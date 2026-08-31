@@ -1,0 +1,5 @@
+/target/
+/target-*/
+/web-dist/
+*.crystalpack
+*.crystalpack.gz

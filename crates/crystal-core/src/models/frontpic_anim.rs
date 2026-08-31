@@ -1,0 +1,555 @@
+use std::collections::{BTreeMap, BTreeSet};
+
+use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+pub const FRONTPIC_ANIM_FRAME_COMMAND: &str = "frame";
+pub const FRONTPIC_ANIM_SET_REPEAT_COMMAND: &str = "setrepeat";
+pub const FRONTPIC_ANIM_DO_REPEAT_COMMAND: &str = "dorepeat";
+pub const FRONTPIC_ANIM_END_COMMAND: &str = "endanim";
+pub const FRONTPIC_ANIM_COMMANDS: &[&str] = &[
+    FRONTPIC_ANIM_FRAME_COMMAND,
+    FRONTPIC_ANIM_SET_REPEAT_COMMAND,
+    FRONTPIC_ANIM_DO_REPEAT_COMMAND,
+    FRONTPIC_ANIM_END_COMMAND,
+];
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct FrontpicAnimCommand {
+    #[serde(deserialize_with = "required_frontpic_command_kind")]
+    pub kind: String,
+    pub frame: Option<u16>,
+    pub duration: Option<u16>,
+    pub count: Option<u16>,
+    pub target: Option<u16>,
+}
+
+impl<'de> Deserialize<'de> for FrontpicAnimCommand {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct RawFrontpicAnimCommand {
+            #[serde(deserialize_with = "required_frontpic_command_kind")]
+            kind: String,
+            frame: Option<u16>,
+            duration: Option<u16>,
+            count: Option<u16>,
+            target: Option<u16>,
+        }
+
+        let raw = RawFrontpicAnimCommand::deserialize(deserializer)?;
+        let command = Self {
+            kind: raw.kind,
+            frame: raw.frame,
+            duration: raw.duration,
+            count: raw.count,
+            target: raw.target,
+        };
+        if let Some(issue) = frontpic_anim_command_issue(&command) {
+            return Err(D::Error::custom(format!(
+                "invalid frontpic animation command: {issue:?}"
+            )));
+        }
+        Ok(command)
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct FrontpicAnimProgram {
+    pub commands: Vec<FrontpicAnimCommand>,
+}
+
+impl<'de> Deserialize<'de> for FrontpicAnimProgram {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct RawFrontpicAnimProgram {
+            commands: Vec<FrontpicAnimCommand>,
+        }
+
+        let raw = RawFrontpicAnimProgram::deserialize(deserializer)?;
+        if raw.commands.is_empty() {
+            return Err(D::Error::custom(
+                "frontpic animation program must contain commands",
+            ));
+        }
+        for (index, command) in raw.commands.iter().enumerate() {
+            if command.kind == FRONTPIC_ANIM_DO_REPEAT_COMMAND
+                && command
+                    .target
+                    .is_some_and(|target| usize::from(target) >= raw.commands.len())
+            {
+                return Err(D::Error::custom(format!(
+                    "frontpic animation command {index} repeats to out-of-range target"
+                )));
+            }
+        }
+        Ok(Self {
+            commands: raw.commands,
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum FrontpicAnimCommandIssue {
+    MissingFrame,
+    MissingSetRepeatCount,
+    MissingDoRepeatTarget,
+    InvalidDoRepeatTarget,
+    UnknownCommand,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum FrontpicAnimCatalogIssue {
+    InvalidSpeciesId {
+        species_id: String,
+    },
+    UnknownSpecies {
+        species_id: String,
+    },
+    EmptyProgram {
+        species_id: String,
+    },
+    Command {
+        species_id: String,
+        index: usize,
+        command: String,
+        issue: FrontpicAnimCommandIssue,
+    },
+    MissingSpeciesProgram {
+        species_id: String,
+    },
+}
+
+pub fn is_known_frontpic_anim_command(kind: &str) -> bool {
+    FRONTPIC_ANIM_COMMANDS.contains(&kind)
+}
+
+fn required_frontpic_command_kind<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = String::deserialize(deserializer)?;
+    if is_known_frontpic_anim_command(&value) {
+        Ok(value)
+    } else {
+        Err(serde::de::Error::custom(format!(
+            "frontpic animation command kind must be one of {FRONTPIC_ANIM_COMMANDS:?}, found {value:?}"
+        )))
+    }
+}
+
+pub fn frontpic_anim_command_issue(
+    command: &FrontpicAnimCommand,
+) -> Option<FrontpicAnimCommandIssue> {
+    match command.kind.as_str() {
+        FRONTPIC_ANIM_FRAME_COMMAND => {
+            if command.frame.is_none() || command.duration.is_none() {
+                Some(FrontpicAnimCommandIssue::MissingFrame)
+            } else {
+                None
+            }
+        }
+        FRONTPIC_ANIM_SET_REPEAT_COMMAND => {
+            if command.count.is_none() {
+                Some(FrontpicAnimCommandIssue::MissingSetRepeatCount)
+            } else {
+                None
+            }
+        }
+        FRONTPIC_ANIM_DO_REPEAT_COMMAND => {
+            if command.target.is_none() {
+                Some(FrontpicAnimCommandIssue::MissingDoRepeatTarget)
+            } else {
+                None
+            }
+        }
+        FRONTPIC_ANIM_END_COMMAND => None,
+        _ => Some(FrontpicAnimCommandIssue::UnknownCommand),
+    }
+}
+
+pub fn frontpic_anim_catalog_issues(
+    programs: &BTreeMap<String, FrontpicAnimProgram>,
+    species_ids: &BTreeSet<String>,
+) -> Vec<FrontpicAnimCatalogIssue> {
+    let mut issues = Vec::new();
+    for (species_id, program) in programs {
+        if !is_exact_nonempty_frontpic_token(species_id) {
+            issues.push(FrontpicAnimCatalogIssue::InvalidSpeciesId {
+                species_id: species_id.clone(),
+            });
+        } else if !is_frontpic_animation_asset_key(species_id, species_ids) {
+            issues.push(FrontpicAnimCatalogIssue::UnknownSpecies {
+                species_id: species_id.clone(),
+            });
+        }
+        if program.commands.is_empty() {
+            issues.push(FrontpicAnimCatalogIssue::EmptyProgram {
+                species_id: species_id.clone(),
+            });
+        }
+        for (index, command) in program.commands.iter().enumerate() {
+            if let Some(issue) = frontpic_anim_command_issue(command) {
+                issues.push(FrontpicAnimCatalogIssue::Command {
+                    species_id: species_id.clone(),
+                    index,
+                    command: command.kind.clone(),
+                    issue,
+                });
+            } else if command.kind == FRONTPIC_ANIM_DO_REPEAT_COMMAND
+                && command
+                    .target
+                    .is_some_and(|target| usize::from(target) >= program.commands.len())
+            {
+                issues.push(FrontpicAnimCatalogIssue::Command {
+                    species_id: species_id.clone(),
+                    index,
+                    command: command.kind.clone(),
+                    issue: FrontpicAnimCommandIssue::InvalidDoRepeatTarget,
+                });
+            }
+        }
+    }
+    for species_id in species_ids {
+        if !programs.contains_key(species_id) {
+            issues.push(FrontpicAnimCatalogIssue::MissingSpeciesProgram {
+                species_id: species_id.clone(),
+            });
+        }
+    }
+    issues
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+pub struct FrontpicAnimProgramTable(pub BTreeMap<String, FrontpicAnimProgram>);
+
+impl<'de> Deserialize<'de> for FrontpicAnimProgramTable {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let programs = BTreeMap::<String, FrontpicAnimProgram>::deserialize(deserializer)?;
+        if programs.is_empty() {
+            return Err(D::Error::custom(
+                "frontpic animation table must not be empty",
+            ));
+        }
+        for (species_id, program) in &programs {
+            if !is_exact_nonempty_frontpic_token(species_id) {
+                return Err(D::Error::custom(format!(
+                    "frontpic animation species id must be exact ASCII alphanumeric/underscore, found {species_id:?}"
+                )));
+            }
+            if program.commands.is_empty() {
+                return Err(D::Error::custom(format!(
+                    "frontpic animation program for {species_id:?} must not be empty"
+                )));
+            }
+        }
+        Ok(Self(programs))
+    }
+}
+
+fn is_exact_nonempty_frontpic_token(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+}
+
+fn has_reserved_pack_prefix(value: &str) -> bool {
+    let value = value.to_ascii_lowercase();
+    value.starts_with("fallback") || value.starts_with("legacy")
+}
+
+fn is_frontpic_animation_asset_key(species_id: &str, species_ids: &BTreeSet<String>) -> bool {
+    species_ids.contains(species_id)
+        || species_id == "EGG"
+        || species_id
+            .strip_prefix("UNOWN_")
+            .and_then(|suffix| {
+                suffix
+                    .as_bytes()
+                    .first()
+                    .copied()
+                    .filter(|_| suffix.len() == 1)
+            })
+            .is_some_and(|byte| byte.is_ascii_uppercase())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn frontpic_anim_command_set_is_exact() {
+        assert_eq!(
+            FRONTPIC_ANIM_COMMANDS,
+            &[
+                FRONTPIC_ANIM_FRAME_COMMAND,
+                FRONTPIC_ANIM_SET_REPEAT_COMMAND,
+                FRONTPIC_ANIM_DO_REPEAT_COMMAND,
+                FRONTPIC_ANIM_END_COMMAND
+            ]
+        );
+        assert!(is_known_frontpic_anim_command("frame"));
+        assert!(!is_known_frontpic_anim_command("FRAME"));
+    }
+
+    #[test]
+    fn frontpic_anim_command_shape_is_exact_without_fallbacks() {
+        let frame = FrontpicAnimCommand {
+            kind: FRONTPIC_ANIM_FRAME_COMMAND.to_string(),
+            frame: Some(0),
+            duration: Some(8),
+            ..FrontpicAnimCommand::default()
+        };
+        assert_eq!(frontpic_anim_command_issue(&frame), None);
+
+        assert_eq!(
+            frontpic_anim_command_issue(&FrontpicAnimCommand {
+                kind: FRONTPIC_ANIM_FRAME_COMMAND.to_string(),
+                frame: Some(0),
+                ..FrontpicAnimCommand::default()
+            }),
+            Some(FrontpicAnimCommandIssue::MissingFrame)
+        );
+        assert_eq!(
+            frontpic_anim_command_issue(&FrontpicAnimCommand {
+                kind: FRONTPIC_ANIM_SET_REPEAT_COMMAND.to_string(),
+                ..FrontpicAnimCommand::default()
+            }),
+            Some(FrontpicAnimCommandIssue::MissingSetRepeatCount)
+        );
+        assert_eq!(
+            frontpic_anim_command_issue(&FrontpicAnimCommand {
+                kind: FRONTPIC_ANIM_DO_REPEAT_COMMAND.to_string(),
+                ..FrontpicAnimCommand::default()
+            }),
+            Some(FrontpicAnimCommandIssue::MissingDoRepeatTarget)
+        );
+        assert_eq!(
+            frontpic_anim_command_issue(&FrontpicAnimCommand {
+                kind: "FRAME".to_string(),
+                ..FrontpicAnimCommand::default()
+            }),
+            Some(FrontpicAnimCommandIssue::UnknownCommand)
+        );
+    }
+
+    #[test]
+    fn frontpic_anim_catalog_issues_validate_exact_asset_keys_and_programs() {
+        let species_ids = BTreeSet::from(["CHIKORITA".to_string(), "BAYLEEF".to_string()]);
+        let programs = BTreeMap::from([
+            (
+                " BAYLEEF".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_END_COMMAND.to_string(),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "CHIKORITA".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_FRAME_COMMAND.to_string(),
+                        frame: Some(0),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "CHIKO RITA".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_END_COMMAND.to_string(),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "chikorita".to_string(),
+                FrontpicAnimProgram {
+                    commands: Vec::new(),
+                },
+            ),
+            (
+                "EGG".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_END_COMMAND.to_string(),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "UNOWN_A".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_END_COMMAND.to_string(),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "UNOWN_B".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: FRONTPIC_ANIM_DO_REPEAT_COMMAND.to_string(),
+                        target: Some(7),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+            (
+                "UNOWN_aa".to_string(),
+                FrontpicAnimProgram {
+                    commands: vec![FrontpicAnimCommand {
+                        kind: "ENDANIM".to_string(),
+                        ..FrontpicAnimCommand::default()
+                    }],
+                },
+            ),
+        ]);
+
+        assert_eq!(
+            frontpic_anim_catalog_issues(&programs, &species_ids),
+            vec![
+                FrontpicAnimCatalogIssue::InvalidSpeciesId {
+                    species_id: " BAYLEEF".to_string(),
+                },
+                FrontpicAnimCatalogIssue::InvalidSpeciesId {
+                    species_id: "CHIKO RITA".to_string(),
+                },
+                FrontpicAnimCatalogIssue::Command {
+                    species_id: "CHIKORITA".to_string(),
+                    index: 0,
+                    command: FRONTPIC_ANIM_FRAME_COMMAND.to_string(),
+                    issue: FrontpicAnimCommandIssue::MissingFrame,
+                },
+                FrontpicAnimCatalogIssue::Command {
+                    species_id: "UNOWN_B".to_string(),
+                    index: 0,
+                    command: FRONTPIC_ANIM_DO_REPEAT_COMMAND.to_string(),
+                    issue: FrontpicAnimCommandIssue::InvalidDoRepeatTarget,
+                },
+                FrontpicAnimCatalogIssue::UnknownSpecies {
+                    species_id: "UNOWN_aa".to_string(),
+                },
+                FrontpicAnimCatalogIssue::Command {
+                    species_id: "UNOWN_aa".to_string(),
+                    index: 0,
+                    command: "ENDANIM".to_string(),
+                    issue: FrontpicAnimCommandIssue::UnknownCommand,
+                },
+                FrontpicAnimCatalogIssue::UnknownSpecies {
+                    species_id: "chikorita".to_string(),
+                },
+                FrontpicAnimCatalogIssue::EmptyProgram {
+                    species_id: "chikorita".to_string(),
+                },
+                FrontpicAnimCatalogIssue::MissingSpeciesProgram {
+                    species_id: "BAYLEEF".to_string(),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn frontpic_anim_catalog_issues_reject_reserved_pack_prefix_tokens() {
+        let programs = BTreeMap::from([(
+            "fallback_chikorita".to_string(),
+            FrontpicAnimProgram {
+                commands: vec![FrontpicAnimCommand {
+                    kind: FRONTPIC_ANIM_END_COMMAND.to_string(),
+                    ..FrontpicAnimCommand::default()
+                }],
+            },
+        )]);
+
+        assert_eq!(
+            frontpic_anim_catalog_issues(&programs, &BTreeSet::new()),
+            vec![FrontpicAnimCatalogIssue::InvalidSpeciesId {
+                species_id: "fallback_chikorita".to_string(),
+            }]
+        );
+    }
+
+    #[test]
+    fn frontpic_anim_json_requires_explicit_program_and_command_kind() {
+        let missing_commands = serde_json::from_str::<FrontpicAnimProgram>(r#"{}"#)
+            .expect_err("frontpic animation programs must declare command lists")
+            .to_string();
+        assert!(
+            missing_commands.contains("missing field `commands`"),
+            "{missing_commands}"
+        );
+
+        let missing_kind =
+            serde_json::from_str::<FrontpicAnimProgram>(r#"{"commands":[{"frame":0}]}"#)
+                .expect_err("frontpic animation commands must declare their opcode kind")
+                .to_string();
+        assert!(
+            missing_kind.contains("missing field `kind`"),
+            "{missing_kind}"
+        );
+
+        let explicit_command =
+            serde_json::from_str::<FrontpicAnimProgram>(r#"{"commands":[{"kind":"endanim"}]}"#)
+                .expect("optional command operands may be absent when opcode does not use them");
+        assert_eq!(explicit_command.commands[0].kind, FRONTPIC_ANIM_END_COMMAND);
+
+        let unknown_program_field = serde_json::from_str::<FrontpicAnimProgram>(
+            r#"{"commands":[{"kind":"endanim"}],"fallback":[]}"#,
+        )
+        .expect_err("frontpic animation programs must not accept unknown fields")
+        .to_string();
+        assert!(
+            unknown_program_field.contains("unknown field `fallback`"),
+            "{unknown_program_field}"
+        );
+
+        let unknown_command_field = serde_json::from_str::<FrontpicAnimProgram>(
+            r#"{"commands":[{"kind":"endanim","legacyOpcode":"end"}]}"#,
+        )
+        .expect_err("frontpic animation commands must not accept unknown fields")
+        .to_string();
+        assert!(
+            unknown_command_field.contains("unknown field `legacyOpcode`"),
+            "{unknown_command_field}"
+        );
+
+        let unknown_command_kind =
+            serde_json::from_str::<FrontpicAnimProgram>(r#"{"commands":[{"kind":"ENDANIM"}]}"#)
+                .expect_err("frontpic animation command kinds must be exact known opcodes")
+                .to_string();
+        assert!(
+            unknown_command_kind.contains("frontpic animation command kind must be one of"),
+            "{unknown_command_kind}"
+        );
+
+        let issue_error = serde_json::from_str::<FrontpicAnimCommandIssue>(
+            r#"{"missing_frame":{"fallback_frame":0}}"#,
+        )
+        .expect_err("frontpic issue variants must not accept fallback operands")
+        .to_string();
+        assert!(
+            issue_error.contains("invalid type")
+                || issue_error.contains("unknown field `fallback_frame`"),
+            "{issue_error}"
+        );
+    }
+}
