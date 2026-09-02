@@ -2809,7 +2809,11 @@ fn present_visible_step_event(
         );
     } else if let Some(poison) = event.poison_result.as_ref() {
         record_visible_runtime_action(runtime_shell, "overworld:poison_step")?;
-        runtime_shell.poison_flash_frames_remaining = 4;
+        // LoadPoisonBGPals owns four purple BG-palette VBlanks, restores the
+        // map palettes, then PlayPoisonSFX owns one trailing normal DelayFrame
+        // before DoPoisonStep or its faint script can continue.
+        runtime_shell.poison_flash_frames_remaining = 5;
+        queue_visible_shell_sound_effect(runtime_shell, "SFX_POISON")?;
         runtime_shell.last_audio_events.push(format!(
             "poison step damaged={:?} fainted={:?}",
             poison.damaged_names, poison.fainted_names
@@ -2817,11 +2821,10 @@ fn present_visible_step_event(
         if poison.fainted_names.is_empty() {
             set_shell_action_status(runtime_shell, "POISON HURT THE PARTY");
         } else {
-            let mut notices = poison
+            let notices = poison
                 .fainted_names
                 .iter()
                 .map(|name| format!("{name} fainted!"));
-            runtime_shell.field_notice = notices.next();
             runtime_shell.field_notice_queue.extend(notices);
             mark_runtime_snapshot_dirty(runtime_shell);
             set_shell_action_status(
@@ -8561,6 +8564,31 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.visible_diploma.hash(&mut hasher);
     runtime_shell.visible_battle_transition.hash(&mut hasher);
     runtime_shell.visible_capture_animation.hash(&mut hasher);
+    if let Some(replacement) = &runtime_shell.visible_bug_contest_replacement {
+        true.hash(&mut hasher);
+        replacement.phase.hash(&mut hasher);
+        replacement.previous.species.id.hash(&mut hasher);
+        replacement.previous.level.hash(&mut hasher);
+        replacement.previous.max_hp.hash(&mut hasher);
+        replacement.candidate.species.id.hash(&mut hasher);
+        replacement.candidate.nickname.hash(&mut hasher);
+        replacement.candidate.level.hash(&mut hasher);
+        replacement.candidate.max_hp.hash(&mut hasher);
+        if let Some(origin) = &replacement.scripted_static_wild {
+            true.hash(&mut hasher);
+            origin.map_name.hash(&mut hasher);
+            origin.source_script.hash(&mut hasher);
+            origin.startbattle_command_index.hash(&mut hasher);
+            origin.resume_command_index.hash(&mut hasher);
+            origin.battle_type.hash(&mut hasher);
+            origin.species.hash(&mut hasher);
+            origin.level.hash(&mut hasher);
+        } else {
+            false.hash(&mut hasher);
+        }
+    } else {
+        false.hash(&mut hasher);
+    }
     runtime_shell.visible_move_animations.hash(&mut hasher);
     runtime_shell.visible_send_out_animation.hash(&mut hasher);
     runtime_shell
@@ -9125,7 +9153,7 @@ fn update_overworld_sprite_positions(
     ledge_shadows: &mut Query<
         (&mut Transform, &Sprite),
         (
-            With<LedgeShadowMarker>,
+            With<JumpShadowMarker>,
             Without<PlayerMarker>,
             Without<VisibleObjectSprite>,
             Without<PlayfieldTile>,
@@ -9197,12 +9225,24 @@ fn update_overworld_sprite_positions(
     );
     player_transform.translation.z =
         overworld_entity_depth(player_depth_tile, None, (start_x, start_y));
-    if visible_ledge_jump.is_some()
+    if ledge_jump_has_active_shadow(visible_ledge_jump)
         && let Ok((mut shadow_transform, shadow_sprite)) = ledge_shadows.get_single_mut()
     {
-        shadow_transform.translation.x = player_x + camera_offset.x;
-        shadow_transform.translation.y = player_y + camera_offset.y - player_size.y * 0.5
-            + shadow_sprite.custom_size.map_or(0.0, |size| size.y * 0.5);
+        let Some(shadow_size) = shadow_sprite.custom_size else {
+            return false;
+        };
+        let direction = visible_ledge_jump
+            .and_then(|jump| visible_jump_direction(jump.from, jump.to))
+            .unwrap_or(snapshot.overworld.facing);
+        let (shadow_x, shadow_y) = jump_shadow_position_from_actor_ground(
+            player_x,
+            player_y,
+            player_size.y,
+            shadow_size,
+            direction,
+        );
+        shadow_transform.translation.x = shadow_x + camera_offset.x;
+        shadow_transform.translation.y = shadow_y + camera_offset.y;
         shadow_transform.translation.z =
             overworld_entity_depth(player_depth_tile, None, (start_x, start_y)) - 0.000_001;
     }
@@ -9685,6 +9725,28 @@ fn visible_player_playfield_position_for_duration_with_subframe(
         from.0 + (target.0 - from.0) * progress,
         from.1 + (target.1 - from.1) * progress,
     ))
+}
+
+fn visible_tracking_object_playfield_position(
+    target: TilePosition,
+    from: Option<TilePosition>,
+    frames_remaining: u8,
+    total_frames: u8,
+    movement_subframe: f32,
+    start_x: i16,
+    start_y: i16,
+    camera_offset: Vec2,
+) -> Option<(f32, f32)> {
+    let (x, y) = visible_player_playfield_position_for_duration_with_subframe(
+        target,
+        from,
+        frames_remaining,
+        total_frames,
+        movement_subframe,
+        start_x,
+        start_y,
+    )?;
+    Some((x + camera_offset.x, y + camera_offset.y))
 }
 
 fn visible_movement_progress(frames_remaining: u8, total_frames: u8) -> f32 {

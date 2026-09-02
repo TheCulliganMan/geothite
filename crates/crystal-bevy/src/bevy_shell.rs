@@ -29,11 +29,11 @@ use chrono::{Datelike, Local as ChronoLocal, Timelike};
 use crystal_assets::{
     RuntimeBadgeRegion, RuntimeBugContestAction, RuntimeCurrencyAccount, RuntimeDayCareAction,
     RuntimeDayCareCaretaker, RuntimeGameCornerService, RuntimeGenderMenuDefinition,
-    RuntimeGraphicsSpecial, RuntimeHappinessServiceRoutine, RuntimeLinkBattleResult,
-    RuntimeMysteryGiftAction, RuntimePartyCheckSpecial, RuntimePhoneRandomSpecial,
-    RuntimePresentationPhaseMachine, RuntimePresentationProgram, RuntimeShuckieAction,
-    RuntimeStoryGateSpecial, RuntimeTitleMainMenuDefinition, RuntimeTitleMainMenuItem,
-    RuntimeTitlePresentationParameters,
+    RuntimeGraphicsSpecial, RuntimeHappinessServiceRoutine, RuntimeIntroPresentationParameters,
+    RuntimeLinkBattleResult, RuntimeMysteryGiftAction, RuntimePartyCheckSpecial,
+    RuntimePhoneRandomSpecial, RuntimePresentationPhaseMachine, RuntimePresentationProgram,
+    RuntimeShuckieAction, RuntimeStoryGateSpecial, RuntimeTitleMainMenuDefinition,
+    RuntimeTitleMainMenuItem, RuntimeTitlePresentationParameters,
 };
 
 use crate::assets::{
@@ -771,6 +771,7 @@ struct BevyRuntimeShell {
     pending_mail_read: Option<VisibleMailRead>,
     pending_name_choice: Option<VisibleNameChoice>,
     pending_standard_capture: Option<PendingStandardCapture>,
+    visible_bug_contest_replacement: Option<VisibleBugContestReplacement>,
     pending_gift_pokemon_nickname: Option<PendingGiftPokemonNickname>,
     pending_gift_pokemon_pc_notice: bool,
     pending_egg_hatch_nickname: Option<PendingEggHatchNickname>,
@@ -1886,6 +1887,9 @@ struct TitleMenu {
     main_menu_frame: u32,
     scx: u8,
     title_timer: u16,
+    timeout_fade_rate: u8,
+    timeout_fade_register: String,
+    timeout_fade_audio: String,
     entrance_start_scx: u8,
     entrance_scroll_step: u8,
     crystal_oam_target: String,
@@ -1910,17 +1914,25 @@ struct VisibleContinueScreen {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleIntroScreen {
+    scene_count: usize,
+    scene_operation_offsets: Vec<usize>,
+    completion_wait_frames: Vec<u8>,
     jumptable_index: usize,
+    scene_dispatch_tick: u16,
     scene_frame_counter: u8,
     next_scene_frame_counter: Option<u8>,
     scene_delay_frames: u8,
     scene_timer: u8,
     scroll_x: u8,
     scroll_y: u8,
+    ly_overrides: Vec<u8>,
+    lcdc_pointer: u8,
     global_anim_x_offset: u8,
     sprite_count: u8,
     sprites: Vec<VisibleIntroSprite>,
     background_binding: Option<VisibleIntroBackgroundBinding>,
+    attrmap_palette_overrides: Vec<VisibleIntroAttrmapFill>,
+    tile_override: Option<VisibleIntroTileOverride>,
     palette_effect: VisibleIntroPaletteEffect,
     finished: bool,
 }
@@ -1943,14 +1955,42 @@ struct VisibleIntroBgTileBinding {
     resource_tile_start: u16,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct VisibleIntroAttrmapFill {
+    start: usize,
+    end: usize,
+    value: u8,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct VisibleIntroTileOverride {
+    tile_id_start: u8,
+    tile_count: u8,
+    target_vram_bank: u8,
+    resource: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 enum VisibleIntroPaletteEffect {
     None,
-    UnownFade { palette_idx: u8, timer: u8 },
-    AppearUnown { palette_set_idx: u8, revealed: u8 },
-    Scene24Fade { fade_index: u8 },
-    CrystalWordFade { fade_level: u8, timer: u8 },
-    ClearBg,
+    UnownFade {
+        palette_idx: u8,
+        colors: [[u8; 3]; 3],
+    },
+    AppearUnown {
+        palette_resource: String,
+        revealed: u8,
+    },
+    Scene24Fade {
+        colors: [[u8; 3]; 4],
+    },
+    CrystalWordFade {
+        fade_level: u8,
+        colors: [[u8; 3]; 2],
+    },
+    ClearBg {
+        color: [u8; 3],
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -2228,6 +2268,22 @@ struct PendingStandardCapture {
     outcome: crate::core::battle::capture::CaptureOutcome,
     scripted_static_wild: Option<VisibleStaticWildOrigin>,
     default_name: String,
+    prompt_for_nickname: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+enum VisibleBugContestReplacementPhase {
+    AlreadyCaughtText,
+    StatsPrompt,
+    CaughtText,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct VisibleBugContestReplacement {
+    previous: crate::core::models::Pokemon,
+    candidate: crate::core::models::Pokemon,
+    phase: VisibleBugContestReplacementPhase,
+    scripted_static_wild: Option<VisibleStaticWildOrigin>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -2922,7 +2978,6 @@ struct VisibleEarthquake {
     intensity: u16,
     frames_remaining: u16,
     shake_frames_remaining: u16,
-    phase: u8,
 }
 
 impl VisibleEarthquake {
@@ -2931,7 +2986,6 @@ impl VisibleEarthquake {
             intensity: 1_u16 << ((parameter >> 6) & 0x3),
             frames_remaining: shake_frames + sleep_frames,
             shake_frames_remaining: shake_frames,
-            phase: 0,
         }
     }
 
@@ -2941,7 +2995,6 @@ impl VisibleEarthquake {
             intensity: 1_u16 << ((parameter >> 6) & 0x3),
             frames_remaining: frames,
             shake_frames_remaining: frames,
-            phase: 0,
         }
     }
 
@@ -2949,7 +3002,6 @@ impl VisibleEarthquake {
         self.frames_remaining = visible_effect_frames_after_ticks(self.frames_remaining, frames);
         self.shake_frames_remaining =
             visible_effect_frames_after_ticks(self.shake_frames_remaining, frames);
-        self.phase = self.phase.wrapping_add(frames as u8) % 4;
     }
 }
 
@@ -3805,6 +3857,9 @@ struct IntroSceneArtKey {
     scene_timer: u8,
     scroll_x: u8,
     scroll_y: u8,
+    ly_overrides_hash: u64,
+    lcdc_pointer: u8,
+    background_effect_hash: u64,
     global_anim_x_offset: u8,
     sprite_hash: u64,
     palette_effect: VisibleIntroPaletteEffect,
@@ -4310,6 +4365,7 @@ struct BitmapFontArt {
     glyphs: HashMap<char, SpriteFrame>,
 }
 
+#[derive(Clone)]
 struct WindowFrameArt {
     top_left: SpriteFrame,
     top_edge: SpriteFrame,
@@ -4440,7 +4496,9 @@ struct PlayerSpriteFrames {
 struct PlayerFacingMarker;
 
 #[derive(Component)]
-struct LedgeShadowMarker;
+struct JumpShadowMarker {
+    actor_id: String,
+}
 
 #[derive(Component)]
 struct GrassRustleMarker;
@@ -4930,7 +4988,7 @@ fn sync_manual_world_view_layers(
             With<PlayerMarker>,
             With<MultiplayerGhost>,
             With<ObjectMarker>,
-            With<LedgeShadowMarker>,
+            With<JumpShadowMarker>,
             With<GrassRustleMarker>,
         )>,
     >,
@@ -4941,7 +4999,7 @@ fn sync_manual_world_view_layers(
             Added<PlayerMarker>,
             Added<MultiplayerGhost>,
             Added<ObjectMarker>,
-            Added<LedgeShadowMarker>,
+            Added<JumpShadowMarker>,
             Added<GrassRustleMarker>,
         )>,
     >,
@@ -6406,7 +6464,7 @@ fn initialize_bevy_runtime_shell(
                 .insert("hClockResetTrigger".to_string(), 0);
             presentation_machine
                 .memory
-                .insert("wMusicFade".to_string(), 0);
+                .insert(parameters.timeout_fade_register.clone(), 0);
             presentation_machine.memory.insert(
                 parameters.crystal_oam_target.clone(),
                 u16::from(parameters.crystal_initial_y),
@@ -6425,6 +6483,9 @@ fn initialize_bevy_runtime_shell(
                 main_menu_frame: 0,
                 scx: parameters.entrance_start_scx,
                 title_timer: 0,
+                timeout_fade_rate: parameters.timeout_fade_rate,
+                timeout_fade_register: parameters.timeout_fade_register,
+                timeout_fade_audio: parameters.timeout_fade_audio,
                 entrance_start_scx: parameters.entrance_start_scx,
                 entrance_scroll_step: parameters.entrance_scroll_step,
                 crystal_oam_target: parameters.crystal_oam_target,
@@ -6443,8 +6504,12 @@ fn initialize_bevy_runtime_shell(
         #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGameAtRuntimeTile { .. } => None,
     };
-    let mut intro_screen =
-        matches!(&start, BevyShellStart::Title { .. }).then(VisibleIntroScreen::new);
+    let intro_parameters = matches!(&start, BevyShellStart::Title { .. })
+        .then(|| {
+            RuntimeIntroPresentationParameters::from_program(runtime.title_presentation_program())
+        })
+        .transpose()?;
+    let mut intro_screen = intro_parameters.map(VisibleIntroScreen::from_parameters);
     if let Some(intro) = intro_screen.as_mut() {
         apply_visible_intro_background_binding(
             intro,
@@ -6651,6 +6716,7 @@ fn initialize_bevy_runtime_shell(
         pending_mail_read: None,
         pending_name_choice: None,
         pending_standard_capture: None,
+        visible_bug_contest_replacement: None,
         pending_gift_pokemon_nickname: None,
         pending_gift_pokemon_pc_notice: false,
         pending_egg_hatch_nickname: None,

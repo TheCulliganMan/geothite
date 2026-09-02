@@ -575,6 +575,162 @@ fn empty_overworld_frame_advances_without_cloning_or_mutating_gameplay_state() {
     assert_eq!(state.joypad, before_joypad);
 }
 
+#[test]
+fn strength_push_bumps_the_player_and_starts_the_sixteen_frame_object_step() {
+    let mut module = test_map_module("StrengthRoom", "STRENGTH_ROOM", None);
+    module.attributes.width = 2;
+    module.blocks = vec![1, 2];
+    module.events.warps = vec![WarpEvent {
+        index: 1,
+        x: 2,
+        y: 0,
+        target_map_constant: "STRENGTH_ROOM".to_string(),
+        target_map: "STRENGTH_ROOM".to_string(),
+        target_warp_id: 1,
+    }];
+    module
+        .scripts
+        .insert("BoulderFalls".to_string(), serde_json::json!([]));
+    let mut boulder = test_object("STRENGTH_BOULDER", "-1", 1, 0);
+    boulder.spritemovedata = "SPRITEMOVEDATA_STRENGTH_BOULDER".to_string();
+    module.objects = vec![boulder];
+    let mut tileset = test_tileset_definition();
+    tileset.collision.insert(
+        "2".to_string(),
+        vec![
+            "PIT".to_string(),
+            "FLOOR".to_string(),
+            "FLOOR".to_string(),
+            "FLOOR".to_string(),
+        ],
+    );
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        tilesets: BTreeMap::from([("johto".to_string(), tileset)]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    state
+        .flags
+        .set_engine_flag("ENGINE_STRENGTH_ACTIVE", true)
+        .expect("activate Strength");
+    state
+        .script_runtime
+        .stone_table_entries
+        .push(crystal_core::state::ScriptRuntimeStoneTableEntry {
+            queue_slot: 0,
+            warp: 1,
+            object_event: "STRENGTH_BOULDER".to_string(),
+            script: "BoulderFalls".to_string(),
+            source_script: "StrengthStoneTable".to_string(),
+            command_index: 0,
+        });
+    let mut session = data
+        .overworld_session("StrengthRoom", TilePosition::new(0, 0), 0)
+        .expect("Strength room session");
+    session.player.facing = Direction::Right;
+
+    let frame = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            [GameButton::Right],
+            &BTreeSet::new(),
+            &mut ReplayDivider::new([]),
+        )
+        .expect("request Strength push");
+
+    assert_eq!(session.player.tile, TilePosition::new(0, 0));
+    assert!(matches!(
+        frame.movement,
+        Some(StepOutcome::BlockedByObject {
+            at: TilePosition { x: 1, y: 0 },
+            object_identifier: Some(ref object_id),
+            ..
+        }) if object_id == "STRENGTH_BOULDER"
+    ));
+    assert_eq!(
+        session
+            .object_runtime_tile_by_id("STRENGTH_BOULDER")
+            .expect("live boulder tile"),
+        TilePosition::new(2, 0)
+    );
+    assert_eq!(
+        session
+            .object_last_runtime_tiles
+            .get("STRENGTH_BOULDER"),
+        Some(&TilePosition::new(1, 0))
+    );
+    assert_eq!(
+        session.object_step_durations.get("STRENGTH_BOULDER"),
+        Some(&16)
+    );
+    assert_eq!((session.objects[0].x, session.objects[0].y), (1, 0));
+    assert_eq!(state.script_runtime.audio_events.len(), 1);
+    assert_eq!(
+        state.script_runtime.audio_events[0].audio_id.as_deref(),
+        Some("SFX_STRENGTH")
+    );
+
+    for expected_remaining in (1..=15).rev() {
+        data.apply_overworld_input(
+            &mut state,
+            &mut session,
+            std::iter::empty(),
+            &BTreeSet::new(),
+            &mut ReplayDivider::new([]),
+        )
+        .expect("advance Strength boulder slow step");
+        assert_eq!(
+            session.object_step_durations.get("STRENGTH_BOULDER"),
+            Some(&expected_remaining)
+        );
+        assert_eq!((session.objects[0].x, session.objects[0].y), (1, 0));
+        assert_eq!(state.script_runtime.next_script, None);
+    }
+
+    data.apply_overworld_input(
+        &mut state,
+        &mut session,
+        std::iter::empty(),
+        &BTreeSet::new(),
+        &mut ReplayDivider::new([]),
+    )
+    .expect("land Strength boulder");
+    assert!(!session
+        .object_step_durations
+        .contains_key("STRENGTH_BOULDER"));
+    assert!(!session
+        .strength_moving_object_identifiers
+        .contains("STRENGTH_BOULDER"));
+    assert_eq!((session.objects[0].x, session.objects[0].y), (2, 0));
+    assert_eq!(
+        session
+            .object_last_runtime_tiles
+            .get("STRENGTH_BOULDER"),
+        Some(&TilePosition::new(2, 0))
+    );
+    assert_eq!(state.script_runtime.next_script, None);
+
+    data.apply_overworld_input(
+        &mut state,
+        &mut session,
+        std::iter::empty(),
+        &BTreeSet::new(),
+        &mut ReplayDivider::new([]),
+    )
+    .expect("run following-frame stone table");
+    assert_eq!(
+        state
+            .script_runtime
+            .next_script
+            .as_ref()
+            .map(|location| location.script.as_str()),
+        Some("BoulderFalls")
+    );
+    assert_eq!(state.script_runtime.audio_events.len(), 1);
+}
+
 fn phone_scheduler_contact(
     contact_id: &str,
     map_constant: Option<&str>,
@@ -1106,6 +1262,392 @@ fn empty_overworld_frame_does_not_bypass_forced_tile_movement_without_npcs() {
 }
 
 #[test]
+fn forced_door_checktile_step_bypasses_destination_collision_like_asm() {
+    let mut module = test_map_module("Route29", "ROUTE_29", None);
+    module.attributes.width = 1;
+    module.attributes.height = 1;
+    module.blocks = vec![1];
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        runtime_map_metadata: BTreeMap::from([(
+            "ROUTE_29".to_string(),
+            RuntimeMapMetadata {
+                constant: "ROUTE_29".to_string(),
+                name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                group_id: 1,
+                map_id: 1,
+                width: 1,
+                height: 1,
+                environment: "ROUTE".to_string(),
+                phone_service: 1,
+            },
+        )]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session("Route29", TilePosition::new(0, 0), 0)
+        .expect("overworld session");
+    for metatile in &mut session.tileset.metatiles {
+        metatile.collision = [
+            permissions::DOOR,
+            permissions::WALL,
+            permissions::WALL,
+            permissions::WALL,
+        ];
+    }
+
+    let mut divider = ReplayDivider::new([0, 0]);
+    let frame = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            std::iter::empty(),
+            &BTreeSet::new(),
+            &mut divider,
+        )
+        .expect("forced door CheckTile frame");
+
+    assert_eq!(session.player.tile, TilePosition::new(0, 1));
+    assert!(matches!(
+        frame.movement,
+        Some(StepOutcome::Moved {
+            from: TilePosition { x: 0, y: 0 },
+            to: TilePosition { x: 0, y: 1 },
+            speed_multiplier: 1,
+        })
+    ));
+}
+
+#[test]
+fn forced_door_checktile_step_crosses_a_map_connection_like_asm() {
+    let mut source = test_map_module("ForcedConnectionSource", "FORCED_CONNECTION_SOURCE", None);
+    source.attributes.connections = vec![MapConnection {
+        direction: "south".to_string(),
+        target_map: "ForcedConnectionDestination".to_string(),
+        offset: 0,
+    }];
+    source.blocks = vec![1];
+
+    let mut destination = test_map_module(
+        "ForcedConnectionDestination",
+        "FORCED_CONNECTION_DESTINATION",
+        None,
+    );
+    destination.blocks = vec![1];
+    let destination_attributes = destination.attributes.clone();
+
+    let mut tileset = test_tileset_definition();
+    tileset.collision.insert(
+        "1".to_string(),
+        vec![
+            "FLOOR".to_string(),
+            "FLOOR".to_string(),
+            "DOOR".to_string(),
+            "WALL".to_string(),
+        ],
+    );
+    let data = GameDataSet {
+        maps: map_payload(vec![source, destination]),
+        map_attributes: BTreeMap::from([(
+            "ForcedConnectionDestination".to_string(),
+            destination_attributes,
+        )]),
+        runtime_map_metadata: BTreeMap::from([
+            (
+                "FORCED_CONNECTION_SOURCE".to_string(),
+                test_runtime_map_metadata(
+                    "FORCED_CONNECTION_SOURCE",
+                    "ForcedConnectionSource",
+                ),
+            ),
+            (
+                "FORCED_CONNECTION_DESTINATION".to_string(),
+                test_runtime_map_metadata(
+                    "FORCED_CONNECTION_DESTINATION",
+                    "ForcedConnectionDestination",
+                ),
+            ),
+        ]),
+        tilesets: BTreeMap::from([("johto".to_string(), tileset)]),
+        pokegear_landmarks: map_name_sign_landmarks_for_tests([
+            "ForcedConnectionSource",
+            "ForcedConnectionDestination",
+        ]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session(
+            "ForcedConnectionSource",
+            TilePosition::new(0, 1),
+            0,
+        )
+        .expect("forced-connection source session");
+
+    let frame = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            std::iter::empty(),
+            &BTreeSet::new(),
+            &mut ReplayDivider::new([]),
+        )
+        .expect("forced door connection frame");
+
+    assert!(matches!(
+        frame.movement,
+        Some(StepOutcome::Moved {
+            from: TilePosition { x: 0, y: 1 },
+            to: TilePosition { x: 0, y: 2 },
+            speed_multiplier: 1,
+        })
+    ));
+    assert_eq!(
+        frame
+            .connection
+            .as_ref()
+            .map(|transition| transition.destination.map_name.as_str()),
+        Some("ForcedConnectionDestination")
+    );
+    assert_eq!(session.map.name, "ForcedConnectionDestination");
+    assert_eq!(session.player.tile, TilePosition::new(0, 0));
+    assert_eq!(session.player.facing, Direction::Down);
+    assert_eq!(session.last_step_direction, Some(Direction::Down));
+}
+
+#[test]
+fn surfer_enters_a_waterfall_from_the_side_then_checktile_forces_down() {
+    let mut module = test_map_module("Route29", "ROUTE_29", None);
+    module.attributes.width = 2;
+    module.attributes.height = 2;
+    module.blocks = vec![1; 4];
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        runtime_map_metadata: BTreeMap::from([(
+            "ROUTE_29".to_string(),
+            RuntimeMapMetadata {
+                constant: "ROUTE_29".to_string(),
+                name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                group_id: 1,
+                map_id: 1,
+                width: 2,
+                height: 2,
+                environment: "ROUTE".to_string(),
+                phone_service: 1,
+            },
+        )]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session("Route29", TilePosition::new(0, 0), 0)
+        .expect("overworld session");
+    for metatile in &mut session.tileset.metatiles {
+        metatile.collision = [
+            permissions::WATER,
+            permissions::WATERFALL,
+            permissions::WATER,
+            permissions::WATER,
+        ];
+    }
+    session.player.mode = MovementMode::Surf;
+    session.player.facing = Direction::Right;
+
+    let mut divider = ReplayDivider::new([0, 0]);
+    let entry = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            [GameButton::Right],
+            &BTreeSet::new(),
+            &mut divider,
+        )
+        .expect("sideways waterfall entry");
+    assert!(matches!(
+        entry.movement,
+        Some(StepOutcome::Moved {
+            from: TilePosition { x: 0, y: 0 },
+            to: TilePosition { x: 1, y: 0 },
+            speed_multiplier: 1,
+        })
+    ));
+
+    let mut divider = ReplayDivider::new([0, 0]);
+    let forced = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            std::iter::empty(),
+            &BTreeSet::new(),
+            &mut divider,
+        )
+        .expect("waterfall CheckTile pass");
+    assert!(matches!(
+        forced.movement,
+        Some(StepOutcome::Moved {
+            from: TilePosition { x: 1, y: 0 },
+            to: TilePosition { x: 1, y: 1 },
+            speed_multiplier: 1,
+        })
+    ));
+}
+
+#[test]
+fn surfer_enters_whirlpool_then_source_script_forces_the_exact_return_movement() {
+    let mut module = test_map_module("Route29", "ROUTE_29", None);
+    module.attributes.width = 3;
+    module.blocks = vec![1; 3];
+    let movement = |direction: &str| {
+        serde_json::json!([
+            {"command": "step_dig", "args": ["16"]},
+            {"command": "turn_in", "args": [direction]},
+            {"command": "step_dig", "args": ["16"]},
+            {"command": "turn_head", "args": [direction]},
+            {"command": "step_end", "args": []}
+        ])
+    };
+    let mut data = GameDataSet {
+        maps: map_payload(vec![module]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        runtime_map_metadata: BTreeMap::from([(
+            "ROUTE_29".to_string(),
+            RuntimeMapMetadata {
+                constant: "ROUTE_29".to_string(),
+                name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                group_id: 1,
+                map_id: 1,
+                width: 3,
+                height: 1,
+                environment: "ROUTE".to_string(),
+                phone_service: 1,
+            },
+        )]),
+        story_events: vec![serde_json::json!({
+            "StandardScripts": {
+                "StdScripts": [],
+                "GlobalScriptRoots": ["Script_ForcedMovement"],
+                "Script_ForcedMovement": [
+                    {"command": "readvar", "args": ["VAR_FACING"]},
+                    {"command": "ifequal", "args": ["DOWN", ".down"]},
+                    {"command": "ifequal", "args": ["UP", ".up"]},
+                    {"command": "ifequal", "args": ["LEFT", ".left"]},
+                    {"command": "ifequal", "args": ["RIGHT", ".right"]},
+                    {"command": "end", "args": []}
+                ],
+                ".up@Script_ForcedMovement": [
+                    {"command": "applymovement", "args": ["PLAYER", ".MovementData_up"]},
+                    {"command": "end", "args": []}
+                ],
+                ".down@Script_ForcedMovement": [
+                    {"command": "applymovement", "args": ["PLAYER", ".MovementData_down"]},
+                    {"command": "end", "args": []}
+                ],
+                ".right@Script_ForcedMovement": [
+                    {"command": "applymovement", "args": ["PLAYER", ".MovementData_right"]},
+                    {"command": "end", "args": []}
+                ],
+                ".left@Script_ForcedMovement": [
+                    {"command": "applymovement", "args": ["PLAYER", ".MovementData_left"]},
+                    {"command": "end", "args": []}
+                ],
+                ".MovementData_up@Script_ForcedMovement": movement("DOWN"),
+                ".MovementData_down@Script_ForcedMovement": movement("UP"),
+                ".MovementData_right@Script_ForcedMovement": movement("LEFT"),
+                ".MovementData_left@Script_ForcedMovement": movement("RIGHT")
+            }
+        })],
+        ..GameDataSet::default()
+    };
+    data.materialize_global_scripts()
+        .expect("materialize exact forced-movement global root");
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session("Route29", TilePosition::new(0, 0), 0)
+        .expect("overworld session");
+    for metatile in &mut session.tileset.metatiles {
+        metatile.collision = [
+            permissions::WATER,
+            permissions::WHIRLPOOL,
+            permissions::WATER,
+            permissions::WATER,
+        ];
+    }
+    session.player.mode = MovementMode::Surf;
+    session.player.facing = Direction::Right;
+
+    let mut divider = ReplayDivider::new([0, 0]);
+    let entry = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            [GameButton::Right],
+            &BTreeSet::new(),
+            &mut divider,
+        )
+        .expect("enter Whirlpool water tile");
+    assert!(matches!(
+        entry.movement,
+        Some(StepOutcome::Moved {
+            from: TilePosition { x: 0, y: 0 },
+            to: TilePosition { x: 1, y: 0 },
+            speed_multiplier: 1,
+        })
+    ));
+
+    let mut divider = ReplayDivider::new([]);
+    let forced = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            std::iter::empty(),
+            &BTreeSet::new(),
+            &mut divider,
+        )
+        .expect("Whirlpool CheckTile pass");
+    assert_eq!(forced.movement, None);
+    assert_eq!(session.player.tile, TilePosition::new(1, 0));
+    assert_eq!(
+        state.script_runtime.next_script,
+        Some(ScriptLocation {
+            origin_map_name: "Route29".to_string(),
+            script: "Script_ForcedMovement".to_string(),
+        })
+    );
+
+    let outcome = data
+        .apply_script_movement_in_session(
+            &mut state,
+            &mut session,
+            "Route29",
+            ".right@Script_ForcedMovement",
+            0,
+        )
+        .expect("execute source-selected right-facing return movement");
+    assert_eq!(outcome.previous_tile, TilePosition::new(1, 0));
+    assert_eq!(outcome.tile, TilePosition::new(0, 0));
+    assert_eq!(outcome.facing, Direction::Left);
+    assert_eq!(
+        outcome
+            .executed_steps
+            .iter()
+            .map(|step| (step.command.as_str(), step.duration))
+            .collect::<Vec<_>>(),
+        vec![
+            ("step_dig", Some(16)),
+            ("turn_in", None),
+            ("step_dig", Some(16)),
+            ("turn_head", None),
+        ]
+    );
+}
+
+#[test]
 fn overworld_input_does_not_move_or_interact_while_script_runtime_is_blocking() {
     let mut module = test_map_module("Route29", "ROUTE_29", None);
     module.attributes.width = 2;
@@ -1234,6 +1776,221 @@ fn warp_entry_loads_object_roster_from_current_event_flags() {
         .filter_map(|object| object.object_identifier.as_deref())
         .collect::<Vec<_>>();
     assert_eq!(visible, vec!["MOM_AFTER_INTRO"]);
+}
+
+#[test]
+fn fresh_map_entry_does_not_restore_a_stale_prior_visit_object_image() {
+    let source = test_map_module("Outside", "OUTSIDE", None);
+    let mut destination = test_map_module("House", "HOUSE", None);
+    destination.attributes.width = 2;
+    destination.blocks = vec![0, 0];
+    destination.objects = vec![test_object("HOUSE_NPC", "-1", 1, 0)];
+    let data = GameDataSet {
+        maps: map_payload(vec![source, destination]),
+        runtime_map_metadata: BTreeMap::from([
+            (
+                "OUTSIDE".to_string(),
+                test_runtime_map_metadata("OUTSIDE", "Outside"),
+            ),
+            (
+                "HOUSE".to_string(),
+                test_runtime_map_metadata("HOUSE", "House"),
+            ),
+        ]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        pokegear_landmarks: map_name_sign_landmarks_for_tests(["Outside", "House"]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    state.map_object_overrides.insert(
+        "Outside".to_string(),
+        crystal_core::state::OverworldObjectMapMemory::default(),
+    );
+    state.map_object_overrides.insert(
+        "House".to_string(),
+        crystal_core::state::OverworldObjectMapMemory {
+            objects: BTreeMap::from([(
+                "HOUSE_NPC".to_string(),
+                crystal_core::state::OverworldObjectMemory {
+                    x: 3,
+                    y: 0,
+                },
+            )]),
+            object_structs: crystal_core::world::session::OverworldObjectStructRosterMemory {
+                structs: vec![crystal_core::world::session::OverworldObjectStructMemory {
+                    slot: 1,
+                    map_object_index: 1,
+                    live_tile: TilePosition::new(3, 0),
+                    last_tile: None,
+                    initial_tile: TilePosition::new(3, 0),
+                    facing: Some(Direction::Left),
+                    step_duration: None,
+                    last_tile_occupied_remaining_frames: 0,
+                    pending_random_wait: false,
+                    initialized_fixed_spin: false,
+                    strength_push_direction: None,
+                    strength_moving: false,
+                    fixed_facing: false,
+                    sliding: false,
+                    visible: true,
+                    normal_following: false,
+                    following_not_exact_leader_slot: None,
+                }],
+                ..Default::default()
+            },
+            ..Default::default()
+        },
+    );
+    let mut session = data
+        .overworld_session("Outside", TilePosition::new(0, 0), 0)
+        .expect("outside session");
+
+    data.transition_overworld_session(
+        &mut state,
+        &mut session,
+        "House",
+        TilePosition::new(0, 0),
+        SpawnMemoryUpdate::Preserve,
+        &BTreeSet::new(),
+    )
+    .expect("freshly enter house");
+
+    let npc = session
+        .objects
+        .iter()
+        .find(|object| object.object_identifier.as_deref() == Some("HOUSE_NPC"))
+        .expect("house npc");
+    assert_eq!((npc.x, npc.y), (1, 0));
+    assert_eq!(
+        session
+            .object_runtime_tile_by_id("HOUSE_NPC")
+            .expect("live house npc tile"),
+        TilePosition::new(1, 0)
+    );
+    assert_eq!(
+        state
+            .map_object_overrides
+            .keys()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+        vec!["House"]
+    );
+}
+
+#[test]
+fn continue_restores_the_exact_modeled_current_map_object_struct_image() {
+    let mut module = test_map_module("Field", "FIELD", None);
+    module.attributes.width = 12;
+    module.attributes.height = 5;
+    module.blocks = vec![0; 60];
+    module.objects = vec![
+        test_object("REMOVED", "-1", 4, 4),
+        test_object("SECOND", "-1", 5, 4),
+        test_object("THIRD", "-1", 6, 4),
+        test_object("APPEARED", "-1", 18, 4),
+    ];
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        runtime_map_metadata: BTreeMap::from([(
+            "FIELD".to_string(),
+            test_runtime_map_metadata("FIELD", "Field"),
+        )]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        pokegear_landmarks: map_name_sign_landmarks_for_tests(["Field"]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session("Field", TilePosition::new(4, 4), 40)
+        .expect("current field session");
+    session.frame = 40;
+    session.delete_loaded_object_struct("REMOVED");
+    assert!(
+        session
+            .copy_object_struct_for_appear("APPEARED")
+            .expect("copy appeared object into first free struct")
+    );
+    session
+        .set_object_runtime_tile("APPEARED", TilePosition::new(9, 4))
+        .expect("set appeared live tile");
+    session
+        .object_last_runtime_tiles
+        .insert("APPEARED".to_string(), TilePosition::new(8, 4));
+    session
+        .object_last_tiles_occupied_until_frame
+        .insert("APPEARED".to_string(), 45);
+    session.object_step_durations.insert("APPEARED".to_string(), 7);
+    session
+        .object_pending_random_wait
+        .insert("APPEARED".to_string());
+    session
+        .initialized_fixed_spin_objects
+        .insert("APPEARED".to_string());
+    session
+        .fixed_facing_object_identifiers
+        .insert("APPEARED".to_string());
+    session
+        .sliding_object_identifiers
+        .insert("APPEARED".to_string());
+    session.set_loaded_object_struct_invisible("APPEARED", true);
+    session
+        .shown_object_identifiers
+        .insert("SECOND".to_string());
+    session.following = Some(crystal_core::world::session::OverworldFollowState {
+        leader_slot: None,
+        follower_slot: Some(2),
+    });
+    session
+        .normal_following_object_identifiers
+        .insert("SECOND".to_string());
+    session.following_queued_step = Some(crystal_core::world::session::FollowQueuedStep {
+        direction: Direction::Left,
+        stride: 1,
+        duration: 8,
+        jump: false,
+        standing_frame: false,
+    });
+    session.last_step_direction = Some(Direction::Up);
+    session.player_last_runtime_tile = Some(TilePosition::new(4, 5));
+    session.player_last_tile_occupied_until_frame = 43;
+    let expected = session
+        .object_struct_roster_memory()
+        .expect("capture pre-save object-struct image");
+    assert_eq!(
+        expected
+            .structs
+            .iter()
+            .find(|entry| entry.map_object_index == 4)
+            .map(|entry| entry.slot),
+        Some(1)
+    );
+    assert!(
+        expected
+            .structs
+            .iter()
+            .find(|entry| entry.map_object_index == 2)
+            .expect("saved normal follower struct")
+            .normal_following
+    );
+
+    crystal_core::systems::map_context::sync_state_object_overrides(&mut state, &session)
+        .expect("SavePlayerData current-map object image");
+    let state = serde_json::from_value::<GameState>(
+        serde_json::to_value(state).expect("serialize current-map save image"),
+    )
+    .expect("deserialize current-map save image");
+    let (_, resumed) = data
+        .resume_overworld_session_from_state(state, &BTreeSet::new())
+        .expect("Continue from current-map object image");
+
+    assert!(resumed.shown_object_identifiers.contains("SECOND"));
+    assert_eq!(resumed.following, session.following);
+    assert_eq!(
+        resumed
+            .object_struct_roster_memory()
+            .expect("capture resumed object-struct image"),
+        expected
+    );
 }
 
 #[test]
@@ -1503,6 +2260,122 @@ fn warp_preempts_hatch_ready_egg_and_count_step_counters() {
     let egg = state.storage.party.pokemon[0].as_ref().expect("ready egg");
     assert!(egg.is_egg);
     assert_eq!(egg.happiness, 1);
+}
+
+#[test]
+fn player_event_warps_select_the_exact_source_map_setup() {
+    assert_eq!(
+        player_event_warp_map_setup(permissions::PIT),
+        "MAPSETUP_FALL"
+    );
+    assert_eq!(
+        player_event_warp_map_setup(permissions::PIT_68),
+        "MAPSETUP_FALL"
+    );
+    assert_eq!(
+        player_event_warp_map_setup(permissions::DOOR),
+        "MAPSETUP_DOOR"
+    );
+    assert_eq!(
+        player_event_warp_map_setup(permissions::WARP_PANEL),
+        "MAPSETUP_DOOR"
+    );
+}
+
+#[test]
+fn directional_carpet_requires_a_second_matching_input_after_turning() {
+    let mut source = test_map_module("CarpetSource", "CARPET_SOURCE", None);
+    source.events.warps = vec![WarpEvent {
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map_constant: "CARPET_DESTINATION".to_string(),
+        target_map: "CARPET_DESTINATION".to_string(),
+        target_warp_id: 1,
+    }];
+    let mut destination = test_map_module("CarpetDestination", "CARPET_DESTINATION", None);
+    destination.attributes.map_events_label = Some("CarpetDestination_MapEvents".to_string());
+    destination.events.warps = vec![WarpEvent {
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map_constant: "CARPET_SOURCE".to_string(),
+        target_map: "CARPET_SOURCE".to_string(),
+        target_warp_id: 1,
+    }];
+    let mut tileset = test_tileset_definition();
+    tileset.collision.insert(
+        "1".to_string(),
+        vec![
+            "WARP_CARPET_RIGHT".to_string(),
+            "WALL".to_string(),
+            "FLOOR".to_string(),
+            "FLOOR".to_string(),
+        ],
+    );
+    let data = GameDataSet {
+        maps: map_payload(vec![source, destination.clone()]),
+        map_attributes: BTreeMap::from([(
+            "CarpetDestination".to_string(),
+            destination.attributes,
+        )]),
+        map_scripts: BTreeMap::from([(
+            "CarpetDestination_MapEvents".to_string(),
+            serde_json::json!([
+                {"command":"def_warp_events","args":[]},
+                {"command":"warp_event","args":["0","0","CARPET_SOURCE","1"]},
+                {"command":"def_coord_events","args":[]},
+                {"command":"def_bg_events","args":[]},
+                {"command":"def_object_events","args":[]}
+            ]),
+        )]),
+        runtime_map_metadata: BTreeMap::from([
+            (
+                "CARPET_SOURCE".to_string(),
+                test_runtime_map_metadata("CARPET_SOURCE", "CarpetSource"),
+            ),
+            (
+                "CARPET_DESTINATION".to_string(),
+                test_runtime_map_metadata("CARPET_DESTINATION", "CarpetDestination"),
+            ),
+        ]),
+        tilesets: BTreeMap::from([("johto".to_string(), tileset)]),
+        pokegear_landmarks: map_name_sign_landmarks_for_tests([
+            "CarpetSource",
+            "CarpetDestination",
+        ]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    let mut session = data
+        .overworld_session("CarpetSource", TilePosition::new(0, 0), 0)
+        .expect("directional-carpet session");
+    session.player.facing = Direction::Down;
+
+    let turn = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            [GameButton::Right],
+            &BTreeSet::new(),
+            &mut ReplayDivider::new([]),
+        )
+        .expect("turn on directional carpet");
+    assert!(matches!(turn.movement, Some(StepOutcome::Turned { .. })));
+    assert_eq!(turn.warp, None);
+    assert_eq!(session.map.name, "CarpetSource");
+
+    let warp = data
+        .apply_overworld_input(
+            &mut state,
+            &mut session,
+            [GameButton::Right],
+            &BTreeSet::new(),
+            &mut ReplayDivider::new([]),
+        )
+        .expect("enter directional carpet after matching turn");
+    assert!(warp.warp.is_some());
+    assert_eq!(session.map.name, "CarpetDestination");
 }
 
 #[test]
@@ -1954,6 +2827,182 @@ fn verifier_rejects_unknown_object_movement_data_without_direction_fallback() {
     assert!(!report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "unknown_object_movement_data"
             && diagnostic.subject == "Start:START_MALFORMED_OBJECT"
+    }));
+}
+
+#[test]
+fn verifier_rejects_object_movement_radii_that_do_not_fit_the_asm_nibbles() {
+    let mut module = test_map_module("Start", "START_MAP", None);
+    module.scripts = BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
+    let mut invalid_x = test_object("INVALID_X_RADIUS", "EVENT_INVALID_X_RADIUS", 0, 0);
+    invalid_x.move_range_x = 16;
+    let mut invalid_y = test_object("INVALID_Y_RADIUS", "EVENT_INVALID_Y_RADIUS", 1, 0);
+    invalid_y.move_range_y = u16::MAX;
+    module.objects = vec![invalid_x, invalid_y];
+    let data = GameDataSet {
+        maps: [("Start".to_string(), module)].into_iter().collect(),
+        ..GameDataSet::default()
+    };
+
+    let report = verify_game_data(
+        &AssetRoot::new(repository_root_for_tests()),
+        &data,
+        &PlayabilityRules::default(),
+    );
+
+    assert!(report.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "invalid_object_movement_radius"
+            && diagnostic.subject == "Start:INVALID_X_RADIUS"
+            && diagnostic.message.contains("(16, 0)")
+    }));
+    assert!(report.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "invalid_object_movement_radius"
+            && diagnostic.subject == "Start:INVALID_Y_RADIUS"
+            && diagnostic.message.contains("(0, 65535)")
+    }));
+}
+
+#[test]
+fn verifier_rejects_map_object_and_event_records_that_do_not_fit_asm_storage() {
+    let mut too_many = test_map_module("TooMany", "TOO_MANY", None);
+    too_many.attributes.width = 8;
+    too_many.blocks = vec![1; 8];
+    too_many.scripts = BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
+    too_many.objects = (0..16)
+        .map(|index| {
+            test_object(
+                &format!("OBJECT_{index}"),
+                &format!("EVENT_OBJECT_{index}"),
+                index,
+                0,
+            )
+        })
+        .collect();
+
+    let mut bad_object_coordinate = test_map_module("BadObject", "BAD_OBJECT", None);
+    bad_object_coordinate.attributes.width = 127;
+    bad_object_coordinate.blocks = vec![1; 127];
+    bad_object_coordinate.scripts =
+        BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
+    bad_object_coordinate.objects = vec![test_object(
+        "UNSTORABLE_OBJECT",
+        "EVENT_UNSTORABLE_OBJECT",
+        252,
+        0,
+    )];
+
+    let mut bad_event_coordinate = test_map_module("BadEvent", "BAD_EVENT", None);
+    bad_event_coordinate.attributes.width = 129;
+    bad_event_coordinate.blocks = vec![1; 129];
+    bad_event_coordinate.scripts = BTreeMap::from([
+        ("ObjectScript".to_string(), Value::Array(Vec::new())),
+        ("CoordScript".to_string(), Value::Array(Vec::new())),
+        ("BackgroundScript".to_string(), Value::Array(Vec::new())),
+    ]);
+    bad_event_coordinate.events.warps = vec![WarpEvent {
+        index: 1,
+        x: 256,
+        y: 0,
+        target_map_constant: "BAD_EVENT".to_string(),
+        target_map: "BadEvent".to_string(),
+        target_warp_id: 1,
+    }];
+    bad_event_coordinate.events.coord_events = vec![CoordEvent {
+        x: 256,
+        y: 0,
+        scene_id: String::new(),
+        script_name: "CoordScript".to_string(),
+    }];
+    bad_event_coordinate.events.bg_events = vec![BackgroundEvent {
+        x: 256,
+        y: 0,
+        event_type: "BGEVENT_READ".to_string(),
+        script: "BackgroundScript".to_string(),
+    }];
+
+    let data = GameDataSet {
+        maps: [
+            ("TooMany".to_string(), too_many),
+            ("BadObject".to_string(), bad_object_coordinate),
+            ("BadEvent".to_string(), bad_event_coordinate),
+        ]
+        .into_iter()
+        .collect(),
+        ..GameDataSet::default()
+    };
+
+    let report = verify_game_data(
+        &AssetRoot::new(repository_root_for_tests()),
+        &data,
+        &PlayabilityRules::default(),
+    );
+
+    assert!(report.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "too_many_map_objects"
+            && diagnostic.subject == "TooMany"
+            && diagnostic.message.contains("16")
+    }));
+    assert!(report.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "object_event_coordinate_storage_overflow"
+            && diagnostic.subject == "BadObject:UNSTORABLE_OBJECT"
+            && diagnostic.message.contains("(252, 0)")
+    }));
+    for event_kind in ["warp_event", "coord_event", "bg_event"] {
+        assert!(report.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "map_event_coordinate_storage_overflow"
+                && diagnostic.subject.starts_with(&format!("BadEvent:{event_kind}:"))
+                && diagnostic.message.contains("(256, 0)")
+        }));
+    }
+}
+
+#[test]
+fn verifier_rejects_object_schedules_outside_the_two_asm_byte_forms() {
+    let mut module = test_map_module("Start", "START_MAP", None);
+    module.scripts = BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
+    let mut invalid_first_hour =
+        test_object("INVALID_FIRST_HOUR", "EVENT_INVALID_FIRST_HOUR", 0, 0);
+    invalid_first_hour.hram_x = -2;
+    let mut invalid_mask = test_object("INVALID_MASK", "EVENT_INVALID_MASK", 1, 0);
+    invalid_mask.hram_y = 8;
+    let mut invalid_second_hour =
+        test_object("INVALID_SECOND_HOUR", "EVENT_INVALID_SECOND_HOUR", 2, 0);
+    invalid_second_hour.hram_x = 9;
+    invalid_second_hour.hram_y = 24;
+    let mut valid_wrapping_hours =
+        test_object("VALID_WRAPPING_HOURS", "EVENT_VALID_WRAPPING_HOURS", 3, 0);
+    valid_wrapping_hours.hram_x = 18;
+    valid_wrapping_hours.hram_y = 6;
+    module.objects = vec![
+        invalid_first_hour,
+        invalid_mask,
+        invalid_second_hour,
+        valid_wrapping_hours,
+    ];
+    let data = GameDataSet {
+        maps: [("Start".to_string(), module)].into_iter().collect(),
+        ..GameDataSet::default()
+    };
+
+    let report = verify_game_data(
+        &AssetRoot::new(repository_root_for_tests()),
+        &data,
+        &PlayabilityRules::default(),
+    );
+
+    for object_id in [
+        "INVALID_FIRST_HOUR",
+        "INVALID_MASK",
+        "INVALID_SECOND_HOUR",
+    ] {
+        assert!(report.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "invalid_object_schedule"
+                && diagnostic.subject == format!("Start:{object_id}")
+        }));
+    }
+    assert!(!report.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "invalid_object_schedule"
+            && diagnostic.subject == "Start:VALID_WRAPPING_HOURS"
     }));
 }
 
@@ -4277,7 +5326,7 @@ fn compiled_report_rejects_unknown_fields() {
 }
 
 #[test]
-fn modpack_audio_assets_must_be_pcm_files_not_midi_json_or_asm() {
+fn modpack_audio_assets_require_exact_pcm_or_midi_payload_metadata() {
     let music = ModpackAudioAsset::music("MUSIC_ROUTE_29", "mods/new/music/MUSIC_ROUTE_29.pcm")
         .expect("valid PCM music asset");
     assert_eq!(music.id, "MUSIC_ROUTE_29");
@@ -4476,17 +5525,17 @@ fn modpack_audio_assets_must_be_pcm_files_not_midi_json_or_asm() {
         "{missing_source}"
     );
 
-    let legacy_midi_source = serde_json::from_value::<ModpackAudioAsset>(serde_json::json!({
+    let incomplete_midi_source = serde_json::from_value::<ModpackAudioAsset>(serde_json::json!({
         "id": "MUSIC_ROUTE_29",
         "path": "mods/new/music/MUSIC_ROUTE_29.mid",
         "kind": "music",
         "source": "midi"
     }))
-    .expect_err("MIDI source variants are not accepted")
+    .expect_err("MIDI assets must declare their output PCM format")
     .to_string();
     assert!(
-        legacy_midi_source.contains("unknown variant `midi`"),
-        "{legacy_midi_source}"
+        incomplete_midi_source.contains("must declare output pcm_format"),
+        "{incomplete_midi_source}"
     );
 
     for (label, payload, expected) in [

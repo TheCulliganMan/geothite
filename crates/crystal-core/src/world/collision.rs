@@ -152,6 +152,13 @@ pub const fn is_grass_encounter_permission(permission: u8) -> bool {
     )
 }
 
+pub const fn spawns_shaking_grass_object(permission: u8) -> bool {
+    matches!(
+        permission,
+        permissions::LONG_GRASS | permissions::LONG_GRASS_1C
+    ) || (matches!(permission & 0xf0, 0x10 | 0x20) && permission & 0x07 == 0)
+}
+
 pub fn is_warp_permission(permission: u8) -> bool {
     permission == permissions::PIT
         || permission == permissions::PIT_68
@@ -291,8 +298,9 @@ pub fn is_direction_blocked(permission: u8, facing: Direction) -> bool {
     }
 }
 
-/// Mirror `CanObjectLeaveTile`: side-wall and side-buoy permissions constrain
-/// autonomous objects both when entering a tile and when walking off one.
+/// Decode the departure half of Crystal's side-wall and side-buoy masks.
+/// `GetMovementPermissions` applies this to the player, and
+/// `CanObjectLeaveTile` applies the same directional relationship to NPCs.
 pub fn is_direction_blocked_leaving(permission: u8, facing: Direction) -> bool {
     let hi = permission & 0xf0;
     if hi != (permissions::RIGHT_WALL & 0xf0) && hi != (permissions::RIGHT_BUOY & 0xf0) {
@@ -517,34 +525,11 @@ pub fn is_permission_passable(
     let attributes = describe_collision(permission);
     match traversal_state {
         PlayerTraversalState::Walk => attributes.terrain == Terrain::Land,
-        PlayerTraversalState::Surf => {
-            // Crystal permits a surfer to travel down a waterfall without
-            // using the field move. Upward and sideways entry still require
-            // the dedicated Waterfall path.
-            if facing == Direction::Down
-                && matches!(
-                    permission,
-                    permissions::WATERFALL
-                        | permissions::WATERFALL_RIGHT
-                        | permissions::WATERFALL_LEFT
-                        | permissions::WATERFALL_UP
-                        | permissions::CURRENT_DOWN
-                )
-            {
-                return attributes.terrain != Terrain::Wall;
-            }
-            attributes.terrain != Terrain::Wall
-                && permission != permissions::WHIRLPOOL
-                && permission != permissions::WHIRLPOOL_2C
-                && !matches!(
-                    permission,
-                    permissions::WATERFALL
-                        | permissions::WATERFALL_RIGHT
-                        | permissions::WATERFALL_LEFT
-                        | permissions::WATERFALL_UP
-                        | permissions::CURRENT_DOWN
-                )
-        }
+        // CheckSurfPerms consults CollisionPermissionTable after applying
+        // only the independent directional wall mask. Every `$30..$3f`
+        // current is WATER_TILE from every approach; CheckTile forces its
+        // low-two-bit direction on the following overworld pass.
+        PlayerTraversalState::Surf => attributes.terrain != Terrain::Wall,
     }
 }
 
@@ -659,7 +644,7 @@ mod tests {
     }
 
     #[test]
-    fn passability_respects_walk_surf_wall_and_whirlpool_rules() {
+    fn passability_respects_walk_and_complete_surf_water_rules() {
         assert!(is_permission_passable(
             permissions::FLOOR,
             Direction::Down,
@@ -675,9 +660,14 @@ mod tests {
             Direction::Down,
             PlayerTraversalState::Surf
         ));
-        assert!(!is_permission_passable(
+        assert!(is_permission_passable(
             permissions::WHIRLPOOL,
             Direction::Down,
+            PlayerTraversalState::Surf
+        ));
+        assert!(is_permission_passable(
+            permissions::WHIRLPOOL_2C,
+            Direction::Left,
             PlayerTraversalState::Surf
         ));
         assert!(is_permission_passable(
@@ -690,6 +680,23 @@ mod tests {
             Direction::Right,
             PlayerTraversalState::Walk
         ));
+    }
+
+    #[test]
+    fn every_current_permission_is_surfable_from_every_direction_before_forcing_motion() {
+        for permission in 0x30..=0x3f {
+            for direction in [
+                Direction::Down,
+                Direction::Up,
+                Direction::Left,
+                Direction::Right,
+            ] {
+                assert!(
+                    is_permission_passable(permission, direction, PlayerTraversalState::Surf),
+                    "current permission {permission:#04x} must admit {direction:?} before CheckTile forces its low-two-bit direction"
+                );
+            }
+        }
     }
 
     #[test]
@@ -935,5 +942,18 @@ mod tests {
             traversal_error.contains("invalid type") || traversal_error.contains("unknown variant"),
             "{traversal_error}"
         );
+    }
+
+    #[test]
+    fn shaking_grass_permissions_match_both_source_checks_exactly() {
+        let expected = [0x10, 0x14, 0x18, 0x1c, 0x20, 0x28];
+
+        for permission in u8::MIN..=u8::MAX {
+            assert_eq!(
+                spawns_shaking_grass_object(permission),
+                expected.contains(&permission),
+                "collision {permission:#04x}"
+            );
+        }
     }
 }

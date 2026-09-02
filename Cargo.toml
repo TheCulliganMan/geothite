@@ -61,7 +61,7 @@ strip = "symbols"
 [workspace.package]
 edition = "2024"
 license = "ISC"
-repository = "https://github.com/TheCulliganMan/Geothite"
+repository = "https://github.com/TheCulliganMan/crystal-llm"
 rust-version = "1.94"
 
 [workspace.dependencies]

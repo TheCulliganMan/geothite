@@ -86,17 +86,18 @@ Start, and Right Shift for Select.
 ### Browser build
 
 Build the 2D WASM game, generate its JavaScript bindings, and serve
-`web-dist` with the Rust server. The browser audio runtime is committed under
-`web-client/audio-runtime`; this repository does not use npm:
+`rust/web-dist` with the Rust server:
 
 ```sh
+npm run build:browser-audio-runtime
+cd rust
 rustup target add wasm32-unknown-unknown
 cargo build -p crystal-bevy --target wasm32-unknown-unknown --profile web-release
 wasm-bindgen --target web --out-dir web-dist --out-name crystal-bevy \
   target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm
 cp web-client/index.html web-dist/
 cp -R web-client/audio-runtime web-dist/
-cp /path/to/core-modular.browser.crystalpack web-dist/
+cp ../content-packs/core-modular.browser.crystalpack web-dist/
 gzip -9 -k web-dist/crystal-bevy_bg.wasm
 gzip -9 -k web-dist/core-modular.browser.crystalpack
 cargo run -p crystal-web-server -- --dir web-dist --port 8080
@@ -145,11 +146,21 @@ For repeatable map screenshots and side-by-side 2D/2.5D inspection, see
 
 ## Verification
 
-Compiled game packs are external build inputs and are intentionally excluded
-from this Rust-only repository. Generate or obtain a verified pack separately,
-then pass its path to the native or browser build commands above.
+Verify the pinned ASM checkout and reference ROM before exporting:
 
-Run the Rust compile and test gates from the repository root:
+```sh
+npm run verify:asm
+npm run verify:pack
+npm run asm:boot
+```
+
+From the repository root, rebuild the definitive core pack:
+
+```sh
+./export
+```
+
+Run the Rust compile and test gates from this directory:
 
 ```sh
 cargo test --workspace --no-run

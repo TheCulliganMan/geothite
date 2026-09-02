@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::collision::{
     PlayerTraversalState, Terrain, TilesetCollision, can_enter_tile, can_jump_ledge,
-    describe_collision, sample_collision,
+    describe_collision, is_direction_blocked_leaving, sample_collision,
 };
 use super::map::{Direction, OverworldMapData, TilePosition};
 
@@ -167,6 +167,14 @@ pub fn attempt_step_with_occupied_tiles(
             };
         }
     };
+    if sample_collision(map, tileset, state.tile)
+        .is_some_and(|sample| is_direction_blocked_leaving(sample.permission, direction))
+    {
+        return StepOutcome::Blocked {
+            at: target,
+            facing: direction,
+        };
+    }
     if let Some(occupied) = occupied_tile_at(occupied_tiles, target) {
         return StepOutcome::BlockedByObject {
             at: target,
@@ -530,6 +538,79 @@ mod tests {
     }
 
     #[test]
+    fn player_cannot_leave_through_directional_wall_or_buoy_edges() {
+        for (direction, source, target, wall, buoy) in [
+            (
+                Direction::Down,
+                TilePosition::new(0, 0),
+                TilePosition::new(0, 1),
+                permissions::DOWN_WALL,
+                permissions::DOWN_BUOY,
+            ),
+            (
+                Direction::Up,
+                TilePosition::new(0, 1),
+                TilePosition::new(0, 0),
+                permissions::UP_WALL,
+                permissions::UP_BUOY,
+            ),
+            (
+                Direction::Left,
+                TilePosition::new(1, 0),
+                TilePosition::new(0, 0),
+                permissions::LEFT_WALL,
+                permissions::LEFT_BUOY,
+            ),
+            (
+                Direction::Right,
+                TilePosition::new(0, 0),
+                TilePosition::new(1, 0),
+                permissions::RIGHT_WALL,
+                permissions::RIGHT_BUOY,
+            ),
+        ] {
+            for (source_permission, destination_permission, mode) in [
+                (wall, permissions::FLOOR, MovementMode::Normal),
+                (buoy, permissions::WATER, MovementMode::Surf),
+            ] {
+                let mut collision = [destination_permission; 4];
+                let source_quadrant =
+                    usize::from(source.y as u16 % 2) * 2 + usize::from(source.x as u16 % 2);
+                collision[source_quadrant] = source_permission;
+                let map = OverworldMapData::from_attributes(
+                    "directional edge",
+                    &attributes(1, 1),
+                    vec![0],
+                );
+                let tileset = TilesetCollision {
+                    metatiles: vec![MetatileCollision { collision }],
+                };
+                let mut state = PlayerMovementState {
+                    tile: source,
+                    facing: direction,
+                    mode,
+                };
+
+                assert_eq!(
+                    attempt_step(
+                        &mut state,
+                        direction,
+                        &map,
+                        &tileset,
+                        StepOptions::default(),
+                    ),
+                    StepOutcome::Blocked {
+                        at: target,
+                        facing: direction,
+                    },
+                    "source permission {source_permission:#04x} toward {direction:?}",
+                );
+                assert_eq!(state.tile, source);
+            }
+        }
+    }
+
+    #[test]
     fn blocked_step_keeps_position() {
         let mut state = PlayerMovementState {
             tile: TilePosition::new(2, 2),
@@ -828,29 +909,32 @@ mod tests {
     }
 
     #[test]
-    fn bike_ledge_jump_keeps_fixed_ledge_speed() {
-        let mut state = PlayerMovementState {
-            tile: TilePosition::new(2, 2),
-            facing: Direction::Down,
-            mode: MovementMode::Bike,
-        };
-        let outcome = attempt_ledge_jump(
-            &mut state,
-            Direction::Down,
-            &ledge_map(),
-            &ledge_tileset(permissions::FLOOR),
-            StepOptions::default(),
-        );
+    fn bike_and_skate_ledge_jumps_keep_fixed_ledge_speed() {
+        for mode in [MovementMode::Bike, MovementMode::Skate] {
+            let mut state = PlayerMovementState {
+                tile: TilePosition::new(2, 2),
+                facing: Direction::Down,
+                mode,
+            };
+            let outcome = attempt_ledge_jump(
+                &mut state,
+                Direction::Down,
+                &ledge_map(),
+                &ledge_tileset(permissions::FLOOR),
+                StepOptions::default(),
+            );
 
-        assert_eq!(
-            outcome,
-            LedgeJumpOutcome::Jumped {
-                from: TilePosition::new(2, 2),
-                over: TilePosition::new(2, 3),
-                to: TilePosition::new(2, 4),
-                speed_multiplier: 1,
-            }
-        );
+            assert_eq!(
+                outcome,
+                LedgeJumpOutcome::Jumped {
+                    from: TilePosition::new(2, 2),
+                    over: TilePosition::new(2, 3),
+                    to: TilePosition::new(2, 4),
+                    speed_multiplier: 1,
+                },
+                "{mode:?} must retain STEP_LEDGE's fixed cadence",
+            );
+        }
     }
 
     #[test]
