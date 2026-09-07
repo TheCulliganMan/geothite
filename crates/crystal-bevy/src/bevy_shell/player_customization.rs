@@ -348,7 +348,7 @@ mod customization_tests {
     #[test]
     fn customization_persists_real_game_identity_and_rolls_back_failed_save() {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../..")
+            .join("../..")
             .canonicalize()
             .unwrap();
         let directory =

@@ -4,7 +4,7 @@ mod tests {
     #[test]
     fn verified_browser_pack_gets_a_distinct_repeatable_customization_identity() {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../../content-packs/core-modular.browser.crystalpack")
+            .join("../../content-packs/core-modular.browser.crystalpack")
             .canonicalize()
             .unwrap();
         let base = crystal_assets::read_verified_compiled_game_pack(path).unwrap();
