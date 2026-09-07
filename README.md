@@ -380,3 +380,24 @@ Special Defense stats. Battle AI, screens, and Counter/Mirror Coat follow the
 move's category. The base game retains Crystal's original type split.
 See [the modpack instructions](../modpacks/modern-move-split/README.md) for layering
 on the Gen 3 pack, browser output, and source regeneration.
+
+
+### Self-contained Docker build
+
+The production Docker build includes the exported browser pack and embedded
+modpack JSON. No sibling checkout or prepared source snapshot is required.
+The server and WASM browser client are compiled from the same checkout.
+
+Set a stable random `CRYSTAL_AUTH_SECRET` of at least 32 bytes in an ignored
+`.env` file, then run:
+
+```sh
+docker compose -f docker-compose.production.yml up -d --build
+docker compose -f docker-compose.production.yml ps
+curl --fail http://localhost:3003/healthz
+```
+
+Keep the signing secret stable across updates. Ratings persist in the named
+data volume; browser saves remain local. Do not delete the data volume during
+routine updates. The browser pack is generated: regenerate it with the canonical
+exporter when content changes rather than editing it by hand.
