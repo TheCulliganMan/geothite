@@ -99,7 +99,7 @@
         width: 100%;
       }
     </style>
-    <link rel="stylesheet" href="./mobile-player.css?v=20260907-mobile">
+    <link rel="stylesheet" href="./mobile-player.css?v=20260907-controls">
   </head>
   <body>
     <main id="game-stage" aria-label="Geothite game">
@@ -127,7 +127,7 @@
       <p id="startup-error-message"></p>
       <button id="retry-start" type="button">Reload</button>
     </dialog>
-    <button id="mute" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound">Enable sound</button>
+    <button id="mute" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 5 6m0-6-5 6"/></svg></button>
     <details id="player-options">
     <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
     <nav id="controls" aria-label="Display controls">
@@ -138,8 +138,8 @@
         <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out" disabled>−</button>
         <button id="camera-reset" type="button" aria-label="Reset camera" title="Reset camera" disabled>100%</button>
         <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in" disabled>+</button>
-        <button id="rotate-left" type="button" aria-label="Rotate camera left" title="Rotate camera left 45°" disabled>↶</button>
-        <button id="rotate-right" type="button" aria-label="Rotate camera right" title="Rotate camera right 45°" disabled>↷</button>
+        <button id="rotate-left" type="button" aria-label="Rotate camera left" title="Rotate camera left 45°" disabled><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.2M3 4v6h6"/></svg></button>
+        <button id="rotate-right" type="button" aria-label="Rotate camera right" title="Rotate camera right 45°" disabled><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10a9 9 0 1 0-2.7 8.2M21 4v6h-6"/></svg></button>
       </div>
     </nav>
     </details>
@@ -218,7 +218,7 @@
           let audioState = 'idle';
           const updateMute = () => {
             wasm.crystal_set_muted(muted);
-            muteButton.textContent = muted ? 'Sound off' : audioState === 'ready' ? 'Sound on' : 'Enable sound';
+            muteButton.dataset.audible = String(!muted && audioState === 'ready');
             muteButton.setAttribute('aria-pressed', String(muted));
             muteButton.setAttribute('aria-label', muted || audioState !== 'ready' ? 'Enable sound' : 'Mute sound');
             muteButton.title = muteButton.getAttribute('aria-label');
