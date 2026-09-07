@@ -2903,8 +2903,8 @@ fn spawn_visible_kurt_apricorn_menu(
 }
 
 // Pokedex_DrawMainScreenBG / Pokedex_DrawDexEntryScreenBG use tiles $31..$70.
-fn pokedex_background_tiles(detail: bool) -> [[u8; 20]; 18] {
-    let mut tiles = [[0x7f; 20]; 18];
+fn pokedex_background_tiles(screen: u8) -> [[u8; 20]; 18] {
+    let mut tiles = [[0x32; 20]; 18];
     let mut border = |x: usize, y: usize, width: usize, height: usize| {
         tiles[y][x] = 0x33;
         tiles[y][x + width + 1] = 0x35;
@@ -2915,11 +2915,38 @@ fn pokedex_background_tiles(detail: bool) -> [[u8; 20]; 18] {
             tiles[y + height + 1][col] = 0x39;
         }
         for row in y + 1..=y + height {
+            tiles[row][x + 1..=x + width].fill(0x7f);
             tiles[row][x] = 0x36;
             tiles[row][x + width + 1] = 0x37;
         }
     };
-    if detail {
+    if screen == 5 {
+        border(2, 1, 13, 10);
+        border(2, 14, 13, 1);
+        tiles[15][2] = 0x3d;
+        tiles[15][16] = 0x3e;
+    } else if screen == 2 {
+        border(0, 2, 18, 8);
+        border(0, 12, 18, 4);
+    } else if screen == 3 || screen == 8 {
+        border(0, 2, 18, 14);
+        if screen == 8 {
+            border(0, 12, 18, 4);
+        }
+    } else if screen == 4 {
+        border(0, 0, 7, 7);
+        border(0, 11, 18, 5);
+        for row in 1..10 {
+            tiles[row][9..20].fill(0x7f);
+        }
+        tiles[0][8] = 0x59;
+        for row in 1..8 {
+            tiles[row][8] = 0x5a;
+        }
+        tiles[8][8] = 0x53;
+        tiles[9][8] = 0x69;
+        tiles[10][8] = 0x6a;
+    } else if screen == 1 {
         border(0, 0, 18, 15);
         tiles[0][19] = 0x34;
         for row in 1..16 {
@@ -2932,6 +2959,9 @@ fn pokedex_background_tiles(detail: bool) -> [[u8; 20]; 18] {
     } else {
         border(0, 0, 7, 7);
         border(0, 9, 7, 6);
+        for row in 1..16 {
+            tiles[row][9..20].fill(0x7f);
+        }
         for row in 1..8 {
             tiles[row][8] = 0x5a;
         }
@@ -2942,12 +2972,29 @@ fn pokedex_background_tiles(detail: bool) -> [[u8; 20]; 18] {
             tiles[row][8] = tile;
         }
     }
+    if screen == 0 || screen == 6 {
+        for (i, tile) in [
+            0x3b, 0x48, 0x49, 0x4a, 0x44, 0x45, 0x46, 0x47, 0x3c, 0x3b, 0x41, 0x42, 0x43, 0x4b,
+            0x4c, 0x4d, 0x4e, 0x3c,
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            tiles[17][i + 1] = tile;
+        }
+    } else if screen == 1 {
+        tiles[17].fill(0x7f);
+        tiles[17][0] = 0x3b;
+    } else if screen == 2 || screen == 3 || screen == 8 {
+        tiles[1][0] = 0x3b;
+        tiles[1][9] = 0x3c;
+    }
     tiles
 }
 
 fn load_pokedex_background(
     asset_root: &AssetRoot,
-    detail: bool,
+    screen: u8,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let sheet =
@@ -2966,9 +3013,15 @@ fn load_pokedex_background(
         [0, 0, 0, 255],
     ];
     let mut pixels = vec![255; 160 * 144 * 4];
-    for (row, tiles) in pokedex_background_tiles(detail).iter().enumerate() {
+    for (row, tiles) in pokedex_background_tiles(screen).iter().enumerate() {
         for (col, &tile) in tiles.iter().enumerate() {
             if tile == 0x7f {
+                for y in 0..8 {
+                    for x in 0..8 {
+                        let offset = ((row * 8 + y) * 160 + col * 8 + x) * 4;
+                        pixels[offset..offset + 4].copy_from_slice(&[0, 0, 0, 255]);
+                    }
+                }
                 continue;
             }
             let index = usize::from(tile - 0x31);
@@ -2986,6 +3039,99 @@ fn load_pokedex_background(
                     let offset = ((row * 8 + y) * 160 + col * 8 + x) * 4;
                     pixels[offset..offset + 4].copy_from_slice(&palette[level]);
                 }
+            }
+        }
+    }
+    if screen == 1 || screen == 5 {
+        let (left, top) = if screen == 5 { (6, 5) } else { (1, 1) };
+        for y in top * 8..(top + 7) * 8 {
+            for x in left * 8..(left + 7) * 8 {
+                let offset = (y * 160 + x) * 4;
+                pixels[offset..offset + 4].copy_from_slice(&[255, 255, 255, 255]);
+            }
+        }
+    }
+    let tile_pixel = |tile: u8, x: usize, y: usize| -> [u8; 4] {
+        if tile == 0x7f {
+            return [0, 0, 0, 255];
+        }
+        let index = usize::from(tile - 0x31);
+        let shade =
+            sheet.get_pixel(((index % 16) * 8 + x) as u32, ((index / 16) * 8 + y) as u32)[0];
+        palette[palette_index_from_gray(shade)]
+    };
+    // The source scrolls the BG five pixels and overlays a separate window.
+    if matches!(screen, 0 | 1 | 4 | 6) {
+        let original = pixels.clone();
+        for y in 0..144 {
+            for x in 0..160 {
+                let offset = (y * 160 + x) * 4;
+                if x < 155 {
+                    pixels[offset..offset + 4].copy_from_slice(&original[offset + 20..offset + 24]);
+                } else {
+                    let tile = match y / 8 {
+                        0 => 0x66,
+                        16 => 0x68,
+                        17 => 0x3c,
+                        _ => 0x67,
+                    };
+                    pixels[offset..offset + 4].copy_from_slice(&tile_pixel(tile, x - 155, y % 8));
+                }
+            }
+        }
+    }
+    if matches!(screen, 0 | 4 | 6) {
+        let old = screen == 6;
+        let results = screen == 4;
+        let window_x = if old || results { 67 } else { 64 };
+        let bottom = if results { 10 } else { 16 };
+        for y in 0..144 {
+            for x in window_x..160 {
+                let wx = x - window_x;
+                let col = wx / 8;
+                let row = y / 8;
+                let tile = if row == 17 && !results {
+                    [0x3c, 0x3b, 0x41, 0x42, 0x43, 0x4b, 0x4c, 0x4d, 0x4e, 0x3c, 0x32, 0x32][col]
+                } else if col == 11 {
+                    match row {
+                        0 => {
+                            if old || results {
+                                0x66
+                            } else {
+                                0x50
+                            }
+                        }
+                        r if r == bottom => {
+                            if old || results {
+                                0x68
+                            } else {
+                                0x52
+                            }
+                        }
+                        11 if results => 0x66,
+                        17 if results => 0x68,
+                        17 => 0x32,
+                        _ => {
+                            if old || results {
+                                0x67
+                            } else {
+                                0x51
+                            }
+                        }
+                    }
+                } else if row == 0 {
+                    if col == 5 { 0x3f } else { 0x34 }
+                } else if row == bottom {
+                    if col == 5 { 0x40 } else { 0x39 }
+                } else if row == 11 && results {
+                    0x34
+                } else if row == 17 {
+                    if results { 0x39 } else { 0x32 }
+                } else {
+                    0x7f
+                };
+                let offset = (y * 160 + x) * 4;
+                pixels[offset..offset + 4].copy_from_slice(&tile_pixel(tile, wx % 8, y % 8));
             }
         }
     }
@@ -3015,6 +3161,131 @@ fn spawn_field_pokedex_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    if let Some(cursor) = runtime_shell.pokedex_controls.unown_cursor {
+        return spawn_pokedex_unown_screen(
+            commands,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+            cursor,
+        );
+    }
+    if let Some(kanto) = runtime_shell.pokedex_controls.area_region {
+        return spawn_pokedex_nest_screen(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+            kanto,
+        );
+    }
+    if runtime_shell.pokedex_controls.printer_open {
+        return spawn_pokedex_printer_screen(commands, snapshot, rendered_art, asset_root, images);
+    }
+    if let Some(entries) =
+        pokedex_option_entries(runtime_shell).or_else(|| pokedex_search_entries(runtime_shell))
+    {
+        let options = runtime_shell.pokedex_controls.option_cursor.is_some();
+        let frame = load_pokedex_background(
+            asset_root,
+            if options {
+                2
+            } else if runtime_shell.pokedex_controls.search_not_found {
+                8
+            } else {
+                3
+            },
+            images,
+        )?;
+        commit_presented_fullscreen_frame(
+            commands,
+            rendered_art,
+            &frame,
+            PresentedFullscreenFrameSource::Transient,
+            3.4,
+            images,
+        )?;
+        let (x, y) = battle_hud_tile_origin(1.0, 1.0);
+        spawn_pokedex_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            if options { " OPTION " } else { " SEARCH " },
+            x,
+            y,
+            3.8,
+        );
+        for (index, text) in entries.iter().enumerate() {
+            if !options
+                && runtime_shell.pokedex_controls.search_not_found
+                && (2..4).contains(&index)
+            {
+                continue;
+            }
+            let row = if options {
+                4.0 + index as f32 * 2.0
+            } else {
+                [4.0, 6.0, 13.0, 15.0, 14.0, 16.0][index]
+            };
+            let (x, y) = battle_hud_tile_origin(if index < 4 { 2.0 } else { 1.0 }, row);
+            let short_type;
+            let text = if !options && index < 2 {
+                short_type = format!(
+                    "{}TYPE{}",
+                    if runtime_shell.pokedex_controls.search_cursor == Some(index) {
+                        ">"
+                    } else {
+                        " "
+                    },
+                    index + 1
+                );
+                short_type.as_str()
+            } else {
+                text.as_str()
+            };
+            spawn_pokedex_text(commands, rendered_art, asset_root, images, text, x, y, 3.8);
+        }
+        if options {
+            let lines = match runtime_shell.pokedex_controls.option_cursor.unwrap() {
+                0 => ["<PK><MN> are listed by", "evolution type."],
+                1 => ["<PK><MN> are listed by", "official type."],
+                2 => ["<PK><MN> are listed", "alphabetically."],
+                _ => ["UNOWN are listed", "in catching order."],
+            };
+            for (i, line) in lines.into_iter().enumerate() {
+                let (x, y) = battle_hud_tile_origin(1.0, 14.0 + i as f32 * 2.0);
+                spawn_pokedex_text(commands, rendered_art, asset_root, images, line, x, y, 3.8);
+            }
+        } else {
+            for (i, kind) in runtime_shell
+                .pokedex_controls
+                .search_types
+                .into_iter()
+                .enumerate()
+            {
+                let row = 4.0 + i as f32 * 2.0;
+                let (x, y) = battle_hud_tile_origin(9.0, row);
+                spawn_pokedex_text(
+                    commands,
+                    rendered_art,
+                    asset_root,
+                    images,
+                    POKEDEX_SEARCH_LABELS[kind],
+                    x,
+                    y,
+                    3.8,
+                );
+                spawn_pokedex_interface_tile(commands, asset_root, images, 0x3d, 8.0, row)?;
+                spawn_pokedex_interface_tile(commands, asset_root, images, 0x3e, 17.0, row)?;
+            }
+            spawn_pokedex_search_slowpoke(commands, asset_root, images, runtime_shell)?;
+        }
+        return Ok(());
+    }
     let selected = runtime_shell.pokedex_cursor;
     let species = snapshot.pokemon.get(selected).with_context(|| {
         format!(
@@ -3036,7 +3307,15 @@ fn spawn_field_pokedex_screen(
             .contains(&species.species_id);
     let background = load_pokedex_background(
         asset_root,
-        runtime_shell.pokedex_detail_open && seen,
+        if runtime_shell.pokedex_detail_open && seen {
+            1
+        } else if runtime_shell.pokedex_controls.search_results.is_some() {
+            4
+        } else if runtime_shell.pokedex_controls.mode == VisiblePokedexMode::Old {
+            6
+        } else {
+            0
+        },
         images,
     )?;
     commit_presented_fullscreen_frame(
@@ -3060,35 +3339,43 @@ fn spawn_field_pokedex_screen(
         )?;
         return Ok(());
     }
-    for (col, row, text) in [
-        (1.0, 11.0, "SEEN".to_string()),
-        (
-            5.0,
-            12.0,
-            format!("{:03}", snapshot.progression.pokedex_seen),
-        ),
-        (1.0, 14.0, "OWN".to_string()),
-        (
-            5.0,
-            15.0,
-            format!("{:03}", snapshot.progression.pokedex_owned),
-        ),
-        (1.0, 17.0, "A ENTRY B BACK".to_string()),
-    ] {
+    let labels = if let Some(results) = runtime_shell.pokedex_controls.search_results.as_ref() {
+        let [first, second] = runtime_shell.pokedex_controls.search_types;
+        let mut labels = vec![
+            (0.375, 12.0, "SEARCH R".to_string()),
+            (8.375, 12.0, "ESULTS".to_string()),
+            (2.375, 14.0, "TYPE".to_string()),
+            (8.375, 14.0, POKEDEX_SEARCH_LABELS[first].to_string()),
+            (0.375, 16.0, format!("{:3}", results.len())),
+            (4.375, 16.0, "FOUND!".to_string()),
+        ];
+        if second != 0 && second != first {
+            labels.push((9.375, 15.0, "/".to_string()));
+            labels.push((10.375, 15.0, POKEDEX_SEARCH_LABELS[second].to_string()));
+        }
+        labels
+    } else {
+        vec![
+            (0.375, 11.0, "SEEN".to_string()),
+            (
+                4.375,
+                12.0,
+                format!("{:3}", snapshot.progression.pokedex_seen),
+            ),
+            (0.375, 14.0, "OWN".to_string()),
+            (
+                4.375,
+                15.0,
+                format!("{:3}", snapshot.progression.pokedex_owned),
+            ),
+        ]
+    };
+    for (col, row, text) in labels {
         let (x, y) = battle_hud_tile_origin(col, row);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &text,
-            x,
-            y,
-            3.8,
-        );
+        spawn_pokedex_text(commands, rendered_art, asset_root, images, &text, x, y, 3.8);
     }
     if seen {
-        if let Some(frame) = pokemon_frame_for_art(
+        if let Some(mut frame) = pokemon_frame_for_art(
             rendered_art,
             asset_root,
             &species.species_id,
@@ -3096,7 +3383,37 @@ fn spawn_field_pokedex_screen(
             false,
             images,
         ) {
-            let (x, y) = battle_hud_tile_origin(4.0, 4.0);
+            let palette_text = crate::read_runtime_asset_to_string(
+                asset_root
+                    .runtime_assets()
+                    .join("gfx/pokedex/question_mark.pal"),
+            )?;
+            let palettes = parse_palette_file(&palette_text, None)?;
+            let palette = palettes.first().context("missing Pokédex list palette")?;
+            let source_palette = load_pokemon_palette(
+                asset_root,
+                &normalize_pokemon_asset_id(&species.species_id),
+                PokemonSpriteSide::Front,
+                false,
+            )?;
+            let mut image = images
+                .get(&frame.handle)
+                .context("missing Pokédex preview image")?
+                .clone();
+            for pixel in image.data.chunks_exact_mut(4) {
+                let level = if pixel[3] == 0 {
+                    0
+                } else {
+                    pokemon_palette_index(
+                        &image::Rgba([pixel[0], pixel[1], pixel[2], pixel[3]]),
+                        &source_palette,
+                    )
+                };
+                let colour = palette[level];
+                pixel.copy_from_slice(&[colour[0], colour[1], colour[2], 255]);
+            }
+            frame.handle = images.add(image);
+            let (x, y) = battle_hud_tile_origin(3.375, 4.0);
             commands.spawn((
                 SpriteBundle {
                     texture: frame.handle,
@@ -3111,60 +3428,92 @@ fn spawn_field_pokedex_screen(
             ));
         }
     } else {
-        let (x, y) = battle_hud_tile_origin(3.0, 4.0);
-        spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, "?", x, y, 3.8);
+        let palette_text = crate::read_runtime_asset_to_string(
+            asset_root
+                .runtime_assets()
+                .join("gfx/pokedex/question_mark.pal"),
+        )?;
+        let palettes = parse_palette_file(&palette_text, None)?;
+        let palette = palettes
+            .first()
+            .context("missing Pokédex question-mark palette")?;
+        spawn_pokedex_png(
+            commands,
+            asset_root,
+            images,
+            "gfx/pokedex/question_mark.png",
+            3.375,
+            4.0,
+            Some(palette),
+        )?;
     }
-    let scroll = visible_window_start(selected, snapshot.pokemon.len(), 7);
-    for (visible_index, entry) in snapshot.pokemon.iter().skip(scroll).take(7).enumerate() {
-        let index = scroll + visible_index;
+    let scroll = runtime_shell.pokedex_scroll;
+    let order = visible_pokedex_listing(snapshot, runtime_shell);
+    for (visible_index, &index) in order
+        .iter()
+        .skip(scroll)
+        .take(visible_pokedex_listing_height(runtime_shell))
+        .enumerate()
+    {
+        let entry = &snapshot.pokemon[index];
+        let list_col = if runtime_shell.pokedex_controls.mode == VisiblePokedexMode::Old
+            || runtime_shell.pokedex_controls.search_results.is_some()
+        {
+            8.375
+        } else {
+            8.0
+        };
         let entry_seen = snapshot
             .progression
             .pokedex_seen_species
-            .contains(&entry.species_id);
-        let entry_caught = snapshot
-            .progression
-            .pokedex_caught_species
             .contains(&entry.species_id);
         let name = if entry_seen {
             crate::core::models::pokemon_species_display_name(&entry.species_id)
         } else {
             "-----".to_string()
         };
+        if snapshot
+            .progression
+            .pokedex_caught_species
+            .contains(&entry.species_id)
+        {
+            spawn_pokedex_interface_tile(
+                commands,
+                asset_root,
+                images,
+                0x4f,
+                list_col,
+                2.0 + visible_index as f32 * 2.0,
+            )?;
+        }
         // The list has eleven tiles: put the number above the ten-character
         // name instead of drawing a fourteen-character row past the screen edge.
         let row = 1.0 + visible_index as f32 * 2.0;
         for (col, line_row, text) in [
             (
-                9.0,
+                list_col,
                 row,
-                format!(
-                    "{}{:03}",
-                    if entry_caught { "C" } else { " " },
-                    entry.int_id
-                ),
+                if runtime_shell.pokedex_controls.mode == VisiblePokedexMode::Old {
+                    format!("{:03}", entry.int_id)
+                } else {
+                    String::new()
+                },
             ),
-            (
-                9.0,
-                row + 1.0,
-                format!(
-                    "{}{}",
-                    if index == selected { ">" } else { " " },
-                    compact_scene_label(&name, 10)
-                ),
-            ),
+            (list_col + 1.0, row + 1.0, compact_scene_label(&name, 10)),
         ] {
             let (x, y) = battle_hud_tile_origin(col, line_row);
-            spawn_field_command_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &text,
-                x,
-                y,
-                3.8,
-            );
+            spawn_pokedex_text(commands, rendered_art, asset_root, images, &text, x, y, 3.8);
         }
+    }
+    if let Some(position) = order.iter().position(|&index| index == selected) {
+        spawn_pokedex_list_cursor(
+            commands,
+            asset_root,
+            images,
+            runtime_shell,
+            position.saturating_sub(scroll),
+            order.len(),
+        )?;
     }
     Ok(())
 }
@@ -3997,6 +4346,7 @@ fn spawn_field_pokedex_detail(
         images,
     ) {
         let (x, y) = battle_hud_tile_origin(4.0, 4.0);
+        let x = x - 5.0 * TILE_SIZE / 8.0;
         commands.spawn((
             SpriteBundle {
                 texture: frame.handle,
@@ -4010,6 +4360,18 @@ fn spawn_field_pokedex_detail(
             FieldCommandMarker,
         ));
     }
+    spawn_pokedex_png(
+        commands,
+        asset_root,
+        images,
+        &format!(
+            "gfx/footprints/{}.png",
+            species.species_id.to_ascii_lowercase()
+        ),
+        17.875,
+        1.5,
+        None,
+    )?;
     let (height, weight) = pokedex_measurements(entry, caught);
     for (row, text) in [
         (
@@ -4017,11 +4379,26 @@ fn spawn_field_pokedex_detail(
             crate::core::models::pokemon_species_display_name(&species.species_id),
         ),
         (5.0, entry.classification.clone()),
-        (7.0, format!("HT {height}")),
-        (9.0, format!("WT {weight}")),
+        (
+            7.0,
+            if caught {
+                format!("HT{height:>7}")
+            } else {
+                "HT  ?'??\"".into()
+            },
+        ),
+        (
+            9.0,
+            if caught {
+                format!("WT{weight:>8}")
+            } else {
+                "WT   ???lb".into()
+            },
+        ),
     ] {
         let (x, y) = battle_hud_tile_origin(9.0, row);
-        spawn_field_command_bitmap_text(
+        let x = x - 5.0 * TILE_SIZE / 8.0;
+        spawn_pokedex_text(
             commands,
             rendered_art,
             asset_root,
@@ -4032,28 +4409,48 @@ fn spawn_field_pokedex_detail(
             3.8,
         );
     }
-    let (x, y) = battle_hud_tile_origin(1.0, 8.0);
-    spawn_field_command_bitmap_text(
+    for (tile, col, row) in [
+        (0x5c, 2.0, 8.0),
+        (0x5d, 3.0, 8.0),
+        (0x5e, 14.0, 7.0),
+        (0x5f, 17.0, 7.0),
+    ] {
+        spawn_pokedex_interface_tile(commands, asset_root, images, tile, col - 0.625, row)?;
+    }
+    let (x, y) = battle_hud_tile_origin(4.0, 8.0);
+    let x = x - 5.0 * TILE_SIZE / 8.0;
+    spawn_pokedex_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        &format!("No.{:03}", species.int_id),
+        &format!("{:03}", species.int_id),
         x,
         y,
         3.8,
     );
-    let (x, y) = battle_hud_tile_origin(1.0, 17.0);
-    spawn_field_command_bitmap_text(
+    let (x, y) = battle_hud_tile_origin(2.0, 17.0);
+    let x = x - 5.0 * TILE_SIZE / 8.0;
+    spawn_pokedex_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        if caught { "A PAGE B BACK" } else { "B BACK" },
+        if runtime_shell.pokedex_scripted_entry {
+            ""
+        } else {
+            "PAGE AREA CRY PRNT"
+        },
         x,
         y,
         3.8,
     );
+    if !runtime_shell.pokedex_scripted_entry {
+        let col = [1.0, 6.0, 11.0, 15.0][runtime_shell.pokedex_controls.entry_action];
+        let (x, y) = battle_hud_tile_origin(col, 17.0);
+        let x = x - 5.0 * TILE_SIZE / 8.0;
+        spawn_pokedex_text(commands, rendered_art, asset_root, images, ">", x, y, 3.9);
+    }
     // DisplayDexEntry returns after the name/classification/number for uncaught mons.
     if !caught {
         return Ok(());
@@ -4070,31 +4467,18 @@ fn spawn_field_pokedex_detail(
                 species.species_id
             )
         })?;
-    for (index, line) in wrap_boot_text_for_box(page, 18, 5).iter().enumerate() {
-        let (x, y) = battle_hud_tile_origin(1.0, 11.0 + index as f32);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            line,
-            x,
-            y,
-            3.8,
-        );
+    for (index, line) in wrap_boot_text_for_box(page, 18, 3).iter().enumerate() {
+        let (x, y) = battle_hud_tile_origin(2.0, 11.0 + index as f32 * 2.0);
+        let x = x - 5.0 * TILE_SIZE / 8.0;
+        spawn_pokedex_text(commands, rendered_art, asset_root, images, line, x, y, 3.8);
     }
-    if entry.pages.len() > 1 {
-        let (x, y) = battle_hud_tile_origin(16.0, 17.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!("{}/{}", page_index + 1, entry.pages.len()),
-            x,
-            y,
-            3.8,
-        );
+    for (tile, col, row) in [
+        (0x55, 1.0, 9.0),
+        (0x55, 2.0, 9.0),
+        (0x56, 1.0, 10.0),
+        (if page_index == 0 { 0x57 } else { 0x58 }, 2.0, 10.0),
+    ] {
+        spawn_pokedex_interface_tile(commands, asset_root, images, tile, col - 0.625, row)?;
     }
     Ok(())
 }
@@ -13165,5 +13549,677 @@ fn spawn_furniture_radio_textbox(
         let (x,y) = battle_hud_tile_origin(1.0, 14.0);
         spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, &text, x, y, 3.6);
     }
+    Ok(())
+}
+
+fn spawn_pokedex_interface_tile(
+    commands: &mut Commands,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    tile: u8,
+    col: f32,
+    row: f32,
+) -> Result<()> {
+    let sheet =
+        crate::open_runtime_image(asset_root.runtime_assets().join("gfx/pokedex/pokedex.png"))?
+            .to_rgba8();
+    anyhow::ensure!(
+        sheet.dimensions() == (128, 32) && (0x31..=0x70).contains(&tile),
+        "invalid Pokédex interface tile"
+    );
+    let index = usize::from(tile - 0x31);
+    let mut pixels = Vec::with_capacity(256);
+    for y in 0..8 {
+        for x in 0..8 {
+            let value =
+                sheet.get_pixel(((index % 16) * 8 + x) as u32, ((index / 16) * 8 + y) as u32)[0];
+            let palette = [
+                [255, 255, 255, 255],
+                [255, 165, 82, 255],
+                [214, 82, 49, 255],
+                [0, 0, 0, 255],
+            ];
+            pixels.extend_from_slice(&palette[palette_index_from_gray(value)]);
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 8,
+            height: 8,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let (x, y) = battle_hud_tile_origin(col, row);
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::splat(TILE_SIZE)),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, 3.8),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
+    Ok(())
+}
+
+fn spawn_pokedex_nest_screen(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    shell: &BevyRuntimeShell,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    kanto: bool,
+) -> Result<()> {
+    let palettes = &snapshot.presentation.pokegear_town_map_palette_map;
+    let frame = load_town_map_frame_with_nests(
+        root,
+        if kanto { "kanto" } else { "johto" },
+        snapshot.trainer.player_gender,
+        palettes
+            .get("town_map")
+            .context("missing town map palette")?,
+        palettes.get("pokegear").context("missing gear palette")?,
+        false,
+        0,
+        true,
+        images,
+    )?;
+    commit_presented_fullscreen_frame(
+        commands,
+        art,
+        &frame,
+        PresentedFullscreenFrameSource::Transient,
+        3.4,
+        images,
+    )?;
+    let species = selected_pokedex_catalog_species(snapshot, shell.pokedex_cursor)?;
+    let (x, y) = battle_hud_tile_origin(2.0, 0.0);
+    spawn_field_command_bitmap_text(
+        commands,
+        art,
+        root,
+        images,
+        &format!(
+            "{}'S NEST",
+            crate::core::models::pokemon_species_display_name(&species.species_id)
+        ),
+        x,
+        y,
+        3.8,
+    );
+    if shell.pokedex_controls.area_show_player {
+        let player = visible_pokegear_player_landmark(snapshot)?;
+        if (player.region == "KANTO") != kanto {
+            return Ok(());
+        }
+        let female = snapshot.trainer.player_gender & PLAYER_GENDER_FEMALE != 0;
+        let palette_id = u8::from(female);
+        let frame = if player.constant == "LANDMARK_FAST_SHIP" {
+            load_town_map_ship_frame(
+                root,
+                false,
+                palette_id,
+                snapshot.progression.time.time_of_day.as_key(),
+                images,
+            )?
+        } else {
+            sprite_frame_for_art(
+                art,
+                root,
+                if female { "kris" } else { "chris" },
+                palette_id,
+                snapshot.progression.time.time_of_day.as_key(),
+                Direction::Down,
+                false,
+                images,
+            )
+            .context("render Pokédex area player")?
+        };
+        commands.spawn((
+            SpriteBundle {
+                texture: frame.handle,
+                sprite: Sprite {
+                    custom_size: Some(frame.size),
+                    ..default()
+                },
+                transform: Transform::from_xyz(
+                    PLAYFIELD_LEFT + (player.x as f32 - 8.0) * TILE_SIZE / 8.0,
+                    PLAYFIELD_TOP - (player.y as f32 - 16.0) * TILE_SIZE / 8.0,
+                    3.8,
+                ),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
+        return Ok(());
+    }
+    if shell.pokedex_controls.area_frames & 16 != 0 {
+        return Ok(());
+    }
+    let nests = visible_pokedex_nests(shell, snapshot, kanto)?;
+    let mut icon = crate::open_runtime_image(
+        root.runtime_assets()
+            .join("gfx/pokegear/dexmap_nest_icon.png"),
+    )?
+    .to_rgba8();
+    for pixel in icon.pixels_mut() {
+        if pixel[0] == 255 {
+            pixel[3] = 0;
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: icon.width(),
+            height: icon.height(),
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        icon.into_raw(),
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let handle = images.add(image);
+    for landmark in nests {
+        commands.spawn((
+            SpriteBundle {
+                texture: handle.clone(),
+                sprite: Sprite {
+                    custom_size: Some(Vec2::splat(TILE_SIZE)),
+                    ..default()
+                },
+                transform: Transform::from_xyz(
+                    PLAYFIELD_LEFT + (landmark.x as f32 - 8.0) * TILE_SIZE / 8.0,
+                    PLAYFIELD_TOP - (landmark.y as f32 - 16.0) * TILE_SIZE / 8.0,
+                    3.8,
+                ),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
+    }
+    Ok(())
+}
+
+fn spawn_pokedex_unown_screen(
+    commands: &mut Commands,
+    shell: &BevyRuntimeShell,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    cursor: usize,
+) -> Result<()> {
+    const COORDS: [(u8, u8, u8, u8); 26] = [
+        (4, 11, 3, 11),
+        (4, 10, 3, 10),
+        (4, 9, 3, 9),
+        (4, 8, 3, 8),
+        (4, 7, 3, 7),
+        (4, 6, 3, 6),
+        (4, 5, 3, 5),
+        (4, 4, 3, 4),
+        (4, 3, 3, 2),
+        (5, 3, 5, 2),
+        (6, 3, 6, 2),
+        (7, 3, 7, 2),
+        (8, 3, 8, 2),
+        (9, 3, 9, 2),
+        (10, 3, 10, 2),
+        (11, 3, 11, 2),
+        (12, 3, 12, 2),
+        (13, 3, 13, 2),
+        (14, 3, 15, 2),
+        (14, 4, 15, 4),
+        (14, 5, 15, 5),
+        (14, 6, 15, 6),
+        (14, 7, 15, 7),
+        (14, 8, 15, 8),
+        (14, 9, 15, 9),
+        (14, 10, 15, 10),
+    ];
+    let letters = &shell.shell.session().state().pokedex.unown_letters;
+    let &letter = letters
+        .get(cursor)
+        .context("Unown Dex cursor has no caught letter")?;
+    anyhow::ensure!((1..=26).contains(&letter), "invalid caught Unown letter");
+    let frame = load_pokedex_background(root, 5, images)?;
+    commit_presented_fullscreen_frame(
+        commands,
+        art,
+        &frame,
+        PresentedFullscreenFrameSource::Transient,
+        3.4,
+        images,
+    )?;
+    let font = crate::open_runtime_image(root.runtime_assets().join("gfx/font/unown_font.png"))?
+        .to_rgba8();
+    let mut glyph = |tile: u8, col: u8, row: u8| {
+        let mut pixels = image::imageops::crop_imm(
+            &font,
+            u32::from(tile % 3) * 8,
+            u32::from(tile / 3) * 8,
+            8,
+            8,
+        )
+        .to_image();
+        for pixel in pixels.pixels_mut() {
+            for channel in &mut pixel.0[..3] {
+                *channel = 255 - *channel;
+            }
+        }
+        let mut image = Image::new(
+            Extent3d {
+                width: 8,
+                height: 8,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            pixels.into_raw(),
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::default(),
+        );
+        image.sampler = ImageSampler::nearest();
+        let (x, y) = battle_hud_tile_origin(f32::from(col), f32::from(row));
+        commands.spawn((
+            SpriteBundle {
+                texture: images.add(image),
+                sprite: Sprite {
+                    custom_size: Some(Vec2::splat(TILE_SIZE)),
+                    ..default()
+                },
+                transform: Transform::from_xyz(x, y, 3.8),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
+    };
+    for (index, &caught) in letters.iter().enumerate() {
+        let &(col, row, cursor_col, cursor_row) =
+            COORDS.get(index).context("too many Unown Dex letters")?;
+        anyhow::ensure!((1..=26).contains(&caught), "invalid caught Unown letter");
+        glyph(caught - 1, col, row);
+        if index == cursor {
+            glyph(26, cursor_col, cursor_row);
+        }
+    }
+    for (index, byte) in POKEDEX_UNOWN_WORDS[usize::from(letter - 1)]
+        .bytes()
+        .enumerate()
+    {
+        glyph(byte - b'A', 4 + index as u8, 15);
+    }
+    let source = crate::open_runtime_image(root.runtime_assets().join(format!(
+        "gfx/pokemon/unown_{}/front.png",
+        char::from(b'a' + letter - 1)
+    )))?
+    .to_rgba8();
+    let width = source.width();
+    let pixels = image::imageops::crop_imm(&source, 0, 0, width, width).to_image();
+    let mut image = Image::new(
+        Extent3d {
+            width,
+            height: width,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels.into_raw(),
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let (x, y) = battle_hud_tile_origin(9.0, 8.0);
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::splat(width as f32 * TILE_SIZE / 8.0)),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, 3.8),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
+    Ok(())
+}
+
+fn spawn_pokedex_png(
+    commands: &mut Commands,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    path: &str,
+    col: f32,
+    row: f32,
+    palette: Option<&Palette>,
+) -> Result<()> {
+    let mut source = crate::open_runtime_image(root.runtime_assets().join(path))?.to_rgba8();
+    if let Some(palette) = palette {
+        for pixel in source.pixels_mut() {
+            let colour = palette[palette_index_from_gray(pixel[0])];
+            pixel.0 = [colour[0], colour[1], colour[2], 255];
+        }
+    }
+    if path.starts_with("gfx/footprints/") {
+        for pixel in source.pixels_mut() {
+            for channel in &mut pixel.0[..3] {
+                *channel = 255 - *channel;
+            }
+        }
+    }
+    let width = source.width();
+    let height = source.height();
+    let mut image = Image::new(
+        Extent3d {
+            width,
+            height,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        source.into_raw(),
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let (x, y) = battle_hud_tile_origin(col, row);
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(width as f32, height as f32) * TILE_SIZE / 8.0),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, 3.8),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
+    Ok(())
+}
+
+fn spawn_pokedex_text(
+    commands: &mut Commands,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    text: &str,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    for (index, frame) in bitmap_text_frames(art, root, images, text)
+        .into_iter()
+        .enumerate()
+    {
+        let Some(mut image) = images.get(&frame.handle).cloned() else {
+            art.font_error = Some("Pokédex glyph image is missing".to_string());
+            return;
+        };
+        for pixel in image.data.chunks_exact_mut(4) {
+            let white = pixel[3];
+            pixel.copy_from_slice(&[white, white, white, 255]);
+        }
+        commands.spawn((
+            SpriteBundle {
+                texture: images.add(image),
+                sprite: Sprite {
+                    custom_size: Some(frame.size),
+                    ..default()
+                },
+                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
+    }
+}
+
+fn spawn_pokedex_list_cursor(
+    commands: &mut Commands,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    shell: &BevyRuntimeShell,
+    row: usize,
+    listing_len: usize,
+) -> Result<()> {
+    let mut data = if shell.pokedex_controls.mode == VisiblePokedexMode::Old {
+        if row == 0 {
+            POKEDEX_OLD_TOP_CURSOR
+        } else {
+            POKEDEX_OLD_CURSOR
+        }
+    } else if shell.pokedex_controls.search_results.is_some() {
+        POKEDEX_RESULTS_CURSOR
+    } else {
+        POKEDEX_NEW_CURSOR
+    }
+    .iter()
+    .map(|&(x, y, t, fx, fy)| (x, y + row as i16 * 16, t, fx, fy))
+    .collect::<Vec<_>>();
+    if shell.pokedex_controls.mode != VisiblePokedexMode::Old
+        && shell.pokedex_controls.search_results.is_none()
+    {
+        let position = shell.pokedex_scroll + row;
+        let offset = if position + 1 == listing_len {
+            121
+        } else {
+            position * 121 / listing_len.max(1)
+        };
+        data.push((153, 4 + offset as i16, 0x0f, false, false));
+    }
+    let sheet = crate::open_runtime_image(root.runtime_assets().join("gfx/pokedex/slowpoke.png"))?
+        .to_rgba8();
+    let palette_text =
+        crate::read_runtime_asset_to_string(root.runtime_assets().join("gfx/pokedex/cursor.pal"))?;
+    let palettes = parse_palette_file(&palette_text, None)?;
+    let palette = palettes.first().context("missing Pokédex cursor palette")?;
+    let mut pixels = vec![0; 160 * 144 * 4];
+    for &(left, top, tile, flip_x, flip_y) in &data {
+        for y in 0..8 {
+            for x in 0..8 {
+                let screen_x = i32::from(left) + x;
+                let screen_y = i32::from(top) + y;
+                if !(0..160).contains(&screen_x) || !(0..144).contains(&screen_y) {
+                    continue;
+                }
+                let sx = if flip_x { 7 - x } else { x };
+                let sy = if flip_y { 7 - y } else { y };
+                let shade = sheet.get_pixel(
+                    u32::from(tile % 16) * 8 + sx as u32,
+                    u32::from(tile / 16) * 8 + sy as u32,
+                )[0];
+                let level = palette_index_from_gray(shade);
+                if level == 0 {
+                    continue;
+                }
+                let colour = palette[level];
+                let offset = (screen_y as usize * 160 + screen_x as usize) * 4;
+                pixels[offset..offset + 4].copy_from_slice(&[colour[0], colour[1], colour[2], 255]);
+            }
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 160,
+            height: 144,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
+                ..default()
+            },
+            transform: Transform::from_xyz(
+                PLAYFIELD_LEFT + PLAYFIELD_WIDTH / 2.0,
+                PLAYFIELD_TOP - PLAYFIELD_HEIGHT / 2.0,
+                3.9,
+            ),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
+    Ok(())
+}
+
+fn spawn_pokedex_printer_screen(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    let frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+    let source = crate::open_runtime_image(
+        root.runtime_assets()
+            .join(format!("gfx/frames/{frame_id}.png")),
+    )?
+    .to_rgba8();
+    let palette = [[0, 0, 0], [85, 85, 85], [170, 170, 170], [255, 255, 255]];
+    let mut pixels = vec![0; 160 * 144 * 4];
+    for pixel in pixels.chunks_exact_mut(4) {
+        pixel[3] = 255;
+    }
+    for x in 0..20 {
+        let top = if x == 0 {
+            0
+        } else if x == 19 {
+            2
+        } else {
+            1
+        };
+        let bottom = if x == 0 {
+            4
+        } else if x == 19 {
+            5
+        } else {
+            1
+        };
+        pokegear_blit_paletted_tile(&source, top, &palette, x * 8, 5 * 8, 160, &mut pixels)?;
+        pokegear_blit_paletted_tile(&source, bottom, &palette, x * 8, 16 * 8, 160, &mut pixels)?;
+    }
+    for y in 6..16 {
+        for x in [0, 19] {
+            pokegear_blit_paletted_tile(&source, 3, &palette, x * 8, y * 8, 160, &mut pixels)?;
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 160,
+            height: 144,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let frame = SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::new(160.0, 144.0),
+    };
+    commit_presented_fullscreen_frame(
+        commands,
+        art,
+        &frame,
+        PresentedFullscreenFrameSource::Transient,
+        3.4,
+        images,
+    )?;
+    for (col, row, text) in [
+        (2.0, 7.0, "Printer Error 2"),
+        (1.0, 11.0, "Check the Game Boy"),
+        (1.0, 13.0, "Printer Manual."),
+        (2.0, 15.0, "Press B to Cancel"),
+    ] {
+        let (x, y) = battle_hud_tile_origin(col, row);
+        spawn_pokedex_text(commands, art, root, images, text, x, y, 3.8);
+    }
+    Ok(())
+}
+
+fn spawn_pokedex_search_slowpoke(
+    commands: &mut Commands,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    shell: &BevyRuntimeShell,
+) -> Result<()> {
+    let elapsed = shell
+        .pokedex_controls
+        .search_animation
+        .as_ref()
+        .map_or(0, |(elapsed, _)| *elapsed);
+    let frame = if elapsed < 175 { (elapsed / 7) % 5 } else { 0 };
+    let sheet = crate::open_runtime_image(root.runtime_assets().join("gfx/pokedex/slowpoke.png"))?
+        .to_rgba8();
+    let palette_text = crate::read_runtime_asset_to_string(
+        root.runtime_assets().join("gfx/stats/party_menu_ob.pal"),
+    )?;
+    let palettes = parse_palette_file(&palette_text, None)?;
+    let palette = palettes
+        .first()
+        .context("missing Pokédex Slowpoke palette")?;
+    let mut pixels = vec![0; 24 * 24 * 4];
+    for row in 0..3 {
+        for col in 0..3 {
+            let tile = usize::from(frame) * 3 + col + row * 16;
+            for y in 0..8 {
+                for x in 0..8 {
+                    let level = palette_index_from_gray(
+                        sheet.get_pixel(((tile % 16) * 8 + x) as u32, ((tile / 16) * 8 + y) as u32)
+                            [0],
+                    );
+                    if level == 0 {
+                        continue;
+                    }
+                    let colour = palette[level];
+                    let offset = ((row * 8 + y) * 24 + col * 8 + x) * 4;
+                    pixels[offset..offset + 4]
+                        .copy_from_slice(&[colour[0], colour[1], colour[2], 255]);
+                }
+            }
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 24,
+            height: 24,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let (x, y) = battle_hud_tile_origin(9.0, 10.0);
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::splat(3.0 * TILE_SIZE)),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, 3.9),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
     Ok(())
 }

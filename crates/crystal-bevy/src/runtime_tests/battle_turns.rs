@@ -1627,7 +1627,7 @@ fn runtime_failed_ball_residual_then_wild_flee_replays_in_one_rng_stream() {
 }
 
 #[test]
-fn runtime_capture_completion_stores_active_wild_pokemon_in_authoritative_state() {
+fn runtime_capture_completion_stores_active_wild_pokemon_and_pokedex_in_authoritative_state() {
     let root = temp_repository_root("scripted-wild-capture");
     write_floor_tileset(&root, "johto");
     let asset_root = AssetRoot::new(&root);
@@ -1662,6 +1662,9 @@ fn runtime_capture_completion_stores_active_wild_pokemon_in_authoritative_state(
         .expect("scripted wild battle starts");
     assert_eq!(session.state.battle_active_party_index, Some(0));
     assert!(session.state.pokedex.has_seen("CHIKORITA"));
+    assert!(!session.state.pokedex.has_caught("CHIKORITA"));
+    assert_eq!(session.state.pokedex.seen_count(), 1);
+    assert_eq!(session.state.pokedex.caught_count(), 0);
     let attempt = session
         .throw_ball_at_active_battle(&runtime, "MASTER_BALL")
         .expect("throw master ball");
@@ -1702,6 +1705,8 @@ fn runtime_capture_completion_stores_active_wild_pokemon_in_authoritative_state(
         })
     );
     assert!(session.state.pokedex.has_caught("CHIKORITA"));
+    assert_eq!(session.state.pokedex.seen_count(), 1);
+    assert_eq!(session.state.pokedex.caught_count(), 1);
     assert_eq!(session.state.battle, BattleMemory::Inactive);
     assert_eq!(session.state.battle_active_party_index, None);
     assert_eq!(session.state.money, 245);

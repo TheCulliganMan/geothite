@@ -8902,6 +8902,8 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.visible_balance_overlay.hash(&mut hasher);
     runtime_shell.visible_mom_bank.hash(&mut hasher);
     runtime_shell.pokedex_cursor.hash(&mut hasher);
+    runtime_shell.pokedex_scroll.hash(&mut hasher);
+    runtime_shell.pokedex_controls.hash(&mut hasher);
     runtime_shell.pokegear_menu_open.hash(&mut hasher);
     visible_pokegear_exit_palettes_are_clear(runtime_shell).hash(&mut hasher);
     runtime_shell.pokegear_standalone_map.hash(&mut hasher);

@@ -523,6 +523,57 @@ fn visible_pokedex_menu_entries(
         !snapshot.pokemon.is_empty(),
         "compiled pack has no Pokemon species"
     );
+    if runtime_shell.pokedex_controls.printer_open {
+        return Ok(vec![
+            "Printer Error 2".into(),
+            "Check the Game Boy".into(),
+            "Printer Manual.".into(),
+            "Press B to Cancel".into(),
+        ]);
+    }
+    if let Some(kanto) = runtime_shell.pokedex_controls.area_region {
+        let species = selected_pokedex_catalog_species(snapshot, runtime_shell.pokedex_cursor)?;
+        let mut entries = vec![
+            format!(
+                "{}'S NEST",
+                crate::core::models::pokemon_species_display_name(&species.species_id)
+            ),
+            if kanto { "KANTO" } else { "JOHTO" }.into(),
+        ];
+        entries.extend(
+            visible_pokedex_nests(runtime_shell, snapshot, kanto)?
+                .into_iter()
+                .map(|place| place.name),
+        );
+        return Ok(entries);
+    }
+    if let Some(cursor) = runtime_shell.pokedex_controls.unown_cursor {
+        return runtime_shell
+            .shell
+            .session()
+            .state()
+            .pokedex
+            .unown_letters
+            .iter()
+            .enumerate()
+            .map(|(index, &letter)| {
+                let word = POKEDEX_UNOWN_WORDS
+                    .get(usize::from(letter).wrapping_sub(1))
+                    .context("invalid caught Unown letter")?;
+                Ok(format!(
+                    "{}{} {}",
+                    if cursor == index { ">" } else { " " },
+                    char::from(b'A' + letter - 1),
+                    word
+                ))
+            })
+            .collect();
+    }
+    if let Some(entries) =
+        pokedex_option_entries(runtime_shell).or_else(|| pokedex_search_entries(runtime_shell))
+    {
+        return Ok(entries);
+    }
     if runtime_shell.pokedex_detail_open {
         return visible_pokedex_detail_entries(snapshot, runtime_shell);
     }
@@ -533,7 +584,11 @@ fn visible_pokedex_menu_entries(
         snapshot.pokemon.len()
     );
     let selected = runtime_shell.pokedex_cursor;
-    Ok(windowed_index_range(selected, snapshot.pokemon.len())
+    let order = visible_pokedex_listing(snapshot, runtime_shell);
+    Ok(order
+        .into_iter()
+        .skip(runtime_shell.pokedex_scroll)
+        .take(visible_pokedex_listing_height(runtime_shell))
         .map(|index| {
             let species = &snapshot.pokemon[index];
             let marker = if index == selected { ">" } else { " " };

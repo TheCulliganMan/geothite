@@ -627,6 +627,10 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
         .expect("unlock Pokedex through engine flag storage");
     runtime_shell
         .shell
+        .record_pokedex_seen("CHIKORITA")
+        .expect("seen entry for the detail input test");
+    runtime_shell
+        .shell
         .set_script_flag_for_smoke(ENGINE_POKEGEAR_FLAG)
         .expect("unlock Pokegear through engine flag storage");
 
@@ -635,7 +639,13 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
     assert_eq!(
         visible_start_menu_entries(&runtime_shell).expect("start menu entries"),
         vec![
-            ">#DEX", " PACK", " <POKE>GEAR", " AB", " SAVE", " OPTION", " EXIT"
+            ">#DEX",
+            " PACK",
+            " <POKE>GEAR",
+            " AB",
+            " SAVE",
+            " OPTION",
+            " EXIT"
         ]
     );
 
@@ -656,6 +666,7 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
 
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::A])
         .expect("A opens Pokedex detail from the highlighted species");
+    assert!(runtime_shell.pokedex_detail_open);
     {
         let snapshot = runtime_shell
             .shell
@@ -677,8 +688,10 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::B])
         .expect("B closes Pokedex");
 
-    apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::Start])
-        .expect("Start reopens the start menu through normal input dispatch");
+    assert!(
+        runtime_shell.start_menu_cursor.is_some(),
+        "CloseSubmenu returns to the Start menu"
+    );
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::Down])
         .expect("Down moves from Pokedex to Pack");
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::Down])
@@ -700,10 +713,12 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
 
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::A])
         .expect("A exits the Pokégear clock card");
-    assert_eq!(runtime_shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested));
+    assert_eq!(
+        runtime_shell.pokegear_exit,
+        Some(VisiblePokegearExitPhase::Requested)
+    );
     settle_visible_shell_smoke_until_idle(&mut runtime_shell).unwrap();
     assert!(!runtime_shell.pokegear_menu_open);
-
 }
 
 fn assert_no_visible_pokedex_or_pokegear_debug_rows(lines: &[String]) {
@@ -8035,17 +8050,57 @@ fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
     );
     assert!(!caught_rows.join(" ").contains("CATCH"));
     let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let caught_species = snapshot.progression.pokedex_caught_species.clone();
     for (label, detail, caught) in [
         ("list", false, true),
+        ("unknown", false, false),
         ("entry", true, true),
         ("seen", true, false),
+        ("options", false, true),
+        ("search", false, true),
+        ("results", false, true),
+        ("area", true, true),
+        ("printer", true, true),
+        ("unown", false, true),
     ] {
+        snapshot.progression.pokedex_caught_species = caught_species.clone();
+        runtime_shell.pokedex_controls = VisiblePokedexControls::default();
+        if matches!(label, "list" | "entry" | "seen" | "unknown") {
+            runtime_shell.pokedex_controls.mode = VisiblePokedexMode::Old;
+        }
+        match label {
+            "options" => runtime_shell.pokedex_controls.option_cursor = Some(0),
+            "search" => {
+                runtime_shell.pokedex_controls.search_cursor = Some(0);
+                runtime_shell.pokedex_controls.search_types = [1, 0];
+            }
+            "results" => {
+                runtime_shell.pokedex_controls.search_results =
+                    Some(vec![runtime_shell.pokedex_cursor]);
+                runtime_shell.pokedex_controls.search_types = [1, 0];
+            }
+            "area" => runtime_shell.pokedex_controls.area_region = Some(false),
+            "printer" => runtime_shell.pokedex_controls.printer_open = true,
+            "unown" => {
+                runtime_shell.pokedex_controls.unown_cursor = Some(1);
+                runtime_shell
+                    .shell
+                    .session_mut()
+                    .state_mut()
+                    .pokedex
+                    .unown_letters = vec![1, 26];
+            }
+            _ => {}
+        }
         runtime_shell.pokedex_detail_open = detail;
         snapshot.progression.pokedex_seen_species = snapshot
             .pokemon
             .iter()
             .map(|mon| mon.species_id.clone())
             .collect();
+        if label == "unknown" {
+            snapshot.progression.pokedex_seen_species.clear();
+        }
         if !caught {
             snapshot.progression.pokedex_caught_species.clear();
         }
@@ -10954,4 +11009,249 @@ fn dialogue_regression_new_page_cannot_borrow_previous_printer_progress() {
         page_index: 1, visible_chars: 9, frames_until_next_char: 0,
     });
     assert_eq!(visible_revealed_field_dialog_text(&shell, "BERRY in\nthe ITEM POCKET."), "BERRY in\n");
+}
+
+#[test]
+fn pokedex_entry_navigation_preserves_page_at_boundary_and_plays_cry_on_open() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let snapshot = shell.shell.snapshot().unwrap();
+    let index = snapshot
+        .pokemon
+        .iter()
+        .position(|p| p.species_id == "CYNDAQUIL")
+        .unwrap();
+    shell.shell.record_pokedex_seen("CYNDAQUIL").unwrap();
+    shell.pokedex_cursor = index;
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    inspect_visible_pokedex_selection(&mut shell).unwrap();
+    assert!(
+        shell
+            .last_audio_events
+            .iter()
+            .any(|event| event.contains("queued pokedex_entry cry")),
+        "Pokedex_InitDexEntryScreen plays the selected species cry"
+    );
+    shell.pokedex_detail_page = 1;
+    // With only Cyndaquil seen, neither direction can select another entry.
+    move_visible_pokedex_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokedex_cursor, index);
+    assert_eq!(
+        shell.pokedex_detail_page, 1,
+        "failed navigation must not reinitialize the entry"
+    );
+}
+
+#[test]
+fn pokedex_page_buttons_preserve_cursor_row_like_asm() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let snapshot = shell.shell.snapshot().unwrap();
+    for species in &*snapshot.pokemon {
+        shell
+            .shell
+            .record_pokedex_seen(&species.species_id)
+            .unwrap();
+    }
+    shell.pokedex_controls.mode = VisiblePokedexMode::Old;
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    shell.pokedex_cursor = 3;
+    shell.pokedex_scroll = 0;
+    // Left on the first page does nothing, even below the first row.
+    page_visible_pokedex_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokedex_cursor, 3);
+    page_visible_pokedex_cursor(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokedex_cursor, 10);
+    page_visible_pokedex_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokedex_cursor, 3);
+}
+
+#[test]
+fn pokedex_select_and_start_stay_inside_dex_and_search_caught_species() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.record_pokedex_caught("CYNDAQUIL").unwrap();
+    shell.shell.record_pokedex_seen("QUILAVA").unwrap();
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    press_visible_select_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.option_cursor, Some(0));
+    assert!(
+        shell.field_notice.is_none(),
+        "Select must not run registered-item logic"
+    );
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokedex_menu_open);
+    press_visible_start_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.search_cursor, Some(0));
+    shell.pokedex_controls.search_types = [2, 0]; // Fire
+    shell.pokedex_controls.search_cursor = Some(2);
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.search_results.is_none());
+    advance_visible_pokedex_search(&mut shell, 207);
+    let snapshot = shell.shell.snapshot().unwrap();
+    let names = visible_pokedex_listing(&snapshot, &shell)
+        .into_iter()
+        .map(|i| snapshot.pokemon[i].species_id.clone())
+        .collect::<Vec<_>>();
+    assert_eq!(names, ["CYNDAQUIL"]);
+    press_visible_b_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.search_cursor, Some(0));
+    press_visible_start_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.search_cursor, None);
+    assert!(shell.pokedex_menu_open);
+}
+
+#[test]
+fn pokedex_orders_end_at_last_seen_and_alphabetical_omits_unseen() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.progression.pokedex_seen_species = ["CYNDAQUIL".to_string(), "CHIKORITA".to_string()]
+        .into_iter()
+        .collect();
+    let names = |mode| {
+        visible_pokedex_order(&snapshot, mode)
+            .into_iter()
+            .map(|i| snapshot.pokemon[i].species_id.clone())
+            .collect::<Vec<_>>()
+    };
+    assert_eq!(
+        names(VisiblePokedexMode::New),
+        ["CHIKORITA", "BAYLEEF", "MEGANIUM", "CYNDAQUIL"]
+    );
+    assert_eq!(
+        names(VisiblePokedexMode::Alphabetical),
+        ["CHIKORITA", "CYNDAQUIL"]
+    );
+    let old = names(VisiblePokedexMode::Old);
+    assert_eq!(old.first().unwrap(), "BULBASAUR");
+    assert_eq!(old.last().unwrap(), "CYNDAQUIL");
+}
+
+#[test]
+fn pokedex_entry_actions_have_separate_input_and_return_to_entry() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.record_pokedex_caught("CYNDAQUIL").unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    shell.pokedex_cursor = snapshot
+        .pokemon
+        .iter()
+        .position(|p| p.species_id == "CYNDAQUIL")
+        .unwrap();
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    inspect_visible_pokedex_selection(&mut shell).unwrap();
+    page_visible_pokedex_cursor(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokedex_controls.entry_action, 1);
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.area_region, Some(false));
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.area_region, None);
+    assert!(shell.pokedex_detail_open);
+    page_visible_pokedex_cursor(&mut shell, 1).unwrap();
+    let page = shell.pokedex_detail_page;
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert_eq!(
+        shell.pokedex_detail_page, page,
+        "CRY must not turn the page"
+    );
+    page_visible_pokedex_cursor(&mut shell, 1).unwrap();
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.printer_open);
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert!(
+        shell.pokedex_controls.printer_open,
+        "only B cancels Printer Error 2"
+    );
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(!shell.pokedex_controls.printer_open);
+    assert!(shell.pokedex_detail_open);
+}
+
+#[test]
+fn pokedex_unown_mode_requires_upgrade_and_keeps_catch_order() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    press_visible_select_button(&mut shell).unwrap();
+    assert_eq!(pokedex_option_entries(&shell).unwrap().len(), 3);
+    shell
+        .shell
+        .set_script_flag_for_smoke("ENGINE_UNOWN_DEX")
+        .unwrap();
+    shell.shell.record_pokedex_caught("UNOWN").unwrap();
+    shell.shell.session_mut().state_mut().pokedex.unown_letters = vec![26, 1, 13];
+    assert_eq!(pokedex_option_entries(&shell).unwrap().len(), 4);
+    shell.pokedex_controls.option_cursor = Some(3);
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    assert_eq!(shell.pokedex_controls.unown_cursor, Some(0));
+    page_visible_pokedex_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokedex_controls.unown_cursor, Some(0));
+    page_visible_pokedex_cursor(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokedex_controls.unown_cursor, Some(1));
+    assert_eq!(
+        shell.shell.session().state().pokedex.unown_letters,
+        [26, 1, 13]
+    );
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.option_cursor.is_some());
+    assert!(shell.pokedex_controls.unown_cursor.is_none());
+}
+
+#[test]
+fn pokedex_seen_caught_counts_and_unown_forms_survive_save_roundtrip() {
+    use crate::core::models::{Dv, PokedexState, Pokemon};
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let before = shell.shell.snapshot().unwrap().progression;
+    shell.shell.record_pokedex_seen("PIDGEY").unwrap();
+    shell.shell.record_pokedex_seen("PIDGEY").unwrap();
+    let seen = shell.shell.snapshot().unwrap().progression;
+    assert!(seen.pokedex_seen_species.contains("PIDGEY"));
+    assert!(!seen.pokedex_caught_species.contains("PIDGEY"));
+    assert_eq!(seen.pokedex_seen, before.pokedex_seen + 1);
+    assert_eq!(seen.pokedex_owned, before.pokedex_owned);
+    shell.shell.record_pokedex_caught("PIDGEY").unwrap();
+    shell.shell.record_pokedex_caught("PIDGEY").unwrap();
+    let caught = shell.shell.snapshot().unwrap().progression;
+    assert_eq!(caught.pokedex_seen, seen.pokedex_seen);
+    assert_eq!(caught.pokedex_owned, before.pokedex_owned + 1);
+    assert!(caught.pokedex_caught_species.contains("PIDGEY"));
+    let species = shell
+        .shell
+        .runtime()
+        .data()
+        .pokemon
+        .get("UNOWN")
+        .unwrap()
+        .clone();
+    let z = Pokemon::new_for_tests(species.clone(), 5, Dv::from_non_hp(15, 15, 15, 15));
+    let a = Pokemon::new_for_tests(species, 5, Dv::from_non_hp(0, 0, 0, 0));
+    assert_eq!((z.dvs.unown_letter(), a.dvs.unown_letter()), (26, 1));
+    let dex = &mut shell.shell.session_mut().state_mut().pokedex;
+    assert!(dex.record_caught_pokemon(&z));
+    assert!(!dex.record_caught_pokemon(&a));
+    assert!(!dex.record_caught_pokemon(&z));
+    assert_eq!(dex.unown_letters, [26, 1]);
+    assert!(dex.has_seen("UNOWN"));
+    assert!(dex.has_caught("UNOWN"));
+    let restored: PokedexState = serde_json::from_slice(&serde_json::to_vec(dex).unwrap()).unwrap();
+    assert_eq!(&restored, dex);
+}
+
+#[test]
+fn pokedex_empty_search_blocks_input_until_source_delays_finish() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    press_visible_start_button(&mut shell).unwrap();
+    shell.pokedex_controls.search_types = [16, 0]; // No caught Dark Pokemon.
+    shell.pokedex_controls.search_cursor = Some(2);
+    press_visible_pokedex_a_button(&mut shell).unwrap();
+    advance_visible_pokedex_search(&mut shell, 206);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.search_animation.is_some());
+    assert!(shell.pokedex_controls.search_cursor.is_some());
+    advance_visible_pokedex_search(&mut shell, 1);
+    assert!(shell.pokedex_controls.search_not_found);
+    assert_eq!(shell.pokedex_controls.not_found_frames, 128);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.search_cursor.is_some());
+    advance_visible_pokedex_search(&mut shell, 128);
+    assert!(!shell.pokedex_controls.search_not_found);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokedex_controls.search_cursor.is_none());
+    assert!(shell.pokedex_menu_open);
 }

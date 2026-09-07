@@ -854,6 +854,8 @@ struct BevyRuntimeShell {
     pokedex_detail_page: usize,
     pokedex_scripted_entry: bool,
     pokedex_cursor: usize,
+    pokedex_scroll: usize,
+    pokedex_controls: VisiblePokedexControls,
     pokegear_menu_open: bool,
     pokegear_exit: Option<VisiblePokegearExitPhase>,
     pokegear_exit_input_blocked: bool,
@@ -7323,6 +7325,8 @@ fn initialize_bevy_runtime_shell(
         pokedex_detail_page: 0,
         pokedex_scripted_entry: false,
         pokedex_cursor: 0,
+        pokedex_scroll: 0,
+        pokedex_controls: VisiblePokedexControls::default(),
         pokegear_menu_open: false,
         pokegear_exit: None,
         pokegear_exit_input_blocked: false,
@@ -7519,6 +7523,7 @@ include!("bevy_shell/multiplayer.rs");
 include!("bevy_shell/player_customization.rs");
 include!("bevy_shell/field_travel.rs");
 include!("bevy_shell/trainer_card.rs");
+include!("bevy_shell/pokedex.rs");
 include!("bevy_shell/radio.rs");
 include!("bevy_shell/pokegear_input.rs");
 include!("bevy_shell/pc_input.rs");

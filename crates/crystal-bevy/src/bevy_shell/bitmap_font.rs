@@ -3382,6 +3382,30 @@ fn load_town_map_frame(
     unlocked_mask: u8,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    load_town_map_frame_with_nests(
+        asset_root,
+        region,
+        player_gender,
+        tile_palettes,
+        pokegear_tile_palettes,
+        standalone,
+        unlocked_mask,
+        false,
+        images,
+    )
+}
+
+fn load_town_map_frame_with_nests(
+    asset_root: &AssetRoot,
+    region: &str,
+    player_gender: u8,
+    tile_palettes: &[String],
+    pokegear_tile_palettes: &[String],
+    standalone: bool,
+    unlocked_mask: u8,
+    nests: bool,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
     const WIDTH_TILES: usize = 20;
     const HEIGHT_TILES: usize = 18;
     const TILE_PIXELS: usize = 8;
@@ -3429,7 +3453,11 @@ fn load_town_map_frame(
         tilemap.len(),
         WIDTH_TILES * HEIGHT_TILES
     );
-    if standalone {
+    if nests {
+        tilemap[WIDTH_TILES] = 0x06;
+        tilemap[WIDTH_TILES + 1..2 * WIDTH_TILES - 1].fill(0x07);
+        tilemap[2 * WIDTH_TILES - 1] = 0x17;
+    } else if standalone {
         apply_standalone_town_map_frame(&mut tilemap);
     } else {
         // InitPokegearTilemap.Map replaces the third row with a border,
@@ -3448,51 +3476,73 @@ fn load_town_map_frame(
     let mut data = vec![0_u8; width * height * 4];
     for (map_index, tile_id) in tilemap.into_iter().enumerate() {
         let (sheet, tile, token) = if tile_id < 0x30 {
-            (&source, usize::from(tile_id), &tile_palettes[usize::from(tile_id)])
+            (
+                &source,
+                usize::from(tile_id),
+                &tile_palettes[usize::from(tile_id)],
+            )
         } else if tile_id < 0x60 {
             let tile = usize::from(tile_id - 0x30);
-            (&pokegear, tile, pokegear_tile_palettes.get(tile)
-                .with_context(|| format!("missing Pokégear palette for tile {tile_id:#x}"))?)
+            (
+                &pokegear,
+                tile,
+                pokegear_tile_palettes
+                    .get(tile)
+                    .with_context(|| format!("missing Pokégear palette for tile {tile_id:#x}"))?,
+            )
         } else {
             anyhow::bail!("Town Map tile id {tile_id:#x} has no compiled tile art");
         };
         let palette = &palettes[pokegear_palette_index(token)?];
-        pokegear_blit_paletted_tile(sheet, tile, palette,
+        pokegear_blit_paletted_tile(
+            sheet,
+            tile,
+            palette,
             (map_index % WIDTH_TILES) * TILE_PIXELS,
-            (map_index / WIDTH_TILES) * TILE_PIXELS, width, &mut data)?;
+            (map_index / WIDTH_TILES) * TILE_PIXELS,
+            width,
+            &mut data,
+        )?;
     }
 
-    // PokegearMap_UpdateLandmarkName owns a 12x2 tile panel at (8, 0).
-    // The regional .bin contains the map underneath that panel; leaving it
-    // intact makes the label collide with the map art. Clear the panel and
-    // restore its map-pin tile exactly as the TypeScript/ASM composition does.
-    let panel_colour = palettes[0][0];
-    for row in 0..(2 * TILE_PIXELS) {
-        for col in (8 * TILE_PIXELS)..width {
-            let offset = (row * width + col) * 4;
-            data[offset..offset + 3].copy_from_slice(&panel_colour);
-            data[offset + 3] = 255;
+    if !nests {
+        // PokegearMap_UpdateLandmarkName owns a 12x2 tile panel at (8, 0).
+        // The regional .bin contains the map underneath that panel; leaving it
+        // intact makes the label collide with the map art. Clear the panel and
+        // restore its map-pin tile exactly as the TypeScript/ASM composition does.
+        let panel_colour = palettes[0][0];
+        for row in 0..(2 * TILE_PIXELS) {
+            for col in (8 * TILE_PIXELS)..width {
+                let offset = (row * width + col) * 4;
+                data[offset..offset + 3].copy_from_slice(&panel_colour);
+                data[offset + 3] = 255;
+            }
         }
-    }
-    const MAP_LABEL_ICON_TILE: usize = 4; // VRAM tile $34 after PokegearGFX loads at $30.
-    let icon_palette = match pokegear_tile_palettes[MAP_LABEL_ICON_TILE].as_str() {
-        "BORDER" => 0,
-        "EARTH" => 1,
-        "MOUNTAIN" => 2,
-        "CITY" => 3,
-        "POI" => 4,
-        "POI_MTN" => 5,
-        token => anyhow::bail!("unknown Pokégear palette token {token}"),
-    };
-    let icon_x = (MAP_LABEL_ICON_TILE % 16) * TILE_PIXELS;
-    let icon_y = (MAP_LABEL_ICON_TILE / 16) * TILE_PIXELS;
-    for row in 0..TILE_PIXELS {
-        for col in 0..TILE_PIXELS {
-            let pixel = pokegear.get_pixel((icon_x + col) as u32, (icon_y + row) as u32);
-            let colour = palettes[icon_palette][palette_index_from_gray(pixel[0])];
-            let offset = (row * width + 8 * TILE_PIXELS + col) * 4;
-            data[offset..offset + 3].copy_from_slice(&colour);
-            data[offset + 3] = 255;
+        const MAP_LABEL_ICON_TILE: usize = 4; // VRAM tile $34 after PokegearGFX loads at $30.
+        let icon_palette = match pokegear_tile_palettes[MAP_LABEL_ICON_TILE].as_str() {
+            "BORDER" => 0,
+            "EARTH" => 1,
+            "MOUNTAIN" => 2,
+            "CITY" => 3,
+            "POI" => 4,
+            "POI_MTN" => 5,
+            token => anyhow::bail!("unknown Pokégear palette token {token}"),
+        };
+        let icon_x = (MAP_LABEL_ICON_TILE % 16) * TILE_PIXELS;
+        let icon_y = (MAP_LABEL_ICON_TILE / 16) * TILE_PIXELS;
+        for row in 0..TILE_PIXELS {
+            for col in 0..TILE_PIXELS {
+                let pixel = pokegear.get_pixel((icon_x + col) as u32, (icon_y + row) as u32);
+                let colour = palettes[icon_palette][palette_index_from_gray(pixel[0])];
+                let offset = (row * width + 8 * TILE_PIXELS + col) * 4;
+                data[offset..offset + 3].copy_from_slice(&colour);
+                data[offset + 3] = 255;
+            }
+        }
+    } else {
+        for pixel in data[..width * TILE_PIXELS * 4].chunks_exact_mut(4) {
+            pixel[..3].copy_from_slice(&palettes[0][0]);
+            pixel[3] = 255;
         }
     }
     let mut image = Image::new(

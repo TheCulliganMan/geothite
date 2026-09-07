@@ -458,6 +458,20 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
             snapshot.pokemon.len()
         );
     }
+    let order = visible_pokedex_order(&snapshot, runtime_shell.pokedex_controls.mode);
+    let position = order
+        .iter()
+        .position(|&i| i == runtime_shell.pokedex_cursor)
+        .unwrap_or(0);
+    if let Some(&index) = order.get(position) {
+        runtime_shell.pokedex_cursor = index;
+    }
+    runtime_shell.pokedex_scroll = position.min(order.len().saturating_sub(7));
+    runtime_shell.pokedex_controls = VisiblePokedexControls {
+        mode: runtime_shell.pokedex_controls.mode,
+        return_to_start: runtime_shell.start_menu_cursor.is_some(),
+        ..Default::default()
+    };
     runtime_shell.pokedex_menu_open = true;
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_detail_page = 0;
@@ -482,6 +496,10 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 }
 
 fn close_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.pokedex_controls = VisiblePokedexControls {
+        mode: runtime_shell.pokedex_controls.mode,
+        ..Default::default()
+    };
     runtime_shell.pokedex_menu_open = false;
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
@@ -493,6 +511,18 @@ fn close_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn move_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
+    if pokedex_input_delay_active(runtime_shell) {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.unown_cursor.is_some() {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.printer_open
+        || runtime_shell.pokedex_controls.area_region.is_some()
+        || runtime_shell.pokedex_scripted_entry
+    {
+        return Ok(());
+    }
     let snapshot = runtime_shell.shell.snapshot()?;
     if snapshot.pokemon.is_empty() {
         anyhow::bail!("compiled pack has no Pokemon species");
@@ -503,48 +533,150 @@ fn move_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         runtime_shell.pokedex_cursor,
         snapshot.pokemon.len()
     );
-    let current = runtime_shell.pokedex_cursor;
-    let next = if runtime_shell.pokedex_detail_open {
-        let seen = &snapshot.progression.pokedex_seen_species;
-        let mut candidate_index = current;
-        let mut found = None;
-        let step = if delta < 0 { -1 } else { 1 };
-        for _ in 0..snapshot.pokemon.len() {
-            let candidate = candidate_index as isize + step;
-            if candidate < 0 || candidate >= snapshot.pokemon.len() as isize {
-                break;
-            }
-            candidate_index = candidate as usize;
-            if seen.contains(&snapshot.pokemon[candidate_index].species_id) {
-                found = Some(candidate_index);
-                break;
-            }
-        }
-        found.unwrap_or(current)
+    if let Some(cursor) = runtime_shell.pokedex_controls.search_cursor.as_mut() {
+        *cursor = (*cursor as isize + delta).clamp(0, 3) as usize;
+        return Ok(());
+    }
+    let option_count = if pokedex_unown_unlocked(runtime_shell) {
+        4
     } else {
-        (current as isize + delta).clamp(0, snapshot.pokemon.len() as isize - 1) as usize
+        3
     };
+    if let Some(cursor) = runtime_shell.pokedex_controls.option_cursor.as_mut() {
+        *cursor = (*cursor as isize + delta).clamp(0, option_count - 1) as usize;
+        return Ok(());
+    }
+    let order = visible_pokedex_listing(&snapshot, runtime_shell);
+    let height = visible_pokedex_listing_height(runtime_shell);
+    if order.is_empty() {
+        return Ok(());
+    }
+    let current = runtime_shell.pokedex_cursor;
+    let position = order
+        .iter()
+        .position(|&i| i == current)
+        .context("Pokedex selection is absent from its listing")?;
+    let next_position = if runtime_shell.pokedex_detail_open {
+        let step = if delta < 0 { -1 } else { 1 };
+        let mut candidate = position as isize + step;
+        let mut found = position;
+        while candidate >= 0 && candidate < order.len() as isize {
+            if snapshot
+                .progression
+                .pokedex_seen_species
+                .contains(&snapshot.pokemon[order[candidate as usize]].species_id)
+            {
+                found = candidate as usize;
+                break;
+            }
+            candidate += step;
+        }
+        found
+    } else {
+        (position as isize + delta).clamp(0, order.len() as isize - 1) as usize
+    };
+    let next = order[next_position];
+    if next == current {
+        return Ok(());
+    }
     runtime_shell.pokedex_cursor = next;
+    if next_position < runtime_shell.pokedex_scroll {
+        runtime_shell.pokedex_scroll = next_position;
+    } else if next_position >= runtime_shell.pokedex_scroll + height {
+        runtime_shell.pokedex_scroll = next_position + 1 - height;
+    }
     runtime_shell.pokedex_detail_page = 0;
+    runtime_shell.pokedex_controls.entry_action = 0;
     runtime_shell.last_audio_events.push(format!(
         "Pokedex cursor {}->{} {}",
         current + 1,
         next + 1,
         snapshot.pokemon[next].species_id
     ));
+    if runtime_shell.pokedex_detail_open {
+        queue_visible_pokemon_cry(
+            runtime_shell,
+            &snapshot.pokemon[next].species_id,
+            "pokedex_entry",
+        )?;
+    }
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
 }
 
 fn page_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
-    if runtime_shell.pokedex_detail_open {
+    if pokedex_input_delay_active(runtime_shell) {
         return Ok(());
     }
-    move_visible_pokedex_cursor(runtime_shell, delta * 7)
+    if let Some(cursor) = runtime_shell.pokedex_controls.unown_cursor.as_mut() {
+        let count = runtime_shell
+            .shell
+            .session()
+            .state()
+            .pokedex
+            .unown_letters
+            .len();
+        if count > 0 {
+            *cursor = (*cursor as isize + delta).clamp(0, count as isize - 1) as usize;
+        }
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.printer_open {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.area_region.is_some() {
+        if delta < 0 {
+            runtime_shell.pokedex_controls.area_region = Some(false);
+        } else if runtime_shell
+            .shell
+            .snapshot()?
+            .progression
+            .active_engine_flags
+            .contains("ENGINE_CREDITS_SKIP")
+        {
+            runtime_shell.pokedex_controls.area_region = Some(true);
+        }
+        return Ok(());
+    }
+    if runtime_shell.pokedex_detail_open && !runtime_shell.pokedex_scripted_entry {
+        runtime_shell.pokedex_controls.entry_action =
+            (runtime_shell.pokedex_controls.entry_action as isize + delta).clamp(0, 3) as usize;
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.search_cursor.is_some() {
+        change_visible_pokedex_search_type(runtime_shell, delta);
+        return Ok(());
+    }
+    if runtime_shell.pokedex_detail_open || runtime_shell.pokedex_controls.option_cursor.is_some() {
+        return Ok(());
+    }
+    let snapshot = runtime_shell.shell.snapshot()?;
+    anyhow::ensure!(
+        runtime_shell.pokedex_cursor < snapshot.pokemon.len(),
+        "Pokedex cursor out of range"
+    );
+    let order = visible_pokedex_listing(&snapshot, runtime_shell);
+    let height = visible_pokedex_listing_height(runtime_shell);
+    if order.len() <= height {
+        return Ok(());
+    }
+    let old_scroll = runtime_shell.pokedex_scroll;
+    let new_scroll = if delta < 0 {
+        old_scroll.saturating_sub(height)
+    } else {
+        (old_scroll + height).min(order.len() - height)
+    };
+    let shift = new_scroll as isize - old_scroll as isize;
+    move_visible_pokedex_cursor(runtime_shell, shift)?;
+    runtime_shell.pokedex_scroll = new_scroll;
+    Ok(())
 }
 
 fn inspect_visible_pokedex_selection(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
+    if visible_pokedex_order(&snapshot, runtime_shell.pokedex_controls.mode).is_empty() {
+        return Ok(());
+    }
     let species = selected_pokedex_catalog_species(&snapshot, runtime_shell.pokedex_cursor)?;
     if !snapshot
         .progression
@@ -566,6 +698,7 @@ fn inspect_visible_pokedex_selection(runtime_shell: &mut BevyRuntimeShell) -> Re
         .with_context(|| format!("compiled pack missing Pokedex entry {}", species.species_id))?;
     runtime_shell.pokedex_detail_open = true;
     runtime_shell.pokedex_detail_page = 0;
+    runtime_shell.pokedex_controls.entry_action = 0;
     runtime_shell.last_audio_events.push(format!(
         "opened Pokedex detail #{} {} class={} h={} w={} pages={}",
         species.int_id,
@@ -575,6 +708,7 @@ fn inspect_visible_pokedex_selection(runtime_shell: &mut BevyRuntimeShell) -> Re
         entry.weight_digits,
         entry.pages.join(" / ")
     ));
+    queue_visible_pokemon_cry(runtime_shell, &species.species_id, "pokedex_entry")?;
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
 }

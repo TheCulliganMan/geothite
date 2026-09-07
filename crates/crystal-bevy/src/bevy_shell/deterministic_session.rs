@@ -406,6 +406,15 @@ fn apply_keyboard_input(
             }
         }
     }
+    advance_visible_pokedex_search(&mut runtime_shell, elapsed_input_ticks);
+    if runtime_shell.pokedex_controls.area_region.is_some() {
+        let before = (runtime_shell.pokedex_controls.area_frames & 16, runtime_shell.pokedex_controls.area_show_player);
+        runtime_shell.pokedex_controls.area_frames = runtime_shell.pokedex_controls.area_frames.wrapping_add(elapsed_input_ticks as u8);
+        runtime_shell.pokedex_controls.area_show_player = keys.pressed(KeyCode::ShiftRight);
+        let after = (runtime_shell.pokedex_controls.area_frames & 16, runtime_shell.pokedex_controls.area_show_player);
+        if before != after { mark_runtime_presentation_dirty(&mut runtime_shell); }
+    }
+
     advance_visible_pokegear_map_animation(&mut runtime_shell, elapsed_input_ticks);
     let radio_hold_active = runtime_shell.pokegear_map_radio_delay.is_some_and(|remaining| remaining != 0);
     let radio_ticks = advance_visible_map_radio_delay(&mut runtime_shell, elapsed_input_ticks);
@@ -5808,6 +5817,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             // capture objects.
             runtime_shell.battle_message_scene = None;
             runtime_shell.pokedex_cursor = species_index;
+            runtime_shell.pokedex_controls = VisiblePokedexControls { mode: runtime_shell.pokedex_controls.mode, ..Default::default() };
             runtime_shell.pokedex_menu_open = true;
             runtime_shell.pokedex_detail_open = true;
             runtime_shell.pokedex_detail_page = 0;
@@ -6884,6 +6894,72 @@ fn continue_visible_capture_after_owned_surface(
 }
 
 fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if pokedex_input_delay_active(runtime_shell) {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.unown_cursor.take().is_some() {
+        runtime_shell.pokedex_controls.option_cursor =
+            Some(match runtime_shell.pokedex_controls.mode {
+                VisiblePokedexMode::New => 0,
+                VisiblePokedexMode::Old => 1,
+                VisiblePokedexMode::Alphabetical => 2,
+            });
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.printer_open {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.area_region.take().is_some() {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_detail_open && !runtime_shell.pokedex_scripted_entry {
+        match runtime_shell.pokedex_controls.entry_action {
+            1 => {
+                runtime_shell.pokedex_controls.area_region = Some(false);
+                return Ok(());
+            }
+            2 => {
+                let snapshot = runtime_shell.shell.snapshot()?;
+                let species =
+                    selected_pokedex_catalog_species(&snapshot, runtime_shell.pokedex_cursor)?;
+                return queue_visible_pokemon_cry(
+                    runtime_shell,
+                    &species.species_id,
+                    "pokedex_entry",
+                );
+            }
+            3 => {
+                runtime_shell.pokedex_controls.printer_open = true;
+                return Ok(());
+            }
+            _ => {}
+        }
+    }
+    if runtime_shell.pokedex_controls.search_cursor.is_some() {
+        return press_visible_pokedex_search_a(runtime_shell);
+    }
+    if let Some(cursor) = runtime_shell.pokedex_controls.option_cursor.take() {
+        if cursor == 3 {
+            runtime_shell.pokedex_controls.unown_cursor = Some(0);
+            return Ok(());
+        }
+        let mode = match cursor {
+            0 => VisiblePokedexMode::New,
+            1 => VisiblePokedexMode::Old,
+            _ => VisiblePokedexMode::Alphabetical,
+        };
+        if mode == runtime_shell.pokedex_controls.mode {
+            return Ok(());
+        }
+        runtime_shell.pokedex_controls.mode = mode;
+        let snapshot = runtime_shell.shell.snapshot()?;
+        let order = visible_pokedex_order(&snapshot, runtime_shell.pokedex_controls.mode);
+        if let Some(&index) = order.first() {
+            runtime_shell.pokedex_cursor = index;
+        }
+        runtime_shell.pokedex_scroll = 0;
+        return record_visible_runtime_action(runtime_shell, "pokedex:mode");
+    }
     if runtime_shell.pokedex_detail_open {
         let snapshot = runtime_shell.shell.presentation_snapshot()?;
         let species = selected_pokedex_catalog_species(&snapshot, runtime_shell.pokedex_cursor)?;
@@ -6927,6 +7003,25 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.pokedex_menu_open && pokedex_input_delay_active(runtime_shell) { return Ok(()); }
+    if runtime_shell.pokedex_menu_open && runtime_shell.pokedex_controls.unown_cursor.is_some() { return press_visible_pokedex_a_button(runtime_shell); }
+    if runtime_shell.pokedex_menu_open {
+        if std::mem::take(&mut runtime_shell.pokedex_controls.printer_open) { return Ok(()); }
+        if runtime_shell.pokedex_controls.area_region.take().is_some() { return Ok(()); }
+    }
+    if runtime_shell.pokedex_menu_open && !runtime_shell.pokedex_detail_open {
+        if runtime_shell.pokedex_controls.search_cursor.take().is_some() { return Ok(()); }
+        if runtime_shell.pokedex_controls.search_results.take().is_some() {
+            if let Some((cursor, scroll)) = runtime_shell.pokedex_controls.search_backup.take() {
+                runtime_shell.pokedex_cursor = cursor;
+                runtime_shell.pokedex_scroll = scroll;
+            }
+            runtime_shell.pokedex_controls.search_cursor = Some(0);
+            runtime_shell.pokedex_controls.search_types = [1, 0];
+            return Ok(());
+        }
+    }
+    if runtime_shell.pokedex_menu_open && runtime_shell.pokedex_controls.option_cursor.take().is_some() { return Ok(()); }
     if runtime_shell.visible_battle_sliding_intro.is_some() {
         return Ok(());
     }
@@ -7688,8 +7783,13 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             return Ok(());
         }
         record_visible_runtime_action(runtime_shell, "pokedex:close")?;
+        let return_to_start = runtime_shell.pokedex_controls.return_to_start;
         close_visible_pokedex_menu(runtime_shell);
-        continue_visible_script_after_prompt(runtime_shell)?;
+        queue_visible_shell_sound_effect(runtime_shell, "SFX_READ_TEXT_2")?;
+        if return_to_start {
+            select_visible_start_menu_option_exact(runtime_shell, StartMenuOption::Pokedex)?;
+            set_shell_action_status(runtime_shell, "START MENU");
+        } else { continue_visible_script_after_prompt(runtime_shell)?; }
         return Ok(());
     }
     if runtime_shell.options_menu_open {
@@ -8130,6 +8230,7 @@ fn move_visible_mom_bank(runtime_shell: &mut BevyRuntimeShell, delta: isize, hor
 }
 
 fn press_visible_select_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.pokedex_menu_open { return press_visible_pokedex_select(runtime_shell); }
     if runtime_shell.pokegear_exit.is_some() { return Ok(()); }
     if runtime_shell
         .special_boundary
@@ -8369,6 +8470,7 @@ fn switch_visible_pack_item(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
 }
 
 fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.pokedex_menu_open { return press_visible_pokedex_start(runtime_shell); }
     if let Some(puzzle) = runtime_shell.visible_unown_puzzle.as_ref() {
         return if puzzle.solved { Ok(()) } else { close_visible_unown_puzzle(runtime_shell) };
     }
