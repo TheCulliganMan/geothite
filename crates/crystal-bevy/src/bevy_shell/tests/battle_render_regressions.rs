@@ -1,4 +1,24 @@
 #[test]
+fn battle_hp_corner_is_black_in_every_hp_palette() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    let tiles = battle_hp_bar_tiles(&mut art, &asset_root, &mut images)
+        .expect("battle HP graphics");
+    for zone in 0..=2 {
+        let image = images.get(&tiles[&(0x6c, zone)].handle).unwrap();
+        let opaque: Vec<_> = image.data.chunks_exact(4).filter(|pixel| pixel[3] != 0).collect();
+        assert!(!opaque.is_empty(), "corner must be visible");
+        assert!(opaque.iter().all(|pixel| *pixel == [0, 0, 0, 255]),
+            "player HP corner must use black in palette {zone}");
+    }
+}
+
+#[test]
 fn battle_dialogue_uses_player_input_drains_once_and_returns_menu_control() {
     let mut runtime_shell = route36_battle_shell_for_render_regression();
     runtime_shell.visible_battle_transition = None;
@@ -2468,6 +2488,8 @@ fn caught_capture_retains_then_clears_sprites_without_revealing_enemy_before_com
 
     {
         let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        confirm_visible_name_choice(&mut runtime_shell).expect("scroll capture nickname question");
+        assert!(runtime_shell.pending_name_input.is_none());
         confirm_visible_name_choice(&mut runtime_shell).expect("choose to nickname capture");
         assert!(runtime_shell.pending_name_input.is_some());
         assert!(runtime_shell.visible_capture_animation.is_some());

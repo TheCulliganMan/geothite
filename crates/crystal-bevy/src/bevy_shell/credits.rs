@@ -839,6 +839,7 @@ fn open_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
         .context("name_player custom return BG-map wait is invalid")?;
     runtime_shell.pending_player_name_return = None;
     runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+        nickname_pages: VecDeque::new(),
         options,
         selected: default_option - 1,
         player_menu: Some(VisiblePlayerNameMenuDefinition {
@@ -883,6 +884,46 @@ fn open_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     Ok(())
 }
 
+// GiveANickname_YesNo prints the source question before opening YesNoBox.
+// Its CONT command is an A/B-controlled scroll, not another menu row.
+fn visible_nickname_prompt_pages(
+    runtime_shell: &BevyRuntimeShell,
+    default_name: &str,
+    hatched: bool,
+) -> Result<VecDeque<String>> {
+    let label = if hatched {
+        "_BreedAskNicknameText"
+    } else {
+        "_CaughtAskNicknameText"
+    };
+    let text = runtime_shell.shell.text_snapshot(label)?;
+    let body = text.body.as_ref()
+        .with_context(|| format!("nickname text {label} has no exported body"))?;
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    let buffers = BTreeMap::from([("STRING_BUFFER_1".to_string(), default_name.to_string())]);
+    let pages = render_visible_script_text_pages(
+        body,
+        &buffers,
+        &snapshot.trainer.player_name,
+        visible_rival_name(&snapshot),
+        snapshot.progression.time.day_of_week,
+    );
+    anyhow::ensure!(!pages.is_empty(), "nickname text {label} rendered no pages");
+    Ok(pages.into())
+}
+
+fn advance_visible_nickname_prompt(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
+        return false;
+    };
+    if choice.nickname_pages.len() <= 1 {
+        return false;
+    }
+    choice.nickname_pages.pop_front();
+    mark_runtime_snapshot_dirty(runtime_shell);
+    true
+}
+
 fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
     let selected = {
         let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
@@ -891,6 +932,9 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         if choice.player_menu.is_some()
             && choice.player_phase != Some(VisiblePlayerNameChoicePhase::Menu)
         {
+            return Ok(());
+        }
+        if choice.nickname_pages.len() > 1 {
             return Ok(());
         }
         let count = choice.options.len();
@@ -912,6 +956,9 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
 }
 
 fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if advance_visible_nickname_prompt(runtime_shell) {
+        return Ok(());
+    }
     let Some(mut choice) = runtime_shell.pending_name_choice.take() else {
         return handle_visible_no_player_name_input(runtime_shell, "choice-confirm");
     };
@@ -1991,6 +2038,7 @@ fn confirm_visible_player_name_input(runtime_shell: &mut BevyRuntimeShell) -> Re
     if let Some(player_menu) = runtime_shell.pending_player_name_return.take() {
         let player_name = input.value;
         runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+            nickname_pages: VecDeque::new(),
             options: Vec::new(),
             selected: 0,
             player_menu: Some(player_menu),

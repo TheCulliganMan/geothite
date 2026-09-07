@@ -2383,3 +2383,77 @@ fn fullscreen_does_not_spawn_moms_next_map_load_replacement() {
     expand_fullscreen_object_presentation(&mut snapshot, &shell).unwrap();
     assert_eq!(snapshot.visible_object_slots, original, "fullscreen must not materialize Mom's replacement while the original is still talking");
 }
+
+#[cfg(feature = "fullscreen-scaling")]
+#[test]
+fn fullscreen_elm_keeps_his_position_when_leaving_the_lab() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let mut shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile { spawn_identifier: 14, map_name: "ElmsLab".into(), tile_x: 4, tile_y: 4 }, BevyShellConfig::default()).unwrap();
+    // The entry callback places Elm at (3, 4); his introduction then walks
+    // him to (5, 2). Walking south unloads him before the expanded view ends.
+    let world = &mut shell.shell.session.overworld;
+    let index = world.objects.iter().position(|object| object.object_identifier.as_deref() == Some("ELMSLAB_ELM")).unwrap();
+    assert!(world.object_has_loaded_struct(index));
+    world.set_object_runtime_tile("ELMSLAB_ELM", TilePosition::new(5, 2)).unwrap();
+    world.set_object_runtime_facing("ELMSLAB_ELM", Direction::Right).unwrap();
+    let path = (5..=11).map(|y| TilePosition::new(4, y)).collect::<Vec<_>>();
+    world.advance_object_struct_roster_along_player_path(&path).unwrap();
+    assert!(!world.object_has_loaded_struct(index));
+    let before = shell.shell.snapshot().unwrap();
+    let mut expanded = before.clone();
+    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    assert_eq!(expanded.visible_object_runtime_tiles.get("ELMSLAB_ELM"), Some(&TilePosition::new(5, 2)));
+    assert_eq!(expanded.visible_object_facings.get("ELMSLAB_ELM"), Some(&Direction::Right));
+    assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
+}
+
+#[test]
+fn asm_follow_keeps_the_last_command_queued_at_script_end() {
+    let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
+    let movement = VisibleScriptMovement {
+        object_id: "LEADER".to_string(),
+        phases: VecDeque::new(),
+        pending_programs: VecDeque::new(),
+        hold_frames_remaining: 0,
+        active_jump_duration: None,
+        active_uses_standing_frame: false,
+        active_tree_shake_duration: None,
+        active_stationary_effect: None,
+        active_stationary_duration: 0,
+        stationary_y_offset: 0,
+        stationary_initial_facing: Direction::Down,
+        follower_object_id: Some("PLAYER".to_string()),
+        follower_queued_step: Some(VisibleFollowerStep {
+            direction: Direction::Down,
+            stride: 1,
+            duration: WALK_FRAME_HOLD_TICKS,
+            jump: false,
+            standing_frame: false,
+        }),
+        follower_active_jump_duration: None,
+        follower_active_uses_standing_frame: false,
+    };
+    runtime_shell.visible_script_movement_scene =
+        Some(Arc::new(runtime_shell.shell.snapshot().unwrap()));
+    runtime_shell.visible_script_movement = Some(movement);
+    assert!(!start_next_visible_script_movement_phase(&mut runtime_shell).unwrap());
+    assert!(runtime_shell.visible_script_movement.is_none());
+}
+
+#[test]
+fn asm_script_jump_samples_height_before_incrementing() {
+    let offsets = [
+        -4, -6, -8, -10, -11, -12, -12, -12, -11, -10, -9, -8, -6, -4, 0, 0,
+    ];
+    for total in [8_u8, 16, 32] {
+        for remaining in (1..=total).rev() {
+            let index = usize::from(total - remaining) * 16 / usize::from(total);
+            assert_eq!(
+                visible_script_jump_y_offset(&offsets, total, remaining),
+                -f32::from(offsets[index]) * BATTLE_HUD_SCALE
+            );
+        }
+    }
+}

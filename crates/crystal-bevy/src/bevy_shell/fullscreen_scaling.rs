@@ -660,7 +660,7 @@ fn sync_fullscreen_world_layout(
 
 // The engine's loaded object structs intentionally cover the original LCD and
 // govern movement, interaction and RNG. The expanded camera also presents map
-// objects outside that simulation range, using their source-initialized state.
+// objects outside that simulation range, retaining their last loaded pose.
 // Never insert these extra actors into the authoritative object roster.
 fn expand_fullscreen_object_presentation(
     snapshot: &mut RuntimeShellSnapshot,
@@ -681,14 +681,18 @@ fn expand_fullscreen_object_presentation(
         {
             continue;
         }
-        let tile = world
+        let mut tile = world
             .object_runtime_tile_checked(index, object)
             .context("resolve distant fullscreen NPC coordinates")?;
         if let Some(id) = object.object_identifier.as_ref() {
-            let facing =
+            let mut facing =
                 world.object_facings.get(id).copied().with_context(|| {
                     format!("fullscreen NPC {id} has no source-initialized facing")
                 })?;
+            if let Some((last_tile, last_facing)) = world.unloaded_object_presentation.get(id) {
+                tile = *last_tile;
+                facing = *last_facing;
+            }
             snapshot
                 .visible_object_runtime_tiles
                 .insert(id.clone(), tile);

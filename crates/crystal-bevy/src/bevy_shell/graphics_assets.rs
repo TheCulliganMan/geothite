@@ -581,31 +581,20 @@ fn play_pending_audio(
     #[cfg(all(not(test), not(target_arch = "wasm32")))] mut native_audio: NonSendMut<
         NativeAudioBackend,
     >,
-    #[cfg(all(not(test), target_arch = "wasm32"))] mut browser_audio_unlocked: Local<bool>,
     #[cfg(all(not(test), target_arch = "wasm32"))] mut browser_audio: NonSendMut<
         BrowserAudioBackend,
     >,
-    #[cfg(all(not(test), target_arch = "wasm32"))] keyboard: Res<ButtonInput<KeyCode>>,
-    #[cfg(all(not(test), target_arch = "wasm32"))] mouse: Res<ButtonInput<MouseButton>>,
-    #[cfg(all(not(test), target_arch = "wasm32"))] touches: Res<Touches>,
 ) {
     #[cfg_attr(test, allow(unused_variables))]
     let sound = runtime_shell.shell.session().state().options.sound;
     #[cfg(all(not(test), target_arch = "wasm32"))]
-    if !*browser_audio_unlocked {
-        let unlock_requested = browser_audio_unlock_requested(
-            keyboard.get_just_pressed().next().is_some(),
-            mouse.get_just_pressed().next().is_some(),
-            touches.any_just_pressed(),
-        );
-        if !unlock_requested {
-            // Keep the initial music/SFX queued until this system is running
-            // in the browser's user-input event turn. Creating the WebAudio
-            // stream before a gesture leaves its AudioContext suspended and
-            // produces permanent silence even after the player clicks.
-            return;
-        }
-        *browser_audio_unlocked = true;
+    if BROWSER_AUDIO_CONTEXT.with(|slot| {
+        slot.borrow().as_ref().is_none_or(|context| {
+            context.state() != web_sys::AudioContextState::Running
+        })
+    }) {
+        // Preserve queued sounds until the gesture's resume promise succeeds.
+        return;
     }
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
@@ -911,14 +900,6 @@ fn play_pending_audio(
         ));
         trim_event_log(&mut runtime_shell.last_audio_events);
     }
-}
-
-fn browser_audio_unlock_requested(
-    keyboard_just_pressed: bool,
-    mouse_just_pressed: bool,
-    touch_just_pressed: bool,
-) -> bool {
-    keyboard_just_pressed || mouse_just_pressed || touch_just_pressed
 }
 
 fn clear_failed_music_playback_state(

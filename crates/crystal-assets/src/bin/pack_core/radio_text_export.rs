@@ -60,7 +60,7 @@ fn source_arguments(source: &str) -> Result<Vec<String>> {
     Ok(result)
 }
 
-fn collect_text_bodies(
+pub(super) fn collect_text_bodies(
     source: &str,
     required: &BTreeSet<String>,
     bodies: &mut BTreeMap<String, Value>,
@@ -456,6 +456,14 @@ fn source_selection_tables(repository: &Path) -> Result<BTreeMap<String, Value>>
 pub fn export(repository: &Path) -> Result<()> {
     let bodies = source_text_bodies(repository)?;
     let tables = source_selection_tables(repository)?;
+    export_global_text_bodies(repository, &bodies, &tables)
+}
+
+pub(super) fn export_global_text_bodies(
+    repository: &Path,
+    bodies: &BTreeMap<String, Value>,
+    tables: &BTreeMap<String, Value>,
+) -> Result<()> {
     let mut outputs = Vec::new();
     for relative in [
         "story_events/StandardScripts.json",
@@ -467,8 +475,8 @@ pub fn export(repository: &Path) -> Result<()> {
             .get_mut("StandardScripts")
             .and_then(Value::as_object_mut)
             .with_context(|| format!("{} is missing StandardScripts", path.display()))?;
-        // Radio is driven by its own program, not a map-script text reference.
-        // Keep its text roots in the materialized global runtime catalog.
+        // Engine-owned text has no map-script reference. Keep its source
+        // commands in the materialized global runtime catalog.
         let roots = scripts
             .get_mut("GlobalScriptRoots")
             .and_then(Value::as_array_mut)
@@ -481,7 +489,7 @@ pub fn export(repository: &Path) -> Result<()> {
                 roots.push(json!(label));
             }
         }
-        for (label, commands) in bodies.iter().chain(&tables) {
+        for (label, commands) in bodies.iter().chain(tables) {
             scripts.insert(label.clone(), commands.clone());
         }
         let mut bytes = serde_json::to_vec_pretty(&catalog)?;

@@ -50,6 +50,10 @@ pub struct OverworldSession {
     pub map_events: MapEvents,
     pub objects: Vec<ObjectEvent>,
     pub object_runtime_tiles: BTreeMap<String, TilePosition>,
+    /// Presentation-only poses retained when actors leave the LCD simulation
+    /// viewport but remain on an expanded camera. Never used by gameplay.
+    #[serde(skip)]
+    pub unloaded_object_presentation: BTreeMap<String, (TilePosition, Direction)>,
     #[serde(default)]
     pub object_last_runtime_tiles: BTreeMap<String, TilePosition>,
     #[serde(default)]
@@ -616,6 +620,7 @@ impl OverworldSession {
             map_events,
             objects,
             object_runtime_tiles: BTreeMap::new(),
+            unloaded_object_presentation: BTreeMap::new(),
             object_last_runtime_tiles: BTreeMap::new(),
             object_last_tiles_occupied_until_frame: BTreeMap::new(),
             object_facings,
@@ -2092,6 +2097,11 @@ impl OverworldSession {
                 && !object_struct_tile_is_in_loaded_viewport(self.player.tile, initial)
                 && !object_event_starts_wont_delete(&object.spritemovedata)
             {
+                if let Some(id) = object.object_identifier.as_ref() {
+                    if let Some(facing) = self.object_facings.get(id).copied() {
+                        self.unloaded_object_presentation.insert(id.clone(), (current, facing));
+                    }
+                }
                 self.unload_object_struct(index);
             }
         }
@@ -2164,6 +2174,7 @@ impl OverworldSession {
         }
         self.loaded_object_struct_slots.clear();
         self.loaded_object_struct_initial_tiles.clear();
+        self.unloaded_object_presentation.clear();
         self.object_struct_roster_player_tile = Some(self.player.tile);
         self.object_struct_roster_initialized = true;
     }
@@ -2593,6 +2604,7 @@ impl OverworldSession {
             .map(|(index, _)| index).collect();
         self.loaded_object_struct_slots.clear();
         self.loaded_object_struct_initial_tiles.clear();
+        self.unloaded_object_presentation.clear();
         self.object_struct_roster_player_tile = Some(self.player.tile);
         self.object_struct_roster_initialized = true;
         for index in 0..self.objects.len() {
@@ -3989,6 +4001,7 @@ impl WarpTransition {
             map_events,
             objects,
             object_runtime_tiles: BTreeMap::new(),
+            unloaded_object_presentation: BTreeMap::new(),
             object_last_runtime_tiles: BTreeMap::new(),
             object_last_tiles_occupied_until_frame: BTreeMap::new(),
             object_facings,
@@ -4046,6 +4059,7 @@ impl ConnectionTransition {
             map_events,
             objects,
             object_runtime_tiles: BTreeMap::new(),
+            unloaded_object_presentation: BTreeMap::new(),
             object_last_runtime_tiles: BTreeMap::new(),
             object_last_tiles_occupied_until_frame: BTreeMap::new(),
             object_facings,
@@ -4695,6 +4709,26 @@ mod tests {
             !session.object_has_loaded_struct(12),
             "the entering event cannot replace an offscreen WONT_DELETE_F struct"
         );
+    }
+
+    #[test]
+    fn expanded_view_keeps_unloaded_scripted_object_position() {
+        let mut session = OverworldSession::with_events_and_objects(
+            map_with_blocks(10, 6, vec![0; 60]), MapEvents::default(),
+            vec![object("ELM", 3, 4, "-1")], tileset(), TilePosition::new(4, 4),
+        );
+        session.set_object_runtime_tile("ELM", TilePosition::new(5, 2)).unwrap();
+        session.set_object_runtime_facing("ELM", Direction::Right).unwrap();
+        let path = (5..=11).map(|y| TilePosition::new(4, y)).collect::<Vec<_>>();
+        session.advance_object_struct_roster_along_player_path(&path).unwrap();
+        assert!(!session.object_has_loaded_struct(0));
+        // Gameplay still uses map-object memory after unloading.
+        assert_eq!(session.object_runtime_tile_by_id("ELM").unwrap(), TilePosition::new(3, 4));
+        assert_eq!(session.unloaded_object_presentation.get("ELM"), Some(&(TilePosition::new(5, 2), Direction::Right)));
+        let encoded = serde_json::to_value(&session).unwrap();
+        assert!(encoded.get("unloaded_object_presentation").is_none());
+        session.begin_map_object_setup();
+        assert!(session.unloaded_object_presentation.is_empty());
     }
 
     #[test]

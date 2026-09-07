@@ -1080,8 +1080,9 @@ pub fn calculate_damage(
     }
     let (mut attack_value, mut defense_value) =
         truncate_damage_stats(attack_value, defense_value, context.link_colosseum);
-    if context.defender_metal_powder
-        || (defender.species.id == "DITTO" && defender.item.as_deref() == Some("METAL_POWDER"))
+    if !context.is_confusion_damage
+        && (context.defender_metal_powder
+            || (defender.species.id == "DITTO" && defender.item.as_deref() == Some("METAL_POWDER")))
     {
         (attack_value, defense_value) =
             apply_metal_powder_damage_stats(attack_value, defense_value);
@@ -1104,48 +1105,49 @@ pub fn calculate_damage(
     let mut damage = base_damage.min(997) as u16 + 2;
     damage = damage.saturating_mul(u16::from(context.pre_stab_multiplier.max(1)));
 
-    damage = apply_weather_type_modifier(
-        damage,
-        context.weather,
-        &move_data.move_type,
-        weather_modifiers,
-    )?;
+    // Struggle returns before BattleCommand_Stab performs weather, badge,
+    // STAB, or type-chart adjustments. Confusion bypasses that command too.
+    let skips_stab_command = context.is_confusion_damage || move_data.name == "STRUGGLE";
+    let mut type_multiplier = TypeMultiplier::one();
+    if !skips_stab_command {
+        damage = apply_weather_type_modifier(
+            damage,
+            context.weather,
+            &move_data.move_type,
+            weather_modifiers,
+        )?;
 
-    if context.attacker_type_badge_boost {
-        damage = damage.saturating_add((damage / 8).max(1));
-    }
+        if context.attacker_type_badge_boost {
+            damage = damage.saturating_add((damage / 8).max(1));
+        }
 
-    if !context.is_confusion_damage
-        && (move_data.move_type == attacker.species.type1
-            || move_data.move_type == attacker.species.type2)
-    {
-        damage = ((damage as u32 * 3) / 2) as u16;
-    }
+        if move_data.move_type == attacker.species.type1
+            || move_data.move_type == attacker.species.type2
+        {
+            damage = ((damage as u32 * 3) / 2) as u16;
+        }
 
-    let defender_types = distinct_defender_types(defender);
-    let type_multiplier = if context.is_confusion_damage || move_data.name == "STRUGGLE" {
-        TypeMultiplier::one()
-    } else {
-        calculate_type_effectiveness_multiplier_with_foresight(
+        let defender_types = distinct_defender_types(defender);
+        type_multiplier = calculate_type_effectiveness_multiplier_with_foresight(
             type_effectiveness,
             &move_data.move_type,
             &defender_types,
             context.defender_identified,
-        )?
-    };
-    if type_multiplier.numerator == 0 {
-        return Ok(DamageResult {
-            damage: 0,
-            type_multiplier,
-        });
+        )?;
+        if type_multiplier.numerator == 0 {
+            return Ok(DamageResult {
+                damage: 0,
+                type_multiplier,
+            });
+        }
+        damage = apply_type_effectiveness_rows(
+            type_effectiveness,
+            &move_data.move_type,
+            &defender_types,
+            context.defender_identified,
+            damage,
+        )?;
     }
-    damage = apply_type_effectiveness_rows(
-        type_effectiveness,
-        &move_data.move_type,
-        &defender_types,
-        context.defender_identified,
-        damage,
-    )?;
 
     damage = damage
         .checked_mul(context.post_type_damage_multiplier.max(1))
@@ -1160,8 +1162,11 @@ pub fn calculate_damage(
         .expect("Rage damage was capped to u16");
     }
 
-    let roll = context.random_roll.max(1);
-    damage = ((damage as u32 * roll as u32) / 255).max(1) as u16;
+    // Confusion calls DamageCalc without DamageVariation.
+    if !context.is_confusion_damage {
+        let roll = context.random_roll.max(1);
+        damage = ((damage as u32 * roll as u32) / 255).max(1) as u16;
+    }
 
     Ok(DamageResult {
         damage,
@@ -2050,6 +2055,97 @@ mod tests {
             .expect("ordinary types are neutral under sun"),
             40
         );
+    }
+
+    #[test]
+    fn confusion_skips_metal_powder_defense_boost() {
+        // HitSelfInConfusion calls TruncateHL_BC but never DittoMetalPowder.
+        let mut mon = pokemon(
+            "DITTO",
+            pokemon_type("NORMAL"),
+            BaseStats::new(48, 48, 48, 48, 48, 48),
+            50,
+        );
+        let damage = |mon: &Pokemon| {
+            calculate_damage(
+                mon,
+                mon,
+                &tackle(pokemon_type("NORMAL"), 40),
+                &stat_multipliers(),
+                &type_categories(),
+                &type_effectiveness_table(),
+                &weather_modifiers(),
+                DamageContext {
+                    is_confusion_damage: true,
+                    ..DamageContext::default()
+                },
+            )
+            .unwrap()
+        };
+        let plain = damage(&mon);
+        mon.item = Some("METAL_POWDER".into());
+        assert_eq!(damage(&mon), plain);
+    }
+
+    #[test]
+    fn typeless_damage_skips_the_stab_command() {
+        // BattleCommand_Stab returns immediately for STRUGGLE. Confusion
+        // calls DamageCalc directly and never executes Stab or DamageVariation.
+        let mut attacker = pokemon(
+            "ATTACKER",
+            pokemon_type("NORMAL"),
+            BaseStats::new(80, 80, 80, 80, 80, 80),
+            50,
+        );
+        let mut defender = attacker.clone();
+        let mut move_data = tackle(pokemon_type("NORMAL"), 50);
+        for confusion in [false, true] {
+            move_data.name = if confusion { "TACKLE" } else { "STRUGGLE" }.into();
+            let context = DamageContext {
+                is_confusion_damage: confusion,
+                ..DamageContext::default()
+            };
+            attacker.species.type1 = pokemon_type("WATER");
+            attacker.species.type2 = pokemon_type("WATER");
+            defender.species.type1 = pokemon_type("WATER");
+            defender.species.type2 = pokemon_type("WATER");
+            let expected = calculate_damage(
+                &attacker,
+                &defender,
+                &move_data,
+                &stat_multipliers(),
+                &type_categories(),
+                &type_effectiveness_table(),
+                &weather_modifiers(),
+                context,
+            )
+            .unwrap();
+            attacker.species.type1 = pokemon_type("NORMAL");
+            attacker.species.type2 = pokemon_type("NORMAL");
+            for defender_type in ["NORMAL", "GHOST"] {
+                defender.species.type1 = pokemon_type(defender_type);
+                defender.species.type2 = pokemon_type(defender_type);
+                let result = calculate_damage(
+                    &attacker,
+                    &defender,
+                    &move_data,
+                    &stat_multipliers(),
+                    &type_categories(),
+                    &type_effectiveness_table(),
+                    &weather_modifiers(),
+                    DamageContext {
+                        attacker_type_badge_boost: true,
+                        random_roll: if confusion { 217 } else { 255 },
+                        ..context
+                    },
+                )
+                .unwrap();
+                assert_eq!(
+                    result, expected,
+                    "confusion={confusion}, defender={defender_type}"
+                );
+            }
+        }
     }
 
     #[test]

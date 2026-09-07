@@ -12343,7 +12343,8 @@ impl GameDataSet {
         };
 
         let mut bug_contest_timed_out = false;
-        if staged_state.bug_contest.timer_active
+        if !input_locked && staged_state.link_session.link_mode == 0
+            && staged_state.bug_contest.timer_active
             && staged_state
                 .flags
                 .is_engine_flag_set("ENGINE_BUG_CONTEST_TIMER")
@@ -12354,24 +12355,17 @@ impl GameDataSet {
             bug_contest_timed_out = matches!(
                 timer.effect,
                 SpecialRoutineEffect::BugContestTimer { active: false, .. }
-            ) && staged_session.map.name == "NationalParkBugContest";
+            );
         }
 
         if bug_contest_timed_out {
-            prepare_bug_contest_results_warp(&mut staged_state)?;
-            let destination_tile = raw_event_tile_to_runtime_tile_checked(0, 4)
-                .context("resolve Bug Contest results warp tile")?;
-            let mode = staged_session.player.mode;
-            self.transition_overworld_session_with_mode(
-                &mut staged_state,
-                &mut staged_session,
-                "Route36NationalParkGate",
-                destination_tile,
-                mode,
-                "MAPSETUP_WARP",
-                SpawnMemoryUpdate::Preserve,
-                music_ids,
-            )?;
+            // CheckTimeEvents calls the source script. Its announcement,
+            // waitbutton, and results warp must retain their authored order.
+            staged_state.script_runtime.next_script = Some(ScriptLocation {
+                origin_map_name: staged_session.map.name.clone(),
+                script: "BugCatchingContestOverScript".to_string(),
+            });
+            staged_state.script_runtime.script_ended = None;
         }
 
         let mut movement = None;
@@ -17630,6 +17624,7 @@ impl GameDataSet {
             anyhow::bail!("battle capture item {ball_id} is not usable in battle");
         }
         let mut staged_state = state.clone();
+        let battle_end = self.active_battle_end_context(&staged_state)?;
         let active_index = require_active_battle_party_index(&staged_state)
             .map_err(|error| anyhow::anyhow!("{error}"))?;
         let active_enemy_index = require_active_battle_enemy_party_index(&staged_state)
@@ -17819,6 +17814,14 @@ impl GameDataSet {
         let capture = capture.context("Ball action did not produce a capture outcome")?;
         commit_battle_turn_outcome(&mut staged_state, active_index, &turn)
             .map_err(|error| anyhow::anyhow!("commit active battle Ball turn: {error:?}"))?;
+        if matches!(staged_state.battle, BattleMemory::Inactive)
+            && let Some((battle_type, roaming_slot, _, map_name)) = battle_end
+        {
+            self.finish_battle_roaming_update_exact(
+                &mut staged_state, &battle_type, roaming_slot,
+                &turn.state.enemy, &map_name, divider,
+            )?;
+        }
         *state = staged_state;
         Ok((capture, turn))
     }

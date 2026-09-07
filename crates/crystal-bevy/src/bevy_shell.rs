@@ -1209,6 +1209,42 @@ const SAVE_TEXT_SAVING: &str = "_SavingDontTurnOffThePowerText";
 const SAVE_TEXT_SAVED: &str = "_SavedTheGameText";
 const SAVE_TEXT_CORRUPTED: &str = "_SaveFileCorruptedText";
 
+fn music_volume_during_transient(volume: f32, transient_id: Option<&str>) -> f32 {
+    // audio/sfx.asm: these effects occupy channels 5–8, or explicitly set
+    // sfx_priority_on. The ASM music clock keeps advancing while inaudible.
+    let suppresses_music = matches!(
+        transient_id,
+        Some(
+            "SFX_FANFARE"
+                | "SFX_FANFARE_2"
+                | "SFX_ELEVATOR"
+                | "SFX_LEVEL_UP"
+                | "SFX_DEX_FANFARE_50_79"
+                | "SFX_KEY_ITEM"
+                | "SFX_DEX_FANFARE_20_49"
+                | "SFX_ITEM"
+                | "SFX_CAUGHT_MON"
+                | "SFX_DEX_FANFARE_80_109"
+                | "SFX_REGISTER_PHONE_NUMBER"
+                | "SFX_GET_EGG"
+                | "SFX_GET_EGG_UNUSED"
+                | "SFX_MOVE_DELETED"
+                | "SFX_2ND_PLACE"
+                | "SFX_1ST_PLACE"
+                | "SFX_CHOOSE_A_CARD"
+                | "SFX_GET_TM"
+                | "SFX_GET_BADGE"
+                | "SFX_QUIT_SLOTS"
+                | "SFX_DEX_FANFARE_LESS_THAN_20"
+                | "SFX_DEX_FANFARE_140_169"
+                | "SFX_DEX_FANFARE_170_199"
+                | "SFX_DEX_FANFARE_200_229"
+                | "SFX_DEX_FANFARE_230_PLUS"
+        )
+    );
+    if suppresses_music { 0.0 } else { volume }
+}
+
 #[cfg(all(not(test), not(target_arch = "wasm32")))]
 struct NativeAudioBackend {
     output: NativeAudioOutput,
@@ -1318,8 +1354,15 @@ impl NativeAudioBackend {
 
     fn set_music_volume(&mut self, volume: u8) {
         self.music_volume = f32::from(volume.min(7)) / 7.0;
+        self.refresh_music_volume();
+    }
+
+    fn refresh_music_volume(&self) {
         if let Some(sink) = self.music_sink.as_ref() {
-            sink.set_volume(self.music_volume);
+            sink.set_volume(music_volume_during_transient(
+                self.music_volume,
+                self.transient_audio_id.as_deref(),
+            ));
         }
     }
 
@@ -1329,6 +1372,7 @@ impl NativeAudioBackend {
         }
         self.transient_audio_id = None;
         self.transient_deadline = None;
+        self.refresh_music_volume();
     }
 
     fn transient_finished(&mut self) -> bool {
@@ -1368,7 +1412,10 @@ impl NativeAudioBackend {
         self.transient_sinks.retain(|sink| !sink.empty());
         let sink = rodio::Sink::try_new(&self.output.handle).context("create native audio sink")?;
         if matches!(command.kind, ModpackAudioKind::Music) {
-            sink.set_volume(self.music_volume);
+            sink.set_volume(music_volume_during_transient(
+                self.music_volume,
+                self.transient_audio_id.as_deref(),
+            ));
         }
         let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
         let channels = u16::from(audio.format.channels);
@@ -1422,6 +1469,7 @@ impl NativeAudioBackend {
                 dispatch_started_at.elapsed().as_millis()
             );
             self.transient_sinks.push(sink);
+            self.refresh_music_volume();
         }
         Ok(())
     }
@@ -1434,6 +1482,7 @@ struct BrowserAudioBackend {
     music_volume: f32,
     master_gain: Option<web_sys::GainNode>,
     transient: Option<(web_sys::AudioBufferSourceNode, f64)>,
+    transient_audio_id: Option<String>,
 }
 
 #[cfg(all(not(test), target_arch = "wasm32"))]
@@ -1445,6 +1494,7 @@ impl BrowserAudioBackend {
             music_volume: 1.0,
             master_gain: None,
             transient: None,
+            transient_audio_id: None,
         }
     }
 
@@ -1458,8 +1508,15 @@ impl BrowserAudioBackend {
 
     fn set_music_volume(&mut self, volume: u8) {
         self.music_volume = f32::from(volume.min(7)) / 7.0;
+        self.refresh_music_volume();
+    }
+
+    fn refresh_music_volume(&self) {
         if let Some((_, gain)) = self.music.as_ref() {
-            gain.gain().set_value(self.music_volume);
+            gain.gain().set_value(music_volume_during_transient(
+                self.music_volume,
+                self.transient_audio_id.as_deref(),
+            ));
         }
     }
 
@@ -1468,6 +1525,8 @@ impl BrowserAudioBackend {
             let _ = source.stop_with_when(0.0);
             let _ = source.disconnect();
         }
+        self.transient_audio_id = None;
+        self.refresh_music_volume();
     }
 
     fn transient_finished(&mut self) -> bool {
@@ -1493,10 +1552,7 @@ impl BrowserAudioBackend {
             self.stop_transient();
         }
         if self.context.is_none() {
-            self.context = Some(
-                web_sys::AudioContext::new()
-                    .map_err(|error| anyhow::anyhow!("create browser AudioContext: {error:?}"))?,
-            );
+            self.context = BROWSER_AUDIO_CONTEXT.with(|slot| slot.borrow().clone());
         }
         let context = self
             .context
@@ -1510,9 +1566,6 @@ impl BrowserAudioBackend {
             self.master_gain = Some(gain);
         }
         let destination = self.master_gain.as_ref().expect("master gain initialized");
-        context
-            .resume()
-            .map_err(|error| anyhow::anyhow!("resume browser AudioContext: {error:?}"))?;
         let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
         let channels = usize::from(audio.format.channels);
         let frame_count = samples.len() / channels;
@@ -1550,7 +1603,10 @@ impl BrowserAudioBackend {
             let gain = context
                 .create_gain()
                 .map_err(|error| anyhow::anyhow!("create browser music gain: {error:?}"))?;
-            gain.gain().set_value(self.music_volume);
+            gain.gain().set_value(music_volume_during_transient(
+                self.music_volume,
+                self.transient_audio_id.as_deref(),
+            ));
             source
                 .connect_with_audio_node(&gain)
                 .map_err(|error| anyhow::anyhow!("connect browser music source: {error:?}"))?;
@@ -1570,6 +1626,8 @@ impl BrowserAudioBackend {
             self.music = Some((source, music_gain.expect("music gain was created")));
         } else {
             self.transient = Some((source, js_sys::Date::now() + buffer.duration() * 1_000.0));
+            self.transient_audio_id = Some(command.audio_id.clone());
+            self.refresh_music_volume();
         }
         Ok(())
     }
@@ -2641,6 +2699,7 @@ struct PendingNpcTradeCommit {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleNameChoice {
+    nickname_pages: VecDeque<String>,
     options: Vec<String>,
     selected: usize,
     player_menu: Option<VisiblePlayerNameMenuDefinition>,

@@ -2146,6 +2146,7 @@ fn apply_moveobject_command(
     } else {
         session.object_runtime_tiles.remove(&object_id);
     }
+    session.unloaded_object_presentation.remove(&object_id);
     session.objects[object_index].x = x;
     session.objects[object_index].y = y;
 
@@ -2217,6 +2218,7 @@ pub fn apply_writeobjectxy_command(
     })?;
 
     if let Some(object_index) = object_index {
+        session.unloaded_object_presentation.remove(&object_id);
         session.objects[object_index].x = x;
         session.objects[object_index].y = y;
     }

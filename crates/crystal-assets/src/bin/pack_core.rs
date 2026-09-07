@@ -1,3 +1,5 @@
+#[path = "pack_core/nickname_text_export.rs"]
+mod nickname_text_export;
 #[path = "pack_core/item_name_export.rs"]
 mod item_name_export;
 #[path = "pack_core/battle_oam_export.rs"]
@@ -34,6 +36,7 @@ fn export_core_pack(repository_root: &Path) -> Result<()> {
     export_pokegear_card_layouts(repository_root)?;
     item_name_export::export(repository_root).context("export source item names")?;
     radio_text_export::export(repository_root).context("export source radio text commands")?;
+    nickname_text_export::export(repository_root).context("export source nickname text commands")?;
     frontpic_animation_export::export(repository_root).context("export source main and idle frontpic animations")?;
     battle_oam_export::export(repository_root).context("export source battle OAM")?;
     let asset_root = AssetRoot::new(repository_root);

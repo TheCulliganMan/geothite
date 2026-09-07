@@ -457,11 +457,10 @@ fn sync_visible_script_jump(
 }
 
 fn visible_script_jump_y_offset(offsets: &[i16; 16], total: u8, remaining: u8) -> f32 {
-    // Script followers use the same movement clock as their leader. XY now
-    // advances before each draw like TypeScript, so sampling the jump arc at
-    // elapsed=0 leaves the follower floating one frame behind its map tile.
-    let height = (visible_movement_progress(remaining, total) * 32.0).round() as u16;
-    let index = usize::from((height / 2).min(15));
+    // UpdateJumpPosition saves the old OBJECT_JUMP_HEIGHT in e before
+    // adding the step vector, then indexes y_offsets with that old height.
+    let elapsed = total.saturating_sub(remaining);
+    let index = (usize::from(elapsed) * 16 / usize::from(total.max(1))).min(15);
     -f32::from(offsets[index]) * BATTLE_HUD_SCALE
 }
 
@@ -2467,11 +2466,14 @@ fn begin_visible_gift_pokemon(
         1, 1, gift_species_id, gift_level, granted.outcome, granted.state_checksum
     ));
     if asks_for_nickname && let Some(location) = granted.outcome.location.clone() {
+        let default_name = crate::core::models::pokemon_species_display_name(&gift_species_id);
+        let nickname_pages = visible_nickname_prompt_pages(runtime_shell, &default_name, false)?;
         runtime_shell.pending_gift_pokemon_nickname = Some(PendingGiftPokemonNickname {
-            default_name: crate::core::models::pokemon_species_display_name(&gift_species_id),
+            default_name,
             location,
         });
         runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+            nickname_pages,
             options: vec!["YES".to_string(), "NO".to_string()],
             selected: 0,
             player_menu: None,

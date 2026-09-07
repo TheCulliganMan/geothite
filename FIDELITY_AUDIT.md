@@ -7589,3 +7589,47 @@ Latest checkpoint:
  with the monorepo root's generated-output policy. Existing tracked artifacts
  are retained. Publish the Rust tree using the existing standalone remote
  layout and a fast-forward child of its current main.
+
+## 2026-09-07 — Contest, Game Corner, and Unown follow-up
+
+- `engine/battle/core.asm::CheckContestBattleOver` checks the Park Ball byte
+  at the next turn boundary. A failed final ball previously left Rust in an
+  active battle with zero balls. The shared turn commit now exits after the
+  enemy response and between-turn effects, retaining capture and faint paths.
+  Its dedicated exit uses the source result-mask/add operation and retains
+  scripted battle provenance; the ball adapter applies battle-end roaming
+  updates on terminal turns. Random wild contest exits also queue the authored
+  out-of-balls script when exhausted, including successful final captures;
+  scripted-static battles retain their own continuation and losses retain
+  their blackout path.
+- `engine/overworld/events.asm::CheckTimeEvents` calls
+  `BugCatchingContestOverScript`. Rust previously warped directly to the gate,
+  bypassing the announcement, sound, and waitbutton. Timeout now queues that
+  script and respects existing script/input ownership and link mode.
+- `home/menu.asm::YesNoMenuHeader` has no `STATICMENU_WRAP` flag. Card Flip's
+  entry/replay and slots' replay menus now clamp YES/NO cursor movement rather
+  than toggling at either edge. Cursor movement is silent, as in VerticalMenu.
+- `engine/games/unown_puzzle.asm::UnownPuzzleJumptable` ignores B and uses
+  START to quit. The solved branch clears sprites and accepts A or B, retaining
+  success. Rust now follows those exit controls and suppresses the solved
+  cursor instead of continuing to blink it. The cleared START/CANCEL lettering
+  is filled with PUZZLE_VOID rather than the surrounding border tile.
+- Focused regression validation is in progress. These findings do not establish
+  full minigame parity or cycle-exact rendering/input timing.
+- Original core regression reproduced the exhausted-ball defect: after a failed
+  final contest ball with both battlers alive, `BattleMemory` remained active
+  instead of exiting (one test failed at the intended assertion). The initial
+  build completed normally; final-code validation follows separately.
+- Final Bevy puzzle-control and Card Flip boundary/silence regressions passed
+  (2 tests, 817.72 seconds of fixture execution). Both focused Unown rendering
+  checks passed (2 tests, 0.01 seconds). The timeout ownership/announcement
+  regression passed (1 asset test, 0.03 seconds). Slots and final core exit
+  validation are still pending; no live compiler/test was stopped for latency.
+- Final validation complete: the corrected contest exit/continuation regression
+  passed (1 core test, 0.01 seconds), and the slots YES/NO boundary/silence
+  regression passed (1 Bevy test, 568.46 seconds). All seven focused regressions
+  in this follow-up passed. Every build/test started for this follow-up reached
+  a terminal result; the original core defect was reproduced before its fix.
+  Concurrent workspace changes were observed during validation, so these
+  results are scoped to this follow-up's focused regressions, not a full-tree
+  certification or a claim of complete minigame ASM parity.

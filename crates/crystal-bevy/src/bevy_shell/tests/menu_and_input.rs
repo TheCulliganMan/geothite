@@ -10828,3 +10828,72 @@ fn mailbox_reader_close_does_not_reuse_held_b_on_the_restored_list() {
     }
     assert!(shell.mailbox_cursor.is_none(), "a fresh B press still exits the mailbox");
 }
+
+#[test]
+fn unown_puzzle_uses_start_to_quit_and_b_to_acknowledge_success() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let puzzle = VisibleUnownPuzzle {
+        puzzle_id: "KABUTO".into(), layout: [[0; 6]; 6], holding_piece: None,
+        cursor_x: 0, cursor_y: 0, solved: false,
+    };
+    shell.visible_unown_puzzle = Some(puzzle.clone());
+    set_visible_script_numeric_value(&mut shell, 0);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.visible_unown_puzzle.is_some(), "UnownPuzzleJumptable ignores B before completion");
+    assert!(has_visible_shell_start_action(&mut shell), "START belongs to the puzzle");
+    press_visible_start_button(&mut shell).unwrap();
+    assert!(shell.visible_unown_puzzle.is_none(), "START quits the unsolved puzzle");
+    shell.visible_unown_puzzle = Some(VisibleUnownPuzzle { solved: true, ..puzzle });
+    set_visible_script_numeric_value(&mut shell, 1);
+    press_visible_start_button(&mut shell).unwrap();
+    assert!(shell.visible_unown_puzzle.is_some(), "SimpleWaitPressAorB does not accept START");
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.visible_unown_puzzle.is_none());
+    assert_eq!(shell.shell.session().state().script_runtime.script_value.as_deref(), Some("1"),
+        "B acknowledges completion without converting the chamber result to cancellation");
+}
+
+#[test]
+fn card_flip_yes_no_choices_stop_at_the_source_menu_edges() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.visible_card_flip = Some(VisibleCardFlip {
+        phase: VisibleCardFlipPhase::AskPlay, animation: VisibleCardFlipAnimation::None,
+        yes_no_index: 0, which_card: 0, bet_x: 2, bet_y: 2, round: 0,
+        face_card: None, coins: 99, payout: 0, deck: Vec::new(), revealed: vec![false; 24],
+        message: "PLAY WITH THREE COINS?".into(),
+    });
+    let audio_count = shell.pending_audio.len();
+    for phase in [VisibleCardFlipPhase::AskPlay, VisibleCardFlipPhase::PlayAgain] {
+        shell.visible_card_flip.as_mut().unwrap().phase = phase;
+        shell.visible_card_flip.as_mut().unwrap().yes_no_index = 0;
+        move_visible_card_flip_cursor(&mut shell, 0, -1).unwrap();
+        assert_eq!(shell.visible_card_flip.as_ref().unwrap().yes_no_index, 0,
+            "YesNoBox does not wrap Up from YES to NO");
+        move_visible_card_flip_cursor(&mut shell, 0, 1).unwrap();
+        assert_eq!(shell.visible_card_flip.as_ref().unwrap().yes_no_index, 1);
+        move_visible_card_flip_cursor(&mut shell, 0, 1).unwrap();
+        assert_eq!(shell.visible_card_flip.as_ref().unwrap().yes_no_index, 1,
+            "YesNoBox does not wrap Down from NO to YES");
+    }
+    assert_eq!(shell.pending_audio.len(), audio_count, "cursor movement is silent");
+}
+
+#[test]
+fn slot_machine_yes_no_choices_stop_at_the_source_menu_edges() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.visible_slot_machine = Some(VisibleSlotMachine {
+        phase: VisibleSlotMachinePhase::PlayAgain, animation: VisibleSlotMachineAnimation::None,
+        yes_no_index: 0, bet: 3, coins: 99, payout: 0, offsets: [14; 3],
+        spin_ticks: [0; 3], spinning: [false; 3], next_reel: 1,
+        actor: None, secondary_actor: None, background_y_offset: 0,
+        windows: visible_slot_windows([14; 3]), message: "PLAY AGAIN?".into(),
+    });
+    let audio_count = shell.pending_audio.len();
+    change_visible_slot_machine_bet(&mut shell, 1).unwrap();
+    assert_eq!(shell.visible_slot_machine.as_ref().unwrap().yes_no_index, 0);
+    change_visible_slot_machine_bet(&mut shell, -1).unwrap();
+    assert_eq!(shell.visible_slot_machine.as_ref().unwrap().yes_no_index, 1);
+    change_visible_slot_machine_bet(&mut shell, -1).unwrap();
+    assert_eq!(shell.visible_slot_machine.as_ref().unwrap().yes_no_index, 1);
+    assert_eq!(shell.pending_audio.len(), audio_count, "cursor movement is silent");
+}

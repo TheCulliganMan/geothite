@@ -30,10 +30,15 @@ test('battle and trade requests are explicit and do not collide with the trade c
 });
 
 import { JSDOM } from 'jsdom';
+import { readFileSync } from 'node:fs';
+const chatStyles = readFileSync(new URL('./social-chat.css', import.meta.url), 'utf8');
 import { mountSocialChat } from './social-chat.js';
 function chatHarness() {
   const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">');
   const { window } = dom;
+  const style = window.document.createElement('style');
+  style.textContent = chatStyles;
+  window.document.head.append(style);
   let state = { connected: true, events: [], players: [] };
   let poll;
   window.setInterval = fn => { poll = fn; return 1; };
@@ -125,4 +130,49 @@ test('Escape keeps drafts, touch Start bypasses chat, and failed accepts can be 
     h.poll({ connected: true, players: [], events: [{ type: 'interaction_response', request_id: 'req', accepted: false }] });
     assert.equal(h.document.querySelector('[data-action="accept"]'), null);
   } finally { h.cleanup(); }
+});
+
+
+test('Close tab returns to gameplay while retaining drafts and passive messages', () => {
+  const h = chatHarness();
+  try {
+    h.document.querySelector('.chat-toggle').click();
+    h.document.querySelector('input#chat-message').value = 'draft';
+    const close = h.document.querySelector('.chat-close');
+    assert.ok(close, 'expanded chat needs a visible close control');
+    assert.equal(close.hidden, false);
+    close.click();
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+    assert.equal(h.document.querySelector('form').hidden, true);
+    h.poll({ connected: true, players: [], events: [{ type: 'chat', channel: 'say', from_user_id: 'player-2', from_display_name: 'GOLD', text: 'Hello!' }] });
+    const line = h.document.querySelector('.chat-line');
+    assert.match(line.textContent, /Hello!/);
+    assert.equal(h.window.getComputedStyle(h.document.querySelector('.chat-log')).display === 'none', false);
+    assert.equal(line.querySelector('button').tabIndex, -1);
+    h.document.querySelector('.chat-toggle').click();
+    assert.equal(h.document.querySelector('input#chat-message').value, 'draft');
+    assert.equal(line.querySelector('button').tabIndex, 0);
+  } finally { h.cleanup(); }
+});
+
+
+test('passive messages fade with age and reopening reveals their history', () => {
+  const h = chatHarness();
+  const originalNow = h.window.Date.now;
+  let now = 1000;
+  h.window.Date.now = () => now;
+  try {
+    const state = { connected: true, players: [], events: [] };
+    h.poll({ ...state, events: [{ type: 'chat', channel: 'say', text: 'Hello!' }] });
+    const line = h.document.querySelector('.chat-line');
+    assert.equal(h.window.getComputedStyle(line).opacity, '1');
+    now += 10000;
+    h.poll(state);
+    assert.equal(h.window.getComputedStyle(line).opacity, '0');
+    h.document.querySelector('.chat-toggle').click();
+    assert.equal(h.window.getComputedStyle(line).opacity, '1');
+    h.document.querySelector('.chat-close').click();
+    h.poll({ ...state, events: [{ type: 'chat', channel: 'say', text: 'New message' }] });
+    assert.equal(h.window.getComputedStyle(h.document.querySelector('.chat-line:last-child')).opacity, '1');
+  } finally { h.window.Date.now = originalNow; h.cleanup(); }
 });

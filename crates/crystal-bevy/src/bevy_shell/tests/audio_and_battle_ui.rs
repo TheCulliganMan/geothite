@@ -144,14 +144,6 @@ fn assert_audio_cache_contains_non_silent_pcm(world: &World, expected_count: usi
 }
 
 #[test]
-fn browser_audio_requires_a_real_user_gesture_before_starting_web_audio() {
-    assert!(!browser_audio_unlock_requested(false, false, false));
-    assert!(browser_audio_unlock_requested(true, false, false));
-    assert!(browser_audio_unlock_requested(false, true, false));
-    assert!(browser_audio_unlock_requested(false, false, true));
-}
-
-#[test]
 fn music_none_reset_survives_a_following_music_request_until_playback() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.pending_music_stop = true;
@@ -2220,4 +2212,15 @@ fn frontpic_animation_rejects_missing_operands_and_missing_endanim() {
     assert!(step_visible_frontpic_animation(&mut animation, &FrontpicAnimProgram { commands: vec![
         FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), duration: Some(1), ..Default::default() }
     ] }).is_err());
+}
+
+#[test]
+fn victory_fanfares_suppress_music_and_restore_its_current_volume() {
+    for id in ["SFX_LEVEL_UP", "SFX_CAUGHT_MON", "SFX_FANFARE", "SFX_FANFARE_2", "SFX_GET_BADGE"] {
+        assert_eq!(music_volume_during_transient(0.5, Some(id)), 0.0, "{id}");
+    }
+    assert_eq!(music_volume_during_transient(0.25, None), 0.25);
+    assert_eq!(music_volume_during_transient(0.5, Some("SFX_READ_TEXT")), 0.5);
+    assert_eq!(music_volume_during_transient(0.5, Some("SFX_GET_COIN_FROM_SLOTS")), 0.5);
+    assert_eq!(music_volume_during_transient(0.0, None), 0.0);
 }
