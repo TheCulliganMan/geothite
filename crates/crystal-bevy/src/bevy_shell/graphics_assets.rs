@@ -778,7 +778,7 @@ fn play_pending_audio(
                 } => {
                     #[cfg(all(not(test), target_arch = "wasm32"))]
                     {
-                        decoded_browser_midi_audio(
+                        match decoded_browser_midi_audio(
                             &command,
                             &midi_base64,
                             format,
@@ -786,7 +786,18 @@ fn play_pending_audio(
                             &payload_hash,
                             loop_start_sample,
                             loop_end_sample,
-                        )
+                        ) {
+                            Ok(Some(audio)) => Ok(audio),
+                            Ok(None) => {
+                                if !matches!(command.kind, ModpackAudioKind::Music) {
+                                    runtime_shell.transient_audio_playing = true;
+                                }
+                                runtime_shell.pending_audio.push(command);
+                                runtime_shell.pending_audio.extend(pending.drain(..));
+                                break;
+                            }
+                            Err(error) => Err(error),
+                        }
                     }
                     #[cfg(any(test, not(target_arch = "wasm32")))]
                     {
@@ -1001,13 +1012,13 @@ fn decoded_browser_midi_audio(
     payload_hash: &str,
     loop_start_sample: Option<usize>,
     loop_end_sample: Option<usize>,
-) -> Result<CachedPcmAudio> {
+) -> Result<Option<CachedPcmAudio>> {
     use wasm_bindgen::{JsCast as _, JsValue};
 
     let global = js_sys::global();
     let synth = js_sys::Reflect::get(
         &global,
-        &JsValue::from_str("__crystalSynthesizeMidi"),
+        &JsValue::from_str("__crystalPollMidi"),
     )
     .map_err(|error| anyhow::anyhow!("find browser audio synthesizer: {error:?}"))?
     .dyn_into::<js_sys::Function>()
@@ -1017,6 +1028,9 @@ fn decoded_browser_midi_audio(
         .map_err(|error| {
             anyhow::anyhow!("synthesize browser audio {}: {error:?}", command.audio_id)
         })?;
+    if result.is_null() {
+        return Ok(None);
+    }
     let sample_rate = js_sys::Reflect::get(&result, &JsValue::from_str("sampleRate"))
         .map_err(|error| anyhow::anyhow!("read synthesized sample rate: {error:?}"))?
         .as_f64()
@@ -1046,7 +1060,7 @@ fn decoded_browser_midi_audio(
             command.audio_id
         );
     }
-    decoded_pcm_audio(command, bytes, format, loop_start_sample, loop_end_sample)
+    decoded_pcm_audio(command, bytes, format, loop_start_sample, loop_end_sample).map(Some)
 }
 
 fn pcm_i16_samples(audio: &CachedPcmAudio) -> Result<Arc<[i16]>> {

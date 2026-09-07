@@ -384,7 +384,7 @@ fn compose_tile_grid(
         TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::default(),
     );
-    image.sampler = ImageSampler::nearest();
+    crystal_render_api::stream_composed_image(&mut image);
     images.add(image)
 }
 
@@ -448,7 +448,7 @@ fn compose_visual_world_tiles(
         TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::default(),
     );
-    image.sampler = ImageSampler::nearest();
+    crystal_render_api::stream_composed_image(&mut image);
     images.add(image)
 }
 
@@ -521,7 +521,7 @@ fn compose_priority_tile_grid(
         TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::default(),
     );
-    image.sampler = ImageSampler::nearest();
+    crystal_render_api::stream_composed_image(&mut image);
     images.add(image)
 }
 

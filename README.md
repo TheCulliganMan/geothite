@@ -114,7 +114,8 @@ Check the server and run the browser session tests (the latter require Node.js):
 
 ```sh
 cargo check --locked -p crystal-web-server
-node --test web-client/browser-session.test.mjs web-client/webmcp.test.mjs
+npm ci
+npm run test:browser
 ```
 
 The production Dockerfile builds the server and WASM client from the same

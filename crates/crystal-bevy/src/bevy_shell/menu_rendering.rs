@@ -6253,13 +6253,28 @@ fn render_playfield(
     #[cfg(feature = "voxel-view")]
     {
         if visual_world_enabled && !facing_only_redraw && !retained_texture_content {
-            rendered.visual_world_texture = Some(compose_visual_world_tiles(
-                &visual_world_tile_handles,
-                visual_world_tiles_x as usize,
-                visual_world_tiles_y as usize,
-                rendered.visual_world_texture.clone(),
-                &mut images,
-            ));
+            // Fullscreen 2D and 2.5D often request exactly the same grid.
+            // Reuse its complete image instead of composing and uploading a
+            // second identical multi-megabyte atlas on every camera step.
+            rendered.visual_world_texture = Some(
+                if visual_world_tiles_x == CLASSIC_SCROLL_TILES_X
+                    && visual_world_tiles_y == CLASSIC_SCROLL_TILES_Y
+                    && visual_world_tile_handles == viewport_tile_handles
+                {
+                    viewport_texture.clone()
+                } else {
+                    compose_visual_world_tiles(
+                        &visual_world_tile_handles,
+                        visual_world_tiles_x as usize,
+                        visual_world_tiles_y as usize,
+                        rendered
+                            .visual_world_texture
+                            .clone()
+                            .filter(|handle| handle != &viewport_texture),
+                        &mut images,
+                    )
+                },
+            );
         }
         rendered.visual_world_grid_size = UVec2::new(
             visual_world_tiles_x as u32,
