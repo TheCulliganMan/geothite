@@ -148,7 +148,7 @@
       <p>Controller: D-pad or left stick to move. Bottom face button confirms; right face button goes back. Start opens the menu; Back / View is Select. On Steam Deck, use a Gamepad layout.</p>
       <p id="webmcp-status" role="status">Agent tools: checking WebMCP support.</p>
       <p>Arrow keys — move<br>Z — interact<br>M — menu<br>X — back<br>Face a player and press A (Z) to interact.<br>Enter — chat · Esc — return to game</p>
-      <p>2.5D camera: − / + to zoom, ↶ / ↷ to rotate. Click the percentage to reset. Arrow keys still follow map directions.</p>
+      <p>2.5D camera: − / + to zoom, ↶ / ↷ to rotate. Click the percentage to reset. Arrow keys still follow map directions. Controller: hold the left stick or D-pad to walk; right stick left/right orbits and up/down zooms.</p>
       <button id="close-help" type="button">Close</button>
     </dialog>
     <script type="module">
@@ -165,7 +165,8 @@
       const canvas = document.querySelector('canvas');
       let cancelAgentInput = () => {};
       const touchControls = mountTouchControls({ document, window, canvas, onInput: () => cancelAgentInput() });
-      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput() });
+      let viewControls;
+      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput(), onCamera: (axes, dt) => viewControls?.moveCamera(axes, dt) });
       const fullscreenButton = document.querySelector('#fullscreen');
       fullscreenButton.hidden = !document.fullscreenEnabled;
       fullscreenButton.addEventListener('click', async () => {
@@ -219,7 +220,7 @@
           document.querySelector('#loading').hidden = true;
           document.querySelector('#touch-controls').disabled = false;
           mountSocialChat(wasm, { document, window, playerId: session.playerId });
-          mountViewToggle(wasm, {
+          viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             cameraControls: {
               group: document.querySelector('#camera-controls'),

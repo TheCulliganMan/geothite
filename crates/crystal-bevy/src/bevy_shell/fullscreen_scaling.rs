@@ -458,14 +458,47 @@ mod responsive_world_tests {
     use super::*;
 
     #[test]
-    fn fullscreen_small_room_uses_available_height_without_enlarging_dialogue() {
+    fn fullscreen_wide_room_uses_height_beside_dialogue() {
         let view = Vec2::new(2560.0, 1440.0);
         let (zoom, center) = fullscreen_world_layout(view, Vec2::new(640.0, 576.0), 0.75);
-        assert!(zoom > 1.8);
-        assert!(576.0 * zoom <= view.y - 224.0);
-        assert!(center.y > 0.0);
+        assert!(zoom > 2.0);
+        assert!(576.0 * zoom <= view.y - 64.0);
+        assert!(center.x < 0.0);
+        assert_eq!(center.y, 0.0);
         let (outdoor_zoom, _) = fullscreen_world_layout(view, Vec2::splat(4000.0), 0.75);
         assert_eq!(outdoor_zoom, 1.0);
+    }
+
+    #[test]
+    fn fullscreen_field_panels_fit_and_leave_the_room_clear() {
+        for dpi in [1.0, 1.25, 2.0, 3.0] {
+            for logical in [Vec2::new(1920.0, 1080.0), Vec2::new(3440.0, 1440.0),
+                Vec2::new(800.0, 1000.0), Vec2::new(320.0, 568.0), Vec2::new(160.0, 144.0)] {
+                let physical = logical * dpi;
+                let scale = fullscreen_pixels_per_world_unit(physical, dpi) * dpi;
+                let view = physical / scale;
+                let layout = fullscreen_field_layout(view);
+                let panel_min = layout.dialog_translation - Vec2::new(320.0, 288.0);
+                let panel_max = layout.dialog_translation + Vec2::new(320.0, 288.0);
+                assert!(panel_min.cmpge(-view * 0.5).all());
+                assert!(panel_max.cmple(view * 0.5).all());
+                let map = Vec2::new(640.0, 576.0);
+                let (zoom, center) = fullscreen_world_layout(view, map, scale);
+                if zoom > 1.0 {
+                    let room_max = center + map * zoom * 0.5;
+                    let room_min = center - map * zoom * 0.5;
+                    assert!(room_min.cmpge(layout.world_area.min).all());
+                    assert!(room_max.cmple(layout.world_area.max).all());
+                    assert!(room_max.x < panel_min.x || room_min.y > panel_min.y + 192.0,
+                        "room and dialogue must occupy separate regions");
+                }
+                if physical.x > physical.y * 1.5 {
+                    assert!(layout.dialog_translation.x > 0.0);
+                } else {
+                    assert_eq!(layout.dialog_translation.x, 0.0);
+                }
+            }
+        }
     }
 }
 
@@ -488,15 +521,44 @@ fn fullscreen_modal_size(view: Vec2, pixels_per_unit: f32) -> Vec2 {
     )
 }
 
+struct FullscreenFieldLayout {
+    dialog_translation: Vec2,
+    world_area: Rect,
+}
+
+fn fullscreen_field_layout(view: Vec2) -> FullscreenFieldLayout {
+    // Keep even full-height field panels inside the smallest supported LCD.
+    let inset = ((view - Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)) * 0.5)
+        .clamp(Vec2::ZERO, Vec2::splat(16.0));
+    let sidebar = view.x >= PLAYFIELD_WIDTH * 2.0 + 96.0 && view.x >= view.y * 1.5;
+    let dialog_translation = Vec2::new(
+        if sidebar { (view.x - PLAYFIELD_WIDTH) * 0.5 - inset.x } else { 0.0 },
+        -(view.y - PLAYFIELD_HEIGHT) * 0.5 + inset.y,
+    );
+    let world_area = if sidebar {
+        Rect::from_corners(
+            -view * 0.5 + Vec2::splat(32.0),
+            Vec2::new(dialog_translation.x - PLAYFIELD_WIDTH * 0.5 - 32.0, view.y * 0.5 - 32.0),
+        )
+    } else {
+        Rect::from_corners(
+            -view * 0.5 + Vec2::new(32.0, 224.0),
+            view * 0.5 - Vec2::splat(32.0),
+        )
+    };
+    FullscreenFieldLayout { dialog_translation, world_area }
+}
+
 fn fullscreen_world_layout(view: Vec2, map: Vec2, pixels_per_unit: f32) -> (f32, Vec2) {
-    // Reserve the original six-row textbox at the bottom, independently of
-    // terrain magnification. Large maps retain the expanded native viewport.
-    let available = Vec2::new(view.x - 64.0, view.y - 224.0).max(Vec2::ONE);
+    // Wide screens reserve a column for field panels; portrait screens reserve
+    // the six-row textbox below the room. Large maps retain the native camera.
+    let layout = fullscreen_field_layout(view);
+    let available = layout.world_area.size().max(Vec2::ONE);
     let fit = (available / map).min_element();
     if fit > 1.0 {
         let source_pixels = 4.0 * pixels_per_unit;
         let zoom = (fit * source_pixels).floor() / source_pixels;
-        (zoom.max(1.0), Vec2::new(0.0, 96.0))
+        (zoom.max(1.0), layout.world_area.center())
     } else {
         (1.0, Vec2::ZERO)
     }
@@ -594,10 +656,14 @@ fn sync_fullscreen_world_layout(
     let mut world_transform = Transform::IDENTITY;
     let mut dialog_transform = Transform::IDENTITY;
     let active = !rendered.title_active && rendered.map_name.is_some();
+    // Dialogue belongs to the viewport, independently of the world renderer.
+    // Voxel view skips 2D terrain scaling, but shares responsive panel docking.
+    if active {
+        dialog_transform.translation = fullscreen_field_layout(view).dialog_translation.extend(0.0);
+    }
     #[cfg(feature = "voxel-view")]
     let active = active && !voxel.is_some_and(|settings| settings.enabled);
     if active {
-        dialog_transform.translation.y = -view.y * 0.5 + PLAYFIELD_HEIGHT * 0.5 + 16.0;
         if let Some((width, height)) = rendered
             .map_name
             .as_deref()

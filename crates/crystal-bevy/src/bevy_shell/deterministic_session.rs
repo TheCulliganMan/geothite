@@ -3872,7 +3872,12 @@ fn sync_overworld_held_directions(
                 .overworld_held_directions
                 .retain(|held| *held != direction);
         }
-        if keys.just_pressed(key) {
+        // Host frames can clear the press edge before a simulation tick
+        // samples it. Recover a still-held direction without reordering
+        // directions already tracked (the latest deliberate press wins).
+        if keys.pressed(key)
+            && (keys.just_pressed(key) || !runtime_shell.overworld_held_directions.contains(&direction))
+        {
             runtime_shell
                 .overworld_held_directions
                 .retain(|held| *held != direction);

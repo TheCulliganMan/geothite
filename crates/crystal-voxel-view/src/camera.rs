@@ -14,35 +14,35 @@ pub const CAMERA_PITCH_DEGREES: f32 = 45.0;
 const CAMERA_FOCAL: f32 = 1.0;
 const FAR_DEPTH_MARGIN: f32 = 4096.0;
 
-/// Discrete browser controls keep zoom bounded and rotation repeatable.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+/// Continuous browser controls; one rotation unit is 45 degrees.
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct VoxelCameraControls {
-    pub zoom_step: u8,
-    pub rotation_step: u8,
+    pub zoom_step: f32,
+    pub rotation_step: f32,
 }
 
 impl Default for VoxelCameraControls {
     fn default() -> Self {
         Self {
-            zoom_step: 1,
-            rotation_step: 0,
+            zoom_step: 1.0,
+            rotation_step: 0.0,
         }
     }
 }
 
 impl VoxelCameraControls {
-    pub fn new(zoom_step: u8, rotation_step: u8) -> Self {
+    pub fn new(zoom_step: f32, rotation_step: f32) -> Self {
         Self {
-            zoom_step: zoom_step.min(5),
-            rotation_step: rotation_step % 8,
+            zoom_step: if zoom_step.is_finite() { zoom_step.clamp(0.0, 5.0) } else { 1.0 },
+            rotation_step: if rotation_step.is_finite() { rotation_step.rem_euclid(8.0) } else { 0.0 },
         }
     }
 
     pub fn pose(self, viewport_size: Vec2) -> VoxelCameraPose {
         let controls = Self::new(self.zoom_step, self.rotation_step);
         let mut pose = camera_pose(viewport_size);
-        let zoom = 0.75 + f32::from(controls.zoom_step) * 0.25;
-        let yaw = f32::from(controls.rotation_step) * std::f32::consts::FRAC_PI_4;
+        let zoom = 0.75 + controls.zoom_step * 0.25;
+        let yaw = controls.rotation_step * std::f32::consts::FRAC_PI_4;
         pose.eye = pose.target + Quat::from_rotation_y(yaw) * (pose.eye - pose.target) / zoom;
         pose
     }
@@ -118,14 +118,14 @@ mod tests {
             camera_pose(viewport)
         );
         let base = camera_pose(viewport);
-        let zoomed = VoxelCameraControls::new(5, 0).pose(viewport);
+        let zoomed = VoxelCameraControls::new(5.0, 0.0).pose(viewport);
         assert!(
             ((zoomed.eye - zoomed.target).length() * 2.0 - (base.eye - base.target).length()).abs()
                 < 0.001
         );
         assert_eq!(
-            VoxelCameraControls::new(255, 255),
-            VoxelCameraControls::new(5, 7)
+            VoxelCameraControls::new(255.0, 255.0),
+            VoxelCameraControls::new(5.0, 7.0)
         );
     }
 
@@ -134,7 +134,7 @@ mod tests {
         let viewport = Vec2::new(640.0, 576.0);
         let base = camera_pose(viewport);
         for step in 0..8 {
-            let pose = VoxelCameraControls::new(1, step).pose(viewport);
+            let pose = VoxelCameraControls::new(1.0, step as f32).pose(viewport);
             assert_eq!(pose.target, base.target);
             assert!((pose.eye.y - base.eye.y).abs() < 0.001);
             assert!(
@@ -155,7 +155,16 @@ mod tests {
                     > 0.999
             );
         }
-        assert_eq!(VoxelCameraControls::new(1, 8).pose(viewport), base);
+        assert_eq!(VoxelCameraControls::new(1.0, 8.0).pose(viewport), base);
+    }
+
+    #[test]
+    fn analog_orbit_preserves_fractional_angles_and_rejects_nonfinite_input() {
+        let viewport = Vec2::new(640.0, 576.0);
+        let pose = VoxelCameraControls::new(1.5, 0.25).pose(viewport);
+        let offset = pose.eye - pose.target;
+        assert!((offset.x.atan2(offset.z) - std::f32::consts::FRAC_PI_4 * 0.25).abs() < 0.00001);
+        assert_eq!(VoxelCameraControls::new(f32::NAN, f32::INFINITY), VoxelCameraControls::default());
     }
 
     #[test]

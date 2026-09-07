@@ -70,7 +70,7 @@ fn apply_browser_voxel_view(mut settings: ResMut<crystal_voxel_view::VoxelViewSe
 
 #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
 #[wasm_bindgen::prelude::wasm_bindgen]
-pub fn crystal_set_voxel_camera(zoom_step: u8, rotation_step: u8) {
+pub fn crystal_set_voxel_camera(zoom_step: f32, rotation_step: f32) {
     BROWSER_VOXEL_CAMERA.with(|value| {
         value.set(Some(crystal_voxel_view::VoxelCameraControls::new(zoom_step, rotation_step)));
     });

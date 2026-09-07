@@ -94,6 +94,10 @@ Enable the optional renderer with `--features voxel-view` before `--`.
 Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
 and Right Shift.
 
+Wide screens dock field dialogue and panels in a right-hand column. Portrait
+screens place dialogue at the bottom center. Both 2D and 2.5D views use this
+responsive layout, with smaller insets to keep panels on small screens.
+
 ## Development
 
 The workspace is organized around focused Rust crates:

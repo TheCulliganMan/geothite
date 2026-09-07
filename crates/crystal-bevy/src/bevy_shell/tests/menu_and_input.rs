@@ -10897,3 +10897,22 @@ fn slot_machine_yes_no_choices_stop_at_the_source_menu_edges() {
     assert_eq!(shell.visible_slot_machine.as_ref().unwrap().yes_no_index, 1);
     assert_eq!(shell.pending_audio.len(), audio_count, "cursor movement is silent");
 }
+
+#[test]
+fn held_direction_survives_a_press_between_simulation_ticks() {
+    let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut keys = ButtonInput::<KeyCode>::default();
+    keys.press(KeyCode::ArrowRight);
+    // The render frame saw the edge, but no simulation tick ran in it.
+    keys.clear();
+    sync_overworld_held_directions(&keys, &mut runtime_shell, false);
+    assert_eq!(runtime_shell.overworld_held_directions, VecDeque::from([GameButton::Right]));
+    keys.press(KeyCode::ArrowUp);
+    sync_overworld_held_directions(&keys, &mut runtime_shell, false);
+    keys.clear();
+    sync_overworld_held_directions(&keys, &mut runtime_shell, false);
+    assert_eq!(runtime_shell.overworld_held_directions.back(), Some(&GameButton::Up));
+    keys.release(KeyCode::ArrowUp);
+    sync_overworld_held_directions(&keys, &mut runtime_shell, false);
+    assert_eq!(runtime_shell.overworld_held_directions, VecDeque::from([GameButton::Right]));
+}
