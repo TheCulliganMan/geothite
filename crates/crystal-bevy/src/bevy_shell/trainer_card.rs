@@ -1487,6 +1487,7 @@ fn close_visible_field_pack_without_log(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.visible_unown_words = None;
     runtime_shell.visible_diploma = None;
     runtime_shell.visible_battle_transition = None;
+    runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.heal_music_active = false;
 }
 

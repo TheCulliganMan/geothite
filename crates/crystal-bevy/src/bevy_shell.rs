@@ -835,6 +835,7 @@ struct BevyRuntimeShell {
     visible_unown_words: Option<String>,
     visible_diploma: Option<u8>,
     visible_battle_transition: Option<VisibleBattleTransition>,
+    visible_battle_sliding_intro: Option<u8>,
     visible_capture_animation: Option<VisibleCaptureAnimation>,
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
     visible_send_out_animation: Option<VisibleSendOutAnimation>,
@@ -6659,6 +6660,10 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             advance_visible_heal_machine(runtime_shell)?;
             continue;
         }
+        if runtime_shell.visible_battle_sliding_intro.is_some() {
+            advance_visible_battle_sliding_intro(runtime_shell);
+            continue;
+        }
         if runtime_shell.visible_battle_transition.is_some() {
             advance_visible_battle_transition(runtime_shell);
             continue;
@@ -7297,6 +7302,7 @@ fn initialize_bevy_runtime_shell(
         visible_unown_words: None,
         visible_diploma: None,
         visible_battle_transition: None,
+        visible_battle_sliding_intro: None,
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
         visible_send_out_animation: None,
@@ -7522,6 +7528,7 @@ include!("bevy_shell/economy.rs");
 include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_entry.rs");
+include!("bevy_shell/battle_sliding_intro.rs");
 include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]
