@@ -11073,12 +11073,28 @@ fn visible_field_text_ends_with_prompt(
     anyhow::bail!("field text TX_FAR chain exceeds eight bodies")
 }
 
+// Field notices share the ASM textbox's two baselines. Additional lines
+// scroll the previous bottom line upward, just like a `cont` instruction.
+fn visible_field_notice_pages(notice: &str) -> Vec<String> {
+    notice
+        .split("\n\n")
+        .flat_map(|paragraph| {
+            let lines: Vec<_> = paragraph.split('\n').collect();
+            if lines.len() <= 2 {
+                vec![paragraph.to_owned()]
+            } else {
+                lines.windows(2).map(|lines| lines.join("\n")).collect()
+            }
+        })
+        .collect()
+}
+
 fn visible_field_dialog_pages(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Option<Vec<String>> {
     if let Some(notice) = runtime_shell.field_notice.as_ref() {
-        return Some(notice.split("\n\n").map(str::to_owned).collect());
+        return Some(visible_field_notice_pages(notice));
     }
     if let Some(notice) = runtime_shell.pc_notice.as_ref() {
         return Some(vec![notice.clone()]);
@@ -11207,6 +11223,11 @@ fn visible_revealed_field_dialog_text(runtime_shell: &BevyRuntimeShell, full_tex
         // the first character on the following frame.
         return String::new();
     };
+    // A new page may reach rendering before the printer's next tick. Never
+    // apply the preceding stream's character count to that new page.
+    if reveal.text.split('\u{1e}').nth(reveal.page_index) != Some(full_text) {
+        return String::new();
+    }
     full_text.chars().take(reveal.visible_chars).collect()
 }
 

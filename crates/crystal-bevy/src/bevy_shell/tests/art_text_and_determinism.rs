@@ -1019,3 +1019,30 @@ fn assert_fullscreen_nickname_dialogue_layout(mut world: World) {
         }
     }
 }
+
+#[test]
+fn dialogue_regression_nurse_goodbye_stops_at_text_terminator() {
+    for terminator in ["done", "prompt", "text_end"] {
+        let body = ScriptTextBody {
+            label: "NurseGoodbyeText".into(),
+            commands: [("text", "We hope to see you"), ("line", "again."),
+                (terminator, ""), ("text", "We hope to see you"), ("line", "again."), ("done", "")]
+                .into_iter().enumerate().map(|(command_index, (command, text))| ScriptTextBodyCommand {
+                    command: command.into(), args: if text.is_empty() { vec![] } else { vec![text.into()] }, command_index,
+                }).collect(),
+        };
+        assert_eq!(render_visible_script_text_pages(&body, &BTreeMap::new(), "CHRIS", "RIVAL", 0),
+            ["We hope to see you\nagain."], "unused bytes after {terminator} are not another page");
+    }
+}
+
+#[test]
+fn dialogue_regression_pickup_pages_keep_the_carried_line() {
+    for item in ["BERRY", "ANTIDOTE"] {
+        let pages = visible_field_notice_pages(&format!("CHRIS put the\n{item} in\nthe ITEM POCKET."));
+        assert_eq!(pages, [format!("CHRIS put the\n{item} in"), format!("{item} in\nthe ITEM POCKET.")]);
+        assert_eq!(visible_field_page_initial_chars(&pages[0], &pages[1]), format!("{item} in\n").chars().count());
+    }
+    assert_eq!(visible_field_notice_pages("First paragraph.\n\nSecond paragraph."),
+        ["First paragraph.", "Second paragraph."]);
+}
