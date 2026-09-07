@@ -27,7 +27,7 @@ struct SourceIdentity {
 
 fn catalog() -> Result<BTreeMap<String, MoveCategory>> {
     let source: Source = serde_json::from_str(include_str!(
-        "../../../../modpacks/modern-move-split/data.json"
+        "../../../modpacks/modern-move-split/data.json"
     ))?;
     ensure!(
         source.source.repository == "https://github.com/pret/pokeplatinum"
