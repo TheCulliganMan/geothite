@@ -44,7 +44,10 @@ try {
     || document.querySelector('#startup-error').open, null, { timeout: 180000 });
   assert.equal(await page.locator('#startup-error').evaluate(e => e.open ? e.textContent : null), null);
   await page.evaluate(async synchronousAudio => {
-    const wasm = await import('./crystal-bevy.js');
+    const scripts = [...document.scripts].map(script => script.textContent).join('\n');
+    const bundle = scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+    if (!bundle) throw new Error('Missing compiled bundle import');
+    const wasm = await import(bundle);
     const { createGameBridge } = await import('./webmcp.js');
     window.walkingBridge = createGameBridge(wasm);
     if (synchronousAudio) {

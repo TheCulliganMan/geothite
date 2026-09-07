@@ -17,3 +17,5 @@
 !docker/
 !docker/runtime-data/
 !docker/runtime-data/**
+!tools/
+!tools/version-browser-bundle.sh
