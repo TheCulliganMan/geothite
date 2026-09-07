@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { JSDOM } from 'jsdom';
 import { mountViewToggle } from './view-toggle.js';
 
 function mount(saved, savedCamera = {}) {
@@ -17,13 +18,27 @@ function mount(saved, savedCamera = {}) {
     setAttribute: (key, value) => attributes.set(key, value),
     addEventListener: (type, handler) => { assert.equal(type, 'click'); click = handler; },
   };
+  const dom = new JSDOM('<canvas></canvas>', { pretendToBeVisual: true });
+  const canvas = dom.window.document.querySelector('canvas');
+  canvas.focus = options => { assert.deepEqual(options, { preventScroll: true }); focused = true; };
+  let captured;
+  canvas.setPointerCapture = id => { captured = id; };
+  canvas.hasPointerCapture = id => captured === id;
+  canvas.releasePointerCapture = () => { captured = undefined; };
+  canvas.getBoundingClientRect = () => ({ width: 400, height: 400 });
+  const pointer = (type, x, y, id = 1, pointerType = 'touch') => {
+    const event = new dom.window.Event(type, { cancelable: true });
+    Object.assign(event, { clientX: x, clientY: y, pointerId: id, pointerType });
+    canvas.dispatchEvent(event);
+    return event;
+  };
   const controller = mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
     cameraControls,
     button,
-    canvas: { focus: options => { assert.deepEqual(options, { preventScroll: true }); focused = true; } },
+    canvas,
     storage: { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) },
   });
-  return { controller, cameraControls, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
+  return { pointer, dom, controller, cameraControls, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
 }
 
 test('starts in 2D, toggles the renderer both ways, and returns keyboard focus to the game', () => {
@@ -98,4 +113,38 @@ test('analog camera integrates elapsed time and keeps fractional angles without 
   const count = ui.cameraCalls.length;
   assert.equal(ui.controller.moveCamera({ yaw: 1, zoom: 1 }, 1 / 60), false);
   assert.equal(ui.cameraCalls.length, count);
+});
+
+
+test('touch drag orbits and zooms only in 2.5D and persists on release', () => {
+  const ui = mount();
+  assert.equal(ui.pointer('pointerdown', 0, 100).defaultPrevented, false);
+  ui.pointer('pointermove', 100, 0);
+  assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+  ui.click();
+  assert.equal(ui.pointer('pointerdown', 0, 100).defaultPrevented, true);
+  ui.pointer('pointermove', 100, 0);
+  assert.deepEqual(ui.cameraCalls.at(-1), [2.25, 2]);
+  ui.pointer('pointerup', 100, 0);
+  assert.equal(ui.values.get('crystal.display.rotation'), '2');
+  ui.pointer('pointermove', 200, 0);
+  assert.deepEqual(ui.cameraCalls.at(-1), [2.25, 2]);
+});
+
+test('drag ignores mouse and extra fingers and stops on cancellation, blur, and mode switch', () => {
+  const ui = mount('true');
+  ui.pointer('pointerdown', 0, 0, 1, 'mouse');
+  ui.pointer('pointermove', 100, 0, 1, 'mouse');
+  assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+  for (const stop of [() => ui.pointer('pointercancel', 0, 0),
+    () => ui.dom.window.dispatchEvent(new ui.dom.window.Event('blur')),
+    () => ui.click()]) {
+    ui.pointer('pointerdown', 0, 0);
+    ui.pointer('pointerdown', 10, 0, 2);
+    ui.pointer('pointermove', 100, 0, 2);
+    assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+    stop();
+    ui.pointer('pointermove', 100, 0);
+    assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+  }
 });

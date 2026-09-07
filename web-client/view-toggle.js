@@ -38,7 +38,16 @@ export function mountViewToggle(wasm, { button, canvas, storage, cameraControls 
   cameraAction(cameraControls.rotateLeft, () => { rotation = (rotation + 7) % 8; });
   cameraAction(cameraControls.rotateRight, () => { rotation = (rotation + 1) % 8; });
   cameraAction(cameraControls.reset, () => { zoom = 1; rotation = 0; });
+  let drag = null;
+  const endDrag = () => {
+    if (!drag) return;
+    const id = drag.id;
+    drag = null;
+    if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+    saveCamera();
+  };
   const update = () => {
+    endDrag();
     wasm.crystal_set_voxel_view(enabled);
     updateCamera();
     button.setAttribute('aria-pressed', String(enabled));
@@ -53,6 +62,42 @@ export function mountViewToggle(wasm, { button, canvas, storage, cameraControls 
     storage.setItem(VIEW_KEY, String(enabled));
     canvas.focus({ preventScroll: true });
   });
+  // Use displacement rather than frame time so the world follows the finger.
+  const document = canvas.ownerDocument;
+  const window = document.defaultView;
+  const blocked = () => !enabled || document.hidden ||
+    document.querySelector('dialog[open], #player-options[open]') ||
+    document.querySelector('#touch-controls')?.disabled;
+  canvas.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch' || drag || blocked()) return;
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    canvas.setPointerCapture(event.pointerId);
+    canvas.focus({ preventScroll: true });
+    event.preventDefault();
+  });
+  canvas.addEventListener('pointermove', event => {
+    if (!drag || event.pointerId !== drag.id) return;
+    if (blocked()) { endDrag(); return; }
+    const { width, height } = canvas.getBoundingClientRect();
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+    if (width > 0 && height > 0) {
+      rotation = ((rotation + dx / width * 8) % 8 + 8) % 8;
+      zoom = Math.max(0, Math.min(5, zoom - dy / height * 5));
+      updateCamera();
+    }
+    event.preventDefault();
+  });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+    canvas.addEventListener(type, event => {
+      if (event.pointerId === drag?.id) endDrag();
+    });
+  }
+  window.addEventListener('blur', endDrag);
+  window.addEventListener('pagehide', endDrag);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) endDrag(); });
   let moving = false;
   return {
     moveCamera({ yaw = 0, zoom: zoomAxis = 0 }, seconds) {
