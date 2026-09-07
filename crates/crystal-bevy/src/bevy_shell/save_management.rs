@@ -78,7 +78,7 @@ fn apply_save_management(
             });
             let can_replace = online_safe && (can_save || runtime.title_menu.is_some() || runtime.intro_screen.is_some());
             let current = || read_save_game_for_modpack(&path, runtime.shell.runtime().modpack(), &runtime.shell.runtime().pack_identity().content_hash);
-            let summary = |state: &GameState| serde_json::json!({
+            let summary = |state: &crystal_core::state::GameState| serde_json::json!({
                 "trainer": state.player_name, "sprite": state.player_gender,
                 "trainer_id": state.player_id,
             });
