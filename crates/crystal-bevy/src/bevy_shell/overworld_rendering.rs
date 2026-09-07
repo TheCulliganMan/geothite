@@ -6971,14 +6971,14 @@ fn spawn_field_shop_screen(
             format!(
                 "{}{} ×{:02}",
                 if selected == index { ">" } else { " " },
-                compact_scene_label(&name, 10),
+                name,
                 quantity.min(99)
             )
         } else {
             format!(
                 "{}{}",
                 if selected == index { ">" } else { " " },
-                compact_scene_label(&name, 10)
+                name
             )
         };
         let (x, y) = battle_hud_tile_origin(2.0, row);

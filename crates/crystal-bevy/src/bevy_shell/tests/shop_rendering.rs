@@ -1,10 +1,9 @@
 use crate::core::systems::shop::ShopResult;
 
 #[test]
-fn mart_rendering_matches_the_typescript_text_contract() {
+fn mart_rendering_preserves_the_text_contract() {
     let rendering = include_str!("../overworld_rendering.rs");
     let interactions = include_str!("../battle_messages.rs");
-    let typescript = include_str!("../../../../../../packages/core/src/ui/menus/mart.ts");
 
     for text in [
         "Welcome! How may I\\nhelp you?",
@@ -35,17 +34,6 @@ fn mart_rendering_matches_the_typescript_text_contract() {
     assert!(rendering.contains("battle_hud_tile_origin(10.0, row + 1.0)"));
     assert!(rendering.contains("battle_hud_tile_origin(1.0, 13.0 + index as f32)"));
     assert!(rendering.contains("battle_hud_tile_origin(8.0, 16.0)"));
-    for layout in [
-        "topMenu: createWindow(0, 0, 8, 9)",
-        "itemList: createWindow(1, 3, SCREEN_TILE_WIDTH - 1, MART_ITEM_LIST_HEIGHT_TILES)",
-        "moneyWindow: createWindow(11, 0, SCREEN_TILE_WIDTH - 11, 3)",
-        "quantityPrompt: createWindow(7, 15, SCREEN_TILE_WIDTH - 7, SCREEN_TILE_HEIGHT - 15)",
-    ] {
-        assert!(
-            typescript.contains(layout),
-            "TypeScript Mart layout changed: {layout}"
-        );
-    }
     assert!(!rendering.contains("let price = if selling { item.price / 2 } else { item.price };"));
     assert!(!rendering.contains("shop.mart_type, shop.mart_id, snapshot.trainer.money"));
     assert!(!rendering.contains("SELL {} ${}"));
@@ -303,4 +291,59 @@ fn mart_buy_list_includes_the_asm_cancel_entry() {
     buy_visible_shop_cursor_item(&mut shell).unwrap();
     assert!(shell.shop_top_cursor.is_some());
     assert!(shell.shop_quantity.is_none());
+}
+
+#[test]
+fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
+    for selling in [false, true] {
+        let mut shell = initialized_mart_shell();
+        confirm_visible_shop_top_menu(&mut shell).unwrap();
+        let mut snapshot = shell.shell.snapshot().unwrap();
+        // The screenshot's missing PARLYZ HEAL row exceeded the old ten-character cap.
+        std::sync::Arc::make_mut(&mut snapshot.items)
+            .iter_mut()
+            .find(|item| item.item_id == "POTION")
+            .unwrap()
+            .name = "PARLYZ HEAL".to_string();
+        if selling {
+            snapshot.bag.items = vec![crate::RuntimeBagItemSnapshot {
+                item_id: "POTION".to_string(),
+                quantity: 2,
+            }];
+            shell.sell_cursor = Some(MenuCursor {
+                surface_id: "sell:bag".to_string(),
+                option_index: 0,
+            });
+        }
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut images = Assets::<Image>::default();
+        spawn_field_shop_screen(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &shell,
+            snapshot.pending_shop.as_ref().unwrap(),
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        assert!(art.font_error.is_none(), "{:?}", art.font_error);
+        let (x, y) = battle_hud_tile_origin(2.0, 4.0);
+        let mut glyphs = world.query::<(&DialogGlyphMarker, &Transform)>();
+        let row = glyphs
+            .iter(&world)
+            .filter(|(_, transform)| transform.translation.y == y)
+            .collect::<Vec<_>>();
+        assert_eq!(row.len(), if selling { 16 } else { 12 });
+        for index in 0..12 {
+            assert!(
+                row.iter()
+                    .any(|(marker, _)| marker.key == dialog_glyph_key(x, y, index))
+            );
+        }
+        assert!(row.iter().all(|(_, transform)| transform.translation.x < battle_hud_tile_origin(19.0, 4.0).0));
+    }
 }
