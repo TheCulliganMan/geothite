@@ -40,3 +40,15 @@
 #social-chat .chat-toggle:hover, #social-chat .chat-toggle:focus-visible { color: #d8dce3; }
 
 #social-chat .chat-toggle svg { display: block; transform: translate(1px, -1px); }
+
+#social-chat .chat-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-left: 12px; border-bottom: 1px solid #303846; }
+#social-chat .chat-header strong { display: block; font-size: 14px; }
+#social-chat .chat-status { display: block; color: #c4b38d; font-size: 11px; line-height: 1.3; }
+#social-chat .chat-status[data-connected="true"] { color: #91c7ad; }
+#social-chat .chat-header > div { margin-right: auto; }
+#social-chat .chat-nearby { min-height: 44px; border: 0; padding: 0 8px; border-radius: 6px; background: transparent; white-space: nowrap; }
+#social-chat .chat-nearby[aria-expanded="true"] { background: #344054; }
+#social-chat.editing .chat-log:empty::before { content: "No messages yet."; display: block; padding: 16px 0; color: #a8b0be; text-align: center; }
+#social-chat .chat-players:empty::before { content: "No trainers nearby."; color: #a8b0be; padding: 4px; }
+#social-chat .chat-players:empty:not([hidden]) { display: flex; }
+#social-chat form button { border: 1px solid #617386; background: #294157; color: #fff; padding: 0 10px; font-weight: 600; }

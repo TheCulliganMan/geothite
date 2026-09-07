@@ -12,7 +12,7 @@
     <meta name="color-scheme" content="dark">
     <meta name="referrer" content="no-referrer">
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="./social-chat.css">
+    <link rel="stylesheet" href="./social-chat.css?v=20260907-mobile">
     <style>
       * {
         box-sizing: border-box;
@@ -99,7 +99,7 @@
         width: 100%;
       }
     </style>
-    <link rel="stylesheet" href="./mobile-player.css">
+    <link rel="stylesheet" href="./mobile-player.css?v=20260907-mobile">
   </head>
   <body>
     <main id="game-stage" aria-label="Geothite game">
@@ -127,10 +127,10 @@
       <p id="startup-error-message"></p>
       <button id="retry-start" type="button">Reload</button>
     </dialog>
+    <button id="mute" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound">Enable sound</button>
     <details id="player-options">
     <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
     <nav id="controls" aria-label="Display controls">
-      <button id="mute" type="button" aria-label="Mute audio" aria-pressed="false" title="Mute audio">🔊</button>
       <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D</button>
       <button id="fullscreen" type="button" aria-label="Fullscreen">⛶</button>
       <button id="help" type="button" aria-label="Controls">?</button>
@@ -154,10 +154,10 @@
     <script type="module">
       import { createGameBridge, registerGameTools } from './webmcp.js';
       import { mountGamepadControls } from './gamepad-controls.js';
-      import { mountAudioUnlock } from './audio-unlock.js';
+      import { mountAudioUnlock } from './audio-unlock.js?v=20260907-mobile';
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
-      import { mountSocialChat } from './social-chat.js';
+      import { mountSocialChat } from './social-chat.js?v=20260907-mobile';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
       import audioSynthContext from './audio-runtime/context.js';
@@ -213,7 +213,25 @@
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await init();
-          mountAudioUnlock(wasm, document);
+          const muteButton = document.querySelector('#mute');
+          let muted = localStorage.getItem('crystal.audio.muted') === 'true';
+          let audioState = 'idle';
+          const updateMute = () => {
+            wasm.crystal_set_muted(muted);
+            muteButton.textContent = muted ? 'Sound off' : audioState === 'ready' ? 'Sound on' : 'Enable sound';
+            muteButton.setAttribute('aria-pressed', String(muted));
+            muteButton.setAttribute('aria-label', muted || audioState !== 'ready' ? 'Enable sound' : 'Mute sound');
+            muteButton.title = muteButton.getAttribute('aria-label');
+          };
+          updateMute();
+          muteButton.addEventListener('click', event => {
+            muted = muted || audioState !== 'ready' ? false : true;
+            updateMute();
+            localStorage.setItem('crystal.audio.muted', String(muted));
+            resumeAudio(event);
+            canvas.focus({ preventScroll: true });
+          });
+          const resumeAudio = mountAudioUnlock(wasm, document, { control: muteButton, onState: state => { audioState = state; updateMute(); } });
           // WASM initialization starts asynchronous pack loading. Enable input
           // only after the actual game loop has produced its first observation.
           await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });
@@ -228,22 +246,6 @@
               rotateLeft: document.querySelector('#rotate-left'), rotateRight: document.querySelector('#rotate-right'),
               reset: document.querySelector('#camera-reset'),
             },
-          });
-          const muteButton = document.querySelector('#mute');
-          let muted = localStorage.getItem('crystal.audio.muted') === 'true';
-          const updateMute = () => {
-            wasm.crystal_set_muted(muted);
-            muteButton.textContent = muted ? '🔇' : '🔊';
-            muteButton.setAttribute('aria-pressed', String(muted));
-            muteButton.setAttribute('aria-label', muted ? 'Unmute audio' : 'Mute audio');
-            muteButton.title = muted ? 'Unmute audio' : 'Mute audio';
-          };
-          updateMute();
-          muteButton.addEventListener('click', () => {
-            muted = !muted;
-            updateMute();
-            localStorage.setItem('crystal.audio.muted', String(muted));
-            canvas.focus({ preventScroll: true });
           });
           const bridge = createGameBridge(wasm);
           cancelAgentInput = () => bridge.cancel();

@@ -56,10 +56,10 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   panel.id = 'social-chat';
   panel.setAttribute('aria-label', 'Chat');
   panel.innerHTML = `<button class="chat-toggle" type="button" aria-label="Open chat" title="Chat (Enter)" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3V11.5A7.5 7.5 0 0 1 9.5 4h3a7.5 7.5 0 0 1 7.5 7.5Z"/></svg></button>
-    <button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button>
+    <header class="chat-header" hidden><div><strong>Chat</strong><span class="chat-status" role="status">Connecting…</span></div><button class="chat-nearby" type="button" aria-expanded="false">Nearby · 0</button><button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button></header>
     <div class="chat-log" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions"></div>
     <div class="chat-requests"></div><div class="chat-actions" hidden></div><div class="chat-players" hidden></div>
-    <form hidden><label class="sr-only" for="chat-channel">Channel</label><select id="chat-channel"></select><label class="sr-only" for="chat-message">Message</label><input id="chat-message" autocomplete="off" placeholder="Say something…" maxlength="600"><button type="submit" aria-label="Send">↵</button></form>`;
+    <form hidden><label class="sr-only" for="chat-channel">Channel</label><select id="chat-channel"></select><label class="sr-only" for="chat-message">Message</label><input id="chat-message" autocomplete="off" placeholder="Say something…" enterkeyhint="send" maxlength="600"><button type="submit" aria-label="Send message">Send</button></form>`;
   document.body.append(panel);
   const log = panel.querySelector('.chat-log');
   const input = panel.querySelector('input');
@@ -67,11 +67,29 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const form = panel.querySelector('form');
   const toggle = panel.querySelector('.chat-toggle');
   const close = panel.querySelector('.chat-close');
+  const header = panel.querySelector('.chat-header');
+  const nearby = panel.querySelector('.chat-nearby');
+  let rosterOpen = false;
+  const status = panel.querySelector('.chat-status');
   const actions = panel.querySelector('.chat-actions');
   const roster = panel.querySelector('.chat-players');
   const requests = panel.querySelector('.chat-requests');
   const controller = new window.AbortController();
   const listen = (target, event, handler, options = {}) => target.addEventListener(event, handler, { ...options, signal: controller.signal });
+  const updateViewport = () => {
+    const viewport = window.visualViewport;
+    const height = viewport?.height ?? window.innerHeight;
+    const top = viewport?.offsetTop ?? 0;
+    panel.classList.toggle('compact', height < 300);
+    panel.style.setProperty('--chat-viewport-height', height + 'px');
+    panel.style.setProperty('--chat-viewport-bottom', Math.max(0, window.innerHeight - height - top) + 'px');
+  };
+  listen(window, 'resize', updateViewport);
+  if (window.visualViewport) {
+    listen(window.visualViewport, 'resize', updateViewport);
+    listen(window.visualViewport, 'scroll', updateViewport);
+  }
+  updateViewport();
   let channels = ['general', 'trade', 'lfg'];
   let players = [];
   let selectedPlayer = null;
@@ -98,11 +116,14 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const setOpen = value => {
     open = value;
     panel.classList.toggle('editing', open);
+    document.body.classList.toggle('chat-open', open);
+    updateViewport();
     form.hidden = !open;
     close.hidden = !open;
+    header.hidden = !open;
     for (const control of log.querySelectorAll('button')) control.tabIndex = open ? 0 : -1;
     if (!open) log.scrollTop = log.scrollHeight;
-    roster.hidden = !open;
+    roster.hidden = !open || !rosterOpen;
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close chat' : 'Open chat');
     if (open) { input.focus(); log.scrollTop = log.scrollHeight; }
@@ -163,6 +184,11 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   });
   listen(toggle, 'click', () => setOpen(!open));
   listen(close, 'click', () => setOpen(false));
+  listen(nearby, 'click', () => {
+    rosterOpen = !rosterOpen;
+    roster.hidden = !rosterOpen;
+    nearby.setAttribute('aria-expanded', String(rosterOpen));
+  });
   listen(form, 'submit', event => { event.preventDefault(); submit(); });
   const captureKeys = event => {
     if (event.crystalGameControl) return;
@@ -207,9 +233,12 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     for (const line of log.children) line.classList.toggle('chat-faded', window.Date.now() - Number(line.dataset.receivedAt) >= 10000);
     try {
       const state = JSON.parse(wasm.crystal_social_poll());
-      if (connected && !state.connected) { append('Reconnecting…'); requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
+      if (connected && !state.connected) { requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
       connected = state.connected;
+      status.textContent = connected ? 'Connected' : 'Reconnecting…';
+      status.dataset.connected = String(connected);
       players = state.players ?? [];
+      nearby.textContent = 'Nearby · ' + players.filter(p => p.user_id !== selfUserId).length;
       const signature = JSON.stringify(players);
       if (signature !== rosterSignature) {
         rosterSignature = signature;
@@ -252,8 +281,8 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
           requests.replaceChildren(); requestCards.clear(); setOpen(false);
         }
       }
-    } catch (error) { if (connected) append('Chat unavailable.'); connected = false; }
+    } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; }
   };
   const timer = window.setInterval(poll, 150);
-  return () => { controller.abort(); window.clearInterval(timer); wasm.crystal_social_focus(false); panel.remove(); };
+  return () => { controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); wasm.crystal_social_focus(false); panel.remove(); };
 }
