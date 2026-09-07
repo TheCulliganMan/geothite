@@ -1,5 +1,6 @@
 use crystal_core::save::{
-    SaveGame, SaveModpackIdentity, encode_save_game_bytes, read_save_game_bytes_for_modpack,
+    SaveModpackIdentity, encode_save_game_bytes, erase_save_game, read_save_game_bytes_for_modpack,
+    read_save_game_for_modpack, write_save_game_for_modpack,
 };
 use crystal_core::state::GameState;
 
@@ -13,7 +14,13 @@ fn shared_save_preserves_progress_and_rejects_corruption_and_other_packs() {
     state.player_name = "NOVA".into();
     state.player_id = 23456;
     state.player_gender = 1;
-    let save = SaveGame::new(state, identity.clone(), hash.clone()).unwrap();
+    let path = std::env::temp_dir().join(format!(
+        "geothite-sharing-{}.crystalsave",
+        std::process::id()
+    ));
+    write_save_game_for_modpack(&path, state, &identity, &hash).unwrap();
+    let save = read_save_game_for_modpack(&path, &identity, &hash).unwrap();
+    erase_save_game(&path).unwrap();
     let bytes = encode_save_game_bytes(&save).unwrap();
     let imported =
         read_save_game_bytes_for_modpack(&bytes, "shared.crystalsave", &identity, &hash).unwrap();
