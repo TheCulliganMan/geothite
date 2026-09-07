@@ -112,7 +112,7 @@ pub(super) fn append(
                         source_y = roof_rows.saturating_sub(tops[x] - y).min(roof_rows - 1);
                     }
                     let mut source_x = x;
-                    if normal[0] != 0 && !roof {
+                    if (normal[0] != 0 || normal[2] < 0) && !roof {
                         source_x = facade_side_course_x(
                             inside,
                             luminance,
@@ -182,6 +182,13 @@ mod tests {
             0,
             7,
         );
+        // Rear wall UVs must use a plain course, never the center doorway.
+        for (normals, uvs) in mesh.textured.normals.chunks_exact(4)
+            .zip(mesh.textured.uvs.chunks_exact(4)) {
+            if normals[0] == [0.0, 0.0, -1.0] && uvs[0][1] > 0.5 {
+                assert!(uvs.iter().all(|uv| uv[0] <= 0.125), "rear copied front artwork: {uvs:?}");
+            }
+        }
         let mut area_balance = Vec3::ZERO;
         for (quad, normal) in mesh
             .textured

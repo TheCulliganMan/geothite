@@ -2,7 +2,7 @@ const buttonMap = [[0, 'a'], [1, 'b'], [8, 'select'], [9, 'start'], [12, 'up'], 
 
 export function stickDirection(x, y, previous = null) {
   const magnitude = Math.max(Math.abs(x), Math.abs(y));
-  if (magnitude < (previous ? 0.35 : 0.55)) return null;
+  if (magnitude < (previous ? 0.25 : 0.35)) return null;
   // Keep the chosen axis near a diagonal so a resting thumb cannot chatter
   // between directions; let deliberate turns cross a small hysteresis band.
   let horizontal = Math.abs(x) > Math.abs(y);
@@ -44,7 +44,20 @@ export function createGamepadInput(emit) {
   return { update, clear: () => update([]) };
 }
 
-export function mountGamepadControls({ document, window, canvas, controls, onInput }) {
+// Remap the deadzone so camera velocity starts at zero and reaches full speed.
+export function gamepadCamera(pads) {
+  const axis = value => Number.isFinite(value) && Math.abs(value) > 0.2
+    ? Math.sign(value) * (Math.min(1, Math.abs(value)) - 0.2) / 0.8 : 0;
+  for (const pad of Array.from(pads)) {
+    if (!pad?.connected || pad.mapping !== 'standard') continue;
+    const yaw = axis(pad.axes[2]);
+    const zoom = axis(-pad.axes[3]);
+    if (yaw || zoom) return { yaw, zoom };
+  }
+  return { yaw: 0, zoom: 0 };
+}
+
+export function mountGamepadControls({ document, window, canvas, controls, onInput, onCamera = () => false }) {
   if (!window.navigator.getGamepads) return;
   const input = createGamepadInput((button, down) => {
     if (down) {
@@ -58,22 +71,42 @@ export function mountGamepadControls({ document, window, canvas, controls, onInp
     document.querySelector('#touch-controls').disabled ||
     document.querySelector('dialog[open], #player-options[open]') ||
     /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
-  const poll = () => {
-    if (blocked()) input.clear();
-    else input.update(window.navigator.getGamepads());
+  let lastFrame;
+  let cameraActive = false;
+  const clear = () => {
+    input.clear();
+    lastFrame = undefined;
+    cameraActive = false;
+    onCamera({ yaw: 0, zoom: 0 }, 0);
+  };
+  const poll = timestamp => {
+    const seconds = lastFrame === undefined ? 0 : (timestamp - lastFrame) / 1000;
+    lastFrame = timestamp;
+    if (blocked()) clear();
+    else {
+      const pads = window.navigator.getGamepads();
+      input.update(pads);
+      const movingCamera = Boolean(onCamera(gamepadCamera(pads), seconds));
+      if (movingCamera && !cameraActive) {
+        onInput();
+        canvas.focus({ preventScroll: true });
+        document.body.classList.add('controller-active');
+      }
+      cameraActive = movingCamera;
+    }
     window.requestAnimationFrame(poll);
   };
   window.requestAnimationFrame(poll);
-  window.addEventListener('blur', () => input.clear());
-  window.addEventListener('pagehide', () => input.clear());
+  window.addEventListener('blur', () => clear());
+  window.addEventListener('pagehide', () => clear());
   window.addEventListener('gamepaddisconnected', () => {
-    input.clear();
+    clear();
     if (!Array.from(window.navigator.getGamepads()).some(pad => pad?.connected && pad.mapping === 'standard')) {
       document.body.classList.remove('controller-active');
     }
   });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) input.clear(); });
-  document.addEventListener('focusin', () => { if (blocked()) input.clear(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clear(); });
+  document.addEventListener('focusin', () => { if (blocked()) clear(); });
   window.addEventListener('keydown', event => {
     if (event.isTrusted && !blocked() && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyZ', 'KeyX', 'Enter', 'ShiftRight'].includes(event.code)) {
       document.body.classList.add('controller-active');

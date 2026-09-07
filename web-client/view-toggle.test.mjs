@@ -17,13 +17,13 @@ function mount(saved, savedCamera = {}) {
     setAttribute: (key, value) => attributes.set(key, value),
     addEventListener: (type, handler) => { assert.equal(type, 'click'); click = handler; },
   };
-  mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
+  const controller = mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
     cameraControls,
     button,
     canvas: { focus: options => { assert.deepEqual(options, { preventScroll: true }); focused = true; } },
     storage: { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) },
   });
-  return { cameraControls, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
+  return { controller, cameraControls, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
 }
 
 test('starts in 2D, toggles the renderer both ways, and returns keyboard focus to the game', () => {
@@ -85,4 +85,17 @@ test('camera preferences survive reload and invalid saved values are sanitized',
   assert.deepEqual(ui.cameraCalls, [[4, 6]]);
   const invalid = mount('true', { 'crystal.display.zoom': 'NaN', 'crystal.display.rotation': '-1' });
   assert.deepEqual(invalid.cameraCalls, [[1, 0]]);
+});
+
+test('analog camera integrates elapsed time and keeps fractional angles without stepping', () => {
+  const ui = mount('true');
+  ui.controller.moveCamera({ yaw: 1, zoom: 0 }, 1 / 60);
+  const first = ui.cameraCalls.at(-1);
+  assert.ok(first[1] > 0 && first[1] < 1);
+  for (let i = 1; i < 60; i++) ui.controller.moveCamera({ yaw: 1, zoom: 0 }, 1 / 60);
+  assert.ok(Math.abs(ui.cameraCalls.at(-1)[1] - 2) < 1e-9);
+  ui.click();
+  const count = ui.cameraCalls.length;
+  assert.equal(ui.controller.moveCamera({ yaw: 1, zoom: 1 }, 1 / 60), false);
+  assert.equal(ui.cameraCalls.length, count);
 });

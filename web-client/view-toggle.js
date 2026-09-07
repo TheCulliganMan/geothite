@@ -5,13 +5,13 @@ const ROTATION_KEY = 'crystal.display.rotation';
 function savedStep(storage, key, defaultValue, maximum) {
   const raw = storage.getItem(key);
   const value = raw === null ? defaultValue : Number(raw);
-  return Number.isInteger(value) && value >= 0 && value <= maximum ? value : defaultValue;
+  return Number.isFinite(value) && value >= 0 && value <= maximum ? value : defaultValue;
 }
 
 export function mountViewToggle(wasm, { button, canvas, storage, cameraControls }) {
   let enabled = storage.getItem(VIEW_KEY) === 'true';
   let zoom = savedStep(storage, ZOOM_KEY, 1, 5);
-  let rotation = savedStep(storage, ROTATION_KEY, 0, 7);
+  let rotation = savedStep(storage, ROTATION_KEY, 0, 8);
   const updateCamera = () => {
     wasm.crystal_set_voxel_camera(zoom, rotation);
     cameraControls.group.hidden = !enabled;
@@ -20,14 +20,17 @@ export function mountViewToggle(wasm, { button, canvas, storage, cameraControls 
     cameraControls.rotateLeft.disabled = !enabled;
     cameraControls.rotateRight.disabled = !enabled;
     cameraControls.reset.disabled = !enabled;
-    cameraControls.reset.textContent = `${75 + zoom * 25}%`;
-    cameraControls.reset.setAttribute('aria-label', `Reset camera (zoom ${75 + zoom * 25}%)`);
+    cameraControls.reset.textContent = `${Math.round(75 + zoom * 25)}%`;
+    cameraControls.reset.setAttribute('aria-label', `Reset camera (zoom ${Math.round(75 + zoom * 25)}%)`);
+  };
+  const saveCamera = () => {
+    storage.setItem(ZOOM_KEY, String(zoom));
+    storage.setItem(ROTATION_KEY, String(rotation));
   };
   const cameraAction = (control, change) => control.addEventListener('click', () => {
     change();
     updateCamera();
-    storage.setItem(ZOOM_KEY, String(zoom));
-    storage.setItem(ROTATION_KEY, String(rotation));
+    saveCamera();
     canvas.focus({ preventScroll: true });
   });
   cameraAction(cameraControls.zoomOut, () => { zoom = Math.max(0, zoom - 1); });
@@ -50,4 +53,20 @@ export function mountViewToggle(wasm, { button, canvas, storage, cameraControls 
     storage.setItem(VIEW_KEY, String(enabled));
     canvas.focus({ preventScroll: true });
   });
+  let moving = false;
+  return {
+    moveCamera({ yaw = 0, zoom: zoomAxis = 0 }, seconds) {
+      if (!enabled || (!yaw && !zoomAxis)) {
+        if (moving) saveCamera();
+        moving = false;
+        return false;
+      }
+      const dt = Number.isFinite(seconds) ? Math.max(0, Math.min(seconds, 0.05)) : 0;
+      rotation = (rotation + yaw * dt * 2 + 8) % 8;
+      zoom = Math.max(0, Math.min(5, zoom + zoomAxis * dt * 2));
+      moving = true;
+      updateCamera();
+      return true;
+    },
+  };
 }

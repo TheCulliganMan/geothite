@@ -56,3 +56,55 @@ test('stick hysteresis prevents repeated presses around the deadzone and diagona
   input.update([pad([], [.1, .2])]);
   assert.deepEqual(events.slice(1), [['right', false], ['down', true], ['down', false]]);
 });
+
+import { gamepadCamera } from './gamepad-controls.js';
+test('camera stick is analog and independent of a continuously held walking stick', () => {
+  const events = [];
+  const input = createGamepadInput((...event) => events.push(event));
+  for (let frame = 0; frame < 120; frame++) {
+    const controller = pad([], [1, 0, .6, -.6]);
+    input.update([controller]);
+    const camera = gamepadCamera([controller]);
+    assert.ok(Math.abs(camera.yaw - .5) < 1e-9);
+    assert.ok(Math.abs(camera.zoom - .5) < 1e-9);
+  }
+  assert.deepEqual(events, [['right', true]]);
+  input.clear();
+  assert.deepEqual(events.at(-1), ['right', false]);
+  assert.deepEqual(gamepadCamera([pad([], [1, 0, .19, NaN])]), { yaw: 0, zoom: 0 });
+  assert.deepEqual(gamepadCamera([]), { yaw: 0, zoom: 0 });
+});
+
+test('camera polling uses elapsed time and stops immediately on blur or text focus', () => {
+  const window = new EventTarget();
+  let frame;
+  window.requestAnimationFrame = callback => { frame = callback; };
+  window.navigator = { getGamepads: () => [pad([], [0, 0, 1, 0])] };
+  const document = new EventTarget();
+  document.body = { classList: { add() {}, remove() {} } };
+  document.hasFocus = () => true;
+  document.querySelector = selector => selector === '#touch-controls' ? { disabled: false } : null;
+  const calls = [];
+  mountGamepadControls({ document, window, canvas: { focus() {} }, onInput() {},
+    controls: { setButton() {} }, onCamera: (axes, dt) => { calls.push([axes, dt]); return Boolean(axes.yaw); } });
+  frame(100); frame(120);
+  assert.deepEqual(calls.at(-1), [{ yaw: 1, zoom: 0 }, .02]);
+  window.dispatchEvent(new Event('blur'));
+  assert.deepEqual(calls.at(-1), [{ yaw: 0, zoom: 0 }, 0]);
+  document.activeElement = { tagName: 'INPUT' };
+  frame(200);
+  assert.deepEqual(calls.at(-1), [{ yaw: 0, zoom: 0 }, 0]);
+  document.activeElement = null;
+  frame(10000);
+  assert.deepEqual(calls.at(-1), [{ yaw: 1, zoom: 0 }, 0]);
+});
+
+test('a gentle deliberate stick tilt starts walking and hysteresis sustains the hold', () => {
+  const events = [];
+  const input = createGamepadInput((...args) => events.push(args));
+  input.update([pad([], [.4, 0])]);
+  input.update([pad([], [.3, 0])]);
+  assert.deepEqual(events, [['right', true]]);
+  input.update([pad([], [.2, 0])]);
+  assert.deepEqual(events.at(-1), ['right', false]);
+});

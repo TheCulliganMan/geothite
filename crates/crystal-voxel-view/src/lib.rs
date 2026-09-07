@@ -163,7 +163,7 @@ impl Plugin for VoxelViewPlugin {
 
 /// Runtime presentation switch used by the location tester and optional-mod
 /// builds. It cannot affect simulation because only the renderer reads it.
-#[derive(Resource, Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
 pub struct VoxelViewSettings {
     pub enabled: bool,
     pub allow_f3_toggle: bool,

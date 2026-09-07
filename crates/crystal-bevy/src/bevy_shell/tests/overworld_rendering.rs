@@ -2292,6 +2292,7 @@ fn fullscreen_room_and_dialogue_resize_independently() {
     let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
     assert_eq!(dialogue.scale, Vec3::ONE);
     assert!(dialogue.translation.y < -400.0, "dialogue belongs at the viewport bottom");
+    assert!(dialogue.translation.x > 800.0, "wide-screen field panels belong beside the room");
     assert!(world.query_filtered::<&Parent, With<PlayerMarker>>().iter(world).count() > 0);
     world.query::<&mut Window>().single_mut(world).resolution.set(800.0, 1000.0);
     app.update();
@@ -2300,6 +2301,31 @@ fn fullscreen_room_and_dialogue_resize_independently() {
     assert!(resized.scale.x < root.scale.x);
     let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
     assert_eq!(dialogue.scale, Vec3::ONE);
+    assert_eq!(dialogue.translation.x, 0.0, "portrait dialogue returns to the bottom center");
+    #[cfg(feature = "voxel-view")]
+    {
+        app.world_mut().insert_resource(crystal_voxel_view::VoxelViewSettings {
+            enabled: true,
+            ..default()
+        });
+        for (width, height) in [(800.0, 1000.0), (1920.0, 1080.0), (320.0, 568.0)] {
+            let world = app.world_mut();
+            world.query::<&mut Window>().single_mut(world).resolution.set(width, height);
+            app.update();
+            let world = app.world_mut();
+            let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+            let physical = Vec2::new(width, height);
+            let view = physical / fullscreen_pixels_per_world_unit(physical, 1.0);
+            assert_eq!(dialogue.translation.y - PLAYFIELD_HEIGHT * 0.5, -view.y * 0.5 + 16.0,
+                "voxel dialogue must retain its bottom inset after resizing");
+            assert_eq!(dialogue.translation.x, if width > height * 1.5 {
+                (view.x - PLAYFIELD_WIDTH) * 0.5 - 16.0
+            } else { 0.0 }, "voxel panels must follow the same responsive docking");
+            assert_eq!(dialogue.scale, Vec3::ONE);
+            let terrain = world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world);
+            assert_eq!(*terrain, Transform::IDENTITY, "voxel terrain must not receive 2D room scaling");
+        }
+    }
 }
 
 #[cfg(feature = "fullscreen-scaling")]

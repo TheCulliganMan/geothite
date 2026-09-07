@@ -6398,13 +6398,13 @@ fn append_pixel_building(
             }
         }
 
-        // The source drawing supplies a front stack, but the building is a
-        // closed volume. Carry that stack onto the rear plane at reduced
-        // light, as the reference mesher does for non-front faces. Omitting
-        // this plane exposed the ground through Ecruteak's rear eaves and
-        // between adjoining traditional roof sections.
+        // Close the rear with wall courses. Doors and windows in the source
+        // facade belong to the front and must not be mirrored onto the back.
         for storey in 0..tower_storeys {
             for source_y in roof_pixels..pixel_height {
+                let rear_source_x = if celadon_department_store { 0 } else {
+                    facade_side_course_x(&inside, &luminance, pixel_width, source_y, darkest, false)
+                };
                 let y_top = storey as f32 * wall_course_height * facade_height_scale
                     + (pixel_height - source_y) as f32 * pixel_z_size * facade_height_scale;
                 let y_bottom = y_top - pixel_z_size * facade_height_scale;
@@ -6420,7 +6420,7 @@ fn append_pixel_building(
                             [x1, y_bottom, roof_back_z],
                         ],
                         [0.0, 0.0, -1.0],
-                        source_pixel_uv(geometry, placement, x, source_y, true),
+                        source_pixel_uv(geometry, placement, rear_source_x, source_y, true),
                         [0.68, 0.68, 0.68, 1.0],
                     );
                 }
@@ -13195,6 +13195,14 @@ mod tests {
             &mut [false; 40],
         )
         .unwrap();
+        let rear_wall_uvs: Vec<_> = mesh.textured.normals.chunks_exact(4)
+            .zip(mesh.textured.uvs.chunks_exact(4))
+            .filter(|(n, uv)| n[0] == [0.0, 0.0, -1.0] && uv[0][1] > 0.4)
+            .map(|(_, uv)| uv)
+            .collect();
+        assert!(!rear_wall_uvs.is_empty(), "rear wall must remain closed");
+        assert!(rear_wall_uvs.iter().all(|uvs| uvs.iter().all(|uv| uv[0] <= 1.0 / 64.0)),
+            "rear walls must sample siding, not the facade's doors and windows");
         let side_courses = mesh
             .textured
             .positions

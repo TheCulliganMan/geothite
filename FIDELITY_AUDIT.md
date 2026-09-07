@@ -7633,3 +7633,31 @@ Latest checkpoint:
   Concurrent workspace changes were observed during validation, so these
   results are scoped to this follow-up's focused regressions, not a full-tree
   certification or a claim of complete minigame ASM parity.
+
+# Evolution, trade, and typeless damage audit (2026-09-07)
+
+- `python3 rust/tools/check_evolution_trade_asm.py` (from the repository root)
+  compares the canonical generated core manifest's evolution and NPC trade
+  payloads with the vendored ASM. All 251 species, 122 evolution rules, and
+  seven NPC trade records match exactly, including explicit empty evolution
+  tables, ordered branches, DVs, items, nicknames, trainer IDs, and genders.
+  Deliberately altered evolution and trade fixtures are rejected.
+- `engine/pokemon/evolve.asm::EvolveAfterBattle` skips all non-trade methods
+  when `wLinkMode` is nonzero. The Rust selector now does the same. Regressions
+  cover ordinary link and Time Capsule modes, forced evolution, required held
+  items, Everstone, and happiness thresholds/time windows.
+- `engine/battle/effect_commands.asm::BattleCommand_Stab` returns immediately
+  for Struggle. Rust now skips that command's weather, badge, STAB, and type
+  adjustments for Struggle and confusion self-damage.
+- `HitSelfInConfusion` bypasses both `DittoMetalPowder` and `DamageVariation`.
+  Rust no longer applies either to confusion, consumes no damage-variation
+  random byte, and no longer emits a fictitious random roll in the self-damage
+  event. The selected move's held-type-item and Selfdestruct bugs remain intact.
+- Validation: all 2,187 `crystal-core` library tests pass. The run used an
+  isolated target directory and unoptimized development profile because of
+  concurrent host builds. All 59 focused evolution/damage module tests also
+  pass; the link-mode, typeless modifier, Metal Powder, and extra-RNG
+  regressions were observed failing before correction.
+- Scope: exact table parity and these control-flow corrections are verified.
+  This pass does not certify every battle effect combination, presentation
+  path, NPC trade interaction, or link transport against ROM execution.

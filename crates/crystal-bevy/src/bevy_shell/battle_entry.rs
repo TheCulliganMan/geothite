@@ -8817,7 +8817,10 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell
         .visible_map_name_sign
         .as_ref()
-        .map(|sign| (&sign.landmark, &sign.label))
+        // The setup hold and visible window use the same label. Include the
+        // show boundary so retained-world rendering cannot swallow it, but
+        // exclude countdown frames that leave the window's pixels unchanged.
+        .map(|sign| (&sign.landmark, &sign.label, sign.frames_remaining <= 58))
         .hash(&mut hasher);
     runtime_shell.pending_delete_save.hash(&mut hasher);
     runtime_shell.pending_clock_reset.hash(&mut hasher);

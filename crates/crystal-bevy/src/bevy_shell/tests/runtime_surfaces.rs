@@ -461,6 +461,26 @@ fn retained_animations_consume_every_bounded_catch_up_tick() {
 }
 
 #[test]
+fn map_name_sign_render_key_tracks_visibility_without_redrawing_countdown_frames() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.visible_map_name_sign = Some(VisibleMapNameSign {
+        landmark: "TEST".to_string(),
+        label: "TEST".to_string(),
+        frames_remaining: 60,
+    });
+    let hidden_key = shell_render_key(&shell);
+    advance_visible_map_name_sign(&mut shell.visible_map_name_sign, 1);
+    assert_eq!(shell_render_key(&shell), hidden_key);
+    advance_visible_map_name_sign(&mut shell.visible_map_name_sign, 1);
+    let visible_key = shell_render_key(&shell);
+    assert_ne!(visible_key, hidden_key, "showing the route sign must bypass retained-world rendering");
+    advance_visible_map_name_sign(&mut shell.visible_map_name_sign, 58);
+    assert_eq!(shell_render_key(&shell), visible_key);
+    advance_visible_map_name_sign(&mut shell.visible_map_name_sign, 1);
+    assert_ne!(shell_render_key(&shell), visible_key);
+}
+
+#[test]
 fn map_name_sign_show_boundary_invalidates_the_idle_renderer() {
     let mut sign = Some(VisibleMapNameSign {
         landmark: "TEST".to_string(),
