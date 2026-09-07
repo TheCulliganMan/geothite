@@ -77,3 +77,15 @@ fn apply_visible_pc_quantity_controls(shell: &mut BevyRuntimeShell, down: u8, a_
         dispatch_visible_ui_direction(shell, direction);
     }
 }
+
+fn sample_visible_pc_text_joypad_history(keys: &ButtonInput<KeyCode>, shell: &mut BevyRuntimeShell) {
+    let mailbox_reader = shell.mailbox_cursor.is_some() && shell.pending_mail_read.is_some();
+    let pc_text = shell.pc_notice.is_some() && shell.pc_item_quantity.is_none()
+        && shell.pc_confirmation.is_none();
+    if mailbox_reader || pc_text {
+        // ReadAnyMail.loop, PrintLetterDelay and PromptButton call GetJoypad.
+        // Returning to a scrolling menu must retain their button mirrors;
+        // JoyTextDelay must not turn a held dismissal B into a second B.
+        shell.pc_joypad.get_joypad(visible_menu_physical_down(keys));
+    }
+}

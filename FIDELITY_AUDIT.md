@@ -7558,3 +7558,34 @@ Latest checkpoint:
  59955 LIVE expanded confirmation regression (NO+A+Up, B+A+Down, YES+A+Down,
  upper/lower cursor limits and exact15-frame side-effect boundary).
  Source MenuClickSound queues SFX_READ_TEXT_2 before closing wait.
+-59955 TERMINAL0 confirmation cases PASS248.90s. Added direct A/B wait guards
+ plus assertions;65434 TERMINAL0 expanded check PASS213.50s.79562 TERMINAL0
+ all-targets PASS3m35 (existing unused browser_save_path_for_identity warning).
+-83075 TERMINAL101 reader RED175.54s: B closed reader, then the same held B
+ closed the restored mailbox. ReadAnyMail.loop calls GetJoypad; Rust's reader
+ left pc_joypad stale. Added shared text GetJoypad history sampling for mailbox
+ reader and ordinary PC notices (excluding quantity and confirmation owners).
+ Both direct controls and live early mail-reader keyboard branch now sample.
+-28680 LIVE reader + PC notice held-B regression, then fresh-release/repress
+ exit verification. No live test/build was stopped or restarted for latency.
+ Known remaining scope: party notice geometry/entry choreography, complete
+ inherited parent backdrop, ReadAnyMail START printer path, full CPU-cost
+ accounting on PC redraw, and Pokégear nested YesNo/entry transition timing.
+ Goal tool read during this turn reported PAUSED; status was not changed.
+ No full PC/Pokegear/ASM completion claim.
+-28680 TERMINAL0 held-B reader/ordinary-PC-notice check PASS251.15s.
+ 81223 TERMINAL0 all-targets PASS1m50 (existing unused function warning).
+ While that binary ran, added coverage for generic text dismissals invoked
+ without advancing menu-repeat ticks. Text history sampling is unconditional
+ on that generic path (the text handler can consume a fresh edge there).
+ Running the focused regression again against that final guard; no other
+ production changes planned in this batch. Earlier processes all terminal.
+-92693 TERMINAL0 final reader/PC-notice history regression PASS341.89s,
+ including a notice dismissal without advancing menu-repeat ticks. All own
+ test/build processes are now terminal; focused regressions and all-targets
+ checks passed as recorded above. No full ASM parity completion claim.
+-User requested commit and publication to geothite/main. Added Rust-local
+ ignores for generated output and Playwright scratch captures, consistent
+ with the monorepo root's generated-output policy. Existing tracked artifacts
+ are retained. Publish the Rust tree using the existing standalone remote
+ layout and a fast-forward child of its current main.

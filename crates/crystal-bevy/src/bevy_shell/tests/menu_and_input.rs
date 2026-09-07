@@ -10805,6 +10805,21 @@ fn mailbox_reader_close_does_not_reuse_held_b_on_the_restored_list() {
     }
     keys.reset_all();
     for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+    let text = "The cleared MAIL\nwas put away.".to_string();
+    shell.pc_notice = Some(text.clone());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        visible_chars: text.chars().count(), text, page_index: 0, frames_until_next_char: 0,
+    });
+    keys.press(KeyCode::KeyX);
+    apply_visible_runtime_controls(&keys, &mut shell, false);
+    assert!(shell.pc_notice.is_none());
+    for _ in 0..20 {
+        keys.clear();
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.mailbox_cursor.is_some(), "PC notice dismissal also preserves GetJoypad history");
+    }
+    keys.reset_all();
+    for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
     keys.press(KeyCode::KeyX);
     for _ in 0..8 {
         apply_visible_runtime_controls(&keys, &mut shell, true);

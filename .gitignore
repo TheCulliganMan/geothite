@@ -1,2 +1,6 @@
 /target/
 /target-*/
+
+# Generated runtime captures, profiles, and browser scratch files.
+/output/
+/.playwright-cli/

@@ -4041,6 +4041,7 @@ fn apply_runtime_hotkeys(
         return;
     }
     if runtime_shell.pending_mail_read.is_some() {
+        sample_visible_pc_text_joypad_history(&keys, &mut runtime_shell);
         if keys.just_pressed(KeyCode::KeyZ) || keys.just_pressed(KeyCode::KeyX) {
             run_bevy_action(&mut runtime_shell, close_visible_mail_read);
         }
@@ -4445,6 +4446,9 @@ fn apply_visible_runtime_controls(
     if apply_visible_pokegear_card_controls(keys, runtime_shell, advance_repeat) {
         return;
     }
+    // The generic text owner can consume fresh A/B even without advancing
+    // menu repeat ticks, so its GetJoypad mirrors must be updated there too.
+    sample_visible_pc_text_joypad_history(keys, runtime_shell);
     let pc_item_list_active = runtime_shell.pc_item_cursor.is_some()
         && runtime_shell.pc_item_quantity.is_none() && runtime_shell.pc_notice.is_none();
     let pc_item_quantity_active = runtime_shell.pc_item_quantity.is_some();
