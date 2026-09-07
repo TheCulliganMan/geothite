@@ -103,12 +103,16 @@ fn apply_save_management(
                     if action == "import" {
                         anyhow::ensure!(can_replace, "Return to the title screen or overworld and finish online interactions before restoring.");
                         runtime.shell.runtime().save_game(&path, save.into_state())?;
+                        // Prevent the old live session from autosaving over the import before reload.
+                        runtime.quick_save_path = None;
                     }
                     Ok(serde_json::json!({"save": preview, "reload": action == "import"}))
                 }
                 "delete" => {
                     anyhow::ensure!(can_replace, "Return to the title screen or overworld and finish online interactions before deleting.");
                     erase_save_game(&path)?;
+                    // Autosave must not recreate a deleted slot while the browser restarts.
+                    runtime.quick_save_path = None;
                     Ok(serde_json::json!({"reload": true}))
                 }
                 _ => unreachable!(),

@@ -1,6 +1,7 @@
 // Only checkpoint atomic overworld states; battles and scripts retain the last
 // safe checkpoint rather than saving presentation state the loader cannot restore.
 fn save_browser_checkpoint(runtime: &mut BevyRuntimeShell) -> Result<bool> {
+    if save_manager_is_open() { return Ok(false); }
     let Some(path) = runtime.quick_save_path.as_ref() else { return Ok(false) };
     let snapshot = runtime.shell.snapshot()?;
     if snapshot.trainer.player_name.is_empty()

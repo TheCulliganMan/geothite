@@ -77,8 +77,8 @@ export function mountSaveManagement(wasm, { document, window }) {
   };
   const refresh = async () => {
     current = await request('status');
-    summary.textContent = current.save ? `Saved trainer: ${current.save.trainer} · ID ${current.save.trainer_id}` : 'No valid saved game for this player yet.';
-    if (!current.can_save) summary.textContent += ' Save new progress after returning to the overworld.';
+    summary.textContent = current.save ? `${current.save.trainer} · Trainer ${current.save.trainer_id}` : 'No valid saved game for this player yet.';
+    if (!current.can_save && !current.save) summary.textContent = 'Start your adventure to create a save.';
   };
   const open = () => {
     previousFocus = document.activeElement;
@@ -88,7 +88,7 @@ export function mountSaveManagement(wasm, { document, window }) {
   };
   const close = () => {
     if (busy) return;
-    pending = null; confirm.hidden = true; linkBox.hidden = true; file.value = '';
+    pending = null; confirm.hidden = true; linkBox.hidden = true; linkBox.open = false; file.value = '';
     wasm.crystal_save_manager_close(); dialog.close();
     (previousFocus?.isConnected ? previousFocus : document.querySelector('canvas'))?.focus();
   };
@@ -98,7 +98,7 @@ export function mountSaveManagement(wasm, { document, window }) {
     const preview = await request('inspect', bytes);
     pending = { action: 'import', bytes };
     confirm.querySelector('p').textContent = `Restore ${preview.save.trainer} (ID ${preview.save.trainer_id})? This replaces your current saved progress and restarts the game. Download a backup first if you want to keep it.`;
-    confirm.hidden = false; status.textContent = 'Save checked. Confirm below to restore it.';
+    confirm.hidden = false; confirm.scrollIntoView?.({ block: 'nearest' }); status.textContent = 'Ready to restore.';
   };
   document.querySelector('#save-games').disabled = false;
   document.querySelector('#save-games').addEventListener('click', open);
@@ -116,8 +116,8 @@ export function mountSaveManagement(wasm, { document, window }) {
     status.textContent = 'Backup downloaded. It contains your last saved progress.';
   }));
   const copyLink = async () => {
-    try { await window.navigator.clipboard.writeText(link.value); status.textContent = 'Save link copied. Share it or add it as a bookmark.'; }
-    catch { link.focus(); link.select(); status.textContent = 'Copy the selected link to share it or save it as a bookmark.'; }
+    try { await window.navigator.clipboard.writeText(link.value); status.textContent = 'Link copied. Ready to share or bookmark.'; }
+    catch { linkBox.open = true; link.focus(); link.select(); status.textContent = 'Copy the selected link to share it or save it as a bookmark.'; }
   };
   dialog.querySelector('[data-action=share]').addEventListener('click', () => run(async () => {
     await request('export'); link.value = await createSaveLink(wasm.crystal_save_manager_take_bytes(), window.location.href);
@@ -132,7 +132,7 @@ export function mountSaveManagement(wasm, { document, window }) {
   dialog.querySelector('[data-action=delete]').addEventListener('click', () => {
     pending = { action: 'delete' }; confirm.hidden = false;
     confirm.querySelector('p').textContent = 'Delete this player’s saved game and its recovery copy? The game will restart. Download a backup first if you want to keep your progress.';
-    status.textContent = '';
+    confirm.scrollIntoView?.({ block: 'nearest' }); status.textContent = '';
   });
   dialog.querySelector('[data-cancel]').addEventListener('click', () => { pending = null; confirm.hidden = true; status.textContent = 'Cancelled. Your save is unchanged.'; });
   dialog.querySelector('[data-confirm]').addEventListener('click', () => run(async () => {
