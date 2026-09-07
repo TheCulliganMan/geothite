@@ -61,7 +61,13 @@ keep their 2D presentation. Camera zoom and rotation are available in 2.5D.
 
 Browser identities are created automatically. Save through the game's normal
 menu; saves remain in that browser. Clearing browser storage removes the local
-identity and saves. Server-side multiplayer ratings persist separately.
+identity and saves.
+
+Multiplayer ratings persist in a named Docker volume across container rebuilds
+and restarts. Keep the signing secret in `.env` unchanged so returning players
+can reuse their identities. Active connections, chat history, and in-progress
+matches are temporary; players reconnect after a server restart. See
+[persistence and cleanup](docs/deployment.md#persistence-and-cleanup).
 
 ### Multiplayer
 

@@ -89,7 +89,13 @@ uses the `web-release` profile to limit linker memory use.
 ## Persistence and cleanup
 
 Multiplayer ratings persist in the `crystal_multiplayer_data` volume. Game saves
-remain in each player's browser. Back up server data and preserve the signing
+remain in each player's browser. Live connections, chat history, queues, and
+in-progress matches are held in memory and do not survive a server restart.
+Returning players retain their browser credentials when the signing secret
+stays unchanged. The server loads persisted ratings at startup and writes
+ratings atomically to `ratings.json` in its data directory.
+
+Back up server data and preserve the signing
 secret before migrating. Routine Compose updates keep the data volume.
 Do not use `docker compose down -v` unless you intend to delete server data.
 
