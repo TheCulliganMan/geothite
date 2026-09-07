@@ -4400,3 +4400,117 @@ fn battle_transition_handoff_keeps_input_owned_for_sliding_intro() {
             "BattleIntroSlidingPics must own input before trainer/wild narration");
     }
 }
+
+#[test]
+fn battle_frontpic_padding_matches_asm_for_every_picture_size() {
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    for width in [40usize, 48, 56] {
+        let source = Image::new(
+            Extent3d {
+                width: width as u32,
+                height: width as u32,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            [17u8, 33, 65, 255].repeat(width * width),
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::default(),
+        );
+        let frame = SpriteFrame {
+            handle: images.add(source),
+            size: Vec2::splat(width as f32),
+        };
+        let padded = battle_padded_frontpic(&mut art, &mut images, &frame).unwrap();
+        assert_eq!(padded.size, Vec2::splat(56.0));
+        let pixels = &images.get(&padded.handle).unwrap().data;
+        let left = if width == 56 { 0 } else { 8 };
+        for y in 0..56 {
+            for x in 0..56 {
+                let inside = x >= left && x < left + width && y >= 56 - width;
+                let expected = if inside { [17, 33, 65, 255] } else { [0; 4] };
+                assert_eq!(&pixels[(y * 56 + x) * 4..(y * 56 + x + 1) * 4], &expected);
+            }
+        }
+        let image_count = images.len();
+        let repeated = battle_padded_frontpic(&mut art, &mut images, &frame).unwrap();
+        assert_eq!(padded.handle, repeated.handle);
+        assert_eq!(
+            images.len(),
+            image_count,
+            "redrawing must reuse the padded texture"
+        );
+    }
+}
+
+#[test]
+fn battle_pokemon_positions_use_native_front_and_back_boxes() {
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    for (side, width, species) in [
+        (PokemonSpriteSide::Front, 40, "hoothoot"),
+        (PokemonSpriteSide::Back, 48, "totodile"),
+    ] {
+        let frame = SpriteFrame {
+            handle: images.add(Image::new(
+                Extent3d {
+                    width,
+                    height: width,
+                    depth_or_array_layers: 1,
+                },
+                TextureDimension::D2,
+                [17u8, 33, 65, 255].repeat((width * width) as usize),
+                TextureFormat::Rgba8UnormSrgb,
+                RenderAssetUsages::default(),
+            )),
+            size: Vec2::splat(width as f32),
+        };
+        art.pokemon_cache.insert(
+            PokemonArtKey {
+                species_id: normalize_pokemon_asset_id(species),
+                side,
+                shiny: false,
+                frame: 0,
+            },
+            frame,
+        );
+        spawn_battler_marker(
+            &mut Commands::new(&mut queue, &world),
+            &mut art,
+            &AssetRoot::new(PathBuf::from("unused")),
+            &mut images,
+            species,
+            side,
+            22,
+            22,
+            false,
+            false,
+            0,
+            Vec3::ZERO,
+            1.0,
+            None,
+            VisibleBattlerArtOverride::Pokemon,
+            None,
+            None,
+            None,
+            true,
+            None,
+        )
+        .unwrap();
+    }
+    queue.apply(&mut world);
+    let mut query = world.query_filtered::<(&Transform, &Sprite), With<BattleBattlerMarker>>();
+    let positions: Vec<_> = query
+        .iter(&world)
+        .map(|(transform, sprite)| {
+            let size = sprite.custom_size.unwrap() / 4.0;
+            let left = (transform.translation.x - PLAYFIELD_LEFT) / 4.0 - size.x / 2.0;
+            let top = (PLAYFIELD_TOP - transform.translation.y) / 4.0 - size.y / 2.0;
+            (left, top, size)
+        })
+        .collect();
+    assert!(positions.contains(&(96.0, 0.0, Vec2::splat(56.0))));
+    assert!(positions.contains(&(16.0, 48.0, Vec2::splat(48.0))));
+}
