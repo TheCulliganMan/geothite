@@ -4,3 +4,6 @@
 # Generated runtime captures, profiles, and browser scratch files.
 /output/
 /.playwright-cli/
+
+# Local deployment secrets.
+.env
