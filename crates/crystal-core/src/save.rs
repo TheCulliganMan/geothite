@@ -759,7 +759,9 @@ fn read_browser_save_bytes(path: &Path) -> Result<Vec<u8>, SaveError> {
         .map_err(|error| SaveError::Decode(format!("browser save {}: {error}", path.display())))
 }
 
-fn encode_save_game_bytes(save: &SaveGame) -> Result<Vec<u8>, SaveError> {
+/// Encode a validated current-format save for download or sharing.
+pub fn encode_save_game_bytes(save: &SaveGame) -> Result<Vec<u8>, SaveError> {
+    save.validate()?;
     let encoded = bincode::serde::encode_to_vec(save, save_binary_config())
         .map_err(|error| SaveError::Encode(error.to_string()))?;
     if encoded.len() > u32::MAX as usize {

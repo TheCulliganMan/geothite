@@ -25,3 +25,18 @@ cargo run -p crystal-assets --bin pack_player_customization -- . \
 The builder preserves the source pack's maps, rules, sprites and audio, adds
 the `player-customization` manifest and feature flag, and derives a new verified
 pack identity. The Docker build includes the form and stylesheet automatically.
+
+## Save games
+
+Open **Settings → Save games** to save progress, download a `.crystalsave`
+backup, restore a file, or delete the current player's save and recovery copy.
+Restoring and deleting require confirmation and restart the game. Other
+players' saves and multiplayer credentials are unchanged.
+
+**Copy save link** creates a compressed snapshot of the last saved game in a
+URL fragment. Share that URL or bookmark it; opening it previews the trainer
+and asks before replacing progress. The fragment is not sent to the web server.
+Anyone with the link can import the game progress. Links do not update as you
+play, and very large saves must be shared as files instead. Rust validates the
+current save format, checksum, exact pack identity, and game references before
+importing. No older save formats or pack migration are accepted.

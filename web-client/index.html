@@ -100,6 +100,7 @@
       }
     </style>
     <link rel="stylesheet" href="./player-customization.css?v=1">
+    <link rel="stylesheet" href="./save-management.css?v=1">
     <link rel="stylesheet" href="./mobile-player.css?v=20260907-controls">
   </head>
   <body>
@@ -133,6 +134,7 @@
     <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
     <nav id="controls" aria-label="Display controls">
       <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D</button>
+      <button id="save-games" type="button" disabled>Save games</button>
       <button id="personalization" type="button" hidden>Personalization</button>
       <span id="personalization-notice" role="status"></span>
       <button id="fullscreen" type="button" aria-label="Fullscreen">⛶</button>
@@ -146,6 +148,31 @@
       </div>
     </nav>
     </details>
+    <dialog id="save-games-dialog" aria-labelledby="save-games-title">
+      <h2 id="save-games-title">Save games</h2>
+      <p data-summary></p>
+      <small>Backups and links contain your last saved progress. Save now to include your latest changes.</small>
+      <div class="save-actions">
+        <button type="button" data-action="save">Save now</button>
+        <button type="button" data-action="download">Download backup</button>
+        <button type="button" data-action="share">Copy save link</button>
+      </div>
+      <div data-link-box hidden>
+        <label for="save-share-link">Share or bookmark this snapshot</label>
+        <textarea id="save-share-link" data-link readonly spellcheck="false"></textarea>
+        <small>Anyone with this link can import this game progress. Future progress does not update the link.</small>
+        <button type="button" data-copy>Copy link</button>
+      </div>
+      <label for="save-import">Restore a save file</label>
+      <input id="save-import" type="file" accept=".crystalsave,application/octet-stream">
+      <small>Only saves for the current game pack can be restored.</small>
+      <div class="save-actions"><button type="button" data-action="delete">Delete saved game</button></div>
+      <section data-confirmation hidden aria-label="Confirm save replacement">
+        <p></p><div class="save-actions"><button type="button" data-cancel>Cancel</button><button type="button" data-confirm>Confirm and restart</button></div>
+      </section>
+      <p role="status" aria-live="polite"></p>
+      <button type="button" data-close>Close</button>
+    </dialog>
     <dialog id="personalization-dialog" aria-labelledby="personalization-title">
       <form>
         <h2 id="personalization-title">Personalization</h2>
@@ -177,6 +204,7 @@
       import { mountAudioUnlock } from './audio-unlock.js?v=20260907-mobile';
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
+      import { mountSaveManagement } from './save-management.js?v=1';
       import { mountPlayerCustomization } from './player-customization.js?v=1';
       import { mountSocialChat } from './social-chat.js?v=20260907-mobile';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
@@ -259,6 +287,7 @@
           document.querySelector('#touch-controls').disabled = false;
           mountSocialChat(wasm, { document, window, playerId: session.playerId });
           mountPlayerCustomization(wasm, { document, window });
+          mountSaveManagement(wasm, { document, window });
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             cameraControls: {

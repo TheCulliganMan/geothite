@@ -1,0 +1,11 @@
+#save-games-dialog { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 24px; overflow-y: auto; }
+#save-games-dialog h2 { margin: 0 0 8px; }
+#save-games-dialog p { line-height: 1.5; }
+#save-games-dialog .save-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+#save-games-dialog label { display: block; margin: 16px 0 8px; }
+#save-games-dialog input, #save-games-dialog textarea { width: 100%; max-width: 100%; color: #fff; background: #141e2d; border: 1px solid #44536a; border-radius: 8px; padding: 10px; font: 16px/1.4 system-ui, sans-serif; }
+#save-games-dialog textarea { height: 88px; resize: vertical; }
+#save-games-dialog [data-confirmation] { border: 1px solid #ca8960; border-radius: 10px; padding: 12px; margin: 16px 0; }
+#save-games-dialog [data-action=delete] { color: #ffb5a8; }
+#save-games-dialog [role=status] { color: #c7eafa; min-height: 24px; overflow-wrap: anywhere; }
+#save-games-dialog small { display: block; color: #aab7c7; line-height: 1.5; margin: 8px 0; }

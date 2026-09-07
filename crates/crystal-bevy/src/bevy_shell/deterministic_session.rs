@@ -331,7 +331,7 @@ fn apply_keyboard_input(
         .wrapping_add(u64::from(elapsed_input_ticks));
     // Modal profile editing blocks gameplay input, while the presentation clock
     // keeps input release, browser observation, and real-time clock updates live.
-    if customization_is_open() { return; }
+    if customization_is_open() || save_manager_is_open() { return; }
     match advance_visible_poison_flash(&mut runtime_shell, elapsed_input_ticks) {
         Ok(true) => return,
         Ok(false) => {}

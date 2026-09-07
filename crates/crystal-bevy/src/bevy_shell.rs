@@ -5131,6 +5131,7 @@ pub fn run_bevy_shell(
             ..default()
         }))
         .add_systems(Startup, setup_shell_view)
+        .add_systems(Update, apply_save_management.before(apply_player_customization).before(poll_multiplayer).before(apply_keyboard_input))
         .add_systems(Update, apply_player_customization.before(poll_multiplayer).before(apply_keyboard_input))
         .add_systems(Update, poll_multiplayer.before(apply_keyboard_input))
         .add_systems(
@@ -7521,6 +7522,7 @@ fn initialize_bevy_runtime_shell(
 include!("bevy_shell/deterministic_session.rs");
 include!("bevy_shell/multiplayer.rs");
 include!("bevy_shell/player_customization.rs");
+include!("bevy_shell/save_management.rs");
 include!("bevy_shell/field_travel.rs");
 include!("bevy_shell/trainer_card.rs");
 include!("bevy_shell/pokedex.rs");
