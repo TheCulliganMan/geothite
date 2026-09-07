@@ -937,6 +937,9 @@ fn nickname_prompt_uses_asm_pages_and_tile_baselines() {
             &mut images, &choice,
         ).expect("render source nickname question");
         queue.apply(&mut world);
+        let mut surfaces = world.query_filtered::<Option<&SceneDialogMarker>, With<Sprite>>();
+        assert!(surfaces.iter(&world).all(|marker| marker.is_some()),
+            "nickname frame, paper, text, arrow and choices must share field-dialogue ownership");
         let mut query = world.query_filtered::<&Transform, With<DialogGlyphMarker>>();
         let origins = query.iter(&world).map(|transform| transform.translation).collect::<Vec<_>>();
         for (x, y) in [(1.0, 14.0), (1.0, 16.0)] {
@@ -961,6 +964,58 @@ fn nickname_prompt_uses_asm_pages_and_tile_baselines() {
                 "nickname-question.png"
             })).expect("save nickname prompt render");
         }
+        #[cfg(feature = "fullscreen-scaling")]
+        assert_fullscreen_nickname_dialogue_layout(world);
         choice.nickname_pages.pop_front();
+    }
+}
+
+#[cfg(feature = "fullscreen-scaling")]
+fn assert_fullscreen_nickname_dialogue_layout(mut world: World) {
+    let mut runtime = core_modular_title_shell_for_test();
+    runtime.title_menu = None;
+    runtime.intro_screen = None;
+    let mut app = App::new();
+    let mut surfaces = world.query::<(&Sprite, &Transform, &Handle<Image>,
+        Option<&SceneDialogMarker>, Option<&BattleCommandMarker>)>();
+    for (sprite, transform, texture, dialogue, battle) in surfaces.iter(&world) {
+        let mut entity = app.world_mut().spawn(SpriteBundle {
+            sprite: sprite.clone(),
+            transform: *transform,
+            texture: texture.clone(),
+            ..default()
+        });
+        if dialogue.is_some() { entity.insert(SceneDialogMarker); }
+        if battle.is_some() { entity.insert(BattleCommandMarker); }
+    }
+    app.add_plugins((MinimalPlugins, bevy::transform::TransformPlugin))
+        .insert_resource(runtime)
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .insert_resource(RenderedViewport {
+            map_name: Some("ElmsLab".into()),
+            ..default()
+        })
+        .add_systems(Startup, setup_fullscreen_scene)
+        .add_systems(PostUpdate, sync_fullscreen_world_layout
+            .before(bevy::transform::TransformSystem::TransformPropagate));
+    app.world_mut().spawn((Window {
+        resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+        ..default()
+    }, bevy::window::PrimaryWindow));
+    for (width, height) in [(1920.0, 1080.0), (390.0, 430.0), (640.0, 576.0)] {
+        let world = app.world_mut();
+        world.query::<&mut Window>().single_mut(world).resolution.set(width, height);
+        app.update();
+        let world = app.world_mut();
+        let (root, offset) = world.query_filtered::<(Entity, &Transform), With<FullscreenDialogRoot>>()
+            .single(world);
+        let offset = offset.translation;
+        let mut surfaces = world.query_filtered::<(&Transform, &GlobalTransform, Option<&Parent>),
+            Or<(With<SceneDialogMarker>, With<BattleCommandMarker>)>>();
+        for (local, global, parent) in surfaces.iter(world) {
+            assert_eq!(parent.map(Parent::get), Some(root), "every nickname surface must follow the dialogue root");
+            assert!((global.translation() - local.translation - offset).length() < 0.001,
+                "frame and glyphs must receive exactly the same viewport translation");
+        }
     }
 }
