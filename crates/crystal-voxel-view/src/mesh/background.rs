@@ -36,6 +36,38 @@ pub(super) fn append_repeating_background_apron(
         return;
     };
 
+    if mesh.tree_cache.is_some() {
+        // The apron repeats one existing source tile. Four planar strips with
+        // repeat UVs preserve every texel without one quad per repeated tile.
+        let apron = BACKGROUND_APRON_TILES;
+        let mut surface = SurfaceMeshData::default();
+        for [left, right, top, bottom] in [
+            [-apron, width + apron, -apron, 0],
+            [-apron, width + apron, height, height + apron],
+            [-apron, 0, 0, height],
+            [width, width + apron, 0, height],
+        ] {
+            append_top(
+                &mut surface,
+                [
+                    geometry.origin_x + left as f32 * geometry.tile_width,
+                    geometry.origin_x + right as f32 * geometry.tile_width,
+                    geometry.origin_z + top as f32 * geometry.tile_height,
+                    geometry.origin_z + bottom as f32 * geometry.tile_height,
+                ],
+                BACKGROUND_HEIGHT,
+                (left as f32, right as f32, top as f32, bottom as f32),
+            );
+        }
+        mesh.background = Some(RepeatingBackground {
+            mesh: surface,
+            texture: cells[background_row * geometry.width + background_column]
+                .texture
+                .clone(),
+        });
+        return;
+    }
+
     for row in -BACKGROUND_APRON_TILES..height + BACKGROUND_APRON_TILES {
         for column in -BACKGROUND_APRON_TILES..width + BACKGROUND_APRON_TILES {
             if (0..width).contains(&column) && (0..height).contains(&row) {
@@ -211,6 +243,53 @@ mod tests {
                 .all(|position| position[1] == BACKGROUND_HEIGHT)
         );
         assert!(mesh.solid.positions.is_empty());
+        let mut compact = TerrainMeshData {
+            tree_cache: Some(HashMap::new()),
+            ..Default::default()
+        };
+        append_repeating_background_apron(&mut compact, &geometry, &cells, &shapes);
+        assert!(compact.textured.positions.is_empty());
+        let background = compact.background.as_ref().unwrap();
+        assert_eq!(background.mesh.quad_count(), 4);
+        let mut area = 0.0;
+        for (positions, uvs) in background
+            .mesh
+            .positions
+            .chunks_exact(4)
+            .zip(background.mesh.uvs.chunks_exact(4))
+        {
+            for (p, uv) in positions.iter().zip(uvs) {
+                assert_eq!(p[0], geometry.origin_x + uv[0] * geometry.tile_width);
+                assert_eq!(p[2], geometry.origin_z + uv[1] * geometry.tile_height);
+                assert_eq!(p[1], BACKGROUND_HEIGHT);
+            }
+            area += (uvs[3][0] - uvs[0][0]) * (uvs[1][1] - uvs[0][1]);
+            // A repeat sampler must read the same source texel at every source-pixel center,
+            // including negative coordinates to the north and west of the map.
+            for row in (uvs[0][1] as i32)..(uvs[1][1] as i32) {
+                for column in (uvs[0][0] as i32)..(uvs[3][0] as i32) {
+                    assert!(
+                        !(column >= 0
+                            && column < geometry.width as i32
+                            && row >= 0
+                            && row < geometry.height as i32)
+                    );
+                    for pixel in 0..8 {
+                        assert_eq!(
+                            ((column as f32 + (pixel as f32 + 0.5) / 8.0).rem_euclid(1.0) * 8.0)
+                                .floor() as usize,
+                            pixel
+                        );
+                        assert_eq!(
+                            ((row as f32 + (pixel as f32 + 0.5) / 8.0).rem_euclid(1.0) * 8.0)
+                                .floor() as usize,
+                            pixel
+                        );
+                    }
+                }
+            }
+        }
+        assert_eq!(area as usize, expected_quads);
 
         let min_x = mesh
             .textured
