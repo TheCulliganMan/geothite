@@ -123,3 +123,29 @@ docker compose -f docker-compose.production.yml exec pokecrystal-multiplayer \
 If a build fails, fix the reported error before treating the update as complete.
 Check container health and the public HTTPS endpoint after deployment. A healthy
 backend alone does not verify DNS or reverse-proxy configuration.
+
+### Validate browser releases through the public URL
+
+The Docker build gives each generated JavaScript/WASM pair a content-derived
+filename and rewrites the page to import that pair. Do not publish generated
+files under a reused URL: an intermediary cache can retain the old JavaScript
+while fetching new WASM, causing a missing function-import startup failure.
+For manually assembled browser distributions, run
+`sh tools/version-browser-bundle.sh /path/to/web` after copying the page and
+wasm-bindgen output.
+
+Before rollout, run `npm ci`, `npm run test:browser`, and install the test
+browsers with `npx playwright install chromium webkit`. Validate the candidate
+and then repeat against the public HTTPS URL:
+
+```sh
+node tools/browser-deployment-smoke.mjs \
+  'https://your-game.example/?multiplayer=off' \
+  /path/to/previous-release/crystal-bevy.js /tmp/deployment-proof.json
+```
+
+The check reaches the New Game menu in Chromium and mobile WebKit with both
+fresh assets and an intentionally stale unversioned JavaScript response. It
+fails on startup errors or missing game state and records screenshots. This is
+WebKit with an iPhone viewport, not a physical-device Safari test. A container
+healthcheck or a localhost-only check does not validate public cache behavior.
