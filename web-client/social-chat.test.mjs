@@ -176,3 +176,46 @@ test('passive messages fade with age and reopening reveals their history', () =>
     assert.equal(h.window.getComputedStyle(h.document.querySelector('.chat-line:last-child')).opacity, '1');
   } finally { h.window.Date.now = originalNow; h.cleanup(); }
 });
+
+test('mobile chat tracks the visible viewport above the keyboard and clears its open state', () => {
+  const dom = new JSDOM('<canvas tabindex="0"></canvas>');
+  const { window } = dom;
+  const viewport = new window.EventTarget();
+  viewport.height = 350;
+  viewport.offsetTop = 50;
+  Object.defineProperty(window, 'visualViewport', { value: viewport });
+  const cleanup = mountSocialChat({
+    crystal_social_focus() {}, crystal_social_poll: () => '{"connected":true,"events":[],"players":[]}',
+  }, { window, document: window.document, playerId: 1 });
+  try {
+    const panel = window.document.querySelector('#social-chat');
+    panel.querySelector('.chat-toggle').click();
+    assert.equal(window.document.body.classList.contains('chat-open'), true);
+    assert.equal(panel.style.getPropertyValue('--chat-viewport-height'), '350px');
+    assert.equal(panel.style.getPropertyValue('--chat-viewport-bottom'), (window.innerHeight - 400) + 'px');
+    viewport.height = 280;
+    viewport.dispatchEvent(new window.Event('resize'));
+    assert.equal(panel.style.getPropertyValue('--chat-viewport-height'), '280px');
+    panel.querySelector('.chat-close').click();
+    assert.equal(window.document.body.classList.contains('chat-open'), false);
+    cleanup();
+    viewport.height = 700;
+    viewport.dispatchEvent(new window.Event('resize'));
+    assert.equal(panel.style.getPropertyValue('--chat-viewport-height'), '280px');
+  } finally { window.close(); }
+});
+
+test('connection status recovers visibly without duplicating reconnect errors in the log', () => {
+  const h = chatHarness();
+  try {
+    const status = h.document.querySelector('.chat-status');
+    assert.ok(status);
+    h.poll({ connected: true, events: [], players: [] });
+    assert.equal(status.textContent, 'Connected');
+    h.poll({ connected: false, events: [], players: [] });
+    assert.equal(status.textContent, 'Reconnecting…');
+    h.poll({ connected: true, events: [], players: [] });
+    assert.equal(status.textContent, 'Connected');
+    assert.equal(h.document.querySelector('.chat-log').textContent.includes('Reconnecting'), false);
+  } finally { h.cleanup(); }
+});
