@@ -10,10 +10,14 @@ mod tests {
         let base = crystal_assets::read_verified_compiled_game_pack(path).unwrap();
         let pack = crystal_assets::build_player_customization_modpack(&base).unwrap();
         assert!(pack.data().player_customization);
-        let (legacy, content_hash) = crystal_assets::player_customization_base_save_identity(&pack).unwrap().unwrap();
+        let (legacy, content_hash) = crystal_assets::player_customization_base_save_identity(&pack)
+            .unwrap()
+            .unwrap();
         let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../content-packs/core-modular.browser.crystalpack")
-        ).unwrap();
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../../content-packs/core-modular.browser.crystalpack"),
+        )
+        .unwrap();
         assert_eq!(legacy, loaded.save_modpack_identity().unwrap());
         assert_eq!(content_hash, base.identity().unwrap().content_hash);
         assert!(!base.data().player_customization);
@@ -54,6 +58,9 @@ mod tests {
             player_customization: true,
             ..data
         };
-        assert_eq!(serde_json::to_value(&data).unwrap()["player_customization"], true);
+        assert_eq!(
+            serde_json::to_value(&data).unwrap()["player_customization"],
+            true
+        );
     }
 }

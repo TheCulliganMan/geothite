@@ -5,12 +5,12 @@ use crystal_assets::{build_player_customization_modpack, read_verified_compiled_
 
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
-    let repository_root = PathBuf::from(
-        args.next()
-            .context("usage: pack_player_customization <repository-root> [base-pack] [output-pack]")?,
-    )
-    .canonicalize()
-    .context("resolve repository root")?;
+    let repository_root =
+        PathBuf::from(args.next().context(
+            "usage: pack_player_customization <repository-root> [base-pack] [output-pack]",
+        )?)
+        .canonicalize()
+        .context("resolve repository root")?;
     let base_pack = args
         .next()
         .map(PathBuf::from)
@@ -20,7 +20,9 @@ fn main() -> Result<()> {
         .map(PathBuf::from)
         .unwrap_or_else(|| repository_root.join("content-packs/player-customization.crystalpack"));
     if args.next().is_some() {
-        anyhow::bail!("usage: pack_player_customization <repository-root> [base-pack] [output-pack]");
+        anyhow::bail!(
+            "usage: pack_player_customization <repository-root> [base-pack] [output-pack]"
+        );
     }
     pack_player_customization(&base_pack, &output_pack)
 }

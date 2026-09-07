@@ -41,22 +41,32 @@ pub fn build_player_customization_modpack(base: &CompiledGamePack) -> Result<Com
 
 /// Reconstruct only the exact pre-personalization pack, so existing browser saves
 /// can be copied into the new slot without accepting unrelated pack identities.
-pub fn player_customization_base_save_identity(pack: &CompiledGamePack)
-    -> Result<Option<(crystal_core::save::SaveModpackIdentity, String)>> {
-    if !pack.data.player_customization { return Ok(None); }
+pub fn player_customization_base_save_identity(
+    pack: &CompiledGamePack,
+) -> Result<Option<(crystal_core::save::SaveModpackIdentity, String)>> {
+    if !pack.data.player_customization {
+        return Ok(None);
+    }
     verify_compiled_game_pack_for_runtime(pack)?;
-    ensure!(pack.report.manifests.last().map(String::as_str) == Some(PLAYER_CUSTOMIZATION_MANIFEST_ID),
-        "player customization must be the final extension for save migration");
+    ensure!(
+        pack.report.manifests.last().map(String::as_str) == Some(PLAYER_CUSTOMIZATION_MANIFEST_ID),
+        "player customization must be the final extension for save migration"
+    );
     let mut base = pack.clone();
     base.data.player_customization = false;
     base.report.manifests.pop();
     base.identity = derive_compiled_game_pack_identity_from_manifest(
-        base.format_version, &base.data, &base.audio_manifest, &base.runtime_files, &base.report,
+        base.format_version,
+        &base.data,
+        &base.audio_manifest,
+        &base.runtime_files,
+        &base.report,
     )?;
     verify_compiled_game_pack_for_runtime(&base)?;
     let bytes = crate::serialized_compiled_game_pack_bytes(&base)?;
     let identity = crystal_core::save::SaveModpackIdentity::from_compiled_pack_bytes(
-        base.runtime_modpack_id()?, &bytes,
+        base.runtime_modpack_id()?,
+        &bytes,
     )?;
     Ok(Some((identity, base.identity.content_hash)))
 }
