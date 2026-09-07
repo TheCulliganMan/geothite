@@ -189,7 +189,13 @@ fn save_player_customization(
         "This pack does not enable personalization."
     );
     profile.validate()?;
-    let before = runtime.shell.session().state().clone();
+    let before = runtime.shell.session.clone();
+    let journal = (
+        runtime.shell.runtime_command_sequence,
+        runtime.shell.runtime_commands.len(),
+        runtime.shell.runtime_results.len(),
+    );
+    let last_frame = runtime.shell.last_frame.clone();
     let path = runtime
         .quick_save_path
         .clone()
@@ -197,7 +203,7 @@ fn save_player_customization(
     let update = (|| -> Result<()> {
         runtime
             .shell
-            .set_trainer_identity(profile.name.clone(), before.player_id)?;
+            .set_trainer_identity(profile.name.clone(), before.state.player_id)?;
         runtime.shell.set_player_gender(profile.sprite)?;
         persist_customization(profile)?;
         runtime.shell.save(&path)?;
@@ -207,7 +213,11 @@ fn save_player_customization(
         if let Some(old) = previous_profile {
             let _ = persist_customization(old);
         }
-        runtime.shell.session.state = before;
+        runtime.shell.session = before;
+        runtime.shell.runtime_command_sequence = journal.0;
+        runtime.shell.runtime_commands.truncate(journal.1);
+        runtime.shell.runtime_results.truncate(journal.2);
+        runtime.shell.last_frame = last_frame;
         mark_runtime_snapshot_dirty(runtime);
         return Err(error);
     }
@@ -388,6 +398,11 @@ mod customization_tests {
         assert_eq!(loaded.player_id, 23456);
         assert_eq!(shell.shell.snapshot().unwrap().trainer.player_gender, 1);
         let before = shell.shell.session().state().clone();
+        let journal_before = (
+            shell.shell.runtime_command_sequence,
+            shell.shell.runtime_commands.len(),
+            shell.shell.runtime_results.len(),
+        );
         shell.quick_save_path = Some(
             directory
                 .join("missing.crystalsave")
@@ -397,6 +412,14 @@ mod customization_tests {
         std::fs::write(directory.join("missing.crystalsave"), b"file").unwrap();
         assert!(save_player_customization(&mut shell, &prior, Some(&next)).is_err());
         assert_eq!(shell.shell.session().state(), &before);
+        assert_eq!(
+            (
+                shell.shell.runtime_command_sequence,
+                shell.shell.runtime_commands.len(),
+                shell.shell.runtime_results.len()
+            ),
+            journal_before
+        );
         assert_eq!(
             shell
                 .shell
