@@ -253,42 +253,9 @@ tests or dedicated test targets, not in the production game executable.
 
 ### Deploy online multiplayer
 
-Set `CRYSTAL_AUTH_SECRET` to a stable random signing secret of at least 32 bytes
-(for example, generate one with `openssl rand -hex 32`). Keep it across restarts.
-
-```sh
-docker compose -f docker-compose.production.yml up -d --build pokecrystal-multiplayer
-```
-
-Open the game's HTTPS URL and play. No invite or account is required. The browser
-automatically requests a server-issued player identity from `POST /v1/session`
-and remembers its signed credential locally for future visits. Credentials last
-ten years. The server chooses identities and verifies them on WebSocket connections.
-Browser saves remain local; multiplayer ratings live in the Docker data volume.
-
-The page requires HTTPS (localhost is also supported) for its per-player Web Lock.
-A second tab for the same player shows an explanation instead of opening a
-duplicate connection or writing the same save concurrently.
-
-Terminate TLS at your proxy and forward `/v1/ws` with WebSocket upgrades to port
-8080. Allow an idle timeout longer than 45 seconds. The server sends heartbeat
-pings every 15 seconds, expires unresponsive clients after 45 seconds, and bounds
-socket writes to two seconds. Failed critical delivery disconnects the client
-and cancels its match; presence departures are never silently dropped.
-
-Verification commands from `rust/`:
-
-```sh
-cargo test --locked -p crystal-web-server -p crystal-net
-node --test web-client/browser-session.test.mjs
-cargo check --locked -p crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown
-```
-
-The Docker build caches Cargo dependencies and compiled targets, and uses two
-parallel Cargo jobs by default (`--build-arg CARGO_BUILD_JOBS=N` overrides this).
-The `web-release` profile keeps size optimization within crates and disables
-whole-program LTO, which exhausted an 8 GiB builder on this game. Static page
-and audio updates are copied after compilation, so they do not rebuild Rust.
+See [Deployment](docs/deployment.md) for Docker setup, HTTPS proxying,
+configuration, updates, persistence, and cleanup. The repository includes all
+inputs needed to build the server and WASM browser client together.
 
 ### WebMCP agents in the hosted game
 
@@ -380,24 +347,3 @@ Special Defense stats. Battle AI, screens, and Counter/Mirror Coat follow the
 move's category. The base game retains Crystal's original type split.
 See [the modpack instructions](../modpacks/modern-move-split/README.md) for layering
 on the Gen 3 pack, browser output, and source regeneration.
-
-
-### Self-contained Docker build
-
-The production Docker build includes the exported browser pack and embedded
-modpack JSON. No sibling checkout or prepared source snapshot is required.
-The server and WASM browser client are compiled from the same checkout.
-
-Set a stable random `CRYSTAL_AUTH_SECRET` of at least 32 bytes in an ignored
-`.env` file, then run:
-
-```sh
-docker compose -f docker-compose.production.yml up -d --build
-docker compose -f docker-compose.production.yml ps
-curl --fail http://localhost:3003/healthz
-```
-
-Keep the signing secret stable across updates. Ratings persist in the named
-data volume; browser saves remain local. Do not delete the data volume during
-routine updates. The browser pack is generated: regenerate it with the canonical
-exporter when content changes rather than editing it by hand.
