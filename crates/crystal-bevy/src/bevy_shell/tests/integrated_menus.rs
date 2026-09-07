@@ -3054,3 +3054,120 @@ fn integrated_title_mystery_gift_entry_requires_unlocked_save() {
 
     let _ = std::fs::remove_file(&save_path);
 }
+
+#[test]
+fn integrated_pokecenter_pc_opens_from_collision() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "CherrygrovePokecenter1F".to_string(),
+            tile_x: 9,
+            tile_y: 2,
+        },
+        BevyShellConfig { smoke_player_name: Some("TEST".to_string()), ..Default::default() },
+    )
+    .unwrap();
+    shell.shell.session.overworld.player.facing = Direction::Up;
+    shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            5,
+            None,
+            None,
+            "TEST",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .unwrap();
+    assert_eq!(
+        shell
+            .shell
+            .current_overworld_interaction_checked()
+            .unwrap()
+            .map(|i| i.script),
+        Some("PCScript".to_string())
+    );
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    app.update();
+    // Walk against the PC before interacting, as on the touch controls.
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowUp);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    for _ in 0..8 { app.update(); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert!(
+        shell.pc_hub_session_open,
+        "PC must open: status={:?}, events={:?}, interaction={:?}",
+        shell.last_action_status,
+        shell.last_audio_events,
+        shell.shell.current_overworld_interaction_checked()
+    );
+    let snapshot = shell.shell.presentation_snapshot().unwrap();
+    assert!(
+        visible_field_dialog_pages(&snapshot, shell).is_some(),
+        "The PC boot message must reach the visible text printer"
+    );
+    assert!(
+        !visible_scene_dialog_entries(&snapshot, shell)
+            .unwrap()
+            .is_empty(),
+        "The PC boot message must render above its underlying runtime menu"
+    );
+    let _ = shell;
+    for _ in 0..128 {
+        if app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .pc_hub_cursor
+            .is_some()
+        {
+            break;
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert!(
+        shell.pc_hub_cursor.is_some(),
+        "PC boot must reach its menu: {:?}",
+        shell.last_audio_events
+    );
+    let _ = shell;
+    app.update();
+    {
+        let world = app.world_mut();
+        assert!(world.query_filtered::<&Sprite, With<SceneDialogTextBoxBackgroundMarker>>()
+            .iter(world).any(|sprite| sprite.custom_size == Some(Vec2::new(14.0 * TILE_SIZE, 11.0 * TILE_SIZE))),
+            "The PC chooser must render its full menu window");
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    for _ in 0..128 {
+        if app.world().resource::<BevyRuntimeShell>().special_boundary.is_none() { break; }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert!(shell.bill_pc_action_cursor.is_some(), "A must select Bill's PC instead of advancing PCScript");
+    let _ = shell;
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    let selected = app.world().resource::<BevyRuntimeShell>().pc_hub_cursor.as_ref().unwrap().option_index;
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+    assert_ne!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .pc_hub_cursor
+            .as_ref()
+            .unwrap()
+            .option_index,
+        selected
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert_overworld_control_returns_and_player_moves(&mut app, "PCScript");
+}

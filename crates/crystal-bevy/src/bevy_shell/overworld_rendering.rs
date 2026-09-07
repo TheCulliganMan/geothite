@@ -5239,6 +5239,18 @@ fn spawn_scene_dialog(
     if scene_dialog_surface_active(snapshot, runtime_shell) {
         require_bitmap_font_art(rendered_art, asset_root, images)?;
     }
+    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
+        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+        spawn_scene_dialog_text_content(commands, snapshot, runtime_shell, rendered_art, asset_root, images)?;
+        return Ok(());
+    }
+    if runtime_shell.pc_hub_cursor.is_some()
+        || (runtime_shell.bill_pc_action_cursor.is_some()
+            && runtime_shell.pc_notice.is_none() && runtime_shell.field_notice.is_none())
+    {
+        spawn_visible_pokecenter_pc_menu(commands, snapshot, runtime_shell, rendered_art, asset_root, images)?;
+        return Ok(());
+    }
     if runtime_shell.visible_diploma.is_some() {
         spawn_visible_diploma(
             commands,
@@ -5553,6 +5565,82 @@ fn spawn_visible_egg_hatch(
                 6.3,
             );
         }
+    }
+    Ok(())
+}
+
+fn spawn_visible_pokecenter_pc_menu(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    // The hub uses menu_coords 0,0,15,12; BillsPC uses the full 20x18
+    // screen. Neither menu fits in the two-line field textbox.
+    let hub = runtime_shell.pc_hub_cursor.is_some();
+    let (width, height) = if hub { (16.0, 13.0) } else { (20.0, 18.0) };
+    let background = spawn_scene_dialog_window(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        0.0,
+        0.0,
+        width,
+        height,
+        4.0,
+    );
+    commands
+        .entity(background)
+        .insert(SceneDialogTextBoxBackgroundMarker);
+    let entries = if hub {
+        let actions = visible_pc_hub_actions(snapshot);
+        let selected =
+            strict_readonly_cursor_index(&runtime_shell.pc_hub_cursor, "pc:hub", actions.len())
+                .context("PC hub requires a valid cursor")?;
+        actions
+            .into_iter()
+            .enumerate()
+            .map(|(index, action)| {
+                format!(
+                    "{}{}",
+                    if index == selected { ">" } else { " " },
+                    visible_pc_hub_action_label(snapshot, action)
+                )
+            })
+            .collect::<Vec<_>>()
+    } else {
+        visible_bill_pc_action_entries(runtime_shell)?
+    };
+    for (index, entry) in entries.iter().enumerate() {
+        let (x, y) = battle_hud_tile_origin(1.0, 2.0 + index as f32 * 2.0);
+        spawn_scene_dialog_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            entry,
+            x,
+            y,
+            4.2,
+        );
+    }
+    if hub {
+        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+        let (x, y) =
+            battle_hud_tile_origin(FIELD_TEXT_BOX_TEXT_LEFT_TILE, FIELD_TEXT_BOX_TEXT_TOP_TILE);
+        spawn_scene_dialog_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            "ACCESS WHOSE PC?",
+            x,
+            y,
+            4.2,
+        );
     }
     Ok(())
 }
@@ -11089,6 +11177,17 @@ fn visible_field_notice_pages(notice: &str) -> Vec<String> {
         .collect()
 }
 
+// The PC special suspends PCScript with an active core menu. Its messages
+// belong to the field printer, above that menu and any retained script text.
+fn visible_pokecenter_pc_text_boundary(
+    shell: &BevyRuntimeShell,
+) -> Option<&SpecialBoundaryDisplay> {
+    shell.special_boundary.as_ref().filter(|boundary| {
+        (shell.pc_hub_session_open && boundary.label != "HallOfFamePC")
+            || boundary.label == "PokecenterPCCantUseText"
+    })
+}
+
 fn visible_field_dialog_pages(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
@@ -11098,6 +11197,12 @@ fn visible_field_dialog_pages(
     }
     if let Some(notice) = runtime_shell.pc_notice.as_ref() {
         return Some(vec![notice.clone()]);
+    }
+    if let Some(boundary) = visible_pokecenter_pc_text_boundary(runtime_shell) {
+        return Some(boundary.details.clone());
+    }
+    if runtime_shell.pc_hub_session_open {
+        return None;
     }
     // Mom's second YesNoBox confirms the live DST state written by the
     // preceding Initial*DSTFlag special. Execution history is neither source
@@ -11490,6 +11595,14 @@ fn visible_scene_dialog_entries(
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
     let mut entries = Vec::new();
+    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
+        if let Some(text) = visible_field_dialog_text(snapshot, runtime_shell) {
+            push_wrapped_scene_dialog_lines(&mut entries,
+                &visible_revealed_field_dialog_text(runtime_shell, &text));
+        }
+        entries.truncate(FIELD_TEXT_BOX_VISIBLE_ROWS);
+        return Ok(entries);
+    }
     if let Some(bank) = runtime_shell.visible_mom_bank.as_ref() {
         if let Some(message) = bank.messages.front() {
             push_wrapped_scene_dialog_lines(&mut entries, message);

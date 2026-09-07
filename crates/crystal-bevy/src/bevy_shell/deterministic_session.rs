@@ -6332,6 +6332,16 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         dismiss_visible_pc_notice(runtime_shell)?;
         return Ok(());
     }
+    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
+        let snapshot = runtime_shell.shell.presentation_snapshot()?;
+        if !visible_field_dialogue_is_fully_revealed(runtime_shell, &snapshot) {
+            return Ok(());
+        }
+        if advance_visible_completed_field_text_page(runtime_shell, &snapshot)? {
+            return Ok(());
+        }
+        return close_visible_special_boundary(runtime_shell);
+    }
     // A visible Player PC menu owns A even though the originating script's
     // text/window bookkeeping remains open underneath it.  Handling the
     // generic printer first made A silently close/advance that hidden layer
@@ -6406,43 +6416,47 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
         return buy_visible_shop_cursor_item(runtime_shell);
     }
-    if advance_visible_next_pending_script_request(runtime_shell, &snapshot)? {
-        return Ok(());
-    };
-    if snapshot.ui.window_open {
-        return close_active_runtime_surface(runtime_shell);
-    }
-    if snapshot.ui.active_pokemon_picture.is_some() {
-        return close_visible_pokemon_picture(runtime_shell);
-    }
-    // An open textbox does not imply that the script asked to close it. Once
-    // PrintText's pending label is consumed, execute the authored successor
-    // (`promptbutton`, `waitbutton`, `yesorno`, or the next command) before
-    // considering any host-side text close. Explicit non-text surfaces above
-    // still own their canonical close boundary.
-    if runtime_shell.active_script_cursor.is_some() {
-        return execute_visible_active_script_step(runtime_shell);
-    }
-    if snapshot.ui.text_window_open {
-        return close_visible_text_window(runtime_shell);
-    }
-    if !snapshot.script_events.command_queue.is_empty() {
-        return execute_next_visible_queued_script_command(runtime_shell);
-    }
-    if snapshot.script_events.next_script.is_some() {
-        return take_visible_next_script(runtime_shell);
-    }
-    if snapshot.script_events.script_ended.is_some() {
-        return take_visible_script_end_state(runtime_shell);
-    }
-    if snapshot.script_events.map_reentry_script.is_some() {
-        return take_visible_map_reentry_script(runtime_shell);
-    }
-    if !snapshot.script_events.deferred_scripts.is_empty() {
-        return take_visible_deferred_script(runtime_shell);
-    }
-    if let Some(flag) = visible_auto_runtime_flag(&snapshot) {
-        return consume_visible_runtime_flag_kind(runtime_shell, flag);
+    // PokemonCenterPC owns input until its hub and submenus close. The
+    // suspended PCScript cursor points at closetext, not a menu action.
+    if !runtime_shell.pc_hub_session_open {
+        if advance_visible_next_pending_script_request(runtime_shell, &snapshot)? {
+            return Ok(());
+        };
+        if snapshot.ui.window_open {
+            return close_active_runtime_surface(runtime_shell);
+        }
+        if snapshot.ui.active_pokemon_picture.is_some() {
+            return close_visible_pokemon_picture(runtime_shell);
+        }
+        // An open textbox does not imply that the script asked to close it. Once
+        // PrintText's pending label is consumed, execute the authored successor
+        // (`promptbutton`, `waitbutton`, `yesorno`, or the next command) before
+        // considering any host-side text close. Explicit non-text surfaces above
+        // still own their canonical close boundary.
+        if runtime_shell.active_script_cursor.is_some() {
+            return execute_visible_active_script_step(runtime_shell);
+        }
+        if snapshot.ui.text_window_open {
+            return close_visible_text_window(runtime_shell);
+        }
+        if !snapshot.script_events.command_queue.is_empty() {
+            return execute_next_visible_queued_script_command(runtime_shell);
+        }
+        if snapshot.script_events.next_script.is_some() {
+            return take_visible_next_script(runtime_shell);
+        }
+        if snapshot.script_events.script_ended.is_some() {
+            return take_visible_script_end_state(runtime_shell);
+        }
+        if snapshot.script_events.map_reentry_script.is_some() {
+            return take_visible_map_reentry_script(runtime_shell);
+        }
+        if !snapshot.script_events.deferred_scripts.is_empty() {
+            return take_visible_deferred_script(runtime_shell);
+        }
+        if let Some(flag) = visible_auto_runtime_flag(&snapshot) {
+            return consume_visible_runtime_flag_kind(runtime_shell, flag);
+        }
     }
     if snapshot.pending_move_learn.is_some() {
         return confirm_visible_pending_move_learn(runtime_shell);
@@ -7267,6 +7281,16 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         dismiss_visible_pc_notice(runtime_shell)?;
         return Ok(());
     }
+    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
+        let snapshot = runtime_shell.shell.presentation_snapshot()?;
+        if !visible_field_dialogue_is_fully_revealed(runtime_shell, &snapshot) {
+            return Ok(());
+        }
+        if advance_visible_completed_field_text_page(runtime_shell, &snapshot)? {
+            return Ok(());
+        }
+        return close_visible_special_boundary(runtime_shell);
+    }
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     if snapshot.pending_move_learn.is_some() {
         return cancel_visible_pending_move_learn(runtime_shell);
@@ -7469,6 +7493,7 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return close_visible_pc_surface(runtime_shell);
     }
     if !runtime_shell.pokegear_menu_open
+        && !runtime_shell.pc_hub_session_open
         && (snapshot.ui.text_window_open
             || snapshot.ui.window_open
             || snapshot.ui.menu.is_some()
