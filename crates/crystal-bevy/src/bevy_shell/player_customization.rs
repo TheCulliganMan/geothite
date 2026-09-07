@@ -112,11 +112,21 @@ fn customization_storage() -> Result<(web_sys::Storage, String)> {
         .session_storage()
         .map_err(|_| anyhow::anyhow!("Player session is unavailable"))?
         .context("Player session is unavailable")?;
-    let identity = session
-        .get_item("crystal.multiplayer.player_id")
-        .ok()
-        .flatten()
-        .unwrap_or_else(|| "local".into());
+    let offline =
+        web_sys::UrlSearchParams::new_with_str(&window.location().search().unwrap_or_default())
+            .ok()
+            .and_then(|params| params.get("multiplayer"))
+            .as_deref()
+            == Some("off");
+    let identity = if offline {
+        "local".into()
+    } else {
+        session
+            .get_item("crystal.multiplayer.player_id")
+            .ok()
+            .flatten()
+            .unwrap_or_else(|| "local".into())
+    };
     Ok((storage, format!("geothite.profile.{identity}")))
 }
 

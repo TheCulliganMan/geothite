@@ -66,3 +66,16 @@ test('invalid edits stay in the dialog; cancel does not save; pack gating hides 
   h.state.enabled = false; h.ui.poll(); assert.equal(doc.querySelector('#personalization').hidden, true);
   h.dom.window.close();
 });
+
+test('profile polling resumes after browser back navigation', () => {
+  const h = harness(); let timers = 0;
+  h.window.setInterval = () => { timers++; return timers; };
+  h.window.dispatchEvent(new h.window.Event('pagehide'));
+  h.state.enabled = false;
+  h.window.dispatchEvent(new h.window.Event('pageshow'));
+  assert.equal(timers, 1);
+  assert.equal(h.window.document.querySelector('#personalization').hidden, true);
+  h.window.dispatchEvent(new h.window.Event('pageshow'));
+  assert.equal(timers, 1, 'does not create duplicate polling loops');
+  h.dom.window.close();
+});

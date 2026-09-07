@@ -68,8 +68,14 @@ export function mountPlayerCustomization(wasm, { document, window }) {
     }
     if (state.open) document.querySelector('#personalization-notice').textContent = '';
   };
-  const timer = window.setInterval(poll, 100);
-  window.addEventListener('pagehide', () => { window.clearInterval(timer); close(); }, { once: true });
+  let timer = window.setInterval(poll, 100);
+  window.addEventListener('pagehide', () => {
+    window.clearInterval(timer); timer = null;
+    if (dialog.open) close();
+  });
+  window.addEventListener('pageshow', () => {
+    if (timer === null) { timer = window.setInterval(poll, 100); poll(); }
+  });
   poll();
   return { poll, close };
 }
