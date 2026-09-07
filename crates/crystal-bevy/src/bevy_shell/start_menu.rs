@@ -3242,6 +3242,11 @@ fn spawn_battler_marker(
             )
         })?
     };
+    let frame = if side == PokemonSpriteSide::Front && !minimize && !substitute {
+        battle_padded_frontpic(rendered_art, images, &frame)?
+    } else {
+        frame
+    };
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     let native_size = if minimize || substitute {
         Vec2::splat(TILE_SIZE * 2.0)
@@ -3313,6 +3318,52 @@ fn spawn_battler_marker(
         );
     }
     Ok(())
+}
+
+// engine/gfx/load_pics.asm:PadFrontpic writes columns into a 7x7 box.
+// Both smaller sizes start one tile from the left and end at the bottom.
+fn battle_padded_frontpic(
+    art: &mut RenderedTilesetArt,
+    images: &mut Assets<Image>,
+    frame: &SpriteFrame,
+) -> Result<SpriteFrame> {
+    let width = frame.size.x as usize;
+    if frame.size != Vec2::splat(40.0) && frame.size != Vec2::splat(48.0) {
+        return Ok(frame.clone());
+    }
+    let key = IntroArtKey {
+        asset_id: format!("battle-padded-front:{:?}", frame.handle.id()),
+    };
+    if let Some(cached) = art.intro_cache.get(&key) {
+        return Ok(cached.clone());
+    }
+    let source = images
+        .get(&frame.handle)
+        .context("battle frontpic image is unavailable")?;
+    let mut data = vec![0; 56 * 56 * 4];
+    for row in 0..width {
+        let target = ((row + 56 - width) * 56 + 8) * 4;
+        data[target..target + width * 4]
+            .copy_from_slice(&source.data[row * width * 4..(row + 1) * width * 4]);
+    }
+    let mut padded = Image::new(
+        Extent3d {
+            width: 56,
+            height: 56,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        data,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    padded.sampler = ImageSampler::nearest();
+    let padded = SpriteFrame {
+        handle: images.add(padded),
+        size: Vec2::splat(56.0),
+    };
+    art.intro_cache.insert(key, padded.clone());
+    Ok(padded)
 }
 
 fn spawn_battle_battler_texture(

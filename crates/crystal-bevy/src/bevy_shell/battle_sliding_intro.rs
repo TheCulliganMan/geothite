@@ -47,7 +47,7 @@ fn battle_sliding_intro_art(
             images,
         )
         .context("battle sliding intro requires opponent frontpic")?;
-        (frame, palette)
+        (battle_padded_frontpic(art, images, &frame)?, palette)
     } else {
         let source_key = IntroArtKey {
             asset_id: asset_id.to_string(),
