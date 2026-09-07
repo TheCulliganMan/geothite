@@ -11,10 +11,13 @@ fn open_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.options_menu_open = false;
     runtime_shell.save_menu_open = false;
     runtime_shell.save_flow = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell
@@ -162,6 +165,7 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.trainer_card_open = false;
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
     runtime_shell.trainer_card_colon_visible = false;
@@ -174,7 +178,9 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.field_pack_action_cursor = None;
     runtime_shell.field_pack_target_mode = None;
     runtime_shell.pack_toss = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     let pockets = carried_field_pack_pockets(&snapshot);
     let pocket = if pockets.contains(&runtime_shell.last_field_pack_pocket) {
@@ -197,19 +203,23 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 
 fn open_visible_pc_item_deposit_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    let item_count = snapshot
+    // HasNoItems checks all four source pockets before DepositSellPack
+    // opens the ITEM pocket, which may contain only its CANCEL row.
+    let has_items = snapshot
         .bag
         .items
         .iter()
-        .filter(|item| item.quantity > 0)
-        .count();
-    if item_count == 0 {
+        .chain(&snapshot.bag.balls)
+        .chain(&snapshot.bag.key_items)
+        .any(|item| item.quantity > 0)
+        || snapshot.bag.tm_hm.iter().any(|item| item.quantity > 0);
+    if !has_items {
         runtime_shell.pc_item_cursor = None;
         runtime_shell.pc_notice = Some("No items here!".to_string());
         record_visible_runtime_action(runtime_shell, "pc:item:deposit:empty")?;
         runtime_shell
             .last_audio_events
-            .push("bag item pocket has no carried item to deposit".to_string());
+            .push("bag has no carried items in its four source pockets".to_string());
         set_shell_action_status(runtime_shell, "NO ITEMS TO DEPOSIT");
         trim_event_log(&mut runtime_shell.last_audio_events);
         return Ok(());
@@ -219,6 +229,7 @@ fn open_visible_pc_item_deposit_pack(runtime_shell: &mut BevyRuntimeShell) -> Re
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.trainer_card_open = false;
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
     runtime_shell.trainer_card_colon_visible = false;
@@ -234,19 +245,21 @@ fn open_visible_pc_item_deposit_pack(runtime_shell: &mut BevyRuntimeShell) -> Re
     runtime_shell.ball_cursor = None;
     runtime_shell.tmhm_cursor = None;
     runtime_shell.custom_item_cursor = None;
-    runtime_shell.field_pack_pocket = Some(FieldPackPocket::Items);
-    move_visible_cursor_slot(
-        &mut runtime_shell.bag_cursor,
-        "bag:items".to_string(),
-        item_count,
-        0,
-        &mut runtime_shell.last_audio_events,
-    )?;
+    open_visible_field_pack_pocket(runtime_shell, FieldPackPocket::Items)?;
     runtime_shell
         .last_audio_events
         .push("opened PC item deposit Pack".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
+}
+
+fn close_visible_pc_item_deposit_pack(runtime_shell: &mut BevyRuntimeShell) {
+    close_visible_field_pack_without_log(runtime_shell);
+    runtime_shell.pc_item_action = None;
+    runtime_shell.player_pc_action_cursor = Some(MenuCursor {
+        surface_id: "pc:player-actions".to_string(),
+        option_index: 1,
+    });
 }
 
 fn visible_field_pack_is_open(runtime_shell: &BevyRuntimeShell) -> bool {
@@ -447,11 +460,14 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell.pokedex_detail_page = 0;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     close_visible_party_detail_state(runtime_shell);
     runtime_shell.options_menu_open = false;
     runtime_shell.save_menu_open = false;
     runtime_shell.save_flow = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell.last_audio_events.push(format!(
@@ -586,6 +602,10 @@ fn selected_pokedex_catalog_species(
 }
 
 fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    runtime_shell.pokegear_exit = None;
+    runtime_shell.pokegear_exit_input_blocked = false;
+    runtime_shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+    runtime_shell.pokegear_joypad_prepared = false;
     let snapshot = runtime_shell.shell.snapshot()?;
     if snapshot
         .presentation
@@ -595,20 +615,20 @@ fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     {
         anyhow::bail!("compiled pack has no Pokegear landmarks");
     }
-    let landmark_count = snapshot.presentation.pokegear_landmarks.landmarks.len();
-    if runtime_shell.pokegear_cursor >= landmark_count {
-        anyhow::bail!(
-            "Pokegear cursor {} is out of range for {} landmarks",
-            runtime_shell.pokegear_cursor,
-            landmark_count
-        );
-    }
+    runtime_shell.pokegear_cursor = visible_pokegear_initial_cursor_index(&snapshot, false)?;
+    runtime_shell.pokegear_map_animation_frame = 0;
     runtime_shell.pokegear_menu_open = true;
     runtime_shell.pokegear_standalone_map = false;
+    runtime_shell.pokegear_map_radio_delay = None;
+    runtime_shell.pokegear_return_start_menu_cursor = runtime_shell.start_menu_cursor.clone();
     runtime_shell.pokegear_phone_status = None;
+    runtime_shell.pokegear_phone_cursor = 0;
+    runtime_shell.pokegear_phone_scroll = 0;
+    runtime_shell.pokegear_phone_menu = None;
+    runtime_shell.pokegear_phone_delete_question_retained = false;
     runtime_shell.pokegear_page = PokegearPage::Clock;
     runtime_shell.pokegear_radio_station = None;
-    runtime_shell.pokegear_radio_segment = 0;
+    runtime_shell.pokegear_radio_broadcast = None;
     runtime_shell.pokedex_menu_open = false;
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
@@ -616,7 +636,9 @@ fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     runtime_shell.options_menu_open = false;
     runtime_shell.save_menu_open = false;
     runtime_shell.save_flow = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     let landmark =
@@ -630,21 +652,43 @@ fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()
 
 fn close_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     exit_visible_pokegear_radio(runtime_shell)?;
+    finish_visible_pokegear_menu(runtime_shell);
+    Ok(())
+}
+
+fn finish_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.pokegear_exit = None;
+    runtime_shell.pokegear_radio_input_blocked = false;
+    if let Some(cursor) = runtime_shell.pokegear_return_start_menu_cursor.take() {
+        runtime_shell.start_menu_cursor = Some(cursor);
+    }
     runtime_shell.pokegear_phone_call = None;
+    runtime_shell.pokegear_phone_menu = None;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.pokegear_standalone_map = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.pokegear_phone_status = None;
     runtime_shell.pokegear_page = PokegearPage::Clock;
     runtime_shell.pokegear_radio_station = None;
-    runtime_shell.pokegear_radio_segment = 0;
+    runtime_shell.pokegear_radio_broadcast = None;
     runtime_shell
         .last_audio_events
         .push("closed Pokegear".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
-    Ok(())
 }
 
 fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
+    if runtime_shell.pokegear_map_radio_delay.is_some() { return Ok(()); }
+    if let Some(menu) = runtime_shell.pokegear_phone_menu.as_mut() {
+        if let Some(cursor) = menu.delete_confirmation.as_mut() {
+            *cursor = cursor.saturating_add_signed(delta).min(1);
+        } else {
+            menu.cursor = menu.cursor.saturating_add_signed(delta).min(if menu.can_delete { 2 } else { 1 });
+        }
+        mark_runtime_presentation_dirty(runtime_shell);
+        return Ok(());
+    }
     let snapshot = runtime_shell.shell.snapshot()?;
     if runtime_shell.pokegear_page == PokegearPage::Radio {
         let before = snapshot.progression.radio_tuning_knob;
@@ -677,79 +721,68 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
         return Ok(());
     }
     if runtime_shell.pokegear_page == PokegearPage::Phone {
-        let contact_ids = visible_pokegear_phone_contact_ids(&snapshot);
-        if contact_ids.is_empty() {
-            return handle_visible_no_phone_contacts(runtime_shell, "move");
-        }
-        anyhow::ensure!(
-            runtime_shell.pokegear_phone_cursor < contact_ids.len(),
-            "Pokegear phone cursor {} is out of range for {} contacts",
-            runtime_shell.pokegear_phone_cursor,
-            contact_ids.len()
-        );
-        let current = runtime_shell.pokegear_phone_cursor;
-        let next = wrapped_index(current, contact_ids.len(), delta);
+        visible_pokegear_phone_window(runtime_shell)?;
+        visible_pokegear_phone_slots(&snapshot)?;
+        let next = runtime_shell.pokegear_phone_cursor.saturating_add_signed(delta).min(9);
         runtime_shell.pokegear_phone_cursor = next;
+        if next < runtime_shell.pokegear_phone_scroll {
+            runtime_shell.pokegear_phone_scroll = next;
+        } else if next >= runtime_shell.pokegear_phone_scroll + 4 {
+            runtime_shell.pokegear_phone_scroll = next - 3;
+        }
         runtime_shell.pokegear_phone_status = None;
-        runtime_shell.last_audio_events.push(format!(
-            "Pokegear phone cursor {}->{} {}",
-            current + 1,
-            next + 1,
-            contact_ids[next]
-        ));
-        trim_event_log(&mut runtime_shell.last_audio_events);
+        mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(());
     }
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
-    let region_indices = visible_pokegear_landmark_indices(&snapshot)?;
+    let region_indices = visible_pokegear_landmark_indices(&snapshot, runtime_shell.pokegear_standalone_map)?;
     if region_indices.is_empty() {
         anyhow::bail!("compiled pack has no Pokegear landmarks for the active region");
     }
-    let current_position = region_indices
-        .iter()
-        .position(|index| *index == runtime_shell.pokegear_cursor)
-        .with_context(|| {
-            format!(
-                "Pokegear landmark cursor {} is not in the active region",
-                runtime_shell.pokegear_cursor
-            )
-        })?;
-    // _TownMap increments the landmark on Up and decrements it on Down,
-    // opposite the portable Pokégear list convention used by this handler.
-    let delta = if runtime_shell.pokegear_standalone_map {
-        -delta
+    let current = landmarks.get(runtime_shell.pokegear_cursor)
+        .with_context(|| format!("Pokegear landmark cursor {} is outside the catalog", runtime_shell.pokegear_cursor))?;
+    let current_id = u8::try_from(current.id).context("Pokegear landmark ID exceeds a source byte")?;
+    let first = landmarks[region_indices[0]].id;
+    let last = landmarks[*region_indices.last().unwrap()].id;
+    // Both PokegearMap_ContinueMap and _TownMap increment on Up and
+    // decrement on Down, opposite the menu-row delta passed here.
+    // Source Up compares >= the last ID, while Down compares == the first.
+    // An initial ship cursor may lie outside the ordinary traversal limits.
+    let next_id = if delta < 0 {
+        if current.id >= last { first } else { current.id + 1 }
+    } else if delta > 0 {
+        if current.id == first { last } else { u16::from(current_id.wrapping_sub(1)) }
     } else {
-        delta
+        return Ok(());
     };
-    let next_position = wrapped_index(current_position, region_indices.len(), delta);
-    let next = region_indices[next_position];
+    let next = landmarks.iter().position(|landmark| landmark.id == next_id)
+        .with_context(|| format!("source Pokegear cursor landmark {next_id} is missing"))?;
     runtime_shell.pokegear_cursor = next;
     runtime_shell.last_audio_events.push(format!(
         "Pokegear cursor {}->{} {}",
-        current_position + 1,
-        next_position + 1,
+        current.id,
+        next_id,
         landmarks[next].constant
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
 }
 
-fn visible_pokegear_region(snapshot: &RuntimeShellSnapshot) -> Result<&str> {
-    let constant = snapshot
-        .presentation
-        .pokegear_landmarks
-        .map_to_landmark
-        .get(&snapshot.overworld.map_name)
-        .with_context(|| {
-            format!(
-                "active map {} has no compiled Pokegear landmark mapping",
-                snapshot.overworld.map_name
-            )
-        })?;
-    let landmark = snapshot
-        .presentation
-        .pokegear_landmarks
-        .landmarks
+fn visible_pokegear_player_landmark(
+    snapshot: &RuntimeShellSnapshot,
+) -> Result<&crate::core::models::display_metadata::PokegearLandmark> {
+    let catalog = &snapshot.presentation.pokegear_landmarks;
+    let lookup = |map: &str| catalog.map_to_landmark.get(map)
+        .with_context(|| format!("active map {map} has no compiled Pokegear landmark mapping"));
+    let mut constant = lookup(&snapshot.overworld.map_name)?;
+    // TownMap_InitCursorAndPlayerIconPositions resolves SPECIAL through the
+    // actual backup-map registers, not a guessed region or respawn location.
+    if constant == "LANDMARK_SPECIAL" {
+        let backup = snapshot.progression.backup_warp_map_name.as_deref()
+            .context("SPECIAL Pokegear location requires the source backup map")?;
+        constant = lookup(backup)?;
+    }
+    catalog.landmarks
         .iter()
         .find(|landmark| landmark.constant == *constant)
         .with_context(|| {
@@ -757,25 +790,58 @@ fn visible_pokegear_region(snapshot: &RuntimeShellSnapshot) -> Result<&str> {
                 "active map {} references missing Pokegear landmark {constant}",
                 snapshot.overworld.map_name
             )
-        })?;
+        })
+}
+
+fn visible_pokegear_initial_cursor_index(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<usize> {
+    let player = visible_pokegear_player_landmark(snapshot)?;
+    let cursor = if !standalone_map && player.constant == "LANDMARK_FAST_SHIP" {
+        "LANDMARK_NEW_BARK_TOWN"
+    } else {
+        &player.constant
+    };
+    snapshot.presentation.pokegear_landmarks.landmarks.iter()
+        .position(|landmark| landmark.constant == cursor)
+        .with_context(|| format!("initial Pokegear landmark {cursor} is missing"))
+}
+
+fn visible_pokegear_region(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<&str> {
+    let landmark = visible_pokegear_player_landmark(snapshot)?;
+    let constant = &landmark.constant;
     anyhow::ensure!(
         matches!(landmark.region.as_str(), "JOHTO" | "KANTO"),
         "Pokegear landmark {constant} has unsupported region {}",
         landmark.region
     );
-    Ok(landmark.region.as_str())
+    // _TownMap compares against KANTO_LANDMARK without the portable gear's
+    // explicit Fast Ship exception.
+    Ok(if standalone_map && constant == "LANDMARK_FAST_SHIP" { "KANTO" } else { landmark.region.as_str() })
 }
 
-fn visible_pokegear_landmark_indices(snapshot: &RuntimeShellSnapshot) -> Result<Vec<usize>> {
-    let region = visible_pokegear_region(snapshot)?;
-    let indices = snapshot
+fn visible_pokegear_landmark_indices(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<Vec<usize>> {
+    let region = visible_pokegear_region(snapshot, standalone_map)?;
+    let (first, last) = match region {
+        "JOHTO" => ("LANDMARK_NEW_BARK_TOWN", "LANDMARK_SILVER_CAVE"),
+        "KANTO" if snapshot.progression.active_engine_flags.contains("ENGINE_CREDITS_SKIP") =>
+            ("LANDMARK_PALLET_TOWN", "LANDMARK_ROUTE_28"),
+        "KANTO" => ("LANDMARK_VICTORY_ROAD", "LANDMARK_ROUTE_28"),
+        _ => unreachable!("visible_pokegear_region validates the region"),
+    };
+    let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
+    let boundary = |constant| landmarks.iter().find(|landmark| landmark.constant == constant)
+        .map(|landmark| landmark.id)
+        .with_context(|| format!("Pokegear cursor boundary {constant} is missing"));
+    let first = boundary(first)?;
+    let last = boundary(last)?;
+    let mut indices = snapshot
         .presentation
         .pokegear_landmarks
         .landmarks
         .iter()
         .enumerate()
-        .filter_map(|(index, landmark)| (landmark.region == region).then_some(index))
+        .filter_map(|(index, landmark)| (first..=last).contains(&landmark.id).then_some(index))
         .collect::<Vec<_>>();
+    indices.sort_by_key(|index| landmarks[*index].id);
     anyhow::ensure!(
         !indices.is_empty(),
         "compiled pack has no Pokegear landmarks for active region {region}"
@@ -784,25 +850,79 @@ fn visible_pokegear_landmark_indices(snapshot: &RuntimeShellSnapshot) -> Result<
 }
 
 fn inspect_visible_pokegear_selection(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if matches!(
-        runtime_shell.pokegear_page,
-        PokegearPage::Clock | PokegearPage::Radio
-    ) {
+    if runtime_shell.pokegear_page == PokegearPage::Clock {
+        return request_visible_pokegear_exit(runtime_shell);
+    }
+    if runtime_shell.pokegear_page == PokegearPage::Radio {
         return Ok(());
     }
     if runtime_shell.pokegear_page == PokegearPage::Phone {
-        return start_visible_pokegear_phone_call(runtime_shell);
+        return confirm_visible_pokegear_phone_menu(runtime_shell);
     }
     Ok(())
+}
+
+fn confirm_visible_pokegear_phone_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let Some(menu) = runtime_shell.pokegear_phone_menu.clone() else {
+        let snapshot = runtime_shell.shell.snapshot()?;
+        let Some(contact_id) = selected_visible_pokegear_phone_contact_id(&snapshot, runtime_shell)? else {
+            return Ok(());
+        };
+        let can_delete = crate::core::systems::phone::can_delete_pokegear_phone_number(
+            &snapshot.special.phone_contacts, &contact_id,
+        )?;
+        runtime_shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+            contact_id, can_delete, cursor: 0, delete_confirmation: None,
+        });
+        mark_runtime_presentation_dirty(runtime_shell);
+        return Ok(());
+    };
+    if let Some(choice) = menu.delete_confirmation {
+        anyhow::ensure!(choice <= 1, "invalid phone deletion confirmation cursor");
+        if choice == 0 {
+            let mutation = runtime_shell.shell.apply_runtime_mutation_command(
+                crate::RuntimeMutationCommand::DeletePokegearPhoneNumber { contact_id: menu.contact_id },
+            )?;
+            let crate::RuntimeMutationResult::PokegearPhoneNumberDeleted(deleted) = mutation.result else {
+                anyhow::bail!("phone deletion returned a different runtime result");
+            };
+            anyhow::ensure!(deleted, "selected phone contact was not deletable");
+            mark_runtime_snapshot_dirty(runtime_shell);
+        }
+        // .CancelDelete skips PrintText; the YES branch prints AskWhoCall.
+        runtime_shell.pokegear_phone_delete_question_retained = choice != 0;
+        runtime_shell.pokegear_phone_menu = None;
+    } else if menu.cursor == 0 {
+        runtime_shell.pokegear_phone_menu = None;
+        return start_visible_pokegear_phone_call(runtime_shell);
+    } else if menu.can_delete && menu.cursor == 1 {
+        runtime_shell.pokegear_phone_menu.as_mut().unwrap().delete_confirmation = Some(0);
+    } else {
+        anyhow::ensure!(menu.cursor == if menu.can_delete { 2 } else { 1 }, "invalid phone submenu cursor");
+        runtime_shell.pokegear_phone_delete_question_retained = false;
+        runtime_shell.pokegear_phone_menu = None;
+    }
+    mark_runtime_presentation_dirty(runtime_shell);
+    Ok(())
+}
+
+// FadeToMenu disables sprite updates: each HangUp_Wait20Frames adds
+// WaitBGMap's four frames. Click, three dot strings, and AskWhoCall each
+// also clear/upload their textbox for four frames before printing.
+const VISIBLE_POKEGEAR_HANGUP_FRAMES: u8 = 7 * (20 + 4) + 5 * 4;
+
+// PokegearPhone_MakePhoneCall clears hInMenu for script input without
+// leaving the Phone card. Screen ownership and menu input are independent.
+fn visible_pokegear_screen_active(runtime_shell: &BevyRuntimeShell) -> bool {
+    runtime_shell.pokegear_menu_open || runtime_shell.pokegear_phone_call.is_some()
 }
 
 fn start_visible_pokegear_phone_call(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let (contact_id, no_service) = {
         let snapshot = runtime_shell.shell.snapshot()?;
-        if visible_pokegear_phone_contact_ids(&snapshot).is_empty() {
-            return handle_visible_no_phone_contacts(runtime_shell, "call");
-        }
-        let contact_id = selected_visible_pokegear_phone_contact_id(&snapshot, runtime_shell)?;
+        let Some(contact_id) = selected_visible_pokegear_phone_contact_id(&snapshot, runtime_shell)? else {
+            return Ok(()); // PokegearPhone_Joypad.a returns on an empty wPhoneList slot.
+        };
         let no_service = snapshot
             .maps
             .iter()
@@ -819,6 +939,7 @@ fn start_visible_pokegear_phone_call(runtime_shell: &mut BevyRuntimeShell) -> Re
             != 0;
         (contact_id, no_service)
     };
+    runtime_shell.pokegear_phone_delete_question_retained = false;
     if no_service {
         record_visible_runtime_action(
             runtime_shell,
@@ -844,9 +965,10 @@ fn start_visible_pokegear_phone_call(runtime_shell: &mut BevyRuntimeShell) -> Re
     )?;
     queue_visible_shell_sound_effect(runtime_shell, "SFX_CALL")?;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.pokegear_phone_status = None;
     runtime_shell.pokegear_radio_station = None;
-    runtime_shell.pokegear_radio_segment = 0;
+    runtime_shell.pokegear_radio_broadcast = None;
     runtime_shell.pokegear_phone_call = Some(VisiblePokegearPhoneCall {
         contact_id: contact_id.clone(),
         phase: VisiblePokegearPhoneCallPhase::Ringing { rings_started: 1 },
@@ -951,6 +1073,28 @@ fn advance_visible_pokegear_phone_call(
             };
             Ok(true)
         }
+        VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining } => {
+            let remaining = frames_remaining.saturating_sub(
+                u8::try_from(elapsed_input_ticks).unwrap_or(u8::MAX));
+            if frames_remaining > VISIBLE_POKEGEAR_HANGUP_FRAMES - 4
+                && remaining <= VISIBLE_POKEGEAR_HANGUP_FRAMES - 4
+            {
+                // HangUp_Beep plays only after PrintText's initial upload.
+                queue_visible_shell_sound_effect(runtime_shell, "SFX_HANG_UP")?;
+            }
+            if remaining == 0 {
+                runtime_shell.pokegear_phone_call = None;
+                runtime_shell.pokegear_menu_open = true;
+                runtime_shell.pokegear_page = PokegearPage::Phone;
+                runtime_shell.pokegear_phone_status = None;
+                set_shell_action_status(runtime_shell, "PHONE");
+            } else {
+                runtime_shell.pokegear_phone_call.as_mut().expect("active hangup").phase =
+                    VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining: remaining };
+            }
+            mark_runtime_snapshot_dirty(runtime_shell);
+            Ok(true)
+        }
         VisiblePokegearPhoneCallPhase::AwaitHangup => Ok(false),
     }
 }
@@ -981,12 +1125,20 @@ fn finish_visible_pokegear_phone_call(runtime_shell: &mut BevyRuntimeShell) -> R
         "outgoing Pokegear phone call is not waiting for hangup"
     );
     record_visible_runtime_action(runtime_shell, "pokegear_phone_call:hangup")?;
-    queue_visible_shell_sound_effect(runtime_shell, "SFX_HANG_UP")?;
-    runtime_shell.pokegear_phone_call = None;
-    runtime_shell.pokegear_menu_open = true;
-    runtime_shell.pokegear_page = PokegearPage::Phone;
-    runtime_shell.pokegear_phone_status = None;
-    set_shell_action_status(runtime_shell, "PHONE");
+    // PokegearPhone_FinishPhoneCall replaces PrintText's retained final
+    // page with PokegearAskWhoCallText. Retire its script text ownership so
+    // the page cannot overlay that prompt or reappear after leaving the card.
+    if runtime_shell.shell.session().state().script_runtime.text_window_open {
+        runtime_shell.shell.close_text_window()?;
+    }
+    runtime_shell.field_text_reveal = None;
+    mark_runtime_snapshot_dirty(runtime_shell);
+    // Retain the card through the source holds and textbox upload waits.
+    // NO_TEXT_SCROLL is restored before this routine, so printing is immediate.
+    runtime_shell.pokegear_phone_call.as_mut().expect("active call").phase =
+        VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining: VISIBLE_POKEGEAR_HANGUP_FRAMES };
+    runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     Ok(())
 }
 
@@ -1063,40 +1215,25 @@ fn advance_visible_incoming_phone_sequence(
     Ok(true)
 }
 
-fn handle_visible_no_phone_contacts(
-    runtime_shell: &mut BevyRuntimeShell,
-    action: &str,
-) -> Result<()> {
-    record_visible_runtime_action(
-        runtime_shell,
-        format!("pokegear_phone:{action}:no_contacts"),
-    )?;
-    runtime_shell
-        .last_audio_events
-        .push("Pokegear has no registered phone contacts".to_string());
-    set_shell_action_status(runtime_shell, "NO PHONE CONTACTS");
-    trim_event_log(&mut runtime_shell.last_audio_events);
-    Ok(())
-}
-
 fn sync_visible_pokegear_radio(
     runtime_shell: &mut BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> Result<()> {
     let tuning_knob = snapshot.progression.radio_tuning_knob;
     runtime_shell.pokegear_radio_tuning_knob = tuning_knob;
-    let station = VISIBLE_POKEGEAR_RADIO_STATIONS
-        .iter()
-        .find_map(|(position, handler)| {
-            (*position == tuning_knob)
-                .then(|| visible_pokegear_radio_station(snapshot, handler))
-                .flatten()
-        });
+    let station = match VISIBLE_POKEGEAR_RADIO_STATIONS.iter()
+        .find(|(position, _)| *position == tuning_knob) {
+        Some((_, handler)) => visible_pokegear_radio_station(snapshot, handler)?,
+        None => None,
+    };
     runtime_shell.pokegear_radio_station = station
         .as_ref()
         .map(|(constant, _)| (*constant).to_string());
     if station.is_none() {
+        runtime_shell.pokegear_radio_broadcast = None;
+        mark_runtime_snapshot_dirty(runtime_shell);
         runtime_shell.active_pokegear_radio = None;
+        runtime_shell.pending_audio.clear();
         set_visible_stopped_music_state(runtime_shell, Some("MUSIC_NONE"));
         runtime_shell
             .last_audio_events
@@ -1104,54 +1241,37 @@ fn sync_visible_pokegear_radio(
         trim_event_log(&mut runtime_shell.last_audio_events);
         return Ok(());
     }
-    let music_id = station
-        .as_ref()
-        .expect("station was checked above")
-        .1
-        .clone();
-    let retained_radio = station
-        .as_ref()
-        .map(|_| (snapshot.overworld.map_name.clone(), music_id.clone()));
-    if runtime_shell.active_music.as_deref() == Some(music_id.as_str())
-        || pending_music_command_is(&runtime_shell.pending_audio, &music_id)
-    {
-        runtime_shell.active_pokegear_radio = retained_radio;
-        return Ok(());
-    }
-    let playback = runtime_shell
-        .shell
-        .runtime()
-        .audio()
-        .require_playback_entry(AudioKind::Music, &music_id)?;
-    enqueue_bevy_audio_command(
-        &mut runtime_shell.pending_audio,
-        BevyAudioCommand {
-            audio_id: music_id.clone(),
-            kind: ModpackAudioKind::Music,
-            mode: playback.mode,
-            looped: matches!(
-                playback.loop_policy,
-                crate::assets::ModpackAudioLoopPolicy::Loop
-            ),
-        },
-    );
-    runtime_shell.pending_music_stop = true;
-    runtime_shell.active_music = Some(music_id.clone());
-    runtime_shell.faded_music = None;
-    runtime_shell.active_pokegear_radio = retained_radio;
-    let (constant, _) = station.expect("station was checked above");
-    runtime_shell
-        .last_audio_events
-        .push(format!("Pokegear radio tuned {constant} {music_id}"));
-    trim_event_log(&mut runtime_shell.last_audio_events);
+    load_visible_radio_broadcast(runtime_shell)?;
     Ok(())
 }
 
-fn exit_visible_pokegear_radio(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if runtime_shell.pokegear_page == PokegearPage::Radio
-        && runtime_shell.active_music.as_deref() == Some("MUSIC_NONE")
-    {
-        queue_visible_current_music(runtime_shell)?;
+fn visible_pokegear_radio_exit_song(shell: &BevyRuntimeShell) -> Result<Option<String>> {
+    if shell.pokegear_page != PokegearPage::Radio { return Ok(None); }
+    use crate::assets::radio_host::RadioMusicEffect;
+    let mode = shell.pokegear_radio_broadcast.as_ref().and_then(|broadcast| broadcast.host.music_mode.as_ref());
+    Ok(match mode {
+        Some(RadioMusicEffect::PokemonChannel) => Some(shell.active_pokegear_radio.as_ref().context("radio bumper has no retained map music")?.1.clone()),
+        Some(RadioMusicEffect::Stop) => shell.shell.current_music_id().map(str::to_owned),
+        None if shell.active_music.as_deref() == Some("MUSIC_NONE") => shell.shell.current_music_id().map(str::to_owned),
+        _ => None,
+    })
+}
+
+fn queue_visible_pokegear_restored_music(shell: &mut BevyRuntimeShell, song: String) -> Result<()> {
+    let playback = shell.shell.runtime().audio().require_playback_entry(AudioKind::Music, &song)?;
+    let command = BevyAudioCommand {audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
+        looped: matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop)};
+    enqueue_bevy_audio_command(&mut shell.pending_audio, command);
+    shell.active_music = Some(song);
+    shell.faded_music = None;
+    Ok(())
+}
+
+fn exit_visible_pokegear_radio(shell: &mut BevyRuntimeShell) -> Result<()> {
+    if let Some(song) = visible_pokegear_radio_exit_song(shell)? {
+        shell.pending_audio.clear();
+        set_visible_stopped_music_state(shell, Some("MUSIC_NONE"));
+        queue_visible_pokegear_restored_music(shell, song)?;
     }
     Ok(())
 }
@@ -1163,35 +1283,14 @@ fn visible_pokegear_radio_frequency(tuning_knob: u8) -> f32 {
 fn visible_pokegear_radio_station(
     snapshot: &RuntimeShellSnapshot,
     handler: &str,
-) -> Option<(&'static str, String)> {
-    let landmark = snapshot
-        .presentation
-        .pokegear_landmarks
-        .map_to_landmark
-        .get(&snapshot.overworld.map_name)
-        .and_then(|constant| {
-            snapshot
-                .presentation
-                .pokegear_landmarks
-                .landmarks
-                .iter()
-                .find(|landmark| landmark.constant == *constant)
-        });
-    let landmark_constant = landmark.map(|landmark| landmark.constant.as_str());
-    let in_johto = landmark.is_none_or(|landmark| landmark.region != "KANTO");
-    if in_johto
-        && snapshot
-            .progression
-            .active_engine_flags
-            .contains("ENGINE_ROCKETS_IN_RADIO_TOWER")
-    {
-        return Some(("ROCKET_RADIO", "MUSIC_ROCKET_OVERTURE".to_string()));
-    }
+) -> Result<Option<(&'static str, String)>> {
+    let landmark = visible_pokegear_player_landmark(snapshot)?;
+    let landmark_constant = Some(landmark.constant.as_str());
+    let in_johto = visible_pokegear_region(snapshot, false)? == "JOHTO";
     let flags = &snapshot.progression.active_engine_flags;
-    match handler {
+    let mut station = match handler {
         "PKMNTalkAndPokedexShow" if in_johto => {
-            if landmark_constant == Some("LANDMARK_FAST_SHIP")
-                || matches!(
+            if matches!(
                     snapshot.progression.time.time_of_day,
                     crate::core::world::encounters::TimeOfDay::Morning
                 )
@@ -1203,12 +1302,8 @@ fn visible_pokegear_radio_station(
         }
         "PokemonMusic" if in_johto => Some((
             "POKEMON_MUSIC",
-            if snapshot.progression.time.day_of_week % 2 == 0 {
-                "MUSIC_POKEMON_MARCH"
-            } else {
-                "MUSIC_POKEMON_LULLABY"
-            }
-            .to_string(),
+            crate::core::systems::radio_program::radio_music_channel_song(
+                snapshot.progression.time.day_of_week)?.to_string(),
         )),
         "LuckyChannel" if in_johto => Some(("LUCKY_CHANNEL", "MUSIC_GAME_CORNER".to_string())),
         "BuenasPassword" if in_johto => {
@@ -1221,7 +1316,8 @@ fn visible_pokegear_radio_station(
             Some(("PLACES_AND_PEOPLE", "MUSIC_VIRIDIAN_CITY".to_string()))
         }
         "LetsAllSing" if !in_johto && flags.contains("ENGINE_EXPN_CARD") => {
-            Some(("LETS_ALL_SING", "MUSIC_BICYCLE".to_string()))
+            Some(("LETS_ALL_SING", crate::core::systems::radio_program::radio_music_channel_song(
+                snapshot.progression.time.day_of_week)?.to_string()))
         }
         "PokeFluteRadio" if !in_johto && flags.contains("ENGINE_EXPN_CARD") => {
             Some(("POKE_FLUTE_RADIO", "MUSIC_POKE_FLUTE_CHANNEL".to_string()))
@@ -1239,14 +1335,26 @@ fn visible_pokegear_radio_station(
             ))
         }
         _ => None,
+    };
+    // RadioChannels gates reception before PlayRadioShow can hijack a program.
+    // The source keeps LoadStation's name; only the program/music changes.
+    if let Some((channel, music)) = station.as_mut() {
+        if matches!(*channel, "OAKS_POKEMON_TALK" | "POKEDEX_SHOW" | "POKEMON_MUSIC"
+            | "LUCKY_CHANNEL" | "BUENAS_PASSWORD" | "PLACES_AND_PEOPLE" | "LETS_ALL_SING")
+            && flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER")
+            && visible_radio_program_in_johto(snapshot)?
+        {
+            *music = "MUSIC_ROCKET_OVERTURE".to_string();
+        }
     }
-}
-
-fn toggle_visible_pokegear_page(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    cycle_visible_pokegear_page(runtime_shell, 1)
+    Ok(station)
 }
 
 fn cycle_visible_pokegear_page(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
+    if runtime_shell.pokegear_map_radio_delay.is_some() { return Ok(()); }
+    if runtime_shell.pokegear_phone_menu.is_some() {
+        return Ok(());
+    }
     if !runtime_shell.pokegear_menu_open {
         return handle_visible_no_active_pokegear(runtime_shell, "page_toggle");
     }
@@ -1282,35 +1390,24 @@ fn cycle_visible_pokegear_page(runtime_shell: &mut BevyRuntimeShell, delta: isiz
                 runtime_shell.pokegear_page
             )
         })?;
+    let next = current.saturating_add_signed(delta).min(pages.len() - 1);
+    if next == current {
+        return Ok(());
+    }
     exit_visible_pokegear_radio(runtime_shell)?;
     runtime_shell.pokegear_phone_status = None;
-    runtime_shell.pokegear_page = pages[wrapped_index(current, pages.len(), delta)];
-    if runtime_shell.pokegear_page == PokegearPage::Map {
-        let region_indices = visible_pokegear_landmark_indices(&snapshot)?;
-        let current_landmark = snapshot
-            .presentation
-            .pokegear_landmarks
-            .map_to_landmark
-            .get(&snapshot.overworld.map_name)
-            .with_context(|| {
-                format!(
-                    "active map {} has no compiled Pokegear landmark mapping",
-                    snapshot.overworld.map_name
-                )
-            })?;
-        runtime_shell.pokegear_cursor = region_indices
-            .iter()
-            .copied()
-            .find(|index| {
-                snapshot.presentation.pokegear_landmarks.landmarks[*index].constant
-                    == *current_landmark
-            })
-            .with_context(|| {
-                format!("current Pokegear landmark {current_landmark} is outside the active region")
-            })?;
+    runtime_shell.pokegear_page = pages[next];
+    runtime_shell.pokegear_map_animation_frame = 0;
+    if runtime_shell.pokegear_page == PokegearPage::Phone {
+        runtime_shell.pokegear_phone_delete_question_retained = false;
+        runtime_shell.pokegear_phone_cursor = 0;
+        runtime_shell.pokegear_phone_scroll = 0;
     }
+
+    // PokegearMap_Init restores the retained cursor; only entering the
+    // complete Pokegear runs TownMap_InitCursorAndPlayerIconPositions.
     runtime_shell.pokegear_radio_station = None;
-    runtime_shell.pokegear_radio_segment = 0;
+    runtime_shell.pokegear_radio_broadcast = None;
     if runtime_shell.pokegear_page == PokegearPage::Radio {
         sync_visible_pokegear_radio(runtime_shell, &snapshot)?;
     }
@@ -2087,8 +2184,11 @@ fn open_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.options_menu_open = false;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell
@@ -2272,9 +2372,12 @@ fn open_visible_options_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.save_menu_open = false;
     runtime_shell.save_flow = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell
@@ -2287,6 +2390,14 @@ fn open_visible_options_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 
 fn close_visible_options_menu(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.options_menu_open = false;
+    let resume_main_menu = runtime_shell.title_menu.as_ref().is_some_and(|title| {
+        title.main_menu_phase_interpreter.is_some() && !title.main_menu_waiting_for_input
+    });
+    if resume_main_menu
+        && let Err(error) = resume_visible_main_menu_after_subprogram(runtime_shell)
+    {
+        record_visible_runtime_system_error(runtime_shell, error);
+    }
     runtime_shell
         .last_audio_events
         .push("closed Options".to_string());
@@ -2562,6 +2673,10 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
         mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(());
     }
+    complete_visible_accepted_evolution_after_special_boundary(
+        runtime_shell,
+        &boundary.label,
+    )?;
     if matches!(
         runtime_shell.pending_script_party_selection.as_ref(),
         Some(PendingScriptPartySelection::MoveTutor { .. })
@@ -2915,6 +3030,7 @@ fn open_visible_party_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.options_menu_open = false;
     runtime_shell.save_menu_open = false;
     runtime_shell.save_flow = None;
@@ -3039,6 +3155,7 @@ fn open_visible_party_summary(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     let level = slot.pokemon.level;
     let hp = slot.pokemon.hp;
     let max_hp = slot.pokemon.max_hp;
+    let play_cry = stats_mon_uses_menu_animation(&slot.pokemon);
     runtime_shell.party_summary_open = true;
     runtime_shell.party_summary_page = 1;
     runtime_shell.party_action_cursor = None;
@@ -3048,7 +3165,10 @@ fn open_visible_party_summary(runtime_shell: &mut BevyRuntimeShell) -> Result<()
         "opened party summary index={} species={} level={} hp={}/{}",
         slot_index, species_id, level, hp, max_hp
     ));
-    queue_visible_pokemon_cry(runtime_shell, &species_id, "party_summary")?;
+    if play_cry {
+        queue_visible_pokemon_cry(runtime_shell, &species_id, "party_summary")?;
+    }
+    queue_visible_stats_egg_sound(runtime_shell, &slot.pokemon)?;
     set_shell_action_status(
         runtime_shell,
         format!("{species_id} L{level} HP {hp}/{max_hp}"),
@@ -3133,11 +3253,12 @@ fn move_visible_party_summary_pokemon(
             option_index: next,
         });
     }
-    runtime_shell.party_summary_page = 1;
+    // MonStatsInit preserves the selected page when changing Pokemon.
     let slot = selected_party_slot_snapshot(&snapshot, runtime_shell.party_cursor)?;
-    if !slot.pokemon.is_egg {
+    if stats_mon_uses_menu_animation(&slot.pokemon) {
         queue_visible_pokemon_cry(runtime_shell, &slot.pokemon.species.id, "party_summary")?;
     }
+    queue_visible_stats_egg_sound(runtime_shell, &slot.pokemon)?;
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
@@ -4000,7 +4121,8 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
         return Ok(());
     }
     if runtime_shell.pc_item_quantity.is_some() {
-        return adjust_visible_pc_item_quantity(runtime_shell, -1);
+        if !visible_pc_item_quantity_input_ready(runtime_shell) { return Ok(()); }
+        return adjust_visible_pc_item_quantity(runtime_shell, -10);
     }
     if runtime_shell.kurt_apricorn_cursor.is_some() {
         if runtime_shell.kurt_apricorn_quantity.is_some() {
@@ -4046,6 +4168,9 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
     }
     if runtime_shell.pack_toss.is_some() {
         return adjust_visible_pack_toss_quantity(runtime_shell, -10);
+    }
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::PutMailInPack(_))) {
+        return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
         return move_visible_cursor_slot(
@@ -4198,11 +4323,27 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
     if runtime_shell.pokedex_menu_open {
         return page_visible_pokedex_cursor(runtime_shell, -1);
     }
+    if runtime_shell.bill_pc_pokemon_summary.is_some() && !visible_wait_sfx_finished(runtime_shell) {
+        return Ok(());
+    }
+    if let Some(summary) = runtime_shell.bill_pc_pokemon_summary.as_mut() {
+        if visible_pc_pokemon_at(&snapshot, summary.location)?.is_egg { return Ok(()); }
+        summary.page = if summary.page == 1 { 3 } else { summary.page - 1 };
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
+    if runtime_shell.bill_pc_pokemon_action_cursor.is_some() || runtime_shell.pending_pc_release.is_some() {
+        return Ok(()); // VerticalMenu/YesNoBox must not switch the box underneath it.
+    }
     if runtime_shell.storage_cursor.is_some() {
-        return switch_visible_pc_box_by_delta(runtime_shell, -1);
+        return if runtime_shell.bill_pc_move_open {
+            switch_visible_pc_move_container(runtime_shell, -1)
+        } else {
+            Ok(()) // Withdraw_UpDown handles only vertical list input.
+        };
     }
     if runtime_shell.pc_item_cursor.is_some() {
-        return move_visible_pc_item_cursor(runtime_shell, -1);
+        return Ok(()); // PCItemsMenuData enables neither Left nor Right.
     }
     if runtime_shell.player_pc_action_cursor.is_some() {
         let option_count = visible_player_pc_actions(runtime_shell).len();
@@ -4214,24 +4355,8 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
             &mut runtime_shell.last_audio_events,
         );
     }
-    if runtime_shell.mailbox_action_cursor.is_some() {
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_action_cursor,
-            "pc:mailbox-actions".to_string(),
-            VISIBLE_MAILBOX_ACTIONS.len(),
-            -1,
-            &mut runtime_shell.last_audio_events,
-        );
-    }
-    if runtime_shell.mailbox_cursor.is_some() {
-        let count = snapshot.mailbox.len();
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_cursor,
-            "pc:mailbox".to_string(),
-            count,
-            -1,
-            &mut runtime_shell.last_audio_events,
-        );
+    if runtime_shell.mailbox_action_cursor.is_some() || runtime_shell.mailbox_cursor.is_some() {
+        return Ok(()); // Neither mailbox menu enables horizontal navigation.
     }
     if visible_menu_has_selectable_options(&snapshot) {
         return move_visible_menu_cursor_horizontal(runtime_shell, -1);
@@ -4269,7 +4394,8 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
         return Ok(());
     }
     if runtime_shell.pc_item_quantity.is_some() {
-        return adjust_visible_pc_item_quantity(runtime_shell, 1);
+        if !visible_pc_item_quantity_input_ready(runtime_shell) { return Ok(()); }
+        return adjust_visible_pc_item_quantity(runtime_shell, 10);
     }
     if runtime_shell.kurt_apricorn_cursor.is_some() {
         if runtime_shell.kurt_apricorn_quantity.is_some() {
@@ -4315,6 +4441,9 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
     }
     if runtime_shell.pack_toss.is_some() {
         return adjust_visible_pack_toss_quantity(runtime_shell, 10);
+    }
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::PutMailInPack(_))) {
+        return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
         return move_visible_cursor_slot(
@@ -4467,11 +4596,27 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
     if runtime_shell.pokedex_menu_open {
         return page_visible_pokedex_cursor(runtime_shell, 1);
     }
+    if runtime_shell.bill_pc_pokemon_summary.is_some() && !visible_wait_sfx_finished(runtime_shell) {
+        return Ok(());
+    }
+    if let Some(summary) = runtime_shell.bill_pc_pokemon_summary.as_mut() {
+        if visible_pc_pokemon_at(&snapshot, summary.location)?.is_egg { return Ok(()); }
+        summary.page = if summary.page == 3 { 1 } else { summary.page + 1 };
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
+    if runtime_shell.bill_pc_pokemon_action_cursor.is_some() || runtime_shell.pending_pc_release.is_some() {
+        return Ok(()); // VerticalMenu/YesNoBox must not switch the box underneath it.
+    }
     if runtime_shell.storage_cursor.is_some() {
-        return switch_visible_pc_box_by_delta(runtime_shell, 1);
+        return if runtime_shell.bill_pc_move_open {
+            switch_visible_pc_move_container(runtime_shell, 1)
+        } else {
+            Ok(()) // Withdraw_UpDown handles only vertical list input.
+        };
     }
     if runtime_shell.pc_item_cursor.is_some() {
-        return move_visible_pc_item_cursor(runtime_shell, 1);
+        return Ok(()); // PCItemsMenuData enables neither Left nor Right.
     }
     if runtime_shell.player_pc_action_cursor.is_some() {
         let option_count = visible_player_pc_actions(runtime_shell).len();
@@ -4483,24 +4628,8 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
             &mut runtime_shell.last_audio_events,
         );
     }
-    if runtime_shell.mailbox_action_cursor.is_some() {
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_action_cursor,
-            "pc:mailbox-actions".to_string(),
-            VISIBLE_MAILBOX_ACTIONS.len(),
-            1,
-            &mut runtime_shell.last_audio_events,
-        );
-    }
-    if runtime_shell.mailbox_cursor.is_some() {
-        let count = snapshot.mailbox.len();
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_cursor,
-            "pc:mailbox".to_string(),
-            count,
-            1,
-            &mut runtime_shell.last_audio_events,
-        );
+    if runtime_shell.mailbox_action_cursor.is_some() || runtime_shell.mailbox_cursor.is_some() {
+        return Ok(()); // Neither mailbox menu enables horizontal navigation.
     }
     if visible_menu_has_selectable_options(&snapshot) {
         return move_visible_menu_cursor_horizontal(runtime_shell, 1);
@@ -4577,11 +4706,14 @@ fn shift_visible_battle_pack_pocket(
                 surface_id: "battle:bag-items".to_string(),
                 option_index: runtime_shell.field_pack_cursor_positions[0],
             });
-            visible_cursor_index(
+            move_visible_pack_cursor_slot(
                 &mut runtime_shell.bag_cursor,
-                "battle:bag-items",
+                "battle:bag-items".to_string(),
                 field_pack_selectable_count(item_ids.len()),
-            );
+                0,
+                &mut runtime_shell.field_pack_scroll_positions[0],
+                &mut runtime_shell.last_audio_events,
+            )?;
             runtime_shell.field_pack_cursor_positions[0] = runtime_shell
                 .bag_cursor
                 .as_ref()
@@ -4593,11 +4725,14 @@ fn shift_visible_battle_pack_pocket(
                 surface_id: "bag:balls".to_string(),
                 option_index: runtime_shell.field_pack_cursor_positions[1],
             });
-            visible_cursor_index(
+            move_visible_pack_cursor_slot(
                 &mut runtime_shell.ball_cursor,
-                "bag:balls",
+                "bag:balls".to_string(),
                 field_pack_selectable_count(ball_ids.len()),
-            );
+                0,
+                &mut runtime_shell.field_pack_scroll_positions[1],
+                &mut runtime_shell.last_audio_events,
+            )?;
             runtime_shell.field_pack_cursor_positions[1] = runtime_shell
                 .ball_cursor
                 .as_ref()
@@ -4609,11 +4744,14 @@ fn shift_visible_battle_pack_pocket(
                 surface_id: "bag:key-items".to_string(),
                 option_index: runtime_shell.field_pack_cursor_positions[2],
             });
-            visible_cursor_index(
+            move_visible_pack_cursor_slot(
                 &mut runtime_shell.key_item_cursor,
-                "bag:key-items",
+                "bag:key-items".to_string(),
                 field_pack_selectable_count(key_count),
-            );
+                0,
+                &mut runtime_shell.field_pack_scroll_positions[2],
+                &mut runtime_shell.last_audio_events,
+            )?;
             runtime_shell.field_pack_cursor_positions[2] = runtime_shell
                 .key_item_cursor
                 .as_ref()
@@ -4625,11 +4763,14 @@ fn shift_visible_battle_pack_pocket(
                 surface_id: "bag:tmhm".to_string(),
                 option_index: runtime_shell.field_pack_cursor_positions[3],
             });
-            visible_cursor_index(
+            move_visible_pack_cursor_slot(
                 &mut runtime_shell.tmhm_cursor,
-                "bag:tmhm",
+                "bag:tmhm".to_string(),
                 field_pack_selectable_count(tmhm_count),
-            );
+                0,
+                &mut runtime_shell.field_pack_scroll_positions[3],
+                &mut runtime_shell.last_audio_events,
+            )?;
             runtime_shell.field_pack_cursor_positions[3] = runtime_shell
                 .tmhm_cursor
                 .as_ref()
@@ -4686,6 +4827,7 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return Ok(());
     }
     if runtime_shell.pc_item_quantity.is_some() {
+        if !visible_pc_item_quantity_input_ready(runtime_shell) { return Ok(()); }
         return adjust_visible_pc_item_quantity(runtime_shell, if delta < 0 { 1 } else { -1 });
     }
     if runtime_shell.options_menu_open {
@@ -4807,6 +4949,9 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
     }
     if runtime_shell.pack_toss.is_some() {
         return adjust_visible_pack_toss_quantity(runtime_shell, if delta < 0 { 1 } else { -1 });
+    }
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::PutMailInPack(_))) {
+        return move_visible_mailbox_confirmation_cursor(runtime_shell, delta);
     }
     if runtime_shell.pc_confirmation.is_some() {
         return move_visible_cursor_slot(
@@ -5019,6 +5164,31 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
             &mut runtime_shell.last_audio_events,
         );
     }
+    if runtime_shell.pending_pc_release.is_some() {
+        return move_visible_nonwrapping_cursor_slot(
+            &mut runtime_shell.yes_no_cursor,
+            "pc:release-confirm".to_string(),
+            2,
+            delta,
+            &mut runtime_shell.last_audio_events,
+        );
+    }
+    if runtime_shell.pc_notice.is_some() {
+        return Ok(());
+    }
+    if runtime_shell.bill_pc_pokemon_summary.is_some() {
+        return move_visible_pc_summary_pokemon(runtime_shell, delta);
+    }
+    if runtime_shell.bill_pc_pokemon_action_cursor.is_some() {
+        let count = visible_pc_pokemon_action_labels(runtime_shell).len();
+        return move_visible_nonwrapping_cursor_slot(
+            &mut runtime_shell.bill_pc_pokemon_action_cursor,
+            "pc:pokemon-actions".to_string(),
+            count,
+            delta,
+            &mut runtime_shell.last_audio_events,
+        );
+    }
     if runtime_shell.storage_cursor.is_some() {
         return move_visible_storage_cursor(runtime_shell, delta);
     }
@@ -5038,24 +5208,8 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
             &mut runtime_shell.last_audio_events,
         );
     }
-    if runtime_shell.mailbox_action_cursor.is_some() {
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_action_cursor,
-            "pc:mailbox-actions".to_string(),
-            VISIBLE_MAILBOX_ACTIONS.len(),
-            delta,
-            &mut runtime_shell.last_audio_events,
-        );
-    }
-    if runtime_shell.mailbox_cursor.is_some() {
-        let count = snapshot.mailbox.len();
-        return move_visible_cursor_slot(
-            &mut runtime_shell.mailbox_cursor,
-            "pc:mailbox".to_string(),
-            count,
-            delta,
-            &mut runtime_shell.last_audio_events,
-        );
+    if runtime_shell.mailbox_action_cursor.is_some() || runtime_shell.mailbox_cursor.is_some() {
+        return move_visible_mailbox_cursor(runtime_shell, delta);
     }
     if runtime_shell.pokedex_menu_open {
         return move_visible_pokedex_cursor(runtime_shell, delta);
@@ -5157,30 +5311,6 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
     if runtime_shell.elevator_cursor.is_some() {
         return move_visible_elevator_cursor(runtime_shell, delta);
     }
-    if runtime_shell.pending_pc_release.is_some() {
-        return move_visible_cursor_slot(
-            &mut runtime_shell.yes_no_cursor,
-            "pc:release-confirm".to_string(),
-            2,
-            delta,
-            &mut runtime_shell.last_audio_events,
-        );
-    }
-    if runtime_shell.pc_notice.is_some() {
-        return Ok(());
-    }
-    if runtime_shell.bill_pc_box_summary.is_some() {
-        return Ok(());
-    }
-    if runtime_shell.bill_pc_pokemon_action_cursor.is_some() {
-        return move_visible_cursor_slot(
-            &mut runtime_shell.bill_pc_pokemon_action_cursor,
-            "pc:pokemon-actions".to_string(),
-            4,
-            delta,
-            &mut runtime_shell.last_audio_events,
-        );
-    }
     if runtime_shell.field_notice.is_some() {
         return Ok(());
     }
@@ -5266,4 +5396,87 @@ fn adjust_visible_kurt_apricorn_quantity(
         Some((i32::from(current) + i32::from(delta)).clamp(1, i32::from(maximum)) as u16);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
+}
+
+fn advance_visible_pokegear_map_animation(runtime_shell: &mut BevyRuntimeShell, frames: u32) {
+    if !runtime_shell.pokegear_menu_open || runtime_shell.pokegear_page != PokegearPage::Map {
+        return;
+    }
+    // GetSpriteAnimFrame displays the loading call plus eight duration calls.
+    // RedWalk/BlueWalk repeat standing, walking, standing, mirrored walking.
+    let before = runtime_shell.pokegear_map_animation_frame / 9;
+    runtime_shell.pokegear_map_animation_frame =
+        ((u32::from(runtime_shell.pokegear_map_animation_frame) + frames % 36) % 36) as u8;
+    if runtime_shell.pokegear_map_animation_frame / 9 != before {
+        mark_runtime_presentation_dirty(runtime_shell);
+    }
+}
+
+fn advance_visible_map_radio_delay(runtime_shell: &mut BevyRuntimeShell, ticks: u32) -> u32 {
+    let Some(remaining) = runtime_shell.pokegear_map_radio_delay.as_mut() else { return ticks; };
+    let consumed = ticks.min(u32::from(*remaining));
+    *remaining -= consumed as u16;
+    if consumed != 0 {
+        // DelayFrames does not queue released button edges for its loop.
+        runtime_shell.pending_ui_button_presses.clear();
+    }
+    ticks - consumed
+}
+
+fn close_visible_map_radio(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if snapshot.ui.menu.is_some() {
+        let _ = runtime_shell.shell.close_active_menu()?;
+    }
+    close_visible_pokegear_menu(runtime_shell)?;
+    if runtime_shell.start_menu_cursor.is_none() {
+        continue_visible_script_after_prompt(runtime_shell)?;
+    }
+    Ok(())
+}
+
+fn visible_furniture_radio_station(snapshot: &RuntimeShellSnapshot, station: &str) -> Result<&'static str> {
+    Ok(match station {
+        "MAPRADIO_POKEMON_CHANNEL" => {
+            if !visible_radio_program_in_johto(snapshot)? { "PLACES_AND_PEOPLE" }
+            else if snapshot.progression.time.time_of_day == crate::core::world::encounters::TimeOfDay::Morning {
+                "POKEDEX_SHOW"
+            } else { "OAKS_POKEMON_TALK" }
+        }
+        "MAPRADIO_OAKS_POKEMON_TALK" => "OAKS_POKEMON_TALK",
+        "MAPRADIO_POKEDEX_SHOW" => "POKEDEX_SHOW",
+        "MAPRADIO_POKEMON_MUSIC" => "POKEMON_MUSIC",
+        "MAPRADIO_LUCKY_CHANNEL" => "LUCKY_CHANNEL",
+        "MAPRADIO_UNOWN" => "UNOWN_RADIO",
+        "MAPRADIO_PLACES_PEOPLE" => "PLACES_AND_PEOPLE",
+        "MAPRADIO_LETS_ALL_SING" => "LETS_ALL_SING",
+        "MAPRADIO_ROCKET" => "ROCKET_RADIO",
+        _ => anyhow::bail!("unknown source furniture radio station {station}"),
+    })
+}
+
+fn visible_radio_station_name(station: &str, rockets_in_radio_tower: bool) -> Result<&'static str> {
+    // LoadStation_* returns these names to both UpdateRadioStation and PlayRadio.
+    Ok(match station {
+        "OAKS_POKEMON_TALK" => "OAK's <PK><MN> Talk",
+        "POKEDEX_SHOW" => "#DEX Show",
+        "POKEMON_MUSIC" => "#MON Music",
+        "LUCKY_CHANNEL" => "Lucky Channel",
+        "UNOWN_RADIO" | "EVOLUTION_RADIO" => "?????",
+        "POKE_FLUTE_RADIO" => "# FLUTE",
+        // The normal Buena program prints its own name later. Its loader
+        // returns an empty string unless the tower is occupied by Rockets.
+        "BUENAS_PASSWORD" => if rockets_in_radio_tower { "BUENA'S PASSWORD" } else { "" },
+        "PLACES_AND_PEOPLE" => "Places & People",
+        "LETS_ALL_SING" | "ROCKET_RADIO" => "Let's All Sing!",
+        _ => anyhow::bail!("source radio station name is missing for {station}"),
+    })
+}
+
+fn visible_radio_program_in_johto(snapshot: &RuntimeShellSnapshot) -> Result<bool> {
+    let raw = snapshot.presentation.pokegear_landmarks.map_to_landmark
+        .get(&snapshot.overworld.map_name).context("radio program location is missing")?;
+    // IsInJohto checks raw FAST_SHIP before resolving SPECIAL. RadioChannels
+    // instead uses the already resolved gear landmark when gating reception.
+    Ok(raw == "LANDMARK_FAST_SHIP" || visible_pokegear_player_landmark(snapshot)?.id < 47)
 }

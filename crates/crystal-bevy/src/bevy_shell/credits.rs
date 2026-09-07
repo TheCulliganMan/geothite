@@ -74,7 +74,12 @@ fn visible_credits_quoted_text(line: &str) -> Option<&str> {
 
 fn append_visible_credits_text_tiles(target: &mut Vec<u16>, text: &str) -> Result<()> {
     let char_map = bitmap_font_char_map();
-    for ch in text.chars() {
+    // PlaceString interprets charmap byte $54 through PlacePOKEText, writing
+    // the four ordinary font tiles "POKé" into wTilemap before VBlank copies
+    // it. Credits' #MON/#DEX strings therefore occupy three more tiles than
+    // their encoded source byte stream.
+    let expanded = text.replace('#', "POKé");
+    for ch in expanded.chars() {
         if ch == '@' {
             break;
         }
@@ -87,10 +92,7 @@ fn append_visible_credits_text_tiles(target: &mut Vec<u16>, text: &str) -> Resul
     Ok(())
 }
 
-fn load_visible_credits_script(asset_root: &AssetRoot) -> Result<Vec<VisibleCreditsOp>> {
-    let path = asset_root.resolve_vendor("data/credits_script.asm");
-    let content = crate::read_runtime_asset_to_string(&path)
-        .with_context(|| format!("read credits script {}", path.display()))?;
+fn parse_visible_credits_script(content: &str) -> Result<Vec<VisibleCreditsOp>> {
     let mut tokens = Vec::new();
     for raw_line in content.lines() {
         let line = strip_visible_asm_comment(raw_line);
@@ -155,9 +157,128 @@ fn load_visible_credits_script(asset_root: &AssetRoot) -> Result<Vec<VisibleCred
         }
     }
     if ops.is_empty() {
-        anyhow::bail!("credits script {} produced no operations", path.display());
+        anyhow::bail!("exported credits script produced no operations");
     }
     Ok(ops)
+}
+
+fn load_visible_credits_program(runtime_shell: &BevyRuntimeShell) -> Result<VisibleCreditsProgram> {
+    let operations = runtime_shell
+        .runtime
+        .title_presentation_program()
+        .subprograms
+        .iter()
+        .flat_map(|subprogram| &subprogram.phases)
+        .flat_map(|phase| &phase.operations)
+        .filter(|operation| operation.op == "credits_source_data")
+        .collect::<Vec<_>>();
+    anyhow::ensure!(
+        operations.len() == 1,
+        "runtime title presentation resolves to {} credits_source_data operations",
+        operations.len()
+    );
+    let fields = &operations[0].fields;
+    let source = |name: &str| -> Result<&str> {
+        fields
+            .get(name)
+            .and_then(serde_json::Value::as_str)
+            .filter(|value| !value.is_empty())
+            .with_context(|| format!("credits_source_data has no {name}"))
+    };
+    let script_source = source("script_source")?;
+    let constants_source = source("constants_source")?;
+    let strings_source = source("strings_source")?;
+    let skip_position_threshold = fields
+        .get("skip_position_threshold")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u16::try_from(value).ok())
+        .context("credits_source_data skip threshold is invalid")?;
+    let end_music_fade = fields
+        .get("end_music_fade")
+        .and_then(serde_json::Value::as_object)
+        .context("credits_source_data has no end music fade")?;
+    let end_music_target = end_music_fade
+        .get("target")
+        .and_then(serde_json::Value::as_str)
+        .filter(|target| !target.is_empty())
+        .context("credits_source_data end music target is invalid")?
+        .to_string();
+    runtime_shell
+        .runtime
+        .audio()
+        .require_playback_entry(AudioKind::Music, &end_music_target)?;
+    let end_music_fade_rate = end_music_fade
+        .get("rate")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .filter(|rate| *rate > 0 && *rate < 0x40)
+        .context("credits_source_data end music fade rate is invalid")?;
+    let exit_clear = fields
+        .get("exit_clear")
+        .and_then(serde_json::Value::as_object)
+        .context("credits_source_data has no exit clear definition")?;
+    let exit_clear_frames = exit_clear
+        .get("frames")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .filter(|frames| *frames > 0)
+        .context("credits_source_data exit clear frame count is invalid")?;
+    let exit_clear_fill = exit_clear
+        .get("cgb_palette_fill_byte")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .context("credits_source_data exit CGB palette fill is invalid")?;
+    anyhow::ensure!(
+        exit_clear_fill == 0xff,
+        "Credits ClearPalettes must fill the CGB palette buffers with $ff"
+    );
+    let menu_state = fields
+        .get("menu_state")
+        .and_then(serde_json::Value::as_object)
+        .context("credits_source_data has no menu state")?;
+    anyhow::ensure!(
+        menu_state.get("register").and_then(serde_json::Value::as_str) == Some("hInMenu"),
+        "credits_source_data menu state does not target hInMenu"
+    );
+    let menu_state_value = menu_state
+        .get("value")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .context("credits_source_data hInMenu value is invalid")?;
+    let restores_menu_state_on_return = menu_state
+        .get("restored_on_return")
+        .and_then(serde_json::Value::as_bool)
+        .context("credits_source_data hInMenu restoration flag is invalid")?;
+    anyhow::ensure!(
+        !restores_menu_state_on_return,
+        "Credits source unexpectedly restores hInMenu on return"
+    );
+    let ops = parse_visible_credits_script(script_source)?;
+    anyhow::ensure!(
+        matches!(ops.last(), Some(VisibleCreditsOp::End))
+            && ops
+                .iter()
+                .filter(|op| matches!(op, VisibleCreditsOp::End))
+                .count()
+                == 1,
+        "exported credits program must terminate with exactly one CREDITS_END"
+    );
+    anyhow::ensure!(
+        ops.iter().any(|op| matches!(op, VisibleCreditsOp::TheEnd)),
+        "exported credits program has no CREDITS_THEEND"
+    );
+    Ok(VisibleCreditsProgram {
+        ops,
+        constant_indices: parse_visible_credit_constant_indices(constants_source)?,
+        strings: parse_visible_credits_strings(strings_source)?,
+        string_tiles: parse_visible_credits_string_tiles(strings_source)?,
+        skip_position_threshold,
+        end_music_target,
+        end_music_fade_rate,
+        menu_state_value,
+        exit_clear_frames,
+        exit_clear_color: [exit_clear_fill; 3],
+    })
 }
 
 fn parse_visible_credits_u8(token: &str) -> Result<u8> {
@@ -205,25 +326,93 @@ fn tick_visible_credits_screen(runtime_shell: &mut BevyRuntimeShell) {
     let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return;
     };
-    if credits.awaiting_exit {
+    credits.frame = credits.frame.saturating_add(1);
+    if let Some(remaining) = credits.exit_clear_frames_remaining.as_mut() {
+        *remaining = remaining.saturating_sub(1);
+        if *remaining == 0 {
+            if let Err(error) = close_visible_credits_screen(runtime_shell, "acknowledge") {
+                record_visible_runtime_system_error(runtime_shell, error);
+            }
+        }
         return;
     }
-    credits.frame = credits.frame.saturating_add(1);
+    if credits.music_start_delay_frames > 0 {
+        credits.music_start_delay_frames = credits.music_start_delay_frames.saturating_sub(1);
+        if credits.music_start_delay_frames == 0 {
+            if let Err(error) = queue_visible_credits_music_start(runtime_shell) {
+                record_visible_runtime_system_error(runtime_shell, error);
+                return;
+            }
+        }
+    }
     if let Err(error) = run_visible_credits_jumptable_step(runtime_shell) {
         record_visible_runtime_system_error(runtime_shell, error);
+        return;
     }
+    commit_visible_credits_bg_map_third(runtime_shell);
+}
+
+fn commit_visible_credits_bg_map_third(runtime_shell: &mut BevyRuntimeShell) {
+    let Some(credits) = runtime_shell.credits_screen.as_mut() else {
+        return;
+    };
+    if credits.bg_map_mode != 1 {
+        return;
+    }
+    // UpdateBGMap copies rows 0..5, 6..11, and 12..17 on successive
+    // VBlanks. The End occupies rows 9 and 10, so it reaches VRAM with the
+    // middle third. Clearing wTilemap before CREDITS_END leaves this retained
+    // VRAM state untouched because ParseCredits first disables hBGMapMode.
+    let first_row = usize::from(credits.bg_map_third) * 6;
+    let row_range = first_row..first_row + 6;
+    credits
+        .displayed_text_rows
+        .retain(|row, _| !row_range.contains(row));
+    for line in &credits.lines {
+        let base_row = 6 + usize::from(line.line_index) * 2;
+        for (line_offset, tiles) in line.tiles.iter().enumerate() {
+            // Credits strings use the text engine's <NEXT> control, whose
+            // NextLineChar advances by SCREEN_WIDTH * 2, leaving one blank
+            // tile row between authored rows.
+            let row = base_row + line_offset * 2;
+            if row_range.contains(&row) {
+                credits.displayed_text_rows.insert(
+                    row,
+                    VisibleCreditsTextRow {
+                        token: line.token.clone(),
+                        tiles: tiles.clone(),
+                    },
+                );
+            }
+        }
+    }
+    if credits.bg_map_third == 1 {
+        credits.displayed_show_the_end = credits.show_the_end;
+    }
+    credits.bg_map_third = match credits.bg_map_third {
+        0 => 1,
+        1 => 2,
+        _ => 0,
+    };
 }
 
 fn visible_credits_can_skip(credits: &VisibleCreditsScreen) -> bool {
-    credits.allow_skip && credits.consumed_bytes >= VISIBLE_CREDITS_SKIP_THRESHOLD
+    credits.allow_skip && credits.consumed_bytes >= credits.program.skip_position_threshold
 }
 
 fn press_visible_credits_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let Some(credits) = runtime_shell.credits_screen.as_ref() else {
+    let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return handle_visible_no_credits_screen(runtime_shell, "a");
     };
+    if credits.exit_clear_frames_remaining.is_some() {
+        record_visible_runtime_action(runtime_shell, "credits:a:ignored-during-exit")?;
+        return Ok(());
+    }
     if credits.awaiting_exit {
-        return close_visible_credits_screen(runtime_shell, "acknowledge");
+        credits.exit_clear_frames_remaining = Some(credits.program.exit_clear_frames);
+        record_visible_runtime_action(runtime_shell, "credits:a:begin-exit")?;
+        set_shell_action_status(runtime_shell, "CREDITS EXIT");
+        return Ok(());
     }
     record_visible_runtime_action(runtime_shell, "credits:a:ignored")?;
     runtime_shell
@@ -237,6 +426,10 @@ fn press_visible_credits_b_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
     let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return handle_visible_no_credits_screen(runtime_shell, "b");
     };
+    if credits.exit_clear_frames_remaining.is_some() {
+        record_visible_runtime_action(runtime_shell, "credits:b:ignored-during-exit")?;
+        return Ok(());
+    }
     if visible_credits_can_skip(credits) && credits.timer > 0 {
         credits.timer = credits.timer.saturating_sub(1);
         record_visible_runtime_action(runtime_shell, "credits:b:advance")?;
@@ -260,7 +453,9 @@ fn close_visible_credits_screen(
     let Some(credits) = runtime_shell.credits_screen.take() else {
         return handle_visible_no_credits_screen(runtime_shell, reason);
     };
-    stop_visible_music(runtime_shell, format!("credits:{reason}:music_stop"))?;
+    if !credits.script_complete {
+        stop_visible_music(runtime_shell, format!("credits:{reason}:music_stop"))?;
+    }
     record_visible_runtime_action(
         runtime_shell,
         format!(
@@ -296,10 +491,27 @@ fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Res
         set_shell_action_status(runtime_shell, format!("CONTINUE {}", save_path.display()));
         return load_visible_runtime_save(runtime_shell, &save_path, "title_continue");
     }
-    let Some(title) = runtime_shell.title_menu.clone() else {
+    let Some(mut title) = runtime_shell.title_menu.clone() else {
         return handle_visible_no_active_title_menu(runtime_shell, "confirm");
     };
-    if !visible_title_main_menu_ready(&title) {
+    if visible_title_main_menu_ready(&title) {
+        anyhow::ensure!(
+            resume_visible_main_menu_input(runtime_shell, false)?.is_some(),
+            "exported MainMenu A input did not reach selection dispatch"
+        );
+        title = runtime_shell
+            .title_menu
+            .clone()
+            .context("MainMenu dispatch lost title state")?;
+    }
+    let exported_dispatch_ready = title.main_menu_phase_interpreter.is_some()
+        && !title.main_menu_waiting_for_input
+        && title.presentation_machine.memory.get("wMenuJoypad") == Some(&0x01)
+        && title
+            .presentation_machine
+            .memory
+            .contains_key("wMenuSelection");
+    if !visible_title_main_menu_ready(&title) && !exported_dispatch_ready {
         return open_visible_title_main_menu(runtime_shell);
     }
     let mut arm_new_game_arrival = false;
@@ -428,6 +640,7 @@ fn close_visible_mystery_gift_screen(
     reason: &'static str,
 ) -> Result<()> {
     runtime_shell.pending_mystery_gift = None;
+    resume_visible_main_menu_after_subprogram(runtime_shell)?;
     record_visible_runtime_action(runtime_shell, format!("mystery_gift:{reason}:close"))?;
     runtime_shell
         .last_audio_events
@@ -464,28 +677,204 @@ fn press_visible_mystery_gift_a_button(runtime_shell: &mut BevyRuntimeShell) -> 
     }
 }
 
-fn visible_name_choice_options(player_gender: u8) -> Vec<String> {
-    if player_gender == PLAYER_GENDER_FEMALE {
-        ["NEW NAME", "KRIS", "AMANDA", "JUANA", "JODI"]
-            .into_iter()
-            .map(str::to_string)
-            .collect()
-    } else {
-        ["NEW NAME", "CHRIS", "MAT", "ALLAN", "JON"]
-            .into_iter()
-            .map(str::to_string)
-            .collect()
-    }
-}
-
 fn open_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
     if !snapshot.trainer.player_name.is_empty() {
         return Ok(());
     }
+    let name_operations = runtime_shell
+        .runtime
+        .title_presentation_program()
+        .subprograms
+        .iter()
+        .flat_map(|subprogram| &subprogram.phases)
+        .flat_map(|phase| &phase.operations)
+        .filter(|operation| operation.op == "name_player")
+        .collect::<Vec<_>>();
+    anyhow::ensure!(
+        name_operations.len() == 1,
+        "runtime title presentation resolves to {} name_player operations",
+        name_operations.len()
+    );
+    let operation = name_operations[0];
+    let gender_key = if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
+        "female"
+    } else {
+        "male"
+    };
+    let options = operation
+        .fields
+        .get("preset_choices")
+        .and_then(serde_json::Value::as_object)
+        .and_then(|choices| choices.get(gender_key))
+        .and_then(serde_json::Value::as_array)
+        .with_context(|| format!("name_player has no {gender_key} preset choices"))?
+        .iter()
+        .map(|value| {
+            value
+                .as_str()
+                .filter(|name| !name.is_empty())
+                .map(str::to_string)
+                .context("name_player has an invalid preset choice")
+        })
+        .collect::<Result<Vec<_>>>()?;
+    anyhow::ensure!(options.len() == 5, "name_player must have five preset choices");
+    let menu = operation
+        .fields
+        .get("preset_menu")
+        .and_then(serde_json::Value::as_object)
+        .context("name_player has no preset menu")?;
+    anyhow::ensure!(
+        menu.get("flags").and_then(serde_json::Value::as_array)
+            == Some(&vec![
+                serde_json::Value::String("STATICMENU_CURSOR".to_string()),
+                serde_json::Value::String("STATICMENU_PLACE_TITLE".to_string()),
+                serde_json::Value::String("STATICMENU_DISABLE_B".to_string()),
+            ]),
+        "name_player preset menu flags differ from ShowPlayerNamingChoices"
+    );
+    let coordinates = menu
+        .get("coordinates")
+        .and_then(serde_json::Value::as_object)
+        .context("name_player preset menu has no coordinates")?;
+    let coordinate = |name: &str| -> Result<usize> {
+        coordinates
+            .get(name)
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|value| usize::try_from(value).ok())
+            .with_context(|| format!("name_player preset menu {name} is invalid"))
+    };
+    let default_option = menu
+        .get("default_option")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| usize::try_from(value).ok())
+        .filter(|value| (1..=options.len()).contains(value))
+        .context("name_player preset menu default option is invalid")?;
+    let motion = operation
+        .fields
+        .get("picture_motion")
+        .and_then(serde_json::Value::as_object)
+        .context("name_player has no picture motion")?;
+    let motion_byte = |name: &str| -> Result<u8> {
+        motion
+            .get(name)
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|value| u8::try_from(value).ok())
+            .filter(|value| *value > 0)
+            .with_context(|| format!("name_player picture motion {name} is invalid"))
+    };
+    anyhow::ensure!(
+        motion_byte("right_tiles")? == 7 && motion_byte("left_tiles")? == 7,
+        "name_player picture motion distance differs from MovePlayerPic"
+    );
+    let motion_frames_per_step = motion_byte("bg_map_wait_frames")?
+        .checked_add(motion_byte("delay_frames")?)
+        .context("name_player picture motion frame count overflows")?;
+    let motion_steps = motion_byte("steps")?;
+    let custom_return = operation
+        .fields
+        .get("custom_return")
+        .and_then(serde_json::Value::as_object)
+        .context("name_player has no custom return choreography")?;
+    anyhow::ensure!(
+        custom_return.get("clear_tilemap").and_then(serde_json::Value::as_bool) == Some(true),
+        "name_player custom return must clear the tilemap"
+    );
+    let custom_fade = |name: &str| -> Result<(u8, u8, u8)> {
+        let fade = custom_return
+            .get(name)
+            .and_then(serde_json::Value::as_object)
+            .with_context(|| format!("name_player custom return has no {name}"))?;
+        let steps = fade
+            .get("steps")
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|value| u8::try_from(value).ok())
+            .filter(|value| *value > 0)
+            .with_context(|| format!("name_player custom return {name} steps are invalid"))?;
+        let frames_per_step = fade
+            .get("frames_per_step")
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|value| u8::try_from(value).ok())
+            .filter(|value| *value > 0)
+            .with_context(|| format!("name_player custom return {name} cadence is invalid"))?;
+        let total = steps
+            .checked_mul(frames_per_step)
+            .with_context(|| format!("name_player custom return {name} duration overflows"))?;
+        Ok((steps, frames_per_step, total))
+    };
+    let player_picture = custom_return
+        .get("player_picture")
+        .and_then(serde_json::Value::as_object)
+        .context("name_player custom return has no player picture")?;
+    anyhow::ensure!(
+        player_picture.get("species_value").and_then(serde_json::Value::as_u64) == Some(0)
+            && player_picture.get("palette_layout").and_then(serde_json::Value::as_str)
+                == Some("SCGB_TRAINER_OR_MON_FRONTPIC_PALS"),
+        "name_player custom return player setup differs from DrawIntroPlayerPic"
+    );
+    let picture_pair = |name: &str| -> Result<(usize, usize)> {
+        let values = player_picture
+            .get(name)
+            .and_then(serde_json::Value::as_array)
+            .with_context(|| format!("name_player custom return player {name} is missing"))?;
+        anyhow::ensure!(values.len() == 2, "name_player custom return player {name} must have two values");
+        Ok((
+            values[0].as_u64().and_then(|value| usize::try_from(value).ok())
+                .with_context(|| format!("name_player custom return player {name} x is invalid"))?,
+            values[1].as_u64().and_then(|value| usize::try_from(value).ok())
+                .with_context(|| format!("name_player custom return player {name} y is invalid"))?,
+        ))
+    };
+    let (custom_player_x, custom_player_y) = picture_pair("coordinate")?;
+    let (custom_player_width, custom_player_height) = picture_pair("dimensions")?;
+    let (custom_fade_out_steps, custom_fade_out_frames_per_step, custom_fade_out_frames) =
+        custom_fade("fade_out")?;
+    let (custom_fade_in_steps, custom_fade_in_frames_per_step, custom_fade_in_frames) =
+        custom_fade("fade_in")?;
+    let custom_bg_map_wait_frames = custom_return
+        .get("bg_map_wait_frames")
+        .and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .filter(|value| *value > 0)
+        .context("name_player custom return BG-map wait is invalid")?;
+    runtime_shell.pending_player_name_return = None;
     runtime_shell.pending_name_choice = Some(VisibleNameChoice {
-        options: visible_name_choice_options(snapshot.trainer.player_gender),
-        selected: 0,
+        options,
+        selected: default_option - 1,
+        player_menu: Some(VisiblePlayerNameMenuDefinition {
+            left: coordinate("left")?,
+            top: coordinate("top")?,
+            right: coordinate("right")?,
+            bottom: coordinate("bottom")?,
+            title: menu
+                .get("title")
+                .and_then(serde_json::Value::as_str)
+                .filter(|title| !title.is_empty())
+                .context("name_player preset menu title is invalid")?
+                .to_string(),
+            title_indent: menu
+                .get("title_indent")
+                .and_then(serde_json::Value::as_u64)
+                .and_then(|value| usize::try_from(value).ok())
+                .context("name_player preset menu title indent is invalid")?,
+            motion_steps,
+            motion_frames_per_step,
+            custom_fade_out_frames,
+            custom_fade_out_steps,
+            custom_fade_out_frames_per_step,
+            custom_bg_map_wait_frames,
+            custom_fade_in_frames,
+            custom_fade_in_steps,
+            custom_fade_in_frames_per_step,
+            custom_player_x,
+            custom_player_y,
+            custom_player_width,
+            custom_player_height,
+        }),
+        player_phase: Some(VisiblePlayerNameChoicePhase::SlideRight),
+        motion_step: 0,
+        motion_frames_remaining: motion_frames_per_step,
+        pending_player_name: None,
     });
     runtime_shell
         .last_audio_events
@@ -499,6 +888,11 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
             return handle_visible_no_player_name_input(runtime_shell, "choice");
         };
+        if choice.player_menu.is_some()
+            && choice.player_phase != Some(VisiblePlayerNameChoicePhase::Menu)
+        {
+            return Ok(());
+        }
         let count = choice.options.len();
         if count == 0 {
             anyhow::bail!("player naming choice menu has no options");
@@ -518,9 +912,15 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
 }
 
 fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let Some(choice) = runtime_shell.pending_name_choice.take() else {
+    let Some(mut choice) = runtime_shell.pending_name_choice.take() else {
         return handle_visible_no_player_name_input(runtime_shell, "choice-confirm");
     };
+    if choice.player_menu.is_some()
+        && choice.player_phase != Some(VisiblePlayerNameChoicePhase::Menu)
+    {
+        runtime_shell.pending_name_choice = Some(choice);
+        return Ok(());
+    }
     if runtime_shell.pending_egg_hatch_nickname.is_some() {
         if choice.selected == 0 {
             let species_name = runtime_shell
@@ -595,9 +995,97 @@ fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<(
         .context("player naming choice selection is out of range")?
         .clone();
     if choice.selected == 0 {
+        runtime_shell.pending_player_name_return = Some(
+            choice
+                .player_menu
+                .take()
+                .context("custom player name choice lost its source return choreography")?,
+        );
         return open_visible_player_name_input(runtime_shell);
     }
-    apply_visible_player_name(runtime_shell, selected)
+    let player_menu = choice
+        .player_menu
+        .as_ref()
+        .context("player preset-name choice lost its source menu definition")?;
+    choice.player_phase = Some(VisiblePlayerNameChoicePhase::SlideLeft);
+    choice.motion_step = 0;
+    choice.motion_frames_remaining = player_menu.motion_frames_per_step;
+    choice.pending_player_name = Some(selected);
+    runtime_shell.pending_name_choice = Some(choice);
+    Ok(())
+}
+
+fn tick_visible_player_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
+        return Ok(());
+    };
+    let Some(phase) = choice.player_phase else {
+        return Ok(());
+    };
+    let menu = choice
+        .player_menu
+        .as_ref()
+        .context("moving player-name portrait has no source menu definition")?;
+    if phase == VisiblePlayerNameChoicePhase::Menu {
+        return Ok(());
+    }
+    choice.motion_frames_remaining = choice.motion_frames_remaining.saturating_sub(1);
+    if choice.motion_frames_remaining > 0 {
+        return Ok(());
+    }
+    choice.motion_step = choice.motion_step.saturating_add(1);
+    match phase {
+        VisiblePlayerNameChoicePhase::SlideRight => {
+            if choice.motion_step < menu.motion_steps {
+                choice.motion_frames_remaining = menu.motion_frames_per_step;
+                return Ok(());
+            }
+            choice.player_phase = Some(VisiblePlayerNameChoicePhase::Menu);
+            choice.motion_step = menu.motion_steps.saturating_sub(1);
+            Ok(())
+        }
+        VisiblePlayerNameChoicePhase::SlideLeft => {
+            if choice.motion_step < menu.motion_steps {
+                choice.motion_frames_remaining = menu.motion_frames_per_step;
+                return Ok(());
+            }
+            let player_name = choice
+                .pending_player_name
+                .take()
+                .context("returning player portrait has no selected preset name")?;
+            runtime_shell.pending_name_choice = None;
+            apply_visible_player_name(runtime_shell, player_name)
+        }
+        VisiblePlayerNameChoicePhase::CustomFadeOut => {
+            if choice.motion_step < menu.custom_fade_out_frames {
+                choice.motion_frames_remaining = 1;
+                return Ok(());
+            }
+            choice.player_phase = Some(VisiblePlayerNameChoicePhase::CustomBgMapWait);
+            choice.motion_step = 0;
+            choice.motion_frames_remaining = menu.custom_bg_map_wait_frames;
+            Ok(())
+        }
+        VisiblePlayerNameChoicePhase::CustomBgMapWait => {
+            choice.player_phase = Some(VisiblePlayerNameChoicePhase::CustomFadeIn);
+            choice.motion_step = 0;
+            choice.motion_frames_remaining = 1;
+            Ok(())
+        }
+        VisiblePlayerNameChoicePhase::CustomFadeIn => {
+            if choice.motion_step < menu.custom_fade_in_frames {
+                choice.motion_frames_remaining = 1;
+                return Ok(());
+            }
+            let player_name = choice
+                .pending_player_name
+                .take()
+                .context("custom player-name return has no completed name")?;
+            runtime_shell.pending_name_choice = None;
+            apply_visible_player_name(runtime_shell, player_name)
+        }
+        VisiblePlayerNameChoicePhase::Menu => unreachable!("filtered above"),
+    }
 }
 
 fn visible_pokemon_nickname_label(species_name: &str) -> String {
@@ -1199,6 +1687,19 @@ fn complete_visible_smoke_player_name_if_needed(
     complete_visible_smoke_time_set_if_needed(runtime_shell)?;
     complete_visible_smoke_oak_intro_if_needed(runtime_shell)?;
     if runtime_shell.pending_name_choice.is_some() {
+        for _ in 0..64 {
+            if runtime_shell
+                .pending_name_choice
+                .as_ref()
+                .is_none_or(|choice| {
+                    choice.player_phase.is_none()
+                        || choice.player_phase == Some(VisiblePlayerNameChoicePhase::Menu)
+                })
+            {
+                break;
+            }
+            tick_visible_player_name_choice(runtime_shell)?;
+        }
         confirm_visible_name_choice(runtime_shell)?;
     }
     if runtime_shell.pending_name_input.is_none() {
@@ -1220,8 +1721,34 @@ fn complete_visible_smoke_player_name_if_needed(
     }
     apply_visible_name_input_smoke_key(runtime_shell, KeyCode::Enter);
     apply_visible_name_input_smoke_key(runtime_shell, KeyCode::KeyZ);
+    complete_visible_smoke_player_name_return_if_needed(runtime_shell)?;
     complete_visible_smoke_oak_intro_if_needed(runtime_shell)?;
     Ok(())
+}
+
+fn complete_visible_smoke_player_name_return_if_needed(
+    runtime_shell: &mut BevyRuntimeShell,
+) -> Result<()> {
+    for _ in 0..64 {
+        let Some(phase) = runtime_shell
+            .pending_name_choice
+            .as_ref()
+            .and_then(|choice| choice.player_phase)
+        else {
+            return Ok(());
+        };
+        anyhow::ensure!(
+            matches!(
+                phase,
+                VisiblePlayerNameChoicePhase::CustomFadeOut
+                    | VisiblePlayerNameChoicePhase::CustomBgMapWait
+                    | VisiblePlayerNameChoicePhase::CustomFadeIn
+            ),
+            "visible smoke expected a custom player-name return, found {phase:?}"
+        );
+        tick_visible_player_name_choice(runtime_shell)?;
+    }
+    anyhow::bail!("visible smoke custom player-name return did not finish")
 }
 
 fn complete_visible_smoke_time_set_if_needed(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
@@ -1230,6 +1757,7 @@ fn complete_visible_smoke_time_set_if_needed(runtime_shell: &mut BevyRuntimeShel
     }
     const MAX_TIME_SET_SMOKE_STEPS: usize = 512;
     for _ in 0..MAX_TIME_SET_SMOKE_STEPS {
+        tick_visible_time_set_screen(runtime_shell)?;
         let Some(phase) = runtime_shell
             .pending_time_set
             .as_ref()
@@ -1238,6 +1766,10 @@ fn complete_visible_smoke_time_set_if_needed(runtime_shell: &mut BevyRuntimeShel
             return Ok(());
         };
         match phase {
+            VisibleTimeSetPhase::StartupDelay
+            | VisibleTimeSetPhase::StartupFadeOut
+            | VisibleTimeSetPhase::StartupLoad
+            | VisibleTimeSetPhase::StartupFadeIn => {}
             VisibleTimeSetPhase::WakeDialogue
             | VisibleTimeSetPhase::HourConfirm
             | VisibleTimeSetPhase::MinuteConfirm
@@ -1282,10 +1814,26 @@ fn complete_visible_smoke_oak_intro_if_needed(runtime_shell: &mut BevyRuntimeShe
     if runtime_shell.pending_oak_intro.is_none() {
         return Ok(());
     }
-    const MAX_OAK_INTRO_SMOKE_STEPS: usize = 256;
+    const MAX_OAK_INTRO_SMOKE_STEPS: usize = 512;
     for _ in 0..MAX_OAK_INTRO_SMOKE_STEPS {
         if runtime_shell.pending_oak_intro.is_none() {
             return Ok(());
+        }
+        if runtime_shell
+            .pending_oak_intro
+            .as_ref()
+            .is_some_and(|oak_intro| {
+                oak_intro.scene_phase == VisibleOakIntroPhase::Cry
+                    && oak_intro.wooper_cry_queued
+            })
+        {
+            runtime_shell.pending_audio.retain(|command| {
+                !matches!(
+                    command.kind,
+                    ModpackAudioKind::SoundEffect | ModpackAudioKind::Cry
+                )
+            });
+            runtime_shell.active_transient_kind = None;
         }
         tick_visible_oak_intro(runtime_shell)?;
         if let Some(oak_intro) = runtime_shell.pending_oak_intro.as_mut() {
@@ -1440,6 +1988,21 @@ fn confirm_visible_player_name_input(runtime_shell: &mut BevyRuntimeShell) -> Re
         };
         return finish_visible_gift_pokemon_nickname(runtime_shell, Some(nickname));
     }
+    if let Some(player_menu) = runtime_shell.pending_player_name_return.take() {
+        let player_name = input.value;
+        runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+            options: Vec::new(),
+            selected: 0,
+            player_menu: Some(player_menu),
+            player_phase: Some(VisiblePlayerNameChoicePhase::CustomFadeOut),
+            motion_step: 0,
+            motion_frames_remaining: 1,
+            pending_player_name: Some(player_name),
+        });
+        set_shell_action_status(runtime_shell, "PLAYER NAME");
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     apply_visible_player_name(runtime_shell, input.value)
 }
 
@@ -1537,6 +2100,7 @@ fn apply_visible_player_name(
     runtime_shell: &mut BevyRuntimeShell,
     player_name: String,
 ) -> Result<()> {
+    runtime_shell.pending_player_name_return = None;
     let snapshot = runtime_shell.shell.snapshot()?;
     record_visible_runtime_action(
         runtime_shell,
@@ -1569,6 +2133,7 @@ fn apply_visible_player_name(
 }
 
 fn reset_visible_music_state(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.pending_victory_music_delay = false;
     runtime_shell.active_music = None;
     runtime_shell.faded_music = None;
     runtime_shell.music_fade = None;
@@ -2017,6 +2582,12 @@ fn initialize_visible_party_cursor(
 
 fn selected_party_index(runtime_shell: &mut BevyRuntimeShell) -> Result<usize> {
     let snapshot = runtime_shell.shell.snapshot()?;
+    if runtime_shell.bill_pc_deposit_open {
+        let VisiblePcPokemonLocation::Party(index) = selected_visible_pc_pokemon_location(runtime_shell, &snapshot)? else {
+            anyhow::bail!("PC Deposit must select a party Pokemon");
+        };
+        return Ok(index);
+    }
     if snapshot.party.slots.is_empty() {
         anyhow::bail!("party is empty");
     }
@@ -2332,13 +2903,30 @@ fn decline_visible_pending_move_learn(runtime_shell: &mut BevyRuntimeShell) -> R
         "pending move learn declined party_index={} learned={}",
         resolution.party_index, resolution.learned_move
     ));
-    runtime_shell.battle_messages.extend(visible_move_learning_text_pages(
+    let result_pages = visible_move_learning_text_pages(
         runtime_shell,
         "_DidNotLearnMoveText",
         &recipient_name,
         &recipient_name,
         &resolution.learned_move,
-    )?);
+    )?;
+    runtime_shell.battle_messages.extend(result_pages.iter().cloned());
+    let final_result_page = result_pages
+        .last()
+        .context("declined move learning rendered no result page")?
+        .clone();
+    if let Some(cancellation) = runtime_shell.battle_evolution_cancellations.front_mut()
+        && cancellation.accepted
+        && cancellation.party_index == resolution.party_index
+    {
+        cancellation.pending_move_messages.push(final_result_page.clone());
+    }
+    if let Some(cancellation) = runtime_shell.field_evolution_cancellation.as_mut()
+        && cancellation.accepted
+        && cancellation.party_index == resolution.party_index
+    {
+        cancellation.pending_move_messages.push(final_result_page);
+    }
     push_visible_deferred_evolution_events(
         runtime_shell,
         outcome.deferred_evolution.as_ref(),
@@ -2412,6 +3000,7 @@ fn push_visible_deferred_evolution_events(
                     evolved_message: evolved_message.clone(),
                     pending_move_messages,
                     report: evolution.clone(),
+                    accepted: false,
                 },
             );
         }
@@ -2512,11 +3101,12 @@ fn move_visible_bag_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -
     runtime_shell.custom_item_cursor = None;
     runtime_shell.pc_item_cursor = None;
     runtime_shell.field_pack_pocket = Some(FieldPackPocket::Items);
-    move_visible_cursor_slot(
+    move_visible_pack_cursor_slot(
         &mut runtime_shell.bag_cursor,
         "bag:items".to_string(),
         field_pack_selectable_count(carried_item_count(&snapshot.bag.items)),
         delta,
+        &mut runtime_shell.field_pack_scroll_positions[0],
         &mut runtime_shell.last_audio_events,
     )?;
     runtime_shell.field_pack_cursor_positions[0] = runtime_shell
@@ -2541,11 +3131,12 @@ fn move_visible_key_item_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
         runtime_shell.field_pack_target_mode = None;
         runtime_shell.battle_pack_target_mode = None;
     }
-    move_visible_cursor_slot(
+    move_visible_pack_cursor_slot(
         &mut runtime_shell.key_item_cursor,
         "bag:key-items".to_string(),
         field_pack_selectable_count(carried_item_count(&snapshot.bag.key_items)),
         delta,
+        &mut runtime_shell.field_pack_scroll_positions[2],
         &mut runtime_shell.last_audio_events,
     )?;
     runtime_shell.field_pack_cursor_positions[2] = runtime_shell
@@ -2570,11 +3161,12 @@ fn move_visible_battle_bag_cursor(
     runtime_shell.field_pack_target_mode = None;
     runtime_shell.battle_pack_target_mode = None;
     let item_ids = carried_battle_non_ball_item_ids(&snapshot);
-    move_visible_cursor_slot(
+    move_visible_pack_cursor_slot(
         &mut runtime_shell.bag_cursor,
         "battle:bag-items".to_string(),
         field_pack_selectable_count(item_ids.len()),
         delta,
+        &mut runtime_shell.field_pack_scroll_positions[0],
         &mut runtime_shell.last_audio_events,
     )?;
     runtime_shell.field_pack_cursor_positions[0] = runtime_shell
@@ -2604,11 +3196,12 @@ fn move_visible_ball_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
     } else {
         field_pack_selectable_count(carried_ball_item_ids(&snapshot).len())
     };
-    move_visible_cursor_slot(
+    move_visible_pack_cursor_slot(
         &mut runtime_shell.ball_cursor,
         "bag:balls".to_string(),
         option_count,
         delta,
+        &mut runtime_shell.field_pack_scroll_positions[1],
         &mut runtime_shell.last_audio_events,
     )?;
     runtime_shell.field_pack_cursor_positions[1] = runtime_shell
@@ -2633,11 +3226,12 @@ fn move_visible_tmhm_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         runtime_shell.field_pack_target_mode = None;
         runtime_shell.battle_pack_target_mode = None;
     }
-    move_visible_cursor_slot(
+    move_visible_pack_cursor_slot(
         &mut runtime_shell.tmhm_cursor,
         "bag:tmhm".to_string(),
         field_pack_selectable_count(snapshot.bag.tm_hm.len()),
         delta,
+        &mut runtime_shell.field_pack_scroll_positions[3],
         &mut runtime_shell.last_audio_events,
     )?;
     runtime_shell.field_pack_cursor_positions[3] = runtime_shell
@@ -2675,48 +3269,30 @@ fn move_visible_custom_item_cursor(
 
 fn move_visible_storage_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    if runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open {
-        let count = snapshot.party.slots.len();
-        return move_visible_cursor_slot(
-            &mut runtime_shell.storage_cursor,
-            pc_move_party_surface_id().to_string(),
-            if runtime_shell.bill_pc_move_source.is_some() {
-                count + 1
-            } else {
-                count.max(1)
-            },
-            delta,
-            &mut runtime_shell.last_audio_events,
-        );
+    let party = runtime_shell.bill_pc_deposit_open
+        || (runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open);
+    // CopyBoxmonSpecies appends the -1/CANCEL entry in every BillsPC mode,
+    // including the Move insertion list.
+    let (surface_id, count) = if party {
+        (pc_party_surface_id().to_string(), snapshot.party.slots.len() + 1)
+    } else {
+        (storage_cursor_surface_id(visible_pc_box_index(&snapshot, runtime_shell)),
+            visible_storage_box(&snapshot, runtime_shell)?.slots.len() + 1)
+    };
+    let current = strict_readonly_cursor_index(&runtime_shell.storage_cursor, &surface_id, count)
+        .context("PC list requires a valid Pokémon or CANCEL cursor")?;
+    let next = current.saturating_add_signed(delta).min(count - 1);
+    if next == current { return Ok(()); }
+    // BillsPC_PressUp/Down scroll only after the cursor reaches a window edge.
+    if next < runtime_shell.pc_list_scroll {
+        runtime_shell.pc_list_scroll = next;
+    } else if next >= runtime_shell.pc_list_scroll + 5 {
+        runtime_shell.pc_list_scroll = next - 4;
     }
-    let current_box = current_storage_box(&snapshot)?;
-    if current_box.slots.is_empty() && !runtime_shell.bill_pc_move_open {
-        runtime_shell.storage_cursor = Some(MenuCursor {
-            surface_id: storage_cursor_surface_id(snapshot.storage.current_pc_box),
-            option_index: 0,
-        });
-        runtime_shell.last_audio_events.push(format!(
-            "pc box {} has no stored Pokemon",
-            snapshot.storage.current_pc_box
-        ));
-        trim_event_log(&mut runtime_shell.last_audio_events);
-        return Ok(());
-    }
-    move_visible_cursor_slot(
-        &mut runtime_shell.storage_cursor,
-        storage_cursor_surface_id(snapshot.storage.current_pc_box),
-        if runtime_shell.bill_pc_move_open {
-            if runtime_shell.bill_pc_move_source.is_some() {
-                current_box.slots.len() + 1
-            } else {
-                current_box.slots.len().max(1)
-            }
-        } else {
-            current_box.slots.len()
-        },
-        delta,
-        &mut runtime_shell.last_audio_events,
-    )
+    runtime_shell.storage_cursor = Some(MenuCursor { surface_id, option_index: next });
+    runtime_shell.last_audio_events.push(format!("cursor {}->{}", current + 1, next + 1));
+    trim_event_log(&mut runtime_shell.last_audio_events);
+    Ok(())
 }
 
 fn move_visible_pc_item_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
@@ -2725,18 +3301,29 @@ fn move_visible_pc_item_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
     runtime_shell.key_item_cursor = None;
     runtime_shell.ball_cursor = None;
     runtime_shell.tmhm_cursor = None;
-    move_visible_cursor_slot(
-        &mut runtime_shell.pc_item_cursor,
-        "pc:items".to_string(),
-        snapshot
-            .bag
-            .pc_items
-            .iter()
-            .filter(|item| item.quantity > 0)
-            .count(),
-        delta,
-        &mut runtime_shell.last_audio_events,
-    )
+    let count = snapshot.bag.pc_items.len() + 1;
+    let current = strict_readonly_cursor_index(&runtime_shell.pc_item_cursor, "pc:items", count)
+        .context("PC item list requires an item or CANCEL cursor")?;
+    let next = current.saturating_add_signed(delta).min(count - 1);
+    if next == current {
+        return Ok(());
+    }
+    if next < runtime_shell.pc_item_scroll {
+        runtime_shell.pc_item_scroll = next;
+    } else if next >= runtime_shell.pc_item_scroll + 4 {
+        runtime_shell.pc_item_scroll = next - 3;
+    }
+    runtime_shell.pc_item_row = next - runtime_shell.pc_item_scroll;
+    runtime_shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".to_string(),
+        option_index: next,
+    });
+    runtime_shell
+        .last_audio_events
+        .push(format!("cursor {}->{}", current + 1, next + 1));
+    trim_event_log(&mut runtime_shell.last_audio_events);
+    mark_runtime_presentation_dirty(runtime_shell);
+    Ok(())
 }
 
 fn move_visible_fly_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
@@ -2923,20 +3510,16 @@ fn move_visible_pending_move_learn_cursor(
 
 fn selected_current_box_slot_index(runtime_shell: &mut BevyRuntimeShell) -> Result<usize> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    let current_box = current_storage_box(&snapshot)?;
+    let current_box = visible_storage_box(&snapshot, runtime_shell)?;
     if current_box.slots.is_empty() && !runtime_shell.bill_pc_move_open {
         anyhow::bail!(
             "current PC box {} has no Pokemon",
             snapshot.storage.current_pc_box
         );
     }
-    let surface_id = storage_cursor_surface_id(snapshot.storage.current_pc_box);
+    let surface_id = storage_cursor_surface_id(current_box.index);
     let option_count = if runtime_shell.bill_pc_move_open {
-        if runtime_shell.bill_pc_move_source.is_some() {
-            current_box.slots.len() + 1
-        } else {
-            current_box.slots.len().max(1)
-        }
+        current_box.slots.len() + 1
     } else {
         current_box.slots.len()
     };
@@ -2959,39 +3542,32 @@ fn selected_pc_move_slot_index(runtime_shell: &mut BevyRuntimeShell) -> Result<u
     }
     let snapshot = runtime_shell.shell.snapshot()?;
     let count = snapshot.party.slots.len();
-    let option_count = if runtime_shell.bill_pc_move_source.is_some() {
-        count + 1
-    } else {
-        count.max(1)
-    };
+    let option_count = count + 1;
     strict_readonly_cursor_index(
         &runtime_shell.storage_cursor,
-        pc_move_party_surface_id(),
+        pc_party_surface_id(),
         option_count,
     )
     .context("PC MOVE party surface pc:move-party is active without a valid cursor")
 }
 
-fn current_storage_box(snapshot: &RuntimeShellSnapshot) -> Result<&crate::RuntimePcBoxSnapshot> {
-    snapshot
-        .storage
-        .boxes
-        .iter()
-        .find(|pc_box| pc_box.index == snapshot.storage.current_pc_box)
-        .with_context(|| {
-            format!(
-                "current PC box {} is missing from storage snapshot",
-                snapshot.storage.current_pc_box
-            )
-        })
+fn visible_pc_box_index(snapshot: &RuntimeShellSnapshot, runtime_shell: &BevyRuntimeShell) -> usize {
+    if runtime_shell.bill_pc_move_open { runtime_shell.bill_pc_move_loaded_box }
+    else { snapshot.storage.current_pc_box }
+}
+
+fn visible_storage_box<'a>(snapshot: &'a RuntimeShellSnapshot, runtime_shell: &BevyRuntimeShell) -> Result<&'a crate::RuntimePcBoxSnapshot> {
+    let index = visible_pc_box_index(snapshot, runtime_shell);
+    snapshot.storage.boxes.iter().find(|pc_box| pc_box.index == index)
+        .with_context(|| format!("visible PC box {index} is missing from storage snapshot"))
 }
 
 fn storage_cursor_surface_id(box_index: usize) -> String {
     format!("pc:box:{box_index}")
 }
 
-fn pc_move_party_surface_id() -> &'static str {
-    "pc:move:party"
+fn pc_party_surface_id() -> &'static str {
+    "pc:party"
 }
 
 fn party_move_cursor_surface_id(party_index: usize) -> String {
@@ -3028,7 +3604,7 @@ fn move_visible_menu_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         return move_visible_cursor_for_surface(
             runtime_shell,
             shop_cursor_surface_id(shop),
-            shop.inventory.len(),
+            shop.inventory.len() + 1,
             delta,
         );
     }
@@ -3100,7 +3676,7 @@ fn move_visible_shop_buy_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
     move_visible_mart_cursor_slot(
         &mut runtime_shell.menu_cursor,
         shop_cursor_surface_id(&shop),
-        shop.inventory.len(),
+        shop.inventory.len() + 1,
         delta,
         &mut runtime_shell.last_audio_events,
     )
@@ -3149,6 +3725,79 @@ fn move_visible_cursor_for_surface(
         delta,
         &mut runtime_shell.last_audio_events,
     )
+}
+
+fn move_visible_nonwrapping_cursor_slot(
+    cursor_slot: &mut Option<MenuCursor>,
+    surface_id: String,
+    option_count: usize,
+    delta: isize,
+    event_log: &mut Vec<String>,
+) -> Result<()> {
+    let current = strict_readonly_cursor_index(cursor_slot, &surface_id, option_count)
+        .with_context(|| format!("menu {surface_id} has no valid cursor"))?;
+    let next = current.saturating_add_signed(delta).min(option_count - 1);
+    if next == current { return Ok(()); }
+    *cursor_slot = Some(MenuCursor { surface_id, option_index: next });
+    event_log.push(format!("cursor {}->{}", current + 1, next + 1));
+    trim_event_log(event_log);
+    Ok(())
+}
+
+/// ScrollingMenu_InitFlags never enables wrapping. Each pocket keeps its
+/// scroll byte when its cursor moves back from the bottom of the window.
+fn move_visible_pack_cursor_slot(
+    cursor_slot: &mut Option<MenuCursor>,
+    surface_id: String,
+    option_count: usize,
+    delta: isize,
+    scroll: &mut usize,
+    event_log: &mut Vec<String>,
+) -> Result<()> {
+    const ROWS: usize = 5;
+    anyhow::ensure!(option_count > 0, "{surface_id} has no CANCEL row");
+    let mut current = match cursor_slot.as_ref() {
+        Some(cursor) => {
+            anyhow::ensure!(cursor.surface_id == surface_id, "Pack {surface_id} has cursor surface {}", cursor.surface_id);
+            cursor.option_index
+        }
+        None => 0,
+    };
+    if delta == 0 {
+        // InitScrollingMenuCursor clamps the scroll first, preserving the
+        // screen row after an item disappears. Only an invalid row then resets.
+        let mut row = current
+            .checked_sub(*scroll)
+            .context("Pack cursor precedes its retained scrolling window")?;
+        *scroll = (*scroll).min(option_count.saturating_sub(ROWS));
+        if *scroll + row >= option_count {
+            *scroll = 0;
+            row = 0;
+        }
+        if row >= ROWS {
+            row = 0;
+        }
+        current = *scroll + row;
+    }
+    anyhow::ensure!(
+        current < option_count && current >= *scroll && current < *scroll + ROWS,
+        "Pack cursor is outside its source window"
+    );
+    let next = current.saturating_add_signed(delta).min(option_count - 1);
+    if next < *scroll {
+        *scroll = next;
+    } else if next >= *scroll + ROWS {
+        *scroll = next + 1 - ROWS;
+    }
+    *cursor_slot = Some(MenuCursor {
+        surface_id,
+        option_index: next,
+    });
+    if next != current {
+        event_log.push(format!("cursor {}->{}", current + 1, next + 1));
+        trim_event_log(event_log);
+    }
+    Ok(())
 }
 
 fn move_visible_cursor_slot(
@@ -3677,6 +4326,19 @@ fn select_visible_linked_menu_option(
     Ok(())
 }
 
+fn visible_text_label_can_auto_continue(runtime_shell: &BevyRuntimeShell) -> Result<bool> {
+    if visible_pending_text_wait_closes_window(runtime_shell) {
+        return Ok(false);
+    }
+    let snapshot = runtime_shell.shell.snapshot()?;
+    Ok(snapshot.ui.text_window_open
+        && snapshot.ui.text.is_some()
+        && snapshot.ui.pending_yes_no.is_none()
+        && snapshot.script_events.pending_text_label.is_some()
+        && visible_field_dialogue_is_entirely_consumed(runtime_shell, &snapshot)
+        && !visible_field_text_ends_with_prompt(&snapshot, runtime_shell)?)
+}
+
 fn advance_visible_text_label(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, "script:pending:text_label")?;
     let label = runtime_shell
@@ -3837,5 +4499,131 @@ fn arm_visible_current_scene_script(
         scene.map_name, scene.scene_id, scene.script_name, reason
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    Ok(())
+}
+
+fn selected_visible_pc_pokemon_location(runtime_shell: &BevyRuntimeShell, snapshot: &RuntimeShellSnapshot) -> Result<VisiblePcPokemonLocation> {
+    if runtime_shell.bill_pc_deposit_open || (runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open) {
+        let selected = strict_readonly_cursor_index(&runtime_shell.storage_cursor,
+            pc_party_surface_id(), snapshot.party.slots.len()).context("PC party selection is invalid")?;
+        Ok(VisiblePcPokemonLocation::Party(snapshot.party.slots[selected].index))
+    } else {
+        let pc_box = visible_storage_box(snapshot, runtime_shell)?;
+        let selected = strict_readonly_cursor_index(&runtime_shell.storage_cursor,
+            &storage_cursor_surface_id(pc_box.index), pc_box.slots.len()).context("PC box selection is invalid")?;
+        Ok(VisiblePcPokemonLocation::Box { box_index: pc_box.index, box_slot: pc_box.slots[selected].index })
+    }
+}
+
+fn visible_pc_summary_pokemon(snapshot: &RuntimeShellSnapshot, location: VisiblePcPokemonLocation) -> Result<crate::core::models::pokemon::Pokemon> {
+    let mut pokemon = visible_pc_pokemon_at(snapshot, location)?.clone();
+    if matches!(location, VisiblePcPokemonLocation::Box { .. }) {
+        // BillsPC_CopyMon calls CalcBufferMonStats for boxed records. The
+        // temporary party-only bytes are rebuilt without changing the box.
+        let stats = crate::core::models::pokemon::calculate_stats(&pokemon.species, pokemon.level, pokemon.dvs,
+            crate::core::models::pokemon::StatExperience {
+                hp: pokemon.hp_exp, attack: pokemon.attack_exp, defense: pokemon.defense_exp,
+                speed: pokemon.speed_exp, special: pokemon.special_exp,
+            });
+        pokemon.max_hp = stats.max_hp;
+        pokemon.attack = stats.attack;
+        pokemon.defense = stats.defense;
+        pokemon.speed = stats.speed;
+        pokemon.special_attack = stats.special_attack;
+        pokemon.special_defense = stats.special_defense;
+        pokemon.hp = if pokemon.is_egg { 0 } else { stats.max_hp };
+        pokemon.status = None;
+        pokemon.sleep_turns = 0;
+    }
+    Ok(pokemon)
+}
+
+fn move_visible_pc_summary_pokemon(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
+    if !visible_wait_sfx_finished(runtime_shell) {
+        return Ok(());
+    }
+    let snapshot = runtime_shell.shell.snapshot()?;
+    let summary = runtime_shell.bill_pc_pokemon_summary.as_ref()
+        .context("PC Stats browsing requires an open summary")?;
+    let (surface, count) = match summary.location {
+        VisiblePcPokemonLocation::Party(_) => (pc_party_surface_id().to_string(), snapshot.party.slots.len()),
+        VisiblePcPokemonLocation::Box { box_index, .. } => {
+            let pc_box = visible_storage_box(&snapshot, runtime_shell)?;
+            anyhow::ensure!(pc_box.index == box_index, "PC Stats box differs from the visible list");
+            (storage_cursor_surface_id(box_index), pc_box.slots.len())
+        }
+    };
+    // _StatsScreenDPad excludes the -1/CANCEL entry before calling the
+    // same five-row BillsPC_PressUp/Down routines as the underlying list.
+    let current = strict_readonly_cursor_index(&runtime_shell.storage_cursor, &surface, count)
+        .context("PC Stats requires a selected Pokemon")?;
+    let next = current.saturating_add_signed(delta).min(count - 1);
+    if next == current { return Ok(()); }
+    move_visible_storage_cursor(runtime_shell, next as isize - current as isize)?;
+    let location = selected_visible_pc_pokemon_location(runtime_shell, &snapshot)?;
+    runtime_shell.bill_pc_pokemon_summary.as_mut()
+        .context("PC Stats disappeared while browsing")?.location = location;
+    queue_visible_stats_egg_sound(runtime_shell, visible_pc_pokemon_at(&snapshot, location)?)?;
+    // MonStatsInit redraws the selected Pokemon without resetting page bits.
+    mark_runtime_snapshot_dirty(runtime_shell);
+    Ok(())
+}
+
+fn visible_pc_pokemon_at(snapshot: &RuntimeShellSnapshot, location: VisiblePcPokemonLocation) -> Result<&crate::core::models::pokemon::Pokemon> {
+    match location {
+        VisiblePcPokemonLocation::Party(index) => snapshot.party.slots.iter()
+            .find(|slot| slot.index == index).map(|slot| &slot.pokemon)
+            .with_context(|| format!("PC party slot {index} is missing")),
+        VisiblePcPokemonLocation::Box { box_index, box_slot } => snapshot.storage.boxes.iter()
+            .find(|pc_box| pc_box.index == box_index).and_then(|pc_box| pc_box.slots.iter().find(|slot| slot.index == box_slot))
+            .map(|slot| &slot.pokemon).with_context(|| format!("PC box {box_index} slot {box_slot} is missing")),
+    }
+}
+
+fn close_visible_pc_item_list(runtime_shell: &mut BevyRuntimeShell) {
+    let action_index = match runtime_shell.pc_item_action {
+        Some(VisiblePlayerPcAction::TossItem) => 2,
+        _ => 0,
+    };
+    if let Some(cursor) = runtime_shell.pc_item_cursor.as_ref() {
+        runtime_shell.pc_item_row = cursor.option_index - runtime_shell.pc_item_scroll;
+    }
+    runtime_shell.pc_item_switch_origin = None;
+    runtime_shell.pc_item_move_sequence = None;
+    runtime_shell.pc_item_cursor = None;
+    runtime_shell.pc_item_action = None;
+    runtime_shell.player_pc_action_cursor = Some(MenuCursor {
+        surface_id: "pc:player-actions".to_string(),
+        option_index: action_index,
+    });
+    mark_runtime_presentation_dirty(runtime_shell);
+}
+
+fn restore_visible_pc_item_list_position(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let total = runtime_shell.shell.snapshot()?.bag.pc_items.len() + 1;
+    let mut row = if let Some(cursor) = runtime_shell.pc_item_cursor.as_ref() {
+        cursor
+            .option_index
+            .checked_sub(runtime_shell.pc_item_scroll)
+            .context("PC item cursor precedes its scrolling window")?
+    } else {
+        runtime_shell.pc_item_row
+    };
+    anyhow::ensure!(row < 4, "PC item row exceeds the source window");
+    // InitScrollingMenuCursor adjusts the scroll first, preserving the
+    // screen row. Only an out-of-list row resets the whole selection.
+    runtime_shell.pc_item_scroll = runtime_shell.pc_item_scroll.min(total.saturating_sub(4));
+    if runtime_shell.pc_item_scroll + row >= total {
+        runtime_shell.pc_item_scroll = 0;
+        row = 0;
+    }
+    runtime_shell.pc_item_row = row;
+    runtime_shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".to_string(),
+        option_index: runtime_shell.pc_item_scroll + row,
+    });
+    // The restored ScrollingMenu must reach its first WaitBGMap before input.
+    runtime_shell.pc_menu_input_wait_frames = 4;
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }

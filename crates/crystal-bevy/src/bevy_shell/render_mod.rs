@@ -69,26 +69,20 @@ fn publish_visual_world_frame(
         || battle_entities.iter().next().is_some()
         || fullscreen_entities.iter().next().is_some()
         || rendered.map_name.is_none()
-        || !visual_tile_grid_is_complete(&rendered.visual_tiles)
+        || rendered.visual_tiles_revision.is_none()
     {
         clear_published_visual_world(&mut published);
         return;
     }
 
-    let (Some(map_id), Some(map_visual_key), Some(viewport_origin), Some(map_texture)) = (
+    let (Some(map_id), Some(terrain_revision), Some(map_texture)) = (
         rendered.map_name.as_deref(),
-        rendered.map_visual_key,
-        rendered.viewport_origin,
+        rendered.visual_tiles_revision,
         rendered.map_texture.as_ref(),
     ) else {
         clear_published_visual_world(&mut published);
         return;
     };
-    let terrain_revision = visual_terrain_revision(
-        map_visual_key,
-        viewport_origin,
-        rendered.visual_tiles.as_slice(),
-    );
     let Some((_, map_transform)) = map_sprites
         .iter()
         .find(|(texture, _)| texture.id() == map_texture.id())
@@ -244,6 +238,12 @@ fn publish_visual_world_frame(
         active: true,
         map_id: Arc::from(map_id),
         terrain_revision,
+        grid_origin: {
+            let (x, y) = rendered.viewport_origin.expect("published terrain has a viewport origin");
+            IVec2::new(i32::from(x), i32::from(y))
+                - (published_grid_size.as_ivec2()
+                    - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2
+        },
         map_texture: published_map_texture,
         center,
         viewport_size: Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT),
@@ -474,6 +474,30 @@ mod render_mod_tests {
 
         assert!(!naming_screen_blocks_world_presentation(None));
         assert!(naming_screen_blocks_world_presentation(Some(&input)));
+    }
+
+    #[test]
+    #[ignore = "manual retained-frame CPU benchmark; run with --ignored --nocapture"]
+    fn benchmark_retained_terrain_revision() {
+        use std::{hint::black_box, time::Instant};
+        let tiles = complete_visual_grid();
+        let iterations = 10_000;
+        let start = Instant::now();
+        for _ in 0..iterations {
+            assert!(visual_tile_grid_is_complete(black_box(&tiles)));
+            black_box(visual_terrain_revision(7, (-4, 12), black_box(&tiles)));
+        }
+        let uncached = start.elapsed();
+        let revision = Some(visual_terrain_revision(7, (-4, 12), &tiles));
+        let start = Instant::now();
+        for _ in 0..iterations {
+            black_box(black_box(revision).expect("validated retained terrain"));
+        }
+        eprintln!(
+            "{iterations} retained frames / {} tiles: rescan {uncached:?}, cached {:?}",
+            tiles.len(),
+            start.elapsed()
+        );
     }
 
     #[test]

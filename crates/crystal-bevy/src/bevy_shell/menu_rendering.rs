@@ -2,9 +2,6 @@ const TITLE_MAIN_MENU_TIME_BOX_X: usize = 0;
 const TITLE_MAIN_MENU_TIME_BOX_Y: usize = 14;
 const TITLE_MAIN_MENU_TIME_BOX_WIDTH: usize = 20;
 const TITLE_MAIN_MENU_TIME_BOX_HEIGHT: usize = 4;
-const TITLE_MAIN_MENU_CURSOR_PERIOD: u32 = 16;
-const TITLE_MAIN_MENU_CURSOR_OFFSET: usize = 1;
-const TITLE_MAIN_MENU_FADE_SPEED: u32 = 24;
 const TITLE_MAIN_MENU_DAY_STRINGS: [&str; 7] =
     ["SUN", "MON", "TUES", "WEDNES", "THURS", "FRI", "SATUR"];
 const BOOT_UI_WHITE: [u8; 4] = [255, 255, 255, 255];
@@ -39,40 +36,47 @@ fn load_visible_field_pack_frame(
     let up_arrow = crate::read_runtime_asset(assets.join("gfx/font/up_arrow.2bpp"))
         .context("read canonical Pack scroll-up glyph")?;
     let female = snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE;
-    let icon_tiles = crate::read_runtime_asset(root.join(if female {
-        "pack_f.2bpp"
-    } else {
-        "pack.2bpp"
-    }))
-    .context("read canonical Pack icon tiles")?;
+    let icon_tiles =
+        crate::read_runtime_asset(root.join(if female { "pack_f.2bpp" } else { "pack.2bpp" }))
+            .context("read canonical Pack icon tiles")?;
     let palette_source = crate::read_runtime_asset_to_string(root.join(if female {
         "pack_f.pal"
     } else {
         "pack.pal"
     }))
     .context("read canonical Pack palettes")?;
-    let mut palettes = parse_palette_file(&palette_source, None)?;
-    anyhow::ensure!(palettes.len() >= 6, "Pack palette must contain six palettes");
-    while palettes.len() < 8 {
-        palettes.push(*palettes.last().expect("six palettes checked"));
-    }
-    anyhow::ensure!(menu_tiles.len() == 80 * 16, "Pack menu art must contain 80 tiles");
-    anyhow::ensure!(icon_tiles.len() == 60 * 16, "Pack icon art must contain four 15-tile pockets");
+    let palettes = parse_palette_file(&palette_source, None)?;
+    anyhow::ensure!(
+        palettes.len() >= 6,
+        "Pack palette must contain six palettes"
+    );
+    anyhow::ensure!(
+        menu_tiles.len() == 80 * 16,
+        "Pack menu art must contain 80 tiles"
+    );
+    anyhow::ensure!(
+        icon_tiles.len() == 60 * 16,
+        "Pack icon art must contain four 15-tile pockets"
+    );
     let label_map = crate::read_runtime_asset(root.join("pack_menu.tilemap"))
         .context("read canonical Pack pocket-label tilemap")?;
-    anyhow::ensure!(label_map.len() == 60, "Pack pocket-label tilemap must contain 60 bytes");
+    anyhow::ensure!(
+        label_map.len() == 60,
+        "Pack pocket-label tilemap must contain 60 bytes"
+    );
 
     let pocket_index = match pocket {
-        FieldPackPocket::TmHm => 0,
-        FieldPackPocket::Items => 1,
+        FieldPackPocket::TmHm => 3,
+        FieldPackPocket::Items => 0,
         FieldPackPocket::KeyItems => 2,
-        FieldPackPocket::Balls => 3,
+        FieldPackPocket::Balls => 1,
         FieldPackPocket::Custom(pocket_id) => {
             anyhow::bail!("custom Pack pocket {pocket_id} has no canonical ASM pocket art")
         }
     };
     let icon_chunk = [1_usize, 3, 0, 2][pocket_index];
-    let mut tilemap = vec![NAME_ENTRY_SPACE_TILE; PACK_SCREEN_WIDTH_TILES * PACK_SCREEN_HEIGHT_TILES];
+    let mut tilemap =
+        vec![NAME_ENTRY_SPACE_TILE; PACK_SCREEN_WIDTH_TILES * PACK_SCREEN_HEIGHT_TILES];
     let mut attrmap = vec![0_u8; tilemap.len()];
     for y in 1..12 {
         for x in 0..PACK_SCREEN_WIDTH_TILES {
@@ -115,29 +119,47 @@ fn load_visible_field_pack_frame(
         }
         Ok(())
     };
-    for visible_index in 0..7 {
+    for visible_index in 0..5 {
         let index = list_start + visible_index;
         if index > items.len() {
             break;
         }
-        let row = 2 + visible_index;
-        write(7, row, if index == selected { "▶" } else { " " })?;
+        let row = 2 + visible_index * 2;
+        write(
+            7,
+            row,
+            if index != selected {
+                " "
+            } else if runtime_shell.pc_notice.is_some()
+                || runtime_shell.field_pack_action_cursor.is_some()
+            {
+                "▷"
+            } else {
+                "▶"
+            },
+        )?;
         if let Some((item_id, quantity)) = items.get(index) {
-            let name = compact_scene_label(&item_display_name(snapshot, item_id).to_uppercase(), 8);
-            write(8, row, &name)?;
-            if !matches!(pocket, FieldPackPocket::KeyItems) {
-                write(16, row, &format!("×{:02}", (*quantity).min(99)))?;
+            let item = snapshot
+                .items
+                .iter()
+                .find(|item| item.item_id == *item_id)
+                .with_context(|| {
+                    format!("Pack item {item_id} is missing from the source catalog")
+                })?;
+            write(8, row, &item.name)?;
+            if !matches!(pocket, FieldPackPocket::KeyItems)
+                && !item
+                    .property
+                    .split('|')
+                    .any(|flag| flag.trim() == "CANT_TOSS")
+            {
+                write(17, row + 1, &format!("×{:2}", quantity))?;
             }
         } else {
             write(8, row, "CANCEL")?;
         }
     }
-    if list_start > 0 {
-        write(19, 2, "▲")?;
-    }
-    if list_start + 7 < items.len() + 1 {
-        write(19, 8, "▼")?;
-    }
+    // Pack pocket headers leave SCROLLINGMENU_DISPLAY_ARROWS clear.
 
     let width = 20 * SOURCE_TILE_SIZE;
     let height = 18 * SOURCE_TILE_SIZE;
@@ -145,7 +167,9 @@ fn load_visible_field_pack_frame(
     for (index, tile_id) in tilemap.iter().copied().enumerate() {
         let x = index % 20;
         let y = index / 20;
-        let palette = &palettes[usize::from(attrmap[index].min(7))];
+        let palette = palettes
+            .get(usize::from(attrmap[index]))
+            .context("Pack LCD attribute selects a missing source palette")?;
         if tile_id == NAME_ENTRY_SPACE_TILE {
             fill_native_tile(&mut data, x, y, palette[0]);
         } else if tile_id >= 0x80 {
@@ -161,18 +185,27 @@ fn load_visible_field_pack_frame(
         }
     }
     draw_time_set_window(&frame, 0, 12, 20, 6, &mut data)?;
-    for (line_index, line) in wrap_boot_text_for_box(description, 18, 3).iter().enumerate() {
-        draw_time_set_text(&font, line, 8, (14 + line_index) * 8, &mut data)?;
+    // ItemDescriptions uses PlaceString/NEXT, which advances two tile rows.
+    // Keep the exported source breaks, including deliberate hyphenation.
+    let description = normalize_boot_text(description);
+    let description_lines = description.lines().collect::<Vec<_>>();
+    anyhow::ensure!(description_lines.len() <= 2, "Pack description exceeds its source textbox");
+    for (line_index, line) in description_lines.iter().enumerate() {
+        anyhow::ensure!(boot_text_tile_len(line) <= 18, "Pack description exceeds its source line width");
+        draw_time_set_text(&font, line, 8, (14 + line_index * 2) * 8, &mut data)?;
     }
     if let Some(cursor) = runtime_shell.field_pack_action_cursor.as_ref() {
         let actions = visible_selected_pack_item_actions(snapshot, runtime_shell, pocket, false)?;
-        let choice = strict_readonly_cursor_index(
-            &Some(cursor.clone()),
-            "pack:actions",
-            actions.len(),
-        )
-        .context("Pack action cursor is invalid")?;
-        let top = match actions.len() { 5 => 1, 4 => 3, 3 => 5, 2 => 7, _ => 9 };
+        let choice =
+            strict_readonly_cursor_index(&Some(cursor.clone()), "pack:actions", actions.len())
+                .context("Pack action cursor is invalid")?;
+        let top = match actions.len() {
+            5 => 1,
+            4 => 3,
+            3 => 5,
+            2 => 7,
+            _ => 9,
+        };
         draw_time_set_window(&frame, 13, top, 7, actions.len() + 2, &mut data)?;
         for (index, action) in actions.iter().enumerate() {
             draw_time_set_text(
@@ -189,14 +222,21 @@ fn load_visible_field_pack_frame(
         }
     }
     let mut image = Image::new(
-        Extent3d { width: width as u32, height: height as u32, depth_or_array_layers: 1 },
+        Extent3d {
+            width: width as u32,
+            height: height as u32,
+            depth_or_array_layers: 1,
+        },
         TextureDimension::D2,
         data,
         TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::default(),
     );
     image.sampler = ImageSampler::nearest();
-    Ok(SpriteFrame { handle: images.add(image), size: Vec2::new(width as f32, height as f32) })
+    Ok(SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::new(width as f32, height as f32),
+    })
 }
 
 fn fill_native_tile(target: &mut [u8], tile_x: usize, tile_y: usize, rgb: [u8; 3]) {
@@ -425,98 +465,6 @@ fn draw_native_hp_bar(target: &mut [u8], x: usize, y: usize, hp: u16, max_hp: u1
     }
 }
 
-fn load_visible_party_summary_frame(
-    runtime_shell: &BevyRuntimeShell,
-    rows: &[(usize, f32, String)],
-    tint: [u8; 4],
-    page: u8,
-    hp: Option<(u16, u16)>,
-    images: &mut Assets<Image>,
-) -> Result<SpriteFrame> {
-    let font = crate::open_runtime_image(
-        runtime_shell.asset_root.runtime_assets().join("gfx/font/font.png"),
-    )
-    .context("decode status-screen font PNG")?
-    .to_rgba8();
-    let width = 160;
-    let height = 144;
-    let mut data = vec![0_u8; width * height * 4];
-    for y in 0..height {
-        let color = if y < 8 * 8 { BOOT_UI_WHITE } else { tint };
-        for x in 0..width {
-            let offset = (y * width + x) * 4;
-            data[offset..offset + 4].copy_from_slice(&color);
-        }
-    }
-    // stats_screen.asm divides the fixed identity header from the active page.
-    for x in 0..width {
-        let offset = (7 * 8 * width + x) * 4;
-        data[offset..offset + 4].copy_from_slice(&[0, 0, 0, 255]);
-    }
-    for (index, color) in [
-        [255, 158, 255, 255],
-        [173, 255, 115, 255],
-        [140, 255, 255, 255],
-    ]
-    .into_iter()
-    .enumerate()
-    {
-        let left = (13 + index * 2) * 8;
-        for y in 5 * 8..7 * 8 {
-            for x in left..left + 2 * 8 {
-                let offset = (y * width + x) * 4;
-                data[offset..offset + 4].copy_from_slice(&color);
-            }
-        }
-        if usize::from(page.saturating_sub(1)) == index {
-            for y in 5 * 8..7 * 8 {
-                for x in left..left + 2 * 8 {
-                    if y == 5 * 8 || y == 7 * 8 - 1 || x == left || x == left + 2 * 8 - 1 {
-                        let offset = (y * width + x) * 4;
-                        data[offset..offset + 4].copy_from_slice(&[0, 0, 0, 255]);
-                    }
-                }
-            }
-        }
-    }
-    draw_native_page_arrow(&mut data, 12 * 8, 6 * 8, false);
-    draw_native_page_arrow(&mut data, 19 * 8, 6 * 8, true);
-    if page == 1
-        && let Some((current_hp, max_hp)) = hp
-    {
-        draw_native_hp_bar(&mut data, 2 * 8, 9 * 8 + 2, current_hp, max_hp);
-    }
-    for (column, row, text) in rows {
-        draw_time_set_text(
-            &font,
-            &compact_scene_label(text, 18),
-            column * 8,
-            (*row as usize) * 8,
-            &mut data,
-        )?;
-    }
-    let mut image = Image::new(
-        Extent3d { width: width as u32, height: height as u32, depth_or_array_layers: 1 },
-        TextureDimension::D2,
-        data,
-        TextureFormat::Rgba8UnormSrgb,
-        RenderAssetUsages::default(),
-    );
-    image.sampler = ImageSampler::nearest();
-    Ok(SpriteFrame { handle: images.add(image), size: Vec2::new(width as f32, height as f32) })
-}
-
-fn draw_native_page_arrow(target: &mut [u8], x: usize, y: usize, right: bool) {
-    for row in 0..7 {
-        let half_width = if row <= 3 { row } else { 6 - row };
-        for offset in 0..=half_width {
-            let column = if right { offset } else { 6 - offset };
-            let pixel = ((y + row) * 160 + x + column) * 4;
-            target[pixel..pixel + 4].copy_from_slice(&[0, 0, 0, 255]);
-        }
-    }
-}
-
 fn load_visible_title_main_menu_frame(
     runtime_shell: &BevyRuntimeShell,
     title: &TitleMenu,
@@ -567,15 +515,14 @@ fn load_visible_title_main_menu_frame(
         .cursor
         .option_index
         .min(options.len().saturating_sub(1));
-    let cursor_bob = visible_title_main_menu_cursor_bob(title.main_menu_frame);
     for (index, option) in options.iter().enumerate() {
-        let y = (title.main_menu.top + 2 + index) * SOURCE_TILE_SIZE;
+        let y = visible_title_main_menu_item_tile_y(title, index) * SOURCE_TILE_SIZE;
         if index == selected {
             draw_time_set_text(
                 &font,
                 "▶",
                 (title.main_menu.left + 1) * SOURCE_TILE_SIZE,
-                y + cursor_bob,
+                y,
                 &mut data,
             )?;
         }
@@ -615,17 +562,6 @@ fn load_visible_title_main_menu_frame(
         )?;
     }
 
-    let fade_alpha = visible_title_main_menu_fade_alpha(title.main_menu_frame);
-    if fade_alpha > 0 {
-        for pixel in data.chunks_exact_mut(4) {
-            let alpha = fade_alpha;
-            let inv_alpha = 255_u16.saturating_sub(alpha);
-            pixel[0] = ((u16::from(pixel[0]) * inv_alpha) / 255) as u8;
-            pixel[1] = ((u16::from(pixel[1]) * inv_alpha) / 255) as u8;
-            pixel[2] = ((u16::from(pixel[2]) * inv_alpha) / 255) as u8;
-        }
-    }
-
     let mut image = Image::new(
         Extent3d {
             width: width as u32,
@@ -642,6 +578,12 @@ fn load_visible_title_main_menu_frame(
         handle: images.add(image),
         size: Vec2::new(width as f32, height as f32),
     })
+}
+
+fn visible_title_main_menu_item_tile_y(title: &TitleMenu, index: usize) -> usize {
+    // RunMenuItemPrintingFunction advances HL by two tile rows after every
+    // item; STATICMENU_CURSOR uses the same InitVerticalMenuCursor spacing.
+    title.main_menu.top + 2 + index * 2
 }
 
 fn visible_title_menu_option_label(option: &RuntimeTitleMainMenuItem) -> &str {
@@ -743,18 +685,6 @@ fn load_visible_continue_screen_frame(
         handle: images.add(image),
         size: Vec2::new(width as f32, height as f32),
     })
-}
-
-fn visible_title_main_menu_cursor_bob(frame: u32) -> usize {
-    if frame % TITLE_MAIN_MENU_CURSOR_PERIOD < TITLE_MAIN_MENU_CURSOR_PERIOD / 2 {
-        0
-    } else {
-        TITLE_MAIN_MENU_CURSOR_OFFSET
-    }
-}
-
-fn visible_title_main_menu_fade_alpha(frame: u32) -> u16 {
-    255_u16.saturating_sub(frame.saturating_mul(TITLE_MAIN_MENU_FADE_SPEED).min(255) as u16)
 }
 
 fn visible_title_main_menu_clock_strings(snapshot: &RuntimeShellSnapshot) -> (String, String) {
@@ -2063,6 +1993,15 @@ fn load_gender_selection_frame(
     gender: &VisibleGenderSelection,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    load_gender_selection_frame_with_black_fade(asset_root, gender, 0, images)
+}
+
+fn load_gender_selection_frame_with_black_fade(
+    asset_root: &AssetRoot,
+    gender: &VisibleGenderSelection,
+    black_alpha: u8,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
     let assets = asset_root.runtime_assets();
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode gender-selection font PNG")?
@@ -2109,6 +2048,14 @@ fn load_gender_selection_frame(
         )?;
     }
     apply_gender_selection_fade(gender.fade_counter, &mut data);
+    if black_alpha > 0 {
+        let keep = u16::from(255 - black_alpha);
+        for pixel in data.chunks_exact_mut(4) {
+            for channel in &mut pixel[0..3] {
+                *channel = ((u16::from(*channel) * keep) / 255) as u8;
+            }
+        }
+    }
 
     let mut image = Image::new(
         Extent3d {
@@ -2212,6 +2159,7 @@ fn spawn_visible_time_set_screen(
 ) -> Result<()> {
     let key = TimeSetArtKey {
         phase: time_set.phase,
+        startup_palette_step: time_set.startup_palette_step,
         hour: time_set.hour,
         minute: time_set.minute,
         visible_dialog: visible_time_set_visible_dialog(time_set),
@@ -2283,6 +2231,26 @@ fn load_time_set_frame(
     time_set: &VisibleTimeSetScreen,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    if matches!(
+        time_set.phase,
+        VisibleTimeSetPhase::StartupDelay | VisibleTimeSetPhase::StartupFadeOut
+    ) {
+        let black_alpha = if time_set.phase == VisibleTimeSetPhase::StartupFadeOut {
+            visible_time_set_palette_black_alpha(
+                time_set.startup_palette_step,
+                time_set.startup_palette_steps,
+                false,
+            )
+        } else {
+            0
+        };
+        return load_gender_selection_frame_with_black_fade(
+            asset_root,
+            &time_set.startup_gender,
+            black_alpha,
+            images,
+        );
+    }
     let assets = asset_root.runtime_assets();
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode time-set font PNG")?
@@ -2304,12 +2272,37 @@ fn load_time_set_frame(
         pixel.copy_from_slice(&BOOT_UI_WHITE);
     }
 
+    if matches!(
+        time_set.phase,
+        VisibleTimeSetPhase::StartupLoad | VisibleTimeSetPhase::StartupFadeIn
+    ) {
+        let black_alpha = if time_set.phase == VisibleTimeSetPhase::StartupLoad {
+            255
+        } else {
+            visible_time_set_palette_black_alpha(
+                time_set.startup_palette_step,
+                time_set.startup_palette_steps,
+                true,
+            )
+        };
+        let keep = u16::from(255 - black_alpha);
+        for pixel in data.chunks_exact_mut(4) {
+            for channel in &mut pixel[0..3] {
+                *channel = ((u16::from(*channel) * keep) / 255) as u8;
+            }
+        }
+    }
+
     match time_set.phase {
+        VisibleTimeSetPhase::StartupDelay
+        | VisibleTimeSetPhase::StartupFadeOut
+        | VisibleTimeSetPhase::StartupLoad
+        | VisibleTimeSetPhase::StartupFadeIn => {}
         VisibleTimeSetPhase::SetHour => {
             draw_time_set_textbox(
                 &font,
                 &frame,
-                "What time is it?",
+                &time_set.hour_prompt,
                 0,
                 TIME_SET_TEXTBOX_Y,
                 20,
@@ -2337,7 +2330,7 @@ fn load_time_set_frame(
             draw_time_set_textbox(
                 &font,
                 &frame,
-                "How many minutes?",
+                &time_set.minute_prompt,
                 0,
                 TIME_SET_TEXTBOX_Y,
                 20,
@@ -2427,6 +2420,16 @@ fn load_time_set_frame(
         handle: images.add(image),
         size: Vec2::new(width as f32, height as f32),
     })
+}
+
+fn visible_time_set_palette_black_alpha(step: u8, steps: u8, fade_in: bool) -> u8 {
+    if steps <= 1 {
+        return if fade_in { 0 } else { 255 };
+    }
+    let progress = u16::from(step.saturating_sub(1).min(steps - 1));
+    let denominator = u16::from(steps - 1);
+    let alpha = ((255 * progress) / denominator) as u8;
+    if fade_in { 255 - alpha } else { alpha }
 }
 
 fn draw_time_set_textbox(
@@ -3039,16 +3042,10 @@ fn load_oak_intro_screen_frame(
     }
 
     if oak_intro.wipe_active {
-        let wipe_x = usize::from(oak_intro.wipe_window_x.min(VISIBLE_OAK_WIPE_END_X));
-        fill_native_rect(
-            &mut data,
-            width,
-            wipe_x,
-            0,
-            width.saturating_sub(wipe_x),
-            height,
-            255,
-        );
+        // The Game Boy window begins at WX - 7. Intro_WipeInFrontpic moves
+        // WX left from $77 to $07, revealing the portrait right-to-left.
+        let concealed_width = usize::from(oak_intro.wipe_window_x.saturating_sub(7));
+        fill_native_rect(&mut data, width, 0, 0, concealed_width, height, 255);
     }
     if oak_intro.fade_active || oak_intro.fade_alpha > 0 {
         fade_native_to_white(&mut data, oak_intro.fade_alpha);
@@ -3154,37 +3151,48 @@ fn render_visible_credits_frame_from_sources(
     credits: &VisibleCreditsScreen,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
-    let palette_set = sources
-        .palette_sets
-        .get(usize::from(credits.scene_index & 0x03))
-        .context("credits palette set missing")?;
-    let bg_palette = &palette_set[0];
-    let border_palette = &palette_set[1];
-    let text_palette = &palette_set[2];
     let mut data = vec![0_u8; CREDITS_SCREEN_WIDTH * CREDITS_SCREEN_HEIGHT * 4];
-    fill_visible_credits_rect(
-        &mut data,
-        0,
-        0,
-        CREDITS_SCREEN_WIDTH,
-        CREDITS_SCREEN_HEIGHT,
-        bg_palette[0],
-    );
-    draw_visible_credits_mon_strip(sources, credits, bg_palette, &mut data)?;
-    fill_visible_credits_rect(
-        &mut data,
-        0,
-        5 * SOURCE_TILE_SIZE,
-        CREDITS_SCREEN_WIDTH,
-        12 * SOURCE_TILE_SIZE,
-        text_palette[0],
-    );
-    draw_visible_credits_border_rows(sources, border_palette, &mut data);
-    draw_visible_credits_text(sources, credits, text_palette, &mut data)?;
-    if credits.show_the_end || credits.awaiting_exit {
-        draw_visible_credits_the_end(sources, text_palette, &mut data);
+    if credits.exit_clear_frames_remaining.is_some() {
+        fill_visible_credits_rect(
+            &mut data,
+            0,
+            0,
+            CREDITS_SCREEN_WIDTH,
+            CREDITS_SCREEN_HEIGHT,
+            credits.program.exit_clear_color,
+        );
+    } else {
+        let palette_set = sources
+            .palette_sets
+            .get(usize::from(credits.scene_index & 0x03))
+            .context("credits palette set missing")?;
+        let bg_palette = &palette_set[0];
+        let border_palette = &palette_set[1];
+        let text_palette = &palette_set[2];
+        fill_visible_credits_rect(
+            &mut data,
+            0,
+            0,
+            CREDITS_SCREEN_WIDTH,
+            CREDITS_SCREEN_HEIGHT,
+            bg_palette[0],
+        );
+        draw_visible_credits_mon_strip(sources, credits, bg_palette, &mut data)?;
+        fill_visible_credits_rect(
+            &mut data,
+            0,
+            5 * SOURCE_TILE_SIZE,
+            CREDITS_SCREEN_WIDTH,
+            12 * SOURCE_TILE_SIZE,
+            text_palette[0],
+        );
+        draw_visible_credits_border_rows(sources, border_palette, &mut data);
+        draw_visible_credits_text(sources, credits, text_palette, &mut data)?;
+        if credits.displayed_show_the_end {
+            draw_visible_credits_the_end(sources, text_palette, &mut data);
+        }
+        apply_visible_credits_line_scroll(credits, &mut data);
     }
-    apply_visible_credits_line_scroll(credits, &mut data);
     let mut image = Image::new(
         Extent3d {
             width: CREDITS_SCREEN_WIDTH as u32,
@@ -3425,33 +3433,30 @@ fn draw_visible_credits_text(
     palette: &Palette,
     target: &mut [u8],
 ) -> Result<()> {
-    for line in &credits.lines {
-        if line.token == "COPYRIGHT" {
-            draw_visible_credits_copyright(sources, credits, palette, target);
+    for (row, displayed) in &credits.displayed_text_rows {
+        if displayed.token == "COPYRIGHT" {
+            draw_visible_credits_copyright(sources, *row, palette, target);
             continue;
         }
-        for (line_offset, tile_ids) in line.tiles.iter().enumerate() {
-            let mut draw_x = 0;
-            let draw_y = (6 + usize::from(line.line_index) * 2) * SOURCE_TILE_SIZE
-                + line_offset * SOURCE_TILE_SIZE;
-            for tile_id in tile_ids {
-                if *tile_id != 0x7f {
-                    let levels = sources.font.levels.get(tile_id).with_context(|| {
-                        format!("credits font tile 0x{tile_id:02x} unavailable")
-                    })?;
-                    blit_visible_credits_levels(
-                        target,
-                        levels,
-                        SOURCE_TILE_SIZE,
-                        SOURCE_TILE_SIZE,
-                        draw_x,
-                        draw_y,
-                        palette,
-                        false,
-                    );
-                }
-                draw_x += SOURCE_TILE_SIZE;
+        let mut draw_x = 0;
+        let draw_y = row * SOURCE_TILE_SIZE;
+        for tile_id in &displayed.tiles {
+            if *tile_id != 0x7f {
+                let levels = sources.font.levels.get(tile_id).with_context(|| {
+                    format!("credits font tile 0x{tile_id:02x} unavailable")
+                })?;
+                blit_visible_credits_levels(
+                    target,
+                    levels,
+                    SOURCE_TILE_SIZE,
+                    SOURCE_TILE_SIZE,
+                    draw_x,
+                    draw_y,
+                    palette,
+                    false,
+                );
             }
+            draw_x += SOURCE_TILE_SIZE;
         }
     }
     Ok(())
@@ -3459,19 +3464,11 @@ fn draw_visible_credits_text(
 
 fn draw_visible_credits_copyright(
     sources: &CreditsRenderSources,
-    credits: &VisibleCreditsScreen,
+    row: usize,
     palette: &Palette,
     target: &mut [u8],
 ) {
-    let draw_y = (6 + usize::from(
-        credits
-            .lines
-            .iter()
-            .find(|line| line.token == "COPYRIGHT")
-            .map(|line| line.line_index)
-            .unwrap_or(0),
-    ) * 2)
-        * SOURCE_TILE_SIZE;
+    let draw_y = row * SOURCE_TILE_SIZE;
     for (tile_index, levels) in sources.copyright_tiles.iter().enumerate() {
         blit_visible_credits_levels(
             target,
@@ -3685,11 +3682,11 @@ fn visible_credits_gray_level(red: u8, green: u8, blue: u8, alpha: u8) -> u8 {
         return 0;
     }
     let value = ((u16::from(red) + u16::from(green) + u16::from(blue)) / 3) as u8;
-    if value > 213 {
+    if value >= 213 {
         0
-    } else if value > 160 {
+    } else if value >= 128 {
         1
-    } else if value > 96 {
+    } else if value >= 43 {
         2
     } else {
         3
@@ -3759,7 +3756,10 @@ fn apply_visible_credits_line_scroll(credits: &VisibleCreditsScreen, target: &mu
     if shift == 0 {
         return;
     }
-    for (start, count) in [(0x1f_usize, 8_usize), (0x87_usize, 8_usize)] {
+    // Credits_LYOverride writes eight consecutive entries, but the final SCX
+    // value remains latched for the following scanline. The ROM therefore
+    // scrolls nine visible lines at each border (31..=39 and 135..=143).
+    for (start, count) in [(0x1f_usize, 9_usize), (0x87_usize, 9_usize)] {
         for y in start..(start + count).min(CREDITS_SCREEN_HEIGHT) {
             for x in 0..CREDITS_SCREEN_WIDTH {
                 let source_x = (x as i16 + shift).rem_euclid(CREDITS_SCREEN_WIDTH as i16) as usize;
@@ -3934,7 +3934,7 @@ fn visible_credits_screen_lines(credits: &VisibleCreditsScreen) -> Vec<String> {
         .iter()
         .map(|line| line.text.clone())
         .collect::<Vec<_>>();
-    if credits.show_the_end || credits.awaiting_exit {
+    if credits.show_the_end {
         lines.push("THE END".to_string());
     }
     lines
@@ -4287,7 +4287,17 @@ fn render_playfield(
         fixed_battle_canvases,
     } = entity_queries;
     let mut queued_despawns = std::collections::HashSet::new();
-    if let Some(intro) = runtime_shell.intro_screen.clone() {
+    if let Some(current_intro) = runtime_shell.intro_screen.clone() {
+        let mut intro = runtime_shell
+            .intro_display_screen
+            .clone()
+            .unwrap_or_else(|| current_intro.clone());
+        // VBlank has already copied hSCX, palettes, BG data, and shadow OAM
+        // from the preceding CPU step. The LCD STAT callback runs later in
+        // the visible frame and reads the LY table and callback pointer after
+        // the current scene step has updated them.
+        intro.ly_overrides = current_intro.ly_overrides;
+        intro.lcdc_pointer = current_intro.lcdc_pointer;
         let shell_render_key = shell_render_key(&runtime_shell);
         if rendered.title_active && rendered.shell_render_key == Some(shell_render_key) {
             return;
@@ -4917,7 +4927,13 @@ fn render_playfield(
     // field extraction, then retire it on the next update once both layers
     // are independently query-visible. This check precedes the idle fast path
     // so a visually stable field cannot strand the pending presenter.
-    if tileset_art.presented_fullscreen_release_pending
+    // A closed field screen can resume directly into a dialogue-only fast
+    // path. Retire its presenter here too: that path never reaches the full
+    // compositor's release step. A different map still waits for staging.
+    let returning_to_staged_field = rendered.map_name.as_deref()
+            == Some(runtime_shell.shell.session().overworld().map.name.as_str());
+    if tileset_art.presented_fullscreen_entity.is_some()
+        && (tileset_art.presented_fullscreen_release_pending || returning_to_staged_field)
         && !retained_field_fullscreen_active(&runtime_shell)
         && map_base_surfaces.iter().next().is_some()
         && map_priority_surfaces.iter().next().is_some()
@@ -5000,6 +5016,11 @@ fn render_playfield(
     } else {
         field_snapshot
     };
+    #[cfg(feature = "fullscreen-scaling")]
+    if let Err(error) = expand_fullscreen_object_presentation(Arc::make_mut(&mut snapshot), &runtime_shell) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+        return;
+    }
     if !runtime_shell.follower_visible_tile_overrides.is_empty() {
         let snapshot = Arc::make_mut(&mut snapshot);
         for (object_id, tile) in &runtime_shell.follower_visible_tile_overrides {
@@ -5042,6 +5063,7 @@ fn render_playfield(
     let dialog_key = scene_dialog_entries.as_ref().ok().map(|entries| {
             let mut hasher = std::collections::hash_map::DefaultHasher::new();
             entries.hash(&mut hasher);
+            field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
             strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
                 .hash(&mut hasher);
             hasher.finish()
@@ -5250,7 +5272,7 @@ fn render_playfield(
         && !runtime_shell.options_menu_open
         && !runtime_shell.party_menu_open
         && !runtime_shell.pokedex_menu_open
-        && !runtime_shell.pokegear_menu_open
+        && !visible_pokegear_screen_active(&runtime_shell)
         && !runtime_shell.trainer_card_open
         && !visible_field_pack_is_open(&runtime_shell)
         && !runtime_shell.save_menu_open
@@ -5743,7 +5765,7 @@ fn render_playfield(
         && !runtime_shell.options_menu_open
         && !runtime_shell.party_menu_open
         && !runtime_shell.pokedex_menu_open
-        && !runtime_shell.pokegear_menu_open
+        && !visible_pokegear_screen_active(&runtime_shell)
         && !runtime_shell.trainer_card_open
         && !visible_field_pack_is_open(&runtime_shell)
         && !runtime_shell.save_menu_open
@@ -6247,6 +6269,8 @@ fn render_playfield(
     }
     #[cfg(any(test, feature = "voxel-view"))]
     {
+        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
+            .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
     }
     rendered.viewport_origin = Some((start_x, start_y));
@@ -7652,7 +7676,7 @@ fn render_playfield(
                 return;
             }
         }
-    } else if runtime_shell.pokegear_menu_open
+    } else if visible_pokegear_screen_active(&runtime_shell)
         || !scene_dialog_surface_active(&snapshot, &runtime_shell)
     {
         if runtime_debug_overlays_enabled() {

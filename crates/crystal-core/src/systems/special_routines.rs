@@ -3397,8 +3397,14 @@ pub struct RuntimeSpawnPointRef {
     pub subtile_y: i16,
 }
 
+pub const CRYSTAL_NUM_SPAWN_POINTS: u16 = 28;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeSpawnPointCatalogIssue {
+    IdentifierOutOfRange {
+        key: String,
+        identifier: u16,
+    },
     IdentifierMismatch {
         key: String,
         identifier: u16,
@@ -3489,6 +3495,12 @@ pub fn runtime_spawn_point_catalog_issues(
         }
         if key.parse::<u16>().ok() != Some(spawn.identifier) {
             issues.push(RuntimeSpawnPointCatalogIssue::IdentifierMismatch {
+                key: key.clone(),
+                identifier: spawn.identifier,
+            });
+        }
+        if spawn.identifier >= CRYSTAL_NUM_SPAWN_POINTS {
+            issues.push(RuntimeSpawnPointCatalogIssue::IdentifierOutOfRange {
                 key: key.clone(),
                 identifier: spawn.identifier,
             });
@@ -3962,12 +3974,6 @@ where
         "DayCareLady" => day_care_interaction(&mut next, context, routine, "lady", divider),
         "DayCareManOutside" => day_care_man_outside(&mut next, routine, divider),
         "GiveShuckle" => give_shuckle(&mut next, context, routine, divider),
-        "BuenasPassword" => buenas_password(
-            &mut next,
-            context.buena_password_categories,
-            routine,
-            divider,
-        ),
         "SelectRandomBugContestContestants" => select_random_bug_contest_contestants(
             &mut next,
             context.bug_contest_config,
@@ -4189,9 +4195,7 @@ pub fn apply_special_routine_with_context(
         "CheckMysteryGift" => check_mystery_gift(state, routine),
         "GetMysteryGiftItem" => get_mystery_gift_item(state, context.item_catalog, routine),
         "UnlockMysteryGift" => unlock_mystery_gift(state, routine),
-        "BuenasPassword" => Err(SpecialRoutineError::MissingDividerSource {
-            routine: routine.to_string(),
-        }),
+        "BuenasPassword" => buenas_password(state, context.buena_password_categories, routine),
         "BuenaPrize" => buena_prize(state, context.item_catalog, context.buena_prizes, routine),
         "CelebiShrineEvent" => celebi_shrine_event(state, routine),
         "CheckMagikarpLength" => check_magikarp_length(state, context.magikarp_lengths, routine),
@@ -4337,6 +4341,23 @@ fn heal_party(
     move_catalog: &BTreeMap<String, Move>,
     routine: &str,
 ) -> Result<SpecialRoutineOutcome, SpecialRoutineError> {
+    for (party_slot, pokemon) in state.storage.party.pokemon.iter().enumerate() {
+        let Some(pokemon) = pokemon.as_ref() else {
+            continue;
+        };
+        if pokemon.is_egg {
+            continue;
+        }
+        for learned in &pokemon.moves {
+            if !move_catalog.contains_key(&learned.name) {
+                return Err(SpecialRoutineError::UnknownMove {
+                    routine: routine.to_string(),
+                    party_slot,
+                    move_id: learned.name.clone(),
+                });
+            }
+        }
+    }
     let mut party = state.storage.party.clone();
     let mut healed_slots = Vec::new();
     for (party_slot, slot) in party.pokemon.iter_mut().enumerate() {
@@ -5388,7 +5409,7 @@ fn check_lucky_number_show_flag(
     state: &mut GameState,
     routine: &str,
 ) -> Result<SpecialRoutineOutcome, SpecialRoutineError> {
-    let flag = state.lucky_number_show_flag;
+    let flag = state.lucky_number_countdown.check_expired(state.time.current_day);
     set_script_bool_value(state, flag);
     state.script_runtime.last_special_routine = Some(routine.to_string());
     Ok(SpecialRoutineOutcome {
@@ -5405,7 +5426,12 @@ fn reset_lucky_number_show_flag<S>(
 where
     S: DividerSource + ?Sized,
 {
-    state.lucky_number_show_flag = false;
+    state.lucky_number_countdown.restart(state.time.current_day);
+    state.flags.clear_engine_flag("ENGINE_LUCKY_NUMBER_SHOW")
+        .map_err(|error| SpecialRoutineError::EventFlag {
+            routine: routine.to_string(),
+            error,
+        })?;
     let lucky_number = load_or_regenerate_lucky_number(state, divider)?;
     state.script_runtime.last_special_routine = Some(routine.to_string());
     Ok(SpecialRoutineOutcome {
@@ -9651,17 +9677,13 @@ fn unlock_mystery_gift(
     })
 }
 
-fn buenas_password<S>(
+fn buenas_password(
     state: &mut GameState,
     categories: &BuenaPasswordCategories,
     routine: &str,
-    divider: &mut S,
-) -> Result<SpecialRoutineOutcome, RandomSpecialRoutineError<S::Error>>
-where
-    S: DividerSource + ?Sized,
-{
+) -> Result<SpecialRoutineOutcome, SpecialRoutineError> {
     let (category_id, category, correct) =
-        ensure_buenas_password(state, categories, routine, divider)?;
+        stored_buenas_password(state, categories, routine)?;
     let guess = state
         .script_runtime
         .variables
@@ -9997,7 +10019,7 @@ fn day_care_collect_egg<S>(
 where
     S: DividerSource,
 {
-    let Some(egg) = state
+    let Some(mut egg) = state
         .day_care
         .egg
         .clone()
@@ -10024,6 +10046,8 @@ where
     }
     let species = egg.species.id.clone();
     let level = egg.level;
+    // DayCare_GiveEgg clears both MON_HP bytes after calculating party stats.
+    egg.hp = 0;
     if !state.storage.party.add_pokemon(egg) {
         return Ok(crate::state::DayCareInteractionState {
             caretaker: "man".to_string(),
@@ -11670,6 +11694,7 @@ fn battle_tower_battle(
     state.battle_active_party_index = None;
     state.battle_active_enemy_party_index = None;
     state.battle_rewarded_enemy_party_indices.clear();
+    state.battle_evolvable_party_indices.clear();
     heal_battle_tower_party(state, move_catalog);
     state.battle_tower.quick_saved = false;
     if result_code != 0 {
@@ -12181,6 +12206,7 @@ where
     state.battle_active_party_index = Some(active_party_index);
     state.battle_active_enemy_party_index = Some(0);
     state.battle_rewarded_enemy_party_indices.clear();
+    state.battle_evolvable_party_indices.clear();
     state
         .script_runtime
         .variables
@@ -12870,87 +12896,16 @@ where
     ))
 }
 
-fn ensure_buenas_password<'a, S>(
-    state: &mut GameState,
+// engine/events/buena.asm reads wBuenasPassword; only the radio generates it.
+fn stored_buenas_password<'a>(
+    state: &GameState,
     categories: &'a BuenaPasswordCategories,
     routine: &str,
-    divider: &mut S,
-) -> Result<
-    (&'a str, &'a BuenaPasswordCategoryDefinition, String),
-    RandomSpecialRoutineError<S::Error>,
->
-where
-    S: DividerSource + ?Sized,
-{
+) -> Result<(&'a str, &'a BuenaPasswordCategoryDefinition, String), SpecialRoutineError> {
     if categories.order.is_empty() || categories.categories.is_empty() {
         return Err(SpecialRoutineError::MissingBuenaPasswordCategories {
             routine: routine.to_string(),
-        }
-        .into());
-    }
-    let current_day = state.time.current_day;
-    if !state.buenas_password.generated || state.buenas_password.generation_day != current_day {
-        if categories.order.len() != 11 {
-            return Err(SpecialRoutineError::InvalidState {
-                routine: routine.to_string(),
-                message: format!(
-                    "Buena password table must contain exactly 11 categories, found {}",
-                    categories.order.len()
-                ),
-            }
-            .into());
-        }
-        let mut rng = CrystalRandom::new(state.random_state, &mut *divider);
-        let category_index = loop {
-            // BuenasPassword4 masks hRandomSub with $f and rejects 11..15.
-            // Both the initial path and each retry enter with carry clear.
-            let candidate = rng
-                .random(false)
-                .map_err(RandomSpecialRoutineError::Divider)?
-                .value
-                & 0x0f;
-            if candidate < 11 {
-                break usize::from(candidate);
-            }
-        };
-        let Some(category_id) = categories.order.get(category_index) else {
-            return Err(SpecialRoutineError::InvalidBuenaPasswordCategoryIndex {
-                routine: routine.to_string(),
-                index: category_index,
-            }
-            .into());
-        };
-        let Some(category) = categories.categories.get(category_id) else {
-            return Err(SpecialRoutineError::InvalidBuenaPasswordCategoryIndex {
-                routine: routine.to_string(),
-                index: category_index,
-            }
-            .into());
-        };
-        if category.options.len() != 3 {
-            return Err(SpecialRoutineError::InvalidBuenaPasswordCategoryIndex {
-                routine: routine.to_string(),
-                index: category_index,
-            }
-            .into());
-        }
-        let option_index = loop {
-            // The option loop masks with 3 and rejects 3; SWAP/AND/CP leave
-            // carry clear for every attempt.
-            let candidate = rng
-                .random(false)
-                .map_err(RandomSpecialRoutineError::Divider)?
-                .value
-                & 0x03;
-            if candidate < 3 {
-                break usize::from(candidate);
-            }
-        };
-        state.random_state = rng.state();
-        state.buenas_password.category_index = category_index;
-        state.buenas_password.option_index = option_index;
-        state.buenas_password.generation_day = current_day;
-        state.buenas_password.generated = true;
+        });
     }
     let Some(category_id) = categories.order.get(state.buenas_password.category_index) else {
         return Err(SpecialRoutineError::InvalidBuenaPasswordCategoryIndex {
@@ -12980,9 +12935,6 @@ pub fn validate_saved_buena_password_references(
     password: &BuenasPasswordState,
     categories: &BuenaPasswordCategories,
 ) -> Result<(), SpecialRoutineError> {
-    if !password.generated {
-        return Ok(());
-    }
     let Some(category_id) = categories.order.get(password.category_index) else {
         return Err(
             SpecialRoutineError::SavedBuenaPasswordCategoryIndexOutOfRange {
@@ -14257,11 +14209,15 @@ fn heal_pokemon(pokemon: &mut Pokemon, move_catalog: &BTreeMap<String, Move>) ->
         pokemon.status = None;
         changed = true;
     }
+    if pokemon.sleep_turns != 0 {
+        pokemon.sleep_turns = 0;
+        changed = true;
+    }
     for learned in &mut pokemon.moves {
         let Some(move_data) = move_catalog.get(&learned.name) else {
             continue;
         };
-        let restored_pp = move_data.pp;
+        let restored_pp = crate::models::max_move_pp(move_data.pp, learned.pp_ups);
         if learned.current_pp != restored_pp {
             learned.current_pp = restored_pp;
             changed = true;

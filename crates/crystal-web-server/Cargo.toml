@@ -10,6 +10,7 @@ rust-version.workspace = true
 anyhow.workspace = true
 axum = { version = "0.8", features = ["ws"] }
 base64 = "0.22"
+crystal-assets = { path = "../crystal-assets" }
 crystal-net = { path = "../crystal-net" }
 futures-util = "0.3"
 hmac = "0.12"

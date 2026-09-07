@@ -66,8 +66,6 @@ pub struct Item {
     pub battle_focus_energy: Option<bool>,
     #[serde(deserialize_with = "required_nullable_bool")]
     pub battle_stat_drop_guard: Option<bool>,
-    #[serde(deserialize_with = "required_nullable_u8")]
-    pub battle_stat_drop_guard_turns: Option<u8>,
     #[serde(deserialize_with = "required_nullable_bool")]
     pub confusion_heal: Option<bool>,
     #[serde(deserialize_with = "required_nullable_u16")]
@@ -141,8 +139,6 @@ impl<'de> Deserialize<'de> for Item {
             battle_focus_energy: Option<bool>,
             #[serde(deserialize_with = "required_nullable_bool")]
             battle_stat_drop_guard: Option<bool>,
-            #[serde(deserialize_with = "required_nullable_u8")]
-            battle_stat_drop_guard_turns: Option<u8>,
             #[serde(deserialize_with = "required_nullable_bool")]
             confusion_heal: Option<bool>,
             #[serde(deserialize_with = "required_nullable_u16")]
@@ -193,7 +189,6 @@ impl<'de> Deserialize<'de> for Item {
             battle_capture_ball: raw.battle_capture_ball,
             battle_focus_energy: raw.battle_focus_energy,
             battle_stat_drop_guard: raw.battle_stat_drop_guard,
-            battle_stat_drop_guard_turns: raw.battle_stat_drop_guard_turns,
             confusion_heal: raw.confusion_heal,
             repel_steps: raw.repel_steps,
             escape_rope_mode: raw.escape_rope_mode,
@@ -218,7 +213,7 @@ impl<'de> Deserialize<'de> for Item {
 
 fn validate_item_payload(item: &Item) -> Result<(), String> {
     validate_exact_item_text("item.name", &item.name)?;
-    validate_exact_optional_item_text("item.description", &item.description)?;
+    validate_item_description(&item.description)?;
     if item.pp_up_stages.is_some_and(|stages| stages > 3) {
         return Err("item.pp_up_stages must be in 0..=3".to_string());
     }
@@ -248,9 +243,15 @@ fn validate_exact_item_text(field: &str, value: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_exact_optional_item_text(field: &str, value: &str) -> Result<(), String> {
-    if value.trim() != value || value.chars().any(char::is_control) {
-        return Err(format!("{field} must be exact text"));
+/// Source ItemDescriptions may end with NEXT followed by an empty line.
+/// Validate each authored line without trimming away those control boundaries.
+pub fn is_exact_item_description(value: &str) -> bool {
+    value.split('\n').all(|line| line.trim() == line && !line.chars().any(char::is_control))
+}
+
+fn validate_item_description(value: &str) -> Result<(), String> {
+    if !is_exact_item_description(value) {
+        return Err("item.description must be exact text".to_string());
     }
     Ok(())
 }
@@ -409,6 +410,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn item_description_retains_source_lines_without_allowing_other_controls() {
+        let description = "Restores #MON\nHP by 20.";
+        assert!(validate_item_description(description).is_ok());
+        assert!(validate_item_description("A black APRICORN.\n").is_ok());
+        for invalid in [" padded", "trailing ", "trailing \n", "a\tb", "a\rb", "a\0b"] {
+            assert!(validate_item_description(invalid).is_err(), "{invalid:?}");
+        }
+        assert!(validate_exact_item_text("item.name", description).is_err());
+    }
+
+    #[test]
     fn item_effect_ids_are_modpack_owned_strings_not_core_enums() {
         let item: Item = serde_json::from_str(
             r#"{
@@ -431,7 +443,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -518,7 +529,6 @@ mod tests {
               "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-              "battle_stat_drop_guard_turns":null,
               "confusion_heal":null,
               "repel_steps":null,
               "escape_rope_mode":null,
@@ -653,7 +663,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -703,7 +712,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -822,7 +830,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1022,7 +1029,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1115,7 +1121,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1164,7 +1169,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1210,7 +1214,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1257,7 +1260,6 @@ mod tests {
 		              "battle_focus_energy":null,
               "battle_capture_ball":null,
               "battle_stat_drop_guard":null,
-		              "battle_stat_drop_guard_turns":null,
 		              "confusion_heal":null,
 		              "repel_steps":null,
 		              "escape_rope_mode":null,
@@ -1305,7 +1307,6 @@ mod tests {
             "battle_focus_energy": null,
             "battle_capture_ball": null,
             "battle_stat_drop_guard": null,
-            "battle_stat_drop_guard_turns": null,
             "confusion_heal": null,
             "repel_steps": null,
             "escape_rope_mode": null,
@@ -1374,10 +1375,9 @@ mod tests {
     }
 
     #[test]
-    fn serialized_items_require_explicit_menu_and_battle_guard_fields() {
+    fn serialized_items_require_explicit_menu_and_battle_fields() {
         for field in [
             "battle_stat_drop_guard",
-            "battle_stat_drop_guard_turns",
             "battle_capture_ball",
             "field_menu",
             "field_usable",
@@ -1421,7 +1421,6 @@ mod tests {
             "battle_focus_energy": null,
             "battle_capture_ball": null,
             "battle_stat_drop_guard": null,
-            "battle_stat_drop_guard_turns": null,
             "confusion_heal": null,
             "repel_steps": null,
             "escape_rope_mode": null,

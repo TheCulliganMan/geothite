@@ -1,0 +1,128 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { parseChat, channelName } from './social-chat.js';
+
+test('WoW-style channel aliases and normal messages', () => {
+  for (const [command, channel] of [['s', 'say'], ['1', 'general'], ['2', 'trade'], ['3', 'lfg']]) {
+    assert.deepEqual(parseChat(`/${command} Hello!`), { type: 'chat', channel, target_user_id: null, text: 'Hello!' });
+    assert.deepEqual(parseChat(`/${command}`), { select: channel });
+  }
+  assert.equal(parseChat(' Hello! ', 'custom:friends').channel, 'custom:friends');
+});
+
+test('whisper, reply, join, leave, and validation', () => {
+  assert.deepEqual(parseChat('/w player-2 Hello!'), { type: 'chat', channel: 'whisper', target_user_id: 'player-2', text: 'Hello!' });
+  assert.equal(parseChat('/r Hello!', 'say', 'player-2').target_user_id, 'player-2');
+  assert.throws(() => parseChat('/r Hello!'), /No whisper/);
+  assert.deepEqual(parseChat('/join Friends'), { type: 'chat_join', channel: 'custom:friends' });
+  assert.deepEqual(parseChat('/leave 2'), { type: 'chat_leave', channel: 'trade' });
+  assert.equal(channelName('GENERAL'), 'general');
+  for (const invalid of ['', 'a'.repeat(281), 'Hello\nworld', '/unknown hi', '/w player-2', '/join bad name']) assert.throws(() => parseChat(invalid));
+  assert.equal(parseChat('😀'.repeat(280)).text.length, 560);
+});
+
+test('battle and trade requests are explicit and do not collide with the trade channel', () => {
+  assert.deepEqual(parseChat('/battle player-2'), { type: 'interaction_request', target_user_id: 'player-2', kind: 'battle' });
+  assert.deepEqual(parseChat('/tradewith player-2'), { type: 'interaction_request', target_user_id: 'player-2', kind: 'trade' });
+  assert.equal(parseChat('/trade Hello').type, 'chat');
+  assert.deepEqual(parseChat('/cancel'), { type: 'interaction_cancel' });
+  assert.throws(() => parseChat('/battle'), /trainer/);
+});
+
+import { JSDOM } from 'jsdom';
+import { mountSocialChat } from './social-chat.js';
+function chatHarness() {
+  const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">');
+  const { window } = dom;
+  let state = { connected: true, events: [], players: [] };
+  let poll;
+  window.setInterval = fn => { poll = fn; return 1; };
+  window.clearInterval = () => {};
+  const sent = [];
+  const cleanup = mountSocialChat({ crystal_social_focus() {}, crystal_social_send: json => sent.push(JSON.parse(json)), crystal_social_poll: () => JSON.stringify(state) }, { window, document: window.document, playerId: 1 });
+  const key = (key, type = 'keydown', extra = {}) => window.document.activeElement.dispatchEvent(new window.KeyboardEvent(type, { key, code: key, bubbles: true, cancelable: true, ...extra }));
+  return { window, document: window.document, sent, key, poll: next => { state = next; poll(); }, cleanup: () => { cleanup(); window.close(); } };
+}
+
+test('Enter opens and sends without closing chat or leaking into gameplay', () => {
+  const h = chatHarness();
+  try {
+    const leaked = [];
+    h.window.addEventListener('keydown', e => leaked.push(e.key));
+    h.window.addEventListener('keyup', e => leaked.push(e.key));
+    h.poll({ connected: true, events: [], players: [] });
+    h.document.querySelector('canvas').focus();
+    h.key('Enter'); h.key('Enter', 'keyup');
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    assert.doesNotMatch(h.document.body.textContent, /World chat|Connected to world chat|Welcome!/);
+    h.document.activeElement.value = 'hello';
+    h.key('Enter'); h.key('Enter', 'keyup');
+    assert.equal(h.sent[0].text, 'hello');
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    assert.equal(h.document.activeElement.value, '');
+    assert.equal(h.document.querySelector('form').hidden, false);
+    h.key('Enter'); h.key('Enter', 'keyup');
+    h.document.activeElement.value = '   ';
+    h.key('Enter'); h.key('Enter', 'keyup');
+    assert.equal(h.sent.length, 1);
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    assert.equal(h.document.querySelector('form').hidden, false);
+    h.key('Escape'); h.key('Escape', 'keyup');
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+    assert.deepEqual(leaked, []);
+    h.document.querySelector('#other').focus();
+    h.key('Enter');
+    assert.equal(h.document.activeElement.id, 'other');
+  } finally { h.cleanup(); }
+});
+
+test('player selection sends requests and incoming requests have working response buttons', () => {
+  const h = chatHarness();
+  try {
+    h.poll({ connected: true, players: [{ user_id: 'player-2', display_name: 'GOLD' }], selected_player: 'player-2', events: [] });
+    h.document.querySelector('[data-action="battle"]').click();
+    assert.deepEqual(h.sent[0], { type: 'interaction_request', target_user_id: 'player-2', kind: 'battle' });
+    h.poll({ connected: true, players: [], events: [{ type: 'interaction_request', request_id: 'request-1', from_user_id: 'player-2', from_display_name: 'GOLD', kind: 'trade' }] });
+    h.document.querySelector('[data-action="accept"]').click();
+    assert.deepEqual(h.sent[1], { type: 'interaction_response', request_id: 'request-1', target_user_id: 'player-2', accepted: true });
+  } finally { h.cleanup(); }
+});
+
+test('closed chat exposes only an accessible bubble, with no visible label', () => {
+  const h = chatHarness();
+  try {
+    const toggle = h.document.querySelector('.chat-toggle');
+    assert.equal(toggle.textContent.trim(), '');
+    assert.ok(toggle.querySelector('svg[aria-hidden="true"]'));
+    assert.equal(toggle.getAttribute('aria-label'), 'Open chat');
+    assert.equal(h.document.querySelector('form').hidden, true);
+    toggle.click();
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    h.key('Escape');
+    assert.equal(h.document.querySelector('form').hidden, true);
+  } finally { h.cleanup(); }
+});
+
+test('Escape keeps drafts, touch Start bypasses chat, and failed accepts can be retried', () => {
+  const h = chatHarness();
+  try {
+    h.document.querySelector('canvas').focus();
+    const start = new h.window.KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true });
+    Object.defineProperty(start, 'crystalGameControl', { value: true });
+    h.document.activeElement.dispatchEvent(start);
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+    h.key('Enter');
+    h.document.activeElement.value = 'draft';
+    h.key('Escape'); h.key('Escape', 'keyup');
+    h.key('Enter');
+    assert.equal(h.document.activeElement.value, 'draft');
+    h.poll({ connected: true, players: [], events: [{ type: 'interaction_request', request_id: 'req', from_user_id: 'player-2', from_display_name: 'GOLD', kind: 'trade' }] });
+    const accept = h.document.querySelector('[data-action="accept"]');
+    accept.click();
+    assert.equal(accept.disabled, true);
+    h.poll({ connected: true, players: [], events: [{ type: 'error', code: 'social_error', message: 'Close the current dialogue or menu first.' }] });
+    assert.equal(accept.disabled, false);
+    h.poll({ connected: true, players: [], events: [{ type: 'interaction_response', request_id: 'req', accepted: false }] });
+    assert.equal(h.document.querySelector('[data-action="accept"]'), null);
+  } finally { h.cleanup(); }
+});

@@ -500,7 +500,7 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         || runtime_shell.visible_magnet_train.is_some()
         || runtime_shell.hall_of_fame_pc_index.is_some()
         || runtime_shell.pokedex_menu_open
-        || runtime_shell.pokegear_menu_open
+        || visible_pokegear_screen_active(runtime_shell)
         || runtime_shell.trainer_card_open
         || (runtime_shell.party_menu_open && runtime_shell.fly_cursor.is_some())
         || (runtime_shell.storage_cursor.is_some() && !runtime_shell.party_menu_open)
@@ -578,7 +578,7 @@ fn spawn_field_command_menu(
     // The Town Map is a complete raster surface and intentionally has no
     // command-entry rows. Render Pokégear ownership before the generic empty
     // entry guard, or TownMapScript opens modal state while drawing nothing.
-    if runtime_shell.pokegear_menu_open {
+    if visible_pokegear_screen_active(runtime_shell) {
         if let Err(error) = spawn_field_pokegear_screen(
             commands,
             snapshot,
@@ -2903,6 +2903,111 @@ fn spawn_visible_kurt_apricorn_menu(
     Ok(())
 }
 
+// Pokedex_DrawMainScreenBG / Pokedex_DrawDexEntryScreenBG use tiles $31..$70.
+fn pokedex_background_tiles(detail: bool) -> [[u8; 20]; 18] {
+    let mut tiles = [[0x7f; 20]; 18];
+    let mut border = |x: usize, y: usize, width: usize, height: usize| {
+        tiles[y][x] = 0x33;
+        tiles[y][x + width + 1] = 0x35;
+        tiles[y + height + 1][x] = 0x38;
+        tiles[y + height + 1][x + width + 1] = 0x3a;
+        for col in x + 1..=x + width {
+            tiles[y][col] = 0x34;
+            tiles[y + height + 1][col] = 0x39;
+        }
+        for row in y + 1..=y + height {
+            tiles[row][x] = 0x36;
+            tiles[row][x + width + 1] = 0x37;
+        }
+    };
+    if detail {
+        border(0, 0, 18, 15);
+        tiles[0][19] = 0x34;
+        for row in 1..16 {
+            tiles[row][19] = 0x7f;
+        }
+        tiles[16][19] = 0x39;
+        for col in 1..20 {
+            tiles[10][col] = 0x61;
+        }
+    } else {
+        border(0, 0, 7, 7);
+        border(0, 9, 7, 6);
+        for row in 1..8 {
+            tiles[row][8] = 0x5a;
+        }
+        for row in 10..16 {
+            tiles[row][8] = 0x5a;
+        }
+        for (row, tile) in [(0, 0x59), (8, 0x53), (9, 0x54), (16, 0x5b)] {
+            tiles[row][8] = tile;
+        }
+    }
+    tiles
+}
+
+fn load_pokedex_background(
+    asset_root: &AssetRoot,
+    detail: bool,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
+    let sheet =
+        crate::open_runtime_image(asset_root.runtime_assets().join("gfx/pokedex/pokedex.png"))
+            .context("decode Pokédex interface tiles")?
+            .to_rgba8();
+    anyhow::ensure!(
+        sheet.dimensions() == (128, 32),
+        "invalid Pokédex interface sheet dimensions"
+    );
+    // PREDEFPAL_POKEDEX: RGB 31,31,31 / 31,20,10 / 26,10,6 / 0,0,0.
+    let palette = [
+        [255, 255, 255, 255],
+        [255, 165, 82, 255],
+        [214, 82, 49, 255],
+        [0, 0, 0, 255],
+    ];
+    let mut pixels = vec![255; 160 * 144 * 4];
+    for (row, tiles) in pokedex_background_tiles(detail).iter().enumerate() {
+        for (col, &tile) in tiles.iter().enumerate() {
+            if tile == 0x7f {
+                continue;
+            }
+            let index = usize::from(tile - 0x31);
+            for y in 0..8 {
+                for x in 0..8 {
+                    let shade = sheet
+                        .get_pixel(((index % 16) * 8 + x) as u32, ((index / 16) * 8 + y) as u32)[0];
+                    let level = match shade {
+                        255 => 0,
+                        170 => 1,
+                        85 => 2,
+                        0 => 3,
+                        _ => anyhow::bail!("invalid Pokédex interface shade {shade}"),
+                    };
+                    let offset = ((row * 8 + y) * 160 + col * 8 + x) * 4;
+                    pixels[offset..offset + 4].copy_from_slice(&palette[level]);
+                }
+            }
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 160,
+            height: 144,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    Ok(SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::new(160.0, 144.0),
+    })
+}
+
 fn spawn_field_pokedex_screen(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -2930,7 +3035,19 @@ fn spawn_field_pokedex_screen(
             .progression
             .pokedex_caught_species
             .contains(&species.species_id);
-    commit_presented_fullscreen_solid(commands, rendered_art, [31, 46, 61, 255], 3.4, images)?;
+    let background = load_pokedex_background(
+        asset_root,
+        runtime_shell.pokedex_detail_open && seen,
+        images,
+    )?;
+    commit_presented_fullscreen_frame(
+        commands,
+        rendered_art,
+        &background,
+        PresentedFullscreenFrameSource::Transient,
+        3.4,
+        images,
+    )?;
     if runtime_shell.pokedex_detail_open && seen {
         spawn_field_pokedex_detail(
             commands,
@@ -2944,14 +3061,22 @@ fn spawn_field_pokedex_screen(
         )?;
         return Ok(());
     }
-    for (row, text) in [
-        (10.0, "SEEN".to_string()),
-        (11.0, format!("{:03}", snapshot.progression.pokedex_seen)),
-        (13.0, "OWN".to_string()),
-        (14.0, format!("{:03}", snapshot.progression.pokedex_owned)),
-        (16.0, "SELECT>OPTION".to_string()),
+    for (col, row, text) in [
+        (1.0, 11.0, "SEEN".to_string()),
+        (
+            5.0,
+            12.0,
+            format!("{:03}", snapshot.progression.pokedex_seen),
+        ),
+        (1.0, 14.0, "OWN".to_string()),
+        (
+            5.0,
+            15.0,
+            format!("{:03}", snapshot.progression.pokedex_owned),
+        ),
+        (1.0, 17.0, "A ENTRY B BACK".to_string()),
     ] {
-        let (x, y) = battle_hud_tile_origin(1.0, row);
+        let (x, y) = battle_hud_tile_origin(col, row);
         spawn_field_command_bitmap_text(
             commands,
             rendered_art,
@@ -2972,12 +3097,12 @@ fn spawn_field_pokedex_screen(
             false,
             images,
         ) {
-            let (x, y) = battle_hud_tile_origin(3.5, 4.0);
+            let (x, y) = battle_hud_tile_origin(4.0, 4.0);
             commands.spawn((
                 SpriteBundle {
                     texture: frame.handle,
                     sprite: Sprite {
-                        custom_size: Some(frame.size),
+                        custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                         ..default()
                     },
                     transform: Transform::from_xyz(x, y, 3.8),
@@ -3006,23 +3131,41 @@ fn spawn_field_pokedex_screen(
         } else {
             "-----".to_string()
         };
-        let (x, y) = battle_hud_tile_origin(9.0, 1.0 + visible_index as f32 * 2.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!(
-                "{}{}{:03} {}",
-                if index == selected { ">" } else { " " },
-                if entry_caught { "C" } else { " " },
-                entry.int_id,
-                compact_scene_label(&name, 8)
+        // The list has eleven tiles: put the number above the ten-character
+        // name instead of drawing a fourteen-character row past the screen edge.
+        let row = 1.0 + visible_index as f32 * 2.0;
+        for (col, line_row, text) in [
+            (
+                9.0,
+                row,
+                format!(
+                    "{}{:03}",
+                    if entry_caught { "C" } else { " " },
+                    entry.int_id
+                ),
             ),
-            x,
-            y,
-            3.8,
-        );
+            (
+                9.0,
+                row + 1.0,
+                format!(
+                    "{}{}",
+                    if index == selected { ">" } else { " " },
+                    compact_scene_label(&name, 10)
+                ),
+            ),
+        ] {
+            let (x, y) = battle_hud_tile_origin(col, line_row);
+            spawn_field_command_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                &text,
+                x,
+                y,
+                3.8,
+            );
+        }
     }
     Ok(())
 }
@@ -3035,6 +3178,12 @@ fn spawn_field_pokegear_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    if visible_pokegear_exit_palettes_are_clear(runtime_shell) {
+        return commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 3.4, images);
+    }
+    if runtime_shell.pokegear_map_radio_delay.is_some() {
+        return spawn_furniture_radio_textbox(commands, snapshot, runtime_shell, rendered_art, asset_root, images);
+    }
     match runtime_shell.pokegear_page {
         PokegearPage::Clock => {}
         // Standard furniture specials (TownMapScript/MapRadio) use these
@@ -3051,44 +3200,14 @@ fn spawn_field_pokegear_screen(
         PokegearPage::Radio => {}
     }
     if runtime_shell.pokegear_page == PokegearPage::Phone {
-        let contacts = visible_pokegear_phone_contact_ids(snapshot);
-        if !contacts.is_empty() {
-            anyhow::ensure!(
-                runtime_shell.pokegear_phone_cursor < contacts.len(),
-                "Pokégear phone cursor {} is outside {} contacts",
-                runtime_shell.pokegear_phone_cursor,
-                contacts.len()
-            );
-        }
+        visible_pokegear_phone_window(runtime_shell)?;
+        visible_pokegear_phone_slots(snapshot)?;
     }
     if runtime_shell.pokegear_page == PokegearPage::Radio {
-        if let Some(station) = runtime_shell.pokegear_radio_station.as_deref() {
-            let transcript = visible_map_radio_transcript(station);
-            if !transcript.is_empty() {
-                let label = transcript
-                    .get(runtime_shell.pokegear_radio_segment)
-                    .with_context(|| {
-                        format!(
-                            "Pokégear radio segment {} is outside {} transcript segments for {station}",
-                            runtime_shell.pokegear_radio_segment,
-                            transcript.len()
-                        )
-                    })?;
-                snapshot
-                    .presentation
-                    .asm_text
-                    .get(*label)
-                    .with_context(|| {
-                        format!("Pokégear radio transcript text {label} is missing")
-                    })?;
-            }
+        if runtime_shell.pokegear_radio_station.is_some() {
+            visible_radio_text_rows(runtime_shell)?;
         } else {
-            anyhow::ensure!(
-                runtime_shell.pokegear_radio_tuning_knob <= 80
-                    && runtime_shell.pokegear_radio_tuning_knob % 2 == 0,
-                "Pokégear radio tuning knob {} is outside the even range 0..=80",
-                runtime_shell.pokegear_radio_tuning_knob,
-            );
+            anyhow::ensure!(runtime_shell.pokegear_radio_tuning_knob <= 80 && runtime_shell.pokegear_radio_tuning_knob % 2 == 0, "invalid radio tuning knob");
         }
     }
     let tile_palette_map = &snapshot.presentation.pokegear_town_map_palette_map;
@@ -3098,18 +3217,19 @@ fn spawn_field_pokegear_screen(
     let pokegear_tile_palettes = tile_palette_map
         .get("pokegear")
         .context("compiled pack has no Pokégear palette assignment")?;
+    let flags = &snapshot.progression.active_engine_flags;
+    let unlocked_mask = 1
+        | (u8::from(flags.contains("ENGINE_MAP_CARD")) << 1)
+        | (u8::from(flags.contains("ENGINE_PHONE_CARD")) << 2)
+        | (u8::from(flags.contains("ENGINE_RADIO_CARD")) << 3);
     if runtime_shell.pokegear_page != PokegearPage::Map {
-        let flags = &snapshot.progression.active_engine_flags;
-        let unlocked_mask = 1
-            | (u8::from(flags.contains("ENGINE_MAP_CARD")) << 1)
-            | (u8::from(flags.contains("ENGINE_PHONE_CARD")) << 2)
-            | (u8::from(flags.contains("ENGINE_RADIO_CARD")) << 3);
         let phone_service = snapshot
             .maps
             .iter()
             .find(|map| map.map_name == snapshot.overworld.map_name)
             .and_then(|map| map.metadata.as_ref())
-            .is_none_or(|metadata| ((metadata.phone_service & 0xf0) >> 4) == 0);
+            .with_context(|| format!("Pokégear active map {} has no metadata", snapshot.overworld.map_name))?
+            .phone_service >> 4 == 0;
         let frame = pokegear_card_frame_for_art(
             rendered_art,
             asset_root,
@@ -3132,7 +3252,7 @@ fn spawn_field_pokegear_screen(
         )?;
     }
     if runtime_shell.pokegear_page == PokegearPage::Map {
-        let region = visible_pokegear_region(snapshot)?;
+        let region = visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?;
         let frame = town_map_frame_for_art(
             rendered_art,
             asset_root,
@@ -3141,12 +3261,13 @@ fn spawn_field_pokegear_screen(
             town_tile_palettes,
             pokegear_tile_palettes,
             runtime_shell.pokegear_standalone_map,
+            unlocked_mask,
             images,
         )
         .with_context(|| {
             let key = (
                 format!(
-                    "{}:{}",
+                    "{}:{}:{unlocked_mask}",
                     if runtime_shell.pokegear_standalone_map {
                         "standalone"
                     } else {
@@ -3173,7 +3294,9 @@ fn spawn_field_pokegear_screen(
             3.4,
             images,
         )?;
-        let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
+        if !runtime_shell.pokegear_standalone_map {
+            spawn_pokegear_card_objects(commands, snapshot, runtime_shell, asset_root, images)?;
+        }
         let landmark = selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
         for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
             if line.is_empty() {
@@ -3191,21 +3314,7 @@ fn spawn_field_pokegear_screen(
                 3.8,
             );
         }
-        let current_constant = snapshot
-            .presentation
-            .pokegear_landmarks
-            .map_to_landmark
-            .get(&snapshot.overworld.map_name)
-            .with_context(|| {
-                format!(
-                    "active map {} has no compiled Pokégear landmark mapping",
-                    snapshot.overworld.map_name
-                )
-            })?;
-        let current = landmarks
-            .iter()
-            .find(|entry| entry.constant == *current_constant)
-            .with_context(|| format!("current Pokégear landmark {current_constant} is missing"))?;
+        let current = visible_pokegear_player_landmark(snapshot)?;
         spawn_town_map_markers(
             commands,
             snapshot,
@@ -3214,6 +3323,7 @@ fn spawn_field_pokegear_screen(
             images,
             current,
             landmark,
+            runtime_shell.pokegear_map_animation_frame / 9,
         )?;
     }
     if runtime_shell.pokegear_page != PokegearPage::Map {
@@ -3229,6 +3339,130 @@ fn spawn_field_pokegear_screen(
     Ok(())
 }
 
+fn spawn_pokegear_card_objects(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    let metadata = snapshot
+        .maps
+        .iter()
+        .find(|map| map.map_name == snapshot.overworld.map_name)
+        .and_then(|map| map.metadata.as_ref())
+        .context("Pokégear entry map metadata is missing")?;
+    // LoadMapPals supplies OBJ palette zero before FadeToMenu. Pokégear
+    // replaces BG palettes but retains that object palette for its arrows.
+    let time = match metadata.phone_service & 0x0f {
+        0 => snapshot.progression.time.time_of_day.as_key(),
+        1 => "day",
+        2 => "nite",
+        3 => "morn",
+        4 if snapshot
+            .progression
+            .active_engine_flags
+            .contains("STATUSFLAGS_FLASH") =>
+        {
+            "nite"
+        }
+        4 => "dark",
+        value => anyhow::bail!("invalid source map palette selector {value}"),
+    };
+    let palettes = parse_palette_file(
+        &crate::read_runtime_asset_to_string(
+            asset_root
+                .runtime_assets()
+                .join("gfx/overworld/npc_sprites.pal"),
+        )?,
+        Some(time),
+    )?;
+    let palette = palettes
+        .first()
+        .context("Pokégear inherited OBJ palette zero is missing")?;
+    let source = crate::open_runtime_image(
+        asset_root
+            .runtime_assets()
+            .join("gfx/pokegear/pokegear_sprites.png"),
+    )?
+    .to_rgba8();
+    anyhow::ensure!(
+        source.width() == 16 && source.height() == 40,
+        "Pokégear object tile sheet has invalid dimensions"
+    );
+    let card = match runtime_shell.pokegear_page {
+        PokegearPage::Clock => 0,
+        PokegearPage::Map => 1,
+        PokegearPage::Phone => 2,
+        PokegearPage::Radio => 3,
+    };
+    let mut objects = vec![
+        (0, card * 16, 12),
+        (1, card * 16 + 8, 12),
+        (2, card * 16, 20),
+        (3, card * 16 + 8, 20),
+    ];
+    if runtime_shell.pokegear_page == PokegearPage::Radio {
+        let position = runtime_shell.pokegear_radio_tuning_knob;
+        anyhow::ensure!(
+            position <= 80 && position % 2 == 0,
+            "Pokégear radio knob must be an even position in 0..=80"
+        );
+        for y in [8, 16, 24] {
+            objects.push((8, 72 + usize::from(position), y));
+        }
+    }
+    for (tile, left, top) in objects {
+        let mut data = Vec::with_capacity(256);
+        for y in 0..8 {
+            for x in 0..8 {
+                let pixel = source
+                    .get_pixel((tile % 2 * 8 + x) as u32, (tile / 2 * 8 + y) as u32)
+                    .0;
+                anyhow::ensure!(
+                    pixel[0] == pixel[1] && pixel[1] == pixel[2],
+                    "Pokégear object tile contains a non-monochrome pixel"
+                );
+                let index = match pixel[0] {
+                    255 => 0,
+                    170 => 1,
+                    85 => 2,
+                    0 => 3,
+                    value => anyhow::bail!("Pokégear object tile has invalid shade {value}"),
+                };
+                data.extend_from_slice(&palette[index]);
+                data.push(if index == 0 { 0 } else { 255 });
+            }
+        }
+        let mut image = Image::new(
+            Extent3d {
+                width: 8,
+                height: 8,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            data,
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::default(),
+        );
+        image.sampler = ImageSampler::nearest();
+        let (x, y) = battle_hud_tile_origin(left as f32 / 8.0, top as f32 / 8.0);
+        commands.spawn((
+            SpriteBundle {
+                texture: images.add(image),
+                sprite: Sprite {
+                    custom_size: Some(Vec2::splat(TILE_SIZE)),
+                    ..default()
+                },
+                transform: Transform::from_xyz(x, y, 3.8),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
+    }
+    Ok(())
+}
+
 fn spawn_non_map_pokegear_content(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -3237,6 +3471,7 @@ fn spawn_non_map_pokegear_content(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    spawn_pokegear_card_objects(commands, snapshot, runtime_shell, asset_root, images)?;
     let entries = visible_pokegear_menu_entries(snapshot, runtime_shell)?;
     let mut spawn = |text: &str, tile_x: f32, tile_y: f32| {
         let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
@@ -3253,54 +3488,96 @@ fn spawn_non_map_pokegear_content(
     };
     match runtime_shell.pokegear_page {
         PokegearPage::Clock => {
-            spawn(" SWITCH>", 12.0, 1.0);
-            if let Some(day) = entries.first() {
-                spawn(&day.chars().take(14).collect::<String>(), 6.0, 6.0);
-            }
-            if let Some(time) = entries.get(1) {
-                spawn(&time.chars().take(14).collect::<String>(), 6.0, 8.0);
-            }
-            spawn(
-                &entries.join(" ").chars().take(18).collect::<String>(),
-                1.0,
-                13.0,
+            spawn(" SWITCH▶", 12.0, 1.0);
+            spawn(&entries[0], 6.0, 6.0);
+            spawn(&entries[1], 6.0, 8.0);
+            let text = snapshot
+                .presentation
+                .asm_text
+                .get("_PokegearPressButtonText")
+                .context("Pokégear clock is missing its authored exit prompt")?;
+            let text = normalize_visible_script_text_with_context(
+                text,
+                &snapshot.trainer.player_name,
+                visible_rival_name(snapshot),
+                snapshot.progression.time.day_of_week,
             );
+            for (index, line) in text.lines().enumerate() {
+                spawn(line, 1.0, 14.0 + index as f32 * 2.0);
+            }
         }
         PokegearPage::Phone => {
-            for (index, line) in entries.iter().take(7).enumerate() {
-                spawn(
-                    &line.chars().take(16).collect::<String>(),
-                    1.0,
-                    4.0 + index as f32,
-                );
+            let slots = visible_pokegear_phone_slots(snapshot)?;
+            let start = visible_pokegear_phone_window(runtime_shell)?;
+            for row in 0..4 {
+                if let Some(contact_id) = slots[start + row] {
+                    let contact = snapshot
+                        .special
+                        .phone_contacts
+                        .0
+                        .get(contact_id)
+                        .with_context(|| format!("Pokégear contact {contact_id} is missing"))?;
+                    let name = contact
+                        .lines
+                        .first()
+                        .with_context(|| format!("Pokégear contact {contact_id} has no name"))?;
+                    spawn(name, 2.0, 4.0 + row as f32 * 2.0);
+                    if let Some(class) = contact.lines.get(1) {
+                        spawn(class, 5.0, 5.0 + row as f32 * 2.0);
+                    }
+                } else {
+                    spawn("----------", 2.0, 4.0 + row as f32 * 2.0);
+                }
             }
-            let status = entries
-                .iter()
-                .rev()
-                .find(|line| line.contains("SERVICE") || line.contains("CALL"))
-                .or_else(|| entries.first())
-                .map(|line| line.trim_start_matches([' ', '>']))
-                .unwrap_or("NO PHONE NUMBERS");
-            spawn(&status.chars().take(18).collect::<String>(), 1.0, 13.0);
+            spawn(
+                if runtime_shell.pokegear_phone_menu.as_ref().is_some_and(|menu| menu.delete_confirmation.is_none()) { "▷" } else { "▶" },
+                1.0,
+                4.0 + (runtime_shell.pokegear_phone_cursor - start) as f32 * 2.0,
+            );
+            for (index, line) in visible_pokegear_phone_prompt(snapshot, runtime_shell)?
+                .lines()
+                .enumerate()
+            {
+                spawn(line, 1.0, 14.0 + index as f32 * 2.0);
+            }
         }
         PokegearPage::Radio => {
-            let heading = entries
-                .first()
-                .map(|line| line.strip_prefix("RADIO  ").unwrap_or(line))
-                .unwrap_or("NO SIGNAL");
-            spawn(&heading.chars().take(17).collect::<String>(), 2.0, 9.0);
-            for (index, line) in entries.iter().skip(1).take(4).enumerate() {
-                spawn(
-                    &line.chars().take(18).collect::<String>(),
-                    1.0,
-                    13.0 + index as f32,
-                );
+            // NoRadioName clears both the station window and the textbox.
+            // Tuning instructions and a duplicated station name are not radio text.
+            if runtime_shell.pokegear_radio_station.is_none() {
+                return Ok(());
             }
-            if entries.len() == 1 {
-                spawn(&heading.chars().take(18).collect::<String>(), 1.0, 13.0);
+            let broadcast = runtime_shell.pokegear_radio_broadcast.as_ref().context("radio station has no live broadcast")?;
+            if let Some(rows) = &broadcast.host.name_tiles {
+                for (index, row) in rows.iter().enumerate() {
+                    spawn(&visible_radio_tile_row(row)?, 1.0, 8.0 + index as f32);
+                }
+            } else {
+                let heading = entries.first().context("radio station has no name")?.strip_prefix("RADIO  ").context("radio heading has no prefix")?;
+                spawn(heading, 2.0, 9.0);
+            }
+            for (index, line) in visible_radio_text_rows(runtime_shell)?.iter().enumerate() {
+                spawn(line, 1.0, 13.0 + index as f32);
             }
         }
         PokegearPage::Map => {}
+    }
+    if let Some(menu) = runtime_shell.pokegear_phone_menu.as_ref() {
+        let (x, y, width, height, labels, selected): (usize, usize, usize, usize, &[&str], usize) =
+            if let Some(choice) = menu.delete_confirmation {
+                (14, 7, 6, 5, &["YES", "NO"], choice)
+            } else if menu.can_delete {
+                (9, 4, 10, 8, &["CALL", "DELETE", "CANCEL"], menu.cursor)
+            } else {
+                (9, 6, 10, 6, &["CALL", "CANCEL"], menu.cursor)
+            };
+        spawn_pokegear_phone_window(commands, snapshot, asset_root, images, x, y, width, height)?;
+        let first_row = y + if menu.delete_confirmation.is_some() { 1 } else { 2 };
+        for (index, label) in labels.iter().enumerate() {
+            let (left, top) = battle_hud_tile_origin((x + 1) as f32, (first_row + index * 2) as f32);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images,
+                &format!("{}{}", if index == selected { ">" } else { " " }, label), left, top, 4.1);
+        }
     }
     Ok(())
 }
@@ -3367,6 +3644,39 @@ fn town_map_marker_rects(
     rects
 }
 
+fn load_town_map_ship_frame(
+    asset_root: &AssetRoot,
+    walking: bool,
+    palette_id: u8,
+    time: &str,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
+    let bytes = crate::read_runtime_asset(asset_root.runtime_assets().join("gfx/pokegear/fast_ship.2bpp"))?;
+    anyhow::ensure!(bytes.len() == 128, "FastShipGFX must contain two four-tile source poses");
+    let palettes = load_npc_sprite_palette_bank(asset_root, time)?;
+    let palette = palettes.get(usize::from(palette_id)).context("Town Map ship palette is missing")?;
+    let mut data = vec![0; 16 * 16 * 4];
+    // Pokegear_LoadGFX places standing/walking poses at OBJ $10/$14.
+    // RedWalk/BlueWalk OAM arrange each pose in row-major order.
+    let tile_offset = if walking { 4 } else { 0 };
+    for tile in 0..4 {
+        for y in 0..8 {
+            for x in 0..8 {
+                let bit = 7 - x;
+                let index = usize::from((bytes[(tile + tile_offset) * 16 + y * 2] >> bit & 1)
+                    | ((bytes[(tile + tile_offset) * 16 + y * 2 + 1] >> bit & 1) << 1));
+                let offset = ((tile / 2 * 8 + y) * 16 + tile % 2 * 8 + x) * 4;
+                data[offset..offset + 3].copy_from_slice(&palette[index]);
+                data[offset + 3] = if index == 0 { 0 } else { 255 };
+            }
+        }
+    }
+    let mut image = Image::new(Extent3d { width: 16, height: 16, depth_or_array_layers: 1 },
+        TextureDimension::D2, data, TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
+    image.sampler = ImageSampler::nearest();
+    Ok(SpriteFrame { handle: images.add(image), size: Vec2::splat(2.0 * TILE_SIZE) })
+}
+
 fn spawn_town_map_markers(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -3375,36 +3685,38 @@ fn spawn_town_map_markers(
     images: &mut Assets<Image>,
     player: &crate::core::models::PokegearLandmark,
     cursor: &crate::core::models::PokegearLandmark,
+    pose: u8,
 ) -> Result<()> {
     let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     let player_center = Vec2::new(player.x as f32 - 8.0, player.y as f32 - 16.0);
-    let female = snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE;
-    let (sprite_id, sprite_token) = if female {
-        ("kris", "SPRITE_KRIS")
+    let female = snapshot.trainer.player_gender & PLAYER_GENDER_FEMALE != 0;
+    let sprite_id = if female { "kris" } else { "chris" };
+    // RedWalk/BlueWalk OAM select PAL_OW_RED/PAL_OW_BLUE directly.
+    // The overworld player's object palette override does not apply here.
+    let palette_id = u8::from(female);
+    let walking = pose % 2 == 1;
+    let player_frame = if player.constant == "LANDMARK_FAST_SHIP" {
+        load_town_map_ship_frame(asset_root, walking, palette_id,
+            snapshot.progression.time.time_of_day.as_key(), images)?
     } else {
-        ("chris", "SPRITE_CHRIS")
-    };
-    let palette_id = resolve_visible_object_palette(
-        sprite_token,
-        snapshot.trainer.player_palette_id,
-        &snapshot.presentation.sprite_palette_defaults,
-    );
-    let player_frame = sprite_frame_for_art(
+        sprite_frame_for_art(
         rendered_art,
         asset_root,
         sprite_id,
         palette_id,
         snapshot.progression.time.time_of_day.as_key(),
         Direction::Down,
-        false,
+        walking,
         images,
     )
-    .with_context(|| format!("render Town Map player sprite {sprite_id}"))?;
+        .with_context(|| format!("render Town Map player sprite {sprite_id}"))?
+    };
     commands.spawn((
         SpriteBundle {
             texture: player_frame.handle,
             sprite: Sprite {
-                custom_size: Some(player_frame.size * scale),
+                custom_size: Some(player_frame.size),
+                flip_x: pose == 3,
                 ..default()
             },
             transform: Transform::from_xyz(
@@ -3423,7 +3735,9 @@ fn spawn_town_map_markers(
         };
         let z = match rect.kind {
             TownMapMarkerKind::Player => 3.65,
-            TownMapMarkerKind::Cursor => 3.7,
+            // InitPlayerIcon allocates OAM before InitCursor. Earlier OBJ
+            // entries win overlapping pixels, so the cursor is behind it.
+            TownMapMarkerKind::Cursor => 3.64,
         };
         commands.spawn((
             SpriteBundle {
@@ -3683,12 +3997,12 @@ fn spawn_field_pokedex_detail(
         false,
         images,
     ) {
-        let (x, y) = battle_hud_tile_origin(3.5, 4.0);
+        let (x, y) = battle_hud_tile_origin(4.0, 4.0);
         commands.spawn((
             SpriteBundle {
                 texture: frame.handle,
                 sprite: Sprite {
-                    custom_size: Some(frame.size),
+                    custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                     ..default()
                 },
                 transform: Transform::from_xyz(x, y, 3.8),
@@ -3697,25 +4011,15 @@ fn spawn_field_pokedex_detail(
             FieldCommandMarker,
         ));
     }
-    let height = if caught {
-        entry.height_digits.to_string()
-    } else {
-        "????".to_string()
-    };
-    let weight = if caught {
-        entry.weight_digits.to_string()
-    } else {
-        "????".to_string()
-    };
+    let (height, weight) = pokedex_measurements(entry, caught);
     for (row, text) in [
         (
-            2.0,
+            3.0,
             crate::core::models::pokemon_species_display_name(&species.species_id),
         ),
-        (4.0, entry.classification.clone()),
+        (5.0, entry.classification.clone()),
         (7.0, format!("HT {height}")),
-        (8.0, format!("WT {weight}")),
-        (9.0, format!("No.{:03}", species.int_id)),
+        (9.0, format!("WT {weight}")),
     ] {
         let (x, y) = battle_hud_tile_origin(9.0, row);
         spawn_field_command_bitmap_text(
@@ -3728,6 +4032,32 @@ fn spawn_field_pokedex_detail(
             y,
             3.8,
         );
+    }
+    let (x, y) = battle_hud_tile_origin(1.0, 8.0);
+    spawn_field_command_bitmap_text(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        &format!("No.{:03}", species.int_id),
+        x,
+        y,
+        3.8,
+    );
+    let (x, y) = battle_hud_tile_origin(1.0, 17.0);
+    spawn_field_command_bitmap_text(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        if caught { "A PAGE B BACK" } else { "B BACK" },
+        x,
+        y,
+        3.8,
+    );
+    // DisplayDexEntry returns after the name/classification/number for uncaught mons.
+    if !caught {
+        return Ok(());
     }
     let page_index = runtime_shell.pokedex_detail_page;
     let page = entry
@@ -3755,7 +4085,7 @@ fn spawn_field_pokedex_detail(
         );
     }
     if entry.pages.len() > 1 {
-        let (x, y) = battle_hud_tile_origin(14.0, 16.0);
+        let (x, y) = battle_hud_tile_origin(16.0, 17.0);
         spawn_field_command_bitmap_text(
             commands,
             rendered_art,
@@ -3844,7 +4174,12 @@ fn spawn_field_pack_screen(
         strict_readonly_cursor_index(cursor, &surface_id, row_count).with_context(|| {
             format!("field PACK cursor is invalid for {surface_id} with {row_count} rows")
         })?;
-    let list_start = visible_window_start(selected, row_count, 7);
+    let pocket_index = FIELD_PACK_POCKETS.iter().position(|candidate| candidate == &pocket)
+        .context("Pack pocket has no source scrolling state")?;
+    let list_start = runtime_shell.field_pack_scroll_positions[pocket_index];
+    anyhow::ensure!(list_start <= row_count.saturating_sub(5)
+        && selected >= list_start && selected < list_start + 5,
+        "Pack cursor is outside its retained scrolling window");
     let description = if let Some((item_id, _)) = items.get(selected) {
         snapshot
             .items
@@ -3882,6 +4217,33 @@ fn spawn_field_pack_screen(
         asset_root,
         images,
     )?;
+    if runtime_shell.pc_item_action == Some(VisiblePlayerPcAction::DepositItem)
+        && runtime_shell.pc_notice.is_some()
+    {
+        // DepositSellPack updates the tilemap while retaining LCD attrs;
+        // its MenuTextbox and quantity selector remain on Pack BG palette 0.
+        let filename = if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
+            "pack_f.pal"
+        } else {
+            "pack.pal"
+        };
+        let palettes = parse_palette_file(
+            &crate::read_runtime_asset_to_string(
+                asset_root.runtime_assets().join("gfx/pack").join(filename),
+            )?,
+            None,
+        )?;
+        let palette = *palettes.first().context("Pack BG palette 0 is missing")?;
+        spawn_pc_item_notice(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+            palette,
+        )?;
+    }
     Ok(())
 }
 
@@ -4068,212 +4430,13 @@ fn spawn_field_party_summary_screen(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
     rendered_art: &mut RenderedTilesetArt,
-    asset_root: &AssetRoot,
+    _asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    let slot = snapshot
-        .party
-        .slots
-        .get(runtime_shell.party_cursor)
-        .with_context(|| {
-            format!(
-                "party summary cursor {} is outside {} slots",
-                runtime_shell.party_cursor,
-                snapshot.party.slots.len()
-            )
-        })?;
-    let pokemon = &slot.pokemon;
-    let page = runtime_shell.party_summary_page;
-    anyhow::ensure!(
-        (1..=3).contains(&page),
-        "party summary page {page} is outside pages 1 through 3"
-    );
-    let held_item_label = if let Some(item_id) = pokemon.item.as_deref() {
-        snapshot
-            .items
-            .iter()
-            .find(|item| item.item_id == item_id)
-            .with_context(|| format!("party summary held item {item_id} is missing"))?
-            .name
-            .replace('_', " ")
-    } else {
-        "NONE".to_string()
-    };
-    for learned in &pokemon.moves {
-        snapshot
-            .moves
-            .iter()
-            .find(|move_data| move_data.move_id == learned.name)
-            .with_context(|| {
-                format!(
-                    "party summary is missing move metadata for {}",
-                    learned.name
-                )
-            })?;
-    }
-    let tint = if pokemon.is_egg {
-        [255, 240, 199, 255]
-    } else {
-        match page {
-            1 => [255, 219, 227, 255],
-            2 => [214, 245, 214, 255],
-            _ => [214, 232, 255, 255],
-        }
-    };
-    let mut rows = vec![
-        (
-            8,
-            0.0,
-            format!("No.{:03}  L{:>2}", pokemon.species.int_id, pokemon.level),
-        ),
-        (8, 2.0, compact_scene_label(&pokemon.nickname, 10)),
-        (
-            9,
-            4.0,
-            format!(
-                "/{}",
-                crate::core::models::pokemon_species_display_name(&pokemon.species.id)
-            ),
-        ),
-    ];
-    if pokemon.is_egg {
-        rows.push((8, 1.0, "EGG".to_string()));
-        let hatch_lines = if pokemon.happiness < 6 {
-            [
-                "It's making sounds",
-                "inside. It's going",
-                "to hatch soon!",
-                "",
-            ]
-        } else if pokemon.happiness < 11 {
-            [
-                "It moves around",
-                "inside sometimes.",
-                "It must be close",
-                "to hatching.",
-            ]
-        } else if pokemon.happiness < 41 {
-            [
-                "Wonder what's",
-                "inside? It needs",
-                "more time, though.",
-                "",
-            ]
-        } else {
-            ["This EGG needs a", "lot more time to", "hatch.", ""]
-        };
-        rows.extend(
-            hatch_lines
-                .into_iter()
-                .enumerate()
-                .filter(|(_, line)| !line.is_empty())
-                .map(|(index, line)| (1, 9.0 + index as f32 * 2.0, line.to_string())),
-        );
-    } else {
-        match page {
-            1 => {
-                let species = snapshot
-                    .pokemon
-                    .iter()
-                    .find(|entry| entry.species_id == pokemon.species.id)
-                    .with_context(|| {
-                        format!(
-                            "party summary is missing species data for {}",
-                            pokemon.species.id
-                        )
-                    })?;
-                let type1 = species.type1.clone();
-                let type2 = (species.type1 != species.type2).then(|| species.type2.clone());
-                rows.extend([
-                    (0, 9.0, "HP".to_string()),
-                    (1, 10.0, format!("{:>3}/{:>3}", pokemon.hp, pokemon.max_hp)),
-                    (0, 12.0, "STATUS/".to_string()),
-                    (6, 13.0, party_status_token(pokemon).to_string()),
-                    (0, 14.0, "TYPE/".to_string()),
-                    (1, 15.0, type1),
-                    (1, 16.0, type2.unwrap_or_default()),
-                    (10, 9.0, "EXP POINTS".to_string()),
-                    (13, 10.0, format!("{:>7}", pokemon.experience.max(0))),
-                ]);
-            }
-            2 => {
-                rows.push((0, 8.0, "ITEM".to_string()));
-                rows.push((8, 8.0, held_item_label));
-                if pokemon.moves.is_empty() {
-                    rows.push((8, 10.0, "NO MOVES".to_string()));
-                } else {
-                    for (index, learned) in pokemon.moves.iter().take(4).enumerate() {
-                        let row = 8.0 + index as f32 * 2.0;
-                        rows.push((
-                            8,
-                            row + 2.0,
-                            battle_move_display_name(snapshot, &learned.name),
-                        ));
-                        rows.push((12, row + 3.0, visible_move_pp_text(snapshot, learned)));
-                    }
-                }
-            }
-            _ => rows.extend([
-                (0, 9.0, format!("IDNo.{:05}", pokemon.original_trainer_id)),
-                (0, 12.0, format!("OT/{}", pokemon.original_trainer_name)),
-                (11, 8.0, "ATTACK".to_string()),
-                (17, 9.0, format!("{:>3}", pokemon.attack)),
-                (11, 10.0, "DEFENSE".to_string()),
-                (17, 11.0, format!("{:>3}", pokemon.defense)),
-                (11, 12.0, "SPCL.ATK".to_string()),
-                (17, 13.0, format!("{:>3}", pokemon.special_attack)),
-                (11, 14.0, "SPCL.DEF".to_string()),
-                (17, 15.0, format!("{:>3}", pokemon.special_defense)),
-                (11, 16.0, "SPEED".to_string()),
-                (17, 17.0, format!("{:>3}", pokemon.speed)),
-            ]),
-        }
-    }
-    let frame = load_visible_party_summary_frame(
-        runtime_shell,
-        &rows,
-        tint,
-        page,
-        (!pokemon.is_egg).then_some((pokemon.hp, pokemon.max_hp)),
-        images,
-    )?;
-    commit_presented_fullscreen_frame(
-        commands,
-        rendered_art,
-        &frame,
-        PresentedFullscreenFrameSource::Transient,
-        3.4,
-        images,
-    )?;
-    let sprite_species = if pokemon.is_egg {
-        "EGG"
-    } else {
-        &pokemon.species.id
-    };
-    let shiny = !pokemon.is_egg && visible_pokemon_is_shiny(pokemon);
-    let sprite = pokemon_frame_for_art(
-        rendered_art,
-        asset_root,
-        sprite_species,
-        PokemonSpriteSide::Front,
-        shiny,
-        images,
-    )
-    .with_context(|| format!("party summary front sprite {sprite_species} is unavailable"))?;
-    let (x, y) = battle_hud_tile_origin(3.5, 3.5);
-    commands.spawn((
-        SpriteBundle {
-            texture: sprite.handle,
-            sprite: Sprite {
-                custom_size: Some(sprite.size * 4.0),
-                ..default()
-            },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
-        FieldCommandMarker,
-    ));
-    Ok(())
+    let slot = snapshot.party.slots.get(runtime_shell.party_cursor)
+        .context("party Stats cursor is outside the party")?;
+    spawn_source_stats_screen(commands, snapshot, runtime_shell, &slot.pokemon,
+        runtime_shell.party_summary_page, rendered_art, images, 3.4)
 }
 
 fn spawn_visible_egg_hatch_tile(
@@ -4940,6 +5103,9 @@ fn spawn_options_menu_command_window(
         "OPTIONS cursor {selected} is outside {} entries",
         OPTIONS_MENU_ITEMS.len()
     );
+    // ASM UpdateFrame reloads the border immediately, including when Options
+    // is entered from the title menu rather than the overworld render path.
+    rendered_art.selected_window_frame_id = textbox_frame_id(snapshot.trainer.options.frame);
     spawn_options_menu_window_fill(commands, 3.3);
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
         .context("OPTIONS menu requires window-frame art")?;
@@ -5107,7 +5273,7 @@ fn spawn_scene_dialog(
         spawn_visible_magnet_train(commands, runtime_shell, rendered_art, asset_root, images)?;
         return Ok(());
     }
-    spawn_visible_heal_machine(commands, runtime_shell, rendered_art, asset_root, images)?;
+    spawn_visible_heal_machine(commands, snapshot, runtime_shell, rendered_art, asset_root, images)?;
     spawn_visible_balance_overlay(commands, runtime_shell, rendered_art, asset_root, images);
     if runtime_shell.visible_mom_bank.as_ref().is_some_and(|bank| {
         bank.messages.is_empty()
@@ -5168,6 +5334,10 @@ fn spawn_scene_dialog(
     if let Some(reader) = runtime_shell.pending_mail_read.as_ref() {
         spawn_visible_mail_read_screen(commands, rendered_art, asset_root, images, reader)?;
         return Ok(());
+    }
+    if runtime_shell.mailbox_cursor.is_some() {
+        return spawn_visible_mailbox_screen(commands, snapshot, runtime_shell,
+            rendered_art, asset_root, images);
     }
     if let Some(shop) = snapshot.pending_shop.as_ref() {
         spawn_field_shop_screen(
@@ -5269,7 +5439,10 @@ fn spawn_scene_dialog(
         return Ok(());
     }
 
-    spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+    // Outgoing phone scripts print into the existing green card textbox.
+    if runtime_shell.pokegear_phone_call.is_none() {
+        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+    }
     spawn_scene_dialog_text_content(
         commands,
         snapshot,
@@ -6052,8 +6225,12 @@ fn composite_visible_magnet_train_player(
     }
 }
 
+#[derive(Component)]
+struct HealMachineWorldSprite;
+
 fn spawn_visible_heal_machine(
     commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
@@ -6062,6 +6239,29 @@ fn spawn_visible_heal_machine(
     let Some(animation) = runtime_shell.visible_heal_machine.as_ref() else {
         return Ok(());
     };
+    let map = snapshot
+        .maps
+        .iter()
+        .find(|map| map.map_name == snapshot.overworld.map_name)
+        .context("heal-machine map is missing from the runtime snapshot")?;
+    let (width, height) = render_tile_bounds_i16(
+        &map.map_name,
+        map.attributes.width,
+        map.attributes.height,
+    )?;
+    let player_x = snapshot.overworld.tile.x.checked_mul(RENDER_TILES_PER_RUNTIME_TILE)
+        .context("heal-machine player x exceeds render coordinates")?;
+    let player_y = snapshot.overworld.tile.y.checked_mul(RENDER_TILES_PER_RUNTIME_TILE)
+        .context("heal-machine player y exceeds render coordinates")?;
+    let (start_x, start_y) = connection_composite_viewport_origin(
+        snapshot, map, player_x, player_y, width, height,
+    )
+    .context("heal-machine viewport exceeds render coordinates")?;
+    // ASM's fixed OAM positions assume the player's map tile starts at
+    // LCD (64, 64). Our camera clamps at map edges, so translate that
+    // source viewport into the same viewport used to draw the machine.
+    let camera_x = f32::from(player_x - start_x) * SOURCE_TILE_SIZE as f32 - 64.0;
+    let camera_y = f32::from(player_y - start_y) * SOURCE_TILE_SIZE as f32 - 64.0;
     if rendered_art.heal_machine_ball_cache.is_none() {
         let frames = load_visible_heal_machine_ball_frames(asset_root, images);
         match frames {
@@ -6092,35 +6292,35 @@ fn spawn_visible_heal_machine(
     } else {
         0
     };
-    // dbsprite stores (tile y, tile x, pixel y, pixel x), then hardware OAM
+    // dbsprite takes (tile x, tile y, pixel x, pixel y), then hardware OAM
     // applies the usual x-8/y-16 origin. Keep these as exact source-screen
     // pixels rather than approximate tile centers.
     let positions: &[(f32, f32, bool)] = if animation.kind == 2 {
         &[
-            (52.0, 65.0, false),
-            (52.0, 70.0, false),
-            (51.0, 61.0, false),
-            (51.0, 74.0, false),
-            (49.0, 57.0, false),
-            (49.0, 77.0, false),
+            (73.0, 44.0, false),
+            (78.0, 44.0, false),
+            (69.0, 43.0, false),
+            (82.0, 43.0, false),
+            (65.0, 41.0, false),
+            (85.0, 41.0, false),
         ]
     } else {
         &[
-            (30.0, 16.0, false),
-            (30.0, 24.0, true),
-            (35.0, 16.0, false),
-            (35.0, 24.0, true),
-            (40.0, 16.0, false),
-            (40.0, 24.0, true),
+            (24.0, 22.0, false),
+            (32.0, 22.0, true),
+            (24.0, 27.0, false),
+            (32.0, 27.0, true),
+            (24.0, 32.0, false),
+            (32.0, 32.0, true),
         ]
     };
     if animation.kind != 2 {
         let elm_x = if animation.kind == 1 { 16.0 } else { 0.0 };
         let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
-        for (source_x, source_y) in [(24.0, 18.0), (24.0, 22.0)] {
+        for (source_x, source_y) in [(26.0, 16.0), (30.0, 16.0)] {
             let (x, y) = battle_hud_tile_origin(
-                (source_x + elm_x) / SOURCE_TILE_SIZE as f32,
-                (source_y + elm_y) / SOURCE_TILE_SIZE as f32,
+                (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
+                (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
             );
             commands.spawn((
                 SpriteBundle {
@@ -6133,6 +6333,7 @@ fn spawn_visible_heal_machine(
                     ..default()
                 },
                 FieldCommandMarker,
+                HealMachineWorldSprite,
             ));
         }
     }
@@ -6140,8 +6341,8 @@ fn spawn_visible_heal_machine(
     let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
     for &(source_x, source_y, flip_x) in positions.iter().take(visible_count.min(positions.len())) {
         let (x, y) = battle_hud_tile_origin(
-            (source_x + elm_x) / SOURCE_TILE_SIZE as f32,
-            (source_y + elm_y) / SOURCE_TILE_SIZE as f32,
+            (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
+            (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
         );
         commands.spawn((
             SpriteBundle {
@@ -6155,6 +6356,7 @@ fn spawn_visible_heal_machine(
                 ..default()
             },
             FieldCommandMarker,
+                HealMachineWorldSprite,
         ));
     }
     Ok(())
@@ -6502,6 +6704,53 @@ const SHOP_MONEY_WINDOW_LEFT: f32 = 11.0;
 const SHOP_MONEY_WINDOW_WIDTH: f32 = 9.0;
 const SHOP_MONEY_TEXT_LEFT: f32 = SHOP_MONEY_WINDOW_LEFT + 1.0;
 
+fn spawn_mart_window(
+    commands: &mut Commands,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    tile_x: f32,
+    tile_y: f32,
+    width_tiles: f32,
+    height_tiles: f32,
+    z: f32,
+) {
+    let (center_x, center_y) = battle_window_center(tile_x, tile_y, width_tiles, height_tiles);
+    if width_tiles > 2.0 && height_tiles > 2.0 {
+        commands.spawn((
+            SpriteBundle {
+                sprite: Sprite {
+                    color: Color::WHITE,
+                    custom_size: Some(Vec2::new(
+                        TILE_SIZE * (width_tiles - 2.0),
+                        TILE_SIZE * (height_tiles - 2.0),
+                    )),
+                    ..default()
+                },
+                transform: Transform::from_xyz(center_x, center_y, z),
+                ..default()
+            },
+            SceneDialogMarker,
+        ));
+    }
+    if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
+        let width = width_tiles.round().max(0.0) as usize;
+        let height = height_tiles.round().max(0.0) as usize;
+        if width >= 2 && height >= 2 {
+            spawn_scene_dialog_window_frame_tiles(
+                commands,
+                frame,
+                tile_x,
+                tile_y,
+                width,
+                height,
+                z + 0.05,
+            );
+            return;
+        }
+    }
+}
+
 fn spawn_field_shop_screen(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -6517,7 +6766,7 @@ fn spawn_field_shop_screen(
         Some("Welcome! How may I\nhelp you?")
     };
     if let Some(notice) = shop_notice {
-        spawn_battle_window(
+        spawn_mart_window(
             commands,
             rendered_art,
             asset_root,
@@ -6563,7 +6812,7 @@ fn spawn_field_shop_screen(
         return Ok(());
     }
     if let Some(cursor) = runtime_shell.shop_top_cursor.as_ref() {
-        spawn_battle_window(
+        spawn_mart_window(
             commands,
             rendered_art,
             asset_root,
@@ -6574,7 +6823,7 @@ fn spawn_field_shop_screen(
             9.0,
             4.1,
         );
-        spawn_battle_window(
+        spawn_mart_window(
             commands,
             rendered_art,
             asset_root,
@@ -6600,7 +6849,7 @@ fn spawn_field_shop_screen(
         );
         for (index, option) in ["BUY", "SELL", "QUIT"].iter().enumerate() {
             let (x, y) =
-                battle_hud_tile_origin(SHOP_TOP_MENU_OPTION_LEFT, 1.0 + index as f32 * 2.0);
+                battle_hud_tile_origin(SHOP_TOP_MENU_OPTION_LEFT, 2.0 + index as f32 * 2.0);
             spawn_scene_dialog_bitmap_text(
                 commands,
                 rendered_art,
@@ -6618,7 +6867,11 @@ fn spawn_field_shop_screen(
     let item_ids = if selling {
         sellable_carried_item_ids(snapshot)
     } else {
-        shop.inventory.clone()
+        shop.inventory
+            .iter()
+            .cloned()
+            .chain(std::iter::once("CANCEL".to_string()))
+            .collect()
     };
     let (cursor, surface_id) = if selling {
         (&runtime_shell.sell_cursor, "sell:bag".to_string())
@@ -6632,7 +6885,7 @@ fn spawn_field_shop_screen(
                 item_ids.len()
             )
         })?;
-    spawn_battle_window(
+    spawn_mart_window(
         commands,
         rendered_art,
         asset_root,
@@ -6643,7 +6896,7 @@ fn spawn_field_shop_screen(
         10.0,
         4.1,
     );
-    spawn_battle_window(
+    spawn_mart_window(
         commands,
         rendered_art,
         asset_root,
@@ -6654,7 +6907,7 @@ fn spawn_field_shop_screen(
         3.0,
         4.1,
     );
-    spawn_battle_window(
+    spawn_mart_window(
         commands,
         rendered_art,
         asset_root,
@@ -6693,6 +6946,20 @@ fn spawn_field_shop_screen(
     for (visible_index, item_id) in item_ids.iter().skip(scroll).take(4).enumerate() {
         let index = scroll + visible_index;
         let row = 4.0 + visible_index as f32 * 2.0;
+        if !selling && item_id == "CANCEL" {
+            let (x, y) = battle_hud_tile_origin(2.0, row);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                &format!("{}CANCEL", if selected == index { ">" } else { " " }),
+                x,
+                y,
+                4.2,
+            );
+            continue;
+        }
         let item = snapshot
             .items
             .iter()
@@ -6743,6 +7010,9 @@ fn spawn_field_shop_screen(
     let selected_item_id = item_ids
         .get(selected)
         .context("selected shop item is missing from its inventory")?;
+    if !selling && selected_item_id == "CANCEL" {
+        return Ok(());
+    }
     let description = snapshot
         .items
         .iter()
@@ -6762,7 +7032,74 @@ fn spawn_field_shop_screen(
             quantity.quantity > 0,
             "shop quantity prompt has zero quantity"
         );
-        spawn_battle_window(
+        if let Some(yes) = quantity.confirmation {
+            let total = visible_shop_quantity_total(quantity);
+            spawn_mart_window(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                0.0,
+                12.0,
+                20.0,
+                6.0,
+                4.3,
+            );
+            let name = snapshot
+                .items
+                .iter()
+                .find(|item| item.item_id == quantity.item_id)
+                .context("confirmation item is missing")?
+                .name
+                .as_str();
+            let lines = if quantity.selling {
+                vec!["I can pay you".to_string(), format!("¥{total}.")]
+            } else {
+                vec![
+                    format!("{} {}(S)", quantity.quantity, name),
+                    format!("will be ¥{total}."),
+                ]
+            };
+            for (index, line) in lines.iter().enumerate() {
+                let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
+                spawn_scene_dialog_bitmap_text(
+                    commands,
+                    rendered_art,
+                    asset_root,
+                    images,
+                    line,
+                    x,
+                    y,
+                    4.5,
+                );
+            }
+            spawn_mart_window(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                14.0,
+                7.0,
+                6.0,
+                5.0,
+                4.3,
+            );
+            for (index, label) in ["YES", "NO"].iter().enumerate() {
+                let (x, y) = battle_hud_tile_origin(15.0, 8.0 + index as f32 * 2.0);
+                spawn_scene_dialog_bitmap_text(
+                    commands,
+                    rendered_art,
+                    asset_root,
+                    images,
+                    &format!("{}{label}", if yes == (index == 0) { ">" } else { " " }),
+                    x,
+                    y,
+                    4.5,
+                );
+            }
+            return Ok(());
+        }
+        spawn_mart_window(
             commands,
             rendered_art,
             asset_root,
@@ -6773,7 +7110,7 @@ fn spawn_field_shop_screen(
             3.0,
             4.3,
         );
-        let total = u32::from(quantity.unit_price) * u32::from(quantity.quantity);
+        let total = visible_shop_quantity_total(quantity);
         let (x, y) = battle_hud_tile_origin(8.0, 16.0);
         spawn_scene_dialog_bitmap_text(
             commands,
@@ -6797,127 +7134,32 @@ fn spawn_field_storage_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    let pc_box = snapshot
-        .storage
-        .boxes
-        .iter()
-        .find(|pc_box| pc_box.index == snapshot.storage.current_pc_box)
-        .with_context(|| {
-            format!(
-                "current PC box {} is missing",
-                snapshot.storage.current_pc_box
-            )
-        })?;
-    commit_presented_fullscreen_solid(commands, rendered_art, [212, 232, 245, 255], 4.0, images)?;
-    if runtime_shell.pc_notice.is_some() {
+    let pc_box = visible_storage_box(snapshot, runtime_shell)?;
+    commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 4.0, images)?;
+    let refusal_notice = runtime_shell.pc_transfer_sequence.as_ref().is_some_and(|sequence|
+        matches!(sequence.phase, VisiblePcTransferPhase::RefusalWaitSfx | VisiblePcTransferPhase::RefusalHold));
+    let waiting_for_cry = runtime_shell.pc_transfer_sequence.as_ref()
+        .is_some_and(|sequence| sequence.phase == VisiblePcTransferPhase::SuccessWaitCry);
+    let transfer_success = runtime_shell.pc_transfer_sequence.as_ref()
+        .filter(|sequence| matches!(sequence.phase, VisiblePcTransferPhase::SuccessWaitCry | VisiblePcTransferPhase::SuccessHold))
+        .map(|sequence| sequence.success.as_ref().context("PC transfer is missing its retained presentation"))
+        .transpose()?;
+    let move_save = runtime_shell.bill_pc_move_save.as_ref();
+    let retained_names = if let Some(release) = runtime_shell.pc_release_sequence.as_ref() {
+        Some(&release.retained_names)
+    } else { transfer_success.map(|success| &success.names)
+        .or_else(|| move_save.map(|save| &save.presentation.names)) };
+    let clear_left_info = (runtime_shell.pc_release_sequence.is_some() || transfer_success.is_some()) && !waiting_for_cry;
+    let timed_notice = refusal_notice || clear_left_info;
+    if runtime_shell.pc_notice.is_some() && !timed_notice {
         spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images);
         return Ok(());
     }
-    if let Some(summary) = runtime_shell.bill_pc_box_summary.as_ref() {
-        let summary_box = snapshot
-            .storage
-            .boxes
-            .iter()
-            .find(|entry| entry.index == summary.box_index)
-            .with_context(|| format!("PC summary box {} is missing", summary.box_index))?;
-        let slot = summary_box
-            .slots
-            .iter()
-            .find(|entry| entry.index == summary.box_slot)
-            .with_context(|| {
-                format!(
-                    "PC summary slot {} is missing from box {}",
-                    summary.box_slot, summary.box_index
-                )
-            })?;
-        anyhow::ensure!(
-            (1..=3).contains(&summary.page),
-            "PC summary page {} is outside pages 1 through 3",
-            summary.page
-        );
-        let pokemon = &slot.pokemon;
-        let held_item_label = if let Some(item_id) = pokemon.item.as_deref() {
-            snapshot
-                .items
-                .iter()
-                .find(|item| item.item_id == item_id)
-                .with_context(|| format!("PC summary held item {item_id} is missing"))?
-                .name
-                .replace('_', " ")
-        } else {
-            "NONE".to_string()
-        };
-        for learned in &pokemon.moves {
-            snapshot
-                .moves
-                .iter()
-                .find(|move_data| move_data.move_id == learned.name)
-                .with_context(|| format!("PC summary move metadata {} is missing", learned.name))?;
-        }
-        let mut rows = vec![
-            (1.0, compact_scene_label(&pokemon.nickname, 10)),
-            (
-                2.0,
-                format!(
-                    "No.{:03}  \u{e10a}{:>2}",
-                    pokemon.species.int_id, pokemon.level
-                ),
-            ),
-            (
-                4.0,
-                format!(
-                    "< {}  {}  {} >",
-                    if summary.page == 1 { "[1]" } else { "1" },
-                    if summary.page == 2 { "[2]" } else { "2" },
-                    if summary.page == 3 { "[3]" } else { "3" }
-                ),
-            ),
-        ];
-        match summary.page {
-            1 => rows.extend([
-                (6.0, format!("HP  {:>3}/{:>3}", pokemon.hp, pokemon.max_hp)),
-                (7.0, format!("STATUS  {}", party_status_token(pokemon))),
-                (9.0, format!("EXP POINTS {:>7}", pokemon.experience.max(0))),
-                (11.0, format!("ITEM {held_item_label}")),
-            ]),
-            2 => {
-                if pokemon.moves.is_empty() {
-                    rows.push((7.0, "NO MOVES".to_string()));
-                } else {
-                    for (index, learned) in pokemon.moves.iter().take(4).enumerate() {
-                        let row = 6.0 + index as f32 * 2.0;
-                        rows.push((row, battle_move_display_name(snapshot, &learned.name)));
-                        rows.push((row + 1.0, visible_move_pp_text(snapshot, learned)));
-                    }
-                }
-            }
-            _ => rows.extend([
-                (6.0, format!("OT/{}", pokemon.original_trainer_name)),
-                (7.0, format!("IDNo.{:05}", pokemon.original_trainer_id)),
-                (9.0, format!("ATTACK  {:>3}", pokemon.attack)),
-                (10.0, format!("DEFENSE {:>3}", pokemon.defense)),
-                (11.0, format!("SPCL.ATK{:>3}", pokemon.special_attack)),
-                (12.0, format!("SPCL.DEF{:>3}", pokemon.special_defense)),
-                (13.0, format!("SPEED   {:>3}", pokemon.speed)),
-            ]),
-        }
-        rows.push((16.0, "A NEXT  B BACK".to_string()));
-        for (row, text) in rows {
-            let (x, y) = battle_hud_tile_origin(1.0, row);
-            spawn_scene_dialog_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &compact_scene_label(&text, 18),
-                x,
-                y,
-                4.2,
-            );
-        }
-        return Ok(());
+    if let Some(summary) = runtime_shell.bill_pc_pokemon_summary.as_ref() {
+        let pokemon = visible_pc_summary_pokemon(snapshot, summary.location)?;
+        return spawn_source_stats_screen(commands, snapshot, runtime_shell, &pokemon, summary.page, rendered_art, images, 4.1);
     }
-    let party_move_view = runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open;
+    let party_move_view = runtime_shell.bill_pc_deposit_open || (runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open);
     let entries = if party_move_view {
         snapshot
             .party
@@ -6932,202 +7174,221 @@ fn spawn_field_storage_screen(
             .map(|slot| (slot.index, &slot.pokemon))
             .collect::<Vec<_>>()
     };
-    let option_count = if runtime_shell.bill_pc_move_open {
-        if runtime_shell.bill_pc_move_source.is_some() {
-            entries.len() + 1
-        } else {
-            entries.len().max(1)
-        }
-    } else {
-        entries.len()
-    };
+    let option_count = retained_names.map_or(entries.len(), Vec::len) + 1;
     let surface_id = if party_move_view {
-        pc_move_party_surface_id().to_string()
+        pc_party_surface_id().to_string()
     } else {
         storage_cursor_surface_id(pc_box.index)
     };
+    let displayed_cursor = move_save.map(|save| save.presentation.cursor.clone())
+        .or_else(|| runtime_shell.storage_cursor.clone());
     let selected =
-        strict_readonly_cursor_index(&runtime_shell.storage_cursor, &surface_id, option_count)
+        strict_readonly_cursor_index(&displayed_cursor, &surface_id, option_count)
             .with_context(|| {
                 format!(
                     "PC storage cursor is invalid for box {} with {option_count} entries",
                     pc_box.index
                 )
             })?;
-    for (tile_x, text) in [
-        (
-            1.0,
-            format!(
-                "< {} >",
-                if party_move_view {
-                    "PARTY".to_string()
-                } else {
-                    compact_scene_label(&pc_box.name, 10)
-                }
-            ),
-        ),
-        (
-            14.0,
-            format!(
-                "{:02}/{}",
-                entries.len(),
-                if party_move_view { 6 } else { 20 }
-            ),
-        ),
-    ] {
-        let (x, y) = battle_hud_tile_origin(tile_x, 0.5);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &text,
-            x,
-            y,
-            4.2,
-        );
+    // BillsPC_BoxName, BillsPC_RefreshTextboxes and BillsPC_PlaceString.
+    spawn_battle_window(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        8.0,
+        2.0,
+        12.0,
+        12.0,
+        4.1,
+    );
+    spawn_battle_window(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        8.0,
+        0.0,
+        12.0,
+        3.0,
+        4.1,
+    );
+    spawn_battle_window(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        0.0,
+        15.0,
+        20.0,
+        3.0,
+        4.1,
+    );
+    if runtime_shell.bill_pc_move_open {
+        // BillsPC_MoveMonWOMail_BoxNameAndArrows writes PCMailGFX $5f/$5e.
+        spawn_pc_extra_tile(commands, asset_root, images, 3, 8.0, 1.0)?;
+        spawn_pc_extra_tile(commands, asset_root, images, 2, 19.0, 1.0)?;
     }
-    let scroll = visible_window_start(selected, option_count, 7);
-    for visible_index in 0..7 {
-        let slot_index = scroll + visible_index;
-        if slot_index >= option_count {
-            break;
-        }
-        let row = 2.5 + visible_index as f32 * 1.5;
-        let slot = entries.iter().find(|(index, _)| *index == slot_index);
-        let label = slot
-            .map(|(_, pokemon)| compact_scene_label(&pokemon.nickname, 10))
-            .unwrap_or_else(|| "---".to_string());
-        let level = slot
-            .map(|(_, pokemon)| format!("L{:02}", pokemon.level))
-            .unwrap_or_default();
-        let (x, y) = battle_hud_tile_origin(1.0, row);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!(
-                "{}{:02} {}",
-                if selected == slot_index { ">" } else { " " },
-                slot_index + 1,
-                label
-            ),
-            x,
-            y,
-            4.2,
-        );
-        let (x, y) = battle_hud_tile_origin(15.0, row);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &level,
-            x,
-            y,
-            4.2,
-        );
-    }
-    if runtime_shell.bill_pc_move_save.is_some() {
-        let (x, y) = battle_hud_tile_origin(1.0, 16.0);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            "Saving… Leave ON!",
-            x,
-            y,
-            4.2,
-        );
-        return Ok(());
-    }
-    let action = if runtime_shell.bill_pc_move_open {
-        "A PLACE  B CANCEL"
+    let box_name = if party_move_view {
+        "PARTY <PK><MN>"
     } else {
-        "A WITHDRAW  SELECT RELEASE"
+        &pc_box.name
     };
-    let (x, y) = battle_hud_tile_origin(1.0, 14.0);
+    let (x, y) = battle_hud_tile_origin(10.0, 1.0);
     spawn_scene_dialog_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        &compact_scene_label(action, 18),
+        box_name,
         x,
         y,
         4.2,
     );
+    let scroll = move_save.map_or(runtime_shell.pc_list_scroll, |save| save.presentation.scroll);
+    for visible_index in 0..5 {
+        let slot_index = scroll + visible_index;
+        if slot_index >= option_count {
+            break;
+        }
+        let name = if let Some(names) = retained_names {
+            names.get(slot_index).map(String::as_str)
+        } else {
+            entries.get(slot_index).map(|(_, pokemon)| pokemon.nickname.as_str())
+        };
+        let label = if let Some(name) = name {
+            name
+        } else {
+            "CANCEL"
+        };
+        let (x, y) = battle_hud_tile_origin(9.0, 4.0 + visible_index as f32 * 2.0);
+        spawn_scene_dialog_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            label,
+            x,
+            y,
+            4.2,
+        );
+    }
+    if (retained_names.is_none() || move_save.is_some()) && runtime_shell.bill_pc_pokemon_action_cursor.is_none() && runtime_shell.pending_pc_release.is_none() {
+        spawn_bill_pc_cursor(commands, asset_root, images, selected - scroll, runtime_shell.bill_pc_move_source.is_some() || move_save.is_some())?;
+    }
+    // DepositPokemon/TryWithdrawPokemon/ReleasePKMN_ByePKMN clear the left
+    // information area while the pre-mutation list and submenu remain intact.
+    if !clear_left_info {
+        let info = if waiting_for_cry {
+            Some(transfer_success.context("PC cry is missing its retained Pokémon")?.pokemon.clone())
+        } else if let Some(save) = move_save {
+            Some(save.presentation.pokemon.clone())
+        } else if let Some(source) = runtime_shell.bill_pc_move_source.as_ref() {
+            // PrepInsertCursor redraws only the list and retains PCMonInfo
+            // and the white submenu palette of the picked-up Pokémon.
+            let location = match source.location {
+                crystal_assets::RuntimePokemonStorageLocation::Party { slot } => VisiblePcPokemonLocation::Party(slot),
+                crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot } =>
+                    VisiblePcPokemonLocation::Box { box_index, box_slot: slot },
+            };
+            Some(visible_pc_pokemon_info(visible_pc_pokemon_at(snapshot, location)?))
+        } else {
+            entries.get(selected).map(|(_, pokemon)| visible_pc_pokemon_info(pokemon))
+        };
+        let picture = load_pc_pokemon_picture(asset_root, info.as_ref(),
+            runtime_shell.bill_pc_pokemon_action_cursor.is_some() || runtime_shell.pending_pc_release.is_some()
+                || runtime_shell.bill_pc_move_source.is_some() || move_save.is_some(), images)?;
+        let (x, y) = battle_hud_tile_origin(4.0, 7.0);
+        commands.spawn((SpriteBundle {
+            texture: picture.handle,
+            sprite: Sprite { custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)), ..default() },
+            transform: Transform::from_xyz(x, y, 4.2),
+            ..default()
+        }, FieldCommandMarker));
+        if let Some(pokemon) = info.as_ref() {
+            if !pokemon.is_egg {
+                let level = visible_print_level_text(pokemon.level);
+                let species_name = canonical_species_display_name(&pokemon.species_id);
+                for (row, text) in [(12.0, level.as_str()), (14.0, species_name.as_str())] {
+                    let (x, y) = battle_hud_tile_origin(1.0, row);
+                    spawn_scene_dialog_bitmap_text(
+                        commands,
+                        rendered_art,
+                        asset_root,
+                        images,
+                        text,
+                        x,
+                        y,
+                        4.2,
+                    );
+                }
+                if let Some(item) = pokemon.held_item.as_deref() {
+                    spawn_pc_extra_tile(commands, asset_root, images,
+                        if crate::core::models::item::is_mail_item_id(item) { 0 } else { 1 },
+                        7.0, 12.0)?;
+                }
+                let gender = pokemon.gender.map(|gender| gender.to_string()).unwrap_or_default();
+                let (x, y) = battle_hud_tile_origin(5.0, 12.0);
+                spawn_scene_dialog_bitmap_text(
+                    commands,
+                    rendered_art,
+                    asset_root,
+                    images,
+                    &gender,
+                    x,
+                    y,
+                    4.2,
+                );
+            }
+        }
+    }
+    let prompt_id = if runtime_shell.bill_pc_move_source.is_some() {
+        "PCString_MoveToWhere"
+    } else if runtime_shell.pending_pc_release.is_some() {
+        "PCString_ReleasePKMN"
+    } else if runtime_shell.bill_pc_pokemon_action_cursor.is_some() {
+        "PCString_WhatsUp"
+    } else {
+        "PCString_ChooseaPKMN"
+    };
+    let prompt = if timed_notice {
+        runtime_shell.pc_notice.as_deref().context("PC timed message is missing its notice")?
+    } else if runtime_shell.bill_pc_move_save.is_some() {
+        "Saving… Leave ON!"
+    } else {
+        snapshot.presentation.pc_strings.get(prompt_id)
+            .with_context(|| format!("PC presentation is missing {prompt_id}"))?
+    };
     let (x, y) = battle_hud_tile_origin(1.0, 16.0);
     spawn_scene_dialog_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        &format!("PARTY {:02}/6", snapshot.storage.party_count),
+        prompt,
         x,
         y,
         4.2,
     );
-    if runtime_shell.pending_pc_release.is_some() {
+    if let Some(cursor) = runtime_shell.bill_pc_pokemon_action_cursor.as_ref() {
         spawn_battle_window(
             commands,
             rendered_art,
             asset_root,
             images,
-            1.0,
+            9.0,
+            4.0,
+            11.0,
             10.0,
-            18.0,
-            8.0,
             4.5,
         );
-        let selected =
-            strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "pc:release-confirm", 2)
-                .context("PC release confirmation cursor is invalid")?;
-        let (x, y) = battle_hud_tile_origin(2.0, 11.0);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            "Release <PK><MN>?",
-            x,
-            y,
-            4.8,
-        );
-        for (index, label) in ["YES", "NO"].iter().enumerate() {
-            let (x, y) = battle_hud_tile_origin(12.0, 13.0 + index as f32 * 2.0);
-            spawn_scene_dialog_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &format!("{}{}", if selected == index { ">" } else { " " }, label),
-                x,
-                y,
-                4.8,
-            );
-        }
-    } else if let Some(cursor) = runtime_shell.bill_pc_pokemon_action_cursor.as_ref() {
-        spawn_battle_window(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            10.0,
-            8.0,
-            9.0,
-            9.0,
-            4.5,
-        );
-        let selected = strict_readonly_cursor_index(&Some(cursor.clone()), "pc:pokemon-actions", 4)
+        let selected = strict_readonly_cursor_index(&Some(cursor.clone()), "pc:pokemon-actions", visible_pc_pokemon_action_labels(runtime_shell).len())
             .context("PC Pokémon action cursor is invalid")?;
-        for (index, label) in ["WITHDRAW", "STATS", "RELEASE", "CANCEL"]
+        for (index, label) in visible_pc_pokemon_action_labels(runtime_shell)
             .iter()
             .enumerate()
         {
-            let (x, y) = battle_hud_tile_origin(11.0, 9.0 + index as f32 * 2.0);
+            let (x, y) = battle_hud_tile_origin(10.0, 6.0 + index as f32 * 2.0);
             spawn_scene_dialog_bitmap_text(
                 commands,
                 rendered_art,
@@ -7139,6 +7400,300 @@ fn spawn_field_storage_screen(
                 4.8,
             );
         }
+    }
+    if runtime_shell.pending_pc_release.is_some() {
+        // BillsPC_Withdraw.release retains its submenu under PlaceYesNoBox
+        // at (14, 11); the release question belongs to the bottom PC line.
+        spawn_battle_window(commands, rendered_art, asset_root, images,
+            14.0, 11.0, 6.0, 5.0, 4.9);
+        let selected = strict_readonly_cursor_index(
+            &runtime_shell.yes_no_cursor, "pc:release-confirm", 2,
+        ).context("PC release confirmation cursor is invalid")?;
+        for (index, label) in ["YES", "NO"].iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(15.0, 12.0 + index as f32 * 2.0);
+            spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
+                &format!("{}{}", if selected == index { ">" } else { " " }, label),
+                x, y, 5.0);
+        }
+    }
+    Ok(())
+}
+
+
+fn spawn_pc_extra_tile(
+    commands: &mut Commands,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    tile_index: usize,
+    tile_x: f32,
+    tile_y: f32,
+) -> Result<()> {
+    let bytes = crate::read_runtime_asset(asset_root.runtime_assets().join("gfx/pc/pc_mail.2bpp"))?;
+    anyhow::ensure!(bytes.len() == 64, "PCMailGFX must contain four tiles");
+    let predef = crate::read_runtime_asset_to_string(
+        asset_root.runtime_assets().join("gfx/sgb/predef.pal"),
+    )?;
+    let line = predef
+        .lines()
+        .find(|line| {
+            line.split_once(';')
+                .is_some_and(|(_, name)| name.trim() == "PREDEFPAL_POKEDEX")
+        })
+        .context("BillsPC background palette PREDEFPAL_POKEDEX is missing")?;
+    let palettes = parse_palette_file(line, None)?;
+    let palette = palettes
+        .first()
+        .context("invalid BillsPC background palette")?;
+    anyhow::ensure!(tile_index < 4, "PCMailGFX tile {tile_index} is out of range");
+    let tile = &bytes[tile_index * 16..(tile_index + 1) * 16];
+    let mut data = Vec::with_capacity(256);
+    for y in 0..8 {
+        for x in 0..8 {
+            let shift = 7 - x;
+            let index =
+                usize::from(((tile[y * 2] >> shift) & 1) | (((tile[y * 2 + 1] >> shift) & 1) << 1));
+            data.extend_from_slice(&palette[index]);
+            data.push(255);
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 8,
+            height: 8,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        data,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
+    commands.spawn((
+        SpriteBundle {
+            texture: images.add(image),
+            sprite: Sprite {
+                custom_size: Some(Vec2::splat(TILE_SIZE)),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, 4.2),
+            ..default()
+        },
+        FieldCommandMarker,
+    ));
+    Ok(())
+}
+
+fn visible_pc_pokemon_info(pokemon: &crate::core::models::pokemon::Pokemon) -> VisiblePcPokemonInfo {
+    let gender = match pokemon.species.gender_ratio {
+        255 => None,
+        254 => Some('♀'),
+        0 => Some('♂'),
+        ratio if pokemon.dvs.attack.saturating_mul(17) < ratio => Some('♀'),
+        _ => Some('♂'),
+    };
+    VisiblePcPokemonInfo {
+        species_id: pokemon.species.id.clone(),
+        frontpic_asset_id: if pokemon.is_egg {
+            "egg".into()
+        } else if pokemon.species.id == "UNOWN" {
+            // BillsPC and Stats both call GetUnownLetter before GetFrontpic.
+            format!("unown_{}", char::from(b'a' + pokemon.dvs.unown_letter() - 1))
+        } else {
+            normalize_pokemon_asset_id(&pokemon.species.id)
+        },
+        level: pokemon.level,
+        is_egg: pokemon.is_egg,
+        is_shiny: !pokemon.is_egg && visible_pokemon_is_shiny(pokemon),
+        gender,
+        held_item: pokemon.item.clone(),
+    }
+}
+
+fn load_pc_pokemon_picture(
+    asset_root: &AssetRoot,
+    pokemon: Option<&VisiblePcPokemonInfo>,
+    use_species_palette: bool,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
+    let orange = parse_palette_file(
+        &crate::read_runtime_asset_to_string(
+            asset_root.runtime_assets().join("gfx/pc/orange.pal"),
+        )?,
+        None,
+    )?;
+    let orange = *orange
+        .first()
+        .context("BillsPC orange palette is missing")?;
+    let mut palette = orange;
+    let mut source_picture = None;
+    if let Some(pokemon) = pokemon {
+        let species = normalize_pokemon_asset_id(if pokemon.is_egg {
+            "EGG"
+        } else {
+            &pokemon.species_id
+        });
+        let source = crate::open_runtime_image(pokemon_asset_path(
+            asset_root,
+            &pokemon.frontpic_asset_id,
+            PokemonSpriteSide::Front,
+            "png",
+        ))?
+        .to_rgba8();
+        let size = source.width() as usize;
+        anyhow::ensure!(
+            matches!(size, 40 | 48 | 56) && source.height() >= size as u32,
+            "BillsPC frontpic {species} is not a source 5x5, 6x6 or 7x7 picture"
+        );
+        let source_palette =
+            load_pokemon_palette(asset_root, &pokemon.frontpic_asset_id, PokemonSpriteSide::Front, false)?;
+        if use_species_palette {
+            palette = load_pokemon_palette(
+                asset_root,
+                &species,
+                PokemonSpriteSide::Front,
+                pokemon.is_shiny,
+            )?;
+        }
+        source_picture = Some((source, source_palette, size));
+    }
+    let mut data = vec![0; 56 * 56 * 4];
+    for pixel in data.chunks_exact_mut(4) {
+        pixel[..3].copy_from_slice(&palette[0]);
+        pixel[3] = 255;
+    }
+    if let Some((source, source_palette, size)) = source_picture {
+        // PadFrontpic is column-major: 5x5 gets one blank column on each
+        // side and two above; 6x6 gets one column left and one row above.
+        let left = if size < 56 { 8 } else { 0 };
+        let top = 56 - size;
+        for y in 0..size {
+            for x in 0..size {
+                let pixel = source.get_pixel(x as u32, y as u32).0;
+                let index = if pixel[3] == 0 {
+                    0
+                } else {
+                    source_palette
+                        .iter()
+                        .position(|rgb| *rgb == [pixel[0], pixel[1], pixel[2]])
+                        .context("BillsPC frontpic pixel is absent from its source palette")?
+                };
+                let offset = ((top + y) * 56 + left + x) * 4;
+                data[offset..offset + 3].copy_from_slice(&palette[index]);
+            }
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 56,
+            height: 56,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        data,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    Ok(SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::splat(56.0),
+    })
+}
+
+fn spawn_bill_pc_cursor(
+    commands: &mut Commands,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    row: usize,
+    inserting: bool,
+) -> Result<()> {
+    anyhow::ensure!(
+        row < 5,
+        "PC selection cursor row {row} exceeds its five-row list"
+    );
+    let source = crate::open_runtime_image(asset_root.runtime_assets().join("gfx/pc/pc.png"))
+        .context("decode BillsPC cursor OAM tiles")?
+        .to_rgba8();
+    anyhow::ensure!(
+        source.width() == 16 && source.height() == 32,
+        "invalid PC cursor tile sheet"
+    );
+    let mut tiles = Vec::new();
+    for tile in [0, 1, 6, 7] {
+        let mut pixels = Vec::with_capacity(8 * 8 * 4);
+        for y in 0..8 {
+            for x in 0..8 {
+                let pixel = source.get_pixel((tile % 2) * 8 + x, (tile / 2) * 8 + y);
+                anyhow::ensure!(
+                    pixel[0] == pixel[1] && pixel[1] == pixel[2] && matches!(pixel[0], 0 | 255),
+                    "PC cursor tile is not monochrome"
+                );
+                pixels.extend_from_slice(&[
+                    pixel[0],
+                    pixel[1],
+                    pixel[2],
+                    if pixel[0] == 255 { 0 } else { 255 },
+                ]);
+            }
+        }
+        let mut image = Image::new(
+            Extent3d {
+                width: 8,
+                height: 8,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            pixels,
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::default(),
+        );
+        image.sampler = ImageSampler::nearest();
+        tiles.push(images.add(image));
+    }
+    // BillsPC_UpdateSelectionCursor.OAM; coordinates include the hardware
+    // OAM origin (8,16), removed before placing the screen-space sprites.
+    let mut objects = Vec::new();
+    if inserting {
+        // BillsPC_UpdateInsertCursor.OAM uses tiles $06/$07 as the ends.
+        objects.push((10 * 8, 4 * 8 + 7, 2, false, false));
+        for x in 11..=18 {
+            objects.push((x * 8, 5 * 8 + 3, 0, false, true));
+        }
+        objects.push((19 * 8, 4 * 8 + 7, 3, false, false));
+    } else {
+        for x in 10..=18 {
+            objects.push((x * 8, 4 * 8 + 6, 0, false, false));
+            objects.push((x * 8, 7 * 8 + 1, 0, false, true));
+        }
+        objects.extend([
+            (18 * 8 + 7, 4 * 8 + 6, 0, false, false),
+            (18 * 8 + 7, 7 * 8 + 1, 0, false, true),
+            (9 * 8 + 6, 5 * 8 + 6, 1, false, false),
+            (9 * 8 + 6, 6 * 8 + 1, 1, false, true),
+            (19 * 8 + 1, 5 * 8 + 6, 1, true, false),
+            (19 * 8 + 1, 6 * 8 + 1, 1, true, true),
+        ]);
+    }
+    for (x, y, tile, flip_x, flip_y) in objects {
+        let (x, y) = battle_hud_tile_origin(
+            (x as f32 - 8.0) / 8.0,
+            (y as f32 - 16.0 + row as f32 * 16.0) / 8.0,
+        );
+        commands.spawn((
+            SpriteBundle {
+                texture: tiles[tile].clone(),
+                sprite: Sprite {
+                    custom_size: Some(Vec2::splat(TILE_SIZE)),
+                    flip_x,
+                    flip_y,
+                    ..default()
+                },
+                transform: Transform::from_xyz(x, y, 4.3),
+                ..default()
+            },
+            FieldCommandMarker,
+        ));
     }
     Ok(())
 }
@@ -7203,6 +7758,172 @@ fn spawn_pc_notice(
     }
 }
 
+// LoadMapPals / LoadSpecialMapPalette retain BG palette 7 for TextboxPalette.
+fn source_map_text_palette(
+    snapshot: &RuntimeShellSnapshot,
+    asset_root: &AssetRoot,
+) -> Result<Palette> {
+    let map = snapshot
+        .maps
+        .iter()
+        .find(|map| map.map_name == snapshot.overworld.map_name)
+        .context("PC map is missing")?;
+    let metadata = map
+        .metadata
+        .as_ref()
+        .context("PC map metadata is missing")?;
+    let environment = metadata.environment.to_ascii_uppercase();
+    let tileset = map.attributes.tileset_name.to_ascii_lowercase();
+    let tileset = tileset.strip_prefix("tileset_").unwrap_or(&tileset);
+    let special = match tileset {
+        "pokecom_center" | "battle_tower_inside" | "house" | "radio_tower" => Some(tileset),
+        "ice_path" if environment != "INDOOR" => Some("ice_path"),
+        "mansion" => Some("mansion_1"),
+        _ => None,
+    };
+    let (path, index) = if let Some(special) = special {
+        (format!("gfx/tilesets/{special}.pal"), 7)
+    } else {
+        let time = match metadata.phone_service & 0x0f {
+            0 => snapshot.progression.time.time_of_day.as_key(),
+            1 => "day",
+            2 => "nite",
+            3 => "morn",
+            4 if snapshot
+                .progression
+                .active_engine_flags
+                .contains("STATUSFLAGS_FLASH") =>
+            {
+                "nite"
+            }
+            4 => "dark",
+            value => anyhow::bail!("invalid source map palette selector {value}"),
+        };
+        let group = match time {
+            "morn" | "morning" => 0,
+            "day" => 1,
+            "nite" | "night" => 2,
+            "dark" => 3,
+            value => anyhow::bail!("invalid map palette time {value}"),
+        };
+        let index = match environment.as_str() {
+            "INDOOR" | "GATE" => 7,
+            "TOWN" | "ROUTE" | "CAVE" | "DUNGEON" | "ENVIRONMENT_5" => group * 8 + 7,
+            value => anyhow::bail!("invalid map palette environment {value}"),
+        };
+        ("gfx/tilesets/bg_tiles.pal".to_owned(), index)
+    };
+    let palettes = parse_palette_file(
+        &crate::read_runtime_asset_to_string(asset_root.runtime_assets().join(path))?,
+        None,
+    )?;
+    palettes
+        .get(index)
+        .copied()
+        .context("source map text palette is missing")
+}
+
+fn spawn_pc_item_palette_window(
+    commands: &mut Commands,
+    frame: &WindowFrameArt,
+    background: [u8; 3],
+    tile_x: f32,
+    tile_y: f32,
+    width: usize,
+    height: usize,
+    z: f32,
+) {
+    let (x, y) = battle_window_center(tile_x, tile_y, width as f32, height as f32);
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::srgb_u8(background[0], background[1], background[2]),
+                custom_size: Some(Vec2::new(
+                    TILE_SIZE * width as f32,
+                    TILE_SIZE * height as f32,
+                )),
+                ..default()
+            },
+            transform: Transform::from_xyz(x, y, z),
+            ..default()
+        },
+        BattleCommandMarker,
+    ));
+    spawn_battle_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
+}
+
+fn spawn_pc_item_notice(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    palette: Palette,
+) -> Result<()> {
+    if runtime_shell.pc_notice.is_none() {
+        return Ok(());
+    }
+    let frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+    let key = (frame_id, palette);
+    if !rendered_art.pc_window_frame_cache.contains_key(&key) {
+        let frame = load_window_frame_art_with_palette(asset_root, frame_id, &palette, images)?;
+        rendered_art.pc_window_frame_cache.insert(key, frame);
+    }
+    if let Some(notice) = runtime_shell.pc_notice.as_deref() {
+        let text = visible_revealed_shell_notice_text(runtime_shell, notice);
+        spawn_pc_item_palette_window(
+            commands,
+            &rendered_art.pc_window_frame_cache[&key],
+            palette[0],
+            0.0,
+            12.0,
+            20,
+            6,
+            4.5,
+        );
+        for (index, line) in text.split('\n').enumerate() {
+            let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                line,
+                x,
+                y,
+                4.8,
+            );
+        }
+        if let Some(quantity) = runtime_shell.pc_item_quantity.as_ref()
+            && visible_field_text_reveal_is_complete_for_text(runtime_shell, notice)
+        {
+            spawn_pc_item_palette_window(
+                commands,
+                &rendered_art.pc_window_frame_cache[&key],
+                palette[0],
+                15.0,
+                9.0,
+                5,
+                3,
+                4.5,
+            );
+            let (x, y) = battle_hud_tile_origin(16.0, 10.0);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                &format!("×{:02}", quantity.quantity),
+                x,
+                y,
+                4.8,
+            );
+        }
+    }
+    Ok(())
+}
+
 fn spawn_field_pc_item_screen(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -7211,78 +7932,144 @@ fn spawn_field_pc_item_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    commit_presented_fullscreen_solid(commands, rendered_art, [230, 237, 214, 255], 4.0, images)?;
-    let items = snapshot
-        .bag
-        .pc_items
-        .iter()
-        .filter(|item| item.quantity > 0)
-        .collect::<Vec<_>>();
+    let palette = source_map_text_palette(snapshot, asset_root)?;
+    let [r, g, b] = palette[0];
+    commit_presented_fullscreen_solid(commands, rendered_art, [r, g, b, 255], 4.0, images)?;
+    let frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+    rendered_art.selected_window_frame_id = frame_id;
+    let key = (frame_id, palette);
+    if !rendered_art.pc_window_frame_cache.contains_key(&key) {
+        let frame = load_window_frame_art_with_palette(asset_root, frame_id, &palette, images)?;
+        rendered_art.pc_window_frame_cache.insert(key, frame);
+    }
+    let frame = &rendered_art.pc_window_frame_cache[&key];
+    // ClearPCItemScreen draws two Textboxes over the inherited BG palette.
+    spawn_battle_window_frame_tiles(commands, frame, 0.0, 0.0, 20, 12, 4.15);
+    spawn_battle_window_frame_tiles(commands, frame, 0.0, 12.0, 20, 6, 4.15);
+    let items = &snapshot.bag.pc_items;
     let selected =
-        strict_readonly_cursor_index(&runtime_shell.pc_item_cursor, "pc:items", items.len())
-            .with_context(|| format!("PC item cursor is invalid for {} items", items.len()))?;
-    let (x, y) = battle_hud_tile_origin(1.0, 0.5);
-    spawn_scene_dialog_bitmap_text(
-        commands,
-        rendered_art,
-        asset_root,
-        images,
-        &format!("ITEM STORAGE {:02}", items.len()),
-        x,
-        y,
-        4.2,
+        strict_readonly_cursor_index(&runtime_shell.pc_item_cursor, "pc:items", items.len() + 1)
+            .context("PC item cursor is invalid")?;
+    let scroll = runtime_shell.pc_item_scroll;
+    anyhow::ensure!(
+        scroll <= selected && selected < scroll + 4,
+        "PC item cursor lies outside its source scrolling window"
     );
-    let scroll = visible_window_start(selected, items.len(), 7);
-    for (visible_index, item) in items.iter().skip(scroll).take(7).enumerate() {
+    for visible_index in 0..4 {
         let index = scroll + visible_index;
-        let row = 2.5 + visible_index as f32 * 1.5;
+        if index > items.len() {
+            break;
+        }
+        let row = 2.0 + visible_index as f32 * 2.0;
+        if selected == index || runtime_shell.pc_item_switch_origin == Some(index) {
+            let (x, y) = battle_hud_tile_origin(4.0, row);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                if selected == index && runtime_shell.pc_notice.is_none() {
+                    "▶"
+                } else {
+                    "▷"
+                },
+                x,
+                y,
+                4.2,
+            );
+        }
+        let (x, y) = battle_hud_tile_origin(5.0, row);
+        if index == items.len() {
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                "CANCEL",
+                x,
+                y,
+                4.2,
+            );
+            break;
+        }
+        let item = &items[index];
         let catalog = snapshot
             .items
             .iter()
             .find(|catalog| catalog.item_id == item.item_id)
             .with_context(|| format!("PC item {} is missing", item.item_id))?;
-        let (x, y) = battle_hud_tile_origin(1.0, row);
         spawn_scene_dialog_bitmap_text(
             commands,
             rendered_art,
             asset_root,
             images,
-            &format!(
-                "{}{}",
-                if selected == index { ">" } else { " " },
-                compact_scene_label(&catalog.name.replace('_', " "), 11)
-            ),
+            &catalog.name,
             x,
             y,
             4.2,
         );
-        let (x, y) = battle_hud_tile_origin(16.0, row);
-        spawn_scene_dialog_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!("×{:02}", item.quantity.min(99)),
-            x,
-            y,
-            4.2,
-        );
+        // PlaceMenuItemQuantity skips protected items and writes on the
+        // following line, using spaces rather than zero padding.
+        if !catalog
+            .property
+            .split('|')
+            .any(|flag| flag.trim() == "CANT_TOSS")
+        {
+            let (x, y) = battle_hud_tile_origin(14.0, row + 1.0);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                &format!("×{:2}", item.quantity),
+                x,
+                y,
+                4.2,
+            );
+        }
     }
-    let selected_item = items.get(selected).context("selected PC item is missing")?;
-    let description = snapshot
-        .items
-        .iter()
-        .find(|catalog| catalog.item_id == selected_item.item_id)
-        .with_context(|| format!("selected PC item {} is missing", selected_item.item_id))?
-        .description
-        .as_str();
-    for (index, line) in wrap_boot_text_for_box(description, 18, 3)
-        .iter()
-        .enumerate()
-    {
-        let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32);
-        spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.2);
+    for (visible, row, glyph) in [
+        (scroll > 0, 1.0, "▲"),
+        (scroll + 4 <= items.len(), 10.0, "▼"),
+    ] {
+        if visible {
+            let (x, y) = battle_hud_tile_origin(18.0, row);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                glyph,
+                x,
+                y,
+                4.2,
+            );
+        }
     }
+    if let Some(item) = items.get(selected) {
+        let catalog = snapshot
+            .items
+            .iter()
+            .find(|catalog| catalog.item_id == item.item_id)
+            .with_context(|| format!("selected PC item {} is missing", item.item_id))?;
+        for (index, line) in wrap_boot_text_for_box(&catalog.description, 18, 2)
+            .iter()
+            .enumerate()
+        {
+            let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                line,
+                x,
+                y,
+                4.2,
+            );
+        }
+    }
+    spawn_pc_item_notice(commands, snapshot, runtime_shell, rendered_art, asset_root, images, palette)?;
     Ok(())
 }
 
@@ -7436,7 +8223,7 @@ fn spawn_scene_dialog_text_content(
     } else if field_dialogue_prompt_arrow_visible(snapshot, runtime_shell) {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_LEFT_TILE + FIELD_TEXT_BOX_WIDTH_TILES - 2.0,
-            FIELD_TEXT_BOX_TOP_TILE + FIELD_TEXT_BOX_HEIGHT_TILES - 2.0,
+            FIELD_TEXT_BOX_TOP_TILE + FIELD_TEXT_BOX_HEIGHT_TILES - 1.0,
         );
         spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, "▼", x, y, 4.2);
     }
@@ -7459,6 +8246,16 @@ fn field_dialogue_prompt_arrow_visible(
             && visible_field_text_reveal_is_complete(reveal, &pages[page_index])
             && (page_index + 1 < pages.len()
                 || visible_field_notice_uses_prompt_arrow(runtime_shell))
+            && visible_vblank_counter_bit4(runtime_shell);
+    }
+    // Paragraph and _ContText wait inside PlaceString, before writetext
+    // returns and the script can publish its final promptbutton boundary.
+    if let Some(pages) = visible_field_dialog_pages(snapshot, runtime_shell)
+        && let Some(reveal) = runtime_shell.field_text_reveal.as_ref()
+        && reveal.text == pages.join("\u{1e}")
+        && reveal.page_index + 1 < pages.len()
+    {
+        return visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
             && visible_vblank_counter_bit4(runtime_shell);
     }
     snapshot.ui.pending_text_wait.is_some()
@@ -8934,27 +9731,131 @@ fn spawn_visible_name_choice_screen(
         }
         return Ok(());
     }
-    // The new-game preset-name menu is a complete LCD scene. Its 12x14
-    // window intentionally occupies only the left half, but the remainder is
-    // blank background—not the already initialized bedroom. Keep capture
-    // nickname YES/NO prompts as battle overlays via the branch above.
-    commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 5.8, images)?;
-    const LEFT_TILE: f32 = 0.0;
-    const TOP_TILE: f32 = 0.0;
-    // NEW NAME occupies eight glyph cells beginning at column two. Twelve
-    // tiles leave its final glyph clear of the right frame, while fourteen
-    // tiles tightly contain the five double-spaced choices.
-    const WIDTH_TILES: usize = 12;
-    const HEIGHT_TILES: usize = 14;
+    let snapshot = runtime_shell.shell.snapshot()?;
+    let phase = choice
+        .player_phase
+        .context("new-game name choices have no source presentation phase")?;
+    if phase == VisiblePlayerNameChoicePhase::CustomFadeOut {
+        let menu = choice
+            .player_menu
+            .as_ref()
+            .context("custom player-name fade has no source definition")?;
+        spawn_player_name_custom_fade_overlay(
+            commands,
+            f32::from(
+                choice
+                    .motion_step
+                    .checked_div(menu.custom_fade_out_frames_per_step)
+                    .unwrap_or(0)
+                    .saturating_add(1)
+                    .min(menu.custom_fade_out_steps),
+            ) / f32::from(menu.custom_fade_out_steps),
+        );
+        return Ok(());
+    }
+    let background_key = NameChoiceArtKey {
+        player_gender: snapshot.trainer.player_gender,
+        phase,
+        motion_step: if matches!(
+            phase,
+            VisiblePlayerNameChoicePhase::CustomBgMapWait
+                | VisiblePlayerNameChoicePhase::CustomFadeIn
+        ) {
+            0
+        } else {
+            choice.motion_step
+        },
+    };
+    if !rendered_art.name_choice_cache.contains_key(&background_key)
+        && !rendered_art.name_choice_errors.contains_key(&background_key)
+    {
+        match load_visible_player_name_choice_background(
+            runtime_shell,
+            rendered_art,
+            images,
+            choice,
+        ) {
+            Ok(frame) => {
+                rendered_art.name_choice_errors.remove(&background_key);
+                rendered_art.name_choice_cache.insert(background_key.clone(), frame);
+            }
+            Err(error) => {
+                rendered_art
+                    .name_choice_errors
+                    .insert(background_key.clone(), error.to_string());
+            }
+        }
+    }
+    let background = rendered_art
+        .name_choice_cache
+        .get(&background_key)
+        .cloned()
+        .with_context(|| {
+            format!(
+                "required player-name background could not be rendered: {}",
+                rendered_art
+                    .name_choice_errors
+                    .get(&background_key)
+                    .map(String::as_str)
+                    .unwrap_or("unknown error")
+            )
+        })?;
+    commit_presented_fullscreen_frame(
+        commands,
+        rendered_art,
+        &background,
+        PresentedFullscreenFrameSource::Cached,
+        5.8,
+        images,
+    )?;
+    match phase {
+        VisiblePlayerNameChoicePhase::CustomBgMapWait => {
+            spawn_player_name_custom_fade_overlay(commands, 1.0);
+            return Ok(());
+        }
+        VisiblePlayerNameChoicePhase::CustomFadeIn => {
+            let menu = choice
+                .player_menu
+                .as_ref()
+                .context("custom player-name fade has no source definition")?;
+            spawn_player_name_custom_fade_overlay(
+                commands,
+                1.0 - f32::from(
+                    choice
+                        .motion_step
+                        .checked_div(menu.custom_fade_in_frames_per_step)
+                        .unwrap_or(0)
+                        .min(menu.custom_fade_in_steps),
+                ) / f32::from(menu.custom_fade_in_steps),
+            );
+            return Ok(());
+        }
+        _ => {}
+    }
+    if choice.player_phase != Some(VisiblePlayerNameChoicePhase::Menu) {
+        return Ok(());
+    }
+    let menu = choice
+        .player_menu
+        .as_ref()
+        .context("new-game name choices have no source menu definition")?;
+    anyhow::ensure!(
+        menu.left <= menu.right && menu.top <= menu.bottom && menu.right < 20 && menu.bottom < 18,
+        "new-game name menu coordinates are outside the LCD"
+    );
+    let left_tile = menu.left as f32;
+    let top_tile = menu.top as f32;
+    let width_tiles = menu.right - menu.left + 1;
+    let height_tiles = menu.bottom - menu.top + 1;
     let (center_x, center_y) =
-        field_window_center(LEFT_TILE, TOP_TILE, WIDTH_TILES as f32, HEIGHT_TILES as f32);
+        field_window_center(left_tile, top_tile, width_tiles as f32, height_tiles as f32);
     commands.spawn((
         SpriteBundle {
             sprite: Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
-                    WIDTH_TILES as f32 * TILE_SIZE,
-                    HEIGHT_TILES as f32 * TILE_SIZE,
+                    width_tiles as f32 * TILE_SIZE,
+                    height_tiles as f32 * TILE_SIZE,
                 )),
                 ..default()
             },
@@ -8967,25 +9868,46 @@ fn spawn_visible_name_choice_screen(
         spawn_scene_dialog_window_frame_tiles(
             commands,
             frame,
-            LEFT_TILE,
-            TOP_TILE,
-            WIDTH_TILES,
-            HEIGHT_TILES,
+            left_tile,
+            top_tile,
+            width_tiles,
+            height_tiles,
             6.0,
         );
     }
+    // The source tilemap replaces the frame tiles with the menu title.
+    // Bitmap glyphs are transparent, so erase that span before drawing them.
+    let title_width = menu.title.chars().count() as f32;
+    let (title_x, title_y) = field_window_center(
+        left_tile + menu.title_indent as f32,
+        top_tile,
+        title_width,
+        1.0,
+    );
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::WHITE,
+                custom_size: Some(Vec2::new(title_width * TILE_SIZE, TILE_SIZE)),
+                ..default()
+            },
+            transform: Transform::from_xyz(title_x, title_y, 6.05),
+            ..default()
+        },
+        SceneDialogMarker,
+    ));
     spawn_scene_dialog_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        "NAME",
-        battle_hud_tile_origin(1.0, 1.0).0,
-        battle_hud_tile_origin(1.0, 1.0).1,
+        &menu.title,
+        battle_hud_tile_origin(left_tile + menu.title_indent as f32, top_tile).0,
+        battle_hud_tile_origin(left_tile + menu.title_indent as f32, top_tile).1,
         6.1,
     );
     for (index, label) in choice.options.iter().enumerate() {
-        let row_y = 3.0 + index as f32 * 2.0;
+        let row_y = top_tile + 2.0 + index as f32 * 2.0;
         if index == choice.selected {
             spawn_scene_dialog_bitmap_text(
                 commands,
@@ -8993,8 +9915,8 @@ fn spawn_visible_name_choice_screen(
                 asset_root,
                 images,
                 ">",
-                battle_hud_tile_origin(1.0, row_y).0,
-                battle_hud_tile_origin(1.0, row_y).1,
+                battle_hud_tile_origin(left_tile + 1.0, row_y).0,
+                battle_hud_tile_origin(left_tile + 1.0, row_y).1,
                 6.1,
             );
         }
@@ -9004,12 +9926,159 @@ fn spawn_visible_name_choice_screen(
             asset_root,
             images,
             label,
-            battle_hud_tile_origin(2.0, row_y).0,
-            battle_hud_tile_origin(2.0, row_y).1,
+            battle_hud_tile_origin(left_tile + 2.0, row_y).0,
+            battle_hud_tile_origin(left_tile + 2.0, row_y).1,
             6.1,
         );
     }
     Ok(())
+}
+
+fn spawn_player_name_custom_fade_overlay(commands: &mut Commands, alpha: f32) {
+    let (center_x, center_y) = field_window_center(
+        0.0,
+        0.0,
+        NAME_ENTRY_SCREEN_TILE_WIDTH as f32,
+        NAME_ENTRY_SCREEN_TILE_HEIGHT as f32,
+    );
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::srgba(1.0, 1.0, 1.0, alpha.clamp(0.0, 1.0)),
+                custom_size: Some(Vec2::new(
+                    NAME_ENTRY_SCREEN_TILE_WIDTH as f32 * TILE_SIZE,
+                    NAME_ENTRY_SCREEN_TILE_HEIGHT as f32 * TILE_SIZE,
+                )),
+                ..default()
+            },
+            transform: Transform::from_xyz(center_x, center_y, 6.2),
+            ..default()
+        },
+        SceneDialogMarker,
+    ));
+}
+
+fn load_visible_player_name_choice_background(
+    runtime_shell: &BevyRuntimeShell,
+    rendered_art: &mut RenderedTilesetArt,
+    images: &mut Assets<Image>,
+    choice: &VisibleNameChoice,
+) -> Result<SpriteFrame> {
+    let snapshot = runtime_shell.shell.snapshot()?;
+    let assets = runtime_shell.asset_root.runtime_assets();
+    let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
+        .context("decode player-name background font PNG")?
+        .to_rgba8();
+    let textbox_frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
+        .context("decode player-name background textbox frame PNG")?
+        .to_rgba8();
+    let width = TIME_SET_SCREEN_TILE_WIDTH * SOURCE_TILE_SIZE;
+    let height = TIME_SET_SCREEN_TILE_HEIGHT * SOURCE_TILE_SIZE;
+    let mut data = vec![255_u8; width * height * 4];
+    for pixel in data.chunks_exact_mut(4) {
+        pixel[3] = 255;
+    }
+
+    let asset_id = if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
+        "player:kris"
+    } else {
+        "player:chris"
+    };
+    let art_key = IntroArtKey {
+        asset_id: asset_id.to_string(),
+    };
+    if !rendered_art.intro_cache.contains_key(&art_key) {
+        let frame = load_oak_intro_frame(&runtime_shell.asset_root, asset_id, images)
+            .with_context(|| format!("load {asset_id} for NamePlayer"))?;
+        rendered_art.intro_cache.insert(art_key.clone(), frame);
+    }
+    let player_frame = rendered_art
+        .intro_cache
+        .get(&art_key)
+        .context("NamePlayer player portrait cache entry is missing")?;
+    let player_image = images
+        .get(&player_frame.handle)
+        .context("NamePlayer player portrait image is missing")?;
+    let menu = choice
+        .player_menu
+        .as_ref()
+        .context("NamePlayer background has no source menu definition")?;
+    let max_step = menu.motion_steps.saturating_sub(1);
+    let step = choice.motion_step.min(max_step);
+    let tile_x = match choice.player_phase {
+        Some(VisiblePlayerNameChoicePhase::SlideRight | VisiblePlayerNameChoicePhase::Menu) => {
+            6 + usize::from(step)
+        }
+        Some(VisiblePlayerNameChoicePhase::SlideLeft) => 13_usize.saturating_sub(usize::from(step)),
+        Some(VisiblePlayerNameChoicePhase::CustomFadeIn) => menu.custom_player_x,
+        Some(VisiblePlayerNameChoicePhase::CustomBgMapWait) => menu.custom_player_x,
+        Some(VisiblePlayerNameChoicePhase::CustomFadeOut) => {
+            anyhow::bail!("custom fade-out must retain the NamingScreen surface")
+        }
+        None => anyhow::bail!("NamePlayer background has no motion phase"),
+    };
+    if choice.player_phase != Some(VisiblePlayerNameChoicePhase::CustomBgMapWait) {
+        anyhow::ensure!(
+            menu.custom_player_width == 7 && menu.custom_player_height == 7,
+            "NamePlayer custom portrait dimensions differ from DrawIntroPlayerPic"
+        );
+        blit_sprite_frame_image(
+            player_image,
+            tile_x * SOURCE_TILE_SIZE,
+            if choice.player_phase == Some(VisiblePlayerNameChoicePhase::CustomFadeIn) {
+                menu.custom_player_y * SOURCE_TILE_SIZE
+            } else {
+                4 * SOURCE_TILE_SIZE
+            },
+            width,
+            height,
+            &mut data,
+        );
+    }
+    if matches!(
+        choice.player_phase,
+        Some(
+            VisiblePlayerNameChoicePhase::SlideRight
+                | VisiblePlayerNameChoicePhase::Menu
+                | VisiblePlayerNameChoicePhase::SlideLeft
+        )
+    ) {
+        let oak_text6 = visible_presentation_text_pages(
+            runtime_shell.runtime.title_presentation_program(),
+            "OakText6",
+            "PLAYER",
+        )?
+        .into_iter()
+        .last()
+        .context("OakText6 has no visible page")?;
+        draw_time_set_textbox(
+            &font,
+            &textbox_frame,
+            &oak_text6,
+            0,
+            OAK_INTRO_TEXTBOX_Y,
+            TIME_SET_SCREEN_TILE_WIDTH,
+            OAK_INTRO_TEXTBOX_HEIGHT,
+            &mut data,
+        )?;
+    }
+
+    let mut image = Image::new(
+        Extent3d {
+            width: width as u32,
+            height: height as u32,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        data,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    Ok(SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::new(width as f32, height as f32),
+    })
 }
 
 fn spawn_scene_dialog_bitmap_text(
@@ -9126,7 +10195,7 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
     } else if field_dialogue_prompt_arrow_visible(snapshot, runtime_shell) {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_LEFT_TILE + FIELD_TEXT_BOX_WIDTH_TILES - 2.0,
-            FIELD_TEXT_BOX_TOP_TILE + FIELD_TEXT_BOX_HEIGHT_TILES - 2.0,
+            FIELD_TEXT_BOX_TOP_TILE + FIELD_TEXT_BOX_HEIGHT_TILES - 1.0,
         );
         for (glyph_index, frame) in bitmap_text_frames(rendered_art, asset_root, images, "▼")
             .into_iter()
@@ -9732,20 +10801,20 @@ fn bitmap_text_frames(
     let Some(font) = rendered_art.font_cache.as_ref() else {
         return Vec::new();
     };
-    // Keep the visible renderer on the same character stream as the
-    // TypeScript BitmapFont.  In particular, exported ASM text still carries
-    // control tokens such as <PKMN>; letting those fall through to '?' hides
-    // content errors and draws the wrong number of tiles.
-    normalize_bitmap_font_text(text)
+    let frames = normalize_bitmap_font_text(text)
         .chars()
-        .map(|ch| font.glyphs.get(&ch).or_else(|| font.glyphs.get(&'?')))
-        .map(|frame| {
-            frame.cloned().unwrap_or_else(|| SpriteFrame {
-                handle: Handle::default(),
-                size: Vec2::splat(0.0),
-            })
+        .map(|ch| {
+            font.glyphs.get(&ch).cloned()
+                .with_context(|| format!("bitmap font has no source glyph for U+{:04X}", u32::from(ch)))
         })
-        .collect()
+        .collect::<Result<Vec<_>>>();
+    match frames {
+        Ok(frames) => frames,
+        Err(error) => {
+            rendered_art.font_error = Some(error.to_string());
+            Vec::new()
+        }
+    }
 }
 
 fn require_bitmap_font_art(
@@ -9958,6 +11027,47 @@ fn pokepic_frame_for_art<'a>(
             .cloned()
             .unwrap_or_else(|| format!("Pokepic {species_id} is unavailable"))
     })
+}
+
+fn visible_field_text_ends_with_prompt(
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+) -> Result<bool> {
+    let Some(mut text) = snapshot.ui.text.clone() else {
+        return Ok(false);
+    };
+    // Follow the same TX_FAR pointers used to render the actual text body.
+    for _ in 0..8 {
+        let target = text
+            .body
+            .as_ref()
+            .and_then(|body| {
+                body.commands
+                    .iter()
+                    .find(|command| command.command == "text_far")
+                    .and_then(|command| command.args.first())
+            })
+            .cloned();
+        let Some(target) = target else {
+            return Ok(text.body.as_ref().is_some_and(|body| {
+                body.commands
+                    .iter()
+                    .rev()
+                    .find(|command| command.command != "text_end")
+                    .is_some_and(|command| {
+                        matches!(command.command.as_str(), "prompt" | "text_promptbutton")
+                    })
+            }) || text
+                .asm_text
+                .as_ref()
+                .is_some_and(|body| body.trim_end().ends_with("<PROMPT>")));
+        };
+        text = runtime_shell
+            .shell
+            .text_snapshot(&target)
+            .with_context(|| format!("resolve field text prompt through TX_FAR {target}"))?;
+    }
+    anyhow::bail!("field text TX_FAR chain exceeds eight bodies")
 }
 
 fn visible_field_dialog_pages(
@@ -10500,18 +11610,28 @@ fn visible_scene_dialog_entries(
         return Ok(entries);
     }
     if runtime_shell.storage_cursor.is_some() {
-        push_visible_storage_dialog_entries(&mut entries, snapshot, runtime_shell);
-        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
+        push_visible_storage_dialog_entries(&mut entries, snapshot, runtime_shell)?;
+        if runtime_shell.bill_pc_pokemon_summary.is_none() {
+            entries.truncate(SCENE_MENU_VISIBLE_ROWS);
+        }
         return Ok(entries);
     }
     if runtime_shell.pc_item_cursor.is_some() {
-        push_visible_pc_item_dialog_entries(&mut entries, snapshot, runtime_shell);
+        push_visible_pc_item_dialog_entries(&mut entries, snapshot, runtime_shell)?;
         entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
     if let Some(shop) = &snapshot.pending_shop {
         push_visible_shop_dialog_entries(&mut entries, snapshot, runtime_shell, shop)?;
         entries.truncate(SCENE_MENU_VISIBLE_ROWS);
+        return Ok(entries);
+    }
+    if runtime_shell.pending_name_choice.is_some() {
+        push_visible_name_choice_entries(&mut entries, runtime_shell);
+        return Ok(entries);
+    }
+    if runtime_shell.pending_name_input.is_some() {
+        push_visible_name_input_entries(&mut entries, runtime_shell);
         return Ok(entries);
     }
     if let Some(menu) = &snapshot.ui.menu {
@@ -10542,14 +11662,6 @@ fn visible_scene_dialog_entries(
     if runtime_shell.pending_phone_prompt.is_some() {
         push_visible_phone_prompt_entries(&mut entries, runtime_shell)?;
         entries.truncate(SCENE_MENU_VISIBLE_ROWS);
-        return Ok(entries);
-    }
-    if runtime_shell.pending_name_choice.is_some() {
-        push_visible_name_choice_entries(&mut entries, runtime_shell);
-        return Ok(entries);
-    }
-    if runtime_shell.pending_name_input.is_some() {
-        push_visible_name_input_entries(&mut entries, runtime_shell);
         return Ok(entries);
     }
     if runtime_shell.pending_mail_input.is_some() {
@@ -10622,24 +11734,14 @@ fn push_visible_mailbox_dialog_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<()> {
-    entries.push("MAIL BOX".to_string());
-    let selected = strict_readonly_cursor_index(
-        &runtime_shell.mailbox_cursor,
-        "pc:mailbox",
-        snapshot.mailbox.len(),
-    )
-    .context("mailbox is open without a valid nonempty cursor")?;
-    for (index, entry) in snapshot.mailbox.iter().enumerate() {
-        entries.push(compact_scene_label(
-            &format!(
-                "{}{}",
-                if index == selected { ">" } else { " " },
-                entry.mail.author
-            ),
-            SCENE_DIALOG_TEXT_CHARS,
-        ));
+    let (selected, scroll) = visible_mailbox_window(snapshot, runtime_shell)?;
+    for index in scroll..(scroll + 4).min(snapshot.mailbox.len() + 1) {
+        let label = if index == snapshot.mailbox.len() { "CANCEL" }
+            else { snapshot.mailbox[index].mail.author.as_str() };
+        entries.push(format!("{}{}", if index == selected { ">" } else { " " }, label));
     }
     if let Some(cursor) = &runtime_shell.mailbox_action_cursor {
+        anyhow::ensure!(selected < snapshot.mailbox.len(), "mailbox CANCEL has no message submenu");
         let action = strict_readonly_cursor_index(
             &Some(cursor.clone()),
             "pc:mailbox-actions",
@@ -10647,10 +11749,6 @@ fn push_visible_mailbox_dialog_entries(
         )
         .context("mailbox action menu is open without a valid cursor")?;
         entries.clear();
-        entries.push(compact_scene_label(
-            &snapshot.mailbox[selected].mail.author,
-            SCENE_DIALOG_TEXT_CHARS,
-        ));
         entries.extend(
             VISIBLE_MAILBOX_ACTIONS
                 .iter()
@@ -10864,6 +11962,11 @@ fn push_visible_name_choice_entries(entries: &mut Vec<String>, runtime_shell: &B
     let Some(choice) = runtime_shell.pending_name_choice.as_ref() else {
         return;
     };
+    if choice.player_menu.is_some()
+        && choice.player_phase != Some(VisiblePlayerNameChoicePhase::Menu)
+    {
+        return;
+    }
     if let Some(default_name) = runtime_shell
         .pending_standard_capture
         .as_ref()
@@ -11005,7 +12108,7 @@ fn push_visible_pending_move_learn_entries(
     .context("pending move-learn forget menu has no valid cursor")?;
     for (index, learned) in slot.pokemon.moves.iter().enumerate() {
         let marker = if index == selected { ">" } else { " " };
-        entries.push(move_menu_entry(snapshot, learned, marker));
+        entries.push(move_menu_entry(snapshot, learned, marker)?);
     }
     entries.push(format!(
         "{}CANCEL",
@@ -11022,172 +12125,123 @@ fn push_visible_storage_dialog_entries(
     entries: &mut Vec<String>,
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
-) {
-    let Some(box_snapshot) = snapshot
-        .storage
-        .boxes
-        .iter()
-        .find(|pc_box| pc_box.index == snapshot.storage.current_pc_box)
-    else {
-        entries.push(compact_scene_label(
-            &format!("INVALID PC BOX {}", snapshot.storage.current_pc_box),
-            30,
-        ));
-        return;
-    };
-    let party_move_view = runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open;
+) -> Result<()> {
+    if let Some(summary) = &runtime_shell.bill_pc_pokemon_summary {
+        let pokemon = visible_pc_summary_pokemon(snapshot, summary.location)?;
+        entries.extend(visible_stats_screen_entries(snapshot, runtime_shell, &pokemon, summary.page)?);
+        return Ok(());
+    }
+    if runtime_shell.bill_pc_move_save.is_some() {
+        entries.push("Saving… Leave ON!".to_string());
+        return Ok(());
+    }
+    if runtime_shell.pending_pc_release.is_some() {
+        let selected = strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "pc:release-confirm", 2)
+            .context("PC release confirmation cursor is invalid")?;
+        entries.push(snapshot.presentation.pc_strings.get("PCString_ReleasePKMN")
+            .context("PC release question is missing")?.clone());
+        entries.extend(["YES", "NO"].iter().enumerate().map(|(index, label)|
+            format!("{}{}", if selected == index { ">" } else { " " }, label)));
+        return Ok(());
+    }
+    if runtime_shell.bill_pc_pokemon_action_cursor.is_some() && runtime_shell.bill_pc_pokemon_summary.is_none() {
+        let selected = strict_readonly_cursor_index(&runtime_shell.bill_pc_pokemon_action_cursor, "pc:pokemon-actions", visible_pc_pokemon_action_labels(runtime_shell).len())
+            .context("PC Pokemon action cursor is invalid")?;
+        entries.push(snapshot.presentation.pc_strings.get("PCString_WhatsUp")
+            .context("PC action question is missing")?.clone());
+        entries.extend(visible_pc_pokemon_action_labels(runtime_shell).iter().enumerate().map(|(index, label)|
+            format!("{}{}", if selected == index { ">" } else { " " }, label)));
+        return Ok(());
+    }
+    let box_snapshot = visible_storage_box(snapshot, runtime_shell)?;
+    let party_move_view = runtime_shell.bill_pc_deposit_open || (runtime_shell.bill_pc_move_open && runtime_shell.bill_pc_move_party_open);
     let visible_slots = if party_move_view {
         snapshot
             .party
             .slots
             .iter()
-            .map(|slot| (slot.index, &slot.pokemon))
+            .map(|slot| &slot.pokemon)
             .collect::<Vec<_>>()
     } else {
         box_snapshot
             .slots
             .iter()
-            .map(|slot| (slot.index, &slot.pokemon))
+            .map(|slot| &slot.pokemon)
             .collect::<Vec<_>>()
     };
     let surface_id = if party_move_view {
-        pc_move_party_surface_id().to_string()
+        pc_party_surface_id().to_string()
     } else {
         storage_cursor_surface_id(box_snapshot.index)
     };
-    entries.push(compact_scene_label(
-        &format!(
-            "{} {}/{}",
-            if party_move_view {
-                "PARTY".to_string()
-            } else {
-                format!("BOX {} {}", box_snapshot.index, box_snapshot.name)
-            },
-            visible_slots.len(),
-            if party_move_view { 6 } else { 20 }
-        ),
-        SCENE_DIALOG_TEXT_CHARS,
-    ));
-    entries.push(compact_scene_label(
-        if runtime_shell.bill_pc_move_save.is_some() {
-            "Saving… Leave ON!"
-        } else if runtime_shell.party_menu_open {
-            "A DEPOSIT  B CLOSE"
-        } else {
-            "A WITHDRAW SELECT RELEASE"
-        },
-        SCENE_DIALOG_TEXT_CHARS,
-    ));
-    if visible_slots.is_empty() && !runtime_shell.bill_pc_move_open {
-        entries.push("EMPTY".to_string());
-        return;
-    }
-    let option_count = if runtime_shell.bill_pc_move_open {
-        if runtime_shell.bill_pc_move_source.is_some() {
-            visible_slots.len() + 1
-        } else {
-            visible_slots.len().max(1)
-        }
+    let option_count = visible_slots.len() + 1;
+    let selected =
+        strict_readonly_cursor_index(&runtime_shell.storage_cursor, &surface_id, option_count)
+            .context("PC list requires a valid Pokémon or CANCEL cursor")?;
+    entries.push(if party_move_view {
+        "PARTY <PK><MN>".to_string()
     } else {
-        visible_slots.len()
-    };
-    let cursor_index =
-        strict_readonly_cursor_index(&runtime_shell.storage_cursor, &surface_id, option_count);
-    let Some(cursor_index) = cursor_index else {
-        entries.push(compact_scene_label(
-            &format!("INVALID CURSOR {surface_id}"),
-            SCENE_DIALOG_TEXT_CHARS,
+        box_snapshot.name.clone()
+    });
+    let start = runtime_shell.pc_list_scroll;
+    for index in start..(start + 5).min(option_count) {
+        let name = visible_slots
+            .get(index)
+            .map(|pokemon| pokemon.nickname.as_str())
+            .unwrap_or("CANCEL");
+        entries.push(format!(
+            "{}{}",
+            if index == selected { ">" } else { " " },
+            name
         ));
-        return;
-    };
-    entries.extend(
-        windowed_index_range(cursor_index, option_count).map(|offset| {
-            let marker = if offset == cursor_index { ">" } else { " " };
-            let Some((slot_index, pokemon)) =
-                visible_slots.iter().find(|(index, _)| *index == offset)
-            else {
-                return compact_scene_label(
-                    &format!("{marker}{offset} EMPTY"),
-                    SCENE_DIALOG_TEXT_CHARS,
-                );
-            };
-            let held = pokemon
-                .item
-                .as_deref()
-                .map(|item| format!(" item={item}"))
-                .unwrap_or_default();
-            compact_scene_label(
-                &format!(
-                    "{marker}{} {} L{} HP {}/{}{}",
-                    slot_index, pokemon.species.id, pokemon.level, pokemon.hp, pokemon.max_hp, held
-                ),
-                SCENE_DIALOG_TEXT_CHARS,
-            )
-        }),
-    );
+    }
+    Ok(())
 }
 
 fn push_visible_pc_item_dialog_entries(
     entries: &mut Vec<String>,
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
-) {
-    let carried_offsets = snapshot
-        .bag
-        .pc_items
-        .iter()
-        .enumerate()
-        .filter(|(_, item)| item.quantity > 0)
-        .map(|(offset, _)| offset)
-        .collect::<Vec<_>>();
-    entries.push(compact_scene_label(
-        &format!("PC ITEMS {}", carried_offsets.len()),
-        SCENE_DIALOG_TEXT_CHARS,
-    ));
-    entries.push(compact_scene_label(
-        if visible_field_pack_is_open(runtime_shell) {
-            "A DEPOSIT ITEM  B CLOSE"
-        } else if runtime_shell.pc_item_action == Some(VisiblePlayerPcAction::TossItem) {
-            "A TOSS ITEM  B CLOSE"
+) -> Result<()> {
+    let items = &snapshot.bag.pc_items;
+    let selected =
+        strict_readonly_cursor_index(&runtime_shell.pc_item_cursor, "pc:items", items.len() + 1)
+            .context("PC item observation requires an item or CANCEL cursor")?;
+    let scroll = runtime_shell.pc_item_scroll;
+    anyhow::ensure!(
+        scroll <= selected && selected < scroll + 4,
+        "PC item observation cursor outside scrolling window"
+    );
+    for index in scroll..(scroll + 4).min(items.len() + 1) {
+        let marker = if index == selected {
+            ">"
+        } else if runtime_shell.pc_item_switch_origin == Some(index) {
+            "▷"
         } else {
-            "A WITHDRAW ITEM  B CLOSE"
-        },
-        SCENE_DIALOG_TEXT_CHARS,
-    ));
-    if carried_offsets.is_empty() {
-        entries.push("EMPTY".to_string());
-        return;
+            " "
+        };
+        if index == items.len() {
+            entries.push(format!("{marker}CANCEL"));
+            break;
+        }
+        let item = &items[index];
+        let catalog = snapshot
+            .items
+            .iter()
+            .find(|entry| entry.item_id == item.item_id)
+            .with_context(|| format!("PC item {} is missing", item.item_id))?;
+        let quantity = if catalog
+            .property
+            .split('|')
+            .any(|flag| flag.trim() == "CANT_TOSS")
+        {
+            String::new()
+        } else {
+            format!(" ×{:2}", item.quantity)
+        };
+        entries.push(format!("{marker}{}{quantity}", catalog.name));
     }
-    let cursor_index = strict_readonly_cursor_index(
-        &runtime_shell.pc_item_cursor,
-        "pc:items",
-        carried_offsets.len(),
-    );
-    let Some(cursor_index) = cursor_index else {
-        entries.push(compact_scene_label(
-            "INVALID CURSOR pc:items",
-            SCENE_DIALOG_TEXT_CHARS,
-        ));
-        return;
-    };
-    entries.extend(
-        windowed_index_range(cursor_index, carried_offsets.len()).map(|visible_index| {
-            let item = &snapshot.bag.pc_items[carried_offsets[visible_index]];
-            let marker = if visible_index == cursor_index {
-                ">"
-            } else {
-                " "
-            };
-            compact_scene_label(
-                &format!(
-                    "{marker}{} x{}",
-                    item_display_name(snapshot, &item.item_id),
-                    item.quantity
-                ),
-                SCENE_DIALOG_TEXT_CHARS,
-            )
-        }),
-    );
+    Ok(())
 }
 
 fn push_visible_runtime_menu_dialog_entries(
@@ -11299,7 +12353,7 @@ fn push_visible_shop_dialog_entries(
     let cursor_index = strict_readonly_cursor_index(
         &runtime_shell.menu_cursor,
         &surface_id,
-        shop.inventory.len(),
+        shop.inventory.len() + 1,
     );
     entries.push(compact_scene_label(
         &format!("BUY {}", format_price(snapshot.trainer.money)),
@@ -11309,7 +12363,10 @@ fn push_visible_shop_dialog_entries(
         format!("shop buy menu is open without a valid nonempty cursor for {surface_id}")
     })?;
     entries.extend(
-        windowed_index_range(cursor_index, shop.inventory.len()).map(|index| {
+        windowed_index_range(cursor_index, shop.inventory.len() + 1).map(|index| {
+            if index == shop.inventory.len() {
+                return format!("{}CANCEL", if index == cursor_index { ">" } else { " " });
+            }
             let item = &shop.inventory[index];
             let marker = if index == cursor_index { ">" } else { " " };
             compact_scene_label(
@@ -11901,4 +12958,91 @@ fn visible_field_idle_entries(
     }
     entries.truncate(SCENE_MENU_VISIBLE_ROWS);
     Ok(entries)
+}
+
+fn spawn_pokegear_phone_window(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> Result<()> {
+    let palette_name = if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
+        "pokegear_f.pal"
+    } else {
+        "pokegear.pal"
+    };
+    let palettes = parse_palette_file(&crate::read_runtime_asset_to_string(
+        asset_root.runtime_assets().join("gfx/pokegear").join(palette_name),
+    )?, None)?;
+    let palette = palettes.first().context("Pokégear phone palette is missing")?;
+    let source = crate::open_runtime_image(asset_root.runtime_assets().join("gfx/frames/1.png"))?.to_rgba8();
+    anyhow::ensure!(source.dimensions() == (24, 16), "invalid source Pokégear frame dimensions");
+    let mut pixels = Vec::with_capacity(width * height * 256);
+    for _ in 0..width * height * 64 {
+        pixels.extend_from_slice(&palette[0]);
+        pixels.push(255);
+    }
+    for row in 0..height {
+        for col in 0..width {
+            let tile = match (col, row) {
+                (0, 0) => 0,
+                (c, 0) if c == width - 1 => 2,
+                (_, 0) => 1,
+                (0, r) if r == height - 1 => 4,
+                (c, r) if c == width - 1 && r == height - 1 => 5,
+                (_, r) if r == height - 1 => 1,
+                (0, _) => 3,
+                (c, _) if c == width - 1 => 3,
+                _ => continue,
+            };
+            pokegear_blit_paletted_tile(&source, tile, palette, col * 8, row * 8, width * 8, &mut pixels)?;
+        }
+    }
+    let mut image = Image::new(Extent3d { width: (width * 8) as u32, height: (height * 8) as u32, depth_or_array_layers: 1 },
+        TextureDimension::D2, pixels, TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
+    image.sampler = ImageSampler::nearest();
+    let (left, top) = battle_window_center(x as f32, y as f32, width as f32, height as f32);
+    commands.spawn((SpriteBundle {
+        texture: images.add(image),
+        sprite: Sprite { custom_size: Some(Vec2::new(width as f32 * TILE_SIZE, height as f32 * TILE_SIZE)), ..default() },
+        transform: Transform::from_xyz(left, top, 4.0), ..default()
+    }, FieldCommandMarker));
+    Ok(())
+}
+
+fn spawn_furniture_radio_textbox(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    // PlayRadio draws Textbox at (0,12), inner size 18x4. Preserve the map.
+    rendered_art.selected_window_frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+    let (x, y) = field_window_center(0.0, 12.0, 20.0, 6.0);
+    commands.spawn((SpriteBundle {
+        sprite: Sprite { color: Color::WHITE,
+            custom_size: Some(Vec2::new(20.0 * TILE_SIZE, 6.0 * TILE_SIZE)), ..default() },
+        transform: Transform::from_xyz(x, y, 3.3), ..default()
+    }, FieldCommandMarker));
+    let frame = battle_window_frame_art(rendered_art, asset_root, images)
+        .context("furniture radio requires source textbox frame")?;
+    spawn_field_command_window_frame_tiles(commands, frame, 0.0, 12.0, 20, 6, 3.4);
+    if runtime_shell.pokegear_map_radio_delay == Some(0) {
+        for (index, row) in visible_radio_text_rows(runtime_shell)?.iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(1.0, 13.0 + index as f32);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, row, x, y, 3.6);
+        }
+    } else {
+        let station = runtime_shell.pokegear_radio_station.as_deref().context("furniture radio has no selected station")?;
+        let text = format!("“{}”", visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?);
+        let (x,y) = battle_hud_tile_origin(1.0, 14.0);
+        spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, &text, x, y, 3.6);
+    }
+    Ok(())
 }

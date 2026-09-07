@@ -13,7 +13,8 @@ use crate::{
     LinkTransport, TransportError, validate_local_session_bootstrap,
 };
 
-pub const PROTOCOL_VERSION: u16 = 1;
+// Version 2 adds channeled chat and explicit invitation cancellation.
+pub const PROTOCOL_VERSION: u16 = 2;
 pub const MAX_RELAY_BYTES: usize = 64 * 1024;
 const SESSION_ID_BYTES: usize = 16;
 
@@ -69,6 +70,17 @@ pub enum ClientMessage {
         tile_y: i32,
         direction: String,
     },
+    Chat {
+        channel: String,
+        target_user_id: Option<String>,
+        text: String,
+    },
+    ChatJoin {
+        channel: String,
+    },
+    ChatLeave {
+        channel: String,
+    },
     QueueJoin {
         mode: MatchMode,
         rating: i32,
@@ -83,6 +95,7 @@ pub enum ClientMessage {
         target_user_id: String,
         kind: MatchMode,
     },
+    InteractionCancel,
     InteractionResponse {
         request_id: Uuid,
         target_user_id: String,
@@ -114,6 +127,16 @@ pub enum ServerMessage {
     },
     PresenceLeft {
         user_id: String,
+    },
+    Chat {
+        channel: String,
+        from_user_id: String,
+        from_display_name: String,
+        target_user_id: Option<String>,
+        text: String,
+    },
+    ChatChannels {
+        channels: Vec<String>,
     },
     QueueJoined {
         mode: MatchMode,
@@ -173,6 +196,20 @@ pub enum HostedConnectionError {
     Decode(String),
     #[error("hosted server rejected the request ({code}): {message}")]
     Server { code: String, message: String },
+}
+
+fn decode_server_message(text: &str) -> Result<ServerMessage, HostedConnectionError> {
+    let message: ServerMessage = serde_json::from_str(text)
+        .map_err(|error| HostedConnectionError::Decode(error.to_string()))?;
+    if let ServerMessage::Error { code, message } = &message {
+        if !matches!(code.as_str(), "invalid_request" | "chat_error") {
+            return Err(HostedConnectionError::Server {
+                code: code.clone(),
+                message: message.clone(),
+            });
+        }
+    }
+    Ok(message)
 }
 
 pub struct HostedConnection {
@@ -256,11 +293,7 @@ impl HostedConnection {
                     }
                 }
                 WsEvent::Message(WsMessage::Text(text)) => {
-                    let message = serde_json::from_str::<ServerMessage>(&text)
-                        .map_err(|error| HostedConnectionError::Decode(error.to_string()))?;
-                    if let ServerMessage::Error { code, message } = message {
-                        return Err(HostedConnectionError::Server { code, message });
-                    }
+                    let message = decode_server_message(&text)?;
                     messages.push(message);
                 }
                 WsEvent::Message(WsMessage::Ping(payload)) => {
@@ -366,14 +399,9 @@ impl LinkTransport for HostedLinkTransport {
                     messages.push(self.codec.decode(&envelope[SESSION_ID_BYTES..])?);
                 }
                 WsEvent::Message(WsMessage::Text(text)) => {
-                    let message = serde_json::from_str::<ServerMessage>(&text)
+                    let message = decode_server_message(&text)
                         .map_err(|error| hosted_transport_error(error.to_string()))?;
-                    match message {
-                        ServerMessage::Error { code, message } => {
-                            return Err(hosted_transport_error(format!("{code}: {message}")));
-                        }
-                        message => self.server_messages.push_back(message),
-                    }
+                    self.server_messages.push_back(message);
                 }
                 WsEvent::Message(WsMessage::Ping(payload)) => {
                     self.sender.send(WsMessage::Pong(payload));
@@ -449,6 +477,20 @@ impl HostedLinkSession {
                 tile_y,
                 direction: direction.into(),
             })
+    }
+
+    pub fn send_social(&mut self, message: ClientMessage) -> Result<(), TransportError> {
+        if !matches!(
+            &message,
+            ClientMessage::Chat { .. }
+                | ClientMessage::ChatJoin { .. }
+                | ClientMessage::ChatLeave { .. }
+        ) {
+            return Err(hosted_transport_error(
+                "only chat messages may use the social transport",
+            ));
+        }
+        self.endpoint.transport_mut().send_protocol(message)
     }
 
     pub fn drain_server_messages(&mut self) -> Vec<ServerMessage> {
@@ -551,5 +593,45 @@ mod tests {
                 "rating_range": 50
             })
         );
+    }
+}
+
+#[cfg(test)]
+mod social_protocol_tests {
+    use super::*;
+
+    #[test]
+    fn routine_rejections_are_delivered_without_tearing_down_the_connection() {
+        for code in ["invalid_request", "chat_error"] {
+            let message = ServerMessage::Error {
+                code: code.into(),
+                message: "try again".into(),
+            };
+            assert_eq!(
+                decode_server_message(&serde_json::to_string(&message).unwrap()).unwrap(),
+                message
+            );
+        }
+        assert!(
+            decode_server_message(
+                r#"{"type":"error","code":"identity_mismatch","message":"denied"}"#
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn social_messages_round_trip_and_cannot_forge_sender_identity() {
+        let message = ClientMessage::Chat {
+            channel: "whisper".into(),
+            target_user_id: Some("player-2".into()),
+            text: "Hello".into(),
+        };
+        assert_eq!(
+            serde_json::from_str::<ClientMessage>(&serde_json::to_string(&message).unwrap())
+                .unwrap(),
+            message
+        );
+        assert!(serde_json::from_str::<ClientMessage>(r#"{"type":"chat","channel":"say","target_user_id":null,"text":"Hello","from_user_id":"someone-else"}"#).is_err());
     }
 }

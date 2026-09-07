@@ -90,7 +90,7 @@ fn visible_pokegear_phone_call_rings_twice_before_entering_the_compiled_asm_call
         .initialize_permanent_phone_numbers()
         .expect("initialize permanent phone contacts");
     let snapshot = runtime_shell.shell.snapshot().expect("phone snapshot");
-    let contacts = visible_pokegear_phone_contact_ids(&snapshot);
+    let contacts = &snapshot.script_events.phone_numbers;
     assert!(
         !contacts.is_empty(),
         "new game must initialize permanent contacts"
@@ -291,8 +291,46 @@ fn visible_pokegear_phone_call_waits_ten_frames_then_hangs_up_on_a() {
         Some(VisiblePokegearPhoneCallPhase::AwaitHangup)
     );
 
+    // PrintText leaves the final call page on the LCD until HangUp replaces
+    // it with PokegearAskWhoCallText. It must not survive as a field dialog.
+    let script = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
+    script.text_window_open = true;
+    script.active_text_label = Some("MomPhoneNoPokemonText".into());
     press_visible_a_button(&mut runtime_shell).expect("hang up outgoing call");
 
+    assert!(!runtime_shell.shell.snapshot().unwrap().ui.text_window_open,
+        "hangup must retire the call text before restoring the Phone prompt");
+    let snapshot = runtime_shell.shell.snapshot().unwrap();
+    // SetUpTextbox clears for four frames. Each 20-frame hold also calls
+    // WaitBGMap (four frames), including the final contact-prompt upload.
+    let mut hangup_frames = Vec::new();
+    assert!(!runtime_shell.pending_audio.iter().any(|audio| audio.audio_id == "SFX_HANG_UP"),
+        "HangUp_Beep must wait for the initial four-frame textbox upload");
+    let stages = [("", 4), ("Click!", 24), ("", 4), ("……", 24),
+        ("", 28), ("……", 24), ("", 28), ("……", 24), ("", 28)];
+    for (stage, (expected, frames)) in stages.iter().enumerate() {
+        assert!(runtime_shell.pokegear_phone_call.is_some(), "hangup stage {stage} must retain the card");
+        assert!(!runtime_shell.pokegear_menu_open, "hangup must not accept menu input");
+        let phase = runtime_shell.pokegear_phone_call.as_ref().unwrap().phase;
+        press_visible_a_button(&mut runtime_shell).unwrap();
+        press_visible_b_button(&mut runtime_shell).unwrap();
+        assert_eq!(runtime_shell.pokegear_phone_call.as_ref().unwrap().phase, phase,
+            "A/B cannot skip a hangup stage");
+        assert_eq!(visible_pokegear_phone_prompt(&snapshot, &runtime_shell).unwrap(), *expected);
+        for _ in 0..frames - 1 {
+            hangup_frames.push(visible_pokegear_phone_prompt(&snapshot, &runtime_shell).unwrap());
+            advance_visible_pokegear_phone_call(&mut runtime_shell, 1).unwrap();
+        }
+        assert_eq!(visible_pokegear_phone_prompt(&snapshot, &runtime_shell).unwrap(), *expected);
+        hangup_frames.push(visible_pokegear_phone_prompt(&snapshot, &runtime_shell).unwrap());
+        advance_visible_pokegear_phone_call(&mut runtime_shell, 1).unwrap();
+    }
+    hangup_frames.push(visible_pokegear_phone_prompt(&snapshot, &runtime_shell).unwrap());
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        std::fs::write(PathBuf::from(directory).join("phone-hangup-runtime-frames.json"),
+            serde_json::to_vec_pretty(&hangup_frames).unwrap()).unwrap();
+    }
     assert!(runtime_shell.pokegear_phone_call.is_none());
     assert!(runtime_shell.pokegear_menu_open);
     assert_eq!(runtime_shell.pokegear_page, PokegearPage::Phone);
@@ -597,7 +635,7 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
     assert_eq!(
         visible_start_menu_entries(&runtime_shell).expect("start menu entries"),
         vec![
-            ">#DEX", " PACK", " #GEAR", " AB", " SAVE", " OPTION", " EXIT"
+            ">#DEX", " PACK", " <POKE>GEAR", " AB", " SAVE", " OPTION", " EXIT"
         ]
     );
 
@@ -661,22 +699,11 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
     }
 
     apply_visible_shell_smoke_frame(&mut runtime_shell, &[GameButton::A])
-        .expect("A opens Pokegear landmark detail");
-    {
-        let snapshot = runtime_shell
-            .shell
-            .snapshot()
-            .expect("Pokegear detail snapshot");
-        let expected = visible_pokegear_menu_entries(&snapshot, &runtime_shell)
-            .expect("valid Pokegear detail entries");
-        let mut overlay_lines = Vec::new();
-        append_visible_shell_surface_overlay(&snapshot, &runtime_shell, &mut overlay_lines);
-        assert_eq!(
-            overlay_lines, expected,
-            "Pokegear detail overlay should be the same visible rows as the command panel"
-        );
-        assert_no_visible_pokedex_or_pokegear_debug_rows(&overlay_lines);
-    }
+        .expect("A exits the Pokégear clock card");
+    assert_eq!(runtime_shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested));
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell).unwrap();
+    assert!(!runtime_shell.pokegear_menu_open);
+
 }
 
 fn assert_no_visible_pokedex_or_pokegear_debug_rows(lines: &[String]) {
@@ -692,30 +719,13 @@ fn assert_no_visible_pokedex_or_pokegear_debug_rows(lines: &[String]) {
 }
 
 #[test]
-fn pokegear_only_shows_transcripts_for_stations_that_have_them() {
-    assert_eq!(
-        visible_map_radio_transcript("OAKS_POKEMON_TALK"),
-        [
-            "PlayersRadioText1",
-            "PlayersRadioText2",
-            "PlayersRadioText3",
-            "PlayersRadioText4",
-        ]
-    );
-    assert_eq!(visible_map_radio_transcript("LUCKY_CHANNEL").len(), 13);
-    assert!(visible_map_radio_transcript("POKEMON_MUSIC").is_empty());
-    assert!(visible_map_radio_transcript("BUENAS_PASSWORD").is_empty());
-    assert!(visible_map_radio_transcript("POKE_FLUTE_RADIO").is_empty());
-}
-
-#[test]
 fn standalone_town_map_uses_asm_cursor_direction_and_cannot_change_pages() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     runtime_shell.pokegear_menu_open = true;
     runtime_shell.pokegear_standalone_map = true;
     runtime_shell.pokegear_page = PokegearPage::Map;
     let snapshot = runtime_shell.shell.snapshot().expect("Town Map snapshot");
-    let indices = visible_pokegear_landmark_indices(&snapshot).expect("active region landmarks");
+    let indices = visible_pokegear_landmark_indices(&snapshot, true).expect("active region landmarks");
     assert!(indices.len() > 1);
     runtime_shell.pokegear_cursor = indices[0];
 
@@ -729,6 +739,168 @@ fn standalone_town_map_uses_asm_cursor_direction_and_cannot_change_pages() {
 }
 
 #[test]
+fn pokegear_map_up_increments_and_down_decrements_landmarks() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Map;
+    let snapshot = shell.shell.snapshot().unwrap();
+    let indices = visible_pokegear_landmark_indices(&snapshot, false).unwrap();
+    shell.pokegear_cursor = indices[1];
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokegear_cursor, indices[2], "PokegearMap_ContinueMap.up increments");
+    move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_cursor, indices[1]);
+    shell.pokegear_cursor = *indices.last().unwrap();
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokegear_cursor, indices[0]);
+    move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_cursor, *indices.last().unwrap());
+}
+
+fn initialized_town_map_location_shell(map_name: &str) -> BevyRuntimeShell {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..").canonicalize().unwrap();
+    let asset_root = AssetRoot::new(root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let tile = crate::core::world::session::warp_tile_position_checked(
+        &runtime.data().maps[map_name].events.warps[0]).unwrap();
+    initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: map_name.into(), tile_x: tile.x, tile_y: tile.y,
+        }, BevyShellConfig { smoke_player_name: Some("AB".into()), ..Default::default() })
+        .unwrap()
+}
+
+fn capture_town_map_location_frame(shell: &BevyRuntimeShell, label: &str) {
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    spawn_field_pokegear_screen(&mut commands, &snapshot, shell, &mut art,
+        &shell.asset_root, &mut images).unwrap();
+    queue.apply(&mut world);
+    assert_eq!(art.font_error, None);
+    let canvas = render_pc_audit_canvas(&mut world, &images, label);
+    let reference = image::open(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../tools/asm-oracle/fixtures")
+        .join(format!("standalone-town-map-{}.png", label.strip_prefix("standalone-").unwrap())))
+        .unwrap().to_rgba8();
+    assert_eq!(reference.dimensions(), (160, 144));
+    let scale = canvas.width() / 160;
+    for y in 0..144 {
+        for x in 0..160 {
+            let actual = canvas.get_pixel(x * scale, y * scale).0.map(|channel| channel >> 3);
+            let expected = reference.get_pixel(x, y).0.map(|channel| channel >> 3);
+            assert_eq!(actual, expected, "{label}: source LCD pixel {x},{y}");
+        }
+    }
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        canvas.save(PathBuf::from(directory).join(format!("{label}.png"))).unwrap();
+    }
+}
+
+#[test]
+fn standalone_town_map_ship_entry_keeps_ship_cursor_and_source_wrap() {
+    let mut shell = initialized_town_map_location_shell("FastShip1F");
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("FastShip1F".into()) }).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].id, 95);
+    assert_eq!(visible_pokegear_region(&snapshot, true).unwrap(), "KANTO");
+    assert_eq!(visible_pokegear_region(&snapshot, false).unwrap(), "JOHTO");
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[
+        visible_pokegear_initial_cursor_index(&snapshot, false).unwrap()].id, 1);
+    capture_town_map_location_frame(&shell, "standalone-ship");
+    move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].id, 94);
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].id, 88);
+}
+
+#[test]
+fn standalone_town_map_special_entry_keeps_backup_landmark() {
+    let mut shell = initialized_town_map_location_shell("Pokecenter2F");
+    shell.shell.session_mut().state_mut().backup_warp_map_name = Some("CeladonDeptStore1F".into());
+    mark_runtime_snapshot_dirty(&mut shell);
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("Pokecenter2F".into()) }).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].constant,
+        "LANDMARK_CELADON_CITY");
+    capture_town_map_location_frame(&shell, "standalone-special-kanto");
+    move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].id, 70);
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    assert_eq!(snapshot.presentation.pokegear_landmarks.landmarks[shell.pokegear_cursor].id, 71);
+}
+
+#[test]
+fn pokegear_map_limits_match_source_regions_and_hall_of_fame_bit() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    let ids = |snapshot: &RuntimeShellSnapshot| visible_pokegear_landmark_indices(snapshot, false)
+        .unwrap().iter().map(|index| snapshot.presentation.pokegear_landmarks.landmarks[*index].id)
+        .collect::<Vec<_>>();
+    assert_eq!(ids(&snapshot), (1..=46).collect::<Vec<_>>(),
+        "Johto excludes SPECIAL and FAST_SHIP from cursor traversal");
+    snapshot.overworld.map_name = "VictoryRoad".into();
+    snapshot.progression.active_engine_flags.remove("ENGINE_CREDITS_SKIP");
+    assert_eq!(ids(&snapshot), (88..=94).collect::<Vec<_>>());
+    snapshot.progression.active_engine_flags.insert("ENGINE_CREDITS_SKIP".into());
+    assert_eq!(ids(&snapshot), (47..=94).collect::<Vec<_>>());
+}
+
+#[test]
+fn pokegear_special_room_uses_the_source_backup_map_region() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().backup_warp_map_name = Some("CeladonDeptStore1F".into());
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.overworld.map_name = "Pokecenter2F".into();
+    assert_eq!(visible_pokegear_region(&snapshot, false).unwrap(), "KANTO");
+}
+
+#[test]
+fn pokegear_map_cursor_survives_card_changes_until_gear_reopens() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().flags.engine_flags.insert("ENGINE_MAP_CARD".into(), true);
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    cycle_visible_pokegear_page(&mut shell, 1).unwrap();
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    let selected = shell.pokegear_cursor;
+    cycle_visible_pokegear_page(&mut shell, -1).unwrap();
+    cycle_visible_pokegear_page(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_cursor, selected, "Map_Init retains its cursor landmark");
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    assert_ne!(shell.pokegear_cursor, selected, "Pokegear entry initializes the cursor again");
+}
+
+#[test]
+fn pokegear_radio_ship_uses_the_live_time_of_day() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.overworld.map_name = "FastShip1F".into();
+    snapshot.progression.radio_tuning_knob = 16;
+    snapshot.progression.time.time_of_day = crate::core::world::encounters::TimeOfDay::Day;
+    sync_visible_pokegear_radio(&mut shell, &snapshot).unwrap();
+    assert_eq!(shell.pokegear_radio_station.as_deref(), Some("OAKS_POKEMON_TALK"));
+}
+
+#[test]
+fn pokegear_radio_rejects_missing_landmark_metadata() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.overworld.map_name = "MissingRadioMap".into();
+    snapshot.progression.radio_tuning_knob = 16;
+    assert!(sync_visible_pokegear_radio(&mut shell, &snapshot).is_err(),
+        "missing source location must not silently tune Johto stations");
+}
+
+#[test]
 fn pokegear_radio_tunes_every_even_knob_position_without_station_wrapping() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     runtime_shell.pokegear_menu_open = true;
@@ -738,18 +910,9 @@ fn pokegear_radio_tunes_every_even_knob_position_without_station_wrapping() {
         .shell
         .snapshot()
         .expect("initial radio snapshot");
-    assert_eq!(
-        visible_pokegear_menu_entries(&snapshot, &runtime_shell)
-            .expect("valid no-signal radio entries")[0],
-        "RADIO  0.5",
-        "cleared wRadioTuningKnob displays (0 + 2) / 4"
-    );
-    assert_eq!(
-        visible_pokegear_menu_entries(&snapshot, &runtime_shell)
-            .expect("valid no-signal radio entries")[1],
-        "UP/DOWN TUNE",
-        "NoRadioName clears the station-name box instead of fabricating a station"
-    );
+    assert!(visible_pokegear_menu_entries(&snapshot, &runtime_shell).unwrap().is_empty(),
+        "NoRadioName clears the name and textbox, without tuning instruction text");
+    assert_eq!(visible_pokegear_radio_frequency(0), 0.5);
 
     for step in 0..7 {
         move_visible_pokegear_cursor(&mut runtime_shell, -1)
@@ -998,7 +1161,8 @@ fn bills_pc_move_mode_confirms_then_saves_entry_and_every_move() {
     assert!(runtime_shell.bill_pc_move_open);
     runtime_shell.pending_audio.clear();
 
-    confirm_visible_bill_pc_move(&mut runtime_shell).expect("select box source");
+    confirm_visible_bill_pc_move(&mut runtime_shell).expect("open box source submenu");
+    confirm_visible_bill_pc_pokemon_action(&mut runtime_shell).expect("choose MOVE");
     switch_visible_pc_move_container(&mut runtime_shell, -1).expect("switch to party");
     runtime_shell.storage_cursor.as_mut().unwrap().option_index = 1;
     confirm_visible_bill_pc_move(&mut runtime_shell).expect("move box Pokemon into party");
@@ -1014,7 +1178,8 @@ fn bills_pc_move_mode_confirms_then_saves_entry_and_every_move() {
         Some("SAVING... LEAVE ON!")
     );
     let mut saving_entries = Vec::new();
-    push_visible_storage_dialog_entries(&mut saving_entries, &pending_snapshot, &runtime_shell);
+    push_visible_storage_dialog_entries(&mut saving_entries, &pending_snapshot, &runtime_shell)
+        .expect("PC save display");
     assert!(
         saving_entries
             .iter()
@@ -1065,6 +1230,10 @@ fn bills_pc_move_mode_confirms_then_saves_entry_and_every_move() {
             .map(|save| (save.phase, save.frames_remaining)),
         Some((VisibleBillPcMoveSavePhase::AfterSave, 24))
     ));
+    let retained = &runtime_shell.bill_pc_move_save.as_ref().unwrap().presentation;
+    assert_eq!(retained.names.len(), 1, "saving retains the pre-insertion destination list");
+    assert_eq!(retained.cursor.option_index, 1);
+    assert_eq!(retained.pokemon.species_id, "CYNDAQUIL");
     press_visible_b_button(&mut runtime_shell).expect("B is ignored during post-save hold");
     assert!(runtime_shell.bill_pc_move_save.is_some());
     advance_visible_bill_pc_move_save(&mut runtime_shell, 23)
@@ -1078,6 +1247,8 @@ fn bills_pc_move_mode_confirms_then_saves_entry_and_every_move() {
         Some("POKEMON MOVED")
     );
 
+    assert_eq!(runtime_shell.storage_cursor.as_ref().unwrap().option_index, 1,
+        "Move returns to the inserted destination row, not the top of the list");
     let saved = runtime_shell
         .shell
         .runtime()
@@ -1137,7 +1308,7 @@ fn bills_pc_release_plays_cry_and_retains_the_source_farewell_sequence() {
         option_index: 0,
     });
 
-    request_visible_current_box_pokemon_release(&mut runtime_shell)
+    request_visible_pc_pokemon_release(&mut runtime_shell)
         .expect("open release confirmation");
     confirm_visible_pc_release_prompt(&mut runtime_shell).expect("confirm release");
 
@@ -1171,7 +1342,8 @@ fn bills_pc_release_plays_cry_and_retains_the_source_farewell_sequence() {
     );
     advance_visible_pc_release_sequence(&mut runtime_shell, 1)
         .expect("enter farewell on eightieth release frame");
-    assert_eq!(runtime_shell.pc_notice.as_deref(), Some("Bye,\nEMBER!"));
+    assert_eq!(runtime_shell.pc_notice.as_deref(), Some("Bye, CYNDAQUIL!"),
+        "ReleasePKMN_ByePKMN places the species name on the same line, not the nickname");
     assert!(matches!(
         runtime_shell
             .pc_release_sequence
@@ -1211,10 +1383,11 @@ fn bills_pc_deposit_plays_cry_and_holds_the_stored_message() {
     mark_runtime_snapshot_dirty(&mut runtime_shell);
     runtime_shell.pending_audio.clear();
     runtime_shell.bill_pc_session_open = true;
-    runtime_shell.party_menu_open = true;
+    runtime_shell.bill_pc_deposit_open = true;
+    runtime_shell.party_menu_open = false;
     runtime_shell.party_cursor = 0;
     runtime_shell.storage_cursor = Some(MenuCursor {
-        surface_id: storage_cursor_surface_id(0),
+        surface_id: pc_party_surface_id().to_string(),
         option_index: 0,
     });
 
@@ -1226,6 +1399,12 @@ fn bills_pc_deposit_plays_cry_and_holds_the_stored_message() {
             .iter()
             .any(|audio| { audio.audio_id == "CRY_CYNDAQUIL" })
     );
+    assert!(runtime_shell.pc_notice.is_none(), "PlayMonCry must finish before the success text is placed");
+    advance_visible_pc_transfer_sequence(&mut runtime_shell, 500).unwrap();
+    assert!(runtime_shell.pc_notice.is_none(), "elapsed frames must not bypass WaitSFX");
+    runtime_shell.pending_audio.clear();
+    runtime_shell.transient_audio_playing = false;
+    advance_visible_pc_transfer_sequence(&mut runtime_shell, 1).unwrap();
     assert_eq!(runtime_shell.pc_notice.as_deref(), Some("Stored EMBER!"));
     assert!(matches!(
         runtime_shell
@@ -1243,7 +1422,8 @@ fn bills_pc_deposit_plays_cry_and_holds_the_stored_message() {
         .expect("finish fiftieth stored-message frame");
     assert!(runtime_shell.pc_transfer_sequence.is_none());
     assert!(runtime_shell.pc_notice.is_none());
-    assert!(runtime_shell.party_menu_open);
+    assert!(!runtime_shell.party_menu_open);
+    assert!(runtime_shell.bill_pc_deposit_open);
     assert_eq!(runtime_shell.party_cursor, 0);
 }
 
@@ -1277,6 +1457,12 @@ fn bills_pc_withdraw_plays_cry_and_holds_the_got_message() {
             .iter()
             .any(|audio| { audio.audio_id == "CRY_CYNDAQUIL" })
     );
+    assert!(runtime_shell.pc_notice.is_none(), "PlayMonCry must finish before the success text is placed");
+    advance_visible_pc_transfer_sequence(&mut runtime_shell, 500).unwrap();
+    assert!(runtime_shell.pc_notice.is_none(), "elapsed frames must not bypass WaitSFX");
+    runtime_shell.pending_audio.clear();
+    runtime_shell.transient_audio_playing = false;
+    advance_visible_pc_transfer_sequence(&mut runtime_shell, 1).unwrap();
     assert_eq!(runtime_shell.pc_notice.as_deref(), Some("Got EMBER!"));
     assert!(matches!(
         runtime_shell
@@ -1315,10 +1501,11 @@ fn bills_pc_deposit_refusal_waits_for_wrong_sfx_then_fifty_frames() {
     mark_runtime_snapshot_dirty(&mut runtime_shell);
     runtime_shell.pending_audio.clear();
     runtime_shell.bill_pc_session_open = true;
-    runtime_shell.party_menu_open = true;
+    runtime_shell.bill_pc_deposit_open = true;
+    runtime_shell.party_menu_open = false;
     runtime_shell.party_cursor = 0;
     runtime_shell.storage_cursor = Some(MenuCursor {
-        surface_id: storage_cursor_surface_id(0),
+        surface_id: pc_party_surface_id().to_string(),
         option_index: 0,
     });
 
@@ -1528,6 +1715,9 @@ fn scripted_shop_and_bill_box_renderers_reject_invalid_retained_state() {
     mailbox_shell.mailbox_cursor = Some(MenuCursor {
         surface_id: "pc:mailbox".to_string(),
         option_index: 0,
+    });
+    mailbox_shell.mailbox_action_cursor = Some(MenuCursor {
+        surface_id: "pc:mailbox-actions".into(), option_index: 0,
     });
     let snapshot = mailbox_shell
         .shell
@@ -1972,6 +2162,86 @@ fn invalid_pokegear_map_cursor_is_not_rebased_to_the_first_landmark() {
 }
 
 #[test]
+fn options_directions_refresh_the_rendered_settings() {
+    let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_options_menu(&mut runtime_shell).expect("open Options");
+    for row in 0..7 {
+        runtime_shell.options_cursor = row;
+        let before = cached_runtime_snapshot(&mut runtime_shell).expect("render before input");
+        dispatch_visible_options_direction(&mut runtime_shell, GameButton::Right);
+        assert_eq!(runtime_shell.last_error, None);
+        let after = cached_runtime_snapshot(&mut runtime_shell).expect("render after input");
+        assert_ne!(
+            option_value_for_item(&before.trainer.options, OPTIONS_MENU_ITEMS[row]),
+            option_value_for_item(&after.trainer.options, OPTIONS_MENU_ITEMS[row]),
+            "the rendered value must refresh for {:?}",
+            OPTIONS_MENU_ITEMS[row]
+        );
+        dispatch_visible_options_direction(&mut runtime_shell, GameButton::Left);
+        let restored = cached_runtime_snapshot(&mut runtime_shell).expect("render reverse input");
+        assert_eq!(
+            option_value_for_item(&before.trainer.options, OPTIONS_MENU_ITEMS[row]),
+            option_value_for_item(&restored.trainer.options, OPTIONS_MENU_ITEMS[row])
+        );
+        assert!(runtime_shell.options_menu_open);
+    }
+}
+
+#[test]
+fn options_directions_redraw_the_cursor_and_wrap_like_asm() {
+    let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_options_menu(&mut runtime_shell).expect("open Options");
+    for direction in [
+        GameButton::Down,
+        GameButton::Up,
+        GameButton::Up,
+        GameButton::Down,
+    ] {
+        let revision = runtime_shell.snapshot_revision;
+        dispatch_visible_options_direction(&mut runtime_shell, direction);
+        assert_ne!(
+            runtime_shell.snapshot_revision, revision,
+            "cursor movement must redraw"
+        );
+    }
+    assert_eq!(runtime_shell.options_cursor, 0);
+    dispatch_visible_options_direction(&mut runtime_shell, GameButton::Up);
+    assert_eq!(runtime_shell.options_cursor, 7);
+    confirm_visible_options_selection(&mut runtime_shell).expect("A on CANCEL");
+    assert!(!runtime_shell.options_menu_open);
+}
+
+#[test]
+fn options_live_keys_refresh_settings_and_frame_preview() {
+    let mut app = integrated_shell_test_app(core_modular_title_shell_for_test());
+    open_title_main_menu_for_test(&mut app);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    for item in OPTIONS_MENU_ITEMS.iter().copied().take(7) {
+        let before = {
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert!(shell.options_menu_open);
+            let snapshot = shell.shell.snapshot().expect("settings before input");
+            option_value_for_item(&snapshot.trainer.options, item)
+        };
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        {
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert_eq!(shell.last_error, None);
+            let snapshot = shell.shell.snapshot().expect("settings after input");
+            assert_ne!(option_value_for_item(&snapshot.trainer.options, item), before);
+            assert_eq!(
+                app.world().resource::<RenderedTilesetArt>().selected_window_frame_id,
+                textbox_frame_id(snapshot.trainer.options.frame)
+            );
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(!app.world().resource::<BevyRuntimeShell>().options_menu_open);
+}
+
+#[test]
 fn options_menu_open_initializes_the_source_text_speed_row() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     runtime_shell.options_cursor = usize::MAX;
@@ -2024,11 +2294,11 @@ fn auxiliary_overworld_menu_renderers_reject_invalid_retained_state() {
 
     runtime_shell.pokegear_page = PokegearPage::Radio;
     runtime_shell.pokegear_radio_station = Some("MAPRADIO_POKEMON_CHANNEL".to_string());
-    runtime_shell.pokegear_radio_segment = usize::MAX;
+    runtime_shell.pokegear_radio_broadcast = None;
     let radio_error = visible_pokegear_menu_entries(&snapshot, &runtime_shell)
-        .expect_err("an invalid Pokegear transcript segment must fail rendering")
+        .expect_err("an missing Pokegear broadcast must fail rendering")
         .to_string();
-    assert!(radio_error.contains("radio segment"), "{radio_error}");
+    assert!(radio_error.contains("live broadcast"), "{radio_error}");
 
     runtime_shell.options_cursor = usize::MAX;
     let options_error = visible_options_menu_entries(&snapshot, &runtime_shell)
@@ -2042,7 +2312,7 @@ fn auxiliary_overworld_menu_renderers_reject_invalid_retained_state() {
         .pokegear_landmarks
         .map_to_landmark
         .remove(&active_map);
-    let region_error = visible_pokegear_region(&missing_landmark_snapshot)
+    let region_error = visible_pokegear_region(&missing_landmark_snapshot, false)
         .expect_err("a missing Town Map location must not become JOHTO")
         .to_string();
     assert!(region_error.contains("landmark mapping"), "{region_error}");
@@ -7307,11 +7577,15 @@ fn malformed_script_snapshot_cannot_fall_through_b_to_overworld_input() {
 }
 
 #[test]
-fn start_menu_labels_match_typescript_asm_glyph_entries() {
+fn start_menu_labels_match_asm_glyph_entries() {
     assert_eq!(start_menu_option_label(StartMenuOption::Pokedex), "#DEX");
     assert_eq!(start_menu_option_label(StartMenuOption::Pokemon), "#MON");
     assert_eq!(start_menu_option_label(StartMenuOption::Pack), "PACK");
-    assert_eq!(start_menu_option_label(StartMenuOption::Pokegear), "#GEAR");
+    assert_eq!(start_menu_option_label(StartMenuOption::Pokegear), "<POKE>GEAR");
+    let glyphs = bitmap_font_char_map();
+    let gear = normalize_bitmap_font_text(start_menu_option_label(StartMenuOption::Pokegear));
+    assert_eq!(gear.chars().map(|ch| glyphs[&ch]).collect::<Vec<_>>(),
+        [0x70, 0x71, 0x86, 0x84, 0x80, 0x91]);
     assert_eq!(
         start_menu_option_label(StartMenuOption::TrainerCard),
         "STATUS"
@@ -7577,6 +7851,31 @@ fn arrow_key_dispatch_moves_visible_start_menu_cursor() {
 }
 
 #[test]
+fn battle_move_held_direction_repeat_depends_on_credits_h_in_menu_leak() {
+    let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    runtime_shell.battle_move_cursor = Some(MenuCursor {
+        surface_id: "battle:moves".to_string(),
+        option_index: 0,
+    });
+
+    assert_eq!(runtime_shell.h_in_menu, 0);
+    assert!(!visible_ui_direction_can_repeat(&runtime_shell));
+
+    runtime_shell.h_in_menu = 1;
+    assert!(
+        visible_ui_direction_can_repeat(&runtime_shell),
+        "Credits' unrestored hInMenu must enable held movement in the battle move menu"
+    );
+
+    runtime_shell.battle_move_cursor = None;
+    runtime_shell.h_in_menu = 0;
+    assert!(
+        visible_ui_direction_can_repeat(&runtime_shell),
+        "ordinary menus manage their own repeat behavior"
+    );
+}
+
+#[test]
 fn held_overworld_direction_is_restored_after_warp_navigation_reset() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let mut keys = ButtonInput::<KeyCode>::default();
@@ -7656,4 +7955,2861 @@ fn visible_overworld_normal_inputs_walk_through_bedroom_warp() {
             .iter()
             .any(|event| event.contains("warp=true"))
     );
+}
+
+#[test]
+fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig {
+            smoke_player_name: Some("AB".to_string()),
+            ..Default::default()
+        },
+    )
+    .expect("initialize overworld shell");
+    complete_visible_smoke_player_name_if_needed(&mut runtime_shell, Some("AB"))
+        .expect("complete player name and run arrival callbacks");
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell)
+        .expect("settle arrival scripts before opening the start menu");
+    let mut snapshot = runtime_shell.shell.snapshot().expect("snapshot");
+    let species = snapshot.pokemon[0].clone();
+    snapshot.progression.pokedex_seen_species.clear();
+    snapshot.progression.pokedex_caught_species.clear();
+    let row = pokedex_entry_row(&snapshot, &species, ">");
+    assert!(row.contains("-----"), "unseen species leaked: {row}");
+    snapshot
+        .progression
+        .pokedex_seen_species
+        .insert(species.species_id.clone());
+    runtime_shell.pokedex_detail_open = true;
+    let entry = snapshot
+        .presentation
+        .pokedex_entries
+        .get(&species.species_id)
+        .unwrap();
+    let description = entry.pages[0].clone();
+    let height = format!(
+        "{}'{:02}\"",
+        entry.height_digits / 100,
+        entry.height_digits % 100
+    );
+    let weight = format!(
+        "{}.{:01}lb",
+        entry.weight_digits / 10,
+        entry.weight_digits % 10
+    );
+    let seen_rows = visible_pokedex_detail_entries(&snapshot, &runtime_shell).unwrap();
+    assert!(
+        !seen_rows
+            .join(" ")
+            .contains(description.split_whitespace().next().unwrap())
+    );
+    assert!(seen_rows.iter().any(|row| row.contains("???")));
+    snapshot
+        .progression
+        .pokedex_caught_species
+        .insert(species.species_id.clone());
+    let caught_rows = visible_pokedex_detail_entries(&snapshot, &runtime_shell).unwrap();
+    assert!(
+        caught_rows.iter().any(|row| row.contains(&height)),
+        "{caught_rows:?}"
+    );
+    assert!(
+        caught_rows.iter().any(|row| row.contains(&weight)),
+        "{caught_rows:?}"
+    );
+    assert!(!caught_rows.join(" ").contains("CATCH"));
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    for (label, detail, caught) in [
+        ("list", false, true),
+        ("entry", true, true),
+        ("seen", true, false),
+    ] {
+        runtime_shell.pokedex_detail_open = detail;
+        snapshot.progression.pokedex_seen_species = snapshot
+            .pokemon
+            .iter()
+            .map(|mon| mon.species_id.clone())
+            .collect();
+        if !caught {
+            snapshot.progression.pokedex_caught_species.clear();
+        }
+        snapshot.progression.pokedex_seen = snapshot.progression.pokedex_seen_species.len();
+        snapshot.progression.pokedex_owned = snapshot.progression.pokedex_caught_species.len();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        spawn_field_pokedex_screen(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &runtime_shell,
+            &mut art,
+            &asset_root,
+            &mut images,
+        )
+        .expect("render Pokédex");
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None);
+        let mut query = world.query::<(&Sprite, &Transform, &Handle<Image>)>();
+        let mut sprites = query.iter(&world).collect::<Vec<_>>();
+        sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
+        let mut canvas = image::RgbaImage::new(PLAYFIELD_WIDTH as u32, PLAYFIELD_HEIGHT as u32);
+        for (sprite, transform, handle) in sprites {
+            let source = images.get(handle).expect("sprite image");
+            let size = sprite.custom_size.expect("explicit sprite size");
+            if source.texture_descriptor.size.width == 56 {
+                assert_eq!(
+                    size,
+                    Vec2::splat(7.0 * TILE_SIZE),
+                    "Pokédex front picture must fill its seven-tile canvas"
+                );
+            }
+            let left = transform.translation.x - size.x / 2.0 - PLAYFIELD_LEFT;
+            let top = PLAYFIELD_TOP - transform.translation.y - size.y / 2.0;
+            assert!(
+                left >= -0.01 && left + size.x <= PLAYFIELD_WIDTH + 0.01,
+                "{label}: sprite clips horizontally: {left} + {}",
+                size.x
+            );
+            assert!(
+                top >= -0.01 && top + size.y <= PLAYFIELD_HEIGHT + 0.01,
+                "{label}: sprite clips vertically: {top} + {}",
+                size.y
+            );
+            let raster = image::RgbaImage::from_raw(
+                source.texture_descriptor.size.width,
+                source.texture_descriptor.size.height,
+                source.data.clone(),
+            )
+            .expect("RGBA sprite");
+            let scaled = image::imageops::resize(
+                &raster,
+                size.x as u32,
+                size.y as u32,
+                image::imageops::FilterType::Nearest,
+            );
+            image::imageops::overlay(
+                &mut canvas,
+                &scaled,
+                left.round() as i64,
+                top.round() as i64,
+            );
+        }
+        if let Ok(directory) = std::env::var("POKEDEX_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas
+                .save(PathBuf::from(directory).join(format!("pokedex-{label}.png")))
+                .unwrap();
+        }
+    }
+}
+
+#[test]
+fn pokedex_measurements_preserve_inches_and_tenths_of_pounds() {
+    let entry = crate::core::models::RuntimePokedexEntry {
+        species: "TEST".into(),
+        classification: "TEST".into(),
+        height_digits: 211,
+        weight_digits: 141,
+        pages: vec!["Test.".into()],
+    };
+    assert_eq!(
+        pokedex_measurements(&entry, true),
+        ("2'11\"".into(), "14.1lb".into())
+    );
+    assert_eq!(
+        pokedex_measurements(&entry, false),
+        ("?'??\"".into(), "???lb".into())
+    );
+}
+
+#[test]
+fn standalone_town_map_ship_animation_matches_rom_poses_and_cadence() {
+    let mut shell = initialized_town_map_location_shell("FastShip1F");
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("FastShip1F".into()) }).unwrap();
+    let records: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/standalone-town-map-ship-animation.json")).unwrap();
+    for (index, row) in records.as_array().unwrap().iter().filter(|row| row["pose"] != 255).enumerate() {
+        if index > 0 { advance_visible_pokegear_map_animation(&mut shell, 1); }
+        assert_eq!(u64::from(shell.pokegear_map_animation_frame / 9), row["pose"].as_u64().unwrap());
+        if index % 9 == 0 && index < 36 {
+            capture_town_map_location_frame(&shell, &format!("standalone-ship-pose-{}", index / 9));
+        }
+    }
+}
+
+#[test]
+fn standalone_town_map_trainer_animation_matches_rom_poses() {
+    let mut shell = initialized_town_map_location_shell("Pokecenter2F");
+    shell.shell.session_mut().state_mut().backup_warp_map_name = Some("CeladonDeptStore1F".into());
+    mark_runtime_snapshot_dirty(&mut shell);
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("Pokecenter2F".into()) }).unwrap();
+    for pose in 0..4 {
+        if pose > 0 { advance_visible_pokegear_map_animation(&mut shell, 9); }
+        capture_town_map_location_frame(&shell, &format!("standalone-special-kanto-pose-{pose}"));
+    }
+    advance_visible_pokegear_map_animation(&mut shell, 9);
+    assert_eq!(shell.pokegear_map_animation_frame, 0);
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    advance_visible_pokegear_map_animation(&mut shell, 9);
+    assert_eq!(shell.pokegear_map_animation_frame, 0, "closed map must not animate");
+}
+
+#[test]
+fn standalone_town_map_ignores_overworld_player_palette_override() {
+    let mut shell = initialized_town_map_location_shell("Pokecenter2F");
+    shell.shell.session_mut().state_mut().backup_warp_map_name = Some("CeladonDeptStore1F".into());
+    shell.shell.session_mut().state_mut().player_palette_id = 5;
+    mark_runtime_snapshot_dirty(&mut shell);
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("Pokecenter2F".into()) }).unwrap();
+    capture_town_map_location_frame(&shell, "standalone-special-kanto");
+}
+
+#[test]
+fn standalone_town_map_kris_poses_use_source_blue_palette() {
+    let mut shell = initialized_town_map_location_shell("Pokecenter2F");
+    shell.shell.session_mut().state_mut().backup_warp_map_name = Some("CeladonDeptStore1F".into());
+    shell.shell.session_mut().state_mut().player_gender = PLAYER_GENDER_FEMALE;
+    // Source map OAM selects PAL_OW_BLUE independently of overworld recoloring.
+    shell.shell.session_mut().state_mut().player_palette_id = 5;
+    mark_runtime_snapshot_dirty(&mut shell);
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::OverworldTownMap { map_name: Some("Pokecenter2F".into()) }).unwrap();
+    for pose in 0..4 {
+        if pose > 0 { advance_visible_pokegear_map_animation(&mut shell, 9); }
+        capture_town_map_location_frame(&shell, &format!("standalone-kris-pose-{pose}"));
+    }
+}
+
+#[test]
+fn npc_sprite_palette_requires_the_requested_source_time_group() {
+    let content = format!("; morn\n{}", "RGB 31,31,31, 20,20,20, 10,10,10, 0,0,0\n".repeat(8));
+    assert!(parse_npc_sprite_palette_bank(&content, "day").is_err(),
+        "a missing day bank must not silently use morning");
+    assert_eq!(parse_npc_sprite_palette_bank(&content, "morning").unwrap().len(), 8);
+    let day = content.replace("; morn", "; day");
+    assert_eq!(parse_npc_sprite_palette_bank(&day, "indoor").unwrap(),
+        parse_npc_sprite_palette_bank(&day, "day").unwrap());
+}
+
+#[test]
+fn pokegear_radio_a_does_not_advance_or_close_the_broadcast() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.pokegear_radio_station = Some("OAKS_POKEMON_TALK".into());
+    load_visible_radio_broadcast(&mut shell).unwrap();
+    for _ in 0..6 {
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.pokegear_menu_open, "PokegearRadio_Joypad does not exit on A");
+        assert!(shell.pokegear_radio_broadcast.is_some(),
+            "broadcast text is driven by PlayRadioShow, not A presses");
+    }
+}
+
+#[test]
+fn pokegear_radio_furniture_holds_input_then_exits_on_a() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::MapRadio { station: "MAPRADIO_POKEMON_CHANNEL".into() }).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.pokegear_radio_broadcast.is_some(), "initial hold must ignore A");
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokegear_menu_open, "initial hold must ignore B");
+    advance_visible_map_radio_delay(&mut shell, 99);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokegear_menu_open, "all 100 delay frames belong to PlayRadio");
+    advance_visible_map_radio_delay(&mut shell, 1);
+    let knob = shell.pokegear_radio_tuning_knob;
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    cycle_visible_pokegear_page(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokegear_radio_tuning_knob, knob, "furniture radio has no tuning controls");
+    assert_eq!(shell.pokegear_page, PokegearPage::Radio, "furniture radio has no cards");
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(!shell.pokegear_menu_open, "furniture radio stops on A, not its last transcript page");
+    assert_eq!(shell.pokegear_map_radio_delay, None);
+    shell.pokegear_map_radio_delay = Some(100);
+    assert_eq!(advance_visible_map_radio_delay(&mut shell, 150), 50,
+        "batched ticks after DelayFrames belong to the broadcast");
+    assert_eq!(shell.pokegear_map_radio_delay, Some(0));
+
+}
+
+#[test]
+fn pokegear_radio_furniture_entry_renders_source_textbox_without_covering_map() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::MapRadio { station: "MAPRADIO_OAKS_POKEMON_TALK".into() }).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    spawn_field_pokegear_screen(&mut commands, &snapshot, &shell, &mut art,
+        &shell.asset_root, &mut images).unwrap();
+    queue.apply(&mut world);
+    assert_eq!(art.font_error, None);
+    let canvas = render_pc_audit_canvas(&mut world, &images, "furniture-radio");
+    let reference = image::load_from_memory(include_bytes!(
+        "../../../../../../tools/asm-oracle/fixtures/furniture-radio-oak-entry.png")).unwrap().to_rgba8();
+    let scale = canvas.width() / 160;
+    for y in 0..144 {
+        for x in 0..160 {
+            let actual = canvas.get_pixel(x * scale, y * scale).0;
+            if y < 96 {
+                assert_eq!(actual[3], 0, "radio must preserve map pixel {x},{y}");
+            } else {
+                assert_eq!(actual.map(|value| value >> 3),
+                    reference.get_pixel(x,y).0.map(|value| value >> 3),
+                    "source furniture radio pixel {x},{y}");
+            }
+        }
+    }
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        canvas.save(PathBuf::from(directory).join("furniture-radio-entry.png")).unwrap();
+    }
+}
+
+#[test]
+fn pokegear_radio_furniture_channel_uses_source_region_and_time() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    use crate::core::world::encounters::TimeOfDay;
+    for (map, backup, johto) in [
+        ("NewBarkTown", None, true),
+        ("FastShip1F", None, true),
+        ("VictoryRoad", None, false),
+        ("Pokecenter2F", Some("CeladonDeptStore1F"), false),
+        // IsInJohto's ship exception precedes SPECIAL resolution.
+        ("Pokecenter2F", Some("FastShip1F"), false),
+    ] {
+        snapshot.overworld.map_name = map.into();
+        snapshot.progression.backup_warp_map_name = backup.map(str::to_string);
+        for time in [TimeOfDay::Morning, TimeOfDay::Day, TimeOfDay::Night] {
+            snapshot.progression.time.time_of_day = time;
+            let expected = if !johto { "PLACES_AND_PEOPLE" }
+                else if time == TimeOfDay::Morning { "POKEDEX_SHOW" }
+                else { "OAKS_POKEMON_TALK" };
+            assert_eq!(visible_furniture_radio_station(&snapshot, "MAPRADIO_POKEMON_CHANNEL").unwrap(), expected);
+        }
+    }
+    assert!(visible_furniture_radio_station(&snapshot, "MISSING_RADIO").is_err());
+    assert!(visible_radio_station_name("MISSING_RADIO", false).is_err());
+}
+
+#[test]
+fn pokegear_radio_takeover_preserves_signal_gates_and_station_identity() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.progression.active_engine_flags.insert("ENGINE_ROCKETS_IN_RADIO_TOWER".into());
+    snapshot.progression.active_engine_flags.insert("ENGINE_ROCKET_SIGNAL_ON_CH20".into());
+    snapshot.progression.active_engine_flags.insert("ENGINE_EXPN_CARD".into());
+    snapshot.progression.time.time_of_day = crate::core::world::encounters::TimeOfDay::Day;
+    for (landmark, handler, expected) in [
+        ("LANDMARK_NEW_BARK_TOWN", "PlacesAndPeople", None),
+        ("LANDMARK_NEW_BARK_TOWN", "RuinsOfAlphRadio", None),
+        ("LANDMARK_NEW_BARK_TOWN", "EvolutionRadio", None),
+        ("LANDMARK_NEW_BARK_TOWN", "PKMNTalkAndPokedexShow", Some(("OAKS_POKEMON_TALK", "MUSIC_ROCKET_OVERTURE"))),
+        ("LANDMARK_NEW_BARK_TOWN", "BuenasPassword", Some(("BUENAS_PASSWORD", "MUSIC_ROCKET_OVERTURE"))),
+        ("LANDMARK_RUINS_OF_ALPH", "RuinsOfAlphRadio", Some(("UNOWN_RADIO", "MUSIC_RUINS_OF_ALPH_RADIO"))),
+        ("LANDMARK_MAHOGANY_TOWN", "EvolutionRadio", Some(("EVOLUTION_RADIO", "MUSIC_LAKE_OF_RAGE_ROCKET_RADIO"))),
+        ("LANDMARK_CELADON_CITY", "PKMNTalkAndPokedexShow", None),
+        ("LANDMARK_CELADON_CITY", "PlacesAndPeople", Some(("PLACES_AND_PEOPLE", "MUSIC_VIRIDIAN_CITY"))),
+        ("LANDMARK_CELADON_CITY", "PokeFluteRadio", Some(("POKE_FLUTE_RADIO", "MUSIC_POKE_FLUTE_CHANNEL"))),
+        ("LANDMARK_FAST_SHIP", "PKMNTalkAndPokedexShow", Some(("OAKS_POKEMON_TALK", "MUSIC_ROCKET_OVERTURE"))),
+    ] {
+        std::sync::Arc::make_mut(&mut snapshot.presentation).pokegear_landmarks.map_to_landmark
+            .insert(snapshot.overworld.map_name.clone(), landmark.into());
+        let actual = visible_pokegear_radio_station(&snapshot, handler).unwrap();
+        assert_eq!(actual.as_ref().map(|(station, music)| (*station, music.as_str())), expected,
+            "{landmark} {handler}: source channel gate must run before PlayRadioShow takeover");
+    }
+    // Gear reception uses the resolved ship landmark, but PlayRadioShow's
+    // IsInJohto checks raw FAST_SHIP before resolving a SPECIAL map.
+    snapshot.overworld.map_name = "Pokecenter2F".into();
+    snapshot.progression.backup_warp_map_name = Some("FastShip1F".into());
+    assert_eq!(visible_pokegear_radio_station(&snapshot, "PKMNTalkAndPokedexShow").unwrap(),
+        Some(("OAKS_POKEMON_TALK", "MUSIC_POKEMON_TALK".into())));
+}
+
+#[test]
+fn pokegear_radio_station_title_uses_source_loader_name() {
+    for (station, name) in [
+        ("OAKS_POKEMON_TALK", "OAK's <PK><MN> Talk"),
+        ("POKEDEX_SHOW", "#DEX Show"), ("POKEMON_MUSIC", "#MON Music"),
+        ("LUCKY_CHANNEL", "Lucky Channel"), ("UNOWN_RADIO", "?????"),
+        ("EVOLUTION_RADIO", "?????"), ("POKE_FLUTE_RADIO", "# FLUTE"),
+        ("PLACES_AND_PEOPLE", "Places & People"),
+        ("LETS_ALL_SING", "Let's All Sing!"), ("ROCKET_RADIO", "Let's All Sing!"),
+    ] {
+        for rockets in [false, true] {
+            assert_eq!(visible_radio_station_name(station, rockets).unwrap(), name);
+        }
+    }
+    assert_eq!(visible_radio_station_name("BUENAS_PASSWORD", false).unwrap(), "");
+    assert_eq!(visible_radio_station_name("BUENAS_PASSWORD", true).unwrap(), "BUENA'S PASSWORD");
+    assert!(visible_radio_station_name("MISSING_RADIO", false).is_err());
+}
+
+#[test]
+fn pokegear_radio_fern_uses_the_music_channel_weekday_song() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.overworld.map_name = "CeladonDeptStore1F".into();
+    snapshot.progression.active_engine_flags.insert("ENGINE_EXPN_CARD".into());
+    snapshot.progression.active_engine_flags.remove("ENGINE_ROCKETS_IN_RADIO_TOWER");
+    for day in 0..7 {
+        snapshot.progression.time.day_of_week = day;
+        let station = visible_pokegear_radio_station(&snapshot, "LetsAllSing").unwrap();
+        assert_eq!(station, Some(("LETS_ALL_SING", if day & 1 == 0 {
+            "MUSIC_POKEMON_MARCH".into()
+        } else { "MUSIC_POKEMON_LULLABY".into() })),
+            "FernMonMusic1 calls StartPokemonMusicChannel, independently of its RadioChannelSongs entry");
+    }
+}
+
+#[test]
+fn pokegear_radio_retuning_resets_all_audio_even_for_the_same_song() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.shell.session_mut().state_mut().flags.clear_engine_flag("ENGINE_ROCKETS_IN_RADIO_TOWER").unwrap();
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.progression.time.time_of_day = crate::core::world::encounters::TimeOfDay::Day;
+    snapshot.progression.active_engine_flags.remove("ENGINE_ROCKETS_IN_RADIO_TOWER");
+    for (knob, previous_song) in [(16, "MUSIC_POKEMON_TALK"), (16, "MUSIC_NEW_BARK_TOWN"), (18, "MUSIC_POKEMON_TALK")] {
+        snapshot.progression.radio_tuning_knob = knob;
+        shell.pending_audio.clear();
+        shell.active_music = Some(previous_song.into());
+        shell.pending_music_stop = false;
+        shell.pending_full_audio_reset = false;
+        shell.transient_audio_playing = true;
+        shell.active_transient_kind = Some(ModpackAudioKind::Cry);
+        shell.pending_audio.push(BevyAudioCommand {
+            audio_id: "SFX_READ_TEXT".into(), kind: ModpackAudioKind::SoundEffect,
+            mode: ModpackAudioPlaybackMode::RawPcm, looped: false,
+        });
+        sync_visible_pokegear_radio(&mut shell, &snapshot).unwrap();
+        if knob == 16 {
+            assert!(!shell.pending_full_audio_reset, "LoadStation sets the program; PlayRadioShow starts its music");
+            advance_visible_radio_broadcast(&mut shell, 1, false).unwrap();
+        }
+        assert!(shell.pending_full_audio_reset,
+            "RadioMusicRestartDE/NoRadioMusic call MUSIC_NONE, resetting all channels");
+        assert!(shell.pending_music_stop);
+        if knob == 16 {
+            assert_eq!(shell.pending_audio.len(), 1, "earlier queued sound must not survive the reset");
+            assert_eq!(shell.pending_audio[0].audio_id, "MUSIC_POKEMON_TALK");
+        } else {
+            assert!(shell.pending_audio.is_empty());
+            assert_eq!(shell.active_music.as_deref(), Some("MUSIC_NONE"));
+        }
+        let mut app = App::new();
+        app.insert_resource(shell).add_systems(Update, play_pending_audio);
+        app.world_mut().spawn(TransientAudioMarker);
+        app.update();
+        let result = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(result.last_error, None);
+        assert!(!result.transient_audio_playing);
+        assert!(result.active_transient_kind.is_none());
+        assert_eq!(app.world_mut().query_filtered::<Entity, With<TransientAudioMarker>>().iter(app.world()).count(), 0);
+        assert_eq!(app.world_mut().query_filtered::<Entity, With<MusicAudioMarker>>().iter(app.world()).count(),
+            usize::from(knob == 16), "only a received station should leave a music playback entity");
+        shell = app.world_mut().remove_resource::<BevyRuntimeShell>().unwrap();
+    }
+}
+
+#[test]
+fn pc_item_quantity_buttons_match_source_wrap_and_ten_item_steps() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    // These cases exercise SelectQuantityToToss after MenuTextbox returns.
+    let question = "How many do you\nwant to withdraw?";
+    shell.pc_notice = Some(question.into());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.into(),
+        page_index: 0,
+        visible_chars: question.chars().count(),
+        frames_until_next_char: 0,
+    });
+    let cases: &[(fn(&mut BevyRuntimeShell) -> Result<()>, u16, u16, u16)] = &[
+        (move_visible_primary_cursor_up, 23, 23, 1),
+        (move_visible_primary_cursor_up, 1, 23, 2),
+        (move_visible_primary_cursor_down, 1, 23, 23),
+        (move_visible_primary_cursor_down, 23, 23, 22),
+        (move_visible_primary_cursor_left, 12, 23, 2),
+        (move_visible_primary_cursor_left, 10, 23, 1),
+        (move_visible_primary_cursor_right, 1, 23, 11),
+        (move_visible_primary_cursor_right, 20, 23, 23),
+        (move_visible_primary_cursor_up, 1, 1, 1),
+        (move_visible_primary_cursor_down, 1, 1, 1),
+        (move_visible_primary_cursor_right, 1, 1, 1),
+    ];
+    for action in [
+        VisiblePlayerPcAction::WithdrawItem,
+        VisiblePlayerPcAction::DepositItem,
+        VisiblePlayerPcAction::TossItem,
+    ] {
+        for &(press, quantity, maximum, expected) in cases {
+            shell.pc_item_quantity = Some(VisiblePcItemQuantity {
+                action,
+                item_id: "POTION".into(),
+                stack_index: 0,
+                quantity,
+                maximum,
+            });
+            press(&mut shell).unwrap();
+            assert_eq!(
+                shell.pc_item_quantity.as_ref().unwrap().quantity,
+                expected,
+                "{action:?}: quantity {quantity}, maximum {maximum}"
+            );
+        }
+    }
+}
+
+#[test]
+fn pc_item_deposit_checks_all_source_bag_pockets_before_refusing_entry() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for item_id in ["POKE_BALL", "BICYCLE", "TM_DYNAMICPUNCH"] {
+        let definition = shell.shell.runtime().data().items[item_id].clone();
+        {
+            let bag = &mut shell.shell.session_mut().state_mut().bag;
+            bag.items.clear();
+            bag.balls.clear();
+            bag.key_items.clear();
+            bag.pc_items.clear();
+            bag.tm_hm.fill(0);
+            bag.custom_pockets.clear();
+        }
+        assert!(
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_item(&definition, 1)
+                .unwrap()
+        );
+        shell.pc_notice = None;
+        shell.field_pack_pocket = None;
+        shell.bag_cursor = None;
+        shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+        open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+        assert_eq!(
+            shell.field_pack_pocket,
+            Some(FieldPackPocket::Items),
+            "HasNoItems must allow opening an empty ITEM pocket when carrying {item_id}"
+        );
+        assert!(
+            shell.pc_notice.is_none(),
+            "{item_id}: {:?}",
+            shell.pc_notice
+        );
+        assert_eq!(
+            shell.bag_cursor.as_ref().unwrap().option_index,
+            0,
+            "empty ITEM pocket retains its CANCEL row"
+        );
+    }
+    {
+        let bag = &mut shell.shell.session_mut().state_mut().bag;
+        bag.items.clear();
+        bag.balls.clear();
+        bag.key_items.clear();
+        bag.pc_items.clear();
+        bag.tm_hm.fill(0);
+        bag.custom_pockets.clear();
+    }
+    for item_id in ["POTION", "ANTIDOTE"] {
+        let definition = shell.shell.runtime().data().items[item_id].clone();
+        assert!(
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_item(&definition, 1)
+                .unwrap()
+        );
+    }
+    shell.bag_cursor = None;
+    shell.field_pack_cursor_positions[0] = 1;
+    open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+    assert_eq!(
+        shell.bag_cursor.as_ref().unwrap().option_index,
+        1,
+        "DepositSellInitPackBuffers retains pocket cursor memory"
+    );
+}
+
+#[test]
+fn pc_item_deposit_returns_to_the_same_pack_selection_after_transfer() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let potion = shell.shell.runtime().data().items["POTION"].clone();
+    {
+        let bag = &mut shell.shell.session_mut().state_mut().bag;
+        bag.items.clear();
+        bag.balls.clear();
+        bag.key_items.clear();
+        bag.pc_items.clear();
+        bag.tm_hm.fill(0);
+        bag.custom_pockets.clear();
+    }
+    assert!(
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_item(&potion, 5)
+            .unwrap()
+    );
+    shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+    open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+    begin_visible_pc_item_quantity(&mut shell).unwrap();
+    commit_visible_pc_item_quantity(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().bag.quantity(&potion), 4);
+    assert_eq!(
+        shell.shell.session().state().bag.pc_item_quantity(&potion),
+        1
+    );
+    assert_eq!(shell.field_pack_pocket, Some(FieldPackPocket::Items));
+    assert_eq!(
+        shell.pc_item_action,
+        Some(VisiblePlayerPcAction::DepositItem)
+    );
+    assert_eq!(shell.bag_cursor.as_ref().unwrap().option_index, 0);
+    dismiss_visible_pc_notice(&mut shell).unwrap();
+    begin_visible_pc_item_quantity(&mut shell).unwrap();
+    adjust_visible_pc_item_quantity(&mut shell, 10).unwrap();
+    commit_visible_pc_item_quantity(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().bag.quantity(&potion), 0);
+    assert_eq!(
+        shell.shell.session().state().bag.pc_item_quantity(&potion),
+        5
+    );
+    assert_eq!(shell.field_pack_pocket, Some(FieldPackPocket::Items));
+    assert_eq!(
+        shell.pc_item_action,
+        Some(VisiblePlayerPcAction::DepositItem)
+    );
+    assert_eq!(
+        shell.bag_cursor.as_ref().unwrap().option_index,
+        0,
+        "last stack becomes CANCEL"
+    );
+}
+
+#[test]
+fn pc_item_deposit_cancel_returns_to_player_pc_from_each_pocket() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let potion = shell.shell.runtime().data().items["POTION"].clone();
+    assert!(
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_item(&potion, 1)
+            .unwrap()
+    );
+    for press in [
+        press_visible_a_button as fn(&mut BevyRuntimeShell) -> Result<()>,
+        press_visible_b_button,
+    ] {
+        for pocket in [
+            FieldPackPocket::Items,
+            FieldPackPocket::Balls,
+            FieldPackPocket::KeyItems,
+            FieldPackPocket::TmHm,
+        ] {
+            shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+            shell.player_pc_action_cursor = None;
+            shell.field_pack_cursor_positions = [0; 4];
+            open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+            open_visible_field_pack_pocket(&mut shell, pocket.clone()).unwrap();
+            let count = field_pack_pocket_count(&shell.shell.snapshot().unwrap(), &pocket);
+            move_visible_active_field_pack_cursor(&mut shell, count as isize).unwrap();
+            press(&mut shell).unwrap();
+            assert_eq!(shell.field_pack_pocket, None, "{pocket:?}");
+            assert_eq!(shell.pc_item_action, None, "{pocket:?}");
+            assert_eq!(
+                shell.player_pc_action_cursor.as_ref().unwrap().option_index,
+                1
+            );
+            assert!(shell.pc_item_quantity.is_none());
+        }
+    }
+}
+
+#[test]
+fn pc_item_deposit_uses_each_source_pocket_and_skips_protected_item_quantities() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for (item_id, pocket, prompt) in [
+        ("POKE_BALL", FieldPackPocket::Balls, true),
+        ("TM_MUD_SLAP", FieldPackPocket::TmHm, true),
+        ("BICYCLE", FieldPackPocket::KeyItems, false),
+        ("HM_CUT", FieldPackPocket::TmHm, false),
+    ] {
+        let definition = shell.shell.runtime().data().items[item_id].clone();
+        {
+            let bag = &mut shell.shell.session_mut().state_mut().bag;
+            bag.items.clear();
+            bag.balls.clear();
+            bag.key_items.clear();
+            bag.pc_items.clear();
+            bag.tm_hm.fill(0);
+            bag.custom_pockets.clear();
+            assert!(
+                bag.add_item(&definition, if prompt { 3 } else { 1 })
+                    .unwrap()
+            );
+        }
+        shell.pc_notice = None;
+        shell.shell.session_mut().state_mut().registered_key_item =
+            (item_id == "BICYCLE").then(|| item_id.to_string());
+        shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+        shell.player_pc_action_cursor = None;
+        shell.field_pack_cursor_positions = [0; 4];
+        open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+        open_visible_field_pack_pocket(&mut shell, pocket.clone()).unwrap();
+        begin_visible_pc_item_quantity(&mut shell).unwrap();
+        if prompt {
+            assert_eq!(
+                shell.pc_item_quantity.as_ref().unwrap().maximum,
+                3,
+                "{item_id}"
+            );
+            adjust_visible_pc_item_quantity(&mut shell, 1).unwrap();
+            commit_visible_pc_item_quantity(&mut shell).unwrap();
+        } else {
+            assert!(
+                shell.pc_item_quantity.is_none(),
+                "{item_id} must transfer one without a quantity prompt"
+            );
+        }
+        assert_eq!(
+            shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .pc_item_quantity(&definition),
+            if prompt { 2 } else { 1 },
+            "{item_id}"
+        );
+        assert_eq!(
+            shell.shell.session().state().bag.quantity(&definition),
+            if prompt { 1 } else { 0 },
+            "{item_id}"
+        );
+        assert_eq!(shell.field_pack_pocket, Some(pocket));
+        if item_id == "BICYCLE" {
+            assert_eq!(
+                shell.shell.session().state().registered_key_item,
+                None,
+                "CheckRegisteredItem clears a deposited registered key item"
+            );
+        }
+    }
+}
+
+#[test]
+fn pc_item_withdrawal_checks_the_items_actual_destination_pocket() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let ball = shell.shell.runtime().data().items["POKE_BALL"].clone();
+    let item_definitions = shell
+        .shell
+        .runtime()
+        .data()
+        .items
+        .values()
+        .filter(|item| item.pocket == "ITEM")
+        .take(20)
+        .cloned()
+        .collect::<Vec<_>>();
+    {
+        let bag = &mut shell.shell.session_mut().state_mut().bag;
+        bag.items.clear();
+        bag.balls.clear();
+        bag.pc_items.clear();
+        for item in &item_definitions {
+            assert!(bag.add_item(item, 99).unwrap());
+        }
+        assert!(bag.add_pc_item(&ball, 2).unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    begin_visible_pc_item_quantity(&mut shell).unwrap();
+    commit_visible_pc_item_quantity(&mut shell).unwrap();
+    assert_eq!(
+        shell.shell.session().state().bag.quantity(&ball),
+        1,
+        "a full ITEM pocket must not block withdrawal into the BALL pocket"
+    );
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&ball), 1);
+}
+
+#[test]
+fn pc_item_quantity_arrows_leave_the_printed_question_unchanged() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let question = "How many do you\nwant to withdraw?";
+    shell.pc_item_quantity = Some(VisiblePcItemQuantity {
+        action: VisiblePlayerPcAction::WithdrawItem,
+        item_id: "POTION".into(),
+        stack_index: 0,
+        quantity: 1,
+        maximum: 23,
+    });
+    shell.pc_notice = Some(question.into());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.into(),
+        page_index: 0,
+        visible_chars: question.chars().count(),
+        frames_until_next_char: 0,
+    });
+    for delta in [1, 10, -1, -10] {
+        adjust_visible_pc_item_quantity(&mut shell, delta).unwrap();
+        assert_eq!(shell.pc_notice.as_deref(), Some(question));
+        assert_eq!(
+            visible_revealed_shell_notice_text(&shell, question),
+            question
+        );
+    }
+}
+
+#[test]
+fn pc_item_list_matches_source_initial_geometry() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [
+        ("POTION", 23),
+        ("ANTIDOTE", 1),
+        ("POKE_BALL", 12),
+        ("GREAT_BALL", 2),
+        ("ESCAPE_ROPE", 3),
+        ("REPEL", 4),
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_pc_item(&item, quantity)
+            .unwrap());
+    }
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    spawn_field_pc_item_screen(
+        &mut commands,
+        &snapshot,
+        &shell,
+        &mut art,
+        &shell.asset_root,
+        &mut images,
+    )
+    .unwrap();
+    queue.apply(&mut world);
+    assert_eq!(art.font_error, None);
+    let canvas = render_pc_audit_canvas(&mut world, &images, "pc-items-initial");
+    let reference = image::load_from_memory(include_bytes!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-items-initial.png"
+    ))
+    .unwrap()
+    .to_rgba8();
+    let scale = canvas.width() / 160;
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        canvas
+            .save(PathBuf::from(directory).join("pc-items-initial.png"))
+            .unwrap();
+    }
+    // Compare source ink independently of the inherited CGB palette. This
+    // checks all glyphs, frame pixels and spacing, not palette ownership.
+    for y in 0..144 {
+        for x in 0..160 {
+            let actual = canvas.get_pixel(x * scale, y * scale).0;
+            let expected = reference.get_pixel(x, y).0;
+            assert_eq!(
+                actual[..3].iter().all(|v| *v < 64),
+                expected[..3].iter().all(|v| *v < 64),
+                "source ink at {x},{y}"
+            );
+        }
+    }
+}
+
+#[test]
+fn pc_item_list_ignores_horizontal_input_and_stops_at_cancel() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for id in ["POTION", "ANTIDOTE"] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_pc_item(&item, 1)
+            .unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    shell.pc_notice = None;
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(
+        shell.pc_item_cursor.as_ref().unwrap().option_index,
+        0,
+        "PCItemsMenuData does not enable horizontal input"
+    );
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 0);
+    move_visible_pc_item_cursor(&mut shell, -1).unwrap();
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 0);
+    for expected in [1, 2, 2] {
+        move_visible_pc_item_cursor(&mut shell, 1).unwrap();
+        assert_eq!(
+            shell.pc_item_cursor.as_ref().unwrap().option_index,
+            expected
+        );
+    }
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.pc_item_cursor.is_none());
+    assert!(shell.pc_item_quantity.is_none());
+    assert_eq!(
+        shell.player_pc_action_cursor.as_ref().unwrap().option_index,
+        0
+    );
+}
+
+#[test]
+fn pc_item_list_scroll_matches_source_down_trace() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for id in [
+        "POTION",
+        "ANTIDOTE",
+        "POKE_BALL",
+        "GREAT_BALL",
+        "ESCAPE_ROPE",
+        "REPEL",
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_pc_item(&item, 1)
+            .unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    let source: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-items-scroll.json"
+    ))
+    .unwrap();
+    for (index, record) in source["records"].as_array().unwrap().iter().enumerate() {
+        if index != 0 {
+            move_visible_pc_item_cursor(&mut shell, 1).unwrap();
+        }
+        let scroll = record["scroll"].as_u64().unwrap() as usize;
+        let row = record["cursor"].as_u64().unwrap() as usize - 1;
+        assert_eq!(
+            shell.pc_item_cursor.as_ref().unwrap().option_index,
+            scroll + row
+        );
+        assert_eq!(shell.pc_item_scroll, scroll, "source down input {index}");
+    }
+}
+
+#[test]
+fn pc_item_list_empty_withdraw_and_toss_open_on_cancel() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (index, action) in [
+        (0, VisiblePlayerPcAction::WithdrawItem),
+        (2, VisiblePlayerPcAction::TossItem),
+    ] {
+        shell.pc_notice = None;
+        shell.pc_item_cursor = None;
+        shell.pc_item_action = None;
+        shell.player_pc_action_cursor = Some(MenuCursor {
+            surface_id: "pc:player-actions".into(),
+            option_index: index,
+        });
+        confirm_visible_player_pc_action(&mut shell).unwrap();
+        assert_eq!(shell.pc_item_action, Some(action));
+        assert_eq!(
+            shell
+                .pc_item_cursor
+                .as_ref()
+                .map(|cursor| cursor.option_index),
+            Some(0)
+        );
+        assert!(
+            shell.pc_notice.is_none(),
+            "source opens its empty scrolling list"
+        );
+        press_visible_a_button(&mut shell).unwrap();
+        assert_eq!(
+            shell.player_pc_action_cursor.as_ref().unwrap().option_index,
+            index
+        );
+        assert!(shell.pc_item_quantity.is_none());
+    }
+}
+
+#[test]
+fn pc_item_list_withdrawal_keeps_source_row_and_cancel() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for (ids, selected, scroll, expected_index, expected_scroll) in [
+        (vec!["POTION", "ANTIDOTE", "GREAT_BALL"], 1, 0, 1, 0),
+        (vec!["POTION"], 0, 0, 0, 0),
+        (
+            vec![
+                "POTION",
+                "ANTIDOTE",
+                "POKE_BALL",
+                "GREAT_BALL",
+                "ESCAPE_ROPE",
+                "REPEL",
+            ],
+            5,
+            2,
+            5,
+            2,
+        ),
+    ] {
+        shell.shell.session_mut().state_mut().bag.pc_items.clear();
+        for id in ids {
+            let item = shell.shell.runtime().data().items[id].clone();
+            assert!(shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_pc_item(&item, 1)
+                .unwrap());
+        }
+        shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+        shell.pc_item_cursor = Some(MenuCursor {
+            surface_id: "pc:items".into(),
+            option_index: selected,
+        });
+        shell.pc_item_scroll = scroll;
+        shell.player_pc_action_cursor = None;
+        shell.pc_notice = None;
+        begin_visible_pc_item_quantity(&mut shell).unwrap();
+        commit_visible_pc_item_quantity(&mut shell).unwrap();
+        dismiss_visible_pc_notice(&mut shell).unwrap();
+        assert_eq!(
+            shell.pc_item_action,
+            Some(VisiblePlayerPcAction::WithdrawItem)
+        );
+        assert!(shell.player_pc_action_cursor.is_none());
+        assert_eq!(
+            shell.pc_item_cursor.as_ref().unwrap().option_index,
+            expected_index
+        );
+        assert_eq!(shell.pc_item_scroll, expected_scroll);
+    }
+}
+
+#[test]
+fn pc_item_list_reopens_at_its_source_row_and_scroll() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for id in [
+        "POTION",
+        "ANTIDOTE",
+        "POKE_BALL",
+        "GREAT_BALL",
+        "ESCAPE_ROPE",
+        "REPEL",
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_pc_item(&item, 1)
+            .unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    for _ in 0..5 {
+        move_visible_pc_item_cursor(&mut shell, 1).unwrap();
+    }
+    close_visible_pc_item_list(&mut shell);
+    confirm_visible_player_pc_action(&mut shell).unwrap();
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 5);
+    assert_eq!(shell.pc_item_scroll, 2);
+}
+
+#[test]
+fn pc_item_list_toss_keeps_source_row_and_cancel() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for (ids, selected, scroll, expected_index, expected_scroll) in [
+        (vec!["POTION", "ANTIDOTE", "GREAT_BALL"], 1, 0, 1, 0),
+        (vec!["POTION"], 0, 0, 0, 0),
+        (
+            vec![
+                "POTION",
+                "ANTIDOTE",
+                "POKE_BALL",
+                "GREAT_BALL",
+                "ESCAPE_ROPE",
+                "REPEL",
+            ],
+            5,
+            2,
+            5,
+            2,
+        ),
+    ] {
+        shell.shell.session_mut().state_mut().bag.pc_items.clear();
+        for id in ids {
+            let item = shell.shell.runtime().data().items[id].clone();
+            assert!(shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_pc_item(&item, 1)
+                .unwrap());
+        }
+        shell.pc_item_action = Some(VisiblePlayerPcAction::TossItem);
+        shell.pc_item_cursor = Some(MenuCursor {
+            surface_id: "pc:items".into(),
+            option_index: selected,
+        });
+        shell.pc_item_scroll = scroll;
+        shell.player_pc_action_cursor = None;
+        shell.pc_notice = None;
+        begin_visible_pc_item_quantity(&mut shell).unwrap();
+        commit_visible_pc_item_quantity(&mut shell).unwrap();
+        resolve_visible_pc_confirmation(&mut shell, true).unwrap();
+        dismiss_visible_pc_notice(&mut shell).unwrap();
+        assert_eq!(
+            shell.pc_item_action,
+            Some(VisiblePlayerPcAction::TossItem)
+        );
+        assert!(shell.player_pc_action_cursor.is_none());
+        assert_eq!(
+            shell.pc_item_cursor.as_ref().unwrap().option_index,
+            expected_index
+        );
+        assert_eq!(shell.pc_item_scroll, expected_scroll);
+    }
+}
+
+#[test]
+fn pc_item_quantity_question_finishes_before_selector_input() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let potion = shell.shell.runtime().data().items["POTION"].clone();
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    assert!(shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .bag
+        .add_pc_item(&potion, 3)
+        .unwrap());
+    let question = "How many do you\nwant to withdraw?";
+    let buttons: &[(&str, fn(&mut BevyRuntimeShell) -> Result<()>)] = &[
+        ("A", press_visible_a_button),
+        ("B", press_visible_b_button),
+        ("Up", move_visible_primary_cursor_up),
+        ("Down", move_visible_primary_cursor_down),
+        ("Left", move_visible_primary_cursor_left),
+        ("Right", move_visible_primary_cursor_right),
+    ];
+    for &(name, press) in buttons {
+        shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+        shell.pc_item_cursor = Some(MenuCursor {
+            surface_id: "pc:items".into(),
+            option_index: 0,
+        });
+        shell.pc_item_quantity = Some(VisiblePcItemQuantity {
+            action: VisiblePlayerPcAction::WithdrawItem,
+            item_id: "POTION".into(),
+            stack_index: 0,
+            quantity: 1,
+            maximum: 3,
+        });
+        shell.pc_notice = Some(question.into());
+        shell.field_text_reveal = Some(VisibleFieldTextReveal {
+            text: question.into(),
+            page_index: 0,
+            visible_chars: 1,
+            frames_until_next_char: 1,
+        });
+        press(&mut shell).unwrap();
+        assert_eq!(
+            shell.pc_item_quantity.as_ref().map(|q| q.quantity),
+            Some(1),
+            "{name} reached the selector before MenuTextbox returned"
+        );
+        assert_eq!(
+            shell.shell.session().state().bag.pc_item_quantity(&potion),
+            3
+        );
+    }
+    shell.field_text_reveal.as_mut().unwrap().visible_chars = question.chars().count();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.pc_item_quantity.is_none());
+    assert_eq!(
+        shell.shell.session().state().bag.pc_item_quantity(&potion),
+        2
+    );
+}
+
+#[test]
+fn pokegear_live_furniture_radio_prints_broadcast_after_initial_hold() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    activate_visible_special_routine_boundary(&mut shell,
+        &SpecialRoutineEffect::MapRadio { station: "MAPRADIO_ROCKET".into() }).unwrap();
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(shell)
+        .insert_resource(native_rtc_source_for_test())
+        .insert_resource(ButtonInput::<KeyCode>::default())
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .add_systems(Update, apply_keyboard_input);
+    for _ in 0..150 { app.update(); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert_eq!(shell.pokegear_map_radio_delay, Some(0));
+    let snapshot = shell.shell.snapshot().unwrap();
+    let text = visible_pokegear_menu_entries(&snapshot, shell).unwrap().join("\n");
+    assert!(text.contains("Ahem, we are"),
+        "PlayRadioShow must print source RocketRadioText1 after its 100-frame hold, got {text:?}");
+    for index in 0..17 {
+        if index > 0 {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            let mut complete = false;
+            for _ in 0..150 {
+                advance_visible_radio_broadcast(&mut shell, 1, false).unwrap();
+                let state = &shell.pokegear_radio_broadcast.as_ref().unwrap().playback.state;
+                if state.current_line == 84 && state.delay == 100 { complete = true; break; }
+            }
+            assert!(complete, "radio print {index} did not complete");
+        }
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_field_pokegear_screen(&mut commands, &snapshot, shell, &mut art, &shell.asset_root, &mut images).unwrap();
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None);
+        let canvas = render_pc_audit_canvas(&mut world, &images, "radio-broadcast");
+        let source = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(format!("../../../tools/asm-oracle/fixtures/radio-rocket-render/radio-print-{index}.png"));
+        let reference = image::open(source).unwrap().to_rgba8();
+        let scale = canvas.width() / 160;
+        for y in 0..144 {
+            for x in 0..160 {
+                let actual = canvas.get_pixel(x * scale, y * scale).0;
+                if y < 96 { assert_eq!(actual[3], 0, "radio overlay covers map {x},{y}"); }
+                else { assert_eq!(actual.map(|value| value >> 3), reference.get_pixel(x, y).0.map(|value| value >> 3), "source radio print {index} pixel {x},{y}"); }
+            }
+        }
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("radio-print-{index}.png"))).unwrap();
+        }
+    }
+
+}
+
+#[test]
+fn pc_item_select_moves_stack_with_a_instead_of_opening_quantity() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [("POTION", 23), ("ANTIDOTE", 2), ("POKE_BALL", 12)] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_pc_item(&item, quantity)
+                .unwrap()
+        );
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    assert!(
+        has_visible_shell_select_action(&mut shell),
+        "PCItemsJoypad enables SELECT"
+    );
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    press_visible_select_button(&mut shell).unwrap();
+    assert!(
+        shell.field_notice.is_none(),
+        "PC Select must not use the registered-item path"
+    );
+    move_visible_pc_item_cursor(&mut shell, 2).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(
+        shell.pc_item_quantity.is_none(),
+        "A places the carried stack before entering withdrawal"
+    );
+    assert!(shell.pc_item_move_sequence.is_some());
+    advance_visible_pc_item_move_sequence(&mut shell).unwrap();
+    assert!(
+        shell.pc_item_move_sequence.is_some(),
+        "first switch sound must finish before the second starts"
+    );
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    advance_visible_pc_item_move_sequence(&mut shell).unwrap();
+    assert!(
+        shell.pc_item_move_sequence.is_none(),
+        "second sound starts without another wait"
+    );
+    assert!(
+        shell
+            .pending_audio
+            .iter()
+            .any(|audio| audio.audio_id == "SFX_SWITCH_POKEMON")
+    );
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(
+        snapshot
+            .bag
+            .pc_items
+            .iter()
+            .map(|stack| (stack.item_id.as_str(), stack.quantity))
+            .collect::<Vec<_>>(),
+        [("ANTIDOTE", 2), ("POKE_BALL", 12), ("POTION", 23)]
+    );
+}
+
+#[test]
+fn pc_item_select_b_cancels_move_without_closing_the_list() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    let item = shell.shell.runtime().data().items["POTION"].clone();
+    assert!(
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_pc_item(&item, 2)
+            .unwrap()
+    );
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    press_visible_select_button(&mut shell).unwrap();
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(
+        shell.pc_item_cursor.is_some(),
+        "PCItemsJoypad .b_2 clears wSwitchItem and reopens the list"
+    );
+    assert_eq!(
+        shell.pc_item_action,
+        Some(VisiblePlayerPcAction::WithdrawItem)
+    );
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pc_item_cursor.is_none(), "the next B exits normally");
+}
+
+#[test]
+fn pokegear_compiled_radio_retains_raw_landmark_names() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    for filename in [
+        "core-modular.crystalpack",
+        "core-modular.browser.crystalpack",
+    ] {
+        let pack = crystal_assets::read_verified_compiled_game_pack(
+            root.join("content-packs").join(filename),
+        )
+        .unwrap();
+        let definitions = &pack.data().global_scripts.as_ref().unwrap().definitions;
+        let rows = definitions["Landmarks"].as_array().unwrap();
+        assert_eq!(rows.len(), 96, "{filename}");
+        assert_eq!(
+            definitions["NewBarkTownName"][0]["args"][0], "\"NEW BARK<BSP>TOWN@\"",
+            "{filename}"
+        );
+        for row in rows {
+            let label = row["args"][2].as_str().unwrap();
+            assert!(
+                definitions.contains_key(label),
+                "{filename} omitted source name {label}"
+            );
+        }
+    }
+}
+
+#[test]
+fn pc_item_text_observation_accepts_cancel_in_empty_and_nonempty_lists() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    for count in 0..=1 {
+        if count == 1 {
+            let item = shell.shell.runtime().data().items["POTION"].clone();
+            assert!(
+                shell
+                    .shell
+                    .session_mut()
+                    .state_mut()
+                    .bag
+                    .add_pc_item(&item, 1)
+                    .unwrap()
+            );
+        }
+        shell.pc_item_cursor = Some(MenuCursor {
+            surface_id: "pc:items".into(),
+            option_index: count,
+        });
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut entries = Vec::new();
+        push_visible_pc_item_dialog_entries(&mut entries, &snapshot, &shell).unwrap();
+        assert!(
+            entries.iter().any(|line| line.contains(">CANCEL")),
+            "source CANCEL row must be visible: {entries:?}"
+        );
+        assert!(
+            !entries
+                .iter()
+                .any(|line| line.contains("INVALID CURSOR") || line == "EMPTY"),
+            "{entries:?}"
+        );
+    }
+}
+
+#[test]
+fn pc_item_select_is_available_over_source_pc_window() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().script_runtime.window_open = true;
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor { surface_id: "pc:items".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    assert!(shell.shell.snapshot().unwrap().ui.window_open);
+    assert!(has_visible_shell_select_action(&mut shell), "PCItemsJoypad owns SELECT while its parent script window remains open");
+}
+
+#[test]
+fn pc_item_move_render_matches_source_select_place_and_cancel_frames() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-items-move.json"
+    ))
+    .unwrap();
+    let references: [&[u8]; 8] = [
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-0.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-1.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-2.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-3.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-4.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-5.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-6.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-7.png"),
+    ];
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [
+        ("POTION", 23),
+        ("ANTIDOTE", 1),
+        ("POKE_BALL", 12),
+        ("GREAT_BALL", 2),
+        ("ESCAPE_ROPE", 3),
+        ("REPEL", 4),
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_pc_item(&item, quantity)
+                .unwrap()
+        );
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    let mut images = Assets::<Image>::default();
+    for (index, record) in fixture["records"].as_array().unwrap().iter().enumerate() {
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = false;
+        match record["button"].as_str() {
+            None => {}
+            Some("select") => press_visible_select_button(&mut shell).unwrap(),
+            Some("down") => move_visible_pc_item_cursor(&mut shell, 1).unwrap(),
+            Some("a") => press_visible_a_button(&mut shell).unwrap(),
+            Some("b") => press_visible_b_button(&mut shell).unwrap(),
+            other => panic!("unexpected source input {other:?}"),
+        }
+        for _ in 0..3 {
+            if shell.pc_item_move_sequence.is_none() {
+                break;
+            }
+            shell.pending_audio.clear();
+            shell.transient_audio_playing = false;
+            advance_visible_pc_item_move_sequence(&mut shell).unwrap();
+        }
+        assert!(shell.pc_item_move_sequence.is_none());
+        assert_eq!(
+            shell.pc_item_switch_origin.map_or(0, |i| i + 1),
+            record["switch_item"].as_u64().unwrap() as usize
+        );
+        assert_eq!(
+            shell.pc_item_scroll,
+            record["scroll"].as_u64().unwrap() as usize
+        );
+        assert_eq!(
+            shell.pc_item_cursor.as_ref().unwrap().option_index - shell.pc_item_scroll + 1,
+            record["cursor"].as_u64().unwrap() as usize
+        );
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut world = World::new();
+        let mut art = RenderedTilesetArt::default();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_field_pc_item_screen(
+            &mut commands,
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None);
+        let canvas = render_pc_audit_canvas(&mut world, &images, "pc-items-move");
+        let reference = image::load_from_memory(references[index])
+            .unwrap()
+            .to_rgba8();
+        let scale = canvas.width() / 160;
+        // Compare source RGB5 as well as ink; display color expansion may
+        // differ while the actual Game Boy color values must agree.
+        for y in 0..144 {
+            for x in 0..160 {
+                let actual = canvas.get_pixel(x * scale, y * scale).0;
+                let expected = reference.get_pixel(x, y).0;
+                assert_eq!(actual.map(|value| value >> 3), expected.map(|value| value >> 3),
+                    "frame {index}, source RGB5 {x},{y}");
+                assert_eq!(
+                    actual[..3].iter().all(|v| *v < 64),
+                    expected[..3].iter().all(|v| *v < 64),
+                    "frame {index}, source ink {x},{y}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn pc_withdraw_quantity_matches_real_source_menu_frames() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity.json"
+    ))
+    .unwrap();
+    let references: [&[u8]; 4] = [
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-0.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-1.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-2.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-3.png"),
+    ];
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [
+        ("POTION", 23),
+        ("ANTIDOTE", 1),
+        ("POKE_BALL", 12),
+        ("GREAT_BALL", 2),
+        ("ESCAPE_ROPE", 3),
+        ("REPEL", 4),
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(
+            shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_pc_item(&item, quantity)
+                .unwrap()
+        );
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor {
+        surface_id: "pc:items".into(),
+        option_index: 0,
+    });
+    press_visible_a_button(&mut shell).unwrap();
+    let question = shell.pc_notice.clone().unwrap();
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.clone(),
+        page_index: 0,
+        visible_chars: question.chars().count(),
+        frames_until_next_char: 0,
+    });
+    for (index, record) in fixture["records"].as_array().unwrap().iter().enumerate() {
+        match record["button"].as_str() {
+            None => {}
+            Some("down") => adjust_visible_pc_item_quantity(&mut shell, -1).unwrap(),
+            Some("up") => adjust_visible_pc_item_quantity(&mut shell, 1).unwrap(),
+            Some("right") => adjust_visible_pc_item_quantity(&mut shell, 10).unwrap(),
+            other => panic!("unexpected source quantity input {other:?}"),
+        }
+        assert_eq!(
+            shell.pc_item_quantity.as_ref().unwrap().quantity as u64,
+            record["quantity"].as_u64().unwrap()
+        );
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_scene_dialog(
+            &mut commands,
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        let canvas = render_pc_audit_canvas(&mut world, &images, "pc-withdraw-quantity");
+        let reference = image::load_from_memory(references[index])
+            .unwrap()
+            .to_rgba8();
+        let scale = canvas.width() / 160;
+        for y in 0..144 {
+            for x in 0..160 {
+                assert_eq!(
+                    canvas.get_pixel(x * scale, y * scale).0.map(|v| v >> 3),
+                    reference.get_pixel(x, y).0.map(|v| v >> 3),
+                    "frame {index}, source pixel {x},{y}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn pc_deposit_quantity_matches_real_source_menu_frames() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity.json"
+    ))
+    .unwrap();
+    let references: [&[u8]; 4] = [
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-0.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-1.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-2.png"),
+        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-3.png"),
+    ];
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let potion = shell.shell.runtime().data().items["POTION"].clone();
+    shell.shell.session_mut().state_mut().bag.items.clear();
+    shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .bag
+        .add_item(&potion, 23)
+        .unwrap();
+    shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+    open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    let question = shell.pc_notice.clone().unwrap();
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.clone(),
+        page_index: 0,
+        visible_chars: question.chars().count(),
+        frames_until_next_char: 0,
+    });
+    for (index, record) in fixture["records"].as_array().unwrap().iter().enumerate() {
+        match record["button"].as_str() {
+            None => {}
+            Some("down") => adjust_visible_pc_item_quantity(&mut shell, -1).unwrap(),
+            Some("up") => adjust_visible_pc_item_quantity(&mut shell, 1).unwrap(),
+            Some("right") => adjust_visible_pc_item_quantity(&mut shell, 10).unwrap(),
+            other => panic!("unexpected source quantity input {other:?}"),
+        }
+        assert_eq!(
+            shell.pc_item_quantity.as_ref().unwrap().quantity as u64,
+            record["quantity"].as_u64().unwrap()
+        );
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_field_pack_screen(
+            &mut commands,
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        let canvas = render_pc_audit_canvas(&mut world, &images, "pc-deposit-quantity");
+        let reference = image::load_from_memory(references[index])
+            .unwrap()
+            .to_rgba8();
+        let scale = canvas.width() / 160;
+        for y in 0..144 {
+            for x in 0..160 {
+                assert_eq!(
+                    canvas.get_pixel(x * scale, y * scale).0.map(|v| v >> 3),
+                    reference.get_pixel(x, y).0.map(|v| v >> 3),
+                    "frame {index}, source pixel {x},{y}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn pc_deposit_pack_scroll_matches_source_in_both_directions() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/pc-deposit-scroll.json"
+    ))
+    .unwrap();
+    let references: [&[u8]; 12] = [
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-0.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-1.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-2.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-3.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-4.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-5.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-6.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-7.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-8.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-9.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-10.png"
+        ),
+        include_bytes!(
+            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-11.png"
+        ),
+    ];
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.items.clear();
+    for (id, quantity) in [
+        ("POTION", 23),
+        ("ANTIDOTE", 1),
+        ("ESCAPE_ROPE", 3),
+        ("REPEL", 4),
+        ("SUPER_POTION", 5),
+        ("HYPER_POTION", 6),
+    ] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .add_item(&item, quantity)
+            .unwrap();
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::DepositItem);
+    open_visible_pc_item_deposit_pack(&mut shell).unwrap();
+    for (index, record) in fixture["records"].as_array().unwrap().iter().enumerate() {
+        match record["button"].as_str() {
+            None => {}
+            Some("down") => move_visible_active_field_pack_cursor(&mut shell, 1).unwrap(),
+            Some("up") => move_visible_active_field_pack_cursor(&mut shell, -1).unwrap(),
+            other => panic!("unexpected source scroll input {other:?}"),
+        }
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_field_pack_screen(
+            &mut commands,
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        let canvas = render_pc_audit_canvas(&mut world, &images, "pc-deposit-scroll");
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("pc-deposit-scroll-{index}.png"))).unwrap();
+        }
+        let reference = image::load_from_memory(references[index])
+            .unwrap()
+            .to_rgba8();
+        let scale = canvas.width() / 160;
+        for y in 0..144 {
+            for x in 0..160 {
+                assert_eq!(
+                    canvas.get_pixel(x * scale, y * scale).0.map(|v| v >> 3),
+                    reference.get_pixel(x, y).0.map(|v| v >> 3),
+                    "frame {index}, source pixel {x},{y}"
+                );
+            }
+        }
+    }
+    open_visible_field_pack_pocket(&mut shell, FieldPackPocket::Balls).unwrap();
+    open_visible_field_pack_pocket(&mut shell, FieldPackPocket::Items).unwrap();
+    assert_eq!(shell.field_pack_scroll_positions[0], 2);
+    assert_eq!(shell.bag_cursor.as_ref().unwrap().option_index, 3);
+
+}
+
+#[test]
+fn pack_reentry_after_removing_a_stack_preserves_the_source_screen_row() {
+    // Six items + CANCEL, bottom row selected. Removing one item makes
+    // InitScrollingMenuCursor reduce scroll from two to one before restoring Y.
+    let mut cursor = Some(MenuCursor { surface_id: "bag:items".into(), option_index: 6 });
+    let mut scroll = 2;
+    move_visible_pack_cursor_slot(&mut cursor, "bag:items".into(), 6, 0,
+        &mut scroll, &mut Vec::new()).unwrap();
+    assert_eq!(scroll, 1);
+    assert_eq!(cursor.unwrap().option_index, 5);
+}
+
+#[test]
+fn pokegear_live_all_radio_stations_match_source_textboxes() {
+    check_live_radio_source_fixtures(&["buena-day", "buena-night", "lucky", "oak", "pokedex", "places-people", "ben-sunday", "fern-monday"]);
+}
+
+#[test]
+fn pokegear_station_loading_preserves_source_radio_music_state() {
+    use crate::assets::radio_host::RadioMusicEffect;
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.pokegear_radio_station = Some("OAKS_POKEMON_TALK".into());
+    load_visible_radio_broadcast(&mut shell).unwrap();
+    for mode in [RadioMusicEffect::Stop, RadioMusicEffect::PokemonChannel,
+        RadioMusicEffect::Restart("MUSIC_POKEMON_TALK")]
+    {
+        shell.pokegear_radio_broadcast.as_mut().unwrap().host.music_mode = Some(mode.clone());
+        shell.pokegear_radio_station = Some("LUCKY_CHANNEL".into());
+        load_visible_radio_broadcast(&mut shell).unwrap();
+        assert_eq!(shell.pokegear_radio_broadcast.as_ref().unwrap().host.music_mode,
+            Some(mode), "LoadStation_LuckyChannel does not write wPokegearRadioMusicPlaying");
+        assert_eq!(shell.pokegear_radio_broadcast.as_ref().unwrap().playback.state.current_line, 3);
+    }
+}
+
+#[test]
+fn pokegear_phone_last_text_button_is_not_a_new_hangup_press() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().unwrap();
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Phone;
+    shell.pokegear_joypad.sample(crate::core::input::B_PAD_A, true);
+    start_visible_pokegear_phone_call(&mut shell).unwrap();
+    for _ in 0..2 {
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = false;
+        advance_visible_pokegear_phone_call(&mut shell, 1).unwrap();
+    }
+    assert_eq!(shell.pokegear_phone_call.as_ref().unwrap().phase, VisiblePokegearPhoneCallPhase::Calling);
+    let mut keys = ButtonInput::default();
+    for _ in 0..40 {
+        advance_visible_script_until_player_boundary(&mut shell).unwrap();
+        for _ in 0..256 {
+            let snapshot = shell.shell.snapshot().unwrap();
+            if visible_field_dialogue_is_fully_revealed(&shell, &snapshot) { break; }
+            tick_visible_field_text_reveal(&mut shell, true).unwrap();
+        }
+        if visible_text_label_can_auto_continue(&shell).unwrap() {
+            advance_visible_text_label(&mut shell).unwrap();
+        }
+        keys = ButtonInput::default();
+        keys.press(KeyCode::KeyX);
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.last_error, None);
+        keys.clear();
+        advance_visible_pokegear_phone_call(&mut shell, 1).unwrap();
+        if matches!(shell.pokegear_phone_call.as_ref().unwrap().phase, VisiblePokegearPhoneCallPhase::FinishDelay { .. }) { break; }
+    }
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert!(matches!(shell.pokegear_phone_call.as_ref().unwrap().phase, VisiblePokegearPhoneCallPhase::FinishDelay { .. }),
+        "compiled phone conversation must finish at its source ten-frame hold: phase={:?} cursor={:?} label={:?} pending_label={:?} wait={:?} last_action={:?}",
+        shell.pokegear_phone_call.as_ref().unwrap().phase, shell.active_script_cursor,
+        snapshot.ui.text.as_ref().map(|text| &text.label), snapshot.script_events.pending_text_label,
+        snapshot.ui.pending_text_wait, shell.last_runtime_action.as_ref().map(|record| &record.action));
+    advance_visible_pokegear_phone_call(&mut shell, 10).unwrap();
+    assert!(keys.pressed(KeyCode::KeyX));
+    assert!(!keys.just_pressed(KeyCode::KeyX));
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_phone_call.as_ref().unwrap().phase, VisiblePokegearPhoneCallPhase::AwaitHangup,
+        "B that finished the conversation is already in hJoyDown and must not auto-hang up");
+}
+
+#[test]
+fn pokegear_radio_held_cancel_waits_for_the_source_program_call_to_return() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.pokegear_map_radio_delay = None;
+    shell.pokegear_radio_station = Some("ROCKET_RADIO".into());
+    load_visible_radio_broadcast(&mut shell).unwrap();
+    // Source line 55 prints RocketRadioText7, including TextCommand_PAUSE.
+    shell.pokegear_radio_broadcast.as_mut().unwrap().playback.state.current_line = 55;
+    advance_visible_radio_broadcast(&mut shell, 1, false).unwrap();
+    assert!(shell.pokegear_radio_broadcast.as_ref().unwrap().playback.call_suspended());
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyX);
+    // PokegearRadio_Joypad cannot sample B inside its suspended FarCall.
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pokegear_menu_open, "B must not interrupt the source radio printer");
+    keys.clear();
+    for _ in 0..200 {
+        advance_visible_radio_broadcast(&mut shell, 1, true).unwrap();
+        if !shell.pokegear_radio_broadcast.as_ref().unwrap().playback.call_suspended() { break; }
+    }
+    assert!(!shell.pokegear_radio_broadcast.as_ref().unwrap().playback.call_suspended());
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pokegear_menu_open, "the returning FarCall still owns its completion frame");
+    advance_visible_radio_broadcast(&mut shell, 1, true).unwrap();
+    // The next portable joypad call tests hJoyLast, not a new press edge.
+    assert!(keys.pressed(KeyCode::KeyX));
+    assert!(!keys.just_pressed(KeyCode::KeyX));
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested),
+        "held B must request exit when the source joypad loop resumes");
+}
+
+#[test]
+fn pokegear_clock_samples_held_buttons_before_right() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for flag in ["ENGINE_MAP_CARD", "ENGINE_PHONE_CARD", "ENGINE_RADIO_CARD"] {
+        shell.shell.session_mut().state_mut().flags.set_engine_flag(flag, true).unwrap();
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    for button in [KeyCode::KeyZ, KeyCode::KeyX, KeyCode::Enter, KeyCode::ShiftRight] {
+        shell.pokegear_menu_open = true;
+        shell.pokegear_page = PokegearPage::Clock;
+        shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+        let mut keys = ButtonInput::default();
+        keys.press(button);
+        keys.press(KeyCode::ArrowRight);
+        keys.clear(); // hJoyLast is held input, with no new press edge.
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested),
+            "PokegearClock_Joypad must request exit for held {button:?} before examining Right");
+        assert_eq!(shell.pokegear_page, PokegearPage::Clock);
+        close_visible_pokegear_menu(&mut shell).unwrap();
+    }
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Clock;
+        shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowRight);
+    keys.clear();
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_page, PokegearPage::Map,
+        "Clock hJoyLast Right does not wait for the generic menu repeat timer");
+}
+
+#[test]
+fn pokegear_live_portable_buena_matches_source_day_and_night_screens() {
+    check_live_radio_source_fixtures(&["portable-buena-day", "portable-buena-night"]);
+}
+
+#[test]
+fn pokegear_cards_use_source_repeat_and_simultaneous_button_priority() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().unwrap();
+    for flag in ["ENGINE_MAP_CARD", "ENGINE_PHONE_CARD", "ENGINE_RADIO_CARD"] {
+        shell.shell.session_mut().state_mut().flags.set_engine_flag(flag, true).unwrap();
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.pokegear_page = PokegearPage::Map;
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowUp);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    let first = shell.pokegear_cursor;
+    keys.clear();
+    for _ in 0..14 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pokegear_cursor, first, "JoyTextDelay's initial 15-frame hold");
+    }
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    let second = shell.pokegear_cursor;
+    assert_ne!(second, first);
+    for _ in 0..4 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pokegear_cursor, second, "JoyTextDelay's 5-frame repeat");
+    }
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_ne!(shell.pokegear_cursor, second);
+
+    shell.pokegear_page = PokegearPage::Phone;
+    shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::ArrowRight);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_page, PokegearPage::Phone, "Phone A precedes Right");
+    assert!(shell.pokegear_phone_menu.is_some());
+    shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+        contact_id: "PHONE_BILL".into(), can_delete: true, cursor: 0, delete_confirmation: None,
+    });
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    keys.clear();
+    for _ in 0..30 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+    assert_eq!(shell.pokegear_phone_menu.as_ref().unwrap().cursor, 1,
+        "contact submenu directions use hJoyPressed, not held-repeat hJoyLast");
+
+    shell.pokegear_phone_menu = None;
+    for phase in [VisiblePokegearPhoneCallPhase::NoServicePrompt, VisiblePokegearPhoneCallPhase::AwaitHangup] {
+        shell.pokegear_phone_call = Some(VisiblePokegearPhoneCall {
+            contact_id: "PHONE_MOM".into(), phase,
+        });
+        shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+        let mut keys = ButtonInput::default();
+        keys.press(KeyCode::KeyX);
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        keys.clear();
+        if shell.pokegear_phone_call.is_some() {
+            advance_visible_pokegear_phone_call(&mut shell, u32::from(VISIBLE_POKEGEAR_HANGUP_FRAMES)).unwrap();
+        }
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pokegear_phone_call.is_none());
+        assert!(shell.pokegear_menu_open, "held B after a phone prompt is not a new contact-list B");
+        assert_eq!(shell.pokegear_page, PokegearPage::Phone);
+    }
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+    shell.pokegear_radio_tuning_knob = 40;
+    shell.shell.session_mut().state_mut().radio_tuning_knob = 40;
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowUp);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_radio_tuning_knob, 38,
+        "AnimateTuningKnob tests Down before Up");
+    assert_eq!(shell.last_error, None);
+}
+
+fn check_live_radio_source_fixtures(names: &[&str]) {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let baseline = shell.shell.session().state().clone();
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../tools/asm-oracle/fixtures/radio-live");
+    for &name in names {
+        let directory = root.join(name);
+        let trace: serde_json::Value = serde_json::from_slice(&std::fs::read(directory.join("trace.json")).unwrap()).unwrap();
+        let initial = &trace["initial_state"];
+        let portable_knob = trace["portable_knob"].as_u64().map(|value| value as u8);
+        let prints = trace["prints"].as_array().unwrap();
+        let last_print_frame = prints.last().unwrap()["end"].as_u64().unwrap();
+        let first = &trace["loops"][0];
+        *shell.shell.session_mut().state_mut() = baseline.clone();
+        let caught = trace["caught_species"].as_u64().map(|id| {
+            shell.shell.runtime().data().pokemon.values().find(|species| u64::from(species.int_id) == id).unwrap().id.clone()
+        });
+        let game = shell.shell.session_mut().state_mut();
+        game.time.current_day = initial["day"].as_u64().unwrap() as u8;
+        game.time.day_of_week = game.time.current_day % 7;
+        game.time.registers.hours = prints[0]["hour"].as_u64().unwrap() as u8;
+        game.player_gender = 0;
+        if let Some(knob) = portable_knob {
+            game.radio_tuning_knob = knob;
+            for flag in ["ENGINE_POKEGEAR", "ENGINE_MAP_CARD", "ENGINE_RADIO_CARD", "ENGINE_PHONE_CARD"] {
+                game.flags.set_engine_flag(flag, true).unwrap();
+            }
+        }
+        game.pokedex.caught_species.clear();
+        if let Some(species) = caught { game.pokedex.seen_species.insert(species.clone()); game.pokedex.caught_species.insert(species); }
+        game.flags.clear_engine_flag("ENGINE_ROCKETS_IN_RADIO_TOWER").unwrap();
+        game.flags.engine_flags.insert("STATUSFLAGS_HALL_OF_FAME_F".into(), initial["status_flags"].as_u64().unwrap() & 64 != 0);
+        let badges = initial["kanto_badges"].as_u64().unwrap() as u8;
+        game.badges.kanto = std::array::from_fn(|index| badges & (1 << index) != 0);
+        game.lucky_number_countdown.remaining_days = initial["lucky_timer"][0].as_u64().unwrap() as u8;
+        game.lucky_number_countdown.last_checked_day = initial["lucky_timer"][1].as_u64().unwrap() as u8;
+        game.lucky_id_number = initial["lucky_number"].as_u64().unwrap() as u16;
+        game.lucky_number_day = None;
+        let password = first["buena_password"].as_u64().unwrap() as u8;
+        game.buenas_password.category_index = usize::from(password >> 4);
+        game.buenas_password.option_index = usize::from(password & 15);
+        game.flags.set_engine_flag("ENGINE_BUENAS_PASSWORD", first["buena_generated"].as_bool().unwrap()).unwrap();
+        // Legal DIV stimuli reproduce the ROM's captured choices. These are
+        // deliberately not presented as captured CPU/VBlank timing. Force the
+        // ADC boundary so an incorrect caller carry changes the returned byte.
+        game.random_state = crate::core::random::CrystalRandomState { add: 0, sub: 255 };
+        let mut add = 0u8;
+        let mut sub = 255u8;
+        let mut samples = Vec::new();
+        for call in trace["random"].as_array().unwrap().iter().filter(|call| call["frame"].as_u64().unwrap() <= last_print_frame) {
+            let carry = u8::from(call["carry_in"].as_bool().unwrap());
+            let value = call["value"].as_u64().unwrap() as u8;
+            samples.push(255u8.wrapping_sub(add));
+            samples.push(sub.wrapping_sub(value).wrapping_sub(carry));
+            add = 255u8.wrapping_add(carry);
+            sub = value;
+        }
+        let expected_reads = samples.len();
+        shell.shell.session_mut().divider = crate::core::random::RuntimeDividerSource::replay(samples);
+        shell.pokegear_menu_open = true;
+        shell.pokegear_page = PokegearPage::Radio;
+        shell.pokegear_map_radio_delay = if portable_knob.is_some() { None } else { Some(0) };
+        if let Some(knob) = portable_knob { shell.pokegear_radio_tuning_knob = knob; }
+        shell.pokegear_radio_station = Some(match initial["radio_line"].as_u64().unwrap() {
+            0 => "OAKS_POKEMON_TALK", 1 => "POKEDEX_SHOW", 2 => "POKEMON_MUSIC", 3 => "LUCKY_CHANNEL",
+            4 => "BUENAS_PASSWORD", 5 => "PLACES_AND_PEOPLE", 6 => "LETS_ALL_SING", _ => unreachable!(),
+        }.into());
+        shell.active_pokegear_radio = None;
+        load_visible_radio_broadcast(&mut shell).unwrap();
+        for (index, record) in prints.iter().enumerate() {
+            let mut complete = false;
+            for _ in 0..700 {
+                advance_visible_radio_broadcast(&mut shell, 1, false).unwrap_or_else(|error| panic!("{name} print {index}: {error:#}"));
+                let state = &shell.pokegear_radio_broadcast.as_ref().unwrap().playback.state;
+                if state.current_line == 84 && state.delay == 100 { complete = true; break; }
+            }
+            assert!(complete, "{name} print {index} did not complete");
+            let broadcast = shell.pokegear_radio_broadcast.as_ref().unwrap();
+            let actual = broadcast.playback.window.tiles.iter().flatten().map(|tile| format!("{tile:02x}")).collect::<String>();
+            assert_eq!(actual, record["tiles_after"].as_str().unwrap(), "{name} print {index} source tiles");
+            let snapshot = shell.shell.snapshot().unwrap();
+            let mut world = World::new();
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            let mut images = Assets::<Image>::default();
+            let mut art = RenderedTilesetArt::default();
+            let mut commands = Commands::new(&mut queue, &world);
+            spawn_field_pokegear_screen(&mut commands, &snapshot, &shell, &mut art, &shell.asset_root, &mut images).unwrap();
+            queue.apply(&mut world);
+            assert_eq!(art.font_error, None);
+            let canvas = render_pc_audit_canvas(&mut world, &images, name);
+            let reference = image::open(directory.join(format!("radio-print-{index}.png"))).unwrap().to_rgba8();
+            let scale = canvas.width() / 160;
+            if let Ok(output) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                let output = PathBuf::from(output).join(name);
+                std::fs::create_dir_all(&output).unwrap();
+                canvas.save(output.join(format!("radio-print-{index}.png"))).unwrap();
+            }
+            for y in 0..144 {
+                for x in 0..160 {
+                    let actual = canvas.get_pixel(x * scale, y * scale).0;
+                    if y < 96 && portable_knob.is_none() { assert_eq!(actual[3], 0, "{name} covers map {x},{y}"); }
+                    else { assert_eq!(actual.map(|v| v >> 3), reference.get_pixel(x, y).0.map(|v| v >> 3), "{name} print {index} pixel {x},{y}"); }
+                }
+            }
+
+            if index == 0 {
+                let before = cached_runtime_snapshot(&mut shell).unwrap();
+                let render_before = shell_render_key(&shell);
+                advance_visible_radio_broadcast(&mut shell, 1, false).unwrap();
+                let after = cached_runtime_snapshot(&mut shell).unwrap();
+                assert!(Arc::ptr_eq(&before, &after), "{name}: a radio countdown must not rebuild the game snapshot");
+                assert_eq!(render_before, shell_render_key(&shell), "{name}: a countdown must not redraw unchanged tiles");
+            }
+
+        }
+        let crate::core::random::RuntimeDividerSource::Replay(divider) = &shell.shell.session().divider else { unreachable!() };
+        assert_eq!(divider.consumed(), expected_reads, "{name} Random call count differs from the ROM trace");
+    }
+}
+
+#[test]
+fn pokegear_exit_retains_final_tuning_frame_and_waits_for_sound() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Radio;
+    shell.shell.apply_runtime_mutation_command(crate::RuntimeMutationCommand::SetPokegearRadioTuning(
+        crate::assets::RuntimePokegearRadioTuningCommand { tuning_knob: 40 },
+    )).unwrap();
+    shell.pokegear_radio_tuning_knob = 40;
+    shell.pokegear_radio_station = Some("BUENAS_PASSWORD".into());
+    let snapshot = shell.shell.snapshot().unwrap();
+    sync_visible_pokegear_radio(&mut shell, &snapshot).unwrap();
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.last_error, None);
+    assert_eq!(shell.shell.snapshot().unwrap().progression.radio_tuning_knob, 38,
+        "source PlaySpriteAnimations runs after Radio_Joypad sets the EXIT bit");
+    assert!(shell.pokegear_menu_open,
+        "source exit retains the card through DelayFrame and WaitSFX");
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested));
+    shell.pokegear_return_start_menu_cursor = Some(MenuCursor {
+        surface_id: START_MENU_SURFACE_ID.into(), option_index: 2,
+    });
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::WaitSound));
+    assert!(shell.pending_audio.iter().any(|command| command.audio_id == "SFX_READ_TEXT_2"));
+    for _ in 0..30 { advance_visible_pokegear_exit(&mut shell, 1).unwrap(); }
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::WaitSound),
+        "queued closing SFX must not be replaced by a fixed countdown");
+    shell.pending_audio.retain(|command| matches!(command.kind, ModpackAudioKind::Music));
+    shell.transient_audio_playing = true;
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::WaitSound));
+    shell.transient_audio_playing = false;
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::ClearPalettes { frames_remaining: 4 }));
+    assert!(!visible_pokegear_exit_palettes_are_clear(&shell), "the scanned frame precedes the requested CGB palette upload");
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert!(visible_pokegear_exit_palettes_are_clear(&shell));
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    spawn_field_pokegear_screen(&mut commands, &snapshot, &shell, &mut art, &shell.asset_root, &mut images).unwrap();
+    queue.apply(&mut world);
+    let canvas = render_pc_audit_canvas(&mut world, &images, "pokegear-exit-clear");
+    let source = image::load_from_memory(include_bytes!("../../../../../../tools/asm-oracle/fixtures/pokegear-exit/buena-down/exit-frame-20.png")).unwrap().to_rgba8();
+    let scale = canvas.width() / source.width();
+    for y in 0..canvas.height() { for x in 0..canvas.width() {
+        assert_eq!(canvas.get_pixel(x, y).0.map(|v| v >> 3), source.get_pixel(x / scale, y / scale).0.map(|v| v >> 3),
+            "ClearPalettes source LCD pixel {x},{y}");
+    }}
+    for remaining in [2, 1] {
+        advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+        assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::ClearPalettes { frames_remaining: remaining }));
+        assert!(shell.pokegear_menu_open);
+    }
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert!(matches!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::RestoreMusic { .. })));
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_NONE"));
+    assert!(shell.pokegear_menu_open, "DelayFrame between MUSIC_NONE and the restored song retains the blank card");
+    advance_visible_pokegear_exit(&mut shell, 1).unwrap();
+    assert!(!shell.pokegear_menu_open);
+    assert!(shell.pokegear_exit.is_none());
+    assert_eq!(shell.active_music.as_deref(), shell.shell.current_music_id());
+    assert_eq!(shell.start_menu_cursor.as_ref().unwrap().option_index, 2);
+    assert!(shell.pokegear_exit_input_blocked, "returning from the submenu must not consume this frame's buttons again");
+}
+
+#[test]
+fn pc_item_confirm_with_down_selects_the_original_stack() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [("POTION", 23), ("ANTIDOTE", 1)] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell.shell.session_mut().state_mut().bag.add_pc_item(&item, quantity).unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor { surface_id: "pc:items".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    while shell.pc_menu_input_wait_frames > 1 {
+        apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    }
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.last_error, None);
+    let quantity = shell.pc_item_quantity.as_ref().expect("A opens the selected stack's quantity dialog");
+    assert_eq!(quantity.item_id, "POTION", "ScrollingMenuJoyAction tests A before Down; the confirmation must not move first");
+    assert_eq!(quantity.maximum, 23);
+    shell.pc_item_quantity = None;
+    shell.pc_notice = None;
+    shell.field_text_reveal = None;
+    while shell.pc_menu_input_wait_frames > 1 {
+        apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    }
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ShiftRight);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_switch_origin, Some(0), "SELECT + Down marks the original stack, as in the ROM trace");
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 0);
+    while shell.pc_menu_input_wait_frames > 1 {
+        apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    }
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_switch_origin, None, "B cancels the marked stack before any movement");
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 0);
+    while shell.pc_menu_input_wait_frames > 1 {
+        apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    }
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::Enter);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 0, "disabled START still wins over Down");
+    toggle_visible_start_menu(&mut shell).unwrap();
+    assert!(!visible_field_pack_is_open(&shell), "START is not a PC deposit shortcut");
+    shell.pc_item_cursor = None;
+    shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+    toggle_visible_start_menu(&mut shell).unwrap();
+    assert!(!shell.party_menu_open, "START is not a Bill's PC party shortcut");
+    assert_eq!(shell.last_error, None);
+}
+
+#[test]
+fn pc_item_quantity_cancel_wins_over_confirm_and_directions() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    let potion = shell.shell.runtime().data().items["POTION"].clone();
+    assert!(shell.shell.session_mut().state_mut().bag.add_pc_item(&potion, 23).unwrap());
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor { surface_id: "pc:items".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    begin_visible_pc_item_quantity(&mut shell).unwrap();
+    let question = shell.pc_notice.clone().unwrap();
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.clone(), page_index: 0, visible_chars: question.chars().count(), frames_until_next_char: 0,
+    });
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::ArrowDown);
+    shell.field_text_consumed_a = true;
+    shell.field_text_consumed_b = true;
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pc_item_quantity.is_some(), "a printer-consumed edge must not dismiss the newly ready selector");
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 23);
+    shell.field_text_consumed_a = false;
+    shell.field_text_consumed_b = false;
+    keys.clear();
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pc_item_quantity.is_some(), "held text buttons are not new selector presses");
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 23);
+    apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.last_error, None);
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 23,
+        "BuySellToss_InterpretJoypad tests B before A and Down, so cancel must not withdraw anything");
+    assert!(shell.pc_item_quantity.is_none());
+    begin_visible_pc_item_quantity(&mut shell).unwrap();
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.clone(), page_index: 0, visible_chars: 1, frames_until_next_char: 0,
+    });
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 1,
+        "the question printer owns input before the quantity selector");
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 23);
+    shell.field_text_reveal.as_mut().unwrap().visible_chars = question.chars().count();
+    shell.field_text_consumed_a = true;
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 1,
+        "finishing the question must not reuse its A press to confirm");
+    shell.field_text_consumed_a = false;
+    keys.clear();
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pc_item_quantity.is_some(), "holding the question's A must not confirm after the consumed flag clears");
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 23);
+    apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.shell.session().state().bag.pc_item_quantity(&potion), 22,
+        "A confirms the displayed one item before Down could wrap it to 23");
+    assert!(shell.pc_item_quantity.is_none());
+    assert_eq!(shell.last_error, None);
+}
+
+#[test]
+fn pc_directions_follow_the_source_owner_priority() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for (id, quantity) in [("POTION", 23), ("ANTIDOTE", 1), ("POKE_BALL", 12)] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell.shell.session_mut().state_mut().bag.add_pc_item(&item, quantity).unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor { surface_id: "pc:items".into(), option_index: 1 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowLeft);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 1,
+        "ScrollingMenuJoyAction tests disabled Left before Down");
+    shell.pc_item_cursor.as_mut().unwrap().option_index = 0;
+    shell.pc_item_quantity = Some(VisiblePcItemQuantity {
+        action: VisiblePlayerPcAction::WithdrawItem, item_id: "POTION".into(),
+        stack_index: 0, quantity: 10, maximum: 23,
+    });
+    let question = "How many do you\nwant to withdraw?";
+    shell.pc_notice = Some(question.into());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.into(), page_index: 0, visible_chars: question.chars().count(), frames_until_next_char: 0,
+    });
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowDown);
+    keys.press(KeyCode::ArrowUp);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 9,
+        "BuySellToss_InterpretJoypad tests Down before Up");
+    apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true);
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 8);
+    keys.clear();
+    keys.press(KeyCode::ArrowUp);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 7,
+        "new Up does not outrank an already-held Down in hJoyLast");
+    keys.clear();
+    for _ in 0..14 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 7,
+            "quantity JoyTextDelay initial repeat is fifteen frames");
+    }
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 6);
+    for _ in 0..4 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 6);
+    }
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 5);
+    keys.press(KeyCode::ShiftRight);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 4,
+        "fresh ignored SELECT still exposes held directions through JoyTextDelay");
+    assert_eq!(shell.last_error, None);
+}
+
+#[test]
+fn pc_quantity_releasing_one_direction_preserves_the_source_repeat_counter() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let question = "How many do you\nwant to withdraw?";
+    shell.pc_item_quantity = Some(VisiblePcItemQuantity {
+        action: VisiblePlayerPcAction::WithdrawItem, item_id: "POTION".into(),
+        stack_index: 0, quantity: 10, maximum: 23,
+    });
+    shell.pc_notice = Some(question.into());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: question.into(), page_index: 0, visible_chars: question.chars().count(), frames_until_next_char: 0,
+    });
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowDown);
+    keys.press(KeyCode::ArrowUp);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, 9);
+    keys.clear();
+    for frame in 1..=15 {
+        if frame == 6 { keys.release(KeyCode::ArrowDown); }
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pc_item_quantity.as_ref().unwrap().quantity, if frame == 15 { 10 } else { 9 },
+            "GetJoypad release must not restart wTextDelayFrames at source frame {frame}");
+        keys.clear();
+    }
+    assert_eq!(shell.last_error, None);
+}
+
+#[test]
+fn pokegear_delete_confirmation_buttons_precede_directions() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().unwrap();
+    {
+        let state = shell.shell.session_mut().state_mut();
+        state.flags.set_engine_flag("ENGINE_PHONE_CARD", true).unwrap();
+        state.script_runtime.phone_numbers.insert("PHONE_BILL".into());
+        state.script_runtime.phone_number_order.push(Some("PHONE_BILL".into()));
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.pokegear_page = PokegearPage::Phone;
+    for buttons in [[KeyCode::KeyZ, KeyCode::ArrowUp], [KeyCode::KeyZ, KeyCode::KeyX]] {
+        shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+            contact_id: "PHONE_BILL".into(), can_delete: true, cursor: 1,
+            delete_confirmation: Some(if buttons[1] == KeyCode::ArrowUp { 1 } else { 0 }),
+        });
+        shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+        let mut keys = ButtonInput::default();
+        for button in buttons { keys.press(button); }
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pokegear_phone_menu.is_none(), "YesNoBox must close");
+        assert!(shell.shell.session().state().script_runtime.phone_numbers.contains("PHONE_BILL"),
+            "VerticalMenu confirms the original NO before Up and treats A+B as cancel");
+        assert_eq!(shell.last_error, None);
+        keys.clear();
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pokegear_phone_menu.is_none(), "held A must not reopen the contact submenu");
+        assert!(shell.pokegear_menu_open, "held B must not close the restored phone card");
+    }
+    for ignored in [KeyCode::Enter, KeyCode::ShiftRight, KeyCode::ArrowLeft, KeyCode::ArrowRight] {
+        shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+            contact_id: "PHONE_BILL".into(), can_delete: true, cursor: 1, delete_confirmation: Some(0),
+        });
+        shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
+        let mut keys = ButtonInput::default();
+        keys.press(ignored);
+        keys.press(KeyCode::ArrowDown);
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.pokegear_phone_menu.as_ref().unwrap().delete_confirmation, Some(0),
+            "disabled {ignored:?} still has priority over Down");
+    }
+}
+
+#[test]
+fn pokegear_delete_cancellation_retains_the_original_question() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().unwrap();
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_PHONE_CARD", true).unwrap();
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.pokegear_page = PokegearPage::Phone;
+    let snapshot = shell.shell.snapshot().unwrap();
+    for cancel_with_b in [false, true] {
+        shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+            contact_id: "PHONE_BILL".into(), can_delete: true, cursor: 1,
+            delete_confirmation: Some(1),
+        });
+        let question = visible_pokegear_phone_prompt(&snapshot, &shell).unwrap();
+        assert!(question.contains("Delete this stored"));
+        if cancel_with_b { press_visible_b_button(&mut shell).unwrap(); }
+        else { confirm_visible_pokegear_phone_menu(&mut shell).unwrap(); }
+        assert!(shell.pokegear_phone_menu.is_none());
+        assert_eq!(visible_pokegear_phone_prompt(&snapshot, &shell).unwrap(), question,
+            ".CancelDelete retains the LCD question after NO or B");
+        move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+        assert_eq!(visible_pokegear_phone_prompt(&snapshot, &shell).unwrap(), question,
+            "moving through contacts does not print AskWhoCallText");
+    }
+}
+
+#[test]
+fn pc_item_list_does_not_sample_a_press_during_redraw_waits() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().bag.pc_items.clear();
+    for id in ["POTION", "ANTIDOTE", "POKE_BALL"] {
+        let item = shell.shell.runtime().data().items[id].clone();
+        assert!(shell.shell.session_mut().state_mut().bag.add_pc_item(&item, 23).unwrap());
+    }
+    shell.pc_item_action = Some(VisiblePlayerPcAction::WithdrawItem);
+    shell.pc_item_cursor = Some(MenuCursor { surface_id: "pc:items".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 1);
+    // _ScrollingMenu.zero waits three frames after drawing; the following
+    // MenuJoypadLoop.BGMap_OAM waits four more before GetJoypad runs again.
+    keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pc_item_quantity.is_none(), "a one-frame A pulse during redraw must not select an item");
+    assert_eq!(shell.pc_joypad.down, GameButton::Down.pad_bit(), "GetJoypad mirrors stay unchanged during upload");
+    for _ in 0..6 { apply_visible_runtime_controls(&ButtonInput::default(), &mut shell, true); }
+    assert!(shell.pc_item_quantity.is_none(), "an unsampled pulse must not be buffered into the next menu poll");
+    assert_eq!(shell.pc_item_cursor.as_ref().unwrap().option_index, 1);
+    // After the next idle poll, hold A through the following WaitBGMap.
+    // It must be recognized at the real poll despite no new Bevy edge then.
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    for _ in 0..3 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        keys.clear();
+        assert!(shell.pc_item_quantity.is_none());
+    }
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pc_item_quantity.as_ref().unwrap().item_id, "ANTIDOTE");
+
+}
+
+#[test]
+fn mailbox_list_preserves_the_source_four_rows_cancel_and_direction_limits() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mail = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().mail.clone().unwrap();
+    shell.shell.session_mut().state_mut().mailbox = (0..6).map(|index| {
+        let mut mail = mail.clone();
+        mail.author = format!("MAIL{index}");
+        crate::core::state::MailboxMail { item_id: "FLOWER_MAIL".into(), mail }
+    }).collect();
+    shell.mailbox_cursor = Some(MenuCursor { surface_id: "pc:mailbox".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    move_visible_primary_cursor_up(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 0,
+        "MailboxPC scrolling menu does not wrap at its first message");
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 1,
+        "mailbox does not enable horizontal input");
+    for _ in 0..4 { move_visible_primary_cursor_down(&mut shell).unwrap(); }
+    let snapshot = shell.shell.snapshot().unwrap();
+    let entries = visible_scene_dialog_entries(&snapshot, &shell).unwrap();
+    assert_eq!(entries, [" MAIL2", " MAIL3", " MAIL4", ">MAIL5"],
+        "four-row window must scroll to keep the selected author visible");
+    confirm_visible_mailbox_selection(&mut shell).unwrap();
+    move_visible_primary_cursor_up(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_action_cursor.as_ref().unwrap().option_index, 0,
+        "mailbox submenu neither wraps nor accepts horizontal navigation");
+    shell.mailbox_action_cursor.as_mut().unwrap().option_index = 2;
+    confirm_visible_mailbox_action(&mut shell).unwrap();
+    assert!(shell.party_menu_open);
+    press_visible_b_button(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 5,
+        "cancelling ATTACH MAIL restores the selected letter");
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 6,
+        "ScrollingMenu includes CANCEL after the final message");
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 6);
+    assert_eq!(visible_scene_dialog_entries(&snapshot, &shell).unwrap().last().unwrap(), ">CANCEL");
+    shell.shell.session_mut().state_mut().mailbox.clear();
+    mark_runtime_snapshot_dirty(&mut shell);
+    restore_visible_mailbox_position(&mut shell, 6).unwrap();
+    let empty = shell.shell.snapshot().unwrap();
+    assert_eq!(visible_scene_dialog_entries(&empty, &shell).unwrap(), [">CANCEL"],
+        "MailboxPC.loop retains a CANCEL-only list after its last letter is removed");
+    confirm_visible_mailbox_selection(&mut shell).unwrap();
+    assert!(shell.mailbox_cursor.is_none());
+    assert_eq!(shell.player_pc_action_cursor.as_ref().unwrap().option_index, 3);
+}
+
+#[test]
+fn mailbox_attach_success_waits_on_party_screen_before_returning() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let pokemon = shell.shell.session_mut().state_mut().storage.party.pokemon[0].as_mut().unwrap();
+    let mail = pokemon.mail.take().unwrap();
+    pokemon.item = None;
+    shell.shell.session_mut().state_mut().mailbox = vec![crate::core::state::MailboxMail {
+        item_id: "FLOWER_MAIL".into(), mail,
+    }];
+    shell.mailbox_cursor = Some(MenuCursor { surface_id: "pc:mailbox".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    confirm_visible_mailbox_selection(&mut shell).unwrap();
+    shell.mailbox_action_cursor.as_mut().unwrap().option_index = 2;
+    confirm_visible_mailbox_action(&mut shell).unwrap();
+    attach_visible_mailbox_mail(&mut shell).unwrap();
+    assert!(shell.party_menu_open,
+        "MailboxPC.AttachMail PrintText waits on the party screen before CloseSubmenu");
+    assert!(shell.mailbox_cursor.is_none(), "the hidden mailbox cannot own this prompt");
+    assert_eq!(shell.pc_notice.as_deref(), Some("The MAIL was moved\nfrom the MAILBOX."));
+    assert!(shell.shell.session().state().mailbox.is_empty());
+    let text = shell.pc_notice.clone().unwrap();
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        visible_chars: text.chars().count(), text, page_index: 0, frames_until_next_char: 0,
+    });
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(!shell.party_menu_open);
+    assert!(shell.pc_notice.is_none());
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 0);
+    assert_eq!(visible_scene_dialog_entries(&shell.shell.snapshot().unwrap(), &shell).unwrap(), [">CANCEL"]);
+}
+
+#[test]
+fn mailbox_buttons_choose_before_directions_and_cancel_wins_in_submenu() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mail = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().mail.clone().unwrap();
+    shell.shell.session_mut().state_mut().mailbox = (0..2).map(|_| crate::core::state::MailboxMail {
+        item_id: "FLOWER_MAIL".into(), mail: mail.clone(),
+    }).collect();
+    shell.mailbox_cursor = Some(MenuCursor { surface_id: "pc:mailbox".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut keys = ButtonInput::<KeyCode>::default();
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::ArrowDown);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 0,
+        "ScrollingMenuJoyAction resolves A before Down");
+    assert!(shell.mailbox_action_cursor.is_some());
+    keys.reset_all();
+    for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+    keys.press(KeyCode::KeyZ);
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::ArrowDown);
+    for _ in 0..8 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        keys.clear();
+        if shell.mailbox_action_cursor.is_none() { break; }
+    }
+    assert!(shell.mailbox_action_cursor.is_none(), "VerticalMenu exits on buttons before directions");
+    assert!(shell.pending_mail_read.is_none(), "VerticalMenu gives B priority over A");
+    assert_eq!(shell.mailbox_cursor.as_ref().unwrap().option_index, 0);
+    keys.reset_all();
+    for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+    confirm_visible_mailbox_selection(&mut shell).unwrap();
+    keys.press(KeyCode::ArrowDown);
+    for _ in 0..40 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        keys.clear();
+    }
+    assert_eq!(shell.mailbox_action_cursor.as_ref().unwrap().option_index, 1,
+        "ScrollingMenu clears hInMenu before VerticalMenu, so held directions do not repeat");
+}
+
+#[test]
+fn mailbox_confirmation_keeps_its_choice_and_waits_fifteen_vblanks() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mail = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().mail.clone().unwrap();
+    shell.shell.session_mut().state_mut().mailbox = (0..2).map(|_| crate::core::state::MailboxMail {
+        item_id: "FLOWER_MAIL".into(), mail: mail.clone(),
+    }).collect();
+    shell.mailbox_cursor = Some(MenuCursor { surface_id: "pc:mailbox".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    for (choice, direction, cancel, remaining) in [(1, KeyCode::ArrowUp, false, 2),
+        (0, KeyCode::ArrowDown, true, 2), (0, KeyCode::ArrowDown, false, 1)] {
+        confirm_visible_mailbox_selection(&mut shell).unwrap();
+        shell.mailbox_action_cursor.as_mut().unwrap().option_index = 1;
+        confirm_visible_mailbox_action(&mut shell).unwrap();
+        shell.yes_no_cursor.as_mut().unwrap().option_index = choice;
+        let text = shell.pc_notice.clone().unwrap();
+        shell.field_text_reveal = Some(VisibleFieldTextReveal {
+            visible_chars: text.chars().count(), text, page_index: 0, frames_until_next_char: 0,
+        });
+        let mut keys = ButtonInput::<KeyCode>::default();
+        for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+        keys.press(if choice == 0 { KeyCode::ArrowUp } else { KeyCode::ArrowDown });
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.yes_no_cursor.as_ref().unwrap().option_index, choice,
+            "YesNoMenuHeader has no wrap flag");
+        keys.reset_all();
+        for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+        keys.press(KeyCode::KeyZ);
+        if cancel { keys.press(KeyCode::KeyX); }
+        keys.press(direction);
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pc_confirmation.is_some(),
+            "InterpretTwoOptionMenu delays 15 VBlanks before closing YesNoBox");
+        assert_eq!(shell.yes_no_cursor.as_ref().unwrap().option_index, choice,
+            "A chooses the displayed answer before a simultaneous direction");
+        press_visible_b_button(&mut shell).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.pc_confirmation.is_some(), "button helpers cannot bypass the source closing wait");
+        assert_eq!(shell.shell.session().state().mailbox.len(), 2);
+        keys.clear();
+        for _ in 0..14 {
+            apply_visible_runtime_controls(&keys, &mut shell, true);
+            assert!(shell.pc_confirmation.is_some());
+            assert_eq!(shell.shell.session().state().mailbox.len(), 2);
+        }
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pc_confirmation.is_none());
+        assert_eq!(shell.shell.session().state().mailbox.len(), remaining);
+    }
+    assert_eq!(shell.pc_notice.as_deref(), Some("The cleared MAIL\nwas put away."));
+}
+
+#[test]
+fn mailbox_reader_close_does_not_reuse_held_b_on_the_restored_list() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mail = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().mail.clone().unwrap();
+    shell.shell.session_mut().state_mut().mailbox = vec![crate::core::state::MailboxMail {
+        item_id: "FLOWER_MAIL".into(), mail,
+    }];
+    shell.mailbox_cursor = Some(MenuCursor { surface_id: "pc:mailbox".into(), option_index: 0 });
+    mark_runtime_snapshot_dirty(&mut shell);
+    confirm_visible_mailbox_selection(&mut shell).unwrap();
+    confirm_visible_mailbox_action(&mut shell).unwrap();
+    assert!(shell.pending_mail_read.is_some());
+    let mut keys = ButtonInput::<KeyCode>::default();
+    keys.press(KeyCode::KeyX);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pending_mail_read.is_none());
+    for _ in 0..20 {
+        keys.clear();
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.mailbox_cursor.is_some(),
+            "ReadAnyMail.GetJoypad must retain B history when MailboxPC resumes");
+    }
+    keys.reset_all();
+    for _ in 0..8 { apply_visible_runtime_controls(&keys, &mut shell, true); }
+    keys.press(KeyCode::KeyX);
+    for _ in 0..8 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        keys.clear();
+        if shell.mailbox_cursor.is_none() { break; }
+    }
+    assert!(shell.mailbox_cursor.is_none(), "a fresh B press still exits the mailbox");
 }

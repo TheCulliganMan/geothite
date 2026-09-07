@@ -219,11 +219,15 @@ pub fn frontpic_anim_catalog_issues(
             }
         }
     }
-    for species_id in species_ids {
-        if !programs.contains_key(species_id) {
-            issues.push(FrontpicAnimCatalogIssue::MissingSpeciesProgram {
-                species_id: species_id.clone(),
-            });
+    let mut required_assets = species_ids.clone();
+    required_assets.extend(programs.keys()
+        .filter(|key| is_frontpic_animation_asset_key(key, species_ids))
+        .map(|key| key.strip_suffix("_IDLE").unwrap_or(key).to_owned()));
+    for asset in required_assets {
+        for key in [asset.clone(), format!("{asset}_IDLE")] {
+            if !programs.contains_key(&key) {
+                issues.push(FrontpicAnimCatalogIssue::MissingSpeciesProgram { species_id: key });
+            }
         }
     }
     issues
@@ -274,6 +278,8 @@ fn has_reserved_pack_prefix(value: &str) -> bool {
 }
 
 fn is_frontpic_animation_asset_key(species_id: &str, species_ids: &BTreeSet<String>) -> bool {
+    // Each source picture asset has anim.asm and anim_idle.asm programs.
+    let species_id = species_id.strip_suffix("_IDLE").unwrap_or(species_id);
     species_ids.contains(species_id)
         || species_id == "EGG"
         || species_id
@@ -291,6 +297,24 @@ fn is_frontpic_animation_asset_key(species_id: &str, species_ids: &BTreeSet<Stri
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn frontpic_catalog_accepts_and_requires_source_idle_programs() {
+        let species = BTreeSet::from(["CYNDAQUIL".to_owned()]);
+        let program = FrontpicAnimProgram { commands: vec![FrontpicAnimCommand {
+            kind: "endanim".into(), ..Default::default()
+        }] };
+        let mut programs = BTreeMap::from([
+            ("CYNDAQUIL".to_owned(), program.clone()),
+            ("CYNDAQUIL_IDLE".to_owned(), program),
+        ]);
+        assert!(frontpic_anim_catalog_issues(&programs, &species).is_empty(),
+            "Stats must be able to select both source main and idle assets");
+        programs.remove("CYNDAQUIL_IDLE");
+        assert!(frontpic_anim_catalog_issues(&programs, &species).contains(
+            &FrontpicAnimCatalogIssue::MissingSpeciesProgram { species_id: "CYNDAQUIL_IDLE".into() }
+        ));
+    }
 
     #[test]
     fn frontpic_anim_command_set_is_exact() {
@@ -351,7 +375,7 @@ mod tests {
     #[test]
     fn frontpic_anim_catalog_issues_validate_exact_asset_keys_and_programs() {
         let species_ids = BTreeSet::from(["CHIKORITA".to_string(), "BAYLEEF".to_string()]);
-        let programs = BTreeMap::from([
+        let mut programs = BTreeMap::from([
             (
                 " BAYLEEF".to_string(),
                 FrontpicAnimProgram {
@@ -424,6 +448,12 @@ mod tests {
                 },
             ),
         ]);
+
+        for asset in ["BAYLEEF", "CHIKORITA", "EGG", "UNOWN_A", "UNOWN_B"] {
+            programs.insert(format!("{asset}_IDLE"), FrontpicAnimProgram {
+                commands: vec![FrontpicAnimCommand { kind: "endanim".into(), ..Default::default() }],
+            });
+        }
 
         assert_eq!(
             frontpic_anim_catalog_issues(&programs, &species_ids),

@@ -43,7 +43,7 @@ fn visible_player_withdraw_message(
     runtime_shell: &BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
     nickname: &str,
-) -> String {
+) -> Result<String> {
     let battle = snapshot
         .battle
         .as_ref()
@@ -51,18 +51,24 @@ fn visible_player_withdraw_message(
     let hp_at_send_out = runtime_shell
         .battle_enemy_hp_at_player_send_out
         .expect("player withdrawal requires the enemy HP captured at send-out");
-    let damage = hp_at_send_out.saturating_sub(battle.enemy_pokemon.hp);
-    let percent = if battle.enemy_pokemon.max_hp == 0 {
-        0
-    } else {
-        u32::from(damage).saturating_mul(100) / u32::from(battle.enemy_pokemon.max_hp)
-    };
-    match percent {
+    // WithdrawMonText performs the HP subtraction in two bytes, so healing
+    // above the captured HP wraps exactly as it does on the cartridge. Like
+    // SendOutMonText, it truncates max HP before division and only examines
+    // the quotient's low byte.
+    let damage = hp_at_send_out.wrapping_sub(battle.enemy_pokemon.hp);
+    let divisor = battle.enemy_pokemon.max_hp >> 2;
+    anyhow::ensure!(
+        divisor != 0,
+        "WithdrawMonText would not terminate with enemy max HP {}",
+        battle.enemy_pokemon.max_hp
+    );
+    let percent = ((u32::from(damage) * 25) / u32::from(divisor)) as u8;
+    Ok(match percent {
         0 => format!("{nickname}, that's enough! Come back!"),
         1..=29 => format!("{nickname}, come back!"),
         30..=69 => format!("{nickname}, OK! Come back!"),
         _ => format!("{nickname}, good! Come back!"),
-    }
+    })
 }
 
 fn queue_visible_player_recall_animation(
@@ -151,6 +157,59 @@ fn stage_visible_battle_messages(
         Stat::SpecialDefense => "SPCL.DEF",
         Stat::Accuracy => "ACCURACY",
         Stat::Evasion => "EVASION",
+    };
+    let protected_moves = events
+        .iter()
+        .filter_map(|event| match event {
+            BattleEvent::MoveProtected {
+                side, move_name, ..
+            } => Some((*side, move_name.as_str())),
+            _ => None,
+        })
+        .collect::<BTreeSet<_>>();
+    let command_owned_check_hit_failures = events
+        .iter()
+        .filter_map(|event| match event {
+            BattleEvent::LeechSeedFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::PainSplitFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::MimicFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::EncoreFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::SpiteFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::Conversion2Failed { side, move_name }
+            | BattleEvent::AttractFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::DisableFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::ForesightFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::ForceSwitchFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::LockOnFailed {
+                side, move_name, ..
+            } => Some((*side, move_name.as_str())),
+            _ => None,
+        })
+        .collect::<BTreeSet<_>>();
+    let fail_move_text = |side: BattleSide, move_name: &str| {
+        if protected_moves.contains(&(side, move_name)) {
+            "It failed!".to_string()
+        } else {
+            "But it failed!".to_string()
+        }
     };
     let message_count_before = runtime_shell.battle_messages.len();
     let stage_message_scenes = message_count_before == 0;
@@ -399,6 +458,9 @@ fn stage_visible_battle_messages(
             | BattleEvent::HealFailed {
                 side, move_name, ..
             }
+            | BattleEvent::PainSplitFailed {
+                side, move_name, ..
+            }
             | BattleEvent::FutureSightFailed {
                 side, move_name, ..
             }
@@ -444,6 +506,9 @@ fn stage_visible_battle_messages(
                 side, move_name, ..
             }
             | BattleEvent::EscapeTrapFailed {
+                side, move_name, ..
+            }
+            | BattleEvent::LockOnFailed {
                 side, move_name, ..
             }
             | BattleEvent::OhkoFailed {
@@ -1026,7 +1091,19 @@ fn stage_visible_battle_messages(
                 name(*side),
                 battle_move_display_name(snapshot, move_name)
             )),
+            BattleEvent::Missed {
+                side, move_name, ..
+            } if command_owned_check_hit_failures.contains(&(*side, move_name.as_str())) =>
+            {
+                None
+            }
             BattleEvent::Missed { side, .. } => Some(format!("{}'s\nattack missed!", name(*side))),
+            BattleEvent::AirborneAvoided {
+                side, move_name, ..
+            } if command_owned_check_hit_failures.contains(&(*side, move_name.as_str())) =>
+            {
+                None
+            }
             BattleEvent::AirborneAvoided { target, .. } => {
                 Some(format!("{}\nevaded the attack!", name(*target)))
             }
@@ -1103,16 +1180,26 @@ fn stage_visible_battle_messages(
             BattleEvent::TeleportFailed { .. }
             | BattleEvent::StatusHealFailed { .. }
             | BattleEvent::ConfusionFailed { .. }
-            | BattleEvent::LeechSeedFailed { .. }
             | BattleEvent::CurseFailed { .. }
             | BattleEvent::ConversionFailed { .. }
-            | BattleEvent::Conversion2Failed { .. }
             | BattleEvent::MetronomeFailed { .. }
-            | BattleEvent::MimicFailed { .. }
             | BattleEvent::SketchFailed { .. }
             | BattleEvent::SleepTalkFailed { .. }
             | BattleEvent::MirrorMoveFailed { .. }
             | BattleEvent::ForceSwitchFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::Conversion2Failed { side, move_name } => {
+                Some(fail_move_text(*side, move_name))
+            }
+            BattleEvent::MimicFailed {
+                side, move_name, ..
+            } => Some(fail_move_text(*side, move_name)),
+            BattleEvent::LeechSeedFailed { target, .. } => {
+                Some(format!("{}\nevaded the attack!", name(*target)))
+            }
+            BattleEvent::CurseStatsCapped { side, .. } => Some(format!(
+                "{}'s\nABILITY won't\nrise anymore!",
+                name(*side)
+            )),
             BattleEvent::TrapFailed { .. } => None,
             BattleEvent::LeechSeedImmune { target, .. } => {
                 Some(format!("It doesn't affect\n{}!", name(*target)))
@@ -1123,9 +1210,6 @@ fn stage_visible_battle_messages(
                 }
                 crate::core::battle::turn::OhkoFailureReason::Missed { .. } => {
                     "The attack missed!".to_string()
-                }
-                crate::core::battle::turn::OhkoFailureReason::AbilityBlocked { .. } => {
-                    format!("It doesn't affect\n{}!", name(side.other()))
                 }
             }),
             BattleEvent::Disobeyed { .. } if disobedience_nap => None,
@@ -1643,7 +1727,9 @@ fn stage_visible_battle_messages(
             BattleEvent::AttractApplied { target, .. } => {
                 Some(format!("{}\nfell in love!", name(*target)))
             }
-            BattleEvent::AttractFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::AttractFailed {
+                side, move_name, ..
+            } => Some(fail_move_text(*side, move_name)),
             BattleEvent::InfatuatedTurn { side, source, .. } => {
                 let message = format!("{}\nis in love with\n{}!", name(*side), name(*source));
                 queue_visible_status_animation(
@@ -1673,14 +1759,18 @@ fn stage_visible_battle_messages(
             BattleEvent::DisableEnded { side, .. } => {
                 Some(format!("{}'s\ndisabled no more!", name(*side)))
             }
-            BattleEvent::DisableFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::DisableFailed {
+                side, move_name, ..
+            } => Some(fail_move_text(*side, move_name)),
             BattleEvent::EncoreApplied { target, .. } => {
                 Some(format!("{}\ngot an ENCORE!", name(*target)))
             }
             BattleEvent::EncoreEnded { side, .. } => {
                 Some(format!("{}'s\nENCORE ended!", name(*side)))
             }
-            BattleEvent::EncoreFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::EncoreFailed { target, .. } => {
+                Some(format!("It didn't affect\n{}!", name(*target)))
+            }
             BattleEvent::ProtectApplied { side, .. } => {
                 Some(format!("{}\nPROTECTED itself!", name(*side)))
             }
@@ -1712,10 +1802,17 @@ fn stage_visible_battle_messages(
                 Some(format!("{}'s\ngetting pumped!", name(*side)))
             }
             BattleEvent::FocusEnergyFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::BellyDrumApplied { side, .. } => Some(format!(
+                "{}\ncut its HP and\nmaximized ATTACK!",
+                name(*side)
+            )),
+            BattleEvent::BellyDrumFailed { .. } => Some("But it failed!".to_string()),
             BattleEvent::ForesightApplied { side, target, .. } => {
                 Some(format!("{}\nidentified\n{}!", name(*side), name(*target)))
             }
-            BattleEvent::ForesightFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::ForesightFailed {
+                side, move_name, ..
+            } => Some(fail_move_text(*side, move_name)),
             BattleEvent::NightmareApplied { target, .. } => {
                 Some(format!("{}\nstarted to have a\nNIGHTMARE!", name(*target)))
             }
@@ -1726,6 +1823,8 @@ fn stage_visible_battle_messages(
                     .push_back(format!("{}\ncopied the stat", name(*side)));
                 Some(format!("changes of\n{}!", name(*target)))
             }
+            BattleEvent::PsychUpFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::WeatherFailed { .. } => Some("But it failed!".to_string()),
             BattleEvent::TransformApplied { side, species, .. } => Some(format!(
                 "{}\nTRANSFORMED into\n{}!",
                 name(*side),
@@ -1756,6 +1855,9 @@ fn stage_visible_battle_messages(
                 Some("All stat changes\nwere eliminated!".to_string())
             }
             BattleEvent::LockOnApplied { side, .. } => Some(format!("{}\ntook aim!", name(*side))),
+            BattleEvent::LockOnFailed { target, .. } => {
+                Some(format!("It didn't affect\n{}!", name(*target)))
+            }
             BattleEvent::DestinyBondApplied { side, .. } => Some(format!(
                 "{}'s\ntrying to take its\nopponent with it!",
                 name(*side)
@@ -1833,7 +1935,9 @@ fn stage_visible_battle_messages(
                 battle_move_display_name(snapshot, target_move),
                 reduction
             )),
-            BattleEvent::SpiteFailed { .. } => Some("But it failed!".to_string()),
+            BattleEvent::SpiteFailed { target, .. } => {
+                Some(format!("It didn't affect\n{}!", name(*target)))
+            }
             BattleEvent::Splash { .. } => Some("But nothing happened!".to_string()),
             BattleEvent::HealApplied {
                 side, move_name, ..
@@ -1879,6 +1983,9 @@ fn stage_visible_battle_messages(
                 Some(format!("Sucked health from\n{}!", name(*target)))
             }
             BattleEvent::PainSplitApplied { .. } => Some("The battlers\nshared pain!".to_string()),
+            BattleEvent::PainSplitFailed { target, .. } => {
+                Some(format!("It didn't affect\n{}!", name(*target)))
+            }
             BattleEvent::HeldItemHpHealed { side, item_id, .. } => {
                 let message = format!(
                     "{}\nrecovered with\n{}.",
@@ -2184,12 +2291,13 @@ fn stage_visible_battle_messages(
                             runtime_shell,
                             snapshot,
                             &name(BattleSide::Player),
-                        );
+                        )
+                        .expect("player switch event must resolve source withdrawal text");
                         runtime_shell.battle_messages.push_back(withdraw.clone());
                         queue_visible_player_recall_animation(runtime_shell, snapshot, &withdraw);
                     }
                     Some(
-                        visible_player_send_out_message(snapshot, *party_index)
+                        visible_player_send_out_message(snapshot, *party_index, false)
                             .expect("player switch event must resolve source send-out text"),
                     )
                 }
@@ -2811,206 +2919,12 @@ fn visible_battle_animation_definition(
 )> {
     let (timeline_frame, sound_events, cry_events, object_events, bg_events) =
         compile_visible_battle_animation_timeline(snapshot, &label, animation_param)?;
-    // TypeScript/ASM execute consecutive commands in one update and yield only
-    // at an explicit wait (or while a live object/background effect continues).
-    let final_sound_frame = sound_events.last().map_or(0, |(frame, _)| *frame);
-    let final_cry_frame = cry_events.last().map_or(0, |(frame, _)| *frame);
-    let bundle =
-        serde_json::from_str::<serde_json::Value>(&snapshot.presentation.battle_anim_bundle)
-            .ok()?;
-    let final_object_frame = object_events
-        .iter()
-        .filter_map(|event| {
-            let VisibleMoveObjectCommand::Spawn { object_id, .. } = &event.command else {
-                return None;
-            };
-            let object = bundle.get("objects")?.get(object_id)?;
-            if object
-                .get("function")
-                .and_then(serde_json::Value::as_str)
-                .is_some_and(|function| function != "BATTLE_ANIM_FUNC_NULL")
-            {
-                return None;
-            }
-            let frameset = object.get("frameset")?.as_str()?;
-            let lifetime = visible_null_battle_animation_object_lifetime(&bundle, frameset)?;
-            let natural_end = event.frame.saturating_add(lifetime.saturating_sub(1));
-            let cleared_at = object_events
-                .iter()
-                .find(|candidate| {
-                    candidate.frame >= event.frame
-                        && matches!(&candidate.command, VisibleMoveObjectCommand::Clear)
-                })
-                .map(|candidate| candidate.frame);
-            Some(cleared_at.map_or(natural_end, |clear| natural_end.min(clear)))
-        })
-        .max()
-        .unwrap_or(0);
-    let final_bg_frame = bg_events
-        .iter()
-        .filter(|effect| !effect.incremented)
-        .filter_map(|effect| {
-            let terminating_increment = bg_events
-                .iter()
-                .find(|candidate| {
-                    candidate.incremented
-                        && candidate.effect_id == effect.effect_id
-                        && candidate.frame >= effect.frame
-                })
-                .map(|candidate| candidate.frame);
-            let reload_interval = || {
-                parse_visible_battle_animation_int(&effect.target)
-                    .and_then(|value| u16::try_from(value).ok())
-                    .map(|value| value.saturating_add(1).max(1))
-            };
-            let lifetime = match effect.effect_id.as_str() {
-                "BATTLE_BG_EFFECT_TACKLE"
-                | "BATTLE_BG_EFFECT_BODY_SLAM"
-                | "BATTLE_BG_EFFECT_BETA_PURSUIT" => 12,
-                "BATTLE_BG_EFFECT_VITAL_THROW" => {
-                    return terminating_increment
-                        .map(|frame| frame.saturating_add(7))
-                        .or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_ROLLOUT" => effect.duration,
-                "BATTLE_BG_EFFECT_SHAKE_SCREEN_X" | "BATTLE_BG_EFFECT_SHAKE_SCREEN_Y" => {
-                    effect.duration.max(1)
-                }
-                "BATTLE_BG_EFFECT_FLASH_INVERTED" | "BATTLE_BG_EFFECT_FLASH_WHITE" => {
-                    reload_interval()?.saturating_mul(u16::from(effect.param))
-                }
-                "BATTLE_BG_EFFECT_WHITE_HUES" | "BATTLE_BG_EFFECT_BLACK_HUES" => {
-                    reload_interval()?.saturating_mul(3)
-                }
-                "BATTLE_BG_EFFECT_ALTERNATE_HUES" | "BATTLE_BG_EFFECT_CYCLE_BGPALS_INVERTED" => {
-                    return Some(timeline_frame);
-                }
-                "BATTLE_BG_EFFECT_ACID_ARMOR" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_CYCLE_OBPALS_GRAY_AND_YELLOW"
-                | "BATTLE_BG_EFFECT_CYCLE_MID_OBPALS_GRAY_AND_YELLOW" => {
-                    return Some(timeline_frame);
-                }
-                "BATTLE_BG_EFFECT_CYCLE_MON_LIGHT_DARK_REPEATING" => {
-                    if effect.duration == 0 {
-                        6
-                    } else {
-                        effect.duration
-                    }
-                }
-                "BATTLE_BG_EFFECT_START_WATER" | "BATTLE_BG_EFFECT_END_WATER" => 1,
-                "BATTLE_BG_EFFECT_WATER" => 17,
-                "BATTLE_BG_EFFECT_WHIRLPOOL" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_NIGHT_SHADE"
-                | "BATTLE_BG_EFFECT_TELEPORT"
-                | "BATTLE_BG_EFFECT_PSYCHIC" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_WOBBLE_MON" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_WAVE_DEFORM_MON" => {
-                    return terminating_increment
-                        .map(|frame| frame.saturating_add(32))
-                        .or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_WOBBLE_PLAYER" => 33,
-                "BATTLE_BG_EFFECT_WOBBLE_SCREEN" => 32,
-                // One setup update, $20 displacement updates, then cleanup.
-                "BATTLE_BG_EFFECT_VIBRATE_MON" => 33,
-                "BATTLE_BG_EFFECT_FLAIL" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_DIG" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_DOUBLE_TEAM" => {
-                    let second_increment = bg_events
-                        .iter()
-                        .filter(|candidate| {
-                            candidate.incremented
-                                && candidate.effect_id == effect.effect_id
-                                && candidate.frame >= effect.frame
-                        })
-                        .nth(1)
-                        .map(|candidate| candidate.frame);
-                    return second_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_BOUNCE_DOWN" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_WITHDRAW" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_REMOVE_MON" => {
-                    // The longer player-side tile rectangle takes nine shifts
-                    // plus its setup and three-state cadence to terminate.
-                    37
-                }
-                "BATTLE_BG_EFFECT_FAINT_MON" => 14,
-                "BATTLE_BG_EFFECT_BETA_SEND_OUT_MON1" => {
-                    let second_increment = bg_events
-                        .iter()
-                        .filter(|candidate| {
-                            candidate.incremented
-                                && candidate.effect_id == effect.effect_id
-                                && candidate.frame >= effect.frame
-                        })
-                        .nth(1)
-                        .map(|candidate| candidate.frame);
-                    return second_increment.or(Some(timeline_frame));
-                }
-                "BATTLE_BG_EFFECT_BETA_SEND_OUT_MON2" => 66,
-                // RunPicResizeScript spends four updates on every table
-                // entry. Enter has three graphics entries; Return has three
-                // graphics entries plus its terminal hidden entry.
-                "BATTLE_BG_EFFECT_ENTER_MON" => 12,
-                "BATTLE_BG_EFFECT_RETURN_MON" => 16,
-                "BATTLE_BG_EFFECT_BATTLEROBJ_1ROW" | "BATTLE_BG_EFFECT_BATTLEROBJ_2ROW" => {
-                    if effect.duration == 0 {
-                        6
-                    } else {
-                        effect.duration
-                    }
-                }
-                "BATTLE_BG_EFFECT_FADE_MON_TO_LIGHT"
-                | "BATTLE_BG_EFFECT_FADE_MON_TO_BLACK"
-                | "BATTLE_BG_EFFECT_FADE_MON_TO_LIGHT_REPEATING"
-                | "BATTLE_BG_EFFECT_FADE_MON_TO_BLACK_REPEATING"
-                | "BATTLE_BG_EFFECT_FADE_MONS_TO_BLACK_REPEATING"
-                | "BATTLE_BG_EFFECT_FADE_MON_TO_WHITE_WAIT_FADE_BACK"
-                | "BATTLE_BG_EFFECT_RAPID_FLASH"
-                | "BATTLE_BG_EFFECT_FLASH_MON_REPEATING"
-                | "BATTLE_BG_EFFECT_FADE_MON_FROM_WHITE" => {
-                    return terminating_increment.or(Some(timeline_frame));
-                }
-                _ => return None,
-            };
-            let last_reset = bg_events
-                .iter()
-                .filter(|candidate| {
-                    candidate.incremented
-                        && candidate.effect_id == effect.effect_id
-                        && candidate.frame >= effect.frame
-                })
-                .map(|candidate| candidate.frame)
-                .max()
-                .unwrap_or(effect.frame);
-            Some(last_reset.saturating_add(lifetime.saturating_sub(1)))
-        })
-        .max()
-        .unwrap_or(0);
+    // RunBattleAnimCommand stops the root script at anim_ret. Live objects
+    // and BG effects do not extend it; RunBattleAnimScript clears OAM as soon
+    // as that tick completes. Events are one-based, so include the return tick.
     Some((
         label,
-        timeline_frame
-            .max(final_sound_frame)
-            .max(final_cry_frame)
-            .max(final_object_frame)
-            .max(final_bg_frame)
-            .max(1),
+        timeline_frame.saturating_add(1),
         sound_events,
         cry_events,
         object_events,
@@ -3298,7 +3212,7 @@ fn execute_visible_battle_animation_script(
                 timeline.objects.push(VisibleMoveObjectEvent {
                     frame: timeline.frame.saturating_add(1),
                     command: VisibleMoveObjectCommand::Increment {
-                        slot: u8::try_from(slot).ok()?,
+                        index: u8::try_from(slot).ok()?,
                     },
                 });
             }
@@ -3308,7 +3222,7 @@ fn execute_visible_battle_animation_script(
                 timeline.objects.push(VisibleMoveObjectEvent {
                     frame: timeline.frame.saturating_add(1),
                     command: VisibleMoveObjectCommand::Set {
-                        slot: u8::try_from(slot).ok()?,
+                        index: u8::try_from(slot).ok()?,
                         value: u8::try_from(value & 0xff).ok()?,
                     },
                 });
@@ -3507,7 +3421,7 @@ fn battle_anim_reset_obp0_value(super_game_boy: bool) -> u8 {
     if super_game_boy { 0xf0 } else { 0xe0 }
 }
 
-fn visible_null_battle_animation_object_lifetime(
+fn visible_battle_animation_frameset_lifetime(
     bundle: &serde_json::Value,
     frameset_name: &str,
 ) -> Option<u16> {
@@ -3516,7 +3430,7 @@ fn visible_null_battle_animation_object_lifetime(
     for frame in frames {
         match frame.get("command")?.as_str()? {
             "frame" | "wait" => {
-                let frames = frame.get("duration")?.as_u64()?.max(1);
+                let frames = frame.get("duration")?.as_u64()?.saturating_add(1);
                 duration = duration.saturating_add(u16::try_from(frames).ok()?);
             }
             "delete" => return Some(duration.max(1)),
@@ -5005,36 +4919,53 @@ fn active_fly_destinations(
     snapshot: &RuntimeShellSnapshot,
     shell: &RuntimeGameShell,
 ) -> Result<Vec<RuntimeFlyDestinationKey>> {
-    let use_kanto_map = visible_pokegear_region(snapshot)? == "KANTO"
+    let use_kanto_map = visible_pokegear_region(snapshot, false)? == "KANTO"
         && snapshot
             .progression
             .active_engine_flags
             .contains("ENGINE_FLYPOINT_INDIGO_PLATEAU");
-    Ok(shell
-        .fly_destination_keys()
+    ordered_active_fly_destinations(
+        shell.fly_destination_keys(),
+        &snapshot.presentation.pokegear_landmarks,
+        &snapshot.progression.active_engine_flags,
+        use_kanto_map,
+    )
+}
+
+fn ordered_active_fly_destinations(
+    destinations: BTreeSet<RuntimeFlyDestinationKey>,
+    landmarks: &crystal_core::models::PokegearLandmarksPayload,
+    active_engine_flags: &BTreeSet<String>,
+    use_kanto_map: bool,
+) -> Result<Vec<RuntimeFlyDestinationKey>> {
+    let mut active = Vec::new();
+    for destination in destinations {
+        let landmark = landmarks
+            .landmarks
+            .iter()
+            .find(|landmark| landmark.constant == destination.label)
+            .with_context(|| {
+                format!(
+                    "FLY destination {} references missing Pokégear landmark {}",
+                    destination.flypoint_flag, destination.label
+                )
+            })?;
+        if (landmark.region == "KANTO") != use_kanto_map {
+            continue;
+        }
+        let is_default = if use_kanto_map {
+            destination.label == "LANDMARK_INDIGO_PLATEAU"
+        } else {
+            destination.label == "LANDMARK_NEW_BARK_TOWN"
+        };
+        if is_default || active_engine_flags.contains(&destination.flypoint_flag) {
+            active.push((landmark.id, destination));
+        }
+    }
+    active.sort_by_key(|(landmark_id, _)| *landmark_id);
+    Ok(active
         .into_iter()
-        .filter(|destination| {
-            let destination_is_kanto = snapshot
-                .presentation
-                .pokegear_landmarks
-                .landmarks
-                .iter()
-                .find(|landmark| landmark.constant == destination.label)
-                .is_some_and(|landmark| landmark.region == "KANTO");
-            if destination_is_kanto != use_kanto_map {
-                return false;
-            }
-            let is_default = if use_kanto_map {
-                destination.label == "LANDMARK_INDIGO_PLATEAU"
-            } else {
-                destination.label == "LANDMARK_SILVER_CAVE"
-            };
-            is_default
-                || snapshot
-                    .progression
-                    .active_engine_flags
-                    .contains(&destination.flypoint_flag)
-        })
+        .map(|(_, destination)| destination)
         .collect())
 }
 
@@ -6113,7 +6044,8 @@ fn switch_visible_battle_party_without_turn(
         switched.party_index, switched.state_checksum
     ));
     let replacement = runtime_shell.shell.snapshot()?;
-    let send_out_message = visible_player_send_out_message(&replacement, switched.party_index)?;
+    let send_out_message =
+        visible_player_send_out_message(&replacement, switched.party_index, false)?;
     runtime_shell
         .battle_messages
         .push_back(send_out_message.clone());
@@ -6207,9 +6139,13 @@ fn switch_visible_trainer_shift_party_without_turn(
         .find(|slot| slot.index == outgoing_index)
         .map(|slot| slot.pokemon.nickname.as_str())
         .context("trainer Shift switch is missing the outgoing party member")?;
-    let withdraw_message =
-        visible_player_withdraw_message(runtime_shell, &enemy_send_out_scene, outgoing_nickname);
-    let send_out_message = visible_player_send_out_message(&replacement, switched.party_index)?;
+    let withdraw_message = visible_player_withdraw_message(
+        runtime_shell,
+        &enemy_send_out_scene,
+        outgoing_nickname,
+    )?;
+    let send_out_message =
+        visible_player_send_out_message(&replacement, switched.party_index, false)?;
     runtime_shell
         .battle_messages
         .push_back(withdraw_message.clone());
@@ -6665,6 +6601,9 @@ fn claim_visible_battle_rewards(runtime_shell: &mut BevyRuntimeShell) -> Result<
         } => format!("battle:claim_rewards:trainer:{source_script}:{trainer_class}:{trainer_id}"),
     };
     record_visible_runtime_action(runtime_shell, reward_action)?;
+    if !trainer_battle {
+        queue_visible_victory_music(runtime_shell, &snapshot)?;
+    }
     let message = match battle.kind {
         crate::RuntimeBattleKind::Wild { .. } => {
             let rewards = runtime_shell.shell.claim_active_wild_battle_rewards()?;
@@ -7026,14 +6965,35 @@ fn push_visible_battle_reward_events(
                 learned_moves: recipient.learned_moves.clone(),
                 pending_move_learns: recipient.pending_move_learns.clone(),
                 deferred_level_evolution: false,
-                evolution: recipient.evolution.clone(),
+                evolution: Default::default(),
                 recipient_outcomes: Vec::new(),
+                post_battle_evolutions: Vec::new(),
             };
             push_visible_battle_reward_events(
                 runtime_shell,
                 &projected,
                 recipient.party_index,
                 &recipient.nickname,
+            )?;
+        }
+        for evolution in &outcome.post_battle_evolutions {
+            let projected = crate::core::systems::battle_rewards::BattleRewardOutcome {
+                defeated_species: outcome.defeated_species.clone(),
+                experience_awarded: 0,
+                level_before: 0,
+                level_after: 0,
+                learned_moves: Vec::new(),
+                pending_move_learns: Vec::new(),
+                deferred_level_evolution: false,
+                evolution: evolution.evolution.clone(),
+                recipient_outcomes: Vec::new(),
+                post_battle_evolutions: Vec::new(),
+            };
+            push_visible_battle_reward_events(
+                runtime_shell,
+                &projected,
+                evolution.party_index,
+                &evolution.nickname,
             )?;
         }
         return Ok(());
@@ -7124,6 +7084,7 @@ fn push_visible_battle_reward_events(
                     evolved_message: evolved_message.clone(),
                     pending_move_messages,
                     report: outcome.evolution.clone(),
+                    accepted: false,
                 });
         }
         runtime_shell
@@ -7186,6 +7147,7 @@ fn advance_visible_trainer_battle(runtime_shell: &mut BevyRuntimeShell) -> Resul
     );
     trim_event_log(&mut runtime_shell.last_audio_events);
     if advance.trainer_defeated {
+        queue_visible_victory_music(runtime_shell, &snapshot)?;
         queue_visible_trainer_result_text(runtime_shell, &snapshot, &win_text)?;
         reset_visible_battle_exit_state(runtime_shell);
         complete_visible_scripted_trainer_battle(
@@ -7288,7 +7250,7 @@ fn confirm_visible_shop_top_menu(runtime_shell: &mut BevyRuntimeShell) -> Result
             visible_cursor_index(
                 &mut runtime_shell.menu_cursor,
                 &shop_cursor_surface_id(shop),
-                shop.inventory.len(),
+                shop.inventory.len() + 1,
             );
             Ok(())
         }
@@ -7323,9 +7285,18 @@ fn buy_visible_shop_cursor_item(runtime_shell: &mut BevyRuntimeShell) -> Result<
     let selected_index = strict_readonly_cursor_index(
         &runtime_shell.menu_cursor,
         &surface_id,
-        shop.inventory.len(),
+        shop.inventory.len() + 1,
     )
     .with_context(|| format!("shop item surface {surface_id} is active without a valid cursor"))?;
+    if selected_index == shop.inventory.len() {
+        runtime_shell.menu_cursor = None;
+        runtime_shell.shop_top_cursor = Some(MenuCursor {
+            surface_id: "shop:top".to_string(), option_index: 0,
+        });
+        runtime_shell.shop_notice = Some("Can I do anything\nelse for you?".to_string());
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     begin_visible_shop_quantity(runtime_shell, &shop, selected_index, false)
 }
 
@@ -7349,70 +7320,18 @@ fn begin_visible_shop_quantity(
         .iter()
         .find(|item| item.item_id == item_id)
         .with_context(|| format!("shop quantity item {item_id} is missing from catalog"))?;
-    let unit_price = if selling { item.price / 2 } else { item.price };
+    let unit_price = item.price;
+    // StandardMartAskPurchaseQuantity sets wItemQuantity to MAX_ITEM_STACK.
+    // CompareMoney and ReceiveItem run only after MartConfirmPurchase.
     let max_quantity = if selling {
         carried_item_quantity(&snapshot, &item_id)
             .unwrap_or(0)
             .min(99)
-    } else if unit_price == 0 {
-        0
     } else {
-        let owned = carried_item_quantity(&snapshot, &item_id)
-            .unwrap_or(0)
-            .min(99);
-        let stack_limit: u16 = match item.pocket.as_str() {
-            "KEY_ITEM" => 1,
-            _ => 99,
-        };
-        let pocket_has_room = owned > 0
-            || match item.pocket.as_str() {
-                "ITEM" => {
-                    snapshot
-                        .bag
-                        .items
-                        .iter()
-                        .filter(|entry| entry.quantity > 0)
-                        .count()
-                        < 20
-                }
-                "BALL" => {
-                    snapshot
-                        .bag
-                        .balls
-                        .iter()
-                        .filter(|entry| entry.quantity > 0)
-                        .count()
-                        < 12
-                }
-                "KEY_ITEM" => {
-                    snapshot
-                        .bag
-                        .key_items
-                        .iter()
-                        .filter(|entry| entry.quantity > 0)
-                        .count()
-                        < 25
-                }
-                "TM_HM" => true,
-                _ => true,
-            };
-        let capacity = if pocket_has_room {
-            stack_limit.saturating_sub(owned)
-        } else {
-            0
-        };
-        capacity.min((snapshot.trainer.money / u32::from(unit_price)).min(99) as u16)
+        crate::core::models::MAX_ITEM_STACK
     };
     if max_quantity == 0 {
-        let notice = if selling {
-            "You don't have any left."
-        } else if unit_price == 0 {
-            "That item isn't for sale right now."
-        } else if snapshot.trainer.money < u32::from(unit_price) {
-            "You don't have\nenough money."
-        } else {
-            "You can't carry\nany more items."
-        };
+        let notice = "You don't have any left.";
         set_shell_action_status(runtime_shell, notice);
         runtime_shell.shop_notice = Some(notice.to_string());
         runtime_shell.shop_return_to_top_after_notice = true;
@@ -7425,6 +7344,7 @@ fn begin_visible_shop_quantity(
         quantity: 1,
         max_quantity,
         unit_price,
+        confirmation: None,
     });
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
@@ -7434,13 +7354,37 @@ fn adjust_visible_shop_quantity(runtime_shell: &mut BevyRuntimeShell, delta: i16
     let Some(quantity) = runtime_shell.shop_quantity.as_mut() else {
         return Ok(());
     };
-    quantity.quantity = (i32::from(quantity.quantity) + i32::from(delta))
-        .clamp(1, i32::from(quantity.max_quantity)) as u16;
+    if let Some(yes) = quantity.confirmation.as_mut() {
+        if delta.abs() == 1 {
+            *yes = delta > 0;
+        }
+    } else {
+        quantity.quantity = match delta {
+            -1 if quantity.quantity == 1 => quantity.max_quantity,
+            1 if quantity.quantity == quantity.max_quantity => 1,
+            _ => (i32::from(quantity.quantity) + i32::from(delta))
+                .clamp(1, i32::from(quantity.max_quantity)) as u16,
+        };
+    }
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
 
 fn confirm_visible_shop_quantity(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let pending = runtime_shell
+        .shop_quantity
+        .as_mut()
+        .context("shop quantity prompt is not open")?;
+    if pending.confirmation.is_none() {
+        pending.confirmation = Some(true);
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
+    if pending.confirmation == Some(false) {
+        runtime_shell.shop_quantity = None;
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     let quantity = runtime_shell
         .shop_quantity
         .take()
@@ -7509,7 +7453,7 @@ fn buy_visible_shop_item_from_snapshot(
     let notice = visible_shop_transaction_status("BOUGHT", &item_id, &transaction.outcome);
     set_shell_action_status(runtime_shell, notice.clone());
     runtime_shell.shop_notice = Some(notice);
-    runtime_shell.shop_return_to_top_after_notice = true;
+    runtime_shell.shop_return_to_top_after_notice = false;
     let snapshot = runtime_shell.shell.snapshot()?;
     if let Some(shop) = snapshot.pending_shop.as_ref() {
         if shop.inventory.is_empty() {
@@ -7597,11 +7541,12 @@ fn sell_visible_shop_item_from_list(
     let notice = visible_shop_transaction_status("SOLD", &item_id, &transaction.outcome);
     set_shell_action_status(runtime_shell, notice.clone());
     runtime_shell.shop_notice = Some(notice);
-    runtime_shell.shop_return_to_top_after_notice = true;
+    runtime_shell.shop_return_to_top_after_notice = false;
     let snapshot = runtime_shell.shell.snapshot()?;
     let sellable = sellable_carried_item_ids(&snapshot);
     if sellable.is_empty() {
         runtime_shell.sell_cursor = None;
+        runtime_shell.shop_return_to_top_after_notice = true;
     } else {
         runtime_shell.sell_cursor = Some(MenuCursor {
             surface_id: "sell:bag".to_string(),
@@ -7683,7 +7628,9 @@ fn visible_shop_transaction_status(
 
 fn close_visible_pc_surface(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, "pc:submenu:close")?;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     runtime_shell.pc_item_action = None;
     runtime_shell.pc_item_quantity = None;
@@ -7692,12 +7639,14 @@ fn close_visible_pc_surface(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     runtime_shell.mailbox_cursor = None;
     runtime_shell.mailbox_action_cursor = None;
     runtime_shell.mailbox_attach_index = None;
+    runtime_shell.mailbox_attach_return_index = None;
+    runtime_shell.mailbox_confirmation_response = None;
     runtime_shell.pc_confirmation = None;
     runtime_shell.bill_pc_move_open = false;
     runtime_shell.bill_pc_move_party_open = false;
     runtime_shell.bill_pc_move_source = None;
     runtime_shell.bill_pc_pokemon_action_cursor = None;
-    runtime_shell.bill_pc_box_summary = None;
+    runtime_shell.bill_pc_pokemon_summary = None;
     runtime_shell.pending_pc_release = None;
     runtime_shell.pc_release_sequence = None;
     runtime_shell.pc_transfer_sequence = None;
@@ -7776,6 +7725,16 @@ fn visible_bill_pc_action_label(action: VisibleBillPcAction) -> &'static str {
     }
 }
 
+fn visible_pc_pokemon_action_labels(runtime_shell: &BevyRuntimeShell) -> &'static [&'static str] {
+    if runtime_shell.bill_pc_move_open {
+        &["MOVE", "STATS", "CANCEL"]
+    } else if runtime_shell.bill_pc_deposit_open {
+        &["DEPOSIT", "STATS", "RELEASE", "CANCEL"]
+    } else {
+        &["WITHDRAW", "STATS", "RELEASE", "CANCEL"]
+    }
+}
+
 fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let selected = strict_readonly_cursor_index(
         &runtime_shell.bill_pc_action_cursor,
@@ -7789,9 +7748,11 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
         format!("pc:bill:{}", visible_bill_pc_action_label(action)),
     )?;
     runtime_shell.bill_pc_action_cursor = None;
+    runtime_shell.bill_pc_deposit_open = action == VisibleBillPcAction::Deposit;
     match action {
         VisibleBillPcAction::Withdraw => {
             let snapshot = runtime_shell.shell.snapshot()?;
+            runtime_shell.pc_list_scroll = 0;
             runtime_shell.storage_cursor = Some(MenuCursor {
                 surface_id: storage_cursor_surface_id(snapshot.storage.current_pc_box),
                 option_index: 0,
@@ -7800,12 +7761,12 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
             set_shell_action_status(runtime_shell, "WITHDRAW <PK><MN>");
         }
         VisibleBillPcAction::Deposit => {
-            let snapshot = runtime_shell.shell.snapshot()?;
+            runtime_shell.pc_list_scroll = 0;
             runtime_shell.storage_cursor = Some(MenuCursor {
-                surface_id: storage_cursor_surface_id(snapshot.storage.current_pc_box),
+                surface_id: pc_party_surface_id().to_string(),
                 option_index: 0,
             });
-            open_visible_party_menu(runtime_shell)?;
+            close_visible_party_detail_state(runtime_shell);
             set_shell_action_status(runtime_shell, "DEPOSIT <PK><MN>");
         }
         VisibleBillPcAction::ChangeBox => {
@@ -7910,6 +7871,7 @@ fn confirm_visible_bill_pc_box_action(runtime_shell: &mut BevyRuntimeShell) -> R
                     VisiblePcTransferKind::BoxPrint,
                     snapshot.storage.current_pc_box,
                     "There's no <PK><MN>.",
+                    false,
                 )?;
                 set_shell_action_status(runtime_shell, "THERE'S NO POKEMON");
             } else {
@@ -7964,44 +7926,128 @@ fn begin_visible_bill_pc_box_switch(
     Ok(())
 }
 
-fn confirm_visible_bill_pc_move(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+fn close_visible_bill_pc_move_list(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    record_visible_runtime_action(runtime_shell, "pc:move:close")?;
+    runtime_shell.bill_pc_move_open = false;
+    runtime_shell.bill_pc_move_party_open = false;
+    runtime_shell.bill_pc_move_source = None;
+    runtime_shell.storage_cursor = None;
+    runtime_shell.pc_list_scroll = 0;
+    runtime_shell.bill_pc_action_cursor = Some(MenuCursor {
+        surface_id: "pc:bill-actions".to_string(), option_index: 3,
+    });
+    set_shell_action_status(runtime_shell, "BILL'S PC");
+    Ok(())
+}
+
+fn begin_visible_bill_pc_move_source(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    let box_index = snapshot.storage.current_pc_box;
+    let location = selected_visible_pc_pokemon_location(runtime_shell, &snapshot)?;
+    if let VisiblePcPokemonLocation::Party(index) = location {
+        let pokemon = visible_pc_pokemon_at(&snapshot, location)?;
+        // BillsPC_CheckMail_PreventBlackout runs before PrepInsertCursor.
+        let refusal = if snapshot.party.slots.len() <= 1 {
+            Some("It's your last <PK><MN>!")
+        } else if !snapshot.party.slots.iter().any(|slot| slot.index != index && slot.pokemon.hp > 0) {
+            Some("No more usable <PK><MN>!")
+        } else if pokemon.item.as_deref().is_some_and(crate::core::models::item::is_mail_item_id) {
+            Some("Remove MAIL.")
+        } else { None };
+        if let Some(text) = refusal {
+            return begin_visible_pc_transfer_refusal(runtime_shell, VisiblePcTransferKind::Deposit,
+                snapshot.storage.current_pc_box, text, true);
+        }
+    }
+    record_visible_runtime_action(runtime_shell, "pc:move:pick_up")?;
+    runtime_shell.bill_pc_move_source = Some(VisiblePcMoveSource {
+        scroll: runtime_shell.pc_list_scroll,
+        location: match location {
+        VisiblePcPokemonLocation::Party(slot) => crystal_assets::RuntimePokemonStorageLocation::Party { slot },
+        VisiblePcPokemonLocation::Box { box_index, box_slot } =>
+            crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot: box_slot },
+        },
+    });
+    runtime_shell.bill_pc_pokemon_action_cursor = None;
+    set_shell_action_status(runtime_shell, "CHOOSE A DESTINATION");
+    mark_runtime_snapshot_dirty(runtime_shell);
+    Ok(())
+}
+
+fn cancel_visible_bill_pc_move_source(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let source = runtime_shell.bill_pc_move_source.clone().context("Move cancellation has no source")?;
+    record_visible_runtime_action(runtime_shell, "pc:move:cancel_insertion")?;
+    let (surface_id, slot) = match source.location {
+        crystal_assets::RuntimePokemonStorageLocation::Party { slot } => {
+            runtime_shell.bill_pc_move_party_open = true;
+            (pc_party_surface_id().to_string(), slot)
+        }
+        crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot } => {
+            runtime_shell.bill_pc_move_party_open = false;
+            runtime_shell.bill_pc_move_loaded_box = box_index;
+            (storage_cursor_surface_id(box_index), slot)
+        }
+    };
+    runtime_shell.storage_cursor = Some(MenuCursor { surface_id, option_index: slot });
+    runtime_shell.pc_list_scroll = source.scroll;
+    runtime_shell.bill_pc_move_source = None;
+    set_shell_action_status(runtime_shell, "CHOOSE A POKEMON TO MOVE");
+    mark_runtime_snapshot_dirty(runtime_shell);
+    Ok(())
+}
+
+fn confirm_visible_bill_pc_move(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.bill_pc_move_source.is_none() {
+        return open_visible_bill_pc_pokemon_actions(runtime_shell);
+    }
+    let snapshot = runtime_shell.shell.snapshot()?;
+    let box_index = visible_pc_box_index(&snapshot, runtime_shell);
     let slot = selected_pc_move_slot_index(runtime_shell)?;
     let target = if runtime_shell.bill_pc_move_party_open {
         crystal_assets::RuntimePokemonStorageLocation::Party { slot }
     } else {
         crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot }
     };
-    let Some(source) = runtime_shell.bill_pc_move_source.clone() else {
-        let occupied = match &target {
-            crystal_assets::RuntimePokemonStorageLocation::Party { slot } => snapshot
-                .party
-                .slots
-                .iter()
-                .any(|candidate| candidate.index == *slot),
-            crystal_assets::RuntimePokemonStorageLocation::Box { .. } => {
-                current_storage_box(&snapshot)?
-                    .slots
-                    .iter()
-                    .any(|candidate| candidate.index == slot)
-            }
-        };
-        if !occupied {
-            set_shell_action_status(runtime_shell, "NO POKEMON THERE");
-            return Ok(());
-        }
-        runtime_shell.bill_pc_move_source = Some(target);
-        set_shell_action_status(runtime_shell, "CHOOSE A DESTINATION");
-        return Ok(());
+    let source = runtime_shell.bill_pc_move_source.clone().context("Move insertion has no source")?.location;
+    let same_container = match (&source, &target) {
+        (crystal_assets::RuntimePokemonStorageLocation::Party { .. },
+         crystal_assets::RuntimePokemonStorageLocation::Party { .. }) => true,
+        (crystal_assets::RuntimePokemonStorageLocation::Box { box_index: source_box, .. },
+         crystal_assets::RuntimePokemonStorageLocation::Box { box_index: target_box, .. }) => source_box == target_box,
+        _ => false,
     };
-    if source == target {
-        runtime_shell.bill_pc_move_source = None;
-        set_shell_action_status(runtime_shell, "MOVE CANCELLED");
-        return Ok(());
+    // BillsPC_CheckSpaceInDestination runs before the save and exempts
+    // rearranging the same container, even when every slot is occupied.
+    let destination_full = if runtime_shell.bill_pc_move_party_open {
+        snapshot.party.slots.len() >= crate::core::models::party::PARTY_SIZE
+    } else {
+        visible_storage_box(&snapshot, runtime_shell)?.count >= crate::core::models::MAX_BOX_MONS
+    };
+    if !same_container && destination_full {
+        let message = snapshot.presentation.pc_strings.get("PCString_TheresNoRoom")
+            .context("PC no-room message is missing")?;
+        return begin_visible_pc_transfer_refusal(runtime_shell,
+            if runtime_shell.bill_pc_move_party_open { VisiblePcTransferKind::Withdraw }
+            else { VisiblePcTransferKind::Deposit },
+            snapshot.storage.current_pc_box, message, false);
     }
+    let source_location = match &source {
+        crystal_assets::RuntimePokemonStorageLocation::Party { slot } => VisiblePcPokemonLocation::Party(*slot),
+        crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot } =>
+            VisiblePcPokemonLocation::Box { box_index: *box_index, box_slot: *slot },
+    };
+    let presentation = VisiblePcMovePresentation {
+        names: if runtime_shell.bill_pc_move_party_open {
+            snapshot.party.slots.iter().map(|slot| slot.pokemon.nickname.clone()).collect()
+        } else {
+            visible_storage_box(&snapshot, runtime_shell)?.slots.iter().map(|slot| slot.pokemon.nickname.clone()).collect()
+        },
+        pokemon: visible_pc_pokemon_info(visible_pc_pokemon_at(&snapshot, source_location)?),
+        cursor: runtime_shell.storage_cursor.clone().context("Move save has no insertion cursor")?,
+        scroll: runtime_shell.pc_list_scroll,
+    };
     runtime_shell.bill_pc_move_source = None;
     runtime_shell.bill_pc_move_save = Some(VisibleBillPcMoveSave {
+        presentation,
         source,
         target,
         phase: VisibleBillPcMoveSavePhase::BeforeMove,
@@ -8055,22 +8101,21 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
     let moved = runtime_shell
         .shell
         .move_pokemon_without_mail(pending.source, pending.target)?;
-    match moved.target {
-        crystal_assets::RuntimePokemonStorageLocation::Party { .. } => {
+    let (surface_id, slot) = match moved.target {
+        crystal_assets::RuntimePokemonStorageLocation::Party { slot } => {
             runtime_shell.bill_pc_move_party_open = true;
-            runtime_shell.storage_cursor = Some(MenuCursor {
-                surface_id: pc_move_party_surface_id().to_string(),
-                option_index: 0,
-            });
+            (pc_party_surface_id().to_string(), slot)
         }
-        crystal_assets::RuntimePokemonStorageLocation::Box { box_index, .. } => {
+        crystal_assets::RuntimePokemonStorageLocation::Box { box_index, slot } => {
+            runtime_shell.bill_pc_move_loaded_box = box_index;
             runtime_shell.bill_pc_move_party_open = false;
-            runtime_shell.storage_cursor = Some(MenuCursor {
-                surface_id: storage_cursor_surface_id(box_index),
-                option_index: 0,
-            });
+            (storage_cursor_surface_id(box_index), slot)
         }
-    }
+    };
+    // CheckTrivialMove adjusts the destination after removing an earlier
+    // source; otherwise the insertion's cursor and window remain in place.
+    runtime_shell.pc_list_scroll = runtime_shell.pc_list_scroll.min(slot);
+    runtime_shell.storage_cursor = Some(MenuCursor { surface_id, option_index: slot });
     mark_runtime_snapshot_dirty(runtime_shell);
     quick_save_from_bill_pc(runtime_shell)?;
     queue_visible_shell_sound_effect(runtime_shell, "SFX_SAVE")?;
@@ -8107,9 +8152,11 @@ fn visible_storage_contains_mail(snapshot: &RuntimeShellSnapshot) -> bool {
 
 fn open_visible_bill_pc_move_mode(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
+    runtime_shell.bill_pc_move_loaded_box = snapshot.storage.current_pc_box;
     runtime_shell.bill_pc_move_open = true;
     runtime_shell.bill_pc_move_party_open = false;
     runtime_shell.bill_pc_move_source = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = Some(MenuCursor {
         surface_id: storage_cursor_surface_id(snapshot.storage.current_pc_box),
         option_index: 0,
@@ -8127,7 +8174,9 @@ fn close_visible_bill_pc_actions(runtime_shell: &mut BevyRuntimeShell) -> Result
     runtime_shell.bill_pc_move_open = false;
     runtime_shell.bill_pc_move_party_open = false;
     runtime_shell.bill_pc_move_source = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.party_menu_open = false;
     runtime_shell.pc_hub_cursor = Some(MenuCursor {
         surface_id: "pc:hub".to_string(),
@@ -8174,6 +8223,8 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             runtime_shell.bill_pc_session_open = false;
             runtime_shell.bill_pc_action_cursor = None;
             runtime_shell.bill_pc_box_cursor = None;
+            runtime_shell.pc_item_scroll = 0;
+            runtime_shell.pc_item_row = 0;
             runtime_shell.player_pc_action_cursor = Some(MenuCursor {
                 surface_id: "pc:player-actions".to_string(),
                 option_index: 0,
@@ -8452,12 +8503,17 @@ fn apply_visible_decoration_outcome(
     Ok(())
 }
 
-fn dismiss_visible_pc_notice(runtime_shell: &mut BevyRuntimeShell) {
+fn dismiss_visible_pc_notice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.pc_notice = runtime_shell
         .decoration_menu
         .as_mut()
         .and_then(|menu| menu.notice_queue.pop_front());
+    if let Some(index) = runtime_shell.mailbox_attach_return_index.take() {
+        close_visible_party_menu(runtime_shell);
+        restore_visible_mailbox_position(runtime_shell, index)?;
+    }
     mark_runtime_snapshot_dirty(runtime_shell);
+    Ok(())
 }
 
 fn confirm_visible_decoration_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
@@ -8693,20 +8749,8 @@ fn confirm_visible_player_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Res
     runtime_shell.player_pc_action_cursor = None;
     match action {
         VisiblePlayerPcAction::WithdrawItem | VisiblePlayerPcAction::TossItem => {
-            let snapshot = runtime_shell.shell.snapshot()?;
-            if carried_item_count(&snapshot.bag.pc_items) == 0 {
-                runtime_shell.pc_notice = Some("No items here!".to_string());
-                runtime_shell.player_pc_action_cursor = Some(MenuCursor {
-                    surface_id: "pc:player-actions".to_string(),
-                    option_index: selected,
-                });
-            } else {
-                runtime_shell.pc_item_action = Some(action);
-                runtime_shell.pc_item_cursor = Some(MenuCursor {
-                    surface_id: "pc:items".to_string(),
-                    option_index: 0,
-                });
-            }
+            runtime_shell.pc_item_action = Some(action);
+            restore_visible_pc_item_list_position(runtime_shell)?;
         }
         VisiblePlayerPcAction::DepositItem => {
             runtime_shell.pc_item_action = Some(action);
@@ -8723,7 +8767,7 @@ fn confirm_visible_player_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Res
         VisiblePlayerPcAction::MailBox => {
             let snapshot = runtime_shell.shell.snapshot()?;
             if snapshot.mailbox.is_empty() {
-                runtime_shell.pc_notice = Some("There's no MAIL here.".to_string());
+                runtime_shell.pc_notice = Some(visible_mailbox_text(&snapshot, "_EmptyMailboxText")?);
                 runtime_shell.player_pc_action_cursor = Some(MenuCursor {
                     surface_id: "pc:player-actions".to_string(),
                     option_index: selected,
@@ -8733,6 +8777,7 @@ fn confirm_visible_player_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Res
                     surface_id: "pc:mailbox".to_string(),
                     option_index: 0,
                 });
+                runtime_shell.mailbox_scroll = 0;
             }
         }
         VisiblePlayerPcAction::Decoration => {
@@ -8748,12 +8793,16 @@ fn confirm_visible_player_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Res
 fn close_visible_player_pc(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.player_pc_action_cursor = None;
     runtime_shell.decoration_menu = None;
+    runtime_shell.pc_item_switch_origin = None;
+    runtime_shell.pc_item_move_sequence = None;
     runtime_shell.pc_item_cursor = None;
     runtime_shell.pc_item_action = None;
     runtime_shell.pc_item_quantity = None;
     runtime_shell.mailbox_cursor = None;
     runtime_shell.mailbox_action_cursor = None;
     runtime_shell.mailbox_attach_index = None;
+    runtime_shell.mailbox_attach_return_index = None;
+    runtime_shell.mailbox_confirmation_response = None;
     if runtime_shell.pc_hub_session_open {
         runtime_shell.pc_hub_cursor = Some(MenuCursor {
             surface_id: "pc:hub".to_string(),
@@ -8777,12 +8826,11 @@ fn close_visible_player_pc(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 
 fn confirm_visible_mailbox_selection(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    let selected = strict_readonly_cursor_index(
-        &runtime_shell.mailbox_cursor,
-        "pc:mailbox",
-        snapshot.mailbox.len(),
-    )
-    .context("mailbox requires a valid cursor")?;
+    let (selected, _) = visible_mailbox_window(&snapshot, runtime_shell)?;
+    if selected == snapshot.mailbox.len() {
+        close_visible_mailbox(runtime_shell);
+        return Ok(());
+    }
     runtime_shell.mailbox_action_cursor = Some(MenuCursor {
         surface_id: "pc:mailbox-actions".to_string(),
         option_index: 0,
@@ -8806,6 +8854,8 @@ fn confirm_visible_mailbox_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
     )
     .context("mailbox action has no selected message")?;
     let entry = &snapshot.mailbox[mailbox_index];
+    // VerticalMenu's window is closed before dispatching any submenu action.
+    runtime_shell.mailbox_action_cursor = None;
     match action {
         0 => {
             runtime_shell.pending_mail_read = Some(VisibleMailRead {
@@ -8821,12 +8871,14 @@ fn confirm_visible_mailbox_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
                 option_index: 0,
             });
             runtime_shell.pc_notice =
-                Some("The MAIL's message will be lost. Is that OK?".to_string());
+                Some(visible_mailbox_text(&snapshot, "_MailMessageLostText")?);
             return Ok(());
         }
         2 => {
             runtime_shell.mailbox_attach_index = Some(mailbox_index);
-            runtime_shell.mailbox_action_cursor = None;
+            // PartyMenuSelect owns A/B until it returns. Keep the message
+            // index and scroll, but do not let the hidden mailbox consume B.
+            runtime_shell.mailbox_cursor = None;
             open_visible_party_menu(runtime_shell)?;
             set_shell_action_status(runtime_shell, "ATTACH MAIL TO WHICH POKEMON?");
             return Ok(());
@@ -8834,16 +8886,7 @@ fn confirm_visible_mailbox_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
         _ => {}
     }
     runtime_shell.mailbox_action_cursor = None;
-    let latest = runtime_shell.shell.snapshot()?;
-    if latest.mailbox.is_empty() {
-        runtime_shell.mailbox_cursor = None;
-        runtime_shell.player_pc_action_cursor = Some(MenuCursor {
-            surface_id: "pc:player-actions".to_string(),
-            option_index: 3,
-        });
-    } else if let Some(cursor) = runtime_shell.mailbox_cursor.as_mut() {
-        cursor.option_index = cursor.option_index.min(latest.mailbox.len() - 1);
-    }
+    restore_visible_mailbox_position(runtime_shell, mailbox_index)?;
     Ok(())
 }
 
@@ -8851,6 +8894,7 @@ fn resolve_visible_pc_confirmation(
     runtime_shell: &mut BevyRuntimeShell,
     accepted: bool,
 ) -> Result<()> {
+    runtime_shell.mailbox_confirmation_response = None;
     let confirmation = runtime_shell
         .pc_confirmation
         .take()
@@ -8898,23 +8942,13 @@ fn resolve_visible_pc_confirmation(
                 "Discarded\n{}(S).",
                 item_display_name(&runtime_shell.shell.snapshot()?, &transfer.item_id)
             ));
-            let snapshot = runtime_shell.shell.snapshot()?;
-            let count = carried_item_count(&snapshot.bag.pc_items);
-            if count == 0 {
-                runtime_shell.pc_item_cursor = None;
-                runtime_shell.pc_item_action = None;
-                runtime_shell.player_pc_action_cursor = Some(MenuCursor {
-                    surface_id: "pc:player-actions".to_string(),
-                    option_index: 2,
-                });
-            } else if let Some(cursor) = runtime_shell.pc_item_cursor.as_mut() {
-                cursor.option_index = cursor.option_index.min(count - 1);
-            }
+            restore_visible_pc_item_list_position(runtime_shell)?;
         }
         VisiblePcConfirmation::PutMailInPack(mailbox_index) => {
             match runtime_shell.shell.move_mailbox_mail_to_bag(mailbox_index) {
                 Ok(_) => {
-                    runtime_shell.pc_notice = Some("The MAIL was put in the PACK.".to_string())
+                    runtime_shell.pc_notice = Some(visible_mailbox_text(
+                        &runtime_shell.shell.snapshot()?, "_MailClearedPutAwayText")?)
                 }
                 Err(error) if error.to_string().contains("bag") => {
                     runtime_shell.pc_notice = Some("The PACK is full.".to_string())
@@ -8922,16 +8956,7 @@ fn resolve_visible_pc_confirmation(
                 Err(error) => return Err(error),
             }
             runtime_shell.mailbox_action_cursor = None;
-            let snapshot = runtime_shell.shell.snapshot()?;
-            if snapshot.mailbox.is_empty() {
-                runtime_shell.mailbox_cursor = None;
-                runtime_shell.player_pc_action_cursor = Some(MenuCursor {
-                    surface_id: "pc:player-actions".to_string(),
-                    option_index: 3,
-                });
-            } else if let Some(cursor) = runtime_shell.mailbox_cursor.as_mut() {
-                cursor.option_index = cursor.option_index.min(snapshot.mailbox.len() - 1);
-            }
+            restore_visible_mailbox_position(runtime_shell, mailbox_index)?;
         }
         VisiblePcConfirmation::NpcTrade(pending) => {
             let PendingScriptPartySelection::NpcTrade {
@@ -9485,28 +9510,19 @@ fn attach_visible_mailbox_mail(runtime_shell: &mut BevyRuntimeShell) -> Result<(
         .attach_mailbox_mail_to_party(mailbox_index, party_index)
     {
         Ok(_) => {
-            runtime_shell.pc_notice = Some("The MAIL was attached.".to_string());
+            runtime_shell.pc_notice = Some(visible_mailbox_text(
+                &runtime_shell.shell.snapshot()?, "_MailMovedFromBoxText")?);
             runtime_shell.mailbox_attach_index = None;
-            close_visible_party_menu(runtime_shell);
-            let snapshot = runtime_shell.shell.snapshot()?;
-            if snapshot.mailbox.is_empty() {
-                runtime_shell.mailbox_cursor = None;
-                runtime_shell.player_pc_action_cursor = Some(MenuCursor {
-                    surface_id: "pc:player-actions".to_string(),
-                    option_index: 3,
-                });
-            } else {
-                runtime_shell.mailbox_cursor = Some(MenuCursor {
-                    surface_id: "pc:mailbox".to_string(),
-                    option_index: mailbox_index.min(snapshot.mailbox.len() - 1),
-                });
-            }
+            // PrintText must finish before .exit2 calls CloseSubmenu.
+            runtime_shell.mailbox_attach_return_index = Some(mailbox_index);
         }
         Err(error) if error.to_string().contains("Egg") => {
-            runtime_shell.pc_notice = Some("An EGG can't hold MAIL.".to_string())
+            runtime_shell.pc_notice = Some(visible_mailbox_text(
+                &runtime_shell.shell.snapshot()?, "_MailEggText")?)
         }
         Err(error) if error.to_string().contains("already holding") => {
-            runtime_shell.pc_notice = Some("That Pokemon is holding an item.".to_string())
+            runtime_shell.pc_notice = Some(visible_mailbox_text(
+                &runtime_shell.shell.snapshot()?, "_MailAlreadyHoldingItemText")?)
         }
         Err(error) => return Err(error),
     }
@@ -9525,7 +9541,9 @@ fn turn_off_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.bill_pc_move_open = false;
     runtime_shell.bill_pc_move_party_open = false;
     runtime_shell.bill_pc_move_source = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     runtime_shell.pc_item_action = None;
     runtime_shell.pc_item_quantity = None;
@@ -9533,6 +9551,8 @@ fn turn_off_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.mailbox_cursor = None;
     runtime_shell.mailbox_action_cursor = None;
     runtime_shell.mailbox_attach_index = None;
+    runtime_shell.mailbox_attach_return_index = None;
+    runtime_shell.mailbox_confirmation_response = None;
     runtime_shell.pc_confirmation = None;
     let snapshot = runtime_shell.shell.snapshot()?;
     if snapshot.ui.menu.is_some() {

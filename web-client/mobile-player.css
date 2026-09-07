@@ -1,0 +1,77 @@
+:root {
+  --shell: #09090d;
+  --ink: #eee;
+  --muted: #888;
+  --accent: #bbb;
+}
+html, body { overscroll-behavior: none; background: var(--shell); color: var(--ink); font-family: system-ui, sans-serif; }
+#game-stage { position: fixed; inset: 0; overflow: hidden; background: #000; }
+#game-stage canvas { display: block; width: 100% !important; height: 100% !important; outline: none; image-rendering: pixelated; touch-action: none; }
+#loading { position: absolute; inset: 0; display: grid; place-content: center; color: #8f8a9a; font-size: 13px; background: #09090d; }
+#loading[hidden] { display: none; }
+#player-options { position: fixed; top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); z-index: 12; }
+#player-options summary { display: grid; place-items: center; width: 44px; height: 44px; list-style: none; padding: 0; line-height: 1; border-radius: 6px; color: #eee9ff80; background: #09090d30; font-size: 22px; cursor: pointer; touch-action: manipulation; }
+#player-options summary svg { display: block; width: 20px; height: 20px; }
+#player-options summary::-webkit-details-marker { display: none; }
+#player-options summary:hover, #player-options[open] summary { color: #eee9ff; background: #17131ddd; }
+#player-options summary:focus-visible { outline: 2px solid var(--accent); }
+#player-options #controls { position: absolute; top: 52px; right: 0; width: 232px; max-width: calc(100vw - 16px); padding: 8px; border: 1px solid #ffffff15; border-radius: 16px; background: #131019ed; box-shadow: 0 8px 32px #0006; gap: 6px; }
+#touch-controls { display: none; }
+#touch-controls button:hover { outline: none; }
+#touch-controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+dialog { max-height: calc(100dvh - 32px); overflow: auto; }
+#help-dialog { line-height: 1.6; }
+.touch-help { color: #bbb; }
+@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
+  body { --top: env(safe-area-inset-top, 0px); --deck: clamp(200px, 26dvh, 240px); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  #controls { top: calc(12px + env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); gap: 5px; max-width: calc(100vw - 110px); }
+  #controls > button { width: 44px; min-width: 44px; height: 44px; padding: 0; border-color: #3b354d; border-radius: 14px; background: #242031; backdrop-filter: none; }
+  #view-toggle { font-size: 11px; }
+  #camera-controls { gap: 5px; }
+  #camera-controls button { height: 40px; min-width: 38px; padding: 0 9px; }
+  #game-stage { top: var(--top); bottom: calc(var(--deck) + env(safe-area-inset-bottom)); left: env(safe-area-inset-left); right: env(safe-area-inset-right); }
+  #touch-controls { position: fixed; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 12px; inset: auto 0 0; height: calc(var(--deck) + env(safe-area-inset-bottom)); margin: 0; padding: 12px max(20px, env(safe-area-inset-right)) calc(38px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); border: 0; min-width: 0; background: linear-gradient(#000, #09090d 30%); touch-action: none; }
+  #touch-controls:disabled { opacity: .4; }
+  #dpad { position: relative; width: clamp(144px, 42vw, 180px); height: clamp(144px, 42vw, 180px); justify-self: start; touch-action: none; border-radius: 50%; background: transparent; }
+  #dpad button { position: absolute; width: 34%; height: 34%; min-width: 0; padding: 0; border-radius: 8px; border: 0; color: #aaa; background: #ffffff0c; font-size: 19px; backdrop-filter: none; touch-action: none; }
+  #dpad [data-game-button=up] { left: 33%; top: 0; border-bottom: 0; border-radius: 10px 10px 0 0; }
+  #dpad [data-game-button=down] { left: 33%; bottom: 0; border-top: 0; border-radius: 0 0 10px 10px; }
+  #dpad [data-game-button=left] { left: 0; top: 33%; border-right: 0; border-radius: 10px 0 0 10px; }
+  #dpad [data-game-button=right] { right: 0; top: 33%; border-left: 0; border-radius: 0 10px 10px 0; }
+  .dpad-center { position: absolute; inset: 33%; z-index: 1; background: #ffffff0c; display: grid; place-items: center; pointer-events: none; }
+  .dpad-center::after { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 1px solid #ffffff15; }
+  .action-buttons { display: flex; justify-self: end; gap: 12px; align-items: center; }
+  .action-buttons button { display: grid; place-items: center; line-height: 1; width: clamp(57px, 16vw, 76px); height: clamp(57px, 16vw, 76px); min-width: 0; padding: 0; border-radius: 8px; border: 1px solid #ffffff12; background: #ffffff0c; color: #aaa; font-size: 25px; font-weight: 800; backdrop-filter: none; touch-action: none; }
+  .action-buttons button span { display: block; line-height: 1; }
+  .action-buttons [data-game-button=b] { background: #ffffff0c; color: #aaa; }
+  #touch-controls button.held { background: #ffffff28; color: #fff; }
+  .system-buttons { position: absolute; bottom: calc(9px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
+  .system-buttons button { height: 44px; min-width: 72px; background: transparent; border: 0; border-radius: 12px; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .15em; backdrop-filter: none; touch-action: none; }
+  #social-chat { bottom: auto; top: calc(var(--top) + 8px); left: max(18px, env(safe-area-inset-left)); width: min(470px, calc(100vw - 36px)); z-index: 11; border-radius: 12px; }
+  #social-chat input, #social-chat select { font-size: 16px; height: 44px; }
+  #social-chat form button { height: 44px; }
+  #social-chat .chat-log { height: min(150px, 20dvh); }
+}
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse), (orientation: landscape) and (max-height: 600px) and (max-width: 960px) {
+  body { --top: env(safe-area-inset-top, 0px); --rail: clamp(132px, 20vw, 185px); }
+  #controls { top: calc(6px + env(safe-area-inset-top)); max-width: calc(100vw - 150px); }
+  #camera-controls { flex-basis: auto; }
+  #game-stage { left: calc(var(--rail) + env(safe-area-inset-left)); right: calc(var(--rail) + env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom)); border-radius: 0; }
+  #touch-controls { top: var(--top); height: auto; padding: 0; background: none; pointer-events: none; }
+  #dpad { position: absolute; left: max(8px, env(safe-area-inset-left)); top: 50%; transform: translateY(-50%); width: calc(var(--rail) - 18px); height: calc(var(--rail) - 18px); pointer-events: auto; }
+  .action-buttons { position: absolute; right: max(10px, env(safe-area-inset-right)); top: 45%; transform: translateY(-50%); gap: 8px; pointer-events: auto; }
+  .action-buttons button { width: 56px; height: 56px; }
+  .system-buttons { left: auto; right: max(8px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); transform: none; gap: 0; pointer-events: auto; }
+  .system-buttons button { min-width: 60px; }
+  #social-chat { left: calc(var(--rail) + env(safe-area-inset-left) + 8px); width: calc(100vw - 2 * var(--rail) - env(safe-area-inset-left) - env(safe-area-inset-right) - 16px); }
+  #social-chat .chat-log { height: 75px; }
+}
+
+
+body.controller-active #touch-controls { display: none; }
+body.controller-active #game-stage { inset: 0; }
+body.controller-active #social-chat { left: max(8px, env(safe-area-inset-left)); }
+
+@media (pointer: coarse), (max-width: 760px) { #social-chat .chat-toggle { left: 0; right: auto; top: 0; bottom: auto; } }

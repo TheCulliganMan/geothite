@@ -2,7 +2,7 @@ use super::turn::{BattleCombatState, battle_pokemon_gender};
 use super::{
     damage::{
         DamageCalculationError, DamageContext, TypeCategories, TypeEffectivenessTable,
-        WeatherModifiers, calculate_damage, is_physical_type,
+        WeatherModifiers, calculate_damage, is_physical_move,
     },
     stats::BattleStatMultiplierTables,
 };
@@ -1428,7 +1428,8 @@ fn smart_perish_song_delta(
     if !enemy_has_reserve {
         return 5;
     }
-    if state.player_escape_trap.is_some() {
+    // wPlayerSubStatus5.CANT_RUN means the player trapped the enemy.
+    if state.enemy_escape_trap.is_some() {
         return if rng.battle_random_byte() >= 128 {
             -1
         } else {
@@ -1490,7 +1491,7 @@ pub fn trainer_ai_damage(
     if attacker.status.as_deref() == Some("BURN") {
         attacker.status = None;
     }
-    let physical = is_physical_type(type_categories, &move_data.move_type)?;
+    let physical = is_physical_move(type_categories, move_data)?;
     calculate_damage(
         &attacker,
         &defender,
@@ -1514,6 +1515,13 @@ pub fn trainer_ai_damage(
             ),
             defender_metal_powder: state.player.species.id == "DITTO"
                 && state.player.item.as_deref() == Some("METAL_POWDER"),
+            attacker_species_item_boost: if physical {
+                matches!(state.enemy.species.id.as_str(), "CUBONE" | "MAROWAK")
+                    && state.enemy.item.as_deref() == Some("THICK_CLUB")
+            } else {
+                state.enemy.species.id == "PIKACHU"
+                    && state.enemy.item.as_deref() == Some("LIGHT_BALL")
+            },
             defender_screen: if physical {
                 state.player_reflect_turns != 0
             } else {
@@ -1522,6 +1530,16 @@ pub fn trainer_ai_damage(
             link_colosseum: state.link_colosseum,
             held_type_boost_percent,
             attacker_burn_penalty: state.enemy_burn_attack_penalty_active,
+            attacker_loaded_stat: Some(if physical {
+                state.enemy_loaded_stats.attack
+            } else {
+                state.enemy_loaded_stats.special_attack
+            }),
+            defender_loaded_stat: Some(if physical {
+                state.player_loaded_stats.defense
+            } else {
+                state.player_loaded_stats.special_defense
+            }),
             ..DamageContext::default()
         },
     )
@@ -1647,8 +1665,8 @@ fn trainer_ai_effect_is_redundant(state: &BattleCombatState, effect: &str) -> bo
             .as_ref()
             .is_some_and(|encore| encore.turns_remaining != 0),
         "SNORE" | "SLEEP_TALK" => state.enemy.status.as_deref() != Some("SLEEP"),
-        // AI_Redundant checks the enemy's own CANT_RUN substatus here.
-        "MEAN_LOOK" => state.enemy_escape_trap.is_some(),
+        // The enemy's own CANT_RUN bit means it already trapped the player.
+        "MEAN_LOOK" => state.player_escape_trap.is_some(),
         // Source bug: any major status passes the sleep prerequisite.
         "NIGHTMARE" => state.player.status.is_none() || state.player_nightmare_source.is_some(),
         "SPIKES" => state.player_spikes,
@@ -1995,6 +2013,29 @@ mod tests {
         let player = Pokemon::new_for_tests(species("PLAYER"), 20, Dv::from_non_hp(10, 10, 10, 10));
         let enemy = Pokemon::new_for_tests(species("ENEMY"), 20, Dv::from_non_hp(10, 10, 10, 10));
         BattleCombatState::new(player, enemy)
+    }
+
+    #[test]
+    fn perish_song_checks_the_opponents_trapping_flag_not_the_targets_record() {
+        use crate::battle::turn::{BattleEscapeTrapState, BattleSide};
+
+        let mut state = ai_test_state();
+        state.enemy_party = vec![state.enemy.clone(), state.enemy.clone()];
+        state.enemy_escape_trap = Some(BattleEscapeTrapState {
+            source: BattleSide::Player,
+            move_name: "MEAN_LOOK".to_string(),
+        });
+        let mut rng = ScriptedRandom(VecDeque::from([128]));
+        assert_eq!(smart_perish_song_delta(&state, 0, &mut rng), -1);
+        assert!(rng.0.is_empty());
+
+        state.enemy_escape_trap = None;
+        state.player_escape_trap = Some(BattleEscapeTrapState {
+            source: BattleSide::Enemy,
+            move_name: "MEAN_LOOK".to_string(),
+        });
+        let mut rng = ScriptedRandom(VecDeque::new());
+        assert_eq!(smart_perish_song_delta(&state, 0, &mut rng), 0);
     }
 
     #[test]

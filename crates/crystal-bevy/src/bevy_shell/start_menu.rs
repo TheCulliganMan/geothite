@@ -193,7 +193,7 @@ fn visible_field_pack_target_entries(
             snapshot,
             &slot.pokemon.moves,
             selected_move,
-        ));
+        )?);
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     if mode == FieldPackTargetMode::TmHmPokemon && runtime_shell.tmhm_forget_menu_open {
@@ -215,12 +215,12 @@ fn visible_field_pack_target_entries(
         let visible_end = (visible_start + visible_move_rows).min(row_count);
         entries.extend((visible_start..visible_end).map(|index| {
             if index == slot.pokemon.moves.len() {
-                format!("{}CANCEL", if index == selected_move { ">" } else { " " })
+                Ok(format!("{}CANCEL", if index == selected_move { ">" } else { " " }))
             } else {
                 let marker = if index == selected_move { ">" } else { " " };
                 move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
             }
-        }));
+        }).collect::<Result<Vec<_>>>()?);
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     if mode == FieldPackTargetMode::TmHmPokemon {
@@ -347,7 +347,7 @@ fn visible_party_menu_entries(
                 " "
             };
             move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
-        }));
+        }).collect::<Result<Vec<_>>>()?);
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     if let Some(give_take_cursor) = &runtime_shell.party_give_take_cursor {
@@ -484,79 +484,7 @@ fn visible_party_summary_entries(
         .slots
         .get(selected)
         .context("party summary cursor does not select a Pokemon")?;
-    anyhow::ensure!(
-        (1..=3).contains(&runtime_shell.party_summary_page),
-        "party summary page {} is outside 1..=3",
-        runtime_shell.party_summary_page
-    );
-    let pokemon = &slot.pokemon;
-    let status = party_status_token(pokemon);
-    let held = pokemon
-        .item
-        .as_deref()
-        .map(|item| item_display_name(snapshot, item))
-        .unwrap_or_else(|| "-".to_string());
-    let mut entries = vec![
-        compact_scene_label(
-            &format!(
-                "SUMMARY {}/{} {}",
-                selected + 1,
-                snapshot.party.slots.len(),
-                pokemon.nickname
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "{} \u{e10a}{} HP {}/{} {status}",
-                crate::core::models::pokemon_species_display_name(&pokemon.species.id),
-                pokemon.level,
-                pokemon.hp,
-                pokemon.max_hp
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "ATK {} DEF {} SPD {}",
-                pokemon.attack, pokemon.defense, pokemon.speed
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "SAT {} SDF {} ITEM {held}",
-                pokemon.special_attack, pokemon.special_defense
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "EXP {} HAP {} OT {}#{}",
-                pokemon.experience,
-                pokemon.happiness,
-                pokemon.original_trainer_name,
-                pokemon.original_trainer_id
-            ),
-            30,
-        ),
-    ];
-    entries.push(format!(
-        "PAGE {}/3",
-        runtime_shell.party_summary_page
-    ));
-    if pokemon.moves.is_empty() {
-        entries.push("NO MOVES".to_string());
-    } else {
-        entries.extend(
-            pokemon
-                .moves
-                .iter()
-                .take(SCENE_MENU_VISIBLE_ROWS.saturating_sub(entries.len()))
-                .map(|learned| move_menu_entry(snapshot, learned, " ")),
-        );
-    }
-    Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect())
+    visible_stats_screen_entries(snapshot, runtime_shell, &slot.pokemon, runtime_shell.party_summary_page)
 }
 
 fn visible_fly_destination_entries(
@@ -635,57 +563,71 @@ fn visible_pokedex_detail_entries(
                 species.species_id
             )
         })?;
+    let caught = runtime_shell.pokedex_scripted_entry
+        || snapshot
+            .progression
+            .pokedex_caught_species
+            .contains(&species.species_id);
+    let (height, weight) = pokedex_measurements(entry, caught);
     let mut entries = vec![
-        compact_scene_label(
-            &format!(
-                "#{:03} {} {}",
-                species.int_id, species.species_id, entry.classification
-            ),
-            30,
+        format!(
+            "No.{:03} {}",
+            species.int_id,
+            crate::core::models::pokemon_species_display_name(&species.species_id)
         ),
-        compact_scene_label(
-            &format!(
-                "HT {} WT {} TYPE {}/{}",
-                entry.height_digits, entry.weight_digits, species.type1, species.type2
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "CATCH {} EXP {} GROW {}",
-                species.catch_rate, species.base_exp, species.growth_rate
-            ),
-            30,
-        ),
-        compact_scene_label(
-            &format!(
-                "EGG {}/{} AB {}",
-                species.egg_group1, species.egg_group2, species.ability
-            ),
-            30,
-        ),
+        entry.classification.clone(),
+        format!("HT {height} WT {weight}"),
     ];
-    entries.extend(
-        wrap_scene_dialog_line(page, SCENE_DIALOG_TEXT_CHARS)
-            .into_iter()
-            .take(SCENE_MENU_VISIBLE_ROWS.saturating_sub(entries.len())),
-    );
-    Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect())
+    if caught {
+        entries.extend(wrap_scene_dialog_line(page, SCENE_DIALOG_TEXT_CHARS));
+    }
+    Ok(entries)
+}
+
+fn pokedex_measurements(
+    entry: &crate::core::models::RuntimePokedexEntry,
+    caught: bool,
+) -> (String, String) {
+    if !caught {
+        return ("?'??\"".to_string(), "???lb".to_string());
+    }
+    (
+        format!(
+            "{}'{:02}\"",
+            entry.height_digits / 100,
+            entry.height_digits % 100
+        ),
+        format!(
+            "{}.{:01}lb",
+            entry.weight_digits / 10,
+            entry.weight_digits % 10
+        ),
+    )
 }
 
 fn visible_pokegear_menu_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
+    if let Some(delay) = runtime_shell.pokegear_map_radio_delay {
+        if delay == 0 { return visible_radio_observation_rows(runtime_shell); }
+        let station = runtime_shell.pokegear_radio_station.as_deref().context("furniture radio has no selected station")?;
+        return Ok(vec![format!("“{}”", visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?)]);
+    }
     if runtime_shell.pokegear_page == PokegearPage::Clock {
         let time = &snapshot.progression.time;
-        const DAY_NAMES: [&str; 7] = ["SUN", "MON", "TUES", "WED", "THURS", "FRI", "SAT"];
+        // TextCommand_DAY prints the complete weekday; it does not append
+        // the encounter time-of-day period.
+        const DAY_NAMES: [&str; 7] = [
+            "SUNDAY",
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+        ];
         let day = DAY_NAMES[usize::from(time.day_of_week % 7)];
-        let time_period = match time.time_of_day {
-            crate::core::world::encounters::TimeOfDay::Morning => "MORN",
-            crate::core::world::encounters::TimeOfDay::Day => "DAY",
-            crate::core::world::encounters::TimeOfDay::Night => "NITE",
-        };
         let hour_24 = time.registers.hours;
         let hour_12 = match hour_24 % 12 {
             0 => 12,
@@ -693,236 +635,168 @@ fn visible_pokegear_menu_entries(
         };
         let meridiem = if hour_24 < 12 { "AM" } else { "PM" };
         return Ok(vec![
-            format!("{day} {time_period}"),
-            format!("{hour_12:>2}:{:02}{meridiem}", time.registers.minutes),
+            day.to_string(),
+            format!("{hour_12:>2}:{:02} {meridiem}", time.registers.minutes),
         ]);
     }
     if runtime_shell.pokegear_page == PokegearPage::Radio {
-        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else {
-            anyhow::ensure!(
-                runtime_shell.pokegear_radio_segment == 0,
-                "Pokegear no-signal radio has transcript segment {}",
-                runtime_shell.pokegear_radio_segment
-            );
-            return Ok(vec![
-                format!(
-                    "RADIO  {:.1}",
-                    visible_pokegear_radio_frequency(
-                        runtime_shell.pokegear_radio_tuning_knob
-                    )
-                ),
-                "UP/DOWN TUNE".to_string(),
-                "LEFT/RIGHT CARD".to_string(),
-            ]);
-        };
-        let transcript = visible_map_radio_transcript(station);
-        if transcript.is_empty() {
-            anyhow::ensure!(
-                runtime_shell.pokegear_radio_segment == 0,
-                "Pokegear music-only station {station} has transcript segment {}",
-                runtime_shell.pokegear_radio_segment
-            );
+        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else { return Ok(Vec::new()); };
+        let broadcast = runtime_shell.pokegear_radio_broadcast.as_ref().context("radio station has no live broadcast")?;
+        let heading = if let Some(rows) = &broadcast.host.name_tiles {
+            visible_radio_tile_row(&rows[1])?.trim().to_string()
         } else {
-            anyhow::ensure!(
-                runtime_shell.pokegear_radio_segment < transcript.len(),
-                "Pokegear radio segment {} is outside {} transcript segments for {station}",
-                runtime_shell.pokegear_radio_segment,
-                transcript.len()
-            );
-        }
-        let segment = runtime_shell.pokegear_radio_segment;
-        let mut entries = vec![compact_scene_label(
-            &format!("RADIO  {}", visible_map_radio_station_name(station)),
-            30,
-        )];
-        if let Some(label) = transcript.get(segment) {
-            let text = snapshot
-                .presentation
-                .asm_text
-                .get(*label)
-                .with_context(|| format!("Pokegear radio transcript text {label} is missing"))?;
-            entries.extend(
-                normalize_visible_script_text_with_context(
-                    text,
-                    &snapshot.trainer.player_name,
-                    visible_rival_name(snapshot),
-                    snapshot.progression.time.day_of_week,
-                )
-                .lines()
-                .flat_map(|line| wrap_scene_dialog_line(line, SCENE_DIALOG_TEXT_CHARS)),
-            );
-        }
-        return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
+            visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?.to_string()
+        };
+        let mut entries = vec![format!("RADIO  {heading}")];
+        entries.extend(visible_radio_observation_rows(runtime_shell)?);
+        return Ok(entries);
     }
     if runtime_shell.pokegear_page == PokegearPage::Phone {
         return visible_pokegear_phone_entries(snapshot, runtime_shell);
     }
-    visible_pokegear_landmark_indices(snapshot)?;
+    visible_pokegear_landmark_indices(snapshot, runtime_shell.pokegear_standalone_map)?;
     Ok(Vec::new())
 }
 
-fn visible_pokegear_radio_handler_name(
+fn visible_pokegear_phone_slots(snapshot: &RuntimeShellSnapshot) -> Result<Vec<Option<&str>>> {
+    let saved = &snapshot.script_events.phone_number_order;
+    anyhow::ensure!(
+        saved.len() <= 10,
+        "Pokégear phone list exceeds ten source slots"
+    );
+    let mut slots = vec![None; 10];
+    for (index, contact) in saved.iter().enumerate() {
+        slots[index] = contact.as_deref();
+    }
+    Ok(slots)
+}
+
+fn visible_pokegear_phone_window(runtime_shell: &BevyRuntimeShell) -> Result<usize> {
+    let selected = runtime_shell.pokegear_phone_cursor;
+    let scroll = runtime_shell.pokegear_phone_scroll;
+    anyhow::ensure!(
+        selected < 10 && scroll <= 6 && selected >= scroll && selected < scroll + 4,
+        "Pokégear phone cursor {selected} is outside its four-row window at {scroll}"
+    );
+    Ok(scroll)
+}
+
+fn visible_pokegear_phone_prompt(
     snapshot: &RuntimeShellSnapshot,
-    handler: &str,
-) -> &'static str {
-    match visible_pokegear_radio_station(snapshot, handler).map(|(constant, _)| constant) {
-        Some("OAKS_POKEMON_TALK") => "OAK'S POKEMON TALK",
-        Some("POKEDEX_SHOW") => "POKEDEX SHOW",
-        Some("POKEMON_MUSIC") => "POKEMON MUSIC",
-        Some("LUCKY_CHANNEL") => "LUCKY CHANNEL",
-        Some("BUENAS_PASSWORD") => "BUENA'S PASSWORD",
-        Some("UNOWN_RADIO") => "?????",
-        Some("PLACES_AND_PEOPLE") => "PLACES & PEOPLE",
-        Some("LETS_ALL_SING") => "LET'S ALL SING",
-        Some("POKE_FLUTE_RADIO") => "POKE FLUTE",
-        Some("EVOLUTION_RADIO") => "EVOLUTION RADIO",
-        Some("ROCKET_RADIO") => "ROCKET RADIO",
-        _ => "NO SIGNAL",
-    }
-}
-
-fn visible_map_radio_transcript(station: &str) -> &'static [&'static str] {
-    const POKEMON_CHANNEL: &[&str] = &[
-        "PlayersRadioText1",
-        "PlayersRadioText2",
-        "PlayersRadioText3",
-        "PlayersRadioText4",
-    ];
-    const LUCKY_CHANNEL: &[&str] = &[
-        "LC_Text1",
-        "LC_Text2",
-        "LC_Text3",
-        "LC_Text4",
-        "LC_Text5",
-        "LC_Text6",
-        "LC_Text7",
-        "LC_Text8",
-        "LC_Text9",
-        "LC_Text7",
-        "LC_Text8",
-        "LC_Text10",
-        "LC_Text11",
-    ];
-    match station {
-        "MAPRADIO_POKEMON_CHANNEL" | "OAKS_POKEMON_TALK" | "POKEDEX_SHOW" | "PLACES_AND_PEOPLE" => {
-            POKEMON_CHANNEL
+    runtime_shell: &BevyRuntimeShell,
+) -> Result<String> {
+    if let Some(call) = runtime_shell.pokegear_phone_call.as_ref() {
+        match call.phase {
+            VisiblePokegearPhoneCallPhase::Calling
+            | VisiblePokegearPhoneCallPhase::FinishDelay { .. }
+            | VisiblePokegearPhoneCallPhase::AwaitHangup => return Ok(String::new()),
+            _ => {}
         }
-        "MAPRADIO_LUCKY_CHANNEL" | "LUCKY_CHANNEL" => LUCKY_CHANNEL,
-        // These stations are music-only at this UI boundary. Do not present
-        // Oak's broadcast as a fabricated transcript for a different station.
-        _ => &[],
     }
-}
-
-fn visible_map_radio_station_name(station: &str) -> String {
-    match station {
-        "MAPRADIO_POKEMON_CHANNEL" | "OAKS_POKEMON_TALK" | "POKEDEX_SHOW" => {
-            "OAK'S POKEMON TALK".to_string()
+    let label = if let Some(VisiblePokegearPhoneCall {
+        phase: VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining }, ..
+    }) = runtime_shell.pokegear_phone_call.as_ref() {
+        match VISIBLE_POKEGEAR_HANGUP_FRAMES - frames_remaining {
+            4..=27 => "_PhoneClickText",
+            32..=55 | 84..=107 | 136..=159 => "_PhoneEllipseText",
+            _ => return Ok(String::new()),
         }
-        "MAPRADIO_LUCKY_CHANNEL" | "LUCKY_CHANNEL" => "LUCKY CHANNEL".to_string(),
-        "MAPRADIO_POKEMON_MUSIC" | "POKEMON_MUSIC" => "POKEMON MUSIC".to_string(),
-        "MAPRADIO_PLACES_PEOPLE" | "PLACES_AND_PEOPLE" => "PLACES & PEOPLE".to_string(),
-        "MAPRADIO_LETS_ALL_SING" | "LETS_ALL_SING" => "LET'S ALL SING".to_string(),
-        "MAPRADIO_ROCKET" | "ROCKET_RADIO" => "ROCKET RADIO".to_string(),
-        "MAPRADIO_UNOWN" => "MYSTERIOUS BROADCAST".to_string(),
-        other => other.replace('_', " "),
-    }
+    } else if runtime_shell.pokegear_phone_delete_question_retained
+        || runtime_shell.pokegear_phone_menu.as_ref().is_some_and(|menu| menu.delete_confirmation.is_some()) {
+        "_PokegearAskDeleteText"
+    } else if runtime_shell
+        .pokegear_phone_call
+        .as_ref()
+        .is_some_and(|call| matches!(call.phase, VisiblePokegearPhoneCallPhase::NoServicePrompt))
+    {
+        "_GearOutOfServiceText"
+    } else if runtime_shell.pokegear_phone_call.as_ref().is_some_and(|call| {
+        matches!(call.phase, VisiblePokegearPhoneCallPhase::Ringing { .. })
+    }) {
+        "_GearEllipseText"
+    } else {
+        "_PokegearAskWhoCallText"
+    };
+    let text = snapshot
+        .presentation
+        .asm_text
+        .get(label)
+        .with_context(|| format!("Pokégear phone is missing {label}"))?;
+    Ok(normalize_visible_script_text_with_context(
+        text,
+        &snapshot.trainer.player_name,
+        visible_rival_name(snapshot),
+        snapshot.progression.time.day_of_week,
+    ))
 }
 
 fn visible_pokegear_phone_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
-    let contact_ids = visible_pokegear_phone_contact_ids(snapshot);
-    if contact_ids.is_empty() {
-        anyhow::ensure!(
-            runtime_shell.pokegear_phone_cursor == 0,
-            "Pokegear empty phone list has cursor {}",
-            runtime_shell.pokegear_phone_cursor
-        );
-        return Ok(vec!["PHONE EMPTY".to_string()]);
-    }
-    anyhow::ensure!(
-        runtime_shell.pokegear_phone_cursor < contact_ids.len(),
-        "Pokegear phone cursor {} is out of range for {} contacts",
-        runtime_shell.pokegear_phone_cursor,
-        contact_ids.len()
-    );
-    let selected = runtime_shell.pokegear_phone_cursor;
+    let slots = visible_pokegear_phone_slots(snapshot)?;
+    let start = visible_pokegear_phone_window(runtime_shell)?;
     let mut entries = Vec::new();
-    let visible_contacts = 3;
-    let start = visible_window_start(selected, contact_ids.len(), visible_contacts);
-    for (index, contact_id) in contact_ids
-        .iter()
-        .enumerate()
-        .skip(start)
-        .take(visible_contacts)
-    {
-        let marker = if index == selected { ">" } else { " " };
-        let contact = snapshot
-            .special
-            .phone_contacts
-            .0
-            .get(contact_id)
-            .with_context(|| format!("Pokegear phone contact {contact_id} is missing"))?;
-        let lines = contact.lines.as_slice();
-        let primary = lines
-            .first()
-            .with_context(|| format!("Pokegear phone contact {contact_id} has no display line"))?;
-        entries.push(compact_scene_label(
-            &format!("{marker}{primary}"),
-            SCENE_DIALOG_TEXT_CHARS,
-        ));
-        if let Some(class) = lines.get(1) {
-            entries.push(compact_scene_label(
-                &format!("    {class}"),
-                SCENE_DIALOG_TEXT_CHARS,
-            ));
+    for row in 0..4 {
+        let marker = if start + row == runtime_shell.pokegear_phone_cursor {
+            ">"
+        } else {
+            " "
+        };
+        if let Some(contact_id) = slots[start + row] {
+            let contact = snapshot
+                .special
+                .phone_contacts
+                .0
+                .get(contact_id)
+                .with_context(|| format!("Pokégear phone contact {contact_id} is missing"))?;
+            let primary = contact
+                .lines
+                .first()
+                .with_context(|| format!("Pokégear phone contact {contact_id} has no name"))?;
+            entries.push(format!("{marker}{primary}"));
+            entries.push(
+                contact
+                    .lines
+                    .get(1)
+                    .map(|class| format!("    {class}"))
+                    .unwrap_or_default(),
+            );
+        } else {
+            // NonTrainerCallerNames.none is the source name for contact ID 0.
+            entries.push(format!("{marker}----------"));
+            entries.push(String::new());
         }
     }
-    let map_has_no_service = snapshot
-        .maps
-        .iter()
-        .find(|map| map.map_name == snapshot.overworld.map_name)
-        .and_then(|map| map.metadata.as_ref())
-        .is_some_and(|metadata| ((metadata.phone_service & 0xf0) >> 4) != 0);
-    if let Some(status) = runtime_shell
-        .pokegear_phone_status
-        .as_deref()
-        .or(map_has_no_service.then_some("NO SERVICE"))
-    {
-        entries.push(compact_scene_label(status, SCENE_DIALOG_TEXT_CHARS));
+    entries.extend(
+        visible_pokegear_phone_prompt(snapshot, runtime_shell)?
+            .lines()
+            .map(str::to_string),
+    );
+    if let Some(menu) = runtime_shell.pokegear_phone_menu.as_ref() {
+        let labels: &[&str] = if menu.delete_confirmation.is_some() {
+            &["YES", "NO"]
+        } else if menu.can_delete {
+            &["CALL", "DELETE", "CANCEL"]
+        } else {
+            &["CALL", "CANCEL"]
+        };
+        let selected = menu.delete_confirmation.unwrap_or(menu.cursor);
+        entries.extend(labels.iter().enumerate().map(|(index, label)|
+            format!("{}{}", if index == selected { ">" } else { " " }, label)));
     }
-    Ok(entries.into_iter().take(10).collect())
-}
-
-fn visible_pokegear_phone_contact_ids(snapshot: &RuntimeShellSnapshot) -> Vec<String> {
-    snapshot
-        .script_events
-        .phone_numbers
-        .iter()
-        .cloned()
-        .collect()
+    Ok(entries)
 }
 
 fn selected_visible_pokegear_phone_contact_id(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
-) -> Result<String> {
-    let contact_ids = visible_pokegear_phone_contact_ids(snapshot);
-    if contact_ids.is_empty() {
-        anyhow::bail!("Pokegear has no registered phone contacts");
-    }
-    contact_ids
-        .get(runtime_shell.pokegear_phone_cursor)
-        .cloned()
-        .with_context(|| {
-            format!(
-                "Pokegear phone cursor {} is out of range for {} contacts",
-                runtime_shell.pokegear_phone_cursor,
-                contact_ids.len()
-            )
-        })
+) -> Result<Option<String>> {
+    visible_pokegear_phone_window(runtime_shell)?;
+    Ok(
+        visible_pokegear_phone_slots(snapshot)?[runtime_shell.pokegear_phone_cursor]
+            .map(str::to_string),
+    )
 }
 
 fn visible_options_menu_entries(
@@ -1899,47 +1773,23 @@ fn visible_surf_line_offsets(animation: Option<&VisibleMoveAnimation>) -> Option
     // BG effects execute before animation objects. The copy therefore sees
     // the scanline boundary written by Surf on the preceding update.
     let object_frame = animation.frame.saturating_sub(1);
-    let mut state = 0_u8;
-    let mut state_frame = spawn.frame;
-    for event in animation.object_events.iter().skip(spawn_index + 1) {
-        if event.frame > object_frame {
-            break;
-        }
-        match &event.command {
-            VisibleMoveObjectCommand::Increment { slot: 1 } => {
-                state = state.wrapping_add(1);
-                state_frame = event.frame;
+    let function = battle_program::FUNCTIONS.iter().position(|name| *name == "BATTLE_ANIM_FUNC_SURF")? as u8;
+    let mut machine = BattleObjectMachine::new(animation.player_move);
+    machine.initialize(0, 1, [0, 0, 0, function, 0, 0], *x as u8, *y as u8, *param);
+    for tick in spawn.frame..=object_frame {
+        for event in animation.object_events.iter().skip(spawn_index + 1).filter(|event| event.frame == tick) {
+            match event.command {
+                VisibleMoveObjectCommand::Increment { index: 1 } => {
+                    machine.object_mut(0)[14] = machine.object(0)[14].wrapping_add(1);
+                }
+                VisibleMoveObjectCommand::Set { index: 1, value } => machine.object_mut(0)[14] = value,
+                VisibleMoveObjectCommand::Clear => machine.clear_objects(),
+                _ => {}
             }
-            VisibleMoveObjectCommand::Set { slot: 1, value } => {
-                state = *value;
-                state_frame = event.frame;
-            }
-            VisibleMoveObjectCommand::Clear => return None,
-            _ => {}
         }
+        if machine.object(0)[0] != 0 { machine.step_object(0).ok()?; }
     }
-    let age = object_frame.saturating_sub(spawn.frame);
-    let state_age = object_frame.saturating_sub(state_frame);
-    let (_, animated_y) = visible_battle_anim_object_position(
-        "BATTLE_ANIM_FUNC_SURF",
-        i32::from(*x),
-        i32::from(*y),
-        *param,
-        age,
-        state,
-        state_age,
-        animation.player_move,
-    )?;
-    let rise_updates = (i32::from(*y) - i32::from(*param) + 1).max(0) as u16;
-    let start_y = if state != 0 {
-        i32::from(*param).saturating_sub(1)
-            + i32::from(state_age.saturating_add(1)).saturating_mul(2)
-    } else if age >= rise_updates {
-        0
-    } else {
-        animated_y.saturating_sub(16)
-    };
-    let start = start_y.clamp(0, 0x5e) as usize;
+    let start = usize::from(machine.read(battle_program::H_L_Y_OVERRIDE_START)).min(0x5e);
     let rotation = usize::from(effect_age);
     let mut offsets = [0_i8; 0x5f];
     for line in start.saturating_add(1)..=0x5e {
@@ -2338,6 +2188,7 @@ fn visible_battler_line_offsets(
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct VisibleBattleDmgPaletteRegisters {
+    obp0_write_frame: Option<u16>,
     bgp: u8,
     obp0: u8,
     obp1: u8,
@@ -2374,6 +2225,7 @@ fn visible_battle_dmg_palette_registers(
     animation: Option<&VisibleMoveAnimation>,
 ) -> VisibleBattleDmgPaletteRegisters {
     let mut registers = VisibleBattleDmgPaletteRegisters {
+        obp0_write_frame: None,
         bgp: 0xe4,
         obp0: 0xe4,
         obp1: 0xe4,
@@ -2390,7 +2242,7 @@ fn visible_battle_dmg_palette_registers(
             let age = frame - effect.frame;
             match effect.effect_id.as_str() {
                 "BATTLE_PALETTE_BGP" if age == 0 => registers.bgp = effect.param,
-                "BATTLE_PALETTE_OBP0" if age == 0 => registers.obp0 = effect.param,
+                "BATTLE_PALETTE_OBP0" if age == 0 => { registers.obp0 = effect.param; registers.obp0_write_frame = Some(frame); },
                 "BATTLE_PALETTE_OBP1" if age == 0 => registers.obp1 = effect.param,
                 "BATTLE_BG_EFFECT_FLASH_INVERTED" | "BATTLE_BG_EFFECT_FLASH_WHITE" => {
                     let interval = battle_bg_effect_reload_interval(effect);
@@ -2481,6 +2333,7 @@ fn visible_battle_dmg_palette_registers(
                             | "BATTLE_BG_EFFECT_CYCLE_MID_OBPALS_GRAY_AND_YELLOW"
                     ) {
                         registers.obp0 = value;
+                        registers.obp0_write_frame = Some(frame);
                     }
                 }
                 _ => {}
@@ -4366,14 +4219,14 @@ fn spawn_battle_caught_icon(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) {
-    // The source caught marker is literal font tile $5d.  The bitmap-font map
-    // exposes that tile through the canonical <TRAINER> private-use glyph.
+    // The caught marker is literal font tile $5d. The <TRAINER> text command
+    // expands to seven letters and must not select this contextual tile.
     spawn_battle_hud_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        "\u{e103}",
+        "\u{e110}",
         1.0,
         1.0,
         3.7,
@@ -5067,1459 +4920,6 @@ fn visible_battle_anim_sine(angle: u8, amplitude: u8) -> i32 {
     }
 }
 
-fn visible_battle_anim_frameset<'a>(
-    function: &str,
-    base: &'a str,
-    param: u8,
-    age: u16,
-    x: i32,
-    state: u8,
-    state_age: u16,
-    y: i32,
-    player_move: bool,
-) -> (&'a str, u16) {
-    match function {
-        "BATTLE_ANIM_FUNC_EMBER" if (param >> 4) == 3 => ("BATTLE_ANIM_FRAMESET_FLAMETHROWER", age),
-        "BATTLE_ANIM_FUNC_BUBBLE" if age >= 12 => ("BATTLE_ANIM_FRAMESET_PULSING_BUBBLE", age - 12),
-        "BATTLE_ANIM_FUNC_ROCK_SMASH" if param & 0x40 != 0 => {
-            ("BATTLE_ANIM_FRAMESET_SMALL_ROCK", age)
-        }
-        "BATTLE_ANIM_FUNC_ROCK_SMASH" => ("BATTLE_ANIM_FRAMESET_BIG_ROCK", age),
-        "BATTLE_ANIM_FUNC_SING" => match param {
-            1 => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_2", age),
-            2 => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_3", age),
-            _ => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_1", age),
-        },
-        "BATTLE_ANIM_FUNC_DIZZY" => {
-            let mut runtime_param = param;
-            let mut toggles = 0_u16;
-            let mut last_toggle_age = 0_u16;
-            for tick in 0..=age {
-                runtime_param = runtime_param.wrapping_add(2);
-                if runtime_param & 0x1f == 0 {
-                    toggles = toggles.wrapping_add(1);
-                    last_toggle_age = tick;
-                }
-            }
-            let frameset_age = age.saturating_sub(last_toggle_age);
-            if base == "BATTLE_ANIM_FRAMESET_IMP" {
-                if toggles & 1 == 0 {
-                    ("BATTLE_ANIM_FRAMESET_IMP", frameset_age)
-                } else {
-                    ("BATTLE_ANIM_FRAMESET_IMP_FLIPPED", frameset_age)
-                }
-            } else if toggles & 1 == 0 {
-                ("BATTLE_ANIM_FRAMESET_CHICK_1", frameset_age)
-            } else {
-                ("BATTLE_ANIM_FRAMESET_CHICK_2", frameset_age)
-            }
-        }
-        "BATTLE_ANIM_FUNC_BITE" => {
-            let initial_angle = if param & 0x80 != 0 { 0x30_u8 } else { 0x10 };
-            let amplitude = match param & 0x7f {
-                0 => 0x10,
-                value => value,
-            };
-            let angle = initial_angle.wrapping_add((age as u8).wrapping_mul(2));
-            if visible_battle_anim_sine(angle, amplitude) >= 0 {
-                ("BATTLE_ANIM_FRAMESET_BITE_2", 0)
-            } else {
-                ("BATTLE_ANIM_FRAMESET_BITE_1", 0)
-            }
-        }
-        "BATTLE_ANIM_FUNC_FIRE_BLAST" if param == 7 => {
-            let travel_frames = u16::try_from(((0x88 - x).max(0) + 1) / 2).unwrap_or(0);
-            let transition_age = travel_frames.saturating_add(1);
-            if age < transition_age {
-                (base, age)
-            } else {
-                (
-                    "BATTLE_ANIM_FRAMESET_EMBER",
-                    age.saturating_sub(transition_age),
-                )
-            }
-        }
-        "BATTLE_ANIM_FUNC_FIRE_BLAST" => ("BATTLE_ANIM_FRAMESET_BURNED", age),
-        "BATTLE_ANIM_FUNC_RAZOR_LEAF" if state != 0 => {
-            ("BATTLE_ANIM_FRAMESET_RAZOR_LEAF_1", state_age)
-        }
-        "BATTLE_ANIM_FUNC_RAZOR_LEAF" if age >= 17 => {
-            let offset = if param & 0x40 != 0 { 32 } else { 0 };
-            (
-                "BATTLE_ANIM_FRAMESET_RAZOR_LEAF_2",
-                age.saturating_sub(17).saturating_add(offset),
-            )
-        }
-        "BATTLE_ANIM_FUNC_LEECH_SEED" if age >= 99 => {
-            ("BATTLE_ANIM_FRAMESET_LEECH_SEED_3", age - 99)
-        }
-        "BATTLE_ANIM_FUNC_LEECH_SEED" if age >= 34 => {
-            ("BATTLE_ANIM_FRAMESET_LEECH_SEED_2", age - 34)
-        }
-        "BATTLE_ANIM_FUNC_PARALYZED" if param & 0x80 != 0 => {
-            ("BATTLE_ANIM_FRAMESET_PARALYZED_FLIPPED", age)
-        }
-        "BATTLE_ANIM_FUNC_AMNESIA" => {
-            let phase = (age / 8) % 3;
-            let frameset = match phase {
-                0 => "BATTLE_ANIM_FRAMESET_AMNESIA_1",
-                1 => "BATTLE_ANIM_FRAMESET_AMNESIA_2",
-                _ => "BATTLE_ANIM_FRAMESET_AMNESIA_3",
-            };
-            (frameset, age % 8)
-        }
-        "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES" => match param {
-            1 => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_2", age),
-            2 => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_3", age),
-            _ => ("BATTLE_ANIM_FRAMESET_MUSIC_NOTE_1", age),
-        },
-        "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER" => {
-            let toggles = age.min(40) / 4;
-            let frameset = match toggles % 4 {
-                0 => "BATTLE_ANIM_FRAMESET_LOCK_ON_1",
-                1 => "BATTLE_ANIM_FRAMESET_LOCK_ON_2",
-                2 => "BATTLE_ANIM_FRAMESET_LOCK_ON_3",
-                _ => "BATTLE_ANIM_FRAMESET_LOCK_ON_4",
-            };
-            (frameset, age.saturating_sub(toggles.saturating_mul(4)))
-        }
-        "BATTLE_ANIM_FUNC_SLUDGE" if age >= 13 => {
-            ("BATTLE_ANIM_FRAMESET_SLUDGE_BUBBLE_BURST", age - 13)
-        }
-        "BATTLE_ANIM_FUNC_STRING" => match param {
-            0 => ("BATTLE_ANIM_FRAMESET_STRING_SHOT_1", age),
-            1 => ("BATTLE_ANIM_FRAMESET_STRING_SHOT_2", age),
-            2 => ("BATTLE_ANIM_FRAMESET_STRING_SHOT_3", age),
-            _ => (base, age),
-        },
-        "BATTLE_ANIM_FUNC_WRAP" if state != 0 => match base {
-            "BATTLE_ANIM_FRAMESET_BIND_1" => ("BATTLE_ANIM_FRAMESET_BIND_2", state_age),
-            "BATTLE_ANIM_FRAMESET_BIND_3" => ("BATTLE_ANIM_FRAMESET_BIND_4", state_age),
-            _ => (base, state_age),
-        },
-        "BATTLE_ANIM_FUNC_WATER_GUN" => {
-            let transition_age = u16::try_from((y - 0x2f).max(0)).unwrap_or(0);
-            if age < transition_age {
-                (base, age)
-            } else if age < transition_age.saturating_add(24) {
-                (
-                    "BATTLE_ANIM_FRAMESET_WATER_GUN_2",
-                    age.saturating_sub(transition_age),
-                )
-            } else {
-                (
-                    "BATTLE_ANIM_FRAMESET_WATER_GUN_3",
-                    age.saturating_sub(transition_age.saturating_add(24)),
-                )
-            }
-        }
-        "BATTLE_ANIM_FUNC_SOUND" => {
-            let effective_param = if player_move {
-                param
-            } else {
-                (!param).wrapping_add(3)
-            };
-            let frameset = match effective_param & 3 {
-                0 => "BATTLE_ANIM_FRAMESET_SOUND_1",
-                1 => "BATTLE_ANIM_FRAMESET_SOUND_2",
-                2 => "BATTLE_ANIM_FRAMESET_SOUND_3",
-                _ => "BATTLE_ANIM_FRAMESET_SOUND_4",
-            };
-            (frameset, age)
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 6 && state != 0 => {
-            ("BATTLE_ANIM_FRAMESET_EGG_CRACKED_BOTTOM", state_age)
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 6 && age >= 57 => {
-            ("BATTLE_ANIM_FRAMESET_EGG_WOBBLE", age - 57)
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 11 && age >= 1 => {
-            ("BATTLE_ANIM_FRAMESET_EGG_CRACKED_TOP", age - 1)
-        }
-        _ => (base, age),
-    }
-}
-
-fn visible_battle_anim_object_position(
-    function: &str,
-    x: i32,
-    y: i32,
-    param: u8,
-    age: u16,
-    state: u8,
-    state_age: u16,
-    player_move: bool,
-) -> Option<(i32, i32)> {
-    let updates = u32::from(age) + 1;
-    match function {
-        "BATTLE_ANIM_FUNC_NULL" => Some((x & 0xff, y & 0xff)),
-        "BATTLE_ANIM_FUNC_USER_TO_TARGET"
-        | "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR"
-        | "BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR" => {
-            let speed = if function == "BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR" {
-                6
-            } else {
-                i32::from(if param == 0 { 2 } else { param })
-            };
-            let current_x = (x + speed.saturating_mul(updates as i32)) & 0xff;
-            if current_x >= 0x84 {
-                return None;
-            }
-            let y_step = (speed / 2).max(1);
-            Some((
-                current_x,
-                (y - y_step.saturating_mul(updates as i32)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_WAVE_TO_TARGET" => {
-            let speed = i32::from(if param == 0 { 2 } else { param });
-            let current_x = (x + speed.saturating_mul(updates as i32)) & 0xff;
-            if current_x >= 0x84 {
-                return None;
-            }
-            let base_y = (y - (speed / 2).max(1).saturating_mul(updates as i32)) & 0xff;
-            let angle = (updates as u8).wrapping_mul(4);
-            Some((
-                current_x,
-                (base_y + visible_battle_anim_sine(angle, 6)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN" => {
-            let mut state = 0_u8;
-            let mut runtime_param = param;
-            let mut angle = 0_u8;
-            let mut base_x = x & 0xff;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                if state == 0 {
-                    state = 1;
-                }
-                if state == 1 {
-                    state = 2;
-                    angle = 0;
-                }
-                if state == 2 {
-                    if angle >= 0x40 {
-                        let high = runtime_param & 0xf0;
-                        if high != 0 {
-                            runtime_param = high.wrapping_sub(0x10) | (runtime_param & 0x0f);
-                            state = 1;
-                            continue;
-                        }
-                        state = 3;
-                        continue;
-                    }
-                    let step = match runtime_param & 0x0f {
-                        0 => 4,
-                        value => value,
-                    };
-                    x_offset =
-                        (visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18) - 0x18) >> 1;
-                    y_offset = visible_battle_anim_sine(angle, 0x18);
-                    angle = angle.wrapping_add(step);
-                    continue;
-                }
-                base_x = (base_x + 4) & 0xff;
-                if base_x >= 0xb0 {
-                    return None;
-                }
-            }
-            Some(((base_x + x_offset) & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_THROW_TO_TARGET" => {
-            let moved = updates.min(u32::try_from(((0x88 - x).max(0) + 1) / 2).unwrap_or(0));
-            let base_x = (x + 2 * moved as i32).min(0x88) & 0xff;
-            let base_y = (y - moved as i32) & 0xff;
-            let angle = 0_u8.wrapping_sub((moved.saturating_sub(1)) as u8);
-            Some((
-                base_x,
-                (base_y + visible_battle_anim_sine(angle, param)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE" => {
-            let start = if param & 0x80 != 0 { 0x20 } else { 0 };
-            let amplitude = param & 0x7f;
-            let angle = (start as u8).wrapping_add(age as u8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SHAKE" => {
-            if age >= 31 {
-                return None;
-            }
-            let encoded = param & 0x0f;
-            let amplitude = i32::from(if encoded == 0 { 2 } else { encoded });
-            let offset = if age % 2 == 0 { amplitude } else { -amplitude };
-            Some(((x + offset) & 0xff, y & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_DROP" => {
-            let mut angle = 0x30_u8;
-            let mut amplitude = 0x48_u8;
-            let decrement = param;
-            for step in 0..updates {
-                let offset = visible_battle_anim_sine(angle, amplitude);
-                angle = angle.wrapping_add(1);
-                if angle & 0x3f == 0 {
-                    angle = 0x20;
-                    amplitude = amplitude.saturating_sub(decrement);
-                    if amplitude == 0 {
-                        return None;
-                    }
-                }
-                if step == updates - 1 {
-                    return Some((x & 0xff, (y + offset) & 0xff));
-                }
-            }
-            None
-        }
-        "BATTLE_ANIM_FUNC_MOVE_UP" => {
-            let speed = param;
-            let mut offset = 0_u8;
-            for step in 0..updates {
-                if offset != 0 && offset < 0xd8 {
-                    return None;
-                }
-                offset = offset.wrapping_sub(speed);
-                if step == updates - 1 {
-                    return Some((x & 0xff, (y + i32::from(offset)) & 0xff));
-                }
-            }
-            None
-        }
-        "BATTLE_ANIM_FUNC_RAPID_SPIN" => {
-            let offset = 0_u8.wrapping_sub((updates as u8).wrapping_mul(4));
-            if offset == 0xd0 {
-                None
-            } else {
-                Some((x & 0xff, (y + i32::from(offset)) & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_ABSORB" => {
-            let encoded = param & 0x0f;
-            let speed = i32::from(if encoded == 0 { 2 } else { encoded });
-            let current_x = (x - speed.saturating_mul(updates as i32)) & 0xff;
-            if current_x < 0x30 {
-                return None;
-            }
-            let y_step = (speed / 2).max(1);
-            Some((
-                current_x,
-                (y + y_step.saturating_mul(updates as i32)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_ABSORB_CIRCLE" => {
-            let mut runtime_param = param;
-            let mut radius = 0x40_u8;
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                let angle = runtime_param;
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), radius);
-                y_offset = visible_battle_anim_sine(angle, radius);
-                runtime_param = runtime_param.wrapping_add(1);
-                if runtime_param & 1 == 0 {
-                    base_x = (base_x - 1) & 0xff;
-                }
-                if runtime_param & 3 == 0 {
-                    base_y = (base_y + 1) & 0xff;
-                }
-                radius = if base_x >= 0x5a {
-                    radius.saturating_add(1).min(0x60)
-                } else {
-                    radius.saturating_sub(1)
-                };
-                if radius == 0 {
-                    return None;
-                }
-            }
-            Some(((base_x + x_offset) & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_COTTON" => {
-            let angle = ((updates as u8) >> 1).wrapping_add(param);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x18) >> 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_POWDER" => {
-            if age >= 112 {
-                return None;
-            }
-            let y_offset = updates / 2;
-            let x_offset = if updates % 2 == 1 { 0x10 } else { 0 };
-            Some(((x + x_offset) & 0xff, (y + y_offset as i32) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_ANCIENT_POWER" => {
-            if age >= 32 {
-                return None;
-            }
-            let angle = (age as u8).wrapping_add(1);
-            Some((
-                x & 0xff,
-                (y - visible_battle_anim_sine(angle, param)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SPEED_LINE" => {
-            let travel = i32::from(age);
-            let offset = if param & 0x80 != 0 { -travel } else { travel };
-            Some(((x + offset) & 0xff, y & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_FLOAT_UP" => {
-            let angle = updates as u8;
-            Some((
-                (x + visible_battle_anim_sine(angle, 4)) & 0xff,
-                (y - updates as i32) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_RECOVER" => {
-            let initial_amplitude = param & 0xf0;
-            let prior_decrements = age / 2;
-            let amplitude = initial_amplitude.saturating_sub(prior_decrements as u8);
-            if amplitude == 0 {
-                return None;
-            }
-            let angle = ((param & 0x0f) << 3).wrapping_add(age as u8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_RAZOR_WIND" => {
-            let initial_angle = if param & 0x80 != 0 { 0x20_u8 } else { 0 };
-            let angle = initial_angle.wrapping_add((age as u8).wrapping_mul(0x10));
-            let amplitude = param & 0x7f;
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SPIRAL_DESCENT" => {
-            // BattleAnimFunc_SpiralDescent removes on the 328th update,
-            // immediately before applying that frame's offsets.
-            if age >= 327 {
-                return None;
-            }
-            let angle = age as u8;
-            let descent = i32::from(age / 8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x18) >> 3) + descent) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_ROCK_SMASH" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let angle = 0x40_u8.wrapping_sub((age - 1) as u8);
-            if angle < 0x30 {
-                return None;
-            }
-            let next_angle = angle.wrapping_sub(1);
-            Some((
-                (x + visible_battle_anim_sine(next_angle.wrapping_mul(13), 4)) & 0xff,
-                (y + visible_battle_anim_sine(angle, param & 0x3f)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SING" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let prior_x = (x + 2 * i32::from(age - 1)) & 0xff;
-            if prior_x >= 0xb8 {
-                return None;
-            }
-            let angle = 0_u8.wrapping_sub(age as u8);
-            Some((
-                (prior_x + 2) & 0xff,
-                (y - i32::from(age) + visible_battle_anim_sine(angle, 8)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_PRESENT_SMOKESCREEN" => {
-            let mut sprite_x = x & 0xff;
-            let mut sprite_y = y & 0xff;
-            let mut base_x = None;
-            let mut base_y = None;
-            let mut angle = 0x34_u8;
-            let mut amplitude = 0x10_u8;
-            for _ in 0..updates {
-                if sprite_x < 0x6c {
-                    return None;
-                }
-                sprite_x = (sprite_x + 2) & 0xff;
-                sprite_y = (sprite_y - 1) & 0xff;
-                let y_offset = visible_battle_anim_sine(angle, amplitude).abs();
-                angle = angle.wrapping_sub(4);
-                if angle & 0x1f == 0 {
-                    amplitude /= 2;
-                }
-                let stable_x = *base_x.get_or_insert(sprite_x);
-                let stable_y = *base_y.get_or_insert(sprite_y);
-                sprite_x = stable_x;
-                sprite_y = (stable_y + y_offset) & 0xff;
-            }
-            Some((sprite_x, sprite_y))
-        }
-        "BATTLE_ANIM_FUNC_CLAMP_ENCORE" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let angle = ((age - 1) as u8).wrapping_mul(4);
-            let amplitude = param & 0x7f;
-            Some((
-                (x + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(angle.wrapping_add(0x40), amplitude / 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_DIZZY" => {
-            let angle = param.wrapping_add((age as u8).wrapping_mul(2));
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x10)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x10) >> 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_BITE" => {
-            let initial_angle = if param & 0x80 != 0 { 0x30_u8 } else { 0x10 };
-            let amplitude = match param & 0x7f {
-                0 => 0x10,
-                value => value,
-            };
-            let mut boundary_count = 0_u8;
-            for tick in 1..=updates {
-                if initial_angle.wrapping_add((tick as u8).wrapping_mul(2)) & 0x1f == 0 {
-                    boundary_count = boundary_count.saturating_add(1);
-                }
-            }
-            if boundary_count >= 5 {
-                return None;
-            }
-            let angle = initial_angle.wrapping_add((age as u8).wrapping_mul(2));
-            Some((
-                x & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SHINY" => Some((
-            (x + visible_battle_anim_sine(param.wrapping_add(0x10), 0x10)) & 0xff,
-            (y + visible_battle_anim_sine(param, 0x10)) & 0xff,
-        )),
-        "BATTLE_ANIM_FUNC_FIRE_BLAST" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            match param {
-                1 => Some((x & 0xff, (y - i32::from(age)) & 0xff)),
-                2 => Some(((x - i32::from(age)) & 0xff, y & 0xff)),
-                3 => Some(((x + i32::from(age)) & 0xff, y & 0xff)),
-                4 => Some(((x - i32::from(age)) & 0xff, (y + i32::from(age)) & 0xff)),
-                5 => Some(((x + i32::from(age)) & 0xff, (y + i32::from(age)) & 0xff)),
-                7 => {
-                    let travel_frames = u16::try_from(((0x88 - x).max(0) + 1) / 2).unwrap_or(0);
-                    if age <= travel_frames {
-                        return Some((
-                            (x + 2 * i32::from(age)) & 0xff,
-                            (y - i32::from(age)) & 0xff,
-                        ));
-                    }
-                    let base_x = (x + 2 * i32::from(travel_frames)) & 0xff;
-                    let base_y = (y - i32::from(travel_frames)) & 0xff;
-                    let angle = age.saturating_sub(travel_frames.saturating_add(1)) as u8;
-                    Some((
-                        (base_x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x10)) & 0xff,
-                        (base_y + visible_battle_anim_sine(angle, 0x10)) & 0xff,
-                    ))
-                }
-                8 => {
-                    let angle = (age - 1) as u8;
-                    Some((
-                        (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x10)) & 0xff,
-                        (y + visible_battle_anim_sine(angle, 0x10)) & 0xff,
-                    ))
-                }
-                9 => None,
-                _ => Some((x & 0xff, y & 0xff)),
-            }
-        }
-        "BATTLE_ANIM_FUNC_RAZOR_LEAF" => {
-            let trigger_age = (state != 0).then(|| age.saturating_sub(state_age));
-            let mut jump_index = 0_u8;
-            let mut var1 = 0_u8;
-            let mut var2 = 0_u8;
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for tick in 0..=age {
-                if trigger_age == Some(tick) {
-                    jump_index = jump_index.wrapping_add(state);
-                }
-                if jump_index == 0 {
-                    jump_index = 1;
-                    var1 = 0x40;
-                }
-                if jump_index == 1 {
-                    let angle = var1;
-                    if angle < 0x30 {
-                        jump_index = 2;
-                        var1 = 0;
-                        var2 = 0;
-                        continue;
-                    }
-                    let radius = param & 0x3f;
-                    var1 = angle.wrapping_sub(1);
-                    y_offset = visible_battle_anim_sine(angle, radius);
-                    let magnitude = match radius {
-                        0x20.. => 0x100_i32,
-                        0x18..=0x1f => 0x180,
-                        _ => 0x200,
-                    };
-                    let delta = if param & 0x80 == 0 {
-                        magnitude
-                    } else {
-                        -magnitude
-                    };
-                    let position =
-                        (((base_x as u16) << 8) | u16::from(var2)).wrapping_add(delta as u16);
-                    base_x = i32::from(position >> 8);
-                    var2 = position as u8;
-                    continue;
-                }
-                if jump_index == 2 {
-                    if (y_offset & 0xff) == 0x20 {
-                        return None;
-                    }
-                    let angle = var1;
-                    x_offset = visible_battle_anim_sine(angle, 0x10);
-                    var1 = if param & 0x40 != 0 {
-                        angle.wrapping_sub(1)
-                    } else {
-                        angle.wrapping_add(1)
-                    };
-                    let position =
-                        (((y_offset & 0xff) as u16) << 8 | u16::from(var2)).wrapping_add(0x80);
-                    y_offset = i32::from(position >> 8);
-                    var2 = position as u8;
-                    continue;
-                }
-                if jump_index == 3 {
-                    jump_index = 4;
-                    continue;
-                }
-                if (4..=7).contains(&jump_index) {
-                    jump_index = jump_index.wrapping_add(1);
-                    continue;
-                }
-                if jump_index == 8 && base_x < 0xc0 {
-                    base_x = (base_x + 8) & 0xff;
-                    base_y = (base_y - 4) & 0xff;
-                }
-            }
-            Some(((base_x + x_offset) & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_LEECH_SEED" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let movement_steps = age.min(33);
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut fraction = 0_u8;
-            let mut countdown = 0x40_u8;
-            let mut y_offset = 0_i32;
-            let delta = u16::from((param & 0xf0) >> 4) << 8 | u16::from(param & 0x0f) << 4;
-            for _ in 0..movement_steps {
-                let original_countdown = countdown;
-                countdown = countdown.wrapping_sub(1);
-                y_offset = visible_battle_anim_sine(original_countdown, 0x20);
-                let position = (((base_x as u16) << 8) | u16::from(fraction)).wrapping_add(delta);
-                base_x = i32::from(position >> 8);
-                fraction = position as u8;
-                if countdown & 1 == 0 {
-                    base_y = (base_y - 1) & 0xff;
-                }
-            }
-            Some((base_x & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_PARALYZED" => {
-            let delay = u16::from((param & 0x70) >> 4);
-            let interval = delay.saturating_add(1).max(1);
-            let toggles = if age == 0 {
-                0
-            } else {
-                1_u16.saturating_add((age - 1) / interval)
-            };
-            let magnitude = i32::from(param & 0x0f);
-            let initial_offset = if param & 0x80 != 0 {
-                -magnitude
-            } else {
-                magnitude
-            };
-            let offset = if toggles & 1 == 0 {
-                initial_offset
-            } else {
-                -initial_offset
-            };
-            Some(((x + offset) & 0xff, y & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_METRONOME_HAND" => {
-            let angle = (age as u8).wrapping_mul(2);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 8)) & 0xff,
-                (y + visible_battle_anim_sine(angle, 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_AMNESIA" => {
-            if age >= 32 {
-                None
-            } else {
-                Some((x & 0xff, y & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_AGILITY" => Some(((x + i32::from(param)) & 0xff, y & 0xff)),
-        "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE" => {
-            let angle = param.wrapping_add(age as u8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x18) >> 3) - 2 * i32::from(age)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT" => {
-            let angle = param.wrapping_add(age as u8);
-            Some((
-                (x + (visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18) >> 1)) & 0xff,
-                (y + visible_battle_anim_sine(angle, 0x18)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SMOKE_FLAME_WHEEL" => {
-            let mut runtime_param = param;
-            let mut vertical_drift = 0_u8;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                let angle = runtime_param;
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18);
-                y_offset = (visible_battle_anim_sine(angle, 0x18) >> 3) + i32::from(vertical_drift);
-                runtime_param = runtime_param.wrapping_add(2);
-                if runtime_param & 7 == 0 {
-                    if vertical_drift as i8 == -24 {
-                        return None;
-                    }
-                    vertical_drift = vertical_drift.wrapping_sub(1);
-                }
-            }
-            Some(((x + x_offset) & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_RAIN_SANDSTORM" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let speed = match param {
-                0 => 2_i32,
-                1 => 8,
-                2 => 4,
-                _ => return None,
-            };
-            let vertical = i32::from((age.saturating_mul(4) % 0x70) as u8);
-            Some(((x + speed * i32::from(age)) & 0xff, (y + vertical) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            if age > 0x38 {
-                return None;
-            }
-            let base_x = if y & 1 == 0 { x - i32::from(age) } else { x };
-            Some((
-                (base_x + visible_battle_anim_sine((age as u8).wrapping_add(0x10), 0x18)) & 0xff,
-                (y + i32::from(age)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_BATON_PASS" => {
-            let mut amplitude = param;
-            let mut angle = 0_u8;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                if amplitude == 0 {
-                    break;
-                }
-                angle = angle.wrapping_add(1);
-                y_offset = visible_battle_anim_sine(angle, amplitude).abs();
-                if angle & 0x1f == 0 {
-                    amplitude >>= 1;
-                }
-            }
-            Some((x & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER" => {
-            if age >= 58 {
-                None
-            } else {
-                Some((x & 0xff, y & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_PERISH_SONG" => {
-            let angle = param.wrapping_add((age as u8).wrapping_mul(2));
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x50)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x50) >> 2) + i32::from(age as u8)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SACRED_FIRE" => {
-            let mut runtime_param = param;
-            let mut vertical_drift = 0_u8;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                let angle = runtime_param;
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18);
-                y_offset = (visible_battle_anim_sine(angle, 0x18) >> 3) + i32::from(vertical_drift);
-                runtime_param = runtime_param.wrapping_add(2);
-                if runtime_param & 3 == 0 {
-                    if vertical_drift as i8 == -48 {
-                        return None;
-                    }
-                    vertical_drift = vertical_drift.wrapping_sub(2);
-                }
-            }
-            Some(((x + x_offset) & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_SLUDGE" => {
-            let rise = age.saturating_sub(13);
-            Some((x & 0xff, (y - i32::from(rise)) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_SOLAR_BEAM" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let fixed_radius = 0x2800_i32 - 0x80 * i32::from(age - 1);
-            let radius = u8::try_from((fixed_radius.max(0) >> 8) & 0xff).ok()?;
-            if radius == 0 {
-                return None;
-            }
-            Some((
-                (x + visible_battle_anim_sine(param.wrapping_add(0x10), radius)) & 0xff,
-                (y + visible_battle_anim_sine(param, radius)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_DIG" => {
-            if age >= 23 {
-                return None;
-            }
-            let offset = if age <= 11 {
-                2 * i32::from(age + 1)
-            } else {
-                24 - 2 * i32::from(age - 11)
-            };
-            Some((x & 0xff, (y + offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_STRING" => Some((x & 0xff, y & 0xff)),
-        "BATTLE_ANIM_FUNC_WRAP" => Some((x & 0xff, y & 0xff)),
-        "BATTLE_ANIM_FUNC_METRONOME_SPARKLE_SKETCH" => {
-            let mut runtime_param = param;
-            let mut y_offset = 0_u8;
-            let mut x_offset = 0_i32;
-            for _ in 0..updates {
-                if y_offset >= 0x20 {
-                    return None;
-                }
-                x_offset = visible_battle_anim_sine(runtime_param.wrapping_add(0x10), 8);
-                runtime_param = runtime_param.wrapping_add(2);
-                if runtime_param & 7 == 0 {
-                    y_offset = y_offset.saturating_add(1);
-                }
-            }
-            Some(((x + x_offset) & 0xff, (y + i32::from(y_offset)) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM" => {
-            let progress = age.saturating_mul(2);
-            if progress >= 0x10 {
-                return None;
-            }
-            let amplitude = progress as u8;
-            Some((
-                (x + visible_battle_anim_sine(param.wrapping_add(0x10), amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(param, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SWAGGER_MORNING_SUN" => {
-            let angle = param & 0x3f;
-            let speed = (param >> 6) & 0x03;
-            let amplitude = speed.wrapping_mul((age as u8).wrapping_add(1));
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), amplitude)) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_PETAL_DANCE" => {
-            if age >= 327 {
-                return None;
-            }
-            let angle = age as u8;
-            let descent = i32::from(age / 8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x18) >> 3) + descent) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_BONEMERANG" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let angle = param.wrapping_add((age - 1) as u8);
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(8 + 0x10), 0x30)) & 0xff,
-                (y + visible_battle_anim_sine(angle, 0x30)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_PSYCH_UP" => {
-            let angle = param.wrapping_add((age as u8).wrapping_add(1));
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, 0x18) >> 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_CONVERSION" => {
-            let mut angle = param;
-            let mut radius = 0_u8;
-            let mut progress = 0_u8;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..updates {
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), radius);
-                y_offset = visible_battle_anim_sine(angle, radius);
-                angle = angle.wrapping_add(1);
-                progress = progress.wrapping_add(1);
-                if progress < 0x40 {
-                    radius = radius.wrapping_add(1);
-                } else {
-                    radius = radius.wrapping_sub(1);
-                    if radius == 0 {
-                        return None;
-                    }
-                }
-            }
-            Some(((x + x_offset) & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_BATTLE_ANIM_OBJ_B0" => {
-            let high = u32::from((param >> 4) & 0x0f);
-            let low = u32::from(param & 0x0f);
-            let delta = ((high * 0x11) << 8) | (low << 4);
-            let position = ((x as u32 & 0xff) << 8).wrapping_add(delta.wrapping_mul(updates));
-            Some((((position >> 8) as i32) & 0xff, y & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_WATER_GUN" => {
-            let transition_age = u16::try_from((y - 0x2f).max(0)).unwrap_or(0);
-            if age < transition_age {
-                let steps = age.saturating_add(1);
-                let angle = param.wrapping_sub(steps as u8);
-                return Some((
-                    (x + 2 * i32::from(steps)) & 0xff,
-                    (y - i32::from(steps) + visible_battle_anim_sine(angle, 8)) & 0xff,
-                ));
-            }
-            let base_x = (x + 2 * i32::from(transition_age)) & 0xff;
-            let splash_offset = age.saturating_sub(transition_age).min(24);
-            Some((base_x, (0x30 + i32::from(splash_offset)) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_SPIKES" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let movement_steps = age.min(33);
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut fraction = 0_u8;
-            let mut countdown = 0x40_u8;
-            let mut y_offset = 0_i32;
-            let delta = u16::from((param & 0xf0) >> 4) << 8 | u16::from(param & 0x0f) << 4;
-            for _ in 0..movement_steps {
-                let original_countdown = countdown;
-                countdown = countdown.wrapping_sub(1);
-                y_offset = visible_battle_anim_sine(original_countdown, 0x20);
-                let position = (((base_x as u16) << 8) | u16::from(fraction)).wrapping_add(delta);
-                base_x = i32::from(position >> 8);
-                fraction = position as u8;
-                if countdown & 1 == 0 {
-                    base_y = (base_y - 1) & 0xff;
-                }
-            }
-            Some((base_x & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_HIDDEN_POWER" => {
-            if state == 0 {
-                let angle = param.wrapping_add(age as u8);
-                return Some((
-                    (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                    (y + (visible_battle_anim_sine(angle, 0x18) >> 2)) & 0xff,
-                ));
-            }
-            let trigger_age = age.saturating_sub(state_age);
-            if state_age == 0 {
-                let angle = param.wrapping_add(trigger_age.saturating_sub(1) as u8);
-                return Some((
-                    (x + visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18)) & 0xff,
-                    (y + (visible_battle_anim_sine(angle, 0x18) >> 2)) & 0xff,
-                ));
-            }
-            let radius = 0x18_u16.saturating_add(state_age.saturating_sub(1).saturating_mul(8));
-            if radius >= 0x80 {
-                return None;
-            }
-            let angle = param.wrapping_add(trigger_age as u8);
-            let radius = radius as u8;
-            Some((
-                (x + visible_battle_anim_sine(angle.wrapping_add(0x10), radius)) & 0xff,
-                (y + (visible_battle_anim_sine(angle, radius) >> 2)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SKY_ATTACK" => match state {
-            0 => Some((x & 0xff, y & 0xff)),
-            1 => {
-                let prior_x = x + 4 * i32::from(state_age);
-                if prior_x >= 0x84 {
-                    Some((prior_x & 0xff, y & 0xff))
-                } else {
-                    Some(((prior_x + 4) & 0xff, y & 0xff))
-                }
-            }
-            _ => {
-                let prior_x = 0x84 + 4 * i32::from(state_age);
-                if prior_x >= 0xd0 {
-                    None
-                } else {
-                    Some(((prior_x + 4) & 0xff, y & 0xff))
-                }
-            }
-        },
-        "BATTLE_ANIM_FUNC_HORN" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let travel_frames = u16::try_from(((0x58 - x).max(0) + 1) / 2).unwrap_or(0);
-            if age <= travel_frames {
-                return Some(((x + 2 * i32::from(age)) & 0xff, y & 0xff));
-            }
-            if age == travel_frames.saturating_add(1) {
-                return Some(((x + 2 * i32::from(travel_frames)) & 0xff, y & 0xff));
-            }
-            let impact_step = age.saturating_sub(travel_frames.saturating_add(2));
-            let amplitude = impact_step.saturating_mul(8);
-            if amplitude >= 0x20 {
-                return None;
-            }
-            let x_offset = visible_battle_anim_sine(amplitude as u8, 8);
-            Some((
-                (x + 2 * i32::from(travel_frames) + x_offset) & 0xff,
-                (y - (x_offset >> 1)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_SOUND" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            if age >= 9 {
-                return None;
-            }
-            let effective_param = if player_move {
-                param
-            } else {
-                (!param).wrapping_add(3)
-            };
-            let angle = ((age - 1) as u8).wrapping_mul(2);
-            let x_offset = visible_battle_anim_sine(angle, 0x10);
-            let y_offset = match effective_param & 3 {
-                0 => -x_offset,
-                1 => 0,
-                _ => x_offset,
-            };
-            Some(((x + x_offset) & 0xff, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_CONFUSE_RAY" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let amplitude = (param >> 4) | ((param & 0x0f) << 4);
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut current_x = base_x;
-            let mut y_offset = 0_i32;
-            for step in 1..=age {
-                let angle = (param & 0x3f).wrapping_add(step as u8);
-                y_offset = visible_battle_anim_sine(angle, amplitude);
-                let x_offset =
-                    visible_battle_anim_sine(angle.wrapping_add(0x10), amplitude);
-                if current_x < 0x80 {
-                    if angle & 3 == 0 {
-                        base_y = (base_y - 1) & 0xff;
-                    }
-                    if angle & 1 == 0 {
-                        base_x = (base_x + 1) & 0xff;
-                    }
-                }
-                current_x = (base_x + x_offset) & 0xff;
-            }
-            Some((current_x, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_CURSE" => {
-            let prior_x = x - 2 * i32::from(age);
-            if prior_x < 0x30 {
-                None
-            } else {
-                Some(((prior_x - 2) & 0xff, (y + 2 * i32::from(age + 1)) & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_BETA_PURSUIT" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            if param == 0 {
-                if age >= 7 {
-                    return None;
-                }
-                let offset = -20 + 4 * i32::from(age);
-                Some((x & 0xff, (y + offset) & 0xff))
-            } else {
-                let offset = -(4 * i32::from(age.min(10)));
-                Some((x & 0xff, (y + offset) & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_THIEF_PAYDAY" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let mut angle = 0x28_u8;
-            let mut amplitude = (y - 0x28) as u8;
-            let mut base_x = x & 0xff;
-            let mut y_offset = 0_i32;
-            let mask = if param == 0 { 0xff } else { param };
-            for _ in 0..age {
-                y_offset = visible_battle_anim_sine(angle, amplitude);
-                if angle & mask == 0 {
-                    base_x = (base_x - 1) & 0xff;
-                }
-                angle = angle.wrapping_add(1);
-                if angle & 0x3f == 0 {
-                    angle = 0x20;
-                    amplitude /= 2;
-                }
-            }
-            Some((base_x, (y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_GUST" => {
-            const RADII: [u8; 9] = [8, 6, 5, 4, 5, 6, 8, 12, 16];
-            let mut runtime_param = 0_u8;
-            let mut angle = 0_u8;
-            let mut radius_index = 0_usize;
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            let trigger_age = (state != 0).then(|| age.saturating_sub(state_age));
-            for tick in 0..=age {
-                let radius = RADII[radius_index];
-                y_offset =
-                    (visible_battle_anim_sine(angle, radius) >> 4) + i32::from(runtime_param);
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), radius);
-                angle = angle.wrapping_sub(8);
-                if runtime_param >= 0xc2 {
-                    runtime_param = 0;
-                    radius_index = 0;
-                    x_offset = 0;
-                    y_offset = 0;
-                } else {
-                    runtime_param = runtime_param.wrapping_sub(1);
-                    if runtime_param & 7 == 0 {
-                        radius_index = (radius_index + 1) % RADII.len();
-                    }
-                }
-                if trigger_age.is_some_and(|trigger| tick >= trigger) && base_x < 0x88 {
-                    base_x = (base_x + 1) & 0xff;
-                    if base_x & 1 == 0 {
-                        base_y = (base_y - 1) & 0xff;
-                    }
-                }
-            }
-            Some(((base_x + x_offset) & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_STRENGTH_SEISMIC_TOSS" => {
-            let trigger_age = (state != 0).then(|| age.saturating_sub(state_age));
-            let mut jump_index = 0_u8;
-            let mut var1 = 0_u8;
-            let mut var2 = 0_u8;
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut y_offset = 0_u8;
-            for tick in 0..=age {
-                if trigger_age == Some(tick) {
-                    jump_index = jump_index.wrapping_add(state);
-                }
-                if jump_index == 0 {
-                    if y_offset == 0xe0 {
-                        var1 = 2;
-                        jump_index = 1;
-                        continue;
-                    }
-                    let accumulator =
-                        ((u16::from(y_offset) << 8) | u16::from(var1)).wrapping_sub(0x80);
-                    y_offset = (accumulator >> 8) as u8;
-                    var1 = accumulator as u8;
-                    continue;
-                }
-                if jump_index == 1 {
-                    if var2 != 0 {
-                        var2 = var2.wrapping_sub(1);
-                        continue;
-                    }
-                    var2 = 4;
-                    var1 = (!var1).wrapping_add(1);
-                    y_offset = y_offset.wrapping_add(var1);
-                    continue;
-                }
-                base_y = (base_y - 2) & 0xff;
-                base_x = (base_x + 4) & 0xff;
-                if base_x >= 0x84 {
-                    return None;
-                }
-            }
-            Some((base_x, (base_y + i32::from(y_offset)) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_SURF" => {
-            let trigger_age = (state != 0).then(|| age.saturating_sub(state_age));
-            let mut runtime_state = 0_u8;
-            let base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            let mut angle = 0_u8;
-            for tick in 0..=age {
-                if trigger_age == Some(tick) {
-                    runtime_state = runtime_state.wrapping_add(state);
-                }
-                if runtime_state == 0 {
-                    runtime_state = 1;
-                    continue;
-                }
-                if runtime_state == 1 {
-                    if base_y < i32::from(param) {
-                        runtime_state = 2;
-                        continue;
-                    }
-                    base_y = (base_y - 1) & 0xff;
-                    y_offset = visible_battle_anim_sine(angle, 0x10);
-                    x_offset = (x_offset + 1) & 7;
-                    angle = angle.wrapping_add(2);
-                    continue;
-                }
-                if runtime_state == 2 {
-                    continue;
-                }
-                if runtime_state == 3 {
-                    if base_y >= 0x70 {
-                        return None;
-                    }
-                    base_y = (base_y + 2) & 0xff;
-                    continue;
-                }
-                return None;
-            }
-            Some(((base_x + x_offset) & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_POISON_GAS" => {
-            let mut runtime_state = 0_u8;
-            let mut base_x = x & 0xff;
-            let mut base_y = y & 0xff;
-            let mut angle = 0_u8;
-            let mut descent = 0_u8;
-            let mut x_offset = 0_i32;
-            let mut y_offset = 0_i32;
-            for _ in 0..=age {
-                if runtime_state == 0 {
-                    if base_x >= 0x84 {
-                        runtime_state = 1;
-                        continue;
-                    }
-                    base_x = (base_x + 1) & 0xff;
-                    angle = angle.wrapping_add(1);
-                    x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18);
-                    if base_x & 1 == 0 {
-                        base_y = (base_y - 1) & 0xff;
-                    }
-                    continue;
-                }
-                y_offset = (visible_battle_anim_sine(angle, 0x18) >> 3) + i32::from(descent);
-                x_offset = visible_battle_anim_sine(angle.wrapping_add(0x10), 0x18);
-                angle = angle.wrapping_add(1);
-                if angle & 7 == 0 {
-                    if descent >= 0x28 {
-                        return None;
-                    }
-                    descent = descent.saturating_add(1);
-                }
-            }
-            Some(((base_x + x_offset) & 0xff, (base_y + y_offset) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_KICK" => {
-            if state == 0 {
-                let movements = i32::from(age).min(((0x98 - x).max(0) + 1) / 2);
-                Some(((x + movements * 2) & 0xff, (y - movements) & 0xff))
-            } else {
-                let movements = i32::from(state_age).min(((0x98 - x).max(0) + 1) / 2);
-                let angle = 0x2c_u8.wrapping_add(state_age.min(u16::from(u8::MAX)) as u8);
-                Some((
-                    (x + movements * 2) & 0xff,
-                    (y + visible_battle_anim_sine(angle, 8)) & 0xff,
-                ))
-            }
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 1 && state != 0 => None,
-        "BATTLE_ANIM_FUNC_EGG" if param == 1 && age <= 56 => {
-            let movements = i32::from(age).min((0x40 - x).max(0));
-            let (angle, amplitude) = visible_egg_wave_at_age(age);
-            Some((
-                (x + movements) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 1 => {
-            let mut base_x = (x + (0x40 - x).max(0)) & 0xff;
-            let mut fixed_y = (y & 0xff) << 8;
-            let mut pause = 0_u8;
-            let mut resume_after_pause = false;
-            for _ in 0..age.saturating_sub(56) {
-                if base_x >= 0x88 {
-                    return Some((base_x, (fixed_y >> 8) & 0xff));
-                }
-                if pause != 0 {
-                    pause = pause.saturating_sub(1);
-                    if pause == 0 {
-                        resume_after_pause = true;
-                    }
-                    continue;
-                }
-                if !resume_after_pause && base_x & 0xf == 0 && base_x != (x & 0xff) {
-                    pause = 0x10;
-                    continue;
-                }
-                resume_after_pause = false;
-                base_x = (base_x + 1) & 0xff;
-                fixed_y = (fixed_y - 0x80) & 0xffff;
-            }
-            Some((base_x, (fixed_y >> 8) & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 6 && age <= 56 => {
-            let movements = i32::from(age).min((0x4b - x).max(0));
-            let (angle, amplitude) = visible_egg_wave_at_age(age);
-            Some((
-                (x + movements) & 0xff,
-                (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 6 && state != 0 => Some(((0x4b) & 0xff, (y + 4) & 0xff)),
-        "BATTLE_ANIM_FUNC_EGG" if param == 6 => {
-            if age == 57 {
-                let (angle, amplitude) = visible_egg_wave_at_age(56);
-                Some((
-                    0x4b,
-                    (y + visible_battle_anim_sine(angle, amplitude)) & 0xff,
-                ))
-            } else {
-                let angle = 2_u8.wrapping_mul(age.saturating_sub(58) as u8);
-                Some(((0x4b + visible_battle_anim_sine(angle, 2)) & 0xff, y & 0xff))
-            }
-        }
-        "BATTLE_ANIM_FUNC_EGG" if param == 11 => Some((x & 0xff, y & 0xff)),
-        "BATTLE_ANIM_FUNC_NEEDLE" => {
-            if age == 0 {
-                return Some((x & 0xff, y & 0xff));
-            }
-            let speed = i32::from(param & 0x0f);
-            let movements = i32::from(age);
-            let prior_x = (x + speed.saturating_mul(movements.saturating_sub(1))) & 0xff;
-            if prior_x >= 0x84 {
-                return None;
-            }
-            let y_speed = speed / 2;
-            let y_offset = if (param >> 4) & 0x0f == 2 {
-                let angle = 0_u8.wrapping_sub((age.saturating_sub(1) as u8).wrapping_mul(4));
-                visible_battle_anim_sine(angle, 0x10).min(0)
-            } else {
-                0
-            };
-            Some((
-                (prior_x + speed) & 0xff,
-                (y - y_speed.saturating_mul(movements) + y_offset) & 0xff,
-            ))
-        }
-        "BATTLE_ANIM_FUNC_EMBER" => match param >> 4 {
-            1 => {
-                let encoded = param & 0x0f;
-                let step = i32::from(if encoded == 0 { 1 } else { encoded });
-                Some((
-                    (x + step.saturating_mul(updates as i32)) & 0xff,
-                    (y - (step >> 1).saturating_mul(updates as i32)) & 0xff,
-                ))
-            }
-            2 => None,
-            _ => Some((x & 0xff, y & 0xff)),
-        },
-        "BATTLE_ANIM_FUNC_BUBBLE" => {
-            let initial_steps = updates.min(12);
-            let step = i32::from(param & 0x0f);
-            let mut current_x = (x + step.saturating_mul(initial_steps as i32)) & 0xff;
-            let mut current_y = (y - (step >> 1).saturating_mul(initial_steps as i32)) & 0xff;
-            if updates <= 12 {
-                return Some((current_x, current_y));
-            }
-            let mut x_fraction = 0_u8;
-            let mut y_fraction = 0_u8;
-            for _ in 0..updates - 12 {
-                if current_x < 0x98 {
-                    let position =
-                        (((current_x as u16) << 8) | u16::from(x_fraction)).wrapping_add(0x60);
-                    current_x = i32::from(position >> 8);
-                    x_fraction = position as u8;
-                }
-                if current_y >= 0x20 {
-                    let delta = 0xff00_u16 | u16::from(param & 0xf0);
-                    let position =
-                        (((current_y as u16) << 8) | u16::from(y_fraction)).wrapping_add(delta);
-                    current_y = i32::from(position >> 8);
-                    y_fraction = position as u8;
-                }
-            }
-            Some((current_x & 0xff, current_y & 0xff))
-        }
-        "BATTLE_ANIM_FUNC_THUNDER_WAVE" => {
-            let current_x = (x + 2_i32.saturating_mul(updates as i32)) & 0xff;
-            if current_x >= 0x84 {
-                return None;
-            }
-            let base_y = (y - updates as i32) & 0xff;
-            let angle = (updates as u8).wrapping_mul(6);
-            Some((
-                current_x,
-                (base_y + visible_battle_anim_sine(angle, 6)) & 0xff,
-            ))
-        }
-        _ => None,
-    }
-}
-
-fn visible_egg_wave_at_age(age: u16) -> (u8, u8) {
-    if age == 0 {
-        return (0, 0);
-    }
-    if age <= 24 {
-        return (0x28_u8.wrapping_add((age - 1) as u8), 0x10);
-    }
-    (0x20_u8.wrapping_add((age - 25) as u8), 0x08)
-}
-
 fn spawn_visible_move_animation_objects(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -6649,241 +5049,37 @@ fn spawn_visible_move_animation_objects(
         return Ok(());
     };
     let bundle = battle_anim_render_bundle(rendered_art, snapshot)?;
-    // Crystal owns ten animation-object structs. Spawns occupy the first free
-    // slot, while anim_incobj/anim_setobj address those slots one-based.
-    let mut slots = [None::<(&VisibleMoveObjectEvent, u16, u8, u16)>; 10];
-    for event in animation
-        .object_events
-        .iter()
-        .filter(|event| event.frame <= animation.frame)
-    {
-        for slot in &mut slots {
-            let Some((spawn, spawn_frame, state, state_frame)) = slot.as_ref() else {
-                continue;
-            };
-            let VisibleMoveObjectCommand::Spawn {
-                object_id,
-                x,
-                y,
-                param,
-            } = &spawn.command
-            else {
-                continue;
-            };
-            let object = bundle
-                .get("objects")
-                .and_then(|objects| objects.get(object_id))
-                .with_context(|| {
-                    format!(
-                        "battle animation object {object_id} is missing from the runtime bundle"
-                    )
-                })?;
-            let function = battle_anim_object_function(object_id, object)?;
-            let age = event.frame.saturating_sub(*spawn_frame);
-            let state_age = event.frame.saturating_sub(*state_frame);
-            let deleted = if function == "BATTLE_ANIM_FUNC_NULL" {
-                object
-                    .get("frameset")
-                    .and_then(serde_json::Value::as_str)
-                    .and_then(|frameset| {
-                        visible_null_battle_animation_object_lifetime(&bundle, frameset)
-                    })
-                    .is_some_and(|lifetime| age >= lifetime)
-            } else {
-                visible_battle_anim_object_position(
-                    function,
-                    i32::from(*x),
-                    i32::from(*y),
-                    *param,
-                    age,
-                    *state,
-                    state_age,
-                    animation.player_move,
-                )
-                .is_none()
-            };
-            if deleted {
-                *slot = None;
-            }
-        }
-        match &event.command {
-            VisibleMoveObjectCommand::Spawn { .. } => {
-                if let Some(slot) = slots.iter_mut().find(|slot| slot.is_none()) {
-                    *slot = Some((event, event.frame, 0, event.frame));
-                }
-            }
-            VisibleMoveObjectCommand::Clear => slots.fill(None),
-            VisibleMoveObjectCommand::Increment { slot } => {
-                if let Some(entry) = slot
-                    .checked_sub(1)
-                    .and_then(|slot| slots.get_mut(usize::from(slot)))
-                    && let Some((_, _, state, state_frame)) = entry.as_mut()
-                {
-                    *state = state.wrapping_add(1);
-                    *state_frame = event.frame;
-                }
-            }
-            VisibleMoveObjectCommand::Set { slot, value } => {
-                if let Some(entry) = slot
-                    .checked_sub(1)
-                    .and_then(|slot| slots.get_mut(usize::from(slot)))
-                    && let Some((_, _, state, state_frame)) = entry.as_mut()
-                {
-                    *state = *value;
-                    *state_frame = event.frame;
-                }
-            }
+    let mut playback = match rendered_art.battle_object_runtime.take() {
+        Some(playback) if playback.source == animation.object_events
+            && playback.player == animation.player_move && playback.label == animation.animation_label
+            && u32::from(animation.frame) + 1 >= playback.next_tick => playback,
+        _ => new_visible_battle_objects(&bundle, animation)?,
+    };
+    advance_visible_battle_objects(&mut playback, &bundle, animation)?;
+    let live_slots = playback.slots.clone();
+    let object_obp0_write = playback.obp0_write;
+    rendered_art.battle_object_runtime = Some(playback);
+    let mut dmg_palettes = visible_battle_dmg_palette_registers(Some(animation));
+    if let Some((tick, value)) = object_obp0_write {
+        // Source order is commands, background effects, then object callbacks.
+        if dmg_palettes.obp0_write_frame.is_none_or(|frame| tick >= u32::from(frame)) {
+            dmg_palettes.obp0 = value;
         }
     }
-    // Replaying object commands reconstructs slot ownership, but an object
-    // may expire on a frame with no subsequent command. Crystal updates all
-    // ten animation structs every frame, so apply the same lifetime/function
-    // deletion check at the actual rendered age before collecting sprites.
-    for slot in &mut slots {
-        let Some((spawn, spawn_frame, state, state_frame)) = slot.as_ref() else {
-            continue;
-        };
-        let VisibleMoveObjectCommand::Spawn {
-            object_id,
-            x,
-            y,
-            param,
-        } = &spawn.command
-        else {
-            continue;
-        };
-        let object = bundle
-            .get("objects")
-            .and_then(|objects| objects.get(object_id))
-            .with_context(|| {
-                format!("battle animation object {object_id} is missing from the runtime bundle")
-            })?;
-        let function = battle_anim_object_function(object_id, object)?;
-        let age = animation.frame.saturating_sub(*spawn_frame);
-        let state_age = animation.frame.saturating_sub(*state_frame);
-        let deleted = if function == "BATTLE_ANIM_FUNC_NULL" {
-            object
-                .get("frameset")
-                .and_then(serde_json::Value::as_str)
-                .and_then(|frameset| {
-                    visible_null_battle_animation_object_lifetime(&bundle, frameset)
-                })
-                .is_some_and(|lifetime| age >= lifetime)
-        } else {
-            visible_battle_anim_object_position(
-                function,
-                i32::from(*x),
-                i32::from(*y),
-                *param,
-                age,
-                *state,
-                state_age,
-                animation.player_move,
-            )
-            .is_none()
-        };
-        if deleted {
-            *slot = None;
-        }
-    }
-    let active = slots
-        .into_iter()
-        .enumerate()
-        .filter_map(|(slot_index, entry)| {
-            entry.map(|(event, spawn_frame, state, state_frame)| {
-                (
-                    slot_index,
-                    event,
-                    animation.frame.saturating_sub(spawn_frame),
-                    state,
-                    animation.frame.saturating_sub(state_frame),
-                )
-            })
-        })
-        .collect::<Vec<_>>();
-    if active.is_empty() {
-        return Ok(());
-    }
-    let dmg_palettes = visible_battle_dmg_palette_registers(Some(animation));
-    for (slot_index, event, age, state, state_age) in active {
-        let VisibleMoveObjectCommand::Spawn {
-            object_id, x, y, ..
-        } = &event.command
-        else {
-            continue;
-        };
-        let Some(object) = bundle
-            .get("objects")
-            .and_then(|objects| objects.get(object_id))
-        else {
-            anyhow::bail!("battle animation object {object_id} is missing from the runtime bundle");
-        };
-        let function = battle_anim_object_function(object_id, object)?;
-        let VisibleMoveObjectCommand::Spawn { param, .. } = &event.command else {
-            continue;
-        };
-        if function == "BATTLE_ANIM_FUNC_RAIN_SANDSTORM" && *param > 2 {
-            anyhow::bail!(
-                "battle animation object {object_id} has invalid Rain/Sandstorm variant {param}"
-            );
-        }
-        if function == "BATTLE_ANIM_FUNC_STRING" && *param > 2 {
-            anyhow::bail!(
-                "battle animation object {object_id} has invalid String Shot variant {param}"
-            );
-        }
-        let Some((animated_x, animated_y)) = visible_battle_anim_object_position(
-            function,
-            i32::from(*x),
-            i32::from(*y),
-            *param,
-            age,
-            state,
-            state_age,
-            animation.player_move,
-        ) else {
-            continue;
-        };
-        let base_frameset_name = object
-            .get("frameset")
-            .and_then(serde_json::Value::as_str)
-            .with_context(|| format!("battle animation object {object_id} has no frameset"))?;
-        let (frameset_name, frameset_age) = visible_battle_anim_frameset(
-            function,
-            base_frameset_name,
-            *param,
-            age,
-            i32::from(*x),
-            state,
-            state_age,
-            i32::from(*y),
-            animation.player_move,
-        );
-        let Some((frame_index, frame)) =
-            battle_anim_frame_at_age(&bundle, frameset_name, frameset_age)?
-        else {
-            continue;
-        };
-        let palette_override = if function == "BATTLE_ANIM_FUNC_SKY_ATTACK" {
-            let palette_age = if state == 0 {
-                age
-            } else {
-                age.saturating_sub(state_age).saturating_sub(1)
-            };
-            if palette_age == 0 {
-                Some("PAL_BATTLE_OB_GRAY")
-            } else {
-                let runtime_param = param.wrapping_add(palette_age as u8);
-                Some(match (runtime_param >> 2) % 4 {
-                    0 => "PAL_BATTLE_OB_GRAY",
-                    1 => "PAL_BATTLE_OB_YELLOW",
-                    2 => "PAL_BATTLE_OB_RED",
-                    _ => "PAL_BATTLE_OB_BLUE",
-                })
-            }
-        } else {
-            None
-        };
+    for (slot_index, live) in live_slots.iter().enumerate() {
+        let Some(live) = live else { continue; };
+        if live.oam.entries.is_empty() { continue; }
+        let VisibleMoveObjectCommand::Spawn { object_id, .. } = &animation.object_events[live.event_index].command else { unreachable!() };
+        let object = &bundle["objects"][object_id];
+        let frameset_name = live.frameset;
+        let frame_index = live.frame;
+        let frame = bundle["framesets"][frameset_name].as_array()
+            .and_then(|frames| frames.get(frame_index)).context("live battle frameset overran")?;
+        let palette_override = Some(match live.bytes[5] & 7 {
+            0 => "PAL_BATTLE_OB_GRAY", 1 => "PAL_BATTLE_OB_YELLOW", 2 => "PAL_BATTLE_OB_RED",
+            3 => "PAL_BATTLE_OB_GREEN", 4 => "PAL_BATTLE_OB_BLUE", 5 => "PAL_BATTLE_OB_BROWN",
+            other => anyhow::bail!("invalid live battle palette {other}"),
+        });
         let rendered = battle_anim_rendered_frame(
             rendered_art,
             &bundle,
@@ -6894,55 +5090,15 @@ fn spawn_visible_move_animation_objects(
             frame_index,
             frame,
             !animation.player_move,
-            function == "BATTLE_ANIM_FUNC_STRING" && *param == 0,
-            function == "BATTLE_ANIM_FUNC_WATER_GUN"
-                && age >= u16::try_from((i32::from(*y) - 0x2f).max(0)).unwrap_or(0),
+            false,
+            false,
             palette_override,
             dmg_palettes.obp0,
             dmg_palettes.obp1,
+            Some(&live.oam),
             images,
         )?;
-        let flags = object
-            .get("flags")
-            .and_then(serde_json::Value::as_i64)
-            .with_context(|| format!("battle animation object {object_id} has no numeric flags"))?;
-        let relative = flags & 1 != 0;
-        let fix_y = object
-            .get("fix_y")
-            .and_then(serde_json::Value::as_i64)
-            .with_context(|| format!("battle animation object {object_id} has no numeric fix_y"))?;
-        let dynamic_fix_y = if matches!(
-            function,
-            "BATTLE_ANIM_FUNC_LEECH_SEED" | "BATTLE_ANIM_FUNC_SPIKES"
-        ) {
-            i32::from(age.min(33)) * 2
-        } else {
-            0
-        };
-        let (source_x, source_y) = if relative && !animation.player_move {
-            // InitBattleAnimation mirrors the object's base coordinate for an
-            // enemy move; the animation function's offsets are applied after
-            // that mirror. Mirroring `animated_x` reverses every X offset.
-            let x_offset = (animated_x - i32::from(*x)) & 0xff;
-            let mirrored_x = (0xb4_i32 - i32::from(*x) + x_offset) & 0xff;
-            let adjusted_y = if fix_y == 0xff {
-                (animated_y + 40) & 0xff
-            } else {
-                let y_offset = (animated_y - i32::from(*y)) & 0xff;
-                let enemy_fix_y_adjust = i32::from(matches!(
-                    animation.animation_label.as_str(),
-                    "BattleAnim_Kinesis"
-                        | "BattleAnim_Recover"
-                        | "BattleAnim_Softboiled"
-                        | "BattleAnim_MilkDrink"
-                )) * SOURCE_TILE_SIZE as i32;
-                (fix_y as i32 + dynamic_fix_y - i32::from(*y) + y_offset - enemy_fix_y_adjust)
-                    & 0xff
-            };
-            (mirrored_x, adjusted_y)
-        } else {
-            (animated_x & 0xff, animated_y & 0xff)
-        };
+        let (source_x, source_y) = live.oam.origin;
         let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
         let destination_x = source_x - 8 + i32::from(rendered.offset_x);
         let destination_y = source_y - 16
@@ -6960,7 +5116,7 @@ fn spawn_visible_move_animation_objects(
                         + (destination_x as f32 + rendered.sprite.size.x / scale / 2.0) * scale,
                     PLAYFIELD_TOP
                         - (destination_y as f32 + rendered.sprite.size.y / scale / 2.0) * scale,
-                    3.45,
+                    3.45 - slot_index as f32 * 0.001,
                 ),
                 ..default()
             },
@@ -7023,7 +5179,6 @@ fn battle_anim_frame_at_age<'a>(
     let mut remaining = u32::from(age);
     let mut index = 0_usize;
     let mut control_guard = 0_usize;
-    let mut last_frame = None;
     loop {
         let frame = frames
             .get(index)
@@ -7036,12 +5191,11 @@ fn battle_anim_frame_at_age<'a>(
                     .with_context(|| {
                         format!("battle animation frame {frameset_name}[{index}] has no duration")
                     })?
-                    .max(1) as u32;
+                    .saturating_add(1) as u32;
                 if remaining < duration {
                     return Ok(Some((index, frame)));
                 }
                 remaining -= duration;
-                last_frame = Some((index, frame));
                 index += 1;
                 control_guard = 0;
             }
@@ -7052,9 +5206,9 @@ fn battle_anim_frame_at_age<'a>(
                     .with_context(|| {
                         format!("battle animation wait {frameset_name}[{index}] has no duration")
                     })?
-                    .max(1) as u32;
+                    .saturating_add(1) as u32;
                 if remaining < duration {
-                    return Ok(last_frame);
+                    return Ok(None);
                 }
                 remaining -= duration;
                 index += 1;
@@ -7093,6 +5247,7 @@ fn battle_anim_rendered_frame(
     palette_override: Option<&str>,
     obp0: u8,
     obp1: u8,
+    runtime_oam: Option<&VisibleBattleObjectOam>,
     images: &mut Assets<Image>,
 ) -> Result<BattleAnimRenderedFrame> {
     let flags = object
@@ -7112,12 +5267,14 @@ fn battle_anim_rendered_frame(
         .with_context(|| {
             format!("battle animation frame {frameset_name}[{frame_index}] has no yflip")
         })?
-        ^ (enemy_move && !suppress_enemy_flips && flags & 0x40 != 0)
-        ^ extra_yflip;
+        ^ (enemy_move && !suppress_enemy_flips && (flags & 0x40 != 0 || extra_yflip));
     let cache_key = format!(
         "{object_id}:{frameset_name}:{frame_index}:{frame_xflip}:{frame_yflip}:{}:{obp0:02x}:{obp1:02x}",
         palette_override.unwrap_or("default"),
     );
+    let cache_key = if let Some(oam) = runtime_oam {
+        format!("{cache_key}:{:?}:{:?}:{:?}", oam.origin, oam.entries, oam.rows)
+    } else { cache_key };
     if let Some(rendered) = rendered_art.battle_anim_object_cache.get(&cache_key) {
         return Ok(rendered.clone());
     }
@@ -7143,48 +5300,6 @@ fn battle_anim_rendered_frame(
             .get("tile_offset")
             .and_then(serde_json::Value::as_i64)
             .with_context(|| format!("battle animation OAM set {oam_name} has no tile offset"))?;
-        let base_frameset_name = object
-            .get("frameset")
-            .and_then(serde_json::Value::as_str)
-            .with_context(|| format!("battle animation object {object_id} has no base frameset"))?;
-        let base_frames = bundle
-            .get("framesets")
-            .and_then(|sets| sets.get(base_frameset_name))
-            .and_then(serde_json::Value::as_array)
-            .with_context(|| {
-                format!("battle animation frameset {base_frameset_name} is missing")
-            })?;
-        // OAM tile offsets remain relative to the graphics block loaded for
-        // the object's declared frameset. A runtime frameset override changes
-        // OAM selection, not the base VRAM address.
-        let mut base_offset = None;
-        for (base_index, base_frame) in base_frames.iter().enumerate() {
-            let Some(base_oam_name) = base_frame
-                .get("oam_set")
-                .and_then(serde_json::Value::as_str)
-            else {
-                continue;
-            };
-            let offset = bundle
-                .get("oam_sets")
-                .and_then(|sets| sets.get(base_oam_name))
-                .with_context(|| {
-                    format!(
-                        "battle animation base frame {base_frameset_name}[{base_index}] references missing OAM set {base_oam_name}"
-                    )
-                })?
-                .get("tile_offset")
-                .and_then(serde_json::Value::as_i64)
-                .with_context(|| {
-                    format!(
-                        "battle animation base OAM set {base_oam_name} has no tile offset"
-                    )
-                })?;
-            base_offset = Some(base_offset.map_or(offset, |current: i64| current.min(offset)));
-        }
-        let base_offset = base_offset.with_context(|| {
-            format!("battle animation base frameset {base_frameset_name} has no OAM tile offset")
-        })?;
         let gfx_id = object
             .get("gfx_id")
             .and_then(serde_json::Value::as_str)
@@ -7227,12 +5342,12 @@ fn battle_anim_rendered_frame(
             .and_then(serde_json::Value::as_str)
             .with_context(|| format!("battle animation object {object_id} has no palette"))?;
         let palette_name = match palette_override.unwrap_or(declared_palette) {
-            "PAL_BATTLE_OB_GRAY" | "PAL_BATTLE_OB_ENEMY" => "gray",
+            "PAL_BATTLE_OB_GRAY" => "gray",
             "PAL_BATTLE_OB_YELLOW" => "yellow",
             "PAL_BATTLE_OB_RED" => "red",
             "PAL_BATTLE_OB_GREEN" => "green",
             "PAL_BATTLE_OB_BLUE" => "blue",
-            "PAL_BATTLE_OB_BROWN" | "PAL_BATTLE_OB_PLAYER" => "brown",
+            "PAL_BATTLE_OB_BROWN" => "brown",
             other => anyhow::bail!("unknown battle animation palette {other}"),
         };
         let palette = load_battle_anim_palette(asset_root, palette_name)?;
@@ -7241,7 +5356,9 @@ fn battle_anim_rendered_frame(
         let mut min_y = 0_i32;
         let mut max_x = 0_i32;
         let mut max_y = 0_i32;
-        for entry in entries {
+        for (piece_index, entry) in entries.iter().enumerate() {
+            if runtime_oam.is_some_and(|oam| piece_index >= oam.entries.len()) { break; }
+            let runtime_piece = runtime_oam.map(|oam| oam.entries[piece_index]);
             let entry_x = entry
                 .get("x")
                 .and_then(serde_json::Value::as_i64)
@@ -7256,6 +5373,9 @@ fn battle_anim_rendered_frame(
                 })? as i32;
             let x = if frame_xflip { -(entry_x + 8) } else { entry_x };
             let y = if frame_yflip { -(entry_y + 8) } else { entry_y };
+            let (x, y) = if let (Some(oam), Some(piece)) = (runtime_oam, runtime_piece) {
+                (i32::from(piece[1]) - oam.origin.0, i32::from(piece[0]) - oam.origin.1)
+            } else { (x, y) };
             let entry_xflip = entry
                 .get("xflip")
                 .and_then(serde_json::Value::as_bool)
@@ -7279,20 +5399,32 @@ fn battle_anim_rendered_frame(
                     )
                 })?,
             };
-            let object_palette = match obp {
+            let obp = runtime_piece.map_or(obp, |piece| u64::from((piece[3] >> 4) & 1));
+            let mut object_palette = match obp {
                 0 => obp0,
                 1 => obp1,
                 other => anyhow::bail!(
                     "battle animation OAM set {oam_name} has invalid OBP selector {other}"
                 ),
             };
+            let palette = if let Some(piece) = runtime_piece {
+                // CGB uses OAM palette bits, not the DMG OBP selector. The
+                // source's BattleAnim_SetOBPals remaps only gray and yellow.
+                let palette_id = piece[3] & 7;
+                object_palette = if palette_id < 2 { obp0 } else { 0xe4 };
+                let name = ["gray", "yellow", "red", "green", "blue", "brown"]
+                    .get(usize::from(palette_id)).context("unsupported CGB object palette")?;
+                load_battle_anim_palette(asset_root, name)?
+            } else { palette };
             let tile_id = entry
                 .get("tile_id")
                 .and_then(serde_json::Value::as_i64)
                 .with_context(|| {
                     format!("battle animation OAM set {oam_name} has an entry without tile_id")
                 })?;
-            let tile_index = tile_offset + tile_id - base_offset;
+            // GetBattleAnimOAM adds this offset directly to the loaded GFX
+            // block. Frameset changes never rebase the graphics sheet.
+            let tile_index = tile_offset + tile_id;
             let tile_start = usize::try_from(tile_index)
                 .ok()
                 .and_then(|index| index.checked_mul(16))
@@ -7305,12 +5437,15 @@ fn battle_anim_rendered_frame(
             let mut pixels = [0_u8; 8 * 8 * 4];
             for output_y in 0..8_usize {
                 for output_x in 0..8_usize {
-                    let source_x = if entry_xflip ^ frame_xflip {
+                    if runtime_oam.is_some_and(|oam| !oam.rows[piece_index][output_y]) { continue; }
+                    let effective_xflip = runtime_piece.map_or(entry_xflip ^ frame_xflip, |piece| piece[3] & 0x20 != 0);
+                    let effective_yflip = runtime_piece.map_or(entry_yflip ^ frame_yflip, |piece| piece[3] & 0x40 != 0);
+                    let source_x = if effective_xflip {
                         7 - output_x
                     } else {
                         output_x
                     };
-                    let source_y = if entry_yflip ^ frame_yflip {
+                    let source_y = if effective_yflip {
                         7 - output_y
                     } else {
                         output_y
@@ -7353,7 +5488,11 @@ fn battle_anim_rendered_frame(
                     let target_x = usize::try_from(x - min_x).unwrap() + tile_x;
                     let target_y = usize::try_from(y - min_y).unwrap() + tile_y;
                     let target = (target_y * width + target_x) * 4;
-                    composite[target..target + 4].copy_from_slice(&pixels[source..source + 4]);
+                    // CGB OAM priority is first-entry-first, including
+                    // overlapping pieces belonging to the same object.
+                    if composite[target + 3] == 0 {
+                        composite[target..target + 4].copy_from_slice(&pixels[source..source + 4]);
+                    }
                 }
             }
         }
@@ -7432,17 +5571,8 @@ fn load_battle_anim_palette(asset_root: &AssetRoot, requested: &str) -> Result<[
     })
 }
 
-fn spawn_battle_command_menu(
-    commands: &mut Commands,
-    snapshot: &RuntimeShellSnapshot,
-    runtime_shell: &BevyRuntimeShell,
-    battle: &crate::RuntimeBattleSnapshot,
-    rendered_art: &mut RenderedTilesetArt,
-    asset_root: &AssetRoot,
-    images: &mut Assets<Image>,
-) -> Result<()> {
-    require_bitmap_font_art(rendered_art, asset_root, images)?;
-    if runtime_shell.visible_capture_animation.is_some()
+fn visible_battle_command_animation_active(runtime_shell: &BevyRuntimeShell) -> bool {
+    runtime_shell.visible_capture_animation.is_some()
         || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell
             .visible_move_animations
@@ -7458,7 +5588,19 @@ fn spawn_battle_command_menu(
             .battle_exp_tween
             .as_ref()
             .is_some_and(|tween| tween.started)
-    {
+}
+
+fn spawn_battle_command_menu(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    battle: &crate::RuntimeBattleSnapshot,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    require_bitmap_font_art(rendered_art, asset_root, images)?;
+    if visible_battle_command_animation_active(runtime_shell) {
         return Ok(());
     }
     if battle_window_frame_art(rendered_art, asset_root, images).is_none() {
@@ -8083,6 +6225,7 @@ fn spawn_visible_capture_animation(
         }),
         0xe4,
         0xe4,
+        None,
         images,
     )?;
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
@@ -9795,7 +7938,7 @@ fn spawn_battle_move_info_window(
             rendered_art,
             asset_root,
             images,
-            &compact_scene_label(&battle_type_display_name(move_type), 10),
+            &compact_scene_label(source_type_display_name(move_type)?, 10),
             2.0,
             10.0,
         );
@@ -10197,11 +8340,16 @@ fn item_display_name(snapshot: &RuntimeShellSnapshot, item_id: &str) -> String {
         .unwrap_or_else(|| format!("INVALID ITEM {item_id}"))
 }
 
-fn battle_type_display_name(move_type: &str) -> String {
-    move_type
-        .strip_suffix("_TYPE")
-        .unwrap_or(move_type)
-        .replace('_', " ")
+fn source_type_display_name(type_id: &str) -> Result<&str> {
+    // constants/type_constants.asm indexes data/types/names.asm.
+    match type_id {
+        "NORMAL" | "FIGHTING" | "FLYING" | "POISON" | "GROUND" | "ROCK"
+        | "BIRD" | "BUG" | "GHOST" | "STEEL" | "FIRE" | "WATER" | "GRASS"
+        | "ELECTRIC" | "ICE" | "DRAGON" | "DARK" => Ok(type_id),
+        "PSYCHIC_TYPE" => Ok("PSYCHIC"),
+        "CURSE_TYPE" => Ok("???"),
+        _ => anyhow::bail!("type {type_id:?} has no source TypeNames entry"),
+    }
 }
 
 fn visible_battle_command_menu_entries(
@@ -10216,11 +8364,7 @@ fn visible_battle_command_menu_entries(
         return visible_battle_shift_prompt_entries(snapshot, runtime_shell, battle);
     }
     if let Some(mode) = runtime_shell.battle_pack_target_mode {
-        return Ok(visible_battle_pack_target_entries(
-            snapshot,
-            runtime_shell,
-            mode,
-        ));
+        return visible_battle_pack_target_entries(snapshot, runtime_shell, mode);
     }
     if runtime_shell.battle_move_cursor.is_some() {
         return Ok(visible_battle_move_entries(snapshot, runtime_shell, battle));
@@ -10458,19 +8602,15 @@ fn visible_battle_pack_target_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
     mode: BattlePackTargetMode,
-) -> Vec<String> {
-    let selected_party = runtime_shell
-        .party_cursor
-        .min(snapshot.party.slots.len().saturating_sub(1));
-    let mut entries = selected_battle_pack_item_label(snapshot, runtime_shell)
-        .map(|_| Vec::new())
-        .unwrap_or_else(|| vec![compact_scene_label("INVALID CURSOR battle:item", 30)]);
+) -> Result<Vec<String>> {
+    let selected_party = runtime_shell.party_cursor;
+    anyhow::ensure!(selected_party < snapshot.party.slots.len(), "battle item target party cursor is invalid");
+    selected_battle_pack_item_label(snapshot, runtime_shell)
+        .context("battle item target requires a selected item")?;
+    let mut entries = Vec::new();
     if mode == BattlePackTargetMode::PartyMove {
         let Some(slot) = snapshot.party.slots.get(selected_party) else {
-            return vec![compact_scene_label(
-                &format!("INVALID PARTY SLOT {selected_party}"),
-                30,
-            )];
+            anyhow::bail!("battle item target party slot {selected_party} is absent");
         };
         entries.push(party_slot_entry(snapshot, slot, true));
         let selected_move = strict_readonly_cursor_index(
@@ -10478,22 +8618,16 @@ fn visible_battle_pack_target_entries(
             &party_move_cursor_surface_id(slot.index),
             slot.pokemon.moves.len(),
         );
-        let Some(selected_move) = selected_move else {
-            entries.push(compact_scene_label(
-                &format!("INVALID CURSOR party:{}:moves", slot.index),
-                30,
-            ));
-            return entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect();
-        };
+        let selected_move = selected_move.context("battle item target move cursor is invalid")?;
         entries.extend(windowed_move_entries(
             snapshot,
             &slot.pokemon.moves,
             selected_move,
-        ));
-        return entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect();
+        )?);
+        return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     entries.extend(windowed_party_slot_entries(snapshot, selected_party));
-    entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect()
+    Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect())
 }
 
 fn visible_battle_move_entries(

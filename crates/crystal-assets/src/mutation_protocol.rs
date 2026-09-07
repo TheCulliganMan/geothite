@@ -77,6 +77,64 @@ pub struct CompiledTilesetExtension {
 }
 
 impl CompiledGamePack {
+    /// Applies an application's encounter-table overlay and derives a new verified identity.
+    /// Content policy belongs to the caller; the runtime engine remains unchanged.
+    pub fn with_wild_encounter_overlay(
+        &self,
+        manifest_id: &str,
+        encounters: BTreeMap<String, WildEncounterData>,
+    ) -> Result<Self> {
+        verify_compiled_game_pack_for_runtime(self)?;
+        anyhow::ensure!(!encounters.is_empty(), "encounter overlay cannot be empty");
+        anyhow::ensure!(
+            is_exact_manifest_id_token(manifest_id),
+            "invalid overlay manifest id"
+        );
+        anyhow::ensure!(
+            !self.report.manifests.iter().any(|id| id == manifest_id),
+            "overlay already applied"
+        );
+        let mut pack = self.clone();
+        for (map, table) in encounters {
+            anyhow::ensure!(
+                pack.data.maps.contains_key(&map),
+                "unknown encounter map {map}"
+            );
+            anyhow::ensure!(table.map_name == map, "encounter map key mismatch: {map}");
+            for slots in table
+                .grass
+                .iter()
+                .chain(table.water.iter())
+                .chain(table.swarm_overrides.values().map(|swarm| &swarm.grass))
+                .chain(table.zones.iter().map(|zone| &zone.grass))
+            {
+                for encounter in slots.morning.iter().chain(&slots.day).chain(&slots.night) {
+                    anyhow::ensure!(
+                        pack.data.pokemon.contains_key(&encounter.species),
+                        "unknown encounter species {} in {map}",
+                        encounter.species
+                    );
+                    anyhow::ensure!(
+                        (1..=100).contains(&encounter.level),
+                        "invalid encounter level {} in {map}",
+                        encounter.level
+                    );
+                }
+            }
+            pack.data.wild_encounters.insert(map, table);
+        }
+        pack.report.manifests.push(manifest_id.to_owned());
+        pack.identity = derive_compiled_game_pack_identity_from_manifest(
+            pack.format_version,
+            &pack.data,
+            &pack.audio_manifest,
+            &pack.runtime_files,
+            &pack.report,
+        )?;
+        verify_compiled_game_pack_for_runtime(&pack)?;
+        Ok(pack)
+    }
+
     /// Adds one complete tileset and recalculates the definitive pack identity.
     /// Existing tilesets and runtime files remain byte-for-byte unchanged.
     pub fn with_tileset_extension(&self, extension: CompiledTilesetExtension) -> Result<Self> {
@@ -719,7 +777,23 @@ fn encode_base64_bytes(bytes: &[u8]) -> String {
     encoded
 }
 
+#[cfg(any(test, feature = "test-fixtures"))]
+thread_local! {
+    static RUNTIME_PACK_VERIFICATION_COUNTS: std::cell::Cell<(u64, u64)> = const { std::cell::Cell::new((0, 0)) };
+}
+
+/// Per-thread instrumentation for regression tests of runtime loading work.
+#[cfg(any(test, feature = "test-fixtures"))]
+pub fn runtime_pack_verification_counts_for_tests() -> (u64, u64) {
+    RUNTIME_PACK_VERIFICATION_COUNTS.get()
+}
+
 pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<()> {
+    #[cfg(any(test, feature = "test-fixtures"))]
+    RUNTIME_PACK_VERIFICATION_COUNTS.with(|counts| {
+        let (runtime, identity) = counts.get();
+        counts.set((runtime + 1, identity));
+    });
     if pack.format_version != COMPILED_GAME_PACK_FORMAT_VERSION {
         anyhow::bail!(
             "compiled game pack has unsupported format version {}",
@@ -767,6 +841,11 @@ pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<
 }
 
 fn validate_compiled_game_pack_identity(pack: &CompiledGamePack) -> Result<()> {
+    #[cfg(any(test, feature = "test-fixtures"))]
+    RUNTIME_PACK_VERIFICATION_COUNTS.with(|counts| {
+        let (runtime, identity) = counts.get();
+        counts.set((runtime, identity + 1));
+    });
     validate_compiled_runtime_files(&pack.runtime_files)?;
     let derived = if matches!(
         pack.audio_compression.as_deref(),
@@ -812,6 +891,12 @@ pub fn validate_compiled_runtime_files(runtime_files: &BTreeMap<String, Vec<u8>>
         if bytes.is_empty() {
             anyhow::bail!("compiled runtime vendor asset '{key}' must not be empty");
         }
+    }
+    for &key in REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
+        let bytes = runtime_files.get(key).with_context(|| {
+            format!("compiled runtime file bundle is missing required Pokégear layout '{key}'")
+        })?;
+        anyhow::ensure!(!bytes.is_empty(), "compiled Pokégear layout '{key}' must not be empty");
     }
     Ok(())
 }
@@ -1817,6 +1902,12 @@ fn insert_fly_destination(
     flypoint_flag: String,
     destination: FlyDestination,
 ) -> Result<()> {
+    anyhow::ensure!(
+        destination.destination_spawn_identifier
+            < crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS,
+        "fly destination '{flypoint_flag}' spawn identifier {} is outside Crystal's SpawnPoints table",
+        destination.destination_spawn_identifier
+    );
     if flypoint_flag != destination.flypoint_flag {
         anyhow::bail!(
             "fly destination key '{flypoint_flag}' does not match record flypoint_flag '{}'",

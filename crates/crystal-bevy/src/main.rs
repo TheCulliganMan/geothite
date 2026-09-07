@@ -10,10 +10,12 @@ use crystal_bevy::{
 
 const DEFAULT_PACK_FILENAME: &str = "core-modular.crystalpack";
 #[cfg(target_arch = "wasm32")]
-const DEFAULT_BROWSER_PACK_FILENAME: &str = "core-modular.browser.crystalpack";
+const DEFAULT_BROWSER_PACK_FILENAME: &str = "realtime-clock.browser.crystalpack";
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<()> {
+    #[cfg(feature = "operation-trace")]
+    let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args_from(env::args().skip(1))?;
     if args.help {
         print_usage();
@@ -33,9 +35,17 @@ fn main() -> Result<()> {
         .context("compiled game pack path has no parent directory")?
         .to_path_buf();
     let asset_root = AssetRoot::new(pack_directory.clone());
-    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path)
-        .with_context(|| format!("load compiled game pack {}", pack_path.display()))?;
-    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
+    let loaded = {
+        #[cfg(feature = "operation-trace")]
+        let _span = bevy::log::info_span!("crystal_pack_read_verify").entered();
+        crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path)
+            .with_context(|| format!("load compiled game pack {}", pack_path.display()))?
+    };
+    let runtime = {
+        #[cfg(feature = "operation-trace")]
+        let _span = bevy::log::info_span!("crystal_runtime_load").entered();
+        CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
+    };
     let default_save_path = default_save_path(&pack_directory, &runtime);
     let start = match args.load_save {
         Some(save_path) => BevyShellStart::LoadSave { save_path },
@@ -97,9 +107,9 @@ async fn run_browser() -> Result<()> {
     crystal_bevy::run_bevy_shell(
         asset_root,
         runtime,
-        BevyShellStart::Title {
-            spawn_identifier,
-            save_path: continue_save_path,
+        match continue_save_path {
+            Some(save_path) => BevyShellStart::LoadSave { save_path },
+            None => BevyShellStart::Title { spawn_identifier, save_path: None },
         },
         config,
     )
@@ -132,37 +142,27 @@ fn browser_multiplayer_config() -> Result<Option<BevyMultiplayerConfig>> {
             format!("{scheme}://{}/v1/ws", location.host().unwrap_or_default())
         }
     };
-    let storage = window.local_storage().ok().flatten();
-    let player_id = params
-        .get("player_id")
-        .and_then(|value| value.parse::<u64>().ok())
-        .or_else(|| {
-            storage
-                .as_ref()
-                .and_then(|storage| {
-                    storage
-                        .get_item("crystal.multiplayer.player_id")
-                        .ok()
-                        .flatten()
-                })
-                .and_then(|value| value.parse::<u64>().ok())
-        })
-        .filter(|value| *value > 0)
-        .unwrap_or_else(|| {
-            let time = js_sys::Date::now() as u64;
-            let random = (js_sys::Math::random() * f64::from(u32::MAX)) as u64;
-            ((time << 20) ^ random) & ((1_u64 << 53) - 1)
-        })
-        .max(1);
-    if let Some(storage) = &storage {
-        let _ = storage.set_item("crystal.multiplayer.player_id", &player_id.to_string());
-    }
+    // The page selects and locks this tab's identity before starting WASM.
+    let storage = window
+        .session_storage()
+        .map_err(|error| anyhow::anyhow!("access browser session storage: {error:?}"))?
+        .context("browser session storage is unavailable")?;
+    let player_id = storage
+        .get_item("crystal.multiplayer.player_id")
+        .map_err(|error| anyhow::anyhow!("read browser player identity: {error:?}"))?
+        .context("browser player identity was not initialized")?
+        .parse::<u64>()
+        .context("browser player identity is invalid")?;
+    anyhow::ensure!(player_id > 0, "browser player identity must be nonzero");
+    let server_token = storage
+        .get_item("crystal.multiplayer.token")
+        .map_err(|error| anyhow::anyhow!("read browser authentication: {error:?}"))?;
     let display_name = params
         .get("player_name")
         .unwrap_or_else(|| format!("PLAYER{:04}", player_id % 10_000));
     Ok(Some(BevyMultiplayerConfig {
         server_url,
-        server_token: params.get("token"),
+        server_token,
         world_id: params.get("world").unwrap_or_else(|| "main".into()),
         player_id,
         display_name,

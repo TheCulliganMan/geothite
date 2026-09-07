@@ -15,7 +15,6 @@ fn mart_rendering_matches_the_typescript_text_contract() {
         "You can't carry\\nany more items.",
         "You don't have anything to sell.",
         "You don't have any left.",
-        "That item isn't for sale right now.",
         "BUY",
         "SELL",
         "QUIT",
@@ -164,4 +163,144 @@ fn mart_transaction_notices_use_player_facing_copy_and_prices() {
         visible_shop_transaction_status("BOUGHT", "POTION", &pack_full),
         "You can't carry\nany more items."
     );
+}
+
+fn initialized_mart_shell() -> BevyRuntimeShell {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .script_runtime
+        .pending_shop = Some(crate::core::state::ScriptShopRequest {
+        mart_type: "MARTTYPE_STANDARD".to_string(),
+        mart_id: "MART_CHERRYGROVE".to_string(),
+        inventory: vec![
+            "POTION".to_string(),
+            "ANTIDOTE".to_string(),
+            "PARLYZ_HEAL".to_string(),
+            "AWAKENING".to_string(),
+        ],
+        source_script: "CherrygroveMartClerkScript".to_string(),
+        command_index: 3,
+    });
+    shell.shop_welcome_seen = true;
+    shell.shop_notice = None;
+    shell.shop_top_cursor = Some(MenuCursor {
+        surface_id: "shop:top".to_string(),
+        option_index: 0,
+    });
+    shell
+}
+
+#[test]
+fn mart_frames_and_glyphs_share_the_fullscreen_dialog_layer() {
+    let shell = initialized_mart_shell();
+    let snapshot = shell.shell.snapshot().expect("snapshot");
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    spawn_field_shop_screen(
+        &mut Commands::new(&mut queue, &world),
+        &snapshot,
+        &shell,
+        snapshot.pending_shop.as_ref().unwrap(),
+        &mut art,
+        &shell.asset_root,
+        &mut images,
+    )
+    .expect("render mart");
+    queue.apply(&mut world);
+    let mut query = world.query::<(Entity, Option<&SceneDialogMarker>)>();
+    for (entity, marker) in query.iter(&world) {
+        assert!(
+            marker.is_some(),
+            "mart entity {entity:?} would detach from its text in fullscreen"
+        );
+    }
+    assert!(world.entities().len() > 50, "frames and text were spawned");
+}
+
+#[test]
+fn mart_quantity_buttons_follow_asm_wrap_and_ten_item_steps() {
+    let mut shell = initialized_mart_shell();
+    let shop = shell.shell.snapshot().unwrap().pending_shop.unwrap();
+    shell.shell.session_mut().state_mut().money = 0;
+    begin_visible_shop_quantity(&mut shell, &shop, 0, false).unwrap();
+    assert_eq!(
+        shell.shop_quantity.as_ref().map(|q| q.max_quantity),
+        Some(99),
+        "ASM checks money after confirmation, not before quantity selection"
+    );
+    adjust_visible_shop_quantity(&mut shell, -1).unwrap();
+    assert_eq!(shell.shop_quantity.as_ref().unwrap().quantity, 99);
+    adjust_visible_shop_quantity(&mut shell, 1).unwrap();
+    assert_eq!(shell.shop_quantity.as_ref().unwrap().quantity, 1);
+    adjust_visible_shop_quantity(&mut shell, 10).unwrap();
+    assert_eq!(shell.shop_quantity.as_ref().unwrap().quantity, 11);
+    adjust_visible_shop_quantity(&mut shell, -10).unwrap();
+    assert_eq!(shell.shop_quantity.as_ref().unwrap().quantity, 1);
+}
+
+#[test]
+fn mart_purchase_requires_confirmation_and_returns_to_the_item_list() {
+    let mut shell = initialized_mart_shell();
+    confirm_visible_shop_top_menu(&mut shell).unwrap();
+    let shop = shell.shell.snapshot().unwrap().pending_shop.unwrap();
+    shell.shell.session_mut().state_mut().money = 1000;
+    begin_visible_shop_quantity(&mut shell, &shop, 0, false).unwrap();
+    confirm_visible_shop_quantity(&mut shell).unwrap();
+    assert_eq!(
+        shell.shell.session().state().money,
+        1000,
+        "choosing a quantity must not purchase before YesNoBox"
+    );
+    assert!(shell.shop_quantity.is_some());
+    confirm_visible_shop_quantity(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().money, 700);
+    assert!(
+        !shell.shop_return_to_top_after_notice,
+        "BuyMenuLoop stays in the inventory after a transaction"
+    );
+}
+
+#[test]
+fn mart_confirmation_can_be_declined_without_mutating_money() {
+    let mut shell = initialized_mart_shell();
+    confirm_visible_shop_top_menu(&mut shell).unwrap();
+    let shop = shell.shell.snapshot().unwrap().pending_shop.unwrap();
+    let money = shell.shell.session().state().money;
+    begin_visible_shop_quantity(&mut shell, &shop, 0, false).unwrap();
+    confirm_visible_shop_quantity(&mut shell).unwrap();
+    adjust_visible_shop_quantity(&mut shell, -1).unwrap();
+    confirm_visible_shop_quantity(&mut shell).unwrap();
+    assert!(shell.shop_quantity.is_none());
+    assert_eq!(shell.shell.session().state().money, money);
+    assert!(shell.shop_top_cursor.is_none());
+    assert_eq!(shell.menu_cursor.as_ref().unwrap().option_index, 0);
+}
+
+#[test]
+fn mart_sell_subtotal_halves_the_complete_quantity_price() {
+    let quantity = VisibleShopQuantity {
+        item_id: "POTION".to_string(),
+        selling: true,
+        quantity: 2,
+        max_quantity: 99,
+        unit_price: 301,
+        confirmation: None,
+    };
+    assert_eq!(visible_shop_quantity_total(&quantity), 301);
+}
+
+#[test]
+fn mart_buy_list_includes_the_asm_cancel_entry() {
+    let mut shell = initialized_mart_shell();
+    confirm_visible_shop_top_menu(&mut shell).unwrap();
+    move_visible_shop_buy_cursor(&mut shell, 99).unwrap();
+    assert_eq!(shell.menu_cursor.as_ref().unwrap().option_index, 4);
+    buy_visible_shop_cursor_item(&mut shell).unwrap();
+    assert!(shell.shop_top_cursor.is_some());
+    assert!(shell.shop_quantity.is_none());
 }

@@ -16,3 +16,6 @@ bevy = { version = "0.14", default-features = false, features = [
     "multi_threaded",
 ] }
 crystal-render-api = { path = "../crystal-render-api" }
+
+[features]
+operation-trace = []

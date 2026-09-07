@@ -1,0 +1,36 @@
+#social-chat { position: fixed; z-index: 9; bottom: max(12px, env(safe-area-inset-bottom)); left: max(12px, env(safe-area-inset-left)); width: min(440px, calc(100vw - 24px)); color: #eee9d9; font: 13px/1.5 system-ui, sans-serif; pointer-events: none; text-shadow: 0 1px 3px #000, 0 0 4px #000; }
+#social-chat [hidden] { display: none !important; }
+#social-chat button, #social-chat input, #social-chat select { pointer-events: auto; font: inherit; color: inherit; }
+#social-chat .chat-toggle { position: absolute; right: 0; bottom: 0; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; line-height: 1; background: transparent; color: #d8dce380; }
+#social-chat .chat-log { max-height: min(180px, 23vh); overflow-y: auto; overflow-wrap: anywhere; scrollbar-width: thin; padding: 0 40px 4px 4px; }
+#social-chat.editing { background: #0c1017db; border-radius: 7px; pointer-events: auto; }
+#social-chat.editing .chat-log { min-height: 100px; padding: 8px 10px; }
+#social-chat.editing .chat-toggle { display: none; }
+#social-chat .chat-line { padding: 2px 0; }
+#social-chat .chat-line button { display: inline; min-width: 0; height: auto; padding: 0; border: 0; background: none; text-shadow: inherit; }
+#social-chat .chat-line button:hover { text-decoration: underline; }
+#social-chat .chat-say { color: #fff; }
+#social-chat .chat-general { color: #f2d7a3; }
+#social-chat .chat-trade { color: #ffc9a0; }
+#social-chat .chat-lfg { color: #91dcff; }
+#social-chat .chat-whisper { color: #edabff; }
+#social-chat .chat-system { color: #ffe08b; }
+#social-chat form { display: flex; gap: 5px; padding: 7px; border-top: 1px solid #343741; }
+#social-chat input, #social-chat select { min-width: 0; height: 36px; border: 1px solid #485160; border-radius: 5px; color: #fff; background: #131b27; }
+#social-chat input { flex: 1; width: 100%; padding: 0 8px; }
+#social-chat select { max-width: 100px; }
+#social-chat form button { height: 36px; border-radius: 5px; }
+#social-chat .chat-actions, #social-chat .chat-players, #social-chat .chat-requests > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; }
+#social-chat .chat-players:empty, #social-chat .chat-requests:empty { display: none; }
+#social-chat .chat-requests > div { pointer-events: auto; background: #121c2bf5; border: 1px solid #93815b; border-radius: 6px; margin-top: 4px; }
+#social-chat .chat-actions > span { margin-right: auto; }
+#social-chat .chat-actions button, #social-chat .chat-players button, #social-chat .chat-requests button { min-height: 36px; border: 1px solid #526174; border-radius: 4px; padding: 3px 9px; background: #172435; }
+#social-chat button:hover { filter: brightness(1.2); }
+#social-chat button:focus-visible { outline: 2px solid #f2d7a3; outline-offset: 2px; }
+#social-chat .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-height: 500px) { #social-chat .chat-log { max-height: 85px; } #social-chat.editing .chat-log { min-height: 45px; } }
+
+#social-chat:not(.editing) .chat-log { display: none; }
+#social-chat .chat-toggle:hover, #social-chat .chat-toggle:focus-visible { color: #d8dce3; }
+
+#social-chat .chat-toggle svg { display: block; transform: translate(1px, -1px); }

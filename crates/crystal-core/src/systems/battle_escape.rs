@@ -264,13 +264,17 @@ pub fn escape_chance(
             message: "rng_roll_values must be exactly 256".to_string(),
         });
     }
-    let enemy_divisor = (enemy_speed / rules.enemy_speed_divisor).max(1);
-    Ok(
-        ((u32::from(player_speed) * u32::from(rules.player_speed_multiplier))
-            / u32::from(enemy_divisor))
+    // TryToRunAwayFromBattle uses only the low byte after dividing Speed,
+    // and branches directly to .can_escape when that byte is zero.
+    let enemy_divisor = (enemy_speed / rules.enemy_speed_divisor) as u8;
+    if enemy_divisor == 0 {
+        return Ok(rules.rng_roll_values);
+    }
+    // Only hProduct + 2 and + 3 are copied into the two-byte dividend.
+    let dividend = player_speed.wrapping_mul(rules.player_speed_multiplier);
+    Ok((u32::from(dividend) / u32::from(enemy_divisor))
         .saturating_add(u32::from(attempts_before) * u32::from(rules.failed_attempt_bonus))
-        .min(u32::from(u16::MAX)) as u16,
-    )
+        .min(u32::from(u16::MAX)) as u16)
 }
 
 fn escape_speed(
@@ -407,6 +411,34 @@ mod tests {
                 },
             ],
         );
+    }
+
+    #[test]
+    fn asm_escape_divisor_is_a_byte_and_zero_escapes_without_random() {
+        // TryToRunAwayFromBattle shifts enemy Speed twice, then uses only A.
+        for enemy_speed in [3, 1024, 1027] {
+            let mut divider = crate::random::ReplayDivider::new([]);
+            let mut rng =
+                CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut divider);
+            let result = attempt_wild_battle_escape_exact_with_loaded_speeds(
+                1,
+                enemy_speed,
+                &escape_rules(),
+                0,
+                &mut rng,
+            )
+            .expect("zero divisor escapes before BattleRandom");
+            assert!(result.escaped);
+            assert_eq!(result.roll, None);
+            assert_eq!(divider.consumed(), 0);
+        }
+        assert_eq!(escape_chance(1, 1028, 0, &escape_rules()), Ok(32));
+    }
+
+    #[test]
+    fn asm_escape_dividend_keeps_only_low_two_product_bytes() {
+        assert_eq!(escape_chance(2048, 4092, 0, &escape_rules()), Ok(0));
+        assert_eq!(escape_chance(2049, 4092, 0, &escape_rules()), Ok(0));
     }
 
     #[test]

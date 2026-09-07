@@ -2581,6 +2581,7 @@ fn clear_visible_non_pc_surfaces(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pokedex_detail_open = false;
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.pokegear_phone_status = None;
     runtime_shell.trainer_card_open = false;
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
@@ -2619,7 +2620,9 @@ fn activate_visible_special_routine_boundary(
                 runtime_shell.bill_pc_move_open = false;
                 runtime_shell.bill_pc_move_party_open = false;
                 runtime_shell.bill_pc_move_source = None;
+                runtime_shell.pc_list_scroll = 0;
                 runtime_shell.storage_cursor = None;
+                runtime_shell.bill_pc_deposit_open = false;
                 runtime_shell.pc_item_cursor = None;
                 runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                     label: "PokecenterPCCantUseText".to_string(),
@@ -2645,7 +2648,9 @@ fn activate_visible_special_routine_boundary(
                 )],
             });
             queue_visible_shell_sound_effect(runtime_shell, "SFX_BOOT_PC")?;
+            runtime_shell.pc_list_scroll = 0;
             runtime_shell.storage_cursor = None;
+            runtime_shell.bill_pc_deposit_open = false;
             runtime_shell.pc_item_cursor = None;
             runtime_shell.last_audio_events.push(format!(
                 "opened Pokemon Center PC hub current_box={}",
@@ -2666,6 +2671,8 @@ fn activate_visible_special_routine_boundary(
             runtime_shell.bill_pc_move_open = false;
             runtime_shell.bill_pc_move_party_open = false;
             runtime_shell.bill_pc_move_source = None;
+            runtime_shell.pc_item_scroll = 0;
+            runtime_shell.pc_item_row = 0;
             runtime_shell.player_pc_action_cursor = Some(MenuCursor {
                 surface_id: "pc:player-actions".to_string(),
                 option_index: 0,
@@ -2674,7 +2681,9 @@ fn activate_visible_special_routine_boundary(
             runtime_shell.pc_item_cursor = None;
             runtime_shell.pc_item_action = None;
             runtime_shell.pc_item_quantity = None;
+            runtime_shell.pc_list_scroll = 0;
             runtime_shell.storage_cursor = None;
+            runtime_shell.bill_pc_deposit_open = false;
             runtime_shell.field_notice = Some(format!("{player_name} turned on\nthe PC."));
             runtime_shell
                 .last_audio_events
@@ -2688,38 +2697,17 @@ fn activate_visible_special_routine_boundary(
             runtime_shell.pokegear_page = PokegearPage::Map;
             runtime_shell.pokegear_standalone_map = true;
             let snapshot = runtime_shell.shell.snapshot()?;
-            let region_indices = visible_pokegear_landmark_indices(&snapshot)?;
-            let current_landmark = snapshot
-                .presentation
-                .pokegear_landmarks
-                .map_to_landmark
-                .get(&snapshot.overworld.map_name)
-                .with_context(|| {
-                    format!(
-                        "active map {} has no compiled Pokegear landmark mapping",
-                        snapshot.overworld.map_name
-                    )
-                })?;
-            runtime_shell.pokegear_cursor = region_indices
-                .iter()
-                .copied()
-                .find(|index| {
-                    snapshot.presentation.pokegear_landmarks.landmarks[*index].constant
-                        == *current_landmark
-                })
-                .with_context(|| {
-                    format!(
-                        "current Pokegear landmark {current_landmark} is outside the active region"
-                    )
-                })?;
+            runtime_shell.pokegear_cursor = visible_pokegear_initial_cursor_index(&snapshot, true)?;
             set_shell_action_status(runtime_shell, "TOWN MAP");
             Ok(true)
         }
         SpecialRoutineEffect::MapRadio { station } => {
             open_visible_pokegear_menu(runtime_shell)?;
+            runtime_shell.pokegear_map_radio_delay = Some(100);
             runtime_shell.pokegear_page = PokegearPage::Radio;
-            runtime_shell.pokegear_radio_station = Some(station.clone());
-            runtime_shell.pokegear_radio_segment = 0;
+            runtime_shell.pokegear_radio_station = Some(visible_furniture_radio_station(
+                &runtime_shell.shell.snapshot()?, station)?.to_string());
+            load_visible_radio_broadcast(runtime_shell)?;
             runtime_shell
                 .last_audio_events
                 .push(format!("opened map radio station={station}"));
@@ -5879,31 +5867,19 @@ fn load_visible_runtime_save(
         } else {
             anyhow::bail!("unsupported post-credits spawn marker {marker}");
         };
-        let spawn = snapshot
-            .spawn_points
-            .iter()
-            .find(|spawn| spawn.identifier == spawn_identifier)
-            .cloned()
-            .with_context(|| {
-                format!("compiled pack is missing post-credits spawn {spawn_identifier}")
-            })?;
-        let state = runtime_shell.shell.session_mut().state_mut();
-        state.last_spawn_identifier = Some(spawn_identifier);
-        state.hall_of_fame.spawn_after_champion = None;
-        state
-            .script_runtime
-            .variables
-            .insert("wLastSpawnMapGroup".to_string(), spawn.group_id.to_string());
-        state
-            .script_runtime
-            .variables
-            .insert("wLastSpawnMapNumber".to_string(), spawn.map_id.to_string());
-        let warped = runtime_shell.shell.warp_to_spawn_point()?;
-        runtime_shell.shell.execute_pending_script_warp()?;
+        runtime_shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .hall_of_fame
+            .spawn_after_champion = None;
+        let checksum = runtime_shell
+            .shell
+            .transition_to_spawn_point(spawn_identifier, "MAPSETUP_WARP")?;
         post_credits_warped = true;
         runtime_shell.last_audio_events.push(format!(
-            "post-credits continue spawn={} outcome={:?} checksum={:?}",
-            spawn_identifier, warped.outcome.effect, warped.state_checksum
+            "post-credits continue spawn={} checksum={:?}",
+            spawn_identifier, checksum
         ));
     }
     runtime_shell.title_menu = None;
@@ -5941,6 +5917,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_mail_input = None;
     runtime_shell.pending_mail_read = None;
     runtime_shell.pending_name_choice = None;
+    runtime_shell.pending_player_name_return = None;
     runtime_shell.pokegear_phone_call = None;
     runtime_shell.incoming_phone_sequence = None;
     runtime_shell.pending_egg_hatch_nickname = None;
@@ -6092,7 +6069,7 @@ fn reset_visible_selection_cursors(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pc_release_sequence = None;
     runtime_shell.pc_transfer_sequence = None;
     runtime_shell.bill_pc_pokemon_action_cursor = None;
-    runtime_shell.bill_pc_box_summary = None;
+    runtime_shell.bill_pc_pokemon_summary = None;
     runtime_shell.pc_notice = None;
     runtime_shell.field_notice = None;
     runtime_shell.pending_tmhm_text_stage = None;
@@ -6135,12 +6112,13 @@ fn reset_visible_selection_cursors(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pokedex_scripted_entry = false;
     runtime_shell.pokedex_cursor = 0;
     runtime_shell.pokegear_menu_open = false;
+    runtime_shell.pokegear_map_radio_delay = None;
     runtime_shell.pokegear_cursor = 0;
     runtime_shell.pokegear_phone_cursor = 0;
     runtime_shell.pokegear_phone_status = None;
     runtime_shell.pokegear_page = PokegearPage::Clock;
     runtime_shell.pokegear_radio_station = None;
-    runtime_shell.pokegear_radio_segment = 0;
+    runtime_shell.pokegear_radio_broadcast = None;
     runtime_shell.trainer_card_open = false;
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
     runtime_shell.trainer_card_colon_visible = false;
@@ -6168,7 +6146,9 @@ fn reset_visible_selection_cursors(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.ball_cursor = None;
     runtime_shell.tmhm_cursor = None;
     runtime_shell.custom_item_cursor = None;
+    runtime_shell.pc_list_scroll = 0;
     runtime_shell.storage_cursor = None;
+    runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     runtime_shell.decoration_menu = None;
     runtime_shell.pc_hub_session_open = false;

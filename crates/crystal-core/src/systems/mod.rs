@@ -34,3 +34,8 @@ pub mod special_routines;
 pub mod step_events;
 pub mod time;
 pub mod tmhm;
+
+pub mod radio_program;
+pub mod radio_text;
+
+pub mod radio_playback;

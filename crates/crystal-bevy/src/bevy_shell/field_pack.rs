@@ -572,22 +572,23 @@ fn pokedex_entry_row(
     species: &crate::RuntimePokemonCatalogSnapshot,
     marker: &str,
 ) -> String {
-    let Some(entry) = snapshot
-        .presentation
-        .pokedex_entries
-        .get(&species.species_id)
-    else {
-        return compact_scene_label(&format!("{marker}#{} INVALID DEX", species.int_id), 30);
+    let seen = snapshot
+        .progression
+        .pokedex_seen_species
+        .contains(&species.species_id);
+    let caught = snapshot
+        .progression
+        .pokedex_caught_species
+        .contains(&species.species_id);
+    let name = if seen {
+        crate::core::models::pokemon_species_display_name(&species.species_id)
+    } else {
+        "-----".to_string()
     };
-    compact_scene_label(
-        &format!(
-            "{marker}#{:03} {} {} {}pg",
-            species.int_id,
-            species.species_id,
-            entry.classification,
-            entry.pages.len()
-        ),
-        30,
+    format!(
+        "{marker}{}{:03} {name}",
+        if caught { "C" } else { " " },
+        species.int_id
     )
 }
 
@@ -663,7 +664,7 @@ fn windowed_move_entries(
     snapshot: &RuntimeShellSnapshot,
     moves: &[crate::core::models::pokemon::LearnedMove],
     selected_move: usize,
-) -> Vec<String> {
+) -> Result<Vec<String>> {
     windowed_index_range(selected_move, moves.len())
         .map(|index| {
             let learned = &moves[index];
@@ -677,26 +678,24 @@ fn move_menu_entry(
     snapshot: &RuntimeShellSnapshot,
     learned: &crate::core::models::pokemon::LearnedMove,
     marker: &str,
-) -> String {
-    let Some(move_data) = snapshot
+) -> Result<String> {
+    let move_data = snapshot
         .moves
         .iter()
         .find(|move_data| move_data.move_id == learned.name)
-    else {
-        return compact_scene_label(&format!("{marker}{} INVALID MOVE", learned.name), 30);
-    };
-    compact_scene_label(
+        .with_context(|| format!("move {:?} has no source metadata", learned.name))?;
+    Ok(compact_scene_label(
         &format!(
             "{marker}{} {}/{} {} P{} A{}",
             move_data.name.replace('_', " "),
             learned.current_pp,
             crate::core::models::max_move_pp(move_data.pp, learned.pp_ups),
-            battle_type_display_name(&move_data.move_type),
+            source_type_display_name(&move_data.move_type)?,
             move_data.power,
             move_data.accuracy
         ),
         30,
-    )
+    ))
 }
 
 fn windowed_index_range(selected: usize, len: usize) -> std::ops::Range<usize> {
@@ -1369,7 +1368,7 @@ fn format_progress_details(snapshot: &RuntimeShellSnapshot, lines: &mut Vec<Stri
         snapshot.progression.link_draws,
         snapshot.progression.repel_steps_remaining,
         snapshot.progression.active_repel_item,
-        snapshot.progression.last_spawn_identifier
+        snapshot.progression.last_spawn_map_constant
     ));
     lines.push(format!("time={:?}", snapshot.progression.time));
     lines.push(format!(
@@ -1398,7 +1397,7 @@ fn format_storage_details(
         snapshot.storage.boxes.len()
     ));
     for box_snapshot in snapshot.storage.boxes.iter().take(8) {
-        let selected_slot = if box_snapshot.index == snapshot.storage.current_pc_box {
+        let selected_slot = if box_snapshot.index == visible_pc_box_index(snapshot, runtime_shell) {
             readonly_cursor_index(
                 &runtime_shell.storage_cursor,
                 &storage_cursor_surface_id(box_snapshot.index),

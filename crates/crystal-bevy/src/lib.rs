@@ -1,6 +1,6 @@
-#[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
-compile_error!("the voxel-view feature is native-only and cannot be enabled for WASM builds");
-
+mod battle_anim_machine;
+#[cfg(feature = "operation-trace")]
+pub mod operation_trace;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::sync::{Arc, OnceLock};
@@ -658,6 +658,7 @@ pub struct RuntimeTrainerSnapshot {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeProgressionSnapshot {
+    pub backup_warp_map_name: Option<String>,
     pub badges: Badges,
     pub pokedex_seen: usize,
     pub pokedex_owned: usize,
@@ -671,7 +672,7 @@ pub struct RuntimeProgressionSnapshot {
     pub active_repel_item: Option<String>,
     pub registered_key_item: Option<String>,
     pub radio_tuning_knob: u8,
-    pub last_spawn_identifier: Option<u16>,
+    pub last_spawn_map_constant: Option<String>,
     pub hall_of_fame: crystal_core::state::HallOfFameState,
     pub time: crystal_core::systems::time::TimeState,
     pub active_event_flags: BTreeSet<String>,
@@ -686,6 +687,7 @@ pub struct RuntimeScriptEventsSnapshot {
     pub named_buffers: BTreeMap<String, String>,
     pub variable_sprites: BTreeMap<String, String>,
     pub phone_numbers: BTreeSet<String>,
+    pub phone_number_order: Vec<Option<String>>,
     pub last_special_routine: Option<String>,
     pub last_talked_object: Option<String>,
     pub active_menu: Option<String>,
@@ -960,7 +962,7 @@ pub struct RuntimeBattleSnapshot {
     pub enemy_wrapped: bool,
     pub rewarded_enemy_party_indices: Vec<usize>,
     pub escape_attempts: u8,
-    pub player_stat_drop_guard_turns: u8,
+    pub player_mist_active: bool,
     pub pay_day_money: u32,
     pub amulet_coin_active: bool,
     pub trainer_items_used: BTreeSet<String>,
@@ -1486,7 +1488,6 @@ pub struct RuntimeItemBattleUseKey {
     pub battle_escape_mode: Option<String>,
     pub battle_focus_energy: Option<bool>,
     pub battle_stat_drop_guard: Option<bool>,
-    pub battle_stat_drop_guard_turns: Option<u8>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -2007,7 +2008,6 @@ pub struct RuntimeItemCatalogSnapshot {
     pub battle_escape_mode: Option<String>,
     pub battle_focus_energy: Option<bool>,
     pub battle_stat_drop_guard: Option<bool>,
-    pub battle_stat_drop_guard_turns: Option<u8>,
     pub confusion_heal: Option<bool>,
     pub repel_steps: Option<u16>,
     pub escape_rope_mode: Option<String>,
@@ -2544,7 +2544,7 @@ impl RuntimeGameShell {
             title_state.lucky_id_number,
             &mut divider_after,
         )?;
-        let (mut state, overworld) = self
+        let (state, overworld) = self
             .runtime
             .data
             .start_overworld_session_from_new_game_state(
@@ -2552,8 +2552,6 @@ impl RuntimeGameShell {
                 reset_state,
                 &self.runtime.audio.music_ids(),
             )?;
-        state.last_spawn_identifier = Some(spawn_identifier);
-
         self.session = RuntimeOverworldSession {
             state,
             overworld,
@@ -2578,12 +2576,17 @@ impl RuntimeGameShell {
         tile_y: i16,
     ) -> Result<Self> {
         let map_name = map_name.as_ref();
+        let last_spawn_map_constant = runtime
+            .data
+            .runtime_spawn_point(spawn_identifier)?
+            .map_constant
+            .clone();
         let mut session = runtime
             .start_overworld_session_at_runtime_tile(&asset_root, map_name, tile_x, tile_y)
             .with_context(|| {
                 format!("start runtime game shell at {map_name} runtime tile ({tile_x}, {tile_y})")
             })?;
-        session.state.last_spawn_identifier = Some(spawn_identifier);
+        session.state.last_spawn_map_constant = Some(last_spawn_map_constant);
         session.state.set_game_timer_counting(true);
         Ok(Self {
             asset_root,
@@ -7879,6 +7882,30 @@ impl RuntimeGameShell {
         })
     }
 
+    pub fn transition_to_spawn_point(
+        &mut self,
+        spawn_identifier: u16,
+        map_setup: &str,
+    ) -> Result<StateChecksum> {
+        let mutation =
+            self.apply_runtime_mutation_command(RuntimeMutationCommand::TransitionToSpawnPoint {
+                spawn_identifier,
+                map_setup: map_setup.to_string(),
+            })?;
+        let RuntimeMutationResult::SpawnPointTransitioned {
+            spawn_identifier: transitioned_identifier,
+            ..
+        } = mutation.result
+        else {
+            anyhow::bail!("runtime mutation returned non-spawn-transition result");
+        };
+        anyhow::ensure!(
+            transitioned_identifier == spawn_identifier,
+            "runtime transitioned to spawn {transitioned_identifier}, expected {spawn_identifier}"
+        );
+        Ok(mutation.state_checksum)
+    }
+
     pub fn apply_current_map_setup_callbacks(&mut self, map_setup: &str) -> Result<StateChecksum> {
         let mutation =
             self.apply_runtime_mutation_command(RuntimeMutationCommand::ApplyMapSetupCallbacks {
@@ -8804,7 +8831,7 @@ impl RuntimeGameShell {
     }
 
     pub fn start_link_battle(&mut self, start: &LinkBattleStart) -> Result<StateChecksum> {
-        activate_link_battle_start(self.session.state_mut(), start)
+        activate_link_battle_start(self.session.state_mut(), start, &self.runtime.data().items)
             .context("activate Colosseum link battle")?;
         self.runtime
             .validate_save_state_for_runtime_pack(self.session.state())
@@ -9087,7 +9114,7 @@ impl RuntimeGameShell {
         FM: FnOnce(
             &crystal_core::battle::turn::BattleCombatState,
             &mut dyn crystal_core::random::BattleRandomSource,
-        ) -> Result<usize>,
+        ) -> Result<crystal_core::battle::turn::EnemyMoveSelection>,
         FP: FnMut(
             usize,
             &crystal_core::battle::turn::BattleCombatState,
@@ -9125,7 +9152,7 @@ impl RuntimeGameShell {
         FM: FnOnce(
             &crystal_core::battle::turn::BattleCombatState,
             &mut dyn crystal_core::random::BattleRandomSource,
-        ) -> Result<usize>,
+        ) -> Result<crystal_core::battle::turn::EnemyMoveSelection>,
         FP: FnMut(
             usize,
             &crystal_core::battle::turn::BattleCombatState,
@@ -9172,7 +9199,7 @@ impl RuntimeGameShell {
         FM: FnOnce(
             &crystal_core::battle::turn::BattleCombatState,
             &mut dyn crystal_core::random::BattleRandomSource,
-        ) -> Result<usize>,
+        ) -> Result<crystal_core::battle::turn::EnemyMoveSelection>,
         FP: FnMut(
             usize,
             &crystal_core::battle::turn::BattleCombatState,
@@ -9299,7 +9326,7 @@ impl RuntimeGameShell {
         FM: FnOnce(
             &crystal_core::battle::turn::BattleCombatState,
             &mut dyn crystal_core::random::BattleRandomSource,
-        ) -> Result<usize>,
+        ) -> Result<crystal_core::battle::turn::EnemyMoveSelection>,
         FP: FnMut(
             usize,
             &crystal_core::battle::turn::BattleCombatState,
@@ -9413,8 +9440,8 @@ impl RuntimeGameShell {
         };
         Ok(RuntimeBattleStateItemUse {
             item_use: outcome.item_use,
-            stat_drop_guard_turns_before: outcome.stat_drop_guard_turns_before,
-            stat_drop_guard_turns_after: outcome.stat_drop_guard_turns_after,
+            mist_active_before: outcome.mist_active_before,
+            mist_active_after: outcome.mist_active_after,
             state_checksum: mutation.state_checksum,
         })
     }
@@ -9581,9 +9608,14 @@ impl RuntimeGameShell {
             .get(party_index)
             .and_then(|pokemon| pokemon.clone())
             .with_context(|| format!("party index {party_index} has no Pokemon"))?;
+        let level_up_happiness = self
+            .runtime
+            .data
+            .level_up_happiness_context(&self.session.state)?;
         self.runtime.data.apply_party_pokemon_item_effect(
             &mut pokemon,
             item_id,
+            level_up_happiness,
             self.session.state.time.time_of_day,
             false,
         )
@@ -10214,6 +10246,12 @@ impl RuntimeGameShell {
         })
     }
 
+    pub fn switch_pc_item_stacks(&mut self, source_index: usize, target_index: usize) -> Result<()> {
+        self.session.state.bag.switch_pc_item_stacks(source_index, target_index).map_err(anyhow::Error::msg)?;
+        self.runtime.validate_save_state_for_runtime_pack(&self.session.state)
+            .context("validate runtime state after PC item-stack switch")
+    }
+
     pub fn switch_bag_item_stacks(
         &mut self,
         pocket: &str,
@@ -10804,6 +10842,8 @@ impl RuntimeGameShell {
     }
 
     fn snapshot_with_integrity(&self, integrity: bool) -> Result<RuntimeShellSnapshot> {
+        #[cfg(feature = "operation-trace")]
+        let _span = bevy::log::info_span!("crystal_snapshot", integrity).entered();
         let (state_checksum, visual_state_hash) = if integrity {
             self.runtime
                 .validate_save_state_for_runtime_pack(&self.session.state)
@@ -11298,6 +11338,17 @@ impl RuntimeGameShell {
                 transfer_mode,
             )?
             .context("completed link trade did not return the sent Pokemon")?;
+        let received_before_evolution = self.session.state.storage.party.pokemon
+            [received_party_index]
+            .as_ref()
+            .context("received link-trade Pokemon is absent from the appended party slot")?
+            .clone();
+        if !received_before_evolution.is_egg {
+            self.session
+                .state
+                .pokedex
+                .record_caught_pokemon(&received_before_evolution);
+        }
         let link_mode = match transfer_mode {
             LinkTradeTransferMode::TradeCenter => LinkMode::Link,
             LinkTradeTransferMode::TimeCapsule => LinkMode::TimeCapsule,
@@ -11318,6 +11369,16 @@ impl RuntimeGameShell {
             check_and_evolve(received, &self.runtime.data.evolutions, &context, false)
                 .map_err(|error| anyhow::anyhow!("evolve received link-trade Pokemon: {error:?}"))?
         };
+        if evolution.target_species.is_some() {
+            let evolved_pokemon = self.session.state.storage.party.pokemon[received_party_index]
+                .as_ref()
+                .context("evolved link-trade Pokemon disappeared")?
+                .clone();
+            self.session
+                .state
+                .pokedex
+                .record_caught_pokemon(&evolved_pokemon);
+        }
         if !evolution.pending_move_learns.is_empty() {
             anyhow::ensure!(
                 self.session.state.pending_move_learn.is_none()
@@ -11411,6 +11472,7 @@ impl RuntimeTrainerSnapshot {
 impl RuntimeProgressionSnapshot {
     fn from_state(state: &GameState) -> Self {
         Self {
+            backup_warp_map_name: state.backup_warp_map_name.clone(),
             badges: state.badges.clone(),
             pokedex_seen: state.pokedex.seen_count(),
             pokedex_owned: state.pokedex.caught_count(),
@@ -11424,7 +11486,7 @@ impl RuntimeProgressionSnapshot {
             active_repel_item: state.active_repel_item.clone(),
             registered_key_item: state.registered_key_item.clone(),
             radio_tuning_knob: state.radio_tuning_knob,
-            last_spawn_identifier: state.last_spawn_identifier,
+            last_spawn_map_constant: state.last_spawn_map_constant.clone(),
             hall_of_fame: state.hall_of_fame.clone(),
             time: state.time.clone(),
             active_event_flags: state.flags.active_event_flags().cloned().collect(),
@@ -11460,6 +11522,7 @@ impl RuntimeScriptEventsSnapshot {
             named_buffers: runtime.named_buffers.clone(),
             variable_sprites: runtime.variable_sprites.clone(),
             phone_numbers: runtime.phone_numbers.clone(),
+            phone_number_order: runtime.phone_number_order.clone(),
             last_special_routine: runtime.last_special_routine.clone(),
             last_talked_object: runtime.last_talked_object.clone(),
             active_menu: runtime.active_menu.clone(),
@@ -11867,7 +11930,7 @@ impl RuntimeBattleSnapshot {
                 .copied()
                 .collect(),
             escape_attempts: state.battle_escape_attempts,
-            player_stat_drop_guard_turns: state.battle_player_stat_drop_guard_turns,
+            player_mist_active: combat.is_some_and(|combat| combat.player_mist_active),
             pay_day_money: state.battle_pay_day_money,
             amulet_coin_active: state.battle_amulet_coin_active,
             trainer_items_used: state
@@ -12248,7 +12311,6 @@ impl RuntimeItemCatalogSnapshot {
             battle_escape_mode: item.battle_escape_mode.clone(),
             battle_focus_energy: item.battle_focus_energy,
             battle_stat_drop_guard: item.battle_stat_drop_guard,
-            battle_stat_drop_guard_turns: item.battle_stat_drop_guard_turns,
             confusion_heal: item.confusion_heal,
             repel_steps: item.repel_steps,
             escape_rope_mode: item.escape_rope_mode.clone(),
@@ -12731,8 +12793,8 @@ pub struct RuntimeBattleEscapeItemUse {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeBattleStateItemUse {
     pub item_use: ItemUseOutcome,
-    pub stat_drop_guard_turns_before: u8,
-    pub stat_drop_guard_turns_after: u8,
+    pub mist_active_before: bool,
+    pub mist_active_after: bool,
     pub state_checksum: StateChecksum,
 }
 
@@ -13165,10 +13227,22 @@ impl CrystalRuntime {
             .save_modpack_identity()
             .context("compute compiled game pack save identity")?;
         let (_, _, pack) = loaded.into_parts();
-        Self::from_compiled_pack(asset_root, pack, modpack)
+        Self::from_verified_compiled_pack(asset_root, pack, modpack)
     }
 
+    #[cfg(test)]
     fn from_compiled_pack(
+        asset_root: &AssetRoot,
+        pack: CompiledGamePack,
+        modpack: SaveModpackIdentity,
+    ) -> Result<Self> {
+        crystal_assets::verify_compiled_game_pack_for_runtime(&pack)?;
+        Self::from_verified_compiled_pack(asset_root, pack, modpack)
+    }
+
+    // Both entry points above verify the owned pack before entering here.
+    // No mutation occurs between verification and consuming its parts.
+    fn from_verified_compiled_pack(
         asset_root: &AssetRoot,
         pack: CompiledGamePack,
         modpack: SaveModpackIdentity,
@@ -13182,8 +13256,8 @@ impl CrystalRuntime {
                 expected_id
             );
         }
-        crystal_assets::verify_compiled_game_pack_for_runtime(&pack)?;
-        let pack_identity = pack.identity()?;
+        // Full verification already compared the derived and stored identity.
+        // Retain that verified value instead of hashing the same pack again.
         let (
             _,
             data,
@@ -13192,11 +13266,8 @@ impl CrystalRuntime {
             audio_compression,
             runtime_files,
             _,
-            stored_identity,
+            pack_identity,
         ) = pack.into_parts();
-        if pack_identity != stored_identity {
-            anyhow::bail!("compiled game pack stored identity changed during runtime load");
-        }
         let audio_manifest = if audio_compression.is_none()
             && audio_manifest.music.is_empty()
             && audio_manifest.sound_effects.is_empty()
@@ -14819,7 +14890,6 @@ impl CrystalRuntime {
                 battle_escape_mode: item.battle_escape_mode.clone(),
                 battle_focus_energy: item.battle_focus_energy,
                 battle_stat_drop_guard: item.battle_stat_drop_guard,
-                battle_stat_drop_guard_turns: item.battle_stat_drop_guard_turns,
             })
             .collect()
     }
@@ -15139,13 +15209,9 @@ impl CrystalRuntime {
             .type_effectiveness
             .matchups
             .iter()
-            .flat_map(|(attacking_type, defenders)| {
-                defenders
-                    .keys()
-                    .map(move |defending_type| RuntimeTypeEffectivenessKey {
-                        attacking_type: attacking_type.clone(),
-                        defending_type: defending_type.clone(),
-                    })
+            .map(|entry| RuntimeTypeEffectivenessKey {
+                attacking_type: entry.attacker.clone(),
+                defending_type: entry.defender.clone(),
             })
             .collect()
     }
@@ -15155,13 +15221,9 @@ impl CrystalRuntime {
             .type_effectiveness
             .foresight_matchups
             .iter()
-            .flat_map(|(attacking_type, defenders)| {
-                defenders
-                    .keys()
-                    .map(move |defending_type| RuntimeTypeEffectivenessKey {
-                        attacking_type: attacking_type.clone(),
-                        defending_type: defending_type.clone(),
-                    })
+            .map(|entry| RuntimeTypeEffectivenessKey {
+                attacking_type: entry.attacker.clone(),
+                defending_type: entry.defender.clone(),
             })
             .collect()
     }
@@ -16153,7 +16215,6 @@ impl CrystalRuntime {
                 && item.battle_escape_mode == key.battle_escape_mode
                 && item.battle_focus_energy == key.battle_focus_energy
                 && item.battle_stat_drop_guard == key.battle_stat_drop_guard
-                && item.battle_stat_drop_guard_turns == key.battle_stat_drop_guard_turns
         })
     }
 
@@ -16357,19 +16418,19 @@ impl CrystalRuntime {
     }
 
     pub fn has_type_effectiveness(&self, key: &RuntimeTypeEffectivenessKey) -> bool {
-        self.data
-            .type_effectiveness
-            .matchups
-            .get(&key.attacking_type)
-            .is_some_and(|defenders| defenders.contains_key(&key.defending_type))
+        self.data.type_effectiveness.matchups.iter().any(|entry| {
+            entry.attacker == key.attacking_type && entry.defender == key.defending_type
+        })
     }
 
     pub fn has_foresight_type_effectiveness(&self, key: &RuntimeTypeEffectivenessKey) -> bool {
         self.data
             .type_effectiveness
             .foresight_matchups
-            .get(&key.attacking_type)
-            .is_some_and(|defenders| defenders.contains_key(&key.defending_type))
+            .iter()
+            .any(|entry| {
+                entry.attacker == key.attacking_type && entry.defender == key.defending_type
+            })
     }
 
     pub fn has_weather_type_modifier(&self, key: &RuntimeWeatherTypeModifierKey) -> bool {
@@ -18393,8 +18454,6 @@ impl RuntimeOverworldSession {
         let (state, overworld) = runtime
             .data
             .start_overworld_session_from_spawn(spawn, &runtime.audio.music_ids())?;
-        let mut state = state;
-        state.last_spawn_identifier = Some(spawn.identifier);
         Ok(Self {
             state,
             overworld,
@@ -18843,7 +18902,7 @@ impl RuntimeOverworldSession {
         FM: FnOnce(
             &crystal_core::battle::turn::BattleCombatState,
             &mut dyn crystal_core::random::BattleRandomSource,
-        ) -> Result<usize>,
+        ) -> Result<crystal_core::battle::turn::EnemyMoveSelection>,
         FP: FnMut(
             usize,
             &crystal_core::battle::turn::BattleCombatState,
@@ -18899,7 +18958,7 @@ impl RuntimeOverworldSession {
                     inner: rng,
                     calls: &mut enemy_move_ai_random_calls,
                 };
-                let slot = select_enemy_move
+                let selection = select_enemy_move
                     .take()
                     .expect("enemy move selector is invoked once")(
                     combat, &mut counting_rng
@@ -18909,9 +18968,11 @@ impl RuntimeOverworldSession {
                         error: format!("{error:#}"),
                     }
                 })?;
-                selected_move_slot.set(Some(slot));
-                *enemy_action.borrow_mut() = BattleAction::Move { slot };
-                Ok(slot)
+                selected_move_slot.set(Some(selection.slot));
+                *enemy_action.borrow_mut() = BattleAction::Move {
+                    slot: selection.slot,
+                };
+                Ok(selection)
             };
         let mut post_order_selector =
             |combat: &crystal_core::battle::turn::BattleCombatState,
@@ -19590,16 +19651,11 @@ impl RuntimeOverworldSession {
                 state.script_runtime.variables.remove("BUENA_PASSWORD");
             }
         }
-        let mut divider_after = self.divider.clone();
-        let mut recording = RecordingDivider::new(&mut divider_after);
-        let outcome = runtime.data.apply_random_special_routine(
+        let outcome = runtime.data.apply_special_routine(
             &mut state,
             "BuenasPassword",
             &runtime.music_ids(),
-            &mut recording,
         )?;
-        let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
-        drop(recording);
         overworld.set_time(state.time.registers.hours, state.time.time_of_day);
         overworld.sync_event_flag_memory(&state.flags);
         let outcome = RuntimeMutationOutcome {
@@ -19609,12 +19665,11 @@ impl RuntimeOverworldSession {
         Ok(RecordedRuntimeMutation {
             command: RuntimeMutationCommand::UseBuenaPassword(RuntimeBuenaPasswordCommand {
                 guess,
-                divider_trace,
             }),
             state,
             overworld,
             outcome,
-            divider_after: Some(divider_after),
+            divider_after: None,
         })
     }
 
@@ -20557,8 +20612,8 @@ impl RuntimeOverworldSession {
         };
         Ok(RuntimeBattleStateItemUse {
             item_use: outcome.item_use,
-            stat_drop_guard_turns_before: outcome.stat_drop_guard_turns_before,
-            stat_drop_guard_turns_after: outcome.stat_drop_guard_turns_after,
+            mist_active_before: outcome.mist_active_before,
+            mist_active_after: outcome.mist_active_after,
             state_checksum: mutation.state_checksum,
         })
     }
@@ -22773,8 +22828,8 @@ fn validate_save_references_for_runtime_pack(state: &GameState, data: &GameDataS
             );
         }
     }
-    if let Some(spawn_identifier) = state.last_spawn_identifier {
-        data.validate_saved_spawn_reference("last_spawn_identifier", spawn_identifier)?;
+    if let Some(map_constant) = &state.last_spawn_map_constant {
+        data.validate_saved_map_constant_reference("last_spawn_map_constant", map_constant)?;
     }
     if let Some(map_name) = &state.dig_warp_map_name {
         let _ = data.validate_saved_map_reference("dig_warp_map_name", map_name)?;

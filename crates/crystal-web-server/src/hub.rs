@@ -1,3 +1,5 @@
+#[path = "chat.rs"]
+mod chat;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use uuid::Uuid;
@@ -24,6 +26,8 @@ pub struct Delivery {
 struct ClientRecord {
     identity: ClientIdentity,
     presence: Option<PresenceRecord>,
+    chat_channels: HashSet<String>,
+    chat_sent: VecDeque<std::time::Instant>,
 }
 
 #[derive(Debug, Clone)]
@@ -64,6 +68,7 @@ struct PendingInteraction {
     from: Uuid,
     target: Uuid,
     kind: MatchMode,
+    created: std::time::Instant,
 }
 
 #[derive(Debug, Default)]
@@ -93,6 +98,8 @@ impl Hub {
             ClientRecord {
                 identity,
                 presence: None,
+                chat_channels: ["general", "trade", "lfg"].map(str::to_owned).into(),
+                chat_sent: VecDeque::new(),
             },
         );
         Ok(vec![deliver(
@@ -106,12 +113,11 @@ impl Hub {
 
     pub fn disconnect(&mut self, connection_id: Uuid) -> Vec<Delivery> {
         self.remove_from_queues(connection_id);
+        let cancelled = self.cancel_interactions_for(connection_id);
         let Some(client) = self.clients.remove(&connection_id) else {
             return Vec::new();
         };
         self.users.remove(&client.identity.user_id);
-        self.interactions
-            .retain(|_, request| request.from != connection_id && request.target != connection_id);
         let ended = self
             .sessions
             .iter()
@@ -135,6 +141,11 @@ impl Hub {
                 })
             })
             .collect::<Vec<_>>();
+        output.extend(
+            cancelled
+                .into_iter()
+                .filter(|delivery| delivery.connection_id != connection_id),
+        );
         if let Some(presence) = client.presence {
             self.remove_presence_index(&client.identity.world, &presence, connection_id);
             output.extend(
@@ -165,12 +176,23 @@ impl Hub {
     }
 
     pub fn handle(&mut self, connection_id: Uuid, message: ClientMessage) -> Vec<Delivery> {
+        let chat = matches!(
+            &message,
+            ClientMessage::Chat { .. }
+                | ClientMessage::ChatJoin { .. }
+                | ClientMessage::ChatLeave { .. }
+        );
         match self.handle_checked(connection_id, message) {
             Ok(deliveries) => deliveries,
             Err(message) => vec![deliver(
                 connection_id,
                 ServerMessage::Error {
-                    code: "invalid_request".into(),
+                    code: if chat {
+                        "chat_error"
+                    } else {
+                        "invalid_request"
+                    }
+                    .into(),
                     message,
                 },
             )],
@@ -261,7 +283,19 @@ impl Hub {
                         (false, false) => {}
                     }
                 }
+                output.extend(self.expire_interactions());
                 Ok(output)
+            }
+            ClientMessage::Chat {
+                channel,
+                target_user_id,
+                text,
+            } => self.chat(connection_id, channel, target_user_id, text),
+            ClientMessage::ChatJoin { channel } => {
+                self.chat_membership(connection_id, channel, true)
+            }
+            ClientMessage::ChatLeave { channel } => {
+                self.chat_membership(connection_id, channel, false)
             }
             ClientMessage::QueueJoin {
                 mode,
@@ -280,6 +314,7 @@ impl Hub {
                 target_user_id,
                 kind,
             } => self.interaction_request(connection_id, target_user_id, kind),
+            ClientMessage::InteractionCancel => Ok(self.cancel_interactions_for(connection_id)),
             ClientMessage::InteractionResponse {
                 request_id,
                 target_user_id,
@@ -304,6 +339,13 @@ impl Hub {
     ) -> Result<Vec<Delivery>, String> {
         if self.active_session_for(connection_id).is_some() {
             return Err("client is already in an active session".into());
+        }
+        if self
+            .interactions
+            .values()
+            .any(|r| r.from == connection_id || r.target == connection_id)
+        {
+            return Err("respond to or finish the pending invitation before queuing".into());
         }
         self.remove_from_queues(connection_id);
         let rating_range = rating_range.min(MAX_RATING_RANGE);
@@ -404,6 +446,66 @@ impl Hub {
         )])
     }
 
+    fn cancel_interaction(&mut self, request_id: Uuid) -> Vec<Delivery> {
+        let Some(request) = self.interactions.remove(&request_id) else {
+            return Vec::new();
+        };
+        [
+            (request.from, request.target),
+            (request.target, request.from),
+        ]
+        .into_iter()
+        .filter_map(|(recipient, peer)| {
+            self.clients.get(&peer).map(|client| {
+                deliver(
+                    recipient,
+                    ServerMessage::InteractionResponse {
+                        request_id,
+                        from_user_id: client.identity.user_id.clone(),
+                        accepted: false,
+                    },
+                )
+            })
+        })
+        .collect()
+    }
+
+    fn cancel_interactions_for(&mut self, player: Uuid) -> Vec<Delivery> {
+        let ids = self
+            .interactions
+            .iter()
+            .filter(|(_, r)| r.from == player || r.target == player)
+            .map(|(id, _)| *id)
+            .collect::<Vec<_>>();
+        ids.into_iter()
+            .flat_map(|id| self.cancel_interaction(id))
+            .collect()
+    }
+
+    pub fn expire_interactions(&mut self) -> Vec<Delivery> {
+        let ids = self
+            .interactions
+            .iter()
+            .filter(|(_, request)| {
+                request.created.elapsed() >= std::time::Duration::from_secs(30)
+                    || !self
+                        .clients
+                        .get(&request.from)
+                        .and_then(|client| client.presence.as_ref())
+                        .zip(
+                            self.clients
+                                .get(&request.target)
+                                .and_then(|client| client.presence.as_ref()),
+                        )
+                        .is_some_and(|(a, b)| presences_are_visible(a, b))
+            })
+            .map(|(id, _)| *id)
+            .collect::<Vec<_>>();
+        ids.into_iter()
+            .flat_map(|id| self.cancel_interaction(id))
+            .collect()
+    }
+
     fn interaction_request(
         &mut self,
         connection_id: Uuid,
@@ -418,6 +520,20 @@ impl Hub {
             .get(&target_user_id)
             .copied()
             .ok_or("target is offline")?;
+        if self.interactions.values().any(|r| {
+            [r.from, r.target]
+                .iter()
+                .any(|id| *id == connection_id || *id == target)
+        }) {
+            return Err("one of the players already has a pending invitation".into());
+        }
+        if self.queues.values().any(|queue| {
+            queue
+                .iter()
+                .any(|entry| entry.connection_id == connection_id || entry.connection_id == target)
+        }) {
+            return Err("one of the players is queued for matchmaking".into());
+        }
         let from = self.clients.get(&connection_id).expect("checked");
         let target_client = self.clients.get(&target).expect("user index is valid");
         if from.identity.world != target_client.identity.world {
@@ -447,6 +563,7 @@ impl Hub {
                 from: connection_id,
                 target,
                 kind,
+                created: std::time::Instant::now(),
             },
         );
         Ok(vec![deliver(
@@ -490,7 +607,9 @@ impl Hub {
             .expect("checked")
             .identity
             .clone();
-        self.interactions.remove(&request_id);
+        if request.created.elapsed() >= std::time::Duration::from_secs(30) {
+            return Ok(self.cancel_interaction(request_id));
+        }
         let mut output = vec![deliver(
             request.from,
             ServerMessage::InteractionResponse {
@@ -503,7 +622,7 @@ impl Hub {
             if self.active_session_for(request.from).is_some()
                 || self.active_session_for(connection_id).is_some()
             {
-                return Err("one of the players is already in an active session".into());
+                return Ok(self.cancel_interaction(request_id));
             }
             let requester_presence = self
                 .clients
@@ -516,7 +635,7 @@ impl Hub {
                 .and_then(|client| client.presence.as_ref())
                 .ok_or("responder has no map presence")?;
             if !presences_are_visible(requester_presence, responder_presence) {
-                return Err("players moved outside presence range".into());
+                return Ok(self.cancel_interaction(request_id));
             }
             self.remove_from_queues(request.from);
             self.remove_from_queues(connection_id);
@@ -552,6 +671,7 @@ impl Hub {
                 },
             ));
         }
+        self.interactions.remove(&request_id);
         Ok(output)
     }
 
@@ -599,7 +719,13 @@ impl Hub {
                 .get(&id)
                 .map(|client| client.identity.user_id.clone())
         });
-        if session.ranked && session.mode == MatchMode::Battle {
+        if session.ranked
+            && session.mode == MatchMode::Battle
+            && !session
+                .reports
+                .values()
+                .any(|outcome| *outcome == MatchOutcome::Cancelled)
+        {
             let first = self
                 .clients
                 .get(&session.players[0])
@@ -818,8 +944,18 @@ fn validate_identity(identity: &ClientIdentity) -> Result<(), String> {
         return Err("invalid display name".into());
     }
     validate_token("world id", &identity.world.world_id)?;
-    validate_token("modpack id", &identity.world.modpack.id)?;
+    validate_modpack_id(&identity.world.modpack.id)?;
     validate_token("modpack content hash", &identity.world.modpack.content_hash)
+}
+
+fn validate_modpack_id(value: &str) -> Result<(), String> {
+    if value.len() > MAX_TOKEN_BYTES {
+        return Err("invalid modpack id".into());
+    }
+    for manifest in value.split('+') {
+        validate_token("modpack id", manifest)?;
+    }
+    Ok(())
 }
 
 fn validate_token(label: &str, value: &str) -> Result<(), String> {
@@ -854,6 +990,54 @@ mod tests {
                 },
             },
         }
+    }
+
+    #[test]
+    fn composed_modpack_identity_is_accepted_but_empty_segments_are_rejected() {
+        assert!(validate_modpack_id("core+all-251-catchable-v1").is_ok());
+        for invalid in ["+core", "core+", "core++mod", "core/other", "core+bad pack"] {
+            assert!(validate_modpack_id(invalid).is_err(), "{invalid}");
+        }
+    }
+
+    #[test]
+    fn cancelling_ranked_match_preserves_unequal_ratings() {
+        let mut hub = Hub::default();
+        let a = Uuid::new_v4();
+        let b = Uuid::new_v4();
+        hub.connect(a, identity("a", "core")).unwrap();
+        hub.connect(b, identity("b", "core")).unwrap();
+        let ratings = HashMap::from([("a".into(), 1100), ("b".into(), 1000)]);
+        hub.replace_ratings(ratings.clone()).unwrap();
+        hub.handle(
+            a,
+            ClientMessage::QueueJoin {
+                mode: MatchMode::Battle,
+                rating: 1100,
+                rating_range: 200,
+            },
+        );
+        let found = hub.handle(
+            b,
+            ClientMessage::QueueJoin {
+                mode: MatchMode::Battle,
+                rating: 1000,
+                rating_range: 200,
+            },
+        );
+        let ServerMessage::MatchFound { session_id, .. } = found[0].message else {
+            panic!("match");
+        };
+        let settled = hub.handle(
+            a,
+            ClientMessage::Result {
+                session_id,
+                outcome: MatchOutcome::Cancelled,
+            },
+        );
+        assert_eq!(settled.len(), 2);
+        assert_eq!(hub.session_count(), 0);
+        assert_eq!(hub.ratings_snapshot(), ratings);
     }
 
     #[test]
@@ -1059,6 +1243,120 @@ mod tests {
                 .all(|delivery| matches!(delivery.message, ServerMessage::ResultSettled { .. }))
         );
         assert_eq!(hub.session_count(), 0);
+    }
+
+    fn nearby_pair() -> (Hub, Uuid, Uuid) {
+        let mut hub = Hub::default();
+        let a = Uuid::new_v4();
+        let b = Uuid::new_v4();
+        hub.connect(a, identity("a", "core")).unwrap();
+        hub.connect(b, identity("b", "core")).unwrap();
+        for id in [a, b] {
+            hub.handle(
+                id,
+                ClientMessage::Presence {
+                    map: "test-map".into(),
+                    tile_x: 4,
+                    tile_y: 8,
+                    direction: "down".into(),
+                },
+            );
+        }
+        (hub, a, b)
+    }
+
+    fn request_battle(hub: &mut Hub, a: Uuid) -> Uuid {
+        let deliveries = hub.handle(
+            a,
+            ClientMessage::InteractionRequest {
+                target_user_id: "b".into(),
+                kind: MatchMode::Battle,
+            },
+        );
+        let ServerMessage::InteractionRequest { request_id, .. } = deliveries[0].message else {
+            panic!("expected an invitation: {deliveries:?}");
+        };
+        request_id
+    }
+
+    #[test]
+    fn sender_can_cancel_an_invitation_and_immediately_try_again() {
+        let (mut hub, a, _) = nearby_pair();
+        request_battle(&mut hub, a);
+        let cancelled = hub.handle(a, ClientMessage::InteractionCancel);
+        assert_eq!(cancelled.len(), 2);
+        assert!(hub.interactions.is_empty());
+        request_battle(&mut hub, a);
+    }
+
+    #[test]
+    fn ignored_invitation_expires_and_releases_both_players() {
+        let (mut hub, a, b) = nearby_pair();
+        let id = request_battle(&mut hub, a);
+        hub.interactions.get_mut(&id).unwrap().created -= std::time::Duration::from_secs(31);
+        assert_eq!(hub.expire_interactions().len(), 2);
+        assert!(hub.interactions.is_empty());
+        assert!(hub.expire_interactions().is_empty());
+        request_battle(&mut hub, a);
+        let result = hub.handle(
+            b,
+            ClientMessage::QueueJoin {
+                mode: MatchMode::Battle,
+                rating: 1000,
+                rating_range: 100,
+            },
+        );
+        assert!(matches!(result[0].message, ServerMessage::Error { .. }));
+        assert_eq!(hub.queued_count(), 0);
+    }
+
+    #[test]
+    fn pending_invitation_cannot_be_overwritten_or_crossed() {
+        let (mut hub, a, b) = nearby_pair();
+        request_battle(&mut hub, a);
+        for (sender, target) in [(a, "b"), (b, "a")] {
+            let result = hub.handle(
+                sender,
+                ClientMessage::InteractionRequest {
+                    target_user_id: target.into(),
+                    kind: MatchMode::Trade,
+                },
+            );
+            assert!(matches!(result[0].message, ServerMessage::Error { .. }));
+        }
+        assert_eq!(hub.interactions.len(), 1);
+    }
+
+    #[test]
+    fn disconnect_notifies_the_waiting_invitation_peer() {
+        let (mut hub, a, b) = nearby_pair();
+        let request_id = request_battle(&mut hub, a);
+        let result = hub.disconnect(b);
+        assert!(result.iter().any(|delivery| delivery.connection_id == a && matches!(
+            delivery.message, ServerMessage::InteractionResponse { request_id: id, accepted: false, .. } if id == request_id
+        )));
+        assert!(hub.interactions.is_empty());
+    }
+
+    #[test]
+    fn leaving_invitation_range_notifies_both_players() {
+        let (mut hub, a, b) = nearby_pair();
+        let request_id = request_battle(&mut hub, a);
+        let result = hub.handle(
+            b,
+            ClientMessage::Presence {
+                map: "other-map".into(),
+                tile_x: 4,
+                tile_y: 8,
+                direction: "down".into(),
+            },
+        );
+        for player in [a, b] {
+            assert!(result.iter().any(|delivery| delivery.connection_id == player && matches!(
+                delivery.message, ServerMessage::InteractionResponse { request_id: id, accepted: false, .. } if id == request_id
+            )));
+        }
+        assert!(hub.interactions.is_empty());
     }
 
     #[test]

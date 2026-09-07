@@ -758,12 +758,12 @@ fn visible_script_text_uses_saved_rival_name_and_current_weekday() {
 }
 
 #[test]
-fn bitmap_font_normalization_and_glyph_map_match_typescript() {
+fn bitmap_font_normalization_and_glyph_map_match_asm() {
     assert_eq!(
         normalize_bitmap_font_text(
             "<TRAINER> <ROCKET> <PKMN> <POKE> <PC> <TM> <PK><MN><DOT><PO><KE><LV><ID><……>#"
         ),
-        "\u{e103} \u{e104} \u{e105}\u{e106} POKé \u{e101} \u{e102} \u{e105}\u{e106}\u{e107}\u{e108}\u{e109}\u{e10a}\u{e10b}……POKé"
+        "TRAINER ROCKET \u{e105}\u{e106} \u{e108}\u{e109} PC TM \u{e105}\u{e106}\u{e107}\u{e108}\u{e109}\u{e10a}\u{e10b}……POKé"
     );
 
     let glyphs = bitmap_font_char_map();
@@ -779,11 +779,6 @@ fn bitmap_font_normalization_and_glyph_map_match_typescript() {
         ('…', 0x75),
         ('—', 0x7a),
         ('–', 0x7a),
-        ('\u{e100}', 0x4a),
-        ('\u{e101}', 0x5b),
-        ('\u{e102}', 0x5c),
-        ('\u{e103}', 0x5d),
-        ('\u{e104}', 0x5e),
         ('\u{e105}', 0xe1),
         ('\u{e106}', 0xe2),
         ('\u{e107}', 0xf2),
@@ -791,9 +786,28 @@ fn bitmap_font_normalization_and_glyph_map_match_typescript() {
         ('\u{e109}', 0x71),
         ('\u{e10a}', 0x6e),
         ('\u{e10b}', 0x73),
+        ('\u{e110}', 0x5d),
     ] {
         assert_eq!(glyphs.get(&glyph), Some(&tile), "glyph {glyph:?}");
     }
+}
+
+#[test]
+fn bitmap_font_contracts_source_charmap_pairs_into_single_tiles() {
+    assert_eq!(normalize_bitmap_font_text("What's up?"), "What\u{e124} up?");
+    assert_eq!(normalize_bitmap_font_text("'d'l'm'r's't'v"),
+        "\u{e120}\u{e121}\u{e122}\u{e123}\u{e124}\u{e125}\u{e126}");
+    assert_eq!(normalize_bitmap_font_text("'A 'S 'x"), "'A 'S 'x");
+}
+
+#[test]
+fn bitmap_font_reports_unmapped_characters_instead_of_drawing_question_marks() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let frames = bitmap_text_frames(&mut art, &asset_root, &mut images, "\u{10ffff}");
+    assert!(frames.is_empty());
+    assert!(art.font_error.as_deref().is_some_and(|error| error.contains("U+10FFFF")));
 }
 
 fn route36_overworld_shell_for_battle_render_regression() -> BevyRuntimeShell {
@@ -872,4 +886,18 @@ fn finish_current_battle_message_for_regression(runtime_shell: &mut BevyRuntimeS
         visible_chars: pages[page_index].chars().count(),
         frames_until_next_char: 0,
     });
+}
+
+#[test]
+fn source_font_ink_is_black_in_both_png_and_2bpp_paths() {
+    // The reference Pokégear LCD's foreground is RGB5(0,0,0). The previous
+    // shared font tint changed every printed glyph to RGB5(2,3,2).
+    let mut images = Assets::<Image>::default();
+    let source = image::RgbaImage::from_pixel(8, 8, image::Rgba([0, 0, 0, 255]));
+    let png = bitmap_font_tile_handle(&source, 0, 1, &mut images).unwrap();
+    let planar = bitmap_font_2bpp_tile_handle(&[255; 16], 0, &mut images).unwrap();
+    for handle in [png, planar] {
+        assert!(images.get(&handle).unwrap().data.chunks_exact(4)
+            .all(|pixel| pixel == [0, 0, 0, 255]));
+    }
 }

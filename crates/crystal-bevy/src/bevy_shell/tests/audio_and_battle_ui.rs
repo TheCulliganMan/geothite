@@ -1,4 +1,113 @@
 #[test]
+fn victory_music_survives_retained_battle_text_until_overworld_return() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.title_menu = None;
+    shell.active_music = Some("MUSIC_WILD_VICTORY".into());
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    shell
+        .battle_messages
+        .push_back("Gained EXP. Points!".into());
+    queue_visible_current_music(&mut shell).unwrap();
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_WILD_VICTORY"));
+    shell.battle_message_scene = None;
+    shell.battle_messages.clear();
+    queue_visible_current_music(&mut shell).unwrap();
+    assert_eq!(
+        shell.active_music.as_deref(),
+        shell.shell.current_music_id()
+    );
+}
+
+#[test]
+fn victory_music_matches_asm_classes_and_wild_reward_gates() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut state = shell.shell.session().state().clone();
+    for class in ["FALKNER", "WILL", "CHAMPION", "RED", "BLUE"] {
+        assert_eq!(
+            visible_victory_music_id(&state, Some(class)),
+            Some("MUSIC_GYM_VICTORY")
+        );
+    }
+    assert_eq!(
+        visible_victory_music_id(&state, Some("YOUNGSTER")),
+        Some("MUSIC_TRAINER_VICTORY")
+    );
+    state.link_session.link_mode = 1;
+    assert_eq!(visible_victory_music_id(&state, Some("YOUNGSTER")), None);
+    state.link_session.link_mode = 0;
+    state.battle_pay_day_money = 0;
+    for pokemon in state.storage.party.pokemon.iter_mut().flatten() {
+        pokemon.turns_in_battle = 0;
+        pokemon.item = None;
+    }
+    assert_eq!(visible_victory_music_id(&state, None), Some("MUSIC_NONE"));
+    state.battle_pay_day_money = 1;
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+    state.battle_pay_day_money = 0;
+    let index = state
+        .storage
+        .party
+        .pokemon
+        .iter()
+        .position(Option::is_some)
+        .unwrap();
+    state.storage.party.pokemon[index].as_mut().unwrap().item = Some("EXP_SHARE".into());
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+    state.storage.party.pokemon[index].as_mut().unwrap().hp = 0;
+    assert_eq!(visible_victory_music_id(&state, None), Some("MUSIC_NONE"));
+    let pokemon = state.storage.party.pokemon[index].as_mut().unwrap();
+    pokemon.hp = 1;
+    pokemon.item = None;
+    pokemon.turns_in_battle = 1;
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+}
+
+#[test]
+fn victory_music_is_queued_and_not_replaced_by_live_battle_music() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    shell.pending_audio.clear();
+    queue_visible_victory_music(&mut shell, &snapshot).unwrap();
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_WILD_VICTORY"));
+    assert!(shell.pending_music_stop);
+    assert!(shell.pending_full_audio_reset);
+    assert!(pending_music_command_is(
+        &shell.pending_audio,
+        "MUSIC_WILD_VICTORY"
+    ));
+    shell.battle_message_scene = Some(Box::new(snapshot));
+    let mut app = App::new();
+    app.insert_resource(shell).add_systems(
+        Update,
+        (sync_runtime_battle_music, sync_runtime_current_music, play_pending_audio).chain(),
+    );
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(!shell.pending_music_stop);
+    assert!(pending_music_command_is(&shell.pending_audio, "MUSIC_WILD_VICTORY"));
+    assert!(shell.audio_source_cache.is_empty(), "ASM DelayFrame precedes playback");
+    app.update();
+    assert!(app.world().resource::<BevyRuntimeShell>().pending_audio.is_empty());
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 1);
+    assert_eq!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .active_music
+            .as_deref(),
+        Some("MUSIC_WILD_VICTORY")
+    );
+}
+
+#[test]
 fn battle_animation_cry_selectors_choose_exact_species_variants() {
     assert_eq!(
         visible_pokemon_animation_cry_id("SANDSHREW", 0),
@@ -1648,8 +1757,11 @@ fn battle_move_menu_uses_asm_windows_and_cancel_row() {
     assert_eq!(battle_window_frame_tile_count(12, 6), 32);
     assert_eq!(battle_window_frame_tile_count(16, 6), 40);
     assert_eq!(battle_window_frame_tile_count(11, 5), 28);
-    assert_eq!(battle_type_display_name("FIRE_TYPE"), "FIRE");
-    assert_eq!(battle_type_display_name("SPECIAL_ATTACK"), "SPECIAL ATTACK");
+    assert_eq!(source_type_display_name("FIRE").unwrap(), "FIRE");
+    assert_eq!(source_type_display_name("CURSE_TYPE").unwrap(), "???");
+    assert_eq!(source_type_display_name("PSYCHIC_TYPE").unwrap(), "PSYCHIC");
+    assert!(source_type_display_name("SPECIAL_ATTACK").is_err());
+    assert!(source_type_display_name("FIRE_TYPE").is_err());
 }
 
 #[test]
@@ -2016,11 +2128,96 @@ fn battle_submenus_drop_rust_only_instruction_rows() {
         &snapshot,
         &runtime_shell,
         BattlePackTargetMode::PartyPokemon,
-    );
+    ).expect("source battle item target entries");
     assert!(
         target_entries
             .iter()
             .all(|entry| !entry.contains("A TARGET") && !entry.contains("B BACK")),
         "battle item target menu should not render Rust-only instruction rows: {target_entries:?}"
     );
+}
+
+
+#[test]
+fn frontpic_animation_matches_source_frame_and_repeat_boundaries() {
+    use crate::core::models::frontpic_anim::{FrontpicAnimCommand, FrontpicAnimProgram};
+    let frame = |number, duration| FrontpicAnimCommand {
+        kind: "frame".into(), frame: Some(number), duration: Some(duration), ..Default::default()
+    };
+    let program = FrontpicAnimProgram { commands: vec![
+        FrontpicAnimCommand { kind: "setrepeat".into(), count: Some(2), ..Default::default() },
+        frame(1, 2),
+        FrontpicAnimCommand { kind: "dorepeat".into(), target: Some(1), ..Default::default() },
+        frame(2, 1),
+        FrontpicAnimCommand { kind: "endanim".into(), ..Default::default() },
+    ] };
+    let mut animation = VisibleFrontpicAnimation {
+        species_id: "CYNDAQUIL".into(), speed: 0, pointer: 0, repeat: 0, wait: 0, frame: 0,
+    };
+    let mut trace = Vec::new();
+    for _ in 0..7 {
+        let finished = step_visible_frontpic_animation(&mut animation, &program).unwrap();
+        trace.push((animation.frame, animation.wait, animation.repeat, finished));
+    }
+    assert_eq!(trace, vec![
+        (1, 1, 2, false), (1, 0, 2, false),
+        (1, 1, 1, false), (1, 0, 1, false),
+        (1, 0, 0, false), (2, 0, 0, false), (2, 0, 0, true),
+    ], "PokeAnim_DoAnimScript decrements the frame timer immediately, and exhausted dorepeat returns for one frame");
+    animation.pointer = 0; animation.wait = 0; animation.speed = 255;
+    let program = FrontpicAnimProgram { commands: vec![frame(1, 16)] };
+    assert!(!step_visible_frontpic_animation(&mut animation, &program).unwrap());
+    assert_eq!(animation.wait, 14, "PokeAnim_GetDuration returns the low byte of 16 + 16*255/16 before decrement");
+    animation.pointer = 0; animation.wait = 0; animation.speed = 0;
+    let program = FrontpicAnimProgram { commands: vec![frame(1, 0)] };
+    assert!(!step_visible_frontpic_animation(&mut animation, &program).unwrap());
+    assert_eq!(animation.wait, 255, "zero duration wraps through 256 ticks");
+}
+
+
+#[test]
+fn frontpic_animation_replays_original_rom_menu_calls() {
+    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../tools/asm-oracle/fixtures/frontpic-animation-cyndaquil.json");
+    let trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixture).unwrap()).unwrap();
+    let calls = trace["calls"].as_array().unwrap();
+    assert_eq!(calls.len(), 95, "complete healthy Cyndaquil main and idle menu programs");
+    for (index, call) in calls.iter().enumerate() {
+        let value = |phase: &str, field: &str| call[phase][field].as_u64().unwrap() as u16;
+        let program = serde_json::from_value(call["program"].clone()).unwrap();
+        let mut animation = VisibleFrontpicAnimation {
+            species_id: "CYNDAQUIL".into(), speed: value("before", "speed"),
+            pointer: usize::from(value("before", "pointer")), repeat: value("before", "repeat"),
+            wait: value("before", "wait"), frame: 0,
+        };
+        let finished = step_visible_frontpic_animation(&mut animation, &program).unwrap();
+        assert_eq!((animation.pointer, animation.wait, animation.repeat, finished),
+            (usize::from(value("after", "pointer")), value("after", "wait"),
+                value("after", "repeat"), value("after", "state") & 0x80 != 0),
+            "source PokeAnim_Play call {index}: {call}");
+    }
+}
+
+
+#[test]
+fn frontpic_animation_rejects_missing_operands_and_missing_endanim() {
+    use crate::core::models::frontpic_anim::{FrontpicAnimCommand, FrontpicAnimProgram};
+    for command in [
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), ..Default::default() },
+        FrontpicAnimCommand { kind: "setrepeat".into(), ..Default::default() },
+        FrontpicAnimCommand { kind: "dorepeat".into(), ..Default::default() },
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), duration: Some(256), ..Default::default() },
+    ] {
+        let mut animation = VisibleFrontpicAnimation {
+            species_id: "CYNDAQUIL".into(), speed: 0, pointer: 0, repeat: 0, wait: 0, frame: 0,
+        };
+        assert!(step_visible_frontpic_animation(&mut animation,
+            &FrontpicAnimProgram { commands: vec![command] }).is_err());
+    }
+    let mut animation = VisibleFrontpicAnimation {
+        species_id: "CYNDAQUIL".into(), speed: 0, pointer: 1, repeat: 0, wait: 0, frame: 0,
+    };
+    assert!(step_visible_frontpic_animation(&mut animation, &FrontpicAnimProgram { commands: vec![
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), duration: Some(1), ..Default::default() }
+    ] }).is_err());
 }

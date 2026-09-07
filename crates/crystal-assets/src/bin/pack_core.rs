@@ -1,3 +1,11 @@
+#[path = "pack_core/item_name_export.rs"]
+mod item_name_export;
+#[path = "pack_core/battle_oam_export.rs"]
+mod battle_oam_export;
+#[path = "pack_core/frontpic_animation_export.rs"]
+mod frontpic_animation_export;
+#[path = "pack_core/radio_text_export.rs"]
+mod radio_text_export;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -23,6 +31,11 @@ fn main() -> Result<()> {
 }
 
 fn export_core_pack(repository_root: &Path) -> Result<()> {
+    export_pokegear_card_layouts(repository_root)?;
+    item_name_export::export(repository_root).context("export source item names")?;
+    radio_text_export::export(repository_root).context("export source radio text commands")?;
+    frontpic_animation_export::export(repository_root).context("export source main and idle frontpic animations")?;
+    battle_oam_export::export(repository_root).context("export source battle OAM")?;
     let asset_root = AssetRoot::new(repository_root);
     let compiler = ModpackCompiler::new(&asset_root);
     let core_manifest = ModpackManifest {
@@ -68,6 +81,18 @@ fn export_core_pack(repository_root: &Path) -> Result<()> {
     write_provenance(repository_root, &tracked_pack)?;
     println!("exported {}", tracked_pack.display());
     println!("exported {}", browser_pack.display());
+    Ok(())
+}
+
+fn export_pokegear_card_layouts(repository_root: &Path) -> Result<()> {
+    for &relative in crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
+        let source = repository_root.join("vendor/pokecrystal").join(relative);
+        let target = repository_root.join("apps/web/assets").join(relative);
+        let bytes = fs::read(&source).with_context(|| format!("read source Pokégear layout {}", source.display()))?;
+        anyhow::ensure!(!bytes.is_empty(), "source Pokégear layout {} is empty", source.display());
+        fs::create_dir_all(target.parent().context("Pokégear layout has no parent")?)?;
+        fs::write(&target, bytes).with_context(|| format!("export Pokégear layout {}", target.display()))?;
+    }
     Ok(())
 }
 

@@ -265,6 +265,17 @@ impl TimeState {
         }
     }
 
+    /// Shared civil clock, independent of the save's manually configured offset.
+    pub fn update_server_datetime(&mut self, date: GameDate, hour: u8, minute: u8, second: u8) {
+        // Sunday is day zero. Keep Crystal's 140-day cycle without RTC overflow.
+        let days = days_from_civil(date.year, date.month, date.day);
+        let epoch = days_from_civil(2000, 1, 2);
+        let day = (days - epoch).rem_euclid(140);
+        self.rtc_anchor = game_date_from_days(days - day);
+        self.start_time = ClockTime::default();
+        self.update_from_datetime(date, hour, minute, second);
+    }
+
     pub fn update_from_datetime(&mut self, date: GameDate, hour: u8, minute: u8, second: u8) {
         self.capture_rtc(date, hour, minute, second);
         self.update_time_registers();

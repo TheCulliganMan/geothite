@@ -615,7 +615,8 @@ pub fn sell_item(
         });
     }
 
-    let payout = sell_price * u32::from(quantity);
+    // DisplaySellingPrice calls BuySell_MultiplyPrice before Sell_HalvePrice.
+    let payout = u32::from(item.price) * u32::from(quantity) / 2;
     let starting_money = state.money;
     state.money = state.money.saturating_add(payout).min(max_money);
     Ok(ShopResult {
@@ -700,7 +701,6 @@ mod tests {
             battle_capture_ball: None,
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
-            battle_stat_drop_guard_turns: None,
             confusion_heal: None,
             repel_steps: None,
             escape_rope_mode: None,
@@ -1640,4 +1640,14 @@ mod tests {
             "{error}"
         );
     }
+    #[test]
+    fn selling_halves_the_total_after_multiplying_quantity_like_asm() {
+        let mut state = GameState::default();
+        let item = item("ODD_PRICE", 301, item_pocket("ITEM"));
+        state.bag.add_item(&item, 2).unwrap();
+        let items = BTreeMap::from([(item.script_name.clone(), item)]);
+        let result = sell_item(&mut state, &items, &currency_constants(999_999), "ODD_PRICE", 2).unwrap();
+        assert_eq!(result.credited, 301);
+    }
+
 }

@@ -16,7 +16,7 @@ use crate::state::GameState;
 
 const SAVE_MAGIC: &[u8; 12] = b"CRYSTALSAVE\0";
 pub const SAVE_EXTENSION: &str = "crystalsave";
-pub const SAVE_FORMAT_VERSION: u16 = 23;
+pub const SAVE_FORMAT_VERSION: u16 = 24;
 const SAVE_VERSION_OFFSET: usize = SAVE_MAGIC.len();
 const SAVE_PAYLOAD_LENGTH_OFFSET: usize = SAVE_VERSION_OFFSET + 2;
 const SAVE_PAYLOAD_HASH_OFFSET: usize = SAVE_PAYLOAD_LENGTH_OFFSET + 4;
@@ -1087,10 +1087,10 @@ fn validate_save_slot_id(slot_id: &str) -> Result<(), SaveError> {
         || slot_id.trim() != slot_id
         || !slot_id
             .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.'))
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'+'))
     {
         return Err(SaveError::InvalidIdentity(format!(
-            "save slot id '{slot_id}' must be exact ASCII using only letters, numbers, underscores, hyphens, or dots"
+            "save slot id '{slot_id}' must be exact ASCII using only letters, numbers, underscores, hyphens, dots, or plus signs"
         )));
     }
     Ok(())
@@ -1129,6 +1129,15 @@ mod tests {
         let path = temp_save_path(name);
         std::fs::create_dir_all(&path).expect("create temp save dir");
         path
+    }
+
+    #[test]
+    fn save_slot_accepts_composed_modpack_identity() {
+        validate_save_slot_id("core-modular+all-251-catchable-v1+realtime-clock-local")
+            .expect("generated composed-pack save name is valid");
+        for invalid in ["../slot", "slot/name", "slot name", " slot"] {
+            assert!(validate_save_slot_id(invalid).is_err());
+        }
     }
 
     #[test]

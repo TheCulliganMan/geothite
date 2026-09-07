@@ -59,8 +59,11 @@ web-sys = { version = "0.3", features = [
 [features]
 default = ["bevy-shell"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
+fullscreen-scaling = ["bevy-shell"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
 location-tester = ["voxel-view", "crystal-assets/test-fixtures"]
+# Opt-in per-system and render tracing; native captures use TRACE_CHROME.
+operation-trace = ["bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
 
 [[example]]
 name = "render_at_location"
@@ -73,3 +76,4 @@ required-features = ["location-tester"]
 [dev-dependencies]
 crystal-assets = { path = "../crystal-assets", features = ["test-fixtures"] }
 crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
+sha2.workspace = true

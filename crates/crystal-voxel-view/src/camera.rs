@@ -14,6 +14,40 @@ pub const CAMERA_PITCH_DEGREES: f32 = 45.0;
 const CAMERA_FOCAL: f32 = 1.0;
 const FAR_DEPTH_MARGIN: f32 = 4096.0;
 
+/// Discrete browser controls keep zoom bounded and rotation repeatable.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct VoxelCameraControls {
+    pub zoom_step: u8,
+    pub rotation_step: u8,
+}
+
+impl Default for VoxelCameraControls {
+    fn default() -> Self {
+        Self {
+            zoom_step: 1,
+            rotation_step: 0,
+        }
+    }
+}
+
+impl VoxelCameraControls {
+    pub fn new(zoom_step: u8, rotation_step: u8) -> Self {
+        Self {
+            zoom_step: zoom_step.min(5),
+            rotation_step: rotation_step % 8,
+        }
+    }
+
+    pub fn pose(self, viewport_size: Vec2) -> VoxelCameraPose {
+        let controls = Self::new(self.zoom_step, self.rotation_step);
+        let mut pose = camera_pose(viewport_size);
+        let zoom = 0.75 + f32::from(controls.zoom_step) * 0.25;
+        let yaw = f32::from(controls.rotation_step) * std::f32::consts::FRAC_PI_4;
+        pose.eye = pose.target + Quat::from_rotation_y(yaw) * (pose.eye - pose.target) / zoom;
+        pose
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct VoxelCameraPose {
     pub eye: Vec3,
@@ -75,6 +109,54 @@ pub fn card_rotation_toward_camera(pose: VoxelCameraPose) -> Quat {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn camera_controls_preserve_default_pose_and_bound_zoom() {
+        let viewport = Vec2::new(640.0, 576.0);
+        assert_eq!(
+            VoxelCameraControls::default().pose(viewport),
+            camera_pose(viewport)
+        );
+        let base = camera_pose(viewport);
+        let zoomed = VoxelCameraControls::new(5, 0).pose(viewport);
+        assert!(
+            ((zoomed.eye - zoomed.target).length() * 2.0 - (base.eye - base.target).length()).abs()
+                < 0.001
+        );
+        assert_eq!(
+            VoxelCameraControls::new(255, 255),
+            VoxelCameraControls::new(5, 7)
+        );
+    }
+
+    #[test]
+    fn orbit_keeps_target_pitch_and_billboards_aligned_at_every_angle() {
+        let viewport = Vec2::new(640.0, 576.0);
+        let base = camera_pose(viewport);
+        for step in 0..8 {
+            let pose = VoxelCameraControls::new(1, step).pose(viewport);
+            assert_eq!(pose.target, base.target);
+            assert!((pose.eye.y - base.eye.y).abs() < 0.001);
+            assert!(
+                ((pose.eye - pose.target).length() - (base.eye - base.target).length()).abs()
+                    < 0.001
+            );
+            let rotation = card_rotation_toward_camera(pose);
+            assert!(
+                rotation
+                    .mul_vec3(Vec3::Z)
+                    .dot((pose.eye - pose.target).normalize())
+                    > 0.999
+            );
+            assert!(
+                rotation
+                    .mul_vec3(Vec3::Y)
+                    .dot(pose.transform().up().as_vec3())
+                    > 0.999
+            );
+        }
+        assert_eq!(VoxelCameraControls::new(1, 8).pose(viewport), base);
+    }
 
     #[test]
     fn camera_is_tilted_at_the_requested_pitch() {

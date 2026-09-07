@@ -1630,18 +1630,18 @@ fn game_window_keeps_focused_rendering_display_synchronized_and_caps_unfocused_u
 }
 
 #[test]
-fn game_window_uses_a_single_frame_low_latency_swapchain() {
+fn game_window_allows_cpu_gpu_overlap_with_synchronized_presentation() {
     let window = low_latency_game_window("test".to_string());
 
     assert!(
-        !window.resizable,
-        "native play must retain the fixed integer-scaled LCD window"
+        window.resizable == cfg!(feature = "fullscreen-scaling"),
+        "only the fullscreen presentation mod enables native window resizing"
     );
     assert_eq!(window.present_mode, PresentMode::AutoVsync);
     assert_eq!(
         window.desired_maximum_frame_latency,
-        NonZeroU32::new(1),
-        "the renderer must not queue multiple stale input/presentation frames"
+        NonZeroU32::new(2),
+        "one frame can serialize CPU and GPU work; allow one frame of overlap"
     );
 }
 
@@ -2237,12 +2237,27 @@ fn title_art_cache_tracks_native_eight_frame_animation_cadence() {
     let mut title = core_modular_title_shell_for_test()
         .title_menu
         .expect("title menu");
-    title.phase = VisibleTitlePhase::PressStart;
-    title.frame = 15;
-    title.scx = 0;
-    title.title_timer = 0;
+    title
+        .presentation_machine
+        .memory
+        .insert("wJumptableIndex".to_string(), 2);
+    title
+        .presentation_machine
+        .values
+        .insert("title_suicune_frame".to_string(), 15);
+    title
+        .presentation_machine
+        .memory
+        .insert("hSCX".to_string(), 0);
+    title
+        .presentation_machine
+        .memory
+        .insert("wTitleScreenTimer".to_string(), 0);
     assert_eq!(title_screen_art_key(&title).frame, 8);
-    title.frame = 16;
+    title
+        .presentation_machine
+        .values
+        .insert("title_suicune_frame".to_string(), 16);
     assert_eq!(title_screen_art_key(&title).frame, 16);
 }
 
@@ -2402,6 +2417,7 @@ fn inactive_voxel_view_uses_only_the_classic_scroll_grid() {
             VISUAL_WORLD_TILES_Y,
         )
     );
+    #[cfg(not(feature = "fullscreen-scaling"))]
     assert!(
         i32::from(VISUAL_WORLD_TILES_X) * i32::from(VISUAL_WORLD_TILES_Y)
             > 10 * i32::from(CLASSIC_SCROLL_TILES_X) * i32::from(CLASSIC_SCROLL_TILES_Y)
@@ -2415,6 +2431,7 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
         enabled: true,
         allow_f3_toggle: true,
+        camera: Default::default(),
     })
     .add_systems(Update, sync_manual_world_view_layers);
     let classic_world = app.world_mut().spawn(PlayerMarker).id();
@@ -2468,4 +2485,114 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
             .is_none(),
         "manual 2D selection must restore the classic overworld to layer 0"
     );
+}
+
+#[test]
+fn browser_autosave_preserves_safe_progress_and_skips_title() {
+    let mut shell = core_modular_title_shell_for_test();
+    let path = std::env::temp_dir().join(format!("crystal-browser-resume-{}.crystalsave", uuid::Uuid::new_v4()));
+    shell.quick_save_path = Some(path.clone());
+    assert!(!save_browser_checkpoint(&mut shell).unwrap());
+    assert!(!path.exists());
+    shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.quick_save_path = Some(path.clone());
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".to_string();
+    assert!(save_browser_checkpoint(&mut shell).unwrap());
+    let saved = shell.shell.runtime().load_save(&path).unwrap();
+    assert_eq!(saved.player_name, "CHRIS");
+    let resumed = RuntimeGameShell::resume_from_save(shell.asset_root.clone(), shell.shell.runtime().clone(), &path).unwrap();
+    assert_eq!(resumed.snapshot().unwrap().trainer.player_name, "CHRIS");
+    assert_eq!(resumed.snapshot().unwrap().overworld.map_name, shell.shell.snapshot().unwrap().overworld.map_name);
+    shell.pending_name_input = None;
+    shell.start_menu_cursor = Some(MenuCursor { surface_id: "start".into(), option_index: 0 });
+    assert!(!save_browser_checkpoint(&mut shell).unwrap());
+    std::fs::remove_file(path).unwrap();
+}
+
+#[test]
+fn field_dialogue_printer_catches_up_across_character_delays() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().options.text_speed = TextSpeed::Mid;
+    shell.field_notice = Some("ABCDEFGHIJKLMNO".to_string());
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    app.insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)));
+    app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+        std::time::Duration::from_secs_f64(f64::from(GAME_TICK_SECONDS) * 3.0),
+    ));
+    let before = app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .field_text_reveal
+        .clone()
+        .unwrap();
+    for _ in 0..3 {
+        app.update();
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert_eq!(
+        shell.field_text_reveal.as_ref().unwrap().visible_chars,
+        before.visible_chars + 3,
+        "nine LCD frames must print three MID-speed letters even at 20 host FPS"
+    );
+}
+
+#[test]
+fn field_dialogue_cursor_blinks_on_completed_intermediate_pages() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.presentation_snapshot().unwrap();
+    snapshot.ui.text_window_open = true;
+    snapshot.ui.text = Some(crate::RuntimeTextSnapshot {
+        label: "CursorRegression".to_string(),
+        source: crate::RuntimeTextSource::AsmText,
+        asm_text: Some("First page.\n\nSecond page.".to_string()),
+        body: None,
+        queued_text_events: 0,
+    });
+    let pages = visible_field_dialog_pages(&snapshot, &shell).unwrap();
+    assert_eq!(pages.len(), 2);
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: pages.join("\u{1e}"),
+        page_index: 0,
+        visible_chars: pages[0].chars().count(),
+        frames_until_next_char: 0,
+    });
+    shell.shell.session_mut().state_mut().vblank_counter = 16;
+    assert!(
+        field_dialogue_prompt_arrow_visible(&snapshot, &shell),
+        "ASM Paragraph waits with a cursor before the script reaches promptbutton"
+    );
+    shell.shell.session_mut().state_mut().vblank_counter = 0;
+    assert!(!field_dialogue_prompt_arrow_visible(&snapshot, &shell));
+    shell.shell.session_mut().state_mut().vblank_counter = 16;
+    shell.field_text_reveal.as_mut().unwrap().visible_chars -= 1;
+    assert!(!field_dialogue_prompt_arrow_visible(&snapshot, &shell));
+}
+
+#[test]
+fn field_dialogue_cursor_updates_retained_glyphs_at_asm_border_tile() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.field_notice = Some("AB".to_string());
+    shell.shell.session_mut().state_mut().options.no_text_scroll = true;
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    let (x, y) = battle_hud_tile_origin(18.0, 17.0);
+    for frame in 0..40 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.last_error, None);
+        let visible = visible_vblank_counter_bit4(shell);
+        let found = app
+            .world_mut()
+            .query_filtered::<&Transform, With<DialogGlyphMarker>>()
+            .iter(app.world())
+            .any(|t| t.translation.x == x && t.translation.y == y);
+        assert_eq!(
+            found, visible,
+            "cursor must follow VBlank bit 4 at tile (18,17), frame {frame}"
+        );
+    }
 }

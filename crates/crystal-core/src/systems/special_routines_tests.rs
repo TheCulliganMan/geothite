@@ -707,7 +707,6 @@ fn item_data(id: &str) -> Item {
         battle_capture_ball: None,
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
-        battle_stat_drop_guard_turns: None,
         confusion_heal: None,
         repel_steps: None,
         escape_rope_mode: None,
@@ -1569,10 +1568,10 @@ fn heal_party_restores_hp_status_and_pp_from_exact_move_catalog() {
             .expect("party pokemon");
         assert_eq!(pokemon.hp, pokemon.max_hp);
         assert_eq!(pokemon.status, None);
-        assert_eq!(pokemon.sleep_turns, 3);
+        assert_eq!(pokemon.sleep_turns, 0);
         assert_eq!(pokemon.confusion_turns, 2);
         assert!(pokemon.focus_energy);
-        assert_eq!(pokemon.moves[0].current_pp, 35);
+        assert_eq!(pokemon.moves[0].current_pp, 42);
         assert_eq!(pokemon.moves[1].current_pp, 40);
         assert_eq!(
             state.party.pokemon[slot]
@@ -1605,7 +1604,7 @@ fn special_routines_reject_unknown_or_case_changed_routines_without_mutation() {
 }
 
 #[test]
-fn heal_party_preserves_unknown_move_pp_and_heals_known_fields() {
+fn heal_party_rejects_unknown_move_without_partial_healing() {
     let mut state = GameState::default();
     let mut pokemon = pokemon("CHIKORITA");
     pokemon.moves[0].name = "tackle".to_string();
@@ -1614,21 +1613,18 @@ fn heal_party_preserves_unknown_move_pp_and_heals_known_fields() {
         .register_capture_in_box(0, pokemon)
         .expect("store");
     state.sync_party_from_storage();
-    let outcome = apply_special_routine(&mut state, &moves(), "HealParty").expect("heal party");
+    let before = state.clone();
 
     assert_eq!(
-        outcome.effect,
-        SpecialRoutineEffect::HealParty {
-            healed_slots: vec![0]
+        apply_special_routine(&mut state, &moves(), "HealParty")
+            .expect_err("unknown party move must not receive a partial heal"),
+        SpecialRoutineError::UnknownMove {
+            routine: "HealParty".to_string(),
+            party_slot: 0,
+            move_id: "tackle".to_string(),
         }
     );
-    let healed = state.storage.party.pokemon[0]
-        .as_ref()
-        .expect("party Pokemon");
-    assert_eq!(healed.hp, healed.max_hp);
-    assert_eq!(healed.status, None);
-    assert_eq!(healed.moves[0].current_pp, 1);
-    assert_eq!(healed.moves[1].current_pp, 40);
+    assert_eq!(state, before);
 }
 
 #[test]
@@ -2814,9 +2810,64 @@ fn random_special_divider_exhaustion_is_atomic() {
 }
 
 #[test]
+fn lucky_number_check_reports_expired_countdown_without_a_prize_claim() {
+    let mut state = GameState::default();
+    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+    let check = apply_special_routine(&mut state, &moves(), "CheckLuckyNumberShowFlag").unwrap();
+    assert_eq!(check.effect, SpecialRoutineEffect::CheckLuckyNumberShowFlag { flag: true });
+    assert_eq!(state.script_runtime.script_value.as_deref(), Some("1"));
+    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+}
+
+#[test]
+fn lucky_number_countdown_expires_on_friday_and_survives_day_wrap() {
+    // RestartLuckyNumberCountdown uses GetWeekday (current day modulo seven).
+    // Checking a prize claim must neither expire nor restart this timer.
+    for (start_day, expected_days) in [(1, 4), (5, 7), (139, 6)] {
+        let mut state = GameState::default();
+        state.time.current_day = start_day;
+        state.lucky_number_day = Some(start_day);
+        state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+        let mut divider = ReplayDivider::new([]);
+        apply_random_special_routine(
+            &mut state, &moves(), "ResetLuckyNumberShowFlag", &mut divider,
+        ).unwrap();
+        assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+        assert_eq!(state.lucky_number_countdown.remaining_days, expected_days);
+        state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+        for elapsed in 0..=expected_days {
+            state.time.current_day = (start_day + elapsed) % 140;
+            for _ in 0..2 {
+                let checked = apply_special_routine(
+                    &mut state, &moves(), "CheckLuckyNumberShowFlag",
+                ).unwrap();
+                assert_eq!(checked.effect, SpecialRoutineEffect::CheckLuckyNumberShowFlag {
+                    flag: elapsed == expected_days,
+                });
+                assert_eq!(state.lucky_number_countdown.remaining_days, expected_days - elapsed);
+                assert!(state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+            }
+        }
+    }
+}
+
+#[test]
+fn lucky_number_reset_rolls_back_countdown_and_claim_on_rng_failure() {
+    let mut state = GameState::default();
+    state.time.current_day = 1;
+    state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+    let before = state.clone();
+    let mut divider = ReplayDivider::new([]);
+    assert!(apply_random_special_routine(
+        &mut state, &moves(), "ResetLuckyNumberShowFlag", &mut divider,
+    ).is_err());
+    assert_eq!(state, before);
+}
+
+#[test]
 fn lucky_number_show_flag_and_reset_use_daily_lucky_number() {
     let mut state = GameState::default();
-    state.lucky_number_show_flag = true;
+    state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
     state.time.current_day = 6;
     state.script_runtime.script_value = Some("preserved".to_string());
 
@@ -2847,7 +2898,7 @@ fn lucky_number_show_flag_and_reset_use_daily_lucky_number() {
             random_state_after: CrystalRandomState { add: 2, sub: 2 },
         }
     );
-    assert!(!state.lucky_number_show_flag);
+    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
     assert_eq!(state.lucky_number_day, Some(6));
     assert_eq!(state.lucky_id_number, 513);
     assert_eq!(state.random_state, CrystalRandomState { add: 2, sub: 2 });
@@ -8278,11 +8329,8 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             },
         );
     }
-    // Reject masked category 15, accept category 0, reject masked option
-    // 3, then accept option 0.
-    let mut divider = ReplayDivider::new(divider_trace_for_sub_values([15, 0, 3, 0]));
-
-    let first = apply_random_special_routine_with_context(
+    // The radio owns generation; the quiz reads the existing zero-valued password.
+    let first = apply_special_routine_with_context(
         &mut state,
         full_context_with_buena_password_categories(
             &moves,
@@ -8292,9 +8340,8 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             &buena_password_categories,
         ),
         "BuenasPassword",
-        &mut divider,
     )
-    .expect("generate password");
+    .expect("read stored password");
 
     assert_eq!(
         first.effect,
@@ -8312,7 +8359,6 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             random_state_after: CrystalRandomState::default()
         }
     );
-    assert_eq!(divider.consumed(), 8);
     assert_eq!(state.script_runtime.script_value.as_deref(), Some("0"));
     for host_mirror in ["_buena_category", "_buena_category_type", "_buena_password"] {
         assert!(
@@ -8327,8 +8373,7 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
         .variables
         .insert("BUENA_PASSWORD".to_string(), " TOTODILE".to_string());
     let before_padded_guess = padded_guess.clone();
-    let mut padded_divider = ReplayDivider::new([]);
-    let padded_guess_error = apply_random_special_routine_with_context(
+    let padded_guess_error = apply_special_routine_with_context(
         &mut padded_guess,
         full_context_with_buena_password_categories(
             &moves,
@@ -8338,15 +8383,14 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             &buena_password_categories,
         ),
         "BuenasPassword",
-        &mut padded_divider,
     )
     .expect_err("padded Buena password guess rejected");
     assert_eq!(
         padded_guess_error,
-        RandomSpecialRoutineError::Routine(SpecialRoutineError::InvalidBuenaPasswordGuess {
+        SpecialRoutineError::InvalidBuenaPasswordGuess {
             routine: "BuenasPassword".to_string(),
             guess: " TOTODILE".to_string(),
-        })
+        }
     );
     assert_eq!(padded_guess, before_padded_guess);
 
@@ -8354,8 +8398,7 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
         .script_runtime
         .variables
         .insert("BUENA_PASSWORD".to_string(), "TOTODILE".to_string());
-    let mut repeat_divider = ReplayDivider::new([]);
-    let correct = apply_random_special_routine_with_context(
+    let correct = apply_special_routine_with_context(
         &mut state,
         full_context_with_buena_password_categories(
             &moves,
@@ -8365,7 +8408,6 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             &buena_password_categories,
         ),
         "BuenasPassword",
-        &mut repeat_divider,
     )
     .expect("match password");
     assert_eq!(
@@ -8384,7 +8426,6 @@ fn buena_password_and_prize_are_exact_saveable_accounting() {
             random_state_after: CrystalRandomState::default()
         }
     );
-    assert_eq!(repeat_divider.consumed(), 0);
     assert!(
         !state
             .script_runtime
@@ -8440,8 +8481,7 @@ fn buena_password_requires_explicit_modpack_category_data_without_builtin_table_
     let before = state.clone();
 
     let move_catalog = moves();
-    let mut divider = ReplayDivider::new([]);
-    let error = apply_random_special_routine_with_context(
+    let error = apply_special_routine_with_context(
         &mut state,
         full_context(
             &move_catalog,
@@ -8450,15 +8490,14 @@ fn buena_password_requires_explicit_modpack_category_data_without_builtin_table_
             &EMPTY_TEST_ITEMS,
         ),
         "BuenasPassword",
-        &mut divider,
     )
     .expect_err("missing Buena password categories reject");
 
     assert_eq!(
         error,
-        RandomSpecialRoutineError::Routine(SpecialRoutineError::MissingBuenaPasswordCategories {
+        SpecialRoutineError::MissingBuenaPasswordCategories {
             routine: "BuenasPassword".to_string()
-        })
+        }
     );
     assert_eq!(state, before);
 }
@@ -9098,6 +9137,31 @@ fn day_care_initial_countdown_retry_inherits_comparison_carry() {
 
     assert_eq!(state.day_care.steps_until_next_egg, 150);
     assert_eq!(divider.consumed(), 8);
+}
+
+#[test]
+fn day_care_collect_egg_clears_party_hp_like_the_source_handoff() {
+    let mut state = GameState::default();
+    let mut female = pokemon("CHIKORITA");
+    female.dvs.attack = 0;
+    let mut male = pokemon("CHIKORITA");
+    male.dvs.attack = 15;
+    male.dvs.defense = 1;
+    state.day_care.man.pokemon = Some(female);
+    state.day_care.lady.pokemon = Some(male);
+    let mut divider = ReplayDivider::new(divider_trace_for_sub_values([150, 0x12, 0x34]));
+    let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+    update_day_care_compatibility(&mut state, &mut rng).unwrap();
+    state.day_care.egg_present = true;
+    let max_hp = state.day_care.egg.as_ref().unwrap().max_hp;
+    assert!(max_hp > 0);
+    let mut divider = ReplayDivider::new(divider_trace_for_sub_values([150, 0x12, 0x34]));
+    let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+    assert!(day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng).unwrap().success);
+    let egg = state.storage.party.pokemon[0].as_ref().unwrap();
+    assert!(egg.is_egg);
+    assert_eq!(egg.hp, 0, "DayCare_GiveEgg writes both MON_HP bytes to zero");
+    assert_eq!(egg.max_hp, max_hp);
 }
 
 #[test]
@@ -11550,7 +11614,7 @@ fn give_odd_egg_rejects_full_party_without_pc_fallback() {
 #[test]
 fn warp_to_spawn_point_only_clears_runtime_status_bits() {
     let mut state = GameState::default();
-    state.last_spawn_identifier = Some(21);
+    state.last_spawn_map_constant = Some("GOLDENROD_CITY".to_string());
     state.overworld = OverworldMemory::Active {
         map_name: "Route29".to_string(),
         tile: TilePosition::new(7, 4),
@@ -11596,7 +11660,10 @@ fn warp_to_spawn_point_only_clears_runtime_status_bits() {
         state.flags.is_engine_flag_set("ENGINE_SAFARI_ZONE"),
         Ok(false)
     );
-    assert_eq!(state.last_spawn_identifier, Some(21));
+    assert_eq!(
+        state.last_spawn_map_constant.as_deref(),
+        Some("GOLDENROD_CITY")
+    );
     assert_eq!(state.overworld, before_overworld);
     assert_eq!(
         state.script_runtime.pending_script_warp,
@@ -12106,6 +12173,33 @@ fn runtime_spawn_point_catalog_issues_reject_reserved_pack_prefix_tokens() {
                 identifier: 1,
             },
         ],
+    );
+}
+
+#[test]
+fn runtime_spawn_point_catalog_rejects_identifiers_past_num_spawns() {
+    let spawn_points = [(
+        "28".to_string(),
+        RuntimeSpawnPointRef {
+            identifier: 28,
+            map_constant: "ROUTE_29".to_string(),
+            map_name: "Route29".to_string(),
+            group_name: "GROUP_ROUTE_29".to_string(),
+            ..spawn_point(28, "ROUTE_29", 1, 1, 0, 0)
+        },
+    )]
+    .into_iter()
+    .collect();
+    let runtime_map_names = [("ROUTE_29".to_string(), "Route29".to_string())]
+        .into_iter()
+        .collect();
+
+    assert_eq!(
+        runtime_spawn_point_catalog_issues(&spawn_points, &runtime_map_names),
+        vec![RuntimeSpawnPointCatalogIssue::IdentifierOutOfRange {
+            key: "28".to_string(),
+            identifier: 28,
+        }]
     );
 }
 

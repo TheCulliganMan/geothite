@@ -1,0 +1,45 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Browser startup regression</title>
+<h1>Browser startup regression</h1>
+<pre id="result">RUNNING: waiting for two live game-loop observations</pre>
+<iframe title="Game under test" style="width:960px;height:640px"></iframe>
+<script type="module">
+  const frame = document.querySelector('iframe');
+  const result = document.querySelector('#result');
+  const deadline = setTimeout(() => {
+    result.textContent = 'FAIL: the game loop did not respond within 60 seconds';
+  }, 60000);
+  window.addEventListener('message', event => {
+    if (event.source !== frame.contentWindow || event.origin !== location.origin
+        || event.data?.test !== 'browser-startup') return;
+    clearTimeout(deadline);
+    result.textContent = event.data.result;
+  });
+  frame.addEventListener('load', () => {
+    const script = frame.contentDocument.createElement('script');
+    script.type = 'module';
+    script.textContent = `
+      import * as wasm from './crystal-bevy.js';
+      import { createGameBridge } from './webmcp.js';
+      const report = result => parent.postMessage({ test: 'browser-startup', result }, location.origin);
+      try {
+        while (!document.querySelector('#loading').hidden) {
+          if (document.querySelector('#startup-error').open) {
+            throw new Error(document.querySelector('#startup-error-message').textContent);
+          }
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        const bridge = createGameBridge(wasm);
+        await bridge.execute({ kind: 'observe' });
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await bridge.execute({ kind: 'observe' });
+        report('PASS: browser startup and repeated live game-loop observations');
+      } catch (error) {
+        report('FAIL: ' + error.message);
+      }
+    `;
+    frame.contentDocument.body.append(script);
+  }, { once: true });
+  frame.src = './?multiplayer=off';
+</script>

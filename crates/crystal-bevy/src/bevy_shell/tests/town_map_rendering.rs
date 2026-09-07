@@ -1,4 +1,62 @@
 #[test]
+fn fly_destinations_use_asm_landmark_order_and_new_bark_default() {
+    let destinations = [
+        ("ENGINE_FLYPOINT_SILVER_CAVE", 26, "LANDMARK_SILVER_CAVE"),
+        ("ENGINE_FLYPOINT_VIOLET", 16, "LANDMARK_VIOLET_CITY"),
+        ("ENGINE_FLYPOINT_NEW_BARK", 14, "LANDMARK_NEW_BARK_TOWN"),
+        (
+            "ENGINE_FLYPOINT_INDIGO_PLATEAU",
+            13,
+            "LANDMARK_INDIGO_PLATEAU",
+        ),
+    ]
+    .into_iter()
+    .map(|(flypoint_flag, destination_spawn_identifier, label)| {
+        RuntimeFlyDestinationKey {
+            flypoint_flag: flypoint_flag.to_string(),
+            destination_spawn_identifier,
+            label: label.to_string(),
+        }
+    })
+    .collect::<BTreeSet<_>>();
+    let landmarks = crystal_core::models::PokegearLandmarksPayload {
+        landmarks: [
+            (46, "LANDMARK_SILVER_CAVE", "JOHTO"),
+            (6, "LANDMARK_VIOLET_CITY", "JOHTO"),
+            (1, "LANDMARK_NEW_BARK_TOWN", "JOHTO"),
+            (90, "LANDMARK_INDIGO_PLATEAU", "KANTO"),
+        ]
+        .into_iter()
+        .map(|(id, constant, region)| crystal_core::models::PokegearLandmark {
+            id,
+            constant: constant.to_string(),
+            label: constant.to_string(),
+            name: constant.to_string(),
+            region: region.to_string(),
+            x: 0,
+            y: 0,
+        })
+        .collect(),
+        map_to_landmark: BTreeMap::new(),
+    };
+    let active_flags = ["ENGINE_FLYPOINT_VIOLET".to_string()]
+        .into_iter()
+        .collect::<BTreeSet<_>>();
+
+    let active =
+        ordered_active_fly_destinations(destinations, &landmarks, &active_flags, false)
+            .expect("exact Fly table should resolve");
+
+    assert_eq!(
+        active
+            .iter()
+            .map(|destination| destination.flypoint_flag.as_str())
+            .collect::<Vec<_>>(),
+        ["ENGINE_FLYPOINT_NEW_BARK", "ENGINE_FLYPOINT_VIOLET"]
+    );
+}
+
+#[test]
 fn town_map_markers_project_oam_coordinates_at_full_lcd_scale() {
     let player = crate::core::models::PokegearLandmark {
         id: 1,
@@ -80,7 +138,7 @@ fn town_map_frame_reserves_the_two_row_landmark_label_panel() {
     let pokegear = tokens("pokegear");
     let mut images = Assets::<Image>::default();
 
-    let frame = load_town_map_frame(&asset_root, "johto", 0, &town, &pokegear, false, &mut images)
+    let frame = load_town_map_frame(&asset_root, "johto", 0, &town, &pokegear, false, 0xf, &mut images)
         .expect("render Johto Town Map");
     let image = images.get(&frame.handle).expect("Town Map image");
     let pixel = |x: usize, y: usize| {
@@ -173,10 +231,68 @@ fn pokegear_non_map_cards_render_their_distinct_authored_layouts() {
                 >= 5,
             "{page:?} rendered as a flat placeholder"
         );
+        if page == PokegearPage::Radio {
+            let offset = (8 * 8 * 160 + 8) * 4;
+            let rgb5 = image.data[offset..offset + 3].iter().map(|value| value >> 3).collect::<Vec<_>>();
+            assert_eq!(rgb5, [28, 31, 20],
+                "NoRadioName must clear the RLE station window to the textbox background");
+        }
         signatures.push(image.data.clone());
     }
 
     assert_ne!(signatures[0], signatures[1]);
     assert_ne!(signatures[1], signatures[2]);
     assert_ne!(signatures[0], signatures[2]);
+}
+
+#[test]
+fn town_map_player_marker_uses_one_source_sprite_scale() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_standalone_map = true;
+    shell.pokegear_page = PokegearPage::Map;
+    let snapshot = shell.shell.snapshot().unwrap();
+    shell.pokegear_cursor = visible_pokegear_landmark_indices(&snapshot, true).unwrap()[0];
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    let world = app.world_mut();
+    let marker = world.query_filtered::<(&Sprite, &Transform), With<FieldCommandMarker>>()
+        .iter(world)
+        .find(|(_, transform)| (transform.translation.z - 3.65).abs() < 0.001)
+        .expect("Town Map player marker").0;
+    assert_eq!(marker.custom_size, Some(Vec2::splat(64.0)),
+        "a 16x16 source sprite must be 64x64 world units, not scaled twice");
+}
+
+#[cfg(feature = "fullscreen-scaling")]
+#[test]
+fn fullscreen_town_map_owns_one_centered_layer_and_restores_world() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.pokegear_menu_open = true;
+    shell.pokegear_standalone_map = true;
+    shell.pokegear_page = PokegearPage::Map;
+    shell.pokegear_cursor = visible_pokegear_landmark_indices(&shell.shell.snapshot().unwrap(), true).unwrap()[0];
+    let mut app = integrated_shell_test_app(shell);
+    app.world_mut().spawn((Window {
+        resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+        ..default()
+    }, bevy::window::PrimaryWindow));
+    app.add_systems(Startup, setup_fullscreen_scene).add_systems(PostUpdate,
+        (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
+    app.update();
+    app.update();
+    let world = app.world_mut();
+    let world_visibility = world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world);
+    assert_eq!(*world_visibility, Visibility::Hidden, "the room must not surround the Town Map");
+    let presenter_parent = world.query_filtered::<&Parent, With<VisibleIntroSurface>>().single(world).get();
+    for parent in world.query_filtered::<&Parent, With<FieldCommandMarker>>().iter(world) {
+        assert_eq!(parent.get(), presenter_parent, "map, label and markers must share the screen transform");
+    }
+    let transform = world.get::<Transform>(presenter_parent).unwrap();
+    assert_eq!(transform.translation, Vec3::ZERO);
+    assert!(transform.scale.x > 1.0, "the map should use the available screen height");
+    world.resource_mut::<BevyRuntimeShell>().pokegear_menu_open = false;
+    app.update();
+    let world = app.world_mut();
+    assert_eq!(*world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world), Visibility::Inherited);
 }

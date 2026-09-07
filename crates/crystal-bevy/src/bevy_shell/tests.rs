@@ -1,4 +1,5 @@
 include!("tests/shell_basics.rs");
+include!("tests/multiplayer_rendering.rs");
 include!("tests/overworld_rendering.rs");
 include!("tests/intro_title_rendering.rs");
 include!("tests/title_flow.rs");
@@ -99,3 +100,5 @@ fn egg_hatch_wobble_uses_exact_asm_pairs_and_crack_boundaries() {
         vec![50, 124, 222]
     );
 }
+
+include!("tests/webmcp.rs");

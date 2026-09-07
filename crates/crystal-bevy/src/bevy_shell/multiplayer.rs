@@ -1,3 +1,5 @@
+include!("social.rs");
+
 struct MultiplayerRuntime {
     connection: Option<crystal_net::hosted::HostedConnection>,
     session: Option<crystal_net::hosted::HostedLinkSession>,
@@ -32,6 +34,7 @@ struct MultiplayerRuntime {
     failed: bool,
     reconnect_frames: u16,
     reconnect_attempt: u8,
+    social_notice: Option<String>,
     sent_input_count: usize,
     sent_battle_action_count: usize,
     sent_menu_result_count: usize,
@@ -94,6 +97,7 @@ impl MultiplayerRuntime {
             failed: false,
             reconnect_frames: 0,
             reconnect_attempt: 0,
+            social_notice: None,
             sent_input_count: 0,
             sent_battle_action_count: 0,
             sent_menu_result_count: 0,
@@ -132,10 +136,19 @@ impl MultiplayerRuntime {
         runtime_shell: &mut BevyRuntimeShell,
         keys: &mut ButtonInput<KeyCode>,
     ) -> Result<()> {
+        self.poll_social(runtime_shell)?;
         if self.failed {
             return self.poll_reconnect(runtime_shell);
         }
         self.publish_presence(runtime_shell)?;
+        let map = runtime_shell.shell.session().snapshot().map_name;
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+            bridge.players = self.remote_presences.iter()
+                .filter(|(_, player)| player.map == map)
+                .map(|(id, player)| serde_json::json!({"user_id": id, "display_name": player.display_name}))
+                .collect();
+            bridge.players.sort_by(|a, b| a["user_id"].as_str().cmp(&b["user_id"].as_str()));
+        });
         self.handle_interaction_input(runtime_shell, keys)?;
         let mut matched = None;
         let mut lobby_messages = Vec::new();
@@ -160,6 +173,8 @@ impl MultiplayerRuntime {
         for message in lobby_messages {
             match message {
                 crystal_net::hosted::ServerMessage::Welcome { .. } => {
+                    SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = true);
+                    social_event(&message);
                     runtime_shell.last_action_status =
                         Some("Connected to multiplayer server".into());
                 }
@@ -171,13 +186,39 @@ impl MultiplayerRuntime {
                     session_id,
                     mode,
                     opponent_display_name,
+                    opponent_user_id,
                     is_host,
-                    ..
                 } => {
+                    social_event(&crystal_net::hosted::ServerMessage::MatchFound {
+                        session_id, mode, opponent_display_name: opponent_display_name.clone(),
+                        opponent_user_id, is_host,
+                    });
                     if Some(mode) != self.queued_mode && Some(mode) != self.direct_mode {
                         anyhow::bail!("hosted server returned a different match mode");
                     }
+                    if self.direct_mode == Some(mode)
+                        && direct_interaction_block_reason(runtime_shell.shell.session().state()).is_some()
+                    {
+                        self.connection.as_mut().context("matched connection is missing")?
+                            .send(crystal_net::hosted::ClientMessage::Result {
+                                session_id,
+                                outcome: crystal_net::hosted::MatchOutcome::Cancelled,
+                            })?;
+                        self.direct_mode = None;
+                        runtime_shell.last_action_status = Some("Invitation cancelled because you are no longer ready".into());
+                        continue;
+                    }
                     matched = Some((session_id, mode, opponent_display_name, is_host));
+                }
+                crystal_net::hosted::ServerMessage::ResultSettled { session_id, .. } => {
+                    // A peer may cancel before we have consumed MatchFound.
+                    // Do not bootstrap an already-settled session from this batch.
+                    if matched.as_ref().is_some_and(|(id, _, _, _)| *id == session_id) {
+                        matched = None;
+                        self.direct_mode = None;
+                        self.queued_mode = None;
+                        runtime_shell.last_action_status = Some("Partner cancelled the session".into());
+                    }
                 }
                 message => self.handle_server_message(message)?,
             }
@@ -234,6 +275,9 @@ impl MultiplayerRuntime {
             for message in messages {
                 self.handle_server_message(message)?;
             }
+        }
+        if let Some(notice) = self.social_notice.take() {
+            runtime_shell.last_action_status = Some(notice);
         }
         if self.session_settled {
             if !self.result_reported {
@@ -305,6 +349,7 @@ impl MultiplayerRuntime {
     }
 
     fn handle_server_message(&mut self, message: crystal_net::hosted::ServerMessage) -> Result<()> {
+        social_event(&message);
         match message {
             crystal_net::hosted::ServerMessage::Presence {
                 user_id,
@@ -343,16 +388,25 @@ impl MultiplayerRuntime {
                     kind,
                 });
             }
-            crystal_net::hosted::ServerMessage::InteractionResponse { accepted, .. } => {
+            crystal_net::hosted::ServerMessage::InteractionResponse { request_id, accepted, .. } => {
                 if !accepted {
                     self.direct_mode = None;
+                    if self.pending_interaction.as_ref().is_some_and(|request| request.request_id == request_id) {
+                        self.pending_interaction = None;
+                    }
+                    self.social_notice = Some("Invitation declined or cancelled".into());
                 }
             }
             crystal_net::hosted::ServerMessage::ResultSettled { .. } => {
-                self.session_settled = true;
+                self.session_settled = self.session.is_some();
             }
             crystal_net::hosted::ServerMessage::Error { code, message } => {
-                anyhow::bail!("hosted multiplayer server error {code}: {message}");
+                if matches!(code.as_str(), "invalid_request" | "chat_error") {
+                    if code == "invalid_request" { self.direct_mode = None; }
+                    self.social_notice = Some(message);
+                } else {
+                    anyhow::bail!("hosted multiplayer server error {code}: {message}");
+                }
             }
             _ => {}
         }
@@ -365,7 +419,10 @@ impl MultiplayerRuntime {
         keys: &mut ButtonInput<KeyCode>,
     ) -> Result<()> {
         if let Some(request) = self.pending_interaction.clone() {
-            let accepted = if keys.just_pressed(KeyCode::KeyZ) {
+            let unavailable = direct_interaction_block_reason(runtime_shell.shell.session().state());
+            let accepted = if unavailable.is_some() {
+                Some(false)
+            } else if keys.just_pressed(KeyCode::KeyZ) {
                 Some(true)
             } else if keys.just_pressed(KeyCode::KeyX) {
                 Some(false)
@@ -382,23 +439,50 @@ impl MultiplayerRuntime {
                 .context("incoming interaction has no lobby connection")?
                 .send(crystal_net::hosted::ClientMessage::InteractionResponse {
                     request_id: request.request_id,
-                    target_user_id: request.from_user_id,
+                    target_user_id: request.from_user_id.clone(),
                     accepted,
                 })
                 .context("respond to hosted player interaction")?;
+            social_event(&crystal_net::hosted::ServerMessage::InteractionResponse {
+                request_id: request.request_id, from_user_id: request.from_user_id.clone(), accepted,
+            });
             self.direct_mode = accepted.then_some(request.kind);
             self.pending_interaction = None;
-            keys.clear_just_pressed(KeyCode::KeyZ);
-            keys.clear_just_pressed(KeyCode::KeyX);
-            runtime_shell.last_action_status = Some(if accepted {
+            if unavailable.is_none() {
+                keys.reset(KeyCode::KeyZ);
+                keys.reset(KeyCode::KeyX);
+            }
+            runtime_shell.last_action_status = Some(if let Some(reason) = unavailable {
+                format!("Invitation declined: {reason}")
+            } else if accepted {
                 "Challenge accepted".into()
             } else {
                 "Challenge declined".into()
             });
             return Ok(());
         }
+        if self.direct_mode.is_some() && self.session.is_none() && keys.just_pressed(KeyCode::KeyX) {
+            if let Some(connection) = self.connection.as_mut() {
+                connection.send(crystal_net::hosted::ClientMessage::InteractionCancel)?;
+            }
+            keys.reset(KeyCode::KeyX);
+            runtime_shell.last_action_status = Some("Cancelling invitation".into());
+            return Ok(());
+        }
         if self.session.is_some() || self.queued_mode.is_some() || self.direct_mode.is_some() {
             return Ok(());
+        }
+        if keys.just_pressed(KeyCode::KeyZ)
+            && runtime_shell.player_walk_frame_ticks == 0
+            && !has_visible_shell_a_action(runtime_shell)?
+        {
+            let snapshot = runtime_shell.shell.session().snapshot();
+            let target_tile = snapshot.tile.moved(snapshot.facing);
+            if let Some(id) = select_facing_player(&self.remote_presences, &snapshot.map_name, target_tile, keys) {
+                SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.selected_player = Some(id));
+                runtime_shell.last_action_status = Some("Choose Battle or Trade in chat".into());
+                return Ok(());
+            }
         }
         let mode = if keys.just_pressed(KeyCode::KeyC) {
             Some(crystal_net::hosted::MatchMode::Battle)
@@ -412,6 +496,10 @@ impl MultiplayerRuntime {
         let Some(mode) = mode else {
             return Ok(());
         };
+        if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) {
+            runtime_shell.last_action_status = Some(reason.into());
+            return Ok(());
+        }
         let snapshot = runtime_shell.shell.session().snapshot();
         let target_tile = snapshot.tile.moved(snapshot.facing);
         let target = self.remote_presences.iter().find(|(_, presence)| {
@@ -433,7 +521,7 @@ impl MultiplayerRuntime {
             .context("request hosted player interaction")?;
         self.direct_mode = Some(mode);
         runtime_shell.last_action_status =
-            Some(format!("Sent {mode:?} request to {}", target.display_name));
+            Some(format!("Sent {mode:?} request to {} — X cancels", target.display_name));
         Ok(())
     }
 
@@ -451,6 +539,7 @@ impl MultiplayerRuntime {
     }
 
     fn return_to_lobby(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = false);
         if let Some(session) = self.session.as_mut() {
             session.disconnect();
         }
@@ -875,48 +964,13 @@ impl MultiplayerRuntime {
         }
 
         let expected_trade_id = self.current_trade_id();
-        while let Some(offer) = self.peer_trade_offers.pop_front() {
-            if offer.trade_id() != expected_trade_id {
-                anyhow::bail!(
-                    "peer trade offer {} does not match active trade {}",
-                    offer.trade_id(),
-                    expected_trade_id
-                );
-            }
-            let result = self
-                .active_trade
-                .as_mut()
-                .expect("active trade was initialized")
-                .insert_offer(offer)
-                .context("insert peer Trade Center offer")?;
-            if matches!(
-                result,
-                crate::core::multiplayer::InsertTradeFrameResult::Conflict
-            ) {
-                anyhow::bail!("peer sent a conflicting Trade Center offer");
-            }
-        }
-        while let Some(confirmation) = self.peer_trade_confirmations.pop_front() {
-            if confirmation.trade_id() != expected_trade_id {
-                anyhow::bail!(
-                    "peer trade confirmation {} does not match active trade {}",
-                    confirmation.trade_id(),
-                    expected_trade_id
-                );
-            }
-            let result = self
-                .active_trade
-                .as_mut()
-                .expect("active trade was initialized")
-                .insert_confirmation(confirmation)
-                .context("insert peer Trade Center confirmation")?;
-            if matches!(
-                result,
-                crate::core::multiplayer::InsertTradeFrameResult::Conflict
-            ) {
-                anyhow::bail!("peer sent a conflicting Trade Center confirmation");
-            }
-        }
+        receive_peer_trade_round(
+            self.active_trade.as_mut().expect("active trade was initialized"),
+            &mut self.peer_trade_offers,
+            &mut self.peer_trade_confirmations,
+            &expected_trade_id,
+            &hosted_trade_id(&self.trade_id_prefix, self.trade_sequence.saturating_add(1)),
+        )?;
 
         if let Some(selection) = runtime_shell.pending_link_trade_party_slot.take() {
             match selection {
@@ -1469,6 +1523,42 @@ impl MultiplayerRuntime {
     }
 }
 
+fn select_facing_player(
+    players: &HashMap<String, RemotePresence>,
+    map: &str,
+    target: TilePosition,
+    keys: &mut ButtonInput<KeyCode>,
+) -> Option<String> {
+    if !keys.just_pressed(KeyCode::KeyZ) { return None; }
+    let id = players.iter().filter(|(_, player)| {
+        player.map == map && player.tile_x == target.x && player.tile_y == target.y
+    }).map(|(id, _)| id).min()?.clone();
+    // Consume both held and edge state so A cannot also reach an NPC below
+    // the remote trainer during this frame.
+    keys.reset(KeyCode::KeyZ);
+    Some(id)
+}
+
+fn direct_interaction_block_reason(state: &crate::core::state::GameState) -> Option<&'static str> {
+    if !matches!(state.battle, crate::core::state::BattleMemory::Inactive) {
+        return Some("finish your current battle first");
+    }
+    if state.pending_move_learn.is_some() || !state.pending_move_learn_queue.is_empty() {
+        return Some("finish learning moves first");
+    }
+    if !state
+        .storage
+        .party
+        .pokemon
+        .iter()
+        .flatten()
+        .any(|pokemon| !pokemon.is_egg && pokemon.hp > 0)
+    {
+        return Some("you need a battle-ready Pokemon");
+    }
+    None
+}
+
 fn selected_cable_club_room(
     state: &crate::core::state::GameState,
     pending_room: Option<u8>,
@@ -1498,6 +1588,65 @@ fn match_mode_room(mode: crystal_net::hosted::MatchMode) -> u8 {
         crystal_net::hosted::MatchMode::Trade => 1,
         crystal_net::hosted::MatchMode::Battle => 2,
     }
+}
+
+fn receive_peer_trade_round(
+    trade: &mut TradeSyncBuffer,
+    offers: &mut VecDeque<TradeOffer>,
+    confirmations: &mut VecDeque<TradeConfirmation>,
+    current_trade_id: &str,
+    next_trade_id: &str,
+) -> Result<()> {
+    // A peer can finish this exchange and send its next offer before our
+    // frame loop drains the preceding confirmation. Keep that next round
+    // queued; arbitrary or stale trade IDs still fail validation below.
+    while offers
+        .front()
+        .is_some_and(|offer| offer.trade_id() != next_trade_id)
+    {
+        let offer = offers.pop_front().expect("checked queued offer");
+        if offer.trade_id() != current_trade_id {
+            anyhow::bail!(
+                "peer trade offer {} does not match active trade {}",
+                offer.trade_id(),
+                current_trade_id
+            );
+        }
+        let result = trade
+            .insert_offer(offer)
+            .context("insert peer Trade Center offer")?;
+        if matches!(
+            result,
+            crate::core::multiplayer::InsertTradeFrameResult::Conflict
+        ) {
+            anyhow::bail!("peer sent a conflicting Trade Center offer");
+        }
+    }
+    while confirmations
+        .front()
+        .is_some_and(|confirmation| confirmation.trade_id() != next_trade_id)
+    {
+        let confirmation = confirmations
+            .pop_front()
+            .expect("checked queued confirmation");
+        if confirmation.trade_id() != current_trade_id {
+            anyhow::bail!(
+                "peer trade confirmation {} does not match active trade {}",
+                confirmation.trade_id(),
+                current_trade_id
+            );
+        }
+        let result = trade
+            .insert_confirmation(confirmation)
+            .context("insert peer Trade Center confirmation")?;
+        if matches!(
+            result,
+            crate::core::multiplayer::InsertTradeFrameResult::Conflict
+        ) {
+            anyhow::bail!("peer sent a conflicting Trade Center confirmation");
+        }
+    }
+    Ok(())
 }
 
 fn hosted_trade_id(session_id: &str, sequence: u64) -> String {
@@ -1533,9 +1682,12 @@ fn link_trade_leaves_battle_ready(
     offered_party_slot: usize,
     received: &crate::core::models::Pokemon,
 ) -> bool {
-    received.hp > 0
+    (!received.is_egg && received.hp > 0)
         || party.pokemon.iter().enumerate().any(|(index, pokemon)| {
-            index != offered_party_slot && pokemon.as_ref().is_some_and(|pokemon| pokemon.hp > 0)
+            index != offered_party_slot
+                && pokemon
+                    .as_ref()
+                    .is_some_and(|pokemon| !pokemon.is_egg && pokemon.hp > 0)
         })
 }
 
@@ -1605,7 +1757,7 @@ fn mark_link_disconnected(state: &mut crate::core::state::GameState) {
 fn sync_multiplayer_ghosts(
     mut commands: Commands,
     multiplayer: Option<NonSend<MultiplayerRuntime>>,
-    runtime_shell: Res<BevyRuntimeShell>,
+    mut runtime_shell: ResMut<BevyRuntimeShell>,
     rendered: Res<RenderedViewport>,
     time: Res<Time>,
     mut tileset_art: ResMut<RenderedTilesetArt>,
@@ -1634,7 +1786,10 @@ fn sync_multiplayer_ghosts(
     let Some((start_x, start_y)) = rendered.viewport_origin else {
         return;
     };
-    let Ok(snapshot) = runtime_shell.shell.snapshot() else {
+    // Ghosts need the same read-only presentation as the local compositor.
+    // Save validation and whole-state hashing belong at persistence/replay/
+    // network boundaries, not once per display frame for remote sprites.
+    let Ok(snapshot) = cached_runtime_snapshot(&mut runtime_shell) else {
         return;
     };
     let camera_offset = visible_overworld_camera_offset(&rendered, &runtime_shell, 1.0);
@@ -1840,7 +1995,11 @@ fn poll_multiplayer(
     let Some(mut multiplayer) = multiplayer else {
         return;
     };
+    if SOCIAL_BRIDGE.with_borrow(|bridge| bridge.focused) {
+        keys.reset_all();
+    }
     if let Err(error) = multiplayer.poll(&mut runtime_shell, &mut keys) {
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| { bridge.connected = false; bridge.pending.clear(); });
         let cleanup_error = multiplayer.mark_disconnected(&mut runtime_shell).err();
         record_visible_runtime_system_error(
             &mut runtime_shell,
@@ -1873,6 +2032,22 @@ fn trim_multiplayer_queue<T>(queue: &mut VecDeque<T>) {
 #[cfg(test)]
 mod multiplayer_tests {
     use super::*;
+
+    #[test]
+    fn a_selects_only_the_facing_player_and_preserves_ordinary_interactions() {
+        let players = HashMap::from([("player-2".into(), RemotePresence {
+            display_name: "GOLD".into(), map: "map-a".into(), tile_x: 3, tile_y: 4, direction: "down".into(),
+        })]);
+        let mut keys = ButtonInput::default();
+        keys.press(KeyCode::KeyZ);
+        assert_eq!(select_facing_player(&players, "map-b", TilePosition::new(3, 4), &mut keys), None);
+        assert!(keys.just_pressed(KeyCode::KeyZ));
+        assert_eq!(select_facing_player(&players, "map-a", TilePosition::new(4, 4), &mut keys), None);
+        assert!(keys.pressed(KeyCode::KeyZ));
+        assert_eq!(select_facing_player(&players, "map-a", TilePosition::new(3, 4), &mut keys), Some("player-2".into()));
+        assert!(!keys.pressed(KeyCode::KeyZ));
+        assert!(!keys.just_pressed(KeyCode::KeyZ));
+    }
 
     #[test]
     fn remote_ghost_motion_advances_smoothly_and_lands_exactly() {
@@ -1997,6 +2172,104 @@ mod multiplayer_tests {
     }
 
     #[test]
+    fn direct_invites_require_a_ready_party_and_do_not_interrupt_battles() {
+        let mut state = crate::core::state::GameState::default();
+        assert!(direct_interaction_block_reason(&state).is_some());
+        let species = crate::core::models::PokemonSpecies::new_for_tests(
+            "PIKACHU",
+            crate::core::models::BaseStats::new(35, 55, 40, 90, 50, 50),
+        );
+        let pokemon = crate::core::models::Pokemon::new_for_tests(
+            species,
+            10,
+            crate::core::models::Dv::default(),
+        );
+        state.storage.party.pokemon[0] = Some(pokemon.clone());
+        assert!(direct_interaction_block_reason(&state).is_none());
+        state.storage.party.pokemon[0].as_mut().unwrap().is_egg = true;
+        assert!(direct_interaction_block_reason(&state).is_some());
+        state.storage.party.pokemon[0] = Some(pokemon.clone());
+        state.battle = crate::core::state::BattleMemory::Wild {
+            battle_type: "normal".into(),
+            battle_music: "music".into(),
+            map_name: "map".into(),
+            roaming_slot: None,
+            enemy_pokemon: pokemon,
+            enemy_party: Vec::new(),
+        };
+        assert_eq!(
+            direct_interaction_block_reason(&state),
+            Some("finish your current battle first")
+        );
+    }
+
+    #[test]
+    fn fast_peer_next_trade_offer_does_not_abort_the_confirmed_current_exchange() {
+        let species = crate::core::models::PokemonSpecies::new_for_tests(
+            "PIKACHU",
+            crate::core::models::BaseStats::new(35, 55, 40, 90, 50, 50),
+        );
+        let pokemon = crate::core::models::Pokemon::new_for_tests(
+            species,
+            10,
+            crate::core::models::Dv::default(),
+        );
+        let mut trade = TradeSyncBuffer::new(
+            crate::core::multiplayer::TradeParticipants::new("session-trade-1", 1, 2).unwrap(),
+        );
+        for player in [1, 2] {
+            trade
+                .insert_offer(
+                    TradeOffer::new("session-trade-1", player, 0, pokemon.clone()).unwrap(),
+                )
+                .unwrap();
+        }
+        trade
+            .insert_confirmation(TradeConfirmation::new("session-trade-1", 1, true).unwrap())
+            .unwrap();
+        let mut offers =
+            VecDeque::from([TradeOffer::new("session-trade-2", 2, 0, pokemon).unwrap()]);
+        let mut confirmations =
+            VecDeque::from([TradeConfirmation::new("session-trade-1", 2, true).unwrap()]);
+        receive_peer_trade_round(
+            &mut trade,
+            &mut offers,
+            &mut confirmations,
+            "session-trade-1",
+            "session-trade-2",
+        )
+        .expect("coalesced next-round offer must be retained while current confirmation commits");
+        assert!(trade.is_ready());
+        assert!(!trade.outcome().unwrap().cancelled());
+        assert_eq!(offers.len(), 1);
+        assert!(confirmations.is_empty());
+        let mut next = TradeSyncBuffer::new(
+            crate::core::multiplayer::TradeParticipants::new("session-trade-2", 1, 2).unwrap(),
+        );
+        receive_peer_trade_round(
+            &mut next,
+            &mut offers,
+            &mut confirmations,
+            "session-trade-2",
+            "session-trade-3",
+        )
+        .unwrap();
+        assert!(next.offer(2).is_some());
+        assert!(offers.is_empty());
+        confirmations.push_back(TradeConfirmation::new("unrelated-trade", 2, true).unwrap());
+        assert!(
+            receive_peer_trade_round(
+                &mut next,
+                &mut offers,
+                &mut confirmations,
+                "session-trade-2",
+                "session-trade-3"
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
     fn both_cancel_selections_exit_but_a_declined_offer_only_restarts_trade_menu() {
         let mut exit = TradeSyncBuffer::new(
             crate::core::multiplayer::TradeParticipants::new("trade-exit", 1, 2)
@@ -2079,6 +2352,11 @@ mod multiplayer_tests {
 
         assert!(!link_trade_leaves_battle_ready(&party, 0, &fainted));
         assert!(link_trade_leaves_battle_ready(&party, 0, &alive));
+        let mut egg = alive.clone();
+        egg.is_egg = true;
+        assert!(!link_trade_leaves_battle_ready(&party, 0, &egg));
+        party.pokemon[1] = Some(egg);
+        assert!(!link_trade_leaves_battle_ready(&party, 0, &fainted));
         party.pokemon[1] = Some(alive);
         assert!(link_trade_leaves_battle_ready(&party, 0, &fainted));
     }

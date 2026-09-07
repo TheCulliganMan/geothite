@@ -233,6 +233,8 @@ pub enum ScriptPhoneError {
     InvalidPermanentContact { contact_id: String },
     #[error("permanent phone numbers exceed exact phone contact capacity {capacity}")]
     PermanentContactsExceedCapacity { capacity: usize },
+    #[error("saved phone list is inconsistent with its registered contacts")]
+    InvalidPhoneList,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -505,6 +507,62 @@ pub fn apply_script_phone_command(
             command: other.to_string(),
         }),
     }
+}
+
+/// CheckCanDeletePhoneNumber protects the two non-trainer family contacts.
+pub fn can_delete_pokegear_phone_number(
+    catalog: &PhoneContactCatalog,
+    contact_id: &str,
+) -> Result<bool, ScriptPhoneError> {
+    let contact = catalog.0.get(contact_id).ok_or_else(|| ScriptPhoneError::UnknownSavedContact {
+        contact_id: contact_id.to_string(),
+    })?;
+    let class = contact.trainer_class.as_deref().ok_or_else(|| ScriptPhoneError::InvalidSavedContact {
+        contact_id: contact_id.to_string(),
+    })?;
+    if class != "TRAINER_NONE" {
+        return Ok(true);
+    }
+    let caller = contact.trainer_label.as_deref().ok_or_else(|| ScriptPhoneError::InvalidSavedContact {
+        contact_id: contact_id.to_string(),
+    })?;
+    Ok(!matches!(caller, "PHONECONTACT_MOM" | "PHONECONTACT_ELM"))
+}
+
+/// PokegearPhone_DeletePhoneNumber is distinct from Script_delcellnum:
+/// it makes one forward pass moving each following entry into an empty slot.
+pub fn delete_pokegear_phone_number(
+    state: &mut GameState,
+    catalog: &PhoneContactCatalog,
+    contact_id: &str,
+) -> Result<bool, ScriptPhoneError> {
+    if !can_delete_pokegear_phone_number(catalog, contact_id)? {
+        return Ok(false);
+    }
+    let runtime = &mut state.script_runtime;
+    if !runtime.phone_numbers.contains(contact_id) {
+        return Ok(false);
+    }
+    let order = &mut runtime.phone_number_order;
+    let saved = order.iter().flatten().cloned().collect::<BTreeSet<_>>();
+    if order.len() > MAX_PHONE_CONTACTS || saved != runtime.phone_numbers
+        || saved.len() != order.iter().flatten().count()
+    {
+        return Err(ScriptPhoneError::InvalidPhoneList);
+    }
+    let selected = order.iter().position(|entry| entry.as_deref() == Some(contact_id))
+        .ok_or(ScriptPhoneError::InvalidPhoneList)?;
+    // wPhoneList has a zero sentinel after its ten selectable entries.
+    order.resize(MAX_PHONE_CONTACTS + 1, None);
+    order[selected] = None;
+    for index in 0..MAX_PHONE_CONTACTS {
+        if order[index].is_none() {
+            order[index] = order[index + 1].take();
+        }
+    }
+    order.truncate(MAX_PHONE_CONTACTS);
+    runtime.phone_numbers.remove(contact_id);
+    Ok(true)
 }
 
 pub fn initialize_permanent_phone_numbers(
@@ -881,6 +939,34 @@ mod tests {
             callee_script: None,
             caller_time_mask: 0,
             caller_script: None,
+        }
+    }
+
+    #[test]
+    fn pokegear_delete_preserves_source_single_pass_holes_and_script_value() {
+        let mut catalog = catalog();
+        for (id, caller) in [("PHONE_MOM", "PHONECONTACT_MOM"), ("PHONE_ELM", "PHONECONTACT_ELM"), ("PHONE_BILL", "PHONECONTACT_BILL")] {
+            let contact = catalog.0.get_mut(id).unwrap();
+            contact.trainer_class = Some("TRAINER_NONE".into());
+            contact.trainer_label = Some(caller.into());
+        }
+        let mut state = GameState::default();
+        state.script_runtime.phone_number_order = vec![
+            Some("PHONE_MOM".into()), None, None, Some("PHONE_JOEY".into()),
+            Some("PHONE_ELM".into()), Some("PHONE_BILL".into()),
+        ];
+        state.script_runtime.phone_numbers = state.script_runtime.phone_number_order.iter().flatten().cloned().collect();
+        state.script_runtime.script_value = Some("37".into());
+        assert!(delete_pokegear_phone_number(&mut state, &catalog, "PHONE_BILL").unwrap());
+        assert_eq!(&state.script_runtime.phone_number_order[..5], &[
+            Some("PHONE_MOM".into()), None, Some("PHONE_JOEY".into()), Some("PHONE_ELM".into()), None,
+        ]);
+        assert_eq!(state.script_runtime.phone_number_order.len(), MAX_PHONE_CONTACTS);
+        assert_eq!(state.script_runtime.script_value.as_deref(), Some("37"));
+        for contact in ["PHONE_MOM", "PHONE_ELM"] {
+            let before = state.clone();
+            assert!(!delete_pokegear_phone_number(&mut state, &catalog, contact).unwrap());
+            assert_eq!(state, before);
         }
     }
 

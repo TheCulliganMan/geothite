@@ -162,6 +162,10 @@ pub enum BagSaveError {
 }
 
 impl Bag {
+    pub fn switch_pc_item_stacks(&mut self, source_index: usize, target_index: usize) -> Result<(), String> {
+        switch_inventory_stacks(&mut self.pc_items, source_index, target_index, MAX_ITEM_STACK).map(|_| ())
+    }
+
     pub fn switch_item_stacks(
         &mut self,
         pocket: &str,
@@ -270,6 +274,9 @@ impl Bag {
                 stack_index,
                 1,
             ),
+            // _TossItem resolves TM/HM counters via GetTMHMNumber and does
+            // not use wCurItemQuantity (the visible menu-row index).
+            ITEM_POCKET_TM_HM => self.remove_tmhm(definition, quantity),
             _ => Err(format!(
                 "indexed removal is unavailable for pocket {}",
                 definition.pocket
@@ -832,7 +839,6 @@ mod tests {
             battle_capture_ball: None,
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
-            battle_stat_drop_guard_turns: None,
             confusion_heal: None,
             repel_steps: None,
             escape_rope_mode: None,
@@ -1128,6 +1134,19 @@ mod tests {
             bag.validate(),
             Err("custom_pockets must not redefine built-in pocket ITEM".to_string())
         );
+    }
+
+    #[test]
+    fn indexed_tmhm_removal_uses_the_compiled_counter_not_the_menu_row() {
+        let mut machine = item("TM_MUD_SLAP", item_pocket("TM_HM"));
+        machine.tmhm_index = Some(30);
+        for menu_row in [0, 1, 29, 255] {
+            let mut bag = Bag::default();
+            assert!(bag.add_item(&machine, 3).unwrap());
+            assert!(bag.remove_item_at(&machine, menu_row, 2).unwrap());
+            assert_eq!(bag.quantity(&machine), 1);
+            assert_eq!(bag.tm_hm[30], 1);
+        }
     }
 
     #[test]

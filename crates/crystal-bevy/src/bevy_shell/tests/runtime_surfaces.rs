@@ -182,8 +182,18 @@ fn native_title_main_menu_keeps_game_timer_counting_clear() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.intro_screen = None;
     let title = runtime_shell.title_menu.as_mut().expect("title menu");
-    title.phase = VisibleTitlePhase::MainMenu;
-    title.scx = 0;
+    title
+        .presentation_machine
+        .memory
+        .insert("wJumptableIndex".to_string(), 0x82);
+    title
+        .presentation_machine
+        .memory
+        .insert("wTitleScreenSelectedOption".to_string(), 0);
+    title
+        .presentation_machine
+        .memory
+        .insert("hSCX".to_string(), 0);
     let mut app = integrated_shell_test_app(runtime_shell);
 
     app.update();
@@ -886,7 +896,7 @@ fn retained_fullscreen_lcd_survives_title_setup_and_hands_off_to_complete_overwo
 
     {
         let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
-        finish_visible_intro_screen(&mut runtime_shell, "retained-lcd-regression")
+        finish_and_drain_visible_intro_for_test(&mut runtime_shell, "retained-lcd-regression")
             .expect("handoff intro to title");
     }
     app.update();
@@ -895,10 +905,18 @@ fn retained_fullscreen_lcd_survives_title_setup_and_hands_off_to_complete_overwo
     {
         let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
         let title = runtime_shell.title_menu.as_mut().expect("title menu");
-        title.phase = VisibleTitlePhase::PressStart;
-        title.scx = 0;
-        title.frame = 0;
-        title.title_timer = 10_000;
+        title
+            .presentation_machine
+            .memory
+            .insert("hSCX".to_string(), 0);
+        title
+            .presentation_machine
+            .values
+            .insert("title_suicune_frame".to_string(), 0);
+        title
+            .presentation_machine
+            .memory
+            .insert("wTitleScreenTimer".to_string(), 10_000);
         title
             .presentation_machine
             .memory
@@ -1391,6 +1409,11 @@ fn retained_field_fullscreen_ownership_distinguishes_new_game_and_capture_name_c
     runtime_shell.pending_name_choice = Some(VisibleNameChoice {
         options: vec!["YES".to_string(), "NO".to_string()],
         selected: 0,
+        player_menu: None,
+        player_phase: None,
+        motion_step: 0,
+        motion_frames_remaining: 0,
+        pending_player_name: None,
     });
     assert!(
         retained_field_fullscreen_active(&runtime_shell),
@@ -1444,20 +1467,14 @@ fn retained_field_fullscreen_ownership_distinguishes_new_game_and_capture_name_c
 }
 
 #[test]
-fn new_game_name_choice_covers_the_complete_lcd_with_white() {
+fn new_game_name_choice_uses_source_menu_over_player_portrait_lcd() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.intro_screen = None;
     runtime_shell.title_menu = None;
-    runtime_shell.pending_name_choice = Some(VisibleNameChoice {
-        options: vec![
-            "NEW NAME".to_string(),
-            "CHRIS".to_string(),
-            "MAT".to_string(),
-            "ALLAN".to_string(),
-            "JON".to_string(),
-        ],
-        selected: 0,
-    });
+    open_visible_name_choice(&mut runtime_shell).expect("open source player-name menu");
+    for _ in 0..40 {
+        tick_visible_player_name_choice(&mut runtime_shell).expect("finish MovePlayerPicRight");
+    }
     mark_runtime_snapshot_dirty(&mut runtime_shell);
     let mut app = integrated_shell_test_app(runtime_shell);
 
@@ -1470,21 +1487,111 @@ fn new_game_name_choice_covers_the_complete_lcd_with_white() {
         .filter_map(|sprite| sprite.custom_size)
         .collect::<Vec<_>>();
     assert!(
-        menu_sizes.contains(&Vec2::new(12.0 * TILE_SIZE, 14.0 * TILE_SIZE)),
-        "preset-name menu must be wide enough for NEW NAME and no taller than its five choices; sizes={menu_sizes:?}"
+        menu_sizes.contains(&Vec2::new(11.0 * TILE_SIZE, 12.0 * TILE_SIZE)),
+        "preset-name menu must use the exact menu_coords 0,0,10,11 extent; sizes={menu_sizes:?}"
     );
+
+    let header_backing = world
+        .query_filtered::<(&Sprite, &Transform), With<SceneDialogMarker>>()
+        .iter(world)
+        .any(|(sprite, transform)| {
+            sprite.color == Color::WHITE
+                && sprite.custom_size.is_some_and(|size| size.y == TILE_SIZE && size.x >= 4.0 * TILE_SIZE)
+                && transform.translation.z > 6.0
+                && transform.translation.z < 6.1
+        });
+    assert!(header_backing, "NAME must replace the border tiles with an opaque white text backing");
 
     let retained = retained_fullscreen_surface(app.world_mut());
     let images = app.world().resource::<Assets<Image>>();
     let image = images
         .get(&retained.texture)
         .expect("retained name-choice backdrop image");
+    assert!(image.data.chunks_exact(4).all(|pixel| pixel[3] == 255));
     assert!(
         image
             .data
             .chunks_exact(4)
+            .any(|pixel| pixel != [255, 255, 255, 255]),
+        "NamePlayer must retain the shifted player portrait and OakText6 behind its menu"
+    );
+    let top_right = (19 * SOURCE_TILE_SIZE) * 4;
+    assert_eq!(
+        &image.data[top_right..top_right + 4],
+        &[255, 255, 255, 255],
+        "the untouched LCD background must remain source-white"
+    );
+}
+
+#[test]
+fn custom_player_name_return_retains_naming_then_clears_and_redraws_portrait() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.intro_screen = None;
+    runtime_shell.title_menu = None;
+    open_visible_name_choice(&mut runtime_shell).expect("open source player-name menu");
+    for _ in 0..40 {
+        tick_visible_player_name_choice(&mut runtime_shell).expect("finish MovePlayerPicRight");
+    }
+    confirm_visible_name_choice(&mut runtime_shell).expect("choose NEW NAME");
+    runtime_shell.pending_name_input.as_mut().expect("NamingScreen").value = "GOLD".to_string();
+    mark_runtime_snapshot_dirty(&mut runtime_shell);
+    let mut app = integrated_shell_test_app(runtime_shell);
+    app.update();
+    let naming_texture = retained_fullscreen_surface(app.world_mut()).texture;
+
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        confirm_visible_player_name_input(&mut shell).expect("finish NamingScreen");
+    }
+    app.update();
+    assert_eq!(
+        retained_fullscreen_surface(app.world_mut()).texture,
+        naming_texture,
+        "RotateThreePalettesRight must fade the retained NamingScreen"
+    );
+
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        for _ in 0..24 {
+            tick_visible_player_name_choice(&mut shell).expect("finish fade out");
+        }
+    }
+    app.update();
+    let blank_texture = retained_fullscreen_surface(app.world_mut()).texture;
+    let images = app.world().resource::<Assets<Image>>();
+    assert!(
+        images
+            .get(&blank_texture)
+            .expect("cleared custom-name LCD")
+            .data
+            .chunks_exact(4)
             .all(|pixel| pixel == [255, 255, 255, 255]),
-        "the uncovered half of the preset-name screen must be white, not retained overworld pixels"
+        "ClearTilemap and WaitBGMap must expose the source-white LCD beneath the white palette"
+    );
+
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        for _ in 0..4 {
+            tick_visible_player_name_choice(&mut shell).expect("finish WaitBGMap");
+        }
+    }
+    app.update();
+    let portrait_texture = retained_fullscreen_surface(app.world_mut()).texture;
+    let images = app.world().resource::<Assets<Image>>();
+    let image = images.get(&portrait_texture).expect("redrawn player LCD");
+    assert!(
+        image
+            .data
+            .chunks_exact(4)
+            .any(|pixel| pixel != [255, 255, 255, 255]),
+        "DrawIntroPlayerPic must redraw the source player portrait before fade-in"
+    );
+    let textbox_start = OAK_INTRO_TEXTBOX_Y * SOURCE_TILE_SIZE * 160 * 4;
+    assert!(
+        image.data[textbox_start..]
+            .chunks_exact(4)
+            .all(|pixel| pixel == [255, 255, 255, 255]),
+        "ClearTilemap means OakText6 must not be invented after custom naming"
     );
 }
 
@@ -1523,4 +1630,1628 @@ fn transparent_tileset_color_zero_is_opaque_on_base_and_clear_on_priority() {
         priority.chunks_exact(4).all(|pixel| pixel[3] == 0),
         "the separately composed priority layer must still clear color-zero pixels"
     );
+}
+
+#[cfg(feature = "fullscreen-scaling")]
+#[test]
+fn fullscreen_name_choices_separate_portrait_text_and_controls() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.intro_screen = None;
+    shell.title_menu = None;
+    open_visible_name_choice(&mut shell).unwrap();
+    for _ in 0..40 { tick_visible_player_name_choice(&mut shell).unwrap(); }
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut app = integrated_shell_test_app(shell);
+    app.world_mut().spawn((Window { resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0), ..default() }, bevy::window::PrimaryWindow));
+    app.add_systems(Startup, setup_fullscreen_scene).add_systems(PostUpdate,
+        (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
+    app.update();
+    let world = app.world_mut();
+    let (sprite, transform) = world.query_filtered::<(&Sprite, &Transform), With<VisibleIntroSurface>>().single(world);
+    assert_eq!(sprite.rect.unwrap().size(), Vec2::splat(56.0));
+    assert!(sprite.custom_size.unwrap().y > 800.0);
+    assert!(transform.translation.x < 0.0);
+    let (sprite, transform, visibility) = world.query_filtered::<(&Sprite, &Transform, &Visibility), With<FullscreenBootDialogue>>().single(world);
+    assert_eq!(*visibility, Visibility::Inherited);
+    assert_eq!(sprite.custom_size, Some(Vec2::new(640.0, 192.0)));
+    assert!(transform.translation.y < -500.0);
+    let controls = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+    assert_eq!(controls.scale, Vec3::ONE);
+    assert!(controls.translation.x > 500.0);
+}
+
+#[test]
+fn bookshelf_jumptext_remains_open_after_printing_until_player_confirms() {
+    // JumpTextScript executes repeattext, waitbutton, closetext, end.
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell
+        .shell
+        .close_active_menu()
+        .expect("close the completed map callback surface");
+    runtime_shell.intro_screen = None;
+    runtime_shell.title_menu = None;
+    runtime_shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .options
+        .no_text_scroll = true;
+    runtime_shell
+        .shell
+        .apply_script_text_command("PlayersHouse2F", "PictureBookshelfScript", 0)
+        .expect("execute the source farjumptext");
+    mark_runtime_snapshot_dirty(&mut runtime_shell);
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(runtime_shell)
+        .insert_resource(native_rtc_source_for_test())
+        .insert_resource(ButtonInput::<KeyCode>::default())
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .add_systems(Update, apply_keyboard_input);
+    for _ in 0..3 {
+        app.update();
+    }
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(shell.last_error, None);
+    assert!(
+        shell
+            .shell
+            .session()
+            .state()
+            .script_runtime
+            .text_window_open,
+        "finishing PrintText must not consume JumpTextScript's waitbutton"
+    );
+    assert!(
+        shell
+            .shell
+            .session()
+            .state()
+            .script_runtime
+            .pending_text_wait
+            .is_some()
+    );
+    press_visible_a_button(&mut shell).expect("acknowledge the bookshelf text");
+    assert!(
+        !shell
+            .shell
+            .session()
+            .state()
+            .script_runtime
+            .text_window_open
+    );
+}
+
+#[test]
+fn empty_pc_withdraw_list_has_a_working_cancel_entry() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.intro_screen = None;
+    shell.title_menu = None;
+    shell.bill_pc_session_open = true;
+    shell.bill_pc_action_cursor = Some(MenuCursor {
+        surface_id: "pc:bill-actions".to_string(),
+        option_index: 0,
+    });
+    confirm_visible_bill_pc_action(&mut shell).expect("open empty Withdraw list");
+    assert!(shell.storage_cursor.is_some());
+    press_visible_a_button(&mut shell).expect("empty list selects CANCEL");
+    assert!(shell.storage_cursor.is_none());
+    assert!(shell.bill_pc_action_cursor.is_some());
+}
+
+#[test]
+fn autonomous_waitsfx_does_not_acknowledge_an_unread_text_page() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.shell.close_active_menu().expect("finish map callback surface");
+    shell.shell.session_mut().state_mut().script_runtime.text_window_open = true;
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.field_notice = Some("First page.\n\nSecond page.".to_string());
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: "First page.\u{1e}Second page.".to_string(),
+        page_index: 0,
+        visible_chars: "First page.".len(),
+        frames_until_next_char: 0,
+    });
+    shell.visible_wait_sfx_boundary = true;
+    let snapshot = shell.shell.presentation_snapshot().expect("text snapshot");
+    advance_visible_wait_sfx_boundary(&mut shell, &snapshot, true).expect("poll sound fence");
+    assert_eq!(shell.field_text_reveal.as_ref().unwrap().page_index, 0,
+        "an autonomous sound fence must not supply the player's page acknowledgement");
+}
+
+#[test]
+fn pokegear_clock_uses_the_full_weekday_and_spaced_meridiem() {
+    let runtime_shell = core_modular_title_shell_for_test();
+    let mut snapshot = runtime_shell.shell.snapshot().expect("clock snapshot");
+    snapshot.progression.time.day_of_week = 3;
+    snapshot.progression.time.registers.hours = 0;
+    snapshot.progression.time.registers.minutes = 7;
+    let entries = visible_pokegear_menu_entries(&snapshot, &runtime_shell).expect("clock entries");
+    assert_eq!(entries, ["WEDNESDAY", "12:07 AM"]);
+}
+
+#[test]
+fn pokegear_and_pc_render_audit_surfaces_fit_the_gameboy_screen() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().expect("source permanent contacts");
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut snapshot = shell.shell.snapshot().expect("render audit snapshot");
+    for flag in ["ENGINE_MAP_CARD", "ENGINE_PHONE_CARD", "ENGINE_RADIO_CARD"] {
+        snapshot.progression.active_engine_flags.insert(flag.into());
+    }
+    let data = shell.shell.runtime().data();
+    let mut pokemon = crate::core::models::pokemon::create_pokemon_from_known_dvs(
+        &snapshot.party.slots[0].pokemon.species, 10, crate::core::models::Dv::default(),
+        &data.learnsets, &data.moves, &data.growth_rates).unwrap();
+    pokemon.item = None;
+    pokemon.mail = None;
+    pokemon.original_trainer_name = "CHRIS".into();
+    pokemon.original_trainer_id = 0;
+    snapshot.party.slots[0].pokemon = pokemon.clone();
+    let pc_box = snapshot.storage.boxes.iter_mut()
+        .find(|pc_box| pc_box.index == snapshot.storage.current_pc_box).unwrap();
+    pc_box.slots = vec![crate::RuntimePcBoxSlotSnapshot { index: 0, pokemon }];
+    pc_box.count = 1;
+    // Exercise the shipped, materialized pack. Loose repository graphics hid
+    // missing Clock/Phone/Radio RLE files from this audit.
+    let asset_root = shell.asset_root.clone();
+    for label in ["clock", "phone", "phone-actions", "phone-ringing", "phone-conversation", "phone-hangup-click", "phone-hangup-dots", "phone-hangup-blank", "phone-after-hangup", "radio", "phone-deletable-actions", "phone-delete-confirm", "phone-deleted", "pc-withdraw", "pc-withdraw-actions", "pc-withdraw-release", "pc-stats-egg", "pc-stats-pink", "pc-stats-green", "pc-stats-blue", "pc-stats-return", "pc-move", "pc-move-actions", "pc-move-cancel", "pc-move-inserting", "pc-move-other-box", "pc-move-restored", "pc-move-saving", "pc-move-saved", "pc-withdraw-empty", "pc-deposit", "pc-deposit-actions", "pc-deposit-refusal", "pc-released", "pc-release-bye", "pc-withdraw-cry", "pc-withdraw-success"] {
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        if label.starts_with("pc-") {
+            if let Some(slot) = snapshot.storage.boxes[0].slots.first_mut() {
+                slot.pokemon.is_egg = label == "pc-stats-egg";
+                slot.pokemon.happiness = if slot.pokemon.is_egg { 20 } else { 70 };
+            }
+            shell.bill_pc_pokemon_summary = match label {
+                "pc-stats-egg" | "pc-stats-pink" => Some(1), "pc-stats-green" => Some(2), "pc-stats-blue" => Some(3), _ => None,
+            }.map(|page| VisiblePcPokemonSummary {
+                location: VisiblePcPokemonLocation::Box { box_index: 0, box_slot: 0 }, page,
+            });
+            shell.bill_pc_move_open = label.starts_with("pc-move");
+            shell.bill_pc_move_party_open = false;
+            shell.bill_pc_move_loaded_box = if matches!(label, "pc-move-other-box" | "pc-move-saving" | "pc-move-saved") { 1 } else { 0 };
+            shell.bill_pc_move_source = matches!(label, "pc-move-inserting" | "pc-move-other-box").then_some(VisiblePcMoveSource {
+                location: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 0, slot: 0 },
+                scroll: 0,
+            });
+            shell.bill_pc_move_save = (label == "pc-move-saving").then(|| VisibleBillPcMoveSave {
+                presentation: VisiblePcMovePresentation {
+                    names: Vec::new(),
+                    pokemon: visible_pc_pokemon_info(&snapshot.storage.boxes[0].slots[0].pokemon),
+                    cursor: MenuCursor { surface_id: storage_cursor_surface_id(1), option_index: 0 },
+                    scroll: 0,
+                },
+                source: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 0, slot: 0 },
+                target: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 1, slot: 0 },
+                phase: VisibleBillPcMoveSavePhase::BeforeMove,
+                frames_remaining: 11,
+            });
+            shell.pc_notice = None;
+            shell.pc_transfer_sequence = None;
+            shell.pc_release_sequence = None;
+            shell.bill_pc_deposit_open = label.starts_with("pc-deposit");
+            shell.bill_pc_pokemon_action_cursor = matches!(label, "pc-stats-return" | "pc-move-actions" | "pc-withdraw-actions" | "pc-withdraw-release" | "pc-deposit-actions" | "pc-deposit-refusal" | "pc-released" | "pc-release-bye" | "pc-withdraw-cry" | "pc-withdraw-success").then(|| MenuCursor {
+                surface_id: "pc:pokemon-actions".to_string(), option_index: if label == "pc-stats-return" { 1 } else if matches!(label, "pc-withdraw-release" | "pc-released" | "pc-release-bye") { 2 } else { 0 },
+            });
+            shell.pending_pc_release = (label == "pc-withdraw-release").then_some(VisiblePcReleasePrompt {
+                location: VisiblePcPokemonLocation::Box { box_index: snapshot.storage.current_pc_box, box_slot: 0 },
+            });
+            shell.yes_no_cursor = shell.pending_pc_release.as_ref().map(|_| MenuCursor {
+                surface_id: "pc:release-confirm".to_string(), option_index: 0,
+            });
+            if label == "pc-move-saved" {
+                let slot = snapshot.storage.boxes[0].slots[0].clone();
+                snapshot.storage.boxes[1].slots = vec![slot];
+                snapshot.storage.boxes[1].count = 1;
+                snapshot.storage.boxes[0].slots.clear();
+                snapshot.storage.boxes[0].count = 0;
+            }
+            if label == "pc-withdraw-empty" {
+                let pc_box = snapshot.storage.boxes.iter_mut()
+                    .find(|pc_box| pc_box.index == snapshot.storage.current_pc_box).unwrap();
+                pc_box.slots.clear();
+                pc_box.count = 0;
+            }
+            shell.storage_cursor = Some(MenuCursor {
+                surface_id: if shell.bill_pc_deposit_open { pc_party_surface_id().to_string() } else { storage_cursor_surface_id(visible_pc_box_index(&snapshot, &shell)) },
+                option_index: if label == "pc-move-cancel" { 1 } else { 0 },
+            });
+            if label == "pc-deposit-refusal" {
+                shell.pc_notice = Some("It's your last <PK><MN>!".into());
+                shell.pc_transfer_sequence = Some(VisiblePcTransferSequence {
+                    kind: VisiblePcTransferKind::Deposit,
+                    box_index: snapshot.storage.current_pc_box,
+                    phase: VisiblePcTransferPhase::RefusalHold,
+                    frames_remaining: 40,
+                    close_submenu_after_hold: true,
+                    success: None,
+                });
+            }
+            if matches!(label, "pc-released" | "pc-release-bye") {
+                shell.pc_notice = Some(if label == "pc-released" { "Released <PK><MN>." } else { "Bye, CYNDAQUIL!" }.into());
+                shell.pc_release_sequence = Some(VisiblePcReleaseSequence {
+                    box_index: snapshot.storage.current_pc_box,
+                    species_name: "CYNDAQUIL".into(),
+                    retained_names: vec!["CYNDAQUIL".into()],
+                    phase: if label == "pc-released" { VisiblePcReleasePhase::Released } else { VisiblePcReleasePhase::Bye },
+                    frames_remaining: 30,
+                });
+            }
+            if matches!(label, "pc-withdraw-cry" | "pc-withdraw-success") {
+                let holding_message = label == "pc-withdraw-success";
+                shell.pc_notice = holding_message.then(|| "Got CYNDAQUIL!".into());
+                shell.pc_transfer_sequence = Some(VisiblePcTransferSequence {
+                    kind: VisiblePcTransferKind::Withdraw,
+                    box_index: snapshot.storage.current_pc_box,
+                    phase: if holding_message { VisiblePcTransferPhase::SuccessHold } else { VisiblePcTransferPhase::SuccessWaitCry },
+                    frames_remaining: if holding_message { 40 } else { 0 },
+                    close_submenu_after_hold: false,
+                    success: Some(VisiblePcTransferSuccess {
+                        names: vec!["CYNDAQUIL".into()],
+                        pokemon: visible_pc_pokemon_info(&snapshot.party.slots[0].pokemon),
+                        message: "Got CYNDAQUIL!".into(),
+                    }),
+                });
+            }
+            spawn_field_storage_screen(&mut commands, &snapshot, &shell, &mut art,
+                &asset_root, &mut images).expect("render PC withdraw");
+        } else {
+            shell.pokegear_page = match label {
+                "clock" => PokegearPage::Clock,
+                label if label.starts_with("phone") => PokegearPage::Phone,
+                _ => PokegearPage::Radio,
+            };
+            shell.pokegear_phone_call = (matches!(label, "phone-ringing" | "phone-conversation") || label.starts_with("phone-hangup-")).then(|| VisiblePokegearPhoneCall {
+                contact_id: "PHONE_MOM".into(),
+                phase: if label == "phone-ringing" { VisiblePokegearPhoneCallPhase::Ringing { rings_started: 1 } }
+                    else if label == "phone-conversation" { VisiblePokegearPhoneCallPhase::Calling }
+                    else { VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining: match label {
+                        "phone-hangup-click" => VISIBLE_POKEGEAR_HANGUP_FRAMES - 10,
+                        "phone-hangup-dots" => VISIBLE_POKEGEAR_HANGUP_FRAMES - 40,
+                        "phone-hangup-blank" => VISIBLE_POKEGEAR_HANGUP_FRAMES - 60,
+                        _ => unreachable!(),
+                    } } },
+            });
+            if label == "phone-ringing" {
+                shell.pokegear_menu_open = false;
+                assert!(retained_field_fullscreen_active(&shell),
+                    "hInMenu=0 during a call must not retire the Phone card");
+            }
+            shell.pokegear_phone_menu = (label == "phone-actions").then(|| VisiblePokegearPhoneMenu {
+                contact_id: "PHONE_MOM".into(), can_delete: false, cursor: 0, delete_confirmation: None,
+            });
+            if matches!(label, "phone-deletable-actions" | "phone-delete-confirm" | "phone-deleted") {
+                snapshot.script_events.phone_number_order = vec![Some("PHONE_MOM".into()), Some("PHONE_ELM".into())];
+                if label != "phone-deleted" {
+                    snapshot.script_events.phone_number_order.push(Some("PHONE_BILL".into()));
+                    shell.pokegear_phone_menu = Some(VisiblePokegearPhoneMenu {
+                        contact_id: "PHONE_BILL".into(), can_delete: true,
+                        cursor: if label == "phone-delete-confirm" { 1 } else { 0 },
+                        delete_confirmation: (label == "phone-delete-confirm").then_some(0),
+                    });
+                }
+                snapshot.script_events.phone_numbers = snapshot.script_events.phone_number_order.iter().flatten().cloned().collect();
+                shell.pokegear_phone_cursor = 2;
+            }
+            if label == "phone-conversation" {
+                snapshot.ui.text_window_open = true;
+                snapshot.ui.text = Some(shell.shell.text_snapshot("MomPhoneNoPokemonText").expect("source Mom call text"));
+                let pages = visible_field_dialog_pages(&snapshot, &shell).expect("source phone pages");
+                shell.field_text_reveal = Some(VisibleFieldTextReveal {
+                    text: pages.join("\u{1e}"), page_index: 0,
+                    visible_chars: pages[0].chars().count(), frames_until_next_char: 0,
+                });
+                shell.shell.session_mut().state_mut().vblank_counter = 0;
+            }
+            spawn_field_pokegear_screen(&mut commands, &snapshot, &shell, &mut art,
+                &asset_root, &mut images).expect("render Pokégear");
+            if label == "phone-conversation" {
+                spawn_scene_dialog(&mut commands, &snapshot, &shell, &mut art,
+                    &asset_root, &mut images).expect("render phone conversation in the card");
+                snapshot.ui.text_window_open = false;
+                snapshot.ui.text = None;
+                shell.field_text_reveal = None;
+            }
+        }
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None, "{label} font rendering");
+        let canvas = render_pc_audit_canvas(&mut world, &images, label);
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).expect("create render audit directory");
+            canvas.save(PathBuf::from(directory).join(format!("{label}.png")))
+                .expect("save rendered UI audit");
+        }
+    }
+}
+
+#[test]
+fn pokegear_cards_match_original_rom_lcd() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.initialize_permanent_phone_numbers().unwrap();
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.trainer.player_gender = PLAYER_GENDER_FEMALE;
+    snapshot.overworld.map_name = "OlivinePokecenter1F".into();
+    snapshot.progression.time.day_of_week = 0;
+    snapshot.progression.time.registers.hours = 0;
+    snapshot.progression.time.registers.minutes = 0;
+    for flag in ["ENGINE_MAP_CARD", "ENGINE_PHONE_CARD", "ENGINE_RADIO_CARD"] {
+        snapshot.progression.active_engine_flags.insert(flag.into());
+    }
+    shell.pokegear_cursor = visible_pokegear_initial_cursor_index(&snapshot, false).unwrap();
+    // trace.json records BlueWalk OAM tiles $14..$17 without X flip.
+    shell.pokegear_map_animation_frame = 9;
+    let reference_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../tools/asm-oracle/fixtures");
+    let mut cases = [("clock", PokegearPage::Clock), ("map", PokegearPage::Map),
+        ("phone", PokegearPage::Phone), ("phone-actions", PokegearPage::Phone),
+        ("radio", PokegearPage::Radio)].into_iter()
+        .map(|(label, page)| (label, page, 1_u8, 7_u8, reference_root.join("pokegear-female")))
+        .collect::<Vec<_>>();
+    cases.push(("map", PokegearPage::Map, 0, 7, reference_root.join("pokegear-male")));
+    for gender in 0..2 {
+        for cards in 0..8 {
+            cases.push(("clock", PokegearPage::Clock, gender, cards,
+                reference_root.join(format!("pokegear-clock-cards/{gender}/{cards}"))));
+        }
+    }
+    let mut differences = Vec::new();
+    for (label, page, gender, cards, reference) in cases {
+        snapshot.trainer.player_gender = gender;
+        // wPokegearFlags source bit order differs from the visible tab order.
+        for (bit, flag) in ["ENGINE_MAP_CARD", "ENGINE_RADIO_CARD", "ENGINE_PHONE_CARD"].into_iter().enumerate() {
+            if cards & (1 << bit) != 0 { snapshot.progression.active_engine_flags.insert(flag.into()); }
+            else { snapshot.progression.active_engine_flags.remove(flag); }
+        }
+        let identity = format!("{label}-gender{gender}-cards{cards}");
+        shell.pokegear_page = page;
+        shell.pokegear_phone_menu = (label == "phone-actions").then(|| VisiblePokegearPhoneMenu {
+            contact_id: "PHONE_MOM".into(), can_delete: false, cursor: 0, delete_confirmation: None,
+        });
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        spawn_field_pokegear_screen(&mut Commands::new(&mut queue, &world), &snapshot,
+            &shell, &mut art, &shell.asset_root, &mut images).unwrap();
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None, "{label}");
+        let canvas = render_pc_audit_canvas(&mut world, &images, label);
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("{identity}.png"))).unwrap();
+        }
+        let rom = image::open(reference.join(format!("rom-{label}.png"))).unwrap().to_rgba8();
+        assert_eq!(rom.dimensions(), (160, 144));
+        let scale = canvas.width() / 160;
+        assert_eq!(canvas.dimensions(), (160 * scale, 144 * scale));
+        let count = canvas.enumerate_pixels().filter(|(x, y, pixel)| {
+            let expected = rom.get_pixel(x / scale, y / scale);
+            pixel[3] != 255 || (0..3).any(|channel| pixel[channel] >> 3 != expected[channel] >> 3)
+        }).count();
+        differences.push((identity, count));
+    }
+    assert!(differences.iter().all(|(_, count)| *count == 0), "RGB5 pixel differences: {differences:?}");
+}
+
+#[test]
+fn pc_stats_returns_to_the_same_pokemon_submenu() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor {
+        surface_id: storage_cursor_surface_id(0), option_index: 0,
+    });
+    open_visible_bill_pc_pokemon_actions(&mut shell).expect("open Pokémon submenu");
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 1;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).expect("open STATS");
+    assert!(shell.bill_pc_pokemon_summary.is_some());
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().map(|cursor| cursor.option_index),
+        Some(1), "BillsPC stats returns to the same submenu and cursor");
+    press_visible_b_button(&mut shell).expect("close STATS");
+    assert!(shell.bill_pc_pokemon_summary.is_none());
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().map(|cursor| cursor.option_index), Some(1));
+}
+
+#[test]
+fn pc_egg_stats_ignores_page_arrows_and_a_closes_on_any_retained_page() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None; pokemon.mail = None;
+    pokemon.is_egg = true;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+    pokemon.is_egg = false;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.bill_pc_session_open = true;
+    shell.bill_pc_action_cursor = Some(MenuCursor { surface_id: "pc:bill-actions".into(), option_index: 0 });
+    confirm_visible_bill_pc_action(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 1, "EggStatsJoypad masks Left/Right");
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 1);
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_none(), "Egg A exits instead of advancing pages");
+    press_visible_a_button(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 2);
+    move_visible_primary_cursor_up(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 2, "browsing through an Egg preserves hidden page bits");
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_none());
+}
+
+#[test]
+fn party_stats_browsing_keeps_the_current_page() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    assert!(state.storage.party.add_pokemon(pokemon));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.pending_audio.clear();
+    shell.party_summary_open = true;
+    shell.party_summary_page = 2;
+    move_visible_party_summary_pokemon(&mut shell, 1).unwrap();
+    assert_eq!(shell.party_cursor, 1);
+    assert_eq!(shell.party_summary_page, 2, "MonStatsInit does not reset page bits when changing Pokemon");
+}
+
+#[test]
+fn pc_stats_rebuilds_boxed_party_fields_without_mutating_storage() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    pokemon.hp = 1;
+    pokemon.max_hp = 1;
+    pokemon.attack = 1;
+    pokemon.defense = 1;
+    pokemon.speed = 1;
+    pokemon.special_attack = 1;
+    pokemon.special_defense = 1;
+    pokemon.status = Some("POISON".into());
+    pokemon.experience = 500_000; // Stats uses stored level, not CalcLevel.
+    state.storage.party.pokemon[0] = Some(pokemon.clone());
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+    pokemon.is_egg = true;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    let snapshot = shell.shell.snapshot().unwrap();
+    let boxed = visible_pc_summary_pokemon(&snapshot,
+        VisiblePcPokemonLocation::Box { box_index: 0, box_slot: 0 }).unwrap();
+    assert_eq!(boxed.hp, 27, "CalcBufferMonStats reconstructs boxed HP from level/DVs/stat experience");
+    assert_eq!((boxed.attack, boxed.defense, boxed.speed, boxed.special_attack, boxed.special_defense),
+        (15, 13, 18, 17, 15));
+    assert_eq!(boxed.level, 10);
+    assert!(boxed.status.is_none());
+    let egg = visible_pc_summary_pokemon(&snapshot,
+        VisiblePcPokemonLocation::Box { box_index: 0, box_slot: 1 }).unwrap();
+    assert_eq!(egg.hp, 0);
+    assert_eq!(egg.max_hp, 27);
+    assert_eq!(snapshot.storage.boxes[0].slots[0].pokemon.hp, 1, "the source temp-mon copy does not mutate saved storage");
+    let party = visible_pc_summary_pokemon(&snapshot, VisiblePcPokemonLocation::Party(0)).unwrap();
+    assert_eq!(party.hp, 1);
+    assert_eq!(party.status.as_deref(), Some("POISON"));
+}
+
+#[test]
+fn pc_stats_vertical_input_browses_real_pokemon_and_retains_the_page() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    for index in 0..8 {
+        pokemon.nickname = format!("MON{index}");
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+        if index == 0 { state.storage.party.pokemon[0] = Some(pokemon.clone()); }
+        else if index < 6 { assert!(state.storage.party.add_pokemon(pokemon.clone())); }
+    }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    for party in [false, true] {
+        shell.bill_pc_action_cursor = None; // Directly enter the already-saved Move fixture.
+        open_visible_bill_pc_move_mode(&mut shell).unwrap();
+        if party { switch_visible_pc_move_container(&mut shell, -1).unwrap(); }
+        press_visible_a_button(&mut shell).unwrap();
+        move_visible_primary_cursor_down(&mut shell).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        move_visible_primary_cursor_right(&mut shell).unwrap();
+        assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 2);
+        move_visible_primary_cursor_down(&mut shell).unwrap();
+        let location = shell.bill_pc_pokemon_summary.as_ref().unwrap().location;
+        let snapshot = shell.shell.snapshot().unwrap();
+        assert_eq!(visible_pc_pokemon_at(&snapshot, location).unwrap().nickname, "MON1",
+            "StatsScreenDPad loads the next Pokemon instead of ignoring Down");
+        for _ in 0..8 { move_visible_primary_cursor_down(&mut shell).unwrap(); }
+        let last = if party { 5 } else { 7 };
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, last,
+            "Stats browsing excludes the CANCEL entry and stops at the last Pokemon");
+        assert_eq!(shell.pc_list_scroll, last - 4);
+        assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 2);
+        press_visible_b_button(&mut shell).unwrap();
+        assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 1);
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, last);
+        press_visible_a_button(&mut shell).unwrap();
+        for _ in 0..10 { move_visible_primary_cursor_up(&mut shell).unwrap(); }
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0);
+        assert_eq!(shell.pc_list_scroll, 0);
+        let snapshot = shell.shell.snapshot().unwrap();
+        assert_eq!(visible_pc_pokemon_at(&snapshot, shell.bill_pc_pokemon_summary.as_ref().unwrap().location)
+            .unwrap().nickname, "MON0");
+        press_visible_b_button(&mut shell).unwrap();
+        press_visible_b_button(&mut shell).unwrap();
+        press_visible_b_button(&mut shell).unwrap();
+    }
+}
+
+#[test]
+fn pc_deposit_and_withdraw_ignore_horizontal_box_browsing() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.bill_pc_session_open = true;
+    for action_index in [0, 1] {
+        shell.bill_pc_action_cursor = Some(MenuCursor {
+            surface_id: "pc:bill-actions".to_string(), option_index: action_index,
+        });
+        confirm_visible_bill_pc_action(&mut shell).unwrap();
+        let before = shell.storage_cursor.clone();
+        move_visible_primary_cursor_left(&mut shell).unwrap();
+        assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0,
+            "Withdraw_UpDown does not read PAD_LEFT/PAD_RIGHT");
+        assert_eq!(shell.storage_cursor, before);
+        move_visible_primary_cursor_right(&mut shell).unwrap();
+        assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0);
+        assert_eq!(shell.storage_cursor, before);
+        press_visible_b_button(&mut shell).unwrap();
+    }
+}
+
+#[test]
+fn pc_move_same_position_still_runs_the_source_save() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    for _ in 0..crate::core::models::MAX_BOX_MONS {
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_bill_pc_move_mode(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_move_save.is_some(),
+        "CheckTrivialMove adjusts indices; it does not cancel the source save");
+    assert_eq!(shell.bill_pc_move_save.as_ref().unwrap().frames_remaining, 20);
+}
+
+#[test]
+fn pc_move_full_destination_refuses_before_saving_and_retains_insertion() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+    for _ in 0..crate::core::models::MAX_BOX_MONS {
+        assert!(state.storage.pc_boxes[1].add_pokemon(pokemon.clone()));
+    }
+    for _ in 1..6 { assert!(state.storage.party.add_pokemon(pokemon.clone())); }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    for party in [false, true] {
+        open_visible_bill_pc_move_mode(&mut shell).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        switch_visible_pc_move_container(&mut shell, if party { -1 } else { 1 }).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.bill_pc_move_save.is_none(), "capacity is checked before the save hold");
+        assert!(shell.bill_pc_move_source.is_some());
+        assert_eq!(shell.pc_notice.as_deref(), Some("There's no room!"));
+        assert!(matches!(shell.pc_transfer_sequence.as_ref().map(|sequence| sequence.phase),
+            Some(VisiblePcTransferPhase::RefusalWaitSfx)));
+        shell.pending_audio.clear();
+        advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+        assert_eq!(shell.pc_transfer_sequence.as_ref().unwrap().frames_remaining, 50);
+        press_visible_b_button(&mut shell).unwrap();
+        assert!(shell.bill_pc_move_source.is_some(), "B cannot skip refusal");
+        advance_visible_pc_transfer_sequence(&mut shell, 49).unwrap();
+        assert!(shell.pc_notice.is_some());
+        advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+        assert!(shell.pc_notice.is_none());
+        assert!(shell.bill_pc_move_source.is_some(), "no-room returns to insertion");
+        assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0);
+        press_visible_b_button(&mut shell).unwrap();
+    }
+}
+
+#[test]
+fn pc_move_cancel_restores_source_window_without_changing_saved_box() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    for index in 0..8 {
+        pokemon.nickname = format!("SOURCE{index}");
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+        if index == 0 { state.storage.party.pokemon[0] = Some(pokemon.clone()); }
+        else if index < 6 { assert!(state.storage.party.add_pokemon(pokemon.clone())); }
+    }
+    for index in 0..3 {
+        pokemon.nickname = format!("TARGET{index}");
+        assert!(state.storage.pc_boxes[1].add_pokemon(pokemon.clone()));
+    }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    for party in [false, true] {
+        open_visible_bill_pc_move_mode(&mut shell).unwrap();
+        if party { switch_visible_pc_move_container(&mut shell, -1).unwrap(); }
+        for _ in 0..5 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+        assert_eq!(shell.pc_list_scroll, 1);
+        press_visible_a_button(&mut shell).unwrap();
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.bill_pc_move_source.is_some());
+        switch_visible_pc_move_container(&mut shell, if party { 2 } else { 1 }).unwrap();
+        let snapshot = shell.shell.snapshot().unwrap();
+        assert_eq!(snapshot.storage.current_pc_box, 0,
+            "Move browsing changes wBillsPC_LoadedBox, never saved wCurBox");
+        let mut entries = Vec::new();
+        push_visible_storage_dialog_entries(&mut entries, &snapshot, &shell).unwrap();
+        assert_eq!(entries[0], snapshot.storage.boxes[1].name);
+        assert!(entries.iter().any(|entry| entry.contains("TARGET0")));
+        move_visible_storage_cursor_down(&mut shell).unwrap();
+        press_visible_b_button(&mut shell).unwrap();
+        assert!(shell.bill_pc_move_source.is_none());
+        assert_eq!(shell.bill_pc_move_party_open, party);
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().surface_id,
+            if party { pc_party_surface_id().to_string() } else { storage_cursor_surface_id(0) });
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 5);
+        assert_eq!(shell.pc_list_scroll, 1, "B restores BackupScrollPosition");
+        assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0);
+    }
+    open_visible_bill_pc_move_mode(&mut shell).unwrap();
+    for box_index in 1..crate::core::models::MAX_PC_BOXES {
+        switch_visible_pc_move_container(&mut shell, 1).unwrap();
+        let snapshot = shell.shell.snapshot().unwrap();
+        assert_eq!(snapshot.storage.current_pc_box, 0);
+        assert_eq!(visible_storage_box(&snapshot, &shell).unwrap().index, box_index);
+        let mut entries = Vec::new();
+        push_visible_storage_dialog_entries(&mut entries, &snapshot, &shell).unwrap();
+        assert_eq!(entries[0], snapshot.storage.boxes[box_index].name);
+    }
+    switch_visible_pc_move_container(&mut shell, 1).unwrap();
+    assert!(shell.bill_pc_move_party_open);
+    switch_visible_pc_move_container(&mut shell, 1).unwrap();
+    assert!(!shell.bill_pc_move_party_open);
+    assert_eq!(shell.bill_pc_move_loaded_box, 0);
+}
+
+#[test]
+fn pc_move_opens_source_submenu_before_picking_up_a_pokemon() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    mark_runtime_snapshot_dirty(&mut shell);
+    open_visible_bill_pc_move_mode(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_move_source.is_none(), "A opens the submenu, not insertion mode");
+    assert!(shell.bill_pc_pokemon_action_cursor.is_some());
+    move_visible_primary_cursor_up(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 0,
+        "STATICMENU_CURSOR without STATICMENU_WRAP stops at the top");
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0,
+        "submenu horizontal input must not browse boxes behind the popup");
+    assert_eq!(visible_pc_pokemon_action_labels(&shell).as_ref(), ["MOVE", "STATS", "CANCEL"]);
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 2,
+        "the submenu stops at CANCEL");
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_action_cursor.is_none());
+    assert!(shell.pending_pc_release.is_none(), "Move option three is CANCEL, never RELEASE");
+    assert!(shell.bill_pc_move_open);
+    press_visible_a_button(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().location,
+        VisiblePcPokemonLocation::Box { box_index: 0, box_slot: 0 });
+    press_visible_b_button(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 1);
+    press_visible_b_button(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_move_source.is_some());
+    assert!(shell.bill_pc_pokemon_action_cursor.is_none());
+    press_visible_b_button(&mut shell).unwrap();
+    switch_visible_pc_move_container(&mut shell, -1).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    move_visible_primary_cursor_down(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().location, VisiblePcPokemonLocation::Party(0));
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 3);
+    move_visible_primary_cursor_right(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().page, 1);
+    move_visible_primary_cursor_left(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_none(), "A exits the blue Stats page");
+    move_visible_primary_cursor_up(&mut shell).unwrap();
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_move_source.is_none(), "BillsPC_CheckMail_PreventBlackout runs before insertion");
+    assert_eq!(shell.pc_notice.as_deref(), Some("It's your last <PK><MN>!"));
+}
+
+#[test]
+fn pc_move_lists_keep_five_rows_and_include_cancel() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    for index in 0..8 {
+        pokemon.nickname = format!("MON{index}");
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+        if index == 0 { state.storage.party.pokemon[0] = Some(pokemon.clone()); }
+        else if index < 6 { assert!(state.storage.party.add_pokemon(pokemon.clone())); }
+    }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    for party in [false, true] {
+        for inserting in [false, true] {
+            shell.bill_pc_move_open = true;
+            shell.bill_pc_move_party_open = party;
+            shell.bill_pc_move_source = inserting.then_some(VisiblePcMoveSource {
+                location: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 0, slot: 0 }, scroll: 0,
+            });
+            shell.pc_list_scroll = 0;
+            shell.storage_cursor = Some(MenuCursor {
+                surface_id: if party { pc_party_surface_id().to_string() } else { storage_cursor_surface_id(0) },
+                option_index: 0,
+            });
+            move_visible_storage_cursor_up(&mut shell).unwrap();
+            assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0,
+                "Move uses BillsPC_PressUp and must not wrap");
+            for _ in 0..3 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+            let rows = |shell: &BevyRuntimeShell| {
+                let mut entries = Vec::new();
+                push_visible_storage_dialog_entries(&mut entries, &shell.shell.snapshot().unwrap(), shell).unwrap();
+                entries.into_iter().skip(1).collect::<Vec<_>>()
+            };
+            assert_eq!(rows(&shell), [" MON0", " MON1", " MON2", ">MON3", " MON4"]);
+            for _ in 0..2 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+            assert_eq!(rows(&shell), [" MON1", " MON2", " MON3", " MON4", ">MON5"]);
+            move_visible_storage_cursor_up(&mut shell).unwrap();
+            assert_eq!(rows(&shell), [" MON1", " MON2", " MON3", ">MON4", " MON5"]);
+            for _ in 0..12 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+            assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, if party { 6 } else { 8 });
+            assert_eq!(rows(&shell).last().map(String::as_str), Some(">CANCEL"),
+                "CopyBoxmonSpecies and RefreshTextboxes append CANCEL in both Move phases");
+            if !inserting {
+                confirm_visible_bill_pc_move(&mut shell).unwrap();
+                assert!(!shell.bill_pc_move_open, "selecting CANCEL must leave Move");
+                assert_eq!(shell.bill_pc_action_cursor.as_ref().unwrap().option_index, 3);
+                shell.bill_pc_action_cursor = None;
+            }
+        }
+    }
+    open_visible_bill_pc_move_mode(&mut shell).unwrap();
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(!shell.bill_pc_move_open, "B must leave source selection as CANCEL does");
+    assert_eq!(shell.bill_pc_action_cursor.as_ref().unwrap().option_index, 3);
+
+}
+
+#[test]
+fn pc_withdraw_list_keeps_five_rows_and_stops_at_both_ends() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    for index in 0..8 {
+        pokemon.nickname = format!("MON{index}");
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+    move_visible_storage_cursor_up(&mut shell).unwrap();
+    assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0, "BillsPC_PressUp stops at the first row");
+    for _ in 0..3 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+    let rows = |shell: &BevyRuntimeShell| {
+        let mut entries = Vec::new();
+        push_visible_storage_dialog_entries(&mut entries, &shell.shell.snapshot().unwrap(), shell).unwrap();
+        entries.into_iter().skip(1).collect::<Vec<_>>()
+    };
+    assert_eq!(rows(&shell), [" MON0", " MON1", " MON2", ">MON3", " MON4"]);
+    for _ in 0..2 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+    assert_eq!(rows(&shell), [" MON1", " MON2", " MON3", " MON4", ">MON5"]);
+    move_visible_storage_cursor_up(&mut shell).unwrap();
+    assert_eq!(rows(&shell), [" MON1", " MON2", " MON3", ">MON4", " MON5"]);
+    for _ in 0..10 { move_visible_storage_cursor_down(&mut shell).unwrap(); }
+    assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 8);
+    assert_eq!(rows(&shell), [" MON4", " MON5", " MON6", " MON7", ">CANCEL"]);
+}
+
+#[test]
+fn pc_boxed_egg_release_waits_for_sound_and_fifty_frames() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    pokemon.is_egg = true;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+    open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 2;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+    assert!(shell.pending_pc_release.is_none());
+    assert!(shell.pc_transfer_sequence.is_some(), "BillsPC_IsMonAnEgg must wait for SFX_WRONG and 50 frames");
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.pc_notice.is_some());
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+    advance_visible_pc_transfer_sequence(&mut shell, 49).unwrap();
+    assert!(shell.pc_notice.is_some());
+    advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+    assert!(shell.pc_notice.is_none());
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 2);
+    assert_eq!(shell.shell.session().state().storage.pc_boxes[0].count, 1);
+}
+
+#[test]
+fn pc_egg_withdrawal_does_not_play_the_unhatched_species_cry() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut egg = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    egg.is_egg = true;
+    egg.item = None;
+    egg.mail = None;
+    assert!(state.storage.pc_boxes[0].add_pokemon(egg));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.pending_audio.clear();
+    shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+    withdraw_visible_pc_pokemon(&mut shell).unwrap();
+    assert!(!shell.pending_audio.iter().any(|audio| audio.audio_id.starts_with("CRY_")),
+        "GetCryIndex rejects EGG; the unhatched species must stay silent");
+}
+
+#[test]
+fn pc_success_notices_retain_the_selected_submenu_until_the_last_frame() {
+    for action in ["deposit", "withdraw", "release"] {
+        let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+        let state = shell.shell.session_mut().state_mut();
+        let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+        pokemon.item = None;
+        pokemon.mail = None;
+        for index in 0..2 {
+            pokemon.nickname = format!("MON{index}");
+            state.storage.party.pokemon[index] = Some(pokemon.clone());
+            assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+        }
+        state.sync_party_from_storage();
+        mark_runtime_snapshot_dirty(&mut shell);
+        shell.bill_pc_deposit_open = action == "deposit";
+        shell.storage_cursor = Some(MenuCursor {
+            surface_id: if action == "deposit" { pc_party_surface_id().into() } else { storage_cursor_surface_id(0) },
+            option_index: 1,
+        });
+        open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+        shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = if action == "release" { 2 } else { 0 };
+        confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+        if action == "release" { confirm_visible_pc_release_prompt(&mut shell).unwrap(); }
+        assert!(shell.bill_pc_pokemon_action_cursor.is_some(), "{action}: the source retains its submenu during the notice");
+        let retained_names = if action == "release" {
+            &shell.pc_release_sequence.as_ref().unwrap().retained_names
+        } else {
+            &shell.pc_transfer_sequence.as_ref().unwrap().success.as_ref().unwrap().names
+        };
+        assert_eq!(retained_names, &["MON0", "MON1"], "{action}: removal must not rewrite the retained list");
+        if action != "release" {
+            assert!(shell.pc_notice.is_none());
+            assert_eq!(shell.pc_transfer_sequence.as_ref().unwrap().success.as_ref().unwrap().pokemon.level, 10,
+                "the cry retains the level displayed before the core withdrawal conversion");
+            assert_eq!(shell.pc_transfer_sequence.as_ref().unwrap().success.as_ref().unwrap().pokemon.species_id,
+                shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().species.id);
+            shell.pending_audio.clear();
+            shell.transient_audio_playing = false;
+            advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+        }
+        if action == "release" {
+            advance_visible_pc_release_sequence(&mut shell, 129).unwrap();
+        } else {
+            advance_visible_pc_transfer_sequence(&mut shell, 49).unwrap();
+        }
+        assert!(shell.bill_pc_pokemon_action_cursor.is_some());
+        if action == "release" {
+            advance_visible_pc_release_sequence(&mut shell, 1).unwrap();
+        } else {
+            advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+        }
+        assert!(shell.bill_pc_pokemon_action_cursor.is_none());
+        assert!(shell.pc_notice.is_none());
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0);
+    }
+}
+
+#[test]
+fn pc_capacity_refusals_preserve_the_selected_mon_and_action_menu() {
+    for (deposit, capacity) in [(false, true), (true, true), (true, false)] {
+        let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+        let state = shell.shell.session_mut().state_mut();
+        let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+        pokemon.item = None;
+        pokemon.mail = None;
+        for (index, slot) in state.storage.party.pokemon.iter_mut().enumerate() {
+            let mut member = pokemon.clone();
+            if !capacity && index != 1 { member.hp = 0; }
+            *slot = Some(member);
+        }
+        for _ in 0..if deposit && capacity { 20 } else { 2 } {
+            assert!(state.storage.pc_boxes[0].add_pokemon(pokemon.clone()));
+        }
+        state.sync_party_from_storage();
+        mark_runtime_snapshot_dirty(&mut shell);
+        shell.bill_pc_deposit_open = deposit;
+        shell.storage_cursor = Some(MenuCursor {
+            surface_id: if deposit { pc_party_surface_id().into() } else { storage_cursor_surface_id(0) }, option_index: 1,
+        });
+        open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+        confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+        assert!(shell.pc_transfer_sequence.is_some());
+        assert!(shell.bill_pc_pokemon_action_cursor.is_some(),
+            "the source retains the submenu until the refusal sound and hold finish");
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = false;
+        advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+        advance_visible_pc_transfer_sequence(&mut shell, 50).unwrap();
+        assert_eq!(shell.storage_cursor.as_ref().map(|cursor| cursor.option_index), Some(1), "deposit={deposit}: failed transfer keeps the list position");
+        assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().map(|cursor| cursor.option_index), if capacity { Some(0) } else { None }, "deposit={deposit} capacity={capacity}: source refusal destination");
+    }
+}
+
+#[test]
+fn pc_removing_last_boxed_pokemon_keeps_the_empty_cancel_list() {
+    for release in [true, false] {
+        let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+        let state = shell.shell.session_mut().state_mut();
+        let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+        pokemon.item = None;
+        pokemon.mail = None;
+        assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+        mark_runtime_snapshot_dirty(&mut shell);
+        shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+        if release {
+            release_visible_pc_pokemon(&mut shell).unwrap();
+            advance_visible_pc_release_sequence(&mut shell, 130).unwrap();
+        } else {
+            withdraw_visible_pc_pokemon(&mut shell).unwrap();
+            shell.pending_audio.clear();
+            shell.transient_audio_playing = false;
+            advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+            advance_visible_pc_transfer_sequence(&mut shell, 50).unwrap();
+        }
+        assert_eq!(shell.shell.session().state().storage.pc_boxes[0].count, 0);
+        assert_eq!(shell.storage_cursor.as_ref().map(|cursor| cursor.option_index), Some(0),
+            "release={release}: the rebuilt source list still owns CANCEL");
+    }
+}
+
+#[test]
+fn pc_deposit_opens_source_submenu_before_moving_a_party_pokemon() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let pokemon = state.storage.party.pokemon[0].as_mut().unwrap();
+    pokemon.item = None;
+    pokemon.mail = None;
+    state.storage.party.pokemon[1] = Some(pokemon.clone());
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.bill_pc_session_open = true;
+    shell.bill_pc_action_cursor = Some(MenuCursor { surface_id: "pc:bill-actions".into(), option_index: 1 });
+    confirm_visible_bill_pc_action(&mut shell).unwrap();
+    assert!(shell.bill_pc_deposit_open);
+    assert!(!shell.party_menu_open);
+    open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().storage.party.filled_slots(), 2);
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut entries = Vec::new();
+    push_visible_storage_dialog_entries(&mut entries, &snapshot, &shell).unwrap();
+    assert_eq!(&entries[1..], &[">DEPOSIT", " STATS", " RELEASE", " CANCEL"]);
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 1;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_summary.as_ref().unwrap().location, VisiblePcPokemonLocation::Party(0));
+    press_visible_b_button(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 1);
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 2;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+    assert_eq!(shell.pending_pc_release.as_ref().unwrap().location, VisiblePcPokemonLocation::Party(0));
+    press_visible_b_button(&mut shell).unwrap();
+    assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().unwrap().option_index, 2);
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 0;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().storage.party.filled_slots(), 1);
+    assert_eq!(shell.shell.session().state().storage.pc_boxes[0].count, 1);
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    advance_visible_pc_transfer_sequence(&mut shell, 1).unwrap();
+    advance_visible_pc_transfer_sequence(&mut shell, 50).unwrap();
+    assert!(shell.bill_pc_deposit_open);
+    assert!(!shell.party_menu_open);
+    assert_eq!(shell.storage_cursor.as_ref().unwrap().surface_id, pc_party_surface_id());
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(!shell.bill_pc_deposit_open);
+    assert!(shell.bill_pc_action_cursor.is_some());
+}
+
+#[test]
+fn pc_party_release_checks_source_refusals_then_compacts_the_party() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let initial = shell.shell.session().state().clone();
+    for (case, expected) in [("last", "last party"), ("fainted", "last usable"), ("mail", "holding mail"), ("egg", "Egg"), ("valid", "")] {
+        let state = shell.shell.session_mut().state_mut();
+        *state = initial.clone();
+        let first = state.storage.party.pokemon[0].as_mut().unwrap();
+        if case != "mail" { first.item = None; first.mail = None; }
+        let mut second = first.clone();
+        second.nickname = "SECOND".into();
+        second.item = None;
+        second.mail = None;
+        if case == "fainted" { second.hp = 0; }
+        if case == "egg" { first.is_egg = true; }
+        if case != "last" { state.storage.party.pokemon[1] = Some(second); }
+        state.sync_party_from_storage();
+        let before = state.clone();
+        let result = shell.shell.apply_runtime_mutation_command(
+            crate::RuntimeMutationCommand::ReleasePartyPokemon(crate::assets::RuntimePartySlotCommand { party_index: 0 }),
+        );
+        if case == "valid" {
+            assert!(matches!(result.unwrap().result, crate::RuntimeMutationResult::PartyPokemonReleased(_)));
+            let state = shell.shell.session().state();
+            assert_eq!(state.storage.party.filled_slots(), 1);
+            assert_eq!(state.storage.party.pokemon[0].as_ref().unwrap().nickname, "SECOND");
+        } else {
+            let error = format!("{:#}", result.unwrap_err());
+            assert!(error.contains(expected), "{case}: {error}");
+            assert_eq!(shell.shell.session().state(), &before, "refusal must not remove or reorder Pokemon");
+        }
+    }
+}
+
+#[test]
+fn pc_declining_release_returns_to_the_release_submenu_row() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None;
+    pokemon.mail = None;
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor {
+        surface_id: storage_cursor_surface_id(0), option_index: 0,
+    });
+    for cancel_with_b in [false, true] {
+        open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+        move_visible_primary_cursor_down(&mut shell).unwrap();
+        move_visible_primary_cursor_down(&mut shell).unwrap();
+        assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0);
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.pending_pc_release.is_some());
+        if cancel_with_b {
+            press_visible_b_button(&mut shell).unwrap();
+        } else {
+            move_visible_primary_cursor_down(&mut shell).unwrap();
+            move_visible_primary_cursor_down(&mut shell).unwrap();
+            move_visible_primary_cursor_left(&mut shell).unwrap();
+            move_visible_primary_cursor_right(&mut shell).unwrap();
+            assert_eq!(shell.yes_no_cursor.as_ref().unwrap().option_index, 1);
+            assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0);
+            assert_eq!(shell.shell.snapshot().unwrap().storage.current_pc_box, 0);
+            press_visible_a_button(&mut shell).unwrap();
+        }
+        assert!(shell.pending_pc_release.is_none());
+        assert_eq!(shell.bill_pc_pokemon_action_cursor.as_ref().map(|cursor| cursor.option_index),
+            Some(2), "BillsPC_Withdraw.FailedRelease restores wMenuCursorY");
+        assert_eq!(shell.shell.session().state().storage.pc_boxes[0].count, 1);
+    }
+}
+
+#[test]
+fn pokegear_contact_submenu_gates_calls_and_confirms_deletion() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    state.script_runtime.phone_number_order = vec![Some("PHONE_MOM".into()), Some("PHONE_ELM".into()), Some("PHONE_BILL".into())];
+    state.script_runtime.phone_numbers = state.script_runtime.phone_number_order.iter().flatten().cloned().collect();
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Phone;
+    inspect_visible_pokegear_selection(&mut shell).unwrap();
+    assert!(shell.pokegear_phone_call.is_none(), "A must open the contact submenu before calling");
+    assert!(!shell.pokegear_phone_menu.as_ref().unwrap().can_delete);
+    move_visible_pokegear_cursor(&mut shell, 10).unwrap();
+    assert_eq!(shell.pokegear_phone_menu.as_ref().unwrap().cursor, 1);
+    cycle_visible_pokegear_page(&mut shell, -1).unwrap();
+    assert_eq!(shell.pokegear_page, PokegearPage::Phone);
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.pokegear_menu_open);
+    assert!(shell.pokegear_phone_menu.is_none());
+    shell.pokegear_phone_cursor = 2;
+    for accept in [false, true] {
+        inspect_visible_pokegear_selection(&mut shell).unwrap();
+        assert!(shell.pokegear_phone_menu.as_ref().unwrap().can_delete);
+        move_visible_pokegear_cursor(&mut shell, 1).unwrap();
+        inspect_visible_pokegear_selection(&mut shell).unwrap();
+        assert_eq!(shell.pokegear_phone_menu.as_ref().unwrap().delete_confirmation, Some(0));
+        if accept { inspect_visible_pokegear_selection(&mut shell).unwrap(); }
+        else { press_visible_b_button(&mut shell).unwrap(); }
+        assert!(shell.pokegear_phone_menu.is_none());
+        assert_eq!(shell.shell.session().state().script_runtime.phone_numbers.contains("PHONE_BILL"), !accept);
+    }
+    assert_eq!(shell.pokegear_phone_cursor, 2);
+}
+
+#[test]
+fn pokegear_returns_to_its_start_menu_cursor_but_scripted_map_does_not() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.start_menu_cursor = Some(MenuCursor {
+        surface_id: START_MENU_SURFACE_ID.to_string(), option_index: 2,
+    });
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.start_menu_cursor = None; // select_visible_start_menu_option suspends it.
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    assert_eq!(shell.start_menu_cursor.as_ref().map(|cursor| cursor.option_index), Some(2));
+    shell.start_menu_cursor = None;
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    shell.pokegear_standalone_map = true;
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    assert!(shell.start_menu_cursor.is_none());
+}
+
+#[test]
+fn pokegear_clock_buttons_exit_and_card_navigation_stops_at_the_edges() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for button in [GameButton::A, GameButton::B, GameButton::Start, GameButton::Select] {
+        shell.pokegear_menu_open = true;
+        shell.pokegear_page = PokegearPage::Clock;
+        match button {
+            GameButton::A => press_visible_a_button(&mut shell),
+            GameButton::B => press_visible_b_button(&mut shell),
+            GameButton::Start => press_visible_start_button(&mut shell),
+            GameButton::Select => press_visible_select_button(&mut shell),
+            _ => unreachable!(),
+        }.expect("clock button input");
+        assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested), "{button:?} must request the clock exit");
+        close_visible_pokegear_menu(&mut shell).unwrap();
+    }
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Clock;
+    cycle_visible_pokegear_page(&mut shell, -1).expect("left edge");
+    assert_eq!(shell.pokegear_page, PokegearPage::Clock);
+}
+
+#[test]
+fn pokegear_contacts_keep_the_saved_phone_list_order() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().expect("phone snapshot");
+    snapshot.script_events.phone_numbers = ["PHONE_ELM".into(), "PHONE_MOM".into()].into();
+    snapshot.script_events.phone_number_order = vec![Some("PHONE_MOM".into()), Some("PHONE_ELM".into())];
+    assert_eq!(visible_pokegear_phone_slots(&snapshot).unwrap().into_iter().flatten().collect::<Vec<_>>(), ["PHONE_MOM", "PHONE_ELM"],
+        "wPhoneList order must not be replaced by alphabetical set order");
+}
+
+#[test]
+fn missing_server_clock_pauses_gameplay_without_using_device_time() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.intro_screen = None;
+    runtime_shell.title_menu = None;
+    let mut keys = ButtonInput::<KeyCode>::default();
+    keys.press(KeyCode::Enter);
+    let before = runtime_shell.shell.session().state().clone();
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(runtime_shell)
+        .insert_resource(NativeRtcSource::Server)
+        .insert_resource(keys)
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .add_systems(Update, (apply_keyboard_input, apply_runtime_hotkeys).chain());
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.shell.session().state(), &before);
+    assert_eq!(shell.latest_rtc_sample, None);
+    assert!(shell.start_menu_cursor.is_none());
+    assert_eq!(shell.last_error.as_deref(), Some(SERVER_CLOCK_UNAVAILABLE));
+}
+
+#[test]
+fn pokegear_phone_preserves_empty_slots_and_scrolls_only_at_window_edges() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let runtime = &mut shell.shell.session_mut().state_mut().script_runtime;
+    runtime.phone_numbers = ["PHONE_MOM".into(), "PHONE_ELM".into()].into();
+    runtime.phone_number_order = vec![Some("PHONE_MOM".into()), None, Some("PHONE_ELM".into())];
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.pokegear_menu_open = true;
+    shell.pokegear_page = PokegearPage::Phone;
+    move_visible_pokegear_cursor(&mut shell, -1).expect("Up at first slot");
+    assert_eq!(shell.pokegear_phone_cursor, 0);
+    move_visible_pokegear_cursor(&mut shell, 1).expect("select empty slot");
+    start_visible_pokegear_phone_call(&mut shell).expect("A on contact zero is ignored");
+    assert!(shell.pokegear_phone_call.is_none());
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(visible_pokegear_phone_slots(&snapshot).unwrap()[2], Some("PHONE_ELM"));
+    assert_eq!(visible_pokegear_phone_entries(&snapshot, &shell).unwrap()[2], ">----------");
+    for _ in 0..3 { move_visible_pokegear_cursor(&mut shell, 1).unwrap(); }
+    assert_eq!((shell.pokegear_phone_cursor, shell.pokegear_phone_scroll), (4, 1));
+    move_visible_pokegear_cursor(&mut shell, -1).unwrap();
+    assert_eq!((shell.pokegear_phone_cursor, shell.pokegear_phone_scroll), (3, 1));
+    for _ in 0..10 { move_visible_pokegear_cursor(&mut shell, 1).unwrap(); }
+    assert_eq!((shell.pokegear_phone_cursor, shell.pokegear_phone_scroll), (9, 6));
+}
+
+#[test]
+fn stats_source_print_level_uses_three_tiles_at_every_level() {
+    assert_eq!(visible_print_level_text(5), "\u{e10a}5 ");
+    assert_eq!(visible_print_level_text(10), "\u{e10a}10");
+    assert_eq!(visible_print_level_text(100), "100");
+    let mut map = SourceStatsLayout::default();
+    stats_write_text(&mut map, 17, 14, &visible_print_level_text(100)).unwrap();
+}
+
+#[test]
+fn stats_shiny_palette_loads_the_two_source_colors() {
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let palette = load_pokemon_palette(&root, "cyndaquil", PokemonSpriteSide::Front, true).unwrap();
+    assert_eq!(palette, [[255, 255, 255],
+        [normalize_palette_component(29), normalize_palette_component(23), normalize_palette_component(9)],
+        [normalize_palette_component(22), 0, normalize_palette_component(19)], [0, 0, 0]]);
+}
+
+fn render_pc_audit_canvas(world: &mut World, images: &Assets<Image>, label: &str) -> image::RgbaImage {
+        let mut query = world.query::<(&Sprite, &Transform, &Handle<Image>)>();
+        let mut sprites = query.iter(&world).collect::<Vec<_>>();
+        sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
+        let mut canvas = image::RgbaImage::new(PLAYFIELD_WIDTH as u32, PLAYFIELD_HEIGHT as u32);
+        for (sprite, transform, handle) in sprites {
+            let size = sprite.custom_size.expect("explicit sprite size");
+            let left = transform.translation.x - size.x / 2.0 - PLAYFIELD_LEFT;
+            let top = PLAYFIELD_TOP - transform.translation.y - size.y / 2.0;
+            assert!(left >= -0.01 && left + size.x <= PLAYFIELD_WIDTH + 0.01,
+                "{label}: horizontal clipping at {left} with width {}", size.x);
+            assert!(top >= -0.01 && top + size.y <= PLAYFIELD_HEIGHT + 0.01,
+                "{label}: vertical clipping at {top} with height {}", size.y);
+            let mut raster = if let Some(source) = images.get(handle) {
+                image::RgbaImage::from_raw(source.width(), source.height(), source.data.clone())
+                    .expect("RGBA sprite")
+            } else {
+                // Bevy's default image handle is its solid white sprite texture.
+                assert_eq!(*handle, Handle::<Image>::default(), "missing authored sprite");
+                image::RgbaImage::from_pixel(1, 1, image::Rgba([255, 255, 255, 255]))
+            };
+            let color = sprite.color.to_srgba();
+            for pixel in raster.pixels_mut() {
+                for (channel, tint) in pixel.0.iter_mut().zip([color.red, color.green, color.blue, color.alpha]) {
+                    *channel = (f32::from(*channel) * tint).round() as u8;
+                }
+            }
+            if sprite.flip_x { image::imageops::flip_horizontal_in_place(&mut raster); }
+            if sprite.flip_y { image::imageops::flip_vertical_in_place(&mut raster); }
+            let scaled = image::imageops::resize(&raster, size.x as u32, size.y as u32,
+                image::imageops::FilterType::Nearest);
+            image::imageops::overlay(&mut canvas, &scaled, left.round() as i64, top.round() as i64);
+        }
+    canvas
+}
+
+#[test]
+fn stats_level_and_shiny_variants_render_without_clipping() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let snapshot = shell.shell.snapshot().unwrap();
+    let data = shell.shell.runtime().data();
+    for (variant, level, dvs) in [
+        ("level5", 5, crate::core::models::Dv::default()),
+        ("level100", 100, crate::core::models::Dv::default()),
+        ("unown-z", 10, crate::core::models::Dv { attack: 6, defense: 6, speed: 6, special: 6, hp: 0 }),
+        ("shiny", 10, crate::core::models::Dv { attack: 2, defense: 10, speed: 10, special: 10, hp: 0 }),
+    ] {
+        let species = if variant == "unown-z" {
+            data.saved_species("UNOWN").unwrap()
+        } else { snapshot.party.slots[0].pokemon.species.clone() };
+        let mut pokemon = crate::core::models::pokemon::create_pokemon_from_known_dvs(
+            &species, level, dvs,
+            &data.learnsets, &data.moves, &data.growth_rates).unwrap();
+        pokemon.item = None; pokemon.mail = None;
+        pokemon.original_trainer_name = "CHRIS".into();
+        pokemon.original_trainer_id = 0;
+        for (page, name) in [(1, "pink"), (2, "green"), (3, "blue")] {
+            let mut world = World::new();
+            let mut images = Assets::<Image>::default();
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            let mut commands = Commands::new(&mut queue, &world);
+            spawn_source_stats_screen(&mut commands, &snapshot, &shell, &pokemon,
+                page, &mut RenderedTilesetArt::default(), &mut images, 4.1).unwrap();
+            queue.apply(&mut world);
+            let canvas = render_pc_audit_canvas(&mut world, &images, variant);
+            if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                let directory = PathBuf::from(directory).join(variant);
+                std::fs::create_dir_all(&directory).unwrap();
+                canvas.save(directory.join(format!("pc-stats-{name}.png"))).unwrap();
+            }
+        }
+    }
+}
+
+#[test]
+fn stats_observation_reports_the_active_pc_and_party_page() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut pokemon = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    pokemon.item = None; pokemon.mail = None;
+    state.storage.party.pokemon[0] = Some(pokemon.clone());
+    assert!(state.storage.pc_boxes[0].add_pokemon(pokemon));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor { surface_id: storage_cursor_surface_id(0), option_index: 0 });
+    let snapshot = shell.shell.snapshot().unwrap();
+    for page in 1..=3 {
+        shell.bill_pc_pokemon_summary = Some(VisiblePcPokemonSummary {
+            location: VisiblePcPokemonLocation::Box { box_index: 0, box_slot: 0 }, page,
+        });
+        shell.party_summary_page = page;
+        let mut pc = Vec::new();
+        push_visible_storage_dialog_entries(&mut pc, &snapshot, &shell).unwrap();
+        assert_eq!(visible_scene_dialog_entries(&snapshot, &shell).unwrap(), pc,
+            "the public scene observation must not truncate the Stats page to six rows");
+        let party = visible_party_summary_entries(&snapshot, &shell).unwrap();
+        for entries in [&pc, &party] {
+            let text = entries.join("\n");
+            assert!(!text.contains("CANCEL"), "Stats is not the underlying storage list: {text}");
+            assert_eq!(text.contains("EXP POINTS"), page == 1, "{text}");
+            assert_eq!(text.contains("ITEM"), page == 2, "{text}");
+            assert_eq!(text.contains("SPCL.ATK"), page == 3, "{text}");
+            assert!(!text.contains("HAP "), "hidden happiness is not visible Stats text");
+        }
+    }
+
+    let mut egg_snapshot = snapshot.clone();
+    egg_snapshot.storage.boxes[0].slots[0].pokemon.is_egg = true;
+    egg_snapshot.storage.boxes[0].slots[0].pokemon.happiness = 20;
+    let mut entries = Vec::new();
+    push_visible_storage_dialog_entries(&mut entries, &egg_snapshot, &shell).unwrap();
+    let text = entries.join("\n");
+    assert!(text.contains("Wonder what's"), "{text}");
+    assert!(text.contains("more time, though."), "{text}");
+    assert!(!text.contains("SPCL.ATK"), "Egg hides the retained blue page");
+    assert!(!text.contains("CYNDAQUIL"), "Egg must not expose its hidden species");
+}
+
+#[test]
+fn pc_unown_portraits_load_all_dv_selected_forms() {
+    use crate::core::models::{BaseStats, Dv, Pokemon, PokemonSpecies};
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let species = PokemonSpecies::new_for_tests("UNOWN", BaseStats {
+        hp: 48, attack: 72, defense: 48, speed: 48, special_attack: 72, special_defense: 48,
+    });
+    let mut portraits = std::collections::HashSet::new();
+    for letter in 0..26_u8 {
+        let packed = letter * 10;
+        let dvs = Dv { attack: ((packed >> 6) & 3) << 1,
+            defense: ((packed >> 4) & 3) << 1, speed: ((packed >> 2) & 3) << 1,
+            special: (packed & 3) << 1, hp: 0 };
+        let pokemon = Pokemon::new_for_tests(species.clone(), 10, dvs);
+        let mut images = Assets::<Image>::default();
+        let picture = load_pc_pokemon_picture(&root, Some(&visible_pc_pokemon_info(&pokemon)),
+            true, &mut images).expect("PC Stats must load the DV-selected Unown frontpic");
+        assert!(portraits.insert(images.get(&picture.handle).unwrap().data.clone()),
+            "Unown form {} repeated another form", letter + 1);
+    }
+}
+
+
+#[test]
+fn party_stats_suppresses_cries_for_eggs_fainted_frozen_and_asleep_pokemon() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let base = shell.shell.session_mut().state_mut().storage.party.pokemon[0].as_ref().unwrap().clone();
+    for (egg, hp, status, expected_cry) in [
+        (true, 10, None, false), (false, 0, None, false),
+        (false, 10, Some("FREEZE"), false), (false, 10, Some("SLEEP"), false),
+        (false, 10, None, true), (false, 10, Some("POISON"), true),
+        (false, 10, Some("BURN"), true), (false, 10, Some("PARALYSIS"), true),
+    ] {
+        let mut pokemon = base.clone();
+        pokemon.is_egg = egg; pokemon.hp = hp; pokemon.status = status.map(str::to_owned);
+        pokemon.item = None; pokemon.mail = None;
+        pokemon.sleep_turns = if status == Some("SLEEP") { 3 } else { 0 };
+        let state = shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0] = Some(pokemon.clone());
+        state.storage.party.pokemon[1] = Some(pokemon);
+        state.sync_party_from_storage();
+        mark_runtime_snapshot_dirty(&mut shell);
+        shell.party_cursor = 0;
+        shell.pending_audio.clear(); shell.transient_audio_playing = false;
+        open_visible_party_summary(&mut shell).unwrap();
+        assert_eq!(shell.pending_audio.iter().any(|audio| matches!(audio.kind, ModpackAudioKind::Cry)),
+            expected_cry, "Stats opening: egg={egg} hp={hp} status={status:?}");
+        shell.pending_audio.clear();
+        move_visible_party_summary_pokemon(&mut shell, 1).unwrap();
+        assert_eq!(shell.pending_audio.iter().any(|audio| matches!(audio.kind, ModpackAudioKind::Cry)),
+            expected_cry, "Stats browsing: egg={egg} hp={hp} status={status:?}");
+        close_visible_party_summary(&mut shell);
+    }
+}
+
+#[test]
+fn party_stats_exit_buttons_wait_for_pending_and_playing_cries() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.party_menu_open = true;
+    for confirm in [false, true] {
+        open_visible_party_summary(&mut shell).unwrap();
+        shell.party_summary_page = 3;
+        assert!(!shell.pending_audio.is_empty());
+        let press = if confirm { press_visible_a_button } else { press_visible_b_button };
+        press(&mut shell).unwrap();
+        assert!(shell.party_summary_open, "exit during queued cry: A={confirm}");
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = true;
+        press(&mut shell).unwrap();
+        assert!(shell.party_summary_open, "exit during playing cry: A={confirm}");
+        shell.transient_audio_playing = false;
+        press(&mut shell).unwrap();
+        assert!(!shell.party_summary_open, "exit after cry: A={confirm}");
+    }
+}
+
+#[test]
+fn party_egg_stats_plays_boops_only_below_six_hatch_cycles() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut egg = shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_ref().unwrap().clone();
+    egg.is_egg = true;
+    egg.item = None;
+    egg.mail = None;
+    for happiness in [0, 5, 6, 10, 11, 20] {
+        egg.happiness = happiness;
+        let state = shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0] = Some(egg.clone());
+        state.storage.party.pokemon[1] = Some(egg.clone());
+        state.sync_party_from_storage();
+        mark_runtime_snapshot_dirty(&mut shell);
+        shell.party_cursor = 0;
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = false;
+        open_visible_party_summary(&mut shell).unwrap();
+        for browsing in [false, true] {
+            if browsing {
+                shell.pending_audio.clear();
+                move_visible_party_summary_pokemon(&mut shell, 1).unwrap();
+            }
+            assert_eq!(shell.pending_audio.iter()
+                .filter(|audio| audio.audio_id == "SFX_2_BOOPS").count(),
+                usize::from(happiness < 6), "happiness={happiness}, browsing={browsing}");
+            assert!(!shell.pending_audio.iter()
+                .any(|audio| matches!(audio.kind, ModpackAudioKind::Cry)));
+        }
+        close_visible_party_summary(&mut shell);
+    }
+}
+
+#[test]
+fn pc_egg_stats_plays_boops_and_waits_before_browsing_or_exiting() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let state = shell.shell.session_mut().state_mut();
+    let mut egg = state.storage.party.pokemon[0].as_ref().unwrap().clone();
+    egg.item = None;
+    egg.mail = None;
+    egg.is_egg = true;
+    egg.happiness = 5;
+    assert!(state.storage.pc_boxes[0].add_pokemon(egg.clone()));
+    assert!(state.storage.pc_boxes[0].add_pokemon(egg));
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.storage_cursor = Some(MenuCursor {
+        surface_id: storage_cursor_surface_id(0), option_index: 0,
+    });
+    shell.pending_audio.clear();
+    open_visible_bill_pc_pokemon_actions(&mut shell).unwrap();
+    shell.bill_pc_pokemon_action_cursor.as_mut().unwrap().option_index = 1;
+    confirm_visible_bill_pc_pokemon_action(&mut shell).unwrap();
+    assert_eq!(shell.pending_audio.iter().filter(|audio| audio.audio_id == "SFX_2_BOOPS").count(), 1);
+    move_visible_pc_summary_pokemon(&mut shell, 1).unwrap();
+    assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 0);
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_some());
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_some());
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    move_visible_pc_summary_pokemon(&mut shell, 1).unwrap();
+    assert_eq!(shell.storage_cursor.as_ref().unwrap().option_index, 1);
+    assert_eq!(shell.pending_audio.iter().filter(|audio| audio.audio_id == "SFX_2_BOOPS").count(), 1);
+    shell.pending_audio.clear();
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.bill_pc_pokemon_summary.is_none());
+}
+
+#[test]
+fn mailbox_windows_match_original_rom_lcd() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mail = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().mail.clone().unwrap();
+    shell.shell.session_mut().state_mut().mailbox = (0..6).map(|index| {
+        let mut mail = mail.clone();
+        mail.author = format!("MAIL{index}");
+        crate::core::state::MailboxMail { item_id: "FLOWER_MAIL".into(), mail }
+    }).collect();
+    mark_runtime_snapshot_dirty(&mut shell);
+    let reference = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../tools/asm-oracle/fixtures/mailbox");
+    let mut differences = Vec::new();
+    for index in 0usize..9 {
+        let label = if index < 7 { format!("mailbox-{index}") }
+            else if index == 7 { "mailbox-actions".into() } else { "mailbox-confirm".into() };
+        shell.mailbox_scroll = if index < 7 { index.saturating_sub(3) } else { 3 };
+        shell.mailbox_cursor = Some(MenuCursor {
+            surface_id: "pc:mailbox".into(), option_index: if index < 7 { index } else { 5 },
+        });
+        shell.mailbox_action_cursor = (index >= 7).then(|| MenuCursor {
+            surface_id: "pc:mailbox-actions".into(), option_index: if index == 7 { 0 } else { 1 },
+        });
+        if index == 8 {
+            confirm_visible_mailbox_action(&mut shell).unwrap();
+            let question = shell.pc_notice.clone().unwrap();
+            shell.field_text_reveal = Some(VisibleFieldTextReveal {
+                text: question.clone(), page_index: 0, visible_chars: question.chars().count(), frames_until_next_char: 0,
+            });
+        }
+        let mut snapshot = shell.shell.snapshot().unwrap();
+        snapshot.overworld.map_name = "OlivinePokecenter1F".into();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        let palette = source_map_text_palette(&snapshot, &shell.asset_root).unwrap();
+        // The oracle deliberately clears the parent backdrop to isolate menus.
+        commit_presented_fullscreen_solid(&mut commands, &mut art,
+            [palette[0][0], palette[0][1], palette[0][2], 255], 3.0, &mut images).unwrap();
+        spawn_scene_dialog(&mut commands, &snapshot, &shell, &mut art, &shell.asset_root, &mut images).unwrap();
+        queue.apply(&mut world);
+        assert_eq!(art.font_error, None, "{label}");
+        let canvas = render_pc_audit_canvas(&mut world, &images, &label);
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("{label}.png"))).unwrap();
+        }
+        let rom = image::open(reference.join(format!("rom-{label}.png"))).unwrap().to_rgba8();
+        assert_eq!(rom.dimensions(), (160, 144));
+        let scale = canvas.width() / 160;
+        assert_eq!(canvas.dimensions(), (160 * scale, 144 * scale));
+        let count = canvas.enumerate_pixels().filter(|(x, y, pixel)| {
+            let expected = rom.get_pixel(x / scale, y / scale);
+            pixel[3] != 255 || (0..3).any(|channel| pixel[channel] >> 3 != expected[channel] >> 3)
+        }).count();
+        differences.push((label, count));
+    }
+    assert!(differences.iter().all(|(_, count)| *count == 0), "mailbox RGB5 differences: {differences:?}");
 }

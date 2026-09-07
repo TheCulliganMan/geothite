@@ -1082,6 +1082,8 @@ impl DecorationActionOutcome {
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct GameDataSet {
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub server_clock: bool,
     #[serde(default, skip_serializing_if = "crate::NuzlockeRules::is_disabled")]
     pub nuzlocke_rules: crate::NuzlockeRules,
     pub pokemon: BTreeMap<String, PokemonSpecies>,
@@ -2019,7 +2021,6 @@ pub struct RuntimeKurtApricornCommand {
 #[serde(deny_unknown_fields)]
 pub struct RuntimeBuenaPasswordCommand {
     pub guess: Option<String>,
-    pub divider_trace: RuntimeDividerTrace,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -2495,6 +2496,10 @@ pub enum RuntimeMutationCommand {
     ApplyScriptMap(RuntimeScriptCommandRef),
     ApplyRandomScriptMap(RuntimeRandomScriptMapCommand),
     TransitionPendingScriptWarp,
+    TransitionToSpawnPoint {
+        spawn_identifier: u16,
+        map_setup: String,
+    },
     ApplyMapSetupCallbacks {
         map_setup: String,
     },
@@ -2674,6 +2679,7 @@ pub enum RuntimeMutationCommand {
     DepositPartyPokemonToCurrentBox(RuntimePcDepositCommand),
     WithdrawCurrentBoxPokemonToParty(RuntimePcWithdrawCommand),
     ReleaseCurrentBoxPokemon(RuntimePcReleaseCommand),
+    ReleasePartyPokemon(RuntimePartySlotCommand),
     MovePcPokemonWithoutMail(RuntimePcMoveCommand),
     DepositBagItemToPc(RuntimePcItemCommand),
     WithdrawPcItemToBag(RuntimePcItemCommand),
@@ -2721,6 +2727,7 @@ pub enum RuntimeMutationCommand {
     SwapPartyPokemon(RuntimePartySwapCommand),
     SwapPartyPokemonMoves(RuntimePartyMoveSwapCommand),
     InitializePermanentPhoneNumbers,
+    DeletePokegearPhoneNumber { contact_id: String },
     StartPokegearPhoneCall(RuntimePokegearPhoneCallCommand),
 }
 
@@ -2984,7 +2991,7 @@ pub enum RuntimeScriptRuntimeMemoryEntryRemoved {
     PhoneNumber { key: String },
 }
 
-pub const RUNTIME_MUTATION_COMMAND_SCHEMA: &str = "crystal_runtime_mutation_command_v49";
+pub const RUNTIME_MUTATION_COMMAND_SCHEMA: &str = "crystal_runtime_mutation_command_v50";
 
 pub fn encode_runtime_mutation_command_payload(
     command: &RuntimeMutationCommand,
@@ -3282,7 +3289,7 @@ fn full_heal_party_slot(
             )
         })?;
         let before_pp = learned.current_pp;
-        let after_pp = move_data.pp;
+        let after_pp = crystal_core::models::max_move_pp(move_data.pp, learned.pp_ups);
         learned.current_pp = after_pp;
         pp_restored.push((learned.name.clone(), before_pp, after_pp));
     }
@@ -3290,6 +3297,7 @@ fn full_heal_party_slot(
         pokemon.hp = pokemon.max_hp;
     }
     pokemon.status = None;
+    pokemon.sleep_turns = 0;
     let outcome = PartyRecoveryOutcome {
         party_index,
         species_id: pokemon.species.id.clone(),
@@ -3446,6 +3454,29 @@ fn insert_party_pokemon(party: &mut Party, slot: usize, pokemon: Pokemon) -> Res
     Ok(())
 }
 
+fn rebuild_pc_party_stats(pokemon: &mut Pokemon, nuzlocke_rules: crate::NuzlockeRules) {
+    // SendGetMonIntoFromBox and CalcBufferMonStats both calculate all stats
+    // with stat experience, then initialize the party-only HP/status bytes.
+    let preserve_fainted = nuzlocke_rules.permadeath && pokemon.hp == 0;
+    let stats = calculate_stats(&pokemon.species, pokemon.level, pokemon.dvs,
+        crystal_core::models::pokemon::StatExperience {
+            hp: pokemon.hp_exp,
+            attack: pokemon.attack_exp,
+            defense: pokemon.defense_exp,
+            speed: pokemon.speed_exp,
+            special: pokemon.special_exp,
+        });
+    pokemon.max_hp = stats.max_hp;
+    pokemon.attack = stats.attack;
+    pokemon.defense = stats.defense;
+    pokemon.speed = stats.speed;
+    pokemon.special_attack = stats.special_attack;
+    pokemon.special_defense = stats.special_defense;
+    pokemon.hp = if pokemon.is_egg || preserve_fainted { 0 } else { stats.max_hp };
+    pokemon.status = None;
+    pokemon.sleep_turns = 0;
+}
+
 fn restore_deposited_pokemon_pp(
     moves: &BTreeMap<String, Move>,
     pokemon: &mut Pokemon,
@@ -3558,6 +3589,10 @@ pub enum RuntimeMutationResult {
     ScriptAudioApplied(ScriptAudioCue),
     ScriptMapApplied(ScriptMapAction),
     PendingScriptWarpTransitioned(ScriptWarpRequest),
+    SpawnPointTransitioned {
+        spawn_identifier: u16,
+        map_name: String,
+    },
     MapSetupCallbacksApplied(String),
     ScriptTextApplied(ScriptTextAction),
     ScriptVariableApplied(ScriptVariableOutcome),
@@ -3722,6 +3757,7 @@ pub enum RuntimeMutationResult {
     PartyPokemonDeposited(RuntimeStorageDepositOutcome),
     PcPokemonWithdrawn(RuntimeStorageWithdrawOutcome),
     PcPokemonReleased(RuntimeStorageReleaseOutcome),
+    PartyPokemonReleased(Pokemon),
     PcPokemonMoved(RuntimeStorageMoveOutcome),
     BagItemDepositedToPc(RuntimePcItemTransferOutcome),
     PcItemWithdrawnToBag(RuntimePcItemTransferOutcome),
@@ -3769,6 +3805,7 @@ pub enum RuntimeMutationResult {
     PartyPokemonSwapped(RuntimePartySwapOutcome),
     PartyPokemonMovesSwapped(RuntimePartyMoveSwapOutcome),
     PermanentPhoneNumbersInitialized(Vec<String>),
+    PokegearPhoneNumberDeleted(bool),
     PokegearPhoneCallStarted(RuntimePokegearPhoneCallOutcome),
 }
 
@@ -3789,6 +3826,7 @@ impl RuntimeMutationResult {
             Self::ScriptAudioApplied(_) => "script_audio_applied",
             Self::ScriptMapApplied(_) => "script_map_applied",
             Self::PendingScriptWarpTransitioned(_) => "pending_script_warp_transitioned",
+            Self::SpawnPointTransitioned { .. } => "spawn_point_transitioned",
             Self::MapSetupCallbacksApplied(_) => "map_setup_callbacks_applied",
             Self::ScriptTextApplied(_) => "script_text_applied",
             Self::ScriptVariableApplied(_) => "script_variable_applied",
@@ -3953,6 +3991,7 @@ impl RuntimeMutationResult {
             Self::PartyPokemonDeposited(_) => "party_pokemon_deposited",
             Self::PcPokemonWithdrawn(_) => "pc_pokemon_withdrawn",
             Self::PcPokemonReleased(_) => "pc_pokemon_released",
+            Self::PartyPokemonReleased(_) => "party_pokemon_released",
             Self::PcPokemonMoved(_) => "pc_pokemon_moved",
             Self::BagItemDepositedToPc(_) => "bag_item_deposited_to_pc",
             Self::PcItemWithdrawnToBag(_) => "pc_item_withdrawn_to_bag",
@@ -4000,6 +4039,7 @@ impl RuntimeMutationResult {
             Self::PartyPokemonSwapped(_) => "party_pokemon_swapped",
             Self::PartyPokemonMovesSwapped(_) => "party_pokemon_moves_swapped",
             Self::PermanentPhoneNumbersInitialized(_) => "permanent_phone_numbers_initialized",
+            Self::PokegearPhoneNumberDeleted(_) => "pokegear_phone_number_deleted",
             Self::PokegearPhoneCallStarted(_) => "pokegear_phone_call_started",
         }
     }
@@ -4153,7 +4193,6 @@ pub fn runtime_special_routine_requires_divider_trace(routine: &str) -> bool {
             | "DayCareLady"
             | "DayCareManOutside"
             | "GiveShuckle"
-            | "BuenasPassword"
             | "LoadOpponentTrainerAndPokemonWithOTSprite"
             | "GiveOddEgg"
     )

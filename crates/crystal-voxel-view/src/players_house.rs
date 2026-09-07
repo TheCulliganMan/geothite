@@ -14,15 +14,12 @@ pub(crate) enum StairKind {
 
 /// Return the exact 2x2 source coordinate and direction for each authored
 /// player-house stair drawing. Blocks `$0a`/`$0b` are embedded in the north
-/// wall course used by Red and Copycat's houses; block `$0f` is the equivalent
-/// ground-floor flight in the player's house. These are art identities, not
-/// collision guesses.
+/// wall course. Block `$0f` contains a refrigerator, not a staircase.
 pub(crate) fn stair_local(source: &VisualTileSource) -> Option<(u8, u8, StairKind)> {
     if source.tileset_id.as_ref() != "players_house" {
         return None;
     }
     let (origin_column, origin_row, drawing, kind) = match source.metatile_id {
-        0x0f => (0, 1, [[0x0a, 0x0b], [0x1a, 0x1b]], StairKind::UpEast),
         0x0a => (2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
         0x0b => (2, 0, [[0x4e, 0x4f], [0x5e, 0x5f]], StairKind::DownWest),
         _ => return None,
@@ -91,14 +88,14 @@ pub(crate) fn upright_fixture_local(source: &VisualTileSource) -> Option<(u8, u8
                 DRAWING[usize::from(source.subtile_row - 2)][usize::from(source.subtile_column)],
             )
         }
-        0x0f if source.subtile_column >= 2 => {
-            const DRAWING: [[u16; 2]; 4] = [[0x25, 0x35], [0x25, 0x35], [0x25, 0x35], [0x25, 0x35]];
+        0x0f if source.subtile_column < 2 && source.subtile_row >= 1 => {
+            const DRAWING: [[u16; 2]; 3] = [[0x0a, 0x0b], [0x1a, 0x1b], [0x2a, 0x2b]];
             (
-                2,
                 0,
+                1,
                 2,
-                4,
-                DRAWING[usize::from(source.subtile_row)][usize::from(source.subtile_column - 2)],
+                3,
+                DRAWING[usize::from(source.subtile_row - 1)][usize::from(source.subtile_column)],
             )
         }
         0x11 if source.subtile_row >= 1 => {
@@ -188,7 +185,24 @@ mod tests {
     }
 
     #[test]
-    fn kitchen_drawings_are_separate_complete_upright_objects() {
+    fn refrigerator_is_a_complete_cabinet_not_a_staircase() {
+        for (row, drawing) in [[0x0a, 0x0b], [0x1a, 0x1b], [0x2a, 0x2b]]
+            .iter()
+            .enumerate()
+        {
+            for (column, tile) in drawing.iter().enumerate() {
+                let candidate = source(0x0f, column as u8, row as u8 + 1, *tile);
+                assert_eq!(stair_local(&candidate), None);
+                assert_eq!(
+                    upright_fixture_local(&candidate),
+                    Some((column as u8, row as u8, 2, 3))
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn kitchen_drawings_are_objects_and_partition_is_architecture() {
         assert_eq!(
             upright_fixture_local(&source(0x07, 0, 2, 0x50)),
             Some((0, 0, 2, 2))
@@ -197,14 +211,8 @@ mod tests {
             upright_fixture_local(&source(0x07, 3, 3, 0x19)),
             Some((1, 1, 2, 2))
         );
-        assert_eq!(
-            upright_fixture_local(&source(0x0f, 2, 0, 0x25)),
-            Some((0, 0, 2, 4))
-        );
-        assert_eq!(
-            upright_fixture_local(&source(0x0f, 3, 3, 0x35)),
-            Some((1, 3, 2, 4))
-        );
+        assert_eq!(upright_fixture_local(&source(0x0f, 2, 0, 0x25)), None);
+        assert_eq!(upright_fixture_local(&source(0x0f, 3, 3, 0x35)), None);
         assert_eq!(
             upright_fixture_local(&source(0x11, 0, 1, 0x06)),
             Some((0, 0, 2, 3))
@@ -264,9 +272,8 @@ mod tests {
     }
 
     #[test]
-    fn all_three_house_stairs_use_their_exact_drawing_and_direction() {
+    fn house_stairs_use_their_exact_drawing_and_direction() {
         for (block, origin_column, origin_row, drawing, kind) in [
-            (0x0f, 0, 1, [[0x0a, 0x0b], [0x1a, 0x1b]], StairKind::UpEast),
             (0x0a, 2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
             (
                 0x0b,

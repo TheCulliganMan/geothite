@@ -109,6 +109,7 @@ mod tests {
             active: true,
             map_id: Arc::from("NewBarkTown"),
             terrain_revision: 1,
+            grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::weak_from_u128(1),
             center: Vec2::new(-16.0, 16.0),
             viewport_size: Vec2::new(16.0, 8.0),

@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Crystal · Play</title>
+    <meta name="theme-color" content="#09090d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="color-scheme" content="dark">
+    <meta name="referrer" content="no-referrer">
     <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./social-chat.css">
     <style>
       * {
         box-sizing: border-box;
@@ -19,17 +24,6 @@
         background: #000;
       }
 
-      body > canvas {
-        position: fixed !important;
-        inset: 0 !important;
-        display: block !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        outline: 0 !important;
-        image-rendering: pixelated;
-      }
-
       #controls {
         position: fixed;
         z-index: 10;
@@ -37,7 +31,19 @@
         right: max(12px, env(safe-area-inset-right));
         display: flex;
         gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        max-width: min(420px, calc(100vw - 24px));
       }
+
+      #camera-controls {
+        display: flex;
+        flex-basis: 100%;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      #camera-controls[hidden] { display: none; }
 
       button {
         min-width: 44px;
@@ -57,6 +63,16 @@
         background: rgb(25 32 45 / 94%);
         outline: 2px solid #75d8ff;
         outline-offset: 2px;
+      }
+
+      #view-toggle[aria-pressed="true"] {
+        border-color: #75d8ff;
+        background: #17465b;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: progress;
       }
 
       dialog {
@@ -80,19 +96,65 @@
         width: 100%;
       }
     </style>
+    <link rel="stylesheet" href="./mobile-player.css">
   </head>
   <body>
-    <canvas id="crystal-canvas" tabindex="0"></canvas>
+    <main id="game-stage" aria-label="Pokémon Crystal game">
+      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys, Z, X and M. Enter opens chat."></canvas>
+      <div id="loading" role="status"><span id="loading-message">Loading…</span></div>
+    </main>
+    <fieldset id="touch-controls" aria-label="Game controls" disabled>
+      <div id="dpad" role="group" aria-label="Movement pad. Slide to change direction.">
+        <button type="button" data-game-button="up" aria-label="Move up">▴</button>
+        <button type="button" data-game-button="left" aria-label="Move left">◂</button>
+        <span class="dpad-center"></span>
+        <button type="button" data-game-button="right" aria-label="Move right">▸</button>
+        <button type="button" data-game-button="down" aria-label="Move down">▾</button>
+      </div>
+      <div class="action-buttons" role="group" aria-label="Action buttons">
+        <button type="button" data-game-button="b" aria-label="B — back"><span>B</span></button>
+        <button type="button" data-game-button="a" aria-label="A — interact and confirm"><span>A</span></button>
+      </div>
+      <div class="system-buttons">
+        <button type="button" data-game-button="select" aria-label="Select">SELECT</button>
+        <button type="button" data-game-button="start" aria-label="Start — game menu">START</button>
+      </div>
+    </fieldset>
+    <dialog id="startup-error" aria-label="Unable to start game">
+      <p id="startup-error-message"></p>
+      <button id="retry-start" type="button">Reload</button>
+    </dialog>
+    <details id="player-options">
+    <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
     <nav id="controls" aria-label="Display controls">
+      <button id="mute" type="button" aria-label="Mute audio" aria-pressed="false" title="Mute audio">🔊</button>
+      <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D</button>
       <button id="fullscreen" type="button" aria-label="Fullscreen">⛶</button>
       <button id="help" type="button" aria-label="Controls">?</button>
+      <div id="camera-controls" role="group" aria-label="2.5D camera controls" hidden>
+        <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out" disabled>−</button>
+        <button id="camera-reset" type="button" aria-label="Reset camera" title="Reset camera" disabled>100%</button>
+        <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in" disabled>+</button>
+        <button id="rotate-left" type="button" aria-label="Rotate camera left" title="Rotate camera left 45°" disabled>↶</button>
+        <button id="rotate-right" type="button" aria-label="Rotate camera right" title="Rotate camera right 45°" disabled>↷</button>
+      </div>
     </nav>
-    <dialog id="help-dialog">
-      <p>Arrow keys — move<br>Z — interact<br>Enter — menu<br>X — back</p>
+    </details>
+    <dialog id="help-dialog" aria-label="How to play">
+      <p class="touch-help">Slide your thumb on the D-pad to move. A talks and confirms; B goes back. START opens the menu. Hold a direction to keep walking.</p>
+      <p>Controller: D-pad or left stick to move. Bottom face button confirms; right face button goes back. Start opens the menu; Back / View is Select. On Steam Deck, use a Gamepad layout.</p>
+      <p id="webmcp-status" role="status">Agent tools: checking WebMCP support.</p>
+      <p>Arrow keys — move<br>Z — interact<br>M — menu<br>X — back<br>Face a player and press A (Z) to interact.<br>Enter — chat · Esc — return to game</p>
+      <p>2.5D camera: − / + to zoom, ↶ / ↷ to rotate. Click the percentage to reset. Arrow keys still follow map directions.</p>
       <button id="close-help" type="button">Close</button>
     </dialog>
     <script type="module">
-      import init from './crystal-bevy.js';
+      import { createGameBridge, registerGameTools } from './webmcp.js';
+      import { mountGamepadControls } from './gamepad-controls.js';
+      import { mountTouchControls } from './touch-controls.js';
+      import { mountViewToggle } from './view-toggle.js';
+      import { mountSocialChat } from './social-chat.js';
+      import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import {
         initializeCrystalAudioSynth,
         synthesizeCrystalMidi,
@@ -100,27 +162,111 @@
       import audioSynthContext from './audio-runtime/context.js';
 
       const canvas = document.querySelector('canvas');
-      document.querySelector('#fullscreen').addEventListener('click', async () => {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
-        } else {
-          await document.documentElement.requestFullscreen();
-        }
+      let cancelAgentInput = () => {};
+      const touchControls = mountTouchControls({ document, window, canvas, onInput: () => cancelAgentInput() });
+      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput() });
+      const fullscreenButton = document.querySelector('#fullscreen');
+      fullscreenButton.hidden = !document.fullscreenEnabled;
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch { fullscreenButton.hidden = true; }
+        canvas.focus({ preventScroll: true });
       });
       const helpDialog = document.querySelector('#help-dialog');
-      document.querySelector('#help').addEventListener('click', () => helpDialog.showModal());
-      document.querySelector('#close-help').addEventListener('click', () => helpDialog.close());
+      document.querySelector('#help').addEventListener('click', () => { document.querySelector('#player-options').open = false; helpDialog.showModal(); });
+      document.querySelector('#close-help').addEventListener('click', () => { helpDialog.close(); canvas.focus({ preventScroll: true }); });
+      document.addEventListener('pointerdown', event => {
+        const options = document.querySelector('#player-options');
+        if (!options.contains(event.target)) options.open = false;
+      });
       canvas.addEventListener('pointerdown', () => canvas.focus({ preventScroll: true }));
 
+      const showStartupError = error => {
+        touchControls.releaseAll();
+        document.querySelector('#touch-controls').disabled = true;
+        document.querySelector('#startup-error-message').textContent = String(error?.message ?? error);
+        const dialog = document.querySelector('#startup-error');
+        if (!dialog.open) dialog.showModal();
+      };
+      document.querySelector('#retry-start').addEventListener('click', () => location.reload());
+      window.addEventListener('unhandledrejection', event => showStartupError(event.reason));
+      window.addEventListener('error', event => { if (event.error) showStartupError(event.error); });
       try {
-        initializeCrystalAudioSynth(audioSynthContext);
-        globalThis.__crystalSynthesizeMidi = synthesizeCrystalMidi;
-        await init();
-        canvas.focus({ preventScroll: true });
+        const { startServerClock } = await import('./server-clock.js');
+        const serverClock = await startServerClock({ fetch });
+        globalThis.__crystalServerClock = () => serverClock.sample();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) serverClock.synchronize().catch(() => {});
+        });
+        const session = await startOnlineSession({ url: location.href, localStorage, sessionStorage, crypto, fetch });
+        history.replaceState(null, '', session.url);
+        await runWithPlayerLock(navigator.locks, session.playerId, async () => {
+          initializeCrystalAudioSynth(audioSynthContext);
+          globalThis.__crystalSynthesizeMidi = synthesizeCrystalMidi;
+          const wasm = await import('./crystal-bevy.js');
+          const { default: init } = wasm;
+          await init();
+          // WASM initialization starts asynchronous pack loading. Enable input
+          // only after the actual game loop has produced its first observation.
+          await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });
+          document.querySelector('#loading').hidden = true;
+          document.querySelector('#touch-controls').disabled = false;
+          mountSocialChat(wasm, { document, window, playerId: session.playerId });
+          mountViewToggle(wasm, {
+            button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
+            cameraControls: {
+              group: document.querySelector('#camera-controls'),
+              zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),
+              rotateLeft: document.querySelector('#rotate-left'), rotateRight: document.querySelector('#rotate-right'),
+              reset: document.querySelector('#camera-reset'),
+            },
+          });
+          const muteButton = document.querySelector('#mute');
+          let muted = localStorage.getItem('crystal.audio.muted') === 'true';
+          const updateMute = () => {
+            wasm.crystal_set_muted(muted);
+            muteButton.textContent = muted ? '🔇' : '🔊';
+            muteButton.setAttribute('aria-pressed', String(muted));
+            muteButton.setAttribute('aria-label', muted ? 'Unmute audio' : 'Mute audio');
+            muteButton.title = muted ? 'Unmute audio' : 'Mute audio';
+          };
+          updateMute();
+          muteButton.addEventListener('click', () => {
+            muted = !muted;
+            updateMute();
+            localStorage.setItem('crystal.audio.muted', String(muted));
+            canvas.focus({ preventScroll: true });
+          });
+          const bridge = createGameBridge(wasm);
+          cancelAgentInput = () => bridge.cancel();
+          let lifetime = new AbortController();
+          window.addEventListener('pagehide', () => { bridge.cancel(); lifetime.abort(); });
+          window.addEventListener('keydown', event => { if (event.isTrusted) bridge.cancel(); }, { capture: true });
+          window.addEventListener('blur', () => bridge.cancel());
+          document.addEventListener('visibilitychange', () => { if (document.hidden) bridge.cancel(); });
+          const enableAgentTools = async () => {
+            try {
+              const registration = await registerGameTools(document, bridge, { signal: lifetime.signal });
+              document.querySelector('#webmcp-status').textContent = registration.supported
+                ? 'Agent tools ready: observe the game and press Game Boy buttons through WebMCP.'
+                : 'This browser does not support the current WebMCP API. Touch and keyboard play are available.';
+            } catch (error) {
+              document.querySelector('#webmcp-status').textContent = `Agent tools unavailable: ${error.message}`;
+            }
+          };
+          window.addEventListener('pageshow', event => {
+            if (event.persisted) { lifetime = new AbortController(); void enableAgentTools(); }
+          });
+          await enableAgentTools();
+          canvas.focus({ preventScroll: true });
+        });
       } catch (error) {
-        if (!String(error).includes('Using exceptions for control flow')) {
-          console.error(error);
-        }
+        showStartupError(error);
       }
     </script>
   </body>

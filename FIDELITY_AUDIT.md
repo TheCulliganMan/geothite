@@ -4,6 +4,952 @@ Status: in progress.  This document is the gate for production fidelity
 changes. `vendor/pokecrystal` is the only behavior authority; TypeScript and
 existing Rust tests are implementation evidence only.
 
+## Outgoing Phone card retention (2026-09-06)
+
+`PokegearPhone_MakePhoneCall` clears `hInMenu` to run phone scripts but keeps
+its Phone card on the LCD. Rust incorrectly used the input-menu flag as its
+fullscreen visibility flag and returned to the overworld during calls. A
+new ringing regression failed on retiring the fullscreen surface. Rendering
+now retains that card independently of input ownership and uses its existing
+green textbox for script dialogue instead of overlaying the white field box.
+The canonical-ROM oracle now captures both ringing and Mom's first conversation
+page; both independently compare with **zero RGB5 pixel differences**.
+Hang-up also left the final script text window active after restoring the
+Phone menu; a regression reproduced this stale-text ownership and the fix
+retires that text before restoring the card prompt. The three focused outgoing
+phone lifecycle checks pass, and all twenty captured PC/Pokégear surfaces
+compare with zero RGB5 pixel differences. Full ring/printer cadence,
+source HangUp textbox/upload timing, no-service timing, and broader call
+branches remain open; these captures do not establish complete call parity.
+
+`HangUp` previously returned to the contact menu immediately. Its source
+routine holds Click! and three ellipse/blank pairs, each through an explicit
+20-frame delay. The regression first failed because stage zero had already
+closed the card. Rust now retains it through all seven holds, blocks A/B from
+skipping them, and restores the contact prompt only afterward. The source
+NO_TEXT_SCROLL flag makes these strings print without letter delays. The
+oracle now initializes CHRIS@ for the skipped naming setup before following
+Mom's later pages; otherwise <PLAYER> reads unterminated boot RAM. Source
+captures also expose an intermediate clear during SetUpTextbox/ApplyTilemap:
+the logical upload waits are corrected below; LCD scanout remains open.
+The new Click!, dots, blank, and restored contact-prompt captures all compare
+with zero RGB5 pixel differences (24 verified static PC/Pokégear surfaces in
+total). The lifecycle regression passes, including A/B rejection throughout
+all seven holds. FadeToMenu disables sprite updates, so ApplyTilemap and
+PhoneRing_CopyTilemapAtOnce both route through four-frame waits here; those waits are now modeled below; intermediate LCD uploads remain open.
+
+The outgoing sequence now also includes the four-frame upload waits:
+7 × (20-frame hold + 4-frame WaitBGMap), plus five four-frame PrintText
+setup clears (Click!, three dot strings, and the restored contact prompt).
+The resulting logical text sequence is 188 frames; the sound begins after
+the first setup clear. A regression first reproduced the missing clear
+(`Click!` displayed where the source box is empty). The ROM oracle records
+every hang-up frame's first text row, LCD hash, BG-map third, VBlank counter,
+and sprite-update flag. `compare_phone_timing.py` compares those text-memory
+rows against the Rust lifecycle test's optional frame export; LCD scanout
+latency is explicitly outside this comparator's scope.
+Verification: all 189 sampled text states (elapsed 0 through 188) match the
+ROM with no differences, including the restored contact prompt. The comparator
+also rejects deliberately corrupted and truncated traces. Three focused call
+lifecycle checks pass, followed by the expanded sound/trace regression and
+the render fixture; the four hang-up held surfaces remain RGB5-identical.
+
+
+## PC Move list audit (2026-09-06)
+
+`MoveMonWithoutMail_DPad` and `_2` share `BillsPC_PressUp/Down` with the
+other PC lists. Rust instead wrapped with the generic menu cursor and centered
+its renderer around the selection. `CopyBoxmonSpecies` also appends the
+-1/CANCEL entry in both Move phases, and `BillsPC_RefreshTextboxes` prints
+CANCEL; Rust omitted it from source selection and rendered insertion's last
+row as blank. The new party/box, source/insertion regression reproduced the
+first-row wrap (0 → 7). All four modes now use saturated movement, persistent
+five-row edge scrolling, and the source CANCEL entry. Selecting CANCEL or
+pressing B from source selection returns to Bill's PC's MOVE option.
+The oracle's new `--pc-move` mode uses source SaveBox during setup before
+running `_MovePKMNWithoutMail`, since Move reads saved box tables.
+Both new source screenshots exposed exactly 36 mismatched RGB5 pixels, all
+at the omitted left/right box arrows. These now use PCMailGFX tiles $5f/$5e
+through the same source tile decoder as the held-item icons. The expanded
+list regression passes for party/box selection and insertion, with CANCEL
+and B exit checks. Both Move captures now compare with zero RGB5 pixel
+differences (26 verified static PC/Pokégear surfaces total). Existing Withdraw
+scrolling and both Move entry/save checks pass. Rechecked populated/empty
+Withdraw, Deposit, withdrawal cry/success, and release/bye captures also remain
+pixel-identical to the ROM.
+
+These insertion/cancellation gaps are addressed in the follow-up below;
+capacity refusal and save-transition presentation still need source checks.
+
+## PC action-menu ownership (2026-09-06)
+
+Move previously selected its source immediately on A. Its restored submenu
+uses the source MOVE/STATS/CANCEL entries; all action-count consumers now use
+that mode's actual list length. STATS resolves party/box location correctly,
+and MOVE runs BillsPC_CheckMail_PreventBlackout before entering insertion.
+A regression first failed because A had already picked up the Pokémon.
+After restoring the submenu, actual directional input exposed a shared PC
+bug: list input ran before action-menu and release-prompt input. The Pokémon
+under the popup moved instead of its menu cursor. Modal PC input now runs
+first, with horizontal box browsing blocked under those popups. Stats' left
+and right keys wrap source pages; A on BLUE_PAGE closes rather than wrapping.
+The expanded Move regression covers real submenu navigation, CANCEL, Stats
+return, party Stats selection, and last-party rejection before insertion.
+The release-decline regression now uses actual directional/A inputs instead
+of assigning cursor fields. Shared StatsScreen layout and its up/down
+Pokémon browsing remain open.
+The Move submenu's held LCD matches the source with zero RGB5 differences.
+The oracle now gives the source its list-rebuild interval after B before
+pressing Down; combining those presses eight frames apart had sent Down
+while the source was still in its initialization routine. A returned-list
+capture makes that separation explicit. The source STATICMENU_CURSOR data
+also lacks STATICMENU_WRAP, exposing the generic Rust cursor's incorrect
+end-to-end wrapping in these PC popups.
+A boundary regression reproduced Up from MOVE wrapping to CANCEL (index 2).
+Those action menus and release confirmation now use non-wrapping cursors.
+The release regression also presses Down twice at NO, ensuring it cannot
+wrap back to YES or move the underlying Pokémon selection.
+Verification: the expanded Move submenu/Stats/admission regression passes;
+the directional-input release-decline regression passes; both existing Move
+entry/save checks pass. The Move submenu and both surrounding list captures
+compare with zero RGB5 pixel differences (27 verified static PC/Pokégear
+surfaces total). Stats layout and insertion behavior remain unfinished.
+
+
+
+
+## Move loaded box versus saved current box (2026-09-06)
+
+`MoveMonWOMail_InsertMon_SaveGame` restores the original wCurBox before saving
+and reloading it. The native Move command instead set current_pc_box to the
+destination; the box-insertion regression reproduced 1 instead of original 0.
+That assignment is removed and the focused native regression passes.
+The source insertion-cancellation trace also confirms wCurBox stays 0 while
+wBillsPC_LoadedBox goes 1 → 2 → 1. Rust's UI previously called SwitchCurrentPcBox
+while browsing and cleared only its source on B. A separate visible loaded-box
+index now drives list, header, cursor and selection lookup without mutating
+the saved current box. The picked-up source retains its original scroll.
+The party/box cancellation regression passes with an off-screen source row,
+browsing another box, and restoration of the original container and window.
+The expanded browsing regression covers all fourteen boxes and the party
+boundary. Three new captures reproduced 3,210 differing RGB5 pixels during
+insertion and 3,638 in the other box; cancellation's restored view already
+matched. The renderer now uses BillsPC_UpdateInsertCursor OAM tiles $06/$07
+and retains the picked-up Pokémon's info and white submenu palette.
+All three captures now compare with zero RGB5 pixel differences, as do six
+rechecked Move/Withdraw/Deposit surfaces (30 verified static surfaces total).
+The save regression also reproduced destination row 0 instead of 1. The
+commit now keeps the adjusted destination cursor and its existing scroll,
+matching CheckTrivialMove; the focused save regression passes.
+Both additional Move regressions first failed: same-slot insertion was
+cancelled without saving, and a full destination entered the save hold.
+The shortcut is removed. BillsPC_CheckSpaceInDestination now runs before
+saving, exempts same-container rearrangements (including a full box), and
+uses the source no-room message, SFX_WRONG fence, and 50-frame hold while
+retaining insertion state. Full party and box refusal checks pass, including
+B rejection during the hold and return to insertion afterward. All seven
+focused Move checks pass.
+
+The new save capture reproduced another 3,638-pixel mismatch: Rust retired
+the picked-up presentation as soon as saving began. A retained presentation
+record now holds the destination list, source picture, insertion cursor and
+scroll through both save phases, independent of the native storage mutation.
+The saving capture now matches at zero RGB5 differences (31 verified static
+surfaces), and the save-flow regression passes. The oracle initially stalled
+inside InsertPokemonIntoBox because the skipped new-game setup left empty
+saved boxes without their -1 species terminator. Setup now calls the source
+EraseBoxes before seeding BOX1 and SaveBox. The complete source save succeeds;
+its trace shows saved current box restored to 0 while loaded box remains 2.
+The post-save destination capture also matches at zero RGB5 differences.
+The final comparison passes for all 32 captured PC/Pokégear views, and all
+seven focused Move regressions pass after the retained-save change. The
+save-flow regression also checks that the old destination list and cursor
+remain retained after the native storage mutation.
+
+## Deposit/Withdraw horizontal input (2026-09-06)
+
+The new directional-input regression reproduced Left changing the saved box
+from index 0 to 13 during Withdraw. Source Withdraw_UpDown reads only Up/Down
+for both Deposit and Withdraw. Horizontal input now reaches box browsing only
+in Move; the unused generic next-box mutation helpers are removed. The
+Deposit/Withdraw regression passes and preserves each list's cursor.
+
+
+## PC Stats source audit (2026-09-06)
+
+The `--pc-stats` oracle captures all three boxed-Pokémon stats pages and
+return to the action submenu. It waits for the source cry/animation and
+asserts MonStatsJoypad (state 6) with page bits 1, 2, and 3; the original
+60-frame interval sent Right during the cry and mislabeled later captures.
+Fixture setup now initializes CHRIS and copies party OT names into the box.
+The initial pages differed by 15,095 / 15,095 / 15,011 RGB5 pixels.
+Both PC and party summaries now use one source tile renderer, with the actual
+Stats fonts, page tiles, HP/EXP bars, palettes, placement and page contents.
+After correcting the portrait's four-pixel offset, all three regular pages
+and the separate Egg page compare with zero RGB5 differences. All 37 current
+PC/Pokégear capture comparisons pass; this proves the captured states only.
+
+`StatsScreenDPad` excludes CANCEL and shares BillsPC_PressUp/Down. Rust ignored
+vertical input. The regression first failed with MON0 instead of MON1; the
+handler now updates summary location and five-row list cursor/scroll while
+retaining page bits. Box/party edges, CANCEL exclusion, and B return pass.
+Boxed Stats now rebuilds its temporary party fields through CalcBufferMonStats
+semantics: stored level and stat experience determine stats, HP is restored
+(zero for Egg), and status/sleep are cleared without changing saved storage.
+The regression reproduced HP 1 instead of 27 before the fix.
+
+Two additional regressions reproduced Egg accepting page arrows and party
+Stats resetting to page 1 when changing Pokémon. Egg now ignores Left/Right
+and A closes on any retained page; party browsing preserves the page. All six
+focused Stats checks passed before the subsequent level/palette edge audit.
+The older integrated party-menu test fails during its boot/name fixture,
+before it opens the party menu or reaches Stats; that integration has not
+been validated by this work.
+
+Remaining source work includes Stats cry/animation input fences, variant
+portraits, and semantic observer output. The edge audit reproduced PrintLevel's single-digit alignment bug (`LV 5`
+instead of `LV5 `), and a shiny palette test reproduced ordinary yellow/red
+instead of the authored shiny colors. PrintLevel now left-aligns two digits
+and overwrites the LV glyph with three digits at level 100, including the
+next-level field and the ordinary PC info panel. The shared Pokémon palette
+loader reads the source's two shiny colors with white/black endpoints;
+missing or malformed shiny palettes now fail instead of silently rendering
+normal colors. Stats' upper region uses the Pokémon palette as ASM does.
+All eight focused checks passed. Nine new ROM comparisons (all three pages
+for level 5, level 100, and shiny DVs $2a/$aa) have zero RGB5 differences.
+The original 37 views also pass after the palette/level changes: 46 total
+ROM/Rust comparisons, all zero RGB5 differences.
+Full PC/Pokégear parity is not established by these static captures.
+
+
+## Stats text surfaces and Unown pictures (2026-09-06)
+
+The shell's PC text-surface helper returned BOX1 / CYNDAQUIL / CANCEL while
+Stats was open. Party summary text mixed hidden pages, included happiness,
+and truncated the result to six rows. A regression reproduced the storage
+list. The Stats layout now records text alongside its source tilemap; both
+PC and party text surfaces consume that active-page text, with no six-row
+summary truncation. The extended regression passes for all three pages,
+the scene-entry boundary, and Egg text hiding the underlying species/page.
+This verifies the shell text helpers; external CLI/MCP observation integration
+has not been established by this check.
+
+BillsPC and StatsScreen both call GetUnownLetter before loading the picture.
+Rust's PC picture helper requested nonexistent gfx/pokemon/unown/front.png.
+The new all-26-form regression reproduced that missing-file failure. The
+retained PC info now includes its DV-selected frontpic asset identity, while
+normal/shiny colors still come from the species palette. The regression now
+loads 26 distinct DV-selected portraits successfully. All three Unown Z pages
+now match the ROM with zero RGB5 differences, including the source orientation.
+The other nine Stats variant pages also remain exact, as do the rechecked 37
+original surfaces after the layout refactor (49 captured comparisons total).
+
+The next animation pass must distinguish StatsScreen_GetAnimationParam's
+healthy menu animation from fainted/frozen/asleep static presentation and
+Egg handling. Current PC Stats opening only sets summary state, while party
+opening and browsing cry eligibility are corrected in the follow-up below. Source StatsScreenWaitCry also gates input after page loading.
+Existing party Left/Right and browsing already consult visible_wait_sfx_finished;
+that alone does not establish the missing source animation sequence or PC gate.
+
+The Unown Z Stats render then failed at tile $5f: it printed the internal
+PSYCHIC_TYPE token instead of TypeNames' PSYCHIC label. The shared battle type
+formatter also guessed labels by removing suffixes; its Curse regression
+reproduced CURSE instead of source ???. Type display now accepts the exact
+source type constants and maps PSYCHIC_TYPE/CURSE_TYPE explicitly. Invalid
+identifiers fail rather than being reformatted into plausible names. Move
+rows propagate missing metadata/type errors through their Result boundaries;
+the battle diagnostic surface reports such errors explicitly. The Curse/type-name regression, all ten Stats checks, battle submenu rendering,
+and the TM/HM forget-menu boundary pass with the new type fix.
+
+
+## Frontpic script timing prerequisite for Stats (2026-09-06)
+
+PokeAnim_DoAnimScript immediately enters WaitAnim after loading a frame;
+its duration is an eight-bit result, including zero wrapping through 256
+calls. An exhausted/zero dorepeat returns for one call instead of executing
+the next command immediately. Rust's shared frontpic player held ordinary
+frames one call too long and consumed the exhausted-repeat boundary.
+The new seven-call regression reproduced both mismatches. The player now
+uses the source boundaries and arithmetic. Missing operands, out-of-byte
+operands and running past a program without endanim now error instead of
+silently selecting zero or declaring completion.
+
+The Stats ROM oracle now records PokeAnim_Play before/after state and reads
+the live animation program bytes from the pinned original ROM. All 95 calls
+of Cyndaquil's main and idle menu animations replay exactly through the Rust
+stepper. The duration/repeat/overflow and malformed-command checks pass, as
+does the existing hatch sequence using the shared player. This establishes
+script-call behavior, not Stats' complete setup/cry/HDMA frame schedule.
+The compiled presentation catalog now carries main and idle programs (see
+the export audit below). Stats menu setup sequencing remains to be wired.
+
+The party Stats eligibility regression reproduced a species cry when opening
+an Egg's screen. Opening and browsing now both apply the source Egg/HP/freeze/
+sleep predicate. Healthy, poisoned, burned and paralyzed Pokémon retain their
+menu cry; fainted, frozen, asleep and Egg views do not queue one. The full
+menu-animation scheduler and Egg's near-hatch SFX timing remain separate
+work; this change does not claim to implement those sequences. The focused
+eligibility check passes all sixteen opening/browsing cases.
+
+
+
+## Source idle-animation export (2026-09-06)
+
+`PokeAnims.Menu` requires both the main script and the idle script. The old
+catalog contained 278 main programs; all 278 source picture directories also
+have anim_idle.asm. A new catalog regression failed because CYNDAQUIL_IDLE
+was rejected as an unknown asset. Main and `_IDLE` programs are now explicit
+catalog entries, and missing counterparts produce verification diagnostics.
+This applies to species, Egg, and the individual Unown picture assets.
+
+The canonical Rust pack exporter now parses both scripts directly from
+vendor/pokecrystal/gfx/pokemon. It checks byte operands, exact opcodes/arity,
+repeat targets, and endanim termination instead of reading guessed animation
+lengths. Both exporter checks pass: all 556 programs parse, and both Cyndaquil
+programs equal the original-ROM bytes recorded for all 95 animation calls.
+The seven focused core catalog/command checks also pass. Canonical desktop and
+browser packs were regenerated successfully. All 278 existing main programs
+are unchanged; all 278 idle programs are present. Five focused asset checks
+pass, including typed read-back equality of all 556 programs in both packs.
+Stats menu sequencing and its input fences remain to be wired to these programs.
+
+The optional Gen 3 static-art generator now explicitly emits terminating main
+and idle programs, and its validator requires exactly that pair per species.
+The missing-program regression first failed at 135 versus 270 programs.
+Regeneration from the pinned Emerald checkout changes only the animation
+catalog in data.json; existing program values and generated assets are unchanged.
+Both focused Gen 3 source/assets checks pass. The combined Gen 3 pack export
+also completed successfully with the regenerated canonical base.
+
+Next timing audit: StatsScreenMain calls its current jumptable handler before
+StatsScreen_WaitAnim. StatsScreenWaitCry advances on IsSFXPlaying, separately
+from the animation flags. Preserve that distinction rather than imposing a
+blanket animation-completion input gate. The menu animation's SetWait loads
+18 and immediately falls through to its first Wait decrement.
+
+
+## Ordinary party Stats exit sound gate (2026-09-06)
+
+The ordinary party A-on-blue and B handlers bypassed the sound gate already
+present in battle Stats, page cycling, and Pokemon browsing. The new focused
+regression reproduced B closing while the opening cry was still queued.
+Both ordinary exit branches now check sound completion before recording an
+exit or resuming the surrounding script, matching StatsScreenWaitCry before
+MonStatsJoypad/EggStatsJoypad. The regression covers both buttons with queued
+and actively playing cries, and successful exit after sound completion.
+All three focused party_stats checks pass (exit gating, retained-page browsing,
+and the sixteen cry-eligibility cases). This is not evidence for complete
+animation/HDMA scheduling or a blanket animation-completion input gate.
+
+## Stats animation schedule ROM evidence (2026-09-06)
+
+The oracle now records source scene routine entries, Stats jumptable handlers,
+and script-call start/end frame numbers. Four checked-in schedules cover
+Cyndaquil and Egg happiness 5, 10, and 20. Additional hooks leave the existing
+95-call Cyndaquil command trace exactly unchanged.
+
+In this normal fixture, CryNoWait begins at frame 936, Setup at 938, main
+Play at 940, SetWait at 1004, Idle at 1022, idle Play at 1024, and Finish at
+1066. All 18 Wait entries include SetWait's same-call fallthrough. The 53
+main script calls run from 940 through 1003, with eleven two-frame gaps;
+the script calls themselves begin/end in the same recorded emulator frame.
+The enclosing frame placement/HDMA path therefore cannot be replaced by
+one script call per VBlank. Do not generalize this species/fixture's gaps
+into a universal hard-coded delay without tracing the source transfer path.
+
+MonStatsJoypad begins at 979, before animation completion. Egg happiness 10
+enters EggStatsJoypad at 948 while its animation ends at 959. Happiness 5
+finishes animation at 985 and only enters joypad at 994 after its sound;
+happiness 20 has no animation scene entries. These observations rule out
+a blanket animation-completion input fence. Runtime animation scheduling
+and dynamic Stats portraits remain unimplemented and are the next work.
+
+## Stats transfer timing investigation (2026-09-06)
+
+Schedule captures now include scanlines, CPU-cycle timestamps, and the source
+WaitDMATransfer loop with pending DMA/palette/background flags. A fifth
+fixture uses Lugia's larger portrait. Its consecutive Play calls include a
+three-frame gap; Cyndaquil has eleven two-frame gaps and otherwise one-frame
+gaps. A universal extra frame per nonzero picture command is not established.
+
+For Cyndaquil's first main command, Play enters at frame 940/scanline 9;
+the subsequent DMA wait begins at 941/scanline 60 with no competing palette
+or background-map request. Setup's two transfers instead enter separate
+waits at 938/86 and 939/68. This distinguishes source processing overrun from
+transfer-priority starvation. The exact prior 95-call command trace remains
+unchanged after these read-only hooks. The runtime scheduler still needs
+source processing/transfer timing rather than species-specific delay tables.
+
+## Egg Stats sound selection and PC sound gate (2026-09-06)
+
+Party and PC Stats omitted EggStatsScreen's SFX_2_BOOPS for retained hatch
+cycles below six. Separate real-pack regressions reproduced missing sound
+on party entry (happiness zero) and PC entry (happiness five). The shared
+Egg sound selection now queues that source cue on opening and browsing in
+both surfaces, and never queues a species cry for an Egg. Six or more hatch
+cycles remain silent. PC A/B, page arrows, and Pokemon browsing now check
+pending/playing sound before acting, as StatsScreenWaitCry requires.
+
+This fixes selection and input behavior at the current Stats entry boundary;
+it does not establish the exact offset after source initialization, graphic
+loading, animation setup, and HDMA. The full timing scheduler is still pending.
+All nine focused Egg, PC, and party Stats checks pass. They include the
+twelve opening/browsing hatch-cycle cases, PC sound-gated browsing/exit,
+retained pages and selection, boxed-stat reconstruction, and existing
+party cry eligibility and exit behavior.
+
+## Pokegear map location, cursor, and radio corrections (2026-09-06)
+
+Six new regressions failed against the old runtime: portable map Up moved
+backwards; Johto traversal included SPECIAL and FAST_SHIP; card changes
+reset the selected landmark; SPECIAL rooms selected Johto instead of the
+backup-map region; radio silently treated missing location metadata as
+Johto; and daytime radio on the ship selected the morning Pokedex Show.
+
+Map traversal now follows source direction and regional cursor limits:
+Johto 1..46, Kanto 88..94 before STATUSFLAGS_HALL_OF_FAME_F, and Kanto 47..94
+after it. The source bit is exported as ENGINE_CREDITS_SKIP. Full Pokegear
+entry initializes the cursor; switching cards retains it. Fast Ship starts
+the cursor at New Bark Town while retaining the ship player marker.
+SPECIAL resolves through the actual backup warp map exposed by the runtime
+snapshot. The player marker and radio use that same resolved landmark.
+Missing location metadata now propagates an error. The ship selects morning
+versus day/night shows from live time just like other Johto locations.
+
+A new original-ROM map navigation fixture records 27 -> 28 on Up, retention
+of 28 through clock/map switching, and 28 -> 27 on Down, with player marker
+27 unchanged. This independently confirms the cursor behavior. All 23 fixed
+Pokégear checks pass, including the six red-first regressions and existing
+phone, radio, clock, and render checks. The standalone Town Map direction/
+page-lock check also passes after a warning-free rebuild. Full PC/Pokegear
+parity remains open.
+
+The standalone Town Map has a distinct entry path that still needs its own
+SPECIAL/Fast Ship audit: TownMap_GetCurrentLandmark resolves SPECIAL but
+does not apply portable Pokégear's Fast Ship cursor substitution, and its
+tilemap region comparison has no Fast Ship exception. Do not generalize the
+portable entry fix to those source differences without matching that path.
+
+## Standalone Town Map entry and OAM follow-up (2026-09-06)
+
+Standalone entry re-looked up the raw current-map landmark after portable
+initialization, rejecting SPECIAL and Fast Ship as outside the ordinary
+cursor range. The first fixture run stopped at invalid spawn tiles; after
+switching to authored warp tiles, both regressions reached and reproduced
+the actual entry error. Standalone initialization now retains the source
+TownMap_GetCurrentLandmark result. Its region selection preserves the
+source's Kanto comparison for Fast Ship, distinct from portable gear's
+Johto exception and New Bark cursor substitution.
+
+Cursor movement now implements source Up's >= upper-bound comparison and
+Down's == lower-bound comparison over landmark IDs, rather than requiring
+the initial cursor to belong to a filtered vector. Original-ROM fixtures
+confirm ship 95 -> 94 -> 88 and SPECIAL/Celadon 71 -> 70 -> 71 before the
+Hall of Fame. Both behaviors and normal standalone controls pass.
+
+Image comparison then exposed 109 differing pixels on the ship and eight
+on SPECIAL/Celadon. The ship used a trainer icon instead of FastShipGFX;
+the eight-pixel error was cursor-over-player priority. Earlier player OAM
+entries must win overlaps. The renderer now uses the source boat's initial
+pose and puts cursor pixels behind the player. All four standalone Town Map
+checks pass, including pixel regressions against the two checked-in source
+LCD images. Independent compare_ui.py comparison reports zero differing
+RGB5 pixels for both frames (previously 109 and eight). Walking-icon timing
+and the full Pokegear/PC lifecycle remain open.
+
+The four focused portable Pokegear map checks also pass after the shared
+region and cursor changes. Validation used the current compiled Bevy test
+binary; no broader passing suite is treated as evidence of full parity.
+
+
+## Town Map walking animation follow-up (2026-09-06)
+
+The map renderer held its player/boat icon in the standing pose. Read-only
+ROM loop hooks now record 108 animation entries and all four LCD poses.
+GetSpriteAnimFrame displays the loading call plus eight duration calls:
+standing, walking, standing, mirrored walking repeat every 36 calls. The
+sampled standalone and portable loops each advance once per VBlank.
+
+A ROM-image regression failed at ship walking pose 1, pixel (139,108),
+before the renderer was connected to the new animation state. Rust now
+advances the map animation through its gameplay ticks, resets it on map
+entry, loads the boat's second authored pose or the trainer's walking
+frame, and applies the source fourth-pose horizontal flip. Closed maps do
+not animate. A generic NPC sprite palette fallback encountered on this
+path was removed: absent selected palettes now error instead of choosing
+the first palette.
+
+All six standalone map checks pass, including the source cadence replay
+and eight source pose images. Independent compare_ui.py comparison reports
+zero differing RGB5 pixels on all eight poses. The first walking pose changes 85 boat pixels
+and 93 trainer pixels relative to standing; trainer mirror poses differ
+by another 24 pixels. All four focused portable map checks also pass after
+the shared animation change. Full card-entry/LCD setup timing and female map icon
+captures remain unverified, as do the remaining Pokegear/PC lifecycles.
+
+
+## Town Map gender and palette follow-up (2026-09-06)
+
+Map player/boat icons incorrectly inherited the overworld player palette
+override. RedWalk and BlueWalk source OAM specify PAL_OW_RED (0) and
+PAL_OW_BLUE (1) directly. A real-pack regression with override 5 reproduced
+gray RGB5 (13,13,13) at pixel (73,61), where the original map LCD has red
+(31,7,1). Map rendering now selects the source fixed palette from the gender
+bit. The oracle accepts --player-gender and captures all four Kris poses.
+
+The NPC palette loader also silently searched other time banks if its
+requested bank was absent. A regression reproduced missing day data being
+accepted from morning. It now requires exactly eight palettes in the
+requested bank. The renderer's explicit indoor art mode still maps to the
+PALETTE_DAY object bank; this mapping is checked independently of missing
+bank rejection. The focused palette-bank check passes.
+
+The initial source_ test filter accidentally selected 88 tests. After its
+build completed, only that unintended test process was interrupted; its
+partial results are not counted as validation. All eight focused map
+checks pass. Independent comparison reports zero differing RGB5 pixels
+for all four Kris poses. Together with the palette-bank check, nine
+focused checks pass. Full Pokegear/PC entry timing and other
+remaining lifecycles are not established by these palette checks.
+
+
+## Radio input ownership follow-up (2026-09-06)
+
+Portable radio A input incorrectly advanced a hard-coded transcript and
+closed the gear at its last segment. The focused regression reproduced
+segment 0 becoming 1 after one A press. PokegearRadio_Joypad reads B and
+Left, then runs its broadcast handler; it does not page or exit on A.
+The portable A path now leaves the broadcast state alone.
+
+Furniture PlayRadio has separate input ownership: DelayFrames 100 precedes
+its A/B stop loop, and it has no tuning or card controls. A second regression
+reproduced A paging text during this hold. A dedicated optional delay state
+now distinguishes furniture radio, discards released input edges during
+the hold, blocks A/B until its 100 frames elapse, and closes/resumes the
+originating script on A or B afterward. Tuning and card changes are ignored.
+Existing gear-dismiss paths clear the furniture state. Five focused
+pokegear_radio_ checks pass after both failures were reproduced.
+
+This does not establish radio parity. The remaining hard-coded transcript
+aliases incorrectly reuse PlayersRadioText/LC_Text for portable stations;
+PlayRadioShow instead uses its authored segment machine, dynamic choices,
+and RadioScroll (100 delay calls, then its transition). Furniture radio is
+also still presented through the gear surface rather than PlayRadio's
+four-row overworld textbox. These are explicit remaining production bugs,
+not validated substitutes for the source broadcast program. Full radio
+entry/LCD scheduling remains unverified.
+
+
+## Furniture radio entry display follow-up (2026-09-06)
+
+MapRadio incorrectly entered the full portable card renderer and reused
+unrelated transcript text. Its new pixel regression reproduced the card
+render failure before any source textbox was drawn. PlayRadio instead
+places an 18x4 interior textbox at tile (0,12), writes an opening quote at
+(1,14), the selected source station name at (2,14), and a closing quote.
+The furniture renderer now draws only that bottom six-tile-row overlay.
+It bypasses portable card availability, title formatting, and transcript
+aliases for the entry surface.
+
+Furniture station selection now follows PlayRadioStationPointers. The
+Pokemon Channel follows IsInJohto and live time, including the source's
+raw Fast Ship check before SPECIAL backup-map resolution. All explicit
+station selections use their source LoadStation names; Rocket radio's
+returned title is Let's All Sing!, as authored. Unknown station IDs fail
+instead of becoming made-up labels.
+
+The first oracle setup omitted OpenText and therefore had invalid textbox
+palette/attribute entry state; it was corrected before pixel validation.
+The boot fixture intentionally supplies no map scene, so only rows 96..143
+are compared. The renderer regression then exposed missing curly-quote
+charmap entries. Adding source tile mappings 0x72/0x73 fixed that failure.
+All three focused furniture-radio checks pass, including region/time
+selection and input ownership. An independent pixel comparison reports
+zero differing RGB5 textbox pixels and zero overlay alpha throughout the
+map area above row 96, including every scaled subpixel.
+
+The live broadcast program after the entry hold remains unimplemented.
+Portable transcript aliases and the full RadioScroll/dynamic-program state
+machine remain production parity work. This entry fix is not evidence that
+those broadcasts, their sound changes, or their scheduling are complete.
+
+## Radio source text commands and runtime registration (2026-09-06)
+
+The flattened radio catalog loses executable text semantics: Rocket line 7
+turns `text_pause` into a printed ellipsis, and the source's initial `line`
+control is unavailable to the broadcast program. The compiled-pack regression
+failed because `_RocketRadioText7` had no typed command body.
+
+The canonical Rust exporter now follows every `text_far` reference in
+`engine/pokegear/radio.asm` and exports all 113 source text bodies from
+`data/text`, preserving command order, quoted operands, RAM substitutions,
+line controls, and all five pauses. Missing labels, malformed operands,
+unknown commands, duplicate bodies and absent terminators fail export.
+The exporter registers these bodies as global roots so runtime script
+materialization retains them; merely adding catalog definitions is insufficient.
+Both desktop and browser packs were regenerated successfully through `./export`.
+
+The original compiled-pack regression now passes. Two parser checks pass,
+and a separate integration check verifies that all 113 source labels reach
+the materialized runtime text catalog with Rocket line 7's exact commands.
+Its first attempt failed on an uncanonicalized test root, which was corrected
+before this validation; that setup failure is not counted as a product bug.
+
+The source oracle's new Rocket program fixture records 1,646 loop entries
+and five completed 30-frame pauses. RadioScroll decrements for 100 calls,
+then transitions on a separate call; the next program line follows on another
+call. Plain new-text states are therefore 102 frames apart. A pause emits
+no glyph and can be skipped by held A/B in the source text routine.
+
+This fixes the exported data prerequisite, not live playback. Portable
+transcript aliases, the static furniture entry after its hold, dynamic
+program selection/substitutions, music changes and the full radio scheduler
+remain open. The existing flattened catalog must not be used as the authority
+for the replacement radio program.
+
+## Radio reception, takeover and source names (2026-09-06)
+
+The takeover check previously ran before RadioChannels reception gates.
+The new regression reproduced New Bark's unavailable Places & People
+frequency returning Rocket radio. The source gates each frequency first;
+PlayRadioShow then hijacks only initial programs below POKE_FLUTE_RADIO.
+Rust now preserves no-signal results, leaves Unown and evolution programs
+alone, and changes eligible programs' music without discarding the tuned
+station identity. Kanto reception and Expansion Card gates remain in force.
+The shared program-region predicate follows IsInJohto's raw Fast Ship check
+before SPECIAL resolution, distinct from the gear's reception predicate.
+
+A second regression reproduced Pokedex Show being titled OAK'S POKEMON TALK.
+Portable and furniture radio now share the exact LoadStation names,
+including the PK/MN tiles, #DEX Show, #MON Music, ?????, and # FLUTE.
+Buena's loader returns an empty name normally and BUENA'S PASSWORD during
+the Rocket takeover; its later program-driven name remains playback work.
+The synthesized name fallback and obsolete MAPRADIO name aliases are removed.
+
+All nine focused `pokegear_radio_` checks pass after both failures were
+reproduced. The expanded takeover matrix includes Kanto with Expansion Card,
+raw Fast Ship, and SPECIAL with a Fast Ship backup, alongside no-signal,
+ordinary, Unown and evolution cases. The existing source furniture textbox
+pixel comparison remains green through the shared name function.
+
+These are reception and initial-name corrections. Source program execution,
+dynamic text, automatic scrolling, exact music-start timing, and later
+program-driven title changes remain unimplemented; this does not establish
+complete radio parity.
+
+## Shared text command expansion and START Pokegear logo (2026-09-06)
+
+Tracing radio's PlaceString boundary exposed another TypeScript-derived
+assumption in the shared bitmap font. `<TRAINER>`, `<ROCKET>`, `<PC>` and
+`<TM>` were mapped to single contextual tiles instead of the words returned
+by TrainerCharText, RocketCharText, PCCharText and TMCharText in home/text.asm.
+`<POKE>` incorrectly became POKé rather than the two tiles `<PO><KE>`.
+The existing normalization test explicitly preserved the TypeScript result;
+changing its expectation to the ASM reproduced all five mismatches.
+
+Normalization now performs the source word/logo expansions. Obsolete private
+glyph aliases for those commands are removed. The battle caught marker keeps
+literal tile $5d through its own private glyph, distinct from the seven-letter
+TRAINER command. The five focused bitmap-font checks pass after the failure.
+
+START's Pokegear entry separately used `#GEAR` instead of the source
+`<POKE>GEAR`. Its label regression failed before the production label changed.
+The corrected entry resolves to source tiles 70, 71, 86, 84, 80, 91 (hex),
+six tiles rather than eight. This corrects the logo and its width, without
+claiming complete START layout or radio playback parity.
+
+The broader START run passed five checks but exposed a stale title-test helper:
+it stopped the custom-name return after forty portrait-slide ticks and tried
+to open START while the source fade/BG-map/fade sequence still owned input.
+`complete_oak_intro_for_test` now follows the live naming phase through the
+normal app update loop; it selects NEW NAME only when the preset menu is
+actually ready. No production naming timing was changed for this test failure.
+The previously failing title-to-START integration check now passes, including
+opening START, rendering its glyphs and selecting its menu with live keys.
+
+## Source radio printer and scroll primitives (2026-09-06)
+
+`crystal-core::systems::radio_text` now models PrintRadioLine's first/second
+line mutation and coordinates, source text/string command execution, RAM
+string and weekday expansion, TextCommand_PAUSE and RadioScroll. The scroll
+primitive preserves the separate transition call after the 100 decrements,
+copies full source rows 15/16 to 13/14 when appropriate, and clears only the
+bottom interior. Text pauses print no glyph and sample held A/B only at entry.
+Unknown commands, missing RAM strings, invalid weekdays and out-of-window
+writes report errors rather than fabricating content.
+
+The source oracle now captures PrintRadioLine entry/return, its 40-byte
+unmodified input, next-line A register, counts and all 120 before/after tiles.
+All 17 Rocket prints match the Rust printer tile for tile, including the
+first two lines and the looping program. The complete 1,646-entry loop trace
+also verifies all countdown calls and 16 scroll transitions. Four focused
+core checks pass, including paused partial text, held-button sampling and
+RAM/weekday string expansion.
+
+This is a core component, not yet connected to the Bevy radio surface.
+The existing transcript aliases and static furniture broadcast remain open;
+program selection, dynamic program state, music and UI integration still
+need replacement. Explicit waits are verified separately from CPU/VBlank
+scheduling: the first ROM print crosses one frame without a text pause,
+which this printer does not claim to simulate.
+
+## Exported radio command encoding and Lucky Channel replay (2026-09-06)
+
+The core radio encoder now consumes the exported ScriptTextBody commands,
+keeping text_start, line, pause, weekday and RAM operations as source bytes.
+It uses source charmap controls and single-byte contractions; it does not
+flatten #, PK/MN, PO/KE or the word-expansion controls into display text.
+RAM references require explicit symbol bindings. Malformed operands,
+unmapped characters, missing bindings and commands after a terminator fail.
+
+All 113 exported radio bodies encode within the source 40-byte copy limit.
+The encoder's output matches the captured ROM input bytes for 17 Rocket and
+18 Lucky Channel prints, then produces identical full textbox tile output.
+The Lucky fixture captures actual RAM buffers and weekdays at printer entry,
+covering both number announcements and their pauses. Six focused core checks
+pass. The oracle remains read-only outside its documented fixture setup.
+
+This connects the exported command format to the verified core printer;
+it does not yet connect that printer to Bevy's live radio. Complete program
+control, random selections, dynamic state, music and UI scheduling remain
+open, as does removal of the old transcript aliases from the live surface.
+
+## Native radio program transitions, first families (2026-09-06)
+
+The core radio program controller now selects source text/next-line pairs
+for Rocket, Lucky Channel, Ben/Fern and the three music-only signals.
+Effects preserve source call order: initial textbox/music setup, Lucky's
+timer check/reset request, its first number formatting, and music-only
+printed-line ownership. Lucky's repeated announcement reuses the buffer;
+its two extra closing lines occur only when the single Random byte is zero.
+Ben/Fern share weekday March/Lullaby selection and hold at line $1c after
+their closing text. Re-entering Rocket with text already printed does not
+restart its music.
+
+Eight focused core checks pass. The transition controller selects byte-exact
+text and next-line values for 46 ROM prints across Rocket, Lucky, Ben on Sunday
+and Fern on Monday. The tests separately exercise all 256 Lucky branch bytes,
+both music shows on every weekday, and the music-only startup ownership.
+The ROM music hook confirms IDs $51/$50 for the two captured music shows.
+An initial hook attempted an unsupported combined DE property; it was fixed
+to read D/E and both captures were regenerated before validation.
+
+The new live Fern regression was queued with this change; the follow-up
+below records its failure and production fix. Dynamic Oak, Pokedex Show,
+Places & People and Buena control remains unimplemented in
+the new controller, and full live radio integration remains open. Returned
+effects still require their runtime owner; these core checks do not prove
+timer mutations, music scheduling or complete broadcast parity.
+
+## Live Fern music and radio audio reset follow-up (2026-09-06)
+
+The live Fern regression failed with MUSIC_BICYCLE instead of Sunday's
+MUSIC_POKEMON_MARCH. The selector now uses the verified core weekday music
+function for both Ben and Fern, matching StartPokemonMusicChannel rather
+than the unused per-channel song-table entry. The regression covers all
+seven weekdays with valid Kanto/Expansion Card reception.
+
+A second regression reproduced the same-song early return skipping the
+source audio reset. RadioMusicRestartDE calls PlayMusic(MUSIC_NONE), whose
+_InitSound clears all audio registers and WRAM, before starting its song.
+Retuning now preserves that full reset even for an already playing song,
+removes earlier queued sounds, and starts the received station afterward.
+No-signal tuning also removes earlier queued sounds before MUSIC_NONE.
+The existing playback boundary stops active transient entities/sinks when
+the full-reset flag is consumed.
+
+All eleven focused radio checks pass after both failures were reproduced.
+The reset check exercises same-song, different-song and no-signal cases,
+including transient cleanup through play_pending_audio. Initial names,
+reception gates, source furniture textbox pixels and input ownership remain
+covered. Exact CPU/audio scheduling and the remaining live text/program
+integration are still open; this does not establish complete radio parity.
+The strengthened reset check also passes with explicit no-error and music
+entity assertions: one replacement music entity for a received station,
+none at no signal, and no surviving transient entity.
+
+## Radio selection source tables follow-up (2026-09-06)
+
+The canonical StandardScripts catalog lacks OaksPKMNTalkRoutes, PnP_Places
+and the three PnP_HiddenPeople entry points. The radio exporter now reads
+these directly from data/radio and preserves source row order. HiddenPeople
+labels select overlapping suffixes through the shared -1 sentinel, with
+19, 14 and 6 rows respectively. The tables remain data definitions, not
+executable GlobalScriptRoots. The parser rejects missing terminators,
+unexpected labels, malformed operands and trailing data.
+
+A compiled-pack regression checks all five exact tables through materialized
+global definitions and requires that none become executable scripts. The
+old pack failed with OaksPKMNTalkRoutes absent (session 94081, terminal 101).
+All three exporter parser checks passed (session 27096). Canonical desktop
+and browser pack regeneration completed successfully (session 33975).
+Both compiled radio integration checks passed against the regenerated pack
+(session 48573): exact selection tables, non-executable membership, and all
+113 text bodies. Live Oak and Places & People program consumption is still
+unimplemented; exporting their inputs does not establish broadcast parity.
+
+The ROM oracle now records returned Random bytes at the verified source
+pop-bc/ret boundary, without replacing the hardware-derived generator.
+New radio-program-oak.json and radio-program-places-people.json fixtures
+each contain 18 completed prints, with 19 and 86 random calls respectively.
+The Places trace includes 60 draws for six place selections, preserving
+the source rejection loop rather than reducing draws modulo the table size.
+These traces are evidence for the pending dynamic controller, not proof
+that the current live radio already follows it.
+
+The core startup regression failed with UnimplementedLine(5), session
+26719 terminal 101. The controller now implements lines 5 and 44..49:
+source intro, trainer rejection/hidden-list selection, unmasked place
+rejection, adjective indexing and both probability thresholds, preserving
+each Random call. Source table counts and exclusion slices are explicit
+context inputs; name/landmark formatting remains an effect for the live
+owner. Existing callers explicitly omit this context for other programs.
+The new source replay consumes all 86 captured draws and compares all 18
+printed texts and resulting tile windows using captured RAM. Additional
+checks cover every threshold byte, progression gates, and repeated intro
+music behavior. Session 49722 completed with ten passes and a source-fixture
+parser failure: trainer_constants includes TRAINER_NONE at index zero, so
+68 rows mean NUM_TRAINER_CLASSES=67 and IDs use the actual zero-based row
+index. The fixture parser is corrected and the full replay rerun passed
+all eleven checks in session 1145 (0.09 seconds of tests). This includes
+all 86 captured random draws and 18 printed tile windows. Full live
+integration and formatting effects remain open.
+
+## PC item list layout and source names (2026-09-06, in progress)
+
+The --pc-items oracle captures PlayerWithdrawItemMenu after source setup,
+using POTION 23, ANTIDOTE 1, POKE_BALL 12, GREAT_BALL 2, ESCAPE_ROPE 3,
+and REPEL 4. Initial PNG retained as pc-items-initial.png. Initial one-frame button captures missed input polling boundaries. The
+new capture holds each real Down input until the source cursor changes,
+releases it, and waits for redraw. Session 68978 completed; the seven
+(cursor,scroll) pairs are (1,0),(2,0),(3,0),(4,0),(4,1),(4,2),(4,3),
+ending at CANCEL with an empty description box. JSON and all seven PNGs
+are retained as pc-items-scroll*. The final image was visually inspected.
+
+pc_item_list_matches_source_initial_geometry failed against the old renderer
+at pixel (4,3), session 98460. The renderer now draws the two source frames,
+four item rows, staggered quantities, protected-item quantity suppression,
+scroll arrows and two-tile description spacing. It supports rendering CANCEL,
+but cursor/input flow still excludes that row and needs correction. Scrolling
+still uses a generic centered window; source retains independent scroll and
+cursor values. CGB palette ownership remains open. The regression compares
+all 160x144 dark-ink pixels independently of the inherited palette.
+
+Session 35067 then failed at (64,48): the exported POKE_BALL name is
+"POKE BALL" instead of source "# BALL". Saved Rust render in
+/tmp/crystal-pc-list-rust/pc-items-initial.png confirms the missing accent.
+New pack_core/item_name_export.rs reads all 256 source ItemNames slots and
+maps the 250 named item constants (including TM/HM macro invocations) to
+both existing aggregate and modular catalogs. It preserves source text
+control tokens instead of substituting English names. Export is wired into
+pack_core before compilation. The focused exporter test passed in session 40545 (7m29s build).
+The canonical exporter is now compiling/running in live session 8210,
+using CARGO_TARGET_DIR=$PWD/target; do not restart it for observation
+timeouts. After it finishes, rerun the Bevy pc_item_list_ regressions.
+The aggregate also contains five synthetic Pokegear/card entries beyond the
+250 native item constants; their removal/representation is a separate open
+parity defect, and this source-name exporter only targets native table rows.
+No pack has been regenerated for this change yet.
+
+pc_item_list_ignores_horizontal_input_and_stops_at_cancel is now added
+but has not run: it checks source-disabled Left/Right, clamped Up at the
+first row, the two-item list plus CANCEL, clamped Down at CANCEL, and A
+returning to WITHDRAW ITEM. Run it with the next Bevy PC-list checks.
+Current handlers still violate these requirements; no production cursor
+fix has been made yet.
+
+## PC item quantity and transfer mismatches (2026-09-06)
+
+PlayerWithdrawItemMenu and DepositItem use SelectQuantityToToss, whose
+BuySellToss_InterpretJoypad wraps Up/Down at 1 and wItemQuantity and clamps
+Left/Right by minus/plus 10. Rust's vertical dispatch has the correct sign
+but clamps instead of wrapping; its horizontal handlers use minus/plus 1.
+The new pc_item_quantity_buttons_match_source_wrap_and_ten_item_steps
+regression covers all four directions, bounds, and single-item stacks for
+withdraw, deposit, and toss. An already-built test executable contained
+the new regression and reproduced Up at 23 staying at 23 rather than
+wrapping to 1 (session 57581, terminal 101, 45.31 seconds). The production
+helper now wraps unit changes and the horizontal handlers pass -10/+10.
+Session 61060 passed the rebuilt regression (39.99 seconds of tests),
+covering all three PC quantity actions. Initial commentary misidentified
+horizontal handlers as vertical; the verified defects are wrapping and
+horizontal step size, not the vertical direction mapping.
+
+Further source inspection confirms two deposit-flow mismatches. HasNoItems
+(engine/pokemon/mon_menu.asm) checks ITEM, KEY ITEM, BALL and TM/HM pockets,
+whereas open_visible_pc_item_deposit_pack rejects an empty ITEM pocket
+alone. The added pc_item_deposit_checks_all_source_bag_pockets_before_refusing_entry
+regression uses a ball, key item and TM separately; it has not run yet.
+PlayerDepositItemMenu loops back through DepositSellPack after a successful
+transfer, whereas deposit_visible_selected_pack_item_to_pc closes the Pack
+and returns to Player PC actions. The added
+pc_item_deposit_returns_to_the_same_pack_selection_after_transfer checks
+the item counts, retained pocket, action and cursor after transfer. Both
+deposit regressions are present in the source being built by session 61060,
+but that command filtered only the quantity test. Running the deposit
+checks initially exposed invalid test fixtures: Bag::default removed the
+required TM/HM slots (session 71834). The fixtures now clear pocket
+contents while preserving TM/HM slot allocation. Session 27046 then
+reproduced actual entry bugs: a ball-only bag was refused, and a fresh
+ITEM entry failed because no cursor had been initialized.
+
+The entry now checks all four source pockets and uses the standard pocket
+opener, preserving its CANCEL row and pocket cursor memory. Session 82731
+passed entry and reproduced the post-transfer failure (field_pack_pocket
+became None). The transfer now retains the active pocket, cursor and
+DepositItem action and refreshes its item list. Session 77469 passed all
+three PC checks, including a second transfer that empties the last stack
+while retaining CANCEL (38.48 seconds). The A-on-CANCEL regression failed
+with "selected Pack cursor is CANCEL" in session 34263 (33.33 seconds).
+The deposit A handler now checks the CANCEL row before item lookup and
+shares the deposit-close function with both existing B/cancel paths.
+The regression now checks A and B from each of the four source pockets.
+Session 53079 ran six checks: the four earlier PC checks passed, including
+A/B cancellation from all four pockets. New deposit/withdrawal checks
+failed because deposit rejected the BALL pocket and withdrawal used ITEM
+capacity even for a ball (73.62 seconds).
+
+The UI now reads each source pocket's selected stack/counter and uses
+_CheckTossableItem's single-item bypass for protected deposits/withdrawals.
+Withdrawal capacity dispatches to ITEM, BALL, KEY ITEM or the selected
+TM/HM counter. Successful native PC deposit also clears registration when
+the registered key item no longer exists in the bag. Session 26713 passed all six transfer/input checks (112.90 seconds for
+eight total tests). The source tests cover balls, a TM, Bicycle, HM Cut,
+Bicycle registration, and withdrawal with a full ITEM pocket.
+
+Bag::remove_item_at rejected TM/HM pockets. Source _TossItem ignores
+the menu row for TM/HM and resolves its counter through GetTMHMNumber.
+The new indexed_tmhm_removal_uses_the_compiled_counter_not_the_menu_row
+regression failed with "indexed removal is unavailable for pocket TM_HM"
+in session 28727 (12m10s initial test build). It uses compiled index 30
+with several unrelated menu-row values. Indexed TM/HM removal now calls
+remove_tmhm. Session 75126 passed the focused regression, and the built
+core executable passed all 15 bag tests. Session 26713 subsequently passed
+all six PC transfer/input regressions. No build was restarted because of
+an observation timeout.
+
+Session 26713 also reproduced two new defects: changing quantity replaced
+an already printed question with "HOW MANY?\nPOTION x2", and the source
+quantity window was absent at pixel (120,72). Quantity adjustment now
+changes only the count, preserving question and reveal state. Withdraw,
+deposit, and toss use the source question text. The renderer draws the
+source SpeechTextbox and, after its question completes, a separate 5x3
+window at tile (15,9), with the multiplication glyph and padded two-digit
+quantity at (16,10). Session 17800 passed all eight PC regressions (98.26 seconds), including
+zero RGB5 pixel differences in both source quantity-window captures.
+Input handlers still need source timing checks while the question prints.
+
+The source oracle now supports --item-quantity for the isolated
+SelectQuantityToToss window. It initializes a blank textbox backdrop with
+source routines, then uses real button inputs. The retained maximum-23
+fixture records 1,23,1,11,21,23,13,3,1 for initial,Down,Up,Right,Right,
+Right,Left,Left,Left. Its counter tiles are the multiplication glyph and
+two zero-padded digits (f1 f6 f7 at quantity 1). The JSON and quantity-01/23
+PNGs live under tools/asm-oracle/fixtures/pc-item-quantity*. These verify
+the source selector only, not a complete PC/Pack backdrop. The two PNGs now drive a RGB5 pixel comparison of the quantity window,
+including preservation of the surrounding backdrop. Session 82731 waited behind
+another task's live shared-target build; no restart was made.
+
 ## Method
 
 - Scope: production Rust under `rust/crates`; test-only references are listed
@@ -18,11 +964,34 @@ existing Rust tests are implementation evidence only.
 
 ## Initial production findings
 
+- Highest-priority active UI audit: Pokégear and PC. `tools/asm-oracle/pokegear_trace.py` SHA-checks the canonical ROM, redirects only boot dispatch/setup in a temporary copy, establishes the source indoor/day palette, and captures unmodified card and Withdraw routines. `compare_ui.py` independently compares RGB5 LCD pixels and rejects nonuniform scaled pixels. **Verified zero-difference fixture captures:** Clock, initial Phone list, no-signal Radio, empty Withdraw, populated Cyndaquil Withdraw, its action submenu, and Release confirmation. The action submenu comparison exposed its options one tile too high and the shared renderer's missing single-tile contractions; both are corrected and independently verified against the LCD. Release now retains its submenu under the small YES/NO box, with its question in the PC bottom line. Declining Release preserves its submenu row (NO and B regression passes). Pokégear closure retains the originating START cursor; the regression passes and also checks that a scripted map does not open START. Unmapped bitmap glyphs report a rendering error instead of silently substituting question marks; five focused font checks pass. Other confirmed fixes include black source font ink, Clock A/Start/Select exit, non-wrapping card edges, source card-arrow/radio-knob OAM and inherited palette, Radio's source station-name clear, saved phone ordering including empty slots and four-row edge scrolling, PC's padded/orange list picture and exact selection cursor, empty-list CANCEL, and STATS submenu retention. **Open:** shared source StatsScreen, five-row cursor/scroll persistence, notice/save/release transitions and item/box/hub layouts; Pokégear call presentation and phone-menu printer/click/delay timing, radio authored scrolling/timing, map behavior/markers and normal entry/exit lifecycle. Full parity is not established.
+
+- Phone contact-menu follow-up: source `PokegearPhoneContactSubmenu` has CALL/CANCEL for non-trainer MOM/ELM and CALL/DELETE/CANCEL for other contacts. A now opens this submenu, directional inputs stop at its edges, Left/Right cannot change cards while it owns input, and B closes it without leaving Pokégear. DELETE uses the source question/YES-NO layout and a native runtime mutation. The core operation is separate from `delcellnum`: it clears the selected slot then makes one forward empty-slot shift pass across the ten entries and zero sentinel, preserving pre-existing adjacent holes exactly and leaving script return state untouched. The source ROM oracle now captures both submenu variants, deletion confirmation, and the resulting list. All four new phone LCD captures (protected-contact submenu, deletable-contact submenu, deletion confirmation, and deleted list) compare with zero RGB5 differences; the prior seven captures remain exact. The first UI flow regression caught that exported non-trainer classes are `TRAINER_NONE`, not absent values. Eligibility now reads the source class and `PHONECONTACT_*` caller identifier, with no ID-name inference. The corrected core regression and live submenu/deletion flow both pass, including protected MOM, B cancellation, and confirmed BILL deletion. ROM RAM captures independently show the eleven phone-list bytes changing from `0104030000000000000000` to `0104000000000000000000`. The earlier core pass covered shifting/script-state behavior, but did not catch this catalog mismatch. Call backdrop/text/script timing is still open. `_DepositPKMN` list/submenu LCD references are now also matched by Rust.
+
+- PC cry fence implementation: Deposit/Withdraw now enter `SuccessWaitCry`, retain a typed display record (species, level, gender, item and shiny/Egg flags), and keep the old picture/What's up? during the cry. Only actual transient-audio completion starts `SuccessHold` and its 50-frame message. Success names/message/display info are grouped in one retained transfer record and participate in the render key. EGG skips the unhatched species cry, matching `GetCryIndex`'s carry return. New timing and Egg-silence regressions were written before the fix. Shared builds delayed execution until after the change, so no pre-fix failure result is claimed; the withdrawal wait and Egg-silence checks now pass. Deposit also passes. Both new withdrawal frames have zero RGB5 differences, all eighteen captured PC/Pokégear surfaces still match the ROM, and all 36 focused PC checks pass. Rust cry/success render fixtures are added for comparison against the existing withdrawal ROM trace.
+- Outgoing Pokégear call backdrop evidence: `--phone-call` now captures the original `phone-ringing` frame. The green Phone card, contacts, selected-contact arrow and lower text box remain visible while ringing dots print. Rust's `start_visible_pokegear_phone_call` sets `pokegear_menu_open = false`, so its backdrop is still divergent. This capture confirms the next Pokégear presentation correction; no phone-call fix is claimed yet. Source `PokegearPhone_MakePhoneCall` sets `hInMenu = 0` during the call, so the correction must separate retained card visibility from menu input ownership; enabling the interactive gear menu throughout dialogue would not reproduce that source distinction.
+- PC conversion/display boundary: the new native level calculation exposed a retained-view mistake. The success sequence captured the returned, converted Pokemon rather than the pre-transfer snapshot. A regression reproduced the cry display changing from its original level 10 to calculated level 1. Deposit/Withdraw now capture their displayed info from the pre-mutation snapshot. The first unoptimized-assets Bevy test exceeded the default test-thread stack; a 16 MiB test-thread rerun reached the intended failing assertion. The post-fix retained-display regression passes with the normal optimized asset dependency; all 36 PC checks pass, and all eighteen captured PC/Pokégear surfaces remain pixel-identical to the ROM.
+- Native PC withdrawal conversion is corrected: `WithdrawCurrentBoxPokemonToParty` now applies the shared source CalcLevel calculation, rebuilds all stats using stat experience, clears status/sleep, and restores HP (zero for EGG). Box-to-party Move also rebuilds stats and clears status/HP, but retains the boxed level as `CalcBufferMonStats` does. Explicit Nuzlocke permadeath keeps fainted Pokemon at zero HP. Withdrawal does not refill PP. The regression failed with stale [level 20, max HP 46] instead of [level 21, max HP 61], then passed all eight ordinary/Move × injured/fainted/Egg/Nuzlocke cases. The two existing Move path checks and six Nuzlocke checks also pass. Boxed StatsScreen projection and the broader PC presentation remain open.
+- PC successful notice retention: Deposit/Withdraw/Release no longer discard their submenu immediately after mutation. Timed sequences retain the pre-mutation names, allowing a removed last row to stay renderable until the source return resets the list. Success notices use the one-line PC box and clear the left information area. The new lifecycle test failed on immediate Deposit cancellation, then passed for all three operations, including preserved names and the final-frame reset. ROM Released/Bye captures differed by 3,373/3,479 RGB5 pixels before the fix; both corrected hold images now have zero RGB5 differences, and all sixteen captured PC/Pokégear surfaces match their ROM references; all 35 focused PC checks pass. A separate source timing gap is confirmed: `PlayMonCry` calls `WaitSFX` for Deposit/Withdraw, whereas Release uses nonblocking `PlayCry`. The new withdrawal trace shows party count already increased to two while the old Pokémon picture and What's up? remain during the cry, followed by Got CYNDAQUIL! with the left area cleared. The cry-wait correction is verified in the follow-up above.
+- PC refusal rendering audit: a new `_DepositPKMN` capture during the last-Pokémon refusal shows the picture and DEPOSIT submenu retained above the one-line PC notice. The old generic notice differed at 4,524 RGB5 pixels. A lifecycle regression also reproduced the submenu being cleared before the sound/50-frame hold. Refusals now render through the retained PC layout, and an explicit `close_submenu_after_hold` field defers admission-refusal cancellation until the source return; capacity and boxed-Egg refusals keep their submenu. The corrected refusal image has zero RGB5 differences; all fourteen captured PC/Pokégear surfaces match their ROM references, and all 34 focused PC checks pass. The `--pc-populated` oracle now also captures the source Released/Bye intermediate screens for the next fix. Successful transfer/release notice retention and left-info clearing are addressed in the follow-up above; the Deposit/Withdraw cry fence remains open.
+- Additional PC source regressions: boxed Egg RELEASE previously displayed an untimed notice; it now waits for `SFX_WRONG` and 50 frames, ignores A during the hold, and returns to RELEASE (regression failed before and passed after). `ReleasePKMN_ByePKMN` uses `GetPokemonName` and a single line, so the farewell now retains the species display name and prints `Bye, CYNDAQUIL!` instead of a second-line nickname (regression failed before and passed after). Withdraw/Deposit now retain a five-row scroll position and saturate at both list ends; Up previously wrapped from row zero to CANCEL. Direction reversal retains the current window. All 34 focused PC checks pass, including the new list regression and corrected farewell assertion. Move mode scrolling remains under audit.
+- PC HP-gate audit found a core Day-Care handoff mismatch: Rust collected prebuilt Eggs with full HP (20 in the regression), while `DayCare_GiveEgg` clears both `MON_HP` bytes after stat calculation. The collection boundary now zeroes current HP while retaining max HP; the regression failed before the fix, then passed along with all 23 focused Day-Care checks.
+- PC Deposit follow-up: explicit PC Deposit state replaces the ordinary party-menu shortcut. The five-row party list and DEPOSIT/STATS/RELEASE/CANCEL submenu match `_DepositPKMN` LCD captures with zero RGB5 differences, bringing the verified capture set to thirteen states. Summary/release selection is typed as party or box, preventing boxed-slot assumptions in party actions. A opens the submenu without moving a Pokemon; STATS and cancelled Release retain their selected submenu rows; confirmed DEPOSIT moves the selected party member and returns to the PC party list after its source hold. A native party-release command applies the source last-party/other-HP/Mail/Egg checks before compacting and syncing the party. Closing storage clears Deposit ownership. Thirty focused PC checks pass; the three Deposit checks also pass after adding semantic-menu and mode-exit assertions. CLI/MCP menu text now exposes the active DEPOSIT/WITHDRAW action choices or Release YES/NO rather than the underlying Pokemon list. A new lifecycle regression also reproduced the last-withdrawal bug: the transfer completion handler discarded the cursor instead of retaining the empty CANCEL list. That return path is corrected; the regression now passes for both last withdrawal and last boxed release. Refusal return destinations are now corrected: `.FailedWithdraw` and Deposit `.box_full` retain their submenus, while last-party/other-HP/Mail Deposit refusals return to the list with its position preserved. The new regression failed on the old row-zero reset and passes with the fix; 32 focused PC checks passed. Refusal notice retention is addressed in the follow-up above; successful transfer/release notice retention remains open. StatsScreen, retained notice/release rendering, and Move mode cursor/scroll behavior remain open; Withdraw/Deposit scrolling is corrected in the follow-up above.
+
+- Battle trap ownership now distinguishes ASM's source-owned `SUBSTATUS_CANT_RUN` from Rust's target-owned escape-trap record. `TryEnemyFlee`, `AI_Redundant.MeanLook`, `AI_Smart_PerishSong`, and the live `AI_SwitchOrTryItem` adapter now consult the appropriate target. Regressions exposed the reversed sides, including a trainer switching out while trapped; the focused core battle suite (754 tests), full core binary (2,161 tests), and four live trainer post-order tests pass. Successful `RunAttempt` now also terminates the between-turn gate, preventing post-escape Sandstorm damage and Perish Song fainting.
+- Active UI follow-up: `JumpTextScript`'s implicit `waitbutton` was consumed by the automatic PrintText completion path, and terminal `prompt` metadata was discarded by the page-only renderer. The frame loop now distinguishes these source waits. PC Withdraw's seven-row blue list, absent selected-mon picture, stale Select-to-Release help, wrong submenu coordinates, and missing CANCEL sentinel are being replaced with source layout, assets, and cancellation. The Withdraw and Deposit list/submenu captures now match the ROM. Remaining work includes retaining the PC screen through notices; proper PC stats/item/change-box screens; terminal prompt arrows and internal text-command timing; repeated/automatic dialogue progression; and the wider battle UI audit. These entries are an open work queue, not a claim of full UI parity.
+- Core escape arithmetic now preserves `engine/battle/core.asm::TryToRunAwayFromBattle`'s register widths: only the low byte of enemy Speed divided by four becomes `hDivisor`, zero branches to `.can_escape` before `BattleRandom`, and only the low two product bytes become the dividend. The previous `.max(1)` divisor invented a random roll for low-Speed opponents and missed the byte truncation. Two regressions failed before the fix and pass afterward, including an empty DIV replay proving the zero-divisor path consumes no randomness. `cargo test -p crystal-core` passes all 2,159 tests. This is a bounded arithmetic correction, not evidence of complete core or runtime parity.
+- Credits now distinguishes its WRAM tilemap from transferred VRAM. The source's `CREDITS_THEEND, CREDITS_WAIT 20, CREDITS_END` sequence re-enters `ParseCredits` after the hold and clears WRAM rows 5–16, but first disables `hBGMapMode`; the already-transferred 8×2 THE END graphic therefore remains visible while A is accepted. A SHA-pinned PyBoy oracle that redirects only `CrystalIntro` through the ROM's unmodified `RedCredits` lifecycle proves that boundary frame is pixel-identical to the preceding frame while retaining the real fade, font loading, white palette setup, delay, and `Credits` call. Rust now advances `hBGMapThird` through top/middle/bottom on each enabled VBlank, commits text rows only when their third transfers, preserves the text engine's two-tile-row `<NEXT>` stride even when a string crosses a hardware-third boundary, expands encoded `$54` through `PlacePOKEText` into the displayed `POKé` tiles, delays THE END until its middle-third transfer, and retains its displayed pixels after the untransferred final WRAM clear. The credits bitmap decoder also uses the canonical four grayscale buckets; its former thresholds changed source color 2 into color 3 and painted the blue border wave white. The scanline compositor preserves the hardware-latched final SCX value after each eight-byte `wLYOverrides` band, producing the ROM's nine shifted lines at both borders. Full-screen normalized-RGB5 hashes now match the ROM for the blank top transfer, the first two STAFF rows, the completed three-third STAFF transfer, and the complete B-accelerated run's A-ready exit frame.
+- `InitClock` now models its saved `hInMenu` byte as live runtime state rather than validation-only metadata: entry saves the prior byte and writes one, and final acknowledgement restores it. The exporter certifies `JoyTextDelay`'s 15-count press seed and 5-count restart, each selector redraw's four-frame `WaitBGMap`, and the no-direction `DelayFrame` in both `SetHour` and `SetMinutes`. From those source loops it emits the observable ten-frame first repeat and five-frame later repeat. Rust accepts continuously held Up/Down at those exact boundaries, including a hold begun during the selector's blocking ten-frame entry delay; A retains priority and Left/Right/B remain ignored in the numeric selectors. The live keyboard path preserves Up/Down movement in the following YES/NO menus and now routes B there as the source cancel rather than swallowing it for the entire clock flow.
+- `InitClock`'s live selector now consumes the exported default hour/minute, exact hour/minute domains, ten-frame post-draw input delay, Up/Down-only direction contract, ten source text entries, and morning/day/night response map. The copied ASCII wake/reaction strings are deleted: typed `text`/`line`/`cont`/terminal commands preserve the first two-line ellipsis screen, the exact Unicode dialogue, and response scrolling. `SetHour` and `SetMinutes` ignore B and Left/Right exactly as their ASM loops do; Rust previously navigated backward on B and changed minutes with Left/Right. Entry now executes the exported `MUSIC_NONE` fade request and source-timed 79-frame transition: eight frames retaining the confirmed gender screen, four eight-frame palette steps to black, three one-frame `Request1bpp` transfers plus four `WaitBGMap` frames while black, and four eight-frame palette steps revealing the cleared clock screen before `OakTimeWokeUpText` starts. The exported setup also certifies the tilemap/sprite clears, Diploma layout, BG-map disable, standard font, and exact three GFX/tile destinations. Sprite-update register ownership still needs to move into the generic presentation interpreter.
+- OakSpeech portrait presentation now consumes its four exported ASM-derived portrait operations. Each Oak/player reveal uses the source six palette words at ten frames per word; Wooper's window starts at `$77`, waits one frame, subtracts eight through `$07`, and terminates before writing `$ff`. Rendering applies the hardware `WX - 7` boundary, correcting the old left-to-right host wipe to Crystal's right-to-left reveal. The three following `RotateThreePalettesRight`/`ClearTilemap` transitions are separate exported dismissal operations, and Rust reads their three-word/eight-frame timing instead of retaining the duplicate constant. All Oak text now comes from typed, source-spanned `text`/`line`/`cont`/`para`/prompt/terminal commands resolved through each `text_far` target; the copied prose arrays are deleted. This corrects OakText2 to its three source scroll states, makes OakText7's two `cont` passages eight visible states, and retains OakText3's prompt only after the exported embedded Wooper cry finishes `WaitSFX`. Credits remain in the larger presentation-program gap.
+- `NamePlayer` now consumes both source branches from exported metadata. The preset menu uses the gender-specific ASM arrays rather than Rust copies of CHRIS/KRIS and their alternatives; its title, title indent, default row, disabled-B behavior, and inclusive `menu_coords 0,0,10,11` geometry are validated, replacing an invented 12×14 window and displaced text. The shared eight-step `MovePlayerPic` loop executes four `WaitBGMap` frames plus one `DelayFrame` per step, shifting the retained portrait from tile x=6 through x=13 for 40 frames before input and back for 40 frames before a preset commits. `NEW NAME` now retains NamingScreen through the exact 24-frame `RotateThreePalettesRight`, clears the tilemap, holds the four-frame `WaitBGMap`, redraws the 7×7 gendered portrait at 6,4 without inventing the cleared OakText6 textbox, and reveals it through the exact 24-frame `RotateThreePalettesLeft`; only then does `InitName` commit the typed value or the gendered CHRIS/KRIS fallback and open OakText7. Headless smoke consumes the same choreography, and B remains disabled across the blocking NamePlayer menu/return call.
+- Credits no longer reads `data/credits_script.asm`, `constants/credits_constants.asm`, or `data/credits_strings.asm` from a vendor checkout during play. The exporter now embeds their source-certified contents in the required presentation payload, registers `MUSIC_CREDITS` and `MUSIC_POST_CREDITS`, derives the `$0d` B-skip position threshold from `Credits_HandleBButton`, and Rust decodes the complete operation/constant/string/tile program once when Credits opens. `CREDITS_WAIT` performs its distinct `hBGMapThird=0`/`hBGMapMode=1` update while `CREDITS_WAIT2` does not; enabled VBlanks now commit the exact six-row thirds into retained display state instead of drawing newly parsed text immediately. `CREDITS_MUSIC` preserves the source `MUSIC_NONE` → one `DelayFrame` → `MUSIC_CREDITS` ordering instead of queueing both requests in one host step. `CREDITS_END` starts the exact rate-32 fade toward `MUSIC_POST_CREDITS`, leaves the credits track active while that fade runs, and the live THE END jumptable continues until A with its stale VRAM graphic intact. That A press enters the source `ClearBGPalettes` teardown: the exporter certifies the CGB `$ff` palette-buffer fill and `WaitBGMap`'s four `DelayFrames`, Rust renders the resulting all-white LCD for that blocking interval, and only then returns without stopping the music fade. The certified setup and exact exit-without-restore blocks also expose the original `hInMenu=TRUE` leak: battle move Up/Down remains edge-only before Credits and admits continuous held input afterward. `tools/asm-oracle/credits_trace.py` SHA-checks the canonical ROM, applies a temporary standard farcall dispatch through `RedCredits`, and emits event LCD hashes plus optional PPMs for setup, all BG thirds, THE END, A, and teardown. Credits setup, jumptable scheduling, border transfer, and teardown state are still expressed by the handwritten visible state rather than the generic presentation interpreter.
 - All 20 exact `QueueScript` targets in `engine/events/overworld.asm` are now exported as canonical global script roots instead of depending on test injection or incidental reachability. Definition-only CPU closures for Fly and Headbutt presentation stay out of the script cursor catalog and are source-fingerprint certified. The queued Surf path materializes its live-facing `wMovementBuffer`, Waterfall samples live `wPlayerTileCollision`, and `TreeMonEncounter` runs through an exact source-certified, DIV-traced mutation that writes `wTempWildMonSpecies`, `wCurPartyLevel`, `wBattleType`, and `wScriptVar` before the script's ordinary `randomwildmon`/`startbattle` continuation. `text_asm` is treated as the static-text/embedded-code boundary rather than parsed as text bytecode.
 - Cry PCM rendering now follows the cartridge parameter boundary: it accepts `wCryPitch`/`wCryLength`, applies the 16-bit pitch addition to raw and symbolic tonal frequencies, replaces tempo only for non-noise channels, and preserves noise timing. The core exporter renders normal, Growl (`length + $c0`), and Roar (`length + $40`) PCM for every species, and Rust selects those exact species assets from `anim_cry` selectors 2/3, 0, and 1 respectively. Ordinary species cries also use the species-rendered normal asset instead of the unmodified shared base cry.
 - Used move-effect command routing is now checked exhaustively against the source pointer table and compiled effect bodies for `checkhit`, `effectchance`, and `kingsrock`. The comparison includes Bide's release-only shared hit gate and PoisonMultiHit's per-hit chance sampler as explicit control-flow placements. King's Rock now follows the exact scripts that contain `kingsrock`; built-in flinch scripts such as Headbutt no longer receive a second held-item flinch roll.
 - Battle animation packs and the visible timeline compiler now accept only the 36 opcodes in Crystal's `data/moves/animations.asm` command language (plus local labels). Rust previously validated commands as arbitrary nonempty strings and silently treated unknown opcodes as no-ops, allowing exporter drift or malformed packs to produce incomplete but plausible animations. Catalog and deserialization regressions reject unknown commands before presentation.
-- Intro sprite-animation input now crosses a typed, fail-closed boundary shared by intro and field-move OAM consumers. Missing piece coordinates/tiles/attributes, missing frames or OAM targets, unknown frame commands, invalid frame flags, truncated 32×32 tile/attribute maps, missing palette banks, and out-of-range graphic tiles are errors instead of zero defaults, skipped sprites, palette-first substitution, short-map acceptance, or modulo wrapping. Pack-owned sprite initialization, local-label control flow, callback instructions, and framesets now drive the live runner, including the `wSlotsDelay`/`wIntroSceneFrameCounter` WRAM alias that switches Unown F at `$40`. The remaining intro gap is resource-transfer/scene-program execution and ROM checkpoint parity, not permissive asset or callback interpretation.
+- Intro sprite-animation input now crosses a typed, fail-closed boundary shared by intro and field-move OAM consumers. Missing piece coordinates/tiles/attributes, missing frames or OAM targets, unknown frame commands, invalid frame flags, truncated 32×32 tile/attribute maps, missing palette banks, and out-of-range graphic tiles are errors instead of zero defaults, skipped sprites, palette-first substitution, short-map acceptance, or modulo wrapping. Pack-owned sprite initialization, local-label control flow, callback instructions, and framesets now drive the live runner, including the `wSlotsDelay`/`wIntroSceneFrameCounter` WRAM alias that switches Unown F at `$40`. `tools/asm-oracle/intro_trace.py` now SHA-checks and runs the unmodified ROM boot, verifies all 28 scene transitions, and records 56 first/last boundary checkpoints over the cartridge's 2,442-frame CrystalIntro execution, including normalized LCD, both BG maps and attribute maps, exact OAM bytes, palette buffers, LY overrides, and display registers. Its optional timing trace records every decompressor hook interval and interrupt count plus each intervening VBlank's live graphics-request state and elapsed CPU time through the call to `GameTimer`. Rust now uses the VBlank-latched scene state while retaining live STAT-owned LY data, keeps cumulative Crystal-word palette writes, performs byte-wrapped OAM coordinate arithmetic, clears `wGlobalAnimXOffset` as part of the source `wSpriteAnimData` range, and honors OBJ-behind-BG color-zero priority. Seven representative terminal scene LCD hashes now match the ROM exactly. The exporter executes an exact SM83 machine-cycle model over every source-certified LZ3 command path and emits `decompress_machine_cycles` for each presentation decompression; canonical regression values cover literal, run, alternate, zero, signed/absolute rewrite, flip, reverse, long-count, counter-carry, and terminating-return costs through the real intro resources. It also source-certifies the interrupt-vector jump, both `LCD` handler branches, the inherited 144-line HBlank trigger, and the inactive `MobileTimer` branch, exporting exact 27-, 49-, and 48-machine-cycle totals including hardware entry/vector dispatch. The VBlank contract now explicitly retains `_UpdateSound` as a state-dependent every-frame dependency guarded by `wMusicPlaying`; the ROM timing samples prove otherwise-identical graphics states range from 930 to 3,166 machine cycles before `GameTimer` as the live sound program changes. Rust parses, validates, and retains this interrupt contract in the visible intro state, rejecting missing/zero costs or a pack that falsely labels sound timing constant. Scene 16 exposes the remaining cycle-accuracy gap especially clearly: VBlank lands partway through `DoNextFrameForAllSprites`, so 11 grass OAM pieces contain the new Y coordinate while nine retain older shadow-OAM bytes. The current high-level frame runner rebuilds all pieces atomically. Decompression-heavy setup scenes likewise cross additional VBlanks, leaving Rust at 2,258 frames versus the ROM's 2,442. The remaining intro work is to execute the retained metadata in a shared CPU/VBlank scheduler, add exact stateful `_UpdateSound` costs, and extend equivalent source-derived costs to the scene and sprite paths—not add scene padding, a fitted per-frame budget, or a scene-specific sprite exception.
 - The live intro sprite runner now consumes object frameset/function bindings and every frame/wait/restart/end/delete step directly from the validated pack-owned ASM sprite bundle. The duplicate Rust frameset table is deleted; it had replaced `SPRITE_ANIM_FRAMESET_INTRO_UNOWN_F`'s source `wait 0; end` sequence with an invented one-frame wait. Missing framesets, oversized durations, unknown animation functions, and unresolved graphic ownership fail the visible sequence instead of freezing, silently skipping a sprite, or selecting art by object name. Each allocation's graphic and tile base are derived from the exported VRAM transfer state. The outer scene scheduler remains part of the larger presentation-program replacement.
 - Memory Game board initialization and pair accounting now follow `MemoryGame_InitBoard`/`MemoryGame_CheckMatch` rather than constructing and double-shuffling an invented 16-card species deck. Rust allocates the exact 9×5 board, consumes one of the three source count rows in placement-call order (`2,8,4,7,3,6,1`), rejection-samples `Random & $3f`, and fills the remaining cells with card 5 without another RNG call. Its live board, jumptable phase, counter, tries, five-byte match history, matched count, selected-card registers, cursor index, and last-drawn card now reside in validated typed core state; typed frame/joypad input replaces every `memory_*` string register and host card-index command. Each round performs 45 card-placement executions before spawning the cursor with five tries; `CheckTriesRemaining` decrements before the first-card loop, the sprite callback writes its one-based A-button choice after the jumptable for next-frame consumption, bounded 9×5 movement matches the source cursor, and B is ignored during play. Invalid choices remain latched in their distinct source phases. PickCard2's fallthrough decrement is followed by 63 more counter frames and a separate zero-counter resolution execution. Matches write `$ff` into both board cells, append the card id to the match history, increase the matched-card count by two, and retain the source last-card value; misses restore the face-down value. Zero tries enters RevealAll, whose first A reveals the board and whose blocking acknowledgement accepts A or B. Both apparent menu calls use the empty `UnusedCursor_InterpretJoypad_AnimateCursor` stub with carry clear, so ResetBoard always initializes and AskPlayAgain always loops to RestartGame; the invented proceed/restart/quit paths are removed. The obsolete parallel `memory_revealed` board and pair-at-once resolution shortcut are removed. Remaining gaps are presentation-owned tile rendering and text/audio timing.
 - Card Flip now uses validated typed core state and inputs for its exact 24-byte deck, face-indexed discard pile, source phase, played-card counter, selection registers, face-up card, and finite payout loop. Entry preserves the two distinct source failures around its three-coin stake: the shared `CheckCoinsAndCoinCase` wrapper rejects exactly zero coins before checking the Coin Case or consuming shuffle RNG; once entered, one or two coins still reach `_CardFlip`, shuffle the deck, and then produce the game-local `Not enough coins…` result. The wrapper is not rerun between an accepted stake and that round's reveal/payout phases, so spending the last three coins does not abort the already-started game. `wCardFlipNumCardsPlayed` advances only when Play Again is accepted, and its twelfth increment reshuffles before the next stake, matching the ASM control flow.
@@ -60,7 +1029,17 @@ existing Rust tests are implementation evidence only.
 - Destination map music now synchronizes during map setup even when a field notice remains visible, and an old queued copy of that destination track cannot suppress the authoritative replacement after an intervening music change. The former textbox and stale-queue guards could leave Elm's Lab music playing after the player exited to New Bark Town; neither guard exists in the ASM map-music path.
 - Both authored `special WaitSFX` uses now enter the same autonomous transient-completion boundary as the `waitsfx` opcode. Fly cannot run `.ReturnFromFly`, and Rock Smash cannot start `SFX_STRENGTH`, until the pending/playing channels 5–8 program has ended. The former special branch drained the event and immediately cleared `waiting_for_sound_effect`, turning a blocking source call into a no-op.
 - The title timeout now executes its exported `fade_audio` boundary through the shared ASM music-fade engine. `TitleScreenMain` writes the certified source rate byte `8` to the exported `wMusicFade` target and requests `MUSIC_NONE`; Rust previously stored the derived 64-frame duration in that WRAM register, decremented it in title-specific shell code, and never began the audible fade. The phase interpreter now validates the exact register/rate/target and the eight-volume-step duration, the visible title observes real fade completion, and `TitleScreenEnd` selects `TITLESCREENOPTION_RESTART` only after the shared engine clears the source register. Red-then-green interpreter coverage, all 10 visible-title regressions, and the exact shared fade regression pass.
-- CrystalIntro's 28-entry scene domain now comes from the certified `IntroScenes` ASM jump table. The exporter records every entry's exact compiled-operation offset and source-authored completion waits in the loop dispatch contract; Rust independently derives those waits from each operation range and rejects missing, reordered, extra, out-of-range, operation-table-disagreeing, or timing-disagreeing entries. Bevy initializes, delays, and completes the intro from that source-derived contract. The invented descriptive scene-name array, clear-palette scene list, and special-case 6/3-frame delay policy are removed. Sprite activation is likewise keyed by exported `(dispatcher_entry, dispatch_tick)` operations and exact instance IDs rather than ten literal ASM source-line numbers; the load boundary verifies each activation remains inside its source scene and agrees with its lifetime or grouped-instance tick. All ten ordinary intro audio operations now carry source-derived dispatcher entry/tick metadata: allocation-adjacent cues inherit certified sprite activation ticks, persistent handlers use the independent ASM tick simulation, and Scene 28's whoosh derives from its exported `$80` pre-decrement sequence. Bevy tracks dispatcher invocation count separately from `wIntroSceneFrameCounter`, which is required when a scene inherits a nonzero counter. Scene 12's eight sentinel-terminated Unown sound cues likewise execute from that scene's exported `scheduled_audio` operation, including the certified SFX-channel stop semantics, instead of duplicated Rust frame/audio matches. Pack loading rejects misplaced ordinary cues and invalid schedule clocks, sentinels, channel behavior, unordered frames, or audio IDs absent from the certified catalog before gameplay begins. Unown pulse fades now resolve their three RGB555 colors from the exported `palette_fade_lookup` tables and source fold contract, while the final Crystal-word fade resolves both grayscale colors from the exported fast/slow hue vectors; the five handwritten renderer color generators are removed. Scene 20's indexed Unown reveal now selects its exact exported palette resource and destination slot from `copy_indexed_palette`, and Scene 24 converts the selected four RGB555 channels directly from `broadcast_indexed_palette` on the exported mask/shift cadence. The final broadcast naturally persists through Scene 25 instead of being reconstructed from a handwritten fade index, and the renderer no longer maps an invented numeric palette-set field to resource names. These exact operation boundaries now support replacing the remaining handwritten per-scene behavior without duplicating its topology, timing, allocation identity, palette data, or scheduled effects again.
+- CrystalIntro now distinguishes its two source exit paths. Button cancellation executes the exported `button_cancel` phase and its sole `PlayMusic(MUSIC_NONE)` effect; natural Scene 28 completion falls directly through cleanup and preserves `MUSIC_CRYSTAL_OPENING` during the otherwise-silent title entrance. Rust previously cleared pending audio and reset all channels on both exits, inserting a silence boundary absent from the ASM.
+- CrystalIntro now enters and leaves through its exported callable phases. Rust executes and validates the three exact AF stack-slot saves, `BANK(wGBCPalettes)` selection, and `hVBlank`/`hInMenu`/`hMapAnims`/`wJumptableIndex` initialization instead of reproducing their resulting zero defaults by hand. Its exit consumes the exported palette, OAM, tilemap, scroll/window, reverse restore, and return operations; saved registers are paired to their original stack slots, so malformed or reordered callable state fails rather than silently handing off to the title. Both `ClearBGPalettes` and LCD-enabled `ClearTilemap` retain their source four-frame `WaitBGMap` boundaries: the intro owns an opaque-white retained LCD for all eight cleanup frames, rejects further input, and queues the title entrance cue only after the final register restore and return.
+- CrystalIntro's 28-entry scene domain now comes from the certified `IntroScenes` ASM jump table. The exporter records every entry's exact compiled-operation offset and source-authored completion waits in the loop dispatch contract; Rust independently derives those waits from each operation range and rejects missing, reordered, extra, out-of-range, operation-table-disagreeing, or timing-disagreeing entries. Bevy initializes, delays, and completes the intro from that source-derived contract. The invented descriptive scene-name array, clear-palette scene list, and special-case 6/3-frame delay policy are removed. Sprite activation is likewise keyed by exported `(dispatcher_entry, dispatch_tick)` operations and exact instance IDs rather than ten literal ASM source-line numbers; the load boundary verifies each activation remains inside its source scene and agrees with its lifetime or grouped-instance tick. All ten ordinary intro audio operations now carry source-derived dispatcher entry/tick metadata: allocation-adjacent cues inherit certified sprite activation ticks, persistent handlers use the independent ASM tick simulation, and Scene 28's whoosh derives from its exported `$80` pre-decrement sequence. Bevy tracks dispatcher invocation count separately from `wIntroSceneFrameCounter`, which is required when a scene inherits a nonzero counter. Scene 12's eight sentinel-terminated Unown sound cues likewise execute from that scene's exported `scheduled_audio` operation, including the certified SFX-channel stop semantics, instead of duplicated Rust frame/audio matches. Pack loading rejects misplaced ordinary cues and invalid schedule clocks, sentinels, channel behavior, unordered frames, or audio IDs absent from the certified catalog before gameplay begins. Unown pulse fades now resolve their three RGB555 colors from the exported `palette_fade_lookup` tables and source fold contract, while the final Crystal-word fade resolves both grayscale colors from the exported fast/slow hue vectors; the five handwritten renderer color generators are removed. Scene 20's indexed Unown reveal now selects its exact exported palette resource and destination slot from `copy_indexed_palette`, and Scene 24 converts the selected four RGB555 channels directly from `broadcast_indexed_palette` on the exported mask/shift cadence. The final broadcast naturally persists through Scene 25 instead of being reconstructed from a handwritten fade index, and the renderer no longer maps an invented numeric palette-set field to resource names. All scene behavior now executes from these exact operation boundaries rather than a parallel handwritten per-scene state machine.
+- Visible intro scene identity now retains and reports the exact exported `IntroScenes` label for the active dispatch entry. Rust no longer manufactures `IntroScene{index + 1}` names independently of the source-owned dispatch table.
+- The exported CrystalIntro scene phase now carries executable operation-index labels for all 28 dispatch entries, every scene-local branch destination, and the outer loop entry. Label offsets are resolved against the first compiled operation covering each target block's source instruction rather than reconstructed in Rust. Pack loading requires every dispatch label to equal its exported entry offset, requires every scene-local branch target to exist, and rejects targets that leave their owning scene range. The shared Rust phase machine now executes the emitted comparisons and conditional returns, exact byte reads/writes, wrapped increments/decrements/transforms, masked byte-computation pipelines, local assignments, scheduled audio tables, conditional indexed 2bpp requests, and sprite/palette/perspective/tilemap effects. All 28 scenes are live through exported control and timing paths. This includes both Suicune motion sequences; both halves of the Scene 12 Unown fade; Scene 16's source four-frame prepare/swap cadence and `$08` XOR over only nonzero tile IDs below `$80`; Scene 20's scroll, hold, cadence, timer, and indexed-palette graph; Scene 24's palette broadcast and `$40` counter seed; Scene 25's source countdown behavior; Scene 27's dual-speed word fade and `$80` seed; and Scene 28's CGB-only white palette fill, palette-transfer request, internal four-frame `WaitBGMap`, pre-decrement whoosh edge, and terminal jumptable exit bit. Internal blocking waits are distinct from scene-completion delays, so they resume the same dispatcher entry rather than advancing early. Mutated-pack regressions prove exported operands drive live Rust behavior, and the outer dispatcher consumes interpreter-owned counter updates exactly once while preserving source-seeded values across scene boundaries. A resumable setup cursor executes all 13 linear scene routines—Scenes 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, and 26—directly through their exported operation ranges. It requires an explicit normal/mobile transfer mode, validates the `Request2bpp` blocking contract, derives every transfer duration from the exported tile count and tiles-per-VBlank rate, and triggers sprite allocations and Scene 13's opening music only when those operations are actually reached after the blocking transfers. The exporter attaches the same request-state, chunking, scheduling, and save/restore contract to direct one-tile `Request2bpp` calls as to helper-wrapped transfers; the two Scene 15/19 omissions previously made exact timing impossible. Normal-mode setup timings are verified at 55, 39, 55, 87, 7, 39, 71, 56, 55, 56, 4, 1, and 41 dispatcher invocations. Their `$00` black and Scene 26 `$ff` white RGB555 palette clears are distinguished.
+- CrystalIntro decompression, 2bpp-transfer, enclosing-wrapper, and sprite-scheduler timing are no longer discarded at the presentation boundary. Every LZ3 operation carries its exact source-decoder machine-cycle total. All 37 canonical calls additionally carry their pinned-ROM start/end frames, elapsed T-cycles, and crossed-frame count; the exporter fingerprints both resource order and exact body-cycle total before attaching a sample, and an altered program remains inspectable but cannot be loaded as a playable Rust pack with mismatched timing. The generic timed cursor fails closed if the boundary count is absent, reports the work performed, and suspends immediately after the decompressor for each of the 88 observed crossed frames before executing the following operation. All 39 `Request2bpp` calls now carry their own ROM start/end frames, start phase, elapsed T-cycles, and 497 crossed-frame total. This includes the two direct one-tile calls as well as the 37 decompression pairs. For every paired call, the oracle proves exactly that `Intro_DecompressRequest2bpp_* crossings = Decompress crossings + Request2bpp crossings`; the previous aggregate “transfer chunks plus wrapper residual” representation is removed. Rust schedules the measured request duration directly and retains the nominal normal/mobile chunk rates only as the source lower bound. The sprite scheduler carries 23 pinned-ROM `(dispatcher_entry, dispatch_tick, elapsed_t_cycles)` crossings, validated in strict call order and consumed at the actual `PlaySpriteAnimations` boundary. Scene advancement now precedes that scheduler exactly as it does in the outer ASM loop, so tick one belongs to the newly selected scene instead of the handler that just returned. Together these move the live completion boundary from frame 2312 to 2440 without scene-end padding. The canonical pack also carries source-certified LCD, inactive timer, complete normal-VBlank tail, state-dependent `_UpdateSound` timing components, and the exact 21/48/49-machine-cycle non-interrupt bodies between the outer loop's four routine hooks. Rust requires and retains all three outer-body costs; stale packs now fail before play instead of silently assuming the missing mainline time is free. The ROM enters its 28 scenes on frames `1,66,195,240,369,435,564,667,763,770,963,1012,1205,1288,1418,1485,1634,1700,1797,1868,2022,2026,2035,2036,2069,2133,2180,2309` and completes on 2442; the remaining two-frame net deficit is phase-sensitive setup/mainline work and still requires the shared SM83 clock before the intro can be classified faithful.
+- The intro timing oracle now captures the actual PyBoy frame-cycle origin instead of treating elapsed routine time and crossed host frames as unrelated measurements. The pinned ROM enters `CrystalIntro` 2,980 T-cycles into a 70,224-T-cycle frame. Before emitting a timing trace, the runner derives each call's start phase from that one origin and proves that `floor((start_phase + elapsed_t_cycles) / 70,224)` equals the recorded crossed-frame count for all 37 decompressions and all 10,949 instrumented intro helper calls. It now also composes all 1,752 completed outer-loop iterations from `JoyTextDelay` entry through the central `DelayFrame` return, retaining each call offset and each intervening CPU/interrupt gap. Those intervals cross exactly 2,441 frame boundaries: 1,717 cross one, twenty cross two, two cross none, and the setup iterations account for the larger values. The three inter-call gaps reduce exactly to their source bodies of 84, 192, and 196 T-cycles after subtracting only source-certified 27/49-machine-cycle LCD and 48-machine-cycle timer interrupts. The preceding entry-to-first-input interval independently reduces to 59 source machine cycles plus one callback-zero LCD interrupt, advancing the shared phase from 2,980 to the observed 3,324 T-cycles. All 1,753 no-input `JoyTextDelay` calls now retain their in-call LCD/timer positions and reduce uniquely to the two reachable source bodies: 1,395 repeat-suppression calls at 107 machine cycles and 358 repeat restarts at 110; the exporter also certifies the 101-cycle pressed-input path. Its common instruction sequence and all three source tails are exported independently. The oracle replays them against all 1,753 calls and reproduces every instruction-boundary LCD/timer admission, LCD-before-timer priority, callback branch, interrupt count, and total elapsed T-cycle count. The source-initialized 4,096-Hz timer requests every 262,144 T-cycles beginning 258,428 T-cycles after intro entry; five calls contain a timer interrupt, and two defer it behind an active LCD handler. Rust parses that exact epoch and executes the same instruction-aware interrupt scheduler. Wiring it into the live loop together with VBlank admission remains part of the shared-clock step. The exporter and Rust pack boundary retain the entry/input anchors, and `RuntimeIntroFrameClock` accepts checked machine-cycle advances directly. This proves directly that the remaining host runner cannot map one dispatcher invocation to one frame; notably, Scene 10 dispatcher ticks 43 and 75 must execute another iteration before the next VBlank. Rust requires the same frame length and entry phase in the playable pack's fail-closed interrupt timing contract. This establishes the phase input needed to replace the remaining aggregate waits with one shared CPU/VBlank clock.
+- `RuntimeIntroFrameClock` is now the executable Rust form of that frame lattice. Exact `Decompress` and `Request2bpp` operations require the exported start phase and elapsed T-cycles, advance the clock, and reject any declared crossed-frame count that is not the clock's derived quotient. The timed setup cursor cannot consume either exact timing scope without an explicit frame duration; generic non-intro transfers retain their source chunk calculation. These are the first live timing paths whose scheduling counts are computed from phase and CPU duration rather than merely copied from the ROM trace.
+
+- The intro interrupt contract now includes the emulator-backed hardware event lattice rather than only handler costs: 456 T-cycles per scanline, HBlank request at scanline T-cycle 250, 144 visible HBlank requests, VBlank request at frame T-cycle 65,664, and a 70,224-T-cycle frame. Rust validates those relationships and computes the next HBlank/VBlank distance from the persistent live phase. The enriched ROM trace retains LY, LCD registers, callback identity, and OAM identity at every `JoyTextDelay` LCD/timer admission; the first call demonstrates instruction-boundary admission directly, with phase 3,324 crossing the line-7 request at 3,442 during the instruction ending at 3,444 and reaching the `LCD` hook at 3,480 after the certified 36-T-cycle hardware/vector prefix. The instruction scheduler reproduces that first call at phase 3,872 after one callback-zero handler, a callback-active sample from phase 534 to 1,366 after two 49-machine-cycle handlers, and all five timer-interrupted samples exactly. It now admits VBlank at the same instruction boundary with hardware VBlank-before-LCD-before-timer priority, adds the certified hardware/vector prefix to a state-supplied VBlank body, advances the one persistent clock through that body, and coalesces repeated masked LCD/timer requests before servicing them after `reti`. A focused long-handler regression crosses 78 HBlank requests and correctly services one pending LCD interrupt. Supplying the live state-dependent body and wiring this scheduler through the outer loop remain required before it becomes the single production clock.
+- The optional full-VBlank intro oracle captures exactly one sample for each ROM frame 1 through 2,441 before completion, including the pre-update audio state and registers, `_UpdateSound` duration, complete handler duration, and scene/frame-counter identity. Those samples contain 159 distinct sound durations and 292 distinct complete VBlank-handler durations (3,972 through 37,248 T-cycles), proving that neither a constant nor an average sound cost can close the clock. The nine music/SFX programs reachable from `CrystalIntro` already carry the exact parsed ASM channel program in their canonical MIDI sequencer-specific payloads. Rust now extracts that payload into typed channels and decodes the exact 18-command intro surface into a closed instruction enum. Command arity, booleans, pitches, octave/duration domains, signed-magnitude envelope nibbles, drum/duty fields, and 11-bit pulse frequencies fail closed before execution; channel programs must begin at a label and terminate with `sound_ret`, and auxiliary source graphs are rejected because none is reachable in this source corpus. Canonical coverage decodes all nine real programs, while mutations reject invented wait/no-op commands, invalid hardware frequencies, and unterminated streams. The next shared-clock step is to execute those commands as the ASM channel state machine and admit the resulting state-dependent `_UpdateSound` cost at every VBlank; the current host PCM queue is not timing authority.
 
 | Rust location | Behavior | ASM evidence | Classification | Required repair and parity test |
 | --- | --- | --- | --- | --- |
@@ -85,7 +1064,7 @@ existing Rust tests are implementation evidence only.
 | `crates/crystal-core/src/systems/script_runtime.rs`, `script_objects.rs`; saved delay/emote payloads; Bevy script callbacks | Script timing no longer treats source delay parameters as literal LCD frames or forces zero to one. `pause` consumes two frames per wrapping byte-counter tick, `wait` consumes six, and `showemote` retains its source duration byte while presenting the nested `pause 0` for two frames per tick. Saved queues carry both the original byte parameter and derived frame count and reject forged combinations; values above `0xff` fail before mutation. Special-phone `pause 30` therefore presents 60 frames instead of 30. | `engine/overworld/scripting.asm::Script_pause`, `Script_wait`, `Script_showemote`, `ShowEmoteScript`; `engine/phone/phone.asm::CheckSpecialPhoneCall`; `macros/scripts/events.asm`. | faithful | Core tests cover factors, zero-wrap, overflow, emote derivation, and saved-state validation; special-phone and Bevy runtime tests assert source parameters separately from presentation frames. |
 | `crates/crystal-bevy/src/main.rs` release argument surface | Production accepts only help, an exact `.crystalpack`, an optional `.crystalsave` to load, and an optional save destination. Smoke, spawn, list, repository, and arbitrary-state controls are rejected. | No Game Boy CLI/debug command surface exists; desktop packaging still needs pack/save selection. | faithful | `release_argument_surface_contains_only_pack_and_save_configuration` and `release_api_has_no_direct_new_game_or_arbitrary_tile_entry` cover the release boundary. |
 | `crates/crystal-bevy/src/bevy_shell/deterministic_session.rs` keyboard routing | Desktop keys map only to the eight Game Boy controls; modifier chords, function keys, Space, Escape, and the removed developer dispatcher cannot mutate gameplay. Visible screens consume the same configured controls. | `home/joypad.asm:16-105` samples A/B/Select/Start/Right/Left/Up/Down. | faithful | Release-source tests reject forbidden aliases, direct special invocation, developer shortcuts, and partial idle-frame paths; integrated live-input tests cover title, menus, overworld, and battle. |
-| `crates/crystal-bevy/src/bevy_shell.rs` `Visible*` title/intro/Oak/time/name/credits state machines | Handwritten presentation state and transitions run beside the core script/runtime. | `engine/movie/intro.asm`, `engine/menus/intro_menu.asm`, `engine/movie/credits.asm`, naming/menu ASM. | divergent | Export typed presentation commands/data and replace shell state machines with generic interpreter. Differential frame-boundary scenarios against ASM. |
+| `crates/crystal-bevy/src/bevy_shell.rs` `Visible*` title/intro/Oak/time/name/credits state machines | Handwritten presentation state and transitions run beside the core script/runtime. The title entrance/timer/input/fade subprogram is now authoritative for its visible phase, Start selection, SCX, timer, clock-reset latch, crystal OAM Y, and Suicune animation byte. The shell derives these directly from interpreter memory, executes the exported `SuicuneFrameIterator` operations each visible tick, and no longer stores a parallel phase/frame/register copy, fabricates `wTitleScreenSelectedOption`, or sets the jumptable completion bit. `Intro_MainMenu` now begins from its exported block and fixes the music stop → one-frame delay → `MUSIC_MAIN_MENU` ordering before exposing the menu. The preceding exported title teardown now runs from its decoded operation range: palette/OAM clearing, LCD/OBJ and scroll/window writes, tilemap clears, palette restoration, and all four four-frame waits complete before the option-tail dispatch; input remains title-owned during the transition, and the cleared LCD surface renders as source-white. The invented TypeScript-derived main-menu fade and vertically bobbing cursor are removed: ASM's `STATICMENU_CURSOR` and cleared tilemap display immediately without a host animation clock, and `RunMenuItemPrintingFunction` supplies the exact two-tile row stride instead of Rust's former one-row packing. The decoded `MainMenu` phase now owns display preparation, Diploma/default palettes, game-timer unpausing, exact save/Mystery Gift variant selection, its `GetScrollingMenuJoypad` A/B boundary, `wMenuJoypad`/`wMenuSelection`, CloseWindow, cancel return, selection-table validation, and the `.loop@MainMenu` return after Continue, Options, or Mystery Gift. Its static cursor wraps vertically and returning subprograms reload the source default row. The intro/Oak/time/name/credits machines remain. | `engine/movie/intro.asm`, `engine/menus/intro_menu.asm`, `engine/movie/credits.asm`, naming/menu ASM. | divergent | Replace the remaining intro/Oak/time/name/credits duplicated visible state with the generic interpreter. Differential frame-boundary scenarios against ASM. |
 | `crates/crystal-bevy/src/bevy_shell.rs:823-11080+` | `VisibleIntroScreen`, `VisibleTitlePhase`, `VisibleTimeSetScreen`, `VisibleOakIntroSequence`, `VisibleCreditsScreen`, `VisibleGenderSelection`, `VisibleNameChoice`, and `VisibleScreenFade` encode game flow in handwritten Rust states and hard-coded text/timing. | `engine/movie/intro.asm`, `engine/menus/intro_menu.asm:627+ (OakSpeech), 966+ (title)`, `engine/movie/credits.asm`, plus the relevant text/menu/naming source tables. | divergent | Replace with exported bytecode/tables and a generic screen interpreter. One scenario must compare each stable scene boundary and input wait against ASM; no shell-only transition allowed. |
 | `crates/crystal-bevy/src/bevy_shell.rs:490-608,1205-1265,28054-28144,41696-42009` | Ordinary `PlayMusic` replacement and music fades preserve active SFX/cry playback, matching Crystal's separate channels 1–4 and 5–8; only the explicit `MUSIC_NONE`/`_InitSound` boundary clears both. `MUSIC_NONE` is carried as a typed stop/reset request through script resolution and save validation, is forbidden from the stored playback queue, and has no PCM file or fake sink. That full-reset request is latched independently, so a following music request cannot erase it before the backend runs. The live Magnet Train `PlayMusic2` call now stops music without clearing transient channels, consumes its source `DelayFrame`, and starts `MUSIC_MAGNET_TRAIN` only on the following frame. `musicfadeout` retains the old track, applies the source `wMusicFadeCount` cadence to each of the seven volume steps, performs `_InitSound` and loads the target only on the following zero-volume update, and reproduces the bicycle-only zero-to-seven fade-in. The bicycle fade-in is rate zero because `MusicFadeRestart` clears the old rate/counter before setting only `MUSIC_FADE_IN_F`. Native Rodio and browser WebAudio apply the same retained volume. Every exported SFX carries its exact source-table byte, and queued/active SFX follows `PlaySFX`: a request interrupts only when its byte is less than or equal to `wCurSFX`; cries replace the transient channels unconditionally. Accepted music, SFX, and cry calls now reach the backend in source order instead of being reduced to the last music/transient pair; an asynchronous PCM preparation miss defers that command and the complete remaining suffix so a later cue cannot overtake it. Both authored `special WaitSFX` uses and the `waitsfx` opcode remain blocked through pending and active transient playback. The host still represents channels 5–8 as one Rodio/WebAudio transient sink, so independent per-channel evolution remains incomplete. | `audio/engine.asm::FadeMusic` decrements `wMusicFadeCount`, mirrors the 0–7 right-volume nibble, restarts at zero, and sets `MUSIC_FADE_IN_F` only for `PLAYER_BIKE`; `constants/sfx_constants.asm` defines sequential priority bytes with `00` highest. `home/audio.asm::PlaySFX` rejects a request when active `wCurSFX` is numerically lower, while `_PlaySFX` clears channels 5–8 before starting an accepted request. `home/audio.asm::PlayMusic` branches on zero before `_PlayMusic`: nonzero ids reload music channels without clearing channels 5–8, while `MUSIC_NONE` calls `_InitSound` and clears all audio state. `home/audio.asm::PlayMusic2` calls `_PlayMusic(MUSIC_NONE)`, `DelayFrame`, then `_PlayMusic` with the replacement; `engine/events/magnet_train.asm` uses it for `MUSIC_MAGNET_TRAIN`. | partially faithful | Replace the single transient sink with an exported four-channel mixer/command stream. Differential traces must cover intro→title, map warp, SFX/cry overlap rules, battle and credits and assert active channel/program state at every command boundary; exact accepted-call ordering, `MUSIC_NONE`, live `PlayMusic2`, fade cadence, and a real `PlayersHouseRadioScript` request/event path now have focused coverage. |
 | `crates/crystal-bevy/src/bevy_shell.rs` intro compositor | The extracted compositor retains one complete LCD surface. Tilemap, attrmap, palette, signed `$8800` tile addressing, mixed-resource BG tiles, OBJ graphics, and OBJ tile bases now come from source-ordered exported VRAM ownership. Focused tests prove settled scenes are nonblack and the complete sequence never loses its LCD surface, but scene state transitions remain handwritten and have no ROM checkpoint proof. | `engine/movie/intro.asm:CrystalIntro`, `IntroSceneJumper`, `IntroScene1..28` and their referenced graphics/palette/OAM resources. | partially faithful | Execute the exported scene/palette-effect commands instead of handwritten transitions and compare fixed scene checkpoints to an ASM/ROM oracle. No startup bypass. |
@@ -231,7 +1210,7 @@ above are therefore semantic, not keyword-only.
 | TypeScript Day-Care compatibility parity | Two non-Ditto parents require compatible Egg groups and opposite non-null genders; genderless species are incompatible. Matching Defense DV and low three Special DV bits produce the sentinel compatibility `255`. Otherwise same-species parents score `254`, compatible/dittos score `128`, and sharing the 16-bit OT id subtracts `77` regardless of OT name. A species is in the no-Egg category when both Egg groups say so. | Corrected Rust's inverted DV-match result from `0` to `255`, made gender ratio `255` genderless, changed the OT comparison to id-only, and aligned the two-group no-Egg test. | Static comparison against `packages/core/src/engine/systems/breeding.ts`; execution is intentionally deferred to the final grouped validation pass. |
 | TypeScript Day-Care Egg timer parity | Each compatible step increments the byte step counter and decrements the byte countdown. When it reaches zero, the runtime first draws the next countdown, then draws independently against thresholds `80/40/30/10` for compatibility bands `230/170/110/>0`; compatibility `0` or sentinel `255` never creates an Egg. A failed roll retains the newly drawn countdown rather than guaranteeing an Egg. | Replaced Rust's elapsed-counter guaranteed creation with the wrapping countdown and two-draw threshold cycle. RNG state is committed after both timer/chance draws, failures return with the next countdown installed, and only a successful chance roll enters Egg construction. | Static comparison against `packages/core/src/engine/systems/breeding.ts` and `day-care.ts`; execution is intentionally deferred to the final grouped validation pass. |
 | TypeScript Day-Care inheritance-donor parity | The non-Ditto female is the mother for species selection. Move and DV inheritance normally use the male parent; with Ditto they use the non-Ditto parent only when it is male or genderless, otherwise Ditto is the donor. The donor's Defense DV and low three Special DV bits replace the corresponding random bits. | Core Egg construction now selects the move/DV donor independently from the mother using the TypeScript Ditto/gender rules, inherits the two DV fragments from that donor, and carries that donor's ordered moves into pack-level inheritance resolution. | Static comparison against `packages/core/src/engine/systems/breeding.ts`; execution is intentionally deferred to the final grouped validation pass. |
-| TypeScript Bill's PC transfer parity | Depositing is rejected before mutation when the selected slot is empty, it is the last party member, it holds a mail item, or the active box is full. Withdrawal is rejected before clearing the box when the party is full. Withdrawal and release compact later box entries left, and release rejects Eggs and mail holders. | Rust now preflights party/box capacity and deposit policies before taking either source slot, rejects protected releases, and compacts box Pokémon plus parallel metadata after successful withdrawal or release. This removes the prior loss-on-error ordering. | Static comparison against `packages/core/src/ui/menus/pc-menu.ts`; execution is intentionally deferred to the final grouped validation pass. |
+| Bill's PC storage mutations | Deposit/withdraw preflight their source and capacity before removal and compact the counted list. Box release checks only Eggs; party release checks party count, other HP, Mail, then Eggs. | Rust exposes native party release, compacts party storage and syncs its runtime mirror, and preserves storage on refusal. The extra boxed-Mail release gate is removed because it does not occur in BillsPC_Withdraw.release. | `engine/pokemon/bills_pc.asm::BillsPCDepositFuncRelease`, `BillsPC_Withdraw.release`, `BillsPC_CheckMail_PreventBlackout`; `bills_pc_top.asm::CheckCurPartyMonFainted`; 30 focused PC checks pass, including source party-release refusal ordering and successful compaction. |
 | ASM damaging-secondary-effect RNG parity | Every reached `effectchance` first clears `wEffectFailed`, returns failed without RNG through a Substitute, and otherwise consumes one `BattleRandom` byte and succeeds only when the byte is strictly below the move's raw chance byte. Chance zero therefore always fails but still consumes one byte; chance 100% uses threshold 255 and retains Crystal's documented 1/256 failure at roll 255. | Rust's shared effect-chance sampler always consumes at a reachable non-Substitute command, compares against `floor(percent × 255 / 100)`, records the exact failed byte, and preserves Substitute's no-RNG failure. Sky Attack's source-zero chance demonstrably consumes and never flinches. | Direct comparison against `BattleCommand_EffectChance`; focused zero-chance Sky Attack and secondary status/flinch/stat RNG regressions pass. |
 | ASM Protect/Endure RNG boundary | Protect and Endure immediately fail, reset their consecutive-use counter, and consume no success byte when the opponent already acted or the user currently has a Substitute. Otherwise `ProtectChance` right-shifts `$ff` once per prior success, fails without RNG if that reaches zero, rejection-samples `BattleRandom` until nonzero even on the first use, decrements the accepted byte, and succeeds when it is strictly below the shifted threshold. The first use is guaranteed but still consumes one or more bytes. | Retained the precondition/reset path, removed the TypeScript-derived no-RNG first-use shortcut and `0..255` threshold approximation, implemented nonzero rejection sampling plus the exact decremented-byte comparison, and made shifted-zero streak failure consume no byte. | Direct comparison against `engine/battle/move_effects/protect.asm::ProtectChance`; focused first-use zero-retry, shifted-zero, Protect, and Endure regressions pass. |
 | ASM Teleport parity | Teleport fails in trainer battles and the four protected scripted battle types. In wild battles it checks the opponent's `CANT_RUN` substatus. The player path then performs its level-based rejection sample; the enemy path contains the documented fallthrough bug and always escapes regardless of level. | Rust had alternated between unconditional wild success and checking the user's own escape-trap record, then incorrectly shared the player's level/RNG calculation with a wild enemy. It also omitted the protected battle types, failure result, and dedicated visible text. | Preserve the protected-type bit in combat state, check only the opponent's exact escape-trap projection, apply the exact player-only level/RNG calculation, retain the source's unconditional wild-enemy escape bug, retain trainer failure, and distinguish successful Teleport from ordinary Run/forced-switch narration. | Static ASM comparison complete; focused wild-enemy regression failed before the side split and now passes; final grouped validation deferred. |
@@ -276,7 +1255,7 @@ above are therefore semantic, not keyword-only.
 | Fishing on an occupied water tile | Vanilla `FishFunction` checks surfing mode and the facing tile's water permission but never calls `CheckFacingObject`. A visible NPC standing on that water tile therefore does not block the cast or encounter. | The runtime cast boundary already followed the bug: it samples terrain without consulting occupied-object tiles. Added an integrated regression so a future collision cleanup cannot normalize this cartridge behavior away. | Direct comparison against `engine/events/overworld.asm::FishFunction` and the documented bug; the runtime scenario places a visible object on the exact facing water tile and still starts the fishing battle. |
 | Swimming NPC movement-radius bug | `CanObjectMoveInDirection` checks `NOCLIP_TILES_F` before the movement-box boundary and jumps past that boundary for swimming movement data. Swimmers remain water/collision constrained but ignore their declared X/Y movement radius. | Autonomous `SPRITEMOVEDATA_SWIM_WANDER` now bypasses only the origin-radius test while retaining water terrain, player/object occupancy, directional collision, stride, duration, and RNG behavior. | Direct comparison against `engine/overworld/npc_movement.asm::CanObjectMoveInDirection` and the documented Lapras bug; the red-first zero-radius swimmer regression now leaves its origin on the first valid water direction. |
 | ASM turn-priority and Quick Claw parity | Player item/switch/run choices return player-first before move-priority, held-item, or Speed checks. Link double-switch order instead uses one 50/50 roll whose interpretation follows serial-clock ownership; a link enemy switch against a player move goes first. Crystal invokes `PursuitSwitch` from the switch routine before recall; Rust's abstract turn list preserves the same outcome by ordering Pursuit ahead of a switch and passing the switching flag for doubled damage. On equal move priority, a single Quick Claw holder consumes one roll. With two holders, the external-clock side is sampled first: enemy first in ordinary/external-clock play, player first for the internal-clock link player, and the first activation returns immediately. Parameter zero is a valid never-activate chance that still consumes its roll. | Added the pre-move player-action and link-switch gates, retained structural Pursuit interception, allowed zero Quick Claw parameters, and replaced unconditional player-then-enemy sampling with the exact serial-clock-dependent branch and short-circuit RNG consumption. | `engine/battle/core.asm::DetermineMoveOrder`, `PursuitSwitch`, and `BattleMonEntrance`; focused regressions cover non-move no-RNG ordering, link double-switch clock inversion, dual-holder ordinary/internal-clock order, and exact RNG consumption. |
-| ASM battle badge-stat parity | Outside link and Battle Tower battles, the player's Zephyr/Mineral/Plain/Glacier badges boost Attack/Defense/Speed/Special Attack by `floor(base/8)` before stages and Burn/Paralysis; enemies never receive badge boosts. Crystal's clobbered accumulator bug makes Glacier Badge boost Special Defense only when unboosted Special Attack is 206–432 or at least 661. | Persisted the explicit enable flag, mapped the exact badge bits at shared damage/confusion/Beat Up/turn-order boundaries, disabled boosts for link and Battle Tower construction, and replaced the unconditional TypeScript-shaped Special Defense boost with the cartridge's exact Special Attack-dependent boundary. | Direct comparison against `engine/battle/core.asm::BadgeStatBoosts` and the source's documented bug; focused boundary coverage checks 205/206, 432/433, and 660/661. |
+| ASM battle badge-stat parity | Outside link and Battle Tower battles, the player's Zephyr/Mineral/Plain/Glacier badges boost the already stage- and status-modified loaded Attack/Defense/Speed/Special Attack by `floor(live_stat/8)`; enemies never receive badge boosts. Crystal's clobbered accumulator bug makes Glacier Badge boost Special Defense only when unboosted Special Attack is 206–432 or at least 661. | Persisted the explicit enable flag, mapped the exact badge bits at shared damage/confusion/Beat Up/turn-order boundaries, disabled boosts for link and Battle Tower construction, and replaced the unconditional TypeScript-shaped Special Defense boost with the cartridge's exact Special Attack-dependent boundary. Damage, wild-enemy Beat Up, and Speed now apply the badge after stat levels and applicable status penalties. | Direct comparison against `engine/battle/core.asm::ApplyStatLevelMultiplierOnAllStats`, `ApplyStatusEffectOnPlayerStats`, and `BadgeStatBoosts`; focused ordering and boundary coverage checks a staged damage quotient, staged/paralyzed Speed, wild-enemy Beat Up defense, and Special Attack boundaries 205/206, 432/433, and 660/661. |
 | Bug-Catching Contest score byte width | `ContestScore` reads only the low byte of max HP, all five battle stats, and current HP. It adds four copies of low max HP plus those low stat bytes, the DV term, low current HP divided by eight, and the held-item point through the two-byte `hProduct` accumulator. | Replaced full-width saturating host arithmetic with the exact low-byte inputs and wrapping 16-bit accumulator. High-byte stat changes can no longer alter the player's contest score. | Direct comparison against `engine/events/bug_contest/judging.asm::ContestScore`; a red-first high-byte regression expected the cartridge score 35 and observed Rust's former 4931. |
 | Bug-Catching Contest caught provenance rewrite | Both party insertion and box insertion call the source caught-data writer before forcing the National Park landmark. The box-full bug applies that same rewrite to the first existing boxed Pokémon: level, current time, and player gender are overwritten along with location. | Contest finalization now writes the live time and player gender instead of preserving stale caught provenance or fabricating an absent time/male identity. The box-full corruption path updates all four modeled caught-data fields. | Direct comparison against `engine/pokemon/caught_data.asm::CheckPartyFullAfterContest`, `SetCaughtData`, and `SetBoxMonCaughtData`; focused party and full-box regressions cover newly created and overwritten provenance. |
 | Wild flee-attempt byte overflow | `TryToRunAwayFromBattle` increments `wNumFleeAttempts` with an 8-bit `inc a` before comparing Speed, so attempt 255 wraps the stored counter to zero even when the faster-player shortcut succeeds without `BattleRandom`. | Both Rust escape entry points now use wrapping byte increment instead of saturating at 255. The ordinary and exact DIV-traced paths retain the same no-RNG fast escape while reporting/persisting counter zero. | Direct comparison against `engine/battle/core.asm::TryToRunAwayFromBattle`; the red-first boundary regression observed the former saturated 255 and now covers both public RNG adapters. |
@@ -490,14 +1469,14 @@ not evidence of either fidelity or divergence.
 | Enemy move slot sampling | Wild `ParseEnemyAction` repeatedly samples `BattleRandom & 3` against the original four move slots, rejecting blanks, disabled slots, and zero PP; it reaches Struggle without this sample when no move is usable. Trainer AI scores all nonblank slots, marks unusable moves at 80, and repeatedly samples `Random & 3` among the tied lowest original slots. | Core owns wild original-slot sampling and committed-move/Struggle zero-read shortcuts. `GameDataSet` owns the complete trainer score passes over effective combat moves. Live play and replay invoke the same authorities and replay rejects forged slots, actions, and phase call counts. | Preserve original slots, source layer order, and masked rejection sampling without renderer-derived selection state. | Wild rejection/Disable/Struggle/commit, all-ten-layer trainer selection, switch/item boundaries, and forged replay regressions pass. |
 | Focus Band activation threshold | ASM loads Focus Band's held parameter (`30`) into `c` and survives only when `BattleRandom < c` | Rust ignored exported item data and hard-coded `<32`, increasing activation odds and allowing malformed zero-parameter payloads to work | Validate the held parameter as an exact nonzero byte and compare the battle byte directly against it, matching Quick Claw's data-driven boundary | Static ASM comparison complete; final validation deferred |
 | Focus Band survival narration and Beat Up handling | ASM distinguishes Endure's `ENDURED the hit!` from Focus Band's named `hung on with <item>!`; Beat Up runs each participant through the ordinary held-power and lethal-hit survival boundaries | Rust represented both survival paths with one event and always displayed Endure text, while Beat Up skipped the attacker's held type-power boost and the defender's Focus Band check | Carry the activating held item on survival events, project the item-specific source message, and apply the shared held-power and Focus Band authorities to every Beat Up participant | Static ASM/TypeScript comparison complete; final validation deferred |
-| Beat Up per-participant damage command | Player/trainer Beat Up selects each healthy, status-free party member, uses that member's level and species base Attack against the target species' base Defense, and performs hit/critical RNG for each loop. Wild-enemy Beat Up instead enters `EnemyAttackDamage` for the active enemy. Both paths retain quotient item boost, cap, variation, Substitute, survival, faint, and Rage boundaries while skipping STAB, weather, and type matchup. | Rust fed every participant through ordinary Dark-move damage using live stats and stages, STAB/type/weather/screens/Metal Powder, rolled accuracy once for the whole move, and disabled critical hits entirely. | Give the player/trainer loop its source base-stat formula and give the wild-enemy branch its active special-stat DamageStats path; sample accuracy, critical, and variation for every participant and retain a neutral matchup result. | Static ASM comparison complete; final validation deferred |
-| Multi-hit command ordering | Crystal runs `checkhit`, effect-chance where applicable, critical, and variation inside each Multi Hit, Double Hit, Twineedle, and Triple Kick iteration. Random hit count is sampled only after the first successful iteration reaches `endloop`; Triple Kick rejection-samples one through three hits and multiplies capped pre-STAB damage by the kick index. Lock-On is consumed by the first check. King’s Rock and Twineedle poison resolve once after a completed loop; faint or miss exits before that tail. | Rust checked accuracy once, sampled count before first-hit critical/damage RNG, made later hits automatic, reduced Triple Kick to one unscaled hit, and rolled King’s Rock plus secondary status after every hit. | Move accuracy/effect-chance into the loop, sample counts at the post-first-hit boundary, carry Triple Kick's 1x/2x/3x pre-STAB multiplier, and defer King’s Rock/Twineedle poison to the single source tail. | Static ASM comparison complete; final validation deferred |
+| Beat Up per-participant damage command | Player/trainer Beat Up performs one initial `checkhit`, then selects each healthy, status-free party member and uses that member's level and species base Attack against the target species' base Defense. `EndLoop` resumes at `critical`, so critical and variation RNG repeat per party slot but accuracy does not. Wild-enemy Beat Up instead enters `EnemyAttackDamage` for the active enemy. Both paths retain quotient item boost, cap, variation, Substitute, survival, faint, and Rage boundaries while skipping STAB, weather, and type matchup. | Rust fed every participant through ordinary Dark-move damage using live stats and stages, STAB/type/weather/screens/Metal Powder and disabled critical hits entirely. | Give the player/trainer loop its source base-stat formula and give the wild-enemy branch its active special-stat DamageStats path; sample accuracy once before the loop, sample critical and variation for every party slot, and retain a neutral matchup result. | Static ASM comparison complete; final validation deferred |
+| Multi-hit command ordering | Crystal runs `checkhit` only on the first iteration. The initial script then reaches effect chance where applicable, critical, and variation; `EndLoop` explicitly resumes at `critical`, so later hits repeat critical and variation without another accuracy or effect-chance sample. Random hit count is sampled only after the first successful iteration reaches `endloop`; Triple Kick rejection-samples one through three hits and multiplies capped pre-STAB damage by the kick index. Lock-On is consumed by the first check. King’s Rock and Twineedle poison resolve once after a completed loop; faint or miss exits before that tail. | Rust sampled count before first-hit critical/damage RNG, reduced Triple Kick to one unscaled hit, and rolled King’s Rock plus secondary status after every hit. | Retain the single pre-loop accuracy/effect-chance boundary, sample counts at the post-first-hit boundary, carry Triple Kick's 1x/2x/3x pre-STAB multiplier, and defer King’s Rock/Twineedle poison to the single source tail. | Static ASM comparison complete; final validation deferred |
 | Multi-hit effectiveness narration | Crystal runs `supereffectivelooptext`, which prints matchup text only on the first completed iteration, while `criticaltext` can still print independently for every critical hit. | The visible Rust projection emitted super-effective/not-very-effective text for every `Damage` event, making multi-hit moves repeat the same result message several times. | Deduplicate effectiveness text per acting side/move within the resolved event batch while retaining every critical-hit message. | Static ASM/presentation comparison complete; final validation deferred |
 | King's Rock activation threshold | `BattleCommand_HeldFlinch` loads King's Rock's held parameter (`30`) and applies flinch only when a separate `BattleRandom` byte is below it | Rust hard-coded `<32`, increasing the activation odds and accepting malformed zero-parameter held-item data | Validate the exact nonzero byte parameter and compare the source battle byte directly against it before applying flinch | Static ASM comparison complete; final validation deferred |
 | Held Berry/BrightPowder parameter authority | ASM consumes exact exported nonzero parameters for HP Berries and BrightPowder; malformed content is a pack error, not an alternate one-point or clamped effect | Rust converted zero/negative Berry healing to 1 HP and clamped BrightPowder into a byte, silently inventing fallback behavior | Reject invalid held parameters through `InvalidHeldItemParameter` and apply only exact authoritative values | Static data-boundary comparison complete; final validation deferred |
 | Berserk Gene timing, confusion counter, and RNG | `HandleBerserkGene` runs at the start of `BattleTurn`, consumes the active holder's item, raises Attack two stages, then sets confusion without initializing the byte counter: a zero counter wraps for 256 turns, while an existing side count is preserved; this path consumes no battle RNG | Rust activated the Gene immediately during switch resolution, called the ordinary confusion helper, always sampled a fresh 2–5-turn duration, and advanced the deterministic battle RNG stream | Move activation to the shared next-turn start boundary, widen the internal confusion counter to represent 256 exactly, preserve an existing Baton Pass count, initialize only a zero count to 256, and emit visible activation/stat/confusion events without sampling RNG | Static ASM comparison complete; final validation deferred |
 | Rage counter and visible feedback | Crystal stores Rage buildup in a dedicated side counter. Each damaging hit while Rage is active increments that counter, displays `RAGE is building!`, and later Rage attacks multiply post-effectiveness damage by `counter + 1`; switching clears both active state and counter. At 255, `inc a` wraps to zero and `ret z` leaves the stored counter unchanged without displaying another building message. | Rust converted each incoming hit into an ordinary Attack-stage increase, changing every physical move, interacting incorrectly with stage caps/critical hits, and displaying generic Attack text. Rage itself never consumed a buildup multiplier. Its later dedicated counter saturated at 255 but still emitted a source-impossible extra narration event. | Persist the separate counter, increment it without touching stat stages, feed it only into Rage damage at the source boundary, clear it with Rage volatile state, and emit dedicated battle narration only when the wrapping increment is nonzero. | Static ASM/TypeScript comparison and focused ordinary/terminal-counter regressions pass; final validation deferred |
-| Substitute damage before survival effects | Crystal's shared `applydamage` boundary sends a successful damaging hit into Substitute first. Endure/Focus Band concern lethal damage to the real battler, while `buildopponentrage` still runs after a successful Substitute hit; Beat Up repeats this boundary for each participant. | Rust evaluated Endure and Focus Band before checking Substitute, and Beat Up bypassed Substitute entirely. Ordinary Substitute hits also returned before building the target's active Rage counter. | Route ordinary and each Beat Up hit into Substitute before lethal-survival logic, build Rage on a successful Substitute hit, and let later Beat Up participants reach the battler only after the doll breaks. | Static ASM command-order comparison complete; final validation deferred |
+| Substitute and survival-effect ordering | Crystal's shared `applydamage` checks Endure first or samples a held Focus Band, calls `BattleCommand_FalseSwipe` after a successful survival check, and only then dispatches the retained damage through `DoEnemyDamage`/`DoPlayerDamage`, where Substitute is selected. A lethal-to-the-real-battler hit can therefore be clamped before reaching the doll, and Focus Band samples even for nonlethal or Substitute hits; `buildopponentrage` remains later in the effect stream. | Rust returned through Substitute before either survival branch, so the doll always received full damage and a held Focus Band skipped its source RNG byte. Beat Up had previously bypassed Substitute entirely. | Run Endure/Focus Band before the shared Substitute/HP split, retain the source damage-then-survival-text event order, build Rage after Substitute, and let later Beat Up participants reach the battler only after the doll breaks. | Direct comparison against `BattleCommand_ApplyDamage`, `DoEnemyDamage`, `DoPlayerDamage`, and `DoSubstituteDamage`; lethal Endure/Focus Band Substitute and nonlethal Focus Band RNG regressions pass. |
 | Substitute target-effect protection | Crystal's individual effect commands reject direct major status, direct/secondary confusion, direct stat drops, Leech Seed, Nightmare, Lock-On, Pain Split, and Sketch while the opponent has a Substitute, while unrelated commands that intentionally omit `CheckSubstituteOpp` retain their source behavior. | Rust modeled Substitute only as damage HP and a few isolated effect checks, allowing common status and control moves to mutate the protected battler directly. These failures could be silent or display success text. | Add a shared Substitute-block event at only the source-verified command boundaries, leave intentional bypasses alone, and project the refusal through the visible battle queue. | Static per-command ASM comparison complete; final validation deferred |
 | Future Sight stored damage and delayed application | Future Sight runs `damagestats` and `damagecalc` when queued, including live calculated Special Attack/Special Defense, stages, Light Screen, Light Ball, Metal Powder, and the held type-power command, but stores the result before `damagevariation`. When its counter reaches the source boundary, the hit announcement precedes `DoMove`, which resumes at variation and sends the hit through Substitute, Focus Band, held healing, retained-damage, Bide, Rage, and faint handling. Turn-limited Protect/Endure/Destiny Bond have already cleared at the action boundaries. | Rust originally rebuilt damage from species base stats, sampled variation on the queue turn, and later subtracted the stored number directly from real HP, shifting RNG and bypassing nearly every shared damage mechanic at landing. Its announcement was coupled to real-HP settlement and therefore disappeared against Substitute. | Calculate and store the pre-variation value from live combat stats with the source item/screen transformations, emit a distinct landing boundary, sample variation only there, then route the delayed hit through the still-live shared damage authorities. | Static ASM comparison complete; delayed RNG, announcement, Substitute, and expired-Endure landing regressions added; final validation deferred |
 | Minimize and Stomp | Crystal stores a distinct minimized flag only after Minimize successfully raises evasion, clears it with ordinary switch volatiles, preserves it through Baton Pass, and doubles Stomp's already-varied damage before hit settlement. Double Team shares the evasion effect but does not set this flag. | Rust previously collapsed both moves to the exported `EVASION_UP` effect and therefore never applied Stomp's Minimize interaction. | Preserve a per-side minimized volatile keyed by the actual `MINIMIZE` move name, clear it on ordinary switch, retain it on Baton Pass, and saturating-double Stomp damage before Substitute, Endure, Focus Band, HP, and event settlement. | Static comparison against `data/moves/effects.asm`, `engine/battle/effect_commands.asm`, and `move_effects/baton_pass.asm`; regression added and final validation deferred. |
@@ -514,7 +1493,7 @@ not evidence of either fidelity or divergence.
 | X Accuracy sure-hit substatus | `XAccuracyEffect` sets `SUBSTATUS_X_ACCURACY`; repeated use fails, switching clears the volatile bit, and `BattleCommand_CheckHit` returns after Fly/Dig eligibility but before perfect-accuracy handling, stat modifiers, BrightPowder, or `BattleRandom`. It is not an Accuracy-level increase. | Rust routed X Accuracy through its generic X-item stage helper, raising Accuracy by one stage and leaving low-accuracy moves subject to BrightPowder and RNG. Battle state had no X Accuracy substatus. | Added side-specific persistent X Accuracy state, dedicated item handling with no stage mutation in both the turn resolver and visible-runtime bag boundary, repeated-use rejection, switch clearing, and the exact sure-hit gate for ordinary, per-hit, and OHKO moves. X Accuracy does not make Fissure hit a flying target. | Four focused core regressions prove the Pokemon-only item helper and turn resolver leave Accuracy unchanged, repeated use fails, switching clears the flag, a 1%-accuracy move hits through BrightPowder without a miss event, and the OHKO Fly gate remains first; grouped core/assets/Bevy checks pass. |
 | Foresight accuracy/evasion interaction | In `CheckHit.StatModifiers`, when the target's Evasion level is at least the user's Accuracy level and the target is identified, the routine returns before both multiplier lookups and retains the move's base accuracy byte. When Accuracy is higher, the advantageous modifiers still apply. | Rust used Foresight only for Normal/Fighting type effectiveness and always applied the net accuracy/evasion stage, so identified targets retained their evasion advantage. | Pass the live identified substatus into ordinary and OHKO accuracy calculation and skip both multipliers only at the exact non-advantageous comparison boundary. | Focused regression covers extreme negative and positive stage differences with an identified target. |
 | Bide release `CheckHit` and damage tail | `storeenergy` ends the initial and storing turns before `checkhit`. On release it clears Bide, prints the unleashed-energy text, builds doubled retained damage, skips to `unleashenergy_command`, then runs reset-type, shared `checkhit`, animation/failure, ordinary damage, faint, Rage, and King's Rock. | Bide phase advancement now precedes the common hit boundary: start/store return directly, while release clears retained state, emits a distinct source-ordered `BideUnleashed` narration event, and alone enters Protect/Lock-On/airborne/accuracy. Successful doubled damage now uses Substitute, Endure, Focus Band, retained-damage, Rage, opposing Bide storage, faint/Destiny Bond, and King's Rock processing instead of direct HP subtraction. | The Bide-specific prepared damage retains its narration event but otherwise follows the same post-`checkhit` authorities as ordinary application. | Five focused Bide regressions cover start/store/release, protected Lock-On preservation, Substitute/Rage/King's Rock, Endure/retained damage/opposing Bide, and Destiny Bond; core and Bevy production compilation pass. |
-| OHKO shared damage handling | A successful Crystal OHKO supplies maximum damage to the ordinary application command, so Substitute receives the hit first and Endure/Focus Band can preserve one real HP; surviving hits continue through held recovery, retained damage, Rage/Bide, and Destiny Bond ordering. The OHKO script ends after `buildopponentrage` and has no King's Rock command. | Rust directly assigned the target's HP to zero and emitted faint, bypassing every shared damage mechanic and its visible narration. | Feed maximum OHKO damage through Substitute and the ordinary survival/item/bookkeeping/faint tail while retaining level, immunity, and special accuracy checks, without inventing a King's Rock tail. | Focused execution now proves Substitute break, Endure survival, and Destiny Bond retaliation; the existing OHKO path also records retained damage, Rage, and Bide through the shared authorities. Focus Band and between-turn held recovery remain covered by their shared helper regressions. |
+| OHKO shared damage handling | A successful Crystal OHKO supplies `$ffff` damage to the ordinary `applydamage` command. Endure or a successful Focus Band check clamps that value against real HP before `DoEnemyDamage`/`DoPlayerDamage` routes it to Substitute or HP; surviving hits continue through retained damage, Rage/Bide, and Destiny Bond ordering. The OHKO script ends after `buildopponentrage` and has no King's Rock command. | Rust originally assigned target HP to zero directly. Its first shared-tail migration still sent `$ffff` to Substitute before checking Endure/Focus Band, reversing the actual `applydamage` order and skipping Focus Band RNG. | Feed maximum OHKO damage through the exact survival-before-Substitute/HP boundary while retaining level, immunity, special accuracy, bookkeeping, and faint handling, without inventing a King's Rock tail. | Focused execution proves plain Substitute break, combined Endure/Focus Band plus Substitute clamping, Focus Band RNG, ordinary Endure survival, and Destiny Bond retaliation. |
 | OHKO `CheckHit` integration | After immunity and the higher-level rejection, Crystal writes the level-adjusted accuracy byte and calls shared `CheckHit`: Protect precedes Lock-On consumption, Lock-On normally guarantees the hit, Fissure retains its flying exception, Fly/Dig precedes X Accuracy, and unlocked attempts use Foresight-aware accuracy/evasion plus BrightPowder before one battle byte. | Rust originally returned through a standalone OHKO branch before the shared checks. Its dedicated boundary now mirrors Protect, Lock-On, airborne exceptions, X Accuracy, Foresight, stages, BrightPowder, and RNG ordering without weakening the level gate. | Keep the special level-adjusted accuracy byte but reproduce every shared hit gate in source order. | Focused OHKO regressions cover ordinary hit, level rejection, immunity, Lock-On/Fly behavior, and X Accuracy versus grounded/flying targets. |
 | Damaging stat effects after KO | AncientPower-class boosts and damaging stat drops apply after `checkfaint`; a knockout terminates the effect stream before those mutations. Their pre-damage `effectchance` command has already consumed its RNG byte, however. | Rust mutated stats before faint resolution, visibly granting effects that Crystal skips on a KO. Simply moving the whole helper after faint would instead lose the source RNG draw. | On a lethal hit, consume only the pre-damage chance sample and suppress the post-faint stat mutation/events; on a surviving hit, retain normal effect application. | Focused AncientPower regressions cover both the surviving-target boost and knockout suppression paths; chance-failure and immunity cases separately prove no mutation while preserving their source gates. |
 | Rapid Spin and Hyper Beam pre-faint commands | Rapid Spin's `clearhazards` and Hyper Beam's `rechargenextturn` both precede `checkfaint`. Rapid Spin therefore clears even when its damage KOs, and a successful Hyper Beam requires recharge after either a KO or a Substitute hit. | Rust grouped Rapid Spin with post-faint stat effects and conditioned recharge on a surviving real-HP target, suppressing both source commands at common terminal boundaries. | Keep Rapid Spin clearing before faint termination and set recharge after every successful Hyper Beam damage application, including Substitute, without setting it on misses/immunity/Protect. | Focused regressions now prove Rapid Spin clears before a target-KO event and Hyper Beam starts recharge on both target KO and Substitute damage. Existing miss/immunity/Protect coverage proves recharge is not set without successful application. |
@@ -617,7 +1596,7 @@ not evidence of either fidelity or divergence.
 - Party field-move refusals now remain on the party surface with visible ASM/TypeScript acknowledgement text (`Can't use SURF here.`, `There's nothing to CUT here.`, Sweet Scent's empty-area text, or the shared generic refusal) instead of disappearing into host status.
 - Trainer victory completion now visibly reports `Sent some to MOM!` when the authoritative payout actually increases Mom's balance. Pay Day payout narration also matches TypeScript's shared `You picked up ¥…!` boundary and remains ordered after trainer prize text.
 - Pokédex lists/entries, party summary species rows, gift presentation, and compact party summaries now share the canonical species-name formatter; special Crystal names no longer vary between battle and overworld screens.
-- Bill's PC deposit mode remains TypeScript's direct party-selection flow, but last-party-member and full-box refusals now appear as blocking overlays on that party surface. Start cannot escape the modal boundary.
+- Bill's PC Deposit now uses the source PC party list and DEPOSIT/STATS/RELEASE/CANCEL submenu, with a native guarded party-release mutation. It no longer uses the ordinary party-selection UI. Initial list/submenu pixels match the ROM; refusal/transfer notices and StatsScreen presentation remain open.
 - Bill's PC withdrawal now displays the source `The party's full!` refusal on the storage surface when all six party slots are occupied, and an empty release surface reports `The BOX is empty.`. Both cases previously updated only the hidden host status even though the selected PC action remained active.
 - Pack GIVE can no longer bypass the party menu's Egg restriction: every persisted Egg representation is refused visibly. Normal held-item TAKE-with-none and full-pocket GIVE/TAKE failures are now player-facing modal outcomes rather than disabled status or propagated runtime errors.
 - Attempting the party-origin GIVE flow from a pocket whose entries cannot be held now shows a modal `That item can't be held.` acknowledgement instead of appearing to ignore the selection.
@@ -1519,7 +2498,7 @@ not evidence of either fidelity or divergence.
 - The visible 2x2 FIGHT/POKéMON/PACK/RUN cursor now stops at each row and column edge. Rust previously used XOR for both axes, making an edge press wrap to the opposite entry. `BattleMenuHeader` uses `STATICMENU_CURSOR | STATICMENU_DISABLE_B` without `STATICMENU_WRAP`, so only an in-bounds directional press changes selection.
 - The selected-party SWITCH/STATS/CANCEL submenu is likewise bounded. Its `BattleMonMenu` data uses `STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING` without `STATICMENU_WRAP`; Rust previously sent it through the generic wrapping list helper, so UP on SWITCH selected CANCEL and DOWN on CANCEL selected SWITCH.
 - Physical B now plays the single source menu click when leaving either MoveSelectionScreen or the battle party list. Selecting the move list's explicit CANCEL row still plays exactly one click through ParsePlayerAction; that route now closes directly rather than reusing the physical-B handler and double-playing the cue.
-- Party Stats controls now remain locked while a queued or playing Pokémon cry owns `StatsScreenWaitCry`. Page cycling, party-member changes, and A/B exit previously accepted input immediately and could change or close the visible screen underneath its opening cry.
+- Battle-party Stats A/B exits, shared page cycling, and party-member changes check queued or playing sound before accepting input, matching `StatsScreenWaitCry`. A follow-up audit found ordinary overworld-party A/B exit handlers omitted that check; the earlier claim that all Stats exits were covered was too broad.
 
 # Battle textbox scrolling and baselines
 
@@ -2550,3 +3529,4032 @@ not evidence of either fidelity or divergence.
   one only on a later matching input after `CheckTurning` has completed. Rust
   now preserves that two-frame turn/activate boundary instead of warping on
   the landing step or the initial facing-change frame.
+
+# Hidden Power high-DV weighting (2026-09-03)
+
+- `HiddenPowerDamage` constructs its power nibble in Attack, Defense, Speed,
+  Special order from most- to least-significant bit, yielding weights
+  `8, 4, 2, 1`. Rust had reversed those weights to `1, 2, 4, 8`; the symmetric
+  zero and maximum test vectors therefore passed while ordinary asymmetric DV
+  spreads produced the wrong base power.
+- The core now assembles the source nibble explicitly before multiplying by
+  five, adding `Special & 3`, halving, and adding 31. Regression coverage locks
+  every isolated high-DV bit as well as an asymmetric Electric-type case.
+
+# Reversal/Flail two-byte HP division (2026-09-03)
+
+- The `.reversal` branch of `BattleCommand_ConstantDamage` cannot pass a
+  two-byte maximum HP value to the cartridge's one-byte `Divide` divisor. When
+  the maximum HP high byte is nonzero, it shifts both `HP * 48` and maximum HP
+  right twice, truncating each independently before division. Rust previously
+  used one direct wide division, which is mathematically close but crosses
+  source power-table boundaries for valid battle stats.
+- `reversal_power` now retains the direct source branch only for one-byte
+  maximum HP and reproduces the paired two-bit truncation otherwise. The
+  regression locks `HP=91, maxHP=257`, where Crystal obtains ratio 17 and power
+  40; the former direct division obtained ratio 16 and power 80.
+
+# Jump Kick retained-damage crash (2026-09-03)
+
+- `EFFECT_JUMP_KICK` uses the source `NormalHit` stream, which runs `critical`,
+  `damagestats`, `damagecalc`, `stab`, and `damagevariation` before `checkhit`.
+  Rust previously performed the accuracy check first, so a miss skipped both
+  damage RNG bytes and had no cartridge-equivalent `wCurDamage` to retain.
+- `GetFailureResultText` shifts that retained damage right three times and
+  applies at least one HP of crash damage. Rust instead removed half the
+  user's maximum HP. Damage preparation is now reusable, allowing Jump Kick
+  to preserve the exact calculated damage across Protect, airborne avoidance,
+  and ordinary accuracy failure without duplicating the damage formula.
+- The same failure routine checks `wTypeModifier` and skips crash damage when
+  effectiveness is zero. Jump Kick into an immune Ghost target now emits the
+  no-effect result without damaging or fainting its user. Regressions lock the
+  critical/variation/accuracy RNG order, exact one-eighth crash amount, and
+  type-immunity exception.
+
+# `NormalHit` damage-before-accuracy ordering (2026-09-03)
+
+- The shared `NormalHit` effect stream runs `critical`, `damagestats`,
+  `damagecalc`, `stab`, and `damagevariation` before `checkhit`. Rust's global
+  accuracy gate previously ran first, so an ordinary missed attack consumed
+  only its accuracy byte instead of consuming critical and variation first.
+- Every exported effect that points directly to `NormalHit` (`NORMAL_HIT`,
+  `ALWAYS_HIT`, `JUMP_KICK`, and `PRIORITY_HIT`) now uses the reusable
+  prepared-damage path.
+  Protect and other `checkhit` failures still preempt accuracy and Lock-On,
+  while preserving the earlier damage calculation performed by the source
+  command stream.
+- A scripted Tackle miss regression locks the exact three-byte order:
+  critical, damage variation, then accuracy. The existing Jump Kick
+  regressions independently lock the same ordering plus its retained-damage
+  failure behavior.
+
+# Damaging effect-stream pre-`checkhit` ordering (2026-09-03)
+
+- The damage-before-accuracy ordering is not limited to `NormalHit`. The ASM
+  streams for damaging status, stat-change, drain, recoil, charge-release,
+  Hyper Beam, Snore, Thief, Rapid Spin, Return/Frustration, Hidden Power, and
+  several other ordinary single-hit effects all finish critical calculation,
+  damage calculation, STAB, and variation before `checkhit`.
+- Those source-reviewed streams now prepare and retain their first damage hit
+  before the shared accuracy/Protect/Lock-On gate. Streams with a materially
+  different boundary remain separate: MultiHit/PoisonMultiHit/TripleKick,
+  TrapTarget, Present, Rage/Rollout/Fury Cutter, the remaining final-damage
+  variants, Thunder, Future Sight, and Beat Up are not collapsed into this
+  ordering. Magnitude and Pursuit are staged separately below.
+- A Poison Sting miss regression proves that the two damage RNG bytes precede
+  accuracy while the post-`checkhit` `effectchance` byte is skipped. The Sky
+  Attack release regression was corrected to the same source order and still
+  proves that its zero-percent effect-chance command samples only after a
+  successful accuracy check.
+
+# Magnitude command staging and Dig damage (2026-09-03)
+
+- The `Magnitude` stream runs `critical`, `damagestats`, `getmagnitude`,
+  `damagecalc`, `stab`, `damagevariation`, and only then `checkhit`. Rust
+  previously resolved dynamic power after the global accuracy gate and, on a
+  hit, sampled the magnitude byte before the critical byte.
+- Magnitude preparation now preserves the exported placeholder through the
+  critical roll, samples and announces the magnitude level next, calculates
+  variation, and then reaches accuracy. A scripted miss locks the exact four
+  random bytes: critical, magnitude, variation, accuracy; it also proves the
+  magnitude announcement occurs even when the later accuracy check fails.
+- `doubleundergrounddamage` occurs after `checkhit` and doubles the already
+  rounded `wCurDamage`. Rust formerly doubled Magnitude's base power before
+  the damage formula, which can differ at integer truncation boundaries and
+  also ran on a miss. The Dig bonus now runs only after a successful check and
+  doubles final damage. A paired-roll regression requires the underground
+  result to be exactly twice the ordinary result.
+
+# Pursuit retained-damage switch bonus (2026-09-03)
+
+- The `Pursuit` stream calculates critical damage, STAB, and variation before
+  its `pursuit` command, which doubles the two-byte `wCurDamage` with `$ffff`
+  saturation when the opponent is switching. Only after that does `checkhit`
+  run. Rust previously doubled base power inside the damage formula after a
+  successful accuracy check.
+- Pursuit now joins pre-`checkhit` preparation and applies the switch bonus to
+  the final rounded damage. Its doubled-power event is emitted before accuracy
+  and therefore remains visible on a later miss, just as the command itself
+  still executes in the source stream.
+- A scripted switching-target miss locks critical/variation/accuracy RNG and
+  the pre-miss bonus event. A paired-roll damage regression requires switching
+  Pursuit to deal exactly twice ordinary Pursuit damage, covering formula
+  truncation that base-power doubling cannot reproduce.
+
+# Airborne retained-damage doubling (2026-09-03)
+
+- Gust, Twister, and Earthquake run their `doubleflyingdamage` or
+  `doubleundergrounddamage` commands after damage variation but before
+  `checkhit`. These commands shift the completed two-byte `wCurDamage` and
+  saturate overflow; they do not double the move-table base power.
+- Rust formerly doubled base power inside damage calculation and reached that
+  work only after accuracy. The three effects now prepare damage before
+  `checkhit` and share the retained final-damage modifier used by Pursuit.
+  Gust/Twister require the target's Fly state, while Earthquake requires Dig;
+  the two airborne substates are no longer treated interchangeably by the
+  bonus calculation.
+- An Earthquake miss regression proves critical and variation occur first and
+  that the underground-damage command executes before the later failed
+  accuracy check. A paired-roll regression requires Dig-target Earthquake to
+  deal exactly twice its already-rounded ordinary damage. Existing Gust and
+  Twister airborne-hit coverage passes through the same source-stage helper.
+
+# Thunder split `checkhit` staging (2026-09-03)
+
+- Thunder's source stream is intentionally unlike the other damaging status
+  effects: `critical`, `damagestats`, and `damagecalc` precede
+  `thunderaccuracy`/`checkhit`, while `effectchance`, `stab`, and
+  `damagevariation` follow a successful check. Rust previously used the
+  generic accuracy-first path and then sampled critical, variation, and effect
+  chance in that order.
+- Critical results can now be staged independently from a complete prepared
+  damage hit. Thunder samples and retains its critical byte before the shared
+  check, samples effect chance immediately after a hit, and passes both into
+  damage application so variation is sampled last. Miss, Protect, and
+  airborne-avoidance paths retain the early critical read but skip the later
+  effect-chance and variation reads.
+- A four-byte scripted hit distinguishes every slot: critical 200, accuracy
+  0, effect chance 200, and raw variation 221 (rotated to 238). A protected
+  Thunder regression separately proves that only Protect's own roll and
+  Thunder's pre-check critical roll occur; accuracy, effect chance, and
+  variation do not.
+
+# Rage/Rollout/Fury Cutter split staging (2026-09-03)
+
+- Rage, Rollout, and Fury Cutter run `critical`, `damagestats`, `damagecalc`,
+  and `stab` before `checkhit`, but perform their power command and
+  `damagevariation` afterward. Rust previously used its global accuracy gate
+  first, so a miss skipped the source's critical RNG read.
+- These effects now retain a staged critical result across `checkhit`; a hit
+  continues into the move-specific escalation and variation stages, while a
+  miss still performs the appropriate Rollout/Fury Cutter chain cleanup
+  without sampling variation.
+- A scripted regression covers all three streams and requires exactly two RNG
+  reads on a miss: critical, then accuracy. Rampage is deliberately excluded
+  because its source stream places `checkhit` before `critical`.
+
+# Fixed-damage `constantdamage` staging (2026-09-03)
+
+- Super Fang, Psywave, Static Damage, and Level Damage share the source stream
+  `constantdamage`, `checkhit`, then `resettypematchup`. Rust previously
+  created the fixed amount only after its shared Protect and accuracy gates.
+- The family now retains its fixed damage before `checkhit`. In particular,
+  Psywave completes its rejection loop before a later accuracy miss or
+  Protect interception, and it samples the amount before type immunity is
+  evaluated by the equivalent of `resettypematchup`.
+- Scripted regressions lock all three boundaries: rejected and accepted
+  Psywave bytes before an accuracy miss, the same loop after Protect succeeds
+  but before Protect is observed, and accepted damage followed by accuracy
+  and then a Psychic-to-Dark immunity failure.
+
+# Present critical/STAB staging (2026-09-03)
+
+- Present's stream runs `checkhit`, `critical`, and `damagestats` before the
+  `present` command. That command itself runs STAB/type matching before it
+  samples the power/heal byte. Rust previously selected Present's branch
+  first and therefore skipped critical RNG entirely for healing and immunity.
+- Present now stages its critical result before entering branch selection and
+  reuses it if the move continues into damage calculation. Healing consumes
+  critical then the Present byte and ends without variation; immunity
+  consumes critical but no Present byte.
+- Scripted regressions distinguish the heal-byte order and the immunity exit.
+  Existing damage, heal, failed-heal, breakpoint, and link-colosseum glitch
+  tests now use the corrected `critical -> present -> variation` byte order.
+
+# Beat Up slot loop and wild branch (2026-09-03)
+
+- Beat Up's loop returns to `critical`, not to its eligibility logic. Every
+  visited party slot therefore consumes a critical byte before `beatup`
+  rejects a fainted or statused member; only eligible members proceed to
+  damage variation. Rust previously prefiltered the party and skipped all RNG
+  for rejected slots.
+- Rust now visits slots in source order, retains each critical result, and
+  applies the existing HP/status selection bug only after the critical read.
+  A scripted three-slot regression requires critical/variation for the first
+  eligible member and critical-only reads for poisoned and fainted members.
+- `EndLoop` sends a one-member party directly to `EndMoveEffect`, even when
+  its only member was rejected, so King's Rock is skipped. Larger failed
+  parties still reach the shared tail. A regression locks the one-member
+  critical read while leaving a guaranteed-flinch byte unused.
+- Wild-enemy Beat Up bypasses OT-party HP/status checks, uses the active
+  attacker, and takes the one-attacker exit. Rust now follows that branch even
+  if stored enemy-party data contains additional members; a statused-wild
+  regression proves exactly one critical/variation pair and one participant.
+
+# Future Sight setup and delayed `checkhit` (2026-09-03)
+
+- Future Sight's setup stream calculates and stores unvaried damage, then its
+  `futuresight` command jumps to `EndMoveEffect`. The following
+  `damagevariation` and `checkhit` are unreachable on setup. Rust previously
+  ran its global accuracy/Protect gates first, allowing setup to miss or be
+  blocked.
+- CheckHit execution is now explicitly gated for the whole shared path, so a
+  no-check effect does not calculate accuracy, consume Lock-On, consult X
+  Accuracy, or test airborne state. Scripted setup regressions prove 1%-
+  accuracy Future Sight consumes no RNG and queues through Protect.
+- When the countdown lands, `CheckFutureSight` restores the stored damage and
+  resumes after the `futuresight` command. Rust now reloads Future Sight move
+  data and runs variation before the delayed Protect/Lock-On/airborne/X
+  Accuracy/ordinary-accuracy gates. A two-byte regression proves maximum
+  variation is consumed before a later accuracy miss discards the attack.
+- Pending-state tests now provide canonical Future Sight move data explicitly;
+  missing landing data remains an error rather than using a fallback accuracy.
+
+# TrapTarget after Substitute damage (2026-09-03)
+
+- Bind, Wrap, Fire Spin, and Whirlpool run `traptarget` after `applydamage`,
+  `checkfaint`, and `buildopponentrage`. The command first rejects an existing
+  WrapCount, then checks the target's live Substitute state before sampling its
+  duration. A trapping hit that breaks the Substitute can therefore apply the
+  trap, while a hit that leaves it intact cannot.
+- Rust formerly returned immediately after redirecting any damaging hit into
+  a Substitute, skipping the later TrapTarget command even when that damage
+  had just broken the decoy. Substitute damage now continues through the
+  source-ordered rage and trapping commands, and TrapTarget performs its own
+  live Substitute check before consuming RNG.
+- Scripted regressions cover both sides of the boundary: breaking a one-HP
+  Substitute consumes the duration byte and stores `BattleRandom & 3 + 3`,
+  while a surviving Substitute leaves the target untrapped and consumes no
+  duration byte.
+
+# Wild ForceSwitch and Teleport level checks (2026-09-03)
+
+- The underleveled wild-battle paths for Roar/Whirlwind and player Teleport
+  preserve the opponent's level in register `b`, rejection-sample a byte below
+  `attacker_level + target_level + 1`, shift `b` twice, and succeed only when
+  the byte is at least `target_level / 4`. Rust formerly compared against the
+  attacker's quarter-level, increasing success odds whenever the attacker was
+  lower-level.
+- Both routines now compare the accepted byte with the target's quarter-level.
+  Scripted level-20-versus-level-40 regressions use byte 6 to distinguish the
+  correct threshold 10 from the former threshold 5 and require failure.
+- Wild enemy Teleport retains Crystal's separate control-flow bug: an
+  underleveled enemy still executes the same rejection loop and comparison but
+  falls through to success regardless of the resulting flags. The existing
+  always-success regression now also requires that RNG byte, after the
+  source-positioned `TryEnemyFlee` read, so the escaped state and random stream
+  both match the cartridge.
+
+# Swagger and direct-confusion command boundaries (2026-09-03)
+
+- Swagger's `attackup2` sets `wAttackMissed` when the target is already at
+  maximum Attack. Its following `failuretext` then jumps to `EndMoveEffect`,
+  so `confusetarget` is never reached and no confusion-duration byte is read.
+  Rust formerly continued into confusion even though the stat command failed.
+- Swagger now stops when Attack did not change and routes successful raises
+  through the silent `ConfuseTarget` semantics shared by secondary confusion:
+  Safeguard, Substitute, or existing confusion simply prevents the effect.
+  Scripted regressions prove maximum Attack leaves confusion clear with zero
+  RNG reads and that an already-confused target produces no direct-confusion
+  failure event.
+- The standalone `Confuse` command has a deliberately different order after
+  its stream-level Safeguard check: it reports existing confusion before it
+  checks Substitute. Rust's direct path now preserves that precedence; a
+  target with both states produces the existing-confusion result and consumes
+  no duration RNG.
+
+# Conversion2 persistent source-move register (2026-09-03)
+
+- `BattleCommand_Conversion2` reads `BATTLE_VARS_LAST_COUNTER_MOVE_OPP`, a
+  persistent used-move register. It does not consult the same-turn damage
+  buffer: the opponent's prior move remains eligible across turn boundaries,
+  and a move need not have dealt damage to supply its type.
+- Rust formerly sourced Conversion2 from `BattleLastDamageState`, required the
+  recorded source to be the opponent, and lost that state at every turn-end
+  clear. Conversion2 now reloads move data from the opponent's exact persistent
+  last-counter-move field before running the existing numeric type-slot
+  rejection loop.
+- A scripted regression starts with no last-damage record but retains Tackle
+  in the opponent register, samples numeric slot 8, and requires Conversion2
+  to become Ghost and consume exactly that one RNG byte. The separate failure
+  regression now names the actual missing-register condition.
+
+# Copy/called-move history clearing (2026-09-03)
+
+- Mirror Move, Mimic, Metronome, and Sleep Talk begin their effect commands
+  with `ClearLastMove`, zeroing both the user's ordinary last-move and
+  last-counter-move registers on success and failure. Mirror Move, Metronome,
+  and Sleep Talk then invoke their selected move through `ResetTurn`, whose
+  charging guard makes `DisplayUsedMoveText` leave those registers clear.
+- Rust formerly retained the wrapper move in both registers. All four paths
+  now clear the shared history at the command boundary, with successful and
+  failed tests asserting the state observed later by Encore, Disable, Spite,
+  Mirror Move, and Conversion2.
+- `CheckUserMove` makes Mirror Move fail when the user already knows the
+  opponent's last move. Mimic likewise scans all four effective battle move
+  slots and additionally rejects Struggle. Rust previously rejected only a
+  recursive copy of the wrapper itself, allowing duplicate learned moves.
+  Dedicated regressions now preserve the full moveset checks. The former
+  successful Mirror Move fixture was corrected because it already included
+  Tackle and therefore contradicted the source rule.
+
+# Spite low-PP reduction text (2026-09-03)
+
+- Spite samples a nominal 2–5 PP loss, then compares it with the target move's
+  remaining PP and keeps the smaller value in register `b`. The same clamped
+  byte is used both for subtraction and `_SpiteEffectText`'s displayed number.
+- Rust already saturated the stored PP at zero but retained the unclamped
+  random amount in `BattleEvent::SpiteApplied`, so a one-PP move could visibly
+  claim it lost two through five PP. The event now carries the exact applied
+  reduction used by the cartridge text path.
+- A scripted maximum-roll regression starts Tackle at one PP and requires
+  `pp_before: 1`, `pp_after: 0`, `reduction: 1`, and exactly one RNG read.
+  Existing ordinary and transformed-target Spite coverage passes unchanged.
+
+# Mimic battle-only move and PP persistence (2026-09-03)
+
+- Mimic replaces only the selected battle move with the copied move at five
+  PP. The permanent party slot remains Mimic: `BattleCommand_DoTurn` consumes
+  Mimic's party PP before the effect, while `CheckMimicUsed` suppresses later
+  party-PP writes whenever that slot holds Mimic but the battle slot does not.
+- Rust formerly copied the complete active combat Pokemon over its party slot
+  at turn end and on switch-out. This permanently taught the copied move and
+  discarded Mimic, while also storing the copied move's temporary five PP.
+- Ordinary PP consumption now mirrors the post-consumption battle PP into the
+  matching party slot, except for the exact Mimic mismatch guarded by the
+  cartridge. Active-to-party synchronization and switch-out preserve that
+  permanent Mimic slot. Regressions cover the initial copy (`Mimic` at four PP
+  in party, copied move at five PP in battle), using the copied move without
+  consuming party PP, switching out without teaching it permanently, and
+  Sketch continuing to replace the party move permanently.
+- The outer `GameState` commit formerly performed a second active-Pokemon
+  overwrite after committing the correct combat party snapshot, reintroducing
+  the copied move in saved storage. Commit now writes party-snapshot moves to
+  persistent storage while retaining battle-active moves only in resumable
+  combat state. A commit-level regression verifies both representations and
+  their distinct PP values survive together.
+
+# Thief mail immunity (2026-09-03)
+
+- Both sides of `BattleCommand_Thief` pass the prospective held item through
+  `ItemIsMail` and return immediately on carry. This happens before either the
+  active battle item or corresponding party item is cleared or assigned.
+- Rust formerly took any target item unconditionally once the attacker had an
+  empty held-item slot, allowing either side to steal all ten mail items.
+- Thief now identifies mail before mutating either combatant. A symmetric
+  player/enemy regression requires Flower Mail to remain on its holder, the
+  attacker to remain empty-handed, and the command to report the precise
+  no-transfer outcome. Ordinary held-item theft still passes unchanged.
+
+# Curse hidden-target gate and stat-command order (2026-09-03)
+
+- Ghost Curse owns a branch-local `CheckHiddenOpponent` before its Substitute
+  and existing-Curse checks. A target in Fly or Dig therefore makes the move
+  fail before the Curse bit is set or half of the user's maximum HP is paid.
+  Rust formerly omitted this private hidden check and applied the full effect.
+- Non-Ghost Curse runs its three stat commands in the fixed order Speed down,
+  Attack up, then Defense up. Rust reached the same final stages but emitted
+  and processed them as Attack, Defense, Speed.
+- The Ghost branch now rejects an airborne target without spending HP, while
+  the self-targeted non-Ghost branch remains unaffected by opponent hiding.
+  Regressions cover the hidden failure and the exact stat-command event order;
+  all pre-existing Curse state, residual, duplicate, and switch tests pass.
+
+# Branch-local hidden checks and StatDown ordering (2026-09-03)
+
+- Nightmare, Foresight, Transform, Attract, Mimic, and ArenaTrap/Mean Look
+  each call `CheckHiddenOpponent` inside their own command. This is distinct
+  from `CheckHit`: commands without `checkhit` still reject Fly/Dig, while
+  Lock-On can pass `CheckHit` only for the later command-local check to fail.
+- Rust formerly relied on shared hit handling and let these direct effects
+  apply when their target was hidden. Each handler now performs its private
+  gate in source order. Transform also restores its leading `ClearLastMove`,
+  clearing both history registers on success and every failure path.
+- `BattleCommand_StatDown` has the same second hidden check after its Mist,
+  lower-bound, enemy-random-failure, and Substitute logic. Rust now preserves
+  that order: Lock-On is consumed but cannot lower a hidden target's stat, and
+  an enemy's 25% failure byte is consumed before Substitute is consulted.
+- Regressions cover all six direct commands, Transform history on success and
+  failure, the Lock-On/stat-down double gate, and both outcomes of the enemy
+  AI roll in front of Substitute.
+
+# Heal Bell ignores abilities (2026-09-03)
+
+- `BattleCommand_HealBell` unconditionally clears the user's active Nightmare
+  bit, active status byte, and all six status bytes in that side's party. Its
+  only side-dependent behavior is selecting the player or OT party base and
+  recalculating that side's active stats; Crystal has no Soundproof exception.
+- Rust had imported a later-generation rule into both the live combat handler
+  and the persistent player-party commit, leaving Soundproof users and
+  Soundproof benched members afflicted after Heal Bell.
+- Both ability gates are removed. Regressions cover a Soundproof active user,
+  a Soundproof benched member across `GameState` commit, and the enemy path's
+  active Nightmare, full-party status, and loaded paralysis-penalty clearing.
+
+# Ability gates cannot preempt Crystal move commands (2026-09-03)
+
+- Crystal's Perish Song sets the Perish bit and count to four on each battler
+  that does not already have it. Roar/Whirlwind enter the protected-battle,
+  wild-level, or trainer-replacement branches directly. Selfdestruct always
+  reaches its damage stream and then clears the user's HP/status. None of
+  these commands consult abilities.
+- Rust had later-generation Soundproof, Suction Cups, and Damp gates in those
+  paths. It also applied a shared Soundproof pre-effect rejection to Crystal
+  sound moves including Growl, Sing, Screech, Snore, Supersonic, and Roar,
+  preventing their authored command streams from executing.
+- Those gates are removed while the existing Crystal context, accuracy, RNG,
+  and failure rules remain unchanged. End-to-end regressions require Perish
+  Song to affect two Soundproof battlers, guaranteed wild Whirlwind to remove
+  a Suction Cups target, Selfdestruct to execute in Damp's presence, and Growl
+  to lower a Soundproof target's Attack.
+
+# Psych Up baseline failure (2026-09-03)
+
+- `BattleCommand_PsychUp` scans all `NUM_LEVEL_STATS` opponent stage bytes
+  before copying them. If every byte equals `BASE_STAT_LEVEL`, it animates a
+  failed move, prints `But it failed!`, and leaves the user's stages intact.
+- Rust unconditionally copied the opponent stage map and emitted success. An
+  unmodified target therefore erased the user's boosts and displayed the
+  two-page copied-stats message even though the cartridge rejects the move.
+- Psych Up now returns a typed failure event before mutation when all target
+  stages are baseline. The battle-message projection renders the authored
+  failure page, and the event journal distinguishes player/enemy failures.
+  A red-first end-to-end regression preserves the user's Attack and Defense
+  stages while proving no success event is emitted.
+
+# Weather-command replay asymmetry (2026-09-03)
+
+- `BattleCommand_StartRain` and `BattleCommand_StartSun` always overwrite the
+  current weather and reset `wWeatherCount` to five, even when that same
+  weather is already active. `BattleCommand_StartSandstorm` uniquely compares
+  the current weather first and runs the failed-move path on a repeat.
+- Rust used one unconditional weather helper for all three moves, so a second
+  Sandstorm incorrectly refreshed its remaining duration and replayed the
+  brewed-storm success text.
+- The shared helper now preserves the exact Sandstorm-only rejection. A typed
+  failure event produces `But it failed!`, the existing storm continues
+  through its ordinary between-turn decrement, and companion coverage locks
+  in Rain Dance and Sunny Day's intentional five-turn refresh behavior.
+
+# Belly Drum owns its complete result text (2026-09-03)
+
+- `BattleCommand_BellyDrum` invokes `AttackUp2` internally but never calls a
+  stat-up message command. Success prints only `BellyDrumText` (`<USER> cut
+  its HP and maximized ATTACK!`). Both maximum-Attack and insufficient-HP
+  failures print only `But it failed!`; the latter still retains Crystal's
+  preliminary +2 Attack glitch.
+- Rust exposed successful and glitched stage mutations as ordinary
+  `StatStageChanged` events, so the renderer displayed an invented Attack-rise
+  page. Failure additionally used a generic heal result rather than owning the
+  command's exact outcome.
+- Belly Drum now emits dedicated success/failure events containing its HP and
+  Attack-stage mutations for deterministic journaling. The renderer maps them
+  to the two authored text paths, while no generic stat message can leak from
+  the internal command. Regressions cover success, the half-HP +2 glitch, and
+  the maximum-Attack no-mutation failure.
+
+# Capped non-Ghost Curse names ABILITY (2026-09-03)
+
+- Before running Speed down, Attack up, and Defense up, non-Ghost
+  `BattleCommand_Curse` tests whether both raisable stats are already capped.
+  Its failure branch deliberately asks `GetStatName` for the eighth synthetic
+  entry and prints `<USER>'s ABILITY won't rise anymore!`.
+- Rust represented this as an ordinary unchanged Attack stage. The visible
+  message therefore named `ATTACK`, losing a cartridge-specific text oddity.
+- The capped branch now emits a dedicated typed outcome and the renderer uses
+  the exact three-line `ABILITY` message. An end-to-end regression starts with
+  capped Attack/Defense and boosted Speed, proves all three stages remain
+  untouched, and excludes the former generic stat event.
+
+# Leech Seed owns EvadedText (2026-09-03)
+
+- After `checkhit`, `BattleCommand_LeechSeed` sends an accuracy miss, a target
+  behind Substitute, and an already-seeded target to the same `EvadedText`:
+  `<TARGET> evaded the attack!`. A protected target first receives
+  `ProtectingItselfText` from `CheckHit`, then the Leech Seed command still
+  prints `EvadedText`. Grass immunity remains the distinct doesn't-affect path.
+- Rust returned at shared hit gates and projected the three failures as an
+  attacker-owned generic miss, `It didn't affect`, or `But it failed`; Protect
+  also omitted the command's required second page.
+- Leech Seed now emits its command-owned failed outcome after Protect and an
+  accuracy miss, and uses that outcome directly for Substitute/existing-seed
+  rejection. The renderer suppresses only the redundant generic accuracy
+  page and maps the shared outcome to the exact target-owned evasion text.
+  Regressions cover all three command branches, Protect's two-result order,
+  and unchanged accuracy RNG consumption.
+
+# Rest ignores abilities (2026-09-03)
+
+- `BattleCommand_Heal` compares current and maximum HP before its Rest branch,
+  then clears toxic state, overwrites the user's status with
+  `REST_SLEEP_TURNS + 1`, and restores HP. It never consults an ability.
+- Rust inserted a later-generation sleep-immunity gate before the source HP
+  comparison, allowing Insomnia or Vital Spirit to reject Rest on a damaged
+  user. That changed both the resulting HP/status and the visible result.
+- The non-ASM gate is removed. An end-to-end regression requires both ability
+  labels to leave a damaged user fully healed and asleep for the exact stored
+  count of three; the existing full-HP failure regression keeps Crystal's
+  intentionally HP-first rule locked independently.
+
+# Pain Split owns its post-CheckHit failure (2026-09-03)
+
+- Pain Split's effect stream runs `checkhit` and then always enters
+  `BattleCommand_PainSplit`. A Protect, Fly/Dig avoidance, or accuracy failure
+  leaves `wAttackMissed` set, and the command prints `PrintDidntAffect2`;
+  Substitute reaches the same text through the command's private check.
+- Rust returned from all three shared `CheckHit` gates before Pain Split and
+  rendered their generic miss/evasion result. Substitute emitted the generic
+  blocked-effect event. Protected Pain Split consequently omitted the second
+  source page after `<TARGET>'s PROTECTING itself!`.
+- All four paths now emit one typed `PainSplitFailed` outcome. Accuracy and
+  airborne journal events remain available but their superseded generic pages
+  are suppressed for this move; Protect retains its first page and is followed
+  by exact `It didn't affect <TARGET>!`. Regressions lock Protect ordering,
+  one-byte miss RNG, Fly avoidance, Substitute routing, and no HP mutation.
+
+# Mimic still clears history after CheckHit failure (2026-09-03)
+
+- Mimic's stream reaches `BattleCommand_Mimic` after `checkhit` regardless of
+  the flag result. The command begins with `ClearLastMove` and only afterward
+  reads `wAttackMissed`, so Protect, Fly/Dig avoidance, and ordinary accuracy
+  misses all clear both of the user's used-move registers before failing.
+- Rust returned from the shared hit gate first. Failed Mimic therefore remained
+  recorded as the user's last move and last counter move, contradicting the
+  command behavior later consumed by Encore, Disable, Spite, Mirror Move, and
+  Conversion2. It also rendered a generic miss/evasion page.
+- All three shared failure paths now execute Mimic's history clear and emit its
+  typed failure without sampling any extra RNG. Generic miss/evasion text is
+  suppressed for Mimic. A protected use retains `<TARGET>'s PROTECTING itself!`
+  and then selects `FailMimic`'s Protect-specific `It failed!` instead of the
+  ordinary `But it failed!`. End-to-end regressions lock both registers, event
+  order inputs, the one-byte accuracy path, and the zero-byte Fly path.
+
+# Encore and Spite own PrintDidntAffect2 (2026-09-03)
+
+- Both effect streams run `checkhit` and then their command. Every Encore
+  failure, including `wAttackMissed`, reaches `PrintDidntAffect2`; Spite has
+  the same terminal failure path. Their authored result is therefore
+  `It didn't affect <TARGET>!`, not `But it failed!` or an attacker-owned miss.
+- Rust returned at Protect, Fly/Dig avoidance, or ordinary accuracy failure and
+  never emitted either command's typed result. Even non-hit-related Encore and
+  Spite failures were projected as the wrong generic failure text.
+- The shared post-`CheckHit` dispatcher now carries Protect, airborne, and
+  accuracy failure kinds and emits the correct Encore/Spite result without
+  changing their random stream. The renderer suppresses only the superseded
+  miss/evasion page and always uses the exact target-owned text; Protect keeps
+  its preceding protection page. End-to-end regressions cover both commands
+  across all three gates, including one-byte accuracy and zero-byte Fly paths.
+
+# Post-CheckHit FailMove command family (2026-09-03)
+
+- Conversion 2, Attract, Disable, and Foresight run their own command after
+  `checkhit` and route `wAttackMissed` to `FailMove`. Ordinary accuracy or
+  Fly/Dig rejection therefore prints `But it failed!`; Protect first prints
+  its protection page and makes `FailMove` select `It failed!` instead.
+- Force Switch likewise observes `wAttackMissed` inside its later command, but
+  its private `.fail` routine always calls `PrintButItFailed`, including after
+  Protect. Rust formerly returned from the shared gate before all five command
+  outcomes and exposed the generic accuracy/evasion text instead.
+- The typed post-hit dispatcher now emits each command's existing failure
+  variant for Protect, airborne rejection, and accuracy misses. Presentation
+  correlates those events by actual `(side, move_name)` rather than assuming an
+  effect id is also a move id; this is required for `ROAR` and `WHIRLWIND`
+  sharing `FORCE_SWITCH`. Four `FailMove` variants select the Protect-specific
+  wording, while Force Switch retains `But it failed!`. Table-driven
+  regressions cover all five commands at the accuracy and Protect gates, all
+  four ordinary-priority commands against Fly, and an isolated zero-RNG Roar
+  versus Fly boundary. Whirlwind's authored ability to hit Fly remains intact.
+
+# Lock-On and Mind Reader own PrintDidntAffect (2026-09-03)
+
+- Both moves share `BattleCommand_LockOn`. After its Substitute check, the
+  command reads `wAttackMissed`; either rejection enters the same `.fail`
+  branch, runs `AnimateFailedMove`, and prints `PrintDidntAffect`. Protect and
+  Fly/Dig avoidance reach that command with the missed flag already set, just
+  like an ordinary accuracy miss.
+- Rust returned from those shared `CheckHit` gates before the command and used
+  a generic blocked-effect result for Substitute. That split one authored
+  failure into several projections and omitted Lock-On's second page after the
+  target's Protect message.
+- A typed `LockOnFailed` result now joins all four failure routes for both
+  actual move names. Presentation correlates the event by `(side, move_name)`,
+  suppresses only the superseded generic miss/evasion page, preserves the
+  failed-move animation, and renders exact `It didn't affect <TARGET>!` text.
+  Regressions cover Lock-On and Mind Reader across accuracy, Protect, and Fly,
+  plus Lock-On against Substitute; they lock one-byte ordinary accuracy use,
+  zero-byte airborne rejection, and Protect's own single random byte.
+
+# Attract ignores abilities (2026-09-03)
+
+- `BattleCommand_Attract` rejects only a missed attack, a genderless or
+  same-gender pairing, a hidden opponent, or an already-attracted opponent.
+  Crystal predates abilities and has no Oblivious check in this command.
+- Rust added a later-generation target-ability immunity after the source's
+  hidden-opponent check, causing an otherwise valid opposite-gender Attract to
+  fail against an ability-bearing imported battler.
+- The non-ASM gate is removed. An end-to-end regression gives the target
+  `OBLIVIOUS` and requires the normal `AttractApplied` result and volatile
+  attraction state, while the existing opposite-gender success and same-gender
+  failure coverage continues to lock the actual Crystal checks.
+
+# Status, stat, confusion, and flinch commands ignore abilities (2026-09-03)
+
+- Crystal's status target commands consult existing status, type immunity,
+  enemy-command failure, Substitute, Safeguard, and weather where authored.
+  Confuse/ConfuseTarget, StatDown, FlinchTarget, HeldFlinch, and `effectchance`
+  likewise contain no ability branches; the last compares its one byte only
+  with the move's stored chance.
+- Rust let later-generation abilities preempt these commands: Insomnia/Vital
+  Spirit/Immunity/Limber/Water Veil/Magma Armor blocked status, Own Tempo
+  blocked confusion, Inner Focus blocked both flinch paths, four defensive
+  abilities blocked stat drops, Serene Grace rewrote effect chance, and Shield
+  Dust cancelled successful secondary effects. Several checks also ran before
+  the source's Safeguard, Substitute, hidden-target, or RNG boundary.
+- Crystal move commands now bypass those ability gates while retaining their
+  exact native checks and random consumption. Ability-originated extension
+  hooks remain isolated at their own call sites rather than leaking into the
+  ASM move-command path. Regressions cover all six status-blocking abilities,
+  direct and secondary confusion, built-in and King's Rock flinch, all four
+  stat-drop abilities, and source-threshold effect-chance outcomes against
+  both Serene Grace and Shield Dust.
+
+# CheckHit and Critical ignore abilities (2026-09-03)
+
+- `BattleCommand_CheckHit` derives its accuracy byte from the move record,
+  Accuracy/Evasion stages, Foresight, the authored Thunder weather branches,
+  BrightPowder, X Accuracy, and Lock-On before its single `BattleRandom`
+  comparison. `BattleCommand_Critical` similarly stores the result of its
+  move/item/Focus Energy threshold roll without consulting the target.
+- Rust additionally scaled accuracy for Compound Eyes, Hustle, and Sand Veil,
+  and discarded successful critical rolls against Battle Armor or Shell Armor.
+  The latter affected both the ordinary damage path and Beat Up's private hit
+  loop.
+- Both source commands are now ability-neutral. Regressions require an exact
+  unchanged 127 accuracy byte for a 50%-accuracy move under all three ability
+  cases, and require the same known Focus Energy critical roll to remain
+  critical against both defensive abilities. Existing Foresight, weather,
+  BrightPowder, Lock-On, critical-stage, and RNG-order tests retain the actual
+  Crystal modifiers.
+
+# Damage and OHKO commands ignore abilities (2026-09-03)
+
+- Crystal's `DamageCalc`, STAB/type commands, and `BattleCommand_OHKO` operate
+  only on battle stats, move data, types, items, screens, weather, badges, and
+  the source critical/random registers. There are no ability absorption,
+  damage-ratio, type-immunity, or Sturdy branches.
+- Rust fed live abilities through the shared damage calculator, allowing
+  Pure Power, Thick Fat, Levitate, and Wonder Guard to change otherwise
+  identical damage. Flash Fire, Water Absorb, and Volt Absorb returned before
+  the authored effect stream, while Sturdy invented a third typed OHKO failure
+  reason and presentation path.
+- The Crystal damage boundary now passes ability-neutral combat snapshots,
+  removes the pre-effect absorption exit, and removes the unconstructible
+  Sturdy OHKO reason. Paired identical-RNG regressions require exact neutral
+  damage under offensive, defensive, and immunity abilities; end-to-end tests
+  require all three absorb abilities to receive damage and a successful
+  level-checked OHKO to faint a Sturdy target.
+
+# Post-damage commands ignore abilities (2026-09-03)
+
+- After `ApplyDamage`, Crystal proceeds through only the commands present in
+  the selected effect stream: Rage/Bide bookkeeping, secondary effects,
+  draining, recoil, faint checks, and later authored commands. No generic
+  contact or defender-type callback exists. `DrainTarget` always heals half
+  the dealt damage (rounded up), and recoil always subtracts one quarter.
+- Rust appended a shared contact callback for Rough Skin, Cute Charm, Effect
+  Spore, Flame Body, Poison Point, and Static, then applied Color Change after
+  every surviving hit. Liquid Ooze inverted drain healing and Rock Head
+  suppressed recoil. These hooks added mutations and RNG bytes between source
+  commands.
+- The generic post-hit callback and its now-unreachable implementation are
+  removed, as are the Liquid Ooze and Rock Head branches. Regressions require
+  identical attacker HP/type state after Rough Skin and Color Change targets,
+  exact drain healing against Liquid Ooze, and exact recoil against Rock Head.
+
+# Action timing and between-turn flow ignore abilities (2026-09-03)
+
+- Crystal's `CheckTurn` has no Truant branch, `DoTurn` subtracts one PP, Sleep
+  decrements its counter once, and action order uses the loaded Speed plus
+  stages, badges, paralysis, priority, and its tie byte. The between-turn
+  sequence contains no generic ability phase.
+- Rust could cancel alternating actions with Truant, spend two PP against
+  Pressure, decrement Sleep twice for Early Bird, double Speed under Swift Swim
+  or Chlorophyll weather, raise Speed at end of turn, or cure status through
+  Shed Skin. Those paths also mutated extension counters and consumed
+  Emerald-style random words outside the source sequence.
+- The gates, PP multiplier, extra Sleep tick, Speed multiplier, Truant-cycle
+  mutation, and entire end-turn ability phase are removed. Regressions require
+  a Truant user to act and spend exactly one PP against Pressure, Early Bird to
+  retain the one-tick sleeping result, weather abilities to preserve neutral
+  Speed, and Speed Boost/Shed Skin to leave state and RNG untouched.
+
+# Battle start, switching, and running ignore abilities (2026-09-03)
+
+- Crystal initializes held battle items without a switch-in ability phase.
+  Ordinary switching commits the outgoing battle Pokémon exactly as authored,
+  loads the selected party member, and checks only Wrap/Mean Look-style source
+  traps. Wild running uses the loaded Speed formula and failed-attempt count.
+- Rust ran Trace, weather setters, Forecast, Intimidate, status self-cures, and
+  Natural Cure around battle entry or switching. Shadow Tag/Magnet Pull could
+  block switches, and Run Away bypassed the cartridge escape calculation.
+  Trace additionally required battle-local restoration state during commits.
+- All switch-in/out and escape ability gates are removed. Trace restoration
+  fields/helpers are deleted, and the former `abilities_initialized` boundary
+  is now the accurately named `battle_start_items_initialized` boundary that
+  performs only the retained held-item initialization. Regressions preserve an
+  outgoing Natural Cure status, ignore an incoming weather ability, permit
+  switches against both ability traps, and require Run Away to consume and
+  obey the ordinary failed escape roll.
+
+# Remaining live battle ability dispatch removed (2026-09-03)
+
+- Crystal weather reads the battle weather byte directly, weather commands do
+  not transform species, status commands do not reflect ailments, and victory
+  does not run a party item-generation pass. None of these boundaries reads a
+  species ability field.
+- Rust still let Air Lock suppress weather, Forecast rewrite Castform's types,
+  Synchronize reflect status, and Pickup consume Emerald-style random words to
+  create an item after victory. Stale Flash Fire flags also remained serialized
+  and could modify Fire power despite the absorption entry point being gone.
+- Those final live battle dispatches, Pickup tables/event, Forecast helper,
+  Synchronize recursion, and Flash Fire fields are removed. The status helper
+  no longer accepts a synthetic ability argument. Regressions require weather
+  and status to ignore Air Lock/Forecast/Synchronize and require a winning
+  Pickup battler to retain an empty item slot without consuming that post-win
+  extension path. A source search now finds no ability read in `turn.rs`; the
+  shared damage calculator is audited separately below.
+
+# Shared damage calculator and AI ignore abilities (2026-09-03)
+
+- Crystal's `DamageCalc`, `DamageStats`, weather modifier, burn penalty, STAB,
+  and type-matchup routines have no ability branches. The battle AI estimates
+  damage with the same source arithmetic rather than a separate ruleset.
+- Rust's shared calculator still applied Pure Power, Hustle, Marvel Scale,
+  Thick Fat, Torrent/Blaze/Overgrow/Swarm, Air Lock, Guts, Levitate, Wonder
+  Guard, and elemental absorption abilities. The live turn path had been
+  neutralizing cloned battlers as a boundary workaround, but direct callers
+  such as AI scoring continued to observe the extension mechanics.
+- All ability reads and modifiers are removed from the shared calculator, and
+  the turn workaround is deleted. Direct regressions lock offensive stat,
+  defensive reduction, immunity/absorption, low-HP, weather suppression, and
+  burn cases; every caller now receives the same ability-neutral Gen II damage.
+
+# Walking encounters ignore abilities (2026-09-03)
+
+- Crystal's `TryWildEncounter` derives its threshold from the map encounter
+  rate, music, and Cleanse Tag before making the source `Random` call. It does
+  not inspect the lead party member or species metadata.
+- Rust passed a `lead_ability` option from the asset facade and doubled or
+  halved the threshold for Illuminate and Stench. That changed both the
+  encounter result and the carry supplied to the exact RNG emulation.
+- The option, party-ability lookup, facade plumbing, and modifiers are removed
+  end-to-end. The walking-rate regression now locks the unmodified 20-percent
+  source threshold of 51; Cleanse Tag retains its separate cartridge behavior.
+
+# Dead runtime ability library removed (2026-09-03)
+
+- After the battle and encounter call sites became ability-neutral, the core
+  still publicly exposed a standalone module implementing the removed Gen III
+  mechanics. Its own tests could pass despite no longer representing any
+  executable Crystal behavior.
+- The module and public export are deleted. The optional Gen III pack's exact
+  assigned-ability vocabulary remains only as a private data-integrity catalog
+  beside that pack's verifier; it no longer claims those values are implemented
+  runtime mechanics.
+
+# False Swipe one-HP and Substitute ordering (2026-09-03)
+
+- `BattleCommand_FalseSwipe` runs after damage variation and before
+  `checkhit`/`applydamage`. Whenever retained damage is at least the target's
+  HP, it replaces `wCurDamage` with target HP minus one. At one HP this is
+  exactly zero; an ordinary critical marker remains an ordinary critical.
+- Rust applied the clamp only during final HP settlement and only when target
+  HP exceeded one. False Swipe could therefore faint a one-HP target, and a
+  Substitute received the unclamped retained damage because its damage path
+  returned before the late clamp.
+- The clamp now lives at the pre-`checkhit` final-damage command boundary.
+  Regressions require a critical False Swipe at one HP to report zero damage,
+  preserve the target and critical result, and leave an existing Substitute
+  at the same HP while still routing through its zero-damage narration and
+  `ResetDamage` tail.
+
+# Endure/Focus Band precede Substitute damage (2026-09-03)
+
+- `BattleCommand_ApplyDamage` checks Endure first; without Endure it inspects
+  and samples Focus Band. A successful survival check calls False Swipe's
+  lethal clamp before `DoEnemyDamage`/`DoPlayerDamage` decides whether the
+  retained damage goes to Substitute or real HP. Focus Band's byte is sampled
+  whenever the item reaches this command, even if damage is nonlethal.
+- Rust returned through its Substitute helper before either survival branch.
+  This skipped Focus Band RNG and let a doll receive full damage where the ASM
+  had already reduced a lethal-to-the-battler value to HP minus one. The older
+  audit description incorrectly endorsed that implementation order and is
+  corrected above.
+- Shared settlement now performs the survival phase before the Substitute/HP
+  split and emits survival narration after the damage event, matching the
+  source call/return order. Regressions cover Endure and Focus Band against a
+  Substitute plus the otherwise invisible nonlethal Focus Band RNG read. One
+  shared prelude now owns this behavior for ordinary damage, Beat Up, Future
+  Sight, Counter/Mirror Coat, Bide, and OHKO. In particular, OHKO's `$ffff` is
+  clamped before the Substitute split, with combined Endure and Focus Band
+  coverage.
+
+# Drain/recoil consume retained `wCurDamage` (2026-09-03)
+
+- `SapHealth` halves the two-byte `wCurDamage` with right shifts, rounds down,
+  and raises only a zero result to one. `BattleCommand_Recoil` likewise takes
+  one quarter with a one-HP minimum. Both commands run after `applydamage`, so
+  a real-HP overkill retains the full calculated damage rather than the HP
+  actually removed.
+- `DoSubstituteDamage` ends at `ResetDamage`. Drain and recoil still execute
+  later in their effect streams, but now see zero and therefore heal or hurt
+  the user by exactly one HP. Rust instead rounded drain upward, based both
+  effects on capped HP loss, and returned from Substitute settlement before
+  either command ran.
+- Post-damage HP commands now receive survival-modified retained damage for
+  real targets and the reset zero value after Substitute damage. Regressions
+  lock odd-damage drain rounding, overkill drain/recoil amounts, and the
+  one-HP drain/recoil results after a Substitute hit. The ordinary settlement
+  path also moved `buildopponentrage` after the post-damage HP command and
+  `checkfaint` boundary, preserving the source narration/state order for a
+  surviving Rage target. SapHealth's command/text boundary remains observable
+  at full HP as a zero-amount drain event instead of being silently skipped.
+
+# Counter/Mirror Coat retain AI damage scratch (2026-09-03)
+
+- `BattleTurn` clears `wCurDamage` and then calls `AIChooseMove` before either
+  battler acts. The last `AIDamageCalc` executed by the trainer scoring layers
+  leaves its result in that shared register. Counter and Mirror Coat read it
+  independently from the opponent's persistent `LAST_COUNTER_MOVE`, producing
+  the documented cartridge glitch when the opponent uses an item instead of
+  overwriting the scratch value with a move.
+- Rust previously returned only the selected move slot from AI and represented
+  Counter input solely as a same-turn damage record. The leaked register was
+  discarded, item turns always made Counter fail, and the source's separate
+  `CheckOpponentWentFirst` condition was only inferred from damage existence.
+- Enemy move selection now returns the selected slot plus the final AI damage
+  register through core, asset replay, and live Bevy boundaries. Counter and
+  Mirror Coat combine that amount with the persistent move identity and the
+  actual source order flag. `CheckHit` failure paths reset the shared scratch
+  exactly as `ResetDamage` does, except for Jump Kick's explicit retained-
+  damage branch; `DoSubstituteDamage` also clears it for every damage family,
+  including a zero-damage hit. Regressions cover the player-item glitch, the
+  went-first gate, a damaging miss clearing the leak, and an Aggressive AI pass
+  exposing its last calculated value.
+
+# FailureText/CriticalText own the shared critical register (2026-09-03)
+
+- `BattleCommand_FailureText` returns immediately when `wAttackMissed` is
+  clear. On a failed move it calls `GetFailureResultText`, which always clears
+  `wCriticalHit` after choosing the failure text. On a successful move,
+  `BattleCommand_CriticalText` clears a nonzero byte after displaying the
+  critical-hit or one-hit-KO message. Scripts that omit or jump around that
+  command can intentionally carry the byte across turns into later AI scoring.
+- Rust correctly retained the shared byte, but also retained a freshly rolled
+  critical after an accuracy miss. It likewise left `$ff` after a failed OHKO
+  and retained prior values through failed Counter, Mirror Coat, Swagger, and
+  delayed Future Sight resolution.
+- Failure cleanup is now gated by an exhaustive effect-to-`failuretext`
+  inventory checked against every ASM effect script, rather than being applied
+  to all failed commands. This preserves source exceptions such as Snore,
+  whose own failure jumps directly to `EndMoveEffect`. Regressions cover a
+  critical roll followed by a miss, fixed-damage type immunity, OHKO and
+  Counter failures, Swagger at the Attack cap, and both successful and missed
+  delayed Future Sight register lifetime.
+- Successful damage cleanup is independently gated by an exhaustive
+  effect-to-`criticaltext` inventory. Ordinary criticals and successful OHKOs
+  now finish at zero, while successful fixed damage, Future Sight, Counter,
+  and Bide retain the incoming marker because their scripts omit the command.
+  Present healing likewise jumps directly to `EndMoveEffect` and retains its
+  sampled critical; Present damage and immune failure clear it. Beat Up clears
+  after each eligible hit but preserves the last critical roll when a trailing
+  ineligible party slot skips directly to `EndLoop`.
+
+# Command-local `ResetDamage` owns Counter scratch lifetime (2026-09-03)
+
+- `wCurDamage` is one shared two-byte register, not a durable per-target damage
+  record. Besides ordinary damage calculation and `checkhit`, the ASM clears it
+  at several command-local boundaries that can run between trainer AI scoring
+  and a later Counter or Mirror Coat in the same turn.
+- Rust retained the seeded AI value through an awake Snore failure, the start
+  of a two-turn charge, failed duplicate Future Sight, OHKO failure, recharge
+  and other `EndTurn` action-prevention paths. It also retained real damage
+  across an ineligible trailing Beat Up party slot. Those leaks let the second
+  battler reflect damage the cartridge had already erased.
+- The turn engine now mirrors each relevant source write: all action-prevention
+  exits that jump to `EndTurn` clear the shared scratch; Snore and OHKO perform
+  their explicit resets; every Beat Up iteration resets before eligibility;
+  and charge setup resets before ending its first phase. Successful Pain Split
+  clears the averaging workspace after updating both battlers.
+- Future Sight now models both source paths. A duplicate queue calls
+  `ResetDamage`; a successful queue clears the register while copying its
+  calculated value into delayed storage. Regressions exercise each boundary
+  with Counter/Mirror Coat after the enemy acts, including the AI scratch
+  glitch as the control case where no intervening ASM reset occurs. Present's
+  healing exit also now observes the `ResetDamage` at the start of its earlier
+  `DamageStats` command instead of leaking AI scratch around `ApplyDamage`.
+
+# Charge setup writes both move-history registers (2026-09-03)
+
+- Charge-effect streams place `usedmovetext` after `charge`. On the first
+  phase, `BattleCommand_Charge` therefore writes the current move directly to
+  both `LAST_MOVE` and `LAST_COUNTER_MOVE` before its `ResetDamage`; it does
+  not preserve the previous move. On release, `CheckCharge` clears the flag
+  and the ordinary used-move text command performs the same update.
+- Rust intentionally skipped both history writes while beginning Fly, Dig,
+  Razor Wind, Sky Attack, Skull Bash, and non-sunny Solarbeam. First-turn
+  charge setup now installs the charging move in both registers. A Solarbeam
+  regression starts with stale Tackle history and requires both bytes to
+  become Solarbeam without dealing first-turn damage.
+
+# Trainer items clear only enemy counter history (2026-09-03)
+
+- After a successful `AI_TryItem` callback, Crystal clears the enemy's Bide,
+  Fury Cutter, Protect, and Rage state and zeros `wLastEnemyCounterMove`. It
+  deliberately does not clear `wLastEnemyMove`, and the equivalent player
+  item path does not perform this trainer-AI cleanup.
+- Rust previously merged player and trainer items into one action branch, so
+  a trainer item could leave stale enemy counter history paired with the live
+  AI damage scratch. A player Counter acting second could then reflect damage
+  after an item turn. Trainer items now apply the exact enemy-only cleanup;
+  regressions prove the stale reflection fails while preserving the separate
+  cartridge glitch where an enemy Counter follows a player item.
+
+# Switch entry resets both counter-history bytes (2026-09-03)
+
+- `NewBattleMonStatus`/`SendOutPlayerMon` clear player `LAST_MOVE` and both
+  battlers' `LAST_COUNTER_MOVE` registers while preserving enemy `LAST_MOVE`.
+  `NewEnemyMonStatus`/`ResetEnemyBattleVars` perform the mirrored operation.
+  Rust previously cleared only the switching battler's two history fields.
+- Ordinary menu switches, forced Roar/Whirlwind switches, forced faint
+  replacements, Shift-style player changes, link opponent replacements, and
+  trainer-party advancement now share an explicit normal-switch entry that
+  performs the complete volatile reset before the raw battler swap. This also
+  closes the former gap where battle-start APIs bypassed all combat-volatility
+  cleanup by calling the low-level swap directly.
+- Baton Pass intentionally retains its raw swap path. Its source
+  `ResetBatonPassStatus` clears only the incoming battler's `LAST_MOVE`, so the
+  regression separately requires `LAST_COUNTER_MOVE` to retain Baton Pass.
+
+# IgnoreSleepOnly preserves history and Encore (2026-09-03)
+
+- A disobedient sleeping Pokémon ordered to use Snore or Sleep Talk takes the
+  special `IgnoreSleepOnly` exit. That routine calls `EndMoveEffect` directly,
+  before `usedmovetext`, and never reaches `.EndDisobedience`; prior
+  `LAST_MOVE`, `LAST_COUNTER_MOVE`, and Encore state therefore remain intact.
+- Rust grouped this result with ordinary loafing, napping, and disobedience
+  self-damage, clearing both history registers and Encore. Only the special
+  sleeping exit now preserves them; the other disobedience outcomes retain
+  their source `.EndDisobedience` cleanup. The regression uses the exact
+  swapped obedience byte that selects this path and locks all three fields.
+
+# Jump Kick crash rewrites the shared damage register (2026-09-03)
+
+- `CheckHit` uniquely preserves `wCurDamage` on a missed Jump Kick or Hi Jump
+  Kick. `GetFailureResultText` then divides that retained value by eight,
+  raises zero to one, writes the crash amount back to `wCurDamage`, and routes
+  it through the ordinary self-damage routine. The rewritten global register
+  remains visible to a Counter acting later in the same turn.
+- Rust applied the correct crash HP loss but left the trainer AI's older
+  scratch amount in its Counter model. Counter could therefore reflect an
+  unrelated scoring value instead of the crash-sized register. Crash
+  settlement now replaces the opponent's observable Counter scratch with the
+  divided amount. A same-turn regression distinguishes a three-HP crash from
+  the seeded twelve-point AI value and requires Counter to consume three.
+
+# Held-item inventory and stat-up timing match Crystal (2026-09-03)
+
+- An exhaustive comparison of Rust held-effect tokens with
+  `constants/item_data_constants.asm` found one Rust-only effect:
+  `HELD_WHITE_HERB`. The optional Generation III pack had injected White Herb
+  and TM01 solely for a removed Pickup ability path, and the turn engine ran
+  White Herb after every action. Crystal has neither item nor behavior. The
+  handler, battle-start initialization state/event, Pickup validation table,
+  and both synthetic items are removed; a full-turn regression proves an
+  unknown modpack White Herb has no hidden runtime activation.
+- Crystal does define seven otherwise-unused entries in
+  `HeldStatUpItems`. `HandleBetweenTurnEffects` runs them after screens and
+  before HP/status berries, raises the selected stage by one, consumes the
+  item only on success, and preserves it when the stage is capped. Rust now
+  implements that complete table at the same boundary and in link-dependent
+  side order, with coverage for Attack, Defense, Speed, both Special stats,
+  Accuracy, Evasion, and the capped case.
+- `HandleBerserkGene` identifies the one special item by the
+  `BERSERK_GENE` item byte. Rust had instead treated every hypothetical
+  `HELD_ATTACK_UP` item as Berserk Gene, giving two stages and confusion at
+  turn start. It now keys that special routine by exact item ID, leaving
+  generic Attack-up effects for the one-stage end-turn table. The source
+  ordering also means a Berserk Gene switched in after the turn-start check is
+  caught by that generic table: it grants one Attack stage and is consumed
+  without confusion before the next turn. Ordinary and Baton Pass switch-in
+  regressions lock this cartridge edge case separately from the normal
+  start-of-turn +2/confusion behavior.
+
+# Between-turn screen and Mystery Berry writes are source-ordered (2026-09-03)
+
+- `HandleScreens` checks Light Screen before Reflect for each battler. Rust
+  iterated those two counters in the opposite order, reversing the two expiry
+  messages when both reached zero together. The screen pass now follows the
+  table-free ASM sequence exactly, with a simultaneous-expiry event-order
+  regression.
+- `HandleMysteryberry` finds the first zero-PP slot and performs a raw byte add:
+  one for Sketch and five for every other move. It never loads base PP and
+  never clamps the result to a calculated maximum. Rust looked up move data
+  and capped the write, producing three PP for a hypothetical three-PP move
+  where the cartridge writes five. The runtime now performs the literal
+  one-or-five write and no longer introduces a move-catalog failure absent
+  from this ASM routine. The source search also starts in the permanent party
+  move list, then mirrors the PP into the active BattleMon slot only when its
+  move ID matches and the user is not transformed. Rust had searched and
+  restored Transform's copied move list instead; it now restores the original
+  party move while leaving copied PP untouched, with explicit split-storage
+  coverage.
+
+# Post-Transform stat commands mutate the live copied levels (2026-09-03)
+
+- Crystal's Transform copies the target's seven stat-level bytes into the
+  user's live BattleMon stat-level region. Every later stat command reads and
+  writes that same region until switching clears Transform. Rust represented
+  copied levels in `BattleTransformState` but continued routing stat commands
+  through the base Pokémon map, so their events and cap checks described one
+  set of levels while damage and accuracy consumed another.
+- A single live-stage accessor now owns the representation split. Ordinary and
+  secondary stat effects, Swagger, Belly Drum, non-Ghost Curse, AncientPower,
+  held stat boosts, Haze, Psych Up, Transform copying, and Baton Pass all read
+  or mutate the effective copied map when Transform is active, while the
+  persistent base map stays untouched. The regression starts from a copied
+  +2 Attack level, applies a +2 command, and requires the live map and event to
+  reach +4 while the base Pokémon remains at zero.
+- X Items now use that same accessor. `XItemEffect` calls `RaiseStat` against
+  the loaded BattleMon stat levels, but Rust's item helper had continued to
+  raise the dormant base map after Transform. Both direct pack mutation and
+  full-turn execution now raise the copied level, preserve the party/base
+  level, and still apply the party happiness change. Core and integrated
+  regressions start from copied Attack +2 and require consecutive X Attacks to
+  reach +3/+4 while the base level remains zero.
+
+# Held status-prevention command family is implemented (2026-09-03)
+
+- Crystal's item-effect vocabulary includes six otherwise-unused prevention
+  effects: poison, burn, freeze, sleep, paralysis, and confusion. Their checks
+  are live in `SleepTarget`, `Poison`/`PoisonTarget`, `BurnTarget`,
+  `FreezeTarget`, `Paralyze`/`ParalyzeTarget`, and
+  `Confuse`/`ConfuseTarget`; Rust had catalogued the tokens only in capture
+  validation and allowed every corresponding battle effect through.
+- Direct commands now report the held item's protection without consuming it.
+  Damaging target commands remain silent, as in the source, and perform the
+  prevention check after their existing-status/type/weather gates but before
+  Safeguard. Direct sleep retains its unusual item-before-already-asleep
+  ordering, while direct poison still reports an already-poisoned target
+  before consulting the item and consults the item before rejecting a
+  different existing status.
+- Regressions cover narrated direct poison, the sleep ordering branch, all
+  four damaging status variants with Safeguard simultaneously active, and
+  silent secondary confusion. Existing status-focused coverage remains green
+  across the full command family.
+
+# Amulet Coin activation follows the held-effect byte (2026-09-03)
+
+- Crystal's `CheckAmuletCoin` passes the sent-out player's item through
+  `GetItemHeldEffect` and compares the result with `HELD_AMULET_COIN`. Rust
+  instead compared the item ID directly with `AMULET_COIN`, which made the
+  battle flag depend on one catalog name rather than the cartridge's held
+  effect and gave modified catalogs the wrong behavior.
+- The sticky `wAmuletCoin` equivalent now travels with the active combat
+  state, is seeded from the authoritative game-state byte, activates from the
+  held-effect catalog on initial resolution and every in-turn player send-out
+  path, and is committed back for Pay Day and trainer-prize doubling. Runtime
+  battle-start and out-of-turn replacement paths consult the same catalog so
+  the flag is visible at the same send-out boundary as ASM. Regressions prove
+  both an arbitrarily named effect-bearing item and a menu switch into one.
+
+# Replacement dialogue preserves SendOutMonText and WithdrawMonText arithmetic (2026-09-03)
+
+- Crystal does not calculate the opposing battler's ordinary HP percentage
+  for the replacement line. `SendOutMonText` multiplies current HP by 25,
+  shifts max HP right twice, and only then divides so the divisor fits in one
+  byte. Rust used `HP * 100 / max HP`, erasing the source's pre-division
+  truncation and selecting a different line at threshold-adjacent values.
+- The visible Rust path now performs the exact shifted-divisor calculation.
+  A 2/21-HP target produces the cartridge quotient 10 and `Go for it,` rather
+  than the conventional quotient 9 and `Your foe's weak! Get'm,`. A nonzero-HP
+  target whose max HP is below four is rejected as the source's non-terminating
+  divide state instead of being assigned an invented percentage; valid
+  cartridge Pokémon cannot reach that malformed boundary.
+- After `BattleTurn` clears `wBattleHasJustStarted`, a link-battle replacement
+  bypasses the HP calculation and always selects `GoMonText`. Rust previously
+  applied the ordinary HP thresholds to link replacements. The replacement
+  helper now keys off the actual link-mode byte and returns `Go!` before even
+  inspecting the divisor, including for the malformed sub-four-max-HP state.
+  Battle entry passes the source's still-set `wBattleHasJustStarted` state,
+  so an initially damaged link opponent continues through the HP-dependent
+  selection exactly as ASM does instead of being flattened to `Go!`.
+- `WithdrawMonText` uses the same truncated divisor but subtracts the current
+  enemy HP from the HP captured at send-out in a wrapping 16-bit operation,
+  then branches on only the quotient's low byte. Rust had saturated that
+  subtraction and used a conventional percentage. The withdrawal path now
+  preserves the wrapping subtraction, shifted divisor, and low-byte branch;
+  regressions cover the 30-percent dialogue boundary, healing above captured
+  HP, and the same documented non-terminating divide state.
+
+# Weather countdown preserves raw-byte underflow (2026-09-03)
+
+- Crystal's `HandleWeather` unconditionally decrements `wWeatherCount` after
+  confirming that a weather type is active. A raw active-weather/count-zero
+  state therefore wraps the count to `$ff`, prints the continuation message,
+  and (for Sandstorm) performs its ordinary damage pass. Rust instead treated
+  zero as a special indefinite state: Rain and Sun returned silently, while
+  Sandstorm dealt damage without advancing or narrating the counter.
+- The end-turn weather boundary now uses byte-wrapping decrement before the
+  ordinary zero-expiry check. A focused raw-state regression requires Rain at
+  count zero to remain active at 255 and emit the matching continuation event;
+  all existing start, continuation, terminal-expiry, and Sandstorm tests stay
+  green.
+
+# Future Sight retains the cartridge countdown register (2026-09-03)
+
+- `BattleCommand_FutureSight` writes `4` to the attacking side's
+  `w*FutureSightCount`. The same turn's `HandleFutureSight` pass decrements it
+  to `3`; later passes land the attack specifically when a decrement produces
+  `1`, after which `BattleCommand_CheckFutureSight` clears the register to
+  zero. Rust instead stored `3` and landed at zero. This kept the usual
+  three-turn delay superficially correct while exposing the wrong register at
+  every boundary and making a raw count-one state attack when ASM silently
+  decrements it inactive.
+- The queued combat state now starts at four, reports three after its queuing
+  turn, lands only on the source's post-decrement-one boundary, and canonicalizes
+  inactive zero as no queued record. Regressions cover queue-turn state,
+  count-two landing, and count-one silent cancellation; all delayed accuracy,
+  variation, Substitute, survival, dual-side ordering, and residual-effect
+  tests remain green.
+
+# Confusion and attraction use the full `$80` RNG split (2026-09-03)
+
+- Both player and enemy `CheckTurn` paths call `BattleRandom` and compare the
+  complete byte with `50 percent + 1`, which assembles to `$80`. Confusion
+  self-damage occupies `$00..$7f`; attraction immobilization occupies
+  `$80..$ff`. Rust masked the low bit instead, retaining a 50-percent frequency
+  but producing different decisions for most cartridge RNG bytes and exposing
+  only `0` or `1` in typed events.
+- The action boundary now records and compares the unmodified random byte.
+  Regressions use `$01` to prove confusion self-damage despite a set low bit
+  and `$02` to prove an attracted battler acts despite a clear low bit. Existing
+  confusion, ordering, Baton Pass/Berserk Gene, Heal Bell, rampage, and Attract
+  integrations were reseeded around the corrected source boundary, and the
+  full core suite remains green.
+
+# Full paralysis preserves RGBDS's literal-percent boundary (2026-09-03)
+
+- Both `CheckTurn` paths compare their random byte with `25 percent`, which
+  RGBDS assembles as `$3f`; unlike the four AI random-failure checks, these
+  comparisons do not add one. Full paralysis therefore occupies only
+  `$00..$3e`, while `$3f` allows the move to continue.
+- Rust used a conventional 64-of-256 threshold and incorrectly stopped the
+  boundary roll `$3f`. The action check now compares against 63, and a raw-byte
+  regression distinguishes it from the nearby source `25 percent + 1`
+  branches that correctly retain a threshold of 64.
+
+# Encore and Wrap preserve their distinct zero-count branches (2026-09-03)
+
+- `HandleEncore` first tests the separate Encore substatus bit, then
+  unconditionally decrements `w*EncoreCount`. An active raw count of zero
+  consequently wraps to `$ff` and remains active when the selected move still
+  has PP. Rust saturated the decrement and ended Encore immediately; its
+  represented active-zero state now performs the cartridge byte wrap.
+- `HandleWrap` does the opposite: it tests `w*WrapCount` itself before any
+  Substitute, animation, release-text, or damage work. A represented trap with
+  count zero is now canonicalized as inactive without emitting the invented
+  release event that Rust previously produced. Focused regressions lock both
+  opposing zero-count boundaries.
+
+# Stage-three critical hits use the ROM's integer quotient (2026-09-03)
+
+- `CriticalHitChances` encodes its +3 entry as `1 out_of 3`. The source macro
+  is `* $100 /`, so RGBDS integer division emits 85 (`$55`), not a rounded 86.
+  `BattleCommand_Critical` succeeds only when the random byte is strictly
+  below that table byte.
+- Rust's handwritten table used 86 and incorrectly treated boundary roll 85
+  as critical. The table now contains the literal ROM value, with a focused
+  Focus Energy + Slash regression requiring `(critical=false, roll=85,
+  threshold=85)`.
+
+# Magnitude retains the inclusive first table boundary (2026-09-03)
+
+- `MagnitudePower` begins with `5 percent + 1`, which emits 13, and
+  `BattleCommand_GetMagnitude` compares that table byte against the sampled
+  byte before taking its `nc` branch. Equality is accepted, so rolls 0 through
+  13 select Magnitude 4; Magnitude 5 begins at 14.
+- Rust advanced roll 13 into the second entry. The exact-breakpoint test now
+  covers both sides of this unusual source boundary, while all later table
+  thresholds remain unchanged and match their inclusive ASM comparisons.
+
+# Zero Disable count is inactive before the action decrement (2026-09-03)
+
+- Both `CheckTurn` branches load the packed `w*DisableCount`, return through
+  `.not_disabled` when it is zero, and only then decrement a nonzero byte.
+  Consequently a raw zero count produces neither state expiry nor
+  `DisabledNoMoreText`.
+- Rust decremented its represented zero with saturation and emitted a
+  `DisableEnded` event. The split state is now canonicalized to no Disable
+  record at that early boundary without an event; ordinary count-one expiry
+  remains unchanged and narrated.
+
+# BrightPowder precedes the ordinary `$ff` accuracy shortcut (2026-09-03)
+
+- `BattleCommand_CheckHit` returns early for Lock-On, rain-boosted Thunder,
+  X Accuracy, and `EFFECT_ALWAYS_HIT`. Every ordinary move instead completes
+  stat modification and the opponent-item lookup first. BrightPowder can
+  therefore subtract its held parameter from a naturally computed `$ff`
+  accuracy byte; only after that subtraction does the command compare the
+  byte with `-1` and potentially skip accuracy RNG.
+- Rust treated every computed `$ff` as equivalent to those explicit early
+  branches and skipped the BrightPowder lookup. An ordinary 100%-accuracy
+  move is now reduced before the `$ff` check, while the source's four genuine
+  sure-hit paths still bypass both the item and RNG. Future Sight's delayed
+  continuation likewise resumes at damage variation and then enters this
+  ordinary item-before-`$ff` boundary. Red-first scripted-RNG regressions use
+  a roll equal to the reduced byte to lock both immediate and delayed misses,
+  including their distinct preceding RNG order.
+
+# Accuracy and Evasion retain two independently floored table passes (2026-09-03)
+
+- `CheckHit.StatModifiers` does not combine the two stat levels into a single
+  net stage. It multiplies the move byte by the user's exact Accuracy table
+  row, divides and floors, then uses that quotient as the input to the inverse
+  Evasion row and floors again. The approximate cartridge ratios therefore do
+  not cancel: base `$ff` at +1 Accuracy against +1 Evasion becomes `$fe`
+  (`floor(floor(255 * 133 / 100) * 75 / 100)`).
+- Rust previously reduced the pair to `accuracy_stage - evasion_stage`, making
+  equal stages an exact identity and using a different table row for every
+  unequal pair. Ordinary, delayed Future Sight, multi-hit/Beat Up's initial
+  check, and OHKO accuracy now share the source's two-pass calculation while
+  retaining Foresight's early bypass. Red-first arithmetic coverage and an
+  OHKO boundary roll lock both the intermediate floor and the resulting RNG
+  decision.
+- OHKO's dedicated Rust path also sampled accuracy RNG unconditionally after
+  those modifiers. The shared ASM `CheckHit` checks the finalized byte for
+  `$ff` first, so an OHKO that still has `$ff` consumes no random byte and
+  cannot fail on roll `$ff`. A zero-read regression now locks that shortcut.
+- A move-table accuracy byte of zero is not another sure-hit sentinel. No
+  canonical Crystal move uses it, but if exact or modified source data does,
+  the first `StatModifiers` division produces zero and the routine raises that
+  quotient to its explicit minimum of one. Rust's invented zero-to-`$ff`
+  fallback is removed; a focused regression requires the source result of one.
+
+# Species critical items short-circuit the remaining tally (2026-09-03)
+
+- `BattleCommand_Critical` checks Chansey/Lucky Punch and Farfetch'd/Stick by
+  their raw species and item bytes. Either match writes critical level two and
+  jumps directly to `.Tally`; it deliberately skips the intervening Focus
+  Energy, high-critical-move, and Scope Lens branches.
+- Rust added the species-item bonus to every later bonus, allowing a focused
+  Chansey using Slash (or the Farfetch'd equivalent) to reach the terminal
+  one-half threshold instead of the source's one-quarter threshold. The tally
+  now preserves the jump and does not require held-effect catalog lookup on
+  either raw special-item branch. A red-first paired regression distinguishes
+  threshold `$40` from the former `$80` result.
+
+# Equal offensive and defensive stages take the critical bypass (2026-09-03)
+
+- `CheckDamageStatsCritical` compares the defender's stage with the attacker's
+  using `cp b` and retains boosted live stats only when that comparison sets
+  carry—that is, only when Defense is strictly lower than Attack. Equal stages
+  take the same unboosted-stat branch as a defensive advantage, despite the
+  nearby source comment describing only a “higher” defensive stage.
+- Because Reflect or Light Screen doubles the live defense before this check
+  and the bypass reloads the unboosted party defense afterward, an equal-stage
+  critical also discards the screen. Rust used `defense > attack`, incorrectly
+  retaining both live stages and screens at equality. Ordinary damage and the
+  wild-enemy Beat Up damage path now use `>=`; red-first coverage proves the
+  equality bypass while a separate offensive-advantage test keeps the source
+  case where a screen still affects a critical hit.
+- The audit descriptions for Beat Up and the multi-hit family were also
+  corrected to reflect `BattleCommand_EndLoop`: only the first iteration runs
+  `checkhit`; later iterations resume at `critical`.
+
+# Critical raw-stat reload discards status and badge modifications (2026-09-03)
+
+- Player and enemy damage first select the already loaded battle stats, which
+  include stat levels, applicable burn, and the player's badge boosts. When
+  `CheckDamageStatsCritical` chooses its bypass, the command replaces both
+  selected words with their raw party-stat counterparts. That reload therefore
+  discards all three live-stat modifications as well as the previously applied
+  screen; species-specific Thick Club, Light Ball, and Metal Powder handling
+  remains later in the command and still applies.
+- Rust's equal-stage bypass reloaded values that had already received badge
+  boosts and then reapplied the attacker's burn penalty. A red-first regression
+  observed those criticals changing from the raw-stat baseline. The bypass now
+  begins from unmodified party stats and gates all stage, status, badge, and
+  screen work together. Wild-enemy Beat Up shares the same equal-stage raw
+  Special Attack/Special Defense rule.
+
+# Badge stat boosts operate on post-stage, post-status live stats (2026-09-03)
+
+- Active-player stat calculation calls `ApplyStatLevelMultiplierOnAllStats`,
+  then `ApplyStatusEffectOnPlayerStats`, and finally `BadgeStatBoosts`. The
+  badge's one-eighth increment is therefore computed from the already staged
+  and, for Attack or Speed, status-penalized battle stat. Initial loading uses
+  the same last-two ordering with neutral stat levels.
+- Rust previously boosted the raw stat before applying its level multiplier
+  and applied Speed's badge before paralysis. A staged Attack regression
+  distinguished damage 597 from the source's 613, and a staged/paralyzed Speed
+  regression distinguished 7 from 6. Damage and turn ordering now follow the
+  source call sequence. The wild-enemy Beat Up specialization also includes
+  the player's eligible Glacier-badge Special Defense before Light Screen,
+  while its qualifying critical bypass still reloads the raw defense.
+
+# Thick Club and Light Ball test the original user through Transform (2026-09-03)
+
+- `SpeciesItemBoost` obtains the player's species with `BattlePartyAttr` and
+  the enemy's from `wTempEnemyMonSpecies`. Neither is the copied
+  `wBattleMonSpecies`/`wEnemyMonSpecies` byte that Transform changes, so the
+  boost follows the user's original species while using its transformed live
+  attacking stat. The held item remains the user's own item.
+- Rust inferred eligibility from the effective transformed Pokémon. A Ditto
+  holding Light Ball and transformed into Pikachu therefore dealt 45 damage
+  instead of the source's unboosted 23. The battle boundary now evaluates the
+  original battler identity and passes only that exact activation into damage;
+  confusion and Present retain their separate source paths that skip or
+  overwrite this boost.
+
+# Future Sight queues from effective live special stats (2026-09-03)
+
+- Future Sight reaches `BattleCommand_DamageStats` and `DamageCalc` before it
+  stores `wCurDamage`. Transform has already copied the target's live species,
+  Special Attack/Special Defense, and stat levels into the battle-mon records;
+  the ordinary player badge and screen modifications are present at that same
+  queue-time boundary. Light Ball and Metal Powder still consult the original
+  species/item authorities described above.
+- Rust's specialized pre-variation calculation read the untransformed stored
+  Pokémon and omitted both sides' player badge-stat contribution. Red-first
+  tests showed a copied Special Attack producing the same stored damage as the
+  original stat and Glacier Badge producing no change. The queue now uses the
+  effective battle Pokémon, applies eligible badges after stat levels, retains
+  Light Screen, and uses original-species item checks before paired truncation.
+
+# Type-boost item multiplier addition retains byte overflow (2026-09-03)
+
+- After matching `TypeBoostItems`, `DamageCalc` loads the held parameter into
+  the eight-bit accumulator and executes `add 100` before storing the
+  multiplier. Parameters above 155 therefore wrap; for example, 200 produces
+  multiplier 44 rather than 300. The following multiply and divide by 100 use
+  that wrapped byte.
+- Rust widened the parameter before addition in ordinary damage, both Beat Up
+  paths, and Future Sight, turning the same parameter into a threefold boost.
+  A red-first regression observed 107 damage instead of the source's 17. One
+  shared quotient helper now performs the byte addition for ordinary turns,
+  trainer AI estimates, party/wild Beat Up, and queued Future Sight damage.
+
+# Type effectiveness is an ordered sparse ASM program (2026-09-03)
+
+- `BattleCommand_Stab` scans `TypeMatchups` in source order and applies every
+  matching row immediately. Each half or double therefore floors the current
+  damage before the scan continues; it is not equivalent to multiplying both
+  defender-type ratios together and flooring once. With an odd intermediate
+  damage of 3, Ground against Grass/Poison executes `3 / 2 = 1` and then
+  `1 * 2 = 2`; Rust's former combined rational left the damage at 3.
+- The table's `db -2` is executable control data, not a second override map.
+  An unidentified target scans through it into the two Normal/Fighting versus
+  Ghost `NO_EFFECT` rows, while an identified target stops at the sentinel and
+  therefore treats those absent pairs as neutral. The old exhaustive-map
+  export erased row order and inverted this Foresight meaning.
+- The exporter and Rust pack schema now preserve the exact pre-sentinel and
+  post-sentinel row arrays. Damage applies matching rows sequentially, absent
+  pairs are neutral, AI/reporting derives its aggregate multiplier by scanning
+  the same ordered data, and pack validation rejects duplicate pairs without
+  demanding invented neutral cells. A red-first dual-type flooring regression,
+  2,118 core tests, 842 assets tests, and the exact-pack Bevy runtime accessor
+  test pass against regenerated canonical packs.
+
+# Transform copies raw and already-loaded battle stats separately (2026-09-04)
+
+- `BattleCommand_Transform` copies both the opponent's five raw BattleMon stat
+  words and the independent `wPlayerStats`/`wEnemyStats` live array. The live
+  copy already contains the opponent's current stages, status penalties, and
+  eligible badge modifications; the transforming user's existing Burn or
+  Paralysis is not reapplied at the copy boundary.
+- Rust previously stored only the copied raw words and reconstructed live
+  values from the transformer's status and badges. A paralyzed Ditto therefore
+  received Speed 10 instead of the copied 43, and a burned Ditto dealt 4 damage
+  where the copied Attack deals 8. Transform now copies the target's
+  first-class per-side loaded array alongside its raw transform image. Speed,
+  ordinary and confusion damage, Future Sight, and trainer-AI damage consume
+  that array, while a qualifying critical still reloads the copied raw words.
+- Burn and Paralysis commands mutate the copied loaded word in place. Haze,
+  Psych Up, Rest, Heal Bell, held status recovery, and successful stat commands
+  replace the array exactly where the source calls `CalcPlayerStats` or
+  `CalcEnemyStats`. Red-first regressions cover copy-time Paralysis and Burn, a
+  post-Transform Speed stage change, in-place Paralysis, and held-cure
+  recalculation.
+
+# Player badge/status order follows the owning stat-load command (2026-09-04)
+
+- Initial `InitBattleMon` loading and the active level-up path apply the major
+  status penalty before `BadgeStatBoosts`. In contrast, the effect-command
+  `CalcPlayerStats` routine first calculates all five staged stats, applies
+  badges, switches turn, and only then applies Paralysis and Burn. Because
+  every step floors integer words, these orders are observably different.
+- Rust previously used stage → status → badge for every read. Combat state now
+  records when a stat command, direct Burn/Paralysis mutation, Haze, Psych Up,
+  Rest, Heal Bell, or held status recovery establishes the badge-before-status
+  live-word order. Speed, damage, confusion, and Transform snapshots honor that
+  state while untouched initial loads retain status-before-badge behavior.
+- A red-first case with raw Attack 23, stage −1, Zephyr Badge, and Burn produced
+  7 under the former order. The source sequence produces staged 15, badge 16,
+  then burned 8; the focused regression and all 2,124 core tests pass.
+
+# Raw-limit stat failures preserve the one-stage rollback bug (2026-09-04)
+
+- `RaiseStat` and `LowerStat` write the requested stage change before testing
+  the corresponding unmodified party-stat word. If that raw word is already
+  999 for a raise or 1 for a drop, the failure branch undoes exactly one stage
+  and skips `CalcPlayerStats`/`CalcEnemyStats`.
+- A one-stage command therefore restores the original stage, but a sharp
+  two-stage command reports failure while leaving a hidden +1 or −1 stage.
+  The already-loaded battle-stat word remains unchanged. Rust formerly accepted
+  the stage change and dynamically exposed it as a successful command.
+- The stat-command boundary now checks the effective raw word (including the
+  raw image copied by Transform), performs the source's single-stage rollback,
+  emits the failure event, and preserves Transform's loaded-stat snapshot.
+  Red-first regressions cover raw 999/1 one-stage failures and both sharp-change
+  rollback directions; all 2,126 core tests pass.
+
+# Loaded battle-stat words are authoritative combat state (2026-09-04)
+
+- Crystal keeps each battler's five underlying raw words separate from the five
+  mutable words used by turn order and damage. Those loaded words are not a
+  pure derived view: commands overwrite or mutate them at specific boundaries,
+  and several source omissions intentionally leave them stale.
+- Rust formerly recalculated most reads from the Pokémon record, with a second
+  temporary cache only for Transform. `BattleCombatState` now owns required
+  player and enemy loaded-stat arrays. Speed, ordinary damage, confusion,
+  Future Sight, Transform, trainer AI, and the wild-enemy Beat Up branch all
+  read them directly. The temporary Transform cache and its invalidation rules
+  have been removed. Wild Beat Up still takes the critical raw-shadow bypass
+  when its stage comparison qualifies, exactly like `EnemyAttackDamage`.
+- Initial player loading performs status then badges. Ordinary switch-in loading
+  preserves the player order and the source's ordinary-enemy status omission;
+  link and Battle Tower enemy loads apply status. Direct Burn and Paralysis
+  mutate the current live word, while source `CalcPlayerStats`/`CalcEnemyStats`
+  boundaries rebuild all five words from exported stage tables in their exact
+  badge/status order. This also preserves the trainer-AI status-heal stale-word
+  behavior until a later calculation command replaces it.
+
+# Belly Drum preserves RaiseStat's hidden raw-limit failure (2026-09-04)
+
+- `BattleCommand_BellyDrum` first invokes the ordinary two-stage Attack command.
+  At raw Attack 999, that command raises the level twice, detects the raw limit,
+  rolls back only once, and returns failure before Belly Drum tests or spends
+  HP. The hidden final level is therefore +1 and the loaded Attack word remains
+  untouched.
+- Rust's bespoke Belly Drum path skipped that preliminary command. It now uses
+  the shared stat-command boundary and suppresses the nested stat event exactly
+  as the parent effect does. The existing low-HP glitch still retains its +2
+  stage, while a successful use finishes at +6.
+
+# Baton Pass's final stage calculation erases status and badges (2026-09-04)
+
+- Both player and enemy Baton Pass paths load the replacement and then call
+  `ApplyStatLevelMultiplierOnAllStats` with the passed levels. That routine
+  reads the untouched raw-stat shadow and overwrites every live word. It thereby
+  erases the switch-in status and badge adjustments, even when a passed level is
+  neutral.
+- Rust now performs this stage-only overwrite after restoring the passed state.
+  A regression passes Speed −2 into a paralyzed replacement and proves the final
+  loaded Speed is the raw stage result rather than the quartered status result.
+  The complete core suite passes with 2,128 tests.
+
+# Active level-up refreshes the five loaded words in source order (2026-09-04)
+
+- After an active participant gains a level, Crystal copies the new level, HP,
+  maximum HP, and (unless transformed) raw stats into the battle records. It
+  then applies current stat levels, major-status penalties, and player badge
+  boosts in that order. A transformed battler instead retains Transform's raw
+  stat image and copied levels while still receiving the new level for damage.
+- Trainer reward synchronization previously replaced the entire Rust combat
+  Pokémon from storage, silently resetting volatile battle fields and leaving
+  the authoritative loaded-stat array stale. The reward boundary now preserves
+  stages, confusion, rampage, Perish Song, Focus Energy, flinching, and battle
+  participation while updating persistent data. It rebuilds loaded stats only
+  when the active recipient actually levels, using the exported multiplier
+  table and the source's status-before-badge order. A focused regression covers
+  a burned, Zephyr-boosted participant at Attack +1.
+
+# Stat experience does not recalculate party stats without a level (2026-09-04)
+
+- `GiveExperiencePoints` writes the five stat-experience accumulators before it
+  checks the recipient's derived level. If that level is unchanged, it jumps to
+  the next participant without invoking `CalcMonStats`. The new stat experience
+  is persistent immediately, but maximum HP and all five calculated stat words
+  legitimately remain stale until a later recalculation boundary.
+- Rust refreshed calculated stats before checking for a level, changing party
+  and battle values after every experience award. That eager refresh is removed;
+  the existing per-level loop remains the only reward path that recalculates.
+  Saved-Pokémon validation now accepts nonzero calculated words at or below the
+  current derivable ceiling rather than rejecting this cartridge-valid stale
+  state, while still rejecting impossible zero or above-ceiling values.
+
+# Level-up move replacement preserves battle state and clears exact Disable (2026-09-04)
+
+- `LearnMove` compares the forgotten move with `wDisabledMove` during an active
+  battle. Only an exact match clears both the disabled-move byte and its count;
+  this happens before the transformed-battler move-copy gate, so Transform does
+  not suppress the clear.
+- Rust's pending replacement synchronized the stored Pokémon by replacing the
+  whole active combat record, erasing stages, confusion, rampage, Perish Song,
+  Focus Energy, flinching, and participation while leaving Disable active. The
+  synchronization boundary now updates persistent data and moves while retaining
+  those volatile fields and the authoritative loaded-stat words, then clears
+  Disable only when its exact move was forgotten. Focused coverage replaces a
+  disabled Growl while retaining a staged, confused live battler.
+
+# Battle level-up happiness precedes evolution and runs once (2026-09-04)
+
+- After `GiveExperiencePoints` has detected and applied any number of gained
+  levels, Crystal calls `LevelUpHappinessMod` exactly once. It compares the low
+  seven bits of the caught-location byte with the current world-map landmark,
+  selecting `HAPPINESS_GAINLEVEL` or `HAPPINESS_GAINLEVELATHOME`, then applies
+  the ordinary below-100, below-200, or high happiness tier.
+- Rust formerly omitted this battle reward entirely, which also prevented a
+  level gain from crossing 220 in time for the immediately following happiness
+  evolution check. Battle reward calls now receive both exact exported change
+  rows and the current exported landmark. The adjustment happens once after all
+  level/stat/move processing and before evolution, while a reward without a
+  level leaves happiness unchanged.
+- An absent caught-data record represents Crystal's zeroed caught-location byte
+  for this comparison rather than a failed match. Regressions cover the zero
+  representation, an at-home multi-level gain receiving only one adjustment,
+  and an Eevee crossing from 219 to 221 before evolving during the day.
+
+# Trainer level evolutions wait for the winning battle exit (2026-09-04)
+
+- `GiveExperiencePoints` does not evolve a Pokémon after each defeated foe. It
+  sets that party slot in `wEvolvableFlags`; only the winning `ExitBattle` path
+  later invokes `EvolveAfterBattle`, which scans the flagged party slots in
+  order. This lets a Pokémon retain its old species through every remaining
+  opponent in a multi-Pokémon trainer battle.
+- Rust previously called `check_and_evolve` inside every individual trainer
+  reward, changing species in the middle of the battle. Game state now carries
+  the exact battle-lifetime evolvable-slot projection, clears it at battle
+  initialization/cleanup, and trainer rewards only set its slot bit. Once no
+  living enemy remains, the flagged party slots are checked and the flags are
+  consumed; wild and standalone single-battle reward paths retain their final
+  battle evolution boundary.
+- A red-first two-opponent regression levels Chikorita on the first Pidgey,
+  proves it remains Chikorita for the second opponent, and then observes the
+  stored flag evolve it into Bayleef only after the final reward.
+
+# Experience recipients follow party-memory order (2026-09-04)
+
+- Each `GiveExperiencePoints` pass initializes `wCurPartyMon` to slot zero and
+  scans upward through the party. The active battler receives no ordering
+  preference; this controls the sequence of experience text, level-up pages,
+  move-learning prompts, happiness changes, and evolvable-flag writes.
+- Rust previously rewarded the active slot first and only then visited the
+  other participants in ascending order. Both active trainer and wild reward
+  paths now execute their participant pass in exact party-slot order while
+  retaining the active recipient as the top-level result. The separate Exp.
+  Share pass remains its own subsequent ascending party scan.
+- Red-first trainer and wild regressions put the active battler in slot one and
+  another eligible participant in slot zero; both now report and queue slot
+  zero before slot one.
+
+# Wild Exp. Share completes both reward passes before evolution (2026-09-04)
+
+- When any fit party member holds Exp. Share, Crystal first halves the enemy
+  reward record and runs `GiveExperiencePoints` for battle participants. It
+  then restores the backup record and runs the routine again for Exp. Share
+  holders. Crucially, that backup is copied only after the record has already
+  been halved, so both scans consume halved base EXP and base stats.
+  `EvolveAfterBattle` is reached only later from the winning
+  `ExitBattle` path, after both complete scans.
+- Rust formerly evolved each wild-battle recipient inside its individual
+  reward call. A holder that had also participated could therefore evolve
+  after the first pass, causing the second pass to use the evolved species'
+  growth curve and learnset. Wild rewards now set the battle-lifetime
+  evolvable slot flags during both passes and scan them only after distribution
+  is complete.
+- A red-first synthetic case starts a level-15 Medium Fast species one point
+  below level 16, gives it Exp. Share, and evolves it into a Slow-growth
+  species. Retaining the original species through two equal 1,814-point reward
+  passes produces the ASM-correct level 19 and only then evolves it. The former
+  unhalved holder pass incorrectly produced level 21.
+
+# Exp. Share restores the already-halved enemy reward record (2026-09-04)
+
+- `GiveExperiencePoints` halves every byte from `wEnemyMonBaseStats` through
+  `wEnemyMonEnd` when any eligible party member holds Exp. Share, then copies
+  that modified range to `wBackupEnemyMonBaseStats`. The holder scan restores
+  the already-halved backup rather than the original enemy record.
+- Rust formerly divided participant EXP/stat experience by two but gave the
+  holder pool the unhalved values. A Pokémon belonging to both scans received
+  150% of the source reward, and a holder outside the participant set received
+  a full rather than half share.
+- Trainer and wild holder scans now retain the initial factor-of-two divisor
+  before dividing among holders. A truncation-sensitive regression with base
+  EXP 65, level 7, two participants, one separate holder, and six base stats of
+  65 produces ordered EXP/stat-exp gains of 16, 16, and 32.
+
+# Evolution stones fail on the selected Pokémon's Everstone (2026-09-04)
+
+- `EvoStoneEffect` reads the selected party Pokémon's held-item byte and jumps
+  to its no-effect path when it equals `EVERSTONE`, before setting
+  `wForceEvolution` or calling `EvolvePokemon`. The item-evolution branch inside
+  `EvolvePokemon` consequently has no separate Everstone check.
+- Rust previously entered its forced item-evolution path directly, so a
+  Pikachu holding Everstone evolved with Thunderstone and reported the stone as
+  consumed. The core item-effect boundary now performs the exact caller-owned
+  check and returns no target change without mutating the Pokémon.
+- A red-first regression observed the incorrect Raichu mutation, HP increase,
+  and consumed result; it now proves the complete Pokémon record remains
+  unchanged.
+
+# Rare Candy applies level-up happiness before evolution (2026-09-04)
+
+- After writing the next level and exact curve EXP, refreshing stats, and
+  preserving the HP deficit, `RareCandyEffect` calls `LevelUpHappinessMod`.
+  Only afterward does it run current-level move learning and `EvolvePokemon`.
+- Rust previously performed the level/stat/move/evolution sequence without any
+  happiness mutation. Rare Candy now receives the same exported
+  `HAPPINESS_GAINLEVEL`/`HAPPINESS_GAINLEVELATHOME` tables and current landmark
+  context used by battle rewards, applies exactly one threshold-selected
+  change, and then evaluates evolution.
+- Core coverage proves a normal level-up changes happiness from 70 to 75 and a
+  high-band 218 Pokémon reaches 220 before the happiness-evolution check. The
+  field transaction regression also proves the loaded pack and current map
+  supply the five-point change while the Candy is consumed normally.
+- The source also overwrites all three party EXP bytes with `CalcExpAtLevel`.
+  Rust formerly kept an anomalously larger saved value with `max`; a red-first
+  level-9/2,000-EXP case now lands at the exact level-10 Medium Fast value of
+  1,000, matching the unconditional cartridge write.
+- `RareCandyEffect` has no level-gain operand: it executes one `inc a` after the
+  max-level check. Definitive item payload validation and runtime application
+  now accept only the exported source increment `1`; positive host values such
+  as `2` no longer create a multi-level Candy mechanic absent from ASM.
+
+# Vitamins mutate only the stat-experience high byte (2026-09-04)
+
+- `VitaminEffect` points at the high byte of the selected two-byte stat-exp
+  field, rejects it only when that byte is at least 100, and otherwise adds 10
+  to that byte while preserving the low byte. The result is not a 16-bit value
+  clamped to 25,600.
+- Rust previously used a saturating 16-bit addition followed by `min(25600)`.
+  At source state `$63ff`, it produced `$6400`; the cartridge produces `$6dff`
+  (28,159). The runtime now performs the literal byte test/write and then runs
+  the existing complete stat refresh.
+- Definitive vitamin payloads are restricted to the source encodings 2,560
+  (`10 << 8`) and 25,600 (`100 << 8`), preventing host-defined arithmetic from
+  replacing the fixed ASM routine. The red-first `$63ff` regression now proves
+  both the overshoot and low-byte preservation.
+
+# HP Up recalculates maximum HP without healing current HP (2026-09-04)
+
+- `VitaminEffect` calls `UpdateStatsAfterItem`, which points `de` at maximum HP
+  and lets `CalcMonStats` overwrite the six calculated stats. It never touches
+  the separate current-HP field.
+- Rare Candy calls that same helper but then explicitly subtracts the old
+  maximum HP from the new maximum and adds the two-byte delta to current HP.
+  Rust previously folded that Rare Candy-only follow-up into the vitamin stat
+  refresh, causing HP Up to heal by the gained maximum HP.
+- Vitamin recalculation now leaves current HP byte-for-byte unchanged while
+  still updating maximum HP and all five other calculated stats. The HP Up
+  regression begins damaged and asserts that only its maximum changes.
+
+# Successful vitamins and bitter medicines apply exported happiness changes (2026-09-04)
+
+- After `VitaminEffect` updates stats and prints the result, it calls
+  `ChangeHappiness` with `HAPPINESS_USEDITEM` before consuming the vitamin.
+  Rust previously left happiness unchanged.
+- The field-item transaction now resolves that exact three-band row from the
+  compiled happiness table and applies it only after a successful vitamin
+  mutation. Preview and committed use share the same path, while a rejected
+  maxed vitamin remains entirely atomic and unconsumed.
+- Successful Heal Powder and EnergyPowder use similarly applies
+  `HAPPINESS_BITTERPOWDER`, Energy Root applies `HAPPINESS_ENERGYROOT`, and
+  Revival Herb applies `HAPPINESS_REVIVALHERB`. Ordinary Potion, status-heal,
+  and Revive paths do not acquire an invented happiness effect.
+- The shared core helper reproduces `ChangeHappiness`'s `<100`, `<200`, and
+  high-band selection, clamps positive and negative overflow to 255 and zero,
+  and returns without changing Eggs. Focused coverage proves all three bands,
+  the upper clamp, Egg exclusion, and an integrated Protein change from 70 to
+  75, while integrated EnergyPowder coverage proves the low-band 70-to-65
+  decrease.
+
+# Stat-raising X Items are consumed at the cap and change happiness (2026-09-04)
+
+- `XItemEffect` calls `UseItemText` before `RaiseStat`, never branches on the
+  stat-up failure flag, and always follows it with `HAPPINESS_USEDXITEM`.
+  Consequently X Attack, X Defend, X Speed, and X Special are consumed even
+  when their target stage is already +6. X Accuracy, Guard Spec, and Dire Hit
+  use separate routines and do not receive this happiness change.
+- Rust previously rejected a capped stat-raising X Item as having no effect and
+  never changed happiness on any X Item path. A capped use now succeeds with no
+  stage delta, consumes the item, and applies the compiled three-band row.
+- The same ASM routine invokes the fixed one-stage `RaiseStat`; it has no
+  payload-controlled magnitude. Definitive validation and runtime application
+  now require `battle_stat_boost_stages == 1`, rejecting host-authored values
+  from 2 through 6 that previously created a stronger non-cartridge X Item.
+- The full battle-turn path stages the happiness mutation immediately before
+  the player item action, after enemy action selection but before the enemy
+  response. This preserves the source ordering for Return/Frustration power and
+  any later faint happiness in the same turn. Direct and recorded battle-item
+  regressions prove the active party/combat copies remain synchronized.
+- X Items now enter the same live `RaiseStat` authority as move commands.
+  Rust formerly changed only the represented stage map and left the five
+  loaded BattleMon stat words untouched, even though damage and turn order
+  consume those words; the apparent boost could therefore be mechanically
+  inert. Successful use now rebuilds the source-loaded words with the exact
+  badge/status ordering. A raw stat already at 999 follows `RaiseStat`'s
+  one-stage rollback and skips recalculation while the item and happiness
+  effects still complete. Focused regressions cover both the rebuilt loaded
+  state and the raw-maximum failure boundary.
+- The exported X Accuracy record retains an `ACCURACY`/one-stage table payload
+  for source provenance, but `XAccuracyEffect` never calls `XItemEffect` or
+  `ChangeHappiness`. Runtime behavior is now classified by its dedicated
+  routine before interpreting that payload: use sets only
+  `SUBSTATUS_X_ACCURACY`, leaves both party and live Accuracy levels at zero,
+  applies no happiness change, and rejects a repeat transaction atomically.
+
+# TMs change happiness after learning; HMs do not (2026-09-04)
+
+- After `LearnMove` succeeds, `AskTeachTMHM` checks `IsHM` and returns
+  immediately for an HM. Only a TM then calls `ChangeHappiness` with
+  `HAPPINESS_LEARNMOVE` and consumes its inventory flag.
+- The Rust TM/HM wrapper now applies the compiled `HAPPINESS_LEARNMOVE` row
+  after a successful consumable TM mutation. Failed compatibility, already
+  known, cancelled/full-moveset, and protected-HM replacement paths remain
+  atomic; successful nonconsumable HMs remain happiness-neutral.
+- Integrated TM/HM regressions distinguish the same learned-move result with
+  happiness 70-to-71 for the TM and unchanged 70 for the HM.
+
+# Gym-leader-class battles change the whole usable party's happiness at start (2026-09-04)
+
+- `InitEnemyTrainer` checks the opponent class against the exact concatenated
+  `GymLeaders` and `KantoGymLeaders` tables. For a match it walks the party in
+  slot order and applies `HAPPINESS_GYMBATTLE` to every Pokémon whose two-byte
+  current HP is nonzero; fainted members are skipped.
+- The runtime now performs that mutation after a new trainer battle is
+  materialized and before its combat snapshot is activated. The exact source
+  class set includes the Johto and Kanto leaders, Elite Four, Champion, and
+  Red; already-defeated trainer requests do not reapply it.
+- An integrated start regression uses Falkner's class and proves 70-to-73 for
+  the living lead while a fainted reserve remains at 70; the later lazy combat
+  snapshot is built from that already-updated party authority.
+
+# Evolution default-nickname replacement is an exact display-byte comparison (2026-09-04)
+
+- `UpdateSpeciesNameIfNotNicknamed` compares the old species name returned by
+  `GetPokemonName` with the stored nickname byte for byte. It replaces the
+  nickname only on an exact match, using the new species' displayed name.
+- Rust previously trimmed the nickname, compared it case-insensitively against
+  the internal species ID, and uppercased the target ID. That renamed a
+  deliberate lowercase nickname such as `bulbasaur`, while failing to update
+  canonical punctuation names whose internal IDs differ from display text.
+- Evolution now compares exact Rust string representations of the canonical
+  display names and writes the canonical target display name. Red-first cases
+  preserve lowercase `bulbasaur` and correctly change default `MR.MIME` to
+  `HO-OH` in a synthetic evolution.
+
+# Successful evolution registers the target as seen and caught (2026-09-04)
+
+- After committing the evolved party structure and running its same-level move
+  learning, `EvolveAfterBattle` calls `SetSeenAndCaughtMon` for the new species.
+  The same evolution routine owns level, stone, and trade evolutions.
+- Rust previously changed species without touching Pokédex state. State-owning
+  battle, deferred move-learning, field-item, and link-trade evolution
+  boundaries now record the evolved species as both seen and caught only after
+  a successful evolution. Cancellable level evolutions retain their provisional
+  Pokémon mutation without Pokédex writes while the visible animation can still
+  be cancelled. Accepting the initial prompt does not register the target: a
+  no-move evolution waits through the evolved text, while an evolution with
+  same-level moves waits through the final learned/did-not-learn result, matching
+  the return from `LearnLevelMoves`. Pressing B restores the source Pokémon
+  without ever registering the target. Forced stone/trade evolutions register
+  immediately. All paths use the
+  full evolved Pokémon record so the source's following `UpdateUnownDex`
+  behavior is also retained; the pure Pokémon transformation remains free of
+  unrelated global state.
+- Link trade application also records the received non-Egg before invoking
+  evolution, matching `AddTempmonToParty`; a resulting target is then recorded
+  by the evolution boundary as a second species.
+- Red-first battle and deferred-evolution regressions assert that cancellable
+  targets remain absent while provisional, including the path that immediately
+  queues a same-level move replacement. Bevy regressions separately prove the
+  no-move, declined-move, replacement-move, and cancellation boundaries.
+
+# Post-battle evolution presentation follows the complete EXP phase (2026-09-04)
+
+- The winning battle path completes `GiveExperiencePoints`, including its
+  participant and Exp. Share scans, before `EvolveAfterBattle` walks every bit
+  retained in `wEvolvableFlags`. A party member flagged against an earlier
+  trainer Pokémon can therefore evolve even when it did not receive EXP from
+  the final opponent.
+- Rust previously attached evolution reports only to the final opponent's
+  reward recipients. The stored Pokémon evolved, but an earlier participant
+  absent from that recipient list had no visible evolution event. Evolution
+  reports are now a separate party-ordered post-battle phase. The Bevy
+  projection emits all recipient EXP, level, and move events first, then every
+  flagged evolution, while retaining the active evolution in the legacy
+  top-level result.
+- A focused regression seeds slot zero as an earlier evolvable participant and
+  lets active slot one alone receive the final opponent's EXP. Slot zero now
+  evolves and is reported with its pre-evolution nickname after the reward
+  recipient phase.
+
+# Trade evolution requires its explicit held-item operand (2026-09-04)
+
+- Every `EVOLVE_TRADE` entry contains a held-item byte. `$ff` is the source's
+  explicit no-item requirement; the exported table represents that exact byte
+  as `-1`.
+- Rust previously interpreted an absent `held_item` field as the `$ff` case,
+  allowing malformed pack data to acquire valid trade-any-item behavior. Table
+  verification now diagnoses the missing operand, and runtime candidate lookup
+  rejects it rather than supplying the sentinel implicitly.
+- Focused coverage distinguishes a missing operand from the explicit `-1`
+  representation while retaining item-specific and Time Capsule behavior.
+
+# Guard Spec is a persistent Mist bit, not a five-turn effect (2026-09-04)
+
+- `GuardSpecEffect` checks and sets `SUBSTATUS_MIST`. It does not initialize,
+  decrement, or inspect a turn counter; the bit persists until the protected
+  battler's volatile state is reset, including on switch.
+- The exporter previously invented a five-turn payload, while a parallel
+  GameState counter neither protected the battler nor expired. Both host-only
+  fields have been deleted from the TypeScript/Rust item schemas, serialized
+  state, runtime projections, verification, and generated pack data.
+- Direct and full-turn item paths now reject a second Guard Spec while Mist is
+  active without consuming it. The direct path materializes and updates the
+  same authoritative combat state used by turns; normal volatile-state switch
+  cleanup clears it. Runtime snapshots expose that boolean directly. Core and
+  integrated regressions cover exact payload validation, repeat rejection,
+  persistence, and volatile-state clearing.
+
+# Trainer substatus items retain their asymmetric repeat behavior (2026-09-04)
+
+- The player-facing `XAccuracyEffect`, `GuardSpecEffect`, and `DireHitEffect`
+  each inspect the corresponding player substatus bit and branch to the
+  not-used path when it is already set.
+- The separate trainer routines `EnemyUsedXAccuracy`, `EnemyUsedGuardSpec`,
+  and `EnemyUsedDireHit` do not perform those checks. Each unconditionally
+  sets the enemy bit and completes the selected inventory-slot use, even when
+  a previous item already set it.
+- Rust previously reused the player's repeat rejection for both battle sides.
+  Full-turn item execution now preserves the player rejection while allowing
+  redundant trainer uses for all three bits. A focused regression starts with
+  every enemy bit set and proves all three trainer items still resolve.
+
+# `ITEMMENU_CLOSE` battle items cannot target reserve Pokémon (2026-09-04)
+
+- `BattlePack.BattleOnly` calls `DoItemEffect` directly and never opens
+  `UseItem_SelectMon`. The source item attributes route X Accuracy, Guard
+  Spec, Dire Hit, and the four stat-raising X Items through this path, so each
+  effect necessarily applies to `wBattleMon`; only `ITEMMENU_PARTY` items
+  expose a selectable party target.
+- Rust's visible Pack already sent those items to the active battler, but both
+  its public pack-backed party mutation and the core full-turn `PartyItem`
+  action accepted an arbitrary reserve index. Either path could consume an X
+  Item and write a transient stage to a reserve record even though no
+  equivalent cartridge input can select that Pokémon.
+- Both authoritative boundaries now reject a reserve target whose exported
+  battle menu is `ITEMMENU_CLOSE` before inventory, RNG, or battle-state
+  changes. Focused core/runtime regressions prove the rejection is atomic and
+  that the same X Attack still succeeds against the active battler afterward.
+- The inverse action-schema boundary is enforced as well: a player's direct
+  `Item` action cannot forge an `ITEMMENU_PARTY` Potion or status healer onto
+  the active battler without selecting a party slot. Trainer-item actions keep
+  their separate source-owned dispatch.
+
+# PP Up cannot be used on Sketch (2026-09-04)
+
+- `RestorePPEffect` names the selected move and then compares its move byte
+  with `SKETCH` before inspecting the packed PP-Up count. Sketch takes the same
+  `PPIsMaxedOutText` retry path as a move that already has three PP Ups, and
+  the item is not consumed.
+- Rust previously treated Sketch like any other one-PP move, incrementing its
+  PP-Up stage even though integer rounding left current and maximum PP at one.
+  The authoritative PP-item helper now rejects the exact `SKETCH` token before
+  mutation. Core and integrated field-item regressions prove the Pokémon and
+  Bag remain byte-for-byte unchanged.
+
+# Forty-base-PP moves cap at 61 PP after three PP Ups (2026-09-04)
+
+- `ComputeMaxPP` divides base PP by five, but caps that per-PP-Up quotient at
+  seven before applying the packed two-bit PP-Up count. The comment names the
+  motivating case explicitly: a 40-PP move must reach 47, 54, then 61 rather
+  than 48, 56, then 64, because 64 would overlap the PP-Up flag bits.
+- Rust's shared `max_move_pp` helper omitted the cap. It now implements the
+  exact quotient boundary, correcting PP restoration, PP Up application,
+  move-use validation, and all field/battle PP displays through their existing
+  common authority. The focused regression also retains the ordinary 35-base-
+  PP maximum of 56.
+- Each use of the sole `PP_UP` item adds exactly `PP_UP_ONE`; the three-stage
+  value is a per-move packed cap, not an item payload. Rust formerly accepted
+  a declared two- or three-stage PP Up and could skip packed progression in a
+  single use. Payload validation and execution now require exactly one stage,
+  with a mutation-atomic two-stage rejection regression.
+- `RestorePP` has only a five-point MysteryBerry branch, a ten-point ordinary
+  Ether/Elixer branch, and full-restoration Max branches. The five-point path
+  always selects one move; party-wide restoration is ten points or full only.
+  Rust formerly accepted any nonzero point count and even a party-wide
+  five-point payload. Validation/execution now enforce the exact point/scope
+  combinations, with focused atomic rejections for seven-point and
+  party-wide-five-point inventions.
+
+# Sacred Ash gates on a fainted member, then fully heals the party (2026-09-04)
+
+- `_SacredAsh` first runs `CheckAnyFaintedMon`, which ignores Eggs and merely
+  decides whether the item can start. Its queued script then calls the ordinary
+  `HealParty`: every non-Egg has major status/sleep cleared, HP copied from
+  maximum HP, and every move restored through `RestoreAllPP` to its
+  PP-Up-adjusted maximum.
+- Rust previously interpreted the exported whole-party percentage as a revive-
+  only operation. It restored only fainted slots, left living party members
+  injured or poisoned, left all PP untouched, and could treat a fainted Egg as
+  an eligible target. The payload also accepted invented partial-heal values.
+- The core now requires the source's exact 100-percent declaration, uses a
+  fainted non-Egg only as the atomic eligibility gate, and records complete HP,
+  status/sleep, and PP recovery for every affected non-Egg. The same shared
+  `HealParty` authorities now honor PP Ups and clear the modeled sleep byte.
+  Core and integrated runtime regressions cover living-member healing,
+  PP-Up-expanded restoration, Egg exclusion, and no-target inventory atomicity.
+- `HealParty` also preflights every non-Egg move against the compiled catalog.
+  The former missing-move branch silently retained stale PP while healing the
+  rest of the Pokémon; it now returns the typed slot/move error before any
+  party or script-runtime mutation.
+
+# Revive half-HP arithmetic does not clamp a zero result (2026-09-04)
+
+- `ReviveHalfHP` loads the two-byte maximum HP and performs `srl d; rr e`, then
+  writes that shifted value directly to current HP. There is no minimum-one
+  correction after the floor division.
+- Rust previously clamped every positive revive percentage to at least one HP.
+  The item authority now preserves the direct floor result; a synthetic
+  one-maximum-HP target therefore remains at zero while the otherwise-valid
+  Revive is consumed, matching the source instruction sequence. Ordinary
+  cartridge species retain their unchanged half-HP outcomes.
+- `RevivePokemon` has only two source branches: `REVIVE` shifts maximum HP
+  right once, while Max Revive and Revival Herb copy maximum HP. Rust formerly
+  accepted any percentage from 1 through 100 and could invent quarter-HP or
+  other revive behavior. Payload validation and execution now accept only the
+  source-semantic 50 and 100 values; the invalid-percentage regression proves
+  rejection before mutation.
+
+# Active party status healers rebuild the copied BattleMon stats (2026-09-04)
+
+- Every accepted player status-healing route calls `HealStatus` after changing
+  the party status byte. For the active party slot, that routine also clears
+  the Toxic and Nightmare substatus bits and calls `CalcPlayerStats`; this is
+  true even for a confusion-only Full Heal or an HP-only Full Restore.
+- Rust's `PartyItem` turn path copied the healed party record into the active
+  battler but left its already-loaded Attack/Speed words and substatus state
+  unchanged unless a major status visibly transitioned to none. A paralyzed
+  active battler could therefore remain at quarter Speed after using its cure.
+- Accepted active-slot status healers now set the source's post-status badge
+  ordering, rebuild all five loaded stat words from the healed state, and
+  clear Toxic/Nightmare. The pack-backed runtime mirror now does the same even
+  when Full Restore healed only HP and the major status was already empty. A
+  full-turn regression proves the Speed restoration, and an integrated
+  regression covers the no-major-status Full Restore path.
+
+# Poison-bit cures include Toxic's modeled status token (2026-09-04)
+
+- Crystal stores ordinary and bad poison under the same `PSN` major-status
+  bit; Toxic's escalating behavior lives in a separate substatus/counter.
+  Consequently Antidote, PSNCureBerry, Full Heal, Full Restore, Heal Powder,
+  and MiracleBerry all accept either kind of poisoning through the same mask.
+- Rust models Toxic as the distinct `BAD_POISON` string, but item matching
+  previously compared that string literally against the exported `POISON`
+  mask meaning. Poison-only and all-status cures therefore reported no effect
+  on a badly poisoned Pokémon. The shared status-mask matcher now treats
+  `BAD_POISON` as a member of `POISON` while preserving exact matching for all
+  other status tokens; a focused regression covers the previously rejected
+  cure.
+
+# Status healers reject fainted targets before inspecting status (2026-09-04)
+
+- `UseStatusHealer` begins with `IsMonFainted` and returns the not-used result
+  immediately. This gate covers individual cures, Full Heal, Heal Powder, and
+  their berry equivalents; a fainted Pokémon retains its status and the item.
+- Rust's ordinary and all-status helpers previously skipped that gate, so a
+  poisoned fainted party member could be cured and consume the item. Both
+  helpers now return the existing typed fainted-target error before any major
+  status, sleep, or confusion mutation. The regression covers both an
+  individual poison cure and Full Heal with exact state preservation.
+
+# Single-target party items reject Eggs at the core boundary (2026-09-04)
+
+- `UseItem_SelectMon` rejects `EGG` immediately after party selection, before
+  dispatching the chosen item's effect. This common gate covers HP/status
+  recovery, Revive, PP items, vitamins, Rare Candy, and evolution stones.
+- Rust's field UI adapter had an Egg check, but the shared effect authorities
+  and in-battle party route did not. Alternate callers could therefore heal an
+  Egg or alter its PP. The active-item, PP-item, and party-special entrypoints
+  now return a typed `TargetEgg` error before payload evaluation or mutation.
+  Sacred Ash retains its distinct source behavior of skipping Eggs while
+  healing every non-Egg. Focused tests prove HP and PP attempts are atomic.
+
+# HP restoration accepts only `HealingHPAmounts` values (2026-09-04)
+
+- `GetHealingItemAmount` reads a closed ASM table: 10, 20, 30, 50, 60, 80,
+  100, or 200 HP, plus the `MAX_STAT_VALUE` entries exported as the full-HP
+  sentinel. There is no caller-defined numeric healing amount.
+- Rust previously accepted every positive `i16`, allowing pack data to invent
+  effects such as a 25-HP Potion. The shared restoration authority now accepts
+  only the source table's values and full-HP sentinel. A focused regression
+  proves an unlisted amount fails without changing the target.
+
+# Repel duration and active-effect rejection are source-exact (2026-09-04)
+
+- The three entrypoints load fixed byte durations before `UseRepel`: Repel is
+  100 steps, Super Repel is 200, and Max Repel is 250. `UseRepel` then checks
+  `wRepelEffect` and refuses the item when any earlier repel remains active.
+- Rust accepted every nonzero `u16` duration, and its public mutation helper
+  overwrote an active repel even though the higher-level bag path happened to
+  precheck it. Validation now accepts only 100/200/250, reports the invalid
+  value in its typed error, and the mutation authority rejects replacement
+  while preserving the existing item and counter. Core regressions cover both
+  invariants; integrated encounter tests remain green.
+
+# Escape Rope exposes only the implemented Dig-warp behavior (2026-09-04)
+
+- `EscapeRopeEffect` enters `EscapeRopeFunction`, which selects the shared
+  Escape Rope/Dig path and restores the saved Dig warp. The exported
+  discriminator for that single behavior is `DIG_WARP`.
+- Rust previously accepted any exact-looking catalog and item mode, including
+  `MOD_WARP`, but the runtime ignored the value and always executed the same
+  saved Dig warp. That made arbitrary labels false authorities and silently
+  routed them through an unapproved fallback behavior.
+- Item-payload, compiled catalog, merge, and direct-use validation now accept
+  only `DIG_WARP`. The item ID remains pack-driven, so a renamed item can use
+  the implemented behavior without inventing a new mode. Focused tests prove
+  unsupported modes are rejected and canonical Escape Rope travel still uses
+  the saved Dig destination.
+
+# A zero saved Dig warp is the ASM “no destination” sentinel (2026-09-04)
+
+- `.CheckCanDig` tests `wDigWarpNumber`, `wDigMapGroup`, and `wDigMapNumber`
+  independently and fails as soon as any byte is zero. In particular, warp
+  number zero is never a usable destination.
+- Rust represented absence as `None` but previously also accepted `Some(0)`.
+  Given an unchecked synthetic index-zero warp, the shared destination helper
+  returned a successful Escape Rope/Dig target that the ASM would reject.
+- The destination authority now treats zero exactly like the absent sentinel,
+  and saved-state validation rejects `Some(0)` so invalid state cannot cross a
+  persistence boundary. Regressions cover both paths.
+
+# Escape Rope opens the Kabuto chamber wall before leaving (2026-09-04)
+
+- The Escape Rope branch of `.DoDig` calls `SpecialKabutoChamber` before it
+  queues the departure script. On `RuinsOfAlphKabutoChamber`, that special
+  sets `EVENT_WALL_OPENED_IN_KABUTO_CHAMBER`; Dig does not call it.
+- Rust's shared Escape Rope path previously validated the saved warp and
+  consumed the item without applying this one map-specific source side effect.
+- A core Escape Rope chamber authority now sets the exact event flag only on
+  the exact chamber map, and the pack runtime invokes it after destination
+  validation and before consumption. Core and integrated regressions cover the
+  positive chamber case and ordinary-cave no-op behavior.
+
+# Flash requires live darkness and opens the Aerodactyl chamber wall (2026-09-04)
+
+- `FlashFunction` checks the Zephyr Badge, calls `SpecialAerodactylChamber`,
+  and permits the move only when that special returns carry or
+  `wTimeOfDayPalset` equals `DARKNESS_PALSET`. The special sets
+  `EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER` on the exact chamber map.
+- Rust previously validated the actor and badge but queued Flash on every map;
+  it also omitted the chamber event entirely. A lit route could therefore use
+  Flash even though the cartridge returns `FieldMoveFailed`.
+- The core now validates the exact exported `dark` palette, implements the
+  Aerodactyl chamber exception and flag, and returns a typed error for ordinary
+  lit maps. The runtime passes the live session map, preserves rejection
+  atomicity, and still defers `STATUSFLAGS_FLASH` to the source
+  `BlindingFlash` callasm boundary.
+
+# Fly destinations are one bounded table selection (2026-09-04)
+
+- `_FlyMap` returns one spawn index selected from the Fly destination table;
+  `FlyFunction` rejects `-1` and every index at or above `NUM_SPAWNS` before
+  storing `wDefaultSpawnpoint`. Crystal's `SpawnPoints` table has exactly 28
+  usable rows, indexed 0 through 27, followed by its `N_A` sentinel.
+- Rust's mutation command previously accepted an unlocked flypoint flag and a
+  spawn identifier as independent caller inputs. An unlocked unrelated flag
+  could therefore authorize travel to any compiled spawn, including a table
+  row not associated with that flag. Spawn catalogs also accepted identifiers
+  beyond the cartridge table.
+- Fly now requires the flag and spawn identifier to match the same compiled
+  destination row before checking its unlock flag or resolving the spawn.
+  Runtime lookup, overlay insertion, and spawn-catalog verification enforce the
+  0..27 domain. Integrated regressions cover unknown flags, mismatched spawns,
+  unset correct flags, and the valid coupled destination.
+
+# Fly catalog verification and menu order match the ASM table (2026-09-04)
+
+- `Flypoints` is a closed ordered table. Its Johto range begins at New Bark
+  Town, its Kanto range ends at Indigo Plateau, and each row couples one
+  landmark to one spawn. The Fly map initializes New Bark as Johto's default
+  and Indigo Plateau as Kanto's default; the default remains selectable even
+  when its visited bit is clear.
+- Rust previously did not verify Fly records against the compiled spawn and
+  landmark catalogs. Its UI also iterated a `BTreeSet` ordered by flypoint flag,
+  silently dropped missing landmarks, and incorrectly made Silver Cave the
+  always-selectable Johto destination.
+- Pack verification now rejects key/record drift, invalid flags or landmarks,
+  out-of-range or missing spawns, missing landmarks, and duplicate spawn or
+  landmark bindings. The shell resolves every landmark explicitly, orders the
+  active rows by the source landmark sequence, and uses New Bark Town and
+  Indigo Plateau as the exact regional defaults. Focused regressions cover the
+  verifier boundary and the Johto default/order behavior.
+
+# Default destinations and last-Center spawn memory are distinct (2026-09-04)
+
+- Crystal stores `wDefaultSpawnpoint` separately from
+  `wLastSpawnMapGroup`/`wLastSpawnMapNumber`. New Game initializes only the
+  default to `SPAWN_HOME`; Fly and post-credits change only the default;
+  Teleport reads the last-Center pair; whiteout reads that pair but falls back
+  to exported `SPAWN_HOME` when it is not a recognized spawn.
+- Rust previously collapsed both WRAM concepts into `last_spawn_identifier`.
+  New Game, Fly, post-credits, and whiteout therefore overwrote Teleport's
+  remembered Center destination, and `WarpToSpawnPoint` incorrectly fabricated
+  a pending script warp from that field even though the ASM special only clears
+  Safari and Bug Contest status.
+- Spawn transitions now preserve last-Center memory. Whiteout performs the
+  exact home fallback without writing it back, `WarpToSpawnPoint` is status
+  cleanup only, and post-credits uses a distinct journaled explicit-spawn
+  transition with `MAPSETUP_WARP`.
+
+# Pokémon Center entry records the outdoor source spawn (2026-09-04)
+
+- `EnterMapWarp.SetSpawn` updates the last-spawn map pair only when the source
+  is a route or town, the destination is indoor, and its tileset is exactly
+  `TILESET_POKECENTER` or `TILESET_POKECOM_CENTER`. It records the outdoor
+  source map, not the Center interior or the current default destination.
+- The shared Rust warp resolver now applies the same environment and tileset
+  predicate and stores the raw source map constant. The authoritative save
+  state no longer collapses the WRAM pair to an optional `SpawnPoints` index,
+  so even a Center source absent from that table remains representable.
+  Teleport and whiteout perform `IsSpawnPoint` only when invoked: Teleport
+  fails for an unrecognized pair, while whiteout uses `SPAWN_HOME`. Unrelated
+  warp and field-travel paths continue to preserve the raw value.
+
+
+PC source-scroll follow-up (2026-09-06): pc_item_scroll is now an explicit
+BevyRuntimeShell field initialized to zero, and the new
+pc_item_list_scroll_matches_source_down_trace regression reads all seven
+records from pc-items-scroll.json. Its behavior is not implemented yet:
+move_visible_pc_item_cursor still delegates to the generic cursor helper,
+and rendering still derives a centered window. Both new PC input tests
+are pending the next pc_item_list_ run after exporter session 8210 ends.
+
+PC empty-list follow-up: PlayerWithdrawItemMenu and PlayerTossItemMenu
+unconditionally enter PCItemsJoypad, even with zero items. Added
+pc_item_list_empty_withdraw_and_toss_open_on_cancel for both actions,
+including A returning to the same action row. It is pending the next
+pc_item_list_ run; current production substitutes "No items here!".
+Canonical export session 8210 remains live and compiling; its process was
+revalidated, and no restart has been made.
+
+Canonical item-name export session 8210 completed successfully, writing
+both desktop and browser packs. Session 51673 is now compiling/running
+cargo test with the Bevy pc_item_list_ filter (four regressions). Keep that
+live session; no observation timeout is a reason to restart it.
+
+PC list verification/fixes: session 51673 finished with the initial full
+screen geometry regression passing against the rebuilt source-name pack.
+The three input regressions failed: Right moved index 0 to 1; empty
+Withdraw left the action absent; source Down #4 retained scroll 0 instead
+of 1. Production now ignores horizontal list input, includes CANCEL in the
+clamped vertical cursor domain, preserves scroll until a four-row window
+edge, draws using explicit scroll state, and opens empty Withdraw/Toss
+lists. A on CANCEL and both B/cancel paths share close_visible_pc_item_list.
+The scroll field participates in the retained presentation hash.
+Session 21041 ended with a compile error (an Option cursor lookup used ?
+without context); fixed that conversion. Session 61199 is the live focused
+rerun. Source cursor/scroll memory across closing/reopening a list and
+post-transfer normalization remain open; entry still resets to row/scroll
+zero, and withdrawal still has older empty-list/lexicographic cursor logic.
+
+Session 61199 passed all four PC list regressions (43.12 seconds): initial
+source geometry, horizontal/cursor/CANCEL behavior, empty lists, and source
+Down-scroll trace. The existing eight PC quantity/transfer checks are now
+running in live session 66702 from the same built test executable with
+pc_item_list_ skipped. Poll that same handle; do not restart it for a
+timeout.
+
+PC transfer baseline session 66702 passed all eight existing tests
+(80.39 seconds). New session 49022 runs six pc_item_list_ regressions,
+adding source row/CANCEL restoration after withdrawal and cursor/scroll
+memory on reopen. The source InitScrollingMenuCursor first clamps scroll
+to max(0, item_count+1-4), then keeps the saved row unless it exceeds the
+remaining list (in which case it resets row/scroll to the first entry).
+Current withdrawal incorrectly searches item IDs lexicographically and
+closes an emptied list. Source resets row/scroll only on entering the
+Player PC session, not each Withdraw/Toss action. Production restoration
+fix is pending the new failing regression output.
+
+Session 49022 reproduced withdrawal selecting index 0 instead of source
+row index 1, and reopening selecting index 0 instead of 5; four earlier
+list tests passed. New restore_visible_pc_item_list_position implements
+InitScrollingMenuCursor's scroll-first/row-second normalization. Withdrawal
+uses it without exiting an empty list; reopening uses persistent pc_item_row
+and pc_item_scroll. Both source Player PC entry points (hub selection and
+PlayersHousePc) reset these fields. Cursor motion and list close retain
+the row; the retained presentation hash includes it. Session 52684 is the
+live six-test rerun. Toss still has its older empty-list/count-minus-one
+cursor code and needs the same source normalization with a regression.
+
+Session 52684 passed all six PC list checks (70.99 seconds), including
+withdrawal row/CANCEL preservation and reopening at row/scroll memory.
+Added pc_item_list_toss_keeps_source_row_and_cancel, covering the same
+three source cases through the actual Toss confirmation/commit path.
+Its red run is now live session 46282; production Toss normalization has
+not been changed yet. Poll that same session before fixing/rerunning.
+
+Session 46282 reproduced Toss clearing its action when the final stack
+was removed (34.99 seconds). Toss now uses the same source position
+normalizer as withdrawal. Combined PC checks are live session 4660 (16
+tests); they also contain new
+pc_item_quantity_question_finishes_before_selector_input, asserting all
+six buttons leave the selector untouched during partial question printing
+and A works after completion. Input gating has not been fixed yet. The
+existing quantity-direction regression now explicitly seeds a completed
+question, matching its intended SelectQuantityToToss phase. Source order:
+MenuTextbox -> PrintText return -> SelectQuantityToToss. Retain the live
+session until terminal output; no restart for timeouts.
+
+Session 4660 finished: 15 PC tests passed (including Toss restoration),
+and the new question timing regression failed because A removed the
+pending quantity while only one question character was visible (147.76
+seconds). Added visible_pc_item_quantity_input_ready and gated the A, B,
+and three directional dispatch paths until the question printer completes.
+Private quantity adjustment/commit routines remain the selector operations;
+only live input dispatch enforces the earlier MenuTextbox phase. Session
+91649 is the active four-test pc_item_quantity_ rerun.
+
+Session 91649 passed all four PC quantity checks (45.66 seconds), including
+all six buttons blocked during partial question printing and A committing
+after completion. The earlier 15 combined PC checks passed before this
+input gate; no full PC/Pokegear parity claim is made.
+
+
+## Native Pokédex Show program (2026-09-06, validation in progress)
+
+Live Pokégear radio still uses fixed transcript aliases, including Oak's
+PlayersRadioText labels for Pokédex Show and Places & People. Replacing
+that path requires the missing source programs, not more alias selection.
+Native radio_program_step line 1 failed with UnimplementedLine(1) in
+session 97730 (1m16s build). Added the caught-bit context, source rejection
+sampling over byte values <251, zero-based caught checks, one-based species
+format effect, initial Pokémon Center song, and complete program sequence
+1->19->20->21->22->85->86->87->1. Repeated cycles preserve printed state.
+RadioProgramText now has a typed source (named label, Pokédex category, or
+Pokédex entry line); static-label callers were migrated without a shim.
+RadioPokedexEntryCursor copies source byte-delimited lines, replacing
+@/NEXT/DEXEND with DONE and skipping the category's four height/weight bytes.
+It does not reflow a flattened description.
+
+The oracle --radio-caught-species option seeds one caught bit before source
+MapRadio/PlayRadio execution. First attempt referenced game before creation;
+corrected setup to emit the same store instructions as other fixtures.
+The completed source capture uses furniture station 2, species 155,
+1800 frames. It includes the selected species and raw source dex entry
+resolved through PokedexDataPointerTable and the source bank table. Retained
+as radio-program-pokedex.json, with 18 prints and 572 total Random calls
+(accepted draws included; earlier commentary incorrectly called all rejected).
+Core tests replay all source text prefixes and resulting textbox tiles,
+plus all captured random calls, caught-only selection and species 251.
+Session 65621 is the live complete radio_text integration rerun. No live UI
+radio owner integration has been done yet; do not claim visible parity.
+
+Session 65621 passed all 14 radio_text integration tests (2m29s build,
+0.04s tests), including all 18 Pokédex Show text/tile replay records and
+572 captured Random calls. Native program validation is complete for this
+covered family; live Pokégear radio integration remains open.
+
+
+## Native Oak radio program (2026-09-06, validation in progress)
+
+The startup regression failed with UnimplementedLine(0) in session 13687.
+Added Oak program states 0,11..18,59..63 in radio_program/oak.rs: intro,
+route/time/encounter-slot rejection sampling, source adverb/adjective order,
+five-segment counter, current-species formatting, and timed channel bumper.
+The source missing-grass-table branch explicitly reprints the retained
+radio buffer and returns to line 0; it does not invent a route fallback.
+Typed effects expose the source bumper's distinct music restart, PrintText,
+WaitBGMap, PlaceString, current/next-line, delay and printed-counter writes.
+Byte decrement wraps at zero for both segment and bumper counters.
+
+Oracle correction: the previous caught-species addition shadowed the
+imported rom_offset helper in main. A new Oak capture reproduced
+UnboundLocalError before dispatch; removed that shadow. Session 19264 then
+captured 4200 source frames, 37 prints, 39 Random calls, and all four
+100-step bumper delays. Loop records now include the source Oak segment
+counter. Retained as radio-program-oak-cycle.json. Tests replay all print
+bytes/tiles, every captured random call, and all 400 bumper delay calls;
+separate tests cover rejected route/time/slot values, the source missing
+route branch, and the full byte domain for both decrementing counters.
+Session 40233 is the live complete radio_text integration run. Formatting
+of encounter/landmark RAM buffers and live UI ownership remain integration
+work; do not claim live radio parity from this native program test.
+
+Session 40233 passed all 18 radio_text integration tests (2m50s build,
+0.06s tests), including 37 Oak source print/tile records, 39 Random calls,
+and all 400 bumper-delay steps. The live radio owner is still not wired;
+Buena remains the missing native program family.
+
+
+## Native Buena radio program (2026-09-07)
+
+Session 35380 reproduced missing line 4. Added radio_program/buena.rs and
+RadioBuenaContext for the updated hour, saved password nibble pair, and
+daily generation flag. States 4 and 64..83 now implement the 18:00 threshold,
+source midnight branches, 11x3 rejection sampling, one-generation flag,
+saved-password reuse, shutdown text order, NoRadioMusic/NoRadioName,
+printed counter resets, and the off-air loop. Typed effects preserve the
+source writes and formatting boundary; live effect execution is still open.
+
+Session 71010 passed 22 radio integration tests (2m34s build, 0.07s tests),
+including all 24 hour values, every valid saved password, and shutdown
+order. The oracle --buena-hour fixture dispatches source LoadStation_BuenasPassword
+through temporary furniture slot 0, seeds the start-hour offset and daily
+flag/password, and leaves source program/printer routines intact. This is
+a program fixture, not evidence of a real furniture Buena station. Captures
+confirmed hHours=18 for 18 night prints with two Random draws, and hHours=0
+for five off-air prints with zero draws. Both have zero explicit pauses.
+Retained radio-program-buena-night.json and radio-program-buena-day.json.
+Session 43536 passed the additional replay test for all 23 exact source
+text prefixes and resulting textbox tiles (7.86s build, 0.03s test).
+All native radio families are represented; the live UI still uses old
+transcript aliases and lacks the unified program/printer/effect owner.
+Full Pokégear parity is not achieved by these native tests.
+
+
+## Live radio owner integration started (2026-09-07)
+
+Inspected the actual frame path: apply_keyboard_input advances only the
+furniture 100-frame hold through advance_visible_map_radio_delay; no Bevy
+code calls radio_program_step or RadioLinePrinter. The furniture renderer
+and visible menu entries return only the quoted station name whenever
+pokegear_map_radio_delay is Some, including Some(0). Portable radio still
+uses fixed transcript aliases. These are live integration gaps, independent
+of the native program tests.
+
+Added pokegear_live_furniture_radio_prints_broadcast_after_initial_hold.
+It activates the actual MapRadio Rocket special, runs 150 updates through
+MinimalPlugins/apply_keyboard_input with a source RTC and tick timer, then
+expects the source first broadcast line ("Ahem, we are") after the hold.
+Session 37015 is compiling that red regression; no production live-owner
+fix has been made yet. Preserve/poll this session rather than restarting
+for a timeout. Upcoming owner must connect program effects, source text
+encoding/RAM bindings, printer/scroll state, presentation/audio and frame
+input ownership, and remove the old transcript path without a fallback.
+
+
+Radio RNG integration boundary (2026-09-07): source Random uses the CPU
+carry input in adc/sbc. The prior radio callback accepted no carry argument.
+Added read-only Random-entry carry capture to the oracle, paired with its
+existing return hook. Completed captures: Oak (95741), Pokédex (86643),
+Places & People (60357), and Buena (91421). Oak has one carry-set draw among
+39 calls; captured Pokédex/PnP/Buena calls are carry-clear. Retained the
+regenerated fixtures with carry_in fields. ASM inspection identifies two
+retry paths needing carry set: Oak rejects encounter slots 0/1 via cp 2,
+and PnP rejects hidden trainers via IsInArray's carry return.
+
+The native callback signature now accepts a bool carry argument. Existing
+call sites temporarily pass false pending the new failing regression;
+this is not the completed RNG fix or a live-runtime fallback. Added
+radio_random_retry_preserves_source_carry_input with both retry paths.
+Session 57455 is waiting for the artifact lock held by still-live Bevy
+regression build 37015. The latter was revalidated with active rustc CPU
+work; do not restart either session for observation timeouts. After 57455
+reproduces failure, preserve carry across those rejection branches and
+assert captured carry values in the fixture replay callbacks. Live radio
+owner implementation remains pending this faithful RNG boundary.
+
+Radio carry correction and live failure confirmed (2026-09-07):
+Sessions 37015 and 57455 both completed with the intended regression failure.
+The live furniture test displayed “Let's All Sing!” after 150 updates instead
+of RocketRadioText1's “Ahem, we are”; the native RNG regression supplied
+false to every draw rather than preserving cp 2 / IsInArray carry.
+Corrected Oak encounter-slot and PnP hidden-trainer retry carry handling.
+Other retry branches explicitly clear carry as their source comparisons do.
+The callback contract now documents the CPU carry input. Replay tests for
+Oak, Pokédex, PnP and Buena assert every oracle-captured carry_in as well as
+random bytes and source text/tiles. Focused red-to-green session 20355 passed;
+full radio_text session 81073 passed all 24 tests (41.87s build, 0.06s tests).
+No build remains live from this checkpoint. The live furniture regression
+remains red: no runtime radio owner has yet been connected. The old fixed
+transcript path must be removed as part of that connection, not retained as
+a fallback. PlayRadioShow's Johto Rocket takeover wrapper also needs owning
+before dispatch (only lines below POKE_FLUTE_RADIO/8 are remapped to 7).
+PC and full Pokégear parity are still incomplete; the overall goal is active.
+
+Stateful radio owner implementation (2026-09-07, in progress):
+Added systems/radio_playback.rs, joining PlayRadioShow's takeover dispatch,
+ordered program effects, PrintRadioLine and RadioScroll. It retains the
+mutated wRadioText buffer, preserves suspended effects rather than replaying
+or skipping them, and owns current/next line, printed count and delay.
+RadioPlaybackHost must execute external formatting/audio/LCD effects and
+resolve source text; it may suspend an effect until its source call finishes.
+This is not yet wired to Bevy: the live furniture regression remains red.
+Added continuous 17-print Rocket replay using exported text labels and
+captured source tile output, plus Oak bumper suspension/order regression.
+Initial compile session 59073 failed on copying a reference to Oak context;
+fixed with copied() before overriding owned delay. Session 85090 is the
+current live focused build (radio_playback_); preserve/poll, do not restart
+for a timeout. No tests for the new owner have completed at this checkpoint.
+
+Radio owner verification and fallible RNG boundary (2026-09-07):
+Session 85090 completed successfully: both continuous Rocket playback and
+Oak suspended-effect ordering checks passed (2m30s build, .01s tests).
+Running its entire radio_text binary passed all 26 tests. The Rocket owner
+check resolves actual exported text by program-selected label and compares
+all 17 source print tile windows; it does not feed oracle text as the runtime
+text source. It also checks 100 decrement calls followed by a separate
+scroll-transition call, and avoids restarting intro music on the next cycle.
+
+RuntimeDividerSource includes finite ReplayDivider and may fail. Changed all
+native radio RNG callbacks to Result<u8, RadioProgramError>, with a Random
+error variant, and propagated errors through selection loops and playback.
+No fabricated byte, panic adapter, or legacy callback shim was added.
+Added an actual CrystalRandom + ReplayDivider exhaustion regression: one
+rejected Pokédex draw consumes the two supplied samples, then the next draw
+returns the exhaustion error. Session 93389 passed (43.26s build); running
+that binary's complete radio_text suite passed all 27 tests (.03s).
+No own build remains live. The Bevy furniture regression remains red and
+live integration still needs to replace the transcript path.
+
+Adapter data inventory: GameDataSet lives in crystal-assets/runtime_commands.rs
+around 1084 and already exposes buena_password_categories, items, pokemon,
+move_names, trainer_class_names, trainers, wild_encounters, pokegear_landmarks,
+pokedex_entries and global_scripts. CrystalRuntime::text_snapshot_for_label
+(lib.rs around 17805) resolves ScriptTextBody from map/global data. Existing
+radio oracle RAM addresses: wMonOrItemNameBuffer=53328, wStringBuffer1=53363,
+wStringBuffer2=53382; radio body encoder currently requires numeric bindings.
+Native RuntimePokedexEntry exposes classification, height/weight digits and
+pages, so preserve original source line delimiters when constructing its
+radio cursor buffer. Runtime-owned RNG/divider is in RuntimeOverworldSession;
+other random mutations stage cloned state/divider and record divider traces.
+Do not introduce a separate radio seed or swallow replay exhaustion.
+
+Native Pokédex radio formatting (2026-09-07):
+Added encode_radio_pokedex_entry in systems/radio_text/encoding.rs and public
+re-export. It constructs the source category/@, two little-endian dimensions,
+and six text lines with NEXT/PAGE/final @ delimiters from RuntimePokedexEntry.
+It preserves catalog ` @ ` line boundaries and two pages, never reflows prose,
+and rejects a layout the source six-line radio cursor cannot consume.
+radio_pokedex_catalog_encoding_matches_all_source_entry_bytes reads all 251
+canonical ASM entry definitions and compares complete encoded bytes. Session
+25112 passed (1m21s build, .02s test). Every catalog species maps directly to
+its source dex_entries filename; no renamed or missing entry exceptions.
+Then changed the Pokédex broadcast replay to use this production converter
+instead of using oracle dex bytes as its input. Full radio_text session 82600
+is now compiling; preserve/poll this specific handle. Bevy live adapter still
+not connected, and furniture regression remains red.
+
+Additional formatting constraint verified: PokegearLandmark.name normalizes
+source <BSP> controls (e.g. source NEW BARK<BSP>TOWN@ becomes NEW BARK TOWN).
+GetLandmarkName copies 18 bytes from the source name into wStringBuffer1.
+Do not blindly treat normalized display names as raw source bytes when
+implementing radio formatting. data/maps/landmarks.asm retains the source
+name labels and quoted control strings. This requires source-preserving
+catalog/export support for the adapter, not a guessed normalization reversal.
+
+Correction to the preceding dex-encoding checkpoint: full suite 82600
+completed with 27 pass / 1 fail. Comparing the generated Cyndaquil buffer
+to actual ROM bytes caught an incorrect page byte: converter and initial
+source-file test both assumed page emitted DEXEND/$5f. The authoritative
+macros/scripts/text.asm defines page as db "@", so its byte is $50. Fixed
+both converter and test to use $50; NEXT remains $4e. The actual ROM buffer
+comparison remains enabled and guards against this shared-assumption error.
+Session 66477 is the current live full radio_text rebuild after that fix.
+Preserve/poll it. Do not report all-entry/ROM parity as verified until this
+corrected build has passed. This is still core formatter work; no Bevy live
+radio fix has been installed yet.
+
+Corrected Pokédex encoding verified (2026-09-07): session 66477 completed
+successfully, all 28 radio_text tests passed (44.29s build, .07s tests).
+This includes the actual ROM-buffer comparison after correcting source
+page to @/$50 and the all-251 source entry comparison.
+
+Raw landmark export regression now added in radio_text_export.rs:
+radio_landmarks_keep_source_coordinates_names_and_controls requires the
+96 source Landmarks rows and named db strings, including literal <BSP> and
+@. Current source_selection_tables does not export them, so this regression
+is expected red. Initial command used wrong bin name pack-core (terminal
+Cargo target error); corrected command uses pack_core. Session 70740 is the
+single current live red-regression build. Last authoritative process check
+showed rustc crystal_core PID3927 active at 91.5% CPU after 1m26s. Preserve
+and poll 70740; do not restart for timeouts. Production raw landmark export
+has not yet been added. GlobalScriptModule.definitions retains all source
+data bodies independently of executable roots, so raw Landmarks and db
+name definitions can be preserved there without adding fake script roots.
+
+PC Select follow-up source verified: engine/events/pokecenter_pc.asm lines
+568..644 enable SELECT, maintain wSwitchItem, use B to clear selection while
+moving, and A/SELECT to invoke SwitchItemsInBag. Source switch_items.asm
+moves/inserts (not merely swaps) and may combine equal item stacks. Selecting
+the same index clears selection; targeting CANCEL while carrying retains it.
+Native PC list currently has cursor/scroll only, no item-move state. Keep
+this as an explicit outstanding PC parity fix, including rendering selected
+row and exact A/B/SELECT ownership, rather than marking PC complete.
+
+Landmark export implementation checkpoint (2026-09-07):
+While session 70740 compiled dependencies, reproduced the missing exported
+Landmarks with a direct Python regression over the actual generated
+StandardScripts catalog (AssertionError: radio source export is missing
+Landmarks). Added collect_landmark_tables and connected it to
+source_selection_tables. It preserves all 96 landmark rows, coordinate
+operands and referenced named db strings, including <BSP>/@; validates row
+arity, numeric coordinates, termination and name references. Raw names are
+not added to executable roots. Current catalog has no colliding source name
+definitions. No generated files have yet been changed by this implementation.
+
+Session 70740 remains live; it may compile the updated exporter test after
+its dependency build completes. Latest authoritative ps showed rustc
+crystal_assets PID4045 at 320.3% CPU after 3m46s. Preserve/poll this handle.
+After focused test passes, run all radio_text_export tests, then run the
+canonical pack_core export to regenerate both catalogs and compiled packs.
+Do not hand-edit generated files. Validate the resulting Landmarks and raw
+NewBarkTownName in both catalogs and compiled definitions. Live Bevy radio
+owner connection and PC Select behavior remain outstanding.
+
+PC implementation note: Bag::switch_item_stacks already delegates to
+switch_inventory_stacks for carried pockets. That helper supports source
+insertion and equal-stack combining, but no public PC inventory entry point
+exists. RuntimeGameShell::switch_bag_item_stacks demonstrates validation.
+Do not reuse switch_visible_pack_item for PC input: it clears selection when
+targeting CANCEL, contrary to source PC move state, which retains selection.
+
+Landmark exporter verification/regeneration (2026-09-07):
+Session 70740 completed after 7m16s, red on `unexpected Landmarks row`.
+The parser had omitted source `assert_table_length KANTO_LANDMARK`, which
+emits no bytes between the Johto/Kanto rows. Added support for that exact
+assertion. Session 71098 ran all four radio_text_export tests and passed
+(5.55s build, .01s tests). Canonical regeneration is now live session 22987:
+`cargo run -p crystal-assets --bin pack_core -- ..`. Its initial output is
+Compiling crystal-core. Preserve/poll this handle; do not restart. Once
+terminal-success, inspect both generated StandardScripts catalogs for all
+96 Landmarks rows and literal NEW BARK<BSP>TOWN@, then verify compiled pack
+runtime definitions. Do not claim regenerated assets until the tool succeeds.
+
+Added two Bevy regressions in menu_and_input.rs, not yet run:
+- pc_item_select_moves_stack_with_a_instead_of_opening_quantity
+- pc_item_select_b_cancels_move_without_closing_the_list
+They use actual select/A/B handlers and source insertion/cancel behavior.
+Run Bevy filter `pc_item_select_` after the export is terminal (to avoid
+reading a pack while regenerated). No PC production fix has been added.
+Core radio has 28 passing tests from corrected session 66477. Live furniture
+radio regression still red; raw catalog work is a prerequisite, not the
+completed runtime connection or full Pokégear/PC parity.
+
+Export wait / PC source audit (2026-09-07): session 22987 remains live and
+has advanced to Compiling crystal-assets. Preserve/poll; do not start the
+PC runtime regressions against a pack while export is still running.
+
+Further PC source requirements for the forthcoming move implementation:
+- ScrollingMenu_ValidateSwitchItem clears an origin at/after list size on
+  menu reentry; targeting CANCEL while already carrying retains selection.
+- ScrollingMenu_PlaceCursor draws source hollow `▷` at column4 on the
+  origin row when it remains within the four visible rows.
+- On stack merge, PCItemsJoypad saves/restores menu screen row and scroll;
+  don't blindly adopt Bag::switch_item_stacks' adjusted target index.
+- PC_PlaySwapItemsSound (pokecenter_pc.asm195) waits for SFX, plays
+  SFX_SWITCH_POKEMON, then waits and plays it again before SwitchItemsInBag.
+  Two same-frame audio requests are not a faithful implementation. Existing
+  PC transfer/release sequences demonstrate WaitSFX ownership and their
+  tests explicitly ensure elapsed frames cannot bypass an active channel.
+  The new move test may need to drive these source waits when that sequence
+  is implemented; preserve the expected insertion and no quantity dialog.
+No production PC change this checkpoint. This turn verified the specific
+live export process and gathered source evidence needed for the next fix.
+
+Compiled-pack verification preparation (2026-09-07): export session 22987
+still live, Compiling crystal-assets. Preserve/poll rather than restart.
+Added Bevy test pokegear_compiled_radio_retains_raw_landmark_names. It uses
+read_verified_compiled_game_pack on both tracked desktop and browser packs,
+then inspects data.global_scripts.definitions: 96 Landmarks rows, exact raw
+NEW BARK<BSP>TOWN@ db operand, and every referenced name definition present.
+This test is not yet run; do not infer pack readiness from the exporter unit
+checks. Run it only after 22987 succeeds, then run pc_item_select_ regressions.
+The direct JSON catalog inspection remains useful but insufficient alone.
+No completed export or PC/live-radio production fix this checkpoint.
+
+Canonical regeneration completed (2026-09-07): session 22987 terminated
+with a real error after compilation: relative repository root `..` caused
+pack write path validation to reject parent-directory traversal. Retried
+with the absolute repository root, not as a timeout restart. Session 76636
+completed successfully and wrote tracked desktop/browser packs. Both
+StandardScripts catalogs now have 96 Landmarks rows, every referenced raw
+name, and exact NEW BARK<BSP>TOWN@. Desktop pack SHA-256 matches its newly
+written provenance. The compiled-definition Bevy test is still pending.
+
+Started Bevy red regression session 5381:
+cargo test --config 'profile.test.package.crystal-bevy.opt-level=0' -p crystal-bevy --lib pc_item_select_ -- --quiet
+It currently compiles crystal-core. Preserve/poll this specific handle.
+After completion, use the built Bevy binary to run
+pokegear_compiled_radio_retains_raw_landmark_names and
+pc_item_text_observation_accepts_cancel_in_empty_and_nonempty_lists.
+The latter is newly added: push_visible_pc_item_dialog_entries treats the
+valid CANCEL index as invalid (count excludes CANCEL), and calls an empty
+source list EMPTY. The actual PC source always includes a CANCEL row.
+Fix the text observation alongside move UI; don't limit parity to pixels.
+No production PC move or observation fix has been made yet.
+
+Compiled landmark runtime data verified (2026-09-07): built a temporary
+standalone Rust audit against the already-built crystal_assets rlib, without
+rebuilding workspace crates. Session 24264 completed successfully. It called
+read_verified_compiled_game_pack for both tracked desktop/browser packs,
+then checked data.global_scripts.definitions for 96 Landmarks rows, every
+referenced db-name label, and exact NEW BARK<BSP>TOWN@. Both passed. This
+proves preservation through compiled serialization/loading, not just JSON.
+The temporary helper path was /var/folders/g4/4th4w0q15ll2y75rjfv993tw0000gn/T/crystal-radio-pack-audit-kor6840c/audit.
+No helper process remains live. Session 5381 (PC Select red regression)
+remains live compiling crystal-assets; last ps showed PID5387 active at
+88.3% CPU after1m21s. Preserve/poll 5381; no timeout restart.
+
+PC sound nuance corrected: PC_PlaySwapItemsSound waits for prior SFX,
+plays the first SFX_SWITCH_POKEMON, then waits for that sound and starts the
+second. SwitchItemsInBag runs immediately after starting the second sound,
+without another WaitSFX. A correct pending sequence therefore needs the
+prior/first waits, but must not keep input locked until the second ends.
+visible_wait_sfx_finished checks pending nonmusic commands and
+transient_audio_playing; existing PC transfer tick branch is the frame/input
+ownership pattern. No production PC move/cancel/observation fix yet.
+
+PC item movement/observation implemented (2026-09-07):
+Session 5381 completed with both intended input regressions red. Important
+root cause: PC Select fell through into registered-item handling and opened
+_MayRegisterItemText, so A/B subsequently belonged to that unrelated notice.
+Session 53295 separately reproduced empty-list observation as EMPTY rather
+than CANCEL.
+
+Production changes:
+- Bag::switch_pc_item_stacks delegates source insertion/combining to the
+  existing inventory helper without returning an adjusted UI index.
+- RuntimeGameShell exposes PC switching and validates the resulting state.
+- Bevy owns pc_item_switch_origin and pc_item_move_sequence, both hashed.
+- Select on PC is routed to PC handling before field-pack/registered items.
+  A while carrying starts placement; B cancels the origin and keeps the list.
+- Pending placement waits for existing SFX, plays first switch sound, waits
+  for it, then starts the second and applies the move immediately. Main tick
+  and direct input gates honor that pending sequence. CANCEL target retains
+  origin; same-item selection clears it; menu row/scroll restore after merge.
+- Origin renders hollow ▷ when distinct from the selected arrow. PC exit
+  clears origin/sequence. Text observation now returns source list/CANCEL
+  rows (including empty list), uses the same four-row scroll window, omits
+  protected-item quantities, and returns an error for invalid state instead
+  of showing a fabricated INVALID CURSOR row. Removed invented EMPTY/title/
+  input-hint lines from this PC item observation helper.
+
+Session 94743 passed both move/cancel regressions after implementation
+(3m16s build,38.15s tests). Test now drives first sound completion and checks
+that second sound starts without another wait. Session 93697 passed CANCEL
+observation (37.14s). Diff whitespace check passed before final local edits.
+No broad PC tests or source hollow-cursor pixel comparison yet.
+
+Next live-input gap found by inspection: has_visible_shell_select_action
+still gates generic menus on !snapshot.ui.window_open, without an explicit
+PC item-list branch. Added pc_item_select_is_available_over_source_pc_window
+using actual script_runtime.window_open. Session 86920 is the current live
+red-regression build, Bevy only; preserve/poll it. After it reproduces,
+allow PC list Select explicitly at that predicate while retaining modal
+input guards, rerun focus, then broaden to pc_item_ checks. Live radio owner
+connection remains pending, overall Pokégear/PC/full ASM parity unfinished.
+
+PC Select parent-window gate correction (2026-09-07): session 86920
+completed red as intended (44.76s build,32.97s test): generic Select
+ownership rejected the PC list while script_runtime.window_open remained
+true. Added an explicit PC item-cursor branch to
+has_visible_shell_select_action after its modal guards and before the
+generic cached-snapshot window exclusions. Session 69913 is now the live
+focused rebuild for pc_item_select_is_available_over_source_pc_window.
+Preserve/poll it. After green, run the built Bevy binary with pc_item_ to
+check the broader affected PC surface; no broader PC run has occurred yet.
+Existing move/cancel and text-observation regressions passed in sessions
+94743/93697. Radio runtime integration and full ASM parity remain open.
+
+PC item verification/source move frames (2026-09-07): session 69913 passed
+Select-over-parent-window regression (42.29s build,33.88s test). Broadened
+using the same binary: session 42752 ran pc_item_ with two test threads and
+passed all 20 tests in341.17s. No need to rerun those unchanged cases merely
+because the next visual regression compiles.
+
+Extended developer oracle with --pc-items-move (requires --pc-items). It
+records cursor/scroll/wSwitchItem/raw inventory and waits for the source
+ScrollingMenuJoyAction hook to resume after sound waits. Captured session
+36503 succeeded against pinned source ROM using tools/asm-oracle/.venv/bin/python.
+Retained fixtures pc-items-move.json and pc-items-move-0.png through-7.png.
+Inputs: initial, Select, Down, Down, A, Select, Down, B.
+Source wSwitchItem: 0,1,1,1,0,3,3,0. Cursor rows:1,1,2,3,3,3,4,4.
+Source tile column4 confirms hollow origin $ec and solid cursor $ed; after
+A the POTION stack is inserted at row3, and B clears the origin only.
+Visually inspected source frame2 and verified raw inventory changes.
+
+Added pc_item_move_render_matches_source_select_place_and_cancel_frames.
+It drives actual native handlers, explicitly completes source SFX waits,
+checks state against every captured frame and compares every160x144 ink
+pixel for all8frames, including cursors, item names/quantities and description.
+This intentionally does not claim inherited CGB palette parity.
+Current live session41851 is the focused Bevy rebuild for that test; preserve
+and poll it. Broader20PCchecks already passed before this added regression.
+Live radio owner integration, PC palette and other overall parity work remain
+incomplete; do not mark the goal complete.
+
+Eight-frame PC render harness correction (2026-09-07): session41851 failed
+before completing its pixel comparison: RenderedTilesetArt retained cached
+entity IDs while the test created a fresh World for each frame. This was a
+harness lifetime mismatch, not evidence of an in-game pixel defect. Moved
+RenderedTilesetArt::default() inside the per-frame World scope, matching the
+existing single-frame audit setup. Images remain shared safely. Session15672
+is the current live focused rebuild; preserve/poll it. The eight-frame
+render comparison is not yet verified. Prior20PCchecks remain passed;
+radio live integration and palette fidelity remain open.
+
+PC item move color audit (2026-09-07): eight-frame ink comparison session15672
+passed. Strengthened the same fixture to compare every RGB5 channel, not just
+ink. Session64421 reproduced native white31,31,31 vs source31,31,16 at frame0
+pixel0,0 (33.48s). PC ClearPCItemScreen retains LoadMapPals BG7; TextboxPalette
+sets attr7 and SetDefaultBGPAndOBP restores inherited wBGPals1. Added strict
+source_map_text_palette selecting environment/time and all LoadSpecialMapPalette
+text-palette cases (mansion replacements affect other palette slots). Introduced
+palette-keyed PC frame cache and explicit-palette frame loading; item list uses
+inherited background and frames instead of party white. Session45592 passed all
+8 complete160x144 RGB5+ink frames (build1m29, test38.00s). Earlier attempt12194
+was a compiler error fixed by using map.attributes.tileset_name and metadata's
+String environment. No build remains running.
+
+Next: quantity popup currently still calls party-white spawn_battle_window.
+Do not blindly recolor based on list fixture: existing quantity fixture is
+isolated via OpenText/ClearScreen and does not establish genuine PC entry
+palette. Capture real PlayerWithdrawItemMenu -> A -> quantity loop and compare
+both popup and speech box before fixing. Existing isolated quantity test only
+checks popup pixels x>=120,y72..95; it does NOT validate speechbox colors.
+Live Pokégear radio still has confirmed stationary-header bug; core RadioPlayback
+has not yet been connected to Bevy. Full goal remains active/incomplete.
+
+Real PC withdrawal quantity entry (2026-09-07): added oracle flag
+--pc-items-withdraw, seeded existing six source stacks, held A until actual
+BuySellToss_InterpretJoypad hook then released, captured None/Down/Up/Right.
+One-frame A was missed (session93736); holding until the source input hook
+fixed capture, no ROM source mutation. Retained pc-withdraw-quantity.json and
+four PNGs. Actual source uses inherited yellow palette throughout and hollow
+item cursor after ScrollingMenu .a_button calls PlaceHollowCursor.
+
+New pc_withdraw_quantity_matches_real_source_menu_frames initially red
+session59227 at frame0 pixel34,17 (solid vs hollow cursor). Runtime audit also
+found spawn_scene_dialog PC list branch returned without rendering pc_notice:
+old isolated popup test manually called unreachable quantity branch in
+spawn_pc_notice. Removed that branch and obsolete isolated-only test. PC list
+now overlays source 20x6 notice and 5x3 selector in inherited palette, uses
+hollow selection during pc_notice, gates counter until question reveal ends.
+New test calls actual spawn_scene_dialog, not manual notice wiring; all four
+full160x144 RGB5 frames PASS session20980 (44.69build,36.13tests). Existing eight
+move-frame RGB5 comparison also PASS session48740 (32.72s). Formatted only own
+new helper/list functions and new regression after successful build; semantics
+unchanged. No live process left.
+
+Next concrete PC issue: Deposit item uses spawn_field_pack_screen, which only
+calls spawn_field_notice and ignores pc_notice/pc_item_quantity. It likely has
+the analogous missing question/selector. Capture PlayerDepositItemMenu through
+DepositSellPack and MenuTextbox before fixing, as Pack's palette differs from
+withdrawal. Broad radio integration remains unresolved as recorded above.
+
+PC deposit quantity/full Pack source audit (2026-09-07): added oracle
+--pc-items-deposit (requires --pc-items-withdraw --pc-items). Seeds real bag
+POTION23 and enters PlayerDepositItemMenu -> DepositSellPack -> A -> quantity
+hook. Captures four None/Down/Up/Right states. Retained four pc-deposit-quantity
+PNGs + JSON; enhanced quantity captures with live VRAM bank1 LCD attrmap.
+Deposit selector(15,9),(16,10), speechbox(0,12),(1,14) all LCD palette0; cursor
+(7,2) attr3. Thus deposit uses Pack palette0 (gender-specific), not inherited
+map BG7, even though TextboxPalette writes RAM attrs7. Tilemap updates retain
+LCD attrs. Oracle now uses correct deposit filenames rather than withdrawal.
+
+Found spawn_field_pack_screen ignored pc_notice/pc_item_quantity. Added shared
+spawn_pc_item_notice, used by withdrawal list and deposit Pack with explicitly
+selected source palettes. Removed repeated-last-palette and clamped-index
+fallback from Pack pixel decoder; missing palette becomes an error. Initial
+scoped deposit overlay regression red54688 at124,75, then green96069
+(50.06build,36.32test); four withdrawal full-frame comparisons still green10801
+33.01s after shared helper extraction.
+
+Expanded regression to pc_deposit_quantity_matches_real_source_menu_frames,
+all160x144 RGB5 channels. Red40024 cursor58,17 exposed solid vs hollow. Fixed
+five rows at y2+2row, full names, quantities below names, hollow cursor during
+PC notice/action popup, 5-row window. Red74032 qty137,25 corrected quantity
+column17 from captured row3 (source tiles17=f1,18=f8,19=f9). Pack headers do not
+set SCROLLINGMENU_DISPLAY_ARROWS, so removed invented arrows. Red24393 icon9,33
+exposed wrong pocket enum mapping: source Items0,Balls1,Key2,TM3 maps graphic
+chunks1,3,0,2 for both genders. Fixed icon AND pocket label selection. Full four
+frames GREEN63570 (45.06build,37.95test). Normal Pack open/cancel render test
+GREEN68546 36.94s (before final icon correction).
+
+After green63570, removed Pack renderer's use of item_display_name fabricated
+INVALID ITEM fallback; strict source catalog names now used directly. Also
+skip CANT_TOSS quantities per PlaceMenuItemQuantity. Formatted only own Pack
+renderer. Current final focused build/test session29210 is LIVE; preserve and
+poll. Full16 tested PC frames do not prove all Pack scrolling/multi-item,
+TM/HM menus, frame choices, deposit completion timing, or general core parity.
+Live Pokégear radio remains unresolved. Do not mark goal complete.
+Final deposit validation29210 terminal0: build51.43s, all four complete source
+RGB5 frames passed36.97s with strict catalog/protected quantity cleanup. No
+own build/test process remains running at this checkpoint.
+
+Pokégear radio species-name source data (2026-09-07): live host integration
+still requires GetPokemonName bytes; PokemonSpecies has identifiers/int_id but
+no source display name. Existing global radio export lacked PokemonNames.
+Regression radio_species_names_keep_source_punctuation_and_all_fixed_slots
+RED97156 (1m29build): missing PokemonNames table. Added strict
+collect_pokemon_names in radio_text_export: exact label/10-byte-width header,
+dname one quoted operand, source encoding <=10 bytes, no embedded @, exact
+251 NUM_POKEMON/253 EGG/256 $100 assertions, no trailing or incomplete data.
+Retains original dname rows in definitions, not fabricated executable roots.
+Malformed-width/terminator/truncation tests added. All6 radio export tests
+GREEN42421, then GREEN26836 with complete source-ROM byte verification.
+
+Retained fixtures pokemon-names.bin (2560 bytes) and pokemon-names.json:
+canonical ROM SHA1 f4cd194bdee0d04ca4eac29e09b8e4e9d818c133, PokemonNames
+bank14 address7384. All256 encoded/padded slots compare byte-for-byte, including
+NIDORAN gender symbols, FARFETCH'D, MR.MIME, EGG and unused slots. Source dname
+pads each name with @ to10; home/names.asm GetPokemonName indexes byte-1
+(wraps0->255), copies10 into StringBuffer1 and writes @ byte10.
+
+Absolute-root export61162 terminal0 regenerated desktop/browser packs
+(dev build1m39). Compiled-loader names audit executable:
+/var/folders/g4/4th4w0q15ll2y75rjfv993tw0000gn/T/crystal-radio-names-audit-6nkz12l7/audit
+compilation69439 terminal0. Audit RUN session24722 currently live: reads both
+verified packs, checks all256 runtime definitions against canonical ROM bytes.
+Preserve/poll it. Radio live UI remains stationary-header failure; no claim of
+broadcast integration. Next work should connect RadioPlayback to real shell
+state/audio/text with complete effect host and true divider/RNG ownership,
+not add a one-station shortcut or seeded/surrogate random fallback.
+Names compiled audit24722 terminal0: both desktop and browser verified loaders
+retain all256 source slots exactly. No own live build/export/audit remains.
+
+Radio text-memory host component (2026-09-07), IN PROGRESS:
+Added public assets module radio_text_memory.rs (lib.rs pub mod only) with
+RadioTextMemory implementing RadioTextEnvironment. It owns weekday, explicit
+RAM strings for D050/D073/D086, current species, encoded dex entry and retained
+RadioPokedexEntryCursor. APIs read typed global text bodies with source RAM
+symbol bindings; exact10+@ PokemonNames slots including0->255; current species
+restoration; Pokédex category/six lines; five-digit Lucky number; raw source
+landmark names preserving BSP; Oak name preservation; catalog trainer class/name
+buffers; all four Buena format families via source catalog indices. Added text
+source dispatcher for Label/PokedexCategory/PokedexEntryLine; RetainedBuffer
+errors because RadioPlayback owns that buffer. No fabricated missing RAM/name
+fallback. This component does NOT yet implement full RadioPlaybackHost or wire
+Bevy radio playback/audio/random/game-state mutation. Do not claim live fix.
+
+Validation session25690 is STILL LIVE (cargo test -p crystal-assets --lib
+radio_memory_formats_compiled_catalogs_like_source_ram -- --quiet). First asset
+lib test build is large: authoritative rustc pid11628 was actively using >200%
+CPU after9m33. Multiple same-handle polls returned running, not failures. NEVER
+restart because slow. Preserve/poll25690 or inspect authoritative ps if handle
+missing. No other own current test/build.
+
+The new regression loads verified desktop pack; compares all256 PokemonNames
+slots with ROM fixture; Cyndaquil StringBuffer1 with actual Pokédex capture;
+seven dex fragments with source prints; Oak preserved name after raw New Bark
+landmark formatting; Lucky00042; all33 Buena words and invalid category/word;
+# BALL source special string; OTIS/FIREBREATHER buffers from Places & People
+capture; RocketRadioText1 encoded source buffer. IMPORTANT: the seven-fragment
+captured comparisons, trainer capture assertions, text-source dispatcher and
+atomic trainer formatting were edited AFTER25690 started compiling. After it
+finishes, format only the new module and run the same focused check again to
+validate latest code. First run may represent earlier test code. Do not stop
+or restart the current build. Current source has no known compiler diagnostic.
+
+Live-host integration findings: runtime story global constants do NOT contain
+trainer class/slot names (YOUNGSTER/JOEY/MYSTICALMAN absent), so numeric PnP
+class/trainer resolution still needs authoritative source mapping, not guessed
+alphabetical catalog ordering. PnP hidden lists always exclude RIVAL1/RIVAL2/CAL,
+so their dynamic naming paths are never used by this radio. Both source class
+and trainer name buffers verified by OTIS fixture; CopyName1 copies class to
+StringBuffer2 before GetTrainerName replacesStringBuffer1. GetLandmarkName
+copies18 WRAMbytes but radio text uses only string through@; this component
+models text strings, not arbitrary WRAM memory reads. Actual LuckyNumberShow1
+calls CheckLuckyNumberShowFlag then ResetLuckyNumberShowFlag ONLY on carry;
+reusing reset unconditionally would be wrong. lib.rs generate_link_battle_random_state
+shows existing direct real CrystalRandom+session.divider ownership precedent;
+radio must likewise preserve real source carries and state, with no surrogate
+randomness. Audio/waits and full radio owner remain next integration work.
+
+Radio text host validation and numeric selection completion (2026-09-07):
+25690 terminal101 after11m40: test loader path contained literal parent segments,
+correctly rejected by verified loader. Fixed test root with canonicalize(),
+kept production path validator. 79346 terminal0 after7m51 build +24.72s test:
+base RAM/species/dex/trainer/Buena/Rocket formatting source comparisons passed.
+
+Extended radio_text_export with collect_radio_trainer_indices reading actual
+constants/trainer_constants.asm. Retains 68 source trainerclass rows (including
+TRAINER_NONE0) under RadioTrainerClasses and each class's ordered const rows
+under RadioTrainerIds_{CLASS}; 546 total slot constants, including unused slots.
+Strict class/slot duplicates, command grammar, permitted source DEF bookkeeping,
+final NUM_TRAINER_CLASSES marker and class count. Tables stay definitions, not
+GlobalScriptRoots. Regression checks FIREBREATHER48/OTIS slot1 and bounds/other
+classes. All7 radio export tests PASS16683 (1m40 build; .07s). Used ephemeral
+profile.test.package.crystal-assets.opt-level=0 for new builds after earlier
+optimized build terminated; did NOT interrupt/restart an active build.
+
+Extended RadioTextMemory with format_source_trainer(class_id,trainer_id),
+format_source_place(PnP index), format_oak_encounter(route,time,slot), and text
+source dispatch. Actual source class and trainer slots resolve to catalog IDs;
+checks class consistency. Map selection uses exported map_id tables, metadata,
+map-to-landmark and raw source names. Oak uses canonical grass table with
+morning/day/night and source middle slots2..4, preserving source Pokémon name
+before landmark write. Added captured OTIS buffers via numeric48/1, PnP index8
+(Cinnabar beta map's landmark), and Oak route13/time0/slot2 from source random
+trace. No guessed display names, alphabetical class order, or fallback map IDs.
+
+Absolute export83667 terminal0 regenerated desktop AND browser packs with all
+new trainer definitions. dev assets opt-level0 build1m36, runtime export slower
+(~5min); prefer normal optimized dev export next time. 26550 assets opt0 lib
+--no-run terminal0 build2m20; produced crystal_assets-b828055f67ce17dd. Full
+captured test73098 terminal101 after208.41s: new source_radio_map returned the
+metadata dictionary's ASM key, but encounter and map_to_landmark keys are the
+metadata NAME. Changed helper to metadata.name (no fallback). Final36971
+terminal0 build27.51s +209.68s test: ALL text-memory source comparisons passed,
+including numeric trainer/places/Oak and prior name/dex/Buena/Rocket checks.
+No own build/export/test remains live.
+
+Note: assets opt0 speeds rebuilding tests but verified pack loader is ~209s
+vs~25s optimized. Existing cfg(test) crate::read_compiled_game_pack can read
+fixture data without repeating whole-runtime verification if future focused
+formatter tests need efficiency; do not weaken production loader or bypass
+required source comparisons. Current passing check DID use verified loader.
+Browser writer clones the same data; only its audio representation differs.
+
+NEXT: actual Bevy RadioPlaybackHost and live owner wiring. All text formatting
+families now have a catalog-backed implementation; no further guessed name or
+numeric-trainer mapping should be needed. Need construct context from source
+selection tables and current state; execute non-text effects (audio, Buena
+state, conditional Lucky reset, explicit LCD waits) in source order; use real
+session.divider/CrystalRandom and preserve carries/state; replace static radio
+transcripts/rendering with RadioPlayback.window and real frame/input ownership.
+Existing live furniture-radio regression remains red (station heading after
+150frames). Full ASM parity, PC perfection and broader requested battle UI /
+utils / duplicate text work are NOT complete; keep full goal active.
+
+Radio prerequisite state repairs (2026-09-07, verification in progress):
+LuckyNumberShow1 calls CheckLuckyNumberShowFlag (countdown) then resets only on
+carry. Rust instead read a duplicate prize-claim bool. 75188 reproduced RED:
+initial zero countdown returned false instead of true with no claim. Added
+LuckyNumberCountdown (remaining_days,last_checked_day), source Friday restart,
+CalcDaysSince 140-day wrap and same-day check behavior. Reset clears the actual
+ENGINE_LUCKY_NUMBER_SHOW engine flag. Removed duplicate lucky_number_show_flag
+from state/raw save/reset and both core/Bevy tests. Seven focused lucky_number_
+checks PASS36189 (test core opt0,2m59). Includes Friday7,Monday4,day139 wrap,
+no double decrement, claim independence and RNG-error atomic rollback.
+
+Found Buena on-demand generation was not source behavior: engine/events/buena.asm
+BuenasPassword only reads wBuenasPassword; radio BuenasPassword4 generates it.
+46825 reproduced three RED failures: daily reset did not clear generated flag;
+save rejected generation_day139 as weekday; quiz consumed8 divider samples.
+Removed duplicate generated/generation_day fields from BuenasPasswordState;
+ENGINE_BUENAS_PASSWORD is the actual wDailyFlags2 flag, and
+ENGINE_BUENAS_PASSWORD_2 is the separate participation flag in wSwarmFlags.
+Daily reset now removes both flags while retaining category/option bytes.
+Removed ensure_buenas_password generation entirely; stored_buenas_password
+reads source password. Moved quiz from random special dispatch to ordinary
+special dispatch. Removed divider_trace from RuntimeBuenaPasswordCommand,
+asset replay and Bevy staging; no RNG shim. Saved references are checked even
+when the broadcast flag is clear, because bytes remain in WRAM. Updated tests
+for ordinary special calls, retained state, strict non-RNG command schema and
+nonzero saved option on RTCday139 with unchanged RNG accumulators. Updated
+Bevy saved-state reference tests and Lucky runtime tests for actual engineflags.
+Core Buena verification42534 is currently LIVE; poll, do not restart. Assets
+focused Buena tests and workspace check remain necessary. No radio live owner
+is connected yet; previous live furniture regression remains red.
+
+Verification update:42534 terminal0, all7 core buena_ checks pass (2m54 build).
+Direct current core test binary crystal_core-f93d3fe84778194f state::tests:::
+all59 passed in.05s.21433 terminal0: all8 assets buena_password_ checks pass
+(5m29 build,.05s tests). No own core/assets test remains live.
+
+Next PC defect confirmed against actual ROM: Pack renderer uses stateless
+visible_window_start (centers selection), and Pack input uses wrapping generic
+move_visible_cursor_slot. Source ScrollingMenu_InitFlags has no wrap flag;
+STATICMENU_WRAP's bit in Pack headers actually means SCROLLINGMENU_ENABLE_FUNCTION3.
+Source scrolls only on window edges and retains offset when moving back up.
+Extended pokegear_trace.py with --pc-items-deposit-scroll (requires --pc-items,
+no --pc-items-withdraw). Seeds six ordinary Items-pocket stacks, calls actual
+PlayerDepositItemMenu, retains LCD/attrmap for12frames including top/bottom
+boundary inputs. Source row/scroll trace: (1,0),(1,0),(2,0),(3,0),(4,0),(5,0),
+(5,1),(5,2),(5,2),(4,2),(3,2),(2,2). Raw captures under
+../tools/asm-oracle/fixtures/pc-deposit-scroll/, names rom-pc-deposit-scroll-N.png
+and pc-deposit-scroll.json.20637 original9frame capture terminal0,23051 expanded
+12frame capture terminal0. Added fullRGB5 comparison
+pc_deposit_pack_scroll_matches_source_in_both_directions in menu_and_input.rs.
+99409 is LIVE red Bevy build/test using BOTH profile.test.package.crystal-bevy
+and crystal-assets opt-level0. Poll it; don't restart. Core/assets test-fixtures
+libraries rebuilding for this profile. No PC scroll production fix yet.
+Planned fix: persistent source pocket scroll positions, edge-clamped Pack
+movement, source InitScrollingMenuCursor restore after list mutations (clamp
+scroll first and preserve row), use stored scroll in renderer and hash it.
+Need preserve each pocket's scroll on switching and reopening, apply same input
+semantics to battle Pack without changing unrelated generic menus. Existing
+field_pack_cursor_positions are absolute; adding [usize;4] scroll offsets needs
+movers, open/reentry, battle pocket switching/economy entry and renderer updates.
+Custom pocket renderer already explicitly errors for missing canonical ASM art.
+Full workspace check still pending after Buena state/command schema migration.
+
+PC scrolling implementation staged while99409's OLD-source test binary was
+already in code generation (rustc Bevy elapsed1m30 verified before edits):
+Added field_pack_scroll_positions[4] and presentation hash. New
+move_visible_pack_cursor_slot handles 5-row edge movement without wrap and
+InitScrollingMenuCursor row-preserving reentry after inventory shrink. Standard
+Items/Balls/Key/TM movers + battle Items use it; battle pocket switching and
+battle Pack entry likewise initialize through it. Generic menu movement stays
+unchanged. Source Pack renderer now uses retained pocket scroll and rejects
+invalid windows instead of centering. Error includes expected surface ID to
+preserve useful invalid-live-cursor diagnostics. Added pocket reentry assertion
+to12frame test, plus small pack_reentry_after_removing_a_stack_preserves_the_source_screen_row
+case (7rows→6rows, scroll2→1 while screen row4 retained). Custom Pack already
+explicitly errors without source art; no custom-art fallback introduced.
+99409 old-source binary crystal_bevy-42f711b8522f2f37 running fullsource test
+(assetsopt0 verified load is slow; lastps at5m25test,55%CPU; do NOT restart).
+51990 cargo check --workspace --all-targets is LIVE and checking new production
+and test changes, after waiting for99409 build lock. Need both terminalresults,
+then new same-profile PC full-frame test build (bothassets/bevyopt0) to verify
+fix. Prior coreBuena7/state59/assetsBuena8 are all terminalpass. Do not confuse
+99409 old-binary expectedRED with a regression of the now-staged fix.
+
+51990 cargo check --workspace --all-targets terminal0 (9m06), only existing
+unused browser_save_path_for_identity warning.99409 OLD-source PC visual test
+terminated101/SIGABRT from test-thread stack overflow before pixel assertions;
+this is NOT a reproduced scrolling pixel failure. Rerun same old binary with
+RUST_MIN_STACK=33554432:52871 LIVE, no rebuild. New-code same-profile green
+build/test60984 LIVE with RUST_MIN_STACK=33554432 and assets/bevy opt0. Old
+binary remains mapped in52871 even when new build replaces on-disk artifact.
+Poll both; do not restart either while live. Need source mismatch result from
+52871 and final full12frame result from60984. Stack size is test harness config,
+not a production fallback. Relevant core/asset tests and workspace check passed.
+
+Radio host source notes gathered while PC verification runs:
+RadioMusicRestartPokemonChannel (pokegear.asm1698) sets radio music state to
+RESTART_MAP_MUSIC, stops MUSIC_NONE, starts MUSIC_POKEMON_CHANNEL. NoRadioMusic
+sets ENTER_MAP_MUSIC after stop. NoRadioName1736 clears columns1..18, rows8..10
+and redraws textbox(0,12); host needs station-name-area state as well as
+RadioPlayback.window (all PlaceRadioString above textbox writes are Buena's
+column2,row9 title). It cannot reduce NoRadioName to changing a semantic label.
+PnP source trainer class count is67 (export RadioTrainerClasses has68 rows,
+including0 and last MYSTICALMAN67 which source excludes). Hidden arrays exported
+by collect_selection_table include shared -1 row; resolve class constants via
+RadioTrainerClasses order, remove sentinel only for context slices. Oak maprows
+resolve metadata.name, not ASM key. PnP progression tests source wStatusFlags
+HALL_OF_FAME bit and full8-bit wKantoBadges; current GameState.hall_of_fame has
+count/entries/spawn_after_champion and badges.kanto boolarray. Must identify
+actual authoritative HOF bit/representation before choosing context field.
+Buena context after this turn must read ENGINE_BUENAS_PASSWORD, not removed
+buenas_password.generated/generation_day; password nibbles remain category/option.
+
+52871 OLD-source large-stack rerun terminal101 after246.29s: exact RGB5
+mismatch frame0 pixel8,120 (nativeblack vs sourcewhite).60984 with scrollfix
+also terminal101 after229.54s at samepixel. Both expose an additional baseline
+Pack description bug: second line is atrow15 instead of sourceNEXT row16.
+The generated Item.description also flattens source next breaks (REPEL: #- MON
+instead of #-\nMON). This was hidden by the quantity question in prior captures.
+Implemented source_descriptions in item_name_export.rs: strict255 source pointer
+slots and label/db/next/@ bodies, preserve newline and hyphens, no wrapping.
+source_names now returns ordered Vec<(ID,name)> so descriptions map by source
+item index. Export writes BOTH name and description to aggregate/modular items.
+New test checks255slots and POTION/REPEL/POKE_BALL exactsource lines. Current
+66672 is LIVE: assetsopt0 pack_core item_name_export tests. Pending successful
+result, run main Rust pack_core exporter with ABSOLUTE repo root (normaldev
+recommended), regenerating both packs. Do not handedit generated data.
+menu_rendering.rs now preserves description lines, validates2rows/18columns,
+draws at14+2*index; normalize_boot_text preserves newlines and expands#.
+Need exporter, new Bevy full12frame verification, and relevantfocused checks.
+The scrolling/reentry helper's small unit test PASS direct new42f711binary .01s.
+51990 workspace check passed BEFORE latest description exporter/renderer edits.
+No old PC test or workspace check remains live; only66672 now live.
+
+66672 item_name_export tests terminal0, both2passed(1m27,.01s).97395 normal
+cargo run -p crystal-assets --bin pack_core -- ABSROOT is LIVE; currently
+compiling optimized assets after core.10858 same bothopt0 Bevy --lib --no-run
+is LIVE queued behind exporter artifact lock; it will build current description
+renderer/test without reading the pack. After both terminalsuccess, run current
+42f711binary PC full12frame test with RUST_MIN_STACK=33554432 and optionally
+POKEGEAR_PC_RENDER_DIR=/tmp/crystal-pc-scroll-audit (newtest now writes12native
+canvasPNGs there for review). Do not run visualtest against stale pack, because
+strict source description lines intentionally reject the old flattened data.
+
+Resolved radio HOF state question: script_runtime.rs1997 sets engine_flags key
+STATUSFLAGS_HALL_OF_FAME_F; special_routines battle_tower_room_menu already reads
+that same key. Use it for PnP context, not count/entries inference. There is no
+ENGINE_HALL_OF_FAME constant in the source map flag table.
+
+97395 main export terminal1 AFTER build9m28: item.description exact-text
+validator rejected MASTER_BALL's new source newline. This left generated JSON
+updated but BOTH compiled packs stale. Must finish main export; no fallback.
+10858 Bevy --no-run terminal0 (9m52 including lock); currentbinary contains new
+source-line renderer. Do NOT run it with stale packs. Added item_description_trace.py
+which reads pinned ROM ItemDescriptions255 pointers and rawbytes from bank0x72,
+address0x4987; fixture item-descriptions.json records all255through@. Exporter
+byte-encodes each retained line plusNEXT0x4e/@0x50 and compares every slot.
+36393 terminal0: all3 item_name_export tests PASS, including all255ROM byte
+comparisons. Exporter source parser is correct; core deserialization is blocker.
+Fixed private Item description validator to allow newline only (still rejects
+padding, CR, tab, NUL; names retain strict single-line validation). New focused
+core test29048 is LIVE using coretestopt0. After terminalpass, rerun normal main
+export; then rebuild current Bevy test with bothassets/bevyopt0 (core library
+changed), then full12frame comparison with RUST_MIN_STACK=33554432 and optional
+POKEGEAR_PC_RENDER_DIR. Don't restart live29048. No other own process live.
+
+29048 focused Item description validation terminal0 (50.32s build,.00s).
+Direct current corebinary all24 models::item::tests:: PASS .01s. Generated JSON
+now confirmed source newlines for POKE_BALL/POTION/REPEL; compiledpacks still
+needsuccessful mainexport.41083 main normaldev export retry is LIVE after this
+private validator fix.86540 bothassets/bevyopt0 --lib --no-run is LIVE queued
+behind41083 build lock. Wait for both, then source12frame run with32MiBstack.
+All255 item-description ROM byte checks already passed36393. No otherownlive.
+
+41083 mainexport terminal1 after2m44: BLK_APRICORN has legitimate source
+"A black APRICORN.\n" (db firstline,next"@"), so whole-string trim was still
+wrong. Source bytes/all255export assertions were right; validation rejected the
+retained terminalNEXT. Added public models::item::is_exact_item_description,
+checking each newline-delimited authored line for padding/othercontrols, allowing
+empty terminal line. Item deserialization and battle_items::item_payload_issues
+now share it (the latter's whole-string trim also would reject terminalNEXT).
+Core explicit test now accepts Apricorn trailing newline, rejects padded trailing
+line instead. Exporter's all255 ROM test now also checks shared Item validation
+for every source description before encoding.17163 is LIVE assetsopt0 pack_core
+item_name_export test after this fix.86540 no-run terminal0 (4m15) but contains
+PRE-Apricorn-validator snapshot; will need current-code rebuild after successful
+export. No liveBevy or mainexport now. Packs stillstale; finishexport first.
+
+17163 terminal0: all3 sourceitem export tests pass including all255 source
+strings accepted by the shared validator AND exact ROM bytes.30799 third main
+export is LIVE: optimized build finished2m45, currently running main without
+reported error (wait for actualterminal).3075 core all24 Item tests terminal0
+(3m13 includinglock,.02s), including Apricorn terminalNEXT case.16519 current
+bothassets/bevyopt0 --lib --no-run is LIVE, started after coretests completed;
+needed for latest shared-validator core change. After BOTH30799 and16519
+success, run new42f711 PC12frame test with32MiBstack + renderdir. README now
+includes commands for deposit scrolling and complete ROM description extraction.
+
+30799 main export terminal0: BOTH desktop and browser packs regenerated with
+source item description lines (including terminalNEXT).16519 currentBevy --no-run
+terminal0 (1m49).40807 is LIVE currentfull12frame comparison using latest42f711
+binary and RUST_MIN_STACK=33554432, POKEGEAR_PC_RENDER_DIR=/tmp/crystal-pc-scroll-audit-20260907.
+84373 is current tinyreentry test (samebinary), started alongside; pollresult.
+All generateddata now current; no mainexport/build remainslive. Do not restart
+40807 while verified pack load runs. Need fullpixels/result, inspectactualnative
+PNGs on success (also saved before assertions for diagnoses). Sourceitemall255
+and latestcore24 checks alreadypassed.
+
+40807 terminal0 after226.34s: ALL12 complete160x144 RGB5 source LCD comparisons
+PASS with currentpack/currentrenderer, covering top/bottomedge no-wrap, downscroll,
+upscrollretention, allsix itemdescriptions, CANCEL blankdescription. Finalextra
+pocket-switch-back checks scroll2 and absoluteindex3 passed. NativecanvasPNGs
+saved under /tmp/crystal-pc-scroll-audit-20260907/pc-deposit-scroll-0..11.png.
+84373 tinycurrent reentryafterstackremoval test also terminal0,.01s. Bothpacks
+are current and exported successfully30799. LatestcoreItem24, all255description
+ROMbytes+validation, coreLucky7/Buena7/state59/assetsBuena8 passed as documented.
+No own build/export/test remains live. Current Bevy opt0+assetsopt0 binary is
+crystal_bevy-42f711b8522f2f37; use32MiB RUST_MIN_STACK and expect~226s verified
+packloading. Earlierrecommended Bevyonlyopt0 withoptimizedassets loads~30s,
+but rebuilding currentoptimizedassets test-fixtures library may take minutes.
+Don't replace an already-running build for speed; choose once before a newbuild.
+
+NEXT PRIORITY stays complete visible Pokégear radio owner/host integration,
+not broaderbattle/utilsaudit yet. CoreRadioPlayback and allformatters available;
+static visible radio transcript path remains wrong and live furniture150frame
+regression remains red. Need contextdata host + exactaudio/flags/RNG/waits/title
+area, connect frame advance, render rawwindow; remove transcriptaliases.
+New Buena state has onlycategory/option; generatedflag now actualENGINE_BUENAS_PASSWORD.
+Lucky countdown separate from claimedENGINE_LUCKY_NUMBER_SHOW. See earliernotes
+for allsourcecalls. FullASMgoal/PCperfection/Pokégearperfection NOT complete.
+
+2026-09-07 radio runtime host/owner checkpoint:
+- Reproduced the live furniture bug in current Bevy binary: session1328
+  terminal101, 224.43s, after150updates still “Let's All Sing!” rather than
+  RocketRadioText1. This is still an OPEN live integration regression.
+- Added RadioLinePrinter::text_at for ordinary PrintText/PlaceString without
+  PrintRadioLine's byte1 mutation or printed counter. Core radio_text integration
+  session11335 terminal0:29 tests, including explicit source bumper coordinates.
+- Added assets radio_host.rs: all external RadioProgramEffect variants, actual
+  RadioTextMemory formatting, Buena stored nibbles/ENGINE_BUENAS_PASSWORD,
+  source Lucky check/reset, four-frame WaitBGMap, ordinary textbox printer,
+  name-area tile overrides, and ordered typed music requests. Source
+  CheckLuckyNumberShowFlag calls ScriptReturnCarry even when invoked by radio:
+  host intentionally preserves its ScriptVar side effect; do not suppress it.
+- Added radio_catalog.rs: exported source trainer IDs/exclusion fallthroughs,
+  Oak grass-route presence and PnP places, no sorted or synthetic selection.
+- Added radio_broadcast.rs: owns RadioPlayback+host+shared Arc catalog, builds
+  context from actual clock/caught flags/HoF status/Kanto badges, uses the same
+  injected CrystalRandom/divider for program selection and subsequent Lucky
+  effects, rolls back owner/game/divider on error. Game clone is skipped on
+  ordinary scroll and suspended printer calls. Music is staged for presentation
+  owner to drain in source order; this module does not play audio itself.
+- Assets host tests session68184 terminal0:2 tests including four-frame wait,
+  Buena name coordinates, music request order, Lucky Friday7day restart,
+  claim-flag clearing, ScriptVar1 then0, exactly4 divider reads with no repeat.
+- Assets real compiled pack owner test session98130 terminal0:201.34s. All17
+  Rocket ROM print records match all120 textbox tiles and printed counters,
+  including live takeover starting station6, source pauses/scrolls and no RNG.
+  Also verifies error rollback for an exhausted Oak selection divider.
+  Test binary crystal_assets-b828055f67ce17dd used assets opt0 and32MiB stack;
+  build1m38s. Arc replaced Rc afterward for Bevy Resource Send/Sync suitability;
+  current production cargo check assets --lib session34250 terminal0,15.37s.
+  Only subsequent core edit was text_at formatting; no behavior changes.
+- No own build/test/export process remains live. Both packs are unchanged from
+  the successful previous source-description export. Do not regenerate for
+  these runtime-only modules.
+
+NEXT: wire RadioBroadcast into Bevy and remove static transcript aliases:
+  BevyRuntimeShell needs optional broadcast state (replace radio_segment), reset
+  on open/close/page/tune/mapradio, hash owner state; sync_visible_pokegear_radio
+  must load owner rather than preplay station music. Native RuntimeGameShell
+  owns runtime and session; destructure to borrow runtime.data() with session
+  state/divider (existing generate_link_battle_random_state precedent).
+  MapRadio battle_results.rs2704 should initialize selected station owner with
+  existing100frame heading hold; advance after hold in deterministic_session.rs
+  around390, respecting suspended text effects/input, then drain typed audio.
+  Audio source pokegear.asm1682: RestartDE sets radio ID and wMapMusic, calls
+  MUSIC_NONE then selected song. PokemonChannel sets RESTART_MAP_MUSIC and
+  plays NONE/channel without changing wMapMusic. NoRadioMusic sets ENTER_MAP_MUSIC.
+  Render raw owner window and optional name rows, expose decoded semantic text;
+  do not use static visible_map_radio_transcript at start_menu.rs703 or its
+  renderer validator at overworld_rendering.rs3204. Furniture renderer13036
+  still always shows heading; portable Radio renderer3559 still flattened text.
+  bitmap_font_char_map supports source tiles and private contraction/PKMN glyphs;
+  beware duplicate map values if reversing HashMap (choose canonical glyphs).
+  Source frame borders are owner tiles79..7e; renderer must respect selected
+  textbox frame. Re-run actual live150frame regression and source rendered
+  captures after integration. Existing static-segment/audio tests may encode
+  old wrong behavior: compare ASM before adjusting expectations.
+Full ASM goal and PC/Pokegear perfection remain incomplete; prioritize this
+live radio integration, then further PC/Pokegear source flow audit.
+
+2026-09-07 LIVE RADIO INTEGRATION VERIFIED checkpoint:
+Previous goal turn was progress (source host/owner verified). This turn wires it
+into production Bevy, removes the static transcript aliases and radio_segment,
+and fixes the reproduced live furniture heading bug.
+- New bevy_shell/radio.rs loads station0..10 RadioBroadcast, advances source
+  frames with runtime.data()/session state+divider, stages audio in source order,
+  renders/observes authoritative textbox tiles. Field replaced with optional
+  broadcast; open/close/page/tune/mapradio lifecycle resets it and hash includes
+  its state. Furniture still renders the source quoted heading for100frames.
+- Source Call suspension exposed from RadioPlayback, so explicit text/WaitBgMap
+  waits own input. B/left (portable) or A/B (furniture) exit before starting a
+  new program call. ASM PokeGear.loop executes jumptable before sprite animations,
+  so updating tuning AFTER the current program call is intentional source order.
+- Opening delay now returns unused ticks, preserving frames beyond the100frame
+  hold in a batched update. Released edges during the hold aren't replayed.
+- Both furniture and portable screen render owner tile rows13..16; source RAM,
+  pauses, scrolls and line choices replace fake PlayersRadioText/LC aliases.
+  No signal has empty displayed text. Name overrides implement NoRadioName and
+  Buena's name writes; observation expands contracted/private font glyphs.
+- RadioHostState retains music_mode as hardware state independently of drained
+  audio requests. Radio owns music while its card is open: normal music sync
+  cannot overwrite it. RestartMusic keeps map/radio song; PokemonChannel keeps
+  that retained song for ExitPokegearRadio_HandleMusic; Stop restores map music
+  on exit. New all-channel resets happen in PlayRadioShow, not LoadStation.
+- Old tests claiming Oak/PeoplePlaces used PlayersRadioText, Buena/music stations
+  had no text, or no-signal showed tuning instructions were removed/corrected
+  against ASM. Retuning check now distinguishes load from program execution.
+
+Verification this turn, all terminal:
+93971 original live150frame furniture regression PASS,227.32s, replacing
+1328's verified “Let's All Sing!” stuck heading with actual RocketRadioText1.
+94734 cargo check -p crystal-bevy --all-targets terminal0; only existing unused
+browser_save_path_for_identity warning. Initial lib check77924 also terminal0.
+13522 source ROM trace/render command terminal0. New optional --radio-render
+captures settled LCD on source line84/delay95 (5frame settle); copied17PNGs
+and full ROM-SHA trace to tools/asm-oracle/fixtures/radio-rocket-render/.
+13629 EXPANDED live150frame+all17rendered textboxes PASS,266.53s. Full160x48
+RGB5 matches for every print; all pixels above row96 remain transparent.
+Source text/control/timing path is real app.update(); subsequent17prints use
+live advance_visible_radio_broadcast. Native captures saved under
+/tmp/crystal-radio-native-20260907/radio-print-0..16.png; visually inspected16.
+41270 current binary furniture100frame hold/B+Aexit/batched150->50leftover
+check PASS,239.81s.
+69749 current binary same-song/different-song/no-signal all-channel audio
+reset and actual play_pending_audio entities check PASS,240.50s.
+Current binary target/debug/deps/crystal_bevy-42f711b8522f2f37, built with both
+Bevy and assets test opt0, RUST_MIN_STACK=33554432. Latest build1m01s.
+All own test/build/oracle sessions are terminal; no process needs resuming.
+No pack export required or performed (runtime-only and oracle/test changes).
+
+Remaining, do NOT claim full parity/perfection:
+- Verify portable radio pixels and all other source station flows (Buena day/
+  night/midnight, Lucky, Oak bumper, Dex, PeoplePlaces) through LIVE integration,
+  not merely previously passing core and formatter checks.
+- ExitPokegearRadio_HandleMusic now restores the correct song, but source
+  RestartMapMusic / PlayMapMusicBike each include a one-frame delay between
+  MUSIC_NONE and restart; current presentation exit queues both immediately.
+  Preserve goal scope and address source exit/WaitSFX choreography too.
+- Audit held/repeated input through source pauses and portable init/card switch
+  timing with actual source traces; explicit waits modeled, not CPU VBlank time.
+- Continue remaining PC/Pokegear flow/pixel audit, then original battle UI,
+  utils, repeated/auto-progress dialogue requirements. Full ASM goal remains
+  ACTIVE and unproven; PC/Pokegear broadly are not yet declared perfect.
+
+
+2026-09-07 PACKAGED POKEGEAR AND LIVE RADIO checkpoint (verification ongoing):
+- Real production defect: compile_runtime_files omitted .rle, so the shipped
+  runtime materialization lacked gfx/pokegear/{clock,phone,radio}.tilemap.rle.
+  Loose-repository rendering tests hid this. Portable live render failed with
+  the actual missing radio.tilemap.rle path (77118), and new pack compilation
+  regression failed on missing clock.tilemap.rle (57742).
+- Main Rust export now copies the three exact source layouts; runtime collection
+  includes RLE; validation requires all three nonempty files for real bundles.
+  Pack regression 31300 PASS, source byte equality and each removed-file rejection;
+  three compiled pack identity checks PASS. Main export 69318 terminal0 rebuilt
+  both desktop and browser packs. No materialized-file workaround/fallback.
+- Renderer now propagates layout loading errors instead of losing their cause.
+- Live radio idle countdown wrongly rebuilt snapshots and redraw keys every
+  frame (90303 red). RadioHost tracks actual GameState effects/RNG; tiles-only
+  changes invalidate presentation, idle frames reuse cached snapshots. Render
+  key hashes visible tiles/name and heading transition, not internal countdown.
+  Bevy lib check 4308 PASS. New live assertions cover Arc identity and render key.
+- New ROM oracle fixtures for eight furniture scenarios and portable Buena day/
+  night include all completed prints and settled LCD captures. RNG stimuli are
+  legal synthetic DIV bytes reproducing ROM choices/caller carry, explicitly
+  NOT captured CPU timing. Native/source Dex setup now sets seen AND caught.
+- Before pack repair, 66910 matched Buena day7/night22, Lucky18, Oak38 rendered
+  textboxes then rejected the invalid Dex fixture. Corrected fixture and source
+  recapture; this was fixture setup, not a production regression.
+- Existing broad PC/Pokegear render audit now uses shell.asset_root (shipped
+  materialized pack) rather than loose repository assets.
+- Current rebuilt-pack verification sessions: 17135 portable full screens,
+  36882 eight radio station textbox sequences, 70065 packaged PC/Pokegear audit.
+  Poll these same sessions to terminal; do not kill/restart for slow pack loads.
+
+Terminal results for the rebuilt-pack runs above:
+- 17135 PASS264.31s: all29 portable Buena day/night complete160x144 RGB5 LCDs.
+- 36882 PASS285.50s: all137 textboxes across eight source broadcast scenarios;
+  exact source tile streams, RGB5 textbox pixels, transparent map area, source
+  Random call count, and snapshot/render-key reuse during idle countdowns.
+- 70065 PASS260.71s: all37 packaged Clock/Phone/Radio/PC audit surfaces render
+  within the Game Boy screen with no font/layout error. This bounds/render check
+  alone is not a source pixel parity claim; independent comparison follows.
+
+Independent pixel verification terminal0:
+- 68989 all29 portable frames also pass compare_ui.read_lcd's full scaled-pixel
+  uniformity and opaque-alpha checks, with zero RGB5 differences.
+- 32874 all37 packaged PC/Pokegear captures independently match the retained
+  original-ROM LCD captures in /tmp/crystal-pokegear-pc-audit. Zero RGB5 pixel
+  differences, no missing references, no transparent/nonuniform scaled pixels.
+  Includes Clock, Phone lists/submenus/call/hangup/deletion, no-signal Radio,
+  PC deposit/refusal, withdraw/cry/success/release, Move/save/restore, and stats.
+  These are static source-matched screens, not proof of every input/timing flow.
+- Next reproduced candidate: apply_runtime_hotkeys/apply_visible_runtime_controls
+  are separate from the frame updater. Updater's suspended radio early return
+  does not block the later hotkey system. Portable Radio also checks hJoyLast
+  B/Left in ASM, but native uses press edges and generic direction-repeat delay.
+  New focused suspended/held-B regression being prepared (source Rocket line55
+  includes the real TextCommand_PAUSE). Initial fixture accidentally chose line7
+  without PAUSE; correct test source now selects line55. Session40861 still runs
+  the first binary; let it finish, then rerun corrected fixture before fixing.
+
+Radio input follow-up:
+- 40861 terminal101222.08s was the acknowledged invalid fixture (line7 has no
+  PAUSE). Corrected to source Rocket program55/TextCommand_PAUSE.
+- 99976 terminal101223.67s is the real red: "B must not interrupt the source
+  radio printer". The separate hotkey pass cancels a live suspended source call.
+- Implemented shared radio input ownership in the noninteractive-input guard;
+  retain a per-tick lock through the returning call's completion frame. Clear
+  it at the next authoritative update; initial furniture hold also blocks the
+  later hotkey pass. Portable hJoyLast B/Left precede generic tuning input, and
+  the frame updater does not advance the broadcast before those held exits.
+- Strengthened test checks completion-frame lock and held-B exit on the next
+  loop. 48242 current build/test LIVE, awaiting terminal verification.
+
+Further terminal results and continuation:
+- 48242 PASS213.71s (build1m46): radio PAUSE blocks B, completion frame remains
+  owned by the suspended call, held B exits at the next loop without a new edge.
+- 84630 cargo check -p crystal-bevy --all-targets PASS1m37; only pre-existing
+  browser_save_path_for_identity dead-code warning.
+- Direct runtime materialization fixture check exposed a now-incomplete test
+  bundle (required RLE missing). complete_required_runtime_files now includes
+  source-byte card layouts and materialization asserts their exact bytes too.
+  86766 focused runtime_file_ checks LIVE; two furniture-radio integration
+  sessions37823/21838 LIVE. Poll to terminal, don't restart slow live checks.
+- Female source Pokégear capture40583 terminal0 under
+  /tmp/crystal-pokegear-female-20260907; NOT yet compared against native female
+  screens. Source oracle --player-gender1, canonical ROM unmodified.
+Remaining: one-frame radio exit music gap / full quit WaitSFX choreography,
+held Clock/button/card transitions and tuning cadence against ASM, further
+PC/Pokegear flow coverage (including female screens), then original battle UI,
+utils/repeated/auto-progress dialogue. Full ASM parity remains ACTIVE, unproven.
+
+2026-09-07 FINAL TERMINAL CHECKPOINT for this batch:
+- 21838 PASS260.37s: furniture100frame hold, A/B exit rules and batched leftover
+  radio ticks remain correct after the shared input guard.
+- 37823 PASS264.89s: actual app.update150frame furniture entry and all17 Rocket
+  source RGB5 textboxes still match after the radio input fix.
+- 86766 first materialization-fixture rerun terminal101: unrelated stale minimal
+  Oak-intro fixture lacked WOOPER_IDLE (now required by existing validation).
+  Added its explicit synthetic idle animation alongside its synthetic main
+  animation; did not weaken production validation or add runtime fallback.
+- 41952 PASS0.36s (build39.18s): all3 runtime_file_ materialization/cache identity/
+  path validation checks. Card layouts are verified at their real mounted paths.
+All own oracle, export, compile, comparison and test sessions are TERMINAL.
+Latest Bevy test binary42f711b8522f2f37 includes all input and fixture changes.
+No further pack export needed for the later Bevy-only input changes.
+Do NOT call PC/Pokegear perfect: static37screens, portable29frames, furniture137
+broadcast textboxes and live Rocket17frames match their specific source fixtures;
+full exit timing and held-card/tuning transitions remain to implement/audit.
+Next priority: source PokeGear.done's DelayFrame/PlaySFX/WaitSFX exit sequence and
+ExitPokegearRadio_HandleMusic's one-frame MUSIC_NONE gap; Clock hJoyLast button
+priority and held card transitions; female screens already captured to /tmp.
+Full ASM parity goal remains ACTIVE with original battle UI/utils/dialogue scope.
+
+
+2026-09-07 SHARED POKEGEAR INPUT continuation, IN PROGRESS:
+Previous goal turn classified PROGRESS (pack/card pixels and radio cancellation
+fixed/verified). This turn10285 is terminal101214.41s: held A+Right on Clock did
+not quit, contradicting PokegearClock_Joypad's PAD_BUTTONS-before-Right priority.
+Further source read is material: hJoyLast is NOT raw held state. JoyTextDelay
+(home/joypad.asm313) calls GetJoypad, uses hJoyDown when hInMenu, resets shared
+wTextDelayFrames to15 on any fresh press, masks hJoyLast until that counter is0,
+then resets5. VBlank decrements it independently of input sampling. Previous
+turn's raw-held Radio handling must be replaced by this sampler, not extended.
+- New core input/joy_text_delay.rs models GetJoypad mirrors +15/5 counter with
+  separate VBlank advance. Three source-semantic checks queued in98123.
+- New Bevy pokegear_input.rs owns base-card priority: Clock buttons beforeRight;
+  Map B/Right/Left/Up/Down; Phone pressedB/A then heldLeft/Right/Up/Down; Radio
+  B/Left before source tuning Down/Up. Contact submenu uses edge-only Up/Down
+  before A/B (B wins). Generic repeat no longer controls these source loops.
+- Shell retains sampler and prepared-this-frame bit. Frame updater advances
+  counter once perVBlank, samples before radio program, hotkeys use same sample.
+  Suspended calls/initialhold don't sample; stale samples cannot trigger exit.
+  Open initializes sampler; page changes retain it. Direct test controls model
+  one source frame when updater has not prepared input.
+- Tests added: Clock held-button precedence and Right; source15/5 map repeats;
+  Phone A-beforeRight; contact submenu no held repeats; radioDown-beforeUp.
+- CURRENT LIVE: 98123 core focused test compiling opt2 (>7min, confirmed rustc
+  pid32172 actively >300%CPU; DO NOT restart). 34843 Bevy Clock test waits on its
+  artifact lock. Need poll both to terminal. Latest code edits happened while
+  core compiled; Bevy has not started compiling yet at last observed poll.
+- No verification claim yet for this new sampler/integration. Need run new card
+  priority test and previous paused-radio/integrated furniture checks afterbuild.
+- Continue checking phone call/NoService/AwaitHangup GetJoypad mirror ownership
+  across nested text and hangup; current card sampler excludes phone calls.
+  Deletion YesNoBox remains generic (main samples mirrors but nested handler
+  not yet source-specific). Check batched input across furniture100framehold.
+- Still pending original source quit WaitSFX/music1framegap; this turn uncovered
+  shared input prerequisite. No narrowing of full ASM goal / PC priorities.
+
+Shared input updates:
+- 98123 terminal0: all3 core JoyTextDelay checks PASS0.00s, build8m52s.
+- 34843 advanced past lock/core/assets into Bevy compilation; still LIVE.
+- New card test also checks retained B through NoService/AwaitHangup return to
+  Phone; sampler now owns these interactive phone phases and preserves mirror
+  state across HangUp. Source contact submenu still edge-only. Full Calling
+  text/GetJoypad/PrintLetterDelay mirror sharing needs further source audit.
+- Radio exit preview is gated on prepared-this-frame, so a blocked/hold frame
+  cannot reuse stale pressed/last bits from a prior card or station.
+- Important remaining limitation: batched host updates advance the source input
+  delay counter by all VBlanks but dispatch only one card action. Need exact
+  per-frame sampling/dispatch across long host batches, coordinated with radio
+  suspended calls/card init waits, before claiming complete input timing parity.
+
+2026-09-07 CARD SAMPLER VERIFIED / MUSIC-STATE FOLLOW-UP:
+-34843 terminal0 Clock regression PASS251.02s (11m00 total build including lock).
+-76369 terminal0 card source15/5 repeat/priority checks PASS250.01s: Map repeat,
+ Phone A beforeRight, contact submenu edge-only Down, heldB through NoService/
+ AwaitHangup restoration, RadioDown beforeUp. Latest code includes prompt mirrors.
+-74052 terminal0 previous suspended-radio/heldB regression PASS259.23s.
+-48134 cargo check Bevy all-targets terminal0 in3m03; only pre-existing unused
+ browser_save_path_for_identity warning. No pack export required (runtime code).
+-New source defect: LoadStation_* never writes wPokegearRadioMusicPlaying, but
+ native new RadioBroadcast discarded its retained host.music_mode. Thus retune
+ during Oak bumper then exit before the new program's first call loses the
+ RestartMapMusic directive. Added preservation regression9598 (LIVE old binary).
+ Fix now inherits mode when changing received stations; furniture explicit
+ ENTER_MAP_MUSIC setup still overrides.5669 LIVE rebuilt focused green attempt.
+-33533 LIVE source live furniture150frame+17Rocket LCD check after new sampler.
+Poll same handles to terminal; never restart for slow loading. All earlier own
+sessions are terminal. Remaining source nuance: B sets exit flag, then outer
+PokeGear.loop STILL calls PlaySpriteAnimations before DelayFrame and .done. Thus
+B+Up/Down can change retained tuning on that last frame; Left deletes tuning
+sprite during page switch. Need model this with delayed full exit choreography,
+not merely early-return on B. Quit WaitSFX and one-frame music gap still pending.
+
+2026-09-07 FINAL TERMINAL INPUT/MUSIC CHECKPOINT:
+-9598 terminal101248.50s confirmed music-state bug: LoadStation_LuckyChannel
+ yielded None instead of Some(Stop). Same regression covers PokemonChannel and
+ Restart modes.5669 terminal0 PASS234.59s after inheritance fix (build52.79s).
+-33533 terminal0 PASS254.96s: live furniture150frame entry and17 source Rocket
+ RGB5 textboxes still match after shared sampler integration.
+-39032 terminal0 latest all-target Bevy check37.13s, only pre-existing unused
+ browser_save_path_for_identity warning. All own sessions now TERMINAL.
+-No pack export needed for core input/Bevy runtime code; latest test binary is
+ target/debug/deps/crystal_bevy-42f711b8522f2f37 with both test opt0 overrides.
+
+CRITICAL NEXT INPUT AUDIT (before broad phone parity claims):
+New card sampler owns AwaitHangup/NoService and contact submenu but still excludes
+Calling. Source phone conversation PrintLetterDelay calls GetJoypad (home/
+print_text.asm.updatedelay/.checkjoypad) and PromptButton reads input too. Its
+last mirror must carry into FinishDelay/AwaitHangup. If native sampler.down is
+still A from starting the call while final conversation was dismissed with held
+B, sampling AwaitHangup can manufacture a fresh B and auto-hang up. This is a
+concrete source-derived risk introduced by separate owner mirrors; reproduce
+and fix next, not a completion claim. Prefer factor public GetJoypad mirror
+update out of core JoyTextDelay::sample (without modifying hJoyLast/counter),
+and wire actual conversation GetJoypad sampling points to the same owner.
+Do NOT paper over it by returning to Bevy just_pressed or adding a fallback;
+that loses inputs held during source blocking waits. Source PAUSE/WaitSFX do
+not GetJoypad until return, while PrintLetterDelay polls GetJoypad; preserve
+that distinction. Add a Calling->FinishDelay->AwaitHangup held-B reproduction.
+
+Remaining full exit work: source B sets jumptable EXIT then still runs sprite
+animations, DelayFrame, next PokeGear.loop UpdateTime/JoyTextDelay/exit check,
+PlaySFX SFX_READ_TEXT_2 + WaitSFX, restore flags/options, ClearBGPalettes/window,
+ExitPokegearRadio_HandleMusic. RestartMapMusic/PlayMapMusicBike each MUSIC_NONE
+then one DelayFrame before song. StartMenu_Pokegear then calls CloseSubmenu.
+Keep immediate cleanup separate from an interactive requested exit, and keep
+standalone TownMap/furniture PlayRadio source exit paths distinct. PlayRadio
+has no portable quit SFX. Do not derive WaitSFX from an invented fixed delay;
+production audio backend transient completion / queued audio already exists.
+B+Down/Up needs final tuning sprite update while Left deletes that sprite.
+Full card init/exit LCD timing, batched per-frame dispatch, phone nested YesNoBox,
+PC held-repeat timing, female screen comparison, original battle UI/utils/
+repeated or auto-progress dialogue remain. Full ASM goal ACTIVE and unproven.
+
+2026-09-07 PHONE MIRROR / PORTABLE EXIT / PC HOLD CHECKPOINT:
+- Core JoyTextDelay now exposes GetJoypad mirror update independently of its
+  repeat gate. Core input tests4 PASS (81643, build5m14). Calling-phase controls
+  retain actual phone input mirrors, skipping PAUSE, WaitSFX and pending delays.
+- Genuine pre-fix phone reproduction3490 failed251.08s: after finishing the
+  compiled MomPhoneNoPokemonText pages with B, held B became a fresh AwaitHangup
+  press and entered HangingUp188. Corrected GetJoypad hook18586 PASS236.58s.
+  Earlier33705/56340/5005/65469 failures were fixture incompleteness (the driver
+  omitted autonomous script stepping / text-label return), NOT bug evidence.
+- Known further phone precision: PromptButton calls JoyTextDelay (hInMenu0),
+  whereas PrintLetterDelay calls bare GetJoypad. Current Calling hook retains
+  down/pressed/released correctly but does not yet distinguish prompt repeat
+  counter updates from printer polling. Do not claim full phone input parity.
+- New portable exit oracle in tools/asm-oracle/pokegear_trace.py supports
+  --pokegear-exit-input b/b-down/b-up. Canonical ROM and temporary setup patch;
+  original exit instructions, ordinary button input, CPU hooks+LCD captures.
+  Durable fixtures tools/asm-oracle/fixtures/pokegear-exit/{no-signal,buena-down}
+  have README exact commands, ROM SHA1, JSON and25 PNGs each. Runs90783/97152 PASS.
+- Source B+Down changes knob40->38 before .done. Native regression56820 failed
+ 234.21s (40 vs38). PokeGear.done queues READ_TEXT_2; measured WaitSFX17frames;
+  ClearBGPalettes WaitBGMap4frames; MUSIC_NONE then DelayFrame before map song.
+- Implemented pokegear_exit.rs requested -> actual backend WaitSound -> palette
+  upload/four frames -> optional one-frame music gap -> retained Start menu.
+  Interactive Clock A/B/START/SELECT and other portable B paths request exit;
+  standalone Town Map/furniture radio remain separate. B+Down/Up still tunes
+  final sprite frame; Left doesn't. Close helper now separates audio from final
+  cleanup. Input blocked through exit and completion frame; source outer sampler
+  runs once more on Requested before .done. Smoke driver explicitly drains its
+  absent audio backend; production still waits actual transient completion.
+- Palette upload nuance reproduced by1954: pre-upload native white pixel31/31/31
+  mismatched ROM old orange31/15/0 at exit-frame19. ClearPalettes only requests
+  hCGBPalUpdate; frame20 is first white. Renderer now preserves card at remaining4,
+  turns white next VBlank at remaining3. All scaled pixels compared to frame20.
+ 1954 TERMINAL101239.84s; corrected25239 LIVE, don't stop/restart.
+-61847 all-targets Bevy check PASS4m13 (only existing unused browser_save_path
+ warning); latest palette/sampler changes were made during check; run final
+ incremental check after latest changes if verification freshness uncertain.
+-4921 LIVE current compiled binary filter pokegear_clock_ (3 tests). Clock tests
+ now assert request+unchanged Clock before explicit cleanup; old paused-Radio
+ held-B test now asserts request. Prior smoke A-exit test explicitly settles.
+
+NEW SOURCE PC HELD-INPUT EVIDENCE (not fixed yet):
+- Oracle --pc-items --pc-items-hold-frames45 captures source withdrawal list,
+  seeded6 canonical items, holds ordinary Down. Optional hooks record menu
+  display/input functions, cycles, cursor/scroll, joy and delay. Runs15725/21224
+ terminal0. Latest /tmp/crystal-pc-held-20260907/pc-items-held.json +45 PNGs.
+- Observed cursor moves relative initial frame753: +2(row2),+18(row3),+27(row4),
+ +36(row4/scroll1),+45(row4/scroll2). Native generic delay12 then4 (dispatch every
+ 13/5frames) cannot match. Source first repeat16frames, then9 here; don't just
+ hardcode these capture intervals. Real MenuJoypadLoop includes four-frame
+ WaitBGMap before each sample, including suppressed repeats. _ScrollingMenu.zero
+ redraws description then waits3frames. CPU display work crosses frame boundary.
+- Hook sequence relative frame753: input+1/reset15 -> InitDisplay+1 -> cursor/
+ description+2 -> BGMap_OAM+5/Wait4 -> sample+9(counter7) -> Wait4 -> sample+13
+ (counter3) -> Wait4 -> sample+17(reset5)/InitDisplay -> desc+18 -> BGMap+22/Wait4
+ -> sample+26(reset5)/InitDisplay -> desc+27. Current generic input owns PC and
+ ignores these display waits / source A,B,Select,Start,Right,Left,Up,Down priority.
+- PC hold fixtures not yet copied to durable repo. Need genuine native red and
+ source-driven PC owner. Source home/menu.asm GetMenuJoypad combines hJoyPressed
+ buttons with hJoyLast directions. Source engine/menus/menu.asm MenuJoypadLoop
+ and scrolling_menu.asm are authority, not TypeScript generic repeat.
+Full goal remains ACTIVE: full card init/exit LCD flow beyond PokeGear return,
+phone prompt counters, batched frame dispatch, nested YesNoBox, PC repeat, female
+screens, battle UI/utils and original text issues remain. No perfection claim.
+
+2026-09-07 EXIT GREEN / PC BUTTON REPRO IN PROGRESS:
+-25239 corrected portable exit regression PASS263.56s. Checks B+Down40->38,
+ requested-frame retention, queued+playing SFX fences, deferred white palette
+ upload, all scaled RGB5 pixels of source exit-frame20, four-frame WaitBGMap,
+ MUSIC_NONE gap, restored map song and Start-menu cursor, completion input lock.
+-4921 terminal0 all3 pokegear_clock_ tests PASS279.40s, including full weekday/
+ meridiem and all four exit buttons' priority before Right. No parity claim
+ for CloseSubmenu's subsequent map uploads after PokeGear.return.
+-PC oracle now --pc-items-held-input down/a-down/select-down/b-down/up-down.
+ Runs96922(A+Down8frames) and15273(updatedDown45) terminal0. Durable fixtures
+ tools/asm-oracle/fixtures/pc-held-input/{down,confirm-down}, README commands.
+ A+Down source keeps cursor1, item0x12/POTION, maximum23 for the full capture.
+-Native pc_item_confirm_with_down_selects_the_original_stack added;24771 LIVE
+ pre-fix. Current generic apply_visible_runtime_controls dispatches Down before
+ A, so it can confirm the next item (ANTIDOTE1). Await genuine red before fix.
+ No PC priority production changes yet. Relevant source ScrollingMenuJoyAction
+ A,B,Select,Start,Right,Left,Up,Down; disabled Start still consumes that combined
+ input, source PC menu enables Select only. Quantity/notice are separate owners.
+
+2026-09-07 PC PRIORITY FIX / QUANTITY AUDIT:
+-24771 native pre-fix PC list A+Down reproduction TERMINAL101221.39s: selected
+ ANTIDOTE instead of source POTION. Generic controls moved before confirming.
+-Added source-priority handling for PC item list button edges before directions:
+ A,B,SELECT,START. Right Shift is SELECT, including combined A+SELECT. Disabled
+ START consumes its combination instead of moving down. Notices/quantity remain
+ separate owners. Generic direction repeat still pending replacement with exact
+ scrolling-menu upload waits; do not claim all PC input parity.
+-Removed unsupported START shortcuts from toggle_visible_start_menu that opened
+ PC deposit Pack or party from storage. Source PCItemsMenuData/BillsPC has neither.
+-7411 LIVE fixed PC list regression, extended SELECT+Down switch origin0, B+Down
+ cancels switch without moving, disabled START+Down, both removed Start shortcuts.
+-16768 terminal0 all-targets Bevy check PASS41.16s after PC list fix, existing
+ unused browser_save_path_for_identity warning only.
+-80709 LIVE held Radio-cancel regression and54285 LIVE Pokedex/Pokegear overlay
+ smoke regression (new exit must be settled explicitly). No process interrupted.
+-New source quantity issue: BuySellToss_InterpretJoypad (engine/items/
+ buy_sell_toss.asm) uses B before A before Down,Up,Left,Right. Current generic
+ controls move then confirm before B. New regression
+ pc_item_quantity_cancel_wins_over_confirm_and_directions seeds23 POTION, ready
+ quantity1, presses A+B+Down and requires no inventory change.64298 LIVE pre-fix;
+ no quantity production changes yet. Current repeat is also generic12/4 instead
+ of JoyTextDelay_ForcehJoyDown's source15/5; quantity dialog is a distinct owner.
+-66679 source SELECT+Down capture terminal0: cursor1/switchorigin1 through8frames.
+ Durable pc-held-input/select-down and README exact command variant retained.
+
+2026-09-07 PC LIST GREEN / EXIT REGRESSION CHECKS:
+-7411 TERMINAL0 PC list A+Down / SELECT+Down / B+Down / START combination and
+ removed bag/party shortcut checks PASS250.69s.
+-80709 TERMINAL0 held cancel through suspended radio program PASS258.36s.
+-54285 TERMINAL0 Pokedex/Pokegear overlay + explicitly settled exit smoke PASS
+259.54s. New exit sequence did not regress those owners.
+-64298 remains LIVE pending pre-fix quantity B+A+Down inventory assertion. Current
+only active own test at this checkpoint; no production quantity changes yet.
+-Quantity source literal priority B,A,Down,Up,Left,Right (unlike item list A,B).
+ `JoyTextDelay_ForcehJoyDown` is home/scrolling_menu.asm43: DelayFrame, temporary
+ hInMenu1, JoyTextDelay, restore hInMenu, combine fresh buttons/filtered directions.
+ Ready quantity uses generic12/4 repeat today; source15/5 plus a one-frame poll.
+
+2026-09-07 QUANTITY CANCEL RED / FIX / VERIFICATION PENDING:
+-64298 TERMINAL101231.62s confirms severe quantity ordering bug: A+B+Down
+ withdrew the entire23-item POTION stack (PC quantity0) instead of cancelling
+ with23 unchanged. BuySellToss source B branch must win before A or Down.
+-Fixed ready PC quantity B-before-A-before-directions dispatch; while question
+ printer is incomplete, control actions do not reach the selector. Print speed
+ still follows physical A/B in the existing authoritative printer update.
+-Do not reuse text-consumed A/B edges at PC list/quantity handoff. New priority
+ branches explicitly preserve field_text_consumed_a/b and consume the pending
+ overworld-interaction A guard. Right Shift remains SELECT, not a PC modifier.
+-66402 LIVE four pc_item_quantity_ checks (first fixed binary): source wrap/ten
+ item steps, question retention, question completion gating, combined cancel/
+ confirm inventory.50675 LIVE latest focused combined regression adds consumed
+ A/B edge assertions; validates cancel leaves23, A+Down withdraws only1, printing
+ and newly-ready selector cannot reuse a consumed A press. No running build
+ has been stopped/restarted. Latest code contains all fixes, no red-state hook.
+-Still need final all-targets check after latest quantity consumed-edge guards.
+-No new pack generation needed (all changes input/lifecycle/render/oracle/tests).
+
+2026-09-07 QUANTITY SUITE GREEN:
+-66402 TERMINAL0 all4 pc_item_quantity_ tests PASS313.81s (first fix binary).
+-83885 TERMINAL0 freshest all-targets Bevy check PASS53.66s after consumed-edge
+ guards; only pre-existing unused browser_save_path_for_identity warning.
+-50675 still LIVE latest focused combined-cancel regression with extra consumed
+ A/B handoff checks. No further production code changes pending at checkpoint.
+-Remaining PC direction priority also needs explicit source owner: item list
+ directions Right,Left,Up,Down, quantity Down,Up,Left,Right. Generic direction
+ routing still prefers newly pressed direction and then Up/Down/Left/Right.
+ Thus opposite/combined directions are not fully correct despite A/B/SELECT
+ priority fixes. Quantity initial repeat is generic13 effective frames vs source
+15; generic later repeat5 matches the quantity loop but not PC list redraws.
+ Do not blanket-claim all simultaneous PC inputs or full scroll cadence fixed.
+-Source exact PC list cadence requires modeling WaitBGMap even for suppressed
+ polls and the real description redraw, not merely setting a9-frame constant.
+ Source first ANTIDOTE redraw/three-frame hold reaches BGMap at relative5;
+ POKE_BALL redraw reaches it at22 after input17 (one more CPU/LCD boundary).
+ Full original goal still active, no completion report or goal status mutation.
+-50675 TERMINAL0 latest focused quantity regression PASS262.54s, including
+ consumed A/B guards, question ownership, B+A+Down leaves23, A+Down withdraws1.
+ All own build/test/oracle sessions are now TERMINAL. Latest production source
+ passes focused checks and freshest all-targets check83885. No red-state edits.
+
+2026-09-07 NEXT GOAL TURN: PC DIRECTION OWNER AUDIT
+-Previous goal turn classified progress: verified input, exit, inventory fixes.
+ Re-read current dispatcher/source at turn entry. No subagents authorized.
+-Added pc_directions_follow_the_source_owner_priority.69637 LIVE pre-fix binary,
+ compiled43.79s; checks PC list Left+Down doesn't move and quantity Down+Up decrements.
+ Source sourcecall priority confirmed in both ScrollingMenuJoyAction and
+ _2DMenuInterpretJoypad; quantity BuySellToss_InterpretJoypad reverses vertical order.
+-2228 original ROM Left+Down20frame capture TERMINAL0, cursor1/scroll0 throughout.
+ Oracle now accepts --pc-items-held-input left-down. Durable pc-held-input/left-down
+ includes20 PNGs, JSON and README command. Canonical original source instructions.
+-Test source extended AFTER69637 binary froze: PC quantity new Up while Down held
+ still decrements, initial15-frame/later5-frame repeats, and ignored fresh SELECT
+ exposes held directions. Neutral frame before a new Down provides real release
+ sampling. These extended assertions not yet compiled/executed.
+-NO PRODUCTION FIX for these new direction/repeat cases yet. Await69637 red;
+ don't stop/restart its live process. Candidate fix: owner-specific held-direction
+ order (PC list Right/Left/Up/Down, quantity Down/Up/Left/Right), when any physical
+ button is fresh expose all held directions before applying that order, and
+ quantity initial generic countdown14 => first repeat after15 calls (later4=>5).
+ Keep PC list redraw cadence separate; replacing it with a9 constant is not source.
+
+2026-09-07 PC DIRECTION RED / FIX / SOURCE QUANTITY CADENCE:
+-69637 TERMINAL101218.43s: native Left+Down moved cursor index1->2, source stays1.
+-Implemented owner-specific direction order: PC item list Right/Left/Up/Down;
+ ready quantity Down/Up/Left/Right. For these owners, any fresh physical game
+ button exposes the complete held direction set before priority selection;
+ a new Up cannot outrank held Down. Fresh ignored SELECT can still expose held
+ directions in the quantity selector. Other menu direction routing unchanged.
+-Quantity first repeat countdown14 gives15 source frames, later countdown4 gives5.
+-8027 LIVE fixed extended pc_directions_follow_the_source_owner_priority test;
+ compile41.60s. Includes Left+Down no move, Down+Up decrements, new Up whileDownheld,
+ fifteen/five repeat intervals, ignored SELECT exposing held Down.
+-58023 original ROM SelectQuantityToToss Up45frame capture TERMINAL0: quantity
+ changes at relative2,17,22,27,32,37,42. Verified intervals15,5,5,5,5,5. Durable
+ pc-held-input/quantity-up has JSON+45PNG and README exact standalone command.
+ Oracle adds --item-quantity-hold-frames (requires --item-quantity). This proves
+ common selector cadence, not complete PC question-to-selector entry timing.
+-65138 fresh Bevy all-targets check TERMINAL0 PASS27.40s, existing unused
+ browser_save_path_for_identity warning only. No source edits after check.
+-Important remaining: generic direction counter still resets when the dominant
+ held direction is released while another remains, whereas source global
+ wTextDelayFrames continues. PC list redraw cadence, batched updates, and PC
+ question/quantity counter handoff need actual shared joypad owner. Continuous
+ quantity holds now15/5, but do not claim every repeat/entry transition perfect.
+-8027 TERMINAL0 PASS218.20s: all extended PC direction and quantity continuous
+ hold assertions pass. All own sessions now terminal; newest source checked by
+65138. No temporary red-state production edits. Full goal remains active.
+
+2026-09-07 QUANTITY SOURCE JOYPAD OWNER MIGRATION:
+-89163 TERMINAL101213.86s: releasing Down while retaining Up restarted native
+ generic repeat; frame15 quantity stayed9 instead of source10.70554 original
+ quantity-release ROM trace terminal0 confirms first change2, repeat17 despite
+ releasing Down after8frames. Durable quantity-release fixture+README retained.
+-Added bevy_shell/pc_input.rs: ready quantity now uses core JoyTextDelay directly,
+ hJoyPressed B/A and hJoyLast Down/Up/Left/Right. Removed quantity's generic
+ direction priority/countdown branches entirely. Release changes mirrors without
+ restarting counter. Printer uses bare GetJoypad to retain held A/B through the
+ completed question; consumed edges cannot become fresh presses next frame.
+-New shell fields pc_joypad + pc_joypad_vblank_prepared. Main updates apply actual
+ elapsed VBlanks once; direct control callers advance one source frame. PC list
+ records input mirrors/counter for quantity handoff; its own redraw/input timing
+ still needs migration from generic direction dispatch to source loop scheduling.
+-Physical key mask helper renamed visible_menu_physical_down, shared Gear/PC;
+ no Gear algorithm changes. PC quantity owner preserves existing modifier mask.
+-Strengthened combined quantity regression: after clearing printer-consumed
+ flags, held buttons must STILL leave selector open. Test explicitly samples
+ release before fresh cancel/confirm; no manufactured Bevy edges substitute for
+ source hJoyPressed. A+B+Down fresh cancels23; fresh A+Down confirms1 after release.
+-12218 LIVE build+four integration tests via libtest multiple OR filters:
+ pc_quantity_releasing_one_direction, pc_item_quantity_cancel_wins,
+ pc_directions_follow_the_source_owner_priority, pc_item_confirm_with_down.
+ IMPORTANT: current libtest --help confirms [FILTERS...] OR semantics. Can pass
+ multiple names after cargo test --; no need separate binaries/test processes.
+-Need final all-targets check after latest migration. No pack export required.
+ Future full parity: source PC list redraw WaitBGMap/description cycles, quantity
+ entry initial upload boundaries/NO_TEXT_SCROLL cases, full shared modal input
+ RAM, batched per-frame action dispatch, phone prompt counters/card init remain.
+
+2026-09-07 QUANTITY SOURCE OWNER GREEN:
+-12218 TERMINAL0 all4 integration filters PASS286.06s: source direction order/
+ cadence, release without counter reset, physical held A/B through question,
+ cancellation/confirmation inventory, PC list confirm/select priority.
+-34344 TERMINAL0 newest all-targets Bevy check PASS1m45, only existing unused
+ browser_save_path_for_identity warning. No production changes after check.
+-All own sessions terminal. Quantity is fully off generic direction counter;
+ pc_input.rs owns source GetJoypad/JoyTextDelay sampling and button dispatch.
+ PC list currently still uses generic display/repeat action scheduling while
+ maintaining pc_joypad mirrors for the quantity handoff. Do not claim its cadence.
+-Confirmed remaining female reference directory exists:
+ /tmp/crystal-pokegear-female-20260907/{rom-clock,rom-map,rom-phone,
+ rom-phone-actions,rom-radio}.png +trace.json. Not yet compared to native.
+ Existing broad render test is runtime_surfaces.rs:
+ pokegear_and_pc_render_audit_surfaces_fit_the_gameboy_screen (line1774 current).
+ Useful next independent visual coverage alongside PC source redraw scheduling.
+
+
+2026-09-07 POKEGEAR FEMALE / DELETE FOLLOW-UP (in progress):
+- Durable female fixtures now tools/asm-oracle/fixtures/pokegear-female, original
+  five ROM LCDs + trace. Native test female_pokegear_cards_match_original_rom_lcd.
+- 9961 terminal101229.12s: invalid fixture map spelling OlivinePokeCenter1F.
+  Corrected to source OlivinePokecenter1F; not bug evidence.
+- 49756 terminal101230.18s: real female comparison RED, clock/phone/actions/radio
+  exact RGB5, map36560 scaled pixels differ. Source/raw regional map matches;
+  portable map never applied InitPokegearTilemap.Map row2 border or
+  Pokegear_FinishTilemap tabs, nor spawned selection arrow. Map player pose
+  fixture also needed trace OAM $14..17 (BlueWalk_2, no flip), frame9 instead0.
+- Map implementation now composes row2 border, source card tabs from unlocked
+  mask, includes mask in cache key, spawns card arrow for portable only.
+  Shared apply_pokegear_card_tabs uses source blank$4f (previous non-map code
+  incorrectly used fontspace$7f for locked cards). Clock tab always present.
+- 25055 terminal101228.32s: real NO+A+Up deletion regression deleted Bill.
+  Nested deletion no longer routes through generic direction-first handler.
+  Uses source fresh buttons + filtered directions, B wins A, buttons before
+  directions, disabled Select/Start/Right/Left suppress lower-priority input.
+  Shared Gear joypad preserves held A/B through restored list. VerticalMenu
+  WaitBGMap/entry/15-frame closing delay still not modeled: semantics only.
+- Oracle --phone-delete-cancel {no,b} added, requires --phone-deletable.
+  16586/37063 terminal0 original ROM captures; both cancelled LCDs identical.
+  Durable fixtures tools/asm-oracle/fixtures/pokegear-delete-no incl b/.
+  Initial82636 invocation terminal2 used wrong edit cwd then unknownarg; no
+  valid capture until corrected. No canonical ROM modifications.
+- Same49756 retained-question regression RED: Rust Whom do you want/to call?
+  vs source Delete this stored/phone number? after NO. .CancelDelete skips
+  AskWhoCall PrintText; contact navigation also doesn't clear that textbox.
+  New explicit retained-question field persists NO/B, cleared by real footer
+  replacement boundaries (submenuCancel, successfuldelete, call, Phoneinit).
+  Included in render hash. No core pack data regeneration required.
+-2269 LIVE four focused tests (femaleLCD, two delete tests, maplabel panel).
+  Must poll same session to terminal. Do not restart. Need latest all-targets
+  check after fixes. Full PC/Pokegear parity and original full ASM goal remain
+  active; PC list source scheduling and entry/exit uploads still unfinished.
+
+
+2026-09-07 POKEGEAR MAP / DELETE GREEN CHECKPOINT:
+-2269 TERMINAL0 four tests PASS258.23s (build1m47): female Clock/Map/Phone/
+ Phoneactions/Radio exact RGB5 at every scaled pixel; maplabelpanel;
+ deletionbuttons preserve NO before Up and A+B cancels, heldA/B do not act
+ on restoredphone, disabledSelect/Start/Right/Left suppress Down;
+ NO/B retain deletionquestion including after movingcontactcursor.
+-65744 TERMINAL0 cargo check -p crystal-bevy --all-targets PASS1m53; only
+ existing browser_save_path_for_identity dead-code warning. No source
+ production changes after this check. No own sessions live.
+-Current map native screenshot /tmp/crystal-female-native-20260907/map.png.
+ Female reference comparison previously failed36560 scaledpixels; after
+ compositionfix+sourceOAMpose alignment now zero on all5screens.
+ New helper apply_pokegear_card_tabs also corrects source missing-card fill
+ $4f; all-unlocked LCD captures do NOT verify locked-card variants yet.
+-Remaining follow-up: original male map reference exists in
+ /tmp/crystal-pokegear-pc-audit/{rom-map.png,trace.json}; retain/compare it and
+ locked-card configurations, standalone map regressions after shared blitter
+ change, nested YesNo WaitBGMap/input polling and15frame closing timing,
+ source Phone prompt counters and entry uploads; PC list redraw scheduling
+ remains generic despite source16/9cycle evidence. Original fullASM goal
+ remains ACTIVE (confirmed get_goal), not complete or blocked.
+
+
+2026-09-07 PC LIST EXPLICIT WAIT OWNER (in progress):
+-78421 terminal101217.84s RED: pc_item_list_does_not_sample_a_press_during_redraw_waits
+  moves Down then sends one-frame A on the next frame; old generic list selects
+  an item during source .zero/WaitBGMap work. Original ROM ignores that pulse.
+-Oracle down-a-pulse added to --pc-items-held-input, requires >=4holdframes;
+  Down2frames, A1frame thenrelease.18697 terminal0 canonicalROM capture20frames:
+  cursor row2 fromrelative2, hJoyDown staysDown throughrelative9, then0; noA
+  sample and no quantityselector. Durable fixtures/pc-held-input/redraw-pulse.
+- PC list now completely removed from generic direction/buttons/repeat path.
+  pc_input.rs apply_visible_pc_item_list_controls uses source JoyTextDelay
+  and button priority A/B/SELECT/START/Right/Left/Up/Down. No GetJoypad during
+  explicit redraw/upload waits, so pulses are not buffered and held buttons
+  are recognized at the actual later poll, independent of Bevy fresh edges.
+- New pc_item_input_wait_frames: every poll schedules WaitBGMap4; a moved
+  cursor adds _ScrollingMenu.zero DelayFrames3. Restoration schedules first
+  WaitBGMap4. advance_visible_pc_input_vblanks advances it and pc_joypad once
+  per authoritative VBlank, or once for direct control tests.
+- IMPORTANT incomplete timing: these are only source explicit waits. CPU
+  work in InitDisplay/description crosses LCD boundaries (inventory-dependent
+  source16/9 measured intervals); not yet modeled. Do not label7 as full
+  redraw duration or claim exact heldrepeat/entrytiming. Batched inputs still
+  dispatch once per update. Core/source-owner counters are now true15/5.
+- Priority fixture now waits until the next eligible poll before independent
+  SELECT/B/START inputs; does not reset the source counter to fake edges.
+  New regression also checks unchanged joypad mirrors duringupload and an A
+  held through wait is recognized even after Bevy just_pressed clears.
+-85170 LIVE five focused tests: new redrawpulse, pc_item_confirm_with_down,
+  pc_directions_follow_the_source_owner_priority, pc_item_quantity_cancel_wins,
+  pc_quantity_releasing_one_direction.53792 LIVE all-targetscheck initially
+  waiting on same cargo build lock. Poll both same handles; neverrestart.
+
+
+Additional current sessions/evidence:
+-53792 TERMINAL0 all-targets check PASS2m42, existing unused browser_save_path
+ warning only.85170 fivePCtests remains LIVE (last ps PID41282, >5min, activeCPU);
+ do not restart. Direct source test load can be slow under parallel checks.
+-Oracle --clock-cards0..7 added for isolated Clock captures with source
+ wPokegearFlags=0x80|cards; rejects other fixturemodes.53490/65737 terminal0
+ capturesmask0bothgenders;80068 terminal0 allremaining14combinations.
+ Durable fixtures/pokegear-clock-cards/{gender}/{cards}/ eachhasclockPNG+trace.
+ Source mask0 begins46474f4f4f4f4f4f, confirms emptytabtile$4f.
+-Older male map retained fixtures/pokegear-male; originaltrace OAM$14..17
+ noflip, same walkingpose asfemale. Existing LCD test renamed accurately
+ pokegear_cards_match_original_rom_lcd, now22cases: originalfemale5, maleMap,
+ all16Clockunlock/gendervariants. No additional runtime/shell initialization
+ percase.38907 LIVE compile/test this expandedcomparison. No production
+ changes after53792 check, only test/oracle/fixture additions.
+
+
+Latest checkpoint:
+-85170 TERMINAL0 all5 PC regression tests PASS362.36s. CPU was active during
+ slow parallel asset loads; no process restart.53792 all-targets PASS above.
+-38907 TERMINAL101231.60s expanded LCD test: originalfemale5+maleMap exact;
+ masks2/3/4/5 differed6720scaledpixels eachgender. INVALID native fixture
+ mapped sourcebits Map/Phone/Radio, but ram_constants.asm288..290 is
+ Map/Radio/Phone. Source oracle uses rawflags correctly. Corrected native
+ caseflagassignment and fixtureREADME/toolhelp to Map1/Radio2/Phone4.
+ This failure is not a new production rendering bug; preserve that distinction.
+
+
+2026-09-07 PC WAIT / POKEGEAR VARIANTS TERMINAL CHECKPOINT:
+-76707 TERMINAL0 expanded22LCD comparisons PASS228.80s (build35.36s).
+ All8rawsourceunlockmasks x2genders exact, plus originalfemale5 andmaleMap.
+ Correct source flag order Map1/Radio2/Phone4. No production fixes were
+ needed after correcting the native case mapping. Test name now
+ pokegear_cards_match_original_rom_lcd (runtime_surfaces.rs).
+-85170 PC5tests PASS362.36s and53792 all-targets PASS2m42 as recorded.
+ No production changes after those checks. All own sessions TERMINAL.
+-83721 terminal0 new drawcycles oracle. Added asserted RET hook immediately
+ before ScrollingMenuJoyAction; byte must C9 and bankmatchesInitDisplay.
+ Captures CPU work separately from .zero DelayFrames3/WaitBGMap4.
+ Fourcompleteddisplaycosts:131340,144916,149960,152932 rawemulatorCPUcycles;
+ crossedframeboundaries1,2,2,2. Durable pc-held-input/draw-cycles/ withJSON
+ and45LCDs. Do not hardcode these costs byitem or claimuniversalrepeat9.
+-Remaining PC wait gap now specifically CPU cost/phase plus fullentryupload
+ choreography, not generic timer: list has sourceJoyTextDelay and explicit
+ 3+4waits, noGetJoypad duringwaits, sourcepriority andphysicalmirrors. Batched
+ control dispatch stillonceperupdate. SourcePhone/YesNo/cardentrytiming and
+ fullglobalmodaljoypadcontinuity remain unproven. FullASMgoal staysACTIVE.
+
+
+2026-09-07 MAILBOX FOLLOW-UP (in progress):
+-Source engine/pokemon/mail.asm MailboxPC TopMenuData=4rows normal scrolling
+ items plusCANCEL, nohorizontal, SubMenuData STATICMENU_CURSOR withoutWRAP.
+ ExistingRustmailbox usedgenericwrapcursor, allowedLeftRight, omittedCANCEL,
+ emittedallletters then truncateddisplay. AlsoATTACHB resetselectedindex0;
+ hiddenmailboxcursor couldconsumeB beforeparty; deletinglastletter closedPC
+ list whereasMailboxPC.loop stillrendersCANCEL.
+-66329 TERMINAL101217.64s realRED new mailbox_list_preserves_the_source_four_rows_cancel_and_direction_limits:
+ Upfromfirstletter wrappedindex0->5. Regression coversfourrowwindow, CANCEL,
+ boundedlist/actions, horizontalnoops, AttachBreturnposition, emptyCANCELlist.
+-NEW mailbox.rs withsourcewindowvalidation, boundedmovement, scroll/rowrestore,
+ closehelper. Newmailbox_scroll field/hash. Initialmailboxentry resets0;
+ confirmationhandlesCANCEL separately; actionwindowclosesbeforedispatch.
+ Read/Cancel/deletion/attachrestorescreenrow includingCANCEL-onlyafterempty.
+ Attach hidesmailboxcursor whilepartyownsinput and restoresselectedletteronB.
+-Existingstrictinvalid-state test nowseedsmailboxactioncursor onemptylist:
+ CANCELisvalid butcannotfabricateamessage submenu; stillexpectsanerror.
+-9462 and5450 TERMINAL101 compileerror Option? innewactionhelper; fixedwith
+ .context. NotbehavioralREDs.5030 LIVE twofocusedtests (Mailboxfunctional plus
+ scripted_shop_and_bill_box_renderers_reject_invalid_retained_state); do not
+ restart.98653 TERMINAL0 latestalltargetscheck PASS2m19 onlyexistingwarning.
+-77135 TERMINAL0 neworacle --mailbox6. SourceSRAMletters/authors and original
+ _PlayerMailBoxMenu onisolatedClearTilemap backdrop. Durablefixtures/mailbox
+ contains7listpositions+actions; originaltilemap,cursor,scroll,ROMSHAJSON.
+ ActualnativeMailboxgeometry STILL genericdialog; notyetfixed/compared.
+ Inputstillgeneric, so combinedbuttonpriority/physicalpolltiming unproven.
+ FullgoalACTIVE. NoPC/Pokegear perfection claim.
+
+2026-09-07 MAILBOX RENDER / ATTACH FOLLOW-UP (in progress):
+-5030 TERMINAL0 two behavior/invalid-state tests PASS693.16s. 86814 handle
+ unavailable after compaction; reran only after ps confirmed no live binary.
+-30186 TERMINAL101 test fixture compile error ambiguous index.saturating_sub;
+ fixed range to usize. 1090 TERMINAL101 real nine-screen RED232.54s: all
+ screens differed. Generic mailbox renderer misplaced windows, omitted retained
+ list under confirmation, and rendered author rows instead of the question.
+-Found source oracle setup issue during image inspection: generic FadeToMenu
+ disables wSpriteUpdatesEnabled, suppressing CGB attribute uploads. MailboxPC
+ is called directly from PlayerPC. Oracle now seeds TILESET_POKECENTER7,
+ enabled sprite updates, ClearScreen, default BGP/OBP, ApplyPals and initial
+ attribute upload. 93375 TERMINAL0 recaptured nine fixtures. Parent backdrop
+ remains deliberately isolated, not claimed as a live PC/overworld frame.
+ Native source_map_text_palette correctly uses indoor palette index7; no
+ palette helper change made. Earlier beige captures had stale attributes.
+-Added dedicated mailbox window renderer: source13x12 list at7,0, four rows,
+ arrows, hollow retained cursor, 14x10 actions at0,0 and6x5 YesNo at14,7.
+ Source compiled mailbox text now supplies lost-message question, cleared-mail
+ notice and empty-mailbox notice. Removed invented author heading on actions.
+-41571 TERMINAL101 attach regression RED222.46s: party_menu_open false before
+ success PrintText acknowledgement. New mailbox_attach_return_index keeps
+ party ownership through notice, dismiss restores mailbox/CANCEL afterwards.
+ Moved-mail, Egg and held-item notices now resolve compiled ASM text.
+-41638 LIVE two focused renderer/attach checks.3196 LIVE queued alltargets.
+ Input priority/poll waits for mailbox still generic; no perfection claim.
+-41638 TERMINAL101 overall: mailbox_windows_match_original_rom_lcd PASS all
+ nine source LCDs (RGB5 at every scaled pixel). Attach case confirmed party
+ stays open, then failed because test acknowledged before text reveal. Fixed
+ fixture to seed fully printed success text before acknowledgement;23821 LIVE.
+-3196 TERMINAL0 all-targets PASS3m03 (before subsequent input changes), only
+ pre-existing browser_save_path_for_identity warning.
+-82252 TERMINAL101 source-input regression RED235.92s: mailbox had no physical
+ A ownership absent its hidden parent UI window; menu never opened. Generic
+ A/direction predicates omitted mailbox. Source audit additionally establishes
+ A-before-directions in ScrollingMenuJoyAction, B-before-A in VerticalMenu,
+ and edge-only submenu directions because _ScrollingMenu.exit clears hInMenu.
+-Added explicit mailbox input ownership, shared PC scrolling-list sampler
+ (renamed pc_menu_input_wait_frames; no old shim), disabled mailbox SELECT,
+ and dedicated edge-only mailbox VerticalMenu sampler with B priority.
+ 25159 LIVE mailbox priority/held-direction regression plus two existing PC
+ redraw/selection regressions. Nested confirmation timing, mail reader input
+ continuity, party notice geometry and inherited parent backdrop not proven.
+-23821 TERMINAL0 attach ownership/acknowledgement PASS225.10s.
+-25159 TERMINAL0 mailbox ownership/priority/no-repeat plus PC item A+Down and
+ redraw pulse tests PASS3/3 in281.56s.88566 TERMINAL0 current all-targets PASS
+ 2m04, existing unused browser_save_path_for_identity warning only.
+-61831 TERMINAL0 recaptured mailbox metadata with hInMenu/hJoyDown/Pressed.
+ All nine PNG files byte-identical to checked fixtures (asserted before copy).
+ Source hInMenu=1 on all seven list positions;0 on actions and confirmation.
+-Next52724 LIVE confirmation RED check (compiled before expanded assertions).
+ Source InterpretTwoOptionMenu explicitly delays15 VBlanks after VerticalMenu,
+ before CloseWindow. Generic Rust confirmation commits immediately and wraps
+ directions; mailbox question still generic input. Expanded regression also
+ covers no wrap, simultaneous B+A and A+direction while preserving displayed
+ selection. Production confirmation fix NOT YET implemented.
+-52724 TERMINAL101 real confirmation RED237.08s: immediately closed YesNoBox
+ instead of preserving it through InterpretTwoOptionMenu's15 VBlank delay.
+ Implemented mailbox_confirmation_response with shared PC wait counter;
+ physical selection retains window/cursor and defers side effects15frames.
+ B overrides A, button choice precedes directions, disabled inputs suppress
+ lower priorities, YesNo cursor clamps and rejects horizontal movement.
+ Printer GetJoypad history is retained, followed by4-frame menu upload wait.
+ 59955 LIVE expanded confirmation regression (NO+A+Up, B+A+Down, YES+A+Down,
+ upper/lower cursor limits and exact15-frame side-effect boundary).
+ Source MenuClickSound queues SFX_READ_TEXT_2 before closing wait.

@@ -125,6 +125,8 @@ pub struct VisualWorldFrame {
     pub map_id: Arc<str>,
     /// Changes whenever the visible tile sources or their live art change.
     pub terrain_revision: u64,
+    /// Map tile coordinate of the grid northwest corner; independent of camera interpolation.
+    pub grid_origin: bevy::prelude::IVec2,
     pub map_texture: Handle<Image>,
     /// Center of the composited map surface / visual viewport in world pixels.
     pub center: Vec2,
@@ -312,6 +314,7 @@ mod tests {
             active: true,
             map_id: Arc::from("NewBarkTown"),
             terrain_revision: 7,
+            grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::weak_from_u128(1),
             center: Vec2::new(8.0, 4.0),
             viewport_size: Vec2::new(16.0, 8.0),

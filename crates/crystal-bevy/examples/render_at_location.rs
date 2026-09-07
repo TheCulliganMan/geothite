@@ -43,12 +43,23 @@ struct Args {
     view: ViewMode,
     list_maps: bool,
     screenshot: Option<PathBuf>,
+    walk: Option<String>,
     output_dir: Option<PathBuf>,
     hour: u8,
 }
 
 fn main() -> Result<()> {
+    #[cfg(feature = "operation-trace")]
+    let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args(env::args().skip(1))?;
+    if args.walk.is_some()
+        && (args.view != ViewMode::TwoPointFiveD
+            || args.all_maps
+            || !args.maps.is_empty()
+            || args.screenshot.is_none())
+    {
+        bail!("--walk requires a single map, --view 2.5d and --screenshot");
+    }
     if args.view == ViewMode::Both && !args.all_maps && args.maps.is_empty() {
         return render_both(&args);
     }
@@ -60,9 +71,17 @@ fn main() -> Result<()> {
         .parent()
         .context("compiled pack has no parent directory")?;
     let asset_root = AssetRoot::new(pack_directory.to_path_buf());
-    let loaded = read_loaded_verified_compiled_game_pack(&pack_path)
-        .with_context(|| format!("load compiled pack {}", pack_path.display()))?;
-    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
+    let loaded = {
+        #[cfg(feature = "operation-trace")]
+        let _span = bevy::log::info_span!("crystal_pack_read_verify").entered();
+        read_loaded_verified_compiled_game_pack(&pack_path)
+            .with_context(|| format!("load compiled pack {}", pack_path.display()))?
+    };
+    let runtime = {
+        #[cfg(feature = "operation-trace")]
+        let _span = bevy::log::info_span!("crystal_runtime_load").entered();
+        CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
+    };
 
     if args.list_maps {
         print_map_catalog(&runtime);
@@ -113,6 +132,7 @@ fn main() -> Result<()> {
                 args.view.label()
             )),
             render_test_screenshot: args.screenshot,
+            render_test_walk: args.walk,
             render_test_hour: Some(args.hour),
             ..Default::default()
         },
@@ -300,6 +320,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut view = ViewMode::TwoD;
     let mut list_maps = false;
     let mut screenshot = None;
+    let mut walk = None;
     let mut output_dir = None;
     let mut hour = 12;
     let mut values = values.into_iter();
@@ -321,6 +342,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
                 hour = next_value(&mut values, "--hour")?.parse::<u8>()?;
                 ensure_render_hour(hour)?;
             }
+            "--walk" => walk = Some(next_value(&mut values, "--walk")?),
             "--list-maps" => list_maps = true,
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(next_value(&mut values, "--screenshot")?))
@@ -345,6 +367,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         view,
         list_maps,
         screenshot,
+        walk,
         output_dir,
         hour,
     })
@@ -367,7 +390,7 @@ fn print_usage() {
     println!(
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
-         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] | \
+         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--walk RDLU] | \
          (--maps <id,id,...> | --all-maps) --output-dir <directory> \
          [--view 2d|2.5d|both] [--hour <0..23>]]"#
     );

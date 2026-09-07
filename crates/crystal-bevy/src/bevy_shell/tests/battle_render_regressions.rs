@@ -81,6 +81,123 @@ fn battle_dialogue_uses_player_input_drains_once_and_returns_menu_control() {
 }
 
 #[test]
+fn replacement_text_uses_send_out_mon_texts_quarter_max_hp_divisor() {
+    let runtime_shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 2;
+    battle.enemy_pokemon.max_hp = 21;
+    let nickname = snapshot.party.slots[0].pokemon.nickname.clone();
+
+    assert_eq!(
+        super::visible_player_send_out_message(&snapshot, 0, false).expect("send-out message"),
+        format!("Go for it, {nickname}!"),
+    );
+}
+
+#[test]
+fn replacement_text_rejects_send_out_mon_texts_nonterminating_divisor() {
+    let runtime_shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 1;
+    battle.enemy_pokemon.max_hp = 3;
+
+    let error = super::visible_player_send_out_message(&snapshot, 0, false)
+        .expect_err("the cartridge divide would never terminate");
+    assert!(
+        error
+            .to_string()
+            .contains("would not terminate with enemy max HP 3"),
+        "{error:#}"
+    );
+}
+
+#[test]
+fn link_replacement_text_uses_go_mon_text_without_reading_enemy_hp() {
+    let runtime_shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    snapshot.link_session.link_mode = 1;
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 1;
+    battle.enemy_pokemon.max_hp = 3;
+    let nickname = snapshot.party.slots[0].pokemon.nickname.clone();
+
+    assert_eq!(
+        super::visible_player_send_out_message(&snapshot, 0, false).expect("send-out message"),
+        format!("Go! {nickname}!"),
+    );
+}
+
+#[test]
+fn initial_link_send_out_text_still_uses_enemy_hp() {
+    let runtime_shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    snapshot.link_session.link_mode = 1;
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 2;
+    battle.enemy_pokemon.max_hp = 21;
+    let nickname = snapshot.party.slots[0].pokemon.nickname.clone();
+
+    assert_eq!(
+        super::visible_player_send_out_message(&snapshot, 0, true).expect("send-out message"),
+        format!("Go for it, {nickname}!"),
+    );
+}
+
+#[test]
+fn withdrawal_text_uses_withdraw_mon_texts_quarter_max_hp_divisor() {
+    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    runtime_shell.battle_enemy_hp_at_player_send_out = Some(20);
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 14;
+    battle.enemy_pokemon.max_hp = 21;
+
+    assert_eq!(
+        super::visible_player_withdraw_message(&runtime_shell, &snapshot, "CYNDAQUIL")
+            .expect("withdrawal message"),
+        "CYNDAQUIL, OK! Come back!",
+    );
+}
+
+#[test]
+fn withdrawal_text_uses_wrapping_damage_and_the_low_quotient_byte() {
+    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    runtime_shell.battle_enemy_hp_at_player_send_out = Some(10);
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 11;
+    battle.enemy_pokemon.max_hp = 21;
+
+    // (10 - 11) wraps to 65535; (65535 * 25) / (21 >> 2) has low byte 251.
+    assert_eq!(
+        super::visible_player_withdraw_message(&runtime_shell, &snapshot, "CYNDAQUIL")
+            .expect("withdrawal message"),
+        "CYNDAQUIL, good! Come back!",
+    );
+}
+
+#[test]
+fn withdrawal_text_rejects_withdraw_mon_texts_nonterminating_divisor() {
+    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    runtime_shell.battle_enemy_hp_at_player_send_out = Some(2);
+    let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");
+    let battle = snapshot.battle.as_mut().expect("active battle");
+    battle.enemy_pokemon.hp = 1;
+    battle.enemy_pokemon.max_hp = 3;
+
+    let error = super::visible_player_withdraw_message(&runtime_shell, &snapshot, "CYNDAQUIL")
+        .expect_err("the cartridge divide would never terminate");
+    assert!(
+        error
+            .to_string()
+            .contains("would not terminate with enemy max HP 3"),
+        "{error:#}"
+    );
+}
+
+#[test]
 fn battle_animation_loop_count_matches_asm_body_passes() {
     let key = ("BattleAnim_Test".to_string(), 4);
     let mut loops = std::collections::BTreeMap::new();
@@ -772,7 +889,7 @@ fn global_dmg_palette_effects_write_registers_on_their_asm_reload_cadence() {
     animation.frame = 2;
     assert_eq!(
         visible_battle_dmg_palette_registers(Some(&animation)),
-        VisibleBattleDmgPaletteRegisters { bgp: 0xe4, obp0: 0xe4, obp1: 0xe4 }
+        VisibleBattleDmgPaletteRegisters { obp0_write_frame: None, bgp: 0xe4, obp0: 0xe4, obp1: 0xe4 }
     );
     animation.frame = 5;
     let registers = visible_battle_dmg_palette_registers(Some(&animation));
@@ -1595,6 +1712,8 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
             defer_level_evolution: false,
         });
         state.sync_party_from_storage();
+        assert!(!state.pokedex.seen_species.contains("DRAGONITE"));
+        assert!(!state.pokedex.caught_species.contains("DRAGONITE"));
     }
     let evolving = "What? DRAGONAIR is evolving!".to_string();
     let evolved = "Congratulations! DRAGONAIR evolved into DRAGONITE!".to_string();
@@ -1628,6 +1747,7 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
             evolved_message: evolved.clone(),
             pending_move_messages: vec![pending.clone()],
             report,
+            accepted: false,
         });
     finish_current_battle_message_for_regression(&mut runtime_shell);
 
@@ -1662,6 +1782,255 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
     assert!(runtime_shell.battle_evolution_cancellations.is_empty());
     assert!(runtime_shell.battle_evolution_cries.is_empty());
     assert!(runtime_shell.battle_sounds_after_messages.is_empty());
+    assert!(
+        !runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .seen_species
+            .contains("DRAGONITE")
+    );
+    assert!(
+        !runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .caught_species
+            .contains("DRAGONITE")
+    );
+}
+
+#[test]
+fn completed_visible_evolution_registers_the_target_species() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "DRAGONAIR",
+            55,
+            None,
+            None,
+            "EVOLUTION_POKEDEX_TEST",
+            1,
+            Dv::from_non_hp(10, 11, 12, 13),
+        )
+        .expect("add Dragonair");
+    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    {
+        let state = runtime_shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0]
+            .as_mut()
+            .expect("Dragonair in party")
+            .species = dragonite;
+        state.sync_party_from_storage();
+    }
+
+    record_visible_completed_evolution(&mut runtime_shell, 0)
+        .expect("commit completed evolution Pokedex state");
+
+    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    assert!(pokedex.seen_species.contains("DRAGONITE"));
+    assert!(pokedex.caught_species.contains("DRAGONITE"));
+
+    runtime_shell.shell.session_mut().state_mut().pokedex = Default::default();
+    let intro = "DRAGONAIR is trying to learn WING ATTACK.".to_string();
+    runtime_shell
+        .battle_evolution_cancellations
+        .push_back(VisibleEvolutionCancellation {
+            party_index: 0,
+            trigger_message: "What? DRAGONAIR is evolving!".to_string(),
+            evolved_message: "Congratulations! DRAGONAIR evolved into DRAGONITE!".to_string(),
+            pending_move_messages: vec![intro],
+            report: EvolutionReport {
+                target_species: Some("DRAGONITE".to_string()),
+                events: Vec::new(),
+                pending_move_learns: vec![crate::core::models::LearnedMove {
+                    name: "WING_ATTACK".to_string(),
+                    current_pp: 35,
+                    pp_ups: 0,
+                }],
+                cancel_snapshot: None,
+            },
+            accepted: true,
+        });
+    complete_visible_accepted_evolution_after_special_boundary(
+        &mut runtime_shell,
+        "MoveForgotPoofText",
+    )
+    .expect("intermediate replacement boundary");
+    assert!(
+        !runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .seen_species
+            .contains("DRAGONITE")
+    );
+    complete_visible_accepted_evolution_after_special_boundary(
+        &mut runtime_shell,
+        "LearnedMoveText",
+    )
+    .expect("learned move completes evolution");
+    assert!(
+        runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .caught_species
+            .contains("DRAGONITE")
+    );
+}
+
+#[test]
+fn accepted_visible_evolution_registers_only_after_the_evolved_text() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "DRAGONAIR",
+            55,
+            None,
+            None,
+            "EVOLUTION_POKEDEX_TIMING_TEST",
+            1,
+            Dv::from_non_hp(10, 11, 12, 13),
+        )
+        .expect("add Dragonair");
+    let original = runtime_shell.shell.session().state.storage.party.pokemon[0]
+        .as_ref()
+        .expect("Dragonair in party")
+        .clone();
+    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_mut()
+        .expect("Dragonair in party")
+        .species = dragonite;
+    let evolving = "What? DRAGONAIR is evolving!".to_string();
+    let evolved = "Congratulations! DRAGONAIR evolved into DRAGONITE!".to_string();
+    runtime_shell.battle_messages = [evolving.clone(), evolved.clone()].into_iter().collect();
+    runtime_shell
+        .battle_evolution_cancellations
+        .push_back(VisibleEvolutionCancellation {
+            party_index: 0,
+            trigger_message: evolving,
+            evolved_message: evolved,
+            pending_move_messages: Vec::new(),
+            report: EvolutionReport {
+                target_species: Some("DRAGONITE".to_string()),
+                events: Vec::new(),
+                pending_move_learns: Vec::new(),
+                cancel_snapshot: Some(Box::new(original)),
+            },
+            accepted: false,
+        });
+
+    finish_current_battle_message_for_regression(&mut runtime_shell);
+    press_visible_a_button(&mut runtime_shell).expect("accept evolution");
+
+    assert!(runtime_shell.battle_evolution_cancellations[0].accepted);
+    assert!(
+        !runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .seen_species
+            .contains("DRAGONITE")
+    );
+
+    runtime_shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .sync_party_from_storage();
+    finish_current_battle_message_for_regression(&mut runtime_shell);
+    press_visible_a_button(&mut runtime_shell).expect("dismiss evolved text");
+
+    assert!(runtime_shell.battle_evolution_cancellations.is_empty());
+    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    assert!(pokedex.seen_species.contains("DRAGONITE"));
+    assert!(pokedex.caught_species.contains("DRAGONITE"));
+}
+
+#[test]
+fn accepted_evolution_with_a_move_registers_at_the_move_result_boundary() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "DRAGONAIR",
+            55,
+            None,
+            None,
+            "EVOLUTION_MOVE_POKEDEX_TIMING_TEST",
+            1,
+            Dv::from_non_hp(10, 11, 12, 13),
+        )
+        .expect("add Dragonair");
+    let original = runtime_shell.shell.session().state.storage.party.pokemon[0]
+        .as_ref()
+        .expect("Dragonair in party")
+        .clone();
+    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    {
+        let state = runtime_shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0]
+            .as_mut()
+            .expect("Dragonair in party")
+            .species = dragonite;
+        state.sync_party_from_storage();
+    }
+    let intro = "DRAGONAIR is trying to learn WING ATTACK.".to_string();
+    let result = "DRAGONAIR did not learn WING ATTACK.".to_string();
+    runtime_shell
+        .battle_evolution_cancellations
+        .push_back(VisibleEvolutionCancellation {
+            party_index: 0,
+            trigger_message: "What? DRAGONAIR is evolving!".to_string(),
+            evolved_message: "Congratulations! DRAGONAIR evolved into DRAGONITE!".to_string(),
+            pending_move_messages: vec![intro.clone(), result.clone()],
+            report: EvolutionReport {
+                target_species: Some("DRAGONITE".to_string()),
+                events: Vec::new(),
+                pending_move_learns: vec![crate::core::models::LearnedMove {
+                    name: "WING_ATTACK".to_string(),
+                    current_pp: 35,
+                    pp_ups: 0,
+                }],
+                cancel_snapshot: Some(Box::new(original)),
+            },
+            accepted: true,
+        });
+
+    complete_visible_accepted_evolution_after_battle_message(
+        &mut runtime_shell,
+        Some(&intro),
+    )
+    .expect("intro is not completion");
+    assert!(
+        !runtime_shell
+            .shell
+            .session()
+            .state
+            .pokedex
+            .seen_species
+            .contains("DRAGONITE")
+    );
+
+    complete_visible_accepted_evolution_after_battle_message(
+        &mut runtime_shell,
+        Some(&result),
+    )
+    .expect("result completes evolution");
+
+    assert!(runtime_shell.battle_evolution_cancellations.is_empty());
+    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    assert!(pokedex.seen_species.contains("DRAGONITE"));
+    assert!(pokedex.caught_species.contains("DRAGONITE"));
 }
 
 #[test]
@@ -2862,4 +3231,1122 @@ fn battle_redraw_retains_fixed_canvas_without_image_growth_even_if_overlay_rebui
         stable_image_count,
         "the failed redraw must not leak image assets"
     );
+}
+
+#[test]
+fn battle_trainer_preserves_authored_palette_colors() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let assets = AssetRoot::new(root);
+    let mut images = Assets::<Image>::default();
+    let frame = load_oak_intro_frame(&assets, "battle-trainer:bug_catcher", &mut images)
+        .expect("trainer frame");
+    let source =
+        crate::open_runtime_image(&assets.runtime_assets().join("gfx/trainers/bug_catcher.png"))
+            .unwrap()
+            .to_rgba8();
+    let rendered = &images.get(&frame.handle).unwrap().data;
+    for (pixel, actual) in source.pixels().zip(rendered.chunks_exact(4)) {
+        if pixel.0[0..3] != [255, 255, 255] {
+            assert_eq!(
+                &pixel.0, actual,
+                "colored trainer pixels must retain their palette index"
+            );
+        }
+    }
+}
+
+#[test]
+fn battle_animation_shared_graphics_use_authored_tile_offsets() {
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let mut art = RenderedTilesetArt::default();
+    let bundle: serde_json::Value = serde_json::from_slice(
+        &crate::read_runtime_asset(&assets.runtime_assets().join("data/battle_anim_bundle.json"))
+            .unwrap(),
+    )
+    .unwrap();
+    let mut images = Assets::<Image>::default();
+    let object = &bundle["objects"]["BATTLE_ANIM_OBJ_STRING_SHOT"];
+    for frameset in [
+        "BATTLE_ANIM_FRAMESET_STRING_SHOT_1",
+        "BATTLE_ANIM_FRAMESET_STRING_SHOT_2",
+        "BATTLE_ANIM_FRAMESET_STRING_SHOT_3",
+    ] {
+        let (_, frame) = battle_anim_frame_at_age(&bundle, frameset, 0)
+            .unwrap()
+            .unwrap();
+        battle_anim_rendered_frame(
+            &mut art,
+            &bundle,
+            &assets,
+            "BATTLE_ANIM_OBJ_STRING_SHOT",
+            object,
+            frameset,
+            0,
+            frame,
+            false,
+            false,
+            false,
+            None,
+            0xe4,
+            0xe4,
+            None,
+            &mut images,
+        )
+        .expect("all String Shot variants address the same web graphics sheet");
+    }
+}
+
+fn battle_anim_regression_bundle() -> serde_json::Value {
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    serde_json::from_slice(
+        &crate::read_runtime_asset(&assets.runtime_assets().join("data/battle_anim_bundle.json"))
+            .unwrap(),
+    )
+    .unwrap()
+}
+
+fn battle_anim_regression_timeline(
+    events: Vec<VisibleMoveObjectEvent>,
+    frame: u16,
+) -> VisibleMoveAnimation {
+    VisibleMoveAnimation {
+        trigger_message: String::new(),
+        move_id: "TEST".into(),
+        animation_label: "BattleAnim_Test".into(),
+        player_move: true,
+        started: true,
+        waiting_for_hp: false,
+        frame,
+        total_frames: 256,
+        sound_events: Vec::new(),
+        next_sound_event: 0,
+        cry_events: Vec::new(),
+        next_cry_event: 0,
+        object_events: events,
+        bg_events: Vec::new(),
+        actor_species_override: None,
+        actor_shiny_override: None,
+    }
+}
+
+fn battle_anim_regression_spawn(frame: u16, param: u8) -> VisibleMoveObjectEvent {
+    VisibleMoveObjectEvent {
+        frame,
+        command: VisibleMoveObjectCommand::Spawn {
+            object_id: "BATTLE_ANIM_OBJ_STRING_SHOT".into(),
+            x: 64,
+            y: 80,
+            param,
+        },
+    }
+}
+
+#[test]
+fn battle_anim_frames_include_the_duration_reload_tick() {
+    let bundle = battle_anim_regression_bundle();
+    let frameset = "BATTLE_ANIM_FRAMESET_STRING_SHOT_1";
+    for age in 0..12 {
+        assert_eq!(
+            battle_anim_frame_at_age(&bundle, frameset, age)
+                .unwrap()
+                .map(|(i, _)| i),
+            Some(usize::from(age / 3)),
+            "age {age}"
+        );
+    }
+    assert!(
+        battle_anim_frame_at_age(&bundle, frameset, 12)
+            .unwrap()
+            .is_none()
+    );
+    assert_eq!(
+        visible_battle_animation_frameset_lifetime(&bundle, frameset),
+        Some(12)
+    );
+}
+
+#[test]
+fn battle_anim_oamwait_hides_objects_for_its_full_duration() {
+    let bundle = serde_json::json!({"framesets": {"BLINK": [
+        {"command": "frame", "duration": 2},
+        {"command": "wait", "duration": 2},
+        {"command": "frame", "duration": 0},
+        {"command": "restart"}
+    ]}});
+    for age in 3..6 {
+        assert!(
+            battle_anim_frame_at_age(&bundle, "BLINK", age)
+                .unwrap()
+                .is_none(),
+            "blink age {age}"
+        );
+    }
+    assert_eq!(
+        battle_anim_frame_at_age(&bundle, "BLINK", 6)
+            .unwrap()
+            .unwrap()
+            .0,
+        2
+    );
+    assert_eq!(
+        battle_anim_frame_at_age(&bundle, "BLINK", 7)
+            .unwrap()
+            .unwrap()
+            .0,
+        0
+    );
+}
+
+#[test]
+fn battle_anim_deleted_framesets_release_non_null_object_slots() {
+    let bundle = battle_anim_regression_bundle();
+    let mut events = vec![battle_anim_regression_spawn(0, 0); 10];
+    events.push(battle_anim_regression_spawn(13, 1));
+    let animation = battle_anim_regression_timeline(events, 13);
+    let slots = visible_battle_objects(&bundle, &animation).map(|playback| playback.slots).unwrap();
+    assert_eq!(slots.iter().flatten().count(), 6);
+    // Five 8-piece String Shot objects fill OAM, delaying later callbacks.
+    assert!(slots[5..].iter().all(Option::is_some));
+    assert_eq!(
+        slots[0].as_ref().unwrap().spawn_frame,
+        13,
+        "the live web must reuse the expired projectile slot"
+    );
+}
+
+#[test]
+fn battle_anim_object_commands_address_creation_ids_after_slot_reuse() {
+    let bundle = battle_anim_regression_bundle();
+    for command in [
+        VisibleMoveObjectCommand::Increment { index: 3 },
+        VisibleMoveObjectCommand::Set { index: 3, value: 1 },
+    ] {
+        let animation = battle_anim_regression_timeline(
+            vec![
+                battle_anim_regression_spawn(0, 0),
+                battle_anim_regression_spawn(0, 1),
+                VisibleMoveObjectEvent {
+                    frame: 13,
+                    command: VisibleMoveObjectCommand::Spawn {
+                        object_id: "BATTLE_ANIM_OBJ_HIT".into(),
+                        x: 64,
+                        y: 80,
+                        param: 0,
+                    },
+                },
+                VisibleMoveObjectEvent { frame: 14, command },
+            ],
+            14,
+        );
+        let slots = visible_battle_objects(&bundle, &animation).map(|playback| playback.slots).unwrap();
+        assert!(
+            slots[0].as_ref().is_some_and(|live| live.bytes[0] == 0),
+            "the callback deletes object 3 before its final OAM update"
+        );
+        assert_eq!(slots[1].as_ref().unwrap().bytes[0], 2, "object 2 must remain untouched");
+    }
+}
+
+#[test]
+fn battle_anim_null_function_deletes_when_incremented() {
+    assert_eq!(
+        battle_object_position_fixture("BATTLE_ANIM_FUNC_NULL", 64, 80, 0, 2, 1, 0, true),
+        None
+    );
+}
+
+#[test]
+fn battle_anim_clearobjs_matches_the_cartridge_partial_clear() {
+    let bundle = battle_anim_regression_bundle();
+    let mut events = vec![battle_anim_regression_spawn(0, 1); 10];
+    events.push(VisibleMoveObjectEvent {
+        frame: 1,
+        command: VisibleMoveObjectCommand::Clear,
+    });
+    let animation = battle_anim_regression_timeline(events, 1);
+    let slots = visible_battle_objects(&bundle, &animation).map(|playback| playback.slots).unwrap();
+    assert!(slots[..7].iter().all(Option::is_none));
+    assert!(slots[7..].iter().all(Option::is_some));
+}
+
+#[test]
+fn battle_anim_commands_run_before_same_tick_object_deletion() {
+    let bundle = battle_anim_regression_bundle();
+    let mut events = vec![battle_anim_regression_spawn(0, 0); 10];
+    events.push(battle_anim_regression_spawn(12, 1));
+    events.push(battle_anim_regression_spawn(13, 2));
+    let animation = battle_anim_regression_timeline(events, 13);
+    let slots = visible_battle_objects(&bundle, &animation).map(|playback| playback.slots).unwrap();
+    assert_eq!(slots.iter().flatten().count(), 6);
+    // Five 8-piece String Shot objects fill OAM, delaying later callbacks.
+    assert!(slots[5..].iter().all(Option::is_some));
+    assert_eq!(
+        slots[0].as_ref().unwrap().spawn_frame,
+        13,
+        "frame 12 spawn must see the still-occupied structs"
+    );
+}
+
+#[test]
+fn battle_anim_projectiles_stop_or_delete_on_the_source_boundary() {
+    let position = |function, param, age, state| {
+        battle_object_position_fixture(function, 128, 56, param, age, state, 0, true)
+    };
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET", 4, 0, 0),
+        Some((132, 54))
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET", 4, 1, 0),
+        Some((132, 54))
+    );
+    assert_eq!(position("BATTLE_ANIM_FUNC_USER_TO_TARGET", 4, 2, 1), None);
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR", 4, 0, 0),
+        Some((132, 54))
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR", 4, 1, 0),
+        None
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET", 0x24, 0, 0),
+        Some((132, 54))
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_USER_TO_TARGET", 0, 10, 0),
+        Some((128, 56))
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR", 8, 0, 0),
+        Some((130, 55))
+    );
+    assert!(position("BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR", 8, 3, 0).is_some());
+    assert!(position("BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR", 8, 4, 0).is_none());
+}
+
+#[test]
+fn battle_anim_enemy_mirrors_the_current_x_coordinate_and_offset() {
+    let mut animation = battle_anim_regression_timeline(Vec::new(), 4);
+    animation.player_move = false;
+    assert_eq!(
+        battle_object_screen_fixture(
+            &animation,
+            "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+            64,
+            80,
+            4,
+            72,
+            83,
+            1,
+            0x90
+        ),
+        (108, 67)
+    );
+    assert_eq!(
+        battle_object_screen_fixture(
+            &animation,
+            "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+            64,
+            80,
+            4,
+            72,
+            83,
+            0,
+            0x90
+        ),
+        (72, 83)
+    );
+    animation.animation_label = "BattleAnim_Recover".into();
+    assert_eq!(
+        battle_object_screen_fixture(
+            &animation,
+            "BATTLE_ANIM_FUNC_RECOVER",
+            64,
+            80,
+            4,
+            72,
+            83,
+            1,
+            0x90
+        )
+        .1,
+        67
+    );
+}
+
+#[test]
+fn battle_anim_string_yflip_is_only_applied_on_the_enemy_side() {
+    let bundle = battle_anim_regression_bundle();
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let object = &bundle["objects"]["BATTLE_ANIM_OBJ_STRING_SHOT"];
+    let frameset = "BATTLE_ANIM_FRAMESET_STRING_SHOT_1";
+    let (i, frame) = battle_anim_frame_at_age(&bundle, frameset, 0)
+        .unwrap()
+        .unwrap();
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    let mut render = |enemy, extra| {
+        let rendered = battle_anim_rendered_frame(
+            &mut art,
+            &bundle,
+            &assets,
+            "BATTLE_ANIM_OBJ_STRING_SHOT",
+            object,
+            frameset,
+            i,
+            frame,
+            enemy,
+            extra,
+            false,
+            None,
+            0xe4,
+            0xe4,
+            None,
+            &mut images,
+        )
+        .unwrap();
+        (
+            rendered.offset_y,
+            images.get(&rendered.sprite.handle).unwrap().data.clone(),
+        )
+    };
+    assert_eq!(render(false, false), render(false, true));
+    assert_ne!(render(true, false), render(true, true));
+}
+
+#[test]
+fn battle_anim_overlapping_oam_entries_keep_the_first_opaque_pixel() {
+    let mut bundle = battle_anim_regression_bundle();
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let object = bundle["objects"]["BATTLE_ANIM_OBJ_HIT"].clone();
+    let frameset = object["frameset"].as_str().unwrap();
+    let (i, frame) = battle_anim_frame_at_age(&bundle, frameset, 0)
+        .unwrap()
+        .unwrap();
+    let frame = frame.clone();
+    let oam = frame["oam_set"].as_str().unwrap().to_string();
+    let first = bundle["oam_sets"][&oam]["entries"][0].clone();
+    let mut second = first.clone();
+    second["xflip"] = serde_json::json!(!first["xflip"].as_bool().unwrap());
+    second["yflip"] = serde_json::json!(!first["yflip"].as_bool().unwrap());
+    let render = |bundle: &serde_json::Value| {
+        let mut art = RenderedTilesetArt::default();
+        let mut images = Assets::<Image>::default();
+        let result = battle_anim_rendered_frame(
+            &mut art,
+            bundle,
+            &assets,
+            "BATTLE_ANIM_OBJ_HIT",
+            &object,
+            frameset,
+            i,
+            &frame,
+            false,
+            false,
+            false,
+            None,
+            0xe4,
+            0xe4,
+            None,
+            &mut images,
+        )
+        .unwrap();
+        images.get(&result.sprite.handle).unwrap().data.clone()
+    };
+    bundle["oam_sets"][&oam]["entries"] = serde_json::json!([first]);
+    let expected = render(&bundle);
+    bundle["oam_sets"][&oam]["entries"] = serde_json::json!([first, second]);
+    let actual = render(&bundle);
+    assert!(expected.chunks_exact(4).any(|pixel| pixel[3] != 0));
+    for (expected, actual) in expected.chunks_exact(4).zip(actual.chunks_exact(4)) {
+        if expected[3] != 0 {
+            assert_eq!(actual, expected);
+        }
+    }
+}
+
+#[test]
+fn battle_anim_return_ends_the_script_without_waiting_for_live_effects() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    let label = "BattleAnim_ReturnRegression".to_string();
+    std::sync::Arc::make_mut(&mut snapshot.presentation)
+        .battle_animations
+        .insert(
+            label.clone(),
+            vec![
+                "anim_obj BATTLE_ANIM_OBJ_HIT, 64, 80, 0".into(),
+                "anim_bgeffect BATTLE_BG_EFFECT_SHAKE_SCREEN_X, 60, 2, 0".into(),
+                "anim_wait 1".into(),
+                "anim_ret".into(),
+            ],
+        );
+    let (_, frames, _, _, _, _) = visible_battle_animation_definition(&snapshot, label, 0).unwrap();
+    assert_eq!(
+        frames, 2,
+        "the root anim_ret stops OAM and BG effects on its own tick"
+    );
+}
+
+#[test]
+fn battle_anim_wave_projectile_uses_source_sine_phase_and_amplitude() {
+    let position = |age| {
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+            128,
+            56,
+            0xff,
+            age,
+            0,
+            0,
+            true,
+        )
+    };
+    assert_eq!(position(0), Some((131, 55)));
+    assert_eq!(position(1), Some((132, 60)));
+    assert!(position(3).is_some());
+    assert!(position(4).is_none());
+}
+
+#[test]
+fn battle_anim_enemy_projectile_mirrors_base_y_but_preserves_wave_offset() {
+    let mut animation = battle_anim_regression_timeline(Vec::new(), 1);
+    animation.player_move = false;
+    assert_eq!(
+        battle_object_screen_fixture(
+            &animation,
+            "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+            128,
+            56,
+            0,
+            132,
+            54,
+            1,
+            0x90
+        ),
+        (48, 88)
+    );
+    assert_eq!(
+        battle_object_screen_fixture(
+            &animation,
+            "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+            128,
+            56,
+            1,
+            132,
+            60,
+            1,
+            0x90
+        ),
+        (48, 96)
+    );
+}
+
+#[test]
+fn battle_anim_shake_uses_both_parameter_nybbles_without_invented_motion() {
+    let position = |param, age, state| {
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_SHAKE",
+            64,
+            80,
+            param,
+            age,
+            state,
+            0,
+            true,
+        )
+    };
+    assert_eq!(position(0, 0, 0), Some((64, 80)));
+    assert_eq!(position(0, 40, 0), Some((64, 80)));
+    for (age, x) in [61, 61, 61, 67, 67, 67, 61].into_iter().enumerate() {
+        assert_eq!(position(0x23, age as u16, 0), Some((x, 80)));
+    }
+    assert_eq!(position(0x23, 8, 1), Some((61, 80)));
+    assert_eq!(position(0x23, 8, 2), None);
+}
+
+#[test]
+fn battle_anim_source_register_order_and_fixed_point_motion() {
+    let position = |function, param, age| {
+        battle_object_position_fixture(function, 64, 80, param, age, 0, age, true)
+    };
+    // functions.asm reads VAR1/VAR2 before incrementing the phase.
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_ANCIENT_POWER", 32, 0),
+        Some((64, 80))
+    );
+    assert_eq!(position("BATTLE_ANIM_FUNC_COTTON", 0, 1), Some((88, 80)));
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_SPEED_LINE", 0, 0),
+        Some((65, 80))
+    );
+    assert_eq!(
+        position("BATTLE_ANIM_FUNC_SPEED_LINE", 128, 0),
+        Some((63, 80))
+    );
+    // FloatUp adds $ffa0 to its 8.8 Y accumulator, and advances phase by two.
+    assert_eq!(position("BATTLE_ANIM_FUNC_FLOAT_UP", 0, 1), Some((64, 79)));
+    assert_eq!(position("BATTLE_ANIM_FUNC_FLOAT_UP", 0, 7), Some((67, 77)));
+    // Absorb tests the old X, and the zero-count Y loop wraps 256 times.
+    assert_eq!(position("BATTLE_ANIM_FUNC_ABSORB", 0, 0), Some((64, 80)));
+    assert_eq!(position("BATTLE_ANIM_FUNC_ABSORB", 1, 0), Some((63, 80)));
+    assert_eq!(position("BATTLE_ANIM_FUNC_ABSORB", 4, 4), Some((44, 90)));
+    assert_eq!(position("BATTLE_ANIM_FUNC_ABSORB", 4, 5), None);
+}
+
+#[test]
+fn battle_anim_every_move_script_compiles_and_allocates_objects() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_regression_bundle();
+    assert_eq!(snapshot.presentation.move_names.len(), 251);
+    for (index, name) in snapshot.presentation.move_names.iter().enumerate() {
+        let label = &snapshot.presentation.battle_animation_table[index + 1];
+        for param in 0..=4 {
+            let (frames, _, _, events, _) =
+                compile_visible_battle_animation_timeline(&snapshot, label, param)
+                    .unwrap_or_else(|| panic!("{name}: {label} parameter {param} failed"));
+            let mut animation = battle_anim_regression_timeline(events, 0);
+            animation.total_frames = frames;
+            for player_move in [true, false] {
+                animation.player_move = player_move;
+                animation.frame = frames.saturating_sub(1);
+                visible_battle_objects(&bundle, &animation).unwrap_or_else(|error| {
+                    panic!("{name} parameter {param} player={player_move}: {error}")
+                });
+            }
+        }
+    }
+}
+
+#[test]
+fn battle_anim_rapid_spin_deletes_after_displaying_terminal_offset() {
+    for (age, expected) in [(11, Some((64, 32))), (12, None), (63, None)] {
+        assert_eq!(
+            battle_object_position_fixture(
+                "BATTLE_ANIM_FUNC_RAPID_SPIN",
+                64,
+                80,
+                0,
+                age,
+                0,
+                age,
+                true
+            ),
+            expected
+        );
+    }
+}
+
+#[test]
+fn battle_anim_absorb_circle_starts_with_zero_radius() {
+    assert_eq!(
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+            128,
+            48,
+            0,
+            0,
+            0,
+            0,
+            true
+        ),
+        Some((128, 48))
+    );
+    assert_eq!(
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+            128,
+            48,
+            0,
+            1,
+            0,
+            1,
+            true
+        ),
+        Some((127, 48))
+    );
+}
+
+#[test]
+fn battle_anim_thunder_wave_is_stationary_until_commanded_to_delete() {
+    for state in 0..=3 {
+        assert_eq!(
+            battle_object_position_fixture(
+                "BATTLE_ANIM_FUNC_THUNDER_WAVE",
+                112,
+                56,
+                0,
+                20,
+                state,
+                3,
+                true
+            ),
+            if state == 3 { None } else { Some((112, 56)) }
+        );
+    }
+    assert_eq!(
+        battle_object_frameset_fixture(
+            "BATTLE_ANIM_FUNC_THUNDER_WAVE",
+            "BATTLE_ANIM_FRAMESET_THUNDER_WAVE_DISABLE",
+            0,
+            20,
+            112,
+            1,
+            3,
+            56,
+            true
+        ),
+        ("BATTLE_ANIM_FRAMESET_THUNDER_WAVE_EXTRA", 3)
+    );
+}
+
+#[test]
+fn battle_anim_conversion_retains_full_radius_and_terminal_tick() {
+    let position = |age| {
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_CONVERSION",
+            64,
+            80,
+            0,
+            age,
+            0,
+            age,
+            true,
+        )
+    };
+    assert_eq!(position(64), Some((128, 80)));
+    assert_eq!(position(127), Some((64, 80)));
+    assert_eq!(position(128), None);
+}
+
+#[test]
+fn battle_anim_bonemerang_initialization_falls_through_to_motion() {
+    assert_eq!(
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_BONEMERANG",
+            64,
+            80,
+            0,
+            0,
+            0,
+            0,
+            true
+        ),
+        Some((97, 80))
+    );
+}
+
+#[test]
+fn battle_anim_speed_line_selects_parameter_frameset() {
+    for param in 0..=2 {
+        let expected = [
+            "BATTLE_ANIM_FRAMESET_SPEED_LINE_1",
+            "BATTLE_ANIM_FRAMESET_SPEED_LINE_2",
+            "BATTLE_ANIM_FRAMESET_SPEED_LINE_3",
+        ];
+        for direction in [0, 128] {
+            assert_eq!(
+                battle_object_frameset_fixture(
+                    "BATTLE_ANIM_FUNC_SPEED_LINE",
+                    "BATTLE_ANIM_FRAMESET_SPEED_LINE_1",
+                    param | direction,
+                    8,
+                    64,
+                    0,
+                    8,
+                    80,
+                    true
+                ),
+                (expected[param as usize], 8)
+            );
+        }
+    }
+}
+
+#[test]
+fn battle_anim_motion_matches_cartridge_routine_traces() {
+    let corpus: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/battle_object_motion.json")).unwrap();
+    assert_eq!(
+        corpus["rom_sha1"],
+        "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"
+    );
+    let samples = corpus["samples"].as_array().unwrap();
+    assert_eq!(samples.len(), 156);
+    assert_eq!(corpus["frames_per_sample"], 161);
+    let mut differences = Vec::new();
+    for sample in samples {
+        assert_eq!(sample["positions"].as_array().unwrap().len(), 161);
+        let function = sample["function"].as_str().unwrap();
+        let param = sample["param"].as_u64().unwrap() as u8;
+        for (age, expected) in sample["positions"].as_array().unwrap().iter().enumerate() {
+            let expected = expected.as_array().map(|xy| {
+                (
+                    xy[0].as_i64().unwrap() as i32,
+                    xy[1].as_i64().unwrap() as i32,
+                )
+            });
+            let actual = battle_object_position_fixture(
+                function,
+                sample["x"].as_i64().unwrap() as i32,
+                sample["y"].as_i64().unwrap() as i32,
+                param,
+                age as u16,
+                0,
+                age as u16,
+                true,
+            );
+            if actual != expected {
+                differences.push(format!(
+                    "{function} param={param} age={age}: Rust {actual:?}, ROM {expected:?}"
+                ));
+                break;
+            }
+        }
+    }
+    assert!(differences.is_empty(), "{}", differences.join("\n"));
+}
+
+#[test]
+fn battle_anim_dizzy_uses_old_phase_for_frameset_resets() {
+    for (age, expected, frameset_age) in [
+        (31, "BATTLE_ANIM_FRAMESET_IMP", 31),
+        (32, "BATTLE_ANIM_FRAMESET_IMP_FLIPPED", 0),
+        (63, "BATTLE_ANIM_FRAMESET_IMP_FLIPPED", 31),
+        (64, "BATTLE_ANIM_FRAMESET_IMP", 0),
+    ] {
+        assert_eq!(
+            battle_object_frameset_fixture(
+                "BATTLE_ANIM_FUNC_DIZZY",
+                "BATTLE_ANIM_FRAMESET_IMP",
+                0,
+                age,
+                64,
+                0,
+                age,
+                80,
+                true
+            ),
+            (expected, frameset_age)
+        );
+    }
+}
+
+#[test]
+fn battle_anim_agility_increment_deletes_and_heal_bell_preserves_y_parity() {
+    assert_eq!(
+        battle_object_position_fixture("BATTLE_ANIM_FUNC_AGILITY", 64, 80, 2, 20, 1, 0, true),
+        None
+    );
+    assert_eq!(
+        battle_object_position_fixture(
+            "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+            64,
+            81,
+            0,
+            0,
+            0,
+            0,
+            true
+        ),
+        Some((88, 82))
+    );
+}
+
+// Fixture calls execute the same instruction runner as live playback. They
+// deliberately omit OAM stepping to isolate callback register transitions.
+fn battle_object_fixture(
+    function: &str,
+    base: &str,
+    x: i32,
+    y: i32,
+    param: u8,
+    age: u16,
+    state: u8,
+    state_age: u16,
+    player: bool,
+) -> (BattleObjectMachine, u16) {
+    let mut machine = BattleObjectMachine::new(player);
+    let function = battle_program::FUNCTIONS
+        .iter()
+        .position(|name| *name == function)
+        .unwrap() as u8;
+    let frameset = battle_program::FRAMESETS
+        .iter()
+        .position(|name| *name == base)
+        .unwrap() as u8;
+    machine.initialize(
+        0,
+        1,
+        [0, 0, frameset, function, 0, 0],
+        x as u8,
+        y as u8,
+        param,
+    );
+    let mut reset = 0;
+    for tick in 0..=age {
+        if state != 0 && tick == age.saturating_sub(state_age) {
+            machine.object_mut(0)[14] = state;
+        }
+        if machine.object(0)[0] != 0 {
+            machine.step_object(0).unwrap();
+            if machine.frameset_reset {
+                reset = tick;
+            }
+        }
+    }
+    (machine, age - reset)
+}
+
+fn battle_object_position_fixture(
+    function: &str,
+    x: i32,
+    y: i32,
+    param: u8,
+    age: u16,
+    state: u8,
+    state_age: u16,
+    player: bool,
+) -> Option<(i32, i32)> {
+    let (machine, _) = battle_object_fixture(
+        function,
+        "BATTLE_ANIM_FRAMESET_HIT_BIG",
+        x,
+        y,
+        param,
+        age,
+        state,
+        state_age,
+        player,
+    );
+    let object = machine.object(0);
+    (object[0] != 0).then_some((
+        i32::from(object[7].wrapping_add(object[9])),
+        i32::from(object[8].wrapping_add(object[10])),
+    ))
+}
+
+fn battle_object_frameset_fixture(
+    function: &str,
+    base: &str,
+    param: u8,
+    age: u16,
+    x: i32,
+    state: u8,
+    state_age: u16,
+    y: i32,
+    player: bool,
+) -> (&'static str, u16) {
+    let (machine, age) =
+        battle_object_fixture(function, base, x, y, param, age, state, state_age, player);
+    (
+        battle_program::FRAMESETS[usize::from(machine.object(0)[3])],
+        age,
+    )
+}
+
+fn battle_object_screen_fixture(
+    animation: &VisibleMoveAnimation,
+    function: &str,
+    x: i32,
+    y: i32,
+    age: u16,
+    animated_x: i32,
+    animated_y: i32,
+    flags: i64,
+    fix_y: i64,
+) -> (i32, i32) {
+    let (mut machine, _) = battle_object_fixture(
+        function,
+        "BATTLE_ANIM_FRAMESET_HIT_BIG",
+        x,
+        y,
+        2,
+        age,
+        0,
+        age,
+        animation.player_move,
+    );
+    let object = machine.object_mut(0);
+    object[1] = flags as u8;
+    object[2] = fix_y as u8;
+    object[7] = animated_x as u8;
+    object[9] = 0;
+    object[10] = (animated_y as u8).wrapping_sub(object[8]);
+    machine
+        .call(
+            battle_program::INIT_BATTLE_ANIM_BUFFER,
+            battle_program::W_ACTIVE_ANIM_OBJECTS,
+        )
+        .unwrap();
+    (
+        i32::from(
+            machine
+                .read(battle_program::W_BATTLE_ANIM_TEMP_X_COORD)
+                .wrapping_add(machine.read(battle_program::W_BATTLE_ANIM_TEMP_X_OFFSET)),
+        ),
+        i32::from(
+            machine
+                .read(battle_program::W_BATTLE_ANIM_TEMP_Y_COORD)
+                .wrapping_add(machine.read(battle_program::W_BATTLE_ANIM_TEMP_Y_OFFSET)),
+        ),
+    )
+}
+
+#[test]
+fn battle_anim_installed_pack_matches_all_cartridge_oam_cases() {
+    let bundle = battle_anim_regression_bundle();
+    for (case, &(function, object, x, y, param, player)) in
+        crate::battle_anim_machine::oracle_oam::CASES
+            .iter()
+            .enumerate()
+    {
+        let mut machine = BattleObjectMachine::new(player);
+        install_battle_object_data(&mut machine, &bundle).unwrap();
+        machine.write(battle_program::W_CUR_ITEM, 5);
+        let mut definition = [0, 128, 0, function, 0, 0];
+        if object != 255 {
+            for (i, v) in definition.iter_mut().enumerate().take(5) {
+                *v = machine
+                    .read(battle_program::BATTLE_ANIM_OBJECTS + u16::from(object) * 6 + i as u16);
+            }
+        }
+        machine.initialize(0, 1, definition, x, y, param);
+        for frame in 0..crate::battle_anim_machine::oracle_oam::FRAMES {
+            machine.begin_oam();
+            if machine.object(0)[0] != 0 {
+                machine.step_object(0).unwrap();
+                machine.oam_update(0).unwrap();
+            }
+            let mut bytes = machine.object(0)[..17].to_vec();
+            bytes.extend(
+                [
+                    battle_program::W_O_B_P0,
+                    battle_program::H_L_C_D_C_POINTER,
+                    battle_program::H_L_Y_OVERRIDE_START,
+                    battle_program::H_L_Y_OVERRIDE_END,
+                ]
+                .map(|a| machine.read(a)),
+            );
+            bytes.extend(machine.oam());
+            bytes.push(machine.read(battle_program::W_BATTLE_ANIM_O_A_M_POINTER_LO));
+            let hash = bytes.into_iter().fold(14695981039346656037_u64, |h, b| {
+                (h ^ u64::from(b)).wrapping_mul(1099511628211)
+            });
+            let offset = (case * crate::battle_anim_machine::oracle_oam::FRAMES + frame) * 8;
+            assert_eq!(
+                hash.to_le_bytes(),
+                crate::battle_anim_machine::oracle_oam::RECORDS[offset..offset + 8],
+                "case {case} frame {frame}"
+            );
+        }
+    }
+}
+#[test]
+fn battle_anim_incremental_playback_matches_uninterrupted_command_history() {
+    let bundle = battle_anim_regression_bundle();
+    let events = vec![
+        VisibleMoveObjectEvent {
+            frame: 0,
+            command: VisibleMoveObjectCommand::Spawn {
+                object_id: "BATTLE_ANIM_OBJ_THUNDER_WAVE".into(),
+                x: 112,
+                y: 56,
+                param: 0,
+            },
+        },
+        battle_anim_regression_spawn(2, 0),
+        VisibleMoveObjectEvent {
+            frame: 4,
+            command: VisibleMoveObjectCommand::Set { index: 1, value: 1 },
+        },
+        VisibleMoveObjectEvent {
+            frame: 6,
+            command: VisibleMoveObjectCommand::Increment { index: 1 },
+        },
+        VisibleMoveObjectEvent {
+            frame: 8,
+            command: VisibleMoveObjectCommand::Clear,
+        },
+        battle_anim_regression_spawn(9, 2),
+    ];
+    for player in [true, false] {
+        let mut animation = battle_anim_regression_timeline(events.clone(), 24);
+        animation.player_move = player;
+        let expected = visible_battle_objects(&bundle, &animation).unwrap();
+        animation.frame = 0;
+        let mut actual = new_visible_battle_objects(&bundle, &animation).unwrap();
+        for frame in [0, 0, 1, 4, 6, 8, 8, 9, 17, 24] {
+            animation.frame = frame;
+            advance_visible_battle_objects(&mut actual, &bundle, &animation).unwrap();
+        }
+        for slot in 0..10 {
+            assert_eq!(
+                actual.machine.object(slot),
+                expected.machine.object(slot),
+                "side {player} slot {slot}"
+            );
+        }
+        assert_eq!(actual.machine.oam(), expected.machine.oam());
+        assert_eq!(actual.next_event, events.len());
+        assert_eq!(actual.next_tick, 25);
+    }
+}
+
+#[test]
+fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector() {
+    let bundle = battle_anim_regression_bundle();
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let animation = battle_anim_regression_timeline(
+        vec![VisibleMoveObjectEvent {
+            frame: 0,
+            command: VisibleMoveObjectCommand::Spawn {
+                object_id: "BATTLE_ANIM_OBJ_HIT".into(),
+                x: 64,
+                y: 80,
+                param: 0,
+            },
+        }],
+        0,
+    );
+    let playback = visible_battle_objects(&bundle, &animation).unwrap();
+    let live = playback.slots[0].as_ref().unwrap();
+    let object = &bundle["objects"]["BATTLE_ANIM_OBJ_HIT"];
+    let frame = &bundle["framesets"][live.frameset][live.frame];
+    let render = |palette: u8, obp0, obp1| {
+        let mut oam = live.oam.clone();
+        for entry in &mut oam.entries {
+            entry[3] = (entry[3] & 0xe0) | palette | 0x10;
+        }
+        let mut art = RenderedTilesetArt::default();
+        let mut images = Assets::<Image>::default();
+        let result = battle_anim_rendered_frame(
+            &mut art,
+            &bundle,
+            &assets,
+            "BATTLE_ANIM_OBJ_HIT",
+            object,
+            live.frameset,
+            live.frame,
+            frame,
+            false,
+            false,
+            false,
+            None,
+            obp0,
+            obp1,
+            Some(&oam),
+            &mut images,
+        )
+        .unwrap();
+        images.get(&result.sprite.handle).unwrap().data.clone()
+    };
+    let red = render(2, 0xe4, 0xe4);
+    assert!(red.chunks_exact(4).any(|pixel| pixel[3] != 0));
+    assert_eq!(red, render(2, 0, 0));
+    assert_ne!(red, render(0, 0xe4, 0xe4));
+    assert_eq!(render(0, 0xe4, 0), render(0, 0xe4, 0xe4));
+    assert_ne!(render(0, 0, 0xe4), render(0, 0xe4, 0xe4));
 }

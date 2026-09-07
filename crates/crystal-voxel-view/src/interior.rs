@@ -12,13 +12,13 @@ use crate::profile::{CellShape, GROUND_HEIGHT, SolidKind};
 const FIXTURE_HEIGHT: f32 = 3.0;
 
 /// The player's bedroom block `$02` carries the upstairs landing in its
-/// north-east 2x2 quadrant. Crystal's warp at `(7,0)` uses this exact drawing
+/// north-east 2x2 quadrant, also retained by decorated blocks $1f/$23-$25. Crystal's warp at `(7,0)` uses this exact drawing
 /// to descend to 1F; the other twelve cells in the block are wall/floor.
 pub(crate) fn player_room_stair_local(
     source: &VisualTileSource,
 ) -> Option<(u8, u8, crate::players_house::StairKind)> {
     if source.tileset_id.as_ref() != "players_room"
-        || source.metatile_id != 0x02
+        || !matches!(source.metatile_id, 0x02 | 0x1f | 0x23..=0x25)
         || source.subtile_column < 2
         || source.subtile_row >= 2
     {
@@ -635,24 +635,30 @@ mod tests {
     #[test]
     fn player_bedroom_stairwell_is_the_exact_northeast_two_by_two_drawing() {
         let drawing = [[0x40, 0x41], [0x50, 0x51]];
-        for row in 0..2 {
-            for column in 0..2 {
-                let mut cell = source("players_room", 0x02, drawing[row as usize][column as usize]);
-                cell.subtile_column = column + 2;
-                cell.subtile_row = row;
-                assert_eq!(
-                    player_room_stair_local(&cell),
-                    Some((column, row, crate::players_house::StairKind::DownWest))
-                );
-                assert!(matches!(
-                    player_room_stair_shape(&cell),
-                    Some(CellShape::RampEast { .. })
-                ));
-                assert_eq!(
-                    player_room_fixture_group(&cell),
-                    None,
-                    "the stair landing must not also become an upright appliance"
-                );
+        for block in [0x02, 0x1f, 0x23, 0x24, 0x25] {
+            for row in 0..2 {
+                for column in 0..2 {
+                    let mut cell = source(
+                        "players_room",
+                        block,
+                        drawing[row as usize][column as usize],
+                    );
+                    cell.subtile_column = column + 2;
+                    cell.subtile_row = row;
+                    assert_eq!(
+                        player_room_stair_local(&cell),
+                        Some((column, row, crate::players_house::StairKind::DownWest))
+                    );
+                    assert!(matches!(
+                        player_room_stair_shape(&cell),
+                        Some(CellShape::RampEast { .. })
+                    ));
+                    assert_eq!(
+                        player_room_fixture_group(&cell),
+                        None,
+                        "the stair landing must not also become an upright appliance"
+                    );
+                }
             }
         }
         assert_eq!(

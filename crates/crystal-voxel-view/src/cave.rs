@@ -10,10 +10,8 @@ use crate::profile::{CellShape, LedgeFace, SolidKind};
 
 pub(crate) const CAVE_SHELF_HEIGHT: f32 = 6.0;
 pub(crate) const CAVE_ROCK_HEIGHT: f32 = 16.0;
-/// One shared visual height for complete outdoor/cave trapezoidal mounds.
-/// This is deliberately separate from the cave shelf datum: loose rocks do
-/// not raise terrain, and every tileset reuses the same mound proportions.
-pub(crate) const TRAPEZOID_MOUND_HEIGHT: f32 = 24.0;
+/// Two native eight-pixel front courses below a complete rock plateau.
+pub(crate) const MOUND_FACE_HEIGHT: f32 = 16.0;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DiagonalCorner {

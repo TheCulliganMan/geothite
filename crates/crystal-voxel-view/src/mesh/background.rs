@@ -241,6 +241,7 @@ mod tests {
 
         let mut frame = VisualWorldFrame {
             active: true,
+            grid_origin: bevy::prelude::IVec2::ZERO,
             map_id: Arc::from("test"),
             map_texture: Handle::default(),
             center: Vec2::ZERO,
