@@ -163,7 +163,6 @@ fn apply_keyboard_input(
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     mut timer: ResMut<RuntimeTickTimer>,
 ) {
-    if customization_is_open() { return; }
     let Some(rtc_sample) = (*rtc_source).try_sample() else {
         if runtime_shell.last_error.as_deref() != Some(SERVER_CLOCK_UNAVAILABLE) {
             runtime_shell.last_error = Some(SERVER_CLOCK_UNAVAILABLE.to_string());
@@ -330,6 +329,9 @@ fn apply_keyboard_input(
     runtime_shell.lcd_animation_frame = runtime_shell
         .lcd_animation_frame
         .wrapping_add(u64::from(elapsed_input_ticks));
+    // Modal profile editing blocks gameplay input, while the presentation clock
+    // keeps input release, browser observation, and real-time clock updates live.
+    if customization_is_open() { return; }
     match advance_visible_poison_flash(&mut runtime_shell, elapsed_input_ticks) {
         Ok(true) => return,
         Ok(false) => {}

@@ -406,6 +406,24 @@ mod customization_tests {
                 .player_name,
             "KRIS"
         );
+        if let Some(output) = std::env::var_os("GEOTHITE_PROFILE_FIXTURE_DIR") {
+            let output = PathBuf::from(output);
+            std::fs::create_dir_all(&output).unwrap();
+            std::fs::copy(
+                &pack_path,
+                output.join("realtime-clock.browser.crystalpack"),
+            )
+            .unwrap();
+            std::fs::copy(&save_path, output.join("profile.crystalsave")).unwrap();
+            std::fs::write(
+                output.join("profile-fixture.json"),
+                serde_json::to_vec(&serde_json::json!({
+                    "modpack_id": shell.shell.runtime().modpack().id(), "trainer_id": 23456,
+                }))
+                .unwrap(),
+            )
+            .unwrap();
+        }
         std::fs::remove_dir_all(directory).unwrap();
     }
 }
