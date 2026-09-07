@@ -10916,3 +10916,42 @@ fn held_direction_survives_a_press_between_simulation_ticks() {
     sync_overworld_held_directions(&keys, &mut runtime_shell, false);
     assert_eq!(runtime_shell.overworld_held_directions, VecDeque::from([GameButton::Right]));
 }
+
+#[test]
+fn dialogue_regression_pickup_receipt_scrolls_to_pocket_and_waits() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    for item in ["BERRY", "ANTIDOTE"] {
+        shell.field_notice = Some(format!("CHRIS put the\n{item} in\nthe ITEM POCKET."));
+        shell.field_text_reveal = None;
+        let snapshot = shell.shell.presentation_snapshot().unwrap();
+        assert_eq!(visible_field_dialog_pages(&snapshot, &shell).unwrap(),
+            [format!("CHRIS put the\n{item} in"), format!("{item} in\nthe ITEM POCKET.")]);
+        for _ in 0..128 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+        assert!(!visible_field_dialogue_is_entirely_consumed(&shell, &snapshot));
+        press_visible_a_button(&mut shell).unwrap();
+        let reveal = shell.field_text_reveal.as_ref().unwrap();
+        assert_eq!(reveal.page_index, 1);
+        assert_eq!(reveal.visible_chars, format!("{item} in\n").chars().count());
+        assert!(shell.field_notice.is_some());
+        for _ in 0..128 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+        assert_eq!(visible_scene_dialog_entries(&snapshot, &shell).unwrap(), [format!("{item} in"), "the ITEM POCKET.".into()]);
+        assert!(shell.field_notice.is_some(), "completed receipt remains until acknowledged");
+        press_visible_a_button(&mut shell).unwrap();
+        assert!(shell.field_notice.is_none());
+    }
+}
+
+#[test]
+fn dialogue_regression_new_page_cannot_borrow_previous_printer_progress() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: "Your POKéMON are\nfully healed.".into(), page_index: 0,
+        visible_chars: 100, frames_until_next_char: 0,
+    });
+    assert_eq!(visible_revealed_field_dialog_text(&shell, "We hope to see you\nagain."), "");
+    shell.field_text_reveal = Some(VisibleFieldTextReveal {
+        text: "CHRIS put the\nBERRY in\u{1e}BERRY in\nthe ITEM POCKET.".into(),
+        page_index: 1, visible_chars: 9, frames_until_next_char: 0,
+    });
+    assert_eq!(visible_revealed_field_dialog_text(&shell, "BERRY in\nthe ITEM POCKET."), "BERRY in\n");
+}

@@ -1915,8 +1915,15 @@ pub(super) fn render_visible_script_text_pages(
                 }
                 current.push_str(&rendered);
             }
-            "text_promptbutton" | "prompt" | "done" | "text_end" => {
+            "text_promptbutton" => {
                 flush_page(&mut pages, &mut lines, &mut current);
+            }
+            "prompt" | "done" | "text_end" => {
+                // These terminate PrintText. Unlabelled bytes after the
+                // terminator (including NurseGoodbyeText's unused copy)
+                // belong to no part of this dialogue stream.
+                flush_page(&mut pages, &mut lines, &mut current);
+                break;
             }
             opcode if opcode.starts_with("sound_") => {}
             _ => {
