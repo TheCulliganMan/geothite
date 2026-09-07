@@ -15,6 +15,7 @@ use crate::random::Random;
 use crate::random::{CrystalRandom, CrystalRandomState, DividerSource, LinkBattleRandomState};
 use crate::state::{
     BattleMemory, EventFlagError, GameState, PendingStaticWildBattleTerminal, RoamingPokemonState,
+    ScriptLocation,
 };
 use crate::systems::economy::CurrencyCatalog;
 use crate::systems::experience::GrowthRateCatalog;
@@ -1735,6 +1736,20 @@ fn deactivate_battle_with_current_result(state: &mut GameState) {
             win_cleanup_applied: false,
         });
     }
+    if let BattleMemory::Wild { battle_type, map_name, .. } = &state.battle
+        && battle_type == "BATTLETYPE_CONTEST"
+        && state.bug_contest.park_balls_remaining == 0
+        && state.battle_result & 0x3f != 1
+    {
+        // Random encounters have no retained compiled battle cursor. Resume
+        // BugCatchingContestBattleScript's exhausted-ball branch after reload;
+        // StaticWild already resumes that check through its source provenance.
+        state.script_runtime.next_script = Some(ScriptLocation {
+            origin_map_name: map_name.clone(),
+            script: "BugCatchingContestOutOfBallsScript".to_string(),
+        });
+        state.script_runtime.script_ended = None;
+    }
     state.battle = BattleMemory::Inactive;
     // Every battle exit returns through ReloadMap -> EnterMap before field
     // scripts resume, which re-arms the five-step encounter cooldown.
@@ -1756,6 +1771,12 @@ pub fn deactivate_battle_after_win(state: &mut GameState) {
 /// ExitBattle's DRAW path used by a successful manual RUN or an enemy flee.
 pub fn deactivate_battle_after_draw(state: &mut GameState) {
     state.battle_result = (state.battle_result & 0xc0) | 2;
+    deactivate_battle_with_current_result(state);
+}
+
+/// CheckContestBattleOver clears the upper result flags and adds DRAW before ExitBattle.
+pub fn deactivate_battle_after_contest_balls_exhausted(state: &mut GameState) {
+    state.battle_result = (state.battle_result & 0x3f).wrapping_add(2);
     deactivate_battle_with_current_result(state);
 }
 

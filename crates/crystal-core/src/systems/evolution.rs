@@ -565,6 +565,14 @@ pub fn find_evolution_candidate<'a>(
                 species_id: entry.species.clone(),
             }
         })?;
+        // EvolveAfterBattle tests wLinkMode before dispatching any
+        // non-trade evolution method.
+        if context.link_mode != LinkMode::None
+            && is_known_evolution_method(&entry.method)
+            && entry.method != METHOD_TRADE
+        {
+            continue;
+        }
         match entry.method.as_str() {
             METHOD_ITEM => {
                 if !context.force_evolution || context.link_mode != LinkMode::None {
@@ -1453,6 +1461,112 @@ mod tests {
                 species_id: "ONIX".to_string(),
             })
         );
+    }
+
+    #[test]
+    fn happiness_evolution_threshold_and_time_windows_match_asm() {
+        let species = BTreeMap::new();
+        let moves = BTreeMap::new();
+        let learnsets = SpeciesLearnsets::new();
+        let mut context = context(&species, &moves, &learnsets);
+        for window in HAPPINESS_WINDOWS {
+            let table = EvolutionTable(BTreeMap::from([(
+                "EEVEE".to_string(),
+                vec![EvolutionEntry::happiness("ESPEON", *window)],
+            )]));
+            for time in [TimeOfDay::Morning, TimeOfDay::Day, TimeOfDay::Night] {
+                context.time_of_day = time;
+                for happiness in [0, 219, 220, 255] {
+                    let mut mon = pokemon("EEVEE", 30);
+                    mon.happiness = happiness;
+                    let time_matches = *window == HAPPINESS_ANYTIME
+                        || (*window == HAPPINESS_NITE) == (time == TimeOfDay::Night);
+                    assert_eq!(
+                        find_evolution_candidate(&mon, &table, &context)
+                            .unwrap()
+                            .is_some(),
+                        happiness >= 220 && time_matches
+                    );
+                    mon.item = Some("EVERSTONE".into());
+                    assert!(
+                        find_evolution_candidate(&mon, &table, &context)
+                            .unwrap()
+                            .is_none()
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn trade_evolution_link_mode_and_held_item_matrix_matches_asm() {
+        let species = BTreeMap::new();
+        let moves = BTreeMap::new();
+        let learnsets = SpeciesLearnsets::new();
+        let mut context = context(&species, &moves, &learnsets);
+        for required in [TRADE_ANY_ITEM, "METAL_COAT"] {
+            let table = EvolutionTable(BTreeMap::from([(
+                "ONIX".to_string(),
+                vec![EvolutionEntry::trade("STEELIX", required)],
+            )]));
+            for mode in [LinkMode::None, LinkMode::Link, LinkMode::TimeCapsule] {
+                context.link_mode = mode;
+                for item in [
+                    None,
+                    Some("METAL_COAT"),
+                    Some("EVERSTONE"),
+                    Some("GOLD_BERRY"),
+                ] {
+                    let mut mon = pokemon("ONIX", 30);
+                    mon.item = item.map(str::to_string);
+                    let expected = mode != LinkMode::None
+                        && item != Some("EVERSTONE")
+                        && (required == TRADE_ANY_ITEM
+                            || (mode == LinkMode::Link && item == Some(required)));
+                    assert_eq!(
+                        find_evolution_candidate(&mon, &table, &context)
+                            .unwrap()
+                            .is_some(),
+                        expected,
+                        "required={required}, mode={mode:?}, item={item:?}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn link_modes_skip_every_non_trade_evolution_method() {
+        // engine/pokemon/evolve.asm branches on wLinkMode before all
+        // non-trade methods, including an otherwise eligible level-up.
+        let species = BTreeMap::new();
+        let moves = BTreeMap::new();
+        let learnsets = SpeciesLearnsets::new();
+        let mut context = context(&species, &moves, &learnsets);
+        let mut mon = pokemon("EEVEE", 30);
+        mon.happiness = 255;
+        mon.attack = 20;
+        mon.defense = 10;
+        for entry in [
+            EvolutionEntry::level("VAPOREON", 20),
+            EvolutionEntry::happiness("ESPEON", HAPPINESS_ANYTIME),
+            EvolutionEntry::stat("FLAREON", 20, STAT_ATK_GT_DEF),
+            EvolutionEntry::item("JOLTEON", "THUNDERSTONE"),
+        ] {
+            let table = EvolutionTable(BTreeMap::from([("EEVEE".to_string(), vec![entry])]));
+            for mode in [LinkMode::Link, LinkMode::TimeCapsule] {
+                context.link_mode = mode;
+                for forced in [false, true] {
+                    context.force_evolution = forced;
+                    context.current_item = Some("THUNDERSTONE");
+                    assert_eq!(
+                        find_evolution_candidate(&mon, &table, &context).unwrap(),
+                        None,
+                        "mode={mode:?}, forced={forced}, table={table:?}"
+                    );
+                }
+            }
+        }
     }
 
     #[test]

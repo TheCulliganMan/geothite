@@ -24,6 +24,7 @@ fn autosave_browser_progress(mut runtime: ResMut<BevyRuntimeShell>, time: Res<Ti
 
 #[cfg(target_arch = "wasm32")]
 thread_local! {
+    static BROWSER_AUDIO_CONTEXT: std::cell::RefCell<Option<web_sys::AudioContext>> = const { std::cell::RefCell::new(None) };
     static BROWSER_MUTED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
     static BROWSER_MASTER_GAIN: std::cell::RefCell<Option<web_sys::GainNode>> = const { std::cell::RefCell::new(None) };
 }
@@ -73,4 +74,17 @@ pub fn crystal_set_voxel_camera(zoom_step: u8, rotation_step: u8) {
     BROWSER_VOXEL_CAMERA.with(|value| {
         value.set(Some(crystal_voxel_view::VoxelCameraControls::new(zoom_step, rotation_step)));
     });
+}
+
+// Called synchronously by trusted DOM gestures, outside the ECS frame loop.
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_resume_audio() -> Result<js_sys::Promise, wasm_bindgen::JsValue> {
+    BROWSER_AUDIO_CONTEXT.with(|slot| {
+        let mut slot = slot.borrow_mut();
+        if slot.is_none() {
+            *slot = Some(web_sys::AudioContext::new()?);
+        }
+        slot.as_ref().expect("browser audio context initialized").resume()
+    })
 }

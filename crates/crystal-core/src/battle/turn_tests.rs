@@ -10121,6 +10121,36 @@ fn damaging_secondary_confusion_is_silent_when_confusion_already_exists() {
 }
 
 #[test]
+fn confusion_self_damage_does_not_consume_damage_variation_rng() {
+    let mut player = pokemon("GASTLY", 50, pokemon_type("GHOST"), "TACKLE");
+    player.confusion_turns = 3;
+    let enemy = pokemon("RATTATA", 40, pokemon_type("NORMAL"), "TACKLE");
+    let mut state = battle_state(player, enemy, 1);
+    let selected = move_data("TACKLE", pokemon_type("NORMAL"), 35, 100);
+    let mut rng = ScriptedBattleRandom::new(vec![1]);
+    let mut events = Vec::new();
+    assert!(
+        move_blocked_by_confusion(
+            &mut state,
+            BattleSide::Player,
+            "TACKLE",
+            &selected,
+            &BTreeMap::new(),
+            &stat_multipliers(),
+            &type_categories(),
+            &type_effectiveness_table(),
+            &weather_modifiers(),
+            &mut rng,
+            &mut events,
+        )
+        .unwrap()
+    );
+    assert_eq!(rng.calls, 1);
+    assert!(events.iter().any(|event| matches!(event,
+        BattleEvent::ConfusionSelfDamage { damage, .. } if *damage > 1)));
+}
+
+#[test]
 fn confusion_turn_can_block_move_with_self_damage() {
     let mut player = pokemon("PSYDUCK", 50, pokemon_type("WATER"), "WATER_GUN");
     player.confusion_turns = 3;
@@ -31345,5 +31375,60 @@ fn modern_move_split_screens_follow_move_categories() {
     for (id, move_type, expected) in [("FIRE_PUNCH", "FIRE", BattleScreen::Reflect), ("SHADOW_BALL", "GHOST", BattleScreen::LightScreen)] {
         let attack = move_data(id, pokemon_type(move_type), 75, 100);
         assert_eq!(active_damage_screen(&state, BattleSide::Enemy, &categories, &attack).unwrap(), Some(expected));
+    }
+}
+
+#[test]
+fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_faint() {
+    for (battle_type, balls, caught, fainted, ends) in [
+        ("BATTLETYPE_CONTEST", 0, false, false, true),
+        ("BATTLETYPE_CONTEST", 1, false, false, false),
+        ("BATTLETYPE_CONTEST", 0, true, false, false),
+        ("BATTLETYPE_CONTEST", 0, false, true, false),
+        ("BATTLETYPE_NORMAL", 0, false, false, false),
+    ] {
+        let mut state = GameState::default();
+        let mut player = pokemon("CHIKORITA", 45, pokemon_type("GRASS"), "TACKLE");
+        let enemy = pokemon("CATERPIE", 12, pokemon_type("BUG"), "TACKLE");
+        if fainted { player.hp = 0; }
+        state.storage.party.pokemon[0] = Some(player.clone());
+        state.bug_contest.park_balls_remaining = balls;
+        state.battle_result = 0x40;
+        state.battle = BattleMemory::Wild {
+            battle_type: battle_type.into(), battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
+            map_name: "NationalPark".into(), roaming_slot: None,
+            enemy_pokemon: enemy.clone(), enemy_party: vec![enemy.clone()],
+        };
+        let outcome = BattleTurnOutcome {
+            state: BattleCombatState::new(player.clone(), enemy.clone())
+                .with_parties(vec![player], vec![enemy]),
+            order: vec![BattleSide::Player, BattleSide::Enemy],
+            events: vec![BattleEvent::BallThrown {
+                side: BattleSide::Player,
+                outcome: CaptureOutcome {
+                    caught, blocked: false, storage_full: false, wobble_count: 0,
+                    animation_shakes: 0, final_catch_rate: 1, ball_id: Some("PARK_BALL".into()),
+                },
+            }],
+        };
+        commit_battle_turn_outcome(&mut state, 0, &outcome).unwrap();
+        assert_eq!(matches!(state.battle, BattleMemory::Inactive), ends,
+            "type={battle_type} balls={balls} caught={caught} fainted={fainted}");
+        if ends {
+            assert_eq!(state.battle_result, 2, "CheckContestBattleOver clears the capture flags and adds DRAW");
+            assert!(state.script_runtime.active_battle_combat.is_none());
+            let script = state.script_runtime.next_script.as_ref().unwrap();
+            assert_eq!(script.origin_map_name, "NationalPark");
+            assert_eq!(script.script, "BugCatchingContestOutOfBallsScript");
+        } else {
+            assert!(state.script_runtime.next_script.is_none());
+        }
+        if caught {
+            // Capture completion has its own WIN path, but the final ball
+            // still resumes the same authored out-of-balls announcement.
+            crate::battle::start::deactivate_battle_after_win(&mut state);
+            assert_eq!(state.script_runtime.next_script.as_ref().unwrap().script,
+                "BugCatchingContestOutOfBallsScript");
+        }
     }
 }

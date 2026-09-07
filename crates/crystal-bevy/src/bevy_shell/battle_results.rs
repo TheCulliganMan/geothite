@@ -2427,17 +2427,6 @@ fn begin_visible_follower_step(
     Ok(())
 }
 
-fn drain_visible_follower_step(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
-    let has_queued_step = runtime_shell
-        .visible_script_movement
-        .as_ref()
-        .is_some_and(|movement| movement.follower_queued_step.is_some());
-    if !has_queued_step {
-        return Ok(false);
-    }
-    advance_visible_follower_step(runtime_shell, None)
-}
-
 fn advance_visible_follower_step(
     runtime_shell: &mut BevyRuntimeShell,
     next_step: Option<VisibleFollowerStep>,

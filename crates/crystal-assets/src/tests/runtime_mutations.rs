@@ -6940,3 +6940,33 @@ fn runtime_mutation_protocol_rejects_framed_v49_payload_without_compatibility_de
             "{error:#}"
         );
 }
+
+#[test]
+fn bug_contest_timeout_queues_the_authored_announcement_before_warping() {
+    let module = test_map_module("NationalParkBugContest", "NATIONAL_PARK_BUG_CONTEST", None);
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        tilesets: BTreeMap::from([("johto".to_string(), test_tileset_definition())]),
+        ..GameDataSet::default()
+    };
+    let mut state = GameState::default();
+    state.flags.set_engine_flag("ENGINE_BUG_CONTEST_TIMER", true).unwrap();
+    data.apply_internal_special_routine(&mut state, "StartBugContestTimer").unwrap();
+    state.time.registers.minutes = 20;
+    state.time.registers.seconds = 1;
+    let mut session = data.overworld_session("NationalParkBugContest", TilePosition::new(0, 0), 0).unwrap();
+    // CheckTimeEvents is deferred while an existing script owns the frame.
+    let existing = ScriptLocation {
+        origin_map_name: session.map.name.clone(), script: "ExistingScript".into(),
+    };
+    state.script_runtime.next_script = Some(existing.clone());
+    data.apply_overworld_input(&mut state, &mut session, [], &BTreeSet::new(), &mut ReplayDivider::new([])).unwrap();
+    assert_eq!(state.script_runtime.next_script, Some(existing));
+    assert!(state.bug_contest.timer_active);
+    state.script_runtime.next_script = None;
+    data.apply_overworld_input(&mut state, &mut session, [], &BTreeSet::new(), &mut ReplayDivider::new([])).unwrap();
+    assert_eq!(session.map.name, "NationalParkBugContest", "the announcement precedes the results warp");
+    assert_eq!(state.script_runtime.next_script.as_ref().map(|script| script.script.as_str()),
+        Some("BugCatchingContestOverScript"));
+    assert!(!state.bug_contest.timer_active);
+}

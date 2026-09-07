@@ -3075,14 +3075,9 @@ fn start_next_visible_script_movement_phase(runtime_shell: &mut BevyRuntimeShell
                     .map(|phase| (movement.object_id.clone(), phase))
             });
         let Some((object_id, phase)) = next else {
-            // The follower is deliberately one command behind its leader.
-            // Once the leader consumes its final phase, the last queued
-            // follower command still has to animate before this retained
-            // scene can be released to the authoritative final snapshot.
-            if drain_visible_follower_step(runtime_shell)? {
-                mark_runtime_snapshot_dirty(runtime_shell);
-                return Ok(true);
-            }
+            // GetFollowerNextMovementIndex leaves the newest command queued
+            // when its queue length reaches zero. step_end does not enqueue
+            // another command, so retain that one-step lag across programs.
             let pending = runtime_shell
                 .visible_script_movement
                 .as_mut()
@@ -3999,6 +3994,17 @@ fn apply_runtime_hotkeys(
         return;
     }
     if runtime_shell.pending_name_choice.is_some() {
+        if runtime_shell.pending_name_choice.as_ref()
+            .is_some_and(|choice| choice.nickname_pages.len() > 1)
+        {
+            if keys.just_pressed(KeyCode::KeyZ) || keys.just_pressed(KeyCode::KeyX) {
+                run_bevy_action(&mut runtime_shell, |shell| {
+                    advance_visible_nickname_prompt(shell);
+                    Ok(())
+                });
+            }
+            return;
+        }
         if keys.just_pressed(KeyCode::ArrowUp) || keys.just_pressed(KeyCode::ArrowLeft) {
             run_bevy_action(&mut runtime_shell, |shell| {
                 move_visible_name_choice(shell, -1)
@@ -6235,11 +6241,13 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 .take()
                 .context("egg hatch text lost its presentation state")?;
             let default_name = crate::core::models::pokemon_species_display_name(&hatch.species_id);
+            let nickname_pages = visible_nickname_prompt_pages(runtime_shell, &default_name, true)?;
             runtime_shell.pending_egg_hatch_nickname = Some(PendingEggHatchNickname {
                 party_index: hatch.party_index,
                 default_name,
             });
             runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+                nickname_pages,
                 options: vec!["YES".to_string(), "NO".to_string()],
                 selected: 0,
                 player_menu: None,
@@ -6819,6 +6827,11 @@ fn continue_visible_capture_after_owned_surface(
     runtime_shell.battle_message_scene = None;
     if prompt_for_nickname {
         runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+            nickname_pages: visible_nickname_prompt_pages(
+                runtime_shell,
+                &runtime_shell.pending_standard_capture.as_ref().unwrap().default_name,
+                false,
+            )?,
             options: vec!["YES".to_string(), "NO".to_string()],
             selected: 0,
             player_menu: None,
@@ -6932,6 +6945,9 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return close_visible_mail_read(runtime_shell);
     }
     if runtime_shell.pending_name_choice.is_some() {
+        if advance_visible_nickname_prompt(runtime_shell) {
+            return Ok(());
+        }
         if runtime_shell
             .pending_name_choice
             .as_ref()
@@ -6986,8 +7002,9 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if runtime_shell.visible_slot_machine.is_some() {
         return close_visible_slot_machine(runtime_shell);
     }
-    if runtime_shell.visible_unown_puzzle.is_some() {
-        return close_visible_unown_puzzle(runtime_shell);
+    if let Some(puzzle) = runtime_shell.visible_unown_puzzle.as_ref() {
+        // UnownPuzzleJumptable ignores B; only the solved A/B wait accepts it.
+        return if puzzle.solved { use_visible_unown_puzzle_cell(runtime_shell) } else { Ok(()) };
     }
     if runtime_shell.visible_unown_printer.is_some() {
         return close_visible_unown_printer(runtime_shell);
@@ -8302,6 +8319,9 @@ fn switch_visible_pack_item(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
 }
 
 fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if let Some(puzzle) = runtime_shell.visible_unown_puzzle.as_ref() {
+        return if puzzle.solved { Ok(()) } else { close_visible_unown_puzzle(runtime_shell) };
+    }
     if runtime_shell.pokegear_exit.is_some() { return Ok(()); }
     if runtime_shell.bill_pc_move_save.is_some()
         || runtime_shell.pc_release_sequence.is_some()
@@ -8620,6 +8640,9 @@ fn has_visible_shell_select_action(runtime_shell: &mut BevyRuntimeShell) -> bool
 }
 
 fn has_visible_shell_start_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if runtime_shell.visible_unown_puzzle.is_some() {
+        return true;
+    }
     if runtime_shell.bill_pc_move_save.is_some()
         || runtime_shell.pc_release_sequence.is_some()
         || runtime_shell.pc_transfer_sequence.is_some()

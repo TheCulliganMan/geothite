@@ -819,6 +819,10 @@ fn unown_puzzle_cursor_blinks_from_hvblankcounter_unless_holding_piece() {
     assert!(visible_unown_puzzle_cursor_visible(&puzzle, 0x10));
     puzzle.holding_piece = Some(1);
     assert!(visible_unown_puzzle_cursor_visible(&puzzle, 0));
+    puzzle.holding_piece = None;
+    puzzle.solved = true;
+    assert!(!visible_unown_puzzle_cursor_visible(&puzzle, 0x10),
+        "the solved puzzle calls ClearSprites before waiting for A or B");
 }
 
 fn core_modular_title_shell_for_test() -> BevyRuntimeShell {
@@ -1407,6 +1411,7 @@ fn retained_field_fullscreen_ownership_distinguishes_new_game_and_capture_name_c
     );
 
     runtime_shell.pending_name_choice = Some(VisibleNameChoice {
+        nickname_pages: VecDeque::new(),
         options: vec!["YES".to_string(), "NO".to_string()],
         selected: 0,
         player_menu: None,
@@ -3254,4 +3259,28 @@ fn mailbox_windows_match_original_rom_lcd() {
         differences.push((label, count));
     }
     assert!(differences.iter().all(|(_, count)| *count == 0), "mailbox RGB5 differences: {differences:?}");
+}
+
+#[test]
+fn unown_solved_cancel_box_uses_the_source_void_tile() {
+    let mut strip = image::RgbaImage::from_pixel(152, 8, image::Rgba([32, 32, 32, 255]));
+    for y in 0..8 { for x in 16..24 {
+        strip.put_pixel(x, y, image::Rgba([248, 248, 248, 255]));
+    }}
+    let sources = UnownPuzzleRenderSources {
+        pieces: HashMap::from([("kabuto".into(), vec![image::RgbaImage::new(24, 24); 16])]),
+        cursor: image::RgbaImage::new(16, 16), start_cancel: strip,
+    };
+    let puzzle = VisibleUnownPuzzle {
+        puzzle_id: "KABUTO".into(), layout: [[0; 6]; 6], holding_piece: None,
+        cursor_x: 0, cursor_y: 0, solved: true,
+    };
+    let mut images = Assets::<Image>::default();
+    let frame = render_visible_unown_puzzle_frame(&sources, &puzzle, false, &mut images).unwrap();
+    let pixels = &images.get(&frame.handle).unwrap().data;
+    for y in 128..136 { for x in 40..120 {
+        let offset = (y * 160 + x) * 4;
+        assert_eq!(&pixels[offset..offset + 4], &[248, 248, 248, 255],
+            "PlaceStartCancelBoxBorder fills the cleared lettering with PUZZLE_VOID");
+    }}
 }

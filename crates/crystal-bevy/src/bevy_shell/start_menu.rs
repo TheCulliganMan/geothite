@@ -4669,7 +4669,9 @@ fn battle_hp_bar_tiles<'a>(
                     let mut pixels = vec![0_u8; SOURCE_TILE_SIZE * SOURCE_TILE_SIZE * 4];
                     for row in 0..SOURCE_TILE_SIZE {
                         let lo = tile[if one_bpp { row } else { row * 2 }];
-                        let hi = if one_bpp { 0 } else { tile[row * 2 + 1] };
+                        // Get1bpp duplicates each row into both bitplanes, so
+                        // monochrome border pixels use black (palette index 3).
+                        let hi = if one_bpp { lo } else { tile[row * 2 + 1] };
                         for col in 0..SOURCE_TILE_SIZE {
                             let bit = 1 << (7 - col);
                             let level = ((hi & bit != 0) as u8) << 1 | (lo & bit != 0) as u8;

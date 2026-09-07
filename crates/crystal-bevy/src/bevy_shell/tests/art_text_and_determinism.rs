@@ -901,3 +901,66 @@ fn source_font_ink_is_black_in_both_png_and_2bpp_paths() {
             .all(|pixel| pixel == [0, 0, 0, 255]));
     }
 }
+
+#[test]
+fn nickname_prompt_uses_asm_pages_and_tile_baselines() {
+    let runtime_shell = core_modular_title_shell_for_test();
+    let pages = visible_nickname_prompt_pages(&runtime_shell, "CYNDAQUIL", false)
+        .expect("exported nickname question");
+    assert_eq!(pages, VecDeque::from([
+        "Give a nickname to\nthe CYNDAQUIL you".to_string(),
+        "the CYNDAQUIL you\nreceived?".to_string(),
+    ]));
+    assert_eq!(
+        visible_nickname_prompt_pages(&runtime_shell, "TOGEPI", true)
+            .expect("exported hatch nickname question"),
+        VecDeque::from(["Give a nickname to\nTOGEPI?".to_string()]),
+    );
+    let mut choice = VisibleNameChoice {
+        nickname_pages: pages,
+        options: vec!["YES".to_string(), "NO".to_string()],
+        selected: 0,
+        player_menu: None,
+        player_phase: None,
+        motion_step: 0,
+        motion_frames_remaining: 0,
+        pending_player_name: None,
+    };
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    for final_page in [false, true] {
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        spawn_visible_name_choice_screen(
+            &mut commands, &runtime_shell, &mut art, &runtime_shell.asset_root,
+            &mut images, &choice,
+        ).expect("render source nickname question");
+        queue.apply(&mut world);
+        let mut query = world.query_filtered::<&Transform, With<DialogGlyphMarker>>();
+        let origins = query.iter(&world).map(|transform| transform.translation).collect::<Vec<_>>();
+        for (x, y) in [(1.0, 14.0), (1.0, 16.0)] {
+            let (x, y) = battle_hud_tile_origin(x, y);
+            assert!(origins.contains(&Vec3::new(x, y, 6.2)), "missing ASM text baseline");
+        }
+        assert_eq!(origins.iter().any(|origin| origin.z == 6.3), final_page,
+            "YesNoBox must open only after CONT scrolls the question");
+        if final_page {
+            for y in [8.0, 10.0] {
+                let (x, y) = battle_hud_tile_origin(15.0, y);
+                assert!(origins.contains(&Vec3::new(x, y, 6.3)), "missing ASM menu cursor row");
+            }
+        }
+        assert_eq!(art.font_error, None, "nickname prompt font rendering");
+        let canvas = render_pc_audit_canvas(&mut world, &images, "nickname prompt");
+        if let Ok(directory) = std::env::var("NICKNAME_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).expect("create nickname render directory");
+            canvas.save(PathBuf::from(directory).join(if final_page {
+                "nickname-yes-no.png"
+            } else {
+                "nickname-question.png"
+            })).expect("save nickname prompt render");
+        }
+        choice.nickname_pages.pop_front();
+    }
+}

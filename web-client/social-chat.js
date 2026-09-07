@@ -56,6 +56,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   panel.id = 'social-chat';
   panel.setAttribute('aria-label', 'Chat');
   panel.innerHTML = `<button class="chat-toggle" type="button" aria-label="Open chat" title="Chat (Enter)" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3V11.5A7.5 7.5 0 0 1 9.5 4h3a7.5 7.5 0 0 1 7.5 7.5Z"/></svg></button>
+    <button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button>
     <div class="chat-log" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions"></div>
     <div class="chat-requests"></div><div class="chat-actions" hidden></div><div class="chat-players" hidden></div>
     <form hidden><label class="sr-only" for="chat-channel">Channel</label><select id="chat-channel"></select><label class="sr-only" for="chat-message">Message</label><input id="chat-message" autocomplete="off" placeholder="Say something…" maxlength="600"><button type="submit" aria-label="Send">↵</button></form>`;
@@ -65,6 +66,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const select = panel.querySelector('select');
   const form = panel.querySelector('form');
   const toggle = panel.querySelector('.chat-toggle');
+  const close = panel.querySelector('.chat-close');
   const actions = panel.querySelector('.chat-actions');
   const roster = panel.querySelector('.chat-players');
   const requests = panel.querySelector('.chat-requests');
@@ -97,6 +99,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     open = value;
     panel.classList.toggle('editing', open);
     form.hidden = !open;
+    close.hidden = !open;
+    for (const control of log.querySelectorAll('button')) control.tabIndex = open ? 0 : -1;
+    if (!open) log.scrollTop = log.scrollHeight;
     roster.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close chat' : 'Open chat');
@@ -113,11 +118,16 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 32;
     const line = document.createElement('div');
     line.className = `chat-line chat-${Object.hasOwn(channelLabels, channel) ? channel : 'system'}`;
-    if (user) line.append(button(name, 'player', () => showPlayer(user, name)), ': ');
+    line.dataset.receivedAt = String(window.Date.now());
+    if (user) {
+      const sender = button(name, 'player', () => showPlayer(user, name));
+      sender.tabIndex = open ? 0 : -1;
+      line.append(sender, ': ');
+    }
     line.append(text);
     log.append(line);
     while (log.childElementCount > 200) log.firstElementChild.remove();
-    if (atBottom) log.scrollTop = log.scrollHeight;
+    if (!open || atBottom) log.scrollTop = log.scrollHeight;
   };
   const send = message => {
     if (!connected) throw new Error('Reconnecting… Your draft is kept.');
@@ -152,6 +162,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     input.value = '';
   });
   listen(toggle, 'click', () => setOpen(!open));
+  listen(close, 'click', () => setOpen(false));
   listen(form, 'submit', event => { event.preventDefault(); submit(); });
   const captureKeys = event => {
     if (event.crystalGameControl) return;
@@ -193,6 +204,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   listen(panel, 'focusout', () => queueMicrotask(() => wasm.crystal_social_focus(panel.contains(document.activeElement))));
   listen(window, 'blur', () => { swallowed.clear(); wasm.crystal_social_focus(false); });
   const poll = () => {
+    for (const line of log.children) line.classList.toggle('chat-faded', window.Date.now() - Number(line.dataset.receivedAt) >= 10000);
     try {
       const state = JSON.parse(wasm.crystal_social_poll());
       if (connected && !state.connected) { append('Reconnecting…'); requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }

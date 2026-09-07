@@ -3638,14 +3638,14 @@ fn change_visible_slot_machine_bet(runtime_shell: &mut BevyRuntimeShell, delta: 
             machine.message = format!("BET {}", machine.bet);
         }
         VisibleSlotMachinePhase::PlayAgain => {
-            machine.yes_no_index ^= 1;
+            machine.yes_no_index = (machine.yes_no_index as i16 - i16::from(delta)).clamp(0, 1) as usize;
         }
         VisibleSlotMachinePhase::Spinning
         | VisibleSlotMachinePhase::Result
         | VisibleSlotMachinePhase::RanOut
         | VisibleSlotMachinePhase::Quitting => return Ok(()),
     }
-    queue_visible_shell_sound_effect(runtime_shell, "SFX_READ_TEXT_2")?;
+    // VerticalMenu plays its click on A/B, not on cursor movement.
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
@@ -4812,12 +4812,10 @@ fn move_visible_card_flip_cursor(
         .context("no Card Flip game is open")?;
     let sound = match game.phase {
         VisibleCardFlipPhase::AskPlay | VisibleCardFlipPhase::PlayAgain => {
-            if dy != 0 {
-                game.yes_no_index ^= 1;
-                Some("SFX_READ_TEXT_2")
-            } else {
-                None
-            }
+            game.yes_no_index = (game.yes_no_index as isize + dy.signum()).clamp(0, 1) as usize;
+            // YesNoBox uses VerticalMenu; only confirmation/cancellation clicks.
+            mark_runtime_snapshot_dirty(runtime_shell);
+            return Ok(());
         }
         VisibleCardFlipPhase::ChooseCard
         | VisibleCardFlipPhase::Result
@@ -6729,6 +6727,7 @@ fn use_visible_unown_puzzle_cell(runtime_shell: &mut BevyRuntimeShell) -> Result
             .state
             .script_runtime
             .active_menu = None;
+        mark_runtime_snapshot_dirty(runtime_shell);
         return continue_visible_script_after_prompt(runtime_shell);
     }
     let occupied = puzzle.layout[puzzle.cursor_y][puzzle.cursor_x] != 0;

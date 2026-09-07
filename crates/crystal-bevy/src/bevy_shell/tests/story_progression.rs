@@ -3016,6 +3016,17 @@ fn pressing_z_on_end_stores_the_gift_pokemon_nickname() {
         Some("CYNDAQUIL")
     );
 
+    let mut prompt = Vec::new();
+    push_visible_name_choice_entries(&mut prompt, &runtime_shell);
+    assert_eq!(prompt, vec!["Give a nickname to", "the CYNDAQUIL you"]);
+    move_visible_name_choice(&mut runtime_shell, 1).expect("ignore cursor before YesNoBox");
+    assert_eq!(runtime_shell.pending_name_choice.as_ref().unwrap().selected, 0);
+    confirm_visible_name_choice(&mut runtime_shell).expect("scroll nickname question");
+    assert!(runtime_shell.pending_name_input.is_none());
+    prompt.clear();
+    push_visible_name_choice_entries(&mut prompt, &runtime_shell);
+    assert_eq!(prompt, vec!["the CYNDAQUIL you", "received?", "> YES", "  NO"]);
+
     confirm_visible_name_choice(&mut runtime_shell).expect("accept nickname prompt");
     let name_input = runtime_shell
         .pending_name_input
@@ -3221,6 +3232,9 @@ fn boxed_givepoke_prints_bills_pc_notice_after_naming_before_script_continuation
         })
     ));
 
+    press_visible_b_button(&mut runtime_shell).expect("B scrolls boxed nickname question");
+    assert!(runtime_shell.pending_gift_pokemon_nickname.is_some());
+    assert!(runtime_shell.pending_name_input.is_none());
     confirm_visible_name_choice(&mut runtime_shell).expect("accept boxed nickname prompt");
     runtime_shell
         .pending_name_input

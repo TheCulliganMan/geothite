@@ -2655,10 +2655,9 @@ fn render_visible_unown_puzzle_frame(
     }
     draw_tile(5, 120, 120, &mut target);
     draw_tile(6, 32, 128, &mut target);
-    if !puzzle.solved {
-        for offset in 0..10 {
-            draw_tile(9 + offset, (5 + offset) * TILE, 128, &mut target);
-        }
+    for offset in 0..10 {
+        let tile = if puzzle.solved { 2 } else { 9 + offset };
+        draw_tile(tile, (5 + offset) * TILE, 128, &mut target);
     }
     draw_tile(6, 120, 128, &mut target);
     draw_tile(7, 32, 136, &mut target);
@@ -2732,7 +2731,7 @@ fn render_visible_unown_puzzle_frame(
 }
 
 fn visible_unown_puzzle_cursor_visible(puzzle: &VisibleUnownPuzzle, vblank_counter: u8) -> bool {
-    puzzle.holding_piece.is_some() || vblank_counter & 0x10 != 0
+    !puzzle.solved && (puzzle.holding_piece.is_some() || vblank_counter & 0x10 != 0)
 }
 
 fn overlay_unown_border(
@@ -9655,23 +9654,7 @@ fn spawn_visible_name_choice_screen(
     images: &mut Assets<Image>,
     choice: &VisibleNameChoice,
 ) -> Result<()> {
-    let nickname_target = runtime_shell
-        .pending_standard_capture
-        .as_ref()
-        .map(|capture| capture.default_name.as_str())
-        .or_else(|| {
-            runtime_shell
-                .pending_gift_pokemon_nickname
-                .as_ref()
-                .map(|gift| gift.default_name.as_str())
-        })
-        .or_else(|| {
-            runtime_shell
-                .pending_egg_hatch_nickname
-                .as_ref()
-                .map(|hatch| hatch.default_name.as_str())
-        });
-    if let Some(default_name) = nickname_target {
+    if let Some(page) = choice.nickname_pages.front() {
         spawn_battle_window(
             commands,
             rendered_art,
@@ -9683,22 +9666,25 @@ fn spawn_visible_name_choice_screen(
             BATTLE_TEXT_BOX_HEIGHT_TILES,
             5.9,
         );
-        spawn_battle_window(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            FIELD_YES_NO_LEFT_TILE,
-            FIELD_YES_NO_TOP_TILE,
-            FIELD_YES_NO_WIDTH_TILES,
-            FIELD_YES_NO_HEIGHT_TILES,
-            6.1,
-        );
-        for (line_index, line) in ["Give a nickname to".to_string(), default_name.to_string()]
-            .into_iter()
-            .enumerate()
-        {
-            let (x, y) = battle_hud_tile_origin(1.0, 13.0 + line_index as f32);
+        // _YesNoBox spans rows 7..=11; VerticalMenu prints on rows 8 and 10.
+        if choice.nickname_pages.len() == 1 {
+            spawn_battle_window(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                FIELD_YES_NO_LEFT_TILE,
+                FIELD_YES_NO_TOP_TILE,
+                FIELD_YES_NO_WIDTH_TILES,
+                5.0,
+                6.1,
+            );
+        }
+        for (line_index, line) in page.lines().enumerate() {
+            let (x, y) = battle_hud_tile_origin(
+                FIELD_TEXT_BOX_TEXT_LEFT_TILE,
+                FIELD_TEXT_BOX_TEXT_TOP_TILE + line_index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            );
             spawn_scene_dialog_bitmap_text(
                 commands,
                 rendered_art,
@@ -9710,10 +9696,15 @@ fn spawn_visible_name_choice_screen(
                 6.2,
             );
         }
+        if choice.nickname_pages.len() > 1 {
+            let (x, y) = battle_hud_tile_origin(18.0, 17.0);
+            spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, "▼", x, y, 6.2);
+            return Ok(());
+        }
         for (index, label) in choice.options.iter().take(2).enumerate() {
             let (x, y) = battle_hud_tile_origin(
-                FIELD_YES_NO_LEFT_TILE,
-                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32,
+                FIELD_YES_NO_LEFT_TILE + 1.0,
+                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32 * 2.0,
             );
             spawn_scene_dialog_bitmap_text(
                 commands,
@@ -11967,27 +11958,11 @@ fn push_visible_name_choice_entries(entries: &mut Vec<String>, runtime_shell: &B
     {
         return;
     }
-    if let Some(default_name) = runtime_shell
-        .pending_standard_capture
-        .as_ref()
-        .map(|capture| capture.default_name.as_str())
-        .or_else(|| {
-            runtime_shell
-                .pending_gift_pokemon_nickname
-                .as_ref()
-                .map(|gift| gift.default_name.as_str())
-        })
-        .or_else(|| {
-            runtime_shell
-                .pending_egg_hatch_nickname
-                .as_ref()
-                .map(|hatch| hatch.default_name.as_str())
-        })
-    {
-        entries.push(compact_scene_label(
-            &format!("Give a nickname to {default_name}?"),
-            30,
-        ));
+    if let Some(page) = choice.nickname_pages.front() {
+        entries.extend(page.lines().map(str::to_string));
+        if choice.nickname_pages.len() > 1 {
+            return;
+        }
     } else {
         entries.push("NAME".to_string());
     }

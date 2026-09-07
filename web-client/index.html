@@ -154,6 +154,7 @@
     <script type="module">
       import { createGameBridge, registerGameTools } from './webmcp.js';
       import { mountGamepadControls } from './gamepad-controls.js';
+      import { mountAudioUnlock } from './audio-unlock.js';
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSocialChat } from './social-chat.js';
@@ -214,6 +215,7 @@
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await init();
+          mountAudioUnlock(wasm, document);
           // WASM initialization starts asynchronous pack loading. Enable input
           // only after the actual game loop has produced its first observation.
           await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });

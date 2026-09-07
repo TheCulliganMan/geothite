@@ -12,6 +12,7 @@ use crate::battle::damage::{
 };
 use crate::battle::start::{
     ActiveBattleEnemyError, ActiveBattlePartyError, deactivate_battle_after_draw,
+    deactivate_battle_after_contest_balls_exhausted,
     require_active_battle_enemy_party_index, require_active_battle_party_index,
     update_active_battle_enemy,
 };
@@ -2123,7 +2124,6 @@ pub enum BattleEvent {
         damage: u16,
         hp_before: u16,
         hp_after: u16,
-        roll: u8,
         result: DamageResult,
     },
     HealApplied {
@@ -2544,6 +2544,19 @@ pub fn commit_battle_turn_outcome(
         .any(|event| matches!(event, BattleEvent::Fled { .. }))
     {
         deactivate_battle_after_draw(state);
+    } else if matches!(&state.battle,
+        BattleMemory::Wild { battle_type, .. } | BattleMemory::StaticWild { battle_type, .. }
+            if battle_type == "BATTLETYPE_CONTEST")
+        && state.bug_contest.park_balls_remaining == 0
+        && outcome.state.player.hp > 0
+        && outcome.state.enemy.hp > 0
+        && outcome.events.iter().any(|event| matches!(event,
+            BattleEvent::BallThrown { side: BattleSide::Player, outcome }
+                if !outcome.caught && !outcome.blocked))
+    {
+        // BattleTurn loops through CheckContestBattleOver after the enemy's
+        // response and between-turn effects. Capture/faint exits happen first.
+        deactivate_battle_after_contest_balls_exhausted(state);
     }
     Ok(())
 }
@@ -4036,7 +4049,6 @@ fn apply_player_obedience(
                 type_categories,
                 type_effectiveness,
                 weather_modifiers,
-                rng,
                 events,
             )?;
             clear_last_moves(state, BattleSide::Player);
@@ -7995,7 +8007,6 @@ fn move_blocked_by_confusion(
         type_categories,
         type_effectiveness,
         weather_modifiers,
-        rng,
         events,
     )?;
     Ok(true)
@@ -8011,11 +8022,10 @@ fn apply_confusion_self_damage(
     type_categories: &TypeCategories,
     type_effectiveness: &TypeEffectivenessTable,
     weather_modifiers: &WeatherModifiers,
-    rng: &mut dyn BattleRandomSource,
     events: &mut Vec<BattleEvent>,
 ) -> Result<(), BattleTurnError> {
     state.critical_hit_register = 0;
-    let damage_roll = crystal_damage_variation_roll(rng);
+    // HitSelfInConfusion calls DamageCalc directly, without DamageVariation.
     let mut damage_move = confusion_damage_move();
     // DamageCalc reads the already-loaded selected move effect even though
     // confusion replaces its power with 40. Selecting Selfdestruct or
@@ -8039,7 +8049,7 @@ fn apply_confusion_self_damage(
             is_confusion_damage: true,
             defender_identified: false,
             weather: state.weather,
-            random_roll: damage_roll,
+            random_roll: u8::MAX,
             attacker_badge_boost: badge_boost_active(state, side, Stat::Attack),
             defender_badge_boost: badge_boost_active(state, side, Stat::Defense),
             attacker_type_badge_boost: false,
@@ -8070,7 +8080,6 @@ fn apply_confusion_self_damage(
         damage,
         hp_before,
         hp_after: pokemon.hp,
-        roll: damage_roll,
         result,
     });
     if pokemon.hp == 0 {
