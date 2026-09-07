@@ -24,6 +24,7 @@ pub struct Delivery {
 
 #[derive(Debug, Clone)]
 struct ClientRecord {
+    player_gender: u8,
     identity: ClientIdentity,
     presence: Option<PresenceRecord>,
     chat_channels: HashSet<String>,
@@ -96,6 +97,7 @@ impl Hub {
         self.clients.insert(
             connection_id,
             ClientRecord {
+                player_gender: 0,
                 identity,
                 presence: None,
                 chat_channels: ["general", "trade", "lfg"].map(str::to_owned).into(),
@@ -208,6 +210,29 @@ impl Hub {
             return Err("connection is not registered".into());
         }
         match message {
+            ClientMessage::SetProfile { display_name, player_gender } => {
+                if display_name.is_empty() || display_name.len() > 24
+                    || !display_name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
+                    || player_gender > 1 {
+                    return Err("Use a handle of 1–24 letters, numbers or underscores and a valid sprite.".into());
+                }
+                if self.sessions.values().any(|session| session.players.contains(&connection_id) && !session.settled)
+                    || self.interactions.values().any(|request| request.from == connection_id || request.target == connection_id)
+                    || self.queues.values().any(|queue| queue.iter().any(|entry| entry.connection_id == connection_id)) {
+                    return Err("Finish your invitation or link session before editing your profile.".into());
+                }
+                let client = self.clients.get_mut(&connection_id).expect("checked");
+                client.identity.display_name = display_name;
+                client.player_gender = player_gender;
+                let Some(presence) = client.presence.clone() else { return Ok(Vec::new()) };
+                let identity = client.identity.clone();
+                let output = self.presence_candidates(&identity.world, Some(&presence), &presence, connection_id)
+                    .into_iter().filter(|id| self.clients.get(id).and_then(|peer| peer.presence.as_ref())
+                        .is_some_and(|peer| presences_are_visible(&presence, peer)))
+                    .map(|id| deliver(id, presence_message(&identity, &presence, player_gender)))
+                    .collect();
+                Ok(output)
+            }
             ClientMessage::Hello { .. } => Err("hello may only be sent once".into()),
             ClientMessage::Presence {
                 map,
@@ -259,12 +284,12 @@ impl Hub {
                         (false, true) => {
                             output.push(deliver(
                                 connection_id,
-                                presence_message(&peer.identity, peer_presence),
+                                presence_message(&peer.identity, peer_presence, peer.player_gender),
                             ));
-                            output.push(deliver(id, presence_message(&identity, &next_presence)));
+                            output.push(deliver(id, presence_message(&identity, &next_presence, self.clients[&connection_id].player_gender)));
                         }
                         (true, true) => {
-                            output.push(deliver(id, presence_message(&identity, &next_presence)))
+                            output.push(deliver(id, presence_message(&identity, &next_presence, self.clients[&connection_id].player_gender)))
                         }
                         (true, false) => {
                             output.push(deliver(
@@ -901,10 +926,11 @@ fn presences_are_visible(left: &PresenceRecord, right: &PresenceRecord) -> bool 
         && left.tile_y.abs_diff(right.tile_y) <= PRESENCE_RADIUS_Y
 }
 
-fn presence_message(identity: &ClientIdentity, presence: &PresenceRecord) -> ServerMessage {
+fn presence_message(identity: &ClientIdentity, presence: &PresenceRecord, player_gender: u8) -> ServerMessage {
     ServerMessage::Presence {
         user_id: identity.user_id.clone(),
         display_name: identity.display_name.clone(),
+        player_gender,
         map: presence.map.clone(),
         tile_x: presence.tile_x,
         tile_y: presence.tile_y,
@@ -1508,5 +1534,45 @@ mod tests {
                     ))
         );
         assert_eq!(hub.session_count(), 0);
+    }
+}
+
+#[cfg(test)]
+mod player_customization_tests {
+    use super::*;
+    fn identity(id: &str) -> ClientIdentity {
+        ClientIdentity { user_id: id.into(), display_name: id.into(), world: WorldIdentity {
+            world_id: "main".into(), modpack: ModpackIdentity { id: "core+player-customization".into(), content_hash: "a".repeat(64) },
+        } }
+    }
+    #[test]
+    fn customization_updates_nearby_sprite_handle_and_retains_authenticated_identity() {
+        let mut hub = Hub::default();
+        let a = Uuid::new_v4(); let b = Uuid::new_v4();
+        hub.connect(a, identity("player-1")).unwrap(); hub.connect(b, identity("player-2")).unwrap();
+        let presence = || ClientMessage::Presence { map: "NewBarkTown".into(), tile_x: 1, tile_y: 1, direction: "down".into() };
+        hub.handle(a, presence()); hub.handle(b, presence());
+        let updates = hub.handle(a, ClientMessage::SetProfile { display_name: "Kris_22".into(), player_gender: 1 });
+        assert!(updates.iter().any(|update| update.connection_id == b && matches!(&update.message,
+            ServerMessage::Presence { user_id, display_name, player_gender: 1, .. } if user_id == "player-1" && display_name == "Kris_22")));
+        assert_eq!(hub.clients[&a].identity.user_id, "player-1");
+        assert_eq!(hub.users["player-1"], a);
+        let updates = hub.handle(b, presence());
+        // Subsequent movement keeps the updated identity in the server record.
+        assert!(!updates.iter().any(|update| matches!(&update.message, ServerMessage::Error { .. })));
+        assert_eq!(hub.clients[&a].player_gender, 1);
+        let chat = hub.handle(a, ClientMessage::Chat { channel: "say".into(), target_user_id: None, text: "Hello".into() });
+        assert!(chat.iter().any(|update| matches!(&update.message, ServerMessage::Chat { from_display_name, .. } if from_display_name == "Kris_22")));
+    }
+    #[test]
+    fn invalid_customization_is_atomic() {
+        let mut hub = Hub::default(); let a = Uuid::new_v4();
+        hub.connect(a, identity("player-1")).unwrap();
+        for (name, sprite) in [("bad handle", 0), ("ok", 2), ("", 0)] {
+            let result = hub.handle(a, ClientMessage::SetProfile { display_name: name.into(), player_gender: sprite });
+            assert!(matches!(&result[0].message, ServerMessage::Error { .. }));
+            assert_eq!(hub.clients[&a].identity.display_name, "player-1");
+            assert_eq!(hub.clients[&a].player_gender, 0);
+        }
     }
 }

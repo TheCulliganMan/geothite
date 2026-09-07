@@ -60,6 +60,7 @@ pub enum MatchOutcome {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ClientMessage {
+    SetProfile { display_name: String, player_gender: u8 },
     Hello {
         protocol_version: u16,
         identity: ClientIdentity,
@@ -120,6 +121,8 @@ pub enum ServerMessage {
     Presence {
         user_id: String,
         display_name: String,
+        #[serde(default)]
+        player_gender: u8,
         map: String,
         tile_x: i32,
         tile_y: i32,

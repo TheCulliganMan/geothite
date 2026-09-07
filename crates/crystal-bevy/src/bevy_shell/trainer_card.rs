@@ -154,6 +154,9 @@ fn visible_start_menu_options(
     } else if !link_mode {
         options.push(StartMenuOption::Save);
     }
+    if cfg!(target_arch = "wasm32") && _runtime_shell.shell.runtime().data().player_customization && !link_mode && !contest_active {
+        options.push(StartMenuOption::Personalization);
+    }
     options.extend([StartMenuOption::Options, StartMenuOption::Exit]);
     options
 }

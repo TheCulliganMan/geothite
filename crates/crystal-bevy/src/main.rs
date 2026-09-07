@@ -95,6 +95,7 @@ async fn run_browser() -> Result<()> {
         DEFAULT_BROWSER_PACK_FILENAME,
         pack_bytes,
     )?;
+    let legacy_profile_pack = crystal_assets::player_customization_base_save_identity(loaded.pack())?;
     let asset_root = AssetRoot::new(".");
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
@@ -103,6 +104,14 @@ async fn run_browser() -> Result<()> {
         runtime.modpack().id(),
         multiplayer.as_ref().map(|config| config.player_id),
     );
+    if runtime.load_save_summary(&save_path).is_err() {
+        if let Some((identity, content_hash)) = legacy_profile_pack {
+            let legacy_path = browser_save_path_for_identity(identity.id(), multiplayer.as_ref().map(|config| config.player_id));
+            if let Ok(save) = crystal_bevy::core::save::read_save_game_for_modpack(&legacy_path, &identity, &content_hash) {
+                runtime.save_game(&save_path, save.into_state())?;
+            }
+        }
+    }
     let continue_save_path = runtime
         .load_save_summary(&save_path)
         .is_ok()

@@ -3071,6 +3071,7 @@ fn start_menu_option_label(option: StartMenuOption) -> &'static str {
         StartMenuOption::Pokedex => "#DEX",
         StartMenuOption::Pokegear => "<POKE>GEAR",
         StartMenuOption::TrainerCard => "STATUS",
+        StartMenuOption::Personalization => "PROFILE",
         StartMenuOption::Options => "OPTION",
         StartMenuOption::Exit => "EXIT",
     }

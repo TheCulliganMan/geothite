@@ -144,7 +144,9 @@ pub fn prepare(
     let base = read_verified_compiled_game_pack(std::fs::canonicalize(
         web_root.join(BROWSER_PACK_FILENAME),
     )?)?;
-    let pack = crystal_assets::build_realtime_clock_modpack(&build(&base)?)?;
+    let pack = crystal_assets::build_player_customization_modpack(
+        &crystal_assets::build_realtime_clock_modpack(&build(&base)?)?
+    )?;
     let directory = data_dir.join("modpacks");
     std::fs::create_dir_all(&directory)?;
     let output = directory.join("all-251.browser.crystalpack");
@@ -264,11 +266,12 @@ fn hosted_pack_composes_server_clock_and_encounters() {
     let (path, identity) = prepare(&source, &directory).unwrap();
     let pack = read_verified_compiled_game_pack(path).unwrap();
     assert!(pack.data().server_clock);
+    assert!(pack.data().player_customization);
     assert!(identity.runtime_modpack_id.contains(MANIFEST_ID));
     assert!(
         identity
             .runtime_modpack_id
-            .ends_with(crystal_assets::REALTIME_CLOCK_MANIFEST_ID)
+            .contains(crystal_assets::REALTIME_CLOCK_MANIFEST_ID)
     );
     assert_eq!(pack.identity().unwrap(), identity);
     verify_coverage(&pack).unwrap();

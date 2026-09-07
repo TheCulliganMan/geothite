@@ -11,6 +11,7 @@ struct MultiplayerRuntime {
     direct_mode: Option<crystal_net::hosted::MatchMode>,
     direct_session: bool,
     pending_interaction: Option<IncomingInteraction>,
+    last_profile: Option<(String, u8)>,
     last_presence: Option<(String, i16, i16, crate::core::world::map::Direction)>,
     presence_frames_since_send: u16,
     remote_presences: HashMap<String, RemotePresence>,
@@ -45,6 +46,7 @@ struct MultiplayerRuntime {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct RemotePresence {
+    player_gender: u8,
     display_name: String,
     map: String,
     tile_x: i16,
@@ -61,7 +63,10 @@ struct IncomingInteraction {
 }
 
 impl MultiplayerRuntime {
-    fn new(runtime_shell: &BevyRuntimeShell, config: BevyMultiplayerConfig) -> Result<Self> {
+    fn new(runtime_shell: &BevyRuntimeShell, mut config: BevyMultiplayerConfig) -> Result<Self> {
+        if runtime_shell.shell.runtime().data().player_customization {
+            if let Some(profile) = stored_customization() { config.display_name = profile.handle; }
+        }
         let connection = Self::connect(runtime_shell, &config)?;
         Ok(Self {
             connection: Some(connection),
@@ -74,6 +79,7 @@ impl MultiplayerRuntime {
             direct_mode: None,
             direct_session: false,
             pending_interaction: None,
+            last_profile: None,
             last_presence: None,
             presence_frames_since_send: 0,
             remote_presences: HashMap::new(),
@@ -173,6 +179,7 @@ impl MultiplayerRuntime {
         for message in lobby_messages {
             match message {
                 crystal_net::hosted::ServerMessage::Welcome { .. } => {
+                    self.last_profile = None;
                     SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = true);
                     social_event(&message);
                     runtime_shell.last_action_status =
@@ -308,6 +315,18 @@ impl MultiplayerRuntime {
 
     fn publish_presence(&mut self, runtime_shell: &BevyRuntimeShell) -> Result<()> {
         const PRESENCE_HEARTBEAT_FRAMES: u16 = 30;
+        if runtime_shell.shell.runtime().data().player_customization && self.session.is_none()
+            && self.queued_mode.is_none() && self.direct_mode.is_none() && self.pending_interaction.is_none() {
+            let profile = (self.config.display_name.clone(), runtime_shell.shell.session().state().player_gender);
+            if self.last_profile.as_ref() != Some(&profile) {
+                if let Some(connection) = self.connection.as_mut() {
+                    connection.send(crystal_net::hosted::ClientMessage::SetProfile {
+                        display_name: profile.0.clone(), player_gender: profile.1,
+                    })?;
+                    self.last_profile = Some(profile);
+                }
+            }
+        }
         let snapshot = runtime_shell.shell.session().snapshot();
         let presence = (
             snapshot.map_name.clone(),
@@ -354,6 +373,7 @@ impl MultiplayerRuntime {
             crystal_net::hosted::ServerMessage::Presence {
                 user_id,
                 display_name,
+                player_gender,
                 map,
                 tile_x,
                 tile_y,
@@ -365,6 +385,7 @@ impl MultiplayerRuntime {
                     user_id,
                     RemotePresence {
                         display_name,
+                        player_gender,
                         map,
                         tile_x,
                         tile_y,
@@ -1930,7 +1951,7 @@ fn multiplayer_ghost_frame(
         "right" => Direction::Right,
         _ => return None,
     };
-    let female = snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE;
+    let female = presence.player_gender == PLAYER_GENDER_FEMALE;
     let (sprite_id, sprite_token, palette_override) = match snapshot.overworld.mode {
         MovementMode::Normal | MovementMode::Skate if female => {
             ("kris", "SPRITE_KRIS", snapshot.trainer.player_palette_id)
@@ -2036,7 +2057,7 @@ mod multiplayer_tests {
     #[test]
     fn a_selects_only_the_facing_player_and_preserves_ordinary_interactions() {
         let players = HashMap::from([("player-2".into(), RemotePresence {
-            display_name: "GOLD".into(), map: "map-a".into(), tile_x: 3, tile_y: 4, direction: "down".into(),
+            player_gender: 0, display_name: "GOLD".into(), map: "map-a".into(), tile_x: 3, tile_y: 4, direction: "down".into(),
         })]);
         let mut keys = ButtonInput::default();
         keys.press(KeyCode::KeyZ);

@@ -25757,17 +25757,13 @@ fn write_compiled_game_pack(path: impl AsRef<Path>, pack: &CompiledGamePack) -> 
     write_serialized_compiled_game_pack(path, &serialized_pack)
 }
 
-fn write_serialized_compiled_game_pack(
-    path: &Path,
-    serialized_pack: &CompiledGamePack,
-) -> Result<()> {
+fn serialized_compiled_game_pack_bytes(serialized_pack: &CompiledGamePack) -> Result<Vec<u8>> {
     let mut encoded = Vec::new();
     ciborium::into_writer(serialized_pack, &mut encoded)
-        .with_context(|| format!("encode compiled game pack {}", path.display()))?;
+        .context("encode compiled game pack")?;
     if encoded.len() > u32::MAX as usize {
         anyhow::bail!(
-            "compiled game pack {} exceeds binary payload length field",
-            path.display()
+            "compiled game pack exceeds binary payload length field"
         );
     }
     let mut bytes = Vec::with_capacity(COMPILED_GAME_PACK_HEADER_LEN + encoded.len());
@@ -25776,6 +25772,11 @@ fn write_serialized_compiled_game_pack(
     bytes.extend_from_slice(&(encoded.len() as u32).to_be_bytes());
     bytes.extend_from_slice(&fnv1a32_bytes(&encoded).to_be_bytes());
     bytes.extend_from_slice(&encoded);
+    Ok(bytes)
+}
+
+fn write_serialized_compiled_game_pack(path: &Path, serialized_pack: &CompiledGamePack) -> Result<()> {
+    let bytes = serialized_compiled_game_pack_bytes(serialized_pack)?;
     if let Some(parent) = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())

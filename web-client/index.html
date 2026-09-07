@@ -99,6 +99,7 @@
         width: 100%;
       }
     </style>
+    <link rel="stylesheet" href="./player-customization.css?v=1">
     <link rel="stylesheet" href="./mobile-player.css?v=20260907-controls">
   </head>
   <body>
@@ -132,6 +133,8 @@
     <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
     <nav id="controls" aria-label="Display controls">
       <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D</button>
+      <button id="personalization" type="button" hidden>Personalization</button>
+      <span id="personalization-notice" role="status"></span>
       <button id="fullscreen" type="button" aria-label="Fullscreen">⛶</button>
       <button id="help" type="button" aria-label="Controls">?</button>
       <div id="camera-controls" role="group" aria-label="2.5D camera controls" hidden>
@@ -143,6 +146,23 @@
       </div>
     </nav>
     </details>
+    <dialog id="personalization-dialog" aria-labelledby="personalization-title">
+      <form>
+        <h2 id="personalization-title">Personalization</h2>
+        <p class="intro">Make this trainer yours. Changes save to this browser.</p>
+        <label for="trainer-name">Trainer name</label>
+        <input id="trainer-name" name="name" maxlength="8" required autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="trainer-name-help">
+        <small id="trainer-name-help">Shown in the game. Up to 8 characters.</small>
+        <label for="trainer-handle">Online handle</label>
+        <input id="trainer-handle" name="handle" maxlength="24" required autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="trainer-handle-help">
+        <small id="trainer-handle-help">Shown to other players and in chat. Letters, numbers and underscores; no @ needed.</small>
+        <label for="trainer-sprite">Player sprite</label>
+        <select id="trainer-sprite" name="sprite"><option value="0">Chris</option><option value="1">Kris</option></select>
+        <small>Updates your walking, cycling and trainer appearance.</small>
+        <div class="actions"><button type="button" data-close>Close</button><button type="submit">Save changes</button></div>
+        <p role="status" aria-live="polite"></p>
+      </form>
+    </dialog>
     <dialog id="help-dialog" aria-label="How to play">
       <p class="touch-help">Slide your thumb on the D-pad to move. A talks and confirms; B goes back. START opens the menu. Hold a direction to keep walking.</p>
       <p>Controller: D-pad or left stick to move. Bottom face button confirms; right face button goes back. Start opens the menu; Back / View is Select. On Steam Deck, use a Gamepad layout.</p>
@@ -157,6 +177,7 @@
       import { mountAudioUnlock } from './audio-unlock.js?v=20260907-mobile';
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
+      import { mountPlayerCustomization } from './player-customization.js?v=1';
       import { mountSocialChat } from './social-chat.js?v=20260907-mobile';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
@@ -238,6 +259,7 @@
           document.querySelector('#loading').hidden = true;
           document.querySelector('#touch-controls').disabled = false;
           mountSocialChat(wasm, { document, window, playerId: session.playerId });
+          mountPlayerCustomization(wasm, { document, window });
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             cameraControls: {

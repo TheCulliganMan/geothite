@@ -19,6 +19,7 @@ fn disconnected_render_multiplayer_fixture() -> MultiplayerRuntime {
         direct_mode: None,
         direct_session: false,
         pending_interaction: None,
+        last_profile: None,
         last_presence: None,
         presence_frames_since_send: 0,
         remote_presences: HashMap::new(),
@@ -103,6 +104,7 @@ fn multiplayer_render_reuses_presentation_snapshot_and_refreshes_after_runtime_t
         .insert(
             "player-2".into(),
             RemotePresence {
+                player_gender: 0,
                 display_name: "REMOTE".into(),
                 map: "NewBarkTown".into(),
                 tile_x: 1,

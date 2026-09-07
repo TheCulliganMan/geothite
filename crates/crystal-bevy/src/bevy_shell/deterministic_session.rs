@@ -163,6 +163,7 @@ fn apply_keyboard_input(
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     mut timer: ResMut<RuntimeTickTimer>,
 ) {
+    if customization_is_open() { return; }
     let Some(rtc_sample) = (*rtc_source).try_sample() else {
         if runtime_shell.last_error.as_deref() != Some(SERVER_CLOCK_UNAVAILABLE) {
             runtime_shell.last_error = Some(SERVER_CLOCK_UNAVAILABLE.to_string());
@@ -10454,6 +10455,9 @@ fn select_visible_start_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Res
         }
         StartMenuOption::TrainerCard => {
             open_visible_trainer_card(runtime_shell)?;
+        }
+        StartMenuOption::Personalization => {
+            crystal_customization_open();
         }
         StartMenuOption::Options => {
             open_visible_options_menu(runtime_shell)?;

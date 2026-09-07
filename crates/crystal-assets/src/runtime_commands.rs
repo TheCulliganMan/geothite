@@ -1084,6 +1084,8 @@ impl DecorationActionOutcome {
 pub struct GameDataSet {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub server_clock: bool,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub player_customization: bool,
     #[serde(default, skip_serializing_if = "crate::NuzlockeRules::is_disabled")]
     pub nuzlocke_rules: crate::NuzlockeRules,
     pub pokemon: BTreeMap<String, PokemonSpecies>,
