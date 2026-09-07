@@ -4372,3 +4372,31 @@ fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector(
     assert_eq!(render(0, 0xe4, 0), render(0, 0xe4, 0xe4));
     assert_ne!(render(0, 0, 0xe4), render(0, 0xe4, 0xe4));
 }
+
+#[test]
+fn wild_battle_appeared_text_keeps_player_backpic_visible() {
+    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    runtime_shell.visible_battle_transition = None;
+    assert_eq!(runtime_shell.battle_entry_messages_remaining, 2);
+    let mut app = battle_render_regression_app(runtime_shell);
+    app.update();
+    let world = app.world_mut();
+    assert!(world.resource::<BevyRuntimeShell>().last_error.is_none());
+    let mut battlers = world.query_filtered::<&Transform, With<BattleBattlerMarker>>();
+    assert_eq!(battlers.iter(world).count(), 2,
+        "ASM InitBattleDisplay retains the player backpic during WildMonAppearedText");
+}
+
+#[test]
+fn battle_transition_handoff_keeps_input_owned_for_sliding_intro() {
+    for trainer_battle in [false, true] {
+        let mut shell = route36_battle_shell_for_render_regression();
+        let transition = shell.visible_battle_transition.as_mut().unwrap();
+        transition.trainer_battle = trainer_battle;
+        transition.frame = visible_battle_transition_total_frames(transition) - 1;
+        advance_visible_battle_transition(&mut shell);
+        assert!(shell.visible_battle_transition.is_none());
+        assert!(visible_noninteractive_battle_animation_owns_input(&shell),
+            "BattleIntroSlidingPics must own input before trainer/wild narration");
+    }
+}

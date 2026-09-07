@@ -7468,6 +7468,22 @@ fn render_playfield(
     }
 
     if runtime_shell.visible_battle_transition.is_none()
+        && let Some(frame) = runtime_shell.visible_battle_sliding_intro
+        && let Some(battle) = &snapshot.battle
+    {
+        if let Err(error) = spawn_visible_battle_sliding_intro(
+            &mut commands,
+            &snapshot,
+            battle,
+            frame,
+            &mut tileset_art,
+            &runtime_shell.asset_root,
+            &mut images,
+        ) {
+            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+            return;
+        }
+    } else if runtime_shell.visible_battle_transition.is_none()
         && let Some(battle) = &snapshot.battle
     {
         let player_send_out_pending = runtime_shell.battle_player_send_out_pending

@@ -11,6 +11,7 @@ include!("tests/menu_and_input.rs");
 include!("tests/story_progression.rs");
 include!("tests/art_text_and_determinism.rs");
 include!("tests/battle_render_regressions.rs");
+include!("tests/battle_sliding_intro.rs");
 include!("tests/shop_rendering.rs");
 include!("tests/heal_machine_rendering.rs");
 include!("tests/town_map_rendering.rs");

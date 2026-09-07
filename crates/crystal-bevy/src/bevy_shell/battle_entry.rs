@@ -13,6 +13,7 @@ fn prepare_visible_battle_entry_with_music_reset(
     reset_music: bool,
 ) -> Result<()> {
     runtime_shell.visible_battle_transition = None;
+    runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
     runtime_shell.visible_send_out_animation = None;
@@ -154,6 +155,7 @@ fn advance_visible_battle_transition(runtime_shell: &mut BevyRuntimeShell) {
     transition.frame = transition.frame.saturating_add(1);
     if transition.frame >= visible_battle_transition_total_frames(transition) {
         runtime_shell.visible_battle_transition = None;
+        runtime_shell.visible_battle_sliding_intro = Some(0);
     }
     mark_runtime_snapshot_dirty(runtime_shell);
 }
@@ -8172,6 +8174,7 @@ fn queue_visible_victory_music(
 
 fn queue_battle_intro_cry(mut runtime_shell: ResMut<BevyRuntimeShell>) {
     if runtime_shell.visible_battle_transition.is_some()
+        || runtime_shell.visible_battle_sliding_intro.is_some()
         || runtime_shell.visible_send_out_animation.is_some()
         || runtime_shell.visible_trainer_exit_animation.is_some()
     {
@@ -8677,6 +8680,7 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.visible_unown_words.hash(&mut hasher);
     runtime_shell.visible_diploma.hash(&mut hasher);
     runtime_shell.visible_battle_transition.hash(&mut hasher);
+    runtime_shell.visible_battle_sliding_intro.hash(&mut hasher);
     runtime_shell.visible_capture_animation.hash(&mut hasher);
     if let Some(replacement) = &runtime_shell.visible_bug_contest_replacement {
         true.hash(&mut hasher);

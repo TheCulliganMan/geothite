@@ -940,6 +940,18 @@ fn apply_keyboard_input(
         }
         return;
     }
+    if runtime_shell.visible_battle_sliding_intro.is_some() {
+        for _ in 0..elapsed_input_ticks {
+            advance_visible_battle_sliding_intro(&mut runtime_shell);
+            if runtime_shell
+                .visible_battle_sliding_intro
+                .is_none_or(|frame| frame + 1 >= BATTLE_SLIDING_INTRO_FRAMES)
+            {
+                break;
+            }
+        }
+        return;
+    }
     if runtime_shell.visible_battle_transition.is_some() {
         let waiting_for_step = matches!(
             runtime_shell.pending_overworld_step_boundary,
@@ -4694,6 +4706,7 @@ fn apply_visible_time_set_input_keys(
 
 fn visible_noninteractive_battle_animation_owns_input(runtime_shell: &BevyRuntimeShell) -> bool {
     runtime_shell.visible_battle_transition.is_some()
+        || runtime_shell.visible_battle_sliding_intro.is_some()
         || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell
             .visible_capture_animation
@@ -5424,6 +5437,9 @@ fn visible_pc_printer_status(runtime_shell: &BevyRuntimeShell) -> bool {
 }
 
 fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.visible_battle_sliding_intro.is_some() {
+        return Ok(());
+    }
     if runtime_shell.mailbox_confirmation_response.is_some() {
         return Ok(());
     }
@@ -6891,6 +6907,9 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.visible_battle_sliding_intro.is_some() {
+        return Ok(());
+    }
     if runtime_shell.mailbox_confirmation_response.is_some() {
         return Ok(());
     }

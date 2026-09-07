@@ -6083,6 +6083,7 @@ fn reset_visible_selection_cursors(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.visible_unown_words = None;
     runtime_shell.visible_diploma = None;
     runtime_shell.visible_battle_transition = None;
+    runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.heal_music_active = false;
     runtime_shell.elevator_cursor = None;
     runtime_shell.yes_no_cursor = None;

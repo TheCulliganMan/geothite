@@ -3024,7 +3024,9 @@ fn spawn_battle_battler_markers(
         }
         return Ok(());
     }
-    if entry_messages_remaining == 1 {
+    // InitBattleDisplay leaves the player's backpic on screen throughout
+    // WildMonAppearedText as well as the subsequent SendOutMonText.
+    if entry_messages_remaining > 0 {
         let player_stem = if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
             "kris_back"
         } else {
@@ -5574,7 +5576,8 @@ fn load_battle_anim_palette(asset_root: &AssetRoot, requested: &str) -> Result<[
 }
 
 fn visible_battle_command_animation_active(runtime_shell: &BevyRuntimeShell) -> bool {
-    runtime_shell.visible_capture_animation.is_some()
+    runtime_shell.visible_battle_sliding_intro.is_some()
+        || runtime_shell.visible_capture_animation.is_some()
         || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell
             .visible_move_animations
