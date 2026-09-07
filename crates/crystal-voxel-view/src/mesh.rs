@@ -18,7 +18,7 @@ use std::collections::{HashMap, VecDeque};
 
 use bevy::{
     asset::AssetId,
-    prelude::{Assets, Image, Mesh, Vec3},
+    prelude::{Assets, Handle, Image, Mesh, Vec3},
     render::{mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology},
 };
 use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
@@ -157,11 +157,37 @@ impl SurfaceMeshData {
 /// generated thickness, so source artwork can never be stretched down a wall.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TerrainMeshData {
+    pub(crate) background: Option<RepeatingBackground>,
+    pub(crate) tree_instances: Vec<TreeMeshInstance>,
+    tree_cache: Option<HashMap<TreeMeshKey, usize>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
     pub animated_textured: SurfaceMeshData,
     pub animated_solid: SurfaceMeshData,
     pub footing_heights: Vec<f32>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) struct RepeatingBackground {
+    pub mesh: SurfaceMeshData,
+    pub texture: Handle<Image>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub(crate) struct TreeMeshInstance {
+    pub mesh: SurfaceMeshData,
+    pub origins: Vec<[f32; 3]>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct TreeMeshKey {
+    rounded: bool,
+    thickness: u32,
+    width: usize,
+    height: usize,
+    scale: [u32; 2],
+    mask: Vec<bool>,
+    pixels: Vec<[u8; 4]>,
 }
 
 impl TerrainMeshData {
@@ -185,7 +211,7 @@ impl TerrainMeshData {
 /// Builds a combined textured surface mesh and a separate untextured solid
 /// mesh from explicitly addressed cells and clean-room source profiles.
 pub fn build_terrain_mesh(frame: &VisualWorldFrame) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, None)
+    build_terrain_mesh_internal(frame, None, false)
 }
 
 /// Runtime variant that removes the authored ground pixels from upright tree
@@ -202,7 +228,15 @@ pub fn build_terrain_mesh_with_samples(
     frame: &VisualWorldFrame,
     samples: &TerrainImageSamples,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples))
+    build_terrain_mesh_internal(frame, Some(samples), false)
+}
+
+/// Runtime meshes share identical painted hulls instead of expanding every copy.
+pub(crate) fn build_instanced_terrain_mesh_with_samples(
+    frame: &VisualWorldFrame,
+    samples: &TerrainImageSamples,
+) -> Result<TerrainMeshData, TerrainMeshError> {
+    build_terrain_mesh_internal(frame, Some(samples), true)
 }
 
 /// Rebuild only the animated flower hulls, using the retained mesh's atlas slots.
@@ -269,6 +303,7 @@ pub(crate) fn build_animated_flowers(
 fn build_terrain_mesh_internal(
     frame: &VisualWorldFrame,
     images: Option<&TerrainImageSamples>,
+    instance_hulls: bool,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     frame
         .validate()
@@ -390,7 +425,10 @@ fn build_terrain_mesh_internal(
         origin_x: -grid_width * 0.5,
         origin_z: -grid_height * 0.5,
     };
-    let mut mesh = TerrainMeshData::default();
+    let mut mesh = TerrainMeshData {
+        tree_cache: instance_hulls.then(HashMap::new),
+        ..Default::default()
+    };
     if let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
         if !crate::interior::has_back_wall(tileset) {
             background::append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes);
@@ -5495,6 +5533,76 @@ fn append_grouped_tree_scaled_inner(
         }
     }
 
+    if mesh.tree_cache.is_some() {
+        let origin = [
+            geometry.origin_x + placement.column as f32 * geometry.tile_width,
+            placement.base_height,
+            geometry.origin_z + placement.row as f32 * geometry.tile_height,
+        ];
+        let key = TreeMeshKey {
+            rounded: placement.rounded,
+            thickness: placement.card_thickness.to_bits(),
+            width: pixel_width,
+            height: pixel_height,
+            scale: [
+                geometry.tile_width.to_bits(),
+                (geometry.tile_height * height_scale).to_bits(),
+            ],
+            mask: solid_pixels.clone(),
+            pixels: drawing.clone(),
+        };
+        if let Some(&index) = mesh.tree_cache.as_ref().and_then(|cache| cache.get(&key)) {
+            mesh.tree_instances[index].origins.push(origin);
+            return Ok(());
+        }
+        let mut prototype = TerrainMeshData::default();
+        append_tree_hull_geometry(
+            &mut prototype,
+            geometry,
+            placement,
+            &solid_pixels,
+            &drawing,
+            pixel_width,
+            pixel_height,
+            height_scale,
+        );
+        for position in &mut prototype.textured.positions {
+            for axis in 0..3 {
+                position[axis] -= origin[axis];
+            }
+        }
+        let index = mesh.tree_instances.len();
+        mesh.tree_instances.push(TreeMeshInstance {
+            mesh: prototype.textured,
+            origins: vec![origin],
+        });
+        mesh.tree_cache.as_mut().unwrap().insert(key, index);
+    } else {
+        append_tree_hull_geometry(
+            mesh,
+            geometry,
+            placement,
+            &solid_pixels,
+            &drawing,
+            pixel_width,
+            pixel_height,
+            height_scale,
+        );
+    }
+    Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+fn append_tree_hull_geometry(
+    mesh: &mut TerrainMeshData,
+    geometry: &GridGeometry,
+    placement: TreePlacement,
+    solid_pixels: &[bool],
+    drawing: &[[u8; 4]],
+    pixel_width: usize,
+    pixel_height: usize,
+    height_scale: f32,
+) {
     let x0 = geometry.origin_x + placement.column as f32 * geometry.tile_width;
     let x1 = x0 + placement.width as f32 * geometry.tile_width;
     let plane_z =
@@ -5512,7 +5620,7 @@ fn append_grouped_tree_scaled_inner(
             pixel_height,
             crown_height,
         );
-        return Ok(());
+        return;
     }
     // Thin props stand vertically in world space. Only animated actors
     // billboard toward the camera; scenery retains its physical orientation.
@@ -5651,7 +5759,6 @@ fn append_grouped_tree_scaled_inner(
             }
         }
     }
-    Ok(())
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -6402,7 +6509,9 @@ fn append_pixel_building(
         // facade belong to the front and must not be mirrored onto the back.
         for storey in 0..tower_storeys {
             for source_y in roof_pixels..pixel_height {
-                let rear_source_x = if celadon_department_store { 0 } else {
+                let rear_source_x = if celadon_department_store {
+                    0
+                } else {
                     facade_side_course_x(&inside, &luminance, pixel_width, source_y, darkest, false)
                 };
                 let y_top = storey as f32 * wall_course_height * facade_height_scale
@@ -13195,14 +13304,21 @@ mod tests {
             &mut [false; 40],
         )
         .unwrap();
-        let rear_wall_uvs: Vec<_> = mesh.textured.normals.chunks_exact(4)
+        let rear_wall_uvs: Vec<_> = mesh
+            .textured
+            .normals
+            .chunks_exact(4)
             .zip(mesh.textured.uvs.chunks_exact(4))
             .filter(|(n, uv)| n[0] == [0.0, 0.0, -1.0] && uv[0][1] > 0.4)
             .map(|(_, uv)| uv)
             .collect();
         assert!(!rear_wall_uvs.is_empty(), "rear wall must remain closed");
-        assert!(rear_wall_uvs.iter().all(|uvs| uvs.iter().all(|uv| uv[0] <= 1.0 / 64.0)),
-            "rear walls must sample siding, not the facade's doors and windows");
+        assert!(
+            rear_wall_uvs
+                .iter()
+                .all(|uvs| uvs.iter().all(|uv| uv[0] <= 1.0 / 64.0)),
+            "rear walls must sample siding, not the facade's doors and windows"
+        );
         let side_courses = mesh
             .textured
             .positions
@@ -13482,6 +13598,65 @@ mod tests {
     }
 
     #[test]
+    fn runtime_repeated_scenery_has_a_fixed_geometry_budget() {
+        let width = 65;
+        let height = 64;
+        let sources = (0..height)
+            .flat_map(|row| {
+                (0..width).map(move |column| {
+                    if column < 64 {
+                        source_with_tile(
+                            0x05,
+                            (column % 4) as u8,
+                            (row % 4) as u8,
+                            0x20 + (row % 4) as u16,
+                        )
+                    } else {
+                        source_with_tile(0x01, 0, 0, 0x05)
+                    }
+                })
+            })
+            .collect();
+        let frame = frame(width, height, sources);
+        let mut samples = TerrainImageSamples::default();
+        for tile in &frame.tiles {
+            let mut rgba = [255, 255, 255, 255].repeat(64);
+            if tile.source.metatile_id == 0x05 {
+                for y in 0..8 {
+                    for x in 1..7 {
+                        rgba[(y * 8 + x) * 4..(y * 8 + x + 1) * 4]
+                            .copy_from_slice(&[0, 80, 0, 255]);
+                    }
+                }
+            }
+            samples
+                .pixels
+                .insert(tile.texture.id(), TileImageSample::Rgba(rgba));
+        }
+        let mesh = build_instanced_terrain_mesh_with_samples(&frame, &samples).unwrap();
+        assert_eq!(mesh.tree_instances.len(), 1);
+        assert_eq!(
+            mesh.tree_instances[0].origins.len(),
+            512,
+            "every tree remains present"
+        );
+        let bytes =
+            |surface: &SurfaceMeshData| surface.positions.len() * 48 + surface.indices.len() * 4;
+        let total = bytes(&mesh.textured)
+            + bytes(&mesh.solid)
+            + mesh
+                .tree_instances
+                .iter()
+                .map(|group| bytes(&group.mesh))
+                .sum::<usize>()
+            + bytes(&mesh.background.as_ref().unwrap().mesh);
+        assert!(
+            total < 2 * 1024 * 1024,
+            "512 repeated trees exceeded the 2 MiB geometry budget: {total}"
+        );
+    }
+
+    #[test]
     fn repeated_tree_metatile_becomes_two_complete_two_tile_tall_sprites() {
         let mut sources = Vec::new();
         for row in 0..4 {
@@ -13547,7 +13722,16 @@ mod tests {
                 for y in 0..SOURCE_TILE_PIXELS {
                     for x in 1..SOURCE_TILE_PIXELS - 1 {
                         let offset = (y * SOURCE_TILE_PIXELS + x) * 4;
-                        rgba[offset..offset + 4].copy_from_slice(&[0, 80, 0, 255]);
+                        rgba[offset..offset + 4].copy_from_slice(&[
+                            0,
+                            if x > 1 && x < 6 && y % 3 == 0 {
+                                120
+                            } else {
+                                80
+                            },
+                            0,
+                            255,
+                        ]);
                     }
                 }
                 rgba
@@ -13560,6 +13744,69 @@ mod tests {
         }
         let mesh = build_terrain_mesh_with_samples(&frame, &samples)
             .expect("complete repeated tree drawing should mesh as upright sprites");
+        let instanced = build_instanced_terrain_mesh_with_samples(&frame, &samples).unwrap();
+        assert_eq!(
+            instanced.tree_instances.len(),
+            1,
+            "identical painted hulls share one mesh"
+        );
+        assert_eq!(instanced.tree_instances[0].origins.len(), 2);
+        assert!(instanced.textured.positions.len() < mesh.textured.positions.len() / 4);
+        // Expand instances only in the test and compare every position, normal,
+        // shade, and sampled source texel against the original complete mesh.
+        let face_signatures = |surface: &SurfaceMeshData, offset: [f32; 3]| {
+            surface
+                .positions
+                .iter()
+                .zip(&surface.normals)
+                .zip(&surface.colors)
+                .zip(&surface.uvs)
+                .map(|(((position, normal), color), uv)| {
+                    let x = (uv[0] * frame.grid_size.x as f32 * 8.0).floor() as usize;
+                    let y = (uv[1] * frame.grid_size.y as f32 * 8.0).floor() as usize;
+                    let tile = &frame.tiles[(y.min(31) / 8) * 5 + x.min(39) / 8];
+                    let TileImageSample::Rgba(bytes) = &samples.pixels[&tile.texture.id()] else {
+                        panic!()
+                    };
+                    let pixel = ((y % 8) * 8 + x % 8) * 4;
+                    let mut key = Vec::new();
+                    key.extend(position.iter().zip(offset).map(|(p, o)| (p + o).to_bits()));
+                    key.extend(normal.map(f32::to_bits));
+                    key.extend(color.map(f32::to_bits));
+                    key.extend(bytes[pixel..pixel + 4].iter().map(|b| u32::from(*b)));
+                    key
+                })
+                .collect::<Vec<_>>()
+        };
+        let mut expected = face_signatures(&mesh.textured, [0.0; 3]);
+        let mut actual = face_signatures(&instanced.textured, [0.0; 3]);
+        for group in &instanced.tree_instances {
+            for &origin in &group.origins {
+                actual.extend(face_signatures(&group.mesh, origin));
+            }
+        }
+        expected.sort();
+        actual.sort();
+        assert_eq!(
+            actual, expected,
+            "instancing must preserve the complete painted geometry"
+        );
+        let mut recolored = samples.clone();
+        let TileImageSample::Rgba(pixels) = recolored
+            .pixels
+            .get_mut(&frame.tiles[2].texture.id())
+            .unwrap()
+        else {
+            panic!()
+        };
+        pixels[4..8].copy_from_slice(&[0, 0, 80, 255]);
+        let distinct = build_instanced_terrain_mesh_with_samples(&frame, &recolored).unwrap();
+        assert_eq!(
+            distinct.tree_instances.len(),
+            2,
+            "different palettes must never share a prototype"
+        );
+
         let is_tree_card_normal = |normal: [f32; 3]| normal == [0.0, 0.0, 1.0];
         let (min_y, max_y) = mesh
             .textured

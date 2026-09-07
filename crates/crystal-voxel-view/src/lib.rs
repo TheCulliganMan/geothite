@@ -254,6 +254,7 @@ struct TerrainRevisionCache {
     built_footing_heights: Vec<f32>,
     footing_origin: Option<IVec2>,
     key: Option<TerrainCacheKey>,
+    instances_root: Option<Entity>,
     textured_entity: Option<Entity>,
     solid_entity: Option<Entity>,
     animated_textured_entity: Option<Entity>,
@@ -284,6 +285,8 @@ struct TerrainBuildResult {
 }
 
 struct BuiltTerrain {
+    background: Option<(Mesh, Handle<Image>)>,
+    instances: Vec<(Mesh, Vec<[f32; 3]>)>,
     footing_heights: Vec<f32>,
     textured_mesh: Mesh,
     solid_mesh: Mesh,
@@ -728,6 +731,7 @@ fn sync_terrain(
         cache.key = None;
         cache.built_frame = None;
         for entity in [
+            cache.instances_root,
             cache.textured_entity,
             cache.solid_entity,
             cache.animated_textured_entity,
@@ -769,15 +773,25 @@ fn sync_terrain(
             // vertex/index buffer. Keep that work on the compute task too;
             // doing it when polling the completed build caused a deterministic
             // 30-45 ms main-thread hitch several seconds into 2.5D movement.
-            let terrain =
-                build_terrain_mesh_with_samples(&build_frame, &samples).map(|mut terrain| {
+            let terrain = mesh::build_instanced_terrain_mesh_with_samples(&build_frame, &samples)
+                .map(|mut terrain| {
                     let animated_textured_mesh =
                         std::mem::take(&mut terrain.animated_textured).into_mesh();
                     let animated_solid_mesh =
                         std::mem::take(&mut terrain.animated_solid).into_mesh();
+                    let background = terrain
+                        .background
+                        .take()
+                        .map(|b| (b.mesh.into_mesh(), b.texture));
+                    let instances = std::mem::take(&mut terrain.tree_instances)
+                        .into_iter()
+                        .map(|group| (group.mesh.into_mesh(), group.origins))
+                        .collect();
                     let footing_heights = terrain.footing_heights.clone();
                     let (textured_mesh, solid_mesh) = terrain.into_meshes();
                     BuiltTerrain {
+                        background,
+                        instances,
                         footing_heights,
                         textured_mesh,
                         solid_mesh,
@@ -824,6 +838,7 @@ fn sync_terrain(
                 cache,
                 meshes,
                 materials,
+                images,
             )?;
         }
     }
@@ -858,6 +873,7 @@ fn sync_terrain(
     // transforms them while a replacement is pending.
     if let Some(live_transform) = retained_terrain_transform(frame, cache) {
         for entity in [
+            cache.instances_root,
             cache.textured_entity,
             cache.solid_entity,
             cache.animated_textured_entity,
@@ -892,21 +908,15 @@ fn apply_built_terrain(
     cache: &mut TerrainRevisionCache,
     meshes: &mut Assets<Mesh>,
     materials: &mut Assets<VoxelMaterial>,
+    images: &mut Assets<Image>,
 ) -> Result<(), TerrainSyncError> {
     cache.footing_origin = None;
     cache.built_frame = Some(frame.clone());
     cache.built_footing_heights = terrain.footing_heights;
 
-    let textured_mesh_handle = update_mesh_asset(
-        meshes,
-        &mut cache.textured_mesh,
-        terrain.textured_mesh,
-    );
-    let solid_mesh_handle = update_mesh_asset(
-        meshes,
-        &mut cache.solid_mesh,
-        terrain.solid_mesh,
-    );
+    let textured_mesh_handle =
+        update_mesh_asset(meshes, &mut cache.textured_mesh, terrain.textured_mesh);
+    let solid_mesh_handle = update_mesh_asset(meshes, &mut cache.solid_mesh, terrain.solid_mesh);
     let animated_textured = update_mesh_asset(
         meshes,
         &mut cache.animated_textured_mesh,
@@ -935,6 +945,62 @@ fn apply_built_terrain(
         cache.solid_material = Some(handle.clone());
         handle
     };
+
+    if let Some(root) = cache.instances_root.take() {
+        commands.entity(root).despawn_recursive();
+    }
+    let root = commands
+        .spawn((
+            SpatialBundle {
+                transform: terrain_transform(frame),
+                ..default()
+            },
+            VoxelTerrain,
+        ))
+        .id();
+    if let Some((mesh, source)) = terrain.background {
+        use bevy::render::texture::{ImageAddressMode, ImageSampler, ImageSamplerDescriptor};
+        let mut image = images
+            .get(&source)
+            .ok_or(TerrainSyncError::SourceTextureUnavailable)?
+            .clone();
+        image.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+            address_mode_u: ImageAddressMode::Repeat,
+            address_mode_v: ImageAddressMode::Repeat,
+            ..ImageSamplerDescriptor::nearest()
+        });
+        image.asset_usage = bevy::render::render_asset::RenderAssetUsages::RENDER_WORLD;
+        let material = materials.add(textured_terrain_material(images.add(image)));
+        let child = commands
+            .spawn((
+                MaterialMeshBundle::<VoxelMaterial> {
+                    mesh: meshes.add(mesh),
+                    material,
+                    ..default()
+                },
+                RenderLayers::layer(VOXEL_RENDER_LAYER),
+            ))
+            .id();
+        commands.entity(root).add_child(child);
+    }
+    for (mesh, origins) in terrain.instances {
+        let mesh = meshes.add(mesh);
+        for origin in origins {
+            let child = commands
+                .spawn((
+                    MaterialMeshBundle::<VoxelMaterial> {
+                        mesh: mesh.clone(),
+                        material: textured_material_handle.clone(),
+                        transform: Transform::from_translation(Vec3::from_array(origin)),
+                        ..default()
+                    },
+                    RenderLayers::layer(VOXEL_RENDER_LAYER),
+                ))
+                .id();
+            commands.entity(root).add_child(child);
+        }
+    }
+    cache.instances_root = Some(root);
 
     if cache.animated_textured_entity.is_none() {
         cache.animated_textured_entity = Some(spawn_terrain_entity(
@@ -1473,6 +1539,58 @@ mod renderer_tests {
     use super::*;
 
     #[test]
+    fn tree_instances_share_meshes_and_replacement_removes_the_old_hierarchy() {
+        let mut world = World::new();
+        let mut images = Assets::<Image>::default();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let mut cache = TerrainRevisionCache::default();
+        let frame = VisualWorldFrame::default();
+        let mut previous = Vec::new();
+        for _ in 0..3 {
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            let mut commands = Commands::new(&mut queue, &world);
+            let terrain = BuiltTerrain {
+                background: None,
+                instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
+                footing_heights: Vec::new(),
+                textured_mesh: actor_quad_mesh(),
+                solid_mesh: actor_quad_mesh(),
+                animated_textured_mesh: actor_quad_mesh(),
+                animated_solid_mesh: actor_quad_mesh(),
+            };
+            apply_built_terrain(
+                &frame,
+                TerrainCacheKey::from_frame(&frame),
+                terrain,
+                &mut commands,
+                &mut cache,
+                &mut meshes,
+                &mut materials,
+                &mut images,
+            )
+            .unwrap();
+            queue.apply(&mut world);
+            for old in previous.drain(..) {
+                assert!(world.get_entity(old).is_none());
+            }
+            let root = cache.instances_root.unwrap();
+            let children = world.get::<Children>(root).unwrap();
+            assert_eq!(children.len(), 2);
+            assert_eq!(
+                world.get::<Handle<Mesh>>(children[0]),
+                world.get::<Handle<Mesh>>(children[1])
+            );
+            assert_eq!(
+                world.get::<Transform>(children[1]).unwrap().translation,
+                Vec3::new(32.0, 4.0, 16.0)
+            );
+            previous.extend(children.iter().copied());
+            previous.push(root);
+        }
+    }
+
+    #[test]
     fn terrain_mesh_transfers_to_render_world_without_a_retained_cpu_copy() {
         let mesh = mesh::SurfaceMeshData::default().into_mesh();
         assert_eq!(
@@ -1494,7 +1612,10 @@ mod renderer_tests {
         assert_eq!(handle.id(), original.id());
         let actual = meshes.get(&handle).unwrap();
         assert_eq!(actual.get_vertex_buffer_data(), vertices);
-        assert_eq!(actual.indices().unwrap().iter().collect::<Vec<_>>(), indices);
+        assert_eq!(
+            actual.indices().unwrap().iter().collect::<Vec<_>>(),
+            indices
+        );
     }
 
     fn sync_cached_terrain_for_test(
