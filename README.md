@@ -106,13 +106,13 @@ The workspace is organized around focused Rust crates:
 | --- | --- |
 | `crates/crystal-core` | Game state, timing, battles, and world rules. |
 | `crates/crystal-assets` | Compiled game data and content packs. |
-| `crates/crystal-audio` | Music, sound effects, and playback data. |
+| `crates/crystal-audio` | Native Rust synthesis, source linking, and audio auditing. |
 | `crates/crystal-net` | Multiplayer protocol and transport. |
 | `crates/crystal-bevy` | Desktop and WASM game client. |
 | `crates/crystal-render-api` | Shared presentation snapshots. |
 | `crates/crystal-voxel-view` | Optional 2.5D renderer. |
 | `crates/crystal-web-server` | HTTP hosting and multiplayer relay. |
-| `web-client` | Browser page, controls, audio runtime, and chat UI. |
+| `web-client` | Browser page, controls, thin WASM audio worker, and chat UI. |
 
 Check the server and run the browser session tests (the latter require Node.js):
 
@@ -125,6 +125,9 @@ npm run test:browser
 The production Dockerfile builds the server and WASM client from the same
 revision. Keep protocol changes coordinated across both. Generated game packs
 should be regenerated using the canonical exporter, not edited manually.
+Audio sources and their Rust exporter are fully contained in this repository;
+see [Native Crystal audio](audio/README.md) for export and regression checks.
+No TypeScript or JavaScript build tool is required to synthesize or export audio.
 
 ## Contributing
 

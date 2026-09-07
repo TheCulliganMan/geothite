@@ -11,6 +11,7 @@ anyhow.workspace = true
 base64 = "0.22"
 ciborium.workspace = true
 crystal-core = { path = "../crystal-core" }
+crystal-audio = { path = "../crystal-audio" }
 flate2 = "1.1"
 serde.workspace = true
 serde_path_to_error = "0.1"

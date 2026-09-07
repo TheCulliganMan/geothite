@@ -1,5 +1,5 @@
 /** Poll preparation without running the canonical synthesizer on the UI thread. */
-export function createMidiPreparation(worker, context) {
+export function createMidiPreparation(worker) {
   let nextId = 0;
   let failure = null;
   const byMidi = new Map();
@@ -16,7 +16,6 @@ export function createMidiPreparation(worker, context) {
     failure = new Error(event.message || 'Audio worker failed');
   };
   worker.onmessageerror = () => { failure = new Error('Invalid audio worker message'); };
-  worker.postMessage({ context });
   return midi => {
     if (failure) throw failure;
     let entry = byMidi.get(midi);

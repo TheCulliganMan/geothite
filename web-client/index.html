@@ -181,7 +181,6 @@
       import { mountSocialChat } from './social-chat.js?v=20260907-mobile';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
-      import audioSynthContext from './audio-runtime/context.js';
 
       const canvas = document.querySelector('canvas');
       let cancelAgentInput = () => {};
@@ -230,7 +229,7 @@
         history.replaceState(null, '', session.url);
         await runWithPlayerLock(navigator.locks, session.playerId, async () => {
           const audioWorker = new Worker(new URL('./audio-worker.js', import.meta.url), { type: 'module' });
-          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, audioSynthContext);
+          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker);
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await init();

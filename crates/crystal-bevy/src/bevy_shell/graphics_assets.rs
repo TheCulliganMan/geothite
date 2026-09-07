@@ -801,18 +801,15 @@ fn play_pending_audio(
                     }
                     #[cfg(any(test, not(target_arch = "wasm32")))]
                     {
-                        let _ = (
-                            midi_base64,
+                        decoded_native_midi_audio(
+                            &command,
+                            &midi_base64,
                             format,
                             byte_len,
-                            payload_hash,
+                            &payload_hash,
                             loop_start_sample,
                             loop_end_sample,
-                        );
-                        Err(anyhow::anyhow!(
-                            "MIDI audio {} requires the browser synthesizer",
-                            command.audio_id
-                        ))
+                        )
                     }
                 }
             };
@@ -1003,6 +1000,32 @@ fn decoded_gzip_pcm_audio(
     decoded_pcm_audio(command, decoded, format, loop_start_sample, loop_end_sample)
 }
 
+#[cfg(any(test, not(target_arch = "wasm32")))]
+fn decoded_native_midi_audio(
+    command: &BevyAudioCommand,
+    midi_base64: &str,
+    format: AudioPcmFormat,
+    byte_len: usize,
+    payload_hash: &str,
+    loop_start_sample: Option<usize>,
+    loop_end_sample: Option<usize>,
+) -> Result<CachedPcmAudio> {
+    use crystal_audio::synth::{SynthContext, decode_midi, render};
+    let rendered = render(&decode_midi(midi_base64)?, SynthContext::cartridge()?)?;
+    let bytes = rendered
+        .downsample()
+        .into_iter()
+        .flat_map(i16::to_le_bytes)
+        .collect::<Vec<_>>();
+    if bytes.len() != byte_len || format!("{:08x}", bevy_audio_fnv1a32(&bytes)) != payload_hash {
+        anyhow::bail!(
+            "native audio {} failed canonical PCM validation",
+            command.audio_id
+        );
+    }
+    decoded_pcm_audio(command, bytes, format, loop_start_sample, loop_end_sample)
+}
+
 #[cfg(all(not(test), target_arch = "wasm32"))]
 fn decoded_browser_midi_audio(
     command: &BevyAudioCommand,
@@ -1113,9 +1136,22 @@ fn decoded_audio_program_source(
             loop_start_sample,
             loop_end_sample,
         ),
-        AudioProgramSource::Midi { .. } => Err(anyhow::anyhow!(
-            "MIDI audio requires the browser synthesizer"
-        )),
+        AudioProgramSource::Midi {
+            midi_base64,
+            format,
+            byte_len,
+            payload_hash,
+            loop_start_sample,
+            loop_end_sample,
+        } => decoded_native_midi_audio(
+            command,
+            &midi_base64,
+            format,
+            byte_len,
+            &payload_hash,
+            loop_start_sample,
+            loop_end_sample,
+        ),
     }
 }
 

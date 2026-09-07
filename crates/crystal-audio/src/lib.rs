@@ -1,3 +1,5 @@
+pub mod synth;
+
 use std::collections::{BTreeMap, VecDeque};
 use std::path::{Path, PathBuf};
 

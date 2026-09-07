@@ -77,6 +77,52 @@ pub struct CompiledTilesetExtension {
 }
 
 impl CompiledGamePack {
+    /// Rebuilds browser audio from programs embedded in the existing content pack.
+    /// The caller supplies native-rendered metadata; pack manifests and identity
+    /// are derived here using the same canonical validation as other mutations.
+    pub fn with_rebuilt_browser_audio(&self, audio: Vec<ModpackAudioAsset>) -> Result<Self> {
+        verify_compiled_game_pack_for_runtime(self)?;
+        anyhow::ensure!(
+            self.audio_compression.as_deref() == Some(PACK_AUDIO_COMPRESSION_MIDI),
+            "audio rebuild requires a browser MIDI pack"
+        );
+        let old = self
+            .data
+            .audio
+            .iter()
+            .map(|a| (&a.id, (&a.kind, &a.path)))
+            .collect::<BTreeMap<_, _>>();
+        let new = audio
+            .iter()
+            .map(|a| (&a.id, (&a.kind, &a.path)))
+            .collect::<BTreeMap<_, _>>();
+        anyhow::ensure!(
+            audio.len() == self.data.audio.len() && old == new,
+            "audio rebuild changed the asset inventory"
+        );
+        for asset in &audio {
+            asset.validate()?;
+            let midi = asset
+                .midi_program
+                .as_ref()
+                .context("rebuilt audio is missing its program")?;
+            let program = crystal_audio::synth::decode_midi(&midi.midi_base64)?;
+            crystal_audio::synth::validate_references(&program.music_data)?;
+        }
+        let mut pack = self.clone();
+        pack.data.audio = audio;
+        pack.audio_manifest =
+            ModpackAudioManifest::from_assets(&pack.data.audio, &BTreeMap::new())?;
+        pack.identity = derive_compiled_game_pack_identity_from_manifest(
+            pack.format_version,
+            &pack.data,
+            &pack.audio_manifest,
+            &pack.runtime_files,
+            &pack.report,
+        )?;
+        verify_compiled_game_pack_for_runtime(&pack)?;
+        Ok(pack)
+    }
     /// Applies an application's encounter-table overlay and derives a new verified identity.
     /// Content policy belongs to the caller; the runtime engine remains unchanged.
     pub fn with_wild_encounter_overlay(

@@ -19,10 +19,15 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
     && cargo build --locked --profile web-release --package crystal-bevy \
         --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
+    && cargo build --locked --profile web-release --package crystal-audio --lib \
+        --features browser-synth --target wasm32-unknown-unknown \
     && mkdir -p /out/web \
     && cp target/release/crystal-web-server /out/crystal-web-server \
-    && wasm-bindgen --target web --out-dir /out/web --out-name crystal-bevy \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
         target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-audio \
+        target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
+    && gzip -9 -k /out/web/crystal-audio_bg.wasm \
     && gzip -9 -k /out/web/crystal-bevy_bg.wasm
 
 # Page, audio, and pack updates do not invalidate the Rust compilation layer.
@@ -31,7 +36,6 @@ COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
 COPY content-packs/core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 RUN cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
     && cp /source/web-client/player-customization.js /source/web-client/player-customization.css /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
-    && cp -R /source/web-client/audio-runtime /out/web/audio-runtime \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack \
     && sh /source/version-browser-bundle.sh /out/web
 

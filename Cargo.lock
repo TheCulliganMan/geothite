@@ -1591,6 +1591,7 @@ dependencies = [
  "anyhow",
  "base64 0.22.1",
  "ciborium",
+ "crystal-audio",
  "crystal-core",
  "flate2",
  "serde",
@@ -1604,8 +1605,11 @@ name = "crystal-audio"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64 0.22.1",
+ "js-sys",
  "serde",
  "serde_json",
+ "wasm-bindgen",
 ]
 
 [[package]]

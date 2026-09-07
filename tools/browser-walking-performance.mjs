@@ -52,10 +52,14 @@ try {
     window.walkingBridge = createGameBridge(wasm);
     if (synchronousAudio) {
       // Experimental control only: execute the SAME synthesizer on the UI thread.
-      const synth = await import('./audio-runtime/browser-synth.js');
-      const { default: context } = await import('./audio-runtime/context.js');
-      synth.initializeCrystalAudioSynth(context);
-      globalThis.__crystalPollMidi = synth.synthesizeCrystalMidi;
+      const workerPath = scripts.match(/new URL\('(\.\/audio-worker(?:-[a-f0-9]{64})?\.js)'/)?.[1];
+      if (!workerPath) throw new Error('Missing audio worker');
+      const workerSource = await (await fetch(workerPath)).text();
+      const audioPath = workerSource.match(/from '(\.\/crystal-audio(?:-[a-f0-9]{64})?\.js)'/)?.[1];
+      if (!audioPath) throw new Error('Missing Rust audio module');
+      const synth = await import(audioPath);
+      await synth.default();
+      globalThis.__crystalPollMidi = synth.synthesize_crystal_midi;
     }
     window.audioPreparation = { completed: 0, samples: 0 };
     const name = typeof globalThis.__crystalPollMidi === 'function' ? '__crystalPollMidi' : '__crystalSynthesizeMidi';

@@ -6,9 +6,16 @@ license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[features]
+browser-synth = ["dep:wasm-bindgen", "dep:js-sys"]
+
 [dependencies]
 anyhow.workspace = true
 serde.workspace = true
-
-[dev-dependencies]
 serde_json.workspace = true
+base64 = "0.22"
+wasm-bindgen = { version = "0.2", optional = true }
+js-sys = { version = "0.3", optional = true }
