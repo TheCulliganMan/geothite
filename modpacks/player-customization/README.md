@@ -11,9 +11,8 @@ the handle is stored per browser player and restored on reconnect. Nearby
 players receive the selected handle and sprite, and chat uses the handle.
 Edits are unavailable during dialogue, battle, and online interactions.
 
-The browser migrates saves from the exact pack that preceded this extension,
-leaving the original slot intact. Other modpacks retain their normal identity
-checks and do not receive the menu unless customization is enabled.
+Saves use the current pack identity. The browser does not migrate older saves.
+The menu is available only when customization is enabled.
 
 To add it to another verified pack:
 

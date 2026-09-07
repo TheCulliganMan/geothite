@@ -547,4 +547,4 @@ mod modern_move_split_modpack;
 pub use modern_move_split_modpack::{MODERN_MOVE_SPLIT_MANIFEST_ID, build_modern_move_split_modpack};
 
 mod player_customization_modpack;
-pub use player_customization_modpack::{PLAYER_CUSTOMIZATION_MANIFEST_ID, build_player_customization_modpack, player_customization_base_save_identity};
+pub use player_customization_modpack::{PLAYER_CUSTOMIZATION_MANIFEST_ID, build_player_customization_modpack};

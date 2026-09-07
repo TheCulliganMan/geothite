@@ -25757,7 +25757,7 @@ fn write_compiled_game_pack(path: impl AsRef<Path>, pack: &CompiledGamePack) -> 
     write_serialized_compiled_game_pack(path, &serialized_pack)
 }
 
-fn serialized_compiled_game_pack_bytes(serialized_pack: &CompiledGamePack) -> Result<Vec<u8>> {
+fn write_serialized_compiled_game_pack(path: &Path, serialized_pack: &CompiledGamePack) -> Result<()> {
     let mut encoded = Vec::new();
     ciborium::into_writer(serialized_pack, &mut encoded)
         .context("encode compiled game pack")?;
@@ -25772,11 +25772,6 @@ fn serialized_compiled_game_pack_bytes(serialized_pack: &CompiledGamePack) -> Re
     bytes.extend_from_slice(&(encoded.len() as u32).to_be_bytes());
     bytes.extend_from_slice(&fnv1a32_bytes(&encoded).to_be_bytes());
     bytes.extend_from_slice(&encoded);
-    Ok(bytes)
-}
-
-fn write_serialized_compiled_game_pack(path: &Path, serialized_pack: &CompiledGamePack) -> Result<()> {
-    let bytes = serialized_compiled_game_pack_bytes(serialized_pack)?;
     if let Some(parent) = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
