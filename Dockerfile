@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
 # Page, audio, and pack updates do not invalidate the Rust compilation layer.
 COPY web-client /source/web-client
 COPY content-packs/core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
-RUN cp /source/web-client/server-clock.js /out/web/ \
+RUN cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
     && cp /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
     && cp -R /source/web-client/audio-runtime /out/web/audio-runtime \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack

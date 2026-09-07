@@ -159,10 +159,7 @@
       import { mountViewToggle } from './view-toggle.js';
       import { mountSocialChat } from './social-chat.js';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
-      import {
-        initializeCrystalAudioSynth,
-        synthesizeCrystalMidi,
-      } from './audio-runtime/browser-synth.js';
+      import { createMidiPreparation } from './audio-worker-client.js';
       import audioSynthContext from './audio-runtime/context.js';
 
       const canvas = document.querySelector('canvas');
@@ -210,8 +207,8 @@
         const session = await startOnlineSession({ url: location.href, localStorage, sessionStorage, crypto, fetch });
         history.replaceState(null, '', session.url);
         await runWithPlayerLock(navigator.locks, session.playerId, async () => {
-          initializeCrystalAudioSynth(audioSynthContext);
-          globalThis.__crystalSynthesizeMidi = synthesizeCrystalMidi;
+          const audioWorker = new Worker(new URL('./audio-worker.js', import.meta.url), { type: 'module' });
+          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, audioSynthContext);
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await init();

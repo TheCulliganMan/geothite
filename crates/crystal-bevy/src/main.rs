@@ -73,6 +73,14 @@ fn main() -> Result<()> {
 
 #[cfg(target_arch = "wasm32")]
 fn main() {
+    std::panic::set_hook(Box::new(|info| {
+        #[wasm_bindgen::prelude::wasm_bindgen]
+        extern "C" {
+            #[wasm_bindgen(js_namespace = console, js_name = error)]
+            fn report_panic(message: &str);
+        }
+        report_panic(&info.to_string());
+    }));
     wasm_bindgen_futures::spawn_local(async {
         if let Err(error) = run_browser().await {
             panic!("start crystal-bevy browser runtime: {error:#}");

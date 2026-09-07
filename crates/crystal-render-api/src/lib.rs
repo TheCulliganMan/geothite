@@ -8,6 +8,9 @@
 //! [`WorldRenderSet::RenderSync`] and must not feed presentation state back
 //! into simulation.
 
+mod streamed_images;
+pub use streamed_images::stream_composed_image;
+
 use std::{collections::HashSet, sync::Arc};
 
 use bevy::prelude::{
@@ -48,6 +51,7 @@ impl Plugin for VisualWorldRenderPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<VisualWorldFrame>();
         configure_world_render_sets(app);
+        streamed_images::install(app);
     }
 }
 

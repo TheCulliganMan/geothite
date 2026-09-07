@@ -36,6 +36,14 @@ opt-level = "z"
 lto = false
 codegen-units = 8
 
+# Keep download-oriented optimization for dependencies, but optimize the game
+# compositor and terrain mesher for frame latency rather than smallest code.
+[profile.web-release.package.crystal-bevy]
+opt-level = 3
+
+[profile.web-release.package.crystal-voxel-view]
+opt-level = 3
+
 # Bevy's default dev profile (opt-level 0) makes the renderer and ECS spend
 # most of their time in bounds checks and unoptimized scheduling code.  That
 # is useful for tiny crates, but it makes ordinary `cargo run` look like the
