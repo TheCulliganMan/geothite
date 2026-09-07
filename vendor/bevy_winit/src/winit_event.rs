@@ -1,4 +1,3 @@
-#![allow(deprecated)]
 #![allow(missing_docs)]
 
 use bevy_ecs::prelude::*;
@@ -13,10 +12,10 @@ use bevy_reflect::Reflect;
 #[cfg(feature = "serialize")]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 use bevy_window::{
-    AppLifecycle, CursorEntered, CursorLeft, CursorMoved, FileDragAndDrop, Ime, ReceivedCharacter,
-    RequestRedraw, WindowBackendScaleFactorChanged, WindowCloseRequested, WindowCreated,
-    WindowDestroyed, WindowFocused, WindowMoved, WindowOccluded, WindowResized,
-    WindowScaleFactorChanged, WindowThemeChanged,
+    AppLifecycle, CursorEntered, CursorLeft, CursorMoved, FileDragAndDrop, Ime, RequestRedraw,
+    WindowBackendScaleFactorChanged, WindowCloseRequested, WindowCreated, WindowDestroyed,
+    WindowFocused, WindowMoved, WindowOccluded, WindowResized, WindowScaleFactorChanged,
+    WindowThemeChanged,
 };
 
 /// Wraps all `bevy_window` events in a common enum.
@@ -39,7 +38,6 @@ pub enum WinitEvent {
     CursorMoved(CursorMoved),
     FileDragAndDrop(FileDragAndDrop),
     Ime(Ime),
-    ReceivedCharacter(ReceivedCharacter),
     RequestRedraw(RequestRedraw),
     WindowBackendScaleFactorChanged(WindowBackendScaleFactorChanged),
     WindowCloseRequested(WindowCloseRequested),
@@ -95,11 +93,6 @@ impl From<FileDragAndDrop> for WinitEvent {
 impl From<Ime> for WinitEvent {
     fn from(e: Ime) -> Self {
         Self::Ime(e)
-    }
-}
-impl From<ReceivedCharacter> for WinitEvent {
-    fn from(e: ReceivedCharacter) -> Self {
-        Self::ReceivedCharacter(e)
     }
 }
 impl From<RequestRedraw> for WinitEvent {
