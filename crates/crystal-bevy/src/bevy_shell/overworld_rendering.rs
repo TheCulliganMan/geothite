@@ -8617,21 +8617,42 @@ fn spawn_scene_dialog_text_box(
     images: &mut Assets<Image>,
     z: f32,
 ) {
+    let background = spawn_scene_dialog_window(
+        commands, rendered_art, asset_root, images,
+        FIELD_TEXT_BOX_LEFT_TILE, FIELD_TEXT_BOX_TOP_TILE,
+        FIELD_TEXT_BOX_WIDTH_TILES, FIELD_TEXT_BOX_HEIGHT_TILES, z,
+    );
+    commands.entity(background).insert(SceneDialogTextBoxBackgroundMarker);
+}
+
+// Field windows must share ownership with their glyphs, so viewport layout
+// and dialogue teardown move/remove the complete surface together.
+fn spawn_scene_dialog_window(
+    commands: &mut Commands,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    tile_x: f32,
+    tile_y: f32,
+    width_tiles: f32,
+    height_tiles: f32,
+    z: f32,
+) -> Entity {
     let (center_x, center_y) = field_window_center(
-        FIELD_TEXT_BOX_LEFT_TILE,
-        FIELD_TEXT_BOX_TOP_TILE,
-        FIELD_TEXT_BOX_WIDTH_TILES,
-        FIELD_TEXT_BOX_HEIGHT_TILES,
+        tile_x,
+        tile_y,
+        width_tiles,
+        height_tiles,
     );
     // The text plane must not depend on the frame image cache. Otherwise an
     // asset-cache miss exposes map pixels through a dialog for a frame.
-    commands.spawn((
+    let background = commands.spawn((
         SpriteBundle {
             sprite: Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
-                    TILE_SIZE * (FIELD_TEXT_BOX_WIDTH_TILES - 2.0),
-                    TILE_SIZE * (FIELD_TEXT_BOX_HEIGHT_TILES - 2.0),
+                    TILE_SIZE * (width_tiles - 2.0),
+                    TILE_SIZE * (height_tiles - 2.0),
                 )),
                 ..default()
             },
@@ -8639,19 +8660,19 @@ fn spawn_scene_dialog_text_box(
             ..default()
         },
         SceneDialogMarker,
-        SceneDialogTextBoxBackgroundMarker,
-    ));
+    )).id();
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
         spawn_scene_dialog_window_frame_tiles(
             commands,
             frame,
-            FIELD_TEXT_BOX_LEFT_TILE,
-            FIELD_TEXT_BOX_TOP_TILE,
-            FIELD_TEXT_BOX_WIDTH_TILES as usize,
-            FIELD_TEXT_BOX_HEIGHT_TILES as usize,
+            tile_x,
+            tile_y,
+            width_tiles as usize,
+            height_tiles as usize,
             z + 0.05,
         );
     }
+    background
 }
 
 fn spawn_visible_name_entry_screen(
@@ -9655,20 +9676,10 @@ fn spawn_visible_name_choice_screen(
     choice: &VisibleNameChoice,
 ) -> Result<()> {
     if let Some(page) = choice.nickname_pages.front() {
-        spawn_battle_window(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            BATTLE_TEXT_BOX_LEFT_TILE,
-            BATTLE_TEXT_BOX_TOP_TILE,
-            BATTLE_TEXT_BOX_WIDTH_TILES,
-            BATTLE_TEXT_BOX_HEIGHT_TILES,
-            5.9,
-        );
+        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 5.9);
         // _YesNoBox spans rows 7..=11; VerticalMenu prints on rows 8 and 10.
         if choice.nickname_pages.len() == 1 {
-            spawn_battle_window(
+            let background = spawn_scene_dialog_window(
                 commands,
                 rendered_art,
                 asset_root,
@@ -9679,6 +9690,7 @@ fn spawn_visible_name_choice_screen(
                 5.0,
                 6.1,
             );
+            commands.entity(background).insert(YesNoPromptMarker);
         }
         for (line_index, line) in page.lines().enumerate() {
             let (x, y) = battle_hud_tile_origin(
