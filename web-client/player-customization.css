@@ -10,3 +10,6 @@
 #personalization-dialog [role="status"] { margin-top: 14px; color: #c7eafa; font-size: 14px; line-height: 1.5; min-height: 21px; }
 #personalization-notice { max-width: 280px; color: #c7eafa; font: 13px/1.4 system-ui, sans-serif; }
 #personalization-notice:empty { display: none; }
+
+#personalization-dialog .key-bindings { border: 1px solid #44536a; border-radius: 8px; margin: 24px 0 0; padding: 12px; }
+#personalization-dialog .key-bindings .actions { flex-wrap: wrap; }

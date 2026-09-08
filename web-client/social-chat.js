@@ -1,3 +1,5 @@
+import { loadKeyBindings, keyLabel } from './player-customization.js?v=2';
+
 const aliases = { s: 'say', say: 'say', '1': 'general', general: 'general', '2': 'trade', trade: 'trade', '3': 'lfg', lfg: 'lfg' };
 export const channelLabels = { say: 'Say', general: '1. General', trade: '2. Trade', lfg: '3. Looking for Group', whisper: 'Whisper' };
 
@@ -212,10 +214,12 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     if (event.type !== 'keydown' || event.ctrlKey || event.metaKey || event.altKey || event.repeat ||
         document.querySelector('dialog[open]') || document.activeElement?.isContentEditable ||
         /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement?.tagName)) return;
-    if (event.key === 'Enter' || event.key === '/') {
+    const bindings = loadKeyBindings(window);
+    const code = event.code || (event.key.length === 1 ? `Key${event.key.toUpperCase()}` : event.key);
+    if (code === bindings.chat || event.key === '/') {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code || event.key);
       setOpen(true); if (event.key === '/') input.value = '/';
-    } else if (event.code === 'KeyM') {
+    } else if (code === bindings.start) {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code);
       const canvas = document.querySelector('canvas');
       for (const type of ['keydown', 'keyup']) {
@@ -225,8 +229,22 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
         if (type === 'keydown') canvas?.dispatchEvent(start);
         else window.setTimeout(() => canvas?.dispatchEvent(start), 60);
       }
+    } else if (event.key === 'Enter') {
+      // Enter is the engine's internal Start key; only a configured binding
+      // may forward it. Touch/controller events bypass this physical-key path.
+      event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code || event.key);
     }
   };
+  const updateBindingLabels = () => {
+    const bindings = loadKeyBindings(window);
+    panel.querySelector('.chat-toggle').title = `Chat (${keyLabel(bindings.chat)})`;
+    for (const element of document.querySelectorAll('[data-chat-key]')) element.textContent = keyLabel(bindings.chat);
+    for (const element of document.querySelectorAll('[data-start-key]')) element.textContent = keyLabel(bindings.start);
+    document.querySelector('canvas')?.setAttribute('aria-label', `Game screen. Arrow keys move; Z confirms; X goes back; ${keyLabel(bindings.start)} opens the game menu; ${keyLabel(bindings.chat)} opens chat.`);
+  };
+  listen(window, 'geothite-key-bindings-changed', updateBindingLabels);
+  listen(window, 'storage', updateBindingLabels);
+  updateBindingLabels();
   listen(window, 'keydown', captureKeys, { capture: true });
   listen(window, 'keyup', captureKeys, { capture: true });
   listen(panel, 'focusin', () => wasm.crystal_social_focus(true));

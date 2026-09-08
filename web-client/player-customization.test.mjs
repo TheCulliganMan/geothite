@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
-import { validateProfile, mountPlayerCustomization } from './player-customization.js';
+import { validateProfile, mountPlayerCustomization, loadKeyBindings } from './player-customization.js';
 
 test('profile validation matches the Rust field limits', () => {
   assert.equal(validateProfile({ name: 'KRIS', handle: 'Kris_22', sprite: 1 }), null);
@@ -16,7 +16,7 @@ test('profile validation matches the Rust field limits', () => {
 });
 
 function harness() {
-  const dom = new JSDOM(readFileSync(new URL('./index.html', import.meta.url), 'utf8'));
+  const dom = new JSDOM(readFileSync(new URL('./index.html', import.meta.url), 'utf8'), { url: 'https://geothite.test/' });
   const { window } = dom;
   const dialog = window.document.querySelector('#personalization-dialog');
   dialog.showModal = () => { dialog.open = true; };
@@ -77,5 +77,29 @@ test('profile polling resumes after browser back navigation', () => {
   assert.equal(h.window.document.querySelector('#personalization').hidden, true);
   h.window.dispatchEvent(new h.window.Event('pageshow'));
   assert.equal(timers, 1, 'does not create duplicate polling loops');
+  h.dom.window.close();
+});
+
+test('key bindings persist independently of profile edits, reject conflicts, and reset explicitly', () => {
+  const h = harness(); const doc = h.window.document;
+  doc.querySelector('#personalization').click();
+  const chat = doc.querySelector('#chat-key'), start = doc.querySelector('#start-key');
+  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'KeyM');
+  chat.value = 'KeyT'; start.value = 'KeyT';
+  doc.querySelector('[data-save-bindings]').click();
+  assert.match(doc.querySelector('#key-bindings-status').textContent, /different/);
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
+  start.value = 'Enter'; doc.querySelector('[data-save-bindings]').click();
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter' });
+  assert.equal(h.submitted(), undefined, 'key bindings do not submit the trainer profile');
+  h.ui.close(); doc.querySelector('#personalization').click();
+  assert.equal(chat.value, 'KeyT'); assert.equal(start.value, 'Enter');
+  doc.querySelector('[data-reset-bindings]').click();
+  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'KeyM');
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter' });
+  doc.querySelector('[data-save-bindings]').click();
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
+  h.window.localStorage.setItem('geothite.key-bindings.v1', '{broken');
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
   h.dom.window.close();
 });

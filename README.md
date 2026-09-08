@@ -53,7 +53,10 @@ proxying, upgrades, health checks, persistence, and cleanup.
 
 In the browser, use the arrow keys to move, `Z` for A, `X` for B, `M` for the
 game menu, and Right Shift for Select. Press `Enter` to open chat and `Esc`
-to close it. Phones expose touch controls; standard gamepads are supported.
+to close it. Rebind Chat and Start in **Personalization → Keyboard bindings**;
+**Save key bindings** keeps the choice in this browser across reloads. Chat and
+Start require different keys. Enter still sends messages while typing in chat.
+Phones expose touch controls; standard gamepads are supported.
 Click or press a key in the game to enable browser audio.
 
 Use the **2.5D** control to switch the overworld renderer. Battles and menus

@@ -34,7 +34,7 @@ import { readFileSync } from 'node:fs';
 const chatStyles = readFileSync(new URL('./social-chat.css', import.meta.url), 'utf8');
 import { mountSocialChat } from './social-chat.js';
 function chatHarness() {
-  const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">');
+  const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">', { url: 'https://geothite.test/' });
   const { window } = dom;
   const style = window.document.createElement('style');
   style.textContent = chatStyles;
@@ -233,5 +233,31 @@ test('closing chat while its opener is held cannot leak repeated Start presses',
     h.key('Enter', 'keyup');
     assert.deepEqual(leaked, [], 'chat owns the entire press through release');
     assert.equal(h.document.querySelector('form').hidden, true);
+  } finally { h.cleanup(); }
+});
+
+import { saveKeyBindings } from './player-customization.js';
+test('saved chat and Start bindings apply immediately and unbound Enter never leaks Start', async () => {
+  const h = chatHarness();
+  try {
+    const canvas = h.document.querySelector('canvas');
+    const game = [];
+    canvas.addEventListener('keydown', event => game.push([event.code, !!event.crystalGameControl]));
+    saveKeyBindings(h.window, { chat: 'KeyT', start: 'Space' });
+    canvas.focus(); h.key('Enter'); h.key('Enter', 'keyup');
+    assert.deepEqual(game, []); assert.equal(h.document.querySelector('form').hidden, true);
+    h.key('t', 'keydown', { code: 'KeyT' }); h.key('t', 'keyup', { code: 'KeyT' });
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    h.key('Escape'); h.key('Escape', 'keyup');
+    h.key(' ', 'keydown', { code: 'Space' }); h.key(' ', 'keyup', { code: 'Space' });
+    assert.deepEqual(game, [['Enter', true]]);
+    await new Promise(resolve => h.window.setTimeout(resolve, 80));
+    saveKeyBindings(h.window, { chat: 'KeyM', start: 'Enter' });
+    h.key('Enter'); h.key('Enter', 'keyup');
+    assert.deepEqual(game, [['Enter', true], ['Enter', true]]);
+    assert.equal(h.document.querySelector('form').hidden, true);
+    h.key('m', 'keydown', { code: 'KeyM' }); h.key('m', 'keyup', { code: 'KeyM' });
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    assert.match(h.document.querySelector('.chat-toggle').title, /M/);
   } finally { h.cleanup(); }
 });
