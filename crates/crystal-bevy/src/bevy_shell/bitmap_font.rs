@@ -2978,10 +2978,14 @@ fn oak_intro_asset_paths(
         ));
     }
     if let Some(stem) = asset_id.strip_prefix("battle-player:") {
-        if stem == "dude" {
+        if matches!(stem, "dude" | "dude_female") {
             return Ok((
                 runtime_assets.join("gfx/battle/dude.png"),
-                runtime_assets.join("gfx/trainers/cal.gbcpal"),
+                runtime_assets.join(if stem == "dude_female" {
+                    "gfx/trainers/falkner.gbcpal"
+                } else {
+                    "gfx/trainers/cal.gbcpal"
+                }),
                 true,
             ));
         }

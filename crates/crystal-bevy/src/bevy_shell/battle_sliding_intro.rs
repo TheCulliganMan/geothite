@@ -126,7 +126,7 @@ fn spawn_visible_battle_sliding_intro(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     let player_id = if battle.battle_type == "BATTLETYPE_TUTORIAL" {
-        "battle-player:dude"
+        tutorial_backpic_id(snapshot)
     } else if snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE {
         "battle-player:kris_back"
     } else {

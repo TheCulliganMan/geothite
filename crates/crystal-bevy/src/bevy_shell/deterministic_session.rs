@@ -174,6 +174,24 @@ fn apply_keyboard_input(
         runtime_shell.last_error = None;
         mark_runtime_presentation_dirty(&mut runtime_shell);
     }
+    if runtime_shell.visible_catch_tutorial.is_none()
+        && runtime_shell.title_menu.is_none()
+        && runtime_shell.intro_screen.is_none()
+        && catch_tutorial_battle_active(&runtime_shell)
+        && runtime_shell.pending_standard_capture.is_none()
+        && runtime_shell.visible_capture_animation.is_none()
+    {
+        // Also recover an active tutorial restored from an older saved game.
+        runtime_shell.visible_catch_tutorial = Some(VisibleCatchTutorial::default());
+    }
+    // CatchTutorial owns joypad input until its capture and result text end.
+    let tutorial_keys = ButtonInput::<KeyCode>::default();
+    let keys = if runtime_shell.visible_catch_tutorial.is_some() {
+        runtime_shell.pending_ui_button_presses.clear();
+        &tutorial_keys
+    } else {
+        &*keys
+    };
     runtime_shell.field_text_consumed_a = false;
     runtime_shell.field_text_consumed_b = false;
     log_visible_key_presses(&mut runtime_shell, &keys);
@@ -1264,6 +1282,13 @@ fn apply_keyboard_input(
         {
             stats.frames_before_input -= 1;
         }
+    }
+    if runtime_shell.visible_catch_tutorial.is_some() {
+        if let Err(error) = advance_visible_catch_tutorial(&mut runtime_shell, elapsed_input_ticks) {
+            record_visible_runtime_error(&mut runtime_shell, &error);
+            runtime_shell.last_error = Some(format!("{error:#}"));
+        }
+        return;
     }
     if let Some(frames) = runtime_shell.visible_script_delay_frames.as_mut() {
         *frames = frames.saturating_sub(elapsed_input_ticks.min(u32::from(u16::MAX)) as u16);

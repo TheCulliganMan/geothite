@@ -101,18 +101,8 @@ fn prepare_visible_battle_entry_with_music_reset(
     // frame) before the first text page is acknowledged.
     runtime_shell.battle_message_scene = Some(Box::new(snapshot.clone()));
     if battle.battle_type == "BATTLETYPE_TUTORIAL" {
-        let actions = visible_battle_action_ids(&snapshot, battle);
-        if let Some(option_index) = actions
-            .iter()
-            .position(|action| *action == VisibleBattleAction::Pack)
-        {
-            // ASM DudeAutoInput_DownA leaves the four-command menu
-            // visible with PACK selected before TutorialPack continues.
-            runtime_shell.battle_action_cursor = Some(MenuCursor {
-                surface_id: "battle:actions".to_string(),
-                option_index,
-            });
-        }
+        runtime_shell.visible_catch_tutorial = Some(VisibleCatchTutorial::default());
+        runtime_shell.pending_ui_button_presses.clear();
     }
     runtime_shell.battle_entry_messages_remaining = runtime_shell.battle_messages.len();
     Ok(())
@@ -10169,6 +10159,7 @@ fn advance_visible_pc_item_move_sequence(runtime_shell: &mut BevyRuntimeShell) -
 
 // Presentation belongs to one battle/session and must not survive loading a save.
 fn reset_visible_battle_presentation(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.visible_catch_tutorial = None;
     runtime_shell.visible_battle_transition = None;
     runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.visible_capture_animation = None;

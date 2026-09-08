@@ -19808,11 +19808,14 @@ impl GameDataSet {
                 let exact_start = commands
                     .and_then(|commands| commands.get(startbattle_command_index))
                     .is_some_and(|entry| {
-                        entry.get("command").and_then(Value::as_str) == Some("startbattle")
-                            && entry
-                                .get("args")
-                                .and_then(Value::as_array)
-                                .is_some_and(Vec::is_empty)
+                        let command = entry.get("command").and_then(Value::as_str);
+                        let args = entry.get("args").and_then(Value::as_array);
+                        (command == Some("startbattle") && args.is_some_and(Vec::is_empty))
+                            || (battle_type == "BATTLETYPE_TUTORIAL"
+                                && command == Some("catchtutorial")
+                                && args.is_some_and(|args| {
+                                    args.len() == 1 && args[0].as_str() == Some(battle_type)
+                                }))
                     });
                 let exact_resume = commands
                     .and_then(|commands| commands.get(resume_command_index))

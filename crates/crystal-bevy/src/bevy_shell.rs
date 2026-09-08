@@ -837,6 +837,7 @@ struct BevyRuntimeShell {
     visible_diploma: Option<u8>,
     visible_battle_transition: Option<VisibleBattleTransition>,
     visible_battle_sliding_intro: Option<u8>,
+    visible_catch_tutorial: Option<VisibleCatchTutorial>,
     visible_capture_animation: Option<VisibleCaptureAnimation>,
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
     battle_fainted_hud: [bool; 2],
@@ -7330,6 +7331,7 @@ fn initialize_bevy_runtime_shell(
         visible_diploma: None,
         visible_battle_transition: None,
         visible_battle_sliding_intro: None,
+        visible_catch_tutorial: None,
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
         battle_fainted_hud: [false; 2],
@@ -7591,3 +7593,5 @@ include!("bevy_shell/webmcp.rs");
 include!("bevy_shell/browser_preferences.rs");
 
 include!("bevy_shell/battle_objects.rs");
+
+include!("bevy_shell/catch_tutorial.rs");

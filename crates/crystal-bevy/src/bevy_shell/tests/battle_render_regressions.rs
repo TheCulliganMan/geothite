@@ -4916,3 +4916,212 @@ fn battle_transition_trainer_and_wild_colour_surfaces_render_before_intro() {
         save_live_battle_canvas_for_test(app.world_mut(), name);
     }
 }
+
+fn catch_tutorial_regression_shell() -> BevyRuntimeShell {
+    let root = AssetRoot::new(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap(),
+    );
+    let runtime = workspace_desktop_runtime(&root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(
+        root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route29".into(),
+            tile_x: 50,
+            tile_y: 9,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("TEST".into()),
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
+    shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            5,
+            None,
+            None,
+            "TEST",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .unwrap();
+    settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
+    let command = shell
+        .shell
+        .script_command_payload_keys()
+        .into_iter()
+        .find(|key| key.script_label == "Route29Tutorial1" && key.command == "catchtutorial")
+        .expect("authored Route29 tutorial command");
+    start_visible_catch_tutorial(&mut shell, &command.script_label, command.command_index).unwrap();
+    shell
+}
+
+#[test]
+fn catch_tutorial_runs_without_buttons_and_preserves_player_state() {
+    let mut shell = catch_tutorial_regression_shell();
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell
+            .shell
+            .save(PathBuf::from(directory).join("tutorial-active.crystalsave"))
+            .unwrap();
+    }
+    let before = shell.shell.snapshot().unwrap();
+    let mut app = menu_render_test_app(shell);
+    let mut phases = std::collections::HashSet::new();
+    let mut rendered_throw = false;
+    for _ in 0..2200 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        let phase = shell
+            .visible_catch_tutorial
+            .as_ref()
+            .map(|t| format!("{:?}", t.phase));
+        let capture = shell
+            .visible_capture_animation
+            .as_ref()
+            .is_some_and(|animation| animation.started && animation.frame == 10);
+        if let Some(phase) = phase {
+            if phases.insert(phase.clone()) && phase != "Narration" {
+                save_live_battle_canvas_for_test(app.world_mut(), &format!("tutorial-{phase}.png"));
+            }
+        }
+        if capture {
+            rendered_throw = true;
+            let dude = app
+                .world()
+                .resource::<RenderedTilesetArt>()
+                .intro_cache
+                .get(&IntroArtKey {
+                    asset_id: "battle-player:dude".into(),
+                })
+                .unwrap()
+                .handle
+                .clone();
+            let world = app.world_mut();
+            assert!(
+                world
+                    .query_filtered::<&Handle<Image>, With<BattleBattlerMarker>>()
+                    .iter(world)
+                    .any(|image| image == &dude),
+                "keep DUDE visible while throwing"
+            );
+            save_live_battle_canvas_for_test(app.world_mut(), "tutorial-ball-throw.png");
+        }
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if shell.visible_catch_tutorial.is_none() && !catch_tutorial_battle_active(shell) {
+            break;
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(
+        shell.visible_catch_tutorial.is_none(),
+        "tutorial stalled: phase={:?} messages={:?} capture={:?}",
+        shell
+            .visible_catch_tutorial
+            .as_ref()
+            .map(|t| (t.phase, t.wait)),
+        shell.battle_messages,
+        shell.visible_capture_animation
+    );
+    assert!(!catch_tutorial_battle_active(shell));
+    assert!(
+        rendered_throw,
+        "the tutorial must play the capture animation"
+    );
+    for phase in ["Fight", "Pack", "Items", "Balls", "Capture"] {
+        assert!(phases.contains(phase), "missing {phase}");
+    }
+    let after = shell.shell.snapshot().unwrap();
+    assert_eq!(after.trainer.player_name, before.trainer.player_name);
+    assert_eq!(after.trainer.options, before.trainer.options);
+    assert_eq!(after.bag, before.bag, "use the DUDE's temporary ball");
+    let persistent_party = |party: &crate::RuntimePartySnapshot| {
+        party.slots.iter().map(|slot| {
+            let mut pokemon = slot.pokemon.clone();
+            pokemon.turns_in_battle = 0;
+            pokemon
+        }).collect::<Vec<_>>()
+    };
+    assert_eq!(persistent_party(&after.party), persistent_party(&before.party),
+        "do not add the tutorial Rattata or award experience");
+    assert_eq!(
+        after.progression.pokedex_caught_species,
+        before.progression.pokedex_caught_species
+    );
+    assert_eq!(after.overworld.map_name, "Route29");
+    assert!(
+        shell.field_notice.is_some()
+            || after.ui.text.is_some()
+            || shell.active_script_cursor.is_some(),
+        "resume the tutorial debrief script"
+    );
+    for _ in 0..400 {
+        if app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_event_flag_set("EVENT_LEARNED_TO_CATCH_POKEMON")
+            .unwrap()
+        {
+            break;
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    assert!(shell
+        .shell
+        .session()
+        .state()
+        .flags
+        .is_event_flag_set("EVENT_LEARNED_TO_CATCH_POKEMON")
+        .unwrap());
+}
+
+#[test]
+fn catch_tutorial_recovers_an_existing_menu_and_ignores_player_commands() {
+    let mut shell = catch_tutorial_regression_shell();
+    shell.visible_catch_tutorial = None;
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_messages.clear();
+    shell.battle_entry_messages_remaining = 0;
+    let mut app = menu_render_test_app(shell);
+    for _ in 0..1800 {
+        let keys = [
+            KeyCode::ArrowUp,
+            KeyCode::KeyZ,
+            KeyCode::KeyX,
+            KeyCode::Enter,
+        ];
+        for key in keys {
+            app.world_mut()
+                .resource_mut::<ButtonInput<KeyCode>>()
+                .press(key);
+        }
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if shell.visible_catch_tutorial.is_none() && !catch_tutorial_battle_active(shell) {
+            return;
+        }
+    }
+    panic!("restored tutorial must finish without accepting Fight/Run/cancel inputs");
+}

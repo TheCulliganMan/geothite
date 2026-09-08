@@ -2706,7 +2706,7 @@ fn spawn_battle_battler_markers(
     player_send_out_pending: bool,
     capture_enemy_hidden: bool,
     capture_enemy_clip_tiles: Option<u8>,
-    capture_throw_active: bool,
+    _capture_throw_active: bool,
     send_out_animation: Option<&VisibleSendOutAnimation>,
     trainer_exit_animation: Option<&VisibleTrainerExitAnimation>,
     frontpic_animation: Option<&VisibleFrontpicAnimation>,
@@ -3065,20 +3065,19 @@ fn spawn_battle_battler_markers(
         )?;
     }
     if battle.battle_type == "BATTLETYPE_TUTORIAL" {
-        if !capture_throw_active {
-            spawn_battle_trainer_marker(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                "battle-player:dude",
-                Vec3::new(
-                    PLAYFIELD_LEFT + TILE_SIZE * 2.0,
-                    PLAYFIELD_TOP - TILE_SIZE * 6.0,
-                    3.0,
-                ),
-            )?;
-        }
+        // The DUDE remains on the BG while the ball travels from his hand.
+        spawn_battle_trainer_marker(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            tutorial_backpic_id(snapshot),
+            Vec3::new(
+                PLAYFIELD_LEFT + TILE_SIZE * 2.0,
+                PLAYFIELD_TOP - TILE_SIZE * 6.0,
+                3.0,
+            ),
+        )?;
         return Ok(());
     }
     // InitBattleDisplay leaves the player's backpic on screen throughout
@@ -6817,6 +6816,22 @@ fn spawn_battle_pack_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    // TutorialPack uses the DUDE's temporary pockets, never the player's bag.
+    let tutorial_snapshot = runtime_shell.visible_catch_tutorial.as_ref().map(|_| {
+        let mut tutorial = snapshot.clone();
+        tutorial.bag.items = vec![crate::RuntimeBagItemSnapshot {
+            item_id: "POTION".into(),
+            quantity: 1,
+        }];
+        tutorial.bag.balls = vec![crate::RuntimeBagItemSnapshot {
+            item_id: "POKE_BALL".into(),
+            quantity: 1,
+        }];
+        tutorial.bag.key_items.clear();
+        tutorial.bag.tm_hm.clear();
+        tutorial
+    });
+    let snapshot = tutorial_snapshot.as_ref().unwrap_or(snapshot);
     let (item_ids, cursor, surface_id, pocket_label, show_quantity) =
         if runtime_shell.ball_cursor.is_some() {
             (
@@ -6874,7 +6889,8 @@ fn spawn_battle_pack_screen(
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 3.4),
+            // Cover the battle HUD as well as the battler sprites.
+            transform: Transform::from_xyz(0.0, 0.0, 3.79),
             ..default()
         },
         BattleCommandMarker,

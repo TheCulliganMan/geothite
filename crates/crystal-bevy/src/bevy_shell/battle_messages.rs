@@ -2669,7 +2669,9 @@ fn advance_visible_battle_text_reveal(
     let frames_per_char = if acceleration_requested {
         1
     } else {
-        visible_text_frames_per_char(snapshot.trainer.options.text_speed)
+        visible_text_frames_per_char(if runtime_shell.visible_catch_tutorial.is_some() {
+            TextSpeed::Mid
+        } else { snapshot.trainer.options.text_speed })
     };
     reveal.frames_until_next_char = frames_per_char.saturating_sub(1);
     true
