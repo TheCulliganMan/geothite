@@ -7721,7 +7721,8 @@ fn render_playfield(
             record_visible_render_error(&mut commands, &mut runtime_shell, error);
             return;
         }
-        if let Err(error) = spawn_battle_hud(
+        if !visible_wild_entrance_animation_active(&runtime_shell)
+            && let Err(error) = spawn_battle_hud(
             &mut commands,
             &snapshot,
             battle,
@@ -7820,7 +7821,8 @@ fn render_playfield(
                 record_visible_render_error(&mut commands, &mut runtime_shell, error);
                 return;
             }
-            if let Err(error) = spawn_battle_hud(
+            if !visible_wild_entrance_animation_active(&runtime_shell)
+            && let Err(error) = spawn_battle_hud(
                 &mut commands,
                 scene,
                 battle,

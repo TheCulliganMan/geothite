@@ -30,7 +30,11 @@ fn battle_sliding_intro_owns_73_frames_without_dismissing_narration() {
         advance_visible_battle_sliding_intro(&mut shell);
     }
     assert_eq!(shell.visible_battle_sliding_intro, None);
-    assert!(!visible_noninteractive_battle_animation_owns_input(&shell));
+    // A wild/static encounter keeps ownership for its frontpic animation;
+    // the encounter text has not been dismissed or begun revealing.
+    assert!(visible_noninteractive_battle_animation_owns_input(&shell));
+    assert!(visible_wild_entrance_animation_active(&shell));
+    assert_eq!(shell.battle_messages, messages);
     assert!(shell.battle_text_reveal.is_none());
 }
 

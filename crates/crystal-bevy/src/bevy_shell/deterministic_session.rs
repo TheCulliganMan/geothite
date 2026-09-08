@@ -5853,10 +5853,6 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             && dismissed_battle_message
                 .as_deref()
                 .is_some_and(|message| message.ends_with("\nwants to battle!"));
-        let starts_wild_frontpic = entry_messages_before == 2
-            && dismissed_battle_message
-                .as_deref()
-                .is_some_and(|message| message.starts_with("Wild "));
         let starts_enemy_send_out = runtime_shell.battle_enemy_send_out_pending
             || dismissed_battle_message
                 .as_deref()
@@ -5972,9 +5968,6 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 shiny,
             });
             queue_visible_shell_sound_effect(runtime_shell, "SFX_BALL_POOF")?;
-        }
-        if starts_wild_frontpic {
-            start_visible_enemy_frontpic_animation(runtime_shell, 0)?;
         }
         runtime_shell.battle_enemy_send_out_pending = false;
         runtime_shell.battle_player_send_out_pending = false;

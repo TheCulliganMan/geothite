@@ -9,8 +9,34 @@ fn advance_visible_battle_sliding_intro(shell: &mut BevyRuntimeShell) {
     *frame += 1;
     if *frame >= BATTLE_SLIDING_INTRO_FRAMES {
         shell.visible_battle_sliding_intro = None;
+        // BattleStartMessage animates wild frontpics before printing the
+        // encounter text. Trainer frontpics still start after their send-out.
+        if let Err(error) = begin_visible_wild_entrance_animation(shell) {
+            record_visible_runtime_system_error(shell, error);
+        }
     }
     mark_runtime_snapshot_dirty(shell);
+}
+
+fn begin_visible_wild_entrance_animation(shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = shell.shell.snapshot()?;
+    let Some(battle) = snapshot.battle.as_ref() else { return Ok(()); };
+    if matches!(battle.kind, RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. })
+        && snapshot.trainer.options.battle_scene == BattleScene::On
+    {
+        start_visible_enemy_frontpic_animation(shell, 0)?;
+    }
+    Ok(())
+}
+
+fn visible_wild_entrance_animation_active(shell: &BevyRuntimeShell) -> bool {
+    shell.visible_frontpic_animation.is_some()
+        && shell.battle_message_scene.as_ref().and_then(|scene| scene.battle.as_ref())
+            .is_some_and(|battle| {
+                matches!(battle.kind, RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. })
+                    && shell.battle_entry_messages_remaining
+                        == if battle.battle_type == "BATTLETYPE_TUTORIAL" { 1 } else { 2 }
+            })
 }
 
 fn battle_sliding_intro_offsets(frame: u8) -> (f32, f32) {
