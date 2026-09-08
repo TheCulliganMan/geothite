@@ -1,4 +1,4 @@
-import { loadKeyBindings, keyLabel } from './player-customization.js?v=2';
+import { loadKeyBindings, keyLabel } from './player-customization.js?v=3';
 
 const aliases = { s: 'say', say: 'say', '1': 'general', general: 'general', '2': 'trade', trade: 'trade', '3': 'lfg', lfg: 'lfg' };
 export const channelLabels = { say: 'Say', general: '1. General', trade: '2. Trade', lfg: '3. Looking for Group', whisper: 'Whisper' };
@@ -219,19 +219,20 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     if (code === bindings.chat || event.key === '/') {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code || event.key);
       setOpen(true); if (event.key === '/') input.value = '/';
-    } else if (code === bindings.start) {
+    } else if (code === bindings.start || code === bindings.select) {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code);
       const canvas = document.querySelector('canvas');
+      const isSelect = code === bindings.select;
       for (const type of ['keydown', 'keyup']) {
-        const start = new window.KeyboardEvent(type, { key: 'Enter', code: 'Enter', bubbles: true });
+        const start = new window.KeyboardEvent(type, { key: isSelect ? 'Shift' : 'Enter', code: isSelect ? 'ShiftRight' : 'Enter', bubbles: true });
         Object.defineProperty(start, 'crystalGameControl', { value: true });
         // Give the game a frame to observe Start before releasing it.
         if (type === 'keydown') canvas?.dispatchEvent(start);
         else window.setTimeout(() => canvas?.dispatchEvent(start), 60);
       }
-    } else if (event.key === 'Enter') {
-      // Enter is the engine's internal Start key; only a configured binding
-      // may forward it. Touch/controller events bypass this physical-key path.
+    } else if (event.key === 'Enter' || code === 'ShiftRight') {
+      // Only configured physical bindings may forward the engine's internal
+      // Start and Select keys. Touch/controller events bypass this physical-key path.
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code || event.key);
     }
   };
@@ -240,7 +241,8 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     panel.querySelector('.chat-toggle').title = `Chat (${keyLabel(bindings.chat)})`;
     for (const element of document.querySelectorAll('[data-chat-key]')) element.textContent = keyLabel(bindings.chat);
     for (const element of document.querySelectorAll('[data-start-key]')) element.textContent = keyLabel(bindings.start);
-    document.querySelector('canvas')?.setAttribute('aria-label', `Game screen. Arrow keys move; Z confirms; X goes back; ${keyLabel(bindings.start)} opens the game menu; ${keyLabel(bindings.chat)} opens chat.`);
+    for (const element of document.querySelectorAll('[data-select-key]')) element.textContent = keyLabel(bindings.select);
+    document.querySelector('canvas')?.setAttribute('aria-label', `Game screen. Arrow keys move; Z confirms; X goes back; ${keyLabel(bindings.start)} opens the game menu; ${keyLabel(bindings.chat)} opens chat; ${keyLabel(bindings.select)} is Select.`);
   };
   listen(window, 'geothite-key-bindings-changed', updateBindingLabels);
   listen(window, 'storage', updateBindingLabels);

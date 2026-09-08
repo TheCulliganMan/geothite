@@ -1,15 +1,19 @@
-export const DEFAULT_KEY_BINDINGS = Object.freeze({ chat: 'Enter', start: 'KeyM' });
+export const DEFAULT_KEY_BINDINGS = Object.freeze({ chat: 'Enter', start: 'KeyM', select: 'Backspace' });
 const KEY_BINDINGS_STORAGE = 'geothite.key-bindings.v1';
-export const BINDABLE_KEYS = ['Enter', 'Space', 'Backspace', ...'ABCDEFGHIJKLMNOPQRSTUVWY'.split('').map(key => `Key${key}`), ...'0123456789'.split('').map(key => `Digit${key}`)];
-export const keyLabel = code => code === 'Space' ? 'Space' : code.replace(/^(Key|Digit)/, '');
+export const BINDABLE_KEYS = ['Enter', 'Space', 'Backspace', 'ShiftRight', ...'ABCDEFGHIJKLMNOPQRSTUVWY'.split('').map(key => `Key${key}`), ...'0123456789'.split('').map(key => `Digit${key}`)];
+export const keyLabel = code => code === 'ShiftRight' ? 'Right Shift' : code === 'Space' ? 'Space' : code.replace(/^(Key|Digit)/, '');
 export function validateKeyBindings(bindings) {
-  if (!bindings || !BINDABLE_KEYS.includes(bindings.chat) || !BINDABLE_KEYS.includes(bindings.start)) return 'Choose a key for Chat and Start.';
-  if (bindings.chat === bindings.start) return 'Chat and Start must use different keys.';
+  if (!bindings || !['chat', 'start', 'select'].every(action => BINDABLE_KEYS.includes(bindings[action]))) return 'Choose a key for Chat, Start, and Select.';
+  if (new Set([bindings.chat, bindings.start, bindings.select]).size !== 3) return 'Chat, Start, and Select must use different keys.';
   return null;
 }
 export function loadKeyBindings(window) {
   try {
     const saved = JSON.parse(window.localStorage.getItem(KEY_BINDINGS_STORAGE));
+    if (saved && saved.select === undefined) {
+      // Preserve existing two-action preferences when adding Select.
+      saved.select = ['Backspace', 'ShiftRight', ...BINDABLE_KEYS].find(code => code !== saved.chat && code !== saved.start);
+    }
     if (!validateKeyBindings(saved)) return saved;
   } catch {}
   return { ...DEFAULT_KEY_BINDINGS };
@@ -17,7 +21,7 @@ export function loadKeyBindings(window) {
 export function saveKeyBindings(window, bindings) {
   const error = validateKeyBindings(bindings);
   if (error) throw new Error(error);
-  window.localStorage.setItem(KEY_BINDINGS_STORAGE, JSON.stringify({ chat: bindings.chat, start: bindings.start }));
+  window.localStorage.setItem(KEY_BINDINGS_STORAGE, JSON.stringify({ chat: bindings.chat, start: bindings.start, select: bindings.select }));
   window.dispatchEvent(new window.Event('geothite-key-bindings-changed'));
 }
 
@@ -41,17 +45,18 @@ export function mountPlayerCustomization(wasm, { document, window }) {
   const status = dialog.querySelector('[role="status"]');
   const chatKey = form.elements.namedItem('chat-key');
   const startKey = form.elements.namedItem('start-key');
+  const selectKey = form.elements.namedItem('select-key');
   const bindingStatus = dialog.querySelector('#key-bindings-status');
-  for (const select of [chatKey, startKey]) {
+  for (const select of [chatKey, startKey, selectKey]) {
     for (const code of BINDABLE_KEYS) {
       const option = document.createElement('option');
       option.value = code; option.textContent = keyLabel(code); select.append(option);
     }
   }
-  const fillBindings = bindings => { chatKey.value = bindings.chat; startKey.value = bindings.start; };
+  const fillBindings = bindings => { chatKey.value = bindings.chat; startKey.value = bindings.start; selectKey.value = bindings.select; };
   dialog.querySelector('[data-save-bindings]').addEventListener('click', () => {
     try {
-      saveKeyBindings(window, { chat: chatKey.value, start: startKey.value });
+      saveKeyBindings(window, { chat: chatKey.value, start: startKey.value, select: selectKey.value });
       bindingStatus.textContent = 'Key bindings saved on this browser.';
     } catch (error) { bindingStatus.textContent = error.message; }
   });

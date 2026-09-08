@@ -88,18 +88,32 @@ test('key bindings persist independently of profile edits, reject conflicts, and
   chat.value = 'KeyT'; start.value = 'KeyT';
   doc.querySelector('[data-save-bindings]').click();
   assert.match(doc.querySelector('#key-bindings-status').textContent, /different/);
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
   start.value = 'Enter'; doc.querySelector('[data-save-bindings]').click();
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter', select: 'Backspace' });
   assert.equal(h.submitted(), undefined, 'key bindings do not submit the trainer profile');
   h.ui.close(); doc.querySelector('#personalization').click();
   assert.equal(chat.value, 'KeyT'); assert.equal(start.value, 'Enter');
   doc.querySelector('[data-reset-bindings]').click();
   assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'KeyM');
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter', select: 'Backspace' });
   doc.querySelector('[data-save-bindings]').click();
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
   h.window.localStorage.setItem('geothite.key-bindings.v1', '{broken');
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
+  h.dom.window.close();
+});
+
+test('Select is saved and older preferences migrate without conflicting with a saved Start key', () => {
+  const h = harness(); const doc = h.window.document;
+  h.window.localStorage.setItem('geothite.key-bindings.v1', JSON.stringify({ chat: 'KeyT', start: 'Backspace' }));
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Backspace', select: 'ShiftRight' });
+  doc.querySelector('#personalization').click();
+  const select = doc.querySelector('#select-key');
+  assert.equal(select.value, 'ShiftRight');
+  select.value = 'KeyQ'; doc.querySelector('[data-save-bindings]').click();
+  h.ui.close(); doc.querySelector('#personalization').click();
+  assert.equal(select.value, 'KeyQ');
+  assert.equal(loadKeyBindings(h.window).select, 'KeyQ');
   h.dom.window.close();
 });

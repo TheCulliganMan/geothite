@@ -195,9 +195,10 @@
         <div class="actions"><button type="submit">Save changes</button></div>
         <p role="status" aria-live="polite"></p>
         <fieldset class="key-bindings"><legend>Keyboard bindings</legend>
-          <small>Saved on this browser. Movement, Z (A), X (B), and Right Shift (Select) keep their keys.</small>
+          <small>Saved on this browser. Movement, Z (A), and X (B) keep their keys.</small>
           <label for="chat-key">Open chat</label><select id="chat-key" name="chat-key"></select>
           <label for="start-key">Game Start</label><select id="start-key" name="start-key"></select>
+          <label for="select-key">Game Select</label><select id="select-key" name="select-key"></select>
           <small>Enter sends messages while typing in chat. Escape closes chat.</small>
           <div class="actions"><button type="button" data-save-bindings>Save key bindings</button><button type="button" data-reset-bindings>Use defaults</button></div>
           <p id="key-bindings-status" aria-live="polite"></p>
@@ -211,7 +212,7 @@
         <p class="menu-caption">Move, explore, and meet other trainers.</p>
         <dl class="help-controls"><dt>D-pad</dt><dd>Move. Slide to change direction.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu.</dd></dl>
         <details open><summary>2.5D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
-        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>M</span> / Start: menu. Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
+        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>M</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
         <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
       </div>
@@ -223,8 +224,8 @@
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSaveManagement } from './save-management.js?v=2';
-      import { mountPlayerCustomization } from './player-customization.js?v=2';
-      import { mountSocialChat } from './social-chat.js?v=20260908-bindings';
+      import { mountPlayerCustomization } from './player-customization.js?v=3';
+      import { mountSocialChat } from './social-chat.js?v=20260908-bindings-select';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
 
