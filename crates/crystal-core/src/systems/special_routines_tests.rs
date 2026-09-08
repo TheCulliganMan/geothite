@@ -39,9 +39,13 @@ static EMPTY_TEST_PHONE_CONTACTS: LazyLock<PhoneContactCatalog> =
     LazyLock::new(PhoneContactCatalog::default);
 static EMPTY_TEST_WILD_ENCOUNTERS: LazyLock<BTreeMap<String, WildEncounterData>> =
     LazyLock::new(BTreeMap::new);
-const MODPACK_SPECIAL_ROUTINES_JSON: &str = include_str!(
-    "../../../../../apps/web/assets/data/content-packs/core-modular/special_routines/routines.json"
-);
+// Load the optional external catalog only for tests that actually use it.
+static MODPACK_SPECIAL_ROUTINES_JSON: LazyLock<String> = LazyLock::new(|| {
+    let path = std::env::var_os("GEOTHITE_SPECIAL_ROUTINES_FIXTURE")
+        .map(std::path::PathBuf::from)
+        .expect("set GEOTHITE_SPECIAL_ROUTINES_FIXTURE to the special-routines test catalog");
+    std::fs::read_to_string(path).expect("read special-routines test catalog")
+});
 
 fn divider_trace_for_sub_values(values: impl IntoIterator<Item = u8>) -> Vec<u8> {
     divider_trace_for_sub_values_after(0, values)
@@ -306,7 +310,7 @@ fn special_routine_registry_is_exact_and_covers_core_modpack_declarations() {
     assert!(!is_known_special_routine("MODPACK_ONLY_ROUTINE"));
 
     let routines: BTreeMap<String, serde_json::Value> =
-        serde_json::from_str(MODPACK_SPECIAL_ROUTINES_JSON).expect("core special routines json");
+        serde_json::from_str(&MODPACK_SPECIAL_ROUTINES_JSON).expect("core special routines json");
     let unknown: Vec<&str> = routines
         .keys()
         .map(String::as_str)
@@ -7671,7 +7675,7 @@ fn inactive_declared_specials_reject_without_runtime_mutation() {
 #[test]
 fn every_modpack_declared_special_has_an_exact_rust_branch() {
     let declared: BTreeMap<String, serde_json::Value> =
-        serde_json::from_str(MODPACK_SPECIAL_ROUTINES_JSON).expect("special routines json");
+        serde_json::from_str(&MODPACK_SPECIAL_ROUTINES_JSON).expect("special routines json");
     let mut missing = Vec::new();
 
     for routine in declared.keys() {

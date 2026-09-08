@@ -376,6 +376,23 @@ where
 }
 
 impl GameState {
+    // Namespaced extension keys preserve the existing positional binary save
+    // layout. Old saves contain neither key and naturally start at zero.
+    pub fn pve_battles(&self) -> u64 {
+        self.script_runtime.memory.get("GEOTHITE_PVE_BATTLES").and_then(|n| n.parse().ok()).unwrap_or(0)
+    }
+
+    pub fn pve_wins(&self) -> u64 {
+        self.script_runtime.memory.get("GEOTHITE_PVE_WINS").and_then(|n| n.parse().ok()).unwrap_or(0)
+    }
+
+    pub(crate) fn record_pve_battle(&mut self, won: bool) {
+        self.script_runtime.memory.insert("GEOTHITE_PVE_BATTLES".into(), self.pve_battles().saturating_add(1).to_string());
+        if won {
+            self.script_runtime.memory.insert("GEOTHITE_PVE_WINS".into(), self.pve_wins().saturating_add(1).to_string());
+        }
+    }
+
     /// Construct the deterministic WRAM state produced by Crystal's
     /// `ResetWRAM` path. Hardware- and SRAM-derived identity/daily values are
     /// completed by the runtime new-game lifecycle.
@@ -3694,6 +3711,13 @@ impl ScriptRuntimeMemory {
         for key in self.variables.keys() {
             validate_script_runtime_token(&format!("variables[{key}]"), key)?;
         }
+        let mut career = [0u64; 2];
+        for (index, key) in ["GEOTHITE_PVE_BATTLES", "GEOTHITE_PVE_WINS"].iter().enumerate() {
+            if let Some(value) = self.memory.get(*key) {
+                career[index] = value.parse::<u64>().map_err(|_| format!("invalid {key} counter"))?;
+            }
+        }
+        if career[1] > career[0] { return Err("PvE wins exceed completed battles".into()); }
         for key in self.memory.keys() {
             // `memcall wCallerContact + PHONE_CONTACT_SCRIPT2_BANK` is one
             // exact compiled ASM operand, not three independent WRAM keys.

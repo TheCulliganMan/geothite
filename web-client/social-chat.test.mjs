@@ -301,3 +301,64 @@ test('speech bubbles follow visible speakers, escape text, expire, and exclude p
   now=20000; speech.update({heads,events:[]}); assert.equal(document.querySelectorAll('.speech-bubble').length,0);
   speech.destroy(); assert.equal(document.querySelector('#speech-bubbles'),null); window.close();
 });
+
+test('Social shows the server directory including offline users without mixing nearby actions', () => {
+  const h = chatHarness();
+  try {
+    h.poll({ connected: true, events: [], players: [] });
+    h.document.querySelector('.chat-toggle').click();
+    h.document.querySelector('[data-tab="social"]').click();
+    assert.deepEqual(h.sent[0], {type:'social_list', query:'', offset:0});
+    h.poll({connected:true, players:[], events:[{type:'social_users',query:'',offset:0,total:3,users:[
+      {user_id:'player-1',display_name:'CHRIS',online:true},
+      {user_id:'player-2',display_name:'GOLD',online:true},
+      {user_id:'player-3',display_name:'<img src=x>',online:false},
+    ]}]});
+    const rows = h.document.querySelectorAll('.directory-list .community-player');
+    assert.equal(rows.length, 3); assert.equal(rows[0].disabled, true);
+    assert.match(rows[2].textContent, /Offline/); assert.equal(rows[2].querySelector('img'), null);
+    rows[2].click(); assert.equal(h.document.querySelector('[data-action="whisper"]').disabled, true);
+    assert.equal(h.document.querySelector('[data-action="battle"]'), null);
+    rows[1].click(); h.document.querySelector('[data-action="whisper"]').click();
+    assert.equal(h.document.querySelector('#chat-message').value, '/w player-2 ');
+    assert.equal(h.document.querySelector('[data-tab="chat"]').getAttribute('aria-selected'), 'true');
+    h.document.querySelector('[data-tab="social"]').click();
+    h.poll({connected:false,players:[],events:[]});
+    assert.match(h.document.querySelector('.directory-list').textContent, /Unknown/);
+  } finally {h.cleanup();}
+});
+
+test('Leaderboard tabs rank metrics, paginate, preserve drafts, and ignore stale responses', () => {
+  const h = chatHarness();
+  try {
+    h.poll({connected:true,players:[],events:[]});
+    h.document.querySelector('.chat-toggle').click();
+    h.document.querySelector('#chat-message').value = 'draft';
+    h.document.querySelector('[data-tab="leaderboard"]').click();
+    assert.deepEqual(h.sent.at(-1), {type:'leaderboard',metric:'pvp_wins',offset:0});
+    h.poll({connected:true,players:[],events:[{type:'leaderboard',metric:'pvp_wins',total:101,offset:0,entries:[{rank:1,user_id:'player-2',display_name:'GOLD',online:true,value:12}]}]});
+    assert.match(h.document.querySelector('.leaderboard-list').textContent, /#1GOLDOnline12/);
+    h.document.querySelector('.leaderboard-pages [data-page="next"]').click();
+    assert.equal(h.sent.at(-1).offset,100);
+    const metric = h.document.querySelector('#leaderboard-metric'); metric.value = 'trades';
+    metric.dispatchEvent(new h.window.Event('change'));
+    assert.deepEqual(h.sent.at(-1), {type:'leaderboard',metric:'trades',offset:0});
+    h.poll({connected:true,players:[],events:[{type:'leaderboard',metric:'pvp_wins',total:1,offset:0,entries:[{rank:1,user_id:'player-2',display_name:'STALE',online:true,value:12}]}]});
+    assert.doesNotMatch(h.document.querySelector('.leaderboard-list').textContent,/STALE/);
+    h.document.querySelector('[data-tab="chat"]').click();
+    assert.equal(h.document.querySelector('#chat-message').value,'draft');
+  } finally {h.cleanup();}
+});
+
+test('Social search debounces requests and ignores old query results', async () => {
+  const h = chatHarness();
+  try {
+    h.poll({connected:true,players:[],events:[]});
+    h.document.querySelector('.chat-toggle').click();h.document.querySelector('[data-tab="social"]').click();
+    const search=h.document.querySelector('#social-search');search.value='Gold';search.dispatchEvent(new h.window.Event('input'));
+    await new Promise(resolve=>h.window.setTimeout(resolve,300));
+    assert.deepEqual(h.sent.at(-1),{type:'social_list',query:'Gold',offset:0});
+    h.poll({connected:true,players:[],events:[{type:'social_users',query:'',offset:0,total:1,users:[{user_id:'x',display_name:'STALE',online:true}]}]});
+    assert.doesNotMatch(h.document.querySelector('.directory-list').textContent,/STALE/);
+  } finally {h.cleanup();}
+});

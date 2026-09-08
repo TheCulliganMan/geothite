@@ -8,6 +8,7 @@ struct SocialBridge {
     players: Vec<serde_json::Value>,
     selected_player: Option<String>,
     heads: Vec<serde_json::Value>,
+    last_stats: Option<(u64, u64, u16)>,
 }
 
 thread_local! {
@@ -28,7 +29,9 @@ pub fn crystal_social_send(json: &str) -> std::result::Result<(), String> {
         serde_json::from_str(json).map_err(|e| e.to_string())?;
     if !matches!(
         &message,
-        crystal_net::hosted::ClientMessage::Chat { .. }
+        crystal_net::hosted::ClientMessage::Leaderboard { .. }
+            | crystal_net::hosted::ClientMessage::SocialList { .. }
+            | crystal_net::hosted::ClientMessage::Chat { .. }
             | crystal_net::hosted::ClientMessage::ChatJoin { .. }
             | crystal_net::hosted::ClientMessage::ChatLeave { .. }
             | crystal_net::hosted::ClientMessage::InteractionRequest { .. }
@@ -67,7 +70,9 @@ fn social_event(message: &crystal_net::hosted::ServerMessage) {
     use crystal_net::hosted::ServerMessage;
     if !matches!(
         message,
-        ServerMessage::Welcome { .. }
+        ServerMessage::Leaderboard { .. }
+            | ServerMessage::SocialUsers { .. }
+            | ServerMessage::Welcome { .. }
             | ServerMessage::Chat { .. }
             | ServerMessage::ChatChannels { .. }
             | ServerMessage::InteractionRequest { .. }
@@ -126,6 +131,23 @@ impl MultiplayerRuntime {
     }
 
     fn poll_social(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+        let state = runtime_shell.shell.session().state();
+        let stats = (state.pve_battles(), state.pve_wins(), state.storage.party.pokemon.iter().flatten()
+            .filter(|p| !p.is_egg).map(|p| u16::from(p.level)).sum::<u16>());
+        let publish = SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+            if !bridge.connected { bridge.last_stats = None; }
+            bridge.connected && !state.player_name.is_empty() && bridge.last_stats != Some(stats)
+        });
+        if publish {
+            let message = crystal_net::hosted::ClientMessage::GameStats { pve_battles: stats.0, pve_wins: stats.1, party_level: stats.2 };
+            if let Some(connection) = self.connection.as_mut() {
+                connection.send(message)?;
+                SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.last_stats = Some(stats));
+            } else if let Some(session) = self.session.as_mut() {
+                session.send_social(message)?;
+                SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.last_stats = Some(stats));
+            }
+        }
         let messages = SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
             if self.failed {
                 bridge.connected = false;
@@ -161,6 +183,12 @@ mod social_bridge_tests {
         let chat = r#"{"type":"chat","channel":"say","target_user_id":null,"text":"Hello"}"#;
         assert!(crystal_social_send(chat).is_err());
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = true);
+        assert!(crystal_social_send(r#"{"type":"game_stats","pve_battles":10,"pve_wins":10,"party_level":600}"#).is_err());
+        assert!(crystal_social_send(r#"{"type":"trade_completed","trade_id":"fake"}"#).is_err());
+        crystal_social_send(r#"{"type":"social_list","query":"","offset":0}"#).unwrap();
+        crystal_social_send(r#"{"type":"leaderboard","metric":"pvp_wins","offset":0}"#).unwrap();
+        assert_eq!(SOCIAL_BRIDGE.with_borrow(|bridge| bridge.pending.len()), 2);
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.pending.clear());
         crystal_social_send(r#"{"type":"interaction_request","target_user_id":"player-2","kind":"battle"}"#).unwrap();
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.pending.clear());
         crystal_social_send(chat).unwrap();

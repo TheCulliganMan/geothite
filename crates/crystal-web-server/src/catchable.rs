@@ -163,7 +163,7 @@ mod tests {
     #[test]
     fn real_browser_pack_has_all_251_renewable_without_changing_gameplay_rules() {
         let source = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../../content-packs/core-modular.browser.crystalpack");
+            .join("../../content-packs/core-modular.browser.crystalpack");
         let base =
             read_verified_compiled_game_pack(std::fs::canonicalize(source).unwrap()).unwrap();
         assert!(
@@ -261,7 +261,7 @@ mod tests {
 #[cfg(test)]
 #[test]
 fn hosted_pack_composes_server_clock_and_encounters() {
-    let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../content-packs");
+    let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../content-packs");
     let directory = std::env::temp_dir().join(format!("hosted-clock-{}", uuid::Uuid::new_v4()));
     let (path, identity) = prepare(&source, &directory).unwrap();
     let pack = read_verified_compiled_game_pack(path).unwrap();

@@ -1,5 +1,7 @@
 #[path = "chat.rs"]
 mod chat;
+#[path = "community.rs"]
+mod community;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use uuid::Uuid;
@@ -61,6 +63,7 @@ struct Session {
     mode: MatchMode,
     ranked: bool,
     reports: HashMap<Uuid, MatchOutcome>,
+    trades: HashMap<String, HashSet<Uuid>>,
     settled: bool,
 }
 
@@ -76,6 +79,8 @@ struct PendingInteraction {
 pub struct Hub {
     clients: HashMap<Uuid, ClientRecord>,
     users: HashMap<String, Uuid>,
+    directory: HashMap<String, String>,
+    standings: HashMap<String, crystal_net::hosted::LeaderboardStats>,
     queues: HashMap<WorldIdentity, VecDeque<QueueEntry>>,
     sessions: HashMap<Uuid, Session>,
     interactions: HashMap<Uuid, PendingInteraction>,
@@ -93,6 +98,7 @@ impl Hub {
         if self.users.contains_key(&identity.user_id) {
             return Err("user already has an active connection".into());
         }
+        self.directory.insert(identity.user_id.clone(), identity.display_name.clone());
         self.users.insert(identity.user_id.clone(), connection_id);
         self.clients.insert(
             connection_id,
@@ -210,6 +216,10 @@ impl Hub {
             return Err("connection is not registered".into());
         }
         match message {
+            ClientMessage::SocialList { query, offset } => self.social_list(connection_id, query, offset),
+            ClientMessage::Leaderboard { metric, offset } => self.leaderboard(connection_id, metric, offset),
+            ClientMessage::GameStats { pve_battles, pve_wins, party_level } => self.update_game_stats(connection_id, pve_battles, pve_wins, party_level),
+            ClientMessage::TradeCompleted { trade_id } => self.confirm_trade(connection_id, trade_id),
             ClientMessage::SetProfile { display_name, player_gender } => {
                 if display_name.is_empty() || display_name.len() > 24
                     || !display_name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
@@ -224,6 +234,7 @@ impl Hub {
                 let client = self.clients.get_mut(&connection_id).expect("checked");
                 client.identity.display_name = display_name;
                 client.player_gender = player_gender;
+                self.directory.insert(client.identity.user_id.clone(), client.identity.display_name.clone());
                 let Some(presence) = client.presence.clone() else { return Ok(Vec::new()) };
                 let identity = client.identity.clone();
                 let output = self.presence_candidates(&identity.world, Some(&presence), &presence, connection_id)
@@ -403,6 +414,7 @@ impl Hub {
                 mode,
                 ranked: true,
                 reports: HashMap::new(),
+                trades: HashMap::new(),
                 settled: false,
             },
         );
@@ -672,6 +684,7 @@ impl Hub {
                     mode: request.kind,
                     ranked: false,
                     reports: HashMap::new(),
+                    trades: HashMap::new(),
                     settled: false,
                 },
             );
@@ -785,6 +798,14 @@ impl Hub {
             self.ratings.insert(first, next_first);
             self.ratings.insert(second, next_second);
         }
+        if session.mode == MatchMode::Battle && !session.reports.values().any(|result| *result == MatchOutcome::Cancelled) {
+            for id in session.players {
+                let user = &self.clients[&id].identity.user_id;
+                let stats = self.standings.entry(user.clone()).or_default();
+                stats.pvp_battles = stats.pvp_battles.saturating_add(1);
+                if Some(id) == winner { stats.pvp_wins = stats.pvp_wins.saturating_add(1); }
+            }
+        }
         self.sessions.remove(&session_id);
         Ok(session
             .players
@@ -817,6 +838,38 @@ impl Hub {
     pub fn session_count(&self) -> usize {
         self.sessions.len()
     }
+    pub fn directory_snapshot(&self) -> HashMap<String, String> {
+        self.directory.clone()
+    }
+
+    pub fn replace_directory(&mut self, directory: HashMap<String, String>) -> Result<(), String> {
+        for (user_id, name) in &directory {
+            validate_token("directory user id", user_id)?;
+            if name.is_empty() || name.len() > MAX_NAME_BYTES {
+                return Err("invalid directory display name".into());
+            }
+        }
+        self.directory = directory;
+        Ok(())
+    }
+
+    fn social_list(&self, connection_id: Uuid, query: String, offset: usize) -> Result<Vec<Delivery>, String> {
+        if query.len() > 128 { return Err("Search is too long".into()); }
+        let search = query.to_lowercase();
+        let mut users = self.directory.iter()
+            .filter(|(id, name)| name.to_lowercase().contains(&search) || id.to_lowercase().contains(&search))
+            .map(|(id, name)| crystal_net::hosted::SocialUser {
+                user_id: id.clone(), display_name: name.clone(), online: self.users.contains_key(id),
+            }).collect::<Vec<_>>();
+        users.sort_by(|a, b| b.online.cmp(&a.online)
+            .then_with(|| a.display_name.to_lowercase().cmp(&b.display_name.to_lowercase()))
+            .then_with(|| a.user_id.cmp(&b.user_id)));
+        let total = users.len();
+        let offset = offset.min(total.saturating_sub(1) / 100 * 100);
+        let users = users.into_iter().skip(offset).take(100).collect();
+        Ok(vec![deliver(connection_id, ServerMessage::SocialUsers { query, offset, total, users })])
+    }
+
     pub fn ratings_snapshot(&self) -> HashMap<String, i32> {
         self.ratings.clone()
     }

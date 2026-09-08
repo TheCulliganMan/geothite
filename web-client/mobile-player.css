@@ -196,3 +196,14 @@ body.chat-open #mute { visibility: hidden; }
 #player-options #camera-controls { order: 6; }
 #player-options #personalization-notice { order: 7; }
 #player-options #controls:has(#fullscreen[hidden]) #view-toggle { grid-column: 1 / -1; }
+
+/* Keep community lists scrollable inside the visible viewport, including the keyboard. */
+@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
+  #social-chat.editing .community-tabs { flex: 0 0 auto; }
+  #social-chat.editing #community-social, #social-chat.editing #community-leaderboard { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
+  #social-chat.editing .community-toolbar, #social-chat.editing footer, #social-chat.editing .leaderboard-note { flex: 0 0 auto; }
+  #social-chat.editing .directory-list, #social-chat.editing .leaderboard-list { flex: 1 1 auto; min-height: 0; height: auto; overscroll-behavior: contain; }
+  #social-chat.editing .chat-header { background: #19191b; }
+  #social-chat.editing { border-color: #78674980; background: #101114f5; }
+  #social-chat.editing.compact .leaderboard-note { display: none; }
+}

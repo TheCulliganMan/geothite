@@ -1116,6 +1116,24 @@ mod tests {
         SaveGame::new(state, modpack, pack_content_hash().to_string()).expect("test save")
     }
 
+    #[test]
+    fn career_pve_counters_roundtrip_through_current_binary_saves() {
+        let identity = SaveModpackIdentity::new("core", pack_content_hash()).unwrap();
+        for tracked in [false, true] {
+            let mut state = GameState::default();
+            if tracked {
+                state.record_pve_battle(true);
+                state.record_pve_battle(false);
+            }
+            let save = test_save(state, identity.clone());
+            let bytes = encode_save_game_bytes(&save).unwrap();
+            let restored = read_save_game_bytes(&bytes, "career test").unwrap();
+            assert_eq!(restored, save);
+            assert_eq!(restored.state.pve_battles(), if tracked { 2 } else { 0 });
+            assert_eq!(restored.state.pve_wins(), if tracked { 1 } else { 0 });
+        }
+    }
+
     fn temp_save_path(name: &str) -> std::path::PathBuf {
         let unique = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)

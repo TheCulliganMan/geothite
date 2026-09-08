@@ -93,22 +93,35 @@ export function mountSpeechBubbles({ document, window, canvas, selfUserId }) {
 export function mountSocialChat(wasm, { document, window, playerId }) {
   const panel = document.createElement('section');
   panel.id = 'social-chat';
-  panel.setAttribute('aria-label', 'Chat');
+  panel.setAttribute('aria-label', 'Community');
   panel.innerHTML = `<button class="chat-toggle" type="button" aria-label="Open chat" title="Chat (Enter)" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3V11.5A7.5 7.5 0 0 1 9.5 4h3a7.5 7.5 0 0 1 7.5 7.5Z"/></svg></button>
-    <header class="chat-header" hidden><div><strong>Chat</strong><span class="chat-status" role="status">Connecting…</span></div><button class="chat-nearby" type="button" aria-expanded="false">Nearby · 0</button><button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button></header>
-    <div class="chat-log" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions"></div>
+    <header class="chat-header" hidden><div><strong>Community</strong><span class="chat-status" role="status">Connecting…</span></div><button class="chat-nearby" type="button" aria-expanded="false">Nearby · 0</button><button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button></header>
+    <nav class="community-tabs" role="tablist" aria-label="Community" hidden><button type="button" role="tab" data-tab="chat" aria-selected="true" aria-controls="community-chat">Chat</button><button type="button" role="tab" data-tab="social" aria-selected="false" aria-controls="community-social" tabindex="-1">Social</button><button type="button" role="tab" data-tab="leaderboard" aria-selected="false" aria-controls="community-leaderboard" tabindex="-1">Leaderboard</button></nav>
+    <section id="community-social" role="tabpanel" aria-label="All users" hidden><div class="community-toolbar"><label class="sr-only" for="social-search">Search all users</label><input id="social-search" type="search" placeholder="Find a trainer…" maxlength="128"><span class="directory-count" aria-live="polite">All users</span></div><div class="directory-list"></div><footer class="directory-pages"><button type="button" data-page="previous">‹ Previous</button><span></span><button type="button" data-page="next">Next ›</button></footer></section>
+    <section id="community-leaderboard" role="tabpanel" aria-label="Leaderboard" hidden><div class="community-toolbar"><label class="sr-only" for="leaderboard-metric">Rank by</label><select id="leaderboard-metric"><option value="pvp_wins">PvP · Battles won</option><option value="pvp_battles">PvP · Battles played</option><option value="pve_wins">PvE · Battles won</option><option value="pve_battles">PvE · Battles played</option><option value="trades">Completed player trades</option><option value="party_level">Highest combined party level</option></select></div><div class="leaderboard-list"></div><footer class="leaderboard-pages"><button type="button" data-page="previous">‹ Previous</button><span></span><button type="button" data-page="next">Next ›</button></footer><p class="leaderboard-note">Completed PvP and trades confirmed by both players. PvE totals come from game saves. Tracking starts with this update.</p></section>
+    <div id="community-chat" class="chat-log" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions"></div>
     <div class="chat-requests"></div><div class="chat-actions" hidden></div><div class="chat-players" hidden></div>
     <form hidden><label class="sr-only" for="chat-channel">Channel</label><select id="chat-channel"></select><label class="sr-only" for="chat-message">Message</label><input id="chat-message" autocomplete="off" placeholder="Say something…" enterkeyhint="send" maxlength="600"><button type="submit" aria-label="Send message">Send</button></form>`;
   document.body.append(panel);
   const log = panel.querySelector('.chat-log');
-  const input = panel.querySelector('input');
-  const select = panel.querySelector('select');
+  const input = panel.querySelector('#chat-message');
+  const select = panel.querySelector('#chat-channel');
   const form = panel.querySelector('form');
   const toggle = panel.querySelector('.chat-toggle');
   const close = panel.querySelector('.chat-close');
   const header = panel.querySelector('.chat-header');
   const nearby = panel.querySelector('.chat-nearby');
   let rosterOpen = false;
+  let activeTab = 'chat';
+  const tabs = panel.querySelector('.community-tabs');
+  const socialPanel = panel.querySelector('#community-social');
+  const boardPanel = panel.querySelector('#community-leaderboard');
+  const search = panel.querySelector('#social-search');
+  const metric = panel.querySelector('#leaderboard-metric');
+  let directory = [], directoryTotal = 0, directoryOffset = 0, directoryQuery = '';
+  let rankings = [], rankingTotal = 0, rankingOffset = 0;
+  let lastCommunityRequest = 0, searchTimer = null;
+  let directoryLoaded = false, rankingsLoaded = false;
   const status = panel.querySelector('.chat-status');
   const actions = panel.querySelector('.chat-actions');
   const roster = panel.querySelector('.chat-players');
@@ -159,15 +172,20 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     panel.classList.toggle('editing', open);
     document.body.classList.toggle('chat-open', open);
     updateViewport();
-    form.hidden = !open;
+    form.hidden = !open || activeTab !== 'chat';
+    tabs.hidden = !open;
+    socialPanel.hidden = !open || activeTab !== 'social';
+    boardPanel.hidden = !open || activeTab !== 'leaderboard';
+    log.hidden = open && activeTab !== 'chat';
+    nearby.hidden = activeTab !== 'chat';
     close.hidden = !open;
     header.hidden = !open;
     for (const control of log.querySelectorAll('button')) control.tabIndex = open ? 0 : -1;
     if (!open) log.scrollTop = log.scrollHeight;
-    roster.hidden = !open || !rosterOpen;
+    roster.hidden = !open || activeTab !== 'chat' || !rosterOpen;
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close chat' : 'Open chat');
-    if (open) { input.focus(); log.scrollTop = log.scrollHeight; }
+    if (open) { (activeTab === 'social' ? search : activeTab === 'leaderboard' ? metric : input).focus(); log.scrollTop = log.scrollHeight; requestCommunity(true); }
     else { actions.hidden = true; document.querySelector('canvas')?.focus(); wasm.crystal_social_focus(false); }
   };
   const button = (label, action, handler) => {
@@ -175,6 +193,68 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     el.type = 'button'; el.textContent = label; el.dataset.action = action;
     el.onclick = handler;
     return el;
+  };
+  const requestCommunity = (force = false) => {
+    if (!open || activeTab === 'chat' || !connected) return;
+    const now = window.Date.now();
+    if (!force && now - lastCommunityRequest < 5000) return;
+    lastCommunityRequest = now;
+    attempt(() => send(activeTab === 'social'
+      ? { type: 'social_list', query: directoryQuery, offset: directoryOffset }
+      : { type: 'leaderboard', metric: metric.value, offset: rankingOffset }));
+  };
+  const setTab = (name, focus = true) => {
+    activeTab = name;
+    for (const tab of tabs.children) {
+      tab.setAttribute('aria-selected', String(tab.dataset.tab === name));
+      tab.tabIndex = tab.dataset.tab === name ? 0 : -1;
+    }
+    actions.hidden = true;
+    setOpen(true);
+    if (focus) panel.querySelector(`[data-tab="${name}"]`).focus();
+  };
+  const renderCommunity = () => {
+    const renderRows = (container, rows, loaded, board = false) => {
+      const focusedId = container.contains(document.activeElement) ? document.activeElement.dataset.userId : null;
+      const scrollTop = container.scrollTop;
+      container.replaceChildren();
+      if (!loaded || !rows.length) {
+        const empty = document.createElement('p'); empty.className = 'community-empty';
+        empty.textContent = !connected ? 'Reconnecting… Status will update when connected.' : !loaded ? 'Loading…' : board ? 'No scores yet. Be the first!' : directoryQuery ? 'No trainers match your search.' : 'No trainers yet.';
+        container.append(empty); return;
+      }
+      for (const person of rows) {
+        const row = button('', 'community-player', () => showPlayer(person.user_id, person.display_name));
+        row.className = 'community-player'; row.dataset.userId = person.user_id;
+        row.disabled = person.user_id === selfUserId;
+        if (board) { const rank = document.createElement('span'); rank.className = 'player-rank'; rank.textContent = '#' + person.rank; row.append(rank); }
+        const dot = document.createElement('i'); dot.className = 'presence-dot'; dot.dataset.online = connected ? String(person.online) : 'unknown'; dot.setAttribute('aria-hidden', 'true');
+        const name = document.createElement('span'); name.className = 'player-name'; name.textContent = person.display_name + (person.user_id === selfUserId ? ' (You)' : '');
+        const presence = document.createElement('span'); presence.className = 'player-presence'; presence.textContent = !connected ? 'Unknown' : person.online ? 'Online' : 'Offline';
+        row.append(dot, name, presence);
+        if (board) { const score = document.createElement('strong'); score.className = 'player-score'; score.textContent = person.value.toLocaleString(); row.append(score); }
+        container.append(row);
+        if (person.user_id === focusedId) row.focus({ preventScroll: true });
+      }
+      container.scrollTop = scrollTop;
+    };
+    renderRows(panel.querySelector('.directory-list'), directory, directoryLoaded);
+    renderRows(panel.querySelector('.leaderboard-list'), rankings, rankingsLoaded, true);
+    if (selectedPlayer) {
+      const selected = directory.find(p => p.user_id === selectedPlayer) ?? rankings.find(p => p.user_id === selectedPlayer);
+      const online = connected && selected?.online !== false;
+      for (const control of actions.querySelectorAll('button')) {
+        control.disabled = !online || control.dataset.action !== 'whisper' && !players.some(p => p.user_id === selectedPlayer);
+      }
+    }
+    panel.querySelector('.directory-count').textContent = `${directoryTotal} ${directoryQuery ? 'found' : 'users'}`;
+    for (const [selector, offset, total] of [['.directory-pages', directoryOffset, directoryTotal], ['.leaderboard-pages', rankingOffset, rankingTotal]]) {
+      const footer = panel.querySelector(selector);
+      footer.hidden = total <= 100;
+      footer.querySelector('span').textContent = `${offset + 1}–${Math.min(offset + 100, total)} of ${total}`;
+      footer.querySelector('[data-page="previous"]').disabled = !connected || offset === 0;
+      footer.querySelector('[data-page="next"]').disabled = !connected || offset + 100 >= total;
+    }
   };
   const append = (text, channel = 'system', user = null, name = null) => {
     const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 32;
@@ -184,7 +264,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     if (user) {
       const sender = button(name, 'player', () => showPlayer(user, name));
       sender.tabIndex = open ? 0 : -1;
-      line.append(sender, ': ');
+      line.append('[', sender, channel === 'say' ? '] says: ' : channel === 'whisper' ? '] whispers: ' : ']: ');
     }
     line.append(text);
     log.append(line);
@@ -198,16 +278,21 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const attempt = fn => { try { fn(); } catch (error) { append(String(error.message ?? error)); } };
   const showPlayer = (id, name) => {
     selectedPlayer = id;
-    setOpen(true);
+    if (!open) setOpen(true);
     actions.replaceChildren();
     const title = document.createElement('span'); title.textContent = name;
-    actions.append(title, button('Whisper', 'whisper', () => { input.value = `/w ${id} `; input.focus(); }));
-    for (const kind of ['battle', 'trade']) actions.append(button(kind === 'battle' ? 'Battle' : 'Trade', kind, () => attempt(() => {
+    const person = directory.find(p => p.user_id === id) ?? rankings.find(p => p.user_id === id);
+    const isNearby = players.some(p => p.user_id === id);
+    const online = connected && (isNearby || person?.online === true || !person);
+    const whisper = button('Whisper', 'whisper', () => { setTab('chat', false); input.value = `/w ${id} `; input.focus(); });
+    whisper.disabled = !online; actions.append(title, whisper);
+    for (const kind of isNearby && online ? ['battle', 'trade'] : []) actions.append(button(kind === 'battle' ? 'Battle' : 'Trade', kind, () => attempt(() => {
       send({ type: 'interaction_request', target_user_id: id, kind });
       append(`${kind === 'battle' ? 'Battle' : 'Trade'} request sent to ${name}.`);
       actions.replaceChildren(button('Cancel request', 'cancel', () => attempt(() => { send({ type: 'interaction_cancel' }); actions.hidden = true; })));
       input.focus();
     })));
+    if (!online) { const note = document.createElement('span'); note.textContent = 'Offline'; actions.append(note); }
     actions.hidden = false;
   };
   const submit = () => attempt(() => {
@@ -223,6 +308,20 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     }
     input.value = '';
   });
+  for (const tab of tabs.children) listen(tab, 'click', () => setTab(tab.dataset.tab));
+  listen(search, 'input', () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => { directoryQuery = search.value.trim(); directoryOffset = 0; directoryLoaded = false; renderCommunity(); requestCommunity(true); }, 250);
+  });
+  listen(metric, 'change', () => { rankingOffset = 0; rankingsLoaded = false; renderCommunity(); requestCommunity(true); });
+  for (const [selector, kind] of [['.directory-pages', 'social'], ['.leaderboard-pages', 'leaderboard']]) {
+    for (const control of panel.querySelectorAll(`${selector} button`)) listen(control, 'click', () => {
+      const delta = control.dataset.page === 'next' ? 100 : -100;
+      if (kind === 'social') directoryOffset = Math.max(0, directoryOffset + delta);
+      else rankingOffset = Math.max(0, rankingOffset + delta);
+      requestCommunity(true);
+    });
+  }
   listen(toggle, 'click', () => setOpen(!open));
   listen(close, 'click', () => setOpen(false));
   listen(nearby, 'click', () => {
@@ -243,7 +342,12 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       event.stopImmediatePropagation();
       if (event.type === 'keydown') {
         swallowed.add(event.code || event.key);
-        if (event.key === 'Escape') { event.preventDefault(); setOpen(false); }
+        if (document.activeElement?.dataset.tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+          event.preventDefault();
+          const names = ['chat', 'social', 'leaderboard'];
+          const index = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (names.indexOf(activeTab) + (event.key === 'ArrowRight' ? 1 : 2)) % 3;
+          setTab(names[index]);
+        } else if (event.key === 'Escape') { event.preventDefault(); setOpen(false); }
         else if (event.key === 'Enter' && document.activeElement === input && !event.isComposing) {
           event.preventDefault(); if (!event.repeat) submit();
         }
@@ -257,7 +361,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     const code = event.code || (event.key.length === 1 ? `Key${event.key.toUpperCase()}` : event.key);
     if (code === bindings.chat || event.key === '/') {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code || event.key);
-      setOpen(true); if (event.key === '/') input.value = '/';
+      activeTab = 'chat'; setTab('chat', false); if (event.key === '/') input.value = '/';
     } else if (code === bindings.start || code === bindings.select) {
       event.preventDefault(); event.stopImmediatePropagation(); swallowed.add(event.code);
       const canvas = document.querySelector('canvas');
@@ -297,7 +401,13 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       const state = JSON.parse(wasm.crystal_social_poll());
       speech.update(state);
       if (connected && !state.connected) { requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
+      const connectionChanged = connected !== state.connected;
       connected = state.connected;
+      if (connectionChanged) {
+        lastCommunityRequest = 0;
+        if (connected) { directoryLoaded = false; rankingsLoaded = false; }
+        renderCommunity();
+      }
       status.textContent = connected ? 'Connected' : 'Reconnecting…';
       status.dataset.connected = String(connected);
       players = state.players ?? [];
@@ -306,14 +416,18 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       if (signature !== rosterSignature) {
         rosterSignature = signature;
         roster.replaceChildren(...players.filter(p => p.user_id !== selfUserId).map(p => button(p.display_name, 'player', () => showPlayer(p.user_id, p.display_name))));
-        if (selectedPlayer && !players.some(p => p.user_id === selectedPlayer)) { actions.hidden = true; selectedPlayer = null; }
+        if (selectedPlayer && activeTab === 'chat' && !players.some(p => p.user_id === selectedPlayer)) { actions.hidden = true; selectedPlayer = null; }
       }
       if (state.selected_player) {
         const player = players.find(p => p.user_id === state.selected_player);
         if (player) showPlayer(player.user_id, player.display_name);
       }
       for (const event of state.events) {
-        if (event.type === 'chat') {
+        if (event.type === 'social_users' && event.query === directoryQuery) {
+          directory = event.users; directoryTotal = event.total; directoryOffset = event.offset; directoryLoaded = true; renderCommunity();
+        } else if (event.type === 'leaderboard' && event.metric === metric.value) {
+          rankings = event.entries; rankingTotal = event.total; rankingOffset = event.offset; rankingsLoaded = true; renderCommunity();
+        } else if (event.type === 'chat') {
           if (event.channel === 'whisper' && event.from_user_id !== selfUserId) replyTarget = event.from_user_id;
           const channel = event.channel === 'say' ? '' : `[${channelLabels[event.channel] ?? event.channel.replace(/^custom:/, '')}] `;
           append(`${channel}${event.text}`, event.channel, event.from_user_id, event.from_display_name);
@@ -344,8 +458,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
           requests.replaceChildren(); requestCards.clear(); setOpen(false);
         }
       }
-    } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; }
+      requestCommunity();
+    } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; renderCommunity(); }
   };
   const timer = window.setInterval(poll, 150);
-  return () => { speech.destroy(); controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); wasm.crystal_social_focus(false); panel.remove(); };
+  return () => { speech.destroy(); controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); window.clearTimeout(searchTimer); wasm.crystal_social_focus(false); panel.remove(); };
 }

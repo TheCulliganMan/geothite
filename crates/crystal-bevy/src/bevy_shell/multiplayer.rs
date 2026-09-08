@@ -1181,6 +1181,12 @@ impl MultiplayerRuntime {
         self.active_trade = None;
         self.trade_sequence = self.trade_sequence.saturating_add(1);
         mark_runtime_snapshot_dirty(runtime_shell);
+        // Finalize and schedule the save before networking can fail: a statistics
+        // report must never leave a completed exchange eligible for reapplication.
+        if !outcome.cancelled() {
+            self.session.as_mut().context("completed trade has no session")?
+                .send_social(crystal_net::hosted::ClientMessage::TradeCompleted { trade_id: expected_trade_id.clone() })?;
+        }
         Ok(())
     }
 

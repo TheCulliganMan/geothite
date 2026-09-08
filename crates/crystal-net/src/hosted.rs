@@ -61,6 +61,10 @@ pub enum MatchOutcome {
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ClientMessage {
     SetProfile { display_name: String, player_gender: u8 },
+    SocialList { query: String, offset: usize },
+    Leaderboard { metric: String, offset: usize },
+    GameStats { pve_battles: u64, pve_wins: u64, party_level: u16 },
+    TradeCompleted { trade_id: String },
     Hello {
         protocol_version: u16,
         identity: ClientIdentity,
@@ -111,9 +115,47 @@ pub enum ClientMessage {
     },
 }
 
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct LeaderboardStats {
+    pub pvp_battles: u64,
+    pub pvp_wins: u64,
+    pub pve_battles: u64,
+    pub pve_wins: u64,
+    pub trades: u64,
+    pub party_level: u16,
+}
+impl LeaderboardStats {
+    pub fn score(&self, metric: &str) -> Option<u64> {
+        Some(match metric {
+            "pvp_wins" => self.pvp_wins, "pvp_battles" => self.pvp_battles,
+            "pve_wins" => self.pve_wins, "pve_battles" => self.pve_battles,
+            "trades" => self.trades, "party_level" => u64::from(self.party_level),
+            _ => return None,
+        })
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LeaderboardEntry {
+    pub rank: usize,
+    pub user_id: String,
+    pub display_name: String,
+    pub online: bool,
+    pub value: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SocialUser {
+    pub user_id: String,
+    pub display_name: String,
+    pub online: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ServerMessage {
+    Leaderboard { metric: String, offset: usize, total: usize, entries: Vec<LeaderboardEntry> },
+    SocialUsers { query: String, offset: usize, total: usize, users: Vec<SocialUser> },
     Welcome {
         protocol_version: u16,
         connection_id: Uuid,
@@ -485,7 +527,11 @@ impl HostedLinkSession {
     pub fn send_social(&mut self, message: ClientMessage) -> Result<(), TransportError> {
         if !matches!(
             &message,
-            ClientMessage::Chat { .. }
+            ClientMessage::SocialList { .. }
+                | ClientMessage::Leaderboard { .. }
+                | ClientMessage::GameStats { .. }
+                | ClientMessage::TradeCompleted { .. }
+                | ClientMessage::Chat { .. }
                 | ClientMessage::ChatJoin { .. }
                 | ClientMessage::ChatLeave { .. }
         ) {

@@ -224,6 +224,10 @@ async fn main() -> Result<()> {
     let mut hub = Hub::default();
     hub.replace_ratings(load_ratings(&config.data_dir).await?)
         .map_err(anyhow::Error::msg)?;
+    hub.replace_directory(load_directory(&config.data_dir).await?)
+        .map_err(anyhow::Error::msg)?;
+    hub.replace_standings(load_standings(&config.data_dir).await?)
+        .map_err(anyhow::Error::msg)?;
     let hub = Arc::new(Mutex::new(hub));
     let (ratings_dirty, ratings_rx) = mpsc::channel(1);
     let persistence_task = tokio::spawn(rating_persistence_task(
@@ -507,6 +511,7 @@ async fn handle_socket(
             return;
         }
     };
+    let _ = state.ratings_dirty.try_send(());
     dispatch(&state, deliveries).await;
     let mut heartbeat = tokio::time::interval(HEARTBEAT_INTERVAL);
     heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
@@ -558,13 +563,14 @@ async fn handle_socket(
         match message {
             Message::Text(text) => match serde_json::from_str::<ClientMessage>(&text) {
                 Ok(message) => {
+                    let profile_changed = matches!(&message, ClientMessage::SetProfile { .. } | ClientMessage::GameStats { .. } | ClientMessage::TradeCompleted { .. });
                     let may_change_ratings = matches!(&message, ClientMessage::Result { .. });
                     let deliveries = state.hub.lock().await.handle(connection_id, message);
                     let settled = deliveries.iter().any(|delivery| {
                         matches!(delivery.message, ServerMessage::ResultSettled { .. })
                     });
                     dispatch(&state, deliveries).await;
-                    if may_change_ratings && settled {
+                    if profile_changed || may_change_ratings && settled {
                         let _ = state.ratings_dirty.try_send(());
                     }
                 }
@@ -602,6 +608,22 @@ async fn handle_socket(
     state.senders.lock().await.remove(&connection_id);
     dispatch(&state, deliveries).await;
     let _ = timeout(WRITE_TIMEOUT, writer.send(Message::Close(None))).await;
+}
+
+async fn load_standings(data_dir: &PathBuf) -> Result<HashMap<String, crystal_net::hosted::LeaderboardStats>> {
+    match tokio::fs::read(data_dir.join("leaderboards.json")).await {
+        Ok(bytes) => serde_json::from_slice(&bytes).context("decode leaderboard totals"),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(HashMap::new()),
+        Err(error) => Err(error).context("read leaderboard totals"),
+    }
+}
+
+async fn load_directory(data_dir: &PathBuf) -> Result<HashMap<String, String>> {
+    match tokio::fs::read(data_dir.join("users.json")).await {
+        Ok(bytes) => serde_json::from_slice(&bytes).context("decode social directory"),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(HashMap::new()),
+        Err(error) => Err(error).context("read social directory"),
+    }
 }
 
 async fn load_ratings(data_dir: &PathBuf) -> Result<HashMap<String, i32>> {
@@ -654,6 +676,14 @@ async fn persist_ratings(hub: &Arc<Mutex<Hub>>, data_dir: &PathBuf) -> Result<()
     tokio::fs::rename(&temporary, &path)
         .await
         .with_context(|| format!("replace {}", path.display()))?;
+    let directory = hub.lock().await.directory_snapshot();
+    let temporary = data_dir.join(format!("users.{}.tmp", Uuid::new_v4()));
+    tokio::fs::write(&temporary, serde_json::to_vec_pretty(&directory)?).await?;
+    tokio::fs::rename(&temporary, data_dir.join("users.json")).await?;
+    let standings = hub.lock().await.standings_snapshot();
+    let temporary = data_dir.join(format!("leaderboards.{}.tmp", Uuid::new_v4()));
+    tokio::fs::write(&temporary, serde_json::to_vec_pretty(&standings)?).await?;
+    tokio::fs::rename(&temporary, data_dir.join("leaderboards.json")).await?;
     Ok(())
 }
 
@@ -901,6 +931,27 @@ async fn shutdown_signal() {
 mod tests {
     use super::*;
     use crystal_net::hosted::{MatchMode, MatchOutcome};
+
+    #[tokio::test]
+    async fn community_files_survive_restart() {
+        let data_dir = std::env::temp_dir().join(format!("geothite-community-{}", Uuid::new_v4()));
+        let hub = Arc::new(Mutex::new(Hub::default()));
+        let mut standings = HashMap::new();
+        standings.insert("gold".into(), crystal_net::hosted::LeaderboardStats {
+            pvp_battles: 4, pvp_wins: 3, pve_battles: 12, pve_wins: 10,
+            trades: 2, party_level: 123,
+        });
+        hub.lock().await.replace_directory(HashMap::from([("gold".into(), "Gold".into())])).unwrap();
+        hub.lock().await.replace_standings(standings.clone()).unwrap();
+        persist_ratings(&hub, &data_dir).await.unwrap();
+        let mut restarted = Hub::default();
+        restarted.replace_directory(load_directory(&data_dir).await.unwrap()).unwrap();
+        restarted.replace_standings(load_standings(&data_dir).await.unwrap()).unwrap();
+        assert_eq!(restarted.directory_snapshot()["gold"], "Gold");
+        assert_eq!(restarted.standings_snapshot(), standings);
+        assert!(load_ratings(&data_dir).await.unwrap().is_empty());
+        tokio::fs::remove_dir_all(data_dir).await.unwrap();
+    }
 
     #[tokio::test]
     async fn healthcheck_rejects_a_server_missing_the_required_clock_endpoint() {

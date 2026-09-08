@@ -1706,6 +1706,15 @@ fn reset_active_battle_slots(state: &mut GameState, items: &BTreeMap<String, Ite
 }
 
 fn deactivate_battle_with_current_result(state: &mut GameState) {
+    let pve = match &state.battle {
+        BattleMemory::Wild { battle_type, .. } | BattleMemory::StaticWild { battle_type, .. }
+            | BattleMemory::Trainer { battle_type, .. } =>
+                !matches!(battle_type.as_str(), "BATTLETYPE_LINK" | "BATTLETYPE_TUTORIAL" | "BATTLETYPE_DEBUG"),
+        BattleMemory::Inactive => false,
+    };
+    if pve {
+        state.record_pve_battle(state.battle_result & 0x3f == 0);
+    }
     let mut pending_pay_day_payout = state.battle_pay_day_money.min(ASM_MAX_BATTLE_MONEY);
     if state.battle_amulet_coin_active {
         pending_pay_day_payout = pending_pay_day_payout
@@ -2012,6 +2021,44 @@ mod tests {
             rng.battle_random_byte();
         }
         rng.seed()
+    }
+
+    #[test]
+    fn career_pve_counters_count_terminals_once_and_exclude_link_and_tutorial_battles() {
+        let mut state = GameState::default();
+        let enemy = Pokemon::new_for_tests(species(), 5, Dv::default());
+        let battle = |kind: &str| BattleMemory::Wild {
+            battle_type: kind.into(), battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
+            map_name: "Route29".into(), roaming_slot: None,
+            enemy_pokemon: enemy.clone(), enemy_party: vec![enemy.clone()],
+        };
+        state.battle = battle("BATTLETYPE_NORMAL");
+        deactivate_battle_after_win(&mut state);
+        deactivate_battle_after_win(&mut state);
+        assert_eq!((state.pve_battles(), state.pve_wins()), (1, 1));
+        state.battle = battle("BATTLETYPE_NORMAL");
+        deactivate_battle_after_draw(&mut state);
+        state.battle = battle("BATTLETYPE_NORMAL");
+        deactivate_battle_after_loss(&mut state);
+        assert_eq!((state.pve_battles(), state.pve_wins()), (3, 1));
+        for kind in ["BATTLETYPE_LINK", "BATTLETYPE_TUTORIAL"] {
+            state.battle = battle(kind);
+            deactivate_battle_after_win(&mut state);
+        }
+        assert_eq!((state.pve_battles(), state.pve_wins()), (3, 1));
+    }
+
+    #[test]
+    fn career_pve_counters_preserve_legacy_save_shape_and_survive_roundtrip() {
+        let mut state = GameState::default();
+        let legacy = serde_json::to_value(&state).unwrap();
+        assert!(legacy.get("pve_battles").is_none());
+        assert_eq!(serde_json::from_value::<GameState>(legacy.clone()).unwrap().pve_battles(), 0);
+        state.record_pve_battle(true); state.record_pve_battle(true); state.record_pve_battle(false);
+        let restored: GameState = serde_json::from_value(serde_json::to_value(&state).unwrap()).unwrap();
+        assert_eq!((restored.pve_battles(), restored.pve_wins()), (3, 2));
+        let mut malformed = legacy; malformed["script_runtime"]["memory"]["GEOTHITE_PVE_WINS"] = "1".into();
+        assert!(serde_json::from_value::<GameState>(malformed).is_err());
     }
 
     #[test]

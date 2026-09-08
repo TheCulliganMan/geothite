@@ -68,7 +68,7 @@ Browser identities are created automatically. Save through the game's normal
 menu; saves remain in that browser. Clearing browser storage removes the local
 identity and saves.
 
-Multiplayer ratings persist in a named Docker volume across container rebuilds
+Multiplayer ratings, the user directory, and leaderboard totals persist in a named Docker volume across container rebuilds
 and restarts. Keep the signing secret in `.env` unchanged so returning players
 can reuse their identities. Active connections, chat history, and in-progress
 matches are temporary; players reconnect after a server restart. See
@@ -82,6 +82,20 @@ Players must use compatible game packs to share a world.
 
 Chat supports nearby Say, map-wide General, Trade, Looking for Group,
 private whispers, and custom channels. Type `/help` for available commands.
+
+The compact community window has **Chat**, **Social**, and **Leaderboard** tabs.
+Social lists every trainer known to this server, including offline users, with
+search and live connection status. Click an online name to whisper; battle and
+trade invitations require the trainer to be nearby.
+
+Leaderboards rank PvP wins and completed battles, PvE wins and completed battles,
+completed player trades, and highest combined level of the six non-egg party
+members. Ties share a rank. PvP results and trades require confirmation from both
+participants; cancelled sessions do not count. PvE follows the game's encounter
+results (including captures as wins), excludes tutorials and link battles, and
+persists in normal saves. Save restores cannot reduce or double-count a trainer's
+recorded totals. Tracking and the user directory begin as players use this update;
+historical battles and trades were not stored.
 
 ### Desktop play
 
