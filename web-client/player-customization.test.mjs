@@ -84,23 +84,23 @@ test('key bindings persist independently of profile edits, reject conflicts, and
   const h = harness(); const doc = h.window.document;
   doc.querySelector('#personalization').click();
   const chat = doc.querySelector('#chat-key'), start = doc.querySelector('#start-key');
-  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'KeyM');
+  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'Space');
   chat.value = 'KeyT'; start.value = 'KeyT';
   doc.querySelector('[data-save-bindings]').click();
   assert.match(doc.querySelector('#key-bindings-status').textContent, /different/);
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'Space', select: 'Backspace' });
   start.value = 'Enter'; doc.querySelector('[data-save-bindings]').click();
   assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter', select: 'Backspace' });
   assert.equal(h.submitted(), undefined, 'key bindings do not submit the trainer profile');
   h.ui.close(); doc.querySelector('#personalization').click();
   assert.equal(chat.value, 'KeyT'); assert.equal(start.value, 'Enter');
   doc.querySelector('[data-reset-bindings]').click();
-  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'KeyM');
+  assert.equal(chat.value, 'Enter'); assert.equal(start.value, 'Space');
   assert.deepEqual(loadKeyBindings(h.window), { chat: 'KeyT', start: 'Enter', select: 'Backspace' });
   doc.querySelector('[data-save-bindings]').click();
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'Space', select: 'Backspace' });
   h.window.localStorage.setItem('geothite.key-bindings.v1', '{broken');
-  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyM', select: 'Backspace' });
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'Space', select: 'Backspace' });
   h.dom.window.close();
 });
 

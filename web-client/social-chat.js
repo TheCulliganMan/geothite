@@ -1,4 +1,4 @@
-import { loadKeyBindings, keyLabel } from './player-customization.js?v=3';
+import { loadKeyBindings, keyLabel } from './player-customization.js?v=4';
 
 const aliases = { s: 'say', say: 'say', '1': 'general', general: 'general', '2': 'trade', trade: 'trade', '3': 'lfg', lfg: 'lfg' };
 export const channelLabels = { say: 'Say', general: '1. General', trade: '2. Trade', lfg: '3. Looking for Group', whisper: 'Whisper' };

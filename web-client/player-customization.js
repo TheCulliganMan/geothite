@@ -1,4 +1,4 @@
-export const DEFAULT_KEY_BINDINGS = Object.freeze({ chat: 'Enter', start: 'KeyM', select: 'Backspace' });
+export const DEFAULT_KEY_BINDINGS = Object.freeze({ chat: 'Enter', start: 'Space', select: 'Backspace' });
 const KEY_BINDINGS_STORAGE = 'geothite.key-bindings.v1';
 export const BINDABLE_KEYS = ['Enter', 'Space', 'Backspace', 'ShiftRight', ...'ABCDEFGHIJKLMNOPQRSTUVWY'.split('').map(key => `Key${key}`), ...'0123456789'.split('').map(key => `Digit${key}`)];
 export const keyLabel = code => code === 'ShiftRight' ? 'Right Shift' : code === 'Space' ? 'Space' : code.replace(/^(Key|Digit)/, '');

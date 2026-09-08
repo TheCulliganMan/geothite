@@ -105,7 +105,7 @@
   </head>
   <body>
     <main id="game-stage" aria-label="Geothite game">
-      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys, Z, X and M. Enter opens chat."></canvas>
+      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys, Z, X and Space. Enter opens chat."></canvas>
       <div id="loading" role="status"><span id="loading-message">Loading…</span></div>
     </main>
     <fieldset id="touch-controls" aria-label="Game controls" disabled>
@@ -212,7 +212,7 @@
         <p class="menu-caption">Move, explore, and meet other trainers.</p>
         <dl class="help-controls"><dt>D-pad</dt><dd>Move. Slide to change direction.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu.</dd></dl>
         <details open><summary>2.5D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
-        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>M</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
+        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
         <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
       </div>
@@ -224,8 +224,8 @@
       import { mountTouchControls } from './touch-controls.js';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSaveManagement } from './save-management.js?v=2';
-      import { mountPlayerCustomization } from './player-customization.js?v=3';
-      import { mountSocialChat } from './social-chat.js?v=20260908-bindings-select';
+      import { mountPlayerCustomization } from './player-customization.js?v=4';
+      import { mountSocialChat } from './social-chat.js?v=20260908-space';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
 
