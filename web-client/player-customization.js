@@ -1,6 +1,6 @@
 export const DEFAULT_KEY_BINDINGS = Object.freeze({ chat: 'Enter', start: 'Space', select: 'Backspace' });
 const KEY_BINDINGS_STORAGE = 'geothite.key-bindings.v1';
-export const BINDABLE_KEYS = ['Enter', 'Space', 'Backspace', 'ShiftRight', ...'ABCDEFGHIJKLMNOPQRSTUVWY'.split('').map(key => `Key${key}`), ...'0123456789'.split('').map(key => `Digit${key}`)];
+export const BINDABLE_KEYS = ['Enter', 'Space', 'Backspace', 'ShiftRight', ...'BCEFGHIJKLMNOPQRTUVY'.split('').map(key => `Key${key}`), ...'0123456789'.split('').map(key => `Digit${key}`)];
 export const keyLabel = code => code === 'ShiftRight' ? 'Right Shift' : code === 'Space' ? 'Space' : code.replace(/^(Key|Digit)/, '');
 export function validateKeyBindings(bindings) {
   if (!bindings || !['chat', 'start', 'select'].every(action => BINDABLE_KEYS.includes(bindings[action]))) return 'Choose a key for Chat, Start, and Select.';
@@ -13,6 +13,12 @@ export function loadKeyBindings(window) {
     if (saved && saved.select === undefined) {
       // Preserve existing two-action preferences when adding Select.
       saved.select = ['Backspace', 'ShiftRight', ...BINDABLE_KEYS].find(code => code !== saved.chat && code !== saved.start);
+    }
+    if (saved) for (const action of ['chat', 'start', 'select']) {
+      if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(saved[action])) {
+        saved[action] = [DEFAULT_KEY_BINDINGS[action], ...BINDABLE_KEYS].find(code =>
+          !Object.entries(saved).some(([other, value]) => other !== action && value === code));
+      }
     }
     if (!validateKeyBindings(saved)) return saved;
   } catch {}

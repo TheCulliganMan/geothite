@@ -117,3 +117,14 @@ test('Select is saved and older preferences migrate without conflicting with a s
   assert.equal(loadKeyBindings(h.window).select, 'KeyQ');
   h.dom.window.close();
 });
+
+test('WASD is reserved for movement and conflicting older bindings migrate without dropping other preferences', () => {
+  const h = harness();
+  h.window.localStorage.setItem('geothite.key-bindings.v1', JSON.stringify({ chat: 'KeyW', start: 'KeyT', select: 'KeyQ' }));
+  assert.deepEqual(loadKeyBindings(h.window), { chat: 'Enter', start: 'KeyT', select: 'KeyQ' });
+  h.window.document.querySelector('#personalization').click();
+  for (const code of ['KeyW','KeyA','KeyS','KeyD']) {
+    assert.equal(h.window.document.querySelector(`#chat-key option[value="${code}"]`), null);
+  }
+  h.dom.window.close();
+});

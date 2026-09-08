@@ -64,7 +64,7 @@ function mountedPad() {
   const canvas = new Element(); const events = [];
   for (const type of ['keydown', 'keyup']) canvas.addEventListener(type, event => events.push([type, event.code]));
   mountTouchControls({ document, window, canvas });
-  return { window, events, buttons, dpad, flush: () => { for (const fn of timers.values()) fn(); timers.clear(); },
+  return { window, document, events, buttons, dpad, flush: () => { for (const fn of timers.values()) fn(); timers.clear(); },
     fire(element, type, id = 1, x = 90, y = 10) {
       const event = new Event(type, { cancelable: true });
       Object.assign(event, { pointerId: id, button: 0, clientX: x, clientY: y, detail: 1 });
@@ -90,4 +90,36 @@ test('touch cancellation and window blur immediately release all held keys', () 
   pad.window.dispatchEvent(new Event('blur'));
   pad.flush();
   assert.deepEqual(pad.events, [['keydown', 'ArrowUp'], ['keydown', 'KeyZ'], ['keyup', 'ArrowUp'], ['keyup', 'KeyZ']]);
+});
+
+function keyboard(pad, type, code, extra = {}) {
+  const event = new Event(type, { cancelable: true });
+  Object.assign(event, { code, ...extra }); pad.window.dispatchEvent(event);
+}
+test('WASD and arrows share held directions without early releases or repeat presses', () => {
+  const pad = mountedPad();
+  for (const [letter, arrow] of [['KeyW','ArrowUp'],['KeyA','ArrowLeft'],['KeyS','ArrowDown'],['KeyD','ArrowRight']]) {
+    const before = pad.events.length;
+    keyboard(pad, 'keydown', letter); keyboard(pad, 'keydown', letter, { repeat: true });
+    keyboard(pad, 'keydown', arrow); keyboard(pad, 'keyup', letter);
+    assert.deepEqual(pad.events.slice(before), [['keydown', arrow]]);
+    keyboard(pad, 'keyup', arrow);
+    assert.deepEqual(pad.events.slice(before), [['keydown', arrow], ['keyup', arrow]]);
+  }
+});
+test('typing does not move, blur releases WASD, and browser shortcuts remain available', () => {
+  const pad = mountedPad();
+  pad.document.activeElement = { tagName: 'INPUT' };
+  keyboard(pad, 'keydown', 'KeyW'); keyboard(pad, 'keyup', 'KeyW');
+  assert.deepEqual(pad.events, []);
+  pad.document.activeElement = null;
+  keyboard(pad, 'keydown', 'KeyW', { ctrlKey: true });
+  assert.deepEqual(pad.events, []);
+  keyboard(pad, 'keydown', 'KeyW');
+  pad.document.activeElement = { tagName: 'INPUT' };
+  pad.document.dispatchEvent(new Event('focusin'));
+  assert.deepEqual(pad.events, [['keydown','ArrowUp'],['keyup','ArrowUp']]);
+  pad.document.activeElement = null;
+  keyboard(pad, 'keydown', 'KeyD'); pad.window.dispatchEvent(new Event('blur'));
+  assert.deepEqual(pad.events.slice(-2), [['keydown','ArrowRight'],['keyup','ArrowRight']]);
 });

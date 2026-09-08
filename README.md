@@ -51,7 +51,7 @@ proxying, upgrades, health checks, persistence, and cleanup.
 
 ## Playing
 
-In the browser, use the arrow keys to move, `Z` for A, `X` for B, `Space` for the
+In the browser, use the arrow keys or WASD to move, `Z` for A, `X` for B, `Space` for the
 game menu, and `Backspace` for Select. Press `Enter` to open chat and `Esc`
 to close it. Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
 **Save key bindings** keeps the choice in this browser across reloads. Chat, Start, and

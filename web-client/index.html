@@ -105,7 +105,7 @@
   </head>
   <body>
     <main id="game-stage" aria-label="Geothite game">
-      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys, Z, X and Space. Enter opens chat."></canvas>
+      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
       <div id="loading" role="status"><span id="loading-message">Loading…</span></div>
     </main>
     <fieldset id="touch-controls" aria-label="Game controls" disabled>
@@ -195,7 +195,7 @@
         <div class="actions"><button type="submit">Save changes</button></div>
         <p role="status" aria-live="polite"></p>
         <fieldset class="key-bindings"><legend>Keyboard bindings</legend>
-          <small>Saved on this browser. Movement, Z (A), and X (B) keep their keys.</small>
+          <small>Saved on this browser. Arrow keys and WASD move. Z (A) and X (B) keep their keys.</small>
           <label for="chat-key">Open chat</label><select id="chat-key" name="chat-key"></select>
           <label for="start-key">Game Start</label><select id="start-key" name="start-key"></select>
           <label for="select-key">Game Select</label><select id="select-key" name="select-key"></select>
@@ -212,7 +212,7 @@
         <p class="menu-caption">Move, explore, and meet other trainers.</p>
         <dl class="help-controls"><dt>D-pad</dt><dd>Move. Slide to change direction.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu.</dd></dl>
         <details open><summary>2.5D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
-        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
+        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / WASD / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
         <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
       </div>
@@ -221,11 +221,11 @@
       import { createGameBridge, registerGameTools } from './webmcp.js';
       import { mountGamepadControls } from './gamepad-controls.js';
       import { mountAudioUnlock } from './audio-unlock.js?v=20260907-mobile';
-      import { mountTouchControls } from './touch-controls.js';
+      import { mountTouchControls } from './touch-controls.js?v=wasd';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSaveManagement } from './save-management.js?v=2';
-      import { mountPlayerCustomization } from './player-customization.js?v=4';
-      import { mountSocialChat } from './social-chat.js?v=20260908-space';
+      import { mountPlayerCustomization } from './player-customization.js?v=5';
+      import { mountSocialChat } from './social-chat.js?v=20260908-wasd';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
 

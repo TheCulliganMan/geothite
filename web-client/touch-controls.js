@@ -36,6 +36,8 @@ export function createButtonState(emit) {
 export function mountTouchControls({ document, window, canvas, onInput = () => {} }) {
   const pad = document.querySelector('#touch-controls');
   const dpad = document.querySelector('#dpad');
+  const movement = { KeyW: 'up', KeyA: 'left', KeyS: 'down', KeyD: 'right', ArrowUp: 'up', ArrowLeft: 'left', ArrowDown: 'down', ArrowRight: 'right' };
+  const heldKeyboard = new Set();
   const heldPointers = new Set();
   const pressedAt = new Map();
   const pendingReleases = new Map();
@@ -55,10 +57,29 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
     heldPointers.clear(); pressedAt.clear();
     for (const timer of pendingReleases.values()) window.clearTimeout(timer);
     pendingReleases.clear();
-    state.clear(id => typeof id !== 'string');
+    state.clear(id => typeof id !== 'string' || id.startsWith('keyboard:'));
+    heldKeyboard.clear();
   };
   const blocked = () => Boolean(document.querySelector('dialog[open]')) ||
     /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
+  const keyboardBlocked = () => blocked() || document.activeElement?.isContentEditable ||
+    /^(BUTTON|A)$/.test(document.activeElement?.tagName) || document.activeElement?.closest?.('#social-chat');
+  const keyboard = event => {
+    if (event.crystalGameControl || !movement[event.code]) return;
+    const id = `keyboard:${event.code}`;
+    if (event.type === 'keyup' && heldKeyboard.delete(event.code)) {
+      event.preventDefault(); event.stopImmediatePropagation(); state.set(id, null); return;
+    }
+    if (pad.disabled || keyboardBlocked() || event.ctrlKey || event.metaKey || event.altKey) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    if (event.type === 'keydown' && !event.repeat && !heldKeyboard.has(event.code)) {
+      if (event.isTrusted) document.body?.classList.add('controller-active');
+      onInput(); heldKeyboard.add(event.code); state.set(id, movement[event.code]);
+    }
+  };
+  window.addEventListener('keydown', keyboard, { capture: true });
+  window.addEventListener('keyup', keyboard, { capture: true });
+  document.addEventListener('focusin', () => { if (keyboardBlocked()) releaseAll(); });
   const bind = (element, resolve) => {
     element.addEventListener('pointerdown', event => {
       if (event.button !== 0 || pad.disabled || blocked()) return;

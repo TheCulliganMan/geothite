@@ -1,4 +1,4 @@
-import { loadKeyBindings, keyLabel } from './player-customization.js?v=4';
+import { loadKeyBindings, keyLabel } from './player-customization.js?v=5';
 
 const aliases = { s: 'say', say: 'say', '1': 'general', general: 'general', '2': 'trade', trade: 'trade', '3': 'lfg', lfg: 'lfg' };
 export const channelLabels = { say: 'Say', general: '1. General', trade: '2. Trade', lfg: '3. Looking for Group', whisper: 'Whisper' };
@@ -242,7 +242,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     for (const element of document.querySelectorAll('[data-chat-key]')) element.textContent = keyLabel(bindings.chat);
     for (const element of document.querySelectorAll('[data-start-key]')) element.textContent = keyLabel(bindings.start);
     for (const element of document.querySelectorAll('[data-select-key]')) element.textContent = keyLabel(bindings.select);
-    document.querySelector('canvas')?.setAttribute('aria-label', `Game screen. Arrow keys move; Z confirms; X goes back; ${keyLabel(bindings.start)} opens the game menu; ${keyLabel(bindings.chat)} opens chat; ${keyLabel(bindings.select)} is Select.`);
+    document.querySelector('canvas')?.setAttribute('aria-label', `Game screen. Arrow keys or WASD move; Z confirms; X goes back; ${keyLabel(bindings.start)} opens the game menu; ${keyLabel(bindings.chat)} opens chat; ${keyLabel(bindings.select)} is Select.`);
   };
   listen(window, 'geothite-key-bindings-changed', updateBindingLabels);
   listen(window, 'storage', updateBindingLabels);
