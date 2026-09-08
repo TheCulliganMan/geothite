@@ -15,7 +15,7 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.stack));
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()); });
-  await page.goto('http://localhost:8091/?multiplayer=off');
+  await page.goto(new URL('/?multiplayer=off', process.env.GEOTHITE_URL ?? 'http://localhost:8091').href);
   await page.waitForFunction(() => document.querySelector('#startup-error').open ||
     (document.querySelector('#loading').hidden && !document.querySelector('#touch-controls').disabled), null, { timeout: 180000 });
   assert.equal(await page.locator('#startup-error').evaluate(dialog => dialog.open ? dialog.textContent : null), null);

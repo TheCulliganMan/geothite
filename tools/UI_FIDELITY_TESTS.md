@@ -34,3 +34,5 @@ cargo test -p crystal-bevy --lib -- battle_sliding_intro_ final_wild_attack_reta
 
 Inspect the generated images in addition to the assertions. Semantic text checks
 alone cannot detect compositor scaling, occluded terrain, or stale sprites.
+
+Set `GEOTHITE_URL` to test a deployed instance with the same fixture pack.
