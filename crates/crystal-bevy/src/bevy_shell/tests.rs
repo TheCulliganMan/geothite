@@ -103,3 +103,19 @@ fn egg_hatch_wobble_uses_exact_asm_pairs_and_crack_boundaries() {
 }
 
 include!("tests/webmcp.rs");
+
+// Optional visual-reference files are read only by the tests that use them.
+// Their absence must not prevent unrelated gameplay regressions from compiling.
+fn external_oracle_fixture_bytes(name: &str) -> Vec<u8> {
+    let root = std::env::var_os("GEOTHITE_ORACLE_FIXTURES")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| {
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../tools/asm-oracle/fixtures")
+        });
+    let path = root.join(name);
+    std::fs::read(&path).unwrap_or_else(|error| panic!("Visual reference {} unavailable ({error}); set GEOTHITE_ORACLE_FIXTURES to the reference directory", path.display()))
+}
+fn external_oracle_fixture_text(name: &str) -> String {
+    String::from_utf8(external_oracle_fixture_bytes(name)).expect("UTF-8 visual reference")
+}

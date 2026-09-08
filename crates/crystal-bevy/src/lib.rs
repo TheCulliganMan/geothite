@@ -23064,14 +23064,27 @@ fn validate_saved_script_runtime_references(data: &GameDataSet, state: &GameStat
                 ModpackAudioKind::Music,
             )?;
         }
-        let (command, args) = saved_music_fade_command_payload(fade);
-        data.validate_saved_script_command_payload_reference(
-            "script_runtime.pending_music_fade.source_script",
-            &fade.source_script,
-            fade.command_index,
-            command,
-            &args,
-        )?;
+        if fade.source_script == "FadeOutMusic" {
+            // This fade is authored by a built-in special, not a map-script
+            // musicfadeout opcode. Validate its exact emitted shape and catalog.
+            anyhow::ensure!(
+                fade.command_index == 0 && fade.audio_id == "MUSIC_NONE" && fade.fade_frames == 2,
+                "saved FadeOutMusic request does not match the built-in fade"
+            );
+            data.validate_saved_special_routine_reference(
+                "script_runtime.pending_music_fade.source_script",
+                &fade.source_script,
+            )?;
+        } else {
+            let (command, args) = saved_music_fade_command_payload(fade);
+            data.validate_saved_script_command_payload_reference(
+                "script_runtime.pending_music_fade.source_script",
+                &fade.source_script,
+                fade.command_index,
+                command,
+                &args,
+            )?;
+        }
     }
     for (index, event) in runtime.audio_events.iter().enumerate() {
         if let Some(audio_id) = &event.audio_id {

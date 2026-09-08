@@ -8201,8 +8201,7 @@ fn standalone_town_map_ship_animation_matches_rom_poses_and_cadence() {
     let mut shell = initialized_town_map_location_shell("FastShip1F");
     activate_visible_special_routine_boundary(&mut shell,
         &SpecialRoutineEffect::OverworldTownMap { map_name: Some("FastShip1F".into()) }).unwrap();
-    let records: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/standalone-town-map-ship-animation.json")).unwrap();
+    let records: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("standalone-town-map-ship-animation.json")).unwrap();
     for (index, row) in records.as_array().unwrap().iter().filter(|row| row["pose"] != 255).enumerate() {
         if index > 0 { advance_visible_pokegear_map_animation(&mut shell, 1); }
         assert_eq!(u64::from(shell.pokegear_map_animation_frame / 9), row["pose"].as_u64().unwrap());
@@ -8327,8 +8326,7 @@ fn pokegear_radio_furniture_entry_renders_source_textbox_without_covering_map() 
     queue.apply(&mut world);
     assert_eq!(art.font_error, None);
     let canvas = render_pc_audit_canvas(&mut world, &images, "furniture-radio");
-    let reference = image::load_from_memory(include_bytes!(
-        "../../../../../../tools/asm-oracle/fixtures/furniture-radio-oak-entry.png")).unwrap().to_rgba8();
+    let reference = image::load_from_memory(&external_oracle_fixture_bytes("furniture-radio-oak-entry.png")).unwrap().to_rgba8();
     let scale = canvas.width() / 160;
     for y in 0..144 {
         for x in 0..160 {
@@ -8902,9 +8900,7 @@ fn pc_item_list_matches_source_initial_geometry() {
     queue.apply(&mut world);
     assert_eq!(art.font_error, None);
     let canvas = render_pc_audit_canvas(&mut world, &images, "pc-items-initial");
-    let reference = image::load_from_memory(include_bytes!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-items-initial.png"
-    ))
+    let reference = image::load_from_memory(&external_oracle_fixture_bytes("pc-items-initial.png"))
     .unwrap()
     .to_rgba8();
     let scale = canvas.width() / 160;
@@ -9001,9 +8997,7 @@ fn pc_item_list_scroll_matches_source_down_trace() {
         surface_id: "pc:items".into(),
         option_index: 0,
     });
-    let source: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-items-scroll.json"
-    ))
+    let source: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("pc-items-scroll.json"))
     .unwrap();
     for (index, record) in source["records"].as_array().unwrap().iter().enumerate() {
         if index != 0 {
@@ -9506,19 +9500,17 @@ fn pc_item_select_is_available_over_source_pc_window() {
 
 #[test]
 fn pc_item_move_render_matches_source_select_place_and_cancel_frames() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-items-move.json"
-    ))
+    let fixture: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("pc-items-move.json"))
     .unwrap();
     let references: [&[u8]; 8] = [
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-0.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-1.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-2.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-3.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-4.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-5.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-6.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-items-move-7.png"),
+        &external_oracle_fixture_bytes("pc-items-move-0.png"),
+        &external_oracle_fixture_bytes("pc-items-move-1.png"),
+        &external_oracle_fixture_bytes("pc-items-move-2.png"),
+        &external_oracle_fixture_bytes("pc-items-move-3.png"),
+        &external_oracle_fixture_bytes("pc-items-move-4.png"),
+        &external_oracle_fixture_bytes("pc-items-move-5.png"),
+        &external_oracle_fixture_bytes("pc-items-move-6.png"),
+        &external_oracle_fixture_bytes("pc-items-move-7.png"),
     ];
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     shell.shell.session_mut().state_mut().bag.pc_items.clear();
@@ -9620,15 +9612,13 @@ fn pc_item_move_render_matches_source_select_place_and_cancel_frames() {
 
 #[test]
 fn pc_withdraw_quantity_matches_real_source_menu_frames() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity.json"
-    ))
+    let fixture: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("pc-withdraw-quantity.json"))
     .unwrap();
     let references: [&[u8]; 4] = [
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-0.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-1.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-2.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-withdraw-quantity-3.png"),
+        &external_oracle_fixture_bytes("pc-withdraw-quantity-0.png"),
+        &external_oracle_fixture_bytes("pc-withdraw-quantity-1.png"),
+        &external_oracle_fixture_bytes("pc-withdraw-quantity-2.png"),
+        &external_oracle_fixture_bytes("pc-withdraw-quantity-3.png"),
     ];
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     shell.shell.session_mut().state_mut().bag.pc_items.clear();
@@ -9711,15 +9701,13 @@ fn pc_withdraw_quantity_matches_real_source_menu_frames() {
 
 #[test]
 fn pc_deposit_quantity_matches_real_source_menu_frames() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity.json"
-    ))
+    let fixture: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("pc-deposit-quantity.json"))
     .unwrap();
     let references: [&[u8]; 4] = [
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-0.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-1.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-2.png"),
-        include_bytes!("../../../../../../tools/asm-oracle/fixtures/pc-deposit-quantity-3.png"),
+        &external_oracle_fixture_bytes("pc-deposit-quantity-0.png"),
+        &external_oracle_fixture_bytes("pc-deposit-quantity-1.png"),
+        &external_oracle_fixture_bytes("pc-deposit-quantity-2.png"),
+        &external_oracle_fixture_bytes("pc-deposit-quantity-3.png"),
     ];
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let potion = shell.shell.runtime().data().items["POTION"].clone();
@@ -9788,47 +9776,21 @@ fn pc_deposit_quantity_matches_real_source_menu_frames() {
 
 #[test]
 fn pc_deposit_pack_scroll_matches_source_in_both_directions() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/pc-deposit-scroll.json"
-    ))
+    let fixture: serde_json::Value = serde_json::from_str(&external_oracle_fixture_text("pc-deposit-scroll/pc-deposit-scroll.json"))
     .unwrap();
     let references: [&[u8]; 12] = [
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-0.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-1.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-2.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-3.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-4.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-5.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-6.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-7.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-8.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-9.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-10.png"
-        ),
-        include_bytes!(
-            "../../../../../../tools/asm-oracle/fixtures/pc-deposit-scroll/rom-pc-deposit-scroll-11.png"
-        ),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-0.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-1.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-2.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-3.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-4.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-5.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-6.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-7.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-8.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-9.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-10.png"),
+        &external_oracle_fixture_bytes("pc-deposit-scroll/rom-pc-deposit-scroll-11.png"),
     ];
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     shell.shell.session_mut().state_mut().bag.items.clear();
@@ -10305,7 +10267,7 @@ fn pokegear_exit_retains_final_tuning_frame_and_waits_for_sound() {
     spawn_field_pokegear_screen(&mut commands, &snapshot, &shell, &mut art, &shell.asset_root, &mut images).unwrap();
     queue.apply(&mut world);
     let canvas = render_pc_audit_canvas(&mut world, &images, "pokegear-exit-clear");
-    let source = image::load_from_memory(include_bytes!("../../../../../../tools/asm-oracle/fixtures/pokegear-exit/buena-down/exit-frame-20.png")).unwrap().to_rgba8();
+    let source = image::load_from_memory(&external_oracle_fixture_bytes("pokegear-exit/buena-down/exit-frame-20.png")).unwrap().to_rgba8();
     let scale = canvas.width() / source.width();
     for y in 0..canvas.height() { for x in 0..canvas.width() {
         assert_eq!(canvas.get_pixel(x, y).0.map(|v| v >> 3), source.get_pixel(x / scale, y / scale).0.map(|v| v >> 3),

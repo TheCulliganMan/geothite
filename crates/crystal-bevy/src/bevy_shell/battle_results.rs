@@ -2746,11 +2746,12 @@ fn activate_visible_special_routine_boundary(
                 .is_some()
             {
                 take_visible_pending_music_fade(runtime_shell)?;
-                Ok(true)
             } else {
                 drain_visible_audio_events(runtime_shell)?;
-                Ok(false)
             }
+            // FadeOutMusic arms the audio fade and returns. The script's own
+            // pause controls when its next scene action runs.
+            Ok(false)
         }
         SpecialRoutineEffect::WaitSfx => {
             drain_visible_audio_events(runtime_shell)?;

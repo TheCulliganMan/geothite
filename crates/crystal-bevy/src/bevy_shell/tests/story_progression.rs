@@ -5301,3 +5301,209 @@ fn cherrygrove_guide_tour_completes_and_grants_the_map_card() {
     );
     assert_eq!(snapshot.overworld.tile, TilePosition::new(24, 11));
 }
+
+#[test]
+fn event_battle_rival_approach_reaches_battle_for_every_starter_and_trigger() {
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&root);
+    for starter in ["TOTODILE", "CHIKORITA", "CYNDAQUIL"] {
+        for y in [6, 7] {
+            let (mut state, _) = runtime
+                .data()
+                .start_overworld_session_at_runtime_tile(
+                    "CherrygroveCity",
+                    TilePosition::new(32, y),
+                    &runtime.music_ids(),
+                )
+                .unwrap();
+            state.player_name = "TEST".into();
+            state
+                .flags
+                .set_event_flag(&format!("EVENT_GOT_{starter}_FROM_ELM"), true)
+                .unwrap();
+            state
+                .scenes
+                .set_current_scene(
+                    "SCENE_CHERRYGROVECITY_MEET_RIVAL",
+                    runtime.data().map_scene_table("CherrygroveCity").unwrap(),
+                )
+                .unwrap();
+            state.storage.party.pokemon[0] = Some(crate::core::models::Pokemon::new_for_tests(
+                runtime.data().pokemon[starter].clone(),
+                5,
+                Dv::default(),
+            ));
+            state.sync_party_from_storage();
+            let save = std::env::temp_dir().join(format!(
+                "geothite-rival-{}-{starter}-{y}.crystalsave",
+                std::process::id()
+            ));
+            runtime.save_game(&save, state).unwrap();
+            let shell = initialize_bevy_runtime_shell(
+                root.clone(),
+                runtime.clone(),
+                BevyShellStart::LoadSave {
+                    save_path: save.clone(),
+                },
+                BevyShellConfig::default(),
+            )
+            .unwrap();
+            std::fs::remove_file(save).unwrap();
+            let mut app = integrated_shell_test_app(shell);
+            let mut reached_battle = false;
+            for frame in 0..900 {
+                let shell = app.world().resource::<BevyRuntimeShell>();
+                let x = shell.shell.session().snapshot().tile.x;
+                let battle = shell.shell.has_active_battle();
+                if battle {
+                    reached_battle = true;
+                    break;
+                }
+                let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
+                keys.reset_all();
+                if x < 33 {
+                    keys.press(KeyCode::ArrowRight);
+                } else if frame % 8 == 0 {
+                    keys.press(KeyCode::KeyZ);
+                }
+                app.update();
+                let shell = app.world().resource::<BevyRuntimeShell>();
+                assert_eq!(shell.last_error, None, "{starter} row {y}, frame {frame}");
+            }
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert!(
+                reached_battle,
+                "{starter} row {y} stranded: cursor={:?}, action={:?}, emote={:?}, music_fade={:?}, movement={}, text={:?}",
+                shell.active_script_cursor,
+                shell.last_action_status,
+                shell.visible_overworld_emote,
+                shell.music_fade,
+                shell.visible_script_movement.is_some(),
+                shell
+                    .shell
+                    .snapshot()
+                    .unwrap()
+                    .script_events
+                    .pending_text_label
+            );
+        }
+    }
+}
+
+#[test]
+fn event_battle_fade_special_retains_valid_state_without_stopping_the_script() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let moves = shell.shell.runtime().data().moves.clone();
+    let outcome = crate::core::systems::special_routines::apply_special_routine(
+        shell.shell.session_mut().state_mut(),
+        &moves,
+        "FadeOutMusic",
+    )
+    .unwrap();
+    shell
+        .shell
+        .snapshot()
+        .expect("built-in fade must remain valid between script steps");
+    let state = shell.shell.session().state().clone();
+    for change in 0..3 {
+        let mut malformed = state.clone();
+        let fade = malformed
+            .script_runtime
+            .pending_music_fade
+            .as_mut()
+            .unwrap();
+        match change {
+            0 => fade.command_index = 1,
+            1 => fade.fade_frames = 3,
+            _ => fade.audio_id = "MUSIC_NEW_BARK_TOWN".into(),
+        }
+        assert!(
+            shell
+                .shell
+                .runtime()
+                .validate_save_state_for_runtime_pack(&malformed)
+                .is_err(),
+            "reject malformed built-in fades"
+        );
+    }
+    assert!(
+        !activate_visible_special_routine_boundary(&mut shell, &outcome.effect).unwrap(),
+        "audio fades must not claim a blocking scene boundary"
+    );
+    assert!(shell.music_fade.is_some());
+    assert!(
+        shell
+            .shell
+            .snapshot()
+            .unwrap()
+            .script_events
+            .pending_music_fade
+            .is_none()
+    );
+}
+
+#[test]
+fn event_battle_all_compiled_trainer_and_static_encounters_start() {
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&root);
+    let data = runtime.data();
+    let (mut baseline, _) = data
+        .start_overworld_session_at_runtime_tile(
+            "CherrygroveCity",
+            TilePosition::new(32, 7),
+            &runtime.music_ids(),
+        )
+        .unwrap();
+    baseline.storage.party.pokemon[0] = Some(crate::core::models::Pokemon::new_for_tests(
+        data.pokemon["TOTODILE"].clone(),
+        50,
+        Dv::default(),
+    ));
+    baseline.sync_party_from_storage();
+    let mut trainers = 0;
+    let mut wild = 0;
+    for key in runtime.scripted_trainer_battle_keys() {
+        let mut state = baseline.clone();
+        data.start_scripted_trainer_battle(
+            &mut state,
+            &key.map_name,
+            &key.map_name,
+            &key.source_script,
+            key.startbattle_command_index,
+        )
+        .unwrap_or_else(|error| {
+            panic!(
+                "{}/{}/{}: {error:#}",
+                key.map_name, key.source_script, key.startbattle_command_index
+            )
+        });
+        trainers += 1;
+    }
+    for (map, module) in &data.maps {
+        for key in &module.scripted_wild_battles {
+            let mut state = baseline.clone();
+            let mut divider =
+                crate::core::random::ReplayDivider::new(std::iter::repeat_n(127, 10000));
+            data.start_scripted_wild_battle(
+                &mut state,
+                map,
+                map,
+                &key.source_script,
+                key.startbattle_command_index,
+                &mut divider,
+            )
+            .unwrap_or_else(|error| {
+                panic!(
+                    "{map}/{}/{}: {error:#}",
+                    key.source_script, key.startbattle_command_index
+                )
+            });
+            wild += 1;
+        }
+    }
+    assert!(
+        trainers > 0 && wild > 0,
+        "encounter catalog must not be empty"
+    );
+    println!("Verified {trainers} trainer and {wild} static wild battle starts");
+}
