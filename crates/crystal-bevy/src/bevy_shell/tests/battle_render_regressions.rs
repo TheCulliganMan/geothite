@@ -5125,3 +5125,139 @@ fn catch_tutorial_recovers_an_existing_menu_and_ignores_player_commands() {
     }
     panic!("restored tutorial must finish without accepting Fight/Run/cancel inputs");
 }
+
+#[test]
+fn battle_pack_renders_source_pockets_for_both_players_and_scrolls_without_truncation() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    for item in [
+        "POTION",
+        "SUPER_POTION",
+        "HYPER_POTION",
+        "MAX_POTION",
+        "ANTIDOTE",
+        "AWAKENING",
+        "FULL_HEAL",
+        "ESCAPE_ROPE",
+        "POKE_BALL",
+        "GREAT_BALL",
+        "BICYCLE",
+    ] {
+        shell.shell.add_bag_item(item, 1).unwrap();
+    }
+    let snapshot = shell.shell.snapshot().unwrap();
+    let machines = snapshot
+        .items
+        .iter()
+        .filter(|item| item.tmhm_index == Some(1) || item.tmhm_index == Some(51))
+        .map(|item| item.item_id.clone())
+        .collect::<Vec<_>>();
+    assert_eq!(machines.len(), 2);
+    for item in machines {
+        shell.shell.add_bag_item(&item, 1).unwrap();
+    }
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        shell.shell.save(PathBuf::from(directory).join("battle-pack.crystalsave")).unwrap();
+    }
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_messages.clear();
+    shell.battle_entry_messages_remaining = 0;
+    open_visible_battle_pack(&mut shell).unwrap();
+    let mut male_items = None;
+    for gender in [PLAYER_GENDER_MALE, PLAYER_GENDER_FEMALE] {
+        for pocket_index in 0..4 {
+            assert_eq!(
+                active_visible_field_pack_pocket(&shell),
+                FIELD_PACK_POCKETS[pocket_index]
+            );
+            let mut snapshot = shell.shell.snapshot().unwrap();
+            snapshot.trainer.player_gender = gender;
+            if gender == PLAYER_GENDER_FEMALE {
+                snapshot.trainer.options.frame = FrameType::Frame8;
+            }
+            let mut world = World::new();
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            let mut images = Assets::<Image>::default();
+            spawn_battle_pack_screen(
+                &mut Commands::new(&mut queue, &world),
+                &snapshot,
+                &shell,
+                &mut RenderedTilesetArt::default(),
+                &shell.asset_root,
+                &mut images,
+            )
+            .unwrap();
+            queue.apply(&mut world);
+            let name = format!("battle-pack-{gender}-{pocket_index}.png");
+            let canvas = render_pc_audit_canvas(&mut world, &images, &name);
+            assert!(canvas.pixels().all(|pixel| pixel[3] == 255));
+            let colors = canvas
+                .pixels()
+                .map(|pixel| pixel.0)
+                .collect::<std::collections::HashSet<_>>();
+            assert!(
+                colors.len() >= 7,
+                "source Pack palettes must survive rendering"
+            );
+            if pocket_index == 0 {
+                if gender == PLAYER_GENDER_MALE {
+                    male_items = Some(canvas.clone());
+                } else {
+                    assert_ne!(
+                        male_items.as_ref().unwrap(),
+                        &canvas,
+                        "use the female bag art and palette"
+                    );
+                }
+            }
+            if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                canvas.save(PathBuf::from(directory).join(name)).unwrap();
+            }
+            if pocket_index == 0 {
+                shell.field_pack_action_cursor = Some(MenuCursor {
+                    surface_id: "pack:actions".into(),
+                    option_index: 0,
+                });
+                let mut world = World::new();
+                let mut queue = bevy::ecs::world::CommandQueue::default();
+                spawn_battle_pack_screen(
+                    &mut Commands::new(&mut queue, &world),
+                    &snapshot,
+                    &shell,
+                    &mut RenderedTilesetArt::default(),
+                    &shell.asset_root,
+                    &mut images,
+                )
+                .unwrap();
+                queue.apply(&mut world);
+                let canvas = render_pc_audit_canvas(&mut world, &images, "battle-pack-actions");
+                let scale = PLAYFIELD_WIDTH as u32 / 160;
+                assert!(
+                    (14 * 8 * scale..19 * 8 * scale).all(|x| (9 * 8 * scale..10 * 8 * scale)
+                        .all(|y| canvas.get_pixel(x, y).0 == [255, 255, 255, 255])),
+                    "USE and QUIT must have the source blank row between them"
+                );
+                if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                    canvas
+                        .save(
+                            PathBuf::from(directory)
+                                .join(format!("battle-pack-actions-{gender}.png")),
+                        )
+                        .unwrap();
+                }
+                shell.field_pack_action_cursor = None;
+            }
+            shift_visible_battle_pack_pocket(&mut shell, 1).unwrap();
+        }
+    }
+    for _ in 0..6 {
+        move_visible_battle_bag_cursor(&mut shell, 1).unwrap();
+    }
+    let selected = shell.bag_cursor.as_ref().unwrap().option_index;
+    let scroll = shell.field_pack_scroll_positions[0];
+    assert!(scroll > 0 && selected >= scroll && selected < scroll + 5);
+    shift_visible_battle_pack_pocket(&mut shell, 1).unwrap();
+    shift_visible_battle_pack_pocket(&mut shell, -1).unwrap();
+    assert_eq!(shell.bag_cursor.as_ref().unwrap().option_index, selected);
+    assert_eq!(shell.field_pack_scroll_positions[0], scroll);
+}

@@ -6812,11 +6812,11 @@ fn spawn_battle_pack_screen(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
-    rendered_art: &mut RenderedTilesetArt,
-    asset_root: &AssetRoot,
+    _rendered_art: &mut RenderedTilesetArt,
+    _asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    // TutorialPack uses the DUDE's temporary pockets, never the player's bag.
+    // TutorialPack reads the DUDE's temporary pockets, never the player's bag.
     let tutorial_snapshot = runtime_shell.visible_catch_tutorial.as_ref().map(|_| {
         let mut tutorial = snapshot.clone();
         tutorial.bag.items = vec![crate::RuntimeBagItemSnapshot {
@@ -6832,221 +6832,100 @@ fn spawn_battle_pack_screen(
         tutorial
     });
     let snapshot = tutorial_snapshot.as_ref().unwrap_or(snapshot);
-    let (item_ids, cursor, surface_id, pocket_label, show_quantity) =
-        if runtime_shell.ball_cursor.is_some() {
-            (
-                carried_ball_item_ids(snapshot),
-                &runtime_shell.ball_cursor,
-                "bag:balls",
-                "BALL",
-                true,
-            )
-        } else if runtime_shell.key_item_cursor.is_some() {
-            (
-                snapshot
-                    .bag
-                    .key_items
-                    .iter()
-                    .filter(|item| item.quantity > 0)
-                    .map(|item| item.item_id.clone())
-                    .collect(),
-                &runtime_shell.key_item_cursor,
-                "bag:key-items",
-                "KEY",
-                false,
-            )
-        } else if runtime_shell.tmhm_cursor.is_some() {
-            (
-                snapshot
-                    .bag
-                    .tm_hm
-                    .iter()
-                    .filter(|item| item.quantity > 0)
-                    .map(|item| item.item_id.clone())
-                    .collect(),
-                &runtime_shell.tmhm_cursor,
-                "bag:tmhm",
-                "TM/HM",
-                true,
-            )
-        } else {
-            (
-                carried_battle_non_ball_item_ids(snapshot),
-                &runtime_shell.bag_cursor,
-                "battle:bag-items",
-                "ITEMS",
-                true,
-            )
-        };
-    let row_count = field_pack_selectable_count(item_ids.len());
-    let selected = strict_readonly_cursor_index(cursor, surface_id, row_count)
-        .with_context(|| format!("battle pack surface {surface_id} has no valid cursor"))?;
-    commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
-                // gfx/pack/pack.pal color zero: RGB 31,31,31.
-                color: Color::WHITE,
-                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
-                ..default()
-            },
-            // Cover the battle HUD as well as the battler sprites.
-            transform: Transform::from_xyz(0.0, 0.0, 3.79),
-            ..default()
-        },
-        BattleCommandMarker,
-    ));
-    for (row, text) in [
-        (1.0, "< PACK >"),
-        (4.0, "[BAG]"),
-        (7.0, "<     >"),
-        (8.0, pocket_label),
-    ] {
-        let (x, y) = battle_hud_tile_origin(0.0, row);
-        spawn_battle_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            text,
-            x,
-            y,
-            3.8,
-        );
-    }
-    let list_start = visible_window_start(selected, row_count, 7);
-    for visible_index in 0..7 {
-        let index = list_start + visible_index;
-        if index >= row_count {
-            break;
-        }
-        let row = 2.0 + visible_index as f32;
-        let (x, y) = battle_hud_tile_origin(7.0, row);
-        if index >= item_ids.len() {
-            spawn_battle_command_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &format!("{}CANCEL", if index == selected { ">" } else { " " }),
-                x,
-                y,
-                3.8,
-            );
-            continue;
-        }
-        let item_id = &item_ids[index];
-        let item = snapshot
-            .items
-            .iter()
-            .find(|item| item.item_id == *item_id)
-            .with_context(|| format!("battle PACK item {item_id} is missing"))?;
-        spawn_battle_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!(
-                "{}{}",
-                if index == selected { ">" } else { " " },
-                compact_scene_label(&item.name.replace('_', " "), 8)
-            ),
-            x,
-            y,
-            3.8,
-        );
-        if show_quantity {
-            let quantity = carried_item_quantity(snapshot, item_id)
+    let pocket = active_visible_field_pack_pocket(runtime_shell);
+    let (ids, cursor, surface_id, pocket_index) = match pocket {
+        FieldPackPocket::Items => (
+            carried_battle_non_ball_item_ids(snapshot),
+            &runtime_shell.bag_cursor,
+            "battle:bag-items",
+            0,
+        ),
+        FieldPackPocket::Balls => (
+            carried_ball_item_ids(snapshot),
+            &runtime_shell.ball_cursor,
+            "bag:balls",
+            1,
+        ),
+        FieldPackPocket::KeyItems => (
+            snapshot
+                .bag
+                .key_items
+                .iter()
+                .filter(|item| item.quantity > 0)
+                .map(|item| item.item_id.clone())
+                .collect(),
+            &runtime_shell.key_item_cursor,
+            "bag:key-items",
+            2,
+        ),
+        FieldPackPocket::TmHm => (
+            snapshot
+                .bag
+                .tm_hm
+                .iter()
+                .filter(|item| item.quantity > 0)
+                .map(|item| item.item_id.clone())
+                .collect(),
+            &runtime_shell.tmhm_cursor,
+            "bag:tmhm",
+            3,
+        ),
+        FieldPackPocket::Custom(_) => anyhow::bail!("battle Pack has a nonstandard pocket"),
+    };
+    let items = ids
+        .iter()
+        .map(|id| {
+            let quantity = carried_item_quantity(snapshot, id)
                 .or_else(|| {
                     snapshot
                         .bag
                         .tm_hm
                         .iter()
-                        .find(|item| item.item_id == *item_id)
+                        .find(|item| item.item_id == *id)
                         .map(|item| item.quantity)
                 })
-                .with_context(|| format!("battle pack item {item_id} has no carried quantity"))?;
-            let (x, y) = battle_hud_tile_origin(16.0, row);
-            spawn_battle_command_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &format!("×{:02}", quantity.min(99)),
-                x,
-                y,
-                3.8,
-            );
-        }
-    }
-    let description = if selected >= item_ids.len() {
-        "Close the PACK."
+                .with_context(|| format!("Pack item {id} has no quantity"))?;
+            Ok((id.clone(), quantity))
+        })
+        .collect::<Result<Vec<_>>>()?;
+    let rows = field_pack_selectable_count(items.len());
+    let selected = strict_readonly_cursor_index(cursor, surface_id, rows)
+        .with_context(|| format!("battle Pack cursor is invalid for {surface_id}"))?;
+    let list_start = if tutorial_snapshot.is_some() {
+        0
     } else {
-        item_ids
-            .get(selected)
-            .and_then(|item_id| snapshot.items.iter().find(|item| item.item_id == *item_id))
-            .map(|item| item.description.as_str())
-            .with_context(|| format!("battle pack selection {selected} has no item description"))?
+        runtime_shell.field_pack_scroll_positions[pocket_index]
     };
-    for (index, line) in wrap_boot_text_for_box(description, 18, 4)
-        .iter()
-        .enumerate()
-    {
-        let (x, y) = battle_hud_tile_origin(1.0, 13.0 + index as f32);
-        spawn_battle_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            line,
-            x,
-            y,
-            3.8,
-        );
-    }
-    if let Some(action_cursor) = &runtime_shell.field_pack_action_cursor {
-        let pocket = active_visible_field_pack_pocket(runtime_shell);
-        let actions = visible_selected_pack_item_actions(snapshot, runtime_shell, &pocket, true)?;
-        let action_selected = strict_readonly_cursor_index(
-            &Some(action_cursor.clone()),
-            "pack:actions",
-            actions.len(),
-        )
-        .context("battle pack action menu has no valid cursor")?;
-        let top = match actions.len() {
-            4 => 3.0,
-            3 => 5.0,
-            2 => 7.0,
-            _ => 9.0,
-        };
-        spawn_battle_window(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            13.0,
-            top,
-            7.0,
-            actions.len() as f32 * 2.0 + 1.0,
-            4.1,
-        );
-        for (index, action) in actions.iter().enumerate() {
-            let (x, y) = battle_hud_tile_origin(14.0, top + 1.0 + index as f32 * 2.0);
-            spawn_battle_command_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                &format!(
-                    "{}{}",
-                    if index == action_selected { ">" } else { " " },
-                    visible_field_pack_action_label(*action)
-                ),
-                x,
-                y,
-                4.3,
-            );
-        }
-    }
+    anyhow::ensure!(
+        list_start <= rows.saturating_sub(5) && selected >= list_start && selected < list_start + 5,
+        "battle Pack cursor is outside its retained scrolling window"
+    );
+    let description = items
+        .get(selected)
+        .and_then(|(id, _)| snapshot.items.iter().find(|item| item.item_id == *id))
+        .map_or("", |item| item.description.as_str());
+    let frame = load_visible_field_pack_frame(
+        snapshot,
+        runtime_shell,
+        &pocket,
+        &items,
+        selected,
+        list_start,
+        description,
+        images,
+    )?;
+    commands.spawn((
+        SpriteBundle {
+            texture: frame.handle,
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
+                ..default()
+            },
+            transform: Transform::from_xyz(0.0, 0.0, 4.0),
+            ..default()
+        },
+        BattleCommandMarker,
+    ));
     Ok(())
 }
 

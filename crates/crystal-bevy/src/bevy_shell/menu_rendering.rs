@@ -28,9 +28,12 @@ fn load_visible_field_pack_frame(
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode Pack font PNG")?
         .to_rgba8();
-    let frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
-        .context("decode Pack textbox frame PNG")?
-        .to_rgba8();
+    let frame = crate::open_runtime_image(assets.join(format!(
+        "gfx/frames/{}.png",
+        textbox_frame_id(snapshot.trainer.options.frame)
+    )))
+    .context("decode Pack textbox frame PNG")?
+    .to_rgba8();
     let menu_tiles = crate::read_runtime_asset(root.join("pack_menu.2bpp"))
         .context("read canonical Pack menu tiles")?;
     let up_arrow = crate::read_runtime_asset(assets.join("gfx/font/up_arrow.2bpp"))
@@ -146,7 +149,24 @@ fn load_visible_field_pack_frame(
                 .with_context(|| {
                     format!("Pack item {item_id} is missing from the source catalog")
                 })?;
-            write(8, row, &item.name)?;
+            if matches!(pocket, FieldPackPocket::TmHm) {
+                let number = item.tmhm_index.context("TM/HM has no source number")?;
+                let label = if number > 50 {
+                    format!("H{}", number - 50)
+                } else {
+                    format!("{number:02}")
+                };
+                write(5, row, &label)?;
+                let move_id = item.tmhm_move.as_ref().context("TM/HM has no move")?;
+                let move_data = snapshot
+                    .moves
+                    .iter()
+                    .find(|entry| entry.move_id == *move_id)
+                    .context("TM/HM move is missing from the source catalog")?;
+                write(8, row, &move_data.name)?;
+            } else {
+                write(8, row, &item.name)?;
+            }
             if !matches!(pocket, FieldPackPocket::KeyItems)
                 && !item
                     .property
@@ -187,15 +207,48 @@ fn load_visible_field_pack_frame(
     draw_time_set_window(&frame, 0, 12, 20, 6, &mut data)?;
     // ItemDescriptions uses PlaceString/NEXT, which advances two tile rows.
     // Keep the exported source breaks, including deliberate hyphenation.
-    let description = normalize_boot_text(description);
+    let tm_description = if matches!(pocket, FieldPackPocket::TmHm) {
+        if let Some((item_id, _)) = items.get(selected) {
+            let item = snapshot
+                .items
+                .iter()
+                .find(|item| item.item_id == *item_id)
+                .context("TM/HM selection has no catalog item")?;
+            let move_id = item
+                .tmhm_move
+                .as_ref()
+                .context("TM/HM selection has no move")?;
+            Some(
+                load_asm_move_descriptions(&runtime_shell.asset_root, snapshot)?
+                    .remove(move_id)
+                    .context("TM/HM move description is missing")?,
+            )
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+    let description = normalize_boot_text(tm_description.as_deref().unwrap_or(description));
     let description_lines = description.lines().collect::<Vec<_>>();
-    anyhow::ensure!(description_lines.len() <= 2, "Pack description exceeds its source textbox");
+    anyhow::ensure!(
+        description_lines.len() <= 2,
+        "Pack description exceeds its source textbox"
+    );
     for (line_index, line) in description_lines.iter().enumerate() {
-        anyhow::ensure!(boot_text_tile_len(line) <= 18, "Pack description exceeds its source line width");
+        anyhow::ensure!(
+            boot_text_tile_len(line) <= 18,
+            "Pack description exceeds its source line width"
+        );
         draw_time_set_text(&font, line, 8, (14 + line_index * 2) * 8, &mut data)?;
     }
     if let Some(cursor) = runtime_shell.field_pack_action_cursor.as_ref() {
-        let actions = visible_selected_pack_item_actions(snapshot, runtime_shell, pocket, false)?;
+        let actions = visible_selected_pack_item_actions(
+            snapshot,
+            runtime_shell,
+            pocket,
+            snapshot.battle.is_some(),
+        )?;
         let choice =
             strict_readonly_cursor_index(&Some(cursor.clone()), "pack:actions", actions.len())
                 .context("Pack action cursor is invalid")?;
@@ -206,7 +259,7 @@ fn load_visible_field_pack_frame(
             2 => 7,
             _ => 9,
         };
-        draw_time_set_window(&frame, 13, top, 7, actions.len() + 2, &mut data)?;
+        draw_time_set_window(&frame, 13, top, 7, 12 - top, &mut data)?;
         for (index, action) in actions.iter().enumerate() {
             draw_time_set_text(
                 &font,
@@ -216,7 +269,7 @@ fn load_visible_field_pack_frame(
                     visible_field_pack_action_label(*action)
                 ),
                 14 * 8,
-                (top + 1 + index) * 8,
+                (top + 1 + index * 2) * 8,
                 &mut data,
             )?;
         }

@@ -6146,11 +6146,7 @@ fn visible_pack_menu_renders_and_confirms_cancel_row_from_normal_inputs() {
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -6184,11 +6180,11 @@ fn visible_pack_menu_renders_and_confirms_cancel_row_from_normal_inputs() {
         assert_eq!(entries.first().map(String::as_str), Some("POCKET: ITEMS"));
         assert!(
             entries.iter().any(|entry| entry == ">POTION x01"),
-            "Pack should render TypeScript-style quantity rows: {entries:?}"
+            "Pack should expose item quantity rows: {entries:?}"
         );
         assert!(
             entries.iter().any(|entry| entry == " CANCEL"),
-            "Pack should render the trailing TypeScript CANCEL row: {entries:?}"
+            "Pack should expose the trailing CANCEL row: {entries:?}"
         );
         let items = snapshot
             .bag
