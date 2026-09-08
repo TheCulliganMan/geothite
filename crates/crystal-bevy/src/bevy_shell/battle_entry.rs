@@ -149,83 +149,154 @@ fn visible_battle_transition_is_terminal(transition: &VisibleBattleTransition) -
     transition.frame.saturating_add(1) >= visible_battle_transition_total_frames(transition)
 }
 
+const BATTLE_TRANSITION_POKEBALL: [&str; 16] = [
+    "......XXXX......",
+    "....XXXXXXXX....",
+    "..XXXX....XXXX..",
+    "..XX........XX..",
+    ".XX..........XX.",
+    ".XX...XXXX...XX.",
+    "XX...XX..XX...XX",
+    "XXXXXX....XXXXXX",
+    "XXXXXX....XXXXXX",
+    "XX...XX..XX...XX",
+    ".XX...XXXX...XX.",
+    ".XX..........XX.",
+    "..XX........XX..",
+    "..XXXX....XXXX..",
+    "....XXXXXXXX....",
+    "......XXXX......",
+];
+
+fn battle_transition_bgp(transition: VisibleBattleTransition, dark: bool) -> u8 {
+    // StartTrainerBattle_Flash: twelve BGP writes, each held for two
+    // frames, followed by a sentinel frame. Repeat the sequence three times.
+    const BGP: [u8; 12] = [
+        0xf9, 0xfe, 0xff, 0xfe, 0xf9, 0xe4, 0x90, 0x40, 0x00, 0x40, 0x90, 0xe4,
+    ];
+    let prefix = if transition.trainer_battle { 4 } else { 3 };
+    if !dark && transition.frame >= prefix && transition.frame < prefix + 75 {
+        BGP.get(((transition.frame - prefix) % 25 / 2) as usize)
+            .copied()
+            .unwrap_or(0xe4)
+    } else {
+        0xe4
+    }
+}
+
+fn prepare_battle_transition_texture(
+    root: &AssetRoot,
+    transition: VisibleBattleTransition,
+    tiles: &[BattleTransitionTile],
+    camera_offset: Vec2,
+    dark: bool,
+    priority_only: bool,
+    existing: Option<Handle<Image>>,
+    images: &mut Assets<Image>,
+) -> Result<Handle<Image>> {
+    let trainer = transition.trainer_battle && transition.frame >= 2;
+    let (ball_tile, trainer_palette) = if trainer {
+        let path = root.runtime_assets().join("gfx/overworld");
+        let tile = crate::read_runtime_asset(&path.join("battle_transition_tiles.2bpp"))?;
+        anyhow::ensure!(tile.len() >= 16, "battle transition square tile is missing");
+        let palette_bytes = crate::read_runtime_asset(&path.join(if dark {
+            "trainer_battle_dark.pal"
+        } else {
+            "trainer_battle.pal"
+        }))?;
+        let palette = parse_palette_file(std::str::from_utf8(&palette_bytes)?, None)?
+            .into_iter()
+            .next()
+            .context("trainer battle palette is missing")?;
+        (tile, palette)
+    } else {
+        (Vec::new(), [[0; 3]; 4])
+    };
+    let bgp = battle_transition_bgp(transition, dark);
+    let mut data = vec![0; 160 * 144 * 4];
+    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    let origin_x =
+        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 - (camera_offset.x / scale).round() as i32;
+    let origin_y =
+        i32::from(CLASSIC_SCROLL_HALO_TILES) * 8 + (camera_offset.y / scale).round() as i32;
+    for y in 0..144 {
+        for x in 0..160 {
+            let source_x =
+                (origin_x + x as i32).clamp(0, i32::from(CLASSIC_SCROLL_TILES_X) * 8 - 1) as usize;
+            let source_y =
+                (origin_y + y as i32).clamp(0, i32::from(CLASSIC_SCROLL_TILES_Y) * 8 - 1) as usize;
+            let tile = tiles
+                .get(source_y / 8 * CLASSIC_SCROLL_TILES_X as usize + source_x / 8)
+                .context("battle transition source tile is missing")?;
+            let mut index = tile.indices[source_y % 8 * 8 + source_x % 8];
+            let tile_x = x / 8;
+            let tile_y = y / 8;
+            if trainer
+                && (2..18).contains(&tile_x)
+                && (1..17).contains(&tile_y)
+                && BATTLE_TRANSITION_POKEBALL[tile_y - 1].as_bytes()[tile_x - 2] == b'X'
+            {
+                // LoadPokeBallGraphics writes textured tile FE at each X;
+                // all other cells keep the underlying overworld tile.
+                let bit = 7 - x % 8;
+                index = ((ball_tile[y % 8 * 2] >> bit) & 1)
+                    | (((ball_tile[y % 8 * 2 + 1] >> bit) & 1) << 1);
+            }
+            let palette = if trainer {
+                &trainer_palette
+            } else {
+                &tile.palette
+            };
+            let rgb = palette[((bgp >> (index * 2)) & 3) as usize];
+            let offset = (y * 160 + x) * 4;
+            data[offset..offset + 3].copy_from_slice(&rgb);
+            data[offset + 3] = if !priority_only
+                || (index != 0
+                    && tile
+                        .priority_from_row
+                        .is_some_and(|row| source_y % 8 >= row as usize))
+            {
+                255
+            } else {
+                0
+            };
+        }
+    }
+    let mut image = Image::new(
+        Extent3d {
+            width: 160,
+            height: 144,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        data,
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
+    image.sampler = ImageSampler::nearest();
+    if let Some(handle) = existing {
+        if let Some(target) = images.get_mut(&handle) {
+            *target = image;
+            return Ok(handle);
+        }
+    }
+    Ok(images.add(image))
+}
+
 fn spawn_visible_battle_transition(
     commands: &mut Commands,
     transition: VisibleBattleTransition,
     viewport_texture: Option<Handle<Image>>,
     priority_texture: Option<Handle<Image>>,
 ) {
-    const POKEBALL_PATTERN: [&str; 16] = [
-        "......XXXX......",
-        "....XXXXXXXX....",
-        "..XXXX....XXXX..",
-        "..XX........XX..",
-        ".XX..........XX.",
-        ".XX...XXXX...XX.",
-        "XX...XX..XX...XX",
-        "XXXXXX....XXXXXX",
-        "XXXXXX....XXXXXX",
-        "XX...XX..XX...XX",
-        ".XX...XXXX...XX.",
-        ".XX..........XX.",
-        "..XX........XX..",
-        "..XXXX....XXXX..",
-        "....XXXXXXXX....",
-        "......XXXX......",
-    ];
-    // battle-transition.ts averages the four packed BGP crumbs and converts
-    // their distance from shade 3 into a white-overlay alpha.
-    const FLASH_ALPHA: [f32; 12] = [
-        0.25,
-        1.0 / 12.0,
-        0.0,
-        1.0 / 12.0,
-        0.25,
-        0.5,
-        0.75,
-        11.0 / 12.0,
-        1.0,
-        11.0 / 12.0,
-        0.75,
-        0.5,
-    ];
     let frame = usize::from(transition.frame);
     let prefix_frames = if transition.trainer_battle { 4 } else { 3 };
-    // Trainer transitions begin with the ASM 16x16 Poké Ball cutout on a
-    // black 20x18 tilemap. Wild transitions retain the ordinary square map.
-    if transition.trainer_battle && frame >= 2 {
-        for y in 0..18 {
-            for x in 0..20 {
-                let inside_ball = (2..18).contains(&x)
-                    && (1..17).contains(&y)
-                    && POKEBALL_PATTERN[y - 1].as_bytes()[x - 2] == b'X';
-                if !inside_ball {
-                    spawn_visible_battle_transition_black_tile(commands, x, y);
-                }
-            }
-        }
-    }
     if frame < prefix_frames {
         return;
     }
     let flash_frames = 75;
     let effect_frame = frame - prefix_frames;
     if effect_frame < flash_frames {
-        let sweep_frame = effect_frame % 25;
-        let flash_index = sweep_frame / 2;
-        let alpha = FLASH_ALPHA[flash_index.min(FLASH_ALPHA.len() - 1)];
-        commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    color: Color::srgba(248.0 / 255.0, 248.0 / 255.0, 248.0 / 255.0, alpha),
-                    custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
-                    ..default()
-                },
-                transform: Transform::from_xyz(0.0, 0.0, 2.75),
-                ..default()
-            },
-            BattleCommandMarker,
-        ));
         return;
     }
 
@@ -293,19 +364,10 @@ fn spawn_visible_battle_transition(
         (false, true) => {
             // SpeckleToBlack chooses twelve previously unfilled LCD tiles on
             // each of sixteen frames, then holds for three frames. Reproduce
-            // the TypeScript transition's seed-zero LCG and rejection of
-            // tiles already black in the trainer Poké Ball mask.
+            // a deterministic scatter with rejection of cells already filled.
+            // The trainer's textured FE tiles are not black FF cells.
             let calls = effect_step.min(16) * 12;
             let mut black = [false; 20 * 18];
-            if transition.trainer_battle {
-                for y in 0..18 {
-                    for x in 0..20 {
-                        black[y * 20 + x] = !((2..18).contains(&x)
-                            && (1..17).contains(&y)
-                            && POKEBALL_PATTERN[y - 1].as_bytes()[x - 2] == b'X');
-                    }
-                }
-            }
             let mut seed = 0_u32;
             for _ in 0..calls {
                 for _ in 0..(20 * 18) {
@@ -366,41 +428,19 @@ fn spawn_visible_battle_transition(
                     } else {
                         None
                     };
-                    for x in std::iter::once(shift).chain(wrap_shift) {
-                        commands.spawn((
-                            SpriteBundle {
-                                texture: texture.clone(),
-                                sprite: Sprite {
-                                    rect: Some(Rect::new(
-                                        0.0,
-                                        source_y as f32 * source_scale,
-                                        PLAYFIELD_WIDTH,
-                                        (source_y as f32 + 1.0) * source_scale,
-                                    )),
-                                    custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, source_scale)),
-                                    ..default()
-                                },
-                                transform: Transform::from_xyz(
-                                    x,
-                                    PLAYFIELD_TOP - (source_y as f32 + 0.5) * source_scale,
-                                    2.65,
-                                ),
-                                ..default()
-                            },
-                            BattleCommandMarker,
-                        ));
-                    }
-                    if let Some(priority) = priority_texture.as_ref() {
+                    for (texture, z) in std::iter::once((&texture, 0.0))
+                        .chain(priority_texture.as_ref().map(|priority| (priority, 2.4)))
+                    {
                         for x in std::iter::once(shift).chain(wrap_shift) {
                             commands.spawn((
                                 SpriteBundle {
-                                    texture: priority.clone(),
+                                    texture: texture.clone(),
                                     sprite: Sprite {
                                         rect: Some(Rect::new(
                                             0.0,
-                                            source_y as f32 * source_scale,
-                                            PLAYFIELD_WIDTH,
-                                            (source_y as f32 + 1.0) * source_scale,
+                                            source_y as f32,
+                                            TITLE_SCREEN_WIDTH as f32,
+                                            source_y as f32 + 1.0,
                                         )),
                                         custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, source_scale)),
                                         ..default()
@@ -408,7 +448,7 @@ fn spawn_visible_battle_transition(
                                     transform: Transform::from_xyz(
                                         x,
                                         PLAYFIELD_TOP - (source_y as f32 + 0.5) * source_scale,
-                                        2.66,
+                                        z,
                                     ),
                                     ..default()
                                 },

@@ -6042,6 +6042,7 @@ fn render_playfield(
     // Bevy entities.  The old per-tile entity churn was the dominant cost on
     // every camera step and was the reason the shell could fall to one FPS.
     // Objects, player, dialog, and battle overlays remain separate layers.
+    let mut transition_tiles = Vec::new();
     let mut viewport_tile_handles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
     );
@@ -6133,10 +6134,25 @@ fn render_playfield(
                 );
                 return;
             };
-            #[cfg(not(any(test, feature = "voxel-view")))]
-            let _ = source_tile_index;
             if inside_scroll_surface {
                 viewport_tile_handles.push(tile_handle.clone());
+                if let Some(art) = tileset_art.cache.get(source_art_key) {
+                    let mut tile = art.transition_tiles[source_tile_index as usize].clone();
+                    // Animated tiles retain their current frame. Prefer the
+                    // source index for equal colours, including colour zero.
+                    if art.animated_tiles.contains_key(&(source_tile_index as usize))
+                        && let Some(image) = images.get(&tile_handle)
+                    {
+                        for (index, pixel) in tile.indices.iter_mut().zip(image.data.chunks_exact(4)) {
+                            if pixel[..3] != tile.palette[*index as usize] {
+                                if let Some(found) = tile.palette.iter().position(|rgb| pixel[..3] == *rgb) {
+                                    *index = found as u8;
+                                }
+                            }
+                        }
+                    }
+                    transition_tiles.push(tile);
+                }
             }
             #[cfg(feature = "voxel-view")]
             if visual_world_enabled {
@@ -6231,6 +6247,9 @@ fn render_playfield(
                 None
             };
             if inside_scroll_surface {
+                if let Some(tile) = transition_tiles.last_mut() {
+                    tile.priority_from_row = priority_spec.as_ref().map(|(_, row)| *row as u8);
+                }
                 priority_viewport_tiles.push(priority_spec);
             }
         }
@@ -6307,6 +6326,9 @@ fn render_playfield(
             &mut images,
         )
     };
+    if !transition_tiles.is_empty() {
+        rendered.transition_tiles = transition_tiles;
+    }
     rendered.map_texture = Some(viewport_texture.clone());
     rendered.map_priority_texture = Some(priority_viewport_texture.clone());
     #[cfg(feature = "voxel-view")]
@@ -6410,6 +6432,13 @@ fn render_playfield(
     let camera_offset =
         visible_overworld_camera_offset(&rendered, &runtime_shell, movement_subframe);
     set_overworld_map_scroll(&mut map_sprites, camera_offset);
+    let transition_replaces_map = runtime_shell.visible_battle_transition.is_some_and(|transition| {
+        transition.frame >= if transition.trainer_battle { 2 } else { 3 }
+    }) && !matches!(runtime_shell.pending_overworld_step_boundary, Some(PendingOverworldStepBoundary::WildBattle));
+    let map_visibility = if transition_replaces_map { Visibility::Hidden } else { Visibility::Inherited };
+    for entity in tiles.iter() {
+        commands.entity(entity).insert(map_visibility);
+    }
     if can_update_positions_in_place
         && tiles.iter().count() == 2
         && update_overworld_sprite_positions(
@@ -6445,6 +6474,7 @@ fn render_playfield(
         commands.spawn((
             SpriteBundle {
                 texture: viewport_texture,
+                visibility: map_visibility,
                 sprite: Sprite {
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
@@ -6459,6 +6489,7 @@ fn render_playfield(
         commands.spawn((
             SpriteBundle {
                 texture: priority_viewport_texture,
+                visibility: map_visibility,
                 sprite: Sprite {
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
@@ -7533,12 +7564,43 @@ fn render_playfield(
             Some(PendingOverworldStepBoundary::WildBattle)
         )
     {
-        spawn_visible_battle_transition(
-            &mut commands,
-            transition,
-            rendered.map_texture.clone(),
-            rendered.map_priority_texture.clone(),
-        );
+        let dark = visible_effective_map_time_of_day(map, live_time_of_day, flash_active)
+            .eq_ignore_ascii_case("dark");
+        let textures = (|| -> Result<(Handle<Image>, Handle<Image>)> {
+            let base = prepare_battle_transition_texture(
+                &runtime_shell.asset_root, transition, &rendered.transition_tiles,
+                camera_offset, dark, false, rendered.transition_texture.clone(), &mut images,
+            )?;
+            let priority = prepare_battle_transition_texture(
+                &runtime_shell.asset_root, transition, &rendered.transition_tiles,
+                camera_offset, dark, true, rendered.transition_priority_texture.clone(), &mut images,
+            )?;
+            Ok((base, priority))
+        })();
+        match textures {
+            Ok((texture, priority)) => {
+                rendered.transition_texture = Some(texture.clone());
+                rendered.transition_priority_texture = Some(priority.clone());
+                let wave_start = (if transition.trainer_battle { 4 } else { 3 }) + 75 + 2;
+                let wave = transition.cave_environment && !transition.stronger_enemy
+                    && transition.frame >= wave_start;
+                if transition_replaces_map && !wave {
+                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)] {
+                        commands.spawn((SpriteBundle {
+                            texture,
+                            sprite: Sprite {
+                                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
+                                ..default()
+                            },
+                            transform: Transform::from_xyz(0.0, 0.0, z),
+                            ..default()
+                        }, BattleCommandMarker));
+                    }
+                }
+                spawn_visible_battle_transition(&mut commands, transition, Some(texture), Some(priority));
+            }
+            Err(error) => record_visible_render_error(&mut commands, &mut runtime_shell, error),
+        }
     }
 
     if runtime_shell.visible_battle_transition.is_none()

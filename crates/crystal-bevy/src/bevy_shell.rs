@@ -4000,6 +4000,9 @@ struct RenderedViewport {
     tile: Option<TilePosition>,
     map_texture: Option<Handle<Image>>,
     map_priority_texture: Option<Handle<Image>>,
+    transition_tiles: Vec<BattleTransitionTile>,
+    transition_texture: Option<Handle<Image>>,
+    transition_priority_texture: Option<Handle<Image>>,
     /// Read-only presentation metadata for an optional overworld renderer.
     /// These cells describe the same 20x18 source-tile viewport as
     /// `map_texture`; they never participate in collision or movement.
@@ -4519,8 +4522,16 @@ enum PokemonSpriteSide {
     Back,
 }
 
+#[derive(Clone)]
+struct BattleTransitionTile {
+    priority_from_row: Option<u8>,
+    indices: [u8; 64],
+    palette: Palette,
+}
+
 struct TilesetArt {
     metatile_layout: Vec<u8>,
+    transition_tiles: Vec<BattleTransitionTile>,
     tile_handles: Vec<Handle<Image>>,
     priority_tile_handles: Vec<Handle<Image>>,
     animated_tiles: HashMap<usize, TilesetAnimatedTile>,

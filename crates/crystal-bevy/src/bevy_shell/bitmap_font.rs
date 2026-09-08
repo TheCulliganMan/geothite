@@ -570,6 +570,7 @@ fn load_tileset_art(
     let renderable_tile_count = source_tile_count.max(palette_map.len()).max(1);
     let mut tile_handles = Vec::with_capacity(renderable_tile_count);
     let mut priority_tile_handles = Vec::with_capacity(renderable_tile_count);
+    let mut transition_tiles = Vec::with_capacity(renderable_tile_count);
     for tile_index in 0..renderable_tile_count {
         let palette_value = palette_map.get(tile_index).copied().unwrap_or(0);
         let palette_index = usize::from(palette_value & 0x07);
@@ -587,6 +588,26 @@ fn load_tileset_art(
             palette,
             &mut data,
         );
+        // Keep the original two-bit indices: reconstructing them from RGB
+        // loses information whenever two palette entries share a colour.
+        let mut indices = [0; 64];
+        let columns = width as usize / SOURCE_TILE_SIZE;
+        for y in 0..8 {
+            for x in 0..8 {
+                let pixel = source.get_pixel(
+                    ((source_tile_index % columns) * 8 + x) as u32,
+                    ((source_tile_index / columns) * 8 + y) as u32,
+                );
+                indices[y * 8 + x] = if pixel[3] == 0 { 0 } else {
+                    palette_index_from_gray(pixel[0]) as u8
+                };
+            }
+        }
+        transition_tiles.push(BattleTransitionTile {
+            priority_from_row: None,
+            indices,
+            palette: palette.copied().unwrap_or([[255; 3], [170; 3], [85; 3], [0; 3]]),
+        });
         let mut priority_data = data.clone();
         clear_source_tile_palette_zero_alpha(
             &source,
@@ -631,6 +652,7 @@ fn load_tileset_art(
     )?;
     Ok(TilesetArt {
         metatile_layout,
+        transition_tiles,
         tile_handles,
         priority_tile_handles,
         animated_tiles,

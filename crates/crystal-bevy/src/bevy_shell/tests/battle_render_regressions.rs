@@ -2881,7 +2881,7 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
         let base_strips = strips
             .iter(world)
             .filter(|(sprite, transform)| {
-                sprite.rect.is_some() && (transform.translation.z - 2.65).abs() < f32::EPSILON
+                sprite.rect.is_some() && (transform.translation.z - 0.0).abs() < f32::EPSILON
             })
             .collect::<Vec<_>>();
         let mut source_rows = vec![Vec::<f32>::new(); 144];
@@ -2892,10 +2892,10 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
                 "each native scanline must display as one 640x4 strip"
             );
             let rect = sprite.rect.expect("wave strip source rectangle");
-            let source_y = (rect.min.y / (TILE_SIZE / 8.0)) as u8;
+            let source_y = rect.min.y as u8;
             assert_eq!(
                 rect.max.y - rect.min.y,
-                TILE_SIZE / 8.0,
+                1.0,
                 "wave strips must sample exactly one native scanline"
             );
             source_rows[usize::from(source_y)].push(transform.translation.x);
@@ -2929,13 +2929,13 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
         let priority_count = priority_strips
             .iter(world)
             .filter(|(sprite, transform)| {
-                sprite.rect.is_some() && (transform.translation.z - 2.66).abs() < f32::EPSILON
+                sprite.rect.is_some() && (transform.translation.z - 2.4).abs() < f32::EPSILON
             })
             .count();
         assert_eq!(
             priority_count,
             source_rows.iter().map(Vec::len).sum::<usize>(),
-            "priority scanlines must use the same wrap copies as the base layer"
+            "priority scanlines must wrap with the base layer"
         );
     }
 }
@@ -4733,4 +4733,186 @@ fn battle_browser_fixture_starts_from_overworld_interaction() {
         "real encounter continuation: cursor={:?}, events={:?}, ui={:?}, special={:?}, scene={}, exp={:?}, messages={:?}",
         shell.active_script_cursor, snapshot.script_events, snapshot.ui, shell.special_boundary,
         shell.battle_message_scene.is_some(), shell.battle_exp_tween, shell.battle_messages);
+}
+
+
+#[test]
+fn battle_transition_uses_textured_fe_tiles_and_native_colour_registers() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut images = Assets::<Image>::default();
+    let mut indices = [0; 64];
+    for (i, index) in indices.iter_mut().enumerate() {
+        *index = (i % 4) as u8;
+    }
+    let map_palette = [[200, 240, 160], [100, 180, 80], [40, 100, 20], [8, 32, 0]];
+    let tiles = vec![
+        BattleTransitionTile {
+            priority_from_row: None,
+            indices,
+            palette: map_palette
+        };
+        (CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y) as usize
+    ];
+    let mut transition = VisibleBattleTransition {
+        frame: 2,
+        trainer_battle: true,
+        cave_environment: false,
+        stronger_enemy: false,
+    };
+    let handle = prepare_battle_transition_texture(
+        &shell.asset_root,
+        transition,
+        &tiles,
+        Vec2::ZERO,
+        false,
+        false,
+        None,
+        &mut images,
+    )
+    .unwrap();
+    let pixel = |images: &Assets<Image>, x: usize, y: usize| -> [u8; 4] {
+        images.get(&handle).unwrap().data[(y * 160 + x) * 4..(y * 160 + x + 1) * 4]
+            .try_into()
+            .unwrap()
+    };
+    // First FE cell starts at LCD tile (8, 1). Its 2bpp art has a dark
+    // border, a light upper facet, a mid-tone side, and a red lower facet.
+    assert_eq!(pixel(&images, 64, 8), [57, 57, 57, 255]);
+    assert_eq!(pixel(&images, 65, 9), [255, 148, 239, 255]);
+    assert_eq!(pixel(&images, 65, 10), [255, 90, 123, 255]);
+    assert_eq!(pixel(&images, 65, 14), [255, 41, 41, 255]);
+    // Outside the ball the map remains detailed, using BG palette seven.
+    assert_eq!(pixel(&images, 0, 0), [255, 148, 239, 255]);
+    assert_eq!(pixel(&images, 1, 0), [255, 90, 123, 255]);
+    transition.frame = 4;
+    let reused = prepare_battle_transition_texture(
+        &shell.asset_root,
+        transition,
+        &tiles,
+        Vec2::ZERO,
+        false,
+        false,
+        Some(handle.clone()),
+        &mut images,
+    )
+    .unwrap();
+    assert_eq!(reused, handle);
+    assert_eq!(pixel(&images, 65, 9), [255, 90, 123, 255]);
+    assert_eq!(pixel(&images, 65, 10), [255, 41, 41, 255]);
+    assert_eq!(pixel(&images, 65, 14), [57, 57, 57, 255]);
+    transition.trainer_battle = false;
+    transition.frame = 3;
+    prepare_battle_transition_texture(
+        &shell.asset_root,
+        transition,
+        &tiles,
+        Vec2::ZERO,
+        false,
+        false,
+        Some(handle.clone()),
+        &mut images,
+    )
+    .unwrap();
+    assert_eq!(pixel(&images, 0, 0), [100, 180, 80, 255]);
+    assert_eq!(pixel(&images, 1, 0), [40, 100, 20, 255]);
+    assert_eq!(pixel(&images, 2, 0), [8, 32, 0, 255]);
+    transition.frame = 13; // Identity BGP, halfway through the first flash.
+    prepare_battle_transition_texture(
+        &shell.asset_root,
+        transition,
+        &tiles,
+        Vec2::ZERO,
+        false,
+        false,
+        Some(handle.clone()),
+        &mut images,
+    )
+    .unwrap();
+    assert_eq!(pixel(&images, 0, 0), [200, 240, 160, 255]);
+    assert_eq!(pixel(&images, 1, 0), [100, 180, 80, 255]);
+    assert_eq!(
+        tiles[0].indices, indices,
+        "flashing must not mutate source indices"
+    );
+    assert_eq!(
+        tiles[0].palette, map_palette,
+        "flashing must not poison map palettes"
+    );
+    assert_eq!(images.len(), 1, "reuse the transition image across frames");
+    let mut foreground = tiles.clone();
+    for tile in &mut foreground {
+        tile.priority_from_row = Some(4);
+    }
+    let priority = prepare_battle_transition_texture(
+        &shell.asset_root,
+        transition,
+        &foreground,
+        Vec2::ZERO,
+        false,
+        true,
+        None,
+        &mut images,
+    )
+    .unwrap();
+    let pixels = &images.get(&priority).unwrap().data;
+    assert_eq!(
+        pixels[(1 * 160 + 1) * 4 + 3],
+        0,
+        "clipped upper tile stays behind actors"
+    );
+    assert_eq!(
+        pixels[(4 * 160) * 4 + 3],
+        0,
+        "colour zero stays behind actors"
+    );
+    assert_eq!(
+        pixels[(4 * 160 + 1) * 4 + 3],
+        255,
+        "foreground detail covers actors"
+    );
+}
+
+#[test]
+fn battle_transition_trainer_and_wild_colour_surfaces_render_before_intro() {
+    let mut app = battle_render_regression_app(route36_battle_shell_for_render_regression());
+    for (trainer, frame, name) in [
+        (true, 2, "trainer-transition-textured.png"),
+        (true, 4, "trainer-transition-flash.png"),
+        (false, 13, "wild-transition-colour.png"),
+        (false, 80, "wild-transition-ripple-start.png"),
+    ] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.visible_battle_transition = Some(VisibleBattleTransition {
+                frame,
+                trainer_battle: trainer,
+                cave_environment: !trainer,
+                stronger_enemy: false,
+            });
+            mark_runtime_snapshot_dirty(&mut shell);
+        }
+        app.update();
+        assert!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .last_error
+                .is_none()
+        );
+        let rendered = app.world().resource::<RenderedViewport>();
+        let image = app
+            .world()
+            .resource::<Assets<Image>>()
+            .get(rendered.transition_texture.as_ref().unwrap())
+            .unwrap();
+        assert_eq!(image.width(), 160);
+        assert_eq!(image.height(), 144);
+        assert!(
+            image
+                .data
+                .chunks_exact(4)
+                .any(|p| p[0] != p[1] || p[1] != p[2]),
+            "{name} must retain chromatic pixels"
+        );
+        save_live_battle_canvas_for_test(app.world_mut(), name);
+    }
 }
