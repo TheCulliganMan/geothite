@@ -273,8 +273,19 @@
         if (!dialog.open) dialog.showModal();
       };
       document.querySelector('#retry-start').addEventListener('click', () => location.reload());
-      window.addEventListener('unhandledrejection', event => showStartupError(event.reason));
-      window.addEventListener('error', event => { if (event.error) showStartupError(event.error); });
+      const handleGlobalError = error => {
+        // Safari extensions can reject their own messaging promises in the
+        // page. Geothite does not use runtime.sendMessage; this specific error
+        // must not disable game input or force a reload. Leave it in the
+        // browser console, and keep all other failures on the fatal path.
+        if (String(error?.message ?? error).trim() === 'Invalid call to runtime.sendMessage(). Tab not found.') {
+          console.warn('External browser messaging failed:', error);
+          return;
+        }
+        showStartupError(error);
+      };
+      window.addEventListener('unhandledrejection', event => handleGlobalError(event.reason));
+      window.addEventListener('error', event => { if (event.error) handleGlobalError(event.error); });
       try {
         const { startServerClock } = await import('./server-clock.js');
         const serverClock = await startServerClock({ fetch });
