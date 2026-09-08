@@ -20,7 +20,10 @@ try {
   await page.screenshot({ path: new URL('browser-startup.png', directory).pathname });
   assert.equal(await page.locator('#startup-error').evaluate(dialog => dialog.open ? dialog.textContent : null), null);
   await page.evaluate(async () => {
-    const wasm = await import('/crystal-bevy.js');
+    const entry = [...document.scripts].map(script => script.textContent).join('\n')
+      .match(/import\(['"]([^'"]*crystal-bevy[^'"]*\.js)['"]\)/)?.[1];
+    if (!entry) throw new Error('The page must declare its game bundle');
+    const wasm = await import(new URL(entry, location.href).href);
     const { createGameBridge } = await import('/webmcp.js');
     window.qaBridge = createGameBridge(wasm);
   });
