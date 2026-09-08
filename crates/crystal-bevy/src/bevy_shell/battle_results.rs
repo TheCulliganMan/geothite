@@ -5839,6 +5839,9 @@ fn load_visible_runtime_save(
     arrival_reason: &str,
 ) -> Result<()> {
     runtime_shell.shell.load(path)?;
+    // Loading replaces the session. Old battle narration must not capture the
+    // restored map's script continuation or play over its arrival dialogue.
+    reset_visible_battle_presentation(runtime_shell);
     let post_credits_spawn = runtime_shell
         .shell
         .session()

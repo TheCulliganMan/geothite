@@ -12,39 +12,7 @@ fn prepare_visible_battle_entry_with_music_reset(
     runtime_shell: &mut BevyRuntimeShell,
     reset_music: bool,
 ) -> Result<()> {
-    runtime_shell.visible_battle_transition = None;
-    runtime_shell.visible_battle_sliding_intro = None;
-    runtime_shell.visible_capture_animation = None;
-    runtime_shell.visible_move_animations.clear();
-    runtime_shell.battle_fainted_hud = [false; 2];
-    runtime_shell.battle_retained_text.clear();
-    runtime_shell.visible_send_out_animation = None;
-    runtime_shell.visible_trainer_exit_animation = None;
-    runtime_shell.visible_frontpic_animation = None;
-    reset_visible_selection_cursors(runtime_shell);
-    reset_visible_battle_action_cursors(runtime_shell);
-    runtime_shell.battle_messages.clear();
-    runtime_shell.battle_text_reveal = None;
-    runtime_shell.field_text_reveal = None;
-    runtime_shell.battle_fanfare_messages.clear();
-    runtime_shell.battle_evolution_cries.clear();
-    runtime_shell.battle_evolution_cancellations.clear();
-    runtime_shell.field_evolution_cancellation = None;
-    runtime_shell.battle_sounds_after_messages.clear();
-    runtime_shell.battle_message_scenes.clear();
-    runtime_shell.battle_entry_messages_remaining = 0;
-    runtime_shell.battle_message_scene = None;
-    runtime_shell.battle_hp_tween = None;
-    runtime_shell.battle_exp_tween = None;
-    runtime_shell.pending_battle_exp_tweens.clear();
-    runtime_shell.battle_level_stats.clear();
-    runtime_shell.party_move_cursor = None;
-    runtime_shell.last_battle_cry_key = None;
-    runtime_shell.pending_battle_cries_after_messages.clear();
-    runtime_shell.battle_enemy_send_out_pending = false;
-    runtime_shell.battle_player_send_out_pending = false;
-    runtime_shell.battle_enemy_hp_at_player_send_out = None;
-    runtime_shell.pending_battle_scenes_after_message.clear();
+    reset_visible_battle_presentation(runtime_shell);
     if reset_music {
         reset_visible_music_state(runtime_shell);
     }
@@ -10157,4 +10125,41 @@ fn advance_visible_pc_item_move_sequence(runtime_shell: &mut BevyRuntimeShell) -
     restore_visible_pc_item_list_position(runtime_shell)?;
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
+}
+
+// Presentation belongs to one battle/session and must not survive loading a save.
+fn reset_visible_battle_presentation(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.visible_battle_transition = None;
+    runtime_shell.visible_battle_sliding_intro = None;
+    runtime_shell.visible_capture_animation = None;
+    runtime_shell.visible_move_animations.clear();
+    runtime_shell.battle_fainted_hud = [false; 2];
+    runtime_shell.battle_retained_text.clear();
+    runtime_shell.visible_send_out_animation = None;
+    runtime_shell.visible_trainer_exit_animation = None;
+    runtime_shell.visible_frontpic_animation = None;
+    reset_visible_selection_cursors(runtime_shell);
+    reset_visible_battle_action_cursors(runtime_shell);
+    runtime_shell.battle_messages.clear();
+    runtime_shell.battle_text_reveal = None;
+    runtime_shell.field_text_reveal = None;
+    runtime_shell.battle_fanfare_messages.clear();
+    runtime_shell.battle_evolution_cries.clear();
+    runtime_shell.battle_evolution_cancellations.clear();
+    runtime_shell.field_evolution_cancellation = None;
+    runtime_shell.battle_sounds_after_messages.clear();
+    runtime_shell.battle_message_scenes.clear();
+    runtime_shell.battle_entry_messages_remaining = 0;
+    runtime_shell.battle_message_scene = None;
+    runtime_shell.battle_hp_tween = None;
+    runtime_shell.battle_exp_tween = None;
+    runtime_shell.pending_battle_exp_tweens.clear();
+    runtime_shell.battle_level_stats.clear();
+    runtime_shell.party_move_cursor = None;
+    runtime_shell.last_battle_cry_key = None;
+    runtime_shell.pending_battle_cries_after_messages.clear();
+    runtime_shell.battle_enemy_send_out_pending = false;
+    runtime_shell.battle_player_send_out_pending = false;
+    runtime_shell.battle_enemy_hp_at_player_send_out = None;
+    runtime_shell.pending_battle_scenes_after_message.clear();
 }

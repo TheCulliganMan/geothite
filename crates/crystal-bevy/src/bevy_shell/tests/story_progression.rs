@@ -3523,6 +3523,7 @@ fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
     app.update();
 
     let mut dialogue_pages = Vec::new();
+    let mut item_notice_pages = Vec::new();
     let mut completed_labels = std::collections::BTreeSet::new();
     let mut previous_label = None;
     let mut completed = false;
@@ -3580,6 +3581,19 @@ fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
             .iter()
             .any(|event| event.contains("MUSIC_HEAL"));
         saw_waitsfx |= shell.visible_wait_sfx_boundary;
+        // Item-pocket notices overlay the next authored text label. Record
+        // their actual pages separately instead of attributing them to it.
+        if let Some(notice) = shell.field_notice.as_ref() {
+            let pages = visible_field_notice_pages(notice);
+            if let Some(reveal) = shell.field_text_reveal.as_ref()
+                && reveal.text == pages.join("\u{1e}")
+            {
+                let page = (reveal.page_index, pages[reveal.page_index].clone());
+                if item_notice_pages.last() != Some(&page) {
+                    item_notice_pages.push(page);
+                }
+            }
+        }
         let visible_label = snapshot.ui.text.as_ref().map(|text| text.label.clone());
         if visible_label != previous_label {
             if let Some(previous) = previous_label.take() {
@@ -3598,7 +3612,8 @@ fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
             visible_label,
             shell.field_text_reveal.as_ref(),
             visible_field_dialog_pages(&snapshot, shell),
-        ) && reveal.text == pages.join("\u{1e}")
+        ) && shell.field_notice.is_none()
+            && reveal.text == pages.join("\u{1e}")
         {
             if reveal.page_index > 0 {
                 let carried_chars = visible_field_page_initial_chars(
@@ -3730,6 +3745,12 @@ fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
         completed,
         "Mr. Pokemon's complete authored scene did not settle"
     );
+
+    assert_eq!(item_notice_pages.len(), 2, "Mystery Egg pocket notice must print once: {item_notice_pages:?}");
+    assert_eq!(item_notice_pages[0].0, 0);
+    assert_eq!(item_notice_pages[1].0, 1);
+    assert!(item_notice_pages[0].1.contains("MYSTERY EGG"));
+    assert!(item_notice_pages[1].1.contains("KEY POCKET"));
 
     let expected_page_counts = [
         ("MrPokemonIntroText1", 2usize),
