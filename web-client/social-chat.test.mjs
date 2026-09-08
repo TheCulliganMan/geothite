@@ -362,3 +362,18 @@ test('Social search debounces requests and ignores old query results', async () 
     assert.doesNotMatch(h.document.querySelector('.directory-list').textContent,/STALE/);
   } finally {h.cleanup();}
 });
+
+test('community tabs show a reconnect state before the first connection', () => {
+  const h = chatHarness();
+  try {
+    h.poll({ connected: false, players: [], events: [] });
+    h.document.querySelector('.chat-toggle').click();
+    for (const [tab, list, pages] of [['social', '.directory-list', '.directory-pages'], ['leaderboard', '.leaderboard-list', '.leaderboard-pages']]) {
+      h.document.querySelector(`[data-tab="${tab}"]`).click();
+      assert.match(h.document.querySelector(list).textContent, /Reconnecting/);
+      assert.equal(h.document.querySelector(pages).hidden, true);
+      assert.ok([...h.document.querySelectorAll(`${pages} button`)].every(b => b.disabled));
+    }
+    assert.deepEqual(h.sent, []);
+  } finally { h.cleanup(); }
+});

@@ -461,6 +461,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       requestCommunity();
     } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; renderCommunity(); }
   };
+  renderCommunity();
   const timer = window.setInterval(poll, 150);
   return () => { speech.destroy(); controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); window.clearTimeout(searchTimer); wasm.crystal_social_focus(false); panel.remove(); };
 }
