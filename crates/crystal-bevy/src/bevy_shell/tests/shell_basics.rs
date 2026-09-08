@@ -1396,15 +1396,11 @@ fn azalea_rival_full_multi_pokemon_battle_advances_every_party_slot_then_resumes
 #[test]
 fn real_pack_trainer_battle_starts_and_resolves_from_route_30() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root.clone());
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load core pack for Red battle");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let party = [VisibleShellSmokePokemon {
         species_id: "TYPHLOSION".to_string(),
         level: 100,

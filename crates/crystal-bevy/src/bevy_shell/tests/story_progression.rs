@@ -1301,15 +1301,11 @@ fn real_pack_bug_contest_timeout_warps_to_national_park_gate() {
 #[test]
 fn visible_overworld_normal_inputs_trigger_mom_coord_event() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -1389,15 +1385,11 @@ fn visible_overworld_normal_inputs_trigger_mom_coord_event() {
 #[test]
 fn moms_coord_event_keeps_the_written_dialogue_in_the_textbox() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -3468,15 +3460,11 @@ fn givepoke_full_party_and_current_box_returns_two_without_a_nickname_prompt() {
 #[test]
 fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");

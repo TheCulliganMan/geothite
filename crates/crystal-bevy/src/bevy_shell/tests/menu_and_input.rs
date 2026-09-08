@@ -3688,7 +3688,12 @@ fn battle_tower_declining_save_and_cancel_returns_to_the_next_opponent_loop() {
             .script_events
             .pending_text_label
             .as_deref(),
-        Some("Text_BattleTower_LeftWithoutSaving")
+        Some("Text_BattleTower_LeftWithoutSaving"),
+        "resume cursor={:?}, boundary={:?}, action={:?}, text={:?}",
+        runtime_shell.active_script_cursor,
+        runtime_shell.special_boundary,
+        runtime_shell.last_runtime_action,
+        runtime_shell.shell.snapshot().unwrap().ui.text,
     );
     settle_visible_shell_smoke_until_idle(&mut runtime_shell)
         .expect("finish Battle Tower left-without-saving cancellation");

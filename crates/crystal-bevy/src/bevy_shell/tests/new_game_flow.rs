@@ -30,15 +30,11 @@ fn compiled_pack_contains_complete_npc_trade_payloads() {
 #[test]
 fn real_pack_battle_tower_loads_canonical_roster_and_party() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut shell =
         RuntimeGameShell::new_game_at_runtime_tile(asset_root, runtime, 1, "BattleTower1F", 8, 5)
             .expect("start Battle Tower map shell");
