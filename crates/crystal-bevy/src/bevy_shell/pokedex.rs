@@ -519,6 +519,7 @@ enum VisiblePokedexMode {
 #[derive(Clone, Debug, Default, Hash)]
 struct VisiblePokedexControls {
     mode: VisiblePokedexMode,
+    previous_entry: Option<usize>,
     option_cursor: Option<usize>,
     search_cursor: Option<usize>,
     search_types: [usize; 2],
@@ -544,7 +545,7 @@ fn visible_pokedex_order(snapshot: &RuntimeShellSnapshot, mode: VisiblePokedexMo
                 POKEDEX_NEW_ORDER
                     .iter()
                     .position(|&id| id == snapshot.pokemon[i].species_id)
-                    .unwrap_or(POKEDEX_NEW_ORDER.len()),
+                    .expect("compiled species must exist in the source NEW Pokédex order"),
                 snapshot.pokemon[i].int_id,
             )
         }),
@@ -561,7 +562,7 @@ fn visible_pokedex_order(snapshot: &RuntimeShellSnapshot, mode: VisiblePokedexMo
                     POKEDEX_ALPHA_ORDER
                         .iter()
                         .position(|&id| id == snapshot.pokemon[i].species_id)
-                        .unwrap_or(POKEDEX_ALPHA_ORDER.len()),
+                        .expect("compiled species must exist in the source alphabetical Pokédex order"),
                     snapshot.pokemon[i].species_id.clone(),
                 )
             });

@@ -652,6 +652,11 @@ fn apply_visible_script_entry_command(
     if stepped.command == "waitsfx" {
         runtime_shell.visible_wait_sfx_boundary = true;
     }
+    if let Some(crate::RuntimeCompiledScriptBoundary::PhoneCallasm(effect)) = stepped.boundary.as_ref() {
+        begin_visible_incoming_phone_sequence(runtime_shell, *effect)?;
+        arm_visible_active_script_cursor_from_run(runtime_shell, stepped.next_cursor.clone());
+        return Ok(());
+    }
     trim_event_log(&mut runtime_shell.last_audio_events);
     if activate_visible_script_boundary_after_outcome(runtime_shell, &stepped.mutation)? {
         arm_visible_active_script_cursor_from_run(runtime_shell, stepped.next_cursor.clone());
@@ -868,11 +873,15 @@ fn resume_visible_script_return(runtime_shell: &mut BevyRuntimeShell) -> Result<
 }
 
 fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.incoming_phone_sequence.is_some() {
+        return Ok(());
+    }
     let Some(cursor) = runtime_shell.active_script_cursor.clone() else {
         return handle_visible_no_active_script_cursor(runtime_shell, "step");
     };
     let boundary_snapshot = runtime_shell.shell.presentation_snapshot()?;
-    if boundary_snapshot.script_events.pending_text_label.is_some()
+    if boundary_snapshot.battle.is_some()
+        || boundary_snapshot.script_events.pending_text_label.is_some()
         || !boundary_snapshot.script_events.pending_delays.is_empty()
         || !boundary_snapshot
             .script_events
@@ -1180,6 +1189,11 @@ fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> R
     }
     if stepped.command == "waitsfx" {
         runtime_shell.visible_wait_sfx_boundary = true;
+    }
+    if let Some(crate::RuntimeCompiledScriptBoundary::PhoneCallasm(effect)) = stepped.boundary.as_ref() {
+        begin_visible_incoming_phone_sequence(runtime_shell, *effect)?;
+        arm_visible_active_script_cursor_from_run(runtime_shell, stepped.next_cursor.clone());
+        return Ok(());
     }
     if activate_visible_script_boundary_after_outcome(runtime_shell, &stepped.mutation)? {
         arm_visible_active_script_cursor_from_run(runtime_shell, stepped.next_cursor.clone());
@@ -2615,7 +2629,7 @@ fn activate_visible_special_routine_boundary(
                 runtime_shell.pc_item_cursor = None;
                 runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                     label: "PokecenterPCCantUseText".to_string(),
-                    details: vec!["BZZZT! YOU MUST HAVE A POKEMON TO USE THIS!".to_string()],
+                    details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterPCCantUseText")?,
                 });
                 queue_visible_shell_sound_effect(runtime_shell, "SFX_CHOOSE_PC_OPTION")?;
                 set_shell_action_status(runtime_shell, "CAN'T USE THE PC");
@@ -2631,10 +2645,7 @@ fn activate_visible_special_routine_boundary(
             runtime_shell.pc_hub_cursor = None;
             runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                 label: "PokecenterPCTurnOnText".to_string(),
-                details: vec![format!(
-                    "{} turned on the PC.",
-                    snapshot.trainer.player_name
-                )],
+                details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterPCTurnOnText")?,
             });
             queue_visible_shell_sound_effect(runtime_shell, "SFX_BOOT_PC")?;
             runtime_shell.pc_list_scroll = 0;
@@ -5909,6 +5920,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_player_name_return = None;
     runtime_shell.pokegear_phone_call = None;
     runtime_shell.incoming_phone_sequence = None;
+    runtime_shell.incoming_phone_contact = None;
     runtime_shell.pending_egg_hatch_nickname = None;
     runtime_shell.visible_field_item_notice = None;
     runtime_shell.pending_delete_save = None;
@@ -5928,6 +5940,8 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.battle_fainted_hud = [false; 2];
+    runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
     runtime_shell.visible_trainer_exit_animation = None;
     runtime_shell.visible_frontpic_animation = None;
@@ -6168,6 +6182,12 @@ fn reset_visible_battle_action_cursors(runtime_shell: &mut BevyRuntimeShell) {
 
 fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     reset_visible_battle_action_cursors(runtime_shell);
+    // Core commits a terminal turn before its LCD sequence has played. The
+    // queued attack, HP change, faint and reward narration still own that
+    // presentation; clearing them here skips the final hit and tile drop.
+    if !runtime_shell.battle_messages.is_empty() {
+        return;
+    }
     runtime_shell.party_move_cursor = None;
     runtime_shell.last_battle_cry_key = None;
     runtime_shell.pending_battle_cries_after_messages.clear();
@@ -6176,6 +6196,8 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_enemy_hp_at_player_send_out = None;
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.battle_fainted_hud = [false; 2];
+    runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
     runtime_shell.visible_trainer_exit_animation = None;
     runtime_shell.visible_frontpic_animation = None;

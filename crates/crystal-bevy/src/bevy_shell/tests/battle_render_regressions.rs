@@ -1,7 +1,31 @@
 #[test]
+fn battle_input_keeps_post_battle_map_script_suspended() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    sync_visible_battle_action_cursor(&mut shell);
+    arm_visible_active_script_cursor_with_origin(
+        &mut shell, "Route36", "WateredWeirdTreeScript", 13,
+    );
+    assert!(shell.active_script_cursor.is_some());
+    assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap());
+    execute_visible_active_script_step(&mut shell).unwrap();
+    assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap());
+    press_visible_a_button(&mut shell).unwrap();
+    assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap());
+    assert_eq!(shell.active_script_cursor.as_ref().unwrap().next_command_index, 13);
+    assert!(shell.last_action_status.as_deref().is_some_and(|s| s.starts_with("FIGHT MOVES")), "{:?}", shell.last_action_status);
+}
+
+#[test]
 fn battle_hp_corner_is_black_in_every_hp_palette() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -3257,7 +3281,7 @@ fn battle_redraw_retains_fixed_canvas_without_image_growth_even_if_overlay_rebui
 
 #[test]
 fn battle_trainer_preserves_authored_palette_colors() {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
     let assets = AssetRoot::new(root);
     let mut images = Assets::<Image>::default();
     let frame = load_oak_intro_frame(&assets, "battle-trainer:bug_catcher", &mut images)
@@ -3279,7 +3303,7 @@ fn battle_trainer_preserves_authored_palette_colors() {
 
 #[test]
 fn battle_animation_shared_graphics_use_authored_tile_offsets() {
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let mut art = RenderedTilesetArt::default();
     let bundle: serde_json::Value = serde_json::from_slice(
         &crate::read_runtime_asset(&assets.runtime_assets().join("data/battle_anim_bundle.json"))
@@ -3319,7 +3343,7 @@ fn battle_animation_shared_graphics_use_authored_tile_offsets() {
 }
 
 fn battle_anim_regression_bundle() -> serde_json::Value {
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     serde_json::from_slice(
         &crate::read_runtime_asset(&assets.runtime_assets().join("data/battle_anim_bundle.json"))
             .unwrap(),
@@ -3600,7 +3624,7 @@ fn battle_anim_enemy_mirrors_the_current_x_coordinate_and_offset() {
 #[test]
 fn battle_anim_string_yflip_is_only_applied_on_the_enemy_side() {
     let bundle = battle_anim_regression_bundle();
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let object = &bundle["objects"]["BATTLE_ANIM_OBJ_STRING_SHOT"];
     let frameset = "BATTLE_ANIM_FRAMESET_STRING_SHOT_1";
     let (i, frame) = battle_anim_frame_at_age(&bundle, frameset, 0)
@@ -3640,7 +3664,7 @@ fn battle_anim_string_yflip_is_only_applied_on_the_enemy_side() {
 #[test]
 fn battle_anim_overlapping_oam_entries_keep_the_first_opaque_pixel() {
     let mut bundle = battle_anim_regression_bundle();
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let object = bundle["objects"]["BATTLE_ANIM_OBJ_HIT"].clone();
     let frameset = object["frameset"].as_str().unwrap();
     let (i, frame) = battle_anim_frame_at_age(&bundle, frameset, 0)
@@ -4320,7 +4344,7 @@ fn battle_anim_incremental_playback_matches_uninterrupted_command_history() {
 #[test]
 fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector() {
     let bundle = battle_anim_regression_bundle();
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let animation = battle_anim_regression_timeline(
         vec![VisibleMoveObjectEvent {
             frame: 0,
@@ -4513,4 +4537,200 @@ fn battle_pokemon_positions_use_native_front_and_back_boxes() {
         .collect();
     assert!(positions.contains(&(96.0, 0.0, Vec2::splat(56.0))));
     assert!(positions.contains(&(16.0, 48.0, Vec2::splat(48.0))));
+}
+#[test]
+fn final_wild_attack_retains_move_and_faint_presentation_before_rewards() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    shell.battle_hp_tween = None;
+    {
+        let state = shell.shell.session_mut().state_mut();
+        let player = state.storage.party.pokemon[0].as_mut().unwrap();
+        player.moves = vec![crate::core::models::LearnedMove {
+            name: "SWIFT".into(), current_pp: 20, pp_ups: 0,
+        }];
+        state.sync_party_from_storage();
+        let crate::core::state::BattleMemory::StaticWild {
+            enemy_pokemon, enemy_party, ..
+        } = &mut state.battle else { panic!("static wild fixture"); };
+        enemy_pokemon.hp = 1;
+        // A faster opponent must not KO itself with Struggle recoil before
+        // the finishing player attack that this test is meant to exercise.
+        enemy_pokemon.moves = vec![crate::core::models::LearnedMove {
+            name: "SPLASH".into(), current_pp: 40, pp_ups: 0,
+        }];
+        enemy_party[0] = enemy_pokemon.clone();
+        state.script_runtime.active_battle_combat = None;
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    resolve_visible_battle_move(&mut shell, 0).unwrap();
+    assert!(shell.battle_messages.iter().any(|message| message.contains("fainted!")),
+        "the actual turn must defeat the final opponent: {:?}", shell.battle_messages);
+    assert!(shell.visible_move_animations.iter().any(|animation| animation.move_id == "SWIFT"),
+        "settling final rewards must retain the finishing attack animation: animations={:?}, events={:?}",
+        shell.visible_move_animations.iter().map(|animation| &animation.move_id).collect::<Vec<_>>(),
+        shell.last_audio_events);
+    assert!(shell.visible_move_animations.iter().any(|animation| animation.move_id == "FAINT_MON"),
+        "settling final rewards must retain the authored faint animation");
+    assert_eq!(shell.battle_message_scene.as_ref().unwrap().battle.as_ref().unwrap().enemy_pokemon.hp, 1,
+        "the finishing move begins with the pre-damage battler visible");
+    let faint = shell.visible_move_animations.iter().find(|animation| animation.move_id == "FAINT_MON").unwrap();
+    assert_eq!(faint.sound_events, vec![(0, "SFX_KINESIS".to_string()), (14, "SFX_FAINT".to_string())],
+        "FaintEnemyPokemon plays KINESIS before the tile drop and FAINT afterward");
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    save_live_battle_canvas_for_test(app.world_mut(), "final-hit-before.png");
+    let mut saw_faint = false;
+    let mut saw_finishing_move = false;
+    let mut finished_faint = false;
+    let mut captured_frames = std::collections::BTreeSet::new();
+    for _ in 0..2000 {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if shell.visible_move_animations.front().is_some_and(|animation|
+            animation.started && animation.move_id == "SWIFT" && animation.frame == 0)
+        {
+            saw_finishing_move = true;
+            save_live_battle_canvas_for_test(app.world_mut(), "final-move-swift.png");
+            let canvas = render_live_battle_canvas_for_test(app.world_mut(), "finishing move HUD");
+            assert_eq!(*canvas.get_pixel(400, 376), image::Rgba([255, 255, 255, 255]),
+                "BattleAnimClearHud erases the attacking player's HUD before SWIFT");
+        }
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let faint_frame = shell.visible_move_animations.front()
+            .filter(|animation| animation.started && animation.move_id == "FAINT_MON")
+            .map(|animation| animation.frame);
+        let faint_pending = shell.visible_move_animations.iter()
+            .any(|animation| animation.move_id == "FAINT_MON");
+        let between_animations = !shell.visible_move_animations.front()
+            .is_some_and(|animation| animation.started);
+        if faint_pending && between_animations {
+            let world = app.world_mut();
+            assert!(world.query_filtered::<&Transform, With<BattleBattlerMarker>>()
+                .iter(world).any(|transform| transform.translation.x > 0.0),
+                "zero HP must not remove the opponent before its pending faint animation");
+        }
+        if let Some(frame) = faint_frame {
+            saw_faint = true;
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert_eq!(shell.battle_message_scene.as_ref().unwrap().battle.as_ref().unwrap().enemy_pokemon.hp, 0,
+                "the damage scene must reach zero HP before the faint drop");
+            if let Some(tween) = &shell.battle_hp_tween {
+                assert_eq!(tween.enemy_pixels, 0, "the HP bar must empty before the faint drop");
+            }
+            let canvas = render_live_battle_canvas_for_test(app.world_mut(), "faint speech box");
+            assert!((384..416).any(|y| (16..624).any(|x| canvas.get_pixel(x, y).0[..3] == [0, 0, 0])),
+                "the source speech-box top border must remain during the faint animation");
+            if [0, 6, 12].contains(&frame) && captured_frames.insert(frame) {
+                save_live_battle_canvas_for_test(app.world_mut(), &format!("final-faint-{frame:02}.png"));
+            }
+        } else if saw_faint && !faint_pending {
+            save_live_battle_canvas_for_test(app.world_mut(), "final-faint-after.png");
+            let world = app.world_mut();
+            let mut battlers = world.query_filtered::<&Transform, With<BattleBattlerMarker>>();
+            assert!(!battlers.iter(world).any(|transform| transform.translation.x > 0.0),
+                "the defeated opponent must remain absent after the faint animation");
+            let canvas = render_live_battle_canvas_for_test(world, "post-faint HUD");
+            for y in 0..128 {
+                for x in 32..352 {
+                    assert_eq!(*canvas.get_pixel(x, y), image::Rgba([255, 255, 255, 255]),
+                        "FaintEnemyPokemon clears the source HUD rectangle after the tile drop at ({x},{y})");
+                }
+            }
+            finished_faint = true;
+            break;
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(saw_finishing_move, "finishing SWIFT must be rendered");
+    assert!(saw_faint && finished_faint,
+        "the live frame loop must play and complete the final faint: messages={:?}, animations={:?}, events={:?}",
+        shell.battle_messages,
+        shell.visible_move_animations.iter().map(|animation| (&animation.move_id, animation.started, animation.frame)).collect::<Vec<_>>(),
+        shell.last_audio_events);
+
+    for _ in 0..2000 {
+        if app.world().resource::<BevyRuntimeShell>().battle_messages.is_empty() { break; }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.battle_messages.is_empty(), "reward narration must finish");
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap(),
+        "acknowledging the last reward must resume the suspended map script without another A");
+}
+
+fn save_live_battle_canvas_for_test(world: &mut World, name: &str) {
+    let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else { return; };
+    let canvas = render_live_battle_canvas_for_test(world, name);
+    std::fs::create_dir_all(&directory).unwrap();
+    canvas.save(PathBuf::from(directory).join(name)).unwrap();
+}
+
+fn render_live_battle_canvas_for_test(world: &mut World, name: &str) -> image::RgbaImage {
+    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>),
+        Or<(With<BattleBattlerMarker>, With<BattleHudMarker>, With<BattleCommandMarker>)>>()
+        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+        .collect::<Vec<_>>();
+    let mut lcd = World::new();
+    for sprite in sprites { lcd.spawn(sprite); }
+    render_pc_audit_canvas(&mut lcd, world.resource::<Assets<Image>>(), name)
+}
+
+#[test]
+fn battle_browser_fixture_starts_from_overworld_interaction() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: "Route36".into(), tile_x: 35, tile_y: 10,
+        }, BevyShellConfig { smoke_player_name: Some("TEST".into()), ..Default::default() }).unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
+    let player_id = shell.shell.session().state().player_id;
+    shell.shell.add_party_pokemon("MEWTWO", 100, None, None, "TEST", player_id,
+        Dv::from_non_hp(10, 10, 10, 10)).unwrap();
+    {
+        let state = shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0].as_mut().unwrap().moves = vec![
+            crate::core::models::LearnedMove { name: "SWIFT".into(), current_pp: 20, pp_ups: 0 },
+        ];
+        state.sync_party_from_storage();
+    }
+    shell.shell.add_bag_item("SQUIRTBOTTLE", 1).unwrap();
+    settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
+    shell.shell.session.overworld.player.facing = Direction::Up;
+    assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
+        Some("SudowoodoScript".into()));
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("battle-browser.crystalsave")).unwrap();
+    }
+    let mut app = menu_render_test_app(shell);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowUp);
+    let mut saw_faint = false;
+    for _ in 0..3000 {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        saw_faint |= shell.battle_messages.iter().any(|m| m.contains("fainted!"));
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if saw_faint && shell.battle_messages.is_empty() { break; }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    for _ in 0..200 { app.update(); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert!(saw_faint, "real encounter must reach final faint");
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap(),
+        "real encounter continuation: cursor={:?}, events={:?}, ui={:?}, special={:?}, scene={}, exp={:?}, messages={:?}",
+        shell.active_script_cursor, snapshot.script_events, snapshot.ui, shell.special_boundary,
+        shell.battle_message_scene.is_some(), shell.battle_exp_tween, shell.battle_messages);
 }

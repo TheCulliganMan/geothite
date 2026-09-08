@@ -391,7 +391,12 @@ fn execute_visible_battle_pack_action(runtime_shell: &mut BevyRuntimeShell) -> R
 
 fn close_visible_field_pack_from_cancel(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, "pack:cancel")?;
+    let return_to_party = runtime_shell.party_held_item_give_target.is_some();
     close_visible_field_pack_without_log(runtime_shell);
+    if return_to_party {
+        // GiveTakePartyMonItem returns to StartMenu_Pokemon.choosemenu.
+        open_visible_party_menu(runtime_shell)?;
+    }
     set_shell_action_status(runtime_shell, "PACK CLOSED");
     continue_visible_script_after_prompt(runtime_shell)
 }
@@ -2079,30 +2084,20 @@ fn complete_visible_scripted_wild_battle(
             origin.map_name, origin.source_script, origin.startbattle_command_index
         ),
     )?;
-    let completed = runtime_shell
-        .shell
-        .complete_scripted_wild_battle_and_run_compiled_script(
-            origin.clone(),
-            256,
-            ScriptRuntimeInputs::default(),
-            ScriptPhoneInputs::default(),
-        )?;
-    let completion = completed.completion;
+    let completion = runtime_shell.shell.complete_scripted_wild_battle(origin.clone())?;
+    runtime_shell.active_script_cursor = Some(ActiveScriptCursor {
+        origin_map_name: origin.map_name.clone(),
+        source_script: origin.source_script.clone(),
+        next_command_index: origin.resume_command_index,
+    });
     runtime_shell.last_audio_events.push(format!(
-        "scripted wild complete source={} reload={} resumed_steps={} checksum={:?}",
+        "scripted wild complete source={} checksum={:?}",
         origin.source_script,
-        completed
-            .run
-            .steps
-            .iter()
-            .any(|step| step.command == "reloadmapafterbattle"),
-        completed.run.steps.len(),
         completion.state_checksum
     ));
-    let reached_boundary =
-        integrate_visible_compiled_script_run(runtime_shell, &completed.run.steps)?;
-    arm_visible_active_script_cursor_from_run(runtime_shell, completed.run.next_cursor);
-    if reached_boundary {
+    // startbattle returns only after its attack, faint, and reward presentation.
+    // Running reloadmapafterbattle now would reset that pending LCD sequence.
+    if !runtime_shell.battle_messages.is_empty() {
         return Ok(());
     }
     continue_visible_script_after_prompt(runtime_shell)?;

@@ -16,6 +16,8 @@ fn prepare_visible_battle_entry_with_music_reset(
     runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.battle_fainted_hud = [false; 2];
+    runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
     runtime_shell.visible_trainer_exit_animation = None;
     runtime_shell.visible_frontpic_animation = None;
@@ -645,7 +647,10 @@ fn advance_visible_move_animation(runtime_shell: &mut BevyRuntimeShell) -> Resul
         (animation.frame >= animation.total_frames).then(|| animation.trigger_message.clone())
     };
     if let Some(trigger_message) = finished_trigger {
-        runtime_shell.visible_move_animations.pop_front();
+        let completed = runtime_shell.visible_move_animations.pop_front().unwrap();
+        if completed.move_id == "FAINT_MON" {
+            runtime_shell.battle_fainted_hud[usize::from(!completed.player_move)] = true;
+        }
         let completed_before_trigger_message = runtime_shell
             .battle_messages
             .front()
@@ -1000,6 +1005,7 @@ fn advance_visible_trainer_exit_animation(runtime_shell: &mut BevyRuntimeShell) 
         runtime_shell.visible_trainer_exit_animation = None;
         if start_send_out {
             let shiny = visible_send_out_side_is_shiny(runtime_shell, side)?;
+            runtime_shell.battle_fainted_hud[usize::from(side == crate::core::battle::turn::BattleSide::Enemy)] = false;
             runtime_shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
                 side,
                 frame: 0,
@@ -2625,6 +2631,7 @@ fn advance_visible_pc_release_sequence(
 
 fn close_visible_party_detail_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.party_menu_open = false;
+    runtime_shell.party_return_start_menu_cursor = None;
     runtime_shell.party_summary_open = false;
     runtime_shell.party_action_cursor = None;
     runtime_shell.party_give_take_cursor = None;
@@ -8708,6 +8715,8 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
         false.hash(&mut hasher);
     }
     runtime_shell.visible_move_animations.hash(&mut hasher);
+    runtime_shell.battle_fainted_hud.hash(&mut hasher);
+    runtime_shell.battle_retained_text.hash(&mut hasher);
     runtime_shell.visible_send_out_animation.hash(&mut hasher);
     runtime_shell
         .visible_trainer_exit_animation
@@ -8916,6 +8925,7 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.pokegear_phone_status.hash(&mut hasher);
     runtime_shell.pokegear_phone_call.hash(&mut hasher);
     runtime_shell.incoming_phone_sequence.hash(&mut hasher);
+    runtime_shell.incoming_phone_contact.hash(&mut hasher);
     runtime_shell.pokegear_page.hash(&mut hasher);
     runtime_shell.pokegear_radio_tuning_knob.hash(&mut hasher);
     runtime_shell.pokegear_radio_station.hash(&mut hasher);

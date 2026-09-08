@@ -1,7 +1,7 @@
 #[test]
 fn integrated_title_launch_schedule_renders_menu_and_starts_music() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -82,7 +82,7 @@ fn integrated_title_launch_schedule_renders_menu_and_starts_music() {
 #[test]
 fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movement() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -331,7 +331,7 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
 #[test]
 fn integrated_players_house_first_floor_renders_after_bedroom_warp() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -383,7 +383,7 @@ fn integrated_players_house_first_floor_renders_after_bedroom_warp() {
 #[test]
 fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -559,7 +559,7 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
 #[test]
 fn integrated_players_house_decoration_menu_sets_up_owned_bed_and_reloads_room() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -708,7 +708,7 @@ fn integrated_players_house_decoration_menu_sets_up_owned_bed_and_reloads_room()
 #[test]
 fn integrated_players_house_bookshelf_renders_dialogue_from_the_live_compiled_pack() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -843,7 +843,7 @@ fn integrated_players_house_bookshelf_renders_dialogue_from_the_live_compiled_pa
 #[test]
 fn blocked_bookshelf_direction_turns_player_without_moving() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -1096,7 +1096,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
         ),
     ] {
         let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../..")
+            .join("../..")
             .canonicalize()
             .expect("repository root");
         let asset_root = AssetRoot::new(repo_root);
@@ -1523,7 +1523,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
 #[test]
 fn integrated_title_to_start_menu_schedule_renders_and_selects_with_live_keys() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -1674,7 +1674,7 @@ fn integrated_title_to_start_menu_schedule_renders_and_selects_with_live_keys() 
 #[test]
 fn trainer_card_border_uses_the_asm_opposite_gender_palette() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -1716,7 +1716,7 @@ fn trainer_card_border_uses_the_asm_opposite_gender_palette() {
 #[test]
 fn integrated_title_option_entry_opens_options_before_new_game() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -2156,7 +2156,7 @@ fn integrated_party_menu_renders_and_confirms_cancel_row() {
 #[test]
 fn integrated_title_to_options_menu_schedule_renders_and_changes_with_live_keys() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -2375,7 +2375,7 @@ fn integrated_title_to_options_menu_schedule_renders_and_changes_with_live_keys(
 #[test]
 fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let save_path = std::env::temp_dir().join(format!(
@@ -2558,7 +2558,7 @@ fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
 #[test]
 fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let save_path = std::env::temp_dir().join(format!(
@@ -2744,7 +2744,7 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
 #[test]
 fn continue_consumes_post_credits_marker_and_warps_to_new_bark() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let save_path = std::env::temp_dir().join(format!(
@@ -2805,7 +2805,7 @@ fn continue_consumes_post_credits_marker_and_warps_to_new_bark() {
 #[test]
 fn continue_consumes_red_post_credits_marker_and_warps_to_mt_silver() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let save_path = std::env::temp_dir().join(format!(
@@ -2871,7 +2871,7 @@ fn continue_consumes_red_post_credits_marker_and_warps_to_mt_silver() {
 #[test]
 fn integrated_title_mystery_gift_entry_requires_unlocked_save() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let save_path = std::env::temp_dir().join(format!(
@@ -3055,9 +3055,21 @@ fn integrated_title_mystery_gift_entry_requires_unlocked_save() {
     let _ = std::fs::remove_file(&save_path);
 }
 
+fn save_live_pc_dialog_for_test(world: &mut World, name: &str) {
+    let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else { return; };
+    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>), With<SceneDialogMarker>>()
+        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+        .collect::<Vec<_>>();
+    let mut dialog = World::new();
+    for sprite in sprites { dialog.spawn(sprite); }
+    let canvas = render_pc_audit_canvas(&mut dialog, world.resource::<Assets<Image>>(), name);
+    std::fs::create_dir_all(&directory).unwrap();
+    canvas.save(PathBuf::from(directory).join(name)).unwrap();
+}
+
 #[test]
 fn integrated_pokecenter_pc_opens_from_collision() {
-    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap());
     let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
     let mut shell = initialize_bevy_runtime_shell(
@@ -3072,6 +3084,7 @@ fn integrated_pokecenter_pc_opens_from_collision() {
         BevyShellConfig { smoke_player_name: Some("TEST".to_string()), ..Default::default() },
     )
     .unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
     shell.shell.session.overworld.player.facing = Direction::Up;
     shell
         .shell
@@ -3093,7 +3106,11 @@ fn integrated_pokecenter_pc_opens_from_collision() {
             .map(|i| i.script),
         Some("PCScript".to_string())
     );
-    let mut app = integrated_shell_test_app(shell);
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("pc-browser.crystalsave")).unwrap();
+    }
+    let mut app = menu_render_test_app(shell);
     app.update();
     app.update();
     // Walk against the PC before interacting, as on the touch controls.
@@ -3109,6 +3126,9 @@ fn integrated_pokecenter_pc_opens_from_collision() {
         shell.last_audio_events,
         shell.shell.current_overworld_interaction_checked()
     );
+    assert!(shell.special_boundary.is_some(), "PC boot text must remain visible: {:?}", shell.last_audio_events);
+    assert_eq!(shell.special_boundary.as_ref().unwrap().details,
+        vec!["TEST turned on\nthe PC.".to_string()], "PC boot keeps the source line break");
     let snapshot = shell.shell.presentation_snapshot().unwrap();
     assert!(
         visible_field_dialog_pages(&snapshot, shell).is_some(),
@@ -3147,6 +3167,7 @@ fn integrated_pokecenter_pc_opens_from_collision() {
             .iter(world).any(|sprite| sprite.custom_size == Some(Vec2::new(14.0 * TILE_SIZE, 11.0 * TILE_SIZE))),
             "The PC chooser must render its full menu window");
     }
+    save_live_pc_dialog_for_test(app.world_mut(), "pc-hub.png");
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     for _ in 0..128 {
         if app.world().resource::<BevyRuntimeShell>().special_boundary.is_none() { break; }
@@ -3156,6 +3177,19 @@ fn integrated_pokecenter_pc_opens_from_collision() {
     assert_eq!(shell.last_error, None);
     assert!(shell.bill_pc_action_cursor.is_some(), "A must select Bill's PC instead of advancing PCScript");
     let _ = shell;
+    app.update();
+    assert!(app.world().resource::<RenderedTilesetArt>().font_error.is_none(),
+        "all five source PC rows must render, including MOVE <PK><MN> W/O MAIL");
+    {
+        let world = app.world_mut();
+        let rows = world.query_filtered::<&Transform, With<DialogGlyphMarker>>()
+            .iter(world).map(|transform| transform.translation.y).collect::<Vec<_>>();
+        assert!(!rows.contains(&battle_hud_tile_origin(1.0, 3.0).1),
+            "Bill's PC keeps an empty tile row between each source menu option: {rows:?}");
+        assert!(rows.contains(&battle_hud_tile_origin(1.0, 10.0).1),
+            "Bill's PC must render SEE YA on source row 10");
+    }
+    save_live_pc_dialog_for_test(app.world_mut(), "pc-bills-menu.png");
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
     let selected = app.world().resource::<BevyRuntimeShell>().pc_hub_cursor.as_ref().unwrap().option_index;
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);

@@ -4116,10 +4116,14 @@ fn begin_map_object_setup(session: &mut OverworldSession, state: &GameState) {
     session.begin_map_object_setup();
 }
 
-fn finish_map_object_setup(session: &mut OverworldSession) -> Result<()> {
+fn finish_map_object_setup(session: &mut OverworldSession, state: &mut GameState) -> Result<()> {
     session
         .finish_map_object_setup()
-        .map_err(|error| anyhow::anyhow!("initialize visible map objects: {error}"))
+        .map_err(|error| anyhow::anyhow!("initialize visible map objects: {error}"))?;
+    // Callbacks run before InitializeVisibleSprites. Persist the allocated
+    // structs afterward so an immediate save retains the same live objects.
+    sync_state_object_overrides(state, session)
+        .context("persist initialized map object structs")
 }
 
 fn reset_map_bike_flags(state: &mut GameState) -> Result<()> {

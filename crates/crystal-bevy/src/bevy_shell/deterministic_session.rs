@@ -1082,6 +1082,16 @@ fn apply_keyboard_input(
             return;
         }
     }
+    // FaintEnemyPokemon/FaintYourPokemon animate before printing faint text.
+    // HPBarAnim must finish first; the preceding speech remains on the LCD.
+    let start_faint = runtime_shell.visible_move_animations.front().is_some_and(|animation| {
+        animation.move_id == "FAINT_MON" && !animation.started
+            && runtime_shell.battle_messages.front() == Some(&animation.trigger_message)
+    }) && !runtime_shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active);
+    if start_faint {
+        runtime_shell.visible_move_animations.front_mut().unwrap().started = true;
+        mark_runtime_snapshot_dirty(&mut runtime_shell);
+    }
     if !runtime_shell.battle_messages.is_empty()
         && !runtime_shell
             .visible_move_animations
@@ -4460,6 +4470,7 @@ fn apply_visible_runtime_controls(
     advance_repeat: bool,
 ) {
     if runtime_shell.visible_script_movement.is_some()
+        || runtime_shell.incoming_phone_sequence.is_some()
         || visible_noninteractive_field_animation_owns_input(runtime_shell)
         || visible_noninteractive_battle_animation_owns_input(runtime_shell)
     {
@@ -4521,6 +4532,43 @@ fn apply_visible_runtime_controls(
     let alt_pressed = keys.pressed(KeyCode::AltLeft) || keys.pressed(KeyCode::AltRight);
     let ctrl_pressed = keys.pressed(KeyCode::ControlLeft) || keys.pressed(KeyCode::ControlRight);
     let plain_input = !alt_pressed && !ctrl_pressed && !shift_pressed;
+    if runtime_shell.party_menu_open && runtime_shell.party_summary_open {
+        // StatsScreen_GetJoypad reads hJoyPressed, not JoyTextDelay. One
+        // fresh sample takes exactly one branch of StatsScreen_JoypadAction;
+        // a held arrow must not repeat or combine a page change with A.
+        runtime_shell.ui_held_direction = None;
+        runtime_shell.ui_direction_repeat_ticks = 0;
+        if !plain_input { return; }
+        let egg = runtime_shell.shell.session().state().storage.party.pokemon
+            .get(runtime_shell.party_cursor)
+            .and_then(Option::as_ref)
+            .is_some_and(|pokemon| pokemon.is_egg);
+        let key = if egg {
+            // EggStatsJoypad handles A first, then masks out Left/Right.
+            [KeyCode::KeyZ, KeyCode::KeyX, KeyCode::ArrowUp, KeyCode::ArrowDown]
+                .into_iter().find(|key| keys.just_pressed(*key))
+        } else {
+            [KeyCode::KeyX, KeyCode::ArrowLeft, KeyCode::ArrowRight,
+             KeyCode::KeyZ, KeyCode::ArrowUp, KeyCode::ArrowDown]
+                .into_iter().find(|key| keys.just_pressed(*key))
+        };
+        match key {
+            Some(KeyCode::KeyX) if !runtime_shell.field_text_consumed_b =>
+                run_bevy_action(runtime_shell, press_visible_b_button),
+            Some(KeyCode::KeyZ) if !runtime_shell.field_text_consumed_a =>
+                run_bevy_action(runtime_shell, press_visible_a_button),
+            Some(KeyCode::ArrowLeft) => run_bevy_nonadvancing_action(runtime_shell,
+                |shell| cycle_visible_party_summary_page(shell, -1)),
+            Some(KeyCode::ArrowRight) => run_bevy_nonadvancing_action(runtime_shell,
+                |shell| cycle_visible_party_summary_page(shell, 1)),
+            Some(KeyCode::ArrowUp) => run_bevy_nonadvancing_action(runtime_shell,
+                |shell| move_visible_party_summary_pokemon(shell, -1)),
+            Some(KeyCode::ArrowDown) => run_bevy_nonadvancing_action(runtime_shell,
+                |shell| move_visible_party_summary_pokemon(shell, 1)),
+            _ => {}
+        }
+        return;
+    }
     if keys.just_pressed(KeyCode::KeyZ)
         || keys.just_pressed(KeyCode::KeyX)
         || keys.just_pressed(KeyCode::Enter)
@@ -4586,7 +4634,19 @@ fn apply_visible_runtime_controls(
         && !runtime_shell.field_text_consumed_a
     {
         match has_visible_shell_a_action(runtime_shell) {
-            Ok(true) => run_bevy_action(runtime_shell, press_visible_a_button),
+            Ok(true) => {
+                let pokegear_was_open = runtime_shell.pokegear_menu_open;
+                run_bevy_action(runtime_shell, press_visible_a_button);
+                if !pokegear_was_open && runtime_shell.pokegear_menu_open {
+                    // A menu confirmation can span many source frames on a
+                    // touchscreen. Only buttons held at entry are suppressed,
+                    // until release; new card inputs still work immediately.
+                    runtime_shell.pokegear_opening_buttons = visible_menu_physical_down(keys)
+                        & (crate::core::input::B_PAD_A | crate::core::input::B_PAD_B
+                            | crate::core::input::B_PAD_SELECT | crate::core::input::B_PAD_START);
+                    return;
+                }
+            },
             Ok(false) => {}
             Err(error) => {
                 record_visible_runtime_error(runtime_shell, &error);
@@ -4962,6 +5022,9 @@ fn visible_non_text_player_boundary(
     runtime_shell: &BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> bool {
+    if runtime_shell.incoming_phone_sequence.is_some() {
+        return true;
+    }
     runtime_shell
         .visible_script_delay_frames
         .is_some_and(|frames| frames > 0)
@@ -5000,8 +5063,11 @@ fn visible_non_text_player_boundary(
         || runtime_shell.elevator_cursor.is_some()
         || visible_menu_has_selectable_options(snapshot)
         || snapshot.battle.is_some()
+        || runtime_shell.battle_message_scene.is_some()
+        || !runtime_shell.battle_messages.is_empty()
         || runtime_shell.start_menu_cursor.is_some()
         || runtime_shell.party_menu_open
+        || runtime_shell.trainer_card_open
         || runtime_shell.pokedex_menu_open
         || runtime_shell.pokegear_menu_open
         || runtime_shell.options_menu_open
@@ -5082,6 +5148,7 @@ fn close_visible_noninteractive_runtime_surface(
     // Pokegear map screen. Auto-closing that core marker here erased the map
     // in the same continuation pass that opened it.
     if runtime_shell.pokegear_menu_open
+        || runtime_shell.pc_hub_session_open
         || runtime_shell.visible_heal_machine.is_some()
         || runtime_shell.visible_magnet_train.is_some()
     {
@@ -5130,6 +5197,7 @@ fn finish_visible_empty_battle_reward_presentation(
     }
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     if snapshot.battle.is_none() {
+        reset_visible_battle_exit_state(runtime_shell);
         runtime_shell.battle_message_scene = None;
         runtime_shell.battle_hp_tween = None;
         runtime_shell.battle_fanfare_messages.clear();
@@ -5140,6 +5208,8 @@ fn finish_visible_empty_battle_reward_presentation(
         queue_visible_current_music(runtime_shell)?;
         if runtime_shell.pending_plain_battle_map_reload {
             begin_visible_plain_battle_map_reload(runtime_shell)?;
+        } else {
+            continue_visible_script_after_prompt(runtime_shell)?;
         }
         mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(true);
@@ -5628,6 +5698,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
         let staged_scenes_aligned =
             runtime_shell.battle_message_scenes.len() == runtime_shell.battle_messages.len();
+        runtime_shell.battle_retained_text = visible_battle_message_lines(runtime_shell, runtime_shell.battle_messages.front().unwrap());
         let dismissed_battle_message = runtime_shell.battle_messages.pop_front();
         runtime_shell.battle_text_reveal = None;
         if let Some(animation) = runtime_shell.visible_capture_animation.as_mut()
@@ -5694,7 +5765,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             });
         if starts_exp_animation {
             let tween = runtime_shell.battle_exp_tween.as_mut().unwrap();
-            if tween.pixels == tween.target_pixels {
+            if tween.pixels == tween.target_pixels && !tween.remaining_targets.is_empty() {
                 tween.pixels = 0;
                 tween.target_pixels = tween
                     .remaining_targets
@@ -5869,6 +5940,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 crate::core::battle::turn::BattleSide::Player
             };
             let shiny = visible_send_out_side_is_shiny(runtime_shell, side)?;
+            runtime_shell.battle_fainted_hud[usize::from(side == crate::core::battle::turn::BattleSide::Enemy)] = false;
             runtime_shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
                 side,
                 frame: 0,
@@ -6035,6 +6107,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                             && !battle.enemy_spikes_zero_hp_unchecked
                     });
             if terminal_scene {
+                reset_visible_battle_exit_state(runtime_shell);
                 runtime_shell.battle_hp_tween = None;
                 runtime_shell.battle_exp_tween = None;
                 runtime_shell.pending_battle_exp_tweens.clear();
@@ -6047,6 +6120,8 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 queue_visible_current_music(runtime_shell)?;
                 if runtime_shell.pending_plain_battle_map_reload {
                     begin_visible_plain_battle_map_reload(runtime_shell)?;
+                } else {
+                    continue_visible_script_after_prompt(runtime_shell)?;
                 }
             }
             if resume_trainer_settlement {
@@ -6431,7 +6506,8 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     }
     // PokemonCenterPC owns input until its hub and submenus close. The
     // suspended PCScript cursor points at closetext, not a menu action.
-    if !runtime_shell.pc_hub_session_open {
+    // Battles likewise own input until their suspended map script resumes.
+    if !runtime_shell.pc_hub_session_open && snapshot.battle.is_none() {
         if advance_visible_next_pending_script_request(runtime_shell, &snapshot)? {
             return Ok(());
         };
@@ -7645,6 +7721,9 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             close_visible_field_pack_action_menu(runtime_shell);
             return Ok(());
         }
+        if runtime_shell.party_held_item_give_target.is_some() {
+            return close_visible_field_pack_from_cancel(runtime_shell);
+        }
         record_visible_runtime_action(runtime_shell, "pack:close")?;
         runtime_shell.bag_cursor = None;
         runtime_shell.key_item_cursor = None;
@@ -7732,7 +7811,7 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             return Ok(());
         }
         record_visible_runtime_action(runtime_shell, "party:close")?;
-        close_visible_party_menu(runtime_shell);
+        exit_visible_party_menu(runtime_shell);
         continue_visible_script_after_prompt(runtime_shell)?;
         return Ok(());
     }
@@ -8794,6 +8873,9 @@ fn has_visible_shell_select_action(runtime_shell: &mut BevyRuntimeShell) -> bool
 }
 
 fn has_visible_shell_start_action(runtime_shell: &mut BevyRuntimeShell) -> bool {
+    if runtime_shell.pokedex_menu_open {
+        return true;
+    }
     if runtime_shell.visible_unown_puzzle.is_some() {
         return true;
     }
@@ -9972,6 +10054,14 @@ fn close_visible_diploma(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     const MAX_CONTINUE_STEPS: usize = 2048;
     for _ in 0..MAX_CONTINUE_STEPS {
+        if !runtime_shell.battle_messages.is_empty() { return Ok(()); }
+        // PokemonCenterPC owns its synchronous special until the user exits.
+        if runtime_shell.pc_hub_session_open { return Ok(()); }
+        // RingTwice_StartCall and HangUp are synchronous ASM calls. Only
+        // their presentation timer may release the script continuation.
+        if runtime_shell.incoming_phone_sequence.is_some() {
+            return Ok(());
+        }
         if close_visible_noninteractive_runtime_surface(runtime_shell)? {
             continue;
         }

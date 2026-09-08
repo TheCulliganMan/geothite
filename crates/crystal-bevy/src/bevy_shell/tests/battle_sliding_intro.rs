@@ -101,6 +101,7 @@ fn battle_sliding_intro_renders_trainer_and_wild_without_hud_or_cry() {
             assert!(transform.translation.x - width * 0.5 >= PLAYFIELD_LEFT);
             assert!(transform.translation.x + width * 0.5 <= PLAYFIELD_LEFT + PLAYFIELD_WIDTH);
         }
+        save_live_battle_canvas_for_test(world, &format!("intro-{kind}-36.png"));
         let image_count = world.resource::<Assets<Image>>().len();
         {
             let mut shell = world.resource_mut::<BevyRuntimeShell>();
@@ -108,6 +109,7 @@ fn battle_sliding_intro_renders_trainer_and_wild_without_hud_or_cry() {
             mark_runtime_snapshot_dirty(&mut shell);
         }
         app.update();
+        save_live_battle_canvas_for_test(app.world_mut(), &format!("intro-{kind}-72.png"));
         assert_eq!(
             app.world().resource::<Assets<Image>>().len(),
             image_count,

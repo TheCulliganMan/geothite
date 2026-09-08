@@ -2711,6 +2711,7 @@ fn spawn_battle_battler_markers(
     trainer_exit_animation: Option<&VisibleTrainerExitAnimation>,
     frontpic_animation: Option<&VisibleFrontpicAnimation>,
     move_animation: Option<&VisibleMoveAnimation>,
+    pending_faint_sides: [bool; 2],
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
@@ -2747,10 +2748,11 @@ fn spawn_battle_battler_markers(
                 battle.enemy_spikes_zero_hp_unchecked
             }
         };
-        if hp == 0 && unchecked_spikes_ko {
+        let faint_pending = pending_faint_sides[usize::from(side == crate::core::battle::turn::BattleSide::Enemy)];
+        if hp == 0 && (unchecked_spikes_ko || faint_pending) {
             1
         } else {
-            visible_faint_animation_render_hp(move_animation, side, hp)
+            hp
         }
     };
     let active_player_pokemon = battle
@@ -3160,22 +3162,14 @@ fn spawn_battle_battler_markers(
     Ok(())
 }
 
-fn visible_faint_animation_render_hp(
-    move_animation: Option<&VisibleMoveAnimation>,
-    side: crate::core::battle::turn::BattleSide,
-    hp: u16,
-) -> u16 {
-    if hp == 0
-        && move_animation.is_some_and(|animation| {
-            animation.started
-                && animation.animation_label == "BattleAnim_FaintMon"
-                && animation.player_move == (side == crate::core::battle::turn::BattleSide::Player)
-        })
-    {
-        1
-    } else {
-        hp
+fn visible_pending_faint_sides(shell: &BevyRuntimeShell) -> [bool; 2] {
+    let mut sides = [false; 2];
+    for animation in &shell.visible_move_animations {
+        if animation.move_id == "FAINT_MON" {
+            sides[usize::from(!animation.player_move)] = true;
+        }
     }
+    sides
 }
 
 fn normalize_battle_trainer_sprite_id(trainer_class: &str) -> String {
@@ -3882,6 +3876,38 @@ fn battle_substitute_frames<'a>(
                 .clone()
                 .unwrap_or_else(|| "battle substitute art is unavailable".to_string())
         })
+}
+
+fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeShell) {
+    // BattleAnimClearHud removes the actor's HUD during actual moves.
+    // FaintYourPokemon/FaintEnemyPokemon erase the same boxes after the drop
+    // and keep them erased until the next send-out.
+    let mut cleared = shell.battle_fainted_hud;
+    if let Some(animation) = shell.visible_move_animations.front().filter(|animation|
+        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id))
+    {
+        cleared[usize::from(!animation.player_move)] = true;
+    }
+    for (cleared, left, top, width, height) in [
+        (cleared[0], 9.0, 7.0, 11.0, 5.0),
+        (cleared[1], 1.0, 0.0, 10.0, 4.0),
+    ] {
+        if !cleared { continue; }
+        let (x, y) = field_window_center(left, top, width, height);
+        commands.spawn((
+            SpriteBundle {
+                sprite: Sprite {
+                    color: Color::WHITE,
+                    custom_size: Some(Vec2::new(width * TILE_SIZE, height * TILE_SIZE)),
+                    ..default()
+                },
+                transform: Transform::from_xyz(x, y, 3.8),
+                ..default()
+            },
+            BattleHudMarker,
+            BattleCommandMarker,
+        ));
+    }
 }
 
 fn spawn_battle_hud(
@@ -5711,7 +5737,7 @@ fn spawn_battle_command_menu(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     require_bitmap_font_art(rendered_art, asset_root, images)?;
-    if visible_battle_command_animation_active(runtime_shell) {
+    if runtime_shell.visible_battle_sliding_intro.is_some() {
         return Ok(());
     }
     if battle_window_frame_art(rendered_art, asset_root, images).is_none() {
@@ -5724,6 +5750,17 @@ fn spawn_battle_command_menu(
                 .cloned()
                 .unwrap_or_else(|| "battle window frame art is unavailable".to_string())
         );
+    }
+    if visible_battle_command_animation_active(runtime_shell) {
+        spawn_battle_window(commands, rendered_art, asset_root, images,
+            BATTLE_TEXT_BOX_LEFT_TILE, BATTLE_TEXT_BOX_TOP_TILE,
+            BATTLE_TEXT_BOX_WIDTH_TILES, BATTLE_TEXT_BOX_HEIGHT_TILES, 3.5);
+        for (index, line) in runtime_shell.battle_retained_text.iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
+            spawn_battle_command_bitmap_text(commands, rendered_art, asset_root, images,
+                line, x, y, 3.8);
+        }
+        return Ok(());
     }
     if let Some(stats) = runtime_shell
         .battle_level_stats

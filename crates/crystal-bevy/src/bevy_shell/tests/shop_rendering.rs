@@ -1,6 +1,75 @@
 use crate::core::systems::shop::ShopResult;
 
 #[test]
+fn mart_counter_interaction_opens_source_shop() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: "CherrygroveMart".to_string(), tile_x: 3, tile_y: 3,
+        },
+        BevyShellConfig { smoke_player_name: Some("TEST".to_string()), ..Default::default() },
+    ).unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
+    shell.shell.session.overworld.player.facing = Direction::Left;
+    shell.shell.add_bag_item("PARLYZ_HEAL", 2).unwrap();
+    assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
+        Some("CherrygroveMartClerkScript".to_string()));
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("mart-browser.crystalsave")).unwrap();
+    }
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    for _ in 0..128 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if shell.shop_top_cursor.is_some() { break; }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.shop_top_cursor.is_some());
+    assert_eq!(shell.shell.snapshot().unwrap().pending_shop.unwrap().mart_id, "MART_CHERRYGROVE");
+}
+
+#[test]
+fn mart_counter_interaction_survives_save_restore() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: "CherrygroveMart".into(), tile_x: 3, tile_y: 3,
+        },
+        BevyShellConfig { smoke_player_name: Some("TEST".into()), ..Default::default() },
+    ).unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
+    let path = std::env::temp_dir().join(format!("mart-restore-{}.crystalsave", std::process::id()));
+    shell.shell.save(&path).unwrap();
+    load_visible_runtime_save(&mut shell, &path, "title_continue").unwrap();
+    std::fs::remove_file(&path).unwrap();
+    assert!(shell.shell.session.overworld.object_has_loaded_struct(0),
+        "the restored clerk must retain its live object struct");
+    shell.shell.session.overworld.player.facing = Direction::Left;
+    assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
+        Some("CherrygroveMartClerkScript".into()));
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    for _ in 0..128 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if shell.shop_top_cursor.is_some() { return; }
+    }
+    panic!("restored Mart clerk must open the shop");
+}
+
+#[test]
 fn mart_rendering_preserves_the_text_contract() {
     let rendering = include_str!("../overworld_rendering.rs");
     let interactions = include_str!("../battle_messages.rs");
@@ -299,15 +368,10 @@ fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
         let mut shell = initialized_mart_shell();
         confirm_visible_shop_top_menu(&mut shell).unwrap();
         let mut snapshot = shell.shell.snapshot().unwrap();
-        // The screenshot's missing PARLYZ HEAL row exceeded the old ten-character cap.
-        std::sync::Arc::make_mut(&mut snapshot.items)
-            .iter_mut()
-            .find(|item| item.item_id == "POTION")
-            .unwrap()
-            .name = "PARLYZ HEAL".to_string();
+        // Render the real PARLYZ HEAL entry with its source price and description.
         if selling {
             snapshot.bag.items = vec![crate::RuntimeBagItemSnapshot {
-                item_id: "POTION".to_string(),
+                item_id: "PARLYZ_HEAL".to_string(),
                 quantity: 2,
             }];
             shell.sell_cursor = Some(MenuCursor {
@@ -315,6 +379,7 @@ fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
                 option_index: 0,
             });
         }
+        if !selling { move_visible_shop_buy_cursor(&mut shell, 2).unwrap(); }
         let mut world = World::new();
         let mut queue = bevy::ecs::world::CommandQueue::default();
         let mut art = RenderedTilesetArt::default();
@@ -331,7 +396,7 @@ fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
         .unwrap();
         queue.apply(&mut world);
         assert!(art.font_error.is_none(), "{:?}", art.font_error);
-        let (x, y) = battle_hud_tile_origin(2.0, 4.0);
+        let (x, y) = battle_hud_tile_origin(2.0, if selling { 4.0 } else { 8.0 });
         let mut glyphs = world.query::<(&DialogGlyphMarker, &Transform)>();
         let row = glyphs
             .iter(&world)
@@ -345,5 +410,11 @@ fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
             );
         }
         assert!(row.iter().all(|(_, transform)| transform.translation.x < battle_hud_tile_origin(19.0, 4.0).0));
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            let label = if selling { "mart-sell" } else { "mart-buy" };
+            render_pc_audit_canvas(&mut world, &images, label)
+                .save(PathBuf::from(directory).join(format!("{label}.png"))).unwrap();
+        }
     }
 }

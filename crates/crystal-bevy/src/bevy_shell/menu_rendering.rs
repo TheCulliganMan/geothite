@@ -298,17 +298,20 @@ fn load_visible_field_party_frame(
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode party-menu font PNG")?
         .to_rgba8();
-    let window = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
-        .context("decode party-menu window frame PNG")?
-        .to_rgba8();
+    let window = crate::open_runtime_image(assets.join(format!(
+        "gfx/frames/{}.png",
+        textbox_frame_id(snapshot.trainer.options.frame)
+    )))
+    .context("decode party-menu window frame PNG")?
+    .to_rgba8();
     let battle_extra = crate::read_runtime_asset(assets.join("gfx/font/font_battle_extra.2bpp"))
         .context("read party-menu level glyphs")?;
-    let text_palette: Palette = [
-        [255, 255, 255],
-        [170, 170, 170],
-        [85, 85, 85],
-        [0, 0, 0],
-    ];
+    let text_palette: Palette = [[255, 255, 255], [170, 170, 170], [85, 85, 85], [0, 0, 0]];
+    let hp_colors = stats_palette_colors(&runtime_shell.asset_root, "gfx/battle/hp_bar.pal")?;
+    anyhow::ensure!(
+        hp_colors.len() == 6,
+        "party HP palette must contain three color pairs"
+    );
     let width = 160;
     let height = 144;
     let mut data = vec![255_u8; width * height * 4];
@@ -319,91 +322,144 @@ fn load_visible_field_party_frame(
         let name_row = 1 + row_index * 2;
         draw_time_set_text(
             &font,
-            if selected == row_index { "▶" } else { " " },
+            if selected == row_index {
+                if runtime_shell.party_action_cursor.is_some() {
+                    "▷"
+                } else {
+                    "▶"
+                }
+            } else if runtime_shell.party_switch_cursor.is_some()
+                && runtime_shell.party_cursor == row_index
+            {
+                "▷"
+            } else {
+                " "
+            },
             0,
             name_row * 8,
             &mut data,
         )?;
-        if runtime_shell.party_switch_cursor.is_some() && runtime_shell.party_cursor == row_index {
-            draw_time_set_text(&font, "▷", 16, name_row * 8, &mut data)?;
-        }
+        // PlacePartyNicknames runs for every slot, including Eggs.
+        draw_time_set_text(
+            &font,
+            &slot.pokemon.nickname,
+            3 * 8,
+            name_row * 8,
+            &mut data,
+        )?;
         if !slot.pokemon.is_egg {
             draw_time_set_text(
                 &font,
-                &compact_scene_label(&slot.pokemon.nickname, 10),
-                3 * 8,
-                name_row * 8,
-                &mut data,
-            )?;
-            draw_time_set_text(
-                &font,
-                &format!("{:>3}/{:>3}", slot.pokemon.hp.min(999), slot.pokemon.max_hp.min(999)),
+                &format!(
+                    "{:>3}/{:>3}",
+                    slot.pokemon.hp.min(999),
+                    slot.pokemon.max_hp.min(999)
+                ),
                 13 * 8,
                 name_row * 8,
                 &mut data,
             )?;
             let status_row = name_row + 1;
-            draw_time_set_text(&font, party_status_token(&slot.pokemon), 5 * 8, status_row * 8, &mut data)?;
-            draw_paletted_2bpp_tile(
-                &battle_extra,
-                usize::from(0x6e_u8 - 0x60),
-                &text_palette,
-                8,
-                status_row,
-                &mut data,
-            )?;
+            // PlaceNonFaintStatus leaves the three tiles blank when healthy.
+            if slot.pokemon.hp == 0 || slot.pokemon.status.is_some() {
+                draw_time_set_text(
+                    &font,
+                    party_status_token(&slot.pokemon),
+                    5 * 8,
+                    status_row * 8,
+                    &mut data,
+                )?;
+            }
+            if slot.pokemon.level < 100 {
+                draw_paletted_2bpp_tile(
+                    &battle_extra,
+                    usize::from(0x6e_u8 - 0x60),
+                    &text_palette,
+                    8,
+                    status_row,
+                    &mut data,
+                )?;
+            }
             draw_time_set_text(
                 &font,
-                &format!("{:>2}", slot.pokemon.level.min(100)),
-                9 * 8,
+                &format!("{:<3}", slot.pokemon.level),
+                if slot.pokemon.level < 100 {
+                    9 * 8
+                } else {
+                    8 * 8
+                },
                 status_row * 8,
                 &mut data,
             )?;
-            draw_native_hp_bar(
-                &mut data,
-                11 * 8,
-                status_row * 8 + 2,
-                slot.pokemon.hp,
-                slot.pokemon.max_hp,
-            );
+            // DrawBattleHPBar: HP:, six fill tiles, then the $6b end cap.
+            let fill = usize::from(battle_hud_hp_pixels(slot.pokemon.hp, slot.pokemon.max_hp));
+            let zone = usize::from(2 - visible_hp_zone(fill as u16));
+            let palette = [
+                [255, 255, 255],
+                hp_colors[zone * 2],
+                hp_colors[zone * 2 + 1],
+                [0, 0, 0],
+            ];
+            for (offset, tile) in [0x60, 0x61]
+                .into_iter()
+                .enumerate()
+                .chain(
+                    (0..6).map(|index| (index + 2, 0x62 + fill.saturating_sub(index * 8).min(8))),
+                )
+                .chain(std::iter::once((8, 0x6b)))
+            {
+                draw_paletted_2bpp_tile(
+                    &battle_extra,
+                    tile - 0x60,
+                    &palette,
+                    11 + offset,
+                    status_row,
+                    &mut data,
+                )?;
+            }
         }
     }
     let cancel_row = 1 + snapshot.party.slots.len().min(6) * 2;
     draw_time_set_text(
         &font,
-        if selected >= snapshot.party.slots.len() { "▶CANCEL" } else { " CANCEL" },
-        8,
+        if selected >= snapshot.party.slots.len() {
+            "▶CANCEL"
+        } else {
+            " CANCEL"
+        },
+        0,
         cancel_row * 8,
         &mut data,
     )?;
     draw_time_set_window(&window, 0, 14, 20, 4, &mut data)?;
     let prompt = if runtime_shell.party_hp_transfer_source.is_some() {
-        "Use on which"
+        "Use on which <PK><MN>?"
     } else if runtime_shell.party_switch_cursor.is_some() {
         "Move to where?"
     } else {
         "Choose a POKéMON."
     };
     draw_time_set_text(&font, prompt, 8, 16 * 8, &mut data)?;
-    if runtime_shell.party_hp_transfer_source.is_some() {
-        draw_time_set_text(&font, "POKéMON?", 8, 17 * 8, &mut data)?;
-    }
 
+    // PokemonActionSubmenu clears the prompt before opening either submenu.
+    if runtime_shell.party_action_cursor.is_some() || runtime_shell.party_give_take_cursor.is_some()
+    {
+        pokegear_fill_rect(&mut data, 160, 8, 15 * 8, 18 * 8, 2 * 8, [255, 255, 255]);
+    }
     if let Some(cursor) = runtime_shell.party_action_cursor.as_ref() {
         let actions = visible_party_actions(snapshot, runtime_shell)?;
-        let action_selected = strict_readonly_cursor_index(
-            &Some(cursor.clone()),
-            "party:actions",
-            actions.len(),
-        )
-        .context("party action cursor is invalid")?;
-        draw_time_set_window(&window, 6, 0, 14, 18, &mut data)?;
+        let action_selected =
+            strict_readonly_cursor_index(&Some(cursor.clone()), "party:actions", actions.len())
+                .context("party action cursor is invalid")?;
+        // MonSubmenu.GetTopCoord anchors the two-tile-spaced rows at y=17.
+        let top = 18 - 2 * (actions.len() + 1);
+        draw_time_set_window(&window, 6, top, 14, 18 - top, &mut data)?;
         for (index, action) in actions.iter().enumerate() {
             let label = party_submenu_action_entry(
                 *action,
                 if index == action_selected { "▶" } else { " " },
             );
-            draw_time_set_text(&font, &label, 7 * 8, (1 + index * 2) * 8, &mut data)?;
+            draw_time_set_text(&font, &label, 7 * 8, (top + 2 + index * 2) * 8, &mut data)?;
         }
     }
     if let Some(cursor) = runtime_shell.party_give_take_cursor.as_ref() {
@@ -413,34 +469,37 @@ fn load_visible_field_party_frame(
         } else {
             ("party:give-take", &["GIVE", "TAKE"])
         };
-        let choice = strict_readonly_cursor_index(
-            &Some(cursor.clone()),
-            surface,
-            labels.len(),
-        )
-        .with_context(|| format!("{surface} cursor is invalid"))?;
-        let top = 18_usize.saturating_sub(labels.len() + 2);
-        draw_time_set_window(&window, 12, top, 8, labels.len() + 2, &mut data)?;
+        let choice = strict_readonly_cursor_index(&Some(cursor.clone()), surface, labels.len())
+            .with_context(|| format!("{surface} cursor is invalid"))?;
+        let top = 18 - 2 * (labels.len() + 1);
+        draw_time_set_window(&window, 12, top, 8, 18 - top, &mut data)?;
         for (index, label) in labels.iter().enumerate() {
             draw_time_set_text(
                 &font,
                 &format!("{}{}", if index == choice { "▶" } else { " " }, label),
                 13 * 8,
-                (top + 1 + index) * 8,
+                (top + 2 + index * 2) * 8,
                 &mut data,
             )?;
         }
     }
 
     let mut image = Image::new(
-        Extent3d { width: width as u32, height: height as u32, depth_or_array_layers: 1 },
+        Extent3d {
+            width: width as u32,
+            height: height as u32,
+            depth_or_array_layers: 1,
+        },
         TextureDimension::D2,
         data,
         TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::default(),
     );
     image.sampler = ImageSampler::nearest();
-    Ok(SpriteFrame { handle: images.add(image), size: Vec2::new(width as f32, height as f32) })
+    Ok(SpriteFrame {
+        handle: images.add(image),
+        size: Vec2::new(width as f32, height as f32),
+    })
 }
 
 fn draw_native_hp_bar(target: &mut [u8], x: usize, y: usize, hp: u16, max_hp: u16) {
@@ -7539,6 +7598,7 @@ fn render_playfield(
             runtime_shell.visible_trainer_exit_animation.as_ref(),
             runtime_shell.visible_frontpic_animation.as_ref(),
             runtime_shell.visible_move_animations.front(),
+            visible_pending_faint_sides(&runtime_shell),
             &mut tileset_art,
             &runtime_shell.asset_root,
             &mut images,
@@ -7564,6 +7624,7 @@ fn render_playfield(
             record_visible_render_error(&mut commands, &mut runtime_shell, error);
             return;
         }
+        spawn_visible_battle_hud_clear(&mut commands, &runtime_shell);
         if let Err(error) = spawn_visible_move_animation_objects(
             &mut commands,
             &snapshot,
@@ -7636,6 +7697,7 @@ fn render_playfield(
                 runtime_shell.visible_trainer_exit_animation.as_ref(),
                 runtime_shell.visible_frontpic_animation.as_ref(),
                 runtime_shell.visible_move_animations.front(),
+                visible_pending_faint_sides(&runtime_shell),
                 &mut tileset_art,
                 &runtime_shell.asset_root,
                 &mut images,
@@ -7661,6 +7723,7 @@ fn render_playfield(
                 record_visible_render_error(&mut commands, &mut runtime_shell, error);
                 return;
             }
+            spawn_visible_battle_hud_clear(&mut commands, &runtime_shell);
             if let Err(error) = spawn_visible_move_animation_objects(
                 &mut commands,
                 scene,

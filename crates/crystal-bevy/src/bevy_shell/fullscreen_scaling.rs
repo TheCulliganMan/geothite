@@ -318,7 +318,10 @@ fn sync_fullscreen_scene_layout(
         .filter(|choice| choice.player_phase == Some(VisiblePlayerNameChoicePhase::Menu));
     let mut boot_dialogue = None;
     let modal_active = fullscreen_modal_active(&runtime, &rendered);
-    let mut background = modal_active.then_some(Color::BLACK);
+    // Partial PC/Mart windows retain the room behind them. The fullscreen
+    // backdrop sits above terrain, so reserve it for opaque LCD screens.
+    let mut background = (modal_active && !fullscreen_field_panel_active(&runtime))
+        .then_some(Color::BLACK);
     let mut layout = None;
     {
         let mut presenters = pieces.p0();
@@ -510,7 +513,23 @@ struct FullscreenDialogRoot;
 struct FullscreenModalRoot;
 
 fn fullscreen_modal_active(runtime: &BevyRuntimeShell, rendered: &RenderedViewport) -> bool {
-    !rendered.title_active && retained_field_fullscreen_active(runtime)
+    !rendered.title_active
+        && (retained_field_fullscreen_active(runtime)
+            || fullscreen_field_panel_active(runtime)
+            || fullscreen_battle_active(runtime))
+}
+
+fn fullscreen_battle_active(runtime: &BevyRuntimeShell) -> bool {
+    runtime.visible_battle_transition.is_none()
+        && (runtime.battle_lcd_animation_active
+            || runtime.battle_message_scene.as_ref().is_some_and(|scene| scene.battle.is_some()))
+}
+
+fn fullscreen_field_panel_active(runtime: &BevyRuntimeShell) -> bool {
+    runtime.pc_hub_session_open
+        || runtime.bill_pc_session_open
+        || runtime.player_pc_action_cursor.is_some()
+        || runtime.shell.session().state().script_runtime.pending_shop.is_some()
 }
 
 fn fullscreen_modal_size(view: Vec2, pixels_per_unit: f32) -> Vec2 {
@@ -584,7 +603,11 @@ fn sync_fullscreen_world_layout(
     modal_root: Query<Entity, With<FullscreenModalRoot>>,
     modal_entities: Query<
         (Entity, Option<&Parent>, Option<&SceneDialogMarker>),
-        Or<(With<FieldCommandMarker>, With<VisibleIntroSurface>)>,
+        Or<(
+            With<FieldCommandMarker>, With<VisibleIntroSurface>, With<SceneDialogMarker>,
+            With<BattleBattlerMarker>, With<BattleHudMarker>, With<BattleCommandMarker>,
+            With<BattleWindowFrameMarker>,
+        )>,
     >,
     world_entities: Query<
         (Entity, Option<&Parent>),
@@ -610,6 +633,7 @@ fn sync_fullscreen_world_layout(
         return;
     };
     let modal_active = fullscreen_modal_active(&runtime, &rendered);
+    let field_panel_active = !rendered.title_active && fullscreen_field_panel_active(&runtime);
     for (entity, parent) in &world_entities {
         if !(modal_active && modal_entities.get(entity).is_ok())
             && parent.map(Parent::get) != Some(world_root) {
@@ -707,6 +731,13 @@ fn sync_fullscreen_world_layout(
         );
         dialog_transform.translation = (position - Vec2::new(x, y)).extend(0.0);
     }
+    // PC and Mart menus use the source LCD coordinates, including the room
+    // visible behind their partial windows. They must not inherit the small
+    // bottom-docked speech transform or the expanded-room camera transform.
+    if field_panel_active {
+        let zoom = fullscreen_modal_size(view, pixels_per_unit).x / PLAYFIELD_WIDTH;
+        world_transform = Transform::from_scale(Vec3::new(zoom, zoom, 1.0));
+    }
     for (mut transform, mut visibility, world, modal) in &mut roots {
         *transform = if modal.is_some() {
             let zoom = fullscreen_modal_size(view, pixels_per_unit).x / PLAYFIELD_WIDTH;
@@ -716,7 +747,7 @@ fn sync_fullscreen_world_layout(
         } else {
             dialog_transform
         };
-        *visibility = if modal.is_some() == modal_active {
+        *visibility = if modal.is_some() == modal_active || (world.is_some() && field_panel_active) {
             Visibility::Inherited
         } else {
             Visibility::Hidden

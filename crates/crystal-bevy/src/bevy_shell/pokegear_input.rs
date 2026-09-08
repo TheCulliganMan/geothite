@@ -19,7 +19,9 @@ fn visible_menu_physical_down(keys: &ButtonInput<KeyCode>) -> u8 {
 }
 
 fn sample_visible_pokegear_joypad(keys: &ButtonInput<KeyCode>, shell: &mut BevyRuntimeShell) {
-    shell.pokegear_joypad.sample(visible_menu_physical_down(keys), shell.pokegear_map_radio_delay.is_none());
+    let down = visible_menu_physical_down(keys);
+    shell.pokegear_opening_buttons &= down;
+    shell.pokegear_joypad.sample(down & !shell.pokegear_opening_buttons, shell.pokegear_map_radio_delay.is_none());
 }
 
 fn apply_visible_pokegear_card_controls(

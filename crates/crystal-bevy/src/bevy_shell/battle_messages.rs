@@ -2251,9 +2251,13 @@ fn stage_visible_battle_messages(
                         // core.asm::MonFaintedAnimation performs seven bitmap
                         // shifts with a two-frame delay after each one.
                         total_frames: 14,
-                        sound_events: vec![(0, "SFX_FAINT".to_string())],
+                        sound_events: if *side == BattleSide::Enemy {
+                            vec![(0, "SFX_KINESIS".to_string()), (14, "SFX_FAINT".to_string())]
+                        } else {
+                            Vec::new()
+                        },
                         next_sound_event: 0,
-                        cry_events: Vec::new(),
+                        cry_events: if *side == BattleSide::Player { vec![(0, 2)] } else { Vec::new() },
                         next_cry_event: 0,
                         object_events: Vec::new(),
                         bg_events: vec![VisibleMoveBgEvent {
@@ -6730,7 +6734,18 @@ fn retain_visible_pre_reward_battle_scene(
     // Reward authority commits EXP, levels, moves, and evolution atomically,
     // but Crystal does not reveal the resulting battler before narrating it.
     // Keep the faint/reward boundary frame until every queued message clears.
-    runtime_shell.battle_message_scene = Some(Box::new(battle_before_rewards.clone()));
+    // stage_visible_battle_messages may already retain the pre-hit scene.
+    // Its queued transitions, rather than the atomic reward snapshot, own
+    // when zero HP and changed EXP become visible.
+    if runtime_shell.battle_message_scene.is_none() {
+        runtime_shell.battle_message_scene = Some(Box::new(battle_before_rewards.clone()));
+    }
+    // Reward messages append to the same narration queue. Preserve its
+    // one-scene-per-message alignment, or the input path discards the
+    // finishing move's staged damage scene as soon as rewards are appended.
+    while runtime_shell.battle_message_scenes.len() < runtime_shell.battle_messages.len() {
+        runtime_shell.battle_message_scenes.push_back(Box::new(battle_before_rewards.clone()));
+    }
     mark_runtime_snapshot_dirty(runtime_shell);
 }
 
@@ -6842,7 +6857,8 @@ fn stage_visible_battle_exp_tween(
     let mut staged = VecDeque::new();
     let mut rolling_exp = before_mon.experience;
     for (experience_awarded, level_before, level_after, nickname) in awards {
-        if experience_awarded <= 0 {
+        // AnimateExpBar returns before sound or animation at MAX_LEVEL.
+        if experience_awarded <= 0 || level_before >= 100 {
             continue;
         }
         let mut segment_before = before_mon.clone();
@@ -7681,6 +7697,21 @@ fn close_visible_pc_surface(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     Ok(())
 }
 
+fn visible_pc_source_text_pages(
+    shell: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    label: &str,
+) -> Result<Vec<String>> {
+    let text = shell.shell.text_snapshot(label)?;
+    let source = text.asm_text.as_deref().with_context(|| format!("PC text {label} has no exported ASM text"))?;
+    let pages = render_visible_asm_text_pages(
+        source, &snapshot.script_events.named_buffers, &snapshot.trainer.player_name,
+        visible_rival_name(snapshot), snapshot.progression.time.day_of_week,
+    );
+    anyhow::ensure!(!pages.is_empty(), "PC text {label} has no source pages");
+    Ok(pages)
+}
+
 fn visible_pc_hub_actions(snapshot: &RuntimeShellSnapshot) -> Vec<VisiblePcHubAction> {
     let mut actions = vec![VisiblePcHubAction::BillsPc, VisiblePcHubAction::PlayerPc];
     if snapshot
@@ -7707,9 +7738,9 @@ fn visible_pc_hub_action_label(
     action: VisiblePcHubAction,
 ) -> String {
     match action {
-        VisiblePcHubAction::BillsPc => "BILL'S PC".to_string(),
-        VisiblePcHubAction::PlayerPc => format!("{}'S PC", snapshot.trainer.player_name),
-        VisiblePcHubAction::OakPc => "PROF.OAK'S PC".to_string(),
+        VisiblePcHubAction::BillsPc => "BILL's PC".to_string(),
+        VisiblePcHubAction::PlayerPc => format!("{}'s PC", snapshot.trainer.player_name),
+        VisiblePcHubAction::OakPc => "PROF.OAK's PC".to_string(),
         VisiblePcHubAction::HallOfFame => "HALL OF FAME".to_string(),
         VisiblePcHubAction::TurnOff => "TURN OFF".to_string(),
     }
@@ -8212,10 +8243,7 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             });
             runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                 label: "PokecenterBillsPCText".to_string(),
-                details: vec![
-                    "BILL'S PC accessed.".to_string(),
-                    "<PK><MN> Storage System opened.".to_string(),
-                ],
+                details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterBillsPCText")?,
             });
             set_shell_action_status(runtime_shell, "BILL'S PC");
         }
@@ -8231,10 +8259,7 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             });
             runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                 label: "PokecenterPlayersPCText".to_string(),
-                details: vec![
-                    "Accessed own PC.".to_string(),
-                    "Item Storage System opened.".to_string(),
-                ],
+                details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterPlayersPCText")?,
             });
             set_shell_action_status(runtime_shell, "PLAYER'S PC");
         }

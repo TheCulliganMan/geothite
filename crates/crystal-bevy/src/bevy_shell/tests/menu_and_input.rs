@@ -1,7 +1,7 @@
 #[test]
 fn visible_start_menu_responds_to_normal_button_inputs() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -59,7 +59,7 @@ fn visible_start_menu_responds_to_normal_button_inputs() {
 #[test]
 fn visible_pokegear_phone_call_rings_twice_before_entering_the_compiled_asm_callback() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -164,7 +164,7 @@ fn visible_pokegear_phone_call_rings_twice_before_entering_the_compiled_asm_call
 #[test]
 fn visible_pokegear_phone_call_without_service_stays_in_the_contact_menu() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -345,6 +345,8 @@ fn visible_pokegear_phone_call_waits_ten_frames_then_hangs_up_on_a() {
 #[test]
 fn visible_incoming_phone_call_preserves_source_ring_and_hangup_timing() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    runtime_shell.shell.session_mut().state.script_runtime.variables
+        .insert("VAR_CALLERID".to_string(), "PHONE_ELM".to_string());
     runtime_shell.pending_audio.clear();
     runtime_shell.last_audio_events.clear();
     let map_name = runtime_shell
@@ -426,7 +428,7 @@ fn visible_incoming_phone_call_preserves_source_ring_and_hangup_timing() {
 #[test]
 fn select_without_a_registered_item_opens_the_exact_asm_textbox() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -595,7 +597,7 @@ fn dst_confirmation_uses_the_live_dst_flag_not_special_execution_history() {
 #[test]
 fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -773,7 +775,7 @@ fn pokegear_map_up_increments_and_down_decrements_landmarks() {
 }
 
 fn initialized_town_map_location_shell(map_name: &str) -> BevyRuntimeShell {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..").canonicalize().unwrap();
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
     let asset_root = AssetRoot::new(root);
     let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
@@ -6135,7 +6137,7 @@ fn seventh_battle_tower_win_keeps_the_prize_claimable_when_the_item_pocket_is_fu
 #[test]
 fn visible_pack_menu_renders_and_confirms_cancel_row_from_normal_inputs() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -6335,7 +6337,7 @@ fn visible_pack_menu_renders_and_confirms_cancel_row_from_normal_inputs() {
 #[test]
 fn visible_mail_composer_uses_asm_grid_and_atomically_attaches_player_mail() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -6506,7 +6508,7 @@ fn every_asm_mail_type_builds_its_source_stationery_lcd() {
 #[test]
 fn card_flip_lcd_composes_source_cards_instead_of_text_placeholders() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -6565,7 +6567,7 @@ fn card_flip_lcd_composes_source_cards_instead_of_text_placeholders() {
 #[test]
 fn card_flip_group_bet_cursors_use_the_complete_asm_oam_extents() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let sources =
@@ -7337,7 +7339,7 @@ fn visible_slot_machine_runs_exact_golem_and_chansey_phase_counts() {
 #[test]
 fn slot_machine_renderer_composites_source_oam_actors_and_scy_shake() {
     let repository_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repository_root);
@@ -7489,7 +7491,7 @@ fn visible_slot_machine_runs_source_ran_out_text_and_sixty_frame_exit() {
 
 fn initialized_mail_reader_shell(mail_type: &str) -> BevyRuntimeShell {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7613,7 +7615,7 @@ fn start_menu_labels_match_asm_glyph_entries() {
 #[test]
 fn start_menu_field_command_renders_bitmap_glyph_sprites() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7667,7 +7669,7 @@ fn start_menu_field_command_renders_bitmap_glyph_sprites() {
 #[test]
 fn arrow_key_mapping_moves_overworld_player_when_held() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7733,7 +7735,7 @@ fn arrow_key_mapping_moves_overworld_player_when_held() {
 #[test]
 fn live_runtime_hotkeys_move_overworld_player_when_arrow_key_is_held() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7825,7 +7827,7 @@ fn live_runtime_hotkeys_move_overworld_player_when_arrow_key_is_held() {
 #[test]
 fn arrow_key_dispatch_moves_visible_start_menu_cursor() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7917,7 +7919,7 @@ fn held_overworld_direction_is_restored_after_warp_navigation_reset() {
 #[test]
 fn visible_overworld_normal_inputs_walk_through_bedroom_warp() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -7975,7 +7977,7 @@ fn visible_overworld_normal_inputs_walk_through_bedroom_warp() {
 #[test]
 fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -8049,7 +8051,7 @@ fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
         "{caught_rows:?}"
     );
     assert!(!caught_rows.join(" ").contains("CATCH"));
-    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let caught_species = snapshot.progression.pokedex_caught_species.clone();
     for (label, detail, caught) in [
         ("list", false, true),
@@ -9427,7 +9429,7 @@ fn pc_item_select_b_cancels_move_without_closing_the_list() {
 
 #[test]
 fn pokegear_compiled_radio_retains_raw_landmark_names() {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..");
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
     for filename in [
         "core-modular.crystalpack",
         "core-modular.browser.crystalpack",
@@ -11012,6 +11014,295 @@ fn dialogue_regression_new_page_cannot_borrow_previous_printer_progress() {
 }
 
 #[test]
+fn pokegear_start_menu_confirmation_must_be_released_before_clock_exit() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_POKEGEAR", true).unwrap();
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_MAP_CARD", true).unwrap();
+    mark_runtime_snapshot_dirty(&mut shell);
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("pokegear-browser.crystalsave"))
+            .expect("save isolated browser verification fixture");
+    }
+    toggle_visible_start_menu(&mut shell).unwrap();
+    for _ in 0..8 {
+        if selected_visible_start_menu_option(&mut shell).unwrap() == StartMenuOption::Pokegear { break; }
+        move_visible_start_menu_cursor(&mut shell, 1).unwrap();
+    }
+    assert_eq!(selected_visible_start_menu_option(&mut shell).unwrap(), StartMenuOption::Pokegear);
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(shell.pokegear_menu_open);
+    keys.clear();
+    for _ in 0..120 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert!(shell.pokegear_exit.is_none(), "the opening touch hold must not exit the clock");
+    }
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    spawn_field_pokegear_screen(
+        &mut Commands::new(&mut queue, &world), &snapshot, &shell,
+        &mut art, &shell.asset_root, &mut images,
+    ).expect("the held-open clock must render without an error banner");
+    queue.apply(&mut world);
+    assert!(world.query_filtered::<Entity, With<FieldCommandMarker>>().iter(&world).count() > 0);
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        render_pc_audit_canvas(&mut world, &images, "pokegear-held-open")
+            .save(PathBuf::from(directory).join("pokegear-held-open.png")).unwrap();
+    }
+    // A newly pressed direction must remain usable while the opening A is held.
+    keys.press(KeyCode::ArrowRight);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_page, PokegearPage::Map);
+    assert!(shell.pokegear_exit.is_none());
+    keys.release(KeyCode::ArrowRight);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    keys.press(KeyCode::ArrowLeft);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_page, PokegearPage::Clock);
+    assert!(shell.pokegear_exit.is_none());
+    keys.release(KeyCode::ArrowLeft);
+    keys.release(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    keys.press(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(shell.pokegear_exit, Some(VisiblePokegearExitPhase::Requested));
+    settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
+    assert!(!shell.pokegear_menu_open);
+    assert!(shell.start_menu_cursor.is_some());
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+}
+
+#[test]
+fn pokedex_defaults_to_source_new_order_and_stops_at_last_seen() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.record_pokedex_caught("CYNDAQUIL").unwrap();
+    shell.shell.record_pokedex_seen("CHIKORITA").unwrap();
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_POKEDEX", true).unwrap();
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("pokedex-browser.crystalsave")).unwrap();
+    }
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut images = Assets::<Image>::default();
+        spawn_field_pokedex_screen(&mut Commands::new(&mut queue, &world), &snapshot, &shell,
+            &mut art, &shell.asset_root, &mut images).unwrap();
+        queue.apply(&mut world);
+        std::fs::create_dir_all(&directory).unwrap();
+        render_pc_audit_canvas(&mut world, &images, "pokedex-order")
+            .save(PathBuf::from(directory).join("pokedex-order.png")).unwrap();
+    }
+    assert_eq!(snapshot.pokemon[shell.pokedex_cursor].species_id, "CHIKORITA",
+        "a fresh Pokédex opens in source NEW mode");
+    for _ in 0..300 { move_visible_pokedex_cursor(&mut shell, 1).unwrap(); }
+    assert_eq!(snapshot.pokemon[shell.pokedex_cursor].species_id, "CYNDAQUIL",
+        "the source list ends at its last seen species");
+}
+
+#[test]
+fn elm_robbery_call_continues_after_ringing_into_disaster_text() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let map_name = shell.shell.snapshot().unwrap().overworld.map_name;
+    let state = &mut shell.shell.session_mut().state;
+    state.script_runtime.special_phone_call = Some("SPECIALCALL_ROBBED".to_string());
+    state
+        .script_runtime
+        .variables
+        .insert("VAR_CALLERID".to_string(), "PHONE_ELM".to_string());
+    state.script_runtime.memory.insert(
+        "wCallerContact + PHONE_CONTACT_SCRIPT2_BANK".to_string(),
+        "ElmPhoneCallerScript".to_string(),
+    );
+    shell.active_script_cursor = Some(ActiveScriptCursor {
+        origin_map_name: map_name,
+        source_script: "Script_ReceivePhoneCall".to_string(),
+        next_command_index: 1,
+    });
+    execute_visible_active_script_step(&mut shell).expect("start ASM double ring");
+    assert!(shell.incoming_phone_sequence.is_some());
+    let mut keys = ButtonInput::default();
+    keys.press(KeyCode::KeyX);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    continue_visible_script_after_prompt(&mut shell).unwrap();
+    assert_eq!(
+        shell
+            .active_script_cursor
+            .as_ref()
+            .unwrap()
+            .next_command_index,
+        2,
+        "input and auto continuation must not skip the ringing presentation"
+    );
+    advance_visible_incoming_phone_sequence(&mut shell, 120).expect("complete ASM double ring");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(
+        snapshot.script_events.pending_text_label.as_deref(),
+        Some("ElmPhoneDisasterText"),
+        "finishing RingTwice_StartCall must immediately execute the caller script"
+    );
+    assert!(
+        !snapshot.ui.window_open,
+        "the caller textbox is not a script menu"
+    );
+
+    // A/B advances PrintText's pages, then the wrapper's waitbutton starts
+    // HangUp. The caller clears the special call and marks the robbery first.
+    for _ in 0..40 {
+        advance_visible_script_until_player_boundary(&mut shell).unwrap();
+        for _ in 0..256 {
+            let snapshot = shell.shell.snapshot().unwrap();
+            if visible_field_dialogue_is_fully_revealed(&shell, &snapshot) {
+                break;
+            }
+            tick_visible_field_text_reveal(&mut shell, true).unwrap();
+        }
+        if visible_text_label_can_auto_continue(&shell).unwrap() {
+            advance_visible_text_label(&mut shell).unwrap();
+        }
+        let mut keys = ButtonInput::default();
+        keys.press(KeyCode::KeyX);
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+        assert_eq!(shell.last_error, None);
+        if matches!(
+            shell.incoming_phone_sequence,
+            Some(VisibleIncomingPhoneSequence::HangUp { .. })
+        ) {
+            break;
+        }
+    }
+    assert!(matches!(
+        shell.incoming_phone_sequence,
+        Some(VisibleIncomingPhoneSequence::HangUp { .. })
+    ));
+    let state = &shell.shell.session().state;
+    assert!(state.script_runtime.special_phone_call.is_none());
+    assert!(
+        state
+            .flags
+            .is_event_flag_set("EVENT_ELM_CALLED_ABOUT_STOLEN_POKEMON")
+            .unwrap()
+    );
+    advance_visible_incoming_phone_sequence(&mut shell, 140).expect("finish ASM hangup");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert!(!snapshot.ui.text_window_open);
+    assert!(!snapshot.ui.window_open);
+    assert!(shell.active_script_cursor.is_none());
+    assert!(
+        shell
+            .shell
+            .session()
+            .state
+            .script_runtime
+            .phone_call_timer
+            .initialized
+    );
+}
+
+#[test]
+fn elm_robbery_call_runs_after_overworld_step_without_a() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: "NewBarkTown".to_string(), tile_x: 9, tile_y: 8,
+        }, BevyShellConfig { smoke_player_name: Some("TEST".to_string()), ..Default::default() }).unwrap();
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
+    settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_POKEGEAR", true).unwrap();
+    shell.shell.session_mut().state_mut().script_runtime.special_phone_call = Some("SPECIALCALL_ROBBED".to_string());
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        shell.shell.save(PathBuf::from(directory).join("elm-browser.crystalsave")).unwrap();
+    }
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+    let mut rang = false;
+    let mut reached_disaster = false;
+    for _ in 0..400 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        rang |= shell.incoming_phone_sequence.is_some();
+        reached_disaster = shell.shell.snapshot().unwrap().script_events.pending_text_label.as_deref() == Some("ElmPhoneDisasterText");
+        if reached_disaster { break; }
+    }
+    assert!(rang && reached_disaster, "a real overworld step must ring and start Elm's disaster text without A");
+}
+
+
+#[test]
+fn incoming_phone_renders_caller_box_and_asm_name_flash() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.incoming_phone_contact = Some("PHONE_ELM".to_string());
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut frames = Vec::new();
+    for (remaining, name_visible) in [
+        (120, false),
+        (100, true),
+        (80, false),
+        (60, false),
+        (40, true),
+        (20, false),
+    ] {
+        shell.incoming_phone_sequence = Some(VisibleIncomingPhoneSequence::RingTwice {
+            frames_remaining: remaining,
+            second_ring_started: remaining <= 60,
+        });
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut images = Assets::<Image>::default();
+        let mut art = RenderedTilesetArt::default();
+        spawn_scene_dialog(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        assert!(art.font_error.is_none(), "{:?}", art.font_error);
+        let glyph_count = world.query::<&DialogGlyphMarker>().iter(&world).count();
+        assert_eq!(
+            glyph_count > 0,
+            name_visible,
+            "ring frame {}",
+            120 - remaining
+        );
+        assert!(
+            world.query::<&SceneDialogMarker>().iter(&world).count() > 0,
+            "Phone_CallerTextbox must remain visible even while the name is blank"
+        );
+        let canvas = render_pc_audit_canvas(&mut world, &images, "incoming-phone");
+        if let Some(directory) = std::env::var_os("CRYSTAL_PHONE_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas
+                .save(PathBuf::from(directory).join(format!("ring-{}.png", 120 - remaining)))
+                .unwrap();
+        }
+        frames.push(canvas);
+    }
+    assert_eq!(frames[0], frames[2]);
+    assert_eq!(frames[0], frames[3]);
+    assert_eq!(frames[1], frames[4]);
+    assert_ne!(frames[0], frames[1]);
+}
+
+#[test]
 fn pokedex_entry_navigation_preserves_page_at_boundary_and_plays_cry_on_open() {
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let snapshot = shell.shell.snapshot().unwrap();
@@ -11021,8 +11312,8 @@ fn pokedex_entry_navigation_preserves_page_at_boundary_and_plays_cry_on_open() {
         .position(|p| p.species_id == "CYNDAQUIL")
         .unwrap();
     shell.shell.record_pokedex_seen("CYNDAQUIL").unwrap();
-    shell.pokedex_cursor = index;
     open_visible_pokedex_menu(&mut shell).unwrap();
+    shell.pokedex_cursor = index;
     inspect_visible_pokedex_selection(&mut shell).unwrap();
     assert!(
         shell
@@ -11129,12 +11420,13 @@ fn pokedex_entry_actions_have_separate_input_and_return_to_entry() {
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     shell.shell.record_pokedex_caught("CYNDAQUIL").unwrap();
     let snapshot = shell.shell.snapshot().unwrap();
-    shell.pokedex_cursor = snapshot
+    let index = snapshot
         .pokemon
         .iter()
         .position(|p| p.species_id == "CYNDAQUIL")
         .unwrap();
     open_visible_pokedex_menu(&mut shell).unwrap();
+    shell.pokedex_cursor = index;
     inspect_visible_pokedex_selection(&mut shell).unwrap();
     page_visible_pokedex_cursor(&mut shell, 1).unwrap();
     assert_eq!(shell.pokedex_controls.entry_action, 1);
@@ -11254,4 +11546,32 @@ fn pokedex_empty_search_blocks_input_until_source_delays_finish() {
     press_visible_b_button(&mut shell).unwrap();
     assert!(shell.pokedex_controls.search_cursor.is_none());
     assert!(shell.pokedex_menu_open);
+}
+
+#[test]
+fn pokedex_first_open_does_not_treat_catalog_zero_as_a_previous_entry() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.record_pokedex_seen("BULBASAUR").unwrap();
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.pokemon[shell.pokedex_cursor].species_id, "CHIKORITA");
+    move_visible_pokedex_cursor(&mut shell, 999).unwrap();
+    inspect_visible_pokedex_selection(&mut shell).unwrap();
+    close_visible_pokedex_menu(&mut shell);
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    assert_eq!(snapshot.pokemon[shell.pokedex_cursor].species_id, "BULBASAUR",
+        "reopening remembers an entry that was actually displayed");
+}
+
+#[test]
+fn pokedex_start_key_reaches_search_through_input_routing() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.record_pokedex_seen("CYNDAQUIL").unwrap();
+    open_visible_pokedex_menu(&mut shell).unwrap();
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    assert_eq!(shell.pokedex_controls.search_cursor, Some(0));
 }

@@ -1433,11 +1433,13 @@ fn confirm_visible_mail_input(runtime_shell: &mut BevyRuntimeShell) -> Result<()
         input.party_index,
         message,
     )?;
+    let return_to_party = runtime_shell.party_held_item_give_target.is_some();
     runtime_shell.party_held_item_give_target = None;
     runtime_shell.held_item_swap_prompt = false;
     runtime_shell.yes_no_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell.battle_pack_target_mode = None;
+    if return_to_party { open_visible_party_menu(runtime_shell)?; }
     runtime_shell.field_notice = Some(format!(
         "Made party #{} hold {}.",
         input.party_index, transfer.item_id

@@ -3470,6 +3470,7 @@ fn give_selected_held_item_with_swap_confirmation(
         }
         Err(error) => return Err(error),
     };
+    let return_to_party = runtime_shell.party_held_item_give_target.is_some();
     runtime_shell.party_held_item_give_target = None;
     runtime_shell.held_item_swap_prompt = false;
     runtime_shell.yes_no_cursor = None;
@@ -3490,6 +3491,7 @@ fn give_selected_held_item_with_swap_confirmation(
     );
     close_visible_field_pack_without_log(runtime_shell);
     runtime_shell.battle_pack_target_mode = None;
+    if return_to_party { open_visible_party_menu(runtime_shell)?; }
     runtime_shell.field_notice = Some(match old_item_name {
         Some(old_item_name) => {
             format!("Took {pokemon_name}'s {old_item_name} and made it hold {new_item_name}.")

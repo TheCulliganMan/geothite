@@ -3712,7 +3712,7 @@ impl GameDataSet {
         self.sync_current_map_music(state, &request.target_map, mode, music_ids)?;
         self.sync_current_map_scene(state, &request.target_map)?;
         self.apply_map_setup_callbacks(state, session, &request.target_map, "MAPSETUP_WARP")?;
-        finish_map_object_setup(session)?;
+        finish_map_object_setup(session, state)?;
         let callback_mode = self.map_entry_movement_mode(state, session, session.player.mode)?;
         if callback_mode != session.player.mode {
             session.player.mode = callback_mode;
@@ -5515,10 +5515,10 @@ impl GameDataSet {
         effect: ExactPhoneCallasmEffect,
     ) -> Result<()> {
         match effect {
-            ExactPhoneCallasmEffect::RingTwice => {
-                state.script_runtime.window_open = true;
-            }
-            ExactPhoneCallasmEffect::HangUp => {}
+            // Phone_CallerTextbox draws directly into the tilemap; it does
+            // not open a script menu. The presentation boundary owns the
+            // caller box, and farwritetext opens the subsequent speech box.
+            ExactPhoneCallasmEffect::RingTwice | ExactPhoneCallasmEffect::HangUp => {}
             ExactPhoneCallasmEffect::InitReceiveDelay => {
                 restart_receive_call_delay(state, true);
                 state
@@ -11996,7 +11996,7 @@ impl GameDataSet {
         self.sync_current_map_scene(state, destination_map)?;
         self.init_map_name_sign(state, destination_map)?;
         self.apply_map_setup_callbacks(state, session, destination_map, map_setup)?;
-        finish_map_object_setup(session)?;
+        finish_map_object_setup(session, state)?;
         let callback_mode = self.map_entry_movement_mode(state, session, session.player.mode)?;
         if callback_mode != session.player.mode {
             session.player.mode = callback_mode;
@@ -12043,7 +12043,7 @@ impl GameDataSet {
         self.sync_current_map_scene(&mut state, &map_name)?;
         self.init_map_name_sign(&mut state, &map_name)?;
         self.apply_map_setup_callbacks(&mut state, &mut overworld, &map_name, "MAPSETUP_WARP")?;
-        finish_map_object_setup(&mut overworld)?;
+        finish_map_object_setup(&mut overworld, &mut state)?;
         self.commit_overworld_snapshot(
             &mut state,
             &overworld,
@@ -12088,7 +12088,7 @@ impl GameDataSet {
         self.sync_current_map_scene(&mut state, &map_name)?;
         self.init_map_name_sign(&mut state, &map_name)?;
         self.apply_map_setup_callbacks(&mut state, &mut overworld, &map_name, "MAPSETUP_WARP")?;
-        finish_map_object_setup(&mut overworld)?;
+        finish_map_object_setup(&mut overworld, &mut state)?;
         self.commit_overworld_snapshot(&mut state, &overworld, SpawnMemoryUpdate::Preserve);
         overworld.set_time(state.time.registers.hours, state.time.time_of_day);
         Ok((state, overworld))

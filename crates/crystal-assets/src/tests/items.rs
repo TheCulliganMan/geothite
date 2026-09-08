@@ -6181,7 +6181,7 @@ fn source_phone_callasms_execute_typed_ringing_hangup_timer_and_caller_effects()
     );
     assert!(state.script_runtime.command_queue.is_empty());
     assert!(state.script_runtime.audio_events.is_empty());
-    assert!(state.script_runtime.window_open);
+    assert!(!state.script_runtime.window_open);
     assert!(state.script_runtime.phone_call_timer.initialized);
     assert_eq!(
         state

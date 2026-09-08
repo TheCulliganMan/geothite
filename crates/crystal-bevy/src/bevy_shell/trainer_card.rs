@@ -1,4 +1,5 @@
 fn open_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    runtime_shell.trainer_card_return_start_menu_cursor = runtime_shell.start_menu_cursor.clone();
     let frame_phase = runtime_shell.shell.session().state().vblank_counter & 0x3f;
     runtime_shell.trainer_card_open = true;
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
@@ -30,6 +31,10 @@ fn open_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 
 fn close_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.trainer_card_open = false;
+    // StartMenu_Status returns through CloseSubmenu to StartMenu.Reopen.
+    if let Some(cursor) = runtime_shell.trainer_card_return_start_menu_cursor.take() {
+        runtime_shell.start_menu_cursor = Some(cursor);
+    }
     runtime_shell.trainer_card_page = VisibleTrainerCardPage::Info;
     runtime_shell.trainer_card_colon_visible = false;
     runtime_shell.trainer_card_colon_ticks = 0;
@@ -459,9 +464,10 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
         );
     }
     let order = visible_pokedex_order(&snapshot, runtime_shell.pokedex_controls.mode);
-    let position = order
-        .iter()
-        .position(|&i| i == runtime_shell.pokedex_cursor)
+    // wPrevDexEntry is zero until an entry has actually been displayed.
+    // Catalog index zero is a valid species, not that source sentinel.
+    let position = runtime_shell.pokedex_controls.previous_entry
+        .and_then(|previous| order.iter().position(|&i| i == previous))
         .unwrap_or(0);
     if let Some(&index) = order.get(position) {
         runtime_shell.pokedex_cursor = index;
@@ -469,6 +475,7 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell.pokedex_scroll = position.min(order.len().saturating_sub(7));
     runtime_shell.pokedex_controls = VisiblePokedexControls {
         mode: runtime_shell.pokedex_controls.mode,
+        previous_entry: runtime_shell.pokedex_controls.previous_entry,
         return_to_start: runtime_shell.start_menu_cursor.is_some(),
         ..Default::default()
     };
@@ -498,6 +505,7 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 fn close_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pokedex_controls = VisiblePokedexControls {
         mode: runtime_shell.pokedex_controls.mode,
+        previous_entry: runtime_shell.pokedex_controls.previous_entry,
         ..Default::default()
     };
     runtime_shell.pokedex_menu_open = false;
@@ -594,6 +602,7 @@ fn move_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         snapshot.pokemon[next].species_id
     ));
     if runtime_shell.pokedex_detail_open {
+        runtime_shell.pokedex_controls.previous_entry = Some(next);
         queue_visible_pokemon_cry(
             runtime_shell,
             &snapshot.pokemon[next].species_id,
@@ -697,6 +706,7 @@ fn inspect_visible_pokedex_selection(runtime_shell: &mut BevyRuntimeShell) -> Re
         .get(&species.species_id)
         .with_context(|| format!("compiled pack missing Pokedex entry {}", species.species_id))?;
     runtime_shell.pokedex_detail_open = true;
+    runtime_shell.pokedex_controls.previous_entry = Some(runtime_shell.pokedex_cursor);
     runtime_shell.pokedex_detail_page = 0;
     runtime_shell.pokedex_controls.entry_action = 0;
     runtime_shell.last_audio_events.push(format!(
@@ -743,6 +753,7 @@ fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     runtime_shell.pokegear_exit_input_blocked = false;
     runtime_shell.pokegear_joypad = crate::core::input::JoyTextDelay::default();
     runtime_shell.pokegear_joypad_prepared = false;
+    runtime_shell.pokegear_opening_buttons = 0;
     let snapshot = runtime_shell.shell.snapshot()?;
     if snapshot
         .presentation
@@ -794,6 +805,7 @@ fn close_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<(
 }
 
 fn finish_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.pokegear_opening_buttons = 0;
     runtime_shell.pokegear_exit = None;
     runtime_shell.pokegear_radio_input_blocked = false;
     if let Some(cursor) = runtime_shell.pokegear_return_start_menu_cursor.take() {
@@ -1289,6 +1301,12 @@ fn begin_visible_incoming_phone_sequence(
     );
     match effect {
         crate::core::systems::script_runtime::ScriptPhoneCallasmPresentation::RingTwice => {
+            runtime_shell.incoming_phone_contact = Some(
+                runtime_shell.shell.session().state().script_runtime.variables
+                    .get("VAR_CALLERID")
+                    .context("incoming phone call has no caller ID")?
+                    .clone(),
+            );
             queue_visible_shell_sound_effect(runtime_shell, "SFX_CALL")?;
             runtime_shell.incoming_phone_sequence = Some(VisibleIncomingPhoneSequence::RingTwice {
                 frames_remaining: 120,
@@ -1339,6 +1357,7 @@ fn advance_visible_incoming_phone_sequence(
             let next = frames_remaining.saturating_sub(elapsed);
             if next == 0 {
                 runtime_shell.incoming_phone_sequence = None;
+                runtime_shell.incoming_phone_contact = None;
                 continue_visible_script_after_prompt(runtime_shell)?;
             } else {
                 runtime_shell.incoming_phone_sequence =
@@ -3161,6 +3180,9 @@ fn open_visible_party_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             )
         })?;
     runtime_shell.party_menu_open = true;
+    if runtime_shell.start_menu_cursor.is_some() {
+        runtime_shell.party_return_start_menu_cursor = runtime_shell.start_menu_cursor.clone();
+    }
     runtime_shell.party_summary_open = false;
     runtime_shell.party_move_reorder_open = false;
     runtime_shell.party_move_reorder_origin = None;
@@ -3192,6 +3214,7 @@ fn open_visible_party_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 
 fn close_visible_party_menu(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.party_menu_open = false;
+    runtime_shell.party_return_start_menu_cursor = None;
     runtime_shell.party_summary_open = false;
     runtime_shell.party_move_cursor = None;
     runtime_shell.party_action_cursor = None;
@@ -3228,7 +3251,7 @@ fn open_visible_party_action_menu(runtime_shell: &mut BevyRuntimeShell) -> Resul
     );
     if runtime_shell.party_cursor == snapshot.party.slots.len() {
         record_visible_runtime_action(runtime_shell, "party:cancel")?;
-        close_visible_party_menu(runtime_shell);
+        exit_visible_party_menu(runtime_shell);
         set_shell_action_status(runtime_shell, "POKEMON CLOSED");
         return Ok(());
     }
@@ -3260,6 +3283,16 @@ fn open_visible_party_action_menu(runtime_shell: &mut BevyRuntimeShell) -> Resul
     );
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
+}
+
+fn exit_visible_party_menu(runtime_shell: &mut BevyRuntimeShell) {
+    // StartMenu_Pokemon returns 0 through CloseSubmenu to StartMenu.Reopen.
+    // Script-owned selections and transitions to other screens do not reopen it.
+    let cursor = runtime_shell.party_return_start_menu_cursor.take();
+    close_visible_party_menu(runtime_shell);
+    if let Some(cursor) = cursor {
+        runtime_shell.start_menu_cursor = Some(cursor);
+    }
 }
 
 fn close_visible_party_action_menu(runtime_shell: &mut BevyRuntimeShell) {
@@ -3476,8 +3509,10 @@ fn confirm_visible_party_give_take(runtime_shell: &mut BevyRuntimeShell) -> Resu
         let party_index = selected_party_index(runtime_shell)?;
         record_visible_runtime_action(runtime_shell, "party:held_item:give")?;
         runtime_shell.party_held_item_give_target = Some(party_index);
+        let return_cursor = runtime_shell.party_return_start_menu_cursor.take();
         close_visible_party_menu(runtime_shell);
         open_visible_field_pack(runtime_shell)?;
+        runtime_shell.party_return_start_menu_cursor = return_cursor;
         set_shell_action_status(runtime_shell, "CHOOSE AN ITEM TO GIVE");
         trim_event_log(&mut runtime_shell.last_audio_events);
         return Ok(());

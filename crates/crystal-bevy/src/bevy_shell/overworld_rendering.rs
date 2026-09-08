@@ -502,7 +502,10 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         || runtime_shell.pokedex_menu_open
         || visible_pokegear_screen_active(runtime_shell)
         || runtime_shell.trainer_card_open
-        || (runtime_shell.party_menu_open && runtime_shell.fly_cursor.is_some())
+        // StartMenu_Pokemon owns the whole LCD through party selection,
+        // MonSubmenu, and StatsScreen. Retain its presenter on idle frames
+        // as well as redraws, and apply the same fullscreen transform to OAM.
+        || runtime_shell.party_menu_open
         || (runtime_shell.storage_cursor.is_some() && !runtime_shell.party_menu_open)
         || (runtime_shell.pc_item_cursor.is_some() && !visible_field_pack_is_open(runtime_shell))
         || runtime_shell.bill_pc_box_cursor.is_some()
@@ -5612,6 +5615,109 @@ fn spawn_options_menu_text(
     spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, text, x, y, z);
 }
 
+// Phone_CallerTextbox is a 20x4 tile window at (0, 0). Each .Ring
+// alternates blank/name/blank for three 20-frame waits, then retains the name.
+fn incoming_phone_caller_name_visible(runtime_shell: &BevyRuntimeShell) -> bool {
+    match runtime_shell.incoming_phone_sequence {
+        Some(VisibleIncomingPhoneSequence::RingTwice {
+            frames_remaining, ..
+        }) => (120 - frames_remaining) % 60 / 20 == 1,
+        _ => true,
+    }
+}
+
+fn spawn_visible_incoming_phone(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    runtime_shell: &BevyRuntimeShell,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<bool> {
+    let Some(contact_id) = runtime_shell.incoming_phone_contact.as_ref() else {
+        return Ok(false);
+    };
+    let contact = snapshot
+        .special
+        .phone_contacts
+        .0
+        .get(contact_id)
+        .with_context(|| format!("incoming phone contact {contact_id} is missing"))?;
+    spawn_scene_dialog_window(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        0.0,
+        0.0,
+        20.0,
+        4.0,
+        4.0,
+    );
+    if incoming_phone_caller_name_visible(runtime_shell) {
+        let name = contact
+            .lines
+            .first()
+            .context("incoming phone contact has no name")?;
+        for (text, tile_x, tile_y) in [("☎", 1.0, 1.0), (name.as_str(), 3.0, 1.0)] {
+            let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                text,
+                x,
+                y,
+                4.2,
+            );
+        }
+        if let Some(class) = contact.lines.get(1) {
+            let (x, y) = battle_hud_tile_origin(6.0, 2.0);
+            spawn_scene_dialog_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                class,
+                x,
+                y,
+                4.2,
+            );
+        }
+    }
+    match runtime_shell.incoming_phone_sequence {
+        Some(VisibleIncomingPhoneSequence::RingTwice { .. }) => Ok(true),
+        Some(VisibleIncomingPhoneSequence::HangUp { frames_remaining }) => {
+            spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+            let label = match (140 - frames_remaining) / 20 {
+                0 => Some("_PhoneClickText"),
+                1 | 3 | 5 => Some("_PhoneEllipseText"),
+                _ => None,
+            };
+            if let Some(label) = label {
+                let text = visible_asm_text(snapshot, label)?;
+                let (x, y) = battle_hud_tile_origin(
+                    FIELD_TEXT_BOX_TEXT_LEFT_TILE,
+                    FIELD_TEXT_BOX_TEXT_TOP_TILE,
+                );
+                spawn_scene_dialog_bitmap_text(
+                    commands,
+                    rendered_art,
+                    asset_root,
+                    images,
+                    &text,
+                    x,
+                    y,
+                    4.2,
+                );
+            }
+            Ok(true)
+        }
+        None => Ok(false),
+    }
+}
+
 fn spawn_scene_dialog(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -5622,6 +5728,9 @@ fn spawn_scene_dialog(
 ) -> Result<()> {
     if scene_dialog_surface_active(snapshot, runtime_shell) {
         require_bitmap_font_art(rendered_art, asset_root, images)?;
+    }
+    if spawn_visible_incoming_phone(commands, snapshot, runtime_shell, rendered_art, asset_root, images)? {
+        return Ok(());
     }
     if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
@@ -6020,7 +6129,7 @@ fn spawn_visible_pokecenter_pc_menu(
             rendered_art,
             asset_root,
             images,
-            "ACCESS WHOSE PC?",
+            &visible_pc_source_text_pages(runtime_shell, snapshot, "_PokecenterPCWhoseText")?.join("\n"),
             x,
             y,
             4.2,
@@ -10617,6 +10726,10 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> bool {
+    // The caller header owns glyphs outside the ordinary speech window.
+    if runtime_shell.incoming_phone_contact.is_some() {
+        return false;
+    }
     let Ok(entries) = visible_scene_dialog_entries(snapshot, runtime_shell) else {
         return false;
     };
@@ -12286,7 +12399,8 @@ fn scene_dialog_surface_active(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> bool {
-    runtime_shell.visible_mom_bank.is_some()
+    runtime_shell.incoming_phone_contact.is_some()
+        || runtime_shell.visible_mom_bank.is_some()
         || snapshot.pending_shop.is_some()
         || snapshot.ui.menu.is_some()
         || snapshot.ui.text.is_some()
@@ -13340,13 +13454,12 @@ fn visible_bill_pc_action_entries(runtime_shell: &BevyRuntimeShell) -> Result<Ve
         .iter()
         .enumerate()
         .map(|(index, action)| {
-            compact_scene_label(
-                &format!(
-                    "{}{}",
-                    if index == selected { ">" } else { " " },
-                    visible_bill_pc_action_label(*action)
-                ),
-                SCENE_DIALOG_TEXT_CHARS,
+            // The source's <PK><MN> tokens occupy two tiles after decoding.
+            // Truncating the undecoded string adds an unsupported '~' glyph.
+            format!(
+                "{}{}",
+                if index == selected { ">" } else { " " },
+                visible_bill_pc_action_label(*action)
             )
         })
         .collect())

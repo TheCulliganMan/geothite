@@ -847,7 +847,7 @@ fn unown_puzzle_cursor_blinks_from_hvblankcounter_unless_holding_piece() {
 
 fn core_modular_title_shell_for_test() -> BevyRuntimeShell {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -2949,7 +2949,7 @@ fn stats_source_print_level_uses_three_tiles_at_every_level() {
 
 #[test]
 fn stats_shiny_palette_loads_the_two_source_colors() {
-    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let palette = load_pokemon_palette(&root, "cyndaquil", PokemonSpriteSide::Front, true).unwrap();
     assert_eq!(palette, [[255, 255, 255],
         [normalize_palette_component(29), normalize_palette_component(23), normalize_palette_component(9)],
@@ -2977,6 +2977,11 @@ fn render_pc_audit_canvas(world: &mut World, images: &Assets<Image>, label: &str
                 assert_eq!(*handle, Handle::<Image>::default(), "missing authored sprite");
                 image::RgbaImage::from_pixel(1, 1, image::Rgba([255, 255, 255, 255]))
             };
+            if let Some(rect) = sprite.rect {
+                raster = image::imageops::crop_imm(&raster,
+                    rect.min.x as u32, rect.min.y as u32,
+                    rect.width() as u32, rect.height() as u32).to_image();
+            }
             let color = sprite.color.to_srgba();
             for pixel in raster.pixels_mut() {
                 for (channel, tint) in pixel.0.iter_mut().zip([color.red, color.green, color.blue, color.alpha]) {
@@ -3077,7 +3082,7 @@ fn stats_observation_reports_the_active_pc_and_party_page() {
 #[test]
 fn pc_unown_portraits_load_all_dv_selected_forms() {
     use crate::core::models::{BaseStats, Dv, Pokemon, PokemonSpecies};
-    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../.."));
+    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let species = PokemonSpecies::new_for_tests("UNOWN", BaseStats {
         hp: 48, attack: 72, defense: 48, speed: 48, special_attack: 72, special_defense: 48,
     });
@@ -3303,4 +3308,423 @@ fn unown_solved_cancel_box_uses_the_source_void_tile() {
         assert_eq!(&pixels[offset..offset + 4], &[248, 248, 248, 255],
             "PlaceStartCancelBoxBorder fills the cleared lettering with PUZZLE_VOID");
     }}
+}
+
+fn menu_render_test_app(shell: BevyRuntimeShell) -> App {
+    let mut app = integrated_shell_test_app(shell);
+    // Browser packs contain MIDI music. These native LCD tests exercise
+    // rendering and input, without invoking the browser synthesizer.
+    app.add_systems(
+        Update,
+        (|mut shell: ResMut<BevyRuntimeShell>| {
+            shell.pending_audio.clear();
+            shell.transient_audio_playing = false;
+        })
+        .after(queue_battle_intro_cry)
+        .before(play_pending_audio),
+    );
+    app
+}
+
+fn save_live_menu_lcd_for_test(world: &mut World, name: &str) {
+    let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else {
+        return;
+    };
+    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>),
+        Or<(With<FieldCommandMarker>, With<VisibleIntroSurface>)>>()
+        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+        .collect::<Vec<_>>();
+    let mut lcd = World::new();
+    for sprite in sprites {
+        lcd.spawn(sprite);
+    }
+    let canvas = render_pc_audit_canvas(&mut lcd, world.resource::<Assets<Image>>(), name);
+    std::fs::create_dir_all(&directory).unwrap();
+    canvas.save(PathBuf::from(directory).join(name)).unwrap();
+}
+
+#[test]
+fn party_and_stats_retain_the_lcd_through_live_input_and_idle_frames() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_mut()
+        .unwrap()
+        .item = None;
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_mut()
+        .unwrap()
+        .mail = None;
+    shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .sync_party_from_storage();
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(app.world().resource::<BevyRuntimeShell>().party_menu_open);
+    let retained = retained_fullscreen_surface(app.world_mut());
+    {
+        let art = app.world().resource::<RenderedTilesetArt>();
+        let frame = art.intro_presented_surface.as_ref().unwrap();
+        let pixels = &app
+            .world()
+            .resource::<Assets<Image>>()
+            .get(&frame.handle)
+            .unwrap()
+            .data;
+        assert!(
+            pixels.chunks_exact(4).all(|pixel| pixel[3] == 255),
+            "party background must be fully opaque"
+        );
+        assert!(
+            pixels
+                .chunks_exact(4)
+                .filter(|pixel| pixel[..3] == [255, 255, 255])
+                .count()
+                > 160 * 144 / 2,
+            "the white LCD background must remain behind the Pokemon icon"
+        );
+        assert!(
+            pixels
+                .chunks_exact(4)
+                .filter(|pixel| pixel[..3] == [0, 0, 0])
+                .count()
+                > 50,
+            "the retained LCD must contain menu text and borders, not only an OAM sprite"
+        );
+    }
+    save_live_menu_lcd_for_test(app.world_mut(), "pokemon-menu.png");
+    for _ in 0..3 {
+        app.update();
+        assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .party_action_cursor
+            .is_some()
+    );
+    assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .party_summary_open
+    );
+    assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    // Finish the cry before the source StatsScreenWaitCry joypad boundary.
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = false;
+    }
+    for page in [2, 3, 1] {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        assert_eq!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .party_summary_page,
+            page
+        );
+        app.update();
+        assert_retained_fullscreen_surface(app.world_mut(), &retained);
+        save_live_menu_lcd_for_test(app.world_mut(), &format!("pokemon-stats-{page}.png"));
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert!(
+        !app.world()
+            .resource::<BevyRuntimeShell>()
+            .party_summary_open
+    );
+    assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    app.update();
+    assert!(!app.world().resource::<BevyRuntimeShell>().party_menu_open);
+    assert_eq!(
+        selected_visible_start_menu_option(&mut app.world_mut().resource_mut::<BevyRuntimeShell>())
+            .unwrap(),
+        StartMenuOption::Pokemon,
+        "CloseSubmenu returns to the selected START menu row"
+    );
+    assert!(
+        app.world()
+            .resource::<RenderedTilesetArt>()
+            .presented_fullscreen_entity
+            .is_none()
+    );
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().last_error, None);
+}
+
+#[test]
+fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    let font =
+        crate::open_runtime_image(shell.asset_root.runtime_assets().join("gfx/font/font.png"))
+            .unwrap()
+            .to_rgba8();
+    let tile = |image: &[u8], x: usize, y: usize| -> Vec<u8> {
+        (y * 8..y * 8 + 8)
+            .flat_map(|row| {
+                image[(row * 160 + x * 8) * 4..(row * 160 + x * 8 + 8) * 4]
+                    .iter()
+                    .copied()
+            })
+            .collect()
+    };
+    let mut expected = vec![255; 160 * 144 * 4];
+    draw_time_set_text(&font, "EGG", 24, 8, &mut expected).unwrap();
+    snapshot.party.slots[0].pokemon.is_egg = true;
+    snapshot.party.slots[0].pokemon.nickname = "EGG".into();
+    let save_frame = |images: &Assets<Image>, frame: &SpriteFrame, name: &str| {
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            let directory = PathBuf::from(directory);
+            std::fs::create_dir_all(&directory).unwrap();
+            let image = images.get(&frame.handle).unwrap();
+            image::RgbaImage::from_raw(image.width(), image.height(), image.data.clone())
+                .unwrap()
+                .save(directory.join(name))
+                .unwrap();
+        }
+    };
+    let mut images = Assets::<Image>::default();
+    let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
+    save_frame(&images, &frame, "party-egg.png");
+    let pixels = &images.get(&frame.handle).unwrap().data;
+    for x in 3..6 {
+        assert_eq!(
+            tile(pixels, x, 1),
+            tile(&expected, x, 1),
+            "PlacePartyNicknames includes Eggs"
+        );
+    }
+    for x in 5..20 {
+        assert_eq!(
+            tile(pixels, x, 2),
+            vec![255; 256],
+            "Egg rows omit status, level, and HP"
+        );
+    }
+
+    let frame = load_visible_field_party_frame(&snapshot, &shell, 1, &mut images).unwrap();
+    let pixels = &images.get(&frame.handle).unwrap().data;
+    expected.fill(255);
+    draw_time_set_text(&font, "▶CANCEL", 0, 3 * 8, &mut expected).unwrap();
+    for x in 0..7 {
+        assert_eq!(
+            tile(pixels, x, 3),
+            tile(&expected, x, 3),
+            "PartyMenu2DMenuData keeps the CANCEL cursor at column zero"
+        );
+    }
+
+    snapshot.party.slots[0].pokemon.is_egg = false;
+    snapshot.party.slots[0].pokemon.level = 100;
+    snapshot.party.slots[0].pokemon.hp = snapshot.party.slots[0].pokemon.max_hp;
+    let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
+    save_frame(&images, &frame, "party-level100.png");
+    let pixels = &images.get(&frame.handle).unwrap().data;
+    expected.fill(255);
+    draw_time_set_text(&font, "100", 64, 16, &mut expected).unwrap();
+    for x in 8..11 {
+        assert_eq!(
+            tile(pixels, x, 2),
+            tile(&expected, x, 2),
+            "PlacePartyMonLevel replaces LV at 100"
+        );
+    }
+    for x in 5..8 {
+        assert_eq!(
+            tile(pixels, x, 2),
+            vec![255; 256],
+            "PlaceNonFaintStatus leaves healthy status blank"
+        );
+    }
+    // DrawBattleHPBar puts HP: at columns 11/12 and the end cap at 19.
+    let extra = crate::read_runtime_asset(
+        shell
+            .asset_root
+            .runtime_assets()
+            .join("gfx/font/font_battle_extra.2bpp"),
+    )
+    .unwrap();
+    let colors = stats_palette_colors(&shell.asset_root, "gfx/battle/hp_bar.pal").unwrap();
+    let palette = [[255, 255, 255], colors[0], colors[1], [0, 0, 0]];
+    for (x, id) in [(11, 0x60), (12, 0x61), (13, 0x6a), (19, 0x6b)] {
+        draw_paletted_2bpp_tile(&extra, id - 0x60, &palette, x, 2, &mut expected).unwrap();
+        assert_eq!(
+            tile(pixels, x, 2),
+            tile(&expected, x, 2),
+            "source HP tile at {x}"
+        );
+    }
+    shell.party_action_cursor = Some(MenuCursor {
+        surface_id: "party:actions".into(),
+        option_index: 0,
+    });
+    let actions = visible_party_actions(&snapshot, &shell).unwrap();
+    let top = 18 - 2 * (actions.len() + 1);
+    let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
+    save_frame(&images, &frame, "party-actions.png");
+    let pixels = &images.get(&frame.handle).unwrap().data;
+    expected.fill(255);
+    draw_time_set_text(&font, "STATS", 64, (top + 2) * 8, &mut expected).unwrap();
+    for x in 8..13 {
+        assert_eq!(
+            tile(pixels, x, top + 2),
+            tile(&expected, x, top + 2),
+            "MonSubmenu.GetTopCoord bottom-aligns actions"
+        );
+    }
+}
+
+#[test]
+fn party_stats_joypad_is_edge_only_and_uses_asm_button_priority() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    open_visible_party_menu(&mut shell).unwrap();
+    open_visible_party_summary(&mut shell).unwrap();
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = false;
+    let mut keys = ButtonInput::<KeyCode>::default();
+    keys.press(KeyCode::ArrowRight);
+    keys.press(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert_eq!(
+        shell.party_summary_page, 2,
+        "StatsScreen_JoypadAction gives Right priority over A"
+    );
+    keys.clear();
+    for _ in 0..40 {
+        apply_visible_runtime_controls(&keys, &mut shell, true);
+    }
+    assert_eq!(
+        shell.party_summary_page, 2,
+        "StatsScreen_GetJoypad reads hJoyPressed without menu repeat"
+    );
+    assert!(shell.party_summary_open);
+    keys.reset_all();
+    keys.press(KeyCode::KeyX);
+    keys.press(KeyCode::KeyZ);
+    apply_visible_runtime_controls(&keys, &mut shell, true);
+    assert!(!shell.party_summary_open);
+    assert!(
+        shell.party_menu_open,
+        "one input sample must not also close the parent party menu"
+    );
+}
+
+#[test]
+fn trainer_status_retains_its_lcd_during_live_page_changes() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let snapshot = shell.shell.snapshot().unwrap();
+        let index = visible_start_menu_options(&shell, &snapshot)
+            .iter()
+            .position(|option| *option == StartMenuOption::TrainerCard)
+            .unwrap();
+        shell.start_menu_cursor.as_mut().unwrap().option_index = index;
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(app.world().resource::<BevyRuntimeShell>().trainer_card_open);
+    save_live_menu_lcd_for_test(app.world_mut(), "trainer-status.png");
+    let retained = retained_fullscreen_surface(app.world_mut());
+    for _ in 0..3 {
+        app.update();
+        assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    }
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+    assert_eq!(
+        app.world().resource::<BevyRuntimeShell>().trainer_card_page,
+        VisibleTrainerCardPage::JohtoBadges
+    );
+    assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowLeft);
+    assert_eq!(
+        app.world().resource::<BevyRuntimeShell>().trainer_card_page,
+        VisibleTrainerCardPage::Info
+    );
+    assert_retained_fullscreen_surface(app.world_mut(), &retained);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    app.update();
+    assert!(!app.world().resource::<BevyRuntimeShell>().trainer_card_open);
+    assert_eq!(
+        selected_visible_start_menu_option(&mut app.world_mut().resource_mut::<BevyRuntimeShell>())
+            .unwrap(),
+        StartMenuOption::TrainerCard
+    );
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().last_error, None);
+}
+
+#[test]
+fn party_give_item_keeps_start_closed_until_the_party_menu_exits() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    toggle_visible_start_menu(&mut shell).unwrap();
+    select_visible_start_menu_option(&mut shell).unwrap();
+    assert!(shell.party_menu_open);
+    assert!(shell.party_return_start_menu_cursor.is_some());
+    shell.party_give_take_cursor = Some(MenuCursor {
+        surface_id: "party:give-take".into(),
+        option_index: 0,
+    });
+    confirm_visible_party_give_take(&mut shell).unwrap();
+    assert!(visible_field_pack_is_open(&shell));
+    assert!(
+        shell.start_menu_cursor.is_none(),
+        "GIVE must not render START over the Pack"
+    );
+    assert!(shell.party_return_start_menu_cursor.is_some());
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(shell.party_menu_open);
+    assert!(shell.start_menu_cursor.is_none());
+    press_visible_b_button(&mut shell).unwrap();
+    assert!(!shell.party_menu_open);
+    assert_eq!(
+        selected_visible_start_menu_option(&mut shell).unwrap(),
+        StartMenuOption::Pokemon
+    );
+}
+
+#[test]
+fn party_give_item_success_returns_to_party_with_the_start_cursor_retained() {
+    let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let pokemon = shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_mut()
+        .unwrap();
+    pokemon.item = None;
+    pokemon.mail = None;
+    shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .sync_party_from_storage();
+    shell.shell.add_bag_item("BERRY", 1).unwrap();
+    toggle_visible_start_menu(&mut shell).unwrap();
+    select_visible_start_menu_option(&mut shell).unwrap();
+    shell.party_give_take_cursor = Some(MenuCursor {
+        surface_id: "party:give-take".into(),
+        option_index: 0,
+    });
+    confirm_visible_party_give_take(&mut shell).unwrap();
+    give_selected_held_item(&mut shell).unwrap();
+    assert!(shell.party_menu_open);
+    assert!(shell.start_menu_cursor.is_none());
+    assert!(shell.party_return_start_menu_cursor.is_some());
+    assert!(!visible_field_pack_is_open(&shell));
+    assert_eq!(
+        shell.shell.session().state().storage.party.pokemon[0]
+            .as_ref()
+            .unwrap()
+            .item
+            .as_deref(),
+        Some("BERRY")
+    );
 }
