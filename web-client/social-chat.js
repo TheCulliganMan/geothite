@@ -53,6 +53,43 @@ export function parseChat(input, selected = 'say', replyTarget = null) {
   return { type: 'chat', channel, target_user_id: target, text };
 }
 
+export function mountSpeechBubbles({ document, window, canvas, selfUserId }) {
+  const layer = document.createElement('div');
+  layer.id = 'speech-bubbles'; layer.setAttribute('aria-hidden', 'true');
+  document.body.append(layer);
+  const bubbles = new Map();
+  return {
+    update(state) {
+      const now = window.Date.now();
+      for (const event of state.events ?? []) {
+        if (event.type !== 'chat' || event.channel !== 'say' || !event.text) continue;
+        const id = event.from_user_id === selfUserId ? '__self__' : event.from_user_id;
+        let bubble = bubbles.get(id);
+        if (!bubble) {
+          if (bubbles.size >= 24) { const oldest = bubbles.keys().next().value; bubbles.get(oldest).element.remove(); bubbles.delete(oldest); }
+          const element = document.createElement('div'); element.className = 'speech-bubble';
+          layer.append(element); bubble = { element }; bubbles.set(id, bubble);
+        }
+        bubble.element.textContent = event.text;
+        bubble.expires = now + Math.min(10000, Math.max(5000, event.text.length * 45));
+      }
+      const rect = canvas.getBoundingClientRect();
+      const heads = new Map((state.heads ?? []).map(head => [head.user_id, head]));
+      for (const [id, bubble] of bubbles) {
+        if (now >= bubble.expires) { bubble.element.remove(); bubbles.delete(id); continue; }
+        const head = heads.get(id);
+        bubble.element.hidden = !head || document.hidden || !!document.querySelector('dialog[open]');
+        if (!head) continue;
+        bubble.element.style.left = `${rect.left + head.x * rect.width}px`;
+        bubble.element.style.top = `${rect.top + head.y * rect.height - 8}px`;
+        bubble.element.classList.toggle('fading', bubble.expires - now < 700);
+      }
+    },
+    clear() { for (const bubble of bubbles.values()) bubble.element.remove(); bubbles.clear(); },
+    destroy() { layer.remove(); bubbles.clear(); },
+  };
+}
+
 export function mountSocialChat(wasm, { document, window, playerId }) {
   const panel = document.createElement('section');
   panel.id = 'social-chat';
@@ -102,6 +139,8 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const requestCards = new Map();
   const swallowed = new Set();
   const selfUserId = `player-${playerId}`;
+  const speech = mountSpeechBubbles({ document, window, canvas: document.querySelector('canvas'), selfUserId });
+  listen(window, 'pagehide', () => speech.clear());
   const help = '/s say · /1 general · /2 trade · /3 LFG · /w trainer-ID message · /r reply · /battle trainer-ID · /tradewith trainer-ID · /cancel · /join name · /leave name';
   const updateChannels = () => {
     const previous = select.value;
@@ -256,6 +295,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     for (const line of log.children) line.classList.toggle('chat-faded', window.Date.now() - Number(line.dataset.receivedAt) >= 10000);
     try {
       const state = JSON.parse(wasm.crystal_social_poll());
+      speech.update(state);
       if (connected && !state.connected) { requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
       connected = state.connected;
       status.textContent = connected ? 'Connected' : 'Reconnecting…';
@@ -307,5 +347,5 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; }
   };
   const timer = window.setInterval(poll, 150);
-  return () => { controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); wasm.crystal_social_focus(false); panel.remove(); };
+  return () => { speech.destroy(); controller.abort(); document.body.classList.remove('chat-open'); window.clearInterval(timer); wasm.crystal_social_focus(false); panel.remove(); };
 }

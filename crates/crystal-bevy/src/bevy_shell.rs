@@ -5239,6 +5239,10 @@ pub fn run_bevy_shell(
                 .after(apply_visible_battle_screen_offset)
                 .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
         );
+    #[cfg(feature = "voxel-view")]
+    app.add_systems(PostUpdate, publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate).after(crystal_voxel_view::ActorHeadProjection));
+    #[cfg(not(feature = "voxel-view"))]
+    app.add_systems(PostUpdate, publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate));
     #[cfg(target_arch = "wasm32")]
     app.add_systems(Update, apply_webmcp_input.before(poll_multiplayer).before(apply_keyboard_input))
         .add_systems(PostUpdate, finish_webmcp_request)

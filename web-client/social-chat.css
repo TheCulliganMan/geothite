@@ -52,3 +52,9 @@
 #social-chat .chat-players:empty::before { content: "No trainers nearby."; color: #a8b0be; padding: 4px; }
 #social-chat .chat-players:empty:not([hidden]) { display: flex; }
 #social-chat form button { border: 1px solid #617386; background: #294157; color: #fff; padding: 0 10px; font-weight: 600; }
+
+#speech-bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 12; }
+.speech-bubble { position: absolute; transform: translate(-50%, -100%); width: max-content; max-width: min(220px, 58vw); padding: 7px 10px; border: 1px solid #a8bac8; border-radius: 11px; background: #fffffff2; color: #172333; font: 500 13px/1.35 system-ui, sans-serif; overflow-wrap: anywhere; white-space: pre-wrap; box-shadow: 0 2px 8px #0005; transition: opacity .7s; }
+.speech-bubble::after { content: ''; position: absolute; left: calc(50% - 5px); bottom: -6px; width: 9px; height: 9px; background: #fffffff2; border-right: 1px solid #a8bac8; border-bottom: 1px solid #a8bac8; transform: rotate(45deg); }
+.speech-bubble.fading { opacity: 0; }
+.speech-bubble[hidden] { display: none; }

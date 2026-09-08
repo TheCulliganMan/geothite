@@ -56,6 +56,8 @@ game menu, and `Backspace` for Select. Press `Enter` to open chat and `Esc`
 to close it. Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
 **Save key bindings** keeps the choice in this browser across reloads. Chat, Start, and
 Select require different keys. Enter still sends messages while typing in chat.
+Nearby Say messages appear briefly above the speaking trainer in 2D and 2.5D.
+Whispers and global channels stay in the chat panel.
 Phones expose touch controls; standard gamepads are supported.
 Click or press a key in the game to enable browser audio.
 

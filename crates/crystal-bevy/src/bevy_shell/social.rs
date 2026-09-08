@@ -7,6 +7,7 @@ struct SocialBridge {
     focused: bool,
     players: Vec<serde_json::Value>,
     selected_player: Option<String>,
+    heads: Vec<serde_json::Value>,
 }
 
 thread_local! {
@@ -55,6 +56,7 @@ pub fn crystal_social_poll() -> String {
             "connected": bridge.connected,
             "events": bridge.events.drain(..).collect::<Vec<_>>(),
             "players": bridge.players,
+            "heads": bridge.heads,
             "selected_player": bridge.selected_player.take(),
         })
         .to_string()
@@ -169,4 +171,44 @@ mod social_bridge_tests {
         assert!(!SOCIAL_BRIDGE.with_borrow(|bridge| bridge.focused));
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| *bridge = SocialBridge::default());
     }
+}
+
+// Project actual rendered trainer sprites, never inferred map coordinates.
+fn publish_social_heads(
+    rendered: Res<RenderedViewport>,
+    cameras: Query<(&Camera, &GlobalTransform), With<MainCameraMarker>>,
+    players: Query<(&Sprite, &GlobalTransform), With<PlayerMarker>>,
+    ghosts: Query<(&MultiplayerGhost, &Sprite, &GlobalTransform)>,
+    menus: Query<(), Or<(With<FieldCommandMarker>, With<BattleCommandMarker>, With<FixedBattleCanvasMarker>, With<TitleScreenMarker>, With<VisibleIntroSurface>)>>,
+    #[cfg(feature = "voxel-view")] voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
+    #[cfg(feature = "voxel-view")] voxel_heads: Option<Res<crystal_voxel_view::ActorScreenHeads>>,
+) {
+    let mut heads = Vec::new();
+    if !rendered.title_active && rendered.map_name.is_some() && menus.is_empty() {
+        #[cfg(feature = "voxel-view")]
+        let voxel_active = voxel_status.as_ref().is_some_and(|status| status.active);
+        #[cfg(not(feature = "voxel-view"))]
+        let voxel_active = false;
+        let project = |sprite: &Sprite, transform: &GlobalTransform, id: &str| -> Option<Vec2> {
+            #[cfg(feature = "voxel-view")]
+            if voxel_active {
+                let visual_id = if id == "__self__" { crystal_render_api::VisualActorId::Player }
+                    else { crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(id)) };
+                return voxel_heads.as_ref()?.0.get(&visual_id).copied();
+            }
+            let _ = voxel_active;
+            let (camera, camera_transform) = cameras.get_single().ok()?;
+            let size = camera.logical_target_size()?;
+            let point = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y * sprite.custom_size?.y * 0.5))?;
+            let normalized = (point + camera.logical_viewport_rect()?.min) / size;
+            (normalized.is_finite() && normalized.cmpge(Vec2::ZERO).all() && normalized.cmple(Vec2::ONE).all()).then_some(normalized)
+        };
+        for (sprite, transform) in &players {
+            if let Some(point) = project(sprite, transform, "__self__") { heads.push(serde_json::json!({"user_id":"__self__", "x":point.x, "y":point.y})); }
+        }
+        for (ghost, sprite, transform) in &ghosts {
+            if let Some(point) = project(sprite, transform, &ghost.user_id) { heads.push(serde_json::json!({"user_id":ghost.user_id, "x":point.x, "y":point.y})); }
+        }
+    }
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.heads = heads);
 }

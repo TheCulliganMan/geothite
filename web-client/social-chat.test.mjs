@@ -278,3 +278,26 @@ test('Select defaults to Backspace, can be rebound, and old native Select does n
     assert.throws(() => saveKeyBindings(h.window, { chat: 'Enter', start: 'KeyM', select: 'Enter' }), /different/);
   } finally { h.cleanup(); }
 });
+
+import { mountSpeechBubbles } from './social-chat.js';
+test('speech bubbles follow visible speakers, escape text, expire, and exclude private/global messages', () => {
+  const dom = new JSDOM('<canvas></canvas>', { pretendToBeVisual: true });
+  const { window } = dom; const { document } = window;
+  let now = 1000; window.Date.now = () => now;
+  const canvas = document.querySelector('canvas');
+  canvas.getBoundingClientRect = () => ({left:10, top:20, width:400, height:300});
+  const speech = mountSpeechBubbles({ document, window, canvas, selfUserId: 'player-1' });
+  const heads = [{user_id:'__self__',x:.5,y:.5},{user_id:'player-2',x:.7,y:.6}];
+  const chat = (from, text, channel='say') => ({type:'chat',from_user_id:from,text,channel});
+  speech.update({ heads, events:[chat('player-1','Hello!'),chat('player-2','<img src=x onerror=alert(1)>'),chat('player-3','secret','whisper'),chat('player-4','global','general')] });
+  const bubbles = [...document.querySelectorAll('.speech-bubble')];
+  assert.equal(bubbles.length,2); assert.equal(bubbles[0].style.left,'210px');
+  assert.equal(bubbles[0].style.top,'162px'); assert.equal(document.querySelector('img'),null);
+  speech.update({heads:[{user_id:'__self__',x:.6,y:.4}],events:[chat('player-1','Second message')]});
+  assert.equal(document.querySelectorAll('.speech-bubble').length,2);
+  assert.equal(bubbles[0].textContent,'Second message'); assert.equal(bubbles[0].style.left,'250px');
+  assert.equal(bubbles[1].hidden,true);
+  speech.update({heads:[],events:[]}); assert.equal(bubbles[0].hidden,true);
+  now=20000; speech.update({heads,events:[]}); assert.equal(document.querySelectorAll('.speech-bubble').length,0);
+  speech.destroy(); assert.equal(document.querySelector('#speech-bubbles'),null); window.close();
+});

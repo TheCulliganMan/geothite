@@ -144,11 +144,13 @@ impl Plugin for VoxelViewPlugin {
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
         app.init_resource::<VoxelViewSettings>()
             .init_resource::<VoxelViewStatus>()
+            .init_resource::<ActorScreenHeads>()
             .init_resource::<VoxelScene>()
             .init_resource::<TerrainRevisionCache>()
             .init_resource::<TerrainBuildQueue>()
             .init_resource::<ActorIdCache>()
             .init_resource::<PlayerSilhouetteCache>()
+            .add_systems(PostUpdate, project_actor_heads.after(bevy::transform::TransformSystem::TransformPropagate).in_set(ActorHeadProjection))
             .add_systems(Startup, setup_voxel_view)
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
@@ -168,6 +170,34 @@ pub struct VoxelViewSettings {
     pub enabled: bool,
     pub allow_f3_toggle: bool,
     pub camera: VoxelCameraControls,
+}
+
+/// Normalized canvas positions for browser overlays, derived from rendered cards.
+#[derive(Resource, Default)]
+pub struct ActorScreenHeads(pub HashMap<VisualActorId, Vec2>);
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ActorHeadProjection;
+
+fn project_actor_heads(
+    status: Res<VoxelViewStatus>, cache: Res<ActorIdCache>,
+    cameras: Query<(&Camera, &GlobalTransform), With<VoxelWorldCamera>>,
+    cards: Query<&GlobalTransform, With<VoxelActorCard>>,
+    mut heads: ResMut<ActorScreenHeads>,
+) {
+    heads.0.clear();
+    if !status.active { return; }
+    let Ok((camera, camera_transform)) = cameras.get_single() else { return; };
+    let (Some(size), Some(rect)) = (camera.logical_target_size(), camera.logical_viewport_rect()) else { return; };
+    for (id, entity) in &cache.entities {
+        if !matches!(id, VisualActorId::Player | VisualActorId::RemotePlayer(_)) { continue; }
+        let Ok(transform) = cards.get(*entity) else { continue; };
+        if let Some(point) = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y)) {
+            let normalized = (point + rect.min) / size;
+            if normalized.is_finite() && normalized.cmpge(Vec2::ZERO).all() && normalized.cmple(Vec2::ONE).all() {
+                heads.0.insert(*id, normalized);
+            }
+        }
+    }
 }
 
 /// Observable presentation state for the developer location tester. Gameplay
