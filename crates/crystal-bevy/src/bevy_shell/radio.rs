@@ -65,11 +65,7 @@ fn advance_visible_radio_broadcast(
         let before_name = broadcast.host.name_tiles;
         for _ in 0..frames {
             suspended |= broadcast.playback.call_suspended();
-            let RuntimeGameShell {
-                runtime, session, ..
-            } = &mut shell.shell;
-            let crate::RuntimeOverworldSession { state, divider, .. } = session;
-            broadcast.advance_frame(runtime.data(), state, divider, in_johto, held_ab)?;
+            shell.shell.advance_radio_broadcast(&mut broadcast, in_johto, held_ab)?;
             game_state_changed |= broadcast.host.game_state_changed;
             suspended |= broadcast.playback.call_suspended();
         }

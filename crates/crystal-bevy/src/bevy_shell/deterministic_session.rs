@@ -491,7 +491,7 @@ fn apply_keyboard_input(
     if runtime_shell
         .shell
         .session()
-        .overworld
+        .overworld()
         .following
         .as_ref()
         .and_then(|following| following.follower_slot)
@@ -1045,7 +1045,7 @@ fn apply_keyboard_input(
                 jump.frame += 1;
             } else {
                 runtime_shell.visible_ledge_jump = None;
-                let overworld = &mut runtime_shell.shell.session_mut().overworld;
+                let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
                 overworld.player_last_runtime_tile = None;
                 overworld.player_last_tile_occupied_until_frame = 0;
                 mark_runtime_snapshot_dirty(&mut runtime_shell);
@@ -1930,7 +1930,7 @@ fn apply_keyboard_input(
         if runtime_shell
             .shell
             .session()
-            .overworld
+            .overworld()
             .forced_movement_direction()
             .is_some()
         {
@@ -1966,7 +1966,7 @@ fn apply_keyboard_input(
             .and_then(game_button_direction)
             .and_then(|direction| {
                 crate::core::world::movement::checked_move_by_stride(
-                    runtime_shell.shell.session().overworld.player.tile,
+                    runtime_shell.shell.session().overworld().player.tile,
                     direction,
                     crate::core::world::movement::DEFAULT_RUNTIME_TILE_STRIDE,
                 )
@@ -2026,7 +2026,7 @@ fn apply_keyboard_input(
             || runtime_shell
                 .shell
                 .session()
-                .overworld
+                .overworld()
                 .forced_movement_direction()
                 .is_some()
         {
@@ -2041,7 +2041,7 @@ fn apply_keyboard_input(
             None
         };
         let object_tiles_before_tick = {
-            let overworld = &runtime_shell.shell.session().overworld;
+            let overworld = &runtime_shell.shell.session().overworld();
             let mut tiles = BTreeMap::new();
             for (index, object) in overworld
                 .objects
@@ -2073,10 +2073,10 @@ fn apply_keyboard_input(
         let object_facings_before_tick = runtime_shell
             .shell
             .session()
-            .overworld
+            .overworld()
             .object_facings
             .clone();
-        let player_facing_before_tick = runtime_shell.shell.session().overworld.player.facing;
+        let player_facing_before_tick = runtime_shell.shell.session().overworld().player.facing;
         let tick = if rtc_changed {
             rtc_changed = false;
             runtime_shell
@@ -2087,19 +2087,19 @@ fn apply_keyboard_input(
         };
         match tick.map(Clone::clone) {
             Ok(frame) => {
-                player_facing_changed |= runtime_shell.shell.session().overworld.player.facing
+                player_facing_changed |= runtime_shell.shell.session().overworld().player.facing
                     != player_facing_before_tick;
                 let reached_boundary = overworld_frame_reaches_presentation_boundary(&frame);
                 let object_tiles_after_tick = runtime_shell
                     .shell
                     .session()
-                    .overworld
+                    .overworld()
                     .object_runtime_tiles
                     .clone();
                 let object_step_durations_after_tick = runtime_shell
                     .shell
                     .session()
-                    .overworld
+                    .overworld()
                     .object_step_durations
                     .clone();
                 let mut newly_walking = object_tiles_before_tick
@@ -2114,7 +2114,7 @@ fn apply_keyboard_input(
                     && let Some((leader_id, follower_id)) = runtime_shell
                         .shell
                         .session()
-                        .overworld
+                        .overworld()
                         .normal_follow_object_ids()
                     && leader_id == "PLAYER"
                     && follower_id != "PLAYER"
@@ -2150,7 +2150,7 @@ fn apply_keyboard_input(
                 let pushed_boulder = runtime_shell
                     .shell
                     .session()
-                    .overworld
+                    .overworld()
                     .objects
                     .iter()
                     .find_map(|object| {
@@ -2206,7 +2206,7 @@ fn apply_keyboard_input(
                 let object_facings_after_tick = runtime_shell
                     .shell
                     .session()
-                    .overworld
+                    .overworld()
                     .object_facings
                     .clone();
                 for (object_id, direction) in object_facings_after_tick {
@@ -2867,7 +2867,7 @@ fn advance_visible_trainer_sight_cutscene(runtime_shell: &mut BevyRuntimeShell) 
     let current = runtime_shell
         .shell
         .session()
-        .overworld
+        .overworld()
         .object_runtime_tile_by_id(&object_id)?;
     let stride = crate::core::world::movement::DEFAULT_RUNTIME_TILE_STRIDE;
     let next = match direction {
@@ -2901,7 +2901,7 @@ fn advance_visible_trainer_sight_cutscene(runtime_shell: &mut BevyRuntimeShell) 
         },
     };
     {
-        let overworld = &mut runtime_shell.shell.session_mut().overworld;
+        let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
         overworld.set_object_runtime_facing(&object_id, direction)?;
         overworld.set_object_runtime_tile(&object_id, next)?;
     }
@@ -3019,7 +3019,7 @@ fn advance_visible_walk_timers(runtime_shell: &mut BevyRuntimeShell, elapsed_tic
         runtime_shell.player_walk_from = None;
     }
     if player_landed {
-        let overworld = &mut runtime_shell.shell.session_mut().overworld;
+        let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
         overworld.player_last_runtime_tile = None;
         overworld.player_last_tile_occupied_until_frame = 0;
     }
@@ -3046,7 +3046,7 @@ fn advance_visible_walk_timers(runtime_shell: &mut BevyRuntimeShell, elapsed_tic
         runtime_shell
             .follower_visible_tile_overrides
             .remove(&object_id);
-        let overworld = &mut runtime_shell.shell.session_mut().overworld;
+        let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
         overworld.object_last_runtime_tiles.remove(&object_id);
         overworld
             .object_last_tiles_occupied_until_frame
@@ -3151,7 +3151,7 @@ fn start_next_visible_script_movement_phase(runtime_shell: &mut BevyRuntimeShell
                     runtime_shell
                         .shell
                         .session()
-                        .overworld
+                        .overworld()
                         .objects
                         .iter()
                         .find(|object| {
@@ -3283,7 +3283,7 @@ fn start_next_visible_script_movement_phase(runtime_shell: &mut BevyRuntimeShell
                     runtime_shell
                         .shell
                         .session()
-                        .overworld
+                        .overworld()
                         .objects
                         .iter()
                         .find(|object| {
@@ -5332,7 +5332,7 @@ fn visible_evolution_moves_resolved(
         .iter()
         .map(|learned| learned.name.as_str())
         .collect::<std::collections::BTreeSet<_>>();
-    let state = &runtime_shell.shell.session().state;
+    let state = &runtime_shell.shell.session().state();
     !state
         .pending_move_learn
         .iter()
@@ -9563,8 +9563,8 @@ fn play_pending_field_notice_sound(runtime_shell: &mut BevyRuntimeShell) -> Resu
 fn commit_visible_pending_block_field_move(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let Some(pending) = runtime_shell
         .shell
-        .session
-        .state
+        .session()
+        .state()
         .script_runtime
         .pending_block_field_move
         .as_ref()
@@ -9582,8 +9582,8 @@ fn commit_visible_pending_block_field_move(runtime_shell: &mut BevyRuntimeShell)
 fn commit_visible_pending_flash_field_move(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if runtime_shell
         .shell
-        .session
-        .state
+        .session()
+        .state()
         .script_runtime
         .pending_flash_field_move
         .is_none()
@@ -9596,8 +9596,8 @@ fn commit_visible_pending_flash_field_move(runtime_shell: &mut BevyRuntimeShell)
 fn commit_visible_pending_surf_field_move(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if runtime_shell
         .shell
-        .session
-        .state
+        .session()
+        .state()
         .script_runtime
         .pending_surf_field_move
         .is_none()
@@ -9632,7 +9632,7 @@ fn execute_visible_pending_waterfall_step(
         step_index < total_steps,
         "visible WATERFALL step {step_index} is outside total {total_steps}"
     );
-    let origin_map_name = runtime_shell.shell.session.overworld.map.name.clone();
+    let origin_map_name = runtime_shell.shell.session().overworld().map.name.clone();
     for (command_index, expected_command) in [(0, "applymovement"), (1, "callasm")] {
         let source_script = ".loop@Script_UsedWaterfall";
         record_visible_runtime_action(
@@ -9665,8 +9665,8 @@ fn execute_visible_pending_waterfall_step(
     anyhow::ensure!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session()
+            .state()
             .script_runtime
             .script_value
             .as_deref()
@@ -9698,7 +9698,7 @@ fn execute_visible_deferred_field_move_source_command(
     command_index: usize,
     expected_command: &str,
 ) -> Result<()> {
-    let origin_map_name = runtime_shell.shell.session.overworld.map.name.clone();
+    let origin_map_name = runtime_shell.shell.session().overworld().map.name.clone();
     record_visible_runtime_action(
         runtime_shell,
         format!("script:step:{source_script}:{command_index}"),

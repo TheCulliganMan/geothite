@@ -190,19 +190,19 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .text_window_open = true;
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .active_text_label = Some(text_label.clone());
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .pending_text_label = Some(text_label.clone());
         // Mutating the authoritative fixture directly bypasses the
@@ -250,19 +250,19 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .text_window_open = false;
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .pending_text_label = None;
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .active_text_label = None;
         mark_runtime_snapshot_dirty(&mut runtime_shell);
@@ -406,7 +406,7 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
         },
     )
     .expect("initialize player-bedroom shell");
-    runtime_shell.shell.session.overworld.player.facing = Direction::Up;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
 
     let mut app = integrated_shell_test_app(runtime_shell);
     app.update();
@@ -586,7 +586,7 @@ fn integrated_players_house_decoration_menu_sets_up_owned_bed_and_reloads_room()
         .shell
         .set_script_flag_for_smoke("EVENT_DECO_BED_2")
         .expect("own the Pink Bed");
-    runtime_shell.shell.session.overworld.player.facing = Direction::Up;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
 
     let mut app = integrated_shell_test_app(runtime_shell);
     app.update();
@@ -739,7 +739,7 @@ fn integrated_players_house_bookshelf_renders_dialogue_from_the_live_compiled_pa
         },
     )
     .expect("initialize player-bedroom shell");
-    runtime_shell.shell.session.overworld.player.facing = Direction::Up;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
     let mut app = integrated_shell_test_app(runtime_shell);
     app.update();
     app.update();
@@ -863,8 +863,8 @@ fn blocked_bookshelf_direction_turns_player_without_moving() {
         BevyShellConfig::default(),
     )
     .expect("initialize bookshelf-facing fixture");
-    runtime_shell.shell.session.overworld.player.facing = Direction::Down;
-    let initial_tile = runtime_shell.shell.session.overworld.player.tile;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Down;
+    let initial_tile = runtime_shell.shell.session().overworld().player.tile;
     let mut app = integrated_shell_test_app(runtime_shell);
     app.update();
 
@@ -988,7 +988,7 @@ fn settled_keyboard_path_to_script(
     runtime_shell: &BevyRuntimeShell,
     expected_script: &str,
 ) -> (Vec<Direction>, TilePosition, Direction) {
-    let start = runtime_shell.shell.session.overworld.clone();
+    let start = runtime_shell.shell.session().overworld().clone();
     let mut queue = std::collections::VecDeque::from([(start.clone(), Vec::new())]);
     let mut visited =
         std::collections::BTreeSet::from([(start.player.tile.x, start.player.tile.y)]);
@@ -1215,8 +1215,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
             assert_eq!(
                 shell
                     .shell
-                    .session
-                    .overworld
+                    .session().overworld()
                     .check_interaction_checked(1)
                     .expect("check settled collision interaction")
                     .as_ref()
@@ -1256,18 +1255,17 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                     .shell
                     .last_frame()
                     .and_then(|frame| frame.interaction.as_ref()),
-                runtime_shell.shell.session.state.script_runtime,
+                runtime_shell.shell.session().state().script_runtime,
                 runtime_shell.active_script_cursor,
                 runtime_shell.field_text_reveal,
                 runtime_shell.field_notice,
                 runtime_shell.special_boundary,
                 runtime_shell
                     .shell
-                    .session
-                    .state
+                    .session().state()
                     .map_block_overrides
                     .get("PlayersHouse2F"),
-                &runtime_shell.shell.session.overworld.map.metatile_ids[..4],
+                &runtime_shell.shell.session().overworld().map.metatile_ids[..4],
                 runtime_shell.last_audio_events,
             );
             {
@@ -3085,7 +3083,7 @@ fn integrated_pokecenter_pc_opens_from_collision() {
     )
     .unwrap();
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
-    shell.shell.session.overworld.player.facing = Direction::Up;
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
     shell
         .shell
         .add_party_pokemon(

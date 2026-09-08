@@ -660,7 +660,7 @@ fn normal_vblank_batch_records_div_and_replays_rng_with_the_timer() {
     runtime_shell.intro_screen = None;
     runtime_shell.title_menu = None;
     runtime_shell.shell.set_runtime_journal_enabled(true);
-    runtime_shell.shell.session_mut().divider =
+    *runtime_shell.shell.session_mut().divider_mut_for_tests() =
         crystal_core::random::RuntimeDividerSource::replay([0x12, 0x34, 0x56, 0x78]);
     let state_before = runtime_shell.shell.session().state().clone();
     let retained_before = runtime_shell.shell.retained_runtime_commands().len();
@@ -707,7 +707,7 @@ fn normal_vblank_batch_records_div_and_replays_rng_with_the_timer() {
     replay.intro_screen = None;
     replay.title_menu = None;
     *replay.shell.session_mut().state_mut() = state_before;
-    replay.shell.session_mut().divider = crystal_core::random::RuntimeDividerSource::replay([]);
+    *replay.shell.session_mut().divider_mut_for_tests() = crystal_core::random::RuntimeDividerSource::replay([]);
     replay
         .shell
         .apply_runtime_command_frame(command_frame)
@@ -730,7 +730,7 @@ fn battle_transition_vblank_uses_cutscene_handler_without_advancing_rng() {
         cave_environment: false,
         trainer_battle: false,
     });
-    runtime_shell.shell.session_mut().divider =
+    *runtime_shell.shell.session_mut().divider_mut_for_tests() =
         crystal_core::random::RuntimeDividerSource::replay([]);
     let state_before = runtime_shell.shell.session().state().clone();
     let retained_before = runtime_shell.shell.retained_runtime_commands().len();
@@ -875,8 +875,7 @@ fn dontrestartmapmusic_is_not_auto_consumed_before_map_reload() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .map_music_restart_disabled = true;
 
@@ -885,8 +884,7 @@ fn dontrestartmapmusic_is_not_auto_consumed_before_map_reload() {
 
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .map_music_requested = true;
     let snapshot = runtime_shell.shell.snapshot().expect("runtime snapshot");

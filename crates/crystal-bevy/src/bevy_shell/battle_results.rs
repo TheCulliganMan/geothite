@@ -376,8 +376,8 @@ fn retain_visible_seen_by_trainer_last_talked(
     object_id: &str,
 ) {
     let session = runtime_shell.shell.session_mut();
-    session.state.script_runtime.last_talked_object = Some(object_id.to_string());
-    session.overworld.last_talked_object_identifier = Some(object_id.to_string());
+    session.state_mut().script_runtime.last_talked_object = Some(object_id.to_string());
+    session.overworld_mut().last_talked_object_identifier = Some(object_id.to_string());
 }
 
 fn commit_visible_seen_by_trainer_object_coordinates(
@@ -386,9 +386,9 @@ fn commit_visible_seen_by_trainer_object_coordinates(
 ) -> Result<()> {
     let session = runtime_shell.shell.session_mut();
     anyhow::ensure!(
-        session.overworld.map.name == map_name,
+        session.overworld().map.name == map_name,
         "SeenByTrainerScript coordinate commit belongs to {map_name}, but the active map is {}",
-        session.overworld.map.name
+        session.overworld().map.name
     );
     let command = crate::core::systems::script_objects::ScriptObjectCommand {
         source_script: "SeenByTrainerScript".to_string(),
@@ -403,14 +403,15 @@ fn commit_visible_seen_by_trainer_object_coordinates(
         emote: None,
         duration: None,
     };
+    let (state, overworld) = session.state_and_overworld_mut();
     crate::core::systems::script_objects::apply_writeobjectxy_command(
-        &mut session.overworld,
+        overworld,
         &command,
     )
     .map_err(|error| anyhow::anyhow!("apply SeenByTrainerScript writeobjectxy: {error:?}"))?;
     crate::core::systems::map_context::sync_state_object_overrides(
-        &mut session.state,
-        &session.overworld,
+        state,
+        overworld,
     )
     .context("sync SeenByTrainerScript object coordinates")?;
     Ok(())
@@ -634,7 +635,7 @@ fn apply_visible_script_entry_command(
         return Ok(());
     }
     record_visible_runtime_action(runtime_shell, format!("script:step:{script}:0"))?;
-    let origin_map_name = runtime_shell.shell.session.overworld.map.name.clone();
+    let origin_map_name = runtime_shell.shell.session().overworld().map.name.clone();
     let stepped = runtime_shell.shell.step_compiled_script_command(
         &origin_map_name,
         script,
@@ -688,7 +689,7 @@ fn arm_visible_active_script_cursor(
     script: &str,
     next_command_index: usize,
 ) {
-    let origin_map_name = runtime_shell.shell.session.overworld.map.name.clone();
+    let origin_map_name = runtime_shell.shell.session().overworld().map.name.clone();
     arm_visible_active_script_cursor_with_origin(
         runtime_shell,
         &origin_map_name,
@@ -2227,7 +2228,7 @@ fn begin_visible_script_movement(
                 runtime_shell
                     .shell
                     .session()
-                    .overworld
+                    .overworld()
                     .objects
                     .iter()
                     .enumerate()
@@ -2323,7 +2324,7 @@ fn begin_visible_script_movement(
             if let Some((slot, object)) = runtime_shell
                 .shell
                 .session()
-                .overworld
+                .overworld()
                 .objects
                 .iter()
                 .enumerate()
@@ -5264,7 +5265,7 @@ fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> 
     runtime_shell.object_walk_total_ticks = WALK_FRAME_HOLD_TICKS;
     runtime_shell.object_walk_stride = false;
     {
-        let overworld = &mut runtime_shell.shell.session_mut().overworld;
+        let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
         overworld.set_object_runtime_facing(&pending.object_id, pending.direction)?;
         overworld.set_player_facing(opposite);
     }
@@ -5446,8 +5447,8 @@ fn settle_visible_overworld_frame_arrival(runtime_shell: &mut BevyRuntimeShell) 
 fn settle_visible_overworld_travel(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if let Some(pending) = runtime_shell
         .shell
-        .session
-        .state
+        .session()
+        .state()
         .script_runtime
         .pending_field_travel
         .as_ref()

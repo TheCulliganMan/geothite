@@ -195,13 +195,13 @@ fn visible_pokegear_phone_call_without_service_stays_in_the_contact_menu() {
         .initialize_permanent_phone_numbers()
         .expect("initialize permanent phone contacts");
     let cave_tile = TilePosition::new(4, 4);
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "WhirlIslandCave".to_string(),
         tile: cave_tile,
         facing: Direction::Down,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -345,7 +345,7 @@ fn visible_pokegear_phone_call_waits_ten_frames_then_hangs_up_on_a() {
 #[test]
 fn visible_incoming_phone_call_preserves_source_ring_and_hangup_timing() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session_mut().state.script_runtime.variables
+    runtime_shell.shell.session_mut().state_mut().script_runtime.variables
         .insert("VAR_CALLERID".to_string(), "PHONE_ELM".to_string());
     runtime_shell.pending_audio.clear();
     runtime_shell.last_audio_events.clear();
@@ -561,7 +561,7 @@ fn dst_confirmation_uses_the_live_dst_flag_not_special_execution_history() {
                 command.get("command").and_then(serde_json::Value::as_str) == Some("yesorno")
             })
             .expect("Mom DST yes/no command");
-        runtime_shell.shell.session.overworld = runtime_shell
+        *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
             .shell
             .runtime()
             .data()
@@ -2000,7 +2000,7 @@ fn invalid_party_cursor_is_not_clamped_to_a_playable_row() {
 #[test]
 fn party_move_reorder_does_not_invent_a_cancel_row() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let move_count = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let move_count = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("party Pokemon")
         .moves
@@ -2585,13 +2585,13 @@ fn unown_printer_special_opens_authored_menu_instead_of_debug_boundary() {
 #[test]
 fn buenas_password_requires_the_source_three_choice_input_and_allows_a_wrong_answer() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "RadioTower2F".to_string(),
         tile: TilePosition::new(8, 7),
         facing: Direction::Down,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -2707,13 +2707,13 @@ fn buenas_password_requires_the_source_three_choice_input_and_allows_a_wrong_ans
 #[test]
 fn buena_remember_password_special_opens_its_source_yes_no_menu_without_host_input() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "RadioTower2F".to_string(),
         tile: TilePosition::new(8, 7),
         facing: Direction::Down,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -2836,13 +2836,13 @@ fn buena_remember_password_special_opens_its_source_yes_no_menu_without_host_inp
 #[test]
 fn battle_tower_action_is_silent_and_reaches_the_authored_receptionist_text() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTower1F".to_string(),
         tile: TilePosition::new(10, 9),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -2878,13 +2878,13 @@ fn battle_tower_action_is_silent_and_reaches_the_authored_receptionist_text() {
 fn battle_tower_challenge_menu_uses_source_choices_and_cancel_result() {
     fn shell_at_challenge_menu() -> (BevyRuntimeShell, usize) {
         let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-        runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+        runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
             map_name: "BattleTower1F".to_string(),
             tile: TilePosition::new(10, 9),
             facing: Direction::Up,
             mode: MovementMode::Normal,
         };
-        runtime_shell.shell.session.overworld = runtime_shell
+        *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
             .shell
             .runtime()
             .data()
@@ -2909,8 +2909,7 @@ fn battle_tower_challenge_menu_uses_source_choices_and_cancel_result() {
             .expect("Battle Tower challenge menu special");
         runtime_shell
             .shell
-            .session
-            .state
+            .session_mut().state_mut()
             .script_runtime
             .script_value = Some("1".to_string());
         (runtime_shell, command_index)
@@ -3047,13 +3046,13 @@ fn battle_tower_rule_check_is_silent_on_success_and_queues_authored_failure_text
 fn battle_tower_room_menu_selects_a_level_or_returns_source_cancel_code() {
     fn shell_at_room_menu() -> (BevyRuntimeShell, usize) {
         let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-        runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+        runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
             map_name: "BattleTower1F".to_string(),
             tile: TilePosition::new(10, 9),
             facing: Direction::Up,
             mode: MovementMode::Normal,
         };
-        runtime_shell.shell.session.overworld = runtime_shell
+        *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
             .shell
             .runtime()
             .data()
@@ -3240,20 +3239,20 @@ fn battle_tower_room_menu_selects_a_level_or_returns_source_cancel_code() {
 #[test]
 fn battle_tower_receptionist_escort_launches_canonical_opponent_battle() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTower1F".to_string(),
         tile: TilePosition::new(7, 7),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
         .overworld_session("BattleTower1F", TilePosition::new(7, 7), 0)
         .expect("start Battle Tower 1F session");
     sync_synthetic_current_map_image(&mut runtime_shell);
-    runtime_shell.shell.session.state.battle_tower.level_group = 1;
+    runtime_shell.shell.session_mut().state_mut().battle_tower.level_group = 1;
     arm_visible_active_script_cursor_with_origin(
         &mut runtime_shell,
         "BattleTower1F",
@@ -3336,20 +3335,20 @@ fn battle_tower_receptionist_escort_launches_canonical_opponent_battle() {
 #[test]
 fn battle_tower_win_resumes_the_room_loop_instead_of_the_failure_warp() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTowerBattleRoom".to_string(),
         tile: TilePosition::new(4, 6),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
         .overworld_session("BattleTowerBattleRoom", TilePosition::new(4, 6), 0)
         .expect("start Battle Tower battle-room session");
     sync_synthetic_current_map_image(&mut runtime_shell);
-    runtime_shell.shell.session.state.battle_tower.level_group = 1;
+    runtime_shell.shell.session_mut().state_mut().battle_tower.level_group = 1;
     runtime_shell
         .shell
         .load_battle_tower_opponent_special("BATTLETOWERBATTLEROOM_YOUNGSTER".to_string())
@@ -3387,7 +3386,7 @@ fn battle_tower_win_resumes_the_room_loop_instead_of_the_failure_warp() {
         "Script_BattleRoomLoop",
         battle_command_index + 1,
     );
-    runtime_shell.shell.session.state.battle_result = 0;
+    runtime_shell.shell.session_mut().state_mut().battle_result = 0;
 
     complete_visible_battle_tower_battle(&mut runtime_shell)
         .expect("resume Battle Tower room script after a win");
@@ -3435,13 +3434,13 @@ fn battle_tower_room_decision_shell() -> (BevyRuntimeShell, PathBuf) {
     ));
     runtime_shell.quick_save_path = Some(save_path.clone());
 
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTower1F".to_string(),
         tile: TilePosition::new(7, 7),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -3457,8 +3456,7 @@ fn battle_tower_room_decision_shell() -> (BevyRuntimeShell, PathBuf) {
         .clone();
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .scenes
         .enter_map("BattleTower1F", &scene_table)
         .expect("arm Battle Tower resume scene");
@@ -3467,20 +3465,20 @@ fn battle_tower_room_decision_shell() -> (BevyRuntimeShell, PathBuf) {
         .save(&save_path)
         .expect("write pre-entry Battle Tower quick-save");
 
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTowerBattleRoom".to_string(),
         tile: TilePosition::new(4, 6),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
         .overworld_session("BattleTowerBattleRoom", TilePosition::new(4, 6), 0)
         .expect("start Battle Tower battle-room session");
     sync_synthetic_current_map_image(&mut runtime_shell);
-    let tower = &mut runtime_shell.shell.session.state.battle_tower;
+    let tower = &mut runtime_shell.shell.session_mut().state_mut().battle_tower;
     tower.level_group = 1;
     tower.beaten_trainers = 3;
     tower.reward_item = "HP_UP".to_string();
@@ -3806,11 +3804,11 @@ fn photo_studio_without_a_printer_reports_the_source_failure_instead_of_success(
 #[test]
 fn photo_studio_rejects_an_egg_without_opening_the_picture_surface() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.is_egg = true;
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::PhotoStudio);
     runtime_shell.party_menu_open = true;
 
@@ -3865,13 +3863,13 @@ fn photo_studio_rejects_an_egg_without_opening_the_picture_surface() {
 #[test]
 fn photo_studio_special_prints_its_intro_before_opening_party_selection() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "CianwoodPhotoStudio".to_string(),
         tile: TilePosition::new(2, 4),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -3924,13 +3922,13 @@ fn photo_studio_special_prints_its_intro_before_opening_party_selection() {
 #[test]
 fn poke_seer_special_prints_its_intro_before_opening_party_selection() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "PokeSeersHouse".to_string(),
         tile: TilePosition::new(2, 4),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -4008,13 +4006,13 @@ fn poke_seer_special_prints_its_intro_before_opening_party_selection() {
 #[test]
 fn name_rater_special_preserves_the_exported_intro_pages_before_its_prompt() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "GoldenrodNameRater".to_string(),
         tile: TilePosition::new(2, 4),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -4130,13 +4128,13 @@ fn name_rater_and_move_deleter_print_which_mon_before_party_selection() {
 #[test]
 fn day_care_lady_intro_and_which_mon_prompt_preserve_exported_pages() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "DayCare".to_string(),
         tile: TilePosition::new(2, 7),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -4192,7 +4190,7 @@ fn day_care_lady_intro_and_which_mon_prompt_preserve_exported_pages() {
         .collect::<Vec<_>>();
     actual_pages.push(runtime_shell.pc_notice.clone().expect("final yes/no page"));
     assert_eq!(actual_pages, expected_pages);
-    assert!(runtime_shell.shell.session.state.day_care.lady.active);
+    assert!(runtime_shell.shell.session().state().day_care.lady.active);
 
     for _ in 0..expected_pages.len() - 1 {
         close_visible_special_boundary(&mut runtime_shell).expect("advance Day-Care introduction");
@@ -4211,20 +4209,20 @@ fn day_care_lady_intro_and_which_mon_prompt_preserve_exported_pages() {
 #[test]
 fn day_care_growth_and_fee_pages_resolve_exact_decimal_operands() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "DayCare".to_string(),
         tile: TilePosition::new(2, 7),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
         .overworld_session("DayCare", TilePosition::new(2, 7), 0)
         .expect("start Day-Care session");
     sync_synthetic_current_map_image(&mut runtime_shell);
-    let mut resident = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let mut resident = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .clone()
         .expect("party Pokemon");
     resident.nickname = "EMBER".to_string();
@@ -4235,8 +4233,8 @@ fn day_care_growth_and_fee_pages_resolve_exact_decimal_operands() {
         current_level,
     )
     .expect("derive resident current level from stored EXP");
-    runtime_shell.shell.session.state.day_care.lady.pokemon = Some(resident);
-    runtime_shell.shell.session.state.day_care.lady.active = true;
+    runtime_shell.shell.session_mut().state_mut().day_care.lady.pokemon = Some(resident);
+    runtime_shell.shell.session_mut().state_mut().day_care.lady.active = true;
     let command_index = runtime_shell
         .shell
         .runtime()
@@ -4651,13 +4649,13 @@ fn name_rater_preserves_better_name_choice_and_what_name_boundaries() {
         let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
         let player_id = runtime_shell.shell.session().state().player_id;
         let player_name = runtime_shell.shell.session().state().player_name.clone();
-        let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+        let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
             .as_mut()
             .expect("party Pokemon");
         pokemon.nickname = "EMBER".to_string();
         pokemon.original_trainer_id = player_id;
         pokemon.original_trainer_name = player_name;
-        runtime_shell.shell.session.state.sync_party_from_storage();
+        runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
         runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::NameRater);
         runtime_shell.party_menu_open = true;
         runtime_shell.party_cursor = 0;
@@ -4740,13 +4738,13 @@ fn name_rater_completion_preserves_every_exported_printtext_page() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let player_id = runtime_shell.shell.session().state().player_id;
     let player_name = runtime_shell.shell.session().state().player_name.clone();
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.nickname = "EMBER".to_string();
     pokemon.original_trainer_id = player_id;
     pokemon.original_trainer_name = player_name;
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.party_menu_open = true;
     runtime_shell.party_cursor = 0;
     runtime_shell.pending_name_input = Some(PendingNameInput {
@@ -4791,7 +4789,7 @@ fn name_rater_completion_preserves_every_exported_printtext_page() {
 #[test]
 fn move_deleter_prints_which_move_before_opening_the_move_list() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = vec![
@@ -4806,7 +4804,7 @@ fn move_deleter_prints_which_move_before_opening_the_move_list() {
             pp_ups: 0,
         },
     ];
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pending_script_party_selection =
         Some(PendingScriptPartySelection::MoveDeletion { party_index: None });
     runtime_shell.party_menu_open = true;
@@ -4836,7 +4834,7 @@ fn move_deleter_prints_which_move_before_opening_the_move_list() {
 #[test]
 fn move_deleter_waits_before_and_after_the_deleted_move_sound() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = vec![
@@ -4851,7 +4849,7 @@ fn move_deleter_waits_before_and_after_the_deleted_move_sound() {
             pp_ups: 0,
         },
     ];
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveDeletion {
         party_index: 0,
         move_index: 0,
@@ -4944,7 +4942,7 @@ fn tmhm_replacement_rejects_hm_without_mutating_the_pokemon() {
         .shell
         .add_bag_item("TM_HEADBUTT", 1)
         .expect("add a TM");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = ["CUT", "TACKLE", "LEER", "SMOKESCREEN"]
@@ -4955,8 +4953,8 @@ fn tmhm_replacement_rejects_hm_without_mutating_the_pokemon() {
             pp_ups: 0,
         })
         .collect();
-    runtime_shell.shell.session.state.sync_party_from_storage();
-    let before = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
+    let before = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .clone()
         .expect("party Pokemon before refusal");
     runtime_shell.field_pack_pocket = Some(FieldPackPocket::TmHm);
@@ -4984,7 +4982,7 @@ fn tmhm_replacement_rejects_hm_without_mutating_the_pokemon() {
     confirm_visible_tmhm_target(&mut runtime_shell).expect("reject forgetting CUT");
 
     assert_eq!(
-        runtime_shell.shell.session.state.storage.party.pokemon[0].as_ref(),
+        runtime_shell.shell.session().state().storage.party.pokemon[0].as_ref(),
         Some(&before)
     );
     let source = runtime_shell
@@ -5013,7 +5011,7 @@ fn tmhm_replacement_uses_source_text_pause_and_sound_boundaries() {
         .shell
         .add_bag_item("TM_HEADBUTT", 1)
         .expect("add a TM");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
@@ -5024,7 +5022,7 @@ fn tmhm_replacement_uses_source_text_pause_and_sound_boundaries() {
             pp_ups: 0,
         })
         .collect();
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.field_pack_pocket = Some(FieldPackPocket::TmHm);
     runtime_shell.field_pack_target_mode = Some(FieldPackTargetMode::TmHmPokemon);
     runtime_shell.tmhm_cursor = Some(MenuCursor {
@@ -5064,7 +5062,7 @@ fn tmhm_forget_menu_renders_the_source_cancel_row() {
         .shell
         .add_bag_item("TM_HEADBUTT", 1)
         .expect("add a TM");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
@@ -5075,7 +5073,7 @@ fn tmhm_forget_menu_renders_the_source_cancel_row() {
             pp_ups: 0,
         })
         .collect();
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.field_pack_pocket = Some(FieldPackPocket::TmHm);
     runtime_shell.field_pack_target_mode = Some(FieldPackTargetMode::TmHmPokemon);
     runtime_shell.tmhm_cursor = Some(MenuCursor {
@@ -5158,7 +5156,7 @@ fn tmhm_refusal_and_full_moves_decision_use_exported_source_text() {
         ("full", "TM_HEADBUTT", "HEADBUTT", "_AskForgetMoveText"),
     ] {
         let mut runtime_shell = configured_tm_shell(item_id);
-        let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+        let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
             .as_mut()
             .expect("party Pokemon");
         match kind {
@@ -5181,7 +5179,7 @@ fn tmhm_refusal_and_full_moves_decision_use_exported_source_text() {
             _ => unreachable!(),
         }
         let nickname = pokemon.nickname.clone();
-        runtime_shell.shell.session.state.sync_party_from_storage();
+        runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
 
         confirm_visible_tmhm_target(&mut runtime_shell).expect("resolve TM/HM target");
 
@@ -5346,7 +5344,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
         ),
     ] {
         let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-        let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+        let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
             .as_mut()
             .expect("party Pokemon");
         if known {
@@ -5357,7 +5355,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
             });
         }
         let nickname = pokemon.nickname.clone();
-        runtime_shell.shell.session.state.sync_party_from_storage();
+        runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
         runtime_shell.pending_script_party_selection =
             Some(PendingScriptPartySelection::MoveTutor {
                 move_id: move_id.to_string(),
@@ -5387,7 +5385,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
     }
 
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let nickname = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let nickname = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("party Pokemon")
         .nickname
@@ -5424,7 +5422,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
 #[test]
 fn move_tutor_four_move_prompt_preserves_every_exported_source_page() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
@@ -5436,7 +5434,7 @@ fn move_tutor_four_move_prompt_preserves_every_exported_source_page() {
         })
         .collect();
     let nickname = pokemon.nickname.clone();
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::MoveTutor {
         move_id: "FLAMETHROWER".to_string(),
         party_index: None,
@@ -5516,7 +5514,7 @@ fn move_tutor_four_move_prompt_preserves_every_exported_source_page() {
 #[test]
 fn move_tutor_replacement_plays_each_sound_at_its_source_text_boundary() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
@@ -5527,7 +5525,7 @@ fn move_tutor_replacement_plays_each_sound_at_its_source_text_boundary() {
             pp_ups: 0,
         })
         .collect();
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::MoveTutor {
         move_id: "FLAMETHROWER".to_string(),
         party_index: Some(0),
@@ -5628,10 +5626,10 @@ fn magikarp_length_special_prints_the_measurement_before_the_map_branch() {
         10,
         crate::core::models::Dv::default(),
     );
-    magikarp.original_trainer_id = runtime_shell.shell.session.state.player_id;
-    magikarp.original_trainer_name = runtime_shell.shell.session.state.player_name.clone();
-    runtime_shell.shell.session.state.storage.party.pokemon[0] = Some(magikarp);
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    magikarp.original_trainer_id = runtime_shell.shell.session().state().player_id;
+    magikarp.original_trainer_name = runtime_shell.shell.session().state().player_name.clone();
+    runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0] = Some(magikarp);
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     runtime_shell.pending_script_party_selection =
         Some(PendingScriptPartySelection::CheckMagikarpLength);
     runtime_shell.party_menu_open = true;
@@ -5642,8 +5640,7 @@ fn magikarp_length_special_prints_the_measurement_before_the_map_branch() {
 
     let formatted = runtime_shell
         .shell
-        .session
-        .state
+        .session().state()
         .script_runtime
         .named_buffers["STRING_BUFFER_1"]
         .clone();
@@ -5693,8 +5690,8 @@ fn print_diploma_shows_the_diploma_then_requires_b_to_cancel_the_printer_error()
 #[test]
 fn poke_seer_preserves_the_asm_high_byte_ot_check_and_complete_advice() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.player_id = 0x1201;
-    let pokemon = runtime_shell.shell.session.state.storage.party.pokemon[0]
+    runtime_shell.shell.session_mut().state_mut().player_id = 0x1201;
+    let pokemon = runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("party Pokemon");
     pokemon.nickname = "EMBER".to_string();
@@ -5707,7 +5704,7 @@ fn poke_seer_preserves_the_asm_high_byte_ot_check_and_complete_advice() {
         original_trainer_gender: 0,
         location: 1,
     });
-    runtime_shell.shell.session.state.sync_party_from_storage();
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
     let snapshot = runtime_shell
         .shell
         .presentation_snapshot()
@@ -5912,13 +5909,13 @@ fn npc_trade_dialogs_preserve_the_asm_species_buffers_and_gender_suffix() {
 #[test]
 fn successful_npc_trade_waits_for_the_cable_prompt_before_exchanging_pokemon() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "GoldenrodDeptStore5F".to_string(),
         tile: TilePosition::new(10, 3),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
@@ -6008,27 +6005,26 @@ fn successful_npc_trade_waits_for_the_cable_prompt_before_exchanging_pokemon() {
 
 fn seventh_battle_tower_win_shell() -> BevyRuntimeShell {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
-    runtime_shell.shell.session.state.overworld = crate::core::state::OverworldMemory::Active {
+    runtime_shell.shell.session_mut().state_mut().overworld = crate::core::state::OverworldMemory::Active {
         map_name: "BattleTowerBattleRoom".to_string(),
         tile: TilePosition::new(4, 6),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    runtime_shell.shell.session.overworld = runtime_shell
+    *runtime_shell.shell.session_mut().overworld_mut() = runtime_shell
         .shell
         .runtime()
         .data()
         .overworld_session("BattleTowerBattleRoom", TilePosition::new(4, 6), 0)
         .expect("start Battle Tower battle-room session");
     sync_synthetic_current_map_image(&mut runtime_shell);
-    runtime_shell.shell.session.state.battle_tower.level_group = 1;
+    runtime_shell.shell.session_mut().state_mut().battle_tower.level_group = 1;
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .battle_tower
         .beaten_trainers = 6;
-    runtime_shell.shell.session.state.battle_tower.reward_item = "HP_UP".to_string();
+    runtime_shell.shell.session_mut().state_mut().battle_tower.reward_item = "HP_UP".to_string();
     runtime_shell
         .shell
         .load_battle_tower_opponent_special("BATTLETOWERBATTLEROOM_YOUNGSTER".to_string())
@@ -6066,7 +6062,7 @@ fn seventh_battle_tower_win_shell() -> BevyRuntimeShell {
         "Script_BattleRoomLoop",
         battle_command_index + 1,
     );
-    runtime_shell.shell.session.state.battle_result = 0;
+    runtime_shell.shell.session_mut().state_mut().battle_result = 0;
     runtime_shell
 }
 
@@ -6115,12 +6111,11 @@ fn seventh_battle_tower_win_keeps_the_prize_claimable_when_the_item_pocket_is_fu
         20,
         "test pack needs twenty item slots"
     );
-    runtime_shell.shell.session.state.bag.items.clear();
+    runtime_shell.shell.session_mut().state_mut().bag.items.clear();
     for item_id in full_item_pocket {
         runtime_shell
             .shell
-            .session
-            .state
+            .session_mut().state_mut()
             .bag
             .items
             .insert(item_id, 1);
@@ -6614,11 +6609,11 @@ fn card_flip_group_bet_cursors_use_the_complete_asm_oam_extents() {
 fn visible_card_flip_commits_the_stake_and_deck_before_card_selection() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let coin_case = runtime_shell.shell.runtime().data().items["COIN_CASE"].clone();
-    runtime_shell.shell.session_mut().state.coins = 99;
+    runtime_shell.shell.session_mut().state_mut().coins = 99;
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .bag
         .add_item(&coin_case, 1)
         .expect("add Coin Case");
@@ -6827,7 +6822,7 @@ fn visible_card_flip_commits_the_stake_and_deck_before_card_selection() {
         let core_game = runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .card_flip
             .as_mut()
@@ -6870,7 +6865,7 @@ fn visible_card_flip_commits_the_stake_and_deck_before_card_selection() {
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .card_flip = Some(card_flip_play_again);
     flip_visible_card(&mut runtime_shell).expect("decline another game");
@@ -6907,26 +6902,26 @@ fn visible_card_flip_commits_the_stake_and_deck_before_card_selection() {
 fn visible_slot_machine_pays_one_coin_every_other_frame_after_result_sound() {
     let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let coin_case = runtime_shell.shell.runtime().data().items["COIN_CASE"].clone();
-    runtime_shell.shell.session_mut().state.coins = 99;
+    runtime_shell.shell.session_mut().state_mut().coins = 99;
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .bag
         .add_item(&coin_case, 1)
         .expect("add Coin Case");
-    runtime_shell.shell.session_mut().state.random_state =
+    runtime_shell.shell.session_mut().state_mut().random_state =
         crystal_core::random::CrystalRandomState::default();
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .script_value = None;
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .slot_machine = Some(SlotMachineState {
         phase: SlotMachinePhase::Betting,
@@ -6939,7 +6934,7 @@ fn visible_slot_machine_pays_one_coin_every_other_frame_after_result_sound() {
         matched_symbol: None,
         payout_remaining: 0,
     });
-    runtime_shell.shell.session_mut().divider = crystal_core::random::RuntimeDividerSource::replay(
+    *runtime_shell.shell.session_mut().divider_mut_for_tests() = crystal_core::random::RuntimeDividerSource::replay(
         std::iter::repeat_n([0_u8, 255_u8], 64).flatten(),
     );
     runtime_shell.visible_slot_machine = Some(VisibleSlotMachine {
@@ -7421,7 +7416,7 @@ fn visible_slot_machine_runs_source_ran_out_text_and_sixty_frame_exit() {
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .slot_machine = Some(SlotMachineState {
         phase: SlotMachinePhase::Result,
@@ -7434,7 +7429,7 @@ fn visible_slot_machine_runs_source_ran_out_text_and_sixty_frame_exit() {
         matched_symbol: None,
         payout_remaining: 0,
     });
-    runtime_shell.shell.session_mut().state.coins = 0;
+    runtime_shell.shell.session_mut().state_mut().coins = 0;
     runtime_shell.visible_slot_machine = Some(VisibleSlotMachine {
         phase: VisibleSlotMachinePhase::Result,
         animation: VisibleSlotMachineAnimation::AwaitResult,
@@ -7538,10 +7533,10 @@ fn initialized_mail_reader_shell(mail_type: &str) -> BevyRuntimeShell {
 }
 
 fn sync_synthetic_current_map_image(runtime_shell: &mut BevyRuntimeShell) {
-    let session = &mut runtime_shell.shell.session;
+    let (state, overworld) = runtime_shell.shell.session_mut().state_and_overworld_mut();
     crate::core::systems::map_context::sync_state_object_overrides(
-        &mut session.state,
-        &session.overworld,
+        state,
+        overworld,
     )
     .expect("sync synthetic current-map object image");
 }
@@ -10156,7 +10151,7 @@ fn check_live_radio_source_fixtures(names: &[&str]) {
             sub = value;
         }
         let expected_reads = samples.len();
-        shell.shell.session_mut().divider = crate::core::random::RuntimeDividerSource::replay(samples);
+        *shell.shell.session_mut().divider_mut_for_tests() = crate::core::random::RuntimeDividerSource::replay(samples);
         shell.pokegear_menu_open = true;
         shell.pokegear_page = PokegearPage::Radio;
         shell.pokegear_map_radio_delay = if portable_knob.is_some() { None } else { Some(0) };
@@ -10213,7 +10208,7 @@ fn check_live_radio_source_fixtures(names: &[&str]) {
             }
 
         }
-        let crate::core::random::RuntimeDividerSource::Replay(divider) = &shell.shell.session().divider else { unreachable!() };
+        let crate::core::random::RuntimeDividerSource::Replay(divider) = &shell.shell.session().divider_for_tests() else { unreachable!() };
         assert_eq!(divider.consumed(), expected_reads, "{name} Random call count differs from the ROM trace");
     }
 }
@@ -11076,7 +11071,7 @@ fn pokedex_defaults_to_source_new_order_and_stops_at_last_seen() {
 fn elm_robbery_call_continues_after_ringing_into_disaster_text() {
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let map_name = shell.shell.snapshot().unwrap().overworld.map_name;
-    let state = &mut shell.shell.session_mut().state;
+    let state = &mut shell.shell.session_mut().state_mut();
     state.script_runtime.special_phone_call = Some("SPECIALCALL_ROBBED".to_string());
     state
         .script_runtime
@@ -11147,7 +11142,7 @@ fn elm_robbery_call_continues_after_ringing_into_disaster_text() {
         shell.incoming_phone_sequence,
         Some(VisibleIncomingPhoneSequence::HangUp { .. })
     ));
-    let state = &shell.shell.session().state;
+    let state = &shell.shell.session().state();
     assert!(state.script_runtime.special_phone_call.is_none());
     assert!(
         state
@@ -11164,7 +11159,7 @@ fn elm_robbery_call_continues_after_ringing_into_disaster_text() {
         shell
             .shell
             .session()
-            .state
+            .state()
             .script_runtime
             .phone_call_timer
             .initialized

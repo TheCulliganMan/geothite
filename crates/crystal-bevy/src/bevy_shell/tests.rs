@@ -119,3 +119,5 @@ fn external_oracle_fixture_bytes(name: &str) -> Vec<u8> {
 fn external_oracle_fixture_text(name: &str) -> String {
     String::from_utf8(external_oracle_fixture_bytes(name)).expect("UTF-8 visual reference")
 }
+
+include!("tests/runtime_frontend_smoke.rs");

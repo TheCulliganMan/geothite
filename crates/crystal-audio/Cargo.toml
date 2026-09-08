@@ -13,6 +13,7 @@ crate-type = ["rlib", "cdylib"]
 browser-synth = ["dep:wasm-bindgen", "dep:js-sys"]
 
 [dependencies]
+flate2 = "1.1"
 anyhow.workspace = true
 serde.workspace = true
 serde_json.workspace = true

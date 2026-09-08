@@ -1714,12 +1714,12 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
         .expect("add Dragonair");
     let dragonite = runtime_shell
         .runtime
-        .data
+        .data()
         .pokemon
         .get("DRAGONITE")
         .expect("Dragonite in compiled pack")
         .clone();
-    let original = runtime_shell.shell.session().state.storage.party.pokemon[0]
+    let original = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("Dragonair in party")
         .clone();
@@ -1798,14 +1798,14 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
     press_visible_b_button(&mut runtime_shell).expect("cancel evolution with B");
 
     assert_eq!(
-        runtime_shell.shell.session().state.storage.party.pokemon[0].as_ref(),
+        runtime_shell.shell.session().state().storage.party.pokemon[0].as_ref(),
         Some(&original)
     );
     assert!(
         runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pending_move_learn
             .is_none()
     );
@@ -1813,7 +1813,7 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
         runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pending_move_learn_queue
             .is_empty()
     );
@@ -1830,7 +1830,7 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
         !runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .seen_species
             .contains("DRAGONITE")
@@ -1839,7 +1839,7 @@ fn b_cancels_visible_evolution_before_success_and_restores_exact_pokemon() {
         !runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .caught_species
             .contains("DRAGONITE")
@@ -1861,7 +1861,7 @@ fn completed_visible_evolution_registers_the_target_species() {
             Dv::from_non_hp(10, 11, 12, 13),
         )
         .expect("add Dragonair");
-    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    let dragonite = runtime_shell.runtime.data().pokemon["DRAGONITE"].clone();
     {
         let state = runtime_shell.shell.session_mut().state_mut();
         state.storage.party.pokemon[0]
@@ -1874,7 +1874,7 @@ fn completed_visible_evolution_registers_the_target_species() {
     record_visible_completed_evolution(&mut runtime_shell, 0)
         .expect("commit completed evolution Pokedex state");
 
-    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    let pokedex = &runtime_shell.shell.session().state().pokedex;
     assert!(pokedex.seen_species.contains("DRAGONITE"));
     assert!(pokedex.caught_species.contains("DRAGONITE"));
 
@@ -1908,7 +1908,7 @@ fn completed_visible_evolution_registers_the_target_species() {
         !runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .seen_species
             .contains("DRAGONITE")
@@ -1922,7 +1922,7 @@ fn completed_visible_evolution_registers_the_target_species() {
         runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .caught_species
             .contains("DRAGONITE")
@@ -1944,11 +1944,11 @@ fn accepted_visible_evolution_registers_only_after_the_evolved_text() {
             Dv::from_non_hp(10, 11, 12, 13),
         )
         .expect("add Dragonair");
-    let original = runtime_shell.shell.session().state.storage.party.pokemon[0]
+    let original = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("Dragonair in party")
         .clone();
-    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    let dragonite = runtime_shell.runtime.data().pokemon["DRAGONITE"].clone();
     runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0]
         .as_mut()
         .expect("Dragonair in party")
@@ -1980,7 +1980,7 @@ fn accepted_visible_evolution_registers_only_after_the_evolved_text() {
         !runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .seen_species
             .contains("DRAGONITE")
@@ -1995,7 +1995,7 @@ fn accepted_visible_evolution_registers_only_after_the_evolved_text() {
     press_visible_a_button(&mut runtime_shell).expect("dismiss evolved text");
 
     assert!(runtime_shell.battle_evolution_cancellations.is_empty());
-    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    let pokedex = &runtime_shell.shell.session().state().pokedex;
     assert!(pokedex.seen_species.contains("DRAGONITE"));
     assert!(pokedex.caught_species.contains("DRAGONITE"));
 }
@@ -2015,11 +2015,11 @@ fn accepted_evolution_with_a_move_registers_at_the_move_result_boundary() {
             Dv::from_non_hp(10, 11, 12, 13),
         )
         .expect("add Dragonair");
-    let original = runtime_shell.shell.session().state.storage.party.pokemon[0]
+    let original = runtime_shell.shell.session().state().storage.party.pokemon[0]
         .as_ref()
         .expect("Dragonair in party")
         .clone();
-    let dragonite = runtime_shell.runtime.data.pokemon["DRAGONITE"].clone();
+    let dragonite = runtime_shell.runtime.data().pokemon["DRAGONITE"].clone();
     {
         let state = runtime_shell.shell.session_mut().state_mut();
         state.storage.party.pokemon[0]
@@ -2059,7 +2059,7 @@ fn accepted_evolution_with_a_move_registers_at_the_move_result_boundary() {
         !runtime_shell
             .shell
             .session()
-            .state
+            .state()
             .pokedex
             .seen_species
             .contains("DRAGONITE")
@@ -2072,7 +2072,7 @@ fn accepted_evolution_with_a_move_registers_at_the_move_result_boundary() {
     .expect("result completes evolution");
 
     assert!(runtime_shell.battle_evolution_cancellations.is_empty());
-    let pokedex = &runtime_shell.shell.session().state.pokedex;
+    let pokedex = &runtime_shell.shell.session().state().pokedex;
     assert!(pokedex.seen_species.contains("DRAGONITE"));
     assert!(pokedex.caught_species.contains("DRAGONITE"));
 }
@@ -2557,7 +2557,7 @@ fn new_contest_capture_stays_live_through_pokedex_then_skips_nickname() {
     runtime_shell.battle_message_scenes.clear();
     let contest_pokemon = runtime_shell
         .runtime
-        .data
+        .data()
         .create_pokemon("PIDGEY", 4, Dv::from_non_hp(10, 10, 10, 10))
         .expect("materialize a canonical Route36 Contest encounter");
     {
@@ -2661,12 +2661,12 @@ fn contest_replacement_shell_for_regression() -> (BevyRuntimeShell, crate::core:
     runtime_shell.battle_message_scenes.clear();
     let previous = runtime_shell
         .runtime
-        .data
+        .data()
         .create_pokemon("LEDYBA", 5, Dv::from_non_hp(8, 8, 8, 8))
         .expect("materialize prior Contest catch");
     let candidate = runtime_shell
         .runtime
-        .data
+        .data()
         .create_pokemon("PIDGEY", 4, Dv::from_non_hp(10, 10, 10, 10))
         .expect("materialize candidate Contest catch");
     {
@@ -4708,7 +4708,7 @@ fn battle_browser_fixture_starts_from_overworld_interaction() {
     }
     shell.shell.add_bag_item("SQUIRTBOTTLE", 1).unwrap();
     settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
-    shell.shell.session.overworld.player.facing = Direction::Up;
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
     assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
         Some("SudowoodoScript".into()));
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {

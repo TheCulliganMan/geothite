@@ -2851,7 +2851,7 @@ fn press_visible_battle_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result
             runtime_shell
                 .shell
                 .session_mut()
-                .state
+                .state_mut()
                 .battle_escape_attempts = 0;
             if battle.commands.player_forced_struggle
                 || battle.commands.player_turn_automatic

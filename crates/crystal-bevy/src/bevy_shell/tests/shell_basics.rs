@@ -218,12 +218,11 @@ fn hm_animation_source_keeps_fly_species_owned_and_removes_invented_whirlpool_ov
 #[test]
 fn visible_cut_commits_the_block_at_the_source_callasm_boundary() {
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
-    let map_name = runtime_shell.shell.session.overworld.map.name.clone();
-    runtime_shell.shell.session.overworld.map.metatile_ids[0] = 0x5b;
+    let map_name = runtime_shell.shell.session().overworld().map.name.clone();
+    runtime_shell.shell.session_mut().overworld_mut().map.metatile_ids[0] = 0x5b;
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .pending_block_field_move =
         Some(crystal_core::systems::field_moves::FieldMoveBlockOutcome {
@@ -247,21 +246,20 @@ fn visible_cut_commits_the_block_at_the_source_callasm_boundary() {
     runtime_shell.pending_field_notice_effect_frames = Some(34);
 
     assert_eq!(
-        runtime_shell.shell.session.overworld.map.metatile_at(0, 0),
+        runtime_shell.shell.session().overworld().map.metatile_at(0, 0),
         Some(0x5b)
     );
     assert!(
         begin_pending_field_notice_effect(&mut runtime_shell).expect("begin source Cut effect")
     );
     assert_eq!(
-        runtime_shell.shell.session.overworld.map.metatile_at(0, 0),
+        runtime_shell.shell.session().overworld().map.metatile_at(0, 0),
         Some(0x3c)
     );
     assert!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .script_runtime
             .pending_block_field_move
             .is_none()
@@ -269,8 +267,7 @@ fn visible_cut_commits_the_block_at_the_source_callasm_boundary() {
     assert_eq!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .map_block_overrides
             .get(&map_name)
             .and_then(|overrides| overrides.get(&(0, 0)))
@@ -284,8 +281,7 @@ fn visible_flash_sets_the_status_bit_at_the_source_callasm_boundary() {
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .pending_flash_field_move =
         Some(crystal_core::systems::field_moves::FieldMoveFlagOutcome {
@@ -302,8 +298,7 @@ fn visible_flash_sets_the_status_bit_at_the_source_callasm_boundary() {
     assert_eq!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .flags
             .is_engine_flag_set("STATUSFLAGS_FLASH"),
         Ok(false)
@@ -314,8 +309,7 @@ fn visible_flash_sets_the_status_bit_at_the_source_callasm_boundary() {
     assert_eq!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .flags
             .is_engine_flag_set("STATUSFLAGS_FLASH"),
         Ok(true)
@@ -323,8 +317,7 @@ fn visible_flash_sets_the_status_bit_at_the_source_callasm_boundary() {
     assert!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .script_runtime
             .pending_flash_field_move
             .is_none()
@@ -334,26 +327,24 @@ fn visible_flash_sets_the_status_bit_at_the_source_callasm_boundary() {
 #[test]
 fn visible_surf_moves_only_at_the_source_slow_step_boundary() {
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
-    let from_tile = runtime_shell.shell.session.overworld.player.tile;
-    let facing = runtime_shell.shell.session.overworld.player.facing;
+    let from_tile = runtime_shell.shell.session().overworld().player.tile;
+    let facing = runtime_shell.shell.session().overworld().player.facing;
     let to_tile = match facing {
         Direction::Up => TilePosition::new(from_tile.x, from_tile.y - 1),
         Direction::Down => TilePosition::new(from_tile.x, from_tile.y + 1),
         Direction::Left => TilePosition::new(from_tile.x - 1, from_tile.y),
         Direction::Right => TilePosition::new(from_tile.x + 1, from_tile.y),
     };
-    let map_name = runtime_shell.shell.session.overworld.map.name.clone();
+    let map_name = runtime_shell.shell.session().overworld().map.name.clone();
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .memory
         .insert("wSurfingPlayerState".to_string(), "4".to_string());
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .pending_surf_field_move =
         Some(crystal_core::systems::field_moves::FieldMoveTravelOutcome {
@@ -369,24 +360,23 @@ fn visible_surf_moves_only_at_the_source_slow_step_boundary() {
     runtime_shell.pending_surf_start_from = Some(from_tile);
     runtime_shell.pending_field_notice_effect_frames = Some(16);
 
-    assert_eq!(runtime_shell.shell.session.overworld.player.tile, from_tile);
+    assert_eq!(runtime_shell.shell.session().overworld().player.tile, from_tile);
     assert_eq!(
-        runtime_shell.shell.session.overworld.player.mode,
+        runtime_shell.shell.session().overworld().player.mode,
         MovementMode::Normal
     );
     assert!(
         begin_pending_field_notice_effect(&mut runtime_shell).expect("begin source Surf slow_step")
     );
-    assert_eq!(runtime_shell.shell.session.overworld.player.tile, to_tile);
+    assert_eq!(runtime_shell.shell.session().overworld().player.tile, to_tile);
     assert_eq!(
-        runtime_shell.shell.session.overworld.player.mode,
+        runtime_shell.shell.session().overworld().player.mode,
         MovementMode::Surf
     );
     assert!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .script_runtime
             .pending_surf_field_move
             .is_none()
@@ -396,19 +386,18 @@ fn visible_surf_moves_only_at_the_source_slow_step_boundary() {
 #[test]
 fn visible_waterfall_commits_each_source_loop_step_individually() {
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
-    runtime_shell.shell.session.overworld.player.mode = MovementMode::Surf;
-    runtime_shell.shell.session.overworld.player.facing = Direction::Up;
-    let from_tile = runtime_shell.shell.session.overworld.player.tile;
+    runtime_shell.shell.session_mut().overworld_mut().player.mode = MovementMode::Surf;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+    let from_tile = runtime_shell.shell.session().overworld().player.tile;
     let to_tile = TilePosition::new(from_tile.x, from_tile.y - 1);
-    let map_name = runtime_shell.shell.session.overworld.map.name.clone();
-    runtime_shell.shell.session.state.overworld =
+    let map_name = runtime_shell.shell.session().overworld().map.name.clone();
+    runtime_shell.shell.session_mut().state_mut().overworld =
         crystal_core::state::OverworldMemory::from_snapshot(
-            &runtime_shell.shell.session.overworld.snapshot(),
+            &runtime_shell.shell.session().overworld().snapshot(),
         );
     runtime_shell
         .shell
-        .session
-        .state
+        .session_mut().state_mut()
         .script_runtime
         .pending_waterfall_field_move =
         Some(crystal_core::systems::field_moves::FieldMoveTravelOutcome {
@@ -422,16 +411,15 @@ fn visible_waterfall_commits_each_source_loop_step_individually() {
             mode: MovementMode::Surf,
         });
 
-    assert_eq!(runtime_shell.shell.session.overworld.player.tile, from_tile);
+    assert_eq!(runtime_shell.shell.session().overworld().player.tile, from_tile);
     execute_visible_pending_waterfall_step(&mut runtime_shell, 0, 1)
         .expect("execute one source Waterfall loop step");
 
-    assert_eq!(runtime_shell.shell.session.overworld.player.tile, to_tile);
+    assert_eq!(runtime_shell.shell.session().overworld().player.tile, to_tile);
     assert_eq!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .script_runtime
             .script_value
             .as_deref(),
@@ -440,8 +428,7 @@ fn visible_waterfall_commits_each_source_loop_step_individually() {
     assert!(
         runtime_shell
             .shell
-            .session
-            .state
+            .session().state()
             .script_runtime
             .pending_waterfall_field_move
             .is_none()
@@ -983,7 +970,7 @@ fn all_elm_starters_complete_the_full_asm_rival_battle_branch() {
                 Dv::from_non_hp(10, 10, 10, 10),
             )
             .expect("add selected Elm starter");
-        shell.session_mut().state.badges.johto.fill(true);
+        shell.session_mut().state_mut().badges.johto.fill(true);
         if shell.script_events_snapshot().script_ended.is_some() {
             shell
                 .take_script_end_state()
@@ -1039,9 +1026,9 @@ fn all_elm_starters_complete_the_full_asm_rival_battle_branch() {
         shell
             .snapshot()
             .unwrap_or_else(|error| panic!("{starter} rival battle snapshot failed: {error:#}"));
-        shell.session_mut().state.random_state =
+        shell.session_mut().state_mut().random_state =
             crystal_core::random::CrystalRandomState::default();
-        shell.session_mut().divider = crystal_core::random::RuntimeDividerSource::replay(
+        *shell.session_mut().divider_mut_for_tests() = crystal_core::random::RuntimeDividerSource::replay(
             deterministic_battle_divider_trace(0),
         );
         let mut turns = 0usize;
@@ -1257,7 +1244,7 @@ fn azalea_rival_full_multi_pokemon_battle_advances_every_party_slot_then_resumes
             Dv::from_non_hp(15, 15, 15, 15),
         )
         .expect("add battle lead");
-    shell.session_mut().state.badges.johto.fill(true);
+    shell.session_mut().state_mut().badges.johto.fill(true);
     if shell.script_events_snapshot().script_ended.is_some() {
         shell
             .take_script_end_state()
@@ -1299,8 +1286,8 @@ fn azalea_rival_full_multi_pokemon_battle_advances_every_party_slot_then_resumes
         "ASM counter-starter branch must materialize the entire three-Pokemon party"
     );
 
-    shell.session_mut().state.random_state = crystal_core::random::CrystalRandomState::default();
-    shell.session_mut().divider = crystal_core::random::RuntimeDividerSource::replay(
+    shell.session_mut().state_mut().random_state = crystal_core::random::CrystalRandomState::default();
+    *shell.session_mut().divider_mut_for_tests() = crystal_core::random::RuntimeDividerSource::replay(
         deterministic_battle_divider_trace(0x1234),
     );
 

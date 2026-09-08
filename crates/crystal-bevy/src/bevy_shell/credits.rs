@@ -1755,7 +1755,7 @@ fn complete_visible_smoke_player_name_if_needed(
         let snapshot = runtime_shell.shell.snapshot()?;
         if snapshot.trainer.player_name.is_empty() {
             if let Some(smoke_player_name) = smoke_player_name {
-                runtime_shell.shell.session_mut().state.player_name = smoke_player_name.to_string();
+                runtime_shell.shell.session_mut().state_mut().player_name = smoke_player_name.to_string();
                 runtime_shell.snapshot_revision = runtime_shell.snapshot_revision.wrapping_add(1);
                 return Ok(());
             }
@@ -4412,7 +4412,7 @@ fn visible_pending_text_wait_closes_window(runtime_shell: &BevyRuntimeShell) -> 
     runtime_shell
         .shell
         .session()
-        .state
+        .state()
         .script_runtime
         .pending_text_wait
         .as_ref()
@@ -4450,8 +4450,8 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
     if new_map_load {
         if runtime_shell
             .shell
-            .session
-            .state
+            .session()
+            .state()
             .script_runtime
             .pending_field_travel
             .is_some()
@@ -4466,8 +4466,8 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
             ));
         } else if runtime_shell
             .shell
-            .session
-            .state
+            .session()
+            .state()
             .script_runtime
             .pending_script_warp
             .is_some()

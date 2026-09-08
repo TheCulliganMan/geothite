@@ -8,7 +8,7 @@ fn seen_by_trainer_commits_the_approached_tile_to_raw_map_object_memory() {
     runtime_shell
         .shell
         .session_mut()
-        .overworld
+        .overworld_mut()
         .set_object_runtime_tile(object_id, approached_tile)
         .expect("move visible trainer to its approached tile");
 
@@ -18,22 +18,22 @@ fn seen_by_trainer_commits_the_approached_tile_to_raw_map_object_memory() {
 
     let session = runtime_shell.shell.session();
     assert_eq!(
-        session.state.script_runtime.last_talked_object.as_deref(),
+        session.state().script_runtime.last_talked_object.as_deref(),
         Some(object_id)
     );
     assert_eq!(
-        session.overworld.last_talked_object_identifier.as_deref(),
+        session.overworld().last_talked_object_identifier.as_deref(),
         Some(object_id)
     );
     let map_object_index = session
-        .overworld
+        .overworld()
         .objects
         .iter()
         .position(|object| object.object_identifier.as_deref() == Some(object_id))
         .map(|index| u8::try_from(index + 1).expect("map-object index fits one byte"))
         .expect("trainer map object");
     let memory = session
-        .state
+        .state()
         .map_object_overrides
         .get("Route36")
         .expect("Route36 current-map object image");
@@ -128,7 +128,7 @@ fn terminal_player_sprite_y_offset_survives_applymovement_return() {
     runtime_shell
         .shell
         .session_mut()
-        .overworld
+        .overworld_mut()
         .set_player_facing(Direction::Left);
     let scene = runtime_shell.shell.snapshot().expect("movement scene");
     begin_visible_field_travel_movement(
@@ -1080,7 +1080,7 @@ fn route29_fruit_tree_interaction_grants_and_presents_the_berry() {
     )
     .expect("initialize Route 29 fruit-tree shell");
     runtime_shell.shell.session_mut().state_mut().player_name = "KRIS".to_string();
-    runtime_shell.shell.session_mut().overworld.player.facing = Direction::Up;
+    runtime_shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
 
     let interaction = runtime_shell
         .shell
@@ -1839,8 +1839,8 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
                 visible_label.is_some(),
                 "Mom's open textbox lost its active text between script boundaries: cursor={:?} active={:?} last_text_event={:?} wait={:?} yes_no={} movement={:?}",
                 shell.active_script_cursor,
-                shell.shell.session().state.script_runtime.active_text_label,
-                shell.shell.session().state.script_runtime.text_events.last(),
+                shell.shell.session().state().script_runtime.active_text_label,
+                shell.shell.session().state().script_runtime.text_events.last(),
                 snapshot.ui.pending_text_wait,
                 snapshot.ui.pending_yes_no.is_some(),
                 shell.visible_script_movement,
@@ -2595,7 +2595,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
     // replay every tile through the production Bevy keyboard path.
     let exit_path = {
         let shell = app.world().resource::<BevyRuntimeShell>();
-        let start = shell.shell.session().overworld.clone();
+        let start = shell.shell.session().overworld().clone();
         let mut queue = std::collections::VecDeque::from([(start.clone(), Vec::new())]);
         let mut visited =
             std::collections::BTreeSet::from([(start.player.tile.x, start.player.tile.y)]);
@@ -2709,8 +2709,8 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         snapshot.overworld.tile,
         shell.shell.pending_script_work_reason(),
         (
-            &shell.shell.session().overworld.object_runtime_tiles,
-            &shell.shell.session().overworld.object_last_runtime_tiles
+            &shell.shell.session().overworld().object_runtime_tiles,
+            &shell.shell.session().overworld().object_last_runtime_tiles
         ),
         (
             shell
@@ -2765,7 +2765,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         }
         let path = {
             let shell = app.world().resource::<BevyRuntimeShell>();
-            collision_path_to_map_warp(&shell.shell.session().overworld, "PLAYERS_HOUSE_1F")
+            collision_path_to_map_warp(&shell.shell.session().overworld(), "PLAYERS_HOUSE_1F")
         };
         press_visible_direction_until_tile_changes(&mut app, path[0]);
         settle_visible_story_boundary(&mut app);
@@ -2782,7 +2782,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         visible_mom.is_some(),
         "Mom's completed-story object must load on re-entry; flags={:?} objects={:?}",
         snapshot.progression.active_event_flags,
-        shell.shell.session().overworld.objects
+        shell.shell.session().overworld().objects
     );
     let visible_mom = visible_mom.unwrap();
     assert_eq!(
@@ -2810,7 +2810,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         }
         let path = {
             let shell = app.world().resource::<BevyRuntimeShell>();
-            collision_path_to_map_warp(&shell.shell.session().overworld, "NEW_BARK_TOWN")
+            collision_path_to_map_warp(&shell.shell.session().overworld(), "NEW_BARK_TOWN")
         };
         press_visible_direction_until_tile_changes(&mut app, path[0]);
         settle_visible_story_boundary(&mut app);
@@ -2842,7 +2842,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         }
         let path = {
             let shell = app.world().resource::<BevyRuntimeShell>();
-            collision_path_to_map_warp(&shell.shell.session().overworld, "ELMS_LAB")
+            collision_path_to_map_warp(&shell.shell.session().overworld(), "ELMS_LAB")
         };
         press_visible_direction_until_tile_changes(&mut app, path[0]);
         saw_route_text |= settle_visible_story_boundary(&mut app).0;
@@ -2874,7 +2874,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         let path = {
             let shell = app.world().resource::<BevyRuntimeShell>();
             collision_path_to_tile(
-                &shell.shell.session().overworld,
+                &shell.shell.session().overworld(),
                 TilePosition { x: 5, y: 3 },
             )
         };
@@ -3318,7 +3318,7 @@ fn custom_givepoke_uses_authored_identity_and_randomizes_boxed_ot_id() {
         while session.state_mut().storage.party.add_pokemon(seeded.clone()) {}
         session.state_mut().random_state = Default::default();
         session.state_mut().sync_party_from_storage();
-        session.divider = crate::core::random::RuntimeDividerSource::replay([
+        *session.divider_mut_for_tests() = crate::core::random::RuntimeDividerSource::replay([
             0, 0, 0, 0, 0, 0x20, 0, 1,
         ]);
     }
@@ -3358,7 +3358,7 @@ fn custom_givepoke_uses_authored_identity_and_randomizes_boxed_ot_id() {
         let current_box = &mut session.state_mut().storage.pc_boxes[0];
         while current_box.add_pokemon(seeded.clone()) {}
         session.state_mut().random_state = Default::default();
-        session.divider = crate::core::random::RuntimeDividerSource::replay([0, 0, 0, 0]);
+        *session.divider_mut_for_tests() = crate::core::random::RuntimeDividerSource::replay([0, 0, 0, 0]);
     }
     let full = runtime_shell
         .shell
@@ -3871,7 +3871,7 @@ fn mr_pokemon_visit_prints_every_asm_page_once_then_arms_the_rival_story() {
     );
     // Reproduce the real stale-accumulator failure without fabricating a
     // second visible input timeline after the deterministic scene settles.
-    shell.shell.session_mut().state.script_runtime.script_value = Some("1".to_string());
+    shell.shell.session_mut().state_mut().script_runtime.script_value = Some("1".to_string());
     shell
         .shell
         .run_compiled_script_until_boundary(

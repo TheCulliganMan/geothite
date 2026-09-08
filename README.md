@@ -163,3 +163,11 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)
 - [Operation profiling](tools/OPERATION_PROFILING.md)
+
+## Alternative frontends
+
+The renderer-independent `crystal-runtime` crate owns game sessions, commands,
+snapshots, saves and audio cue resolution. `crystal-audio::pcm` decodes the same
+packed sounds for custom audio devices. See [the frontend assessment and integration
+guide](docs/FRONTEND_ARCHITECTURE.md) for the headless example and remaining UI
+controller work.

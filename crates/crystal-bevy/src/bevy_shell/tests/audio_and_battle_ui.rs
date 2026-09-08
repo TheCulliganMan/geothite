@@ -618,7 +618,7 @@ fn music_fade_keeps_the_old_track_until_the_asm_counter_finishes() {
     }));
 
     let mut bicycle_shell = core_modular_title_shell_for_test();
-    bicycle_shell.shell.session.overworld.player.mode = MovementMode::Bike;
+    bicycle_shell.shell.session_mut().overworld_mut().player.mode = MovementMode::Bike;
     bicycle_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
     begin_visible_music_fade(&mut bicycle_shell, "MUSIC_NEW_BARK_TOWN", 2)
         .expect("begin bicycle replacement fade");
@@ -1250,8 +1250,7 @@ fn overworld_scene_spawns_real_tiles_and_player_from_compiled_pack() {
         assert_eq!(
             runtime_shell
                 .shell
-                .session
-                .state
+                .session().state()
                 .flags
                 .event_flags
                 .get(event_flag),
@@ -1377,7 +1376,7 @@ fn active_pokemon_picture_renders_the_asm_window_and_grayscale_frontpic() {
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .active_pokemon_picture = Some("CHIKORITA".to_string());
 

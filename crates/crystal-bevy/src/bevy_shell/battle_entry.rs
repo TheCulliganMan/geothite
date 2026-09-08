@@ -3599,7 +3599,7 @@ fn open_visible_slot_machine_for_script_command(
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_slot_machine_input = Some(SlotMachineInput::Enter { lucky });
     let entered = runtime_shell
@@ -3677,7 +3677,7 @@ fn spin_visible_slot_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
                 runtime_shell
                     .shell
                     .session_mut()
-                    .state
+                    .state_mut()
                     .script_runtime
                     .pending_slot_machine_input = Some(SlotMachineInput::AcknowledgeResult);
                 let result = runtime_shell
@@ -3711,7 +3711,7 @@ fn spin_visible_slot_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
             runtime_shell
                 .shell
                 .session_mut()
-                .state
+                .state_mut()
                 .script_runtime
                 .pending_slot_machine_input = Some(SlotMachineInput::Continue);
             let result = runtime_shell
@@ -3789,7 +3789,7 @@ fn spin_visible_slot_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_slot_machine_input = Some(SlotMachineInput::Start { bet, lucky });
     queue_visible_shell_sound_effect(runtime_shell, "SFX_SLOT_MACHINE_START")?;
@@ -3835,7 +3835,7 @@ fn resolve_visible_slot_stop(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_slot_machine_input = Some(SlotMachineInput::StopReel {
         reel,
@@ -3983,7 +3983,7 @@ fn resolve_visible_slot_result(runtime_shell: &mut BevyRuntimeShell) -> Result<(
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_slot_machine_input = Some(SlotMachineInput::ResolveResult);
     let result = runtime_shell
@@ -4656,7 +4656,7 @@ fn advance_visible_slot_machine_animation(runtime_shell: &mut BevyRuntimeShell) 
                 runtime_shell
                     .shell
                     .session_mut()
-                    .state
+                    .state_mut()
                     .script_runtime
                     .pending_slot_machine_input = Some(SlotMachineInput::PayoutFrame);
                 let result = runtime_shell
@@ -4691,7 +4691,7 @@ fn advance_visible_slot_machine_animation(runtime_shell: &mut BevyRuntimeShell) 
 }
 
 fn clear_visible_slot_runtime_state(runtime_shell: &mut BevyRuntimeShell) {
-    let script_runtime = &mut runtime_shell.shell.session_mut().state.script_runtime;
+    let script_runtime = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
     script_runtime.slot_machine = None;
     script_runtime.pending_slot_machine_input = None;
 }
@@ -4734,7 +4734,7 @@ fn close_visible_slot_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<()
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .pending_slot_machine_input = Some(SlotMachineInput::Quit);
         let result = runtime_shell
@@ -4800,7 +4800,7 @@ fn open_visible_card_flip_for_script_command(
         revealed: vec![false; 24],
         message: "PLAY WITH THREE COINS?".to_string(),
     });
-    let script_runtime = &mut runtime_shell.shell.session_mut().state.script_runtime;
+    let script_runtime = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
     script_runtime.card_flip = None;
     script_runtime.pending_card_flip_input = None;
     set_shell_action_status(runtime_shell, "CARD FLIP");
@@ -4944,7 +4944,7 @@ fn reveal_visible_card_flip(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_card_flip_input = Some(CardFlipInput::Reveal {
         which_card: u8::try_from(which_card).context("Card Flip side fits a byte")?,
@@ -5007,7 +5007,7 @@ fn acknowledge_visible_card_flip_result(runtime_shell: &mut BevyRuntimeShell) ->
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_card_flip_input = Some(CardFlipInput::AcknowledgeResult);
     let result = runtime_shell
@@ -5046,7 +5046,7 @@ fn start_visible_card_flip_round(runtime_shell: &mut BevyRuntimeShell) -> Result
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .pending_card_flip_input = Some(input);
     let result = runtime_shell
@@ -5205,7 +5205,7 @@ fn advance_visible_card_flip_animation(runtime_shell: &mut BevyRuntimeShell) -> 
             runtime_shell
                 .shell
                 .session_mut()
-                .state
+                .state_mut()
                 .script_runtime
                 .pending_card_flip_input = Some(CardFlipInput::PayoutFrame);
             let result = runtime_shell
@@ -5307,7 +5307,7 @@ fn close_visible_card_flip(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .pending_card_flip_input = Some(CardFlipInput::Quit);
         let result = runtime_shell
@@ -5690,7 +5690,7 @@ fn open_visible_kurt_apricorn_for_script_command(
     let choices = visible_kurt_apricorn_choices(&snapshot);
     record_visible_runtime_action(runtime_shell, "script:special:kurt_apricorn:open")?;
     if choices.is_empty() {
-        let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+        let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
         scripts.script_value = Some("0".to_string());
         scripts
             .variables
@@ -5723,7 +5723,7 @@ fn resolve_visible_kurt_apricorn_selection(
         runtime_shell.kurt_apricorn_cursor = None;
         runtime_shell.kurt_apricorn_quantity = None;
         record_visible_runtime_action(runtime_shell, "script:special:kurt_apricorn:cancel")?;
-        let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+        let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
         scripts.script_value = Some("0".to_string());
         scripts
             .variables
@@ -5792,7 +5792,7 @@ fn resolve_visible_script_party_selection(
             ));
         }
         (PendingScriptPartySelection::BillsGrandfather, None) => {
-            let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+            let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
             scripts.script_value = Some("0".to_string());
             scripts
                 .variables
@@ -5846,7 +5846,7 @@ fn resolve_visible_script_party_selection(
             }
         }
         (PendingScriptPartySelection::CheckMagikarpLength, None) => {
-            let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+            let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
             scripts.script_value = Some("1".to_string());
             scripts
                 .variables
@@ -6605,7 +6605,7 @@ fn resolve_visible_script_party_selection(
 
 fn set_visible_script_numeric_value(runtime_shell: &mut BevyRuntimeShell, value: u8) {
     let value = value.to_string();
-    let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+    let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
     scripts.script_value = Some(value.clone());
     scripts
         .variables
@@ -6731,7 +6731,7 @@ fn use_visible_unown_puzzle_cell(runtime_shell: &mut BevyRuntimeShell) -> Result
         runtime_shell
             .shell
             .session_mut()
-            .state
+            .state_mut()
             .script_runtime
             .active_menu = None;
         mark_runtime_snapshot_dirty(runtime_shell);
@@ -6747,7 +6747,7 @@ fn use_visible_unown_puzzle_cell(runtime_shell: &mut BevyRuntimeShell) -> Result
         }
     };
     {
-        let scripts = &mut runtime_shell.shell.session_mut().state.script_runtime;
+        let scripts = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
         scripts.script_value = Some(puzzle.puzzle_id.clone());
         scripts
             .variables
@@ -6792,7 +6792,7 @@ fn close_visible_unown_puzzle(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .active_menu = None;
     set_visible_script_numeric_value(runtime_shell, 0);
@@ -6832,7 +6832,7 @@ fn close_visible_unown_printer(runtime_shell: &mut BevyRuntimeShell) -> Result<(
     runtime_shell
         .shell
         .session_mut()
-        .state
+        .state_mut()
         .script_runtime
         .active_menu = None;
     queue_visible_current_music(runtime_shell)?;

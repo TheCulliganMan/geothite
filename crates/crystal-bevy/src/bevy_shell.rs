@@ -3710,13 +3710,7 @@ struct BevyAudioCacheKey {
     looped: bool,
 }
 
-#[derive(Debug, Clone)]
-struct CachedPcmAudio {
-    bytes: Arc<[u8]>,
-    samples: Arc<[i16]>,
-    format: AudioPcmFormat,
-    loop_range: Option<(usize, usize)>,
-}
+use crystal_audio::pcm::DecodedPcmAudio as CachedPcmAudio;
 
 impl BevyAudioCacheKey {
     fn from_command(command: &BevyAudioCommand) -> Self {

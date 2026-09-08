@@ -1606,6 +1606,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
+ "flate2",
  "js-sys",
  "serde",
  "serde_json",
@@ -1624,8 +1625,8 @@ dependencies = [
  "crystal-core",
  "crystal-net",
  "crystal-render-api",
+ "crystal-runtime",
  "crystal-voxel-view",
- "flate2",
  "getrandom 0.3.4",
  "image",
  "js-sys",
@@ -1688,6 +1689,22 @@ name = "crystal-render-api"
 version = "0.1.0"
 dependencies = [
  "bevy",
+]
+
+[[package]]
+name = "crystal-runtime"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "crystal-assets",
+ "crystal-audio",
+ "crystal-core",
+ "crystal-net",
+ "image",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tracing",
 ]
 
 [[package]]

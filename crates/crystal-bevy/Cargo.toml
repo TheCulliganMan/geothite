@@ -22,10 +22,10 @@ chrono.workspace = true
 crystal-assets = { path = "../crystal-assets" }
 crystal-audio = { path = "../crystal-audio" }
 crystal-core = { path = "../crystal-core" }
+crystal-runtime = { path = "../crystal-runtime" }
 crystal-net = { path = "../crystal-net" }
 crystal-render-api = { path = "../crystal-render-api", optional = true }
 crystal-voxel-view = { path = "../crystal-voxel-view", optional = true }
-flate2 = "1.1"
 image = { version = "0.25.10", default-features = false, features = ["png"] }
 serde.workspace = true
 serde_json.workspace = true
@@ -62,9 +62,9 @@ default = ["bevy-shell"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
 fullscreen-scaling = ["bevy-shell"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
-location-tester = ["voxel-view", "crystal-assets/test-fixtures"]
+location-tester = ["crystal-runtime/location-tester", "voxel-view", "crystal-assets/test-fixtures"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
-operation-trace = ["bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
+operation-trace = ["crystal-runtime/operation-trace", "bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
 
 [[example]]
 name = "render_at_location"
@@ -75,6 +75,7 @@ name = "audit_voxel_coverage"
 required-features = ["location-tester"]
 
 [dev-dependencies]
+crystal-runtime = { path = "../crystal-runtime", features = ["test-fixtures"] }
 crystal-assets = { path = "../crystal-assets", features = ["test-fixtures"] }
 crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
 sha2.workspace = true

@@ -2,10 +2,11 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, bail};
+use crystal_runtime::CrystalRuntime;
+use crystal_assets::{AssetRoot, modpack::COMPILED_GAME_PACK_EXTENSION};
+use crystal_core::save::SAVE_EXTENSION;
 use crystal_bevy::{
-    BevyMultiplayerConfig, BevyShellConfig, BevyShellStart, CrystalRuntime,
-    assets::{AssetRoot, modpack::COMPILED_GAME_PACK_EXTENSION},
-    core::save::SAVE_EXTENSION,
+    BevyMultiplayerConfig, BevyShellConfig, BevyShellStart,
 };
 
 const DEFAULT_PACK_FILENAME: &str = "core-modular.crystalpack";
@@ -553,8 +554,8 @@ mod tests {
     }
 
     #[test]
-    fn release_api_has_no_direct_new_game_or_arbitrary_tile_entry() {
-        let runtime_source = include_str!("lib.rs");
+    fn release_cli_keeps_debug_spawns_gated_with_shared_runtime() {
+        let runtime_source = include_str!("../../crystal-runtime/src/lib.rs");
         let shell_source = include_str!("bevy_shell.rs");
         let asset_source = concat!(
             include_str!("../../crystal-assets/src/lib.rs"),
@@ -568,10 +569,12 @@ mod tests {
             include_str!("../../crystal-assets/src/merge.rs"),
             include_str!("../../crystal-assets/src/script_parsing.rs"),
         );
-        assert!(!runtime_source.contains("pub fn new_game("));
-        assert!(!runtime_source.contains("pub fn new_game_at_runtime_tile("));
-        assert!(!runtime_source.contains("pub fn start_overworld_session("));
-        assert!(!runtime_source.contains("pub fn start_overworld_session_at_runtime_tile("));
+        assert!(runtime_source.contains("pub fn new_game("));
+        for entry in ["new_game_at_runtime_tile", "start_overworld_session_at_runtime_tile"] {
+            assert!(runtime_source.contains(&format!(
+                "#[cfg(any(test, feature = \"test-fixtures\", feature = \"location-tester\"))]\n    pub fn {entry}("
+            )));
+        }
         assert!(
             shell_source
                 .contains("#[cfg(any(test, feature = \"location-tester\"))]\n    NewGame {\n        spawn_identifier: u16,\n    }")

@@ -1,9 +1,10 @@
 use std::{env, path::PathBuf, process::Command};
 
 use anyhow::{Context, Result, bail};
+use crystal_runtime::CrystalRuntime;
+use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_bevy::{
-    BevyShellConfig, BevyShellStart, CrystalRuntime,
-    assets::{AssetRoot, read_loaded_verified_compiled_game_pack},
+    BevyShellConfig, BevyShellStart,
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -212,7 +213,7 @@ fn nearest_walkable_tile(
     for (x, y) in candidates {
         let x = i16::try_from(x)?;
         let y = i16::try_from(y)?;
-        let tile = crystal_bevy::core::world::map::TilePosition::new(x, y);
+        let tile = crystal_runtime::core::world::map::TilePosition::new(x, y);
         if runtime.data().overworld_session(map, tile, 0).is_ok() {
             return Ok((x, y));
         }

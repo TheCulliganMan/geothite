@@ -7,10 +7,8 @@ use std::{
 
 use anyhow::{Context, Result, bail};
 use bevy::prelude::{Handle, Image};
-use crystal_bevy::{
-    CrystalRuntime,
-    assets::{AssetRoot, read_loaded_verified_compiled_game_pack},
-};
+use crystal_runtime::CrystalRuntime;
+use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_render_api::{VisualTile, VisualTileSource};
 use crystal_voxel_view::audit_cell_coverage_on_map;
 use serde_json::json;

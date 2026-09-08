@@ -14,7 +14,7 @@ fn mart_counter_interaction_opens_source_shop() {
         BevyShellConfig { smoke_player_name: Some("TEST".to_string()), ..Default::default() },
     ).unwrap();
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("TEST")).unwrap();
-    shell.shell.session.overworld.player.facing = Direction::Left;
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Left;
     shell.shell.add_bag_item("PARLYZ_HEAL", 2).unwrap();
     assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
         Some("CherrygroveMartClerkScript".to_string()));
@@ -53,9 +53,9 @@ fn mart_counter_interaction_survives_save_restore() {
     shell.shell.save(&path).unwrap();
     load_visible_runtime_save(&mut shell, &path, "title_continue").unwrap();
     std::fs::remove_file(&path).unwrap();
-    assert!(shell.shell.session.overworld.object_has_loaded_struct(0),
+    assert!(shell.shell.session().overworld().object_has_loaded_struct(0),
         "the restored clerk must retain its live object struct");
-    shell.shell.session.overworld.player.facing = Direction::Left;
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Left;
     assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().map(|i| i.script),
         Some("CherrygroveMartClerkScript".into()));
     let mut app = menu_render_test_app(shell);

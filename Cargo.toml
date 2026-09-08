@@ -7,6 +7,7 @@ members = [
     "crates/crystal-mapgen",
     "crates/crystal-net",
     "crates/crystal-render-api",
+    "crates/crystal-runtime",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
 ]
@@ -39,6 +40,10 @@ codegen-units = 8
 # Keep download-oriented optimization for dependencies, but optimize the game
 # compositor and terrain mesher for frame latency rather than smallest code.
 [profile.web-release.package.crystal-bevy]
+opt-level = 3
+
+# Keep the extracted runtime at its former crystal-bevy optimization level.
+[profile.web-release.package.crystal-runtime]
 opt-level = 3
 
 [profile.web-release.package.crystal-voxel-view]

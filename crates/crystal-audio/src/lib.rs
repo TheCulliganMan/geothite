@@ -1,3 +1,4 @@
+pub mod pcm;
 pub mod synth;
 
 use std::collections::{BTreeMap, VecDeque};

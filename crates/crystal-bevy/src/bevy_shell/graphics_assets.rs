@@ -932,41 +932,14 @@ fn decoded_pcm_audio(
     loop_end_sample: Option<usize>,
 ) -> Result<CachedPcmAudio> {
     if command.mode != ModpackAudioPlaybackMode::RawPcm {
-        anyhow::bail!(
-            "audio program {} declared PCM but queued as {:?}",
-            command.audio_id,
-            command.mode
-        );
+        anyhow::bail!("audio program {} declared PCM but queued as {:?}", command.audio_id, command.mode);
     }
-    if format.sample_rate_hz != 22_050
-        || format.channels != 2
-        || format.bits_per_sample != 16
-    {
-        anyhow::bail!("canonical PCM must be 22.05 kHz stereo signed 16-bit data");
-    }
-    let block_align = usize::from(format.channels) * 2;
-    if bytes.is_empty() || bytes.len() % block_align != 0 {
-        anyhow::bail!("PCM byte length is not aligned to frame size");
-    }
-    let frame_count = bytes.len() / block_align;
-    let loop_range = match (loop_start_sample, loop_end_sample) {
-        (Some(start), Some(end)) if start < end && end <= frame_count => Some((start, end)),
-        (None, None) => None,
-        (Some(start), Some(end)) => {
-            anyhow::bail!("PCM loop range [{start}, {end}) is outside {frame_count} frames")
-        }
-        _ => anyhow::bail!("PCM source has unpaired loop metadata"),
-    };
-    Ok(CachedPcmAudio {
-        samples: bytes
-            .chunks_exact(2)
-            .map(|sample| i16::from_le_bytes([sample[0], sample[1]]))
-            .collect::<Vec<_>>()
-            .into(),
-        bytes: bytes.into(),
+    crystal_audio::pcm::decode_pcm(
+        bytes,
         format,
-        loop_range,
-    })
+        loop_start_sample,
+        loop_end_sample,
+    )
 }
 
 fn decoded_gzip_pcm_audio(
@@ -979,25 +952,16 @@ fn decoded_gzip_pcm_audio(
     loop_end_sample: Option<usize>,
 ) -> Result<CachedPcmAudio> {
     if command.mode != ModpackAudioPlaybackMode::RawPcm {
-        anyhow::bail!(
-            "audio program {} declared compressed PCM but queued as {:?}",
-            command.audio_id,
-            command.mode
-        );
+        anyhow::bail!("audio program {} declared PCM but queued as {:?}", command.audio_id, command.mode);
     }
-    use flate2::read::GzDecoder;
-    let mut decoder = GzDecoder::new(compressed);
-    let mut decoded = Vec::new();
-    std::io::Read::read_to_end(&mut decoder, &mut decoded)
-        .with_context(|| format!("decompress PCM audio {}", command.audio_id))?;
-    if decoded.len() != byte_len || format!("{:08x}", bevy_audio_fnv1a32(&decoded)) != payload_hash
-    {
-        anyhow::bail!(
-            "compressed PCM audio {} failed metadata validation",
-            command.audio_id
-        );
-    }
-    decoded_pcm_audio(command, decoded, format, loop_start_sample, loop_end_sample)
+    crystal_audio::pcm::decode_gzip_pcm(
+        compressed,
+        format,
+        byte_len,
+        payload_hash,
+        loop_start_sample,
+        loop_end_sample,
+    )
 }
 
 #[cfg(any(test, not(target_arch = "wasm32")))]
@@ -1010,20 +974,17 @@ fn decoded_native_midi_audio(
     loop_start_sample: Option<usize>,
     loop_end_sample: Option<usize>,
 ) -> Result<CachedPcmAudio> {
-    use crystal_audio::synth::{SynthContext, decode_midi, render};
-    let rendered = render(&decode_midi(midi_base64)?, SynthContext::cartridge()?)?;
-    let bytes = rendered
-        .downsample()
-        .into_iter()
-        .flat_map(i16::to_le_bytes)
-        .collect::<Vec<_>>();
-    if bytes.len() != byte_len || format!("{:08x}", bevy_audio_fnv1a32(&bytes)) != payload_hash {
-        anyhow::bail!(
-            "native audio {} failed canonical PCM validation",
-            command.audio_id
-        );
+    if command.mode != ModpackAudioPlaybackMode::RawPcm {
+        anyhow::bail!("audio program {} declared PCM but queued as {:?}", command.audio_id, command.mode);
     }
-    decoded_pcm_audio(command, bytes, format, loop_start_sample, loop_end_sample)
+    crystal_audio::pcm::decode_midi_pcm(
+        midi_base64,
+        format,
+        byte_len,
+        payload_hash,
+        loop_start_sample,
+        loop_end_sample,
+    )
 }
 
 #[cfg(all(not(test), target_arch = "wasm32"))]
@@ -1113,46 +1074,10 @@ fn decoded_audio_program_source(
     command: &BevyAudioCommand,
     source: AudioProgramSource,
 ) -> Result<CachedPcmAudio> {
-    match source {
-        AudioProgramSource::Pcm {
-            bytes,
-            format,
-            loop_start_sample,
-            loop_end_sample,
-        } => decoded_pcm_audio(command, bytes, format, loop_start_sample, loop_end_sample),
-        AudioProgramSource::PcmGzip {
-            bytes,
-            format,
-            byte_len,
-            payload_hash,
-            loop_start_sample,
-            loop_end_sample,
-        } => decoded_gzip_pcm_audio(
-            command,
-            &bytes,
-            format,
-            byte_len,
-            &payload_hash,
-            loop_start_sample,
-            loop_end_sample,
-        ),
-        AudioProgramSource::Midi {
-            midi_base64,
-            format,
-            byte_len,
-            payload_hash,
-            loop_start_sample,
-            loop_end_sample,
-        } => decoded_native_midi_audio(
-            command,
-            &midi_base64,
-            format,
-            byte_len,
-            &payload_hash,
-            loop_start_sample,
-            loop_end_sample,
-        ),
+    if command.mode != ModpackAudioPlaybackMode::RawPcm {
+        anyhow::bail!("audio program {} queued as {:?}", command.audio_id, command.mode);
     }
+    crystal_audio::pcm::decode_program_source(source)
 }
 
 fn bitmap_font_glyph_pixel(r: u8, g: u8, b: u8, alpha: u8) -> bool {

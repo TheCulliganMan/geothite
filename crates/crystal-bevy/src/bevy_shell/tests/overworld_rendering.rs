@@ -2364,10 +2364,10 @@ fn fullscreen_distant_npcs_respect_hidden_flags_without_mutating_gameplay() {
     let runtime = workspace_desktop_runtime(&asset_root);
     let mut shell = initialize_bevy_runtime_shell(asset_root, runtime,
         BevyShellStart::NewGameAtRuntimeTile { spawn_identifier: 14, map_name: "GoldenrodCity".into(), tile_x: 14, tile_y: 8 }, BevyShellConfig::default()).unwrap();
-    let index = shell.shell.session.overworld.objects.iter().enumerate().find(|(index, object)| {
-        !shell.shell.session.overworld.object_has_loaded_struct(*index) && shell.shell.session.overworld.is_object_visible(object) && object.object_identifier.is_some()
+    let index = shell.shell.session().overworld().objects.iter().enumerate().find(|(index, object)| {
+        !shell.shell.session().overworld().object_has_loaded_struct(*index) && shell.shell.session().overworld().is_object_visible(object) && object.object_identifier.is_some()
     }).map(|(index, _)| index).unwrap();
-    let id = shell.shell.session.overworld.objects[index].object_identifier.clone().unwrap();
+    let id = shell.shell.session().overworld().objects[index].object_identifier.clone().unwrap();
     let before = shell.shell.snapshot().unwrap();
     let mut expanded = before.clone();
     expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
@@ -2376,13 +2376,13 @@ fn fullscreen_distant_npcs_respect_hidden_flags_without_mutating_gameplay() {
     expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert_eq!(expanded.visible_objects.len(), count);
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
-    assert!(!shell.shell.session.overworld.object_has_loaded_struct(index));
-    shell.shell.session.overworld.hidden_object_identifiers.insert(id.clone());
+    assert!(!shell.shell.session().overworld().object_has_loaded_struct(index));
+    shell.shell.session().overworld().hidden_object_identifiers.insert(id.clone());
     let mut hidden = before.clone();
     expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
     assert!(!hidden.visible_object_runtime_tiles.contains_key(&id));
-    shell.shell.session.overworld.hidden_object_identifiers.remove(&id);
-    shell.shell.session.overworld.invisible_object_struct_identifiers.insert(id.clone());
+    shell.shell.session().overworld().hidden_object_identifiers.remove(&id);
+    shell.shell.session().overworld().invisible_object_struct_identifiers.insert(id.clone());
     let mut invisible = before;
     expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
     assert!(!invisible.visible_object_runtime_tiles.contains_key(&id));
@@ -2397,7 +2397,7 @@ fn fullscreen_does_not_spawn_moms_next_map_load_replacement() {
         BevyShellStart::NewGameAtRuntimeTile { spawn_identifier: 14, map_name: "PlayersHouse1F".into(), tile_x: 9, tile_y: 4 }, BevyShellConfig::default()).unwrap();
     let mut flags = crystal_core::state::EventFlagMemory::default();
     flags.set_event_flag("EVENT_PLAYERS_HOUSE_MOM_2", true).unwrap();
-    let world = &mut shell.shell.session.overworld;
+    let world = shell.shell.session_mut().overworld_mut();
     *world = world.clone().with_event_flag_memory(&flags);
     flags.set_event_flag("EVENT_PLAYERS_HOUSE_MOM_1", true).unwrap();
     flags.set_event_flag("EVENT_PLAYERS_HOUSE_MOM_2", false).unwrap();
@@ -2419,7 +2419,7 @@ fn fullscreen_elm_keeps_his_position_when_leaving_the_lab() {
         BevyShellStart::NewGameAtRuntimeTile { spawn_identifier: 14, map_name: "ElmsLab".into(), tile_x: 4, tile_y: 4 }, BevyShellConfig::default()).unwrap();
     // The entry callback places Elm at (3, 4); his introduction then walks
     // him to (5, 2). Walking south unloads him before the expanded view ends.
-    let world = &mut shell.shell.session.overworld;
+    let world = shell.shell.session_mut().overworld_mut();
     let index = world.objects.iter().position(|object| object.object_identifier.as_deref() == Some("ELMSLAB_ELM")).unwrap();
     assert!(world.object_has_loaded_struct(index));
     world.set_object_runtime_tile("ELMSLAB_ELM", TilePosition::new(5, 2)).unwrap();
