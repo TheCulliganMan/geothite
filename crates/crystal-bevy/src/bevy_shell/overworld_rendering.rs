@@ -3464,7 +3464,8 @@ fn spawn_field_pokedex_screen(
         {
             8.375
         } else {
-            8.0
+            // Inset the caught marker from the green cursor's left stroke.
+            8.25
         };
         let entry_seen = snapshot
             .progression

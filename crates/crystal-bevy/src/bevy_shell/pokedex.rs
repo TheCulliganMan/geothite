@@ -864,27 +864,28 @@ const POKEDEX_OLD_TOP_CURSOR: &[(i16, i16, u8, bool, bool)] = &[
     (150, 16, 0x30, true, true),
 ];
 
+// Give the inset New/ABC listing two extra pixels of clearance on the right.
 const POKEDEX_NEW_CURSOR: &[(i16, i16, u8, bool, bool)] = &[
     (63, 11, 0x30, false, false),
     (63, 3, 0x31, false, false),
     (71, 3, 0x32, false, false),
     (79, 3, 0x32, false, false),
     (87, 3, 0x33, false, false),
-    (120, 3, 0x33, true, false),
-    (128, 3, 0x32, true, false),
-    (136, 3, 0x32, true, false),
-    (144, 3, 0x31, true, false),
-    (144, 11, 0x30, true, false),
+    (122, 3, 0x33, true, false),
+    (130, 3, 0x32, true, false),
+    (138, 3, 0x32, true, false),
+    (146, 3, 0x31, true, false),
+    (146, 11, 0x30, true, false),
     (63, 19, 0x30, false, true),
     (63, 27, 0x31, false, true),
     (71, 27, 0x32, false, true),
     (79, 27, 0x32, false, true),
     (87, 27, 0x33, false, true),
-    (120, 27, 0x33, true, true),
-    (128, 27, 0x32, true, true),
-    (136, 27, 0x32, true, true),
-    (144, 27, 0x31, true, true),
-    (144, 19, 0x30, true, true),
+    (122, 27, 0x33, true, true),
+    (130, 27, 0x32, true, true),
+    (138, 27, 0x32, true, true),
+    (146, 27, 0x31, true, true),
+    (146, 19, 0x30, true, true),
 ];
 
 const POKEDEX_RESULTS_CURSOR: &[(i16, i16, u8, bool, bool)] = &[

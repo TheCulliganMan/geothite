@@ -219,3 +219,19 @@ test('connection status recovers visibly without duplicating reconnect errors in
     assert.equal(h.document.querySelector('.chat-log').textContent.includes('Reconnecting'), false);
   } finally { h.cleanup(); }
 });
+
+test('closing chat while its opener is held cannot leak repeated Start presses', () => {
+  const h = chatHarness();
+  try {
+    const leaked = [];
+    h.window.addEventListener('keydown', event => leaked.push(event.code));
+    h.window.addEventListener('keyup', event => leaked.push(event.code));
+    h.document.querySelector('canvas').focus();
+    h.key('Enter');
+    h.document.querySelector('.chat-close').click();
+    h.key('Enter', 'keydown', { repeat: true });
+    h.key('Enter', 'keyup');
+    assert.deepEqual(leaked, [], 'chat owns the entire press through release');
+    assert.equal(h.document.querySelector('form').hidden, true);
+  } finally { h.cleanup(); }
+});

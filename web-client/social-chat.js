@@ -192,6 +192,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   listen(form, 'submit', event => { event.preventDefault(); submit(); });
   const captureKeys = event => {
     if (event.crystalGameControl) return;
+    if (event.type === 'keydown' && event.repeat && swallowed.has(event.code || event.key)) {
+      event.preventDefault(); event.stopImmediatePropagation(); return;
+    }
     if (event.type === 'keyup' && swallowed.delete(event.code || event.key)) {
       event.preventDefault(); event.stopImmediatePropagation(); return;
     }
