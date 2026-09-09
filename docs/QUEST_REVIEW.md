@@ -908,3 +908,14 @@ main-then-idle presentation, its nonblocking cry, and the distinct ProfOaksPCRat
 path (no PC boot text; music stops before its last sound). Source:
 [picture animation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/gfx/pic_animation.asm),
 [Oak rating](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/prof_oaks_pc.asm).
+
+
+The tall-screen Kurt prompt fix `ded8e637` is deployed as image
+`sha256:a1e32679ef9a00eedda35fdf33c93331761ac03c532146a12dfd373a911bf461`.
+The production order/quantity-cancel/confirmation/movement sequence passes without
+runtime errors. Both list and quantity PNGs were inspected: prompt glyphs now
+remain inside the bottom dialogue box rather than floating over the map. This is
+Chromium keyboard coverage at 390×844, DPR 2; physical Safari/touch remains open.
+The shared interpreter extraction `e75b29dd` is pushed but was not part of this
+deployment. Hall of Fame ceremony integration and the broader quest audit remain
+unfinished.
