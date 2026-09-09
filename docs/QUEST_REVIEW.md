@@ -919,3 +919,15 @@ Chromium keyboard coverage at 390×844, DPR 2; physical Safari/touch remains ope
 The shared interpreter extraction `e75b29dd` is pushed but was not part of this
 deployment. Hall of Fame ceremony integration and the broader quest audit remain
 unfinished.
+
+
+Hall of Fame member-panel rendering is implemented and passes its native pack
+check (5.01 seconds), including shiny artwork and egg rejection. The enlarged
+native screenshot was reviewed: source number, species, gender, nickname, level
+and original trainer ID are legible in their source positions. This exposed and
+fixed a missing number-symbol mapping and font-extra overrides replacing ID/number
+with ordinary punctuation. The font mapping regression passes as well. The panel
+and shared sequence are not connected to the live ceremony yet; player panel,
+entrances, main/idle animation, cry/music, Oak rating and credits transition still
+require integration and full verification. This batch is being wrapped and
+deployed at the user's request without claiming that ceremony complete.

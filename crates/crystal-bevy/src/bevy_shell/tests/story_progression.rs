@@ -5837,3 +5837,30 @@ fn event_battle_all_compiled_trainer_and_static_encounters_start() {
     );
     println!("Verified {trainers} trainer and {wild} static wild battle starts");
 }
+
+
+#[test]
+fn hall_of_fame_member_panel_renders_shiny_identity_from_pack() {
+    let shell = progression_shell_on_map_for_test("HallOfFame");
+    let mut pokemon = shell.shell.session().state().storage.party.pokemon.iter()
+        .flatten().next().unwrap().clone();
+    pokemon.dvs = Dv::from_non_hp(10, 10, 10, 10);
+    pokemon.nickname = "CHAMPION".into();
+    pokemon.original_trainer_id = 12345;
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    let frame = render_visible_hall_of_fame_member(&pokemon, 0, &mut art,
+        &shell.asset_root, &mut images).unwrap();
+    let pixels = images.get(&frame.handle).unwrap();
+    assert_eq!(frame.size, Vec2::new(160.0, 144.0));
+    assert!(pixels.data.chunks_exact(4).any(|pixel| pixel[0] != pixel[1]));
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        std::fs::create_dir_all(&directory).unwrap();
+        let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+        image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
+            .save(PathBuf::from(directory).join("hall-of-fame-shiny-member.png")).unwrap();
+    }
+    pokemon.is_egg = true;
+    assert!(render_visible_hall_of_fame_member(&pokemon, 0, &mut art,
+        &shell.asset_root, &mut images).is_err());
+}

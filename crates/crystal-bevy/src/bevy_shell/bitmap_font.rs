@@ -238,6 +238,7 @@ fn bitmap_font_char_map() -> HashMap<char, u16> {
         ('♂', 0xef),
         ('♀', 0xf5),
         ('¥', 0xf0),
+        ('№', 0x74), // font_battle_extra: source number symbol
         ('☎', 0x62),
         ('…', 0x75),
         ('—', 0x7a),

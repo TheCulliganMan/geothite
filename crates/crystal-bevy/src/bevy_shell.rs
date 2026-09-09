@@ -7553,6 +7553,7 @@ include!("bevy_shell/mailbox.rs");
 include!("bevy_shell/pokegear_exit.rs");
 include!("bevy_shell/title_menu.rs");
 include!("bevy_shell/credits.rs");
+include!("bevy_shell/hall_of_fame.rs");
 include!("bevy_shell/script_callbacks.rs");
 include!("bevy_shell/economy.rs");
 include!("bevy_shell/battle_messages.rs");

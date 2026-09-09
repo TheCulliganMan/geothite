@@ -8986,8 +8986,11 @@ fn load_bitmap_font_extra_glyphs(
             images,
         )?;
     }
-    // LoadFontsExtra installs the extras first, then LoadFontsBattleExtra
-    // supplies the battle-specific Lv tile at 0x6e.
-    install(&battle_extra, 0x6e - 0x60, 0x6e, glyphs, images)?;
+    // Preserve ordinary quotes while restoring the semantic battle glyphs.
+    // ID and the number symbol share tile addresses with font_extra punctuation.
+    for (ch, tile) in [('\u{e10a}', 0x6e), ('\u{e10b}', 0x73), ('№', 0x74)] {
+        let handle = bitmap_font_2bpp_tile_handle(&battle_extra, tile - 0x60, images)?;
+        glyphs.insert(ch, SpriteFrame { handle, size: Vec2::splat(BITMAP_FONT_GLYPH_SIZE) });
+    }
     Ok(())
 }
