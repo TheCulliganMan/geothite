@@ -2315,3 +2315,257 @@ fn pharmacy_before_jasmines_request_opens_shop_without_giving_medicine() {
     assert!(shell.shell.snapshot().unwrap().pending_shop.is_none());
     assert_eq!(shell.shell.session().state().bag, bag);
 }
+
+#[test]
+fn moomoo_farm_feeding_milestones_rewards_and_save_load() {
+    fn visit(app: &mut App, map: &str, script: &str, answer: bool) -> Vec<String> {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, map, script);
+            quest_talk(&mut shell, script);
+        }
+        quest_settle(app, answer, |shell| {
+            quest_dialogue_is_idle(shell) && shell.special_boundary.is_none()
+        })
+    }
+    let mut shell = progression_shell_on_map_for_test("Route39Barn");
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+    let mut app = menu_render_test_app(shell);
+    let labels = visit(&mut app, "Route39Barn", "MoomooScript", true);
+    assert!(labels
+        .iter()
+        .any(|label| label == "Route39BarnItsCryIsWeakText"));
+    assert!(!labels
+        .iter()
+        .any(|label| label == "Route39BarnAskGiveBerryText"));
+    let labels = visit(&mut app, "Route39Farmhouse", "PokefanF_SnoreFarmer", true);
+    assert!(labels.iter().any(|label| label == "FarmerFText_InTrouble"));
+    assert_eq!(
+        quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "TM_SNORE"),
+        0
+    );
+    visit(&mut app, "Route39Farmhouse", "PokefanM_DairyFarmer", true);
+    assert!(app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .session()
+        .state()
+        .flags
+        .is_event_flag_set("EVENT_TALKED_TO_FARMER_ABOUT_MOOMOO")
+        .unwrap());
+    let labels = visit(&mut app, "Route39Barn", "MoomooScript", true);
+    assert!(labels
+        .iter()
+        .any(|label| label == "Route39BarnNoBerriesText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.shell.add_bag_item("BERRY", 7).unwrap();
+    }
+    let labels = visit(&mut app, "Route39Barn", "MoomooScript", false);
+    assert!(labels
+        .iter()
+        .any(|label| label == "Route39BarnRefusedBerryText"));
+    assert_eq!(
+        quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "BERRY"),
+        7
+    );
+    for fed in 1..=7 {
+        let labels = visit(&mut app, "Route39Barn", "MoomooScript", true);
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "BERRY"), 7 - fed);
+        assert_eq!(
+            shell
+                .shell
+                .session()
+                .state()
+                .flags
+                .is_event_flag_set("EVENT_HEALED_MOOMOO")
+                .unwrap(),
+            fed == 7
+        );
+        let milestone = match fed {
+            3 => Some("Route39BarnLittleHealthierText"),
+            5 => Some("Route39BarnQuiteHealthyText"),
+            7 => Some("Route39BarnTotallyHealthyText"),
+            _ => None,
+        };
+        if let Some(label) = milestone {
+            assert!(labels.iter().any(|actual| actual == label));
+        }
+        if fed == 3 || fed == 7 {
+            let progress = shell
+                .shell
+                .session()
+                .state()
+                .script_runtime
+                .memory
+                .get("wMooMooBerries")
+                .cloned();
+            quest_assert_save_round_trip(&mut shell, "moomoo-feeding");
+            assert_eq!(
+                shell
+                    .shell
+                    .session()
+                    .state()
+                    .script_runtime
+                    .memory
+                    .get("wMooMooBerries"),
+                progress.as_ref()
+            );
+        }
+    }
+    let labels = visit(&mut app, "Route39Barn", "MoomooScript", true);
+    assert!(labels.iter().any(|label| label == "MoomooHappyMooText"));
+    assert!(!labels
+        .iter()
+        .any(|label| label == "Route39BarnAskGiveBerryText"));
+    for script in ["Route39BarnTwin1Script", "Route39BarnTwin2Script"] {
+        let labels = visit(&mut app, "Route39Barn", script, true);
+        assert!(labels
+            .iter()
+            .any(|label| label == "Route39BarnTwinWereFeedingMoomooText"));
+    }
+    for _ in 0..2 {
+        let labels = visit(&mut app, "Route39Farmhouse", "PokefanF_SnoreFarmer", true);
+        assert!(labels
+            .iter()
+            .any(|label| label == "FarmerFText_SnoreSpeech"));
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "TM_SNORE"), 1);
+        quest_assert_save_round_trip(&mut shell, "moomoo-snore");
+    }
+    let before_money = app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .session()
+        .state()
+        .money;
+    let labels = visit(&mut app, "Route39Farmhouse", "PokefanM_DairyFarmer", false);
+    assert!(labels.iter().any(|label| label == "FarmerMText_NoSale"));
+    assert_eq!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .shell
+            .session()
+            .state()
+            .money,
+        before_money
+    );
+    visit(&mut app, "Route39Farmhouse", "PokefanM_DairyFarmer", true);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "MOOMOO_MILK"), 1);
+        assert_eq!(shell.shell.session().state().money, before_money - 500);
+        quest_assert_save_round_trip(&mut shell, "moomoo-milk");
+    }
+    let labels = visit(&mut app, "Route39Farmhouse", "PokefanM_DairyFarmer", true);
+    assert!(labels.iter().any(|label| label == "FarmerMText_Milking"));
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(shell, "MOOMOO_MILK"), 1);
+    assert_eq!(shell.shell.session().state().money, before_money - 500);
+}
+
+#[test]
+fn moomoo_milk_preserves_money_on_rejection_and_retries_after_making_room() {
+    let mut shell = progression_shell_on_map_for_test("Route39Farmhouse");
+    // Isolate sale rejection branches; the feeding test establishes healing.
+    shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .flags
+        .set_event_flag("EVENT_HEALED_MOOMOO", true)
+        .unwrap();
+    shell.shell.session_mut().state_mut().money = 499;
+    quest_move_beside_npc(&mut shell, "Route39Farmhouse", "PokefanM_DairyFarmer");
+    quest_talk(&mut shell, "PokefanM_DairyFarmer");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "FarmerMText_NoMoney"));
+    let items;
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().money, 499);
+        assert_eq!(quest_item_quantity(&shell, "MOOMOO_MILK"), 0);
+        items = shell
+            .runtime
+            .data()
+            .items
+            .values()
+            .filter(|item| item.pocket == "ITEM" && item.script_name != "MOOMOO_MILK")
+            .take(20)
+            .cloned()
+            .collect::<Vec<_>>();
+        let state = shell.shell.session_mut().state_mut();
+        state.money = 500;
+        state.bag.items.clear();
+        for item in &items {
+            assert!(state.bag.add_item(item, 1).unwrap());
+        }
+        assert_eq!(state.bag.items.len(), 20);
+        quest_talk(&mut shell, "PokefanM_DairyFarmer");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "FarmerMText_NoRoom"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().money, 500);
+        assert_eq!(quest_item_quantity(&shell, "MOOMOO_MILK"), 0);
+        assert!(shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .bag
+            .remove_item(&items[0], 1)
+            .unwrap());
+        quest_talk(&mut shell, "PokefanM_DairyFarmer");
+    }
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(shell.shell.session().state().money, 0);
+    assert_eq!(quest_item_quantity(&shell, "MOOMOO_MILK"), 1);
+    quest_assert_save_round_trip(&mut shell, "moomoo-milk-retry");
+}
+
+#[test]
+fn moomoo_slow_cry_accepts_the_authored_species_value() {
+    let mut shell = progression_shell_on_map_for_test("Route39Barn");
+    shell
+        .shell
+        .step_compiled_script_command(
+            "Route39Barn",
+            "MoomooScript",
+            1,
+            Default::default(),
+            Default::default(),
+        )
+        .unwrap();
+    shell
+        .shell
+        .step_compiled_script_command(
+            "Route39Barn",
+            "MoomooScript",
+            4,
+            Default::default(),
+            Default::default(),
+        )
+        .unwrap();
+    let step = shell
+        .shell
+        .step_compiled_script_command(
+            "Route39Barn",
+            "MoomooScript",
+            5,
+            Default::default(),
+            Default::default(),
+        )
+        .unwrap();
+    assert!(
+        matches!(step.mutation.result, RuntimeMutationResult::SpecialRoutineApplied(
+        crate::core::systems::special_routines::SpecialRoutineOutcome {
+            effect: SpecialRoutineEffect::PlaySlowCry { ref species, .. }, ..
+        }) if species == "MILTANK")
+    );
+}

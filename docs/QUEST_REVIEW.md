@@ -48,7 +48,7 @@ a complete quest.
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
-| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Pending |
+| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo price/cry presentation and remaining side quests pending |
 
 ## Renderer work
 
@@ -341,3 +341,25 @@ This was headed desktop Chromium at 390x844 CSS pixels with device scale 2;
 iOS Safari/touch input and perceptual audio comparison remain unverified.
 Medicine test-only commit 87ee0678 is pushed separately and needs no gameplay
 redeployment.
+
+
+## Moomoo Farm script fixes and bounded review
+
+The real Moomoo interaction reproduced a crash at `PlaySlowCry`: `checkevent`
+left `_value=0`, and the following `setval MILTANK` updated only `script_value`.
+Accumulator-writing variable commands now synchronize both fields. Twelve
+script-variable checks, 68 script-runtime checks, and the existing exact-species
+cry lookup check pass. The authored checkevent/setval/cry regression now passes.
+
+The healing sequence subsequently reached seven berries, retained progress
+across reloads, and awarded Snore once. Milk purchases then exposed missing
+`HAVE_LESS` comparison resolution. Script numeric constants now include the
+three values from the existing `AmountComparison` implementation; all three Moomoo regressions now pass (75.97 seconds), including the complete
+feeding/reward chain and insufficient-money/full-pocket/retry branches.
+Milk purchases charge exactly ¥500 only after successful delivery; repeat
+interactions preserve the existing bottle. Deployment verification is pending.
+
+Presentation gaps remain: the milk dialogue displays an unresolved decimal
+price placeholder, and `PlaySlowCry` uses the ordinary visible cry playback
+path. Neither slowed-cry audio fidelity nor complete visual traversal has been
+verified by these state tests.

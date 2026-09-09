@@ -13169,6 +13169,15 @@ impl GameDataSet {
             ("PHONE_CONTACTS_FULL".to_string(), 1),
             ("PHONE_CONTACT_REFUSED".to_string(), 2),
         ]);
+        // checkmoney/checkcoins return these engine comparison bytes. Resolve
+        // their branch operands even when the pack omits the shared constants.
+        use crystal_core::systems::economy::AmountComparison;
+        for comparison in [AmountComparison::HaveMore, AmountComparison::HaveAmount, AmountComparison::HaveLess] {
+            constants.insert(
+                comparison.script_label().to_string(),
+                comparison.script_code().parse().expect("amount comparison byte"),
+            );
+        }
         if let Some(rules) = &self.battle_tower_rules {
             constants.insert(
                 "BATTLETOWER_STREAK_LENGTH".to_string(),

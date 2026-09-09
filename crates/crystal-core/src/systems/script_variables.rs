@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+use serde::{de::Error as _, Deserialize, Deserializer, Serialize};
 
 use crate::state::GameState;
 use crate::world::encounters::TimeOfDay;
@@ -142,6 +142,10 @@ pub fn apply_script_variable_command(
             reject_target(&command)?;
             let value = require_joined_value(&command)?;
             state.script_runtime.script_value = Some(value.clone());
+            state
+                .script_runtime
+                .variables
+                .insert("_value".to_string(), value.clone());
             Ok(ScriptVariableOutcome::SetAccumulator {
                 value,
                 source_script: command.source_script,
@@ -160,6 +164,10 @@ pub fn apply_script_variable_command(
                     variable: variable.clone(),
                 })?;
             state.script_runtime.script_value = Some(value.clone());
+            state
+                .script_runtime
+                .variables
+                .insert("_value".to_string(), value.clone());
             Ok(ScriptVariableOutcome::SetAccumulator {
                 value,
                 source_script: command.source_script,
@@ -193,6 +201,10 @@ pub fn apply_script_variable_command(
                 .cloned()
                 .unwrap_or_else(|| "0".to_string());
             state.script_runtime.script_value = Some(value.clone());
+            state
+                .script_runtime
+                .variables
+                .insert("_value".to_string(), value.clone());
             Ok(ScriptVariableOutcome::SetAccumulator {
                 value,
                 source_script: command.source_script,
@@ -240,6 +252,10 @@ pub fn apply_script_variable_command(
                 .is_some_and(|time_of_day| expected & time_of_day_mask(time_of_day) != 0);
             let value = if active { "TRUE" } else { "FALSE" }.to_string();
             state.script_runtime.script_value = Some(value.clone());
+            state
+                .script_runtime
+                .variables
+                .insert("_value".to_string(), value.clone());
             Ok(ScriptVariableOutcome::SetAccumulator {
                 value,
                 source_script: command.source_script,
@@ -529,6 +545,40 @@ mod tests {
                 .collect(),
             source_script: "VarScript".to_string(),
             command_index: 5,
+        }
+    }
+
+    #[test]
+    fn accumulator_commands_replace_stale_special_routine_value() {
+        for (cmd, expected) in [
+            (command("setval", None, &["MILTANK"]), "MILTANK"),
+            (command("readvar", Some("VAR_CALLERID"), &[]), "PHONE_BILL"),
+            (command("readmem", Some("wMooMooBerries"), &[]), "3"),
+            (command("checktime", None, &["NITE"]), "FALSE"),
+        ] {
+            let mut state = GameState::default();
+            state
+                .script_runtime
+                .variables
+                .insert("_value".into(), "STALE".into());
+            state
+                .script_runtime
+                .variables
+                .insert("VAR_CALLERID".into(), "PHONE_BILL".into());
+            state
+                .script_runtime
+                .memory
+                .insert("wMooMooBerries".into(), "3".into());
+            apply_script_variable_command(&mut state, cmd, None).unwrap();
+            assert_eq!(state.script_runtime.script_value.as_deref(), Some(expected));
+            assert_eq!(
+                state
+                    .script_runtime
+                    .variables
+                    .get("_value")
+                    .map(String::as_str),
+                Some(expected)
+            );
         }
     }
 
