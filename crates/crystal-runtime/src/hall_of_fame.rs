@@ -4,7 +4,7 @@
 //! rating are explicit completion boundaries; their duration belongs to the
 //! existing animation and dialogue interpreters, not an estimated timer.
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum HallOfFamePhase {
     /// White display after the opening music/palette fade has completed.
     OpeningHold,
@@ -29,7 +29,7 @@ pub enum HallOfFamePhase {
     Complete,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct HallOfFameSequence {
     members: usize,
     phase: HallOfFamePhase,
@@ -45,6 +45,8 @@ impl HallOfFameSequence {
             elapsed: 0,
         })
     }
+
+    pub fn elapsed_frames(&self) -> u16 { self.elapsed }
 
     pub fn phase(&self) -> HallOfFamePhase {
         self.phase
@@ -97,7 +99,7 @@ impl HallOfFameSequence {
             ),
             PlayerBack => (56, PlayerFront),
             PlayerFront => (96, OakRating),
-            ClosingFade => (8, Complete),
+            ClosingFade => (32, Complete),
             PokemonAnimation { .. } | OakRating | Complete => return false,
         };
         self.elapsed += 1;
@@ -176,7 +178,7 @@ mod tests {
             assert!(!sequence.tick());
         }
         assert!(sequence.complete_rating());
-        wait(&mut sequence, 8);
+        wait(&mut sequence, 32);
         assert_eq!(sequence.phase(), Complete);
         assert!(!sequence.tick());
         assert!(!sequence.complete_rating());

@@ -827,6 +827,12 @@ fn spawn_visible_credits_screen(
     rendered_art: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    if let Some(ceremony) = credits.hall_of_fame.as_ref() {
+        let frame = render_visible_hall_of_fame_screen(runtime_shell, ceremony, rendered_art, images)?;
+        commit_presented_fullscreen_frame(commands, rendered_art, &frame,
+            PresentedFullscreenFrameSource::Transient, PRESENTED_FULLSCREEN_BASE_Z, images)?;
+        return Ok(());
+    }
     if rendered_art.credits_sources.is_none() && rendered_art.credits_source_error.is_none() {
         match load_visible_credits_sources(&runtime_shell.asset_root) {
             Ok(sources) => rendered_art.credits_sources = Some(sources),
@@ -4041,6 +4047,10 @@ fn visible_emote_target_movement(
 }
 
 fn visible_credits_screen_lines(credits: &VisibleCreditsScreen) -> Vec<String> {
+    if let Some(ceremony) = credits.hall_of_fame.as_ref() {
+        return vec![format!("HALL OF FAME {:?}", ceremony.sequence.phase()),
+            ceremony.rating_text.chars().take(ceremony.rating_visible).collect()];
+    }
     let mut lines = credits
         .lines
         .iter()

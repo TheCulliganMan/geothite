@@ -323,6 +323,12 @@ fn strip_visible_asm_comment(line: &str) -> String {
 }
 
 fn tick_visible_credits_screen(runtime_shell: &mut BevyRuntimeShell) {
+    if runtime_shell.credits_screen.as_ref().is_some_and(|credits| credits.hall_of_fame.is_some()) {
+        if let Err(error) = tick_visible_hall_of_fame(runtime_shell) {
+            record_visible_runtime_system_error(runtime_shell, error);
+        }
+        return;
+    }
     let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return;
     };
@@ -401,6 +407,9 @@ fn visible_credits_can_skip(credits: &VisibleCreditsScreen) -> bool {
 }
 
 fn press_visible_credits_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.credits_screen.as_ref().is_some_and(|credits| credits.hall_of_fame.is_some()) {
+        return acknowledge_visible_hall_of_fame(runtime_shell);
+    }
     let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return handle_visible_no_credits_screen(runtime_shell, "a");
     };
@@ -423,6 +432,9 @@ fn press_visible_credits_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn press_visible_credits_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.credits_screen.as_ref().is_some_and(|credits| credits.hall_of_fame.is_some()) {
+        return acknowledge_visible_hall_of_fame(runtime_shell);
+    }
     let Some(credits) = runtime_shell.credits_screen.as_mut() else {
         return handle_visible_no_credits_screen(runtime_shell, "b");
     };

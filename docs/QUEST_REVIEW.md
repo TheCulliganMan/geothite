@@ -17,8 +17,8 @@ Full normal-input traversal and visual review remain separate checks.
 - Evolution completion, cancellation, registration and move-learning checks passed.
 
 44a31298 is deployed: rebuilt container is healthy and a real browser battle interaction passed. Opponent-name bounds pass in the native renderer; the mobile browser top row matches all 9,216 compared native pixels. No clipping fix was needed.
-Hall of Fame currently uses the existing abbreviated presentation; a full visual
-team-induction ceremony has not been established by these tests.
+The Hall of Fame presentation was subsequently integrated; see the ceremony
+integration review below for current coverage and remaining fidelity limits.
 
 ## Quest coverage still in progress
 
@@ -40,7 +40,7 @@ a complete quest.
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
 | Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; all eight Kanto leader reward/repeat/save continuations pass; full access/traversal, combat and remaining presentation checks are pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
-| Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
+| Hall of Fame | Record, ceremony, save, credits, title/Continue, postgame unlocks | Lance entry, animated ceremony, Oak rating, credits and Continue verified; full postgame traversal pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Sprout Tower rival departure, scene/save state, elder battle continuation, Flash reward/repeat/save pass; full tower traversal and visual timing pending; other early-story coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
 | Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; Floria prerequisites, SquirtBottle badge gate/gift/refusal, Sudowoodo victory continuation, Rock Smash/repeats and save/load pass; full traversal, remaining outcomes and visual/audio review pending; Kenya mail pending |
@@ -931,3 +931,27 @@ and shared sequence are not connected to the live ceremony yet; player panel,
 entrances, main/idle animation, cry/music, Oak rating and credits transition still
 require integration and full verification. This batch is being wrapped and
 deployed at the user's request without claiming that ceremony complete.
+
+
+### Hall of Fame ceremony integration
+
+The authored `halloffame` boundary now runs the shared presentation sequence
+before credits instead of skipping the induction. It shows each non-egg party
+member's back/front entrance, main and idle animation, shiny/form-aware portrait,
+identity panel and cry. The player portrait and play-time panel precede Oak's
+pack-authored seen/caught count and rating. The final acknowledgement waits for
+the rating sound before the white transition and existing credits program.
+Normal A/B input cannot skip a party animation. Canonical champion recording
+and saving remain at the existing boundary.
+
+Five matching native regressions pass (63.65 seconds): the normal Lance room
+scene reaches the ceremony, the ceremony reaches the actual credits program,
+THE END acknowledgement returns to title, and Continue consumes the champion
+spawn marker and restores New Bark Town. The shiny member panel and existing
+Hall-of-Fame map access check also pass. The two standalone shared timeline
+checks cover six-member ordering and non-interruptible animation/rating waits.
+Native ceremony PNGs were generated for review. The fixture starts in Lance's
+room; it does not claim a full Elite Four playthrough. Palette interpolation and
+outer animation setup timing have not been compared frame-for-frame to a ROM;
+the opening currently cuts to the white hold. Physical Safari/touch and the
+broader postgame traversal remain separate coverage.

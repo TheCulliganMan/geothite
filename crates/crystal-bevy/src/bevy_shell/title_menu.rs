@@ -7618,6 +7618,7 @@ fn open_visible_credits_screen(
     runtime_shell.pending_special_cry = None;
     runtime_shell.pending_special_sound = None;
     runtime_shell.credits_screen = Some(VisibleCreditsScreen {
+        hall_of_fame: None,
         program,
         allow_skip,
         resume_game_timer_on_exit: false,

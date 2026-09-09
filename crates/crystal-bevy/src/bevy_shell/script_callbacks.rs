@@ -1141,32 +1141,15 @@ fn consume_visible_runtime_flag_kind(
         return Ok(());
     }
     if matches!(consumed, RuntimeScriptRuntimeFlagValue::HallOfFameRequested) {
-        // `halloffame` is a gameplay boundary, not an acknowledgement window.
-        // The ASM records the party, runs the Hall of Fame sequence, and then
-        // enters credits without waiting for an external/debug input.  The
-        // compact Rust presentation uses the same credits state machine after
-        // the canonical core record has been committed, so a natural Elite
-        // Four completion cannot strand the player at a special-boundary
-        // placeholder.
         let hall_of_fame = &runtime_shell.shell.snapshot()?.progression.hall_of_fame;
-        // The core has already inserted the newly crowned team. A second
-        // entry or a count above one therefore proves the source status flag
-        // was set before this Hall of Fame call; the first clear remains
-        // unskippable exactly as the old wStatusFlags value passed in B.
         let allow_skip = hall_of_fame.count > 1 || hall_of_fame.entries.len() > 1;
-        // HallOfFame saves the champion marker and team before credits. This
-        // is an authored save boundary, so normal menu/cursor blockers do not
-        // apply while the Hall of Fame script is suspended here.
         if let Some(path) = runtime_shell.quick_save_path.clone() {
             runtime_shell.shell.save(&path)?;
         }
         open_visible_credits_screen(runtime_shell, allow_skip)?;
-        let credits = runtime_shell
-            .credits_screen
-            .as_mut()
-            .context("Hall of Fame credits did not open a credits screen")?;
-        credits.resume_game_timer_on_exit = true;
-        trim_event_log(&mut runtime_shell.last_audio_events);
+        begin_visible_hall_of_fame(runtime_shell)?;
+        runtime_shell.credits_screen.as_mut().context("Hall of Fame owner missing")?
+            .resume_game_timer_on_exit = true;
         return Ok(());
     }
     if let Some(boundary) = runtime_flag_boundary_display(&consumed) {

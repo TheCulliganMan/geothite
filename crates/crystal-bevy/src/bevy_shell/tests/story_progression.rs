@@ -42,6 +42,7 @@ fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
         std::env::temp_dir().join(format!("geothite-hof-{}.crystalsave", std::process::id()));
     let _ = std::fs::remove_file(&save_path);
     shell.quick_save_path = Some(save_path.clone());
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
     // Start at the authored Hall of Fame boundary after Lance's map dialogue.
     let commands = shell
         .shell
@@ -64,7 +65,63 @@ fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
     let saved = shell.shell.runtime().load_save(&save_path).unwrap();
     assert_eq!(saved.hall_of_fame.count, 1);
     assert!(saved.hall_of_fame.spawn_after_champion.is_some());
-    close_visible_credits_screen(&mut shell, "regression_end").unwrap();
+    assert!(shell.credits_screen.as_ref().unwrap().hall_of_fame.is_some(),
+        "champion ceremony must precede credits");
+    let mut phases = BTreeSet::new();
+    let mut reviewed_rating_wait = false;
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    for _ in 0..6000 {
+        let Some(ceremony) = shell.credits_screen.as_ref().unwrap().hall_of_fame.clone() else { break; };
+        let phase = format!("{:?}", ceremony.sequence.phase());
+        if phases.insert(phase.clone()) {
+            let frame = render_visible_hall_of_fame_screen(&shell, &ceremony, &mut art, &mut images).unwrap();
+            if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                std::fs::create_dir_all(&directory).unwrap();
+                let pixels = images.get(&frame.handle).unwrap();
+                let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+                image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
+                    .save(PathBuf::from(directory).join(format!("hof-{}.png", phase.replace([' ', '{', '}', ':'], "")))).unwrap();
+            }
+        }
+        shell.pending_audio.clear(); // This test completes queued playback explicitly.
+        if ceremony.sequence.phase() == crystal_runtime::hall_of_fame::HallOfFamePhase::OakRating {
+            if ceremony.rating_pages.is_empty() && ceremony.rating_sound_started && !reviewed_rating_wait {
+                shell.transient_audio_playing = true;
+                acknowledge_visible_hall_of_fame(&mut shell).unwrap();
+                tick_visible_hall_of_fame(&mut shell).unwrap();
+                assert_eq!(shell.credits_screen.as_ref().unwrap().hall_of_fame.as_ref().unwrap().sequence.phase(),
+                    crystal_runtime::hall_of_fame::HallOfFamePhase::OakRating);
+                shell.transient_audio_playing = false;
+                reviewed_rating_wait = true;
+            } else { press_visible_credits_a_button(&mut shell).unwrap(); }
+        } else {
+            press_visible_credits_a_button(&mut shell).unwrap();
+            press_visible_credits_b_button(&mut shell).unwrap();
+            assert_eq!(shell.credits_screen.as_ref().unwrap().hall_of_fame.as_ref().unwrap().sequence.phase(), ceremony.sequence.phase());
+        }
+        tick_visible_hall_of_fame(&mut shell).unwrap();
+    }
+    assert!(shell.credits_screen.as_ref().unwrap().hall_of_fame.is_none(), "ceremony must finish");
+    assert!(reviewed_rating_wait, "final rating sound must gate credits");
+    for required in ["PokemonBack", "PokemonFront", "PokemonAnimation", "PokemonHold", "PlayerBack", "PlayerFront", "OakRating", "ClosingFade"] {
+        assert!(phases.iter().any(|phase| phase.starts_with(required)), "missing {required}: {phases:?}");
+    }
+    // The ceremony must hand off to the real credits program, including its
+    // music, THE END wait, and normal acknowledgement/return path.
+    for _ in 0..40000 {
+        tick_visible_credits_screen(&mut shell);
+        if shell.credits_screen.as_ref().is_some_and(|credits| credits.awaiting_exit) {
+            break;
+        }
+    }
+    assert!(shell.credits_screen.as_ref().unwrap().awaiting_exit);
+    press_visible_credits_a_button(&mut shell).unwrap();
+    for _ in 0..60 {
+        if shell.credits_screen.is_none() { break; }
+        tick_visible_credits_screen(&mut shell);
+    }
+    assert!(shell.credits_screen.is_none());
     assert!(
         shell.title_menu.is_some() || shell.intro_screen.is_some(),
         "credits must return to title"
@@ -87,6 +144,34 @@ fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
     assert!(shell.shell.session().state().game_timer_counting);
     assert!(shell.last_error.is_none());
     let _ = std::fs::remove_file(&save_path);
+}
+
+#[test]
+fn hall_of_fame_lance_entry_reaches_ceremony() {
+    let mut shell = progression_shell_on_map_for_test("HallOfFame");
+    let runtime = shell.shell.runtime().clone();
+    let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+    state.player_name = "CHRIS".into();
+    runtime.data().transition_overworld_session(state, overworld, "HallOfFame",
+        TilePosition::new(4, 13), crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+        &runtime.music_ids()).unwrap();
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        shell.shell.save(PathBuf::from(directory).join("hof-browser.crystalsave")).unwrap();
+    }
+    arm_visible_current_scene_script(&mut shell, "hof_entry_test").unwrap();
+    let mut app = menu_render_test_app(shell);
+    for _ in 0..4000 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        if shell.credits_screen.as_ref().is_some_and(|credits| credits.hall_of_fame.is_some()) {
+            assert_eq!(shell.shell.session().state().hall_of_fame.count, 1);
+            return;
+        }
+    }
+    panic!("Lance's entry scene never reached Hall of Fame");
 }
 
 #[test]

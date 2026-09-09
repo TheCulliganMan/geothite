@@ -2416,6 +2416,7 @@ impl TitleMenu {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleCreditsScreen {
+    hall_of_fame: Option<VisibleHallOfFame>,
     program: VisibleCreditsProgram,
     allow_skip: bool,
     resume_game_timer_on_exit: bool,
