@@ -41,7 +41,7 @@ a complete quest.
 | Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; all eight Kanto leader reward/repeat/save continuations pass; full access/traversal, combat and remaining presentation checks are pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
-| Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
+| Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Sprout Tower rival departure, scene/save state, elder battle continuation, Flash reward/repeat/save pass; full tower traversal and visual timing pending; other early-story coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
 | Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; Floria prerequisites, SquirtBottle badge gate/gift/refusal, Sudowoodo victory continuation, Rock Smash/repeats and save/load pass; full traversal, remaining outcomes and visual/audio review pending; Kenya mail pending |
 | Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | All five Kimono trainer battle continuations, Surf prerequisite/reward/repeat and save/load pass; Chuck dialogue/battle continuation, badge/TM, wife's Fly gift/repeat and save/load pass; full combat/traversal and visual review pending; other chains pending |
@@ -591,3 +591,16 @@ Crystal learnset excludes Strength, and the implementation correctly refused it.
 Replacement/cancel, a second recipient, boulder movement and browser visual/audio
 verification are not established by this acquisition/teaching check; existing
 field Strength tests are separate.
+
+### Sprout Tower rival scene and Flash
+
+The real-pack visible-shell regression passes the authored rival scene through
+lecture, escape-rope dialogue, disappearance and no-op scene state. Save/load
+preserves the departure. The elder's real interaction starts his battle with no
+Flash awarded; staged terminal victory then runs the reward/explanation and sets
+both elder-defeated and HM-received flags. Save/load and after-talk give neither
+a second battle nor another HM (41.03 seconds). The
+[Sprout Tower script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/SproutTower3F.asm)
+is the reference. The fixture positions the player at the scene and beside the
+elder; full tower traversal, earlier sages, full combat, camera/audio timing and
+Flash teaching/use are not established by this check.

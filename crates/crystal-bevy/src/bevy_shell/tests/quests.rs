@@ -3042,3 +3042,56 @@ fn strength_sailor_gift_teaching_and_repeat_preserve_the_hm_after_reload() {
     assert!(!labels.iter().any(|label| label == "OlivineCafeStrengthSailorText"));
     assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_STRENGTH"), 1);
 }
+
+#[test]
+fn sprout_tower_rival_departure_and_elders_flash_reward_persist() {
+    let mut shell = progression_shell_on_map_for_test("SproutTower3F");
+    quest_start_coord_script(&mut shell, "SproutTower3F", "SproutTower3FRivalScene");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.special_boundary.is_none());
+    for expected in ["SproutTowerElderLecturesRivalText", "SproutTowerRivalOnlyCareAboutStrongText",
+        "SproutTowerRivalUsedEscapeRopeText"] {
+        assert!(labels.iter().any(|label| label == expected), "missing {expected}: {labels:?}");
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().scenes.map_scenes.get("SproutTower3F").map(String::as_str),
+            Some("SCENE_SPROUTTOWER3F_NOOP"));
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some("SPROUTTOWER3F_RIVAL")));
+        assert_eq!(quest_item_quantity(&shell, "HM_FLASH"), 0);
+        quest_assert_save_round_trip(&mut shell, "sprout-rival-departure");
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some("SPROUTTOWER3F_RIVAL")));
+        quest_move_beside_npc(&mut shell, "SproutTower3F", "SageLiScript");
+        quest_talk(&mut shell, "SageLiScript");
+    }
+    let labels = quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+    assert!(labels.iter().any(|label| label == "SageLiSeenText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_FLASH"), 0);
+        quest_finish_current_trainer(&mut shell);
+    }
+    let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+    for expected in ["SageLiTakeThisFlashText", "SageLiFlashExplanationText"] {
+        assert!(labels.iter().any(|label| label == expected), "missing {expected}: {labels:?}");
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_FLASH"), 1);
+        for flag in ["EVENT_GOT_HM05_FLASH", "EVENT_BEAT_SAGE_LI"] {
+            assert!(shell.shell.session().state().flags.is_event_flag_set(flag).unwrap());
+        }
+        quest_assert_save_round_trip(&mut shell, "sprout-flash-reward");
+        quest_move_beside_npc(&mut shell, "SproutTower3F", "SageLiScript");
+        quest_talk(&mut shell, "SageLiScript");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "SageLiAfterBattleText"));
+    assert!(!labels.iter().any(|label| label == "SageLiSeenText" || label == "SageLiTakeThisFlashText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_FLASH"), 1);
+    assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle());
+}
