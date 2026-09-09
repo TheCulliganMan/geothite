@@ -38,7 +38,7 @@ a complete quest.
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
-| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner verified; remaining leaders pending |
+| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner verified; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; other leaders and Clair/Dragon's Den remain pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |

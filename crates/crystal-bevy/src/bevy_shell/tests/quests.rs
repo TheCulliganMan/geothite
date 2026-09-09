@@ -1114,3 +1114,52 @@ fn red_scale_trade_preserves_the_scale_when_the_item_pocket_is_full() {
     assert_eq!(quest_item_quantity(shell, "RED_SCALE"), 0);
     assert_eq!(quest_item_quantity(shell, "EXP_SHARE"), 1);
 }
+
+#[test]
+fn whitney_delays_badge_until_bridgets_scene_then_grants_attract_once() {
+    let mut shell = progression_shell_on_map_for_test("GoldenrodGym");
+    {
+        // Begin at the authored post-victory state; do not award the badge
+        // merely because the trainer has been defeated.
+        let state = shell.shell.session_mut().state_mut();
+        for flag in ["EVENT_BEAT_WHITNEY", "EVENT_MADE_WHITNEY_CRY"] {
+            state.flags.set_event_flag(flag, true).unwrap();
+        }
+        state.scenes.map_scenes.insert("GoldenrodGym".into(), "SCENE_GOLDENRODGYM_WHITNEY_STOPS_CRYING".into());
+        state.scenes.map_scene_indices.insert("GoldenrodGym".into(), 1);
+    }
+    quest_move_beside_npc(&mut shell, "GoldenrodGym", "GoldenrodGymWhitneyScript");
+    quest_talk(&mut shell, "GoldenrodGymWhitneyScript");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "WhitneyYouMeanieText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().badges.johto[2]);
+        assert_eq!(quest_item_quantity(&shell, "TM_ATTRACT"), 0);
+        quest_start_coord_script(&mut shell, "GoldenrodGym", "WhitneyCriesScript");
+    }
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_MADE_WHITNEY_CRY").unwrap());
+        assert!(!shell.shell.session().state().badges.johto[2]);
+        quest_move_beside_npc(&mut shell, "GoldenrodGym", "GoldenrodGymWhitneyScript");
+        quest_talk(&mut shell, "GoldenrodGymWhitneyScript");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "PlayerReceivedPlainBadgeText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().badges.johto[2]);
+        assert_eq!(quest_item_quantity(&shell, "TM_ATTRACT"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_TM45_ATTRACT").unwrap());
+        quest_talk(&mut shell, "GoldenrodGymWhitneyScript");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "WhitneyGoodCryText"));
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(&shell, "TM_ATTRACT"), 1);
+    quest_assert_save_round_trip(&mut shell, "whitney-awards");
+    assert!(shell.shell.session().state().badges.johto[2]);
+}
