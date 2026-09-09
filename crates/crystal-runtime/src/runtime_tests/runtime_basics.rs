@@ -2368,6 +2368,31 @@ fn add_runtime_field_encounters(data: &mut GameDataSet) {
     );
 }
 
+fn canonical_standard_scripts_for_field_tests() -> &'static serde_json::Map<String, serde_json::Value> {
+    static SCRIPTS: std::sync::OnceLock<serde_json::Map<String, serde_json::Value>> =
+        std::sync::OnceLock::new();
+    SCRIPTS.get_or_init(|| {
+        let repository_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("workspace root");
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            &repository_root.join("content-packs/core-modular.browser.crystalpack"),
+        )
+        .expect("read shipped pack for field-move script fixtures");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&AssetRoot::new(repository_root), loaded)
+            .expect("load shipped field-move scripts");
+        runtime
+            .data()
+            .story_events
+            .iter()
+            .find_map(|catalog| catalog.get("StandardScripts"))
+            .and_then(serde_json::Value::as_object)
+            .cloned()
+            .expect("shipped StandardScripts definitions")
+    })
+}
+
 fn add_runtime_rock_smash_global_scripts(data: &mut GameDataSet) {
     data.special_routines.insert(
         "WarpToSpawnPoint".to_string(),
@@ -2376,16 +2401,7 @@ fn add_runtime_rock_smash_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../apps/web/assets/data/story_events/StandardScripts.json");
-    let exported: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(path).expect("read canonical StandardScripts export"),
-    )
-    .expect("parse canonical StandardScripts export");
-    let exported = exported
-        .get("StandardScripts")
-        .and_then(serde_json::Value::as_object)
-        .expect("StandardScripts definitions");
+    let exported = canonical_standard_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2425,16 +2441,7 @@ fn add_runtime_headbutt_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../apps/web/assets/data/story_events/StandardScripts.json");
-    let exported: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(path).expect("read canonical StandardScripts export"),
-    )
-    .expect("parse canonical StandardScripts export");
-    let exported = exported
-        .get("StandardScripts")
-        .and_then(serde_json::Value::as_object)
-        .expect("StandardScripts definitions");
+    let exported = canonical_standard_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2476,16 +2483,7 @@ fn add_runtime_sweet_scent_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../apps/web/assets/data/story_events/StandardScripts.json");
-    let exported: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(path).expect("read canonical StandardScripts export"),
-    )
-    .expect("parse canonical StandardScripts export");
-    let exported = exported
-        .get("StandardScripts")
-        .and_then(serde_json::Value::as_object)
-        .expect("StandardScripts definitions");
+    let exported = canonical_standard_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2525,16 +2523,7 @@ fn add_runtime_sweet_scent_global_scripts(data: &mut GameDataSet) {
 }
 
 fn add_runtime_deferred_field_move_global_scripts(data: &mut GameDataSet) {
-    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../apps/web/assets/data/story_events/StandardScripts.json");
-    let exported: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(path).expect("read canonical StandardScripts export"),
-    )
-    .expect("parse canonical StandardScripts export");
-    let exported = exported
-        .get("StandardScripts")
-        .and_then(serde_json::Value::as_object)
-        .expect("StandardScripts definitions");
+    let exported = canonical_standard_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()

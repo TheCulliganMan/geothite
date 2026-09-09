@@ -9,6 +9,7 @@ include!("tests/integrated_menus.rs");
 include!("tests/audio_and_battle_ui.rs");
 include!("tests/menu_and_input.rs");
 include!("tests/story_progression.rs");
+include!("tests/quests.rs");
 include!("tests/art_text_and_determinism.rs");
 include!("tests/battle_render_regressions.rs");
 include!("tests/battle_sliding_intro.rs");
