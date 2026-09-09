@@ -545,7 +545,12 @@ update. Removing that branch routes its Cancel row through the normal complete
 Pack cleanup. A regression now passes for all four empty pockets, checking the
 Cancel row before input, closing, idle updates, absence of runtime errors and
 successful observation after closing (17.76 seconds). Production rollout remains
-in progress in the subsequent deployment; Pack display rollout is now complete.
+complete: 09cdcb5b is deployed in healthy image 74c8db6a0c17. A fresh production
+Chromium session opened the empty Balls pocket, selected Cancel, successfully
+observed the closed menu, and walked from (35,10) to (35,12). Before/after/movement
+screenshots were reviewed; the pocket is visible, the menu closes, and no
+page/runtime errors occur. This is keyboard input at a mobile viewport, not a
+physical Safari/touch check.
 
 ### Kimono Girls and Surf acquisition
 
