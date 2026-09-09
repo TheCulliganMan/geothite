@@ -185,3 +185,71 @@ fn battle_sliding_intro_clips_first_frame_at_lcd_edges() {
         ]
     );
 }
+
+#[test]
+fn wild_shiny_entrance_sparkles_before_frontpic_and_releases_input() {
+    for scene in [BattleScene::On, BattleScene::Off] {
+        let mut shell = wild_shiny_entrance_shell_for_test(scene);
+        let messages = shell.battle_messages.clone();
+        begin_visible_wild_entrance_animation(&mut shell).unwrap();
+        assert!(shell.visible_frontpic_animation.is_none());
+        assert_eq!(shell.visible_send_out_animation.as_ref().unwrap().frame, VisibleSendOutAnimation::NORMAL_FRAMES);
+        for _ in 0..VisibleSendOutAnimation::SHINY_FRAMES {
+            assert!(visible_wild_entrance_animation_active(&shell));
+            assert!(visible_noninteractive_battle_animation_owns_input(&shell));
+            assert_eq!(shell.visible_send_out_animation.as_ref().unwrap().battler_scale(), 1.0);
+            press_visible_a_button(&mut shell).unwrap();
+            assert_eq!(shell.battle_messages, messages);
+            advance_visible_battle_animation_frame(&mut shell).unwrap();
+        }
+        assert!(shell.visible_send_out_animation.is_none());
+        assert_eq!(shell.pending_audio.iter().filter(|audio| audio.audio_id == "SFX_SHINE").count(), 8);
+        assert!(!shell.pending_audio.iter().any(|audio| audio.audio_id == "SFX_BALL_POOF"));
+        assert_eq!(shell.visible_frontpic_animation.is_some(), scene == BattleScene::On);
+        for _ in 0..1000 {
+            if shell.visible_frontpic_animation.is_none() { break; }
+            advance_visible_battle_animation_frame(&mut shell).unwrap();
+        }
+        assert!(shell.visible_frontpic_animation.is_none());
+        assert!(!visible_wild_entrance_animation_active(&shell));
+        assert!(!visible_noninteractive_battle_animation_owns_input(&shell));
+        assert_eq!(shell.battle_messages, messages);
+    }
+}
+
+fn wild_shiny_entrance_shell_for_test(scene: BattleScene) -> BevyRuntimeShell {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    {
+        let state = shell.shell.session_mut().state_mut();
+        state.options.battle_scene = scene;
+        let crate::core::state::BattleMemory::StaticWild { enemy_pokemon, enemy_party, .. } = &mut state.battle
+            else { panic!("static wild fixture"); };
+        enemy_pokemon.dvs = Dv::from_non_hp(14, 10, 10, 10);
+        enemy_pokemon.max_hp = enemy_pokemon.calculate_stat(crate::core::models::Stat::Hp).unwrap();
+        enemy_pokemon.attack = enemy_pokemon.calculate_stat(crate::core::models::Stat::Attack).unwrap();
+        enemy_pokemon.defense = enemy_pokemon.calculate_stat(crate::core::models::Stat::Defense).unwrap();
+        enemy_pokemon.speed = enemy_pokemon.calculate_stat(crate::core::models::Stat::Speed).unwrap();
+        enemy_pokemon.special_attack = enemy_pokemon.calculate_stat(crate::core::models::Stat::SpecialAttack).unwrap();
+        enemy_pokemon.special_defense = enemy_pokemon.calculate_stat(crate::core::models::Stat::SpecialDefense).unwrap();
+        enemy_pokemon.hp = enemy_pokemon.max_hp;
+        enemy_party[0] = enemy_pokemon.clone();
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    shell.pending_audio.clear();
+    shell
+}
+
+#[test]
+fn wild_shiny_entrance_renders_sparkles_without_encounter_text() {
+    let mut shell = wild_shiny_entrance_shell_for_test(BattleScene::On);
+    begin_visible_wild_entrance_animation(&mut shell).unwrap();
+    shell.visible_send_out_animation.as_mut().unwrap().frame += 16;
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    assert!(app.world().resource::<BevyRuntimeShell>().last_error.is_none());
+    assert!(app.world().resource::<BevyRuntimeShell>().battle_text_reveal.is_none());
+    save_live_battle_canvas_for_test(app.world_mut(), "wild-shiny-sparkles.png");
+}

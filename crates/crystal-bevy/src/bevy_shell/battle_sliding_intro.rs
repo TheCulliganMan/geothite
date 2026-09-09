@@ -21,16 +21,27 @@ fn advance_visible_battle_sliding_intro(shell: &mut BevyRuntimeShell) {
 fn begin_visible_wild_entrance_animation(shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = shell.shell.snapshot()?;
     let Some(battle) = snapshot.battle.as_ref() else { return Ok(()); };
-    if matches!(battle.kind, RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. })
-        && snapshot.trainer.options.battle_scene == BattleScene::On
-    {
-        start_visible_enemy_frontpic_animation(shell, 0)?;
+    if matches!(battle.kind, RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. }) {
+        // BattleStartMessage requests ANIM_SEND_OUT_MON with parameter 1:
+        // only the shiny sequence, before the frontpic and encounter text.
+        if visible_pokemon_is_shiny(&battle.enemy_pokemon) {
+            shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
+                side: crate::core::battle::turn::BattleSide::Enemy,
+                frame: VisibleSendOutAnimation::NORMAL_FRAMES,
+                shiny: true,
+            });
+            queue_visible_shell_sound_effect(shell, "SFX_SHINE")?;
+        } else if snapshot.trainer.options.battle_scene == BattleScene::On {
+            start_visible_enemy_frontpic_animation(shell, 0)?;
+        }
     }
     Ok(())
 }
 
 fn visible_wild_entrance_animation_active(shell: &BevyRuntimeShell) -> bool {
-    shell.visible_frontpic_animation.is_some()
+    (shell.visible_frontpic_animation.is_some()
+        || shell.visible_send_out_animation.as_ref().is_some_and(|animation|
+            animation.side == crate::core::battle::turn::BattleSide::Enemy))
         && shell.battle_message_scene.as_ref().and_then(|scene| scene.battle.as_ref())
             .is_some_and(|battle| {
                 matches!(battle.kind, RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. })

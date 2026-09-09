@@ -774,6 +774,7 @@ fn visible_move_animation_user_species(
 }
 
 fn advance_visible_send_out_animation(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let wild_entrance = visible_wild_entrance_animation_active(runtime_shell);
     let Some(animation) = runtime_shell.visible_send_out_animation.as_mut() else {
         return Ok(());
     };
@@ -789,6 +790,13 @@ fn advance_visible_send_out_animation(runtime_shell: &mut BevyRuntimeShell) -> R
     }
     if finished {
         runtime_shell.visible_send_out_animation = None;
+        if wild_entrance {
+            if runtime_shell.shell.snapshot()?.trainer.options.battle_scene == BattleScene::On {
+                start_visible_enemy_frontpic_animation(runtime_shell, 0)?;
+            }
+            mark_runtime_presentation_dirty(runtime_shell);
+            return Ok(());
+        }
         // Use the retained send-out scene: the authoritative turn may already
         // include damage whose animation has not played yet.
         let scene = if let Some(scene) = runtime_shell.battle_message_scene.as_deref() {
