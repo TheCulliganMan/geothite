@@ -1926,3 +1926,75 @@ fn borrowed_bicycle_mileage_triggers_the_visible_shop_call_once() {
     assert!(shell.shell.session().state().script_runtime.special_phone_call.is_none());
     assert_eq!(shell.shell.session().state().step_events.bike_step_count, 1024);
 }
+
+fn check_shiny_egg_walk_hatch_nickname(accept: bool) {
+    let mut shell = progression_shell_on_map_for_test("NewBarkTown");
+    let dvs = Dv::from_non_hp(2, 10, 10, 10);
+    shell.shell.add_party_pokemon("TOGEPI", 5, None, None, "CHRIS", 1, dvs).unwrap();
+    let runtime = shell.shell.runtime().clone();
+    let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+    runtime.data().transition_overworld_session(state, overworld, "NewBarkTown", TilePosition::new(13, 6),
+        crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+    state.player_name = "CHRIS".to_string();
+    state.player_id = 1;
+    let egg = state.storage.party.pokemon[1].as_mut().unwrap();
+    egg.is_egg = true;
+    egg.nickname = "EGG".to_string();
+    egg.hp = 0;
+    egg.happiness = 1;
+    // Stage the last hatch cycle, then use actual directional input.
+    state.step_events.step_count = 127;
+    state.sync_party_from_storage();
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut app = menu_render_test_app(shell);
+    for _ in 0..24 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "hatch trigger error: {:?}", shell.last_error);
+        if shell.visible_egg_hatch.is_some() { break; }
+    }
+    assert!(app.world().resource::<BevyRuntimeShell>().visible_egg_hatch.is_some(), "walking must begin hatch presentation");
+    quest_settle(&mut app, false, |shell| shell.pending_egg_hatch_nickname.is_some());
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.visible_egg_hatch.is_none());
+        assert_eq!(shell.pending_name_choice.as_ref().unwrap().options, ["YES", "NO"]);
+        let hatched = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
+        assert!(!hatched.is_egg);
+        assert_eq!(hatched.dvs, dvs);
+        assert!(visible_pokemon_is_shiny(hatched));
+    }
+    if accept {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        assert!(app.world().resource::<BevyRuntimeShell>().pending_name_input.is_some());
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ); // A on the name grid.
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter); // END.
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ); // Confirm.
+    } else {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    }
+    let before = app.world().resource::<BevyRuntimeShell>().shell.session().overworld().player.tile;
+    for _ in 0..12 { press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowLeft); }
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    assert!(shell.pending_egg_hatch_nickname.is_none());
+    assert!(shell.pending_name_choice.is_none());
+    assert!(shell.pending_name_input.is_none());
+    assert_ne!(shell.shell.session().overworld().player.tile, before, "overworld movement resumes");
+    quest_assert_save_round_trip(&mut shell, "visible-shiny-hatch");
+    let restored = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
+    assert_eq!(restored.nickname, if accept { "A" } else { "TOGEPI" });
+    assert_eq!(restored.dvs, dvs);
+    assert!(!restored.is_egg);
+}
+
+#[test]
+fn shiny_egg_walk_hatch_nickname_decline_restores_overworld_and_saves() {
+    check_shiny_egg_walk_hatch_nickname(false);
+}
+
+#[test]
+fn shiny_egg_walk_hatch_nickname_accept_restores_overworld_and_saves() {
+    check_shiny_egg_walk_hatch_nickname(true);
+}

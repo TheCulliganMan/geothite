@@ -212,3 +212,16 @@ checks pass (hold, wobble/cracks, shell, frontpic, hatch text), and the separate
 shiny Unown/hatch art plus save check passes. Its regenerated shiny hatch sprite
 was visually reviewed; full-screen normal-input hatch and nickname completion
 remain open.
+
+Breeding DV fix ed4e7270 is deployed. The container is healthy, production browser battle interaction passes, and its screenshot was reviewed. Core egg-validity fix 1c5e39e7 is now building for deployment; completion is still pending.
+
+Visible shiny hatching now passes both nickname paths through the native real-pack
+input controller. A staged final-cycle shiny Togepi egg hatches after real walking;
+A advances the hatch text/animation, B declines naming, or A opens the keyboard
+and A/START/A enters and confirms a nickname. Both paths release the controller
+back to overworld movement and preserve shiny DVs, egg completion and the chosen
+name through a complete save/load. Two tests pass (126.79 seconds). The fixture
+sets a valid player identity, as normal new-game setup would; hatching assigns
+that identity to the Pokémon. Typewriter completion is accelerated by the test
+helper, while animation timing advances through host updates. These checks do
+not replace browser/mobile hatch screenshots or the full preceding breeding walk.
