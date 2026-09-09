@@ -3621,3 +3621,40 @@ fn kurt_browser_fixture_for_test(shell: &mut BevyRuntimeShell, apricorn: &str, p
     assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().unwrap().script, "Kurt1");
     shell.shell.save(directory.join(format!("kurt-{phase}-browser.crystalsave"))).unwrap();
 }
+
+
+#[test]
+fn kurt_full_apricorn_list_scrolls_and_cancels_without_consuming_items() {
+    let mut shell = progression_shell_on_map_for_test("KurtsHouse");
+    for event in ["EVENT_CLEARED_SLOWPOKE_WELL", "EVENT_KURT_GAVE_YOU_LURE_BALL"] {
+        shell.shell.session_mut().state_mut().flags.set_event_flag(event, true).unwrap();
+    }
+    for item in KURT_APRICORN_ORDER {
+        shell.shell.add_bag_item(item, 3).unwrap();
+    }
+    quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+    quest_talk(&mut shell, "Kurt1");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, |shell| shell.kurt_apricorn_cursor.is_some());
+    for _ in 0..3 { app.update(); }
+    save_live_menu_lcd_for_test(app.world_mut(), "kurt-all-apricorns-top.png");
+    for _ in 0..6 { tm_mart_key_for_test(&mut app, KeyCode::ArrowDown); }
+    let selected = rendered_mart_text_for_test(&mut app);
+    assert!(selected.contains("PNK APRICORN"), "{selected}");
+    save_live_menu_lcd_for_test(app.world_mut(), "kurt-all-apricorns-bottom.png");
+    tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+    let quantity = rendered_mart_text_for_test(&mut app);
+    assert!(quantity.contains("PNK APRICORN") && quantity.contains("How many"), "{quantity}");
+    save_live_menu_lcd_for_test(app.world_mut(), "kurt-all-apricorns-quantity.png");
+    tm_mart_key_for_test(&mut app, KeyCode::KeyX);
+    tm_mart_key_for_test(&mut app, KeyCode::ArrowDown);
+    let cancel = rendered_mart_text_for_test(&mut app);
+    assert!(cancel.contains("CANCEL"), "{cancel}");
+    tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    for item in KURT_APRICORN_ORDER {
+        assert_eq!(quest_item_quantity(shell, item), 3, "{item}");
+    }
+    assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_KURT_MAKING_BALLS").unwrap());
+}

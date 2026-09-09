@@ -858,3 +858,13 @@ verbose item receipt/audio-boundary coverage also passes (5.01 seconds), alongsi
 the seven daily-reset, four core Kurt and clock integration checks recorded above.
 These are staged quest fixtures, not a complete walking playthrough or physical
 Safari verification. Production deployment and browser Kurt review remain pending.
+
+
+An additional all-seven-types inventory regression passes (10.23 seconds): scroll
+to Pink Apricorn, open its quantity window, cancel quantity, select the final
+CANCEL entry, and return to dialogue idle without consuming any Apricorn or
+starting an order. The bottom-list and quantity-overlay PNGs were inspected;
+item names, counts, arrows and retained list are readable. This closes the native
+scrolling case left uncovered by the individual-recipe fixtures. Commit
+`3425ad0c` is pushed and its production build is running; browser verification
+remains pending.
