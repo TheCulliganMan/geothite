@@ -2946,3 +2946,54 @@ fn kimono_girls_all_five_battle_continuations_unlock_surf_once_and_persist() {
     assert!(!labels.iter().any(|label| label == "SurfGuyLikeADanceText"));
     assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_SURF"), 1);
 }
+
+#[test]
+fn chucks_victory_unlocks_wifes_fly_reward_after_save_and_only_once() {
+    fn talk_to_wife(app: &mut App) -> Vec<String> {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, "CianwoodCity", "CianwoodCityChucksWife");
+            quest_talk(&mut shell, "CianwoodCityChucksWife");
+        }
+        quest_settle(app, true, quest_dialogue_is_idle)
+    }
+    let shell = progression_shell_on_map_for_test("CianwoodCity");
+    let mut app = menu_render_test_app(shell);
+    let labels = talk_to_wife(&mut app);
+    assert!(labels.iter().any(|label| label == "ChucksWifeBeatChuckText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_FLY"), 0);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_HM02_FLY").unwrap());
+        let key = shell.shell.scripted_trainer_battle_keys().into_iter()
+            .find(|key| key.map_name == "CianwoodGym" && key.trainer_class == "CHUCK").unwrap();
+        quest_move_beside_npc(&mut shell, "CianwoodGym", &key.source_script);
+        quest_talk(&mut shell, &key.source_script);
+    }
+    quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+    quest_finish_current_trainer(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BEAT_CHUCK").unwrap());
+        assert!(shell.shell.session().state().badges.johto[5]);
+        assert_eq!(quest_item_quantity(&shell, "TM_DYNAMICPUNCH"), 1);
+        assert_eq!(quest_item_quantity(&shell, "HM_FLY"), 0);
+        quest_assert_save_round_trip(&mut shell, "chuck-before-fly");
+    }
+    let labels = talk_to_wife(&mut app);
+    for expected in ["ChucksWifeGiveHMText", "ChucksWifeFlySpeechText", "ChucksWifeChubbyText"] {
+        assert!(labels.iter().any(|label| label == expected), "missing {expected}: {labels:?}");
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_FLY"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_HM02_FLY").unwrap());
+        quest_assert_save_round_trip(&mut shell, "chuck-fly-reward");
+    }
+    let labels = talk_to_wife(&mut app);
+    assert!(labels.iter().any(|label| label == "ChucksWifeChubbyText"));
+    assert!(!labels.iter().any(|label| label == "ChucksWifeGiveHMText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_FLY"), 1);
+}
