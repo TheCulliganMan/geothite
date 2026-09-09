@@ -44,7 +44,7 @@ a complete quest.
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
 | Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; Floria prerequisites, SquirtBottle badge gate/gift/refusal, Sudowoodo victory continuation, Rock Smash/repeats and save/load pass; full traversal, remaining outcomes and visual/audio review pending; Kenya mail pending |
-| Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | Pending |
+| Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | All five Kimono trainer battle continuations, Surf prerequisite/reward/repeat and save/load pass; full combat/traversal and visual review pending; other chains pending |
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
@@ -540,3 +540,17 @@ Pack cleanup. A regression now passes for all four empty pockets, checking the
 Cancel row before input, closing, idle updates, absence of runtime errors and
 successful observation after closing (17.76 seconds). Production rollout remains
 pending behind the already-running Pack display deployment.
+
+### Kimono Girls and Surf acquisition
+
+The real-pack visible-shell regression passes all five authored trainer starts
+and victory continuations, their individual defeat flags, save/load and repeat
+after-talk. The gentleman withholds HM03 before each victory, awards one HM_SURF
+after all five, explains it, and gives only repeat dialogue after saving/loading.
+The [Dance Theater script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/DanceTheater.asm)
+is the reference. The check passes in 39.36 seconds. It positions the player
+beside each NPC and stages terminal trainer victories; it does not establish full
+combat, walking through the theater, the female prerequisite wording, visual
+placement or Surf teaching/use. Existing field Surf checks remain separate.
+The Pack retention regression also passes after the empty-Balls Cancel fix
+(6.16 seconds).

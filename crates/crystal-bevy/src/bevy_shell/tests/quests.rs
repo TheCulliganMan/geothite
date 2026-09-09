@@ -2887,3 +2887,62 @@ fn squirtbottle_bag_use_enters_watering_without_a_second_prompt() {
     assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
         object.object_identifier.as_deref() == Some("ROUTE36_WEIRD_TREE")));
 }
+
+#[test]
+fn kimono_girls_all_five_battle_continuations_unlock_surf_once_and_persist() {
+    fn talk_to_reward_giver(app: &mut App) -> Vec<String> {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, "DanceTheater", "DanceTheaterSurfGuy");
+            quest_talk(&mut shell, "DanceTheaterSurfGuy");
+        }
+        quest_settle(app, true, quest_dialogue_is_idle)
+    }
+    let shell = progression_shell_on_map_for_test("DanceTheater");
+    let mut app = menu_render_test_app(shell);
+    for (index, (name, flag)) in [
+        ("Naoko", "EVENT_BEAT_KIMONO_GIRL_NAOKO"),
+        ("Sayo", "EVENT_BEAT_KIMONO_GIRL_SAYO"),
+        ("Zuki", "EVENT_BEAT_KIMONO_GIRL_ZUKI"),
+        ("Kuni", "EVENT_BEAT_KIMONO_GIRL_KUNI"),
+        ("Miki", "EVENT_BEAT_KIMONO_GIRL_MIKI"),
+    ].into_iter().enumerate() {
+        let labels = talk_to_reward_giver(&mut app);
+        assert!(labels.iter().any(|label| label == "SurfGuyLadGiftText"), "before battle {index}: {labels:?}");
+        assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_SURF"), 0);
+        let script = format!("TrainerKimonoGirl{name}");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_HM03_SURF").unwrap());
+            quest_move_beside_npc(&mut shell, "DanceTheater", &script);
+            quest_talk(&mut shell, &script);
+        }
+        quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+        quest_finish_current_trainer(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().flags.is_event_flag_set(flag).unwrap());
+            quest_assert_save_round_trip(&mut shell, &format!("kimono-{name}"));
+            quest_move_beside_npc(&mut shell, "DanceTheater", &script);
+            quest_talk(&mut shell, &script);
+        }
+        let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == &format!("KimonoGirl{name}AfterBattleText")), "{name}: {labels:?}");
+        assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle());
+    }
+    let labels = talk_to_reward_giver(&mut app);
+    assert!(labels.iter().any(|label| label == "SurfGuyLikeADanceText"));
+    assert!(labels.iter().any(|label| label == "SurfGuySurfExplanationText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_SURF"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_HM03_SURF").unwrap());
+        quest_assert_save_round_trip(&mut shell, "kimono-surf-reward");
+    }
+    let labels = talk_to_reward_giver(&mut app);
+    assert!(labels.iter().any(|label| label == "SurfGuyElegantKimonoGirlsText"));
+    assert!(!labels.iter().any(|label| label == "SurfGuyLikeADanceText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_SURF"), 1);
+}
