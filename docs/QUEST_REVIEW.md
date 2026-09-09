@@ -112,7 +112,7 @@ regression, five elevator checks, two vertical-menu checks, three sound-wait
 checks, item notice, Whitney, medicine, and map load/refresh checks pass.
 Four elevator fixtures were updated to locate the shipped pack. Nine existing
 shiny checks also pass; the unverified shiny scope above remains open.
-These Dragon's Den changes have not yet been deployed.
+Dragon's Den fix 27412562 is deployed. The rebuilt container is healthy and the production browser battle interaction passes; its screenshot was reviewed. The complete quiz/reward sequence is verified in the native real-pack fixture, not yet through normal browser traversal.
 
 Transform review found the core copied target DVs but the runtime snapshot exposed
 only its species. The renderer could revert to the original shiny palette after
