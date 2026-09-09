@@ -745,3 +745,19 @@ existing wide-screen NPC test passes (6.28 seconds) after fixing its three test-
 mutations to use mutable session access. The quantity prompt, wide-screen mask and
 Celadon background-counter fix still require the next production deployment and
 visual review. These browser checks use Chromium, not physical Safari/touch.
+
+### Daily quest reset audit — remaining defect
+
+Source inspection confirms `CheckDailyResetTimer` clears both daily flag bytes,
+the swarm byte, and four bytes each for rematches, phone items and phone time-of-day
+flags. `GameState::apply_daily_reset` currently clears fishing/swarm structures and
+only Buena's two named engine flags plus the Sunday TM claim. The generic engine
+flag map retains the other daily quest flags: Kurt, Bug Contest, Time Capsule,
+fruit trees, Shuckie, bargain merchant, Trainer House, Clefairy, Lapras, haircut,
+Daisy, Indigo rival, move tutor, sale and phone-related flags. This is an incomplete
+reset implementation; individual quest progression and next-day script behavior
+still need regression coverage before a broader fix can be considered verified.
+Preserve permanent badges, gifts and completed-story flags during that fix.
+Sources: [daily reset](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/time.asm),
+[flag storage](https://raw.githubusercontent.com/pret/pokecrystal/master/data/events/engine_flags.asm),
+[flag names](https://raw.githubusercontent.com/pret/pokecrystal/master/constants/engine_flags.asm).
