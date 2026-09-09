@@ -3049,7 +3049,8 @@ fn load_pokemon_animation_frame(
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let species_id = normalize_pokemon_asset_id(species_id);
-    let image_path = pokemon_asset_path(asset_root, &species_id, side, "png");
+    let image_species = if species_id == "unown" { "unown_a" } else { &species_id };
+    let image_path = pokemon_asset_path(asset_root, image_species, side, "png");
     let source = crate::open_runtime_image(&image_path)
         .with_context(|| format!("decode Pokemon sprite PNG {}", image_path.display()))?
         .to_rgba8();
@@ -3137,6 +3138,7 @@ fn load_pokemon_palette(
     shiny: bool,
 ) -> Result<Palette> {
     if shiny {
+        let species_id = if species_id.starts_with("unown_") { "unown" } else { species_id };
         let palette_path = asset_root
             .runtime_assets()
             .join("gfx/pokemon")
@@ -3316,7 +3318,9 @@ fn pokemon_palette_index(pixel: &image::Rgba<u8>, source_palette: &Palette) -> u
 }
 
 fn normalize_pokemon_asset_id(species_id: &str) -> String {
-    species_id.trim().to_ascii_lowercase().replace('_', "-")
+    // Bundled species directories retain the canonical ID's underscores.
+    // Accept hyphenated callers without changing canonical names such as MR__MIME.
+    species_id.trim().to_ascii_lowercase().replace('-', "_")
 }
 
 fn copy_source_image_rgba(
@@ -4777,4 +4781,12 @@ fn parse_palette_file(content: &str, group_filter: Option<&str>) -> Result<Vec<P
         }
     }
     Ok(palettes)
+}
+
+fn pokemon_asset_id_for_dvs(species_id: &str, dvs: Dv) -> String {
+    if species_id.eq_ignore_ascii_case("UNOWN") {
+        format!("unown_{}", char::from(b'a' + dvs.unown_letter() - 1))
+    } else {
+        normalize_pokemon_asset_id(species_id)
+    }
 }

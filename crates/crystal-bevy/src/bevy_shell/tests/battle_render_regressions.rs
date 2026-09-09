@@ -5650,3 +5650,27 @@ fn battle_pack_renders_source_pockets_for_both_players_and_scrolls_without_trunc
     assert_eq!(shell.bag_cursor.as_ref().unwrap().option_index, selected);
     assert_eq!(shell.field_pack_scroll_positions[0], scroll);
 }
+
+#[test]
+fn battle_command_hud_keeps_the_opponent_name_inside_the_lcd() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_text_reveal = None;
+    sync_visible_battle_action_cursor(&mut shell);
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    let world = app.world_mut();
+    assert!(world.resource::<BevyRuntimeShell>().last_error.is_none(), "{:?}", world.resource::<BevyRuntimeShell>().last_error);
+    let mut names = world.query_filtered::<(&Sprite, &Transform), With<BattleHudMarker>>();
+    let top_row = names.iter(world).filter(|(_, transform)| transform.translation.y > PLAYFIELD_TOP - TILE_SIZE).collect::<Vec<_>>();
+    assert!(!top_row.is_empty(), "opponent name must be present");
+    for (sprite, transform) in top_row {
+        assert!(transform.translation.y + sprite.custom_size.unwrap().y * 0.5 <= PLAYFIELD_TOP);
+    }
+    save_live_battle_canvas_for_test(world, "battle-command-native.png");
+}

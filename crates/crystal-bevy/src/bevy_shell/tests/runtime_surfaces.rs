@@ -2947,7 +2947,7 @@ fn stats_source_print_level_uses_three_tiles_at_every_level() {
 
 #[test]
 fn stats_shiny_palette_loads_the_two_source_colors() {
-    let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let root = progression_shell_on_map_for_test("LakeOfRage").asset_root;
     let palette = load_pokemon_palette(&root, "cyndaquil", PokemonSpriteSide::Front, true).unwrap();
     assert_eq!(palette, [[255, 255, 255],
         [normalize_palette_component(29), normalize_palette_component(23), normalize_palette_component(9)],

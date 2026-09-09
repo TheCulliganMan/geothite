@@ -16,7 +16,7 @@ Full normal-input traversal and visual review remain separate checks.
 - Hall of Fame record saved before credits; title and Continue progression.
 - Evolution completion, cancellation, registration and move-learning checks passed.
 
-44a31298 is deployed: rebuilt container is healthy and a real browser battle interaction passed. The screenshot raised an opponent-name clipping concern; visual review remains open.
+44a31298 is deployed: rebuilt container is healthy and a real browser battle interaction passed. Opponent-name bounds pass in the native renderer; the mobile browser top row matches all 9,216 compared native pixels. No clipping fix was needed.
 Hall of Fame currently uses the existing abbreviated presentation; a full visual
 team-induction ceremony has not been established by these tests.
 
@@ -74,3 +74,5 @@ establish visual fidelity.
 Animation checks passed for alternating walking feet, consecutive high-refresh
 steps, Fly retaining map objects without stale frames, and Fly/Rock Smash sound
 waits. The visual review and remaining animation cases are still open.
+
+Shiny coverage explicitly includes encounter/gift DV generation and odds, palettes, sparkle animation, Red Gyarados, capture, evolution, storage and save/load preservation. The exhaustive 65,536-DV predicate check and actual Red Gyarados script pass. All 251 species now load normal/shiny front and back artwork: the shared lookup incorrectly changed underscores to hyphens, breaking Farfetch'd, Mr. Mime, Nidoran and Ho-Oh. Unown now selects DV-specific battle art and shares its species shiny palette; species-only catalog art defaults to A. Hatch reveal now uses the party Pokémon's shiny state. Full capture/evolution/storage, generation distribution, Transform and sparkle timing verification remains pending. These findings do not establish that all shinies work.

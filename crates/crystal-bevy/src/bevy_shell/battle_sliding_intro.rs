@@ -165,7 +165,7 @@ fn spawn_visible_battle_sliding_intro(
         ),
         RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => format!(
             "pokemon:{}",
-            normalize_pokemon_asset_id(&battle.enemy_pokemon.species.id)
+            pokemon_asset_id_for_dvs(&battle.enemy_pokemon.species.id, battle.enemy_pokemon.dvs)
         ),
     };
     let player = battle_sliding_intro_art(art, root, images, player_id)?;

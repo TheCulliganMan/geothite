@@ -880,3 +880,100 @@ fn every_overworld_tm_and_hm_has_an_acquisition_source_in_the_shipped_pack() {
         "TM/HM definitions without a mapped gift, pickup or shop: {missing:?}"
     );
 }
+
+#[test]
+fn shiny_dv_detection_matches_all_generation_two_combinations() {
+    let shell = progression_shell_on_map_for_test("LakeOfRage");
+    let mut pokemon = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().clone();
+    let mut shiny_count = 0;
+    for packed in 0u32..65536 {
+        pokemon.dvs = Dv::from_non_hp((packed >> 12) as u8, ((packed >> 8) & 15) as u8,
+            ((packed >> 4) & 15) as u8, (packed & 15) as u8);
+        let expected = packed & 0x2fff == 0x2aaa;
+        assert_eq!(visible_pokemon_is_shiny(&pokemon), expected, "DV word {packed:04x}");
+        shiny_count += usize::from(expected);
+    }
+    assert_eq!(shiny_count, 8, "eight shiny combinations out of 65536 DV words");
+}
+
+#[test]
+fn lake_of_rage_script_starts_a_shiny_gyarados() {
+    let mut shell = progression_shell_on_map_for_test("LakeOfRage");
+    arm_visible_active_script_cursor(&mut shell, "RedGyarados", 0);
+    execute_visible_active_script_step(&mut shell).unwrap();
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, |shell| shell.shell.snapshot().unwrap().battle.is_some());
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let battle = snapshot.battle.as_ref().unwrap();
+    let origin = visible_static_wild_source(&snapshot, battle).unwrap();
+    assert_eq!(origin.species, "GYARADOS");
+    assert_eq!(origin.level, 30);
+    assert_eq!(origin.battle_type, "BATTLETYPE_FORCESHINY");
+    assert!(visible_pokemon_is_shiny(&battle.enemy_pokemon));
+}
+
+#[test]
+fn every_species_has_loadable_normal_and_shiny_front_and_back_art() {
+    let shell = progression_shell_on_map_for_test("LakeOfRage");
+    let species = &shell.shell.runtime().data().pokemon;
+    assert_eq!(species.len(), 251);
+    let mut images = Assets::<Image>::default();
+    for id in species.keys() {
+        let asset = normalize_pokemon_asset_id(id);
+        for side in [PokemonSpriteSide::Front, PokemonSpriteSide::Back] {
+            for shiny in [false, true] {
+                let palette = load_pokemon_palette(&shell.asset_root, &asset, side, shiny)
+                    .unwrap_or_else(|error| panic!("{id} {side:?} shiny={shiny} palette: {error}"));
+                assert_eq!(palette[0], [255, 255, 255]);
+                assert_eq!(palette[3], [0, 0, 0]);
+                let frame = load_pokemon_animation_frame(
+                    &shell.asset_root, id, side, shiny, 0, &mut images,
+                ).unwrap_or_else(|error| panic!("{id} {side:?} shiny={shiny} art: {error}"));
+                assert!(frame.size.x > 0.0 && frame.size.y > 0.0);
+                assert!(images.get(&frame.handle).unwrap().data
+                    .chunks_exact(4).any(|pixel| pixel[3] != 0));
+            }
+        }
+    }
+}
+
+#[test]
+fn shiny_unown_forms_and_hatch_art_use_the_shipped_palettes() {
+    let mut shell = progression_shell_on_map_for_test("LakeOfRage");
+    let mut images = Assets::<Image>::default();
+    for letter in b'a'..=b'z' {
+        let id = format!("unown_{}", char::from(letter));
+        for side in [PokemonSpriteSide::Front, PokemonSpriteSide::Back] {
+            load_pokemon_animation_frame(&shell.asset_root, &id, side, true, 0, &mut images)
+                .unwrap_or_else(|error| panic!("{id} {side:?}: {error}"));
+        }
+    }
+    let dvs = Dv::from_non_hp(2, 10, 10, 10);
+    assert_eq!(pokemon_asset_id_for_dvs("UNOWN", dvs), "unown_i");
+    assert_eq!(pokemon_asset_id_for_dvs("UNOWN", Dv::from_non_hp(14, 10, 10, 10)), "unown_v");
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0].as_mut().unwrap().dvs = dvs;
+    let species_id = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap().species.id.clone();
+    shell.visible_egg_hatch = Some(VisibleEggHatch {
+        party_index: 0, species_id: species_id.clone(), phase: VisibleEggHatchPhase::Reveal, frame: 0,
+    });
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    let mut art = RenderedTilesetArt::default();
+    spawn_visible_egg_hatch(&mut commands, &shell, &mut art, &shell.asset_root, &mut images).unwrap();
+    queue.apply(&mut world);
+    let key = PokemonArtKey { species_id: normalize_pokemon_asset_id(&species_id),
+        side: PokemonSpriteSide::Front, shiny: true, frame: 0 };
+    assert!(art.pokemon_cache.contains_key(&key), "hatch reveal must select the shiny sprite");
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        let frame = &art.pokemon_cache[&key];
+        let sprite = images.get(&frame.handle).unwrap();
+        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.clone()).unwrap()
+            .save(PathBuf::from(directory).join("shiny-hatch-sprite.png")).unwrap();
+    }
+    quest_assert_save_round_trip(&mut shell, "shiny");
+    let restored = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap();
+    assert_eq!(restored.dvs, dvs);
+    assert!(visible_pokemon_is_shiny(restored));
+}

@@ -5986,12 +5986,15 @@ fn spawn_visible_egg_hatch(
         VisibleEggHatchPhase::HatchText => (hatch.species_id.as_str(), 0, 0),
         VisibleEggHatchPhase::HuhText => return Ok(()),
     };
+    let shiny = species_id != "EGG" && runtime_shell.shell.session().state()
+        .storage.party.pokemon.get(hatch.party_index).and_then(Option::as_ref)
+        .is_some_and(visible_pokemon_is_shiny);
     let sprite = pokemon_animation_frame_for_art(
         rendered_art,
         asset_root,
         species_id,
         PokemonSpriteSide::Front,
-        false,
+        shiny,
         animation_frame,
         images,
     )

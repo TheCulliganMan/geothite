@@ -2838,7 +2838,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            enemy_render_species,
+            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -2894,7 +2894,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            player_transform_species.unwrap_or_else(|| {
+            &pokemon_asset_id_for_dvs(player_transform_species.unwrap_or_else(|| {
                 if transform_pending_player {
                     &slot.pokemon.species.id
                 } else {
@@ -2903,7 +2903,7 @@ fn spawn_battle_battler_markers(
                         .as_deref()
                         .unwrap_or(&slot.pokemon.species.id)
                 }
-            }),
+            }), slot.pokemon.dvs),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
@@ -2935,7 +2935,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            enemy_render_species,
+            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -3059,7 +3059,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            enemy_render_species,
+            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -3141,7 +3141,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            player_transform_species.unwrap_or_else(|| {
+            &pokemon_asset_id_for_dvs(player_transform_species.unwrap_or_else(|| {
                 if transform_pending_player {
                     &slot.pokemon.species.id
                 } else {
@@ -3150,7 +3150,7 @@ fn spawn_battle_battler_markers(
                         .as_deref()
                         .unwrap_or(&slot.pokemon.species.id)
                 }
-            }),
+            }), slot.pokemon.dvs),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
