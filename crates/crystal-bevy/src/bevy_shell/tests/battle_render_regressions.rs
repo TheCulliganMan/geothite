@@ -5674,3 +5674,93 @@ fn battle_command_hud_keeps_the_opponent_name_inside_the_lcd() {
     }
     save_live_battle_canvas_for_test(world, "battle-command-native.png");
 }
+
+#[test]
+fn transform_keeps_target_shiny_palette_and_unown_form_after_animation() {
+    let shell = route36_battle_shell_for_render_regression();
+    for player_move in [true, false] {
+        for target_shiny in [true, false] {
+            let target_dvs = if target_shiny { Dv::from_non_hp(14, 10, 10, 10) }
+                else { Dv::from_non_hp(0, 0, 0, 0) };
+            let original_dvs = if target_shiny { Dv::from_non_hp(0, 0, 0, 0) }
+                else { Dv::from_non_hp(14, 10, 10, 10) };
+            let mut snapshot = shell.shell.snapshot().unwrap();
+            let battle = snapshot.battle.as_mut().unwrap();
+            let active = battle.active_player_party_index.unwrap();
+            let player = &mut snapshot.party.slots.iter_mut().find(|slot| slot.index == active).unwrap().pokemon;
+            if player_move {
+                *player = shell.runtime.data().create_pokemon("DITTO", 30, original_dvs).unwrap();
+                battle.enemy_pokemon = shell.runtime.data().create_pokemon("UNOWN", 30, target_dvs).unwrap();
+                battle.player_transformed_species = Some("UNOWN".into());
+                battle.player_transformed_dvs = Some(target_dvs);
+            } else {
+                *player = shell.runtime.data().create_pokemon("UNOWN", 30, target_dvs).unwrap();
+                battle.enemy_pokemon = shell.runtime.data().create_pokemon("DITTO", 30, original_dvs).unwrap();
+                battle.enemy_transformed_species = Some("UNOWN".into());
+                battle.enemy_transformed_dvs = Some(target_dvs);
+            }
+            for frame in [Some(47), Some(48), None] {
+                let animation = frame.map(|frame| VisibleMoveAnimation {
+                    trigger_message: String::new(), move_id: "TRANSFORM".into(),
+                    animation_label: "BattleAnim_Transform".into(), player_move,
+                    started: true, waiting_for_hp: false, frame, total_frames: 104,
+                    sound_events: vec![], next_sound_event: 0, cry_events: vec![], next_cry_event: 0,
+                    object_events: vec![], bg_events: vec![
+                        VisibleMoveBgEvent { frame: 0, effect_id: "BATTLE_ACTOR_TRANSFORM".into(), duration: 0, target: "BG_EFFECT_USER".into(), param: 0, incremented: false },
+                        VisibleMoveBgEvent { frame: 48, effect_id: "BATTLE_ACTOR_UPDATEACTORPIC".into(), duration: 0, target: "BG_EFFECT_USER".into(), param: 0, incremented: false },
+                    ], actor_species_override: None, actor_shiny_override: None,
+                });
+                let mut world = World::new();
+                let mut queue = bevy::ecs::world::CommandQueue::default();
+                let mut commands = Commands::new(&mut queue, &world);
+                let mut art = RenderedTilesetArt::default();
+                let mut images = Assets::<Image>::default();
+                spawn_battle_battler_markers(&mut commands, &snapshot, snapshot.battle.as_ref().unwrap(),
+                    0, None, false, false, false, None, false, None, None, None,
+                    animation.as_ref(), [false; 2], &mut art, &shell.asset_root, &mut images).unwrap();
+                queue.apply(&mut world);
+                let before = frame == Some(47);
+                let expected = PokemonArtKey {
+                    species_id: if before { "ditto".into() } else { pokemon_asset_id_for_dvs("UNOWN", target_dvs) },
+                    side: if player_move { PokemonSpriteSide::Back } else { PokemonSpriteSide::Front },
+                    shiny: if before { !target_shiny } else { target_shiny }, frame: 0,
+                };
+                assert!(art.pokemon_cache.contains_key(&expected), "player={player_move}, shiny={target_shiny}, frame={frame:?}: expected {expected:?}");
+                if frame.is_none() && target_shiny {
+                    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                        let sprite = images.get(&art.pokemon_cache[&expected].handle).unwrap();
+                        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.clone()).unwrap()
+                            .save(PathBuf::from(directory).join(format!("shiny-transform-{}.png", if player_move { "player" } else { "enemy" }))).unwrap();
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn runtime_snapshot_exposes_transformed_dvs_without_replacing_party_dvs() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let original = shell.shell.session().state().storage.party.clone();
+    let mut combat = crate::core::battle::turn::active_battle_combat_state(shell.shell.session().state()).unwrap();
+    let target = shell.runtime.data().create_pokemon("UNOWN", 30, Dv::from_non_hp(14, 10, 10, 10)).unwrap();
+    let transformed = crate::core::battle::turn::BattleTransformState {
+        species: target.species.clone(), dvs: target.dvs, moves: target.moves.clone(),
+        stat_boosts: target.stat_boosts.clone(), attack: target.attack, defense: target.defense,
+        speed: target.speed, special_attack: target.special_attack, special_defense: target.special_defense,
+    };
+    combat.player_transform = Some(transformed.clone());
+    combat.enemy_transform = Some(transformed);
+    shell.shell.session_mut().state_mut().script_runtime.active_battle_combat = Some(combat);
+    let snapshot = shell.shell.snapshot().unwrap();
+    let battle = snapshot.battle.unwrap();
+    assert_eq!(battle.player_transformed_dvs, Some(target.dvs));
+    assert_eq!(battle.enemy_transformed_dvs, Some(target.dvs));
+    assert_eq!(shell.shell.session().state().storage.party, original);
+    let combat = shell.shell.session_mut().state_mut().script_runtime.active_battle_combat.as_mut().unwrap();
+    combat.player_transform = None;
+    combat.enemy_transform = None;
+    let battle = shell.shell.snapshot().unwrap().battle.unwrap();
+    assert_eq!(battle.player_transformed_dvs, None);
+    assert_eq!(battle.enemy_transformed_dvs, None);
+}

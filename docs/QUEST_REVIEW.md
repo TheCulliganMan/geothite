@@ -38,14 +38,14 @@ a complete quest.
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
-| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair/Dragon's Den and Kanto leaders remain pending |
+| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; Kanto leaders remain pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
 | Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Pending |
 | Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | Pending |
-| Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Pending |
+| Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
 | Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Pending |
@@ -113,3 +113,15 @@ checks, item notice, Whitney, medicine, and map load/refresh checks pass.
 Four elevator fixtures were updated to locate the shipped pack. Nine existing
 shiny checks also pass; the unverified shiny scope above remains open.
 These Dragon's Den changes have not yet been deployed.
+
+Transform review found the core copied target DVs but the runtime snapshot exposed
+only its species. The renderer could revert to the original shiny palette after
+the move animation and choose the wrong Unown form. The snapshot now carries both
+sides' transformed DVs, and rendering uses them consistently for form and palette.
+Tests cover both sides, shiny/non-shiny targets, frames before/at the picture swap,
+and the settled state. Runtime snapshot tests verify copied values clear with the
+transform state without changing party DVs. The existing core Transform-copy test
+passes; ten shiny checks pass, along with the picture-swap timing regression.
+Both rendered shiny Unown sides were visually reviewed. This does not establish
+all Transform/capture/switch combinations or every gift/egg/evolution path.
+The Transform rendering changes are not yet deployed.

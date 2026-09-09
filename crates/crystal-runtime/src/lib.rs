@@ -934,6 +934,8 @@ pub struct RuntimeBattleSnapshot {
     pub enemy_spikes_zero_hp_unchecked: bool,
     pub player_transformed_species: Option<String>,
     pub enemy_transformed_species: Option<String>,
+    pub player_transformed_dvs: Option<Dv>,
+    pub enemy_transformed_dvs: Option<Dv>,
     pub player_substitute_hp: u16,
     pub enemy_substitute_hp: u16,
     pub player_semi_invulnerable: bool,
@@ -11954,6 +11956,8 @@ impl RuntimeBattleSnapshot {
             enemy_transformed_species: combat
                 .and_then(|combat| combat.enemy_transform.as_ref())
                 .map(|transform| transform.species.id.clone()),
+            player_transformed_dvs: combat.and_then(|combat| combat.player_transform.as_ref()).map(|transform| transform.dvs),
+            enemy_transformed_dvs: combat.and_then(|combat| combat.enemy_transform.as_ref()).map(|transform| transform.dvs),
             player_substitute_hp: combat.map_or(0, |combat| combat.player_substitute_hp),
             enemy_substitute_hp: combat.map_or(0, |combat| combat.enemy_substitute_hp),
             player_semi_invulnerable: combat

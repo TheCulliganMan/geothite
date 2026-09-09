@@ -2805,16 +2805,20 @@ fn spawn_battle_battler_markers(
     } else {
         None
     };
-    let enemy_render_shiny = if move_enemy_art == VisibleBattlerArtOverride::Transform {
-        active_player_pokemon.is_some_and(|pokemon| visible_pokemon_is_shiny(pokemon))
-    } else {
-        move_enemy_shiny.unwrap_or_else(|| visible_pokemon_is_shiny(&battle.enemy_pokemon))
-    };
-    let player_render_shiny = if move_player_art == VisibleBattlerArtOverride::Transform {
-        visible_pokemon_is_shiny(&battle.enemy_pokemon)
-    } else {
-        false
-    };
+    let player_default_dvs = active_player_pokemon.map(|pokemon| {
+        if transform_pending_player { pokemon.dvs }
+        else { battle.player_transformed_dvs.unwrap_or(pokemon.dvs) }
+    });
+    let enemy_default_dvs = if transform_pending_enemy { battle.enemy_pokemon.dvs }
+        else { battle.enemy_transformed_dvs.unwrap_or(battle.enemy_pokemon.dvs) };
+    let enemy_render_dvs = if move_enemy_art == VisibleBattlerArtOverride::Transform {
+        player_default_dvs.context("enemy Transform requires active player DVs")?
+    } else { enemy_default_dvs };
+    let player_render_dvs = if move_player_art == VisibleBattlerArtOverride::Transform {
+        Some(enemy_default_dvs)
+    } else { player_default_dvs };
+    let enemy_render_shiny = move_enemy_shiny.unwrap_or_else(|| visible_dvs_are_shiny(enemy_render_dvs));
+    let player_render_shiny = move_player_shiny.unwrap_or_else(|| player_render_dvs.is_some_and(visible_dvs_are_shiny));
     let send_out_scale = |side| {
         send_out_animation
             .filter(|animation| animation.side == side)
@@ -2838,7 +2842,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
+            &pokemon_asset_id_for_dvs(enemy_render_species, enemy_render_dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -2903,7 +2907,7 @@ fn spawn_battle_battler_markers(
                         .as_deref()
                         .unwrap_or(&slot.pokemon.species.id)
                 }
-            }), slot.pokemon.dvs),
+            }), player_render_dvs.unwrap_or(slot.pokemon.dvs)),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
@@ -2911,11 +2915,7 @@ fn spawn_battle_battler_markers(
             ),
             slot.pokemon.max_hp,
             battle.player_substitute_hp > 0,
-            if move_player_art == VisibleBattlerArtOverride::Transform {
-                player_render_shiny
-            } else {
-                move_player_shiny.unwrap_or_else(|| visible_pokemon_is_shiny(&slot.pokemon))
-            },
+            player_render_shiny,
             0,
             player_move_offset,
             1.0,
@@ -2935,7 +2935,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
+            &pokemon_asset_id_for_dvs(enemy_render_species, enemy_render_dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -3059,7 +3059,7 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            &pokemon_asset_id_for_dvs(enemy_render_species, battle.enemy_pokemon.dvs),
+            &pokemon_asset_id_for_dvs(enemy_render_species, enemy_render_dvs),
             PokemonSpriteSide::Front,
             render_hp(
                 crate::core::battle::turn::BattleSide::Enemy,
@@ -3150,7 +3150,7 @@ fn spawn_battle_battler_markers(
                         .as_deref()
                         .unwrap_or(&slot.pokemon.species.id)
                 }
-            }), slot.pokemon.dvs),
+            }), player_render_dvs.unwrap_or(slot.pokemon.dvs)),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
@@ -3158,11 +3158,7 @@ fn spawn_battle_battler_markers(
             ),
             slot.pokemon.max_hp,
             battle.player_substitute_hp > 0,
-            if move_player_art == VisibleBattlerArtOverride::Transform {
-                player_render_shiny
-            } else {
-                move_player_shiny.unwrap_or_else(|| visible_pokemon_is_shiny(&slot.pokemon))
-            },
+            player_render_shiny,
             0,
             player_move_offset,
             player_scale,
@@ -3836,10 +3832,14 @@ fn battle_battler_bgp_frame(
 }
 
 fn visible_pokemon_is_shiny(pokemon: &crate::core::models::pokemon::Pokemon) -> bool {
-    pokemon.dvs.defense == 10
-        && pokemon.dvs.speed == 10
-        && pokemon.dvs.special == 10
-        && matches!(pokemon.dvs.attack, 2 | 3 | 6 | 7 | 10 | 11 | 14 | 15)
+    visible_dvs_are_shiny(pokemon.dvs)
+}
+
+fn visible_dvs_are_shiny(dvs: Dv) -> bool {
+    dvs.defense == 10
+        && dvs.speed == 10
+        && dvs.special == 10
+        && matches!(dvs.attack, 2 | 3 | 6 | 7 | 10 | 11 | 14 | 15)
 }
 
 fn battle_substitute_frames<'a>(
