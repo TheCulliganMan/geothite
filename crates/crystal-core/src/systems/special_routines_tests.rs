@@ -7963,7 +7963,9 @@ fn kurt_selection_removes_exact_apricorn_and_records_script_values() {
             .map(String::as_str),
         Some("2")
     );
-    assert_eq!(state.script_runtime.script_value.as_deref(), Some("1"));
+    // RED_APRICORN is item byte $55; TRUE would lose the recipe identity.
+    assert_eq!(state.script_runtime.script_value.as_deref(), Some("85"));
+    assert_eq!(state.script_runtime.variables.get("_value").map(String::as_str), Some("85"));
 
     let mut unselected = GameState::default();
     unselected.bag.add_item(&item, 3).expect("add apricorn");

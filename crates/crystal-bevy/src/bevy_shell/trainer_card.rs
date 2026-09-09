@@ -5024,7 +5024,7 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
             );
         }
         let snapshot = runtime_shell.shell.snapshot()?;
-        let option_count = visible_kurt_apricorn_choices(&snapshot).len();
+        let option_count = visible_kurt_apricorn_choices(&snapshot).len() + 1;
         return move_visible_cursor_slot(
             &mut runtime_shell.kurt_apricorn_cursor,
             "script:kurt-apricorn".to_string(),

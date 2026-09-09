@@ -1650,7 +1650,7 @@ fn apply_runtime_effect(
         "itemnotify" => state.script_runtime.item_notify_queued = true,
         // The pack-backed item boundary resolves the variable quantity,
         // performs ReceiveItem, fills STRING_BUFFER_4 with CurItemName, and
-        // queues GiveItemScript. Neither operand is itself a string buffer.
+        // presents the canonical item receipt. Neither operand is a string buffer.
         "verbosegiveitemvar" => {}
         "addcellnum" => {
             let contact_id = &command.args[0];

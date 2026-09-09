@@ -5226,6 +5226,7 @@ fn render_playfield(
         && snapshot.pending_shop.is_none()
         && snapshot.ui.active_pokemon_picture.is_none()
         && snapshot.pending_move_learn.is_none()
+        && runtime_shell.kurt_apricorn_cursor.is_none()
         && runtime_shell.pending_name_input.is_none()
         && runtime_shell.pending_mail_input.is_none()
         && runtime_shell.pending_name_choice.is_none()

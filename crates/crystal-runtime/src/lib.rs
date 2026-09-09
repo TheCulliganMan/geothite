@@ -16052,7 +16052,10 @@ impl CrystalRuntime {
         source_script: &str,
         command_index: usize,
     ) -> bool {
-        self.data.maps.get(map_name).is_some_and(|module| {
+        // Variable-quantity grants share the canonical receipt/audio boundary.
+        self.data.script_runtime_command(map_name, source_script, command_index)
+            .is_ok_and(|command| command.command == "verbosegiveitemvar")
+            || self.data.maps.get(map_name).is_some_and(|module| {
             module.script_item_grants.iter().any(|grant| {
                 grant.source_script == source_script && grant.command_index == command_index
             })

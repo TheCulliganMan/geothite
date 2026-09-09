@@ -761,3 +761,100 @@ Preserve permanent badges, gifts and completed-story flags during that fix.
 Sources: [daily reset](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/time.asm),
 [flag storage](https://raw.githubusercontent.com/pret/pokecrystal/master/data/events/engine_flags.asm),
 [flag names](https://raw.githubusercontent.com/pret/pokecrystal/master/constants/engine_flags.asm).
+
+The broader reset implementation is now staged in Rust: all 78 named flags in
+those six storage banks are cleared. An independent source-address comparison
+matched every selected flag and excluded the other 84 engine flags. New core
+coverage exercises daily claims, persistence and permanent progression retention;
+a clock integration check exercises same-day retention, midnight expiration and
+a fresh claim on the next day. All seven selected core tests pass, including atomic failure behavior. The
+clock integration test also passes: same-day claims persist, midnight clears
+them, and a fresh next-day claim stays set. This change is not committed or
+deployed yet. Full individual quest/script review remains open.
+
+The shop/counter deployment of `6f892e03` completed successfully as image
+`sha256:762b8af5cce7e655faba882ad1c630d731712383dcec0868d0e36a274be6772e`;
+the container is running. The updated production browser sequence passes without
+runtime errors. Stock, quantity, confirmation and resumed movement screenshots
+were inspected: move description, How many prompt, and opaque black area outside
+the inventory LCD are correct. This is Chromium keyboard coverage, not physical
+Safari/touch, and does not complete the broader selling/layout audit.
+A new Kurt regression stages the cleared-Well prerequisite and three Apricorns,
+then exercises cancellation, selection/quantity, same-day waiting, next-day
+collection, save/load and repeat collection for all seven recipes. It also checks
+the working/available Kurt object flags after map callbacks. That regression is building against location-tester/fullscreen-scaling;
+it does not prove traversal, initial gift, full-pocket handling or
+visual/audio fidelity.
+
+### Hall of Fame presentation audit — confirmed missing ceremony
+
+`consume_visible_runtime_script_flag` currently handles HallOfFameRequested by
+saving and opening credits immediately. The existing story regression explicitly
+expects that shortcut, so its pass cannot establish ceremony fidelity. The source
+runs a separate ceremony first: Hall of Fame music, each non-egg team member's
+back/front entrance, identity display and frontpic animation, then the player
+portrait, ID/play-time panel and Professor Oak Pokédex rating before credits. A dedicated presentation state and sequence
+checks are still required, retaining the existing canonical record/save and
+first-clear credits behavior. Source:
+[Hall of Fame](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/halloffame.asm).
+
+Kurt's first real-input run failed (9.89 seconds) after cancellation and quantity
+selection: the recipe branch could not resolve `BLU_APRICORN`. Inspection also
+found that SelectApricornForKurt returned TRUE instead of the selected item byte.
+The shared core now returns the original Apricorn byte, and the branch resolver
+uses the same seven values. The old core test's TRUE expectation is corrected to
+RED_APRICORN's $55 result. The seven-recipe regression is rebuilding; these fixes
+are not yet verified, committed or deployed. Sources:
+[item constants](https://raw.githubusercontent.com/pret/pokecrystal/master/constants/item_constants.asm),
+[Kurt script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/KurtsHouse.asm).
+
+The corrected item-byte run reached next-day collection but failed after 14.22
+seconds: verbosegiveitemvar queued a nonexistent GiveItemScript, invalidating
+the next snapshot. Variable-quantity grants now resolve their quantity from state
+and use the existing ScriptItemGranted presentation boundary, matching ordinary
+verbose rewards. The direct runtime command no longer queues a nonexistent script.
+The game-level regression is rebuilding with this fix. The separate core Kurt
+contract tests completed successfully; their selection assertion now requires
+item byte $55 rather than TRUE. Deployment remains pending.
+
+All seven Kurt recipes now pass the real-input quest regression (111.88 seconds):
+cancel selection, select three, same-day refusal, next-day reward, working/available
+object flags, save/load and repeat collection. Seven daily-reset core checks also
+pass with the current Apricorn code, alongside four core Kurt contract tests.
+An expanded combined-pack run is building to check quantity cancellation, full
+Ball-stack refusal with preserved orders, save/load and retry. It can export
+ignored browser saves for ordering/collection and native menu screenshots. No
+Kurt visual fidelity or production verification is claimed yet.
+
+The expanded run exposed a fixture error and a renderer defect. A single 99-Ball
+stack allows a second stack (102 total was valid); the refusal fixture now fills
+all 12 Ball-pocket slots. Native captures showed no Apricorn list or quantity
+window because the older dialogue notice returned before the menu renderer.
+Kurt's menu now takes precedence and draws the source selection/quantity prompts.
+The rerun asserts rendered prompt glyphs and exports screenshots; its result is
+pending. Quantity-window layering and complete visual fidelity still need review.
+
+The first menu-priority change was insufficient: scene-dialog ownership and its
+text-only update path still bypassed the menu. Both now yield while Kurt's menu
+is open. Prompt glyph checks then passed, but the full-pocket fixture's cleanup
+incorrectly requested removal of 1,188 Balls from one stack; cleanup now removes
+each of the twelve stacks separately. Screenshots exposed overlapping list names
+and quantities plus loss of the list during quantity selection. The renderer now
+follows the source scrolling list's unframed rectangle, separate quantity rows,
+retained list and quantity overlay, with a selectable CANCEL entry. Verification
+is running after correcting an Option/Result compile error in the window helper.
+Sources: [scrolling menu](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/menus/scrolling_menu.asm),
+[item text placement](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/menus/menu_2.asm),
+[Kurt selection](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/kurt.asm).
+
+
+The final combined-pack Kurt regression passes all seven recipes (136.10 seconds),
+including selectable CANCEL, quantity cancellation, three-item orders, same-day
+waiting, midnight readiness, full Ball-pocket refusal, retained order after
+save/load, successful retry and no duplicate collection. The native list and
+quantity screenshots were inspected: names no longer overlap quantities, CANCEL
+is visible, and the list remains behind the quantity window. Ordinary Elm aide
+verbose item receipt/audio-boundary coverage also passes (5.01 seconds), alongside
+the seven daily-reset, four core Kurt and clock integration checks recorded above.
+These are staged quest fixtures, not a complete walking playthrough or physical
+Safari verification. Production deployment and browser Kurt review remain pending.

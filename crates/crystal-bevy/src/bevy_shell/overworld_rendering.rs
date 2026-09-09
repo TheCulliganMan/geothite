@@ -566,6 +566,19 @@ fn spawn_field_command_menu(
         }
         return;
     }
+    if runtime_shell.kurt_apricorn_cursor.is_some() {
+        if let Err(error) = spawn_visible_kurt_apricorn_menu(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+        ) {
+            *render_error = Some(error);
+        }
+        return;
+    }
     if runtime_shell.field_notice.is_some() && !visible_field_pack_is_open(runtime_shell) {
         if let Err(error) = require_bitmap_font_art(rendered_art, asset_root, images) {
             *render_error = Some(error);
@@ -686,19 +699,6 @@ fn spawn_field_command_menu(
         if let Err(error) =
             spawn_visible_unown_printer(commands, runtime_shell, rendered_art, asset_root, images)
         {
-            *render_error = Some(error);
-        }
-        return;
-    }
-    if runtime_shell.kurt_apricorn_cursor.is_some() {
-        if let Err(error) = spawn_visible_kurt_apricorn_menu(
-            commands,
-            snapshot,
-            runtime_shell,
-            rendered_art,
-            asset_root,
-            images,
-        ) {
             *render_error = Some(error);
         }
         return;
@@ -2803,109 +2803,60 @@ fn spawn_visible_kurt_apricorn_menu(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     let choices = visible_kurt_apricorn_choices(snapshot);
-    let selected = strict_readonly_cursor_index(
-        &runtime_shell.kurt_apricorn_cursor,
-        "script:kurt-apricorn",
-        choices.len(),
-    )
-    .with_context(|| {
-        format!(
-            "Kurt Apricorn cursor is invalid for {} choices",
-            choices.len()
-        )
-    })?;
-    let (left, top, width, height) = if runtime_shell.kurt_apricorn_quantity.is_some() {
-        (6.0, 9.0, 14.0, 4.0)
-    } else {
-        (1.0, 1.0, 13.0, 10.0)
-    };
-    let (center_x, center_y) = field_window_center(left, top, width, height);
-    commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
-                color: Color::WHITE,
-                custom_size: Some(Vec2::new(
-                    TILE_SIZE * (width - 2.0),
-                    TILE_SIZE * (height - 2.0),
-                )),
-                ..default()
-            },
-            transform: Transform::from_xyz(center_x, center_y, 4.1),
-            ..default()
-        },
-        FieldCommandMarker,
-    ));
-    let frame = battle_window_frame_art(rendered_art, asset_root, images)
-        .context("Kurt Apricorn menu requires window-frame art")?;
-    spawn_field_command_window_frame_tiles(
-        commands,
-        frame,
-        left,
-        top,
-        width as usize,
-        height as usize,
-        4.2,
-    );
-    if let Some(quantity) = runtime_shell.kurt_apricorn_quantity {
-        let (item_id, _) = choices
-            .get(selected)
-            .context("selected Kurt Apricorn choice is missing")?;
-        let (x, y) = battle_hud_tile_origin(7.0, 10.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &item_display_name(snapshot, item_id),
-            x,
-            y,
-            4.3,
-        );
-        let (x, y) = battle_hud_tile_origin(16.0, 11.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!("×{quantity:02}"),
-            x,
-            y,
-            4.3,
-        );
-        return Ok(());
+    let total = choices.len() + 1; // The source scrolling list ends in CANCEL.
+    let selected = strict_readonly_cursor_index(&runtime_shell.kurt_apricorn_cursor,
+        "script:kurt-apricorn", total).context("invalid Kurt Apricorn cursor")?;
+    let quantity = runtime_shell.kurt_apricorn_quantity;
+    spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+    let prompt = if quantity.is_some() { ["How many should I", "make?"] }
+        else { ["Which APRICORN", "should I use?"] };
+    for (row, line) in prompt.into_iter().enumerate() {
+        let (x, y) = battle_hud_tile_origin(1.0, 14.0 + row as f32 * 2.0);
+        spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.3);
     }
-    let first = selected
-        .saturating_sub(3)
-        .min(choices.len().saturating_sub(4));
-    for (row, (index, (item_id, quantity))) in
-        choices.iter().enumerate().skip(first).take(4).enumerate()
-    {
+    // ScrollingMenu_UpdateDisplay clears the complete list rectangle without
+    // drawing a frame. Names and quantities occupy consecutive rows.
+    let (x, y) = field_window_center(1.0, 1.0, 13.0, 10.0);
+    commands.spawn((SpriteBundle {
+        sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 13.0, TILE_SIZE * 10.0)), ..default() },
+        transform: Transform::from_xyz(x, y, 4.1), ..default()
+    }, FieldCommandMarker));
+    let first = selected.saturating_sub(3).min(total.saturating_sub(4));
+    for (row, index) in (first..total).take(4).enumerate() {
+        let line = choices.get(index).map(|(item, _)| item_display_name(snapshot, item)).unwrap_or_else(|| "CANCEL".into());
         let (x, y) = battle_hud_tile_origin(2.0, 2.0 + row as f32 * 2.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!(
-                "{}{}",
-                if index == selected { ">" } else { " " },
-                item_display_name(snapshot, item_id)
-            ),
-            x,
-            y,
-            4.3,
-        );
-        let (x, y) = battle_hud_tile_origin(10.0, 2.0 + row as f32 * 2.0);
-        spawn_field_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
-            &format!("×{:02}", (*quantity).min(99)),
-            x,
-            y,
-            4.3,
-        );
+        spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, &line, x, y, 4.3);
+        if index == selected {
+            let (x, y) = battle_hud_tile_origin(1.0, 2.0 + row as f32 * 2.0);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images,
+                if quantity.is_some() { "▷" } else { ">" }, x, y, 4.3);
+        }
+        if let Some((_, count)) = choices.get(index) {
+            let (x, y) = battle_hud_tile_origin(10.0, 3.0 + row as f32 * 2.0);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images,
+                &format!("×{:2}", (*count).min(99)), x, y, 4.3);
+        }
+    }
+    for (show, row, arrow) in [(first > 0, 1.0, "▲"), (first + 4 < total, 10.0, "▼")] {
+        if show {
+            let (x, y) = battle_hud_tile_origin(13.0, row);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, arrow, x, y, 4.3);
+        }
+    }
+    if let Some(quantity) = quantity {
+        let (item, _) = choices.get(selected).context("Kurt quantity has no selected Apricorn")?;
+        let (x, y) = field_window_center(6.0, 9.0, 14.0, 4.0);
+        commands.spawn((SpriteBundle {
+            sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 2.0)), ..default() },
+            transform: Transform::from_xyz(x, y, 4.5), ..default()
+        }, FieldCommandMarker));
+        let frame = battle_window_frame_art(rendered_art, asset_root, images)
+            .context("Kurt quantity window requires frame art")?;
+        spawn_field_command_window_frame_tiles(commands, frame, 6.0, 9.0, 14, 4, 4.6);
+        for (col, row, line) in [(7.0, 10.0, item_display_name(snapshot, item)), (16.0, 11.0, format!("×{quantity:02}"))] {
+            let (x, y) = battle_hud_tile_origin(col, row);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, &line, x, y, 4.7);
+        }
     }
     Ok(())
 }
@@ -5732,6 +5683,8 @@ fn spawn_scene_dialog(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    if runtime_shell.kurt_apricorn_cursor.is_some() { return Ok(()); }
+
     if scene_dialog_surface_active(snapshot, runtime_shell) {
         require_bitmap_font_art(rendered_art, asset_root, images)?;
     }
@@ -12471,6 +12424,8 @@ fn scene_dialog_surface_active(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> bool {
+    // Kurt's list/quantity menu replaces the suspended script dialogue.
+    if runtime_shell.kurt_apricorn_cursor.is_some() { return false; }
     runtime_shell.incoming_phone_contact.is_some()
         || runtime_shell.visible_mom_bank.is_some()
         || snapshot.pending_shop.is_some()
@@ -13382,7 +13337,7 @@ fn visible_field_command_entries(
         let selected = strict_readonly_cursor_index(
             &runtime_shell.kurt_apricorn_cursor,
             "script:kurt-apricorn",
-            choices.len(),
+            choices.len() + 1,
         )
         .context("Kurt Apricorn selection has no valid cursor")?;
         if let Some(quantity) = runtime_shell.kurt_apricorn_quantity {
@@ -13395,7 +13350,7 @@ fn visible_field_command_entries(
                 format!("×{quantity:02} / {maximum:02}"),
             ]);
         }
-        let entries = choices
+        let mut entries = choices
             .iter()
             .enumerate()
             .map(|(index, (item_id, quantity))| {
@@ -13407,6 +13362,7 @@ fn visible_field_command_entries(
                 )
             })
             .collect::<Vec<_>>();
+        entries.push(format!("{}CANCEL", if selected == choices.len() { ">" } else { " " }));
         return Ok(entries);
     }
     if runtime_shell.bill_pc_action_cursor.is_some() {

@@ -2948,6 +2948,15 @@ pub fn buena_password_category_issues(
     issues
 }
 
+// SelectApricornForKurt returns the original item byte in wScriptVar, not TRUE.
+// Shared with the script operand resolver so recipe branches use the same values.
+pub const KURT_APRICORN_SCRIPT_VALUES: [(&str, u8); 7] = [
+    ("RED_APRICORN", 0x55), ("BLU_APRICORN", 0x59),
+    ("YLW_APRICORN", 0x5c), ("GRN_APRICORN", 0x5d),
+    ("WHT_APRICORN", 0x61), ("BLK_APRICORN", 0x63),
+    ("PNK_APRICORN", 0x65),
+];
+
 pub type KurtApricornRecipes = BTreeMap<String, String>;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -9499,6 +9508,12 @@ fn select_apricorn_for_kurt(
             item_id: apricorn,
         });
     }
+    let script_value = KURT_APRICORN_SCRIPT_VALUES.iter()
+        .find(|(item_id, _)| *item_id == apricorn)
+        .map(|(_, value)| *value)
+        .ok_or_else(|| SpecialRoutineError::UnknownItem {
+            routine: routine.to_string(), item_id: apricorn.clone(),
+        })?;
     let item = item_catalog
         .get(&apricorn)
         .ok_or_else(|| SpecialRoutineError::UnknownItem {
@@ -9536,7 +9551,7 @@ fn select_apricorn_for_kurt(
         .script_runtime
         .variables
         .insert("VAR_KURT_APRICORNS".to_string(), quantity.to_string());
-    set_script_bool_value(state, true);
+    set_script_numeric_value(state, script_value);
     state.script_runtime.last_special_routine = Some(routine.to_string());
     Ok(SpecialRoutineOutcome {
         routine: routine.to_string(),

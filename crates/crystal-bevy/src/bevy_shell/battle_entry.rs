@@ -5737,10 +5737,10 @@ fn resolve_visible_kurt_apricorn_selection(
     let selected = strict_readonly_cursor_index(
         &runtime_shell.kurt_apricorn_cursor,
         "script:kurt-apricorn",
-        choices.len(),
+        choices.len() + 1,
     )
     .context("Kurt Apricorn selection has no valid cursor")?;
-    if cancelled {
+    if cancelled || selected == choices.len() {
         runtime_shell.kurt_apricorn_cursor = None;
         runtime_shell.kurt_apricorn_quantity = None;
         record_visible_runtime_action(runtime_shell, "script:special:kurt_apricorn:cancel")?;

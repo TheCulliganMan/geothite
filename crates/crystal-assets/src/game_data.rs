@@ -2736,9 +2736,21 @@ impl GameDataSet {
         command_index: usize,
     ) -> Result<ScriptItemGrantOutcome> {
         self.require_current_map(current_map, map_name)?;
-        let mut grant = self
-            .script_item_grant(map_name, source_script, command_index)?
-            .clone();
+        let variable_grant = self.script_runtime_command(map_name, source_script, command_index)
+            .ok().filter(|command| command.command == "verbosegiveitemvar");
+        let mut grant = if let Some(command) = variable_grant {
+            let item_id = command.args.first().context("verbosegiveitemvar requires an item")?;
+            let variable = command.args.get(1).context("verbosegiveitemvar requires a quantity variable")?;
+            let quantity = state.script_runtime.variables.get(variable)
+                .with_context(|| format!("verbosegiveitemvar quantity {variable} is unset"))?
+                .parse::<u16>().with_context(|| format!("verbosegiveitemvar quantity {variable} is not a u16"))?;
+            ScriptItemGrant {
+                command: "verbosegiveitem".into(), item_id: item_id.clone(), quantity,
+                source_script: source_script.into(), command_index, verbose: true,
+            }
+        } else {
+            self.script_item_grant(map_name, source_script, command_index)?.clone()
+        };
         if grant.item_id == crystal_core::systems::script_items::SCRIPT_ITEM_FROM_MEMORY_ID {
             grant.item_id = state
                 .script_runtime
@@ -4890,77 +4902,14 @@ impl GameDataSet {
                 });
         }
         if command.command == "verbosegiveitemvar" {
-            let item_id = command.args.first().with_context(|| {
-                format!(
-                    "verbosegiveitemvar {}:{} has no item id",
-                    command.source_script, command.command_index
-                )
-            })?;
-            let quantity_variable = command.args.get(1).with_context(|| {
-                format!(
-                    "verbosegiveitemvar {}:{} has no quantity variable",
-                    command.source_script, command.command_index
-                )
-            })?;
-            let quantity = next_state
-                .script_runtime
-                .variables
-                .get(quantity_variable)
-                .with_context(|| {
-                    format!(
-                        "verbosegiveitemvar {}:{} quantity variable {} is unset",
-                        command.source_script, command.command_index, quantity_variable
-                    )
-                })?
-                .parse::<u16>()
-                .with_context(|| {
-                    format!(
-                        "verbosegiveitemvar {}:{} quantity variable {} is not a u16",
-                        command.source_script, command.command_index, quantity_variable
-                    )
-                })?;
-            let grant = core_grant_script_item(
-                &mut next_state,
-                &self.items,
-                ScriptItemGrant {
-                    command: "verbosegiveitem".to_string(),
-                    item_id: item_id.clone(),
-                    quantity,
-                    source_script: command.source_script.clone(),
-                    command_index: command.command_index,
-                    verbose: true,
-                },
-            )
-            .map_err(|error| anyhow::anyhow!("apply verbosegiveitemvar: {error:?}"))?;
-            let script_value = if matches!(&grant, ScriptItemGrantOutcome::Granted { .. }) {
-                "1"
-            } else {
-                "0"
-            }
-            .to_string();
-            next_state.script_runtime.script_value = Some(script_value.clone());
-            next_state
-                .script_runtime
-                .variables
-                .insert("_value".to_string(), script_value.clone());
-            next_state
-                .script_runtime
-                .call_stack
-                .push(ScriptReturnFrame {
-                    origin_map_name: map_name.to_string(),
-                    source_script: command.source_script.clone(),
-                    next_command_index: command.command_index + 1,
-                });
-            next_state.script_runtime.next_script = Some(ScriptLocation {
-                origin_map_name: map_name.to_string(),
-                script: "GiveItemScript".to_string(),
-            });
-            next_state.script_runtime.script_ended = None;
+            let grant = self.grant_script_item(&mut next_state, map_name, map_name,
+                &command.source_script, command.command_index)?;
+            let value = if matches!(grant, ScriptItemGrantOutcome::Granted { .. }) { "1" } else { "0" }.to_string();
+            next_state.script_runtime.script_value = Some(value.clone());
+            next_state.script_runtime.variables.insert("_value".into(), value.clone());
             outcome = ScriptRuntimeOutcome::ScriptValueSet {
-                command: command.command.clone(),
-                value: script_value,
-                source_script: command.source_script.clone(),
-                command_index: command.command_index,
+                command: command.command.clone(), value,
+                source_script: command.source_script.clone(), command_index: command.command_index,
             };
         }
         if matches!(command.command.as_str(), "callasm" | "memcallasm") {
@@ -13169,6 +13118,8 @@ impl GameDataSet {
             ("PHONE_CONTACTS_FULL".to_string(), 1),
             ("PHONE_CONTACT_REFUSED".to_string(), 2),
         ]);
+        constants.extend(crystal_core::systems::special_routines::KURT_APRICORN_SCRIPT_VALUES
+            .iter().map(|(item_id, value)| ((*item_id).to_string(), i32::from(*value))));
         // checkmoney/checkcoins return these engine comparison bytes. Resolve
         // their branch operands even when the pack omits the shared constants.
         use crystal_core::systems::economy::AmountComparison;

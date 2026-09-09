@@ -8396,13 +8396,89 @@ impl GameState {
     {
         let mut next = self.clone();
         next.fishing.daily_flags1 = 0;
-        // CheckDailyResetTimer clears wDailyFlags2 and wSwarmFlags, retaining
-        // wBuenasPassword. The second flag records participation, not generation.
-        next.flags.engine_flags.remove("ENGINE_BUENAS_PASSWORD");
-        next.flags.engine_flags.remove("ENGINE_BUENAS_PASSWORD_2");
-        // The Sunday happiness gift shares wDailyFlags2. Its claim expires
-        // at the daily reset; the map script separately enforces Sunday.
-        next.flags.engine_flags.remove("ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN");
+        // CheckDailyResetTimer clears the daily, swarm, rematch and phone flag
+        // banks. Named flags are stored separately from fishing's raw bytes.
+        // Keep permanent story/event flags and the retained Buena password.
+        next.flags.engine_flags.retain(|flag, _| !matches!(flag.as_str(),
+            "ENGINE_KURT_MAKING_BALLS"
+            | "ENGINE_DAILY_BUG_CONTEST"
+            | "ENGINE_QWILFISH_SWARM"
+            | "ENGINE_TIME_CAPSULE"
+            | "ENGINE_ALL_FRUIT_TREES"
+            | "ENGINE_GOT_SHUCKIE_TODAY"
+            | "ENGINE_GOLDENROD_UNDERGROUND_MERCHANT_CLOSED"
+            | "ENGINE_FOUGHT_IN_TRAINER_HALL_TODAY"
+            | "ENGINE_MT_MOON_SQUARE_CLEFAIRY"
+            | "ENGINE_UNION_CAVE_LAPRAS"
+            | "ENGINE_GOLDENROD_UNDERGROUND_GOT_HAIRCUT"
+            | "ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN"
+            | "ENGINE_DAISYS_GROOMING"
+            | "ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT"
+            | "ENGINE_DAILY_MOVE_TUTOR"
+            | "ENGINE_BUENAS_PASSWORD"
+            | "ENGINE_BUENAS_PASSWORD_2"
+            | "ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON"
+            | "ENGINE_JACK_READY_FOR_REMATCH"
+            | "ENGINE_HUEY_READY_FOR_REMATCH"
+            | "ENGINE_GAVEN_READY_FOR_REMATCH"
+            | "ENGINE_BETH_READY_FOR_REMATCH"
+            | "ENGINE_JOSE_READY_FOR_REMATCH"
+            | "ENGINE_REENA_READY_FOR_REMATCH"
+            | "ENGINE_JOEY_READY_FOR_REMATCH"
+            | "ENGINE_WADE_READY_FOR_REMATCH"
+            | "ENGINE_RALPH_READY_FOR_REMATCH"
+            | "ENGINE_LIZ_READY_FOR_REMATCH"
+            | "ENGINE_ANTHONY_READY_FOR_REMATCH"
+            | "ENGINE_TODD_READY_FOR_REMATCH"
+            | "ENGINE_GINA_READY_FOR_REMATCH"
+            | "ENGINE_ARNIE_READY_FOR_REMATCH"
+            | "ENGINE_ALAN_READY_FOR_REMATCH"
+            | "ENGINE_DANA_READY_FOR_REMATCH"
+            | "ENGINE_CHAD_READY_FOR_REMATCH"
+            | "ENGINE_TULLY_READY_FOR_REMATCH"
+            | "ENGINE_BRENT_READY_FOR_REMATCH"
+            | "ENGINE_TIFFANY_READY_FOR_REMATCH"
+            | "ENGINE_VANCE_READY_FOR_REMATCH"
+            | "ENGINE_WILTON_READY_FOR_REMATCH"
+            | "ENGINE_PARRY_READY_FOR_REMATCH"
+            | "ENGINE_ERIN_READY_FOR_REMATCH"
+            | "ENGINE_BEVERLY_HAS_NUGGET"
+            | "ENGINE_JOSE_HAS_STAR_PIECE"
+            | "ENGINE_WADE_HAS_ITEM"
+            | "ENGINE_GINA_HAS_LEAF_STONE"
+            | "ENGINE_ALAN_HAS_FIRE_STONE"
+            | "ENGINE_DANA_HAS_THUNDERSTONE"
+            | "ENGINE_DEREK_HAS_NUGGET"
+            | "ENGINE_TULLY_HAS_WATER_STONE"
+            | "ENGINE_TIFFANY_HAS_PINK_BOW"
+            | "ENGINE_WILTON_HAS_ITEM"
+            | "ENGINE_JACK_MONDAY_MORNING"
+            | "ENGINE_HUEY_WEDNESDAY_NIGHT"
+            | "ENGINE_GAVEN_THURSDAY_MORNING"
+            | "ENGINE_BETH_FRIDAY_AFTERNOON"
+            | "ENGINE_JOSE_SATURDAY_NIGHT"
+            | "ENGINE_REENA_SUNDAY_MORNING"
+            | "ENGINE_JOEY_MONDAY_AFTERNOON"
+            | "ENGINE_WADE_TUESDAY_NIGHT"
+            | "ENGINE_RALPH_WEDNESDAY_MORNING"
+            | "ENGINE_LIZ_THURSDAY_AFTERNOON"
+            | "ENGINE_ANTHONY_FRIDAY_NIGHT"
+            | "ENGINE_TODD_SATURDAY_MORNING"
+            | "ENGINE_GINA_SUNDAY_AFTERNOON"
+            | "ENGINE_ARNIE_TUESDAY_MORNING"
+            | "ENGINE_ALAN_WEDNESDAY_AFTERNOON"
+            | "ENGINE_DANA_THURSDAY_NIGHT"
+            | "ENGINE_CHAD_FRIDAY_MORNING"
+            | "ENGINE_TULLY_SUNDAY_NIGHT"
+            | "ENGINE_BRENT_MONDAY_MORNING"
+            | "ENGINE_TIFFANY_TUESDAY_AFTERNOON"
+            | "ENGINE_VANCE_WEDNESDAY_NIGHT"
+            | "ENGINE_WILTON_THURSDAY_MORNING"
+            | "ENGINE_PARRY_FRIDAY_AFTERNOON"
+            | "ENGINE_ERIN_SATURDAY_NIGHT"
+            | "ENGINE_DUNSPARCE_SWARM"
+            | "ENGINE_YANMA_SWARM"
+        ));
         next.fishing.swarm_flag = 0;
         next.swarms.active.clear();
         next.apply_pokerus_tick(1);
@@ -10497,6 +10573,39 @@ mod tests {
         assert_eq!(state.secret_id, 0xffff);
         assert_eq!(state.random_state, CrystalRandomState { add: 1, sub: 0xff });
         assert_eq!(divider.consumed(), 14);
+    }
+
+    #[test]
+    fn daily_quest_claims_expire_without_erasing_story_progress() {
+        let mut state = GameState::default();
+        state.kenji_break_timer = 2;
+        // Exercise independent quest, swarm and phone storage banks.
+        let daily = [
+            "ENGINE_KURT_MAKING_BALLS",
+            "ENGINE_GOLDENROD_UNDERGROUND_GOT_HAIRCUT",
+            "ENGINE_UNION_CAVE_LAPRAS",
+            "ENGINE_DUNSPARCE_SWARM",
+            "ENGINE_JOEY_READY_FOR_REMATCH",
+            "ENGINE_GINA_HAS_LEAF_STONE",
+            "ENGINE_JACK_MONDAY_MORNING",
+        ];
+        let permanent = [
+            "ENGINE_PLAINBADGE", "ENGINE_POKEDEX", "ENGINE_POKEGEAR",
+            "ENGINE_LUCKY_NUMBER_SHOW", "ENGINE_ROCKETS_IN_MAHOGANY",
+        ];
+        for flag in daily.into_iter().chain(permanent) {
+            state.flags.set_engine_flag(flag, true).unwrap();
+        }
+        state.flags.set_event_flag("EVENT_GOT_HM01_CUT", true).unwrap();
+        state.flags.set_event_flag("EVENT_BEAT_BUGSY", true).unwrap();
+        let events = state.flags.event_flags.clone();
+        state.apply_daily_reset(&mut ReplayDivider::new([])).unwrap();
+        // Persisted flags must not resurrect the expired daily restrictions.
+        let flags: EventFlagMemory = serde_json::from_str(
+            &serde_json::to_string(&state.flags).unwrap()).unwrap();
+        for flag in daily { assert!(!flags.is_engine_flag_set(flag).unwrap(), "{flag}"); }
+        for flag in permanent { assert!(flags.is_engine_flag_set(flag).unwrap(), "{flag}"); }
+        assert_eq!(flags.event_flags, events);
     }
 
     #[test]

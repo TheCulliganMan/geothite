@@ -3499,3 +3499,125 @@ fn game_corner_tm_prizes_check_coins_refusal_capacity_and_save() {
         }
     }
 }
+
+#[test]
+fn kurt_apricorn_orders_wait_until_next_day_and_preserve_rewards_after_reload() {
+    for (apricorn, ball) in [
+        ("RED_APRICORN", "LEVEL_BALL"), ("BLU_APRICORN", "LURE_BALL"),
+        ("YLW_APRICORN", "MOON_BALL"), ("GRN_APRICORN", "FRIEND_BALL"),
+        ("WHT_APRICORN", "FAST_BALL"), ("BLK_APRICORN", "HEAVY_BALL"),
+        ("PNK_APRICORN", "LOVE_BALL"),
+    ] {
+        let full_quantity = 99 * crate::core::models::BALL_POCKET_CAPACITY as u16;
+        let mut shell = progression_shell_on_map_for_test("KurtsHouse");
+        let runtime = shell.runtime.clone();
+        runtime.data().update_clock_from_datetime(shell.shell.session_mut().state_mut(),
+            crate::core::systems::time::GameDate::new(2000, 1, 2), 12, 0, 0,
+            &mut crate::core::random::ReplayDivider::new([0; 32])).unwrap();
+        for event in ["EVENT_CLEARED_SLOWPOKE_WELL", "EVENT_KURT_GAVE_YOU_LURE_BALL"] {
+            shell.shell.session_mut().state_mut().flags.set_event_flag(event, true).unwrap();
+        }
+        shell.shell.session_mut().state_mut().player_name = "TEST".into();
+        shell.shell.add_bag_item(apricorn, 3).unwrap();
+        quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+        kurt_browser_fixture_for_test(&mut shell, apricorn, "order");
+        quest_talk(&mut shell, "Kurt1");
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, true, |shell| shell.kurt_apricorn_cursor.is_some());
+        if apricorn == "RED_APRICORN" {
+            for _ in 0..3 { app.update(); }
+            let text = rendered_mart_text_for_test(&mut app);
+            assert!(text.contains("Which APRICORN") && text.contains("should I use?"), "{text}");
+            save_live_menu_lcd_for_test(app.world_mut(), "kurt-apricorn-list.png");
+        }
+        if apricorn == "RED_APRICORN" {
+            tm_mart_key_for_test(&mut app, KeyCode::ArrowDown);
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+        } else { tm_mart_key_for_test(&mut app, KeyCode::KeyX); }
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, apricorn), 3);
+            assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_KURT_MAKING_BALLS").unwrap());
+            quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+            quest_talk(&mut shell, "Kurt1");
+        }
+        quest_settle(&mut app, true, |shell| shell.kurt_apricorn_cursor.is_some());
+        tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+        assert_eq!(app.world().resource::<BevyRuntimeShell>().kurt_apricorn_quantity, Some(1));
+        if apricorn == "RED_APRICORN" {
+            for _ in 0..3 { app.update(); }
+            let text = rendered_mart_text_for_test(&mut app);
+            assert!(text.contains("How many should I") && text.contains("make?"), "{text}");
+            save_live_menu_lcd_for_test(app.world_mut(), "kurt-apricorn-quantity.png");
+        }
+        tm_mart_key_for_test(&mut app, KeyCode::KeyX);
+        assert!(app.world().resource::<BevyRuntimeShell>().kurt_apricorn_cursor.is_some());
+        assert_eq!(app.world().resource::<BevyRuntimeShell>().kurt_apricorn_quantity, None);
+        assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), apricorn), 3);
+        tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+        tm_mart_key_for_test(&mut app, KeyCode::ArrowUp);
+        tm_mart_key_for_test(&mut app, KeyCode::ArrowUp);
+        assert_eq!(app.world().resource::<BevyRuntimeShell>().kurt_apricorn_quantity, Some(3));
+        tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, apricorn), 0);
+            assert!(shell.shell.session().state().flags.is_engine_flag_set("ENGINE_KURT_MAKING_BALLS").unwrap());
+            quest_assert_save_round_trip(&mut shell, &format!("kurt-order-{apricorn}"));
+            quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt2");
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_KURTS_HOUSE_KURT_1").unwrap());
+            assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_KURTS_HOUSE_KURT_2").unwrap());
+            quest_talk(&mut shell, "Kurt2");
+        }
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), ball), 0);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            runtime.data().update_clock_from_datetime(shell.shell.session_mut().state_mut(),
+                crate::core::systems::time::GameDate::new(2000, 1, 3), 0, 0, 0,
+                &mut crate::core::random::ReplayDivider::new([0; 32])).unwrap();
+            quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+            assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_KURTS_HOUSE_KURT_1").unwrap());
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_KURTS_HOUSE_KURT_2").unwrap());
+            shell.shell.add_bag_item(ball, full_quantity).unwrap();
+            quest_talk(&mut shell, "Kurt1");
+        }
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, ball), full_quantity);
+            assert!(shell.shell.session().state().flags.is_event_flag_set(&format!("EVENT_GAVE_KURT_{apricorn}")).unwrap());
+            quest_assert_save_round_trip(&mut shell, &format!("kurt-full-{apricorn}"));
+            for _ in 0..crate::core::models::BALL_POCKET_CAPACITY {
+                shell.shell.remove_bag_item(ball, 99).unwrap();
+            }
+            quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+            kurt_browser_fixture_for_test(&mut shell, apricorn, "ready");
+            quest_talk(&mut shell, "Kurt1");
+        }
+        let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == "KurtsHouseKurtJustFinishedYourBallText"), "{labels:?}");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, ball), 3);
+            quest_assert_save_round_trip(&mut shell, &format!("kurt-reward-{apricorn}"));
+            quest_move_beside_npc(&mut shell, "KurtsHouse", "Kurt1");
+            quest_talk(&mut shell, "Kurt1");
+        }
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), ball), 3);
+        eprintln!("passed Kurt {apricorn}: quantity, same-day wait, next-day collection, save and repeat");
+    }
+}
+
+fn kurt_browser_fixture_for_test(shell: &mut BevyRuntimeShell, apricorn: &str, phase: &str) {
+    if apricorn != "RED_APRICORN" { return; }
+    let Some(directory) = std::env::var_os("POKEGEAR_PC_RENDER_DIR") else { return; };
+    let directory = PathBuf::from(directory);
+    std::fs::create_dir_all(&directory).unwrap();
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+    assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().unwrap().script, "Kurt1");
+    shell.shell.save(directory.join(format!("kurt-{phase}-browser.crystalsave"))).unwrap();
+}
