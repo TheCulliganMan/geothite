@@ -529,3 +529,14 @@ idle updates and closing. Existing Pack Cancel and party/Stats retention tests
 also pass (three targeted tests total). The resulting native Pack image was
 reviewed for the item list, description and action menu. Browser rollout of this
 retention fix 453a6460 is rebuilding; these checks do not establish every Pack flow.
+
+### Empty Balls pocket Cancel
+
+The browser's earlier `bag:balls has no valid cursor` error was reproduced with
+normal Start/Pack/pocket/Cancel input. The empty-Balls branch cleared only the
+cursor and left Pack open, causing a renderer/observation error on the next
+update. Removing that branch routes its Cancel row through the normal complete
+Pack cleanup. A regression now passes for all four empty pockets, checking the
+Cancel row before input, closing, idle updates, absence of runtime errors and
+successful observation after closing (17.76 seconds). Production rollout remains
+pending behind the already-running Pack display deployment.

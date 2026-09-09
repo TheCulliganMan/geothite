@@ -6641,22 +6641,6 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return open_visible_field_pack_action_menu(runtime_shell);
     }
     if snapshot.battle.is_none() && runtime_shell.ball_cursor.is_some() {
-        let ball_count = snapshot
-            .bag
-            .balls
-            .iter()
-            .filter(|ball| ball.quantity > 0)
-            .count();
-        if ball_count == 0 {
-            runtime_shell.ball_cursor = None;
-            record_visible_runtime_action(runtime_shell, "field:ball:no_items")?;
-            runtime_shell
-                .last_audio_events
-                .push("bag has no carried ball".to_string());
-            set_shell_action_status(runtime_shell, "NO BALLS");
-            trim_event_log(&mut runtime_shell.last_audio_events);
-            return Ok(());
-        }
         if selected_field_pack_cancel_row(&snapshot, runtime_shell, &FieldPackPocket::Balls)? {
             return close_visible_field_pack_from_cancel(runtime_shell);
         }

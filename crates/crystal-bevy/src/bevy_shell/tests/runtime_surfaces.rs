@@ -3754,3 +3754,31 @@ fn field_pack_keeps_its_visible_lcd_across_pockets_actions_and_idle_frames() {
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
     assert!(!visible_field_pack_is_open(app.world().resource::<BevyRuntimeShell>()));
 }
+
+#[test]
+fn every_empty_field_pack_pocket_cancel_closes_cleanly_and_can_be_observed() {
+    for pocket_index in 0..4 {
+        let shell = progression_shell_on_map_for_test("Route36");
+        let mut app = menu_render_test_app(shell);
+        app.update();
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        for _ in 0..pocket_index {
+            press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        }
+        {
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert!(visible_field_pack_is_open(shell));
+            let observation = webmcp_observation(shell, None).unwrap();
+            assert!(observation["observe"]["menus"][0]["entries"].as_array().unwrap()
+                .iter().any(|entry| entry.as_str() == Some(">CANCEL")));
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        for _ in 0..3 { app.update(); }
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "pocket {pocket_index}: {:?}", shell.last_error);
+        assert!(!visible_field_pack_is_open(shell), "pocket {pocket_index} must close on Cancel");
+        webmcp_observation(shell, None).expect("closed Pack must remain observable");
+    }
+}
