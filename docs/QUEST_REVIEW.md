@@ -670,3 +670,16 @@ NPC scripts, visible dialogue input, shared clock updates and save/load. Both fu
 unset across save/load, and making room allows a successful retry (15.64 seconds).
 Traversal and browser animation/audio review remain pending. Other daily
 quest flags also need a complete reset audit; this fix is specific to the TM gift.
+
+The TM transaction regression also passes with the production combined pack
+(94.64 seconds) and can emit an ignored browser save beside the Goldenrod clerk.
+A headed Chromium run at 390×844 CSS pixels captured welcome, top menu, stock,
+quantity, confirmation, purchase and exit without runtime exceptions. The stock,
+confirmation and exit screenshots were inspected. **Visual review is not passed:**
+the TM description box displays `?`, because the shop uses the machine item's
+placeholder description instead of its move description. The stock screen also
+leaves the overworld behind the menu, whereas the source `BuyMenu` calls
+`FadeToMenu` and `BlankScreen`. Quantity prompting and the remaining shop layout
+must be reviewed against the [mart implementation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/items/mart.asm).
+These renderer fixes remain pending; this browser run does not verify the new
+Sunday clock reset or physical Safari/touch input.

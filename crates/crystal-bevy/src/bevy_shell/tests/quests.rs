@@ -3179,6 +3179,14 @@ fn tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory() {
             shell.shell.session_mut().state_mut().flags.set_event_flag(flag, value).unwrap();
         }
         quest_move_beside_npc(&mut shell, map, script);
+        if mart == "MART_GOLDENROD_5F_1" {
+            if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                std::fs::create_dir_all(&directory).unwrap();
+                shell.shell.session_mut().state_mut().money = 50000;
+                shell.shell.session_mut().state_mut().player_name = "TEST".into();
+                shell.shell.save(PathBuf::from(directory).join("tm-mart-browser.crystalsave")).unwrap();
+            }
+        }
         quest_talk(&mut shell, script);
         let mut app = menu_render_test_app(shell);
         quest_settle(&mut app, true, |shell| shell.shop_top_cursor.is_some() && shell.shop_welcome_seen && shell.shop_notice.is_none() && shell.field_notice.is_none());
