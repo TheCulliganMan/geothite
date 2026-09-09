@@ -357,7 +357,8 @@ across reloads, and awarded Snore once. Milk purchases then exposed missing
 three values from the existing `AmountComparison` implementation; all three Moomoo regressions now pass (75.97 seconds), including the complete
 feeding/reward chain and insufficient-money/full-pocket/retry branches.
 Milk purchases charge exactly ¥500 only after successful delivery; repeat
-interactions preserve the existing bottle. Deployment verification is pending.
+interactions preserve the existing bottle. Deployment and the initial sick-cow
+browser interaction are verified below.
 
 Presentation gaps remain: the milk dialogue displays an unresolved decimal
 price placeholder, and `PlaySlowCry` uses the ordinary visible cry playback
@@ -375,3 +376,14 @@ both walking hatch nickname paths and persistence, retained hatch portrait,
 stone evolution/save, Unown forms/palettes, Stats layout/palette, Transform,
 and wild sparkle sequencing/input release. This does not cover every evolution
 method or every capture/switch/Transform combination.
+
+
+Moomoo fixes `796b342e` are deployed. The container is running and healthy with
+image `sha256:6ab1a471a056ddecbcfae7d40f863281b24002d65f86938d2dc98e5aaf4f97ba`.
+A fresh production browser session passed the sick-cow greeting, weak-cry text,
+dialogue close and walking into the open aisle, with no page/runtime errors.
+The initial movement assertion aimed down into the barn fence; the corrected
+run uses the open aisle and verifies changed coordinates. Reviewed screenshots
+show complete weak-cry text within its box and the player walking after closure.
+This is desktop Chromium at 390×844 CSS pixels/DPR 2 with keyboard inputs;
+iPhone Safari, touch controls and perceptual cry fidelity remain unverified.
