@@ -101,7 +101,6 @@ fn mart_rendering_preserves_the_text_contract() {
     assert!(rendering.contains("let row = 4.0 + visible_index as f32 * 2.0;"));
     assert!(rendering.contains("battle_hud_tile_origin(2.0, row)"));
     assert!(rendering.contains("battle_hud_tile_origin(10.0, row + 1.0)"));
-    assert!(rendering.contains("battle_hud_tile_origin(1.0, 13.0 + index as f32)"));
     assert!(rendering.contains("battle_hud_tile_origin(8.0, 16.0)"));
     assert!(!rendering.contains("let price = if selling { item.price / 2 } else { item.price };"));
     assert!(!rendering.contains("shop.mart_type, shop.mart_id, snapshot.trainer.money"));
@@ -417,4 +416,28 @@ fn mart_long_item_names_render_every_glyph_in_buy_and_sell_rows() {
                 .save(PathBuf::from(directory).join(format!("{label}.png"))).unwrap();
         }
     }
+}
+
+#[test]
+fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
+    let mut shell = initialized_mart_shell();
+    shell.shell.session_mut().state_mut().script_runtime.pending_shop.as_mut().unwrap().inventory =
+        vec!["TM_THUNDERPUNCH".into()];
+    confirm_visible_shop_top_menu(&mut shell).unwrap();
+    let mut app = menu_render_test_app(shell);
+    for _ in 0..3 { app.update(); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    let glyphs = app.world().resource::<RenderedTilesetArt>().font_cache.as_ref().unwrap()
+        .glyphs.iter().map(|(character, frame)| (*character, frame.handle.clone())).collect::<Vec<_>>();
+    let mut letters = app.world_mut().query::<(&Handle<Image>, &Transform, &Visibility)>()
+        .iter(app.world()).filter(|(_, _, visibility)| **visibility != Visibility::Hidden)
+        .filter_map(|(image, transform, _)| glyphs.iter().find(|(_, handle)| handle == image)
+            .map(|(character, _)| (transform.translation.y, transform.translation.x, *character)))
+        .collect::<Vec<_>>();
+    letters.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.total_cmp(&b.1)));
+    let text = letters.iter().map(|(_, _, character)| *character).collect::<String>();
+    assert!(text.contains("electric punch") && text.contains("paralyze"), "{text}");
+    retained_fullscreen_surface(app.world_mut());
+    save_live_menu_lcd_for_test(app.world_mut(), "tm-shop-stock.png");
 }

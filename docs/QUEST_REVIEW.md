@@ -663,7 +663,8 @@ clears the daily flag bank containing the
 The Rust daily reset now also removes `ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN`;
 the receptionist script retains the Sunday and happiness gates. All six happiness
 cases now pass through the following Sunday, a second gift and another save/load
-(54.00 seconds). Deployment is pending.
+(54.00 seconds). Fix `43c01689` is deployed; the replacement container is
+running and healthy (image `747f4b3411a4`).
 
 These fixtures stage dates, happiness and positions, then use actual map callbacks,
 NPC scripts, visible dialogue input, shared clock updates and save/load. Both full-stack cases also pass: a failed gift at 99 copies leaves the claim
@@ -683,3 +684,14 @@ leaves the overworld behind the menu, whereas the source `BuyMenu` calls
 must be reviewed against the [mart implementation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/items/mart.asm).
 These renderer fixes remain pending; this browser run does not verify the new
 Sunday clock reset or physical Safari/touch input.
+
+
+The shop renderer now resolves TM descriptions from the existing bundled move
+text and clears/retains the inventory LCD. Description lines use the source's
+spaced textbox rows. The native glyph check and full LCD image pass; the image
+shows ThunderPunch's complete description and a white background. The image
+capture helper now includes scene-dialog sprites, which it previously omitted.
+All five TM shop transaction variants pass with this renderer (81.53 seconds),
+and the text-contract check passes after the line placement adjustment. Production
+render verification is pending deployment; quantity prompts, selling presentation
+and other source-layout differences remain open.

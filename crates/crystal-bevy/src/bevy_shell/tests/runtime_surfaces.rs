@@ -3329,7 +3329,7 @@ fn save_live_menu_lcd_for_test(world: &mut World, name: &str) {
         return;
     };
     let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>),
-        Or<(With<FieldCommandMarker>, With<VisibleIntroSurface>)>>()
+        Or<(With<FieldCommandMarker>, With<SceneDialogMarker>, With<VisibleIntroSurface>)>>()
         .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
         .collect::<Vec<_>>();
     let mut lcd = World::new();

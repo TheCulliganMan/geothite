@@ -505,6 +505,8 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         // Pack and its item-action submenu own the LCD, including idle frames.
         // Without retention the overworld adopts the presenter and erases it.
         || visible_field_pack_is_open(runtime_shell)
+        || (runtime_shell.shell.session().state().script_runtime.pending_shop.is_some()
+            && runtime_shell.shop_top_cursor.is_none())
         // StartMenu_Pokemon owns the whole LCD through party selection,
         // MonSubmenu, and StatsScreen. Retain its presenter on idle frames
         // as well as redraws, and apply the same fullscreen transform to OAM.
@@ -7394,6 +7396,10 @@ fn spawn_field_shop_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    // BuyMenu clears the map before drawing its scrolling inventory.
+    if runtime_shell.shop_top_cursor.is_none() {
+        commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 4.0, images)?;
+    }
     let shop_notice = if runtime_shell.shop_welcome_seen {
         runtime_shell.shop_notice.as_deref()
     } else {
@@ -7647,18 +7653,19 @@ fn spawn_field_shop_screen(
     if !selling && selected_item_id == "CANCEL" {
         return Ok(());
     }
-    let description = snapshot
-        .items
-        .iter()
-        .find(|item| item.item_id == *selected_item_id)
-        .with_context(|| format!("selected shop item {selected_item_id} is missing"))?
-        .description
-        .as_str();
-    for (index, line) in wrap_boot_text_for_box(description, 18, 4)
-        .iter()
-        .enumerate()
-    {
-        let (x, y) = battle_hud_tile_origin(1.0, 13.0 + index as f32);
+    let item = snapshot.items.iter().find(|item| item.item_id == *selected_item_id)
+        .with_context(|| format!("selected shop item {selected_item_id} is missing"))?;
+    let description = if let Some(move_id) = item.tmhm_move.as_ref() {
+        if rendered_art.move_description_cache.is_none() {
+            rendered_art.move_description_cache = Some(load_asm_move_descriptions(asset_root, snapshot)?);
+        }
+        rendered_art.move_description_cache.as_ref().unwrap().get(move_id)
+            .with_context(|| format!("shop TM move description {move_id} is missing"))?.clone()
+    } else {
+        item.description.clone()
+    };
+    for (index, line) in wrap_boot_text_for_box(&description, 18, 2).iter().enumerate() {
+        let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
         spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.2);
     }
     if let Some(quantity) = runtime_shell.shop_quantity.as_ref() {
@@ -13720,7 +13727,7 @@ fn spawn_furniture_radio_textbox(
     spawn_field_command_window_frame_tiles(commands, frame, 0.0, 12.0, 20, 6, 3.4);
     if runtime_shell.pokegear_map_radio_delay == Some(0) {
         for (index, row) in visible_radio_text_rows(runtime_shell)?.iter().enumerate() {
-            let (x, y) = battle_hud_tile_origin(1.0, 13.0 + index as f32);
+            let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
             spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, row, x, y, 3.6);
         }
     } else {
