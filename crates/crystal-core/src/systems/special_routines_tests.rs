@@ -9454,6 +9454,48 @@ fn day_care_ditto_uses_distinct_move_and_dv_inheritance_parents() {
 }
 
 #[test]
+fn day_care_shiny_ditto_preserves_random_special_bit_and_derives_hp() {
+    // Enumerate the 512 equally likely attack/speed/Special-bit outcomes.
+    // Either Ditto slot supplies Defense and the low three Special bits;
+    // donor Special 2 and 10 must produce the same 1/64 shiny distribution.
+    for ditto_first in [true, false] {
+        for donor_special in [2, 10] {
+            let mut shiny_count = 0;
+            for attack in 0..16 {
+                for speed in 0..16 {
+                    for special_high in [0, 8] {
+                        let mut state = GameState::default();
+                        let mut ditto = pokemon("DITTO");
+                        ditto.dvs = Dv::from_non_hp(2, 10, 10, donor_special);
+                        let mut mate = pokemon("CHIKORITA");
+                        mate.dvs = Dv::from_non_hp(15, 1, 1, 1);
+                        let (first, second) = if ditto_first { (ditto, mate) } else { (mate, ditto) };
+                        state.day_care.man.pokemon = Some(first);
+                        state.day_care.lady.pokemon = Some(second);
+                        let mut divider = ReplayDivider::new(divider_trace_for_sub_values([
+                            200, (attack << 4) | 1, (speed << 4) | special_high | 5,
+                        ]));
+                        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+                        update_day_care_compatibility(&mut state, &mut rng).unwrap();
+                        let egg = state.day_care.egg.as_ref().expect("compatible parents generate egg");
+                        assert_eq!(egg.dvs, Dv::from_non_hp(attack, 10, speed, special_high | 2),
+                            "ditto_first={ditto_first}, donor_special={donor_special}");
+                        assert!(egg.is_egg);
+                        let saved = serde_json::to_string(&egg.dvs).unwrap();
+                        assert_eq!(serde_json::from_str::<Dv>(&saved).unwrap(), egg.dvs);
+                        if egg.dvs.defense == 10 && egg.dvs.speed == 10 && egg.dvs.special == 10 && egg.dvs.attack & 2 != 0 {
+                            shiny_count += 1;
+                        }
+                        assert_eq!(divider.consumed(), 6);
+                    }
+                }
+            }
+            assert_eq!(shiny_count, 8);
+        }
+    }
+}
+
+#[test]
 fn day_care_step_does_not_consult_the_growth_rate_table() {
     let mut state = GameState::default();
     let mut resident = pokemon("CHIKORITA");

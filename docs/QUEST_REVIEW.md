@@ -183,3 +183,16 @@ it does not ride all 1,024 steps. Five core mileage/poison/service checks pass.
 Slowpoke Tail offer checks also pass both answers, unchanged maximum money and
 inventory, scene advancement and save/load; the authored seller never sells an
 item even when answering yes. No seller production change was needed.
+
+Breeding shiny audit found a production defect: InitEgg discarded the random
+high Special DV bit during inheritance, preventing inherited eggs from being
+shiny. It also retained the pre-inheritance HP DV, which could fail persisted DV
+validation. The implementation now preserves the random Special bit, inherits
+the donor's low three bits and Defense, and recomputes the derived HP DV. This
+matches [InitEgg](https://github.com/pret/pokecrystal/blob/master/engine/events/daycare.asm).
+The new regression failed before the fix and passes all 512 attack/speed/Special
+bit outcomes for both Ditto slots and donor Special 2/10 (2,048 generated eggs).
+Each setup yields eight shiny outcomes, and all generated DVs serialize and
+validate on read. All 24 Day Care checks pass. This proves the tested inheritance
+distribution, not random-source uniformity, every parent pairing, or a complete
+visible hatch playthrough. Existing eggs are not rerolled by this change.

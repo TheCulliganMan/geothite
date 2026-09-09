@@ -13476,8 +13476,15 @@ where
         _ => None,
     };
     if let Some(dv_donor) = dv_donor {
-        dvs.defense = dv_donor.dvs.defense & 0x0f;
-        dvs.special = dv_donor.dvs.special & 0x07;
+        // InitEgg preserves the random Special high bit while inheriting
+        // Defense and the donor's low three Special bits. Rebuild the derived
+        // HP DV after inheritance so stats and persisted DVs stay consistent.
+        dvs = Dv::from_non_hp(
+            dvs.attack,
+            dv_donor.dvs.defense & 0x0f,
+            dvs.speed,
+            (dvs.special & 0x08) | (dv_donor.dvs.special & 0x07),
+        );
     }
     let mut egg = parent.clone();
     egg.species.id = egg_species_id;
