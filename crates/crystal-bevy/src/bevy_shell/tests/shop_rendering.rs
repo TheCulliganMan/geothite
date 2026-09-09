@@ -428,6 +428,23 @@ fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
     for _ in 0..3 { app.update(); }
     let shell = app.world().resource::<BevyRuntimeShell>();
     assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    let text = rendered_mart_text_for_test(&mut app);
+    assert!(text.contains("electric punch") && text.contains("paralyze"), "{text}");
+    retained_fullscreen_surface(app.world_mut());
+    save_live_menu_lcd_for_test(app.world_mut(), "tm-shop-stock.png");
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    for _ in 0..3 { app.update(); }
+    let text = rendered_mart_text_for_test(&mut app);
+    assert!(text.contains("How many?"), "{text}");
+    assert!(!text.contains("electric punch"), "quantity prompt must replace the description: {text}");
+    save_live_menu_lcd_for_test(app.world_mut(), "tm-shop-quantity.png");
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    for _ in 0..3 { app.update(); }
+    let text = rendered_mart_text_for_test(&mut app);
+    assert!(text.contains("electric punch") && !text.contains("How many?"), "{text}");
+}
+
+fn rendered_mart_text_for_test(app: &mut App) -> String {
     let glyphs = app.world().resource::<RenderedTilesetArt>().font_cache.as_ref().unwrap()
         .glyphs.iter().map(|(character, frame)| (*character, frame.handle.clone())).collect::<Vec<_>>();
     let mut letters = app.world_mut().query::<(&Handle<Image>, &Transform, &Visibility)>()
@@ -436,8 +453,5 @@ fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
             .map(|(character, _)| (transform.translation.y, transform.translation.x, *character)))
         .collect::<Vec<_>>();
     letters.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.total_cmp(&b.1)));
-    let text = letters.iter().map(|(_, _, character)| *character).collect::<String>();
-    assert!(text.contains("electric punch") && text.contains("paralyze"), "{text}");
-    retained_fullscreen_surface(app.world_mut());
-    save_live_menu_lcd_for_test(app.world_mut(), "tm-shop-stock.png");
+    letters.iter().map(|(_, _, character)| *character).collect::<String>()
 }

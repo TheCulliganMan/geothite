@@ -695,3 +695,12 @@ All five TM shop transaction variants pass with this renderer (81.53 seconds),
 and the text-contract check passes after the line placement adjustment. Production
 render verification is pending deployment; quantity prompts, selling presentation
 and other source-layout differences remain open.
+
+The quantity screen had another confirmed omission: it kept the item description
+instead of displaying `How many?`, used by the standard, herbal, pharmacy and sell
+[source prompts](https://raw.githubusercontent.com/pret/pokecrystal/master/data/text/common_3.asm).
+The renderer now replaces the description during quantity selection and restores
+it on B cancellation. The real-input glyph regression passes (6.91 seconds), and
+the full native quantity image was inspected: prompt, quantity and total are
+visible without the old description. This additional fix is awaiting deployment;
+production verification and the broader selling/layout audit remain open.

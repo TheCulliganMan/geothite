@@ -7653,20 +7653,22 @@ fn spawn_field_shop_screen(
     if !selling && selected_item_id == "CANCEL" {
         return Ok(());
     }
-    let item = snapshot.items.iter().find(|item| item.item_id == *selected_item_id)
-        .with_context(|| format!("selected shop item {selected_item_id} is missing"))?;
-    let description = if let Some(move_id) = item.tmhm_move.as_ref() {
-        if rendered_art.move_description_cache.is_none() {
-            rendered_art.move_description_cache = Some(load_asm_move_descriptions(asset_root, snapshot)?);
+    if runtime_shell.shop_quantity.is_none() {
+        let item = snapshot.items.iter().find(|item| item.item_id == *selected_item_id)
+            .with_context(|| format!("selected shop item {selected_item_id} is missing"))?;
+        let description = if let Some(move_id) = item.tmhm_move.as_ref() {
+            if rendered_art.move_description_cache.is_none() {
+                rendered_art.move_description_cache = Some(load_asm_move_descriptions(asset_root, snapshot)?);
+            }
+            rendered_art.move_description_cache.as_ref().unwrap().get(move_id)
+                .with_context(|| format!("shop TM move description {move_id} is missing"))?.clone()
+        } else {
+            item.description.clone()
+        };
+        for (index, line) in wrap_boot_text_for_box(&description, 18, 2).iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
+            spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.2);
         }
-        rendered_art.move_description_cache.as_ref().unwrap().get(move_id)
-            .with_context(|| format!("shop TM move description {move_id} is missing"))?.clone()
-    } else {
-        item.description.clone()
-    };
-    for (index, line) in wrap_boot_text_for_box(&description, 18, 2).iter().enumerate() {
-        let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
-        spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.2);
     }
     if let Some(quantity) = runtime_shell.shop_quantity.as_ref() {
         anyhow::ensure!(
@@ -7740,6 +7742,9 @@ fn spawn_field_shop_screen(
             }
             return Ok(());
         }
+        let (x, y) = battle_hud_tile_origin(1.0, 14.0);
+        spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
+            "How many?", x, y, 4.5);
         spawn_mart_window(
             commands,
             rendered_art,
