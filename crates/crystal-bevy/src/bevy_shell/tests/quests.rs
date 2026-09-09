@@ -3277,3 +3277,129 @@ fn tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory() {
         for item in inventory { assert_eq!(quest_item_quantity(&shell, &item), 99); }
     }
 }
+
+#[test]
+fn sunday_happiness_tm_gifts_follow_thresholds_and_remain_claimed_after_reload() {
+    const MAP: &str = "GoldenrodDeptStore5F";
+    const SCRIPT: &str = "GoldenrodDeptStore5FReceptionistScript";
+    const OBJECT: &str = "GOLDENRODDEPTSTORE5F_RECEPTIONIST";
+    const CLAIMED: &str = "ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN";
+    for happiness in [0, 49, 50, 149, 150, 255] {
+        let mut shell = progression_shell_on_map_for_test(MAP);
+        // A civil Sunday/Monday pair keeps all clock registers consistent for saves.
+        shell.shell.session_mut().state_mut().time.update_server_datetime(
+            crate::core::systems::time::GameDate { year: 2000, month: 1, day: 3 }, 12, 0, 0);
+        quest_move_beside_npc(&mut shell, MAP, SCRIPT);
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some(OBJECT)), "receptionist must be absent Monday");
+        {
+            let state = shell.shell.session_mut().state_mut();
+            state.time.update_server_datetime(
+                crate::core::systems::time::GameDate { year: 2000, month: 1, day: 2 }, 12, 0, 0);
+            state.storage.party.pokemon[0].as_mut().unwrap().happiness = happiness;
+        }
+        quest_move_beside_npc(&mut shell, MAP, SCRIPT);
+        assert!(shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some(OBJECT)), "receptionist must appear Sunday");
+        assert!(!shell.shell.session().state().flags.is_engine_flag_set(CLAIMED).unwrap());
+        quest_talk(&mut shell, SCRIPT);
+        let mut app = menu_render_test_app(shell);
+        let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        let (expected, item) = if happiness < 50 {
+            ("GoldenrodDeptStore5FReceptionistItLooksEvilHowAboutThisTMText", Some("TM_FRUSTRATION"))
+        } else if happiness < 150 {
+            ("GoldenrodDeptStore5FReceptionistItsAdorableText", None)
+        } else {
+            ("GoldenrodDeptStore5FReceptionistThisMoveShouldBePerfectText", Some("TM_RETURN"))
+        };
+        assert!(labels.iter().any(|label| label == expected), "happiness {happiness}: {labels:?}");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            for candidate in ["TM_RETURN", "TM_FRUSTRATION"] {
+                assert_eq!(quest_item_quantity(&shell, candidate), u16::from(item == Some(candidate)));
+            }
+            assert_eq!(shell.shell.session().state().flags.is_engine_flag_set(CLAIMED).unwrap(), item.is_some());
+            quest_assert_save_round_trip(&mut shell, &format!("sunday-tm-{happiness}"));
+            // An unawarded middle-range visit must not block a later eligible visit.
+            // A claimed gift must block the other gift too, even after happiness changes.
+            shell.shell.session_mut().state_mut().storage.party.pokemon[0].as_mut().unwrap().happiness =
+                if happiness >= 150 { 0 } else { 255 };
+            quest_move_beside_npc(&mut shell, MAP, SCRIPT);
+            quest_talk(&mut shell, SCRIPT);
+        }
+        let repeat = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if item.is_some() {
+            assert!(repeat.iter().any(|label|
+                label == "GoldenrodDeptStore5FReceptionistThereAreTMsPerfectForMonText"));
+            for candidate in ["TM_RETURN", "TM_FRUSTRATION"] {
+                assert_eq!(quest_item_quantity(shell, candidate), u16::from(item == Some(candidate)));
+            }
+        } else {
+            assert!(repeat.iter().any(|label|
+                label == "GoldenrodDeptStore5FReceptionistThisMoveShouldBePerfectText"));
+            assert_eq!(quest_item_quantity(shell, "TM_RETURN"), 1);
+            assert_eq!(quest_item_quantity(shell, "TM_FRUSTRATION"), 0);
+        }
+        assert!(shell.shell.session().state().flags.is_engine_flag_set(CLAIMED).unwrap());
+        let before_return = quest_item_quantity(shell, "TM_RETURN");
+        let before_frustration = quest_item_quantity(shell, "TM_FRUSTRATION");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            let runtime = shell.runtime.clone();
+            runtime.data().update_clock_from_datetime(shell.shell.session_mut().state_mut(),
+                crate::core::systems::time::GameDate { year: 2000, month: 1, day: 9 },
+                12, 0, 0, &mut crate::core::random::ReplayDivider::new([0, 0])).unwrap();
+            assert!(!shell.shell.session().state().flags.is_engine_flag_set(CLAIMED).unwrap(),
+                "the daily reset must allow a gift on the next Sunday");
+            quest_move_beside_npc(&mut shell, MAP, SCRIPT);
+            quest_talk(&mut shell, SCRIPT);
+        }
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "TM_RETURN"), before_return + u16::from(happiness < 150));
+        assert_eq!(quest_item_quantity(&shell, "TM_FRUSTRATION"), before_frustration + u16::from(happiness >= 150));
+        assert!(shell.shell.session().state().flags.is_engine_flag_set(CLAIMED).unwrap());
+        quest_assert_save_round_trip(&mut shell, &format!("next-sunday-tm-{happiness}"));
+        eprintln!("passed Sunday TM happiness {happiness}: weekday visibility, gift, reload, repeat, next week");
+    }
+}
+
+#[test]
+fn sunday_happiness_tm_full_stack_can_retry_without_losing_the_gift() {
+    for (happiness, item) in [(0, "TM_FRUSTRATION"), (255, "TM_RETURN")] {
+        let mut shell = progression_shell_on_map_for_test("GoldenrodDeptStore5F");
+        {
+            let state = shell.shell.session_mut().state_mut();
+            state.time.update_server_datetime(
+                crate::core::systems::time::GameDate { year: 2000, month: 1, day: 2 }, 12, 0, 0);
+            state.storage.party.pokemon[0].as_mut().unwrap().happiness = happiness;
+        }
+        shell.shell.add_bag_item(item, 99).unwrap();
+        quest_move_beside_npc(&mut shell, "GoldenrodDeptStore5F", "GoldenrodDeptStore5FReceptionistScript");
+        quest_talk(&mut shell, "GoldenrodDeptStore5FReceptionistScript");
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, item), 99);
+            assert!(!shell.shell.session().state().flags
+                .is_engine_flag_set("ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN").unwrap());
+            quest_assert_save_round_trip(&mut shell, &format!("sunday-full-{item}"));
+            shell.shell.remove_bag_item(item, 1).unwrap(); // make room for a retry
+            quest_move_beside_npc(&mut shell, "GoldenrodDeptStore5F", "GoldenrodDeptStore5FReceptionistScript");
+            quest_talk(&mut shell, "GoldenrodDeptStore5FReceptionistScript");
+        }
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, item), 99);
+        assert!(shell.shell.session().state().flags
+            .is_engine_flag_set("ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN").unwrap());
+        quest_assert_save_round_trip(&mut shell, &format!("sunday-retry-{item}"));
+    }
+}

@@ -8400,6 +8400,9 @@ impl GameState {
         // wBuenasPassword. The second flag records participation, not generation.
         next.flags.engine_flags.remove("ENGINE_BUENAS_PASSWORD");
         next.flags.engine_flags.remove("ENGINE_BUENAS_PASSWORD_2");
+        // The Sunday happiness gift shares wDailyFlags2. Its claim expires
+        // at the daily reset; the map script separately enforces Sunday.
+        next.flags.engine_flags.remove("ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN");
         next.fishing.swarm_flag = 0;
         next.swarms.active.clear();
         next.apply_pokerus_tick(1);

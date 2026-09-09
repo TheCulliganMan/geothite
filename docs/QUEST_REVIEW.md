@@ -645,3 +645,28 @@ readiness, text-reveal and price integer-type issues, not confirmed game defects
 This does not verify department-store traversal, original price-table fidelity,
 shop screenshot/audio timing, selling, Game Corner prizes, Sunday happiness gifts,
 or machine teaching/battle behavior. Those remain in the broader checklist.
+
+### Sunday happiness TM gifts
+
+The real-pack receptionist script passes happiness 0, 49, 50, 149, 150 and 255:
+Frustration below 50, no gift at 50–149, and Return at 150 or above. Map callbacks
+hide her on Monday and show her on Sunday. A middle-range visit does not consume
+the reward; changing happiness after claiming a gift cannot claim the other TM
+that same Sunday. Gift counts and the claim flag survive save/load. These initial
+checks passed in 40.55 seconds.
+
+The next-week extension reproduced a real defect: advancing the shared game clock
+to the following Sunday left the gift permanently claimed. The original
+[daily reset](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/time.asm)
+clears the daily flag bank containing the
+[TM claim flag](https://raw.githubusercontent.com/pret/pokecrystal/master/data/events/engine_flags.asm).
+The Rust daily reset now also removes `ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN`;
+the receptionist script retains the Sunday and happiness gates. All six happiness
+cases now pass through the following Sunday, a second gift and another save/load
+(54.00 seconds). Deployment is pending.
+
+These fixtures stage dates, happiness and positions, then use actual map callbacks,
+NPC scripts, visible dialogue input, shared clock updates and save/load. Both full-stack cases also pass: a failed gift at 99 copies leaves the claim
+unset across save/load, and making room allows a successful retry (15.64 seconds).
+Traversal and browser animation/audio review remain pending. Other daily
+quest flags also need a complete reset audit; this fix is specific to the TM gift.
