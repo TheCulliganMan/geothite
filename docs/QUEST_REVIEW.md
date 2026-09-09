@@ -571,3 +571,18 @@ The [Cianwood script](https://raw.githubusercontent.com/pret/pokecrystal/master/
 is the reference. This test stages the trainer battle's terminal victory and
 positions the player beside each NPC. It does not establish full gym traversal,
 combat, HM-pocket capacity failure, Fly teaching/use or visual/audio fidelity.
+
+### Strength gift and teaching
+
+The real-pack visible-shell check passes the Olivine Café sailor's HM_STRENGTH
+gift, event flag, save/load, visible HM boot/teach flow with an open move slot,
+non-consumption of the HM, persisted learned Strength and repeat conversation
+without a duplicate (8.62 seconds). The fixture selects the HM pocket/cursor,
+then advances the visible prompt and party selection with the normal input helper.
+The [sailor script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/OlivineCafe.asm)
+and [Machop learnset](https://raw.githubusercontent.com/pret/pokecrystal/master/data/pokemon/base_stats/machop.asm)
+are the references. The initial Totodile fixture was corrected: its original
+Crystal learnset excludes Strength, and the implementation correctly refused it.
+Replacement/cancel, a second recipient, boulder movement and browser visual/audio
+verification are not established by this acquisition/teaching check; existing
+field Strength tests are separate.

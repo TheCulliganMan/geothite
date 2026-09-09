@@ -2997,3 +2997,48 @@ fn chucks_victory_unlocks_wifes_fly_reward_after_save_and_only_once() {
     assert!(!labels.iter().any(|label| label == "ChucksWifeGiveHMText"));
     assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_FLY"), 1);
 }
+
+#[test]
+fn strength_sailor_gift_teaching_and_repeat_preserve_the_hm_after_reload() {
+    const SCRIPT: &str = "OlivineCafeStrengthSailorScript";
+    let mut shell = progression_shell_on_map_for_test("OlivineCafe");
+    // Crystal's Totodile cannot learn Strength; use a compatible Machop.
+    // An open move slot isolates acquisition/teaching from replacement choices.
+    let mut learner = crate::core::models::Pokemon::new_for_tests(
+        shell.runtime.data().pokemon["MACHOP"].clone(), 20, Dv::default());
+    learner.moves = vec![crate::core::models::LearnedMove {
+        name: "LOW_KICK".into(), current_pp: 20, pp_ups: 0 }];
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0] = Some(learner);
+    shell.shell.session_mut().state_mut().sync_party_from_storage();
+    quest_move_beside_npc(&mut shell, "OlivineCafe", SCRIPT);
+    quest_talk(&mut shell, SCRIPT);
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "OlivineCafeStrengthSailorText"));
+    assert!(labels.iter().any(|label| label == "OlivineCafeStrengthSailorText_GotStrength"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_STRENGTH"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_HM04_STRENGTH").unwrap());
+        quest_assert_save_round_trip(&mut shell, "strength-sailor-gift");
+        shell.field_pack_pocket = Some(FieldPackPocket::TmHm);
+        shell.tmhm_cursor = Some(MenuCursor { surface_id: "bag:tmhm".into(), option_index: 0 });
+        open_visible_tmhm_teach_prompt(&mut shell).unwrap();
+    }
+    quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap()
+            .moves.iter().any(|learned| learned.name == "STRENGTH"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "HM_STRENGTH"), 1, "HM teaching must not consume it");
+        quest_assert_save_round_trip(&mut shell, "strength-taught");
+        assert!(shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap()
+            .moves.iter().any(|learned| learned.name == "STRENGTH"));
+        quest_move_beside_npc(&mut shell, "OlivineCafe", SCRIPT);
+        quest_talk(&mut shell, SCRIPT);
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "OlivineCafeStrengthSailorText_GotStrength"));
+    assert!(!labels.iter().any(|label| label == "OlivineCafeStrengthSailorText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_STRENGTH"), 1);
+}
