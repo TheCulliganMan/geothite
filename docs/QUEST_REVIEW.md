@@ -604,3 +604,20 @@ a second battle nor another HM (41.03 seconds). The
 is the reference. The fixture positions the player at the scene and beside the
 elder; full tower traversal, earlier sages, full combat, camera/audio timing and
 Flash teaching/use are not established by this check.
+
+### TM/HM item-ball acquisition
+
+The real-pack visible-shell regression exercises every mapped TM/HM `itemball`
+entry: 17 map/script entries represent 16 collectible pickups, including Ice
+Path's Waterfall HM. Each new pickup is visible before interaction, produces the
+found-item notice, adds its authored quantity, sets its event flag, disappears,
+and stays absent after save/load and map re-entry. National Park's normal and
+Bug-Catching Contest variants share Dig's event flag; collecting it in the normal
+map correctly hides it in the contest map too. The expanded check passes in
+48.11 seconds. The [Waterfall source](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/IcePath1F.asm)
+confirms the Ice Path item-ball and event flag.
+
+The fixture positions the player next to each authored pickup and advances the
+visible shell. It does not prove traversal/access puzzles, full-pocket retry,
+hidden items, scripted gifts, shops, teaching, battle use or browser visual/audio
+fidelity. Those remain separate parts of the full TM/HM checklist.

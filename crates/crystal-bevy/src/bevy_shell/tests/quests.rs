@@ -3095,3 +3095,61 @@ fn sprout_tower_rival_departure_and_elders_flash_reward_persist() {
     assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "HM_FLASH"), 1);
     assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle());
 }
+
+#[test]
+fn every_machine_item_ball_is_collectible_and_stays_removed_after_reload() {
+    let mut shell = progression_shell_on_map_for_test("IcePath1F");
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+    let pickups = shell.runtime.data().maps.iter().flat_map(|(map, module)| {
+        module.script_field_pickups.iter().filter_map(|pickup| {
+            let item = pickup.item_id.as_ref()?;
+            (pickup.command == "itemball" && shell.runtime.data().items[item].tmhm_index.is_some())
+                .then(|| (map.clone(), pickup.clone()))
+        })
+    }).collect::<Vec<_>>();
+    assert!(pickups.iter().any(|(_, pickup)| pickup.item_id.as_deref() == Some("HM_WATERFALL")));
+    assert!(!pickups.is_empty());
+    eprintln!("checking {} authored TM/HM item-ball pickups", pickups.len());
+    let mut app = menu_render_test_app(shell);
+    let mut collected_flags = std::collections::BTreeSet::new();
+    for (map, pickup) in pickups {
+        let item = pickup.item_id.as_ref().unwrap();
+        let flag = pickup.event_flag.as_ref().expect("machine item ball has a persistence flag");
+        let (object_id, before) = {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, &map, &pickup.source_script);
+            let object_id = shell.runtime.data().maps[&map].objects.iter()
+                .find(|object| object.script == pickup.source_script).unwrap()
+                .object_identifier.clone().unwrap();
+            if shell.shell.session().state().flags.is_event_flag_set(flag).unwrap() {
+                assert!(collected_flags.contains(flag), "{map}/{item} was not collected by this test");
+                assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+                    object.object_identifier.as_deref() == Some(object_id.as_str())),
+                    "{map}/{item} shares a collected pickup and must stay hidden");
+                eprintln!("passed shared pickup removal {map}/{}: {item}", pickup.source_script);
+                continue;
+            }
+            assert!(shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+                object.object_identifier.as_deref() == Some(object_id.as_str())), "{map}/{item} must be visible");
+            let before = quest_item_quantity(&shell, item);
+            quest_talk(&mut shell, &pickup.source_script);
+            assert!(shell.field_notice.as_deref().is_some_and(|text| text.starts_with("CHRIS found\n")),
+                "{map}/{item} must present its found-item message: {:?}", shell.field_notice);
+            (object_id, before)
+        };
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, item), before + pickup.quantity, "{map}/{item}");
+        assert!(shell.shell.session().state().flags.is_event_flag_set(flag).unwrap(), "{map}/{item}");
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some(object_id.as_str())), "{map}/{item} must disappear");
+        quest_assert_save_round_trip(&mut shell, &format!("machine-ball-{map}-{item}"));
+        quest_move_beside_npc(&mut shell, &map, &pickup.source_script);
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some(object_id.as_str())), "{map}/{item} must stay removed");
+        assert_eq!(quest_item_quantity(&shell, item), before + pickup.quantity);
+        collected_flags.insert(flag.clone());
+        eprintln!("passed {map}/{}: {item}", pickup.source_script);
+    }
+}
