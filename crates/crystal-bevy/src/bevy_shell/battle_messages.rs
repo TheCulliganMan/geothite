@@ -8394,11 +8394,11 @@ fn open_visible_prof_oak_rating(
     rating_label: &str,
 ) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    let rating = snapshot
-        .presentation
-        .asm_text
-        .get(rating_label)
-        .with_context(|| format!("Prof. Oak rating text {rating_label} is missing"))?;
+    // OakRating01..19 are text commands whose text_far target is the
+    // corresponding _OakRating label in the exported text catalog.
+    let text_label = format!("_{rating_label}");
+    let rating = snapshot.presentation.asm_text.get(&text_label)
+        .with_context(|| format!("Prof. Oak rating text {text_label} is missing"))?;
     let rating = normalize_visible_script_text_with_context(
         rating,
         &snapshot.trainer.player_name,

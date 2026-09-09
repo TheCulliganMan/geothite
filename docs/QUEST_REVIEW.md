@@ -240,8 +240,11 @@ question, despite functional input checks passing. The original
 keeps its frontpic until naming or returning to the map. The renderer now draws
 the pending hatchling while the nickname choice is active, preserving its shiny
 palette. A regression checks an actual sprite entity with that artwork; the
-corrected native composition was visually reviewed. The retention fix still
-needs deployment and a fresh browser screenshot.
+corrected native composition was visually reviewed. Retention fix 13d8fa3f is
+deployed. A fresh production Chromium run at phone dimensions passes hatch,
+nickname decline and restored movement, and its nickname screenshot was
+visually reviewed: the shiny hatchling stays visible beside the Yes/No choice.
+This remains distinct from iOS Safari and touch-input verification.
 
 All eight Kanto leader continuations pass from staged terminal battles: Brock,
 Misty, Lt. Surge, Erika, Janine, Sabrina, Blaine and Blue. Each sets its correct
@@ -252,3 +255,16 @@ matching their source scripts. One parameterized real-pack visible-shell test
 covers all eight (70.25 seconds). Leader availability is staged for Misty/Blue;
 gym access quests, mazes, full combat, guide/statue branches and visual/audio
 comparisons remain separate work. No Kanto production change was needed.
+
+Oak/Mt. Silver review exposed a fatal missing-rating lookup during the lab
+conversation. The rating table refers to OakRating01–19 command labels; each
+[source text command](https://github.com/pret/pokecrystal/blob/master/engine/events/prof_oaks_pc.asm)
+points to its matching _OakRating text already in the pack. The renderer now
+resolves that target. All 19 texts pass a real-pack resolution check. A visible
+quest regression stages 8, 15 and 16 badges, confirms the corresponding Oak
+branches, checks the nearby Mt. Silver blocker before/after unlocking, and
+verifies the unlock and repeat dialogue after save/load. All eight selected Oak
+checks pass (46.44 seconds), including the title/intro regression after correcting
+its obsolete test pack path. This proves the tested quest continuation, not full
+Route 28 traversal or fidelity of the assessment's layout, paging and audio.
+Deployment of this rating fix remains pending.

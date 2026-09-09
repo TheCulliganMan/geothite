@@ -1584,15 +1584,11 @@ fn live_runtime_hotkeys_start_new_game_from_title_and_accept_name() {
 #[test]
 fn title_new_game_opens_gender_then_oak_clock_intro_before_name_input() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");

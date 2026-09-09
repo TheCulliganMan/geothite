@@ -2091,3 +2091,51 @@ fn kanto_gym_rewards_and_repeat_dialogue_survive_save_load() {
         assert!(shell.shell.session().state().badges.kanto[badge]);
     }
 }
+
+#[test]
+fn oak_requires_sixteen_badges_and_mt_silver_gate_stays_open_after_reload() {
+    let mut shell = progression_shell_on_map_for_test("OaksLab");
+    for index in 0..8 { shell.shell.award_badge(RuntimeBadgeRegion::Johto, index).unwrap(); }
+    let mut app = menu_render_test_app(shell);
+    for (kanto_count, expected_text) in [(0, "OakNoKantoBadgesText"), (7, "OakYesKantoBadgesText"), (8, "OakOpenMtSilverText")] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            for index in 0..kanto_count { shell.shell.award_badge(RuntimeBadgeRegion::Kanto, index).unwrap(); }
+            quest_move_beside_npc(&mut shell, "OaksLab", "Oak");
+            quest_talk(&mut shell, "Oak");
+        }
+        let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == expected_text), "{kanto_count} Kanto badges: {labels:?}");
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().flags.is_event_flag_set("EVENT_OPENED_MT_SILVER").unwrap(), kanto_count == 8);
+        quest_move_beside_npc(&mut shell, "VictoryRoadGate", "VictoryRoadGateLeftBlackBeltScript");
+        assert_eq!(shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some("VICTORYROADGATE_BLACK_BELT1")), kanto_count < 8);
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_assert_save_round_trip(&mut shell, "mt-silver-unlock");
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_OPENED_MT_SILVER").unwrap());
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some("VICTORYROADGATE_BLACK_BELT1")));
+        quest_move_beside_npc(&mut shell, "OaksLab", "Oak");
+        quest_talk(&mut shell, "Oak");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "OakLabDexCheckText"));
+    assert!(!labels.iter().any(|label| label == "OakOpenMtSilverText"));
+}
+
+#[test]
+fn every_oak_rating_resolves_its_authored_far_text() {
+    let mut shell = progression_shell_on_map_for_test("OaksLab");
+    let ratings = shell.runtime.data().oak_ratings.clone();
+    assert_eq!(ratings.len(), 19);
+    for rating in ratings {
+        open_visible_prof_oak_rating(&mut shell, rating.caught_count_limit, rating.caught_count_limit,
+            &rating.text_label).unwrap();
+        let display = shell.special_boundary.as_ref().unwrap();
+        assert_eq!(display.details.len(), 3);
+        assert!(!display.details[2].trim().is_empty(), "{}", rating.text_label);
+    }
+}
