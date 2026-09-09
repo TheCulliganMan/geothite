@@ -2702,6 +2702,7 @@ fn spawn_battle_battler_markers(
     snapshot: &RuntimeShellSnapshot,
     battle: &crate::RuntimeBattleSnapshot,
     entry_messages_remaining: usize,
+    trainer_result_frame: Option<u8>,
     enemy_send_out_pending: bool,
     player_send_out_pending: bool,
     capture_enemy_hidden: bool,
@@ -3031,8 +3032,25 @@ fn spawn_battle_battler_markers(
             return Ok(());
         }
     }
+    if let (Some(frame), RuntimeBattleKind::Trainer { trainer_class, .. }) =
+        (trainer_result_frame, &battle.kind)
+    {
+        // Land on the same seven-tile picture slot as the enemy frontpic.
+        // Clip only at the viewport edge during entry; the final portrait
+        // must include every column and retain the slot's center.
+        let left_column = 20 - frame.min(24) / 3;
+        let columns = (20 - left_column).min(7);
+        if columns > 0 {
+            spawn_battle_trainer_marker_columns(
+                commands, rendered_art, asset_root, images,
+                &format!("battle-trainer:{}", normalize_battle_trainer_sprite_id(trainer_class)),
+                Vec3::new(PLAYFIELD_LEFT + TILE_SIZE * f32::from(left_column), PLAYFIELD_TOP, 3.0),
+                Some(columns),
+            )?;
+        }
+    }
     let enemy_scale = send_out_scale(crate::core::battle::turn::BattleSide::Enemy);
-    if !capture_enemy_hidden
+    if trainer_result_frame.is_none() && !capture_enemy_hidden
         && (move_enemy_visible || move_enemy_row_extraction.is_some())
         && enemy_scale > 0.0
     {
@@ -3196,6 +3214,18 @@ fn spawn_battle_trainer_marker(
     asset_id: &str,
     top_left: Vec3,
 ) -> Result<()> {
+    spawn_battle_trainer_marker_columns(commands, rendered_art, asset_root, images, asset_id, top_left, None)
+}
+
+fn spawn_battle_trainer_marker_columns(
+    commands: &mut Commands,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    asset_id: &str,
+    top_left: Vec3,
+    columns: Option<u8>,
+) -> Result<()> {
     let key = IntroArtKey {
         asset_id: asset_id.to_string(),
     };
@@ -3210,7 +3240,11 @@ fn spawn_battle_trainer_marker(
         .cloned()
         .context("cached battle trainer art disappeared")?;
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-    let display_size = frame.size * source_scale;
+    let cropped_size = Vec2::new(
+        columns.map_or(frame.size.x, |count| f32::from(count) * SOURCE_TILE_SIZE as f32),
+        frame.size.y,
+    );
+    let display_size = cropped_size * source_scale;
     let position = Vec3::new(
         top_left.x + display_size.x * 0.5,
         top_left.y - display_size.y * 0.5,
@@ -3221,6 +3255,7 @@ fn spawn_battle_trainer_marker(
             texture: frame.handle.clone(),
             sprite: Sprite {
                 color: Color::WHITE,
+                rect: columns.map(|_| Rect::from_corners(Vec2::ZERO, cropped_size)),
                 custom_size: Some(display_size),
                 ..default()
             },
@@ -3955,6 +3990,10 @@ fn spawn_battle_hud(
             BattleHpSide::Player,
             hp_tween.map(|tween| tween.player_pixels),
             hp_tween.map(|tween| tween.player_hp),
+        )?;
+        spawn_battle_exp_bar(
+            commands, &slot.pokemon, growth_rates, rendered_art, asset_root,
+            images, exp_tween.map(|tween| tween.pixels),
         )?;
         return Ok(());
     }

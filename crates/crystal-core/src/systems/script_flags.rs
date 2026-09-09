@@ -247,6 +247,27 @@ fn has_reserved_pack_prefix(value: &str) -> bool {
     value.starts_with("fallback") || value.starts_with("legacy")
 }
 
+// Engine badge flags address the same badge bits as the trainer card and
+// field-move checks. Keep that alias in the shared gameplay layer.
+pub const BADGE_ENGINE_FLAGS: [&str; 16] = [
+    "ENGINE_ZEPHYRBADGE", "ENGINE_HIVEBADGE", "ENGINE_PLAINBADGE", "ENGINE_FOGBADGE",
+    "ENGINE_MINERALBADGE", "ENGINE_STORMBADGE", "ENGINE_GLACIERBADGE", "ENGINE_RISINGBADGE",
+    "ENGINE_BOULDERBADGE", "ENGINE_CASCADEBADGE", "ENGINE_THUNDERBADGE", "ENGINE_RAINBOWBADGE",
+    "ENGINE_SOULBADGE", "ENGINE_MARSHBADGE", "ENGINE_VOLCANOBADGE", "ENGINE_EARTHBADGE",
+];
+
+/// Older saves could retain an award in only one of the two representations.
+/// Preserve existing awards; never infer a badge merely from beating a leader
+/// (Whitney and Clair intentionally award theirs later).
+pub fn reconcile_saved_badge_flags(state: &mut GameState) {
+    for (index, flag) in BADGE_ENGINE_FLAGS.iter().enumerate() {
+        let badge = if index < 8 { &mut state.badges.johto[index] }
+            else { &mut state.badges.kanto[index - 8] };
+        *badge |= state.flags.engine_flags.get(*flag).copied().unwrap_or(false);
+        if *badge { state.flags.engine_flags.insert((*flag).to_string(), true); }
+    }
+}
+
 pub fn apply_script_flag_mutation(
     state: &mut GameState,
     command: ScriptFlagCommand,
@@ -264,6 +285,10 @@ pub fn apply_script_flag_mutation(
     let engine_flag = is_engine_command(&command);
     if engine_flag {
         state.flags.set_engine_flag(&command.flag_id, value)?;
+        if let Some(index) = BADGE_ENGINE_FLAGS.iter().position(|flag| *flag == command.flag_id) {
+            if index < 8 { state.badges.johto[index] = value; }
+            else { state.badges.kanto[index - 8] = value; }
+        }
     } else {
         state.flags.set_event_flag(&command.flag_id, value)?;
     }
@@ -449,6 +474,33 @@ mod tests {
                 .set,
             false
         );
+    }
+
+    #[test]
+    fn all_badge_flags_update_and_clear_the_corresponding_badge_bits() {
+        let mut state = GameState::default();
+        for (index, flag) in BADGE_ENGINE_FLAGS.iter().enumerate() {
+            apply_script_flag_mutation(&mut state, command("setflag", flag)).unwrap();
+            assert_eq!(state.badges.johto.iter().chain(&state.badges.kanto)
+                .filter(|badge| **badge).count(), index + 1);
+        }
+        for flag in BADGE_ENGINE_FLAGS {
+            apply_script_flag_mutation(&mut state, command("clearflag", flag)).unwrap();
+        }
+        reconcile_saved_badge_flags(&mut state);
+        assert!(!state.badges.johto.iter().chain(&state.badges.kanto).any(|badge| *badge));
+    }
+
+    #[test]
+    fn saved_badge_reconciliation_preserves_only_existing_awards() {
+        let mut state = GameState::default();
+        state.flags.set_engine_flag("ENGINE_ZEPHYRBADGE", true).unwrap();
+        state.badges.kanto[7] = true;
+        reconcile_saved_badge_flags(&mut state);
+        assert!(state.badges.johto[0]);
+        assert_eq!(state.flags.is_engine_flag_set("ENGINE_EARTHBADGE"), Ok(true));
+        assert_eq!(state.badges.johto.iter().chain(&state.badges.kanto)
+            .filter(|badge| **badge).count(), 2);
     }
 
     #[test]

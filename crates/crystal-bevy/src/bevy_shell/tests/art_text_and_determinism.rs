@@ -812,7 +812,7 @@ fn bitmap_font_reports_unmapped_characters_instead_of_drawing_question_marks() {
 
 fn route36_overworld_shell_for_battle_render_regression() -> BevyRuntimeShell {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);

@@ -2731,6 +2731,7 @@ pub enum RuntimeMutationCommand {
     InitializePermanentPhoneNumbers,
     DeletePokegearPhoneNumber { contact_id: String },
     StartPokegearPhoneCall(RuntimePokegearPhoneCallCommand),
+    CompleteBattleLoss,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -3809,6 +3810,7 @@ pub enum RuntimeMutationResult {
     PermanentPhoneNumbersInitialized(Vec<String>),
     PokegearPhoneNumberDeleted(bool),
     PokegearPhoneCallStarted(RuntimePokegearPhoneCallOutcome),
+    BattleLossCompleted,
 }
 
 impl RuntimeMutationResult {
@@ -4037,6 +4039,7 @@ impl RuntimeMutationResult {
             Self::PartyPokemonHpTransferred(_) => "party_pokemon_hp_transferred",
             Self::PartyPokemonFullHealed(_) => "party_pokemon_full_healed",
             Self::WholePartyFullHealed(_) => "whole_party_full_healed",
+            Self::BattleLossCompleted => "battle_loss_completed",
             Self::BlackoutResolved(_) => "blackout_resolved",
             Self::PartyPokemonSwapped(_) => "party_pokemon_swapped",
             Self::PartyPokemonMovesSwapped(_) => "party_pokemon_moves_swapped",

@@ -2623,6 +2623,25 @@ fn stage_visible_battle_messages(
     mark_runtime_snapshot_dirty(runtime_shell);
 }
 
+// A delay tick changes the text clock even when it draws no new character.
+// Consume every elapsed tick so slow host frames preserve the selected speed.
+fn advance_visible_battle_text_frames(
+    runtime_shell: &mut BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    acceleration_requested: bool,
+    elapsed_ticks: u32,
+) -> bool {
+    let mut changed = false;
+    for _ in 0..elapsed_ticks {
+        changed |= advance_visible_battle_text_reveal(
+            runtime_shell,
+            snapshot,
+            acceleration_requested,
+        );
+    }
+    changed
+}
+
 fn advance_visible_battle_text_reveal(
     runtime_shell: &mut BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
@@ -3558,6 +3577,11 @@ fn retarget_visible_battle_hp_tween(
     {
         tween.player_target_hp = slot.pokemon.hp;
         tween.player_max_hp = slot.pokemon.max_hp;
+        if tween.player_pixels == tween.player_target_pixels {
+            // Small HP changes can map to the same pixel; no animation tick
+            // will run to update the numeric display in that case.
+            tween.player_hp = tween.player_target_hp;
+        }
     }
     if let Some(pixels) = enemy_target_pixels {
         tween.enemy_target_pixels = pixels;
@@ -5983,6 +6007,7 @@ fn handle_visible_player_fainted_battle_boundary(
                     true,
                 )
             } else {
+                runtime_shell.shell.complete_battle_loss()?;
                 resolve_visible_blackout(runtime_shell)
             }
         }
@@ -7238,6 +7263,9 @@ fn queue_visible_trainer_result_text(
     } else {
         anyhow::bail!("trainer result text '{text_label}' has no renderable body");
     };
+    if let Some(first) = pages.iter().find(|page| !page.trim().is_empty()) {
+        runtime_shell.battle_trainer_result = Some((first.clone(), 0));
+    }
     runtime_shell
         .battle_messages
         .extend(pages.into_iter().filter(|page| !page.trim().is_empty()));

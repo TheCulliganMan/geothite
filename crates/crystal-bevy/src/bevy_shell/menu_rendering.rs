@@ -7704,6 +7704,7 @@ fn render_playfield(
             &snapshot,
             battle,
             runtime_shell.battle_entry_messages_remaining,
+            visible_trainer_result_frame(&runtime_shell),
             runtime_shell.battle_enemy_send_out_pending,
             player_send_out_pending,
             capture_enemy_hidden,
@@ -7727,7 +7728,8 @@ fn render_playfield(
             &snapshot,
             battle,
             runtime_shell.battle_entry_messages_remaining,
-            runtime_shell.battle_enemy_send_out_pending,
+            runtime_shell.battle_enemy_send_out_pending
+                    || visible_trainer_result_frame(&runtime_shell).is_some(),
             player_send_out_pending,
             runtime_shell.visible_trainer_exit_animation.is_some(),
             runtime_shell.battle_hp_tween.as_ref(),
@@ -7795,6 +7797,7 @@ fn render_playfield(
                 scene,
                 battle,
                 runtime_shell.battle_entry_messages_remaining,
+            visible_trainer_result_frame(&runtime_shell),
                 runtime_shell.battle_enemy_send_out_pending,
                 runtime_shell.battle_player_send_out_pending,
                 runtime_shell
@@ -7827,7 +7830,8 @@ fn render_playfield(
                 scene,
                 battle,
                 runtime_shell.battle_entry_messages_remaining,
-                runtime_shell.battle_enemy_send_out_pending,
+                runtime_shell.battle_enemy_send_out_pending
+                    || visible_trainer_result_frame(&runtime_shell).is_some(),
                 runtime_shell.battle_player_send_out_pending,
                 runtime_shell.visible_trainer_exit_animation.is_some(),
                 runtime_shell.battle_hp_tween.as_ref(),

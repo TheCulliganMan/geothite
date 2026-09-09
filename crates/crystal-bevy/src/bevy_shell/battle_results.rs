@@ -5243,7 +5243,7 @@ fn execute_last_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> Re
 }
 
 fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let pending = runtime_shell
+    let mut pending = runtime_shell
         .pending_trainer_sight
         .take()
         .context("trainer sight cutscene completed without retained interaction")?;
@@ -5273,6 +5273,10 @@ fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> 
         runtime_shell,
         &pending.interaction.map_name,
     )?;
+    // The sight event captured the player's facing before the approach.
+    // Dispatch faces the trainer opposite that value, so use the facing
+    // established by SeenByTrainer instead of turning back to the old one.
+    pending.interaction.facing = opposite;
     let dispatch = runtime_shell
         .shell
         .dispatch_interaction_script(&pending.interaction)?;
@@ -6193,6 +6197,7 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     if !runtime_shell.battle_messages.is_empty() {
         return;
     }
+    runtime_shell.battle_trainer_result = None;
     runtime_shell.party_move_cursor = None;
     runtime_shell.last_battle_cry_key = None;
     runtime_shell.pending_battle_cries_after_messages.clear();

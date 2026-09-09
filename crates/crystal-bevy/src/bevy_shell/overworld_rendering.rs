@@ -12295,7 +12295,7 @@ fn visible_scene_dialog_entries(
         return Ok(entries);
     }
     if runtime_shell.pending_phone_prompt.is_some() {
-        push_visible_phone_prompt_entries(&mut entries, runtime_shell)?;
+        push_visible_phone_prompt_entries(&mut entries, snapshot, runtime_shell)?;
         entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
@@ -12484,17 +12484,21 @@ fn visible_asm_text(snapshot: &RuntimeShellSnapshot, label: &str) -> Result<Stri
 
 fn push_visible_phone_prompt_entries(
     entries: &mut Vec<String>,
+    snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<()> {
-    let Some(prompt) = runtime_shell.pending_phone_prompt.as_ref() else {
+    if runtime_shell.pending_phone_prompt.is_none() {
         return Ok(());
-    };
+    }
     let selected = strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:phone-number", 2)
         .context("phone prompt is active without a valid cursor")?;
-    entries.push(compact_scene_label(
-        &format!("PHONE {}", prompt.contact_id),
-        30,
-    ));
+    if let Some(text) = visible_field_dialog_text(snapshot, runtime_shell) {
+        push_wrapped_scene_dialog_lines(
+            entries,
+            &visible_revealed_field_dialog_text(runtime_shell, &text),
+        );
+    }
+
     entries.push(if selected == 0 {
         "> YES    NO".to_string()
     } else {

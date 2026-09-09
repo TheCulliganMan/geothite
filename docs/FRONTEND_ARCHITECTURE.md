@@ -51,6 +51,20 @@ controller for all menu, script and battle presentation phases. Read the pending
 requests and invoke their explicit command/completion methods. Real-time hosts
 must also sample the RTC, manage focus, and avoid advancing VBlank twice.
 `advance_radio_broadcast()` uses the same authoritative game state and RNG.
+
+A terminal party defeat also needs an explicit completion: call
+`complete_battle_loss()` before presenting whiteout and then
+`resolve_blackout_to_last_spawn()` at the recovery boundary. The first command
+validates that no usable party member remains and commits the shared loss
+cleanup; the second retains its independent recovery validation. Phone
+registration stops at `RuntimeCompiledScriptBoundary::PhoneNumberPrompt` until
+the host supplies the player's acceptance or refusal. Neither transition should
+be inferred from a missing sprite or a finished text box.
+
+Gym scripts update badge flags and badge bits together in `crystal-core`, so a
+new frontend sees the same awards as field-move checks and badge counts.
+`load_save()` reconciles older saves that recorded an award in only one of those
+representations. It does not infer an award from a defeated-leader event.
 For fallible session edits, `try_session_update()` restores state and journals
 on error without cloning the immutable pack; the host still owns rollback of
 external side effects.
@@ -128,3 +142,30 @@ backend and PCM boundary without changing game rules or bundled content.
 
 The current Bevy UI has been type-checked, not manually played through for this
 change. A full cross-frontend behavior comparison remains future work.
+
+## Modern 3D world direction
+
+The public Astra world-building demonstrations are useful visual references, but
+are not evidence of game-rule fidelity. For example, the author's
+[3D civilization build comparison](https://github.com/cagrikacmaz/gpt-6-astra-vs-gemini-3-8-flash)
+uses a playable scene, camera interactions, screenshots and manual QA; it explicitly
+identifies itself as an uncontrolled product comparison. Its world presentation
+and camera work illustrate the intended direction for Geothite. The Pokémon
+implementation still needs its own behavior and timing evidence.
+
+A modern renderer can author terrain, buildings, vegetation, lighting, materials
+and character models while using the existing Rust session for movement,
+encounters, scripts, battles, saves and sound programs. The ASM-derived runtime
+grid remains the coordinate reference. Doorways, ledges, grass encounter regions,
+NPC positions and map connections must map back to that grid exactly. Rendering
+may interpolate between committed positions, but must never move the simulation
+according to mesh collision or the camera's frame rate. Decorative height,
+interiors and obscured geometry require authored decisions: they cannot be
+recovered uniquely from the original 2D tiles.
+
+The outdoor New Bark prototype is retained on `feat/new-bark-3d` (`b68cd17b`). It
+is not part of the production battle fixes. Before using it as a replacement,
+review every exit and doorway, connected-map seams, NPC interaction range,
+foreground occlusion, camera controls and mobile frame times. Then extend its
+coverage to interiors and additional maps. An attractive outdoor scene alone does
+not establish that the complete world is supported.

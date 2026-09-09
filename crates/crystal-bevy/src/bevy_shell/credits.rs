@@ -471,6 +471,16 @@ fn close_visible_credits_screen(
         // Script_halloffame restores GAME_TIMER_COUNTING_F immediately after
         // Credits returns. RedCredits/Script_credits never changed the bit.
         runtime_shell.shell.set_game_timer_counting(true)?;
+        let save_path = runtime_shell.quick_save_path.clone();
+        *runtime_shell = initialize_bevy_runtime_shell(
+            runtime_shell.asset_root.clone(), runtime_shell.runtime.clone(),
+            BevyShellStart::Title {
+                spawn_identifier: runtime_shell.runtime.title_new_game_spawn_identifier()?,
+                save_path: save_path.clone(),
+            },
+            BevyShellConfig { quick_save_path: save_path, ..Default::default() },
+        )?;
+        return Ok(());
     }
     set_shell_action_status(runtime_shell, "CREDITS CLOSED");
     trim_event_log(&mut runtime_shell.last_audio_events);

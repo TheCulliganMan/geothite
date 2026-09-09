@@ -2313,6 +2313,7 @@ pub struct RuntimeCompiledScriptStep {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeCompiledScriptBoundary {
     DayOfWeekPrompt,
+    PhoneNumberPrompt,
     TextLabel(String),
     TextWait(ScriptTextWait),
     YesNo(ScriptYesNoPrompt),
@@ -3736,11 +3737,23 @@ impl RuntimeGameShell {
             if steps.len() >= max_steps {
                 anyhow::bail!("compiled script runner exceeded max_steps {max_steps}");
             }
-            let day_of_week_prompt = self
-                .runtime
-                .compiled_script_commands(&current.source_script)?
-                .get(current.command_index)
-                .is_some_and(|command| {
+            let commands = self.runtime.compiled_script_commands(&current.source_script)?;
+            let command = commands.get(current.command_index);
+            // Registration is a synchronous choice, including when reached
+            // through a jump or a returned common script. Leave the opcode
+            // unexecuted until the frontend supplies the player's response.
+            if phone_inputs.accepted.is_none()
+                && command.and_then(|command| command.get("command"))
+                    .and_then(serde_json::Value::as_str) == Some("askforphonenumber")
+            {
+                return Ok(RuntimeCompiledScriptRun {
+                    steps,
+                    next_cursor: Some(current),
+                    boundary: Some(RuntimeCompiledScriptBoundary::PhoneNumberPrompt),
+                    ended: false,
+                });
+            }
+            let day_of_week_prompt = command.is_some_and(|command| {
                     command.get("command").and_then(serde_json::Value::as_str) == Some("special")
                         && command
                             .get("args")
@@ -10747,6 +10760,12 @@ impl RuntimeGameShell {
         })
     }
 
+    /// Commit ExitBattle's loss cleanup before presenting whiteout recovery.
+    pub fn complete_battle_loss(&mut self) -> Result<()> {
+        self.apply_runtime_mutation_command(RuntimeMutationCommand::CompleteBattleLoss)?;
+        Ok(())
+    }
+
     pub fn resolve_blackout_to_last_spawn(&mut self) -> Result<RuntimeBlackoutRecovery> {
         let mutation = self
             .apply_runtime_mutation_command(RuntimeMutationCommand::ResolveBlackoutToLastSpawn)?;
@@ -17686,8 +17705,9 @@ impl CrystalRuntime {
         let save =
             read_save_game_for_modpack(path, &self.modpack, &self.pack_identity.content_hash)
                 .context("read Crystal runtime save for compiled modpack identity")?;
-        let state = save.into_state();
+        let mut state = save.into_state();
         self.validate_save_state_for_runtime_pack(&state)?;
+        crystal_core::systems::script_flags::reconcile_saved_badge_flags(&mut state);
         Ok(state)
     }
 

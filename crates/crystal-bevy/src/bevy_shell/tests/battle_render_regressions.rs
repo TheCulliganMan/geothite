@@ -1,4 +1,393 @@
 #[test]
+fn send_out_frames_reuse_the_cached_runtime_snapshot() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
+        side: crate::core::battle::turn::BattleSide::Player,
+        frame: 0,
+        shiny: false,
+    });
+    let before = cached_runtime_snapshot(&mut shell).unwrap();
+    let revision = shell.snapshot_revision;
+    advance_visible_send_out_animation(&mut shell).unwrap();
+    let after = cached_runtime_snapshot(&mut shell).unwrap();
+    assert!(
+        Arc::ptr_eq(&before, &after),
+        "an animation frame must not rebuild the game catalogs"
+    );
+    assert_ne!(
+        shell.snapshot_revision, revision,
+        "the changed animation must still redraw"
+    );
+}
+
+#[test]
+fn enemy_replacement_keeps_the_complete_player_exp_bar_visible() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_enemy_send_out_pending = true;
+    shell.battle_messages.clear();
+    shell
+        .battle_messages
+        .push_back("FALKNER sent out\na POKéMON!".into());
+    shell.battle_text_reveal = None;
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    let world = app.world_mut();
+    assert!(
+        world.resource::<BevyRuntimeShell>().last_error.is_none(),
+        "{:?}",
+        world.resource::<BevyRuntimeShell>().last_error
+    );
+    let mut hud = world.query_filtered::<&Transform, With<BattleHudMarker>>();
+    for column in 10..18 {
+        let (x, y) = battle_hud_tile_origin(column as f32, 11.0);
+        assert!(
+            hud.iter(world)
+                .any(|transform| transform.translation == Vec3::new(x, y, 3.62)),
+            "enemy replacement erased EXP column {column}"
+        );
+    }
+    save_live_battle_canvas_for_test(world, "enemy-replacement-exp.png");
+}
+
+#[test]
+fn wild_battle_loss_completes_whiteout_once_without_freezing() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let healthy_checksum = shell.shell.state_checksum().unwrap();
+    assert!(
+        shell.shell.complete_battle_loss().is_err(),
+        "a live party cannot be forced into a loss"
+    );
+    assert_eq!(shell.shell.state_checksum().unwrap(), healthy_checksum);
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    shell.battle_hp_tween = None;
+    {
+        let state = shell.shell.session_mut().state_mut();
+        let player = state.storage.party.pokemon[0].as_mut().unwrap();
+        player.hp = 1;
+        player.moves = vec![crate::core::models::LearnedMove {
+            name: "SPLASH".into(),
+            current_pp: 40,
+            pp_ups: 0,
+        }];
+        state.sync_party_from_storage();
+        let crate::core::state::BattleMemory::StaticWild {
+            enemy_pokemon,
+            enemy_party,
+            ..
+        } = &mut state.battle
+        else {
+            panic!("static wild fixture");
+        };
+        enemy_pokemon.moves = vec![crate::core::models::LearnedMove {
+            name: "SWIFT".into(),
+            current_pp: 20,
+            pp_ups: 0,
+        }];
+        enemy_party[0] = enemy_pokemon.clone();
+        state.script_runtime.active_battle_combat = None;
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    resolve_visible_battle_move(&mut shell, 0).unwrap();
+    assert_eq!(
+        shell.visible_blackout_phase,
+        Some(VisibleBlackoutPhase::AwaitText)
+    );
+    let mut app = menu_render_test_app(shell);
+    let mut recovered = false;
+    for _ in 0..1500 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(
+            shell.last_error.is_none(),
+            "whiteout failed: {:?}",
+            shell.last_error
+        );
+        if shell.visible_blackout_phase.is_none()
+            && shell.shell.session().state().storage.party.pokemon[0]
+                .as_ref()
+                .unwrap()
+                .hp
+                > 0
+        {
+            recovered = true;
+            break;
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(
+        recovered,
+        "whiteout stalled: phase={:?} messages={:?} action={:?}",
+        shell.visible_blackout_phase, shell.battle_messages, shell.last_action_status
+    );
+    assert!(shell.battle_messages.is_empty());
+    assert!(shell.battle_hp_tween.is_none());
+    assert!(
+        shell
+            .shell
+            .presentation_snapshot()
+            .unwrap()
+            .battle
+            .is_none()
+    );
+    for _ in 0..120 {
+        app.update();
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.visible_blackout_phase.is_none());
+    assert!(shell.battle_messages.is_empty());
+    assert!(shell.last_error.is_none());
+}
+
+#[test]
+fn replacement_hp_uses_visible_scene_and_preserves_other_battler_animation() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let scene = shell.shell.presentation_snapshot().unwrap();
+    shell.battle_hp_tween = Some(VisibleBattleHpTween {
+        player_hp: 20,
+        player_target_hp: 19,
+        player_max_hp: 30,
+        player_pixels: 32,
+        player_target_pixels: 30,
+        player_frames_until_step: 1,
+        enemy_pixels: 0,
+        enemy_target_pixels: 0,
+        enemy_frames_until_step: 0,
+    });
+    initialize_visible_send_out_hp(
+        &mut shell,
+        &scene,
+        crate::core::battle::turn::BattleSide::Enemy,
+    );
+    let tween = shell.battle_hp_tween.unwrap();
+    let enemy = &scene.battle.as_ref().unwrap().enemy_pokemon;
+    assert_eq!(
+        tween.enemy_pixels,
+        battle_hud_hp_pixels(enemy.hp, enemy.max_hp)
+    );
+    assert!(tween.enemy_pixels > 0);
+    assert_eq!(
+        (
+            tween.player_pixels,
+            tween.player_target_pixels,
+            tween.player_frames_until_step
+        ),
+        (32, 30, 1)
+    );
+}
+
+#[test]
+fn blackout_keeps_the_last_hit_scene_until_recovery() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell
+        .battle_message_scene
+        .as_mut()
+        .unwrap()
+        .battle
+        .as_mut()
+        .unwrap()
+        .enemy_pokemon
+        .hp = 1;
+    resolve_visible_blackout(&mut shell).unwrap();
+    assert_eq!(
+        shell
+            .battle_message_scene
+            .as_ref()
+            .unwrap()
+            .battle
+            .as_ref()
+            .unwrap()
+            .enemy_pokemon
+            .hp,
+        1,
+        "queuing whiteout must not replace a pending animation's scene with the terminal snapshot"
+    );
+}
+
+#[test]
+fn trainer_result_portrait_slides_in_before_defeat_text_and_retains_player() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    let scene = shell.battle_message_scene.as_mut().unwrap();
+    let battle = scene.battle.as_mut().unwrap();
+    battle.enemy_pokemon.hp = 0;
+    battle.kind = RuntimeBattleKind::Trainer {
+        trainer_class: "BUG_CATCHER".into(),
+        trainer_id: "WADE1".into(),
+        trainer_name: "WADE".into(),
+        event_flag: String::new(),
+        seen_text: String::new(),
+        win_text: String::new(),
+        loss_text: String::new(),
+        callback: String::new(),
+        source_script: String::new(),
+        reward: 0,
+        encounter_music: String::new(),
+        ai_move_flags: 0,
+        ai_item_switch_flags: 0,
+        ai_layers: vec![],
+    };
+    let snapshot = (**scene).clone();
+    let source_script = shell
+        .shell
+        .session()
+        .overworld()
+        .objects
+        .iter()
+        .find(|object| object.object_identifier.as_deref() == Some("ROUTE36_YOUNGSTER1"))
+        .unwrap()
+        .script
+        .clone();
+    let text_label = shell
+        .shell
+        .runtime()
+        .data()
+        .scripted_trainer_battle_request("Route36", &source_script, 0)
+        .unwrap()
+        .win_text;
+    queue_visible_trainer_result_text(&mut shell, &snapshot, &text_label).unwrap();
+    assert!(visible_trainer_result_animation_active(&shell));
+    // A 24-frame entry, followed by the authored 40-frame hold.
+    for _ in 0..64 {
+        assert!(visible_noninteractive_battle_animation_owns_input(&shell));
+        advance_visible_battle_animation_frame(&mut shell).unwrap();
+        assert!(shell.battle_text_reveal.is_none());
+    }
+    assert!(!visible_trainer_result_animation_active(&shell));
+    finish_current_battle_message_for_regression(&mut shell);
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    save_live_battle_canvas_for_test(app.world_mut(), "trainer-defeat-portrait.png");
+    let world = app.world_mut();
+    assert!(world.resource::<BevyRuntimeShell>().last_error.is_none());
+    let mut battlers = world.query_filtered::<(&Sprite, &Transform), With<BattleBattlerMarker>>();
+    let markers = battlers.iter(world).collect::<Vec<_>>();
+    assert_eq!(
+        markers.len(),
+        2,
+        "defeat dialogue keeps player backpic and enemy trainer"
+    );
+    let (sprite, transform) = markers
+        .iter()
+        .find(|(sprite, _)| sprite.rect.is_some_and(|rect| rect.width() == 56.0))
+        .expect("all seven trainer picture columns must remain visible");
+    assert_eq!(
+        transform.translation.x,
+        PLAYFIELD_LEFT + TILE_SIZE * 15.5,
+        "trainer must be centered in the same slot as the enemy frontpic"
+    );
+    let half_width = sprite.custom_size.unwrap().x * 0.5;
+    assert!(
+        transform.translation.x + half_width <= PLAYFIELD_LEFT + TILE_SIZE * 20.0,
+        "trainer must not be clipped by the screen edge"
+    );
+}
+
+#[test]
+fn whiteout_recovery_heals_party_and_releases_retained_battle_input() {
+    let mut shell = route36_overworld_shell_for_battle_render_regression();
+    {
+        let state = shell.shell.session_mut().state_mut();
+        for pokemon in state.storage.party.pokemon.iter_mut().flatten() {
+            pokemon.hp = 0;
+        }
+        state.sync_party_from_storage();
+        state.battle_result = 1;
+    }
+    resolve_visible_blackout(&mut shell).unwrap();
+    let messages = shell.battle_messages.clone();
+    resolve_visible_blackout(&mut shell).unwrap();
+    assert_eq!(
+        shell.battle_messages, messages,
+        "whiteout must only queue once"
+    );
+    while !shell.battle_messages.is_empty() {
+        finish_current_battle_message_for_regression(&mut shell);
+        press_visible_a_button(&mut shell).unwrap();
+    }
+    assert_eq!(
+        shell.visible_blackout_phase,
+        Some(VisibleBlackoutPhase::FadeOut)
+    );
+    // A retained HP display from the lost battle must not capture input in
+    // the recovery map or contaminate the next encounter.
+    shell.battle_hp_tween = Some(VisibleBattleHpTween {
+        player_hp: 0,
+        player_target_hp: 0,
+        player_max_hp: 30,
+        player_pixels: 1,
+        player_target_pixels: 0,
+        player_frames_until_step: 1,
+        enemy_pixels: 48,
+        enemy_target_pixels: 48,
+        enemy_frames_until_step: 0,
+    });
+    commit_visible_blackout_recovery(&mut shell).unwrap();
+    assert!(
+        shell
+            .shell
+            .session()
+            .state()
+            .storage
+            .party
+            .pokemon
+            .iter()
+            .flatten()
+            .all(|pokemon| pokemon.hp > 0)
+    );
+    assert!(shell.battle_messages.is_empty());
+    assert!(shell.battle_message_scene.is_none());
+    assert!(shell.battle_hp_tween.is_none());
+    assert!(shell.battle_text_reveal.is_none());
+    assert!(!visible_noninteractive_battle_animation_owns_input(&shell));
+    assert!(shell.active_script_cursor.is_none());
+}
+
+#[test]
+fn battle_text_speed_is_independent_of_host_frame_batching() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let mut snapshot = shell.shell.presentation_snapshot().unwrap();
+    snapshot.trainer.options.no_text_scroll = false;
+    for speed in [TextSpeed::Slow, TextSpeed::Mid, TextSpeed::Fast] {
+        snapshot.trainer.options.text_speed = speed;
+        let mut expected = None;
+        for ticks_per_update in [1, 2, 3, 6] {
+            shell.battle_messages = ["PLAYER is out of\nuseable POKéMON!".to_string()].into();
+            shell.battle_text_reveal = None;
+            for _ in 0..(12 / ticks_per_update) {
+                advance_visible_battle_text_frames(&mut shell, &snapshot, false, ticks_per_update);
+            }
+            let reveal = shell.battle_text_reveal.as_ref().unwrap();
+            let actual = (reveal.visible_chars, reveal.frames_until_next_char);
+            if let Some(expected) = expected {
+                assert_eq!(
+                    actual, expected,
+                    "text speed changes with {ticks_per_update} ticks per host update"
+                );
+            } else {
+                expected = Some(actual);
+            }
+        }
+    }
+}
+
+#[test]
 fn battle_input_keeps_post_battle_map_script_suspended() {
     let mut shell = route36_battle_shell_for_render_regression();
     shell.visible_battle_transition = None;

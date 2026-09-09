@@ -1,5 +1,358 @@
 use crate::RuntimeCompiledScriptBoundary;
 
+fn progression_shell_on_map_for_test(map_name: &str) -> BevyRuntimeShell {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let (tile_x, tile_y) = (0..80)
+        .flat_map(|y| (0..80).map(move |x| (x, y)))
+        .find(|(x, y)| {
+            runtime
+                .start_overworld_session_at_runtime_tile(&asset_root, map_name, *x, *y)
+                .is_ok()
+        })
+        .unwrap();
+    let pokemon = crate::core::models::Pokemon::new_for_tests(
+        runtime.data().pokemon["TOTODILE"].clone(),
+        50,
+        Dv::default(),
+    );
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: map_name.into(),
+            tile_x,
+            tile_y,
+        },
+        BevyShellConfig::default(),
+    )
+    .unwrap();
+    let state = shell.shell.session_mut().state_mut();
+    state.storage.party.pokemon[0] = Some(pokemon);
+    state.sync_party_from_storage();
+    shell
+}
+
+#[test]
+fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
+    let mut shell = progression_shell_on_map_for_test("HallOfFame");
+    let save_path =
+        std::env::temp_dir().join(format!("geothite-hof-{}.crystalsave", std::process::id()));
+    let _ = std::fs::remove_file(&save_path);
+    shell.quick_save_path = Some(save_path.clone());
+    // Start at the authored Hall of Fame boundary after Lance's map dialogue.
+    let commands = shell
+        .shell
+        .runtime()
+        .compiled_script_commands("HallOfFameEnterScript")
+        .unwrap();
+    let index = commands
+        .iter()
+        .position(|command| command["command"] == "halloffame")
+        .unwrap();
+    shell.active_script_cursor = Some(ActiveScriptCursor {
+        origin_map_name: "HallOfFame".into(),
+        source_script: "HallOfFameEnterScript".into(),
+        next_command_index: index,
+    });
+    continue_visible_script_after_prompt(&mut shell).unwrap();
+    assert_eq!(shell.shell.session().state().hall_of_fame.count, 1);
+    assert!(shell.credits_screen.is_some());
+    assert!(save_path.exists(), "Hall of Fame must save before credits");
+    let saved = shell.shell.runtime().load_save(&save_path).unwrap();
+    assert_eq!(saved.hall_of_fame.count, 1);
+    assert!(saved.hall_of_fame.spawn_after_champion.is_some());
+    close_visible_credits_screen(&mut shell, "regression_end").unwrap();
+    assert!(
+        shell.title_menu.is_some() || shell.intro_screen.is_some(),
+        "credits must return to title"
+    );
+    load_visible_runtime_save(&mut shell, &save_path, "title_continue").unwrap();
+    assert_eq!(
+        shell.shell.snapshot().unwrap().overworld.map_name,
+        "NewBarkTown"
+    );
+    assert_eq!(shell.shell.session().state().hall_of_fame.count, 1);
+    assert!(
+        shell
+            .shell
+            .session()
+            .state()
+            .hall_of_fame
+            .spawn_after_champion
+            .is_none()
+    );
+    assert!(shell.shell.session().state().game_timer_counting);
+    assert!(shell.last_error.is_none());
+    let _ = std::fs::remove_file(&save_path);
+}
+
+#[test]
+fn falkner_victory_continues_through_badge_tm_and_repeat_dialogue() {
+    let mut shell = progression_shell_on_map_for_test("VioletGym");
+    let key = shell
+        .shell
+        .scripted_trainer_battle_keys()
+        .into_iter()
+        .find(|key| key.trainer_class == "FALKNER")
+        .unwrap();
+    shell
+        .shell
+        .start_scripted_trainer_battle(
+            &key.map_name,
+            &key.source_script,
+            key.startbattle_command_index,
+        )
+        .unwrap();
+    // The reward script begins at the terminal battle boundary. Combat and
+    // faint animations have their own integration regression above.
+    {
+        let state = shell.shell.session_mut().state_mut();
+        if let crate::core::state::BattleMemory::Trainer {
+            enemy_pokemon,
+            enemy_party,
+            ..
+        } = &mut state.battle
+        {
+            state.battle_rewarded_enemy_party_indices = (0..enemy_party.len()).collect();
+            for pokemon in enemy_party {
+                pokemon.hp = 0;
+            }
+            enemy_pokemon.hp = 0;
+        }
+    }
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    complete_visible_scripted_trainer_battle(
+        &mut shell,
+        &key.map_name,
+        &key.source_script,
+        true,
+        false,
+    )
+    .unwrap();
+    let mut app = menu_render_test_app(shell);
+    let mut complete = false;
+    for _ in 0..2400 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(
+            shell.last_error.is_none(),
+            "Falkner: {:?}",
+            shell.last_error
+        );
+        let state = shell.shell.session().state();
+        complete = state
+            .flags
+            .is_event_flag_set("EVENT_GOT_TM31_MUD_SLAP")
+            .unwrap()
+            && shell.active_script_cursor.is_none()
+            && shell.field_notice.is_none();
+        if complete {
+            break;
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(
+        complete,
+        "gym follow-up stalled: cursor={:?} notice={:?} battle={:?} error={:?}",
+        shell.active_script_cursor, shell.field_notice, shell.battle_messages, shell.last_error
+    );
+    assert!(shell.shell.session().state().badges.johto[0]);
+    let tms = shell.shell.session().state().bag.tm_hm.clone();
+    assert_eq!(tms.iter().map(|n| usize::from(*n)).sum::<usize>(), 1);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    let snapshot = shell.shell.snapshot().unwrap();
+    dispatch_visible_overworld_interaction(
+        &mut shell,
+        crate::core::world::session::OverworldInteraction {
+            map_name: "VioletGym".into(),
+            player_tile: snapshot.overworld.tile,
+            facing: Direction::Up,
+            target_tile: snapshot.overworld.tile,
+            script: "VioletGymFalknerScript".into(),
+            target: crate::core::world::session::OverworldInteractionTarget::Object {
+                object_index: 0,
+                object_identifier: Some("VIOLETGYM_FALKNER".into()),
+                object_type: "OBJECTTYPE_SCRIPT".into(),
+            },
+        },
+        "gym_repeat_regression",
+    )
+    .unwrap();
+    drop(shell);
+    for _ in 0..1000 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(
+            shell.last_error.is_none(),
+            "repeat dialogue: {:?}",
+            shell.last_error
+        );
+        if shell.active_script_cursor.is_none() && shell.field_notice.is_none() {
+            break;
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.active_script_cursor.is_none());
+    assert!(shell.field_notice.is_none());
+    assert_eq!(
+        shell.shell.session().state().bag.tm_hm,
+        tms,
+        "repeat talk duplicated TM"
+    );
+    let save_path = std::env::temp_dir().join(format!("geothite-badge-repair-{}.crystalsave", std::process::id()));
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    shell.shell.session_mut().state_mut().badges.johto[0] = false;
+    shell.shell.save(&save_path).unwrap();
+    shell.shell.load(&save_path).unwrap();
+    assert!(shell.shell.session().state().badges.johto[0], "loading an old flag-only award must restore the badge");
+    assert_eq!(shell.shell.session().state().bag.tm_hm, tms);
+    let _ = std::fs::remove_file(&save_path);
+    let _ = std::fs::remove_file(save_path.with_extension("crystalsave.bak"));
+}
+
+#[test]
+fn joey_after_battle_dialogue_reaches_phone_number_choice() {
+    for accepted in [false, true] {
+        let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+        let runtime = workspace_desktop_runtime(&asset_root);
+        let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+        let (tile_x, tile_y) = (0..80)
+            .flat_map(|y| (0..80).map(move |x| (x, y)))
+            .find(|(x, y)| {
+                runtime
+                    .start_overworld_session_at_runtime_tile(&asset_root, "Route30", *x, *y)
+                    .is_ok()
+            })
+            .unwrap();
+        let mut shell = initialize_bevy_runtime_shell(
+            asset_root,
+            runtime,
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier,
+                map_name: "Route30".into(),
+                tile_x,
+                tile_y,
+            },
+            BevyShellConfig::default(),
+        )
+        .unwrap();
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .flags
+            .set_event_flag("EVENT_BEAT_YOUNGSTER_JOEY", true)
+            .unwrap();
+        let interaction = crate::core::world::session::OverworldInteraction {
+            map_name: "Route30".into(),
+            player_tile: TilePosition::new(tile_x, tile_y),
+            facing: Direction::Left,
+            target_tile: TilePosition::new(tile_x - 2, tile_y),
+            script: "TrainerYoungsterJoey".into(),
+            target: crate::core::world::session::OverworldInteractionTarget::Object {
+                object_index: 0,
+                object_identifier: Some("ROUTE30_YOUNGSTER1".into()),
+                object_type: "OBJECTTYPE_TRAINER".into(),
+            },
+        };
+        dispatch_visible_overworld_interaction(&mut shell, interaction, "phone_regression")
+            .unwrap();
+        for _ in 0..64 {
+            if shell.pending_phone_prompt.is_some() {
+                break;
+            }
+            for _ in 0..200 {
+                tick_visible_field_text_reveal(&mut shell, true).unwrap();
+            }
+            press_visible_a_button(&mut shell).unwrap();
+        }
+        assert!(
+            shell.pending_phone_prompt.is_some(),
+            "Joey never offered a choice: cursor={:?} notice={:?} log={:?}",
+            shell.active_script_cursor,
+            shell.field_notice,
+            shell.last_audio_events
+        );
+        let snapshot = shell.shell.presentation_snapshot().unwrap();
+        assert!(scene_dialog_yes_no_active(&snapshot, &shell));
+        assert_eq!(
+            shell.pending_phone_prompt.as_ref().unwrap().contact_id,
+            "PHONE_YOUNGSTER_JOEY"
+        );
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        let entries = visible_scene_dialog_entries(&snapshot, &shell).unwrap();
+        assert!(!entries.iter().any(|line| line.contains("PHONE_YOUNGSTER")));
+        resolve_visible_phone_prompt(&mut shell, accepted).unwrap();
+        assert_eq!(
+            shell
+                .shell
+                .session()
+                .state()
+                .script_runtime
+                .phone_numbers
+                .contains("PHONE_YOUNGSTER_JOEY"),
+            accepted
+        );
+        assert!(shell.pending_phone_prompt.is_none());
+    }
+}
+
+#[test]
+fn trainer_sight_dispatch_keeps_the_approach_facing_when_player_was_looking_sideways() {
+    let mut shell = route36_overworld_shell_for_battle_render_regression();
+    let object_id = "ROUTE36_YOUNGSTER1";
+    let (object_index, object) = shell
+        .shell
+        .session()
+        .overworld()
+        .objects
+        .iter()
+        .enumerate()
+        .find(|(_, object)| object.object_identifier.as_deref() == Some(object_id))
+        .map(|(index, object)| (index, object.clone()))
+        .unwrap();
+    let interaction = crate::core::world::session::OverworldInteraction {
+        map_name: "Route36".to_string(),
+        player_tile: TilePosition::new(22, 11),
+        facing: Direction::Right,
+        target_tile: TilePosition::new(22, 13),
+        script: object.script,
+        target: crate::core::world::session::OverworldInteractionTarget::Object {
+            object_index: u16::try_from(object_index).unwrap(),
+            object_identifier: Some(object_id.to_string()),
+            object_type: "OBJECTTYPE_TRAINER".to_string(),
+        },
+    };
+    retain_visible_seen_by_trainer_last_talked(&mut shell, object_id);
+    prepare_visible_seen_by_trainer(&mut shell, &interaction).unwrap();
+    shell.pending_trainer_sight = Some(PendingTrainerSight {
+        interaction,
+        object_id: object_id.to_string(),
+        direction: Direction::Up,
+        steps_remaining: 0,
+        frames_until_step: 0,
+    });
+    finish_visible_trainer_sight_script(&mut shell).unwrap();
+    assert_eq!(
+        shell
+            .shell
+            .session()
+            .overworld()
+            .object_facings
+            .get(object_id),
+        Some(&Direction::Up)
+    );
+    assert_eq!(
+        shell.shell.session().overworld().snapshot().facing,
+        Direction::Down
+    );
+    assert!(shell.pending_trainer_intro.is_some());
+    assert!(shell.field_notice.is_some());
+}
+
 #[test]
 fn seen_by_trainer_commits_the_approached_tile_to_raw_map_object_memory() {
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();

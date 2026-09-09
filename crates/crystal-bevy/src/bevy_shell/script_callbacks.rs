@@ -1154,6 +1154,12 @@ fn consume_visible_runtime_flag_kind(
         // was set before this Hall of Fame call; the first clear remains
         // unskippable exactly as the old wStatusFlags value passed in B.
         let allow_skip = hall_of_fame.count > 1 || hall_of_fame.entries.len() > 1;
+        // HallOfFame saves the champion marker and team before credits. This
+        // is an authored save boundary, so normal menu/cursor blockers do not
+        // apply while the Hall of Fame script is suspended here.
+        if let Some(path) = runtime_shell.quick_save_path.clone() {
+            runtime_shell.shell.save(&path)?;
+        }
         open_visible_credits_screen(runtime_shell, allow_skip)?;
         let credits = runtime_shell
             .credits_screen

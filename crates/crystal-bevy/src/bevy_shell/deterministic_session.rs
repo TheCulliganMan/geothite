@@ -1108,7 +1108,7 @@ fn apply_keyboard_input(
     }) && !runtime_shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active);
     if start_faint {
         runtime_shell.visible_move_animations.front_mut().unwrap().started = true;
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
+        mark_runtime_presentation_dirty(&mut runtime_shell);
     }
     if !runtime_shell.battle_messages.is_empty()
         && !runtime_shell
@@ -1116,21 +1116,16 @@ fn apply_keyboard_input(
             .front()
             .is_some_and(|animation| animation.started)
     {
-        match runtime_shell.shell.presentation_snapshot() {
+        match cached_runtime_snapshot(&mut runtime_shell) {
             Ok(snapshot) => {
-                let mut changed = false;
-                for _ in 0..elapsed_input_ticks {
-                    if !advance_visible_battle_text_reveal(
-                        &mut runtime_shell,
-                        &snapshot,
-                        text_acceleration_requested,
-                    ) {
-                        break;
-                    }
-                    changed = true;
-                }
+                let changed = advance_visible_battle_text_frames(
+                    &mut runtime_shell,
+                    &snapshot,
+                    text_acceleration_requested,
+                    elapsed_input_ticks,
+                );
                 if changed {
-                    mark_runtime_snapshot_dirty(&mut runtime_shell);
+                    mark_runtime_presentation_dirty(&mut runtime_shell);
                 }
             }
             Err(error) => {
@@ -1140,7 +1135,7 @@ fn apply_keyboard_input(
             }
         }
     } else if runtime_shell.battle_text_reveal.take().is_some() {
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
+        mark_runtime_presentation_dirty(&mut runtime_shell);
     }
     let mut hp_pixels_changed = false;
     for _ in 0..elapsed_input_ticks {
@@ -1166,7 +1161,7 @@ fn apply_keyboard_input(
         hp_pixels_changed |= player_changed || enemy_changed;
     }
     if hp_pixels_changed {
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
+        mark_runtime_presentation_dirty(&mut runtime_shell);
     }
     let hp_tween_active = runtime_shell
         .battle_hp_tween
@@ -1181,7 +1176,7 @@ fn apply_keyboard_input(
         let animation = runtime_shell.visible_move_animations.front_mut().unwrap();
         animation.waiting_for_hp = false;
         animation.started = true;
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
+        mark_runtime_presentation_dirty(&mut runtime_shell);
         return;
     }
     if hp_tween_active {
@@ -2922,7 +2917,8 @@ fn advance_visible_trainer_sight_cutscene(runtime_shell: &mut BevyRuntimeShell) 
 }
 
 fn visible_battle_animation_owns_frame(runtime_shell: &BevyRuntimeShell) -> bool {
-    runtime_shell.visible_frontpic_animation.is_some()
+    visible_trainer_result_animation_active(runtime_shell)
+        || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell
             .visible_capture_animation
             .as_ref()
@@ -2936,6 +2932,11 @@ fn visible_battle_animation_owns_frame(runtime_shell: &BevyRuntimeShell) -> bool
 }
 
 fn advance_visible_battle_animation_frame(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if visible_trainer_result_animation_active(runtime_shell) {
+        runtime_shell.battle_trainer_result.as_mut().unwrap().1 += 1;
+        mark_runtime_presentation_dirty(runtime_shell);
+        return Ok(());
+    }
     if runtime_shell.visible_frontpic_animation.is_some() {
         return advance_visible_frontpic_animation(runtime_shell);
     }
@@ -4807,7 +4808,8 @@ fn apply_visible_time_set_input_keys(
 }
 
 fn visible_noninteractive_battle_animation_owns_input(runtime_shell: &BevyRuntimeShell) -> bool {
-    runtime_shell.visible_battle_transition.is_some()
+    visible_trainer_result_animation_active(runtime_shell)
+        || runtime_shell.visible_battle_transition.is_some()
         || runtime_shell.visible_battle_sliding_intro.is_some()
         || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell

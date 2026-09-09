@@ -589,7 +589,7 @@ fn advance_visible_capture_animation(runtime_shell: &mut BevyRuntimeShell) -> Re
             runtime_shell.visible_capture_animation = None;
         }
     }
-    mark_runtime_snapshot_dirty(runtime_shell);
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }
 
@@ -683,7 +683,7 @@ fn advance_visible_move_animation(runtime_shell: &mut BevyRuntimeShell) -> Resul
                     next.started = true;
                 }
             }
-            mark_runtime_snapshot_dirty(runtime_shell);
+            mark_runtime_presentation_dirty(runtime_shell);
             return Ok(());
         }
         let continues_same_command =
@@ -741,7 +741,7 @@ fn advance_visible_move_animation(runtime_shell: &mut BevyRuntimeShell) -> Resul
             }
         }
     }
-    mark_runtime_snapshot_dirty(runtime_shell);
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }
 
@@ -789,6 +789,14 @@ fn advance_visible_send_out_animation(runtime_shell: &mut BevyRuntimeShell) -> R
     }
     if finished {
         runtime_shell.visible_send_out_animation = None;
+        // Use the retained send-out scene: the authoritative turn may already
+        // include damage whose animation has not played yet.
+        let scene = if let Some(scene) = runtime_shell.battle_message_scene.as_deref() {
+            scene.clone()
+        } else {
+            runtime_shell.shell.presentation_snapshot()?
+        };
+        initialize_visible_send_out_hp(runtime_shell, &scene, side);
         if side == crate::core::battle::turn::BattleSide::Enemy {
             let snapshot = runtime_shell.shell.snapshot()?;
             let speed = snapshot
@@ -808,7 +816,7 @@ fn advance_visible_send_out_animation(runtime_shell: &mut BevyRuntimeShell) -> R
             queue_visible_pokemon_cry(runtime_shell, &species_id, &reason)?;
         }
     }
-    mark_runtime_snapshot_dirty(runtime_shell);
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }
 
@@ -874,7 +882,7 @@ fn advance_visible_frontpic_animation(runtime_shell: &mut BevyRuntimeShell) -> R
     let Some(mut animation) = runtime_shell.visible_frontpic_animation.take() else {
         return Ok(());
     };
-    let snapshot = runtime_shell.shell.snapshot()?;
+    let snapshot = cached_runtime_snapshot(runtime_shell)?;
     let program = snapshot
         .presentation
         .pokemon_frontpic_anim
@@ -889,7 +897,7 @@ fn advance_visible_frontpic_animation(runtime_shell: &mut BevyRuntimeShell) -> R
     if !step_visible_frontpic_animation(&mut animation, &program)? {
         runtime_shell.visible_frontpic_animation = Some(animation);
     }
-    mark_runtime_snapshot_dirty(runtime_shell);
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }
 
@@ -1012,7 +1020,7 @@ fn advance_visible_trainer_exit_animation(runtime_shell: &mut BevyRuntimeShell) 
             queue_visible_shell_sound_effect(runtime_shell, "SFX_BALL_POOF")?;
         }
     }
-    mark_runtime_snapshot_dirty(runtime_shell);
+    mark_runtime_presentation_dirty(runtime_shell);
     Ok(())
 }
 
@@ -2739,7 +2747,12 @@ fn resolve_visible_blackout(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     runtime_shell
         .battle_messages
         .push_back(format!("{player_name} whited\nout!"));
-    runtime_shell.battle_message_scene = Some(Box::new(blackout_scene));
+    // Loss cleanup may already have removed the authoritative battle while
+    // its final hit and faint animation are still queued. Keep their retained
+    // scene until the whiteout fade has finished.
+    if runtime_shell.battle_message_scene.is_none() {
+        runtime_shell.battle_message_scene = Some(Box::new(blackout_scene));
+    }
     runtime_shell.visible_blackout_phase = Some(VisibleBlackoutPhase::AwaitText);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
@@ -2773,8 +2786,8 @@ fn commit_visible_blackout_recovery(runtime_shell: &mut BevyRuntimeShell) -> Res
     // the 40-frame white hold. MAPSETUP_WARP then reveals the destination;
     // ordinary scene scripts must not run under the still-white palette.
     reset_visible_navigation_state(runtime_shell);
+    reset_visible_battle_presentation(runtime_shell);
     queue_visible_current_music(runtime_shell)?;
-    runtime_shell.battle_message_scene = None;
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
@@ -8817,6 +8830,7 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     hash_menu_cursor(&mut hasher, &runtime_shell.fly_cursor);
     hash_menu_cursor(&mut hasher, &runtime_shell.yes_no_cursor);
     runtime_shell.pending_phone_prompt.hash(&mut hasher);
+    runtime_shell.battle_trainer_result.hash(&mut hasher);
     runtime_shell.pending_remember_password.hash(&mut hasher);
     runtime_shell.pending_day_of_week.hash(&mut hasher);
     runtime_shell.pending_trainer_sight.hash(&mut hasher);
@@ -10181,6 +10195,7 @@ fn reset_visible_battle_presentation(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_sounds_after_messages.clear();
     runtime_shell.battle_message_scenes.clear();
     runtime_shell.battle_entry_messages_remaining = 0;
+    runtime_shell.battle_trainer_result = None;
     runtime_shell.battle_message_scene = None;
     runtime_shell.battle_hp_tween = None;
     runtime_shell.battle_exp_tween = None;
@@ -10193,4 +10208,45 @@ fn reset_visible_battle_presentation(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_player_send_out_pending = false;
     runtime_shell.battle_enemy_hp_at_player_send_out = None;
     runtime_shell.pending_battle_scenes_after_message.clear();
+}
+
+// Retain the returning trainer through its slide, 40-frame hold, and dialogue.
+fn visible_trainer_result_frame(shell: &BevyRuntimeShell) -> Option<u8> {
+    shell.battle_trainer_result.as_ref().and_then(|(trigger, frame)| {
+        (*frame > 0 || shell.battle_messages.front() == Some(trigger)).then_some(*frame)
+    })
+}
+
+fn visible_trainer_result_animation_active(shell: &BevyRuntimeShell) -> bool {
+    visible_trainer_result_frame(shell).is_some_and(|frame| frame < 64)
+}
+
+fn initialize_visible_send_out_hp(
+    shell: &mut BevyRuntimeShell,
+    scene: &RuntimeShellSnapshot,
+    side: crate::core::battle::turn::BattleSide,
+) {
+    let Some(battle) = scene.battle.as_ref() else { return; };
+    let Some(tween) = shell.battle_hp_tween.as_mut() else { return; };
+    match side {
+        crate::core::battle::turn::BattleSide::Enemy => {
+            let pixels = battle_hud_hp_pixels(battle.enemy_pokemon.hp, battle.enemy_pokemon.max_hp);
+            tween.enemy_pixels = pixels;
+            tween.enemy_target_pixels = pixels;
+            tween.enemy_frames_until_step = 0;
+        }
+        crate::core::battle::turn::BattleSide::Player => {
+            if let Some(slot) = battle.active_player_party_index
+                .and_then(|index| scene.party.slots.iter().find(|slot| slot.index == index))
+            {
+                let pixels = battle_hud_hp_pixels(slot.pokemon.hp, slot.pokemon.max_hp);
+                tween.player_pixels = pixels;
+                tween.player_target_pixels = pixels;
+                tween.player_hp = slot.pokemon.hp;
+                tween.player_target_hp = slot.pokemon.hp;
+                tween.player_max_hp = slot.pokemon.max_hp;
+                tween.player_frames_until_step = 0;
+            }
+        }
+    }
 }

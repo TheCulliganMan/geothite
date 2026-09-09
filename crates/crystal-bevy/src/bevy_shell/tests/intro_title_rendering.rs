@@ -2339,7 +2339,7 @@ fn credits_end_clears_wram_but_retains_the_end_pixels_until_exit() {
 }
 
 #[test]
-fn hall_of_fame_credits_restore_game_timer_counting_on_return() {
+fn hall_of_fame_credits_return_to_title_with_the_game_timer_stopped() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.intro_screen = None;
     runtime_shell.title_menu = None;
@@ -2358,7 +2358,8 @@ fn hall_of_fame_credits_restore_game_timer_counting_on_return() {
     close_visible_credits_screen(&mut runtime_shell, "test-return")
         .expect("return from Hall of Fame credits");
 
-    assert!(runtime_shell.shell.session().state().game_timer_counting);
+    assert!(runtime_shell.title_menu.is_some() || runtime_shell.intro_screen.is_some());
+    assert!(!runtime_shell.shell.session().state().game_timer_counting);
     assert!(!runtime_shell.shell.session().state().game_logic_paused);
 }
 

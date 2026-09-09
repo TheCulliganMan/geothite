@@ -10625,6 +10625,11 @@ impl GameDataSet {
                     .with_context(|| format!("badge index {} is outside region", command.index))?;
                 let already_awarded = *slot;
                 *slot = true;
+                let flag_index = command.index + match command.region {
+                    RuntimeBadgeRegion::Johto => 0, RuntimeBadgeRegion::Kanto => 8,
+                };
+                state.flags.engine_flags.insert(
+                    crystal_core::systems::script_flags::BADGE_ENGINE_FLAGS[flag_index].to_string(), true);
                 RuntimeMutationResult::BadgeAwarded(RuntimeBadgeAwardOutcome {
                     region: command.region,
                     index: command.index,
@@ -11159,6 +11164,20 @@ impl GameDataSet {
                     }
                 }
                 RuntimeMutationResult::WholePartyFullHealed(recovered)
+            }
+            RuntimeMutationCommand::CompleteBattleLoss => {
+                anyhow::ensure!(
+                    state.storage.party.pokemon.iter().flatten().any(|pokemon| !pokemon.is_egg)
+                        && !state.storage.party.pokemon.iter().flatten()
+                            .any(|pokemon| !pokemon.is_egg && pokemon.hp > 0),
+                    "battle loss requires every usable party Pokemon to be fainted"
+                );
+                anyhow::ensure!(
+                    !matches!(state.battle, BattleMemory::Inactive),
+                    "battle loss requires an active battle"
+                );
+                crystal_core::battle::start::deactivate_battle_after_loss(state);
+                RuntimeMutationResult::BattleLossCompleted
             }
             RuntimeMutationCommand::ResolveBlackoutToLastSpawn => {
                 anyhow::ensure!(
@@ -13120,6 +13139,14 @@ impl GameDataSet {
             "PARTY_LENGTH".to_string(),
             crystal_core::models::PARTY_SIZE as i32,
         );
+        // Script_AskForPhoneNumber returns these three script-byte values.
+        // Keep them available even in packs whose derived constant catalog
+        // omitted the shared phone-registration branches.
+        constants.extend([
+            ("PHONE_CONTACT_GOT".to_string(), 0),
+            ("PHONE_CONTACTS_FULL".to_string(), 1),
+            ("PHONE_CONTACT_REFUSED".to_string(), 2),
+        ]);
         if let Some(rules) = &self.battle_tower_rules {
             constants.insert(
                 "BATTLETOWER_STREAK_LENGTH".to_string(),
@@ -24890,32 +24917,10 @@ fn branching_callasm_bit_effect<'a>(
 }
 
 fn branching_callasm_engine_flag_is_set(state: &GameState, flag: &str) -> bool {
-    const JOHTO_BADGES: [&str; 8] = [
-        "ENGINE_ZEPHYRBADGE",
-        "ENGINE_HIVEBADGE",
-        "ENGINE_PLAINBADGE",
-        "ENGINE_FOGBADGE",
-        "ENGINE_MINERALBADGE",
-        "ENGINE_STORMBADGE",
-        "ENGINE_GLACIERBADGE",
-        "ENGINE_RISINGBADGE",
-    ];
-    const KANTO_BADGES: [&str; 8] = [
-        "ENGINE_BOULDERBADGE",
-        "ENGINE_CASCADEBADGE",
-        "ENGINE_THUNDERBADGE",
-        "ENGINE_RAINBOWBADGE",
-        "ENGINE_SOULBADGE",
-        "ENGINE_MARSHBADGE",
-        "ENGINE_VOLCANOBADGE",
-        "ENGINE_EARTHBADGE",
-    ];
-
-    if let Some(index) = JOHTO_BADGES.iter().position(|candidate| *candidate == flag) {
-        return state.badges.johto[index];
-    }
-    if let Some(index) = KANTO_BADGES.iter().position(|candidate| *candidate == flag) {
-        return state.badges.kanto[index];
+    if let Some(index) = crystal_core::systems::script_flags::BADGE_ENGINE_FLAGS
+        .iter().position(|candidate| *candidate == flag)
+    {
+        return if index < 8 { state.badges.johto[index] } else { state.badges.kanto[index - 8] };
     }
     state.flags.engine_flags.get(flag).copied().unwrap_or(false)
 }
