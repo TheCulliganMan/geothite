@@ -1850,3 +1850,79 @@ fn map_setup_rebuilds_transient_tiles_before_applying_persistent_door_flags() {
         assert!(!state.map_block_overrides.contains_key("RadioTower3F"));
     }
 }
+
+#[test]
+fn slowpoke_tail_offer_handles_both_answers_without_taking_money_or_granting_an_item() {
+    let mut shell = progression_shell_on_map_for_test("Route32");
+    shell.shell.session_mut().state_mut().money = 999_999;
+    quest_start_coord_script(&mut shell, "Route32", "Route32WannaBuyASlowpokeTailScript");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "Text_RefusedToBuySlowpokeTail"));
+    for yes in [true, false] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, "Route32", "SlowpokeTailSalesmanScript");
+            quest_talk(&mut shell, "SlowpokeTailSalesmanScript");
+        }
+        let labels = quest_settle(&mut app, yes, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == if yes { "Text_ThoughtKidsWereLoaded" } else { "Text_RefusedToBuySlowpokeTail" }));
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().money, 999_999);
+        assert_eq!(quest_item_quantity(shell, "SLOWPOKETAIL"), 0);
+        assert_eq!(shell.shell.session().state().scenes.map_scenes["Route32"], "SCENE_ROUTE32_NOOP");
+    }
+    quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), "slowpoke-tail-offer");
+}
+
+#[test]
+fn borrowed_bicycle_mileage_triggers_the_visible_shop_call_once() {
+    let mut shell = progression_shell_on_map_for_test("GoldenrodBikeShop");
+    quest_move_beside_npc(&mut shell, "GoldenrodBikeShop", "GoldenrodBikeShopClerkScript");
+    quest_talk(&mut shell, "GoldenrodBikeShopClerkScript");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "BICYCLE"), 1);
+        assert!(shell.shell.session().state().flags.is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED").unwrap());
+        let runtime = shell.shell.runtime().clone();
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime.data().transition_overworld_session(state, overworld, "NewBarkTown", TilePosition::new(13, 6), crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+        // Stage mileage immediately before the threshold, then ride through real input.
+        state.step_events.bike_step_count = 1023;
+        shell.shell.use_bag_bicycle_in_field("BICYCLE").unwrap();
+        assert_eq!(shell.shell.session().overworld().player.mode, MovementMode::Bike);
+        reset_visible_navigation_state(&mut shell);
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    for _ in 0..24 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        if app.world().resource::<BevyRuntimeShell>().shell.session().state().step_events.bike_step_count == 1024 { break; }
+    }
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().step_events.bike_step_count, 1024);
+        assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED").unwrap());
+    }
+    // The following count step dispatches the queued special call.
+    for _ in 0..24 {
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if shell.shell.session().state().script_runtime.next_script.as_ref().is_some_and(|next| next.script == "Script_ReceivePhoneCall")
+            || shell.active_script_cursor.is_some() { break; }
+    }
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "BikeShopPhoneCallerText"), "shop call did not reach its dialogue: {labels:?}");
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().script_runtime.special_phone_call.is_none());
+        assert_eq!(quest_item_quantity(&shell, "BICYCLE"), 1);
+        quest_assert_save_round_trip(&mut shell, "bike-shop-call");
+        assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED").unwrap());
+    }
+    for _ in 0..12 { press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowLeft); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.shell.session().state().script_runtime.special_phone_call.is_none());
+    assert_eq!(shell.shell.session().state().step_events.bike_step_count, 1024);
+}

@@ -355,7 +355,7 @@ where
 fn process_bike_step(state: &mut GameState, context: OverworldStepContext) {
     let bike_shop_call_enabled = state
         .flags
-        .is_engine_flag_set("STATUSFLAGS2_BIKE_SHOP_CALL_F")
+        .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
         .expect("canonical Bike Shop status flag is valid");
     if !bike_shop_call_enabled
         || context.movement_mode != MovementMode::Bike
@@ -375,7 +375,7 @@ fn process_bike_step(state: &mut GameState, context: OverworldStepContext) {
     state.script_runtime.special_phone_call = Some("SPECIALCALL_BIKESHOP".to_string());
     state
         .flags
-        .clear_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F")
+        .clear_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED")
         .expect("canonical Bike Shop status flag is valid");
 }
 
@@ -592,7 +592,7 @@ mod tests {
         state.step_events.bike_step_count = 1023;
         state
             .flags
-            .set_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F", true)
+            .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
             .expect("canonical engine flag");
 
         let result = run_overworld_step(
@@ -612,7 +612,7 @@ mod tests {
         assert!(
             !state
                 .flags
-                .is_engine_flag_set("STATUSFLAGS2_BIKE_SHOP_CALL_F")
+                .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
                 .expect("canonical engine flag")
         );
     }
@@ -629,7 +629,7 @@ mod tests {
             state.step_events.bike_step_count = 99;
             state
                 .flags
-                .set_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F", flag)
+                .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", flag)
                 .expect("canonical engine flag");
 
             run_overworld_step(
@@ -652,7 +652,7 @@ mod tests {
         state.script_runtime.special_phone_call = Some("SPECIALCALL_POKERUS".to_string());
         state
             .flags
-            .set_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F", true)
+            .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
             .expect("canonical engine flag");
 
         run_overworld_step(
@@ -671,7 +671,7 @@ mod tests {
         assert!(
             state
                 .flags
-                .is_engine_flag_set("STATUSFLAGS2_BIKE_SHOP_CALL_F")
+                .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
                 .expect("canonical engine flag")
         );
     }
@@ -688,7 +688,7 @@ mod tests {
             state.step_events.bike_step_count = 1023;
             state
                 .flags
-                .set_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F", true)
+                .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
                 .expect("canonical engine flag");
 
             let result = run_overworld_step(

@@ -887,7 +887,7 @@ fn bike_shop_mileage_queues_then_dispatches_on_the_following_count_step() {
     state.step_events.bike_step_count = 1023;
     state
         .flags
-        .set_engine_flag("STATUSFLAGS2_BIKE_SHOP_CALL_F", true)
+        .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
         .expect("canonical engine flag");
     let mut session = data
         .overworld_session("Route29", TilePosition::new(0, 0), 0)

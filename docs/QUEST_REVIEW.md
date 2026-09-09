@@ -35,8 +35,8 @@ a complete quest.
 | Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
 | Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, remaining approach variants, Lance's initial password scene, capture/loss and visual/audio timing remain pending |
 | Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Fake director/Basement Key, warehouse Card Key/repeats, key-gated shutter, final executive/Clear Bell, town restoration and save/load pass. Switch ordering/refusal/emergency/reset and door tiles pass after fixing stale map overrides. Disguise, basement entry, rival, full traversal and visual timing remain pending |
-| Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
-| Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
+| Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller accept/refuse, unchanged money/inventory and save/load pass; full battle approach pending |
+| Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; real gift through mileage threshold, visible shop call, no repeat and save/load pass after fixing the enable flag; full 1,024-step traversal remains pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
 | Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; Kanto leaders remain pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
@@ -171,4 +171,15 @@ The reload regression covers warp, battle reload, Continue, submenu and connecti
 setup. Nine checks pass: reload semantics, the maze, both password-door chains,
 room decorations, Cut, Fly, temporary flags and medicine. Earlier scene/reward
 checks above also pass. Full normal-input maze traversal and visual timing remain
-open. The map-block reload fix is not yet deployed.
+open. Map-block reload fix f3685a28 is deployed; the container is healthy and the production browser battle interaction passes. Its screenshot was reviewed. This smoke check does not establish full maze traversal.
+
+The borrowed bicycle callback was broken: step counting checked the physical-bit
+name STATUSFLAGS2_BIKE_SHOP_CALL_F, while authored shop and phone scripts use
+ENGINE_BIKE_SHOP_CALL_ENABLED. The step system now reads and clears that same
+engine flag. The real-pack visible-shell regression failed at 1,023 steps before
+the fix and now passes gift, actual riding across the threshold, incoming shop
+dialogue, dismissal, save/load and no repeat. The fixture stages mileage at 1,023;
+it does not ride all 1,024 steps. Five core mileage/poison/service checks pass.
+Slowpoke Tail offer checks also pass both answers, unchanged maximum money and
+inventory, scene advancement and save/load; the authored seller never sells an
+item even when answering yes. No seller production change was needed.
