@@ -903,7 +903,7 @@ fn lake_of_rage_script_starts_a_shiny_gyarados() {
     execute_visible_active_script_step(&mut shell).unwrap();
     let mut app = menu_render_test_app(shell);
     quest_settle(&mut app, true, |shell| shell.shell.snapshot().unwrap().battle.is_some());
-    let shell = app.world().resource::<BevyRuntimeShell>();
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
     let snapshot = shell.shell.snapshot().unwrap();
     let battle = snapshot.battle.as_ref().unwrap();
     let origin = visible_static_wild_source(&snapshot, battle).unwrap();
@@ -911,6 +911,22 @@ fn lake_of_rage_script_starts_a_shiny_gyarados() {
     assert_eq!(origin.level, 30);
     assert_eq!(origin.battle_type, "BATTLETYPE_FORCESHINY");
     assert!(visible_pokemon_is_shiny(&battle.enemy_pokemon));
+    let original_dvs = battle.enemy_pokemon.dvs;
+    let ball = shell.runtime.data().items["MASTER_BALL"].clone();
+    shell.shell.session_mut().state_mut().bag.add_item(&ball, 1).unwrap();
+    let outcome = shell.shell.throw_ball_at_active_battle("MASTER_BALL").unwrap().outcome.unwrap();
+    assert!(outcome.caught);
+    let captured = shell.shell.complete_active_wild_capture(&outcome, None).unwrap().stored.unwrap();
+    assert_eq!(captured.pokemon.dvs, original_dvs);
+    let deposited = shell.shell.deposit_party_pokemon_to_current_box(1).unwrap();
+    assert_eq!(deposited.pokemon.dvs, original_dvs);
+    let withdrawn = shell.shell.withdraw_current_box_pokemon_to_party(deposited.box_slot).unwrap();
+    assert_eq!(withdrawn.pokemon.dvs, original_dvs);
+    quest_assert_save_round_trip(&mut shell, "red-gyarados-captured");
+    let restored = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
+    assert_eq!(restored.species.id, "GYARADOS");
+    assert_eq!(restored.dvs, original_dvs);
+    assert!(visible_pokemon_is_shiny(restored));
 }
 
 #[test]
@@ -976,4 +992,22 @@ fn shiny_unown_forms_and_hatch_art_use_the_shipped_palettes() {
     let restored = shell.shell.session().state().storage.party.pokemon[0].as_ref().unwrap();
     assert_eq!(restored.dvs, dvs);
     assert!(visible_pokemon_is_shiny(restored));
+}
+
+#[test]
+fn shiny_stone_evolution_preserves_dvs_and_save_state() {
+    let mut shell = progression_shell_on_map_for_test("CherrygroveCity");
+    let dvs = Dv::from_non_hp(14, 10, 10, 10);
+    shell.shell.add_party_pokemon("PIKACHU", 20, None, None, "CHRIS", 1, dvs).unwrap();
+    let stone = shell.runtime.data().items["THUNDERSTONE"].clone();
+    shell.shell.session_mut().state_mut().bag.add_item(&stone, 1).unwrap();
+    shell.shell.use_bag_item_on_party_pokemon("THUNDERSTONE", 1).unwrap();
+    let evolved = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
+    assert_eq!(evolved.species.id, "RAICHU");
+    assert_eq!(evolved.dvs, dvs);
+    assert!(visible_pokemon_is_shiny(evolved));
+    quest_assert_save_round_trip(&mut shell, "shiny-evolution");
+    let restored = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
+    assert_eq!(restored.species.id, "RAICHU");
+    assert_eq!(restored.dvs, dvs);
 }
