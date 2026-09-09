@@ -3153,3 +3153,127 @@ fn every_machine_item_ball_is_collectible_and_stays_removed_after_reload() {
         eprintln!("passed {map}/{}: {item}", pickup.source_script);
     }
 }
+
+fn tm_mart_key_for_test(app: &mut App, key: KeyCode) {
+    // Read the current message before pressing; retain real menu input and frame updates.
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        for _ in 0..100 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+        mark_runtime_presentation_dirty(&mut shell);
+    }
+    press_key_for_runtime_hotkey_app(app, key);
+}
+
+#[test]
+fn tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory() {
+    // Goldenrod's four inventories depend on the original gift flags, not badges.
+    for (map, script, mart, headbutt, rock_smash) in [
+        ("GoldenrodDeptStore5F", "GoldenrodDeptStore5FClerkScript", "MART_GOLDENROD_5F_1", false, false),
+        ("GoldenrodDeptStore5F", "GoldenrodDeptStore5FClerkScript", "MART_GOLDENROD_5F_2", true, false),
+        ("GoldenrodDeptStore5F", "GoldenrodDeptStore5FClerkScript", "MART_GOLDENROD_5F_3", false, true),
+        ("GoldenrodDeptStore5F", "GoldenrodDeptStore5FClerkScript", "MART_GOLDENROD_5F_4", true, true),
+        ("CeladonDeptStore3F", "CeladonDeptStore3FClerkScript", "MART_CELADON_3F", false, false),
+    ] {
+        let mut shell = progression_shell_on_map_for_test(map);
+        for (flag, value) in [("EVENT_GOT_TM02_HEADBUTT", headbutt), ("EVENT_GOT_TM08_ROCK_SMASH", rock_smash)] {
+            shell.shell.session_mut().state_mut().flags.set_event_flag(flag, value).unwrap();
+        }
+        quest_move_beside_npc(&mut shell, map, script);
+        quest_talk(&mut shell, script);
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, true, |shell| shell.shop_top_cursor.is_some() && shell.shop_welcome_seen && shell.shop_notice.is_none() && shell.field_notice.is_none());
+        let inventory = {
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            let shop = shell.shell.snapshot().unwrap().pending_shop.unwrap();
+            assert_eq!(shop.mart_id, mart);
+            let mut expected = if map == "CeladonDeptStore3F" {
+                vec!["TM_HIDDEN_POWER", "TM_SUNNY_DAY", "TM_PROTECT", "TM_RAIN_DANCE", "TM_SANDSTORM"]
+            } else {
+                vec!["TM_THUNDERPUNCH", "TM_FIRE_PUNCH", "TM_ICE_PUNCH"]
+            };
+            if headbutt { expected.push("TM_HEADBUTT"); }
+            if rock_smash { expected.push("TM_ROCK_SMASH"); }
+            assert_eq!(shop.inventory, expected);
+            shop.inventory
+        };
+        tm_mart_key_for_test(&mut app, KeyCode::KeyZ); // BUY
+        for (index, item) in inventory.iter().enumerate() {
+            if index > 0 { tm_mart_key_for_test(&mut app, KeyCode::ArrowDown); }
+            let price = {
+                let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                assert_eq!(shell.menu_cursor.as_ref().unwrap().option_index, index);
+                assert_eq!(quest_item_quantity(&shell, item), 0);
+                let price = u32::from(shell.runtime.data().items[item].price);
+                assert!(price > 0);
+                shell.shell.session_mut().state_mut().money = price * 2;
+                mark_runtime_snapshot_dirty(&mut shell);
+                price
+            };
+            // Quantity selection and declining Yes/No must leave both balances unchanged.
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+            {
+                let shell = app.world().resource::<BevyRuntimeShell>();
+                assert_eq!(shell.shop_quantity.as_ref().unwrap().confirmation, Some(true));
+                assert_eq!(quest_item_quantity(shell, item), 0);
+                assert_eq!(shell.shell.session().state().money, price * 2);
+            }
+            tm_mart_key_for_test(&mut app, KeyCode::ArrowDown);
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+            {
+                let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                assert!(shell.shop_quantity.is_none());
+                assert_eq!(quest_item_quantity(&shell, item), 0);
+                assert_eq!(shell.shell.session().state().money, price * 2);
+                shell.shell.session_mut().state_mut().money = price - 1;
+                mark_runtime_snapshot_dirty(&mut shell);
+            }
+            for _ in 0..3 { tm_mart_key_for_test(&mut app, KeyCode::KeyZ); }
+            {
+                let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                assert_eq!(shell.shop_notice.as_deref(), Some("You don't have\nenough money."));
+                assert_eq!(quest_item_quantity(&shell, item), 0);
+                assert_eq!(shell.shell.session().state().money, price - 1);
+                shell.shell.session_mut().state_mut().money = price * 2;
+                mark_runtime_snapshot_dirty(&mut shell);
+            }
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ); // dismiss refusal
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ); // quantity
+            tm_mart_key_for_test(&mut app, KeyCode::ArrowUp); // two
+            assert_eq!(app.world().resource::<BevyRuntimeShell>().shop_quantity.as_ref().unwrap().quantity, 2);
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ); // confirm prompt
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ); // purchase
+            {
+                let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                assert_eq!(shell.shop_notice.as_deref(), Some("Here you are.\nThank you!"));
+                assert_eq!(quest_item_quantity(&shell, item), 2);
+                assert_eq!(shell.shell.session().state().money, 0);
+                shell.shell.add_bag_item(item, 97).unwrap(); // stage the stack boundary
+                shell.shell.session_mut().state_mut().money = price;
+                mark_runtime_snapshot_dirty(&mut shell);
+            }
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+            for _ in 0..3 { tm_mart_key_for_test(&mut app, KeyCode::KeyZ); }
+            {
+                let shell = app.world().resource::<BevyRuntimeShell>();
+                assert_eq!(shell.shop_notice.as_deref(), Some("You can't carry\nany more items."));
+                assert_eq!(quest_item_quantity(shell, item), 99);
+                assert_eq!(shell.shell.session().state().money, price);
+                assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+            }
+            tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+            eprintln!("passed {mart}/{item}: decline, insufficient money, buy two, full stack");
+        }
+        // Exit both the item list and clerk before persistence checks.
+        tm_mart_key_for_test(&mut app, KeyCode::KeyX);
+        quest_settle(&mut app, true, |shell| shell.shop_top_cursor.is_some() && shell.shop_welcome_seen && shell.shop_notice.is_none() && shell.field_notice.is_none());
+        tm_mart_key_for_test(&mut app, KeyCode::KeyX);
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.shell.snapshot().unwrap().pending_shop.is_none());
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let money = shell.shell.session().state().money;
+        quest_assert_save_round_trip(&mut shell, mart);
+        assert_eq!(shell.shell.session().state().money, money);
+        for item in inventory { assert_eq!(quest_item_quantity(&shell, &item), 99); }
+    }
+}

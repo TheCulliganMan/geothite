@@ -621,3 +621,27 @@ The fixture positions the player next to each authored pickup and advances the
 visible shell. It does not prove traversal/access puzzles, full-pocket retry,
 hidden items, scripted gifts, shops, teaching, battle use or browser visual/audio
 fidelity. Those remain separate parts of the full TM/HM checklist.
+
+### TM department-store purchases
+
+`tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory` passes
+against the shipped pack (79.30 seconds). It enters the actual Goldenrod 5F clerk
+script with each of the four Headbutt/Rock Smash gift-flag combinations, and the
+actual Celadon 3F clerk script. Each selected inventory is compared with the
+[source mart lists](https://raw.githubusercontent.com/pret/pokecrystal/master/data/items/marts.asm);
+Goldenrod's unlock conditions follow its
+[clerk script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodDeptStore5F.asm).
+All 21 inventory entries across these five variants (10 distinct TMs) pass visible
+keyboard input through BUY, quantity selection and Yes/No confirmation. Declining
+leaves money and inventory unchanged; one yen short rejects the purchase; buying
+two with exactly enough money adds two and leaves zero money; attempting another
+at a staged 99-item stack rejects it without taking money. Exiting the clerk and
+save/load preserve the final money and all stacks for each variant.
+
+The fixture stages player location, prerequisite gift flags, money and the final
+stack boundary. It fast-forwards text reveal before each input; menu transitions
+and transactions run through actual host frames. Initial failures were fixture
+readiness, text-reveal and price integer-type issues, not confirmed game defects.
+This does not verify department-store traversal, original price-table fidelity,
+shop screenshot/audio timing, selling, Game Corner prizes, Sunday happiness gifts,
+or machine teaching/battle behavior. Those remain in the broader checklist.
