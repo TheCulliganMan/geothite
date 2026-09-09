@@ -508,4 +508,18 @@ Both real-pack regressions pass (120.70 seconds): bag use enters watering withou
 a second prompt, the visible battle introduction completes, the Run action
 returns through the escape aftermath, the tree disappears, and save/load preserves
 that state. The bottle remains. The earlier Floria/badge/refusal/victory/TM and
-cleared-tile walking regression also passes. Production rollout is pending.
+cleared-tile walking regression also passes. Commit c2afcdd4 is deployed; its
+container is healthy (image 127c06d8affb). Browser verification is in progress.
+
+### Pack display retention
+
+Production screenshots of Pack → Key Items → SquirtBottle → Use showed the
+world while the menu remained interactive; waiting three seconds did not restore
+it. Pack was missing from `retained_field_fullscreen_active`, allowing the
+world renderer to reuse its display. A native visible-entity regression reproduced
+the failure (no full-screen presenter), then passed after retaining Pack alongside
+other full-screen field menus. It checks opening, pocket changes, the action menu,
+idle updates and closing. Existing Pack Cancel and party/Stats retention tests
+also pass (three targeted tests total). The resulting native Pack image was
+reviewed for the item list, description and action menu. Browser rollout of this
+retention fix remains pending; these checks do not establish every Pack flow.

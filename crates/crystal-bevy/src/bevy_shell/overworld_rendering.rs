@@ -502,6 +502,9 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         || runtime_shell.pokedex_menu_open
         || visible_pokegear_screen_active(runtime_shell)
         || runtime_shell.trainer_card_open
+        // Pack and its item-action submenu own the LCD, including idle frames.
+        // Without retention the overworld adopts the presenter and erases it.
+        || visible_field_pack_is_open(runtime_shell)
         // StartMenu_Pokemon owns the whole LCD through party selection,
         // MonSubmenu, and StatsScreen. Retain its presenter on idle frames
         // as well as redraws, and apply the same fullscreen transform to OAM.

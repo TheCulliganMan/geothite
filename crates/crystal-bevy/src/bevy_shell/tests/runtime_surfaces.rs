@@ -3726,3 +3726,31 @@ fn party_give_item_success_returns_to_party_with_the_start_cursor_retained() {
         Some("BERRY")
     );
 }
+
+#[test]
+fn field_pack_keeps_its_visible_lcd_across_pockets_actions_and_idle_frames() {
+    let mut shell = progression_shell_on_map_for_test("Route36");
+    shell.shell.add_bag_item("SQUIRTBOTTLE", 1).unwrap();
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(visible_field_pack_is_open(app.world().resource::<BevyRuntimeShell>()));
+    let retained = retained_fullscreen_surface(app.world_mut());
+    for key in [None, Some(KeyCode::ArrowRight), None, Some(KeyCode::ArrowRight),
+        Some(KeyCode::KeyZ), None, Some(KeyCode::KeyX), None] {
+        if let Some(key) = key { press_key_for_runtime_hotkey_app(&mut app, key); }
+        for _ in 0..3 {
+            app.update();
+            assert_retained_fullscreen_surface(app.world_mut(), &retained);
+        }
+    }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(visible_field_pack_is_open(shell));
+    assert_eq!(active_visible_field_pack_pocket(shell), FieldPackPocket::KeyItems);
+    save_live_menu_lcd_for_test(app.world_mut(), "field-pack-key-items.png");
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert!(!visible_field_pack_is_open(app.world().resource::<BevyRuntimeShell>()));
+}
