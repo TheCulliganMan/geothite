@@ -1163,3 +1163,51 @@ fn whitney_delays_badge_until_bridgets_scene_then_grants_attract_once() {
     quest_assert_save_round_trip(&mut shell, "whitney-awards");
     assert!(shell.shell.session().state().badges.johto[2]);
 }
+
+#[test]
+fn immediate_johto_gym_rewards_finish_once_and_survive_save_load() {
+    for (map, trainer, badge, tm) in [
+        ("VioletGym", "FALKNER", 0, "TM_MUD_SLAP"),
+        ("AzaleaGym", "BUGSY", 1, "TM_FURY_CUTTER"),
+        ("EcruteakGym", "MORTY", 3, "TM_SHADOW_BALL"),
+        ("CianwoodGym", "CHUCK", 5, "TM_DYNAMICPUNCH"),
+        ("OlivineGym", "JASMINE", 4, "TM_IRON_TAIL"),
+        ("MahoganyGym", "PRYCE", 6, "TM_ICY_WIND"),
+    ] {
+        eprintln!("checking {trainer} reward continuation");
+        let mut shell = progression_shell_on_map_for_test(map);
+        // These fixtures begin with the leader available and the battle won;
+        // prerequisite quests and full combat are outside this reward fixture.
+        for flag in ["EVENT_OLIVINE_GYM_JASMINE"] {
+            shell.shell.session_mut().state_mut().flags.set_event_flag(flag, false).unwrap();
+        }
+        let key = shell.shell.scripted_trainer_battle_keys().into_iter()
+            .find(|key| key.map_name == map && key.trainer_class == trainer).unwrap();
+        shell.shell.start_scripted_trainer_battle(&key.map_name, &key.source_script, key.startbattle_command_index).unwrap();
+        {
+            let state = shell.shell.session_mut().state_mut();
+            let crate::core::state::BattleMemory::Trainer { enemy_pokemon, enemy_party, .. } = &mut state.battle
+                else { panic!("{trainer} requires trainer battle"); };
+            state.battle_rewarded_enemy_party_indices = (0..enemy_party.len()).collect();
+            for pokemon in enemy_party { pokemon.hp = 0; }
+            enemy_pokemon.hp = 0;
+        }
+        shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+        complete_visible_scripted_trainer_battle(&mut shell, &key.map_name, &key.source_script, true, false).unwrap();
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().badges.johto[badge], "{trainer} badge");
+            assert_eq!(quest_item_quantity(&shell, tm), 1, "{trainer} TM");
+            quest_move_beside_npc(&mut shell, map, &key.source_script);
+            quest_talk(&mut shell, &key.source_script);
+        }
+        quest_settle(&mut app, true, quest_dialogue_is_idle);
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, tm), 1, "{trainer} repeat must not duplicate TM");
+        quest_assert_save_round_trip(&mut shell, trainer);
+        assert!(shell.shell.session().state().badges.johto[badge]);
+    }
+}

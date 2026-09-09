@@ -38,7 +38,7 @@ a complete quest.
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
-| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner verified; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; other leaders and Clair/Dragon's Den remain pending |
+| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair/Dragon's Den and Kanto leaders remain pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
@@ -85,6 +85,6 @@ Lake of Rage review exposed three shared progression defects: the auto-runner
 spun during sound waits, sound waits required a rendered page even in an empty
 text window, and completed item notices could repeatedly consume A without
 advancing. The Red Gyarados continuation also attempted to persist a scene on a
-map without scene storage. Fixes pass the real-pack defeat/reward/Lance/trade/save sequence and full-pocket retry. Core scene tests (13), sound-wait tests (3), item-notice tests (3), medicine (1), and visible evolution tests (3) also pass. Item notice dismissal now resumes the script before stale dialogue can reappear. These gameplay fixes still need deployment.
+map without scene storage. Fixes pass the real-pack defeat/reward/Lance/trade/save sequence and full-pocket retry. Core scene tests (13), sound-wait tests (3), item-notice tests (3), medicine (1), and visible evolution tests (3) also pass. Item notice dismissal now resumes the script before stale dialogue can reappear. Gameplay fixes 1e40a90e are deployed; the rebuilt container is healthy and a production browser battle interaction passes.
 The scope still includes access/traversal, capture/loss aftermath, the hideout,
 and every other pending quest in the matrix above.
