@@ -48,7 +48,7 @@ a complete quest.
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
-| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo price/cry presentation and remaining side quests pending |
+| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo cry presentation and remaining side quests pending; milk price verified in production |
 
 ## Renderer work
 
@@ -396,7 +396,7 @@ pack's local/global/currency constants before any frontend renders them. Missing
 TM-count and Bug-Catching Contest operands derive from the existing item and
 contest catalogs. Both regression checks pass: all 12 affected map dialogue
 bodies resolve, and the milk offer renders `fer just ¥500.` (7.96 seconds).
-Production screenshot/deployment verification is pending.
+Production screenshot/deployment verification passed as recorded below.
 
 The remaining sick-cow audio difference has been traced to the source
 [PlaySlowCry routine](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/play_slow_cry.asm):
@@ -404,3 +404,22 @@ subtract `0x140` from cry pitch, add `0x60` to cry length, then wait for complet
 The visible audio command currently carries neither override; implementing the
 exact synthesis and wait behavior remains open. No audio program was changed
 as part of the decimal text fix.
+
+
+Decimal-text fix `c03b7277` is deployed. The container is running and healthy,
+image `sha256:8a4c254c4e53e17ae0e9662e86d0cf35b0316a416d8f7d2e61eafb656776e966`.
+A fresh production Chromium session renders the complete milk offer, including
+`fer just ¥500.`, and the Yes/No prompt without page/runtime errors. The actual
+screenshot was reviewed for legibility and textbox bounds. The first harness
+run faced the television; correcting the input to face the farmer on the right
+passed. This is keyboard interaction at a mobile-sized viewport, not iPhone
+Safari/touch verification.
+
+Slow-cry implementation review additionally found that
+`play_cry_for_species` clears `waiting_for_sound_effect` and the visible special
+handler combines `PlaySlowCry` with ordinary cries. Exact support must retain
+the source sound wait, carry pitch/length through audio preparation and cache
+identity, and validate the original bundled MIDI/PCM metadata before deriving
+a new synthesis. The existing MIDI decoder retains the cartridge program;
+no additional bundled program or generated audio file is required. This work
+remains unimplemented.
