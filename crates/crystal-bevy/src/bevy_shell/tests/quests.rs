@@ -208,11 +208,15 @@ fn medicine_quest_requires_the_request_preserves_refusal_and_heals_amphy() {
             .flags
             .is_event_flag_set("EVENT_JASMINE_RETURNED_TO_GYM")
             .unwrap());
+        quest_assert_save_round_trip(&mut shell, "medicine-refused");
+        assert_eq!(quest_item_quantity(&shell, "SECRETPOTION"), 1);
+        quest_move_beside_npc(&mut shell, "OlivineLighthouse6F", "OlivineLighthouseJasmine");
         quest_talk(&mut shell, "OlivineLighthouseJasmine");
     }
     let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
-    let shell = app.world().resource::<BevyRuntimeShell>();
-    assert_eq!(quest_item_quantity(shell, "SECRETPOTION"), 0);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    quest_assert_save_round_trip(&mut shell, "medicine-amphy-healed");
+    assert_eq!(quest_item_quantity(&shell, "SECRETPOTION"), 0);
     assert!(shell
         .shell
         .session()
@@ -235,6 +239,13 @@ fn medicine_quest_requires_the_request_preserves_refusal_and_heals_amphy() {
         .visible_objects
         .iter()
         .any(|object| object.object_identifier.as_deref() == Some("OLIVINELIGHTHOUSE6F_JASMINE")));
+    quest_move_beside_npc(&mut shell, "CianwoodPharmacy", "CianwoodPharmacist");
+    quest_talk(&mut shell, "CianwoodPharmacist");
+    drop(shell);
+    quest_settle(&mut app, true, |shell| shell.shop_top_cursor.is_some());
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.shell.snapshot().unwrap().pending_shop.unwrap().mart_id, "MART_CIANWOOD");
+    assert_eq!(quest_item_quantity(shell, "SECRETPOTION"), 0, "healing must not enable a second potion");
 }
 
 #[test]
@@ -2271,4 +2282,36 @@ fn oak_lab_script_waits_for_assessment_before_goodbye() {
     let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
         && shell.special_boundary.is_none() && shell.special_boundary_queue.is_empty());
     assert!(labels.iter().any(|label| label == "OakLabGoodbyeText"));
+}
+
+#[test]
+fn pharmacy_before_jasmines_request_opens_shop_without_giving_medicine() {
+    let mut shell = progression_shell_on_map_for_test("CianwoodPharmacy");
+    quest_move_beside_npc(&mut shell, "CianwoodPharmacy", "CianwoodPharmacist");
+    let bag = shell.shell.session().state().bag.clone();
+    quest_talk(&mut shell, "CianwoodPharmacist");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, |shell| shell.shop_top_cursor.is_some());
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.snapshot().unwrap().pending_shop.unwrap().mart_id, "MART_CIANWOOD");
+        assert_eq!(shell.shell.session().state().bag, bag);
+        assert_eq!(quest_item_quantity(shell, "SECRETPOTION"), 0);
+        assert!(!shell.shell.session().state().flags
+            .is_event_flag_set("EVENT_GOT_SECRETPOTION_FROM_PHARMACY").unwrap());
+    }
+    for _ in 0..24 {
+        app.update();
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            for _ in 0..100 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+            mark_runtime_presentation_dirty(&mut shell);
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+        if quest_dialogue_is_idle(app.world().resource::<BevyRuntimeShell>()) { break; }
+    }
+    assert!(quest_dialogue_is_idle(app.world().resource::<BevyRuntimeShell>()));
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.shell.snapshot().unwrap().pending_shop.is_none());
+    assert_eq!(shell.shell.session().state().bag, bag);
 }

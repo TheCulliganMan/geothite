@@ -30,7 +30,7 @@ a complete quest.
 
 | Chain | Required checks | Status |
 | --- | --- | --- |
-| Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, gift, refusal, consumption, healing and departure passed; pharmacy negative case and save/reload pending |
+| Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, pharmacy prerequisite/shop exit, gift, refusal, consumption, healing, departure and save/reload pass; post-healing pharmacy revisit gives no duplicate; full traversal and visual/audio review pending |
 | Suicune | Burned Tower release, Raikou/Entei initialization, Cianwood/Eusine, Route 36/42 sightings, Radio Tower Clear Bell, sages, Tin Tower battle and aftermath | Burned Tower release and Clear Bell gate passed; Tin Tower victory aftermath, route sightings, and Eusine departure/non-repeat passed; save/load also passed; capture and complete Radio Tower/sage chain pending |
 | Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
 | Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, remaining approach variants, Lance's initial password scene, capture/loss and visual/audio timing remain pending |
@@ -316,3 +316,13 @@ exports an isolated browser save beside Oak (9.83 seconds). Pokémon Center PC
 boot/access/shutdown and Day Care intro/party-selection regressions also pass
 (6.49 and 6.44 seconds). These checks exercise neighboring special surfaces;
 they do not establish completion of every remaining quest.
+
+Medicine review now covers the pharmacy before Jasmine's request: it opens
+MART_CIANWOOD, leaves the bag and potion-gift flag unchanged, and returns from
+the shop through B input. The real medicine chain now saves/reloads after refusal
+and again after healing. The potion remains after refusal, is consumed after
+healing, Jasmine's gym/departure flags persist, and a pharmacy revisit opens the
+shop without granting another potion. The extended chain passes; the separate
+prerequisite/shop-exit test passes in 5.86 seconds. No production change was
+needed. Fixtures position the player at each quest leg; this does not claim full
+lighthouse travel or animation/audio fidelity.
