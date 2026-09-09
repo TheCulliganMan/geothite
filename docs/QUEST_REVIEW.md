@@ -387,3 +387,20 @@ run uses the open aisle and verifies changed coordinates. Reviewed screenshots
 show complete weak-cry text within its box and the player walking after closure.
 This is desktop Chromium at 390×844 CSS pixels/DPR 2 with keyboard inputs;
 iPhone Safari, touch controls and perceptual cry fidelity remain unverified.
+
+
+## Shared text decimal substitution
+
+Runtime text snapshots now resolve RGBDS `{d:CONSTANT}` expressions from the
+pack's local/global/currency constants before any frontend renders them. Missing
+TM-count and Bug-Catching Contest operands derive from the existing item and
+contest catalogs. Both regression checks pass: all 12 affected map dialogue
+bodies resolve, and the milk offer renders `fer just ¥500.` (7.96 seconds).
+Production screenshot/deployment verification is pending.
+
+The remaining sick-cow audio difference has been traced to the source
+[PlaySlowCry routine](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/play_slow_cry.asm):
+subtract `0x140` from cry pitch, add `0x60` to cry length, then wait for completion.
+The visible audio command currently carries neither override; implementing the
+exact synthesis and wait behavior remains open. No audio program was changed
+as part of the decimal text fix.

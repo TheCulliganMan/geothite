@@ -17870,6 +17870,53 @@ impl CrystalRuntime {
             .with_context(|| format!("resolve active runtime text snapshot for '{label}'"))
     }
 
+    fn resolve_text_decimal_constants(&self, state: &GameState, text: &str) -> Result<String> {
+        if !text.contains("{d:") {
+            return Ok(text.to_string());
+        }
+        let constants = &self.data.story_event_script_constants;
+        let local = match &state.overworld {
+            OverworldMemory::Active { map_name, .. } => constants.maps.get(map_name),
+            OverworldMemory::Inactive => None,
+        };
+        let mut result = String::with_capacity(text.len());
+        let mut remaining = text;
+        while let Some(start) = remaining.find("{d:") {
+            result.push_str(&remaining[..start]);
+            let operand = &remaining[start + 3..];
+            let end = operand.find('}').context("unterminated decimal text constant")?;
+            let name = &operand[..end];
+            let value = local.and_then(|values| values.get(name)).copied()
+                .or_else(|| constants.global.get(name).copied())
+                .or_else(|| self.data.currency_constants.get(name).map(i64::from))
+                .or_else(|| match name {
+                    "NUM_TMS" => Some(self.data.items.values().filter(|item| {
+                        item.tmhm_index.is_some() && item.script_name.starts_with("TM_")
+                    }).count() as i64),
+                    "BUG_CONTEST_MINUTES" => self.data.bug_contest_config.as_ref().map(|config| i64::from(config.timer_minutes)),
+                    "BUG_CONTEST_BALLS" => self.data.bug_contest_config.as_ref().map(|config| i64::from(config.park_balls)),
+                    _ => None,
+                })
+                .with_context(|| format!("missing decimal text constant {name}"))?;
+            result.push_str(&(value as i32).to_string());
+            remaining = &operand[end + 1..];
+        }
+        result.push_str(remaining);
+        Ok(result)
+    }
+
+    fn resolve_text_body_constants(&self, state: &GameState, body: &ScriptTextBody) -> Result<ScriptTextBody> {
+        let mut body = body.clone();
+        for command in &mut body.commands {
+            for argument in &mut command.args {
+                if argument.contains("{d:") {
+                    *argument = self.resolve_text_decimal_constants(state, argument)?;
+                }
+            }
+        }
+        Ok(body)
+    }
+
     fn text_snapshot_for_label(
         &self,
         state: &GameState,
@@ -17885,7 +17932,7 @@ impl CrystalRuntime {
                     map_name: map_name.clone(),
                 },
                 asm_text: None,
-                body: Some(body.clone()),
+                body: Some(self.resolve_text_body_constants(state, body)?),
                 queued_text_events: state.script_runtime.text_events.len(),
             });
         }
@@ -17898,7 +17945,7 @@ impl CrystalRuntime {
                     map_name: "GlobalScripts".to_string(),
                 },
                 asm_text: None,
-                body: Some(body.clone()),
+                body: Some(self.resolve_text_body_constants(state, body)?),
                 queued_text_events: state.script_runtime.text_events.len(),
             });
         }
@@ -17906,7 +17953,7 @@ impl CrystalRuntime {
             return Ok(RuntimeTextSnapshot {
                 label: label.to_string(),
                 source: RuntimeTextSource::AsmText,
-                asm_text: Some(text.clone()),
+                asm_text: Some(self.resolve_text_decimal_constants(state, text)?),
                 body: None,
                 queued_text_events: state.script_runtime.text_events.len(),
             });

@@ -2574,3 +2574,49 @@ fn moomoo_slow_cry_accepts_the_authored_species_value() {
         }) if species == "MILTANK")
     );
 }
+
+
+#[test]
+fn moomoo_price_text_resolves_pack_decimal_constant_before_rendering() {
+    let mut shell = progression_shell_on_map_for_test("Route39Farmhouse");
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        shell.shell.session_mut().state_mut().flags.set_event_flag("EVENT_HEALED_MOOMOO", true).unwrap();
+        shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+        quest_move_beside_npc(&mut shell, "Route39Farmhouse", "PokefanM_DairyFarmer");
+        shell.shell.save(PathBuf::from(directory).join("milk-price-browser.crystalsave")).unwrap();
+    }
+    let text = shell.shell.text_snapshot("FarmerMText_BuyMilk").unwrap();
+    let body = text.body.expect("authored milk offer text");
+    let pages = render_visible_script_text_pages(
+        &body, &Default::default(), "CHRIS", "RIVAL", 0,
+    );
+    assert!(pages.iter().any(|page| page.contains("fer just ¥500.")), "{pages:?}");
+    assert!(pages.iter().all(|page| !page.contains("{d:")), "{pages:?}");
+}
+
+
+#[test]
+fn all_map_dialogue_decimal_constants_resolve_from_the_pack() {
+    let mut shell = progression_shell_on_map_for_test("Route39Farmhouse");
+    let targets = shell.runtime.data().maps.iter().flat_map(|(map, module)| {
+        module.script_text_bodies.iter().filter(|(_, body)| {
+            body.commands.iter().any(|command| command.args.iter().any(|arg| arg.contains("{d:")))
+        }).map(|(label, _)| (map.clone(), label.clone())).collect::<Vec<_>>()
+    }).collect::<Vec<_>>();
+    assert!(!targets.is_empty());
+    let mut failures = Vec::new();
+    for (map, label) in &targets {
+        if let crate::core::state::OverworldMemory::Active { map_name, .. } =
+            &mut shell.shell.session_mut().state_mut().overworld {
+            *map_name = map.clone();
+        }
+        let text = match shell.shell.text_snapshot(label) {
+            Ok(text) => text,
+            Err(error) => { failures.push(format!("{map}:{label}: {error:#}")); continue; }
+        };
+        let body = text.body.unwrap();
+        assert!(body.commands.iter().all(|command| command.args.iter().all(|arg| !arg.contains("{d:"))), "{map}:{label}");
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+    eprintln!("Resolved {} map dialogue bodies with decimal constants", targets.len());
+}
