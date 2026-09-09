@@ -48,7 +48,7 @@ a complete quest.
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
-| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo cry presentation and remaining side quests pending; milk price verified in production |
+| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo slow-cry worker PCM, dialogue close and movement verified in production; remaining side quests pending; milk price verified in production |
 
 ## Renderer work
 
@@ -459,3 +459,17 @@ closing the panel leaves dialogue idle. The final regression passes in 26.59
 seconds. This positions the fixture beside the NPC and tests the visible shell
 and source scripts; full route traversal, screenshots, and quiz audio timing
 remain separate review items. No production change was needed for these paths.
+
+
+Slow-cry fix `c8fd5ff3` is deployed. The container is running and healthy with
+image `sha256:d254a3bcc37bad83eedf068746b131e08d90ea9886f8bb3a29b6a56955bca433`.
+Two fresh production browser runs pass the Moomoo greeting, weak-cry text,
+dialogue close and walking into the open aisle, with no page/runtime errors.
+Instrumentation observed one parameterized worker result: pitch `64755`, length
+`512`, 19,198 stereo frames, PCM hash `db796201`, exactly matching native output.
+The worker received the unchanged base-source metadata (62,024 bytes, hash
+`c3913779`) for validation. Screenshots of settled text and the player after
+movement were reviewed; final punctuation fits inside the dialogue box.
+This is desktop Chromium at a mobile-sized viewport with keyboard input;
+iPhone Safari/touch and perceptual comparison on original hardware remain
+unverified. The Radio Card regression above is also committed on main.
