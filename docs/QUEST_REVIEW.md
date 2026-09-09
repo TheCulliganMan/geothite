@@ -33,7 +33,7 @@ a complete quest.
 | Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, gift, refusal, consumption, healing and departure passed; pharmacy negative case and save/reload pending |
 | Suicune | Burned Tower release, Raikou/Entei initialization, Cianwood/Eusine, Route 36/42 sightings, Radio Tower Clear Bell, sages, Tin Tower battle and aftermath | Burned Tower release and Clear Bell gate passed; Tin Tower victory aftermath, route sightings, and Eusine departure/non-repeat passed; save/load also passed; capture and complete Radio Tower/sage chain pending |
 | Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
-| Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Pending |
+| Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, executive/rival/Lance approach, capture/loss and visual/audio timing remain pending |
 | Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Pending |
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
@@ -124,4 +124,24 @@ transform state without changing party DVs. The existing core Transform-copy tes
 passes; ten shiny checks pass, along with the picture-swap timing regression.
 Both rendered shiny Unown sides were visually reviewed. This does not establish
 all Transform/capture/switch combinations or every gift/egg/evolution path.
-The Transform rendering changes are not yet deployed.
+Transform rendering fix 5b8f36a1 is deployed via eaf20677. The rebuilt container is healthy, the production browser battle interaction passes, and its screenshot was reviewed. This browser smoke check does not replace the native Transform-specific rendering tests above.
+
+Rocket Hideout coverage now exercises the first camera's two successive trainer
+battles, verifies the secret switch disables all eight camera coordinate scripts,
+and preserves that state through save/load. Trainer fixtures stage terminal HP;
+full combat and the seven other active-camera approach animations remain open.
+Three floor traps start their authored Koffing/Voltorb/Geodude encounters, complete
+a real final turn, set their individual flags, and do not retrigger. The other
+nineteen trap tiles and capture/loss outcomes remain open.
+
+Password tests start from defeated-grunt fixtures, collect both passwords through
+actual dialogue, reject the office door with zero or one password, and open it
+with both. Murkrow's password gates the transmitter door. Both authored floor
+blocks persist through save/load; full normal-input door traversal remains open.
+Three Electrode battles clear their matching object pairs, then award Whirlpool,
+stop the radio signal, unlock town progression, reset the scene, and expose the
+deactivated-transmitter dialogue. The reward and flags survive save/load.
+Four real-pack visible-shell tests pass. NPC fixtures now select an adjacent
+walkable tile and face toward the target; blindly choosing the tile below an
+Electrode placed the player inside a wall. No production hideout changes were
+needed for these tested continuations after the preceding shared script fixes.

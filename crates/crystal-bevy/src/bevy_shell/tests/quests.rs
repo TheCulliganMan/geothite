@@ -6,7 +6,11 @@ fn quest_move_beside_npc(shell: &mut BevyRuntimeShell, map: &str, script: &str) 
         .find(|object| object.script == script)
         .unwrap()
         .clone();
-    let tile = TilePosition::new(object.x as i16, object.y as i16 + 1);
+    let tile = [(0, 1), (-1, 0), (1, 0), (0, -1)].into_iter()
+        .map(|(dx, dy)| TilePosition::new(object.x as i16 + dx, object.y as i16 + dy))
+        .find(|tile| tile.x >= 0 && tile.y >= 0 && runtime.start_overworld_session_at_runtime_tile(
+            &shell.asset_root, map, tile.x, tile.y).is_ok())
+        .expect("quest NPC has a walkable adjacent tile");
     let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
     runtime
         .data()
@@ -37,7 +41,10 @@ fn quest_talk(shell: &mut BevyRuntimeShell, script: &str) {
     let interaction = crate::core::world::session::OverworldInteraction {
         map_name: snapshot.overworld.map_name,
         player_tile: snapshot.overworld.tile,
-        facing: Direction::Up,
+        facing: if object.x as i16 > snapshot.overworld.tile.x { Direction::Right }
+            else if (object.x as i16) < snapshot.overworld.tile.x { Direction::Left }
+            else if object.y as i16 > snapshot.overworld.tile.y { Direction::Down }
+            else { Direction::Up },
         target_tile: TilePosition::new(object.x as i16, object.y as i16),
         script: script.into(),
         target: crate::core::world::session::OverworldInteractionTarget::Object {
@@ -1406,4 +1413,205 @@ fn map_entry_clears_temporary_events_but_reload_and_continue_preserve_them() {
         assert!(state.flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
         assert!(state.flags.is_event_flag_set("EVENT_ANSWERED_DRAGON_MASTER_QUIZ_WRONG").unwrap());
     }
+}
+
+fn quest_begin_script(shell: &mut BevyRuntimeShell, script: &str) {
+    arm_visible_active_script_cursor(shell, script, 0);
+    execute_visible_active_script_step(shell).unwrap();
+    mark_runtime_snapshot_dirty(shell);
+}
+
+fn quest_finish_current_trainer(shell: &mut BevyRuntimeShell) {
+    let map = shell.shell.session().overworld().map.name.clone();
+    let source = {
+        let state = shell.shell.session_mut().state_mut();
+        let crate::core::state::BattleMemory::Trainer { source_script, enemy_pokemon, enemy_party, .. } = &mut state.battle
+            else { panic!("expected actual scripted trainer battle"); };
+        state.battle_rewarded_enemy_party_indices = (0..enemy_party.len()).collect();
+        for pokemon in enemy_party { pokemon.hp = 0; }
+        enemy_pokemon.hp = 0;
+        source_script.clone()
+    };
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    complete_visible_scripted_trainer_battle(shell, &map, &source, true, false).unwrap();
+}
+
+#[test]
+fn rocket_camera_runs_two_grunts_then_switch_disables_every_camera() {
+    let mut shell = progression_shell_on_map_for_test("TeamRocketBaseB1F");
+    quest_start_coord_script(&mut shell, "TeamRocketBaseB1F", "SecurityCamera1a");
+    let mut app = menu_render_test_app(shell);
+    for trainer in ["GRUNTM_20", "GRUNTM_21"] {
+        quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::Trainer { trainer_id, .. } = &shell.shell.session().state().battle
+            else { panic!("camera must summon trainer"); };
+        assert_eq!(trainer_id, trainer);
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_SECURITY_CAMERA_1").unwrap());
+        quest_finish_current_trainer(&mut shell);
+    }
+    quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_SECURITY_CAMERA_1").unwrap());
+        quest_begin_script(&mut shell, "TeamRocketBaseB1FSecretSwitch");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    for camera in ["SecurityCamera1a", "SecurityCamera1b", "SecurityCamera2a", "SecurityCamera2b", "SecurityCamera3a", "SecurityCamera3b", "SecurityCamera4", "SecurityCamera5"] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_start_coord_script(&mut shell, "TeamRocketBaseB1F", camera);
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle(), "disabled {camera}");
+    }
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    for index in 1..=5 { assert!(shell.shell.session().state().flags.is_event_flag_set(&format!("EVENT_SECURITY_CAMERA_{index}")).unwrap()); }
+    quest_assert_save_round_trip(&mut shell, "rocket-cameras");
+}
+
+#[test]
+fn rocket_passwords_gate_office_and_transmitter_doors_and_survive_reload() {
+    let mut shell = progression_shell_on_map_for_test("TeamRocketBaseB3F");
+    quest_begin_script(&mut shell, ".Script@TeamRocketBaseB3FLockedDoor");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "TeamRocketBaseB3FLockedDoorNeedsPasswordText"));
+    for (script, defeated, password) in [
+        ("SlowpokeTailGrunt", "EVENT_BEAT_ROCKET_GRUNTF_5", "EVENT_LEARNED_SLOWPOKETAIL"),
+        ("RaticateTailGrunt", "EVENT_BEAT_ROCKET_GRUNTM_28", "EVENT_LEARNED_RATICATE_TAIL"),
+    ] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.shell.session_mut().state_mut().flags.set_event_flag(defeated, true).unwrap();
+            quest_move_beside_npc(&mut shell, "TeamRocketBaseB3F", script);
+            quest_talk(&mut shell, script);
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().flags.is_event_flag_set(password).unwrap());
+            quest_begin_script(&mut shell, ".Script@TeamRocketBaseB3FLockedDoor");
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.session().state().flags.is_event_flag_set("EVENT_OPENED_DOOR_TO_GIOVANNIS_OFFICE").unwrap(), script == "RaticateTailGrunt");
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_move_beside_npc(&mut shell, "TeamRocketBaseB2F", "RocketElectrode1");
+        quest_begin_script(&mut shell, ".Script@TeamRocketBaseB2FLockedDoor");
+    }
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "RocketBaseDoorNoPasswordText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_OPENED_DOOR_TO_ROCKET_HIDEOUT_TRANSMITTER").unwrap());
+        quest_move_beside_npc(&mut shell, "TeamRocketBaseB3F", "RocketBaseMurkrow");
+        quest_talk(&mut shell, "RocketBaseMurkrow");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_LEARNED_HAIL_GIOVANNI").unwrap());
+        quest_move_beside_npc(&mut shell, "TeamRocketBaseB2F", "RocketElectrode1");
+        quest_begin_script(&mut shell, ".Script@TeamRocketBaseB2FLockedDoor");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_OPENED_DOOR_TO_ROCKET_HIDEOUT_TRANSMITTER").unwrap());
+    assert_eq!(shell.shell.session().overworld().map.metatile_at(7, 6), Some(0x07));
+    quest_assert_save_round_trip(&mut shell, "rocket-passwords");
+    let state = shell.shell.session().state();
+    assert_eq!(state.map_block_overrides["TeamRocketBaseB3F"].get(&(5, 4)), Some(&0x07));
+    assert_eq!(state.map_block_overrides["TeamRocketBaseB2F"].get(&(7, 6)), Some(&0x07));
+}
+
+#[test]
+fn rocket_electrodes_clear_in_pairs_and_award_whirlpool_after_the_third() {
+    let mut shell = progression_shell_on_map_for_test("TeamRocketBaseB2F");
+    {
+        // Stage the post-executive scene; the three wild battles and aftermath run normally.
+        let state = shell.shell.session_mut().state_mut();
+        state.scenes.map_scenes.insert("TeamRocketBaseB2F".into(), "SCENE_TEAMROCKETBASEB2F_ELECTRODES".into());
+        state.scenes.map_scene_indices.insert("TeamRocketBaseB2F".into(), 2);
+        state.flags.set_engine_flag("ENGINE_ROCKET_SIGNAL_ON_CH20", true).unwrap();
+    }
+    let mut app = menu_render_test_app(shell);
+    for index in 1..=3 {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            let script = format!("RocketElectrode{index}");
+            quest_move_beside_npc(&mut shell, "TeamRocketBaseB2F", &script);
+            quest_talk(&mut shell, &script);
+        }
+        quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(shell.shell.snapshot().unwrap().battle.unwrap().enemy_pokemon.species.id, "ELECTRODE");
+            quest_finish_static_wild_final_turn(&mut shell);
+        }
+        quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set(&format!("EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_{index}")).unwrap());
+        for partner in [index, index + 3] {
+            assert!(shell.shell.session().overworld().hidden_object_identifiers.contains(
+                &format!("TEAMROCKETBASEB2F_ELECTRODE{partner}")), "Electrode {partner} remains visible");
+        }
+        assert_eq!(quest_item_quantity(shell, "HM_WHIRLPOOL"), u16::from(index == 3));
+        assert_eq!(shell.shell.session().state().flags.is_event_flag_set("EVENT_CLEARED_ROCKET_HIDEOUT").unwrap(), index == 3);
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_ROCKET_SIGNAL_ON_CH20").unwrap());
+        for flag in ["EVENT_GOT_HM06_WHIRLPOOL", "EVENT_ROUTE_43_GATE_ROCKETS", "EVENT_MAHOGANY_TOWN_POKEFAN_M_BLOCKS_GYM", "EVENT_TURNED_OFF_SECURITY_CAMERAS"] {
+            assert!(shell.shell.session().state().flags.is_event_flag_set(flag).unwrap(), "{flag}");
+        }
+        assert_eq!(shell.shell.session().state().scenes.map_scenes["TeamRocketBaseB2F"], "SCENE_TEAMROCKETBASEB2F_NOOP");
+        quest_begin_script(&mut shell, "TeamRocketBaseB2FTransmitterScript");
+    }
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "RocketBaseB2FDeactivateTransmitterText"));
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    quest_assert_save_round_trip(&mut shell, "rocket-generators");
+    assert_eq!(quest_item_quantity(&shell, "HM_WHIRLPOOL"), 1);
+}
+
+
+#[test]
+fn rocket_floor_traps_start_the_authored_species_and_do_not_repeat() {
+    let shell = progression_shell_on_map_for_test("TeamRocketBaseB1F");
+    let mut app = menu_render_test_app(shell);
+    for (index, species, level) in [(1, "KOFFING", 21), (2, "VOLTORB", 23), (3, "GEODUDE", 21)] {
+        let script = format!("ExplodingTrap{index}");
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_start_coord_script(&mut shell, "TeamRocketBaseB1F", &script);
+        }
+        quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            let battle = shell.shell.snapshot().unwrap().battle.unwrap();
+            assert_eq!(battle.battle_type, "BATTLETYPE_TRAP");
+            assert_eq!(battle.enemy_pokemon.species.id, species);
+            assert_eq!(battle.enemy_pokemon.level, level);
+            quest_finish_static_wild_final_turn(&mut shell);
+        }
+        quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().flags.is_event_flag_set(&format!("EVENT_EXPLODING_TRAP_{index}")).unwrap());
+            quest_start_coord_script(&mut shell, "TeamRocketBaseB1F", &script);
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle());
+    }
+    quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), "rocket-traps");
 }
