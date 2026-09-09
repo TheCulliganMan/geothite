@@ -43,7 +43,7 @@ a complete quest.
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
-| Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; full quiz visual/audio review and other Goldenrod chains pending |
+| Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; Floria prerequisites, SquirtBottle badge gate/gift/refusal, Sudowoodo victory continuation, Rock Smash/repeats and save/load pass; full traversal, remaining outcomes and visual/audio review pending; Kenya mail pending |
 | Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | Pending |
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
@@ -473,3 +473,25 @@ movement were reviewed; final punctuation fits inside the dialogue box.
 This is desktop Chromium at a mobile-sized viewport with keyboard input;
 iPhone Safari/touch and perceptual comparison on original hardware remain
 unverified. The Radio Card regression above is also committed on main.
+
+## SquirtBottle, Sudowoodo and Rock Smash
+
+The real-pack visible-shell quest regression follows the authored
+[flower-shop prerequisites](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodFlowerShop.asm)
+and [Route 36 encounter/reward scripts](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/Route36.asm).
+It checks touching the tree without a bottle, the pre-encounter Rock Smash
+conversation, both Floria conversations, missing-badge refusal, the bottle gift
+and repeat, declining the water prompt, the actual level-20 Sudowoodo battle,
+victory continuation, tree disappearance and walking onto its former tile after
+save/load, the one-time Rock Smash
+TM and flower-shop after-talk. The bottle remains in the bag. Save/load is checked
+before the badge, after refusal, after the battle and after the reward.
+
+The test stages Whitney's badge only after checking its gate (Whitney's own
+handoff has separate coverage), positions the player beside each authored NPC,
+and stages the wild battle's final turn. It does not establish complete route
+traversal, capture/escape/loss outcomes, both Floria approach animations, bag-menu
+bottle use, full TM-pocket retry or browser visual/audio fidelity.
+
+The final expanded regression passes (65.29 seconds); `git diff --check` passes.
+This change adds regression coverage and documentation; it changes no deployed gameplay.

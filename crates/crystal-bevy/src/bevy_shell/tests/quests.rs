@@ -2740,3 +2740,119 @@ fn radio_card_quiz_refusal_each_wrong_answer_reward_and_reload() {
     close_visible_pokegear_menu(&mut shell).unwrap();
     assert!(quest_dialogue_is_idle(&shell));
 }
+
+#[test]
+fn squirtbottle_floria_prerequisites_sudowoodo_and_rock_smash_persist() {
+    fn visit(app: &mut App, map: &str, script: &str, answer: bool, expected: &str) {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            quest_move_beside_npc(&mut shell, map, script);
+            quest_talk(&mut shell, script);
+        }
+        let labels = quest_settle(app, answer, |shell| quest_dialogue_is_idle(shell)
+            && shell.special_boundary.is_none());
+        assert!(labels.iter().any(|label| label == expected), "{script}: {labels:?}");
+    }
+    fn event(app: &App, name: &str) -> bool {
+        app.world().resource::<BevyRuntimeShell>().shell.session().state().flags
+            .is_event_flag_set(name).unwrap()
+    }
+    fn quantity(app: &App, name: &str) -> u16 {
+        quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), name)
+    }
+    let mut shell = progression_shell_on_map_for_test("Route36");
+    quest_move_beside_npc(&mut shell, "Route36", "SudowoodoScript");
+    quest_talk(&mut shell, "SudowoodoScript");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(!app.world().resource::<BevyRuntimeShell>().shell.has_active_battle());
+    assert!(!event(&app, "EVENT_FOUGHT_SUDOWOODO"));
+    visit(&mut app, "Route36", "Route36RockSmashGuyScript", true, "RockSmashGuyText1");
+    assert_eq!(quantity(&app, "TM_ROCK_SMASH"), 0);
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherMySisterWentToSeeWigglyTreeRoute36Text");
+    assert_eq!(quantity(&app, "SQUIRTBOTTLE"), 0);
+    visit(&mut app, "Route36", "Route36FloriaScript", true, "FloriaText1");
+    assert!(event(&app, "EVENT_MET_FLORIA"));
+    assert!(!event(&app, "EVENT_FLORIA_AT_FLOWER_SHOP"));
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherLalalaHavePlentyOfWaterText");
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopFloriaScript", true,
+        "GoldenrodFlowerShopFloriaWonderIfSisWillLendWaterBottleText");
+    assert!(event(&app, "EVENT_TALKED_TO_FLORIA_AT_FLOWER_SHOP"));
+    assert!(event(&app, "EVENT_FLORIA_AT_FLOWER_SHOP"));
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherAskWantToBorrowWaterBottleText");
+    assert_eq!(quantity(&app, "SQUIRTBOTTLE"), 0);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_assert_save_round_trip(&mut shell, "floria-before-badge");
+        // Whitney's battle and delayed badge handoff have separate regressions.
+        shell.shell.award_badge(RuntimeBadgeRegion::Johto, 2).unwrap();
+    }
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherHeresTheSquirtbottleText");
+    assert_eq!(quantity(&app, "SQUIRTBOTTLE"), 1);
+    assert!(event(&app, "EVENT_GOT_SQUIRTBOTTLE"));
+    assert!(event(&app, "EVENT_FLORIA_AT_SUDOWOODO"));
+    assert!(!event(&app, "EVENT_FLORIA_AT_FLOWER_SHOP"));
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherDontDoAnythingDangerousText");
+    visit(&mut app, "Route36", "SudowoodoScript", false, "UseSquirtbottleText");
+    assert!(!event(&app, "EVENT_FOUGHT_SUDOWOODO"));
+    assert_eq!(quantity(&app, "SQUIRTBOTTLE"), 1);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_assert_save_round_trip(&mut shell, "squirtbottle-refusal");
+        quest_move_beside_npc(&mut shell, "Route36", "SudowoodoScript");
+        quest_talk(&mut shell, "SudowoodoScript");
+    }
+    let labels = quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+    assert!(labels.iter().any(|label| label == "UsedSquirtbottleText"));
+    assert!(labels.iter().any(|label| label == "SudowoodoAttackedText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::StaticWild { enemy_pokemon, .. } =
+            &shell.shell.session().state().battle else { panic!("expected Sudowoodo battle"); };
+        assert_eq!(enemy_pokemon.species.id, "SUDOWOODO");
+        assert_eq!(enemy_pokemon.level, 20);
+        quest_finish_static_wild_final_turn(&mut shell);
+    }
+    quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+    assert!(event(&app, "EVENT_FOUGHT_SUDOWOODO"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_assert_save_round_trip(&mut shell, "sudowoodo-cleared");
+        assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+            object.object_identifier.as_deref() == Some("ROUTE36_WEIRD_TREE")));
+    }
+    // Walk onto the tree's former occupied tile using the visible input controller.
+    let tree_tile = {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let tree = shell.runtime.data().maps["Route36"].objects.iter()
+            .find(|object| object.script == "SudowoodoScript").unwrap();
+        TilePosition::new(tree.x as i16, tree.y as i16)
+    };
+    for _ in 0..24 {
+        if app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().overworld.tile == tree_tile {
+            break;
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowUp);
+    }
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().overworld.tile,
+        tree_tile, "cleared tree must no longer block walking after load");
+    visit(&mut app, "Route36", "Route36LassScript", true, "Route36LassText_ClearedSudowoodo");
+    visit(&mut app, "Route36", "Route36RockSmashGuyScript", true, "RockSmashGuyText2");
+    assert_eq!(quantity(&app, "TM_ROCK_SMASH"), 1);
+    assert!(event(&app, "EVENT_GOT_TM08_ROCK_SMASH"));
+    visit(&mut app, "Route36", "Route36RockSmashGuyScript", true, "RockSmashGuyText3");
+    assert_eq!(quantity(&app, "TM_ROCK_SMASH"), 1);
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopFloriaScript", true,
+        "GoldenrodFlowerShopFloriaItReallyWasAMonText");
+    visit(&mut app, "GoldenrodFlowerShop", "FlowerShopTeacherScript", true,
+        "GoldenrodFlowerShopTeacherLalalaHavePlentyOfWaterText");
+    assert_eq!(quantity(&app, "SQUIRTBOTTLE"), 1);
+    quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(),
+        "sudowoodo-rock-smash-reward");
+}
