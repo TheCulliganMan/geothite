@@ -38,7 +38,7 @@ a complete quest.
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller accept/refuse, unchanged money/inventory and save/load pass; full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; real gift through mileage threshold, visible shop call, no repeat and save/load pass after fixing the enable flag; full 1,024-step traversal remains pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
-| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; Kanto leaders remain pending |
+| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; all eight Kanto leader reward/repeat/save continuations pass; full access/traversal, combat and remaining presentation checks are pending |
 | Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
@@ -242,3 +242,13 @@ the pending hatchling while the nickname choice is active, preserving its shiny
 palette. A regression checks an actual sprite entity with that artwork; the
 corrected native composition was visually reviewed. The retention fix still
 needs deployment and a fresh browser screenshot.
+
+All eight Kanto leader continuations pass from staged terminal battles: Brock,
+Misty, Lt. Surge, Erika, Janine, Sabrina, Blaine and Blue. Each sets its correct
+Kanto badge and defeat flag, reaches authored repeat dialogue without starting
+another battle, and preserves rewards through save/load. Erika grants Giga Drain
+and Janine grants Toxic exactly once; the other six leave the bag unchanged,
+matching their source scripts. One parameterized real-pack visible-shell test
+covers all eight (70.25 seconds). Leader availability is staged for Misty/Blue;
+gym access quests, mazes, full combat, guide/statue branches and visual/audio
+comparisons remain separate work. No Kanto production change was needed.

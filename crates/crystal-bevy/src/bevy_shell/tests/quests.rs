@@ -2034,3 +2034,60 @@ fn shiny_hatch_nickname_prompt_retains_the_front_sprite() {
         canvas.save(PathBuf::from(directory).join("shiny-hatch-nickname.png")).unwrap();
     }
 }
+
+#[test]
+fn kanto_gym_rewards_and_repeat_dialogue_survive_save_load() {
+    for (map, trainer, badge, tm, repeat_text) in [
+        ("PewterGym", "BROCK", 0, None, "BrockFightDoneText"),
+        ("CeruleanGym", "MISTY", 1, None, "MistyFightDoneText"),
+        ("VermilionGym", "LT_SURGE", 2, None, "LtSurgeFightDoneText"),
+        ("CeladonGym", "ERIKA", 3, Some("TM_GIGA_DRAIN"), "ErikaAfterBattleText"),
+        ("FuchsiaGym", "JANINE", 4, Some("TM_TOXIC"), "JanineText_ApplyMyself"),
+        ("SaffronGym", "SABRINA", 5, None, "SabrinaFightDoneText"),
+        ("SeafoamGym", "BLAINE", 6, None, "BlaineFightDoneText"),
+        ("ViridianGym", "BLUE", 7, None, "LeaderBlueEpilogueText"),
+    ] {
+        eprintln!("checking {trainer} Kanto continuation");
+        let mut shell = progression_shell_on_map_for_test(map);
+        // Stage leader availability; access quests are checked separately.
+        for flag in ["EVENT_TRAINERS_IN_CERULEAN_GYM", "EVENT_VIRIDIAN_GYM_BLUE"] {
+            shell.shell.session_mut().state_mut().flags.set_event_flag(flag, false).unwrap();
+        }
+        let before_bag = shell.shell.session().state().bag.clone();
+        let key = shell.shell.scripted_trainer_battle_keys().into_iter()
+            .find(|key| key.map_name == map && key.trainer_class == trainer).unwrap();
+        shell.shell.start_scripted_trainer_battle(&key.map_name, &key.source_script, key.startbattle_command_index).unwrap();
+        {
+            let state = shell.shell.session_mut().state_mut();
+            let crate::core::state::BattleMemory::Trainer { enemy_pokemon, enemy_party, .. } = &mut state.battle
+                else { panic!("{trainer} requires trainer battle"); };
+            state.battle_rewarded_enemy_party_indices = (0..enemy_party.len()).collect();
+            for pokemon in enemy_party { pokemon.hp = 0; }
+            enemy_pokemon.hp = 0;
+        }
+        shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+        complete_visible_scripted_trainer_battle(&mut shell, &key.map_name, &key.source_script, true, false).unwrap();
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+            && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+        let awarded_bag = {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().badges.kanto[badge], "{trainer} badge");
+            let defeat = if trainer == "LT_SURGE" { "EVENT_BEAT_LTSURGE".into() } else { format!("EVENT_BEAT_{trainer}") };
+            assert!(shell.shell.session().state().flags.is_event_flag_set(&defeat).unwrap());
+            if let Some(tm) = tm { assert_eq!(quest_item_quantity(&shell, tm), 1); }
+            else { assert_eq!(shell.shell.session().state().bag, before_bag, "{trainer} does not award a TM"); }
+            let bag = shell.shell.session().state().bag.clone();
+            quest_move_beside_npc(&mut shell, map, &key.source_script);
+            quest_talk(&mut shell, &key.source_script);
+            bag
+        };
+        let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == repeat_text), "{trainer} repeat: {labels:?}");
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().bag, awarded_bag);
+        assert!(!shell.shell.has_active_battle(), "{trainer} must not restart the battle");
+        quest_assert_save_round_trip(&mut shell, trainer);
+        assert!(shell.shell.session().state().badges.kanto[badge]);
+    }
+}
