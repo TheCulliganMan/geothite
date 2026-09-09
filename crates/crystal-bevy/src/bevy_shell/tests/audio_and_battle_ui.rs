@@ -472,26 +472,7 @@ fn magnet_train_player_walk_cycle_and_global_offset_follow_sprite_anim_order() {
 
 #[test]
 fn waitsfx_keeps_a_sound_queued_earlier_in_the_same_audio_drain() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
-    let spawn_identifier = runtime
-        .title_new_game_spawn_identifier()
-        .expect("title new-game spawn");
-    let mut runtime_shell = initialize_bevy_runtime_shell(
-        asset_root,
-        runtime,
-        BevyShellStart::NewGame { spawn_identifier },
-        BevyShellConfig::default(),
-    )
-    .expect("initialize visible shell");
+    let mut runtime_shell = progression_shell_on_map_for_test("CherrygroveCity");
     let checksum = runtime_shell.shell.state_checksum().expect("checksum");
     let mut drained_batch = Vec::new();
 

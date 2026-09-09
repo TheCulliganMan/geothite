@@ -5041,7 +5041,8 @@ fn visible_player_boundary(
     runtime_shell: &BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> bool {
-    runtime_shell.field_text_reveal.is_some()
+    (runtime_shell.field_text_reveal.is_some()
+        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, snapshot))
         || visible_non_text_player_boundary(runtime_shell, snapshot)
 }
 
@@ -5052,9 +5053,14 @@ fn visible_non_text_player_boundary(
     if runtime_shell.incoming_phone_sequence.is_some() {
         return true;
     }
-    runtime_shell
-        .visible_script_delay_frames
-        .is_some_and(|frames| frames > 0)
+    // waitsfx resumes on a later host update once playback finishes. Treat
+    // it as a boundary here too, so auto-advance cannot spin pressing A.
+    runtime_shell.visible_wait_sfx_boundary
+        || runtime_shell.field_notice.is_some()
+        || runtime_shell.pc_notice.is_some()
+        || runtime_shell
+            .visible_script_delay_frames
+            .is_some_and(|frames| frames > 0)
         || runtime_shell
             .visible_earthquake
             .as_ref()
@@ -6328,6 +6334,13 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         match field_item_phase {
             Some(VisibleFieldItemPhase::PocketText | VisibleFieldItemPhase::BagFullText) => {
                 runtime_shell.visible_field_item_notice = None;
+                runtime_shell.field_text_reveal = None;
+                runtime_shell.field_notice_scene = None;
+                // The item command has returned. Resume before stale Write
+                // history can replace its notice with the previous dialogue.
+                continue_visible_script_after_prompt(runtime_shell)?;
+                mark_runtime_snapshot_dirty(runtime_shell);
+                return Ok(());
             }
             Some(VisibleFieldItemPhase::AwaitingPrompt) => {
                 let notice = runtime_shell
@@ -10136,6 +10149,9 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
         let text_window_blocks =
             snapshot.ui.text_window_open && runtime_shell.active_script_cursor.is_none();
         if runtime_shell.visible_mom_bank.is_some()
+            || runtime_shell.field_notice.is_some()
+            || runtime_shell.pc_notice.is_some()
+            || runtime_shell.visible_wait_sfx_boundary
             || snapshot.ui.pending_yes_no.is_some()
             || runtime_shell.pending_day_of_week.is_some()
             || runtime_shell.pending_phone_prompt.is_some()
@@ -10198,7 +10214,11 @@ fn advance_visible_wait_sfx_boundary(
     if !runtime_shell.visible_wait_sfx_boundary {
         return Ok(false);
     }
-    if presentation_snapshot.ui.text_window_open {
+    // opentext may precede waitsfx and the first writetext. An empty
+    // window has no printer page to acknowledge.
+    if presentation_snapshot.ui.text_window_open
+        && visible_field_dialog_pages(presentation_snapshot, runtime_shell).is_some()
+    {
         if !visible_field_dialogue_is_fully_revealed(runtime_shell, presentation_snapshot) {
             return Ok(true);
         }

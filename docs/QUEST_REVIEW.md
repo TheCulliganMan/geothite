@@ -32,7 +32,7 @@ a complete quest.
 | --- | --- | --- |
 | Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, gift, refusal, consumption, healing and departure passed; pharmacy negative case and save/reload pending |
 | Suicune | Burned Tower release, Raikou/Entei initialization, Cianwood/Eusine, Route 36/42 sightings, Radio Tower Clear Bell, sages, Tin Tower battle and aftermath | Burned Tower release and Clear Bell gate passed; Tin Tower victory aftermath, route sightings, and Eusine departure/non-repeat passed; save/load also passed; capture and complete Radio Tower/sage chain pending |
-| Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Pending |
+| Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
 | Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Pending |
 | Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Pending |
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
@@ -79,4 +79,12 @@ Shiny coverage explicitly includes encounter/gift DV generation and odds, palett
 
 Wild shiny entrance now schedules the sparkle-only sequence before the frontpic and encounter text, matching BattleStartMessage ordering. New tests verify eight shine events, no ball-poof effect, input ownership/release and Battle Scene on/off behavior. A rendered sparkle frame was visually reviewed. Existing trainer/wild sliding regressions are also checked; full frame-by-frame comparison with original hardware remains open.
 
-Artwork/hatch fix 80245f29 is deployed; container is healthy and the production browser battle interaction passes. The subsequent sparkle fix requires its own deployment.
+Artwork/hatch fix 80245f29 is deployed; container is healthy and the production browser battle interaction passes. Sparkle fix 01161c00 is also deployed; its container is healthy and a production browser battle interaction passes.
+
+Lake of Rage review exposed three shared progression defects: the auto-runner
+spun during sound waits, sound waits required a rendered page even in an empty
+text window, and completed item notices could repeatedly consume A without
+advancing. The Red Gyarados continuation also attempted to persist a scene on a
+map without scene storage. Fixes pass the real-pack defeat/reward/Lance/trade/save sequence and full-pocket retry. Core scene tests (13), sound-wait tests (3), item-notice tests (3), medicine (1), and visible evolution tests (3) also pass. Item notice dismissal now resumes the script before stale dialogue can reappear. These gameplay fixes still need deployment.
+The scope still includes access/traversal, capture/loss aftermath, the hideout,
+and every other pending quest in the matrix above.

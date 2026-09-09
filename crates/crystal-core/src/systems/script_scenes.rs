@@ -209,7 +209,7 @@ pub fn apply_script_scene_command(
             let map_name = require_current_map(current_map_name)?;
             let scene_token = require_scene_id(&command)?;
             let scene_id = resolve_scene_token(map_name, scene_token, table)?;
-            state.scenes.set_map_scene(map_name, &scene_id, table)?
+            set_scene_or_no_scene(state, map_name, &scene_id, table)?
         }
         "setmapscene" => {
             require_target_map(&command)?;
@@ -219,7 +219,7 @@ pub fn apply_script_scene_command(
                 })?;
             let scene_token = require_scene_id(&command)?;
             let scene_id = resolve_scene_token(map_name, scene_token, table)?;
-            state.scenes.set_map_scene(map_name, &scene_id, table)?
+            set_scene_or_no_scene(state, map_name, &scene_id, table)?
         }
         other => {
             return Err(ScriptSceneError::UnknownCommand {
@@ -228,6 +228,20 @@ pub fn apply_script_scene_command(
         }
     };
     Ok(outcome(command, status))
+}
+
+fn set_scene_or_no_scene(
+    state: &mut GameState,
+    map_name: &str,
+    scene_id: &str,
+    table: &MapSceneTable,
+) -> Result<SceneStatus, ScriptSceneError> {
+    // DoScene returns without writing when GetMapSceneID has no storage.
+    // Saving a synthetic numeric scene here makes later save validation fail.
+    if table.scenes.is_empty() {
+        return check_scene_or_no_scene(state, map_name, table);
+    }
+    state.scenes.set_map_scene(map_name, scene_id, table).map_err(Into::into)
 }
 
 fn check_scene_or_no_scene(
@@ -681,6 +695,25 @@ mod tests {
         assert_eq!(state.scenes.current_map_name, "Route43Gate");
         assert_eq!(state.scenes.scene_name, "SCENE_ROUTE43GATE_ROCKETS");
         assert!(!state.scenes.map_scenes.contains_key("Route43"));
+    }
+
+    #[test]
+    fn scene_writes_without_scene_storage_leave_state_unchanged() {
+        for (name, map_id, target_map) in [
+            ("setscene", None, None),
+            ("setmapscene", Some("LAKE_OF_RAGE"), Some("LakeOfRage")),
+        ] {
+            let mut state = GameState::default();
+            state.scenes.enter_map("Route43Gate", &table()).unwrap();
+            let before = state.clone();
+            let result = apply_script_scene_command(
+                &mut state, "Route43Gate", target_map, &MapSceneTable::default(),
+                command(name, map_id, Some("0")),
+            ).unwrap();
+            assert_eq!(result.scene_index, 255);
+            assert_eq!(result.script_name, None);
+            assert_eq!(state, before, "a map without a scene variable cannot store a scene");
+        }
     }
 
     #[test]

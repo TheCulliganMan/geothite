@@ -97,9 +97,11 @@ fn quest_settle(
             }
             // Fast-forward only the typewriter. Script delays, walks and
             // animation boundaries still run through real host updates.
+            let mut text_changed = false;
             for _ in 0..100 {
-                tick_visible_field_text_reveal(&mut shell, true).unwrap();
+                text_changed |= tick_visible_field_text_reveal(&mut shell, true).unwrap();
             }
+            if text_changed { mark_runtime_presentation_dirty(&mut shell); }
             if shell
                 .shell
                 .session()
@@ -115,12 +117,17 @@ fn quest_settle(
     }
     let shell = app.world().resource::<BevyRuntimeShell>();
     panic!(
-        "quest stalled: cursor={:?}, text={:?}, movement={:?}, boundary={:?}, error={:?}",
+        "quest stalled: cursor={:?}, text={:?}, movement={:?}, boundary={:?}, error={:?}, reveal={:?}, rendered={:?}, item={:?}, sfx_wait={}, pending_yes_no={:?}",
         shell.active_script_cursor,
         shell.field_notice,
         shell.visible_script_movement,
         shell.special_boundary,
-        shell.last_error
+        shell.last_error,
+        shell.field_text_reveal,
+        shell.rendered_field_text_identity,
+        shell.visible_field_item_notice,
+        shell.visible_wait_sfx_boundary,
+        shell.shell.session().state().script_runtime.pending_yes_no
     );
 }
 
@@ -399,44 +406,7 @@ fn suicune_tin_tower_choreography_reaches_special_battle_and_finishes_aftermath(
     );
     {
         let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
-        // The choreography reaches a real battle. Set up its final turn;
-        // the move, faint, reward and script continuation execute normally.
-        shell.visible_battle_transition = None;
-        shell.visible_battle_sliding_intro = None;
-        shell.battle_entry_messages_remaining = 0;
-        shell.battle_enemy_send_out_pending = false;
-        shell.battle_player_send_out_pending = false;
-        shell.battle_messages.clear();
-        shell.battle_message_scenes.clear();
-        shell.battle_text_reveal = None;
-        shell.battle_hp_tween = None;
-        let state = shell.shell.session_mut().state_mut();
-        state.storage.party.pokemon[0].as_mut().unwrap().moves =
-            vec![crate::core::models::LearnedMove {
-                name: "SWIFT".into(),
-                current_pp: 20,
-                pp_ups: 0,
-            }];
-        state.sync_party_from_storage();
-        let crate::core::state::BattleMemory::StaticWild {
-            enemy_pokemon,
-            enemy_party,
-            ..
-        } = &mut state.battle
-        else {
-            panic!("Suicune must be static wild");
-        };
-        enemy_pokemon.hp = 1;
-        enemy_pokemon.moves = vec![crate::core::models::LearnedMove {
-            name: "SPLASH".into(),
-            current_pp: 40,
-            pp_ups: 0,
-        }];
-        enemy_party[0] = enemy_pokemon.clone();
-        state.script_runtime.active_battle_combat = None;
-        mark_runtime_snapshot_dirty(&mut shell);
-        shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
-        resolve_visible_battle_move(&mut shell, 0).unwrap();
+        quest_finish_static_wild_final_turn(&mut shell);
     }
     let labels = quest_settle(&mut app, true, |shell| {
         quest_dialogue_is_idle(shell)
@@ -1010,4 +980,137 @@ fn shiny_stone_evolution_preserves_dvs_and_save_state() {
     let restored = shell.shell.session().state().storage.party.pokemon[1].as_ref().unwrap();
     assert_eq!(restored.species.id, "RAICHU");
     assert_eq!(restored.dvs, dvs);
+}
+
+fn quest_finish_static_wild_final_turn(shell: &mut BevyRuntimeShell) {
+    // The choreography reaches a real battle. Set up its final turn;
+    // the move, faint, reward and script continuation execute normally.
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    shell.battle_hp_tween = None;
+    let state = shell.shell.session_mut().state_mut();
+    state.storage.party.pokemon[0].as_mut().unwrap().moves =
+        vec![crate::core::models::LearnedMove {
+            name: "SWIFT".into(),
+            current_pp: 20,
+            pp_ups: 0,
+        }];
+    state.sync_party_from_storage();
+    let crate::core::state::BattleMemory::StaticWild {
+        enemy_pokemon,
+        enemy_party,
+        ..
+    } = &mut state.battle
+    else {
+        panic!("quest must be static wild");
+    };
+    enemy_pokemon.hp = 1;
+    enemy_pokemon.moves = vec![crate::core::models::LearnedMove {
+        name: "SPLASH".into(),
+        current_pp: 40,
+        pp_ups: 0,
+    }];
+    enemy_party[0] = enemy_pokemon.clone();
+    state.script_runtime.active_battle_combat = None;
+    mark_runtime_snapshot_dirty(shell);
+    shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+    resolve_visible_battle_move(shell, 0).unwrap();
+}
+
+#[test]
+fn lake_of_rage_aftermath_lance_and_red_scale_trade_complete() {
+    let mut shell = progression_shell_on_map_for_test("LakeOfRage");
+    arm_visible_active_script_cursor(&mut shell, "RedGyarados", 0);
+    execute_visible_active_script_step(&mut shell).unwrap();
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+    quest_finish_static_wild_final_turn(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "RED_SCALE"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_LAKE_OF_RAGE_RED_GYARADOS").unwrap());
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_LAKE_OF_RAGE_LANCE").unwrap());
+        quest_move_beside_npc(&mut shell, "LakeOfRage", "LakeOfRageLanceScript");
+        quest_talk(&mut shell, "LakeOfRageLanceScript");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_DECIDED_TO_HELP_LANCE").unwrap());
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_REFUSED_TO_HELP_LANCE_AT_LAKE_OF_RAGE").unwrap());
+        quest_talk(&mut shell, "LakeOfRageLanceScript");
+    }
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let state = shell.shell.session().state();
+        assert!(state.flags.is_event_flag_set("EVENT_DECIDED_TO_HELP_LANCE").unwrap());
+        assert!(state.flags.is_event_flag_set("EVENT_LAKE_OF_RAGE_LANCE").unwrap());
+        assert!(!state.flags.is_event_flag_set("EVENT_MAHOGANY_MART_LANCE_AND_DRAGONITE").unwrap());
+        assert_eq!(state.scenes.map_scenes.get("MahoganyMart1F").map(String::as_str),
+            Some("SCENE_MAHOGANYMART1F_LANCE_UNCOVERS_STAIRS"));
+        shell.shell.session_mut().state_mut().scenes.map_scenes.insert("MrPokemonsHouse".into(), "SCENE_MRPOKEMONSHOUSE_NOOP".into());
+        shell.shell.session_mut().state_mut().scenes.map_scene_indices.insert("MrPokemonsHouse".into(), 1);
+        quest_move_beside_npc(&mut shell, "MrPokemonsHouse", "MrPokemonsHouse_MrPokemonScript");
+        quest_talk(&mut shell, "MrPokemonsHouse_MrPokemonScript");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "RED_SCALE"), 1);
+        assert_eq!(quest_item_quantity(&shell, "EXP_SHARE"), 0);
+        quest_talk(&mut shell, "MrPokemonsHouse_MrPokemonScript");
+    }
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "RED_SCALE"), 0);
+        assert_eq!(quest_item_quantity(&shell, "EXP_SHARE"), 1);
+        quest_talk(&mut shell, "MrPokemonsHouse_MrPokemonScript");
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(!labels.iter().any(|label| label == "MrPokemonText_GimmeTheScale"));
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(&shell, "EXP_SHARE"), 1);
+    quest_assert_save_round_trip(&mut shell, "red-scale-lance");
+}
+
+#[test]
+fn red_scale_trade_preserves_the_scale_when_the_item_pocket_is_full() {
+    let mut shell = progression_shell_on_map_for_test("MrPokemonsHouse");
+    shell.shell.session_mut().state_mut().scenes.map_scenes.insert("MrPokemonsHouse".into(), "SCENE_MRPOKEMONSHOUSE_NOOP".into());
+        shell.shell.session_mut().state_mut().scenes.map_scene_indices.insert("MrPokemonsHouse".into(), 1);
+    let items = shell.runtime.data().items.values().filter(|item|
+        item.pocket == "ITEM" && item.script_name != "EXP_SHARE").take(20).cloned().collect::<Vec<_>>();
+    let scale = shell.runtime.data().items["RED_SCALE"].clone();
+    {
+        let bag = &mut shell.shell.session_mut().state_mut().bag;
+        bag.items.clear();
+        for item in &items { assert!(bag.add_item(item, 1).unwrap()); }
+        assert!(bag.add_item(&scale, 1).unwrap());
+        assert_eq!(bag.items.len(), 20);
+    }
+    quest_move_beside_npc(&mut shell, "MrPokemonsHouse", "MrPokemonsHouse_MrPokemonScript");
+    let before = shell.shell.session().state().bag.clone();
+    quest_talk(&mut shell, "MrPokemonsHouse_MrPokemonScript");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().bag, before);
+        assert!(shell.shell.session_mut().state_mut().bag.remove_item(&items[0], 1).unwrap());
+        quest_talk(&mut shell, "MrPokemonsHouse_MrPokemonScript");
+    }
+    quest_settle(&mut app, true, quest_dialogue_is_idle);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(shell, "RED_SCALE"), 0);
+    assert_eq!(quest_item_quantity(shell, "EXP_SHARE"), 1);
 }
