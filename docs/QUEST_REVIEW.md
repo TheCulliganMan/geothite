@@ -33,8 +33,8 @@ a complete quest.
 | Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, gift, refusal, consumption, healing and departure passed; pharmacy negative case and save/reload pending |
 | Suicune | Burned Tower release, Raikou/Entei initialization, Cianwood/Eusine, Route 36/42 sightings, Radio Tower Clear Bell, sages, Tin Tower battle and aftermath | Burned Tower release and Clear Bell gate passed; Tin Tower victory aftermath, route sightings, and Eusine departure/non-repeat passed; save/load also passed; capture and complete Radio Tower/sage chain pending |
 | Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
-| Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, executive/rival/Lance approach, capture/loss and visual/audio timing remain pending |
-| Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Pending |
+| Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, remaining approach variants, Lance's initial password scene, capture/loss and visual/audio timing remain pending |
+| Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Fake director/Basement Key, warehouse Card Key/repeats, key-gated shutter, final executive/Clear Bell, town restoration and save/load pass. Switch ordering/refusal/emergency/reset and door tiles pass after fixing stale map overrides. Disguise, basement entry, rival, full traversal and visual timing remain pending |
 | Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller and full battle approach pending |
 | Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; callback and persistence pending |
 | Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
@@ -145,3 +145,30 @@ Four real-pack visible-shell tests pass. NPC fixtures now select an adjacent
 walkable tile and face toward the target; blindly choosing the tile below an
 Electrode placed the player inside a wall. No production hideout changes were
 needed for these tested continuations after the preceding shared script fixes.
+
+Hideout scene coverage now passes Lance's B2F healing, the B3F rival shove/exit,
+both executive battles' left approach variants and retreats, and Lance's follow,
+pacing and generator handoff. Final trainer HP is staged; authored movement,
+dialogue, battle continuations and save/load execute through the visible shell.
+Lance's initial B3F password exposition, right-side variants and full traversal
+remain open.
+
+Radio Tower checks pass the fake director's Basement Key reward/repeat dialogue,
+the warehouse director's Card Key/repeat, negative Card Key slot behavior, shutter
+opening and persisted map changes. The final executive continuation awards Clear
+Bell, restores Rocket/civilian/town flags, sets the Tin Tower gate scene and saves.
+Fixtures explicitly enter the Rocket takeover phase; the initial-game shutter
+flag is otherwise already set. These are staged quest legs, not full-tower walks.
+
+The underground maze test distinguishes wrong 1-2-3 order from the successful
+3-2-1 door history, checks refusal, emergency activation/deactivation, all eleven
+door flags, critical floor tiles, save/load and warehouse reset. It exposed stale
+changeblock overrides surviving the warehouse's flag reset. Map setup now reloads
+base metatiles before MAPCALLBACK_TILES, discarding that map's stale overrides;
+callbacks reopen persistent doors from their flags. This matches
+[LoadBlockData](https://github.com/pret/pokecrystal/blob/master/home/map.asm).
+The reload regression covers warp, battle reload, Continue, submenu and connection
+setup. Nine checks pass: reload semantics, the maze, both password-door chains,
+room decorations, Cut, Fly, temporary flags and medicine. Earlier scene/reward
+checks above also pass. Full normal-input maze traversal and visual timing remain
+open. The map-block reload fix is not yet deployed.

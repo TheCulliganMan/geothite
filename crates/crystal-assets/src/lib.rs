@@ -335,7 +335,7 @@ use crystal_core::systems::script_variables::{
     script_variable_command_issues,
 };
 use crystal_core::systems::script_warps::{
-    MAP_CALLBACK_NEWMAP, SCRIPT_MAP_FACING_WARP_COMMANDS, SCRIPT_MAP_NEW_LOAD_COMMANDS,
+    MAP_CALLBACK_NEWMAP, MAP_CALLBACK_TILES, SCRIPT_MAP_FACING_WARP_COMMANDS, SCRIPT_MAP_NEW_LOAD_COMMANDS,
     SCRIPT_MAP_NO_PAYLOAD_COMMANDS, SCRIPT_MAP_REANCHOR_COMMANDS, SCRIPT_MAP_WARP_COMMANDS,
     ScriptMapAction, ScriptMapCommand, ScriptMapCommandError,
     apply_script_map_command as core_apply_script_map_command, apply_script_warp_arrival_facing,

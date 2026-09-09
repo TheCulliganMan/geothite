@@ -11568,8 +11568,19 @@ impl GameDataSet {
                     .map(|body| (kind, name, body.clone()))
             })
             .collect();
-        for (_callback_kind, callback_name, body) in callback_bodies {
-            self.execute_map_callback_script(state, session, map_name, &callback_name, &body)?;
+        for callback_kind in callback_kinds {
+            if *callback_kind == MAP_CALLBACK_TILES {
+                // LoadBlockData rebuilds the map before its tile callback.
+                // changeblock writes belong to the loaded map, not every future
+                // visit. Persistent doors are reopened by their event callbacks.
+                session.map.metatile_ids = self.overworld_map(map_name)?.metatile_ids;
+                state.map_block_overrides.remove(map_name);
+            }
+            for (kind, callback_name, body) in &callback_bodies {
+                if kind == callback_kind {
+                    self.execute_map_callback_script(state, session, map_name, callback_name, body)?;
+                }
+            }
         }
         // Callback specials such as ToggleMaptileDecorations persist their
         // authored block writes in GameState.  Apply those writes to the live

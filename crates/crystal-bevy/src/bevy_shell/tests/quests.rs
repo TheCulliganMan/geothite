@@ -1615,3 +1615,238 @@ fn rocket_floor_traps_start_the_authored_species_and_do_not_repeat() {
     }
     quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), "rocket-traps");
 }
+
+#[test]
+fn rocket_executives_retreat_and_lance_hands_off_to_the_generators() {
+    let mut shell = progression_shell_on_map_for_test("TeamRocketBaseB2F");
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0].as_mut().unwrap().hp = 1;
+    quest_start_coord_script(&mut shell, "TeamRocketBaseB2F", "LanceHealsScript1");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let state = shell.shell.session().state();
+        let player = state.storage.party.pokemon[0].as_ref().unwrap();
+        assert_eq!(player.hp, player.max_hp);
+        assert!(state.flags.is_event_flag_set("EVENT_LANCE_HEALED_YOU_IN_TEAM_ROCKET_BASE").unwrap());
+        assert_eq!(state.scenes.map_scenes["TeamRocketBaseB2F"], "SCENE_TEAMROCKETBASEB2F_ROCKET_BOSS");
+        quest_start_coord_script(&mut shell, "TeamRocketBaseB3F", "RocketBaseRival");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().scenes.map_scenes["TeamRocketBaseB3F"], "SCENE_TEAMROCKETBASEB3F_ROCKET_BOSS");
+        assert!(shell.shell.session().overworld().hidden_object_identifiers.contains("TEAMROCKETBASEB3F_RIVAL"));
+        quest_start_coord_script(&mut shell, "TeamRocketBaseB3F", "RocketBaseBossLeft");
+    }
+    quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::Trainer { trainer_id, .. } = &shell.shell.session().state().battle else { panic!("executive battle"); };
+        assert_eq!(trainer_id, "EXECUTIVEM_4");
+        quest_finish_current_trainer(&mut shell);
+    }
+    quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BEAT_ROCKET_EXECUTIVEM_4").unwrap());
+        assert!(shell.shell.session().overworld().hidden_object_identifiers.contains("TEAMROCKETBASEB3F_ROCKET1"));
+        assert_eq!(shell.shell.session().state().scenes.map_scenes["TeamRocketBaseB3F"], "SCENE_TEAMROCKETBASEB3F_NOOP");
+        quest_start_coord_script(&mut shell, "TeamRocketBaseB2F", "RocketBaseBossFLeft");
+    }
+    quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::Trainer { trainer_id, .. } = &shell.shell.session().state().battle else { panic!("executive battle"); };
+        assert_eq!(trainer_id, "EXECUTIVEF_2");
+        quest_finish_current_trainer(&mut shell);
+    }
+    quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BEAT_ROCKET_EXECUTIVEF_2").unwrap());
+    assert_eq!(shell.shell.session().state().scenes.map_scenes["TeamRocketBaseB2F"], "SCENE_TEAMROCKETBASEB2F_ELECTRODES");
+    for object in ["TEAMROCKETBASEB2F_ROCKET1", "TEAMROCKETBASEB2F_ROCKET_GIRL", "TEAMROCKETBASEB2F_DRAGON", "TEAMROCKETBASEB2F_LANCE"] {
+        assert!(shell.shell.session().overworld().hidden_object_identifiers.contains(object), "{object}");
+    }
+    assert_eq!(quest_item_quantity(&shell, "HM_WHIRLPOOL"), 0);
+    assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_CLEARED_ROCKET_HIDEOUT").unwrap());
+    quest_assert_save_round_trip(&mut shell, "rocket-executives");
+}
+
+#[test]
+fn radio_tower_keys_unlock_the_shutter_and_rewards_do_not_repeat() {
+    let mut shell = progression_shell_on_map_for_test("RadioTower3F");
+    // Enter the takeover phase; new-game initialization leaves this shutter open.
+    for flag in ["EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER", "EVENT_RADIO_TOWER_ROCKET_TAKEOVER", "EVENT_BEAT_ROCKET_EXECUTIVEM_3", "EVENT_RECEIVED_CARD_KEY"] {
+        shell.shell.session_mut().state_mut().flags.set_event_flag(flag, false).unwrap();
+    }
+    assert_eq!(quest_item_quantity(&shell, "CARD_KEY"), 0);
+    quest_begin_script(&mut shell, "CardKeySlotScript");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER").unwrap());
+        quest_start_coord_script(&mut shell, "RadioTower5F", "FakeDirectorScript");
+    }
+    quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::Trainer { trainer_id, .. } = &shell.shell.session().state().battle else { panic!("fake director battle"); };
+        assert_eq!(trainer_id, "EXECUTIVEM_3");
+        quest_finish_current_trainer(&mut shell);
+    }
+    quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "BASEMENT_KEY"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BEAT_ROCKET_EXECUTIVEM_3").unwrap());
+        quest_move_beside_npc(&mut shell, "RadioTower5F", "Director");
+        quest_talk(&mut shell, "Director");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "BASEMENT_KEY"), 1);
+        quest_move_beside_npc(&mut shell, "GoldenrodUndergroundWarehouse", "GoldenrodUndergroundWarehouseDirectorScript");
+        quest_talk(&mut shell, "GoldenrodUndergroundWarehouseDirectorScript");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "CARD_KEY"), 1);
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_RECEIVED_CARD_KEY").unwrap());
+        quest_talk(&mut shell, "GoldenrodUndergroundWarehouseDirectorScript");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "CARD_KEY"), 1);
+        quest_move_beside_npc(&mut shell, "RadioTower3F", "RadioTower3FGymGuideScript");
+        quest_begin_script(&mut shell, "CardKeySlotScript");
+    }
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "InsertedTheCardKeyText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER").unwrap());
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(7, 1), Some(0x2a));
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(7, 2), Some(0x01));
+        quest_begin_script(&mut shell, "CardKeySlotScript");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(&shell, "CARD_KEY"), 1);
+    quest_assert_save_round_trip(&mut shell, "radio-tower-keys");
+    assert_eq!(shell.shell.session().state().map_block_overrides["RadioTower3F"].get(&(7, 1)), Some(&0x2a));
+    assert_eq!(shell.shell.session().state().map_block_overrides["RadioTower3F"].get(&(7, 2)), Some(&0x01));
+}
+
+#[test]
+fn radio_tower_final_executive_grants_clear_bell_and_restores_the_towns() {
+    let mut shell = progression_shell_on_map_for_test("RadioTower5F");
+    {
+        let state = shell.shell.session_mut().state_mut();
+        for flag in ["EVENT_CLEARED_RADIO_TOWER", "EVENT_RADIO_TOWER_ROCKET_TAKEOVER", "EVENT_GOT_CLEAR_BELL", "EVENT_TEAM_ROCKET_DISBANDED"] {
+            state.flags.set_event_flag(flag, false).unwrap();
+        }
+        for flag in ["ENGINE_ROCKETS_IN_RADIO_TOWER", "ENGINE_ROCKETS_IN_MAHOGANY"] {
+            state.flags.set_engine_flag(flag, true).unwrap();
+        }
+    }
+    quest_start_coord_script(&mut shell, "RadioTower5F", "RadioTower5FRocketBossScript");
+    let mut app = menu_render_test_app(shell);
+    quest_settle(&mut app, false, |shell| shell.shell.has_active_battle());
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let crate::core::state::BattleMemory::Trainer { trainer_id, .. } = &shell.shell.session().state().battle else { panic!("final executive battle"); };
+        assert_eq!(trainer_id, "EXECUTIVEM_1");
+        assert_eq!(quest_item_quantity(&shell, "CLEAR_BELL"), 0);
+        quest_finish_current_trainer(&mut shell);
+    }
+    quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell) && !shell.shell.has_active_battle() && shell.battle_messages.is_empty());
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert_eq!(quest_item_quantity(&shell, "CLEAR_BELL"), 1);
+    let state = shell.shell.session().state();
+    for flag in ["EVENT_BEAT_ROCKET_EXECUTIVEM_1", "EVENT_CLEARED_RADIO_TOWER", "EVENT_GOT_CLEAR_BELL", "EVENT_TEAM_ROCKET_DISBANDED", "EVENT_RADIO_TOWER_ROCKET_TAKEOVER", "EVENT_GOLDENROD_CITY_ROCKET_TAKEOVER", "EVENT_BLACKTHORN_CITY_SUPER_NERD_BLOCKS_GYM"] {
+        assert!(state.flags.is_event_flag_set(flag).unwrap(), "{flag}");
+    }
+    for flag in ["EVENT_MAHOGANY_MART_OWNERS", "EVENT_GOLDENROD_CITY_CIVILIANS", "EVENT_RADIO_TOWER_CIVILIANS_AFTER", "EVENT_BLACKTHORN_CITY_SUPER_NERD_DOES_NOT_BLOCK_GYM"] {
+        assert!(!state.flags.is_event_flag_set(flag).unwrap(), "{flag}");
+    }
+    for flag in ["ENGINE_ROCKETS_IN_RADIO_TOWER", "ENGINE_ROCKETS_IN_MAHOGANY"] {
+        assert!(!state.flags.is_engine_flag_set(flag).unwrap(), "{flag}");
+    }
+    assert_eq!(state.scenes.map_scenes["RadioTower5F"], "SCENE_RADIOTOWER5F_NOOP");
+    assert_eq!(state.scenes.map_scenes["EcruteakTinTowerEntrance"], "SCENE_ECRUTEAKTINTOWERENTRANCE_SAGE_BLOCKS");
+    assert!(shell.shell.session().overworld().hidden_object_identifiers.contains("RADIOTOWER5F_DIRECTOR"));
+    quest_assert_save_round_trip(&mut shell, "radio-tower-cleared");
+    assert_eq!(quest_item_quantity(&shell, "CLEAR_BELL"), 1);
+}
+
+#[test]
+fn underground_switch_maze_preserves_door_history_and_resets_from_warehouse() {
+    let mut shell = progression_shell_on_map_for_test("GoldenrodUndergroundWarehouse");
+    quest_move_beside_npc(&mut shell, "GoldenrodUndergroundSwitchRoomEntrances", "GoldenrodUndergroundSwitchRoomEntrancesTeacherScript");
+    let mut app = menu_render_test_app(shell);
+    let toggle = |app: &mut App, script: &str, yes: bool| {
+        quest_begin_script(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), script);
+        quest_settle(app, yes, quest_dialogue_is_idle);
+    };
+    toggle(&mut app, "Switch1Script", false);
+    assert!(!app.world().resource::<BevyRuntimeShell>().shell.session().state().flags.is_event_flag_set("EVENT_SWITCH_1").unwrap());
+    // The wrong order reaches the same total but leaves the middle corridor closed.
+    for index in [1, 2, 3] { toggle(&mut app, &format!("Switch{index}Script"), true); }
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().script_runtime.memory["wUndergroundSwitchPositions"], "6");
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_DOOR_5_OPEN").unwrap());
+    }
+    toggle(&mut app, "EmergencySwitchScript", true);
+    assert!(app.world().resource::<BevyRuntimeShell>().shell.session().state().flags.is_event_flag_set("EVENT_DOOR_5_OPEN").unwrap());
+    toggle(&mut app, "EmergencySwitchScript", true);
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().state().script_runtime.memory["wUndergroundSwitchPositions"], "0");
+        for index in 1..=11 { assert!(!shell.shell.session().state().flags.is_event_flag_set(&format!("EVENT_DOOR_{index}_OPEN")).unwrap()); }
+    }
+    for index in [3, 2, 1] { toggle(&mut app, &format!("Switch{index}Script"), true); }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let state = shell.shell.session().state();
+        assert_eq!(state.script_runtime.memory["wUndergroundSwitchPositions"], "6");
+        for index in 1..=11 {
+            assert_eq!(state.flags.is_event_flag_set(&format!("EVENT_DOOR_{index}_OPEN")).unwrap(), [3, 5, 6, 8, 9, 11].contains(&index), "door {index}");
+        }
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(5, 5), Some(0x2d));
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(9, 5), Some(0x2a));
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(9, 6), Some(0x2d));
+        quest_assert_save_round_trip(&mut shell, "underground-switches");
+        assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_DOOR_5_OPEN").unwrap());
+        quest_move_beside_npc(&mut shell, "GoldenrodUndergroundWarehouse", "GoldenrodUndergroundWarehouseDirectorScript");
+        assert_eq!(shell.shell.session().state().script_runtime.memory["wUndergroundSwitchPositions"], "0");
+        quest_move_beside_npc(&mut shell, "GoldenrodUndergroundSwitchRoomEntrances", "GoldenrodUndergroundSwitchRoomEntrancesTeacherScript");
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(5, 5), Some(0x3e));
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(9, 5), Some(0x3f));
+        assert_eq!(shell.shell.session().overworld().map.metatile_at(9, 6), Some(0x3d));
+    }
+}
+
+
+#[test]
+fn map_setup_rebuilds_transient_tiles_before_applying_persistent_door_flags() {
+    let mut shell = progression_shell_on_map_for_test("RadioTower3F");
+    let runtime = shell.shell.runtime().clone();
+    let base = runtime.data().overworld_map("RadioTower3F").unwrap().metatile_at(7, 1).unwrap();
+    assert_ne!(base, 0x2a);
+    for setup in ["MAPSETUP_WARP", "MAPSETUP_RELOADMAP", "MAPSETUP_CONTINUE", "MAPSETUP_SUBMENU", "MAPSETUP_CONNECTION"] {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        state.flags.set_event_flag("EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER", true).unwrap();
+        runtime.data().apply_map_setup_callbacks(state, overworld, "RadioTower3F", setup).unwrap();
+        assert_eq!(overworld.map.metatile_at(7, 1), Some(0x2a), "{setup}: persistent open flag");
+        state.flags.set_event_flag("EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER", false).unwrap();
+        runtime.data().apply_map_setup_callbacks(state, overworld, "RadioTower3F", setup).unwrap();
+        assert_eq!(overworld.map.metatile_at(7, 1), Some(base), "{setup}: stale changeblock must not survive reload");
+        assert!(!state.map_block_overrides.contains_key("RadioTower3F"));
+    }
+}
