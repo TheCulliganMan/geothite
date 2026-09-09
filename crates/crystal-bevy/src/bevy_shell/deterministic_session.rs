@@ -5182,6 +5182,7 @@ fn close_visible_noninteractive_runtime_surface(
     // in the same continuation pass that opened it.
     if runtime_shell.pokegear_menu_open
         || runtime_shell.pc_hub_session_open
+        || runtime_shell.special_boundary.is_some()
         || runtime_shell.visible_heal_machine.is_some()
         || runtime_shell.visible_magnet_train.is_some()
     {

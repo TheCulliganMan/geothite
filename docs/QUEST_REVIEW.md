@@ -299,3 +299,20 @@ hash and byte/frame count, has no loop and contains non-silent samples. No DSP,
 PCM payload or pack data changed. Audible browser verification and deployment of
 this fanfare change remain pending. Full scripted assessment handoff timing still
 needs a browser check in addition to the direct input and continuation tests.
+
+The full Oak lab conversation exposed an additional handoff defect: automatic
+cleanup treated the special's rowless core menu as noninteractive and removed
+its shell-owned assessment in the same update. Cleanup now preserves an active
+special display until its acknowledgement path releases it. A real scripted
+conversation test fails before the fix and passes afterward: the assessment
+survives updates without input, then reaches the authored goodbye only after
+acknowledgement. All 12 selected Oak checks pass (67.31 seconds), including
+Mt. Silver, all rating pages, fanfare ordering and PCM integrity. The prior
+paging build 5e35786b is deployed and healthy; this handoff fix and fanfare commit
+360d573b still await the next deployment and live browser replay.
+
+The same scripted Oak handoff passes with the combined production pack and
+exports an isolated browser save beside Oak (9.83 seconds). Pokémon Center PC
+boot/access/shutdown and Day Care intro/party-selection regressions also pass
+(6.49 and 6.44 seconds). These checks exercise neighboring special surfaces;
+they do not establish completion of every remaining quest.

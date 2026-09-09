@@ -2246,3 +2246,29 @@ fn oak_fanfares_match_pack_pcm_hash_frames_and_loop_metadata() {
         assert!(decoded.samples.iter().any(|sample| sample.unsigned_abs() > 32), "{id} is silent");
     }
 }
+
+#[test]
+fn oak_lab_script_waits_for_assessment_before_goodbye() {
+    let mut shell = progression_shell_on_map_for_test("OaksLab");
+    quest_move_beside_npc(&mut shell, "OaksLab", "Oak");
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        shell.shell.save(PathBuf::from(directory).join("oak-browser.crystalsave")).unwrap();
+    }
+    quest_talk(&mut shell, "Oak");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        || shell.special_boundary.as_ref().is_some_and(|b| b.label == "ProfOaksPcBoot"));
+    assert!(!labels.iter().any(|label| label == "OakLabGoodbyeText"));
+    for _ in 0..120 { app.update(); }
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.special_boundary.as_ref().is_some_and(|b| b.label == "ProfOaksPcBoot"));
+        assert_ne!(shell.shell.session().state().script_runtime.active_text_label.as_deref(),
+            Some("OakLabGoodbyeText"), "the suspended special must own the conversation");
+    }
+    let labels = quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.special_boundary.is_none() && shell.special_boundary_queue.is_empty());
+    assert!(labels.iter().any(|label| label == "OakLabGoodbyeText"));
+}
