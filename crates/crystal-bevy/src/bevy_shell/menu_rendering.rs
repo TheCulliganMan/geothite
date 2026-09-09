@@ -5221,7 +5221,8 @@ fn render_playfield(
         && rendered.tile == Some(snapshot.overworld.tile)
         && rendered.world_key == Some(world_key)
         && snapshot.battle.is_none()
-        && snapshot.ui.menu.is_none()
+        && (snapshot.ui.menu.is_none()
+            || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some())
         && snapshot.pending_shop.is_none()
         && snapshot.ui.active_pokemon_picture.is_none()
         && snapshot.pending_move_learn.is_none()
@@ -5237,7 +5238,8 @@ fn render_playfield(
         && (snapshot.ui.text.is_some()
             || snapshot.ui.pending_yes_no.is_some()
             || runtime_shell.field_notice.is_some()
-            || runtime_shell.pc_notice.is_some());
+            || runtime_shell.pc_notice.is_some()
+            || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some());
     if dialog_only_update && rendered.dialog_key != dialog_key {
         let retained_yes_no_prompt = yes_no_prompts.iter().next().is_some();
         let desired_yes_no_prompt = scene_dialog_yes_no_active(&snapshot, &runtime_shell);
@@ -5462,6 +5464,7 @@ fn render_playfield(
         && rendered.world_key == Some(world_key)
         && rendered.state_hash == Some(state_hash)
         && rendered.shell_render_key == Some(shell_render_key)
+        && rendered.dialog_key == dialog_key
         && snapshot.ui.active_pokemon_picture.is_none()
     {
         return;

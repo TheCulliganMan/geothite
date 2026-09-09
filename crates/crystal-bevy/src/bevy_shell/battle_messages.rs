@@ -8393,26 +8393,26 @@ fn open_visible_prof_oak_rating(
     caught_count: usize,
     rating_label: &str,
 ) -> Result<()> {
-    let snapshot = runtime_shell.shell.snapshot()?;
-    // OakRating01..19 are text commands whose text_far target is the
-    // corresponding _OakRating label in the exported text catalog.
-    let text_label = format!("_{rating_label}");
-    let rating = snapshot.presentation.asm_text.get(&text_label)
-        .with_context(|| format!("Prof. Oak rating text {text_label} is missing"))?;
-    let rating = normalize_visible_script_text_with_context(
-        rating,
-        &snapshot.trainer.player_name,
-        visible_rival_name(&snapshot),
-        snapshot.progression.time.day_of_week,
-    );
-    runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
-        label: "ProfOaksPcBoot".to_string(),
-        details: vec![
-            "PROF.OAK'S PC".to_string(),
-            format!("SEEN {seen_count}  OWN {caught_count}"),
-            rating,
-        ],
-    });
+    let named_buffers = BTreeMap::from([
+        ("wStringBuffer3".to_string(), seen_count.to_string()),
+        ("wStringBuffer4".to_string(), caught_count.to_string()),
+    ]);
+    // Follow ProfOaksPCBoot -> Rate, including its authored page boundaries.
+    // OakRating01..19 text commands point to the corresponding _OakRating text.
+    let mut pages = VecDeque::new();
+    for target in ["_OakPCText2", "_OakPCText3", &format!("_{rating_label}")] {
+        for boundary in visible_exported_special_text_boundaries_with_named_buffers(
+            runtime_shell, "ProfOaksPcBoot", target, &named_buffers,
+        )? {
+            for page in boundary.details.iter().flat_map(|text| visible_field_notice_pages(text)) {
+                pages.push_back(SpecialBoundaryDisplay {
+                    label: boundary.label.clone(), details: vec![page],
+                });
+            }
+        }
+    }
+    runtime_shell.special_boundary = pages.pop_front();
+    runtime_shell.special_boundary_queue = pages;
     set_shell_action_status(runtime_shell, "PROF.OAK'S RATING");
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())

@@ -267,4 +267,22 @@ verifies the unlock and repeat dialogue after save/load. All eight selected Oak
 checks pass (46.44 seconds), including the title/intro regression after correcting
 its obsolete test pack path. This proves the tested quest continuation, not full
 Route 28 traversal or fidelity of the assessment's layout, paging and audio.
-Deployment of this rating fix remains pending.
+Rating lookup fix 2c505392 is deployed and its container is running healthy.
+Browser verification of that build remains separate from the native checks.
+
+Further visual review found that the single assessment list did not preserve the
+original dialogue sequence. Oak's introduction, seen/owned counts, rating header
+and rating paragraphs now use the existing source text-page renderer and the
+field textbox, including two-line scroll steps. The all-19-ratings regression
+checks complete page queues, substituted counts and return to the PC hub only
+after the final page. Mt. Silver and the other selected Oak regressions continue
+to pass. A screenshot test then exposed a blank-text refresh defect: unchanged
+core state could bypass a shell-owned field text update. The retained-dialog
+path now includes these PC/Oak boundaries, and the unchanged-frame check also
+compares the dialogue key. The existing integrated Pokémon Center PC interaction
+passes. The rendered keyboard-input test passes (6.30 seconds), requiring the
+complete final congratulations page, visible text entries and live glyph
+entities for every page. Counts, heading and final-page native dialogue-layer
+captures were inspected; the final text fits within the box. Deployment and
+browser review of these additional changes remain pending; assessment fanfare
+timing is still unverified.

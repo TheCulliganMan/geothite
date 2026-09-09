@@ -11735,7 +11735,7 @@ fn visible_pokecenter_pc_text_boundary(
 ) -> Option<&SpecialBoundaryDisplay> {
     shell.special_boundary.as_ref().filter(|boundary| {
         (shell.pc_hub_session_open && boundary.label != "HallOfFamePC")
-            || boundary.label == "PokecenterPCCantUseText"
+            || matches!(boundary.label.as_str(), "PokecenterPCCantUseText" | "ProfOaksPcBoot")
     })
 }
 

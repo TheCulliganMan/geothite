@@ -2134,8 +2134,55 @@ fn every_oak_rating_resolves_its_authored_far_text() {
     for rating in ratings {
         open_visible_prof_oak_rating(&mut shell, rating.caught_count_limit, rating.caught_count_limit,
             &rating.text_label).unwrap();
-        let display = shell.special_boundary.as_ref().unwrap();
-        assert_eq!(display.details.len(), 3);
-        assert!(!display.details[2].trim().is_empty(), "{}", rating.text_label);
+        let mut pages = Vec::new();
+        shell.pc_hub_session_open = true;
+        while let Some(display) = shell.special_boundary.as_ref() {
+            assert_eq!(display.details.len(), 1);
+            assert!(display.details[0].lines().count() <= 2, "{}", rating.text_label);
+            pages.push(display.details[0].clone());
+            close_visible_special_boundary(&mut shell).unwrap();
+        }
+        assert!(pages.len() >= 4, "{}: {pages:?}", rating.text_label);
+        assert_eq!(pages[0], "Current POKéDEX\ncompletion level:");
+        assert!(pages[1].contains(&format!("{} POKéMON seen", rating.caught_count_limit)));
+        assert!(pages[1].contains(&format!("{} POKéMON owned", rating.caught_count_limit)));
+        assert!(shell.pc_hub_cursor.is_some(), "return to PC after the final page");
     }
+}
+
+#[test]
+fn oak_assessment_prints_complete_pages_over_the_lab() {
+    let mut shell = progression_shell_on_map_for_test("OaksLab");
+    open_visible_prof_oak_rating(&mut shell, 251, 251, "OakRating19").unwrap();
+    let mut app = menu_render_test_app(shell);
+    let mut observed = Vec::new();
+    for index in 0..16 {
+        app.update();
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            for _ in 0..100 {
+                tick_visible_field_text_reveal(&mut shell, true).unwrap();
+            }
+            mark_runtime_presentation_dirty(&mut shell);
+        }
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.last_error, None);
+        let Some(boundary) = shell.special_boundary.as_ref() else { break; };
+        assert_eq!(visible_field_dialog_pages(&shell.shell.snapshot().unwrap(), shell),
+            Some(boundary.details.clone()));
+        assert_eq!(visible_scene_dialog_entries(&shell.shell.snapshot().unwrap(), shell).unwrap().join("\n"),
+            boundary.details[0]);
+        // The source font uses one tile for contractions such as 's.
+        let expected_glyphs = normalize_bitmap_font_text(&boundary.details[0])
+            .chars().filter(|ch| *ch != '\n').count();
+        observed.extend(boundary.details.clone());
+        assert!(app.world_mut().query_filtered::<&Handle<Image>, With<DialogGlyphMarker>>()
+            .iter(app.world()).count() >= expected_glyphs,
+            "assessment page {index} glyphs must reach the renderer");
+        save_live_pc_dialog_for_test(app.world_mut(), &format!("oak-assessment-{index}.png"));
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    assert_eq!(observed.last().map(String::as_str), Some("dreamt about this!\nCongratulations!"));
+    assert!(app.world().resource::<BevyRuntimeShell>().special_boundary.is_none());
 }
