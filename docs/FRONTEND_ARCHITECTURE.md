@@ -169,3 +169,19 @@ review every exit and doorway, connected-map seams, NPC interaction range,
 foreground occlusion, camera controls and mobile frame times. Then extend its
 coverage to interiors and additional maps. An attractive outdoor scene alone does
 not establish that the complete world is supported.
+
+
+## Shared picture animation
+
+`crystal_runtime::frontpic_animation` now owns the main/idle picture program
+interpreter and its byte-sized timing state. Bevy delegates to that interpreter;
+other frontends can consume the same frame index without scene entities or image
+handles. Program selection, cry cues and higher-level animation sequences still
+belong to the presentation controller. The shared Hall of Fame timing module is
+also available, but the visible ceremony is not integrated yet.
+
+Three existing animation regressions pass after extraction, including the
+95-call Cyndaquil main/idle source trace, repeat/frame timing and malformed-program
+rejection. The source-trace fixture remains external and is supplied through
+`CRYSTAL_FRONTPIC_TRACE`; it is not copied into the repo or shipped bundle. This
+validates the extracted interpreter, not every animation controller or frontend.

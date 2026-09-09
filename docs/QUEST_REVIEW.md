@@ -896,3 +896,15 @@ The prompt-layer correction passes the all-seven-types scrolling/quantity/cancel
 regression (10.25 seconds). It is ready for deployment; the corrected tall-screen
 browser image is still required. The shared Hall of Fame module also compiled
 through this Bevy test build, but visible ceremony integration remains open.
+
+
+The picture-program interpreter has moved from Bevy into the shared runtime.
+All three existing checks pass (0.01 seconds), including 95 original Cyndaquil
+main/idle calls. The first replay attempt failed before execution because its
+external fixture path was absent; the fixture was located in the earlier
+verification workspace and supplied through the new CRYSTAL_FRONTPIC_TRACE
+override. No trace data was added to the repository. Hall of Fame still requires
+main-then-idle presentation, its nonblocking cry, and the distinct ProfOaksPCRating
+path (no PC boot text; music stops before its last sound). Source:
+[picture animation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/gfx/pic_animation.asm),
+[Oak rating](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/prof_oaks_pc.asm).

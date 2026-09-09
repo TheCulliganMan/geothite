@@ -4301,15 +4301,7 @@ struct PokemonArtKey {
     frame: u16,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-struct VisibleFrontpicAnimation {
-    species_id: String,
-    speed: u16,
-    pointer: usize,
-    repeat: u16,
-    wait: u16,
-    frame: u16,
-}
+type VisibleFrontpicAnimation = crystal_runtime::frontpic_animation::FrontpicAnimation;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum VisibleFishingPhase {

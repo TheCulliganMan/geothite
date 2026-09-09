@@ -2147,8 +2147,11 @@ fn frontpic_animation_matches_source_frame_and_repeat_boundaries() {
 
 #[test]
 fn frontpic_animation_replays_original_rom_menu_calls() {
-    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../tools/asm-oracle/fixtures/frontpic-animation-cyndaquil.json");
+    // The source trace is an external verification artifact, not shipped game data.
+    let fixture = std::env::var_os("CRYSTAL_FRONTPIC_TRACE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../tools/asm-oracle/fixtures/frontpic-animation-cyndaquil.json"));
     let trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixture).unwrap()).unwrap();
     let calls = trace["calls"].as_array().unwrap();
     assert_eq!(calls.len(), 95, "complete healthy Cyndaquil main and idle menu programs");

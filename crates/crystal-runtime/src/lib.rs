@@ -3,6 +3,7 @@
 //! Owns pack loading, game commands, snapshots, saves, replay, and audio cue
 //! resolution. No window, graphics engine, or audio device is required.
 
+pub mod frontpic_animation;
 pub mod hall_of_fame;
 
 use std::collections::{BTreeMap, BTreeSet};
