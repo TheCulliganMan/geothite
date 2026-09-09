@@ -2186,3 +2186,63 @@ fn oak_assessment_prints_complete_pages_over_the_lab() {
     assert_eq!(observed.last().map(String::as_str), Some("dreamt about this!\nCongratulations!"));
     assert!(app.world().resource::<BevyRuntimeShell>().special_boundary.is_none());
 }
+
+#[test]
+fn oak_rating_fanfare_waits_for_final_text_and_remembers_acknowledgement() {
+    let mut shell = progression_shell_on_map_for_test("OaksLab");
+    for rating in shell.runtime.data().oak_ratings.clone() {
+        shell.pending_audio.clear();
+        shell.pc_hub_session_open = true;
+        shell.pc_hub_cursor = None;
+        open_visible_prof_oak_rating(&mut shell, rating.caught_count_limit,
+            rating.caught_count_limit, &rating.text_label).unwrap();
+        while !shell.special_boundary_queue.is_empty() {
+            for _ in 0..100 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+            assert!(shell.pending_audio.is_empty(), "no fanfare on earlier pages");
+            close_visible_special_boundary(&mut shell).unwrap();
+        }
+        tick_visible_field_text_reveal(&mut shell, true).unwrap();
+        assert!(shell.pending_audio.is_empty(), "wait for the last page to print");
+        for _ in 0..100 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+        assert_eq!(shell.pending_audio.len(), 1);
+        assert_eq!(shell.pending_audio[0].audio_id, rating.fanfare);
+        assert!(!shell.pending_audio[0].looped);
+        for _ in 0..100 { tick_visible_field_text_reveal(&mut shell, true).unwrap(); }
+        assert_eq!(shell.pending_audio.len(), 1, "play each rating fanfare once");
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = true;
+        close_visible_special_boundary(&mut shell).unwrap();
+        assert!(shell.special_boundary.is_some());
+        assert!(shell.pc_hub_cursor.is_none());
+        advance_visible_special_text_pause(&mut shell).unwrap();
+        assert!(shell.special_boundary.is_some(), "retain text while sound plays");
+        shell.transient_audio_playing = false;
+        advance_visible_special_text_pause(&mut shell).unwrap();
+        assert!(shell.special_boundary.is_none(), "no second button press required");
+        assert!(shell.pc_hub_cursor.is_some());
+    }
+}
+
+#[test]
+fn oak_fanfares_match_pack_pcm_hash_frames_and_loop_metadata() {
+    let shell = progression_shell_on_map_for_test("OaksLab");
+    let fanfares = shell.runtime.data().oak_ratings.iter()
+        .map(|rating| rating.fanfare.clone()).collect::<std::collections::BTreeSet<_>>();
+    for id in fanfares {
+        let program = shell.runtime.audio().program(crystal_audio::AudioKind::SoundEffect, &id).unwrap();
+        let (decoded, expected_bytes) = match program.source.clone() {
+            crystal_audio::AudioProgramSource::PcmGzip { bytes, format, byte_len, payload_hash,
+                loop_start_sample, loop_end_sample } => (
+                crystal_audio::pcm::decode_gzip_pcm(&bytes, format, byte_len, &payload_hash,
+                    loop_start_sample, loop_end_sample).unwrap(), byte_len),
+            crystal_audio::AudioProgramSource::Midi { midi_base64, format, byte_len, payload_hash,
+                loop_start_sample, loop_end_sample } => (
+                crystal_audio::pcm::decode_midi_pcm(&midi_base64, format, byte_len, &payload_hash,
+                    loop_start_sample, loop_end_sample).unwrap(), byte_len),
+            _ => panic!("{id} must have canonical pack PCM integrity metadata"),
+        };
+        assert_eq!(decoded.samples.len() / 2, expected_bytes / 4, "{id} frame count");
+        assert_eq!(decoded.loop_range, None, "{id} fanfare must terminate");
+        assert!(decoded.samples.iter().any(|sample| sample.unsigned_abs() > 32), "{id} is silent");
+    }
+}

@@ -12011,6 +12011,7 @@ fn tick_visible_field_text_reveal(
         let changed = reveal.visible_chars < text_len;
         reveal.visible_chars = text_len;
         reveal.frames_until_next_char = 0;
+        queue_visible_completed_oak_rating_sound(runtime_shell)?;
         return Ok(changed);
     }
     let frames_per_char = if acceleration_requested {
@@ -12019,6 +12020,7 @@ fn tick_visible_field_text_reveal(
         visible_text_frames_per_char(snapshot.trainer.options.text_speed)
     };
     if reveal.visible_chars >= text_len {
+        queue_visible_completed_oak_rating_sound(runtime_shell)?;
         return Ok(false);
     }
     if acceleration_requested {
@@ -12030,6 +12032,7 @@ fn tick_visible_field_text_reveal(
     }
     reveal.visible_chars = reveal.visible_chars.saturating_add(1).min(text_len);
     reveal.frames_until_next_char = frames_per_char.saturating_sub(1);
+    queue_visible_completed_oak_rating_sound(runtime_shell)?;
     Ok(true)
 }
 
@@ -14395,5 +14398,17 @@ fn spawn_pokedex_search_slowpoke(
         },
         FieldCommandMarker,
     ));
+    Ok(())
+}
+
+fn queue_visible_completed_oak_rating_sound(shell: &mut BevyRuntimeShell) -> Result<()> {
+    if shell.special_boundary.as_ref().is_some_and(|boundary| boundary.label == "ProfOaksPcBoot")
+        && shell.special_boundary_queue.is_empty()
+        && shell.field_text_reveal.as_ref().is_some_and(|reveal|
+            reveal.visible_chars >= reveal.text.chars().count())
+        && let Some(sound) = shell.pending_special_sound.take()
+    {
+        queue_visible_shell_sound_effect(shell, &sound)?;
+    }
     Ok(())
 }

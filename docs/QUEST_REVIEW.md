@@ -286,3 +286,16 @@ entities for every page. Counts, heading and final-page native dialogue-layer
 captures were inspected; the final text fits within the box. Deployment and
 browser review of these additional changes remain pending; assessment fanfare
 timing is still unverified.
+
+Oak assessment audio now uses each rating table entry's existing fanfare. It is
+queued once when the final source text page finishes printing. An acknowledgement
+while that sound is playing retains the final text and resumes automatically
+when playback ends, matching JoyWaitAorB followed by WaitSFX. A regression covers
+all 19 rating entries, no early playback, no repeat playback, and both retained
+text and automatic return to the PC hub after an early acknowledgement. All ten
+selected Oak checks pass (55.75 seconds). A separate real-pack audio check passes
+(5.12 seconds): every distinct rating fanfare decodes against its canonical PCM
+hash and byte/frame count, has no loop and contains non-silent samples. No DSP,
+PCM payload or pack data changed. Audible browser verification and deployment of
+this fanfare change remain pending. Full scripted assessment handoff timing still
+needs a browser check in addition to the direct input and continuation tests.

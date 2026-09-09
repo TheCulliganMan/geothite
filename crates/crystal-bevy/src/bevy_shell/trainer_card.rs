@@ -2573,6 +2573,16 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
     };
     runtime_shell.visible_special_text_pause_frames = None;
     runtime_shell.visible_internal_special_delay_frames = None;
+    if boundary.label == "ProfOaksPcBoot"
+        && runtime_shell.special_boundary_queue.is_empty()
+        && !visible_wait_sfx_finished(runtime_shell)
+    {
+        // JoyWaitAorB has accepted the acknowledgement. WaitSFX resumes
+        // automatically when the fanfare finishes, retaining the final text.
+        runtime_shell.special_boundary = Some(boundary);
+        runtime_shell.visible_special_text_pause_frames = Some(1);
+        return Ok(());
+    }
     if boundary.label == "WaitSfx" && !visible_wait_sfx_finished(runtime_shell) {
         runtime_shell.special_boundary = Some(boundary);
         runtime_shell

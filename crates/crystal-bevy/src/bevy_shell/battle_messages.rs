@@ -8411,6 +8411,11 @@ fn open_visible_prof_oak_rating(
             }
         }
     }
+    let fanfare = runtime_shell.runtime.data().oak_ratings.iter()
+        .find(|rating| rating.text_label == rating_label)
+        .with_context(|| format!("Oak rating {rating_label} has no fanfare entry"))?
+        .fanfare.clone();
+    runtime_shell.pending_special_sound = Some(fanfare);
     runtime_shell.special_boundary = pages.pop_front();
     runtime_shell.special_boundary_queue = pages;
     set_shell_action_status(runtime_shell, "PROF.OAK'S RATING");
