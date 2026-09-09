@@ -423,7 +423,11 @@ fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
     let mut shell = initialized_mart_shell();
     shell.shell.session_mut().state_mut().script_runtime.pending_shop.as_mut().unwrap().inventory =
         vec!["TM_THUNDERPUNCH".into()];
+    #[cfg(feature = "fullscreen-scaling")]
+    assert!(fullscreen_field_panel_active(&shell));
     confirm_visible_shop_top_menu(&mut shell).unwrap();
+    #[cfg(feature = "fullscreen-scaling")]
+    assert!(!fullscreen_field_panel_active(&shell));
     let mut app = menu_render_test_app(shell);
     for _ in 0..3 { app.update(); }
     let shell = app.world().resource::<BevyRuntimeShell>();

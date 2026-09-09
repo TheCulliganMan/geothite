@@ -2378,12 +2378,12 @@ fn fullscreen_distant_npcs_respect_hidden_flags_without_mutating_gameplay() {
     assert_eq!(expanded.visible_objects.len(), count);
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
     assert!(!shell.shell.session().overworld().object_has_loaded_struct(index));
-    shell.shell.session().overworld().hidden_object_identifiers.insert(id.clone());
+    shell.shell.session_mut().overworld_mut().hidden_object_identifiers.insert(id.clone());
     let mut hidden = before.clone();
     expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
     assert!(!hidden.visible_object_runtime_tiles.contains_key(&id));
-    shell.shell.session().overworld().hidden_object_identifiers.remove(&id);
-    shell.shell.session().overworld().invisible_object_struct_identifiers.insert(id.clone());
+    shell.shell.session_mut().overworld_mut().hidden_object_identifiers.remove(&id);
+    shell.shell.session_mut().overworld_mut().invisible_object_struct_identifiers.insert(id.clone());
     let mut invisible = before;
     expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
     assert!(!invisible.visible_object_runtime_tiles.contains_key(&id));

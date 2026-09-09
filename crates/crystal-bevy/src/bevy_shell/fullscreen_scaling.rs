@@ -529,7 +529,9 @@ fn fullscreen_field_panel_active(runtime: &BevyRuntimeShell) -> bool {
     runtime.pc_hub_session_open
         || runtime.bill_pc_session_open
         || runtime.player_pc_action_cursor.is_some()
-        || runtime.shell.session().state().script_runtime.pending_shop.is_some()
+        // The clerk's top menu overlays the room; inventory submenus own the LCD.
+        || (runtime.shell.session().state().script_runtime.pending_shop.is_some()
+            && runtime.shop_top_cursor.is_some())
 }
 
 fn fullscreen_modal_size(view: Vec2, pixels_per_unit: f32) -> Vec2 {

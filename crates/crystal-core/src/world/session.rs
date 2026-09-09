@@ -2731,15 +2731,17 @@ impl OverworldSession {
             }
         }
 
+        // Looking past a counter applies only to NPCs. Background events
+        // belong to the tile directly faced (including prize-counter signs).
         if let Some(event) = self
-            .background_event_at_checked(adjusted_tile)?
+            .background_event_at_checked(facing_tile)?
             .filter(|event| background_event_accepts_facing(&event.event_type, self.player.facing))
         {
             return Ok(Some(OverworldInteraction {
                 map_name: self.map.name.clone(),
                 player_tile: self.player.tile,
                 facing: self.player.facing,
-                target_tile: adjusted_tile,
+                target_tile: facing_tile,
                 script: event.script.clone(),
                 target: OverworldInteractionTarget::Background {
                     event_type: event.event_type.clone(),

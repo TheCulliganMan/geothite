@@ -704,3 +704,44 @@ it on B cancellation. The real-input glyph regression passes (6.91 seconds), and
 the full native quantity image was inspected: prompt, quantity and total are
 visible without the old description. This additional fix is awaiting deployment;
 production verification and the broader selling/layout audit remain open.
+
+Production image review of `2e7547c7` confirms the TM description is readable,
+but finds a remaining wide-screen defect: map strips remain outside the 160×144
+inventory LCD. The full-screen classifier still treated all shop states as partial
+room overlays. It now reserves that classification for the clerk's top menu;
+inventory states use the opaque modal background. Verification is in progress.
+The first browser exit/movement run had no runtime errors but could not move left
+from its staged clerk-side tile. The browser fixture is being moved to the customer
+side, with an actual across-counter interaction assertion; restored control has
+not yet passed that corrected browser check.
+
+### Game Corner TM prizes
+
+The new real-pack check covers Goldenrod's Thunder, Blizzard and Fire Blast,
+and Celadon's Double Team, Psychic and Hyper Beam. Missing Coin Case, insufficient
+coins, declined confirmation, full-stack refusal, successful purchase, menu exit
+and save/load are included. Goldenrod's three prize sequences passed before the
+Celadon counter interaction failed to resolve. Celadon's TM vendor is a background
+event on the counter, not an NPC behind it. The shared interaction code incorrectly
+applied NPC counter look-through to background events too. Background lookup now
+uses the directly faced tile; the across-counter NPC lookup is retained. All six TM prize sequences now pass (76.29 seconds), including saved coin balances;
+the two ordinary Mart NPC counter checks also pass (8.62 seconds). Deployment is
+pending. Sources:
+[Goldenrod](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodGameCorner.asm),
+[Celadon](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/CeladonGameCornerPrizeRoom.asm),
+[interaction routines](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/events.asm).
+Fixtures stage position, coins and stack capacity. They do not establish normal
+travel, Coin Case acquisition, playing for coins, Pokémon prizes, or visual/audio
+fidelity. The initial frame-zero failure was corrected with a real overworld tick
+before interactions; it was a fixture setup issue.
+
+The corrected customer fixture now uses the normal map transition before saving;
+the browser asserts the restored starting tile (8,3). The production description,
+purchase, exit and resumed movement sequence passes without runtime errors.
+Exit and movement screenshots were inspected. The combined-pack native shop
+regression also passes with fullscreen scaling enabled (119.28 seconds).
+The native fullscreen classification/render test passes (6.99 seconds), and the
+existing wide-screen NPC test passes (6.28 seconds) after fixing its three test-only
+mutations to use mutable session access. The quantity prompt, wide-screen mask and
+Celadon background-counter fix still require the next production deployment and
+visual review. These browser checks use Chromium, not physical Safari/touch.

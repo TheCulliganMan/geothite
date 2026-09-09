@@ -3184,7 +3184,19 @@ fn tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory() {
                 std::fs::create_dir_all(&directory).unwrap();
                 shell.shell.session_mut().state_mut().money = 50000;
                 shell.shell.session_mut().state_mut().player_name = "TEST".into();
+                let original_state = shell.shell.session().state().clone();
+                let original_overworld = shell.shell.session().overworld().clone();
+                let runtime = shell.runtime.clone();
+                let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+                runtime.data().transition_overworld_session(state, overworld, map, TilePosition::new(8, 3),
+                    crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+                shell.shell.session_mut().overworld_mut().player.facing = Direction::Down;
+                assert_eq!(shell.shell.current_overworld_interaction_checked().unwrap().unwrap().script, script,
+                    "browser fixture must reach the clerk from the customer side of the counter");
                 shell.shell.save(PathBuf::from(directory).join("tm-mart-browser.crystalsave")).unwrap();
+                let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+                *state = original_state;
+                *overworld = original_overworld;
             }
         }
         quest_talk(&mut shell, script);
@@ -3409,5 +3421,81 @@ fn sunday_happiness_tm_full_stack_can_retry_without_losing_the_gift() {
         assert!(shell.shell.session().state().flags
             .is_engine_flag_set("ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN").unwrap());
         quest_assert_save_round_trip(&mut shell, &format!("sunday-retry-{item}"));
+    }
+}
+
+fn game_corner_tm_talk_for_test(shell: &mut BevyRuntimeShell, map: &str, script: &str) {
+    if map == "CeladonGameCornerPrizeRoom" {
+        let runtime = shell.runtime.clone();
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime.data().transition_overworld_session(state, overworld, map, TilePosition::new(2, 2),
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+        reset_visible_navigation_state(shell);
+        shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+        let interaction = shell.shell.current_overworld_interaction_checked().unwrap().unwrap();
+        assert_eq!(interaction.script, script);
+        dispatch_visible_overworld_interaction(shell, interaction, "tm_prize_regression").unwrap();
+    } else {
+        quest_move_beside_npc(shell, map, script);
+        quest_talk(shell, script);
+    }
+}
+
+#[test]
+fn game_corner_tm_prizes_check_coins_refusal_capacity_and_save() {
+    for (map, script, prizes) in [
+        ("GoldenrodGameCorner", "GoldenrodGameCornerTMVendorScript",
+            [("TM_THUNDER", 5500), ("TM_BLIZZARD", 5500), ("TM_FIRE_BLAST", 5500)]),
+        ("CeladonGameCornerPrizeRoom", "CeladonGameCornerPrizeRoomTMVendor",
+            [("TM_DOUBLE_TEAM", 1500), ("TM_PSYCHIC_M", 3500), ("TM_HYPER_BEAM", 7500)]),
+    ] {
+        for (index, (item, price)) in prizes.into_iter().enumerate() {
+            let mut shell = progression_shell_on_map_for_test(map);
+            // Enter the interaction after a real overworld frame, as normal travel does.
+            shell.shell.tick(std::iter::empty::<GameButton>()).unwrap();
+            shell.shell.session_mut().state_mut().coins = price;
+            game_corner_tm_talk_for_test(&mut shell, map, script);
+            let mut app = menu_render_test_app(shell);
+            let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+            assert!(labels.iter().any(|label| label.contains("NoCoinCase")), "{map}: {labels:?}");
+            assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), item), 0);
+            assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.session().state().coins, price);
+            app.world_mut().resource_mut::<BevyRuntimeShell>().shell.add_bag_item("COIN_CASE", 1).unwrap();
+            for scenario in ["poor", "decline", "full", "buy"] {
+                {
+                    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                    shell.shell.session_mut().state_mut().coins = if scenario == "poor" { price - 1 } else { price };
+                    if scenario == "full" { shell.shell.add_bag_item(item, 99).unwrap(); }
+                    if scenario == "buy" { shell.shell.remove_bag_item(item, 99).unwrap(); }
+                    game_corner_tm_talk_for_test(&mut shell, map, script);
+                }
+                quest_settle(&mut app, true, |shell|
+                    visible_menu_has_selectable_options(&shell.shell.snapshot().unwrap()));
+                for _ in 0..index { tm_mart_key_for_test(&mut app, KeyCode::ArrowDown); }
+                tm_mart_key_for_test(&mut app, KeyCode::KeyZ);
+                let labels = quest_settle(&mut app, scenario != "decline", |shell| {
+                    if scenario == "buy" {
+                        quest_item_quantity(shell, item) == 1
+                            && visible_menu_has_selectable_options(&shell.shell.snapshot().unwrap())
+                    } else { quest_dialogue_is_idle(shell) }
+                });
+                let shell = app.world().resource::<BevyRuntimeShell>();
+                assert_eq!(shell.shell.session().state().coins,
+                    if scenario == "buy" { 0 } else if scenario == "poor" { price - 1 } else { price },
+                    "{map}/{item}/{scenario}: {labels:?}");
+                assert_eq!(quest_item_quantity(shell, item),
+                    if scenario == "buy" { 1 } else if scenario == "full" { 99 } else { 0 });
+                if scenario == "buy" {
+                    assert!(labels.iter().any(|label| label.contains("HereYouGo")), "{labels:?}");
+                    tm_mart_key_for_test(&mut app, KeyCode::KeyX);
+                    quest_settle(&mut app, true, quest_dialogue_is_idle);
+                }
+                let coins = app.world().resource::<BevyRuntimeShell>().shell.session().state().coins;
+                quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(),
+                    &format!("tm-prize-{map}-{item}-{scenario}"));
+                assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.session().state().coins, coins);
+                eprintln!("passed {map}/{item}: {scenario}");
+            }
+        }
     }
 }
