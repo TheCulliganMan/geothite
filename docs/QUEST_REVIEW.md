@@ -955,3 +955,20 @@ room; it does not claim a full Elite Four playthrough. Palette interpolation and
 outer animation setup timing have not been compared frame-for-frame to a ROM;
 the opening currently cuts to the white hold. Physical Safari/touch and the
 broader postgame traversal remain separate coverage.
+
+
+Production `5c861254` is deployed in healthy container image
+`sha256:46dca500c468d13c1633d20a36c4c751d9e2553aef64f287a7b4015e9f6a5a8c`.
+The live Chromium run passes Lance's entry, party animation/hold, player entrance,
+Oak rating, final sound acknowledgement and credits handoff with zero runtime or
+page errors. Portrait and final-rating screenshots were inspected at 390×844,
+DPR 2: portraits and labels fit their panels. Evidence is kept under ignored
+`target/hall-of-fame-production-doorway-browser.log` and
+`target/battle-fixes-review/browser-hof-*.png`.
+
+The browser fixture is staged in LancesRoom just before the opened exit warp;
+ordinary Up input enters HallOfFame and starts its map-entry script. Restoring a
+save directly inside HallOfFame does not replay that entry script, so that older
+fixture was unsuitable for this browser check. The revised native fixture test
+also passes (61.48 seconds). This fixture update changes tests only, not the
+already deployed game code.

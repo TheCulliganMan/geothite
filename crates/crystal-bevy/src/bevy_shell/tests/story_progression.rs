@@ -158,7 +158,21 @@ fn hall_of_fame_lance_entry_reaches_ceremony() {
     reset_visible_navigation_state(&mut shell);
     mark_runtime_snapshot_dirty(&mut shell);
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        // Browser restoration deliberately does not replay entry scenes.
+        // Save just before the real doorway so an ordinary Up input enters
+        // HallOfFame and arms Lance's scene through the map-load path.
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        state.flags.set_event_flag("EVENT_LANCES_ROOM_EXIT_OPEN", true).unwrap();
+        state.scenes.map_scenes.insert("LancesRoom".into(), "SCENE_LANCESROOM_APPROACH_LANCE".into());
+        state.scenes.map_scene_indices.insert("LancesRoom".into(), 1);
+        runtime.data().transition_overworld_session(state, overworld, "LancesRoom",
+            TilePosition::new(4, 2), crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+            &runtime.music_ids()).unwrap();
         shell.shell.save(PathBuf::from(directory).join("hof-browser.crystalsave")).unwrap();
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime.data().transition_overworld_session(state, overworld, "HallOfFame",
+            TilePosition::new(4, 13), crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+            &runtime.music_ids()).unwrap();
     }
     arm_visible_current_scene_script(&mut shell, "hof_entry_test").unwrap();
     let mut app = menu_render_test_app(shell);
