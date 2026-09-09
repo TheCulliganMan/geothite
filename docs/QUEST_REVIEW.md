@@ -528,7 +528,13 @@ other full-screen field menus. It checks opening, pocket changes, the action men
 idle updates and closing. Existing Pack Cancel and party/Stats retention tests
 also pass (three targeted tests total). The resulting native Pack image was
 reviewed for the item list, description and action menu. Browser rollout of this
-retention fix 453a6460 is rebuilding; these checks do not establish every Pack flow.
+retention fix 453a6460 is deployed and healthy (image 34e82b2d010e). A fresh
+production Chromium session at 390×844 CSS pixels verified the action menu,
+return to the item list, closing Pack and walking from (35,10) to (35,12).
+All three screenshots were reviewed: the full menu remains visible and centered,
+Use/Quit disappears on returning to the list, and the overworld returns on close.
+No page/runtime errors occurred. These checks do not establish every Pack flow
+or physical Safari/touch behavior.
 
 ### Empty Balls pocket Cancel
 
@@ -539,7 +545,7 @@ update. Removing that branch routes its Cancel row through the normal complete
 Pack cleanup. A regression now passes for all four empty pockets, checking the
 Cancel row before input, closing, idle updates, absence of runtime errors and
 successful observation after closing (17.76 seconds). Production rollout remains
-pending behind the already-running Pack display deployment.
+in progress in the subsequent deployment; Pack display rollout is now complete.
 
 ### Kimono Girls and Surf acquisition
 
