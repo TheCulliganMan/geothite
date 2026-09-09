@@ -363,3 +363,15 @@ Presentation gaps remain: the milk dialogue displays an unresolved decimal
 price placeholder, and `PlaySlowCry` uses the ordinary visible cry playback
 path. Neither slowed-cry audio fidelity nor complete visual traversal has been
 verified by these state tests.
+
+
+The same Moomoo healing/reward chain passes with the production combined pack
+(65.12 seconds). An optional ignored save fixture supports checking the initial
+sick-cow interaction through browser inputs.
+
+All 13 targeted Bevy shiny regressions pass again after these script changes
+(180.53 seconds): all-species art, Red Gyarados script, exhaustive DV predicate,
+both walking hatch nickname paths and persistence, retained hatch portrait,
+stone evolution/save, Unown forms/palettes, Stats layout/palette, Transform,
+and wild sparkle sequencing/input release. This does not cover every evolution
+method or every capture/switch/Transform combination.

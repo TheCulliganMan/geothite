@@ -2330,6 +2330,11 @@ fn moomoo_farm_feeding_milestones_rewards_and_save_load() {
     }
     let mut shell = progression_shell_on_map_for_test("Route39Barn");
     shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        quest_move_beside_npc(&mut shell, "Route39Barn", "MoomooScript");
+        shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+        shell.shell.save(PathBuf::from(directory).join("moomoo-browser.crystalsave")).unwrap();
+    }
     let mut app = menu_render_test_app(shell);
     let labels = visit(&mut app, "Route39Barn", "MoomooScript", true);
     assert!(labels
