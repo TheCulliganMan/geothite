@@ -423,3 +423,27 @@ identity, and validate the original bundled MIDI/PCM metadata before deriving
 a new synthesis. The existing MIDI decoder retains the cartridge program;
 no additional bundled program or generated audio file is required. This work
 remains unimplemented.
+
+
+## Source-parameter slow cry implementation
+
+`PlaySlowCry` now derives the species cry from the existing bundled MIDI
+program with the source's 16-bit pitch subtraction and length addition. The
+shared Rust decoder validates the ordinary cry's PCM hash/frame metadata
+before synthesizing the derived result. Native and browser workers use that
+same decoder; synthesis stays off the UI thread. Cache identity includes cry
+parameters, and the generic core cry event is replaced rather than played a
+second time. The core sound-wait flag and visible sound-wait boundary hold the
+script until queued/playing audio completes. No bundled audio inventory or
+compiled pack changed.
+
+Three worker tests and both audio/game WASM checks pass. Five Moomoo tests pass
+(88.62 seconds), covering healing/reward/purchase continuations plus cry state.
+The final two cry regressions pass (8.08 seconds): Miltank's ordinary source
+validates at 15,506 frames, hash `c3913779`; the derived cry is 19,198 frames,
+hash `db796201`, pitch word `64755`, length `512`, with no loop. Ordinary output
+is unchanged, corrupt source hashes fail, cache entries differ, and queued or
+playing audio holds the wait. Production worker PCM and browser interaction
+verification are still pending. Parameterized playback requires the existing
+species MIDI program, available in the shipped browser pack; it does not
+approximate a cry from an opaque PCM-only asset.

@@ -4124,6 +4124,7 @@ fn queue_visible_intro_music(runtime_shell: &mut BevyRuntimeShell, music_id: &st
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: music_id.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,
@@ -4151,6 +4152,7 @@ fn queue_visible_sound_effect(
     enqueue_bevy_audio_command(
         pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: sfx_id.to_string(),
             kind: ModpackAudioKind::SoundEffect,
             mode: playback.mode,
@@ -6232,6 +6234,7 @@ fn open_visible_oak_intro_sequence(runtime_shell: &mut BevyRuntimeShell) -> Resu
         enqueue_bevy_audio_command(
             &mut runtime_shell.pending_audio,
             BevyAudioCommand {
+                cry_parameters: None,
                 audio_id: oak_music.clone(),
                 kind: ModpackAudioKind::Music,
                 mode: playback.mode,
@@ -7667,6 +7670,7 @@ fn queue_visible_credits_music_start(runtime_shell: &mut BevyRuntimeShell) -> Re
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: credits.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,

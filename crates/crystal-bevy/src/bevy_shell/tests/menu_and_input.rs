@@ -8458,6 +8458,7 @@ fn pokegear_radio_retuning_resets_all_audio_even_for_the_same_song() {
         shell.transient_audio_playing = true;
         shell.active_transient_kind = Some(ModpackAudioKind::Cry);
         shell.pending_audio.push(BevyAudioCommand {
+            cry_parameters: None,
             audio_id: "SFX_READ_TEXT".into(), kind: ModpackAudioKind::SoundEffect,
             mode: ModpackAudioPlaybackMode::RawPcm, looped: false,
         });

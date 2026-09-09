@@ -447,6 +447,7 @@ fn overworld_emote_targets_use_each_actors_independent_live_stride() {
 #[test]
 fn finite_pcm_music_does_not_restart_when_its_playback_plan_requests_looping() {
     let pcm_music = BevyAudioCommand {
+        cry_parameters: None,
         audio_id: "MUSIC_CRYSTAL_OPENING".to_string(),
         kind: ModpackAudioKind::Music,
         mode: ModpackAudioPlaybackMode::RawPcm,

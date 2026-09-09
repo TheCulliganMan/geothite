@@ -1951,6 +1951,7 @@ fn intro_title_handoff_clears_fade_and_old_audio_before_title_cue() {
         8,
     ));
     runtime_shell.pending_audio.push(BevyAudioCommand {
+        cry_parameters: None,
         audio_id: "MUSIC_CRYSTAL_OPENING".to_string(),
         kind: ModpackAudioKind::Music,
         mode: ModpackAudioPlaybackMode::RawPcm,

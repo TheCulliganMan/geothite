@@ -16,18 +16,19 @@ export function createMidiPreparation(worker) {
     failure = new Error(event.message || 'Audio worker failed');
   };
   worker.onmessageerror = () => { failure = new Error('Invalid audio worker message'); };
-  return midi => {
+  return (midi, cry = null) => {
+    const key = cry == null ? midi : JSON.stringify([midi, cry]);
     if (failure) throw failure;
-    let entry = byMidi.get(midi);
+    let entry = byMidi.get(key);
     if (!entry) {
       entry = { id: ++nextId };
-      byMidi.set(midi, entry);
+      byMidi.set(key, entry);
       byId.set(entry.id, entry);
-      worker.postMessage({ id: entry.id, midi });
+      worker.postMessage({ id: entry.id, midi, ...(cry == null ? {} : { cry }) });
     }
-    if (entry.error) { byMidi.delete(midi); throw entry.error; }
+    if (entry.error) { byMidi.delete(key); throw entry.error; }
     if (!entry.result) return null;
-    byMidi.delete(midi); // Rust owns the validated PCM cache after this poll.
+    byMidi.delete(key); // Rust owns the validated PCM cache after this poll.
     return entry.result;
   };
 }

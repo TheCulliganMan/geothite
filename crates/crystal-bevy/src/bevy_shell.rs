@@ -3697,6 +3697,7 @@ enum PartyFieldMove {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct BevyAudioCommand {
+    cry_parameters: Option<crystal_audio::pcm::CrySynthesisParameters>,
     audio_id: String,
     kind: ModpackAudioKind,
     mode: ModpackAudioPlaybackMode,
@@ -3705,6 +3706,7 @@ struct BevyAudioCommand {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct BevyAudioCacheKey {
+    cry_parameters: Option<crystal_audio::pcm::CrySynthesisParameters>,
     audio_id: String,
     kind: &'static str,
     mode: &'static str,
@@ -3716,6 +3718,7 @@ use crystal_audio::pcm::DecodedPcmAudio as CachedPcmAudio;
 impl BevyAudioCacheKey {
     fn from_command(command: &BevyAudioCommand) -> Self {
         Self {
+            cry_parameters: command.cry_parameters,
             audio_id: command.audio_id.clone(),
             kind: match command.kind {
                 ModpackAudioKind::Music => "music",

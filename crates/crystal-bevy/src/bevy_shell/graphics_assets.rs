@@ -550,6 +550,7 @@ fn bevy_audio_action(kind: &RuntimeResolvedAudioPlaybackKind) -> Option<BevyAudi
         }
         RuntimeResolvedAudioPlaybackKind::Play { audio_id, playback } => {
             Some(BevyAudioAction::Play(BevyAudioCommand {
+                cry_parameters: None,
                 audio_id: audio_id.clone(),
                 kind: playback.kind,
                 mode: playback.mode,
@@ -977,6 +978,11 @@ fn decoded_native_midi_audio(
     if command.mode != ModpackAudioPlaybackMode::RawPcm {
         anyhow::bail!("audio program {} declared PCM but queued as {:?}", command.audio_id, command.mode);
     }
+    if let Some(parameters) = command.cry_parameters {
+        anyhow::ensure!(loop_start_sample.is_none() && loop_end_sample.is_none(), "cry must not loop");
+        return crystal_audio::pcm::decode_modified_cry(midi_base64,
+            &crystal_audio::pcm::ModifiedCryRequest { format, byte_len, payload_hash: payload_hash.to_string(), parameters });
+    }
     crystal_audio::pcm::decode_midi_pcm(
         midi_base64,
         format,
@@ -1007,8 +1013,14 @@ fn decoded_browser_midi_audio(
     .map_err(|error| anyhow::anyhow!("find browser audio synthesizer: {error:?}"))?
     .dyn_into::<js_sys::Function>()
     .map_err(|_| anyhow::anyhow!("browser audio synthesizer is not initialized"))?;
+    let cry_request = command.cry_parameters.map(|parameters| {
+        serde_json::to_string(&crystal_audio::pcm::ModifiedCryRequest {
+            format: format.clone(), byte_len, payload_hash: payload_hash.to_string(), parameters,
+        })
+    }).transpose()?;
+    let cry_argument = cry_request.as_deref().map(JsValue::from_str).unwrap_or(JsValue::NULL);
     let result = synth
-        .call1(&JsValue::UNDEFINED, &JsValue::from_str(midi_base64))
+        .call2(&JsValue::UNDEFINED, &JsValue::from_str(midi_base64), &cry_argument)
         .map_err(|error| {
             anyhow::anyhow!("synthesize browser audio {}: {error:?}", command.audio_id)
         })?;
@@ -1038,7 +1050,8 @@ fn decoded_browser_midi_audio(
         .into_iter()
         .flat_map(i16::to_le_bytes)
         .collect::<Vec<_>>();
-    if bytes.len() != byte_len || format!("{:08x}", bevy_audio_fnv1a32(&bytes)) != payload_hash {
+    if command.cry_parameters.is_none()
+        && (bytes.len() != byte_len || format!("{:08x}", bevy_audio_fnv1a32(&bytes)) != payload_hash) {
         anyhow::bail!(
             "synthesized audio {} failed canonical PCM validation",
             command.audio_id
@@ -1069,13 +1082,21 @@ fn pcm_samples_for_sound_option(samples: &Arc<[i16]>, sound: Sound) -> Arc<[i16]
     )
 }
 
-#[cfg(all(not(test), not(target_arch = "wasm32")))]
+#[cfg(not(target_arch = "wasm32"))]
 fn decoded_audio_program_source(
     command: &BevyAudioCommand,
     source: AudioProgramSource,
 ) -> Result<CachedPcmAudio> {
     if command.mode != ModpackAudioPlaybackMode::RawPcm {
         anyhow::bail!("audio program {} queued as {:?}", command.audio_id, command.mode);
+    }
+    if let Some(parameters) = command.cry_parameters {
+        let AudioProgramSource::Midi { midi_base64, format, byte_len, payload_hash,
+            loop_start_sample: None, loop_end_sample: None } = source else {
+            anyhow::bail!("modified cry requires a non-looping bundled MIDI program");
+        };
+        return crystal_audio::pcm::decode_modified_cry(&midi_base64,
+            &crystal_audio::pcm::ModifiedCryRequest { format, byte_len, payload_hash, parameters });
     }
     crystal_audio::pcm::decode_program_source(source)
 }

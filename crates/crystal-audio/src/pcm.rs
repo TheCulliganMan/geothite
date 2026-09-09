@@ -85,6 +85,50 @@ pub fn decode_midi_pcm(
     decode_pcm(bytes, format, loop_start_sample, loop_end_sample)
 }
 
+/// Cartridge cry register values, separate from host playback speed.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CrySynthesisParameters {
+    pub pitch: u16,
+    pub length: u16,
+}
+
+impl CrySynthesisParameters {
+    pub fn slow(pitch: i16, length: i16) -> Self {
+        Self {
+            pitch: (pitch as u16).wrapping_sub(0x140),
+            length: (length as u16).wrapping_add(0x60),
+        }
+    }
+}
+
+/// Metadata verifies the unmodified bundled source before derived synthesis.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ModifiedCryRequest {
+    pub format: AudioPcmFormat,
+    pub byte_len: usize,
+    pub payload_hash: String,
+    pub parameters: CrySynthesisParameters,
+}
+
+pub fn decode_modified_cry(midi: &str, request: &ModifiedCryRequest) -> Result<DecodedPcmAudio> {
+    use crate::synth::{SynthContext, decode_midi, render};
+    let mut program = decode_midi(midi)?;
+    anyhow::ensure!(program.cry_pitch.is_some() && program.cry_length.is_some(),
+        "modified cry requires a species cry program");
+    // Preserve the pack's integrity contract; derived output has a different
+    // hash and frame count and must not be compared to the ordinary cry.
+    decode_midi_pcm(midi, request.format.clone(), request.byte_len,
+        &request.payload_hash, None, None)?;
+    program.cry_pitch = Some(i64::from(request.parameters.pitch));
+    program.cry_length = Some(i64::from(request.parameters.length));
+    let rendered = render(&program, SynthContext::cartridge()?)?;
+    anyhow::ensure!(rendered.loop_samples.is_empty(), "modified cry must terminate");
+    let bytes = rendered.downsample().into_iter().flat_map(i16::to_le_bytes).collect();
+    decode_pcm(bytes, request.format.clone(), None, None)
+}
+
 fn pcm_fnv1a32(bytes: &[u8]) -> u32 {
     bytes.iter().fold(0x811c9dc5u32, |hash, byte| {
         (hash ^ u32::from(*byte)).wrapping_mul(0x01000193)

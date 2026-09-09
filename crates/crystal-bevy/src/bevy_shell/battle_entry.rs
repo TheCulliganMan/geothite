@@ -7569,6 +7569,7 @@ fn queue_visible_egg_hatch_music(runtime_shell: &mut BevyRuntimeShell) -> Result
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: MUSIC_ID.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,
@@ -7889,6 +7890,7 @@ fn queue_runtime_title_music(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: title_music.clone(),
             kind: ModpackAudioKind::Music,
             mode,
@@ -7969,6 +7971,7 @@ fn queue_visible_current_music(runtime_shell: &mut BevyRuntimeShell) -> Result<(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: music_id.clone(),
             kind: ModpackAudioKind::Music,
             mode,
@@ -8100,6 +8103,7 @@ fn sync_runtime_battle_music(mut runtime_shell: ResMut<BevyRuntimeShell>) {
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: music_id.clone(),
             kind: ModpackAudioKind::Music,
             mode,
@@ -8182,6 +8186,7 @@ fn queue_visible_victory_music(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: music_id.to_owned(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,
@@ -8386,6 +8391,34 @@ fn visible_message_is_enemy_send_out(message: &str) -> bool {
     message.contains("\nsent out\n")
 }
 
+fn queue_visible_slow_cry(runtime_shell: &mut BevyRuntimeShell, species: &str) -> Result<()> {
+    let snapshot = runtime_shell.shell.snapshot()?;
+    let cry = snapshot.presentation.pokemon_cries.get(species)
+        .with_context(|| format!("missing cry metadata for {species}"))?;
+    let parameters = crystal_audio::pcm::CrySynthesisParameters::slow(cry.pitch, cry.length);
+    let audio_id = format!("CRY_MON_{species}");
+    anyhow::ensure!(matches!(runtime_shell.shell.runtime().audio().require_cry(&audio_id)?.source,
+        AudioProgramSource::Midi { loop_start_sample: None, loop_end_sample: None, .. }),
+        "slow cry requires the bundled species MIDI program");
+    let playback = runtime_shell.shell.runtime().audio()
+        .require_playback_entry(AudioKind::Cry, &audio_id)?;
+    let mode = playback.mode;
+    anyhow::ensure!(!matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop),
+        "slow cry must terminate");
+    // The special's core event denotes this cry. Replace its generic playback
+    // with the parameterized species program, preserving other queued events.
+    let mut drain = runtime_shell.shell.drain_resolved_audio_events()?;
+    drain.events.retain(|event| !(event.event.source_script == "PlaySlowCry"
+        && event.event.kind == crate::core::state::ScriptAudioRuntimeKind::Cry));
+    apply_resolved_audio_drain(runtime_shell, drain);
+    enqueue_bevy_audio_command(&mut runtime_shell.pending_audio, BevyAudioCommand {
+        cry_parameters: Some(parameters), audio_id, kind: ModpackAudioKind::Cry, mode, looped: false,
+    });
+    runtime_shell.visible_wait_sfx_boundary = true;
+    mark_runtime_snapshot_dirty(runtime_shell);
+    Ok(())
+}
+
 fn queue_visible_pokemon_cry(
     runtime_shell: &mut BevyRuntimeShell,
     species_id: &str,
@@ -8421,6 +8454,7 @@ fn queue_visible_pokemon_cry(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: cry_id.clone(),
             kind: ModpackAudioKind::Cry,
             mode: playback_mode,
@@ -8475,6 +8509,7 @@ fn queue_visible_pokemon_animation_cry(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: cry_id.clone(),
             kind: ModpackAudioKind::Cry,
             mode: playback.mode,
@@ -8565,6 +8600,7 @@ fn queue_selected_audio_preview(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: audio_id.clone(),
             kind,
             mode: playback.mode,

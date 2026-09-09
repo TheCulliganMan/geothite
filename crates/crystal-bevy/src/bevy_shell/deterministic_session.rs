@@ -2750,6 +2750,7 @@ fn advance_visible_music_fade(
             enqueue_bevy_audio_command(
                 &mut runtime_shell.pending_audio,
                 BevyAudioCommand {
+                    cry_parameters: None,
                     audio_id: target_music.clone(),
                     kind: ModpackAudioKind::Music,
                     mode: playback.mode,
@@ -9924,6 +9925,7 @@ fn queue_visible_heal_music(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: MUSIC_ID.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,
@@ -9967,6 +9969,7 @@ fn queue_visible_magnet_train_track(runtime_shell: &mut BevyRuntimeShell) -> Res
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: MUSIC_ID.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,

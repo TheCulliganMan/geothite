@@ -85,6 +85,7 @@ fn advance_visible_radio_broadcast(
                     .audio()
                     .require_playback_entry(AudioKind::Music, song)?;
                 let command = BevyAudioCommand {
+                    cry_parameters: None,
                     audio_id: song.into(),
                     kind: ModpackAudioKind::Music,
                     mode: playback.mode,

@@ -326,6 +326,7 @@ fn queue_visible_trainer_encounter_music(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            cry_parameters: None,
             audio_id: music_id.to_string(),
             kind: ModpackAudioKind::Music,
             mode: playback.mode,
@@ -2784,8 +2785,11 @@ fn activate_visible_special_routine_boundary(
             queue_visible_current_music(runtime_shell)?;
             Ok(true)
         }
-        SpecialRoutineEffect::PlayCurMonCry { species, .. }
-        | SpecialRoutineEffect::PlaySlowCry { species, .. } => {
+        SpecialRoutineEffect::PlaySlowCry { species, .. } => {
+            queue_visible_slow_cry(runtime_shell, species)?;
+            Ok(true)
+        }
+        SpecialRoutineEffect::PlayCurMonCry { species, .. } => {
             queue_visible_pokemon_cry(runtime_shell, species, "special")?;
             drain_visible_audio_events(runtime_shell)?;
             Ok(true)

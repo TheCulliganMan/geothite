@@ -1415,7 +1415,7 @@ fn visible_pokegear_radio_exit_song(shell: &BevyRuntimeShell) -> Result<Option<S
 
 fn queue_visible_pokegear_restored_music(shell: &mut BevyRuntimeShell, song: String) -> Result<()> {
     let playback = shell.shell.runtime().audio().require_playback_entry(AudioKind::Music, &song)?;
-    let command = BevyAudioCommand {audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
+    let command = BevyAudioCommand { cry_parameters: None,audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
         looped: matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop)};
     enqueue_bevy_audio_command(&mut shell.pending_audio, command);
     shell.active_music = Some(song);

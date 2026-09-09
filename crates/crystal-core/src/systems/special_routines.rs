@@ -4549,7 +4549,7 @@ fn play_cry_for_species(
             source_script: routine.to_string(),
             command_index: 0,
         });
-    state.script_runtime.waiting_for_sound_effect = false;
+    state.script_runtime.waiting_for_sound_effect = !current_mon;
     state.script_runtime.last_special_routine = Some(routine.to_string());
     let effect = if current_mon {
         SpecialRoutineEffect::PlayCurMonCry { species, audio_id }

@@ -1672,6 +1672,7 @@ fn interruption_emotes_consume_every_bounded_catch_up_tick() {
 #[test]
 fn transient_audio_queue_obeys_asm_sfx_priority_order() {
     let command = |audio_id: &str, kind: ModpackAudioKind| BevyAudioCommand {
+        cry_parameters: None,
         audio_id: audio_id.to_string(),
         kind,
         mode: ModpackAudioPlaybackMode::RawPcm,
@@ -1733,6 +1734,7 @@ fn transient_audio_queue_obeys_asm_sfx_priority_order() {
 #[test]
 fn pending_music_guard_rejects_duplicate_track_but_not_transition() {
     let command = |audio_id: &str, kind: ModpackAudioKind| BevyAudioCommand {
+        cry_parameters: None,
         audio_id: audio_id.to_string(),
         kind,
         mode: ModpackAudioPlaybackMode::RawPcm,

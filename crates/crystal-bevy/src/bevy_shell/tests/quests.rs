@@ -2620,3 +2620,57 @@ fn all_map_dialogue_decimal_constants_resolve_from_the_pack() {
     assert!(failures.is_empty(), "{}", failures.join("\n"));
     eprintln!("Resolved {} map dialogue bodies with decimal constants", targets.len());
 }
+
+#[test]
+fn moomoo_slow_cry_validates_base_pcm_and_keeps_distinct_output_and_cache() {
+    let mut shell = progression_shell_on_map_for_test("Route39Barn");
+    shell.pending_audio.clear();
+    for index in [1, 4, 5] {
+        shell.shell.step_compiled_script_command("Route39Barn", "MoomooScript", index,
+            Default::default(), Default::default()).unwrap();
+    }
+    assert!(shell.shell.session().state().script_runtime.waiting_for_sound_effect);
+    queue_visible_slow_cry(&mut shell, "MILTANK").unwrap();
+    assert_eq!(shell.pending_audio.len(), 1, "the ordinary cry must not also be queued");
+    assert!(shell.visible_wait_sfx_boundary);
+    assert!(!visible_wait_sfx_finished(&mut shell), "queued cry must hold the script");
+    let slow = shell.pending_audio[0].clone();
+    assert_eq!(slow.audio_id, "CRY_MON_MILTANK");
+    let source = shell.runtime.audio().require_cry(&slow.audio_id).unwrap().source.clone();
+    let source_copy = source.clone();
+    let AudioProgramSource::Midi { midi_base64, format, byte_len, payload_hash,
+        loop_start_sample, loop_end_sample } = source else { panic!("browser species cry must retain its MIDI program") };
+    assert_eq!((loop_start_sample, loop_end_sample), (None, None));
+    let base = crystal_audio::pcm::decode_midi_pcm(&midi_base64, format.clone(), byte_len,
+        &payload_hash, None, None).unwrap();
+    let request = crystal_audio::pcm::ModifiedCryRequest { format, byte_len,
+        payload_hash: payload_hash.clone(), parameters: slow.cry_parameters.unwrap() };
+    // Source Miltank parameters are -461/416; PlaySlowCry applies -320/+96.
+    assert_eq!((request.parameters.pitch, request.parameters.length), (64755, 512));
+    let modified = crystal_audio::pcm::decode_modified_cry(&midi_base64, &request).unwrap();
+    assert_eq!(decoded_audio_program_source(&slow, source_copy).unwrap().bytes, modified.bytes);
+    assert_eq!(modified.bytes.len() / 4, 19198);
+    assert_eq!(bevy_audio_fnv1a32(&modified.bytes), 0xdb796201);
+
+    assert_eq!(modified.loop_range, None);
+    assert!(modified.bytes.len() > base.bytes.len(), "source cry length must increase duration");
+    assert_ne!(modified.bytes, base.bytes);
+    assert!(modified.samples.iter().any(|sample| sample.unsigned_abs() > 32));
+    let mut invalid = request.clone();
+    invalid.payload_hash = "00000000".into();
+    assert!(crystal_audio::pcm::decode_modified_cry(&midi_base64, &invalid).is_err());
+    let mut normal = slow.clone();
+    normal.cry_parameters = None;
+    let ordinary = decoded_native_midi_audio(&normal, &midi_base64, request.format.clone(),
+        byte_len, &payload_hash, None, None).unwrap();
+    assert_eq!(ordinary.bytes, base.bytes);
+    shell.pending_audio.clear();
+    shell.transient_audio_playing = true;
+    assert!(!visible_wait_sfx_finished(&mut shell), "playing cry must hold the script");
+    shell.transient_audio_playing = false;
+    assert!(visible_wait_sfx_finished(&mut shell), "finished cry releases the audio wait");
+    assert_ne!(BevyAudioCacheKey::from_command(&slow), BevyAudioCacheKey::from_command(&normal));
+    eprintln!("MILTANK base frames={} hash={payload_hash}; slow frames={} hash={:08x} pitch={} length={}",
+        base.bytes.len()/4, modified.bytes.len()/4, bevy_audio_fnv1a32(&modified.bytes),
+        request.parameters.pitch, request.parameters.length);
+}
