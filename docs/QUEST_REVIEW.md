@@ -509,7 +509,13 @@ a second prompt, the visible battle introduction completes, the Run action
 returns through the escape aftermath, the tree disappears, and save/load preserves
 that state. The bottle remains. The earlier Floria/badge/refusal/victory/TM and
 cleared-tile walking regression also passes. Commit c2afcdd4 is deployed; its
-container is healthy (image 127c06d8affb). Browser verification is in progress.
+container is healthy (image 127c06d8affb). A fresh production Chromium session
+loaded the saved Route 36 fixture, opened Pack/Key Items/SquirtBottle/Use with
+keyboard input, and showed the complete watering message without another prompt.
+The watering screenshot was reviewed; the following dialogue capture shows its
+first page, not the entire attack message. No page/runtime errors occurred on
+that successful run. Desktop Chromium at a mobile viewport is not Safari/touch
+verification. This review exposed the separate invisible-Pack defect below.
 
 ### Pack display retention
 
@@ -522,4 +528,4 @@ other full-screen field menus. It checks opening, pocket changes, the action men
 idle updates and closing. Existing Pack Cancel and party/Stats retention tests
 also pass (three targeted tests total). The resulting native Pack image was
 reviewed for the item list, description and action menu. Browser rollout of this
-retention fix remains pending; these checks do not establish every Pack flow.
+retention fix 453a6460 is rebuilding; these checks do not establish every Pack flow.
