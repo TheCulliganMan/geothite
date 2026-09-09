@@ -46,7 +46,7 @@ a complete quest.
 | Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Pending |
 | Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | Pending |
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
-| Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Pending |
+| Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
 | Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
 | Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Pending |
 
@@ -326,3 +326,18 @@ shop without granting another potion. The extended chain passes; the separate
 prerequisite/shop-exit test passes in 5.86 seconds. No production change was
 needed. Fixtures position the player at each quest leg; this does not claim full
 lighthouse travel or animation/audio fidelity.
+
+Deployment c8133496 (including fanfare commit 360d573b) is running healthy with
+image sha256:80ec54fd93110dc50e5778ca862fde15dbad7cea966b932745a4f1eeaba97e56.
+The live production Oak replay passes using the isolated combined-pack save and
+real keyboard input. It turns toward Oak after Continue, holds the assessment
+introduction without advancing to goodbye, reads seen/owned counts and the
+rating, reaches the goodbye, dismisses the conversation and walks away. No page
+errors or reported runtime errors occurred. Introduction, counts, rating and
+post-dialogue screenshots were inspected; the rating fits within the textbox and
+the final overlay clears. The goodbye capture was taken during its typewriter
+reveal, so it is not evidence that every goodbye glyph was displayed at once.
+This was headed desktop Chromium at 390x844 CSS pixels with device scale 2;
+iOS Safari/touch input and perceptual audio comparison remain unverified.
+Medicine test-only commit 87ee0678 is pushed separately and needs no gameplay
+redeployment.
