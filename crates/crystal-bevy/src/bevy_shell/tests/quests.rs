@@ -1947,6 +1947,9 @@ fn check_shiny_egg_walk_hatch_nickname(accept: bool) {
     state.sync_party_from_storage();
     reset_visible_navigation_state(&mut shell);
     mark_runtime_snapshot_dirty(&mut shell);
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        shell.shell.save(PathBuf::from(directory).join("hatch-browser.crystalsave")).unwrap();
+    }
     let mut app = menu_render_test_app(shell);
     for _ in 0..24 {
         press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight);
@@ -1997,4 +2000,37 @@ fn shiny_egg_walk_hatch_nickname_decline_restores_overworld_and_saves() {
 #[test]
 fn shiny_egg_walk_hatch_nickname_accept_restores_overworld_and_saves() {
     check_shiny_egg_walk_hatch_nickname(true);
+}
+
+#[test]
+fn shiny_hatch_nickname_prompt_retains_the_front_sprite() {
+    let mut shell = progression_shell_on_map_for_test("NewBarkTown");
+    shell.shell.add_party_pokemon("TOGEPI", 5, None, None, "CHRIS", 1,
+        Dv::from_non_hp(2, 10, 10, 10)).unwrap();
+    shell.pending_egg_hatch_nickname = Some(PendingEggHatchNickname {
+        party_index: 1, default_name: "TOGEPI".into(),
+    });
+    let choice = VisibleNameChoice {
+        nickname_pages: visible_nickname_prompt_pages(&shell, "TOGEPI", true).unwrap(),
+        options: vec!["YES".into(), "NO".into()], selected: 0,
+        player_menu: None, player_phase: None, motion_step: 0,
+        motion_frames_remaining: 0, pending_player_name: None,
+    };
+    let mut images = Assets::<Image>::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut commands = Commands::new(&mut queue, &world);
+    spawn_visible_name_choice_screen(&mut commands, &shell, &mut art, &shell.asset_root,
+        &mut images, &choice).unwrap();
+    queue.apply(&mut world);
+    let key = PokemonArtKey { species_id: "togepi".into(), side: PokemonSpriteSide::Front,
+        shiny: true, frame: 0 };
+    let frame = art.pokemon_cache.get(&key).expect("nickname prompt retains shiny hatch art");
+    assert!(world.query::<&Handle<Image>>().iter(&world).any(|image| image == &frame.handle),
+        "the retained frontpic must be drawn, not merely cached");
+    let canvas = render_pc_audit_canvas(&mut world, &images, "shiny-hatch-nickname");
+    if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+        canvas.save(PathBuf::from(directory).join("shiny-hatch-nickname.png")).unwrap();
+    }
 }

@@ -6000,10 +6000,23 @@ fn spawn_visible_egg_hatch(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    // The hatch animation ends before YesNoBox, but its frontpic stays on
+    // the LCD until NamingScreen or the return to the overworld.
+    let nickname_hatch = runtime_shell.pending_egg_hatch_nickname.as_ref().and_then(|pending| {
+        runtime_shell.shell.session().state().storage.party.pokemon
+            .get(pending.party_index).and_then(Option::as_ref)
+            .map(|pokemon| VisibleEggHatch {
+                party_index: pending.party_index,
+                species_id: pokemon.species.id.clone(),
+                phase: VisibleEggHatchPhase::HatchText,
+                frame: 0,
+            })
+    });
     let hatch = runtime_shell
         .visible_egg_hatch
         .as_ref()
-        .context("egg hatch renderer requires active hatch state")?;
+        .or(nickname_hatch.as_ref())
+        .context("egg hatch renderer requires active hatch or nickname state")?;
     commit_presented_fullscreen_solid(commands, rendered_art, [247, 247, 247, 255], 5.8, images)?;
     let (species_id, x_offset, animation_frame) = match hatch.phase {
         VisibleEggHatchPhase::EggHold => ("EGG", 0, 0),
@@ -10294,6 +10307,9 @@ fn spawn_visible_name_choice_screen(
     images: &mut Assets<Image>,
     choice: &VisibleNameChoice,
 ) -> Result<()> {
+    if runtime_shell.pending_egg_hatch_nickname.is_some() {
+        spawn_visible_egg_hatch(commands, runtime_shell, rendered_art, asset_root, images)?;
+    }
     if let Some(page) = choice.nickname_pages.front() {
         spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 5.9);
         // _YesNoBox spans rows 7..=11; VerticalMenu prints on rows 8 and 10.

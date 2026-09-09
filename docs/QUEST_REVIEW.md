@@ -225,3 +225,20 @@ sets a valid player identity, as normal new-game setup would; hatching assigns
 that identity to the Pokémon. Typewriter completion is accelerated by the test
 helper, while animation timing advances through host updates. These checks do
 not replace browser/mobile hatch screenshots or the full preceding breeding walk.
+
+The production browser hatch flow now passes at a 390x844 viewport with DPR 2:
+walking, hatch animation, nickname decline and restored movement. The isolated
+save uses the combined production pack identity; the base-pack save correctly
+was not resumed by that build. This is Chromium at phone dimensions, not iOS
+Safari or touch-input verification. Native replay of the combined-pack fixture
+also passes. Core egg-validity fix 1c5e39e7 is deployed, healthy, and passes the
+same browser flow.
+
+Screenshot review exposed the hatchling disappearing during the nickname Yes/No
+question, despite functional input checks passing. The original
+[HatchEggs sequence](https://github.com/pret/pokecrystal/blob/master/engine/pokemon/breeding.asm)
+keeps its frontpic until naming or returning to the map. The renderer now draws
+the pending hatchling while the nickname choice is active, preserving its shiny
+palette. A regression checks an actual sprite entity with that artwork; the
+corrected native composition was visually reviewed. The retention fix still
+needs deployment and a fresh browser screenshot.
