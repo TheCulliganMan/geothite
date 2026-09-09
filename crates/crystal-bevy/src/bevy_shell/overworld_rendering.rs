@@ -2812,7 +2812,7 @@ fn spawn_visible_kurt_apricorn_menu(
         else { ["Which APRICORN", "should I use?"] };
     for (row, line) in prompt.into_iter().enumerate() {
         let (x, y) = battle_hud_tile_origin(1.0, 14.0 + row as f32 * 2.0);
-        spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.3);
+        spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images, line, x, y, 4.3);
     }
     // ScrollingMenu_UpdateDisplay clears the complete list rectangle without
     // drawing a frame. Names and quantities occupy consecutive rows.

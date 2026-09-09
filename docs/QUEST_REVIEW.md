@@ -868,3 +868,31 @@ item names, counts, arrows and retained list are readable. This closes the nativ
 scrolling case left uncovered by the individual-recipe fixtures. Commit
 `3425ad0c` is pushed and its production build is running; browser verification
 remains pending.
+
+
+Hall of Fame implementation has begun with a renderer-independent sequence in
+`crystal-runtime::hall_of_fame`. Its two standalone Rust tests pass: six-member
+ordering, the source's wrapping back-picture scroll, distinct Pokémon/player
+front-picture durations, animation/rating completion boundaries, and the empty
+record path. The opening palette/music fade is a prerequisite to this sequence;
+frontpic completion and Oak's dialogue/audio completion are external boundaries.
+This module is not connected to the Bevy ceremony yet. Source register timing
+alone does not establish complete frame, audio, rendering or input fidelity;
+production still enters credits directly until integration is completed.
+
+
+Kurt/daily-reset commit `3425ad0c` is deployed as image
+`sha256:d36d0d9dc19e8f65491cb82149fc93c0dc7094993260728923e1062b73915060`.
+Production browser order and collection sequences pass through resumed movement
+without runtime errors after correcting QA matches for rendered quantities and
+wrapped dialogue. Harsh screenshot review nevertheless found a real tall-screen
+layout defect: the prompt glyphs remained over the map while their dialogue box
+moved to the bottom. The prompt now uses the same SceneDialogMarker rendering
+path as its box. That fix is rebuilding for native verification and is not yet
+deployed. Browser checks used Chromium keyboard input, not physical Safari/touch.
+
+
+The prompt-layer correction passes the all-seven-types scrolling/quantity/cancel
+regression (10.25 seconds). It is ready for deployment; the corrected tall-screen
+browser image is still required. The shared Hall of Fame module also compiled
+through this Bevy test build, but visible ceremony integration remains open.
