@@ -196,3 +196,19 @@ Each setup yields eight shiny outcomes, and all generated DVs serialize and
 validate on read. All 24 Day Care checks pass. This proves the tested inheritance
 distribution, not random-source uniformity, every parent pairing, or a complete
 visible hatch playthrough. Existing eggs are not rerolled by this change.
+
+Bicycle callback fix aff7b40f is deployed. The container is healthy, the production browser battle interaction passes, and its screenshot was reviewed. Breeding fix ed4e7270 deployment has started; production completion remains pending.
+
+The core bred-shiny lifecycle now passes generation, collection, Pokémon JSON
+round-trip, the actual overworld hatch boundary, full health, preserved shiny
+DVs and post-hatch Pokémon JSON round-trip. This stages egg readiness and the
+last hatch cycle; it does not prove normal traversal or the complete save file.
+The check exposed core egg initialization clearing the stat modifier map, making
+it fail Pokémon validation. Eggs now receive all eight neutral modifiers. The
+asset/runtime normalization already rebuilt that map, so this is a shared-core
+validity fix rather than evidence of a deployed hatch freeze.
+The existing visible hatch test now loads the selected current pack. Two timing
+checks pass (hold, wobble/cracks, shell, frontpic, hatch text), and the separate
+shiny Unown/hatch art plus save check passes. Its regenerated shiny hatch sprite
+was visually reviewed; full-screen normal-input hatch and nickname completion
+remain open.

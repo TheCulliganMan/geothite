@@ -13517,7 +13517,7 @@ where
     egg.perish_song_turns = 0;
     egg.focus_energy = false;
     egg.turns_in_battle = 0;
-    egg.stat_boosts.clear();
+    egg.stat_boosts = crate::models::pokemon::default_stat_boosts();
     state.day_care.egg = Some(egg);
     Ok(())
 }

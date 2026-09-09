@@ -9496,6 +9496,58 @@ fn day_care_shiny_ditto_preserves_random_special_bit_and_derives_hp() {
 }
 
 #[test]
+fn bred_shiny_survives_collection_hatching_and_pokemon_save_round_trip() {
+    use crate::systems::step_events::{process_overworld_step, OverworldStepContext, StepEventRules};
+    let mut state = GameState::default();
+    state.player_name = "CHRIS".to_string();
+    state.player_id = 1234;
+    let mut ditto = pokemon("DITTO");
+    ditto.dvs = Dv::from_non_hp(2, 10, 10, 10);
+    let mut mate = pokemon("CHIKORITA");
+    mate.species.int_id = 152;
+    mate.dvs = Dv::from_non_hp(15, 1, 1, 1);
+    state.day_care.man.pokemon = Some(ditto);
+    state.day_care.lady.pokemon = Some(mate);
+    let mut divider = ReplayDivider::new(divider_trace_for_sub_values([200, 0x21, 0xad]));
+    let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+    update_day_care_compatibility(&mut state, &mut rng).unwrap();
+    let expected = Dv::from_non_hp(2, 10, 10, 10);
+    assert_eq!(state.day_care.egg.as_ref().unwrap().dvs, expected);
+    state.day_care.egg_present = true;
+    let mut divider = ReplayDivider::new(divider_trace_for_sub_values([200, 0x12, 0x34]));
+    let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+    assert!(day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng).unwrap().success);
+    let egg = state.storage.party.pokemon[0].as_ref().unwrap();
+    assert_eq!(egg.dvs, expected);
+    assert!(egg.is_egg);
+    assert_eq!(egg.hp, 0);
+    let saved = serde_json::to_string(egg).unwrap();
+    state.storage.party.pokemon[0] = Some(serde_json::from_str::<Pokemon>(&saved).unwrap());
+    // Stage the final hatch cycle; execute the actual overworld hatch boundary.
+    state.storage.party.pokemon[0].as_mut().unwrap().happiness = 1;
+    state.step_events.step_count = 127;
+    let rules = StepEventRules {
+        poison_step_interval: 4, egg_step_trigger: 128, hatched_egg_happiness: 120,
+        poison_status: "PSN".to_string(), egg_nickname: "EGG".to_string(),
+        happiness_step_counter_mask: 1, happiness_step_counter_target: 0,
+    };
+    let mut divider = ReplayDivider::new([]);
+    let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+    let result = process_overworld_step(&mut state, &rules, &TEST_GROWTH_RATES, Some(42),
+        OverworldStepContext { movement_mode: crate::world::movement::MovementMode::Normal, map_phone_service: 0 }, &mut rng).unwrap();
+    assert_eq!(result.hatched_party_index, Some(0));
+    let hatched = state.storage.party.pokemon[0].as_ref().unwrap();
+    assert!(!hatched.is_egg);
+    assert_eq!(hatched.dvs, expected);
+    assert_eq!(hatched.hp, hatched.max_hp);
+    hatched.validate_saved_state().unwrap();
+    let saved = serde_json::to_string(hatched).unwrap();
+    let restored: Pokemon = serde_json::from_str(&saved).unwrap();
+    assert_eq!(restored.dvs, expected);
+    assert!(!restored.is_egg);
+}
+
+#[test]
 fn day_care_step_does_not_consult_the_growth_rate_table() {
     let mut state = GameState::default();
     let mut resident = pokemon("CHIKORITA");
