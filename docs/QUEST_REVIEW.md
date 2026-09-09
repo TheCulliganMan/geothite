@@ -43,7 +43,7 @@ a complete quest.
 | Hall of Fame | Record, save, credits, title/Continue, postgame unlocks | Record/save/Continue verified; full ceremony and postgame pending |
 | Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Existing checks identified; coverage review pending |
 | Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
-| Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Pending |
+| Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; full quiz visual/audio review and other Goldenrod chains pending |
 | Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | Pending |
 | Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
 | Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
@@ -447,3 +447,15 @@ playing audio holds the wait. Production worker PCM and browser interaction
 verification are still pending. Parameterized playback requires the existing
 species MIDI program, available in the shipped browser pack; it does not
 approximate a cry from an opaque PCM-only asset.
+
+
+## Radio Card quest review
+
+The real Radio Tower quiz passes refusal, a wrong answer at each of the five
+questions, retry after save/load, the authored correct-answer sequence, award
+and follow-up dialogue, repeat suppression, and saved card ownership. Pokégear
+page selection excludes Radio before the reward and includes it after reload;
+closing the panel leaves dialogue idle. The final regression passes in 26.59
+seconds. This positions the fixture beside the NPC and tests the visible shell
+and source scripts; full route traversal, screenshots, and quiz audio timing
+remain separate review items. No production change was needed for these paths.

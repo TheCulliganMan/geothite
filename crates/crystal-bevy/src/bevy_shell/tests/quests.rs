@@ -2674,3 +2674,69 @@ fn moomoo_slow_cry_validates_base_pcm_and_keeps_distinct_output_and_cache() {
         base.bytes.len()/4, modified.bytes.len()/4, bevy_audio_fnv1a32(&modified.bytes),
         request.parameters.pitch, request.parameters.length);
 }
+
+#[test]
+fn radio_card_quiz_refusal_each_wrong_answer_reward_and_reload() {
+    const SCRIPT: &str = "RadioTower1FRadioCardWomanScript";
+    const ANSWERS: [bool; 5] = [true, true, false, true, false];
+    fn at_question(shell: &BevyRuntimeShell, index: usize) -> bool {
+        let scripts = &shell.shell.session().state().script_runtime;
+        scripts.pending_yes_no.is_some() && scripts.active_text_label.as_deref()
+            == Some(format!("RadioTower1FRadioCardWomanQuestion{index}Text").as_str())
+    }
+    let mut shell = progression_shell_on_map_for_test("RadioTower1F");
+    shell.shell.session_mut().state_mut().flags.set_engine_flag("ENGINE_POKEGEAR", true).unwrap();
+    assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_RADIO_CARD").unwrap());
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    cycle_visible_pokegear_page(&mut shell, 4).unwrap();
+    assert_ne!(shell.pokegear_page, PokegearPage::Radio);
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    quest_move_beside_npc(&mut shell, "RadioTower1F", SCRIPT);
+    quest_talk(&mut shell, SCRIPT);
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "RadioTower1FRadioCardWomanNotTakingQuizText"));
+    for wrong in 0..5 {
+        quest_talk(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), SCRIPT);
+        quest_settle(&mut app, true, |shell| at_question(shell, 1));
+        for (index, answer) in ANSWERS.iter().enumerate().take(wrong) {
+            quest_settle(&mut app, *answer, |shell| at_question(shell, index + 2));
+        }
+        let labels = quest_settle(&mut app, !ANSWERS[wrong], quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == "RadioTower1FRadioCardWomanWrongAnswerText"), "wrong question {}", wrong + 1);
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_engine_flag_set("ENGINE_RADIO_CARD").unwrap());
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        quest_assert_save_round_trip(&mut shell, "radio-quiz-wrong");
+        quest_move_beside_npc(&mut shell, "RadioTower1F", SCRIPT);
+        quest_talk(&mut shell, SCRIPT);
+    }
+    quest_settle(&mut app, true, |shell| at_question(shell, 1));
+    for (index, answer) in ANSWERS.iter().enumerate().take(4) {
+        quest_settle(&mut app, *answer, |shell| at_question(shell, index + 2));
+    }
+    let labels = quest_settle(&mut app, ANSWERS[4], quest_dialogue_is_idle);
+    for expected in ["RadioTower1FRadioCardWomanYouWinText", "RadioTower1FPokegearIsARadioText", "RadioTower1FRadioCardWomanTuneInText"] {
+        assert!(labels.iter().any(|label| label == expected), "missing {expected}");
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(shell.shell.session().state().flags.is_engine_flag_set("ENGINE_RADIO_CARD").unwrap());
+        quest_assert_save_round_trip(&mut shell, "radio-quiz-card");
+        assert!(shell.shell.session().state().flags.is_engine_flag_set("ENGINE_RADIO_CARD").unwrap());
+        quest_move_beside_npc(&mut shell, "RadioTower1F", SCRIPT);
+        quest_talk(&mut shell, SCRIPT);
+    }
+    let labels = quest_settle(&mut app, true, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "RadioTower1FRadioCardWomanTuneInText"));
+    assert!(!labels.iter().any(|label| label == "RadioTower1FRadioCardWomanOfferQuizText" || label == "RadioTower1FRadioCardWomanYouWinText"));
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    open_visible_pokegear_menu(&mut shell).unwrap();
+    cycle_visible_pokegear_page(&mut shell, 4).unwrap();
+    assert!(shell.pokegear_menu_open);
+    assert_eq!(shell.pokegear_page, PokegearPage::Radio);
+    close_visible_pokegear_menu(&mut shell).unwrap();
+    assert!(quest_dialogue_is_idle(&shell));
+}
