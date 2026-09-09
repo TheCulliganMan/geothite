@@ -495,3 +495,17 @@ bottle use, full TM-pocket retry or browser visual/audio fidelity.
 
 The final expanded regression passes (65.29 seconds); `git diff --check` passes.
 This change adds regression coverage and documentation; it changes no deployed gameplay.
+
+### SquirtBottle bag dispatch correction
+
+A new real-pack regression reproduced an extra Yes/No question when using the
+bottle from the bag. The shared backend dispatched `SudowoodoScript`, whereas the
+[original bag effect](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/squirtbottle.asm)
+enters `WateredWeirdTreeScript` directly. The backend now selects that exact entry
+for Route 36's standard tree script, validates it before mutating state, and
+preserves custom tree-script dispatch. No audio or content-pack data changed.
+Both real-pack regressions pass (120.70 seconds): bag use enters watering without
+a second prompt, the visible battle introduction completes, the Run action
+returns through the escape aftermath, the tree disappears, and save/load preserves
+that state. The bottle remains. The earlier Floria/badge/refusal/victory/TM and
+cleared-tile walking regression also passes. Production rollout is pending.

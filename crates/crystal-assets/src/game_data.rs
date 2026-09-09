@@ -15127,9 +15127,19 @@ impl GameDataSet {
         let item = self.field_squirtbottle_item(item_id)?;
         Self::require_field_usable_item_in_bag(state, item_id, item, "squirtbottle")?;
         let script_labels = self.map_script_labels(&overworld.map.name)?;
-        let target =
+        let mut target =
             resolve_squirtbottle_target(overworld, |script| script_labels.contains(script))
                 .map_err(|error| anyhow::anyhow!("{error}"))?;
+        // Crystal's bag effect enters the exported watering sequence directly;
+        // the object's interaction entry includes a separate Yes/No question.
+        // Other authored tree scripts keep their own dispatch entry.
+        if overworld.map.name == "Route36"
+            && target.target_script.as_deref() == Some("SudowoodoScript")
+        {
+            anyhow::ensure!(script_labels.contains("WateredWeirdTreeScript"),
+                "Route36 SquirtBottle use requires WateredWeirdTreeScript");
+            target.target_script = Some("WateredWeirdTreeScript".to_string());
+        }
         let item_use = self.use_bag_item(state, item_id, ItemUseContext::Field)?;
         if let Some(script) = target.target_script.as_ref() {
             commit_interaction_script_dispatch(

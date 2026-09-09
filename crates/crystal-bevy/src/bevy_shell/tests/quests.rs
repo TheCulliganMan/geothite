@@ -2856,3 +2856,34 @@ fn squirtbottle_floria_prerequisites_sudowoodo_and_rock_smash_persist() {
     quest_assert_save_round_trip(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(),
         "sudowoodo-rock-smash-reward");
 }
+
+#[test]
+fn squirtbottle_bag_use_enters_watering_without_a_second_prompt() {
+    let mut shell = progression_shell_on_map_for_test("Route36");
+    shell.shell.add_bag_item("SQUIRTBOTTLE", 1).unwrap();
+    quest_move_beside_npc(&mut shell, "Route36", "SudowoodoScript");
+    shell.shell.session_mut().overworld_mut().player.facing = Direction::Up;
+    mark_runtime_snapshot_dirty(&mut shell);
+    use_visible_field_bag_item_by_id(&mut shell, "SQUIRTBOTTLE".into()).unwrap();
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, true, |shell| shell.shell.has_active_battle());
+    assert!(!labels.iter().any(|label| label == "UseSquirtbottleText"),
+        "bag use must enter watering directly: {labels:?}");
+    assert!(labels.iter().any(|label| label == "UsedSquirtbottleText"));
+    assert!(labels.iter().any(|label| label == "SudowoodoAttackedText"));
+    assert_eq!(quest_item_quantity(app.world().resource::<BevyRuntimeShell>(), "SQUIRTBOTTLE"), 1);
+    quest_settle(&mut app, true, |shell| shell.battle_messages.is_empty()
+        && shell.visible_battle_transition.is_none() && shell.visible_battle_sliding_intro.is_none()
+        && !shell.battle_enemy_send_out_pending && !shell.battle_player_send_out_pending);
+    attempt_visible_battle_run(&mut app.world_mut().resource_mut::<BevyRuntimeShell>()).unwrap();
+    quest_settle(&mut app, true, |shell| quest_dialogue_is_idle(shell)
+        && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_FOUGHT_SUDOWOODO").unwrap());
+    assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+        object.object_identifier.as_deref() == Some("ROUTE36_WEIRD_TREE")));
+    assert_eq!(quest_item_quantity(&shell, "SQUIRTBOTTLE"), 1);
+    quest_assert_save_round_trip(&mut shell, "sudowoodo-bag-escape");
+    assert!(!shell.shell.snapshot().unwrap().visible_objects.iter().any(|object|
+        object.object_identifier.as_deref() == Some("ROUTE36_WEIRD_TREE")));
+}
