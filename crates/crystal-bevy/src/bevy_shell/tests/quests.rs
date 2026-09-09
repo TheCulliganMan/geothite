@@ -56,6 +56,9 @@ fn quest_dialogue_is_idle(shell: &BevyRuntimeShell) -> bool {
         && shell.screen_fade.is_none()
         && shell.pending_scene_script.is_none()
         && shell.field_notice.is_none()
+        && shell.pending_name_choice.is_none()
+        && shell.pending_name_input.is_none()
+        && shell.pending_gift_pokemon_nickname.is_none()
         && shell.visible_script_movement.is_none()
         && !shell.shell.has_pending_script_work()
         && !shell
@@ -113,7 +116,8 @@ fn quest_settle(
                 resolve_visible_pending_yes_no(&mut shell, answer).unwrap();
             }
         }
-        press_key_for_runtime_hotkey_app(app, KeyCode::KeyZ);
+        let gift_nickname = app.world().resource::<BevyRuntimeShell>().pending_gift_pokemon_nickname.is_some();
+        press_key_for_runtime_hotkey_app(app, if gift_nickname { KeyCode::KeyX } else { KeyCode::KeyZ });
     }
     let shell = app.world().resource::<BevyRuntimeShell>();
     panic!(
@@ -1209,5 +1213,197 @@ fn immediate_johto_gym_rewards_finish_once_and_survive_save_load() {
         assert_eq!(quest_item_quantity(&shell, tm), 1, "{trainer} repeat must not duplicate TM");
         quest_assert_save_round_trip(&mut shell, trainer);
         assert!(shell.shell.session().state().badges.johto[badge]);
+    }
+}
+
+fn quest_dragon_quiz_answer(app: &mut App, question: u8, option: usize) {
+    let menu_id = format!("DragonShrineQuestion{question}_MenuHeader");
+    quest_settle(app, false, |shell| {
+        shell.shell.snapshot().unwrap().ui.menu.as_ref()
+            .is_some_and(|menu| menu.menu_id == menu_id)
+    });
+    app.update(); // Publish the menu reached by the preceding input frame.
+    if question == 1 {
+        save_live_pc_dialog_for_test(app.world_mut(), "dragon-quiz-menu.png");
+    }
+    {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let menu = shell.shell.snapshot().unwrap().ui.menu.unwrap();
+        assert!(visible_runtime_menu_disables_b(shell, &menu).unwrap(), "quiz B flag missing: {:?}", menu);
+    }
+    // Use the visible cursor and ordinary input, including the authored B lock.
+    let before_b = app.world().resource::<BevyRuntimeShell>().active_script_cursor.clone();
+    press_key_for_runtime_hotkey_app(app, KeyCode::KeyX);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.shell.snapshot().unwrap().ui.menu.as_ref().unwrap().menu_id, menu_id);
+    assert_eq!(shell.active_script_cursor, before_b, "B must not answer the quiz");
+    for _ in 0..option { press_key_for_runtime_hotkey_app(app, KeyCode::ArrowDown); }
+    press_key_for_runtime_hotkey_app(app, KeyCode::KeyZ);
+}
+
+#[test]
+fn clair_delays_badge_until_quiz_then_gives_tm_and_dratini_once() {
+    for wrong_answer in [false, true] {
+        let mut shell = progression_shell_on_map_for_test("BlackthornGym1F");
+        shell.shell.session_mut().state_mut().try_advance_frame().unwrap();
+        shell.shell.session_mut().overworld_mut().frame = 1;
+        shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+        let key = shell.shell.scripted_trainer_battle_keys().into_iter()
+            .find(|key| key.map_name == "BlackthornGym1F" && key.trainer_class == "CLAIR").unwrap();
+        shell.shell.start_scripted_trainer_battle(&key.map_name, &key.source_script, key.startbattle_command_index).unwrap();
+        {
+            // Begin at the final battle result; gym traversal/combat remain separate.
+            let state = shell.shell.session_mut().state_mut();
+            let crate::core::state::BattleMemory::Trainer { enemy_pokemon, enemy_party, .. } = &mut state.battle
+                else { panic!("Clair requires trainer battle"); };
+            state.battle_rewarded_enemy_party_indices = (0..enemy_party.len()).collect();
+            for pokemon in enemy_party { pokemon.hp = 0; }
+            enemy_pokemon.hp = 0;
+        }
+        shell.battle_message_scene = Some(Box::new(shell.shell.snapshot().unwrap()));
+        complete_visible_scripted_trainer_battle(&mut shell, &key.map_name, &key.source_script, true, false).unwrap();
+        let mut app = menu_render_test_app(shell);
+        quest_settle(&mut app, false, |shell| quest_dialogue_is_idle(shell)
+            && shell.battle_messages.is_empty() && !shell.shell.has_active_battle());
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BEAT_CLAIR").unwrap());
+            assert!(!shell.shell.session().state().badges.johto[7]);
+            assert_eq!(quest_item_quantity(&shell, "TM_DRAGONBREATH"), 0);
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_BLACKTHORN_CITY_GRAMPS_BLOCKS_DRAGONS_DEN").unwrap());
+            quest_move_beside_npc(&mut shell, "BlackthornGym1F", "BlackthornGymClairScript");
+            quest_talk(&mut shell, "BlackthornGymClairScript");
+        }
+        let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == "ClairText_TooMuchToExpect"));
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(!shell.shell.session().state().badges.johto[7]);
+            let runtime = shell.shell.runtime().clone();
+            let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+            runtime.data().transition_overworld_session(state, overworld, "DragonShrine",
+                TilePosition::new(4, 9), crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+                &runtime.music_ids()).unwrap();
+            reset_visible_navigation_state(&mut shell);
+            mark_runtime_snapshot_dirty(&mut shell);
+            arm_visible_active_script_cursor(&mut shell, "DragonShrineTakeTestScript", 0);
+            execute_visible_active_script_step(&mut shell).unwrap();
+        }
+        if wrong_answer { quest_dragon_quiz_answer(&mut app, 1, 1); }
+        for (question, option) in [(1, 0), (2, 0), (3, 1), (4, 0), (5, 1)] {
+            quest_dragon_quiz_answer(&mut app, question, option);
+        }
+        let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == "DragonShrinePlayerReceivedRisingBadgeText"));
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().badges.johto[7]);
+            assert_eq!(shell.shell.session().state().flags.is_event_flag_set("EVENT_ANSWERED_DRAGON_MASTER_QUIZ_WRONG").unwrap(), wrong_answer);
+            assert_eq!(quest_item_quantity(&shell, "TM_DRAGONBREATH"), 0);
+            assert_eq!(shell.shell.session().state().scenes.map_scenes["DragonsDenB1F"], "SCENE_DRAGONSDENB1F_CLAIR_GIVES_TM");
+            quest_talk(&mut shell, "DragonShrineElder1Script");
+        }
+        let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+        assert!(labels.iter().any(|label| label == "DragonShrineComeAgainText"));
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
+            quest_start_coord_script(&mut shell, "DragonsDenB1F", "DragonsDenB1F_ClairScene");
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(quest_item_quantity(&shell, "TM_DRAGONBREATH"), 1);
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_TM24_DRAGONBREATH").unwrap());
+            assert_eq!(shell.shell.session().state().scenes.map_scenes["DragonsDenB1F"], "SCENE_DRAGONSDENB1F_NOOP");
+            quest_move_beside_npc(&mut shell, "DragonShrine", "DragonShrineElder1Script");
+            let runtime = shell.shell.runtime().clone();
+            let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+            runtime.data().apply_map_setup_callbacks(state, overworld, "DragonShrine", "MAPSETUP_DOOR").unwrap();
+            quest_talk(&mut shell, "DragonShrineElder1Script");
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
+            let dratini = shell.shell.session().state().storage.party.pokemon.iter().flatten()
+                .find(|pokemon| pokemon.species.id == "DRATINI").unwrap();
+            assert_eq!(dratini.level, 15);
+            assert_eq!(dratini.moves.iter().any(|move_| move_.name == "EXTREMESPEED"), !wrong_answer);
+            quest_talk(&mut shell, "DragonShrineElder1Script");
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            assert_eq!(shell.shell.session().state().storage.party.pokemon.iter().flatten()
+                .filter(|pokemon| pokemon.species.id == "DRATINI").count(), 1);
+            quest_move_beside_npc(&mut shell, "BlackthornGym1F", "BlackthornGymClairScript");
+            quest_talk(&mut shell, "BlackthornGymClairScript");
+        }
+        quest_settle(&mut app, false, quest_dialogue_is_idle);
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert_eq!(quest_item_quantity(&shell, "TM_DRAGONBREATH"), 1);
+        quest_assert_save_round_trip(&mut shell, if wrong_answer { "clair-wrong" } else { "clair-perfect" });
+        assert!(shell.shell.session().state().badges.johto[7]);
+    }
+}
+
+#[test]
+fn dragon_shrine_full_party_keeps_dratini_available_for_retry() {
+    let mut shell = progression_shell_on_map_for_test("DragonShrine");
+    shell.shell.session_mut().state_mut().player_name = "CHRIS".into();
+    // Post-quiz visit: the automatic entrance scene has already completed.
+    {
+        let state = shell.shell.session_mut().state_mut();
+        state.scenes.map_scenes.insert("DragonShrine".into(), "SCENE_DRAGONSHRINE_NOOP".into());
+        state.scenes.map_scene_indices.insert("DragonShrine".into(), 1);
+    }
+    quest_move_beside_npc(&mut shell, "DragonShrine", "DragonShrineElder1Script");
+    for _ in 1..6 {
+        shell.shell.add_party_pokemon("PIDGEY", 5, None, None, "CHRIS", 1, Dv::default()).unwrap();
+    }
+    quest_move_beside_npc(&mut shell, "DragonShrine", "DragonShrineElder1Script");
+    quest_talk(&mut shell, "DragonShrineElder1Script");
+    let mut app = menu_render_test_app(shell);
+    let labels = quest_settle(&mut app, false, quest_dialogue_is_idle);
+    assert!(labels.iter().any(|label| label == "DragonShrinePartyFullText"));
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        assert!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
+        shell.shell.deposit_party_pokemon_to_current_box(5).unwrap();
+        quest_talk(&mut shell, "DragonShrineElder1Script");
+    }
+    quest_settle(&mut app, false, quest_dialogue_is_idle);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.shell.session().state().flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
+    assert_eq!(shell.shell.session().state().storage.party.pokemon.iter().flatten()
+        .filter(|pokemon| pokemon.species.id == "DRATINI").count(), 1);
+    quest_assert_save_round_trip(&mut shell, "dratini-full-party");
+}
+
+#[test]
+fn map_entry_clears_temporary_events_but_reload_and_continue_preserve_them() {
+    let mut shell = progression_shell_on_map_for_test("DragonShrine");
+    let runtime = shell.shell.runtime().clone();
+    for (setup, cleared) in [
+        ("MAPSETUP_RELOADMAP", false), ("MAPSETUP_SUBMENU", false),
+        ("MAPSETUP_CONTINUE", false), ("MAPSETUP_WARP", true),
+        ("MAPSETUP_DOOR", true), ("MAPSETUP_CONNECTION", true),
+        ("MAPSETUP_FALL", true), ("MAPSETUP_TRAIN", true),
+        ("MAPSETUP_FLY", true), ("MAPSETUP_TELEPORT", true),
+        ("MAPSETUP_BADWARP", true), ("MAPSETUP_LINKRETURN", true),
+    ] {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        for index in 1..=8 {
+            state.flags.set_event_flag(&format!("EVENT_TEMPORARY_UNTIL_MAP_RELOAD_{index}"), true).unwrap();
+        }
+        state.flags.set_event_flag("EVENT_GOT_DRATINI", true).unwrap();
+        state.flags.set_event_flag("EVENT_ANSWERED_DRAGON_MASTER_QUIZ_WRONG", true).unwrap();
+        runtime.data().apply_map_setup_callbacks(state, overworld, "DragonShrine", setup).unwrap();
+        for index in 1..=8 {
+            assert_eq!(state.flags.is_event_flag_set(&format!("EVENT_TEMPORARY_UNTIL_MAP_RELOAD_{index}")).unwrap(), !cleared, "{setup}, flag {index}");
+        }
+        assert!(state.flags.is_event_flag_set("EVENT_GOT_DRATINI").unwrap());
+        assert!(state.flags.is_event_flag_set("EVENT_ANSWERED_DRAGON_MASTER_QUIZ_WRONG").unwrap());
     }
 }

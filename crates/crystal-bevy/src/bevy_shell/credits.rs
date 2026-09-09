@@ -4086,6 +4086,22 @@ fn compiled_special_routine_at(
         }))
 }
 
+fn visible_runtime_menu_disables_b(
+    runtime_shell: &BevyRuntimeShell,
+    menu: &crate::RuntimeMenuSnapshot,
+) -> Result<bool> {
+    let vertical = selected_vertical_menu(menu, &runtime_shell.menu_cursor)?;
+    let crate::RuntimeMenuSource::ScriptDefinition { map_name } = &menu.source else {
+        return Ok(false);
+    };
+    let Some(data_label) = vertical.data_label.as_ref() else { return Ok(false); };
+    let data = runtime_shell.runtime.data().maps[map_name].script_menu_definitions
+        .get(data_label).context("active menu data is missing")?;
+    Ok(data.commands.iter().find(|command| command.command == "db")
+        .is_some_and(|command| command.args.iter().flat_map(|arg| arg.split('|'))
+            .any(|flag| flag.trim() == "STATICMENU_DISABLE_B")))
+}
+
 fn close_active_runtime_surface(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
     if snapshot.ui.menu.is_some() {

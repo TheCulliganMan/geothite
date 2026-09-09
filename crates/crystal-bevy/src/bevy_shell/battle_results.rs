@@ -1209,6 +1209,17 @@ fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> R
         return Ok(());
     }
     arm_visible_script_cursor_after_step(runtime_shell, &stepped);
+    if stepped.command == "loadmenu" {
+        // Loading a header is preparation, not an input boundary. Finish the
+        // interpreter run to verticalmenu before publishing a cursorless menu.
+        if let Some(next) = visible_active_compiled_script_cursor(runtime_shell) {
+            let run = runtime_shell.shell.run_compiled_script_until_boundary(
+                next, 256, ScriptRuntimeInputs::default(), ScriptPhoneInputs::default(),
+            )?;
+            integrate_visible_compiled_script_run(runtime_shell, &run.steps)?;
+            arm_visible_active_script_cursor_from_run(runtime_shell, run.next_cursor);
+        }
+    }
     Ok(())
 }
 
@@ -1274,6 +1285,13 @@ fn integrate_visible_compiled_script_run(
             blocking_movement_precedes_visible_text = true;
         }
         if activate_visible_script_boundary_after_outcome(runtime_shell, &step.mutation)? {
+            reached_boundary = true;
+        }
+        // Compiled continuations can reach menus without the single-step
+        // dispatch path. Initialize the cursor for the exact script call site.
+        if open_visible_vertical_menu_for_script_command(
+            runtime_shell, &step.source_script, step.command_index,
+        )? {
             reached_boundary = true;
         }
         if let Some(crate::RuntimeCompiledScriptBoundary::PhoneCallasm(effect)) =

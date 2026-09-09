@@ -88,3 +88,28 @@ advancing. The Red Gyarados continuation also attempted to persist a scene on a
 map without scene storage. Fixes pass the real-pack defeat/reward/Lance/trade/save sequence and full-pocket retry. Core scene tests (13), sound-wait tests (3), item-notice tests (3), medicine (1), and visible evolution tests (3) also pass. Item notice dismissal now resumes the script before stale dialogue can reappear. Gameplay fixes 1e40a90e are deployed; the rebuilt container is healthy and a production browser battle interaction passes.
 The scope still includes access/traversal, capture/loss aftermath, the hideout,
 and every other pending quest in the matrix above.
+
+Dragon's Den scripted reward coverage now passes both perfect and corrected quiz
+answers, the delayed Rising Badge, the exit TM scene, return-visit Dratini moves,
+repeat dialogue/rewards, and save/load. Full-party refusal/retry also passes.
+Fixtures stage each map leg and Clair's terminal battle; complete gym/Den walking,
+water traversal, and every full-bag reward order are still open.
+
+The quiz fixes initialize the active compiled menu cursor, render only its exact
+call-site alias at authored coordinates, give menus A/B ownership, honor disabled
+B, and release the active menu on closewindow. The rendered three-answer menu and
+underlying question were visually reviewed. New map entry clears the eight
+temporary flags before callbacks; battle reload, submenu return, and Continue
+preserve them. This matches HandleNewMap in
+[warp_connection.asm](https://github.com/pret/pokecrystal/blob/master/engine/overworld/warp_connection.asm)
+and its [setup paths](https://github.com/pret/pokecrystal/blob/master/data/maps/setup_scripts.asm).
+Flag checks also synchronize the script-value alias read by specials; previously
+a wrong quiz answer still awarded the perfect-answer Dratini moves.
+
+Verification: complete Clair reward sequence (both branches), full-party retry,
+all twelve map setup paths with permanent-flag preservation, closewindow core
+regression, five elevator checks, two vertical-menu checks, three sound-wait
+checks, item notice, Whitney, medicine, and map load/refresh checks pass.
+Four elevator fixtures were updated to locate the shipped pack. Nine existing
+shiny checks also pass; the unverified shiny scope above remains open.
+These Dragon's Den changes have not yet been deployed.

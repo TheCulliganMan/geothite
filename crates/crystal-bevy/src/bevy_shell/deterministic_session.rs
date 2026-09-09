@@ -6537,6 +6537,9 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
         return buy_visible_shop_cursor_item(runtime_shell);
     }
+    if visible_menu_has_selectable_options(&snapshot) {
+        return select_visible_menu_cursor_option(runtime_shell);
+    }
     // PokemonCenterPC owns input until its hub and submenus close. The
     // suspended PCScript cursor points at closetext, not a menu action.
     // Battles likewise own input until their suspended map script resumes.
@@ -6767,9 +6770,6 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     }
     if runtime_shell.start_menu_cursor.is_some() {
         return select_visible_start_menu_option(runtime_shell);
-    }
-    if visible_menu_has_selectable_options(&snapshot) {
-        return select_visible_menu_cursor_option(runtime_shell);
     }
     if !snapshot.script_events.audio_events.is_empty() {
         return drain_visible_audio_events(runtime_shell);
@@ -7114,6 +7114,13 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    let menu_snapshot = runtime_shell.shell.snapshot()?;
+    if visible_menu_has_selectable_options(&menu_snapshot) {
+        let menu = menu_snapshot.ui.menu.as_ref().expect("selectable menu");
+        if menu.menu_2d_requested { return cancel_visible_2d_menu(runtime_shell); }
+        if visible_runtime_menu_disables_b(runtime_shell, menu)? { return Ok(()); }
+        return close_active_runtime_surface(runtime_shell);
+    }
     if runtime_shell.pokedex_menu_open && pokedex_input_delay_active(runtime_shell) { return Ok(()); }
     if runtime_shell.pokedex_menu_open && runtime_shell.pokedex_controls.unown_cursor.is_some() { return press_visible_pokedex_a_button(runtime_shell); }
     if runtime_shell.pokedex_menu_open {

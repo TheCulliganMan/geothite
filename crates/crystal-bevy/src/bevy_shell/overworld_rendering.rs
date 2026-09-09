@@ -5917,6 +5917,40 @@ fn spawn_scene_dialog(
         return Ok(());
     }
 
+    if let Some(menu) = snapshot.ui.menu.as_ref()
+        && !menu.menu_2d_requested
+        && visible_menu_has_selectable_options(snapshot)
+    {
+        let vertical = selected_vertical_menu(menu, &runtime_shell.menu_cursor)?;
+        let [left, top, right, bottom] = menu.coords.or(menu.layout.declared_coords)
+            .context("visible vertical menu has no authored coordinates")?;
+        if snapshot.ui.text_window_open {
+            let mut text_snapshot = snapshot.clone();
+            text_snapshot.ui.menu = None;
+            spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+            spawn_scene_dialog_text_content(commands, &text_snapshot, runtime_shell,
+                rendered_art, asset_root, images)?;
+        }
+        spawn_mart_window(commands, rendered_art, asset_root, images,
+            left as f32, top as f32, (right - left + 1) as f32,
+            (bottom - top + 1) as f32, 4.3);
+        let selected = strict_readonly_cursor_index(&runtime_shell.menu_cursor,
+            &vertical_menu_surface_id(menu, vertical), vertical.options.len())
+            .context("visible vertical menu has no valid cursor")?;
+        for (index, option) in vertical.options.iter().enumerate() {
+            let y_tile = top as f32 + 2.0 + index as f32 * 2.0;
+            let (x, y) = battle_hud_tile_origin(left as f32 + 2.0, y_tile);
+            spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
+                option, x, y, 4.4);
+            if index == selected {
+                let (x, y) = battle_hud_tile_origin(left as f32 + 1.0, y_tile);
+                spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
+                    "▶", x, y, 4.4);
+            }
+        }
+        return Ok(());
+    }
+
     if let Some(day_prompt) = runtime_shell.pending_day_of_week.as_ref() {
         if day_prompt.confirming {
             spawn_visible_day_of_week_confirmation(
@@ -12876,7 +12910,11 @@ fn push_visible_runtime_menu_dialog_entries(
     runtime_shell: &BevyRuntimeShell,
     menu: &crate::RuntimeMenuSnapshot,
 ) -> Result<()> {
-    for vertical in &menu.layout.vertical_menus {
+    if menu.layout.vertical_menus.is_empty() { return Ok(()); }
+    // A header can be referenced by several compiled script aliases. Only
+    // the active call site owns the cursor and should be drawn.
+    let vertical = selected_vertical_menu(menu, &runtime_shell.menu_cursor)?;
+    {
         let surface_id = vertical_menu_surface_id(menu, vertical);
         let cursor_index = strict_readonly_cursor_index(
             &runtime_shell.menu_cursor,
@@ -12911,7 +12949,6 @@ fn push_visible_runtime_menu_dialog_entries(
             }
             return Ok(());
         }
-        entries.push(compact_scene_label(&menu.menu_id, SCENE_DIALOG_TEXT_CHARS));
         entries.extend(
             windowed_index_range(cursor_index, vertical.options.len()).map(|index| {
                 let option = &vertical.options[index];

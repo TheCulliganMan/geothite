@@ -1629,7 +1629,10 @@ fn apply_runtime_effect(
             }
             state.script_runtime.window_open = true;
         }
-        "closewindow" => state.script_runtime.window_open = false,
+        "closewindow" => {
+            state.script_runtime.window_open = false;
+            state.script_runtime.active_menu = None;
+        }
         "dontrestartmapmusic" => state.script_runtime.map_music_restart_disabled = true,
         "playmapmusic" => state.script_runtime.map_music_requested = true,
         "wildoff" => {
@@ -4497,6 +4500,20 @@ mod tests {
             Some("RuntimeMenu")
         );
         assert!(state.script_runtime.window_open);
+    }
+
+    #[test]
+    fn closewindow_releases_menu_without_closing_underlying_dialogue() {
+        let mut state = GameState::default();
+        state.script_runtime.text_window_open = true;
+        state.script_runtime.active_text_label = Some("QuestionText".into());
+        apply_script_runtime_command(&mut state, command("loadmenu", &["RuntimeMenu"]), default_inputs()).unwrap();
+        apply_script_runtime_command(&mut state, command("verticalmenu", &[]), default_inputs()).unwrap();
+        apply_script_runtime_command(&mut state, command("closewindow", &[]), default_inputs()).unwrap();
+        assert!(!state.script_runtime.window_open);
+        assert_eq!(state.script_runtime.active_menu, None);
+        assert!(state.script_runtime.text_window_open);
+        assert_eq!(state.script_runtime.active_text_label.as_deref(), Some("QuestionText"));
     }
 
     #[test]

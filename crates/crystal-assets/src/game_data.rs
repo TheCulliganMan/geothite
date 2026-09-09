@@ -3196,7 +3196,10 @@ impl GameDataSet {
             .clone();
         let outcome = core_check_script_flag(state, command)
             .map_err(|error| anyhow::anyhow!("check script flag: {error:?}"))?;
-        state.script_runtime.script_value = Some(if outcome.set { "1" } else { "0" }.to_string());
+        let value = u8::from(outcome.set).to_string();
+        state.script_runtime.script_value = Some(value.clone());
+        // Specials and compiled conditionals read the same script variable.
+        state.script_runtime.variables.insert("_value".to_string(), value);
         Ok(outcome)
     }
 
@@ -11520,6 +11523,14 @@ impl GameDataSet {
         let callback_kinds = map_setup_callback_kinds(map_setup)
             .with_context(|| format!("unknown map setup callback path {map_setup}"))?;
         let module = self.map_module(map_name)?;
+        // HandleNewMap clears the first byte of event flags before callbacks.
+        // Battle reloads, submenu returns, and Continue skip HandleNewMap.
+        if callback_kinds.contains(&MAP_CALLBACK_NEWMAP) {
+            for index in 1..=8 {
+                state.flags.clear_event_flag(&format!("EVENT_TEMPORARY_UNTIL_MAP_RELOAD_{index}"))
+                    .map_err(|error| anyhow::anyhow!("reset temporary map event: {error:?}"))?;
+            }
+        }
         if callback_kinds.contains(&MAP_CALLBACK_NEWMAP) && !module.scenes.scenes.is_empty() {
             state
                 .scenes

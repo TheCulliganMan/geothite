@@ -4727,16 +4727,8 @@ fn elms_officer_naming_screen_resumes_the_authored_script_and_clears_the_scene()
 
 #[test]
 fn elevator_floor_menu_owns_a_before_the_underlying_script_cursor() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut runtime_shell = initialize_bevy_runtime_shell(
         asset_root,
         runtime,
@@ -4811,16 +4803,8 @@ fn elevator_floor_menu_owns_a_before_the_underlying_script_cursor() {
 
 #[test]
 fn elevator_floor_menu_b_returns_false_and_finishes_the_authored_cancel_branch() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut runtime_shell = initialize_bevy_runtime_shell(
         asset_root,
         runtime,
@@ -4898,16 +4882,8 @@ fn elevator_floor_menu_b_returns_false_and_finishes_the_authored_cancel_branch()
 
 #[test]
 fn elevator_current_floor_selection_returns_false_without_a_warp_or_ride() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut runtime_shell = initialize_bevy_runtime_shell(
         asset_root,
         runtime,
@@ -4961,16 +4937,8 @@ fn elevator_current_floor_selection_returns_false_without_a_warp_or_ride() {
 
 #[test]
 fn elevator_without_a_matching_backup_floor_returns_false_without_opening_a_menu() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut runtime_shell = initialize_bevy_runtime_shell(
         asset_root,
         runtime,
