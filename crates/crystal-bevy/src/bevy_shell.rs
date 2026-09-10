@@ -304,12 +304,20 @@ pub struct BevyShellConfig {
     pub multiplayer: Option<BevyMultiplayerConfig>,
     #[cfg(feature = "location-tester")]
     pub render_test_screenshot: Option<PathBuf>,
+    /// Capture the other presentation in the same GPU/runtime session.
+    #[cfg(feature = "location-tester")]
+    pub render_test_second_screenshot: Option<PathBuf>,
+    #[cfg(feature = "location-tester")]
+    pub render_test_live: bool,
     #[cfg(feature = "location-tester")]
     pub render_test_walk: Option<String>,
     /// Fixed 24-hour clock used by deterministic location screenshots.
     /// Normal play continues to use the live/new-game clock path.
     #[cfg(feature = "location-tester")]
     pub render_test_hour: Option<u8>,
+    /// Seed the location renderer's fresh session for incidental encounters.
+    #[cfg(feature = "location-tester")]
+    pub render_test_party: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -670,6 +678,8 @@ struct BevyRuntimeShell {
     visible_continue_screen: Option<VisibleContinueScreen>,
     credits_screen: Option<VisibleCreditsScreen>,
     last_error: Option<String>,
+    #[cfg(feature = "location-tester")]
+    render_test_error: Option<String>,
     last_action_status: Option<String>,
     last_audio_events: Vec<String>,
     pending_audio: Vec<BevyAudioCommand>,
@@ -1950,6 +1960,8 @@ fn set_visible_runtime_action_from_checksum(
 }
 
 fn record_visible_runtime_error(runtime_shell: &mut BevyRuntimeShell, error: &anyhow::Error) {
+    #[cfg(feature = "location-tester")]
+    runtime_shell.render_test_error.get_or_insert_with(|| format!("{error:#}"));
     bevy::log::error!(target: "crystal_bevy::script_trace", error = %error, "visible runtime error");
     let action = format!("runtime:error:{error}");
     if let Ok(snapshot) = runtime_shell.shell.snapshot() {
@@ -4924,6 +4936,8 @@ struct MultiplayerGhost {
 /// instead of forcing `render_playfield` to rebuild the complete map.
 #[derive(Component)]
 struct PlayerSpriteFrames {
+    #[cfg(feature = "voxel-view")]
+    directional_frames: Vec<(Handle<Image>, Handle<Image>)>,
     standing: Handle<Image>,
     walking: Option<Handle<Image>>,
     mirror_walking: bool,
@@ -4954,6 +4968,10 @@ struct ObjectMarker;
 /// changed, instead of despawning and recreating every visible sprite.
 #[derive(Component)]
 struct VisibleObjectSprite {
+    #[cfg(feature = "voxel-view")]
+    directional_frames: Vec<(Handle<Image>, Option<Handle<Image>>)>,
+    #[cfg(feature = "voxel-view")]
+    world_facing: Direction,
     /// Original visible-object index, stable even when ASM leaves the object
     /// identifier blank.  Identifiers are useful for runtime lookups, but
     /// cannot be the renderer's identity because anonymous objects are valid.
@@ -5062,6 +5080,10 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walk = config.render_test_walk.clone();
     #[cfg(feature = "location-tester")]
+    let render_test_second_screenshot = config.render_test_second_screenshot.clone();
+    #[cfg(feature = "location-tester")]
+    let render_test_live = config.render_test_live;
+    #[cfg(feature = "location-tester")]
     let native_rtc_source = config
         .render_test_hour
         .map(|hour| {
@@ -5120,6 +5142,15 @@ pub fn run_bevy_shell(
         window
     };
     let plugins = DefaultPlugins.build();
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let plugins = if render_test_screenshot.is_some() && !render_test_live {
+        // One-shot capture exits from the image-save callback. Keeping its
+        // render world on the main thread avoids waiting for RenderAppChannels
+        // during Winit teardown. Live review and ordinary play stay pipelined.
+        plugins.disable::<bevy::render::pipelined_rendering::PipelinedRenderingPlugin>()
+    } else {
+        plugins
+    };
     #[cfg(feature = "operation-trace")]
     let plugins = plugins.disable::<bevy::log::LogPlugin>();
     app.insert_resource(ClearColor(Color::srgb(0.05, 0.07, 0.06)))
@@ -5323,22 +5354,21 @@ pub fn run_bevy_shell(
     }
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_screenshot.clone() {
-        app.insert_resource(RenderTestScreenshot {
-            path,
-            frame: 0,
-            requested: false,
-            requested_at: None,
-        })
-        .add_systems(Update, capture_render_test_screenshot);
+        render_capture::install(&mut app, path, render_test_second_screenshot.clone(), render_test_live)?;
     }
     #[cfg(feature = "location-tester")]
     if let Some(route)=render_test_walk.as_deref() {
         render_walk::install(&mut app,route,render_test_screenshot.as_deref().context("--walk requires a screenshot path")?)?;
     }
-    app.run();
+    let app_exit = app.run();
+    anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
 
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_screenshot.as_deref() {
+        validate_render_test_screenshot(path)?;
+    }
+    #[cfg(feature = "location-tester")]
+    if let Some(path) = render_test_second_screenshot.as_deref() {
         validate_render_test_screenshot(path)?;
     }
 
@@ -5535,61 +5565,7 @@ fn sync_manual_world_view_layers(
 }
 
 #[cfg(feature = "location-tester")]
-#[derive(Resource)]
-struct RenderTestScreenshot {
-    path: PathBuf,
-    frame: u32,
-    requested: bool,
-    requested_at: Option<u32>,
-}
-
-#[cfg(feature = "location-tester")]
-fn capture_render_test_screenshot(
-    mut capture: ResMut<RenderTestScreenshot>,
-    walk: Option<Res<render_walk::RenderWalk>>,
-    voxel_status: Res<crystal_voxel_view::VoxelViewStatus>,
-    primary_window: Query<Entity, With<PrimaryWindow>>,
-    mut screenshots: ResMut<ScreenshotManager>,
-    mut exit: EventWriter<AppExit>,
-) {
-    capture.frame = capture.frame.saturating_add(1);
-    // Give the extracted visual frame, voxel mesh, and GPU render target
-    // several presented frames to settle. Capturing the first frame in which
-    // status flips active can still read an earlier swapchain frame.
-    let presentation_settled = voxel_status.active_frames >= 30
-        || voxel_status.inactive_reason.as_deref() == Some("disabled");
-    if !capture.requested && capture.frame >= 90 && presentation_settled && walk.as_ref().is_none_or(|walk|walk.settled()) {
-        println!(
-            "2.5D renderer status: {}{}",
-            if voxel_status.active {
-                "active"
-            } else {
-                "inactive"
-            },
-            voxel_status
-                .inactive_reason
-                .as_deref()
-                .map(|reason| format!(" ({reason})"))
-                .unwrap_or_default()
-        );
-        let Ok(window) = primary_window.get_single() else {
-            return;
-        };
-        if screenshots
-            .save_screenshot_to_disk(window, &capture.path)
-            .is_ok()
-        {
-            capture.requested = true;
-            capture.requested_at = Some(capture.frame);
-        }
-    }
-    if capture
-        .requested_at
-        .is_some_and(|requested_at| capture.frame >= requested_at.saturating_add(60))
-    {
-        exit.send(AppExit::Success);
-    }
-}
+mod render_capture;
 
 #[cfg(feature = "location-tester")]
 fn validate_render_test_screenshot(path: &Path) -> Result<()> {
@@ -7108,6 +7084,17 @@ fn initialize_bevy_runtime_shell(
             save_path: _,
         } => RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), spawn_identifier)?,
     };
+    #[cfg(feature = "location-tester")]
+    if config.render_test_party {
+        anyhow::ensure!(runtime_tile_start, "render party requires a fresh location start");
+        let trainer = shell.snapshot()?.trainer;
+        let owner_name = config.smoke_player_name.as_deref()
+            .filter(|name| !name.is_empty()).unwrap_or("RENDER");
+        shell.add_party_pokemon(
+            "TOTODILE", 30, None, None, owner_name, trainer.player_id,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )?;
+    }
     if let Some(save_path) = title_menu
         .as_ref()
         .and_then(|title| title.save_path.as_ref())
@@ -7167,6 +7154,8 @@ fn initialize_bevy_runtime_shell(
         visible_continue_screen: None,
         credits_screen: None,
         last_error: None,
+        #[cfg(feature = "location-tester")]
+        render_test_error: None,
         last_action_status: None,
         last_audio_events: Vec::new(),
         pending_audio: Vec::new(),

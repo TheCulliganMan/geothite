@@ -4,6 +4,8 @@
 mod house_shell;
 #[path = "mesh/hull.rs"]
 mod hull;
+#[path = "mesh/live.rs"]
+mod live;
 
 #[path = "mesh/background.rs"]
 mod background;
@@ -211,7 +213,7 @@ impl TerrainMeshData {
 /// Builds a combined textured surface mesh and a separate untextured solid
 /// mesh from explicitly addressed cells and clean-room source profiles.
 pub fn build_terrain_mesh(frame: &VisualWorldFrame) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, None, false)
+    build_terrain_mesh_internal(frame, None, false, None)
 }
 
 /// Runtime variant that removes the authored ground pixels from upright tree
@@ -228,15 +230,23 @@ pub fn build_terrain_mesh_with_samples(
     frame: &VisualWorldFrame,
     samples: &TerrainImageSamples,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples), false)
+    build_terrain_mesh_internal(frame, Some(samples), false, None)
+}
+
+#[cfg(test)]
+fn build_instanced_terrain_mesh_with_samples(
+    frame: &VisualWorldFrame, samples: &TerrainImageSamples,
+) -> Result<TerrainMeshData, TerrainMeshError> {
+    build_terrain_mesh_internal(frame, Some(samples), true, None)
 }
 
 /// Runtime meshes share identical painted hulls instead of expanding every copy.
-pub(crate) fn build_instanced_terrain_mesh_with_samples(
+pub(crate) fn build_instanced_terrain_mesh_with_profiles(
     frame: &VisualWorldFrame,
     samples: &TerrainImageSamples,
+    profiles: &crate::live_profiles::Document,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples), true)
+    build_terrain_mesh_internal(frame, Some(samples), true, Some(profiles))
 }
 
 /// Rebuild only the animated flower hulls, using the retained mesh's atlas slots.
@@ -304,6 +314,7 @@ fn build_terrain_mesh_internal(
     frame: &VisualWorldFrame,
     images: Option<&TerrainImageSamples>,
     instance_hulls: bool,
+    profiles: Option<&crate::live_profiles::Document>,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     frame
         .validate()
@@ -343,6 +354,28 @@ fn build_terrain_mesh_internal(
         .into_iter()
         .map(|tile| tile.expect("complete tile grid was checked before meshing"))
         .collect();
+    let live_placements = live::resolve(&cells, width, height, frame.map_id.as_ref(), profiles.filter(|_| images.is_some()));
+    // Mask complete overridden drawings from all compiled object matchers.
+    // Texture slots stay fixed so the live mesher still uses the original art.
+    let mut live_cells: Vec<VisualTile> = if live_placements.is_empty() { Vec::new() }
+        else { cells.iter().map(|tile| (*tile).clone()).collect() };
+    let mut live_claimed = vec![false; cell_count];
+    for placement in &live_placements {
+        for index in placement.indices(width) {
+            live_claimed[index] = true;
+            // Keep genuine ground texture identities available to other props.
+            // Ownership suppresses drawing, not sampling from the immutable atlas.
+            let sampleable = matches!(
+                shape_for_source_on_map(frame.map_id.as_ref(), &cells[index].source),
+                CellShape::Flat | CellShape::Water
+            );
+            live_cells[index].source.metatile_id = u16::MAX;
+            if !sampleable {
+                live_cells[index].source.tile_index = u16::MAX;
+            }
+        }
+    }
+    let cells = if live_cells.is_empty() { cells } else { live_cells.iter().collect() };
     let mut shapes: Vec<_> = cells
         .iter()
         .map(|tile| shape_for_source_on_map(frame.map_id.as_ref(), &tile.source))
@@ -414,6 +447,7 @@ fn build_terrain_mesh_internal(
     }
 
     resolve_authored_mountain_tiers(&mut shapes, width, height);
+    taper_johto_ledge_ends(&cells, &mut shapes, width);
 
     let grid_width = frame.tile_size.x * frame.grid_size.x as f32;
     let grid_height = frame.tile_size.y * frame.grid_size.y as f32;
@@ -459,6 +493,9 @@ fn build_terrain_mesh_internal(
         .iter()
         .zip(&shapes)
         .map(|(tile, shape)| match shape {
+            _ if crate::dance_theater::shape(frame.map_id.as_ref(), &tile.source).is_some() => {
+                shape.surface_height(frame.tile_size.y)
+            }
             CellShape::RaisedTop {
                 solid: SolidKind::Bank,
                 ..
@@ -476,9 +513,18 @@ fn build_terrain_mesh_internal(
         })
         .collect();
     let mut claimed_by_building = vec![false; cell_count];
-    let mut claimed_by_tree = vec![false; cell_count];
+    let mut claimed_by_tree = live_claimed;
+    if let Some(images) = images {
+        append_johto_vertical_fences(&mut mesh, images, &cells, &geometry, &mut claimed_by_tree)?;
+    }
+    if let Some(images) = images {
+        for placement in &live_placements {
+            live::append(&mut mesh, &geometry, placement, &cells, images)?;
+        }
+    }
     let mut claimed_by_casino_stool = vec![false; cell_count];
     let mut claimed_by_house_furniture = vec![false; cell_count];
+    append_lighthouse_side_walls(&mut mesh, &cells, &geometry, &mut claimed_by_tree);
     traditional_house::append_north_wall_courses(
         &mut mesh,
         &cells,
@@ -550,15 +596,14 @@ fn build_terrain_mesh_internal(
             }
         }
 
-        for placement in complete_tree_placements(&cells, &geometry) {
+        // Trees are upright source-art cutouts, without rounded voxel hulls
+        // or extruded per-pixel sides. Preserve other grouped props separately.
+        for mut placement in complete_tree_placements(&cells, &geometry) {
+            placement.rounded = false;
+            placement.card_thickness = 0.0;
             append_grouped_tree(
-                &mut mesh,
-                images,
-                &cells,
-                &shapes,
-                &geometry,
-                placement,
-                &mut claimed_by_tree,
+                &mut mesh, images, &cells, &shapes, &geometry,
+                placement, &mut claimed_by_tree,
             )?;
         }
         for placement in park_bench_placements(&cells, &geometry) {
@@ -1581,6 +1626,97 @@ fn wise_trios_divider_placements(
     )
 }
 
+// The north/south source stripe is a plan-view fence run, not a row of
+// south-facing standees. Reuse the atlas's two authored rail courses along Z.
+fn append_johto_vertical_fences(
+    mesh: &mut TerrainMeshData,
+    images: &TerrainImageSamples,
+    cells: &[&VisualTile],
+    geometry: &GridGeometry,
+    claimed: &mut [bool],
+) -> Result<(), TerrainMeshError> {
+    for tileset in ["johto", "johto_modern"] {
+        let sample = |tile_index| cells.iter().position(|tile| {
+            tile.source.tileset_id.as_ref() == tileset && tile.source.tile_index == tile_index
+        });
+        let (Some(upper), Some(lower), Some(ground)) = (sample(0x5a), sample(0x59), sample(0x06)) else {
+            continue;
+        };
+        let courses = [upper, lower];
+        let masks = courses.map(|index| tile_rgba(images, cells[index])
+            .map(|rgba| darker_palette_mask(rgba, 3)));
+        let [upper_mask, lower_mask] = masks;
+        let masks = [upper_mask?, lower_mask?];
+        for (index, tile) in cells.iter().enumerate() {
+            if claimed[index] || tile.source.tileset_id.as_ref() != tileset
+                || tile.source.tile_index != 0x4a
+                || !matches!(tile.source.metatile_id, 0x40 | 0x42 | 0x44 | 0x46 | 0x48 | 0x4a)
+            { continue; }
+            let (x0, x1, z0, z1) = geometry.bounds(index % geometry.width, index / geometry.width);
+            let plane_x = (x0 + x1) * 0.5;
+            append_top(&mut mesh.textured, [x0, x1, z0, z1], 0.0,
+                geometry.uv(ground % geometry.width, ground / geometry.width));
+            let north_corner = matches!(tile.source.metatile_id, 0x40 | 0x42)
+                && tile.source.subtile_row == 1;
+            if north_corner {
+                // This stripe replaces the lower horizontal course at the
+                // elbow. Fill that face at the folded rail plane, not north of it.
+                let (u0, u1, v0, v1) = geometry.uv(lower % geometry.width, lower / geometry.width);
+                for py in 0..8 {
+                    for px in 0..8 {
+                        if !masks[1][py * 8 + px] { continue; }
+                        let xa = x0 + (x1-x0) * px as f32 / 8.0;
+                        let xb = x0 + (x1-x0) * (px+1) as f32 / 8.0;
+                        let ya = (7-py) as f32 * geometry.tile_height / 8.0;
+                        let yb = ya + geometry.tile_height / 8.0;
+                        append_quad(&mut mesh.textured,
+                            [[xb,ya,z1],[xb,yb,z1],[xa,yb,z1],[xa,ya,z1]], [0.0,0.0,1.0],
+                            [[lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py+1)],
+                             [lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py+1)]], TEXTURED_SHADE);
+                    }
+                }
+                claimed[index] = true;
+                continue;
+            }
+            let segments = if matches!(tile.source.metatile_id, 0x48 | 0x4a)
+                && tile.source.subtile_row == 1 { 3 } else { 1 };
+            for segment in 0..segments {
+            let segment_z = z0 + segment as f32 * geometry.tile_height;
+            for (band, source_index) in courses.iter().copied().enumerate() {
+                let (u0, u1, v0, v1) = geometry.uv(source_index % geometry.width, source_index / geometry.width);
+                for py in 0..8 {
+                    for px in 0..8 {
+                        if !masks[band][py * 8 + px] { continue; }
+                        let za = segment_z + (z1 - z0) * px as f32 / 8.0;
+                        let zb = segment_z + (z1 - z0) * (px + 1) as f32 / 8.0;
+                        let ya = (16 - band * 8 - py - 1) as f32 * geometry.tile_height / 8.0;
+                        let yb = ya + geometry.tile_height / 8.0;
+                        append_quad(&mut mesh.textured,
+                            [[plane_x, ya, za], [plane_x, yb, za], [plane_x, yb, zb], [plane_x, ya, zb]],
+                            [1.0, 0.0, 0.0],
+                            [[lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py+1)],
+                             [lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py+1)]], TEXTURED_SHADE);
+                        append_quad(&mut mesh.textured,
+                            [[plane_x, ya, zb], [plane_x, yb, zb], [plane_x, yb, za], [plane_x, ya, za]],
+                            [-1.0, 0.0, 0.0],
+                            [[lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py+1)],
+                             [lerp_pixel(u0,u1,px+1),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py)],
+                             [lerp_pixel(u0,u1,px),lerp_pixel(v0,v1,py+1)]], TEXTURED_SHADE);
+                    }
+                }
+            }
+            }
+            claimed[index] = true;
+        }
+    }
+    Ok(())
+}
+
 fn elite_four_gym_card_placements(
     map_id: &str,
     cells: &[&VisualTile],
@@ -2197,6 +2333,66 @@ fn player_room_pc_keyboard_placements(
         crate::interior::player_room_pc_keyboard_local(source)
             .map(|(column, row)| (column, row, 2, 1))
     })
+}
+
+/// Straight stone perimeter blocks face the neighboring authored walkway.
+/// Mixed window/green courses and corners retain their existing treatment.
+fn append_lighthouse_side_walls(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    geometry: &GridGeometry,
+    claimed: &mut [bool],
+) {
+    let Some(ground) = cells.iter().position(|tile| {
+        tile.source.tileset_id.as_ref() == "lighthouse"
+            && tile.source.metatile_id == 0x27 && tile.source.tile_index == 0x2e
+    }) else { return; };
+    for (index, tile) in cells.iter().enumerate() {
+        let source = &tile.source;
+        if source.tileset_id.as_ref() != "lighthouse" || source.metatile_id != 0x3e
+            || source.subtile_column != 0 || source.subtile_row != 0 { continue; }
+        let column = index % geometry.width;
+        let row = index / geometry.width;
+        if column + 4 > geometry.width || row + 4 > geometry.height { continue; }
+        let complete = (0..4).all(|y| (0..4).all(|x| {
+            let i = (row + y) * geometry.width + column + x;
+            let s = &cells[i].source;
+            !claimed[i] && s.tileset_id == source.tileset_id && s.metatile_id == 0x3e
+                && s.subtile_column as usize == x && s.subtile_row as usize == y
+        }));
+        if !complete { continue; }
+        let floor_at = |x: usize, y: usize| {
+            let s = &cells[y * geometry.width + x].source;
+            s.tileset_id.as_ref() == "lighthouse" && s.metatile_id == 0x27
+        };
+        // A horizontal floor neighbor makes this a corner, outside this pass.
+        if (row > 0 && (0..4).any(|x| floor_at(column+x, row-1)))
+            || (row+4 < geometry.height && (0..4).any(|x| floor_at(column+x, row+4))) {
+            continue;
+        }
+        let west = column > 0 && (0..4).all(|y| floor_at(column-1, row+y));
+        let east = column+4 < geometry.width && (0..4).all(|y| floor_at(column+4, row+y));
+        if !west && !east { continue; }
+        let (x0, _, z0, _) = geometry.bounds(column, row);
+        let (_, x1, _, z1) = geometry.bounds(column+3, row+3);
+        let (u0, _, v0, _) = geometry.uv(column, row);
+        let (_, u1, _, v1) = geometry.uv(column+3, row+3);
+        let height = 4.0 * geometry.tile_height;
+        for (enabled, vertices, normal) in [
+            (east, [[x1,0.0,z0],[x1,height,z0],[x1,height,z1],[x1,0.0,z1]], [1.0,0.0,0.0]),
+            (west, [[x0,0.0,z1],[x0,height,z1],[x0,height,z0],[x0,0.0,z0]], [-1.0,0.0,0.0]),
+        ] {
+            if enabled {
+                append_quad(&mut mesh.textured, vertices, normal,
+                    [[u0,v1],[u0,v0],[u1,v0],[u1,v1]], TEXTURED_SHADE);
+            }
+        }
+        for y in 0..4 { for x in 0..4 {
+            claimed[(row+y)*geometry.width+column+x] = true;
+            append_top(&mut mesh.textured, geometry.bounds(column+x,row+y).into(), 0.0,
+                geometry.uv(ground%geometry.width,ground/geometry.width));
+        }}
+    }
 }
 
 fn player_bed_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> Vec<TreePlacement> {
@@ -5244,8 +5440,19 @@ fn append_kanto_building_placements(
         // Compact Kanto houses are complete one-metatile-high drawings,
         // but are authored as left/right blocks. Their upper two tile rows
         // are roof art and their lower two rows are the facade.
-        if matches!(first, 0x02 | 0x30) && at(x + 4, y) == Some(0x03) {
-            add(x, y, 2, 1, 2);
+        if matches!(first, 0x02 | 0x30) {
+            // Wider houses insert complete $09 roof/facade spans between
+            // the same end caps (for example Cerulean's residential rows).
+            for width_blocks in 2..=6 {
+                let last_x = x + ((width_blocks - 1) * 4) as isize;
+                if at(last_x, y) == Some(0x03)
+                    && (1..width_blocks - 1)
+                        .all(|column| at(x + (column * 4) as isize, y) == Some(0x09))
+                {
+                    add(x, y, width_blocks, 1, 2);
+                    break;
+                }
+            }
         }
         if first == 0x38
             && at(x + 4, y) == Some(0x39)
@@ -5323,7 +5530,17 @@ fn append_grouped_tree_scaled_inner(
     height_scale: f32,
     replace_source_surface: bool,
 ) -> Result<(), TerrainMeshError> {
-    let ground_index = authored_surface_cell(
+    // Authored replacements own their cells; do not draw a second prop over them.
+    if replace_source_surface
+        && (0..placement.height).any(|dy| {
+            (0..placement.width).any(|dx| {
+                claimed[(placement.row + dy) * geometry.width + placement.column + dx]
+            })
+        })
+    {
+        return Ok(());
+    }
+    let Some(ground_index) = authored_surface_cell(
         cells,
         shapes,
         placement.ground_tile_index,
@@ -5334,12 +5551,12 @@ fn append_grouped_tree_scaled_inner(
             0.0
         },
         geometry.tile_height,
-    )
-    .ok_or(TerrainMeshError::MissingGroundSample {
-        column: placement.column as u32,
-        row: placement.row as u32,
-        tile_index: placement.ground_tile_index,
-    })?;
+    ) else {
+        // A clipped source window can contain a complete prop but no usable
+        // ground sample. Keep its unclaimed source drawing instead of dropping
+        // the entire terrain mesh. Never substitute unrelated ground artwork.
+        return Ok(());
+    };
     let pixel_width = placement.width * SOURCE_TILE_PIXELS;
     let pixel_height = placement.height * SOURCE_TILE_PIXELS;
     let ground = tile_rgba(images, cells[ground_index])?;
@@ -6006,7 +6223,7 @@ fn append_pixel_building(
     }
     let game_corner_box = is_goldenrod_game_corner(cells, geometry, placement);
     let kanto_plan_roof = first_building_source.tileset_id.as_ref() == "kanto"
-        && matches!(first_building_source.metatile_id, 0x0c | 0x20);
+        && matches!(first_building_source.metatile_id, 0x02 | 0x30 | 0x38 | 0x0c | 0x20);
     let battle_tower_landmark = first_building_source.tileset_id.as_ref() == "battle_tower_outside";
     // The repeated four-row city houses are compact boxes, not landmark
     // facade cards. All buildings use source-pixel faces; this distinction
@@ -7675,6 +7892,15 @@ fn append_house_furniture(
         ]
     };
 
+    let mut floor_candidates = vec![false; 16 * 16];
+    for y in 0..16 {
+        for x in 0..16 {
+            let (tile, px, py) = source_pixel(x, y)?;
+            floor_candidates[y * 16 + x] = pixels_equal(tile_rgba(images, tile)?, ground, px, py);
+        }
+    }
+    let removable_floor = boundary_connected_mask(16, 16, &floor_candidates);
+
     // The authored stool is a small round seat painted over room floor, not
     // a 16x16 solid cube. As in the reference mod, rows 5..10 form a shallow
     // lid and rows 11..15 fold once into its front/legs. Pixel-level ground
@@ -7682,8 +7908,7 @@ fn append_house_furniture(
     for depth_pixel in 0..11 {
         let source_y = 5 + depth_pixel * 6 / 11;
         for source_x in 2..14 {
-            let (tile, px, py) = source_pixel(source_x, source_y)?;
-            if pixels_equal(tile_rgba(images, tile)?, ground, px, py) {
+            if removable_floor[source_y * 16 + source_x] {
                 continue;
             }
             let [u0, u1, v0, v1] = uv_pixel(source_x, source_y);
@@ -7705,32 +7930,34 @@ fn append_house_furniture(
             );
         }
     }
-    let front_z = z0 + 14.0 * pixel_z;
+    // Preserve the authored leg silhouette on two shallow supports. A single
+    // front plane vanishes edge-on and leaves the seat unsupported from behind.
     for source_y in 11..16 {
         for source_x in 2..14 {
-            let (tile, px, py) = source_pixel(source_x, source_y)?;
-            if pixels_equal(tile_rgba(images, tile)?, ground, px, py) {
+            if removable_floor[source_y * 16 + source_x] {
                 continue;
             }
             let [u0, u1, v0, v1] = uv_pixel(source_x, source_y);
-            let wx0 = x0 + source_x as f32 * pixel_x;
-            let wx1 = wx0 + pixel_x;
-            let wy1 = (16 - source_y) as f32 * pixel_z;
-            let wy0 = wy1 - pixel_z;
-            append_quad(
-                &mut mesh.textured,
-                [
-                    [wx1, wy0, front_z],
-                    [wx1, wy1, front_z],
-                    [wx0, wy1, front_z],
-                    [wx0, wy0, front_z],
-                ],
-                [0.0, 0.0, 1.0],
-                [[u1, v1], [u1, v0], [u0, v0], [u0, v1]],
-                TEXTURED_SHADE,
-            );
+            let x0 = x0 + source_x as f32 * pixel_x;
+            let x1 = x0 + pixel_x;
+            let y1 = (16 - source_y) as f32 * pixel_z;
+            let y0 = y1 - pixel_z;
+            for (near, far) in [(3.0, 5.0), (12.0, 14.0)] {
+                let z0 = z0 + near * pixel_z;
+                let z1 = z0 + (far - near) * pixel_z;
+                for (vertices, normal) in [
+                    ([[x1,y0,z1],[x1,y1,z1],[x0,y1,z1],[x0,y0,z1]], [0.0,0.0,1.0]),
+                    ([[x0,y0,z0],[x0,y1,z0],[x1,y1,z0],[x1,y0,z0]], [0.0,0.0,-1.0]),
+                    ([[x0,y0,z1],[x0,y1,z1],[x0,y1,z0],[x0,y0,z0]], [-1.0,0.0,0.0]),
+                    ([[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]], [1.0,0.0,0.0]),
+                ] {
+                    append_quad(&mut mesh.textured, vertices, normal,
+                        [[u1,v1],[u1,v0],[u0,v0],[u0,v1]], TEXTURED_SHADE);
+                }
+            }
         }
     }
+
     Ok(())
 }
 
@@ -8420,7 +8647,7 @@ fn authored_ground_cell(
     shapes: &[CellShape],
     ground_tile_index: u16,
 ) -> Option<usize> {
-    shapes
+    let sample = shapes
         .iter()
         .enumerate()
         .filter(|(index, shape)| {
@@ -8435,7 +8662,11 @@ fn authored_ground_cell(
         })
         // Coordinate order, not DTO order, makes the authored source stable.
         .min_by_key(|(index, _)| (cells[*index].row, cells[*index].column))
-        .map(|(index, _)| index)
+        .map(|(index, _)| index);
+    if sample.is_none() && std::env::var_os("CRYSTAL_VOXEL_TRACE_GROUND").is_some() {
+        eprintln!("authored_ground_cell missing sample: {}", std::backtrace::Backtrace::force_capture());
+    }
+    sample
 }
 
 fn authored_water_cell(cells: &[&VisualTile], shapes: &[CellShape]) -> Option<usize> {
@@ -8568,7 +8799,7 @@ fn authored_relief_base_cell(
     shapes: &[CellShape],
     base_tile_index: u16,
 ) -> Option<usize> {
-    shapes
+    let sample = shapes
         .iter()
         .enumerate()
         .filter(|(index, shape)| {
@@ -8583,7 +8814,11 @@ fn authored_relief_base_cell(
             ) && cells[*index].source.tile_index == base_tile_index
         })
         .min_by_key(|(index, _)| (cells[*index].row, cells[*index].column))
-        .map(|(index, _)| index)
+        .map(|(index, _)| index);
+    if sample.is_none() && std::env::var_os("CRYSTAL_VOXEL_TRACE_GROUND").is_some() {
+        eprintln!("authored_relief_base_cell missing sample: {}", std::backtrace::Backtrace::force_capture());
+    }
+    sample
 }
 
 fn authored_surface_cell(
@@ -8594,7 +8829,7 @@ fn authored_surface_cell(
     height: f32,
     tile_height: f32,
 ) -> Option<usize> {
-    shapes
+    let sample = shapes
         .iter()
         .enumerate()
         .filter(|(index, shape)| {
@@ -8603,7 +8838,11 @@ fn authored_surface_cell(
                 && (shape.surface_height(tile_height) - height).abs() < f32::EPSILON
         })
         .min_by_key(|(index, _)| (cells[*index].row, cells[*index].column))
-        .map(|(index, _)| index)
+        .map(|(index, _)| index);
+    if sample.is_none() && std::env::var_os("CRYSTAL_VOXEL_TRACE_GROUND").is_some() {
+        eprintln!("authored_surface_cell missing sample: {}", std::backtrace::Backtrace::force_capture());
+    }
+    sample
 }
 
 fn append_masked_upright_hull(
@@ -8660,7 +8899,7 @@ fn append_masked_upright_hull(
                 ],
                 TEXTURED_SHADE,
             );
-            if solid == SolidKind::Tree {
+            if matches!(solid, SolidKind::Tree | SolidKind::CutTree) {
                 continue;
             }
             let depth = upright_depth(solid);
@@ -8684,7 +8923,7 @@ fn append_masked_upright_hull(
         }
     }
 
-    if solid == SolidKind::Tree {
+    if matches!(solid, SolidKind::Tree | SolidKind::CutTree) {
         return Ok(());
     }
 
@@ -9224,6 +9463,36 @@ fn append_ramp_sidewalls(
     }
 }
 
+/// Ease the grassy end of a south-facing ledge into adjacent flat ground.
+/// Only the terminal source column changes; neighboring ledge blocks and the
+/// authored south lip retain their complete height and source drawing.
+fn taper_johto_ledge_ends(cells: &[&VisualTile], shapes: &mut [CellShape], width: usize) {
+    for index in 0..shapes.len() {
+        let source = &cells[index].source;
+        if source.tileset_id.as_ref() != "johto"
+            || source.metatile_id != 0x57
+            || source.subtile_row >= 3
+        {
+            continue;
+        }
+        let CellShape::RaisedTop { height, solid: SolidKind::Bank } = shapes[index] else {
+            continue;
+        };
+        let column = index % width;
+        if source.subtile_column == 3
+            && column + 1 < width
+            && matches!(shapes[index + 1], CellShape::Flat)
+        {
+            shapes[index] = CellShape::RampEast { west_height: height, east_height: 0.0 };
+        } else if source.subtile_column == 0
+            && column > 0
+            && matches!(shapes[index - 1], CellShape::Flat)
+        {
+            shapes[index] = CellShape::RampEast { west_height: 0.0, east_height: height };
+        }
+    }
+}
+
 fn append_east_ramp_sidewalls(
     mesh: &mut TerrainMeshData,
     geometry: &GridGeometry,
@@ -9746,7 +10015,9 @@ fn authored_bank_face_cell(
     let repeats_above_authored_course = local_band >= band_count as usize;
     let is_doorway =
         |index: usize| matches!(cells[index].source.tile_index, 0x46 | 0x47 | 0x56 | 0x57);
-    if let Some(index) = courses.iter().find_map(|(band, _, index)| {
+    // The exposed front owns the visible course. An earlier ledge within
+    // this connected run must not replace its doorway with plain rock.
+    if let Some(index) = courses.iter().rev().find_map(|(band, _, index)| {
         (*band == wanted_from_top && (!repeats_above_authored_course || !is_doorway(*index)))
             .then_some(*index)
     }) {

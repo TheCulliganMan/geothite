@@ -7,20 +7,22 @@ use crate::profile::{CellShape, SolidKind};
 const TILESET: &str = "johto";
 const GROUND_TILE: u16 = 0x06;
 
-/// Block $49 is two rows of ground followed by the authored upper/lower
-/// courses of one horizontal fence. Fold only those two exact source rows;
-/// the surrounding ground stays at the normal map plane.
+/// Fold the exact horizontal rail courses, including corner blocks. Vertical
+/// stripes are owned by the grouped north/south rail mesher.
 pub(crate) fn johto_fence_shape(source: &VisualTileSource) -> Option<CellShape> {
-    if source.tileset_id.as_ref() != TILESET || source.metatile_id != 0x49 {
-        return None;
-    }
-    let band_from_top = match (source.subtile_row, source.tile_index) {
-        (2, 0x5a) => 0,
-        (3, 0x59) => 1,
+    if source.tileset_id.as_ref() != TILESET { return None; }
+    let first_row = match source.metatile_id {
+        0x40 | 0x41 | 0x42 => 0,
+        0x48 | 0x49 | 0x4a => 2,
+        _ => return None,
+    };
+    let band_from_top = match (source.subtile_row.checked_sub(first_row)?, source.tile_index) {
+        (0, 0x5a) => 0,
+        (1, 0x59) => 1,
         _ => return None,
     };
     Some(CellShape::FacadeBand {
-        plane_subtile_row: 4,
+        plane_subtile_row: first_row + 2,
         band_from_top,
         band_count: 2,
         ground_tile_index: GROUND_TILE,
@@ -67,6 +69,7 @@ mod tests {
             })
         );
         assert_eq!(johto_fence_shape(&source(0x49, 1, 0x06)), None);
-        assert_eq!(johto_fence_shape(&source(0x48, 2, 0x5a)), None);
+        assert_eq!(johto_fence_shape(&source(0x48, 2, 0x5a)),
+            johto_fence_shape(&source(0x49, 2, 0x5a)));
     }
 }

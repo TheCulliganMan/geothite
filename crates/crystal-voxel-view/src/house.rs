@@ -172,10 +172,10 @@ pub(crate) fn furniture_local(source: &VisualTileSource) -> Option<(u8, u8, Furn
         (0x01, 2..=3, 2..=3) => (2, 2, [[0x26, 0x27], [0x36, 0x2f]], FurnitureKind::Table),
         (0x02, 0..=1, 2..=3) => (0, 2, [[0x27, 0x29], [0x2f, 0x39]], FurnitureKind::Table),
         (0x02, 2..=3, 2..=3) => (2, 2, [[0x02, 0x03], [0x12, 0x13]], FurnitureKind::Stool),
-        (0x0c, 0..=1, 0..=1) => (0, 0, [[0x02, 0x03], [0x12, 0x13]], FurnitureKind::Stool),
+        (0x0c | 0x21 | 0x23, 0..=1, 0..=1) => (0, 0, [[0x02, 0x03], [0x12, 0x13]], FurnitureKind::Stool),
         (0x0c, 2..=3, 0..=1) => (2, 0, [[0x05, 0x2f], [0x3c, 0x3a]], FurnitureKind::Table),
         (0x0d, 0..=1, 0..=1) => (0, 0, [[0x2f, 0x15], [0x3a, 0x3b]], FurnitureKind::Table),
-        (0x0d, 2..=3, 0..=1) => (2, 0, [[0x02, 0x03], [0x12, 0x13]], FurnitureKind::Stool),
+        (0x0d | 0x22 | 0x24 | 0x2e, 2..=3, 0..=1) => (2, 0, [[0x02, 0x03], [0x12, 0x13]], FurnitureKind::Stool),
         _ => return None,
     };
     let local_column = source.subtile_column - origin_column;

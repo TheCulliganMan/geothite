@@ -144,38 +144,29 @@ remain walkable ground. Profile metadata is mod-owned presentation data; it is
 neither inferred from collision nor fed back into movement, scripts, saves,
 replay state, or checksums.
 
-## Render-at-location tester
+## Live rendering toolkit
 
-The developer-only tester boots the real compiled runtime at any gameplay tile
-and can start in either presentation. Press `F3` to toggle 2D/2.5D without
-changing location:
+Use the [documented no-Cargo toolkit](../../docs/RENDER_TOOLKIT.md) for
+interior work. It keeps one native runtime and GPU session open, captures
+paired source/2.5D images on F6 or a request file, and writes a comparison
+sheet. Set `CRYSTAL_VOXEL_PROFILES=modpacks/voxel-view/profiles.json`
+to reload object geometry from the editable profile file while the viewer runs.
+The toolkit records activation status; older binaries lack this loader. F3 toggles presentation; ordinary movement stays available.
 
 ```sh
-cargo run -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack /path/to/game.crystalpack --list-maps
+target/debug/examples/render_at_location \
+  --pack content-packs/core-modular.browser.crystalpack \
+  --map ElmsLab --x 4 --y 8 --view both --live \
+  --screenshot /tmp/elm-review.png
 
-cargo run -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack /path/to/game.crystalpack \
-  --map NewBarkTown --x 6 --y 8 --view 2.5d \
-  --screenshot /tmp/new-bark-2.5d.png
+# Repeat against that same session; no build or restart.
+touch /tmp/elm-review-2d.request
 
-# Render the identical location in both modes. This writes
-# /tmp/new-bark-2d.png and /tmp/new-bark-2.5d.png.
-cargo run -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack /path/to/game.crystalpack \
-  --map NewBarkTown --x 6 --y 8 --view both \
-  --screenshot /tmp/new-bark.png
-
-# Batch-audit selected map centers in both presentations. Each map receives
-# independently verified 2D and 2.5D screenshots in the output directory.
-cargo run -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack /path/to/game.crystalpack \
-  --maps NewBarkTown,UnionCaveB1F,CeladonCity --view both \
-  --output-dir /tmp/crystal-render-audit
-
-# Use --all-maps instead of --maps to audit every dimensioned runtime map.
+# Orbit 22.5 degrees, then capture.
+printf '1.0 0.5' > /tmp/elm-review-2d.request
 ```
+
+Inspect `/tmp/elm-review-2d.compare.png` after `review ready` is printed.
+The full-resolution pair remains beside it. The toolkit documents which
+controls are live and which Rust source changes are not loaded yet; a
+recapture must never be presented as validation of unloaded source edits.

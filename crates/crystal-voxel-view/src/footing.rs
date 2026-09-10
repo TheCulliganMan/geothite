@@ -23,18 +23,19 @@ pub fn tile_at_visual_point(frame: &VisualWorldFrame, point: Vec2) -> Option<UVe
     let top = frame.center.y + frame.viewport_size.y * 0.5;
     let relative_x = point.x - left;
     let relative_y = top - point.y;
-    if relative_x < 0.0
-        || relative_y < 0.0
-        || relative_x >= frame.viewport_size.x
-        || relative_y >= frame.viewport_size.y
+    let terrain_size = frame.tile_size * frame.grid_size.as_vec2();
+    let terrain_margin = (terrain_size - frame.viewport_size) * 0.5;
+    let grid_x = relative_x + terrain_margin.x;
+    let grid_y = relative_y + terrain_margin.y;
+    // The pitched camera sees actors beyond the classic LCD. Their feet
+    // must sample the published terrain halo too, including raised stages.
+    if grid_x < 0.0 || grid_y < 0.0
+        || grid_x >= terrain_size.x || grid_y >= terrain_size.y
     {
         return None;
     }
-
-    let terrain_size = frame.tile_size * frame.grid_size.as_vec2();
-    let terrain_margin = (terrain_size - frame.viewport_size) * 0.5;
-    let column = ((relative_x + terrain_margin.x) / frame.tile_size.x).floor() as u32;
-    let row = ((relative_y + terrain_margin.y) / frame.tile_size.y).floor() as u32;
+    let column = (grid_x / frame.tile_size.x).floor() as u32;
+    let row = (grid_y / frame.tile_size.y).floor() as u32;
     (column < frame.grid_size.x && row < frame.grid_size.y).then_some(UVec2::new(column, row))
 }
 
@@ -46,9 +47,8 @@ pub fn footing_height(frame: &VisualWorldFrame, foot: Vec2) -> Option<f32> {
     // inside the sprite footprint while rendering at the exact bottom point.
     let Some(coordinate) = tile_at_visual_point(frame, foot + Vec2::Y * FOOTING_SAMPLE_EPSILON)
     else {
-        // The classic renderer can retain a partially clipped actor whose foot
-        // lies just outside the exact 20x18 sample. Treat that seam as ordinary
-        // ground instead of disabling the whole optional renderer.
+        // An actor beyond even the published terrain halo has no sampled
+        // support. Keep the ordinary-ground fallback for that outer seam.
         return Some(0.0);
     };
     Some(

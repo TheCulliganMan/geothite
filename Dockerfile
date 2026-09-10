@@ -10,6 +10,7 @@ COPY .cargo ./.cargo
 COPY vendor ./vendor
 COPY crates ./crates
 COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
+COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
 ARG CARGO_BUILD_JOBS=2
 # Keep dependency and target caches across source edits. Run from the workspace
 # so Cargo reads its WASM target configuration.

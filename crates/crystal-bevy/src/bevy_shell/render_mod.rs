@@ -12,7 +12,7 @@ fn publish_visual_world_frame(
         (&Handle<Image>, &Transform),
         (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
     >,
-    players: Query<(&Handle<Image>, &Sprite, &Transform), With<PlayerMarker>>,
+    players: Query<(&Handle<Image>, &Sprite, &Transform, Option<&PlayerSpriteFrames>), With<PlayerMarker>>,
     multiplayer_ghosts: Query<
         (&MultiplayerGhost, &Handle<Image>, &Sprite, &Transform),
         Without<PlayerMarker>,
@@ -116,13 +116,36 @@ fn publish_visual_world_frame(
             + grass_rustles.iter().count(),
     );
     let mut player_iter = players.iter();
-    if let Some((texture, sprite, transform)) = player_iter.next() {
+    if let Some((texture, sprite, transform, _frames)) = player_iter.next() {
         // A second player sprite is an incomplete deferred scene transition,
         // not a valid immutable frame to hand to a renderer mod.
         if player_iter.next().is_some() {
             clear_published_visual_world(&mut published);
             return;
         }
+        #[cfg(feature = "voxel-view")]
+        let (texture, directional_sprite) = {
+            let Some(frames) = _frames else {
+                clear_published_visual_world(&mut published);
+                return;
+            };
+            let facing = match rendered.player_sprite_facing.unwrap_or(Direction::Down) {
+                Direction::Down => 0, Direction::Left => 1,
+                Direction::Up => 2, Direction::Right => 3,
+            };
+            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
+            let Some((standing, walking)) = frames.directional_frames.get(side) else {
+                clear_published_visual_world(&mut published);
+                return;
+            };
+            let action = frames.walking.as_ref().is_some_and(|walking| walking == texture);
+            let mut view_sprite = sprite.clone();
+            view_sprite.flip_x = action && side % 2 == 0 && runtime_shell.player_walk_mirror_stride;
+            (if action { walking } else { standing }, view_sprite)
+        };
+        #[cfg(feature = "voxel-view")]
+        let sprite = &directional_sprite;
         let Some(actor) = visual_actor(
             crystal_render_api::VisualActorId::Player,
             Arc::from("player"),
@@ -175,6 +198,34 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        #[cfg(feature = "voxel-view")]
+        let (texture, directional_sprite) = {
+            let facing = match object.world_facing {
+                Direction::Down => 0, Direction::Left => 1,
+                Direction::Up => 2, Direction::Right => 3,
+            };
+            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
+            let Some((standing, walking)) = object.directional_frames.get(side) else {
+                clear_published_visual_world(&mut published);
+                return;
+            };
+            let action = object.walking.as_ref().is_some_and(|walking| walking == texture);
+            let mut view_sprite = sprite.clone();
+            // Read the current stride, not a value retained when this entity
+            // was last reconciled: animation can advance without a map redraw.
+            let phase = object.object_identifier.as_ref().and_then(|id| {
+                (runtime_shell.object_walk_from.contains_key(id)
+                    || runtime_shell.trainer_walk_from.as_ref().is_some_and(|(walking, _)| walking == id))
+                    .then(|| runtime_shell.object_walk_phases.get(id).copied().unwrap_or(1))
+            });
+            view_sprite.flip_x = action && side % 2 == 0 && phase.map_or(
+                !runtime_shell.object_walk_stride, object_walk_uses_mirrored_action_frame,
+            );
+            (if action { walking.as_ref().unwrap_or(standing) } else { standing }, view_sprite)
+        };
+        #[cfg(feature = "voxel-view")]
+        let sprite = &directional_sprite;
         let Some(actor) = visual_actor(
             crystal_render_api::VisualActorId::Object(object_index),
             object.source_id.clone(),

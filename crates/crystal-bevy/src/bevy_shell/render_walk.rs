@@ -13,6 +13,8 @@ pub(super) struct RenderWalk {
     first_builds: Option<u64>,
     origins: std::collections::HashSet<(i32, i32)>,
     maps: std::collections::HashSet<String>,
+    player_bounds: Option<(Vec2, Vec2)>,
+    player_moved: bool,
 }
 impl RenderWalk {
     pub(super) fn settled(&self) -> bool {
@@ -49,6 +51,8 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path) -> Result<()> {
         first_builds: None,
         origins: default(),
         maps: default(),
+        player_bounds: None,
+        player_moved: false,
     })
     .add_systems(PreUpdate, drive.after(bevy::input::InputSystem));
     Ok(())
@@ -97,10 +101,24 @@ fn drive(
             times[times.len() * 95 / 100]
         );
         assert!(
-            walk.origins.len() > 1 || walk.maps.len() > 1,
-            "movement QA must actually cross a tile origin or map boundary"
+            walk.origins.len() > 1 || walk.maps.len() > 1 || walk.player_moved,
+            "movement QA requires player translation, a tile-origin change, or a map boundary"
         );
         return;
+    }
+    // Small rooms keep the grid fixed while the player walks across it.
+    // Require a full source-tile span, so facing/stride changes alone do not
+    // satisfy movement. Existing grid/map evidence covers scrolling scenes.
+    if let Some(player) = frame.actors.iter().find(|actor| {
+        actor.id == crystal_render_api::VisualActorId::Player
+    }) {
+        let point = player.center - frame.center;
+        let (low, high) = walk.player_bounds.unwrap_or((point, point));
+        let low = low.min(point);
+        let high = high.max(point);
+        let span = high - low;
+        walk.player_moved |= span.x >= frame.tile_size.x || span.y >= frame.tile_size.y;
+        walk.player_bounds = Some((low, high));
     }
     keyboard.press(walk.route[segment]);
     let dt = time.delta_seconds_f64() * 1000.0;

@@ -122,6 +122,21 @@ pub(crate) fn cave_shape(source: &VisualTileSource) -> Option<CellShape> {
         return None;
     }
 
+    // Straight boundary strips are one two-column face, not parallel ledges.
+    if (source.metatile_id == 0x08 && source.subtile_column < 2)
+        || (source.metatile_id == 0x0a && source.subtile_column >= 2)
+    {
+        let west = source.metatile_id == 0x08;
+        return Some(CellShape::LedgeBand {
+            face: if west { LedgeFace::West } else { LedgeFace::East },
+            plane_subtile: if west { 0 } else { 4 },
+            band_from_top: if west { 1 - source.subtile_column } else { source.subtile_column - 2 },
+            band_count: 2,
+            top_tile_index: 0x16,
+            height: CAVE_ROCK_HEIGHT,
+        });
+    }
+
     if let Some(shape) = barred_rock_shelf_band(source) {
         return Some(shape);
     }

@@ -4274,6 +4274,15 @@ fn update_player_facing_art_in_place(
     *texture = standing.handle.clone();
     sprite.custom_size = Some(standing.size);
     sprite.flip_x = false;
+    #[cfg(feature = "voxel-view")]
+    { retained_frames.directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
+        .into_iter().filter_map(|direction| {
+            let standing = sprite_frame_for_art(tileset_art, &runtime_shell.asset_root,
+                sprite_id, palette_id, effective_time_of_day, direction, false, images)?;
+            let walking = sprite_frame_for_art(tileset_art, &runtime_shell.asset_root,
+                sprite_id, palette_id, effective_time_of_day, direction, true, images)?;
+            Some((standing.handle, walking.handle))
+        }).collect(); }
     retained_frames.standing = standing.handle;
     retained_frames.walking = Some(walking.handle);
     retained_frames.mirror_walking = matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
@@ -5138,7 +5147,7 @@ fn render_playfield(
     } else {
         field_snapshot
     };
-    #[cfg(feature = "fullscreen-scaling")]
+    #[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
     if let Err(error) = expand_fullscreen_object_presentation(Arc::make_mut(&mut snapshot), &runtime_shell) {
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
         return;
@@ -6636,17 +6645,31 @@ fn render_playfield(
                     .map(|(_, from)| *from)
                     .or_else(|| runtime_shell.object_walk_from.get(object_id).copied())
             });
-            let destination_visible = overworld_object_in_scroll_region(view_x, view_y);
+            let destination_visible = overworld_object_in_visual_region(view_x, view_y);
             let origin_visible = walking_from
                 .and_then(|from| runtime_event_view_tile(from, start_x, start_y))
-                .is_some_and(|(x, y)| overworld_object_in_scroll_region(x, y));
+                .is_some_and(|(x, y)| overworld_object_in_visual_region(x, y));
             if !destination_visible && !origin_visible {
                 continue;
             }
 
+            // Day Care tokens refer to residents, not PNG asset names.
+            let resident = match object.sprite.as_str() {
+                "SPRITE_DAY_CARE_MON_1" => Some(&snapshot.day_care.man),
+                "SPRITE_DAY_CARE_MON_2" => Some(&snapshot.day_care.lady),
+                _ => None,
+            };
+            let resolved_object_sprite = if let Some(resident) = resident {
+                let Some(pokemon) = resident.pokemon.as_ref().filter(|_| resident.active) else {
+                    continue;
+                };
+                pokemon.species.id.as_str()
+            } else {
+                object.sprite.as_str()
+            };
             let sprite_id = resolve_visible_object_sprite_asset_id(
                 &runtime_shell.asset_root,
-                &object.sprite,
+                resolved_object_sprite,
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
@@ -6893,7 +6916,25 @@ fn render_playfield(
                         );
                     }
                 }
+                #[cfg(feature = "voxel-view")]
+                let directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
+                    .into_iter()
+                    .filter_map(|view_direction| {
+                        let standing = sprite_frame_for_art(
+                            &mut tileset_art, &runtime_shell.asset_root, &render_sprite_id,
+                            palette_id, effective_time_of_day, view_direction, false, &mut images,
+                        )?;
+                        let walking = animated.then(|| sprite_frame_for_art(
+                            &mut tileset_art, &runtime_shell.asset_root, &render_sprite_id,
+                            palette_id, effective_time_of_day, view_direction, true, &mut images,
+                        )).flatten().map(|frame| frame.handle);
+                        Some((standing.handle, walking))
+                    }).collect();
                 let next_visible = VisibleObjectSprite {
+                    #[cfg(feature = "voxel-view")]
+                    directional_frames,
+                    #[cfg(feature = "voxel-view")]
+                    world_facing: direction,
                     object_index: index,
                     object_identifier: object.object_identifier.clone(),
                     source_id: Arc::from(render_sprite_id.as_str()),
@@ -7353,6 +7394,15 @@ fn render_playfield(
         // sprite is intentionally absent; it is not an art-load failure.
     } else if let Some(standing_frame) = player_art.0 {
         let walking_frame = player_art.1;
+        #[cfg(feature = "voxel-view")]
+        let directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
+        .into_iter().filter_map(|direction| {
+            let standing = sprite_frame_for_art(&mut tileset_art, &runtime_shell.asset_root,
+                player_sprite_id, player_palette_id, effective_time_of_day, direction, false, &mut images)?;
+            let walking = sprite_frame_for_art(&mut tileset_art, &runtime_shell.asset_root,
+                player_sprite_id, player_palette_id, effective_time_of_day, direction, true, &mut images)?;
+            Some((standing.handle, walking.handle))
+        }).collect();
         let fishing_frame = if runtime_shell.visible_fishing_animation.is_some() {
             match fishing_player_frame(
                 &mut tileset_art,
@@ -7476,6 +7526,8 @@ fn render_playfield(
                 );
                 sprite.custom_size = Some(frame.size);
                 sprite.flip_x = player_flip_x;
+                #[cfg(feature = "voxel-view")]
+                { frames.directional_frames = directional_frames; }
                 frames.standing = standing_frame.handle.clone();
                 frames.walking = walking_frame.as_ref().map(|frame| frame.handle.clone());
                 frames.mirror_walking = matches!(
@@ -7503,6 +7555,8 @@ fn render_playfield(
                 },
                 PlayerMarker,
                 PlayerSpriteFrames {
+                    #[cfg(feature = "voxel-view")]
+                    directional_frames,
                     standing: standing_frame.handle.clone(),
                     walking: walking_frame.as_ref().map(|frame| frame.handle.clone()),
                     mirror_walking: matches!(

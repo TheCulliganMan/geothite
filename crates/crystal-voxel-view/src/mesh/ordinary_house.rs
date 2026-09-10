@@ -92,11 +92,25 @@ fn append_course(
             tile_index: crate::house::HOUSE_FLOOR_TILE,
         })?;
     let ground_uv = geometry.uv(ground_index % geometry.width, ground_index / geometry.width);
-    let plane_z = geometry.origin_z + (row + COURSE_HEIGHT) as f32 * geometry.tile_height;
     for local_row in 0..COURSE_HEIGHT {
-        let band_bottom = (COURSE_HEIGHT - local_row - 1) as f32 * geometry.tile_height;
-        let band_top = band_bottom + geometry.tile_height;
         for local_column in 0..width {
+            let plain_wall = (2..4).all(|r| {
+                cells[(row + r) * geometry.width + column + local_column]
+                    .source.tile_index == crate::house::HOUSE_FLOOR_TILE
+            });
+            // Wall tile00 above a fixture belongs to the same rear panel as
+            // the plain columns; only fixture art stays on the forward fold.
+            let panel_tile = local_row < 2 && matches!(
+                cells[(row + local_row) * geometry.width + column + local_column].source.tile_index,
+                0x00 | 0x24 | 0x4a | 0x34 | 0x2c
+            );
+            let wall_rows = if plain_wall || panel_tile { 2 } else { COURSE_HEIGHT };
+            if local_row >= wall_rows {
+                continue;
+            }
+            let plane_z = geometry.origin_z + (row + wall_rows) as f32 * geometry.tile_height;
+            let band_bottom = (wall_rows - local_row - 1) as f32 * geometry.tile_height;
+            let band_top = band_bottom + geometry.tile_height;
             let source_column = column + local_column;
             let source_row = row + local_row;
             let index = source_row * geometry.width + source_column;

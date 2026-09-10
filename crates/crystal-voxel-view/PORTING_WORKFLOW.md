@@ -37,7 +37,7 @@ Every object is handled with the same small loop:
 3. Find the equivalent behavior in the reference mod, when one exists.
 4. Classify the complete Crystal drawing, not isolated 8x8 cells.
 5. Recreate that behavior in a focused Rust module.
-6. Add a source-identity or mesh invariant test.
+6. Capture a fixed-angle reference and an oblique view in the live renderer.
 7. Render the same location in 2D and 2.5D and inspect both images.
 8. Keep iterating while topology, footprint, palette, or occlusion differs.
 
@@ -86,25 +86,55 @@ blocked collision value, a palette color, or the object's screen position.
 Textured vertical faces are split into native 8px bands. A source tile is not
 stretched over an arbitrary wall height.
 
-## Location renders
+## Persistent visual review
 
-Use an isolated target directory so visual work does not wait on another
-Cargo process:
+Use the existing native tester binary directly. Keep the process open for
+visual checks: neither Cargo nor a fresh game/GPU startup belongs in the
+capture loop. The tester is built with `location-tester` when its code changes;
+camera, movement, and repeated capture checks need no rebuild.
+
+From the repository root:
 
 ```sh
-cd /Users/ryanculligan/GitHub/crystal-llm/rust
-CARGO_TARGET_DIR=/tmp/crystal-render-location-target cargo run -q \
-  -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack /Users/ryanculligan/GitHub/crystal-llm/content-packs/core-modular.crystalpack \
-  --map UnionCave1F --x 10 --y 10 --view both \
-  --screenshot /tmp/union-cave-audit.png
+target/debug/examples/render_at_location \
+  --pack content-packs/core-modular.browser.crystalpack \
+  --map ElmsLab --x 4 --y 8 --view both --live \
+  --screenshot /tmp/elm-review.png
 ```
 
-`--view both` writes `*-2d.png` and `*-2.5d.png` at the exact same runtime
-location. The tester also supports `--maps <id,id,...> --output-dir <dir>` and
-`--all-maps --output-dir <dir>` for grid-style coverage renders. F3 toggles
-the normal 2D view and optional 2.5D view in the interactive tester.
+The session writes the 2D source reference and 2.5D render using the same
+runtime and GPU. It then stays open in 2.5D. Move normally and press **F6**
+to capture again. **F3** still toggles the presentation for direct inspection.
+
+An external reviewer can trigger the same running session without keyboard
+focus. Write the request file printed by the tester:
+
+```sh
+# Capture the current location and camera again.
+touch /tmp/elm-review-2d.request
+
+# Set zoom and orbit before capturing: orbit 1 = 45 degrees.
+printf '1.0 0.5' > /tmp/elm-review-2d.request
+```
+
+The request is consumed once. Empty input keeps the camera; two finite
+numbers set zoom and orbit. Invalid input leaves the session running and
+prints the error. Capture time is printed after GPU readback and image
+validation, rather than after a guessed sleep. The live comparison is
+`/tmp/elm-review-2d.compare.png`, with columns ordered **2D reference,
+previous 2.5D (when location and camera match), current 2.5D**. Full-size
+individual PNGs are retained beside it. Read the refreshed image after each
+`review ready` message. Close the window to finish the session.
+
+For a single capture, omit `--live`. `--view both` then writes
+`*-2d.png`, `*-2.5d.png`, and `*-compare.png`, plus a small HTML review page.
+Repeated one-shot captures retain a previous panel only when the pack,
+location, and hour match. Use `--maps <id,id,...> --output-dir <dir>` for
+coverage across rooms; these batch runs are separate game sessions.
+
+Start the New Bark interior review with `ElmsLab`, `PlayersHouse1F`,
+`PlayersHouse2F`, `PlayersNeighborsHouse`, and `ElmsHouse`. Inspect multiple
+positions around furnishings and the stair/door approaches in each room.
 
 Do not accept a render only because it compiled. Check at minimum:
 
@@ -117,17 +147,17 @@ Do not accept a render only because it compiled. Check at minimum:
 - viewport edges continue into the render halo rather than becoming a box;
 - palette and animated tiles still come from the live frame.
 
+For the current fast loop, use [the rendering toolkit](../../docs/RENDER_TOOLKIT.md).
+It records the current session and separates rendered evidence from pending source edits.
+
 ## Full-game coverage audit
 
 The source-coverage auditor inventories every placed metatile/subtile and
 reports its current visual class:
 
 ```sh
-cd /Users/ryanculligan/GitHub/crystal-llm/rust
-CARGO_TARGET_DIR=/tmp/crystal-render-location-target cargo run -q \
-  -p crystal-bevy --example audit_voxel_coverage \
-  --features location-tester -- \
-  --pack /Users/ryanculligan/GitHub/crystal-llm/content-packs/core-modular.crystalpack \
+target/debug/examples/audit_voxel_coverage \
+  --pack content-packs/core-modular.browser.crystalpack \
   --output /tmp/crystal-voxel-coverage.json
 ```
 
@@ -187,7 +217,7 @@ map-edge continuation.
 
 An object is done only when all of the following are true:
 
-1. Its exact source variants are covered by focused tests.
+1. Its exact source variants have been inspected in live paired renders.
 2. Its mesh uses native source bands without duplicated or stretched art.
 3. The paired 2D and 2.5D renders preserve footprint and connected topology.
 4. The player and NPCs occlude correctly at the front, back, and sides.

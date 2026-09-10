@@ -9,6 +9,7 @@ mod building_catalog;
 mod building_style;
 mod cafe;
 mod camera;
+mod live_profiles;
 mod casino;
 mod cave;
 mod celadon_gym;
@@ -75,7 +76,7 @@ use bevy::{
     asset::{AssetId, load_internal_asset},
     core_pipeline::tonemapping::{DebandDither, Tonemapping},
     pbr::{
-        CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, Material,
+        CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, FogFalloff, FogSettings, Material,
         MaterialExtension, MaterialPipeline, MaterialPipelineKey, MaterialPlugin,
     },
     prelude::*,
@@ -144,6 +145,8 @@ impl Plugin for VoxelViewPlugin {
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
         app.init_resource::<VoxelViewSettings>()
             .init_resource::<VoxelViewStatus>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .add_systems(Update, live_profiles::reload.before(sync_voxel_view))
             .init_resource::<ActorScreenHeads>()
             .init_resource::<VoxelScene>()
             .init_resource::<TerrainRevisionCache>()
@@ -154,6 +157,7 @@ impl Plugin for VoxelViewPlugin {
             .add_systems(Startup, setup_voxel_view)
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
+            .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
             .add_systems(
                 Update,
                 sync_player_silhouette_system
@@ -208,6 +212,8 @@ pub struct VoxelViewStatus {
     pub active_frames: u32,
     /// Completed or pending geometry builds; useful for movement profiling.
     pub terrain_builds: u64,
+    /// True until the current profile revision has reached the GPU scene.
+    pub profiles_pending: bool,
     pub inactive_reason: Option<String>,
 }
 
@@ -257,6 +263,7 @@ struct TerrainCacheKey {
     map_id: std::sync::Arc<str>,
     grid_origin: IVec2,
     revision: u64,
+    profiles_revision: u64,
     viewport_bits: [u32; 2],
     tile_bits: [u32; 2],
     grid_size: UVec2,
@@ -268,6 +275,7 @@ impl TerrainCacheKey {
             map_id: frame.map_id.clone(),
             grid_origin: frame.grid_origin,
             revision: frame.terrain_revision,
+            profiles_revision: 0,
             viewport_bits: [
                 frame.viewport_size.x.to_bits(),
                 frame.viewport_size.y.to_bits(),
@@ -450,6 +458,11 @@ fn setup_voxel_view(
                 ..default()
             },
             RenderLayers::layer(VOXEL_RENDER_LAYER),
+            FogSettings {
+                color: Color::NONE,
+                directional_light_color: Color::NONE,
+                ..default()
+            },
             VoxelWorldCamera,
         ))
         .id();
@@ -490,7 +503,7 @@ fn setup_voxel_view(
 #[allow(clippy::too_many_arguments)]
 fn sync_voxel_view(
     frame: Res<VisualWorldFrame>,
-    settings: Res<VoxelViewSettings>,
+    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>),
     mut status: ResMut<VoxelViewStatus>,
     mut last_failure: Local<Option<String>>,
     mut validated_frame_key: Local<Option<TerrainCacheKey>>,
@@ -519,7 +532,13 @@ fn sync_voxel_view(
         ),
     >,
 ) {
+    let (settings, profiles) = presentation;
+    status.profiles_pending = terrain_cache.key.as_ref()
+        .is_none_or(|key| key.profiles_revision != profiles.revision);
+    if status.profiles_pending { status.active_frames = 0; }
     if status.active
+        && !profiles.is_changed()
+        && !status.profiles_pending
         && !frame.is_changed()
         && !settings.is_changed()
         && terrain_builds.key.is_none()
@@ -575,6 +594,7 @@ fn sync_voxel_view(
 
     let terrain_state = match sync_terrain(
         &frame,
+        &profiles,
         &mut commands,
         &mut terrain_cache,
         &mut terrain_builds,
@@ -704,6 +724,34 @@ fn voxel_projection_needs_update(projection: &Projection, pose: VoxelCameraPose)
     }
 }
 
+fn sync_voxel_atmosphere(
+    frame: Res<VisualWorldFrame>,
+    profiles: Res<live_profiles::LiveProfiles>,
+    settings: Res<VoxelViewSettings>,
+    mut cameras: Query<&mut FogSettings, With<VoxelWorldCamera>>,
+) {
+    if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed() {
+        return;
+    }
+    let atmosphere = profiles.document.atmosphere.as_ref().filter(|atmosphere| {
+        frame.active && settings.enabled
+            && atmosphere.maps.iter().any(|map| map == frame.map_id.as_ref())
+    });
+    for mut fog in &mut cameras {
+        if let Some(atmosphere) = atmosphere {
+            let pose = settings.camera.pose(frame.viewport_size);
+            let target_distance = pose.eye.distance(pose.target);
+            fog.color = voxel_clear_color(&frame).with_alpha(atmosphere.opacity);
+            fog.falloff = FogFalloff::Linear {
+                start: target_distance + atmosphere.start_tiles * frame.tile_size.y,
+                end: target_distance + atmosphere.end_tiles * frame.tile_size.y,
+            };
+        } else {
+            fog.color = Color::NONE;
+        }
+    }
+}
+
 fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
     let tileset = frame
         .tiles
@@ -729,6 +777,7 @@ fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
 #[allow(clippy::too_many_arguments)]
 fn sync_terrain(
     frame: &VisualWorldFrame,
+    profiles: &live_profiles::LiveProfiles,
     commands: &mut Commands,
     cache: &mut TerrainRevisionCache,
     builds: &mut TerrainBuildQueue,
@@ -737,11 +786,12 @@ fn sync_terrain(
     materials: &mut Assets<VoxelMaterial>,
     terrain_entities: &mut Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>,
 ) -> Result<TerrainSyncState, TerrainSyncError> {
-    let next_key = TerrainCacheKey::from_frame(frame);
+    let mut next_key = TerrainCacheKey::from_frame(frame);
+    next_key.profiles_revision = profiles.revision;
     if builds
         .key
         .as_ref()
-        .is_some_and(|key| key.map_id != frame.map_id)
+        .is_some_and(|key| key.map_id != frame.map_id || key.profiles_revision != profiles.revision)
     {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -776,6 +826,7 @@ fn sync_terrain(
         }
     }
     if cache.key.as_ref() != Some(&next_key)
+        && cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
         && cache
             .built_frame
             .as_ref()
@@ -795,6 +846,7 @@ fn sync_terrain(
         build_frame.map_texture = images.add(atlas);
         let samples = TerrainImageSamples::capture(frame, images);
         let build_key = next_key.clone();
+        let profile_document = profiles.document.clone();
         builds.key = Some(next_key.clone());
         let build = async move {
             #[cfg(feature = "operation-trace")]
@@ -803,7 +855,7 @@ fn sync_terrain(
             // vertex/index buffer. Keep that work on the compute task too;
             // doing it when polling the completed build caused a deterministic
             // 30-45 ms main-thread hitch several seconds into 2.5D movement.
-            let terrain = mesh::build_instanced_terrain_mesh_with_samples(&build_frame, &samples)
+            let terrain = mesh::build_instanced_terrain_mesh_with_profiles(&build_frame, &samples, &profile_document)
                 .map(|mut terrain| {
                     let animated_textured_mesh =
                         std::mem::take(&mut terrain.animated_textured).into_mesh();
@@ -858,8 +910,11 @@ fn sync_terrain(
             builds.task = None;
         }
         builds.key = None;
-        if completed.key == next_key || terrain_tracking::can_reuse(&completed.frame, frame) {
+        if completed.key == next_key || (completed.key.profiles_revision == profiles.revision
+            && terrain_tracking::can_reuse(&completed.frame, frame)) {
             let terrain = completed.terrain.map_err(TerrainSyncError::Mesh)?;
+            let profile_changed = cache.key.as_ref()
+                .is_none_or(|key| key.profiles_revision != next_key.profiles_revision);
             apply_built_terrain(
                 &completed.frame,
                 next_key.clone(),
@@ -870,6 +925,9 @@ fn sync_terrain(
                 materials,
                 images,
             )?;
+            if profile_changed {
+                println!("geometry profile mesh applied: revision {}", next_key.profiles_revision);
+            }
         }
     }
 
@@ -1471,22 +1529,31 @@ fn actor_transform(
     let foot = actor_foot(actor);
     let height = resolved_footing_height(frame, foot, footing_heights)?;
     let mut position = visual_point_to_voxel(foot, height + 0.05);
-    let profile_scale = frame.tile_size.y / SOURCE_TILE_HEIGHT;
-    let camera_pull = actor_camera_pull(actor, CAMERA_PITCH_DEGREES.to_radians()) * profile_scale;
-    // A camera-facing card leans across the ground in screen space. Pull it
-    // forward by exactly the depth needed for its upper half to clear terrain
-    // at the actor's own footing height. Real trees and buildings remain much
-    // farther apart in depth and still occlude the actor normally.
-    position += (pose.eye - pose.target).normalize_or_zero() * camera_pull;
-    let mut transform = Transform::from_translation(position)
-        .with_rotation(camera::card_rotation_toward_camera(pose));
+    let rotation = if matches!(actor.id, VisualActorId::Object(_) | VisualActorId::Player) {
+        // Directional character artwork supplies the visible side. Keep the card
+        // vertical and its bottom pivot on the footing, with no camera pull.
+        let toward_eye = pose.eye - pose.target;
+        Quat::from_rotation_y(toward_eye.x.atan2(toward_eye.z))
+    } else {
+        let profile_scale = frame.tile_size.y / SOURCE_TILE_HEIGHT;
+        let camera_pull = actor_camera_pull(actor, CAMERA_PITCH_DEGREES.to_radians()) * profile_scale;
+        position += (pose.eye - pose.target).normalize_or_zero() * camera_pull;
+        camera::card_rotation_toward_camera(pose)
+    };
+    let mut transform = Transform::from_translation(position).with_rotation(rotation);
     transform.scale = Vec3::new(
         if actor.flip_x {
             -actor.size.x
         } else {
             actor.size.x
         },
-        actor.size.y,
+        if matches!(actor.id, VisualActorId::Object(_) | VisualActorId::Player) {
+            // Preserve authored front-on proportions under the fixed terrain
+            // pitch without leaning the sprite or lifting its bottom pivot.
+            actor.size.y / CAMERA_PITCH_DEGREES.to_radians().cos()
+        } else {
+            actor.size.y
+        },
         1.0,
     );
     Some(transform)
@@ -1661,6 +1728,7 @@ mod renderer_tests {
         assert_eq!(
             sync_terrain(
                 &frame,
+                &live_profiles::LiveProfiles::default(),
                 &mut commands,
                 &mut cache,
                 &mut builds,
@@ -1796,7 +1864,7 @@ mod renderer_tests {
                     mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
                     mut materials: ResMut<Assets<VoxelMaterial>>,
                     mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>| {
-                    assert_eq!(sync_terrain(&frame, &mut commands, &mut cache, &mut builds,
+                    assert_eq!(sync_terrain(&frame, &live_profiles::LiveProfiles::default(), &mut commands, &mut cache, &mut builds,
                         &mut images, &mut meshes, &mut materials, &mut entities),
                         Err(TerrainSyncError::SourceTextureUnavailable));
                 });
@@ -1904,6 +1972,7 @@ mod renderer_tests {
             map_id: Default::default(),
             grid_origin: IVec2::ZERO,
             revision: 1,
+            profiles_revision: 0,
             viewport_bits: [160.0_f32.to_bits(), 144.0_f32.to_bits()],
             tile_bits: [8.0_f32.to_bits(), 8.0_f32.to_bits()],
             grid_size: UVec2::new(20, 18),
@@ -1932,6 +2001,7 @@ mod renderer_tests {
             map_id: Default::default(),
             grid_origin: IVec2::ZERO,
             revision,
+            profiles_revision: 0,
             viewport_bits: [160.0_f32.to_bits(), 144.0_f32.to_bits()],
             tile_bits: [8.0_f32.to_bits(), 8.0_f32.to_bits()],
             grid_size: UVec2::new(84, 82),

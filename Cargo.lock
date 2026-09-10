@@ -1713,6 +1713,8 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "crystal-render-api",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

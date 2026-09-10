@@ -1,11 +1,9 @@
 use std::{env, path::PathBuf, process::Command};
 
 use anyhow::{Context, Result, bail};
-use crystal_runtime::CrystalRuntime;
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
-use crystal_bevy::{
-    BevyShellConfig, BevyShellStart,
-};
+use crystal_bevy::{BevyShellConfig, BevyShellStart};
+use crystal_runtime::CrystalRuntime;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum ViewMode {
@@ -47,6 +45,7 @@ struct Args {
     walk: Option<String>,
     output_dir: Option<PathBuf>,
     hour: u8,
+    live: bool,
 }
 
 fn main() -> Result<()> {
@@ -61,8 +60,22 @@ fn main() -> Result<()> {
     {
         bail!("--walk requires a single map, --view 2.5d and --screenshot");
     }
-    if args.view == ViewMode::Both && !args.all_maps && args.maps.is_empty() {
-        return render_both(&args);
+    if args.live
+        && (args.view != ViewMode::Both
+            || args.screenshot.is_none()
+            || args.all_maps
+            || !args.maps.is_empty()
+            || args.walk.is_some())
+    {
+        bail!("--live requires one map, --view both and --screenshot, without --walk");
+    }
+    let started = std::time::Instant::now();
+    if args.view == ViewMode::Both
+        && args.screenshot.is_none()
+        && !args.all_maps
+        && args.maps.is_empty()
+    {
+        bail!("--screenshot <prefix.png> is required for --view both");
     }
     let pack_path = args
         .pack
@@ -95,6 +108,7 @@ fn main() -> Result<()> {
 
     let map = args
         .map
+        .clone()
         .context("--map is required unless --list-maps is used")?;
     let (width, height) = runtime
         .data()
@@ -116,6 +130,35 @@ fn main() -> Result<()> {
     );
     println!("press F3 to toggle faithful 2D / optional 2.5D at the same location");
 
+    let pair = args.view == ViewMode::Both;
+    let first = args.screenshot.as_ref().map(|path| {
+        if pair {
+            suffixed_output(path, "2d")
+        } else {
+            path.clone()
+        }
+    });
+    let second = args
+        .screenshot
+        .as_ref()
+        .filter(|_| pair)
+        .map(|path| suffixed_output(path, "2.5d"));
+    let identity = format!(
+        "{}|{:?}|{map}|{tile_x}|{tile_y}|{}",
+        pack_path.display(),
+        std::fs::metadata(&pack_path)?.modified()?,
+        args.hour
+    );
+    let previous = second
+        .as_ref()
+        .filter(|path| {
+            std::fs::read_to_string(path.with_extension("identity"))
+                .ok()
+                .as_deref()
+                == Some(&identity)
+        })
+        .and_then(|path| image::open(path).ok());
+    println!("runtime ready in {:.2}s", started.elapsed().as_secs_f64());
     crystal_bevy::run_bevy_shell(
         asset_root,
         runtime.clone(),
@@ -132,12 +175,24 @@ fn main() -> Result<()> {
                 "Crystal Render Tester — {map} ({tile_x}, {tile_y}) — {} — F3 toggles",
                 args.view.label()
             )),
-            render_test_screenshot: args.screenshot,
+            render_test_screenshot: first.clone(),
+            render_test_second_screenshot: second.clone(),
+            render_test_live: args.live,
             render_test_walk: args.walk,
             render_test_hour: Some(args.hour),
+            render_test_party: true,
             ..Default::default()
         },
-    )
+    )?;
+    if let (Some(first), Some(second)) = (first, second) {
+        write_comparison(&first, &second, previous, args.screenshot.as_ref().unwrap())?;
+        std::fs::write(second.with_extension("identity"), identity)?;
+    }
+    println!(
+        "render loop finished in {:.2}s",
+        started.elapsed().as_secs_f64()
+    );
+    Ok(())
 }
 
 fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
@@ -233,45 +288,53 @@ fn safe_file_stem(map: &str) -> String {
         .collect()
 }
 
-fn render_both(args: &Args) -> Result<()> {
-    let map = args
-        .map
-        .as_deref()
-        .context("--map is required for --view both")?;
-    let output = args
-        .screenshot
-        .as_ref()
-        .context("--screenshot <prefix.png> is required for --view both")?;
-    let executable = env::current_exe().context("resolve render tester executable")?;
-
-    for (view, suffix) in [("2d", "2d"), ("2.5d", "2.5d")] {
-        let output = suffixed_output(output, suffix);
-        let mut command = Command::new(&executable);
-        command
-            .arg("--pack")
-            .arg(&args.pack)
-            .arg("--map")
-            .arg(map)
-            .arg("--view")
-            .arg(view)
-            .arg("--hour")
-            .arg(args.hour.to_string())
-            .arg("--screenshot")
-            .arg(&output);
-        if let Some(x) = args.tile_x {
-            command.arg("--x").arg(x.to_string());
-        }
-        if let Some(y) = args.tile_y {
-            command.arg("--y").arg(y.to_string());
-        }
-        let status = command
-            .status()
-            .with_context(|| format!("launch {view} render for {map}"))?;
-        if !status.success() {
-            bail!("{view} render for {map} exited with {status}");
-        }
-        println!("wrote {}", output.display());
+// One inspection surface: source reference, previous iteration (if available),
+// current render. Nearest sampling preserves the pixel-art edges when shrinking.
+fn write_comparison(
+    first: &std::path::Path,
+    second: &std::path::Path,
+    previous: Option<image::DynamicImage>,
+    prefix: &std::path::Path,
+) -> Result<()> {
+    let mut panels = vec![image::open(first)?];
+    let has_previous = previous.is_some();
+    panels.extend(previous);
+    panels.push(image::open(second)?);
+    let width = 640;
+    let height = 576;
+    let mut sheet = image::RgbImage::new(width * panels.len() as u32, height);
+    for (index, panel) in panels.iter().enumerate() {
+        let panel = panel
+            .resize_exact(width, height, image::imageops::FilterType::Nearest)
+            .to_rgb8();
+        image::imageops::replace(&mut sheet, &panel, index as i64 * i64::from(width), 0);
     }
+    let output = suffixed_output(prefix, "compare").with_extension("png");
+    sheet.save(&output)?;
+    let labels = if has_previous {
+        "2D reference · Previous 2.5D · Current 2.5D"
+    } else {
+        "2D reference · Current 2.5D"
+    };
+    let filename = output
+        .file_name()
+        .unwrap()
+        .to_string_lossy()
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('\"', "&quot;");
+    std::fs::write(
+        output.with_extension("html"),
+        format!(
+            "<!doctype html><meta charset=\"utf-8\"><title>Render comparison</title><style>body{{margin:24px;background:#141b19;color:#e7eee8;font:16px system-ui}}img{{max-width:100%;image-rendering:pixelated}}p{{color:#aebeb4}}</style><h2>{labels}</h2><p>Left to right. Open the PNG at full size to inspect pixel edges. Rerun the same command after each Rust edit, then reload this page.</p><img src=\"{filename}\" alt=\"{labels}\">"
+        ),
+    )?;
+    println!(
+        "review {} — left to right: 2D reference, {}current 2.5D",
+        output.display(),
+        if has_previous { "previous 2.5D, " } else { "" }
+    );
     Ok(())
 }
 
@@ -324,6 +387,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut walk = None;
     let mut output_dir = None;
     let mut hour = 12;
+    let mut live = false;
     let mut values = values.into_iter();
     while let Some(flag) = values.next() {
         match flag.as_str() {
@@ -336,6 +400,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
                     .map(str::to_owned),
             ),
             "--all-maps" => all_maps = true,
+            "--live" => live = true,
             "--x" => tile_x = Some(next_value(&mut values, "--x")?.parse::<i16>()?),
             "--y" => tile_y = Some(next_value(&mut values, "--y")?.parse::<i16>()?),
             "--view" => view = ViewMode::parse(&next_value(&mut values, "--view")?)?,
@@ -371,6 +436,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         walk,
         output_dir,
         hour,
+        live,
     })
 }
 
@@ -391,7 +457,7 @@ fn print_usage() {
     println!(
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
-         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--walk RDLU] | \
+         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] | \
          (--maps <id,id,...> | --all-maps) --output-dir <directory> \
          [--view 2d|2.5d|both] [--hour <0..23>]]"#
     );
