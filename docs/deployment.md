@@ -4,7 +4,8 @@
 
 Use Docker Engine with BuildKit and the Docker Compose plugin. Run commands
 from the repository root. The Dockerfile includes the Rust and WASM toolchains;
-no host Rust installation or sibling repository is required. The initial build
+no host Rust installation is required for the Docker build. Supply the browser
+pack first using [Game content setup](game-content.md). The initial build
 compiles the game and takes substantially longer than a cached rebuild.
 
 ## Start the server
@@ -31,8 +32,8 @@ Open `http://localhost:3003` for local play. Remote browser play requires HTTPS
 for the per-player Web Lock. The browser obtains its identity automatically
 from `POST /v1/session`; no manually issued token or account is required.
 
-The image contains the server, WASM client, browser assets, and canonical
-exported browser pack. The embedded modpack JSON is included in the repository.
+The image contains the server, WASM client, browser assets, and your locally supplied
+browser pack. The repository does not distribute the game pack. The embedded modpack JSON is included in the repository.
 Generated pack data should be regenerated through the canonical exporter when
 content changes, not edited by hand.
 

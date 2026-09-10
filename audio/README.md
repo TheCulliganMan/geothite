@@ -1,8 +1,9 @@
 # Native Crystal audio
 
 Audio synthesis and export use `crystal-audio` in this repository. The Rust
-exporter reads the programs already embedded in the existing bundled content
-pack. No separate disassembly checkout, extracted command catalog, TypeScript,
+exporter reads the programs already embedded in the user-supplied local content
+pack (see [Game content setup](../docs/game-content.md)). Once that pack is
+available, no separate disassembly checkout, extracted command catalog, TypeScript,
 Node.js, or JavaScript synthesizer is required. The wave and drum tables were
 moved from the previously bundled website runtime into the Rust renderer.
 

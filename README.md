@@ -28,6 +28,13 @@ git clone https://github.com/TheCulliganMan/geothite.git
 cd geothite
 ```
 
+Game content is supplied separately; this repository does not include a game
+pack or ROM. Obtain the disassembly from
+[pret/pokecrystal](https://github.com/pret/pokecrystal), follow its assembly
+instructions, and prepare a compatible Geothite pack as described in
+[Game content setup](docs/game-content.md). Place the browser pack at
+`content-packs/core-modular.browser.crystalpack` before building Docker.
+
 Create a signing secret once for a new installation:
 
 ```sh
@@ -43,7 +50,8 @@ docker compose -f docker-compose.production.yml up -d --build
 
 Open [localhost:3003](http://localhost:3003). The first build compiles Rust and
 WebAssembly dependencies and can take several minutes. Docker includes the
-required toolchains and game pack; a separate Rust installation is unnecessary.
+required toolchains and copies your locally supplied game pack into the image;
+a separate Rust installation is unnecessary for the Docker build.
 
 Keep `.env` across updates. For remote access, put the server behind HTTPS.
 See the [deployment guide](docs/deployment.md) for configuration, reverse
@@ -144,8 +152,8 @@ npm run test:browser
 The production Dockerfile builds the server and WASM client from the same
 revision. Keep protocol changes coordinated across both. Generated game packs
 should be regenerated using the canonical exporter, not edited manually.
-Audio sources and their Rust exporter are fully contained in this repository;
-see [Native Crystal audio](audio/README.md) for export and regression checks.
+Audio programs come from your separately supplied pack; the Rust exporter
+is in this repository. See [Native Crystal audio](audio/README.md) for export and regression checks.
 No TypeScript or JavaScript build tool is required to synthesize or export audio.
 
 ## Contributing

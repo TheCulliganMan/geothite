@@ -10,3 +10,12 @@
 
 # Browser test dependencies.
 node_modules
+
+# User-supplied game content and local disassembly/build exports.
+/content-packs/
+*.crystalpack
+*.crystalpack.*
+*.gb
+*.gbc
+/vendor/pokecrystal/
+/apps/web/assets/

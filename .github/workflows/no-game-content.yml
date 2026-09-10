@@ -1,0 +1,17 @@
+name: No bundled game content
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject tracked packs, ROMs, and external source assets
+        shell: bash
+        run: |
+          files=$(git ls-files -- 'content-packs/**' '*.crystalpack' '*.crystalpack.*' '*.gb' '*.gbc' 'vendor/pokecrystal/**' 'apps/web/assets/**')
+          if [ -n "$files" ]; then
+            printf 'Game content must remain external:\n%s\n' "$files"
+            exit 1
+          fi
