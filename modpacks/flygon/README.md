@@ -135,6 +135,9 @@ Pokédex additions, level high-water marks, all 16 badges and Hall of Fame.
 Elm/Mr. Pokémon dialogue and quest handoffs use the same actual script observation
 as later Johto, Kanto and Red events. New pages require a real talked-to object.
 There is no map ranking, coordinate target, distance reward or Route 30 stop.
+First visits to any town, route or interior earn 12 cue/PAM pairings, twice the
+normal six. `new_place_pairings` controls this stronger reward. Visited places
+persist in the brain ledger; revisits, door loops and loading a save do not pay.
 
 The teacher is an engineered privileged game-state adapter, not fly perception.
 It evaluates consequences only; it never supplies a correct button or changes

@@ -88,6 +88,7 @@
     "exploration": 0.1,
     "inverse_temperature": 6.0,
     "frames": 16,
-    "teacher_enabled": true
+    "teacher_enabled": true,
+    "new_place_pairings": 12
   }
 }

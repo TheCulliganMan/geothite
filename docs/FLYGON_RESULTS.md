@@ -367,3 +367,13 @@ Headless Chromium on this host lacked WebGL; use the documented headed review.
 Evidence: `target/flygon-evidence/story-release/` (ignored, not shipped). The existing
 86 browser regression checks passed. These validations do not establish autonomous
 full-story completion or reward-off story performance.
+
+### Strong first-visit rewards
+
+First visits to towns, routes and interiors now receive 12 cue/PAM pairings,
+twice the ordinary six, without introducing route ranks or distance shaping.
+The visited-place ledger persists and absorbs locations from older checkpoints.
+Nine Rust checks pass, including first visits across both regions, interiors,
+repeat visits and restore baselines. The full-graph assay confirms 12 conditioning
+pairings for a new place and zero for a repeated place; all ten causal/adapter
+checks pass. These are controlled checks, not claimed autonomous exploration.

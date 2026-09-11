@@ -25,6 +25,15 @@ fn strings(v: &Value, path: &str) -> Vec<String> {
 }
 fn milestones(v: &Value) -> BTreeSet<String> {
     let mut marks = BTreeSet::new();
+    if v.pointer("/status/screen").and_then(Value::as_str) == Some("overworld") {
+        if let Some(map) = v
+            .pointer("/map_info/name")
+            .and_then(Value::as_str)
+            .filter(|m| !m.is_empty())
+        {
+            marks.insert(format!("place:{map}"));
+        }
+    }
     for flag in strings(v, "/reward_state/event_flags") {
         // Completion markers only. Object visibility and temporary script flags
         // are not achievements; re-toggling any marker never pays twice.
@@ -133,6 +142,15 @@ fn milestones(v: &Value) -> BTreeSet<String> {
     marks
 }
 impl StoryLedger {
+    /// Preserve places already visited by checkpoints from earlier teachers.
+    pub fn baseline_places<'a>(&mut self, places: impl Iterator<Item = &'a String>) {
+        self.seen.extend(
+            places
+                .filter(|p| !p.is_empty())
+                .map(|p| format!("place:{p}")),
+        );
+    }
+
     pub fn feedback(&mut self, before: &Value, after: &Value) -> (Vec<String>, Vec<String>) {
         // Baseline every action, including the first after loading a save or
         // handing control back. Human-earned progress is never credited to a cue.
@@ -259,7 +277,7 @@ mod tests {
     use super::*;
     use serde_json::json;
     fn observation() -> Value {
-        json!({"status":{"party":[],"badges":{"johto":vec![false;8],"kanto":vec![false;8]}},
+        json!({"status":{"screen":"overworld","party":[],"badges":{"johto":vec![false;8],"kanto":vec![false;8]}},
             "map_info":{"name":"ElmsLab"},"observe":{"visible_dialogue":""},
             "reward_state":{"version":1,"event_flags":[],"key_items":[],"machines":[],"caught_species":[],"battle":null}})
     }
@@ -427,11 +445,39 @@ mod tests {
         );
     }
     #[test]
+    fn new_places_pay_once_including_interiors_and_survive_restore() {
+        let mut ledger = StoryLedger::default();
+        let mut before = observation();
+        for map in [
+            "NewBarkTown",
+            "Route29",
+            "CherrygroveCity",
+            "CherrygrovePokecenter1F",
+            "PewterCity",
+            "MtSilverRoom3",
+        ] {
+            let mut after = before.clone();
+            after["map_info"]["name"] = json!(map);
+            assert_eq!(
+                ledger.feedback(&before, &after).0,
+                vec![format!("place:{map}")]
+            );
+            let serialized = serde_json::to_string(&ledger).unwrap();
+            ledger = serde_json::from_str(&serialized).unwrap();
+            assert!(ledger.feedback(&before, &after).0.is_empty());
+            assert!(StoryLedger::default().feedback(&after, &after).0.is_empty());
+            before = after;
+        }
+        let mut revisit = before.clone();
+        revisit["map_info"]["name"] = json!("ElmsLab");
+        assert!(ledger.feedback(&before, &revisit).0.is_empty());
+    }
+    #[test]
     fn walking_menu_toggling_and_repeat_dialogue_do_not_pay() {
         let mut ledger = StoryLedger::default();
         let before = observation();
         let mut after = before.clone();
-        after["map_info"]["name"] = json!("Route30");
+        after["map_info"]["player"] = json!({"x":4,"y":5});
         after["observe"]["menus"] = json!([{"kind":"party"}]);
         assert!(ledger.feedback(&before, &after).0.is_empty());
         after["reward_state"]["last_talked_object"] = json!("ElmsLab_Elm");

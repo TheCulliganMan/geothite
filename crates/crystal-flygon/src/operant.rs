@@ -112,6 +112,7 @@ pub struct OperantConfig {
     pub cue_size: usize,
     pub tonic_mv: f32,
     pub pairings: u32,
+    pub new_place_pairings: u32,
     pub exploration: f64,
     pub inverse_temperature: f64,
     pub frames: u32,
@@ -123,6 +124,7 @@ impl Default for OperantConfig {
             cue_size: 8,
             tonic_mv: 6.9,
             pairings: 6,
+            new_place_pairings: 12,
             exploration: 0.1,
             inverse_temperature: 6.0,
             frames: 16,
@@ -134,6 +136,7 @@ impl OperantConfig {
     pub fn valid(&self) -> bool {
         (1..=128).contains(&self.cue_size)
             && (1..=12).contains(&self.pairings)
+            && (self.pairings..=24).contains(&self.new_place_pairings)
             && self.tonic_mv.is_finite()
             && (0.0..=20.0).contains(&self.tonic_mv)
             && self.exploration.is_finite()
@@ -359,15 +362,29 @@ impl Brain {
         let before = &pending.before;
         let before_map = map_of(before);
         let after_map = map_of(&after);
-        self.operant_state.locations.insert(after_map.into());
+        self.operant_state
+            .story
+            .baseline_places(self.operant_state.locations.iter());
         let (rewards, aversions) = self.operant_state.story.feedback(before, &after);
+        if after
+            .pointer("/status/screen")
+            .and_then(serde_json::Value::as_str)
+            == Some("overworld")
+        {
+            self.operant_state.locations.insert(after_map.into());
+        }
         let reason = (!rewards.is_empty()).then(|| rewards.join("; "));
         let aversion = (!aversions.is_empty()).then(|| aversions.join("; "));
         let goal = false;
         let enabled = c.teacher_enabled && self.config.rewards.enabled;
+        let pairings = if rewards.iter().any(|event| event.starts_with("place:")) {
+            c.new_place_pairings
+        } else {
+            c.pairings
+        };
         let mut training = None;
         if (reason.is_some() || aversion.is_some()) && enabled {
-            for _ in 0..c.pairings {
+            for _ in 0..pairings {
                 let json = if aversion.is_some() {
                     self.action_memory_punish(
                         &pending.context,
@@ -391,7 +408,7 @@ impl Brain {
             }
             self.operant_state.rewarded += 1;
         }
-        let event = serde_json::json!({"decision":self.operant_state.decisions,"context":pending.context,"button":pending.button,"pre_learning_response":pending.score,"pre_mbon_spikes":pending.spikes,"before_map":before_map,"after_map":after_map,"teacher_id":"story-events-v1","reward":reason,"aversion":aversion,"enabled":enabled,"learning":self.config.learning,"goal_reached":goal});
+        let event = serde_json::json!({"decision":self.operant_state.decisions,"context":pending.context,"button":pending.button,"pre_learning_response":pending.score,"pre_mbon_spikes":pending.spikes,"before_map":before_map,"after_map":after_map,"teacher_id":"story-events-v1","conditioning_pairings":if training.is_some(){pairings}else{0},"reward":reason,"aversion":aversion,"enabled":enabled,"learning":self.config.learning,"goal_reached":goal});
         if self.operant_state.recent.len() >= 64 {
             self.operant_state.recent.remove(0);
         }
