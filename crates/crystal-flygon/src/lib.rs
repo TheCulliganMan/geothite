@@ -6,6 +6,7 @@ mod checkpoint;
 mod conditioning;
 mod interface;
 mod operant;
+mod story;
 mod view;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

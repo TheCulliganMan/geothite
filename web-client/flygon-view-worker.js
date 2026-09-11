@@ -16,6 +16,7 @@ self.onmessage = async ({ data }) => {
       result = { updated: true };
     } else if (kind === "render") {
       const started = performance.now();
+      view.animate(data.activityAge, data.motion);
       const pixels = view.render(
         data.width,
         data.height,

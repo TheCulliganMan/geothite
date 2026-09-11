@@ -28,7 +28,7 @@ try {
   });
   page.setDefaultTimeout(30000);
   await page.goto(
-    process.env.FLYGON_URL || "http://127.0.0.1:33008/flygon.html",
+    process.env.FLYGON_URL || "http://127.0.0.1:33008/flygon",
   );
   if ((await page.title()) !== "Flygon")
     throw Error("Unexpected release page or obsolete tagline");

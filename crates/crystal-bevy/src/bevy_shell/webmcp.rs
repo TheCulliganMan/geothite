@@ -241,6 +241,28 @@ fn webmcp_observation(
     Ok(serde_json::json!({
         "frame": runtime.lcd_animation_frame,
         "status": {"screen": screen, "player_name": snapshot.trainer.player_name, "money": snapshot.trainer.money, "badges": snapshot.progression.badges, "party": snapshot.party.slots.iter().map(|slot| { let p = &slot.pokemon; serde_json::json!({"slot": slot.index, "nickname": p.nickname, "level": p.level, "hp": p.hp, "max_hp": p.max_hp, "status": p.status, "item": p.item, "moves": p.moves, "is_egg": p.is_egg}) }).collect::<Vec<_>>()},
+        "reward_state": {
+            "version": 1,
+            "field_actions": runtime.flygon_field_actions,
+            "scenes": runtime.shell.session().state().scenes.map_scenes,
+            "battle_result": runtime.shell.session().state().battle_result,
+            "movement_mode": format!("{:?}", snapshot.overworld.mode),
+            "event_flags": snapshot.progression.active_event_flags,
+            "engine_flags": snapshot.progression.active_engine_flags,
+            "caught_species": snapshot.progression.pokedex_caught_species,
+            "hall_of_fame": snapshot.progression.hall_of_fame.count,
+            "last_talked_object": snapshot.script_events.last_talked_object,
+            "key_items": snapshot.bag.key_items.iter().filter(|i| i.quantity > 0).map(|i| &i.item_id).collect::<Vec<_>>(),
+            "machines": snapshot.bag.tm_hm.iter().filter(|i| i.quantity > 0).map(|i| &i.item_id).collect::<Vec<_>>(),
+            "battle": snapshot.battle.as_ref().map(|b| serde_json::json!({
+                "enemy_party": b.enemy_party.iter().map(|p| serde_json::json!({"hp":p.hp,"max_hp":p.max_hp})).collect::<Vec<_>>(),
+                "active_enemy": b.active_enemy_party_index,
+                "enemy_hp": b.enemy_pokemon.hp,
+                "rewarded_enemies": b.rewarded_enemy_party_indices,
+                "player_turns": b.player_turns_taken,
+                "enemy_turns": b.enemy_turns_taken
+            }))
+        },
         "observe": {"text": text, "visible_dialogue": visible_field_dialog_text(&snapshot, runtime), "menus": menus, "battle_message": runtime.battle_messages.front(), "battle": format_battle_overlay(&snapshot, runtime)},
         "map_info": {"name": snapshot.overworld.map_name, "player": {"x": snapshot.overworld.tile.x, "y": snapshot.overworld.tile.y, "facing": format!("{:?}", snapshot.overworld.facing)}, "dimensions": runtime.runtime.data().saved_map_tile_bounds(&snapshot.overworld.map_name), "objects": objects, "players": players, "terrain": {"origin_x": snapshot.overworld.tile.x.saturating_sub(6), "origin_y": snapshot.overworld.tile.y.saturating_sub(6), "rows": terrain, "note": "Terrain classes describe the current map. Directional permissions, objects, movement mode and game rules still decide whether a move succeeds."}},
         "flow_state": {"animating": visible_noninteractive_field_animation_owns_input(runtime) || visible_battle_command_animation_active(runtime) || runtime.player_walk_frame_ticks > 0, "buttons": ["up", "down", "left", "right", "a", "b", "start", "select"]},

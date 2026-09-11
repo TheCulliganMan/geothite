@@ -234,6 +234,7 @@ p {
   margin-top: 10px;
 }
 .brain-toolbar {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;

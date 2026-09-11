@@ -22,12 +22,15 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
         --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-audio --lib \
         --features browser-synth --target wasm32-unknown-unknown \
-    && mkdir -p /out/web \
+    && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
+    && mkdir -p /out/web/flygon \
     && cp target/release/crystal-web-server /out/crystal-web-server \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
         target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-audio \
         target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web/flygon \
+        target/wasm32-unknown-unknown/web-release/crystal_flygon.wasm \
     && gzip -9 -k /out/web/crystal-audio_bg.wasm \
     && gzip -9 -k /out/web/crystal-bevy_bg.wasm
 
@@ -35,11 +38,17 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
 COPY web-client /source/web-client
 COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
 # Supply this ignored file locally; see docs/game-content.md.
-COPY content-packs/core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
+COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
+COPY modpacks/flygon /source/flygon-config
 RUN cp /source/web-client/save-management.js /source/web-client/save-management.css /out/web/ \
     && cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
     && cp /source/web-client/player-customization.js /source/web-client/player-customization.css /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack \
+    && cp /source/web-client/flygon* /out/web/ \
+    && for source in /source/flygon-config/*.json; do cp "$source" "/out/web/flygon-$(basename "$source")"; done \
+    && cp /source/flygon-config/ATTRIBUTION.md /out/web/FLYGON-ATTRIBUTION.md \
+    && cp /source/flygon-config/README.md /out/web/FLYGON.md \
+    && printf '{"local_clock":false,"live_view":false}\n' > /out/web/flygon-dev.json \
     && sh /source/version-browser-bundle.sh /out/web
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS runtime

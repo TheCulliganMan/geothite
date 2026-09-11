@@ -38,7 +38,7 @@ $("mode").onchange = () => {
     return;
   }
   location.href =
-    "./flygon.html" +
+    "/flygon" +
     {
       reference: "?reference=1",
       fast: "?fast=1",
@@ -212,9 +212,11 @@ function showCircuits(t) {
     ` · Scheduled current: PAM ${((t.reward_ticks || 0) * (config?.dt_ms || 0)).toFixed(0)} ms / PPL ${((t.pulse_ticks || 0) * (config?.dt_ms || 0)).toFixed(0)} ms remaining`;
 }
 
+let controlEpoch = 0;
 async function step() {
   if (busy || !loaded) return;
   busy = true;
+  const epoch = controlEpoch;
   const loopStart = performance.now();
   try {
     const game = bridge();
@@ -242,6 +244,7 @@ async function step() {
       observation,
       freezeLearning: stale,
     });
+    if (epoch !== controlEpoch) return;
     showMetrics(r);
     $("speed").textContent = config.operant
       ? `${r.wall_ms.toFixed(0)} ms candidate probes · ${(r.wasm_memory_bytes / 1048576).toFixed(0)} MiB neural WASM memory`
@@ -292,13 +295,14 @@ async function step() {
       } catch (e) {
         sensorFailure(e, r.action.button);
       }
+      if (epoch !== controlEpoch) return;
       if (outcome && !stale) {
         const reward = await command("outcome", {
           observation: outcome,
           button: r.action.button || "",
         });
         $("story-state").textContent =
-          `Story locations: ${reward.story?.milestones?.join(" · ") || "none yet"}${reward.story?.target ? " · Incentive: " + reward.story.target : ""}${reward.story?.closest_distance != null ? " · observed character " + reward.story.closest_distance + " tiles away" : ""}`;
+          `Story progress: ${reward.story?.milestones?.length || 0} recorded milestones${reward.events.length ? " · " + reward.events.slice(-3).join(" · ") : ""}`;
         if (reward.training)
           showMetrics({
             ...reward.training.telemetry,
@@ -372,8 +376,7 @@ $("load").onclick = async () => {
     $("action").textContent = "No neural action";
     $("readouts").textContent = "No activity yet";
     $("inspection").textContent = "";
-    $("story-state").textContent =
-      "Story incentives: Mom → Elm → Mr. Pokémon. No locations visited yet.";
+    $("story-state").textContent = "Story progress: waiting for gameplay.";
     $("lab-result").textContent =
       "Naive brain; probes freeze learning and apply no reward.";
     $("load").disabled = false;
@@ -410,7 +413,12 @@ $("run").onclick = (event) => {
   running = !running;
   $("run").textContent = running ? "Pause" : "Run brain";
   $("phase").textContent = running ? "RUNNING" : "PAUSED";
-  if (running) step();
+  if (running) {
+    $("play").checked = !laboratory;
+    lastObservation = null;
+    sensorFailures = 0;
+    step();
+  }
 };
 $("step").onclick = () => step();
 $("reward").onclick = () =>
@@ -531,7 +539,7 @@ $("restore-brain").onchange = async () => {
     showMetrics(restored);
     if (restored.story)
       $("story-state").textContent =
-        `Story locations: ${restored.story.join(" · ")} · Restored brain; game state unchanged.`;
+        `Story progress: ${restored.story.length} recorded milestones · Restored brain; game state unchanged.`;
     await render();
     log("Brain checkpoint restored; game state was not changed.");
   } catch (e) {
@@ -587,6 +595,7 @@ $("game").addEventListener("load", () => {
   const frame = $("game").contentWindow;
   const takeover = (event) => {
     if (event.isTrusted && ($("play").checked || running)) {
+      controlEpoch++;
       running = false;
       $("play").checked = false;
       $("run").textContent = "Run brain";

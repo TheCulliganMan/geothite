@@ -19,3 +19,5 @@ node_modules
 *.gbc
 /vendor/pokecrystal/
 /apps/web/assets/
+
+/flygon-data/

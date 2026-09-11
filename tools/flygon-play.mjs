@@ -9,7 +9,7 @@ const browser = await chromium.launch({ headless: false });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1100 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto(process.env.FLYGON_URL || "http://127.0.0.1:33006/flygon.html");
+await page.goto(process.env.FLYGON_URL || "http://127.0.0.1:33006/flygon");
 
 await page.waitForFunction(
   () =>

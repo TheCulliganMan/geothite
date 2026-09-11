@@ -157,7 +157,7 @@ self.onmessage = async ({ data }) => {
         operant_trial_ms: operantMode
           ? record.operant.neural_trial_ms
           : undefined,
-        story: operantMode ? record.operant.locations : undefined,
+        story: operantMode ? record.operant.story?.milestones : undefined,
         config: JSON.parse(brain.configuration()),
       };
     } else if (kind === "find")

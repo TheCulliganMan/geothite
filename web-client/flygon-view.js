@@ -6,7 +6,20 @@ export function createViewer(canvas, { command, inspect, report }) {
     ready = false,
     rendering = false,
     dirty = false,
-    lastFrame;
+    lastFrame,
+    scheduled = false,
+    activityAt = -Infinity,
+    lastDraw = 0;
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let camera = { yaw: 0, pitch: 0, zoom: 1 };
+  function motionEnabled() {
+    return $("animate-brain").checked && !reducedMotion.matches;
+  }
+  function schedule() {
+    if (scheduled || rendering || !ready || document.hidden) return;
+    scheduled = true;
+    requestAnimationFrame(draw);
+  }
   let yaw = 0,
     pitch = 0,
     zoom = 1,
@@ -41,9 +54,11 @@ export function createViewer(canvas, { command, inspect, report }) {
     return {
       width: Math.max(1, Math.min(1200, Math.round(rect.width * ratio))),
       height: Math.max(1, Math.min(1200, Math.round(rect.height * ratio))),
-      yaw,
-      pitch,
-      zoom,
+      ...camera,
+      motion: motionEnabled(),
+      activityAge: Number.isFinite(activityAt)
+        ? Math.max(0, (performance.now() - activityAt) / 1000)
+        : 10,
       group: $("population").value,
       style,
     };
@@ -58,17 +73,31 @@ export function createViewer(canvas, { command, inspect, report }) {
     $("pitch").value = pitch;
     $("view-scale").textContent = `${zoom.toFixed(1)}×`;
     dirty = true;
-    if (!rendering) requestAnimationFrame(draw);
+    schedule();
   }
-  async function draw() {
-    if (!ready || rendering || !dirty) return;
+  async function draw(now) {
+    scheduled = false;
+    if (!ready || rendering || document.hidden) return;
+    const dt = Math.min(0.1, (now - lastDraw) / 1000);
+    lastDraw = now;
+    const blend = motionEnabled() ? 1 - Math.exp(-18 * dt) : 1;
+    const angle = Math.atan2(
+      Math.sin(yaw - camera.yaw), Math.cos(yaw - camera.yaw),
+    );
+    camera.yaw += angle * blend;
+    camera.pitch += (pitch - camera.pitch) * blend;
+    camera.zoom += (zoom - camera.zoom) * blend;
+    const moving = Math.abs(angle) + Math.abs(pitch - camera.pitch)
+      + Math.abs(zoom - camera.zoom) > 0.001;
+    if (!moving) camera = { yaw, pitch, zoom };
+    if (!dirty && !moving && !(motionEnabled() && now - activityAt < 2200)) return;
     dirty = false;
     rendering = true;
     const frame = parameters();
     try {
       const r = await call("render", frame);
-      canvas.width = r.width;
-      canvas.height = r.height;
+      if (canvas.width !== r.width) canvas.width = r.width;
+      if (canvas.height !== r.height) canvas.height = r.height;
       canvas
         .getContext("2d", { alpha: false })
         .putImageData(
@@ -89,7 +118,8 @@ export function createViewer(canvas, { command, inspect, report }) {
       report(e.message);
     } finally {
       rendering = false;
-      if (dirty) requestAnimationFrame(draw);
+      if (dirty || moving || (motionEnabled() && performance.now() - activityAt < 2200))
+        schedule();
     }
   }
   async function select(index) {
@@ -98,6 +128,7 @@ export function createViewer(canvas, { command, inspect, report }) {
     if (index < 0) {
       await call("select", { index: -1, edges: [] });
       $("selection").hidden = true;
+      $("connection-note").textContent = "Select a neuron to explore its strongest incoming and outgoing connections.";
     } else {
       const r = await command("connections", { index });
       if (selected !== index) return;
@@ -113,7 +144,7 @@ export function createViewer(canvas, { command, inspect, report }) {
       $("selected-links").textContent =
         `${Math.min(r.incoming, 48)} / ${r.incoming} incoming · ${Math.min(r.outgoing, 48)} / ${r.outgoing} outgoing`;
       $("connection-note").textContent =
-        `Strongest 48 per direction · ${r.omitted_missing_somas} links lack soma coordinates. Lines join somas, not axon paths. Green means the source spiked.`;
+        `Strongest 48 per direction · ${r.omitted_missing_somas} links lack soma coordinates. Curves join somas, not axon paths; brighter links have more contacts. Green pulses mark source spikes; travel timing is illustrative.`;
       inspect(r);
     }
     changed();
@@ -219,6 +250,9 @@ export function createViewer(canvas, { command, inspect, report }) {
   $("connections").onchange = () =>
     select(selected).catch((e) => report(e.message));
   $("population").onchange = changed;
+  $("animate-brain").onchange = changed;
+  reducedMotion.addEventListener("change", changed);
+  document.addEventListener("visibilitychange", changed);
   $("yaw").oninput = $("pitch").oninput = () => {
     yaw = Number($("yaw").value);
     pitch = Number($("pitch").value);
@@ -240,7 +274,9 @@ export function createViewer(canvas, { command, inspect, report }) {
     async update() {
       if (!ready) return;
       const { indices } = await command("activity");
+      const hasActivity = indices.length > 0;
       await call("activity", { indices }, [indices.buffer]);
+      activityAt = hasActivity ? performance.now() : -Infinity;
       changed();
     },
     setStyle(next) {

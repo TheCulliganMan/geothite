@@ -654,6 +654,8 @@ struct VisibleDecorationMenu {
 
 #[derive(Resource)]
 struct BevyRuntimeShell {
+    /// Successful field actions, observed by the optional Flygon reward adapter.
+    flygon_field_actions: std::collections::BTreeSet<String>,
     /// Presentation-time Game Boy frame. Unlike the semantic save checksum,
     /// this advances while the player stands still so LCD animations continue.
     lcd_animation_frame: u64,
@@ -7138,6 +7140,7 @@ fn initialize_bevy_runtime_shell(
         )?)
     };
     let mut runtime_shell = BevyRuntimeShell {
+        flygon_field_actions: std::collections::BTreeSet::new(),
         lcd_animation_frame: 0,
         ambient_tileset_animation_active: false,
         ambient_tileset_animation_schedule: Vec::new(),

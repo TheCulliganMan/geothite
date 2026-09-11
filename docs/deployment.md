@@ -150,3 +150,26 @@ fresh assets and an intentionally stale unversioned JavaScript response. It
 fails on startup errors or missing game state and records screenshots. This is
 WebKit with an iPhone viewport, not a physical-device Safari test. A container
 healthcheck or a localhost-only check does not validate public cache behavior.
+
+## Optional Flygon
+
+`/flygon` serves the local neural controller. It has no link from the root game.
+The page autoloads its brain; Run starts submitting game inputs. The same Rust
+server serves the game, neural WASM, viewer, and prepared connectome files.
+
+The Docker build requires the BuildKit named context `game_content`. The supplied
+Compose file maps it to the ignored `./content-packs` directory. With a remote Git
+build context, set `additional_contexts.game_content` to an external directory on
+the build host containing `core-modular.browser.crystalpack`.
+
+Mount the prepared `graph.bin` and `metadata.json` read-only at
+`/srv/crystal/web/flygon-data` (the supplied Compose file uses `FLYGON_DATA_DIR`,
+default `./flygon-data`). Their combined SHA256 must match
+`modpacks/flygon/dataset.json`. Without these optional files, the main game still
+works and Flygon reports its missing data. Keep all data outside Git.
+
+Validate `/healthz`, `/`, `/flygon`, `/flygon/`, the hashed Flygon worker imports,
+and graph accessibility after rollout. Run the render review against the actual
+HTTPS route and check manual takeover followed by Run resumes button submissions.
+Keep the previous image, Compose configuration, signing secret and named data
+volume for rollback; redeploy only the Geothite service.

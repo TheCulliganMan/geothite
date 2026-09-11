@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      additional_contexts:
+        game_content: ./content-packs
     image: crystal-multiplayer:local
     logging:
       driver: json-file
@@ -21,6 +23,7 @@ services:
       RUST_LOG: ${RUST_LOG:-crystal_web_server=info,tower_http=info}
     volumes:
       - crystal_multiplayer_data:/srv/crystal/data
+      - ${FLYGON_DATA_DIR:-./flygon-data}:/srv/crystal/web/flygon-data:ro
     read_only: true
     tmpfs:
       - /tmp:size=64m,mode=1777

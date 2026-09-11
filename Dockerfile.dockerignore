@@ -19,3 +19,9 @@
 !docker/runtime-data/**
 !tools/
 !tools/version-browser-bundle.sh
+
+!modpacks/voxel-view/
+!modpacks/voxel-view/profiles.json
+!modpacks/flygon/
+!modpacks/flygon/*.json
+!modpacks/flygon/*.md

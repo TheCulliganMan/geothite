@@ -43,7 +43,7 @@ pub fn serve(root: &Path, data: Option<&Path>, workspace: Option<&Path>, port: u
         dev: workspace.is_some(),
     });
     println!(
-        "Flygon http://127.0.0.1:{}/flygon.html · real local UTC clock · {}",
+        "Flygon http://127.0.0.1:{}/flygon · real local UTC clock · {}",
         listener.local_addr()?.port(),
         if state.dev {
             "live source UI"
@@ -133,6 +133,11 @@ fn handle(mut stream: TcpStream, state: &Preview) -> io::Result<()> {
         );
     }
     let url = parts[1].split('?').next().unwrap_or("/");
+    let url = if matches!(url, "/flygon" | "/flygon/") {
+        "/flygon.html"
+    } else {
+        url
+    };
     if url == "/v1/clock" {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)

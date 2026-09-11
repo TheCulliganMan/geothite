@@ -65,8 +65,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map_err(io::Error::other)?;
     }
     let frozen = parse(brain.operant_decide(&fixture.to_string()))?;
-    let checks = json!({"naive_uniform":uniform(&baseline),"rewarded_action_preferred":readout(&paired,"up")["probability"].as_f64().unwrap()>0.8,"aversive_action_suppressed":readout(&punished,"b")["probability"].as_f64().unwrap()<0.03,"erasure_restores_uniform":uniform(&erased),"frozen_learning_stays_uniform":uniform(&frozen),"frozen_no_weight_changes":frozen["telemetry"]["changed_edges"]==0});
-    let report = json!({"scope":"Artificial action-cue mechanism assay using a synthetic context; not gameplay progress","graph_id":identity["graph_id"],"model_id":identity["model_id"],"interface_id":identity["interface_id"],"checks":checks,"baseline":baseline["action"]["readouts"],"paired":paired["action"]["readouts"],"punished":punished["action"]["readouts"],"erased":erased["action"]["readouts"],"frozen":frozen["action"]["readouts"],"positive_circuit_activity":positive["telemetry"]["circuit_activity"],"negative_circuit_activity":negative["telemetry"]["circuit_activity"]});
+    brain.restore(&checkpoint).map_err(io::Error::other)?;
+    brain.configure(&config).map_err(io::Error::other)?;
+    let _ = parse(brain.operant_decide(&fixture.to_string()))?;
+    let mut story_fixture = fixture.clone();
+    story_fixture["reward_state"] = json!({"version":1,"event_flags":["EVENT_BEAT_RED"]});
+    let story_feedback = parse(brain.operant_feedback(&story_fixture.to_string()))?;
+    let story_pam_spikes = story_feedback["training"]["telemetry"]["circuit_activity"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|p| p["population"] == "PAM01")
+        .filter_map(|p| p["spikes"].as_u64())
+        .sum::<u64>();
+    let checks = json!({"story_event_recruits_pam":story_pam_spikes>0,"story_event_changes_existing_edges":story_feedback["training"]["telemetry"]["changed_edges"].as_u64().unwrap_or(0)>0,"naive_uniform":uniform(&baseline),"rewarded_action_preferred":readout(&paired,"up")["probability"].as_f64().unwrap()>0.8,"aversive_action_suppressed":readout(&punished,"b")["probability"].as_f64().unwrap()<0.03,"erasure_restores_uniform":uniform(&erased),"frozen_learning_stays_uniform":uniform(&frozen),"frozen_no_weight_changes":frozen["telemetry"]["changed_edges"]==0});
+    let report = json!({"scope":"Artificial action-cue mechanism assay using a synthetic context; not gameplay progress","graph_id":identity["graph_id"],"model_id":identity["model_id"],"interface_id":identity["interface_id"],"checks":checks,"story_feedback":story_feedback,"baseline":baseline["action"]["readouts"],"paired":paired["action"]["readouts"],"punished":punished["action"]["readouts"],"erased":erased["action"]["readouts"],"frozen":frozen["action"]["readouts"],"positive_circuit_activity":positive["telemetry"]["circuit_activity"],"negative_circuit_activity":negative["telemetry"]["circuit_activity"]});
     println!("{}", serde_json::to_string_pretty(&report)?);
     if checks.as_object().unwrap().values().any(|v| v != true) {
         return Err("Action-memory causal check failed".into());

@@ -28,3 +28,23 @@ mv audio-worker.versioned.js "audio-worker-$audio_hash.js"
 sed "s|'./audio-worker.js'|'./audio-worker-$audio_hash.js'|g" index.html > index.html.versioned
 mv index.html.versioned index.html
 rm -f crystal-audio.js crystal-audio_bg.wasm.gz audio-worker.js
+
+# Optional Flygon: version both worker imports against one neural module pair.
+if test -s flygon/crystal_flygon_bg.wasm; then
+    flygon_hash=$(cat flygon/crystal_flygon.js flygon/crystal_flygon_bg.wasm | sha256sum | cut -d ' ' -f 1)
+    flygon_name="crystal_flygon-$flygon_hash"
+    sed "s/crystal_flygon_bg\\.wasm/$flygon_name.wasm/g" flygon/crystal_flygon.js > "flygon/$flygon_name.js"
+    mv flygon/crystal_flygon_bg.wasm "flygon/$flygon_name.wasm"
+    gzip -9 -c "flygon/$flygon_name.wasm" > "flygon/$flygon_name.wasm.gz"
+    for worker in flygon-worker flygon-view-worker; do
+        sed "s|flygon/crystal_flygon.js|flygon/$flygon_name.js|g" "$worker.js" > "$worker.next"
+        mv "$worker.next" "$worker.js"
+        worker_hash=$(sha256sum "$worker.js" | cut -d ' ' -f 1)
+        mv "$worker.js" "$worker-$worker_hash.js"
+        for ui in flygon.js flygon-view.js; do
+            sed "s|./$worker.js|./$worker-$worker_hash.js|g" "$ui" > "$ui.next"
+            mv "$ui.next" "$ui"
+        done
+    done
+    rm flygon/crystal_flygon.js
+fi

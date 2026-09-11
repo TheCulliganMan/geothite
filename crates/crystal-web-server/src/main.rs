@@ -247,6 +247,8 @@ async fn main() -> Result<()> {
         .precompressed_gzip()
         .append_index_html_on_directories(true);
     let app = Router::new()
+        .route_service("/flygon", ServeFile::new(config.root.join("flygon.html")))
+        .route_service("/flygon/", ServeFile::new(config.root.join("flygon.html")))
         .route_service(
             "/realtime-clock.browser.crystalpack",
             ServeFile::new(catchable_path),

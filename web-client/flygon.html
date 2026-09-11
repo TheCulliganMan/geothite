@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
@@ -13,8 +14,8 @@
   </head>
   <body>
     <header class="app-header">
-      <a class="brand" href="./flygon.html" aria-label="Flygon home"
-        ><span class="brand-mark" aria-hidden="true">✳</span> FLYGON</a
+      <span class="brand" aria-label="Flygon"
+        ><span class="brand-mark" aria-hidden="true">✳</span> FLYGON</span
       >
       <div class="header-actions">
         <span class="status-dot" aria-hidden="true"></span
@@ -87,6 +88,9 @@
             ><input id="connections" type="checkbox" checked />
             Connections</label
           >
+          <label class="toggle"
+            ><input id="animate-brain" type="checkbox" checked /> Animate</label
+          >
         </div>
         <div class="legend">
           <span class="spike">● Spiking</span
@@ -119,9 +123,7 @@
         Initial neural download: about 216 MiB. Allow at least 1 GiB of free
         memory; game and browser use additional memory.
       </p>
-      <p id="story-state">
-        Elm arrival verified. Cherrygrove is not yet verified.
-      </p>
+      <p id="story-state">Story progress: waiting for gameplay.</p>
     </section>
     <section class="advanced" aria-label="Research and session controls">
       <details>

@@ -47,6 +47,8 @@ pub struct AnatomyView {
     activity: Vec<bool>,
     connections: Vec<Connection>,
     selected: Option<u32>,
+    activity_age: f32,
+    motion: bool,
 }
 #[wasm_bindgen]
 impl AnatomyView {
@@ -102,6 +104,8 @@ impl AnatomyView {
             activity: vec![false; n],
             connections: Vec::new(),
             selected: None,
+            activity_age: 0.0,
+            motion: false,
         })
     }
     pub fn update_activity(&mut self, indices: &[u32]) -> Result<(), String> {
@@ -132,6 +136,15 @@ impl AnatomyView {
         self.connections = edges;
         Ok(())
     }
+    /// Presentation time only: never advances or fabricates neural activity.
+    pub fn animate(&mut self, activity_age: f32, motion: bool) -> Result<(), String> {
+        if !activity_age.is_finite() || activity_age < 0.0 {
+            return Err("Invalid presentation time".into());
+        }
+        self.activity_age = activity_age;
+        self.motion = motion;
+        Ok(())
+    }
     pub fn render(
         &self,
         width: u32,
@@ -148,6 +161,11 @@ impl AnatomyView {
             return Err("Invalid point radius".into());
         }
         let mask = group_mask(group)?;
+        let flash = if self.motion {
+            (-self.activity_age * 1.8).exp()
+        } else {
+            1.0
+        };
         let mut pixels = vec![0; width as usize * height as usize * 4];
         for px in pixels.chunks_exact_mut(4) {
             px.copy_from_slice(&[
@@ -183,10 +201,21 @@ impl AnatomyView {
                     style.inactive
                 };
                 let shade = if active {
-                    1.0
+                    0.45 + 0.55 * flash
                 } else {
                     ((3.65 - z) * 0.65).clamp(0.30, 1.0) * if focused { 1.0 } else { 0.25 }
                 };
+                if active && flash > 0.02 {
+                    glow(
+                        &mut pixels,
+                        width,
+                        height,
+                        (x, y),
+                        radius as f32 + 4.0,
+                        base,
+                        flash * 0.28,
+                    );
+                }
                 for dy in -radius..=radius {
                     for dx in -radius..=radius {
                         if radius > 1 && dx * dx + dy * dy > radius * radius {
@@ -213,47 +242,96 @@ impl AnatomyView {
             let source = self.positions[edge.source as usize];
             let target = self.positions[edge.target as usize];
             if let (Some(source), Some(target)) = (source, target) {
-                let (ax, ay, _) = camera.project(source);
-                let (bx, by, _) = camera.project(target);
+                // Curves are schematic: endpoints are the measured soma coordinates.
+                // A direction-dependent bend separates reciprocal connections.
+                let midpoint: [f32; 3] = std::array::from_fn(|i| (source[i] + target[i]) * 0.5);
+                let delta = std::array::from_fn::<_, 3, _>(|i| target[i] - source[i]);
+                let bend = [delta[1] * 0.22, -delta[0] * 0.22, delta[0] * 0.12];
+                let control: [f32; 3] = std::array::from_fn(|i| midpoint[i] + bend[i]);
+                let curve = |t: f32| {
+                    let p = std::array::from_fn(|i| {
+                        (1.0 - t).powi(2) * source[i]
+                            + 2.0 * (1.0 - t) * t * control[i]
+                            + t * t * target[i]
+                    });
+                    let (x, y, _) = camera.project(p);
+                    (x, y)
+                };
                 let active = self.activity[edge.source as usize];
-                let color = if active {
-                    [110, 255, 188]
-                } else if Some(edge.source) == self.selected {
+                let color = if Some(edge.source) == self.selected {
                     [87, 185, 238]
                 } else {
                     [185, 140, 244]
                 };
-                let alpha = if active { 0.85 } else { 0.32 };
-                line(&mut pixels, width, height, (ax, ay), (bx, by), color, alpha);
-                let (dx, dy) = (bx - ax, by - ay);
+                let strength = (edge.contacts as f32).ln_1p() / 8.0;
+                let alpha = 0.22 + strength.min(1.0) * 0.38;
+                let mut previous = curve(0.0);
+                for step in 1..=40 {
+                    let next = curve(step as f32 / 40.0);
+                    line(&mut pixels, width, height, previous, next, color, alpha);
+                    if edge.contacts >= 10 {
+                        line(
+                            &mut pixels,
+                            width,
+                            height,
+                            (previous.0, previous.1 + 1.0),
+                            (next.0, next.1 + 1.0),
+                            color,
+                            alpha * 0.25,
+                        );
+                    }
+                    previous = next;
+                }
+                let tip = curve(0.78);
+                let before = curve(0.75);
+                let (dx, dy) = (tip.0 - before.0, tip.1 - before.1);
                 let length = dx.hypot(dy);
-                if length > 14.0 {
+                if length > 0.1 {
                     let (ux, uy) = (dx / length, dy / length);
-                    let (tx, ty) = (ax + dx * 0.7, ay + dy * 0.7);
                     for side in [-1.0, 1.0] {
                         line(
                             &mut pixels,
                             width,
                             height,
-                            (tx, ty),
+                            tip,
                             (
-                                tx - ux * 5.0 - uy * side * 3.0,
-                                ty - uy * 5.0 + ux * side * 3.0,
+                                tip.0 - ux * 6.0 - uy * side * 3.0,
+                                tip.1 - uy * 6.0 + ux * side * 3.0,
                             ),
                             color,
-                            alpha,
+                            0.85,
                         );
                     }
                 }
-                if active && edge.contacts >= 10 {
-                    line(
+                glow(&mut pixels, width, height, curve(1.0), 3.5, color, 0.65);
+                // One short traveling trace per measured activity window. Its
+                // speed is illustrative, not measured transmission timing.
+                if active && self.motion && self.activity_age < 1.4 {
+                    let head = (self.activity_age / 1.1).min(1.0);
+                    for i in 0..12 {
+                        let t = head - i as f32 * 0.012;
+                        if t < 0.0 {
+                            break;
+                        }
+                        glow(
+                            &mut pixels,
+                            width,
+                            height,
+                            curve(t),
+                            2.8,
+                            style.spike,
+                            (1.0 - i as f32 / 12.0) * flash,
+                        );
+                    }
+                } else if active && !self.motion {
+                    glow(
                         &mut pixels,
                         width,
                         height,
-                        (ax + 1.0, ay),
-                        (bx + 1.0, by),
-                        color,
-                        0.25,
+                        curve(0.5),
+                        3.5,
+                        style.spike,
+                        0.9,
                     );
                 }
             }
@@ -391,6 +469,35 @@ impl Brain {
     }
 }
 
+/// Soft radial falloff keeps luminous cells legible without square sprites.
+fn glow(
+    pixels: &mut [u8],
+    width: u32,
+    height: u32,
+    center: (f32, f32),
+    radius: f32,
+    color: [u8; 3],
+    alpha: f32,
+) {
+    let r = radius.ceil() as i32;
+    for dy in -r..=r {
+        for dx in -r..=r {
+            let (x, y) = (center.0.round() as i32 + dx, center.1.round() as i32 + dy);
+            if x < 0 || y < 0 || x >= width as i32 || y >= height as i32 {
+                continue;
+            }
+            let falloff = (1.0 - (dx * dx + dy * dy) as f32 / (radius * radius))
+                .max(0.0)
+                .powi(2)
+                * alpha;
+            let j = (y as usize * width as usize + x as usize) * 4;
+            for k in 0..3 {
+                pixels[j + k] = (pixels[j + k] as f32 + color[k] as f32 * falloff).min(255.0) as u8;
+            }
+        }
+    }
+}
+
 fn line(
     pixels: &mut [u8],
     width: u32,
@@ -403,13 +510,25 @@ fn line(
     let steps = ((b.0 - a.0).abs().max((b.1 - a.1).abs()).ceil() as usize).clamp(1, 6400);
     for i in 0..=steps {
         let t = i as f32 / steps as f32;
-        let x = (a.0 + (b.0 - a.0) * t).round() as i32;
-        let y = (a.1 + (b.1 - a.1) * t).round() as i32;
-        if x >= 0 && y >= 0 && x < width as i32 && y < height as i32 {
-            let j = (y as usize * width as usize + x as usize) * 4;
-            for k in 0..3 {
-                pixels[j + k] =
-                    (pixels[j + k] as f32 * (1.0 - alpha) + color[k] as f32 * alpha) as u8;
+        let x = a.0 + (b.0 - a.0) * t;
+        let y = a.1 + (b.1 - a.1) * t;
+        let (ix, iy) = (x.floor() as i32, y.floor() as i32);
+        let (fx, fy) = (x - x.floor(), y - y.floor());
+        // Subpixel coverage prevents thin paths shimmering during an orbit.
+        for (dx, dy, coverage) in [
+            (0, 0, (1.0 - fx) * (1.0 - fy)),
+            (1, 0, fx * (1.0 - fy)),
+            (0, 1, (1.0 - fx) * fy),
+            (1, 1, fx * fy),
+        ] {
+            let (sx, sy) = (ix + dx, iy + dy);
+            if sx >= 0 && sy >= 0 && sx < width as i32 && sy < height as i32 {
+                let j = (sy as usize * width as usize + sx as usize) * 4;
+                let opacity = alpha * coverage;
+                for k in 0..3 {
+                    pixels[j + k] =
+                        (pixels[j + k] as f32 * (1.0 - opacity) + color[k] as f32 * opacity) as u8;
+                }
             }
         }
     }
@@ -451,5 +570,62 @@ impl Brain {
         outgoing.sort_unstable_by(|a, b| b.0.cmp(&a.0).then(a.2.cmp(&b.2)));
         let edges:Vec<_>=incoming.into_iter().take(48).chain(outgoing.into_iter().take(48)).map(|(contacts,source,target,e)|serde_json::json!({"source":source,"target":target,"contacts":contacts,"weight_mv":self.weights[e]})).collect();
         serde_json::to_string(&serde_json::json!({"index":index,"cell":self.metadata.cells[selected],"edges":edges,"incoming":total_in,"outgoing":total_out,"omitted_missing_somas":omitted,"limit_per_direction":48,"geometry":"schematic soma-to-soma; not reconstructed axons","highlight":"source neuron spiked in the measured window; not measured synaptic transmission"})).map_err(|e|e.to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn fixture() -> AnatomyView {
+        let mut view = AnatomyView::new(&[-1., 0., 0., 0., 1., 1., 0., 0., 1., 4.]).unwrap();
+        view.select(
+            0,
+            r#"[{"source":0,"target":1,"contacts":24},{"source":1,"target":0,"contacts":8}]"#,
+        )
+        .unwrap();
+        view
+    }
+    fn frame(view: &AnatomyView) -> Vec<u8> {
+        view.render(240, 240, 0., 0., 1., "all", "{}").unwrap()
+    }
+    #[test]
+    fn animation_requires_measured_activity_and_settles() {
+        let mut view = fixture();
+        view.animate(0.1, true).unwrap();
+        let idle = frame(&view);
+        view.animate(0.6, true).unwrap();
+        assert_eq!(idle, frame(&view), "idle links must never invent spikes");
+        view.update_activity(&[0]).unwrap();
+        view.animate(0.1, true).unwrap();
+        let early = frame(&view);
+        view.animate(0.6, true).unwrap();
+        assert_ne!(
+            early,
+            frame(&view),
+            "measured source activity travels along its links"
+        );
+        view.update_activity(&[]).unwrap();
+        assert_eq!(idle, frame(&view));
+    }
+    #[test]
+    fn reduced_motion_is_static_and_time_is_validated() {
+        let mut view = fixture();
+        view.update_activity(&[0]).unwrap();
+        view.animate(0.1, false).unwrap();
+        let still = frame(&view);
+        view.animate(10., false).unwrap();
+        assert_eq!(still, frame(&view));
+        assert!(view.animate(f32::NAN, true).is_err());
+        assert!(view.animate(-1., true).is_err());
+    }
+    #[test]
+    fn animated_projection_keeps_picking_on_source_somas() {
+        let mut view = fixture();
+        view.animate(0.3, true).unwrap();
+        for yaw in [0., 0.8, -1.2] {
+            let camera = Camera::new(240, 240, yaw, 0.2, 1.4).unwrap();
+            let (x, y, _) = camera.project(view.positions[0].unwrap());
+            assert_eq!(view.pick(240, 240, x, y, yaw, 0.2, 1.4, "all").unwrap(), 0);
+        }
     }
 }

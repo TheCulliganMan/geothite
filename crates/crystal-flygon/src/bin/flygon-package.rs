@@ -298,7 +298,7 @@ fn assemble(repo: &Path, game: &Path, data: &Path, out: &Path) -> Result<()> {
     result?;
     println!(
         "{}",
-        json!({"release":out,"entrypoint":"flygon.html","simulation":"local Rust/WASM","deployed":false})
+        json!({"release":out,"entrypoint":"/flygon","simulation":"local Rust/WASM","deployed":false})
     );
     Ok(())
 }

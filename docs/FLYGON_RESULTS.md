@@ -341,3 +341,29 @@ resume. Normal fresh observations continue using the configured plasticity.
 The cockpit also reports remaining scheduled PAM/PPL current duration separately
 from measured spike counts. No Pokémon build was performed in this follow-up;
 the one neural-crate build took 1.86 seconds.
+
+## Story teacher and handoff validation (2026-09-11)
+
+The default operant teacher is now `story-events-v1`. Route ordering, coordinate
+incentives, Manhattan fallback, arbitrary menu penalties and the Route 30 stop were
+removed. Read-only game telemetry supplies completion flags, scene changes, key
+items, machines, successful field moves, badges, caught species and battle results.
+
+Eight Rust checks pass, including story/field-move coverage and viewer invariants.
+The full retained-graph causal assay also passes eight controls: naive uniformity,
+reward preference, aversive suppression, erasure, frozen probabilities/weights,
+and a synthetic late-story completion passing through `operant_feedback` to actual
+PAM01 spikes and changed existing synapses. This last check is adapter/mechanism
+validation, not a claim that the game defeated Red.
+
+The actual Chromium handoff run used trusted manual input, then Run brain. It
+recorded 13 neural button submissions, zero observation failures and zero unobserved
+actions, and advanced the actual game from intro to title. Game observations
+contained reward telemetry version 1. The render review loaded the brain on entry,
+selected 96 actual connections, rotated without changing neural metrics, and fit a
+390px viewport. No page errors or missing assets occurred in the headed review.
+Headless Chromium on this host lacked WebGL; use the documented headed review.
+
+Evidence: `target/flygon-evidence/story-release/` (ignored, not shipped). The existing
+86 browser regression checks passed. These validations do not establish autonomous
+full-story completion or reward-off story performance.

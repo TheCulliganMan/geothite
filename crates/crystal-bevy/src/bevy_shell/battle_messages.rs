@@ -4264,6 +4264,7 @@ fn use_visible_surf(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     )?;
     record_visible_runtime_action(runtime_shell, format!("field_move:surf:{party_index}"))?;
     let field_move = runtime_shell.shell.use_surf_field_move(party_index)?;
+    runtime_shell.flygon_field_actions.insert("surf".into());
     runtime_shell.last_audio_events.push(format!(
         "field surf party_index={} outcome={:?} checksum={:?}",
         party_index, field_move.outcome, field_move.state_checksum
@@ -4705,6 +4706,7 @@ fn use_visible_cut(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let field_move = runtime_shell
         .shell
         .use_cut_field_move_in_front(party_index)?;
+    runtime_shell.flygon_field_actions.insert("cut".into());
     let metatile_x = field_move.outcome.metatile_x;
     let metatile_y = field_move.outcome.metatile_y;
     runtime_shell.visible_cut_animation = Some(VisibleCutAnimation {
@@ -4750,6 +4752,7 @@ fn use_visible_whirlpool(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let field_move = runtime_shell
         .shell
         .use_whirlpool_field_move_in_front(party_index)?;
+    runtime_shell.flygon_field_actions.insert("whirlpool".into());
     let metatile_x = field_move.outcome.metatile_x;
     let metatile_y = field_move.outcome.metatile_y;
     runtime_shell.last_audio_events.push(format!(
@@ -4804,6 +4807,7 @@ fn use_visible_flash(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     )?;
     record_visible_runtime_action(runtime_shell, format!("field_move:flash:{party_index}"))?;
     let field_move = runtime_shell.shell.use_flash_field_move(party_index)?;
+    runtime_shell.flygon_field_actions.insert("flash".into());
     runtime_shell.last_audio_events.push(format!(
         "field flash party_index={} outcome={:?} checksum={:?}",
         party_index, field_move.outcome, field_move.state_checksum
@@ -4834,6 +4838,7 @@ fn use_visible_waterfall(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     )?;
     record_visible_runtime_action(runtime_shell, format!("field_move:waterfall:{party_index}"))?;
     let field_move = runtime_shell.shell.use_waterfall_field_move(party_index)?;
+    runtime_shell.flygon_field_actions.insert("waterfall".into());
     runtime_shell.last_audio_events.push(format!(
         "field waterfall party_index={} outcome={:?} checksum={:?}",
         party_index, field_move.outcome, field_move.state_checksum
@@ -4900,6 +4905,7 @@ fn use_visible_fly(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         destination.destination_spawn_identifier,
         &destination.flypoint_flag,
     )?;
+    runtime_shell.flygon_field_actions.insert("fly".into());
     runtime_shell.last_audio_events.push(format!(
         "field fly destination {}/{} flag={} party_index={} spawn={} map={} tile=({}, {}) checksum={:?}",
         selected_index + 1,

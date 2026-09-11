@@ -30,7 +30,7 @@ silently substitute a smaller neural graph.
 
 ## Use the viewer
 
-Open `/flygon.html`; the brain loads automatically. The default is the story action-memory
+Open `/flygon`; the brain loads automatically. The default is the story action-memory
 profile. **Run brain** starts decisions; **Control game** enables their submission.
 The game remains in its own pane. Human game input and hiding the tab pause the
 controller. Repeated presses are ordinary game inputs, never scripted route steps.
@@ -67,7 +67,7 @@ FLYGON_DATA_ROOT=/tmp/flygon-data/prepared \
 FLYGON_PORT=33006 sh tools/flygon-dev.sh
 ```
 
-Open `http://127.0.0.1:33006/flygon.html`. The loopback server uses the real local
+Open `http://127.0.0.1:33006/flygon`. The loopback server uses the real local
 UTC clock and disables multiplayer in the embedded game. CSS and `view.json`
 refresh live without resetting the brain or game. **Reload tuning** reads config
 changes without rebuilding or erasing learned synapses. HTML/JS changes require
@@ -114,7 +114,7 @@ run captures, development tests and raw source tables are excluded.
 The output contains the existing game inventory, the optional Flygon page, thin UI,
 WASM, prepared graph, profiles, dataset attribution and a release manifest. It does
 not add a ROM, duplicate game content or upload visitors' brain state. Open
-`/flygon.html`; root `/` is the existing game. Serve the assembled directory through
+`/flygon`; root `/` is the existing game. Serve the assembled directory through
 the existing `crystal-web-server` or the existing hosted game origin/clock. Preserve
 WASM MIME types and same-origin asset paths. The Rust preview server is loopback-only
 and supplies real local time; it is not a public production server. Deployment is a
@@ -128,10 +128,21 @@ external simulation service.
 
 ## Reward curriculum and evidence
 
-`operant.json` contains all curriculum targets, map order, goal map, pre-starter
-targets and eligible dialogue object names. These are evaluator inputs only: they
-are not supplied to the action decoder. The current experimental target is Route30,
-through Cherrygrove. The recorded verified milestone remains Elm arrival.
+The default teacher is `story-events-v1` in Rust `story.rs`. It reads actual
+post-action game telemetry: completion event flags, script scene transitions,
+quest key items, TM/HM acquisition, field moves learned and successfully used,
+Pokédex additions, level high-water marks, all 16 badges and Hall of Fame.
+Elm/Mr. Pokémon dialogue and quest handoffs use the same actual script observation
+as later Johto, Kanto and Red events. New pages require a real talked-to object.
+There is no map ranking, coordinate target, distance reward or Route 30 stop.
+
+The teacher is an engineered privileged game-state adapter, not fly perception.
+It evaluates consequences only; it never supplies a correct button or changes
+progression. Completion prefixes are declared in `story.rs`; arbitrary visibility
+flags do not pay. Successful field actions are recorded only after the game accepts
+the move. Strength is observed through its actual activation flag. Each durable
+milestone pays once per saved brain. Loading an advanced save or resuming after
+human control baselines existing progress without giving the brain credit.
 
 Each context/button pair addresses 8 real KCs. All eight buttons receive 500 ms
 reward-free probes with frozen plasticity and reset transient dynamics. Measured
@@ -142,12 +153,17 @@ PAM01 for reward or PPL101 for aversion. Actual DAN spikes and KC eligibility mo
 existing KC→MBON synapses. The viewer shows actual activity from these trials;
 reported summed trial time is not continuous brain time.
 
-Forward locations, receiving a starter, shorter observed-terrain distance and new
-eligible dialogue can earn reward. Retreat, irrelevant prompts and no progress can
-earn aversion. If the observed terrain does not provide a path, distance falls back
-to Manhattan. This engineered shaping does not establish natural fly perception.
-The older reference profiles have separate reward-strength controls; those controls
-and unpaired manual pulses are disabled/hidden where they do not apply.
+Battle feedback uses actual enemy HP minima, defeated opponent indices and the
+engine's terminal result (win, capture, loss or escape). Healing an opponent and
+repeating the same damage does not pay again. Leaving a battle alone is not a win.
+Menus and backtracking are neutral, so using the party menu for HMs or returning to
+Elm is not punished. Reward histories persist in brain checkpoints. Scenario
+checks cover story transitions, seven machines, 16 badges, terminal battles,
+deduplication and save baselines; they are not evidence of a full story playthrough.
+
+“Run brain” restores game submissions after human takeover. A control epoch rejects
+in-flight decisions/outcomes from before the handoff. Human interventions remain
+recorded as assistance.
 
 Mechanism validation after neural changes:
 
@@ -179,3 +195,24 @@ touch orbit/pinch. It records missing assets and browser exceptions. Output goes
 `target/flygon-evidence/release`; use `FLYGON_EVIDENCE_DIR` to override. The default
 is a visible browser; `FLYGON_HEADLESS=1` is optional where the game renderer supports
 it. No compiler runs in this loop. No neural data or decisions are generated by JS.
+
+## Hidden Geothite route
+
+Production serves this optional controller at `/flygon` (also `/flygon/`). The
+normal root stays the game and contains no Flygon navigation link. The brain loads
+on entry; Run starts gameplay. The Docker build takes external game content from
+BuildKit named context `game_content`, containing `core-modular.browser.crystalpack`.
+Prepared connectome files are a read-only runtime mount at
+`/srv/crystal/web/flygon-data`; set `FLYGON_DATA_DIR` for the supplied Compose file.
+No game content or connectome binary belongs in Git. The neural WASM/glue and
+workers are content-addressed during the production build.
+
+Handoff render check (uses a fresh browser save and real neural button inputs):
+
+```sh
+FLYGON_URL=http://127.0.0.1:33100/flygon node tools/flygon-handoff-review.mjs
+```
+
+Use a headed browser for game rendering on hosts where headless WebGL is absent.
+The check exports the real run record, verifies telemetry version 1 and resumed
+neural submissions, and saves a screenshot. It does not claim story completion.
