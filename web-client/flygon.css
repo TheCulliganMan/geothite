@@ -82,11 +82,6 @@ a:hover {
   color: var(--accent);
   white-space: nowrap;
 }
-.brand-mark {
-  font-size: 27px;
-  vertical-align: -2px;
-  margin-right: 5px;
-}
 .header-actions {
   margin-left: auto;
   display: flex;
@@ -213,12 +208,6 @@ main {
   pointer-events: none;
   padding: 30px;
   text-align: center;
-}
-.empty-orbit {
-  font-size: 70px;
-  line-height: 1.2;
-  color: #446e67;
-  margin-bottom: 18px;
 }
 h1 {
   font-size: 26px;
@@ -492,9 +481,6 @@ footer {
   }
   .brand {
     font-size: 15px;
-  }
-  .brand-mark {
-    font-size: 22px;
   }
   .header-actions {
     gap: 7px;
