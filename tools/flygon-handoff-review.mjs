@@ -4,7 +4,13 @@ import fs from "node:fs/promises";
 const output =
   process.env.FLYGON_EVIDENCE_DIR || "target/flygon-evidence/story-release";
 await fs.mkdir(output, { recursive: true });
-const browser = await chromium.launch({ headless: false });
+const headless = process.env.FLYGON_HEADLESS !== "0";
+const browser = await chromium.launch({
+  headless,
+  args: headless
+    ? ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
+    : undefined,
+});
 try {
   const page = await browser.newPage({
     viewport: { width: 1520, height: 1040 },

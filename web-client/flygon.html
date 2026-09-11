@@ -11,6 +11,7 @@
     <meta name="theme-color" content="#080f16" />
     <title>Flygon</title>
     <link rel="stylesheet" href="./flygon.css" />
+    <link rel="stylesheet" href="./loading-progress.css" />
   </head>
   <body>
     <header class="app-header">
@@ -54,10 +55,7 @@
             aria-describedby="view-help"
           ></canvas>
           <div id="view-empty">
-            <span class="empty-orbit" aria-hidden="true">✳</span>
-            <h1>Loading brain</h1>
-            <p>166,700 neurons · MaleCNS v1.0</p>
-            <p class="note">Loading the local connectome…</p>
+            <div class="loading-card" role="status"><h1>Loading brain</h1><div id="brain-loading-assets"></div></div>
           </div>
           <div class="view-tools">
             <button id="reset-view" title="Reset camera (0)">Reset view</button

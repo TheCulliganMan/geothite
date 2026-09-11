@@ -192,6 +192,17 @@ async fn fetch_browser_pack() -> Result<Vec<u8>> {
     use wasm_bindgen_futures::JsFuture;
 
     let window = web_sys::window().context("browser window is unavailable")?;
+    // The page supplies streamed transport with real byte progress. Standalone
+    // embedders without that presentation hook retain the native fetch path.
+    if let Ok(value) = js_sys::Reflect::get(&window, &"__crystalFetchPack".into()) {
+        if let Some(fetch) = value.dyn_ref::<js_sys::Function>() {
+            let pending = fetch.call1(&window, &DEFAULT_BROWSER_PACK_FILENAME.into())
+                .map_err(|error| anyhow::anyhow!("start pack download: {error:?}"))?;
+            let bytes = JsFuture::from(js_sys::Promise::resolve(&pending)).await
+                .map_err(|error| anyhow::anyhow!("download pack: {error:?}"))?;
+            return Ok(js_sys::Uint8Array::new(&bytes).to_vec());
+        }
+    }
     let response = JsFuture::from(window.fetch_with_str(DEFAULT_BROWSER_PACK_FILENAME))
         .await
         .map_err(|error| anyhow::anyhow!("fetch {DEFAULT_BROWSER_PACK_FILENAME}: {error:?}"))?

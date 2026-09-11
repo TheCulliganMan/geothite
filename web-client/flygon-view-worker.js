@@ -1,12 +1,14 @@
 // Independent presentation worker: every projection and pixel is computed in Rust.
 import init, { AnatomyView } from "./flygon/crystal_flygon.js";
+import { loadWasm } from "./asset-progress.js";
+const report = progress => self.postMessage({ kind: "asset-progress", progress });
 let view;
 self.onmessage = async ({ data }) => {
   const { id, kind } = data;
   try {
     let result;
     if (kind === "load") {
-      await init();
+      await loadWasm(init, "./flygon/crystal_flygon_bg.wasm", "3D renderer", report);
       view?.free();
       view = new AnatomyView(data.records);
       result = { ready: true, somas: data.records.length / 5 };

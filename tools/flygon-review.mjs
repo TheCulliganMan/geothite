@@ -8,8 +8,12 @@ if (!["chromium", "firefox", "webkit"].includes(engine))
 const output =
   process.env.FLYGON_EVIDENCE_DIR || "target/flygon-evidence/release";
 await fs.mkdir(output, { recursive: true });
+const headless = process.env.FLYGON_HEADLESS !== "0";
 const browser = await playwright[engine].launch({
-  headless: process.env.FLYGON_HEADLESS === "1",
+  headless,
+  args: engine === "chromium" && headless
+    ? ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
+    : undefined,
 });
 try {
   const context = await browser.newContext({

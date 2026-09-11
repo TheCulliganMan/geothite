@@ -1,5 +1,5 @@
 // Pointer/DOM transport only. Geometry, projection, picking and pixels are Rust.
-export function createViewer(canvas, { command, inspect, report }) {
+export function createViewer(canvas, { command, inspect, report, onProgress = () => {} }) {
   const worker = new Worker("./flygon-view-worker.js", { type: "module" });
   const pending = new Map();
   let sequence = 0,
@@ -36,6 +36,7 @@ export function createViewer(canvas, { command, inspect, report }) {
     });
   }
   worker.onmessage = ({ data }) => {
+    if (data.kind === "asset-progress") { onProgress(data.progress); return; }
     const p = pending.get(data.id);
     if (!p) return;
     pending.delete(data.id);

@@ -11,7 +11,7 @@ use axum::extract::{Query, Request, State};
 use axum::http::header::CACHE_CONTROL;
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::middleware::{self, Next};
-use axum::response::{IntoResponse, Response};
+use axum::response::{Html, IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
@@ -261,7 +261,7 @@ async fn main() -> Result<()> {
         .nest_service("/packs", ServeDir::new(&config.pack_dir))
         .fallback_service(static_files)
         .layer(TraceLayer::new_for_http())
-        .layer(middleware::from_fn(cache_policy_headers))
+        .layer(middleware::from_fn_with_state(Arc::clone(&config), cache_policy_headers))
         .with_state(state.clone());
     let address = SocketAddr::new(config.host, config.port);
     let listener = tokio::net::TcpListener::bind(address)
@@ -320,16 +320,52 @@ async fn health() -> &'static str {
     "ok\n"
 }
 
-async fn cache_policy_headers(request: Request, next: Next) -> Response {
+async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Request, next: Next) -> Response {
+    let asset_path = request.uri().path().trim_start_matches('/').to_owned();
     let policy = cache_policy(request.uri().path());
+    let page_request = !request.uri().path().starts_with("/v1/");
+    let head = request.method() == axum::http::Method::HEAD;
     let mut response = next.run(request).await;
+    if page_request && response.status() == StatusCode::NOT_FOUND {
+        response = not_found_page(head);
+    }
+    if response.status() == StatusCode::OK && page_request {
+        let decoded_size = if response.headers().contains_key("content-encoding") {
+            if asset_path.split('/').all(|part| !matches!(part, "." | "..")) {
+                tokio::fs::metadata(config.root.join(&asset_path)).await.ok()
+                    .filter(|meta| meta.is_file()).map(|meta| meta.len())
+            } else { None }
+        } else {
+            response.headers().get("content-length").and_then(|v| v.to_str().ok()).and_then(|v| v.parse::<u64>().ok())
+        };
+        if let Some(size) = decoded_size {
+            response.headers_mut().insert("x-asset-bytes", HeaderValue::from_str(&size.to_string()).unwrap());
+        }
+    }
     if response.status().is_success() {
         response
             .headers_mut()
             .insert(CACHE_CONTROL, HeaderValue::from_static(policy));
     }
-    response.headers_mut().insert("origin-agent-cluster", HeaderValue::from_static("?1"));
-    response.headers_mut().insert("permissions-policy", HeaderValue::from_static("tools=(self)"));
+    response
+        .headers_mut()
+        .insert("origin-agent-cluster", HeaderValue::from_static("?1"));
+    response.headers_mut().insert(
+        "permissions-policy",
+        HeaderValue::from_static("tools=(self)"),
+    );
+    response
+}
+
+fn not_found_page(head: bool) -> Response {
+    let mut response = (
+        StatusCode::NOT_FOUND,
+        [(CACHE_CONTROL, "no-store")],
+        Html("<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>404</title><body><h1>404</h1><p>Page not found.</p></body></html>"),
+    ).into_response();
+    if head {
+        *response.body_mut() = axum::body::Body::empty();
+    }
     response
 }
 

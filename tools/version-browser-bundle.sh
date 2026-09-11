@@ -12,7 +12,7 @@ sed "s/crystal-bevy_bg\.wasm/$bundle_name.wasm/g" crystal-bevy.js > "$bundle_nam
 mv crystal-bevy_bg.wasm "$bundle_name.wasm"
 gzip -9 -c "$bundle_name.wasm" > "$bundle_name.wasm.gz"
 gzip -9 -c "$bundle_name.js" > "$bundle_name.js.gz"
-sed "s|'./crystal-bevy.js'|'./$bundle_name.js'|g" index.html > index.html.versioned
+sed "s|'./crystal-bevy.js'|'./$bundle_name.js'|g; s|./crystal-bevy_bg.wasm|./$bundle_name.wasm|g" index.html > index.html.versioned
 mv index.html.versioned index.html
 rm -f crystal-bevy.js crystal-bevy.js.gz crystal-bevy_bg.wasm.gz
 
@@ -23,7 +23,7 @@ sed "s/crystal-audio_bg\.wasm/$audio_name.wasm/g" crystal-audio.js > "$audio_nam
 mv crystal-audio_bg.wasm "$audio_name.wasm"
 gzip -9 -c "$audio_name.wasm" > "$audio_name.wasm.gz"
 gzip -9 -c "$audio_name.js" > "$audio_name.js.gz"
-sed "s|'./crystal-audio.js'|'./$audio_name.js'|g" audio-worker.js > audio-worker.versioned.js
+sed "s|'./crystal-audio.js'|'./$audio_name.js'|g; s|./crystal-audio_bg.wasm|./$audio_name.wasm|g" audio-worker.js > audio-worker.versioned.js
 mv audio-worker.versioned.js "audio-worker-$audio_hash.js"
 sed "s|'./audio-worker.js'|'./audio-worker-$audio_hash.js'|g" index.html > index.html.versioned
 mv index.html.versioned index.html
@@ -37,7 +37,7 @@ if test -s flygon/crystal_flygon_bg.wasm; then
     mv flygon/crystal_flygon_bg.wasm "flygon/$flygon_name.wasm"
     gzip -9 -c "flygon/$flygon_name.wasm" > "flygon/$flygon_name.wasm.gz"
     for worker in flygon-worker flygon-view-worker; do
-        sed "s|flygon/crystal_flygon.js|flygon/$flygon_name.js|g" "$worker.js" > "$worker.next"
+        sed "s|flygon/crystal_flygon.js|flygon/$flygon_name.js|g; s|flygon/crystal_flygon_bg.wasm|flygon/$flygon_name.wasm|g" "$worker.js" > "$worker.next"
         mv "$worker.next" "$worker.js"
         worker_hash=$(sha256sum "$worker.js" | cut -d ' ' -f 1)
         mv "$worker.js" "$worker-$worker_hash.js"

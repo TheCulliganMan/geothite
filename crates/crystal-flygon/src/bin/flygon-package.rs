@@ -14,6 +14,8 @@ mod preview;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 const UI: &[&str] = &[
+    "asset-progress.js",
+    "loading-progress.css",
     "flygon.html",
     "flygon.css",
     "flygon.js",

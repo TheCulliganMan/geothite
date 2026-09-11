@@ -106,7 +106,7 @@
   <body>
     <main id="game-stage" aria-label="Geothite game">
       <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
-      <div id="loading" role="status"><span id="loading-message">Loading…</span></div>
+      <div id="loading" role="status"><div class="loading-card"><h1 id="loading-message">Loading game</h1><div id="game-loading-assets"></div></div></div>
     </main>
     <fieldset id="touch-controls" aria-label="Game controls" disabled>
       <div id="dpad" role="group" aria-label="Movement pad. Slide to change direction.">
@@ -217,6 +217,7 @@
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
       </div>
     </dialog>
+    <link rel="stylesheet" href="./loading-progress.css">
     <script type="module">
       import { createGameBridge, registerGameTools } from './webmcp.js';
       import { mountGamepadControls } from './gamepad-controls.js';
@@ -229,6 +230,13 @@
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
 
+      import { fetchAsset, loadWasm, mountAssetProgress } from './asset-progress.js';
+      const reportAsset = mountAssetProgress(document.querySelector('#game-loading-assets'), ['Game engine', 'Game data', 'Audio engine']);
+      globalThis.__crystalFetchPack = async url => {
+        const bytes = await fetchAsset(url, { label: 'Game data', report: reportAsset });
+        reportAsset({ label: 'Game data', phase: 'initializing' });
+        return bytes;
+      };
       const canvas = document.querySelector('canvas');
       const fitMenuViewport = () => {
         const viewport = window.visualViewport;
@@ -296,11 +304,14 @@
         const session = await startOnlineSession({ url: location.href, localStorage, sessionStorage, crypto, fetch });
         history.replaceState(null, '', session.url);
         await runWithPlayerLock(navigator.locks, session.playerId, async () => {
+          let audioResolve, audioReject;
+          const audioReady = new Promise((resolve, reject) => { audioResolve = resolve; audioReject = reject; });
+          audioReady.catch(() => {});
           const audioWorker = new Worker(new URL('./audio-worker.js', import.meta.url), { type: 'module' });
-          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker);
+          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, { onProgress: progress => { reportAsset(progress); if (progress.phase === 'ready') audioResolve(); if (progress.phase === 'error') audioReject(Error(progress.error)); } });
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
-          await init();
+          await loadWasm(init, './crystal-bevy_bg.wasm', 'Game engine', reportAsset);
           const muteButton = document.querySelector('#mute');
           let muted = localStorage.getItem('crystal.audio.muted') === 'true';
           let audioState = 'idle';
@@ -323,6 +334,7 @@
           // WASM initialization starts asynchronous pack loading. Enable input
           // only after the actual game loop has produced its first observation.
           await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });
+          await audioReady;
           document.querySelector('#loading').hidden = true;
           document.querySelector('#touch-controls').disabled = false;
           mountSocialChat(wasm, { document, window, playerId: session.playerId });

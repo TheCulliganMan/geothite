@@ -11,7 +11,8 @@ try {
   ['chromium', chromium, { viewport: {width:1280,height:900} }],
   ['mobile-webkit', webkit, devices['iPhone 13']],
  ]) {
-  const browser = await type.launch({headless:false});
+  const headless = process.env.BROWSER_HEADLESS === '1';
+  const browser = await type.launch({headless,args:engine==='chromium'&&headless?['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']:undefined});
   try {
    for (const stale of [false,true]) {
     const context = await browser.newContext(options);

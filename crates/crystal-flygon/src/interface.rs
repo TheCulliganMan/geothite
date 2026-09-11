@@ -86,12 +86,6 @@ impl Brain {
         if let Some(s) = v.pointer("/status/screen").and_then(|v| v.as_str()) {
             features.push(format!("screen:{s}"));
         }
-        if let Some(s) = v
-            .pointer("/map_info/player/facing")
-            .and_then(|v| v.as_str())
-        {
-            features.push(format!("facing:{s}"));
-        }
         for (field, prefix) in [("text", "text"), ("battle", "battle")] {
             if let Some(s) = v
                 .pointer(&format!("/observe/{field}"))
@@ -111,49 +105,7 @@ impl Brain {
                 }
             }
         }
-        let px = v
-            .pointer("/map_info/player/x")
-            .and_then(|v| v.as_i64())
-            .unwrap_or(0);
-        let py = v
-            .pointer("/map_info/player/y")
-            .and_then(|v| v.as_i64())
-            .unwrap_or(0);
-        let ox = v
-            .pointer("/map_info/terrain/origin_x")
-            .and_then(|v| v.as_i64())
-            .unwrap_or(px - 6);
-        let oy = v
-            .pointer("/map_info/terrain/origin_y")
-            .and_then(|v| v.as_i64())
-            .unwrap_or(py - 6);
-        if let Some(objects) = v.pointer("/map_info/objects").and_then(|v| v.as_array()) {
-            for object in objects {
-                if let (Some(x), Some(y)) = (object["x"].as_i64(), object["y"].as_i64()) {
-                    let dx = x - px;
-                    let dy = y - py;
-                    if dx.abs() <= 6 && dy.abs() <= 6 {
-                        features.push(format!("object:{dx}:{dy}"));
-                    }
-                }
-            }
-        }
-        if let Some(rows) = v
-            .pointer("/map_info/terrain/rows")
-            .and_then(|v| v.as_array())
-        {
-            for (y, row) in rows.iter().take(13).enumerate() {
-                if let Some(row) = row.as_array() {
-                    for (x, tile) in row.iter().take(13).enumerate() {
-                        if let Some(terrain) = tile.get("terrain").and_then(|v| v.as_str()) {
-                            let dx = ox + x as i64 - px;
-                            let dy = oy + y as i64 - py;
-                            features.push(format!("terrain:{dx}:{dy}:{terrain}"));
-                        }
-                    }
-                }
-            }
-        }
+        features.extend(local_map_features(&v));
         let pool = self
             .metadata
             .cells
@@ -182,7 +134,7 @@ impl Brain {
         indices.sort_unstable();
         indices.dedup();
         self.stimulate(&indices, self.config.stimulus_mv)?;
-        serde_json::to_string(&serde_json::json!({"encoding":"structured local sensory prosthesis v2","features":features,"indices":indices,"strength_mv":self.config.stimulus_mv})).map_err(|e|e.to_string())
+        serde_json::to_string(&serde_json::json!({"encoding":"structured local sensory prosthesis v3","features":features,"indices":indices,"strength_mv":self.config.stimulus_mv})).map_err(|e|e.to_string())
     }
     /// Anatomical soma projection, with brightness determined by measured spikes.
     pub fn render(&self, width: u32, height: u32, yaw: f32, pitch: f32) -> Result<Vec<u8>, String> {
@@ -299,4 +251,76 @@ impl Brain {
         }
         serde_json::json!(labels.iter().enumerate().map(|(g,label)|serde_json::json!({"population":label,"neurons":populations[g],"active":active[g],"spikes":spikes[g]})).collect::<Vec<_>>())
     }
+}
+
+/// Shared local map input for both sensory and action-memory modes. Only
+/// observation fields enter here; evaluator state never becomes a sensory cue.
+pub(crate) fn local_map_features(v: &serde_json::Value) -> Vec<String> {
+    let mut features = Vec::new();
+    if let Some(s) = v
+        .pointer("/map_info/player/facing")
+        .and_then(|v| v.as_str())
+    {
+        features.push(format!("facing:{s}"));
+    }
+    let px = v
+        .pointer("/map_info/player/x")
+        .and_then(|v| v.as_i64())
+        .unwrap_or(0);
+    let py = v
+        .pointer("/map_info/player/y")
+        .and_then(|v| v.as_i64())
+        .unwrap_or(0);
+    let ox = v
+        .pointer("/map_info/terrain/origin_x")
+        .and_then(|v| v.as_i64())
+        .unwrap_or(px - 6);
+    let oy = v
+        .pointer("/map_info/terrain/origin_y")
+        .and_then(|v| v.as_i64())
+        .unwrap_or(py - 6);
+    if let Some(objects) = v.pointer("/map_info/objects").and_then(|v| v.as_array()) {
+        for object in objects {
+            if let (Some(x), Some(y)) = (object["x"].as_i64(), object["y"].as_i64()) {
+                let dx = x - px;
+                let dy = y - py;
+                if dx.abs() <= 6 && dy.abs() <= 6 {
+                    features.push(format!("object:{dx}:{dy}"));
+                }
+            }
+        }
+    }
+    if let Some(rows) = v
+        .pointer("/map_info/terrain/rows")
+        .and_then(|v| v.as_array())
+    {
+        for (y, row) in rows.iter().take(13).enumerate() {
+            if let Some(row) = row.as_array() {
+                for (x, tile) in row.iter().take(13).enumerate() {
+                    if tile.is_null() {
+                        let dx = ox + x as i64 - px;
+                        let dy = oy + y as i64 - py;
+                        if dx.abs() <= 6 && dy.abs() <= 6 {
+                            features.push(format!("terrain:{dx}:{dy}:outside"));
+                        }
+                    }
+                    if let Some(terrain) = tile.get("terrain").and_then(|v| v.as_str()) {
+                        let dx = ox + x as i64 - px;
+                        let dy = oy + y as i64 - py;
+                        if dx.abs() <= 6 && dy.abs() <= 6 {
+                            features.push(format!("terrain:{dx}:{dy}:{terrain}"));
+                            if let Some(permission) =
+                                tile.get("permission").and_then(|v| v.as_u64())
+                            {
+                                features.push(format!("permission:{dx}:{dy}:{permission}"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    features.sort_unstable();
+    features.dedup();
+    features
 }

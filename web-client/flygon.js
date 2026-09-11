@@ -1,3 +1,5 @@
+import { mountAssetProgress } from "./asset-progress.js";
+const reportAsset = mountAssetProgress(document.getElementById("brain-loading-assets"), ["Brain engine", "Connectome", "Neuron metadata", "3D renderer"]);
 import { createViewer } from "./flygon-view.js";
 // Browser lifecycle and UI transport; all neural computations live in Rust.
 const $ = (id) => document.getElementById(id);
@@ -106,6 +108,7 @@ function command(kind, data = {}) {
   });
 }
 worker.onmessage = ({ data }) => {
+  if (data.kind === "asset-progress") { reportAsset(data.progress); return; }
   const p = pending.get(data.id);
   if (!p) return;
   pending.delete(data.id);
@@ -186,6 +189,7 @@ function bridge() {
   return $("game").contentWindow?.__flygonGameBridge;
 }
 const viewer = createViewer($("brain"), {
+  onProgress: reportAsset,
   command,
   inspect: (r) => {
     $("inspection").textContent = JSON.stringify(r, null, 2);

@@ -1,5 +1,7 @@
 // Transport only. Neural dynamics, encoding, decoding and pixels are Rust/WASM.
 import init, { Brain } from "./flygon/crystal_flygon.js";
+import { fetchAsset, loadWasm } from "./asset-progress.js";
+const report = progress => self.postMessage({ kind: "asset-progress", progress });
 let brain,
   runtime,
   laboratory = false,
@@ -15,30 +17,21 @@ self.onmessage = async ({ data }) => {
         brain = null;
       }
       lastSensory = null;
-      runtime = await init();
+      runtime = await loadWasm(init, "./flygon/crystal_flygon_bg.wasm", "Brain engine", report);
       const loadStart = performance.now();
       laboratory = data.laboratory === true;
       operantMode = Boolean(data.config.operant);
       const base = data.base || "./flygon-data/";
-      const [graph, metadata, dataset] = await Promise.all([
-        fetch(base + "graph.bin").then((r) => {
-          if (!r.ok) throw Error("Graph download failed");
-          return r.arrayBuffer();
-        }),
-        fetch(base + "metadata.json").then((r) => {
-          if (!r.ok) throw Error("Metadata download failed");
-          return r.text();
-        }),
-        fetch("./flygon-dataset.json", { cache: "no-store" }).then((r) => {
-          if (!r.ok) throw Error("Dataset identity download failed");
-          return r.json();
-        }),
+      const response = await fetch("./flygon-dataset.json", { cache: "no-store" });
+      if (!response.ok) throw Error("Dataset identity download failed");
+      const dataset = await response.json();
+      const [graph, metadata] = await Promise.all([
+        fetchAsset(base + "graph.bin", { label: "Connectome", expectedBytes: dataset.graph_bytes, report }),
+        fetchAsset(base + "metadata.json", { label: "Neuron metadata", expectedBytes: dataset.metadata_bytes, report }),
       ]);
-      brain = new Brain(
-        new Uint8Array(graph),
-        metadata,
-        JSON.stringify(data.config),
-      );
+      report({ label: "Connectome", phase: "initializing" });
+      brain = new Brain(graph, new TextDecoder().decode(metadata), JSON.stringify(data.config));
+      report({ label: "Connectome", loaded: graph.byteLength, total: graph.byteLength, phase: "ready" });
       const telemetry = JSON.parse(brain.telemetry());
       if (
         telemetry.graph_id !== dataset.graph_id ||
@@ -66,7 +59,9 @@ self.onmessage = async ({ data }) => {
         ...r.telemetry,
         action: r.action,
         sensory: {
-          encoding: "artificial situation/action KC cues; MBON spike readout",
+          encoding: "spatial-map-v2 situation/action KC cues; MBON spike readout",
+          map_features: r.map_features,
+          spatial_channels: r.spatial_channels,
           context: r.context,
           probe_learning: false,
         },
