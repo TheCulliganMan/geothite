@@ -24,8 +24,25 @@
         ><button id="fullscreen">Full screen</button>
       </div>
     </header>
+    <section class="controls" aria-label="Simulation controls">
+      <button id="load">Load Flygon</button
+      ><button id="run" class="primary" disabled>Run brain</button
+      ><button id="step" disabled>One neural decision</button>
+      <label class="toggle"
+        ><input id="play" type="checkbox" checked /> Control game</label
+      >
+      <label class="toggle"
+        ><input id="auto-reward" type="checkbox" checked /> Learn from
+        outcomes</label
+      >
+      <span id="speed">Runs on your device</span>
+    </section>
+    <nav class="workspace-nav" aria-label="Workspace views">
+      <a href="/flygon#game-panel">Game</a>
+      <a href="/flygon#brain-panel">Brain</a>
+    </nav>
     <main>
-      <section class="game" aria-label="Pokémon game">
+      <section id="game-panel" class="game" aria-label="Pokémon game">
         <div class="panel-title">
           <span>GAME</span><span id="game-state">Waiting for game</span>
         </div>
@@ -40,7 +57,7 @@
           ><span>Pokémon Crystal</span>
         </div>
       </section>
-      <section class="brain" aria-label="Interactive connectome">
+      <section id="brain-panel" class="brain" aria-label="Interactive connectome">
         <div class="panel-title">
           <span>BRAIN</span><span class="badge">MaleCNS v1.0</span>
         </div>
@@ -102,19 +119,6 @@
         </p>
       </section>
     </main>
-    <section class="controls" aria-label="Simulation controls">
-      <button id="load">Load Flygon</button
-      ><button id="run" class="primary" disabled>Run brain</button
-      ><button id="step" disabled>One neural decision</button>
-      <label class="toggle"
-        ><input id="play" type="checkbox" checked /> Control game</label
-      >
-      <label class="toggle"
-        ><input id="auto-reward" type="checkbox" checked /> Learn from
-        outcomes</label
-      >
-      <span id="speed">Runs on your device</span>
-    </section>
     <section class="workspace-notes">
       <p id="status-detail" role="alert" hidden></p>
       <p id="metrics">

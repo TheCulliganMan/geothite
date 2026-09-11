@@ -3,6 +3,13 @@ const reportAsset = mountAssetProgress(document.getElementById("brain-loading-as
 import { createViewer } from "./flygon-view.js";
 // Browser lifecycle and UI transport; all neural computations live in Rust.
 const $ = (id) => document.getElementById(id);
+// The document base is /; keep workspace jumps on the current experiment.
+for (const link of document.querySelectorAll(".workspace-nav a")) {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    document.querySelector(link.hash).scrollIntoView({ block: "start" });
+  });
+}
 const query = new URLSearchParams(location.search);
 const operantInitial =
   query.has("operant") ||

@@ -473,26 +473,26 @@ footer {
     height: calc(100dvh - 250px);
   }
 }
-@media (max-width: 700px) {
+.workspace-nav { display: none; }
+
+/* Stack the workspace without pushing the primary controls below both views. */
+@media (max-width: 1000px) {
   .app-header {
-    padding: 0 16px;
-    height: 60px;
+    padding: 8px 16px;
+    min-height: 60px;
+    height: auto;
     gap: 12px;
   }
-  .brand {
-    font-size: 15px;
-  }
-  .header-actions {
-    gap: 7px;
-  }
-  #phase {
-    max-width: 140px;
-    font-size: 9px;
-  }
-  #fullscreen {
-    font-size: 10px;
-    padding: 6px 8px;
-  }
+  .workspace-nav { display: flex; padding: 0 16px; gap: 24px; border-bottom: 1px solid var(--border); }
+  .workspace-nav a { display: flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 13px; }
+  .game, .brain { scroll-margin-top: 12px; }
+  /* Leave a scrolling gutter beside the interactive canvas. */
+  #brain { left: 16px; width: calc(100% - 32px); }
+  .brand { font-size: 15px; }
+  .header-actions { gap: 8px; min-width: 0; }
+  .status-dot { flex-shrink: 0; }
+  #phase { max-width: 120px; font-size: 10px; overflow-wrap: anywhere; }
+  #fullscreen { min-height: 44px; font-size: 12px; padding: 8px; }
   main {
     display: flex;
     flex-direction: column;
@@ -500,45 +500,56 @@ footer {
     min-height: 0;
   }
   .game {
-    height: 440px;
+    /* Leave room for the embedded game's 200px touch deck and a usable screen. */
+    height: clamp(420px, calc(90vw + 200px), 580px);
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
-  .brain {
-    height: 510px;
-  }
-  .panel-title,
-  .game-caption {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .controls {
+  .brain { height: auto; }
+  .brain-stage { flex: none; height: clamp(260px, 80vw, 400px); }
+  .panel-title, .game-caption { padding-left: 16px; padding-right: 16px; }
+  .panel-title > span:first-child { flex-shrink: 0; }
+  .game-caption { gap: 12px; font-size: 12px; }
+  .game-caption > span:last-child { flex-shrink: 0; }
+  body > .controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 12px;
     padding: 12px 16px;
   }
-  .advanced-grid {
-    grid-template-columns: 1fr;
-  }
-  .advanced {
-    padding: 0 16px 12px;
-  }
-  summary > span {
-    display: none;
-  }
-  footer {
-    flex-direction: column;
-    gap: 5px;
-  }
-  .brain-toolbar {
-    gap: 7px;
-    padding: 10px 16px;
-  }
-  .brain-toolbar select {
-    max-width: 170px;
-  }
-  .legend,
-  .connection-note {
-    padding-left: 16px;
-  }
+  body > .controls #step { grid-column: 1 / -1; }
+  body > .controls #speed { grid-column: 1 / -1; font-size: 11px; }
+  button, select, input[type="number"], input[type="search"] { min-height: 44px; }
+  select, input[type="number"], input[type="search"] { font-size: 16px; }
+  select { height: 44px; }
+  .toggle { min-height: 44px; font-size: 12px; }
+  input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; margin: 0; }
+  .workspace-notes { padding: 12px 16px; gap: 6px; font-size: 12px; overflow-wrap: anywhere; }
+  .advanced-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 8px 12px 16px; }
+  .advanced-grid > section { min-width: 0; }
+  .advanced { padding: 0 16px 12px; }
+  summary { min-height: 44px; font-size: 14px; }
+  summary > span { display: none; }
+  .upload { flex-direction: column; align-items: stretch; }
+  .upload input { max-width: 100%; min-width: 0; }
+  .tuning label { flex-wrap: wrap; min-height: 44px; }
+  .note { font-size: 12px; }
+  footer { flex-direction: column; gap: 5px; padding: 12px 16px; }
+  .brain-toolbar { gap: 4px 16px; padding: 8px 16px; }
+  .brain-toolbar label { font-size: 12px; }
+  .brain-toolbar > label:first-child { width: 100%; }
+  .brain-toolbar select { flex: 1; min-width: 0; }
+  .legend { padding: 0 16px 8px; font-size: 11px; gap: 8px 14px; }
+  .connection-note { padding: 0 16px 16px; font-size: 12px; min-height: 0; }
+  .view-tools { top: 8px; right: 16px; }
+  .view-tools button { font-size: 12px; }
+  #view-help { font-size: 11px; padding: 0 12px; }
+  #view-empty { padding: 16px; }
+  #view-empty .loading-card { width: 100%; max-width: 420px; padding: 16px; }
+  #view-empty .loading-card h1 { margin-bottom: 12px; }
+  #view-empty .asset-progress { margin-top: 10px; }
+  #selection { top: 60px; left: 16px; max-width: calc(100% - 32px); padding-right: 48px; }
+  #clear-selection { min-width: 44px; font-size: 20px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * {
