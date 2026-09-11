@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore a fruit fly connectome in 3D and watch its simulated neural activity control Pokémon Crystal, locally in your browser."
+    />
+    <meta name="theme-color" content="#080f16" />
+    <title>Flygon</title>
+    <link rel="stylesheet" href="./flygon.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="./flygon.html" aria-label="Flygon home"
+        ><span class="brand-mark" aria-hidden="true">✳</span> FLYGON</a
+      >
+      <div class="header-actions">
+        <span class="status-dot" aria-hidden="true"></span
+        ><span id="phase" role="status">LOADING</span
+        ><button id="fullscreen">Full screen</button>
+      </div>
+    </header>
+    <main>
+      <section class="game" aria-label="Pokémon game">
+        <div class="panel-title">
+          <span>GAME</span><span id="game-state">Waiting for game</span>
+        </div>
+        <iframe
+          id="game"
+          title="Pokémon Crystal"
+          src="./?multiplayer=off&flygon=1"
+          allow="autoplay; fullscreen"
+        ></iframe>
+        <div class="game-caption">
+          <span id="action">Waiting for neural input</span
+          ><span>Pokémon Crystal</span>
+        </div>
+      </section>
+      <section class="brain" aria-label="Interactive connectome">
+        <div class="panel-title">
+          <span>BRAIN</span><span class="badge">MaleCNS v1.0</span>
+        </div>
+        <div class="brain-stage">
+          <canvas
+            id="brain"
+            width="720"
+            height="720"
+            tabindex="0"
+            role="img"
+            aria-label="Interactive 3D fruit fly brain. Drag to orbit, scroll or pinch to zoom. Arrow keys rotate, plus and minus zoom, zero resets. Click a neuron to inspect its connections."
+            aria-describedby="view-help"
+          ></canvas>
+          <div id="view-empty">
+            <span class="empty-orbit" aria-hidden="true">✳</span>
+            <h1>Loading brain</h1>
+            <p>166,700 neurons · MaleCNS v1.0</p>
+            <p class="note">Loading the local connectome…</p>
+          </div>
+          <div class="view-tools">
+            <button id="reset-view" title="Reset camera (0)">Reset view</button
+            ><span id="view-scale">1.0×</span>
+          </div>
+          <aside id="selection" hidden aria-label="Selected neuron">
+            <button id="clear-selection" aria-label="Clear selected neuron">
+              ×
+            </button>
+            <strong id="selected-name"></strong><span id="selected-id"></span
+            ><span id="selected-links"></span>
+          </aside>
+          <span id="view-help"
+            >Drag to orbit · Scroll to zoom · Click to explore</span
+          >
+        </div>
+        <div class="brain-toolbar">
+          <label
+            >Activity
+            <select id="population">
+              <option value="all">All neurons</option>
+              <option value="KC">Kenyon cells</option>
+              <option value="DAN">Dopamine cells</option>
+              <option value="MBON">Mushroom body outputs</option>
+            </select></label
+          >
+          <label class="toggle"
+            ><input id="connections" type="checkbox" checked />
+            Connections</label
+          >
+        </div>
+        <div class="legend">
+          <span class="spike">● Spiking</span
+          ><span class="dopamine">● Dopamine</span
+          ><span class="incoming">↗ Incoming</span
+          ><span class="outgoing">↗ Outgoing</span>
+        </div>
+        <p id="connection-note" class="connection-note">
+          Select a neuron to see its strongest connections. All activity comes
+          from the simulation.
+        </p>
+      </section>
+    </main>
+    <section class="controls" aria-label="Simulation controls">
+      <button id="load">Load Flygon</button
+      ><button id="run" class="primary" disabled>Run brain</button
+      ><button id="step" disabled>One neural decision</button>
+      <label class="toggle"
+        ><input id="play" type="checkbox" checked /> Control game</label
+      >
+      <label class="toggle"
+        ><input id="auto-reward" type="checkbox" checked /> Learn from
+        outcomes</label
+      >
+      <span id="speed">Runs on your device</span>
+    </section>
+    <section class="workspace-notes">
+      <p id="status-detail" role="alert" hidden></p>
+      <p id="metrics">
+        Initial neural download: about 216 MiB. Allow at least 1 GiB of free
+        memory; game and browser use additional memory.
+      </p>
+      <p id="story-state">
+        Elm arrival verified. Cherrygrove is not yet verified.
+      </p>
+    </section>
+    <section class="advanced" aria-label="Research and session controls">
+      <details>
+        <summary>
+          Session &amp; research tools
+          <span>Checkpoints, learning, source neurons</span>
+        </summary>
+        <div class="advanced-grid">
+          <section>
+            <h2>Session</h2>
+            <label class="field"
+              >Experiment
+              <select
+                id="mode"
+                title="Changing experiment can reset brain and game. Save both first."
+              >
+                <option value="operant">Story · Action memory</option>
+                <option value="reference">Reference · 0.1 ms</option>
+                <option value="fast">Reference · 0.5 ms</option>
+                <option value="balanced">Calibrated BCI</option>
+                <option value="refractory">Synaptic reset</option>
+                <option value="lab">Conditioning lab · 0.1 ms</option>
+                <option value="lab-fast">Conditioning lab · 0.5 ms</option>
+              </select></label
+            >
+            <div class="button-row">
+              <button id="save-brain" disabled>Save brain</button
+              ><button id="save-record" disabled>Export run record</button>
+            </div>
+            <label class="upload"
+              >Restore brain
+              <input id="restore-brain" type="file" accept=".json" disabled
+            /></label>
+            <p class="note">
+              Brain checkpoints retain learned synapses. Save Pokémon separately
+              with the game's save controls.
+            </p>
+            <p id="integration" class="note"></p>
+            <p id="clock-note" class="note"></p>
+          </section>
+          <section>
+            <h2>Learning</h2>
+            <div class="tuning">
+              <label
+                >Sensory current
+                <input
+                  id="stimulus_mv"
+                  type="range"
+                  min="0"
+                  max="60"
+                  step="1"
+                  value="8"
+                /><output>8</output></label
+              ><label
+                >Dopamine current
+                <input
+                  id="dopamine_mv"
+                  type="range"
+                  min="0"
+                  max="60"
+                  step="1"
+                  value="12"
+                /><output>12</output></label
+              ><label
+                >Learning rate
+                <input
+                  id="learning_rate"
+                  type="number"
+                  min="0"
+                  max="0.01"
+                  step="0.0001"
+                  value="0.0001" /></label
+              ><label
+                >Reward pulse ms
+                <input
+                  id="reward_pulse_ms"
+                  type="number"
+                  min="0"
+                  max="5000"
+                  step="25"
+                  value="200" /></label
+              ><label
+                >Eligibility ms
+                <input
+                  id="eligibility_ms"
+                  type="number"
+                  min="1"
+                  max="10000"
+                  step="100"
+                  value="1000" /></label
+              ><label
+                ><input id="learning" type="checkbox" checked /> Plasticity
+                enabled</label
+              >
+            </div>
+            <details id="reward-strengths">
+              <summary>Outcome reward strengths</summary>
+              <div class="tuning">
+                <label
+                  >Story location
+                  <input
+                    id="reward-story"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="1.5" /></label
+                ><label
+                  >Closer to character
+                  <input
+                    id="reward-approach"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.05"
+                    value="0.15" /></label
+                ><label
+                  >New dialogue page
+                  <input
+                    id="reward-dialogue"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="0.4" /></label
+                ><label
+                  >New tile
+                  <input
+                    id="reward-novelty"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.05"
+                    value="0.25" /></label
+                ><label
+                  >Badge
+                  <input
+                    id="reward-badge"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.25"
+                    value="2" /></label
+                ><label
+                  >First party member
+                  <input
+                    id="reward-starter"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.25"
+                    value="1" /></label
+                ><label
+                  >Level increase
+                  <input
+                    id="reward-level_up"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.25"
+                    value="0.5" /></label
+                ><label
+                  >Stationary movement penalty
+                  <input
+                    id="reward-collision"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.25"
+                    value="0.5" /></label
+                ><label
+                  >Attempts
+                  <input
+                    id="reward-collision_attempts"
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="1"
+                    value="3"
+                /></label>
+              </div>
+            </details>
+            <p id="operant-note" class="note">
+              Story mode uses paired action cues and dopamine feedback. Goals
+              shape rewards after actions; neural readouts choose buttons.
+            </p>
+            <div class="button-row">
+              <button id="reload" disabled>Reload tuning</button
+              ><button id="reward" disabled>Reward pulse</button
+              ><button id="aversive" disabled>Aversion pulse</button>
+            </div>
+            <p class="note">
+              Manual stimulation is recorded as assistance. Pulse controls apply
+              to the reference and lab experiments.
+            </p>
+          </section>
+          <section>
+            <h2>Source neurons</h2>
+            <label class="field"
+              >Find a cell type or source ID<input
+                id="cell-query"
+                type="search"
+                placeholder="PAM01, MBON01…" /></label
+            ><button id="find" disabled>Find</button>
+            <div class="button-row">
+              <label
+                >Simulation index
+                <input id="neuron" type="number" min="0" value="0" /></label
+              ><button id="inspect" disabled>Show connections</button>
+            </div>
+            <pre id="inspection">
+Select a soma in the 3D view to inspect its source identity.</pre
+            >
+          </section>
+          <section>
+            <h2>View &amp; activity</h2>
+            <div class="camera">
+              <label
+                >Orbit
+                <input
+                  id="yaw"
+                  type="range"
+                  min="-3.14159"
+                  max="3.14159"
+                  step="0.01"
+                  value="0" /></label
+              ><label
+                >Tilt
+                <input
+                  id="pitch"
+                  type="range"
+                  min="-1.5708"
+                  max="1.5708"
+                  step="0.01"
+                  value="0" /></label
+              ><button id="reload-view">Reload view style</button>
+            </div>
+            <p id="circuits" class="note">
+              Population spikes appear after a neural decision.
+            </p>
+            <details>
+              <summary>Sensory input &amp; readouts</summary>
+              <pre id="readouts">No activity yet</pre>
+            </details>
+          </section>
+        </div>
+        <section id="lab-controls" class="controls" hidden>
+          <strong>Artificial-current memory assay</strong
+          ><button id="probe-a" disabled>Probe A</button
+          ><button id="probe-b" disabled>Probe B</button
+          ><button id="teach-a" disabled>Pair A + reward</button
+          ><button id="teach-b" disabled>Pair B + reward</button
+          ><button id="erase" disabled>Erase learned weights</button
+          ><span id="lab-result"
+            >Probes freeze plasticity and apply no reward.</span
+          >
+        </section>
+        <div id="events" role="log" aria-label="Experiment events"></div>
+      </details>
+    </section>
+    <footer>
+      <span
+        ><a
+          href="https://male-cns.janelia.org/download/"
+          target="_blank"
+          rel="noreferrer"
+          >MaleCNS</a
+        >
+        · FlyEM / HHMI Janelia, Cambridge, MRC LMB, Google Research &amp;
+        contributors ·
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          target="_blank"
+          rel="noreferrer"
+          >CC BY 4.0</a
+        ></span
+      >
+    </footer>
+    <script type="module" src="./flygon.js"></script>
+  </body>
+</html>

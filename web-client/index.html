@@ -338,6 +338,10 @@
             },
           });
           const bridge = createGameBridge(wasm);
+          if (new URLSearchParams(location.search).get("flygon") === "1") {
+            window.__flygonGameBridge = bridge;
+            window.__flygonActivateAudio = resumeAudio;
+          }
           cancelAgentInput = () => bridge.cancel();
           let lifetime = new AbortController();
           window.addEventListener('pagehide', () => { bridge.cancel(); lifetime.abort(); });

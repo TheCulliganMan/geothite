@@ -1,0 +1,8 @@
+{
+  "background": [8, 15, 22],
+  "inactive": [75, 110, 135],
+  "spike": [110, 255, 188],
+  "dopamine": [255, 115, 191],
+  "spike_radius": 2,
+  "soma_radius": 0
+}

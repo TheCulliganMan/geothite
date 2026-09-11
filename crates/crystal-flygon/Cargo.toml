@@ -1,0 +1,30 @@
+[package]
+name = "crystal-flygon"
+version = "0.2.0"
+description = "Local connectome simulation, learning and interactive anatomy for Flygon"
+publish = false
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+wasm-bindgen = "0.2"
+sha2 = "0.10"
+
+[features]
+import = ["dep:arrow-array", "dep:arrow-ipc"]
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+arrow-array = { version = "58", optional = true }
+arrow-ipc = { version = "58", optional = true, features = ["lz4", "zstd"] }
+
+[[bin]]
+name = "flygon-import"
+path = "src/import.rs"
+required-features = ["import"]
