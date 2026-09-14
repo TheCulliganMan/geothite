@@ -1,0 +1,32 @@
+/target/
+/target-*/
+
+# Generated runtime captures, profiles, and browser scratch files.
+/output/
+/.playwright-cli/
+
+# Local deployment secrets.
+.env
+
+# Browser test dependencies.
+node_modules
+
+# Local deployment configuration and operational tooling.
+/.local/
+.env.*
+!.env.example
+/tools/flygon-release*.sh
+/tools/flygon-release*.mjs
+/tools/flygon-release*.py
+/tools/FLYGON-TRAINING.md
+/tools/systemd/flygon-training*.service
+
+# Browser automation reports and local runtime caches.
+.playwright-cli/
+.playwright/
+playwright-report/
+test-results/
+blob-report/
+.DS_Store
+__pycache__/
+*.py[cod]
