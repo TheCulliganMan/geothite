@@ -12,6 +12,7 @@ mod dynamics_tests;
 mod interface;
 mod operant;
 mod objectives;
+mod recovery_objectives;
 mod shop_objectives;
 mod choice_objectives;
 mod pocket_objectives;

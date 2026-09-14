@@ -264,6 +264,7 @@ fn utility_potential(v: &Value) -> f32 {
     -1.0-utility_exit(v).map_or(0.0,|g|0.1*g.distance() as f32)
 }
 pub(crate) fn cues(v: &Value) -> Vec<String> {
+    if let Some(cues)=crate::recovery_objectives::cues(v){return cues;}
     if unneeded_utility_menu(v){return utility_exit(v).map(|g|g.cues().into_iter().map(|s|s.replace("objective:capture:","objective:overworld:")).collect()).unwrap_or_else(||vec!["objective:overworld:return_to_story".into()]);}
     if let Some(item)=healing_item(v) {
         let mut cues=vec![format!("objective:battle:heal:{item}")];
@@ -284,6 +285,7 @@ pub(crate) fn cues(v: &Value) -> Vec<String> {
 /// Foreground menu identity excludes cursor, changing HP and inventory counts.
 /// A battle move list, Pack and main commands must not share one learned head.
 pub(crate) fn menu_context(v: &Value) -> Option<String> {
+    if let Some(cues)=crate::recovery_objectives::cues(v){return Some(cues.join("|"));}
     let menu=v.pointer("/observe/menus")?.as_array()?.last()?;
     let kind=menu["kind"].as_str()?;
     let rows=entries(v);
@@ -339,6 +341,7 @@ fn potential(v:&Value)->Option<f32> {
 /// not a reward for repeatedly highlighting it. Capture completion keeps the
 /// existing one-time species/event reward. Knocking out this target is failure.
 pub(crate) fn feedback(before:&Value,after:&Value,rewards:&mut Vec<String>,aversions:&mut Vec<String>)->f32 {
+    if let Some(progress)=crate::recovery_objectives::feedback(before,after){return progress;}
     if unneeded_utility_menu(before)||unneeded_utility_menu(after){return 0.25*(utility_potential(after)-utility_potential(before));}
     let healing=healing_feedback(before,after);
     let Some(species)=capture_species(before) else{return healing.unwrap_or_else(||trainer_feedback(before,after));};
