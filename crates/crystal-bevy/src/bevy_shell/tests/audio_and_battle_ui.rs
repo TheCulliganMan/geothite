@@ -1,0 +1,2256 @@
+#[test]
+fn victory_music_survives_retained_battle_text_until_overworld_return() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell.title_menu = None;
+    shell.active_music = Some("MUSIC_WILD_VICTORY".into());
+    shell.battle_message_scene = Some(Arc::new(shell.shell.snapshot().unwrap()));
+    shell
+        .battle_messages
+        .push_back("Gained EXP. Points!".into());
+    queue_visible_current_music(&mut shell).unwrap();
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_WILD_VICTORY"));
+    shell.battle_message_scene = None;
+    shell.battle_messages.clear();
+    queue_visible_current_music(&mut shell).unwrap();
+    assert_eq!(
+        shell.active_music.as_deref(),
+        shell.shell.current_music_id()
+    );
+}
+
+#[test]
+fn victory_music_matches_asm_classes_and_wild_reward_gates() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut state = shell.shell.session().state().clone();
+    for class in ["FALKNER", "WILL", "CHAMPION", "RED", "BLUE"] {
+        assert_eq!(
+            visible_victory_music_id(&state, Some(class)),
+            Some("MUSIC_GYM_VICTORY")
+        );
+    }
+    assert_eq!(
+        visible_victory_music_id(&state, Some("YOUNGSTER")),
+        Some("MUSIC_TRAINER_VICTORY")
+    );
+    state.link_session.link_mode = 1;
+    assert_eq!(visible_victory_music_id(&state, Some("YOUNGSTER")), None);
+    state.link_session.link_mode = 0;
+    state.battle_pay_day_money = 0;
+    for pokemon in state.storage.party.pokemon.iter_mut().flatten() {
+        pokemon.turns_in_battle = 0;
+        pokemon.item = None;
+    }
+    assert_eq!(visible_victory_music_id(&state, None), Some("MUSIC_NONE"));
+    state.battle_pay_day_money = 1;
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+    state.battle_pay_day_money = 0;
+    let index = state
+        .storage
+        .party
+        .pokemon
+        .iter()
+        .position(Option::is_some)
+        .unwrap();
+    state.storage.party.pokemon[index].as_mut().unwrap().item = Some("EXP_SHARE".into());
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+    state.storage.party.pokemon[index].as_mut().unwrap().hp = 0;
+    assert_eq!(visible_victory_music_id(&state, None), Some("MUSIC_NONE"));
+    let pokemon = state.storage.party.pokemon[index].as_mut().unwrap();
+    pokemon.hp = 1;
+    pokemon.item = None;
+    pokemon.turns_in_battle = 1;
+    assert_eq!(
+        visible_victory_music_id(&state, None),
+        Some("MUSIC_WILD_VICTORY")
+    );
+}
+
+#[test]
+fn victory_music_is_queued_and_not_replaced_by_live_battle_music() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.battle_messages.clear();
+    let snapshot = shell.shell.snapshot().unwrap();
+    shell.pending_audio.clear();
+    queue_visible_victory_music(&mut shell, &snapshot).unwrap();
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_WILD_VICTORY"));
+    assert!(shell.pending_music_stop);
+    assert!(shell.pending_full_audio_reset);
+    assert!(pending_music_command_is(
+        &shell.pending_audio,
+        "MUSIC_WILD_VICTORY"
+    ));
+    shell.battle_message_scene = Some(Arc::new(snapshot));
+    let mut app = App::new();
+    app.insert_resource(shell).add_systems(
+        Update,
+        (sync_runtime_battle_music, sync_runtime_current_music, play_pending_audio).chain(),
+    );
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(!shell.pending_music_stop);
+    assert!(pending_music_command_is(&shell.pending_audio, "MUSIC_WILD_VICTORY"));
+    assert!(shell.audio_source_cache.is_empty(), "ASM DelayFrame precedes playback");
+    app.update();
+    assert!(app.world().resource::<BevyRuntimeShell>().pending_audio.is_empty());
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 1);
+    assert_eq!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .active_music
+            .as_deref(),
+        Some("MUSIC_WILD_VICTORY")
+    );
+}
+
+#[test]
+fn victory_tracks_decode_against_pack_pcm_metadata() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.pending_audio.clear();
+    shell.battle_messages.clear();
+    let mut app = App::new();
+    app.insert_resource(shell).add_systems(Update, play_pending_audio);
+    for (index, music_id) in ["MUSIC_WILD_VICTORY", "MUSIC_TRAINER_VICTORY", "MUSIC_GYM_VICTORY"]
+        .into_iter().enumerate()
+    {
+        start_visible_victory_music(&mut app.world_mut().resource_mut::<BevyRuntimeShell>(), music_id).unwrap();
+        app.update();
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        assert!(shell.pending_audio.is_empty());
+        // The playback decoder validates the pack's PCM hash, byte count and
+        // loop bounds before placing a track in this cache.
+        assert_audio_cache_contains_non_silent_pcm(app.world(), index + 1);
+    }
+}
+
+#[test]
+fn victory_music_waits_for_turn_messages_but_not_rewards() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    shell.pending_audio.clear();
+    shell.pending_music_stop = false;
+    shell.active_music = Some("MUSIC_JOHTO_WILD_BATTLE".into());
+    shell.battle_messages = VecDeque::from(["Used TACKLE!".into(), "Enemy fainted!".into()]);
+    queue_visible_victory_music(&mut shell, &snapshot).unwrap();
+    shell.battle_messages.push_back("Gained EXP!".into());
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_JOHTO_WILD_BATTLE"));
+    assert!(!shell.pending_music_stop);
+    assert!(shell.pending_audio.is_empty());
+    shell.battle_messages.pop_front();
+    advance_visible_victory_music_boundary(&mut shell).unwrap();
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_JOHTO_WILD_BATTLE"));
+    assert!(shell.pending_audio.is_empty());
+    shell.battle_messages.pop_front();
+    advance_visible_victory_music_boundary(&mut shell).unwrap();
+    assert_eq!(shell.battle_messages.front().unwrap(), "Gained EXP!");
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_WILD_VICTORY"));
+    assert!(shell.pending_victory_music_delay);
+    assert!(pending_music_command_is(&shell.pending_audio, "MUSIC_WILD_VICTORY"));
+    assert!(shell.victory_music_after_messages.is_none());
+}
+
+#[test]
+fn battle_animation_cry_selectors_choose_exact_species_variants() {
+    assert_eq!(
+        visible_pokemon_animation_cry_id("SANDSHREW", 0),
+        "CRY_MON_SANDSHREW_GROWL"
+    );
+    assert_eq!(
+        visible_pokemon_animation_cry_id("SANDSHREW", 1),
+        "CRY_MON_SANDSHREW_ROAR"
+    );
+    assert_eq!(
+        visible_pokemon_animation_cry_id("SANDSHREW", 2),
+        "CRY_MON_SANDSHREW"
+    );
+    assert_eq!(
+        visible_pokemon_animation_cry_id("SANDSHREW", 3),
+        "CRY_MON_SANDSHREW"
+    );
+}
+
+fn assert_audio_cache_contains_non_silent_pcm(world: &World, expected_count: usize) {
+    let cache = &world.resource::<BevyRuntimeShell>().audio_source_cache;
+    assert_eq!(cache.len(), expected_count);
+    for source in cache.values() {
+        let bytes = source.bytes.as_ref();
+        assert_eq!(source.format.bits_per_sample, 16);
+        assert_eq!(bytes.len() % (usize::from(source.format.channels) * 2), 0);
+        assert!(
+            bytes
+                .chunks_exact(2)
+                .any(|sample| i16::from_le_bytes([sample[0], sample[1]]).unsigned_abs() > 32),
+            "cached PCM audio must not be silent"
+        );
+    }
+}
+
+#[test]
+fn music_none_reset_survives_a_following_music_request_until_playback() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.pending_music_stop = true;
+    runtime_shell.pending_full_audio_reset = true;
+    runtime_shell.active_music = Some("MUSIC_CREDITS".to_string());
+    runtime_shell.transient_audio_playing = true;
+    runtime_shell.active_transient_kind = Some(ModpackAudioKind::SoundEffect);
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell);
+    app.add_systems(Update, play_pending_audio);
+    app.world_mut().spawn(TransientAudioMarker);
+    app.update();
+
+    let runtime_shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(!runtime_shell.pending_music_stop);
+    assert!(!runtime_shell.pending_full_audio_reset);
+    assert!(!runtime_shell.transient_audio_playing);
+    assert!(runtime_shell.active_transient_kind.is_none());
+    assert_eq!(
+        app.world_mut()
+            .query_filtered::<Entity, With<TransientAudioMarker>>()
+            .iter(app.world())
+            .count(),
+        0
+    );
+}
+
+#[test]
+fn playmusic_music_none_resets_audio_without_queueing_a_fake_track() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
+    let checksum = runtime_shell
+        .shell
+        .state_checksum()
+        .expect("source state checksum");
+    let mut drained_batch = Vec::new();
+
+    apply_pending_audio_action(
+        &mut runtime_shell,
+        BevyAudioAction::StopMusic {
+            audio_id: "MUSIC_NONE".to_string(),
+        },
+        &mut drained_batch,
+        &checksum,
+    );
+
+    assert!(runtime_shell.pending_music_stop);
+    assert!(runtime_shell.pending_full_audio_reset);
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_NONE"));
+    assert!(
+        drained_batch.is_empty(),
+        "PlayMusic(MUSIC_NONE) calls _InitSound; it does not start a silent audio program"
+    );
+
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let mut source_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: 0,
+            map_name: "ElmsLab".to_string(),
+            tile_x: 5,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Elm's Lab shell");
+    let source_stop = source_shell
+        .shell
+        .script_audio_command_keys()
+        .into_iter()
+        .find(|key| {
+            key.map_name == "ElmsLab"
+                && key.source_script == "ElmsLabHealingMachine_HealParty"
+                && key.command == "playmusic"
+                && key.audio_id.as_deref() == Some("MUSIC_NONE")
+        })
+        .expect("exported Elm healing-machine PlayMusic(MUSIC_NONE)");
+    source_shell
+        .shell
+        .apply_script_audio_command(
+            &source_stop.map_name,
+            &source_stop.source_script,
+            source_stop.command_index,
+        )
+        .expect("execute exported Elm silence command");
+    let drain = source_shell
+        .shell
+        .drain_resolved_audio_events()
+        .expect("resolve exported Elm silence command");
+    apply_resolved_audio_drain(&mut source_shell, drain);
+    assert!(source_shell.pending_music_stop);
+    assert!(source_shell.pending_full_audio_reset);
+    assert_eq!(source_shell.active_music.as_deref(), Some("MUSIC_NONE"));
+    assert!(!source_shell.pending_audio.iter().any(|command| {
+        command.kind == ModpackAudioKind::Music && command.audio_id == "MUSIC_NONE"
+    }));
+}
+
+#[test]
+fn magnet_train_playmusic2_waits_one_frame_between_stop_and_restart() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.pending_audio.clear();
+    runtime_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
+
+    queue_visible_magnet_train_music(&mut runtime_shell)
+        .expect("begin source PlayMusic2 boundary");
+
+    assert!(runtime_shell.pending_music_stop);
+    assert!(
+        runtime_shell.pending_audio.is_empty(),
+        "PlayMusic2 stops music and executes DelayFrame before starting the replacement"
+    );
+
+    runtime_shell.visible_magnet_train = Some(VisibleMagnetTrain {
+        direction: 1,
+        hold_position: 64,
+        final_position: -96,
+        position: 96,
+        offset: 96,
+        player_x: -4,
+        player_sprite_visible: false,
+        player_sprite_frame: 0,
+        player_sprite_duration: 0,
+        wait_counter: 0,
+        phase: 0,
+        arrival_sfx_played: false,
+    });
+    advance_visible_magnet_train(&mut runtime_shell)
+        .expect("advance the PlayMusic2 DelayFrame boundary");
+
+    assert!(runtime_shell.pending_audio.iter().any(|command| {
+        command.kind == ModpackAudioKind::Music
+            && command.audio_id == "MUSIC_MAGNET_TRAIN"
+    }));
+}
+
+#[test]
+fn magnet_train_background_uses_source_attribute_palettes() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let base = load_visible_magnet_train_base(&asset_root, "day")
+        .expect("Magnet Train background assembled from source tiles");
+    let palettes = load_tileset_palette_bank(&asset_root, "train_station", "day")
+        .expect("read source palette bank")
+        .expect("source palette bank");
+
+    for (pixel_index, pixel) in base.rgba.chunks_exact(4).enumerate() {
+        let tile_x = pixel_index % (20 * SOURCE_TILE_SIZE) / SOURCE_TILE_SIZE;
+        let tile_y = pixel_index / (20 * SOURCE_TILE_SIZE) / SOURCE_TILE_SIZE;
+        let palette_id = if tile_y == 8 && (7..13).contains(&tile_x) {
+            4 // PAL_BG_YELLOW
+        } else if tile_y < 4 || tile_y >= 14 {
+            2 // PAL_BG_GREEN
+        } else {
+            0 // PAL_BG_GRAY
+        };
+        let expected = palettes[palette_id][usize::from(base.palette_indices[pixel_index])];
+        assert_eq!(pixel, [expected[0], expected[1], expected[2], 255]);
+    }
+}
+
+#[test]
+fn magnet_train_frame_contains_the_source_gendered_player_sprite() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.intro_screen = None;
+    runtime_shell.title_menu = None;
+    runtime_shell.visible_continue_screen = None;
+    runtime_shell.visible_magnet_train = Some(VisibleMagnetTrain {
+        direction: 1,
+        hold_position: 64,
+        final_position: -96,
+        position: 64,
+        offset: 0,
+        player_x: 28,
+        player_sprite_visible: true,
+        player_sprite_frame: 0,
+        player_sprite_duration: 8,
+        wait_counter: 0,
+        phase: 2,
+        arrival_sfx_played: false,
+    });
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .insert_resource(RenderedViewport::default())
+        .insert_resource(RenderedTilesetArt::default())
+        .init_resource::<Assets<Image>>()
+        .add_systems(Update, render_playfield);
+    app.update();
+
+    let world = app.world();
+    assert_eq!(world.resource::<BevyRuntimeShell>().last_error, None);
+    let frame = world
+        .resource::<RenderedTilesetArt>()
+        .intro_presented_surface
+        .as_ref()
+        .expect("Magnet Train must commit one native LCD frame");
+    let image = world
+        .resource::<Assets<Image>>()
+        .get(&frame.handle)
+        .expect("Magnet Train LCD image");
+    let rendered_art = world.resource::<RenderedTilesetArt>();
+    let player = &rendered_art
+        .magnet_train_player_cache
+        .values()
+        .next()
+        .expect("gendered player frame cache")
+        .standing;
+    let base = rendered_art
+        .magnet_train_base_cache
+        .values()
+        .next()
+        .expect("time-aware Magnet Train background cache");
+    let mut visible_player_pixel = false;
+    for row in 0..16 {
+        for col in 0..16 {
+            let player_offset = (row * 16 + col) * 4;
+            if player[player_offset + 3] == 0 {
+                continue;
+            }
+            let target_x = 12 + col;
+            let target_y = 61 + row;
+            let shifted_source_x = (target_x + 64) % (20 * SOURCE_TILE_SIZE);
+            if base.palette_indices[target_y * (20 * SOURCE_TILE_SIZE) + shifted_source_x] != 0 {
+                continue;
+            }
+            let target_offset = (target_y * (20 * SOURCE_TILE_SIZE) + target_x) * 4;
+            assert_eq!(
+                &image.data[target_offset..target_offset + 4],
+                &player[player_offset..player_offset + 4]
+            );
+            visible_player_pixel = true;
+        }
+    }
+    assert!(
+        visible_player_pixel,
+        "the gendered OAM frame must have at least one pixel above BG color zero"
+    );
+}
+
+#[test]
+fn magnet_train_player_uses_source_palettes_and_oam_priority() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let red = load_visible_magnet_train_player_frames(&asset_root, false, "day")
+        .expect("PAL_OW_RED player frames");
+    let blue = load_visible_magnet_train_player_frames(&asset_root, true, "day")
+        .expect("PAL_OW_BLUE player frames");
+    assert!(red.standing.chunks_exact(4).any(|pixel| {
+        pixel[3] != 0 && pixel[0] > pixel[1] && pixel[0] > pixel[2]
+    }));
+    assert!(blue.standing.chunks_exact(4).any(|pixel| {
+        pixel[3] != 0 && pixel[2] > pixel[0] && pixel[2] > pixel[1]
+    }));
+
+    const WIDTH: usize = 20 * SOURCE_TILE_SIZE;
+    const HEIGHT: usize = 18 * SOURCE_TILE_SIZE;
+    let mut target = vec![0_u8; WIDTH * HEIGHT * 4];
+    let mut player = vec![0_u8; 16 * 16 * 4];
+    player[0..4].copy_from_slice(&[248, 56, 8, 255]);
+    let mut priority = vec![false; WIDTH * HEIGHT];
+    composite_visible_magnet_train_player(&mut target, &priority, &player, 0, 0, false);
+    assert_eq!(&target[0..4], &[0, 0, 0, 0]);
+
+    priority[0] = true;
+    composite_visible_magnet_train_player(&mut target, &priority, &player, 0, 0, false);
+    assert_eq!(&target[0..4], &[248, 56, 8, 255]);
+
+    target.fill(0);
+    player.fill(0);
+    player[15 * 4..15 * 4 + 4].copy_from_slice(&[80, 72, 248, 255]);
+    composite_visible_magnet_train_player(&mut target, &priority, &player, 0, 0, true);
+    assert_eq!(&target[0..4], &[80, 72, 248, 255]);
+}
+
+#[test]
+fn magnet_train_player_walk_cycle_and_global_offset_follow_sprite_anim_order() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.visible_magnet_train = Some(VisibleMagnetTrain {
+        direction: 1,
+        hold_position: 64,
+        final_position: -96,
+        position: 66,
+        offset: 0,
+        player_x: 27,
+        player_sprite_visible: false,
+        player_sprite_frame: 0,
+        player_sprite_duration: 0,
+        wait_counter: 0,
+        phase: 2,
+        arrival_sfx_played: false,
+    });
+
+    advance_visible_magnet_train(&mut runtime_shell).expect("first sprite-animation frame");
+    let animation = runtime_shell.visible_magnet_train.as_ref().unwrap();
+    assert!(animation.player_sprite_visible);
+    assert_eq!(animation.player_sprite_frame, 0);
+    assert_eq!(animation.player_sprite_duration, 8);
+    assert_eq!(animation.position, 65);
+    assert_eq!(animation.player_x, 28);
+
+    for _ in 0..8 {
+        advance_visible_magnet_train(&mut runtime_shell).expect("retain eight-count OAM frame");
+    }
+    let animation = runtime_shell.visible_magnet_train.as_ref().unwrap();
+    assert_eq!(animation.player_sprite_frame, 0);
+    assert_eq!(animation.player_sprite_duration, 0);
+    advance_visible_magnet_train(&mut runtime_shell).expect("advance to walking OAM set");
+    let animation = runtime_shell.visible_magnet_train.as_ref().unwrap();
+    assert_eq!(animation.player_sprite_frame, 1);
+    assert_eq!(animation.player_sprite_duration, 8);
+}
+
+#[test]
+fn waitsfx_keeps_a_sound_queued_earlier_in_the_same_audio_drain() {
+    let mut runtime_shell = progression_shell_on_map_for_test("CherrygroveCity");
+    let checksum = runtime_shell.shell.state_checksum().expect("checksum");
+    let mut drained_batch = Vec::new();
+
+    apply_pending_audio_action(
+        &mut runtime_shell,
+        BevyAudioAction::Play(BevyAudioCommand {
+            cry_parameters: None,
+            audio_id: "SFX_ITEM".to_string(),
+            kind: ModpackAudioKind::SoundEffect,
+            mode: ModpackAudioPlaybackMode::RawPcm,
+            looped: false,
+        }),
+        &mut drained_batch,
+        &checksum,
+    );
+    apply_pending_audio_action(
+        &mut runtime_shell,
+        BevyAudioAction::WaitForSoundEffect,
+        &mut drained_batch,
+        &checksum,
+    );
+
+    assert_eq!(drained_batch.len(), 1);
+    assert_eq!(drained_batch[0].audio_id, "SFX_ITEM");
+}
+
+#[test]
+fn special_waitsfx_blocks_fly_and_rock_smash_until_the_transient_finishes() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_STRENGTH")
+        .expect("queue source sound before special WaitSFX");
+    let special = runtime_shell
+        .shell
+        .wait_sfx_special()
+        .expect("execute source WaitSFX special");
+
+    assert!(
+        activate_visible_special_routine_boundary(&mut runtime_shell, &special.outcome.effect)
+            .expect("activate special WaitSFX boundary")
+    );
+    assert!(runtime_shell.visible_wait_sfx_boundary);
+    assert!(
+        runtime_shell
+            .shell
+            .snapshot()
+            .expect("waiting snapshot")
+            .script_events
+            .waiting_for_sound_effect
+    );
+
+    let snapshot = runtime_shell
+        .shell
+        .presentation_snapshot()
+        .expect("snapshot");
+    advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+        .expect("pending command keeps wait active");
+    assert!(runtime_shell.visible_wait_sfx_boundary);
+
+    runtime_shell.pending_audio.clear();
+    runtime_shell.transient_audio_playing = true;
+    let snapshot = runtime_shell
+        .shell
+        .presentation_snapshot()
+        .expect("snapshot");
+    advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+        .expect("active transient keeps wait active");
+    assert!(runtime_shell.visible_wait_sfx_boundary);
+
+    runtime_shell.transient_audio_playing = false;
+    let snapshot = runtime_shell
+        .shell
+        .presentation_snapshot()
+        .expect("snapshot");
+    advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+        .expect("finished transient releases wait");
+    assert!(!runtime_shell.visible_wait_sfx_boundary);
+    assert!(
+        !runtime_shell
+            .shell
+            .snapshot()
+            .expect("released snapshot")
+            .script_events
+            .waiting_for_sound_effect
+    );
+}
+
+#[test]
+fn music_fade_keeps_the_old_track_until_the_asm_counter_finishes() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
+    begin_visible_music_fade(&mut runtime_shell, "MUSIC_NONE", 2)
+        .expect("begin source music fade");
+
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_ROUTE_29"));
+    assert!(!runtime_shell.pending_music_stop);
+    advance_visible_music_fade(&mut runtime_shell, 1).expect("first fade update");
+    assert_eq!(runtime_shell.music_volume, 6);
+    assert_eq!(runtime_shell.music_fade.as_ref().map(|fade| fade.count), Some(2));
+
+    advance_visible_music_fade(&mut runtime_shell, 20).expect("fade to zero volume");
+    assert_eq!(runtime_shell.music_volume, 0);
+    assert!(runtime_shell.music_fade.is_some());
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_ROUTE_29"));
+
+    advance_visible_music_fade(&mut runtime_shell, 1).expect("finish source fade");
+    assert!(runtime_shell.music_fade.is_none());
+    assert_eq!(runtime_shell.music_volume, 7);
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_NONE"));
+    assert!(runtime_shell.pending_music_stop);
+    assert!(runtime_shell.pending_full_audio_reset);
+
+    let mut replacement_shell = core_modular_title_shell_for_test();
+    replacement_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
+    begin_visible_music_fade(&mut replacement_shell, "MUSIC_NEW_BARK_TOWN", 0)
+        .expect("begin zero-rate replacement fade");
+    advance_visible_music_fade(&mut replacement_shell, 8)
+        .expect("complete zero-rate replacement fade");
+    assert_eq!(
+        replacement_shell.active_music.as_deref(),
+        Some("MUSIC_NEW_BARK_TOWN")
+    );
+    assert!(replacement_shell.pending_audio.iter().any(|command| {
+        command.kind == ModpackAudioKind::Music
+            && command.audio_id == "MUSIC_NEW_BARK_TOWN"
+    }));
+
+    let mut bicycle_shell = core_modular_title_shell_for_test();
+    bicycle_shell.shell.session_mut().overworld_mut().player.mode = MovementMode::Bike;
+    bicycle_shell.active_music = Some("MUSIC_ROUTE_29".to_string());
+    begin_visible_music_fade(&mut bicycle_shell, "MUSIC_NEW_BARK_TOWN", 2)
+        .expect("begin bicycle replacement fade");
+    advance_visible_music_fade(&mut bicycle_shell, 22)
+        .expect("load bicycle fade target at zero volume");
+    assert_eq!(bicycle_shell.music_volume, 0);
+    assert!(bicycle_shell
+        .music_fade
+        .as_ref()
+        .is_some_and(|fade| fade.fading_in && fade.rate == 0 && fade.count == 0));
+    assert_eq!(
+        bicycle_shell.active_music.as_deref(),
+        Some("MUSIC_NEW_BARK_TOWN")
+    );
+    advance_visible_music_fade(&mut bicycle_shell, 7)
+        .expect("raise bicycle target to maximum volume");
+    assert_eq!(bicycle_shell.music_volume, 7);
+    assert!(bicycle_shell.music_fade.is_some());
+    advance_visible_music_fade(&mut bicycle_shell, 1)
+        .expect("finish bicycle fade-in on the next source update");
+    assert!(bicycle_shell.music_fade.is_none());
+}
+
+#[test]
+fn players_house_radio_uses_the_source_musicfadeout_without_stopping_music() {
+    let mut runtime_shell = core_modular_title_shell_for_test();
+    let source_fade = runtime_shell
+        .shell
+        .script_audio_command_keys()
+        .into_iter()
+        .find(|key| {
+            key.map_name == "PlayersHouse2F"
+                && key.source_script == "PlayersHouseRadioScript"
+                && key.command == "musicfadeout"
+        })
+        .expect("exported PlayersHouseRadioScript musicfadeout command");
+    assert_eq!(source_fade.audio_id.as_deref(), Some("MUSIC_NEW_BARK_TOWN"));
+    assert_eq!(source_fade.fade_frames, Some(16));
+
+    runtime_shell.active_music = Some("MUSIC_POKEMON_TALK".to_string());
+    runtime_shell
+        .shell
+        .apply_script_audio_command(
+            &source_fade.map_name,
+            &source_fade.source_script,
+            source_fade.command_index,
+        )
+        .expect("execute the exported source fade command");
+    take_visible_pending_music_fade(&mut runtime_shell)
+        .expect("take the source script fade boundary");
+
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_POKEMON_TALK"));
+    assert!(!runtime_shell.pending_music_stop);
+    assert!(runtime_shell.music_fade.as_ref().is_some_and(|fade| {
+        fade.target_music == "MUSIC_NEW_BARK_TOWN"
+            && fade.rate == 16
+            && fade.count == 0
+            && !fade.fading_in
+    }));
+
+    let drain = runtime_shell
+        .shell
+        .drain_resolved_audio_events()
+        .expect("drain the matching source audio event");
+    apply_resolved_audio_drain(&mut runtime_shell, drain);
+    assert!(runtime_shell.music_fade.as_ref().is_some_and(|fade| {
+        fade.target_music == "MUSIC_NEW_BARK_TOWN"
+            && fade.rate == 16
+            && fade.count == 0
+            && !fade.fading_in
+    }));
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_POKEMON_TALK"));
+    assert!(!runtime_shell.pending_music_stop);
+}
+
+#[test]
+fn wait_play_sfx_sequence_promotes_all_itemfinder_cues_before_text() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize visible shell");
+    let expected = (0..4)
+        .flat_map(|_| {
+            [
+                "SFX_SECOND_PART_OF_ITEMFINDER".to_string(),
+                "SFX_TRANSACTION".to_string(),
+            ]
+        })
+        .collect::<Vec<_>>();
+
+    let snapshot = runtime_shell.shell.snapshot().expect("Itemfinder snapshot");
+    let expected_notice = visible_asm_text(&snapshot, "_ItemfinderItemNearbyText")
+        .expect("compiled Itemfinder nearby text");
+    present_visible_itemfinder_feedback(&mut runtime_shell, &snapshot, true, 8)
+        .expect("begin Itemfinder WaitPlaySFX loop");
+    assert!(runtime_shell.visible_wait_sfx_boundary);
+    assert!(runtime_shell.field_notice.is_none());
+    assert!(
+        runtime_shell.pending_audio.is_empty(),
+        "WaitPlaySFX must wait for any active channel before starting its first cue"
+    );
+    runtime_shell.transient_audio_playing = true;
+    let snapshot = runtime_shell
+        .shell
+        .presentation_snapshot()
+        .expect("busy-channel presentation snapshot");
+    advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+        .expect("poll busy WaitPlaySFX channel");
+    assert!(runtime_shell.pending_audio.is_empty());
+    assert_eq!(runtime_shell.pending_wait_play_sfx.len(), 8);
+
+    let mut promoted = Vec::new();
+    for index in 0..expected.len() {
+        runtime_shell.transient_audio_playing = false;
+        let snapshot = runtime_shell
+            .shell
+            .presentation_snapshot()
+            .expect("presentation snapshot");
+        advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+            .expect("promote next WaitPlaySFX cue");
+        let pending = std::mem::take(&mut runtime_shell.pending_audio);
+        assert_eq!(pending.len(), 1, "cue {index} must be promoted alone");
+        promoted.push(pending[0].audio_id.clone());
+        assert!(runtime_shell.field_notice.is_none());
+    }
+
+    runtime_shell.transient_audio_playing = false;
+    let snapshot = runtime_shell
+        .shell
+        .presentation_snapshot()
+        .expect("final presentation snapshot");
+    advance_visible_wait_sfx_boundary(&mut runtime_shell, &snapshot, false)
+        .expect("finish WaitPlaySFX loop");
+    assert_eq!(promoted, expected);
+    assert!(!runtime_shell.visible_wait_sfx_boundary);
+    assert_eq!(
+        runtime_shell.field_notice.as_deref(),
+        Some(expected_notice.as_str())
+    );
+
+    runtime_shell.field_notice = None;
+    runtime_shell.field_notice_scene = None;
+    let snapshot = runtime_shell.shell.snapshot().expect("no-result snapshot");
+    let expected_nope = visible_asm_text(&snapshot, "_ItemfinderNopeText")
+        .expect("compiled Itemfinder no-result text");
+    present_visible_itemfinder_feedback(&mut runtime_shell, &snapshot, false, 0)
+        .expect("present silent Itemfinder result");
+    assert!(!runtime_shell.visible_wait_sfx_boundary);
+    assert!(runtime_shell.pending_audio.is_empty());
+    assert_eq!(runtime_shell.field_notice.as_deref(), Some(expected_nope.as_str()));
+
+    let error = present_visible_itemfinder_feedback(&mut runtime_shell, &snapshot, true, 7)
+        .expect_err("nearby Itemfinder result must require all eight source cues")
+        .to_string();
+    assert!(error.contains("requires 8 WaitPlaySFX cues, found 7"), "{error}");
+}
+
+#[test]
+fn egg_hatch_runs_exact_hold_wobble_shell_and_frontpic_sequence() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize visible shell");
+    runtime_shell.visible_egg_hatch = Some(VisibleEggHatch {
+        party_index: 0,
+        species_id: "TOGEPI".to_string(),
+        phase: VisibleEggHatchPhase::HuhText,
+        frame: 0,
+    });
+
+    begin_visible_egg_hatch_animation(&mut runtime_shell).expect("begin hatch animation");
+    assert_eq!(
+        runtime_shell.visible_egg_hatch.as_ref().map(|hatch| hatch.phase),
+        Some(VisibleEggHatchPhase::EggHold)
+    );
+    assert_eq!(runtime_shell.active_music.as_deref(), Some("MUSIC_EVOLUTION"));
+
+    for _ in 0..80 {
+        advance_visible_egg_hatch(&mut runtime_shell).expect("egg hold frame");
+    }
+    assert_eq!(
+        runtime_shell.visible_egg_hatch.as_ref().map(|hatch| (hatch.phase, hatch.frame)),
+        Some((VisibleEggHatchPhase::Wobble, 0))
+    );
+    for _ in 0..344 {
+        advance_visible_egg_hatch(&mut runtime_shell).expect("egg wobble frame");
+    }
+    assert_eq!(
+        runtime_shell.visible_egg_hatch.as_ref().map(|hatch| (hatch.phase, hatch.frame)),
+        Some((VisibleEggHatchPhase::Shell, 0))
+    );
+    assert_eq!(
+        runtime_shell
+            .pending_audio
+            .iter()
+            .filter(|event| event.audio_id == "SFX_EGG_CRACK")
+            .count(),
+        3
+    );
+    for _ in 0..130 {
+        advance_visible_egg_hatch(&mut runtime_shell).expect("shell-fragment frame");
+    }
+    assert_eq!(
+        runtime_shell.visible_egg_hatch.as_ref().map(|hatch| hatch.phase),
+        Some(VisibleEggHatchPhase::Reveal)
+    );
+    assert!(runtime_shell.visible_frontpic_animation.is_some());
+    for _ in 0..2_000 {
+        if runtime_shell.visible_frontpic_animation.is_none() {
+            break;
+        }
+        advance_visible_frontpic_animation(&mut runtime_shell).expect("hatch frontpic frame");
+    }
+    assert!(runtime_shell.visible_frontpic_animation.is_none());
+    advance_visible_egg_hatch(&mut runtime_shell).expect("finish hatch reveal");
+    assert_eq!(
+        runtime_shell.visible_egg_hatch.as_ref().map(|hatch| hatch.phase),
+        Some(VisibleEggHatchPhase::HatchText)
+    );
+    assert_eq!(
+        runtime_shell.field_notice.as_deref(),
+        Some("TOGEPI came\nout of its EGG!")
+    );
+    assert_eq!(
+        runtime_shell.pending_field_notice_sound.as_deref(),
+        Some("SFX_CAUGHT_MON")
+    );
+}
+
+#[test]
+fn playback_cache_keeps_canonical_pcm_without_an_audio_container() {
+    let command = BevyAudioCommand {
+        cry_parameters: None,
+        audio_id: "MUSIC_TEST".to_string(),
+        kind: ModpackAudioKind::Music,
+        mode: ModpackAudioPlaybackMode::RawPcm,
+        looped: true,
+    };
+    let pcm = vec![0x34, 0x12, 0xcc, 0xed];
+    let cached = decoded_pcm_audio(
+        &command,
+        pcm.clone(),
+        AudioPcmFormat {
+            sample_rate_hz: 22_050,
+            channels: 2,
+            bits_per_sample: 16,
+        },
+        Some(0),
+        Some(1),
+    )
+    .expect("cache canonical PCM");
+
+    assert_eq!(cached.bytes.as_ref(), pcm.as_slice());
+    assert_eq!(cached.samples.as_ref(), &[0x1234, -0x1234]);
+    assert_eq!(
+        pcm_i16_samples(&cached).unwrap().as_ref(),
+        &[0x1234, -0x1234]
+    );
+    assert_eq!(cached.loop_range, Some((0, 1)));
+}
+
+#[test]
+fn playback_cache_reuses_preconverted_samples() {
+    let command = BevyAudioCommand {
+        cry_parameters: None,
+        audio_id: "SFX_TEST".to_string(),
+        kind: ModpackAudioKind::SoundEffect,
+        mode: ModpackAudioPlaybackMode::RawPcm,
+        looped: false,
+    };
+    let cached = decoded_pcm_audio(
+        &command,
+        vec![0x34, 0x12, 0xcc, 0xed],
+        AudioPcmFormat {
+            sample_rate_hz: 22_050,
+            channels: 2,
+            bits_per_sample: 16,
+        },
+        None,
+        None,
+    )
+    .expect("cache canonical PCM");
+
+    let first = pcm_i16_samples(&cached).expect("first playback samples");
+    let second = pcm_i16_samples(&cached).expect("second playback samples");
+    assert!(
+        Arc::ptr_eq(&first, &second),
+        "replaying a cached SFX must not allocate and convert its PCM again"
+    );
+}
+
+#[test]
+fn playback_cache_rejects_noncanonical_mono_pcm() {
+    let command = BevyAudioCommand {
+        cry_parameters: None,
+        audio_id: "SFX_TEST".to_string(),
+        kind: ModpackAudioKind::SoundEffect,
+        mode: ModpackAudioPlaybackMode::RawPcm,
+        looped: false,
+    };
+    let error = decoded_pcm_audio(
+        &command,
+        vec![0, 0],
+        AudioPcmFormat {
+            sample_rate_hz: 22_050,
+            channels: 1,
+            bits_per_sample: 16,
+        },
+        None,
+        None,
+    )
+    .expect_err("mono is not the one canonical stored audio type")
+    .to_string();
+
+    assert!(error.contains("22.05 kHz stereo signed 16-bit"), "{error}");
+}
+
+#[test]
+fn playback_sound_option_preserves_stereo_or_collapses_to_dual_mono() {
+    let samples: Arc<[i16]> = Arc::from([12_000, -8_000, -4_000, 10_000]);
+
+    let stereo = pcm_samples_for_sound_option(&samples, Sound::Stereo);
+    assert!(Arc::ptr_eq(&stereo, &samples));
+
+    let mono = pcm_samples_for_sound_option(&samples, Sound::Mono);
+    assert_eq!(mono.as_ref(), &[2_000, 2_000, 3_000, 3_000]);
+    assert!(!Arc::ptr_eq(&mono, &samples));
+}
+
+#[test]
+fn title_music_queues_and_spawns_cached_pcm() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let title_music = runtime
+        .title_music_id()
+        .expect("title music id")
+        .to_string();
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::Title {
+            spawn_identifier,
+            save_path: None,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize title shell");
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .add_plugins(MinimalPlugins)
+        .insert_resource(VisibleSequenceTickClock::deterministic_test())
+        .add_systems(Update, tick_visible_title_screen)
+        .add_systems(
+            Update,
+            sync_runtime_title_music.after(tick_visible_title_screen),
+        )
+        .add_systems(Update, play_pending_audio.after(sync_runtime_title_music));
+    advance_title_to_press_start_for_test(&mut app);
+    app.update();
+
+    let world = app.world();
+    let runtime_shell = world.resource::<BevyRuntimeShell>();
+    assert_eq!(runtime_shell.last_error, None);
+    assert_eq!(
+        runtime_shell.active_music.as_deref(),
+        Some(title_music.as_str())
+    );
+    assert!(
+        runtime_shell.pending_audio.is_empty(),
+        "title music queue should be drained into Bevy audio playback"
+    );
+    assert!(
+        runtime_shell
+            .last_audio_events
+            .iter()
+            .any(|event| event.contains("played Music")),
+        "title music should reach the Bevy audio playback system"
+    );
+    assert!(
+        runtime_shell
+            .last_audio_events
+            .iter()
+            .any(|event| event.contains("played SoundEffect SFX_TITLE_SCREEN_ENTRANCE")),
+        "title entrance should reach the Bevy audio playback system"
+    );
+    assert_audio_cache_contains_non_silent_pcm(world, 2);
+    let world = app.world_mut();
+    let mut music_entities = world.query_filtered::<Entity, With<MusicAudioMarker>>();
+    assert_eq!(music_entities.iter(world).count(), 1);
+    let mut transient_entities = world.query_filtered::<Entity, With<TransientAudioMarker>>();
+    assert_eq!(
+        transient_entities.iter(world).count(),
+        1,
+        "PlayMusic must preserve the title entrance SFX on Crystal's separate SFX channels"
+    );
+
+    {
+        let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        runtime_shell.pending_audio.push(BevyAudioCommand {
+            cry_parameters: None,
+            audio_id: title_music.clone(),
+            kind: ModpackAudioKind::Music,
+            mode: ModpackAudioPlaybackMode::RawPcm,
+            looped: true,
+        });
+        runtime_shell.pending_audio.push(BevyAudioCommand {
+            cry_parameters: None,
+            audio_id: title_music.clone(),
+            kind: ModpackAudioKind::Music,
+            mode: ModpackAudioPlaybackMode::RawPcm,
+            looped: true,
+        });
+    }
+    app.update();
+    let world = app.world();
+    assert_eq!(
+        world
+            .resource::<BevyRuntimeShell>()
+            .audio_source_cache
+            .len(),
+        2,
+        "replaying the same title music must reuse the cached decoded PCM"
+    );
+    assert_audio_cache_contains_non_silent_pcm(world, 2);
+    let world = app.world_mut();
+    let mut music_entities = world.query_filtered::<Entity, With<MusicAudioMarker>>();
+    assert_eq!(music_entities.iter(world).count(), 1);
+}
+
+#[test]
+fn overworld_current_music_queues_and_spawns_cached_pcm() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig {
+            smoke_player_name: Some("AB".to_string()),
+            ..Default::default()
+        },
+    )
+    .expect("initialize overworld shell");
+    complete_visible_smoke_player_name_if_needed(&mut runtime_shell, Some("AB"))
+        .expect("complete player name and run arrival callbacks");
+    let expected_music = runtime_shell.shell.audio_state().current_music.clone();
+    assert_eq!(expected_music.as_deref(), Some("MUSIC_NEW_BARK_TOWN"));
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .add_systems(Update, play_pending_audio.after(sync_runtime_current_music))
+        .add_systems(Update, sync_runtime_current_music);
+    app.update();
+
+    let world = app.world();
+    let runtime_shell = world.resource::<BevyRuntimeShell>();
+    assert_eq!(runtime_shell.last_error, None);
+    assert_eq!(runtime_shell.active_music, expected_music);
+    assert!(
+        runtime_shell.pending_audio.is_empty(),
+        "current map music queue should be drained into Bevy audio playback"
+    );
+    assert!(
+        runtime_shell
+            .last_audio_events
+            .iter()
+            .any(|event| event.contains("played Music MUSIC_NEW_BARK_TOWN")),
+        "current map music should reach the Bevy audio playback system"
+    );
+    assert_audio_cache_contains_non_silent_pcm(world, 1);
+    let world = app.world_mut();
+    let mut music_entities = world.query_filtered::<Entity, With<MusicAudioMarker>>();
+    assert_eq!(music_entities.iter(world).count(), 1);
+}
+
+#[test]
+fn overworld_music_is_not_queued_during_name_entry() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize shell");
+    runtime_shell.pending_audio.clear();
+    runtime_shell.active_music = None;
+    runtime_shell.pending_name_input = Some(PendingNameInput {
+        label: "YOUR NAME?".to_string(),
+        value: String::new(),
+        max_length: VISIBLE_NAME_ENTRY_MAX_LENGTH,
+        cursor_column: 0,
+        cursor_row: 0,
+        case: NameInputCase::Upper,
+    });
+
+    queue_visible_current_music(&mut runtime_shell).expect("sync current music");
+
+    assert!(runtime_shell.pending_audio.is_empty());
+    assert_eq!(runtime_shell.active_music, None);
+}
+
+#[test]
+fn overworld_scene_spawns_real_tiles_and_player_from_compiled_pack() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig {
+            smoke_player_name: Some("AB".to_string()),
+            ..Default::default()
+        },
+    )
+    .expect("initialize overworld shell");
+    complete_visible_smoke_player_name_if_needed(&mut runtime_shell, Some("AB"))
+        .expect("complete player name and run arrival callbacks");
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .insert_resource(RenderedViewport::default())
+        .insert_resource(RenderedTilesetArt::default())
+        .init_resource::<Assets<Image>>()
+        .add_systems(Update, render_playfield);
+    app.update();
+
+    let world = app.world();
+    let runtime_shell = world.resource::<BevyRuntimeShell>();
+    assert_eq!(runtime_shell.last_error, None);
+    let snapshot = runtime_shell.shell.snapshot().expect("rendered snapshot");
+    for sprite in [
+        "SPRITE_CONSOLE",
+        "SPRITE_DOLL_1",
+        "SPRITE_DOLL_2",
+        "SPRITE_BIG_DOLL",
+    ] {
+        assert!(
+            !snapshot
+                .visible_objects
+                .iter()
+                .any(|object| object.sprite == sprite),
+            "{sprite} must not render without a live decoration replacement"
+        );
+        assert!(
+            !snapshot.script_events.variable_sprites.contains_key(sprite),
+            "{sprite} must not retain a decoration variable sprite without decoration state"
+        );
+    }
+    for event_flag in [
+        "EVENT_PLAYERS_HOUSE_2F_CONSOLE",
+        "EVENT_PLAYERS_HOUSE_2F_DOLL_1",
+        "EVENT_PLAYERS_HOUSE_2F_DOLL_2",
+        "EVENT_PLAYERS_HOUSE_2F_BIG_DOLL",
+    ] {
+        assert_eq!(
+            runtime_shell
+                .shell
+                .session().state()
+                .flags
+                .event_flags
+                .get(event_flag),
+            Some(&true),
+            "{event_flag} must hide the unset decoration object"
+        );
+    }
+    let rendered_art = world.resource::<RenderedTilesetArt>();
+    assert!(!rendered_art.cache.is_empty());
+    assert!(!rendered_art.sprite_cache.is_empty());
+    assert!(rendered_art.errors.is_empty());
+    assert!(rendered_art.sprite_errors.is_empty());
+    assert!(world.resource::<Assets<Image>>().len() > METATILE_TILE_COUNT);
+
+    let world = app.world_mut();
+    let _surfaces = retained_map_surface_pair(world);
+    let mut players = world.query_filtered::<Entity, With<PlayerMarker>>();
+    assert_eq!(players.iter(world).count(), 1);
+}
+
+#[test]
+fn every_compiled_map_character_has_renderable_sprite_art() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let mut sprite_keys = BTreeSet::new();
+    let mut variable_sprites = runtime.data().initialize_events.variable_sprites.clone();
+    for map in runtime.data().maps.values() {
+        for command in &map.script_runtime_commands {
+            if command.command.eq_ignore_ascii_case("variablesprite") && command.args.len() == 2 {
+                variable_sprites.insert(command.args[0].clone(), command.args[1].clone());
+            }
+        }
+    }
+    for map in runtime.data().maps.values() {
+        for object in &map.objects {
+            if object.sprite == "SPRITE_NONE" || object.sprite == "SPRITE_NULL" {
+                continue;
+            }
+            // These are ASM variable-sprite slots.  Their visible art is
+            // supplied by a `variablesprite`/decoration script at run
+            // time (or by the Day-Care species state), so the raw object
+            // constant is deliberately not an asset filename.
+            if matches!(
+                object.sprite.as_str(),
+                "SPRITE_CONSOLE"
+                    | "SPRITE_DOLL_1"
+                    | "SPRITE_DOLL_2"
+                    | "SPRITE_BIG_DOLL"
+                    | "SPRITE_WEIRD_TREE"
+                    | "SPRITE_OLIVINE_RIVAL"
+                    | "SPRITE_AZALEA_ROCKET"
+                    | "SPRITE_FUCHSIA_GYM_1"
+                    | "SPRITE_FUCHSIA_GYM_2"
+                    | "SPRITE_FUCHSIA_GYM_3"
+                    | "SPRITE_FUCHSIA_GYM_4"
+                    | "SPRITE_COPYCAT"
+                    | "SPRITE_JANINE_IMPERSONATOR"
+                    | "SPRITE_DAY_CARE_MON_1"
+                    | "SPRITE_DAY_CARE_MON_2"
+            ) {
+                continue;
+            }
+            let sprite_id = resolve_visible_object_sprite_asset_id(
+                &asset_root,
+                &object.sprite,
+                &variable_sprites,
+                &runtime.data().menu_icons,
+            );
+            sprite_keys.insert((sprite_id, object.pal & 0x7));
+        }
+    }
+
+    let mut images = Assets::<Image>::default();
+    let mut failures = Vec::new();
+    for (sprite_id, palette_id) in sprite_keys {
+        if let Err(error) = load_sprite_art(&asset_root, &sprite_id, palette_id, "day", &mut images)
+        {
+            failures.push(format!("{sprite_id} palette={palette_id}: {error:#}"));
+        }
+    }
+    assert!(
+        failures.is_empty(),
+        "compiled character sprites must all have renderable art:\n{}",
+        failures.join("\n")
+    );
+}
+
+#[test]
+fn active_pokemon_picture_renders_the_asm_window_and_grayscale_frontpic() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Route36 overworld shell");
+    runtime_shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .script_runtime
+        .active_pokemon_picture = Some("CHIKORITA".to_string());
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .insert_resource(RenderedViewport::default())
+        .insert_resource(RenderedTilesetArt::default())
+        .init_resource::<Assets<Image>>()
+        .add_systems(Update, render_playfield);
+    app.update();
+
+    let world = app.world();
+    let runtime_shell = world.resource::<BevyRuntimeShell>();
+    assert_eq!(runtime_shell.last_error, None);
+    let rendered_art = world.resource::<RenderedTilesetArt>();
+    assert!(
+        rendered_art.pokepic_cache.contains_key("chikorita"),
+        "active Pokemon picture must decode the required grayscale frontpic"
+    );
+    assert_eq!(rendered_art.pokepic_errors.get("chikorita"), None);
+
+    let world = app.world_mut();
+    let mut picture_entities = world.query_filtered::<Entity, With<PokemonPictureMarker>>();
+    assert!(
+        picture_entities.iter(world).count() > 2,
+        "active Pokemon picture should include its window frame and 7x7 frontpic"
+    );
+    assert_eq!(
+        world
+            .query_filtered::<Entity, With<SceneDialogTextBoxBackgroundMarker>>()
+            .iter(world)
+            .count(),
+        0,
+        "ASM pokepic must not synthesize a field textbox"
+    );
+    assert_eq!(
+        world
+            .query_filtered::<Entity, With<DialogGlyphMarker>>()
+            .iter(world)
+            .count(),
+        0,
+        "ASM pokepic must not synthesize species-description text"
+    );
+}
+
+#[test]
+fn battle_scene_renders_real_art_and_asm_hud_without_rust_only_battler_labels() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Route36 overworld shell");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_RENDER",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add battle party Pokemon");
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell)
+        .expect("settle arrival scripts before battle");
+    runtime_shell
+        .shell
+        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
+        .expect("start Sudowoodo battle");
+    prepare_visible_battle_entry(&mut runtime_shell).expect("prepare battle entry");
+    assert_eq!(
+        runtime_shell
+            .battle_messages
+            .iter()
+            .cloned()
+            .collect::<Vec<_>>(),
+        vec![
+            "Wild SUDOWOODO\nappeared!".to_string(),
+            "Go! CYNDAQUIL!".to_string(),
+        ]
+    );
+    assert!(
+        runtime_shell.battle_message_scene.is_some(),
+        "battle entry messages must retain their battle-start render scene"
+    );
+    // This test inspects the post-transition battle canvas itself. The
+    // transition renderer has separate timing/shape coverage.
+    runtime_shell.visible_battle_transition = None;
+    runtime_shell.battle_entry_messages_remaining = 0;
+    runtime_shell.battle_messages.clear();
+    sync_visible_battle_action_cursor(&mut runtime_shell);
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .insert_resource(RenderedViewport::default())
+        .insert_resource(RenderedTilesetArt::default())
+        .init_resource::<Assets<Image>>()
+        .add_systems(Update, render_playfield);
+    app.update();
+
+    let world = app.world();
+    let runtime_shell = world.resource::<BevyRuntimeShell>();
+    assert_eq!(runtime_shell.last_error, None);
+    let rendered_art = world.resource::<RenderedTilesetArt>();
+    assert!(
+        rendered_art.pokemon_cache.contains_key(&PokemonArtKey {
+            species_id: "sudowoodo".to_string(),
+            side: PokemonSpriteSide::Front,
+            shiny: false,
+            frame: 0,
+        }),
+        "enemy battle Pokemon must render real front art"
+    );
+    assert!(
+        rendered_art
+            .pokemon_cache
+            .keys()
+            .any(|key| { key.species_id == "cyndaquil" && key.side == PokemonSpriteSide::Back }),
+        "player battle Pokemon must render real back art"
+    );
+    assert_eq!(rendered_art.font_error, None);
+    assert!(
+        rendered_art.font_cache.is_some(),
+        "battle HUD must render with the runtime bitmap font"
+    );
+    assert!(
+        !rendered_art.window_frame_cache.is_empty(),
+        "battle command windows must render from the real textbox frame tile sheet"
+    );
+    assert!(rendered_art.window_frame_errors.is_empty());
+
+    let world = app.world_mut();
+    let mut battlers = world.query_filtered::<Entity, With<BattleBattlerMarker>>();
+    assert_eq!(
+        battlers.iter(world).count(),
+        2,
+        "battle scene should include only the two battler art sprites here; HUD text must come from the ASM battle HUD path, not Rust-only bitmap labels"
+    );
+    let mut battle_huds = world.query_filtered::<Entity, With<BattleHudMarker>>();
+    assert!(
+        battle_huds.iter(world).count() >= 20,
+        "battle HUD should render enemy/player names, level/status, HP labels, bars, and player HP digits from ASM layout coordinates"
+    );
+    let mut battle_commands = world.query_filtered::<Entity, With<BattleCommandMarker>>();
+    assert!(
+        battle_commands.iter(world).count() > 2,
+        "battle command menu should render"
+    );
+    let mut battle_window_frames = world.query_filtered::<Entity, With<BattleWindowFrameMarker>>();
+    assert_eq!(
+        battle_window_frames.iter(world).count(),
+        battle_window_frame_tile_count(
+            BATTLE_TEXT_BOX_WIDTH_TILES as usize,
+            BATTLE_TEXT_BOX_HEIGHT_TILES as usize,
+        ) + battle_window_frame_tile_count(
+            BATTLE_MAIN_MENU_WIDTH_TILES as usize,
+            BATTLE_MAIN_MENU_HEIGHT_TILES as usize,
+        ),
+        "the post-entry text and main-menu windows should each render one frame sprite per ASM border tile"
+    );
+}
+
+#[test]
+fn public_visible_shell_wild_battle_smoke_runs_from_overworld_to_turn_resolution() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let smoke = smoke_visible_shell_wild_battle(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 2,
+            tile_y: 2,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("AB".to_string()),
+            ..Default::default()
+        },
+        VisibleShellBattleSmokeRef {
+            map_name: "Route36".to_string(),
+            source_script: "WateredWeirdTreeScript".to_string(),
+            command_index: 12,
+        },
+        &[VisibleShellSmokePokemon {
+            species_id: "TYPHLOSION".to_string(),
+            // Keep this a UI/turn-resolution smoke rather than making its
+            // outcome depend on the canonical Sudowoodo damage race.
+            level: 100,
+            held_item_id: None,
+        }],
+        &[],
+    )
+    .expect("public shell battle smoke should complete");
+
+    assert!(!smoke.wild_species.is_empty());
+    assert!(
+        smoke
+            .action_entries
+            .iter()
+            .any(|entry| entry.contains("FIGHT"))
+    );
+    assert!(
+        smoke
+            .action_entries
+            .iter()
+            .any(|entry| entry.contains("PACK"))
+    );
+    assert!(!smoke.move_entries.is_empty());
+    assert_ne!(
+        smoke.state_hash.hash(),
+        0,
+        "smoke must return a committed state checksum"
+    );
+}
+
+#[test]
+fn battle_hud_hp_pixels_and_status_tokens_match_typescript_helpers() {
+    assert_eq!(battle_hud_hp_pixels(0, 100), 0);
+    assert_eq!(battle_hud_hp_pixels(1, 100), 1);
+    assert_eq!(battle_hud_hp_pixels(50, 100), 24);
+    assert_eq!(battle_hud_hp_pixels(100, 100), BATTLE_HUD_HP_BAR_LENGTH_PX);
+    assert_eq!(battle_hud_hp_pixels(200, 100), BATTLE_HUD_HP_BAR_LENGTH_PX);
+    assert_eq!(battle_status_token(Some("POISON")), Some("PSN"));
+    assert_eq!(battle_status_token(Some("BAD_POISON")), Some("PSN"));
+    assert_eq!(battle_status_token(Some("SLEEP")), Some("SLP"));
+    assert_eq!(battle_status_token(Some("PARALYSIS")), Some("PAR"));
+    assert_eq!(battle_status_token(Some("BURN")), Some("BRN"));
+    assert_eq!(battle_status_token(Some("FREEZE")), Some("FRZ"));
+    assert_eq!(battle_status_token(Some("UNKNOWN")), None);
+    assert_eq!(battle_status_token(None), None);
+}
+
+#[test]
+fn battle_main_command_menu_uses_asm_labels_and_grid_order() {
+    let entries = |selected| battle_main_menu_entries_for_type("BATTLETYPE_NORMAL", 0, selected);
+    assert_eq!(
+        entries(battle_main_menu_index_for_action(
+            VisibleBattleAction::Fight
+        )),
+        vec![">FIGHT", " <PKMN>", " PACK", " RUN"]
+    );
+    assert_eq!(
+        entries(battle_main_menu_index_for_action(
+            VisibleBattleAction::Pokemon
+        )),
+        vec![" FIGHT", "><PKMN>", " PACK", " RUN"]
+    );
+    assert_eq!(
+        entries(battle_main_menu_index_for_action(VisibleBattleAction::Pack)),
+        vec![" FIGHT", " <PKMN>", ">PACK", " RUN"]
+    );
+    assert_eq!(
+        entries(battle_main_menu_index_for_action(VisibleBattleAction::Run)),
+        vec![" FIGHT", " <PKMN>", " PACK", ">RUN"]
+    );
+}
+
+#[test]
+fn bug_contest_menu_accepts_only_the_canonical_battle_type() {
+    assert_eq!(
+        battle_main_menu_entries_for_type("BATTLETYPE_CONTEST", 7, 2),
+        vec![" FIGHT", " <PKMN>", ">PARKBALL× 7", " RUN"]
+    );
+    for alias in ["CONTEST", "BATTLETYPE_BUG_CONTEST", "BATTLETYPE_PARK"] {
+        assert_eq!(
+            battle_main_menu_entries_for_type(alias, 7, 2),
+            vec![" FIGHT", " <PKMN>", ">PACK", " RUN"],
+            "noncanonical battle type {alias} must not enter the contest menu"
+        );
+        assert!(
+            !bevy_shell_source().contains(&format!("\"{alias}\"")),
+            "Bevy production paths must not accept {alias}"
+        );
+    }
+}
+
+#[test]
+fn battle_main_command_menu_uses_asm_header_tile_coordinates() {
+    assert_eq!(battle_main_menu_panel_center(), (128.0, -192.0));
+    assert_eq!(battle_main_menu_entry_tile(0), (9.0, 13.0));
+    assert_eq!(battle_main_menu_entry_tile(1), (15.0, 13.0));
+    assert_eq!(battle_main_menu_entry_tile(2), (9.0, 15.0));
+    assert_eq!(battle_main_menu_entry_tile(3), (15.0, 15.0));
+    assert!(battle_command_entries_are_main_menu(&[
+        ">FIGHT".to_string(),
+        " <PKMN>".to_string(),
+        " PACK".to_string(),
+        " RUN".to_string(),
+    ]));
+    assert!(!battle_command_entries_are_main_menu(&[
+        ">TACKLE".to_string(),
+        " GROWL".to_string(),
+        " SMOKESCREEN".to_string(),
+        " EMBER".to_string(),
+    ]));
+}
+
+#[test]
+fn battle_move_menu_uses_asm_windows_and_cancel_row() {
+    assert_eq!(
+        battle_window_center(
+            BATTLE_TEXT_BOX_LEFT_TILE,
+            BATTLE_TEXT_BOX_TOP_TILE,
+            BATTLE_TEXT_BOX_WIDTH_TILES,
+            BATTLE_TEXT_BOX_HEIGHT_TILES,
+        ),
+        (0.0, -192.0)
+    );
+    assert_eq!(battle_submenu_entry_tile(0, false), (1.0, 13.0));
+    assert_eq!(battle_submenu_entry_tile(1, false), (1.0, 14.0));
+    assert_eq!(battle_submenu_entry_tile(0, true), (1.0, 13.0));
+    assert_eq!(battle_submenu_entry_tile(1, true), (10.0, 13.0));
+    assert_eq!(battle_window_frame_tile_count(20, 6), 48);
+    assert_eq!(
+        battle_window_center(
+            BATTLE_MOVE_SELECTION_LEFT_TILE,
+            BATTLE_MOVE_SELECTION_TOP_TILE,
+            BATTLE_MOVE_SELECTION_WIDTH_TILES,
+            BATTLE_MOVE_SELECTION_HEIGHT_TILES,
+        ),
+        (64.0, -192.0)
+    );
+    assert_eq!(
+        battle_window_center(
+            BATTLE_MOVE_INFO_LEFT_TILE,
+            BATTLE_MOVE_INFO_TOP_TILE,
+            BATTLE_MOVE_INFO_WIDTH_TILES,
+            BATTLE_MOVE_INFO_HEIGHT_TILES,
+        ),
+        (-144.0, -48.0)
+    );
+    assert_eq!(battle_move_menu_entry_tile(0), (5.0, 13.0));
+    assert_eq!(battle_move_menu_entry_tile(1), (5.0, 14.0));
+    assert_eq!(battle_move_menu_entry_tile(3), (5.0, 16.0));
+    assert_eq!(battle_move_visible_rows(5), 4);
+    assert_eq!(battle_window_frame_tile_count(12, 6), 32);
+    assert_eq!(battle_window_frame_tile_count(16, 6), 40);
+    assert_eq!(battle_window_frame_tile_count(11, 5), 28);
+    assert_eq!(source_type_display_name("FIRE").unwrap(), "FIRE");
+    assert_eq!(source_type_display_name("CURSE_TYPE").unwrap(), "???");
+    assert_eq!(source_type_display_name("PSYCHIC_TYPE").unwrap(), "PSYCHIC");
+    assert!(source_type_display_name("SPECIAL_ATTACK").is_err());
+    assert!(source_type_display_name("FIRE_TYPE").is_err());
+}
+
+#[test]
+fn field_windows_share_the_overworld_glyph_origin_not_the_battle_origin() {
+    assert_eq!(
+        field_window_center(
+            FIELD_TEXT_BOX_LEFT_TILE,
+            FIELD_TEXT_BOX_TOP_TILE,
+            FIELD_TEXT_BOX_WIDTH_TILES,
+            FIELD_TEXT_BOX_HEIGHT_TILES,
+        ),
+        (0.0, -192.0)
+    );
+    assert_eq!(
+        battle_hud_tile_origin(FIELD_TEXT_BOX_TEXT_LEFT_TILE, FIELD_TEXT_BOX_TEXT_TOP_TILE).1,
+        -176.0,
+        "the field text baseline must sit inside its field textbox"
+    );
+    assert_eq!(
+        battle_window_center(
+            FIELD_TEXT_BOX_LEFT_TILE,
+            FIELD_TEXT_BOX_TOP_TILE,
+            FIELD_TEXT_BOX_WIDTH_TILES,
+            FIELD_TEXT_BOX_HEIGHT_TILES,
+        ),
+        (0.0, -192.0),
+        "field and battle windows share the native 20x18 LCD coordinate space"
+    );
+}
+
+#[test]
+fn battle_move_display_name_does_not_invent_missing_move_labels() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig {
+            smoke_player_name: Some("AB".to_string()),
+            ..Default::default()
+        },
+    )
+    .expect("initialize runtime shell");
+    let snapshot = runtime_shell.shell.snapshot().expect("snapshot");
+    assert_eq!(
+        battle_move_display_name(&snapshot, "MADE_UP_MOVE"),
+        "INVALID MOVE MADE_UP_MOVE"
+    );
+    assert_eq!(
+        battle_move_display_name(&snapshot, "QUICK_ATTACK"),
+        "QUICK ATTACK"
+    );
+}
+
+#[test]
+fn battle_submenu_renders_asm_text_box_frame() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Route36 overworld shell");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_SUBMENU_FRAME",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add lead Pokemon");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "TOTODILE",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_SUBMENU_FRAME",
+            2,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add switch target Pokemon");
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell)
+        .expect("settle arrival scripts before battle");
+    runtime_shell
+        .shell
+        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
+        .expect("start Sudowoodo battle");
+    prepare_visible_battle_entry(&mut runtime_shell).expect("prepare battle entry");
+    runtime_shell.visible_battle_transition = None;
+    runtime_shell.battle_entry_messages_remaining = 0;
+    sync_visible_battle_action_cursor(&mut runtime_shell);
+    select_visible_battle_action(&mut runtime_shell, VisibleBattleAction::Pokemon)
+        .expect("select Pokemon");
+    open_visible_battle_switch_target(&mut runtime_shell).expect("open switch menu");
+
+    let mut app = App::new();
+    app.insert_resource(runtime_shell)
+        .insert_resource(RenderedViewport::default())
+        .insert_resource(RenderedTilesetArt::default())
+        .init_resource::<Assets<Image>>()
+        .add_systems(Update, render_playfield);
+    app.update();
+
+    let world = app.world();
+    let rendered_art = world.resource::<RenderedTilesetArt>();
+    assert!(
+        !rendered_art.window_frame_cache.is_empty(),
+        "battle submenu should load the real textbox frame tile sheet"
+    );
+    assert!(rendered_art.window_frame_errors.is_empty());
+    let world = app.world_mut();
+    let mut frame_tiles = world.query_filtered::<Entity, With<BattleWindowFrameMarker>>();
+    assert_eq!(
+        frame_tiles.iter(world).count(),
+        battle_window_frame_tile_count(
+            BATTLE_TEXT_BOX_WIDTH_TILES as usize,
+            BATTLE_TEXT_BOX_HEIGHT_TILES as usize,
+        ),
+        "battle submenus should render the full ASM text box frame"
+    );
+}
+
+#[test]
+fn battle_move_menu_entries_drop_rust_only_instruction_row() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Route36 overworld shell");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_MOVE_MENU",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add battle party Pokemon");
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell)
+        .expect("settle arrival scripts before battle");
+    runtime_shell
+        .shell
+        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
+        .expect("start Sudowoodo battle");
+    prepare_visible_battle_entry(&mut runtime_shell).expect("prepare battle entry");
+    sync_visible_battle_action_cursor(&mut runtime_shell);
+    select_visible_battle_action(&mut runtime_shell, VisibleBattleAction::Fight)
+        .expect("select fight");
+    open_visible_battle_move_target(&mut runtime_shell).expect("open moves");
+
+    let snapshot = runtime_shell.shell.snapshot().expect("snapshot");
+    let battle = snapshot.battle.as_ref().expect("battle");
+    let entries = visible_battle_move_entries(&snapshot, &runtime_shell, battle);
+    assert!(
+        entries.iter().all(|entry| !entry.contains("A USE MOVE")),
+        "battle move menu should not render Rust-only instruction rows"
+    );
+    assert!(
+        entries.iter().any(|entry| entry.trim_start() == "CANCEL"),
+        "battle move menu should include the TypeScript CANCEL row"
+    );
+
+    let active_index = battle.active_player_party_index.expect("active party");
+    let active_slot = snapshot
+        .party
+        .slots
+        .iter()
+        .find(|slot| slot.index == active_index)
+        .expect("active slot");
+    runtime_shell.battle_move_cursor = Some(MenuCursor {
+        surface_id: "battle:moves".to_string(),
+        option_index: active_slot.pokemon.moves.len(),
+    });
+    let cancel_snapshot = runtime_shell.shell.snapshot().expect("cancel snapshot");
+    let cancel_battle = cancel_snapshot.battle.as_ref().expect("cancel battle");
+    let cancel_entries =
+        visible_battle_move_entries(&cancel_snapshot, &runtime_shell, cancel_battle);
+    assert!(
+        cancel_entries.iter().any(|entry| entry == ">CANCEL"),
+        "move menu should render the selected TypeScript CANCEL row"
+    );
+    press_visible_battle_a_button(&mut runtime_shell).expect("cancel move menu with A");
+    assert_eq!(
+        runtime_shell.battle_move_cursor, None,
+        "selecting the move menu CANCEL row should close the move menu"
+    );
+}
+
+#[test]
+fn battle_submenus_drop_rust_only_instruction_rows() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let mut runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".to_string(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize Route36 overworld shell");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_SUBMENU",
+            1,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add lead Pokemon");
+    runtime_shell
+        .shell
+        .add_party_pokemon(
+            "TOTODILE",
+            10,
+            None,
+            None,
+            "BEVY_BATTLE_SUBMENU",
+            2,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .expect("add switch target Pokemon");
+    runtime_shell
+        .shell
+        .add_bag_item("POTION", 2)
+        .expect("add battle item");
+    runtime_shell
+        .shell
+        .add_bag_item("POKE_BALL", 2)
+        .expect("add battle ball");
+    settle_visible_shell_smoke_until_idle(&mut runtime_shell)
+        .expect("settle arrival scripts before battle");
+    runtime_shell
+        .shell
+        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
+        .expect("start Sudowoodo battle");
+    prepare_visible_battle_entry(&mut runtime_shell).expect("prepare battle entry");
+    sync_visible_battle_action_cursor(&mut runtime_shell);
+
+    select_visible_battle_action(&mut runtime_shell, VisibleBattleAction::Pokemon)
+        .expect("select Pokemon");
+    open_visible_battle_switch_target(&mut runtime_shell).expect("open switch menu");
+    let snapshot = runtime_shell.shell.snapshot().expect("switch snapshot");
+    let battle = snapshot.battle.as_ref().expect("switch battle");
+    let switch_entries = visible_battle_switch_entries(&snapshot, &runtime_shell, battle);
+    assert!(
+        switch_entries
+            .iter()
+            .all(|entry| !entry.contains("A SWITCH") && !entry.contains("B BACK")),
+        "battle switch menu should not render Rust-only instruction rows: {switch_entries:?}"
+    );
+
+    press_visible_battle_b_button(&mut runtime_shell).expect("close switch menu");
+    select_visible_battle_action(&mut runtime_shell, VisibleBattleAction::Pack)
+        .expect("select Pack");
+    open_visible_battle_pack(&mut runtime_shell).expect("open battle pack");
+    let snapshot = runtime_shell.shell.snapshot().expect("item snapshot");
+    let item_entries = visible_battle_item_entries(&snapshot, &runtime_shell);
+    assert!(
+        item_entries
+            .iter()
+            .all(|entry| !entry.contains("A USE ITEM") && !entry.contains("B BACK")),
+        "battle item menu should not render Rust-only instruction rows: {item_entries:?}"
+    );
+    assert!(
+        item_entries
+            .iter()
+            .all(|entry| !entry.contains("effect=") && !entry.contains("use=")),
+        "battle item menu should not expose internal item catalog fields: {item_entries:?}"
+    );
+
+    shift_visible_battle_pack_pocket(&mut runtime_shell, 1).expect("open ball pocket");
+    let snapshot = runtime_shell.shell.snapshot().expect("ball snapshot");
+    let ball_entries = visible_battle_ball_entries(&snapshot, &runtime_shell);
+    assert!(
+        ball_entries
+            .iter()
+            .all(|entry| !entry.contains("A THROW") && !entry.contains("B BACK")),
+        "battle ball menu should not render Rust-only instruction rows: {ball_entries:?}"
+    );
+
+    shift_visible_battle_pack_pocket(&mut runtime_shell, -1)
+        .expect("return to battle items");
+    open_visible_battle_pack_target(&mut runtime_shell, BattlePackTargetMode::PartyPokemon)
+        .expect("open battle item target");
+    let snapshot = runtime_shell.shell.snapshot().expect("target snapshot");
+    let target_entries = visible_battle_pack_target_entries(
+        &snapshot,
+        &runtime_shell,
+        BattlePackTargetMode::PartyPokemon,
+    ).expect("source battle item target entries");
+    assert!(
+        target_entries
+            .iter()
+            .all(|entry| !entry.contains("A TARGET") && !entry.contains("B BACK")),
+        "battle item target menu should not render Rust-only instruction rows: {target_entries:?}"
+    );
+}
+
+
+#[test]
+fn frontpic_animation_matches_source_frame_and_repeat_boundaries() {
+    use crate::core::models::frontpic_anim::{FrontpicAnimCommand, FrontpicAnimProgram};
+    let frame = |number, duration| FrontpicAnimCommand {
+        kind: "frame".into(), frame: Some(number), duration: Some(duration), ..Default::default()
+    };
+    let program = FrontpicAnimProgram { commands: vec![
+        FrontpicAnimCommand { kind: "setrepeat".into(), count: Some(2), ..Default::default() },
+        frame(1, 2),
+        FrontpicAnimCommand { kind: "dorepeat".into(), target: Some(1), ..Default::default() },
+        frame(2, 1),
+        FrontpicAnimCommand { kind: "endanim".into(), ..Default::default() },
+    ] };
+    let mut animation = VisibleFrontpicAnimation {
+        species_id: "CYNDAQUIL".into(), speed: 0, pointer: 0, repeat: 0, wait: 0, frame: 0,
+    };
+    let mut trace = Vec::new();
+    for _ in 0..7 {
+        let finished = step_visible_frontpic_animation(&mut animation, &program).unwrap();
+        trace.push((animation.frame, animation.wait, animation.repeat, finished));
+    }
+    assert_eq!(trace, vec![
+        (1, 1, 2, false), (1, 0, 2, false),
+        (1, 1, 1, false), (1, 0, 1, false),
+        (1, 0, 0, false), (2, 0, 0, false), (2, 0, 0, true),
+    ], "PokeAnim_DoAnimScript decrements the frame timer immediately, and exhausted dorepeat returns for one frame");
+    animation.pointer = 0; animation.wait = 0; animation.speed = 255;
+    let program = FrontpicAnimProgram { commands: vec![frame(1, 16)] };
+    assert!(!step_visible_frontpic_animation(&mut animation, &program).unwrap());
+    assert_eq!(animation.wait, 14, "PokeAnim_GetDuration returns the low byte of 16 + 16*255/16 before decrement");
+    animation.pointer = 0; animation.wait = 0; animation.speed = 0;
+    let program = FrontpicAnimProgram { commands: vec![frame(1, 0)] };
+    assert!(!step_visible_frontpic_animation(&mut animation, &program).unwrap());
+    assert_eq!(animation.wait, 255, "zero duration wraps through 256 ticks");
+}
+
+
+#[test]
+fn frontpic_animation_replays_original_rom_menu_calls() {
+    // The source trace is an external verification artifact, not shipped game data.
+    let fixture = std::env::var_os("CRYSTAL_FRONTPIC_TRACE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../tools/asm-oracle/fixtures/frontpic-animation-cyndaquil.json"));
+    let trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixture).unwrap()).unwrap();
+    let calls = trace["calls"].as_array().unwrap();
+    assert_eq!(calls.len(), 95, "complete healthy Cyndaquil main and idle menu programs");
+    for (index, call) in calls.iter().enumerate() {
+        let value = |phase: &str, field: &str| call[phase][field].as_u64().unwrap() as u16;
+        let program = serde_json::from_value(call["program"].clone()).unwrap();
+        let mut animation = VisibleFrontpicAnimation {
+            species_id: "CYNDAQUIL".into(), speed: value("before", "speed"),
+            pointer: usize::from(value("before", "pointer")), repeat: value("before", "repeat"),
+            wait: value("before", "wait"), frame: 0,
+        };
+        let finished = step_visible_frontpic_animation(&mut animation, &program).unwrap();
+        assert_eq!((animation.pointer, animation.wait, animation.repeat, finished),
+            (usize::from(value("after", "pointer")), value("after", "wait"),
+                value("after", "repeat"), value("after", "state") & 0x80 != 0),
+            "source PokeAnim_Play call {index}: {call}");
+    }
+}
+
+
+#[test]
+fn frontpic_animation_rejects_missing_operands_and_missing_endanim() {
+    use crate::core::models::frontpic_anim::{FrontpicAnimCommand, FrontpicAnimProgram};
+    for command in [
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), ..Default::default() },
+        FrontpicAnimCommand { kind: "setrepeat".into(), ..Default::default() },
+        FrontpicAnimCommand { kind: "dorepeat".into(), ..Default::default() },
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), duration: Some(256), ..Default::default() },
+    ] {
+        let mut animation = VisibleFrontpicAnimation {
+            species_id: "CYNDAQUIL".into(), speed: 0, pointer: 0, repeat: 0, wait: 0, frame: 0,
+        };
+        assert!(step_visible_frontpic_animation(&mut animation,
+            &FrontpicAnimProgram { commands: vec![command] }).is_err());
+    }
+    let mut animation = VisibleFrontpicAnimation {
+        species_id: "CYNDAQUIL".into(), speed: 0, pointer: 1, repeat: 0, wait: 0, frame: 0,
+    };
+    assert!(step_visible_frontpic_animation(&mut animation, &FrontpicAnimProgram { commands: vec![
+        FrontpicAnimCommand { kind: "frame".into(), frame: Some(1), duration: Some(1), ..Default::default() }
+    ] }).is_err());
+}
+
+#[test]
+fn victory_fanfares_suppress_music_and_restore_its_current_volume() {
+    for id in ["SFX_LEVEL_UP", "SFX_CAUGHT_MON", "SFX_FANFARE", "SFX_FANFARE_2", "SFX_GET_BADGE"] {
+        assert_eq!(music_volume_during_transient(0.5, Some(id)), 0.0, "{id}");
+    }
+    assert_eq!(music_volume_during_transient(0.25, None), 0.25);
+    assert_eq!(music_volume_during_transient(0.5, Some("SFX_READ_TEXT")), 0.5);
+    assert_eq!(music_volume_during_transient(0.5, Some("SFX_GET_COIN_FROM_SLOTS")), 0.5);
+    assert_eq!(music_volume_during_transient(0.0, None), 0.0);
+}

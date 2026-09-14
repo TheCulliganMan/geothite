@@ -1,0 +1,20 @@
+{
+  "dataset": "MaleCNS v1.0",
+  "source": "https://male-cns.janelia.org/download/",
+  "license": "CC-BY-4.0",
+  "attribution": "FlyEM/HHMI Janelia, University of Cambridge, MRC LMB, Google Research and the MaleCNS release contributors",
+  "selection": "Assigned superclass, excluding explicit Glia; every pair edge among retained neurons; no added strength threshold",
+  "graph_id": "0b9c7ba3984e0fb1425495429a15368669a808f4a41f4d0f9d24865ac392ab0e",
+  "graph_identity_algorithm": "SHA-256 of graph.bin bytes followed by UTF-8 metadata.json bytes",
+  "neurons": 166700,
+  "edges": 25582938,
+  "contacts": 124177617,
+  "anatomical_neurons": 139662,
+  "graph_bytes": 205330324,
+  "metadata_bytes": 20971786,
+  "source_sha256": {
+    "annotations.feather": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2",
+    "neurotransmitters.feather": "95c9289220663abeb3409f3ad9e5a7f8a53f8093f5139d15502cd08da8879621",
+    "edges.feather": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1"
+  }
+}

@@ -1,0 +1,115 @@
+use std::collections::BTreeMap;
+
+use serde::{Deserialize, Serialize, de::Error as _};
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+pub struct PcStringTable(pub BTreeMap<String, String>);
+
+impl<'de> Deserialize<'de> for PcStringTable {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let values = BTreeMap::<String, String>::deserialize(deserializer)?;
+        if values.is_empty() {
+            return Err(D::Error::custom("pc string table must not be empty"));
+        }
+        if let Some(issue) = pc_string_catalog_issues(&values).into_iter().next() {
+            return Err(D::Error::custom(format!(
+                "invalid pc string table entry: {issue:?}"
+            )));
+        }
+        Ok(Self(values))
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum PcStringCatalogIssue {
+    InvalidString { key: String },
+}
+
+pub fn pc_string_catalog_issues(
+    pc_strings: &BTreeMap<String, String>,
+) -> Vec<PcStringCatalogIssue> {
+    pc_strings
+        .iter()
+        .filter(|(key, value)| !is_exact_nonempty_pc_string_key(key) || value.trim().is_empty())
+        .map(|(key, _)| PcStringCatalogIssue::InvalidString { key: key.clone() })
+        .collect()
+}
+
+fn is_exact_nonempty_pc_string_key(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+}
+
+fn has_reserved_pack_prefix(value: &str) -> bool {
+    let value = value.to_ascii_lowercase();
+    value.starts_with("fallback") || value.starts_with("legacy")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pc_string_catalog_issues_require_nonempty_keys_and_values() {
+        let pc_strings = [
+            ("".to_string(), "Choose a <PK><MN>.".to_string()),
+            (
+                " PCString_Deposit".to_string(),
+                "Deposit <PK><MN>.".to_string(),
+            ),
+            (
+                "PCString Deposit".to_string(),
+                "Deposit <PK><MN>.".to_string(),
+            ),
+            (
+                "PCString_ChooseaPKMN".to_string(),
+                "Choose a <PK><MN>.".to_string(),
+            ),
+            ("PCString_Padded".to_string(), " Withdraw.".to_string()),
+            ("PCString_Trailing".to_string(), "Stored ".to_string()),
+            ("PCString_Withdraw".to_string(), " ".to_string()),
+        ]
+        .into_iter()
+        .collect();
+
+        assert_eq!(
+            pc_string_catalog_issues(&pc_strings),
+            vec![
+                PcStringCatalogIssue::InvalidString { key: String::new() },
+                PcStringCatalogIssue::InvalidString {
+                    key: " PCString_Deposit".to_string(),
+                },
+                PcStringCatalogIssue::InvalidString {
+                    key: "PCString Deposit".to_string(),
+                },
+                PcStringCatalogIssue::InvalidString {
+                    key: "PCString_Withdraw".to_string(),
+                },
+            ],
+        );
+    }
+
+    #[test]
+    fn pc_string_catalog_issues_reject_reserved_pack_prefix_keys() {
+        let pc_strings = [(
+            "fallback_PCString_Deposit".to_string(),
+            "Deposit.".to_string(),
+        )]
+        .into_iter()
+        .collect();
+
+        assert_eq!(
+            pc_string_catalog_issues(&pc_strings),
+            vec![PcStringCatalogIssue::InvalidString {
+                key: "fallback_PCString_Deposit".to_string(),
+            }],
+        );
+    }
+}
