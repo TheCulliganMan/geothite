@@ -1,0 +1,34 @@
+/** Poll preparation without running the canonical synthesizer on the UI thread. */
+export function createMidiPreparation(worker, context) {
+  let nextId = 0;
+  let failure = null;
+  const byMidi = new Map();
+  const byId = new Map();
+  worker.onmessage = ({ data }) => {
+    const entry = byId.get(data.id);
+    if (!entry) return;
+    byId.delete(data.id);
+    if (data.error) entry.error = new Error(data.error);
+    else entry.result = { samples: data.samples, sampleRate: data.sampleRate };
+  };
+  worker.onerror = event => {
+    event.preventDefault();
+    failure = new Error(event.message || 'Audio worker failed');
+  };
+  worker.onmessageerror = () => { failure = new Error('Invalid audio worker message'); };
+  worker.postMessage({ context });
+  return midi => {
+    if (failure) throw failure;
+    let entry = byMidi.get(midi);
+    if (!entry) {
+      entry = { id: ++nextId };
+      byMidi.set(midi, entry);
+      byId.set(entry.id, entry);
+      worker.postMessage({ id: entry.id, midi });
+    }
+    if (entry.error) { byMidi.delete(midi); throw entry.error; }
+    if (!entry.result) return null;
+    byMidi.delete(midi); // Rust owns the validated PCM cache after this poll.
+    return entry.result;
+  };
+}
