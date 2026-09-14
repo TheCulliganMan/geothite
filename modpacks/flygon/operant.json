@@ -1,0 +1,94 @@
+{
+  "dt_ms": 0.5,
+  "tau_membrane_ms": 20.0,
+  "tau_synapse_ms": 5.0,
+  "rest_mv": -52.0,
+  "threshold_mv": -45.0,
+  "refractory_ms": 2.2,
+  "delay_ms": 1.8,
+  "contact_gain_mv": 0.02,
+  "stimulus_mv": 30,
+  "dopamine_mv": 25,
+  "reward_pulse_ms": 200.0,
+  "eligibility_ms": 1000.0,
+  "learning_rate": 0.003,
+  "minimum_weight_fraction": 0.1,
+  "maximum_weight_fraction": 2.0,
+  "learning": true,
+  "decision_ms": 50.0,
+  "kc_rest_mv": -60.0,
+  "adaptation_jump_mv": 8.0,
+  "adaptation_tau_ms": 200.0,
+  "decoder": [
+    {
+      "button": "up",
+      "kind": "DNpe017",
+      "side": "L",
+      "gain": 1.0
+    },
+    {
+      "button": "down",
+      "kind": "DNg11",
+      "side": "L",
+      "gain": 1.0
+    },
+    {
+      "button": "left",
+      "kind": "DNp20",
+      "side": "L",
+      "gain": 1.0
+    },
+    {
+      "button": "right",
+      "kind": "DNp20",
+      "side": "R",
+      "gain": 1.0
+    },
+    {
+      "button": "a",
+      "kind": "DNpe017",
+      "side": "R",
+      "gain": 1.0
+    },
+    {
+      "button": "b",
+      "kind": "DNg11",
+      "side": "R",
+      "gain": 1.0
+    },
+    {
+      "button": "start",
+      "kind": "DNp01",
+      "side": "",
+      "gain": 1.0
+    },
+    {
+      "button": "select",
+      "kind": "MDN",
+      "side": "",
+      "gain": 1.0
+    }
+  ],
+  "rewards": {
+    "enabled": true,
+    "novelty": 0.25,
+    "badge": 2.0,
+    "starter": 1.0,
+    "level_up": 0.5,
+    "collision": 0.5,
+    "collision_attempts": 3,
+    "story": 1.5,
+    "approach": 0.15,
+    "dialogue": 0.4
+  },
+  "operant": {
+    "cue_size": 8,
+    "tonic_mv": 6.9,
+    "pairings": 6,
+    "exploration": 0.1,
+    "inverse_temperature": 6.0,
+    "frames": 16,
+    "teacher_enabled": true,
+    "new_place_pairings": 12
+  }
+}

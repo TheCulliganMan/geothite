@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "flygon",
+  "name": "Flygon",
+  "version": "0.2.0",
+  "status": "experimental-preview",
+  "entrypoint": "/flygon",
+  "kind": "local-neural-controller",
+  "base_game": "Geothite Pok\u00e9mon Crystal browser bundle",
+  "default_profile": "operant",
+  "dataset_manifest": "dataset.json",
+  "model_id": "flygon-lif-kc-dan-ltd-v2",
+  "interface_id": "flygon-local-prosthesis-v5-dual-mbon-operant-v3",
+  "runtime": {
+    "simulation": "Rust / WebAssembly worker",
+    "viewer": "independent Rust / WebAssembly worker",
+    "network": "initial same-origin assets and existing game clock",
+    "uploads": "none by Flygon",
+    "recommended_free_memory_mib": 1024
+  },
+  "evidence": "Elm arrival verified with online shaping; Cherrygrove and reward-off story mastery are not established.",
+  "anatomy": "Source soma coordinates. Connections are schematic soma-to-soma lines, not reconstructed axons. Activity is simulated, not biological recording.",
+  "reward_teacher": "story-events-v1"
+}

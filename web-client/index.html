@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Geothite</title>
+    <meta name="application-name" content="Geothite">
+    <meta name="apple-mobile-web-app-title" content="Geothite">
+    <meta name="description" content="Play Geothite: a Pokémon Crystal adventure with online multiplayer and classic 2D or 2.5D views.">
+    <meta name="theme-color" content="#09090d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="color-scheme" content="dark">
+    <meta name="referrer" content="no-referrer">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./social-chat.css?v=20260908-community">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+
+      #controls {
+        position: fixed;
+        z-index: 10;
+        top: max(12px, env(safe-area-inset-top));
+        right: max(12px, env(safe-area-inset-right));
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        max-width: min(420px, calc(100vw - 24px));
+      }
+
+      #camera-controls {
+        display: flex;
+        flex-basis: 100%;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      #camera-controls[hidden] { display: none; }
+
+      button {
+        min-width: 44px;
+        height: 44px;
+        padding: 0 12px;
+        border: 1px solid #344054;
+        border-radius: 12px;
+        color: #fff;
+        background: rgb(10 14 22 / 82%);
+        font: 700 14px/1 system-ui, sans-serif;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+      }
+
+      button:hover,
+      button:focus-visible {
+        background: rgb(25 32 45 / 94%);
+        outline: 2px solid #75d8ff;
+        outline-offset: 2px;
+      }
+
+      #view-toggle[aria-pressed="true"] {
+        border-color: #75d8ff;
+        background: #17465b;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: progress;
+      }
+
+      dialog {
+        width: min(340px, calc(100vw - 32px));
+        border: 1px solid #344054;
+        border-radius: 14px;
+        color: #fff;
+        background: #0a0e16;
+        font: 15px/1.8 system-ui, sans-serif;
+      }
+
+      dialog::backdrop {
+        background: rgb(0 0 0 / 70%);
+      }
+
+      dialog p {
+        margin: 0 0 14px;
+      }
+
+      dialog button {
+        width: 100%;
+      }
+    </style>
+    <link rel="stylesheet" href="./player-customization.css?v=3">
+    <link rel="stylesheet" href="./save-management.css?v=2">
+    <link rel="stylesheet" href="./mobile-player.css?v=20260908-community">
+  </head>
+  <body>
+    <main id="game-stage" aria-label="Geothite game">
+      <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Use the touch controls or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
+      <div id="loading" role="status"><div class="loading-card"><h1 id="loading-message">Loading game</h1><div id="game-loading-assets"></div></div></div>
+    </main>
+    <fieldset id="touch-controls" aria-label="Game controls" disabled>
+      <div id="dpad" role="group" aria-label="Movement pad. Slide to change direction.">
+        <button type="button" data-game-button="up" aria-label="Move up">▴</button>
+        <button type="button" data-game-button="left" aria-label="Move left">◂</button>
+        <span class="dpad-center"></span>
+        <button type="button" data-game-button="right" aria-label="Move right">▸</button>
+        <button type="button" data-game-button="down" aria-label="Move down">▾</button>
+      </div>
+      <div class="action-buttons" role="group" aria-label="Action buttons">
+        <button type="button" data-game-button="b" aria-label="B — back"><span>B</span></button>
+        <button type="button" data-game-button="a" aria-label="A — interact and confirm"><span>A</span></button>
+      </div>
+      <div class="system-buttons">
+        <button type="button" data-game-button="select" aria-label="Select">SELECT</button>
+        <button type="button" data-game-button="start" aria-label="Start — game menu">START</button>
+      </div>
+    </fieldset>
+    <dialog id="startup-error" aria-label="Unable to start game">
+      <p id="startup-error-message"></p>
+      <button id="retry-start" type="button">Reload</button>
+    </dialog>
+    <button id="mute" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 5 6m0-6-5 6"/></svg></button>
+    <details id="player-options">
+    <summary aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h6m4 0h6M4 17h10m4 0h2"/><path d="M10 4v6m4-6v6M14 14v6m4-6v6"/></svg></summary>
+    <div id="settings-backdrop" aria-hidden="true"></div>
+    <nav id="controls" aria-label="Game settings">
+      <div class="settings-heading"><strong>Settings</strong><button id="close-settings" type="button">Done</button></div>
+      <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D view</button>
+      <button id="save-games" type="button" disabled>Save games</button>
+      <button id="personalization" type="button" hidden>Personalization</button>
+      <span id="personalization-notice" role="status"></span>
+      <button id="fullscreen" type="button" aria-label="Fullscreen">Fullscreen</button>
+      <button id="help" type="button" aria-label="Controls">How to play</button>
+      <div id="camera-controls" role="group" aria-label="2.5D camera controls" hidden>
+        <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out" disabled>−</button>
+        <button id="camera-reset" type="button" aria-label="Reset camera" title="Reset camera" disabled>100%</button>
+        <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in" disabled>+</button>
+        <button id="rotate-left" type="button" aria-label="Rotate camera left" title="Rotate camera left 45°" disabled><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.2M3 4v6h6"/></svg></button>
+        <button id="rotate-right" type="button" aria-label="Rotate camera right" title="Rotate camera right 45°" disabled><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10a9 9 0 1 0-2.7 8.2M21 4v6h-6"/></svg></button>
+      </div>
+    </nav>
+    </details>
+    <dialog id="save-games-dialog" aria-labelledby="save-games-title">
+      <header class="menu-header"><h2 id="save-games-title">Save games</h2><button type="button" data-close>Done</button></header>
+      <div class="menu-body">
+        <p data-summary class="save-summary"></p>
+        <button class="save-primary" type="button" data-action="save">Save now</button>
+        <p class="menu-caption">Back up or share your last saved progress.</p>
+        <div class="save-actions">
+          <button type="button" data-action="download">Download backup</button>
+          <button type="button" data-action="share">Copy save link</button>
+        </div>
+        <details data-link-box hidden>
+          <summary>View your save link</summary>
+          <label class="visually-hidden" for="save-share-link">Share or bookmark this snapshot</label>
+          <textarea id="save-share-link" data-link readonly spellcheck="false"></textarea>
+          <small>Anyone with the link can import this snapshot. It does not update as you play.</small>
+          <button type="button" data-copy>Copy link</button>
+        </details>
+        <div class="save-restore">
+          <div><strong>Restore a backup</strong><small>Choose a .crystalsave file</small></div>
+          <label class="save-file-button" for="save-import">Choose file<input id="save-import" type="file" accept=".crystalsave,application/octet-stream"></label>
+        </div>
+        <section data-confirmation hidden aria-label="Confirm save replacement">
+          <p></p><div class="save-actions"><button type="button" data-cancel>Cancel</button><button type="button" data-confirm>Confirm &amp; restart</button></div>
+        </section>
+        <p role="status" aria-live="polite"></p>
+        <button type="button" data-action="delete">Delete saved game</button>
+      </div>
+    </dialog>
+    <dialog id="personalization-dialog" aria-labelledby="personalization-title">
+      <form>
+<header class="menu-header"><h2 id="personalization-title">Personalization</h2><button type="button" data-close>Done</button></header>
+        <div class="menu-body">
+        <p class="intro">Your trainer, your style.</p>
+        <label for="trainer-name">Trainer name</label>
+        <input id="trainer-name" name="name" maxlength="8" required autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="trainer-name-help">
+        <small id="trainer-name-help">Up to 8 characters.</small>
+        <label for="trainer-handle">Online handle</label>
+        <input id="trainer-handle" name="handle" maxlength="24" required autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="trainer-handle-help">
+        <small id="trainer-handle-help">Visible in chat. Letters, numbers and underscores.</small>
+        <label for="trainer-sprite">Player sprite</label>
+        <select id="trainer-sprite" name="sprite"><option value="0">Chris</option><option value="1">Kris</option></select>
+        <small>Your in-game appearance.</small>
+        <div class="actions"><button type="submit">Save changes</button></div>
+        <p role="status" aria-live="polite"></p>
+        <fieldset class="key-bindings"><legend>Keyboard bindings</legend>
+          <small>Saved on this browser. Arrow keys and WASD move. Z (A) and X (B) keep their keys.</small>
+          <label for="chat-key">Open chat</label><select id="chat-key" name="chat-key"></select>
+          <label for="start-key">Game Start</label><select id="start-key" name="start-key"></select>
+          <label for="select-key">Game Select</label><select id="select-key" name="select-key"></select>
+          <small>Enter sends messages while typing in chat. Escape closes chat.</small>
+          <div class="actions"><button type="button" data-save-bindings>Save key bindings</button><button type="button" data-reset-bindings>Use defaults</button></div>
+          <p id="key-bindings-status" aria-live="polite"></p>
+        </fieldset>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="help-dialog" aria-labelledby="help-title">
+      <header class="menu-header"><h2 id="help-title">How to play</h2><button id="close-help" type="button">Done</button></header>
+      <div class="menu-body">
+        <p class="menu-caption">Move, explore, and meet other trainers.</p>
+        <dl class="help-controls"><dt>D-pad</dt><dd>Move. Slide to change direction.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu.</dd></dl>
+        <details open><summary>2.5D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
+        <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / WASD / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
+        <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
+        <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
+      </div>
+    </dialog>
+    <link rel="stylesheet" href="./loading-progress.css">
+    <script type="module">
+      import { createGameBridge, registerGameTools } from './webmcp.js';
+      import { mountGamepadControls } from './gamepad-controls.js';
+      import { mountAudioUnlock } from './audio-unlock.js?v=20260907-mobile';
+      import { mountTouchControls } from './touch-controls.js?v=wasd';
+      import { mountViewToggle } from './view-toggle.js';
+      import { mountSaveManagement } from './save-management.js?v=2';
+      import { mountPlayerCustomization } from './player-customization.js?v=5';
+      import { mountSocialChat } from './social-chat.js?v=20260908-community-2';
+      import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
+      import { createMidiPreparation } from './audio-worker-client.js';
+
+      import { fetchAsset, loadWasm, mountAssetProgress } from './asset-progress.js';
+      const reportAsset = mountAssetProgress(document.querySelector('#game-loading-assets'), ['Game engine', 'Game data', 'Audio engine']);
+      globalThis.__crystalFetchPack = async url => {
+        const bytes = await fetchAsset(url, { label: 'Game data', report: reportAsset });
+        reportAsset({ label: 'Game data', phase: 'initializing' });
+        return bytes;
+      };
+      const canvas = document.querySelector('canvas');
+      const fitMenuViewport = () => {
+        const viewport = window.visualViewport;
+        document.documentElement.style.setProperty('--menu-viewport-height', `${viewport?.height ?? window.innerHeight}px`);
+        document.documentElement.style.setProperty('--menu-viewport-top', `${viewport?.offsetTop ?? 0}px`);
+      };
+      fitMenuViewport();
+      window.addEventListener('resize', fitMenuViewport);
+      window.visualViewport?.addEventListener('resize', fitMenuViewport);
+      window.visualViewport?.addEventListener('scroll', fitMenuViewport);
+      for (const id of ['close-settings', 'settings-backdrop']) document.getElementById(id).addEventListener('click', () => { document.querySelector('#player-options').open = false; canvas.focus({ preventScroll: true }); });
+      let cancelAgentInput = () => {};
+      const touchControls = mountTouchControls({ document, window, canvas, onInput: () => cancelAgentInput() });
+      let viewControls;
+      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput(), onCamera: (axes, dt) => viewControls?.moveCamera(axes, dt) });
+      const fullscreenButton = document.querySelector('#fullscreen');
+      fullscreenButton.hidden = !document.fullscreenEnabled;
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch { fullscreenButton.hidden = true; }
+        canvas.focus({ preventScroll: true });
+      });
+      const helpDialog = document.querySelector('#help-dialog');
+      document.querySelector('#help').addEventListener('click', () => { document.querySelector('#player-options').open = false; helpDialog.showModal(); });
+      document.querySelector('#close-help').addEventListener('click', () => { helpDialog.close(); canvas.focus({ preventScroll: true }); });
+      document.addEventListener('pointerdown', event => {
+        const options = document.querySelector('#player-options');
+        if (!options.contains(event.target)) options.open = false;
+      });
+      canvas.addEventListener('pointerdown', () => canvas.focus({ preventScroll: true }));
+
+      const showStartupError = error => {
+        touchControls.releaseAll();
+        document.querySelector('#touch-controls').disabled = true;
+        document.querySelector('#startup-error-message').textContent = String(error?.message ?? error);
+        const dialog = document.querySelector('#startup-error');
+        if (!dialog.open) dialog.showModal();
+      };
+      document.querySelector('#retry-start').addEventListener('click', () => location.reload());
+      const handleGlobalError = error => {
+        // Safari extensions can reject their own messaging promises in the
+        // page. Geothite does not use runtime.sendMessage; this specific error
+        // must not disable game input or force a reload. Leave it in the
+        // browser console, and keep all other failures on the fatal path.
+        if (String(error?.message ?? error).trim() === 'Invalid call to runtime.sendMessage(). Tab not found.') {
+          console.warn('External browser messaging failed:', error);
+          return;
+        }
+        showStartupError(error);
+      };
+      window.addEventListener('unhandledrejection', event => handleGlobalError(event.reason));
+      window.addEventListener('error', event => { if (event.error) handleGlobalError(event.error); });
+      try {
+        const { startServerClock } = await import('./server-clock.js');
+        const serverClock = await startServerClock({ fetch });
+        globalThis.__crystalServerClock = () => serverClock.sample();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) serverClock.synchronize().catch(() => {});
+        });
+        const session = await startOnlineSession({ url: location.href, localStorage, sessionStorage, crypto, fetch });
+        history.replaceState(null, '', session.url);
+        await runWithPlayerLock(navigator.locks, session.playerId, async () => {
+          let audioResolve, audioReject;
+          const audioReady = new Promise((resolve, reject) => { audioResolve = resolve; audioReject = reject; });
+          audioReady.catch(() => {});
+          const audioWorker = new Worker(new URL('./audio-worker.js', import.meta.url), { type: 'module' });
+          globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, { onProgress: progress => { reportAsset(progress); if (progress.phase === 'ready') audioResolve(); if (progress.phase === 'error') audioReject(Error(progress.error)); } });
+          const wasm = await import('./crystal-bevy.js');
+          const { default: init } = wasm;
+          await loadWasm(init, './crystal-bevy_bg.wasm', 'Game engine', reportAsset);
+          const muteButton = document.querySelector('#mute');
+          let muted = localStorage.getItem('crystal.audio.muted') === 'true';
+          let audioState = 'idle';
+          const updateMute = () => {
+            wasm.crystal_set_muted(muted);
+            muteButton.dataset.audible = String(!muted && audioState === 'ready');
+            muteButton.setAttribute('aria-pressed', String(muted));
+            muteButton.setAttribute('aria-label', muted || audioState !== 'ready' ? 'Enable sound' : 'Mute sound');
+            muteButton.title = muteButton.getAttribute('aria-label');
+          };
+          updateMute();
+          muteButton.addEventListener('click', event => {
+            muted = muted || audioState !== 'ready' ? false : true;
+            updateMute();
+            localStorage.setItem('crystal.audio.muted', String(muted));
+            resumeAudio(event);
+            canvas.focus({ preventScroll: true });
+          });
+          const resumeAudio = mountAudioUnlock(wasm, document, { control: muteButton, onState: state => { audioState = state; updateMute(); } });
+          // WASM initialization starts asynchronous pack loading. Enable input
+          // only after the actual game loop has produced its first observation.
+          await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });
+          await audioReady;
+          document.querySelector('#loading').hidden = true;
+          document.querySelector('#touch-controls').disabled = false;
+          mountSocialChat(wasm, { document, window, playerId: session.playerId });
+          mountPlayerCustomization(wasm, { document, window });
+          mountSaveManagement(wasm, { document, window });
+          viewControls = mountViewToggle(wasm, {
+            button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
+            cameraControls: {
+              group: document.querySelector('#camera-controls'),
+              zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),
+              rotateLeft: document.querySelector('#rotate-left'), rotateRight: document.querySelector('#rotate-right'),
+              reset: document.querySelector('#camera-reset'),
+            },
+          });
+          const bridge = createGameBridge(wasm);
+          if (new URLSearchParams(location.search).get("flygon") === "1") {
+            window.__flygonGameBridge = bridge;
+            window.__flygonActivateAudio = resumeAudio;
+          }
+          cancelAgentInput = () => bridge.cancel();
+          let lifetime = new AbortController();
+          window.addEventListener('pagehide', () => { bridge.cancel(); lifetime.abort(); });
+          window.addEventListener('keydown', event => { if (event.isTrusted) bridge.cancel(); }, { capture: true });
+          window.addEventListener('blur', () => bridge.cancel());
+          document.addEventListener('visibilitychange', () => { if (document.hidden) bridge.cancel(); });
+          const enableAgentTools = async () => {
+            try {
+              const registration = await registerGameTools(document, bridge, { signal: lifetime.signal });
+              document.querySelector('#webmcp-status').textContent = registration.supported
+                ? 'Agent tools ready: observe the game and press Game Boy buttons through WebMCP.'
+                : 'This browser does not support the current WebMCP API. Touch and keyboard play are available.';
+            } catch (error) {
+              document.querySelector('#webmcp-status').textContent = `Agent tools unavailable: ${error.message}`;
+            }
+          };
+          window.addEventListener('pageshow', event => {
+            if (event.persisted) { lifetime = new AbortController(); void enableAgentTools(); }
+          });
+          await enableAgentTools();
+          canvas.focus({ preventScroll: true });
+        });
+      } catch (error) {
+        showStartupError(error);
+      }
+    </script>
+  </body>
+</html>

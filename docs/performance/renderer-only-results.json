@@ -1,0 +1,190 @@
+{
+  "base": "e9142b0257ad2ccf317bffc223dc98591927dd0f",
+  "packContentHash": "6fb02ab47c69eecf69cad643461176190cd7e61454ed027ae28bcc76dd300282",
+  "runs": [
+    {
+      "variant": "before",
+      "mode": "2d",
+      "run": 1,
+      "browser": "145.0.7632.6",
+      "frames": 278,
+      "median": 16.700000000000728,
+      "p95": 33.29999999999927,
+      "max": 1068.1000000000004,
+      "allocations": 76,
+      "uploadBytes": 257286144,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 8,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "before",
+      "mode": "2d",
+      "run": 2,
+      "browser": "145.0.7632.6",
+      "frames": 262,
+      "median": 16.700000000000728,
+      "p95": 34.30000000000109,
+      "max": 1083.300000000001,
+      "allocations": 70,
+      "uploadBytes": 236974080,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 10,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "before",
+      "mode": "2.5d",
+      "run": 1,
+      "browser": "145.0.7632.6",
+      "frames": 112,
+      "median": 33.39999999999782,
+      "p95": 149.20000000000073,
+      "max": 1432.2000000000007,
+      "allocations": 86,
+      "uploadBytes": 291139584,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 6,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "before",
+      "mode": "2.5d",
+      "run": 2,
+      "browser": "145.0.7632.6",
+      "frames": 103,
+      "median": 33.29999999999927,
+      "p95": 135.10000000000218,
+      "max": 1400.2999999999993,
+      "allocations": 72,
+      "uploadBytes": 243744768,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 6,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "after",
+      "mode": "2d",
+      "run": 1,
+      "browser": "145.0.7632.6",
+      "frames": 277,
+      "median": 16.700000000000728,
+      "p95": 32.900000000001455,
+      "max": 1100.1000000000004,
+      "allocations": 0,
+      "uploadBytes": 37894096,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 3,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "after",
+      "mode": "2d",
+      "run": 2,
+      "browser": "145.0.7632.6",
+      "frames": 265,
+      "median": 16.700000000000728,
+      "p95": 34.20000000000073,
+      "max": 1133.300000000001,
+      "allocations": 0,
+      "uploadBytes": 39219984,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 2,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "after",
+      "mode": "2.5d",
+      "run": 1,
+      "browser": "145.0.7632.6",
+      "frames": 165,
+      "median": 33.20000000000073,
+      "p95": 66,
+      "max": 1416.6000000000004,
+      "allocations": 0,
+      "uploadBytes": 27822688,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 5,
+        "y": 7
+      },
+      "errors": []
+    },
+    {
+      "variant": "after",
+      "mode": "2.5d",
+      "run": 2,
+      "browser": "145.0.7632.6",
+      "frames": 158,
+      "median": 32.900000000001455,
+      "p95": 67.19999999999709,
+      "max": 1535.5,
+      "allocations": 0,
+      "uploadBytes": 19409432,
+      "before": {
+        "facing": "Left",
+        "x": 9,
+        "y": 7
+      },
+      "after": {
+        "facing": "Left",
+        "x": 2,
+        "y": 7
+      },
+      "errors": []
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+// Browser social controls use the game's authenticated socket, including during a link session.
+#[derive(Default)]
+struct SocialBridge {
+    pending: VecDeque<crystal_net::hosted::ClientMessage>,
+    events: VecDeque<crystal_net::hosted::ServerMessage>,
+    connected: bool,
+    focused: bool,
+    players: Vec<serde_json::Value>,
+    selected_player: Option<String>,
+    heads: Vec<serde_json::Value>,
+    last_stats: Option<(u64, u64, u16)>,
+}
+
+thread_local! {
+    static SOCIAL_BRIDGE: std::cell::RefCell<SocialBridge> = std::cell::RefCell::new(SocialBridge::default());
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_social_focus(focused: bool) {
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.focused = focused);
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_social_send(json: &str) -> std::result::Result<(), String> {
+    if json.len() > 2048 {
+        return Err("Social command is too large".into());
+    }
+    let message: crystal_net::hosted::ClientMessage =
+        serde_json::from_str(json).map_err(|e| e.to_string())?;
+    if !matches!(
+        &message,
+        crystal_net::hosted::ClientMessage::Leaderboard { .. }
+            | crystal_net::hosted::ClientMessage::SocialList { .. }
+            | crystal_net::hosted::ClientMessage::Chat { .. }
+            | crystal_net::hosted::ClientMessage::ChatJoin { .. }
+            | crystal_net::hosted::ClientMessage::ChatLeave { .. }
+            | crystal_net::hosted::ClientMessage::InteractionRequest { .. }
+            | crystal_net::hosted::ClientMessage::InteractionResponse { .. }
+            | crystal_net::hosted::ClientMessage::InteractionCancel
+    ) {
+        return Err("Unsupported social command".into());
+    }
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+        if !bridge.connected {
+            return Err("Multiplayer is reconnecting".into());
+        }
+        if bridge.pending.len() >= 32 {
+            return Err("Too many pending social commands".into());
+        }
+        bridge.pending.push_back(message);
+        Ok(())
+    })
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_social_poll() -> String {
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+        serde_json::json!({
+            "connected": bridge.connected,
+            "events": bridge.events.drain(..).collect::<Vec<_>>(),
+            "players": bridge.players,
+            "heads": bridge.heads,
+            "selected_player": bridge.selected_player.take(),
+        })
+        .to_string()
+    })
+}
+
+fn social_event(message: &crystal_net::hosted::ServerMessage) {
+    use crystal_net::hosted::ServerMessage;
+    if !matches!(
+        message,
+        ServerMessage::Leaderboard { .. }
+            | ServerMessage::SocialUsers { .. }
+            | ServerMessage::Welcome { .. }
+            | ServerMessage::Chat { .. }
+            | ServerMessage::ChatChannels { .. }
+            | ServerMessage::InteractionRequest { .. }
+            | ServerMessage::InteractionResponse { .. }
+            | ServerMessage::MatchFound { .. }
+            | ServerMessage::Error { .. }
+    ) {
+        return;
+    }
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+        if bridge.events.len() >= 200 {
+            bridge.events.pop_front();
+        }
+        bridge.events.push_back(message.clone());
+    });
+}
+
+impl MultiplayerRuntime {
+    // Invitations must update the same lobby state as keyboard requests before
+    // MatchFound arrives. Sending them directly would reject a valid match.
+    fn prepare_social_interaction(
+        &mut self,
+        message: &crystal_net::hosted::ClientMessage,
+        runtime_shell: &mut BevyRuntimeShell,
+    ) -> Result<()> {
+        use crystal_net::hosted::{ClientMessage, ServerMessage};
+        match message {
+            ClientMessage::InteractionRequest { target_user_id, kind } => {
+                anyhow::ensure!(self.connection.is_some() && self.session.is_none() && self.queued_mode.is_none() && self.direct_mode.is_none() && self.pending_interaction.is_none(), "Finish or cancel your current invitation or link session first.");
+                if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) { anyhow::bail!(reason); }
+                anyhow::ensure!(!has_visible_shell_a_action(runtime_shell)?, "Close the current dialogue or menu first.");
+                let map = runtime_shell.shell.session().snapshot().map_name;
+                anyhow::ensure!(self.remote_presences.get(target_user_id).is_some_and(|player| player.map == map), "That trainer is no longer nearby.");
+                self.direct_mode = Some(*kind);
+            }
+            ClientMessage::InteractionResponse { request_id, target_user_id, accepted } => {
+                let request = self.pending_interaction.as_ref().context("That invitation has expired.")?;
+                anyhow::ensure!(request.request_id == *request_id && request.from_user_id == *target_user_id, "That invitation has expired.");
+                let kind = request.kind;
+                if *accepted {
+                    if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) { anyhow::bail!(reason); }
+                    anyhow::ensure!(!has_visible_shell_a_action(runtime_shell)?, "Close the current dialogue or menu first.");
+                }
+                self.direct_mode = accepted.then_some(kind);
+                self.pending_interaction = None;
+                social_event(&ServerMessage::InteractionResponse { request_id: *request_id, from_user_id: target_user_id.clone(), accepted: *accepted });
+            }
+            ClientMessage::InteractionCancel => {
+                anyhow::ensure!(self.connection.is_some() && self.session.is_none(), "You are already in a link session.");
+                // Keep direct_mode until the server confirms cancellation: an
+                // acceptance may already be in flight ahead of our cancel.
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    fn poll_social(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+        let state = runtime_shell.shell.session().state();
+        let stats = (state.pve_battles(), state.pve_wins(), state.storage.party.pokemon.iter().flatten()
+            .filter(|p| !p.is_egg).map(|p| u16::from(p.level)).sum::<u16>());
+        let publish = SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+            if !bridge.connected { bridge.last_stats = None; }
+            bridge.connected && !state.player_name.is_empty() && bridge.last_stats != Some(stats)
+        });
+        if publish {
+            let message = crystal_net::hosted::ClientMessage::GameStats { pve_battles: stats.0, pve_wins: stats.1, party_level: stats.2 };
+            if let Some(connection) = self.connection.as_mut() {
+                connection.send(message)?;
+                SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.last_stats = Some(stats));
+            } else if let Some(session) = self.session.as_mut() {
+                session.send_social(message)?;
+                SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.last_stats = Some(stats));
+            }
+        }
+        let messages = SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+            if self.failed {
+                bridge.connected = false;
+                bridge.pending.clear();
+            }
+            bridge.pending.drain(..).collect::<Vec<_>>()
+        });
+        for message in messages {
+            if let Err(error) = self.prepare_social_interaction(&message, runtime_shell) {
+                social_event(&crystal_net::hosted::ServerMessage::Error {
+                    code: "social_error".into(), message: error.to_string(),
+                });
+                continue;
+            }
+            if let Some(connection) = self.connection.as_mut() {
+                connection.send(message)?;
+            } else if let Some(session) = self.session.as_mut() {
+                session.send_social(message)?;
+            }
+        }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod social_bridge_tests {
+    use super::*;
+
+    #[test]
+    fn social_bridge_rejects_gameplay_commands_and_offline_chat() {
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| *bridge = SocialBridge::default());
+        assert!(crystal_social_send(r#"{"type":"queue_leave"}"#).is_err());
+        let chat = r#"{"type":"chat","channel":"say","target_user_id":null,"text":"Hello"}"#;
+        assert!(crystal_social_send(chat).is_err());
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = true);
+        assert!(crystal_social_send(r#"{"type":"game_stats","pve_battles":10,"pve_wins":10,"party_level":600}"#).is_err());
+        assert!(crystal_social_send(r#"{"type":"trade_completed","trade_id":"fake"}"#).is_err());
+        crystal_social_send(r#"{"type":"social_list","query":"","offset":0}"#).unwrap();
+        crystal_social_send(r#"{"type":"leaderboard","metric":"pvp_wins","offset":0}"#).unwrap();
+        assert_eq!(SOCIAL_BRIDGE.with_borrow(|bridge| bridge.pending.len()), 2);
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.pending.clear());
+        crystal_social_send(r#"{"type":"interaction_request","target_user_id":"player-2","kind":"battle"}"#).unwrap();
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.pending.clear());
+        crystal_social_send(chat).unwrap();
+        assert_eq!(SOCIAL_BRIDGE.with_borrow(|bridge| bridge.pending.len()), 1);
+        crystal_social_focus(true);
+        assert!(SOCIAL_BRIDGE.with_borrow(|bridge| bridge.focused));
+        crystal_social_focus(false);
+        assert!(!SOCIAL_BRIDGE.with_borrow(|bridge| bridge.focused));
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| *bridge = SocialBridge::default());
+    }
+}
+
+// Project actual rendered trainer sprites, never inferred map coordinates.
+fn publish_social_heads(
+    rendered: Res<RenderedViewport>,
+    cameras: Query<(&Camera, &GlobalTransform), With<MainCameraMarker>>,
+    players: Query<(&Sprite, &GlobalTransform), With<PlayerMarker>>,
+    ghosts: Query<(&MultiplayerGhost, &Sprite, &GlobalTransform)>,
+    menus: Query<(), Or<(With<FieldCommandMarker>, With<BattleCommandMarker>, With<FixedBattleCanvasMarker>, With<TitleScreenMarker>, With<VisibleIntroSurface>)>>,
+    #[cfg(feature = "voxel-view")] voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
+    #[cfg(feature = "voxel-view")] voxel_heads: Option<Res<crystal_voxel_view::ActorScreenHeads>>,
+) {
+    let mut heads = Vec::new();
+    if !rendered.title_active && rendered.map_name.is_some() && menus.is_empty() {
+        #[cfg(feature = "voxel-view")]
+        let voxel_active = voxel_status.as_ref().is_some_and(|status| status.active);
+        #[cfg(not(feature = "voxel-view"))]
+        let voxel_active = false;
+        let project = |sprite: &Sprite, transform: &GlobalTransform, id: &str| -> Option<Vec2> {
+            #[cfg(feature = "voxel-view")]
+            if voxel_active {
+                let visual_id = if id == "__self__" { crystal_render_api::VisualActorId::Player }
+                    else { crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(id)) };
+                return voxel_heads.as_ref()?.0.get(&visual_id).copied();
+            }
+            let _ = voxel_active;
+            let (camera, camera_transform) = cameras.get_single().ok()?;
+            let size = camera.logical_target_size()?;
+            let point = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y * sprite.custom_size?.y * 0.5))?;
+            let normalized = (point + camera.logical_viewport_rect()?.min) / size;
+            (normalized.is_finite() && normalized.cmpge(Vec2::ZERO).all() && normalized.cmple(Vec2::ONE).all()).then_some(normalized)
+        };
+        for (sprite, transform) in &players {
+            if let Some(point) = project(sprite, transform, "__self__") { heads.push(serde_json::json!({"user_id":"__self__", "x":point.x, "y":point.y})); }
+        }
+        for (ghost, sprite, transform) in &ghosts {
+            if let Some(point) = project(sprite, transform, &ghost.user_id) { heads.push(serde_json::json!({"user_id":ghost.user_id, "x":point.x, "y":point.y})); }
+        }
+    }
+    SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.heads = heads);
+}
