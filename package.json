@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "playwright": "1.58.2",
+    "jsdom": "29.0.1"
+  },
+  "name": "geothite-browser-checks",
+  "scripts": {
+    "test:browser": "node --test web-client/*.test.mjs",
+    "bench:walking": "node tools/browser-walking-performance.mjs"
+  }
+}

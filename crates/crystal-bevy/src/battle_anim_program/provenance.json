@@ -1,0 +1,14 @@
+{
+  "rom_sha1": "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133",
+  "bank": 51,
+  "bank_sha256": "2ab1b21a39f572633a3b7a2a6055e7baf444ba3e26e7712d0c2958140c6ad58e",
+  "sources": {
+    "constants/battle_anim_constants.asm": "b8f6bba84ac6a9e636cfe5f00596b42421da9a48c2a697ff423fc870c5fe99ce",
+    "engine/battle_anims/functions.asm": "f79ffa3db232dfd21a81d9d8ad108d2c45217f52f876799eedec7de05ac227bf",
+    "engine/battle_anims/helpers.asm": "b6e0f52b354db35e55d0d1e60d7e9afdcac0a497f55ceed2d700a40d13ff3146",
+    "engine/battle_anims/core.asm": "55d24a68979e52dabd089857be5213c07a8f1198b0950b6a49e46a7213c59951",
+    "data/battle_anims/framesets.asm": "cb98a82f1d50e86f0c78bff3afa14001f0f865ac9c7324a28775365eb260dbe9",
+    "data/battle_anims/oam.asm": "3760169d375966da1c0b0b097201d384e358ad3aa6b0b0fda42d9e55877d3782",
+    "data/battle_anims/objects.asm": "882bbe39712134e01ca452eb82eb87d98ee1402dc5c18ea22d4161f87d7d77ab"
+  }
+}

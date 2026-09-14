@@ -1,0 +1,69 @@
+pub const GB_CPU_CYCLES_PER_SECOND: u32 = 4_194_304;
+pub const GB_CYCLES_PER_FRAME: u32 = 70_224;
+pub const GB_FRAME_RATE: f64 = GB_CPU_CYCLES_PER_SECOND as f64 / GB_CYCLES_PER_FRAME as f64;
+pub const GB_FRAME_DURATION_MS: f64 =
+    (GB_CYCLES_PER_FRAME as f64 * 1000.0) / GB_CPU_CYCLES_PER_SECOND as f64;
+pub const GB_FRAME_DURATION_SECONDS: f64 = GB_FRAME_DURATION_MS / 1000.0;
+
+/// Number of update ticks consumed by an ASM byte counter that is decremented
+/// before its zero test. A stored zero traverses the complete byte domain.
+pub const fn wrapping_byte_counter_ticks(value: u8) -> u16 {
+    if value == 0 { 256 } else { value as u16 }
+}
+
+pub const fn wrapping_byte_counter_frames(value: u8, frames_per_tick: u16) -> u16 {
+    wrapping_byte_counter_ticks(value) * frames_per_tick
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct Frame(pub u64);
+
+impl Frame {
+    pub const ZERO: Self = Self(0);
+
+    pub fn checked_next(self) -> Option<Self> {
+        match self.0.checked_add(1) {
+            Some(frame) => Some(Self(frame)),
+            None => None,
+        }
+    }
+
+    pub fn next(self) -> Self {
+        self.checked_next().expect("frame cursor overflow")
+    }
+
+    pub fn elapsed_seconds(self) -> f64 {
+        self.0 as f64 * GB_FRAME_DURATION_SECONDS
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn frame_rate_matches_game_boy_cadence() {
+        assert!((GB_FRAME_RATE - 59.727500569606).abs() < 0.000000001);
+        assert!((GB_FRAME_DURATION_MS - 16.742706298828125).abs() < 0.000000001);
+    }
+
+    #[test]
+    fn frame_elapsed_seconds_uses_hardware_duration() {
+        assert_eq!(Frame::ZERO.next(), Frame(1));
+        assert!((Frame(60).elapsed_seconds() - 1.0045623779296875).abs() < 0.000000001);
+    }
+
+    #[test]
+    fn frame_next_exposes_overflow_as_absent_value() {
+        assert_eq!(Frame(u64::MAX).checked_next(), None);
+    }
+
+    #[test]
+    fn byte_counter_zero_wraps_through_the_complete_byte_domain() {
+        assert_eq!(wrapping_byte_counter_ticks(0), 256);
+        assert_eq!(wrapping_byte_counter_ticks(1), 1);
+        assert_eq!(wrapping_byte_counter_ticks(u8::MAX), 255);
+        assert_eq!(wrapping_byte_counter_frames(0, 6), 1536);
+    }
+}
+use serde::{Deserialize, Serialize};

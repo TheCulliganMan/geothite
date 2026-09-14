@@ -1,0 +1,181 @@
+# Geothite
+
+A Rust implementation of Pokémon Crystal with browser and desktop play,
+online multiplayer, and an optional 2.5D overworld renderer.
+
+Geothite separates deterministic game logic from rendering and networking.
+The browser build brings the game, audio, touch controls, and multiplayer
+into one self-hosted application.
+
+## Features
+
+- Classic 2D presentation with a switchable 2.5D overworld view.
+- Keyboard, touch, and gamepad controls with responsive browser layouts.
+- Shared-world multiplayer, player chat, battle invitations, and trading.
+- Browser saves tied to a persistent player identity.
+- A shared server clock for the hosted game's day and night cycle.
+- A Docker build that packages the server and browser client together.
+
+This is an actively developed project. See the [fidelity audit](FIDELITY_AUDIT.md)
+for implementation status and remaining differences from the original game.
+
+## Quick start
+
+Install Docker with the Compose plugin, then clone the repository:
+
+```sh
+git clone https://github.com/TheCulliganMan/geothite.git
+cd geothite
+```
+
+Game content is supplied separately; this repository does not include a game
+pack or ROM. Obtain the disassembly from
+[pret/pokecrystal](https://github.com/pret/pokecrystal), follow its assembly
+instructions, and prepare a compatible Geothite pack as described in
+[Game content setup](docs/game-content.md). Place the browser pack at
+`content-packs/core-modular.browser.crystalpack` before building Docker.
+
+Create a signing secret once for a new installation:
+
+```sh
+umask 077
+printf 'CRYSTAL_AUTH_SECRET=%s\n' "$(openssl rand -hex 32)" > .env
+```
+
+Start the game:
+
+```sh
+docker compose -f docker-compose.production.yml up -d --build
+```
+
+Open [localhost:3003](http://localhost:3003). The first build compiles Rust and
+WebAssembly dependencies and can take several minutes. Docker includes the
+required toolchains and copies your locally supplied game pack into the image;
+a separate Rust installation is unnecessary for the Docker build.
+
+Keep `.env` across updates. For remote access, put the server behind HTTPS.
+See the [deployment guide](docs/deployment.md) for configuration, reverse
+proxying, upgrades, health checks, persistence, and cleanup.
+
+## Playing
+
+In the browser, use the arrow keys or WASD to move, `Z` for A, `X` for B, `Space` for the
+game menu, and `Backspace` for Select. Press `Enter` to open chat and `Esc`
+to close it. Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
+**Save key bindings** keeps the choice in this browser across reloads. Chat, Start, and
+Select require different keys. Enter still sends messages while typing in chat.
+Nearby Say messages appear briefly above the speaking trainer in 2D and 2.5D.
+Whispers and global channels stay in the chat panel.
+Phones expose touch controls; standard gamepads are supported.
+Click or press a key in the game to enable browser audio.
+
+Use the **2.5D** control to switch the overworld renderer. Battles and menus
+keep their 2D presentation. Camera zoom and rotation are available in 2.5D.
+
+Browser identities are created automatically. Save through the game's normal
+menu; saves remain in that browser. Clearing browser storage removes the local
+identity and saves.
+
+Multiplayer ratings, the user directory, and leaderboard totals persist in a named Docker volume across container rebuilds
+and restarts. Keep the signing secret in `.env` unchanged so returning players
+can reuse their identities. Active connections, chat history, and in-progress
+matches are temporary; players reconnect after a server restart. See
+[persistence and cleanup](docs/deployment.md#persistence-and-cleanup).
+
+### Multiplayer
+
+Face a nearby player and press A, or click their name in chat, to choose
+Battle, Trade, or Whisper. Invitations can be accepted or declined in the game.
+Players must use compatible game packs to share a world.
+
+Chat supports nearby Say, map-wide General, Trade, Looking for Group,
+private whispers, and custom channels. Type `/help` for available commands.
+
+The compact community window has **Chat**, **Social**, and **Leaderboard** tabs.
+Social lists every trainer known to this server, including offline users, with
+search and live connection status. Click an online name to whisper; battle and
+trade invitations require the trainer to be nearby.
+
+Leaderboards rank PvP wins and completed battles, PvE wins and completed battles,
+completed player trades, and highest combined level of the six non-egg party
+members. Ties share a rank. PvP results and trades require confirmation from both
+participants; cancelled sessions do not count. PvE follows the game's encounter
+results (including captures as wins), excludes tutorials and link battles, and
+persists in normal saves. Save restores cannot reduce or double-count a trainer's
+recorded totals. Tracking and the user directory begin as players use this update;
+historical battles and trades were not stored.
+
+### Desktop play
+
+For native play, install the Rust toolchain specified in `rust-toolchain.toml`
+and your platform's Bevy build dependencies. Supply a compatible game pack:
+
+```sh
+cargo run -p crystal-bevy -- \
+  --pack /path/to/core-modular.crystalpack \
+  --save-path /path/to/player.crystalsave
+```
+
+Add `--load-save /path/to/player.crystalsave` to load an existing save.
+Enable the optional renderer with `--features voxel-view` before `--`.
+Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
+and Right Shift.
+
+Wide screens dock field dialogue and panels in a right-hand column. Portrait
+screens place dialogue at the bottom center. Both 2D and 2.5D views use this
+responsive layout, with smaller insets to keep panels on small screens.
+
+## Development
+
+The workspace is organized around focused Rust crates:
+
+| Path | Responsibility |
+| --- | --- |
+| `crates/crystal-core` | Game state, timing, battles, and world rules. |
+| `crates/crystal-assets` | Compiled game data and content packs. |
+| `crates/crystal-audio` | Native Rust synthesis, source linking, and audio auditing. |
+| `crates/crystal-net` | Multiplayer protocol and transport. |
+| `crates/crystal-bevy` | Desktop and WASM game client. |
+| `crates/crystal-render-api` | Shared presentation snapshots. |
+| `crates/crystal-voxel-view` | Optional 2.5D renderer. |
+| `crates/crystal-web-server` | HTTP hosting and multiplayer relay. |
+| `web-client` | Browser page, controls, thin WASM audio worker, and chat UI. |
+
+Check the server and run the browser session tests (the latter require Node.js):
+
+```sh
+cargo check --locked -p crystal-web-server
+npm ci
+npm run test:browser
+```
+
+The production Dockerfile builds the server and WASM client from the same
+revision. Keep protocol changes coordinated across both. Generated game packs
+should be regenerated using the canonical exporter, not edited manually.
+Audio programs come from your separately supplied pack; the Rust exporter
+is in this repository. See [Native Crystal audio](audio/README.md) for export and regression checks.
+No TypeScript or JavaScript build tool is required to synthesize or export audio.
+
+## Contributing
+
+Bug reports should include the revision, platform or browser, reproduction
+steps, and any relevant logs. For gameplay differences, describe the expected
+Pokémon Crystal behavior and what happened instead.
+
+Keep changes focused and add regression coverage for behavior fixes. Include
+screenshots for visual changes and the checks you ran in pull requests.
+
+## Further reading
+
+- [Deployment and maintenance](docs/deployment.md)
+- [Game fidelity audit](FIDELITY_AUDIT.md)
+- [Renderer inspection](RENDER_AT_LOCATION.md)
+- [Operation profiling](tools/OPERATION_PROFILING.md)
+
+## Alternative frontends
+
+The renderer-independent `crystal-runtime` crate owns game sessions, commands,
+snapshots, saves and audio cue resolution. `crystal-audio::pcm` decodes the same
+packed sounds for custom audio devices. See [the frontend assessment and integration
+guide](docs/FRONTEND_ARCHITECTURE.md) for the headless example and remaining UI
+controller work.

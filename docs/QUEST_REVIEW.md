@@ -1,0 +1,974 @@
+# Quest and presentation review
+
+This is the working review checklist, not a claim that every route has passed.
+The regression fixtures position a player at each quest leg; dialogue, script
+continuations, and rewards then run through the real runtime and visible shell.
+Full normal-input traversal and visual review remain separate checks.
+
+## Shipped fixes: 44a31298
+
+- Whiteout: normal battle loss cleanup, one recovery sequence, restored input.
+- Battle text catch-up, presentation snapshot reuse, HP handoff, EXP visibility.
+- Trainer defeat portrait: full width, centered in the opponent slot, enemy HUD hidden.
+- Trainer approach facing and phone-number acceptance/refusal.
+- Gym badge state synchronized with script flags; repair old flag-only saves.
+- Falkner badge, TM, repeat dialogue, and save/load regression.
+- Hall of Fame record saved before credits; title and Continue progression.
+- Evolution completion, cancellation, registration and move-learning checks passed.
+
+44a31298 is deployed: rebuilt container is healthy and a real browser battle interaction passed. Opponent-name bounds pass in the native renderer; the mobile browser top row matches all 9,216 compared native pixels. No clipping fix was needed.
+The Hall of Fame presentation was subsequently integrated; see the ceremony
+integration review below for current coverage and remaining fidelity limits.
+
+## Quest coverage still in progress
+
+For each chain, check prerequisites, refusal/cancellation where applicable,
+rewards and item consumption, continuation after battles, repeat interactions,
+map reload, and saved progress. Check visual placement and restored control at
+animated boundaries. A successful isolated opcode is insufficient evidence for
+a complete quest.
+
+| Chain | Required checks | Status |
+| --- | --- | --- |
+| Medicine | Pharmacy prerequisite, SecretPotion gift, refusal, Amphy healing, Jasmine departure and gym availability | Request, pharmacy prerequisite/shop exit, gift, refusal, consumption, healing, departure and save/reload pass; post-healing pharmacy revisit gives no duplicate; full traversal and visual/audio review pending |
+| Suicune | Burned Tower release, Raikou/Entei initialization, Cianwood/Eusine, Route 36/42 sightings, Radio Tower Clear Bell, sages, Tin Tower battle and aftermath | Burned Tower release and Clear Bell gate passed; Tin Tower victory aftermath, route sightings, and Eusine departure/non-repeat passed; save/load also passed; capture and complete Radio Tower/sage chain pending |
+| Lake of Rage | Access, Red Gyarados battle, Red Scale, Lance, Mr. Pokémon exchange | Defeat aftermath, Red Scale, Lance refusal/acceptance and Mart scene unlock, Exp. Share trade/refusal/repeat, full-pocket retry and save/load pass; access/traversal and capture/loss aftermath remain pending |
+| Rocket Hideout | Statue alarms, traps, passwords, locked doors, rival/Lance, generator battles, reward and exit | Camera 1a two-grunt continuation, switch disabling all eight trigger positions, three trap species/repeats, both password doors and persisted floor changes, all three Electrode pairs, Whirlpool/town unlocks and save/load pass. Full traversal, other active cameras/traps, remaining approach variants, Lance's initial password scene, capture/loss and visual/audio timing remain pending |
+| Radio Tower | Disguise/director battles, Basement Key, switch maze, Card Key, rescue, Clear Bell | Fake director/Basement Key, warehouse Card Key/repeats, key-gated shutter, final executive/Clear Bell, town restoration and save/load pass. Switch ordering/refusal/emergency/reset and door tiles pass after fixing stale map overrides. Disguise, basement entry, rival, full traversal and visual timing remain pending |
+| Slowpoke | Tail seller responses, well rescue, Kurt return, repeat state | Rescue callback, town flags, party healing and Kurt warp passed; seller accept/refuse, unchanged money/inventory and save/load pass; full battle approach pending |
+| Bicycle | Gift, refusal, riding restrictions, shop callback, persistence | Gift/refusal/repeat and three runtime riding/restriction checks passed; real gift through mileage threshold, visible shop call, no repeat and save/load pass after fixing the enable flag; full 1,024-step traversal remains pending |
+| Fishing | Old/Good/Super Rod gifts, repeats, water targeting, no bite, hooked encounter, restored control | All three gifts/refusal/repeat and eight runtime casting/encounter checks passed; full visual sequence pending |
+| Gyms | Every leader's after-talk, badges/TMs, delayed Whitney/Clair awards, repeats | Falkner, Bugsy, Morty, Chuck, Jasmine and Pryce terminal-battle reward continuations, repeat dialogue and save/load pass; Whitney post-victory crying state, Bridget scene, delayed badge/Attract, repeat and save/load pass; Clair quiz, delayed badge/TM, return-visit Dratini, repeat dialogue and save/load pass; all eight Kanto leader reward/repeat/save continuations pass; full access/traversal, combat and remaining presentation checks are pending |
+| Evolution | Completion, cancellation, Pokédex registration, move learning | Targeted checks passed; visual review pending |
+| Hall of Fame | Record, ceremony, save, credits, title/Continue, postgame unlocks | Lance entry, animated ceremony, Oak rating, credits and Continue verified; full postgame traversal pending |
+| Early story | Starter, Mystery Egg delivery, rival, Togepi/Everstone, Sprout Tower | Sprout Tower rival departure, scene/save state, elder battle continuation, Flash reward/repeat/save pass; full tower traversal and visual timing pending; other early-story coverage review pending |
+| Ilex Forest | Farfetch'd chase directions, wrong approaches, return to apprentice, Cut, Charcoal, persistence, shrine event | Chase including backward branch, Cut, Charcoal/repeat and save/load passed; full traversal and shrine event pending |
+| Goldenrod | Radio Card, SquirtBottle/Sudowoodo, Kenya mail, flower shop repeats | Radio Card refusal, all five wrong answers, success, repeat, save/load and Radio-tab unlock pass; Floria prerequisites, SquirtBottle badge gate/gift/refusal, Sudowoodo victory continuation, Rock Smash/repeats and save/load pass; full traversal, remaining outcomes and visual/audio review pending; Kenya mail pending |
+| Ecruteak/Cianwood | Kimono Surf reward, Burned Tower rival/Morty gate, Chuck/Fly, Shuckle | All five Kimono trainer battle continuations, Surf prerequisite/reward/repeat and save/load pass; Chuck dialogue/battle continuation, badge/TM, wife's Fly gift/repeat and save/load pass; full combat/traversal and visual review pending; other chains pending |
+| Dragon's Den | Entrance gate, quiz, badge/TM timing, Dratini, Elm/Master Ball | Perfect/corrected quiz, delayed badge/TM, Dratini move reward, full-party retry, repeats and save/load pass; entrance/traversal and Elm/Master Ball pending |
+| Kanto | S.S. Ticket/ship rescue, Power Plant/Machine Part, EXPN Card, Copycat/Lost Item/Pass, Snorlax, Mt. Silver | Oak/Mt. Silver 8/15/16-badge gate, repeat and save/load pass; live Oak assessment/goodbye/movement passes. Other Kanto chains and Route 28 traversal remain pending |
+| Every TM/HM | Every acquisition, compatibility, teaching/replacement/cancel, TM consumption, HM reuse/deletion, field-move badge and location gates | Overworld first: all pickups/gifts/shops/rewards and Cut/Fly/Surf/Strength/Flash/Whirlpool/Waterfall plus Headbutt/Rock Smash/Dig, badge gates, obstacles, map transitions and restored control. Teaching/battle checks remain in scope. Cut/Flash/Surf/Waterfall commit timing and Surf/Whirlpool prompt checks passed; comprehensive audit pending |
+| Other item/side quests | Moomoo healing, Itemfinder, Apricorns, Ruins puzzles, trades, Silver/Rainbow Wings and legendary gates | Moomoo prerequisite/refusal, seven berries, Snore/repeats, milk sale/rejection/retry and save/load pass after two script fixes; Moomoo slow-cry worker PCM, dialogue close and movement verified in production; remaining side quests pending; milk price verified in production |
+
+## Renderer work
+
+See FRONTEND_ARCHITECTURE.md for the shared runtime/audio assessment and remaining
+frontend controller extraction. The modern 3D experiment remains on the separate
+`feat/new-bark-3d` branch. It is not part of the production quest fixes.
+
+TM/HM source coverage identifies 56 machines with a mapped pickup, gift or shop.
+TM09 Psych Up is the original Time Capsule exception ([TM/HM reference](https://www.serebii.net/crystal/tmhm.shtml)); its definition exists, but normal overworld acquisition is not expected. Time Capsule transfer verification remains separate.
+
+The runtime field-move tests initially could not read obsolete loose JSON paths.
+Their fixtures now load the shipped pack. All 14 field-move checks and seven
+Strength/Flash/Headbutt/Rock Smash/Sweet Scent checks pass. These are targeted
+runtime checks, not proof of every map and obstacle. Three bicycle, eight fishing,
+and four TM/HM teaching/consumption checks also pass.
+
+Overworld animation review explicitly includes walking/running, turning, ledge
+jumps, trainer spotting and approach, Farfetch'd and Suicune movement, bicycle,
+fishing, field moves, doors, warps and fades. Check frame timing, sprite placement,
+audio synchronization, and restored control; scripted-state tests alone do not
+establish visual fidelity.
+
+Animation checks passed for alternating walking feet, consecutive high-refresh
+steps, Fly retaining map objects without stale frames, and Fly/Rock Smash sound
+waits. The visual review and remaining animation cases are still open.
+
+Shiny coverage explicitly includes encounter/gift DV generation and odds, palettes, sparkle animation, Red Gyarados, capture, evolution, storage and save/load preservation. The exhaustive 65,536-DV predicate check and actual Red Gyarados script pass. All 251 species now load normal/shiny front and back artwork: the shared lookup incorrectly changed underscores to hyphens, breaking Farfetch'd, Mr. Mime, Nidoran and Ho-Oh. Unown now selects DV-specific battle art and shares its species shiny palette; species-only catalog art defaults to A. Hatch reveal now uses the party Pokémon's shiny state. Red Gyarados capture, PC deposit/withdrawal and save/load preserve its shiny DVs; shiny Pikachu stone evolution into Raichu and save/load also pass. Other evolution paths, gift/egg generation distribution, Transform and sparkle timing verification remain pending. Seven targeted shiny checks pass; the hatch sprite and Stats screenshot were visually reviewed. These findings do not establish that all shinies work.
+
+Wild shiny entrance now schedules the sparkle-only sequence before the frontpic and encounter text, matching BattleStartMessage ordering. New tests verify eight shine events, no ball-poof effect, input ownership/release and Battle Scene on/off behavior. A rendered sparkle frame was visually reviewed. Existing trainer/wild sliding regressions are also checked; full frame-by-frame comparison with original hardware remains open.
+
+Artwork/hatch fix 80245f29 is deployed; container is healthy and the production browser battle interaction passes. Sparkle fix 01161c00 is also deployed; its container is healthy and a production browser battle interaction passes.
+
+Lake of Rage review exposed three shared progression defects: the auto-runner
+spun during sound waits, sound waits required a rendered page even in an empty
+text window, and completed item notices could repeatedly consume A without
+advancing. The Red Gyarados continuation also attempted to persist a scene on a
+map without scene storage. Fixes pass the real-pack defeat/reward/Lance/trade/save sequence and full-pocket retry. Core scene tests (13), sound-wait tests (3), item-notice tests (3), medicine (1), and visible evolution tests (3) also pass. Item notice dismissal now resumes the script before stale dialogue can reappear. Gameplay fixes 1e40a90e are deployed; the rebuilt container is healthy and a production browser battle interaction passes.
+The scope still includes access/traversal, capture/loss aftermath, the hideout,
+and every other pending quest in the matrix above.
+
+Dragon's Den scripted reward coverage now passes both perfect and corrected quiz
+answers, the delayed Rising Badge, the exit TM scene, return-visit Dratini moves,
+repeat dialogue/rewards, and save/load. Full-party refusal/retry also passes.
+Fixtures stage each map leg and Clair's terminal battle; complete gym/Den walking,
+water traversal, and every full-bag reward order are still open.
+
+The quiz fixes initialize the active compiled menu cursor, render only its exact
+call-site alias at authored coordinates, give menus A/B ownership, honor disabled
+B, and release the active menu on closewindow. The rendered three-answer menu and
+underlying question were visually reviewed. New map entry clears the eight
+temporary flags before callbacks; battle reload, submenu return, and Continue
+preserve them. This matches HandleNewMap in
+[warp_connection.asm](https://github.com/pret/pokecrystal/blob/master/engine/overworld/warp_connection.asm)
+and its [setup paths](https://github.com/pret/pokecrystal/blob/master/data/maps/setup_scripts.asm).
+Flag checks also synchronize the script-value alias read by specials; previously
+a wrong quiz answer still awarded the perfect-answer Dratini moves.
+
+Verification: complete Clair reward sequence (both branches), full-party retry,
+all twelve map setup paths with permanent-flag preservation, closewindow core
+regression, five elevator checks, two vertical-menu checks, three sound-wait
+checks, item notice, Whitney, medicine, and map load/refresh checks pass.
+Four elevator fixtures were updated to locate the shipped pack. Nine existing
+shiny checks also pass; the unverified shiny scope above remains open.
+Dragon's Den fix 27412562 is deployed. The rebuilt container is healthy and the production browser battle interaction passes; its screenshot was reviewed. The complete quiz/reward sequence is verified in the native real-pack fixture, not yet through normal browser traversal.
+
+Transform review found the core copied target DVs but the runtime snapshot exposed
+only its species. The renderer could revert to the original shiny palette after
+the move animation and choose the wrong Unown form. The snapshot now carries both
+sides' transformed DVs, and rendering uses them consistently for form and palette.
+Tests cover both sides, shiny/non-shiny targets, frames before/at the picture swap,
+and the settled state. Runtime snapshot tests verify copied values clear with the
+transform state without changing party DVs. The existing core Transform-copy test
+passes; ten shiny checks pass, along with the picture-swap timing regression.
+Both rendered shiny Unown sides were visually reviewed. This does not establish
+all Transform/capture/switch combinations or every gift/egg/evolution path.
+Transform rendering fix 5b8f36a1 is deployed via eaf20677. The rebuilt container is healthy, the production browser battle interaction passes, and its screenshot was reviewed. This browser smoke check does not replace the native Transform-specific rendering tests above.
+
+Rocket Hideout coverage now exercises the first camera's two successive trainer
+battles, verifies the secret switch disables all eight camera coordinate scripts,
+and preserves that state through save/load. Trainer fixtures stage terminal HP;
+full combat and the seven other active-camera approach animations remain open.
+Three floor traps start their authored Koffing/Voltorb/Geodude encounters, complete
+a real final turn, set their individual flags, and do not retrigger. The other
+nineteen trap tiles and capture/loss outcomes remain open.
+
+Password tests start from defeated-grunt fixtures, collect both passwords through
+actual dialogue, reject the office door with zero or one password, and open it
+with both. Murkrow's password gates the transmitter door. Both authored floor
+blocks persist through save/load; full normal-input door traversal remains open.
+Three Electrode battles clear their matching object pairs, then award Whirlpool,
+stop the radio signal, unlock town progression, reset the scene, and expose the
+deactivated-transmitter dialogue. The reward and flags survive save/load.
+Four real-pack visible-shell tests pass. NPC fixtures now select an adjacent
+walkable tile and face toward the target; blindly choosing the tile below an
+Electrode placed the player inside a wall. No production hideout changes were
+needed for these tested continuations after the preceding shared script fixes.
+
+Hideout scene coverage now passes Lance's B2F healing, the B3F rival shove/exit,
+both executive battles' left approach variants and retreats, and Lance's follow,
+pacing and generator handoff. Final trainer HP is staged; authored movement,
+dialogue, battle continuations and save/load execute through the visible shell.
+Lance's initial B3F password exposition, right-side variants and full traversal
+remain open.
+
+Radio Tower checks pass the fake director's Basement Key reward/repeat dialogue,
+the warehouse director's Card Key/repeat, negative Card Key slot behavior, shutter
+opening and persisted map changes. The final executive continuation awards Clear
+Bell, restores Rocket/civilian/town flags, sets the Tin Tower gate scene and saves.
+Fixtures explicitly enter the Rocket takeover phase; the initial-game shutter
+flag is otherwise already set. These are staged quest legs, not full-tower walks.
+
+The underground maze test distinguishes wrong 1-2-3 order from the successful
+3-2-1 door history, checks refusal, emergency activation/deactivation, all eleven
+door flags, critical floor tiles, save/load and warehouse reset. It exposed stale
+changeblock overrides surviving the warehouse's flag reset. Map setup now reloads
+base metatiles before MAPCALLBACK_TILES, discarding that map's stale overrides;
+callbacks reopen persistent doors from their flags. This matches
+[LoadBlockData](https://github.com/pret/pokecrystal/blob/master/home/map.asm).
+The reload regression covers warp, battle reload, Continue, submenu and connection
+setup. Nine checks pass: reload semantics, the maze, both password-door chains,
+room decorations, Cut, Fly, temporary flags and medicine. Earlier scene/reward
+checks above also pass. Full normal-input maze traversal and visual timing remain
+open. Map-block reload fix f3685a28 is deployed; the container is healthy and the production browser battle interaction passes. Its screenshot was reviewed. This smoke check does not establish full maze traversal.
+
+The borrowed bicycle callback was broken: step counting checked the physical-bit
+name STATUSFLAGS2_BIKE_SHOP_CALL_F, while authored shop and phone scripts use
+ENGINE_BIKE_SHOP_CALL_ENABLED. The step system now reads and clears that same
+engine flag. The real-pack visible-shell regression failed at 1,023 steps before
+the fix and now passes gift, actual riding across the threshold, incoming shop
+dialogue, dismissal, save/load and no repeat. The fixture stages mileage at 1,023;
+it does not ride all 1,024 steps. Five core mileage/poison/service checks pass.
+Slowpoke Tail offer checks also pass both answers, unchanged maximum money and
+inventory, scene advancement and save/load; the authored seller never sells an
+item even when answering yes. No seller production change was needed.
+
+Breeding shiny audit found a production defect: InitEgg discarded the random
+high Special DV bit during inheritance, preventing inherited eggs from being
+shiny. It also retained the pre-inheritance HP DV, which could fail persisted DV
+validation. The implementation now preserves the random Special bit, inherits
+the donor's low three bits and Defense, and recomputes the derived HP DV. This
+matches [InitEgg](https://github.com/pret/pokecrystal/blob/master/engine/events/daycare.asm).
+The new regression failed before the fix and passes all 512 attack/speed/Special
+bit outcomes for both Ditto slots and donor Special 2/10 (2,048 generated eggs).
+Each setup yields eight shiny outcomes, and all generated DVs serialize and
+validate on read. All 24 Day Care checks pass. This proves the tested inheritance
+distribution, not random-source uniformity, every parent pairing, or a complete
+visible hatch playthrough. Existing eggs are not rerolled by this change.
+
+Bicycle callback fix aff7b40f is deployed. The container is healthy, the production browser battle interaction passes, and its screenshot was reviewed. Breeding fix ed4e7270 deployment has started; production completion remains pending.
+
+The core bred-shiny lifecycle now passes generation, collection, Pokémon JSON
+round-trip, the actual overworld hatch boundary, full health, preserved shiny
+DVs and post-hatch Pokémon JSON round-trip. This stages egg readiness and the
+last hatch cycle; it does not prove normal traversal or the complete save file.
+The check exposed core egg initialization clearing the stat modifier map, making
+it fail Pokémon validation. Eggs now receive all eight neutral modifiers. The
+asset/runtime normalization already rebuilt that map, so this is a shared-core
+validity fix rather than evidence of a deployed hatch freeze.
+The existing visible hatch test now loads the selected current pack. Two timing
+checks pass (hold, wobble/cracks, shell, frontpic, hatch text), and the separate
+shiny Unown/hatch art plus save check passes. Its regenerated shiny hatch sprite
+was visually reviewed; full-screen normal-input hatch and nickname completion
+remain open.
+
+Breeding DV fix ed4e7270 is deployed. The container is healthy, production browser battle interaction passes, and its screenshot was reviewed. Core egg-validity fix 1c5e39e7 is now building for deployment; completion is still pending.
+
+Visible shiny hatching now passes both nickname paths through the native real-pack
+input controller. A staged final-cycle shiny Togepi egg hatches after real walking;
+A advances the hatch text/animation, B declines naming, or A opens the keyboard
+and A/START/A enters and confirms a nickname. Both paths release the controller
+back to overworld movement and preserve shiny DVs, egg completion and the chosen
+name through a complete save/load. Two tests pass (126.79 seconds). The fixture
+sets a valid player identity, as normal new-game setup would; hatching assigns
+that identity to the Pokémon. Typewriter completion is accelerated by the test
+helper, while animation timing advances through host updates. These checks do
+not replace browser/mobile hatch screenshots or the full preceding breeding walk.
+
+The production browser hatch flow now passes at a 390x844 viewport with DPR 2:
+walking, hatch animation, nickname decline and restored movement. The isolated
+save uses the combined production pack identity; the base-pack save correctly
+was not resumed by that build. This is Chromium at phone dimensions, not iOS
+Safari or touch-input verification. Native replay of the combined-pack fixture
+also passes. Core egg-validity fix 1c5e39e7 is deployed, healthy, and passes the
+same browser flow.
+
+Screenshot review exposed the hatchling disappearing during the nickname Yes/No
+question, despite functional input checks passing. The original
+[HatchEggs sequence](https://github.com/pret/pokecrystal/blob/master/engine/pokemon/breeding.asm)
+keeps its frontpic until naming or returning to the map. The renderer now draws
+the pending hatchling while the nickname choice is active, preserving its shiny
+palette. A regression checks an actual sprite entity with that artwork; the
+corrected native composition was visually reviewed. Retention fix 13d8fa3f is
+deployed. A fresh production Chromium run at phone dimensions passes hatch,
+nickname decline and restored movement, and its nickname screenshot was
+visually reviewed: the shiny hatchling stays visible beside the Yes/No choice.
+This remains distinct from iOS Safari and touch-input verification.
+
+All eight Kanto leader continuations pass from staged terminal battles: Brock,
+Misty, Lt. Surge, Erika, Janine, Sabrina, Blaine and Blue. Each sets its correct
+Kanto badge and defeat flag, reaches authored repeat dialogue without starting
+another battle, and preserves rewards through save/load. Erika grants Giga Drain
+and Janine grants Toxic exactly once; the other six leave the bag unchanged,
+matching their source scripts. One parameterized real-pack visible-shell test
+covers all eight (70.25 seconds). Leader availability is staged for Misty/Blue;
+gym access quests, mazes, full combat, guide/statue branches and visual/audio
+comparisons remain separate work. No Kanto production change was needed.
+
+Oak/Mt. Silver review exposed a fatal missing-rating lookup during the lab
+conversation. The rating table refers to OakRating01–19 command labels; each
+[source text command](https://github.com/pret/pokecrystal/blob/master/engine/events/prof_oaks_pc.asm)
+points to its matching _OakRating text already in the pack. The renderer now
+resolves that target. All 19 texts pass a real-pack resolution check. A visible
+quest regression stages 8, 15 and 16 badges, confirms the corresponding Oak
+branches, checks the nearby Mt. Silver blocker before/after unlocking, and
+verifies the unlock and repeat dialogue after save/load. All eight selected Oak
+checks pass (46.44 seconds), including the title/intro regression after correcting
+its obsolete test pack path. This proves the tested quest continuation, not full
+Route 28 traversal or fidelity of the assessment's layout, paging and audio.
+Rating lookup fix 2c505392 is deployed and its container is running healthy.
+Browser verification of that build remains separate from the native checks.
+
+Further visual review found that the single assessment list did not preserve the
+original dialogue sequence. Oak's introduction, seen/owned counts, rating header
+and rating paragraphs now use the existing source text-page renderer and the
+field textbox, including two-line scroll steps. The all-19-ratings regression
+checks complete page queues, substituted counts and return to the PC hub only
+after the final page. Mt. Silver and the other selected Oak regressions continue
+to pass. A screenshot test then exposed a blank-text refresh defect: unchanged
+core state could bypass a shell-owned field text update. The retained-dialog
+path now includes these PC/Oak boundaries, and the unchanged-frame check also
+compares the dialogue key. The existing integrated Pokémon Center PC interaction
+passes. The rendered keyboard-input test passes (6.30 seconds), requiring the
+complete final congratulations page, visible text entries and live glyph
+entities for every page. Counts, heading and final-page native dialogue-layer
+captures were inspected; the final text fits within the box. Deployment and
+browser review of these additional changes remain pending; assessment fanfare
+timing is still unverified.
+
+Oak assessment audio now uses each rating table entry's existing fanfare. It is
+queued once when the final source text page finishes printing. An acknowledgement
+while that sound is playing retains the final text and resumes automatically
+when playback ends, matching JoyWaitAorB followed by WaitSFX. A regression covers
+all 19 rating entries, no early playback, no repeat playback, and both retained
+text and automatic return to the PC hub after an early acknowledgement. All ten
+selected Oak checks pass (55.75 seconds). A separate real-pack audio check passes
+(5.12 seconds): every distinct rating fanfare decodes against its canonical PCM
+hash and byte/frame count, has no loop and contains non-silent samples. No DSP,
+PCM payload or pack data changed. Audible browser verification and deployment of
+this fanfare change remain pending. Full scripted assessment handoff timing still
+needs a browser check in addition to the direct input and continuation tests.
+
+The full Oak lab conversation exposed an additional handoff defect: automatic
+cleanup treated the special's rowless core menu as noninteractive and removed
+its shell-owned assessment in the same update. Cleanup now preserves an active
+special display until its acknowledgement path releases it. A real scripted
+conversation test fails before the fix and passes afterward: the assessment
+survives updates without input, then reaches the authored goodbye only after
+acknowledgement. All 12 selected Oak checks pass (67.31 seconds), including
+Mt. Silver, all rating pages, fanfare ordering and PCM integrity. The prior
+paging build 5e35786b is deployed and healthy; this handoff fix and fanfare commit
+360d573b still await the next deployment and live browser replay.
+
+The same scripted Oak handoff passes with the combined production pack and
+exports an isolated browser save beside Oak (9.83 seconds). Pokémon Center PC
+boot/access/shutdown and Day Care intro/party-selection regressions also pass
+(6.49 and 6.44 seconds). These checks exercise neighboring special surfaces;
+they do not establish completion of every remaining quest.
+
+Medicine review now covers the pharmacy before Jasmine's request: it opens
+MART_CIANWOOD, leaves the bag and potion-gift flag unchanged, and returns from
+the shop through B input. The real medicine chain now saves/reloads after refusal
+and again after healing. The potion remains after refusal, is consumed after
+healing, Jasmine's gym/departure flags persist, and a pharmacy revisit opens the
+shop without granting another potion. The extended chain passes; the separate
+prerequisite/shop-exit test passes in 5.86 seconds. No production change was
+needed. Fixtures position the player at each quest leg; this does not claim full
+lighthouse travel or animation/audio fidelity.
+
+Deployment c8133496 (including fanfare commit 360d573b) is running healthy with
+image sha256:80ec54fd93110dc50e5778ca862fde15dbad7cea966b932745a4f1eeaba97e56.
+The live production Oak replay passes using the isolated combined-pack save and
+real keyboard input. It turns toward Oak after Continue, holds the assessment
+introduction without advancing to goodbye, reads seen/owned counts and the
+rating, reaches the goodbye, dismisses the conversation and walks away. No page
+errors or reported runtime errors occurred. Introduction, counts, rating and
+post-dialogue screenshots were inspected; the rating fits within the textbox and
+the final overlay clears. The goodbye capture was taken during its typewriter
+reveal, so it is not evidence that every goodbye glyph was displayed at once.
+This was headed desktop Chromium at 390x844 CSS pixels with device scale 2;
+iOS Safari/touch input and perceptual audio comparison remain unverified.
+Medicine test-only commit 87ee0678 is pushed separately and needs no gameplay
+redeployment.
+
+
+## Moomoo Farm script fixes and bounded review
+
+The real Moomoo interaction reproduced a crash at `PlaySlowCry`: `checkevent`
+left `_value=0`, and the following `setval MILTANK` updated only `script_value`.
+Accumulator-writing variable commands now synchronize both fields. Twelve
+script-variable checks, 68 script-runtime checks, and the existing exact-species
+cry lookup check pass. The authored checkevent/setval/cry regression now passes.
+
+The healing sequence subsequently reached seven berries, retained progress
+across reloads, and awarded Snore once. Milk purchases then exposed missing
+`HAVE_LESS` comparison resolution. Script numeric constants now include the
+three values from the existing `AmountComparison` implementation; all three Moomoo regressions now pass (75.97 seconds), including the complete
+feeding/reward chain and insufficient-money/full-pocket/retry branches.
+Milk purchases charge exactly ¥500 only after successful delivery; repeat
+interactions preserve the existing bottle. Deployment and the initial sick-cow
+browser interaction are verified below.
+
+Presentation gaps remain: the milk dialogue displays an unresolved decimal
+price placeholder, and `PlaySlowCry` uses the ordinary visible cry playback
+path. Neither slowed-cry audio fidelity nor complete visual traversal has been
+verified by these state tests.
+
+
+The same Moomoo healing/reward chain passes with the production combined pack
+(65.12 seconds). An optional ignored save fixture supports checking the initial
+sick-cow interaction through browser inputs.
+
+All 13 targeted Bevy shiny regressions pass again after these script changes
+(180.53 seconds): all-species art, Red Gyarados script, exhaustive DV predicate,
+both walking hatch nickname paths and persistence, retained hatch portrait,
+stone evolution/save, Unown forms/palettes, Stats layout/palette, Transform,
+and wild sparkle sequencing/input release. This does not cover every evolution
+method or every capture/switch/Transform combination.
+
+
+Moomoo fixes `796b342e` are deployed. The container is running and healthy with
+image `sha256:6ab1a471a056ddecbcfae7d40f863281b24002d65f86938d2dc98e5aaf4f97ba`.
+A fresh production browser session passed the sick-cow greeting, weak-cry text,
+dialogue close and walking into the open aisle, with no page/runtime errors.
+The initial movement assertion aimed down into the barn fence; the corrected
+run uses the open aisle and verifies changed coordinates. Reviewed screenshots
+show complete weak-cry text within its box and the player walking after closure.
+This is desktop Chromium at 390×844 CSS pixels/DPR 2 with keyboard inputs;
+iPhone Safari, touch controls and perceptual cry fidelity remain unverified.
+
+
+## Shared text decimal substitution
+
+Runtime text snapshots now resolve RGBDS `{d:CONSTANT}` expressions from the
+pack's local/global/currency constants before any frontend renders them. Missing
+TM-count and Bug-Catching Contest operands derive from the existing item and
+contest catalogs. Both regression checks pass: all 12 affected map dialogue
+bodies resolve, and the milk offer renders `fer just ¥500.` (7.96 seconds).
+Production screenshot/deployment verification passed as recorded below.
+
+The remaining sick-cow audio difference has been traced to the source
+[PlaySlowCry routine](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/play_slow_cry.asm):
+subtract `0x140` from cry pitch, add `0x60` to cry length, then wait for completion.
+The visible audio command currently carries neither override; implementing the
+exact synthesis and wait behavior remains open. No audio program was changed
+as part of the decimal text fix.
+
+
+Decimal-text fix `c03b7277` is deployed. The container is running and healthy,
+image `sha256:8a4c254c4e53e17ae0e9662e86d0cf35b0316a416d8f7d2e61eafb656776e966`.
+A fresh production Chromium session renders the complete milk offer, including
+`fer just ¥500.`, and the Yes/No prompt without page/runtime errors. The actual
+screenshot was reviewed for legibility and textbox bounds. The first harness
+run faced the television; correcting the input to face the farmer on the right
+passed. This is keyboard interaction at a mobile-sized viewport, not iPhone
+Safari/touch verification.
+
+Slow-cry implementation review additionally found that
+`play_cry_for_species` clears `waiting_for_sound_effect` and the visible special
+handler combines `PlaySlowCry` with ordinary cries. Exact support must retain
+the source sound wait, carry pitch/length through audio preparation and cache
+identity, and validate the original bundled MIDI/PCM metadata before deriving
+a new synthesis. The existing MIDI decoder retains the cartridge program;
+no additional bundled program or generated audio file is required. This work
+remains unimplemented.
+
+
+## Source-parameter slow cry implementation
+
+`PlaySlowCry` now derives the species cry from the existing bundled MIDI
+program with the source's 16-bit pitch subtraction and length addition. The
+shared Rust decoder validates the ordinary cry's PCM hash/frame metadata
+before synthesizing the derived result. Native and browser workers use that
+same decoder; synthesis stays off the UI thread. Cache identity includes cry
+parameters, and the generic core cry event is replaced rather than played a
+second time. The core sound-wait flag and visible sound-wait boundary hold the
+script until queued/playing audio completes. No bundled audio inventory or
+compiled pack changed.
+
+Three worker tests and both audio/game WASM checks pass. Five Moomoo tests pass
+(88.62 seconds), covering healing/reward/purchase continuations plus cry state.
+The final two cry regressions pass (8.08 seconds): Miltank's ordinary source
+validates at 15,506 frames, hash `c3913779`; the derived cry is 19,198 frames,
+hash `db796201`, pitch word `64755`, length `512`, with no loop. Ordinary output
+is unchanged, corrupt source hashes fail, cache entries differ, and queued or
+playing audio holds the wait. Production worker PCM and browser interaction
+verification are still pending. Parameterized playback requires the existing
+species MIDI program, available in the shipped browser pack; it does not
+approximate a cry from an opaque PCM-only asset.
+
+
+## Radio Card quest review
+
+The real Radio Tower quiz passes refusal, a wrong answer at each of the five
+questions, retry after save/load, the authored correct-answer sequence, award
+and follow-up dialogue, repeat suppression, and saved card ownership. Pokégear
+page selection excludes Radio before the reward and includes it after reload;
+closing the panel leaves dialogue idle. The final regression passes in 26.59
+seconds. This positions the fixture beside the NPC and tests the visible shell
+and source scripts; full route traversal, screenshots, and quiz audio timing
+remain separate review items. No production change was needed for these paths.
+
+
+Slow-cry fix `c8fd5ff3` is deployed. The container is running and healthy with
+image `sha256:d254a3bcc37bad83eedf068746b131e08d90ea9886f8bb3a29b6a56955bca433`.
+Two fresh production browser runs pass the Moomoo greeting, weak-cry text,
+dialogue close and walking into the open aisle, with no page/runtime errors.
+Instrumentation observed one parameterized worker result: pitch `64755`, length
+`512`, 19,198 stereo frames, PCM hash `db796201`, exactly matching native output.
+The worker received the unchanged base-source metadata (62,024 bytes, hash
+`c3913779`) for validation. Screenshots of settled text and the player after
+movement were reviewed; final punctuation fits inside the dialogue box.
+This is desktop Chromium at a mobile-sized viewport with keyboard input;
+iPhone Safari/touch and perceptual comparison on original hardware remain
+unverified. The Radio Card regression above is also committed on main.
+
+## SquirtBottle, Sudowoodo and Rock Smash
+
+The real-pack visible-shell quest regression follows the authored
+[flower-shop prerequisites](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodFlowerShop.asm)
+and [Route 36 encounter/reward scripts](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/Route36.asm).
+It checks touching the tree without a bottle, the pre-encounter Rock Smash
+conversation, both Floria conversations, missing-badge refusal, the bottle gift
+and repeat, declining the water prompt, the actual level-20 Sudowoodo battle,
+victory continuation, tree disappearance and walking onto its former tile after
+save/load, the one-time Rock Smash
+TM and flower-shop after-talk. The bottle remains in the bag. Save/load is checked
+before the badge, after refusal, after the battle and after the reward.
+
+The test stages Whitney's badge only after checking its gate (Whitney's own
+handoff has separate coverage), positions the player beside each authored NPC,
+and stages the wild battle's final turn. It does not establish complete route
+traversal, capture/escape/loss outcomes, both Floria approach animations, bag-menu
+bottle use, full TM-pocket retry or browser visual/audio fidelity.
+
+The final expanded regression passes (65.29 seconds); `git diff --check` passes.
+This change adds regression coverage and documentation; it changes no deployed gameplay.
+
+### SquirtBottle bag dispatch correction
+
+A new real-pack regression reproduced an extra Yes/No question when using the
+bottle from the bag. The shared backend dispatched `SudowoodoScript`, whereas the
+[original bag effect](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/squirtbottle.asm)
+enters `WateredWeirdTreeScript` directly. The backend now selects that exact entry
+for Route 36's standard tree script, validates it before mutating state, and
+preserves custom tree-script dispatch. No audio or content-pack data changed.
+Both real-pack regressions pass (120.70 seconds): bag use enters watering without
+a second prompt, the visible battle introduction completes, the Run action
+returns through the escape aftermath, the tree disappears, and save/load preserves
+that state. The bottle remains. The earlier Floria/badge/refusal/victory/TM and
+cleared-tile walking regression also passes. Commit c2afcdd4 is deployed; its
+container is healthy (image 127c06d8affb). A fresh production Chromium session
+loaded the saved Route 36 fixture, opened Pack/Key Items/SquirtBottle/Use with
+keyboard input, and showed the complete watering message without another prompt.
+The watering screenshot was reviewed; the following dialogue capture shows its
+first page, not the entire attack message. No page/runtime errors occurred on
+that successful run. Desktop Chromium at a mobile viewport is not Safari/touch
+verification. This review exposed the separate invisible-Pack defect below.
+
+### Pack display retention
+
+Production screenshots of Pack → Key Items → SquirtBottle → Use showed the
+world while the menu remained interactive; waiting three seconds did not restore
+it. Pack was missing from `retained_field_fullscreen_active`, allowing the
+world renderer to reuse its display. A native visible-entity regression reproduced
+the failure (no full-screen presenter), then passed after retaining Pack alongside
+other full-screen field menus. It checks opening, pocket changes, the action menu,
+idle updates and closing. Existing Pack Cancel and party/Stats retention tests
+also pass (three targeted tests total). The resulting native Pack image was
+reviewed for the item list, description and action menu. Browser rollout of this
+retention fix 453a6460 is deployed and healthy (image 34e82b2d010e). A fresh
+production Chromium session at 390×844 CSS pixels verified the action menu,
+return to the item list, closing Pack and walking from (35,10) to (35,12).
+All three screenshots were reviewed: the full menu remains visible and centered,
+Use/Quit disappears on returning to the list, and the overworld returns on close.
+No page/runtime errors occurred. These checks do not establish every Pack flow
+or physical Safari/touch behavior.
+
+### Empty Balls pocket Cancel
+
+The browser's earlier `bag:balls has no valid cursor` error was reproduced with
+normal Start/Pack/pocket/Cancel input. The empty-Balls branch cleared only the
+cursor and left Pack open, causing a renderer/observation error on the next
+update. Removing that branch routes its Cancel row through the normal complete
+Pack cleanup. A regression now passes for all four empty pockets, checking the
+Cancel row before input, closing, idle updates, absence of runtime errors and
+successful observation after closing (17.76 seconds). Production rollout remains
+complete: 09cdcb5b is deployed in healthy image 74c8db6a0c17. A fresh production
+Chromium session opened the empty Balls pocket, selected Cancel, successfully
+observed the closed menu, and walked from (35,10) to (35,12). Before/after/movement
+screenshots were reviewed; the pocket is visible, the menu closes, and no
+page/runtime errors occur. This is keyboard input at a mobile viewport, not a
+physical Safari/touch check.
+
+### Kimono Girls and Surf acquisition
+
+The real-pack visible-shell regression passes all five authored trainer starts
+and victory continuations, their individual defeat flags, save/load and repeat
+after-talk. The gentleman withholds HM03 before each victory, awards one HM_SURF
+after all five, explains it, and gives only repeat dialogue after saving/loading.
+The [Dance Theater script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/DanceTheater.asm)
+is the reference. The check passes in 39.36 seconds. It positions the player
+beside each NPC and stages terminal trainer victories; it does not establish full
+combat, walking through the theater, the female prerequisite wording, visual
+placement or Surf teaching/use. Existing field Surf checks remain separate.
+The Pack retention regression also passes after the empty-Balls Cancel fix
+(6.16 seconds).
+
+### Chuck and Fly acquisition
+
+The real-pack visible-shell check passes the wife's pre-victory dialogue with no
+HM, Chuck's actual interaction into battle, terminal-victory continuation,
+Storm Badge and DynamicPunch, save/load before visiting his wife, Fly gift and
+explanation, and save/load/repeat with exactly one HM_FLY (25.67 seconds).
+The [Cianwood script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/CianwoodCity.asm)
+is the reference. This test stages the trainer battle's terminal victory and
+positions the player beside each NPC. It does not establish full gym traversal,
+combat, HM-pocket capacity failure, Fly teaching/use or visual/audio fidelity.
+
+### Strength gift and teaching
+
+The real-pack visible-shell check passes the Olivine Café sailor's HM_STRENGTH
+gift, event flag, save/load, visible HM boot/teach flow with an open move slot,
+non-consumption of the HM, persisted learned Strength and repeat conversation
+without a duplicate (8.62 seconds). The fixture selects the HM pocket/cursor,
+then advances the visible prompt and party selection with the normal input helper.
+The [sailor script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/OlivineCafe.asm)
+and [Machop learnset](https://raw.githubusercontent.com/pret/pokecrystal/master/data/pokemon/base_stats/machop.asm)
+are the references. The initial Totodile fixture was corrected: its original
+Crystal learnset excludes Strength, and the implementation correctly refused it.
+Replacement/cancel, a second recipient, boulder movement and browser visual/audio
+verification are not established by this acquisition/teaching check; existing
+field Strength tests are separate.
+
+### Sprout Tower rival scene and Flash
+
+The real-pack visible-shell regression passes the authored rival scene through
+lecture, escape-rope dialogue, disappearance and no-op scene state. Save/load
+preserves the departure. The elder's real interaction starts his battle with no
+Flash awarded; staged terminal victory then runs the reward/explanation and sets
+both elder-defeated and HM-received flags. Save/load and after-talk give neither
+a second battle nor another HM (41.03 seconds). The
+[Sprout Tower script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/SproutTower3F.asm)
+is the reference. The fixture positions the player at the scene and beside the
+elder; full tower traversal, earlier sages, full combat, camera/audio timing and
+Flash teaching/use are not established by this check.
+
+### TM/HM item-ball acquisition
+
+The real-pack visible-shell regression exercises every mapped TM/HM `itemball`
+entry: 17 map/script entries represent 16 collectible pickups, including Ice
+Path's Waterfall HM. Each new pickup is visible before interaction, produces the
+found-item notice, adds its authored quantity, sets its event flag, disappears,
+and stays absent after save/load and map re-entry. National Park's normal and
+Bug-Catching Contest variants share Dig's event flag; collecting it in the normal
+map correctly hides it in the contest map too. The expanded check passes in
+48.11 seconds. The [Waterfall source](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/IcePath1F.asm)
+confirms the Ice Path item-ball and event flag.
+
+The fixture positions the player next to each authored pickup and advances the
+visible shell. It does not prove traversal/access puzzles, full-pocket retry,
+hidden items, scripted gifts, shops, teaching, battle use or browser visual/audio
+fidelity. Those remain separate parts of the full TM/HM checklist.
+
+### TM department-store purchases
+
+`tm_mart_unlocks_and_visible_transactions_preserve_money_and_inventory` passes
+against the shipped pack (79.30 seconds). It enters the actual Goldenrod 5F clerk
+script with each of the four Headbutt/Rock Smash gift-flag combinations, and the
+actual Celadon 3F clerk script. Each selected inventory is compared with the
+[source mart lists](https://raw.githubusercontent.com/pret/pokecrystal/master/data/items/marts.asm);
+Goldenrod's unlock conditions follow its
+[clerk script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodDeptStore5F.asm).
+All 21 inventory entries across these five variants (10 distinct TMs) pass visible
+keyboard input through BUY, quantity selection and Yes/No confirmation. Declining
+leaves money and inventory unchanged; one yen short rejects the purchase; buying
+two with exactly enough money adds two and leaves zero money; attempting another
+at a staged 99-item stack rejects it without taking money. Exiting the clerk and
+save/load preserve the final money and all stacks for each variant.
+
+The fixture stages player location, prerequisite gift flags, money and the final
+stack boundary. It fast-forwards text reveal before each input; menu transitions
+and transactions run through actual host frames. Initial failures were fixture
+readiness, text-reveal and price integer-type issues, not confirmed game defects.
+This does not verify department-store traversal, original price-table fidelity,
+shop screenshot/audio timing, selling, Game Corner prizes, Sunday happiness gifts,
+or machine teaching/battle behavior. Those remain in the broader checklist.
+
+### Sunday happiness TM gifts
+
+The real-pack receptionist script passes happiness 0, 49, 50, 149, 150 and 255:
+Frustration below 50, no gift at 50–149, and Return at 150 or above. Map callbacks
+hide her on Monday and show her on Sunday. A middle-range visit does not consume
+the reward; changing happiness after claiming a gift cannot claim the other TM
+that same Sunday. Gift counts and the claim flag survive save/load. These initial
+checks passed in 40.55 seconds.
+
+The next-week extension reproduced a real defect: advancing the shared game clock
+to the following Sunday left the gift permanently claimed. The original
+[daily reset](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/time.asm)
+clears the daily flag bank containing the
+[TM claim flag](https://raw.githubusercontent.com/pret/pokecrystal/master/data/events/engine_flags.asm).
+The Rust daily reset now also removes `ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN`;
+the receptionist script retains the Sunday and happiness gates. All six happiness
+cases now pass through the following Sunday, a second gift and another save/load
+(54.00 seconds). Fix `43c01689` is deployed; the replacement container is
+running and healthy (image `747f4b3411a4`).
+
+These fixtures stage dates, happiness and positions, then use actual map callbacks,
+NPC scripts, visible dialogue input, shared clock updates and save/load. Both full-stack cases also pass: a failed gift at 99 copies leaves the claim
+unset across save/load, and making room allows a successful retry (15.64 seconds).
+Traversal and browser animation/audio review remain pending. Other daily
+quest flags also need a complete reset audit; this fix is specific to the TM gift.
+
+The TM transaction regression also passes with the production combined pack
+(94.64 seconds) and can emit an ignored browser save beside the Goldenrod clerk.
+A headed Chromium run at 390×844 CSS pixels captured welcome, top menu, stock,
+quantity, confirmation, purchase and exit without runtime exceptions. The stock,
+confirmation and exit screenshots were inspected. **Visual review is not passed:**
+the TM description box displays `?`, because the shop uses the machine item's
+placeholder description instead of its move description. The stock screen also
+leaves the overworld behind the menu, whereas the source `BuyMenu` calls
+`FadeToMenu` and `BlankScreen`. Quantity prompting and the remaining shop layout
+must be reviewed against the [mart implementation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/items/mart.asm).
+These renderer fixes remain pending; this browser run does not verify the new
+Sunday clock reset or physical Safari/touch input.
+
+
+The shop renderer now resolves TM descriptions from the existing bundled move
+text and clears/retains the inventory LCD. Description lines use the source's
+spaced textbox rows. The native glyph check and full LCD image pass; the image
+shows ThunderPunch's complete description and a white background. The image
+capture helper now includes scene-dialog sprites, which it previously omitted.
+All five TM shop transaction variants pass with this renderer (81.53 seconds),
+and the text-contract check passes after the line placement adjustment. Production
+render verification is pending deployment; quantity prompts, selling presentation
+and other source-layout differences remain open.
+
+The quantity screen had another confirmed omission: it kept the item description
+instead of displaying `How many?`, used by the standard, herbal, pharmacy and sell
+[source prompts](https://raw.githubusercontent.com/pret/pokecrystal/master/data/text/common_3.asm).
+The renderer now replaces the description during quantity selection and restores
+it on B cancellation. The real-input glyph regression passes (6.91 seconds), and
+the full native quantity image was inspected: prompt, quantity and total are
+visible without the old description. This additional fix is awaiting deployment;
+production verification and the broader selling/layout audit remain open.
+
+Production image review of `2e7547c7` confirms the TM description is readable,
+but finds a remaining wide-screen defect: map strips remain outside the 160×144
+inventory LCD. The full-screen classifier still treated all shop states as partial
+room overlays. It now reserves that classification for the clerk's top menu;
+inventory states use the opaque modal background. Verification is in progress.
+The first browser exit/movement run had no runtime errors but could not move left
+from its staged clerk-side tile. The browser fixture is being moved to the customer
+side, with an actual across-counter interaction assertion; restored control has
+not yet passed that corrected browser check.
+
+### Game Corner TM prizes
+
+The new real-pack check covers Goldenrod's Thunder, Blizzard and Fire Blast,
+and Celadon's Double Team, Psychic and Hyper Beam. Missing Coin Case, insufficient
+coins, declined confirmation, full-stack refusal, successful purchase, menu exit
+and save/load are included. Goldenrod's three prize sequences passed before the
+Celadon counter interaction failed to resolve. Celadon's TM vendor is a background
+event on the counter, not an NPC behind it. The shared interaction code incorrectly
+applied NPC counter look-through to background events too. Background lookup now
+uses the directly faced tile; the across-counter NPC lookup is retained. All six TM prize sequences now pass (76.29 seconds), including saved coin balances;
+the two ordinary Mart NPC counter checks also pass (8.62 seconds). Deployment is
+pending. Sources:
+[Goldenrod](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/GoldenrodGameCorner.asm),
+[Celadon](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/CeladonGameCornerPrizeRoom.asm),
+[interaction routines](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/events.asm).
+Fixtures stage position, coins and stack capacity. They do not establish normal
+travel, Coin Case acquisition, playing for coins, Pokémon prizes, or visual/audio
+fidelity. The initial frame-zero failure was corrected with a real overworld tick
+before interactions; it was a fixture setup issue.
+
+The corrected customer fixture now uses the normal map transition before saving;
+the browser asserts the restored starting tile (8,3). The production description,
+purchase, exit and resumed movement sequence passes without runtime errors.
+Exit and movement screenshots were inspected. The combined-pack native shop
+regression also passes with fullscreen scaling enabled (119.28 seconds).
+The native fullscreen classification/render test passes (6.99 seconds), and the
+existing wide-screen NPC test passes (6.28 seconds) after fixing its three test-only
+mutations to use mutable session access. The quantity prompt, wide-screen mask and
+Celadon background-counter fix still require the next production deployment and
+visual review. These browser checks use Chromium, not physical Safari/touch.
+
+### Daily quest reset audit — remaining defect
+
+Source inspection confirms `CheckDailyResetTimer` clears both daily flag bytes,
+the swarm byte, and four bytes each for rematches, phone items and phone time-of-day
+flags. `GameState::apply_daily_reset` currently clears fishing/swarm structures and
+only Buena's two named engine flags plus the Sunday TM claim. The generic engine
+flag map retains the other daily quest flags: Kurt, Bug Contest, Time Capsule,
+fruit trees, Shuckie, bargain merchant, Trainer House, Clefairy, Lapras, haircut,
+Daisy, Indigo rival, move tutor, sale and phone-related flags. This is an incomplete
+reset implementation; individual quest progression and next-day script behavior
+still need regression coverage before a broader fix can be considered verified.
+Preserve permanent badges, gifts and completed-story flags during that fix.
+Sources: [daily reset](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/overworld/time.asm),
+[flag storage](https://raw.githubusercontent.com/pret/pokecrystal/master/data/events/engine_flags.asm),
+[flag names](https://raw.githubusercontent.com/pret/pokecrystal/master/constants/engine_flags.asm).
+
+The broader reset implementation is now staged in Rust: all 78 named flags in
+those six storage banks are cleared. An independent source-address comparison
+matched every selected flag and excluded the other 84 engine flags. New core
+coverage exercises daily claims, persistence and permanent progression retention;
+a clock integration check exercises same-day retention, midnight expiration and
+a fresh claim on the next day. All seven selected core tests pass, including atomic failure behavior. The
+clock integration test also passes: same-day claims persist, midnight clears
+them, and a fresh next-day claim stays set. This change is not committed or
+deployed yet. Full individual quest/script review remains open.
+
+The shop/counter deployment of `6f892e03` completed successfully as image
+`sha256:762b8af5cce7e655faba882ad1c630d731712383dcec0868d0e36a274be6772e`;
+the container is running. The updated production browser sequence passes without
+runtime errors. Stock, quantity, confirmation and resumed movement screenshots
+were inspected: move description, How many prompt, and opaque black area outside
+the inventory LCD are correct. This is Chromium keyboard coverage, not physical
+Safari/touch, and does not complete the broader selling/layout audit.
+A new Kurt regression stages the cleared-Well prerequisite and three Apricorns,
+then exercises cancellation, selection/quantity, same-day waiting, next-day
+collection, save/load and repeat collection for all seven recipes. It also checks
+the working/available Kurt object flags after map callbacks. That regression is building against location-tester/fullscreen-scaling;
+it does not prove traversal, initial gift, full-pocket handling or
+visual/audio fidelity.
+
+### Hall of Fame presentation audit — confirmed missing ceremony
+
+`consume_visible_runtime_script_flag` currently handles HallOfFameRequested by
+saving and opening credits immediately. The existing story regression explicitly
+expects that shortcut, so its pass cannot establish ceremony fidelity. The source
+runs a separate ceremony first: Hall of Fame music, each non-egg team member's
+back/front entrance, identity display and frontpic animation, then the player
+portrait, ID/play-time panel and Professor Oak Pokédex rating before credits. A dedicated presentation state and sequence
+checks are still required, retaining the existing canonical record/save and
+first-clear credits behavior. Source:
+[Hall of Fame](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/halloffame.asm).
+
+Kurt's first real-input run failed (9.89 seconds) after cancellation and quantity
+selection: the recipe branch could not resolve `BLU_APRICORN`. Inspection also
+found that SelectApricornForKurt returned TRUE instead of the selected item byte.
+The shared core now returns the original Apricorn byte, and the branch resolver
+uses the same seven values. The old core test's TRUE expectation is corrected to
+RED_APRICORN's $55 result. The seven-recipe regression is rebuilding; these fixes
+are not yet verified, committed or deployed. Sources:
+[item constants](https://raw.githubusercontent.com/pret/pokecrystal/master/constants/item_constants.asm),
+[Kurt script](https://raw.githubusercontent.com/pret/pokecrystal/master/maps/KurtsHouse.asm).
+
+The corrected item-byte run reached next-day collection but failed after 14.22
+seconds: verbosegiveitemvar queued a nonexistent GiveItemScript, invalidating
+the next snapshot. Variable-quantity grants now resolve their quantity from state
+and use the existing ScriptItemGranted presentation boundary, matching ordinary
+verbose rewards. The direct runtime command no longer queues a nonexistent script.
+The game-level regression is rebuilding with this fix. The separate core Kurt
+contract tests completed successfully; their selection assertion now requires
+item byte $55 rather than TRUE. Deployment remains pending.
+
+All seven Kurt recipes now pass the real-input quest regression (111.88 seconds):
+cancel selection, select three, same-day refusal, next-day reward, working/available
+object flags, save/load and repeat collection. Seven daily-reset core checks also
+pass with the current Apricorn code, alongside four core Kurt contract tests.
+An expanded combined-pack run is building to check quantity cancellation, full
+Ball-stack refusal with preserved orders, save/load and retry. It can export
+ignored browser saves for ordering/collection and native menu screenshots. No
+Kurt visual fidelity or production verification is claimed yet.
+
+The expanded run exposed a fixture error and a renderer defect. A single 99-Ball
+stack allows a second stack (102 total was valid); the refusal fixture now fills
+all 12 Ball-pocket slots. Native captures showed no Apricorn list or quantity
+window because the older dialogue notice returned before the menu renderer.
+Kurt's menu now takes precedence and draws the source selection/quantity prompts.
+The rerun asserts rendered prompt glyphs and exports screenshots; its result is
+pending. Quantity-window layering and complete visual fidelity still need review.
+
+The first menu-priority change was insufficient: scene-dialog ownership and its
+text-only update path still bypassed the menu. Both now yield while Kurt's menu
+is open. Prompt glyph checks then passed, but the full-pocket fixture's cleanup
+incorrectly requested removal of 1,188 Balls from one stack; cleanup now removes
+each of the twelve stacks separately. Screenshots exposed overlapping list names
+and quantities plus loss of the list during quantity selection. The renderer now
+follows the source scrolling list's unframed rectangle, separate quantity rows,
+retained list and quantity overlay, with a selectable CANCEL entry. Verification
+is running after correcting an Option/Result compile error in the window helper.
+Sources: [scrolling menu](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/menus/scrolling_menu.asm),
+[item text placement](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/menus/menu_2.asm),
+[Kurt selection](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/kurt.asm).
+
+
+The final combined-pack Kurt regression passes all seven recipes (136.10 seconds),
+including selectable CANCEL, quantity cancellation, three-item orders, same-day
+waiting, midnight readiness, full Ball-pocket refusal, retained order after
+save/load, successful retry and no duplicate collection. The native list and
+quantity screenshots were inspected: names no longer overlap quantities, CANCEL
+is visible, and the list remains behind the quantity window. Ordinary Elm aide
+verbose item receipt/audio-boundary coverage also passes (5.01 seconds), alongside
+the seven daily-reset, four core Kurt and clock integration checks recorded above.
+These are staged quest fixtures, not a complete walking playthrough or physical
+Safari verification. Production deployment and browser Kurt review remain pending.
+
+
+An additional all-seven-types inventory regression passes (10.23 seconds): scroll
+to Pink Apricorn, open its quantity window, cancel quantity, select the final
+CANCEL entry, and return to dialogue idle without consuming any Apricorn or
+starting an order. The bottom-list and quantity-overlay PNGs were inspected;
+item names, counts, arrows and retained list are readable. This closes the native
+scrolling case left uncovered by the individual-recipe fixtures. Commit
+`3425ad0c` is pushed and its production build is running; browser verification
+remains pending.
+
+
+Hall of Fame implementation has begun with a renderer-independent sequence in
+`crystal-runtime::hall_of_fame`. Its two standalone Rust tests pass: six-member
+ordering, the source's wrapping back-picture scroll, distinct Pokémon/player
+front-picture durations, animation/rating completion boundaries, and the empty
+record path. The opening palette/music fade is a prerequisite to this sequence;
+frontpic completion and Oak's dialogue/audio completion are external boundaries.
+This module is not connected to the Bevy ceremony yet. Source register timing
+alone does not establish complete frame, audio, rendering or input fidelity;
+production still enters credits directly until integration is completed.
+
+
+Kurt/daily-reset commit `3425ad0c` is deployed as image
+`sha256:d36d0d9dc19e8f65491cb82149fc93c0dc7094993260728923e1062b73915060`.
+Production browser order and collection sequences pass through resumed movement
+without runtime errors after correcting QA matches for rendered quantities and
+wrapped dialogue. Harsh screenshot review nevertheless found a real tall-screen
+layout defect: the prompt glyphs remained over the map while their dialogue box
+moved to the bottom. The prompt now uses the same SceneDialogMarker rendering
+path as its box. That fix is rebuilding for native verification and is not yet
+deployed. Browser checks used Chromium keyboard input, not physical Safari/touch.
+
+
+The prompt-layer correction passes the all-seven-types scrolling/quantity/cancel
+regression (10.25 seconds). It is ready for deployment; the corrected tall-screen
+browser image is still required. The shared Hall of Fame module also compiled
+through this Bevy test build, but visible ceremony integration remains open.
+
+
+The picture-program interpreter has moved from Bevy into the shared runtime.
+All three existing checks pass (0.01 seconds), including 95 original Cyndaquil
+main/idle calls. The first replay attempt failed before execution because its
+external fixture path was absent; the fixture was located in the earlier
+verification workspace and supplied through the new CRYSTAL_FRONTPIC_TRACE
+override. No trace data was added to the repository. Hall of Fame still requires
+main-then-idle presentation, its nonblocking cry, and the distinct ProfOaksPCRating
+path (no PC boot text; music stops before its last sound). Source:
+[picture animation](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/gfx/pic_animation.asm),
+[Oak rating](https://raw.githubusercontent.com/pret/pokecrystal/master/engine/events/prof_oaks_pc.asm).
+
+
+The tall-screen Kurt prompt fix `ded8e637` is deployed as image
+`sha256:a1e32679ef9a00eedda35fdf33c93331761ac03c532146a12dfd373a911bf461`.
+The production order/quantity-cancel/confirmation/movement sequence passes without
+runtime errors. Both list and quantity PNGs were inspected: prompt glyphs now
+remain inside the bottom dialogue box rather than floating over the map. This is
+Chromium keyboard coverage at 390×844, DPR 2; physical Safari/touch remains open.
+The shared interpreter extraction `e75b29dd` is pushed but was not part of this
+deployment. Hall of Fame ceremony integration and the broader quest audit remain
+unfinished.
+
+
+Hall of Fame member-panel rendering is implemented and passes its native pack
+check (5.01 seconds), including shiny artwork and egg rejection. The enlarged
+native screenshot was reviewed: source number, species, gender, nickname, level
+and original trainer ID are legible in their source positions. This exposed and
+fixed a missing number-symbol mapping and font-extra overrides replacing ID/number
+with ordinary punctuation. The font mapping regression passes as well. The panel
+and shared sequence are not connected to the live ceremony yet; player panel,
+entrances, main/idle animation, cry/music, Oak rating and credits transition still
+require integration and full verification. This batch is being wrapped and
+deployed at the user's request without claiming that ceremony complete.
+
+
+### Hall of Fame ceremony integration
+
+The authored `halloffame` boundary now runs the shared presentation sequence
+before credits instead of skipping the induction. It shows each non-egg party
+member's back/front entrance, main and idle animation, shiny/form-aware portrait,
+identity panel and cry. The player portrait and play-time panel precede Oak's
+pack-authored seen/caught count and rating. The final acknowledgement waits for
+the rating sound before the white transition and existing credits program.
+Normal A/B input cannot skip a party animation. Canonical champion recording
+and saving remain at the existing boundary.
+
+Five matching native regressions pass (63.65 seconds): the normal Lance room
+scene reaches the ceremony, the ceremony reaches the actual credits program,
+THE END acknowledgement returns to title, and Continue consumes the champion
+spawn marker and restores New Bark Town. The shiny member panel and existing
+Hall-of-Fame map access check also pass. The two standalone shared timeline
+checks cover six-member ordering and non-interruptible animation/rating waits.
+Native ceremony PNGs were generated for review. The fixture starts in Lance's
+room; it does not claim a full Elite Four playthrough. Palette interpolation and
+outer animation setup timing have not been compared frame-for-frame to a ROM;
+the opening currently cuts to the white hold. Physical Safari/touch and the
+broader postgame traversal remain separate coverage.
+
+
+Production `5c861254` is deployed in healthy container image
+`sha256:46dca500c468d13c1633d20a36c4c751d9e2553aef64f287a7b4015e9f6a5a8c`.
+The live Chromium run passes Lance's entry, party animation/hold, player entrance,
+Oak rating, final sound acknowledgement and credits handoff with zero runtime or
+page errors. Portrait and final-rating screenshots were inspected at 390×844,
+DPR 2: portraits and labels fit their panels. Evidence is kept under ignored
+`target/hall-of-fame-production-doorway-browser.log` and
+`target/battle-fixes-review/browser-hof-*.png`.
+
+The browser fixture is staged in LancesRoom just before the opened exit warp;
+ordinary Up input enters HallOfFame and starts its map-entry script. Restoring a
+save directly inside HallOfFame does not replay that entry script, so that older
+fixture was unsuitable for this browser check. The revised native fixture test
+also passes (61.48 seconds). This fixture update changes tests only, not the
+already deployed game code.

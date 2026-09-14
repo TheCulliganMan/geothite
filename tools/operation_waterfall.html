@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crystal Bevy operation waterfall</title>
+<style>
+:root{color-scheme:dark;font:14px system-ui;background:#111820;color:#e3ebf3}body{margin:24px}h1{font-size:24px;margin-bottom:8px}p{color:#aabccc}label{display:inline-flex;align-items:center;gap:8px;margin:8px 16px 8px 0}input,select,button{font:inherit;background:#203040;color:inherit;border:1px solid #496077;padding:6px}input[type=number]{width:110px}#scroll{height:560px;overflow:auto;border:1px solid #496077}canvas{display:block}#detail{min-height:42px;white-space:pre-wrap}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}td,th{padding:8px;text-align:right;border-bottom:1px solid #2d4052}td:first-child,th:first-child{text-align:left;overflow-wrap:anywhere}th{position:sticky;top:0;background:#172330}.table-scroll{max-height:600px;overflow:auto}#filter{width:300px}
+</style>
+<h1>Crystal Bevy operation waterfall</h1>
+<p>__SOURCE__ · CPU wall time, including blocking and synchronization. GPU execution is not timed. Totals include nested work and must not be added together.</p>
+<div id="stats"></div>
+<label>Start (ms) <input id="start" type="number" min="0" step="16"></label>
+<label>Window (ms) <input id="width" type="number" value="20" min="0.1" step="10"></label>
+<label>Frame <select id="frame" aria-label="Captured update frame"></select></label>
+<button id="previous">Previous</button> <button id="next">Next</button> <button id="overview">Whole capture</button>
+<div id="scroll"><canvas id="plot" role="img" aria-label="Timed operation spans grouped by thread and nesting depth"></canvas></div>
+<p id="detail" aria-live="polite">Point at an operation to inspect its timing.</p>
+<h2>All captured operations</h2><label>Filter <input id="filter" placeholder="Operation name"></label>
+<div class="table-scroll"><table><thead><tr><th>Operation</th><th>Calls</th><th>Inclusive total (ms)</th><th>Median (µs)</th><th>p95 (µs)</th><th>Maximum (µs)</th></tr></thead><tbody id="rows"></tbody></table></div>
+<script>
+const data=__DATA__;
+const byId=id=>document.getElementById(id), canvas=byId('plot'), ctx=canvas.getContext('2d');
+const depths=data.threads.map(()=>0);for(const s of data.spans)depths[s[3]]=Math.max(depths[s[3]],s[4]);
+const offsets=[];let height=32;for(const d of depths){offsets.push(height);height+=28+(d+1)*19;}
+const shortName=n=>n.startsWith('system: name=\"')?n.slice(14,-1).split('<')[0].split('::').pop():n;
+const frames=byId('frame');data.frames.forEach((t,i)=>{const o=document.createElement('option');o.value=t;o.textContent=`${i} · ${t.toFixed(2)} ms`;frames.append(o);});
+byId('stats').textContent=`${data.spans.length.toLocaleString()} completed spans · ${data.names.length} operations · ${data.threads.length} threads · ${data.end.toFixed(1)} ms captured`;
+byId('start').value=(data.frames[Math.min(90,data.frames.length-1)]||0).toFixed(3);
+let hits=[];
+function draw(){const start=Number(byId('start').value),width=Math.max(.1,Number(byId('width').value));const w=Math.max(800,byId('scroll').clientWidth);const ratio=devicePixelRatio||1;canvas.width=w*ratio;canvas.height=height*ratio;canvas.style.width=w+'px';canvas.style.height=height+'px';ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#111820';ctx.fillRect(0,0,w,height);ctx.font='12px system-ui';hits=[];frames.selectedIndex=data.frames.findIndex(t=>Math.abs(t-start)<.001);
+const ticks=Math.max(2,Math.floor((w-250)/130));for(let i=0;i<=ticks;i++){let x=240+(w-250)*i/ticks;ctx.fillStyle='#aabccc';ctx.textAlign=i===0?'left':i===ticks?'right':'center';ctx.fillText((start+width*i/ticks).toFixed(2)+' ms',x,16);ctx.textAlign='left';ctx.strokeStyle='#253545';ctx.beginPath();ctx.moveTo(x,23);ctx.lineTo(x,height);ctx.stroke();}
+data.threads.forEach((name,i)=>{ctx.fillStyle='#e3ebf3';ctx.fillText(name.slice(0,32),8,offsets[i]+14);});
+for(const s of data.spans){if(s[1]+s[2]<start||s[1]>start+width)continue;const x=240+Math.max(0,(s[1]-start)/width)*(w-250),right=240+Math.min(1,(s[1]+s[2]-start)/width)*(w-250),y=offsets[s[3]]+24+s[4]*19,bw=Math.max(.6,right-x);ctx.fillStyle=`hsl(${(s[0]*47)%360} 48% 52%)`;ctx.fillRect(x,y,bw,16);if(bw>65){ctx.save();ctx.beginPath();ctx.rect(x,y,bw,16);ctx.clip();ctx.fillStyle='#071019';ctx.fillText(shortName(data.names[s[0]]),x+3,y+12);ctx.restore();}hits.push([x,y,bw,s]);}}
+canvas.addEventListener('mousemove',event=>{const r=canvas.getBoundingClientRect(),x=event.clientX-r.left,y=event.clientY-r.top;const hit=hits.findLast(h=>x>=h[0]&&x<=h[0]+h[2]&&y>=h[1]&&y<h[1]+16);if(hit){const s=hit[3];byId('detail').textContent=`${data.names[s[0]]}\n${s[2].toFixed(4)} ms · start ${s[1].toFixed(3)} ms · ${data.threads[s[3]]}`;}});
+for(const id of ['start','width'])byId(id).addEventListener('input',draw);
+frames.addEventListener('change',()=>{const i=frames.selectedIndex;byId('start').value=frames.value;byId('width').value=((data.frames[i+1]||data.end)-data.frames[i]).toFixed(3);draw();});
+byId('overview').addEventListener('click',()=>{byId('start').value=0;byId('width').value=data.end;draw();});
+for(const [id,d] of [['previous',-1],['next',1]])byId(id).addEventListener('click',()=>{byId('start').value=Math.max(0,Number(byId('start').value)+d*Number(byId('width').value));draw();});
+function table(){const filter=byId('filter').value.toLowerCase();byId('rows').replaceChildren();for(const row of data.summary){if(!row.name.toLowerCase().includes(filter))continue;const tr=document.createElement('tr');for(const value of [row.name,row.count,row.total_ms.toFixed(2),row.median_us.toFixed(2),row.p95_us.toFixed(2),row.max_us.toFixed(2)]){const td=document.createElement('td');td.textContent=value;tr.append(td);}byId('rows').append(tr);}}
+byId('filter').addEventListener('input',table);window.addEventListener('resize',draw);draw();table();
+</script></html>

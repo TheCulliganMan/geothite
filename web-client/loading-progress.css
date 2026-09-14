@@ -1,0 +1,11 @@
+/* Shared, measured loading state for the game and neural workers. */
+.loading-card { width: min(420px, calc(100vw - 48px)); padding: 24px; box-sizing: border-box; color: #e6e9ef; background: #10151df5; border: 1px solid #303a49; border-radius: 14px; text-align: left; box-shadow: 0 16px 60px #0005; font: 13px/1.5 system-ui, sans-serif; }
+.loading-card h1 { margin: 0 0 20px; font-size: 20px; letter-spacing: -.03em; }
+.asset-progress { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; margin-top: 16px; }
+.asset-progress strong { font-weight: 500; }
+.asset-progress span { color: #aebbcf; font-size: 11px; font-variant-numeric: tabular-nums; }
+.asset-progress progress { grid-column: 1 / -1; display: block; width: 100%; height: 5px; border: 0; border-radius: 4px; overflow: hidden; accent-color: #81b5ed; background: #283141; }
+.asset-progress progress::-webkit-progress-bar { background: #283141; }
+.asset-progress progress::-webkit-progress-value { background: #81b5ed; }
+.asset-progress[data-phase="error"] span { color: #ffb1a9; }
+#view-empty .loading-card { pointer-events: auto; }

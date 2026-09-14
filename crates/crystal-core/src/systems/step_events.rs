@@ -1,0 +1,1221 @@
+use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+use crate::models::pokemon::{CaughtData, StatExperience};
+use crate::models::{Party, Pokemon, calculate_stats, pokemon_species_display_name};
+use crate::random::{CrystalRandom, DividerSource};
+use crate::state::GameState;
+use crate::systems::experience::{ExperienceError, GrowthRateCatalog};
+use crate::world::movement::MovementMode;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct StepEventRules {
+    pub poison_step_interval: u8,
+    pub egg_step_trigger: u8,
+    pub hatched_egg_happiness: u8,
+    pub poison_status: String,
+    pub egg_nickname: String,
+    pub happiness_step_counter_mask: u8,
+    pub happiness_step_counter_target: u8,
+}
+
+impl<'de> Deserialize<'de> for StepEventRules {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct RawStepEventRules {
+            poison_step_interval: u8,
+            egg_step_trigger: u8,
+            hatched_egg_happiness: u8,
+            poison_status: String,
+            egg_nickname: String,
+            happiness_step_counter_mask: u8,
+            happiness_step_counter_target: u8,
+        }
+
+        let raw = RawStepEventRules::deserialize(deserializer)?;
+        let rules = Self {
+            poison_step_interval: raw.poison_step_interval,
+            egg_step_trigger: raw.egg_step_trigger,
+            hatched_egg_happiness: raw.hatched_egg_happiness,
+            poison_status: raw.poison_status,
+            egg_nickname: raw.egg_nickname,
+            happiness_step_counter_mask: raw.happiness_step_counter_mask,
+            happiness_step_counter_target: raw.happiness_step_counter_target,
+        };
+        rules.validate_shape().map_err(D::Error::custom)?;
+        Ok(rules)
+    }
+}
+
+impl Default for StepEventRules {
+    fn default() -> Self {
+        Self {
+            poison_step_interval: 0,
+            egg_step_trigger: 0,
+            hatched_egg_happiness: 0,
+            poison_status: String::new(),
+            egg_nickname: String::new(),
+            happiness_step_counter_mask: 0,
+            happiness_step_counter_target: 0,
+        }
+    }
+}
+
+impl StepEventRules {
+    fn validate_shape(&self) -> Result<(), String> {
+        if let Some(issue) = step_event_rules_issues(self).into_iter().next() {
+            return Err(format!("invalid step event rules: {issue:?}"));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum StepEventRulesIssue {
+    MissingPoisonStepInterval,
+    InvalidPoisonStatus { poison_status: String },
+    InvalidEggNickname { egg_nickname: String },
+    HappinessTargetOutsideMask { target: u8, mask: u8 },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, thiserror::Error)]
+#[serde(deny_unknown_fields)]
+pub enum StepEventError {
+    #[error("step event rules are missing")]
+    MissingRules,
+    #[error("step event rules are invalid: {issue:?}")]
+    InvalidRules { issue: StepEventRulesIssue },
+    #[error("day-care experience calculation failed: {error}")]
+    DayCareExperience { error: ExperienceError },
+    #[error("day-care divider source failed: {message}")]
+    DayCareDivider { message: String },
+    #[error("egg caught location {location} exceeds Crystal's seven-bit field")]
+    InvalidCaughtLocation { location: u16 },
+    #[error("an egg hatch requires the current map's exact caught landmark")]
+    MissingCaughtLocation,
+}
+
+pub fn step_event_rules_issues(rules: &StepEventRules) -> Vec<StepEventRulesIssue> {
+    let mut issues = Vec::new();
+    if rules.poison_step_interval == 0 {
+        issues.push(StepEventRulesIssue::MissingPoisonStepInterval);
+    }
+    if !is_exact_step_event_token(&rules.poison_status) {
+        issues.push(StepEventRulesIssue::InvalidPoisonStatus {
+            poison_status: rules.poison_status.clone(),
+        });
+    }
+    if !is_exact_step_event_token(&rules.egg_nickname) {
+        issues.push(StepEventRulesIssue::InvalidEggNickname {
+            egg_nickname: rules.egg_nickname.clone(),
+        });
+    }
+    if rules.happiness_step_counter_target > rules.happiness_step_counter_mask {
+        issues.push(StepEventRulesIssue::HappinessTargetOutsideMask {
+            target: rules.happiness_step_counter_target,
+            mask: rules.happiness_step_counter_mask,
+        });
+    }
+    issues
+}
+
+pub fn require_step_event_rules(rules: &StepEventRules) -> Result<(), StepEventError> {
+    if rules == &StepEventRules::default() {
+        return Err(StepEventError::MissingRules);
+    }
+    if let Some(issue) = step_event_rules_issues(rules).into_iter().next() {
+        return Err(StepEventError::InvalidRules { issue });
+    }
+    Ok(())
+}
+
+fn is_exact_step_event_token(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+}
+
+fn has_reserved_pack_prefix(value: &str) -> bool {
+    let value = value.to_ascii_lowercase();
+    value.starts_with("fallback") || value.starts_with("legacy")
+}
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct StepEventCounters {
+    pub step_count: u8,
+    pub poison_step_count: u8,
+    pub happiness_step_count: u8,
+    /// Exact persisted big-endian `wBikeStep` word, represented as its
+    /// numeric 16-bit value.
+    pub bike_step_count: u16,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct OverworldStepContext {
+    pub movement_mode: MovementMode,
+    /// Packed map palette byte returned by `GetPhoneServiceTimeOfDayByte`.
+    /// Its high nibble is the `GetMapPhoneService` result.
+    pub map_phone_service: u8,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct StepEventResult {
+    pub repel_expired: Option<String>,
+    pub egg_hatched: bool,
+    pub hatched_species: Option<String>,
+    pub hatched_party_index: Option<usize>,
+    pub poison_result: Option<PoisonDamageResult>,
+    pub happiness_changed: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EggHatchResult {
+    pub party_index: usize,
+    pub species_id: String,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PoisonDamageResult {
+    pub damaged_names: Vec<String>,
+    pub fainted_names: Vec<String>,
+}
+
+pub fn process_step(
+    rules: &StepEventRules,
+    counters: &mut StepEventCounters,
+    party: &mut Party,
+) -> StepEventResult {
+    counters.poison_step_count = counters.poison_step_count.wrapping_add(1);
+    counters.step_count = counters.step_count.wrapping_add(1);
+
+    let mut happiness_changed = Vec::new();
+    if counters.step_count == 0 {
+        happiness_changed = apply_happiness_step(rules, counters, party);
+    }
+
+    if counters.step_count == rules.egg_step_trigger {
+        if let Some(hatch) = process_egg_step(rules, party) {
+            return StepEventResult {
+                repel_expired: None,
+                egg_hatched: true,
+                hatched_species: Some(hatch.species_id),
+                hatched_party_index: Some(hatch.party_index),
+                poison_result: None,
+                happiness_changed,
+            };
+        }
+    }
+
+    let poison_result = process_poison_step(rules, counters, party);
+    StepEventResult {
+        repel_expired: None,
+        egg_hatched: false,
+        hatched_species: None,
+        hatched_party_index: None,
+        poison_result,
+        happiness_changed,
+    }
+}
+
+pub fn process_step_checked(
+    rules: &StepEventRules,
+    counters: &mut StepEventCounters,
+    party: &mut Party,
+) -> Result<StepEventResult, StepEventError> {
+    require_step_event_rules(rules)?;
+    Ok(process_step(rules, counters, party))
+}
+
+pub fn process_overworld_step<S>(
+    state: &mut GameState,
+    rules: &StepEventRules,
+    growth_rates: &GrowthRateCatalog,
+    caught_location: Option<u16>,
+    context: OverworldStepContext,
+    rng: &mut CrystalRandom<S>,
+) -> Result<StepEventResult, StepEventError>
+where
+    S: DividerSource,
+    S::Error: std::fmt::Display,
+{
+    if caught_location.is_some_and(|location| location > 0x7f) {
+        return Err(StepEventError::InvalidCaughtLocation {
+            location: caught_location.expect("checked present caught location"),
+        });
+    }
+    let hatch_ready_on_this_step = state.repel_steps_remaining != 1
+        && state.step_events.step_count.wrapping_add(1) == rules.egg_step_trigger
+        && state
+            .storage
+            .party
+            .pokemon
+            .iter()
+            .flatten()
+            .any(|pokemon| is_egg(rules, pokemon) && pokemon.happiness == 1);
+    if hatch_ready_on_this_step && caught_location.is_none() {
+        return Err(StepEventError::MissingCaughtLocation);
+    }
+    if state.repel_steps_remaining > 0 {
+        let expired = state.tick_repel_step_after_movement();
+        if let Some(item_id) = expired {
+            state.sync_party_from_storage();
+            return Ok(StepEventResult {
+                repel_expired: Some(item_id),
+                ..StepEventResult::default()
+            });
+        }
+    } else {
+        state.active_repel_item = None;
+    }
+    state.step_events.poison_step_count = state.step_events.poison_step_count.wrapping_add(1);
+    state.step_events.step_count = state.step_events.step_count.wrapping_add(1);
+
+    let mut happiness_changed = Vec::new();
+    if state.step_events.step_count == 0 {
+        happiness_changed =
+            apply_happiness_step(rules, &mut state.step_events, &mut state.storage.party);
+    }
+
+    if state.step_events.step_count == rules.egg_step_trigger {
+        if let Some(hatch) = process_egg_step(rules, &mut state.storage.party) {
+            let caught_location = caught_location.expect("hatch-ready preflight requires location");
+            let pokemon = state.storage.party.pokemon[hatch.party_index]
+                .as_mut()
+                .expect("egg hatch result points at occupied party slot");
+            pokemon.caught_data = Some(CaughtData {
+                level: 1,
+                time_of_day: Some(state.time.time_of_day),
+                original_trainer_gender: state.player_gender,
+                location: caught_location as u8,
+            });
+            pokemon.original_trainer_id = state.player_id;
+            pokemon.original_trainer_name = state.player_name.clone();
+            state.pokedex.record_caught_pokemon(pokemon);
+            if hatch.species_id == "TOGEPI" {
+                state
+                    .flags
+                    .set_event_flag("EVENT_TOGEPI_HATCHED", true)
+                    .expect("canonical Togepi hatch event flag is valid");
+            }
+            state.sync_party_from_storage();
+            return Ok(StepEventResult {
+                repel_expired: None,
+                egg_hatched: true,
+                hatched_species: Some(hatch.species_id),
+                hatched_party_index: Some(hatch.party_index),
+                poison_result: None,
+                happiness_changed,
+            });
+        }
+    }
+
+    crate::systems::special_routines::advance_day_care_step(state, growth_rates, rng).map_err(
+        |error| match error {
+            crate::systems::special_routines::DayCareStepError::Experience(error) => {
+                StepEventError::DayCareExperience { error }
+            }
+            crate::systems::special_routines::DayCareStepError::Divider(error) => {
+                StepEventError::DayCareDivider {
+                    message: error.to_string(),
+                }
+            }
+        },
+    )?;
+    let poison_result =
+        process_poison_step(rules, &mut state.step_events, &mut state.storage.party);
+    let poison_fainted = poison_result
+        .as_ref()
+        .is_some_and(|result| !result.fainted_names.is_empty());
+    if !poison_fainted {
+        process_bike_step(state, context);
+    }
+    let result = StepEventResult {
+        repel_expired: None,
+        egg_hatched: false,
+        hatched_species: None,
+        hatched_party_index: None,
+        poison_result,
+        happiness_changed,
+    };
+    state.sync_party_from_storage();
+    Ok(result)
+}
+
+fn process_bike_step(state: &mut GameState, context: OverworldStepContext) {
+    let bike_shop_call_enabled = state
+        .flags
+        .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
+        .expect("canonical Bike Shop status flag is valid");
+    if !bike_shop_call_enabled
+        || context.movement_mode != MovementMode::Bike
+        || context.map_phone_service >> 4 != 0
+    {
+        return;
+    }
+
+    // The source treats wBikeStep as a big-endian word, increments it unless
+    // both bytes are $ff, then tests whether its high byte reached $04.
+    state.step_events.bike_step_count = state.step_events.bike_step_count.saturating_add(1);
+    if state.step_events.bike_step_count < 1024 || state.script_runtime.special_phone_call.is_some()
+    {
+        return;
+    }
+
+    state.script_runtime.special_phone_call = Some("SPECIALCALL_BIKESHOP".to_string());
+    state
+        .flags
+        .clear_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED")
+        .expect("canonical Bike Shop status flag is valid");
+}
+
+pub fn process_overworld_step_checked<S>(
+    state: &mut GameState,
+    rules: &StepEventRules,
+    growth_rates: &GrowthRateCatalog,
+    caught_location: Option<u16>,
+    context: OverworldStepContext,
+    rng: &mut CrystalRandom<S>,
+) -> Result<StepEventResult, StepEventError>
+where
+    S: DividerSource,
+    S::Error: std::fmt::Display,
+{
+    require_step_event_rules(rules)?;
+    process_overworld_step(state, rules, growth_rates, caught_location, context, rng)
+}
+
+pub fn apply_happiness_step(
+    rules: &StepEventRules,
+    counters: &mut StepEventCounters,
+    party: &mut Party,
+) -> Vec<String> {
+    counters.happiness_step_count =
+        (counters.happiness_step_count.wrapping_add(1)) & rules.happiness_step_counter_mask;
+    if counters.happiness_step_count != rules.happiness_step_counter_target {
+        return Vec::new();
+    }
+
+    let mut changed = Vec::new();
+    for pokemon in party.pokemon.iter_mut().flatten() {
+        if is_egg(rules, pokemon) {
+            continue;
+        }
+        let before = pokemon.happiness;
+        pokemon.happiness = pokemon.happiness.saturating_add(1);
+        if pokemon.happiness != before {
+            changed.push(pokemon_event_name(pokemon));
+        }
+    }
+    changed
+}
+
+pub fn process_egg_step(rules: &StepEventRules, party: &mut Party) -> Option<EggHatchResult> {
+    for (party_index, pokemon) in party.pokemon.iter_mut().enumerate() {
+        let Some(pokemon) = pokemon else {
+            continue;
+        };
+        if !is_egg(rules, pokemon) {
+            continue;
+        }
+        pokemon.happiness = pokemon.happiness.wrapping_sub(1);
+        if pokemon.happiness == 0 {
+            let species_id = pokemon.species.id.clone();
+            let stats = calculate_stats(
+                &pokemon.species,
+                pokemon.level,
+                pokemon.dvs,
+                StatExperience {
+                    hp: pokemon.hp_exp,
+                    attack: pokemon.attack_exp,
+                    defense: pokemon.defense_exp,
+                    speed: pokemon.speed_exp,
+                    special: pokemon.special_exp,
+                },
+            );
+            pokemon.is_egg = false;
+            pokemon.nickname = pokemon_species_display_name(&species_id);
+            pokemon.happiness = rules.hatched_egg_happiness;
+            pokemon.status = None;
+            pokemon.sleep_turns = 0;
+            pokemon.max_hp = stats.max_hp;
+            pokemon.hp = stats.max_hp;
+            pokemon.attack = stats.attack;
+            pokemon.defense = stats.defense;
+            pokemon.speed = stats.speed;
+            pokemon.special_attack = stats.special_attack;
+            pokemon.special_defense = stats.special_defense;
+            return Some(EggHatchResult {
+                party_index,
+                species_id,
+            });
+        }
+    }
+    None
+}
+
+pub fn process_poison_step(
+    rules: &StepEventRules,
+    counters: &mut StepEventCounters,
+    party: &mut Party,
+) -> Option<PoisonDamageResult> {
+    if counters.poison_step_count < rules.poison_step_interval {
+        return None;
+    }
+    counters.poison_step_count = 0;
+
+    let poisoned_before_step: Vec<usize> = party
+        .pokemon
+        .iter()
+        .enumerate()
+        .filter_map(|(index, pokemon)| {
+            let pokemon = pokemon.as_ref()?;
+            (is_poisoned(rules, pokemon) && pokemon.hp > 0).then_some(index)
+        })
+        .collect();
+
+    let mut result = apply_poison_to_party(rules, party);
+    apply_poison_faint_happiness(party, poisoned_before_step);
+    if result.damaged_names.is_empty() && result.fainted_names.is_empty() {
+        None
+    } else {
+        result.damaged_names.shrink_to_fit();
+        result.fainted_names.shrink_to_fit();
+        Some(result)
+    }
+}
+
+pub fn apply_poison_to_party(rules: &StepEventRules, party: &mut Party) -> PoisonDamageResult {
+    let mut result = PoisonDamageResult::default();
+    for pokemon in party.pokemon.iter_mut().flatten() {
+        if !is_poisoned(rules, pokemon) || pokemon.hp == 0 {
+            continue;
+        }
+        pokemon.hp = pokemon.hp.saturating_sub(1);
+        if pokemon.hp == 0 {
+            pokemon.status = None;
+            result.fainted_names.push(pokemon_event_name(pokemon));
+        } else {
+            result.damaged_names.push(pokemon_event_name(pokemon));
+        }
+    }
+    result
+}
+
+pub fn is_poisoned(rules: &StepEventRules, pokemon: &Pokemon) -> bool {
+    pokemon.status.as_deref() == Some(rules.poison_status.as_str())
+}
+
+pub fn is_egg(rules: &StepEventRules, pokemon: &Pokemon) -> bool {
+    let _ = rules;
+    pokemon.is_egg
+}
+
+fn apply_poison_faint_happiness(party: &mut Party, poisoned_before_step: Vec<usize>) {
+    for index in poisoned_before_step {
+        let Some(pokemon) = party.pokemon[index].as_mut() else {
+            continue;
+        };
+        if pokemon.hp > 0 {
+            continue;
+        }
+        pokemon.happiness = pokemon
+            .happiness
+            .saturating_sub(poison_faint_happiness_delta(pokemon.happiness));
+    }
+}
+
+fn poison_faint_happiness_delta(happiness: u8) -> u8 {
+    if happiness < 200 { 5 } else { 10 }
+}
+
+fn pokemon_event_name(pokemon: &Pokemon) -> String {
+    if !pokemon.nickname.is_empty() {
+        pokemon.nickname.clone()
+    } else {
+        pokemon.species.id.clone()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::{BaseStats, Dv, PokemonSpecies};
+    use crate::systems::experience::crystal_growth_rate_catalog_for_tests;
+
+    fn rules() -> StepEventRules {
+        StepEventRules {
+            poison_step_interval: 4,
+            egg_step_trigger: 0x80,
+            hatched_egg_happiness: 0x78,
+            poison_status: "POISON".to_string(),
+            egg_nickname: "EGG".to_string(),
+            happiness_step_counter_mask: 1,
+            happiness_step_counter_target: 0,
+        }
+    }
+
+    fn normal_overworld_context() -> OverworldStepContext {
+        OverworldStepContext {
+            movement_mode: MovementMode::Normal,
+            map_phone_service: 0,
+        }
+    }
+
+    fn run_overworld_step(state: &mut GameState, context: OverworldStepContext) -> StepEventResult {
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+        process_overworld_step(
+            state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            Some(0),
+            context,
+            &mut rng,
+        )
+        .expect("overworld step")
+    }
+
+    #[test]
+    fn bike_step_queues_shop_call_at_1024_and_clears_the_enable_flag() {
+        let mut state = GameState::default();
+        state.step_events.bike_step_count = 1023;
+        state
+            .flags
+            .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
+            .expect("canonical engine flag");
+
+        let result = run_overworld_step(
+            &mut state,
+            OverworldStepContext {
+                movement_mode: MovementMode::Bike,
+                map_phone_service: 0,
+            },
+        );
+
+        assert_eq!(result, StepEventResult::default());
+        assert_eq!(state.step_events.bike_step_count, 1024);
+        assert_eq!(
+            state.script_runtime.special_phone_call.as_deref(),
+            Some("SPECIALCALL_BIKESHOP")
+        );
+        assert!(
+            !state
+                .flags
+                .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
+                .expect("canonical engine flag")
+        );
+    }
+
+    #[test]
+    fn bike_step_requires_enable_flag_exact_bike_state_and_phone_service() {
+        for (flag, movement_mode, map_phone_service) in [
+            (false, MovementMode::Bike, 0),
+            (true, MovementMode::Normal, 0),
+            (true, MovementMode::Skate, 0),
+            (true, MovementMode::Bike, 0x10),
+        ] {
+            let mut state = GameState::default();
+            state.step_events.bike_step_count = 99;
+            state
+                .flags
+                .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", flag)
+                .expect("canonical engine flag");
+
+            run_overworld_step(
+                &mut state,
+                OverworldStepContext {
+                    movement_mode,
+                    map_phone_service,
+                },
+            );
+
+            assert_eq!(state.step_events.bike_step_count, 99);
+            assert!(state.script_runtime.special_phone_call.is_none());
+        }
+    }
+
+    #[test]
+    fn bike_step_saturates_and_does_not_replace_an_existing_special_call() {
+        let mut state = GameState::default();
+        state.step_events.bike_step_count = u16::MAX;
+        state.script_runtime.special_phone_call = Some("SPECIALCALL_POKERUS".to_string());
+        state
+            .flags
+            .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
+            .expect("canonical engine flag");
+
+        run_overworld_step(
+            &mut state,
+            OverworldStepContext {
+                movement_mode: MovementMode::Bike,
+                map_phone_service: 0,
+            },
+        );
+
+        assert_eq!(state.step_events.bike_step_count, u16::MAX);
+        assert_eq!(
+            state.script_runtime.special_phone_call.as_deref(),
+            Some("SPECIALCALL_POKERUS")
+        );
+        assert!(
+            state
+                .flags
+                .is_engine_flag_set("ENGINE_BIKE_SHOP_CALL_ENABLED")
+                .expect("canonical engine flag")
+        );
+    }
+
+    #[test]
+    fn poison_faint_skips_bike_step_but_nonfatal_damage_does_not() {
+        for (hp, expected_count) in [(1, 1023), (2, 1024)] {
+            let mut state = GameState::default();
+            let mut oddish = pokemon("ODDISH");
+            oddish.hp = hp;
+            oddish.status = Some(rules().poison_status);
+            state.storage.party.pokemon[0] = Some(oddish);
+            state.step_events.poison_step_count = 3;
+            state.step_events.bike_step_count = 1023;
+            state
+                .flags
+                .set_engine_flag("ENGINE_BIKE_SHOP_CALL_ENABLED", true)
+                .expect("canonical engine flag");
+
+            let result = run_overworld_step(
+                &mut state,
+                OverworldStepContext {
+                    movement_mode: MovementMode::Bike,
+                    map_phone_service: 0,
+                },
+            );
+
+            assert!(result.poison_result.is_some());
+            assert_eq!(state.step_events.bike_step_count, expected_count);
+        }
+    }
+
+    #[test]
+    fn step_event_rules_issues_validate_exact_pack_tokens() {
+        assert_eq!(
+            step_event_rules_issues(&StepEventRules::default()),
+            [
+                StepEventRulesIssue::MissingPoisonStepInterval,
+                StepEventRulesIssue::InvalidPoisonStatus {
+                    poison_status: String::new()
+                },
+                StepEventRulesIssue::InvalidEggNickname {
+                    egg_nickname: String::new()
+                },
+            ]
+        );
+
+        let rules = StepEventRules {
+            poison_step_interval: 0,
+            egg_step_trigger: 0x80,
+            hatched_egg_happiness: 0x78,
+            poison_status: "BAD POISON".to_string(),
+            egg_nickname: " EGG".to_string(),
+            happiness_step_counter_mask: 1,
+            happiness_step_counter_target: 2,
+        };
+        assert_eq!(
+            step_event_rules_issues(&rules),
+            vec![
+                StepEventRulesIssue::MissingPoisonStepInterval,
+                StepEventRulesIssue::InvalidPoisonStatus {
+                    poison_status: "BAD POISON".to_string(),
+                },
+                StepEventRulesIssue::InvalidEggNickname {
+                    egg_nickname: " EGG".to_string(),
+                },
+                StepEventRulesIssue::HappinessTargetOutsideMask { target: 2, mask: 1 },
+            ],
+        );
+    }
+
+    #[test]
+    fn bike_step_count_is_required_persisted_state() {
+        let mut encoded =
+            serde_json::to_value(StepEventCounters::default()).expect("serialize step counters");
+        encoded
+            .as_object_mut()
+            .expect("step counters object")
+            .remove("bike_step_count");
+
+        let error = serde_json::from_value::<StepEventCounters>(encoded)
+            .expect_err("wBikeStep must not be defaulted while loading a save")
+            .to_string();
+
+        assert!(error.contains("missing field `bike_step_count`"), "{error}");
+    }
+
+    #[test]
+    fn step_event_rules_issues_reject_reserved_pack_prefix_tokens() {
+        let rules = StepEventRules {
+            poison_step_interval: 4,
+            egg_step_trigger: 0x80,
+            hatched_egg_happiness: 0x78,
+            poison_status: "fallback_poison".to_string(),
+            egg_nickname: "legacy_egg".to_string(),
+            happiness_step_counter_mask: 1,
+            happiness_step_counter_target: 0,
+        };
+
+        assert_eq!(
+            step_event_rules_issues(&rules),
+            vec![
+                StepEventRulesIssue::InvalidPoisonStatus {
+                    poison_status: "fallback_poison".to_string(),
+                },
+                StepEventRulesIssue::InvalidEggNickname {
+                    egg_nickname: "legacy_egg".to_string(),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn checked_step_processing_rejects_missing_or_invalid_rules_before_mutation() {
+        let mut party = Party::default();
+        let mut counters = StepEventCounters::default();
+        assert_eq!(
+            process_step_checked(&StepEventRules::default(), &mut counters, &mut party),
+            Err(StepEventError::MissingRules)
+        );
+        assert_eq!(counters, StepEventCounters::default());
+        assert_eq!(party, Party::default());
+
+        let mut bad_rules = rules();
+        bad_rules.poison_step_interval = 0;
+        let mut oddish = pokemon("ODDISH");
+        oddish.hp = 3;
+        oddish.status = Some("POISON".to_string());
+        party = party_with(vec![(0, oddish)]);
+        let before_party = party.clone();
+        assert_eq!(
+            process_step_checked(&bad_rules, &mut counters, &mut party),
+            Err(StepEventError::InvalidRules {
+                issue: StepEventRulesIssue::MissingPoisonStepInterval,
+            })
+        );
+        assert_eq!(counters, StepEventCounters::default());
+        assert_eq!(party, before_party);
+    }
+
+    fn pokemon(id: &str) -> Pokemon {
+        Pokemon::new_for_tests(
+            PokemonSpecies::new_for_tests(id, BaseStats::new(45, 49, 49, 45, 65, 65)),
+            12,
+            Dv::from_non_hp(1, 2, 3, 4),
+        )
+    }
+
+    fn party_with(entries: Vec<(usize, Pokemon)>) -> Party {
+        let mut party = Party::default();
+        for (slot, pokemon) in entries {
+            party.pokemon[slot] = Some(pokemon);
+        }
+        party
+    }
+
+    #[test]
+    fn poison_damage_applies_every_four_steps_to_exact_poison_status() {
+        let mut oddish = pokemon("ODDISH");
+        oddish.hp = 3;
+        oddish.status = Some(rules().poison_status);
+        let mut party = party_with(vec![(0, oddish)]);
+        let mut counters = StepEventCounters::default();
+
+        for _ in 0..3 {
+            assert_eq!(
+                process_step(&rules(), &mut counters, &mut party).poison_result,
+                None
+            );
+        }
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(
+            result.poison_result,
+            Some(PoisonDamageResult {
+                damaged_names: vec!["ODDISH".to_string()],
+                fainted_names: Vec::new(),
+            })
+        );
+        assert_eq!(party.pokemon[0].as_ref().expect("pokemon").hp, 2);
+        assert_eq!(counters.poison_step_count, 0);
+    }
+
+    #[test]
+    fn poison_status_is_exact_not_lowercase_or_alias_coerced() {
+        let mut grimer = pokemon("GRIMER");
+        grimer.hp = 4;
+        grimer.status = Some("poison".to_string());
+        let mut party = party_with(vec![(0, grimer)]);
+        let mut counters = StepEventCounters {
+            poison_step_count: 3,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(result.poison_result, None);
+        assert_eq!(party.pokemon[0].as_ref().expect("pokemon").hp, 4);
+    }
+
+    #[test]
+    fn poison_faint_clears_status_and_reduces_happiness() {
+        let mut oddish = pokemon("ODDISH");
+        oddish.hp = 1;
+        oddish.happiness = 210;
+        oddish.status = Some(rules().poison_status);
+        let mut party = party_with(vec![(0, oddish)]);
+        let mut counters = StepEventCounters {
+            poison_step_count: 3,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(
+            result.poison_result,
+            Some(PoisonDamageResult {
+                damaged_names: Vec::new(),
+                fainted_names: vec!["ODDISH".to_string()],
+            })
+        );
+        let pokemon = party.pokemon[0].as_ref().expect("pokemon");
+        assert_eq!(pokemon.hp, 0);
+        assert_eq!(pokemon.status, None);
+        assert_eq!(pokemon.happiness, 200);
+    }
+
+    #[test]
+    fn egg_step_hatches_only_when_counter_decrements_to_zero() {
+        let mut egg = pokemon("TOGEPI");
+        egg.nickname = rules().egg_nickname;
+        egg.is_egg = true;
+        egg.happiness = 1;
+        let mut party = party_with(vec![(0, egg)]);
+        let mut counters = StepEventCounters {
+            step_count: 0x7f,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(result.egg_hatched, true);
+        assert_eq!(result.hatched_species, Some("TOGEPI".to_string()));
+        assert_eq!(result.hatched_party_index, Some(0));
+        let pokemon = party.pokemon[0].as_ref().expect("pokemon");
+        assert_eq!(pokemon.nickname, "TOGEPI");
+        assert_eq!(pokemon.happiness, rules().hatched_egg_happiness);
+        assert_eq!(pokemon.status, None);
+        pokemon.validate_saved_state().expect("exact hatch stats");
+    }
+
+    #[test]
+    fn abilities_do_not_change_crystals_one_byte_egg_cycle_decrement() {
+        for ability in ["FLAME_BODY", "MAGMA_ARMOR"] {
+            let mut egg = pokemon("TOGEPI");
+            egg.is_egg = true;
+            egg.nickname = rules().egg_nickname;
+            egg.happiness = 2;
+            let mut accelerator = pokemon("MAGCARGO");
+            accelerator.species.ability = ability.to_string();
+            let mut party = party_with(vec![(0, egg), (1, accelerator)]);
+
+            let hatch = process_egg_step(&rules(), &mut party);
+
+            assert_eq!(hatch, None, "{ability} is not consulted by DoEggStep");
+            assert_eq!(party.pokemon[0].as_ref().unwrap().happiness, 1);
+            assert!(party.pokemon[0].as_ref().unwrap().is_egg);
+        }
+    }
+
+    #[test]
+    fn egg_hatch_initializes_the_exact_display_name_when_nickname_is_declined() {
+        let mut egg = pokemon("FARFETCH_D");
+        egg.is_egg = true;
+        egg.nickname = rules().egg_nickname;
+        egg.happiness = 1;
+        let mut party = party_with(vec![(0, egg)]);
+        let mut counters = StepEventCounters {
+            step_count: 0x7f,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+
+        assert_eq!(result.hatched_species.as_deref(), Some("FARFETCH_D"));
+        assert_eq!(
+            party.pokemon[0].as_ref().expect("hatched Pokemon").nickname,
+            "FARFETCH'D"
+        );
+    }
+
+    #[test]
+    fn egg_step_wraps_counter_and_processes_all_eggs() {
+        let mut first = pokemon("TOGEPI");
+        first.nickname = rules().egg_nickname;
+        first.is_egg = true;
+        first.happiness = 0;
+        let mut second = pokemon("PICHU");
+        second.nickname = rules().egg_nickname;
+        second.is_egg = true;
+        second.happiness = 2;
+        let mut party = party_with(vec![(0, first), (1, second)]);
+        let mut counters = StepEventCounters {
+            step_count: 0x7f,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(result.egg_hatched, false);
+        assert_eq!(party.pokemon[0].as_ref().expect("first").happiness, 0xff);
+        assert_eq!(party.pokemon[1].as_ref().expect("second").happiness, 1);
+    }
+
+    #[test]
+    fn normal_pokemon_nicknamed_egg_is_not_treated_as_an_egg() {
+        let mut normal = pokemon("TOGEPI");
+        normal.nickname = rules().egg_nickname;
+        normal.happiness = 50;
+        assert!(!is_egg(&rules(), &normal));
+    }
+
+    #[test]
+    fn egg_status_alias_is_rejected_instead_of_becoming_a_second_authority() {
+        let mut egg = pokemon("TOGEPI");
+        egg.nickname = "HATCHLING".to_string();
+        egg.status = Some("EGG".to_string());
+        assert!(!is_egg(&rules(), &egg));
+        assert_eq!(
+            egg.validate_saved_state(),
+            Err("pokemon.status cannot encode egg identity; use pokemon.is_egg".to_string())
+        );
+    }
+
+    #[test]
+    fn egg_hatch_skips_poison_in_count_step_ordering() {
+        let mut egg = pokemon("TOGEPI");
+        egg.nickname = rules().egg_nickname;
+        egg.is_egg = true;
+        egg.happiness = 1;
+        let mut oddish = pokemon("ODDISH");
+        oddish.hp = 3;
+        oddish.status = Some(rules().poison_status);
+        let mut party = party_with(vec![(0, egg), (1, oddish)]);
+        let mut counters = StepEventCounters {
+            step_count: 0x7f,
+            poison_step_count: 3,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(result.egg_hatched, true);
+        assert_eq!(result.poison_result, None);
+        assert_eq!(party.pokemon[1].as_ref().expect("poisoned").hp, 3);
+        assert_eq!(counters.poison_step_count, 4);
+    }
+
+    #[test]
+    fn happiness_step_runs_every_512_steps_and_skips_eggs() {
+        let mut chikorita = pokemon("CHIKORITA");
+        chikorita.happiness = 70;
+        let mut egg = pokemon("TOGEPI");
+        egg.nickname = rules().egg_nickname;
+        egg.is_egg = true;
+        egg.happiness = 70;
+        let mut party = party_with(vec![(0, chikorita), (1, egg)]);
+        let mut counters = StepEventCounters {
+            step_count: 0xff,
+            happiness_step_count: 1,
+            ..StepEventCounters::default()
+        };
+
+        let result = process_step(&rules(), &mut counters, &mut party);
+        assert_eq!(result.happiness_changed, vec!["CHIKORITA".to_string()]);
+        assert_eq!(party.pokemon[0].as_ref().expect("mon").happiness, 71);
+        assert_eq!(party.pokemon[1].as_ref().expect("egg").happiness, 70);
+    }
+
+    #[test]
+    fn overworld_step_processes_party_events_repel_and_party_sync() {
+        let mut state = GameState::default();
+        let mut oddish = pokemon("ODDISH");
+        oddish.hp = 3;
+        oddish.status = Some(rules().poison_status);
+        state.storage.party.pokemon[0] = Some(oddish);
+        state.step_events.poison_step_count = 3;
+        state.repel_steps_remaining = 1;
+        state.active_repel_item = Some("REPEL".to_string());
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+
+        let result = process_overworld_step(
+            &mut state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            Some(0),
+            normal_overworld_context(),
+            &mut rng,
+        )
+        .expect("overworld step");
+
+        assert_eq!(result.poison_result, None);
+        assert_eq!(state.storage.party.pokemon[0].as_ref().unwrap().hp, 3);
+        assert_eq!(state.party.pokemon[0].as_ref().unwrap().species, "ODDISH");
+        assert_eq!(state.repel_steps_remaining, 0);
+        assert_eq!(state.active_repel_item, None);
+
+        state.active_repel_item = Some("REPEL".to_string());
+        let _ = process_overworld_step(
+            &mut state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            Some(0),
+            normal_overworld_context(),
+            &mut rng,
+        )
+        .expect("overworld step");
+        assert_eq!(state.repel_steps_remaining, 0);
+        assert_eq!(state.active_repel_item, None);
+    }
+
+    #[test]
+    fn overworld_hatch_applies_exact_owner_caught_pokedex_and_story_state() {
+        let mut state = GameState::default();
+        state.player_name = "KRIS".to_string();
+        state.player_id = 0x1234;
+        state.player_gender = 1;
+        state.time.time_of_day = crate::world::encounters::TimeOfDay::Night;
+        state.step_events.step_count = 0x7f;
+        let mut egg = pokemon("TOGEPI");
+        egg.is_egg = true;
+        egg.nickname = rules().egg_nickname;
+        egg.status = None;
+        egg.sleep_turns = 5;
+        egg.happiness = 1;
+        egg.original_trainer_name = "DAY_CARE".to_string();
+        egg.original_trainer_id = 0xbeef;
+        state.storage.party.pokemon[2] = Some(egg);
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+
+        let result = process_overworld_step(
+            &mut state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            Some(0x2a),
+            normal_overworld_context(),
+            &mut rng,
+        )
+        .expect("overworld hatch");
+
+        assert_eq!(result.hatched_species.as_deref(), Some("TOGEPI"));
+        assert_eq!(result.hatched_party_index, Some(2));
+        let hatched = state.storage.party.pokemon[2]
+            .as_ref()
+            .expect("hatched mon");
+        assert!(!hatched.is_egg);
+        assert_eq!(hatched.status, None);
+        assert_eq!(hatched.sleep_turns, 0);
+        assert_eq!(hatched.original_trainer_name, "KRIS");
+        assert_eq!(hatched.original_trainer_id, 0x1234);
+        assert_eq!(
+            hatched.caught_data,
+            Some(CaughtData {
+                level: 1,
+                time_of_day: Some(crate::world::encounters::TimeOfDay::Night),
+                original_trainer_gender: 1,
+                location: 0x2a,
+            })
+        );
+        hatched.validate_saved_state().expect("exact hatch stats");
+        assert!(state.pokedex.has_seen("TOGEPI"));
+        assert!(state.pokedex.has_caught("TOGEPI"));
+        assert!(
+            state
+                .flags
+                .is_event_flag_set("EVENT_TOGEPI_HATCHED")
+                .expect("valid event flag")
+        );
+        assert_eq!(
+            state.party.pokemon[2].as_ref().expect("party sync").species,
+            "TOGEPI"
+        );
+    }
+
+    #[test]
+    fn overworld_step_rejects_caught_location_outside_crystal_field_before_mutation() {
+        let mut state = GameState::default();
+        let before = state.clone();
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+
+        let error = process_overworld_step(
+            &mut state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            Some(0x80),
+            normal_overworld_context(),
+            &mut rng,
+        )
+        .expect_err("seven-bit caught location must be enforced");
+
+        assert_eq!(
+            error,
+            StepEventError::InvalidCaughtLocation { location: 0x80 }
+        );
+        assert_eq!(state, before);
+    }
+
+    #[test]
+    fn overworld_hatch_requires_exact_map_landmark_before_decrementing_egg() {
+        let mut state = GameState::default();
+        state.step_events.step_count = 0x7f;
+        let mut egg = pokemon("TOGEPI");
+        egg.is_egg = true;
+        egg.happiness = 1;
+        state.storage.party.pokemon[0] = Some(egg);
+        let before = state.clone();
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(state.random_state, &mut divider);
+
+        let error = process_overworld_step(
+            &mut state,
+            &rules(),
+            &crystal_growth_rate_catalog_for_tests(),
+            None,
+            normal_overworld_context(),
+            &mut rng,
+        )
+        .expect_err("hatch must not invent a caught landmark");
+
+        assert_eq!(error, StepEventError::MissingCaughtLocation);
+        assert_eq!(state, before);
+    }
+
+    #[test]
+    fn step_event_issue_json_rejects_unknown_fallback_fields() {
+        let error = serde_json::from_value::<StepEventRulesIssue>(serde_json::json!({
+            "InvalidPoisonStatus": {
+                "poison_status": "PSN",
+                "fallback_poison_status": "POISON"
+            }
+        }))
+        .expect_err("fallback poison status must be rejected")
+        .to_string();
+        assert!(
+            error.contains("unknown field `fallback_poison_status`"),
+            "{error}"
+        );
+    }
+}

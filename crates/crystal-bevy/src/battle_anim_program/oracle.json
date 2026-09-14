@@ -1,0 +1,5527 @@
+{
+  "rom_sha1": "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133",
+  "frames": 384,
+  "width": 21,
+  "cases": [
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 1,
+      "x": 112,
+      "y": 40,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 1,
+      "x": 112,
+      "y": 40,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 105,
+      "x": 132,
+      "y": 56,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 105,
+      "x": 132,
+      "y": 56,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 28,
+      "x": 136,
+      "y": 64,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 28,
+      "x": 136,
+      "y": 64,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 1,
+      "x": 144,
+      "y": 64,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 1,
+      "x": 144,
+      "y": 64,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 64,
+      "x": 116,
+      "y": 52,
+      "param": 128,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NULL",
+      "function_id": 0,
+      "object": 64,
+      "x": 116,
+      "y": 52,
+      "param": 128,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 155,
+      "x": 132,
+      "y": 76,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 155,
+      "x": 132,
+      "y": 76,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 67,
+      "x": 64,
+      "y": 88,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 67,
+      "x": 64,
+      "y": 88,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 67,
+      "x": 64,
+      "y": 80,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 67,
+      "x": 64,
+      "y": 80,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 19,
+      "x": 64,
+      "y": 92,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET",
+      "function_id": 1,
+      "object": 19,
+      "x": 64,
+      "y": 92,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_DISAPPEAR",
+      "function_id": 2,
+      "object": 76,
+      "x": 64,
+      "y": 88,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 52,
+      "x": 136,
+      "y": 56,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 52,
+      "x": 136,
+      "y": 56,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 64,
+      "y": 92,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 64,
+      "y": 92,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 75,
+      "y": 86,
+      "param": 5,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 75,
+      "y": 86,
+      "param": 5,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 85,
+      "y": 81,
+      "param": 7,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 85,
+      "y": 81,
+      "param": 7,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 136,
+      "y": 56,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 136,
+      "y": 56,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 96,
+      "y": 76,
+      "param": 9,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 96,
+      "y": 76,
+      "param": 9,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 126,
+      "y": 61,
+      "param": 10,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 126,
+      "y": 61,
+      "param": 10,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 106,
+      "y": 71,
+      "param": 11,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 106,
+      "y": 71,
+      "param": 11,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 116,
+      "y": 66,
+      "param": 12,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 13,
+      "x": 116,
+      "y": 66,
+      "param": 12,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 16,
+      "x": 56,
+      "y": 88,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 16,
+      "x": 56,
+      "y": 88,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 16,
+      "x": 136,
+      "y": 56,
+      "param": 144,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_IN_CIRCLE",
+      "function_id": 3,
+      "object": 16,
+      "x": 136,
+      "y": 56,
+      "param": 144,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+      "function_id": 4,
+      "object": 12,
+      "x": 64,
+      "y": 92,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+      "function_id": 4,
+      "object": 12,
+      "x": 64,
+      "y": 92,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+      "function_id": 4,
+      "object": 180,
+      "x": 64,
+      "y": 92,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WAVE_TO_TARGET",
+      "function_id": 4,
+      "object": 180,
+      "x": 64,
+      "y": 92,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THROW_TO_TARGET",
+      "function_id": 5,
+      "object": 255,
+      "x": 128,
+      "y": 48,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THROW_TO_TARGET",
+      "function_id": 5,
+      "object": 255,
+      "x": 128,
+      "y": 48,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR",
+      "function_id": 6,
+      "object": 98,
+      "x": 64,
+      "y": 92,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THROW_TO_TARGET_DISAPPEAR",
+      "function_id": 6,
+      "object": 98,
+      "x": 64,
+      "y": 92,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DROP",
+      "function_id": 7,
+      "object": 29,
+      "x": 120,
+      "y": 68,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DROP",
+      "function_id": 7,
+      "object": 29,
+      "x": 120,
+      "y": 68,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DROP",
+      "function_id": 7,
+      "object": 30,
+      "x": 128,
+      "y": 64,
+      "param": 64,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DROP",
+      "function_id": 7,
+      "object": 30,
+      "x": 128,
+      "y": 64,
+      "param": 64,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 182,
+      "x": 64,
+      "y": 96,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 182,
+      "x": 64,
+      "y": 96,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 14,
+      "x": 64,
+      "y": 96,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 14,
+      "x": 64,
+      "y": 96,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 14,
+      "x": 64,
+      "y": 88,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 14,
+      "x": 64,
+      "y": 88,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 143,
+      "x": 64,
+      "y": 88,
+      "param": 35,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 143,
+      "x": 64,
+      "y": 88,
+      "param": 35,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 143,
+      "x": 64,
+      "y": 80,
+      "param": 36,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 143,
+      "x": 64,
+      "y": 80,
+      "param": 36,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 17,
+      "x": 64,
+      "y": 88,
+      "param": 99,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 17,
+      "x": 64,
+      "y": 88,
+      "param": 99,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 17,
+      "x": 64,
+      "y": 80,
+      "param": 100,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_USER_TO_TARGET_SPIN",
+      "function_id": 8,
+      "object": 17,
+      "x": 64,
+      "y": 80,
+      "param": 100,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHAKE",
+      "function_id": 9,
+      "object": 40,
+      "x": 126,
+      "y": 62,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHAKE",
+      "function_id": 9,
+      "object": 40,
+      "x": 126,
+      "y": 62,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHAKE",
+      "function_id": 9,
+      "object": 10,
+      "x": 136,
+      "y": 56,
+      "param": 67,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHAKE",
+      "function_id": 9,
+      "object": 10,
+      "x": 136,
+      "y": 56,
+      "param": 67,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 5,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 136,
+      "y": 56,
+      "param": 5,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 64,
+      "y": 92,
+      "param": 7,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FIRE_BLAST",
+      "function_id": 10,
+      "object": 15,
+      "x": 64,
+      "y": 92,
+      "param": 7,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 28,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 28,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 80,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 80,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 92,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 92,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 144,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 144,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 156,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 156,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 208,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 208,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 220,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 220,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 232,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_LEAF",
+      "function_id": 11,
+      "object": 20,
+      "x": 48,
+      "y": 80,
+      "param": 232,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 146,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 146,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 179,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 179,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 193,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 193,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 209,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 209,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 225,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 225,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 244,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BUBBLE",
+      "function_id": 12,
+      "object": 33,
+      "x": 64,
+      "y": 92,
+      "param": 244,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SURF",
+      "function_id": 13,
+      "object": 34,
+      "x": 88,
+      "y": 104,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SURF",
+      "function_id": 13,
+      "object": 34,
+      "x": 88,
+      "y": 104,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SING",
+      "function_id": 14,
+      "object": 35,
+      "x": 64,
+      "y": 92,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WATER_GUN",
+      "function_id": 15,
+      "object": 36,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WATER_GUN",
+      "function_id": 15,
+      "object": 36,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 96,
+      "param": 18,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 96,
+      "param": 18,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 84,
+      "param": 19,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 84,
+      "param": 19,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 100,
+      "param": 20,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 64,
+      "y": 100,
+      "param": 20,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 120,
+      "y": 68,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EMBER",
+      "function_id": 16,
+      "object": 11,
+      "x": 120,
+      "y": 68,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POWDER",
+      "function_id": 17,
+      "object": 38,
+      "x": 104,
+      "y": 16,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POWDER",
+      "function_id": 17,
+      "object": 38,
+      "x": 104,
+      "y": 16,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 136,
+      "y": 65,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 136,
+      "y": 65,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 64,
+      "y": 92,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 64,
+      "y": 92,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 68,
+      "y": 92,
+      "param": 64,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL",
+      "function_id": 18,
+      "object": 21,
+      "x": 68,
+      "y": 92,
+      "param": 64,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL_BLOCKED",
+      "function_id": 19,
+      "object": 22,
+      "x": 64,
+      "y": 92,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POKEBALL_BLOCKED",
+      "function_id": 19,
+      "object": 22,
+      "x": 64,
+      "y": 92,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 44,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 44,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 44,
+      "x": 132,
+      "y": 48,
+      "param": 36,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 44,
+      "x": 132,
+      "y": 48,
+      "param": 36,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 49,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 49,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 50,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 50,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 51,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 51,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 52,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 52,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 53,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 53,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 54,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 54,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 55,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RECOVER",
+      "function_id": 20,
+      "object": 43,
+      "x": 136,
+      "y": 56,
+      "param": 55,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THUNDER_WAVE",
+      "function_id": 21,
+      "object": 48,
+      "x": 136,
+      "y": 56,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THUNDER_WAVE",
+      "function_id": 21,
+      "object": 48,
+      "x": 136,
+      "y": 56,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 153,
+      "x": 64,
+      "y": 80,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 153,
+      "x": 64,
+      "y": 80,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 53,
+      "x": 136,
+      "y": 56,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 53,
+      "x": 136,
+      "y": 56,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 153,
+      "x": 64,
+      "y": 80,
+      "param": 144,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 153,
+      "x": 64,
+      "y": 80,
+      "param": 144,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 53,
+      "x": 136,
+      "y": 56,
+      "param": 160,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CLAMP_ENCORE",
+      "function_id": 22,
+      "object": 53,
+      "x": 136,
+      "y": 56,
+      "param": 160,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 152,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 152,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 168,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BITE",
+      "function_id": 23,
+      "object": 54,
+      "x": 136,
+      "y": 56,
+      "param": 168,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOLAR_BEAM",
+      "function_id": 24,
+      "object": 60,
+      "x": 48,
+      "y": 84,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GUST",
+      "function_id": 25,
+      "object": 62,
+      "x": 132,
+      "y": 72,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GUST",
+      "function_id": 25,
+      "object": 62,
+      "x": 132,
+      "y": 72,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_WIND",
+      "function_id": 26,
+      "object": 66,
+      "x": 152,
+      "y": 40,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_WIND",
+      "function_id": 26,
+      "object": 66,
+      "x": 152,
+      "y": 40,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_WIND",
+      "function_id": 26,
+      "object": 65,
+      "x": 120,
+      "y": 40,
+      "param": 131,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAZOR_WIND",
+      "function_id": 26,
+      "object": 65,
+      "x": 120,
+      "y": 40,
+      "param": 131,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_KICK",
+      "function_id": 27,
+      "object": 7,
+      "x": 136,
+      "y": 40,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_KICK",
+      "function_id": 27,
+      "object": 7,
+      "x": 136,
+      "y": 40,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 128,
+      "y": 48,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 128,
+      "y": 48,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 136,
+      "y": 64,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 136,
+      "y": 64,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 136,
+      "y": 32,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB",
+      "function_id": 28,
+      "object": 69,
+      "x": 136,
+      "y": 32,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 44,
+      "y": 104,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 44,
+      "y": 104,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 44,
+      "y": 104,
+      "param": 6,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 44,
+      "y": 104,
+      "param": 6,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 76,
+      "y": 104,
+      "param": 11,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_EGG",
+      "function_id": 29,
+      "object": 70,
+      "x": 76,
+      "y": 104,
+      "param": 11,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_UP",
+      "function_id": 30,
+      "object": 71,
+      "x": 44,
+      "y": 108,
+      "param": 6,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_UP",
+      "function_id": 30,
+      "object": 71,
+      "x": 44,
+      "y": 108,
+      "param": 6,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_UP",
+      "function_id": 30,
+      "object": 71,
+      "x": 52,
+      "y": 108,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_MOVE_UP",
+      "function_id": 30,
+      "object": 71,
+      "x": 52,
+      "y": 108,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WRAP",
+      "function_id": 31,
+      "object": 72,
+      "x": 132,
+      "y": 64,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_WRAP",
+      "function_id": 31,
+      "object": 72,
+      "x": 132,
+      "y": 64,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LEECH_SEED",
+      "function_id": 32,
+      "object": 74,
+      "x": 48,
+      "y": 80,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 88,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 88,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 100,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SOUND",
+      "function_id": 33,
+      "object": 75,
+      "x": 64,
+      "y": 100,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 128,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 128,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 136,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 136,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 144,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 144,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 152,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 152,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 160,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 160,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 168,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 168,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 176,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 176,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 184,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONFUSE_RAY",
+      "function_id": 34,
+      "object": 77,
+      "x": 64,
+      "y": 88,
+      "param": 184,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 148,
+      "x": 132,
+      "y": 40,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 148,
+      "x": 132,
+      "y": 40,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 21,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 21,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 148,
+      "x": 132,
+      "y": 40,
+      "param": 160,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 148,
+      "x": 132,
+      "y": 40,
+      "param": 160,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 170,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 170,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 191,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIZZY",
+      "function_id": 35,
+      "object": 82,
+      "x": 44,
+      "y": 56,
+      "param": 191,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 72,
+      "y": 80,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 72,
+      "y": 80,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 68,
+      "y": 80,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 68,
+      "y": 80,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 64,
+      "y": 80,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AMNESIA",
+      "function_id": 36,
+      "object": 83,
+      "x": 64,
+      "y": 80,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FLOAT_UP",
+      "function_id": 37,
+      "object": 84,
+      "x": 64,
+      "y": 80,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_FLOAT_UP",
+      "function_id": 37,
+      "object": 84,
+      "x": 64,
+      "y": 80,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIG",
+      "function_id": 38,
+      "object": 86,
+      "x": 56,
+      "y": 104,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_DIG",
+      "function_id": 38,
+      "object": 86,
+      "x": 56,
+      "y": 104,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 64,
+      "y": 80,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 64,
+      "y": 80,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 132,
+      "y": 48,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 132,
+      "y": 48,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 132,
+      "y": 56,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRING",
+      "function_id": 39,
+      "object": 90,
+      "x": 132,
+      "y": 56,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PARALYZED",
+      "function_id": 40,
+      "object": 89,
+      "x": 20,
+      "y": 88,
+      "param": 66,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PARALYZED",
+      "function_id": 40,
+      "object": 89,
+      "x": 20,
+      "y": 88,
+      "param": 66,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PARALYZED",
+      "function_id": 40,
+      "object": 89,
+      "x": 76,
+      "y": 88,
+      "param": 194,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PARALYZED",
+      "function_id": 40,
+      "object": 89,
+      "x": 76,
+      "y": 88,
+      "param": 194,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIRAL_DESCENT",
+      "function_id": 41,
+      "object": 91,
+      "x": 48,
+      "y": 56,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIRAL_DESCENT",
+      "function_id": 41,
+      "object": 91,
+      "x": 48,
+      "y": 56,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POISON_GAS",
+      "function_id": 42,
+      "object": 94,
+      "x": 44,
+      "y": 80,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_POISON_GAS",
+      "function_id": 42,
+      "object": 94,
+      "x": 44,
+      "y": 80,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 80,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 80,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 72,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 72,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 80,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HORN",
+      "function_id": 43,
+      "object": 95,
+      "x": 72,
+      "y": 80,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 20,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 20,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_NEEDLE",
+      "function_id": 44,
+      "object": 96,
+      "x": 64,
+      "y": 92,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PETAL_DANCE",
+      "function_id": 45,
+      "object": 97,
+      "x": 48,
+      "y": 56,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PETAL_DANCE",
+      "function_id": 45,
+      "object": 97,
+      "x": 48,
+      "y": 56,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THIEF_PAYDAY",
+      "function_id": 46,
+      "object": 99,
+      "x": 120,
+      "y": 76,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_THIEF_PAYDAY",
+      "function_id": 46,
+      "object": 99,
+      "x": 120,
+      "y": 76,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ABSORB_CIRCLE",
+      "function_id": 47,
+      "object": 101,
+      "x": 132,
+      "y": 44,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BONEMERANG",
+      "function_id": 48,
+      "object": 103,
+      "x": 88,
+      "y": 56,
+      "param": 28,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BONEMERANG",
+      "function_id": 48,
+      "object": 103,
+      "x": 88,
+      "y": 56,
+      "param": 28,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SHINY",
+      "function_id": 49,
+      "object": 109,
+      "x": 48,
+      "y": 96,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SKY_ATTACK",
+      "function_id": 50,
+      "object": 110,
+      "x": 48,
+      "y": 88,
+      "param": 64,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SKY_ATTACK",
+      "function_id": 50,
+      "object": 110,
+      "x": 48,
+      "y": 88,
+      "param": 64,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 13,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 13,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 26,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 26,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 39,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 39,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 52,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 118,
+      "x": 48,
+      "y": 108,
+      "param": 52,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_GROWTH_SWORDS_DANCE",
+      "function_id": 51,
+      "object": 114,
+      "x": 48,
+      "y": 108,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SMOKE_FLAME_WHEEL",
+      "function_id": 52,
+      "object": 127,
+      "x": 48,
+      "y": 96,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SMOKE_FLAME_WHEEL",
+      "function_id": 52,
+      "object": 127,
+      "x": 48,
+      "y": 96,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SMOKE_FLAME_WHEEL",
+      "function_id": 52,
+      "object": 116,
+      "x": 132,
+      "y": 60,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SMOKE_FLAME_WHEEL",
+      "function_id": 52,
+      "object": 116,
+      "x": 132,
+      "y": 60,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PRESENT_SMOKESCREEN",
+      "function_id": 53,
+      "object": 117,
+      "x": 64,
+      "y": 92,
+      "param": 108,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PRESENT_SMOKESCREEN",
+      "function_id": 53,
+      "object": 117,
+      "x": 64,
+      "y": 92,
+      "param": 108,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRENGTH_SEISMIC_TOSS",
+      "function_id": 54,
+      "object": 31,
+      "x": 64,
+      "y": 104,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_STRENGTH_SEISMIC_TOSS",
+      "function_id": 54,
+      "object": 31,
+      "x": 64,
+      "y": 104,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 40,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 40,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 32,
+      "y": 88,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 32,
+      "y": 88,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 24,
+      "y": 88,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 24,
+      "y": 88,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 48,
+      "y": 88,
+      "param": 128,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 48,
+      "y": 88,
+      "param": 128,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 56,
+      "y": 88,
+      "param": 129,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 56,
+      "y": 88,
+      "param": 129,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 64,
+      "y": 88,
+      "param": 130,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPEED_LINE",
+      "function_id": 55,
+      "object": 119,
+      "x": 64,
+      "y": 88,
+      "param": 130,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SLUDGE",
+      "function_id": 56,
+      "object": 26,
+      "x": 132,
+      "y": 72,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SLUDGE",
+      "function_id": 56,
+      "object": 26,
+      "x": 132,
+      "y": 72,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_METRONOME_HAND",
+      "function_id": 57,
+      "object": 122,
+      "x": 72,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_METRONOME_HAND",
+      "function_id": 57,
+      "object": 122,
+      "x": 72,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_METRONOME_SPARKLE_SKETCH",
+      "function_id": 58,
+      "object": 123,
+      "x": 72,
+      "y": 80,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_METRONOME_SPARKLE_SKETCH",
+      "function_id": 58,
+      "object": 123,
+      "x": 72,
+      "y": 80,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 48,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 48,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 80,
+      "param": 4,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 80,
+      "param": 4,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 32,
+      "param": 6,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 32,
+      "param": 6,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 88,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 88,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 56,
+      "param": 12,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 56,
+      "param": 12,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 104,
+      "param": 14,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 104,
+      "param": 14,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 24,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_AGILITY",
+      "function_id": 59,
+      "object": 125,
+      "x": 8,
+      "y": 24,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SACRED_FIRE",
+      "function_id": 60,
+      "object": 128,
+      "x": 48,
+      "y": 104,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SACRED_FIRE",
+      "function_id": 60,
+      "object": 128,
+      "x": 48,
+      "y": 104,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 13,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 13,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 26,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 26,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 39,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 39,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 52,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SAFEGUARD_PROTECT",
+      "function_id": 61,
+      "object": 138,
+      "x": 80,
+      "y": 80,
+      "param": 52,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 3,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 3,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 18,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 18,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 49,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_LOCK_ON_MIND_READER",
+      "function_id": 62,
+      "object": 136,
+      "x": 132,
+      "y": 48,
+      "param": 49,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SPIKES",
+      "function_id": 63,
+      "object": 142,
+      "x": 48,
+      "y": 88,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HEAL_BELL_NOTES",
+      "function_id": 64,
+      "object": 133,
+      "x": 72,
+      "y": 52,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BATON_PASS",
+      "function_id": 65,
+      "object": 134,
+      "x": 44,
+      "y": 104,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BATON_PASS",
+      "function_id": 65,
+      "object": 134,
+      "x": 44,
+      "y": 104,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CONVERSION",
+      "function_id": 66,
+      "object": 145,
+      "x": 48,
+      "y": 88,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 154,
+      "x": 64,
+      "y": 72,
+      "param": 44,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 154,
+      "x": 64,
+      "y": 72,
+      "param": 44,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 154,
+      "x": 64,
+      "y": 72,
+      "param": 52,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 154,
+      "x": 64,
+      "y": 72,
+      "param": 52,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 171,
+      "x": 64,
+      "y": 92,
+      "param": 248,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ENCORE_BELLY_DRUM",
+      "function_id": 67,
+      "object": 171,
+      "x": 64,
+      "y": 92,
+      "param": 248,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SWAGGER_MORNING_SUN",
+      "function_id": 68,
+      "object": 169,
+      "x": 72,
+      "y": 88,
+      "param": 68,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SWAGGER_MORNING_SUN",
+      "function_id": 68,
+      "object": 169,
+      "x": 72,
+      "y": 88,
+      "param": 68,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SWAGGER_MORNING_SUN",
+      "function_id": 68,
+      "object": 156,
+      "x": 16,
+      "y": 48,
+      "param": 136,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_SWAGGER_MORNING_SUN",
+      "function_id": 68,
+      "object": 156,
+      "x": 16,
+      "y": 48,
+      "param": 136,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_HIDDEN_POWER",
+      "function_id": 69,
+      "object": 159,
+      "x": 44,
+      "y": 88,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CURSE",
+      "function_id": 70,
+      "object": 165,
+      "x": 68,
+      "y": 72,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_CURSE",
+      "function_id": 70,
+      "object": 165,
+      "x": 68,
+      "y": 72,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 8,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 8,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 24,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 24,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 56,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PERISH_SONG",
+      "function_id": 71,
+      "object": 166,
+      "x": 88,
+      "y": 0,
+      "param": 56,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAPID_SPIN",
+      "function_id": 72,
+      "object": 168,
+      "x": 44,
+      "y": 112,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAPID_SPIN",
+      "function_id": 72,
+      "object": 168,
+      "x": 44,
+      "y": 112,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BETA_PURSUIT",
+      "function_id": 73,
+      "object": 173,
+      "x": 132,
+      "y": 64,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BETA_PURSUIT",
+      "function_id": 73,
+      "object": 173,
+      "x": 132,
+      "y": 64,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BETA_PURSUIT",
+      "function_id": 73,
+      "object": 173,
+      "x": 132,
+      "y": 64,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BETA_PURSUIT",
+      "function_id": 73,
+      "object": 173,
+      "x": 132,
+      "y": 64,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 88,
+      "y": 0,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 88,
+      "y": 0,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 72,
+      "y": 0,
+      "param": 1,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 72,
+      "y": 0,
+      "param": 1,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 56,
+      "y": 0,
+      "param": 2,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_RAIN_SANDSTORM",
+      "function_id": 74,
+      "object": 162,
+      "x": 56,
+      "y": 0,
+      "param": 2,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BATTLE_ANIM_OBJ_B0",
+      "function_id": 75,
+      "object": 176,
+      "x": 128,
+      "y": 48,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_BATTLE_ANIM_OBJ_B0",
+      "function_id": 75,
+      "object": 176,
+      "x": 128,
+      "y": 48,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 0,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 0,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 48,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_PSYCH_UP",
+      "function_id": 76,
+      "object": 177,
+      "x": 44,
+      "y": 88,
+      "param": 48,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ANCIENT_POWER",
+      "function_id": 77,
+      "object": 178,
+      "x": 64,
+      "y": 108,
+      "param": 32,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ANCIENT_POWER",
+      "function_id": 77,
+      "object": 178,
+      "x": 64,
+      "y": 108,
+      "param": 32,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 16,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 16,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 28,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 28,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 40,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 40,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 80,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 80,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 92,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 92,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 144,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 144,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 156,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 156,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 208,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 208,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 220,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 220,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 232,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_ROCK_SMASH",
+      "function_id": 78,
+      "object": 181,
+      "x": 128,
+      "y": 64,
+      "param": 232,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 21,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 21,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 42,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 42,
+      "player": false,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 63,
+      "player": true,
+      "frames": 384
+    },
+    {
+      "function": "BATTLE_ANIM_FUNC_COTTON",
+      "function_id": 79,
+      "object": 183,
+      "x": 136,
+      "y": 40,
+      "param": 63,
+      "player": false,
+      "frames": 384
+    }
+  ]
+}

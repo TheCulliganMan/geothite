@@ -1,0 +1,22 @@
+[package]
+name = "crystal-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[features]
+test-fixtures = []
+
+[dependencies]
+bincode.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+web-time.workspace = true
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+base64 = "0.22"
+web-sys = { version = "0.3", features = ["Storage", "Window"] }

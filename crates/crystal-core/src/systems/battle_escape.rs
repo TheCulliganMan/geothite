@@ -1,0 +1,681 @@
+use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+use crate::battle::stats::{BattleStatMultiplierTables, apply_stage};
+use crate::models::{Pokemon, Stat};
+use crate::random::{BattleRandomSource, CrystalRandom, DividerSource};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct BattleEscapeRules {
+    pub player_speed_multiplier: u16,
+    pub enemy_speed_divisor: u16,
+    pub failed_attempt_bonus: u16,
+    pub rng_roll_values: u16,
+}
+
+impl<'de> Deserialize<'de> for BattleEscapeRules {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct RawBattleEscapeRules {
+            player_speed_multiplier: u16,
+            enemy_speed_divisor: u16,
+            failed_attempt_bonus: u16,
+            rng_roll_values: u16,
+        }
+
+        let raw = RawBattleEscapeRules::deserialize(deserializer)?;
+        let rules = Self {
+            player_speed_multiplier: raw.player_speed_multiplier,
+            enemy_speed_divisor: raw.enemy_speed_divisor,
+            failed_attempt_bonus: raw.failed_attempt_bonus,
+            rng_roll_values: raw.rng_roll_values,
+        };
+        rules.validate_shape().map_err(D::Error::custom)?;
+        Ok(rules)
+    }
+}
+
+impl Default for BattleEscapeRules {
+    fn default() -> Self {
+        Self {
+            player_speed_multiplier: 0,
+            enemy_speed_divisor: 0,
+            failed_attempt_bonus: 0,
+            rng_roll_values: 0,
+        }
+    }
+}
+
+impl BattleEscapeRules {
+    fn validate_shape(&self) -> Result<(), String> {
+        if let Some(issue) = battle_escape_rules_issues(self, true).into_iter().next() {
+            return Err(format!("invalid battle escape rules: {issue:?}"));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum BattleEscapeRulesIssue {
+    Missing,
+    MissingPlayerSpeedMultiplier,
+    MissingEnemySpeedDivisor,
+    InvalidRngRollValues { rng_roll_values: u16 },
+}
+
+pub fn battle_escape_rules_issues(
+    rules: &BattleEscapeRules,
+    required: bool,
+) -> Vec<BattleEscapeRulesIssue> {
+    if !required {
+        return Vec::new();
+    }
+    if rules == &BattleEscapeRules::default() {
+        return vec![BattleEscapeRulesIssue::Missing];
+    }
+
+    let mut issues = Vec::new();
+    if rules.player_speed_multiplier == 0 {
+        issues.push(BattleEscapeRulesIssue::MissingPlayerSpeedMultiplier);
+    }
+    if rules.enemy_speed_divisor == 0 {
+        issues.push(BattleEscapeRulesIssue::MissingEnemySpeedDivisor);
+    }
+    if rules.rng_roll_values != u16::from(u8::MAX) + 1 {
+        issues.push(BattleEscapeRulesIssue::InvalidRngRollValues {
+            rng_roll_values: rules.rng_roll_values,
+        });
+    }
+    issues
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BattleEscapeAttempt {
+    pub escaped: bool,
+    pub chance: u16,
+    pub roll: Option<u8>,
+    pub attempts_before: u8,
+    pub attempts_after: u8,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ExactBattleEscapeError<E> {
+    Escape(BattleEscapeError),
+    Divider(E),
+}
+
+impl<E: std::fmt::Display> std::fmt::Display for ExactBattleEscapeError<E> {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Escape(error) => write!(formatter, "battle escape: {error:?}"),
+            Self::Divider(error) => write!(formatter, "battle escape divider source: {error}"),
+        }
+    }
+}
+
+impl<E: std::fmt::Debug + std::fmt::Display> std::error::Error for ExactBattleEscapeError<E> {}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum BattleEscapeError {
+    MissingStat { side: EscapeSide, stat: Stat },
+    MissingStatStage { side: EscapeSide, stat: Stat },
+    MissingStatMultiplier { side: EscapeSide, stage: i8 },
+    InvalidRules { message: String },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum EscapeSide {
+    Player,
+    Enemy,
+}
+
+pub fn attempt_wild_battle_escape(
+    player: &Pokemon,
+    enemy: &Pokemon,
+    stat_multipliers: &BattleStatMultiplierTables,
+    rules: &BattleEscapeRules,
+    attempts_before: u8,
+    rng: &mut dyn BattleRandomSource,
+) -> Result<BattleEscapeAttempt, BattleEscapeError> {
+    let player_speed = escape_speed(EscapeSide::Player, player, stat_multipliers)?;
+    let enemy_speed = escape_speed(EscapeSide::Enemy, enemy, stat_multipliers)?;
+    attempt_wild_battle_escape_with_loaded_speeds(
+        player_speed,
+        enemy_speed,
+        rules,
+        attempts_before,
+        rng,
+    )
+}
+
+pub(crate) fn attempt_wild_battle_escape_with_loaded_speeds(
+    player_speed: u16,
+    enemy_speed: u16,
+    rules: &BattleEscapeRules,
+    attempts_before: u8,
+    rng: &mut dyn BattleRandomSource,
+) -> Result<BattleEscapeAttempt, BattleEscapeError> {
+    let chance = escape_chance(player_speed, enemy_speed, attempts_before, rules)?;
+    let attempts_after = attempts_before.wrapping_add(1);
+    if player_speed >= enemy_speed || chance >= rules.rng_roll_values {
+        return Ok(BattleEscapeAttempt {
+            escaped: true,
+            chance,
+            roll: None,
+            attempts_before,
+            attempts_after,
+        });
+    }
+    let roll = rng.battle_random_byte();
+    let escaped = u16::from(roll) <= chance;
+    Ok(BattleEscapeAttempt {
+        escaped,
+        chance,
+        roll: Some(roll),
+        attempts_before,
+        attempts_after,
+    })
+}
+
+pub fn attempt_wild_battle_escape_exact<S>(
+    player: &Pokemon,
+    enemy: &Pokemon,
+    stat_multipliers: &BattleStatMultiplierTables,
+    rules: &BattleEscapeRules,
+    attempts_before: u8,
+    rng: &mut CrystalRandom<&mut S>,
+) -> Result<BattleEscapeAttempt, ExactBattleEscapeError<S::Error>>
+where
+    S: DividerSource + ?Sized,
+{
+    let player_speed = escape_speed(EscapeSide::Player, player, stat_multipliers)
+        .map_err(ExactBattleEscapeError::Escape)?;
+    let enemy_speed = escape_speed(EscapeSide::Enemy, enemy, stat_multipliers)
+        .map_err(ExactBattleEscapeError::Escape)?;
+    attempt_wild_battle_escape_exact_with_loaded_speeds(
+        player_speed,
+        enemy_speed,
+        rules,
+        attempts_before,
+        rng,
+    )
+}
+
+pub fn attempt_wild_battle_escape_exact_with_loaded_speeds<S>(
+    player_speed: u16,
+    enemy_speed: u16,
+    rules: &BattleEscapeRules,
+    attempts_before: u8,
+    rng: &mut CrystalRandom<&mut S>,
+) -> Result<BattleEscapeAttempt, ExactBattleEscapeError<S::Error>>
+where
+    S: DividerSource + ?Sized,
+{
+    let chance = escape_chance(player_speed, enemy_speed, attempts_before, rules)
+        .map_err(ExactBattleEscapeError::Escape)?;
+    let attempts_after = attempts_before.wrapping_add(1);
+    if player_speed >= enemy_speed || chance >= rules.rng_roll_values {
+        return Ok(BattleEscapeAttempt {
+            escaped: true,
+            chance,
+            roll: None,
+            attempts_before,
+            attempts_after,
+        });
+    }
+    let roll = rng
+        .battle_random()
+        .map_err(ExactBattleEscapeError::Divider)?;
+    Ok(BattleEscapeAttempt {
+        escaped: u16::from(roll) <= chance,
+        chance,
+        roll: Some(roll),
+        attempts_before,
+        attempts_after,
+    })
+}
+
+pub fn escape_chance(
+    player_speed: u16,
+    enemy_speed: u16,
+    attempts_before: u8,
+    rules: &BattleEscapeRules,
+) -> Result<u16, BattleEscapeError> {
+    if rules.player_speed_multiplier == 0 {
+        return Err(BattleEscapeError::InvalidRules {
+            message: "player_speed_multiplier must be nonzero".to_string(),
+        });
+    }
+    if rules.enemy_speed_divisor == 0 {
+        return Err(BattleEscapeError::InvalidRules {
+            message: "enemy_speed_divisor must be nonzero".to_string(),
+        });
+    }
+    if rules.rng_roll_values != u16::from(u8::MAX) + 1 {
+        return Err(BattleEscapeError::InvalidRules {
+            message: "rng_roll_values must be exactly 256".to_string(),
+        });
+    }
+    // TryToRunAwayFromBattle uses only the low byte after dividing Speed,
+    // and branches directly to .can_escape when that byte is zero.
+    let enemy_divisor = (enemy_speed / rules.enemy_speed_divisor) as u8;
+    if enemy_divisor == 0 {
+        return Ok(rules.rng_roll_values);
+    }
+    // Only hProduct + 2 and + 3 are copied into the two-byte dividend.
+    let dividend = player_speed.wrapping_mul(rules.player_speed_multiplier);
+    Ok((u32::from(dividend) / u32::from(enemy_divisor))
+        .saturating_add(u32::from(attempts_before) * u32::from(rules.failed_attempt_bonus))
+        .min(u32::from(u16::MAX)) as u16)
+}
+
+fn escape_speed(
+    side: EscapeSide,
+    pokemon: &Pokemon,
+    stat_multipliers: &BattleStatMultiplierTables,
+) -> Result<u16, BattleEscapeError> {
+    let base = pokemon
+        .calculate_stat(Stat::Speed)
+        .ok_or(BattleEscapeError::MissingStat {
+            side,
+            stat: Stat::Speed,
+        })?;
+    let stage =
+        *pokemon
+            .stat_boosts
+            .get(&Stat::Speed)
+            .ok_or(BattleEscapeError::MissingStatStage {
+                side,
+                stat: Stat::Speed,
+            })?;
+    apply_stage(stat_multipliers, base, stage)
+        .ok_or(BattleEscapeError::MissingStatMultiplier { side, stage })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::battle::stats::BattleStatMultiplier;
+    use crate::models::{BaseStats, Dv, PokemonSpecies};
+    use crate::random::Random;
+
+    fn stat_multipliers() -> BattleStatMultiplierTables {
+        BattleStatMultiplierTables {
+            stat: vec![
+                BattleStatMultiplier {
+                    numerator: 25,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 28,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 33,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 40,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 50,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 66,
+                    denominator: 100,
+                },
+                BattleStatMultiplier {
+                    numerator: 1,
+                    denominator: 1,
+                },
+                BattleStatMultiplier {
+                    numerator: 15,
+                    denominator: 10,
+                },
+                BattleStatMultiplier {
+                    numerator: 2,
+                    denominator: 1,
+                },
+                BattleStatMultiplier {
+                    numerator: 25,
+                    denominator: 10,
+                },
+                BattleStatMultiplier {
+                    numerator: 3,
+                    denominator: 1,
+                },
+                BattleStatMultiplier {
+                    numerator: 35,
+                    denominator: 10,
+                },
+                BattleStatMultiplier {
+                    numerator: 4,
+                    denominator: 1,
+                },
+            ],
+            accuracy: vec![],
+        }
+    }
+
+    fn pokemon(id: &str, speed: u16) -> Pokemon {
+        Pokemon::new_for_tests(
+            PokemonSpecies::new_for_tests(id, BaseStats::new(45, 49, 49, speed, 65, 65)),
+            20,
+            Dv::from_non_hp(10, 10, 10, 10),
+        )
+    }
+
+    fn escape_rules() -> BattleEscapeRules {
+        BattleEscapeRules {
+            player_speed_multiplier: 32,
+            enemy_speed_divisor: 4,
+            failed_attempt_bonus: 30,
+            rng_roll_values: 256,
+        }
+    }
+
+    #[test]
+    fn battle_escape_rules_issues_require_definitive_rules_when_pokemon_exist() {
+        assert_eq!(
+            battle_escape_rules_issues(&BattleEscapeRules::default(), true),
+            vec![BattleEscapeRulesIssue::Missing]
+        );
+        assert_eq!(
+            battle_escape_rules_issues(&BattleEscapeRules::default(), false),
+            []
+        );
+
+        let rules = BattleEscapeRules {
+            player_speed_multiplier: 0,
+            enemy_speed_divisor: 0,
+            failed_attempt_bonus: 30,
+            rng_roll_values: 257,
+        };
+        assert_eq!(
+            battle_escape_rules_issues(&rules, true),
+            vec![
+                BattleEscapeRulesIssue::MissingPlayerSpeedMultiplier,
+                BattleEscapeRulesIssue::MissingEnemySpeedDivisor,
+                BattleEscapeRulesIssue::InvalidRngRollValues {
+                    rng_roll_values: 257,
+                },
+            ],
+        );
+    }
+
+    #[test]
+    fn asm_escape_divisor_is_a_byte_and_zero_escapes_without_random() {
+        // TryToRunAwayFromBattle shifts enemy Speed twice, then uses only A.
+        for enemy_speed in [3, 1024, 1027] {
+            let mut divider = crate::random::ReplayDivider::new([]);
+            let mut rng =
+                CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut divider);
+            let result = attempt_wild_battle_escape_exact_with_loaded_speeds(
+                1,
+                enemy_speed,
+                &escape_rules(),
+                0,
+                &mut rng,
+            )
+            .expect("zero divisor escapes before BattleRandom");
+            assert!(result.escaped);
+            assert_eq!(result.roll, None);
+            assert_eq!(divider.consumed(), 0);
+        }
+        assert_eq!(escape_chance(1, 1028, 0, &escape_rules()), Ok(32));
+    }
+
+    #[test]
+    fn asm_escape_dividend_keeps_only_low_two_product_bytes() {
+        assert_eq!(escape_chance(2048, 4092, 0, &escape_rules()), Ok(0));
+        assert_eq!(escape_chance(2049, 4092, 0, &escape_rules()), Ok(0));
+    }
+
+    #[test]
+    fn faster_player_escapes_without_rng_after_attempt_increment() {
+        let player = pokemon("RATTATA", 120);
+        let enemy = pokemon("GEODUDE", 20);
+        let mut rng = Random::new(7);
+
+        let outcome = attempt_wild_battle_escape(
+            &player,
+            &enemy,
+            &stat_multipliers(),
+            &escape_rules(),
+            2,
+            &mut rng,
+        )
+        .expect("escape resolves");
+
+        assert!(outcome.escaped);
+        assert_eq!(outcome.roll, None);
+        assert_eq!(outcome.attempts_before, 2);
+        assert_eq!(outcome.attempts_after, 3);
+        assert_eq!(rng.seed(), 7);
+    }
+
+    #[test]
+    fn equal_speed_player_escapes_without_rng() {
+        let player = pokemon("RATTATA", 60);
+        let enemy = pokemon("PIDGEY", 60);
+        let mut rng = Random::new(7);
+
+        let outcome = attempt_wild_battle_escape(
+            &player,
+            &enemy,
+            &stat_multipliers(),
+            &escape_rules(),
+            0,
+            &mut rng,
+        )
+        .expect("equal-speed escape resolves");
+
+        assert!(outcome.escaped);
+        assert_eq!(outcome.roll, None);
+        assert_eq!(rng.seed(), 7);
+    }
+
+    #[test]
+    fn flee_attempt_counter_wraps_as_the_cartridge_byte_before_a_fast_escape() {
+        let player = pokemon("RATTATA", 120);
+        let enemy = pokemon("GEODUDE", 20);
+        let mut rng = Random::new(7);
+
+        let outcome = attempt_wild_battle_escape(
+            &player,
+            &enemy,
+            &stat_multipliers(),
+            &escape_rules(),
+            u8::MAX,
+            &mut rng,
+        )
+        .expect("fast escape resolves");
+
+        assert!(outcome.escaped);
+        assert_eq!(outcome.roll, None);
+        assert_eq!(outcome.attempts_before, u8::MAX);
+        assert_eq!(outcome.attempts_after, 0);
+        assert_eq!(rng.seed(), 7);
+
+        let mut divider = crate::random::ReplayDivider::new([]);
+        let mut exact_rng =
+            CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut divider);
+        let exact = attempt_wild_battle_escape_exact(
+            &player,
+            &enemy,
+            &stat_multipliers(),
+            &escape_rules(),
+            u8::MAX,
+            &mut exact_rng,
+        )
+        .expect("exact fast escape resolves");
+        assert_eq!(exact.attempts_after, 0);
+        assert_eq!(divider.consumed(), 0);
+    }
+
+    #[test]
+    fn slower_player_uses_rng_and_increments_only_on_failure() {
+        let player = pokemon("GEODUDE", 20);
+        let enemy = pokemon("RATTATA", 120);
+        let mut rng = Random::new(1);
+
+        let outcome = attempt_wild_battle_escape(
+            &player,
+            &enemy,
+            &stat_multipliers(),
+            &escape_rules(),
+            0,
+            &mut rng,
+        )
+        .expect("escape resolves");
+
+        assert_eq!(outcome.chance, 38);
+        assert_eq!(outcome.roll, Some(64));
+        assert!(!outcome.escaped);
+        assert_eq!(outcome.attempts_after, 1);
+    }
+
+    #[test]
+    fn exact_escape_uses_battle_random_and_zero_read_speed_shortcut() {
+        let slow = pokemon("GEODUDE", 20);
+        let fast = pokemon("RATTATA", 120);
+        let mut divider = crate::random::ReplayDivider::new([0, 0]);
+        let mut rng =
+            CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut divider);
+        let outcome = attempt_wild_battle_escape_exact(
+            &slow,
+            &fast,
+            &stat_multipliers(),
+            &escape_rules(),
+            0,
+            &mut rng,
+        )
+        .expect("exact escape roll");
+        assert!(outcome.roll.is_some());
+        assert_eq!(divider.consumed(), 2);
+
+        let mut empty = crate::random::ReplayDivider::new([]);
+        let mut rng = CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut empty);
+        let guaranteed = attempt_wild_battle_escape_exact(
+            &fast,
+            &slow,
+            &stat_multipliers(),
+            &escape_rules(),
+            0,
+            &mut rng,
+        )
+        .expect("faster player consumes no DIV");
+        assert!(guaranteed.escaped);
+        assert_eq!(guaranteed.roll, None);
+        assert_eq!(empty.consumed(), 0);
+
+        let mut short = crate::random::ReplayDivider::new([0]);
+        let mut rng = CrystalRandom::new(crate::random::CrystalRandomState::default(), &mut short);
+        assert!(matches!(
+            attempt_wild_battle_escape_exact(
+                &slow,
+                &fast,
+                &stat_multipliers(),
+                &escape_rules(),
+                0,
+                &mut rng,
+            ),
+            Err(ExactBattleEscapeError::Divider(_))
+        ));
+    }
+
+    #[test]
+    fn escape_requires_exact_speed_stage_data() {
+        let mut player = pokemon("GEODUDE", 20);
+        player.stat_boosts.remove(&Stat::Speed);
+        let enemy = pokemon("RATTATA", 120);
+        let mut rng = Random::new(1);
+
+        assert_eq!(
+            attempt_wild_battle_escape(
+                &player,
+                &enemy,
+                &stat_multipliers(),
+                &escape_rules(),
+                0,
+                &mut rng
+            ),
+            Err(BattleEscapeError::MissingStatStage {
+                side: EscapeSide::Player,
+                stat: Stat::Speed
+            })
+        );
+    }
+
+    #[test]
+    fn escape_rejects_missing_rule_divisor_without_formula_fallback() {
+        let player = pokemon("GEODUDE", 20);
+        let enemy = pokemon("RATTATA", 120);
+        let mut rng = Random::new(1);
+        let mut rules = escape_rules();
+        rules.enemy_speed_divisor = 0;
+
+        assert_eq!(
+            attempt_wild_battle_escape(&player, &enemy, &stat_multipliers(), &rules, 0, &mut rng),
+            Err(BattleEscapeError::InvalidRules {
+                message: "enemy_speed_divisor must be nonzero".to_string()
+            })
+        );
+    }
+
+    #[test]
+    fn escape_rejects_missing_player_speed_multiplier_without_zero_chance_fallback() {
+        let player = pokemon("GEODUDE", 20);
+        let enemy = pokemon("RATTATA", 120);
+        let mut rng = Random::new(1);
+        let mut rules = escape_rules();
+        rules.player_speed_multiplier = 0;
+
+        assert_eq!(
+            attempt_wild_battle_escape(&player, &enemy, &stat_multipliers(), &rules, 0, &mut rng),
+            Err(BattleEscapeError::InvalidRules {
+                message: "player_speed_multiplier must be nonzero".to_string()
+            })
+        );
+    }
+
+    #[test]
+    fn battle_escape_serialized_variants_reject_unknown_fallback_fields() {
+        let issue_error = serde_json::from_value::<BattleEscapeRulesIssue>(serde_json::json!({
+            "InvalidRngRollValues": {
+                "rng_roll_values": 0,
+                "default_rng_roll_values": 256
+            }
+        }))
+        .expect_err("default rng roll values must be rejected")
+        .to_string();
+        assert!(
+            issue_error.contains("unknown field `default_rng_roll_values`"),
+            "{issue_error}"
+        );
+
+        let escape_error = serde_json::from_value::<BattleEscapeError>(serde_json::json!({
+            "MissingStat": {
+                "side": "player",
+                "stat": "Speed",
+                "fallback_stat": "Speed"
+            }
+        }))
+        .expect_err("fallback stat must be rejected")
+        .to_string();
+        assert!(
+            escape_error.contains("unknown field `fallback_stat`"),
+            "{escape_error}"
+        );
+    }
+}

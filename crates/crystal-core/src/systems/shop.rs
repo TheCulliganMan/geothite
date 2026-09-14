@@ -1,0 +1,1653 @@
+use std::collections::BTreeMap;
+
+use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+use thiserror::Error;
+
+use crate::models::{Item, MAX_ITEM_STACK};
+use crate::state::{GameState, ScriptShopRequest, ScriptShopRuntimeEvent};
+use crate::systems::economy::CurrencyCatalog;
+
+const PRICE_DIGITS: usize = 6;
+pub const CANCEL_ITEM_ID: &str = "CANCEL";
+pub const SCRIPT_SHOP_COMMANDS: &[&str] = &["pokemart"];
+pub const SCRIPT_SHOP_STANDARD_MART_TYPES: &[&str] =
+    &["MARTTYPE_STANDARD", "MARTTYPE_PHARMACY", "MARTTYPE_BITTER"];
+pub const SCRIPT_SHOP_ZERO_MART_TYPES: &[&str] = &["MARTTYPE_BARGAIN", "MARTTYPE_ROOFTOP"];
+
+pub fn is_known_script_shop_command(command: &str) -> bool {
+    SCRIPT_SHOP_COMMANDS.contains(&command)
+}
+
+pub fn is_known_script_mart_type(mart_type: &str) -> bool {
+    SCRIPT_SHOP_STANDARD_MART_TYPES.contains(&mart_type)
+        || SCRIPT_SHOP_ZERO_MART_TYPES.contains(&mart_type)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ScriptShopCommand {
+    #[serde(deserialize_with = "required_script_shop_command_token")]
+    pub command: String,
+    #[serde(deserialize_with = "required_script_shop_token")]
+    pub mart_type: String,
+    #[serde(deserialize_with = "required_script_shop_token")]
+    pub mart_id: String,
+    #[serde(deserialize_with = "required_script_shop_label_token")]
+    pub source_script: String,
+    pub command_index: usize,
+}
+
+impl<'de> Deserialize<'de> for ScriptShopCommand {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct RawScriptShopCommand {
+            #[serde(deserialize_with = "required_script_shop_command_token")]
+            command: String,
+            #[serde(deserialize_with = "required_script_shop_token")]
+            mart_type: String,
+            #[serde(deserialize_with = "required_script_shop_token")]
+            mart_id: String,
+            #[serde(deserialize_with = "required_script_shop_label_token")]
+            source_script: String,
+            command_index: usize,
+        }
+
+        let raw = RawScriptShopCommand::deserialize(deserializer)?;
+        let command = Self {
+            command: raw.command,
+            mart_type: raw.mart_type,
+            mart_id: raw.mart_id,
+            source_script: raw.source_script,
+            command_index: raw.command_index,
+        };
+        validate_script_shop_command_shape(&command).map_err(D::Error::custom)?;
+        Ok(command)
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+pub struct MartCatalog(pub BTreeMap<String, Vec<String>>);
+
+impl<'de> Deserialize<'de> for MartCatalog {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let values = BTreeMap::<String, Vec<String>>::deserialize(deserializer)?;
+        for (mart_id, item_ids) in &values {
+            if !is_exact_shop_token(mart_id) {
+                return Err(serde::de::Error::custom(format!(
+                    "mart catalog entry id '{mart_id}' must be exact ASCII alphanumeric or underscore"
+                )));
+            }
+            for item_id in item_ids {
+                if !is_exact_shop_token(item_id) {
+                    return Err(serde::de::Error::custom(format!(
+                        "mart item id '{item_id}' must be exact ASCII alphanumeric or underscore"
+                    )));
+                }
+            }
+        }
+        Ok(Self(values))
+    }
+}
+
+impl MartCatalog {
+    pub fn inventory_ids(&self, mart_id: &str) -> Result<&[String], ShopError> {
+        self.0
+            .get(mart_id)
+            .map(Vec::as_slice)
+            .ok_or_else(|| ShopError::UnknownMart {
+                mart_id: mart_id.to_string(),
+            })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MartCatalogIssue {
+    EmptyMartId { mart_id: String },
+    InvalidMartId { mart_id: String },
+    InvalidItem { mart_id: String, item_id: String },
+    UnknownItem { mart_id: String, item_id: String },
+}
+
+pub fn mart_catalog_issues(
+    catalog: &MartCatalog,
+    items: &BTreeMap<String, Item>,
+) -> Vec<MartCatalogIssue> {
+    let mut issues = Vec::new();
+    for (mart_id, item_ids) in &catalog.0 {
+        if mart_id.trim().is_empty() {
+            issues.push(MartCatalogIssue::EmptyMartId {
+                mart_id: mart_id.clone(),
+            });
+        } else if !is_exact_shop_token(mart_id) {
+            issues.push(MartCatalogIssue::InvalidMartId {
+                mart_id: mart_id.clone(),
+            });
+        }
+        for item_id in item_ids {
+            if !is_exact_shop_token(item_id) {
+                issues.push(MartCatalogIssue::InvalidItem {
+                    mart_id: mart_id.clone(),
+                    item_id: item_id.clone(),
+                });
+            } else if !items.contains_key(item_id) {
+                issues.push(MartCatalogIssue::UnknownItem {
+                    mart_id: mart_id.clone(),
+                    item_id: item_id.clone(),
+                });
+            }
+        }
+    }
+    issues
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MartItem {
+    pub identifier: String,
+    pub display_name: String,
+    pub price: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ShopResult {
+    pub success: bool,
+    pub message: String,
+    pub credited: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ScriptShopOutcome {
+    pub mart_type: String,
+    pub mart_id: String,
+    pub inventory: Vec<String>,
+    pub source_script: String,
+    pub command_index: usize,
+}
+
+#[derive(Debug, Error, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum ShopError {
+    #[error("mart '{mart_id}' was not loaded")]
+    UnknownMart { mart_id: String },
+    #[error("mart '{mart_id}' references missing item '{item_id}'")]
+    UnknownMartItem { mart_id: String, item_id: String },
+    #[error("item '{item_id}' was not loaded")]
+    UnknownItem { item_id: String },
+    #[error("cannot buy item without an active script shop")]
+    MissingActiveScriptShop,
+    #[error("cannot sell item without an active script shop")]
+    MissingActiveSellShop,
+    #[error("active script shop {mart_id} does not sell exact item id {item_id}")]
+    ItemNotSoldByActiveScriptShop { mart_id: String, item_id: String },
+    #[error("invalid item id '{item_id}'")]
+    InvalidItemId { item_id: String },
+    #[error("quantity must be positive")]
+    InvalidQuantity,
+    #[error("invalid script shop command '{command}'")]
+    InvalidCommand { command: String },
+    #[error("unknown script shop command '{command}'")]
+    UnknownCommand { command: String },
+    #[error("shop quantity {quantity} exceeds runtime quantity limit")]
+    QuantityTooLarge { quantity: u32 },
+    #[error("unknown script mart type '{mart_type}'")]
+    UnknownMartType { mart_type: String },
+    #[error("invalid script mart type '{mart_type}'")]
+    InvalidMartType { mart_type: String },
+    #[error("invalid mart id '{mart_id}'")]
+    InvalidMartId { mart_id: String },
+    #[error("invalid script shop source script '{source_script}'")]
+    InvalidSourceScript { source_script: String },
+    #[error("mart type '{mart_type}' cannot use explicit mart id 0")]
+    InvalidZeroMart { mart_type: String },
+    #[error("shop money mutation requires currency constant '{constant}'")]
+    MissingCurrencyLimit { constant: String },
+    #[error("{message}")]
+    Bag { message: String },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ScriptShopCommandIssue {
+    pub source_script: String,
+    pub command_index: usize,
+    pub error: ShopError,
+}
+
+pub fn script_shop_command_issues(
+    catalog: &MartCatalog,
+    commands: &[ScriptShopCommand],
+) -> Vec<ScriptShopCommandIssue> {
+    commands
+        .iter()
+        .filter_map(
+            |command| match validate_script_shop_command(catalog, command) {
+                Err(
+                    error @ (ShopError::InvalidMartType { .. }
+                    | ShopError::InvalidCommand { .. }
+                    | ShopError::UnknownCommand { .. }
+                    | ShopError::UnknownMartType { .. }
+                    | ShopError::InvalidMartId { .. }
+                    | ShopError::InvalidSourceScript { .. }
+                    | ShopError::InvalidZeroMart { .. }
+                    | ShopError::UnknownMart { .. }),
+                ) => Some(ScriptShopCommandIssue {
+                    source_script: command.source_script.clone(),
+                    command_index: command.command_index,
+                    error,
+                }),
+                _ => None,
+            },
+        )
+        .collect()
+}
+
+fn validate_script_shop_command_shape(command: &ScriptShopCommand) -> Result<(), String> {
+    validate_script_shop_command_token(&command.command).map_err(|error| error.to_string())?;
+    validate_script_shop_source_script(&command.source_script)
+        .map_err(|error| error.to_string())?;
+    validate_script_mart_type(&command.mart_type).map_err(|error| error.to_string())?;
+    if command.mart_id == "0" {
+        validate_zero_mart(&command.mart_type).map_err(|error| error.to_string())?;
+    }
+    Ok(())
+}
+
+pub fn apply_script_shop_command(
+    state: &mut GameState,
+    catalog: &MartCatalog,
+    items: &BTreeMap<String, Item>,
+    command: ScriptShopCommand,
+) -> Result<ScriptShopOutcome, ShopError> {
+    validate_script_shop_command(catalog, &command)?;
+    let inventory = if command.mart_id == "0" {
+        validate_zero_mart(&command.mart_type)?;
+        Vec::new()
+    } else {
+        load_inventory(catalog, items, &command.mart_id)?
+            .into_iter()
+            .map(|item| item.identifier)
+            .collect()
+    };
+    state.script_runtime.pending_shop = Some(ScriptShopRequest {
+        mart_type: command.mart_type.clone(),
+        mart_id: command.mart_id.clone(),
+        inventory: inventory.clone(),
+        source_script: command.source_script.clone(),
+        command_index: command.command_index,
+    });
+    state
+        .script_runtime
+        .shop_events
+        .push(ScriptShopRuntimeEvent {
+            mart_type: command.mart_type.clone(),
+            mart_id: command.mart_id.clone(),
+            inventory: inventory.clone(),
+            source_script: command.source_script.clone(),
+            command_index: command.command_index,
+        });
+    Ok(ScriptShopOutcome {
+        mart_type: command.mart_type,
+        mart_id: command.mart_id,
+        inventory,
+        source_script: command.source_script,
+        command_index: command.command_index,
+    })
+}
+
+pub fn validate_script_shop_command(
+    catalog: &MartCatalog,
+    command: &ScriptShopCommand,
+) -> Result<(), ShopError> {
+    validate_script_shop_command_token(&command.command)?;
+    validate_script_shop_source_script(&command.source_script)?;
+    validate_script_mart_type(&command.mart_type)?;
+    if command.mart_id == "0" {
+        validate_zero_mart(&command.mart_type)
+    } else if !is_exact_shop_token(&command.mart_id) {
+        Err(ShopError::InvalidMartId {
+            mart_id: command.mart_id.clone(),
+        })
+    } else {
+        catalog.inventory_ids(&command.mart_id).map(|_| ())
+    }
+}
+
+pub fn format_price(value: u32) -> String {
+    format!("¥{:0>width$}", value, width = PRICE_DIGITS)
+}
+
+fn validate_script_mart_type(mart_type: &str) -> Result<(), ShopError> {
+    if !is_exact_shop_token(mart_type) {
+        Err(ShopError::InvalidMartType {
+            mart_type: mart_type.to_string(),
+        })
+    } else if is_known_script_mart_type(mart_type) {
+        Ok(())
+    } else {
+        Err(ShopError::UnknownMartType {
+            mart_type: mart_type.to_string(),
+        })
+    }
+}
+
+fn validate_script_shop_command_token(command: &str) -> Result<(), ShopError> {
+    if !is_exact_script_shop_command_token(command) {
+        Err(ShopError::InvalidCommand {
+            command: command.to_string(),
+        })
+    } else if is_known_script_shop_command(command) {
+        Ok(())
+    } else {
+        Err(ShopError::UnknownCommand {
+            command: command.to_string(),
+        })
+    }
+}
+
+fn is_exact_script_shop_command_token(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value.bytes().all(|byte| byte.is_ascii_lowercase())
+}
+
+fn is_exact_shop_token(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+}
+
+fn is_exact_script_shop_label_token(value: &str) -> bool {
+    !value.is_empty()
+        && value.trim() == value
+        && !has_reserved_pack_prefix(value)
+        && value.bytes().all(|byte| byte.is_ascii_graphic())
+}
+
+fn validate_script_shop_source_script(source_script: &str) -> Result<(), ShopError> {
+    if is_exact_script_shop_label_token(source_script) {
+        Ok(())
+    } else {
+        Err(ShopError::InvalidSourceScript {
+            source_script: source_script.to_string(),
+        })
+    }
+}
+
+fn required_script_shop_command_token<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = String::deserialize(deserializer)?;
+    validate_script_shop_command_token(&value).map_err(serde::de::Error::custom)?;
+    Ok(value)
+}
+
+fn required_script_shop_token<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = String::deserialize(deserializer)?;
+    if is_exact_shop_token(&value) {
+        Ok(value)
+    } else {
+        Err(serde::de::Error::custom(format!(
+            "script shop token must be exact ASCII alphanumeric/underscore, found {value:?}"
+        )))
+    }
+}
+
+fn required_script_shop_label_token<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = String::deserialize(deserializer)?;
+    validate_script_shop_source_script(&value).map_err(serde::de::Error::custom)?;
+    Ok(value)
+}
+
+fn has_reserved_pack_prefix(value: &str) -> bool {
+    let value = value.to_ascii_lowercase();
+    value.starts_with("fallback") || value.starts_with("legacy")
+}
+
+fn validate_zero_mart(mart_type: &str) -> Result<(), ShopError> {
+    if SCRIPT_SHOP_ZERO_MART_TYPES.contains(&mart_type) {
+        Ok(())
+    } else {
+        Err(ShopError::InvalidZeroMart {
+            mart_type: mart_type.to_string(),
+        })
+    }
+}
+
+pub fn load_inventory(
+    catalog: &MartCatalog,
+    items: &BTreeMap<String, Item>,
+    mart_id: &str,
+) -> Result<Vec<MartItem>, ShopError> {
+    let mut inventory = Vec::new();
+    for item_id in catalog.inventory_ids(mart_id)? {
+        let item = items
+            .get(item_id)
+            .ok_or_else(|| ShopError::UnknownMartItem {
+                mart_id: mart_id.to_string(),
+                item_id: item_id.clone(),
+            })?;
+        inventory.push(MartItem {
+            identifier: item.script_name.clone(),
+            display_name: item.name.clone(),
+            price: u32::from(item.price),
+        });
+    }
+    Ok(inventory)
+}
+
+pub fn build_buy_menu(
+    catalog: &MartCatalog,
+    items: &BTreeMap<String, Item>,
+    mart_id: &str,
+) -> Result<Vec<MartItem>, ShopError> {
+    let mut inventory = load_inventory(catalog, items, mart_id)?;
+    inventory.push(MartItem {
+        identifier: CANCEL_ITEM_ID.to_string(),
+        display_name: CANCEL_ITEM_ID.to_string(),
+        price: 0,
+    });
+    Ok(inventory)
+}
+
+pub fn require_active_shop_item(state: &GameState, item_id: &str) -> Result<(), ShopError> {
+    validate_shop_item_id(item_id)?;
+    let shop = state
+        .script_runtime
+        .pending_shop
+        .as_ref()
+        .ok_or(ShopError::MissingActiveScriptShop)?;
+    if shop.inventory.iter().any(|id| id == item_id) {
+        Ok(())
+    } else {
+        Err(ShopError::ItemNotSoldByActiveScriptShop {
+            mart_id: shop.mart_id.clone(),
+            item_id: item_id.to_string(),
+        })
+    }
+}
+
+pub fn close_active_shop(state: &mut GameState) -> Result<ScriptShopRequest, ShopError> {
+    state
+        .script_runtime
+        .pending_shop
+        .take()
+        .ok_or(ShopError::MissingActiveScriptShop)
+}
+
+pub fn max_buy_quantity(state: &GameState, item: &Item) -> u16 {
+    if item.price == 0 {
+        return 0;
+    }
+    let affordable = state.money / u32::from(item.price);
+    let maximum = affordable.min(u32::from(MAX_ITEM_STACK)) as u16;
+    (1..=maximum)
+        .rev()
+        .find(|quantity| {
+            let mut bag = state.bag.clone();
+            bag.add_item(item, *quantity).is_ok_and(|added| added)
+        })
+        .unwrap_or(0)
+}
+
+pub fn buy_active_shop_item(
+    state: &mut GameState,
+    items: &BTreeMap<String, Item>,
+    item_id: &str,
+    quantity: u16,
+) -> Result<ShopResult, ShopError> {
+    require_active_shop_item(state, item_id)?;
+    buy_item(state, items, item_id, quantity)
+}
+
+pub fn buy_item(
+    state: &mut GameState,
+    items: &BTreeMap<String, Item>,
+    item_id: &str,
+    quantity: u16,
+) -> Result<ShopResult, ShopError> {
+    if quantity == 0 {
+        return Err(ShopError::InvalidQuantity);
+    }
+    validate_shop_item_id(item_id)?;
+    let item = items.get(item_id).ok_or_else(|| ShopError::UnknownItem {
+        item_id: item_id.to_string(),
+    })?;
+    let total_cost = u32::from(item.price) * u32::from(quantity);
+    if total_cost > state.money {
+        return Ok(ShopResult {
+            success: false,
+            message: "You don't have enough money.".to_string(),
+            credited: 0,
+        });
+    }
+    let added = state
+        .bag
+        .add_item(item, quantity)
+        .map_err(|message| ShopError::Bag { message })?;
+    if !added {
+        return Ok(ShopResult {
+            success: false,
+            message: "Your Pack is full.".to_string(),
+            credited: 0,
+        });
+    }
+    state.money -= total_cost;
+    Ok(ShopResult {
+        success: true,
+        message: format_price(total_cost),
+        credited: total_cost,
+    })
+}
+
+pub fn sell_active_shop_item(
+    state: &mut GameState,
+    items: &BTreeMap<String, Item>,
+    currency_constants: &CurrencyCatalog,
+    item_id: &str,
+    quantity: u16,
+) -> Result<ShopResult, ShopError> {
+    validate_shop_item_id(item_id)?;
+    if state.script_runtime.pending_shop.is_none() {
+        return Err(ShopError::MissingActiveSellShop);
+    }
+    sell_item(state, items, currency_constants, item_id, quantity)
+}
+
+pub fn sell_item(
+    state: &mut GameState,
+    items: &BTreeMap<String, Item>,
+    currency_constants: &CurrencyCatalog,
+    item_id: &str,
+    quantity: u16,
+) -> Result<ShopResult, ShopError> {
+    if quantity == 0 {
+        return Err(ShopError::InvalidQuantity);
+    }
+    validate_shop_item_id(item_id)?;
+    let item = items.get(item_id).ok_or_else(|| ShopError::UnknownItem {
+        item_id: item_id.to_string(),
+    })?;
+    let sell_price = u32::from(item.price / 2);
+    if sell_price == 0 {
+        return Ok(ShopResult {
+            success: false,
+            message: "We can't offer anything for that item.".to_string(),
+            credited: 0,
+        });
+    }
+    if state.bag.quantity(item) < quantity {
+        return Ok(ShopResult {
+            success: false,
+            message: "Looks like you don't have that many.".to_string(),
+            credited: 0,
+        });
+    }
+    let max_money = shop_money_cap(currency_constants)?;
+    let removed = state
+        .bag
+        .remove_item(item, quantity)
+        .map_err(|message| ShopError::Bag { message })?;
+    if !removed {
+        return Ok(ShopResult {
+            success: false,
+            message: "Looks like you don't have that many.".to_string(),
+            credited: 0,
+        });
+    }
+
+    // DisplaySellingPrice calls BuySell_MultiplyPrice before Sell_HalvePrice.
+    let payout = u32::from(item.price) * u32::from(quantity) / 2;
+    let starting_money = state.money;
+    state.money = state.money.saturating_add(payout).min(max_money);
+    Ok(ShopResult {
+        success: true,
+        message: format_price(payout),
+        credited: state.money - starting_money,
+    })
+}
+
+fn validate_shop_item_id(item_id: &str) -> Result<(), ShopError> {
+    if is_exact_shop_token(item_id) {
+        Ok(())
+    } else {
+        Err(ShopError::InvalidItemId {
+            item_id: item_id.to_string(),
+        })
+    }
+}
+
+fn shop_money_cap(currency_constants: &CurrencyCatalog) -> Result<u32, ShopError> {
+    currency_constants
+        .get("MAX_MONEY")
+        .ok_or_else(|| ShopError::MissingCurrencyLimit {
+            constant: "MAX_MONEY".to_string(),
+        })
+}
+
+pub fn paginate_selection(
+    selection: usize,
+    scroll: usize,
+    total_items: usize,
+    direction: SelectionDirection,
+) -> (usize, usize) {
+    const MART_MENU_PAGE_SIZE: usize = 4;
+    if total_items == 0 {
+        return (0, 0);
+    }
+    let selection = match direction {
+        SelectionDirection::Up => selection.saturating_sub(1),
+        SelectionDirection::Down => (selection + 1).min(total_items - 1),
+    };
+    let scroll = if selection < scroll {
+        selection
+    } else if selection >= scroll + MART_MENU_PAGE_SIZE {
+        selection - MART_MENU_PAGE_SIZE + 1
+    } else {
+        scroll
+    };
+    (selection, scroll)
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum SelectionDirection {
+    Up,
+    Down,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::{ITEM_POCKET_CAPACITY, ItemPocket, item_pocket};
+
+    fn item(id: &str, price: u16, pocket: ItemPocket) -> Item {
+        Item {
+            name: id.replace('_', " "),
+            description: String::new(),
+            effect: "NONE".to_string(),
+            status_heals: Vec::new(),
+            revive_hp_percent: None,
+            party_revive_hp_percent: None,
+            pp_restore_scope: None,
+            pp_restore_points: None,
+            pp_up_stages: None,
+            vitamin_stat: None,
+            vitamin_stat_exp: None,
+            vitamin_max_stat_exp: None,
+            rare_candy_level_gain: None,
+            battle_stat_boost_stat: None,
+            battle_stat_boost_stages: None,
+            battle_escape_mode: None,
+            battle_capture_ball: None,
+            battle_focus_energy: None,
+            battle_stat_drop_guard: None,
+            confusion_heal: None,
+            repel_steps: None,
+            escape_rope_mode: None,
+            price,
+            held_effect: "HELD_NONE".to_string(),
+            parameter: 0,
+            property: String::new(),
+            pocket,
+            field_menu: String::new(),
+            field_usable: true,
+            battle_menu: String::new(),
+            battle_usable: true,
+            script_name: id.to_string(),
+            consumable: false,
+            tmhm_index: None,
+            tmhm_move: None,
+        }
+    }
+
+    fn items() -> BTreeMap<String, Item> {
+        [
+            (
+                "POKE_BALL".to_string(),
+                item("POKE_BALL", 200, item_pocket("BALL")),
+            ),
+            (
+                "POTION".to_string(),
+                item("POTION", 300, item_pocket("ITEM")),
+            ),
+            (
+                "RARE_CANDY".to_string(),
+                item("RARE_CANDY", 1000, item_pocket("ITEM")),
+            ),
+        ]
+        .into_iter()
+        .collect()
+    }
+
+    fn shop_command(mart_type: &str, mart_id: &str) -> ScriptShopCommand {
+        ScriptShopCommand {
+            command: "pokemart".to_string(),
+            mart_type: mart_type.to_string(),
+            mart_id: mart_id.to_string(),
+            source_script: "ShopScript".to_string(),
+            command_index: 11,
+        }
+    }
+
+    fn shop_command_with_command(
+        command: &str,
+        mart_type: &str,
+        mart_id: &str,
+    ) -> ScriptShopCommand {
+        ScriptShopCommand {
+            command: command.to_string(),
+            mart_type: mart_type.to_string(),
+            mart_id: mart_id.to_string(),
+            source_script: "ShopScript".to_string(),
+            command_index: 11,
+        }
+    }
+
+    fn currency_constants(max_money: u32) -> CurrencyCatalog {
+        CurrencyCatalog([("MAX_MONEY".to_string(), max_money)].into_iter().collect())
+    }
+
+    #[test]
+    fn shop_command_json_rejects_unknown_fallback_fields() {
+        let error = serde_json::from_value::<ScriptShopCommand>(serde_json::json!({
+            "command": "pokemart",
+            "mart_type": "MARTTYPE_STANDARD",
+            "mart_id": "MART_CHERRYGROVE",
+            "source_script": "ShopScript",
+            "command_index": 11,
+            "legacy_mart_id": "MART_OLD"
+        }))
+        .expect_err("shop commands must not accept legacy mart ids")
+        .to_string();
+        assert!(error.contains("unknown field `legacy_mart_id`"), "{error}");
+    }
+
+    #[test]
+    fn mart_catalog_issues_reject_empty_ids_invalid_items_and_unknown_exact_items_without_pocket_enums()
+     {
+        let catalog = MartCatalog(
+            [
+                ("".to_string(), vec!["POTION".to_string()]),
+                (" CHERRYGROVE_MART".to_string(), vec!["POTION".to_string()]),
+                ("CHERRYGROVE MART".to_string(), vec!["POTION".to_string()]),
+                (
+                    "CHERRYGROVE_MART".to_string(),
+                    vec![
+                        "POTION".to_string(),
+                        "RARE CANDY".to_string(),
+                        "potion".to_string(),
+                        "BATTLE_PASS".to_string(),
+                    ],
+                ),
+            ]
+            .into_iter()
+            .collect(),
+        );
+        let mut items = items();
+        items.insert(
+            "BATTLE_PASS".to_string(),
+            item("BATTLE_PASS", 100, item_pocket("BATTLE_PASS")),
+        );
+
+        assert_eq!(
+            mart_catalog_issues(&catalog, &items),
+            vec![
+                MartCatalogIssue::EmptyMartId {
+                    mart_id: String::new(),
+                },
+                MartCatalogIssue::InvalidMartId {
+                    mart_id: " CHERRYGROVE_MART".to_string(),
+                },
+                MartCatalogIssue::InvalidMartId {
+                    mart_id: "CHERRYGROVE MART".to_string(),
+                },
+                MartCatalogIssue::InvalidItem {
+                    mart_id: "CHERRYGROVE_MART".to_string(),
+                    item_id: "RARE CANDY".to_string(),
+                },
+                MartCatalogIssue::UnknownItem {
+                    mart_id: "CHERRYGROVE_MART".to_string(),
+                    item_id: "potion".to_string(),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn mart_catalog_accepts_pack_defined_item_pockets_without_coercion() {
+        let catalog = MartCatalog(
+            [("MOD_MART".to_string(), vec!["BATTLE_PASS".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+        let items = [(
+            "BATTLE_PASS".to_string(),
+            item("BATTLE_PASS", 100, item_pocket("BATTLE_PASS")),
+        )]
+        .into_iter()
+        .collect();
+
+        assert_eq!(mart_catalog_issues(&catalog, &items), Vec::new());
+    }
+
+    #[test]
+    fn shop_tokens_reject_reserved_pack_prefixes() {
+        let catalog = MartCatalog(
+            [(
+                "fallback_mart".to_string(),
+                vec!["legacy_potion".to_string()],
+            )]
+            .into_iter()
+            .collect(),
+        );
+
+        assert_eq!(
+            mart_catalog_issues(&catalog, &items()),
+            vec![
+                MartCatalogIssue::InvalidMartId {
+                    mart_id: "fallback_mart".to_string(),
+                },
+                MartCatalogIssue::InvalidItem {
+                    mart_id: "fallback_mart".to_string(),
+                    item_id: "legacy_potion".to_string(),
+                },
+            ]
+        );
+        assert_eq!(
+            script_shop_command_issues(
+                &MartCatalog::default(),
+                &[
+                    shop_command_with_command(
+                        "fallbackshop",
+                        "MARTTYPE_STANDARD",
+                        "CHERRYGROVE_MART",
+                    ),
+                    shop_command("legacy_marttype", "CHERRYGROVE_MART"),
+                    shop_command("MARTTYPE_STANDARD", "fallback_mart"),
+                    {
+                        let mut command = shop_command("MARTTYPE_STANDARD", "CHERRYGROVE_MART");
+                        command.source_script = "fallback_script".to_string();
+                        command
+                    },
+                ],
+            )
+            .into_iter()
+            .map(|issue| issue.error)
+            .collect::<Vec<_>>(),
+            vec![
+                ShopError::InvalidCommand {
+                    command: "fallbackshop".to_string(),
+                },
+                ShopError::InvalidMartType {
+                    mart_type: "legacy_marttype".to_string(),
+                },
+                ShopError::InvalidMartId {
+                    mart_id: "fallback_mart".to_string(),
+                },
+                ShopError::InvalidSourceScript {
+                    source_script: "fallback_script".to_string(),
+                },
+            ]
+        );
+
+        for (field, value) in [
+            ("command", serde_json::json!("fallbackshop")),
+            ("mart_type", serde_json::json!("legacy_marttype")),
+            ("mart_id", serde_json::json!("fallback_mart")),
+            ("source_script", serde_json::json!("legacy_script")),
+        ] {
+            let mut payload = serde_json::json!({
+                "command": "pokemart",
+                "mart_type": "MARTTYPE_STANDARD",
+                "mart_id": "CHERRYGROVE_MART",
+                "source_script": "ShopScript",
+                "command_index": 11
+            });
+            payload[field] = value;
+
+            let error = serde_json::from_value::<ScriptShopCommand>(payload)
+                .expect_err("reserved shop command tokens must fail during JSON load")
+                .to_string();
+            assert!(
+                error.contains("shop") || error.contains("source"),
+                "{field} produced unexpected error: {error}"
+            );
+        }
+    }
+
+    #[test]
+    fn mart_catalog_json_rejects_wrapper_fallback_objects() {
+        let error = serde_json::from_str::<MartCatalog>(
+            r#"{"marts":{"CHERRYGROVE_MART":["POTION"]},"fallback_mart":"DEFAULT_MART"}"#,
+        )
+        .expect_err("mart catalogs must be the compiler-emitted mart map")
+        .to_string();
+        assert!(
+            error.contains("invalid type") || error.contains("invalid value"),
+            "{error}"
+        );
+
+        for (label, payload) in [
+            ("mart id", r#"{"CHERRYGROVE MART":["POTION"]}"#),
+            ("item id", r#"{"CHERRYGROVE_MART":["RARE CANDY"]}"#),
+        ] {
+            let error = serde_json::from_str::<MartCatalog>(payload)
+                .expect_err("malformed mart catalog tokens must fail during JSON load")
+                .to_string();
+            assert!(
+                error.contains("mart") && error.contains("exact ASCII alphanumeric or underscore"),
+                "{label} produced unexpected error: {error}"
+            );
+        }
+    }
+
+    #[test]
+    fn exported_shop_command_and_mart_type_sets_are_exact() {
+        assert!(SCRIPT_SHOP_COMMANDS.contains(&"pokemart"));
+        assert!(SCRIPT_SHOP_STANDARD_MART_TYPES.contains(&"MARTTYPE_STANDARD"));
+        assert!(SCRIPT_SHOP_STANDARD_MART_TYPES.contains(&"MARTTYPE_BITTER"));
+        assert!(SCRIPT_SHOP_ZERO_MART_TYPES.contains(&"MARTTYPE_BARGAIN"));
+        assert!(SCRIPT_SHOP_ZERO_MART_TYPES.contains(&"MARTTYPE_ROOFTOP"));
+        assert!(is_known_script_shop_command("pokemart"));
+        assert!(is_known_script_mart_type("MARTTYPE_PHARMACY"));
+        assert!(!is_known_script_shop_command("PokeMart"));
+        assert!(!is_known_script_mart_type("marttype_standard"));
+    }
+
+    #[test]
+    fn load_inventory_uses_exact_mart_and_item_ids_without_aliasing() {
+        let catalog = MartCatalog(
+            [(
+                "MartCherrygroveDex".to_string(),
+                vec!["POKE_BALL".to_string(), "POTION".to_string()],
+            )]
+            .into_iter()
+            .collect(),
+        );
+        let items = items();
+
+        let inventory = load_inventory(&catalog, &items, "MartCherrygroveDex").expect("inventory");
+        assert_eq!(
+            inventory
+                .iter()
+                .map(|item| item.identifier.as_str())
+                .collect::<Vec<_>>(),
+            vec!["POKE_BALL", "POTION"]
+        );
+        assert_eq!(
+            load_inventory(&catalog, &items, "MART_CHERRYGROVE_DEX"),
+            Err(ShopError::UnknownMart {
+                mart_id: "MART_CHERRYGROVE_DEX".to_string(),
+            })
+        );
+    }
+
+    #[test]
+    fn mart_references_to_missing_items_are_errors_not_zero_price_entries() {
+        let catalog = MartCatalog(
+            [("MartBroken".to_string(), vec!["potion".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+
+        assert_eq!(
+            load_inventory(&catalog, &items(), "MartBroken"),
+            Err(ShopError::UnknownMartItem {
+                mart_id: "MartBroken".to_string(),
+                item_id: "potion".to_string(),
+            })
+        );
+    }
+
+    #[test]
+    fn build_buy_menu_appends_cancel_command() {
+        let catalog = MartCatalog(
+            [("Mart".to_string(), vec!["POTION".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+
+        let menu = build_buy_menu(&catalog, &items(), "Mart").expect("menu");
+
+        assert_eq!(menu[1].identifier, CANCEL_ITEM_ID);
+    }
+
+    #[test]
+    fn applies_script_shop_command_with_exact_mart_inventory() {
+        let catalog = MartCatalog(
+            [(
+                "MartCherrygroveDex".to_string(),
+                vec!["POKE_BALL".to_string(), "POTION".to_string()],
+            )]
+            .into_iter()
+            .collect(),
+        );
+        let items = items();
+        let mut state = GameState::default();
+
+        let outcome = apply_script_shop_command(
+            &mut state,
+            &catalog,
+            &items,
+            shop_command("MARTTYPE_STANDARD", "MartCherrygroveDex"),
+        )
+        .expect("apply shop");
+
+        assert_eq!(
+            outcome,
+            ScriptShopOutcome {
+                mart_type: "MARTTYPE_STANDARD".to_string(),
+                mart_id: "MartCherrygroveDex".to_string(),
+                inventory: vec!["POKE_BALL".to_string(), "POTION".to_string()],
+                source_script: "ShopScript".to_string(),
+                command_index: 11,
+            }
+        );
+        assert_eq!(
+            state.script_runtime.pending_shop,
+            Some(ScriptShopRequest {
+                mart_type: "MARTTYPE_STANDARD".to_string(),
+                mart_id: "MartCherrygroveDex".to_string(),
+                inventory: vec!["POKE_BALL".to_string(), "POTION".to_string()],
+                source_script: "ShopScript".to_string(),
+                command_index: 11,
+            })
+        );
+        assert_eq!(state.script_runtime.shop_events.len(), 1);
+    }
+
+    #[test]
+    fn invalid_script_shop_source_does_not_mutate_runtime_state() {
+        let catalog = MartCatalog(
+            [(
+                "MartCherrygroveDex".to_string(),
+                vec!["POKE_BALL".to_string(), "POTION".to_string()],
+            )]
+            .into_iter()
+            .collect(),
+        );
+        let items = items();
+        let mut state = GameState::default();
+        state.script_runtime.pending_shop = Some(ScriptShopRequest {
+            mart_type: "MARTTYPE_STANDARD".to_string(),
+            mart_id: "PreviousMart".to_string(),
+            inventory: vec!["POTION".to_string()],
+            source_script: "PreviousScript".to_string(),
+            command_index: 1,
+        });
+        let mut command = shop_command("MARTTYPE_STANDARD", "MartCherrygroveDex");
+        command.source_script = "fallback_script".to_string();
+
+        assert_eq!(
+            apply_script_shop_command(&mut state, &catalog, &items, command),
+            Err(ShopError::InvalidSourceScript {
+                source_script: "fallback_script".to_string(),
+            })
+        );
+        assert!(state.script_runtime.shop_events.is_empty());
+        assert_eq!(
+            state.script_runtime.pending_shop,
+            Some(ScriptShopRequest {
+                mart_type: "MARTTYPE_STANDARD".to_string(),
+                mart_id: "PreviousMart".to_string(),
+                inventory: vec!["POTION".to_string()],
+                source_script: "PreviousScript".to_string(),
+                command_index: 1,
+            })
+        );
+    }
+
+    #[test]
+    fn applies_zero_mart_only_for_exact_rooftop_or_bargain_types() {
+        let catalog = MartCatalog::default();
+        let items = items();
+        let mut state = GameState::default();
+
+        let rooftop = apply_script_shop_command(
+            &mut state,
+            &catalog,
+            &items,
+            shop_command("MARTTYPE_ROOFTOP", "0"),
+        )
+        .expect("rooftop zero mart");
+        assert!(rooftop.inventory.is_empty());
+        assert_eq!(
+            state
+                .script_runtime
+                .pending_shop
+                .as_ref()
+                .map(|shop| shop.mart_id.as_str()),
+            Some("0")
+        );
+
+        let error = apply_script_shop_command(
+            &mut state,
+            &catalog,
+            &items,
+            shop_command("MARTTYPE_STANDARD", "0"),
+        )
+        .expect_err("standard zero mart rejected");
+        assert_eq!(
+            error,
+            ShopError::InvalidZeroMart {
+                mart_type: "MARTTYPE_STANDARD".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn validates_script_shop_command_without_mutating_runtime_state() {
+        let catalog = MartCatalog(
+            [("MART_CHERRYGROVE".to_string(), vec!["POTION".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+
+        validate_script_shop_command(
+            &catalog,
+            &shop_command("MARTTYPE_STANDARD", "MART_CHERRYGROVE"),
+        )
+        .expect("known mart is valid");
+        validate_script_shop_command(&catalog, &shop_command("MARTTYPE_ROOFTOP", "0"))
+            .expect("zero rooftop mart is valid");
+
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("marttype_standard", "MART")),
+            Err(ShopError::UnknownMartType {
+                mart_type: "marttype_standard".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command(" MARTTYPE_STANDARD", "MART")),
+            Err(ShopError::InvalidMartType {
+                mart_type: " MARTTYPE_STANDARD".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("MARTTYPE STANDARD", "MART")),
+            Err(ShopError::InvalidMartType {
+                mart_type: "MARTTYPE STANDARD".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("MARTTYPE_STANDARD", "0")),
+            Err(ShopError::InvalidZeroMart {
+                mart_type: "MARTTYPE_STANDARD".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("MARTTYPE_STANDARD", "mart")),
+            Err(ShopError::UnknownMart {
+                mart_id: "mart".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("MARTTYPE_STANDARD", " MART")),
+            Err(ShopError::InvalidMartId {
+                mart_id: " MART".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(&catalog, &shop_command("MARTTYPE_STANDARD", "MA RT")),
+            Err(ShopError::InvalidMartId {
+                mart_id: "MA RT".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(
+                &catalog,
+                &shop_command_with_command("PokeMart", "MARTTYPE_STANDARD", "MART")
+            ),
+            Err(ShopError::InvalidCommand {
+                command: "PokeMart".to_string()
+            })
+        );
+        assert_eq!(
+            validate_script_shop_command(
+                &catalog,
+                &shop_command_with_command("sellmart", "MARTTYPE_STANDARD", "MART")
+            ),
+            Err(ShopError::UnknownCommand {
+                command: "sellmart".to_string()
+            })
+        );
+    }
+
+    #[test]
+    fn script_shop_command_issues_preserve_exact_source_positions() {
+        let catalog = MartCatalog(
+            [("MART_CHERRYGROVE".to_string(), vec!["POTION".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+        let commands = vec![
+            shop_command("MARTTYPE_STANDARD", "MART_CHERRYGROVE"),
+            shop_command_with_command("PokeMart", "MARTTYPE_STANDARD", "MART_CHERRYGROVE"),
+            shop_command_with_command("sellmart", "MARTTYPE_STANDARD", "MART_CHERRYGROVE"),
+            shop_command("marttype_standard", "MART_CHERRYGROVE"),
+            shop_command(" MARTTYPE_STANDARD", "MART_CHERRYGROVE"),
+            shop_command("MARTTYPE_STANDARD", "0"),
+            shop_command("MARTTYPE_STANDARD", "mart_cherrygrove"),
+            shop_command("MARTTYPE_STANDARD", " MART_CHERRYGROVE"),
+        ];
+
+        assert_eq!(
+            script_shop_command_issues(&catalog, &commands),
+            vec![
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::InvalidCommand {
+                        command: "PokeMart".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::UnknownCommand {
+                        command: "sellmart".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::UnknownMartType {
+                        mart_type: "marttype_standard".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::InvalidMartType {
+                        mart_type: " MARTTYPE_STANDARD".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::InvalidZeroMart {
+                        mart_type: "MARTTYPE_STANDARD".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::UnknownMart {
+                        mart_id: "mart_cherrygrove".to_string(),
+                    },
+                },
+                ScriptShopCommandIssue {
+                    source_script: "ShopScript".to_string(),
+                    command_index: 11,
+                    error: ShopError::InvalidMartId {
+                        mart_id: " MART_CHERRYGROVE".to_string(),
+                    },
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn invalid_script_shop_command_does_not_mutate_runtime_state() {
+        let catalog = MartCatalog(
+            [("Mart".to_string(), vec!["POTION".to_string()])]
+                .into_iter()
+                .collect(),
+        );
+        let items = items();
+        let mut state = GameState::default();
+
+        assert_eq!(
+            apply_script_shop_command(
+                &mut state,
+                &catalog,
+                &items,
+                shop_command("marttype_standard", "Mart"),
+            ),
+            Err(ShopError::UnknownMartType {
+                mart_type: "marttype_standard".to_string(),
+            })
+        );
+        assert_eq!(
+            apply_script_shop_command(
+                &mut state,
+                &catalog,
+                &items,
+                shop_command("MARTTYPE_STANDARD", "mart"),
+            ),
+            Err(ShopError::UnknownMart {
+                mart_id: "mart".to_string(),
+            })
+        );
+        assert_eq!(state.script_runtime.pending_shop, None);
+        assert!(state.script_runtime.shop_events.is_empty());
+    }
+
+    #[test]
+    fn buying_items_spends_money_and_uses_bag_capacity() {
+        let mut state = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        let items = items();
+
+        let result = buy_item(&mut state, &items, "POTION", 2).expect("buy");
+
+        assert_eq!(
+            result,
+            ShopResult {
+                success: true,
+                message: "¥000600".to_string(),
+                credited: 600,
+            }
+        );
+        assert_eq!(state.money, 400);
+        assert_eq!(state.bag.quantity(&items["POTION"]), 2);
+
+        let denied = buy_item(&mut state, &items, "POTION", 2).expect("insufficient funds");
+        assert!(!denied.success);
+        assert_eq!(state.money, 400);
+        assert_eq!(state.bag.quantity(&items["POTION"]), 2);
+    }
+
+    #[test]
+    fn active_shop_buy_uses_pending_exact_inventory_and_can_close() {
+        let catalog = MartCatalog(
+            [(
+                "MartCherrygroveDex".to_string(),
+                vec!["POKE_BALL".to_string()],
+            )]
+            .into_iter()
+            .collect(),
+        );
+        let items = items();
+        let mut state = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        apply_script_shop_command(
+            &mut state,
+            &catalog,
+            &items,
+            shop_command("MARTTYPE_STANDARD", "MartCherrygroveDex"),
+        )
+        .expect("open shop");
+
+        let result =
+            buy_active_shop_item(&mut state, &items, "POKE_BALL", 2).expect("active shop buy");
+
+        assert!(result.success);
+        assert_eq!(state.money, 600);
+        assert_eq!(state.bag.quantity(&items["POKE_BALL"]), 2);
+        assert_eq!(
+            buy_active_shop_item(&mut state, &items, "POTION", 1),
+            Err(ShopError::ItemNotSoldByActiveScriptShop {
+                mart_id: "MartCherrygroveDex".to_string(),
+                item_id: "POTION".to_string(),
+            })
+        );
+
+        let closed = close_active_shop(&mut state).expect("close shop");
+        assert_eq!(closed.mart_id, "MartCherrygroveDex");
+        assert_eq!(state.script_runtime.pending_shop, None);
+        assert_eq!(
+            buy_active_shop_item(&mut state, &items, "POKE_BALL", 1),
+            Err(ShopError::MissingActiveScriptShop)
+        );
+    }
+
+    #[test]
+    fn buying_rejects_malformed_item_id_before_state_change() {
+        let mut state = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        let items = items();
+
+        assert_eq!(
+            buy_item(&mut state, &items, "PO TION", 1),
+            Err(ShopError::InvalidItemId {
+                item_id: "PO TION".to_string(),
+            })
+        );
+        assert_eq!(state.money, 1000);
+        assert_eq!(state.bag.quantity(&items["POTION"]), 0);
+    }
+
+    #[test]
+    fn max_buy_quantity_respects_money_and_available_stack_space() {
+        let mut state = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        let potion = item("POTION", 10, item_pocket("ITEM"));
+        for index in 0..ITEM_POCKET_CAPACITY {
+            let filler = item(&format!("DUMMY_ITEM_{index}"), 1, item_pocket("ITEM"));
+            state.bag.add_item(&filler, 1).expect("add filler");
+        }
+        assert_eq!(max_buy_quantity(&state, &potion), 0);
+
+        let mut stocked = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        stocked.bag.add_item(&potion, 98).expect("add potion");
+        assert_eq!(max_buy_quantity(&stocked, &potion), 99);
+    }
+
+    #[test]
+    fn buying_and_selling_pack_defined_pocket_items_uses_exact_pocket_data() {
+        let currency_constants = currency_constants(999_999);
+        let mut state = GameState {
+            money: 1000,
+            ..GameState::default()
+        };
+        let battle_pass = item("BATTLE_PASS", 100, item_pocket("BATTLE_PASS"));
+        let items = BTreeMap::from([("BATTLE_PASS".to_string(), battle_pass.clone())]);
+
+        assert_eq!(max_buy_quantity(&state, &battle_pass), 10);
+        let bought = buy_item(&mut state, &items, "BATTLE_PASS", 2).expect("buy custom item");
+        assert!(bought.success);
+        assert_eq!(state.money, 800);
+        assert_eq!(state.bag.quantity(&battle_pass), 2);
+        assert_eq!(state.bag.custom_pockets["BATTLE_PASS"]["BATTLE_PASS"], 2);
+
+        let sold = sell_item(&mut state, &items, &currency_constants, "BATTLE_PASS", 1)
+            .expect("sell custom item");
+        assert!(sold.success);
+        assert_eq!(sold.credited, 50);
+        assert_eq!(state.money, 850);
+        assert_eq!(state.bag.quantity(&battle_pass), 1);
+    }
+
+    #[test]
+    fn selling_items_credits_half_price_and_caps_money() {
+        let max_money = 999_999;
+        let currency_constants = currency_constants(max_money);
+        let mut state = GameState {
+            money: max_money - 100,
+            ..GameState::default()
+        };
+        let items = items();
+        state
+            .bag
+            .add_item(&items["RARE_CANDY"], 1)
+            .expect("add item");
+
+        let result =
+            sell_item(&mut state, &items, &currency_constants, "RARE_CANDY", 1).expect("sell");
+
+        assert_eq!(state.money, max_money);
+        assert_eq!(result.credited, 100);
+        assert_eq!(result.message, "¥000500");
+        assert_eq!(state.bag.quantity(&items["RARE_CANDY"]), 0);
+    }
+
+    #[test]
+    fn selling_requires_pack_max_money_without_removing_item() {
+        let mut state = GameState {
+            money: 500,
+            ..GameState::default()
+        };
+        let items = items();
+        state
+            .bag
+            .add_item(&items["RARE_CANDY"], 1)
+            .expect("add item");
+
+        assert_eq!(
+            sell_item(
+                &mut state,
+                &items,
+                &CurrencyCatalog::default(),
+                "RARE_CANDY",
+                1
+            ),
+            Err(ShopError::MissingCurrencyLimit {
+                constant: "MAX_MONEY".to_string(),
+            })
+        );
+        assert_eq!(state.money, 500);
+        assert_eq!(state.bag.quantity(&items["RARE_CANDY"]), 1);
+    }
+
+    #[test]
+    fn selling_rejects_malformed_item_id_before_state_change() {
+        let currency_constants = currency_constants(999_999);
+        let mut state = GameState {
+            money: 500,
+            ..GameState::default()
+        };
+        let items = items();
+        state
+            .bag
+            .add_item(&items["RARE_CANDY"], 1)
+            .expect("add item");
+
+        assert_eq!(
+            sell_item(&mut state, &items, &currency_constants, "RARE CANDY", 1),
+            Err(ShopError::InvalidItemId {
+                item_id: "RARE CANDY".to_string(),
+            })
+        );
+        assert_eq!(state.money, 500);
+        assert_eq!(state.bag.quantity(&items["RARE_CANDY"]), 1);
+    }
+
+    #[test]
+    fn active_shop_sell_requires_open_shop_before_mutating_bag_or_money() {
+        let currency_constants = currency_constants(999_999);
+        let mut state = GameState {
+            money: 500,
+            ..GameState::default()
+        };
+        let items = items();
+        state
+            .bag
+            .add_item(&items["RARE_CANDY"], 1)
+            .expect("add item");
+
+        assert_eq!(
+            sell_active_shop_item(&mut state, &items, &currency_constants, "RARE_CANDY", 1),
+            Err(ShopError::MissingActiveSellShop)
+        );
+        assert_eq!(state.money, 500);
+        assert_eq!(state.bag.quantity(&items["RARE_CANDY"]), 1);
+
+        state.script_runtime.pending_shop = Some(ScriptShopRequest {
+            mart_type: "MARTTYPE_STANDARD".to_string(),
+            mart_id: "MART_CHERRYGROVE".to_string(),
+            inventory: vec!["POTION".to_string()],
+            source_script: "ShopScript".to_string(),
+            command_index: 11,
+        });
+        let result =
+            sell_active_shop_item(&mut state, &items, &currency_constants, "RARE_CANDY", 1)
+                .expect("active shop sell");
+
+        assert!(result.success);
+        assert_eq!(result.credited, 500);
+        assert_eq!(state.money, 1000);
+        assert_eq!(state.bag.quantity(&items["RARE_CANDY"]), 0);
+    }
+
+    #[test]
+    fn selling_rejects_unowned_or_valueless_items_without_state_change() {
+        let currency_constants = currency_constants(999_999);
+        let mut state = GameState {
+            money: 500,
+            ..GameState::default()
+        };
+        let mut items = items();
+        items.insert(
+            "FREEBIE".to_string(),
+            item("FREEBIE", 1, item_pocket("ITEM")),
+        );
+
+        let unowned =
+            sell_item(&mut state, &items, &currency_constants, "POTION", 1).expect("sell unowned");
+        assert!(!unowned.success);
+        assert_eq!(state.money, 500);
+
+        state
+            .bag
+            .add_item(&items["FREEBIE"], 1)
+            .expect("add freebie");
+        let valueless = sell_item(&mut state, &items, &currency_constants, "FREEBIE", 1)
+            .expect("sell valueless");
+        assert!(!valueless.success);
+        assert_eq!(state.money, 500);
+        assert_eq!(state.bag.quantity(&items["FREEBIE"]), 1);
+    }
+
+    #[test]
+    fn pagination_matches_four_item_mart_window() {
+        assert_eq!(
+            paginate_selection(3, 0, 8, SelectionDirection::Down),
+            (4, 1)
+        );
+        assert_eq!(paginate_selection(1, 2, 8, SelectionDirection::Up), (0, 0));
+    }
+
+    #[test]
+    fn selection_direction_json_rejects_legacy_alias_payloads() {
+        let error =
+            serde_json::from_str::<SelectionDirection>(r#"{"down":{"legacy_direction":"next"}}"#)
+                .expect_err("selection directions must not accept object-shaped aliases")
+                .to_string();
+        assert!(
+            error.contains("invalid type") || error.contains("unknown field `legacy_direction`"),
+            "{error}"
+        );
+    }
+    #[test]
+    fn selling_halves_the_total_after_multiplying_quantity_like_asm() {
+        let mut state = GameState::default();
+        let item = item("ODD_PRICE", 301, item_pocket("ITEM"));
+        state.bag.add_item(&item, 2).unwrap();
+        let items = BTreeMap::from([(item.script_name.clone(), item)]);
+        let result = sell_item(&mut state, &items, &currency_constants(999_999), "ODD_PRICE", 2).unwrap();
+        assert_eq!(result.credited, 301);
+    }
+
+}
