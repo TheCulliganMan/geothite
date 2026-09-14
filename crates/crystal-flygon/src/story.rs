@@ -40,6 +40,7 @@ pub(crate) struct StoryLedger {
     restoration_epochs: BTreeSet<String>,
     menu_openings_since_progress: u64,
     menu_reopen_cooldown: u64,
+    // Legacy checkpoint field: counts both Pack and Pokemon menu openings.
     battle_pack_visits_without_effect: u64,
     battle_pack_reopen_cooldown: u64,
 }
@@ -371,7 +372,7 @@ impl StoryLedger {
         self.battle_pack_reopen_cooldown=self.battle_pack_reopen_cooldown.saturating_sub(1);
         let (mut rewards, mut aversions) = self.feedback(before, after);
         let in_battle=|v:&Value| v.pointer("/status/screen").and_then(Value::as_str)==Some("battle");
-        let real_battle_effect=["/reward_state/items","/status/party","/reward_state/battle/player_turns","/reward_state/battle/enemy_turns","/reward_state/battle/enemy_hp","/reward_state/battle/enemy_status"]
+        let real_battle_effect=["/reward_state/items","/status/party","/reward_state/battle/player_turns","/reward_state/battle/enemy_turns","/reward_state/battle/enemy_hp","/reward_state/battle/enemy_status","/reward_state/battle/active_player"]
             .iter().any(|p| before.pointer(p)!=after.pointer(p));
         if !in_battle(before) || !in_battle(after) || real_battle_effect {
             self.battle_pack_visits_without_effect=0;
@@ -383,11 +384,13 @@ impl StoryLedger {
             let b=rows(before);let a=rows(after);
             let main=|rows:&[Value]| rows.iter().any(|r| r.as_str().is_some_and(|s|s.trim().trim_start_matches('>').trim()=="FIGHT"))
                 && rows.iter().any(|r| r.as_str().is_some_and(|s|s.trim().trim_start_matches('>').trim()=="PACK"));
-            let selected_pack=b.iter().any(|r|r.as_str().is_some_and(|s|s.trim()==">PACK"));
-            if main(&b) && selected_pack && !a.is_empty() && !main(&a) {
+            let selected=b.iter().filter_map(Value::as_str).find(|s|s.trim().starts_with('>')).map(|s|s.trim().trim_start_matches('>').trim());
+            let selected_pack=selected==Some("PACK");
+            let selected_party=matches!(selected,Some("<PKMN>"|"POKEMON"|"POKéMON"));
+            if main(&b) && (selected_pack || selected_party) && !a.is_empty() && !main(&a) {
                 self.battle_pack_visits_without_effect=self.battle_pack_visits_without_effect.saturating_add(1);
                 if self.battle_pack_visits_without_effect>=3 {
-                    aversions.push("action:battle_pack_loop".into());
+                    aversions.push(if selected_pack {"action:battle_pack_loop"} else {"action:battle_party_loop"}.into());
                     self.battle_pack_reopen_cooldown=24;
                 }
             }
@@ -403,8 +406,10 @@ impl StoryLedger {
             if selected==Some("SWITCH") && message.ends_with(" is already out.") {
                 aversions.push("action:already_active_switch".into());
             }
-            if selected==Some("RUN") && before.pointer("/observe/battle").and_then(Value::as_str).is_some_and(|s|s.starts_with("Trainer "))
-                && message.contains("no running from a trainer battle") {
+            if selected==Some("RUN") && battle_menu_ready(before)
+                && before.pointer("/observe/battle").and_then(Value::as_str).is_some_and(|s|s.starts_with("Trainer "))
+                && (message.to_lowercase().contains("no running from a trainer battle")
+                    || before.pointer("/frame").and_then(Value::as_u64).zip(after.pointer("/frame").and_then(Value::as_u64)).is_some_and(|(a,b)|b>a)) {
                 aversions.push("action:trainer_escape_rejected".into());
             }
         }
@@ -755,6 +760,32 @@ mod tests {
         run["observe"]["battle"]=json!("Wild NORMAL");assert!(!ledger.action_feedback(&run,&rejected,"a").1.contains(&"action:trainer_escape_rejected".into()));
         rejected["observe"]["battle_message"]=json!("CYNDAQUIL\nis already out.");
         rejected["reward_state"]["battle"]["player_turns"]=json!(1);assert!(!ledger.action_feedback(&before,&rejected,"a").1.contains(&"action:already_active_switch".into()));
+    }
+    #[test]
+    fn alternating_party_and_pack_counts_as_one_unproductive_loop() {
+        let mut ledger=StoryLedger::default();
+        let mut main=json!({"status":{"screen":"battle","party":[{"hp":20}]},"observe":{"menus":[{"kind":"battle","entries":["FIGHT","> <PKMN>","PACK","RUN"]}]},"reward_state":{"items":[],"battle":{"active_player":0,"player_turns":0,"enemy_turns":0}}});
+        let mut party=main.clone();party["observe"]["menus"][0]["entries"]=json!([">CYNDAQUIL","CANCEL"]);
+        assert!(!ledger.action_feedback(&main,&party,"a").1.iter().any(|s|s.ends_with("_loop")));
+        ledger.action_feedback(&party,&main,"b");
+        let mut pack=main.clone();pack["observe"]["menus"][0]["entries"]=json!([">POTION","CANCEL"]);
+        main["observe"]["menus"][0]["entries"]=json!(["FIGHT","<PKMN>",">PACK","RUN"]);
+        ledger.action_feedback(&main,&pack,"a");ledger.action_feedback(&pack,&main,"b");
+        main["observe"]["menus"][0]["entries"]=json!(["FIGHT","> <PKMN>","PACK","RUN"]);
+        assert!(ledger.action_feedback(&main,&party,"a").1.contains(&"action:battle_party_loop".into()));
+        assert!(!ledger.action_feedback(&party,&main,"b").1.contains(&"action:battle_party_loop".into()));
+        let mut switched=main.clone();switched["reward_state"]["battle"]["active_player"]=json!(1);
+        ledger.action_feedback(&party,&switched,"a");assert_eq!(ledger.battle_pack_visits_without_effect,0);
+    }
+    #[test]
+    fn trainer_run_attempt_does_not_depend_on_refusal_wording() {
+        let mut ledger=StoryLedger::default();
+        let mut before=json!({"frame":1,"status":{"screen":"battle"},"observe":{"battle":"Trainer NORMAL","menus":[{"kind":"battle","entries":["FIGHT","<PKMN>","PACK",">RUN"]}]},"reward_state":{"battle":{"player_turns":0}}});
+        let mut after=before.clone();after["frame"]=json!(2);after["observe"]["menus"]=json!([]);after["observe"]["battle_message"]=json!("No! You cannot escape!");
+        assert!(ledger.action_feedback(&before,&after,"a").1.contains(&"action:trainer_escape_rejected".into()));
+        assert!(!ledger.action_feedback(&before,&after,"right").1.contains(&"action:trainer_escape_rejected".into()));
+        assert!(!ledger.action_feedback(&after,&before,"a").1.contains(&"action:trainer_escape_rejected".into()));
+        before["observe"]["battle"]=json!("Wild NORMAL");assert!(!ledger.action_feedback(&before,&after,"a").1.contains(&"action:trainer_escape_rejected".into()));
     }
     #[test]
     fn third_unproductive_battle_pack_visit_penalizes_only_the_opener() {
