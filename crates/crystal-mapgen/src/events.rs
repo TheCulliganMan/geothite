@@ -174,24 +174,59 @@ fn generated_event_bundle(grid: &GeneratedGrid) -> GeneratedEventBundle {
         });
     }
 
-    let resident_messages = [
-        ["HELLO! GREAT DAY", "TO BE OUTSIDE."],
-        ["I LIKE EXPLORING", "EVERY LITTLE PATH."],
-        ["THE AIR FEELS GREAT", "FOR A WALK TODAY."],
-        ["TALL GRASS IS WHERE", "WILD #MON HIDE."],
-        ["FLOWERS AND TREES", "MAKE A TOWN HAPPY."],
-    ];
-    let resident_sprites = [
-        "SPRITE_LASS",
-        "SPRITE_FISHER",
-        "SPRITE_TEACHER",
-        "SPRITE_YOUNGSTER",
-        "SPRITE_GRAMPS",
-    ];
-    for ((x, y), (message, sprite)) in resident_positions(grid)
-        .into_iter()
-        .zip(resident_messages.into_iter().zip(resident_sprites))
-    {
+    for (resident_index, (x, y)) in resident_positions(grid).into_iter().enumerate() {
+        let family = grid
+            .scene
+            .as_ref()
+            .map(|scene| scene.districts[usize::from(y) * usize::from(grid.width) + usize::from(x)])
+            .unwrap_or_default();
+        let place = grid
+            .labels
+            .iter()
+            .min_by_key(|label| label.x.abs_diff(x) + label.y.abs_diff(y))
+            .map(|label| label.text.as_str());
+        let (sprite, message) = if resident_index == 0 {
+            (
+                "SPRITE_GRAMPS",
+                place
+                    .map(|name| {
+                        format!("WELCOME! EXPLORE {name}. FOLLOW THE PATHS TO MEET YOUR NEIGHBORS.")
+                    })
+                    .unwrap_or_else(|| {
+                        "WELCOME! FOLLOW THE PATHS. THE CENTER CAN RESTORE YOUR PARTY.".into()
+                    }),
+            )
+        } else {
+            match family {
+                crate::VisualFamily::Waterfront => (
+                    "SPRITE_FISHER",
+                    "I WATCH THE WATER FROM HERE. THERE IS ALWAYS SOMETHING TO DISCOVER.".into(),
+                ),
+                crate::VisualFamily::Woodland => (
+                    "SPRITE_YOUNGSTER",
+                    "THE WOODS ARE FULL OF LIFE. LOOK IN THE GRASS, AND REST WHEN YOU NEED TO."
+                        .into(),
+                ),
+                crate::VisualFamily::Urban => (
+                    "SPRITE_TEACHER",
+                    "THE BUSY STREETS LEAD TO SHOPS. QUIET COURTYARDS ARE MY FAVORITE.".into(),
+                ),
+                crate::VisualFamily::Rocky => (
+                    "SPRITE_FISHER",
+                    "I FOLLOW THE ROCKY PATHS. MY PARTY AND I TAKE OUR TIME.".into(),
+                ),
+                _ => (
+                    "SPRITE_LASS",
+                    place
+                        .map(|name| {
+                            format!("I LIKE WALKING NEAR {name}. EVERY PATH HAS A DIFFERENT VIEW.")
+                        })
+                        .unwrap_or_else(|| {
+                            "I LIKE THE QUIET PATHS. THE GRASS CHANGES AS YOU EXPLORE.".into()
+                        }),
+                ),
+            }
+        };
         let number = bundle.objects.len() + 1;
         let script = format!("GeneratedResident{number}Script");
         let text_label = format!("GeneratedResident{number}Text");
@@ -221,7 +256,7 @@ fn generated_event_bundle(grid: &GeneratedGrid) -> GeneratedEventBundle {
             script,
             text_label,
             "jumptextfaceplayer",
-            text_body_from_lines(message.iter().copied()),
+            text_body_from_lines(wrap_sign_text(&message)),
         );
     }
 
@@ -562,7 +597,9 @@ mod tests {
         let width = 24;
         let height = 24;
         let mut grid = GeneratedGrid {
+            scene: None,
             source: MapSource {
+                schema_version: 2,
                 center: Coordinate { lat: 0.0, lon: 0.0 },
                 bounds: BoundingBox {
                     south: -0.1,

@@ -1,5 +1,6 @@
 {
   "dt_ms": 0.5,
+  "exponential_current_integration": true,
   "tau_membrane_ms": 20.0,
   "tau_synapse_ms": 5.0,
   "rest_mv": -52.0,

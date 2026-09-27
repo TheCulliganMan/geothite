@@ -11806,6 +11806,15 @@ impl RuntimeUiSnapshot {
     }
 }
 
+fn battle_trainer_display_name(name: &str, rival_name: Option<&str>) -> String {
+    name.trim_end_matches('@').replace(
+        "<RIVAL>",
+        rival_name
+            .filter(|name| !name.trim().is_empty())
+            .unwrap_or("???"),
+    )
+}
+
 impl RuntimeBattleSnapshot {
     pub fn phase(&self) -> RuntimeShellPhase {
         match &self.kind {
@@ -11887,7 +11896,13 @@ impl RuntimeBattleSnapshot {
                 RuntimeBattleKind::Trainer {
                     trainer_class: trainer_class.clone(),
                     trainer_id: trainer_id.clone(),
-                    trainer_name: trainer_name.clone(),
+                    // Resolve presentation tokens without changing the pack-backed
+                    // battle memory used by save validation.
+                    trainer_name: battle_trainer_display_name(
+                        trainer_name,
+                        state.script_runtime.variables.get("_rival_name")
+                            .map(String::as_str),
+                    ),
                     event_flag: event_flag.clone(),
                     seen_text: seen_text.clone(),
                     win_text: win_text.clone(),

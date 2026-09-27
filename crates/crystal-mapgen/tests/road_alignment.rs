@@ -154,6 +154,7 @@ fn mapped_road(cell: Option<MapCell>) -> Option<MapCell> {
 
 fn east_west_road(kind: FeatureKind, name: &str, latitude: f64) -> Feature {
     Feature {
+        details: Default::default(),
         kind,
         name: Some(name.to_string()),
         area: false,
@@ -187,6 +188,7 @@ fn east_west_segment(
     east: f64,
 ) -> Feature {
     Feature {
+        details: Default::default(),
         kind,
         name: Some(name.to_string()),
         area: false,
@@ -212,6 +214,7 @@ fn north_south_segment(
     north: f64,
 ) -> Feature {
     Feature {
+        details: Default::default(),
         kind,
         name: Some(name.to_string()),
         area: false,
@@ -231,6 +234,7 @@ fn north_south_segment(
 
 fn source(center: Coordinate, features: Vec<Feature>) -> MapSource {
     MapSource {
+        schema_version: 2,
         center,
         bounds: BoundingBox::square_miles_around(center, SIDE_MILES).expect("bounds"),
         attribution: "synthetic global road alignment fixture".to_string(),

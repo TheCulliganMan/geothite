@@ -53,6 +53,7 @@ pub struct AnatomyView {
     flags: Vec<u32>,
     activity: Vec<bool>,
     spike_counts: Vec<u32>,
+    spike_onsets: Vec<f32>,
     connections: Vec<Connection>,
     activity_connections: Vec<Connection>,
     selected: Option<u32>,
@@ -115,6 +116,7 @@ impl AnatomyView {
             points,
             activity: vec![false; n],
             spike_counts: vec![0; n],
+            spike_onsets: vec![0.0; n],
             connections: Vec::new(),
             activity_connections: Vec::new(),
             selected: None,
@@ -128,6 +130,7 @@ impl AnatomyView {
         }
         self.activity.fill(false);
         self.spike_counts.fill(0);
+        self.spike_onsets.fill(0.0);
         for &i in indices {
             if let Some(active) = self.activity.get_mut(i as usize) {
                 *active = true;
@@ -143,10 +146,34 @@ impl AnatomyView {
         }
         self.activity.fill(false);
         self.spike_counts.fill(0);
+        self.spike_onsets.fill(0.0);
         for sample in samples.chunks_exact(2) {
             if let Some(count) = self.spike_counts.get_mut(sample[0] as usize) {
                 *count = sample[1];
                 self.activity[sample[0] as usize] = sample[1] > 0;
+            }
+        }
+        Ok(())
+    }
+    /// Index, count and measured last-spike phase (millionths of the window).
+    /// Replay the last spike once over 800 presentation ms; counts remain the
+    /// complete window total. This is not a replay of every spike in a burst.
+    pub fn update_timed_spikes(&mut self, samples: &[u32]) -> Result<(), String> {
+        if samples.len() % 3 != 0
+            || samples
+                .chunks_exact(3)
+                .any(|r| r[0] > 400_000 || r[2] > 1_000_000)
+        {
+            return Err("Invalid timed spike samples".into());
+        }
+        self.activity.fill(false);
+        self.spike_counts.fill(0);
+        self.spike_onsets.fill(0.0);
+        for r in samples.chunks_exact(3) {
+            if let Some(count) = self.spike_counts.get_mut(r[0] as usize) {
+                *count = r[1];
+                self.activity[r[0] as usize] = r[1] > 0;
+                self.spike_onsets[r[0] as usize] = r[2] as f32 * 0.8 / 1_000_000.0;
             }
         }
         Ok(())
@@ -210,11 +237,6 @@ impl AnatomyView {
             return Err("Invalid point radius".into());
         }
         let mask = group_mask(group)?;
-        let flash = if self.motion {
-            (-self.activity_age * 1.8).exp()
-        } else {
-            1.0
-        };
         let mut pixels = vec![0; width as usize * height as usize * 4];
         for px in pixels.chunks_exact_mut(4) {
             px.copy_from_slice(&[
@@ -230,7 +252,14 @@ impl AnatomyView {
         for active_pass in [false, true] {
             for point in &self.points {
                 let focused = mask == 0 || point.flags & mask != 0;
-                let active = self.activity[point.index as usize] && focused;
+                let age = self.activity_age - self.spike_onsets[point.index as usize];
+                let active =
+                    self.activity[point.index as usize] && focused && (!self.motion || age >= 0.0);
+                let flash = if self.motion {
+                    (-age.max(0.0) * 1.8).exp()
+                } else {
+                    1.0
+                };
                 if active != active_pass {
                     continue;
                 }
@@ -319,7 +348,13 @@ impl AnatomyView {
                     let (x, y, _) = camera.project(p);
                     (x, y)
                 };
-                let active = self.activity[edge.source as usize];
+                let age = self.activity_age - self.spike_onsets[edge.source as usize];
+                let active = self.activity[edge.source as usize] && (!self.motion || age >= 0.0);
+                let flash = if self.motion {
+                    (-age.max(0.0) * 1.8).exp()
+                } else {
+                    1.0
+                };
                 let signal = if self.flags[edge.source as usize] & 8 != 0 {
                     style.penalty
                 } else if self.flags[edge.source as usize] & 2 != 0 {
@@ -335,12 +370,18 @@ impl AnatomyView {
                     [185, 140, 244]
                 };
                 let strength = (edge.contacts as f32).ln_1p() / 8.0;
-                let alpha = 0.22 + strength.min(1.0) * 0.38;
+                let selected_link =
+                    self.selected == Some(edge.source) || self.selected == Some(edge.target);
+                let alpha = if selected_link {
+                    0.22 + strength.min(1.0) * 0.38
+                } else {
+                    0.04 + strength.min(1.0) * 0.10
+                };
                 let mut previous = curve(0.0);
                 for step in 1..=40 {
                     let next = curve(step as f32 / 40.0);
                     line(&mut pixels, width, height, previous, next, color, alpha);
-                    if edge.contacts >= 10 {
+                    if selected_link && edge.contacts >= 10 {
                         line(
                             &mut pixels,
                             width,
@@ -357,7 +398,7 @@ impl AnatomyView {
                 let before = curve(0.75);
                 let (dx, dy) = (tip.0 - before.0, tip.1 - before.1);
                 let length = dx.hypot(dy);
-                if length > 0.1 {
+                if selected_link && length > 0.1 {
                     let (ux, uy) = (dx / length, dy / length);
                     for side in [-1.0, 1.0] {
                         line(
@@ -374,11 +415,10 @@ impl AnatomyView {
                         );
                     }
                 }
-                glow(&mut pixels, width, height, curve(1.0), 3.5, color, 0.65);
                 // One short traveling trace per measured activity window. Its
                 // speed is illustrative, not measured transmission timing.
-                if active && self.motion && self.activity_age < 1.4 {
-                    let head = (self.activity_age / 1.1).min(1.0);
+                if active && self.motion && age < 1.4 {
+                    let head = (age / 1.1).min(1.0);
                     for i in 0..12 {
                         let t = head - i as f32 * 0.012;
                         if t < 0.0 {
@@ -592,6 +632,19 @@ impl Brain {
             .flat_map(|(i, &n)| [i as u32, n])
             .collect()
     }
+    pub fn view_timed_spikes(&self) -> Vec<u32> {
+        let start = self.tick.saturating_sub(self.last_window_steps as u64);
+        let duration = u64::from(self.last_window_steps).max(1);
+        self.counts
+            .iter()
+            .enumerate()
+            .filter(|(_, n)| **n > 0)
+            .flat_map(|(i, &n)| {
+                let offset = self.last_spike[i].saturating_sub(start).min(duration);
+                [i as u32, n, (offset * 1_000_000 / duration) as u32]
+            })
+            .collect()
+    }
     pub fn prepare_circuit(&mut self) -> Result<(), String> {
         if self.config.operant.is_some() {
             self.ensure_wiring()?;
@@ -774,6 +827,29 @@ mod tests {
             "measured source activity travels along its links"
         );
         view.update_activity(&[]).unwrap();
+        assert_eq!(idle, frame(&view));
+    }
+    #[test]
+    fn timed_activity_respects_order_and_reduced_motion() {
+        let mut view = fixture();
+        view.animate(0.0, true).unwrap();
+        let idle = frame(&view);
+        view.update_timed_spikes(&[0, 4, 500_000, 1, 2, 1_000_000])
+            .unwrap();
+        assert_eq!(idle, frame(&view), "no spikes before measured onset");
+        view.animate(0.5, true).unwrap();
+        assert_ne!(idle, frame(&view));
+        view.animate(0.0, false).unwrap();
+        let summary = frame(&view);
+        view.animate(10.0, false).unwrap();
+        assert_eq!(summary, frame(&view));
+        assert!(view.update_timed_spikes(&[0, 1, 1_000_001]).is_err());
+        assert_eq!(
+            summary,
+            frame(&view),
+            "bad samples must not erase valid activity"
+        );
+        view.update_timed_spikes(&[]).unwrap();
         assert_eq!(idle, frame(&view));
     }
     #[test]

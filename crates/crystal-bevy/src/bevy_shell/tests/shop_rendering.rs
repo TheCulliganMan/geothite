@@ -459,3 +459,98 @@ fn rendered_mart_text_for_test(app: &mut App) -> String {
     letters.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.total_cmp(&b.1)));
     letters.iter().map(|(_, _, character)| *character).collect::<String>()
 }
+
+#[test]
+fn mart_notice_typewriter_refreshes_glyphs_on_a_stationary_map() {
+    let mut shell = initialized_mart_shell();
+    shell.shop_welcome_seen = false;
+    shell.field_text_reveal = None;
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    for notice in [
+        "Welcome! How may I\nhelp you?",
+        "Here you are.\nThank you!",
+        "Please come again!",
+    ] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.shop_welcome_seen = notice != "Welcome! How may I\nhelp you?";
+            shell.shop_notice = shell.shop_welcome_seen.then(|| notice.to_string());
+            shell.field_text_reveal = None;
+            mark_runtime_presentation_dirty(&mut shell);
+        }
+        app.update();
+        for _ in 0..notice.chars().count() {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            tick_visible_field_text_reveal(&mut shell, true).unwrap();
+            mark_runtime_presentation_dirty(&mut shell);
+        }
+        app.update();
+        let world = app.world_mut();
+        assert_eq!(world.resource::<BevyRuntimeShell>().last_error, None);
+        assert!(
+            world
+                .query_filtered::<Entity, With<DialogGlyphMarker>>()
+                .iter(world)
+                .count()
+                >= notice.chars().filter(|c| !c.is_whitespace()).count(),
+            "Mart notice must repaint as letters appear, even though shop and map state are unchanged"
+        );
+        save_live_menu_lcd_for_test(world, &format!("mart-notice-{}.png", notice.len()));
+    }
+}
+
+#[test]
+fn mart_poke_ball_tokens_render_consistently_in_list_and_confirmation() {
+    let mut shell = initialized_mart_shell();
+    confirm_visible_shop_top_menu(&mut shell).unwrap();
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    snapshot.pending_shop.as_mut().unwrap().inventory = vec!["POKE_BALL".into()];
+    for confirming in [false, true] {
+        shell.shop_quantity = confirming.then(|| VisibleShopQuantity {
+            item_id: "POKE_BALL".into(),
+            selling: false,
+            quantity: 1,
+            max_quantity: 99,
+            unit_price: 200,
+            confirmation: Some(true),
+        });
+        let mut expected = None;
+        for name in ["POKé BALL", "# BALL", "<POKE> BALL"] {
+            Arc::make_mut(&mut snapshot.items)
+                .iter_mut()
+                .find(|item| item.item_id == "POKE_BALL")
+                .unwrap()
+                .name = name.into();
+            let mut world = World::new();
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            let mut art = RenderedTilesetArt::default();
+            let mut images = Assets::<Image>::default();
+            spawn_field_shop_screen(
+                &mut Commands::new(&mut queue, &world),
+                &snapshot,
+                &shell,
+                snapshot.pending_shop.as_ref().unwrap(),
+                &mut art,
+                &shell.asset_root,
+                &mut images,
+            )
+            .unwrap();
+            queue.apply(&mut world);
+            let canvas = render_pc_audit_canvas(&mut world, &images, "mart-ball");
+            if let Some(expected) = expected.as_ref() {
+                assert!(
+                    &canvas == expected,
+                    "{name} must display the complete POKé BALL name"
+                );
+            } else {
+                if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+                    canvas
+                        .save(PathBuf::from(directory).join(format!("mart-ball-{confirming}.png")))
+                        .unwrap();
+                }
+                expected = Some(canvas);
+            }
+        }
+    }
+}

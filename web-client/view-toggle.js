@@ -8,8 +8,8 @@ function savedStep(storage, key, defaultValue, maximum) {
   return Number.isFinite(value) && value >= 0 && value <= maximum ? value : defaultValue;
 }
 
-export function mountViewToggle(wasm, { button, canvas, storage, cameraControls }) {
-  let enabled = storage.getItem(VIEW_KEY) === 'true';
+export function mountViewToggle(wasm, { button, canvas, storage, cameraControls, startIn2D = false }) {
+  let enabled = !startIn2D && storage.getItem(VIEW_KEY) === 'true';
   let zoom = savedStep(storage, ZOOM_KEY, 1, 5);
   let rotation = savedStep(storage, ROTATION_KEY, 0, 8);
   const updateCamera = () => {

@@ -240,9 +240,25 @@ fn advance_visible_battle_objects(
                             .with_context(|| format!("unknown frameset {frameset}"))?
                             as u8;
                         let palette = battle_object_palette_id(
-                            object["palette"]
-                                .as_str()
-                                .context("missing object palette")?,
+                            if animation.animation_label == "BattleAnim_ThrowPokeBall"
+                                && matches!(
+                                    object_id.as_str(),
+                                    "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
+                                )
+                            {
+                                match animation.move_id.strip_prefix("THROW_").unwrap_or("") {
+                                    "MASTER_BALL" => "PAL_BATTLE_OB_GREEN",
+                                    "ULTRA_BALL" | "FRIEND_BALL" => "PAL_BATTLE_OB_YELLOW",
+                                    "GREAT_BALL" | "LURE_BALL" | "FAST_BALL" => "PAL_BATTLE_OB_BLUE",
+                                    "HEAVY_BALL" | "MOON_BALL" => "PAL_BATTLE_OB_GRAY",
+                                    "LEVEL_BALL" => "PAL_BATTLE_OB_BROWN",
+                                    _ => "PAL_BATTLE_OB_RED",
+                                }
+                            } else {
+                                object["palette"]
+                                    .as_str()
+                                    .context("missing object palette")?
+                            },
                         )?;
                         *last_id = last_id.wrapping_add(1);
                         machine.initialize(

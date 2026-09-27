@@ -51,6 +51,8 @@ impl Brain {
             || s.config.dt_ms != self.config.dt_ms
             || s.config.delay_ms != self.config.delay_ms
             || s.config.contact_gain_mv != self.config.contact_gain_mv
+            || s.config.exponential_current_integration
+                != self.config.exponential_current_integration
         {
             return Err("Checkpoint graph or integration identity mismatch".into());
         }

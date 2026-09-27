@@ -23,7 +23,7 @@ self.onmessage = async ({ data }) => {
       result = { ready: true, somas: data.records.length / 5 };
     } else if (!view) throw Error("Anatomy is not loaded");
     else if (kind === "activity") {
-      view.update_spikes(data.samples);
+      view.update_timed_spikes(data.samples);
       view.update_activity_connections(JSON.stringify(data.edges));
       result = { updated: true };
     } else if (kind === "render") {

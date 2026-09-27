@@ -5152,54 +5152,7 @@ fn spawn_visible_move_animation_objects(
         .as_ref()
         .filter(|animation| animation.retained_objects_visible())
     {
-        let mut object_events = Vec::new();
-        if capture.blocked {
-            object_events.push(VisibleMoveObjectEvent {
-                frame: 20,
-                command: VisibleMoveObjectCommand::Spawn {
-                    object_id: "BATTLE_ANIM_OBJ_HIT_YFIX".to_string(),
-                    x: 112,
-                    y: 40,
-                    param: 0,
-                },
-            });
-        } else {
-            object_events.push(VisibleMoveObjectEvent {
-                frame: 52,
-                command: VisibleMoveObjectCommand::Spawn {
-                    object_id: "BATTLE_ANIM_OBJ_BALL_POOF".to_string(),
-                    x: 136,
-                    y: 64,
-                    param: 0x10,
-                },
-            });
-        }
-        if !capture.blocked && capture.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            object_events.extend((0_u8..8).map(|index| {
-                VisibleMoveObjectEvent {
-                    frame: capture
-                        .master_ball_special_frame()
-                        .expect("Master Ball frame"),
-                    command: VisibleMoveObjectCommand::Spawn {
-                        object_id: "BATTLE_ANIM_OBJ_MASTER_BALL_SPARKLE".to_string(),
-                        x: 136,
-                        y: 56,
-                        param: 0x30 + index,
-                    },
-                }
-            }));
-        }
-        if !capture.blocked && !capture.caught {
-            object_events.push(VisibleMoveObjectEvent {
-                frame: capture.total_frames().saturating_sub(34),
-                command: VisibleMoveObjectCommand::Spawn {
-                    object_id: "BATTLE_ANIM_OBJ_BALL_POOF".to_string(),
-                    x: 136,
-                    y: 64,
-                    param: 0x10,
-                },
-            });
-        }
+        let object_events = capture.object_events();
         synthetic_shiny = VisibleMoveAnimation {
             trigger_message: String::new(),
             move_id: format!("THROW_{}", capture.ball_id),
@@ -5290,7 +5243,13 @@ fn spawn_visible_move_animation_objects(
                         + (destination_x as f32 + rendered.sprite.size.x / scale / 2.0) * scale,
                     PLAYFIELD_TOP
                         - (destination_y as f32 + rendered.sprite.size.y / scale / 2.0) * scale,
-                    3.45 - slot_index as f32 * 0.001,
+                    if animation.animation_label == "BattleAnim_ThrowPokeBall"
+                        && matches!(object_id.as_str(), "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED")
+                    {
+                        4.1 - slot_index as f32 * 0.001
+                    } else {
+                        3.45 - slot_index as f32 * 0.001
+                    },
                 ),
                 ..default()
             },
@@ -5340,6 +5299,7 @@ fn battle_anim_render_bundle(
         })
 }
 
+#[cfg(test)]
 fn battle_anim_frame_at_age<'a>(
     bundle: &'a serde_json::Value,
     frameset_name: &str,
@@ -6267,218 +6227,6 @@ fn spawn_battle_pending_move_learn_screen(
         }
     }
     Ok(())
-}
-
-fn spawn_visible_capture_animation(
-    commands: &mut Commands,
-    snapshot: &RuntimeShellSnapshot,
-    runtime_shell: &BevyRuntimeShell,
-    rendered_art: &mut RenderedTilesetArt,
-    asset_root: &AssetRoot,
-    images: &mut Assets<Image>,
-) -> Result<()> {
-    let Some(animation) = runtime_shell
-        .visible_capture_animation
-        .as_ref()
-        .filter(|animation| animation.ball_visible())
-    else {
-        return Ok(());
-    };
-    if !animation.blocked {
-        let master_ball = animation.ball_id.eq_ignore_ascii_case("MASTER_BALL");
-        let _drop_start = if master_ball { 164 } else { 92 };
-        // BreakFree sets the retained ball directly to stage 11 before its
-        // poof and ENTER_MON wait, which deinitializes it immediately.
-        if !animation.caught && animation.frame >= animation.total_frames().saturating_sub(34) {
-            return Ok(());
-        }
-    }
-    let (screen_x, screen_y) = if animation.blocked {
-        let Some((x, y)) =
-            visible_capture_object_position(64, 92, 0x20, 0x70, animation.frame, true)
-        else {
-            return Ok(());
-        };
-        (x as f32, y as f32)
-    } else if animation.frame < 36 {
-        let master_ball = animation.ball_id.eq_ignore_ascii_case("MASTER_BALL");
-        let (x, y) = visible_capture_object_position(
-            if master_ball { 64 } else { 68 },
-            92,
-            if master_ball { 0x20 } else { 0x40 },
-            0x88,
-            animation.frame,
-            false,
-        )
-        .context("ordinary Poké Ball throw deinitialized during its flight")?;
-        (x as f32, y as f32)
-    } else if animation.frame < 68 {
-        // The second object is forced into Poké Ball stage 7. Stage 8 uses a
-        // radius-$20 sine for 32 updates before deinitializing.
-        let age = animation.frame.saturating_sub(36);
-        let angle = 0_u8.wrapping_sub(age as u8);
-        (136.0, 65.0 + visible_battle_anim_sine(angle, 0x20) as f32)
-    } else {
-        let master_ball = animation.ball_id.eq_ignore_ascii_case("MASTER_BALL");
-        let (_, landed_y) = visible_capture_object_position(
-            if master_ball { 64 } else { 68 },
-            92,
-            if master_ball { 0x20 } else { 0x40 },
-            0x88,
-            36,
-            false,
-        )
-        .context("capture throw did not reach its retained landing object")?;
-        let drop_start = if master_ball { 164 } else { 92 };
-        let drop_age = animation.frame.saturating_sub(drop_start).min(127);
-        let amplitude = 0x10_u8.saturating_sub(((drop_age / 32) as u8) * 4);
-        let angle = 0_u8.wrapping_sub(drop_age as u8);
-        let y_offset =
-            if animation.frame >= drop_start && animation.frame < animation.shake_setup_frame() {
-                visible_battle_anim_sine(angle, amplitude)
-            } else {
-                0
-            };
-        (136.0, landed_y as f32 + y_offset as f32)
-    };
-    let bundle = battle_anim_render_bundle(rendered_art, snapshot)?;
-    let object_id = if animation.blocked {
-        "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
-    } else {
-        "BATTLE_ANIM_OBJ_POKE_BALL"
-    };
-    let object = bundle
-        .get("objects")
-        .and_then(|objects| objects.get(object_id))
-        .with_context(|| format!("battle animation object {object_id} is missing"))?;
-    let drop_start = animation.shake_entry_frame().saturating_add(8);
-    let (frameset, frameset_age) = if animation.blocked || animation.frame < 36 {
-        ("BATTLE_ANIM_FRAMESET_POKE_BALL_1", animation.frame)
-    } else if animation.frame < 68 {
-        ("BATTLE_ANIM_FRAMESET_POKE_BALL_2", 0)
-    } else if animation.frame < drop_start {
-        // The retained throw object switches to the flattened OAM set while
-        // RETURN_MON collapses the target; it remains visible beneath the
-        // separate opening object rather than disappearing for 24 frames.
-        ("BATTLE_ANIM_FRAMESET_POKE_BALL_3", 0)
-    } else {
-        let bounce_age = animation.frame.saturating_sub(drop_start);
-        if bounce_age < 128 {
-            ("BATTLE_ANIM_FRAMESET_POKE_BALL_1", bounce_age)
-        } else {
-            let first_check = animation.first_shake_check_frame();
-            let completed_check = animation.frame.saturating_sub(first_check) / 48 + 1;
-            let wobble_start = first_check.saturating_add(48 * completed_check.saturating_sub(1));
-            let successful_wobble = animation.frame >= first_check
-                && if animation.caught {
-                    completed_check < u16::from(animation.animation_shakes)
-                } else {
-                    completed_check <= u16::from(animation.animation_shakes)
-                };
-            if successful_wobble {
-                (
-                    "BATTLE_ANIM_FRAMESET_POKE_BALL_5",
-                    animation.frame.saturating_sub(wobble_start),
-                )
-            } else {
-                ("BATTLE_ANIM_FRAMESET_POKE_BALL_4", 0)
-            }
-        }
-    };
-    let Some((frame_index, frame)) = battle_anim_frame_at_age(&bundle, frameset, frameset_age)?
-    else {
-        return Ok(());
-    };
-    let rendered = battle_anim_rendered_frame(
-        rendered_art,
-        &bundle,
-        asset_root,
-        object_id,
-        object,
-        frameset,
-        frame_index,
-        frame,
-        false,
-        false,
-        true,
-        Some(match animation.ball_id.as_str() {
-            "MASTER_BALL" => "PAL_BATTLE_OB_GREEN",
-            "ULTRA_BALL" | "FRIEND_BALL" => "PAL_BATTLE_OB_YELLOW",
-            "GREAT_BALL" | "LURE_BALL" | "FAST_BALL" => "PAL_BATTLE_OB_BLUE",
-            "HEAVY_BALL" | "MOON_BALL" => "PAL_BATTLE_OB_GRAY",
-            "LEVEL_BALL" => "PAL_BATTLE_OB_BROWN",
-            _ => "PAL_BATTLE_OB_RED",
-        }),
-        0xe4,
-        0xe4,
-        None,
-        images,
-    )?;
-    let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-    let destination_x = screen_x - 8.0 + f32::from(rendered.offset_x);
-    let destination_y = screen_y - 16.0 + f32::from(rendered.offset_y);
-    let x = PLAYFIELD_LEFT
-        + (destination_x + rendered.sprite.size.x / source_scale / 2.0) * source_scale;
-    let y = PLAYFIELD_TOP
-        - (destination_y + rendered.sprite.size.y / source_scale / 2.0) * source_scale;
-    commands.spawn((
-        SpriteBundle {
-            texture: rendered.sprite.handle.clone(),
-            sprite: Sprite {
-                custom_size: Some(rendered.sprite.size),
-                ..default()
-            },
-            transform: Transform::from_xyz(x, y, 4.1),
-            ..default()
-        },
-        BattleCommandMarker,
-    ));
-    Ok(())
-}
-
-fn visible_capture_object_position(
-    start_x: i32,
-    start_y: i32,
-    amplitude: u8,
-    target_x: i32,
-    frame: u16,
-    blocked: bool,
-) -> Option<(i32, i32)> {
-    let mut x = start_x;
-    let mut y = start_y;
-    let mut y_offset = 0;
-    let mut angle = 0_u8;
-    let mut stage = 0_u8;
-    for _ in 0..frame {
-        if stage == 0 {
-            stage = 1;
-            continue;
-        }
-        if stage == 1 {
-            if x < target_x {
-                x = (x + 2) & 0xff;
-                y = (y - 1) & 0xff;
-                y_offset = visible_battle_anim_sine(angle, amplitude);
-                angle = angle.wrapping_sub(1);
-                continue;
-            }
-            if !blocked {
-                y = (y + y_offset) & 0xff;
-                y_offset = 0;
-                stage = 2;
-                continue;
-            }
-            stage = 2;
-        }
-        if blocked && stage == 2 {
-            if y >= 0x80 {
-                return None;
-            }
-            y = (y + 4) & 0xff;
-            x = (x - 2) & 0xff;
-        }
-    }
-    Some((x, (y + y_offset) & 0xff))
 }
 
 fn spawn_visible_send_out_poof(
@@ -7924,14 +7672,16 @@ fn spawn_battle_window(
     z: f32,
 ) {
     let (center_x, center_y) = battle_window_center(tile_x, tile_y, width_tiles, height_tiles);
+    // Textbox replaces whole tiles, including the white pixels in its border.
+    // Back the frame too so underlying HUD/menu tiles cannot show through.
     if width_tiles > 2.0 && height_tiles > 2.0 {
         commands.spawn((
             SpriteBundle {
                 sprite: Sprite {
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(
-                        TILE_SIZE * (width_tiles - 2.0),
-                        TILE_SIZE * (height_tiles - 2.0),
+                        TILE_SIZE * width_tiles,
+                        TILE_SIZE * height_tiles,
                     )),
                     ..default()
                 },
@@ -7969,6 +7719,8 @@ fn spawn_battle_move_info_window(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    // ASM draws MoveInfoBox after the move list, overwriting the player HUD
+    // and the shared border on row 12. Keep its fill, frame, and text above both.
     spawn_battle_window(
         commands,
         rendered_art,
@@ -7978,7 +7730,7 @@ fn spawn_battle_move_info_window(
         BATTLE_MOVE_INFO_TOP_TILE,
         BATTLE_MOVE_INFO_WIDTH_TILES,
         BATTLE_MOVE_INFO_HEIGHT_TILES,
-        3.5,
+        4.0,
     );
     let selected = moves.get(cursor_index);
     if let Some(selected) = selected {
@@ -8076,7 +7828,7 @@ fn spawn_battle_move_info_text(
     tile_y: f32,
 ) {
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
-    spawn_battle_command_bitmap_text(commands, rendered_art, asset_root, images, text, x, y, 3.8);
+    spawn_battle_command_bitmap_text(commands, rendered_art, asset_root, images, text, x, y, 4.2);
 }
 
 fn battle_window_frame_art<'a>(

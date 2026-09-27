@@ -91,7 +91,7 @@ export function createViewer(canvas, { command, inspect, report, onProgress = ()
     const moving = Math.abs(angle) + Math.abs(pitch - camera.pitch)
       + Math.abs(zoom - camera.zoom) > 0.001;
     if (!moving) camera = { yaw, pitch, zoom };
-    if (!dirty && !moving && !(motionEnabled() && now - activityAt < 2200)) return;
+    if (!dirty && !moving && !(motionEnabled() && now - activityAt < 3000)) return;
     dirty = false;
     rendering = true;
     const frame = parameters();
@@ -119,7 +119,7 @@ export function createViewer(canvas, { command, inspect, report, onProgress = ()
       report(e.message);
     } finally {
       rendering = false;
-      if (dirty || moving || (motionEnabled() && performance.now() - activityAt < 2200))
+      if (dirty || moving || (motionEnabled() && performance.now() - activityAt < 3000))
         schedule();
     }
   }

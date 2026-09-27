@@ -54,7 +54,33 @@ pub fn render_tile_preview(
         .tilesets
         .get(tileset_id)
         .with_context(|| format!("compiled pack has no tileset named {tileset_id}"))?;
-    let files = pack.runtime_files();
+    let output = render_blocks(
+        map.attributes.width,
+        map.attributes.height,
+        &map.blocks,
+        tileset_id,
+        tileset,
+        pack.runtime_files(),
+        "day",
+    )?;
+    if let Some(parent) = output_path.parent() {
+        std::fs::create_dir_all(parent)
+            .with_context(|| format!("create preview directory {}", parent.display()))?;
+    }
+    output
+        .save(output_path)
+        .with_context(|| format!("write real-tile preview {}", output_path.display()))
+}
+
+pub(crate) fn render_blocks(
+    width: u16,
+    height: u16,
+    blocks: &[u16],
+    tileset_id: &str,
+    tileset: &crystal_assets::TilesetDefinition,
+    files: &BTreeMap<String, Vec<u8>>,
+    palette_group: &str,
+) -> Result<RgbaImage> {
     let metatile_path = format!("data/tilesets/{tileset_id}_metatiles.bin");
     let tiles_path = format!("gfx/tilesets/{tileset_id}.png");
     let metatiles = files
@@ -75,26 +101,28 @@ pub fn render_tile_preview(
         source.width() % TILE_SIZE as u32 == 0 && source.height() % TILE_SIZE as u32 == 0,
         "{tiles_path} is not aligned to 8x8 Game Boy tiles"
     );
-    let palettes = load_palette_bank(files, tileset_id)?;
+    let palettes = load_palette_bank(files, tileset_id, palette_group)?;
     ensure!(!palettes.is_empty(), "tileset {tileset_id} has no palettes");
     ensure!(
-        map.blocks.len() == usize::from(map.attributes.width) * usize::from(map.attributes.height),
-        "map {map_name} block dimensions do not match its block data"
+        blocks.len() == usize::from(width) * usize::from(height),
+        "map {tileset_id} block dimensions do not match its block data"
     );
 
-    let output_width = usize::from(map.attributes.width) * METATILE_SIZE;
-    let output_height = usize::from(map.attributes.height) * METATILE_SIZE;
+    let output_width = usize::from(width) * METATILE_SIZE;
+    let output_height = usize::from(height) * METATILE_SIZE;
     let mut output = RgbaImage::new(u32::try_from(output_width)?, u32::try_from(output_height)?);
     let source_width = source.width() as usize;
     let source_tile_count = (source_width / TILE_SIZE) * (source.height() as usize / TILE_SIZE);
 
-    for (block_position, block) in map.blocks.iter().copied().enumerate() {
+    for (block_position, block) in blocks.iter().copied().enumerate() {
         let metatile_offset = usize::from(block) * METATILE_TILE_COUNT;
         let tile_ids = metatiles
             .get(metatile_offset..metatile_offset + METATILE_TILE_COUNT)
-            .with_context(|| format!("map {map_name} references missing metatile {block:#04x}"))?;
-        let block_x = block_position % usize::from(map.attributes.width);
-        let block_y = block_position / usize::from(map.attributes.width);
+            .with_context(|| {
+                format!("map {tileset_id} references missing metatile {block:#04x}")
+            })?;
+        let block_x = block_position % usize::from(width);
+        let block_y = block_position / usize::from(width);
         for (subtile_position, tile_id) in tile_ids.iter().copied().enumerate() {
             let palette_value = tileset
                 .palette_map
@@ -120,13 +148,7 @@ pub fn render_tile_preview(
             );
         }
     }
-    if let Some(parent) = output_path.parent() {
-        std::fs::create_dir_all(parent)
-            .with_context(|| format!("create preview directory {}", parent.display()))?;
-    }
-    output
-        .save(output_path)
-        .with_context(|| format!("write real-tile preview {}", output_path.display()))
+    Ok(output)
 }
 
 /// Assemble exact per-cell tile renders into their geographic H3 topology.
@@ -651,7 +673,11 @@ fn point_in_preview_polygon(x: f64, y: f64, polygon: &[(f64, f64)]) -> bool {
     inside
 }
 
-fn load_palette_bank(files: &BTreeMap<String, Vec<u8>>, tileset_id: &str) -> Result<Vec<Palette>> {
+fn load_palette_bank(
+    files: &BTreeMap<String, Vec<u8>>,
+    tileset_id: &str,
+    palette_group: &str,
+) -> Result<Vec<Palette>> {
     let tileset_palette = format!("gfx/tilesets/{tileset_id}.pal");
     if let Some(bytes) = files.get(&tileset_palette) {
         let palettes = parse_palette_file(std::str::from_utf8(bytes)?, None)?;
@@ -664,13 +690,13 @@ fn load_palette_bank(files: &BTreeMap<String, Vec<u8>>, tileset_id: &str) -> Res
             .get("gfx/tilesets/bg_tiles.pal")
             .context("compiled pack is missing gfx/tilesets/bg_tiles.pal")?,
     )?;
-    for group in ["day", "morn", "indoor"] {
+    for group in [palette_group] {
         let palettes = parse_palette_file(content, Some(group))?;
         if !palettes.is_empty() {
             return Ok(palettes.into_iter().take(8).collect());
         }
     }
-    bail!("compiled pack background palette has no usable day palette")
+    bail!("background palette has no usable {palette_group} palette")
 }
 
 fn blit_tile(

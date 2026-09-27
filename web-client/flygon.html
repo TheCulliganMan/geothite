@@ -28,13 +28,6 @@
       <button id="load" hidden>Retry loading</button
       ><button id="run" class="primary" disabled>Run brain</button
       ><button id="step" disabled>One neural decision</button>
-      <label class="toggle"
-        ><input id="play" type="checkbox" checked /> Control game</label
-      >
-      <label class="toggle"
-        ><input id="auto-reward" type="checkbox" checked /> Learn from
-        outcomes</label
-      >
       <span id="speed">Runs on your device</span>
     </section>
     <nav class="workspace-nav" aria-label="Workspace views">
@@ -96,7 +89,7 @@
             <select id="population">
               <option value="all">All neurons</option>
               <option value="input">Sensory inputs · selected</option>
-              <option value="readout">Descending readout · selected</option>
+              <option value="readout">Descending readout · reachable</option>
               <option value="sensory">Sensory neurons</option>
               <option value="descending">Descending neurons</option>
               <option value="optic">Optic neurons</option>
@@ -124,6 +117,10 @@
         <p id="connection-note" class="connection-note">
           Select a neuron to see its strongest connections. All activity comes
           from the simulation.
+        </p>
+        <p class="connection-note">
+          Flashes replay each neuron's last spike in window order over 0.8 seconds;
+          brightness summarizes its spike count. Link travel is illustrative.
         </p>
       </section>
     </main>

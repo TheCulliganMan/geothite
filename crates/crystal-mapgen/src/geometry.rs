@@ -77,6 +77,7 @@ pub enum FeatureKind {
     Park,
     Pitch,
     Building,
+    Landmark,
     Rail,
     Trail,
     Street,
@@ -84,8 +85,27 @@ pub enum FeatureKind {
     MajorRoad,
 }
 
+/// Retained source semantics. Missing tags mean unknown, never an inferred OSM fact.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+pub struct FeatureDetails {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub osm_id: Option<String>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub tags: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub inner_rings: Vec<Vec<Coordinate>>,
+    #[serde(default)]
+    pub tunnel: bool,
+    #[serde(default)]
+    pub layer: i16,
+}
+
+pub const SOURCE_SCHEMA_VERSION: u32 = 2;
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Feature {
+    #[serde(default)]
+    pub details: FeatureDetails,
     pub kind: FeatureKind,
     pub name: Option<String>,
     pub area: bool,
@@ -99,6 +119,7 @@ pub struct Feature {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MapSource {
+    pub schema_version: u32,
     pub center: Coordinate,
     pub bounds: BoundingBox,
     pub attribution: String,
@@ -114,6 +135,14 @@ struct OverpassResponse {
 
 #[derive(Debug, Deserialize)]
 struct OverpassElement {
+    #[serde(default)]
+    id: Option<u64>,
+    #[serde(default, rename = "type")]
+    element_type: String,
+    #[serde(default)]
+    lat: Option<f64>,
+    #[serde(default)]
+    lon: Option<f64>,
     #[serde(default)]
     tags: BTreeMap<String, String>,
     #[serde(default)]
@@ -201,6 +230,7 @@ where
 
     sort_and_deduplicate_features(&mut features);
     Ok(MapSource {
+        schema_version: SOURCE_SCHEMA_VERSION,
         center,
         bounds,
         attribution: OPENSTREETMAP_ATTRIBUTION.to_string(),
@@ -264,13 +294,13 @@ fn overpass_query(class: OverpassQueryClass, bounds: BoundingBox) -> String {
     );
     match class {
         OverpassQueryClass::Geometry => format!(
-            "[out:json][timeout:180];(way[highway]({bbox});way[natural=water]({bbox});way[water]({bbox});way[waterway~\"^(river|stream|canal|riverbank)$\"]({bbox});relation[natural=water]({bbox});relation[waterway=riverbank]({bbox});way[leisure=park]({bbox});way[leisure=pitch]({bbox});way[railway]({bbox}););out geom;"
+            "[out:json][timeout:180];(way[highway]({bbox});way[natural=water]({bbox});way[water]({bbox});way[waterway~\"^(river|stream|canal|riverbank)$\"]({bbox});relation[natural=water]({bbox});relation[waterway=riverbank]({bbox});way[leisure=park]({bbox});way[leisure=pitch]({bbox});way[railway]({bbox});nwr[landuse]({bbox});nwr[natural~\"^(wood|scrub|grassland|wetland|heath|beach|bare_rock)$\"]({bbox});nwr[leisure~\"^(garden|nature_reserve)$\"]({bbox});nwr[amenity~\"^(bench|fountain|library|townhall|school|university|hospital|cafe|restaurant|marketplace)$\"]({bbox}););out geom;"
         ),
-        // The planner consumes building representative points, not facade
-        // polygon vertices. `out center` retains the authoritative OSM feature
-        // and exact centroid at the semantic resolution needed by clustering.
+        // Keep footprints and courtyards for district and frontage planning.
         OverpassQueryClass::Building => {
-            format!("[out:json][timeout:180];way[building]({bbox});out tags center;")
+            format!(
+                "[out:json][timeout:180];(way[building]({bbox});relation[building]({bbox}););out geom;"
+            )
         }
     }
 }
@@ -364,7 +394,7 @@ fn overpass_bbox_dimensions_meters(bounds: BoundingBox) -> (f64, f64) {
     (latitude_span_meters, longitude_span_meters)
 }
 
-fn sort_and_deduplicate_features(features: &mut Vec<Feature>) {
+pub(crate) fn sort_and_deduplicate_features(features: &mut Vec<Feature>) {
     features.sort_by(compare_features);
     features.dedup_by(|left, right| compare_features(left, right).is_eq());
 }
@@ -376,6 +406,11 @@ fn compare_features(left: &Feature, right: &Feature) -> std::cmp::Ordering {
         .then_with(|| left.area.cmp(&right.area))
         .then_with(|| left.bridge.cmp(&right.bridge))
         .then_with(|| compare_coordinate_sequences(&left.points, &right.points))
+        .then_with(|| {
+            serde_json::to_string(&left.details)
+                .unwrap()
+                .cmp(&serde_json::to_string(&right.details).unwrap())
+        })
 }
 
 fn compare_coordinate_sequences(left: &[Coordinate], right: &[Coordinate]) -> std::cmp::Ordering {
@@ -556,38 +591,84 @@ pub fn parse_overpass(center: Coordinate, bounds: BoundingBox, json: &str) -> Re
             continue;
         };
         let name = element.tags.get("name").cloned();
+        let mut details = FeatureDetails {
+            osm_id: element
+                .id
+                .map(|id| format!("{}/{id}", element.element_type)),
+            tunnel: element.tags.get("tunnel").is_some_and(|v| v != "no"),
+            layer: element
+                .tags
+                .get("layer")
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(0),
+            tags: element
+                .tags
+                .into_iter()
+                .filter(|(key, _)| {
+                    matches!(
+                        key.as_str(),
+                        "natural"
+                            | "landuse"
+                            | "leisure"
+                            | "building"
+                            | "building:levels"
+                            | "roof:shape"
+                            | "amenity"
+                            | "shop"
+                            | "tourism"
+                            | "historic"
+                            | "highway"
+                            | "railway"
+                            | "water"
+                            | "waterway"
+                            | "surface"
+                            | "bridge"
+                            | "tunnel"
+                            | "layer"
+                            | "access"
+                            | "entrance"
+                    )
+                })
+                .collect(),
+            inner_rings: Vec::new(),
+        };
         let area = matches!(
             kind,
             FeatureKind::Park | FeatureKind::Pitch | FeatureKind::Building
         ) || (kind == FeatureKind::Water
-            && (element
+            && (details
                 .tags
                 .get("natural")
                 .is_some_and(|value| value == "water")
-                || element.tags.contains_key("water")
-                || element
+                || details.tags.contains_key("water")
+                || details
                     .tags
                     .get("waterway")
                     .is_some_and(|value| value == "riverbank")));
         let bridge = matches!(
             kind,
             FeatureKind::Trail | FeatureKind::Street | FeatureKind::Road | FeatureKind::MajorRoad
-        ) && element
+        ) && details
             .tags
             .get("bridge")
             .is_some_and(|value| value == "yes");
         if element.geometry.len() >= 2 {
             features.push(Feature {
+                details: details.clone(),
                 kind,
                 name: name.clone(),
                 area,
                 bridge,
                 points: element.geometry,
             });
-        } else if kind == FeatureKind::Building
-            && let Some(center) = element.center
-        {
+        } else if let Some(center) = element.center.or_else(|| {
+            Some(Coordinate {
+                lat: element.lat?,
+                lon: element.lon?,
+            })
+        }) {
             features.push(Feature {
+                details: details.clone(),
                 kind,
                 name: name.clone(),
                 area,
@@ -595,8 +676,30 @@ pub fn parse_overpass(center: Coordinate, bounds: BoundingBox, json: &str) -> Re
                 points: vec![center],
             });
         }
-        for points in stitch_outer_rings(element.members) {
+        let (inner, outer): (Vec<_>, Vec<_>) = element
+            .members
+            .into_iter()
+            .partition(|member| member.role == "inner");
+        let holes = stitch_outer_rings(
+            inner
+                .into_iter()
+                .map(|mut member| {
+                    member.role = "outer".into();
+                    member
+                })
+                .collect(),
+        );
+        for points in stitch_outer_rings(outer) {
+            details.inner_rings = holes
+                .iter()
+                .filter(|ring| {
+                    ring.first()
+                        .is_some_and(|point| ring_contains(&points, *point))
+                })
+                .cloned()
+                .collect();
             features.push(Feature {
+                details: details.clone(),
                 kind,
                 name: name.clone(),
                 area,
@@ -605,23 +708,80 @@ pub fn parse_overpass(center: Coordinate, bounds: BoundingBox, json: &str) -> Re
             });
         }
     }
-    if features.is_empty() {
-        bail!("OpenStreetMap returned no usable neighborhood features");
-    }
-    features.sort_by(|left, right| {
-        left.kind
-            .cmp(&right.kind)
-            .then_with(|| left.name.cmp(&right.name))
-            .then_with(|| left.bridge.cmp(&right.bridge))
-            .then_with(|| left.points.len().cmp(&right.points.len()))
-    });
+    sort_and_deduplicate_features(&mut features);
     Ok(MapSource {
+        schema_version: SOURCE_SCHEMA_VERSION,
         center,
         bounds,
         attribution: OPENSTREETMAP_ATTRIBUTION.to_string(),
         features,
         h3: None,
     })
+}
+
+/// Polygon membership in a longitude frame anchored to the first ring vertex.
+/// Unwrapping prevents antimeridian polygons from covering the rest of Earth.
+pub(crate) fn ring_contains(ring: &[Coordinate], point: Coordinate) -> bool {
+    if ring.len() < 3 {
+        return false;
+    }
+    let anchor = ring[0].lon;
+    let relative_lon = |lon: f64| (lon - anchor + 180.0).rem_euclid(360.0) - 180.0;
+    let query_x = relative_lon(point.lon);
+    let mut inside = false;
+    let mut previous = ring[ring.len() - 1];
+    for current in ring {
+        if (current.lat > point.lat) != (previous.lat > point.lat) {
+            let x = relative_lon(current.lon);
+            let px = relative_lon(previous.lon);
+            if query_x < (px - x) * (point.lat - current.lat) / (previous.lat - current.lat) + x {
+                inside = !inside;
+            }
+        }
+        previous = *current;
+    }
+    inside
+}
+
+impl Feature {
+    /// A stable geographic anchor without averaging across the antimeridian.
+    /// Closed-ring endpoints count once, so starting a ring at another vertex
+    /// does not bias the location of its structure.
+    pub fn anchor(&self) -> Option<Coordinate> {
+        let points = if self.points.len() > 1 && self.points.first() == self.points.last() {
+            &self.points[..self.points.len() - 1]
+        } else {
+            &self.points
+        };
+        if points.is_empty() {
+            return None;
+        }
+        let (lat, sin, cos) = points.iter().fold((0., 0., 0.), |(lat, sin, cos), p| {
+            (
+                lat + p.lat,
+                sin + p.lon.to_radians().sin(),
+                cos + p.lon.to_radians().cos(),
+            )
+        });
+        Some(Coordinate {
+            lat: lat / points.len() as f64,
+            lon: sin.atan2(cos).to_degrees(),
+        })
+    }
+
+    pub fn contains(&self, point: Coordinate) -> bool {
+        self.area
+            && ring_contains(&self.points, point)
+            && !self
+                .details
+                .inner_rings
+                .iter()
+                .any(|ring| ring_contains(ring, point))
+    }
+
+    pub fn surface_transport(&self) -> bool {
+        !self.details.tunnel && self.details.layer >= 0
+    }
 }
 
 fn stitch_outer_rings(members: Vec<OverpassMember>) -> Vec<Vec<Coordinate>> {
@@ -688,13 +848,39 @@ fn classify(tags: &BTreeMap<String, String>) -> Option<FeatureKind> {
     {
         return Some(FeatureKind::Water);
     }
+    if tags.get("building").is_some_and(|v| v != "no") {
+        return Some(FeatureKind::Building);
+    }
     match tags.get("leisure").map(String::as_str) {
         Some("park") | Some("garden") | Some("nature_reserve") => return Some(FeatureKind::Park),
         Some("pitch") | Some("playground") => return Some(FeatureKind::Pitch),
         _ => {}
     }
-    if tags.contains_key("building") {
-        return Some(FeatureKind::Building);
+    if tags.get("natural").is_some_and(|v| {
+        matches!(
+            v.as_str(),
+            "wood" | "scrub" | "grassland" | "wetland" | "heath" | "beach" | "bare_rock"
+        )
+    }) || tags.contains_key("landuse")
+    {
+        return Some(FeatureKind::Park);
+    }
+    if tags.get("amenity").is_some_and(|v| {
+        matches!(
+            v.as_str(),
+            "bench"
+                | "fountain"
+                | "library"
+                | "townhall"
+                | "school"
+                | "university"
+                | "hospital"
+                | "cafe"
+                | "restaurant"
+                | "marketplace"
+        )
+    }) {
+        return Some(FeatureKind::Landmark);
     }
     if tags.contains_key("railway") {
         return Some(FeatureKind::Rail);
@@ -718,6 +904,125 @@ fn classify(tags: &BTreeMap<String, String>) -> Option<FeatureKind> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn preserves_identifiers_footprints_courtyards_and_transport_levels() {
+        let json = serde_json::json!({"elements":[
+            {"type":"relation","id":42,"tags":{"building":"apartments","landuse":"residential","building:levels":"5"},"members":[
+                {"role":"outer","geometry":[{"lat":0.,"lon":0.},{"lat":0.,"lon":1.},{"lat":1.,"lon":1.},{"lat":1.,"lon":0.},{"lat":0.,"lon":0.}]},
+                {"role":"inner","geometry":[{"lat":0.4,"lon":0.4},{"lat":0.4,"lon":0.6},{"lat":0.6,"lon":0.6},{"lat":0.6,"lon":0.4},{"lat":0.4,"lon":0.4}]}
+            ]},
+            {"type":"way","id":7,"tags":{"highway":"primary","tunnel":"yes","layer":"-1"},"geometry":[{"lat":0.,"lon":0.},{"lat":1.,"lon":1.}]},
+            {"type":"way","id":8,"tags":{"highway":"primary","bridge":"yes","layer":"1"},"geometry":[{"lat":0.,"lon":1.},{"lat":1.,"lon":0.}]}
+        ]});
+        let center = Coordinate { lat: 0.5, lon: 0.5 };
+        let bounds = BoundingBox::square_miles_around(center, 1.).unwrap();
+        let source = parse_overpass(center, bounds, &json.to_string()).unwrap();
+        let building = source
+            .features
+            .iter()
+            .find(|f| f.kind == FeatureKind::Building)
+            .unwrap();
+        assert_eq!(building.details.osm_id.as_deref(), Some("relation/42"));
+        assert_eq!(building.details.tags["building:levels"], "5");
+        assert_eq!(building.points.len(), 5);
+        assert_eq!(building.details.inner_rings.len(), 1);
+        assert!(building.contains(Coordinate { lat: 0.2, lon: 0.2 }));
+        assert!(!building.contains(center));
+        let tunnel = source.features.iter().find(|f| f.details.tunnel).unwrap();
+        assert!(!tunnel.surface_transport());
+        assert_eq!(tunnel.details.layer, -1);
+        let bridge = source.features.iter().find(|f| f.bridge).unwrap();
+        assert!(bridge.surface_transport());
+        assert_eq!(bridge.details.layer, 1);
+        let mut reordered = json.clone();
+        reordered["elements"].as_array_mut().unwrap().reverse();
+        assert_eq!(
+            source,
+            parse_overpass(center, bounds, &reordered.to_string()).unwrap()
+        );
+    }
+
+    #[test]
+    fn antimeridian_ring_does_not_cover_the_opposite_hemisphere() {
+        let ring = vec![
+            Coordinate {
+                lat: -1.,
+                lon: 179.,
+            },
+            Coordinate { lat: 1., lon: 179. },
+            Coordinate {
+                lat: 1.,
+                lon: -179.,
+            },
+            Coordinate {
+                lat: -1.,
+                lon: -179.,
+            },
+        ];
+        assert!(ring_contains(
+            &ring,
+            Coordinate {
+                lat: 0.,
+                lon: 179.5
+            }
+        ));
+        assert!(ring_contains(
+            &ring,
+            Coordinate {
+                lat: 0.,
+                lon: -179.5
+            }
+        ));
+        assert!(!ring_contains(&ring, Coordinate { lat: 0., lon: 0. }));
+        assert!(!ring_contains(&ring, Coordinate { lat: 2., lon: 180. }));
+    }
+
+    #[test]
+    fn closed_footprint_anchor_is_stable_across_the_antimeridian() {
+        let mut feature = Feature {
+            details: Default::default(),
+            kind: FeatureKind::Building,
+            name: None,
+            area: true,
+            bridge: false,
+            points: vec![
+                Coordinate { lat: 0., lon: 179. },
+                Coordinate {
+                    lat: 0.,
+                    lon: -179.,
+                },
+                Coordinate {
+                    lat: 2.,
+                    lon: -179.,
+                },
+                Coordinate { lat: 2., lon: 179. },
+                Coordinate { lat: 0., lon: 179. },
+            ],
+        };
+        let first = feature.anchor().unwrap();
+        assert_eq!(first.lat, 1.);
+        assert!((first.lon.abs() - 180.).abs() < 1e-8);
+        feature.points.pop();
+        feature.points.rotate_left(1);
+        feature.points.push(feature.points[0]);
+        let next = feature.anchor().unwrap();
+        assert!((first.lat - next.lat).abs() < 1e-8);
+        assert!((first.lon - next.lon).abs() < 1e-8);
+    }
+
+    #[test]
+    fn valid_empty_overpass_response_is_explicit_unknown_terrain() {
+        let center = Coordinate { lat: 0., lon: 0. };
+        let source = parse_overpass(
+            center,
+            BoundingBox::square_miles_around(center, 1.).unwrap(),
+            r#"{"elements":[]}"#,
+        )
+        .unwrap();
+        assert!(source.features.is_empty());
+        assert_eq!(source.schema_version, SOURCE_SCHEMA_VERSION);
+    }
 
     #[test]
     fn one_mile_bounds_are_centered_and_geographically_square() {
@@ -1122,13 +1427,15 @@ mod tests {
             assert_eq!(
                 chunk[0].2,
                 format!(
-                    "[out:json][timeout:180];(way[highway]({bbox});way[natural=water]({bbox});way[water]({bbox});way[waterway~\"^(river|stream|canal|riverbank)$\"]({bbox});relation[natural=water]({bbox});relation[waterway=riverbank]({bbox});way[leisure=park]({bbox});way[leisure=pitch]({bbox});way[railway]({bbox}););out geom;"
+                    "[out:json][timeout:180];(way[highway]({bbox});way[natural=water]({bbox});way[water]({bbox});way[waterway~\"^(river|stream|canal|riverbank)$\"]({bbox});relation[natural=water]({bbox});relation[waterway=riverbank]({bbox});way[leisure=park]({bbox});way[leisure=pitch]({bbox});way[railway]({bbox});nwr[landuse]({bbox});nwr[natural~\"^(wood|scrub|grassland|wetland|heath|beach|bare_rock)$\"]({bbox});nwr[leisure~\"^(garden|nature_reserve)$\"]({bbox});nwr[amenity~\"^(bench|fountain|library|townhall|school|university|hospital|cafe|restaurant|marketplace)$\"]({bbox}););out geom;"
                 ),
                 "geometry selector changed in quadrant {index}"
             );
             assert_eq!(
                 chunk[1].2,
-                format!("[out:json][timeout:180];way[building]({bbox});out tags center;"),
+                format!(
+                    "[out:json][timeout:180];(way[building]({bbox});relation[building]({bbox}););out geom;"
+                ),
                 "building selector changed in quadrant {index}"
             );
         }

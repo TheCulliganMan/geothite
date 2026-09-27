@@ -1183,6 +1183,7 @@ mod tests {
             .map(|entry| {
                 let mut features = (0..(entry.ordinal + 1))
                     .map(|index| Feature {
+                        details: Default::default(),
                         kind: FeatureKind::Building,
                         name: Some(format!("building-{index}")),
                         area: true,
@@ -1191,6 +1192,7 @@ mod tests {
                     })
                     .collect::<Vec<_>>();
                 features.extend(entry.plan.portals.iter().map(|portal| Feature {
+                    details: Default::default(),
                     kind: FeatureKind::Road,
                     name: Some(format!("road-{}", portal.edge_id)),
                     area: false,
@@ -1199,6 +1201,7 @@ mod tests {
                 }));
                 prepare_h3_source(
                     MapSource {
+                        schema_version: 2,
                         center: entry.plan.center,
                         bounds: entry.plan.fetch_bounds[0],
                         attribution: "regional fixture".to_string(),
@@ -1397,6 +1400,7 @@ mod tests {
         let manifest = plan_h3_batch(MINNEAPOLIS, 6, 1).expect("one-cell manifest");
         let source = prepare_h3_source(
             MapSource {
+                schema_version: 2,
                 center: manifest.cells[0].plan.center,
                 bounds: BoundingBox::square_miles_around(MINNEAPOLIS, 1.0).expect("bounds"),
                 attribution: "one-cell fixture".to_string(),
@@ -1470,6 +1474,7 @@ mod tests {
         let first_center = manifest.cells[blocked_first].plan.center;
         let second_center = manifest.cells[blocked_second].plan.center;
         let water = Feature {
+            details: Default::default(),
             kind: FeatureKind::Water,
             name: Some("reciprocal crossing ponds".to_string()),
             area: true,
@@ -1485,6 +1490,7 @@ mod tests {
         let roads = internal
             .iter()
             .map(|(edge_id, (first, second, _))| Feature {
+                details: Default::default(),
                 kind: FeatureKind::MajorRoad,
                 name: Some(format!("road-{edge_id}")),
                 area: false,
@@ -1501,6 +1507,7 @@ mod tests {
             .map(|entry| {
                 prepare_h3_source(
                     MapSource {
+                        schema_version: 2,
                         center: entry.plan.center,
                         bounds: entry.plan.fetch_bounds[0],
                         attribution: "water-blocked triangle fixture".to_string(),
@@ -1560,6 +1567,7 @@ mod tests {
             .map(|entry| {
                 prepare_h3_source(
                     MapSource {
+                        schema_version: 2,
                         center: entry.plan.center,
                         bounds: entry.plan.fetch_bounds[0],
                         attribution: "no-road fixture".to_string(),

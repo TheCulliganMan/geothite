@@ -142,7 +142,8 @@ const JOHTO_CLIFF_SOUTH_LAYOUT: [u8; METATILE_BYTES] = [
 const GENERATED_CLIFF_STAIRS_LAYOUT: [u8; METATILE_BYTES] = [
     0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x4c, 0x4c, 0xe0, 0xe1, 0x4c, 0x4c, 0xe2, 0xe3,
 ];
-const HOUSE_SOURCE_METATILES: [u8; 4] = [0x18, 0x19, 0x1a, 0x1b];
+// Goldenrod ordinary two-block-wide house; 1a/1b carry the Center sign.
+const HOUSE_SOURCE_METATILES: [u8; 4] = [0x18, 0x19, 0x16, 0x1e];
 const HOUSE_RECOLOR_SOURCE_TILES: [u8; 10] =
     [0x07, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12];
 const RED_HOUSE_TARGET_TILES: [u8; 10] =
@@ -275,7 +276,7 @@ pub fn build_johto_modern_generated_tileset_extension(
     )
 }
 
-fn build_extension_from_parts(
+pub(crate) fn build_extension_from_parts(
     definitions: &BTreeMap<String, TilesetDefinition>,
     files: &BTreeMap<String, Vec<u8>>,
     manifest_id: String,
@@ -972,120 +973,24 @@ mod tests {
         ],
     ];
 
-    fn canonical_definitions() -> BTreeMap<String, TilesetDefinition> {
-        [
-            (
-                SOURCE_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/johto_modern.json"),
-                include_str!(
-                    "../../../../apps/web/assets/data/tilesets/johto_modern_palette_map.json"
-                ),
-            ),
-            (
-                TRADITIONAL_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/johto.json"),
-                include_str!("../../../../apps/web/assets/data/tilesets/johto_palette_map.json"),
-            ),
-            (
-                PARK_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/park.json"),
-                include_str!("../../../../apps/web/assets/data/tilesets/park_palette_map.json"),
-            ),
-            (
-                LAB_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/lab.json"),
-                include_str!("../../../../apps/web/assets/data/tilesets/lab_palette_map.json"),
-            ),
-            (
-                CAVE_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/cave.json"),
-                include_str!("../../../../apps/web/assets/data/tilesets/cave_palette_map.json"),
-            ),
-            (
-                ICE_PATH_TILESET_ID,
-                include_str!("../../../../apps/web/assets/data/tilesets/ice_path.json"),
-                include_str!("../../../../apps/web/assets/data/tilesets/ice_path_palette_map.json"),
-            ),
-        ]
-        .into_iter()
-        .map(|(id, collision, palette)| {
-            (
-                id.to_string(),
-                TilesetDefinition {
-                    collision: serde_json::from_str(collision).expect("collision JSON"),
-                    palette_map: serde_json::from_str(palette).expect("palette JSON"),
-                },
-            )
+    fn canonical_pack() -> &'static CompiledGamePack {
+        static PACK: std::sync::OnceLock<CompiledGamePack> = std::sync::OnceLock::new();
+        PACK.get_or_init(|| {
+            crystal_assets::read_verified_compiled_game_pack(crate::test_pack_path())
+                .expect("load CRYSTAL_MAPGEN_TEST_PACK")
         })
-        .collect()
+    }
+
+    fn canonical_definitions() -> BTreeMap<String, TilesetDefinition> {
+        canonical_pack().data().tilesets.clone()
     }
 
     fn canonical_files() -> BTreeMap<String, Vec<u8>> {
-        [
-            (
-                "data/tilesets/johto_modern_metatiles.bin",
-                include_bytes!(
-                    "../../../../apps/web/assets/data/tilesets/johto_modern_metatiles.bin"
-                )
-                .as_slice(),
-            ),
-            (
-                "data/tilesets/johto_metatiles.bin",
-                include_bytes!("../../../../apps/web/assets/data/tilesets/johto_metatiles.bin")
-                    .as_slice(),
-            ),
-            (
-                "data/tilesets/park_metatiles.bin",
-                include_bytes!("../../../../apps/web/assets/data/tilesets/park_metatiles.bin")
-                    .as_slice(),
-            ),
-            (
-                "data/tilesets/lab_metatiles.bin",
-                include_bytes!("../../../../apps/web/assets/data/tilesets/lab_metatiles.bin")
-                    .as_slice(),
-            ),
-            (
-                "data/tilesets/cave_metatiles.bin",
-                include_bytes!("../../../../apps/web/assets/data/tilesets/cave_metatiles.bin")
-                    .as_slice(),
-            ),
-            (
-                "data/tilesets/ice_path_metatiles.bin",
-                include_bytes!("../../../../apps/web/assets/data/tilesets/ice_path_metatiles.bin")
-                    .as_slice(),
-            ),
-            (
-                "gfx/tilesets/johto_modern.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/johto_modern.2bpp")
-                    .as_slice(),
-            ),
-            (
-                "gfx/tilesets/johto.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/johto.2bpp").as_slice(),
-            ),
-            (
-                "gfx/tilesets/park.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/park.2bpp").as_slice(),
-            ),
-            (
-                "gfx/tilesets/lab.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/lab.2bpp").as_slice(),
-            ),
-            (
-                "gfx/tilesets/cave.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/cave.2bpp").as_slice(),
-            ),
-            (
-                "gfx/tilesets/ice_path.2bpp",
-                include_bytes!("../../../../apps/web/assets/gfx/tilesets/ice_path.2bpp").as_slice(),
-            ),
-        ]
-        .into_iter()
-        .map(|(path, bytes)| (path.to_string(), bytes.to_vec()))
-        .collect()
+        canonical_pack().runtime_files().clone()
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn builds_exact_generated_tileset_from_canonical_assets() {
         let source_files = canonical_files();
         let extension = build_extension_from_parts(
@@ -1342,6 +1247,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn imports_ten_distinct_national_park_metatile_types() {
         let source_files = canonical_files();
         let extension = build_extension_from_parts(
@@ -1369,6 +1275,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn refuses_to_overwrite_a_canonical_physical_tile() {
         let definitions = canonical_definitions();
         let mut files = canonical_files();
@@ -1383,6 +1290,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn refuses_to_overwrite_a_large_tree_physical_tile() {
         let definitions = canonical_definitions();
         let mut files = canonical_files();
@@ -1398,6 +1306,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn refuses_changed_park_large_tree_palettes() {
         let mut definitions = canonical_definitions();
         definitions
@@ -1418,6 +1327,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn trash_extraction_replaces_the_indoor_floor_with_outdoor_ground() {
         let files = canonical_files();
         let trash = outdoor_trash_art(

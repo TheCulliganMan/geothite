@@ -65,6 +65,7 @@ voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
 location-tester = ["crystal-runtime/location-tester", "voxel-view", "crystal-assets/test-fixtures"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
 operation-trace = ["crystal-runtime/operation-trace", "bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
+meshtastic = ["crystal-net/meshtastic"]
 
 [[example]]
 name = "render_at_location"

@@ -235,9 +235,11 @@
       import { mountSocialChat } from './social-chat.js?v=20260908-community-2';
       import { startOnlineSession, runWithPlayerLock } from './browser-session.js';
       import { createMidiPreparation } from './audio-worker-client.js';
+      import { prepareMeshtasticBridge } from './meshtastic.js';
 
       import { fetchAsset, loadWasm, mountAssetProgress } from './asset-progress.js';
       const reportAsset = mountAssetProgress(document.querySelector('#game-loading-assets'), ['Game engine', 'Game data', 'Audio engine']);
+      const meshtasticBridge = prepareMeshtasticBridge({ global: globalThis, navigator, document, location });
       const packRequests = new Map();
       globalThis.__crystalFetchPack = url => {
         const key = new URL(url, location.href).href;
@@ -330,6 +332,7 @@
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await loadWasm(init, './crystal-bevy_bg.wasm', 'Game engine', reportAsset);
+          await meshtasticBridge?.connect(wasm);
           const muteButton = document.querySelector('#mute');
           let muted = localStorage.getItem('crystal.audio.muted') === 'true';
           let audioState = 'idle';
@@ -356,13 +359,14 @@
           reportAsset({ label: 'Game data', loaded: gameData.byteLength, total: gameData.byteLength, phase: 'ready' });
           document.querySelector('#loading').hidden = true;
           document.querySelector('#touch-controls').disabled = false;
-          if (!document.documentElement.classList.contains("flygon-embedded")) {
+          if (!document.documentElement.classList.contains("flygon-embedded") && !meshtasticBridge) {
             mountSocialChat(wasm, { document, window, playerId: session.playerId });
           }
           mountPlayerCustomization(wasm, { document, window });
           mountSaveManagement(wasm, { document, window });
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
+            startIn2D: document.documentElement.classList.contains("flygon-embedded"),
             cameraControls: {
               group: document.querySelector('#camera-controls'),
               zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),

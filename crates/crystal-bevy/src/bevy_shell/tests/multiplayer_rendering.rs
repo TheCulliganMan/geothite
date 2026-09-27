@@ -1,5 +1,5 @@
 fn disconnected_render_multiplayer_fixture() -> MultiplayerRuntime {
-    let config = BevyMultiplayerConfig {
+    let config = BevyHostedMultiplayerConfig {
         server_url: "ws://unused.invalid".into(),
         server_token: None,
         world_id: "render-test".into(),
@@ -12,6 +12,14 @@ fn disconnected_render_multiplayer_fixture() -> MultiplayerRuntime {
         connection: None,
         session: None,
         config: config.clone(),
+        #[cfg(feature = "meshtastic")]
+        meshtastic_config: None,
+        #[cfg(feature = "meshtastic")]
+        meshtastic_lobby: None,
+        #[cfg(feature = "meshtastic")]
+        pending_meshtastic_invite: None,
+        #[cfg(feature = "meshtastic")]
+        selected_meshtastic_peer: None,
         queued_mode: None,
         match_mode: None,
         result_reported: false,

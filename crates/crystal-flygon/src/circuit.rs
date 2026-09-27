@@ -48,7 +48,12 @@ struct Transition {
 }
 
 // Avoid selecting only the highest-degree cells of one type or hemisphere.
-fn diverse_population(cells: &[Cell], candidates: Vec<usize>, degree: &[u64]) -> Vec<usize> {
+fn diverse_population(
+    cells: &[Cell],
+    candidates: Vec<usize>,
+    degree: &[u64],
+    limit: usize,
+) -> Vec<usize> {
     let mut groups: BTreeMap<(&str, &str), Vec<usize>> = BTreeMap::new();
     for i in candidates {
         groups
@@ -65,13 +70,13 @@ fn diverse_population(cells: &[Cell], candidates: Vec<usize>, degree: &[u64]) ->
         .collect();
     groups.sort_by_key(|g| (std::cmp::Reverse(degree[g[0]]), g[0]));
     let mut selected = Vec::new();
-    while selected.len() < WIDTH {
+    while selected.len() < limit {
         let previous = selected.len();
         for group in &mut groups {
             if let Some(i) = group.pop_front() {
                 selected.push(i);
             }
-            if selected.len() == WIDTH {
+            if selected.len() == limit {
                 break;
             }
         }
@@ -80,6 +85,28 @@ fn diverse_population(cells: &[Cell], candidates: Vec<usize>, degree: &[u64]) ->
         }
     }
     selected
+}
+
+// Every reachable descending cell contributes. Round-robin type/side ordering
+// spreads large populations across bounded policy features. This compression is
+// an engineered readout, not additional anatomical wiring.
+fn pool_readout(signals: impl Iterator<Item = f32>) -> Vec<f32> {
+    let mut pooled = vec![0.0f32; WIDTH];
+    let mut sizes = [0usize; WIDTH];
+    for (i, signal) in signals.enumerate() {
+        pooled[i % WIDTH] += signal;
+        sizes[i % WIDTH] += 1;
+    }
+    for (value, size) in pooled.iter_mut().zip(sizes) {
+        *value /= (size.max(1) as f32).sqrt();
+    }
+    let norm = pooled.iter().map(|x| x * x).sum::<f32>().sqrt();
+    if norm > 1e-6 {
+        for value in &mut pooled {
+            *value /= norm;
+        }
+    }
+    pooled
 }
 
 fn sensory_channel(feature: &str) -> usize {
@@ -127,12 +154,33 @@ fn sensory_channel(feature: &str) -> usize {
     7
 }
 impl CircuitState {
-    fn activate_context(&mut self, context:String, config:&crate::operant::OperantConfig, learning:bool) {
-        if self.context==context {return}
-        if learning {self.train_rollout(self.last_value,config);} else {self.rollout.clear();}
+    fn activate_context(
+        &mut self,
+        context: String,
+        config: &crate::operant::OperantConfig,
+        learning: bool,
+    ) {
+        if self.context == context {
+            return;
+        }
+        if learning {
+            self.train_rollout(self.last_value, config);
+        } else {
+            self.rollout.clear();
+        }
         if !self.weights.is_empty() {
-            let key=if self.context.is_empty(){"legacy".into()}else{self.context.clone()};
-            self.heads.insert(key,(std::mem::take(&mut self.weights),std::mem::take(&mut self.value_weights)));
+            let key = if self.context.is_empty() {
+                "legacy".into()
+            } else {
+                self.context.clone()
+            };
+            self.heads.insert(
+                key,
+                (
+                    std::mem::take(&mut self.weights),
+                    std::mem::take(&mut self.value_weights),
+                ),
+            );
         }
         let (actor,critic)=self.heads.remove(&context).unwrap_or_default();
         self.weights=actor;self.value_weights=critic;self.context=context;self.last_value=0.0;
@@ -141,9 +189,14 @@ impl CircuitState {
         self.updates
     }
     pub(crate) fn valid(&self) -> bool {
-        self.heads.len()<=4096 && self.heads.iter().all(|(key,(actor,critic))|key.len()<=512
-            && actor.len()==WIDTH*8 && actor.iter().all(|x|x.is_finite()&&x.abs()<=4.0)
-            && (critic.is_empty()||critic.len()==WIDTH) && critic.iter().all(|x|x.is_finite()&&x.abs()<=20.0))
+        self.heads.len() <= 4096
+            && self.heads.iter().all(|(key, (actor, critic))| {
+                key.len() <= 512
+                    && actor.len() == WIDTH * 8
+                    && actor.iter().all(|x| x.is_finite() && x.abs() <= 4.0)
+                    && (critic.is_empty() || critic.len() == WIDTH)
+                    && critic.iter().all(|x| x.is_finite() && x.abs() <= 20.0)
+            })
             && (self.pending.is_none() || self.weights.len() == WIDTH * 8)
             && (self.weights.is_empty() || self.weights.len() == WIDTH * 8)
             && self.weights.iter().all(|x| x.is_finite() && x.abs() <= 4.0)
@@ -203,7 +256,7 @@ impl CircuitState {
         self.interrupt();
     }
     pub(crate) fn report(&self) -> Value {
-        json!({"interface":"sensory-descending-actor-critic-v3", "decisions":self.decisions,
+        json!({"interface":"sensory-descending-actor-critic-v4-pooled", "decisions":self.decisions,
             "updates":self.updates,"neural_trial_ms":self.decisions * WINDOW_MS as u64,
             "story":self.story.report(),"recent":self.recent,
             "value":self.last_value,"advantage":self.last_advantage,"entropy":self.last_entropy,
@@ -297,15 +350,16 @@ impl Brain {
             })
             .filter(|&i| degree[i] > 0)
             .collect();
-        inputs = diverse_population(&self.metadata.cells, inputs, &degree);
+        inputs = diverse_population(&self.metadata.cells, inputs, &degree, WIDTH);
         // Explicit odor-like memory prosthesis: reserve a sparse sensory pool
         // in the model's actual plastic KC->MBON circuit. The prior sensory
         // selection could bypass these KCs entirely, leaving DAN pulses with
         // no eligible synapses. These cells encode observations, never buttons.
         inputs.truncate(WIDTH - 64);
-        let mut memory: Vec<usize> = self.plastic.iter().map(|&(pre,_)|pre).collect();
-        memory.sort_unstable(); memory.dedup();
-        let memory = diverse_population(&self.metadata.cells,memory,&degree);
+        let mut memory: Vec<usize> = self.plastic.iter().map(|&(pre, _)| pre).collect();
+        memory.sort_unstable();
+        memory.dedup();
+        let memory = diverse_population(&self.metadata.cells, memory, &degree, WIDTH);
         inputs.extend(memory.into_iter().take(64));
         // Direction is explicitly pre -> post. Zero-conductance transmitter
         // edges cannot establish a functioning route in this LIF model.
@@ -334,7 +388,7 @@ impl Brain {
                     && hops[i] > 0
             })
             .collect();
-        outputs = diverse_population(&self.metadata.cells, outputs, &degree);
+        outputs = diverse_population(&self.metadata.cells, outputs, &degree, n);
         if inputs.is_empty() || outputs.is_empty() {
             return Err("No conducting sensory-to-descending paths in this graph".into());
         }
@@ -445,7 +499,8 @@ impl Brain {
             .collect();
         let wiring_report = json!({"input_indices":wiring.inputs,"readout_indices":wiring.outputs,
             "memory_sensory_neurons":wiring.inputs.iter().filter(|&&i|self.kc[i]).count(),
-            "readout_min_hops":wiring.hops,"propagation":"pre_to_post","input_readout_disjoint":true});
+            "readout_min_hops":wiring.hops,"propagation":"pre_to_post","input_readout_disjoint":true,
+            "readout_features":WIDTH,"readout_pooling":"type-side-round-robin-sqrt-normalized-v1"});
         // One shared sensory pass; no candidate button cues, output tonic drive,
         // dopamine pulses or plasticity during inference. Membrane/synaptic
         // state persists between decisions for temporal sensory integration;
@@ -459,21 +514,20 @@ impl Brain {
         self.config.learning = learning;
         result?;
         let wiring = self.wiring.as_ref().unwrap();
-        let mut readout = vec![0.0f32; WIDTH];
+        let mut signals = Vec::with_capacity(wiring.outputs.len());
         let mut activity = Vec::new();
         for (slot, &i) in wiring.outputs.iter().enumerate() {
             let voltage = (self.voltage[i] - self.config.rest_mv)
                 / (self.config.threshold_mv - self.config.rest_mv);
             let signal = 0.5 * (self.counts[i] as f32 / 4.0).tanh() + 0.5 * voltage.tanh();
-            readout[slot] = signal;
+            signals.push(signal);
             activity.push(json!({"index":i,"source_id":self.metadata.cells[i].id,
-                "spikes":self.counts[i],"voltage_mv":self.voltage[i],"signal":signal}));
+                "spikes":self.counts[i],"voltage_mv":self.voltage[i],"signal":signal,"pool":slot % WIDTH}));
         }
         // Preserve the direction of measured activity while making learning
         // independent of whether downstream responses are subthreshold.
         // Exactly silent readouts remain silent; no bias or fabricated spikes.
-        let readout_norm = readout.iter().map(|x|x*x).sum::<f32>().sqrt();
-        if readout_norm > 1e-6 { for value in &mut readout { *value /= readout_norm; } }
+        let readout = pool_readout(signals.into_iter());
         let learning_enabled =
             self.config.learning && self.config.rewards.enabled && config.teacher_enabled;
         // Context is an explicit engineered adapter input. Each head still
@@ -502,14 +556,32 @@ impl Brain {
             .map(|row| row.iter().zip(&readout).map(|(w, x)| w * x).sum::<f32>())
             .collect();
         let max = logits.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-        let mut policy: Vec<f32> = logits.iter().enumerate().map(|(i,x)| if i==7 && !config.allow_select {0.0} else {(x - max).exp()}).collect();
+        let mut policy: Vec<f32> = logits
+            .iter()
+            .enumerate()
+            .map(|(i, x)| {
+                if i == 7 && !config.allow_select {
+                    0.0
+                } else {
+                    (x - max).exp()
+                }
+            })
+            .collect();
         let total: f32 = policy.iter().sum();
         for p in &mut policy {
             *p /= total;
         }
         let probabilities: Vec<f32> = policy
             .iter()
-            .enumerate().map(|(i,p)| if i==7 && !config.allow_select {0.0} else {(1.0 - config.exploration as f32) * p + config.exploration as f32 / if config.allow_select {8.0} else {7.0}})
+            .enumerate()
+            .map(|(i, p)| {
+                if i == 7 && !config.allow_select {
+                    0.0
+                } else {
+                    (1.0 - config.exploration as f32) * p
+                        + config.exploration as f32 / if config.allow_select { 8.0 } else { 7.0 }
+                }
+            })
             .collect();
         self.circuit.last_entropy = -policy.iter().map(|p| p * p.max(1e-8).ln()).sum::<f32>();
         let policy_probabilities = policy.clone();
@@ -678,6 +750,143 @@ impl Brain {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "requires external MaleCNS data: FLYGON_TEST_DATA"]
+    fn full_graph_pooled_coverage_and_timed_activity() {
+        let root = std::path::PathBuf::from(std::env::var("FLYGON_TEST_DATA").unwrap());
+        let graph = std::fs::read(root.join("graph.bin")).unwrap();
+        let metadata = std::fs::read_to_string(root.join("metadata.json")).unwrap();
+        let mut brain = Brain::new(
+            &graph,
+            &metadata,
+            include_str!("../../../modpacks/flygon/operant.json"),
+        )
+        .unwrap();
+        drop(graph);
+        drop(metadata);
+        brain.ensure_wiring().unwrap();
+        let w = brain.wiring.as_ref().unwrap();
+        assert!(w.outputs.len() > WIDTH);
+        let unique: std::collections::BTreeSet<_> = w.outputs.iter().copied().collect();
+        assert_eq!(unique.len(), w.outputs.len());
+        assert!(
+            w.outputs
+                .iter()
+                .all(|&i| brain.metadata.cells[i].class == "descending_neuron")
+        );
+        assert!(w.inputs.iter().all(|i| !unique.contains(i)));
+        assert!(w.hops.iter().all(|&hop| hop > 0 && hop <= 12));
+        let output_count = w.outputs.len();
+        // Controlled broad sensory stimulus, not a gameplay success claim.
+        let inputs: Vec<u32> = w.inputs.iter().map(|&i| i as u32).collect();
+        brain.stimulate(&inputs, 30.0).unwrap();
+        brain.advance(150.0).unwrap();
+        let before = brain.checkpoint().unwrap();
+        let samples = brain.view_timed_spikes();
+        let counts = brain.view_spikes();
+        assert!(!samples.is_empty());
+        assert_eq!(samples.len() / 3, counts.len() / 2);
+        for (timed, count) in samples.chunks_exact(3).zip(counts.chunks_exact(2)) {
+            assert_eq!(&timed[..2], count);
+            assert!(timed[2] <= 1_000_000);
+        }
+        let mut view = crate::view::AnatomyView::new(&brain.view_anatomy()).unwrap();
+        view.update_timed_spikes(&samples).unwrap();
+        view.update_activity_connections(&brain.view_activity_connections().unwrap())
+            .unwrap();
+        view.animate(0.0, true).unwrap();
+        let early = view.render(320, 240, 0.0, 0.0, 1.0, "all", "{}").unwrap();
+        view.animate(0.8, true).unwrap();
+        assert_ne!(
+            early,
+            view.render(320, 240, 0.0, 0.0, 1.0, "all", "{}").unwrap()
+        );
+        assert_eq!(
+            before,
+            brain.checkpoint().unwrap(),
+            "rendering cannot change neural state"
+        );
+        brain.advance(50.0).unwrap();
+        let continuation = brain.checkpoint().unwrap();
+        brain.restore(&before).unwrap();
+        brain.advance(50.0).unwrap();
+        assert_eq!(continuation, brain.checkpoint().unwrap());
+        println!(
+            "reachable descending readouts={output_count}; pooled features={WIDTH}; spiking neurons={}; full-graph rendering and exact continuation passed",
+            samples.len() / 3
+        );
+        // Eight disjoint sensory channels, followed by a no-transmission control.
+        // All start from rest with learning off; no rewards or policy bypass.
+        brain.config.learning = false;
+        let readout = |b: &Brain| {
+            pool_readout(b.wiring.as_ref().unwrap().outputs.iter().map(|&i| {
+                0.5 * (b.counts[i] as f32 / 4.0).tanh()
+                    + 0.5
+                        * ((b.voltage[i] - b.config.rest_mv)
+                            / (b.config.threshold_mv - b.config.rest_mv))
+                            .tanh()
+            }))
+        };
+        brain.reset_dynamics();
+        brain.advance(150.0).unwrap();
+        assert!(readout(&brain).iter().all(|&x| x == 0.0));
+        let mut responses = Vec::new();
+        for channel in 0..8 {
+            brain.reset_dynamics();
+            let cue: Vec<u32> = inputs.iter().skip(channel).step_by(8).copied().collect();
+            brain.stimulate(&cue, 30.0).unwrap();
+            brain.advance(150.0).unwrap();
+            let response = readout(&brain);
+            assert!(response.iter().any(|x| x.abs() > 0.01));
+            responses.push(response);
+        }
+        let max_similarity = (0..8)
+            .flat_map(|a| (a + 1..8).map(move |b| (a, b)))
+            .map(|(a, b)| {
+                responses[a]
+                    .iter()
+                    .zip(&responses[b])
+                    .map(|(x, y)| x * y)
+                    .sum::<f32>()
+            })
+            .fold(-1.0f32, f32::max);
+        assert!(
+            max_similarity < 0.99,
+            "sensory channels must not collapse: {max_similarity}"
+        );
+        brain.reset_dynamics();
+        brain.weights.fill(0.0); // test-only lesion; external graph is never written
+        brain.stimulate(&inputs, 30.0).unwrap();
+        brain.advance(150.0).unwrap();
+        assert!(
+            brain.counts.iter().any(|&n| n > 0),
+            "sensory stimulus still fires"
+        );
+        assert!(
+            readout(&brain).iter().all(|&x| x == 0.0),
+            "readout requires graph transmission"
+        );
+        println!(
+            "eight sensory channels: maximum pairwise cosine={max_similarity}; quiet and connection-ablation controls passed"
+        );
+    }
+    #[test]
+    fn pooled_readout_uses_cells_beyond_the_old_cutoff() {
+        for source in [0, WIDTH - 1, WIDTH, WIDTH * 3 + 7] {
+            let mut signals = vec![0.0; WIDTH * 4];
+            signals[source] = 0.4;
+            let readout = pool_readout(signals.into_iter());
+            assert_eq!(readout[source % WIDTH], 1.0);
+            assert_eq!(readout.iter().filter(|&&x| x != 0.0).count(), 1);
+        }
+        assert_eq!(
+            pool_readout(std::iter::repeat_n(0.0, WIDTH * 4)),
+            vec![0.0; WIDTH]
+        );
+        let readout = pool_readout((0..WIDTH * 3).map(|i| (i as f32).sin()));
+        assert!((readout.iter().map(|x| x * x).sum::<f32>() - 1.0).abs() < 1e-5);
+        assert!(readout.iter().all(|x| x.is_finite() && x.abs() <= 1.0));
+    }
     fn transition(action: usize, reward: f32) -> Transition {
         let mut gradient = vec![0.125; 8];
         gradient[action] -= 1.0;

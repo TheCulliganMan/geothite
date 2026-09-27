@@ -20,6 +20,7 @@ use crystal_runtime::*;
 pub mod bevy_shell;
 #[cfg(feature = "bevy-shell")]
 pub use bevy_shell::{
+    BevyHostedMultiplayerConfig, BevyMeshtasticConfig, BevyMeshtasticConnection,
     BevyMultiplayerConfig, BevyShellConfig, BevyShellStart, VisibleShellBattleSmoke,
     VisibleShellBattleSmokeRef, VisibleShellOverworldSmoke, VisibleShellPartySmoke,
     VisibleShellSmokeItem, VisibleShellSmokePokemon, VisibleShellStartMenuSmoke,

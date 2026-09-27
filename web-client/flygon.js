@@ -69,9 +69,6 @@ $("integration").textContent = fast
   : "0.1 ms integration · reference mode";
 $("lab-controls").hidden = !laboratory;
 if (laboratory) {
-  $("play").disabled = true;
-  $("auto-reward").checked = false;
-  $("auto-reward").disabled = true;
   $("game-state").textContent = "Game controls disabled for conditioning";
 }
 const worker = new Worker("./flygon-worker.js", { type: "module" });
@@ -177,7 +174,6 @@ function syncTuning() {
   $("integration").textContent =
     `${config.dt_ms} ms integration · ${config.reset_synaptic_current_on_spike ? "synaptic reset ON" : "retained-current model"}${config.dt_ms > 0.1 ? " · approximate fast step" : ""}${config.operant ? " · sensory-to-descending policy" : balanced ? " · calibrated BCI" : ""}`;
   $("learning").checked = config.learning;
-  $("auto-reward").checked = config.rewards.enabled;
   $("step").textContent = config.operant
     ? "One neural decision"
     : `Step ${config.decision_ms} ms`;
@@ -219,7 +215,7 @@ function showMetrics(t) {
 }
 function showCircuits(t) {
   $("circuits").textContent =
-    `Last ${Number(t.activity_window_ms || 0).toFixed(1)} neural ms · ` +
+    `Last ${Number(t.activity_window_ms || 0).toFixed(1)} neural ms · ${Number(t.spiking_neurons || 0).toLocaleString()} / ${Number(t.neurons || 0).toLocaleString()} neurons spiked (${(100 * (t.spiking_neurons || 0) / Math.max(1, t.neurons || 0)).toFixed(2)}%) · ` +
     (t.circuit_activity || [])
       .map(
         (c) =>
@@ -290,7 +286,7 @@ async function step() {
       null,
       2,
     );
-    if ($("play").checked && game) {
+    if (!laboratory && game) {
       let outcome = null;
       try {
         if (r.action.button) transport.neuralButtonSubmissions++;
@@ -446,7 +442,6 @@ $("run").onclick = (event) => {
   $("run").textContent = running ? "Pause" : "Run brain";
   $("phase").textContent = running ? "RUNNING" : "PAUSED";
   if (running) {
-    $("play").checked = !laboratory;
     lastObservation = null;
     sensorFailures = 0;
     step();
@@ -468,7 +463,6 @@ async function tune() {
   for (const key of rewardKeys)
     next.rewards[key] = Number($("reward-" + key).value);
   next.learning = $("learning").checked;
-  next.rewards.enabled = $("auto-reward").checked;
   await command("configure", { config: next });
   config = next;
   syncTuning();
@@ -480,7 +474,6 @@ for (const id of [
   ...neuralKeys,
   ...rewardKeys.map((k) => "reward-" + k),
   "learning",
-  "auto-reward",
 ])
   $(id).onchange = () => tune().catch(error);
 $("reload").onclick = async () => {
@@ -626,10 +619,9 @@ $("erase").onclick = () => lab("erase");
 $("game").addEventListener("load", () => {
   const frame = $("game").contentWindow;
   const takeover = (event) => {
-    if (event.isTrusted && ($("play").checked || running)) {
+    if (event.isTrusted && !laboratory && (running || busy)) {
       controlEpoch++;
       running = false;
-      $("play").checked = false;
       $("run").textContent = "Run brain";
       bridge()?.cancel();
       $("phase").textContent = "PAUSED · HUMAN CONTROL";

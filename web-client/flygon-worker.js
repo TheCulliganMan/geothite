@@ -158,7 +158,7 @@ self.onmessage = async ({ data }) => {
       self.postMessage({ id, result: { records } }, [records.buffer]);
       return;
     } else if (kind === "activity") {
-      const samples = brain.view_spikes();
+      const samples = brain.view_timed_spikes();
       const edges = JSON.parse(brain.view_activity_connections());
       self.postMessage({ id, result: { samples, edges } }, [samples.buffer]);
       return;

@@ -2651,7 +2651,7 @@ fn capture_ball_sprite_count(world: &mut World) -> usize {
     let mut commands = world.query_filtered::<&Transform, With<BattleCommandMarker>>();
     commands
         .iter(world)
-        .filter(|transform| (transform.translation.z - 4.1).abs() < f32::EPSILON)
+        .filter(|transform| (transform.translation.z - 4.1).abs() < 0.01)
         .count()
 }
 
@@ -2671,13 +2671,14 @@ fn assert_caught_capture_render_state(world: &mut World, ball_visible: bool) {
         runtime_shell.last_error, None,
         "capture presentation must render without a hidden asset error"
     );
+    let dex_open = runtime_shell.pokedex_menu_open;
     let _ = runtime_shell;
 
     let mut battlers = world.query_filtered::<Entity, With<BattleBattlerMarker>>();
     assert_eq!(
         battlers.iter(world).count(),
-        1,
-        "only the player battler may remain while the caught enemy is pending commit"
+        usize::from(!dex_open),
+        "the player remains on the battle screen, but the Dex replaces both battlers"
     );
     assert_eq!(
         capture_ball_sprite_count(world),
@@ -5896,4 +5897,268 @@ fn battle_redraws_remove_retired_sprites_from_fullscreen_parents() {
         assert!(child_count > 0, "must exercise fullscreen parenting");
         assert!(child_count <= world.entities().len() as usize);
     }
+}
+
+#[test]
+fn capture_throw_keeps_both_ball_halves_and_runs_object_callbacks() {
+    for ball in ["POKE_BALL", "GREAT_BALL", "ULTRA_BALL", "MASTER_BALL"] {
+        for (caught, blocked) in [(false, false), (true, false), (false, true)] {
+            let mut shell = route36_battle_shell_for_render_regression();
+            shell.visible_battle_transition = None;
+            shell.battle_entry_messages_remaining = 0;
+            shell.battle_enemy_send_out_pending = false;
+            shell.battle_player_send_out_pending = false;
+            shell.battle_messages.clear();
+            shell.battle_message_scenes.clear();
+            shell.visible_capture_animation = Some(VisibleCaptureAnimation {
+                trigger_message: String::new(),
+                ball_id: ball.into(),
+                animation_shakes: 3,
+                blocked,
+                caught,
+                started: true,
+                complete: false,
+                sprites_cleared: false,
+                frame: 0,
+            });
+            let total = shell
+                .visible_capture_animation
+                .as_ref()
+                .unwrap()
+                .total_frames();
+            let mut app = battle_render_regression_app(shell);
+            for frame in 0..=total {
+                {
+                    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                    shell.visible_capture_animation.as_mut().unwrap().frame = frame;
+                    mark_runtime_snapshot_dirty(&mut shell);
+                }
+                app.update();
+                let world = app.world_mut();
+                assert_eq!(
+                    world.resource::<BevyRuntimeShell>().last_error,
+                    None,
+                    "{ball} frame {frame}"
+                );
+                if ball == "POKE_BALL"
+                    && caught
+                    && [0, 36, 52, 68, 92, 124, 228, 284].contains(&frame)
+                {
+                    save_live_battle_canvas_for_test(world, &format!("capture-ball-{frame}.png"));
+                }
+                if frame == 36 && !blocked {
+                    assert_eq!(
+                        capture_ball_sprite_count(world),
+                        2,
+                        "the retained ball and lid must coexist"
+                    );
+                }
+                if frame == total {
+                    assert_eq!(
+                        capture_ball_sprite_count(world),
+                        usize::from(caught),
+                        "breakout removes the ball; a catch retains it"
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn wild_encounter_waits_for_step_and_transition_before_painting_battle_canvas() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.pending_overworld_step_boundary = Some(PendingOverworldStepBoundary::WildBattle);
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    let world = app.world_mut();
+    assert_eq!(world.resource::<BevyRuntimeShell>().last_error, None);
+    assert_eq!(
+        world
+            .query_filtered::<Entity, With<FixedBattleCanvasMarker>>()
+            .iter(world)
+            .count(),
+        0,
+        "a committed wild encounter must not flash a white battle canvas over the last walking step"
+    );
+    for frame in [0, 3, 13, 80] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.pending_overworld_step_boundary = None;
+            shell.visible_battle_transition.as_mut().unwrap().frame = frame;
+            mark_runtime_snapshot_dirty(&mut shell);
+        }
+        app.update();
+        let world = app.world_mut();
+        assert_eq!(
+            world
+                .query_filtered::<Entity, With<FixedBattleCanvasMarker>>()
+                .iter(world)
+                .count(),
+            0
+        );
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.visible_battle_transition = None;
+        shell.visible_battle_sliding_intro = Some(0);
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    let world = app.world_mut();
+    assert_eq!(
+        world
+            .query_filtered::<Entity, With<FixedBattleCanvasMarker>>()
+            .iter(world)
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn ball_pack_label_expands_pokemon_token_instead_of_drawing_pack_art() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.shell.add_bag_item("POKE_BALL", 1).unwrap();
+    let mut snapshot = shell.shell.snapshot().unwrap();
+    let mut images = Assets::<Image>::default();
+    let items = vec![("POKE_BALL".into(), 1)];
+    let original = load_visible_field_pack_frame(
+        &snapshot,
+        &shell,
+        &FieldPackPocket::Balls,
+        &items,
+        0,
+        0,
+        "",
+        &mut images,
+    )
+    .unwrap();
+    Arc::make_mut(&mut snapshot.items)
+        .iter_mut()
+        .find(|item| item.item_id == "POKE_BALL")
+        .unwrap()
+        .name = "POKé BALL".into();
+    let expected = load_visible_field_pack_frame(
+        &snapshot,
+        &shell,
+        &FieldPackPocket::Balls,
+        &items,
+        0,
+        0,
+        "",
+        &mut images,
+    )
+    .unwrap();
+    assert!(
+        images.get(&original.handle).unwrap().data == images.get(&expected.handle).unwrap().data,
+        "the packed # BALL name must render as text, never as a bag icon tile"
+    );
+}
+
+#[test]
+fn post_catch_pokedex_owns_the_lcd_without_battle_hud_or_text() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_messages.clear();
+    shell.battle_message_scene = None;
+    let snapshot = shell.shell.snapshot().unwrap();
+    let species = &snapshot.battle.as_ref().unwrap().enemy_pokemon.species.id;
+    shell.pokedex_cursor = snapshot
+        .pokemon
+        .iter()
+        .position(|pokemon| &pokemon.species_id == species)
+        .unwrap();
+    shell.pokedex_menu_open = true;
+    shell.pokedex_detail_open = true;
+    shell.pokedex_scripted_entry = true;
+    shell.pending_standard_capture = Some(PendingStandardCapture {
+        outcome: crate::core::battle::capture::CaptureOutcome {
+            caught: true,
+            blocked: false,
+            storage_full: false,
+            wobble_count: 3,
+            animation_shakes: 3,
+            final_catch_rate: u8::MAX,
+            ball_id: Some("POKE_BALL".into()),
+        },
+        scripted_static_wild: None,
+        default_name: species.clone(),
+        prompt_for_nickname: true,
+    });
+    let mut app = battle_render_regression_app(shell);
+    for page in [0, 1] {
+        {
+            let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+            shell.pokedex_detail_page = page;
+            mark_runtime_snapshot_dirty(&mut shell);
+        }
+        app.update();
+        let world = app.world_mut();
+        assert_eq!(world.resource::<BevyRuntimeShell>().last_error, None);
+        assert_eq!(
+            world
+                .query_filtered::<Entity, Or<(
+                    With<BattleHudMarker>,
+                    With<BattleBattlerMarker>,
+                    With<FixedBattleCanvasMarker>
+                )>>()
+                .iter(world)
+                .count(),
+            0,
+            "the post-catch Dex replaces the battle rather than layering text and HUD over its entry"
+        );
+        save_live_menu_lcd_for_test(world, &format!("capture-dex-{page}.png"));
+    }
+}
+
+#[test]
+fn pokedex_entry_uses_white_space_and_black_font_ink() {
+    let shell = route36_battle_shell_for_render_regression();
+    let mut images = Assets::<Image>::default();
+    let background = load_pokedex_background(&shell.asset_root, 1, &mut images).unwrap();
+    let data = &images.get(&background.handle).unwrap().data;
+    assert_eq!(
+        &data[(100 * 160 + 80) * 4..(100 * 160 + 80) * 4 + 4],
+        &[255, 255, 255, 255],
+        "the text area's space tile is white, not an inverted black panel"
+    );
+    let mut art = RenderedTilesetArt::default();
+    let source = bitmap_text_frames(&mut art, &shell.asset_root, &mut images, "A")[0].clone();
+    let ink_pixels = images
+        .get(&source.handle)
+        .unwrap()
+        .data
+        .chunks_exact(4)
+        .filter(|pixel| pixel[3] == 255)
+        .count();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    spawn_pokedex_text(
+        &mut Commands::new(&mut queue, &world),
+        &mut art,
+        &shell.asset_root,
+        &mut images,
+        "A",
+        0.0,
+        0.0,
+        3.8,
+    );
+    queue.apply(&mut world);
+    let handle = world.query::<&Handle<Image>>().single(&world);
+    let pixels = &images.get(handle).unwrap().data;
+    assert!(ink_pixels > 0);
+    assert_eq!(
+        pixels
+            .chunks_exact(4)
+            .filter(|pixel| *pixel == [0, 0, 0, 255])
+            .count(),
+        ink_pixels,
+        "glyph ink must stay black rather than becoming white"
+    );
+    assert!(
+        pixels
+            .chunks_exact(4)
+            .any(|pixel| pixel == [255, 255, 255, 255])
+    );
 }

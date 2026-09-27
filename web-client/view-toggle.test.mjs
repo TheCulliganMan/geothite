@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { mountViewToggle } from './view-toggle.js';
 
-function mount(saved, savedCamera = {}) {
+function mount(saved, savedCamera = {}, startIn2D = false) {
   const values = new Map(saved === undefined ? [] : [['crystal.display.voxel', saved]]);
   for (const [key, value] of Object.entries(savedCamera)) values.set(key, value);
   const calls = [];
@@ -34,6 +34,7 @@ function mount(saved, savedCamera = {}) {
   };
   const controller = mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
     cameraControls,
+    startIn2D,
     button,
     canvas,
     storage: { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) },
@@ -147,4 +148,17 @@ test('drag ignores mouse and extra fingers and stops on cancellation, blur, and 
     ui.pointer('pointermove', 100, 0);
     assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
   }
+});
+
+
+test('Flygon starts in 2D despite saved 2.5D and still permits a manual switch', () => {
+  const ui = mount('true', {}, true);
+  assert.deepEqual(ui.calls, [false]);
+  assert.equal(ui.cameraControls.group.hidden, true);
+  assert.equal(ui.values.get('crystal.display.voxel'), 'true');
+  ui.click();
+  assert.deepEqual(ui.calls, [false, true]);
+  assert.equal(ui.cameraControls.group.hidden, false);
+  assert.deepEqual(mount('true', {}, true).calls, [false]);
+  assert.deepEqual(mount('true').calls, [true]);
 });

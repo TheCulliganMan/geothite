@@ -2019,7 +2019,7 @@ pub(super) fn visible_rival_name(snapshot: &RuntimeShellSnapshot) -> &str {
         .get("_rival_name")
         .map(String::as_str)
         .filter(|name| !name.trim().is_empty())
-        .unwrap_or("RIVAL")
+        .unwrap_or("???")
 }
 
 fn render_named_text_buffer(

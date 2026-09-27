@@ -283,7 +283,13 @@ pub enum BevyShellStart {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct BevyMultiplayerConfig {
+pub enum BevyMultiplayerConfig {
+    Hosted(BevyHostedMultiplayerConfig),
+    Meshtastic(BevyMeshtasticConfig),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BevyHostedMultiplayerConfig {
     pub server_url: String,
     pub server_token: Option<String>,
     pub world_id: String,
@@ -291,6 +297,21 @@ pub struct BevyMultiplayerConfig {
     pub display_name: String,
     pub rating: i32,
     pub rating_range: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BevyMeshtasticConfig {
+    pub connection: BevyMeshtasticConnection,
+    pub channel: u8,
+    pub display_name: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BevyMeshtasticConnection {
+    Serial(String),
+    Tcp(String),
+    Ble(String),
+    Browser,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -1107,10 +1128,16 @@ struct VisiblePcReleaseSequence {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum VisiblePcItemMovePhase { WaitPreviousSound, WaitFirstSound }
+enum VisiblePcItemMovePhase {
+    WaitPreviousSound,
+    WaitFirstSound,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct VisiblePcItemMoveSequence { target: usize, phase: VisiblePcItemMovePhase }
+struct VisiblePcItemMoveSequence {
+    target: usize,
+    phase: VisiblePcItemMovePhase,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum VisiblePcTransferKind {
@@ -1303,7 +1330,10 @@ impl NativeAudioBackend {
         let (stream, handle) =
             rodio::OutputStream::try_default().context("open native audio output stream")?;
         Ok(Self {
-            output: NativeAudioOutput { _stream: stream, handle },
+            output: NativeAudioOutput {
+                _stream: stream,
+                handle,
+            },
             music_sink: None,
             music_volume: 1.0,
             transient_sinks: Vec::new(),
@@ -1585,10 +1615,14 @@ impl BrowserAudioBackend {
             .as_ref()
             .expect("browser audio context initialized");
         if self.master_gain.is_none() {
-            let gain = context.create_gain().map_err(|error| anyhow::anyhow!("create master gain: {error:?}"))?;
-            gain.connect_with_audio_node(&context.destination()).map_err(|error| anyhow::anyhow!("connect master gain: {error:?}"))?;
+            let gain = context
+                .create_gain()
+                .map_err(|error| anyhow::anyhow!("create master gain: {error:?}"))?;
+            gain.connect_with_audio_node(&context.destination())
+                .map_err(|error| anyhow::anyhow!("connect master gain: {error:?}"))?;
             BROWSER_MASTER_GAIN.with(|master| *master.borrow_mut() = Some(gain.clone()));
-            gain.gain().set_value(BROWSER_MUTED.with(|muted| if muted.get() { 0.0 } else { 1.0 }));
+            gain.gain()
+                .set_value(BROWSER_MUTED.with(|muted| if muted.get() { 0.0 } else { 1.0 }));
             self.master_gain = Some(gain);
         }
         let destination = self.master_gain.as_ref().expect("master gain initialized");
@@ -1966,7 +2000,9 @@ fn set_visible_runtime_action_from_checksum(
 
 fn record_visible_runtime_error(runtime_shell: &mut BevyRuntimeShell, error: &anyhow::Error) {
     #[cfg(feature = "location-tester")]
-    runtime_shell.render_test_error.get_or_insert_with(|| format!("{error:#}"));
+    runtime_shell
+        .render_test_error
+        .get_or_insert_with(|| format!("{error:#}"));
     bevy::log::error!(target: "crystal_bevy::script_trace", error = %error, "visible runtime error");
     let action = format!("runtime:error:{error}");
     if let Ok(snapshot) = runtime_shell.shell.snapshot() {
@@ -3249,10 +3285,111 @@ impl VisibleTrainerExitAnimation {
 }
 
 impl VisibleCaptureAnimation {
+    fn object_events(&self) -> Vec<VisibleMoveObjectEvent> {
+        use VisibleMoveObjectCommand::{Increment, Set, Spawn};
+        let master = self.ball_id.eq_ignore_ascii_case("MASTER_BALL");
+        let mut events = vec![VisibleMoveObjectEvent {
+            frame: 0,
+            command: Spawn {
+                object_id: if self.blocked {
+                    "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
+                } else {
+                    "BATTLE_ANIM_OBJ_POKE_BALL"
+                }
+                .into(),
+                x: if self.blocked || master { 64 } else { 68 },
+                y: 92,
+                param: if self.blocked || master { 0x20 } else { 0x40 },
+            },
+        }];
+        let mut push = |frame, command| events.push(VisibleMoveObjectEvent { frame, command });
+        if self.blocked {
+            push(
+                20,
+                Spawn {
+                    object_id: "BATTLE_ANIM_OBJ_HIT_YFIX".into(),
+                    x: 112,
+                    y: 40,
+                    param: 0,
+                },
+            );
+            return events;
+        }
+        // Keep the retained lower half and the opening lid as separate
+        // objects. The shared object machine owns motion and framesets.
+        push(
+            36,
+            Spawn {
+                object_id: "BATTLE_ANIM_OBJ_POKE_BALL".into(),
+                x: 136,
+                y: 65,
+                param: 0,
+            },
+        );
+        push(36, Set { index: 2, value: 7 });
+        push(
+            52,
+            Spawn {
+                object_id: "BATTLE_ANIM_OBJ_BALL_POOF".into(),
+                x: 136,
+                y: 64,
+                param: 0x10,
+            },
+        );
+        if let Some(frame) = self.master_ball_special_frame() {
+            for index in 0..8 {
+                push(
+                    frame,
+                    Spawn {
+                        object_id: "BATTLE_ANIM_OBJ_MASTER_BALL_SPARKLE".into(),
+                        x: 136,
+                        y: 56,
+                        param: 0x30 + index,
+                    },
+                );
+            }
+        }
+        push(self.shake_entry_frame() + 8, Increment { index: 2 });
+        push(self.change_dex_sound_frame(), Increment { index: 1 });
+        let wobbles = if self.caught {
+            self.animation_shakes.saturating_sub(1)
+        } else {
+            self.animation_shakes
+        };
+        for check in 0..u16::from(wobbles) {
+            push(
+                self.first_shake_check_frame() + 48 * check,
+                Increment { index: 1 },
+            );
+        }
+        if !self.caught {
+            let frame = self.total_frames().saturating_sub(34);
+            push(
+                frame,
+                Set {
+                    index: 1,
+                    value: 11,
+                },
+            );
+            push(
+                frame,
+                Spawn {
+                    object_id: "BATTLE_ANIM_OBJ_BALL_POOF".into(),
+                    x: 136,
+                    y: 64,
+                    param: 0x10,
+                },
+            );
+        }
+        events.sort_by_key(|event| event.frame);
+        events
+    }
+
     fn throw_active(&self) -> bool {
         self.started && !self.complete
     }
 
+    #[cfg(test)]
     fn ball_visible(&self) -> bool {
         self.throw_active() || (self.complete && self.caught && !self.sprites_cleared)
     }
@@ -5103,17 +5240,36 @@ pub fn run_bevy_shell(
     #[cfg(not(feature = "location-tester"))]
     let native_rtc_source = NativeRtcSource::system_local();
     let native_rtc_source = if runtime.data().server_clock {
-        anyhow::ensure!(NativeRtcSource::Server.try_sample().is_some(), "real-time clock modpack requires a synchronized hosted server clock");
+        anyhow::ensure!(
+            NativeRtcSource::Server.try_sample().is_some(),
+            "real-time clock modpack requires a synchronized hosted server clock"
+        );
         NativeRtcSource::Server
-    } else { native_rtc_source };
+    } else {
+        native_rtc_source
+    };
     let runtime_shell = {
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_shell_initialize").entered();
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
-    let multiplayer_runtime = multiplayer_config
-        .map(|config| MultiplayerRuntime::new(&runtime_shell, config))
-        .transpose()?;
+    let multiplayer_runtime = match multiplayer_config {
+        Some(BevyMultiplayerConfig::Hosted(config)) => {
+            Some(MultiplayerRuntime::new(&runtime_shell, config)?)
+        }
+        Some(BevyMultiplayerConfig::Meshtastic(config)) => {
+            #[cfg(feature = "meshtastic")]
+            {
+                Some(MultiplayerRuntime::new_meshtastic(&runtime_shell, config)?)
+            }
+            #[cfg(not(feature = "meshtastic"))]
+            {
+                let _ = config;
+                anyhow::bail!("Meshtastic multiplayer requires --features meshtastic")
+            }
+        }
+        None => None,
+    };
 
     let mut app = App::new();
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
@@ -5176,8 +5332,19 @@ pub fn run_bevy_shell(
             ..default()
         }))
         .add_systems(Startup, setup_shell_view)
-        .add_systems(Update, apply_save_management.before(apply_player_customization).before(poll_multiplayer).before(apply_keyboard_input))
-        .add_systems(Update, apply_player_customization.before(poll_multiplayer).before(apply_keyboard_input))
+        .add_systems(
+            Update,
+            apply_save_management
+                .before(apply_player_customization)
+                .before(poll_multiplayer)
+                .before(apply_keyboard_input),
+        )
+        .add_systems(
+            Update,
+            apply_player_customization
+                .before(poll_multiplayer)
+                .before(apply_keyboard_input),
+        )
         .add_systems(Update, poll_multiplayer.before(apply_keyboard_input))
         .add_systems(
             Update,
@@ -5279,13 +5446,26 @@ pub fn run_bevy_shell(
                 .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
         );
     #[cfg(feature = "voxel-view")]
-    app.add_systems(PostUpdate, publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate).after(crystal_voxel_view::ActorHeadProjection));
+    app.add_systems(
+        PostUpdate,
+        publish_social_heads
+            .after(bevy::transform::TransformSystem::TransformPropagate)
+            .after(crystal_voxel_view::ActorHeadProjection),
+    );
     #[cfg(not(feature = "voxel-view"))]
-    app.add_systems(PostUpdate, publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate));
+    app.add_systems(
+        PostUpdate,
+        publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate),
+    );
     #[cfg(target_arch = "wasm32")]
-    app.add_systems(Update, apply_webmcp_input.before(poll_multiplayer).before(apply_keyboard_input))
-        .add_systems(PostUpdate, finish_webmcp_request)
-        .add_systems(PostUpdate, autosave_browser_progress);
+    app.add_systems(
+        Update,
+        apply_webmcp_input
+            .before(poll_multiplayer)
+            .before(apply_keyboard_input),
+    )
+    .add_systems(PostUpdate, finish_webmcp_request)
+    .add_systems(PostUpdate, autosave_browser_progress);
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
     app.add_systems(
         Update,
@@ -5295,7 +5475,11 @@ pub fn run_bevy_shell(
     app.add_systems(Startup, setup_fullscreen_scene)
         .add_systems(
             PostUpdate,
-            (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout)
+            (
+                sync_fullscreen_scaling,
+                sync_fullscreen_scene_layout,
+                sync_fullscreen_world_layout,
+            )
                 .chain()
                 .before(bevy::render::camera::CameraUpdateSystem)
                 .before(bevy::transform::TransformSystem::TransformPropagate),
@@ -5359,11 +5543,22 @@ pub fn run_bevy_shell(
     }
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_screenshot.clone() {
-        render_capture::install(&mut app, path, render_test_second_screenshot.clone(), render_test_live)?;
+        render_capture::install(
+            &mut app,
+            path,
+            render_test_second_screenshot.clone(),
+            render_test_live,
+        )?;
     }
     #[cfg(feature = "location-tester")]
-    if let Some(route)=render_test_walk.as_deref() {
-        render_walk::install(&mut app,route,render_test_screenshot.as_deref().context("--walk requires a screenshot path")?)?;
+    if let Some(route) = render_test_walk.as_deref() {
+        render_walk::install(
+            &mut app,
+            route,
+            render_test_screenshot
+                .as_deref()
+                .context("--walk requires a screenshot path")?,
+        )?;
     }
     let app_exit = app.run();
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
@@ -6582,7 +6777,9 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             // The explicit smoke driver has no audio backend. Keep the live
             // WaitSFX boundary; emulate its completion only in this driver.
             if runtime_shell.pokegear_exit == Some(VisiblePokegearExitPhase::WaitSound) {
-                runtime_shell.pending_audio.retain(|command| matches!(command.kind, ModpackAudioKind::Music));
+                runtime_shell
+                    .pending_audio
+                    .retain(|command| matches!(command.kind, ModpackAudioKind::Music));
                 runtime_shell.transient_audio_playing = false;
             }
             advance_visible_pokegear_exit(runtime_shell, 1)?;
@@ -6640,8 +6837,13 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             if runtime_shell
                 .pc_transfer_sequence
                 .as_ref()
-                .is_some_and(|active| matches!(active.phase,
-                    VisiblePcTransferPhase::RefusalWaitSfx | VisiblePcTransferPhase::SuccessWaitCry))
+                .is_some_and(|active| {
+                    matches!(
+                        active.phase,
+                        VisiblePcTransferPhase::RefusalWaitSfx
+                            | VisiblePcTransferPhase::SuccessWaitCry
+                    )
+                })
             {
                 let pending_audio = std::mem::take(&mut runtime_shell.pending_audio);
                 let transient_audio_playing = runtime_shell.transient_audio_playing;
@@ -7091,12 +7293,23 @@ fn initialize_bevy_runtime_shell(
     };
     #[cfg(feature = "location-tester")]
     if config.render_test_party {
-        anyhow::ensure!(runtime_tile_start, "render party requires a fresh location start");
+        anyhow::ensure!(
+            runtime_tile_start,
+            "render party requires a fresh location start"
+        );
         let trainer = shell.snapshot()?.trainer;
-        let owner_name = config.smoke_player_name.as_deref()
-            .filter(|name| !name.is_empty()).unwrap_or("RENDER");
+        let owner_name = config
+            .smoke_player_name
+            .as_deref()
+            .filter(|name| !name.is_empty())
+            .unwrap_or("RENDER");
         shell.add_party_pokemon(
-            "TOTODILE", 30, None, None, owner_name, trainer.player_id,
+            "TOTODILE",
+            30,
+            None,
+            None,
+            owner_name,
+            trainer.player_id,
             Dv::from_non_hp(10, 10, 10, 10),
         )?;
     }

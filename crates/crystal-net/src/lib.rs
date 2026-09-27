@@ -23,6 +23,8 @@ use crystal_core::state::GameEvent;
 use thiserror::Error;
 
 pub mod hosted;
+#[cfg(any(feature = "meshtastic", feature = "meshtastic-protocol"))]
+pub mod meshtastic;
 
 const LINK_FRAME_MAGIC: &[u8; 8] = b"CRYSLINK";
 pub const LINK_FRAME_VERSION: u16 = 2;
@@ -76,6 +78,8 @@ pub enum TransportError {
     TruncatedFrame { buffered_bytes: usize },
     #[error("hosted transport error: {message}")]
     Hosted { message: String },
+    #[error("Meshtastic transport error: {message}")]
+    Meshtastic { message: String },
 }
 
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -154,6 +158,10 @@ impl<T: LinkTransport> LinkEndpoint<T> {
 
     pub fn transport_mut(&mut self) -> &mut T {
         &mut self.transport
+    }
+
+    pub fn into_transport(self) -> T {
+        self.transport
     }
 
     pub fn local_hello(&self) -> &LinkHello {
@@ -1448,6 +1456,46 @@ fn link_frame_binary_config() -> impl bincode::config::Config {
     bincode::config::standard()
         .with_little_endian()
         .with_fixed_int_encoding()
+}
+
+#[cfg(any(feature = "meshtastic", feature = "meshtastic-protocol"))]
+fn encode_bare_link_message(
+    message: &LinkMessage,
+    session: &LinkSessionIdentity,
+) -> Result<Vec<u8>, TransportError> {
+    validate_link_message(message)?;
+    session
+        .validate()
+        .map_err(|error| TransportError::InvalidSession {
+            message: error.to_string(),
+        })?;
+    validate_frame_session(session, message)?;
+    let wire = WireLinkMessage::from_link_message(message, session)?;
+    bincode::serde::encode_to_vec(&wire, link_frame_binary_config()).map_err(|error| {
+        TransportError::InvalidPayload {
+            message: error.to_string(),
+        }
+    })
+}
+
+#[cfg(any(feature = "meshtastic", feature = "meshtastic-protocol"))]
+fn decode_bare_link_message(
+    payload: &[u8],
+    session: &LinkSessionIdentity,
+) -> Result<LinkMessage, TransportError> {
+    let (wire, consumed): (WireLinkMessage, usize) =
+        bincode::serde::decode_from_slice(payload, link_frame_binary_config())
+            .map_err(binary_decode_error)?;
+    if consumed != payload.len() {
+        return Err(TransportError::LengthMismatch {
+            declared: payload.len(),
+            actual: consumed,
+        });
+    }
+    let message = LinkMessage::from(wire);
+    validate_frame_session(session, &message)?;
+    validate_link_message(&message)?;
+    Ok(message)
 }
 
 fn binary_decode_error(error: bincode::error::DecodeError) -> TransportError {

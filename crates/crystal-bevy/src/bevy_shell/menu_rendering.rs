@@ -165,7 +165,7 @@ fn load_visible_field_pack_frame(
                     .context("TM/HM move is missing from the source catalog")?;
                 write(8, row, &move_data.name)?;
             } else {
-                write(8, row, &item.name)?;
+                write(8, row, &normalize_boot_text(&item.name))?;
             }
             if !matches!(pocket, FieldPackPocket::KeyItems)
                 && !item
@@ -5175,12 +5175,14 @@ fn render_playfield(
     let terminal_battle_scene = retained_battle_presentation
         .then(|| runtime_shell.battle_message_scene.clone())
         .flatten();
-    let battle_transition_surface_active = runtime_shell.visible_battle_transition.is_some()
-        && !matches!(
-            runtime_shell.pending_overworld_step_boundary,
-            Some(PendingOverworldStepBoundary::WildBattle)
-        );
-    let battle_canvas_active = !battle_transition_surface_active
+    let capture_pokedex_active = runtime_shell.pokedex_menu_open
+        && runtime_shell.pokedex_scripted_entry
+        && runtime_shell.pending_standard_capture.is_some();
+    // A wild encounter is committed before its last walking step finishes.
+    // Its pending transition still owns the overworld, even at frame zero.
+    // The post-catch Dex owns the whole LCD while the capture remains live.
+    let battle_canvas_active = runtime_shell.visible_battle_transition.is_none()
+        && !capture_pokedex_active
         && (snapshot.battle.is_some() || terminal_battle_scene.is_some());
     let state_hash = snapshot.visual_state_hash;
     runtime_shell.battle_lcd_animation_active = snapshot.battle.is_some();
@@ -5198,6 +5200,14 @@ fn render_playfield(
     let dialog_key = scene_dialog_entries.as_ref().ok().map(|entries| {
             let mut hasher = std::collections::hash_map::DefaultHasher::new();
             entries.hash(&mut hasher);
+            // Shop entries describe the complete message, while its pixels
+            // come from the typewriter. Do not retain the initial blank page
+            // when only the revealed character count has changed.
+            if snapshot.pending_shop.is_some() {
+                runtime_shell.field_text_reveal.as_ref()
+                    .map(|reveal| (&reveal.text, reveal.page_index, reveal.visible_chars))
+                    .hash(&mut hasher);
+            }
             field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
             strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
                 .hash(&mut hasher);
@@ -7745,6 +7755,7 @@ fn render_playfield(
             return;
         }
     } else if runtime_shell.visible_battle_transition.is_none()
+        && !capture_pokedex_active
         && let Some(battle) = &snapshot.battle
     {
         let player_send_out_pending = runtime_shell.battle_player_send_out_pending
@@ -7844,17 +7855,6 @@ fn render_playfield(
             record_visible_render_error(&mut commands, &mut runtime_shell, error);
             return;
         }
-        if let Err(error) = spawn_visible_capture_animation(
-            &mut commands,
-            &snapshot,
-            &runtime_shell,
-            &mut tileset_art,
-            &runtime_shell.asset_root,
-            &mut images,
-        ) {
-            record_visible_render_error(&mut commands, &mut runtime_shell, error);
-            return;
-        }
         if let Err(error) = spawn_visible_send_out_poof(
             &mut commands,
             &runtime_shell,
@@ -7866,6 +7866,7 @@ fn render_playfield(
             return;
         }
     } else if runtime_shell.visible_battle_transition.is_none()
+        && !capture_pokedex_active
         && let Some(scene) = terminal_battle_scene.as_ref()
     {
         if let Some(battle) = scene.battle.as_ref() {
@@ -7946,17 +7947,6 @@ fn render_playfield(
                 record_visible_render_error(&mut commands, &mut runtime_shell, error);
                 return;
             }
-            if let Err(error) = spawn_visible_capture_animation(
-                &mut commands,
-                scene,
-                &runtime_shell,
-                &mut tileset_art,
-                &runtime_shell.asset_root,
-                &mut images,
-            ) {
-                record_visible_render_error(&mut commands, &mut runtime_shell, error);
-                return;
-            }
             if let Err(error) = spawn_visible_send_out_poof(
                 &mut commands,
                 &runtime_shell,
@@ -7996,7 +7986,7 @@ fn render_playfield(
             return;
         }
     }
-    if runtime_shell.pokedex_scripted_entry && runtime_shell.pending_standard_capture.is_some() {
+    if capture_pokedex_active {
         if let Err(error) = spawn_field_pokedex_screen(
             &mut commands,
             &snapshot,

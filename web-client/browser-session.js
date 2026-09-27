@@ -9,6 +9,9 @@ function validPlayerId(value) {
 
 export function prepareSession({ url, localStorage, sessionStorage, crypto, now = () => Date.now() / 1000 }) {
   url = new URL(url);
+  if (url.searchParams.get('multiplayer') === 'meshtastic') {
+    return { playerId: 'meshtastic', url };
+  }
   if (url.searchParams.get('multiplayer') === 'off') {
     return { playerId: 'local', url };
   }

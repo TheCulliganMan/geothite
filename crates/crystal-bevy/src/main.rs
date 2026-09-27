@@ -2,12 +2,13 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, bail};
-use crystal_runtime::CrystalRuntime;
 use crystal_assets::{AssetRoot, modpack::COMPILED_GAME_PACK_EXTENSION};
-use crystal_core::save::SAVE_EXTENSION;
 use crystal_bevy::{
+    BevyHostedMultiplayerConfig, BevyMeshtasticConfig, BevyMeshtasticConnection,
     BevyMultiplayerConfig, BevyShellConfig, BevyShellStart,
 };
+use crystal_core::save::SAVE_EXTENSION;
+use crystal_runtime::CrystalRuntime;
 
 const DEFAULT_PACK_FILENAME: &str = "core-modular.crystalpack";
 #[cfg(target_arch = "wasm32")]
@@ -91,6 +92,7 @@ fn main() {
 
 #[cfg(target_arch = "wasm32")]
 async fn run_browser() -> Result<()> {
+    wait_for_browser_meshtastic().await?;
     let pack_bytes = fetch_browser_pack().await?;
     let loaded = crystal_assets::load_verified_compiled_game_pack_bytes(
         DEFAULT_BROWSER_PACK_FILENAME,
@@ -102,7 +104,10 @@ async fn run_browser() -> Result<()> {
     let multiplayer = browser_multiplayer_config()?;
     let save_path = browser_save_path_for_identity(
         runtime.modpack().id(),
-        multiplayer.as_ref().map(|config| config.player_id),
+        multiplayer.as_ref().and_then(|config| match config {
+            BevyMultiplayerConfig::Hosted(config) => Some(config.player_id),
+            BevyMultiplayerConfig::Meshtastic(_) => None,
+        }),
     );
     let continue_save_path = runtime
         .load_save_summary(&save_path)
@@ -118,7 +123,10 @@ async fn run_browser() -> Result<()> {
         runtime,
         match continue_save_path {
             Some(save_path) => BevyShellStart::LoadSave { save_path },
-            None => BevyShellStart::Title { spawn_identifier, save_path: None },
+            None => BevyShellStart::Title {
+                spawn_identifier,
+                save_path: None,
+            },
         },
         config,
     )
@@ -139,6 +147,22 @@ fn browser_multiplayer_config() -> Result<Option<BevyMultiplayerConfig>> {
         .map_err(|error| anyhow::anyhow!("parse browser multiplayer query: {error:?}"))?;
     if params.get("multiplayer").as_deref() == Some("off") {
         return Ok(None);
+    }
+    if params.get("multiplayer").as_deref() == Some("meshtastic") {
+        let channel = params
+            .get("meshtastic_channel")
+            .map(|value| value.parse::<u8>())
+            .transpose()
+            .context("Meshtastic channel must be an integer from 0 through 7")?
+            .unwrap_or(0);
+        anyhow::ensure!(channel <= 7, "Meshtastic channel must be from 0 through 7");
+        return Ok(Some(BevyMultiplayerConfig::Meshtastic(
+            BevyMeshtasticConfig {
+                connection: BevyMeshtasticConnection::Browser,
+                channel,
+                display_name: params.get("player_name").unwrap_or_else(|| "PLAYER".into()),
+            },
+        )));
     }
     let server_url = match params.get("multiplayer_server") {
         Some(value) => value,
@@ -169,21 +193,46 @@ fn browser_multiplayer_config() -> Result<Option<BevyMultiplayerConfig>> {
     let display_name = params
         .get("player_name")
         .unwrap_or_else(|| format!("PLAYER{:04}", player_id % 10_000));
-    Ok(Some(BevyMultiplayerConfig {
-        server_url,
-        server_token,
-        world_id: params.get("world").unwrap_or_else(|| "main".into()),
-        player_id,
-        display_name,
-        rating: params
-            .get("rating")
-            .and_then(|value| value.parse().ok())
-            .unwrap_or(1000),
-        rating_range: params
-            .get("rating_range")
-            .and_then(|value| value.parse().ok())
-            .unwrap_or(200),
-    }))
+    Ok(Some(BevyMultiplayerConfig::Hosted(
+        BevyHostedMultiplayerConfig {
+            server_url,
+            server_token,
+            world_id: params.get("world").unwrap_or_else(|| "main".into()),
+            player_id,
+            display_name,
+            rating: params
+                .get("rating")
+                .and_then(|value| value.parse().ok())
+                .unwrap_or(1000),
+            rating_range: params
+                .get("rating_range")
+                .and_then(|value| value.parse().ok())
+                .unwrap_or(200),
+        },
+    )))
+}
+
+#[cfg(target_arch = "wasm32")]
+async fn wait_for_browser_meshtastic() -> Result<()> {
+    let window = web_sys::window().context("browser window is unavailable")?;
+    if !window
+        .location()
+        .search()
+        .unwrap_or_default()
+        .contains("multiplayer=meshtastic")
+    {
+        return Ok(());
+    }
+    let ready = js_sys::Reflect::get(&js_sys::global(), &"__crystalMeshtasticReady".into())
+        .map_err(|error| anyhow::anyhow!("read browser Meshtastic readiness: {error:?}"))?;
+    anyhow::ensure!(
+        !ready.is_undefined(),
+        "browser Meshtastic bridge was not initialized"
+    );
+    wasm_bindgen_futures::JsFuture::from(js_sys::Promise::resolve(&ready))
+        .await
+        .map_err(|error| anyhow::anyhow!("connect browser Meshtastic radio: {error:?}"))?;
+    Ok(())
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -196,9 +245,11 @@ async fn fetch_browser_pack() -> Result<Vec<u8>> {
     // embedders without that presentation hook retain the native fetch path.
     if let Ok(value) = js_sys::Reflect::get(&window, &"__crystalFetchPack".into()) {
         if let Some(fetch) = value.dyn_ref::<js_sys::Function>() {
-            let pending = fetch.call1(&window, &DEFAULT_BROWSER_PACK_FILENAME.into())
+            let pending = fetch
+                .call1(&window, &DEFAULT_BROWSER_PACK_FILENAME.into())
                 .map_err(|error| anyhow::anyhow!("start pack download: {error:?}"))?;
-            let bytes = JsFuture::from(js_sys::Promise::resolve(&pending)).await
+            let bytes = JsFuture::from(js_sys::Promise::resolve(&pending))
+                .await
                 .map_err(|error| anyhow::anyhow!("download pack: {error:?}"))?;
             return Ok(js_sys::Uint8Array::new(&bytes).to_vec());
         }
@@ -242,6 +293,10 @@ struct Args {
     multiplayer_player_name: Option<String>,
     multiplayer_rating: Option<i32>,
     multiplayer_rating_range: Option<u32>,
+    meshtastic_serial: Option<String>,
+    meshtastic_tcp: Option<String>,
+    meshtastic_ble: Option<String>,
+    meshtastic_channel: Option<u8>,
 }
 
 fn parse_args_from(values: impl IntoIterator<Item = String>) -> Result<Args> {
@@ -342,6 +397,49 @@ fn parse_args_from(values: impl IntoIterator<Item = String>) -> Result<Args> {
                         .with_context(|| format!("invalid multiplayer rating range '{value}'"))?,
                 );
             }
+            "--meshtastic-serial" => {
+                let value = values
+                    .next()
+                    .context("--meshtastic-serial requires a port")?;
+                anyhow::ensure!(
+                    args.meshtastic_serial.is_none(),
+                    "--meshtastic-serial may be provided only once"
+                );
+                args.meshtastic_serial = Some(value);
+            }
+            "--meshtastic-tcp" => {
+                let value = values
+                    .next()
+                    .context("--meshtastic-tcp requires a host:port address")?;
+                anyhow::ensure!(
+                    args.meshtastic_tcp.is_none(),
+                    "--meshtastic-tcp may be provided only once"
+                );
+                args.meshtastic_tcp = Some(value);
+            }
+            "--meshtastic-ble" => {
+                let value = values
+                    .next()
+                    .context("--meshtastic-ble requires a device name or MAC")?;
+                anyhow::ensure!(
+                    args.meshtastic_ble.is_none(),
+                    "--meshtastic-ble may be provided only once"
+                );
+                args.meshtastic_ble = Some(value);
+            }
+            "--meshtastic-channel" => {
+                let value = values
+                    .next()
+                    .context("--meshtastic-channel requires an index from 0 through 7")?;
+                let channel = value
+                    .parse::<u8>()
+                    .with_context(|| format!("invalid Meshtastic channel '{value}'"))?;
+                anyhow::ensure!(
+                    channel <= 7,
+                    "--meshtastic-channel must be from 0 through 7"
+                );
+                args.meshtastic_channel = Some(channel);
+            }
             other => bail!("unknown argument '{other}'"),
         }
     }
@@ -350,17 +448,34 @@ fn parse_args_from(values: impl IntoIterator<Item = String>) -> Result<Args> {
 }
 
 fn validate_multiplayer_flags(args: &Args) -> Result<()> {
-    let mode_selected = args.multiplayer_server.is_some();
+    let meshtastic_modes = [
+        args.meshtastic_serial.is_some(),
+        args.meshtastic_tcp.is_some(),
+        args.meshtastic_ble.is_some(),
+    ]
+    .into_iter()
+    .filter(|selected| *selected)
+    .count();
+    anyhow::ensure!(
+        meshtastic_modes <= 1,
+        "choose exactly one Meshtastic connection: serial, TCP, or BLE"
+    );
+    anyhow::ensure!(
+        args.multiplayer_server.is_none() || meshtastic_modes == 0,
+        "hosted and Meshtastic multiplayer options are mutually exclusive"
+    );
+    let mode_selected = args.multiplayer_server.is_some() || meshtastic_modes == 1;
     let details_selected = args.multiplayer_token.is_some()
         || args.multiplayer_world.is_some()
         || args.multiplayer_player_id.is_some()
         || args.multiplayer_player_name.is_some()
         || args.multiplayer_rating.is_some()
-        || args.multiplayer_rating_range.is_some();
+        || args.multiplayer_rating_range.is_some()
+        || args.meshtastic_channel.is_some();
     if !mode_selected && details_selected {
         bail!("multiplayer options require --multiplayer-server");
     }
-    if mode_selected {
+    if args.multiplayer_server.is_some() {
         if args.multiplayer_player_id.is_none() {
             bail!("multiplayer requires --multiplayer-player-id");
         }
@@ -368,32 +483,63 @@ fn validate_multiplayer_flags(args: &Args) -> Result<()> {
             bail!("multiplayer requires --multiplayer-player-name");
         }
     }
+    if meshtastic_modes == 1 && args.multiplayer_player_name.is_none() {
+        bail!("Meshtastic multiplayer requires --multiplayer-player-name");
+    }
     Ok(())
 }
 
 #[cfg(not(target_arch = "wasm32"))]
 fn multiplayer_config(args: &Args) -> Result<Option<BevyMultiplayerConfig>> {
     validate_multiplayer_flags(args)?;
+    if let Some(connection) = args
+        .meshtastic_serial
+        .clone()
+        .map(BevyMeshtasticConnection::Serial)
+        .or_else(|| {
+            args.meshtastic_tcp
+                .clone()
+                .map(BevyMeshtasticConnection::Tcp)
+        })
+        .or_else(|| {
+            args.meshtastic_ble
+                .clone()
+                .map(BevyMeshtasticConnection::Ble)
+        })
+    {
+        return Ok(Some(BevyMultiplayerConfig::Meshtastic(
+            BevyMeshtasticConfig {
+                connection,
+                channel: args.meshtastic_channel.unwrap_or(0),
+                display_name: args
+                    .multiplayer_player_name
+                    .clone()
+                    .context("validated Meshtastic player name")?,
+            },
+        )));
+    }
     let Some(server_url) = &args.multiplayer_server else {
         return Ok(None);
     };
-    Ok(Some(BevyMultiplayerConfig {
-        server_url: server_url.clone(),
-        server_token: args.multiplayer_token.clone(),
-        world_id: args
-            .multiplayer_world
-            .clone()
-            .unwrap_or_else(|| "main".into()),
-        player_id: args
-            .multiplayer_player_id
-            .context("validated multiplayer player id")?,
-        display_name: args
-            .multiplayer_player_name
-            .clone()
-            .context("validated multiplayer player name")?,
-        rating: args.multiplayer_rating.unwrap_or(1000),
-        rating_range: args.multiplayer_rating_range.unwrap_or(200),
-    }))
+    Ok(Some(BevyMultiplayerConfig::Hosted(
+        BevyHostedMultiplayerConfig {
+            server_url: server_url.clone(),
+            server_token: args.multiplayer_token.clone(),
+            world_id: args
+                .multiplayer_world
+                .clone()
+                .unwrap_or_else(|| "main".into()),
+            player_id: args
+                .multiplayer_player_id
+                .context("validated multiplayer player id")?,
+            display_name: args
+                .multiplayer_player_name
+                .clone()
+                .context("validated multiplayer player name")?,
+            rating: args.multiplayer_rating.unwrap_or(1000),
+            rating_range: args.multiplayer_rating_range.unwrap_or(200),
+        },
+    )))
 }
 
 fn resolve_pack_path(explicit_pack: Option<&str>) -> Result<PathBuf> {
@@ -442,7 +588,7 @@ fn default_save_path(pack_directory: &Path, runtime: &CrystalRuntime) -> PathBuf
 
 fn print_usage() {
     println!(
-        "crystal-bevy [--pack <path.crystalpack>] [--load-save <path.{SAVE_EXTENSION}>] [--save-path <path.{SAVE_EXTENSION}>] [--multiplayer-server <ws-url> --multiplayer-player-id <id> --multiplayer-player-name <name>] [--multiplayer-token <token>] [--multiplayer-world <id>]"
+        "crystal-bevy [--pack <path.crystalpack>] [--load-save <path.{SAVE_EXTENSION}>] [--save-path <path.{SAVE_EXTENSION}>] [--multiplayer-server <ws-url> --multiplayer-player-id <id> --multiplayer-player-name <name>] [--multiplayer-token <token>] [--multiplayer-world <id>] [--meshtastic-serial <port> | --meshtastic-tcp <host:port> | --meshtastic-ble <name-or-mac>] [--meshtastic-channel <0..7>]"
     );
 }
 
@@ -487,6 +633,10 @@ mod tests {
                 multiplayer_player_name: None,
                 multiplayer_rating: None,
                 multiplayer_rating_range: None,
+                meshtastic_serial: None,
+                meshtastic_tcp: None,
+                meshtastic_ble: None,
+                meshtastic_channel: None,
             }
         );
 
@@ -516,7 +666,7 @@ mod tests {
         .expect("hosted multiplayer arguments");
         assert_eq!(
             multiplayer_config(&args).expect("hosted multiplayer config"),
-            Some(BevyMultiplayerConfig {
+            Some(BevyMultiplayerConfig::Hosted(BevyHostedMultiplayerConfig {
                 server_url: "ws://127.0.0.1:3003/v1/ws".to_string(),
                 server_token: None,
                 world_id: "main".to_string(),
@@ -524,7 +674,7 @@ mod tests {
                 display_name: "CHRIS".to_string(),
                 rating: 1000,
                 rating_range: 200,
-            })
+            }))
         );
 
         assert!(parse_args_from(["--multiplayer-world".to_string(), "main".to_string(),]).is_err());
@@ -532,6 +682,35 @@ mod tests {
             parse_args_from([
                 "--multiplayer-server".to_string(),
                 "ws://127.0.0.1:3003/v1/ws".to_string(),
+            ])
+            .is_err()
+        );
+
+        let mesh = parse_args_from([
+            "--meshtastic-serial".to_string(),
+            "/dev/ttyACM0".to_string(),
+            "--meshtastic-channel".to_string(),
+            "2".to_string(),
+            "--multiplayer-player-name".to_string(),
+            "KRIS".to_string(),
+        ])
+        .expect("Meshtastic arguments");
+        assert_eq!(
+            multiplayer_config(&mesh).unwrap(),
+            Some(BevyMultiplayerConfig::Meshtastic(BevyMeshtasticConfig {
+                connection: BevyMeshtasticConnection::Serial("/dev/ttyACM0".into()),
+                channel: 2,
+                display_name: "KRIS".into(),
+            }))
+        );
+        assert!(
+            parse_args_from([
+                "--meshtastic-serial".to_string(),
+                "/dev/ttyACM0".to_string(),
+                "--meshtastic-tcp".to_string(),
+                "radio:4403".to_string(),
+                "--multiplayer-player-name".to_string(),
+                "KRIS".to_string(),
             ])
             .is_err()
         );
@@ -581,7 +760,10 @@ mod tests {
             include_str!("../../crystal-assets/src/script_parsing.rs"),
         );
         assert!(runtime_source.contains("pub fn new_game("));
-        for entry in ["new_game_at_runtime_tile", "start_overworld_session_at_runtime_tile"] {
+        for entry in [
+            "new_game_at_runtime_tile",
+            "start_overworld_session_at_runtime_tile",
+        ] {
             assert!(runtime_source.contains(&format!(
                 "#[cfg(any(test, feature = \"test-fixtures\", feature = \"location-tester\"))]\n    pub fn {entry}("
             )));

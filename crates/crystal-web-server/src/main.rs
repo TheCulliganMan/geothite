@@ -352,8 +352,16 @@ async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Reques
         .insert("origin-agent-cluster", HeaderValue::from_static("?1"));
     response.headers_mut().insert(
         "permissions-policy",
-        HeaderValue::from_static("tools=(self)"),
+        HeaderValue::from_static("tools=(self), camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
     );
+    for (name, value) in [
+        ("x-content-type-options", "nosniff"),
+        ("x-frame-options", "SAMEORIGIN"),
+        ("referrer-policy", "no-referrer"),
+        ("content-security-policy", "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"),
+    ] {
+        response.headers_mut().insert(name, HeaderValue::from_static(value));
+    }
     response
 }
 
@@ -1067,6 +1075,27 @@ mod tests {
             connection_slots: Arc::new(Semaphore::new(2)),
             shutdown: watch::channel(false).0,
         }
+    }
+
+    #[tokio::test]
+    async fn security_headers_cover_success_and_missing_routes() {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let app = Router::new().route("/v1/clock", get(server_clock))
+            .layer(middleware::from_fn_with_state(test_state().config, cache_policy_headers));
+        let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap(); });
+        for path in ["/v1/clock", "/missing"] {
+            let mut stream = tokio::net::TcpStream::connect(address).await.unwrap();
+            stream.write_all(format!("GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").as_bytes()).await.unwrap();
+            let mut response = String::new();
+            stream.read_to_string(&mut response).await.unwrap();
+            let headers = response.split("\r\n\r\n").next().unwrap().to_ascii_lowercase();
+            for expected in ["x-content-type-options: nosniff", "x-frame-options: sameorigin",
+                "referrer-policy: no-referrer", "frame-ancestors 'self'", "camera=()", "microphone=()"] {
+                assert!(headers.contains(expected), "Missing {expected} on {path}");
+            }
+        }
+        server.abort();
     }
 
     #[tokio::test]

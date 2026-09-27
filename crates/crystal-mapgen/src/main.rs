@@ -12,7 +12,7 @@ use crystal_mapgen::{
     build_modpack, fetch_h3_batch_neighborhoods, fetch_h3_neighborhood, fetch_neighborhood,
     finalize_h3_batch_grid_seams, finalize_h3_source_transport, generate_grid,
     inspect_h3_regional_grid, plan_h3_batch, plan_h3_cell, plan_h3_region, prepare_h3_source,
-    render_h3_mosaic, render_tile_preview, repair_walkable_connectivity,
+    render_h3_mosaic, render_tile_preview,
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -42,10 +42,14 @@ struct Args {
     h3_generate_cells: Option<usize>,
     h3_render_proof: bool,
     resume: bool,
+    build_region: bool,
 }
 
 fn main() -> Result<()> {
     let args = parse_args(env::args().skip(1))?;
+    if args.build_region && args.h3_generate_cells.is_none() {
+        bail!("--build-region requires --h3-generate-cells");
+    }
     if args.h3_render_proof && args.h3_generate_cells.is_none() {
         bail!("--h3-render-proof requires --h3-generate-cells");
     }
@@ -214,10 +218,10 @@ fn main() -> Result<()> {
                 .cell(&entry.plan.cell)
                 .with_context(|| format!("regional plan omitted H3 cell {}", entry.plan.cell))?
                 .clone();
-            let mut expected_center = regional_cell
+            let expected_center = regional_cell
                 .facilities
                 .contains(&crystal_mapgen::H3Facility::PokemonCenter);
-            let mut expected_mart = regional_cell
+            let expected_mart = regional_cell
                 .facilities
                 .contains(&crystal_mapgen::H3Facility::Mart);
             attach_h3_regional_plan(&mut source, regional_cell, args.grid, args.grid)?;
@@ -227,7 +231,7 @@ fn main() -> Result<()> {
                 .context("regional source lost its H3 plan")?
                 .clone();
             let contract = build_h3_seam_contract(&source_plan, &source, args.grid, args.grid)?;
-            let mut grid = generate_grid(source, args.grid, args.grid)?;
+            let grid = generate_grid(source, args.grid, args.grid)?;
             let has_center = [
                 crystal_mapgen::MapCell::PokecenterNorthWest,
                 crystal_mapgen::MapCell::PokecenterNorthEast,
@@ -244,19 +248,11 @@ fn main() -> Result<()> {
             ]
             .into_iter()
             .all(|cell| grid.cells.contains(&cell));
-            expected_center &= has_center;
-            expected_mart &= has_mart;
-            if let Some(regional) = grid
-                .source
-                .h3
-                .as_mut()
-                .and_then(|plan| plan.regional.as_mut())
-            {
-                regional.facilities.retain(|facility| match facility {
-                    crystal_mapgen::H3Facility::PokemonCenter => has_center,
-                    crystal_mapgen::H3Facility::Mart => has_mart,
-                });
-            }
+            ensure!(
+                expected_center == has_center && expected_mart == has_mart,
+                "cell {} could not place its allocated services",
+                source_plan.cell
+            );
             generated_contexts.push((
                 cell_dir,
                 source_plan,
@@ -267,20 +263,15 @@ fn main() -> Result<()> {
             generated_grids.push(grid);
         }
         let grid_seam_finalization = finalize_h3_batch_grid_seams(&mut generated_grids)?;
-        for grid in &mut generated_grids {
-            repair_walkable_connectivity(grid);
-        }
+
         for ((cell_dir, source_plan, contract, expected_center, expected_mart), grid) in
-            generated_contexts.into_iter().zip(generated_grids)
+            generated_contexts.into_iter().zip(&generated_grids)
         {
-            let audit = audit_grid_with_facilities(&grid, expected_center, expected_mart);
-            let grid_seam_profile = build_h3_grid_seam_profile(&grid)?;
-            let regional_report = inspect_h3_regional_grid(&grid)?;
+            let audit = audit_grid_with_facilities(grid, expected_center, expected_mart);
+            let grid_seam_profile = build_h3_grid_seam_profile(grid)?;
+            let regional_report = inspect_h3_regional_grid(grid)?;
             fs::create_dir_all(&cell_dir)?;
-            fs::write(
-                cell_dir.join("grid.json"),
-                serde_json::to_vec_pretty(&grid)?,
-            )?;
+            fs::write(cell_dir.join("grid.json"), serde_json::to_vec_pretty(grid)?)?;
             fs::write(
                 cell_dir.join("audit.json"),
                 serde_json::to_vec_pretty(&audit)?,
@@ -297,7 +288,7 @@ fn main() -> Result<()> {
                 cell_dir.join("regional-report.json"),
                 serde_json::to_vec_pretty(&regional_report)?,
             )?;
-            if !audit.passed && raw_source.is_none() {
+            if !audit.passed {
                 bail!(
                     "H3 cell {} failed audit: {}",
                     source_plan.cell,
@@ -308,7 +299,7 @@ fn main() -> Result<()> {
             if args.h3_render_proof {
                 let temporary_pack = cell_dir.join("preview.crystalpack");
                 let generated = build_modpack(
-                    &grid,
+                    grid,
                     ModpackOptions {
                         base_pack: &args.base_pack,
                         output_pack: &temporary_pack,
@@ -328,22 +319,46 @@ fn main() -> Result<()> {
             regional_reports.push(regional_report);
         }
         let regional_audit = audit_h3_regional_batch(&regional_plan, &regional_reports);
-        if !regional_audit.passed && raw_source.is_none() {
+        if !regional_audit.passed {
             bail!(
                 "H3 regional audit failed: {}",
                 regional_audit.errors.join("; ")
             );
         }
         let seam_audit = audit_h3_seam_contracts(&contracts);
-        if !seam_audit.passed && raw_source.is_none() {
+        if !seam_audit.passed {
             bail!("H3 seam audit failed: {}", seam_audit.errors.join("; "));
         }
         let grid_seam_audit = audit_h3_grid_seams(&grid_seam_profiles);
-        if !grid_seam_audit.passed && raw_source.is_none() {
+        if !grid_seam_audit.passed {
             bail!(
                 "H3 rendered-grid seam audit failed: {}",
                 grid_seam_audit.errors.join("; ")
             );
+        }
+        if args.build_region {
+            let registry_path = args.output_dir.join("world.json");
+            let registry = if registry_path.exists() {
+                let previous: crystal_mapgen::GeneratedRegion =
+                    serde_json::from_slice(&fs::read(&registry_path)?)?;
+                previous.registry
+            } else {
+                crystal_mapgen::WorldMapRegistry::default()
+            };
+            let region = crystal_mapgen::build_region_modpack(
+                &generated_grids,
+                &runtime_connections,
+                crystal_mapgen::RegionBuildOptions {
+                    base_pack: &args.base_pack,
+                    output_pack: &args.output_dir.join("region.crystalpack"),
+                    start_cell: &manifest.origin,
+                    registry,
+                },
+            )?;
+            let pending_registry = registry_path.with_extension("pending.json");
+            fs::write(&pending_registry, serde_json::to_vec_pretty(&region)?)?;
+            fs::rename(&pending_registry, &registry_path)?;
+            println!("built connected region: {}", region.pack_path);
         }
         let pending_mosaic = args.output_dir.join("h3-buckyball.pending.png");
         if args.h3_render_proof {
@@ -514,8 +529,8 @@ fn main() -> Result<()> {
         generated.map_name, generated.runtime_tile_x, generated.runtime_tile_y
     );
     println!(
-        "audit passed: {} houses, {} wild sites, {:.1}% connected walkable terrain",
-        audit.houses, audit.wild_sites, audit.walkable_reach_percent
+        "audit passed: {} structures, {} encounter cells, {:.1}% connected walkable terrain",
+        audit.structures, audit.encounter_cells, audit.walkable_reach_percent
     );
     Ok(())
 }
@@ -533,6 +548,7 @@ fn parse_args(mut args: impl Iterator<Item = String>) -> Result<Args> {
     let mut h3_generate_cells = None;
     let mut h3_render_proof = false;
     let mut resume = false;
+    let mut build_region = false;
     while let Some(argument) = args.next() {
         let value = |args: &mut dyn Iterator<Item = String>, flag: &str| {
             args.next()
@@ -555,11 +571,13 @@ fn parse_args(mut args: impl Iterator<Item = String>) -> Result<Args> {
             }
             "--h3-render-proof" => h3_render_proof = true,
             "--resume" => resume = true,
+            "--build-region" => build_region = true,
             "--help" | "-h" => {
                 println!(
                     "crystal-mapgen --lat <degrees> --lon <degrees> [--miles 1] [--grid 64] [--output-dir path] [--base-pack path] [--source normalized.json]\n\
                      H3 cell: --lat <degrees> --lon <degrees> --h3-res <0-15> [--grid 64] [--source normalized.json]\n\
                      H3 proof: add --h3-generate-cells <1-37> to write audited grids and seam contracts\n\
+                     H3 playable: add --build-region to assemble one connected pack\n\
                      H3 visual: add --h3-render-proof for an exact-tile buckyball PNG\n\
                      H3 resume: add --resume to reuse only validated passed-cell OSM sources\n\
                      H3 topology: add --h3-plan-cells <1-5000> to write a connected manifest without fetching or rendering"
@@ -582,6 +600,7 @@ fn parse_args(mut args: impl Iterator<Item = String>) -> Result<Args> {
         h3_generate_cells,
         h3_render_proof,
         resume,
+        build_region,
     })
 }
 
@@ -960,6 +979,7 @@ mod tests {
         let prepared = |plan: &H3CellPlan, attribution: &str| {
             prepare_h3_source(
                 MapSource {
+                    schema_version: 2,
                     center: plan.center,
                     bounds: plan.fetch_bounds[0],
                     attribution: attribution.to_string(),
@@ -1025,6 +1045,7 @@ mod tests {
         .expect("H3 plan");
         let manifest = plan_h3_batch(plan.center, 6, 1).expect("one-cell manifest");
         let source = MapSource {
+            schema_version: 2,
             center: plan.center,
             bounds: plan.fetch_bounds[0],
             attribution: "legacy compressed fixture".to_string(),
@@ -1034,9 +1055,9 @@ mod tests {
         assert!(validate_explicit_batch_source(&source, &manifest).is_err());
         let audit = MapAudit {
             passed: true,
-            cell_counts: std::collections::BTreeMap::new(),
-            houses: 0,
-            wild_sites: 0,
+            district_counts: std::collections::BTreeMap::new(),
+            structures: 0,
+            encounter_cells: 0,
             walkable_reach_percent: 100.0,
             errors: Vec::new(),
             notes: Vec::new(),
@@ -1078,6 +1099,7 @@ mod tests {
         let manifest = plan_h3_batch(plan.center, 6, 1).expect("one-cell manifest");
         let source = prepare_h3_source(
             MapSource {
+                schema_version: 2,
                 center: plan.center,
                 bounds: plan.fetch_bounds[0],
                 attribution: "resume fixture".to_string(),
@@ -1119,9 +1141,9 @@ mod tests {
         );
         let audit = |passed| MapAudit {
             passed,
-            cell_counts: std::collections::BTreeMap::new(),
-            houses: 0,
-            wild_sites: 0,
+            district_counts: std::collections::BTreeMap::new(),
+            structures: 0,
+            encounter_cells: 0,
             walkable_reach_percent: if passed { 100.0 } else { 0.0 },
             errors: Vec::new(),
             notes: Vec::new(),
@@ -1316,9 +1338,9 @@ mod tests {
         let cells_dir = temporary.path().join("cells");
         let audit = MapAudit {
             passed: true,
-            cell_counts: std::collections::BTreeMap::new(),
-            houses: 0,
-            wild_sites: 0,
+            district_counts: std::collections::BTreeMap::new(),
+            structures: 0,
+            encounter_cells: 0,
             walkable_reach_percent: 100.0,
             errors: Vec::new(),
             notes: Vec::new(),
@@ -1338,6 +1360,7 @@ mod tests {
             fs::create_dir_all(&cell_dir).expect("create resumed cell directory");
             let source = prepare_h3_source(
                 MapSource {
+                    schema_version: 2,
                     center: entry.plan.center,
                     bounds: entry.plan.fetch_bounds[0],
                     attribution: format!("raw source for {}", entry.plan.cell),
@@ -1399,9 +1422,9 @@ mod tests {
         let cells_dir = temporary.path().join("cells");
         let audit = MapAudit {
             passed: true,
-            cell_counts: std::collections::BTreeMap::new(),
-            houses: 0,
-            wild_sites: 0,
+            district_counts: std::collections::BTreeMap::new(),
+            structures: 0,
+            encounter_cells: 0,
             walkable_reach_percent: 100.0,
             errors: Vec::new(),
             notes: Vec::new(),
@@ -1416,6 +1439,7 @@ mod tests {
             };
             let source = prepare_h3_source(
                 MapSource {
+                    schema_version: 2,
                     center: source_plan.center,
                     bounds: source_plan.fetch_bounds[0],
                     attribution: "resume validation fixture".to_string(),

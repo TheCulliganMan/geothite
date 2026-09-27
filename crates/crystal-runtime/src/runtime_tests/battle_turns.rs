@@ -5189,3 +5189,19 @@ fn runtime_special_battle_result_and_fishing_swarm_apply_pack_declared_effects()
     assert_ne!(caught.state_checksum, swarm.state_checksum);
     let _ = std::fs::remove_dir_all(root);
 }
+
+#[test]
+fn rival_battle_name_resolves_first_encounter_and_saved_name() {
+    for (saved, expected) in [
+        (None, "???"),
+        (Some(""), "???"),
+        (Some("   "), "???"),
+        (Some("SILVER"), "SILVER"),
+    ] {
+        assert_eq!(battle_trainer_display_name("<RIVAL>@", saved), expected);
+    }
+    assert_eq!(
+        battle_trainer_display_name("FALKNER@", Some("SILVER")),
+        "FALKNER"
+    );
+}

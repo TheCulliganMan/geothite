@@ -1,9 +1,129 @@
 include!("social.rs");
 
+#[cfg(feature = "meshtastic")]
+type BoxedMeshtasticIo = Box<dyn crystal_net::meshtastic::MeshtasticPacketIo>;
+
+enum RuntimeLinkSession {
+    Hosted(crystal_net::hosted::HostedLinkSession),
+    #[cfg(feature = "meshtastic")]
+    Meshtastic(crystal_net::meshtastic::MeshtasticLinkSession<BoxedMeshtasticIo>),
+}
+
+impl RuntimeLinkSession {
+    fn send(&mut self, message: LinkMessage) -> Result<()> {
+        match self {
+            Self::Hosted(session) => session.send(message).map_err(Into::into),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(session) => session.send(message).map_err(Into::into),
+        }
+    }
+
+    fn poll(&mut self) -> Result<Vec<crystal_net::hosted::HostedLinkSessionEvent>> {
+        match self {
+            Self::Hosted(session) => session.poll().map_err(Into::into),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(session) => session
+                .poll()
+                .map(|events| {
+                    events
+                        .into_iter()
+                        .map(|event| match event {
+                            crystal_net::meshtastic::MeshtasticLinkSessionEvent::Endpoint(
+                                event,
+                            ) => crystal_net::hosted::HostedLinkSessionEvent::Endpoint(event),
+                            crystal_net::meshtastic::MeshtasticLinkSessionEvent::GameplayReady => {
+                                crystal_net::hosted::HostedLinkSessionEvent::GameplayReady
+                            }
+                        })
+                        .collect()
+                })
+                .map_err(Into::into),
+        }
+    }
+
+    fn is_ready_for_gameplay(&self) -> bool {
+        match self {
+            Self::Hosted(session) => session.is_ready_for_gameplay(),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(session) => session.is_ready_for_gameplay(),
+        }
+    }
+
+    fn drain_server_messages(&mut self) -> Vec<crystal_net::hosted::ServerMessage> {
+        match self {
+            Self::Hosted(session) => session.drain_server_messages(),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(_) => Vec::new(),
+        }
+    }
+
+    fn update_presence(
+        &mut self,
+        map: String,
+        x: i32,
+        y: i32,
+        direction: &'static str,
+    ) -> Result<()> {
+        match self {
+            Self::Hosted(session) => session
+                .update_presence(map, x, y, direction)
+                .map_err(Into::into),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(_) => Ok(()),
+        }
+    }
+
+    fn report_result(&mut self, outcome: crystal_net::hosted::MatchOutcome) -> Result<()> {
+        match self {
+            Self::Hosted(session) => session.report_result(outcome).map_err(Into::into),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(_) => Ok(()),
+        }
+    }
+
+    fn send_social(&mut self, message: crystal_net::hosted::ClientMessage) -> Result<()> {
+        match self {
+            Self::Hosted(session) => session.send_social(message).map_err(Into::into),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(_) => Ok(()),
+        }
+    }
+
+    fn disconnect(&mut self) {
+        match self {
+            Self::Hosted(session) => session.disconnect(),
+            #[cfg(feature = "meshtastic")]
+            Self::Meshtastic(_) => {}
+        }
+    }
+
+    #[cfg(feature = "meshtastic")]
+    fn into_meshtastic_io(self) -> Option<BoxedMeshtasticIo> {
+        match self {
+            Self::Hosted(_) => None,
+            Self::Meshtastic(session) => Some(session.into_io()),
+        }
+    }
+}
+
+#[cfg(feature = "meshtastic")]
+struct MeshtasticLobbyRuntime {
+    lobby: crystal_net::meshtastic::MeshtasticLobby<BoxedMeshtasticIo>,
+    selected_mode: Option<crystal_net::hosted::MatchMode>,
+}
+
 struct MultiplayerRuntime {
     connection: Option<crystal_net::hosted::HostedConnection>,
-    session: Option<crystal_net::hosted::HostedLinkSession>,
-    config: BevyMultiplayerConfig,
+    session: Option<RuntimeLinkSession>,
+    config: BevyHostedMultiplayerConfig,
+    #[cfg(feature = "meshtastic")]
+    meshtastic_config: Option<BevyMeshtasticConfig>,
+    #[cfg(feature = "meshtastic")]
+    meshtastic_lobby: Option<MeshtasticLobbyRuntime>,
+    #[cfg(feature = "meshtastic")]
+    pending_meshtastic_invite: Option<crystal_net::meshtastic::IncomingMeshtasticInvite>,
+    #[cfg(feature = "meshtastic")]
+    selected_meshtastic_peer: Option<u32>,
     queued_mode: Option<crystal_net::hosted::MatchMode>,
     match_mode: Option<crystal_net::hosted::MatchMode>,
     result_reported: bool,
@@ -63,15 +183,28 @@ struct IncomingInteraction {
 }
 
 impl MultiplayerRuntime {
-    fn new(runtime_shell: &BevyRuntimeShell, mut config: BevyMultiplayerConfig) -> Result<Self> {
+    fn new(
+        runtime_shell: &BevyRuntimeShell,
+        mut config: BevyHostedMultiplayerConfig,
+    ) -> Result<Self> {
         if runtime_shell.shell.runtime().data().player_customization {
-            if let Some(profile) = stored_customization() { config.display_name = profile.handle; }
+            if let Some(profile) = stored_customization() {
+                config.display_name = profile.handle;
+            }
         }
         let connection = Self::connect(runtime_shell, &config)?;
         Ok(Self {
             connection: Some(connection),
             session: None,
             config: config.clone(),
+            #[cfg(feature = "meshtastic")]
+            meshtastic_config: None,
+            #[cfg(feature = "meshtastic")]
+            meshtastic_lobby: None,
+            #[cfg(feature = "meshtastic")]
+            pending_meshtastic_invite: None,
+            #[cfg(feature = "meshtastic")]
+            selected_meshtastic_peer: None,
             queued_mode: None,
             match_mode: None,
             result_reported: false,
@@ -113,9 +246,266 @@ impl MultiplayerRuntime {
         })
     }
 
+    #[cfg(feature = "meshtastic")]
+    fn new_meshtastic(
+        runtime_shell: &BevyRuntimeShell,
+        mut config: BevyMeshtasticConfig,
+    ) -> Result<Self> {
+        if runtime_shell.shell.runtime().data().player_customization {
+            if let Some(profile) = stored_customization() {
+                config.display_name = profile.handle;
+            }
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        let io: BoxedMeshtasticIo = {
+            use crystal_net::meshtastic::native::{NativeMeshtasticConnection, NativeMeshtasticIo};
+            let connection = match &config.connection {
+                BevyMeshtasticConnection::Serial(port) => {
+                    NativeMeshtasticConnection::Serial(port.clone())
+                }
+                BevyMeshtasticConnection::Tcp(address) => {
+                    NativeMeshtasticConnection::Tcp(address.clone())
+                }
+                BevyMeshtasticConnection::Ble(identifier) => {
+                    NativeMeshtasticConnection::Ble(identifier.clone())
+                }
+                BevyMeshtasticConnection::Browser => {
+                    anyhow::bail!("browser Meshtastic connection requested by native client")
+                }
+            };
+            Box::new(NativeMeshtasticIo::connect(connection).map_err(anyhow::Error::msg)?)
+        };
+        #[cfg(target_arch = "wasm32")]
+        let io: BoxedMeshtasticIo = {
+            match &config.connection {
+                BevyMeshtasticConnection::Browser => Box::new(
+                    crystal_net::meshtastic::browser::BrowserMeshtasticIo::connect()
+                        .map_err(anyhow::Error::msg)?,
+                ),
+                _ => anyhow::bail!("native Meshtastic connection requested by browser client"),
+            }
+        };
+        let player_id = u64::from(io.local_node_id());
+        let descriptor = runtime_shell.shell.link_session_descriptor(
+            "meshtastic-discovery",
+            player_id,
+            config.display_name.clone(),
+        )?;
+        let lobby = crystal_net::meshtastic::MeshtasticLobby::new(
+            io,
+            config.channel,
+            config.display_name.clone(),
+            &descriptor.session,
+        )
+        .map_err(anyhow::Error::msg)?;
+        Ok(Self {
+            connection: None,
+            session: None,
+            config: BevyHostedMultiplayerConfig {
+                server_url: String::new(),
+                server_token: None,
+                world_id: "meshtastic".into(),
+                player_id,
+                display_name: config.display_name.clone(),
+                rating: 0,
+                rating_range: 0,
+            },
+            meshtastic_config: Some(config),
+            meshtastic_lobby: Some(MeshtasticLobbyRuntime {
+                lobby,
+                selected_mode: None,
+            }),
+            pending_meshtastic_invite: None,
+            selected_meshtastic_peer: None,
+            queued_mode: None,
+            match_mode: None,
+            result_reported: false,
+            session_settled: false,
+            direct_mode: None,
+            direct_session: false,
+            pending_interaction: None,
+            last_profile: None,
+            last_presence: None,
+            presence_frames_since_send: 0,
+            remote_presences: HashMap::new(),
+            player_id,
+            peer_player_id: None,
+            peer_player_name: None,
+            trade_id_prefix: "pending".into(),
+            trade_sequence: 1,
+            owns_internal_clock: false,
+            last_sent_link_room: None,
+            remote_link_room: None,
+            game_link_ready: false,
+            party_sent: false,
+            remote_party: None,
+            active_trade: None,
+            peer_trade_offers: VecDeque::new(),
+            peer_trade_confirmations: VecDeque::new(),
+            link_battle_random: None,
+            link_battle_random_sent: false,
+            link_battle_started: false,
+            failed: false,
+            reconnect_frames: 0,
+            reconnect_attempt: 0,
+            social_notice: None,
+            sent_input_count: 0,
+            sent_battle_action_count: 0,
+            sent_menu_result_count: 0,
+            peer_inputs: VecDeque::new(),
+            peer_battle_actions: VecDeque::new(),
+            peer_menu_results: VecDeque::new(),
+        })
+    }
+
+    #[cfg(feature = "meshtastic")]
+    fn poll_meshtastic(
+        &mut self,
+        runtime_shell: &mut BevyRuntimeShell,
+        keys: &mut ButtonInput<KeyCode>,
+    ) -> Result<()> {
+        if self.session.is_some() {
+            return self.poll_active_session(runtime_shell);
+        }
+        let mode = requested_match_mode(
+            runtime_shell.shell.session().state(),
+            runtime_shell.pending_link_room_selection,
+        );
+        let mut negotiated = None;
+        if let Some(mesh) = self.meshtastic_lobby.as_mut() {
+            if mesh.selected_mode != mode {
+                match mode {
+                    Some(mode) => mesh.lobby.enter_room(meshtastic_room(mode)),
+                    None => mesh.lobby.leave_room(),
+                }
+                mesh.selected_mode = mode;
+                self.selected_meshtastic_peer = None;
+                self.pending_meshtastic_invite = None;
+            }
+            for event in mesh.lobby.poll().map_err(anyhow::Error::msg)? {
+                match event {
+                    crystal_net::meshtastic::MeshtasticLobbyEvent::PeerSeen(peer) => {
+                        if crystal_net::meshtastic::lower_node_is_host(
+                            self.player_id as u32,
+                            peer.node_id,
+                        ) {
+                            self.selected_meshtastic_peer.get_or_insert(peer.node_id);
+                            runtime_shell.last_action_status = Some(format!(
+                                "Meshtastic peer: {}. Press A to invite.",
+                                peer.display_name
+                            ));
+                        } else {
+                            runtime_shell.last_action_status = Some(format!(
+                                "Meshtastic peer: {}. Waiting for their invitation.",
+                                peer.display_name
+                            ));
+                        }
+                    }
+                    crystal_net::meshtastic::MeshtasticLobbyEvent::Invite(invite) => {
+                        runtime_shell.last_action_status = Some(format!(
+                            "NODE {:08x} invites you. Press A to accept or B to decline.",
+                            invite.from_node
+                        ));
+                        self.pending_meshtastic_invite = Some(invite);
+                    }
+                    crystal_net::meshtastic::MeshtasticLobbyEvent::SessionAccepted(session) => {
+                        negotiated = Some(session);
+                    }
+                    crystal_net::meshtastic::MeshtasticLobbyEvent::InviteDeclined { .. } => {
+                        runtime_shell.last_action_status =
+                            Some("Meshtastic invitation declined or timed out".into());
+                    }
+                    crystal_net::meshtastic::MeshtasticLobbyEvent::PeerExpired { node_id } => {
+                        if self.selected_meshtastic_peer == Some(node_id) {
+                            self.selected_meshtastic_peer = None;
+                        }
+                    }
+                }
+            }
+            if self.pending_meshtastic_invite.is_none()
+                && !mesh.lobby.has_pending_invite()
+                && keys.just_pressed(KeyCode::KeyZ)
+                && let Some(peer) = self.selected_meshtastic_peer
+            {
+                mesh.lobby.invite(peer).map_err(anyhow::Error::msg)?;
+                runtime_shell.last_action_status = Some("Meshtastic invitation sent".into());
+                keys.reset(KeyCode::KeyZ);
+            }
+            if let Some(invite) = self.pending_meshtastic_invite.clone() {
+                if keys.just_pressed(KeyCode::KeyZ) {
+                    negotiated = mesh
+                        .lobby
+                        .respond(&invite, true)
+                        .map_err(anyhow::Error::msg)?;
+                    self.pending_meshtastic_invite = None;
+                    keys.reset(KeyCode::KeyZ);
+                } else if keys.just_pressed(KeyCode::KeyX) {
+                    mesh.lobby
+                        .respond(&invite, false)
+                        .map_err(anyhow::Error::msg)?;
+                    self.pending_meshtastic_invite = None;
+                    keys.reset(KeyCode::KeyX);
+                    runtime_shell.last_action_status =
+                        Some("Meshtastic invitation declined".into());
+                }
+            }
+        }
+        if let Some(session) = negotiated {
+            self.start_meshtastic_session(runtime_shell, session)?;
+        }
+        self.poll_active_session(runtime_shell)
+    }
+
+    #[cfg(feature = "meshtastic")]
+    fn start_meshtastic_session(
+        &mut self,
+        runtime_shell: &mut BevyRuntimeShell,
+        negotiated: crystal_net::meshtastic::NegotiatedMeshtasticSession,
+    ) -> Result<()> {
+        let mode = meshtastic_mode(negotiated.room);
+        let descriptor = runtime_shell.shell.link_session_descriptor(
+            format!("mesh-{:08x}", negotiated.session_nonce),
+            self.player_id,
+            self.config.display_name.clone(),
+        )?;
+        let io = self
+            .meshtastic_lobby
+            .take()
+            .context("Meshtastic lobby disappeared")?
+            .lobby
+            .into_io();
+        let channel = self
+            .meshtastic_config
+            .as_ref()
+            .context("Meshtastic config disappeared")?
+            .channel;
+        let transport = crystal_net::meshtastic::MeshtasticLinkTransport::new(
+            io,
+            descriptor.session.clone(),
+            negotiated.session_nonce,
+            negotiated.peer_node,
+            channel,
+        )?;
+        self.session = Some(RuntimeLinkSession::Meshtastic(
+            crystal_net::meshtastic::MeshtasticLinkSession::new(
+                transport,
+                descriptor.hello,
+                descriptor.save_checkpoint,
+            )?,
+        ));
+        self.trade_id_prefix = format!("mesh-{:08x}", negotiated.session_nonce);
+        self.match_mode = Some(mode);
+        self.queued_mode = Some(mode);
+        self.owns_internal_clock = negotiated.local_is_host;
+        self.peer_player_id = Some(u64::from(negotiated.peer_node));
+        self.peer_player_name = Some(format!("NODE {:08x}", negotiated.peer_node));
+        runtime_shell.last_action_status = Some("Meshtastic link accepted".into());
+        Ok(())
+    }
+
     fn connect(
         runtime_shell: &BevyRuntimeShell,
-        config: &BevyMultiplayerConfig,
+        config: &BevyHostedMultiplayerConfig,
     ) -> Result<crystal_net::hosted::HostedConnection> {
         let pack = runtime_shell.shell.runtime().pack_identity();
         let identity = crystal_net::hosted::ClientIdentity {
@@ -138,6 +528,18 @@ impl MultiplayerRuntime {
     }
 
     fn poll(
+        &mut self,
+        runtime_shell: &mut BevyRuntimeShell,
+        keys: &mut ButtonInput<KeyCode>,
+    ) -> Result<()> {
+        #[cfg(feature = "meshtastic")]
+        if self.meshtastic_config.is_some() {
+            return self.poll_meshtastic(runtime_shell, keys);
+        }
+        self.poll_hosted(runtime_shell, keys)
+    }
+
+    fn poll_hosted(
         &mut self,
         runtime_shell: &mut BevyRuntimeShell,
         keys: &mut ButtonInput<KeyCode>,
@@ -197,22 +599,29 @@ impl MultiplayerRuntime {
                     is_host,
                 } => {
                     social_event(&crystal_net::hosted::ServerMessage::MatchFound {
-                        session_id, mode, opponent_display_name: opponent_display_name.clone(),
-                        opponent_user_id, is_host,
+                        session_id,
+                        mode,
+                        opponent_display_name: opponent_display_name.clone(),
+                        opponent_user_id,
+                        is_host,
                     });
                     if Some(mode) != self.queued_mode && Some(mode) != self.direct_mode {
                         anyhow::bail!("hosted server returned a different match mode");
                     }
                     if self.direct_mode == Some(mode)
-                        && direct_interaction_block_reason(runtime_shell.shell.session().state()).is_some()
+                        && direct_interaction_block_reason(runtime_shell.shell.session().state())
+                            .is_some()
                     {
-                        self.connection.as_mut().context("matched connection is missing")?
+                        self.connection
+                            .as_mut()
+                            .context("matched connection is missing")?
                             .send(crystal_net::hosted::ClientMessage::Result {
                                 session_id,
                                 outcome: crystal_net::hosted::MatchOutcome::Cancelled,
                             })?;
                         self.direct_mode = None;
-                        runtime_shell.last_action_status = Some("Invitation cancelled because you are no longer ready".into());
+                        runtime_shell.last_action_status =
+                            Some("Invitation cancelled because you are no longer ready".into());
                         continue;
                     }
                     matched = Some((session_id, mode, opponent_display_name, is_host));
@@ -220,11 +629,15 @@ impl MultiplayerRuntime {
                 crystal_net::hosted::ServerMessage::ResultSettled { session_id, .. } => {
                     // A peer may cancel before we have consumed MatchFound.
                     // Do not bootstrap an already-settled session from this batch.
-                    if matched.as_ref().is_some_and(|(id, _, _, _)| *id == session_id) {
+                    if matched
+                        .as_ref()
+                        .is_some_and(|(id, _, _, _)| *id == session_id)
+                    {
                         matched = None;
                         self.direct_mode = None;
                         self.queued_mode = None;
-                        runtime_shell.last_action_status = Some("Partner cancelled the session".into());
+                        runtime_shell.last_action_status =
+                            Some("Partner cancelled the session".into());
                     }
                 }
                 message => self.handle_server_message(message)?,
@@ -244,7 +657,7 @@ impl MultiplayerRuntime {
                 .connection
                 .take()
                 .context("matched hosted connection is missing")?;
-            self.session = Some(
+            self.session = Some(RuntimeLinkSession::Hosted(
                 crystal_net::hosted::HostedLinkSession::new(
                     connection,
                     session_id,
@@ -252,7 +665,7 @@ impl MultiplayerRuntime {
                     descriptor.save_checkpoint,
                 )
                 .context("start hosted deterministic link session")?,
-            );
+            ));
             self.trade_id_prefix = session_id.to_string();
             self.match_mode = Some(mode);
             self.result_reported = false;
@@ -264,6 +677,10 @@ impl MultiplayerRuntime {
             runtime_shell.last_action_status =
                 Some(format!("Matched with {opponent_display_name}"));
         }
+        self.poll_active_session(runtime_shell)
+    }
+
+    fn poll_active_session(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         if self.session.is_some() {
             let (events, messages) = {
                 let session = self
@@ -296,7 +713,7 @@ impl MultiplayerRuntime {
         if self
             .session
             .as_ref()
-            .is_some_and(crystal_net::hosted::HostedLinkSession::is_ready_for_gameplay)
+            .is_some_and(RuntimeLinkSession::is_ready_for_gameplay)
         {
             self.send_local_party(runtime_shell)?;
             self.send_link_room_selection(runtime_shell)?;
@@ -306,22 +723,36 @@ impl MultiplayerRuntime {
             self.advance_colosseum_turn(runtime_shell)?;
             self.advance_colosseum_replacement(runtime_shell)?;
             self.finish_colosseum_if_terminal(runtime_shell)?;
-            self.send_pending_inputs(runtime_shell)?;
+            #[cfg(feature = "meshtastic")]
+            let low_bandwidth_link = self.meshtastic_config.is_some();
+            #[cfg(not(feature = "meshtastic"))]
+            let low_bandwidth_link = false;
+            if !low_bandwidth_link {
+                self.send_pending_inputs(runtime_shell)?;
+                self.send_pending_menu_results(runtime_shell)?;
+            }
             self.send_pending_battle_actions(runtime_shell)?;
-            self.send_pending_menu_results(runtime_shell)?;
         }
         Ok(())
     }
 
     fn publish_presence(&mut self, runtime_shell: &BevyRuntimeShell) -> Result<()> {
         const PRESENCE_HEARTBEAT_FRAMES: u16 = 30;
-        if runtime_shell.shell.runtime().data().player_customization && self.session.is_none()
-            && self.queued_mode.is_none() && self.direct_mode.is_none() && self.pending_interaction.is_none() {
-            let profile = (self.config.display_name.clone(), runtime_shell.shell.session().state().player_gender);
+        if runtime_shell.shell.runtime().data().player_customization
+            && self.session.is_none()
+            && self.queued_mode.is_none()
+            && self.direct_mode.is_none()
+            && self.pending_interaction.is_none()
+        {
+            let profile = (
+                self.config.display_name.clone(),
+                runtime_shell.shell.session().state().player_gender,
+            );
             if self.last_profile.as_ref() != Some(&profile) {
                 if let Some(connection) = self.connection.as_mut() {
                     connection.send(crystal_net::hosted::ClientMessage::SetProfile {
-                        display_name: profile.0.clone(), player_gender: profile.1,
+                        display_name: profile.0.clone(),
+                        player_gender: profile.1,
                     })?;
                     self.last_profile = Some(profile);
                 }
@@ -409,10 +840,18 @@ impl MultiplayerRuntime {
                     kind,
                 });
             }
-            crystal_net::hosted::ServerMessage::InteractionResponse { request_id, accepted, .. } => {
+            crystal_net::hosted::ServerMessage::InteractionResponse {
+                request_id,
+                accepted,
+                ..
+            } => {
                 if !accepted {
                     self.direct_mode = None;
-                    if self.pending_interaction.as_ref().is_some_and(|request| request.request_id == request_id) {
+                    if self
+                        .pending_interaction
+                        .as_ref()
+                        .is_some_and(|request| request.request_id == request_id)
+                    {
                         self.pending_interaction = None;
                     }
                     self.social_notice = Some("Invitation declined or cancelled".into());
@@ -423,7 +862,9 @@ impl MultiplayerRuntime {
             }
             crystal_net::hosted::ServerMessage::Error { code, message } => {
                 if matches!(code.as_str(), "invalid_request" | "chat_error") {
-                    if code == "invalid_request" { self.direct_mode = None; }
+                    if code == "invalid_request" {
+                        self.direct_mode = None;
+                    }
                     self.social_notice = Some(message);
                 } else {
                     anyhow::bail!("hosted multiplayer server error {code}: {message}");
@@ -440,7 +881,8 @@ impl MultiplayerRuntime {
         keys: &mut ButtonInput<KeyCode>,
     ) -> Result<()> {
         if let Some(request) = self.pending_interaction.clone() {
-            let unavailable = direct_interaction_block_reason(runtime_shell.shell.session().state());
+            let unavailable =
+                direct_interaction_block_reason(runtime_shell.shell.session().state());
             let accepted = if unavailable.is_some() {
                 Some(false)
             } else if keys.just_pressed(KeyCode::KeyZ) {
@@ -465,7 +907,9 @@ impl MultiplayerRuntime {
                 })
                 .context("respond to hosted player interaction")?;
             social_event(&crystal_net::hosted::ServerMessage::InteractionResponse {
-                request_id: request.request_id, from_user_id: request.from_user_id.clone(), accepted,
+                request_id: request.request_id,
+                from_user_id: request.from_user_id.clone(),
+                accepted,
             });
             self.direct_mode = accepted.then_some(request.kind);
             self.pending_interaction = None;
@@ -482,7 +926,8 @@ impl MultiplayerRuntime {
             });
             return Ok(());
         }
-        if self.direct_mode.is_some() && self.session.is_none() && keys.just_pressed(KeyCode::KeyX) {
+        if self.direct_mode.is_some() && self.session.is_none() && keys.just_pressed(KeyCode::KeyX)
+        {
             if let Some(connection) = self.connection.as_mut() {
                 connection.send(crystal_net::hosted::ClientMessage::InteractionCancel)?;
             }
@@ -499,7 +944,12 @@ impl MultiplayerRuntime {
         {
             let snapshot = runtime_shell.shell.session().snapshot();
             let target_tile = snapshot.tile.moved(snapshot.facing);
-            if let Some(id) = select_facing_player(&self.remote_presences, &snapshot.map_name, target_tile, keys) {
+            if let Some(id) = select_facing_player(
+                &self.remote_presences,
+                &snapshot.map_name,
+                target_tile,
+                keys,
+            ) {
                 SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.selected_player = Some(id));
                 runtime_shell.last_action_status = Some("Choose Battle or Trade in chat".into());
                 return Ok(());
@@ -517,7 +967,8 @@ impl MultiplayerRuntime {
         let Some(mode) = mode else {
             return Ok(());
         };
-        if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) {
+        if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state())
+        {
             runtime_shell.last_action_status = Some(reason.into());
             return Ok(());
         }
@@ -541,8 +992,10 @@ impl MultiplayerRuntime {
             })
             .context("request hosted player interaction")?;
         self.direct_mode = Some(mode);
-        runtime_shell.last_action_status =
-            Some(format!("Sent {mode:?} request to {} — X cancels", target.display_name));
+        runtime_shell.last_action_status = Some(format!(
+            "Sent {mode:?} request to {} — X cancels",
+            target.display_name
+        ));
         Ok(())
     }
 
@@ -561,11 +1014,43 @@ impl MultiplayerRuntime {
 
     fn return_to_lobby(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = false);
+        #[cfg(feature = "meshtastic")]
+        let meshtastic_io = if self.meshtastic_config.is_some() {
+            self.session
+                .take()
+                .and_then(RuntimeLinkSession::into_meshtastic_io)
+        } else {
+            None
+        };
         if let Some(session) = self.session.as_mut() {
             session.disconnect();
         }
         mark_link_disconnected(runtime_shell.shell.session_mut().state_mut());
-        self.connection = Some(Self::connect(runtime_shell, &self.config)?);
+        #[cfg(feature = "meshtastic")]
+        if let (Some(io), Some(config)) = (meshtastic_io, self.meshtastic_config.as_ref()) {
+            let descriptor = runtime_shell.shell.link_session_descriptor(
+                "meshtastic-discovery",
+                self.player_id,
+                self.config.display_name.clone(),
+            )?;
+            self.meshtastic_lobby = Some(MeshtasticLobbyRuntime {
+                lobby: crystal_net::meshtastic::MeshtasticLobby::new(
+                    io,
+                    config.channel,
+                    self.config.display_name.clone(),
+                    &descriptor.session,
+                )
+                .map_err(anyhow::Error::msg)?,
+                selected_mode: None,
+            });
+            self.connection = None;
+        } else {
+            self.connection = Some(Self::connect(runtime_shell, &self.config)?);
+        }
+        #[cfg(not(feature = "meshtastic"))]
+        {
+            self.connection = Some(Self::connect(runtime_shell, &self.config)?);
+        }
         self.session = None;
         self.queued_mode = None;
         self.match_mode = None;
@@ -574,6 +1059,11 @@ impl MultiplayerRuntime {
         self.direct_mode = None;
         self.direct_session = false;
         self.pending_interaction = None;
+        #[cfg(feature = "meshtastic")]
+        {
+            self.pending_meshtastic_invite = None;
+            self.selected_meshtastic_peer = None;
+        }
         self.last_presence = None;
         self.remote_presences.clear();
         self.peer_player_id = None;
@@ -749,6 +1239,14 @@ impl MultiplayerRuntime {
     }
 
     fn mark_disconnected(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+        #[cfg(feature = "meshtastic")]
+        if self.meshtastic_config.is_some() {
+            self.cancel_interrupted_gameplay(runtime_shell)?;
+            self.return_to_lobby(runtime_shell)?;
+            runtime_shell.last_action_status =
+                Some("Meshtastic link interrupted; returned to the Cable Club".into());
+            return Ok(());
+        }
         if let Some(session) = self.session.as_mut() {
             session.disconnect();
         }
@@ -761,6 +1259,11 @@ impl MultiplayerRuntime {
         self.direct_mode = None;
         self.direct_session = false;
         self.pending_interaction = None;
+        #[cfg(feature = "meshtastic")]
+        {
+            self.pending_meshtastic_invite = None;
+            self.selected_meshtastic_peer = None;
+        }
         self.remote_presences.clear();
         self.last_presence = None;
         self.peer_player_id = None;
@@ -986,7 +1489,9 @@ impl MultiplayerRuntime {
 
         let expected_trade_id = self.current_trade_id();
         receive_peer_trade_round(
-            self.active_trade.as_mut().expect("active trade was initialized"),
+            self.active_trade
+                .as_mut()
+                .expect("active trade was initialized"),
             &mut self.peer_trade_offers,
             &mut self.peer_trade_confirmations,
             &expected_trade_id,
@@ -1184,8 +1689,12 @@ impl MultiplayerRuntime {
         // Finalize and schedule the save before networking can fail: a statistics
         // report must never leave a completed exchange eligible for reapplication.
         if !outcome.cancelled() {
-            self.session.as_mut().context("completed trade has no session")?
-                .send_social(crystal_net::hosted::ClientMessage::TradeCompleted { trade_id: expected_trade_id.clone() })?;
+            self.session
+                .as_mut()
+                .context("completed trade has no session")?
+                .send_social(crystal_net::hosted::ClientMessage::TradeCompleted {
+                    trade_id: expected_trade_id.clone(),
+                })?;
         }
         Ok(())
     }
@@ -1556,10 +2065,17 @@ fn select_facing_player(
     target: TilePosition,
     keys: &mut ButtonInput<KeyCode>,
 ) -> Option<String> {
-    if !keys.just_pressed(KeyCode::KeyZ) { return None; }
-    let id = players.iter().filter(|(_, player)| {
-        player.map == map && player.tile_x == target.x && player.tile_y == target.y
-    }).map(|(id, _)| id).min()?.clone();
+    if !keys.just_pressed(KeyCode::KeyZ) {
+        return None;
+    }
+    let id = players
+        .iter()
+        .filter(|(_, player)| {
+            player.map == map && player.tile_x == target.x && player.tile_y == target.y
+        })
+        .map(|(id, _)| id)
+        .min()?
+        .clone();
     // Consume both held and edge state so A cannot also reach an NPC below
     // the remote trainer during this frame.
     keys.reset(KeyCode::KeyZ);
@@ -1614,6 +2130,32 @@ fn match_mode_room(mode: crystal_net::hosted::MatchMode) -> u8 {
         crystal_net::hosted::MatchMode::TimeCapsule => 0,
         crystal_net::hosted::MatchMode::Trade => 1,
         crystal_net::hosted::MatchMode::Battle => 2,
+    }
+}
+
+#[cfg(feature = "meshtastic")]
+fn meshtastic_room(mode: crystal_net::hosted::MatchMode) -> crystal_net::meshtastic::CableClubRoom {
+    match mode {
+        crystal_net::hosted::MatchMode::TimeCapsule => {
+            crystal_net::meshtastic::CableClubRoom::TimeCapsule
+        }
+        crystal_net::hosted::MatchMode::Trade => {
+            crystal_net::meshtastic::CableClubRoom::TradeCenter
+        }
+        crystal_net::hosted::MatchMode::Battle => crystal_net::meshtastic::CableClubRoom::Colosseum,
+    }
+}
+
+#[cfg(feature = "meshtastic")]
+fn meshtastic_mode(room: crystal_net::meshtastic::CableClubRoom) -> crystal_net::hosted::MatchMode {
+    match room {
+        crystal_net::meshtastic::CableClubRoom::TimeCapsule => {
+            crystal_net::hosted::MatchMode::TimeCapsule
+        }
+        crystal_net::meshtastic::CableClubRoom::TradeCenter => {
+            crystal_net::hosted::MatchMode::Trade
+        }
+        crystal_net::meshtastic::CableClubRoom::Colosseum => crystal_net::hosted::MatchMode::Battle,
     }
 }
 
@@ -2026,7 +2568,10 @@ fn poll_multiplayer(
         keys.reset_all();
     }
     if let Err(error) = multiplayer.poll(&mut runtime_shell, &mut keys) {
-        SOCIAL_BRIDGE.with_borrow_mut(|bridge| { bridge.connected = false; bridge.pending.clear(); });
+        SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
+            bridge.connected = false;
+            bridge.pending.clear();
+        });
         let cleanup_error = multiplayer.mark_disconnected(&mut runtime_shell).err();
         record_visible_runtime_system_error(
             &mut runtime_shell,
@@ -2062,16 +2607,33 @@ mod multiplayer_tests {
 
     #[test]
     fn a_selects_only_the_facing_player_and_preserves_ordinary_interactions() {
-        let players = HashMap::from([("player-2".into(), RemotePresence {
-            player_gender: 0, display_name: "GOLD".into(), map: "map-a".into(), tile_x: 3, tile_y: 4, direction: "down".into(),
-        })]);
+        let players = HashMap::from([(
+            "player-2".into(),
+            RemotePresence {
+                player_gender: 0,
+                display_name: "GOLD".into(),
+                map: "map-a".into(),
+                tile_x: 3,
+                tile_y: 4,
+                direction: "down".into(),
+            },
+        )]);
         let mut keys = ButtonInput::default();
         keys.press(KeyCode::KeyZ);
-        assert_eq!(select_facing_player(&players, "map-b", TilePosition::new(3, 4), &mut keys), None);
+        assert_eq!(
+            select_facing_player(&players, "map-b", TilePosition::new(3, 4), &mut keys),
+            None
+        );
         assert!(keys.just_pressed(KeyCode::KeyZ));
-        assert_eq!(select_facing_player(&players, "map-a", TilePosition::new(4, 4), &mut keys), None);
+        assert_eq!(
+            select_facing_player(&players, "map-a", TilePosition::new(4, 4), &mut keys),
+            None
+        );
         assert!(keys.pressed(KeyCode::KeyZ));
-        assert_eq!(select_facing_player(&players, "map-a", TilePosition::new(3, 4), &mut keys), Some("player-2".into()));
+        assert_eq!(
+            select_facing_player(&players, "map-a", TilePosition::new(3, 4), &mut keys),
+            Some("player-2".into())
+        );
         assert!(!keys.pressed(KeyCode::KeyZ));
         assert!(!keys.just_pressed(KeyCode::KeyZ));
     }

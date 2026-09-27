@@ -1073,6 +1073,7 @@ mod tests {
 
     fn source_for(plan: &H3CellPlan) -> MapSource {
         MapSource {
+            schema_version: 2,
             center: plan.center,
             bounds: plan.fetch_bounds.first().copied().unwrap_or(BoundingBox {
                 south: plan.center.lat - 0.1,
@@ -1100,6 +1101,7 @@ mod tests {
         let grids = [first, second]
             .into_iter()
             .map(|plan| GeneratedGrid {
+                scene: None,
                 source: source_for(plan),
                 width: 64,
                 height: 64,
@@ -1136,6 +1138,7 @@ mod tests {
         let mut grids = [first, second]
             .into_iter()
             .map(|plan| GeneratedGrid {
+                scene: None,
                 source: source_for(plan),
                 width: 64,
                 height: 64,
@@ -1523,6 +1526,7 @@ mod tests {
             .max((samples[14].coordinate.lon - coordinate.lon).abs());
         let epsilon = spacing / 8.0;
         grids[0].source.features.push(Feature {
+            details: Default::default(),
             kind: FeatureKind::Water,
             name: Some("one-sided exact lake".to_string()),
             area: true,

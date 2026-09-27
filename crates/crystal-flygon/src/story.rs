@@ -413,7 +413,8 @@ impl StoryLedger {
         }
         // Pay real setup-stage transitions once, so the cold brain can leave
         // clock/name setup without a scripted boot sequence.
-        if before.pointer("/status/screen") != after.pointer("/status/screen") {
+        if matches!(setup_screen, "intro" | "title" | "clock" | "introduction" | "gender" | "naming")
+            && before.pointer("/status/screen") != after.pointer("/status/screen") {
             let stage = after
                 .pointer("/status/screen")
                 .and_then(Value::as_str)
@@ -563,6 +564,7 @@ mod tests {
     fn nondamaging_battle_turns_buy_time_without_rewards() {
         let mut ledger = StoryLedger::default();
         let mut before = observation();
+        before["status"]["screen"] = json!("battle");
         before["reward_state"]["battle"] = json!({"enemy_hp":20,"player_turns":0});
         for turn in 1..=300 {
             for _ in 0..4 {
@@ -647,12 +649,13 @@ mod tests {
                 .1
                 .is_empty()
         );
-        assert!(
-            restored
-                .action_feedback(&progress, &progress, "a")
-                .1
-                .is_empty()
+        // Progress resets the long-term timeout. A subsequent idle A press
+        // still incurs the independent, immediate idle-input penalty.
+        assert_eq!(
+            restored.action_feedback(&progress, &progress, "a").1,
+            vec!["action:idle_input"]
         );
+        assert_eq!(restored.unproductive_actions, 1);
     }
     #[test]
     fn idle_cost_has_grace_and_ignores_animation_frames() {
@@ -710,6 +713,7 @@ mod tests {
     #[test]
     fn healed_blackout_does_not_reward_respawn_location() {
         let mut before = observation();
+        before["status"]["screen"] = json!("battle");
         before["reward_state"]["battle"] = json!({"enemy_hp":10});
         let mut after = observation();
         after["map_info"]["name"] = json!("NewPokecenter");

@@ -10,7 +10,7 @@
   "default_profile": "operant",
   "dataset_manifest": "dataset.json",
   "model_id": "flygon-lif-kc-dan-ltd-v2",
-  "interface_id": "flygon-connected-sensory-descending-actor-critic-v3",
+  "interface_id": "flygon-connected-sensory-descending-actor-critic-v4-pooled",
   "runtime": {
     "simulation": "Rust / WebAssembly worker",
     "viewer": "independent Rust / WebAssembly worker",

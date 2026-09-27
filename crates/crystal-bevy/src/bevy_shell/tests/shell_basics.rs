@@ -1019,6 +1019,10 @@ fn all_elm_starters_complete_the_full_asm_rival_battle_branch() {
             "wrong rival counter-starter for {starter}"
         );
 
+        let first_encounter = shell.snapshot().expect("first rival encounter snapshot");
+        assert!(matches!(first_encounter.battle.as_ref().map(|battle| &battle.kind),
+            Some(RuntimeBattleKind::Trainer { trainer_name, .. }) if trainer_name == "???"));
+
         // Exercise the actual battle engine to a win, including reward claim,
         // trainer-party advancement, scripted completion, and the post-battle
         // Rival dialogue boundary. The level advantage keeps this a branch

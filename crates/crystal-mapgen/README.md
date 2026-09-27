@@ -1,98 +1,117 @@
-# Crystal coordinate map generator
+# Geographic Crystal worlds
 
-`crystal-mapgen` is a separate Rust pipeline that turns any latitude/longitude
-into a deterministic, playable Crystal modpack. It fetches a square from
-OpenStreetMap, compresses water, parks, buildings, roads, trails, and rail into
-authored Pokemon Crystal rooms, adds a verified runtime map/spawn to the base
-pack, and emits both the `.crystalpack` and a QA preview. The generator uses
-exact Crystal metatiles and a derived `johto_modern_generated` tileset; its
-outdoor benches, National Park fountain, and interactive trash-can art are
-extracted from canonical Park and Lab assets rather than approximated sprites.
+`crystal-mapgen` builds semantic scenes from OpenStreetMap and lowers them to
+Crystal metatiles, events, encounters, and map extensions. Implementation is
+Rust; artwork is read from an external compatible `.crystalpack`.
 
-Every generated town includes real-door residential facades, a functional
-Pokemon Center, a functional Mart with the canonical Violet inventory, readable
-OSM-derived signs, wandering residents, compact encounter fields, tree belts,
-flowers, fences, rocks, relief, and collision-correct shore access when water is
-present. Mapped roads are addressed on a global metatile lattice before the
-requested window is cropped, so overlapping half-mile moves retain the same
-east-west and north-south corridors instead of re-snapping them around the new
-center.
+## Current pipeline
 
-From `rust/`:
+Coordinates → frozen source → districts and routes → complete structures and
+services → reserved destinations → contextual vegetation → tiles and events.
+
+Generator version 2 is the only generator. The old decoration, biome, roadside,
+and quota/repair pipelines have been removed. Normalized input must explicitly
+use source schema 2; older source files must be fetched again. Existing playable
+packs remain independent artifacts: the generator does not rewrite old saves.
+
+Source normalization retains OSM type/ID, building geometry, multipolygon holes,
+selected descriptive tags, and bridge/tunnel/layer semantics. Tunnel and negative
+layer transport are excluded from surface routes. Retaining layer tags is not yet
+a complete simulation of grade-separated crossings in a single 2D map.
+
+Scenes distinguish urban, residential, waterfront, woodland, meadow, and rocky
+families. Mapped land cover wins over procedural decoration. Buildings use
+complete, recorded recipes with source IDs and entrance coordinates; four house
+variants reuse existing pack art. Local repetition is bounded. Courtyards, rest
+areas, clearings, and outcrops are placed only where a complete footprint and
+readable approach fit. Open space does not fail a scenery quota. Rocks and
+ledges are decorative composition, not measured elevation.
+
+The region API allocates map and spawn IDs through a persisted registry, gives
+local script/object identifiers a cell namespace, creates residential interiors,
+and connects selected reciprocal H3 crossings with explicit warp panels. Portal
+landings are separate, reachable, non-warp floor positions. Assembly checks that
+original maps, runtime files, compiled audio, and audio manifests remain equal.
+Published output cannot be overwritten with a different pack.
+
+## Run and verify
+
+Run from the repository root. A compatible pack is required for pack assembly
+and runtime checks. See [content setup](../../docs/game-content.md).
+A fresh pret checkout alone does **not** provide the intermediate runtime export
+required by `pack_core`.
+
+Static scenery can also be rendered directly from an external pret checkout:
 
 ```sh
-cargo run -p crystal-mapgen -- \
-  --lat 44.9475196 \
-  --lon -93.3253477 \
-  --miles 1 \
-  --output-dir output/minneapolis-map \
-  --base-pack ../content-packs/core-modular.crystalpack
+cargo run --locked -p crystal-mapgen --example render_proof -- \
+  /absolute/path/pokecrystal /absolute/path/source-v2.json \
+  output/scenery-proof-v2
 ```
 
-The output contains `neighborhood.crystalpack`, `preview.png` rendered from the
-exact Crystal tiles embedded in that pack, the normalized
-`source.json`, exact generated `grid.json`, automated quality checks in
-`audit.json`, and launch metadata in
-`modpack.json`. New Game starts at the requested coordinate. For repeatable
-offline regeneration, pass the emitted normalized source back with
-`--source output/minneapolis-map/source.json`.
-
-Render or play the generated map with the existing location tester:
+This reuses the production atlas builder and palette renderer, reading original
+art, collision and palette definitions in memory. It writes full maps, day/night
+160×144 walking-scale crops, a labeled HTML gallery, and six synthetic habitat
+fixtures. It checks repeat generation for determinism. These are static scenery
+images, without characters or gameplay simulation; they do not validate a pack.
+Keep the checkout outside this repository and all render output ignored.
 
 ```sh
-cargo run -p crystal-bevy --example render_at_location \
-  --features location-tester -- \
-  --pack output/minneapolis-map/neighborhood.crystalpack \
-  --map GeneratedNeighborhood \
-  --x 65 --y 65 --view 2d --hour 12 \
-  --screenshot output/minneapolis-map/gameplay/home-day.png
+cargo test --locked -p crystal-mapgen --lib --tests
+
+CRYSTAL_MAPGEN_TEST_PACK=/absolute/path/core-modular.crystalpack \
+  cargo test --locked -p crystal-mapgen --lib --tests -- --ignored
 ```
 
-## H3 projection and buckyball proofs
+The ordinary suite uses synthetic geography and includes a seven-cell H3
+resolution-6 region with 96×96 metatiles per cell. It checks deterministic
+composition, source reordering, holes/islands, empty terrain, habitat distinction,
+service access, reciprocal regional seams, ID allocation, and safe portal sites.
+Existing antimeridian, pentagon, road-overlap, and boundary regressions also run.
+Pack-dependent tests are explicitly ignored unless requested; they never silently
+pass when assets are missing.
 
-Pass a coordinate and any H3 resolution to generate the exact owning cell in a
-cell-centered tangent projection (including across UTM zones, the antimeridian,
-and polar latitudes). Lower H3 resolution numbers produce larger geographic
-faces; the 96-block raster below gives a resolution-6 face enough internal
-detail for a dense city, wild rooms, lakes, and broad climbable cliff systems:
+Build the connected Minneapolis region:
 
 ```sh
-cargo run -p crystal-mapgen -- \
+cargo run --locked -p crystal-mapgen -- \
   --lat 44.9475196 --lon -93.3253477 \
-  --h3-res 6 --grid 96 \
-  --output-dir output/minneapolis-h3 \
-  --base-pack ../content-packs/core-modular.crystalpack
+  --h3-res 6 --h3-generate-cells 7 --grid 96 \
+  --build-region --h3-render-proof \
+  --base-pack /absolute/path/core-modular.crystalpack \
+  --output-dir output/minneapolis-v2
 ```
 
-Plan the first 5,000 connected cells without fetching or rendering them:
+`--source /absolute/path/source.json` uses a frozen schema-2 source instead of
+fetching OSM. Omit `--h3-render-proof` and `--build-region` to generate and audit
+regional scenes without game assets. Single-map generation remains available by
+omitting the H3 batch flags. `--h3-plan-cells 5000` plans topology without fetching
+or rendering cells.
 
-```sh
-cargo run -p crystal-mapgen -- \
-  --lat 44.9475196 --lon -93.3253477 \
-  --h3-res 6 --h3-plan-cells 5000 --grid 96 \
-  --output-dir output/minneapolis-h3-5k
-```
+A built region writes `region.crystalpack` and `world.json`. The latter records
+generator/base/source identity, the start map, and map registry. Per-cell grids,
+source snapshots, and audits accompany it. Optional proof rendering writes the
+exact-art full-cell PNGs and region mosaic. Use a new output directory when the
+source, generator, settings, or base pack changes. All these outputs stay ignored.
 
-This topology-only run writes `h3-manifest.json`, a hard-gated
-`h3-topology-audit.json`, and `h3-connections.json`. Every internal edge in the
-connection file contains both cell IDs, opposite presentation sides, and the
-two exact block-level portal gates. Each successive manifest prefix is connected.
+## Remaining acceptance work
 
-Generate and audit a small real-map neighborhood, then assemble its exact tiles
-as an H3 buckyball image:
+This implementation establishes the scene/region foundations; the full visual
+and gameplay showcase is not yet accepted. Remaining work includes:
 
-```sh
-cargo run -p crystal-mapgen -- \
-  --lat 44.9475196 --lon -93.3253477 \
-  --h3-res 6 --h3-generate-cells 7 --h3-render-proof --grid 96 \
-  --source output/minneapolis-source.json \
-  --base-pack ../content-packs/core-modular.crystalpack \
-  --output-dir output/minneapolis-h3-buckyball
-```
+- A reproducible compatible pack/export workspace, then fresh full-region,
+  walking-scale, interior, and day/night captures and visual review.
+- Bounded theme-specific derived atlases and source-art identity in 2.5D
+  profiles. The current implementation still uses the existing generated Johto
+  atlas. More road-surface variety, footprint/frontage-aware compression, and
+  grade-separated crossing behavior also need work.
+- Separate cave interiors, generated-region starter onboarding, and trainers
+  with persistent battle/reward flags. Contextual residents currently converse.
+- Runtime proof for all residential doors, healing HP/status/PP, shopping,
+  blackout recovery, save/reload, and two-client presence/chat/battle/trade.
+- Measured generation time, pack size, browser memory and walking performance,
+  including the requested comparison against a same-device baseline.
 
-The proof retains only per-cell grids, audits, seams, exact PNG previews, and
-`h3-buckyball.png`; temporary full packs used to render each face are removed.
-Only real source geometry may open a transport crossing, and every internal
-crossing is audited from both cells. Atomic houses, facilities, fields, ledges,
-and cliffs must fit wholly inside their owning face, so a stitched view cannot
-contain half structures.
+Synthetic tile counts and successful audits do not establish visual quality or
+substitute for these runtime checks. See [world architecture](world-architecture.md)
+for the deliberately deferred on-demand generation design.

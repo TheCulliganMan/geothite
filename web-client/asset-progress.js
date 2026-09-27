@@ -1,31 +1,45 @@
 // Browser transport only; byte counts come from the response stream.
-export async function fetchAsset(url, { label, expectedBytes, report = () => {} } = {}) {
+export async function fetchAsset(url, { label, expectedBytes, maxBytes = 256 * 1024 * 1024, report = () => {} } = {}) {
   let loaded = 0, total = null;
   const update = phase => report({ label, loaded, total, phase });
   update('connecting');
   try {
+    if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0 ||
+        (expectedBytes !== undefined && (!Number.isSafeInteger(expectedBytes) || expectedBytes < 0 || expectedBytes > maxBytes)))
+      throw Error(`${label}: invalid download size limit`);
     const response = await fetch(url);
     if (!response.ok) throw Error(`${label}: HTTP ${response.status}`);
     const size = expectedBytes ?? response.headers.get('x-asset-bytes') ??
       (!response.headers.get('content-encoding') ? response.headers.get('content-length') : null);
     total = Number(size) > 0 ? Number(size) : null;
+    if (total !== null && (!Number.isSafeInteger(total) || total > maxBytes)) {
+      await response.body?.cancel();
+      throw Error(`${label}: download exceeds size limit`);
+    }
     const buffer = total ? new Uint8Array(total) : null;
     const chunks = [];
     let last = 0;
     if (response.body) {
       const reader = response.body.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        if (buffer) {
-          if (loaded + value.byteLength > buffer.length) throw Error(`${label}: unexpected download size`);
-          buffer.set(value, loaded);
-        } else chunks.push(value);
-        loaded += value.byteLength;
-        if (performance.now() - last > 80) { update('downloading'); last = performance.now(); }
-      }
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (loaded + value.byteLength > maxBytes) throw Error(`${label}: download exceeds size limit`);
+          if (buffer) {
+            if (loaded + value.byteLength > buffer.length) throw Error(`${label}: unexpected download size`);
+            buffer.set(value, loaded);
+          } else chunks.push(value);
+          loaded += value.byteLength;
+          if (performance.now() - last > 80) { update('downloading'); last = performance.now(); }
+        }
+      } catch (error) {
+        await reader.cancel().catch(() => {});
+        throw error;
+      } finally { reader.releaseLock(); }
     } else {
       const bytes = new Uint8Array(await response.arrayBuffer());
+      if (bytes.byteLength > maxBytes) throw Error(`${label}: download exceeds size limit`);
       if (buffer) buffer.set(bytes); else chunks.push(bytes);
       loaded = bytes.byteLength;
     }

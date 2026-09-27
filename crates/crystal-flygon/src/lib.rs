@@ -1,11 +1,13 @@
 //! Flygon neural runtime. Game rewards can inject current, never choose actions.
-pub const INTERFACE_ID: &str = "flygon-connected-sensory-descending-actor-critic-v3";
+pub const INTERFACE_ID: &str = "flygon-connected-sensory-descending-actor-critic-v4-pooled";
 pub const MODEL_ID: &str = "flygon-lif-kc-dan-ltd-v2";
 mod campaign;
 mod breadcrumbs;
 mod checkpoint;
 mod circuit;
 mod conditioning;
+#[cfg(test)]
+mod dynamics_tests;
 mod interface;
 mod operant;
 mod story;
@@ -42,6 +44,10 @@ pub struct Config {
     pub reset_synaptic_current_on_spike: bool,
     #[serde(default)]
     pub drop_refractory_input: bool,
+    /// Integrate exponentially decaying synaptic/adaptation currents over a step.
+    /// False preserves the original end-of-step approximation for lab profiles.
+    #[serde(default)]
+    pub exponential_current_integration: bool,
     pub dt_ms: f32,
     pub tau_membrane_ms: f32,
     pub tau_synapse_ms: f32,
@@ -62,6 +68,17 @@ pub struct Config {
     pub maximum_weight_fraction: f32,
     pub learning: bool,
     pub decision_ms: f32,
+}
+
+// Solution of dv/dt = (rest - v + current)/tau_m with exponentially
+// decaying current. Threshold crossings remain discretized at step boundaries.
+fn current_coupling(dt: f32, tau_m: f32, tau_current: f32) -> f32 {
+    let (dt, tm, tc) = (dt as f64, tau_m as f64, tau_current as f64);
+    if tm == tc {
+        ((dt / tm) * (-dt / tm).exp()) as f32
+    } else {
+        (tc / (tm - tc) * ((-dt / tm).exp() - (-dt / tc).exp())) as f32
+    }
 }
 impl Config {
     /// Validate runtime configuration before allocating neural state.
@@ -363,8 +380,9 @@ impl Brain {
         if c.dt_ms != self.config.dt_ms
             || c.delay_ms != self.config.delay_ms
             || c.contact_gain_mv != self.config.contact_gain_mv
+            || c.exponential_current_integration != self.config.exponential_current_integration
         {
-            return Err("Time step, delay and base gain require an explicit brain reset".into());
+            return Err("Time step, delay, base gain and current integration require an explicit brain reset".into());
         }
         if self.plastic.iter().any(|&(_, e)| {
             let base = self.contacts[e] as f32 * c.contact_gain_mv;
@@ -447,16 +465,28 @@ impl Brain {
         if steps == 0 {
             return Err("Interval smaller than neural step".into());
         }
+        self.tick.checked_add(u64::from(steps) + self.queue.len() as u64)
+            .ok_or("Neural clock limit reached")?;
         self.counts.fill(0);
         self.last_window_steps = steps;
         let leak = (-self.config.dt_ms / self.config.tau_membrane_ms).exp();
         let syn = (-self.config.dt_ms / self.config.tau_synapse_ms).exp();
         let delay = self.queue.len() - 1;
         let adapt_decay = (-self.config.dt_ms / self.config.adaptation_tau_ms).exp();
+        let syn_coupling = current_coupling(
+            self.config.dt_ms,
+            self.config.tau_membrane_ms,
+            self.config.tau_synapse_ms,
+        );
+        let adapt_coupling = current_coupling(
+            self.config.dt_ms,
+            self.config.tau_membrane_ms,
+            self.config.adaptation_tau_ms,
+        );
         let mut dan_fired = vec![0.0; self.dan.len()];
         let mut modulation_by_gate = vec![0.0; self.gate_gains.len()];
         for _ in 0..steps {
-            let slot = self.tick as usize % self.queue.len();
+            let slot = (self.tick % self.queue.len() as u64) as usize;
             let due = std::mem::take(&mut self.queue[slot]);
             dan_fired.fill(0.0);
             for &source in &due {
@@ -481,6 +511,8 @@ impl Brain {
             self.queue[slot].clear();
             let pulse = self.pulse_ticks > 0;
             for &i in &self.active {
+                let previous_current = self.current[i];
+                let previous_adaptation = self.adaptation[i];
                 self.current[i] *= syn;
                 self.adaptation[i] *= adapt_decay;
                 if self.refractory[i] > 0 {
@@ -501,9 +533,15 @@ impl Brain {
                 } else {
                     self.config.rest_mv
                 };
-                self.voltage[i] = rest
-                    + (self.voltage[i] - rest) * leak
-                    + (self.current[i] + stimulus - self.adaptation[i]) * (1.0 - leak);
+                self.voltage[i] = if self.config.exponential_current_integration {
+                    rest + (self.voltage[i] - rest) * leak
+                        + previous_current * syn_coupling
+                        + stimulus * (1.0 - leak)
+                        - previous_adaptation * adapt_coupling
+                } else {
+                    rest + (self.voltage[i] - rest) * leak
+                        + (self.current[i] + stimulus - self.adaptation[i]) * (1.0 - leak)
+                };
                 if self.voltage[i] >= self.config.threshold_mv {
                     self.voltage[i] = rest;
                     if self.config.reset_synaptic_current_on_spike {
@@ -524,7 +562,7 @@ impl Brain {
                     if self.dan_index[i] != usize::MAX {
                         self.delivered_dan_spikes += 1;
                     }
-                    let arrival = (self.tick as usize + delay) % self.queue.len();
+                    let arrival = ((self.tick + delay as u64) % self.queue.len() as u64) as usize;
                     self.queue[arrival].push(i as u32);
                 }
             }

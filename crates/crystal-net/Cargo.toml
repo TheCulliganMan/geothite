@@ -8,12 +8,29 @@ rust-version.workspace = true
 
 [dependencies]
 bincode.workspace = true
+crc32fast = { version = "1", optional = true }
 crystal-core = { path = "../crystal-core" }
 ewebsock = { version = "0.8", features = ["tls"] }
 serde.workspace = true
 serde_json.workspace = true
+sha2 = { workspace = true, optional = true }
 thiserror.workspace = true
 uuid = { version = "1", features = ["js", "serde", "v4"] }
+web-time.workspace = true
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+meshtastic = { version = "0.1.9", optional = true, features = ["bluetooth-le"] }
+tokio = { version = "1", optional = true, features = ["rt-multi-thread", "sync", "time"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = { version = "0.3", optional = true }
+meshtastic = { version = "0.1.9", optional = true, default-features = false }
+wasm-bindgen = { version = "0.2", optional = true }
+
+[features]
+default = []
+meshtastic = ["dep:crc32fast", "dep:sha2", "dep:meshtastic", "dep:tokio", "dep:js-sys", "dep:wasm-bindgen"]
+meshtastic-protocol = ["dep:crc32fast", "dep:sha2"]
 
 [dev-dependencies]
 crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }

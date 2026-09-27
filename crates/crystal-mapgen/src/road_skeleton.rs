@@ -50,10 +50,11 @@ impl RoadSkeleton {
 pub fn build_road_skeleton(source: &MapSource, grid: WorldGrid) -> Result<RoadSkeleton> {
     let mut cells = BTreeMap::<WorldCell, FeatureKind>::new();
     for feature in source.features.iter().filter(|feature| {
-        matches!(
-            feature.kind,
-            FeatureKind::Street | FeatureKind::Road | FeatureKind::MajorRoad
-        )
+        feature.surface_transport()
+            && matches!(
+                feature.kind,
+                FeatureKind::Street | FeatureKind::Road | FeatureKind::MajorRoad
+            )
     }) {
         rasterize_feature(feature, grid, &mut cells)?;
     }
@@ -191,6 +192,7 @@ mod tests {
 
     fn source(center: Coordinate, features: Vec<Feature>) -> MapSource {
         MapSource {
+            schema_version: 2,
             center,
             bounds: BoundingBox::square_miles_around(center, 1.0).expect("bounds"),
             attribution: "test".to_string(),
@@ -201,6 +203,7 @@ mod tests {
 
     fn lake_street() -> Feature {
         Feature {
+            details: Default::default(),
             kind: FeatureKind::MajorRoad,
             name: Some("Lake Street".to_string()),
             area: false,

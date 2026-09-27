@@ -533,16 +533,21 @@ pub fn prepare_h3_source(mut source: MapSource, mut plan: H3CellPlan) -> Result<
         if feature.points.is_empty() {
             continue;
         }
+        if feature.points.len() == 1 && !feature.area {
+            let point = feature.points[0];
+            if LatLng::new(point.lat, point.lon)
+                .is_ok_and(|coordinate| coordinate.to_cell(resolution) == index)
+            {
+                prepared.push(feature);
+            }
+            continue;
+        }
         if feature.area {
             if !feature_intersects_h3_halo(&plan, &feature) {
                 continue;
             }
             if feature.kind == FeatureKind::Building {
-                let count = feature.points.len() as f64;
-                let representative = Coordinate {
-                    lat: feature.points.iter().map(|point| point.lat).sum::<f64>() / count,
-                    lon: circular_longitude_mean(feature.points.iter().map(|point| point.lon)),
-                };
+                let representative = feature.anchor().expect("nonempty footprint");
                 if !LatLng::new(representative.lat, representative.lon)
                     .map(|coordinate| coordinate.to_cell(resolution) == index)
                     .unwrap_or(false)
@@ -1003,6 +1008,16 @@ fn rasterized_h3_authoritative_water(
             .max()
             .unwrap_or(-1)
             .min(i32::from(height) - 1);
+        let holes = feature
+            .details
+            .inner_rings
+            .iter()
+            .map(|ring| {
+                ring.iter()
+                    .map(|&point| plan.project_to_grid(point, width, height))
+                    .collect::<Result<Vec<_>>>()
+            })
+            .collect::<Result<Vec<_>>>()?;
         let polygon_float = polygon
             .iter()
             .map(|&(x, y)| (f64::from(x), f64::from(y)))
@@ -1010,7 +1025,15 @@ fn rasterized_h3_authoritative_water(
         if min_x <= max_x && min_y <= max_y {
             for y in min_y..=max_y {
                 for x in min_x..=max_x {
-                    if point_in_polygon(f64::from(x) + 0.5, f64::from(y) + 0.5, &polygon_float) {
+                    if point_in_polygon(f64::from(x) + 0.5, f64::from(y) + 0.5, &polygon_float)
+                        && !holes.iter().any(|ring| {
+                            crate::grid::point_in_polygon(
+                                f64::from(x) + 0.5,
+                                f64::from(y) + 0.5,
+                                ring,
+                            )
+                        })
+                    {
                         water[y as usize * usize::from(width) + x as usize] = true;
                     }
                 }
@@ -1024,34 +1047,6 @@ fn rasterized_h3_authoritative_water(
             }
         }
     }
-
-    // Match the two deterministic coastline cleanup passes used before H3
-    // boundary authoring. Treating non-water source layers as open ground is
-    // deliberately conservative for transport selection: a landing is never
-    // authorized merely because decoration happened to overwrite water.
-    for _ in 0..2 {
-        let snapshot = water.clone();
-        for y in 1..height.saturating_sub(1) {
-            for x in 1..width.saturating_sub(1) {
-                let index = usize::from(y) * usize::from(width) + usize::from(x);
-                if snapshot[index] {
-                    continue;
-                }
-                let neighbors = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-                    .into_iter()
-                    .filter(|&(neighbor_x, neighbor_y)| {
-                        snapshot
-                            [usize::from(neighbor_y) * usize::from(width) + usize::from(neighbor_x)]
-                    })
-                    .count();
-                if neighbors >= 3 {
-                    water[index] = true;
-                }
-            }
-        }
-    }
-    fill_small_enclosed_raster_land(&mut water, width, height, 16);
-    remove_small_raster_components(&mut water, width, height, 16);
 
     // Final generation reasserts source water at 31 shared-edge samples and
     // expands each hit into the exact cardinal three-cell seam band. Include
@@ -1068,9 +1063,7 @@ fn rasterized_h3_authoritative_water(
                 end,
                 (sample_index as f64 + 0.5) / H3_GRID_SEAM_SAMPLES as f64,
             );
-            if !features.iter().any(|feature| {
-                geographic_polygon_contains(plan.center, coordinate, &feature.points)
-            }) {
+            if !features.iter().any(|feature| feature.contains(coordinate)) {
                 continue;
             }
             for (x, y) in h3_raster_sample_band_for_dimensions(plan, width, height, coordinate)? {
@@ -1133,92 +1126,6 @@ fn raster_line_cells(from: (i32, i32), to: (i32, i32)) -> Vec<(i32, i32)> {
         }
     }
     cells
-}
-
-fn fill_small_enclosed_raster_land(
-    water: &mut [bool],
-    width: u16,
-    height: u16,
-    maximum_size: usize,
-) {
-    let mut unseen = water.iter().map(|cell| !cell).collect::<Vec<_>>();
-    for start in 0..unseen.len() {
-        if !unseen[start] {
-            continue;
-        }
-        unseen[start] = false;
-        let mut component = Vec::new();
-        let mut queue = VecDeque::from([start]);
-        let mut enclosed = true;
-        while let Some(index) = queue.pop_front() {
-            component.push(index);
-            let x = index % usize::from(width);
-            let y = index / usize::from(width);
-            for (next_x, next_y) in [
-                (x.wrapping_sub(1), y),
-                (x + 1, y),
-                (x, y.wrapping_sub(1)),
-                (x, y + 1),
-            ] {
-                if next_x >= usize::from(width) || next_y >= usize::from(height) {
-                    enclosed = false;
-                    continue;
-                }
-                let next = next_y * usize::from(width) + next_x;
-                if unseen[next] {
-                    unseen[next] = false;
-                    queue.push_back(next);
-                }
-            }
-        }
-        if enclosed && component.len() <= maximum_size {
-            for index in component {
-                water[index] = true;
-            }
-        }
-    }
-}
-
-fn remove_small_raster_components(
-    water: &mut [bool],
-    width: u16,
-    height: u16,
-    minimum_size: usize,
-) {
-    let mut unseen = water.to_vec();
-    for start in 0..unseen.len() {
-        if !unseen[start] {
-            continue;
-        }
-        unseen[start] = false;
-        let mut component = Vec::new();
-        let mut queue = VecDeque::from([start]);
-        while let Some(index) = queue.pop_front() {
-            component.push(index);
-            let x = index % usize::from(width);
-            let y = index / usize::from(width);
-            for (next_x, next_y) in [
-                (x.wrapping_sub(1), y),
-                (x + 1, y),
-                (x, y.wrapping_sub(1)),
-                (x, y + 1),
-            ] {
-                if next_x >= usize::from(width) || next_y >= usize::from(height) {
-                    continue;
-                }
-                let next = next_y * usize::from(width) + next_x;
-                if unseen[next] {
-                    unseen[next] = false;
-                    queue.push_back(next);
-                }
-            }
-        }
-        if component.len() < minimum_size {
-            for index in component {
-                water[index] = false;
-            }
-        }
-    }
 }
 
 fn compress_h3_transport(
@@ -1380,7 +1287,8 @@ fn source_transport_crossings(
         matches!(
             feature.kind,
             FeatureKind::Trail | FeatureKind::Street | FeatureKind::Road | FeatureKind::MajorRoad
-        ) && feature.points.len() >= 2
+        ) && feature.surface_transport()
+            && feature.points.len() >= 2
     }) {
         for feature_segment in feature.points.windows(2) {
             for edge_segment in portal.boundary.windows(2) {
@@ -1539,7 +1447,7 @@ where
         }
         features.extend(source.features);
     }
-    sort_and_deduplicate_h3_features(&mut features);
+    crate::geometry::sort_and_deduplicate_features(&mut features);
     let attribution = attribution.context("H3 batch did not contain a fetch envelope")?;
 
     plans
@@ -1551,6 +1459,7 @@ where
                 .with_context(|| format!("H3 plan {} has no fetch bounds", plan.cell))?;
             prepare_h3_source(
                 MapSource {
+                    schema_version: 2,
                     center: plan.center,
                     bounds,
                     attribution: attribution.clone(),
@@ -1657,29 +1566,6 @@ fn batch_fetch_center(bounds: BoundingBox) -> Coordinate {
     }
 }
 
-fn sort_and_deduplicate_h3_features(features: &mut Vec<crate::Feature>) {
-    features.sort_by(|left, right| {
-        left.kind
-            .cmp(&right.kind)
-            .then_with(|| left.name.cmp(&right.name))
-            .then_with(|| left.area.cmp(&right.area))
-            .then_with(|| left.bridge.cmp(&right.bridge))
-            .then_with(|| {
-                for (left, right) in left.points.iter().zip(&right.points) {
-                    let ordering = left
-                        .lat
-                        .total_cmp(&right.lat)
-                        .then_with(|| left.lon.total_cmp(&right.lon));
-                    if !ordering.is_eq() {
-                        return ordering;
-                    }
-                }
-                left.points.len().cmp(&right.points.len())
-            })
-    });
-    features.dedup();
-}
-
 fn fetch_h3_neighborhood_geometry(plan: &H3CellPlan) -> Result<MapSource> {
     let mut merged = None::<MapSource>;
     for &bounds in &plan.fetch_bounds {
@@ -1691,25 +1577,7 @@ fn fetch_h3_neighborhood_geometry(plan: &H3CellPlan) -> Result<MapSource> {
         }
     }
     let mut merged = merged.context("H3 plan did not contain fetch bounds")?;
-    merged.features.sort_by(|left, right| {
-        left.kind
-            .cmp(&right.kind)
-            .then_with(|| left.name.cmp(&right.name))
-            .then_with(|| left.bridge.cmp(&right.bridge))
-            .then_with(|| left.points.len().cmp(&right.points.len()))
-            .then_with(|| {
-                left.points
-                    .first()
-                    .map(|point| (point.lat.to_bits(), point.lon.to_bits()))
-                    .cmp(
-                        &right
-                            .points
-                            .first()
-                            .map(|point| (point.lat.to_bits(), point.lon.to_bits())),
-                    )
-            })
-    });
-    merged.features.dedup();
+    crate::geometry::sort_and_deduplicate_features(&mut merged.features);
     Ok(merged)
 }
 
@@ -1887,12 +1755,10 @@ pub fn build_h3_grid_seam_profile(grid: &GeneratedGrid) -> Result<H3GridSeamProf
                 h3_raster_cell_coordinate(plan, grid.width, grid.height, border)?;
             samples.push(H3GridSeamSample {
                 coordinate,
-                source_water: water.iter().any(|feature| {
-                    geographic_polygon_contains(plan.center, coordinate, &feature.points)
-                }),
-                raster_source_water: water.iter().any(|feature| {
-                    geographic_polygon_contains(plan.center, raster_coordinate, &feature.points)
-                }),
+                source_water: water.iter().any(|feature| feature.contains(coordinate)),
+                raster_source_water: water
+                    .iter()
+                    .any(|feature| feature.contains(raster_coordinate)),
                 surface: h3_seam_surface(grid.cell(border.0, border.1)),
                 transport: h3_transport_kind(grid.cell(border.0, border.1)),
                 inner_surface: h3_seam_surface(grid.cell(inner.0, inner.1)),
@@ -2007,9 +1873,7 @@ fn h3_authoritative_water_band_indices(
                 end,
                 (index as f64 + 0.5) / H3_GRID_SEAM_SAMPLES as f64,
             );
-            if !water.iter().any(|feature| {
-                geographic_polygon_contains(plan.center, coordinate, &feature.points)
-            }) {
+            if !water.iter().any(|feature| feature.contains(coordinate)) {
                 continue;
             }
             for (x, y) in h3_raster_sample_band(&plan, grid, coordinate)? {
@@ -2742,18 +2606,18 @@ fn longitude_delta(first: f64, second: f64) -> f64 {
     (first - second + 180.0).rem_euclid(360.0) - 180.0
 }
 
-fn edge_terrain(portal: &H3Portal, source: &MapSource, center: Coordinate) -> H3EdgeTerrain {
+fn edge_terrain(portal: &H3Portal, source: &MapSource, _center: Coordinate) -> H3EdgeTerrain {
     for feature in source.features.iter().filter(|feature| {
         feature.area && feature.kind == FeatureKind::Water && feature.points.len() >= 3
     }) {
-        if geographic_polygon_contains(center, portal.midpoint, &feature.points) {
+        if feature.contains(portal.midpoint) {
             return H3EdgeTerrain::Water;
         }
     }
     for feature in source.features.iter().filter(|feature| {
         feature.area && feature.kind == FeatureKind::Park && feature.points.len() >= 3
     }) {
-        if geographic_polygon_contains(center, portal.midpoint, &feature.points) {
+        if feature.contains(portal.midpoint) {
             return H3EdgeTerrain::TallGrass;
         }
     }
@@ -2829,19 +2693,6 @@ fn interpolate_coordinate(start: Coordinate, end: Coordinate, amount: f64) -> Co
         lat: start.lat + (end.lat - start.lat) * amount,
         lon: (start.lon + longitude_delta * amount + 180.0).rem_euclid(360.0) - 180.0,
     }
-}
-
-fn geographic_polygon_contains(
-    center: Coordinate,
-    point: Coordinate,
-    polygon: &[Coordinate],
-) -> bool {
-    let point = local_tangent(center, point);
-    let polygon = polygon
-        .iter()
-        .map(|&coordinate| local_tangent(center, coordinate))
-        .collect::<Vec<_>>();
-    point_in_polygon(point.0, point.1, &polygon)
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -3277,24 +3128,6 @@ fn spherical_midpoint(points: impl Iterator<Item = Coordinate>) -> Coordinate {
     }
 }
 
-fn circular_longitude_mean(longitudes: impl Iterator<Item = f64>) -> f64 {
-    let mut sin = 0.0;
-    let mut cos = 0.0;
-    let mut count = 0usize;
-    for longitude in longitudes {
-        sin += longitude.to_radians().sin();
-        cos += longitude.to_radians().cos();
-        count += 1;
-    }
-    if count == 0 {
-        0.0
-    } else {
-        sin.atan2(cos).to_degrees()
-    }
-}
-
-/// Unit-sphere local tangent coordinates. Scale cancels during rasterization;
-/// the basis remains well-defined at both poles and across ±180° longitude.
 fn local_tangent(center: Coordinate, coordinate: Coordinate) -> (f64, f64) {
     let center_lat = center.lat.to_radians();
     let center_lon = center.lon.to_radians();
@@ -3415,6 +3248,7 @@ mod tests {
             H3SourceProvenance::prepared_raw()
         };
         MapSource {
+            schema_version: 2,
             center: plan.center,
             bounds: plan.fetch_bounds[0],
             attribution: "H3 seam fixture".to_string(),
@@ -3582,6 +3416,7 @@ mod tests {
             .map(|entry| entry.plan.clone())
             .collect::<Vec<_>>();
         let road = Feature {
+            details: Default::default(),
             kind: FeatureKind::Road,
             name: Some("one shared road".to_string()),
             area: false,
@@ -3589,6 +3424,7 @@ mod tests {
             points: vec![plans[0].center, plans[1].center],
         };
         let building = Feature {
+            details: Default::default(),
             kind: FeatureKind::Building,
             name: Some("one owned building".to_string()),
             area: true,
@@ -3599,6 +3435,7 @@ mod tests {
         let sources = fetch_h3_batch_neighborhoods_with(&plans, |center, bounds| {
             requests.push(bounds);
             Ok(MapSource {
+                schema_version: 2,
                 center,
                 bounds,
                 attribution: "batch fetch fixture".to_string(),
@@ -3674,6 +3511,7 @@ mod tests {
         }
 
         let building = Feature {
+            details: Default::default(),
             kind: FeatureKind::Building,
             name: Some("dateline building".to_string()),
             area: true,
@@ -3684,6 +3522,7 @@ mod tests {
         let sources = fetch_h3_batch_neighborhoods_with(&plans, |center, bounds| {
             requests.push(bounds);
             Ok(MapSource {
+                schema_version: 2,
                 center,
                 bounds,
                 attribution: "antimeridian batch fixture".to_string(),
@@ -3723,6 +3562,7 @@ mod tests {
         let plan = plan_h3_cell(MINNEAPOLIS, 6).expect("H3 plan");
         for dimensions in [24_u16, 64, 128] {
             let grid = GeneratedGrid {
+                scene: None,
                 source: source_for(&plan, Vec::new()),
                 width: dimensions,
                 height: dimensions,
@@ -3830,6 +3670,25 @@ mod tests {
     }
 
     #[test]
+    fn point_landmarks_survive_h3_preparation_with_their_identity() {
+        let plan = plan_h3_cell(MINNEAPOLIS, 8).unwrap();
+        let landmark = Feature {
+            details: crate::FeatureDetails {
+                osm_id: Some("node/77".into()),
+                ..Default::default()
+            },
+            kind: FeatureKind::Landmark,
+            name: Some("Library".into()),
+            area: false,
+            bridge: false,
+            points: vec![plan.center],
+        };
+        let source = source_for(&plan, vec![landmark.clone()]);
+        let prepared = prepare_h3_source(source, plan).unwrap();
+        assert_eq!(prepared.features, vec![landmark]);
+    }
+
+    #[test]
     fn atomic_building_anchors_are_owned_by_exactly_one_neighboring_cell() {
         let plan = plan_h3_cell(MINNEAPOLIS, 8).expect("origin plan");
         let neighbor_plan = cell_plan(
@@ -3840,11 +3699,13 @@ mod tests {
         )
         .expect("neighbor plan");
         let source = MapSource {
+            schema_version: 2,
             center: MINNEAPOLIS,
             bounds: BoundingBox::square_miles_around(MINNEAPOLIS, 1.0).expect("bounds"),
             attribution: "ownership fixture".to_string(),
             features: vec![
                 Feature {
+                    details: Default::default(),
                     kind: FeatureKind::Building,
                     name: Some("origin house".to_string()),
                     area: true,
@@ -3852,6 +3713,7 @@ mod tests {
                     points: vec![plan.center],
                 },
                 Feature {
+                    details: Default::default(),
                     kind: FeatureKind::Building,
                     name: Some("neighbor house".to_string()),
                     area: true,
@@ -3920,6 +3782,7 @@ mod tests {
         let neighbor =
             cell_plan(target.neighbor.parse().expect("neighbor index")).expect("neighbor plan");
         let road = Feature {
+            details: Default::default(),
             kind: FeatureKind::Road,
             name: Some("shared crossing".to_string()),
             area: false,
@@ -3949,6 +3812,7 @@ mod tests {
         let water_start = spherical_interpolate(start, end, 0.35);
         let water_end = spherical_interpolate(start, end, 0.65);
         let water = Feature {
+            details: Default::default(),
             kind: FeatureKind::Water,
             name: Some("authoritative water crossing".to_string()),
             area: true,
@@ -3962,6 +3826,7 @@ mod tests {
             ],
         };
         let road = Feature {
+            details: Default::default(),
             kind: FeatureKind::Road,
             name: Some("untagged causeway lookalike".to_string()),
             area: false,
@@ -4045,6 +3910,7 @@ mod tests {
             }
         }
         let failed_road = Feature {
+            details: Default::default(),
             kind: FeatureKind::MajorRoad,
             name: Some("Excelsior Boulevard".to_string()),
             area: false,
@@ -4094,6 +3960,7 @@ mod tests {
             lon: -93.376_165_330_704_85,
         };
         let alternate_road = Feature {
+            details: Default::default(),
             kind: FeatureKind::MajorRoad,
             name: Some("Minnesota State Highway 7".to_string()),
             area: false,
@@ -4133,6 +4000,7 @@ mod tests {
         let unselected_coordinate =
             spherical_interpolate(target.boundary[0], target.boundary[1], 0.70);
         let selected = Feature {
+            details: Default::default(),
             kind: FeatureKind::Road,
             name: Some("selected lower-class crossing".to_string()),
             area: false,
@@ -4140,6 +4008,7 @@ mod tests {
             points: vec![plan.center, selected_coordinate],
         };
         let unselected = Feature {
+            details: Default::default(),
             kind: FeatureKind::MajorRoad,
             name: Some("unselected higher-class crossing".to_string()),
             area: false,
@@ -4206,6 +4075,7 @@ mod tests {
         let neighbor =
             cell_plan(portal.neighbor.parse().expect("neighbor index")).expect("neighbor plan");
         let road = Feature {
+            details: Default::default(),
             kind: FeatureKind::MajorRoad,
             name: Some("reciprocal crossing".to_string()),
             area: false,
@@ -4241,6 +4111,7 @@ mod tests {
         let neighbor =
             cell_plan(portal.neighbor.parse().expect("neighbor index")).expect("neighbor plan");
         let road = Feature {
+            details: Default::default(),
             kind: FeatureKind::Road,
             name: Some("shared regional road".to_string()),
             area: false,
@@ -4310,7 +4181,11 @@ mod tests {
         }));
         for grid in &grids {
             let report = crate::inspect_h3_regional_grid(grid).expect("regional route report");
-            assert_eq!(report.connected_edges, vec![portal.edge_id.clone()]);
+            assert_eq!(
+                report.connected_edges,
+                vec![portal.edge_id.clone()],
+                "{report:?}"
+            );
             let cell_plan = grid.source.h3.as_ref().expect("regional H3 plan");
             let band = h3_raster_sample_band(cell_plan, grid, crossing)
                 .expect("selected exact landing band");
@@ -4366,6 +4241,7 @@ mod tests {
         let water_start = spherical_interpolate(start, end, 0.42);
         let water_end = spherical_interpolate(start, end, 0.58);
         let water = Feature {
+            details: Default::default(),
             kind: FeatureKind::Water,
             name: Some("road-crossed shoreline".to_string()),
             area: true,
@@ -4390,6 +4266,7 @@ mod tests {
             }],
         });
         let mut grid = GeneratedGrid {
+            scene: None,
             source: source_for(&plan, vec![water]),
             width: 64,
             height: 64,
@@ -4424,6 +4301,7 @@ mod tests {
         let edge_start = spherical_interpolate(start, end, 0.08);
         let edge_end = spherical_interpolate(start, end, 0.30);
         let water = Feature {
+            details: Default::default(),
             kind: FeatureKind::Water,
             name: Some("off-midpoint lake".to_string()),
             area: true,
@@ -4437,6 +4315,7 @@ mod tests {
             ],
         };
         let mut here = GeneratedGrid {
+            scene: None,
             source: source_for(&plan, vec![water.clone()]),
             width: 64,
             height: 64,
@@ -4444,6 +4323,7 @@ mod tests {
             labels: Vec::new(),
         };
         let mut there = GeneratedGrid {
+            scene: None,
             source: source_for(&neighbor, vec![water]),
             width: 64,
             height: 64,

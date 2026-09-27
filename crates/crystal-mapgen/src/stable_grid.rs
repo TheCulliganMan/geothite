@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use crate::{GeneratedGrid, WorldCell, WorldGrid};
+use crate::{GeneratedGrid, WorldGrid};
 
 /// Deterministic procedural addressing for both square crops and H3 faces.
 ///
@@ -61,9 +61,10 @@ impl StableGrid {
         }
     }
 
+    #[cfg(test)]
     pub(crate) fn local_cell(self, cell: StableCell) -> Option<(u16, u16)> {
         match self {
-            Self::World(grid) if cell.namespace == 0 => grid.local_cell(WorldCell {
+            Self::World(grid) if cell.namespace == 0 => grid.local_cell(crate::WorldCell {
                 x: cell.x,
                 y: cell.y,
             }),
@@ -82,6 +83,10 @@ impl StableGrid {
 }
 
 impl StableCell {
+    pub(crate) fn y_mod(self, modulus: i64) -> i64 {
+        self.y.rem_euclid(modulus)
+    }
+
     pub(crate) fn x_mod(self, modulus: i64) -> i64 {
         self.x.rem_euclid(modulus)
     }
@@ -123,7 +128,9 @@ mod tests {
         )
         .expect("polar H3 plan");
         let grid = GeneratedGrid {
+            scene: None,
             source: MapSource {
+                schema_version: 2,
                 center: plan.center,
                 bounds: plan.fetch_bounds[0],
                 attribution: "polar fixture".to_string(),
@@ -144,7 +151,9 @@ mod tests {
     #[test]
     fn square_addressing_preserves_world_cell_hashes() {
         let grid = GeneratedGrid {
+            scene: None,
             source: MapSource {
+                schema_version: 2,
                 center: Coordinate {
                     lat: 44.95,
                     lon: -93.32,

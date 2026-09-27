@@ -5,6 +5,66 @@ Geothite's Pokémon Crystal browser game. This is an experimental preview, versi
 0.2.0. Story control uses a connected sensory/descending circuit with an online
 policy adapter. This architecture starts untrained; previous
 [measured results](../../docs/FLYGON_RESULTS.md) describe the retired MBON controller.
+The [MaleCNS follow-up](../../docs/FLYGON_MALECNS_FOLLOWUP.md) documents the expanded
+descending readout, measured last-spike animation and additional source review.
+
+## Screenshots and video
+
+Game pane and connectome anatomy view:
+
+![Flygon game pane and connectome anatomy view.](media/flygon-overview.png)
+
+Spike activity view:
+
+![Measured spike activity in the Flygon connectome viewer.](media/flygon-activity.png)
+
+[Screen recording (MP4, 24 seconds, silent)](media/flygon-demo.mp4).
+The recording shows neural inputs during the game's opening introduction,
+brain rotation, and the spike activity view. It is a UI demonstration,
+not a story-completion result.
+
+## Usage
+
+1. Open `/flygon` on a Geothite server with the prepared brain data installed.
+   The game and brain load automatically; progress cards show download status.
+2. Select **Run brain** to start decisions, game inputs, and outcome learning.
+   The default experiment is the story sensory-circuit profile.
+3. Select **Pause** to stop. Manual game input and hiding the tab also pause the
+   controller. Select **Run brain** to resume.
+
+The game starts in classic 2D, regardless of the normal game's saved renderer
+preference. The view toggle can enable 2.5D for the current session.
+
+- Drag to orbit; scroll or pinch to zoom. Mouse and touch are supported.
+- Arrow keys rotate a focused canvas; `+`/`−` zoom; `0` resets; Escape clears selection.
+- Click a soma to inspect its source identity and strongest incoming/outgoing links.
+- Purple arrows are incoming; blue arrows are outgoing. Green links mean their
+  source spiked in the current measured window, not verified synaptic transmission.
+- At most 48 links per direction are drawn, ranked by anatomical contact count.
+  Selection reports visible totals and omissions. Lines join real somas; they are
+  schematic connectivity, not reconstructed axons. Spiking cells are a luminous
+  overlay so activity remains visible within the depth-shaded anatomy.
+- Population selection focuses activity without reducing the simulated graph.
+- Select **Spike activity** in the color menu to display measured neural activity.
+
+Research tools are collapsed beneath the main view. Save brain and Export run
+record retain learned state and evidence. Save the Pokémon game separately when
+its save control is available. These are not atomic combined checkpoints.
+
+## Local setup
+
+The initial brain download is about 216 MiB and is cached when browser storage
+is available. Allow at least 1 GiB of free memory; mobile memory capacity is not
+guaranteed.
+
+Follow the repository's [setup instructions](../../README.md#setup) for the game
+server and separately supplied game content. Prepare the pinned MaleCNS
+`graph.bin` and `metadata.json` using [Data preparation](#data-preparation).
+Set `FLYGON_DATA_DIR` in `.env` to the absolute directory containing those files
+before starting Docker Compose, then open `/flygon` on that server.
+
+See [Flygon deployment](../../docs/deployment.md#optional-flygon) for the read-only
+data mount and asset requirements. The main game can run without the brain data.
 
 ## Architecture
 
@@ -22,7 +82,7 @@ policy adapter. This architecture starts untrained; previous
 
 The simulation and viewer run in separate workers using the same small WASM
 module. The viewer receives real soma coordinates once, and sparse measured spike
-indices after each neural step. Camera gestures do not wait for neural trials.
+counts and last-spike timing after each neural step. Camera gestures do not wait for neural trials.
 All projection, picking, connection extraction and pixels are computed in Rust.
 
 The import retains 166,700 neurons, 25,582,938 directed pair edges and 124,177,617
@@ -30,32 +90,10 @@ contacts. There are 139,662 source soma coordinates. Missing somas remain simula
 but are not drawn. The optional profile dropdown changes experiments; it does not
 silently substitute a smaller neural graph.
 
-## Use the viewer
-
-Open `/flygon`; the brain loads automatically. The default is the story sensory-circuit
-profile. **Run brain** starts decisions; **Control game** enables their submission.
-The game remains in its own pane. Human game input and hiding the tab pause the
-controller. Repeated presses are ordinary game inputs, never scripted route steps.
-
-- Drag to orbit; scroll or pinch to zoom. Mouse and touch are supported.
-- Arrow keys rotate a focused canvas; `+`/`−` zoom; `0` resets; Escape clears selection.
-- Click a soma to inspect its source identity and strongest incoming/outgoing links.
-- Purple arrows are incoming; blue arrows are outgoing. Green links mean their
-  source spiked in the current measured window, not verified synaptic transmission.
-- At most 48 links per direction are drawn, ranked by anatomical contact count.
-  Selection reports visible totals and omissions. Lines join real somas; they are
-  schematic connectivity, not reconstructed axons. Spiking cells are a luminous
-  overlay so activity remains visible within the depth-shaded anatomy.
-- Population selection focuses activity without reducing the simulated graph.
-
-Research tools are collapsed beneath the main view. Save brain and Export run
-record retain learned state and evidence. Save the Pokémon game separately when
-its save control is available. These are not atomic combined checkpoints.
-
 ## Tight source loop
 
 Prerequisites: the repository Rust toolchain, `wasm32-unknown-unknown`, and
-`wasm-bindgen-cli` **0.2.126**, matching Cargo.lock. An existing game bundle is
+`wasm-bindgen-cli` **0.2.128**, matching Cargo.lock. An existing game bundle is
 required; this workflow does not compile Pokémon.
 
 ```sh

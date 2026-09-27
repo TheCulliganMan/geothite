@@ -2978,7 +2978,7 @@ fn load_pokedex_background(
                 for y in 0..8 {
                     for x in 0..8 {
                         let offset = ((row * 8 + y) * 160 + col * 8 + x) * 4;
-                        pixels[offset..offset + 4].copy_from_slice(&[0, 0, 0, 255]);
+                        pixels[offset..offset + 4].copy_from_slice(&[255, 255, 255, 255]);
                     }
                 }
                 continue;
@@ -3012,7 +3012,7 @@ fn load_pokedex_background(
     }
     let tile_pixel = |tile: u8, x: usize, y: usize| -> [u8; 4] {
         if tile == 0x7f {
-            return [0, 0, 0, 255];
+            return [255, 255, 255, 255];
         }
         let index = usize::from(tile - 0x31);
         let shade =
@@ -7558,7 +7558,7 @@ fn spawn_field_shop_screen(
             .iter()
             .find(|item| item.item_id == *item_id)
             .with_context(|| format!("shop item {item_id} is missing"))?;
-        let name = item.name.replace('_', " ");
+        let name = normalize_boot_text(&item.name).replace('_', " ");
         let line = if selling {
             let quantity = carried_item_quantity(snapshot, item_id)
                 .with_context(|| format!("sell item {item_id} has no carried quantity"))?;
@@ -7641,13 +7641,11 @@ fn spawn_field_shop_screen(
                 6.0,
                 4.3,
             );
-            let name = snapshot
-                .items
-                .iter()
-                .find(|item| item.item_id == quantity.item_id)
-                .context("confirmation item is missing")?
-                .name
-                .as_str();
+            let name = normalize_boot_text(
+                &snapshot.items.iter()
+                    .find(|item| item.item_id == quantity.item_id)
+                    .context("confirmation item is missing")?.name,
+            );
             let lines = if quantity.selling {
                 vec!["I can pay you".to_string(), format!("¥{total}.")]
             } else {
@@ -13727,6 +13725,12 @@ fn spawn_pokedex_interface_tile(
                 [214, 82, 49, 255],
                 [0, 0, 0, 255],
             ];
+            // Number and measurement glyphs use black ink on the entry's white paper.
+            let value = if (0x5c..=0x5f).contains(&tile) {
+                255 - value
+            } else {
+                value
+            };
             pixels.extend_from_slice(&palette[palette_index_from_gray(value)]);
         }
     }
@@ -14112,7 +14116,8 @@ fn spawn_pokedex_text(
             return;
         };
         for pixel in image.data.chunks_exact_mut(4) {
-            let white = pixel[3];
+            // Font alpha is ink coverage; the Dex uses black ink on white.
+            let white = 255 - pixel[3];
             pixel.copy_from_slice(&[white, white, white, 255]);
         }
         commands.spawn((

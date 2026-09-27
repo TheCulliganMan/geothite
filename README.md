@@ -1,11 +1,8 @@
 # Geothite
 
-A Rust implementation of Pokémon Crystal with browser and desktop play,
-online multiplayer, and an optional 2.5D overworld renderer.
-
-Geothite separates deterministic game logic from rendering and networking.
-The browser build brings the game, audio, touch controls, and multiplayer
-into one self-hosted application.
+A Rust implementation of Pokémon Crystal with browser and desktop clients,
+multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
+audio, and networking are implemented in this repository.
 
 ## Features
 
@@ -19,21 +16,28 @@ into one self-hosted application.
 This is an actively developed project. See the [fidelity audit](FIDELITY_AUDIT.md)
 for implementation status and remaining differences from the original game.
 
-## Quick start
+## Setup
 
-Install Docker with the Compose plugin, then clone the repository:
+For your own server, you need **Docker with Compose** and a **compatible Geothite
+browser content pack**. Game packs and ROMs are not included. A fresh clone or a
+ROM alone is not enough: the repository does not yet include the complete content
+export pipeline. [Game content setup](docs/game-content.md) explains what is required.
+
+### 1. Clone and add your content pack
 
 ```sh
 git clone https://github.com/TheCulliganMan/geothite.git
 cd geothite
 ```
 
-Game content is supplied separately; this repository does not include a game
-pack or ROM. Obtain the disassembly from
-[pret/pokecrystal](https://github.com/pret/pokecrystal), follow its assembly
-instructions, and prepare a compatible Geothite pack as described in
-[Game content setup](docs/game-content.md). Place the browser pack at
-`content-packs/core-modular.browser.crystalpack` before building Docker.
+Copy your separately supplied browser pack into the ignored local directory:
+
+```sh
+mkdir -p content-packs
+cp /path/to/core-modular.browser.crystalpack content-packs/
+```
+
+### 2. Create your server secret
 
 Create a signing secret once for a new installation:
 
@@ -42,7 +46,7 @@ umask 077
 printf 'CRYSTAL_AUTH_SECRET=%s\n' "$(openssl rand -hex 32)" > .env
 ```
 
-Start the game:
+### 3. Start the server
 
 ```sh
 docker compose -f docker-compose.production.yml up -d --build
@@ -59,9 +63,17 @@ proxying, upgrades, health checks, persistence, and cleanup.
 
 ## Playing
 
-In the browser, use the arrow keys or WASD to move, `Z` for A, `X` for B, `Space` for the
-game menu, and `Backspace` for Select. Press `Enter` to open chat and `Esc`
-to close it. Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
+| Action | Keyboard |
+| --- | --- |
+| Move | Arrow keys or WASD |
+| Confirm / interact (A) | `Z` |
+| Back / cancel (B) | `X` |
+| Game menu (Start) | `Space` |
+| Select | `Backspace` |
+| Open chat / send message | `Enter` |
+| Close chat | `Esc` |
+
+Rebind Chat, Start, and Select in **Personalization → Keyboard bindings**;
 **Save key bindings** keeps the choice in this browser across reloads. Chat, Start, and
 Select require different keys. Enter still sends messages while typing in chat.
 Nearby Say messages appear briefly above the speaking trainer in 2D and 2.5D.
@@ -167,6 +179,8 @@ screenshots for visual changes and the checks you ran in pull requests.
 
 ## Further reading
 
+- [Meshtastic battle/trade profile](modpacks/meshtastic/README.md)
+- [Flygon modpack](modpacks/flygon/README.md)
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)

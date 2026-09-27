@@ -61,12 +61,50 @@ pub fn build_modpack(
     grid: &GeneratedGrid,
     options: ModpackOptions<'_>,
 ) -> Result<GeneratedModpack> {
+    let audit = crate::audit_grid(grid);
+    ensure!(
+        audit.passed,
+        "cannot export an invalid scene: {}",
+        audit.errors.join("; ")
+    );
     let base_pack = options
         .base_pack
         .canonicalize()
         .with_context(|| format!("resolve base pack {}", options.base_pack.display()))?;
     let base = read_verified_compiled_game_pack(&base_pack)
         .with_context(|| format!("load verified base pack {}", base_pack.display()))?;
+    let tileset_extension = build_johto_modern_generated_tileset_extension(
+        &base,
+        format!("{}-tileset", options.manifest_id),
+    )?;
+    let base = base.with_tileset_extension(tileset_extension)?;
+    let extensions = map_extensions(&base, grid, &options)?;
+    let spawn = extensions[0].spawn.clone();
+    let runtime_tile_x = spawn.tile_x;
+    let runtime_tile_y = spawn.tile_y;
+    let extended = base.with_map_extensions(extensions)?;
+    if let Some(parent) = options.output_pack.parent() {
+        fs::create_dir_all(parent)
+            .with_context(|| format!("create output directory {}", parent.display()))?;
+    }
+    extended
+        .write_preserving_storage(options.output_pack)
+        .with_context(|| format!("write generated modpack {}", options.output_pack.display()))?;
+    Ok(GeneratedModpack {
+        path: options.output_pack.display().to_string(),
+        map_name: GENERATED_MAP_NAME.to_string(),
+        map_constant: GENERATED_MAP_CONSTANT.to_string(),
+        spawn_identifier: GENERATED_SPAWN_ID,
+        runtime_tile_x,
+        runtime_tile_y,
+    })
+}
+
+pub(crate) fn map_extensions(
+    base: &crystal_assets::CompiledGamePack,
+    grid: &GeneratedGrid,
+    options: &ModpackOptions<'_>,
+) -> Result<Vec<CompiledMapExtension>> {
     let has_pokecenter = crate::grid::pokecenter_origin(grid).is_some();
     let has_mart = crate::grid::mart_origin(grid).is_some();
     let requests_pokecenter = grid
@@ -93,11 +131,6 @@ pub fn build_modpack(
             "base pack is missing the canonical MART_VIOLET inventory"
         );
     }
-    let tileset_extension = build_johto_modern_generated_tileset_extension(
-        &base,
-        format!("{}-tileset", options.manifest_id),
-    )?;
-    let base = base.with_tileset_extension(tileset_extension)?;
     let template = base
         .data()
         .maps
@@ -130,6 +163,17 @@ pub fn build_modpack(
         .cloned()
         .context("base pack is missing canonical Route34 wild encounters")?;
     wild_encounters.map_name = GENERATED_MAP_NAME.to_string();
+    wild_encounters.swarm_overrides.clear();
+    if let Some(table) = &mut wild_encounters.grass {
+        for slot in table
+            .morning
+            .iter_mut()
+            .chain(&mut table.day)
+            .chain(&mut table.night)
+        {
+            slot.level = slot.level.clamp(3, 6);
+        }
+    }
     wild_encounters.zones = generated_biome_encounter_zones(grid);
     let module = generated_module(template, grid)?;
     let exterior_mart_warp_id = if requests_mart {
@@ -263,26 +307,137 @@ pub fn build_modpack(
             start_new_game_here: false,
         });
     }
-    let extended = base.with_map_extensions(extensions)?;
-    if let Some(parent) = options.output_pack.parent() {
-        fs::create_dir_all(parent)
-            .with_context(|| format!("create output directory {}", parent.display()))?;
+    add_residential_interiors(base, grid, options, &mut extensions)?;
+    Ok(extensions)
+}
+
+fn add_residential_interiors(
+    base: &crystal_assets::CompiledGamePack,
+    grid: &GeneratedGrid,
+    options: &ModpackOptions<'_>,
+    extensions: &mut Vec<CompiledMapExtension>,
+) -> Result<()> {
+    let Some(scene) = &grid.scene else {
+        return Ok(());
+    };
+    if scene.structures.is_empty() {
+        return Ok(());
     }
-    extended
-        .write_preserving_storage(options.output_pack)
-        .with_context(|| format!("write generated modpack {}", options.output_pack.display()))?;
-    Ok(GeneratedModpack {
-        path: options.output_pack.display().to_string(),
-        map_name: GENERATED_MAP_NAME.to_string(),
-        map_constant: GENERATED_MAP_CONSTANT.to_string(),
-        spawn_identifier: GENERATED_SPAWN_ID,
-        runtime_tile_x,
-        runtime_tile_y,
-    })
+    let templates = base
+        .data()
+        .maps
+        .values()
+        .filter(|m| {
+            m.id.ends_with("House")
+                && m.attributes.width <= 8
+                && m.attributes.height <= 6
+                && !m.events.warps.is_empty()
+                && m.events.warps.len() <= 2
+                && m.events
+                    .warps
+                    .iter()
+                    .all(|w| w.target_map_constant == m.events.warps[0].target_map_constant)
+        })
+        .take(3)
+        .collect::<Vec<_>>();
+    ensure!(
+        !templates.is_empty(),
+        "base pack has no small house template with exterior-only exits"
+    );
+    for (number, structure) in scene.structures.iter().enumerate() {
+        let template = templates[number % templates.len()];
+        let name = format!("GeneratedHouse{}", number + 1);
+        let constant = format!("GENERATED_HOUSE_{}", number + 1);
+        let exterior_warp = extensions[0]
+            .module
+            .events
+            .warps
+            .iter()
+            .map(|w| w.index)
+            .max()
+            .unwrap_or(0)
+            + 1;
+        let mut module = template.clone();
+        let exits = module.events.warps.clone();
+        clear_local_behavior(&mut module);
+        module.id = name.clone();
+        module.attributes.map_constant = Some(constant.clone());
+        module.attributes.map_group_constant = Some(GENERATED_GROUP_NAME.into());
+        module.attributes.blocks_label = Some(format!("{name}_Blocks"));
+        module.attributes.map_scripts_label = Some(format!("{name}_MapScripts"));
+        module.attributes.map_events_label = Some(format!("{name}_MapEvents"));
+        module.attributes.connections.clear();
+        module.events.warps = exits
+            .into_iter()
+            .enumerate()
+            .map(|(i, mut warp)| {
+                warp.index = (i + 1) as u16;
+                warp.target_map_constant = GENERATED_MAP_CONSTANT.into();
+                warp.target_map = GENERATED_MAP_CONSTANT.into();
+                warp.target_warp_id = exterior_warp as i16;
+                warp
+            })
+            .collect();
+        crate::world::refresh_warps(&mut module);
+        let exit = module.events.warps[0].clone();
+        extensions[0]
+            .module
+            .events
+            .warps
+            .push(crystal_core::map::WarpEvent {
+                index: exterior_warp,
+                x: structure.door.0,
+                y: structure.door.1,
+                target_map_constant: constant.clone(),
+                target_map: constant.clone(),
+                target_warp_id: 1,
+            });
+        let map_id = u16::try_from(number + 4)?;
+        let spawn_id = 64_000 - u16::try_from(number)?;
+        let tile_x = i16::try_from(exit.x)?;
+        let tile_y = i16::try_from(exit.y.saturating_sub(1))?;
+        let spawn = RuntimeSpawnPoint {
+            identifier: spawn_id,
+            map_constant: constant.clone(),
+            map_name: name.clone(),
+            group_id: GENERATED_GROUP_ID as i16,
+            map_id: map_id as i16,
+            tile_x,
+            tile_y,
+            group_name: GENERATED_GROUP_NAME.into(),
+            metatile_x: tile_x / 2,
+            metatile_y: tile_y / 2,
+            subtile_x: tile_x.rem_euclid(2),
+            subtile_y: tile_y.rem_euclid(2),
+        };
+        extensions.push(CompiledMapExtension {
+            manifest_id: format!("{}-house-{}", options.manifest_id, number + 1),
+            map_name: name.clone(),
+            map_constant: constant.clone(),
+            metadata: RuntimeMapMetadata {
+                constant,
+                name,
+                group_name: GENERATED_GROUP_NAME.into(),
+                group_id: GENERATED_GROUP_ID,
+                map_id,
+                width: module.attributes.width,
+                height: module.attributes.height,
+                environment: "INDOOR".into(),
+                phone_service: 0,
+            },
+            module,
+            spawn_key: spawn_id.to_string(),
+            spawn,
+            wild_encounters: None,
+            start_new_game_here: false,
+        });
+    }
+    crate::world::refresh_warps(&mut extensions[0].module);
+    Ok(())
 }
 
 fn generated_biome_encounter_zones(grid: &GeneratedGrid) -> Vec<WildEncounterZone> {
-    use std::collections::{BTreeMap, VecDeque};
+    use std::collections::BTreeMap;
 
     fn table(species: [&str; 7]) -> WildEncounterTable {
         let slots = species
@@ -300,80 +455,85 @@ fn generated_biome_encounter_zones(grid: &GeneratedGrid) -> Vec<WildEncounterZon
         }
     }
 
-    let width = usize::from(grid.width);
-    let mut seen = vec![false; grid.cells.len()];
-    let mut zones = Vec::new();
-    for start in 0..grid.cells.len() {
-        let kind = match grid.cells[start] {
-            crate::MapCell::IceFloor => "ice_surface",
-            crate::MapCell::RockFloor => "rock_surface",
-            _ => continue,
-        };
-        if seen[start] {
-            continue;
-        }
-        seen[start] = true;
-        let mut queue = VecDeque::from([start]);
-        let (mut min_x, mut min_y, mut max_x, mut max_y) =
-            (start % width, start / width, start % width, start / width);
-        while let Some(index) = queue.pop_front() {
-            let x = index % width;
-            let y = index / width;
-            min_x = min_x.min(x);
-            min_y = min_y.min(y);
-            max_x = max_x.max(x);
-            max_y = max_y.max(y);
-            for (nx, ny) in [
-                (x.wrapping_sub(1), y),
-                (x + 1, y),
-                (x, y.wrapping_sub(1)),
-                (x, y + 1),
-            ] {
-                if nx >= width || ny >= usize::from(grid.height) {
-                    continue;
+    if let Some(scene) = &grid.scene {
+        let mut zones = Vec::new();
+        for y in 0..grid.height {
+            let mut x = 0;
+            while x < grid.width {
+                let family =
+                    scene.districts[usize::from(y) * usize::from(grid.width) + usize::from(x)];
+                let near_start = x.abs_diff(scene.spawn.0).max(y.abs_diff(scene.spawn.1)) <= 12;
+                let start = x;
+                while x + 1 < grid.width
+                    && scene.districts
+                        [usize::from(y) * usize::from(grid.width) + usize::from(x + 1)]
+                        == family
+                    && ((x + 1)
+                        .abs_diff(scene.spawn.0)
+                        .max(y.abs_diff(scene.spawn.1))
+                        <= 12)
+                        == near_start
+                {
+                    x += 1;
                 }
-                let next = ny * width + nx;
-                let same = matches!(
-                    (kind, grid.cells[next]),
-                    ("ice_surface", crate::MapCell::IceFloor)
-                        | ("rock_surface", crate::MapCell::RockFloor)
-                );
-                if same && !seen[next] {
-                    seen[next] = true;
-                    queue.push_back(next);
+                let species = match family {
+                    crate::VisualFamily::Woodland => [
+                        "CATERPIE", "WEEDLE", "SPINARAK", "LEDYBA", "PARAS", "METAPOD", "KAKUNA",
+                    ],
+                    crate::VisualFamily::Waterfront => [
+                        "WOOPER", "POLIWAG", "PSYDUCK", "HOPPIP", "SUNKERN", "PIDGEY", "RATTATA",
+                    ],
+                    crate::VisualFamily::Rocky => [
+                        "GEODUDE",
+                        "SANDSHREW",
+                        "ZUBAT",
+                        "CUBONE",
+                        "ONIX",
+                        "GEODUDE",
+                        "ZUBAT",
+                    ],
+                    crate::VisualFamily::Urban | crate::VisualFamily::Residential => [
+                        "RATTATA", "PIDGEY", "SPEAROW", "SENTRET", "HOOTHOOT", "RATTATA", "PIDGEY",
+                    ],
+                    crate::VisualFamily::Meadow => [
+                        "SENTRET", "PIDGEY", "HOPPIP", "SUNKERN", "RATTATA", "SPEAROW", "CATERPIE",
+                    ],
+                };
+                let mut grass = table(species);
+                for (i, slot) in grass.morning.iter_mut().enumerate() {
+                    slot.level = if near_start {
+                        3 + i as u8 / 3
+                    } else {
+                        6 + i as u8 / 2
+                    };
                 }
+                grass.day = grass.morning.clone();
+                grass.night = grass.morning.clone();
+                grass.night[0].species = if family == crate::VisualFamily::Rocky {
+                    "ZUBAT"
+                } else {
+                    "HOOTHOOT"
+                }
+                .into();
+                zones.push(WildEncounterZone {
+                    id: format!("habitat_{start}_{y}"),
+                    min_x: (start * 2) as i16,
+                    min_y: (y * 2) as i16,
+                    max_x: (x * 2 + 1) as i16,
+                    max_y: (y * 2 + 1) as i16,
+                    grass_rates: BTreeMap::from([
+                        ("morning".into(), 12),
+                        ("day".into(), 12),
+                        ("night".into(), 14),
+                    ]),
+                    grass,
+                });
+                x += 1;
             }
         }
-        let grass = if kind == "ice_surface" {
-            table([
-                "SWINUB", "SWINUB", "SNEASEL", "DELIBIRD", "JYNX", "ZUBAT", "GOLBAT",
-            ])
-        } else {
-            table([
-                "GEODUDE",
-                "GEODUDE",
-                "SANDSHREW",
-                "CUBONE",
-                "ONIX",
-                "GRAVELER",
-                "RHYHORN",
-            ])
-        };
-        zones.push(WildEncounterZone {
-            id: format!("{kind}_{}", zones.len() + 1),
-            min_x: i16::try_from(min_x * 2).expect("generated runtime x fits i16"),
-            min_y: i16::try_from(min_y * 2).expect("generated runtime y fits i16"),
-            max_x: i16::try_from(max_x * 2 + 1).expect("generated runtime x fits i16"),
-            max_y: i16::try_from(max_y * 2 + 1).expect("generated runtime y fits i16"),
-            grass_rates: BTreeMap::from([
-                ("morning".to_string(), 12),
-                ("day".to_string(), 12),
-                ("night".to_string(), 14),
-            ]),
-            grass,
-        });
+        return zones;
     }
-    zones
+    Vec::new()
 }
 
 fn generated_module(template: &MapModule, grid: &GeneratedGrid) -> Result<MapModule> {
@@ -437,6 +597,37 @@ fn generated_module(template: &MapModule, grid: &GeneratedGrid) -> Result<MapMod
         map_events_label: Some("GeneratedNeighborhood_MapEvents".to_string()),
         connection_flags: None,
     };
+    clear_local_behavior(&mut module);
+    module.blocks = grid.crystal_blocks();
+    apply_generated_events(&mut module, grid);
+    let mut pokecenter_warps = 0;
+    let mut mart_warps = 0;
+    for warp in &mut module.events.warps {
+        if warp.target_map_constant == GENERATED_POKECENTER_CONSTANT {
+            // Runtime warp resolution addresses maps by constant token. Keep
+            // the redundant target fields identical, as in canonical maps.
+            warp.target_map = GENERATED_POKECENTER_CONSTANT.to_string();
+            pokecenter_warps += 1;
+        } else if warp.target_map_constant == GENERATED_MART_CONSTANT {
+            warp.target_map = GENERATED_MART_CONSTANT.to_string();
+            mart_warps += 1;
+        }
+    }
+    ensure!(
+        pokecenter_warps == usize::from(has_pokecenter),
+        "generated exterior must contain exactly {} Pokemon Center warp(s), found {pokecenter_warps}",
+        usize::from(has_pokecenter)
+    );
+    ensure!(
+        mart_warps == usize::from(has_mart),
+        "generated exterior must contain exactly {} Mart warp(s), found {mart_warps}",
+        usize::from(has_mart)
+    );
+    ensure_structured_raw_warps_match(&module)?;
+    Ok(module)
+}
+
+fn clear_local_behavior(module: &mut MapModule) {
     module.scripts.clear();
     module.trainer_scripts.clear();
     module.scripted_trainer_battles.clear();
@@ -470,33 +661,6 @@ fn generated_module(template: &MapModule, grid: &GeneratedGrid) -> Result<MapMod
     module.scenes = MapSceneTable::default();
     module.events = MapEvents::default();
     module.objects.clear();
-    module.blocks = grid.crystal_blocks();
-    apply_generated_events(&mut module, grid);
-    let mut pokecenter_warps = 0;
-    let mut mart_warps = 0;
-    for warp in &mut module.events.warps {
-        if warp.target_map_constant == GENERATED_POKECENTER_CONSTANT {
-            // Runtime warp resolution addresses maps by constant token. Keep
-            // the redundant target fields identical, as in canonical maps.
-            warp.target_map = GENERATED_POKECENTER_CONSTANT.to_string();
-            pokecenter_warps += 1;
-        } else if warp.target_map_constant == GENERATED_MART_CONSTANT {
-            warp.target_map = GENERATED_MART_CONSTANT.to_string();
-            mart_warps += 1;
-        }
-    }
-    ensure!(
-        pokecenter_warps == usize::from(has_pokecenter),
-        "generated exterior must contain exactly {} Pokemon Center warp(s), found {pokecenter_warps}",
-        usize::from(has_pokecenter)
-    );
-    ensure!(
-        mart_warps == usize::from(has_mart),
-        "generated exterior must contain exactly {} Mart warp(s), found {mart_warps}",
-        usize::from(has_mart)
-    );
-    ensure_structured_raw_warps_match(&module)?;
-    Ok(module)
 }
 
 fn generated_pokecenter_module(template: &MapModule) -> Result<MapModule> {
@@ -1116,7 +1280,6 @@ fn ensure_structured_raw_warps_match(module: &MapModule) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
 
     use crystal_core::{
         map::WarpEvent,
@@ -1127,14 +1290,6 @@ mod tests {
 
     use super::*;
     use crate::{BoundingBox, Coordinate, MapCell, MapSource};
-
-    fn repository_root_for_tests() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .ancestors()
-            .nth(3)
-            .expect("workspace is nested under rust/crates/crystal-mapgen")
-            .to_path_buf()
-    }
 
     fn generated_grid_with_facilities(has_center: bool, has_mart: bool) -> GeneratedGrid {
         const WIDTH: u16 = 8;
@@ -1161,7 +1316,9 @@ mod tests {
             }
         }
         let mut grid = GeneratedGrid {
+            scene: None,
             source: MapSource {
+                schema_version: 2,
                 center: Coordinate {
                     lat: 44.948,
                     lon: -93.305,
@@ -1198,6 +1355,7 @@ mod tests {
             closed_transport_crossings: Vec::new(),
         });
         grid.source.h3 = Some(plan);
+        grid.scene = Some(crate::scene::plan(&grid));
         grid
     }
 
@@ -1208,43 +1366,36 @@ mod tests {
     }
 
     #[test]
-    fn surface_biomes_receive_spatially_distinct_encounter_tables() {
-        let mut grid = generated_grid_with_facilities(false, false);
-        grid.cells[1 * 8 + 1] = MapCell::IceFloor;
-        grid.cells[1 * 8 + 2] = MapCell::IceFloor;
-        grid.cells[5 * 8 + 5] = MapCell::RockFloor;
-        grid.cells[5 * 8 + 6] = MapCell::RockFloor;
+    fn synthetic_facility_export_fixtures_pass_scene_checks() {
+        for (center, mart) in [(false, false), (false, true), (true, false), (true, true)] {
+            let grid = generated_grid_with_facilities(center, mart);
+            let audit = crate::audit_grid(&grid);
+            assert!(audit.passed, "{:?}", audit.errors);
+        }
+    }
 
+    #[test]
+    fn encounters_follow_habitat_even_when_decorative_tiles_match() {
+        let mut grid = generated_grid_with_facilities(false, false);
+        let mut scene = crate::scene::plan(&grid);
+        scene.districts.fill(crate::VisualFamily::Woodland);
+        for y in 4..8 {
+            for x in 0..8 {
+                scene.districts[y * 8 + x] = crate::VisualFamily::Rocky;
+            }
+        }
+        grid.scene = Some(scene);
         let zones = generated_biome_encounter_zones(&grid);
-        assert_eq!(zones.len(), 2);
-        let ice = zones
-            .iter()
-            .find(|zone| zone.id.starts_with("ice_surface"))
-            .unwrap();
-        let rock = zones
-            .iter()
-            .find(|zone| zone.id.starts_with("rock_surface"))
-            .unwrap();
-        assert_eq!((ice.min_x, ice.min_y, ice.max_x, ice.max_y), (2, 2, 5, 3));
-        assert!(ice.grass.day.iter().any(|entry| entry.species == "SWINUB"));
+        assert_eq!(zones.len(), 8);
+        assert!(zones[0].grass.day.iter().any(|e| e.species == "CATERPIE"));
+        assert!(zones[4].grass.day.iter().any(|e| e.species == "GEODUDE"));
         assert!(
-            ice.grass
-                .night
+            zones
                 .iter()
-                .any(|entry| entry.species == "SNEASEL")
+                .all(|z| z.grass.day.iter().all(|e| e.level <= 5))
         );
-        assert_eq!(
-            (rock.min_x, rock.min_y, rock.max_x, rock.max_y),
-            (10, 10, 13, 11)
-        );
-        assert!(
-            rock.grass
-                .day
-                .iter()
-                .any(|entry| entry.species == "GEODUDE")
-        );
-        assert!(rock.grass.day.iter().any(|entry| entry.species == "ONIX"));
-        assert!(!rock.grass.day.iter().any(|entry| entry.species == "SWINUB"));
+        assert_eq!(zones[0].grass.night[0].species, "HOOTHOOT");
+        assert_eq!(zones[4].grass.night[0].species, "ZUBAT");
     }
 
     fn warp_at(module: &MapModule, coordinate: (u16, u16)) -> &WarpEvent {
@@ -1362,11 +1513,10 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn generated_center_hardening_uses_warp_coordinates_not_template_order() {
-        let root = repository_root_for_tests();
-        let pack =
-            read_verified_compiled_game_pack(root.join("content-packs/core-modular.crystalpack"))
-                .expect("load canonical pack");
+        let pack_path = crate::test_pack_path();
+        let pack = read_verified_compiled_game_pack(pack_path).expect("load canonical pack");
         let mut template = pack
             .data()
             .map_module("MahoganyPokecenter1F")
@@ -1405,11 +1555,10 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn generated_mart_hardening_uses_coordinates_and_keeps_only_the_real_shop() {
-        let root = repository_root_for_tests();
-        let pack =
-            read_verified_compiled_game_pack(root.join("content-packs/core-modular.crystalpack"))
-                .expect("load canonical pack");
+        let pack_path = crate::test_pack_path();
+        let pack = read_verified_compiled_game_pack(pack_path).expect("load canonical pack");
         let mut template = pack
             .data()
             .map_module("VioletMart")
@@ -1462,14 +1611,15 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn generated_center_pack_resolves_full_warp_chain_and_strips_template_story() {
-        let root = repository_root_for_tests();
+        let pack_path = crate::test_pack_path();
         let temporary = tempdir().expect("create temporary generated pack directory");
         let output_pack = temporary.path().join("generated-center.crystalpack");
         build_modpack(
             &generated_center_grid(),
             ModpackOptions {
-                base_pack: &root.join("content-packs/core-modular.crystalpack"),
+                base_pack: &pack_path,
                 output_pack: &output_pack,
                 manifest_id: "generated-center-integration-test",
                 start_new_game_here: false,
@@ -1816,8 +1966,9 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires CRYSTAL_MAPGEN_TEST_PACK; run with --ignored"]
     fn generated_pack_includes_only_allocated_facility_interiors() {
-        let root = repository_root_for_tests();
+        let pack_path = crate::test_pack_path();
         let temporary = tempdir().expect("create temporary generated pack directory");
         for (has_center, has_mart, case_name) in [
             (false, false, "neither"),
@@ -1829,7 +1980,7 @@ mod tests {
             build_modpack(
                 &generated_grid_with_facilities(has_center, has_mart),
                 ModpackOptions {
-                    base_pack: &root.join("content-packs/core-modular.crystalpack"),
+                    base_pack: &pack_path,
                     output_pack: &output_pack,
                     manifest_id: case_name,
                     start_new_game_here: false,

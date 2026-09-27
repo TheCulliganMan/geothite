@@ -1,0 +1,7 @@
+{
+  "channel_index": 0,
+  "discovery_interval_seconds": 15,
+  "peer_expiry_seconds": 45,
+  "session_idle_timeout_seconds": 60,
+  "retry_rounds": 5
+}

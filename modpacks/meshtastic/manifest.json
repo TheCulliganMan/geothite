@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "meshtastic",
+  "name": "Meshtastic Link",
+  "version": "0.1.0",
+  "status": "experimental",
+  "kind": "optional-multiplayer-transport",
+  "base_game": "Geothite Pokemon Crystal",
+  "runtime": {
+    "feature": "meshtastic",
+    "private_app_port": 256,
+    "max_payload_bytes": 233,
+    "overworld_presence": false,
+    "central_server": false
+  }
+}

@@ -1,5 +1,16 @@
+mod source_art;
+pub use source_art::SourceArtPreview;
+mod world;
+pub use world::{
+    GeneratedRegion, MapAllocation, RegionBuildOptions, WorldGenerationIdentity, WorldMapRegistry,
+    build_region_modpack,
+};
+mod scene;
+pub use scene::{
+    PlannedDestination, PlannedStructure, ScenePlan, StructureRecipe, VisualFamily,
+    generate_composed_grid,
+};
 mod audit;
-mod biomes;
 mod custom_tileset;
 mod events;
 mod geometry;
@@ -10,9 +21,7 @@ mod modpack;
 mod preview;
 mod regional;
 mod road_skeleton;
-mod roadside;
 mod stable_grid;
-mod vegetation;
 mod world_grid;
 
 pub use audit::{MapAudit, audit_grid, audit_grid_with_facilities};
@@ -36,9 +45,10 @@ pub use custom_tileset::{
     build_johto_modern_generated_tileset_extension,
 };
 pub use geometry::{
-    BoundingBox, Coordinate, Feature, FeatureKind, MapSource, fetch_map_bounds, fetch_neighborhood,
+    BoundingBox, Coordinate, Feature, FeatureDetails, FeatureKind, MapSource,
+    SOURCE_SCHEMA_VERSION, fetch_map_bounds, fetch_neighborhood,
 };
-pub use grid::{GeneratedGrid, GridLabel, MapCell, generate_grid, repair_walkable_connectivity};
+pub use grid::{GeneratedGrid, GridLabel, MapCell, generate_grid};
 pub use grid_seams::{H3BatchGridSeamFinalization, finalize_h3_batch_grid_seams};
 pub use h3::{
     H3_SOURCE_SCHEMA_VERSION, H3BatchCell, H3BatchConnections, H3BatchLink, H3BatchManifest,
@@ -60,3 +70,13 @@ pub use regional::{
 };
 pub use road_skeleton::{RoadAxis, RoadSkeleton, RoadSkeletonCell, build_road_skeleton};
 pub use world_grid::{ProjectedPoint, WorldCell, WorldGrid, WorldProjection, WorldRect};
+
+/// Version of the composed-world generator. Persisted worlds never change recipe implicitly.
+pub const GENERATOR_VERSION: u32 = 2;
+
+#[cfg(test)]
+fn test_pack_path() -> std::path::PathBuf {
+    std::env::var_os("CRYSTAL_MAPGEN_TEST_PACK")
+        .map(std::path::PathBuf::from)
+        .expect("set CRYSTAL_MAPGEN_TEST_PACK to an external compatible .crystalpack")
+}
