@@ -22,11 +22,11 @@ pub mod bevy_shell;
 pub use bevy_shell::{
     BevyHostedMultiplayerConfig, BevyMeshtasticConfig, BevyMeshtasticConnection,
     BevyMultiplayerConfig, BevyShellConfig, BevyShellStart, VisibleShellBattleSmoke,
-    VisibleShellBattleSmokeRef, VisibleShellOverworldSmoke, VisibleShellPartySmoke,
-    VisibleShellSmokeItem, VisibleShellSmokePokemon, VisibleShellStartMenuSmoke,
-    VisibleShellTitleNameInputSmoke, VisibleShellTitleSmoke, VisibleShellTrainerBattleSmoke,
-    run_bevy_shell, smoke_visible_shell_overworld, smoke_visible_shell_party,
-    smoke_visible_shell_start_menu, smoke_visible_shell_title,
+    VisibleShellBattleSmokeRef, VisibleShellController, VisibleShellOverworldSmoke,
+    VisibleShellPartySmoke, VisibleShellSmokeItem, VisibleShellSmokePokemon,
+    VisibleShellStartMenuSmoke, VisibleShellTitleNameInputSmoke, VisibleShellTitleSmoke,
+    VisibleShellTrainerBattleSmoke, run_bevy_shell, smoke_visible_shell_overworld,
+    smoke_visible_shell_party, smoke_visible_shell_start_menu, smoke_visible_shell_title,
     smoke_visible_shell_title_name_input, smoke_visible_shell_trainer_battle,
     smoke_visible_shell_wild_battle,
 };

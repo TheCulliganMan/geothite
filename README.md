@@ -137,6 +137,21 @@ Wide screens dock field dialogue and panels in a right-hand column. Portrait
 screens place dialogue at the bottom center. Both 2D and 2.5D views use this
 responsive layout, with smaller insets to keep panels on small screens.
 
+### Browser agent play
+
+In browsers that implement the current WebMCP `document.modelContext` API,
+the game registers tools to observe the current presentation, read player and
+party status, inspect visible surroundings and input flow, press original Game
+Boy buttons, and initiate the existing multiplayer interactions. Open **How to
+play → Agent tools** to see whether registration succeeded.
+
+The WebMCP surface follows the same information boundary as a human player. It
+returns on-screen text and menus, inspectable trainer/party state, and relative
+positions of people visible in the viewport. It does not expose walkthroughs,
+objectives, event or engine flags, hidden objects, absolute world coordinates,
+map dimensions, collision data, or pathfinding. Every game action still goes
+through the normal input system, and a human keypress cancels agent input.
+
 ## Development
 
 The workspace is organized around focused Rust crates:
@@ -149,6 +164,7 @@ The workspace is organized around focused Rust crates:
 | `crates/crystal-net` | Multiplayer protocol and transport. |
 | `crates/crystal-bevy` | Desktop and WASM game client. |
 | `crates/crystal-render-api` | Shared presentation snapshots. |
+| `crates/crystal-tui` | Native text snapshots and terminal UI. |
 | `crates/crystal-voxel-view` | Optional 2.5D renderer. |
 | `crates/crystal-web-server` | HTTP hosting and multiplayer relay. |
 | `web-client` | Browser page, controls, thin WASM audio worker, and chat UI. |
@@ -181,6 +197,7 @@ screenshots for visual changes and the checks you ran in pull requests.
 
 - [Meshtastic battle/trade profile](modpacks/meshtastic/README.md)
 - [Flygon modpack](modpacks/flygon/README.md)
+- [Native Rust text renderer and TUI](modpacks/text-tui/README.md)
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)

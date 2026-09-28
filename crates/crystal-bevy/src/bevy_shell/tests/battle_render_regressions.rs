@@ -578,6 +578,114 @@ fn battle_dialogue_uses_player_input_drains_once_and_returns_menu_control() {
 }
 
 #[test]
+fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
+    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    runtime_shell.visible_battle_transition = None;
+    runtime_shell.visible_battle_sliding_intro = None;
+    runtime_shell.visible_send_out_animation = None;
+    runtime_shell.battle_entry_messages_remaining = 0;
+    runtime_shell.battle_enemy_send_out_pending = false;
+    runtime_shell.battle_player_send_out_pending = false;
+    runtime_shell.battle_messages.clear();
+    runtime_shell.battle_message_scenes.clear();
+    runtime_shell.battle_text_reveal = None;
+    sync_visible_battle_action_cursor(&mut runtime_shell);
+    let mut controller = VisibleShellController {
+        shell: runtime_shell,
+    };
+
+    let initial = controller.snapshot().expect("initial battle snapshot");
+    assert!(matches!(
+        initial.phase,
+        RuntimeShellPhase::WildBattle
+            | RuntimeShellPhase::StaticWildBattle
+            | RuntimeShellPhase::TrainerBattle
+    ));
+    let initial_options = &initial
+        .ui
+        .menu
+        .as_ref()
+        .expect("battle command menu")
+        .layout
+        .vertical_menus[0]
+        .options;
+    assert!(initial_options.iter().any(|entry| entry == ">FIGHT"));
+    assert!(initial_options.iter().any(|entry| entry.trim() == "RUN"));
+
+    controller.press(GameButton::A).expect("open Fight menu");
+    let moves = controller.snapshot().expect("move menu snapshot");
+    let move_options = &moves
+        .ui
+        .menu
+        .as_ref()
+        .expect("battle move menu")
+        .layout
+        .vertical_menus[0]
+        .options;
+    assert!(
+        move_options.iter().any(|entry| entry.starts_with('>')),
+        "move menu has no selected command: {move_options:?}"
+    );
+    let pp_before = moves.battle.as_ref().expect("active battle").player_moves[0].current_pp;
+
+    controller
+        .press(GameButton::A)
+        .expect("execute selected move");
+    let after_turn = controller.snapshot().expect("resolved turn snapshot");
+    let pp_after = after_turn
+        .battle
+        .as_ref()
+        .map(|battle| battle.player_moves[0].current_pp)
+        .unwrap_or_else(|| after_turn.party.slots[0].pokemon.moves[0].current_pp);
+    assert!(
+        pp_after < pp_before,
+        "selecting the move did not mutate authoritative battle PP: before={pp_before} after={pp_after} moves={move_options:?} phase={:?} battle={} text={:?}",
+        after_turn.phase,
+        after_turn.battle.is_some(),
+        after_turn.ui.text
+    );
+    assert_eq!(
+        after_turn.ui.text.as_ref().map(|text| text.label.as_str()),
+        Some("visible-shell:battle-message"),
+        "resolved turn must expose its battle dialogue"
+    );
+    assert!(
+        after_turn
+            .ui
+            .text
+            .as_ref()
+            .and_then(|text| text.asm_text.as_deref())
+            .is_some_and(|text| !text.is_empty()),
+        "battle dialogue must be fully revealed at the input boundary"
+    );
+
+    // A decisive turn may end this deliberately small fixture battle. PP and
+    // dialogue above still prove that the selected move executed through the
+    // authoritative battle engine rather than merely changing a TUI cursor.
+    if after_turn.battle.is_none() {
+        return;
+    }
+
+    for _ in 0..64 {
+        let snapshot = controller
+            .snapshot()
+            .expect("battle acknowledgement snapshot");
+        if snapshot.ui.menu.as_ref().is_some_and(|menu| {
+            menu.layout.vertical_menus[0]
+                .options
+                .iter()
+                .any(|entry| entry == ">FIGHT")
+        }) {
+            return;
+        }
+        controller
+            .press(GameButton::A)
+            .expect("advance battle dialogue");
+    }
+    panic!("battle dialogue did not return control to the command menu");
+}
+
+#[test]
 fn replacement_text_uses_send_out_mon_texts_quarter_max_hp_divisor() {
     let runtime_shell = route36_battle_shell_for_render_regression();
     let mut snapshot = runtime_shell.shell.snapshot().expect("battle snapshot");

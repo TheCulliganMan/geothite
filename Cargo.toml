@@ -9,6 +9,7 @@ members = [
     "crates/crystal-net",
     "crates/crystal-render-api",
     "crates/crystal-runtime",
+    "crates/crystal-tui",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
 ]

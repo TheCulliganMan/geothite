@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "text-tui",
+  "name": "Geothite Text TUI",
+  "version": "0.1.0",
+  "status": "experimental",
+  "kind": "optional-rust-renderer",
+  "base_game": "Geothite Pokemon Crystal",
+  "runtime": {
+    "crate": "crystal-tui",
+    "renderer": "Rust text snapshots and Ratatui",
+    "content_pack": "user-supplied",
+    "browser_javascript": false
+  }
+}
+

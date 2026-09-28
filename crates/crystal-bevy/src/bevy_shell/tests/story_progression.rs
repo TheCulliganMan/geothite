@@ -5198,6 +5198,145 @@ fn visible_overworld_normal_inputs_exit_house_and_trigger_new_bark_teacher_stop(
 }
 
 #[test]
+fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
+    fn move_tiles(controller: &mut VisibleShellController, button: GameButton, count: usize) {
+        for _ in 0..count {
+            let before = controller.snapshot().expect("movement start snapshot");
+            let mut moved = false;
+            for _ in 0..4 {
+                controller.press(button).expect("directional input");
+                let after = controller.snapshot().expect("movement result snapshot");
+                if after.overworld.map_name != before.overworld.map_name
+                    || after.overworld.tile != before.overworld.tile
+                {
+                    moved = true;
+                    break;
+                }
+            }
+            assert!(
+                moved,
+                "directional input was blocked on {} {:?} before {button:?}",
+                before.overworld.map_name,
+                before.overworld.tile
+            );
+        }
+    }
+
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let pack_path = repo_root.join("content-packs/text-tui.crystalpack");
+    if !pack_path.exists() {
+        eprintln!(
+            "skipping external-pack controller regression; build {} first",
+            pack_path.display()
+        );
+        return;
+    }
+    let asset_root = AssetRoot::new(pack_path.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path)
+        .expect("read text TUI pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
+        .expect("load text TUI pack");
+    let mut controller = VisibleShellController::new_game(
+        asset_root,
+        runtime,
+        "CHRIS",
+        None,
+    )
+    .expect("start renderer-neutral game");
+
+    let initial = controller.snapshot().expect("initial snapshot");
+    assert_eq!(initial.trainer.player_name, "CHRIS");
+    assert_eq!(initial.overworld.map_name, "PlayersHouse2F");
+    assert_eq!(initial.overworld.tile, TilePosition { x: 3, y: 3 });
+    assert!(
+        has_visible_shell_start_action(&mut controller.shell),
+        "new-game controller did not release input ownership: title={} reveal={} cursor={:?} special={:?} pending_script={} active_work={}",
+        controller.shell.title_menu.is_some(),
+        controller.shell.field_text_reveal.is_some(),
+        controller.shell.active_script_cursor,
+        controller.shell.special_boundary,
+        controller.shell.pending_scene_script.is_some(),
+        controller.shell.shell.has_pending_script_work(),
+    );
+    controller.press(GameButton::Start).expect("open Start menu");
+    let start = controller.snapshot().expect("Start menu snapshot");
+    let start_menu = start.ui.menu.as_ref().unwrap_or_else(|| {
+        panic!(
+            "visible Start menu: cursor={:?} text_window={} window={} text={:?} entries={:?}",
+            controller.shell.start_menu_cursor,
+            start.ui.text_window_open,
+            start.ui.window_open,
+            start.ui.text.as_ref().map(|text| text.label.as_str()),
+            visible_scene_dialog_entries(&start, &controller.shell)
+        )
+    });
+    let start_options = &start_menu.layout.vertical_menus[0].options;
+    assert!(start_options.iter().any(|option| option.contains("PACK")));
+    controller.press(GameButton::B).expect("close Start menu");
+
+    move_tiles(&mut controller, GameButton::Right, 4);
+    move_tiles(&mut controller, GameButton::Up, 3);
+    move_tiles(&mut controller, GameButton::Down, 4);
+    let mom = controller.snapshot().expect("Mom dialogue snapshot");
+    assert_eq!(mom.overworld.map_name, "PlayersHouse1F");
+    assert_eq!(mom.overworld.tile, TilePosition { x: 9, y: 4 });
+    assert_eq!(mom.phase, RuntimeShellPhase::Text);
+    assert_eq!(
+        mom.ui.text.as_ref().map(|text| text.label.as_str()),
+        Some("ElmsLookingForYouText")
+    );
+    assert!(
+        mom.ui.text.as_ref().and_then(|text| text.asm_text.as_deref())
+            .is_some_and(|text| text.contains("CHRIS"))
+    );
+    let mom_tile = mom.overworld.tile;
+    controller.press(GameButton::Right).expect("dialogue owns direction");
+    assert_eq!(controller.snapshot().unwrap().overworld.tile, mom_tile);
+    let first_page = controller.snapshot().unwrap().ui.text.unwrap().asm_text.unwrap();
+    controller.press(GameButton::A).expect("advance Mom text");
+    let second_page = controller.snapshot().unwrap().ui.text.unwrap().asm_text.unwrap();
+    assert_ne!(first_page, second_page, "A must advance the visible page");
+    for _ in 0..127 {
+        let snapshot = controller.snapshot().expect("Mom progression snapshot");
+        if snapshot.phase == RuntimeShellPhase::Overworld && snapshot.ui.text.is_none() {
+            break;
+        }
+        controller.press(GameButton::A).expect("complete Mom scene");
+    }
+    assert_eq!(controller.snapshot().unwrap().phase, RuntimeShellPhase::Overworld);
+
+    move_tiles(&mut controller, GameButton::Down, 2);
+    move_tiles(&mut controller, GameButton::Left, 2);
+    move_tiles(&mut controller, GameButton::Down, 2);
+    move_tiles(&mut controller, GameButton::Down, 2);
+    move_tiles(&mut controller, GameButton::Left, 11);
+    move_tiles(&mut controller, GameButton::Down, 1);
+    move_tiles(&mut controller, GameButton::Left, 1);
+    let gate = controller.snapshot().expect("New Bark gate snapshot");
+    assert_eq!(gate.overworld.map_name, "NewBarkTown");
+    assert_eq!(gate.overworld.tile, TilePosition { x: 1, y: 8 });
+    assert_eq!(gate.phase, RuntimeShellPhase::Text);
+    assert!(
+        gate.ui.text.as_ref().and_then(|text| text.asm_text.as_deref())
+            .is_some_and(|text| text.contains("Wait, CHRIS!"))
+    );
+    for _ in 0..31 {
+        let snapshot = controller.snapshot().expect("gate progression snapshot");
+        if snapshot.phase == RuntimeShellPhase::Overworld && snapshot.ui.text.is_none() {
+            break;
+        }
+        controller.press(GameButton::A).expect("complete New Bark gate");
+    }
+    let returned = controller.snapshot().expect("returned snapshot");
+    assert_eq!(returned.phase, RuntimeShellPhase::Overworld);
+    assert_eq!(returned.overworld.map_name, "NewBarkTown");
+    assert_eq!(returned.overworld.tile, TilePosition { x: 5, y: 8 });
+}
+
+#[test]
 fn elms_lab_callback_places_elm_at_asm_intro_position() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")

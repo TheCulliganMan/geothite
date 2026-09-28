@@ -1,0 +1,13 @@
+{
+  "background": [3, 3, 18],
+  "foreground": [231, 235, 255],
+  "muted": [137, 148, 181],
+  "border": [72, 202, 228],
+  "accent": [255, 205, 73],
+  "selected_background": [53, 91, 170],
+  "selected_foreground": [255, 255, 255],
+  "danger": [255, 107, 129],
+  "water": [84, 170, 255],
+  "grass": [99, 214, 128]
+}
+

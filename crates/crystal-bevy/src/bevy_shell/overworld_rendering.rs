@@ -12034,7 +12034,9 @@ fn log_visible_dialogue_page(
         text,
         script,
     );
-    eprintln!("{event}");
+    if std::env::var_os("CRYSTAL_DIALOGUE_TRACE").is_some() {
+        eprintln!("{event}");
+    }
     runtime_shell.dialogue_log_events.push_back(event);
     if runtime_shell.dialogue_log_events.len() > 4096 {
         runtime_shell.dialogue_log_events.pop_front();
@@ -12051,7 +12053,9 @@ fn log_visible_dialogue_close(runtime_shell: &mut BevyRuntimeShell) {
         label,
         page_index + 1,
     );
-    eprintln!("{event}");
+    if std::env::var_os("CRYSTAL_DIALOGUE_TRACE").is_some() {
+        eprintln!("{event}");
+    }
     runtime_shell.dialogue_log_events.push_back(event);
     if runtime_shell.dialogue_log_events.len() > 4096 {
         runtime_shell.dialogue_log_events.pop_front();

@@ -1,9 +1,10 @@
 # Alternative frontend assessment
 
-Geothite can share its Rust gameplay backend with another renderer. The initial
-separation in this change makes that a direct crate dependency. A complete
-replacement UI still requires extracting presentation orchestration from the
-current shell; this is not yet a drop-in replacement of every screen.
+Geothite shares its Rust gameplay backend and its production visible controller
+with another renderer. Renderer-neutral clients use
+`crystal_bevy::VisibleShellController`; the native text TUI and stdio MCP server
+are the first consumers. The controller remains implemented in `crystal-bevy`,
+but it does not require creating a Bevy app, window, GPU device, or compositor.
 
 ## Boundaries
 
@@ -14,7 +15,7 @@ current shell; this is not yet a drop-in replacement of every screen.
 | `crystal-runtime` | Game session, command dispatch, semantic snapshots, save/replay coordination, audio cue resolution | Yes; extracted from the old `crystal-bevy` library |
 | `crystal-audio` | Rust synthesis and canonical PCM decoding | Yes; decoded samples and frame loop ranges are device independent |
 | `crystal-net` | Multiplayer transport | Yes; session integration still needs host orchestration |
-| `crystal-bevy` | Window/input integration, UI sequencing, classic rendering, playback devices | Current frontend |
+| `crystal-bevy` | Production visible controller, window/input integration, UI sequencing, classic rendering, playback devices | Use `VisibleShellController` for non-Bevy renderers |
 | `crystal-render-api` | Bevy visual world frame and render scheduling | Bevy world mods only |
 | `crystal-voxel-view` | Alternate world view consuming the classic extraction | Still depends on the classic compositor |
 
@@ -26,10 +27,25 @@ from `crystal_runtime`, rather than `crystal_bevy`.
 
 ## Starting another frontend
 
-Depend on `crystal-runtime`, load a verified `.crystalpack`, and construct
-`RuntimeGameShell`. `examples/headless_frontend.rs` demonstrates loading,
-advancing one input frame, reading semantic state, draining audio cues, and
-decoding a packed sound effect without creating a window or audio device:
+For a playable frontend, depend on `crystal-bevy`, load a verified
+`.crystalpack`, and construct `VisibleShellController`. Send original Game Boy
+buttons through `press()`, advance deliberate idle time through `wait_frames()`,
+and render `presentation_snapshot()`. That path owns the same script, warp,
+connection, trainer-sight, battle, menu, text, and story orchestration as the
+graphical frontend.
+
+Do not construct `RuntimeGameShell` and treat `tick()` as a complete game loop.
+It is a lower-level runtime primitive: it can report an overworld step while
+leaving the frontend responsible for coordinate-event dispatch, arrivals,
+script continuation, battles, and controller-owned menus. The original broken
+text client did exactly that, which allowed walking past Mom and the New Bark
+exit scene. New direct renderers must extend the shared visible controller when
+an adapter is missing, never recreate those transitions locally.
+
+`examples/headless_frontend.rs` remains useful when deliberately building a
+low-level runtime integration. It demonstrates loading, advancing one input
+frame, reading semantic state, draining audio cues, and decoding a packed sound
+effect without creating a window or audio device:
 
 ```sh
 cargo run -p crystal-runtime --example headless_frontend -- content-packs/core-modular.browser.crystalpack
@@ -44,13 +60,13 @@ provides embedded presentation bytes directly; a new renderer need not materiali
 the current renderer's path-based asset tree. Simulation collision data must
 remain authoritative even if the visuals change.
 
-Translate host input into `GameButton` or the runtime's typed command methods.
-Drive simulation independently of display refresh using the shared Game Boy
-frame duration. `tick()` advances an overworld input frame; it is not a universal
-controller for all menu, script and battle presentation phases. Read the pending
-requests and invoke their explicit command/completion methods. Real-time hosts
-must also sample the RTC, manage focus, and avoid advancing VBlank twice.
-`advance_radio_broadcast()` uses the same authoritative game state and RNG.
+Translate host input into `GameButton`. Drive simulation independently of
+display refresh using the shared Game Boy frame duration. Low-level hosts that
+intentionally bypass `VisibleShellController` must read every pending request
+and invoke its explicit command/completion method; they are not equivalent to a
+playable frontend until parity is proven. Real-time hosts must also sample the
+RTC, manage focus, and avoid advancing VBlank twice. `advance_radio_broadcast()`
+uses the same authoritative game state and RNG.
 
 A terminal party defeat also needs an explicit completion: call
 `complete_battle_loss()` before presenting whiteout and then
@@ -89,16 +105,16 @@ commands for that adapter instead of exposing the entire mutable game state.
 The web server currently provides hosting, clock/session services and multiplayer
 relay; it does not offer the full game runtime as a general frontend service.
 
-## Remaining work before a full custom UI
+## Remaining independent-frontend work
 
-1. Extract the presentation controller from `bevy_shell`: title/new game, menu
-   navigation, text progression, battle animation completion, script callbacks,
-   and transitions currently coordinate runtime commands there. Keep the typed
-   completion boundaries; do not advance game scripts merely because rendering
-   skipped an animation.
+1. Move `VisibleShellController` into a renderer-neutral crate if eliminating
+   the `crystal-bevy` dependency itself becomes important. Behavior must move as
+   one controller; splitting off only `RuntimeGameShell::tick()` recreates the
+   incomplete-game bug described above.
 2. Extract the audio scheduler from `BevyRuntimeShell`, including fade state,
    priority/preemption, pending decode work, and completion signals. The decoder
-   is reusable now, but playback behavior is not yet one reusable service.
+   is reusable now, but the text client currently completes transient SFX
+   fences without owning an output device. It must not claim audio parity yet.
 3. Define world, battle, and UI presentation views based on semantic snapshots.
    The existing `VisualWorldFrame` requires `Handle<Image>` and is populated
    after `ClassicWorld`; simply implementing another consumer still runs the
@@ -108,17 +124,25 @@ relay; it does not offer the full game runtime as a general frontend service.
    pumping behind explicit adapters as needed. Browser runtime assets currently
    install into a process-global one-time store, which limits multiple packs in
    one browser instance.
-5. Prove parity by driving two frontends with the same recorded input/commands
+5. Continue proving parity by driving two frontends with the same recorded input/commands
    and comparing authoritative checksums, pending requests, audio order and
    completion. Cover title, overworld, dialogue, menus, battle, save/resume, and
    multiplayer before declaring complete frontend interchangeability.
 
-A custom world view inside Bevy is the smaller project. A completely independent
-frontend is feasible with the shared runtime, but the remaining controller and
-audio scheduling extraction is substantial. This change provides the reusable
-backend and PCM boundary without changing game rules or bundled content.
+A custom world view inside Bevy remains the smaller project. A completely
+independent frontend is feasible with the shared runtime and visible controller;
+audio-device integration and broader parity coverage remain substantial.
 
 ## Validation
+
+- `renderer_neutral_controller_plays_mom_and_new_bark_gate` drives the public
+  controller through Start-menu ownership, bedroom and house warps, Mom's full
+  introduction, dialogue input ownership and page changes, the New Bark west
+  exit block, and the authored return movement to `(5, 8)`.
+- `mcp_drives_real_movement_and_production_start_menu` calls the same MCP tool
+  dispatcher used by stdio and verifies authoritative tile movement plus the
+  production Start menu. It skips only when the required external ignored TUI
+  pack has not been built.
 
 - `crystal-runtime` also type-checks independently for `wasm32-unknown-unknown`;
   its normal dependency graph contains no Bevy, WGPU, Winit, Rodio or CPAL.
@@ -140,8 +164,11 @@ backend and PCM boundary without changing game rules or bundled content.
   suite is not green. One source-text RNG assertion also fails against a string
   already present in the base commit (`61f9d301`).
 
-The current Bevy UI has been type-checked, not manually played through for this
-change. A full cross-frontend behavior comparison remains future work.
+The renderer-neutral controller and text MCP path now have an executable early-
+game playthrough regression. A full cross-frontend comparison across battles,
+shops, PCs, save/resume, the complete story, audio timing, and multiplayer
+remains future work; the early-game regression must stay green while that
+coverage expands.
 
 ## Modern 3D world direction
 

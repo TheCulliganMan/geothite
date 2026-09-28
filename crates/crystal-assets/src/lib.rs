@@ -335,9 +335,9 @@ use crystal_core::systems::script_variables::{
     script_variable_command_issues,
 };
 use crystal_core::systems::script_warps::{
-    MAP_CALLBACK_NEWMAP, MAP_CALLBACK_TILES, SCRIPT_MAP_FACING_WARP_COMMANDS, SCRIPT_MAP_NEW_LOAD_COMMANDS,
-    SCRIPT_MAP_NO_PAYLOAD_COMMANDS, SCRIPT_MAP_REANCHOR_COMMANDS, SCRIPT_MAP_WARP_COMMANDS,
-    ScriptMapAction, ScriptMapCommand, ScriptMapCommandError,
+    MAP_CALLBACK_NEWMAP, MAP_CALLBACK_TILES, SCRIPT_MAP_FACING_WARP_COMMANDS,
+    SCRIPT_MAP_NEW_LOAD_COMMANDS, SCRIPT_MAP_NO_PAYLOAD_COMMANDS, SCRIPT_MAP_REANCHOR_COMMANDS,
+    SCRIPT_MAP_WARP_COMMANDS, ScriptMapAction, ScriptMapCommand, ScriptMapCommandError,
     apply_script_map_command as core_apply_script_map_command, apply_script_warp_arrival_facing,
     complete_pending_script_warp, map_setup_callback_kinds, parse_script_warp_facing,
     script_map_command_issues,
@@ -440,10 +440,10 @@ use sha2::{Digest, Sha256};
 
 pub use crystal_core::battle::capture::CaptureRules;
 
-pub mod radio_text_memory;
-pub mod radio_host;
-pub mod radio_catalog;
 pub mod radio_broadcast;
+pub mod radio_catalog;
+pub mod radio_host;
+pub mod radio_text_memory;
 
 mod gen3_modpack;
 pub use gen3_modpack::{GEN3_MANIFEST_ID, GEN3_SPECIES_COUNT, build_gen3_modpack};
@@ -544,7 +544,14 @@ include!("script_parsing.rs");
 mod tests;
 
 mod modern_move_split_modpack;
-pub use modern_move_split_modpack::{MODERN_MOVE_SPLIT_MANIFEST_ID, build_modern_move_split_modpack};
+pub use modern_move_split_modpack::{
+    MODERN_MOVE_SPLIT_MANIFEST_ID, build_modern_move_split_modpack,
+};
 
 mod player_customization_modpack;
-pub use player_customization_modpack::{PLAYER_CUSTOMIZATION_MANIFEST_ID, build_player_customization_modpack};
+pub use player_customization_modpack::{
+    PLAYER_CUSTOMIZATION_MANIFEST_ID, build_player_customization_modpack,
+};
+
+mod text_tui_modpack;
+pub use text_tui_modpack::{TEXT_TUI_MANIFEST_ID, build_text_tui_modpack};

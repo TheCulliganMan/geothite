@@ -98,8 +98,10 @@ use crate::core::world::session::{
 use crate::{
     CrystalRuntime, RuntimeBagItemSnapshot, RuntimeBattleKind, RuntimeCompiledScriptCursor,
     RuntimeElevatorSnapshot, RuntimeFlyDestinationKey, RuntimeGameShell,
-    RuntimeLinkSessionDescriptor, RuntimeMapCatalogSnapshot, RuntimePendingScriptRequest,
-    RuntimeResolvedAudioPlaybackKind, RuntimeRtcSample, RuntimeShellSnapshot, assets::AssetRoot,
+    RuntimeLinkSessionDescriptor, RuntimeMapCatalogSnapshot, RuntimeMenuLayoutSnapshot,
+    RuntimeMenuSnapshot, RuntimeMenuSource, RuntimePendingScriptRequest,
+    RuntimeResolvedAudioPlaybackKind, RuntimeRtcSample, RuntimeShellPhase, RuntimeShellSnapshot,
+    RuntimeTextSnapshot, RuntimeTextSource, RuntimeVerticalMenuSnapshot, assets::AssetRoot,
 };
 
 mod intro_renderer;
@@ -262,7 +264,6 @@ const OPTIONS_MENU_ITEMS: &[OptionsMenuItem] = &[
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum BevyShellStart {
-    #[cfg(any(test, feature = "location-tester"))]
     NewGame {
         spawn_identifier: u16,
     },
@@ -471,6 +472,214 @@ pub struct VisibleShellSmokePokemon {
 pub struct VisibleShellSmokeItem {
     pub item_id: String,
     pub quantity: u16,
+}
+
+/// Renderer-neutral owner of the production visible game controller.
+///
+/// The Bevy window and the terminal frontend must both send original Game Boy
+/// buttons through this controller.  `RuntimeGameShell::tick` is deliberately
+/// lower-level and does not own title/new-game flow, script continuation,
+/// map arrivals, battles, or the rich menu surfaces.
+pub struct VisibleShellController {
+    shell: BevyRuntimeShell,
+}
+
+impl VisibleShellController {
+    /// Start a complete new game, using the same controller as the graphical
+    /// frontend. The terminal currently supplies its trainer name up front;
+    /// gender, clock, Oak's introduction, naming return, and first-map arrival
+    /// still execute through the production controller before control is
+    /// returned to the player.
+    pub fn new_game(
+        asset_root: AssetRoot,
+        runtime: CrystalRuntime,
+        player_name: &str,
+        quick_save_path: Option<PathBuf>,
+    ) -> Result<Self> {
+        anyhow::ensure!(
+            !player_name.trim().is_empty(),
+            "player name cannot be empty"
+        );
+        let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
+        let mut shell = initialize_bevy_runtime_shell(
+            asset_root,
+            runtime,
+            BevyShellStart::NewGame { spawn_identifier },
+            BevyShellConfig {
+                quick_save_path,
+                smoke_player_name: Some(player_name.to_string()),
+                ..Default::default()
+            },
+        )?;
+        complete_visible_smoke_player_name_if_needed(&mut shell, Some(player_name))?;
+        settle_visible_shell_until_input(&mut shell)?;
+        Ok(Self { shell })
+    }
+
+    pub fn load_save(
+        asset_root: AssetRoot,
+        runtime: CrystalRuntime,
+        save_path: PathBuf,
+        quick_save_path: Option<PathBuf>,
+    ) -> Result<Self> {
+        let mut shell = initialize_bevy_runtime_shell(
+            asset_root,
+            runtime,
+            BevyShellStart::LoadSave { save_path },
+            BevyShellConfig {
+                quick_save_path,
+                ..Default::default()
+            },
+        )?;
+        settle_visible_shell_until_input(&mut shell)?;
+        Ok(Self { shell })
+    }
+
+    pub fn snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
+        let mut snapshot = self.shell.shell.presentation_snapshot()?;
+        if let Some(pages) = visible_field_dialog_pages(&snapshot, &self.shell)
+            && let Some(reveal) = self.shell.field_text_reveal.as_ref()
+            && reveal.text == pages.join("\u{1e}")
+            && let Some(page) = pages.get(reveal.page_index)
+            && let Some(text) = snapshot.ui.text.as_mut()
+        {
+            // Runtime text bodies contain every authored page. Graphical Bevy
+            // crops that stream through its printer; renderer-neutral clients
+            // need the same current-page projection or A appears to do nothing.
+            text.asm_text = Some(page.clone());
+            text.body = None;
+        }
+        if let Some(message) = self.shell.battle_messages.front() {
+            // Battle dialogue is owned by the visible controller rather than
+            // RuntimeGameShell's script text surface. Project the currently
+            // revealed page so renderer-neutral clients see the same textbox
+            // that the graphical battle renderer draws instead of a blank HUD
+            // or the command menu hidden underneath it.
+            snapshot.ui.menu = None;
+            snapshot.ui.text = Some(RuntimeTextSnapshot {
+                label: "visible-shell:battle-message".to_string(),
+                source: RuntimeTextSource::AsmText,
+                asm_text: Some(visible_battle_message_text(&self.shell, message)),
+                body: None,
+                queued_text_events: self.shell.battle_messages.len().saturating_sub(1),
+            });
+            snapshot.ui.text_window_open = true;
+        }
+        if snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open {
+            // Runtime text records are retained as execution history after
+            // closetext. They are not a visible surface and must not hide a
+            // production-controller menu such as Start, Pack, or Party.
+            snapshot.ui.text = None;
+            let mut entries = if let Some(battle) = snapshot.battle.as_ref() {
+                visible_battle_command_menu_entries(&snapshot, &self.shell, battle)?
+            } else {
+                visible_field_command_entries(&snapshot, &self.shell)?
+            };
+            if entries.is_empty() {
+                entries = visible_scene_dialog_entries(&snapshot, &self.shell)?;
+            }
+            if !entries.is_empty() {
+                if entries
+                    .iter()
+                    .any(|entry| entry.trim_start().starts_with('>'))
+                {
+                    if snapshot.battle.is_none() {
+                        snapshot.phase = RuntimeShellPhase::Menu;
+                    }
+                    snapshot.ui.menu = Some(RuntimeMenuSnapshot {
+                        menu_id: "visible-shell:text-frontend".to_string(),
+                        source: RuntimeMenuSource::SpecialRoutine,
+                        definition: None,
+                        layout: RuntimeMenuLayoutSnapshot {
+                            declared_coords: None,
+                            data_commands: Vec::new(),
+                            vertical_menus: vec![RuntimeVerticalMenuSnapshot {
+                                source_script: "visible-shell:text-frontend".to_string(),
+                                loadmenu_command_index: 0,
+                                verticalmenu_command_index: 0,
+                                header_label: "visible-shell:text-frontend".to_string(),
+                                data_label: None,
+                                options: entries,
+                                two_dimensional: false,
+                                rows: None,
+                                columns: None,
+                                spacing: None,
+                            }],
+                        },
+                        window_open: true,
+                        coords: None,
+                        menu_2d_requested: false,
+                    });
+                } else {
+                    snapshot.phase = RuntimeShellPhase::Text;
+                    snapshot.ui.text = Some(RuntimeTextSnapshot {
+                        label: "visible-shell:text-frontend".to_string(),
+                        source: RuntimeTextSource::AsmText,
+                        asm_text: Some(entries.join("\n")),
+                        body: None,
+                        queued_text_events: 0,
+                    });
+                    snapshot.ui.text_window_open = true;
+                }
+            }
+        }
+        Ok(snapshot)
+    }
+
+    pub fn presentation_snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
+        self.snapshot()
+    }
+
+    pub fn set_runtime_journal_enabled(&mut self, enabled: bool) {
+        self.shell.shell.set_runtime_journal_enabled(enabled);
+    }
+
+    pub fn has_pending_script_work(&self) -> bool {
+        self.shell.shell.has_pending_script_work()
+            || self.shell.active_script_cursor.is_some()
+            || self.shell.pending_scene_script.is_some()
+            || self.shell.visible_walk_warp_phase.is_some()
+    }
+
+    pub fn save(&mut self, path: impl AsRef<Path>) -> Result<()> {
+        self.shell.shell.save(path)
+    }
+
+    pub fn press(&mut self, button: GameButton) -> Result<()> {
+        let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &[button])?;
+        self.complete_overworld_outcome(outcome)?;
+        settle_visible_shell_until_input(&mut self.shell)
+    }
+
+    pub fn wait_frames(&mut self, frames: usize) -> Result<()> {
+        for _ in 0..frames {
+            let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &[])?;
+            self.complete_overworld_outcome(outcome)?;
+            settle_visible_shell_until_input(&mut self.shell)?;
+        }
+        Ok(())
+    }
+
+    fn complete_overworld_outcome(&mut self, outcome: VisibleShellSmokeFrameOutcome) -> Result<()> {
+        let Some(frame) = outcome.frame else {
+            return Ok(());
+        };
+        if frame.coord_event.is_some() {
+            execute_last_coord_event_script(&mut self.shell)?;
+        }
+        if frame.trainer_sight.is_some() {
+            execute_last_trainer_sight_script(&mut self.shell)?;
+        }
+        if frame.warp.is_some() || frame.connection.is_some() {
+            settle_visible_overworld_frame_arrival(&mut self.shell)?;
+        }
+        if frame.wild_battle.is_some() {
+            prepare_visible_battle_entry(&mut self.shell)?;
+            settle_visible_battle_after_action(&mut self.shell)?;
+            sync_visible_battle_action_cursor(&mut self.shell);
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -6770,9 +6979,35 @@ fn apply_visible_shell_smoke_frame(
 }
 
 fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    settle_visible_shell_controller(runtime_shell, true)
+}
+
+fn settle_visible_shell_until_input(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    settle_visible_shell_controller(runtime_shell, false)
+}
+
+fn settle_visible_shell_controller(
+    runtime_shell: &mut BevyRuntimeShell,
+    auto_input: bool,
+) -> Result<()> {
     const MAX_IDLE_SETTLE_STEPS: usize = 1024;
     for _ in 0..MAX_IDLE_SETTLE_STEPS {
         runtime_shell.pokegear_exit_input_blocked = false;
+        if !auto_input {
+            // This renderer-neutral controller has no audio device. Preserve
+            // music selection and the audit log, but complete transient SFX
+            // so authored WaitSFX fences cannot deadlock terminal gameplay.
+            runtime_shell
+                .pending_audio
+                .retain(|command| matches!(command.kind, ModpackAudioKind::Music));
+            runtime_shell.transient_audio_playing = false;
+            if runtime_shell.visible_wait_sfx_boundary {
+                let presentation = runtime_shell.shell.presentation_snapshot()?;
+                if advance_visible_wait_sfx_boundary(runtime_shell, &presentation, false)? {
+                    continue;
+                }
+            }
+        }
         if runtime_shell.pokegear_exit.is_some() {
             // The explicit smoke driver has no audio backend. Keep the live
             // WaitSFX boundary; emulate its completion only in this driver.
@@ -6869,6 +7104,35 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             advance_visible_battle_transition(runtime_shell);
             continue;
         }
+        if visible_battle_animation_owns_frame(runtime_shell) {
+            advance_visible_battle_animation_frame(runtime_shell)?;
+            continue;
+        }
+        if runtime_shell
+            .battle_hp_tween
+            .as_ref()
+            .is_some_and(visible_battle_hp_tween_active)
+        {
+            let tween = runtime_shell
+                .battle_hp_tween
+                .as_mut()
+                .expect("active battle HP tween");
+            let player_changed = advance_visible_hp_pixels(
+                &mut tween.player_pixels,
+                tween.player_target_pixels,
+                &mut tween.player_frames_until_step,
+            );
+            if player_changed {
+                advance_visible_player_hp_number(tween);
+            }
+            advance_visible_hp_pixels(
+                &mut tween.enemy_pixels,
+                tween.enemy_target_pixels,
+                &mut tween.enemy_frames_until_step,
+            );
+            mark_runtime_presentation_dirty(runtime_shell);
+            continue;
+        }
         let field_travel_delay_finished =
             if let Some(frames) = runtime_shell.pending_field_travel_delay_frames.as_mut() {
                 *frames = frames.saturating_sub(1);
@@ -6933,6 +7197,32 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
                 }
             }
         }
+        // The graphical host advances the source text printer on every
+        // VBlank, independently of field notices. A direct renderer has no
+        // Bevy update loop, so finish revealing the current page here while
+        // preserving the authored A/B acknowledgement boundary.
+        {
+            let presentation = runtime_shell.shell.presentation_snapshot()?;
+            if visible_field_dialog_pages(&presentation, runtime_shell).is_some()
+                && !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation)
+            {
+                tick_visible_field_text_reveal(runtime_shell, false)?;
+                continue;
+            }
+            if runtime_shell.field_text_reveal.is_some()
+                && visible_field_dialog_pages(&presentation, runtime_shell).is_none()
+                && runtime_shell.visible_script_movement_scene.is_none()
+            {
+                // The Bevy update loop releases this presentation-only cache
+                // after closetext. A direct controller has no update system,
+                // so perform the same cleanup here or the stale printer owns
+                // Start/A/B forever after new-game and scripted dialogue.
+                runtime_shell.field_text_reveal = None;
+                runtime_shell.rendered_field_text_identity = None;
+                mark_runtime_snapshot_dirty(runtime_shell);
+                continue;
+            }
+        }
         if runtime_shell.pending_trainer_sight.is_some() {
             advance_visible_trainer_sight_cutscene(runtime_shell)?;
             if runtime_shell.pending_trainer_sight.is_some() {
@@ -6944,6 +7234,14 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
         // present the script up to StartBattle, but must not resume the
         // retained post-battle cursor until a battle result is supplied.
         if snapshot.battle.is_some() {
+            if let Some(message) = runtime_shell.battle_messages.front().cloned()
+                && !visible_battle_message_is_complete(runtime_shell, &message)
+            {
+                advance_visible_battle_text_reveal(runtime_shell, &snapshot, false);
+                mark_runtime_presentation_dirty(runtime_shell);
+                continue;
+            }
+            sync_visible_battle_action_cursor(runtime_shell);
             return Ok(());
         }
         if runtime_shell.pending_gender_selection.is_some() {
@@ -6967,6 +7265,9 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             return Ok(());
         }
         if runtime_shell.pending_day_of_week.is_some() {
+            if !auto_input {
+                return Ok(());
+            }
             // Smoke sessions choose the default weekday and then accept the
             // ASM confirmation prompt, exactly as two consecutive A presses.
             confirm_visible_day_of_week(runtime_shell)?;
@@ -6980,6 +7281,9 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             continue;
         }
         if has_visible_elevator_prompt(&snapshot, runtime_shell) {
+            if !auto_input {
+                return Ok(());
+            }
             select_visible_elevator_floor(runtime_shell)?;
             continue;
         }
@@ -6990,10 +7294,16 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             continue;
         }
         if snapshot.ui.pending_text_wait.is_some() {
+            if !auto_input {
+                return Ok(());
+            }
             advance_visible_pending_text_wait(runtime_shell)?;
             continue;
         }
         if snapshot.ui.pending_yes_no.is_some() {
+            if !auto_input {
+                return Ok(());
+            }
             accept_visible_pending_yes_no(runtime_shell)?;
             continue;
         }
@@ -7003,10 +7313,16 @@ fn settle_visible_shell_smoke_until_idle(runtime_shell: &mut BevyRuntimeShell) -
             || snapshot.ui.active_pokemon_picture.is_some()
             || snapshot.pending_shop.is_some()
         {
+            if !auto_input {
+                return Ok(());
+            }
             close_active_runtime_surface(runtime_shell)?;
             continue;
         }
         if runtime_shell.special_boundary.is_some() {
+            if !auto_input {
+                return Ok(());
+            }
             close_visible_special_boundary(runtime_shell)?;
             continue;
         }
@@ -7149,7 +7465,6 @@ fn initialize_bevy_runtime_shell(
         asset_root
     };
     let initial_arrival_reason = match &start {
-        #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGame { .. } => Some("new_game"),
         #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGameAtRuntimeTile { .. } => None,
@@ -7157,10 +7472,7 @@ fn initialize_bevy_runtime_shell(
         BevyShellStart::Title { .. } => None,
     };
     let restore_loaded_visible_state = matches!(&start, BevyShellStart::LoadSave { .. });
-    #[cfg(any(test, feature = "location-tester"))]
     let initial_player_name_prompt = matches!(&start, BevyShellStart::NewGame { .. });
-    #[cfg(not(any(test, feature = "location-tester")))]
-    let initial_player_name_prompt = false;
     let title_parameters = matches!(&start, BevyShellStart::Title { .. })
         .then(|| {
             RuntimeTitlePresentationParameters::from_program(runtime.title_presentation_program())
@@ -7238,7 +7550,6 @@ fn initialize_bevy_runtime_shell(
             })
         }
         BevyShellStart::LoadSave { .. } => None,
-        #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGame { .. } => None,
         #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGameAtRuntimeTile { .. } => None,
@@ -7265,7 +7576,6 @@ fn initialize_bevy_runtime_shell(
         .map(|_| load_intro_sprite_anim_bundle(runtime.data().sprite_anim_bundle.as_str()))
         .transpose()?;
     let mut shell = match start {
-        #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGame { spawn_identifier } => {
             RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), spawn_identifier)?
         }

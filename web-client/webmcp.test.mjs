@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createGameBridge, gameTools, registerGameTools } from './webmcp.js';
+import { createGameBridge, gameTools, playerVisibleObservation, registerGameTools } from './webmcp.js';
 
 test('tools register with current Document API and unregister through abort', async () => {
   const registered = [];
@@ -8,7 +8,7 @@ test('tools register with current Document API and unregister through abort', as
   const doc = { modelContext: { async registerTool(tool, options) { registered.push({ tool, options }); } } };
   const result = await registerGameTools(doc, { cancel() { canceled++; } });
   assert.equal(result.supported, true);
-  assert.equal(registered.length, 7);
+  assert.equal(registered.length, 6);
   assert.ok(registered.every(({ options }) => options.signal instanceof AbortSignal));
   assert.ok(registered.some(({ tool }) => tool.name === 'pokemon_press'));
   result.dispose();
@@ -38,9 +38,40 @@ test('press validates bounds, rejects hidden actions, and returns actual outcome
     await assert.rejects(press.execute(input), TypeError);
   }
   assert.equal(calls.length, 0);
-  assert.deepEqual(await press.execute({ button: 'a' }), { status: { screen: 'battle' } });
+  assert.equal((await press.execute({ button: 'a' })).status.screen, 'battle');
   assert.deepEqual(calls, [{ kind: 'press', button: 'a', frames: 1 }]);
   assert.equal(press.annotations.readOnlyHint, false);
+});
+
+test('WebMCP exposes player-visible context without guide or engine state', () => {
+  const visible = playerVisibleObservation({
+    frame: 90,
+    status: { screen: 'overworld', party: [{ nickname: 'CINDER', hp: 19, max_hp: 20 }] },
+    reward_state: { event_flags: ['SECRET_GOAL'], engine_flags: ['HIDDEN'], scenes: { Lab: 'DONE' } },
+    observe: {
+      text: 'internal script LabScene:12',
+      visible_dialogue: 'Hello there!',
+      rendered_text: ['Hello there!'],
+      menus: [{ kind: 'start', entries: ['>PACK', 'SAVE'] }],
+      battle: '',
+    },
+    map_info: {
+      name: 'NewBarkTown', dimensions: [20, 18],
+      player: { x: 10, y: 7, facing: 'Down' },
+      objects: [{ name: 'HIDDEN_SCRIPT_ID', x: 12, y: 6 }],
+      players: [{ name: 'KRIS', x: 9, y: 8, facing: 'Left' }],
+      terrain: { rows: [[{ permission: 119, terrain: 'Water' }]] },
+    },
+    flow_state: { animating: false, buttons: ['a'] },
+    recent_events: { last_action: 'internal command', error: null },
+  });
+  assert.equal(visible.observe.visible_dialogue, 'Hello there!');
+  assert.deepEqual(visible.map_info.visible_objects, [{ offset_x: 2, offset_y: -1 }]);
+  assert.deepEqual(visible.map_info.visible_players, [{ name: 'KRIS', offset_x: -1, offset_y: 1, facing: 'Left' }]);
+  const serialized = JSON.stringify(visible);
+  for (const hidden of ['reward_state', 'event_flags', 'engine_flags', 'SECRET_GOAL', 'terrain', 'permission', 'dimensions', 'HIDDEN_SCRIPT_ID', 'internal script', 'recent_events']) {
+    assert.equal(serialized.includes(hidden), false, `leaked ${hidden}`);
+  }
 });
 
 test('bridge serializes simultaneous calls without entering WASM concurrently', async () => {

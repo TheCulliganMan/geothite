@@ -916,7 +916,11 @@ fn visible_trainer_card_entries(
         ));
     }
     entries.extend([
-        compact_scene_label(&format!("TIME {:?}", snapshot.progression.time), 30),
+        format!(
+            "TIME {:>3}:{:02}",
+            snapshot.progression.time.game_time_hours.min(999),
+            snapshot.progression.time.game_time_minutes.min(59)
+        ),
         format!(
             "BADGES {}",
             visible_badge_count(&snapshot.progression.badges)

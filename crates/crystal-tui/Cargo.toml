@@ -1,0 +1,20 @@
+[package]
+name = "geothite"
+version = "0.1.0"
+description = "Renderer-neutral text snapshots and a native terminal frontend for Geothite"
+publish = false
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+crystal-assets = { path = "../crystal-assets" }
+crystal-bevy = { path = "../crystal-bevy" }
+crystal-core = { path = "../crystal-core" }
+crystal-runtime = { path = "../crystal-runtime" }
+crossterm = "0.29"
+ratatui = { version = "0.30", default-features = false, features = ["crossterm"] }
+serde.workspace = true
+serde_json.workspace = true
