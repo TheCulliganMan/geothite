@@ -246,3 +246,7 @@ mod tests {
         assert!(Model::parse(r#"{"primitives":[{"positions":[0,0,0],"normals":[0,0,0],"indices":[0,0,0],"base_color":[1,1,1,1]}]}"#).is_err());
     }
 }
+
+#[path = "dungeon_extension_models.rs"]
+mod extension;
+pub(crate) use extension::{ExtensionKind, extension_model};

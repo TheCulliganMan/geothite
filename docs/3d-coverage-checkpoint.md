@@ -8,9 +8,9 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 514 runtime model documents and 44 complete editable Blender sources
+- 542 runtime model documents and 46 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 68 interior models,
-  42 exterior models, 19 dungeon models, and 220 additional exact battle species
+  59 exterior models, 19 dungeon models, 11 special-environment models, and 220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -26,12 +26,20 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The pack-based headless audit processed all 388 base maps without a mesher error.
-345 maps consume at least one authored model, totaling 208,892 source cells. This
-means partial coverage, not 345 completed maps. Flat floors, water planes, source
+371 maps consume at least one authored model, totaling 226,454 source cells. This
+means partial coverage, not 371 completed maps. Flat floors, water planes, source
 facades and fallback objects are reported separately. Dynamic decorations and
 changed block states require their own scene fixtures.
 
 ## Still open
+
+Seventeen base maps still have no modeled static scenery: Battle Tower battle/
+elevator rooms, Blackthorn Gym 2F, both department-store elevators, Goldenrod's
+store roof, the Celadon prize room and Mansion roof, both mobile-link rooms,
+Colosseum/Time Capsule/Trade Center, Dragon Shrine, Fighting Dojo, the Bike Shop
+and Rocket Base B2F. Those kits are under active authoring. The other 371 maps
+also need remaining-family and visual checks; a positive count is not completion.
+
 
 - Special rooms and structures: elite rooms, shrines, ruins chambers, ship/port
   details, link rooms, department-store roof/elevators, special gyms, tower roof,
@@ -64,7 +72,7 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 551 voxel tests passed, two pre-existing benchmarks ignored
+- 564 voxel tests passed, two pre-existing benchmarks ignored
 - Fourteen immersive-battle presentation/recording bridge tests passed
 - Real production controller battle regression passed: commands, selected move,
   authoritative PP mutation and retained battle dialogue
@@ -73,7 +81,9 @@ based on the production mesher rather than a map-name allowlist.
   inventing interpolation progress or changing the authoritative movement rate
 - Character storage equivalence tests and all model/source validators passed
 - Native examples built and representative exterior/interior/cave/ice scenes were
-  inspected; this is representative review, not every-map visual approval
+  inspected; twelve further native scenes verified the new structural and special
+  environment families. Remaining pixel floors/wall edges were identified for
+  refinement; this is representative review, not every-map visual approval
 - Native FIGHT → TACKLE produced the move dialogue, visible damage and effectiveness
   text. F3 restored source battlers/HUD/text and returned to modeled presentation.
   Party/cancel and Pack/cancel restored the original battle state and compact HUD

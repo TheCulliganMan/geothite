@@ -1,6 +1,8 @@
 //! Source-complete world exterior kits. Authoritative tiles, phases, native
 //! ground and door seams select art; collision and simulation are never read.
 use super::*;
+#[path = "structure_extensions.rs"]
+mod structure_extensions;
 use crate::exterior_models::{Kind, model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -53,20 +55,40 @@ fn ground(
     tile: u16,
     metatile: Option<u16>,
 ) -> Option<usize> {
-    cells.iter().zip(shapes).position(|(c, s)| {
-        c.source.tileset_id.as_ref() == tileset
-            && c.source.tile_index == tile
-            && metatile.is_none_or(|m| c.source.metatile_id == m)
-            && matches!(
-                s,
-                CellShape::Flat
-                    | CellShape::Water
-                    | CellShape::RaisedTop {
-                        solid: SolidKind::Bank,
-                        ..
+    cells
+        .iter()
+        .zip(shapes)
+        .position(|(c, s)| {
+            c.source.tileset_id.as_ref() == tileset
+                && c.source.tile_index == tile
+                && metatile.is_none_or(|m| c.source.metatile_id == m)
+                && matches!(
+                    s,
+                    CellShape::Flat
+                        | CellShape::Water
+                        | CellShape::RaisedTop {
+                            solid: SolidKind::Bank,
+                            ..
+                        }
+                )
+        })
+        .or_else(|| {
+            // Some complete maps deliberately contain no sample of the catalog's
+            // preferred path. Use only independently identified ground from the
+            // same tileset; never borrow a numbered tile from a connected map.
+            if metatile.is_some() {
+                return None;
+            }
+            cells.iter().zip(shapes).position(|(c, shape)| {
+                c.source.tileset_id.as_ref() == tileset
+                    && matches!(shape, CellShape::Flat | CellShape::PlaneAt { height: 0.0 })
+                    && match (tileset, tile, c.source.metatile_id, c.source.tile_index) {
+                        ("johto" | "johto_modern", 0x06, 0x02, 0x05) => true,
+                        ("kanto", KANTO_GROUND_TILE_INDEX, 0x31 | 0x7b, 0x39) => true,
+                        _ => false,
                     }
-            )
-    })
+            })
+        })
 }
 fn clear(c: &[bool], g: &GridGeometry, rect: [usize; 4]) -> bool {
     let [x, y, w, h] = rect;
@@ -303,6 +325,8 @@ fn descriptor(
                 0x68 if p.height > 8 => {
                     if map == "CeladonCity" {
                         Kind::KantoMansion
+                    } else if map == "LavenderTown" {
+                        Kind::LavenderRadioTower
                     } else {
                         Kind::Silph
                     }
@@ -320,7 +344,9 @@ fn descriptor(
                     0x72 => Kind::KantoMart,
                     0x73 => Kind::KantoCenter,
                     _ => {
-                        if map == "SaffronCity" {
+                        if map == "Route19" {
+                            Kind::KantoRouteGate
+                        } else if map == "SaffronCity" {
                             Kind::KantoStation
                         } else if map == "CeladonCity" {
                             Kind::KantoArcade
@@ -403,6 +429,9 @@ pub(super) fn append_building(
     p: BuildingPlacement,
     claimed: &mut [bool],
 ) -> bool {
+    if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed) {
+        return true;
+    }
     let Some(d) = descriptor(map, cells, g, p) else {
         return false;
     };
@@ -718,7 +747,9 @@ pub(super) fn preferred_cells(map: &str, cells: &[&VisualTile], g: &GridGeometry
         }
     };
     for p in building_placements(map, cells, g) {
-        if descriptor(map, cells, g, p).is_some()
+        if structure_extensions::ready(cells, &shapes, g, p) {
+            reserve([p.column, p.row, p.width, p.height]);
+        } else if descriptor(map, cells, g, p).is_some()
             && ground(
                 cells,
                 &shapes,
@@ -1030,5 +1061,70 @@ mod tests {
         assert_eq!(door_column(&a.iter().collect::<Vec<_>>(), &g, p), Some(3.0));
         a[3 * g.width + 3].source.tile_index = 0;
         assert_eq!(door_column(&a.iter().collect::<Vec<_>>(), &g, p), None);
+    }
+}
+
+#[cfg(test)]
+mod structure_underlay_tests {
+    use super::*;
+    use std::sync::Arc;
+    fn tile(tileset: &str, block: u16, index: u16) -> VisualTile {
+        VisualTile {
+            column: 0,
+            row: 0,
+            source: VisualTileSource {
+                tileset_id: Arc::from(tileset),
+                metatile_id: block,
+                subtile_column: 0,
+                subtile_row: 0,
+                tile_index: index,
+            },
+            texture: Handle::default(),
+            priority: false,
+        }
+    }
+    #[test]
+    fn native_grass_and_kanto_paving_rescue_complete_buildings_without_path_samples() {
+        let lawn = tile("johto", 0x02, 0x05);
+        let paving = tile("kanto", 0x7b, 0x39);
+        assert_eq!(
+            ground(&[&lawn], &[CellShape::Flat], "johto", 6, None),
+            Some(0)
+        );
+        assert_eq!(
+            ground(
+                &[&paving],
+                &[CellShape::Flat],
+                "kanto",
+                KANTO_GROUND_TILE_INDEX,
+                None
+            ),
+            Some(0)
+        );
+        assert_eq!(
+            ground(&[&lawn], &[CellShape::Flat], "johto_modern", 6, None),
+            None
+        );
+        let false_paving = tile("kanto", 0x20, 0x39);
+        assert_eq!(
+            ground(
+                &[&false_paving],
+                &[CellShape::Flat],
+                "kanto",
+                KANTO_GROUND_TILE_INDEX,
+                None
+            ),
+            None
+        );
+        assert_eq!(
+            ground(
+                &[&paving],
+                &[CellShape::Flat],
+                "kanto",
+                KANTO_GROUND_TILE_INDEX,
+                Some(0x02)
+            ),
+            None
+        );
     }
 }

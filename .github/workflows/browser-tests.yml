@@ -14,6 +14,8 @@ jobs:
       - run: python3 tools/check-johto-characters.py
       - run: python3 tools/check-interior-models.py
       - run: python3 tools/check-dungeon-models.py
+      - run: python3 tools/check-special-environments.py
+      - run: python3 tools/check-structure-extensions.py
       - run: python3 tools/check-actor-props.py
       - run: python3 tools/check-battle-species.py
       - run: python3 tools/validate-battle-art.py

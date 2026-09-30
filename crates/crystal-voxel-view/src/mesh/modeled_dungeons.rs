@@ -4,11 +4,14 @@
 //! resolver sees immutable sources before live profiles mask them. Missing,
 //! clipped, recolored-with-new-identities and unsupported drawings fall back.
 use super::*;
+#[path = "dungeon_extension.rs"]
+mod extension;
 use crate::dungeon_models::{Kind, model};
 use crate::live_profiles::Document;
 
 #[derive(Clone, Copy, Debug)]
 enum Form {
+    Special(extension::Detail),
     Model(Kind),
     RocketWall { open: [bool; 4] },
     LighthouseWall { open: [bool; 4] },
@@ -34,6 +37,7 @@ impl Placement {
     }
     pub(super) fn kind_label(&self) -> &'static str {
         match self.form {
+            Form::Special(detail) => detail.label(),
             Form::Model(k) => k.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
             Form::LighthouseWall { .. } => "dungeon:lighthouse-masonry",
@@ -253,7 +257,10 @@ pub(super) fn resolve(
     ] {
         r.groups(Kind::TowerGuardian, floor, 28.0, 10.0, groups);
     }
-    if matches!(map, "VioletGym" | "MahoganyGym" | "BlackthornGym1F") {
+    if cells
+        .first()
+        .is_some_and(|t| t.source.tileset_id.as_ref() == "elite_four_room")
+    {
         let statues = grouped_flat_card_placements(cells, g, 0x01, false, |source| {
             let group = crate::violet_gym::card_group(map, source)?;
             if group.height != 4 {
@@ -527,6 +534,7 @@ pub(super) fn resolve(
             });
         }
     }
+    extension::resolve_into(&mut r);
     r.out
 }
 
@@ -536,6 +544,10 @@ pub(super) fn append(
     p: &Placement,
     cells: &[&VisualTile],
 ) {
+    if let Form::Special(detail) = p.form {
+        extension::append(mesh, g, p, cells, detail);
+        return;
+    }
     let floor_uv = g.uv(p.ground % g.width, p.ground / g.width);
     for i in p.indices(g.width) {
         append_top(
@@ -550,6 +562,7 @@ pub(super) fn append(
     let s = n + p.front_rows * g.tile_height;
     let rise = p.rise_pixels * g.tile_height / SOURCE_TILE_HEIGHT;
     match p.form {
+        Form::Special(_) => unreachable!("special placements handled above"),
         Form::Model(kind) => model(kind).append(
             &mut mesh.solid,
             [

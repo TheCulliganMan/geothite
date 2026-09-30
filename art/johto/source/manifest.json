@@ -2658,6 +2658,92 @@
       ]
     },
     {
+      "file": "special-environments.blend",
+      "encoding": "gzip-blend",
+      "bytes": 178998,
+      "sha256": "ffe79248ba2fc4e6e699e5773403d703fb38d418be11abaa8bd724740c50e704",
+      "uncompressed_bytes": 1794936,
+      "uncompressed_sha256": "fde42fd5512a1c512609c92e6be0efc62dacd6ab4de1487a97537111f5d3601d",
+      "chunks": [
+        {
+          "file": "chunks/special-environments.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "f1e4295dfcd6e64d6ad1e880ff97934c9f5671edabb04e9e3a2c69a5edbdc84e",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-environments.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "661bab64288ee4663683dbefb44abd9a5a4b4cdac0c39308e27d7cc229704eb6",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-environments.blend.002.b64",
+          "bytes": 47926,
+          "sha256": "a50509a80ede3c8dca95525cd2ec20e12771ed62f11a1f3d0b0b2c450c30eb41",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "structure-extensions.blend",
+      "encoding": "gzip-blend",
+      "bytes": 485109,
+      "sha256": "5cd3d6ad13602a382662daa219a51e1b06b34cea087043ae8b87318b9bd30e08",
+      "uncompressed_bytes": 7817680,
+      "uncompressed_sha256": "40cd9be0fbb2db6d17837695df5153e1df362731772f1736903329dc922b08de",
+      "chunks": [
+        {
+          "file": "chunks/structure-extensions.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "7e4fbf3f9bccf64b63f8fa3088ddd86c766c9a2c7e2f6d5bad8143004afc4e16",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "ed5e8821d7503b698fcca8c4e54bd7523ac33e5a83503a5a17d66d95a8262464",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "e9185c6a00a19a6d2b954c2ba74a423d075747d4d81e0e8fc675d7a15c51f209",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.003.b64",
+          "bytes": 65536,
+          "sha256": "164e6898be1f345f7cf1e6133526a1882e115686e9a8536e77921c1ec3271d1a",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.004.b64",
+          "bytes": 65536,
+          "sha256": "86d1dda913ba6a4eac283e60345c44ec377f7fa38f7d34d5c555fac061676131",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.005.b64",
+          "bytes": 65536,
+          "sha256": "73373008de9698894a066c0b846e01a69d044c739a7ccc0626901dfb7fd705b3",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.006.b64",
+          "bytes": 65536,
+          "sha256": "8d52eb68e0bb2e60e2ab3d46cd9288b0e45c390b9c1e8fab9ba9c1b8caefeb8c",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/structure-extensions.blend.007.b64",
+          "bytes": 26357,
+          "sha256": "23991c85768a1c3b784b32c41b68daf91e2f5ce98dc14fce4c6e1e79bc30a267",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "world-exteriors.blend",
       "encoding": "gzip-blend",
       "bytes": 2899107,
