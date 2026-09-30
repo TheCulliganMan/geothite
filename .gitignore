@@ -41,3 +41,6 @@ blob-report/
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Canonical editable art materialized from repository-contained source chunks.
+/art/johto/source/*.blend

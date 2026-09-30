@@ -80,3 +80,7 @@ crystal-runtime = { path = "../crystal-runtime", features = ["test-fixtures"] }
 crystal-assets = { path = "../crystal-assets", features = ["test-fixtures"] }
 crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
 sha2.workspace = true
+
+[[example]]
+name = "new_bark_3d"
+required-features = ["location-tester"]

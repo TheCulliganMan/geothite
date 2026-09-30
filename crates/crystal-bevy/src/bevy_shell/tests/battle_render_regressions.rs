@@ -579,7 +579,32 @@ fn battle_dialogue_uses_player_input_drains_once_and_returns_menu_control() {
 
 #[test]
 fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
-    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    // The shared render fixture is a level-10 Cyndaquil against level-20
+    // Sudowoodo: a faster Rock Throw can faint it before it spends any PP.
+    // This test exercises a normal command-menu turn, not the whiteout path.
+    // Keep its legal low-power moves but give this test alone a healthy,
+    // same-owner lead that survives even a maximum-damage critical hit.
+    let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
+    let original_moves = {
+        let state = runtime_shell.shell.session_mut().state_mut();
+        let moves = state.storage.party.pokemon[0].take().unwrap().moves;
+        state.sync_party_from_storage();
+        moves
+    };
+    runtime_shell.shell.set_trainer_identity("CHRIS", 1).unwrap();
+    runtime_shell.shell.add_party_pokemon(
+        "CYNDAQUIL", 40, None, None, "CHRIS", 1,
+        Dv::from_non_hp(10, 10, 10, 10),
+    ).expect("add owned, healthy controller fixture Pokemon");
+    {
+        let state = runtime_shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0].as_mut().unwrap().moves = original_moves;
+        state.sync_party_from_storage();
+    }
+    runtime_shell.shell.start_scripted_wild_battle(
+        "Route36", "WateredWeirdTreeScript", 12,
+    ).expect("start controller fixture battle");
+    prepare_visible_battle_entry(&mut runtime_shell).expect("prepare controller fixture battle");
     runtime_shell.visible_battle_transition = None;
     runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.visible_send_out_animation = None;
@@ -601,6 +626,29 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
             | RuntimeShellPhase::StaticWildBattle
             | RuntimeShellPhase::TrainerBattle
     ));
+    let player = &initial.party.slots[0].pokemon;
+    let enemy = &initial.battle.as_ref().unwrap().enemy_pokemon;
+    assert_eq!(player.hp, player.max_hp, "fixture must start healthy");
+    assert_eq!(player.original_trainer_name, initial.trainer.player_name);
+    assert_eq!(player.original_trainer_id, initial.trainer.player_id);
+    assert!(player.speed > enemy.speed, "fixture must avoid a speed tie");
+    assert_eq!(player.moves[0].name, "TACKLE");
+    let critical_damage = |attacker, defender, move_id: &str| {
+        let rules = &initial.battle_rules;
+        crate::core::battle::damage::calculate_damage(
+            attacker, defender, &controller.shell.shell.runtime().data().moves[move_id],
+            &rules.stat_multipliers, &rules.type_categories, &rules.type_effectiveness,
+            &rules.weather_modifiers,
+            crate::core::battle::damage::DamageContext {
+                is_critical: true,
+                ..Default::default()
+            },
+        ).expect("fixture maximum critical damage").damage
+    };
+    assert!(player.hp > critical_damage(enemy, player, "ROCK_THROW"),
+        "fixture must survive Sudowoodo's strongest full-health attack");
+    assert!(u32::from(critical_damage(player, enemy, "TACKLE")) * 4 < u32::from(enemy.hp),
+        "fixture must leave Sudowoodo healthy even after a critical Tackle");
     let initial_options = &initial
         .ui
         .menu
@@ -632,6 +680,19 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
         .press(GameButton::A)
         .expect("execute selected move");
     let after_turn = controller.snapshot().expect("resolved turn snapshot");
+    let turn_context = format!(
+        "player before=lv{} hp={}/{} speed={} after_hp={} enemy before=lv{} hp={} speed={} messages={:?} events={:?}",
+        initial.party.slots[0].pokemon.level,
+        initial.party.slots[0].pokemon.hp,
+        initial.party.slots[0].pokemon.max_hp,
+        initial.party.slots[0].pokemon.speed,
+        after_turn.party.slots[0].pokemon.hp,
+        initial.battle.as_ref().unwrap().enemy_pokemon.level,
+        initial.battle.as_ref().unwrap().enemy_pokemon.hp,
+        initial.battle.as_ref().unwrap().enemy_pokemon.speed,
+        controller.shell.battle_messages,
+        controller.shell.last_audio_events,
+    );
     let pp_after = after_turn
         .battle
         .as_ref()
@@ -639,7 +700,7 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
         .unwrap_or_else(|| after_turn.party.slots[0].pokemon.moves[0].current_pp);
     assert!(
         pp_after < pp_before,
-        "selecting the move did not mutate authoritative battle PP: before={pp_before} after={pp_after} moves={move_options:?} phase={:?} battle={} text={:?}",
+        "selecting the move did not mutate authoritative battle PP: before={pp_before} after={pp_after} moves={move_options:?} phase={:?} battle={} text={:?}; {turn_context}",
         after_turn.phase,
         after_turn.battle.is_some(),
         after_turn.ui.text
@@ -656,15 +717,11 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
             .as_ref()
             .and_then(|text| text.asm_text.as_deref())
             .is_some_and(|text| !text.is_empty()),
-        "battle dialogue must be fully revealed at the input boundary"
+        "battle dialogue must be fully revealed at the input boundary; {turn_context}"
     );
 
-    // A decisive turn may end this deliberately small fixture battle. PP and
-    // dialogue above still prove that the selected move executed through the
-    // authoritative battle engine rather than merely changing a TUI cursor.
-    if after_turn.battle.is_none() {
-        return;
-    }
+    assert!(after_turn.party.slots[0].pokemon.hp > 0, "fixture lead must survive; {turn_context}");
+    assert!(after_turn.battle.is_some(), "fixture must remain nonterminal; {turn_context}");
 
     for _ in 0..64 {
         let snapshot = controller

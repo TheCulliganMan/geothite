@@ -115,6 +115,9 @@ pub struct VisualActor {
     pub flip_x: bool,
     /// Whether this actor is drawn above foreground-priority map tiles.
     pub above_priority: bool,
+    /// Authoritative world-facing vector (+X east, +Y north), independent of camera orbit.
+    /// None for presentation effects and legacy remote actors.
+    pub facing: Option<Vec2>,
 }
 
 /// Immutable-by-convention snapshot consumed by optional world renderers.
@@ -235,6 +238,11 @@ impl VisualWorldFrame {
             if !is_positive_finite(actor.size) {
                 return Err(VisualWorldFrameError::InvalidActorSize(actor.id));
             }
+            if actor.facing.is_some_and(|direction| {
+                !direction.is_finite() || direction.length_squared() < 0.0001
+            }) {
+                return Err(VisualWorldFrameError::InvalidActorFacing(actor.id));
+            }
             if !actor_ids.insert(actor.id) {
                 return Err(VisualWorldFrameError::DuplicateActor(actor.id));
             }
@@ -288,6 +296,7 @@ pub enum VisualWorldFrameError {
     MissingActorTexture(VisualActorId),
     NonFiniteActorCenter(VisualActorId),
     InvalidActorSize(VisualActorId),
+    InvalidActorFacing(VisualActorId),
     DuplicateActor(VisualActorId),
 }
 
@@ -339,6 +348,7 @@ mod tests {
                 size: Vec2::splat(16.0),
                 flip_x: false,
                 above_priority: false,
+                facing: None,
             }],
         }
     }
@@ -480,12 +490,29 @@ mod tests {
             size: Vec2::splat(16.0),
             flip_x: true,
             above_priority: true,
+            facing: None,
         });
 
         assert_eq!(
             frame.validate(),
             Err(VisualWorldFrameError::DuplicateActor(VisualActorId::Player))
         );
+    }
+
+    #[test]
+    fn active_frame_rejects_invalid_model_facing() {
+        let mut frame = active_frame();
+        for facing in [Vec2::ZERO, Vec2::new(f32::NAN, 0.0)] {
+            frame.actors[0].facing = Some(facing);
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidActorFacing(
+                    VisualActorId::Player
+                ))
+            );
+        }
+        frame.actors[0].facing = Some(Vec2::NEG_Y);
+        assert_eq!(frame.validate(), Ok(()));
     }
 
     #[test]
@@ -512,6 +539,7 @@ mod tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: true,
+            facing: None,
         };
         frame.actors.push(grass_rustle.clone());
 

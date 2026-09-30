@@ -146,9 +146,9 @@ fn publish_visual_world_frame(
         };
         #[cfg(feature = "voxel-view")]
         let sprite = &directional_sprite;
-        let Some(actor) = visual_actor(
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::Player,
-            Arc::from("player"),
+            _frames.map(|frames| frames.source_id.clone()).unwrap_or_else(|| Arc::from("player")),
             texture,
             sprite,
             transform,
@@ -157,6 +157,7 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        actor.facing = Some(visual_facing(rendered.player_sprite_facing.unwrap_or(Direction::Down)));
         actors.push(actor);
     }
 
@@ -226,7 +227,7 @@ fn publish_visual_world_frame(
         };
         #[cfg(feature = "voxel-view")]
         let sprite = &directional_sprite;
-        let Some(actor) = visual_actor(
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::Object(object_index),
             object.source_id.clone(),
             texture,
@@ -237,6 +238,10 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        #[cfg(feature = "voxel-view")]
+        {
+            actor.facing = Some(visual_facing(object.world_facing));
+        }
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }
@@ -358,6 +363,15 @@ fn voxel_spatial_effects_supported(runtime_shell: &BevyRuntimeShell) -> bool {
         && runtime_shell.visible_overworld_emote.is_none()
 }
 
+fn visual_facing(direction: Direction) -> Vec2 {
+    match direction {
+        Direction::Down => Vec2::NEG_Y,
+        Direction::Up => Vec2::Y,
+        Direction::Left => Vec2::NEG_X,
+        Direction::Right => Vec2::X,
+    }
+}
+
 fn visual_actor(
     id: crystal_render_api::VisualActorId,
     source_id: Arc<str>,
@@ -379,6 +393,7 @@ fn visual_actor(
         size,
         flip_x: sprite.flip_x,
         above_priority,
+        facing: None,
     })
 }
 
@@ -494,6 +509,7 @@ mod render_mod_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         assert!(!visual_actor_intersects_grid(
             &actor,

@@ -145,6 +145,7 @@ mod tests {
             size: Vec2::new(8.0, 16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         assert_eq!(actor_foot(&actor), Vec2::new(10.0, 12.0));
     }

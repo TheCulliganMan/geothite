@@ -9458,6 +9458,10 @@ fn update_overworld_sprite_positions(
             overworld_entity_depth(player_depth_tile, None, (start_x, start_y)) - 0.000_001;
     }
 
+    // Retained motion must use the same roster boundary as the full render.
+    // A renderer-mod frame can include NPCs well outside the classic LCD's
+    // scroll margin. Counting only that margin rejects the retained roster,
+    // leaving the map/camera frozen between otherwise unrelated redraws.
     let expected_visible_object_count = snapshot
         .visible_objects
         .iter()
@@ -9480,7 +9484,7 @@ fn update_overworld_sprite_positions(
             });
             [destination, origin].into_iter().flatten().any(|tile| {
                 runtime_event_view_tile(tile, start_x, start_y)
-                    .is_some_and(|(x, y)| overworld_object_in_scroll_region(x, y))
+                    .is_some_and(|(x, y)| overworld_object_in_visual_region(x, y))
             })
         })
         .count();
@@ -9514,10 +9518,10 @@ fn update_overworld_sprite_positions(
                 .map(|(_, from)| *from)
                 .or_else(|| object_walk_from.get(object_id).copied())
         });
-        let destination_visible = overworld_object_in_scroll_region(view_x, view_y);
+        let destination_visible = overworld_object_in_visual_region(view_x, view_y);
         let origin_visible = walking_from
             .and_then(|from| runtime_event_view_tile(from, start_x, start_y))
-            .is_some_and(|(x, y)| overworld_object_in_scroll_region(x, y));
+            .is_some_and(|(x, y)| overworld_object_in_visual_region(x, y));
         if !destination_visible && !origin_visible {
             continue;
         }

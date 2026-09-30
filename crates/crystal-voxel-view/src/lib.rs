@@ -39,6 +39,8 @@ mod lab;
 mod mart;
 mod mesh;
 mod modern_route;
+mod new_bark_actors;
+mod new_bark_models;
 mod olivine_gym;
 mod park;
 mod players_house;
@@ -74,6 +76,7 @@ use bevy::tasks::AsyncComputeTaskPool;
 use bevy::tasks::Task;
 use bevy::{
     asset::{AssetId, load_internal_asset},
+    core_pipeline::fxaa::Fxaa,
     core_pipeline::tonemapping::{DebandDither, Tonemapping},
     pbr::{
         CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, FogFalloff, FogSettings, Material,
@@ -81,6 +84,7 @@ use bevy::{
     },
     prelude::*,
     render::{
+        renderer::RenderAdapterInfo,
         camera::{ClearColorConfig, OrthographicProjection, Projection, RenderTarget, ScalingMode},
         mesh::MeshVertexBufferLayoutRef,
         render_resource::{
@@ -136,6 +140,8 @@ impl Plugin for VoxelViewPlugin {
             Shader::from_wgsl
         );
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
+        #[cfg(not(target_arch = "wasm32"))]
+        app.add_systems(Update, native_model_camera.before(sync_voxel_view));
         load_internal_asset!(
             app,
             SILHOUETTE_SHADER_HANDLE,
@@ -143,7 +149,9 @@ impl Plugin for VoxelViewPlugin {
             Shader::from_wgsl
         );
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
-        app.init_resource::<VoxelViewSettings>()
+        app.init_resource::<new_bark_actors::ModeledActors>()
+            .add_systems(Update, new_bark_actors::sync.after(sync_voxel_view).in_set(WorldRenderSet::RenderSync))
+            .init_resource::<VoxelViewSettings>()
             .init_resource::<VoxelViewStatus>()
             .init_resource::<live_profiles::LiveProfiles>()
             .add_systems(Update, live_profiles::reload.before(sync_voxel_view))
@@ -235,6 +243,9 @@ fn toggle_voxel_view(keyboard: Res<ButtonInput<KeyCode>>, mut settings: ResMut<V
 
 #[derive(Component)]
 struct VoxelWorldCamera;
+
+#[derive(Component)]
+struct VoxelSun;
 
 #[derive(Component)]
 struct VoxelTerrain;
@@ -424,7 +435,14 @@ fn setup_voxel_view(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut scene: ResMut<VoxelScene>,
+    adapter: Option<Res<RenderAdapterInfo>>,
 ) {
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some() {
+        if let Some(adapter) = adapter.as_ref() {
+            eprintln!("modeled renderer adapter: name={} device={:?} backend={:?}", adapter.name, adapter.device_type, adapter.backend);
+        }
+    }
     // Face colors retain their authored shade; this light supplies only
     // the scene's depth-tested cast-shadow visibility.
     commands.insert_resource(DirectionalLightShadowMap { size: 2048 });
@@ -463,6 +481,9 @@ fn setup_voxel_view(
                 directional_light_color: Color::NONE,
                 ..default()
             },
+            // Smooth modeled silhouette edges without changing the faithful
+            // 2D camera or its nearest-neighbor sprite textures.
+            Fxaa { enabled: false, ..default() },
             VoxelWorldCamera,
         ))
         .id();
@@ -494,6 +515,7 @@ fn setup_voxel_view(
             ..default()
         },
         RenderLayers::layer(VOXEL_RENDER_LAYER),
+        VoxelSun,
     ));
 
     scene.camera = Some(camera);
@@ -728,7 +750,9 @@ fn sync_voxel_atmosphere(
     frame: Res<VisualWorldFrame>,
     profiles: Res<live_profiles::LiveProfiles>,
     settings: Res<VoxelViewSettings>,
-    mut cameras: Query<&mut FogSettings, With<VoxelWorldCamera>>,
+    adapter: Option<Res<RenderAdapterInfo>>,
+    mut lights: Query<&mut DirectionalLight, With<VoxelSun>>,
+    mut cameras: Query<(&mut FogSettings, &mut Fxaa), With<VoxelWorldCamera>>,
 ) {
     if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed() {
         return;
@@ -737,7 +761,23 @@ fn sync_voxel_atmosphere(
         frame.active && settings.enabled
             && atmosphere.maps.iter().any(|map| map == frame.map_id.as_ref())
     });
-    for mut fog in &mut cameras {
+    // CPU rasterizers pay for the entire broad terrain halo again in the
+    // shadow pass. Authored contact shading already grounds these scenes;
+    // retain dynamic shadows on hardware and use that baked support on known
+    // software drivers. This changes rendering only, never world state.
+    let software = adapter.as_ref().is_some_and(|adapter| software_renderer(&adapter.name));
+    let mut shadows = !new_bark_models::supports_map(&frame.map_id) || !software;
+    #[cfg(not(target_arch = "wasm32"))]
+    if new_bark_models::supports_map(&frame.map_id) {
+        match std::env::var("CRYSTAL_MODELED_SHADOWS").as_deref() {
+            Ok("on") => shadows = true,
+            Ok("off") => shadows = false,
+            _ => {}
+        }
+    }
+    for mut light in &mut lights { light.shadows_enabled = shadows; }
+    for (mut fog, mut fxaa) in &mut cameras {
+        fxaa.enabled = frame.active && settings.enabled && new_bark_models::supports_map(&frame.map_id);
         if let Some(atmosphere) = atmosphere {
             let pose = settings.camera.pose(frame.viewport_size);
             let target_distance = pose.eye.distance(pose.target);
@@ -750,6 +790,22 @@ fn sync_voxel_atmosphere(
             fog.color = Color::NONE;
         }
     }
+}
+
+fn software_renderer(name: &str) -> bool {
+    let name = name.to_ascii_lowercase();
+    ["llvmpipe", "softpipe", "swiftshader", "software rasterizer"]
+        .iter().any(|label| name.contains(label))
+}
+
+#[cfg(test)]
+#[test]
+fn modeled_software_shadow_profile_does_not_match_hardware_adapters() {
+    assert!(software_renderer("llvmpipe (LLVM 19, 256 bits)"));
+    assert!(software_renderer("Google SwiftShader"));
+    assert!(!software_renderer("Apple M3"));
+    assert!(!software_renderer("NVIDIA RTX 4080"));
+    assert!(!software_renderer("Intel Iris Xe"));
 }
 
 fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
@@ -1371,7 +1427,9 @@ fn sync_player_silhouette_system(
     let Some(actor_quad) = scene.actor_quad.as_ref() else {
         return;
     };
-    if !status.active {
+    // A card silhouette would be occluded by the player's own 3D body and
+    // incorrectly paint the old pixel sprite across its front.
+    if !status.active || new_bark_actors::has_modeled_player(&frame) {
         if let Some(entity) = cache.entity
             && let Ok((_, mut visibility, _)) = entities.get_mut(entity)
         {
@@ -2063,6 +2121,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let pull = actor_camera_pull(&player, 45.0_f32.to_radians());
         let expected = ACTOR_BASE_CAMERA_PULL
@@ -2083,6 +2142,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let remote = VisualActor {
             id: VisualActorId::RemotePlayer(7),
@@ -2123,6 +2183,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let heights = vec![0.0; 4];
         let actor_before =
@@ -2160,4 +2221,32 @@ mod renderer_tests {
         first.map_texture = Handle::weak_from_u128(2);
         assert_eq!(first_key, TerrainCacheKey::from_frame(&first));
     }
+}
+
+
+/// Native art-slice controls; browser camera controls remain authoritative there.
+#[cfg(not(target_arch = "wasm32"))]
+fn native_model_camera(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    frame: Res<VisualWorldFrame>,
+    mut settings: ResMut<VoxelViewSettings>,
+) {
+    if !settings.enabled || !frame.active || frame.map_id.as_ref() != "NewBarkTown" {
+        return;
+    }
+    static TRACE: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    if *TRACE.get_or_init(|| std::env::var_os("CRYSTAL_MODEL_INPUT_TRACE").is_some())
+        && (keyboard.get_just_pressed().next().is_some() || keyboard.get_just_released().next().is_some()) {
+        bevy::log::info!("model input pressed={:?} just_pressed={:?} released={:?}",
+            keyboard.get_pressed().collect::<Vec<_>>(),
+            keyboard.get_just_pressed().collect::<Vec<_>>(),
+            keyboard.get_just_released().collect::<Vec<_>>());
+    }
+    let mut camera = settings.camera;
+    if keyboard.just_pressed(KeyCode::KeyQ) { camera.rotation_step -= 1.0; }
+    if keyboard.just_pressed(KeyCode::KeyE) { camera.rotation_step += 1.0; }
+    if keyboard.just_pressed(KeyCode::PageUp) { camera.zoom_step += 1.0; }
+    if keyboard.just_pressed(KeyCode::PageDown) { camera.zoom_step -= 1.0; }
+    let camera = VoxelCameraControls::new(camera.zoom_step, camera.rotation_step);
+    if settings.camera != camera { settings.camera = camera; }
 }

@@ -15,6 +15,7 @@ pub(super) struct RenderWalk {
     maps: std::collections::HashSet<String>,
     player_bounds: Option<(Vec2, Vec2)>,
     player_moved: bool,
+    capture_steps: bool,
 }
 impl RenderWalk {
     pub(super) fn settled(&self) -> bool {
@@ -22,7 +23,7 @@ impl RenderWalk {
     }
 }
 
-pub(super) fn install(app: &mut App, route: &str, path: &Path) -> Result<()> {
+pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bool) -> Result<()> {
     if let Some(parent) = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
@@ -53,6 +54,7 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path) -> Result<()> {
         maps: default(),
         player_bounds: None,
         player_moved: false,
+        capture_steps,
     })
     .add_systems(PreUpdate, drive.after(bevy::input::InputSystem));
     Ok(())
@@ -109,9 +111,11 @@ fn drive(
     // Small rooms keep the grid fixed while the player walks across it.
     // Require a full source-tile span, so facing/stride changes alone do not
     // satisfy movement. Existing grid/map evidence covers scrolling scenes.
-    if let Some(player) = frame.actors.iter().find(|actor| {
-        actor.id == crystal_render_api::VisualActorId::Player
-    }) {
+    if let Some(player) = frame
+        .actors
+        .iter()
+        .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+    {
         let point = player.center - frame.center;
         let (low, high) = walk.player_bounds.unwrap_or((point, point));
         let low = low.min(point);
@@ -139,7 +143,7 @@ fn drive(
         windows.get_single().is_ok_and(|(_, window)| window.focused)
     );
     walk.trace.push_str(&line);
-    if walk.tick % 32 == 12 {
+    if walk.capture_steps && walk.tick % 32 == 12 {
         if let Ok((window, _)) = windows.get_single() {
             let stem = walk.path.file_stem().unwrap().to_string_lossy();
             let path = walk

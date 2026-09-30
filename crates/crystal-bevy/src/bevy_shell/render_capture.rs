@@ -1,5 +1,7 @@
 //! Automated captures share a GPU session and finish on readback, not a timer.
 use super::*;
+// Location-test startup is also available in local browser builds.
+use bevy::utils::Instant;
 use std::sync::{Arc, Mutex};
 
 type Completion = Arc<Mutex<Option<Result<(), String>>>>;

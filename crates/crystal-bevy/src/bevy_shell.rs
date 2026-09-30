@@ -1,5 +1,7 @@
 #[cfg(feature = "location-tester")]
 mod render_walk;
+#[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+mod render_record;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -322,6 +324,8 @@ pub struct BevyShellConfig {
     /// `None` keeps the optional voxel feature's normal enabled behavior;
     /// location tools can force either side of a 2D/2.5D comparison.
     pub voxel_view_enabled: Option<bool>,
+    /// Optional preview framing: zoom step and signed 22.5-degree orbit steps.
+    pub voxel_camera: Option<(u8, i8)>,
     pub window_title: Option<String>,
     pub multiplayer: Option<BevyMultiplayerConfig>,
     #[cfg(feature = "location-tester")]
@@ -333,6 +337,12 @@ pub struct BevyShellConfig {
     pub render_test_live: bool,
     #[cfg(feature = "location-tester")]
     pub render_test_walk: Option<String>,
+    /// Native developer-only game-frame recording: output directory and seconds.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record: Option<(PathBuf, u32)>,
+    /// Native frame/position measurement without GPU screenshots.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_measure: Option<(PathBuf, u32)>,
     /// Fixed 24-hour clock used by deterministic location screenshots.
     /// Normal play continues to use the live/new-game clock path.
     #[cfg(feature = "location-tester")]
@@ -5287,6 +5297,8 @@ struct MultiplayerGhost {
 /// instead of forcing `render_playfield` to rebuild the complete map.
 #[derive(Component)]
 struct PlayerSpriteFrames {
+    /// Presentation identity of the sprite already selected by the host.
+    source_id: Arc<str>,
     #[cfg(feature = "voxel-view")]
     directional_frames: Vec<(Handle<Image>, Handle<Image>)>,
     standing: Handle<Image>,
@@ -5422,6 +5434,8 @@ pub fn run_bevy_shell(
     let multiplayer_config = config.multiplayer.clone();
     #[cfg(feature = "voxel-view")]
     let voxel_view_enabled = config.voxel_view_enabled.unwrap_or(false);
+    #[cfg(feature = "voxel-view")]
+    let voxel_camera = config.voxel_camera;
     let window_title = config
         .window_title
         .clone()
@@ -5434,6 +5448,10 @@ pub fn run_bevy_shell(
     let render_test_second_screenshot = config.render_test_second_screenshot.clone();
     #[cfg(feature = "location-tester")]
     let render_test_live = config.render_test_live;
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record = config.render_test_record.clone();
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_measure = config.render_test_measure.clone();
     #[cfg(feature = "location-tester")]
     let native_rtc_source = config
         .render_test_hour
@@ -5481,6 +5499,8 @@ pub fn run_bevy_shell(
     };
 
     let mut app = App::new();
+    #[cfg(not(target_arch = "wasm32"))]
+    native_navigation::install(&mut app);
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
         #[cfg(feature = "operation-trace")]
@@ -5697,7 +5717,7 @@ pub fn run_bevy_shell(
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
         enabled: voxel_view_enabled,
         allow_f3_toggle: !cfg!(target_arch = "wasm32"),
-        camera: Default::default(),
+        camera: voxel_camera.map(|(zoom, rotation)| crystal_voxel_view::VoxelCameraControls::new(f32::from(zoom), f32::from(rotation) * 0.5)).unwrap_or_default(),
     })
     .add_plugins(crystal_voxel_view::VoxelViewPlugin)
     .add_systems(
@@ -5761,13 +5781,27 @@ pub fn run_bevy_shell(
     }
     #[cfg(feature = "location-tester")]
     if let Some(route) = render_test_walk.as_deref() {
+        let walk_path = render_test_screenshot.clone();
+        #[cfg(not(target_arch = "wasm32"))]
+        let walk_path = walk_path.or_else(|| render_test_record.as_ref().or(render_test_measure.as_ref()).map(|(path, _)| path.join("walk.png")));
+        #[cfg(not(target_arch = "wasm32"))]
+        let capture_steps = render_test_measure.is_none();
+        #[cfg(target_arch = "wasm32")]
+        let capture_steps = true;
         render_walk::install(
             &mut app,
             route,
-            render_test_screenshot
-                .as_deref()
-                .context("--walk requires a screenshot path")?,
+            walk_path.as_deref().context("--walk requires a screenshot or recording path")?,
+            capture_steps,
         )?;
+    }
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    if let Some((directory, seconds)) = render_test_record.as_ref() {
+        render_record::install(&mut app, directory, *seconds, true)?;
+    }
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    if let Some((directory, seconds)) = render_test_measure.as_ref() {
+        render_record::install(&mut app, directory, *seconds, false)?;
     }
     let app_exit = app.run();
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
@@ -7602,6 +7636,13 @@ fn initialize_bevy_runtime_shell(
         } => RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), spawn_identifier)?,
     };
     #[cfg(feature = "location-tester")]
+    if runtime_tile_start {
+        if let Some(name) = config.smoke_player_name.as_deref().filter(|name| !name.is_empty()) {
+            let player_id = shell.snapshot()?.trainer.player_id;
+            shell.set_trainer_identity(name, player_id)?;
+        }
+    }
+    #[cfg(feature = "location-tester")]
     if config.render_test_party {
         anyhow::ensure!(
             runtime_tile_start,
@@ -8107,3 +8148,6 @@ include!("bevy_shell/browser_preferences.rs");
 include!("bevy_shell/battle_objects.rs");
 
 include!("bevy_shell/catch_tutorial.rs");
+
+#[cfg(not(target_arch = "wasm32"))]
+mod native_navigation;

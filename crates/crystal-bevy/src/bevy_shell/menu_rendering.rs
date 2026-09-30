@@ -5437,6 +5437,7 @@ fn render_playfield(
         // A changed shell key means an overlay was opened or closed.  Let the
         // normal rebuild path remove stale command-window entities.
         && rendered.shell_render_key == Some(shell_render_key);
+    let mut retained_movement_needs_reconcile = false;
     if world_only_update
         && rendered.player_sprite_facing == Some(snapshot.overworld.facing)
         && rendered.player_sprite_mode == Some(snapshot.overworld.mode)
@@ -5482,8 +5483,14 @@ fn render_playfield(
             rendered.shell_render_key = Some(shell_render_key);
             return;
         }
+        // The semantic snapshot can be unchanged even when a retained actor
+        // is missing or the roster no longer matches. Reconcile the scene
+        // below rather than letting an idle acknowledgement retain a stale
+        // camera and partially updated actor transforms for the whole step.
+        retained_movement_needs_reconcile = true;
     }
     if world_only_update
+        && !retained_movement_needs_reconcile
         && rendered.player_sprite_facing == Some(snapshot.overworld.facing)
         && rendered.player_sprite_mode == Some(snapshot.overworld.mode)
     {
@@ -5493,6 +5500,7 @@ fn render_playfield(
         return;
     }
     if rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+        && !retained_movement_needs_reconcile
         && visual_world_mode_unchanged
         && rendered.tile == Some(snapshot.overworld.tile)
         && rendered.world_key == Some(world_key)
@@ -7569,6 +7577,7 @@ fn render_playfield(
                 },
                 PlayerMarker,
                 PlayerSpriteFrames {
+                    source_id: Arc::from(player_sprite_id),
                     #[cfg(feature = "voxel-view")]
                     directional_frames,
                     standing: standing_frame.handle.clone(),

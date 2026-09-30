@@ -9,6 +9,8 @@ mod live;
 
 #[path = "mesh/background.rs"]
 mod background;
+#[path = "mesh/new_bark.rs"]
+mod new_bark;
 #[path = "mesh/ordinary_house.rs"]
 mod ordinary_house;
 #[path = "mesh/players_house.rs"]
@@ -286,6 +288,9 @@ pub(crate) fn build_animated_flowers(
                 row: tile.row,
                 tile_index: ground_tile_index,
             })?;
+        if new_bark::append_flower(&mut solid_mesh, frame.map_id.as_ref(), tile, &geometry, base_height) {
+            continue;
+        }
         // Flower masks use their own palette/outline; the ground sample is
         // required and emitted by the static terrain pass, not by this hull.
         let removable = decorative_cutout_mask(&samples, tile, tile, SolidKind::Flower)?;
@@ -316,6 +321,8 @@ fn build_terrain_mesh_internal(
     instance_hulls: bool,
     profiles: Option<&crate::live_profiles::Document>,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
+    let scenery_metrics = (new_bark::supports_map(frame.map_id.as_ref())
+        && std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some()).then(std::time::Instant::now);
     frame
         .validate()
         .map_err(TerrainMeshError::InvalidVisualFrame)?;
@@ -354,7 +361,23 @@ fn build_terrain_mesh_internal(
         .into_iter()
         .map(|tile| tile.expect("complete tile grid was checked before meshing"))
         .collect();
-    let live_placements = live::resolve(&cells, width, height, frame.map_id.as_ref(), profiles.filter(|_| images.is_some()));
+    let grid_width = frame.tile_size.x * frame.grid_size.x as f32;
+    let grid_height = frame.tile_size.y * frame.grid_size.y as f32;
+    let geometry = GridGeometry {
+        width,
+        height,
+        tile_width: frame.tile_size.x,
+        tile_height: frame.tile_size.y,
+        origin_x: -grid_width * 0.5,
+        origin_z: -grid_height * 0.5,
+    };
+    let mut live_placements = live::resolve(&cells, width, height, frame.map_id.as_ref(), profiles.filter(|_| images.is_some()));
+    if images.is_some() && new_bark::supports_map(frame.map_id.as_ref()) {
+        let reserved = new_bark::preferred_scenery_cells(frame.map_id.as_ref(), &cells, &geometry);
+        // Complete authored trees/signs supersede their old source-art cards.
+        // Mixed props and incomplete groups retain the existing live-profile path.
+        live_placements.retain(|placement| !placement.indices(width).all(|index| reserved[index]));
+    }
     // Mask complete overridden drawings from all compiled object matchers.
     // Texture slots stay fixed so the live mesher still uses the original art.
     let mut live_cells: Vec<VisualTile> = if live_placements.is_empty() { Vec::new() }
@@ -449,16 +472,6 @@ fn build_terrain_mesh_internal(
     resolve_authored_mountain_tiers(&mut shapes, width, height);
     taper_johto_ledge_ends(&cells, &mut shapes, width);
 
-    let grid_width = frame.tile_size.x * frame.grid_size.x as f32;
-    let grid_height = frame.tile_size.y * frame.grid_size.y as f32;
-    let geometry = GridGeometry {
-        width,
-        height,
-        tile_width: frame.tile_size.x,
-        tile_height: frame.tile_size.y,
-        origin_x: -grid_width * 0.5,
-        origin_z: -grid_height * 0.5,
-    };
     let mut mesh = TerrainMeshData {
         tree_cache: instance_hulls.then(HashMap::new),
         ..Default::default()
@@ -566,8 +579,14 @@ fn build_terrain_mesh_internal(
         )?;
     }
     if let Some(images) = images {
-        let placements = outdoor_building_placements(&cells, &geometry);
+        let placements = new_bark::building_placements(frame.map_id.as_ref(), &cells, &geometry);
         for placement in &placements {
+            if new_bark::append_building(
+                &mut mesh, &cells, &shapes, &geometry, frame.map_id.as_ref(),
+                *placement, &mut claimed_by_building,
+            ) {
+                continue;
+            }
             append_pixel_building(
                 &mut mesh,
                 images,
@@ -598,7 +617,13 @@ fn build_terrain_mesh_internal(
 
         // Trees are upright source-art cutouts, without rounded voxel hulls
         // or extruded per-pixel sides. Preserve other grouped props separately.
-        for mut placement in complete_tree_placements(&cells, &geometry) {
+        for mut placement in new_bark::tree_placements(frame.map_id.as_ref(), &cells, &geometry) {
+            if new_bark::append_tree(
+                &mut mesh, &cells, &shapes, &geometry, frame.map_id.as_ref(),
+                placement, &mut claimed_by_tree, frame.grid_origin.to_array(),
+            ) {
+                continue;
+            }
             placement.rounded = false;
             placement.card_thickness = 0.0;
             append_grouped_tree(
@@ -1547,6 +1572,9 @@ fn build_terrain_mesh_internal(
             }
         }
     }
+    if images.is_some() {
+        new_bark::append_signs(&mut mesh, frame.map_id.as_ref(), &cells, &shapes, &geometry, &mut claimed_by_tree);
+    }
     let bank_runs = bank_column_runs(&shapes, &geometry);
 
     for row in 0..height {
@@ -1557,6 +1585,32 @@ fn build_terrain_mesh_internal(
                 || claimed_by_casino_stool[index]
                 || claimed_by_house_furniture[index]
             {
+                continue;
+            }
+            if images.is_some()
+                && new_bark::supports_map(frame.map_id.as_ref())
+                && let CellShape::Cutout { ground_tile_index, solid: SolidKind::Flower } = shapes[index]
+                && let Some(ground) = authored_ground_cell(&cells, &shapes, ground_tile_index)
+                && new_bark::append_flower(
+                    &mut mesh.animated_solid, frame.map_id.as_ref(), cells[index], &geometry,
+                    shapes[ground].surface_height(geometry.tile_height),
+                )
+            {
+                let (west, east, north, south) = geometry.bounds(column, row);
+                append_top(&mut mesh.textured, [west, east, north, south],
+                    shapes[ground].surface_height(geometry.tile_height),
+                    geometry.uv(ground % width, ground / width));
+                continue;
+            }
+            if images.is_some()
+                && let CellShape::Cutout { ground_tile_index, solid: SolidKind::Grass } = shapes[index]
+                && let Some(ground) = authored_ground_cell(&cells, &shapes, ground_tile_index)
+                && new_bark::append_grass(&mut mesh.solid, frame.map_id.as_ref(), cells[index], &geometry,
+                    shapes[ground].surface_height(geometry.tile_height), frame.grid_origin.to_array())
+            {
+                let (west, east, north, south) = geometry.bounds(column, row);
+                append_top(&mut mesh.textured, [west, east, north, south],
+                    shapes[ground].surface_height(geometry.tile_height), geometry.uv(ground % width, ground / width));
                 continue;
             }
             append_textured_cell(
@@ -1588,6 +1642,17 @@ fn build_terrain_mesh_internal(
                 &mut mesh, &geometry, &cells, &shapes, &bank_runs, column, row,
             );
         }
+    }
+
+    new_bark::polish_surfaces(&mut mesh, frame.map_id.as_ref(), &cells, &geometry, frame.grid_origin.to_array());
+    if let Some(started) = scenery_metrics {
+        let surfaces=[&mesh.textured,&mesh.solid,&mesh.animated_textured,&mesh.animated_solid];
+        let vertices:usize=surfaces.iter().map(|m|m.positions.len()).sum();
+        let triangles:usize=surfaces.iter().map(|m|m.indices.len()/3).sum();
+        let repeated:usize=mesh.tree_instances.iter().map(|group|group.mesh.positions.len()*group.origins.len()).sum();
+        eprintln!("scenery_metrics map={} origin={:?} cells={}x{} vertices={} triangles={} repeated_vertices={} bytes={} detail={} build_ms={:.2}",
+            frame.map_id,frame.grid_origin,width,height,vertices,triangles,repeated,
+            vertices*48+triangles*12,if crate::new_bark_models::scenery_full_detail(){"full"}else{"adaptive"},started.elapsed().as_secs_f64()*1000.0);
     }
 
     Ok(mesh)
@@ -10454,7 +10519,7 @@ mod tests {
         source_with_tile(metatile_id, subtile_column, subtile_row, 0x06)
     }
 
-    fn source_with_tile(
+    pub(super) fn source_with_tile(
         metatile_id: u16,
         subtile_column: u8,
         subtile_row: u8,
@@ -10481,11 +10546,13 @@ mod tests {
         source
     }
 
-    fn frame(width: u32, height: u32, sources: Vec<VisualTileSource>) -> VisualWorldFrame {
+    pub(super) fn frame(width: u32, height: u32, sources: Vec<VisualTileSource>) -> VisualWorldFrame {
         assert_eq!(sources.len(), (width * height) as usize);
         VisualWorldFrame {
             active: true,
-            map_id: Arc::from("NewBarkTown"),
+            // Generic mesher fixtures must not opt into a named map's
+            // authored scenery/material override. Map-specific tests opt in.
+            map_id: Arc::from("UnmodeledTestMap"),
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::weak_from_u128(1),
