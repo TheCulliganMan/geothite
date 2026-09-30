@@ -265,6 +265,170 @@ fn immersive_source_animation(
 }
 
 #[test]
+fn immersive_battle_native_oam_stays_unscrolled_through_zero_crossings_and_palette_modes() {
+    use bevy::render::view::RenderLayers;
+    use crystal_render_api::BattleFlashMode;
+
+    let mut shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut animation = immersive_source_animation(&snapshot, "HYPER_BEAM");
+    animation.frame = 13;
+    shell.visible_move_animations.push_back(animation);
+    let before = shell.visible_move_animations.clone();
+    let mut app = App::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    {
+        let mut commands = Commands::new(&mut queue, app.world());
+        capture_presented_battle(
+            &mut commands,
+            &snapshot,
+            &shell,
+            true,
+            &mut art,
+            &mut images,
+        )
+        .unwrap();
+        spawn_visible_move_animation_objects(
+            &mut commands,
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+    }
+    queue.apply(app.world_mut());
+    let source = app
+        .world()
+        .resource::<VisualBattleFrame>()
+        .source
+        .clone()
+        .unwrap();
+    assert!(source.line_x_offsets.is_none() && source.line_y_offsets.is_none());
+    assert!(
+        !source.objects.is_empty(),
+        "the fixture must contain actual beam OAM"
+    );
+    let native = {
+        let world = app.world_mut();
+        world
+            .query::<(Entity, &ImmersiveBattleSourceObject, &Transform, &Sprite)>()
+            .iter(world)
+            .map(|(entity, slot, transform, sprite)| {
+                (entity, slot.0, *transform, sprite.rect, sprite.custom_size)
+            })
+            .collect::<Vec<_>>()
+    };
+    assert_eq!(native.len(), source.objects.len());
+    for (entity, ..) in &native {
+        app.world_mut()
+            .entity_mut(*entity)
+            .insert(RenderLayers::layer(
+                crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
+            ));
+    }
+    let replaced_bg = app
+        .world_mut()
+        .spawn((SpriteBundle::default(), FixedBattleCanvasMarker))
+        .id();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(shell)
+        .init_resource::<RenderedViewport>()
+        .init_resource::<crystal_voxel_view::VoxelViewStatus>()
+        .insert_resource(crystal_voxel_view::VoxelViewSettings {
+            enabled: true,
+            ..default()
+        })
+        .insert_resource(crystal_voxel_view::BattleViewStatus {
+            active: true,
+            ..default()
+        })
+        .insert_resource(BattleFlashMode::Full)
+        .add_systems(
+            Update,
+            (
+                apply_visible_battle_screen_offset,
+                sync_immersive_battle_layers,
+            )
+                .chain(),
+        );
+    // Include both global signs, exact zero and a line-buffer phase. Ownership
+    // must not change when the source scroll register crosses zero or resets.
+    for (offset, line_scroll) in [
+        (Vec2::new(3.0, -2.0), false),
+        (Vec2::ZERO, false),
+        (Vec2::new(-3.0, 2.0), false),
+        (Vec2::ZERO, true),
+        (Vec2::ZERO, false),
+    ] {
+        for mode in [BattleFlashMode::Full, BattleFlashMode::Reduced] {
+            app.world_mut().insert_resource(mode);
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let current = frame.source.as_mut().unwrap();
+            current.screen_offset = offset;
+            current.line_y_offsets = line_scroll.then_some([2; 95]);
+            let expected_frame = frame.clone();
+            drop(frame);
+            app.update();
+            for (entity, slot, transform, rect, size) in &native {
+                let object = source
+                    .objects
+                    .iter()
+                    .find(|object| object.slot == *slot)
+                    .unwrap();
+                assert!(
+                    app.world().get::<RenderLayers>(*entity).is_none(),
+                    "source OAM must remain in the native pass at {offset:?}"
+                );
+                assert_eq!(app.world().get::<Transform>(*entity), Some(transform));
+                let sprite = app.world().get::<Sprite>(*entity).unwrap();
+                assert_eq!((sprite.rect, sprite.custom_size), (*rect, *size));
+                assert_eq!(
+                    app.world().get::<Handle<Image>>(*entity),
+                    Some(if mode == BattleFlashMode::Reduced {
+                        &object.neutral_texture
+                    } else {
+                        &object.texture
+                    })
+                );
+            }
+            assert_eq!(
+                app.world().get::<RenderLayers>(replaced_bg),
+                Some(&RenderLayers::layer(
+                    crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
+                ))
+            );
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), expected_frame);
+            assert_eq!(
+                app.world()
+                    .resource::<BevyRuntimeShell>()
+                    .visible_move_animations,
+                before
+            );
+            assert_eq!(
+                app.world()
+                    .resource::<BevyRuntimeShell>()
+                    .shell
+                    .snapshot()
+                    .unwrap(),
+                snapshot
+            );
+        }
+    }
+    app.world_mut()
+        .resource_mut::<crystal_voxel_view::VoxelViewSettings>()
+        .enabled = false;
+    app.update();
+    assert!(app.world().get::<RenderLayers>(replaced_bg).is_none());
+    for (entity, ..) in &native {
+        assert!(app.world().get::<RenderLayers>(*entity).is_none());
+    }
+}
+
+#[test]
 fn immersive_battle_shadow_ball_preserves_actual_source_palette_and_object_frames() {
     let mut shell = immersive_battle_fixture();
     let snapshot = shell.shell.snapshot().unwrap();
@@ -563,6 +727,7 @@ fn immersive_battle_move_preview_controller(
     shadow_ball: bool,
     psychic: bool,
     hyper_beam: bool,
+    surf: bool,
 ) -> VisibleShellController {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -583,14 +748,15 @@ fn immersive_battle_move_preview_controller(
         BevyShellConfig::default(),
     )
     .unwrap();
-    let shell = prepare_immersive_battle_preview(shell, shadow_ball, psychic, hyper_beam).unwrap();
+    let shell =
+        prepare_immersive_battle_preview(shell, shadow_ball, psychic, hyper_beam, surf).unwrap();
     VisibleShellController { shell }
 }
 
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(true, false, false);
+    let mut controller = immersive_battle_move_preview_controller(true, false, false, false);
     let before = controller.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "GENGAR");
     assert_eq!(before.party.slots[0].pokemon.moves[0].name, "SHADOW_BALL");
@@ -616,7 +782,7 @@ fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, true, false);
+    let mut controller = immersive_battle_move_preview_controller(false, true, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "KADABRA");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -647,7 +813,7 @@ fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, true);
+    let mut controller = immersive_battle_move_preview_controller(false, false, true, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "RATICATE");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -740,4 +906,295 @@ fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
             .any(|animation| animation.player_move && animation.move_id == "HYPER_BEAM"),
         "recharge must not queue another Hyper Beam attack"
     );
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn immersive_battle_surf_preview_teaches_nonconsumable_hm_and_uses_normal_turn() {
+    let mut controller = immersive_battle_move_preview_controller(false, false, false, true);
+    let before = controller.shell.shell.snapshot().unwrap();
+    assert_eq!(before.party.slots[0].pokemon.species.id, "TOTODILE");
+    assert_eq!(before.party.slots[0].pokemon.level, 20);
+    assert_eq!(before.party.slots[0].pokemon.moves[0].name, "SURF");
+    assert_eq!(before.party.slots[0].pokemon.moves[0].current_pp, 15);
+    let surf = before
+        .moves
+        .iter()
+        .find(|entry| entry.move_id == "SURF")
+        .unwrap();
+    assert_eq!(
+        (surf.source_index, surf.power, surf.accuracy, surf.pp),
+        (57, 95, 100, 15)
+    );
+    assert_eq!(surf.move_type, "WATER");
+    assert_eq!(surf.effect, "NORMAL_HIT");
+    assert_eq!(
+        before
+            .bag
+            .tm_hm
+            .iter()
+            .find(|item| item.item_id == "HM_SURF")
+            .unwrap()
+            .quantity,
+        1
+    );
+    controller.press(GameButton::A).unwrap();
+    controller.press(GameButton::A).unwrap();
+    let after = controller.shell.shell.snapshot().unwrap();
+    let pp = after
+        .battle
+        .as_ref()
+        .map(|battle| battle.player_moves[0].current_pp)
+        .unwrap_or(after.party.slots[0].pokemon.moves[0].current_pp);
+    assert_eq!(pp, 14, "the authoritative turn spends exactly one Surf PP");
+    assert_eq!(
+        after
+            .bag
+            .tm_hm
+            .iter()
+            .find(|item| item.item_id == "HM_SURF")
+            .unwrap()
+            .quantity,
+        1
+    );
+    // Do not force accuracy/damage or require a hit to validate legal teaching.
+    assert!(
+        controller
+            .shell
+            .visible_move_animations
+            .iter()
+            .any(|animation| { animation.player_move && animation.move_id == "SURF" })
+    );
+}
+
+#[test]
+fn immersive_battle_surf_preserves_source_program_axis_and_object_lifetime() {
+    let mut shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let animation = immersive_source_animation(&snapshot, "SURF");
+    assert_eq!(animation.animation_label, "BattleAnim_Surf");
+    assert_eq!(animation.total_frames, 185);
+    assert_eq!(
+        animation.sound_events,
+        [1, 33, 65, 97].map(|frame| (frame, "SFX_SURF".to_string()))
+    );
+    assert!(animation.cry_events.is_empty());
+    assert_eq!(animation.object_events.len(), 2);
+    assert_eq!(animation.object_events[0].frame, 1);
+    assert!(matches!(&animation.object_events[0].command,
+        VisibleMoveObjectCommand::Spawn { object_id, x: 88, y: 104, param: 8 }
+        if object_id == "BATTLE_ANIM_OBJ_SURF"));
+    assert_eq!(animation.object_events[1].frame, 129);
+    assert!(matches!(
+        animation.object_events[1].command,
+        VisibleMoveObjectCommand::Increment { index: 1 }
+    ));
+    assert_eq!(animation.bg_events.len(), 1);
+    assert_eq!(animation.bg_events[0].frame, 1);
+    assert_eq!(animation.bg_events[0].effect_id, "BATTLE_BG_EFFECT_SURF");
+    shell.visible_move_animations.push_back(animation);
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    let mut saw_crest = false;
+    for tick in 0..185 {
+        shell.visible_move_animations.front_mut().unwrap().frame = tick;
+        let before_animation = shell.visible_move_animations.clone();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        capture_presented_battle(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &shell,
+            true,
+            &mut art,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        let presented = world.remove_resource::<VisualBattleFrame>().unwrap();
+        let source = presented
+            .source
+            .as_ref()
+            .expect("retain source trace even during fallback");
+        assert_eq!(source.frame, tick);
+        assert_eq!(source.bgp, 0xe4, "Surf does not flash BGP");
+        assert!(
+            source.line_x_offsets.is_none(),
+            "Surf must never bend horizontally"
+        );
+        assert_eq!(
+            source.line_y_offsets,
+            visible_battle_line_y_offsets(shell.visible_move_animations.front())
+        );
+        assert_eq!(source.line_y_offsets.is_some(), (1..183).contains(&tick));
+        assert!(
+            source
+                .objects
+                .iter()
+                .all(|object| object.object_id.as_ref() == "BATTLE_ANIM_OBJ_SURF")
+        );
+        saw_crest |= !source.objects.is_empty();
+        if tick >= 183 {
+            assert!(
+                source.objects.is_empty(),
+                "source VM finished the exit, including any final-tick OAM"
+            );
+        }
+        spawn_visible_move_animation_objects(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &shell,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+        )
+        .unwrap();
+        queue.apply(&mut world);
+        let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+        let mut sprites = world.query::<(
+            &Handle<Image>,
+            &Transform,
+            Option<&BattleSourceObjectMarker>,
+        )>();
+        let mut crops = world.query::<(&Handle<Image>, &Sprite, &Transform)>();
+        for object in &source.objects {
+            let image = images.get(&object.texture).unwrap();
+            let image_size = Vec2::new(
+                image.texture_descriptor.size.width as f32,
+                image.texture_descriptor.size.height as f32,
+            );
+            assert!(
+                crops.iter(&world).any(|(texture, sprite, pose)| {
+                    *texture == object.texture
+                        && sprite.rect.is_some_and(|rect| {
+                            rect.min / image_size == object.uv_rect.min
+                                && rect.max / image_size == object.uv_rect.max
+                        })
+                        && sprite.custom_size == Some(object.size * scale)
+                        && (pose.translation.x - (PLAYFIELD_LEFT + object.center.x * scale)).abs()
+                            < 0.001
+                        && (pose.translation.y - (PLAYFIELD_TOP - object.center.y * scale)).abs()
+                            < 0.001
+                }),
+                "native and3D crop must select the same cached pixels at frame {tick}"
+            );
+            let bounds = Rect::from_center_size(object.center, object.size);
+            assert!(
+                bounds.min.cmpge(Vec2::ZERO).all()
+                    && bounds.max.cmple(Vec2::new(160.0, 144.0)).all(),
+                "Surf source crop escaped the LCD at frame {tick}: {bounds:?}"
+            );
+            assert!(
+                sprites.iter(&world).any(|(image, pose, source_oam)| {
+                    source_oam.is_some()
+                        && *image == object.texture
+                        && (pose.translation.x - (PLAYFIELD_LEFT + object.center.x * scale)).abs()
+                            < 0.001
+                        && (pose.translation.y - (PLAYFIELD_TOP - object.center.y * scale)).abs()
+                            < 0.001
+                }),
+                "Surf source OAM mismatch at frame {tick}"
+            );
+        }
+        assert_eq!(shell.visible_move_animations, before_animation);
+    }
+    assert!(saw_crest);
+    assert_eq!(
+        shell.shell.snapshot().unwrap(),
+        snapshot,
+        "presentation must not change PP/HP/state"
+    );
+}
+
+#[test]
+fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_f3() {
+    let mut shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut animation = immersive_source_animation(&snapshot, "SURF");
+    animation.frame = 65;
+    shell.visible_move_animations.push_back(animation);
+    let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+    let source = frame.source.as_ref().unwrap();
+    assert!(!source.objects.is_empty());
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(frame.clone())
+        .insert_resource(crystal_voxel_view::BattleViewStatus {
+            active: true,
+            ..default()
+        })
+        .init_resource::<crystal_render_api::VisualBattleCanvas>()
+        .add_systems(Update, sync_immersive_battle_source_object_layout);
+    let mut originals = Vec::new();
+    for object in &source.objects {
+        let transform = Transform::from_xyz(
+            PLAYFIELD_LEFT + object.center.x * 4.0,
+            PLAYFIELD_TOP - object.center.y * 4.0,
+            3.8,
+        );
+        let size = object.size * 4.0;
+        let crop = Some(Rect::new(1.0, 2.0, 9.0, 10.0));
+        let entity = app
+            .world_mut()
+            .spawn((
+                SpriteBundle {
+                    transform,
+                    sprite: Sprite {
+                        custom_size: Some(size),
+                        rect: crop,
+                        ..default()
+                    },
+                    ..default()
+                },
+                ImmersiveBattleSourceObject(object.slot),
+            ))
+            .id();
+        originals.push((entity, transform, size, crop));
+    }
+    for viewport in [Vec2::new(1180.0, 812.0), Vec2::new(720.0, 960.0)] {
+        app.world_mut()
+            .resource_mut::<crystal_render_api::VisualBattleCanvas>()
+            .size = viewport;
+        for active in [true, false, true, false] {
+            app.world_mut()
+                .resource_mut::<crystal_voxel_view::BattleViewStatus>()
+                .active = active;
+            app.update();
+            for ((entity, original, size, crop), object) in originals.iter().zip(&source.objects) {
+                let pose = app.world().get::<Transform>(*entity).unwrap();
+                let sprite = app.world().get::<Sprite>(*entity).unwrap();
+                assert_eq!(
+                    sprite.rect, *crop,
+                    "projection cannot alter source UV clipping"
+                );
+                if active {
+                    let projected = crystal_voxel_view::battle_source_overlay_rect(
+                        object.center,
+                        object.size,
+                        viewport,
+                    )
+                    .unwrap();
+                    assert_eq!(
+                        pose.translation.truncate(),
+                        Vec2::new(
+                            projected.center().x - viewport.x * 0.5,
+                            viewport.y * 0.5 - projected.center().y
+                        )
+                    );
+                    assert_eq!(sprite.custom_size, Some(projected.size()));
+                    assert_eq!(pose.translation.z, original.translation.z);
+                } else {
+                    assert_eq!(pose, original);
+                    assert_eq!(sprite.custom_size, Some(*size));
+                    assert!(
+                        app.world()
+                            .get::<ImmersiveBattleSourceObjectLayout>(*entity)
+                            .is_none()
+                    );
+                }
+            }
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), frame);
+        }
+    }
+    assert_eq!(shell.shell.snapshot().unwrap(), snapshot);
 }

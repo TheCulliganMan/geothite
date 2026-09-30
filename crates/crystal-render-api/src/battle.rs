@@ -1,7 +1,7 @@
 //! Read-only battle presentation. These values describe the scene currently on
 //! screen, not the runtime's already-resolved future turn. Renderers must never
 //! use animation completion to advance a turn or infer a battle result.
-use bevy::prelude::{Handle, Image, Resource, Vec2};
+use bevy::prelude::{Handle, Image, Rect, Resource, SystemSet, UVec2, Vec2};
 use std::sync::Arc;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -43,6 +43,10 @@ pub struct VisualBattleBattler {
     pub party_index: Option<usize>,
     pub texture: Handle<Image>,
     pub texture_size: Vec2,
+    /// Full sprite rectangle in the original 160x144 LCD, in pixels, Y down.
+    pub source_rect: Rect,
+    /// Nontransparent source-pixel bounds retained for attack/appearance mapping.
+    pub source_opaque_rect: Rect,
     pub visible: bool,
     /// Substitute/minimize retain their honest source art instead of using a
     /// species mesh that would communicate the wrong visible battle state.
@@ -103,6 +107,9 @@ pub struct VisualBattleSourceObject {
     /// Pixel coordinates in the original 160x144 battle display, Y down.
     pub center: Vec2,
     pub size: Vec2,
+    /// Normalized source texture crop after clipping to the original LCD.
+    /// Texture handles remain shared; this never resizes/reuploads their pixels.
+    pub uv_rect: Rect,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -116,15 +123,41 @@ pub struct VisualBattleSourceFrame {
     /// Current source displacements in pixels, Y up.
     pub battler_offsets: [Vec2; 2],
     pub screen_offset: Vec2,
-    /// Current original horizontal scanline deformation, in source pixels.
-    /// The arena bends its models from this buffer without advancing it.
+    /// Original SCX sampling offsets in source LCD pixels (X right).
+    /// Output column x samples column x + offset for that output row.
     pub line_x_offsets: Option<[i8; 0x5f]>,
+    /// Original vertical background sampling in source LCD pixels (Y down).
+    /// Output row y samples row y + offset; OAM objects and HUD are unwarped.
+    pub line_y_offsets: Option<[i8; 0x5f]>,
     pub objects: Vec<VisualBattleSourceObject>,
 }
+
+/// The immersive viewport size in the native 2D pass and physical pixels.
+/// The bridge publishes this after normal fullscreen layout.
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+pub struct VisualBattleCanvas {
+    pub size: Vec2,
+    pub physical_size: UVec2,
+}
+impl Default for VisualBattleCanvas {
+    fn default() -> Self {
+        Self {
+            size: Vec2::new(640.0, 576.0),
+            physical_size: UVec2::ZERO,
+        }
+    }
+}
+
+/// PostUpdate boundary: extract the viewport before sizing its 3D target.
+#[derive(SystemSet, Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct BattleCanvasExtract;
 
 #[derive(Resource, Clone, Debug, Default, PartialEq)]
 pub struct VisualBattleFrame {
     pub active: bool,
+    /// Preserve exact original clipping/row sampling/transition sequences until
+    /// the 3D renderer can reproduce them. Source data remains available to QA.
+    pub use_source_scene: bool,
     pub map_id: Arc<str>,
     pub environment: VisualBattleEnvironment,
     pub battlers: [Option<VisualBattleBattler>; 2],
@@ -132,6 +165,12 @@ pub struct VisualBattleFrame {
     pub source: Option<VisualBattleSourceFrame>,
 }
 impl VisualBattleFrame {
+    /// Source LCD scroll applies to the rendered BG battlers, never OBJ/HUD.
+    pub fn uses_source_scanlines(&self) -> bool {
+        self.source.as_ref().is_some_and(|source| {
+            source.line_x_offsets.is_some() || source.line_y_offsets.is_some()
+        })
+    }
     pub fn validate(&self) -> Result<(), &'static str> {
         if !self.active {
             return Ok(());
@@ -151,6 +190,15 @@ impl VisualBattleFrame {
             }
             if battler.texture == Handle::default() {
                 return Err("battle fallback texture is missing");
+            }
+            if !battler.source_rect.min.is_finite()
+                || !battler.source_rect.max.is_finite()
+                || battler.source_rect.size().min_element() <= 0.0
+                || !battler.source_opaque_rect.min.is_finite()
+                || !battler.source_opaque_rect.max.is_finite()
+                || battler.source_opaque_rect.size().min_element() <= 0.0
+            {
+                return Err("battle source geometry is invalid");
             }
             if !battler.texture_size.is_finite() || battler.texture_size.min_element() <= 0.0 {
                 return Err("battle texture geometry is invalid");
@@ -189,6 +237,11 @@ impl VisualBattleFrame {
                     || !object.center.is_finite()
                     || !object.size.is_finite()
                     || object.size.min_element() <= 0.0
+                    || !object.uv_rect.min.is_finite()
+                    || !object.uv_rect.max.is_finite()
+                    || object.uv_rect.min.min_element() < 0.0
+                    || object.uv_rect.max.max_element() > 1.0
+                    || object.uv_rect.size().min_element() <= 0.0
                 {
                     return Err("invalid source battle object");
                 }
@@ -212,6 +265,8 @@ mod tests {
                     party_index: Some(2),
                     texture: Handle::weak_from_u128(4),
                     texture_size: Vec2::splat(56.0),
+                    source_rect: Rect::new(16.0, 48.0, 72.0, 104.0),
+                    source_opaque_rect: Rect::new(16.0, 48.0, 72.0, 104.0),
                     visible: true,
                     allow_species_model: true,
                     shiny: false,

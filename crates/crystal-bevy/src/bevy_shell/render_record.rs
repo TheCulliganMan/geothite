@@ -65,6 +65,7 @@ struct Recording {
     armed_at: Option<f64>,
     trigger: String,
     start: Option<f64>,
+    presented_battle_frames: u32,
     cadence: CaptureCadence,
     frames: Vec<f64>,
     trace: String,
@@ -101,11 +102,12 @@ pub(super) fn install(
         armed_at: None,
         trigger: String::new(),
         start: None,
+        presented_battle_frames: 0,
         cadence: CaptureCadence::new(capture_hz),
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -146,7 +148,7 @@ fn record(
     flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
-    windows: Query<Entity, With<PrimaryWindow>>,
+    windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut screenshots: ResMut<ScreenshotManager>,
     images: Res<Assets<Image>>,
     meshes: Res<Assets<Mesh>>,
@@ -167,11 +169,21 @@ fn record(
         }
         recording.outstanding = recording.outstanding.saturating_sub(1);
     }
+    recording.presented_battle_frames = if battle_frame.active {
+        recording.presented_battle_frames.saturating_add(1)
+    } else {
+        0
+    };
     if recording.start.is_none() {
         let now = time.elapsed_seconds_f64();
         let armed_at = *recording.armed_at.get_or_insert(now);
         let world_ready = status.active && status.active_frames >= 30 && !status.profiles_pending;
-        let battle_ready = battle_status.active && battle_status.active_frames >= 30;
+        let battle_ready = recording_battle_ready(
+            battle_frame.active,
+            recording.presented_battle_frames,
+            battle_status.active,
+            battle_status.active_frames,
+        );
         if !recording_start_ready(recording.on_move, world_ready, battle_ready, &battle_frame) {
             if recording.on_move && now - armed_at >= ARM_TIMEOUT_SECONDS {
                 eprintln!(
@@ -274,9 +286,45 @@ fn record(
                     .collect::<Vec<_>>()
                     .join("|")
             });
+        let source_line_offsets = |vertical: bool| {
+            battle_frame
+                .source
+                .as_ref()
+                .and_then(|source| {
+                    if vertical {
+                        source.line_y_offsets.as_ref()
+                    } else {
+                        source.line_x_offsets.as_ref()
+                    }
+                })
+                .map_or_else(String::new, |offsets| {
+                    offsets
+                        .iter()
+                        .map(i8::to_string)
+                        .collect::<Vec<_>>()
+                        .join("|")
+                })
+        };
+        let source_line_x = source_line_offsets(false);
+        let source_line_y = source_line_offsets(true);
         let capture_hz = recording.cadence.requested_hz;
+        let output_size = windows.get_single().map_or(UVec2::ZERO, |(_, window)| {
+            UVec2::new(window.physical_width(), window.physical_height())
+        });
+        let (view_mode, lighting, quality, scene_size) = if battle_status.active {
+            (
+                "modeled_3d",
+                battle_status.lighting,
+                battle_status.quality,
+                battle_status.render_size,
+            )
+        } else {
+            // The classic renderer draws at the native output size. A dormant
+            // 1x1 offscreen target is not its scene resolution.
+            ("source_2d", "source", "native", output_size)
+        };
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             battle_frame.map_id,
             species(0),
             species(1),
@@ -290,20 +338,23 @@ fn record(
             images.len(),
             meshes.len(),
             materials.len(),
-            battle_status.lighting,
-            battle_status.quality,
+            lighting,
+            quality,
             battle_status.software_renderer,
-            battle_status.render_size.x,
-            battle_status.render_size.y,
-            battle_status.output_size.x,
-            battle_status.output_size.y,
+            scene_size.x,
+            scene_size.y,
+            output_size.x,
+            output_size.y,
             capture_hz,
+            view_mode,
+            source_line_x,
+            source_line_y,
         ));
     }
     if !recording.capture_images || !recording.cadence.due(elapsed, recording.outstanding) {
         return;
     }
-    let Ok(window) = windows.get_single() else {
+    let Ok((window, _)) = windows.get_single() else {
         return;
     };
     let index = recording.frames.len();
@@ -341,6 +392,20 @@ fn record(
         recording.cadence.admitted(elapsed);
         recording.outstanding += 1;
     }
+}
+
+fn recording_battle_ready(
+    presented: bool,
+    presented_frames: u32,
+    modeled_active: bool,
+    modeled_frames: u32,
+) -> bool {
+    presented
+        && if modeled_active {
+            modeled_frames >= 30
+        } else {
+            presented_frames >= 30
+        }
 }
 
 fn recording_start_ready(
@@ -440,6 +505,31 @@ mod tests {
             }
         }
         captured
+    }
+
+    #[test]
+    fn classic_battle_capture_arms_from_real_presented_frames() {
+        assert!(!recording_battle_ready(true, 29, false, 0));
+        assert!(recording_battle_ready(true, 30, false, 0));
+        assert!(!recording_battle_ready(false, 300, false, 0));
+        assert!(!recording_battle_ready(true, 300, true, 29));
+        assert!(recording_battle_ready(true, 300, true, 30));
+        // Source fallback during an effect is already a warmed presentation.
+        assert!(recording_battle_ready(true, 301, false, 0));
+        let mut frame = VisualBattleFrame {
+            active: true,
+            ..default()
+        };
+        assert!(!recording_start_ready(true, false, true, &frame));
+        frame.cues.push(VisualBattleCue {
+            kind: VisualBattleCueKind::Move,
+            side: VisualBattleSide::Player,
+            move_id: "SURF".into(),
+            element: "WATER".into(),
+            progress: 0.0,
+            damaging: true,
+        });
+        assert!(recording_start_ready(true, false, true, &frame));
     }
 
     #[test]

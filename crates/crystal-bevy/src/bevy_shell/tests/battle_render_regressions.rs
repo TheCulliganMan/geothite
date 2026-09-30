@@ -1142,49 +1142,258 @@ fn wobble_screen_uses_the_radius_six_asm_sine_for_32_updates() {
 
     assert_eq!(
         screen_x,
-        [0.0, 1.0, 4.0, 6.0, 0.0, -6.0, -1.0, 0.0]
+        [0.0, -1.0, -4.0, -6.0, 0.0, 6.0, 1.0, 0.0]
             .map(|pixels| pixels * source_pixel)
     );
 }
 
+fn surf_source_animation_for_render_regression(player_move: bool) -> VisibleMoveAnimation {
+    VisibleMoveAnimation {
+        trigger_message: String::new(),
+        move_id: "SURF".to_string(),
+        animation_label: "BattleAnim_Surf".to_string(),
+        player_move,
+        started: true,
+        waiting_for_hp: false,
+        frame: 1,
+        total_frames: 185,
+        sound_events: Vec::new(),
+        next_sound_event: 0,
+        cry_events: Vec::new(),
+        next_cry_event: 0,
+        object_events: vec![
+            VisibleMoveObjectEvent {
+                frame: 1,
+                command: VisibleMoveObjectCommand::Spawn {
+                    object_id: "BATTLE_ANIM_OBJ_SURF".to_string(),
+                    x: 88,
+                    y: 104,
+                    param: 8,
+                },
+            },
+            VisibleMoveObjectEvent {
+                frame: 129,
+                command: VisibleMoveObjectCommand::Increment { index: 1 },
+            },
+        ],
+        bg_events: vec![VisibleMoveBgEvent {
+            frame: 1,
+            effect_id: "BATTLE_BG_EFFECT_SURF".to_string(),
+            duration: 0,
+            target: "$0".to_string(),
+            param: 0,
+            incremented: false,
+        }],
+        actor_species_override: None,
+        actor_shiny_override: None,
+    }
+}
+
 #[test]
 fn surf_uses_prior_object_boundary_and_64_byte_wave_rotation() {
-    let mut animation = VisibleMoveAnimation {
-        trigger_message: String::new(), move_id: "SURF".to_string(),
-        animation_label: "BattleAnim_Surf".to_string(), player_move: true,
-        started: true, waiting_for_hp: false, frame: 0, total_frames: 184,
-        sound_events: Vec::new(), next_sound_event: 0, cry_events: Vec::new(),
-        next_cry_event: 0,
-        object_events: vec![VisibleMoveObjectEvent {
-            frame: 0,
-            command: VisibleMoveObjectCommand::Spawn {
-                object_id: "BATTLE_ANIM_OBJ_SURF".to_string(), x: 88, y: 104, param: 8,
-            },
-        }],
-        bg_events: vec![VisibleMoveBgEvent {
-            frame: 0, effect_id: "BATTLE_BG_EFFECT_SURF".to_string(), duration: 0,
-            target: "$0".to_string(), param: 0, incremented: false,
-        }], actor_species_override: None, actor_shiny_override: None,
-    };
-    assert!(visible_surf_line_offsets(Some(&animation)).unwrap().iter().all(|offset| *offset == 0));
-    animation.frame = 1;
+    let mut animation = surf_source_animation_for_render_regression(true);
+    assert!(
+        visible_surf_line_offsets(Some(&animation))
+            .unwrap()
+            .iter()
+            .all(|offset| *offset == 0)
+    );
+    animation.frame = 2;
     let first = visible_surf_line_offsets(Some(&animation)).expect("first Surf copy");
     assert!(first[..=88].iter().all(|offset| *offset == 0));
     assert_eq!(first[89], visible_battle_anim_sine(52, 2) as i8);
     assert_eq!(first[94], visible_battle_anim_sine(62, 2) as i8);
-    animation.frame = 2;
+    animation.frame = 3;
     let second = visible_surf_line_offsets(Some(&animation)).expect("second Surf copy");
     assert!(second[..=87].iter().all(|offset| *offset == 0));
     assert_eq!(second[88], visible_battle_anim_sine(52, 2) as i8);
+}
 
-    animation.object_events.push(VisibleMoveObjectEvent {
-        frame: 10,
-        command: VisibleMoveObjectCommand::Clear,
-    });
-    animation.frame = 10;
-    assert!(visible_surf_line_offsets(Some(&animation)).is_some());
-    animation.frame = 11;
-    assert!(visible_surf_line_offsets(Some(&animation)).is_none());
+#[test]
+fn surf_scanline_axis_and_boundaries_match_both_original_rom_oracles() {
+    // Reuse the existing cartridge traces; do not add another raw source dump.
+    let metadata: serde_json::Value =
+        serde_json::from_str(include_str!("../../battle_anim_program/oracle.json")).unwrap();
+    let records = include_bytes!("../../battle_anim_program/oracle.bin");
+    assert_eq!(
+        metadata["rom_sha1"],
+        "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"
+    );
+    let frames = metadata["frames"].as_u64().unwrap() as usize;
+    let width = metadata["width"].as_u64().unwrap() as usize;
+    assert_eq!(width, 21);
+    let mut sides = [false; 2];
+    for (case_index, case) in metadata["cases"].as_array().unwrap().iter().enumerate() {
+        if case["function"] != "BATTLE_ANIM_FUNC_SURF" {
+            continue;
+        }
+        let player = case["player"].as_bool().unwrap();
+        sides[usize::from(!player)] = true;
+        let mut animation = surf_source_animation_for_render_regression(player);
+        // The BG update sees the previous object frame. Stop before the script
+        // increment, which these object-only oracle cases never issue.
+        for source_frame in 2..=129_u16 {
+            animation.frame = source_frame;
+            let offset = (case_index * frames + usize::from(source_frame - 2)) * width;
+            let record = &records[offset..offset + width];
+            assert_eq!(record[18], 0x42, "Surf selects rSCY, never rSCX");
+            assert_eq!(record[20], 0x5e);
+            let start = usize::from(record[19]);
+            let rotation = usize::from(source_frame - 1);
+            let expected: [i8; 0x5f] = std::array::from_fn(|line| {
+                if line <= start {
+                    0
+                } else {
+                    visible_battle_anim_sine((((line + rotation) & 0x3f) as u8) * 2, 2) as i8
+                }
+            });
+            let combined = visible_battle_line_offsets(Some(&animation)).unwrap();
+            assert_eq!(
+                combined.x, [0; 0x5f],
+                "player={player} frame={source_frame}"
+            );
+            assert_eq!(combined.y, expected, "player={player} frame={source_frame}");
+            assert!(combined.bgp.is_none(), "Surf has no BGP flash command");
+        }
+    }
+    assert_eq!(sides, [true; 2]);
+}
+
+#[test]
+fn surf_scanlines_end_when_the_source_lcd_register_is_cleared() {
+    for player in [true, false] {
+        let mut animation = surf_source_animation_for_render_regression(player);
+        let function = battle_program::FUNCTIONS
+            .iter()
+            .position(|name| *name == "BATTLE_ANIM_FUNC_SURF")
+            .unwrap() as u8;
+        let mut machine = BattleObjectMachine::new(player);
+        machine.initialize(0, 1, [0, 0, 0, function, 0, 0], 88, 104, 8);
+        let mut ended_at = None;
+        for source_frame in 2..=185 {
+            let prior_tick = source_frame - 1;
+            if prior_tick == 129 {
+                machine.object_mut(0)[14] = machine.object(0)[14].wrapping_add(1);
+            }
+            if machine.object(0)[0] != 0 {
+                machine.step_object(0).unwrap();
+            }
+            animation.frame = source_frame;
+            let active = machine.read(battle_program::H_L_C_D_C_POINTER) != 0;
+            assert_eq!(
+                visible_surf_line_offsets(Some(&animation)).is_some(),
+                active,
+                "player={player} source frame={source_frame}"
+            );
+            if !active {
+                ended_at.get_or_insert(source_frame);
+                assert!(visible_battle_line_offsets(Some(&animation)).is_none());
+            }
+        }
+        assert_eq!(
+            ended_at,
+            Some(183),
+            "the source exit must finish before return"
+        );
+    }
+}
+
+#[test]
+fn surf_clear_objects_preserves_the_source_lcd_register() {
+    let mut animation = surf_source_animation_for_render_regression(true);
+    animation.object_events.insert(
+        1,
+        VisibleMoveObjectEvent {
+            frame: 10,
+            command: VisibleMoveObjectCommand::Clear,
+        },
+    );
+    // anim_clearobjs clears object RAM, not the LCD pointer or BG effect.
+    // This synthetic script therefore retains SCY until its normal teardown.
+    for frame in [10, 11, 12] {
+        animation.frame = frame;
+        assert!(visible_surf_line_offsets(Some(&animation)).is_some());
+        assert!(visible_battle_line_x_offsets(Some(&animation)).is_none());
+    }
+}
+
+#[test]
+fn battle_scanline_texture_sampling_uses_positive_and_negative_scroll_registers() {
+    // FF42/43 select the source viewport origin. Positive SCX moves visible
+    // pixels left; positive SCY samples later image rows without moving output.
+    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    for (scx, scy) in [(-5_i8, -2_i8), (0, 0), (5, 2)] {
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let frame = SpriteFrame {
+            handle: Handle::default(),
+            size: Vec2::splat(8.0),
+        };
+        let center = Vec3::new(
+            PLAYFIELD_LEFT + 40.0 * scale,
+            PLAYFIELD_TOP - 40.0 * scale,
+            3.0,
+        );
+        let offsets = VisibleBattleLineOffsets {
+            x: [scx; 0x5f],
+            y: [scy; 0x5f],
+            bgp: None,
+        };
+        spawn_battle_battler_texture(
+            &mut Commands::new(&mut queue, &world),
+            &frame,
+            frame.size * scale,
+            center,
+            Color::WHITE,
+            None,
+            None,
+            None,
+            Some(&offsets),
+            None,
+        );
+        queue.apply(&mut world);
+        let mut query = world.query_filtered::<(&Sprite, &Transform), With<BattleBattlerMarker>>();
+        let (sprite, pose) = query
+            .iter(&world)
+            .find(|(_, pose)| (pose.translation.y - (PLAYFIELD_TOP - 40.5 * scale)).abs() < 0.001)
+            .expect("output row 40 remains present");
+        assert_eq!(pose.translation.x, center.x - f32::from(scx) * scale);
+        let rect = sprite.rect.unwrap();
+        assert_eq!(rect.min.y, 4.0 + f32::from(scy));
+        assert_eq!(rect.max.y, 5.0 + f32::from(scy));
+        assert_eq!(sprite.custom_size, Some(Vec2::new(8.0 * scale, scale)));
+    }
+}
+
+#[test]
+fn horizontal_scanline_producers_keep_raw_source_register_signs() {
+    let mut animation = surf_source_animation_for_render_regression(true);
+    animation.object_events.clear();
+    animation.bg_events[0].target = "BG_EFFECT_TARGET".into();
+    for (effect, frame, samples) in [
+        (
+            "BATTLE_BG_EFFECT_WAVE_DEFORM_MON",
+            11,
+            vec![(4, 9), (12, -9)],
+        ),
+        ("BATTLE_BG_EFFECT_PSYCHIC", 1, vec![(24, 5), (8, -5)]),
+        ("BATTLE_BG_EFFECT_TELEPORT", 1, vec![(24, 5), (8, -5)]),
+        (
+            "BATTLE_BG_EFFECT_BETA_SEND_OUT_MON2",
+            2,
+            vec![(2, 8), (6, -8)],
+        ),
+        ("BATTLE_BG_EFFECT_FLAIL", 10, vec![(1, 6)]),
+        ("BATTLE_BG_EFFECT_FLAIL", 26, vec![(1, -6)]),
+        ("BATTLE_BG_EFFECT_DOUBLE_TEAM", 3, vec![(0, 1), (1, -1)]),
+    ] {
+        animation.bg_events[0].effect_id = effect.into();
+        animation.frame = frame;
+        let offsets = visible_battle_line_x_offsets(Some(&animation)).unwrap();
+        for (line, value) in samples {
+            assert_eq!(offsets[line], value, "{effect} frame {frame} line {line}");
+        }
+    }
 }
 
 #[test]
@@ -2280,7 +2489,7 @@ fn rollout_shakes_screen_vertically_instead_of_lunging_the_battler() {
     let source_pixel = TILE_SIZE / SOURCE_TILE_SIZE as f32;
 
     assert_eq!(visible_move_battler_offsets(Some(&animation)), (Vec3::ZERO, Vec3::ZERO));
-    assert_eq!(visible_move_screen_offset(Some(&animation)).y, -source_pixel);
+    assert_eq!(visible_move_screen_offset(Some(&animation)).y, source_pixel);
     animation.frame = 1;
     assert_eq!(visible_move_screen_offset(Some(&animation)), Vec3::ZERO);
 
@@ -2914,11 +3123,9 @@ fn battle_screen_offset_moves_battlers_and_commands_but_not_fixed_canvas_and_res
             actor_shiny_override: None,
         });
     let expected_offset = visible_move_screen_offset(runtime_shell.visible_move_animations.front());
-    assert_ne!(
-        expected_offset,
-        Vec3::ZERO,
-        "fixture must produce a screen shake"
-    );
+    let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    assert_eq!(expected_offset, Vec3::new(-3.0 * scale, 2.0 * scale, 0.0),
+        "raw SCX=3/SCY=2 select source pixels right/down and move BG left/up");
 
     let battler_origin = Vec3::new(10.0, 20.0, 3.0);
     let command_origin = Vec3::new(-4.0, 7.0, 4.0);
@@ -2949,7 +3156,13 @@ fn battle_screen_offset_moves_battlers_and_commands_but_not_fixed_canvas_and_res
         ))
         .id();
 
+    let oam_origin = Vec3::new(9.0, -12.0, 3.45);
+    let oam = app.world_mut().spawn((
+        Transform::from_translation(oam_origin), BattleCommandMarker, BattleSourceObjectMarker,
+    )).id();
     app.update();
+    assert_eq!(app.world().get::<Transform>(oam).unwrap().translation, oam_origin,
+        "global BG registers cannot move original OAM sprites");
     assert_eq!(
         app.world()
             .entity(battler)
@@ -2981,6 +3194,7 @@ fn battle_screen_offset_moves_battlers_and_commands_but_not_fixed_canvas_and_res
         .visible_move_animations
         .clear();
     app.update();
+    assert_eq!(app.world().get::<Transform>(oam).unwrap().translation, oam_origin);
     assert_eq!(
         app.world()
             .entity(battler)
@@ -6347,4 +6561,124 @@ fn pokedex_entry_uses_white_space_and_black_font_ink() {
             .chunks_exact(4)
             .any(|pixel| pixel == [255, 255, 255, 255])
     );
+}
+
+#[test]
+fn source_battle_object_clipping_preserves_partial_tiles_at_each_lcd_edge() {
+    for (origin, size, screen, texture) in [
+        (
+            Vec2::new(-3.0, 20.0),
+            Vec2::splat(8.0),
+            Rect::new(0.0, 20.0, 5.0, 28.0),
+            Rect::new(3.0, 0.0, 8.0, 8.0),
+        ),
+        (
+            Vec2::new(157.0, 20.0),
+            Vec2::splat(8.0),
+            Rect::new(157.0, 20.0, 160.0, 28.0),
+            Rect::new(0.0, 0.0, 3.0, 8.0),
+        ),
+        (
+            Vec2::new(20.0, -5.0),
+            Vec2::splat(8.0),
+            Rect::new(20.0, 0.0, 28.0, 3.0),
+            Rect::new(0.0, 5.0, 8.0, 8.0),
+        ),
+        (
+            Vec2::new(20.0, 140.0),
+            Vec2::splat(8.0),
+            Rect::new(20.0, 140.0, 28.0, 144.0),
+            Rect::new(0.0, 0.0, 8.0, 4.0),
+        ),
+        (
+            Vec2::new(-8.0, 32.0),
+            Vec2::new(176.0, 32.0),
+            Rect::new(0.0, 32.0, 160.0, 64.0),
+            Rect::new(8.0, 0.0, 168.0, 32.0),
+        ),
+    ] {
+        let clip = visible_battle_object_clip(origin, size).unwrap();
+        assert_eq!(clip.screen, screen);
+        assert_eq!(clip.texture, texture);
+        assert_eq!(
+            clip.screen.size(),
+            clip.texture.size(),
+            "crop must not stretch pixels"
+        );
+    }
+    for origin in [
+        Vec2::new(-8.0, 20.0),
+        Vec2::new(160.0, 20.0),
+        Vec2::new(20.0, -8.0),
+        Vec2::new(20.0, 144.0),
+    ] {
+        assert!(visible_battle_object_clip(origin, Vec2::splat(8.0)).is_none());
+    }
+}
+
+#[test]
+fn ordinary_battle_menu_uses_source_bounds_and_leaves_the_left_textbox_blank() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut battle = snapshot.battle.as_ref().unwrap().clone();
+    let entries = [">FIGHT", " <PKMN>", " PACK", " RUN"].map(str::to_string);
+    for tutorial in [false, true] {
+        battle.battle_type = if tutorial {
+            "BATTLETYPE_TUTORIAL"
+        } else {
+            "BATTLETYPE_NORMAL"
+        }
+        .into();
+        let mut world = World::new();
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        let mut art = RenderedTilesetArt::default();
+        let mut images = Assets::<Image>::default();
+        spawn_battle_main_command_menu(
+            &mut Commands::new(&mut queue, &world),
+            &snapshot,
+            &shell,
+            &battle,
+            &mut art,
+            &shell.asset_root,
+            &mut images,
+            &entries,
+        )
+        .unwrap();
+        assert!(art.font_error.is_none(), "source font must be available");
+        queue.apply(&mut world);
+        let mut query = world.query_filtered::<(&Sprite, &Transform), With<BattleCommandMarker>>();
+        let (_, panel) = query
+            .iter(&world)
+            .find(|(sprite, pose)| {
+                (pose.translation.z - 3.5).abs() < 0.001
+                    && sprite.custom_size == Some(Vec2::new(12.0 * TILE_SIZE, 6.0 * TILE_SIZE))
+            })
+            .expect("actual source right-hand window must be emitted");
+        let left = (panel.translation.x - 6.0 * TILE_SIZE - PLAYFIELD_LEFT) / TILE_SIZE;
+        let top = (PLAYFIELD_TOP - panel.translation.y - 3.0 * TILE_SIZE) / TILE_SIZE;
+        assert_eq!((left, top), (8.0, 12.0));
+        assert_eq!((left + 12.0 - 1.0, top + 6.0 - 1.0), (19.0, 17.0));
+        let text = query
+            .iter(&world)
+            .filter(|(_, pose)| (pose.translation.z - 3.8).abs() < 0.001)
+            .map(|(_, pose)| pose.translation)
+            .collect::<Vec<_>>();
+        assert!(!text.is_empty(), "real source glyphs must be drawn");
+        let left_prompt = text
+            .iter()
+            .any(|position| position.x < PLAYFIELD_LEFT + 8.0 * TILE_SIZE);
+        assert_eq!(
+            left_prompt, tutorial,
+            "ordinary Crystal has no invented name prompt; tutorial output stays untouched here"
+        );
+        for tile in [(9.0, 13.0), (15.0, 13.0), (9.0, 15.0), (15.0, 15.0)] {
+            let (x, y) = battle_hud_tile_origin(tile.0, tile.1);
+            assert!(
+                text.iter().any(
+                    |position| (position.x - x).abs() < 0.001 && (position.y - y).abs() < 0.001
+                ),
+                "source2x2 option/cursor origin {tile:?} must remain occupied"
+            );
+        }
+    }
 }

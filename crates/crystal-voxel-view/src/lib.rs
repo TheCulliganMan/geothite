@@ -8,7 +8,7 @@ mod battle_species_models;
 mod battle_tower;
 mod battle_view;
 mod model_storage;
-pub use battle_view::{BattleViewPlugin, BattleViewStatus};
+pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;
 mod building_style;
 mod cafe;

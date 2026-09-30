@@ -23,6 +23,7 @@ fn main() -> Result<()> {
     let mut shadow_ball = false;
     let mut psychic = false;
     let mut hyper_beam = false;
+    let mut surf = false;
     let mut reduced_flashes = false;
     while let Some(flag) = args.next() {
         match flag.as_str() {
@@ -32,6 +33,7 @@ fn main() -> Result<()> {
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
+            "--surf" => surf = true,
             "--reduced-flashes" => reduced_flashes = true,
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(args.next().context("--screenshot path")?))
@@ -46,12 +48,12 @@ fn main() -> Result<()> {
         }
     }
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam]
+        [shadow_ball, psychic, hyper_beam, surf]
             .into_iter()
             .filter(|active| *active)
             .count()
             <= 1,
-        "choose only one of --shadow-ball, --psychic or --hyper-beam"
+        "choose only one of --shadow-ball, --psychic, --hyper-beam or --surf"
     );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
@@ -96,6 +98,7 @@ fn main() -> Result<()> {
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,
+            render_test_surf: surf,
             battle_reduced_flashes: reduced_flashes,
             render_test_hour: Some(16),
             render_test_screenshot: screenshot,

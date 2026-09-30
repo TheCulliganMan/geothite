@@ -8,6 +8,8 @@ use crystal_render_api::{
 
 #[derive(Component)]
 struct ImmersiveBattleReplaced;
+#[derive(Component)]
+struct ImmersiveBattleSourceObject(usize);
 
 /// Called at the same presentation boundary as battle_canvas_active. Source
 /// images remain an explicit honest fallback for species without exact meshes.
@@ -48,6 +50,7 @@ fn capture_presented_battle(
         .unwrap_or("");
     let mut frame = VisualBattleFrame {
         active: true,
+        use_source_scene: immersive_battle_requires_source_scene(shell),
         map_id: Arc::from(snapshot.overworld.map_name.as_str()),
         environment: immersive_battle_environment(&snapshot.overworld.map_name, environment),
         ..Default::default()
@@ -165,6 +168,42 @@ fn capture_presented_battle(
             )
             .context("immersive battle fallback source art unavailable")?
         };
+        let source_frame = if !is_player && !minimize && !substitute {
+            battle_padded_frontpic(art, images, &source_frame)?
+        } else {
+            source_frame
+        };
+        let size = if minimize || substitute {
+            Vec2::splat(16.0)
+        } else {
+            source_frame.size
+        };
+        let anchor = if is_player {
+            Vec2::new(16.0, 48.0)
+        } else {
+            Vec2::new(96.0, 0.0)
+        };
+        let source_rect = Rect::from_corners(anchor, anchor + size);
+        let opaque = match art
+            .battle_source_bounds_cache
+            .entry(source_frame.handle.id())
+        {
+            std::collections::hash_map::Entry::Occupied(entry) => *entry.get(),
+            std::collections::hash_map::Entry::Vacant(entry) => {
+                let image = images
+                    .get(&source_frame.handle)
+                    .context("source battler bounds image")?;
+                *entry.insert(immersive_source_opaque_bounds(
+                    &image.data,
+                    source_frame.size,
+                ))
+            }
+        };
+        let texture_scale = size / source_frame.size;
+        let source_opaque_rect = Rect::from_corners(
+            anchor + opaque.min * texture_scale,
+            anchor + opaque.max * texture_scale,
+        );
         let unchecked = if is_player {
             battle.player_spikes_zero_hp_unchecked
         } else {
@@ -216,6 +255,8 @@ fn capture_presented_battle(
             },
             texture: source_frame.handle,
             texture_size: source_frame.size,
+            source_rect,
+            source_opaque_rect,
             visible,
             // Authored models currently use the normal palette. Keep actual
             // shiny source art rather than claiming an incorrect shiny mesh.
@@ -392,6 +433,7 @@ fn capture_immersive_source_frame(
         ],
         screen_offset: visible_move_screen_offset(Some(animation)).truncate() / source_scale,
         line_x_offsets: visible_battle_line_x_offsets(Some(animation)),
+        line_y_offsets: visible_battle_line_y_offsets(Some(animation)),
         objects: Vec::with_capacity(10),
     };
     for (index, battler) in battlers.iter().enumerate() {
@@ -474,19 +516,23 @@ fn capture_immersive_source_frame(
             render(0xe4, 0xe4)?
         };
         let size = rendered.sprite.size / source_scale;
-        let center = Vec2::new(
+        let top_left = Vec2::new(
             (live.oam.origin.0 - 8 + i32::from(rendered.offset_x)) as f32,
             (live.oam.origin.1 - 16
                 + i32::from(rendered.offset_y)
                 + visible_rollout_object_y_offset(animation, slot)) as f32,
-        ) + size * 0.5;
+        );
+        let Some(clip) = visible_battle_object_clip(top_left, size) else {
+            continue;
+        };
         source.objects.push(VisualBattleSourceObject {
             slot,
             object_id: Arc::from(object_id.as_str()),
             texture: rendered.sprite.handle,
             neutral_texture: neutral.sprite.handle,
-            center,
-            size,
+            center: clip.screen.center(),
+            size: clip.screen.size(),
+            uv_rect: Rect::from_corners(clip.texture.min / size, clip.texture.max / size),
         });
     }
     Ok(source)
@@ -547,6 +593,8 @@ fn immersive_battle_environment(map: &str, environment: &str) -> VisualBattleEnv
 fn sync_immersive_battle_layers(
     mut commands: Commands,
     status: Res<crystal_voxel_view::BattleViewStatus>,
+    frame: Res<VisualBattleFrame>,
+    mode: Res<crystal_render_api::BattleFlashMode>,
     world_status: Res<crystal_voxel_view::VoxelViewStatus>,
     mut cameras: Query<&mut Camera, With<MainCameraMarker>>,
     settings: Res<crystal_voxel_view::VoxelViewSettings>,
@@ -562,17 +610,21 @@ fn sync_immersive_battle_layers(
         With<BattleHudMarker>,
     >,
     replaced: Query<
-        (Entity, Option<&bevy::render::view::RenderLayers>),
+        (
+            Entity,
+            Option<&bevy::render::view::RenderLayers>,
+            Option<&ImmersiveBattleSourceObject>,
+        ),
         Or<(
             With<FixedBattleCanvasMarker>,
             With<BattleBattlerMarker>,
             With<ImmersiveBattleReplaced>,
         )>,
     >,
+    mut source_objects: Query<(&ImmersiveBattleSourceObject, &mut Handle<Image>)>,
 ) {
-    // With no 3D underlay, load-only compositing would retain old arena
-    // pixels in uncovered margins. Preserve the underlay only while an
-    // actual modeled world or battle camera is rendering this frame.
+    // Only the modeled world renders directly to the window. Battle is an
+    // offscreen LCD quad, so clear its uncovered margins on every frame.
     let clear = immersive_composite_clear_color(world_status.active, status.active);
     for mut camera in &mut cameras {
         use bevy::render::camera::ClearColorConfig::{Default, None};
@@ -590,8 +642,32 @@ fn sync_immersive_battle_layers(
         && !(shell.pokedex_menu_open
             && shell.pokedex_scripted_entry
             && shell.pending_standard_capture.is_some());
-    for (entity, layers) in &replaced {
-        set_immersive_hidden_layer(&mut commands, entity, layers, active);
+    // LCD scroll owns the BG plane, never source OAM. Keep every source object
+    // in the native HUD pass throughout the move, including zero-scroll frames,
+    // so global-only shake cannot shift it or switch its renderer mid-sequence.
+    let retain_source_objects = active && frame.source.is_some();
+    for (entity, layers, source_object) in &replaced {
+        set_immersive_hidden_layer(
+            &mut commands,
+            entity,
+            layers,
+            active && !(retain_source_objects && source_object.is_some()),
+        );
+    }
+    if retain_source_objects {
+        for (slot, mut texture) in &mut source_objects {
+            if let Some(object) = frame
+                .source
+                .as_ref()
+                .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0))
+            {
+                texture.set_if_neq(if *mode == crystal_render_api::BattleFlashMode::Reduced {
+                    object.neutral_texture.clone()
+                } else {
+                    object.texture.clone()
+                });
+            }
+        }
     }
     // The classic clear sprites are opaque erasers. Hiding only the white
     // eraser would resurrect the erased HUD. Apply the same source-space
@@ -634,9 +710,11 @@ fn set_immersive_hidden_layer(
 
 fn immersive_composite_clear_color(
     world_active: bool,
-    battle_active: bool,
+    _battle_active: bool,
 ) -> bevy::render::camera::ClearColorConfig {
-    if world_active || battle_active {
+    // Battles now composite an offscreen image inside the original LCD. Clear
+    // its uncovered window margins; only the window-rendered world is loaded.
+    if world_active {
         bevy::render::camera::ClearColorConfig::None
     } else {
         bevy::render::camera::ClearColorConfig::Default
@@ -679,6 +757,23 @@ fn clear_inactive_visual_battle(
 mod immersive_battle_bridge_tests {
     use super::*;
     #[test]
+    fn source_opaque_bounds_preserve_transparent_padding() {
+        let mut pixels = vec![0; 8 * 8 * 4];
+        for y in 2..7 {
+            for x in 1..5 {
+                pixels[(y * 8 + x) * 4 + 3] = 255;
+            }
+        }
+        assert_eq!(
+            immersive_source_opaque_bounds(&pixels, Vec2::splat(8.0)),
+            Rect::new(1.0, 2.0, 5.0, 7.0)
+        );
+        assert_eq!(
+            immersive_source_opaque_bounds(&[0; 8 * 8 * 4], Vec2::splat(8.0)),
+            Rect::new(0.0, 0.0, 8.0, 8.0)
+        );
+    }
+    #[test]
     fn source_palette_cache_keeps_luminance_order_and_transparency() {
         let pixels = [
             0, 0, 0, 255, 180, 160, 140, 255, 80, 70, 60, 255, 200, 200, 200, 0, 0, 0, 0, 255,
@@ -701,10 +796,10 @@ mod immersive_battle_bridge_tests {
         ));
     }
     #[test]
-    fn immersive_battle_compositor_preserves_active_modeled_battle() {
+    fn immersive_battle_compositor_clears_margins_around_offscreen_battle() {
         assert!(matches!(
             immersive_composite_clear_color(false, true),
-            bevy::render::camera::ClearColorConfig::None
+            bevy::render::camera::ClearColorConfig::Default
         ));
     }
     #[test]
@@ -723,7 +818,7 @@ mod immersive_battle_bridge_tests {
                     camera.clear_color,
                     bevy::render::camera::ClearColorConfig::Default
                 ),
-                !world && !battle
+                !world
             );
         }
     }
@@ -763,9 +858,10 @@ fn prepare_immersive_battle_preview(
     shadow_ball: bool,
     psychic: bool,
     hyper_beam: bool,
+    surf: bool,
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam]
+        [shadow_ball, psychic, hyper_beam, surf]
             .into_iter()
             .filter(|active| *active)
             .count()
@@ -787,6 +883,8 @@ fn prepare_immersive_battle_preview(
         // Sudowoodo resists this level-20 Normal actor's Hyper Beam, keeping
         // the opponent alive so the next real turn can exercise recharge.
         Some(("RATICATE", 20, "TM_HYPER_BEAM", "HYPER_BEAM"))
+    } else if surf {
+        Some(("TOTODILE", 20, "HM_SURF", "SURF"))
     } else {
         None
     };
@@ -908,6 +1006,80 @@ fn prepare_immersive_battle_preview(
         controller.press(GameButton::A)?;
     }
     anyhow::bail!("production battle introduction did not reach a command menu in preview fixture")
+}
+
+/// Publish the full immersive viewport in the native HUD pass.
+/// Source attack coordinates are mapped into this presentation canvas.
+fn publish_immersive_battle_canvas(
+    mut canvas: ResMut<crystal_render_api::VisualBattleCanvas>,
+    windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
+) {
+    let Ok(window) = windows.get_single() else {
+        return;
+    };
+    let physical = Vec2::new(
+        window.physical_width() as f32,
+        window.physical_height() as f32,
+    );
+    if physical.min_element() <= 0.0 {
+        canvas.physical_size = UVec2::ZERO;
+        return;
+    }
+    #[cfg(feature = "fullscreen-scaling")]
+    let pixels_per_unit =
+        fullscreen_pixels_per_world_unit(physical, window.scale_factor()) * window.scale_factor();
+    #[cfg(not(feature = "fullscreen-scaling"))]
+    let pixels_per_unit = (physical / Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)).min_element();
+    let size = physical / pixels_per_unit;
+    canvas.set_if_neq(crystal_render_api::VisualBattleCanvas {
+        size,
+        physical_size: (size * pixels_per_unit).round().as_uvec2(),
+    });
+}
+
+/// These phases use the complete original presentation until their exact
+/// clipping/reveal sequences have a 3D equivalent. SCX/SCY rows are supported
+/// by the background-only 3D composite and do not trigger this fallback. Do not replace them
+/// with invented shrinking, rolling, recoil, particles or capture choreography.
+fn immersive_battle_requires_source_scene(shell: &BevyRuntimeShell) -> bool {
+    let animation = shell.visible_move_animations.front();
+    let clips = visible_move_battler_clip_tiles(animation);
+    let remove = visible_remove_mon_clips(animation);
+    let rows = visible_move_battler_row_extractions(animation);
+    shell.visible_send_out_animation.is_some()
+        || shell.visible_capture_animation.is_some()
+        || shell.visible_trainer_exit_animation.is_some()
+        || visible_beta_send_out_mon1_line_bgps(animation).is_some()
+        || clips.0.is_some()
+        || clips.1.is_some()
+        || remove.0.is_some()
+        || remove.1.is_some()
+        || rows.0.is_some()
+        || rows.1.is_some()
+        || animation.is_some_and(|animation| {
+            matches!(animation.move_id.as_str(), "FAINT_MON" | "RETURN_MON")
+                || animation.animation_label == "BattleAnim_ReturnMon"
+        })
+}
+
+fn immersive_source_opaque_bounds(pixels: &[u8], size: Vec2) -> Rect {
+    let width = size.x as usize;
+    let mut min = size;
+    let mut max = Vec2::ZERO;
+    for (index, _) in pixels
+        .chunks_exact(4)
+        .enumerate()
+        .filter(|(_, pixel)| pixel[3] != 0)
+    {
+        let point = Vec2::new((index % width) as f32, (index / width) as f32);
+        min = min.min(point);
+        max = max.max(point + Vec2::ONE);
+    }
+    if max.cmple(min).any() {
+        Rect::from_corners(Vec2::ZERO, size)
+    } else {
+        Rect::from_corners(min, max)
+    }
 }
 
 #[derive(Component, Clone, Copy)]
@@ -1137,5 +1309,60 @@ fn sync_immersive_battle_ui_layout(
             Vec3::new(center.x, center.y, if panel.border { 3.20 } else { 3.21 });
         sprite.custom_size =
             Some(rect.size() * scale + Vec2::splat(if panel.border { 28.0 } else { 20.0 }));
+    }
+}
+
+#[derive(Component, Clone, Copy)]
+struct ImmersiveBattleSourceObjectLayout {
+    transform: Transform,
+    size: Option<Vec2>,
+}
+
+/// Project the source attack plane through the immersive camera, but render its
+/// OAM in the native overlay so BG scroll never distorts the objects twice.
+/// Store the original transform and size so F3 restores the classic presenter.
+fn sync_immersive_battle_source_object_layout(
+    mut commands: Commands,
+    status: Res<crystal_voxel_view::BattleViewStatus>,
+    frame: Res<VisualBattleFrame>,
+    canvas: Res<crystal_render_api::VisualBattleCanvas>,
+    mut objects: Query<(
+        Entity,
+        &ImmersiveBattleSourceObject,
+        &mut Transform,
+        &mut Sprite,
+        Option<&ImmersiveBattleSourceObjectLayout>,
+    )>,
+) {
+    for (entity, slot, mut transform, mut sprite, stored) in &mut objects {
+        let source = status
+            .active
+            .then_some(frame.source.as_ref())
+            .flatten()
+            .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0));
+        let projected = source.and_then(|source| {
+            crystal_voxel_view::battle_source_overlay_rect(source.center, source.size, canvas.size)
+        });
+        if let Some(rect) = projected {
+            if stored.is_none() {
+                commands
+                    .entity(entity)
+                    .insert(ImmersiveBattleSourceObjectLayout {
+                        transform: *transform,
+                        size: sprite.custom_size,
+                    });
+            }
+            commands.entity(entity).remove_parent();
+            transform.translation.x = rect.center().x - canvas.size.x * 0.5;
+            transform.translation.y = canvas.size.y * 0.5 - rect.center().y;
+            transform.scale = Vec3::ONE;
+            sprite.custom_size = Some(rect.size());
+        } else if let Some(stored) = stored {
+            *transform = stored.transform;
+            sprite.custom_size = stored.size;
+            commands
+                .entity(entity)
+                .remove::<ImmersiveBattleSourceObjectLayout>();
+        }
     }
 }

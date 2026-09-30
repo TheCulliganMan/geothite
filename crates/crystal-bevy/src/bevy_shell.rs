@@ -365,6 +365,9 @@ pub struct BevyShellConfig {
     /// Legal Raticate/TM15 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_hyper_beam: bool,
+    /// Legal Totodile/HM03 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_surf: bool,
     /// Reduce only modeled battle palette contrast and object palette cycling.
     #[cfg(feature = "voxel-view")]
     pub battle_reduced_flashes: bool,
@@ -4560,6 +4563,7 @@ struct RenderedTilesetArt {
     battle_battler_bgp_cache: HashMap<(AssetId<Image>, u8), SpriteFrame>,
     #[cfg(feature = "voxel-view")]
     battle_source_palette_cache: HashMap<AssetId<Image>, [[f32; 4]; 4]>,
+    battle_source_bounds_cache: HashMap<AssetId<Image>, Rect>,
     fishing_rod_cache: Option<[SpriteFrame; 3]>,
     fishing_rod_error: Option<String>,
     fishing_player_cache: HashMap<String, SpriteFrame>,
@@ -5426,6 +5430,10 @@ struct BattleHudMarker;
 #[derive(Component)]
 struct BattleCommandMarker;
 
+// Original OAM sprites are independent of the background SCX/SCY registers.
+#[derive(Component)]
+struct BattleSourceObjectMarker;
+
 #[derive(Component)]
 struct FixedBattleCanvasMarker;
 
@@ -5480,6 +5488,8 @@ pub fn run_bevy_shell(
     let render_test_psychic = config.render_test_psychic;
     #[cfg(feature = "location-tester")]
     let render_test_hyper_beam = config.render_test_hyper_beam;
+    #[cfg(feature = "location-tester")]
+    let render_test_surf = config.render_test_surf;
     #[cfg(feature = "voxel-view")]
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
@@ -5528,6 +5538,7 @@ pub fn run_bevy_shell(
             render_test_shadow_ball,
             render_test_psychic,
             render_test_hyper_beam,
+            render_test_surf,
         )?
     } else {
         runtime_shell
@@ -5745,7 +5756,14 @@ pub fn run_bevy_shell(
     );
     #[cfg(feature = "voxel-view")]
     {
-        let battle_ui_layout = sync_immersive_battle_ui_layout
+        let battle_ui_layout = (
+            publish_immersive_battle_canvas,
+            sync_immersive_battle_ui_layout,
+            sync_immersive_battle_source_object_layout,
+        )
+            .chain()
+            .in_set(crystal_render_api::BattleCanvasExtract)
+            .before(bevy::render::camera::CameraUpdateSystem)
             .before(bevy::transform::TransformSystem::TransformPropagate);
         #[cfg(feature = "fullscreen-scaling")]
         let battle_ui_layout = battle_ui_layout.after(sync_fullscreen_world_layout);

@@ -1357,7 +1357,9 @@ fn visible_move_screen_offset(animation: Option<&VisibleMoveAnimation>) -> Vec3 
             }
         };
         let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-        result += Vec3::new(screen_x * source_scale, -screen_y * source_scale, 0.0);
+        // SCX/SCY select a source viewport origin. Convert their values into
+        // visible BG displacement in the shell's X-right/Y-up coordinates.
+        result += Vec3::new(-screen_x * source_scale, screen_y * source_scale, 0.0);
     }
     result
 }
@@ -1403,6 +1405,7 @@ fn apply_visible_battle_screen_offset(
         (
             Or<(With<BattleCommandMarker>, With<BattleBattlerMarker>)>,
             Without<FixedBattleCanvasMarker>,
+            Without<BattleSourceObjectMarker>,
         ),
     >,
     mut applied_offsets: Local<HashMap<Entity, Vec3>>,
@@ -1899,6 +1902,11 @@ fn visible_surf_line_offsets(animation: Option<&VisibleMoveAnimation>) -> Option
             machine.step_object(0).ok()?;
         }
     }
+    // The source background effect stops when Surf clears its LCD register.
+    // Clearing object RAM alone does not clear this register in the source.
+    if machine.read(battle_program::H_L_C_D_C_POINTER) == 0 {
+        return None;
+    }
     let start = usize::from(machine.read(battle_program::H_L_Y_OVERRIDE_START)).min(0x5e);
     let rotation = usize::from(effect_age);
     let mut offsets = [0_i8; 0x5f];
@@ -1958,7 +1966,6 @@ fn visible_wave_deform_line_offsets(
 
 fn visible_battle_line_x_offsets(animation: Option<&VisibleMoveAnimation>) -> Option<[i8; 0x5f]> {
     let sources = [
-        visible_surf_line_offsets(animation),
         visible_wave_deform_line_offsets(animation),
         visible_psychic_teleport_line_x_offsets(animation),
         visible_beta_send_out_mon2_line_x_offsets(animation),
@@ -2725,14 +2732,10 @@ fn visible_withdraw_line_y_offsets(animation: Option<&VisibleMoveAnimation>) -> 
     Some(offsets)
 }
 
-fn visible_battle_line_offsets(
-    animation: Option<&VisibleMoveAnimation>,
-) -> Option<VisibleBattleLineOffsets> {
-    let x = visible_battle_line_x_offsets(animation);
-    let global_bgp = visible_battle_dmg_palette_registers(animation).bgp;
-    let bgp = visible_beta_send_out_mon1_line_bgps(animation)
-        .or_else(|| (global_bgp != 0xe4).then_some([global_bgp; 0x5f]));
+fn visible_battle_line_y_offsets(animation: Option<&VisibleMoveAnimation>) -> Option<[i8; 0x5f]> {
     let y_sources = [
+        // Surf writes rSCY (0x42), as recorded by both original-ROM oracles.
+        visible_surf_line_offsets(animation),
         visible_bounce_down_line_y_offsets(animation),
         visible_dig_line_y_offsets(animation),
         visible_acid_armor_line_y_offsets(animation),
@@ -2748,6 +2751,17 @@ fn visible_battle_line_offsets(
             *offset = offset.wrapping_add(source_offset);
         }
     }
+    y
+}
+
+fn visible_battle_line_offsets(
+    animation: Option<&VisibleMoveAnimation>,
+) -> Option<VisibleBattleLineOffsets> {
+    let x = visible_battle_line_x_offsets(animation);
+    let global_bgp = visible_battle_dmg_palette_registers(animation).bgp;
+    let bgp = visible_beta_send_out_mon1_line_bgps(animation)
+        .or_else(|| (global_bgp != 0xe4).then_some([global_bgp; 0x5f]));
+    let y = visible_battle_line_y_offsets(animation);
     if x.is_none() && y.is_none() && bgp.is_none() {
         None
     } else {
@@ -3715,8 +3729,10 @@ fn spawn_battle_battler_texture(
                     ..default()
                 },
                 transform: Transform::from_xyz(
+                    // SCX selects a source column to the right, so the
+                    // corresponding visible sprite row moves to the left.
                     position.x
-                        + f32::from(line_offsets.x[line as usize]) * scale
+                        - f32::from(line_offsets.x[line as usize]) * scale
                         + remove_clip.map_or(0.0, |clip| {
                             let displayed_cut = display_size.x
                                 * f32::from(clip.source_pixels).min(frame.size.x)
@@ -5207,6 +5223,24 @@ fn visible_battle_anim_sine(angle: u8, amplitude: u8) -> i32 {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct VisibleBattleObjectClip {
+    screen: Rect,
+    texture: Rect,
+}
+
+fn visible_battle_object_clip(top_left: Vec2, size: Vec2) -> Option<VisibleBattleObjectClip> {
+    let min = top_left.max(Vec2::ZERO);
+    let max = (top_left + size).min(Vec2::new(160.0, 144.0));
+    if max.x <= min.x || max.y <= min.y {
+        return None;
+    }
+    Some(VisibleBattleObjectClip {
+        screen: Rect::from_corners(min, max),
+        texture: Rect::from_corners(min - top_left, max - top_left),
+    })
+}
+
 fn spawn_visible_move_animation_objects(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -5366,18 +5400,21 @@ fn spawn_visible_move_animation_objects(
         let destination_y = source_y - 16
             + i32::from(rendered.offset_y)
             + visible_rollout_object_y_offset(animation, slot_index);
+        let size = rendered.sprite.size / scale;
+        let Some(clip) = visible_battle_object_clip(
+            Vec2::new(destination_x as f32, destination_y as f32), size,
+        ) else { continue; };
         commands.spawn((
             SpriteBundle {
                 texture: rendered.sprite.handle.clone(),
                 sprite: Sprite {
-                    custom_size: Some(rendered.sprite.size),
+                    rect: Some(clip.texture),
+                    custom_size: Some(clip.screen.size() * scale),
                     ..default()
                 },
                 transform: Transform::from_xyz(
-                    PLAYFIELD_LEFT
-                        + (destination_x as f32 + rendered.sprite.size.x / scale / 2.0) * scale,
-                    PLAYFIELD_TOP
-                        - (destination_y as f32 + rendered.sprite.size.y / scale / 2.0) * scale,
+                    PLAYFIELD_LEFT + clip.screen.center().x * scale,
+                    PLAYFIELD_TOP - clip.screen.center().y * scale,
                     if animation.animation_label == "BattleAnim_ThrowPokeBall"
                         && matches!(
                             object_id.as_str(),
@@ -5392,8 +5429,11 @@ fn spawn_visible_move_animation_objects(
                 ..default()
             },
             BattleCommandMarker,
+            BattleSourceObjectMarker,
             #[cfg(feature = "voxel-view")]
             ImmersiveBattleReplaced,
+            #[cfg(feature = "voxel-view")]
+            ImmersiveBattleSourceObject(slot_index),
         ));
     }
     Ok(())
@@ -7703,7 +7743,11 @@ fn spawn_battle_main_command_menu(
         BATTLE_MAIN_MENU_HEIGHT_TILES,
         3.5,
     );
-    if !contest_menu {
+    // Crystal's ordinary command menu leaves the surrounding textbox blank.
+    // Preserve tutorial/debug presentation pending its separate source audit.
+    if !contest_menu
+        && matches!(battle.battle_type.as_str(), "BATTLETYPE_TUTORIAL" | "BATTLETYPE_DEBUG")
+    {
         let prompt_name = if battle.battle_type == "BATTLETYPE_TUTORIAL" {
             "DUDE".to_string()
         } else {
