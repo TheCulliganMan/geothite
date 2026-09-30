@@ -1,4 +1,4 @@
-//! Local, playable connected Johto art slice using the production controller.
+//! Local, playable authored world preview using the production controller.
 use anyhow::{Context, Result};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_bevy::{BevyShellConfig, BevyShellStart};
@@ -52,15 +52,13 @@ fn main() -> Result<()> {
         "use only one of --screenshot, --record or --measure"
     );
     let default_position = match map.as_str() {
-        "NewBarkTown" => (13, 6),
-        "Route29" => (50, 9),
-        "CherrygroveCity" => (29, 4),
-        "Route30" => (7, 40),
-        "Route31" => (14, 9),
-        "VioletCity" => (18, 18),
-        _ => anyhow::bail!(
-            "choose NewBarkTown, Route29, CherrygroveCity, Route30, Route31 or VioletCity"
-        ),
+        "NewBarkTown" => Some((13, 6)),
+        "Route29" => Some((50, 9)),
+        "CherrygroveCity" => Some((29, 4)),
+        "Route30" => Some((7, 40)),
+        "Route31" => Some((14, 9)),
+        "VioletCity" => Some((18, 18)),
+        _ => None,
     };
     let pack = pack
         .canonicalize()
@@ -72,6 +70,30 @@ fn main() -> Result<()> {
         .data()
         .saved_map_tile_bounds(&map)
         .with_context(|| format!("missing preview map {map}"))?;
+    let default_position = if let Some(position) = default_position {
+        position
+    } else {
+        let center = (i32::from(width / 2), i32::from(height / 2));
+        let mut candidates: Vec<_> = (0..height)
+            .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
+            .collect();
+        candidates.sort_by_key(|&(x, y)| {
+            (i32::from(x) - center.0).pow(2) + (i32::from(y) - center.1).pow(2)
+        });
+        candidates
+            .into_iter()
+            .find(|&(x, y)| {
+                runtime
+                    .data()
+                    .overworld_session(
+                        &map,
+                        crystal_runtime::core::world::map::TilePosition::new(x, y),
+                        0,
+                    )
+                    .is_ok()
+            })
+            .with_context(|| format!("no walkable preview tile on {map}"))?
+    };
     let (tile_x, tile_y) = (
         tile_x.unwrap_or(default_position.0),
         tile_y.unwrap_or(default_position.1),

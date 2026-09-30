@@ -1946,10 +1946,13 @@ dependencies = [
 name = "crystal-voxel-view"
 version = "0.1.0"
 dependencies = [
+ "base64 0.22.1",
  "bevy",
  "crystal-render-api",
+ "flate2",
  "serde",
  "serde_json",
+ "sha2",
 ]
 
 [[package]]

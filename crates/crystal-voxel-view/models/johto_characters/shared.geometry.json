@@ -1,0 +1,32 @@
+{
+  "storage": "geothite-model-text-chunks-v1",
+  "bytes": 1749719,
+  "sha256": "e286ea9fb9e67e000bd25409cd1afd94dd0bf916dfe4b420ed54194c47acad63",
+  "chunks": [
+    {
+      "path": "shared.geometry.json.chunks/000.txt",
+      "bytes": 350000,
+      "sha256": "55cb619e1cfaf8cf16a3f582a16061c3db31b083980ffe4c19e0cfdeb4523581"
+    },
+    {
+      "path": "shared.geometry.json.chunks/001.txt",
+      "bytes": 350000,
+      "sha256": "0dbac5d6aa906fa808bbf3222dc2fbcc9ded1307db09a3f2dc87668a5bd834d6"
+    },
+    {
+      "path": "shared.geometry.json.chunks/002.txt",
+      "bytes": 350000,
+      "sha256": "0122c4fc5080ea4ebae60d882559c5f43ac825f484ceea5cd76878a024c6725a"
+    },
+    {
+      "path": "shared.geometry.json.chunks/003.txt",
+      "bytes": 350000,
+      "sha256": "a5ea2b8ffb78cb891e8f521520ca0ac618cd556db4e587c10188fa4e01e5e671"
+    },
+    {
+      "path": "shared.geometry.json.chunks/004.txt",
+      "bytes": 349719,
+      "sha256": "f547a81a9905a5e7ad88688a4678969ecc1b05f44bb1a36aa01c7e225fa23073"
+    }
+  ]
+}

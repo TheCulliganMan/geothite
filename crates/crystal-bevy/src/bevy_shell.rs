@@ -1,7 +1,7 @@
-#[cfg(feature = "location-tester")]
-mod render_walk;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_record;
+#[cfg(feature = "location-tester")]
+mod render_walk;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -340,6 +340,9 @@ pub struct BevyShellConfig {
     /// Native developer-only game-frame recording: output directory and seconds.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_record: Option<(PathBuf, u32)>,
+    /// Arm recording until the first actually presented battle move; never drives input.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record_on_move: bool,
     /// Native frame/position measurement without GPU screenshots.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_measure: Option<(PathBuf, u32)>,
@@ -350,6 +353,9 @@ pub struct BevyShellConfig {
     /// Seed the location renderer's fresh session for incidental encounters.
     #[cfg(feature = "location-tester")]
     pub render_test_party: bool,
+    /// Fresh disposable Route36 battle preview; never used for normal play.
+    #[cfg(feature = "location-tester")]
+    pub render_test_battle: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -5291,6 +5297,10 @@ struct PlayerMarker;
 struct MultiplayerGhost {
     user_id: String,
     display_tile: Vec2,
+    /// The actual sprite chosen by the presentation compositor, including
+    /// gender and riding mode. Optional renderers must never guess it.
+    source_id: Arc<str>,
+    facing: Direction,
 }
 
 /// The player has one retained entity; walking animation swaps its texture
@@ -5448,8 +5458,17 @@ pub fn run_bevy_shell(
     let render_test_second_screenshot = config.render_test_second_screenshot.clone();
     #[cfg(feature = "location-tester")]
     let render_test_live = config.render_test_live;
+    #[cfg(feature = "location-tester")]
+    let render_test_battle = config.render_test_battle;
+    #[cfg(feature = "location-tester")]
+    anyhow::ensure!(
+        !render_test_battle || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
+        "battle preview only supports a fresh disposable location session"
+    );
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let render_test_record = config.render_test_record.clone();
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record_on_move = config.render_test_record_on_move;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let render_test_measure = config.render_test_measure.clone();
     #[cfg(feature = "location-tester")]
@@ -5479,6 +5498,12 @@ pub fn run_bevy_shell(
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_shell_initialize").entered();
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
+    };
+    #[cfg(feature = "location-tester")]
+    let runtime_shell = if render_test_battle {
+        prepare_immersive_battle_preview(runtime_shell)?
+    } else {
+        runtime_shell
     };
     let multiplayer_runtime = match multiplayer_config {
         Some(BevyMultiplayerConfig::Hosted(config)) => {
@@ -5663,6 +5688,16 @@ pub fn run_bevy_shell(
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
         .add_systems(
             Update,
+            sync_immersive_battle_layers.after(crystal_render_api::WorldRenderSet::RenderSync),
+        )
+        .add_systems(
+            Update,
+            clear_inactive_visual_battle
+                .after(render_playfield)
+                .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+        )
+        .add_systems(
+            Update,
             publish_visual_world_frame
                 .after(sync_visible_player_sprite)
                 .after(sync_multiplayer_ghosts)
@@ -5681,6 +5716,14 @@ pub fn run_bevy_shell(
             .after(bevy::transform::TransformSystem::TransformPropagate)
             .after(crystal_voxel_view::ActorHeadProjection),
     );
+    #[cfg(feature = "voxel-view")]
+    {
+        let battle_ui_layout = sync_immersive_battle_ui_layout
+            .before(bevy::transform::TransformSystem::TransformPropagate);
+        #[cfg(feature = "fullscreen-scaling")]
+        let battle_ui_layout = battle_ui_layout.after(sync_fullscreen_world_layout);
+        app.add_systems(PostUpdate, battle_ui_layout);
+    }
     #[cfg(not(feature = "voxel-view"))]
     app.add_systems(
         PostUpdate,
@@ -5717,7 +5760,14 @@ pub fn run_bevy_shell(
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
         enabled: voxel_view_enabled,
         allow_f3_toggle: !cfg!(target_arch = "wasm32"),
-        camera: voxel_camera.map(|(zoom, rotation)| crystal_voxel_view::VoxelCameraControls::new(f32::from(zoom), f32::from(rotation) * 0.5)).unwrap_or_default(),
+        camera: voxel_camera
+            .map(|(zoom, rotation)| {
+                crystal_voxel_view::VoxelCameraControls::new(
+                    f32::from(zoom),
+                    f32::from(rotation) * 0.5,
+                )
+            })
+            .unwrap_or_default(),
     })
     .add_plugins(crystal_voxel_view::VoxelViewPlugin)
     .add_systems(
@@ -5783,7 +5833,12 @@ pub fn run_bevy_shell(
     if let Some(route) = render_test_walk.as_deref() {
         let walk_path = render_test_screenshot.clone();
         #[cfg(not(target_arch = "wasm32"))]
-        let walk_path = walk_path.or_else(|| render_test_record.as_ref().or(render_test_measure.as_ref()).map(|(path, _)| path.join("walk.png")));
+        let walk_path = walk_path.or_else(|| {
+            render_test_record
+                .as_ref()
+                .or(render_test_measure.as_ref())
+                .map(|(path, _)| path.join("walk.png"))
+        });
         #[cfg(not(target_arch = "wasm32"))]
         let capture_steps = render_test_measure.is_none();
         #[cfg(target_arch = "wasm32")]
@@ -5791,17 +5846,25 @@ pub fn run_bevy_shell(
         render_walk::install(
             &mut app,
             route,
-            walk_path.as_deref().context("--walk requires a screenshot or recording path")?,
+            walk_path
+                .as_deref()
+                .context("--walk requires a screenshot or recording path")?,
             capture_steps,
         )?;
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if let Some((directory, seconds)) = render_test_record.as_ref() {
-        render_record::install(&mut app, directory, *seconds, true)?;
+        render_record::install(
+            &mut app,
+            directory,
+            *seconds,
+            true,
+            render_test_record_on_move,
+        )?;
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if let Some((directory, seconds)) = render_test_measure.as_ref() {
-        render_record::install(&mut app, directory, *seconds, false)?;
+        render_record::install(&mut app, directory, *seconds, false, false)?;
     }
     let app_exit = app.run();
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
@@ -7637,7 +7700,11 @@ fn initialize_bevy_runtime_shell(
     };
     #[cfg(feature = "location-tester")]
     if runtime_tile_start {
-        if let Some(name) = config.smoke_player_name.as_deref().filter(|name| !name.is_empty()) {
+        if let Some(name) = config
+            .smoke_player_name
+            .as_deref()
+            .filter(|name| !name.is_empty())
+        {
             let player_id = shell.snapshot()?.trainer.player_id;
             shell.set_trainer_identity(name, player_id)?;
         }
@@ -8121,6 +8188,8 @@ include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/battle_3d.rs");
 include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]

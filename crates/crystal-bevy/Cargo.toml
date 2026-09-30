@@ -84,3 +84,11 @@ sha2.workspace = true
 [[example]]
 name = "new_bark_3d"
 required-features = ["location-tester"]
+
+[[example]]
+name = "audit_authored_assets"
+required-features = ["location-tester"]
+
+[[example]]
+name = "immersive_battle_3d"
+required-features = ["location-tester"]

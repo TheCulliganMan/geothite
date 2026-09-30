@@ -7,17 +7,22 @@ use std::sync::{Arc, Mutex};
 type Completions = Arc<Mutex<Vec<Result<(), String>>>>;
 const MAX_READBACKS: usize = 8;
 const CAPTURE_INTERVAL: f64 = 1.0 / 30.0;
+const ARM_TIMEOUT_SECONDS: f64 = 180.0;
 
 #[derive(Resource)]
 struct Recording {
     directory: PathBuf,
     seconds: f64,
     capture_images: bool,
+    on_move: bool,
+    armed_at: Option<f64>,
+    trigger: String,
     start: Option<f64>,
     last: f64,
     frames: Vec<f64>,
     trace: String,
     update_trace: String,
+    battle_trace: String,
     update_times: Vec<f64>,
     outstanding: usize,
     completions: Completions,
@@ -28,6 +33,7 @@ pub(super) fn install(
     directory: &Path,
     seconds: u32,
     capture_images: bool,
+    on_move: bool,
 ) -> Result<()> {
     anyhow::ensure!(
         (1..=300).contains(&seconds),
@@ -43,11 +49,16 @@ pub(super) fn install(
         directory: directory.to_owned(),
         seconds: f64::from(seconds),
         capture_images,
+        on_move,
+        armed_at: None,
+        trigger: String::new(),
         start: None,
         last: -1.0,
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art\n"
+            .into(),
         update_times: vec![],
         outstanding: 0,
         completions: default(),
@@ -82,6 +93,8 @@ fn record(
     mut recording: ResMut<Recording>,
     time: Res<Time<Real>>,
     status: Res<crystal_voxel_view::VoxelViewStatus>,
+    battle_status: Res<crystal_voxel_view::BattleViewStatus>,
+    battle_frame: Res<crystal_render_api::VisualBattleFrame>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
     windows: Query<Entity, With<PrimaryWindow>>,
@@ -103,10 +116,32 @@ fn record(
         recording.outstanding = recording.outstanding.saturating_sub(1);
     }
     if recording.start.is_none() {
-        if status.active_frames < 30 || status.profiles_pending {
+        let now = time.elapsed_seconds_f64();
+        let armed_at = *recording.armed_at.get_or_insert(now);
+        let world_ready = status.active && status.active_frames >= 30 && !status.profiles_pending;
+        let battle_ready = battle_status.active && battle_status.active_frames >= 30;
+        if !recording_start_ready(recording.on_move, world_ready, battle_ready, &battle_frame) {
+            if recording.on_move && now - armed_at >= ARM_TIMEOUT_SECONDS {
+                eprintln!(
+                    "capture cancelled: no presented battle move observed within {ARM_TIMEOUT_SECONDS}s"
+                );
+                exit.send(AppExit::error());
+            }
             return;
         }
-        recording.start = Some(time.elapsed_seconds_f64());
+        if recording.on_move {
+            if let Some(cue) = battle_frame
+                .cues
+                .iter()
+                .find(|cue| cue.kind == crystal_render_api::VisualBattleCueKind::Move)
+            {
+                recording.trigger = format!(
+                    "first presented move: {:?} {} at progress {:.6}; no synthetic pre-roll\n",
+                    cue.side, cue.move_id, cue.progress
+                );
+            }
+        }
+        recording.start = Some(now);
         println!(
             "{} to {}",
             if recording.capture_images {
@@ -142,6 +177,33 @@ fn record(
     recording
         .update_trace
         .push_str(&row(index, elapsed, &frame));
+    if battle_frame.active {
+        let species = |side: usize| {
+            battle_frame.battlers[side]
+                .as_ref()
+                .map_or("", |battler| battler.species_id.as_ref())
+        };
+        let cues = battle_frame
+            .cues
+            .iter()
+            .map(|cue| {
+                format!(
+                    "{:?}:{:?}:{}:{:.3}",
+                    cue.kind, cue.side, cue.move_id, cue.progress
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("|");
+        recording.battle_trace.push_str(&format!(
+            "{index},{elapsed:.6},{},{},{},{},{},{}\n",
+            battle_frame.map_id,
+            species(0),
+            species(1),
+            cues,
+            battle_status.modeled_species.join("|"),
+            battle_status.source_art_species.join("|")
+        ));
+    }
     if !recording.capture_images
         || recording.outstanding >= MAX_READBACKS
         || elapsed - recording.last < CAPTURE_INTERVAL
@@ -188,7 +250,34 @@ fn record(
     }
 }
 
+fn recording_start_ready(
+    on_move: bool,
+    world_ready: bool,
+    battle_ready: bool,
+    frame: &crystal_render_api::VisualBattleFrame,
+) -> bool {
+    if !on_move {
+        return world_ready || battle_ready;
+    }
+    battle_ready
+        && frame.active
+        && frame
+            .cues
+            .iter()
+            .any(|cue| cue.kind == crystal_render_api::VisualBattleCueKind::Move)
+}
+
 fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
+    if !recording.trigger.is_empty() {
+        std::fs::write(
+            recording.directory.join("capture-trigger.txt"),
+            &recording.trigger,
+        )?;
+    }
+    std::fs::write(
+        recording.directory.join("battle-timing.csv"),
+        &recording.battle_trace,
+    )?;
     std::fs::write(
         recording.directory.join("render-timing.csv"),
         &recording.update_trace,
@@ -207,7 +296,9 @@ fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
             ));
         }
         if let Some(last) = recording.frames.len().checked_sub(1) {
-            concat.push_str(&format!("file 'frame-{last:05}.png'\noption framerate 1000\n"));
+            concat.push_str(&format!(
+                "file 'frame-{last:05}.png'\noption framerate 1000\n"
+            ));
         }
         std::fs::write(recording.directory.join("frames.ffconcat"), concat)?;
         std::fs::write(recording.directory.join("timestamps.csv"), &recording.trace)?;
@@ -227,4 +318,52 @@ fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
         print!("{summary}");
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crystal_render_api::{
+        VisualBattleCue, VisualBattleCueKind, VisualBattleFrame, VisualBattleSide,
+    };
+    #[test]
+    fn immersive_battle_record_arm_requires_an_active_presented_move() {
+        let mut frame = VisualBattleFrame {
+            active: true,
+            ..default()
+        };
+        assert!(!recording_start_ready(true, true, true, &frame));
+        for kind in [
+            VisualBattleCueKind::Impact,
+            VisualBattleCueKind::Faint,
+            VisualBattleCueKind::SendOut,
+            VisualBattleCueKind::Withdraw,
+            VisualBattleCueKind::Capture,
+            VisualBattleCueKind::CaptureDeflect,
+            VisualBattleCueKind::Move,
+        ] {
+            frame.cues = vec![VisualBattleCue {
+                kind,
+                side: VisualBattleSide::Player,
+                move_id: "TACKLE".into(),
+                element: "NORMAL".into(),
+                progress: 0.25,
+                damaging: true,
+            }];
+            assert_eq!(
+                recording_start_ready(true, true, true, &frame),
+                kind == VisualBattleCueKind::Move
+            );
+            assert!(!recording_start_ready(true, true, false, &frame));
+        }
+        frame.active = false;
+        assert!(!recording_start_ready(true, true, true, &frame));
+    }
+    #[test]
+    fn immersive_battle_default_record_and_measure_readiness_is_unchanged() {
+        let frame = VisualBattleFrame::default();
+        assert!(recording_start_ready(false, true, false, &frame));
+        assert!(recording_start_ready(false, false, true, &frame));
+        assert!(!recording_start_ready(false, false, false, &frame));
+    }
 }

@@ -1,101 +1,357 @@
-//! Source-scoped non-human actor geometry; no item state or interaction logic.
-use crate::mesh::SurfaceMeshData;
-use crate::new_bark_models::{ModelKind, model};
-use bevy::prelude::Vec3;
+//! Original source-scoped volumetric actor assets, with no simulation state.
+//!
+//! Runtime source identity is published after variable-sprite and icon
+//! resolution. `monster` and `icon_monster` therefore remain different keys.
+//! Models are ground rooted (+Y up, front +Z) and never infer species from
+//! colors, original script tokens, actor IDs, or another actor's appearance.
+use std::sync::OnceLock;
 
-/// A dwarf orchard tree uses the original authored crown/trunk, with small
-/// original berry geometry. The source sprite also remains a fruit tree after
-/// picking; this prop is not an availability indicator and never reads the bag.
-pub(super) fn fruit_tree() -> SurfaceMeshData {
-    let tree = model(ModelKind::Tree);
-    let mut mesh = tree.surface_mesh();
-    let scale = 1.08 / (tree.max[1] - tree.min[1]);
-    for p in &mut mesh.positions {
-        p[0] *= scale;
-        p[1] = (p[1] - tree.min[1]) * scale;
-        p[2] *= scale;
-    }
-    for center in [
-        [-0.14, 0.66, 0.37],
-        [0.12, 0.71, 0.34],
-        [0.02, 0.94, 0.175],
-        [-0.37, 0.71, 0.03],
-        [0.38, 0.73, 0.0],
-        [0.04, 0.79, -0.325],
-        [-0.15, 1.0, -0.13],
-    ] {
-        append_berry(&mut mesh, Vec3::from_array(center));
-    }
-    mesh
+use crate::mesh::SurfaceMeshData;
+use bevy::prelude::Vec3;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Primitive {
+    positions: Vec<f32>,
+    normals: Vec<f32>,
+    indices: Vec<u32>,
+    base_color: [f32; 4],
+}
+#[derive(Deserialize)]
+struct Export {
+    primitives: Vec<Primitive>,
 }
 
-fn append_berry(mesh: &mut SurfaceMeshData, center: Vec3) {
-    const SEGMENTS: usize = 10;
-    const RINGS: usize = 6;
-    let base = mesh.positions.len() as u32;
-    for row in 0..=RINGS {
-        let latitude = row as f32 / RINGS as f32 * std::f32::consts::PI;
-        for col in 0..=SEGMENTS {
-            let longitude = col as f32 / SEGMENTS as f32 * std::f32::consts::TAU;
-            let normal = Vec3::new(
-                latitude.sin() * longitude.cos(),
-                latitude.cos(),
-                latitude.sin() * longitude.sin(),
-            );
-            mesh.positions
-                .push((center + normal * Vec3::new(0.044, 0.049, 0.044)).to_array());
-            mesh.normals.push(
-                (normal / Vec3::new(0.044, 0.049, 0.044))
-                    .normalize()
-                    .to_array(),
-            );
+/// Parse our original authoring format without discarding smooth normals.
+/// Kept render-only so battle and world presentation can share the same art.
+fn parse_model(json: &str) -> Result<SurfaceMeshData, String> {
+    let source: Export = crate::model_storage::parse(json)?;
+    let mut mesh = SurfaceMeshData::default();
+    for p in source.primitives {
+        let n = p.positions.len() / 3;
+        if n < 3
+            || p.positions.len() % 3 != 0
+            || p.normals.len() != p.positions.len()
+            || p.indices.is_empty()
+            || p.indices.len() % 3 != 0
+            || p.indices.iter().any(|&i| i as usize >= n)
+            || p.positions.iter().chain(&p.normals).any(|v| !v.is_finite())
+            || p.base_color
+                .iter()
+                .any(|v| !v.is_finite() || !(0.0..=1.0).contains(v))
+        {
+            return Err("invalid authored actor primitive".into());
+        }
+        let base = mesh.positions.len() as u32;
+        for point in p.positions.chunks_exact(3) {
+            mesh.positions.push([point[0], point[1], point[2]]);
             mesh.uvs.push([0.0, 0.0]);
-            mesh.colors.push([0.67, 0.065, 0.082, 1.0]);
+            mesh.colors.push(p.base_color);
         }
-    }
-    for row in 0..RINGS {
-        for col in 0..SEGMENTS {
-            let a = base + (row * (SEGMENTS + 1) + col) as u32;
-            let b = a + (SEGMENTS + 1) as u32;
-            // Outward winding; skip degenerate triangles at the two poles.
-            if row > 0 {
-                mesh.indices.extend([a, a + 1, b]);
+        for normal in p.normals.chunks_exact(3) {
+            let normal = Vec3::new(normal[0], normal[1], normal[2]);
+            if normal.length_squared() < 0.000_001 {
+                return Err("zero authored actor normal".into());
             }
-            if row + 1 < RINGS {
-                mesh.indices.extend([a + 1, b + 1, b]);
+            mesh.normals.push(normal.normalize().to_array());
+        }
+        mesh.indices.extend(p.indices.into_iter().map(|i| base + i));
+    }
+    if mesh.positions.is_empty() {
+        return Err("empty authored actor model".into());
+    }
+    let min = (0..3)
+        .map(|a| {
+            mesh.positions
+                .iter()
+                .map(|p| p[a])
+                .fold(f32::INFINITY, f32::min)
+        })
+        .collect::<Vec<_>>();
+    let max = (0..3)
+        .map(|a| {
+            mesh.positions
+                .iter()
+                .map(|p| p[a])
+                .fold(f32::NEG_INFINITY, f32::max)
+        })
+        .collect::<Vec<_>>();
+    if min[1].abs() > 0.000_1 || (0..3).any(|a| max[a] - min[a] < 0.005) {
+        return Err("authored actor must be volumetric and floor rooted".into());
+    }
+    Ok(mesh)
+}
+
+macro_rules! authored_props {
+    ($( $variant:ident => $label:literal ),+ $(,)?) => {
+        #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+        pub(crate) enum PropKind { $( $variant ),+ }
+        pub(crate) const ALL_KINDS: &[PropKind] = &[$( PropKind::$variant ),+];
+        impl PropKind {
+            pub(crate) fn label(self) -> &'static str {
+                match self { $( Self::$variant => $label ),+ }
             }
         }
+        pub(crate) fn mesh(kind: PropKind) -> SurfaceMeshData {
+            match kind { $(
+                PropKind::$variant => {
+                    static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
+                    MODEL.get_or_init(|| parse_model(include_str!(concat!("../models/actor_props/", $label, ".mesh.json")))
+                        .expect(concat!("valid original actor asset: ", $label))).clone()
+                }
+            ),+ }
+        }
+    };
+}
+authored_props! {
+    PokeBall => "poke_ball",
+    Boulder => "boulder",
+    Rock => "rock",
+    FruitTree => "fruit_tree",
+    Paper => "paper",
+    Pokedex => "pokedex",
+    Famicom => "famicom",
+    Snes => "snes",
+    N64 => "n64",
+    VirtualBoy => "virtual_boy",
+    GoldTrophy => "gold_trophy",
+    SilverTrophy => "silver_trophy",
+    Bird => "bird",
+    Fairy => "fairy",
+    Monster => "monster",
+    Dragon => "dragon",
+    Slowpoke => "slowpoke",
+    Sudowoodo => "sudowoodo",
+    Entei => "entei",
+    Raikou => "raikou",
+    Suicune => "suicune",
+    BigSnorlax => "big_snorlax",
+    BigLapras => "big_lapras",
+    BigOnix => "big_onix",
+    Surf => "surf",
+    SurfingPikachu => "surfing_pikachu",
+    IconBat => "icon_bat",
+    IconBigmon => "icon_bigmon",
+    IconBird => "icon_bird",
+    IconBlob => "icon_blob",
+    IconBug => "icon_bug",
+    IconBulbasaur => "icon_bulbasaur",
+    IconCaterpillar => "icon_caterpillar",
+    IconCharmander => "icon_charmander",
+    IconClefairy => "icon_clefairy",
+    IconDiglett => "icon_diglett",
+    IconEgg => "icon_egg",
+    IconEquine => "icon_equine",
+    IconFighter => "icon_fighter",
+    IconFish => "icon_fish",
+    IconFox => "icon_fox",
+    IconGeodude => "icon_geodude",
+    IconGhost => "icon_ghost",
+    IconGyarados => "icon_gyarados",
+    IconHoOh => "icon_ho_oh",
+    IconHumanshape => "icon_humanshape",
+    IconJellyfish => "icon_jellyfish",
+    IconJigglypuff => "icon_jigglypuff",
+    IconLapras => "icon_lapras",
+    IconLugia => "icon_lugia",
+    IconMonster => "icon_monster",
+    IconMoth => "icon_moth",
+    IconOddish => "icon_oddish",
+    IconPikachu => "icon_pikachu",
+    IconPoliwag => "icon_poliwag",
+    IconSerpent => "icon_serpent",
+    IconShell => "icon_shell",
+    IconSlowpoke => "icon_slowpoke",
+    IconSnorlax => "icon_snorlax",
+    ChrisBike => "chris_bike",
+    KrisBike => "kris_bike",
+    BattleChikorita => "battle_chikorita",
+    BattleCyndaquil => "battle_cyndaquil",
+    BattleTotodile => "battle_totodile",
+    BattlePidgey => "battle_pidgey",
+    BattleRattata => "battle_rattata",
+    BattleSentret => "battle_sentret",
+    BattleHoothoot => "battle_hoothoot",
+    IconSquirtle => "icon_squirtle",
+    IconStaryu => "icon_staryu",
+    IconSudowoodo => "icon_sudowoodo",
+    IconUnown => "icon_unown",
+    IconVoltorb => "icon_voltorb",
+}
+
+/// Exact resolved source/path handling. In particular, gfx/icons/monster.png
+/// cannot accidentally claim the unrelated sprite family's representation.
+pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
+    let source = if let Some(path) = source.strip_prefix("gfx/sprites/") {
+        let stem = path.strip_suffix(".png")?;
+        if stem.starts_with("icon_") {
+            return None;
+        }
+        stem.to_owned()
+    } else if let Some(path) = source.strip_prefix("gfx/icons/") {
+        format!("icon_{}", path.strip_suffix(".png")?)
+    } else {
+        source.to_owned()
+    };
+    if source.contains('/') || source.starts_with("battle_") {
+        return None;
     }
+    ALL_KINDS
+        .iter()
+        .copied()
+        .find(|kind| kind.label() == source)
+}
+
+/// These are exact battle species, separately authored from generic icon
+/// families. An unsupported species returns None rather than a false match.
+pub(crate) fn battle_species_kind(species: &str) -> Option<PropKind> {
+    match species.to_ascii_uppercase().as_str() {
+        "CHIKORITA" => Some(PropKind::BattleChikorita),
+        "CYNDAQUIL" => Some(PropKind::BattleCyndaquil),
+        "TOTODILE" => Some(PropKind::BattleTotodile),
+        "PIDGEY" => Some(PropKind::BattlePidgey),
+        "RATTATA" => Some(PropKind::BattleRattata),
+        "SENTRET" => Some(PropKind::BattleSentret),
+        "HOOTHOOT" => Some(PropKind::BattleHoothoot),
+        // Sprite/icon families with exact species names have their own actual
+        // recognizable species meshes. Do not map generic bigmon/fish/etc.
+        "ENTEI" => Some(PropKind::Entei),
+        "RAIKOU" => Some(PropKind::Raikou),
+        "SUICUNE" => Some(PropKind::Suicune),
+        "ONIX" => Some(PropKind::BigOnix),
+        "BULBASAUR" => Some(PropKind::IconBulbasaur),
+        "CHARMANDER" => Some(PropKind::IconCharmander),
+        "CLEFAIRY" => Some(PropKind::IconClefairy),
+        "DIGLETT" => Some(PropKind::IconDiglett),
+        "GEODUDE" => Some(PropKind::IconGeodude),
+        "GYARADOS" => Some(PropKind::IconGyarados),
+        "HO_OH" => Some(PropKind::IconHoOh),
+        "JIGGLYPUFF" => Some(PropKind::IconJigglypuff),
+        "LAPRAS" => Some(PropKind::IconLapras),
+        "LUGIA" => Some(PropKind::IconLugia),
+        "ODDISH" => Some(PropKind::IconOddish),
+        "PIKACHU" => Some(PropKind::IconPikachu),
+        "POLIWAG" => Some(PropKind::IconPoliwag),
+        "SLOWPOKE" => Some(PropKind::IconSlowpoke),
+        "SNORLAX" => Some(PropKind::IconSnorlax),
+        "SQUIRTLE" => Some(PropKind::IconSquirtle),
+        "STARYU" => Some(PropKind::IconStaryu),
+        "SUDOWOODO" => Some(PropKind::IconSudowoodo),
+        "UNOWN" => Some(PropKind::IconUnown),
+        "VOLTORB" => Some(PropKind::IconVoltorb),
+        _ => None,
+    }
+}
+
+pub(crate) fn battle_species_mesh(species: &str) -> Option<SurfaceMeshData> {
+    battle_species_kind(species).map(mesh)
+}
+
+pub(crate) fn kind_labels() -> impl Iterator<Item = &'static str> {
+    ALL_KINDS.iter().copied().map(PropKind::label)
+}
+
+/// Compatibility entry point for the previously supported orchard actor.
+pub(super) fn fruit_tree() -> SurfaceMeshData {
+    mesh(PropKind::FruitTree)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashSet;
+
     #[test]
-    fn fruit_tree_is_grounded_closed_and_uses_original_geometry() {
-        let mesh = fruit_tree();
-        let low = mesh
-            .positions
+    fn exact_source_families_preserve_icon_namespace_and_reject_guesses() {
+        assert_eq!(prop_kind_for_source("poke_ball"), Some(PropKind::PokeBall));
+        assert_eq!(
+            prop_kind_for_source("gfx/sprites/monster.png"),
+            Some(PropKind::Monster)
+        );
+        assert_eq!(
+            prop_kind_for_source("gfx/icons/monster.png"),
+            Some(PropKind::IconMonster)
+        );
+        assert_ne!(
+            prop_kind_for_source("monster"),
+            prop_kind_for_source("icon_monster")
+        );
+        for bad in [
+            "fruit_tree_picked",
+            "monster_extra",
+            "SPRITE_MONSTER",
+            "pikachu",
+            "remote_player",
+            "battle_chikorita",
+            "gfx/sprites/icon_monster.png/extra",
+            "gfx/sprites/icon_monster.png",
+            "path/poke_ball",
+        ] {
+            assert_eq!(prop_kind_for_source(bad), None, "{bad}");
+        }
+        for kind in ALL_KINDS
             .iter()
-            .map(|p| p[1])
-            .fold(f32::INFINITY, f32::min);
-        let high = mesh
-            .positions
-            .iter()
-            .map(|p| p[1])
-            .fold(f32::NEG_INFINITY, f32::max);
-        assert!(low.abs() < 0.0001);
-        assert!((1.0..1.2).contains(&high));
-        assert!(mesh.indices.len() > model(ModelKind::Tree).surface_mesh().indices.len());
-        let original_count = model(ModelKind::Tree).surface_mesh().positions.len();
-        for tri in mesh.indices.chunks_exact(3) {
-            let p = [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-            let geometric = (p[1] - p[0]).cross(p[2] - p[0]);
-            let normal = Vec3::from_array(mesh.normals[tri[0] as usize]);
-            assert!(geometric.is_finite());
-            if tri[0] as usize >= original_count {
-                assert!(geometric.dot(normal) > 0.0);
+            .filter(|kind| !kind.label().starts_with("battle_"))
+        {
+            assert_eq!(prop_kind_for_source(kind.label()), Some(*kind));
+        }
+    }
+
+    #[test]
+    fn battle_species_never_use_generic_family_aliases() {
+        assert_eq!(
+            battle_species_kind("CHIKORITA"),
+            Some(PropKind::BattleChikorita)
+        );
+        assert_eq!(
+            battle_species_kind("RATTATA"),
+            Some(PropKind::BattleRattata)
+        );
+        assert_eq!(battle_species_kind("PIDGEY"), Some(PropKind::BattlePidgey));
+        for missing in [
+            "EEVEE",
+            "CHARIZARD",
+            "MAGIKARP",
+            "NIDORAN_M",
+            "monster",
+            "icon_fish",
+        ] {
+            assert_eq!(battle_species_kind(missing), None);
+        }
+    }
+
+    #[test]
+    fn every_authored_actor_is_finite_volumetric_and_floor_rooted() {
+        let mut labels = HashSet::new();
+        for &kind in ALL_KINDS {
+            assert!(labels.insert(kind.label()));
+            let model = mesh(kind);
+            assert!(model.positions.len() >= 12, "{}", kind.label());
+            assert_eq!(model.positions.len(), model.normals.len());
+            assert_eq!(model.positions.len(), model.colors.len());
+            assert_eq!(model.positions.len(), model.uvs.len());
+            let min_y = model
+                .positions
+                .iter()
+                .map(|p| p[1])
+                .fold(f32::INFINITY, f32::min);
+            assert!(min_y.abs() < 0.0001, "{}: {min_y}", kind.label());
+            assert!(
+                model
+                    .indices
+                    .iter()
+                    .all(|&i| (i as usize) < model.positions.len())
+            );
+            for n in model.normals {
+                assert!((Vec3::from_array(n).length() - 1.0).abs() < 0.0001);
             }
         }
+        assert_eq!(ALL_KINDS.len(), 73);
+    }
+
+    #[test]
+    fn malformed_or_unanchored_exports_fail_closed() {
+        assert!(parse_model(r#"{"primitives":[]}"#).is_err());
+        assert!(parse_model(r#"{"primitives":[{"positions":[0,0,0],"normals":[0,1,0],"indices":[0,1,2],"base_color":[1,1,1,1]}]}"#).is_err());
     }
 }

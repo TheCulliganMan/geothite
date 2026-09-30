@@ -43,6 +43,25 @@ pub(crate) enum ModelKind {
     Flowers,
 }
 
+impl ModelKind {
+    pub(crate) const fn label(self) -> &'static str {
+        match self {
+            Self::House => "johto/cottage",
+            Self::PlayerHouse => "johto/player_house",
+            Self::Lab => "johto/elm_lab",
+            Self::Pokecenter => "johto/pokecenter",
+            Self::Mart => "johto/mart",
+            Self::RouteGate => "johto/route_gate",
+            Self::TraditionalHouse => "johto/traditional_house",
+            Self::VioletGym => "johto/violet_gym",
+            Self::SproutTower => "johto/sprout_tower",
+            Self::Grass | Self::GrassLod => "johto/tall_grass",
+            Self::Tree | Self::TreeLod => "johto/tree",
+            Self::Flowers => "johto/flowers",
+        }
+    }
+}
+
 #[derive(Deserialize)]
 struct Primitive {
     positions: Vec<f32>,
@@ -66,7 +85,7 @@ pub(crate) struct Model {
 
 impl Model {
     fn parse(json: &str) -> Result<Self, String> {
-        let export: Export = serde_json::from_str(json).map_err(|error| error.to_string())?;
+        let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];

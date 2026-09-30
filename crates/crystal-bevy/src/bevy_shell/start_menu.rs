@@ -25,12 +25,8 @@ fn visible_field_pack_entries(
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
     if let Some(cursor) = &runtime_shell.tmhm_decision_prompt_cursor {
-        let selected = strict_readonly_cursor_index(
-            &Some(cursor.clone()),
-            "pack:tmhm:decision",
-            2,
-        )
-        .context("TM/HM decision prompt has no valid cursor")?;
+        let selected = strict_readonly_cursor_index(&Some(cursor.clone()), "pack:tmhm:decision", 2)
+            .context("TM/HM decision prompt has no valid cursor")?;
         let party = snapshot
             .party
             .slots
@@ -51,12 +47,9 @@ fn visible_field_pack_entries(
         ]);
     }
     if let Some(cursor) = &runtime_shell.tmhm_teach_prompt_cursor {
-        let selected = strict_readonly_cursor_index(
-            &Some(cursor.clone()),
-            "pack:tmhm:teach-prompt",
-            2,
-        )
-        .context("TM/HM teach prompt has no valid cursor")?;
+        let selected =
+            strict_readonly_cursor_index(&Some(cursor.clone()), "pack:tmhm:teach-prompt", 2)
+                .context("TM/HM teach prompt has no valid cursor")?;
         let active = FieldPackPocket::TmHm;
         let selected_tmhm = strict_readonly_cursor_index(
             &runtime_shell.tmhm_cursor,
@@ -86,10 +79,12 @@ fn visible_field_pack_entries(
     }
     let active = active_visible_field_pack_pocket(runtime_shell);
     if runtime_shell.field_pack_action_cursor.is_some() {
-        return Ok(visible_field_pack_action_entries(snapshot, runtime_shell, &active)?
-            .into_iter()
-            .take(SCENE_MENU_VISIBLE_ROWS)
-            .collect());
+        return Ok(
+            visible_field_pack_action_entries(snapshot, runtime_shell, &active)?
+                .into_iter()
+                .take(SCENE_MENU_VISIBLE_ROWS)
+                .collect(),
+        );
     }
     let mut entries = vec![format!(
         "POCKET: {}",
@@ -213,14 +208,21 @@ fn visible_field_pack_target_entries(
         let visible_move_rows = SCENE_MENU_VISIBLE_ROWS.saturating_sub(entries.len());
         let visible_start = visible_window_start(selected_move, row_count, visible_move_rows);
         let visible_end = (visible_start + visible_move_rows).min(row_count);
-        entries.extend((visible_start..visible_end).map(|index| {
-            if index == slot.pokemon.moves.len() {
-                Ok(format!("{}CANCEL", if index == selected_move { ">" } else { " " }))
-            } else {
-                let marker = if index == selected_move { ">" } else { " " };
-                move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
-            }
-        }).collect::<Result<Vec<_>>>()?);
+        entries.extend(
+            (visible_start..visible_end)
+                .map(|index| {
+                    if index == slot.pokemon.moves.len() {
+                        Ok(format!(
+                            "{}CANCEL",
+                            if index == selected_move { ">" } else { " " }
+                        ))
+                    } else {
+                        let marker = if index == selected_move { ">" } else { " " };
+                        move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
+                    }
+                })
+                .collect::<Result<Vec<_>>>()?,
+        );
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     if mode == FieldPackTargetMode::TmHmPokemon {
@@ -244,16 +246,15 @@ fn visible_field_pack_target_entries(
                     && match runtime_shell
                         .shell
                         .preview_tmhm_on_party_pokemon(item_id, slot.index, None)
-                        {
-                            Ok(_) => true,
-                            Err(error) => matches!(
-                                error.downcast_ref::<TmHmLearnError>(),
-                                Some(
-                                    TmHmLearnError::MoveListFull
-                                        | TmHmLearnError::AlreadyKnows { .. }
-                                )
-                            ),
-                        };
+                    {
+                        Ok(_) => true,
+                        Err(error) => matches!(
+                            error.downcast_ref::<TmHmLearnError>(),
+                            Some(
+                                TmHmLearnError::MoveListFull | TmHmLearnError::AlreadyKnows { .. }
+                            )
+                        ),
+                    };
                 compact_scene_label(
                     &format!(
                         "{} {}",
@@ -274,8 +275,8 @@ fn visible_field_pack_target_entries(
         )
         .context("field Pack party target has no selected item")?;
         let is_evolution_item = snapshot.item_effect_plans.iter().any(|plan| {
-                plan.item_id == item_id && plan.behavior_id == ITEM_EFFECT_BEHAVIOR_EVOLUTION_STONE
-            });
+            plan.item_id == item_id && plan.behavior_id == ITEM_EFFECT_BEHAVIOR_EVOLUTION_STONE
+        });
         if is_evolution_item {
             entries.extend(
                 windowed_index_range(selected_party, snapshot.party.slots.len()).map(|index| {
@@ -338,16 +339,20 @@ fn visible_party_menu_entries(
             ),
             30,
         )];
-        entries.extend(windowed_index_range(selected, move_count).map(|index| {
-            let marker = if runtime_shell.party_move_reorder_origin == Some(index) {
-                "\u{25b7}"
-            } else if index == selected {
-                ">"
-            } else {
-                " "
-            };
-            move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
-        }).collect::<Result<Vec<_>>>()?);
+        entries.extend(
+            windowed_index_range(selected, move_count)
+                .map(|index| {
+                    let marker = if runtime_shell.party_move_reorder_origin == Some(index) {
+                        "\u{25b7}"
+                    } else if index == selected {
+                        ">"
+                    } else {
+                        " "
+                    };
+                    move_menu_entry(snapshot, &slot.pokemon.moves[index], marker)
+                })
+                .collect::<Result<Vec<_>>>()?,
+        );
         return Ok(entries.into_iter().take(SCENE_MENU_VISIBLE_ROWS).collect());
     }
     if let Some(give_take_cursor) = &runtime_shell.party_give_take_cursor {
@@ -363,11 +368,7 @@ fn visible_party_menu_entries(
                 .slots
                 .get(selected_party_slot)
                 .context("party Mail action cursor points at CANCEL")?;
-            let mut entries = vec![party_slot_entry(
-                snapshot,
-                slot,
-                true,
-            )];
+            let mut entries = vec![party_slot_entry(snapshot, slot, true)];
             entries.extend(
                 ["READ", "TAKE", "QUIT"]
                     .iter()
@@ -378,12 +379,9 @@ fn visible_party_menu_entries(
             );
             return Ok(entries);
         }
-        let selected = strict_readonly_cursor_index(
-            &Some(give_take_cursor.clone()),
-            "party:give-take",
-            2,
-        )
-        .context("party give/take menu has no valid cursor")?;
+        let selected =
+            strict_readonly_cursor_index(&Some(give_take_cursor.clone()), "party:give-take", 2)
+                .context("party give/take menu has no valid cursor")?;
         let slot = snapshot
             .party
             .slots
@@ -407,17 +405,19 @@ fn visible_party_menu_entries(
             snapshot.party.slots.len(),
         )
         .context("party switch screen has no valid target cursor")?;
-        return Ok(windowed_index_range(selected_target, snapshot.party.slots.len())
-            .map(|index| {
-                let slot = &snapshot.party.slots[index];
-                party_switch_slot_entry(
-                    snapshot,
-                    slot,
-                    index == selected_target,
-                    index == selected_party_slot,
-                )
-            })
-            .collect());
+        return Ok(
+            windowed_index_range(selected_target, snapshot.party.slots.len())
+                .map(|index| {
+                    let slot = &snapshot.party.slots[index];
+                    party_switch_slot_entry(
+                        snapshot,
+                        slot,
+                        index == selected_target,
+                        index == selected_party_slot,
+                    )
+                })
+                .collect(),
+        );
     }
     if runtime_shell.party_summary_open {
         return visible_party_summary_entries(snapshot, runtime_shell);
@@ -484,7 +484,12 @@ fn visible_party_summary_entries(
         .slots
         .get(selected)
         .context("party summary cursor does not select a Pokemon")?;
-    visible_stats_screen_entries(snapshot, runtime_shell, &slot.pokemon, runtime_shell.party_summary_page)
+    visible_stats_screen_entries(
+        snapshot,
+        runtime_shell,
+        &slot.pokemon,
+        runtime_shell.party_summary_page,
+    )
 }
 
 fn visible_fly_destination_entries(
@@ -665,9 +670,23 @@ fn visible_pokegear_menu_entries(
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
     if let Some(delay) = runtime_shell.pokegear_map_radio_delay {
-        if delay == 0 { return visible_radio_observation_rows(runtime_shell); }
-        let station = runtime_shell.pokegear_radio_station.as_deref().context("furniture radio has no selected station")?;
-        return Ok(vec![format!("“{}”", visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?)]);
+        if delay == 0 {
+            return visible_radio_observation_rows(runtime_shell);
+        }
+        let station = runtime_shell
+            .pokegear_radio_station
+            .as_deref()
+            .context("furniture radio has no selected station")?;
+        return Ok(vec![format!(
+            "“{}”",
+            visible_radio_station_name(
+                station,
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_ROCKETS_IN_RADIO_TOWER")
+            )?
+        )]);
     }
     if runtime_shell.pokegear_page == PokegearPage::Clock {
         let time = &snapshot.progression.time;
@@ -695,12 +714,24 @@ fn visible_pokegear_menu_entries(
         ]);
     }
     if runtime_shell.pokegear_page == PokegearPage::Radio {
-        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else { return Ok(Vec::new()); };
-        let broadcast = runtime_shell.pokegear_radio_broadcast.as_ref().context("radio station has no live broadcast")?;
+        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else {
+            return Ok(Vec::new());
+        };
+        let broadcast = runtime_shell
+            .pokegear_radio_broadcast
+            .as_ref()
+            .context("radio station has no live broadcast")?;
         let heading = if let Some(rows) = &broadcast.host.name_tiles {
             visible_radio_tile_row(&rows[1])?.trim().to_string()
         } else {
-            visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?.to_string()
+            visible_radio_station_name(
+                station,
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_ROCKETS_IN_RADIO_TOWER"),
+            )?
+            .to_string()
         };
         let mut entries = vec![format!("RADIO  {heading}")];
         entries.extend(visible_radio_observation_rows(runtime_shell)?);
@@ -749,15 +780,21 @@ fn visible_pokegear_phone_prompt(
         }
     }
     let label = if let Some(VisiblePokegearPhoneCall {
-        phase: VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining }, ..
-    }) = runtime_shell.pokegear_phone_call.as_ref() {
+        phase: VisiblePokegearPhoneCallPhase::HangingUp { frames_remaining },
+        ..
+    }) = runtime_shell.pokegear_phone_call.as_ref()
+    {
         match VISIBLE_POKEGEAR_HANGUP_FRAMES - frames_remaining {
             4..=27 => "_PhoneClickText",
             32..=55 | 84..=107 | 136..=159 => "_PhoneEllipseText",
             _ => return Ok(String::new()),
         }
     } else if runtime_shell.pokegear_phone_delete_question_retained
-        || runtime_shell.pokegear_phone_menu.as_ref().is_some_and(|menu| menu.delete_confirmation.is_some()) {
+        || runtime_shell
+            .pokegear_phone_menu
+            .as_ref()
+            .is_some_and(|menu| menu.delete_confirmation.is_some())
+    {
         "_PokegearAskDeleteText"
     } else if runtime_shell
         .pokegear_phone_call
@@ -765,9 +802,11 @@ fn visible_pokegear_phone_prompt(
         .is_some_and(|call| matches!(call.phase, VisiblePokegearPhoneCallPhase::NoServicePrompt))
     {
         "_GearOutOfServiceText"
-    } else if runtime_shell.pokegear_phone_call.as_ref().is_some_and(|call| {
-        matches!(call.phase, VisiblePokegearPhoneCallPhase::Ringing { .. })
-    }) {
+    } else if runtime_shell
+        .pokegear_phone_call
+        .as_ref()
+        .is_some_and(|call| matches!(call.phase, VisiblePokegearPhoneCallPhase::Ringing { .. }))
+    {
         "_GearEllipseText"
     } else {
         "_PokegearAskWhoCallText"
@@ -837,8 +876,9 @@ fn visible_pokegear_phone_entries(
             &["CALL", "CANCEL"]
         };
         let selected = menu.delete_confirmation.unwrap_or(menu.cursor);
-        entries.extend(labels.iter().enumerate().map(|(index, label)|
-            format!("{}{}", if index == selected { ">" } else { " " }, label)));
+        entries.extend(labels.iter().enumerate().map(|(index, label)| {
+            format!("{}{}", if index == selected { ">" } else { " " }, label)
+        }));
     }
     Ok(entries)
 }
@@ -1832,21 +1872,32 @@ fn visible_surf_line_offsets(animation: Option<&VisibleMoveAnimation>) -> Option
     // BG effects execute before animation objects. The copy therefore sees
     // the scanline boundary written by Surf on the preceding update.
     let object_frame = animation.frame.saturating_sub(1);
-    let function = battle_program::FUNCTIONS.iter().position(|name| *name == "BATTLE_ANIM_FUNC_SURF")? as u8;
+    let function = battle_program::FUNCTIONS
+        .iter()
+        .position(|name| *name == "BATTLE_ANIM_FUNC_SURF")? as u8;
     let mut machine = BattleObjectMachine::new(animation.player_move);
     machine.initialize(0, 1, [0, 0, 0, function, 0, 0], *x as u8, *y as u8, *param);
     for tick in spawn.frame..=object_frame {
-        for event in animation.object_events.iter().skip(spawn_index + 1).filter(|event| event.frame == tick) {
+        for event in animation
+            .object_events
+            .iter()
+            .skip(spawn_index + 1)
+            .filter(|event| event.frame == tick)
+        {
             match event.command {
                 VisibleMoveObjectCommand::Increment { index: 1 } => {
                     machine.object_mut(0)[14] = machine.object(0)[14].wrapping_add(1);
                 }
-                VisibleMoveObjectCommand::Set { index: 1, value } => machine.object_mut(0)[14] = value,
+                VisibleMoveObjectCommand::Set { index: 1, value } => {
+                    machine.object_mut(0)[14] = value
+                }
                 VisibleMoveObjectCommand::Clear => machine.clear_objects(),
                 _ => {}
             }
         }
-        if machine.object(0)[0] != 0 { machine.step_object(0).ok()?; }
+        if machine.object(0)[0] != 0 {
+            machine.step_object(0).ok()?;
+        }
     }
     let start = usize::from(machine.read(battle_program::H_L_Y_OVERRIDE_START)).min(0x5e);
     let rotation = usize::from(effect_age);
@@ -2301,7 +2352,10 @@ fn visible_battle_dmg_palette_registers(
             let age = frame - effect.frame;
             match effect.effect_id.as_str() {
                 "BATTLE_PALETTE_BGP" if age == 0 => registers.bgp = effect.param,
-                "BATTLE_PALETTE_OBP0" if age == 0 => { registers.obp0 = effect.param; registers.obp0_write_frame = Some(frame); },
+                "BATTLE_PALETTE_OBP0" if age == 0 => {
+                    registers.obp0 = effect.param;
+                    registers.obp0_write_frame = Some(frame);
+                }
                 "BATTLE_PALETTE_OBP1" if age == 0 => registers.obp1 = effect.param,
                 "BATTLE_BG_EFFECT_FLASH_INVERTED" | "BATTLE_BG_EFFECT_FLASH_WHITE" => {
                     let interval = battle_bg_effect_reload_interval(effect);
@@ -2746,14 +2800,11 @@ fn spawn_battle_battler_markers(
     let enemy_line_offsets = visible_battler_line_offsets(line_offsets.as_ref(), move_enemy_bgp);
     let render_hp = |side, hp| {
         let unchecked_spikes_ko = match side {
-            crate::core::battle::turn::BattleSide::Player => {
-                battle.player_spikes_zero_hp_unchecked
-            }
-            crate::core::battle::turn::BattleSide::Enemy => {
-                battle.enemy_spikes_zero_hp_unchecked
-            }
+            crate::core::battle::turn::BattleSide::Player => battle.player_spikes_zero_hp_unchecked,
+            crate::core::battle::turn::BattleSide::Enemy => battle.enemy_spikes_zero_hp_unchecked,
         };
-        let faint_pending = pending_faint_sides[usize::from(side == crate::core::battle::turn::BattleSide::Enemy)];
+        let faint_pending =
+            pending_faint_sides[usize::from(side == crate::core::battle::turn::BattleSide::Enemy)];
         if hp == 0 && (unchecked_spikes_ko || faint_pending) {
             1
         } else {
@@ -2810,19 +2861,33 @@ fn spawn_battle_battler_markers(
         None
     };
     let player_default_dvs = active_player_pokemon.map(|pokemon| {
-        if transform_pending_player { pokemon.dvs }
-        else { battle.player_transformed_dvs.unwrap_or(pokemon.dvs) }
+        if transform_pending_player {
+            pokemon.dvs
+        } else {
+            battle.player_transformed_dvs.unwrap_or(pokemon.dvs)
+        }
     });
-    let enemy_default_dvs = if transform_pending_enemy { battle.enemy_pokemon.dvs }
-        else { battle.enemy_transformed_dvs.unwrap_or(battle.enemy_pokemon.dvs) };
+    let enemy_default_dvs = if transform_pending_enemy {
+        battle.enemy_pokemon.dvs
+    } else {
+        battle
+            .enemy_transformed_dvs
+            .unwrap_or(battle.enemy_pokemon.dvs)
+    };
     let enemy_render_dvs = if move_enemy_art == VisibleBattlerArtOverride::Transform {
         player_default_dvs.context("enemy Transform requires active player DVs")?
-    } else { enemy_default_dvs };
+    } else {
+        enemy_default_dvs
+    };
     let player_render_dvs = if move_player_art == VisibleBattlerArtOverride::Transform {
         Some(enemy_default_dvs)
-    } else { player_default_dvs };
-    let enemy_render_shiny = move_enemy_shiny.unwrap_or_else(|| visible_dvs_are_shiny(enemy_render_dvs));
-    let player_render_shiny = move_player_shiny.unwrap_or_else(|| player_render_dvs.is_some_and(visible_dvs_are_shiny));
+    } else {
+        player_default_dvs
+    };
+    let enemy_render_shiny =
+        move_enemy_shiny.unwrap_or_else(|| visible_dvs_are_shiny(enemy_render_dvs));
+    let player_render_shiny =
+        move_player_shiny.unwrap_or_else(|| player_render_dvs.is_some_and(visible_dvs_are_shiny));
     let send_out_scale = |side| {
         send_out_animation
             .filter(|animation| animation.side == side)
@@ -2902,16 +2967,19 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            &pokemon_asset_id_for_dvs(player_transform_species.unwrap_or_else(|| {
-                if transform_pending_player {
-                    &slot.pokemon.species.id
-                } else {
-                    battle
-                        .player_transformed_species
-                        .as_deref()
-                        .unwrap_or(&slot.pokemon.species.id)
-                }
-            }), player_render_dvs.unwrap_or(slot.pokemon.dvs)),
+            &pokemon_asset_id_for_dvs(
+                player_transform_species.unwrap_or_else(|| {
+                    if transform_pending_player {
+                        &slot.pokemon.species.id
+                    } else {
+                        battle
+                            .player_transformed_species
+                            .as_deref()
+                            .unwrap_or(&slot.pokemon.species.id)
+                    }
+                }),
+                player_render_dvs.unwrap_or(slot.pokemon.dvs),
+            ),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
@@ -3046,15 +3114,26 @@ fn spawn_battle_battler_markers(
         let columns = (20 - left_column).min(7);
         if columns > 0 {
             spawn_battle_trainer_marker_columns(
-                commands, rendered_art, asset_root, images,
-                &format!("battle-trainer:{}", normalize_battle_trainer_sprite_id(trainer_class)),
-                Vec3::new(PLAYFIELD_LEFT + TILE_SIZE * f32::from(left_column), PLAYFIELD_TOP, 3.0),
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                &format!(
+                    "battle-trainer:{}",
+                    normalize_battle_trainer_sprite_id(trainer_class)
+                ),
+                Vec3::new(
+                    PLAYFIELD_LEFT + TILE_SIZE * f32::from(left_column),
+                    PLAYFIELD_TOP,
+                    3.0,
+                ),
                 Some(columns),
             )?;
         }
     }
     let enemy_scale = send_out_scale(crate::core::battle::turn::BattleSide::Enemy);
-    if trainer_result_frame.is_none() && !capture_enemy_hidden
+    if trainer_result_frame.is_none()
+        && !capture_enemy_hidden
         && (move_enemy_visible || move_enemy_row_extraction.is_some())
         && enemy_scale > 0.0
     {
@@ -3145,16 +3224,19 @@ fn spawn_battle_battler_markers(
             rendered_art,
             asset_root,
             images,
-            &pokemon_asset_id_for_dvs(player_transform_species.unwrap_or_else(|| {
-                if transform_pending_player {
-                    &slot.pokemon.species.id
-                } else {
-                    battle
-                        .player_transformed_species
-                        .as_deref()
-                        .unwrap_or(&slot.pokemon.species.id)
-                }
-            }), player_render_dvs.unwrap_or(slot.pokemon.dvs)),
+            &pokemon_asset_id_for_dvs(
+                player_transform_species.unwrap_or_else(|| {
+                    if transform_pending_player {
+                        &slot.pokemon.species.id
+                    } else {
+                        battle
+                            .player_transformed_species
+                            .as_deref()
+                            .unwrap_or(&slot.pokemon.species.id)
+                    }
+                }),
+                player_render_dvs.unwrap_or(slot.pokemon.dvs),
+            ),
             PokemonSpriteSide::Back,
             render_hp(
                 crate::core::battle::turn::BattleSide::Player,
@@ -3214,7 +3296,15 @@ fn spawn_battle_trainer_marker(
     asset_id: &str,
     top_left: Vec3,
 ) -> Result<()> {
-    spawn_battle_trainer_marker_columns(commands, rendered_art, asset_root, images, asset_id, top_left, None)
+    spawn_battle_trainer_marker_columns(
+        commands,
+        rendered_art,
+        asset_root,
+        images,
+        asset_id,
+        top_left,
+        None,
+    )
 }
 
 fn spawn_battle_trainer_marker_columns(
@@ -3241,7 +3331,9 @@ fn spawn_battle_trainer_marker_columns(
         .context("cached battle trainer art disappeared")?;
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     let cropped_size = Vec2::new(
-        columns.map_or(frame.size.x, |count| f32::from(count) * SOURCE_TILE_SIZE as f32),
+        columns.map_or(frame.size.x, |count| {
+            f32::from(count) * SOURCE_TILE_SIZE as f32
+        }),
         frame.size.y,
     );
     let display_size = cropped_size * source_scale;
@@ -3679,6 +3771,8 @@ fn spawn_visible_battler_extracted_rows(
             ..default()
         },
         BattleCommandMarker,
+        #[cfg(feature = "voxel-view")]
+        ImmersiveBattleReplaced,
     ));
 }
 
@@ -3921,16 +4015,18 @@ fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeSh
     // FaintYourPokemon/FaintEnemyPokemon erase the same boxes after the drop
     // and keep them erased until the next send-out.
     let mut cleared = shell.battle_fainted_hud;
-    if let Some(animation) = shell.visible_move_animations.front().filter(|animation|
-        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id))
-    {
+    if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
+        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id)
+    }) {
         cleared[usize::from(!animation.player_move)] = true;
     }
     for (cleared, left, top, width, height) in [
         (cleared[0], 9.0, 7.0, 11.0, 5.0),
         (cleared[1], 1.0, 0.0, 10.0, 4.0),
     ] {
-        if !cleared { continue; }
+        if !cleared {
+            continue;
+        }
         let (x, y) = field_window_center(left, top, width, height);
         commands.spawn((
             SpriteBundle {
@@ -3944,6 +4040,8 @@ fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeSh
             },
             BattleHudMarker,
             BattleCommandMarker,
+            #[cfg(feature = "voxel-view")]
+            ImmersiveBattleReplaced,
         ));
     }
 }
@@ -3996,8 +4094,13 @@ fn spawn_battle_hud(
             hp_tween.map(|tween| tween.player_hp),
         )?;
         spawn_battle_exp_bar(
-            commands, &slot.pokemon, growth_rates, rendered_art, asset_root,
-            images, exp_tween.map(|tween| tween.pixels),
+            commands,
+            &slot.pokemon,
+            growth_rates,
+            rendered_art,
+            asset_root,
+            images,
+            exp_tween.map(|tween| tween.pixels),
         )?;
         return Ok(());
     }
@@ -5056,6 +5159,8 @@ fn spawn_visible_move_animation_overlay(commands: &mut Commands, runtime_shell: 
                     ..default()
                 },
                 BattleCommandMarker,
+                #[cfg(feature = "voxel-view")]
+                ImmersiveBattleReplaced,
             ));
         }
         return;
@@ -5181,9 +5286,14 @@ fn spawn_visible_move_animation_objects(
     };
     let bundle = battle_anim_render_bundle(rendered_art, snapshot)?;
     let mut playback = match rendered_art.battle_object_runtime.take() {
-        Some(playback) if playback.source == animation.object_events
-            && playback.player == animation.player_move && playback.label == animation.animation_label
-            && u32::from(animation.frame) + 1 >= playback.next_tick => playback,
+        Some(playback)
+            if playback.source == animation.object_events
+                && playback.player == animation.player_move
+                && playback.label == animation.animation_label
+                && u32::from(animation.frame) + 1 >= playback.next_tick =>
+        {
+            playback
+        }
         _ => new_visible_battle_objects(&bundle, animation)?,
     };
     advance_visible_battle_objects(&mut playback, &bundle, animation)?;
@@ -5193,22 +5303,39 @@ fn spawn_visible_move_animation_objects(
     let mut dmg_palettes = visible_battle_dmg_palette_registers(Some(animation));
     if let Some((tick, value)) = object_obp0_write {
         // Source order is commands, background effects, then object callbacks.
-        if dmg_palettes.obp0_write_frame.is_none_or(|frame| tick >= u32::from(frame)) {
+        if dmg_palettes
+            .obp0_write_frame
+            .is_none_or(|frame| tick >= u32::from(frame))
+        {
             dmg_palettes.obp0 = value;
         }
     }
     for (slot_index, live) in live_slots.iter().enumerate() {
-        let Some(live) = live else { continue; };
-        if live.oam.entries.is_empty() { continue; }
-        let VisibleMoveObjectCommand::Spawn { object_id, .. } = &animation.object_events[live.event_index].command else { unreachable!() };
+        let Some(live) = live else {
+            continue;
+        };
+        if live.oam.entries.is_empty() {
+            continue;
+        }
+        let VisibleMoveObjectCommand::Spawn { object_id, .. } =
+            &animation.object_events[live.event_index].command
+        else {
+            unreachable!()
+        };
         let object = &bundle["objects"][object_id];
         let frameset_name = live.frameset;
         let frame_index = live.frame;
-        let frame = bundle["framesets"][frameset_name].as_array()
-            .and_then(|frames| frames.get(frame_index)).context("live battle frameset overran")?;
+        let frame = bundle["framesets"][frameset_name]
+            .as_array()
+            .and_then(|frames| frames.get(frame_index))
+            .context("live battle frameset overran")?;
         let palette_override = Some(match live.bytes[5] & 7 {
-            0 => "PAL_BATTLE_OB_GRAY", 1 => "PAL_BATTLE_OB_YELLOW", 2 => "PAL_BATTLE_OB_RED",
-            3 => "PAL_BATTLE_OB_GREEN", 4 => "PAL_BATTLE_OB_BLUE", 5 => "PAL_BATTLE_OB_BROWN",
+            0 => "PAL_BATTLE_OB_GRAY",
+            1 => "PAL_BATTLE_OB_YELLOW",
+            2 => "PAL_BATTLE_OB_RED",
+            3 => "PAL_BATTLE_OB_GREEN",
+            4 => "PAL_BATTLE_OB_BLUE",
+            5 => "PAL_BATTLE_OB_BROWN",
             other => anyhow::bail!("invalid live battle palette {other}"),
         });
         let rendered = battle_anim_rendered_frame(
@@ -5248,7 +5375,10 @@ fn spawn_visible_move_animation_objects(
                     PLAYFIELD_TOP
                         - (destination_y as f32 + rendered.sprite.size.y / scale / 2.0) * scale,
                     if animation.animation_label == "BattleAnim_ThrowPokeBall"
-                        && matches!(object_id.as_str(), "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED")
+                        && matches!(
+                            object_id.as_str(),
+                            "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
+                        )
                     {
                         4.1 - slot_index as f32 * 0.001
                     } else {
@@ -5258,6 +5388,8 @@ fn spawn_visible_move_animation_objects(
                 ..default()
             },
             BattleCommandMarker,
+            #[cfg(feature = "voxel-view")]
+            ImmersiveBattleReplaced,
         ));
     }
     Ok(())
@@ -5411,8 +5543,13 @@ fn battle_anim_rendered_frame(
         palette_override.unwrap_or("default"),
     );
     let cache_key = if let Some(oam) = runtime_oam {
-        format!("{cache_key}:{:?}:{:?}:{:?}", oam.origin, oam.entries, oam.rows)
-    } else { cache_key };
+        format!(
+            "{cache_key}:{:?}:{:?}:{:?}",
+            oam.origin, oam.entries, oam.rows
+        )
+    } else {
+        cache_key
+    };
     if let Some(rendered) = rendered_art.battle_anim_object_cache.get(&cache_key) {
         return Ok(rendered.clone());
     }
@@ -5495,7 +5632,9 @@ fn battle_anim_rendered_frame(
         let mut max_x = 0_i32;
         let mut max_y = 0_i32;
         for (piece_index, entry) in entries.iter().enumerate() {
-            if runtime_oam.is_some_and(|oam| piece_index >= oam.entries.len()) { break; }
+            if runtime_oam.is_some_and(|oam| piece_index >= oam.entries.len()) {
+                break;
+            }
             let runtime_piece = runtime_oam.map(|oam| oam.entries[piece_index]);
             let entry_x = entry
                 .get("x")
@@ -5512,8 +5651,13 @@ fn battle_anim_rendered_frame(
             let x = if frame_xflip { -(entry_x + 8) } else { entry_x };
             let y = if frame_yflip { -(entry_y + 8) } else { entry_y };
             let (x, y) = if let (Some(oam), Some(piece)) = (runtime_oam, runtime_piece) {
-                (i32::from(piece[1]) - oam.origin.0, i32::from(piece[0]) - oam.origin.1)
-            } else { (x, y) };
+                (
+                    i32::from(piece[1]) - oam.origin.0,
+                    i32::from(piece[0]) - oam.origin.1,
+                )
+            } else {
+                (x, y)
+            };
             let entry_xflip = entry
                 .get("xflip")
                 .and_then(serde_json::Value::as_bool)
@@ -5532,9 +5676,7 @@ fn battle_anim_rendered_frame(
             let obp = match entry.get("obp") {
                 None | Some(serde_json::Value::Null) => 0,
                 Some(value) => value.as_u64().with_context(|| {
-                    format!(
-                        "battle animation OAM set {oam_name} has a non-numeric obp: {entry}"
-                    )
+                    format!("battle animation OAM set {oam_name} has a non-numeric obp: {entry}")
                 })?,
             };
             let obp = runtime_piece.map_or(obp, |piece| u64::from((piece[3] >> 4) & 1));
@@ -5551,9 +5693,12 @@ fn battle_anim_rendered_frame(
                 let palette_id = piece[3] & 7;
                 object_palette = if palette_id < 2 { obp0 } else { 0xe4 };
                 let name = ["gray", "yellow", "red", "green", "blue", "brown"]
-                    .get(usize::from(palette_id)).context("unsupported CGB object palette")?;
+                    .get(usize::from(palette_id))
+                    .context("unsupported CGB object palette")?;
                 load_battle_anim_palette(asset_root, name)?
-            } else { palette };
+            } else {
+                palette
+            };
             let tile_id = entry
                 .get("tile_id")
                 .and_then(serde_json::Value::as_i64)
@@ -5575,9 +5720,13 @@ fn battle_anim_rendered_frame(
             let mut pixels = [0_u8; 8 * 8 * 4];
             for output_y in 0..8_usize {
                 for output_x in 0..8_usize {
-                    if runtime_oam.is_some_and(|oam| !oam.rows[piece_index][output_y]) { continue; }
-                    let effective_xflip = runtime_piece.map_or(entry_xflip ^ frame_xflip, |piece| piece[3] & 0x20 != 0);
-                    let effective_yflip = runtime_piece.map_or(entry_yflip ^ frame_yflip, |piece| piece[3] & 0x40 != 0);
+                    if runtime_oam.is_some_and(|oam| !oam.rows[piece_index][output_y]) {
+                        continue;
+                    }
+                    let effective_xflip = runtime_piece
+                        .map_or(entry_xflip ^ frame_xflip, |piece| piece[3] & 0x20 != 0);
+                    let effective_yflip = runtime_piece
+                        .map_or(entry_yflip ^ frame_yflip, |piece| piece[3] & 0x40 != 0);
                     let source_x = if effective_xflip {
                         7 - output_x
                     } else {
@@ -5754,13 +5903,29 @@ fn spawn_battle_command_menu(
         );
     }
     if visible_battle_command_animation_active(runtime_shell) {
-        spawn_battle_window(commands, rendered_art, asset_root, images,
-            BATTLE_TEXT_BOX_LEFT_TILE, BATTLE_TEXT_BOX_TOP_TILE,
-            BATTLE_TEXT_BOX_WIDTH_TILES, BATTLE_TEXT_BOX_HEIGHT_TILES, 3.5);
+        spawn_battle_window(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            BATTLE_TEXT_BOX_LEFT_TILE,
+            BATTLE_TEXT_BOX_TOP_TILE,
+            BATTLE_TEXT_BOX_WIDTH_TILES,
+            BATTLE_TEXT_BOX_HEIGHT_TILES,
+            3.5,
+        );
         for (index, line) in runtime_shell.battle_retained_text.iter().enumerate() {
             let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
-            spawn_battle_command_bitmap_text(commands, rendered_art, asset_root, images,
-                line, x, y, 3.8);
+            spawn_battle_command_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                line,
+                x,
+                y,
+                3.8,
+            );
         }
         return Ok(());
     }
@@ -6269,6 +6434,8 @@ fn spawn_visible_send_out_poof(
             ..default()
         },
         BattleCommandMarker,
+        #[cfg(feature = "voxel-view")]
+        ImmersiveBattleReplaced,
     ));
     Ok(())
 }
@@ -7683,10 +7850,7 @@ fn spawn_battle_window(
             SpriteBundle {
                 sprite: Sprite {
                     color: Color::WHITE,
-                    custom_size: Some(Vec2::new(
-                        TILE_SIZE * width_tiles,
-                        TILE_SIZE * height_tiles,
-                    )),
+                    custom_size: Some(Vec2::new(TILE_SIZE * width_tiles, TILE_SIZE * height_tiles)),
                     ..default()
                 },
                 transform: Transform::from_xyz(center_x, center_y, z),
@@ -8181,9 +8345,9 @@ fn item_display_name(snapshot: &RuntimeShellSnapshot, item_id: &str) -> String {
 fn source_type_display_name(type_id: &str) -> Result<&str> {
     // constants/type_constants.asm indexes data/types/names.asm.
     match type_id {
-        "NORMAL" | "FIGHTING" | "FLYING" | "POISON" | "GROUND" | "ROCK"
-        | "BIRD" | "BUG" | "GHOST" | "STEEL" | "FIRE" | "WATER" | "GRASS"
-        | "ELECTRIC" | "ICE" | "DRAGON" | "DARK" => Ok(type_id),
+        "NORMAL" | "FIGHTING" | "FLYING" | "POISON" | "GROUND" | "ROCK" | "BIRD" | "BUG"
+        | "GHOST" | "STEEL" | "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "ICE" | "DRAGON"
+        | "DARK" => Ok(type_id),
         "PSYCHIC_TYPE" => Ok("PSYCHIC"),
         "CURSE_TYPE" => Ok("???"),
         _ => anyhow::bail!("type {type_id:?} has no source TypeNames entry"),
@@ -8442,7 +8606,10 @@ fn visible_battle_pack_target_entries(
     mode: BattlePackTargetMode,
 ) -> Result<Vec<String>> {
     let selected_party = runtime_shell.party_cursor;
-    anyhow::ensure!(selected_party < snapshot.party.slots.len(), "battle item target party cursor is invalid");
+    anyhow::ensure!(
+        selected_party < snapshot.party.slots.len(),
+        "battle item target party cursor is invalid"
+    );
     selected_battle_pack_item_label(snapshot, runtime_shell)
         .context("battle item target requires a selected item")?;
     let mut entries = Vec::new();
@@ -8746,7 +8913,13 @@ fn load_bitmap_font_extra_glyphs(
     // ID and the number symbol share tile addresses with font_extra punctuation.
     for (ch, tile) in [('\u{e10a}', 0x6e), ('\u{e10b}', 0x73), ('№', 0x74)] {
         let handle = bitmap_font_2bpp_tile_handle(&battle_extra, tile - 0x60, images)?;
-        glyphs.insert(ch, SpriteFrame { handle, size: Vec2::splat(BITMAP_FONT_GLYPH_SIZE) });
+        glyphs.insert(
+            ch,
+            SpriteFrame {
+                handle,
+                size: Vec2::splat(BITMAP_FONT_GLYPH_SIZE),
+            },
+        );
     }
     Ok(())
 }

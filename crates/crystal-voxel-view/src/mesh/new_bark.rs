@@ -405,7 +405,21 @@ pub(super) fn append_building(
     claimed: &mut [bool],
 ) -> bool {
     if map == "VioletCity" && sprout_platform(cells, geometry, placement) {
-        return append_sprout_platform(mesh, cells, shapes, geometry, placement, claimed);
+        let appended = append_sprout_platform(mesh, cells, shapes, geometry, placement, claimed);
+        if appended {
+            mark_authored_rect(
+                mesh,
+                geometry,
+                [
+                    placement.column,
+                    placement.row,
+                    placement.width,
+                    placement.height,
+                ],
+                "johto/sprout_forecourt",
+            );
+        }
+        return appended;
     }
     let Some(descriptor) = building_model(map, cells, geometry, placement) else {
         return false;
@@ -434,6 +448,17 @@ pub(super) fn append_building(
         0.0,
         geometry.tile_height * 2.0,
         Some(west + descriptor.door_column as f32 * geometry.tile_width),
+    );
+    mark_authored_rect(
+        mesh,
+        geometry,
+        [
+            placement.column,
+            placement.row,
+            placement.width,
+            placement.height,
+        ],
+        descriptor.kind.label(),
     );
     true
 }
@@ -580,6 +605,12 @@ pub(super) fn append_signs(
                 [0.44, 0.46, 0.34, 1.0],
             );
         }
+        mark_authored_rect(
+            mesh,
+            geometry,
+            [placement.column, placement.row, 2, 2],
+            "johto/signboard",
+        );
     }
 }
 
@@ -864,6 +895,17 @@ pub(super) fn append_tree(
         color[1] *= brightness;
         color[2] *= brightness * (1.03 - seed * 0.05);
     }
+    mark_authored_rect(
+        mesh,
+        geometry,
+        [
+            placement.column,
+            placement.row,
+            placement.width,
+            placement.height,
+        ],
+        "johto/tree",
+    );
     true
 }
 
@@ -990,20 +1032,46 @@ enum GroundMaterial {
     Water,
     Shore,
     Bank,
+    Pavers,
+    Stone,
+    Ice,
 }
 
 /// The atlas sample, not an object's plot, identifies the exposed ground under
 /// a modeled tree, house, sign or flower. Unknown art stays untouched.
 fn ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
-    if source.tileset_id.as_ref() != "johto" {
+    let tileset = source.tileset_id.as_ref();
+    if !matches!(
+        tileset,
+        "johto"
+            | "johto_modern"
+            | "kanto"
+            | "forest"
+            | "park"
+            | "battle_tower_outside"
+            | "cave"
+            | "dark_cave"
+            | "ice_path"
+    ) {
         return None;
     }
     match shape_for_source(source) {
-        CellShape::Flat => match source.tile_index {
-            0x05 => Some(GroundMaterial::Lawn),
-            0x06 => Some(GroundMaterial::Path),
-            _ => None,
-        },
+        CellShape::Flat | CellShape::PlaneAt { height: 0.0 } => {
+            match (tileset, source.tile_index) {
+                ("johto" | "johto_modern" | "forest" | "battle_tower_outside", 0x05)
+                | ("kanto", 0x2c)
+                | ("park", 0x01) => Some(GroundMaterial::Lawn),
+                ("johto" | "johto_modern" | "battle_tower_outside", 0x06)
+                | ("kanto", 0x0d | 0x39) => Some(GroundMaterial::Path),
+                ("johto_modern", 0x2f) if matches!(source.metatile_id, 0x06 | 0x66 | 0x77) => {
+                    Some(GroundMaterial::Pavers)
+                }
+                ("park", 0x00) => Some(GroundMaterial::Pavers),
+                ("cave" | "dark_cave", 0x16) | ("ice_path", 0x19) => Some(GroundMaterial::Stone),
+                ("ice_path", 0xc6) => Some(GroundMaterial::Ice),
+                _ => None,
+            }
+        }
         CellShape::Water => Some(GroundMaterial::Water),
         CellShape::ShoreBand => Some(GroundMaterial::Shore),
         _ => None,
@@ -1045,6 +1113,9 @@ fn ground_color(material: GroundMaterial, p: [f32; 3], geometry: &GridGeometry) 
         GroundMaterial::Water => ([0.095, 0.30, 0.32], broad * 0.036 + fine * 0.010),
         GroundMaterial::Shore => ([0.45, 0.46, 0.37], broad * 0.032 + fine * 0.024),
         GroundMaterial::Bank => ([0.39, 0.37, 0.29], broad * 0.035 + fine * 0.020),
+        GroundMaterial::Pavers => ([0.53, 0.51, 0.45], broad * 0.035 + fine * 0.015),
+        GroundMaterial::Stone => ([0.35, 0.36, 0.33], broad * 0.055 + fine * 0.020),
+        GroundMaterial::Ice => ([0.38, 0.56, 0.61], broad * 0.040 + fine * 0.015),
     };
     [
         base[0] + variation,
@@ -1252,7 +1323,7 @@ fn surface_material(
             .then_some(material);
         }
         let world = world?;
-        if cells[world].source.tileset_id.as_ref() != "johto" {
+        if cells[world].source.tileset_id != sample.tileset_id {
             return None;
         }
         // Sampled ground may be beneath any authored object. Water and shore
@@ -1444,6 +1515,42 @@ impl<'a> GroundFinish<'a> {
         let [w, e, n, s] = face_bounds(&positions);
         let full_cell = (e - w - self.geometry.tile_width).abs() < 0.001
             && (s - n - self.geometry.tile_height).abs() < 0.001;
+        if full_cell && material == GroundMaterial::Pavers {
+            let column = ((w - self.geometry.origin_x) / self.geometry.tile_width).round() as i32
+                + self.map_origin[0];
+            let row = ((n - self.geometry.origin_z) / self.geometry.tile_height).round() as i32
+                + self.map_origin[1];
+            let gap = self.geometry.tile_width * 0.02;
+            let inset_w = if column.rem_euclid(2) == 0 { gap } else { 0.0 };
+            let inset_n = if row.rem_euclid(2) == 0 { gap } else { 0.0 };
+            let mut seam = self.color(material, [(w + e) * 0.5, 0.0, (n + s) * 0.5]);
+            for c in &mut seam[..3] {
+                *c *= 0.79;
+            }
+            let rectangles = [
+                ([w, w + inset_w, n, s], true),
+                ([w + inset_w, e, n, n + inset_n], true),
+                ([w + inset_w, e, n + inset_n, s], false),
+            ];
+            for ([x0, x1, z0, z1], is_seam) in rectangles {
+                if x1 <= x0 || z1 <= z0 {
+                    continue;
+                }
+                let p = [[x0, 0.0, z0], [x0, 0.0, z1], [x1, 0.0, z1], [x1, 0.0, z0]];
+                append_quad_colors(
+                    mesh,
+                    p,
+                    [0.0, 1.0, 0.0],
+                    [[0.0; 2]; 4],
+                    if is_seam {
+                        [seam; 4]
+                    } else {
+                        p.map(|p| self.color(material, p))
+                    },
+                );
+            }
+            return;
+        }
         if !full_cell || !matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
             append_quad_colors(
                 mesh,
@@ -1597,9 +1704,20 @@ pub(super) fn polish_surfaces(
     geometry: &GridGeometry,
     map_origin: [i32; 2],
 ) {
-    if !supports_map(map) {
-        return;
+    if supports_map(map) {
+        polish_world_surfaces(mesh, map, cells, geometry, map_origin);
     }
+}
+
+/// Finish known atlas ground throughout the authored world. The source sampler
+/// and actual world cell must agree; new object/coverage claims are never made.
+pub(super) fn polish_world_surfaces(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    geometry: &GridGeometry,
+    map_origin: [i32; 2],
+) {
     let finish = GroundFinish::new(map, cells, geometry, map_origin);
     // The terrain mesher encodes faces as four vertices and six indices,
     // including polygon fans. Refuse unfamiliar topology rather than alter it.
@@ -2514,6 +2632,12 @@ mod tests {
         );
         let mut non_johto = source_with_tile(0x01, 0, 0, 0x05);
         non_johto.tileset_id = std::sync::Arc::from("forest");
+        assert_eq!(
+            ground_material(&non_johto),
+            Some(GroundMaterial::Lawn),
+            "the source-verified forest underlay shares the meadow finish"
+        );
+        non_johto.tileset_id = std::sync::Arc::from("unknown_mod");
         assert_eq!(ground_material(&non_johto), None);
     }
 
@@ -2877,5 +3001,55 @@ mod tests {
         assert!(claimed.iter().all(|claimed| *claimed));
         assert!(!mesh.solid.indices.is_empty());
         assert_eq!(mesh.textured.quad_count(), cells.len());
+    }
+    #[test]
+    fn expanded_ground_finishes_are_source_exact_and_never_object_coverage() {
+        let mut source = source_with_tile(0x06, 0, 0, 0x2f);
+        source.tileset_id = "johto_modern".into();
+        assert_eq!(ground_material(&source), Some(GroundMaterial::Pavers));
+        source.tileset_id = "johto".into();
+        assert_eq!(
+            ground_material(&source),
+            None,
+            "same number in another atlas is not pavement"
+        );
+        source.tileset_id = "cave".into();
+        source.tile_index = 0x16;
+        assert_eq!(ground_material(&source), Some(GroundMaterial::Stone));
+        source.tileset_id = "unknown_mod".into();
+        assert_eq!(ground_material(&source), None);
+    }
+
+    #[test]
+    fn paving_finish_preserves_support_and_source_bounds() {
+        let mut source = source_with_tile(0x06, 0, 0, 0x2f);
+        source.tileset_id = "johto_modern".into();
+        let frame = frame(1, 1, vec![source]);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = GridGeometry {
+            width: 1,
+            height: 1,
+            tile_width: 8.0,
+            tile_height: 8.0,
+            origin_x: 0.0,
+            origin_z: 0.0,
+        };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.0],
+            authored_cells: vec![None],
+            ..Default::default()
+        };
+        append_top(&mut mesh.textured, [0.0, 8.0, 0.0, 8.0], 0.0, g.uv(0, 0));
+        polish_world_surfaces(&mut mesh, "GoldenrodCity", &cells, &g, [0, 0]);
+        assert!(mesh.textured.positions.is_empty());
+        assert!(!mesh.solid.positions.is_empty());
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| p[1] == 0.0 && (0.0..=8.0).contains(&p[0]) && (0.0..=8.0).contains(&p[2]))
+        );
+        assert_eq!(mesh.footing_heights, vec![0.0]);
+        assert_eq!(mesh.authored_cells, vec![None]);
     }
 }

@@ -599,7 +599,9 @@ fn load_tileset_art(
                     ((source_tile_index % columns) * 8 + x) as u32,
                     ((source_tile_index / columns) * 8 + y) as u32,
                 );
-                indices[y * 8 + x] = if pixel[3] == 0 { 0 } else {
+                indices[y * 8 + x] = if pixel[3] == 0 {
+                    0
+                } else {
                     palette_index_from_gray(pixel[0]) as u8
                 };
             }
@@ -607,7 +609,9 @@ fn load_tileset_art(
         transition_tiles.push(BattleTransitionTile {
             priority_from_row: None,
             indices,
-            palette: palette.copied().unwrap_or([[255; 3], [170; 3], [85; 3], [0; 3]]),
+            palette: palette
+                .copied()
+                .unwrap_or([[255; 3], [170; 3], [85; 3], [0; 3]]),
         });
         let mut priority_data = data.clone();
         clear_source_tile_palette_zero_alpha(
@@ -1155,7 +1159,13 @@ fn clear_source_tile_palette_zero_alpha(
     }
 }
 
-fn resolve_tileset_tile_index(source_tile_count: usize, tile_index: usize, vram_bank: u8) -> usize {
+/// Shared source-art bank addressing for the renderer and pack-contained
+/// geometry auditor. Source identity remains the original tile index.
+pub fn resolve_tileset_tile_index(
+    source_tile_count: usize,
+    tile_index: usize,
+    vram_bank: u8,
+) -> usize {
     if source_tile_count == 0 {
         return 0;
     }
@@ -1332,10 +1342,8 @@ fn intro_scene_frame_for_art(
     let title_path = asset_root
         .runtime_assets()
         .join("data/content-packs/core-modular/runtime_title_screen/title.json");
-    let title: crystal_assets::RuntimeTitleScreen = serde_json::from_str(
-        &crate::read_runtime_asset_to_string(&title_path).ok()?,
-    )
-    .ok()?;
+    let title: crystal_assets::RuntimeTitleScreen =
+        serde_json::from_str(&crate::read_runtime_asset_to_string(&title_path).ok()?).ok()?;
     let mut render_intro = intro.clone();
     apply_visible_intro_background_binding(&mut render_intro, &title.program).ok()?;
     intro_scene_frame_for_art_with_bundle(
@@ -1411,7 +1419,10 @@ fn load_intro_scene_frame(
     })
 }
 
-fn apply_visible_intro_scanline_scroll(intro: &VisibleIntroScreen, target: &mut [u8]) -> Result<()> {
+fn apply_visible_intro_scanline_scroll(
+    intro: &VisibleIntroScreen,
+    target: &mut [u8],
+) -> Result<()> {
     const INTRO_BACKING_WIDTH: usize = 32 * SOURCE_TILE_SIZE;
     if intro.lcdc_pointer == 0 {
         return Ok(());
@@ -1508,16 +1519,10 @@ fn draw_intro_tilemap(
 ) -> Result<()> {
     const INTRO_SURFACE_TILES: usize = 32;
     let intro_root = asset_root.runtime_assets().join("gfx/intro");
-    let tilemap_path = visible_intro_resource_path(
-        &intro_root,
-        &background.tilemap_resource,
-        ".tilemap",
-    )?;
-    let attrmap_path = visible_intro_resource_path(
-        &intro_root,
-        &background.attrmap_resource,
-        ".attrmap",
-    )?;
+    let tilemap_path =
+        visible_intro_resource_path(&intro_root, &background.tilemap_resource, ".tilemap")?;
+    let attrmap_path =
+        visible_intro_resource_path(&intro_root, &background.attrmap_resource, ".attrmap")?;
     let palette_name = visible_intro_resource_stem(&background.palette_resource, ".pal")?;
     let tilemap = crate::read_runtime_asset(&tilemap_path)
         .with_context(|| format!("read {}", tilemap_path.display()))?;
@@ -1608,11 +1613,7 @@ fn draw_intro_tilemap(
     Ok(())
 }
 
-fn visible_intro_resource_path(
-    intro_root: &Path,
-    resource: &str,
-    suffix: &str,
-) -> Result<PathBuf> {
+fn visible_intro_resource_path(intro_root: &Path, resource: &str, suffix: &str) -> Result<PathBuf> {
     let relative = resource
         .strip_prefix("gfx/intro/")
         .with_context(|| format!("intro resource {resource} is outside gfx/intro"))?;
@@ -1684,12 +1685,10 @@ fn draw_visible_intro_sprites(
             let attr = (base_attr & !0xe0) | flipped_attr;
             let offset_x = apply_visible_intro_frame_flip(piece_x, (frame_flags & 0x20) != 0);
             let offset_y = apply_visible_intro_frame_flip(piece_y, (frame_flags & 0x40) != 0);
-            let draw_x = (sprite.x
-                + sprite.x_offset
-                + i16::from(intro.global_anim_x_offset)
-                + offset_x)
-                .rem_euclid(256)
-                - 8;
+            let draw_x =
+                (sprite.x + sprite.x_offset + i16::from(intro.global_anim_x_offset) + offset_x)
+                    .rem_euclid(256)
+                    - 8;
             let draw_y = (sprite.y + sprite.y_offset + offset_y).rem_euclid(256) - 16;
             let tile_id = sprite
                 .tile_id
@@ -2024,9 +2023,7 @@ fn visible_intro_effective_palette_cached(
         VisibleIntroPaletteEffect::UnownFade {
             palette_idx,
             colors,
-        }
-            if !is_obj_palette && palette_name == "unowns" =>
-        {
+        } if !is_obj_palette && palette_name == "unowns" => {
             let target = usize::from(*palette_idx & 0x07);
             if palette_index != target {
                 black
@@ -2070,7 +2067,10 @@ fn visible_intro_effective_palette_cached(
         VisibleIntroPaletteEffect::Scene24Fade { .. } => *base_palette,
         VisibleIntroPaletteEffect::CrystalWordFade { palette_colors }
             if palette_name == "crystal_unowns"
-                && palette_colors.get(palette_index).is_some_and(Option::is_some) => {
+                && palette_colors
+                    .get(palette_index)
+                    .is_some_and(Option::is_some) =>
+        {
             let colors = palette_colors[palette_index]
                 .context("intro Crystal-word palette disappeared after validation")?;
             let mut palette = *base_palette;
@@ -2328,8 +2328,8 @@ fn blit_intro_sprite_source_tile(
             if transparent_zero && palette_index == 0 {
                 continue;
             }
-            let priority = background_priority
-                [target_y as usize * INTRO_SURFACE_SIZE + target_x as usize];
+            let priority =
+                background_priority[target_y as usize * INTRO_SURFACE_SIZE + target_x as usize];
             if priority != 0 && attr & 0x80 != 0 {
                 continue;
             }
@@ -3050,7 +3050,11 @@ fn load_pokemon_animation_frame(
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let species_id = normalize_pokemon_asset_id(species_id);
-    let image_species = if species_id == "unown" { "unown_a" } else { &species_id };
+    let image_species = if species_id == "unown" {
+        "unown_a"
+    } else {
+        &species_id
+    };
     let image_path = pokemon_asset_path(asset_root, image_species, side, "png");
     let source = crate::open_runtime_image(&image_path)
         .with_context(|| format!("decode Pokemon sprite PNG {}", image_path.display()))?
@@ -3139,7 +3143,11 @@ fn load_pokemon_palette(
     shiny: bool,
 ) -> Result<Palette> {
     if shiny {
-        let species_id = if species_id.starts_with("unown_") { "unown" } else { species_id };
+        let species_id = if species_id.starts_with("unown_") {
+            "unown"
+        } else {
+            species_id
+        };
         let palette_path = asset_root
             .runtime_assets()
             .join("gfx/pokemon")
@@ -3151,14 +3159,21 @@ fn load_pokemon_palette(
         // supplies the endpoints. These are not four-color palette files.
         let mut colors = Vec::new();
         for raw_line in content.lines() {
-            let line = raw_line.split_once(';').map_or(raw_line, |(line, _)| line).trim();
+            let line = raw_line
+                .split_once(';')
+                .map_or(raw_line, |(line, _)| line)
+                .trim();
             if line.starts_with("RGB") {
                 let values = parse_rgb_values(line)?;
                 anyhow::ensure!(values.len() == 3, "invalid Pokemon palette line {line:?}");
                 colors.push(rgb_triplet_to_u8(&values)?);
             }
         }
-        anyhow::ensure!(colors.len() == 2, "Pokemon palette {} must contain two colors", palette_path.display());
+        anyhow::ensure!(
+            colors.len() == 2,
+            "Pokemon palette {} must contain two colors",
+            palette_path.display()
+        );
         return Ok([[255, 255, 255], colors[0], colors[1], [0, 0, 0]]);
     }
     let side_palette_path = pokemon_asset_path(asset_root, species_id, side, "gbcpal");
@@ -3596,9 +3611,13 @@ fn load_town_map_frame_with_nests(
 
 fn apply_pokegear_card_tabs(tilemap: &mut [u8], unlocked_mask: u8) {
     // Pokegear_FinishTilemap uses $4f for missing cards, not font-space $7f.
-    for row in 0..2 { tilemap[row * 20..row * 20 + 8].fill(0x4f); }
+    for row in 0..2 {
+        tilemap[row * 20..row * 20 + 8].fill(0x4f);
+    }
     for (bit, x, base) in [(0, 0, 0x46_u8), (1, 2, 0x40), (2, 4, 0x44), (3, 6, 0x42)] {
-        if bit != 0 && unlocked_mask & (1 << bit) == 0 { continue; }
+        if bit != 0 && unlocked_mask & (1 << bit) == 0 {
+            continue;
+        }
         tilemap[x] = base;
         tilemap[x + 1] = base + 1;
         tilemap[20 + x] = base + 0x10;
@@ -3664,7 +3683,10 @@ fn pokegear_card_frame_for_art(
     if let Some(error) = rendered_art.town_map_errors.get(&key) {
         anyhow::bail!("{error}");
     }
-    rendered_art.town_map_cache.get(&key).cloned()
+    rendered_art
+        .town_map_cache
+        .get(&key)
+        .cloned()
         .with_context(|| format!("Pokégear card {key:?} has no rendered frame"))
 }
 
@@ -4261,8 +4283,7 @@ fn grass_rustle_frames_for_art(
              -> SpriteFrame {
                 let canvas_width = GRASS_RUSTLE_CANVAS_SOURCE_SIZE.x;
                 let canvas_height = GRASS_RUSTLE_CANVAS_SOURCE_SIZE.y;
-                let mut pixels =
-                    vec![0; canvas_width as usize * canvas_height as usize * 4];
+                let mut pixels = vec![0; canvas_width as usize * canvas_height as usize * 4];
                 for piece in layout {
                     for y in 0..height {
                         for x in 0..width {
@@ -4273,9 +4294,8 @@ fn grass_rustle_frames_for_art(
                             }
                             let target_x = piece.x + x;
                             let target_y = piece.y + y;
-                            let offset = (target_y as usize * canvas_width as usize
-                                + target_x as usize)
-                                * 4;
+                            let offset =
+                                (target_y as usize * canvas_width as usize + target_x as usize) * 4;
                             let color = palette[palette_index_from_gray(pixel[0])];
                             pixels[offset] = color[0];
                             pixels[offset + 1] = color[1];
@@ -4484,13 +4504,19 @@ fn parse_npc_sprite_palette_bank(content: &str, time_of_day: &str) -> Result<Vec
     let normalized = normalize_tileset_time_of_day(time_of_day);
     // The renderer's indoor art mode uses the PALETTE_DAY object bank;
     // indoor is not a fifth wTimeOfDayPal value.
-    let group = if normalized == "indoor" { "day" } else { normalized.as_str() };
+    let group = if normalized == "indoor" {
+        "day"
+    } else {
+        normalized.as_str()
+    };
     // LoadMapPals indexes exactly eight palettes by wTimeOfDayPal.
     // A missing bank is invalid data, not permission to change the time.
     let palettes = parse_palette_file(content, Some(group))?;
-    anyhow::ensure!(palettes.len() == 8,
+    anyhow::ensure!(
+        palettes.len() == 8,
         "NPC sprite palette group {group} requires eight source palettes, got {}",
-        palettes.len());
+        palettes.len()
+    );
     Ok(palettes)
 }
 

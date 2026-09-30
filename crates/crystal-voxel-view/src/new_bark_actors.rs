@@ -1,7 +1,7 @@
 //! Articulated characters consume the authoritative presentation frame only.
 //! No input, collision, script, inventory, facing, or warp state is owned here.
 #[path = "johto_actor_props.rs"]
-mod actor_props;
+pub(crate) mod actor_props;
 #[path = "johto_characters.rs"]
 mod character_meshes;
 
@@ -158,64 +158,64 @@ struct Instance {
     idle_offset: f32,
 }
 
+struct PropInstance {
+    entity: Entity,
+    kind: actor_props::PropKind,
+}
+
 #[derive(Resource, Default)]
 pub(crate) struct ModeledActors {
     meshes: HashMap<CharacterKind, [Handle<Mesh>; JOINT_COUNT]>,
     material: Option<Handle<StandardMaterial>>,
+    remote_material: Option<Handle<StandardMaterial>>,
     shadow_mesh: Option<Handle<Mesh>>,
     shadow_material: Option<Handle<StandardMaterial>>,
     instances: HashMap<VisualActorId, Instance>,
     map_id: String,
-    fruit_mesh: Option<Handle<Mesh>>,
-    props: HashMap<VisualActorId, Entity>,
+    prop_meshes: HashMap<actor_props::PropKind, Handle<Mesh>>,
+    props: HashMap<VisualActorId, PropInstance>,
 }
 
 fn enabled_map(map: &str) -> bool {
-    crate::new_bark_models::supports_map(map)
+    // Actor assets are selected by the resolved presentation source. The map
+    // name cannot change a nurse into a scientist or suppress an indoor rig.
+    !map.is_empty()
 }
 
 /// The silhouette pass must use the same appearance test as the actual rig.
 /// Unsupported mounts keep their original card and its matching silhouette.
 pub(crate) fn has_modeled_player(frame: &VisualWorldFrame) -> bool {
     enabled_map(&frame.map_id)
-        && frame
-            .actors
-            .iter()
-            .any(|actor| actor.id == VisualActorId::Player && character_kind(actor).is_some())
+        && frame.actors.iter().any(|actor| {
+            actor.id == VisualActorId::Player
+                && (character_kind(actor).is_some() || prop_kind(actor).is_some())
+        })
 }
 
 fn character_kind(actor: &VisualActor) -> Option<CharacterKind> {
-    let source = actor.source_id.to_ascii_lowercase().replace(['_', '-'], "");
-    match actor.id {
-        VisualActorId::Player => match source.as_str() {
-            "kris" | "female" | "playerfemale" | "lyra" => Some(CharacterKind::TrainerFemale),
-            "player" | "chris" | "ethan" | "playermale" => Some(CharacterKind::Trainer),
-            // Bikes, surf mounts, disguises, and effects retain their accurate
-            // published art instead of displaying an unrelated walking person.
-            _ => None,
-        },
-        VisualActorId::RemotePlayer(_) => Some(CharacterKind::Trainer),
-        VisualActorId::Object(_) => Some(match source.as_str() {
-            "teacher" | "mom" | "pokefanf" | "granny" => CharacterKind::Teacher,
-            "lass" | "twin" | "cooltrainerf" | "beauty" => CharacterKind::Lass,
-            "scientist" | "supernerd" | "nurse" | "clerk" => CharacterKind::Scientist,
-            "silver" | "rival" => CharacterKind::Rival,
-            "youngster" | "bugcatcher" | "schoolboy" => CharacterKind::Youngster,
-            "fisher" | "fisherman" | "hiker" | "sailor" | "pokefanm" | "blackbelt" => {
-                CharacterKind::Outdoorsman
-            }
-            "gramps" | "gentleman" | "sage" | "elder" => CharacterKind::Elder,
-            "cooltrainerm" | "officer" | "rocket" => CharacterKind::Trainer,
-            _ => return None,
-        }),
-        VisualActorId::Effect(_) => None,
+    if matches!(actor.id, VisualActorId::Effect(_)) {
+        return None;
     }
+    character_meshes::kind_for_source(&actor.source_id)
 }
 
+pub(crate) fn authored_source(source: &str) -> Option<&'static str> {
+    character_meshes::SOURCE_KINDS
+        .iter()
+        .find_map(|&(name, _)| (name == source).then_some(name))
+        .or_else(|| actor_props::prop_kind_for_source(source).map(actor_props::PropKind::label))
+}
+
+fn prop_kind(actor: &VisualActor) -> Option<actor_props::PropKind> {
+    if matches!(actor.id, VisualActorId::Effect(_)) {
+        return None;
+    }
+    actor_props::prop_kind_for_source(&actor.source_id)
+}
+
+#[cfg(test)]
 fn is_fruit_tree(actor: &VisualActor) -> bool {
-    // Verified external-pack SPRITE_FRUIT_TREE is normalized to this exact
-    // source by the host. Never infer a tree from a green texture or NPC ID.
-    matches!(actor.id, VisualActorId::Object(_)) && actor.source_id.as_ref() == "fruit_tree"
+    prop_kind(actor) == Some(actor_props::PropKind::FruitTree)
 }
 
 fn facing_yaw(facing: Vec2) -> f32 {
@@ -348,6 +348,28 @@ fn pose(kind: CharacterKind, motion: &Motion, elapsed: f32) -> [Transform; JOINT
             Quat::from_rotation_x(-0.13 - 0.65 * run * w - swing.min(0.0).abs() * 0.28);
         result[hand].rotation = Quat::from_rotation_x(0.045 + swing * 0.08);
     }
+    if matches!(kind, CharacterKind::SwimmerGirl | CharacterKind::SwimmerGuy) {
+        // The source is a swimmer in the water, not a walking person balanced
+        // on its surface. Lower only the visual body; the production foot/root
+        // remains fixed and no physics or movement mode is inferred here.
+        result[PELVIS].translation.y -= 0.48;
+        result[TORSO].rotation = Quat::from_rotation_x(0.24);
+        for (side, upper, forearm, thigh, shin) in [
+            (-1.0, UPPER_ARM_L, FOREARM_L, THIGH_L, SHIN_L),
+            (1.0, UPPER_ARM_R, FOREARM_R, THIGH_R, SHIN_R),
+        ] {
+            let stroke = elapsed * 1.7 + side * PI * 0.5;
+            result[upper].rotation = Quat::from_euler(
+                EulerRot::XYZ,
+                -0.64 + stroke.sin() * (0.12 + w * 0.16),
+                0.0,
+                side * 0.48,
+            );
+            result[forearm].rotation = Quat::from_rotation_x(-0.42);
+            result[thigh].rotation = Quat::from_rotation_x(0.24 + stroke.sin() * 0.10);
+            result[shin].rotation = Quat::from_rotation_x(0.25);
+        }
+    }
     result
 }
 
@@ -389,8 +411,8 @@ pub(crate) fn sync(
         for (_, instance) in state.instances.drain() {
             commands.entity(instance.entity).despawn_recursive();
         }
-        for (_, entity) in state.props.drain() {
-            commands.entity(entity).despawn_recursive();
+        for (_, instance) in state.props.drain() {
+            commands.entity(instance.entity).despawn_recursive();
         }
         state.map_id = frame.map_id.to_string();
         if !enabled {
@@ -404,6 +426,13 @@ pub(crate) fn sync(
             reflectance: 0.14,
             ..default()
         }));
+        state.remote_material = Some(materials.add(StandardMaterial {
+            base_color: Color::srgba(0.48, 0.88, 1.0, 0.62),
+            alpha_mode: AlphaMode::Blend,
+            perceptual_roughness: 0.88,
+            reflectance: 0.14,
+            ..default()
+        }));
         state.shadow_mesh = Some(meshes.add(contact_shadow()));
         state.shadow_material = Some(materials.add(StandardMaterial {
             base_color: Color::WHITE,
@@ -413,6 +442,7 @@ pub(crate) fn sync(
         }));
     }
     let material = state.material.as_ref().unwrap().clone();
+    let remote_material = state.remote_material.as_ref().unwrap().clone();
     let visible: HashSet<_> = frame
         .actors
         .iter()
@@ -433,7 +463,7 @@ pub(crate) fn sync(
     let visible_props: HashSet<_> = frame
         .actors
         .iter()
-        .filter(|actor| is_fruit_tree(actor))
+        .filter(|actor| prop_kind(actor).is_some())
         .map(|a| a.id)
         .collect();
     let stale_props: Vec<_> = state
@@ -443,16 +473,26 @@ pub(crate) fn sync(
         .filter(|id| !visible_props.contains(id))
         .collect();
     for id in stale_props {
-        if let Some(entity) = state.props.remove(&id) {
-            commands.entity(entity).despawn_recursive();
+        if let Some(instance) = state.props.remove(&id) {
+            commands.entity(instance.entity).despawn_recursive();
         }
     }
-    for actor in frame.actors.iter().filter(|actor| is_fruit_tree(actor)) {
+    for actor in frame
+        .actors
+        .iter()
+        .filter(|actor| prop_kind(actor).is_some())
+    {
+        let material = if matches!(actor.id, VisualActorId::RemotePlayer(_)) {
+            remote_material.clone()
+        } else {
+            material.clone()
+        };
+        let kind = prop_kind(actor).expect("filtered resolved prop");
         let Some(height) =
             resolved_footing_height(&frame, actor_foot(actor), &footing.footing_heights)
         else {
-            if let Some(entity) = state.props.remove(&actor.id) {
-                commands.entity(entity).despawn_recursive();
+            if let Some(instance) = state.props.remove(&actor.id) {
+                commands.entity(instance.entity).despawn_recursive();
             }
             continue;
         };
@@ -460,15 +500,30 @@ pub(crate) fn sync(
         if !scale.is_finite() || scale <= 0.0 {
             continue;
         }
-        let transform = model_transform(actor, height, 0.0, scale);
-        if let Some(&entity) = state.props.get(&actor.id) {
-            if let Ok(mut current) = transforms.get_mut(entity) {
+        let facing = actor
+            .facing
+            .filter(|f| f.is_finite() && f.length_squared() > 0.5)
+            .unwrap_or(Vec2::NEG_Y);
+        let transform = model_transform(actor, height, facing_yaw(facing), scale);
+        // A variable sprite/decor/species can change without a new object ID.
+        // Replace its cached instance rather than leaving yesterday's mesh.
+        if state
+            .props
+            .get(&actor.id)
+            .is_some_and(|instance| instance.kind != kind)
+        {
+            let old = state.props.remove(&actor.id).unwrap();
+            commands.entity(old.entity).despawn_recursive();
+        }
+        if let Some(instance) = state.props.get(&actor.id) {
+            if let Ok(mut current) = transforms.get_mut(instance.entity) {
                 *current = transform;
             }
         } else {
             let mesh = state
-                .fruit_mesh
-                .get_or_insert_with(|| meshes.add(actor_props::fruit_tree().into_mesh()))
+                .prop_meshes
+                .entry(kind)
+                .or_insert_with(|| meshes.add(actor_props::mesh(kind).into_mesh()))
                 .clone();
             let entity = commands
                 .spawn((
@@ -482,7 +537,7 @@ pub(crate) fn sync(
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ))
                 .id();
-            state.props.insert(actor.id, entity);
+            state.props.insert(actor.id, PropInstance { entity, kind });
         }
         if let Some(entity) = cards.entities.get(&actor.id)
             && let Ok(mut visibility) = card_visibility.get_mut(*entity)
@@ -491,6 +546,11 @@ pub(crate) fn sync(
         }
     }
     for actor in &frame.actors {
+        let material = if matches!(actor.id, VisualActorId::RemotePlayer(_)) {
+            remote_material.clone()
+        } else {
+            material.clone()
+        };
         let Some(kind) = character_kind(actor) else {
             continue;
         };
@@ -698,7 +758,11 @@ mod tests {
         app.update();
         app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "PlayersHouse1F".into();
         app.update();
-        assert!(app.world().resource::<ModeledActors>().instances.is_empty());
+        assert_eq!(
+            app.world().resource::<ModeledActors>().instances.len(),
+            1,
+            "resolved actors remain modeled indoors"
+        );
     }
     #[test]
     fn duplicate_characters_share_meshes_and_leave_production_frame_untouched() {
@@ -714,6 +778,14 @@ mod tests {
         app.update();
         assert_eq!(app.world().resource::<Assets<Mesh>>().len(), mesh_count);
         assert_eq!(app.world().resource::<ModeledActors>().instances.len(), 2);
+        let state = app.world().resource::<ModeledActors>();
+        let local_head = state.instances[&VisualActorId::Player].joints[HEAD];
+        let remote_head = state.instances[&VisualActorId::RemotePlayer(23)].joints[HEAD];
+        assert_ne!(
+            app.world().get::<Handle<StandardMaterial>>(local_head),
+            app.world().get::<Handle<StandardMaterial>>(remote_head),
+            "modeled remote players retain the existing distinct ghost material"
+        );
         let frame = app.world().resource::<VisualWorldFrame>();
         assert_eq!(frame.actors[0].center, actor().center);
         assert_eq!(frame.actors[0].facing, actor().facing);
@@ -732,7 +804,7 @@ mod tests {
             .actors
             .push(tree);
         app.update();
-        let root = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(7)];
+        let root = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(7)].entity;
         let meshes = app.world().resource::<Assets<Mesh>>().len();
         let mut other = app.world().resource::<VisualWorldFrame>().actors[1].clone();
         other.id = VisualActorId::Object(8);
@@ -767,7 +839,52 @@ mod tests {
         assert!((transform.rotation * Vec3::Z - Vec3::X).length() < 0.0001);
     }
     #[test]
-    fn character_appearance_and_supported_maps_are_explicit() {
+    fn variable_prop_source_replaces_same_id_and_reuses_per_kind_mesh() {
+        let mut app = actor_test_app();
+        let mut prop = actor();
+        prop.id = VisualActorId::Object(19);
+        prop.source_id = "poke_ball".into();
+        app.world_mut()
+            .resource_mut::<VisualWorldFrame>()
+            .actors
+            .push(prop);
+        app.update();
+        let old = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id = "boulder".into();
+        app.update();
+        let state = app.world().resource::<ModeledActors>();
+        assert_ne!(state.props[&VisualActorId::Object(19)].entity, old);
+        assert_eq!(
+            state.props[&VisualActorId::Object(19)].kind,
+            actor_props::PropKind::Boulder
+        );
+        assert!(app.world().get_entity(old).is_none());
+        let count = app.world().resource::<Assets<Mesh>>().len();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id = "poke_ball".into();
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id =
+            "unknown_decoration".into();
+        app.update();
+        assert!(app.world().resource::<ModeledActors>().props.is_empty());
+    }
+    #[test]
+    fn swimming_look_has_a_waterline_pose_without_moving_the_world_root() {
+        let motion = Motion::new(Vec2::ZERO, Vec2::NEG_Y);
+        let standing = pose(CharacterKind::Trainer, &motion, 1.0);
+        let swimming = pose(CharacterKind::SwimmerGuy, &motion, 1.0);
+        assert!(
+            (standing[PELVIS].translation.y - swimming[PELVIS].translation.y - 0.48).abs() < 0.0001
+        );
+        assert!(
+            swimming
+                .iter()
+                .all(|joint| joint.translation.is_finite() && joint.rotation.is_finite())
+        );
+        assert_eq!(motion.last_world_foot, Vec2::ZERO);
+    }
+    #[test]
+    fn character_appearance_is_source_exact_across_indoor_and_outdoor_maps() {
         for map in [
             "NewBarkTown",
             "Route29",
@@ -778,7 +895,8 @@ mod tests {
         ] {
             assert!(enabled_map(map));
         }
-        assert!(!enabled_map("PlayersHouse1F"));
+        assert!(enabled_map("PlayersHouse1F"));
+        assert!(!enabled_map(""));
         let mut actor = actor();
         actor.source_id = "kris".into();
         assert_eq!(character_kind(&actor), Some(CharacterKind::TrainerFemale));

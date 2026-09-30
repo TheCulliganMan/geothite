@@ -6,13 +6,20 @@
 fn publish_visual_world_frame(
     rendered: Res<RenderedViewport>,
     runtime_shell: Res<BevyRuntimeShell>,
-    #[cfg(feature = "voxel-view")]
-    settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     map_sprites: Query<
         (&Handle<Image>, &Transform),
         (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
     >,
-    players: Query<(&Handle<Image>, &Sprite, &Transform, Option<&PlayerSpriteFrames>), With<PlayerMarker>>,
+    players: Query<
+        (
+            &Handle<Image>,
+            &Sprite,
+            &Transform,
+            Option<&PlayerSpriteFrames>,
+        ),
+        With<PlayerMarker>,
+    >,
     multiplayer_ghosts: Query<
         (&MultiplayerGhost, &Handle<Image>, &Sprite, &Transform),
         Without<PlayerMarker>,
@@ -130,16 +137,23 @@ fn publish_visual_world_frame(
                 return;
             };
             let facing = match rendered.player_sprite_facing.unwrap_or(Direction::Down) {
-                Direction::Down => 0, Direction::Left => 1,
-                Direction::Up => 2, Direction::Right => 3,
+                Direction::Down => 0,
+                Direction::Left => 1,
+                Direction::Up => 2,
+                Direction::Right => 3,
             };
-            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let orbit = settings
+                .as_ref()
+                .map_or(0.0, |settings| settings.camera.rotation_step);
             let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
             let Some((standing, walking)) = frames.directional_frames.get(side) else {
                 clear_published_visual_world(&mut published);
                 return;
             };
-            let action = frames.walking.as_ref().is_some_and(|walking| walking == texture);
+            let action = frames
+                .walking
+                .as_ref()
+                .is_some_and(|walking| walking == texture);
             let mut view_sprite = sprite.clone();
             view_sprite.flip_x = action && side % 2 == 0 && runtime_shell.player_walk_mirror_stride;
             (if action { walking } else { standing }, view_sprite)
@@ -148,7 +162,9 @@ fn publish_visual_world_frame(
         let sprite = &directional_sprite;
         let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::Player,
-            _frames.map(|frames| frames.source_id.clone()).unwrap_or_else(|| Arc::from("player")),
+            _frames
+                .map(|frames| frames.source_id.clone())
+                .unwrap_or_else(|| Arc::from("player")),
             texture,
             sprite,
             transform,
@@ -157,18 +173,20 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
-        actor.facing = Some(visual_facing(rendered.player_sprite_facing.unwrap_or(Direction::Down)));
+        actor.facing = Some(visual_facing(
+            rendered.player_sprite_facing.unwrap_or(Direction::Down),
+        ));
         actors.push(actor);
     }
 
     let mut visible_ghosts = multiplayer_ghosts.iter().collect::<Vec<_>>();
     visible_ghosts.sort_by(|left, right| left.0.user_id.cmp(&right.0.user_id));
     for (ghost, texture, sprite, transform) in visible_ghosts {
-        let Some(actor) = visual_actor(
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(
                 &ghost.user_id,
             )),
-            Arc::from("remote_player"),
+            ghost.source_id.clone(),
             texture,
             sprite,
             transform,
@@ -177,6 +195,7 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        actor.facing = Some(visual_facing(ghost.facing));
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }
@@ -202,28 +221,54 @@ fn publish_visual_world_frame(
         #[cfg(feature = "voxel-view")]
         let (texture, directional_sprite) = {
             let facing = match object.world_facing {
-                Direction::Down => 0, Direction::Left => 1,
-                Direction::Up => 2, Direction::Right => 3,
+                Direction::Down => 0,
+                Direction::Left => 1,
+                Direction::Up => 2,
+                Direction::Right => 3,
             };
-            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let orbit = settings
+                .as_ref()
+                .map_or(0.0, |settings| settings.camera.rotation_step);
             let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
             let Some((standing, walking)) = object.directional_frames.get(side) else {
                 clear_published_visual_world(&mut published);
                 return;
             };
-            let action = object.walking.as_ref().is_some_and(|walking| walking == texture);
+            let action = object
+                .walking
+                .as_ref()
+                .is_some_and(|walking| walking == texture);
             let mut view_sprite = sprite.clone();
             // Read the current stride, not a value retained when this entity
             // was last reconciled: animation can advance without a map redraw.
             let phase = object.object_identifier.as_ref().and_then(|id| {
                 (runtime_shell.object_walk_from.contains_key(id)
-                    || runtime_shell.trainer_walk_from.as_ref().is_some_and(|(walking, _)| walking == id))
-                    .then(|| runtime_shell.object_walk_phases.get(id).copied().unwrap_or(1))
+                    || runtime_shell
+                        .trainer_walk_from
+                        .as_ref()
+                        .is_some_and(|(walking, _)| walking == id))
+                .then(|| {
+                    runtime_shell
+                        .object_walk_phases
+                        .get(id)
+                        .copied()
+                        .unwrap_or(1)
+                })
             });
-            view_sprite.flip_x = action && side % 2 == 0 && phase.map_or(
-                !runtime_shell.object_walk_stride, object_walk_uses_mirrored_action_frame,
-            );
-            (if action { walking.as_ref().unwrap_or(standing) } else { standing }, view_sprite)
+            view_sprite.flip_x = action
+                && side % 2 == 0
+                && phase.map_or(
+                    !runtime_shell.object_walk_stride,
+                    object_walk_uses_mirrored_action_frame,
+                );
+            (
+                if action {
+                    walking.as_ref().unwrap_or(standing)
+                } else {
+                    standing
+                },
+                view_sprite,
+            )
         };
         #[cfg(feature = "voxel-view")]
         let sprite = &directional_sprite;
@@ -295,10 +340,13 @@ fn publish_visual_world_frame(
         map_id: Arc::from(map_id),
         terrain_revision,
         grid_origin: {
-            let (x, y) = rendered.viewport_origin.expect("published terrain has a viewport origin");
+            let (x, y) = rendered
+                .viewport_origin
+                .expect("published terrain has a viewport origin");
             IVec2::new(i32::from(x), i32::from(y))
                 - (published_grid_size.as_ivec2()
-                    - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2
+                    - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32))
+                    / 2
         },
         map_texture: published_map_texture,
         center,
@@ -345,9 +393,8 @@ fn naming_screen_blocks_world_presentation(input: Option<&PendingNameInput>) -> 
 /// complete world frame while these screen-space overlays run; they must not
 /// change the user's manually selected presentation mode.
 fn voxel_spatial_effects_supported(runtime_shell: &BevyRuntimeShell) -> bool {
-    let scripted_actor_displacement =
-        runtime_shell.visible_player_sprite_y_offset != 0
-            || runtime_shell
+    let scripted_actor_displacement = runtime_shell.visible_player_sprite_y_offset != 0
+        || runtime_shell
             .visible_script_movement
             .as_ref()
             .is_some_and(|movement| {
@@ -511,11 +558,7 @@ mod render_mod_tests {
             above_priority: false,
             facing: None,
         };
-        assert!(!visual_actor_intersects_grid(
-            &actor,
-            Vec2::ZERO,
-            grid_size
-        ));
+        assert!(!visual_actor_intersects_grid(&actor, Vec2::ZERO, grid_size));
 
         let touching = crystal_render_api::VisualActor {
             center: Vec2::new(half_grid_width + 8.0, 0.0),

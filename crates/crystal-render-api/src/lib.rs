@@ -8,7 +8,9 @@
 //! [`WorldRenderSet::RenderSync`] and must not feed presentation state back
 //! into simulation.
 
+mod battle;
 mod streamed_images;
+pub use battle::*;
 pub use streamed_images::stream_composed_image;
 
 use std::{collections::HashSet, sync::Arc};
