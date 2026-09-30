@@ -1564,8 +1564,29 @@ fn global_dmg_palette_effects_write_registers_on_their_asm_reload_cadence() {
         animation.bg_events = vec![event(0, effect_id, 2, 0)];
         for (frame, expected) in [(0, 0xe4), (2, 0xe4), (3, cycled), (6, 0xe4)] {
             animation.frame = frame;
-            assert_eq!(visible_battle_dmg_palette_registers(Some(&animation)).obp0, expected);
+            let registers = visible_battle_dmg_palette_registers(Some(&animation));
+            assert_eq!(registers.obp0, expected);
+            assert_eq!(registers.bgp, 0xe4, "OBP-only cycles cannot change BGP");
         }
+    }
+
+    // Hyper Beam starts both effects on source frame 1. Original FlashContinue
+    // writes wBGP every nine ticks, while CycleOBPals writes only wOBP0 every
+    // three ticks; a shared write would erase every inverted flash.
+    animation.bg_events = vec![
+        event(1, "BATTLE_BG_EFFECT_FLASH_INVERTED", 8, 0x40),
+        event(1, "BATTLE_BG_EFFECT_CYCLE_OBPALS_GRAY_AND_YELLOW", 2, 0),
+    ];
+    for (frame, bgp, obp0) in [
+        (0, 0xe4, 0xe4), (1, 0x1b, 0xe4), (4, 0x1b, 0x90),
+        (7, 0x1b, 0xe4), (9, 0x1b, 0xe4), (10, 0xe4, 0x90),
+        (13, 0xe4, 0xe4), (19, 0x1b, 0xe4), (22, 0x1b, 0x90),
+        (28, 0xe4, 0x90),
+    ] {
+        animation.frame = frame;
+        let registers = visible_battle_dmg_palette_registers(Some(&animation));
+        assert_eq!((registers.bgp, registers.obp0), (bgp, obp0),
+            "independent Hyper Beam palettes at source frame {frame}");
     }
 }
 

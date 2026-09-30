@@ -20,11 +20,19 @@ fn main() -> Result<()> {
     let mut seconds = 20;
     let mut live = false;
     let mut enabled = true;
+    let mut shadow_ball = false;
+    let mut psychic = false;
+    let mut hyper_beam = false;
+    let mut reduced_flashes = false;
     while let Some(flag) = args.next() {
         match flag.as_str() {
             "--live" => live = true,
             "--record-on-move" => record_on_move = true,
             "--classic" => enabled = false,
+            "--shadow-ball" => shadow_ball = true,
+            "--psychic" => psychic = true,
+            "--hyper-beam" => hyper_beam = true,
+            "--reduced-flashes" => reduced_flashes = true,
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(args.next().context("--screenshot path")?))
             }
@@ -37,6 +45,14 @@ fn main() -> Result<()> {
             _ => anyhow::bail!("unknown option {flag}"),
         }
     }
+    anyhow::ensure!(
+        [shadow_ball, psychic, hyper_beam]
+            .into_iter()
+            .filter(|active| *active)
+            .count()
+            <= 1,
+        "choose only one of --shadow-ball, --psychic or --hyper-beam"
+    );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
             .into_iter()
@@ -73,9 +89,14 @@ fn main() -> Result<()> {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
             window_title: Some(
-                "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view".into(),
+                "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes"
+                    .into(),
             ),
             render_test_battle: true,
+            render_test_shadow_ball: shadow_ball,
+            render_test_psychic: psychic,
+            render_test_hyper_beam: hyper_beam,
+            battle_reduced_flashes: reduced_flashes,
             render_test_hour: Some(16),
             render_test_screenshot: screenshot,
             render_test_second_screenshot: second,

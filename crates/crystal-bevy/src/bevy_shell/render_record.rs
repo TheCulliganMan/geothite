@@ -57,7 +57,7 @@ pub(super) fn install(
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -95,6 +95,7 @@ fn record(
     status: Res<crystal_voxel_view::VoxelViewStatus>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
     battle_frame: Res<crystal_render_api::VisualBattleFrame>,
+    flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
     windows: Query<Entity, With<PrimaryWindow>>,
@@ -136,8 +137,12 @@ fn record(
                 .find(|cue| cue.kind == crystal_render_api::VisualBattleCueKind::Move)
             {
                 recording.trigger = format!(
-                    "first presented move: {:?} {} at progress {:.6}; no synthetic pre-roll\n",
-                    cue.side, cue.move_id, cue.progress
+                    "first presented move: {:?} {} at progress {:.6}; source frame {:?}; flashes {:?}; no synthetic pre-roll\n",
+                    cue.side,
+                    cue.move_id,
+                    cue.progress,
+                    battle_frame.source.as_ref().map(|source| source.frame),
+                    *flash_mode
                 );
             }
         }
@@ -194,14 +199,42 @@ fn record(
             })
             .collect::<Vec<_>>()
             .join("|");
+        let source_frame = battle_frame
+            .source
+            .as_ref()
+            .map_or(String::new(), |source| source.frame.to_string());
+        let bgp = battle_frame
+            .source
+            .as_ref()
+            .map_or(String::new(), |source| format!("{:02x}", source.bgp));
+        let source_objects = battle_frame
+            .source
+            .as_ref()
+            .map_or(String::new(), |source| {
+                source
+                    .objects
+                    .iter()
+                    .map(|object| {
+                        format!(
+                            "{}:{}:{:.1}:{:.1}",
+                            object.slot, object.object_id, object.center.x, object.center.y
+                        )
+                    })
+                    .collect::<Vec<_>>()
+                    .join("|")
+            });
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?}\n",
             battle_frame.map_id,
             species(0),
             species(1),
             cues,
             battle_status.modeled_species.join("|"),
-            battle_status.source_art_species.join("|")
+            battle_status.source_art_species.join("|"),
+            source_frame,
+            bgp,
+            source_objects,
+            *flash_mode
         ));
     }
     if !recording.capture_images

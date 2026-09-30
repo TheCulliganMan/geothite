@@ -74,6 +74,54 @@ pub struct VisualBattleCue {
     pub damaging: bool,
 }
 
+/// Presentation intensity only. This resource is never read by the controller
+/// or the source animation interpreter. Both modes consume the same frames.
+#[derive(Resource, Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum BattleFlashMode {
+    #[default]
+    Full,
+    Reduced,
+}
+impl BattleFlashMode {
+    pub const fn palette_strength(self) -> f32 {
+        match self {
+            Self::Full => 1.0,
+            Self::Reduced => 0.12,
+        }
+    }
+}
+
+/// A currently visible source object, after source callbacks, framesets,
+/// mirroring, clipping and palette writes. No future spawn event is exposed.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleSourceObject {
+    pub slot: usize,
+    pub object_id: Arc<str>,
+    pub texture: Handle<Image>,
+    /// Same current OAM/frame with neutral OBP registers for reduced flashes.
+    pub neutral_texture: Handle<Image>,
+    /// Pixel coordinates in the original 160x144 battle display, Y down.
+    pub center: Vec2,
+    pub size: Vec2,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleSourceFrame {
+    pub frame: u16,
+    pub bgp: u8,
+    pub battler_bgps: [u8; 2],
+    /// Actual source four-shade palettes, including background shade zero.
+    pub battler_palettes: [[[f32; 4]; 4]; 2],
+    pub battler_textures: [Handle<Image>; 2],
+    /// Current source displacements in pixels, Y up.
+    pub battler_offsets: [Vec2; 2],
+    pub screen_offset: Vec2,
+    /// Current original horizontal scanline deformation, in source pixels.
+    /// The arena bends its models from this buffer without advancing it.
+    pub line_x_offsets: Option<[i8; 0x5f]>,
+    pub objects: Vec<VisualBattleSourceObject>,
+}
+
 #[derive(Resource, Clone, Debug, Default, PartialEq)]
 pub struct VisualBattleFrame {
     pub active: bool,
@@ -81,6 +129,7 @@ pub struct VisualBattleFrame {
     pub environment: VisualBattleEnvironment,
     pub battlers: [Option<VisualBattleBattler>; 2],
     pub cues: Vec<VisualBattleCue>,
+    pub source: Option<VisualBattleSourceFrame>,
 }
 impl VisualBattleFrame {
     pub fn validate(&self) -> Result<(), &'static str> {
@@ -113,6 +162,36 @@ impl VisualBattleFrame {
         for cue in &self.cues {
             if !cue.progress.is_finite() || !(0.0..=1.0).contains(&cue.progress) {
                 return Err("battle cue progress is invalid");
+            }
+        }
+        if let Some(source) = &self.source {
+            if source.objects.len() > 10 {
+                return Err("unbounded source battle objects");
+            }
+            if !source.screen_offset.is_finite()
+                || source
+                    .battler_offsets
+                    .iter()
+                    .any(|offset| !offset.is_finite())
+                || source
+                    .battler_palettes
+                    .iter()
+                    .flatten()
+                    .flatten()
+                    .any(|v| !v.is_finite())
+            {
+                return Err("invalid source battle presentation");
+            }
+            for object in &source.objects {
+                if object.slot >= 10
+                    || object.texture == Handle::default()
+                    || object.neutral_texture == Handle::default()
+                    || !object.center.is_finite()
+                    || !object.size.is_finite()
+                    || object.size.min_element() <= 0.0
+                {
+                    return Err("invalid source battle object");
+                }
             }
         }
         Ok(())

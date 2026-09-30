@@ -273,6 +273,7 @@ fn sync_fullscreen_scene_layout(
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     runtime: Res<BevyRuntimeShell>,
     rendered: Res<RenderedViewport>,
+    #[cfg(feature = "voxel-view")] battle_view: Option<Res<crystal_voxel_view::BattleViewStatus>>,
     images: Res<Assets<Image>>,
     mut pieces: ParamSet<(
         Query<(&Handle<Image>, &mut Sprite, &mut Transform), With<VisibleIntroSurface>>,
@@ -320,8 +321,15 @@ fn sync_fullscreen_scene_layout(
     let modal_active = fullscreen_modal_active(&runtime, &rendered);
     // Partial PC/Mart windows retain the room behind them. The fullscreen
     // backdrop sits above terrain, so reserve it for opaque LCD screens.
-    let mut background = (modal_active && !fullscreen_field_panel_active(&runtime))
-        .then_some(Color::BLACK);
+    #[cfg(feature = "voxel-view")]
+    let modeled_battle_active = battle_view.is_some_and(|status| status.active);
+    #[cfg(not(feature = "voxel-view"))]
+    let modeled_battle_active = false;
+    // The modeled battle camera already supplies the complete backdrop. An
+    // opaque LCD backing here would cover both its sky and arena geometry.
+    let mut background =
+        (modal_active && !fullscreen_field_panel_active(&runtime) && !modeled_battle_active)
+            .then_some(Color::BLACK);
     let mut layout = None;
     {
         let mut presenters = pieces.p0();

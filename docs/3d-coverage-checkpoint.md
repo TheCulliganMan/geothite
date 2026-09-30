@@ -49,8 +49,9 @@ also need remaining-family and visual checks; a positive count is not completion
   interiors and assessing outdoor silhouette/readability at the gameplay camera
 - Species art refinement; shiny, Substitute, Minimize and other special
   presentations currently use faithful source art, not the normal-palette mesh
-- Battle choreography is elemental presentation classes with a bounded particle
-  pool, not custom skeletal choreography for every move or species
+- Move effects now follow the existing source interpreter's live objects,
+  palettes and timing, with additional 3D styling for Psychic and Hyper Beam.
+  Custom skeletal choreography and individual review of every move remain open
 - Native battle interruption/transition matrix: switching, fainting, capture,
   Pokédex and returning to overworld require continued end-to-end checks
 
@@ -72,8 +73,11 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 564 voxel tests passed, two pre-existing benchmarks ignored
-- Fourteen immersive-battle presentation/recording bridge tests passed
+- 569 voxel tests passed, two pre-existing benchmarks ignored
+- Twenty-one immersive-battle presentation/recording bridge tests and twenty-one
+  render API tests passed; the independent BGP/OBP palette cadence regression passed
+- Native build and the normal browser-feature Wasm check passed after the source
+  animation compiler was moved verbatim into its own file
 - Real production controller battle regression passed: commands, selected move,
   authoritative PP mutation and retained battle dialogue
 - Six connected-world regressions passed
@@ -90,6 +94,12 @@ based on the production mesher rather than a map-name allowlist.
 - A real 12-second Tackle capture recorded 232 native frames with its original
   timestamps, beginning at presented move progress 0.0. Median update time during
   capture was 50.75 ms on software GL; this is not a hardware benchmark
+- Actual Psychic and Hyper Beam captures begin at presented move progress zero
+  and retain their frame timestamps. Source waves, deformation, palette changes,
+  beam segments and visible damage were inspected. The legal Hyper Beam fixture
+  also passes the real controller's recharge/PP regression. Native Shadow Ball
+  confirms the original single inversion and moving projectile; reduced-mode
+  timing/contrast/pose tests pass, with native comparison still in progress
 
 The software-rendered native preview is not a hardware performance benchmark.
 Recordings keep their actual timestamps; no interpolated frames or high-FPS claim

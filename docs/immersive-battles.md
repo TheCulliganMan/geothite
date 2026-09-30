@@ -62,11 +62,65 @@ committed. `tools/validate-battle-art.py` validates the palette source and sourc
 boundary without needing a game pack. Authored species sources/generators are
 listed in the actor catalog documentation.
 
-Effects use a fixed pool of 32 particles. Arena meshes are rebuilt only when
-context changes and retired meshes are removed. Species meshes are cached by
-exact identity. Camera motion is intentionally slight to keep the production
-HUD and choices readable. Move effects are elemental presentation classes,
-not a claim of individually authored choreography for every move.
+Move effects now consume the existing source animation interpreter's current
+frame: BGP/OBP palette state, battler displacement, screen shake and the actual
+live object OAM/frameset output. The arena uses ten reused billboard objects
+(the source slot limit), with the source art, colors, mirror direction, clipping
+and trajectory. The original object runtime and decoded bundle are shared with
+the classic renderer; F3 does not start another interpreter or advance a tick.
+Generic move particles/lunges are suppressed whenever this source frame exists.
+The 32-particle pool remains only for non-source send-out/HP-loss presentation.
+
+The source palette remaps the nearest source shade of each authored model color.
+Neutral frames restore the original mesh colors. This is a 3D adaptation, not
+an assertion of pixel-identical original battler silhouettes. Current horizontal
+source scanline offsets also bend modeled battler geometry; removing the source
+buffer restores the cached original positions.
+The arena darkens/brightens at the same palette writes; the compact original
+HUD remains readable and is never flashed. Model geometry is cached by species;
+only the two active actor meshes are uploaded and recolored on palette changes.
+Leaving the battle, opening an owning full-screen page or disabling 3D hides all
+ten source objects and thirteen reused effect volumes; returning to a neutral
+frame restores materials, colors and model positions.
+
+Full source flashes are the default. F4 toggles Full/Reduced in native play;
+`BevyShellConfig.battle_reduced_flashes` sets the initial choice. The preview also
+accepts `--reduced-flashes`. Reduced mode caps model/arena palette contrast to
+12% and uses the same current object frame with neutral OBP registers. Source
+frames, object trajectories, durations, sounds, commands, HP and PP are identical.
+This setting applies to the modeled view; F3 restores the original classic view.
+
+### Verified Shadow Ball source
+
+The ignored `core-modular.browser.crystalpack` script selects BGP `$1b` on source
+frame 1, inverting battler shades and darkening the arena background. The same
+frame spawns the blue-palette Barrage Ball object at `(64,92)` with the source
+`WAVE_TO_TARGET` callback. Frame 33 spawns `BALL_POOF` at `(132,56)`; the script
+returns at frame 57. It does not request a repeated `FLASH_*` background effect,
+so the renderer does not invent a strobe. The pack's source sound remains owned
+by the production animation. No extracted script or art is committed.
+
+### Psychic and Hyper Beam in depth
+
+Psychic uses the pack's actual `PSYCHIC_M` identity and `BattleAnim_PsychicM`
+script. Eight `WAVE` objects begin at source frames 1, 9, 17, 25, 33, 41, 49 and
+57. Their current callback/OAM positions and changing sizes drive violet 3D
+rings beside the original source art. The original alternating hues and rotating
+horizontal sine buffer continue through frame 160; the wave effect stops at
+161 and the script completes at 165. The same current buffer bends the modeled
+battlers. Three quiet violet rings visualize that sustained distortion around
+the target. Violet volumes are an original 3D interpretation; no target lift,
+extra attack duration or black strobe is invented.
+
+Hyper Beam uses `HYPER_BEAM` / `BattleAnim_HyperBeam`. Actual beam segments start
+at frames 1, 5, 9 and 13, with a tip on frame 13. These current source segments
+drive joined golden 3D volumes; the source framesets retain their own lifetimes
+and deletion. Screen shake, inverted flashes, gray/yellow palette cycling,
+source art and sound remain owned by the existing interpreter. There is no
+additional windup or predicted impact. The script completes at frame 61;
+visible HP loss remains the only impact/recoil cue, and recharge remains a
+production battle rule. Full/Reduced changes volume opacity and flash contrast,
+never source timing, geometry trajectories or gameplay.
 
 ## Verification
 
@@ -95,6 +149,15 @@ items/cancel, F3 off/on, faint/switch, capture/Dex, and return to the overworld.
 Pack availability and native results belong in the verification report; they
 must not be inferred from the pure mesh tests above.
 
+The `immersive_battle_shadow_ball_preserves_actual_source_palette_and_object_frames`
+regression compares every source frame 0–56 with the actual classic object
+renderer, including art handles and positions. It verifies the inversion and
+poof boundaries, no premature impact/future poof, and unchanged authoritative
+state. Separate tests cover delayed repeated flash writes, full/reduced color
+limits with identical source frames/poses, bounded object/entity/material counts,
+F3 retirement and neutral/interrupted restoration. Include `location-tester` in
+the `crystal-bevy` test features to run the legal-TM/controller preview regression.
+
 ## Native disposable preview
 
 ```sh
@@ -115,6 +178,31 @@ checks. Recordings use `--record output/battle-recording --seconds 20`. Add
 It never drives input; a 180-second no-move timeout fails instead of producing
 an empty successful clip. The first observed cue progress is saved without
 inventing pre-roll frames.
+
+Add `--shadow-ball` for a separate disposable session with a level-40 Gengar.
+The real TM item mutation teaches `TM_SHADOW_BALL` into the first move slot,
+validating compatibility and assigning the pack's PP; no fabricated move is
+injected. Select FIGHT and the first move normally, then acknowledge the used-move
+message. Example capture: `--shadow-ball --record output/shadow-ball-full
+--record-on-move --seconds 15`; repeat with `--reduced-flashes` for the reduced
+comparison. These options never load or write a user save.
+
+`--psychic` instead uses level-20 Kadabra and the real `TM_PSYCHIC_M` mutation;
+`--hyper-beam` uses level-20 Raticate and `TM_HYPER_BEAM`. Both TMs are verified
+against the pack's compatibility table and occupy the first move slot. Move
+fixture flags are mutually exclusive. Raticate's Normal attack faces the
+unchanged level-20 Rock-type Sudowoodo, allowing the real recharge turn to be
+shown without altering enemy HP or combat rules. Recording examples:
+`--psychic --record output/psychic --record-on-move --seconds 20` and
+`--hyper-beam --record output/hyper-beam --record-on-move --seconds 25`.
+Acknowledge the ordinary turn messages to display recharge. At the initial
+Hyper Beam command menu only, this disposable developer fixture resets the
+RNG state to `(add: 0, sub: 0)` and supplies 16,384 DIV replay samples from the
+existing test LFSR (seed `0xc5af`, polynomial `0xb400`). This makes accuracy and
+damage repeatable for capture; it is developer input, not an emulation of live
+hardware timing. The production accuracy, damage and recharge routines still
+run unchanged. Psychic and normal play retain their existing divider source.
+No fixture loads or writes a user save.
 
 The default battle lighting uses inexpensive soft contact shadows that follow
 presented battlers and their faint/send-out visibility. For a measured A/B test,

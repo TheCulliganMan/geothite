@@ -2437,16 +2437,20 @@ fn visible_battle_dmg_palette_registers(
                         continue;
                     }
                     let value = table[write % table.len()];
-                    registers.bgp = value;
-                    if effect.effect_id == "BATTLE_BG_EFFECT_ALTERNATE_HUES" {
-                        registers.obp1 = value;
-                    } else if matches!(
+                    // Object palette cycles write only wOBP0. Let simultaneous
+                    // screen flashes retain their independent wBGP writes.
+                    if matches!(
                         effect.effect_id.as_str(),
                         "BATTLE_BG_EFFECT_CYCLE_OBPALS_GRAY_AND_YELLOW"
                             | "BATTLE_BG_EFFECT_CYCLE_MID_OBPALS_GRAY_AND_YELLOW"
                     ) {
                         registers.obp0 = value;
                         registers.obp0_write_frame = Some(frame);
+                    } else {
+                        registers.bgp = value;
+                        if effect.effect_id == "BATTLE_BG_EFFECT_ALTERNATE_HUES" {
+                            registers.obp1 = value;
+                        }
                     }
                 }
                 _ => {}
@@ -8314,7 +8318,13 @@ fn battle_move_display_name(snapshot: &RuntimeShellSnapshot, move_id: &str) -> S
         .moves
         .iter()
         .find(|move_data| move_data.move_id == move_id)
-        .map(|move_data| move_data.name.replace('_', " "))
+        .map(|move_data| {
+            usize::from(move_data.source_index)
+                .checked_sub(1)
+                .and_then(|index| snapshot.presentation.move_names.get(index))
+                .cloned()
+                .unwrap_or_else(|| move_data.name.replace('_', " "))
+        })
         .unwrap_or_else(|| format!("INVALID MOVE {move_id}"))
 }
 

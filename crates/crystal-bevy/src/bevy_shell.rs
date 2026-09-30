@@ -356,6 +356,18 @@ pub struct BevyShellConfig {
     /// Fresh disposable Route36 battle preview; never used for normal play.
     #[cfg(feature = "location-tester")]
     pub render_test_battle: bool,
+    /// Legal Gengar/TM30 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_shadow_ball: bool,
+    /// Legal Kadabra/TM29 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_psychic: bool,
+    /// Legal Raticate/TM15 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_hyper_beam: bool,
+    /// Reduce only modeled battle palette contrast and object palette cycling.
+    #[cfg(feature = "voxel-view")]
+    pub battle_reduced_flashes: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -5461,6 +5473,14 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_battle = config.render_test_battle;
     #[cfg(feature = "location-tester")]
+    let render_test_shadow_ball = config.render_test_shadow_ball;
+    #[cfg(feature = "location-tester")]
+    let render_test_psychic = config.render_test_psychic;
+    #[cfg(feature = "location-tester")]
+    let render_test_hyper_beam = config.render_test_hyper_beam;
+    #[cfg(feature = "voxel-view")]
+    let battle_reduced_flashes = config.battle_reduced_flashes;
+    #[cfg(feature = "location-tester")]
     anyhow::ensure!(
         !render_test_battle || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
@@ -5501,7 +5521,12 @@ pub fn run_bevy_shell(
     };
     #[cfg(feature = "location-tester")]
     let runtime_shell = if render_test_battle {
-        prepare_immersive_battle_preview(runtime_shell)?
+        prepare_immersive_battle_preview(
+            runtime_shell,
+            render_test_shadow_ball,
+            render_test_psychic,
+            render_test_hyper_beam,
+        )?
     } else {
         runtime_shell
     };
@@ -5768,6 +5793,11 @@ pub fn run_bevy_shell(
                 )
             })
             .unwrap_or_default(),
+    })
+    .insert_resource(if battle_reduced_flashes {
+        crystal_render_api::BattleFlashMode::Reduced
+    } else {
+        crystal_render_api::BattleFlashMode::Full
     })
     .add_plugins(crystal_voxel_view::VoxelViewPlugin)
     .add_systems(

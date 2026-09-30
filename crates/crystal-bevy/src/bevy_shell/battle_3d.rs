@@ -3,7 +3,7 @@
 // It never calls snapshot(), tick(), a command dispatcher, or turn resolution.
 use crystal_render_api::{
     VisualBattleBattler, VisualBattleCue, VisualBattleCueKind, VisualBattleEnvironment,
-    VisualBattleFrame, VisualBattleSide,
+    VisualBattleFrame, VisualBattleSide, VisualBattleSourceFrame, VisualBattleSourceObject,
 };
 
 #[derive(Component)]
@@ -222,6 +222,14 @@ fn capture_presented_battle(
         });
     }
     if let Some(animation) = animation.filter(|animation| animation.started) {
+        frame.source = Some(capture_immersive_source_frame(
+            snapshot,
+            animation,
+            &frame.battlers,
+            art,
+            &shell.asset_root,
+            images,
+        )?);
         let side = if animation.player_move {
             VisualBattleSide::Player
         } else {
@@ -324,6 +332,175 @@ fn capture_presented_battle(
     debug_assert!(frame.validate().is_ok());
     commands.insert_resource(frame);
     Ok(())
+}
+
+/// Adapt only the interpreter's current presented frame. The source object
+/// runtime is shared with the classic draw: advancing twice to the same tick
+/// is a no-op, so F3 neither restarts nor doubles the source program.
+fn capture_immersive_source_frame(
+    snapshot: &RuntimeShellSnapshot,
+    animation: &VisibleMoveAnimation,
+    battlers: &[Option<VisualBattleBattler>; 2],
+    art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<VisualBattleSourceFrame> {
+    let bundle = battle_anim_render_bundle(art, snapshot)?;
+    let mut playback = match art.battle_object_runtime.take() {
+        Some(playback)
+            if playback.source == animation.object_events
+                && playback.player == animation.player_move
+                && playback.label == animation.animation_label
+                && u32::from(animation.frame) + 1 >= playback.next_tick =>
+        {
+            playback
+        }
+        _ => new_visible_battle_objects(&bundle, animation)?,
+    };
+    advance_visible_battle_objects(&mut playback, &bundle, animation)?;
+    let live_slots = playback.slots.clone();
+    let object_obp0_write = playback.obp0_write;
+    art.battle_object_runtime = Some(playback);
+    let mut registers = visible_battle_dmg_palette_registers(Some(animation));
+    if let Some((tick, value)) = object_obp0_write {
+        if registers
+            .obp0_write_frame
+            .is_none_or(|frame| tick >= u32::from(frame))
+        {
+            registers.obp0 = value;
+        }
+    }
+    let (player_bgp, enemy_bgp) = visible_move_battler_bgps(Some(animation));
+    let (player_offset, enemy_offset) = visible_move_battler_offsets(Some(animation));
+    let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+    let mut source = VisualBattleSourceFrame {
+        frame: animation.frame,
+        bgp: registers.bgp,
+        battler_bgps: [
+            player_bgp.unwrap_or(registers.bgp),
+            enemy_bgp.unwrap_or(registers.bgp),
+        ],
+        battler_palettes: [[[1.0; 4]; 4]; 2],
+        battler_textures: [Handle::default(), Handle::default()],
+        battler_offsets: [
+            player_offset.truncate() / source_scale,
+            enemy_offset.truncate() / source_scale,
+        ],
+        screen_offset: visible_move_screen_offset(Some(animation)).truncate() / source_scale,
+        line_x_offsets: visible_battle_line_x_offsets(Some(animation)),
+        objects: Vec::with_capacity(10),
+    };
+    for (index, battler) in battlers.iter().enumerate() {
+        let Some(battler) = battler else {
+            continue;
+        };
+        let image = images
+            .get(&battler.texture)
+            .context("source battler palette image")?;
+        let mut colors: Vec<_> = image
+            .data
+            .chunks_exact(4)
+            .filter(|pixel| pixel[3] != 0)
+            .map(|pixel| [pixel[0], pixel[1], pixel[2]])
+            .collect();
+        colors.sort_unstable();
+        colors.dedup();
+        colors.sort_by_key(|c| {
+            std::cmp::Reverse(u32::from(c[0]) * 299 + u32::from(c[1]) * 587 + u32::from(c[2]) * 114)
+        });
+        if colors.len() < 4 {
+            colors.insert(0, [255; 3]);
+        }
+        for shade in 0..4 {
+            let color = colors
+                .get(shade)
+                .or_else(|| colors.last())
+                .context("empty source battler palette")?;
+            source.battler_palettes[index][shade] = [
+                f32::from(color[0]) / 255.0,
+                f32::from(color[1]) / 255.0,
+                f32::from(color[2]) / 255.0,
+                1.0,
+            ];
+        }
+        source.battler_textures[index] = if source.battler_bgps[index] == 0xe4 {
+            battler.texture.clone()
+        } else {
+            battle_battler_bgp_frame(
+                art,
+                images,
+                &SpriteFrame {
+                    handle: battler.texture.clone(),
+                    size: battler.texture_size,
+                },
+                source.battler_bgps[index],
+            )?
+            .handle
+        };
+    }
+    for (slot, live) in live_slots.iter().enumerate() {
+        let Some(live) = live.as_ref().filter(|live| !live.oam.entries.is_empty()) else {
+            continue;
+        };
+        let VisibleMoveObjectCommand::Spawn { object_id, .. } =
+            &animation.object_events[live.event_index].command
+        else {
+            continue;
+        };
+        let object = &bundle["objects"][object_id];
+        let frame = &bundle["framesets"][live.frameset][live.frame];
+        let palette = match live.bytes[5] & 7 {
+            0 => "PAL_BATTLE_OB_GRAY",
+            1 => "PAL_BATTLE_OB_YELLOW",
+            2 => "PAL_BATTLE_OB_RED",
+            3 => "PAL_BATTLE_OB_GREEN",
+            4 => "PAL_BATTLE_OB_BLUE",
+            5 => "PAL_BATTLE_OB_BROWN",
+            other => anyhow::bail!("invalid current source object palette {other}"),
+        };
+        let mut render = |obp0, obp1| {
+            battle_anim_rendered_frame(
+                art,
+                &bundle,
+                asset_root,
+                object_id,
+                object,
+                live.frameset,
+                live.frame,
+                frame,
+                !animation.player_move,
+                false,
+                false,
+                Some(palette),
+                obp0,
+                obp1,
+                Some(&live.oam),
+                images,
+            )
+        };
+        let rendered = render(registers.obp0, registers.obp1)?;
+        let neutral = if registers.obp0 == 0xe4 && registers.obp1 == 0xe4 {
+            rendered.clone()
+        } else {
+            render(0xe4, 0xe4)?
+        };
+        let size = rendered.sprite.size / source_scale;
+        let center = Vec2::new(
+            (live.oam.origin.0 - 8 + i32::from(rendered.offset_x)) as f32,
+            (live.oam.origin.1 - 16
+                + i32::from(rendered.offset_y)
+                + visible_rollout_object_y_offset(animation, slot)) as f32,
+        ) + size * 0.5;
+        source.objects.push(VisualBattleSourceObject {
+            slot,
+            object_id: Arc::from(object_id.as_str()),
+            texture: rendered.sprite.handle,
+            neutral_texture: neutral.sprite.handle,
+            center,
+            size,
+        });
+    }
+    Ok(source)
 }
 
 fn immersive_battle_progress(frame: u32, total: u32) -> f32 {
@@ -542,7 +719,20 @@ mod immersive_battle_bridge_tests {
 /// location-test session, then reaches battle commands through the production
 /// controller. Normal play, loaded saves and the battle renderer never call it.
 #[cfg(feature = "location-tester")]
-fn prepare_immersive_battle_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+fn prepare_immersive_battle_preview(
+    mut shell: BevyRuntimeShell,
+    shadow_ball: bool,
+    psychic: bool,
+    hyper_beam: bool,
+) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(
+        [shadow_ball, psychic, hyper_beam]
+            .into_iter()
+            .filter(|active| *active)
+            .count()
+            <= 1,
+        "battle preview move fixtures are mutually exclusive"
+    );
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
     let initial = shell.shell.snapshot()?;
     anyhow::ensure!(
@@ -550,42 +740,74 @@ fn prepare_immersive_battle_preview(mut shell: BevyRuntimeShell) -> Result<BevyR
         "immersive battle preview requires a fresh empty-party Route36 session"
     );
     let trainer = initial.trainer;
-    shell.shell.add_party_pokemon(
-        "CYNDAQUIL",
-        10,
-        None,
-        None,
-        &trainer.player_name,
-        trainer.player_id,
-        Dv::from_non_hp(9, 9, 9, 9),
-    )?;
-    // Keep the legal level-10 move list (Tackle first) while giving this
-    // disposable QA actor enough health to exercise menus and several turns.
-    let low_level_moves = {
-        let state = shell.shell.session_mut().state_mut();
-        let moves = state.storage.party.pokemon[0]
-            .take()
-            .context("preview lead")?
-            .moves;
-        state.sync_party_from_storage();
-        moves
+    let move_fixture = if shadow_ball {
+        Some(("GENGAR", 40, "TM_SHADOW_BALL", "SHADOW_BALL"))
+    } else if psychic {
+        Some(("KADABRA", 20, "TM_PSYCHIC_M", "PSYCHIC_M"))
+    } else if hyper_beam {
+        // Sudowoodo resists this level-20 Normal actor's Hyper Beam, keeping
+        // the opponent alive so the next real turn can exercise recharge.
+        Some(("RATICATE", 20, "TM_HYPER_BEAM", "HYPER_BEAM"))
+    } else {
+        None
     };
-    shell.shell.add_party_pokemon(
-        "CYNDAQUIL",
-        40,
-        None,
-        None,
-        &trainer.player_name,
-        trainer.player_id,
-        Dv::from_non_hp(9, 9, 9, 9),
-    )?;
-    {
-        let state = shell.shell.session_mut().state_mut();
-        state.storage.party.pokemon[0]
-            .as_mut()
-            .context("preview replacement lead")?
-            .moves = low_level_moves;
-        state.sync_party_from_storage();
+    if let Some((species, level, tm, move_name)) = move_fixture {
+        shell.shell.add_party_pokemon(
+            species,
+            level,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+        // Let the real item mutation validate compatibility and set the move's
+        // legal PP. Never inject a fabricated move or mutate a user save.
+        shell.shell.add_bag_item(tm, 1)?;
+        shell.shell.use_bag_tmhm_on_party_pokemon(tm, 0, Some(0))?;
+        let snapshot = shell.shell.snapshot()?;
+        anyhow::ensure!(
+            snapshot.party.slots[0].pokemon.moves[0].name == move_name,
+            "pack did not teach {move_name} in the preview's first move slot"
+        );
+    } else {
+        shell.shell.add_party_pokemon(
+            "CYNDAQUIL",
+            10,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+        // Keep the legal level-10 move list (Tackle first) while giving this
+        // disposable QA actor enough health to exercise menus and several turns.
+        let low_level_moves = {
+            let state = shell.shell.session_mut().state_mut();
+            let moves = state.storage.party.pokemon[0]
+                .take()
+                .context("preview lead")?
+                .moves;
+            state.sync_party_from_storage();
+            moves
+        };
+        shell.shell.add_party_pokemon(
+            "CYNDAQUIL",
+            40,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+        {
+            let state = shell.shell.session_mut().state_mut();
+            state.storage.party.pokemon[0]
+                .as_mut()
+                .context("preview replacement lead")?
+                .moves = low_level_moves;
+            state.sync_party_from_storage();
+        }
     }
     shell.shell.add_party_pokemon(
         "TOTODILE",
@@ -622,6 +844,25 @@ fn prepare_immersive_battle_preview(mut shell: BevyRuntimeShell) -> Result<BevyR
             && controller.shell.visible_send_out_animation.is_none()
             && controller.shell.battle_action_cursor.is_some();
         if ready {
+            if hyper_beam {
+                // Reproducible developer DIV stimuli, using the same LFSR as
+                // controller regressions. This is not captured cartridge
+                // timing: normal play retains its live divider and the core
+                // still performs its real accuracy, damage and recharge logic.
+                let mut divider_state = 0xc5afu16;
+                let samples = (0..16_384).map(|_| {
+                    let feedback = divider_state & 1;
+                    divider_state >>= 1;
+                    if feedback != 0 {
+                        divider_state ^= 0xb400;
+                    }
+                    divider_state as u8
+                });
+                let session = controller.shell.shell.session_mut();
+                session.state_mut().random_state = Default::default();
+                *session.divider_mut_for_tests() =
+                    crystal_core::random::RuntimeDividerSource::replay(samples);
+            }
             mark_runtime_snapshot_dirty(&mut controller.shell);
             return Ok(controller.shell);
         }
