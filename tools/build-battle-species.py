@@ -107,6 +107,279 @@ def register(names,height=1):
   return fn
  return deco
 
+
+# Individually art-directed hero silhouettes. Shared-family builders below remain
+# unchanged; the helpers here are used only by Gengar, Kadabra and Raticate.
+def sculpt_join(n,objects,voxel=.018,ratio=.46):
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in objects:o.select_set(True)
+ bpy.context.view_layer.objects.active=objects[0];bpy.ops.object.join();o=bpy.context.object;o.name=n
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ mod=o.modifiers.new('Continuous clay anatomy','REMESH');mod.mode='VOXEL';mod.voxel_size=voxel;mod.use_smooth_shade=True;bpy.ops.object.modifier_apply(modifier=mod.name)
+ mod=o.modifiers.new('Sculpt transition smoothing','SMOOTH');mod.factor=.55;mod.iterations=3;bpy.ops.object.modifier_apply(modifier=mod.name)
+ mod=o.modifiers.new('Bounded sculpture topology','DECIMATE');mod.ratio=ratio;bpy.ops.object.modifier_apply(modifier=mod.name)
+ bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.000001);bmesh.ops.dissolve_degenerate(bm,edges=list(bm.edges),dist=.000001)
+ unseen=set(bm.faces)
+ while unseen:
+  group=set();queue=[unseen.pop()]
+  while queue:
+   f=queue.pop();group.add(f)
+   for e in f.edges:
+    for neighbor in e.link_faces:
+     if neighbor in unseen:unseen.remove(neighbor);queue.append(neighbor)
+  if len(group)<8:bmesh.ops.delete(bm,geom=list(group),context='FACES')
+ bmesh.ops.recalc_face_normals(bm,faces=bm.faces);bm.to_mesh(o.data);bm.free()
+ for f in o.data.polygons:f.use_smooth=True
+ o.data.update()
+ for f in o.data.polygons:
+  if f.normal.dot(sum((o.data.vertices[i].normal for i in f.vertices),Vector()))<.05:f.use_smooth=False
+ o.select_set(False);return o
+
+def canonicalize_hero_mesh(o):
+ # Stable topology before simplification avoids allocator-dependent BMesh
+ # iteration ordering changing the decimator's equally weighted choices.
+ me=o.data;coordinates=[tuple(round(v,7) for v in vert.co) for vert in me.vertices]
+ ordered=sorted(set(coordinates));lookup={v:i for i,v in enumerate(ordered)};remap=[lookup[v] for v in coordinates];faces=[]
+ for f in me.polygons:
+  indices=tuple(remap[i] for i in f.vertices)
+  if len(set(indices))<3:continue
+  indices=min(indices[i:]+indices[:i] for i in range(len(indices)))
+  faces.append((indices,f.use_smooth))
+ faces.sort();replacement=bpy.data.meshes.new(me.name+' stable topology');replacement.from_pydata(ordered,[],[f[0] for f in faces]);replacement.update()
+ for material in me.materials:replacement.materials.append(material)
+ for f,source in zip(replacement.polygons,faces):f.use_smooth=source[1]
+ o.data=replacement
+
+def finish_hero_normals(objects):
+ # Small, sharply bent finger tips retain face normals when averaging across
+ # the bend would point inward. The rest of each sculpture stays smoothly lit.
+ for o in objects:
+  if o.type!='MESH':continue
+  canonicalize_hero_mesh(o)
+  me=o.data;bm=bmesh.new();bm.from_mesh(me);bmesh.ops.triangulate(bm,faces=list(bm.faces),quad_method='FIXED',ngon_method='EAR_CLIP');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+  bm.to_mesh(me);bm.free();me.update()
+  for attempt in range(3):
+   bad=[]
+   for f in me.polygons:
+    if not f.use_smooth:continue
+    n=sum((me.corner_normals[i].vector for i in f.loop_indices),Vector())
+    if f.normal.dot(n)<.000001:bad.append(f)
+   if not bad:break
+   for f in bad:f.use_smooth=False
+   me.update()
+
+def sculpt_runtime_lod(name,objects):
+ # Keep the editable detailed sculpt beside the bounded game geometry. These
+ # hidden source collections are never exported or counted as runtime parts.
+ high=bpy.data.collections.new(name+' / detailed authoring source');bpy.context.scene.collection.children.link(high)
+ high.hide_render=True;high.hide_viewport=True
+ root=bpy.data.objects.new(name+' / detailed source root',None);high.objects.link(root);root['authoring_only']=True
+ for o in objects:
+  duplicate=o.copy();duplicate.data=o.data.copy();duplicate.name=o.name+' / detailed source';high.objects.link(duplicate);duplicate.parent=root
+  o.data.calc_loop_triangles();count=len(o.data.loop_triangles)
+  if count<=160 or 'crescent smile' in o.name or 'spoon bowl' in o.name:continue
+  ratio=.30 if 'continuous' in o.name else (.35 if 'muscular hind leg' in o.name else .42)
+  bpy.context.view_layer.objects.active=o
+  modifier=o.modifiers.new('Game-resolution sculpture LOD','DECIMATE');modifier.ratio=ratio;modifier.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=modifier.name)
+ finish_hero_normals(objects)
+ bpy.context.view_layer.update();points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
+ low=Vector(tuple(min(p[a] for p in points) for a in range(3)));high=Vector(tuple(max(p[a] for p in points) for a in range(3)))
+ scale=HEIGHTS[name]/(high.z-low.z);center=Vector(((low.x+high.x)*.5,(low.y+high.y)*.5,low.z))
+ for o in objects:o.location=(o.location-center)*scale;o.scale*=scale
+
+
+def sculpt_loft(n,rings,c,seg=16):
+ # Rings are (x,y,z,width,depth), so each shape has an authored profile.
+ vs=[]
+ for x,y,z,w,d in rings:
+  for j in range(seg):a=j*math.tau/seg;vs.append((x+w*math.cos(a),y+d*math.sin(a),z))
+ fs=[tuple(reversed(range(seg))),tuple((len(rings)-1)*seg+j for j in range(seg))]
+ for i in range(len(rings)-1):
+  for j in range(seg):a=i*seg+j;b=i*seg+(j+1)%seg;fs.append((a,b,b+seg,a+seg))
+ return poly(n,vs,fs,c,True)
+
+def sculpt_patch(n,outline,surface,c,depth=.009):
+ # Closed, gently raised surface conforming to an anatomical volume.
+ # Each radial band follows the surface, not a flat camera-facing polygon.
+ k=len(outline);cx=sum(p[0] for p in outline)/k;cz=sum(p[1] for p in outline)/k
+ vs=[]
+ for off in (0,depth):
+  vs.append((cx,surface(cx,cz)+off,cz))
+  for t in (.35,.7,1):
+   for x,z in outline:
+    px=cx+(x-cx)*t;pz=cz+(z-cz)*t;vs.append((px,surface(px,pz)+off,pz))
+ layer=1+k*3;fs=[]
+ for base,flip in ((0,False),(layer,True)):
+  for j in range(k):
+   f=(base,base+1+j,base+1+(j+1)%k);fs.append(tuple(reversed(f)) if flip else f)
+  for ring in range(2):
+   for j in range(k):
+    a=base+1+ring*k+j;b=base+1+ring*k+(j+1)%k;f=(a,b,b+k,a+k);fs.append(tuple(reversed(f)) if flip else f)
+ for j in range(k):a=1+2*k+j;b=1+2*k+(j+1)%k;fs.append((a,b,b+layer,a+layer))
+ return poly(n,vs,fs,c,False)
+
+def sculpt_box(n,p,size,c,bevel=.007):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=p);o=bpy.context.object
+ for coll in list(o.users_collection):coll.objects.unlink(o)
+ COL.objects.link(o);o.name=n;o.dimensions=size;bpy.context.view_layer.objects.active=o;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat(c))
+ mod=o.modifiers.new('Soft enamel edge','BEVEL');mod.width=bevel;mod.segments=2;bpy.ops.object.modifier_apply(modifier=mod.name);o.select_set(False);return o
+
+def sculpt_gengar():
+ P['gengar_violet']=(.39,.29,.57);P['gengar_eye']=(.92,.28,.31);P['gengar_mouth']=(.16,.10,.24)
+ c='gengar_violet';clay=[sph('Broad pear-shaped core',(0,0,.47),(.38,.285,.375),c,40,24)]
+ for s in (-1,1):
+  clay.append(sculpt_loft('Pointed cranial ear',[(s*.235,.01,.70,.125,.11),(s*.28,.025,.86,.105,.08),(s*.35,.04,1.02,.008,.006)],c,12))
+  clay.append(sph('Compact connected thigh',(s*.22,-.025,.19),(.145,.15,.16),c,20,12))
+  clay.append(sph('Broad planted foot',(s*.24,-.13,.075),(.13,.18,.075),c,20,12))
+  clay.append(tube('Short reaching arm',[(s*.30,0,.49),(s*.40,-.08,.43),(s*.47,-.15,.39)],[.095,.089,.082],c))
+ for i,(x,y,z,tx,ty,tz,r) in enumerate([(-.18,.16,.73,-.19,.22,.89,.09),(0,.15,.77,.01,.22,.94,.085),(.17,.16,.73,.22,.22,.87,.09),(-.25,.20,.56,-.41,.31,.66,.12),(.25,.20,.56,.41,.31,.66,.12),(-.14,.245,.40,-.20,.39,.47,.10),(.14,.245,.40,.21,.39,.48,.10),(0,.22,.25,0,.39,.24,.105)]):clay.append(rod('Layered dorsal spine',(x,y,z),(tx,ty,tz),r,c,.004,12))
+ sculpt_join('Gengar / continuous body ears limbs and dorsal spines',clay,.014,.28)
+ for s in (-1,1):
+  for j in (-1,0,1):
+   a=(s*(.442+.018*(j+1)),-.178-.029*j,.39+.043*j);b=(s*(.51+.020*(j+1)),-.23-.020*j,.37+.054*j)
+   tube('Three tapered hand digits',[a,b,(b[0]+s*.017,b[1]-.016,b[2]+.016)],[.043,.028,.003],c)
+  for j in (-1,0,1):rod('Subtle foot digit',(s*.24+j*.045,-.24,.072),(s*.24+j*.053,-.30,.060),.032,c,.010,10)
+ surface=lambda x,z:-.285*math.sqrt(max(.035,1-(x/.38)**2-((z-.47)/.375)**2))-.011
+ outline=[]
+ for i in range(21):u=-1+i/10;outline.append((.303*u,.46+.108*u*u))
+ for i in range(20,-1,-1):u=-1+i/10;outline.append((.303*u,.318+.25*u*u))
+ sculpt_patch('Recessed broad crescent smile',outline,lambda x,z:surface(x,z)-.001,'gengar_mouth',.011)
+ # Separate continuous white tooth field follows the smile; fine gaps end at
+ # the exact crescent boundary, never hang as comb-like projecting rods.
+ for j in range(7):
+  u0=-.96+j*1.92/7+.010;u1=-.96+(j+1)*1.92/7-.010;tooth=[]
+  for i in range(5):u=u0+(u1-u0)*i/4;tooth.append((.303*u,.452+.108*u*u))
+  for i in range(4,-1,-1):u=u0+(u1-u0)*i/4;tooth.append((.303*u,.327+.239*u*u))
+  sculpt_patch('Curved ivory grin tooth',tooth,lambda x,z:surface(x,z)-.006,'white',.005)
+ for s in (-1,1):
+  eye=[(s*.047,.607),(s*.266,.719),(s*.276,.674),(s*.265,.628),(s*.233,.602),(s*.176,.590),(s*.111,.593)]
+  sculpt_patch('Inset angular crimson eye',eye,lambda x,z:surface(x,z)-.005,'gengar_eye',.008)
+  x=s*.187;z=.640
+  # Thin slit pupil and a restrained highlight keep the eyes inset.
+  sculpt_patch('Vertical black eye slit',[(x-.008,z+.030),(x+.008,z+.030),(x+.006,z-.021),(x-.005,z-.021)],lambda x,z:surface(x,z)-.014,'gengar_mouth',.005)
+  brow=[(s*.029,.604),(s*.066,.638),(s*.270,.743),(s*.266,.719)]
+  sculpt_patch('Heavy expressive upper eyelid',brow,lambda x,z:surface(x,z)-.009,c,.010)
+
+def sculpt_kadabra():
+ P['kadabra_yellow']=(.94,.74,.22);P['kadabra_armor']=(.38,.30,.26);P['kadabra_moustache']=(.99,.87,.39)
+ c='kadabra_yellow';armor='kadabra_armor'
+ sculpt_loft('Tapered abdomen',[(0,.02,.24,.13,.12),(0,.015,.33,.18,.145),(0,.012,.48,.155,.12),(0,0,.62,.11,.085)],c,20)
+ sculpt_loft('Angular chest cuirass',[(0,.005,.43,.135,.108),(0,.006,.48,.205,.16),(0,.03,.60,.228,.145),(0,.025,.70,.155,.12)],armor,12)
+ sculpt_loft('Narrow neck',[(0,.0,.65,.081,.082),(0,-.01,.79,.10,.092)],c,12)
+ # Deliberately wedge-shaped fox skull, projecting tapered muzzle and tall ears.
+ # Cross-sections run from the occiput to the tapered projecting muzzle.
+ vs=[];rings=[(.11,.155,.85,1.00),(-.10,.209,.839,1.034),(-.245,.090,.854,.957),(-.365,.023,.871,.902)]
+ for y,w,low,high in rings:
+  mid=(low+high)*.5
+  for x,z in [(-w*.64,low),(w*.64,low),(w,mid-.025),(w*.82,high-.017),(w*.45,high),(-w*.45,high),(-w*.82,high-.017),(-w,mid-.025)]:vs.append((x,y,z))
+ fs=[tuple(reversed(range(8))),tuple(24+j for j in range(8))]
+ for i in range(3):
+  for j in range(8):a=i*8+j;b=i*8+(j+1)%8;fs.append((a,b,b+8,a+8))
+ head=poly('Sculpted fox skull and projecting tapered muzzle',vs,fs,c,False)
+ bpy.context.view_layer.objects.active=head;mod=head.modifiers.new('Softened fox skull planes','BEVEL');mod.width=.012;mod.segments=3;bpy.ops.object.modifier_apply(modifier=mod.name)
+ for s in (-1,1):
+  poly('Long tapered fox ear',[(s*.105,.03,.975),(s*.232,.04,.94),(s*.294,.075,1.275),(s*.171,-.016,1.095),(s*.219,.123,1.081)],[(0,1,2,3),(0,4,1),(1,4,2),(2,4,3),(3,4,0)],c)
+  fin('Recessed ochre ear plane',[(s*.164,.014,1.039),(s*.224,.015,1.034),(s*.269,.055,1.209)],'gold',.007)
+  # Raised three-dimensional triangular eye sockets follow the sloped cheeks.
+  ey=[(s*.063,.949),(s*.174,.973),(s*.153,.926),(s*.098,.928)]
+  surf=lambda x,z:-.247+.73*(abs(x)-.09)
+  sculpt_patch('Narrow focused white eye',ey,surf,'white',.012)
+  px=s*.111
+  sculpt_patch('Focused slit pupil',[(px-.007,.949),(px+.008,.953),(px+.008,.920),(px-.006,.920)],lambda x,z:surf(x,z)-.009,'ink',.006)
+  sculpt_patch('Angular brow plane',[(s*.056,.952),(s*.170,.981),(s*.177,.973),(s*.064,.948)],lambda x,z:surf(x,z)-.004,c,.006)
+  # Broad flat upper moustache sweeps are thick crescent volumes.
+  pts=[(s*.048,-.326,.874),(s*.155,-.342,.833),(s*.273,-.331,.747),(s*.348,-.293,.674)]
+  # Oval cross-section keeps moustache tapered and ribbonlike, not wire whiskers.
+  o=tube('Long swept moustache',pts,[.041,.037,.024,.002],'kadabra_moustache')
+  for v in o.data.vertices:v.co.y=(v.co.y+.33)*.40-.33
+  # Shoulder pads, narrow upper arm, wider forearms and articulated hands.
+  o=sculpt_loft('Sculpted shoulder armor',[(s*.210,.012,.531,.068,.076),(s*.216,.013,.593,.116,.123),(s*.210,.014,.684,.130,.125),(s*.191,.014,.757,.074,.084)],armor,16)
+  elbow=(s*.34,-.045,.57 if s<0 else .68);wrist=(s*.39,-.18,.68 if s<0 else .89)
+  tube('Bent upper arm',[(s*.225,-.015,.635),elbow],[.050,.043],c)
+  tube('Sculpted tapered forearm',[elbow,((elbow[0]+wrist[0])*.5,-.105,(elbow[2]+wrist[2])*.5),wrist],[.051,.069,.037],c)
+  palm=sph('Three-fingered hand palm',wrist,(.066,.050,.068),c,16,10)
+  for j in (-1,0,1):
+   x=wrist[0]+j*.043;z=wrist[2]+.028
+   tube('Curled hand finger',[(x,-.19,z),(x+s*.010,-.232,z+.085),(x+s*.007,-.258,z+.048)],[.023,.020,.012],c)
+   rod('Pale finger claw',(x+s*.007,-.258,z+.048),(x+s*.006,-.274,z+.019),.014,'white',.001,10)
+  # Heavy bent thighs and digitigrade lower legs ground the pose.
+  thigh=(s*.21,.02,.29);knee=(s*.29,-.10,.26);ankle=(s*.245,-.045,.075)
+  sculpt_join('Bent muscular hind leg',[sph('Haunch',thigh,(.14,.13,.14),c,20,12),tube('Bent shin',[knee,(s*.27,-.065,.16),ankle],[.067,.065,.04],c)],.014,.55)
+  sph('Splayed hind foot',(s*.245,-.105,.054),(.098,.115,.05),c,16,10)
+  for j in (-1,0,1):
+   a=(s*.245+j*.046,-.153,.050);b=(s*.245+j*.058,-.237,.040)
+   rod('Three long hind toes',a,b,.032,c,.016,10);rod('Ivory toe claw',b,(b[0],b[1]-.046,.026),.019,'white',.001,10)
+ # Tail has the characteristic substantial golden curl and dark saddle bands.
+ tube('Heavy curved psychic tail',[(0,.125,.30),(0,.33,.23),(-.05,.48,.26),(-.10,.56,.46),(-.07,.50,.66)],[.11,.145,.13,.095,.018],c)
+ tube('Broad tail saddle band',[(0,.26,.241),(-.015,.36,.230)],[.149,.145],armor)
+ # Three pink abdomen waves belong to Kadabra alone.
+ for dx in (-.058,0,.058):tube('Three wavy abdomen markings',[(dx,-.141,.422),(dx-.016,-.153,.390),(dx+.015,-.151,.350),(dx+.002,-.133,.315)],.011,'rose')
+ # Five-point forehead star; all vertices project onto the forehead plane.
+ star=[]
+ for i in range(10):a=math.pi/2+i*math.pi/5;r=.029 if i%2==0 else .013;star.append((r*math.cos(a),.996+r*math.sin(a)))
+ sculpt_patch('Five-point red forehead star',star,lambda x,z:-.11-(1.034-z)*1.753-.007,'red',.006)
+ # A true concave bowl with a thick rim, held above the right hand.
+ tube('Held silver spoon handle',[(.387,-.228,.803),(.394,-.245,.927),(.40,-.25,1.035)],[.013,.012,.010],'silver')
+ seg=24;vs=[];fs=[]
+ for layer in (0,1):
+  for ring in range(5):
+   r=ring/4
+   for j in range(seg):a=j*math.tau/seg;vs.append((.400+.052*r*math.cos(a),-.246+.022*(1-r*r)+layer*.007,1.082+.076*r*math.sin(a)))
+ for layer in (0,1):
+  for ring in range(4):
+   for j in range(seg):a=layer*5*seg+ring*seg+j;b=layer*5*seg+ring*seg+(j+1)%seg;fs.append((a,b,b+seg,a+seg))
+ for j in range(seg):a=4*seg+j;b=4*seg+(j+1)%seg;fs.append((a,b,b+5*seg,a+5*seg))
+ poly('Hollow silver spoon bowl',vs,fs,'silver',True)
+
+def sculpt_raticate():
+ P['raticate_fur']=(.64,.42,.20);P['raticate_cream']=(.95,.84,.59);P['raticate_ear']=(.54,.39,.31)
+ c='raticate_fur';cream='raticate_cream'
+ core=[sph('Pear-shaped rat body',(0,.075,.36),(.34,.305,.335),c,32,20),sph('Broad forward head',(0,-.13,.635),(.295,.235,.25),c,32,20)]
+ for s in (-1,1):
+  core.append(sph('Powerful low haunch',(s*.245,.07,.245),(.165,.19,.20),c,20,12))
+  for i,(x,z,dx,dz) in enumerate([(.235,.77,.095,.075),(.27,.70,.10,.018),(.292,.52,.10,-.035),(.285,.43,.097,-.035)]):
+   core.append(rod('Cheek and shoulder fur tuft',(s*x,-.02,z),(s*(x+dx),-.018,z+dz),.064,c,.003,9))
+ sculpt_join('Raticate / continuous pear body head and fur silhouette',core,.016,.30)
+ # Underside is nested into the body rather than hanging as a separate pouch.
+ sph('Broad cream belly',(0,-.185,.315),(.263,.112,.258),cream,28,16)
+ for s in (-1,1):
+  ear=sph('Flared cupped rat ear',(s*.248,-.065,.823),(.105,.06,.132),c,20,12);ear.rotation_euler[1]=s*.48
+  inner=sph('Recessed ear interior',(s*.260,-.116,.830),(.072,.019,.096),'raticate_ear',20,12);inner.rotation_euler[1]=s*.48
+  # Low slanting eyes replace generic round protruding buttons.
+  outline=[(s*.092,.744),(s*.253,.762),(s*.235,.719),(s*.150,.723)]
+  surf=lambda x,z:-.13-.235*math.sqrt(max(.05,1-(x/.299)**2-((z-.635)/.25)**2))-.008
+  sculpt_patch('Slanted almond eye',outline,surf,'white',.009)
+  x=s*.162
+  sculpt_patch('Focused small rat pupil',[(x-.009,.748),(x+.010,.748),(x+.009,.724),(x-.008,.724)],lambda x,z:surf(x,z)-.010,'ink',.006)
+  sculpt_patch('Natural upper eyelid',[(s*.083,.747),(s*.249,.774),(s*.253,.762),(s*.092,.743)],lambda x,z:surf(x,z)-.002,c,.006)
+ # Cream cheek masses wrap around a real recessed mouth and square incisors.
+ sph('Dark open mouth cavity',(0,-.320,.545),(.132,.063,.138),'ink',24,16)
+ sph('Lower cream jaw',(0,-.318,.423),(.114,.072,.046),cream,24,12)
+ sph('Lower mouth tongue',(0,-.362,.463),(.081,.017,.038),'rose',20,12)
+ for s in (-1,1):
+  cheek=sph('Cream whisker cheek',(s*.145,-.300,.592),(.151,.101,.105),cream,24,14);cheek.rotation_euler[1]=s*.12
+  inc=sculpt_box('Broad upper chisel incisor',(s*.042,-.392,.559),(.076,.045,.125),'white',.008);inc.rotation_euler[0]=-.09
+  inc=sculpt_box('Short lower chisel incisor',(s*.037,-.386,.449),(.068,.036,.044),'white',.006)
+  # Short reaching forepaws sit high on the belly, with visibly separate claws.
+  tube('Short bent forearm',[(s*.28,-.14,.435),(s*.30,-.225,.386),(s*.265,-.284,.411)],[.066,.063,.046],c)
+  sph('Small grasping forepaw',(s*.260,-.280,.415),(.065,.048,.046),cream,16,10)
+  for j in (-1,0,1):
+   x=s*.26+j*.032;tip=(x+s*.01,-.348,.407+.01*j)
+   tube('Three curled forepaw digits',[(x,-.302,.433),(x,-.330,.433),tip],[.019,.017,.008],cream)
+   rod('Forepaw claw',tip,(tip[0],tip[1]-.018,tip[2]-.018),.009,'white',.001,8)
+  sph('Long splayed rat foot',(s*.251,-.04,.053),(.115,.174,.051),cream,20,12)
+  for j in (-1,0,1):
+   x=s*.251+j*.049;rod('Long rat toe',(x,-.14,.048),(x+j*.011,-.240,.030),.026,cream,.012,10);rod('Rat toe claw',(x+j*.011,-.238,.032),(x+j*.017,-.273,.015),.014,'white',.001,10)
+  # Six long tapered whiskers fan from anchored cheek roots.
+  for i,(z,dz) in enumerate([(.639,.075),(.611,.005),(.575,-.092)]):
+   tube('Tapered facial whisker',[(s*.21,-.373,z),(s*.353,-.375,z+dz*.5),(s*.493,-.330,z+dz)],[.011,.008,.001],cream)
+ # Small angular nose stays seated in the cream muzzle.
+ poly('Small split rat nose',[(-.040,-.398,.676),(.040,-.398,.676),(0,-.415,.645),(0,-.369,.673)],[(0,1,2),(0,3,1),(1,3,2),(2,3,0)],'raticate_ear',True)
+ tube('Nose philtrum',[(0,-.406,.646),(0,-.407,.613)],.006,'brown')
+ tube('Long tapered bare rat tail',[(0,.335,.29),(.17,.459,.26),(.365,.505,.36),(.50,.447,.55),(.495,.36,.73),(.433,.30,.86)],[.050,.048,.038,.028,.019,.002],cream)
+ for i,(a,b,r) in enumerate([((.131,.438,.263),(.168,.457,.269),.049),((.285,.497,.308),(.314,.501,.327),.044),((.424,.489,.423),(.444,.479,.450),.033)]):rod('Subtle tail segmentation',a,b,r,'tan',r,12)
+
 @register('BAYLEEF MEGANIUM',1.35)
 def grass_starter(n):
  big=n=='MEGANIUM';c='leaf' if big else 'yellow';quad(c,(.33,.40,.30),(.21,-.34,.85),True)
@@ -341,11 +614,7 @@ def birds(n):
  if deli:sph('Gift sack',(0,.30,.49),(.26,.22,.32),'cream');tube('Sack neck',[(0,.35,.74),(.11,.28,.88),(.21,.15,.73)],.06,'cream')
 @register('RATICATE',.96)
 def raticate(n):
- sph('Chunky rodent body',(0,.07,.32),(.34,.28,.30),'tan');sph('Cream underside',(0,-.15,.28),(.27,.10,.24),'cream');sph('Head',(0,-.11,.59),(.27,.22,.23),'tan');sph('Muzzle',(0,-.285,.51),(.24,.12,.13),'cream');eyes(.68,-.254,.16,.042);feet('cream',.24,s=(.11,.18,.065));arms('tan',.42,.30)
- for s in (-1,1):sph('Round ear',(s*.20,-.04,.77),(.085,.055,.095),'brown');sph('Pink ear',(s*.20,-.088,.77),(.050,.016,.059),'pink');rod('Square incisor',(s*.035,-.39,.52),(s*.035,-.40,.40),.037,'white',seg=4)
- tube('Long hairless tail',[(0,.26,.33),(.25,.40,.39),(.44,.38,.58),(.43,.24,.69)],[.04,.035,.025,.01],'pink')
- for s in (-1,1):
-  for z in (.49,.56):tube('Whisker',[(s*.21,-.30,z),(s*.39,-.31,z+.06),(s*.48,-.29,z+.04)],.007,'white')
+ sculpt_raticate()
 @register('RAICHU PICHU',.96)
 def electric_mice(n):
  baby=n=='PICHU';c='yellow' if baby else 'orange';sph('Mouse body',(0,0,.33),(.20,.16,.26),c);sph('Cream belly',(0,-.143,.30),(.13,.032,.18),'cream');sph('Wide head',(0,-.02,.64),(.24,.18,.22),c);eyes(.67,-.186,.12,.032);feet(c,.14);arms(c,.36,.20);mouth(-.20,.565,.07)
@@ -916,6 +1185,7 @@ def bivalves(n):
  else:sph('Protruding tongue',(0,-.18,.19),(.095,.23,.045),'pink')
 @register('GASTLY HAUNTER GENGAR',1.05)
 def ghosts(n):
+ if n=='GENGAR':sculpt_gengar();return
  gaseous=n=='GASTLY';hands=n=='HAUNTER';sph('Ghost body',(0,0,.49),(.30,.25,.30),'ink' if gaseous else 'purple');eyes(.58,-.229,.15,.044,'red');sph('Wide ghost grin',(0,-.246,.38),(.22,.03,.085),'white')
  for i in range(-3,4):tube('Tooth gap',[(i*.055,-.278,.32),(i*.055,-.278,.44)],.006,'purple')
  for s in (-1,1):leaf('Angry eye brow',(s*.04,-.24,.64),(s*.25,-.19,.72),.048,'ink' if gaseous else 'purple')
@@ -1012,6 +1282,7 @@ def kangaskhan(n):
 
 @register('ABRA KADABRA ALAKAZAM DROWZEE HYPNO',1.12)
 def psychic_humanoids(n):
+ if n=='KADABRA':sculpt_kadabra();return
  tapir=n in ('DROWZEE','HYPNO');abra=n=='ABRA';final=n in ('ALAKAZAM','HYPNO');sph('Psychic torso',(0,0,.42),(.24,.19,.29),'yellow');sph('Brown waist',(0,0,.25),(.24,.18,.15),'brown');sph('Psychic head',(0,-.035,.80),(.23,.19,.20),'yellow');feet('yellow',.19,s=(.13,.19,.075));arms('yellow',.51,.24)
  if tapir:
   tube('Tapir nose',[(0,-.17,.80),(0,-.27,.74),(0,-.29,.60)],[.073,.061,.04],'yellow');eyes(.88,-.202,.13,.030)
@@ -1204,6 +1475,8 @@ def converted(v):return [round(v.x,6),round(v.z,6),round(-v.y,6)]
 def export(name,objects):
  bpy.context.view_layer.update();coords=[o.matrix_world@v.co for o in objects for v in o.data.vertices];lo=Vector([min(p[a] for p in coords) for a in range(3)]);hi=Vector([max(p[a] for p in coords) for a in range(3)]);scale=min(HEIGHTS[name]/(hi.z-lo.z),2.25/(hi.x-lo.x),2.25/(hi.y-lo.y));center=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z))
  for o in objects:o.location=(o.location-center)*scale;o.scale*=scale
+ bpy.context.view_layer.update()
+ if name in ('gengar','kadabra','raticate'):sculpt_runtime_lod(name,objects)
  bpy.context.view_layer.update();prims=[]
  for o in objects:
   me=o.data;me.calc_loop_triangles();pos=[];nor=[];ind=[];lookup={};normal_matrix=o.matrix_world.to_3x3().inverted().transposed()
@@ -1215,6 +1488,12 @@ def export(name,objects):
     if k not in lookup:lookup[k]=len(pos)//3;pos.extend(p);nor.extend(n)
     ind.append(lookup[k])
   if ind:prims.append({'part':o.name,'positions':pos,'normals':nor,'indices':ind,'base_color':[round(v,6) for v in me.materials[0].diffuse_color]})
+ if name in ('gengar','kadabra','raticate'):
+  for p in prims:
+   values=[tuple(p['positions'][i:i+3]+p['normals'][i:i+3]) for i in range(0,len(p['positions']),3)];unique=sorted(set(values));lookup={v:i for i,v in enumerate(unique)};remap=[lookup[v] for v in values];tri=[]
+   for i in range(0,len(p['indices']),3):
+    t=tuple(remap[j] for j in p['indices'][i:i+3]);tri.append(min(t,t[1:]+t[:1],t[2:]+t[:2]))
+   p['positions']=[v for row in unique for v in row[:3]];p['normals']=[v for row in unique for v in row[3:]];p['indices']=[i for t in sorted(tri) for i in t]
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':prims};(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {len(prims)} named parts, {sum(len(p["indices"])//3 for p in prims)} triangles',flush=True)
 def reset():
@@ -1229,7 +1508,9 @@ def run():
  for start in range(0,len(names),args.batch_size):
   reset();scene=bpy.context.scene;roots=[]
   for name in names[start:start+args.batch_size]:
-   COL=bpy.data.collections.new(name);scene.collection.children.link(COL);BUILDERS[name]();objects=list(COL.objects);export(name,objects);root=bpy.data.objects.new(name+' / floor root',None);COL.objects.link(root);root['species']=name.upper();root['authorship']='Original procedural anatomy; no game textures or copied meshes';root.empty_display_size=.07
+   COL=bpy.data.collections.new(name);scene.collection.children.link(COL);BUILDERS[name]();objects=list(COL.objects)
+   if name in ('gengar','kadabra','raticate'):finish_hero_normals(objects)
+   export(name,objects);root=bpy.data.objects.new(name+' / floor root',None);COL.objects.link(root);root['species']=name.upper();root['authorship']='Original procedural anatomy; no game textures or copied meshes';root.empty_display_size=.07
    for o in objects:o.parent=root
    roots.append(root)
   for i,root in enumerate(roots):root.location=((i%4-1.5)*2.0,i//4*2.0,0)

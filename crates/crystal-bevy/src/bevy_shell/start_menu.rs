@@ -5505,6 +5505,56 @@ fn battle_anim_frame_at_age<'a>(
     }
 }
 
+/// The composited image is positioned relative to OAM origin. Absolute screen
+/// movement must not create another texture for the same pixels. Keep clipped
+/// scanlines and every per-piece byte that can affect the rendered image.
+fn battle_anim_runtime_oam_cache_key(oam: &VisibleBattleObjectOam) -> String {
+    let relative: Vec<_> = oam.entries.iter().map(|piece| {
+        (
+            i32::from(piece[0]) - oam.origin.1,
+            i32::from(piece[1]) - oam.origin.0,
+            piece[2],
+            piece[3],
+        )
+    }).collect();
+    format!("{relative:?}:{:?}", oam.rows)
+}
+
+#[cfg(test)]
+mod battle_anim_texture_cache_tests {
+    use super::*;
+
+    #[test]
+    fn translated_objects_reuse_texture_but_oam_pixel_changes_do_not() {
+        let original = VisibleBattleObjectOam {
+            entries: vec![[48, 64, 2, 0], [48, 72, 3, 0]],
+            rows: vec![[true; 8]; 2],
+            origin: (64, 48),
+        };
+        let mut translated = original.clone();
+        translated.origin = (92, 76);
+        for entry in &mut translated.entries {
+            entry[0] += 28;
+            entry[1] += 28;
+        }
+        let original_key = battle_anim_runtime_oam_cache_key(&original);
+        assert_eq!(original_key, battle_anim_runtime_oam_cache_key(&translated));
+        for byte in 0..4 {
+            let mut changed = original.clone();
+            changed.entries[0][byte] += 1;
+            assert_ne!(original_key, battle_anim_runtime_oam_cache_key(&changed));
+        }
+        let mut clipped = original.clone();
+        clipped.rows[0][3] = false;
+        assert_ne!(original_key, battle_anim_runtime_oam_cache_key(&clipped));
+        let mut wrapped = original.clone();
+        wrapped.origin.0 = 255;
+        wrapped.entries[0][1] = 0;
+        assert_ne!(original_key, battle_anim_runtime_oam_cache_key(&wrapped),
+            "signed relative coordinates must preserve source byte wrapping");
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 fn battle_anim_rendered_frame(
     rendered_art: &mut RenderedTilesetArt,
@@ -5547,10 +5597,7 @@ fn battle_anim_rendered_frame(
         palette_override.unwrap_or("default"),
     );
     let cache_key = if let Some(oam) = runtime_oam {
-        format!(
-            "{cache_key}:{:?}:{:?}:{:?}",
-            oam.origin, oam.entries, oam.rows
-        )
+        format!("{cache_key}:{}", battle_anim_runtime_oam_cache_key(oam))
     } else {
         cache_key
     };

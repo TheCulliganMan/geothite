@@ -6,8 +6,55 @@ use std::sync::{Arc, Mutex};
 
 type Completions = Arc<Mutex<Vec<Result<(), String>>>>;
 const MAX_READBACKS: usize = 8;
-const CAPTURE_INTERVAL: f64 = 1.0 / 30.0;
+const DEFAULT_CAPTURE_HZ: u32 = 30;
 const ARM_TIMEOUT_SECONDS: f64 = 180.0;
+const CAPTURE_TIME_EPSILON: f64 = 1.0e-9;
+
+struct CaptureCadence {
+    next_at: f64,
+    requested_hz: u32,
+}
+
+impl Default for CaptureCadence {
+    fn default() -> Self {
+        Self::new(DEFAULT_CAPTURE_HZ)
+    }
+}
+
+impl CaptureCadence {
+    fn new(requested_hz: u32) -> Self {
+        debug_assert!(matches!(requested_hz, 30 | 60));
+        Self {
+            next_at: 0.0,
+            requested_hz,
+        }
+    }
+
+    fn interval(&self) -> f64 {
+        1.0 / f64::from(self.requested_hz)
+    }
+
+    fn due(&self, elapsed: f64, outstanding: usize) -> bool {
+        outstanding < MAX_READBACKS && elapsed + CAPTURE_TIME_EPSILON >= self.next_at
+    }
+
+    fn admitted(&mut self, elapsed: f64) {
+        // Anchor deadlines to the start of the recording. Setting the next
+        // deadline to elapsed + interval would alias a 40Hz renderer to 20Hz.
+        // Skip missed deadlines after a stall or readback backpressure; never
+        // synthesize duplicate frames or request catch-up captures.
+        self.next_at =
+            (((elapsed + CAPTURE_TIME_EPSILON) / self.interval()).floor() + 1.0) * self.interval();
+    }
+}
+
+fn requested_capture_hz(value: Option<&str>) -> Result<u32> {
+    match value {
+        None | Some("30") => Ok(DEFAULT_CAPTURE_HZ),
+        Some("60") => Ok(60),
+        Some(value) => anyhow::bail!("CRYSTAL_CAPTURE_FPS must be 30 or 60, found {value:?}"),
+    }
+}
 
 #[derive(Resource)]
 struct Recording {
@@ -18,7 +65,7 @@ struct Recording {
     armed_at: Option<f64>,
     trigger: String,
     start: Option<f64>,
-    last: f64,
+    cadence: CaptureCadence,
     frames: Vec<f64>,
     trace: String,
     update_trace: String,
@@ -39,6 +86,7 @@ pub(super) fn install(
         (1..=300).contains(&seconds),
         "measurement must be 1–300 seconds"
     );
+    let capture_hz = requested_capture_hz(std::env::var("CRYSTAL_CAPTURE_FPS").ok().as_deref())?;
     std::fs::create_dir_all(directory)?;
     anyhow::ensure!(
         std::fs::read_dir(directory)?.next().is_none(),
@@ -53,11 +101,11 @@ pub(super) fn install(
         armed_at: None,
         trigger: String::new(),
         start: None,
-        last: -1.0,
+        cadence: CaptureCadence::new(capture_hz),
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -100,6 +148,9 @@ fn record(
     runtime: Res<BevyRuntimeShell>,
     windows: Query<Entity, With<PrimaryWindow>>,
     mut screenshots: ResMut<ScreenshotManager>,
+    images: Res<Assets<Image>>,
+    meshes: Res<Assets<Mesh>>,
+    materials: Res<Assets<StandardMaterial>>,
     mut exit: EventWriter<AppExit>,
 ) {
     if let Some(error) = runtime.render_test_error.as_ref() {
@@ -223,8 +274,9 @@ fn record(
                     .collect::<Vec<_>>()
                     .join("|")
             });
+        let capture_hz = recording.cadence.requested_hz;
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{}\n",
             battle_frame.map_id,
             species(0),
             species(1),
@@ -234,13 +286,21 @@ fn record(
             source_frame,
             bgp,
             source_objects,
-            *flash_mode
+            *flash_mode,
+            images.len(),
+            meshes.len(),
+            materials.len(),
+            battle_status.lighting,
+            battle_status.quality,
+            battle_status.software_renderer,
+            battle_status.render_size.x,
+            battle_status.render_size.y,
+            battle_status.output_size.x,
+            battle_status.output_size.y,
+            capture_hz,
         ));
     }
-    if !recording.capture_images
-        || recording.outstanding >= MAX_READBACKS
-        || elapsed - recording.last < CAPTURE_INTERVAL
-    {
+    if !recording.capture_images || !recording.cadence.due(elapsed, recording.outstanding) {
         return;
     }
     let Ok(window) = windows.get_single() else {
@@ -278,7 +338,7 @@ fn record(
     {
         recording.frames.push(elapsed);
         recording.trace.push_str(&row(index, elapsed, &frame));
-        recording.last = elapsed;
+        recording.cadence.admitted(elapsed);
         recording.outstanding += 1;
     }
 }
@@ -301,6 +361,13 @@ fn recording_start_ready(
 }
 
 fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
+    std::fs::write(
+        recording.directory.join("capture-settings.txt"),
+        format!(
+            "capture_images={}\nrequested_capture_hz={}\nactual timestamps; missed deadlines are dropped\n",
+            recording.capture_images, recording.cadence.requested_hz,
+        ),
+    )?;
     if !recording.trigger.is_empty() {
         std::fs::write(
             recording.directory.join("capture-trigger.txt"),
@@ -340,12 +407,13 @@ fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
     times.sort_by(f64::total_cmp);
     if !times.is_empty() {
         let summary = format!(
-            "{} updates; median {:.2}ms, p95 {:.2}ms; {} captured frames over {:.2}s\n",
+            "{} updates; median {:.2}ms, p95 {:.2}ms; {} captured frames over {:.2}s; requested capture cap {}Hz\n",
             times.len(),
             times[times.len() / 2],
             times[times.len() * 95 / 100],
             recording.frames.len(),
-            elapsed
+            elapsed,
+            recording.cadence.requested_hz,
         );
         std::fs::write(recording.directory.join("summary.txt"), &summary)?;
         print!("{summary}");
@@ -359,6 +427,91 @@ mod tests {
     use crystal_render_api::{
         VisualBattleCue, VisualBattleCueKind, VisualBattleFrame, VisualBattleSide,
     };
+
+    fn captures_at_rate(hz: usize, seconds: usize, capture_hz: u32) -> Vec<f64> {
+        let mut cadence = CaptureCadence::new(capture_hz);
+        let mut captured = Vec::new();
+        for sample in 0..hz * seconds {
+            let elapsed = sample as f64 / hz as f64;
+            if cadence.due(elapsed, 0) {
+                captured.push(elapsed);
+                cadence.admitted(elapsed);
+                assert!(!cadence.due(elapsed, 0), "one capture per observed frame");
+            }
+        }
+        captured
+    }
+
+    #[test]
+    fn capture_deadlines_preserve_requested_cap_and_real_render_samples() {
+        for (capture_hz, hz) in [30, 60]
+            .into_iter()
+            .flat_map(|cap| [30, 40, 60, 120].map(|hz| (cap, hz)))
+        {
+            let captures = captures_at_rate(hz, 4, capture_hz);
+            assert_eq!(
+                captures.len(),
+                hz.min(capture_hz as usize) * 4,
+                "{hz}Hz renderer must retain the requested {capture_hz}Hz cap"
+            );
+            assert!(captures.windows(2).all(|times| times[0] < times[1]));
+            for (deadline, &actual) in captures.iter().enumerate() {
+                if hz >= capture_hz as usize {
+                    let scheduled = deadline as f64 / f64::from(capture_hz);
+                    assert!(actual + CAPTURE_TIME_EPSILON >= scheduled);
+                    assert!(actual - scheduled < 1.0 / hz as f64 + CAPTURE_TIME_EPSILON);
+                }
+                // These are real render sample timestamps, never a retimed
+                // 30Hz output grid. 40Hz deliberately has unequal gaps.
+                assert!((actual * hz as f64 - (actual * hz as f64).round()).abs() < 1.0e-8);
+            }
+        }
+        let captures = captures_at_rate(40, 1, 30);
+        let gaps: Vec<_> = captures
+            .windows(2)
+            .map(|times| times[1] - times[0])
+            .collect();
+        assert!(gaps.iter().any(|gap| (*gap - 0.025).abs() < 1.0e-8));
+        assert!(gaps.iter().any(|gap| (*gap - 0.050).abs() < 1.0e-8));
+        let captures = captures_at_rate(40, 1, 60);
+        assert!(
+            captures
+                .windows(2)
+                .all(|times| (times[1] - times[0] - 0.025).abs() < 1.0e-8)
+        );
+    }
+
+    #[test]
+    fn capture_deadlines_drop_missed_frames_after_stalls_and_backpressure() {
+        for cap in [30, 60] {
+            let mut cadence = CaptureCadence::new(cap);
+            assert!(cadence.due(0.0, 0));
+            cadence.admitted(0.0);
+            assert!(!cadence.due(0.01, 0));
+            assert!(!cadence.due(0.05, MAX_READBACKS));
+            assert!(!cadence.due(0.75, MAX_READBACKS));
+            assert!(cadence.due(1.01, MAX_READBACKS - 1));
+            cadence.admitted(1.01);
+            assert!(!cadence.due(1.01, 0));
+            assert!(!cadence.due(1.011, 0));
+            assert!(cadence.due(1.04, 0));
+            cadence.admitted(1.04);
+            assert!(!cadence.due(1.04, 0));
+            assert!(!cadence.due(1.041, 0));
+            assert!(cadence.due(1.07, 0));
+        }
+    }
+
+    #[test]
+    fn capture_cap_defaults_to_30_and_accepts_only_bounded_explicit_rates() {
+        assert_eq!(requested_capture_hz(None).unwrap(), 30);
+        assert_eq!(CaptureCadence::default().requested_hz, 30);
+        assert_eq!(requested_capture_hz(Some("30")).unwrap(), 30);
+        assert_eq!(requested_capture_hz(Some("60")).unwrap(), 60);
+        for invalid in ["0", "120", "59.94", "unlimited"] {
+            assert!(requested_capture_hz(Some(invalid)).is_err());
+        }
+    }
     #[test]
     fn immersive_battle_record_arm_requires_an_active_presented_move() {
         let mut frame = VisualBattleFrame {

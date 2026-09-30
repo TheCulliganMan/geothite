@@ -5,7 +5,14 @@ use bevy::{
     core_pipeline::{fxaa::Fxaa, tonemapping::Tonemapping},
     pbr::{CascadeShadowConfigBuilder, FogFalloff, FogSettings},
     prelude::*,
-    render::{camera::ClearColorConfig, view::RenderLayers},
+    render::{
+        camera::{CameraUpdateSystem, ClearColorConfig, RenderTarget},
+        render_asset::RenderAssetUsages,
+        render_resource::{Extent3d, TextureDimension, TextureFormat, TextureUsages},
+        renderer::RenderAdapterInfo,
+        texture::ImageSampler,
+        view::RenderLayers,
+    },
 };
 use crystal_render_api::{
     BattleFlashMode, VisualBattleBattler, VisualBattleCue, VisualBattleCueKind,
@@ -19,6 +26,9 @@ use std::{
 };
 
 const BATTLE_LAYER: usize = 29;
+// The arena image is drawn behind the native HUD in its existing pass.
+// Layer 30 parks classic sprites, and 31 is the modeled overworld.
+const BATTLE_COMPOSITE_LAYER: usize = 0;
 const MODEL_SCALE: f32 = 2.65;
 const PARTICLES: usize = 32;
 
@@ -32,14 +42,22 @@ impl Plugin for BattleViewPlugin {
             .init_resource::<BattleScene>()
             .add_systems(Startup, setup_battle_scene)
             .add_systems(
+                PostUpdate,
+                sync_battle_composite
+                    .after(CameraUpdateSystem)
+                    .before(bevy::transform::TransformSystem::TransformPropagate),
+            )
+            .add_systems(
                 Update,
                 (
                     toggle_battle_flash_mode,
                     sync_battle_scene,
+                    sync_battle_target,
                     sync_source_objects,
                     sync_modeled_source_effects,
                 )
                     .chain()
+                    .after(crate::toggle_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
     }
@@ -54,9 +72,79 @@ pub struct BattleViewStatus {
     pub modeled_species: Vec<String>,
     pub source_art_species: Vec<String>,
     pub last_error: Option<String>,
+    pub lighting: &'static str,
+    pub quality: &'static str,
+    pub software_renderer: bool,
+    pub render_size: UVec2,
+    pub output_size: UVec2,
 }
 #[derive(Component)]
 struct BattleCamera;
+#[derive(Component)]
+struct BattleCompositeSprite;
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+enum BattleRenderQuality {
+    #[default]
+    Automatic,
+    Native,
+    Balanced,
+    Performance,
+}
+impl BattleRenderQuality {
+    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+    fn from_name(name: &str) -> Self {
+        match name {
+            "balanced" => Self::Balanced,
+            "performance" => Self::Performance,
+            "native" => Self::Native,
+            _ => Self::Automatic,
+        }
+    }
+    fn name(self) -> &'static str {
+        match self {
+            Self::Automatic => "auto",
+            Self::Native => "native",
+            Self::Balanced => "balanced",
+            Self::Performance => "performance",
+        }
+    }
+    fn target_size(self, output: UVec2) -> UVec2 {
+        let numerator = match self {
+            Self::Automatic | Self::Native => 4,
+            Self::Balanced => 3,
+            Self::Performance => 2,
+        };
+        // Integer extents remain stable between actual resizes. This also
+        // bounds unusually large/minimized window allocations.
+        let width = (u64::from(output.x) * numerator / 4).max(1);
+        let height = (u64::from(output.y) * numerator / 4).max(1);
+        let divisor = width.max(height).max(4096);
+        UVec2::new(
+            (width * 4096 / divisor).max(1) as u32,
+            (height * 4096 / divisor).max(1) as u32,
+        )
+    }
+}
+
+fn resolve_battle_profile(
+    software_renderer: bool,
+    requested_quality: BattleRenderQuality,
+    requested_lighting: Option<&str>,
+) -> (BattleRenderQuality, bool) {
+    let quality = match requested_quality {
+        BattleRenderQuality::Automatic if software_renderer => BattleRenderQuality::Balanced,
+        BattleRenderQuality::Automatic => BattleRenderQuality::Native,
+        explicit => explicit,
+    };
+    let vertex_lighting = match requested_lighting {
+        Some("vertex") => true,
+        Some("pbr") => false,
+        _ => software_renderer,
+    };
+    (quality, vertex_lighting)
+}
+
 #[derive(Component)]
 struct BattleLight;
 #[derive(Component)]
@@ -77,7 +165,6 @@ struct BattleModeledSourceEffect(usize);
 struct ActorKey {
     species: Arc<str>,
     modeled: bool,
-    texture: Handle<Image>,
 }
 struct ActorInstance {
     entity: Entity,
@@ -86,12 +173,14 @@ struct ActorInstance {
     mesh: Option<Handle<Mesh>>,
     palette_key: (u8, BattleFlashMode),
     deformation_key: Option<[i8; 0x5f]>,
+    neutral_colors: Option<Vec<[f32; 4]>>,
 }
 #[derive(Resource, Default)]
 struct BattleScene {
     arena: Option<Entity>,
     arena_key: Option<VisualBattleEnvironment>,
     arena_mesh: Option<Handle<Mesh>>,
+    arena_neutral_colors: Vec<[f32; 4]>,
     actors: [Option<ActorInstance>; 2],
     species_meshes: HashMap<Arc<str>, Option<Arc<SurfaceMeshData>>>,
     surface_material: Handle<StandardMaterial>,
@@ -100,9 +189,17 @@ struct BattleScene {
     particle_materials: Vec<Handle<StandardMaterial>>,
     particles: Vec<Entity>,
     ball: Option<Entity>,
+    ball_mesh: Handle<Mesh>,
+    ball_neutral_colors: Vec<[f32; 4]>,
+    surface_white_strength: Option<f32>,
     elapsed: f32,
     was_active: bool,
     source_effect_meshes: Vec<Handle<Mesh>>,
+    vertex_lighting: bool,
+    quality: BattleRenderQuality,
+    software_renderer: bool,
+    render_target: Option<Handle<Image>>,
+    render_size: UVec2,
 }
 #[derive(Clone, serde::Deserialize)]
 struct ArenaPalette {
@@ -145,12 +242,61 @@ fn setup_battle_scene(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut images: ResMut<Assets<Image>>,
     mut scene: ResMut<BattleScene>,
+    adapter: Option<Res<RenderAdapterInfo>>,
 ) {
+    scene.software_renderer = adapter
+        .as_ref()
+        .is_some_and(|adapter| crate::software_renderer(&adapter.name));
+    #[cfg(not(target_arch = "wasm32"))]
+    let (requested_quality, requested_lighting) = (
+        std::env::var("CRYSTAL_BATTLE_QUALITY")
+            .ok()
+            .map_or(scene.quality, |quality| {
+                BattleRenderQuality::from_name(&quality)
+            }),
+        std::env::var("CRYSTAL_BATTLE_LIGHTING").ok(),
+    );
+    #[cfg(target_arch = "wasm32")]
+    let (requested_quality, requested_lighting) = (scene.quality, None::<String>);
+    // Adapter-based defaults apply to the production native and browser
+    // renderers. Explicit native overrides remain useful for matched A/Bs.
+    let (quality, vertex_lighting) = resolve_battle_profile(
+        scene.software_renderer,
+        requested_quality,
+        requested_lighting.as_deref(),
+    );
+    scene.quality = quality;
+    scene.vertex_lighting = vertex_lighting;
+    if scene.quality != BattleRenderQuality::Native {
+        let image = images.add(battle_target_image(UVec2::ONE));
+        scene.render_size = UVec2::ONE;
+        scene.render_target = Some(image.clone());
+        commands.spawn((
+            SpriteBundle {
+                texture: image,
+                sprite: Sprite {
+                    custom_size: Some(Vec2::splat(2.0)),
+                    ..default()
+                },
+                visibility: Visibility::Hidden,
+                ..default()
+            },
+            RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
+            BattleCompositeSprite,
+        ));
+    }
     commands.spawn((
         Camera3dBundle {
             camera: Camera {
-                order: 0,
+                order: if scene.render_target.is_some() { -1 } else { 0 },
+                target: scene
+                    .render_target
+                    .as_ref()
+                    .map_or_else(RenderTarget::default, |image| {
+                        RenderTarget::Image(image.clone())
+                    }),
                 is_active: false,
                 clear_color: ClearColorConfig::Custom(rgb(palette(
                     VisualBattleEnvironment::Meadow,
@@ -215,6 +361,7 @@ fn setup_battle_scene(
     scene.surface_material = materials.add(StandardMaterial {
         perceptual_roughness: 0.96,
         reflectance: 0.1,
+        unlit: scene.vertex_lighting,
         ..default()
     });
     scene.fallback_mesh = meshes.add(Rectangle::new(1.9, 1.9));
@@ -250,10 +397,20 @@ fn setup_battle_scene(
             .id();
         scene.particles.push(entity);
     }
+    let mut ball_mesh = capture_ball_mesh();
+    if scene.vertex_lighting {
+        ball_mesh.colors = vertex_lit_colors(&ball_mesh, Quat::IDENTITY);
+        scene.ball_neutral_colors = ball_mesh.colors.clone();
+    }
+    let mut ball_mesh = ball_mesh.into_mesh();
+    if scene.vertex_lighting {
+        ball_mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::all();
+    }
+    scene.ball_mesh = meshes.add(ball_mesh);
     let ball = commands
         .spawn((
             PbrBundle {
-                mesh: meshes.add(capture_ball_mesh().into_mesh()),
+                mesh: scene.ball_mesh.clone(),
                 material: scene.surface_material.clone(),
                 visibility: Visibility::Hidden,
                 ..default()
@@ -330,6 +487,132 @@ fn setup_battle_scene(
             bevy::pbr::NotShadowCaster,
             bevy::pbr::NotShadowReceiver,
         ));
+    }
+}
+
+fn battle_target_image(size: UVec2) -> Image {
+    let mut image = Image::new_fill(
+        Extent3d {
+            width: size.x,
+            height: size.y,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        &[0, 0, 0, 255],
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::all(),
+    );
+    image.texture_descriptor.usage =
+        TextureUsages::TEXTURE_BINDING | TextureUsages::COPY_DST | TextureUsages::RENDER_ATTACHMENT;
+    image.sampler = ImageSampler::linear();
+    image
+}
+
+fn sync_battle_target(
+    mut scene: ResMut<BattleScene>,
+    mut status: ResMut<BattleViewStatus>,
+    windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
+    mut images: ResMut<Assets<Image>>,
+    mut battle_cameras: Query<(&mut Camera, &mut Projection), With<BattleCamera>>,
+) {
+    let output = windows.get_single().map_or(UVec2::ZERO, |window| {
+        UVec2::new(window.physical_width(), window.physical_height())
+    });
+    status.output_size = output;
+    status.lighting = if scene.vertex_lighting {
+        "vertex"
+    } else {
+        "pbr"
+    };
+    status.quality = scene.quality.name();
+    status.software_renderer = scene.software_renderer;
+    status.render_size = if scene.render_target.is_some() {
+        scene.quality.target_size(output)
+    } else {
+        output
+    };
+    let active = status.active && output.min_element() > 0;
+    if !active && scene.render_target.is_some() {
+        status.render_size = scene.render_size;
+    }
+    let Some(target) = scene.render_target.clone() else {
+        return;
+    };
+    for (mut camera, _) in &mut battle_cameras {
+        if camera.is_active != active {
+            camera.is_active = active;
+        }
+    }
+    if active && scene.render_size != status.render_size {
+        // Replace only this target's image contents; the stable handle keeps
+        // the composite sprite bound across resize/fullscreen transitions.
+        images.insert(target.id(), battle_target_image(status.render_size));
+        // Image asset events are flushed in Last, after camera dimensions are
+        // updated. Marking Projection changed makes CameraUpdateSystem read
+        // the new image extent this frame rather than rendering a stale size.
+        for (_, mut projection) in &mut battle_cameras {
+            projection.set_changed();
+        }
+        scene.render_size = status.render_size;
+    }
+}
+
+fn battle_composite_pose(
+    projection: &OrthographicProjection,
+    camera: &Transform,
+) -> (Vec2, Transform) {
+    // Follow the HUD camera so its source-clocked screen shake is not applied
+    // a second time to the already-shaken 3D image. Stay safely inside its
+    // far plane, behind ordinary HUD/world sprites in the same transparent pass.
+    let depth = -projection.far + (projection.far - projection.near) * 0.01;
+    let center = projection.area.center().extend(depth);
+    (
+        projection.area.size(),
+        Transform {
+            translation: camera.transform_point(center),
+            rotation: camera.rotation,
+            scale: camera.scale,
+        },
+    )
+}
+
+fn sync_battle_composite(
+    status: Res<BattleViewStatus>,
+    cameras: Query<
+        (
+            &Camera,
+            &OrthographicProjection,
+            &Transform,
+            Option<&RenderLayers>,
+        ),
+        (
+            With<bevy::core_pipeline::core_2d::Camera2d>,
+            Without<BattleCompositeSprite>,
+            Without<Parent>,
+        ),
+    >,
+    mut sprites: Query<(&mut Sprite, &mut Transform, &mut Visibility), With<BattleCompositeSprite>>,
+) {
+    let camera = cameras.iter().find(|(camera, _, _, layers)| {
+        camera.is_active
+            && matches!(camera.target, RenderTarget::Window(_))
+            && layers.is_none_or(|layers| {
+                layers.intersects(&RenderLayers::layer(BATTLE_COMPOSITE_LAYER))
+            })
+    });
+    for (mut sprite, mut transform, mut visibility) in &mut sprites {
+        let Some((_, projection, camera, _)) =
+            camera.filter(|_| status.active && status.output_size.min_element() > 0)
+        else {
+            visibility.set_if_neq(Visibility::Hidden);
+            continue;
+        };
+        let (size, pose) = battle_composite_pose(projection, camera);
+        if sprite.custom_size != Some(size) {
+            sprite.custom_size = Some(size);
+        }
+        transform.set_if_neq(pose);
+        visibility.set_if_neq(Visibility::Visible);
     }
 }
 
@@ -422,6 +705,8 @@ fn sync_battle_scene(
         ),
     >,
 ) {
+    #[cfg(feature = "operation-trace")]
+    let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
     let active = settings.enabled && frame.active && valid.is_ok();
     status.active = active;
@@ -432,15 +717,21 @@ fn sync_battle_scene(
     };
     status.last_error = valid.err().map(str::to_owned);
     for (mut camera, mut transform, mut fog) in &mut cameras {
-        camera.is_active = active;
+        if camera.is_active != active {
+            camera.is_active = active;
+        }
         if active {
             *transform = camera_pose(scene.elapsed);
             let (dark, light) = source_environment_palette(frame.source.as_ref(), *flash_mode);
             let sky = rgb(palette(frame.environment).sky)
                 .mix(&Color::BLACK, dark)
                 .mix(&Color::WHITE, light);
-            camera.clear_color = ClearColorConfig::Custom(sky);
-            fog.color = sky;
+            if !matches!(camera.clear_color, ClearColorConfig::Custom(color) if color == sky) {
+                camera.clear_color = ClearColorConfig::Custom(sky);
+            }
+            if fog.color != sky {
+                fog.color = sky;
+            }
             if let Some(source) = &frame.source {
                 // Screen shake stays source-clocked. It affects the arena,
                 // leaving the readable production HUD in its fixed panels.
@@ -451,32 +742,32 @@ fn sync_battle_scene(
         }
     }
     for mut visibility in &mut lights {
-        *visibility = if active {
+        visibility.set_if_neq(if active {
             Visibility::Visible
         } else {
             Visibility::Hidden
-        };
+        });
     }
     for mut visibility in &mut arenas {
-        *visibility = if active {
+        visibility.set_if_neq(if active {
             Visibility::Visible
         } else {
             Visibility::Hidden
-        };
-    }
-    for (_, mut visibility) in &mut actors {
-        *visibility = Visibility::Hidden;
-    }
-    for (_, mut visibility, _) in &mut effects {
-        *visibility = Visibility::Hidden;
-    }
-    for (_, mut visibility) in &mut balls {
-        *visibility = Visibility::Hidden;
-    }
-    for (_, _, mut visibility) in &mut contact_shadows {
-        *visibility = Visibility::Hidden;
+        });
     }
     if !active {
+        for (_, mut visibility) in &mut actors {
+            visibility.set_if_neq(Visibility::Hidden);
+        }
+        for (_, mut visibility, _) in &mut effects {
+            visibility.set_if_neq(Visibility::Hidden);
+        }
+        for (_, mut visibility) in &mut balls {
+            visibility.set_if_neq(Visibility::Hidden);
+        }
+        for (_, _, mut visibility) in &mut contact_shadows {
+            visibility.set_if_neq(Visibility::Hidden);
+        }
         scene.was_active = false;
         status.modeled_species.clear();
         status.source_art_species.clear();
@@ -487,10 +778,18 @@ fn sync_battle_scene(
     }
     scene.was_active = true;
     scene.elapsed += time.delta_seconds().clamp(0.0, 0.1);
-    if let Some(material) = materials.get_mut(&scene.surface_material) {
-        let (dark, light) = source_environment_palette(frame.source.as_ref(), *flash_mode);
-        material.base_color = Color::srgb(1.0 - dark, 1.0 - dark, 1.0 - dark);
-        material.emissive = LinearRgba::new(light, light, light, 1.0);
+    let (dark, light) = source_environment_palette(frame.source.as_ref(), *flash_mode);
+    let base_color = Color::srgb(1.0 - dark, 1.0 - dark, 1.0 - dark);
+    let emissive = LinearRgba::new(light, light, light, 1.0);
+    // Assets::get_mut emits Modified even if the value does not change. Avoid
+    // re-extracting and preparing the same GPU material every display frame.
+    if materials
+        .get(&scene.surface_material)
+        .is_some_and(|material| material.base_color != base_color || material.emissive != emissive)
+    {
+        let material = materials.get_mut(&scene.surface_material).unwrap();
+        material.base_color = base_color;
+        material.emissive = emissive;
     }
     if scene.arena_key != Some(frame.environment) {
         if let Some(entity) = scene.arena.take() {
@@ -499,7 +798,16 @@ fn sync_battle_scene(
         if let Some(mesh) = scene.arena_mesh.take() {
             meshes.remove(mesh.id());
         }
-        let mesh = meshes.add(arena_mesh(frame.environment).into_mesh());
+        let mut data = arena_mesh(frame.environment);
+        if scene.vertex_lighting {
+            data.colors = vertex_lit_colors(&data, Quat::IDENTITY);
+            scene.arena_neutral_colors = data.colors.clone();
+        }
+        let mut mesh = data.into_mesh();
+        if scene.vertex_lighting {
+            mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::all();
+        }
+        let mesh = meshes.add(mesh);
         scene.arena = Some(
             commands
                 .spawn((
@@ -515,6 +823,24 @@ fn sync_battle_scene(
         );
         scene.arena_mesh = Some(mesh);
         scene.arena_key = Some(frame.environment);
+        scene.surface_white_strength = None;
+    }
+    if scene.vertex_lighting && scene.surface_white_strength != Some(light) {
+        // Unlit materials deliberately skip emissive. Apply the BGP white
+        // flash to these background surfaces explicitly, preserving both its
+        // source cadence and reduced intensity. OBJ palettes remain separate.
+        for (handle, neutral) in [
+            (
+                scene.arena_mesh.as_ref().unwrap(),
+                &scene.arena_neutral_colors,
+            ),
+            (&scene.ball_mesh, &scene.ball_neutral_colors),
+        ] {
+            if let Some(mesh) = meshes.get_mut(handle) {
+                mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, surface_white_colors(neutral, light));
+            }
+        }
+        scene.surface_white_strength = Some(light);
     }
     status.modeled_species.clear();
     status.source_art_species.clear();
@@ -560,11 +886,6 @@ fn sync_battle_scene(
         let key = ActorKey {
             species: battler.species_id.clone(),
             modeled,
-            texture: if modeled {
-                Handle::default()
-            } else {
-                source_texture.clone()
-            },
         };
         if modeled {
             status.modeled_species.push(battler.species_id.to_string());
@@ -588,6 +909,7 @@ fn sync_battle_scene(
                 StandardMaterial {
                     perceptual_roughness: 0.92,
                     reflectance: 0.15,
+                    unlit: scene.vertex_lighting,
                     ..default()
                 }
             } else {
@@ -606,8 +928,15 @@ fn sync_battle_scene(
                 modeled,
                 frame.source.as_ref(),
             );
+            let neutral_colors = modeled_data
+                .as_ref()
+                .filter(|_| scene.vertex_lighting)
+                .map(|data| vertex_lit_colors(data, transform.rotation));
             let mesh = modeled_data.as_ref().map(|data| {
                 let mut mesh = data.as_ref().clone().into_mesh();
+                if let Some(colors) = &neutral_colors {
+                    mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors.clone());
+                }
                 mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::MAIN_WORLD
                     | bevy::render::render_asset::RenderAssetUsages::RENDER_WORLD;
                 meshes.add(mesh)
@@ -636,9 +965,21 @@ fn sync_battle_scene(
                 mesh,
                 palette_key: (0xe4, *flash_mode),
                 deformation_key: None,
+                neutral_colors,
             });
         }
+        let vertex_lighting = scene.vertex_lighting;
         if let Some(instance) = &mut scene.actors[index] {
+            if !modeled
+                && materials.get(&instance.material).is_some_and(|material| {
+                    material.base_color_texture.as_ref() != Some(source_texture)
+                })
+            {
+                materials
+                    .get_mut(&instance.material)
+                    .unwrap()
+                    .base_color_texture = Some(source_texture.clone());
+            }
             let deformation = frame
                 .source
                 .as_ref()
@@ -664,14 +1005,20 @@ fn sync_battle_scene(
                         let colors = data
                             .colors
                             .iter()
-                            .map(|color| {
-                                frame.source.as_ref().map_or(*color, |source| {
-                                    source_model_color(
+                            .enumerate()
+                            .map(|(index, color)| {
+                                let neutral = instance
+                                    .neutral_colors
+                                    .as_ref()
+                                    .map_or(*color, |colors| colors[index]);
+                                frame.source.as_ref().map_or(neutral, |source| {
+                                    let mapped = source_model_color(
                                         *color,
                                         bgp,
-                                        &source.battler_palettes[index],
-                                        *flash_mode,
-                                    )
+                                        &source.battler_palettes[battler.side.index()],
+                                        BattleFlashMode::Full,
+                                    );
+                                    source_lit_color(neutral, mapped, bgp, *flash_mode)
                                 })
                             })
                             .collect::<Vec<_>>();
@@ -680,8 +1027,14 @@ fn sync_battle_scene(
                 }
                 instance.palette_key = (bgp, *flash_mode);
             }
-            if let Some(material) = materials.get_mut(&instance.material) {
-                material.unlit = !modeled || (bgp != 0xe4 && *flash_mode == BattleFlashMode::Full);
+            let unlit = vertex_lighting
+                || !modeled
+                || (bgp != 0xe4 && *flash_mode == BattleFlashMode::Full);
+            if materials
+                .get(&instance.material)
+                .is_some_and(|material| material.unlit != unlit)
+            {
+                materials.get_mut(&instance.material).unwrap().unlit = unlit;
             }
             if let Ok((mut transform, mut visibility)) = actors.get_mut(instance.entity) {
                 *transform = actor_pose(
@@ -691,11 +1044,11 @@ fn sync_battle_scene(
                     modeled,
                     frame.source.as_ref(),
                 );
-                *visibility = if battler.visible {
+                visibility.set_if_neq(if battler.visible {
                     Visibility::Visible
                 } else {
                     Visibility::Hidden
-                };
+                });
             }
         }
     }
@@ -704,6 +1057,7 @@ fn sync_battle_scene(
             .as_ref()
             .filter(|battler| battler.visible)
         else {
+            visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
         let pose = actor_pose(
@@ -715,19 +1069,22 @@ fn sync_battle_scene(
         );
         transform.translation = Vec3::new(pose.translation.x, 0.086, pose.translation.z);
         transform.scale = Vec3::new(0.38, 1.0, 0.23) * pose.scale;
-        *visibility = Visibility::Visible;
+        visibility.set_if_neq(Visibility::Visible);
     }
     for (i, entity) in scene.particles.iter().enumerate() {
-        if frame.source.is_some() {
-            continue;
-        }
-        let Some((position, scale, element)) = particle_pose(&frame.cues, i, scene.elapsed) else {
-            continue;
-        };
         if let Ok((mut transform, mut visibility, mut material)) = effects.get_mut(*entity) {
+            let pose = frame
+                .source
+                .is_none()
+                .then(|| particle_pose(&frame.cues, i, scene.elapsed))
+                .flatten();
+            let Some((position, scale, element)) = pose else {
+                visibility.set_if_neq(Visibility::Hidden);
+                continue;
+            };
             *transform = Transform::from_translation(position).with_scale(Vec3::splat(scale));
-            *visibility = Visibility::Visible;
-            *material = scene.particle_materials[element].clone();
+            visibility.set_if_neq(Visibility::Visible);
+            material.set_if_neq(scene.particle_materials[element].clone());
         }
     }
     if let Some(cue) = frame.cues.iter().find(|cue| {
@@ -755,8 +1112,12 @@ fn sync_battle_scene(
                 transform.rotation = Quat::from_rotation_z(
                     (scene.elapsed * 13.0).sin() * 0.22 * (if p < 1.0 { 0.0 } else { 1.0 }),
                 );
-                *visibility = Visibility::Visible;
+                visibility.set_if_neq(Visibility::Visible);
             }
+        }
+    } else {
+        for (_, mut visibility) in &mut balls {
+            visibility.set_if_neq(Visibility::Hidden);
         }
     }
 }
@@ -819,6 +1180,64 @@ fn source_model_color(
     ]
 }
 
+/// Static diffuse lighting keeps the authored volume legible without running
+/// a rough-surface BRDF for every covered pixel on software renderers. The
+/// source mesh and its normals remain unchanged, including during LCD waves.
+fn vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
+    let key = Vec3::new(6.0, 12.0, 8.0).normalize();
+    let fill = Vec3::new(-5.0, 7.0, -3.0).normalize();
+    data.colors
+        .iter()
+        .zip(&data.normals)
+        .map(|(color, normal)| {
+            let normal = rotation * Vec3::from_array(*normal);
+            let diffuse = normal.dot(key).max(0.0) * 0.72;
+            let fill = normal.dot(fill).max(0.0) * 0.16;
+            [
+                color[0] * (0.18 + diffuse + fill),
+                color[1] * (0.20 + diffuse * 0.96 + fill),
+                color[2] * (0.23 + diffuse * 0.88 + fill),
+                color[3],
+            ]
+        })
+        .collect()
+}
+
+fn source_lit_color(
+    neutral: [f32; 4],
+    mapped: [f32; 4],
+    bgp: u8,
+    mode: BattleFlashMode,
+) -> [f32; 4] {
+    if bgp == 0xe4 {
+        return neutral;
+    }
+    if mode == BattleFlashMode::Full {
+        return [mapped[0], mapped[1], mapped[2], neutral[3]];
+    }
+    let strength = mode.palette_strength();
+    [
+        neutral[0] + (mapped[0] - neutral[0]) * strength,
+        neutral[1] + (mapped[1] - neutral[1]) * strength,
+        neutral[2] + (mapped[2] - neutral[2]) * strength,
+        neutral[3],
+    ]
+}
+
+fn surface_white_colors(neutral: &[[f32; 4]], strength: f32) -> Vec<[f32; 4]> {
+    neutral
+        .iter()
+        .map(|color| {
+            [
+                color[0] + (1.0 - color[0]) * strength,
+                color[1] + (1.0 - color[1]) * strength,
+                color[2] + (1.0 - color[2]) * strength,
+                color[3],
+            ]
+        })
+        .collect()
+}
+
 fn source_object_pose(center: Vec2, size: Vec2, elapsed: f32) -> Transform {
     let across = (center.x - 48.0) / 84.0;
     let baseline_y = 88.0 - across * 40.0;
@@ -844,21 +1263,26 @@ fn sync_source_objects(
     )>,
 ) {
     for (slot, mut transform, mut visibility, material) in &mut objects {
-        *visibility = Visibility::Hidden;
         let Some(source) = frame.source.as_ref().filter(|_| status.active) else {
+            visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
         let Some(object) = source.objects.iter().find(|object| object.slot == slot.0) else {
+            visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
         *transform = source_object_pose(object.center, object.size, scene.elapsed);
-        *visibility = Visibility::Visible;
-        if let Some(material) = materials.get_mut(material) {
-            material.base_color_texture = Some(if *mode == BattleFlashMode::Reduced {
-                object.neutral_texture.clone()
-            } else {
-                object.texture.clone()
-            });
+        visibility.set_if_neq(Visibility::Visible);
+        let texture = if *mode == BattleFlashMode::Reduced {
+            &object.neutral_texture
+        } else {
+            &object.texture
+        };
+        if materials
+            .get(material)
+            .is_some_and(|material| material.base_color_texture.as_ref() != Some(texture))
+        {
+            materials.get_mut(material).unwrap().base_color_texture = Some(texture.clone());
         }
     }
 }
@@ -972,21 +1396,26 @@ fn sync_modeled_source_effects(
     )>,
 ) {
     for (slot, mut transform, mut visibility, mut mesh, material) in &mut effects {
-        *visibility = Visibility::Hidden;
         if !status.active {
+            visibility.set_if_neq(Visibility::Hidden);
             continue;
         }
         let Some((shape, pose, mut color)) = modeled_source_effect_pose(&frame, slot.0) else {
+            visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
         *transform = pose;
-        *mesh = scene.source_effect_meshes[shape].clone();
-        *visibility = Visibility::Visible;
+        mesh.set_if_neq(scene.source_effect_meshes[shape].clone());
+        visibility.set_if_neq(Visibility::Visible);
         if *mode == BattleFlashMode::Reduced {
             color[3] *= 0.65;
         }
-        if let Some(material) = materials.get_mut(material) {
-            material.base_color = rgb(color);
+        let color = rgb(color);
+        if materials
+            .get(material)
+            .is_some_and(|material| material.base_color != color)
+        {
+            materials.get_mut(material).unwrap().base_color = color;
         }
     }
 }
@@ -1447,6 +1876,429 @@ fn capture_ball_mesh() -> SurfaceMeshData {
 mod tests {
     use super::*;
     #[test]
+    fn battle_profile_defaults_only_reduce_known_software_renderers() {
+        assert_eq!(
+            resolve_battle_profile(false, BattleRenderQuality::Automatic, None),
+            (BattleRenderQuality::Native, false)
+        );
+        assert_eq!(
+            resolve_battle_profile(true, BattleRenderQuality::Automatic, None),
+            (BattleRenderQuality::Balanced, true)
+        );
+        assert_eq!(
+            resolve_battle_profile(
+                false,
+                BattleRenderQuality::from_name("unknown"),
+                Some("unknown")
+            ),
+            (BattleRenderQuality::Native, false)
+        );
+        assert_eq!(
+            resolve_battle_profile(
+                true,
+                BattleRenderQuality::from_name("unknown"),
+                Some("unknown")
+            ),
+            (BattleRenderQuality::Balanced, true)
+        );
+    }
+
+    #[test]
+    fn battle_profile_explicit_quality_and_lighting_override_independently() {
+        for software in [false, true] {
+            assert_eq!(
+                resolve_battle_profile(software, BattleRenderQuality::Native, Some("pbr")),
+                (BattleRenderQuality::Native, false)
+            );
+            assert_eq!(
+                resolve_battle_profile(software, BattleRenderQuality::Balanced, Some("vertex")),
+                (BattleRenderQuality::Balanced, true)
+            );
+            assert_eq!(
+                resolve_battle_profile(software, BattleRenderQuality::Performance, None),
+                (BattleRenderQuality::Performance, software)
+            );
+        }
+        assert_eq!(
+            resolve_battle_profile(false, BattleRenderQuality::Automatic, Some("vertex")),
+            (BattleRenderQuality::Native, true)
+        );
+        assert_eq!(
+            resolve_battle_profile(true, BattleRenderQuality::Automatic, Some("pbr")),
+            (BattleRenderQuality::Balanced, false)
+        );
+    }
+    #[test]
+    fn scaled_battle_target_is_bounded_and_preserves_aspect() {
+        assert_eq!(
+            BattleRenderQuality::Balanced.target_size(UVec2::new(1180, 812)),
+            UVec2::new(885, 609)
+        );
+        for output in [
+            UVec2::ZERO,
+            UVec2::ONE,
+            UVec2::new(6016, 3384),
+            UVec2::new(800, 8000),
+        ] {
+            let size = BattleRenderQuality::Balanced.target_size(output);
+            assert!(size.min_element() > 0 && size.max_element() <= 4096);
+            if output.min_element() >= 800 {
+                let expected = output.x as f32 / output.y as f32;
+                assert!((size.x as f32 / size.y as f32 - expected).abs() < 0.002);
+            }
+        }
+    }
+
+    #[test]
+    fn battle_target_resize_and_f3_keep_native_hud_and_source_state() {
+        use bevy::render::camera::{CameraProjection, ScalingMode};
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<BattleScene>().quality = BattleRenderQuality::Balanced;
+        app.world_mut()
+            .resource_mut::<VoxelViewSettings>()
+            .allow_f3_toggle = true;
+        app.init_resource::<ButtonInput<KeyCode>>()
+            .add_systems(Update, crate::toggle_voxel_view);
+        let window = app
+            .world_mut()
+            .spawn((
+                Window {
+                    resolution: bevy::window::WindowResolution::new(1180.0, 812.0),
+                    ..default()
+                },
+                bevy::window::PrimaryWindow,
+            ))
+            .id();
+        // Match the production root HUD camera, including its specialized
+        // 2D depth range, layer, minimum LCD extent and compositor order.
+        let mut hud_camera = Camera2dBundle::default();
+        hud_camera.camera.order = 1;
+        hud_camera.camera.clear_color = ClearColorConfig::None;
+        hud_camera.projection.scaling_mode = ScalingMode::AutoMin {
+            min_width: 640.0,
+            min_height: 576.0,
+        };
+        hud_camera.projection.update(1180.0, 812.0);
+        let camera_id = app
+            .world_mut()
+            .spawn((hud_camera, RenderLayers::layer(0)))
+            .id();
+        let hud_transform = Transform::from_xyz(310.0, 210.0, 3.2);
+        let hud = app
+            .world_mut()
+            .spawn((
+                SpriteBundle {
+                    transform: hud_transform,
+                    ..default()
+                },
+                RenderLayers::layer(0),
+            ))
+            .id();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0));
+        let frame = app.world().resource::<VisualBattleFrame>().clone();
+        app.update();
+        let target = app
+            .world()
+            .resource::<BattleScene>()
+            .render_target
+            .clone()
+            .unwrap();
+        let world = app.world_mut();
+        assert_eq!(
+            world
+                .query_filtered::<&Camera, With<bevy::core_pipeline::core_2d::Camera2d>>()
+                .iter(world)
+                .count(),
+            1,
+            "the native HUD camera must own the only full-window 2D pass"
+        );
+        let image_count = app.world().resource::<Assets<Image>>().len();
+        assert_eq!(
+            app.world().resource::<BattleViewStatus>().render_size,
+            UVec2::new(885, 609)
+        );
+        for (width, height) in [(1600, 900), (812, 1180), (1180, 812)] {
+            app.world_mut()
+                .get_mut::<Window>(window)
+                .unwrap()
+                .resolution
+                .set(width as f32, height as f32);
+            app.world_mut()
+                .get_mut::<OrthographicProjection>(camera_id)
+                .unwrap()
+                .update(width as f32, height as f32);
+            app.world_mut()
+                .get_mut::<Transform>(camera_id)
+                .unwrap()
+                .translation = Vec3::new(4.0, -2.0, 0.0);
+            app.update();
+            assert_eq!(
+                app.world().resource::<BattleScene>().render_target.as_ref(),
+                Some(&target)
+            );
+            assert_eq!(app.world().resource::<Assets<Image>>().len(), image_count);
+            let status = app.world().resource::<BattleViewStatus>();
+            assert_eq!(status.output_size, UVec2::new(width, height));
+            assert_eq!(
+                status.render_size,
+                BattleRenderQuality::Balanced.target_size(status.output_size)
+            );
+            let image = app
+                .world()
+                .resource::<Assets<Image>>()
+                .get(&target)
+                .unwrap();
+            assert_eq!(
+                UVec2::new(
+                    image.texture_descriptor.size.width,
+                    image.texture_descriptor.size.height
+                ),
+                status.render_size
+            );
+            assert_eq!(app.world().get::<Transform>(hud), Some(&hud_transform));
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), frame);
+            let projection = app
+                .world()
+                .get::<OrthographicProjection>(camera_id)
+                .unwrap()
+                .clone();
+            let camera_transform = *app.world().get::<Transform>(camera_id).unwrap();
+            let world = app.world_mut();
+            let (sprite, composite, visibility) = world
+                .query_filtered::<(&Sprite, &Transform, &Visibility), With<BattleCompositeSprite>>()
+                .single(world);
+            assert_eq!(*visibility, Visibility::Visible);
+            assert!(composite.translation.z < hud_transform.translation.z);
+            let clip_from_sprite = projection.get_clip_from_view()
+                * camera_transform.compute_matrix().inverse()
+                * composite.compute_matrix();
+            for (x, y) in [(-1.0, -1.0), (1.0, -1.0), (-1.0, 1.0), (1.0, 1.0)] {
+                let half = sprite.custom_size.unwrap() * 0.5;
+                let clip = clip_from_sprite * Vec4::new(x * half.x, y * half.y, 0.0, 1.0);
+                let ndc = clip.truncate() / clip.w;
+                assert!(
+                    (ndc.x - x).abs() < 0.0001 && (ndc.y - y).abs() < 0.0001,
+                    "resize and source camera shake must retain exact fullscreen image coverage"
+                );
+                assert!(
+                    ndc.z > 0.0 && ndc.z < 1.0,
+                    "composite must remain inside the real camera depth range"
+                );
+            }
+        }
+        let composite_layers = RenderLayers::layer(BATTLE_COMPOSITE_LAYER);
+        assert!(composite_layers.intersects(&RenderLayers::layer(0)));
+        for layer in [
+            BATTLE_LAYER,
+            crate::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
+            crate::VOXEL_RENDER_LAYER,
+        ] {
+            assert!(!composite_layers.intersects(&RenderLayers::layer(layer)));
+        }
+        for expected in [false, true] {
+            app.world_mut()
+                .resource_mut::<ButtonInput<KeyCode>>()
+                .press(KeyCode::F3);
+            app.update();
+            assert_eq!(app.world().resource::<BattleViewStatus>().active, expected);
+            let world = app.world_mut();
+            assert!(
+                world
+                    .query_filtered::<&Camera, With<BattleCamera>>()
+                    .iter(world)
+                    .all(|camera| camera.is_active == expected)
+            );
+            assert!(world.get::<Camera>(camera_id).unwrap().is_active);
+            assert!(
+                world
+                    .query_filtered::<&Visibility, With<BattleCompositeSprite>>()
+                    .iter(world)
+                    .all(|visibility| (*visibility == Visibility::Visible) == expected)
+            );
+            let mut keys = world.resource_mut::<ButtonInput<KeyCode>>();
+            keys.release(KeyCode::F3);
+            keys.clear();
+        }
+        app.world_mut().resource_mut::<VisualBattleFrame>().active = false;
+        app.update();
+        let world = app.world_mut();
+        assert!(
+            world
+                .query_filtered::<&Camera, With<BattleCamera>>()
+                .iter(world)
+                .all(|camera| !camera.is_active)
+        );
+        assert_eq!(world.get::<Transform>(hud), Some(&hud_transform));
+    }
+
+    #[test]
+    fn vertex_background_white_flashes_restore_without_touching_object_palettes() {
+        let neutral = vec![[0.15, 0.35, 0.1, 1.0], [0.3, 0.4, 0.2, 0.5]];
+        let mut source = source_test_frame(0xe4);
+        let objects = source.objects.clone();
+        for bgp in [0xe4, 0, 0xe4, 0xff, 0, 0xe4] {
+            source.bgp = bgp;
+            let (_, full) = source_environment_palette(Some(&source), BattleFlashMode::Full);
+            let colors = surface_white_colors(&neutral, full);
+            assert_eq!(
+                colors,
+                if bgp == 0 {
+                    vec![[1.0; 4], [1.0, 1.0, 1.0, 0.5]]
+                } else {
+                    neutral.clone()
+                }
+            );
+            let (_, reduced) = source_environment_palette(Some(&source), BattleFlashMode::Reduced);
+            let reduced_colors = surface_white_colors(&neutral, reduced);
+            if bgp == 0 {
+                assert!(
+                    reduced_colors[0][0] > neutral[0][0] && reduced_colors[0][0] < colors[0][0]
+                );
+            }
+            assert_eq!(source.objects, objects);
+        }
+    }
+
+    #[test]
+    fn fallback_palette_frames_reuse_actor_entity_and_material() {
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
+        app.update();
+        let original = {
+            let scene = app.world().resource::<BattleScene>();
+            let actor = scene.actors[VisualBattleSide::Enemy.index()]
+                .as_ref()
+                .unwrap();
+            (actor.entity, actor.material.clone())
+        };
+        for image in 100..110 {
+            let texture = Handle::weak_from_u128(image);
+            app.world_mut()
+                .resource_mut::<VisualBattleFrame>()
+                .source
+                .as_mut()
+                .unwrap()
+                .battler_textures[1] = texture.clone();
+            app.update();
+            let scene = app.world().resource::<BattleScene>();
+            let actor = scene.actors[VisualBattleSide::Enemy.index()]
+                .as_ref()
+                .unwrap();
+            assert_eq!((actor.entity, actor.material.clone()), original);
+            assert_eq!(
+                app.world()
+                    .resource::<Assets<StandardMaterial>>()
+                    .get(&actor.material)
+                    .unwrap()
+                    .base_color_texture,
+                Some(texture)
+            );
+        }
+    }
+
+    #[test]
+    fn source_motion_at_30_and_60_hz_preserves_clock_and_trajectory() {
+        let mut endpoints = Vec::new();
+        for hz in [30_u16, 60] {
+            let mut app = headless_battle_app();
+            app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+                std::time::Duration::from_secs_f64(1.0 / f64::from(hz)),
+            ));
+            let mut last = None::<Vec3>;
+            for sample in 0..=hz {
+                let source_frame = sample * (60 / hz);
+                let fraction = f32::from(source_frame) / 60.0;
+                let mut source = source_test_frame(0xe4);
+                source.frame = source_frame;
+                source.objects[0].center =
+                    Vec2::new(48.0 + 84.0 * fraction, 88.0 - 40.0 * fraction);
+                app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source);
+                let before = app.world().resource::<VisualBattleFrame>().clone();
+                app.update();
+                assert_eq!(
+                    *app.world().resource::<VisualBattleFrame>(),
+                    before,
+                    "display updates cannot advance source timing or palette events"
+                );
+                let world = app.world_mut();
+                let position = world
+                    .query::<(&BattleSourceObject, &Transform)>()
+                    .iter(world)
+                    .find(|(slot, _)| slot.0 == 0)
+                    .unwrap()
+                    .1
+                    .translation;
+                let expected = side_position(VisualBattleSide::Player)
+                    .lerp(side_position(VisualBattleSide::Enemy), fraction)
+                    + Vec3::Y;
+                assert!(position.distance(expected) < 0.0001);
+                if let Some(last) = last {
+                    let maximum_step = side_position(VisualBattleSide::Player)
+                        .distance(side_position(VisualBattleSide::Enemy))
+                        / f32::from(hz);
+                    assert!(position.distance(last) <= maximum_step + 0.0001);
+                }
+                last = Some(position);
+            }
+            // A repeated presentation sample must hold its source position;
+            // adding a display frame never fabricates another source tick.
+            let before = app.world().resource::<VisualBattleFrame>().clone();
+            app.update();
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), before);
+            endpoints.push(last.unwrap());
+        }
+        assert_eq!(endpoints[0], endpoints[1]);
+    }
+
+    #[test]
+    fn vertex_lighting_preserves_geometry_and_full_source_palette_flashes() {
+        let data = SurfaceMeshData {
+            positions: vec![[0.0, 0.0, 0.0]; 2],
+            normals: vec![[0.0, 1.0, 0.0], [0.0, -1.0, 0.0]],
+            colors: vec![[0.8, 0.4, 0.2, 0.7]; 2],
+            ..default()
+        };
+        let lit = vertex_lit_colors(&data, Quat::IDENTITY);
+        assert!(lit[0][0] > lit[1][0]);
+        assert_eq!(lit[0][3], 0.7);
+        assert_eq!(data.positions, vec![[0.0, 0.0, 0.0]; 2]);
+        let mapped = [1.0, 1.0, 1.0, 0.7];
+        assert_eq!(
+            source_lit_color(lit[0], mapped, 0xe4, BattleFlashMode::Full),
+            lit[0]
+        );
+        assert_eq!(
+            source_lit_color(lit[0], mapped, 0, BattleFlashMode::Full),
+            mapped
+        );
+        let reduced = source_lit_color(lit[0], mapped, 0, BattleFlashMode::Reduced);
+        assert!(reduced[0] > lit[0][0] && reduced[0] < mapped[0]);
+        assert_eq!(reduced[3], 0.7);
+    }
+
+    #[test]
+    fn stable_battle_frames_do_not_modify_material_assets() {
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
+        app.update();
+        app.update();
+        let changed = app
+            .world()
+            .get_resource_ref::<Assets<StandardMaterial>>()
+            .unwrap()
+            .last_changed();
+        app.update();
+        assert_eq!(
+            app.world()
+                .get_resource_ref::<Assets<StandardMaterial>>()
+                .unwrap()
+                .last_changed(),
+            changed,
+            "steady source frames must retain prepared material assets"
+        );
+    }
+
+    #[test]
     fn every_authored_arena_has_finite_grounded_geometry() {
         for environment in [
             VisualBattleEnvironment::Meadow,
@@ -1550,6 +2402,7 @@ mod tests {
         let mut app = App::new();
         app.add_plugins(MinimalPlugins)
             .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<Image>>()
             .init_resource::<Assets<StandardMaterial>>()
             .insert_resource(VoxelViewSettings {
                 enabled: true,

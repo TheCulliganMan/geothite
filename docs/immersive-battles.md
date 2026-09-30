@@ -1,5 +1,12 @@
 # Immersive battle presentation
 
+Original Crystal 2D designs and sequences are authoritative. The current 3D
+presentation still contains deviations; see the [fidelity review](original-2d-fidelity.md).
+
+Known software adapters now use a prelit/scaled arena profile while HUD text
+stays at native resolution. See [battle performance checks](battle-3d-performance.md)
+for measured capture rates, quality choices, source timing and commands.
+
 The optional modeled view now includes a dedicated 3D battle arena. The same
 production `VisibleShellController` still owns FIGHT / PKMN / PACK / RUN,
 selection, PP, HP, damage, status, switching, capture, rewards, dialogue and

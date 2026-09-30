@@ -378,6 +378,88 @@
       ]
     },
     {
+      "file": "actor-props-sudowoodo-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 761335,
+      "sha256": "d286e85797d5b2dc4334bae593f31ba0fed047b1bf463b7092f34de0ee9d1487",
+      "uncompressed_bytes": 3885876,
+      "uncompressed_sha256": "02e088473e47a28d111e5126757dc59faca0d92aa017d5654e5a2e062623b57b",
+      "chunks": [
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "4d639a067cda7f9dc182d2ad64e7d25b32c5c4a633a0f265166813bdfbf305fb",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "07842ea9cdce1a1920a6a7084818116fa9122a2024af88b44cf4e6081b8ee252",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "3105330352bb3a2318ed08203eda86b00b9dca8dcd8c67db4753af7dfcc9ba35",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.003.b64",
+          "bytes": 65536,
+          "sha256": "9d80de3fe9f8adda22495e892eb34706d88089fb461f755114ae4b9a21509747",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.004.b64",
+          "bytes": 65536,
+          "sha256": "cfee5116ceae98e1d498d24f21251a0e8c2f4750a86e40ba85a24160f5b801ba",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.005.b64",
+          "bytes": 65536,
+          "sha256": "9ed100b0c266dfc3c5ba519a17f1736fb9d0986dcfbdc1cd5b89da1a2b62b750",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.006.b64",
+          "bytes": 65536,
+          "sha256": "9e020881be747d39c0e180d456f3ccc06223e44b469ae79bfd2738776b159aa5",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.007.b64",
+          "bytes": 65536,
+          "sha256": "f2f66aba87e48ef89c699f6330c59cdc213e0e9ca2bdbd406b0571b39a576246",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.008.b64",
+          "bytes": 65536,
+          "sha256": "348c22a637f19884fa23c12f89443051fdd053817f17cd9507d559cc1f76bd8f",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.009.b64",
+          "bytes": 65536,
+          "sha256": "2dc14af73da290876f81dd15eae49f23e0d0062026a228a66808ab8b05222fec",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.010.b64",
+          "bytes": 65536,
+          "sha256": "d16dabc87f738605fd1482ae22f4a7cd479cac3fae7bd21847fd946d59327917",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-sudowoodo-refinement.blend.011.b64",
+          "bytes": 40439,
+          "sha256": "702334e35dca15dfc779950a42a211bf1aefb4240fda0228ce86b0fe394fe210",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "battle-species-01.blend",
       "encoding": "gzip-blend",
       "bytes": 359034,
@@ -1181,6 +1263,130 @@
           "file": "chunks/battle-species-19.blend.003.b64",
           "bytes": 1728,
           "sha256": "c6f84781d69e1c582488e3bb9a0338e730bd6726669dcc216025bae845383502",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "battle-species-hero-refinements.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1244532,
+      "sha256": "fbcdf85a062b5657c72677031b1e414c46bc0bce9236fc5fdf9b3ef5e441b0fd",
+      "uncompressed_bytes": 5173104,
+      "uncompressed_sha256": "399cc516f1b1d443564d2e1e85f85ab92828ac7f9ed19c402dddf1274614fd18",
+      "chunks": [
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "2ca6b88b87bce51300dfffa3d363a4cf39eb85a18a31079147cb7e2e14458a83",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "d60d618cbfa15da2dc85d0299f58b408b30927e22c2418c540e38c2d3a4c2ff3",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "1a07434ce549966458e02bcefd2f6ca6dd633b589281c795dae0ea52d4615ee8",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.003.b64",
+          "bytes": 65536,
+          "sha256": "348162e6a2ec7f621d5537c3cb0335892b535ae61e1b4f27ee645417f6a50171",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.004.b64",
+          "bytes": 65536,
+          "sha256": "998e4cef8665d8241569e68d3f5b1e694d525c50ace2e1113ea488c0ea8a5fd0",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.005.b64",
+          "bytes": 65536,
+          "sha256": "1e9c2b01fe3ea47dbac318fbb4bd25d79008af435a84dc36b5cde87d17265e1c",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.006.b64",
+          "bytes": 65536,
+          "sha256": "b617b7471fb53f3dc7502c282661bb92e7085c7ffcb09d2168328c957ec73685",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.007.b64",
+          "bytes": 65536,
+          "sha256": "4698730c4464dd94bd474f1a7c59944c9cea405449cb70900d682ed784a42caf",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.008.b64",
+          "bytes": 65536,
+          "sha256": "f81751e1e6e855bdd9c2c9962699c43ff0196d3a8522aff845c05e63dea08ca1",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.009.b64",
+          "bytes": 65536,
+          "sha256": "4f87086dce5de0b77fe59b1d581961a511f06350302d021302a77822ae3b011d",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.010.b64",
+          "bytes": 65536,
+          "sha256": "da9ad69ebecbdb1c40ee61013ed58ab9253bb3887a28214c07288dbed7e37412",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.011.b64",
+          "bytes": 65536,
+          "sha256": "6f347f2cc88641834ca3c8cbf74177b8c342d24b07ebf8503ce08f01032143c0",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.012.b64",
+          "bytes": 65536,
+          "sha256": "bd1dad2a544b3159c5a818ac3abfb962c81e25f104742b535810ea8dd2b758d9",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.013.b64",
+          "bytes": 65536,
+          "sha256": "034df0036020092f3b1ae2a5d1001bc01140ef664c567669a5a50c20f09eddfd",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.014.b64",
+          "bytes": 65536,
+          "sha256": "0a028d179832d466804f1882cc3ac844339f7908d19109c12b72aeed7287970a",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.015.b64",
+          "bytes": 65536,
+          "sha256": "cc145061bad9a0030b4d52bd7f0ae2c2199e53b762d4096d3c59af90e4993fe8",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.016.b64",
+          "bytes": 65536,
+          "sha256": "84f65fb4550d22313ba4bc54281349043a522f2188b1b61741ff1008747c9f92",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.017.b64",
+          "bytes": 65536,
+          "sha256": "1d4e9df3c5902d124e694473287a9d1df8be327fe31d2fd00f960391503be81d",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/battle-species-hero-refinements.blend.018.b64",
+          "bytes": 64884,
+          "sha256": "6387f498f02d4dbae7d9d46e188f1803502dda5d6967dc143861173881351914",
           "encoding": "base64"
         }
       ]

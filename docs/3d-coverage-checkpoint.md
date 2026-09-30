@@ -6,9 +6,12 @@ sources. All 251 normal-palette species have a first-pass model; their silhouett
 faces, proportions and animation still need individual art direction and gameplay
 review. The private inspection gallery is a review tool, not a quality certification.
 
+The original 2D reference now governs all further changes. Current appearance
+is not certified faithful; see the [fidelity matrix](original-2d-fidelity.md).
+
 ## Included and checked
 
-- 542 runtime model documents and 46 complete editable Blender sources
+- 542 runtime model documents and 48 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 68 interior models,
   59 exterior models, 19 dungeon models, 11 special-environment models, and 220 additional exact battle species
   alongside retained source models
@@ -51,7 +54,7 @@ also need remaining-family and visual checks; a positive count is not completion
   presentations currently use faithful source art, not the normal-palette mesh
 - Move effects now follow the existing source interpreter's live objects,
   palettes and timing, with additional 3D styling for Psychic and Hyper Beam.
-  Custom skeletal choreography and individual review of every move remain open
+  Source-matched pose/effect corrections and individual review of every move remain open
 - Native battle interruption/transition matrix: switching, fainting, capture,
   Pokédex and returning to overworld require continued end-to-end checks
 
@@ -72,6 +75,10 @@ remaining source classifications and mesh/footing validation. It is deliberately
 based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
+
+The battle performance and refined-sculpture increment is documented in
+[battle performance checks](battle-3d-performance.md). The source-animation
+checkpoint verification below remains the baseline for the ongoing conversion.
 
 - 569 voxel tests passed, two pre-existing benchmarks ignored
 - Twenty-one immersive-battle presentation/recording bridge tests and twenty-one

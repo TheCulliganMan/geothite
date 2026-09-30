@@ -4558,6 +4558,8 @@ struct RenderedTilesetArt {
     battle_anim_object_errors: HashMap<String, String>,
     battle_battler_overlay_cache: HashMap<(AssetId<Image>, [u8; 3]), SpriteFrame>,
     battle_battler_bgp_cache: HashMap<(AssetId<Image>, u8), SpriteFrame>,
+    #[cfg(feature = "voxel-view")]
+    battle_source_palette_cache: HashMap<AssetId<Image>, [[f32; 4]; 4]>,
     fishing_rod_cache: Option<[SpriteFrame; 3]>,
     fishing_rod_error: Option<String>,
     fishing_player_cache: HashMap<String, SpriteFrame>,

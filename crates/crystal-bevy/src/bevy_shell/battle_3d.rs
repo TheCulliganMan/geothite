@@ -19,6 +19,8 @@ fn capture_presented_battle(
     art: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    #[cfg(feature = "operation-trace")]
+    let _span = bevy::log::info_span!("crystal_battle_extract").entered();
     // Clear first so an art error restores the complete classic renderer.
     commands.insert_resource(VisualBattleFrame::default());
     let Some(battle) = snapshot.battle.as_ref().filter(|_| canvas_active) else {
@@ -345,6 +347,8 @@ fn capture_immersive_source_frame(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<VisualBattleSourceFrame> {
+    #[cfg(feature = "operation-trace")]
+    let _span = bevy::log::info_span!("crystal_battle_source_extract").entered();
     let bundle = battle_anim_render_bundle(art, snapshot)?;
     let mut playback = match art.battle_object_runtime.take() {
         Some(playback)
@@ -394,35 +398,20 @@ fn capture_immersive_source_frame(
         let Some(battler) = battler else {
             continue;
         };
-        let image = images
-            .get(&battler.texture)
-            .context("source battler palette image")?;
-        let mut colors: Vec<_> = image
-            .data
-            .chunks_exact(4)
-            .filter(|pixel| pixel[3] != 0)
-            .map(|pixel| [pixel[0], pixel[1], pixel[2]])
-            .collect();
-        colors.sort_unstable();
-        colors.dedup();
-        colors.sort_by_key(|c| {
-            std::cmp::Reverse(u32::from(c[0]) * 299 + u32::from(c[1]) * 587 + u32::from(c[2]) * 114)
-        });
-        if colors.len() < 4 {
-            colors.insert(0, [255; 3]);
-        }
-        for shade in 0..4 {
-            let color = colors
-                .get(shade)
-                .or_else(|| colors.last())
-                .context("empty source battler palette")?;
-            source.battler_palettes[index][shade] = [
-                f32::from(color[0]) / 255.0,
-                f32::from(color[1]) / 255.0,
-                f32::from(color[2]) / 255.0,
-                1.0,
-            ];
-        }
+        // Source sprite images are immutable cached frames. Palette flashes
+        // create separate images, so reading the neutral palette once per
+        // source texture preserves all register changes without sorting an
+        // entire scaled battler image on each source animation sample.
+        let palette = match art.battle_source_palette_cache.entry(battler.texture.id()) {
+            std::collections::hash_map::Entry::Occupied(entry) => *entry.get(),
+            std::collections::hash_map::Entry::Vacant(entry) => {
+                let image = images
+                    .get(&battler.texture)
+                    .context("source battler palette image")?;
+                *entry.insert(immersive_source_palette(&image.data))
+            }
+        };
+        source.battler_palettes[index] = palette;
         source.battler_textures[index] = if source.battler_bgps[index] == 0xe4 {
             battler.texture.clone()
         } else {
@@ -503,6 +492,31 @@ fn capture_immersive_source_frame(
     Ok(source)
 }
 
+fn immersive_source_palette(pixels: &[u8]) -> [[f32; 4]; 4] {
+    let mut colors: Vec<_> = pixels
+        .chunks_exact(4)
+        .filter(|pixel| pixel[3] != 0)
+        .map(|pixel| [pixel[0], pixel[1], pixel[2]])
+        .collect();
+    colors.sort_unstable();
+    colors.dedup();
+    colors.sort_by_key(|c| {
+        std::cmp::Reverse(u32::from(c[0]) * 299 + u32::from(c[1]) * 587 + u32::from(c[2]) * 114)
+    });
+    if colors.len() < 4 {
+        colors.insert(0, [255; 3]);
+    }
+    std::array::from_fn(|shade| {
+        let color = colors.get(shade).unwrap_or_else(|| colors.last().unwrap());
+        [
+            f32::from(color[0]) / 255.0,
+            f32::from(color[1]) / 255.0,
+            f32::from(color[2]) / 255.0,
+            1.0,
+        ]
+    })
+}
+
 fn immersive_battle_progress(frame: u32, total: u32) -> f32 {
     (frame as f32 / total.max(1) as f32).clamp(0.0, 1.0)
 }
@@ -538,9 +552,17 @@ fn sync_immersive_battle_layers(
     settings: Res<crystal_voxel_view::VoxelViewSettings>,
     rendered: Res<RenderedViewport>,
     shell: Res<BevyRuntimeShell>,
-    hud: Query<(Entity, &Transform, Option<&ImmersiveBattleUiSource>), With<BattleHudMarker>>,
+    hud: Query<
+        (
+            Entity,
+            &Transform,
+            Option<&ImmersiveBattleUiSource>,
+            Option<&bevy::render::view::RenderLayers>,
+        ),
+        With<BattleHudMarker>,
+    >,
     replaced: Query<
-        Entity,
+        (Entity, Option<&bevy::render::view::RenderLayers>),
         Or<(
             With<FixedBattleCanvasMarker>,
             With<BattleBattlerMarker>,
@@ -568,18 +590,8 @@ fn sync_immersive_battle_layers(
         && !(shell.pokedex_menu_open
             && shell.pokedex_scripted_entry
             && shell.pending_standard_capture.is_some());
-    for entity in &replaced {
-        if active {
-            commands
-                .entity(entity)
-                .insert(bevy::render::view::RenderLayers::layer(
-                    crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
-                ));
-        } else {
-            commands
-                .entity(entity)
-                .remove::<bevy::render::view::RenderLayers>();
-        }
+    for (entity, layers) in &replaced {
+        set_immersive_hidden_layer(&mut commands, entity, layers, active);
     }
     // The classic clear sprites are opaque erasers. Hiding only the white
     // eraser would resurrect the erased HUD. Apply the same source-space
@@ -590,21 +602,33 @@ fn sync_immersive_battle_layers(
     }) {
         cleared[usize::from(!animation.player_move)] = true;
     }
-    for (entity, transform, source) in &hud {
+    for (entity, transform, source, layers) in &hud {
         let source_transform = source.map_or(*transform, |source| source.0);
         if active
             && immersive_battle_hud_is_erased(source_transform.translation.truncate(), cleared)
         {
-            commands
-                .entity(entity)
-                .insert(bevy::render::view::RenderLayers::layer(
-                    crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
-                ));
+            set_immersive_hidden_layer(&mut commands, entity, layers, true);
         } else if replaced.get(entity).is_err() {
-            commands
-                .entity(entity)
-                .remove::<bevy::render::view::RenderLayers>();
+            set_immersive_hidden_layer(&mut commands, entity, layers, false);
         }
+    }
+}
+
+fn set_immersive_hidden_layer(
+    commands: &mut Commands,
+    entity: Entity,
+    current: Option<&bevy::render::view::RenderLayers>,
+    hidden: bool,
+) {
+    let hidden_layer = bevy::render::view::RenderLayers::layer(
+        crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
+    );
+    if hidden && current != Some(&hidden_layer) {
+        commands.entity(entity).insert(hidden_layer);
+    } else if !hidden && current.is_some() {
+        commands
+            .entity(entity)
+            .remove::<bevy::render::view::RenderLayers>();
     }
 }
 
@@ -654,6 +678,21 @@ fn clear_inactive_visual_battle(
 #[cfg(test)]
 mod immersive_battle_bridge_tests {
     use super::*;
+    #[test]
+    fn source_palette_cache_keeps_luminance_order_and_transparency() {
+        let pixels = [
+            0, 0, 0, 255, 180, 160, 140, 255, 80, 70, 60, 255, 200, 200, 200, 0, 0, 0, 0, 255,
+        ];
+        let colors = immersive_source_palette(&pixels);
+        assert_eq!(colors[0], [1.0; 4]);
+        assert_eq!(
+            colors[1],
+            [180.0 / 255.0, 160.0 / 255.0, 140.0 / 255.0, 1.0]
+        );
+        assert_eq!(colors[2], [80.0 / 255.0, 70.0 / 255.0, 60.0 / 255.0, 1.0]);
+        assert_eq!(colors[3], [0.0, 0.0, 0.0, 1.0]);
+        assert_eq!(immersive_source_palette(&[]), [[1.0; 4]; 4]);
+    }
     #[test]
     fn immersive_battle_compositor_preserves_active_modeled_overworld() {
         assert!(matches!(
