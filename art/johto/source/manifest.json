@@ -1740,6 +1740,28 @@
       ]
     },
     {
+      "file": "cable-backwalls.blend",
+      "encoding": "gzip-blend",
+      "bytes": 110034,
+      "sha256": "5a47ed4dd24356ee749ddddb175b1cafda849d70338b5a65e9a4b43747f3d99d",
+      "uncompressed_bytes": 823196,
+      "uncompressed_sha256": "06cca1be9e81c6bfd23327afbb930507cd8ac03a353d7f8d7bb06e5450c0a6b9",
+      "chunks": [
+        {
+          "file": "chunks/cable-backwalls.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "5338460a8daedc160af2bd0dfd6b97c89f1bcfeb511678600ca05a17ba763ff5",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/cable-backwalls.blend.001.b64",
+          "bytes": 44498,
+          "sha256": "020914749b0ac128865ef85a52d1264b65de64f4277062608b48f44d80774894",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "cable-club.blend",
       "encoding": "gzip-blend",
       "bytes": 143524,
@@ -3022,6 +3044,34 @@
       ]
     },
     {
+      "file": "department-store.blend",
+      "encoding": "gzip-blend",
+      "bytes": 154445,
+      "sha256": "8981b1bf3ea89033f5113c3e785c1f4c01c9a319995b62743a9399a853ee0686",
+      "uncompressed_bytes": 1632916,
+      "uncompressed_sha256": "7f8de6baf1fba02ddeacd0eb9e56045c16cbf9cbb349f99b592adfa4c6e0565f",
+      "chunks": [
+        {
+          "file": "chunks/department-store.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "f02b66db27fee8a4f21564de3cab8d862c9b83869428ca57f5d7d5349fdebe4b",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/department-store.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "bfb3396abf7f68041b84a7e6b4486b9e70269e5b72fbe771aebacc1f8c1cc8d8",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/department-store.blend.002.b64",
+          "bytes": 23373,
+          "sha256": "66760f519e0cf34560c365d488032172ac0ac86aee6b1bd9106270bcab9c5fb2",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "dungeons.blend",
       "encoding": "gzip-blend",
       "bytes": 212935,
@@ -3051,6 +3101,28 @@
           "file": "chunks/dungeons.blend.003.b64",
           "bytes": 16327,
           "sha256": "25df5c34e7d2e43f03c5a42b7bb2142ef20462c8b4c55e8dc8f7b8defa7cd4fc",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "facility-workbench.blend",
+      "encoding": "gzip-blend",
+      "bytes": 118772,
+      "sha256": "dd7dd6ca8c38090b3bf567385ba8cb3693f4d8e8979b07f31df24f2abbac9c11",
+      "uncompressed_bytes": 966456,
+      "uncompressed_sha256": "33cbf96ce338b4d06020308f442341b833eff0ad6ca081a74c7cad043e0bd5f1",
+      "chunks": [
+        {
+          "file": "chunks/facility-workbench.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "c34d174045df1498e01d9c85723a31f73c8ace88e7ea2d9041f23a1d0ea44c71",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/facility-workbench.blend.001.b64",
+          "bytes": 53236,
+          "sha256": "2afba0c3d1bdf8f6037a8f931f2df016e9fe5fe344dcb552feec8e94cef1d5ee",
           "encoding": "base64"
         }
       ]
@@ -3119,6 +3191,40 @@
           "file": "chunks/gate-counters.blend.004.b64",
           "bytes": 63602,
           "sha256": "917dabcf1a9377ffeb07efb2ab5ee200a9f1bc5328cba1f1999e33912358009b",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "gym-scenery-kit.blend",
+      "encoding": "gzip-blend",
+      "bytes": 223439,
+      "sha256": "679cb0e0afb98c81f20b0f9d192321732af0a8d18696c30f6a4ab73c6041e090",
+      "uncompressed_bytes": 2868916,
+      "uncompressed_sha256": "7e117f38e1d418b8a4c0139f8b4a41073b174c8abe7b94e6b5d254fd21a35524",
+      "chunks": [
+        {
+          "file": "chunks/gym-scenery-kit.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "e3edb59f4c8afc04c126887efb225a643928168c8268e6b811bf32c52233000a",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/gym-scenery-kit.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "25920f6b30e3abbeab1b2dd74cae025711604b44bef3d8f96888af6d21384b05",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/gym-scenery-kit.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "0b513dcd606884b713df371fc606ee699bca29a17ff3eeeb773ebf48cb38d994",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/gym-scenery-kit.blend.003.b64",
+          "bytes": 26831,
+          "sha256": "3fcd208acea331ece6c390c70e2c4bdb0a26d60819eeb44c6bd24ff5338a9571",
           "encoding": "base64"
         }
       ]
@@ -3250,6 +3356,34 @@
       ]
     },
     {
+      "file": "lighthouse-chamber.blend",
+      "encoding": "gzip-blend",
+      "bytes": 154405,
+      "sha256": "ccc85c55aa851264cc36fc164bfd841f00aeb4e013b7dd494c729d34b48150cf",
+      "uncompressed_bytes": 1452904,
+      "uncompressed_sha256": "c49f667b6ee7164dafd483e28c3b3b45e6df3e92a10df730c1351c80dd1b5d50",
+      "chunks": [
+        {
+          "file": "chunks/lighthouse-chamber.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "ad37de6f4d29b51da34e02e14159f9ffd026e10db02f1dd035c991e2099212a7",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/lighthouse-chamber.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "6b538f61472e1ebd48d05d119dc9490f0fc4504c03b1a9e9f566e8b8eb00cf5f",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/lighthouse-chamber.blend.002.b64",
+          "bytes": 23333,
+          "sha256": "1996d27bc9d26a9b5d464bb6cc7951b5e3fd0f14f772f6907df1051e28fe08e2",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "lighthouse-masonry.blend",
       "encoding": "gzip-blend",
       "bytes": 396645,
@@ -3342,6 +3476,56 @@
       ]
     },
     {
+      "file": "outdoor-sign-frames.blend",
+      "encoding": "gzip-blend",
+      "bytes": 166932,
+      "sha256": "1750ea07af3177c40585c1342d45668d57cac12af7d40d807db466f3203890da",
+      "uncompressed_bytes": 1560484,
+      "uncompressed_sha256": "977972a3da650a320f358ffe1e05a37ccf6d84d2a2f3a462fdf9812d5b7c67d0",
+      "chunks": [
+        {
+          "file": "chunks/outdoor-sign-frames.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "9daacbc62db334d19814217127b4a2745e1f327c942054e8dedb57eabc36721c",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/outdoor-sign-frames.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "58f28f95180c32f5f6983d95d048ad9b95543310c9829fe838048e9304233066",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/outdoor-sign-frames.blend.002.b64",
+          "bytes": 35860,
+          "sha256": "8a694cd94d5ca37771cc269d7b34712ce11f61fb19946f01a29042d2cfe49371",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "park-scenery.blend",
+      "encoding": "gzip-blend",
+      "bytes": 124635,
+      "sha256": "9eaed4cec4f767c092b4dc646a1684a9824e321786e838a92bfbf7161c8d7c55",
+      "uncompressed_bytes": 856064,
+      "uncompressed_sha256": "d977190c0d75aa687a38333da9b835a5fa4df9122ec13ea6ec74a14fb8b3db10",
+      "chunks": [
+        {
+          "file": "chunks/park-scenery.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "1c9b3834235c3110dde4bb03f592b3a5d072e12ae4477e7536b5d827cfa25b34",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/park-scenery.blend.001.b64",
+          "bytes": 59099,
+          "sha256": "1275e1935181622d02d25abe8ac51fb1841d614c82e32e8c849f340713ac2781",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "player-house.blend",
       "encoding": "gzip-blend",
       "bytes": 233604,
@@ -3371,6 +3555,62 @@
           "file": "chunks/player-house.blend.003.b64",
           "bytes": 36996,
           "sha256": "df677046a2f1e82997330fc86ed2ea588d61f7006b9c5f5271656ad0dfbdca30",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "radio-desks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 188551,
+      "sha256": "ae04b2636d18d5ae74a851b30c71a32e56e1aae7aaab02846d5361161bba4ad2",
+      "uncompressed_bytes": 2239636,
+      "uncompressed_sha256": "c686dcf2e5c3b50e986a79d679dbf944c406372889700e9dbe7c64db6b084c4d",
+      "chunks": [
+        {
+          "file": "chunks/radio-desks.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "134153e2950824a8d54013acb18a7d5789b811039e4bed76673bd17bde8b541f",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/radio-desks.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "f7b78cb9d4cda748c0212be347fee0fa57755e3d35d85fccea19d685c386732a",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/radio-desks.blend.002.b64",
+          "bytes": 57479,
+          "sha256": "6e5524414b32080bff2ee2bd82ab39d07de30d7ac0127fc5930460e883cd93b2",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "ship-rooms.blend",
+      "encoding": "gzip-blend",
+      "bytes": 194798,
+      "sha256": "960cffd6086aee46a043c3c9b8525a4e63f56ee7f8e3167f131ffc21378602d1",
+      "uncompressed_bytes": 2135760,
+      "uncompressed_sha256": "39bf3d199b3ae0db7c39b9ccbb99abd7eca07caf96bda785874a93cc09e1ed27",
+      "chunks": [
+        {
+          "file": "chunks/ship-rooms.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "697ea3b4318e8622bee1186750dfd4c66ff576640f67e9cb5da8cf26e197b4c5",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/ship-rooms.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "6c9db14b2d60fc2352a5847320f43a8ef372e4621f4eed273ef2132a6c68b36e",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/ship-rooms.blend.002.b64",
+          "bytes": 63726,
+          "sha256": "98023fc62e7c7080911f75fb1c3586bcbfac8a3da962c84bc84eed52a314ce48",
           "encoding": "base64"
         }
       ]
@@ -3509,6 +3749,62 @@
           "file": "chunks/structure-extensions.blend.007.b64",
           "bytes": 26357,
           "sha256": "23991c85768a1c3b784b32c41b68daf91e2f5ce98dc14fce4c6e1e79bc30a267",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "traditional-room-scenery.blend",
+      "encoding": "gzip-blend",
+      "bytes": 204215,
+      "sha256": "d7c237804f0bfb87b756d6fde9bfecd34b837dfdea293d1adb9f7f081b641641",
+      "uncompressed_bytes": 2451552,
+      "uncompressed_sha256": "9aff138e90b197aa3d07c58823fe258434a0e2bb633f5638f07b1f70c53fdf15",
+      "chunks": [
+        {
+          "file": "chunks/traditional-room-scenery.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "4c87b435c88730bd7b069f2007293e9595196df7b3a2b704b3cd76d007147479",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/traditional-room-scenery.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "dcfb1d3b1806c332e2e41d634d45c54e432e15b75217845e71d1f32a2cdb2882",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/traditional-room-scenery.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "a632be895994776c28abb6eb026ab5f7b34099ec3fda4a8f95a0a2e0870224af",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/traditional-room-scenery.blend.003.b64",
+          "bytes": 7607,
+          "sha256": "6e15e061ea434d05c36b112f3a852b04202d87e640dc2e4a7acae09795f3b130",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "train-station.blend",
+      "encoding": "gzip-blend",
+      "bytes": 128253,
+      "sha256": "8e524d0ee2620a7106f9829beea03dc3ffd0b7c8761eecb67229e572c5efc840",
+      "uncompressed_bytes": 1101816,
+      "uncompressed_sha256": "8b606878bb9e4d31c58ff7b5e74027a82e79140ab784a84273b3c19bd3562a3a",
+      "chunks": [
+        {
+          "file": "chunks/train-station.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "28646d92f70057bfa9bb690c38cc2cbe16ff70c611048af3205d934245f57ff5",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/train-station.blend.001.b64",
+          "bytes": 62717,
+          "sha256": "c8e5a9e02c236cf735a870e7c6c995d6cc80815847330334b1a10600ab9843b7",
           "encoding": "base64"
         }
       ]
@@ -3789,146 +4085,6 @@
           "file": "chunks/world-exteriors.blend.044.b64",
           "bytes": 15523,
           "sha256": "07bec6199ab41f8f4c23430a15d7fd97889140baf018c81ff970e2600dbbe48f",
-          "encoding": "base64"
-        }
-      ]
-    },
-    {
-      "file": "gym-scenery-kit.blend",
-      "encoding": "gzip-blend",
-      "bytes": 223439,
-      "sha256": "679cb0e0afb98c81f20b0f9d192321732af0a8d18696c30f6a4ab73c6041e090",
-      "uncompressed_bytes": 2868916,
-      "uncompressed_sha256": "7e117f38e1d418b8a4c0139f8b4a41073b174c8abe7b94e6b5d254fd21a35524",
-      "chunks": [
-        {
-          "file": "chunks/gym-scenery-kit.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "e3edb59f4c8afc04c126887efb225a643928168c8268e6b811bf32c52233000a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "25920f6b30e3abbeab1b2dd74cae025711604b44bef3d8f96888af6d21384b05",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "0b513dcd606884b713df371fc606ee699bca29a17ff3eeeb773ebf48cb38d994",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.003.b64",
-          "bytes": 26831,
-          "sha256": "3fcd208acea331ece6c390c70e2c4bdb0a26d60819eeb44c6bd24ff5338a9571",
-          "encoding": "base64"
-        }
-      ]
-    },
-    {
-      "file": "department-store.blend",
-      "encoding": "gzip-blend",
-      "bytes": 154445,
-      "sha256": "8981b1bf3ea89033f5113c3e785c1f4c01c9a319995b62743a9399a853ee0686",
-      "uncompressed_bytes": 1632916,
-      "uncompressed_sha256": "7f8de6baf1fba02ddeacd0eb9e56045c16cbf9cbb349f99b592adfa4c6e0565f",
-      "chunks": [
-        {
-          "file": "chunks/department-store.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "f02b66db27fee8a4f21564de3cab8d862c9b83869428ca57f5d7d5349fdebe4b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/department-store.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "bfb3396abf7f68041b84a7e6b4486b9e70269e5b72fbe771aebacc1f8c1cc8d8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/department-store.blend.002.b64",
-          "bytes": 23373,
-          "sha256": "66760f519e0cf34560c365d488032172ac0ac86aee6b1bd9106270bcab9c5fb2",
-          "encoding": "base64"
-        }
-      ]
-    },
-    {
-      "file": "outdoor-sign-frames.blend",
-      "encoding": "gzip-blend",
-      "bytes": 166932,
-      "sha256": "1750ea07af3177c40585c1342d45668d57cac12af7d40d807db466f3203890da",
-      "uncompressed_bytes": 1560484,
-      "uncompressed_sha256": "977972a3da650a320f358ffe1e05a37ccf6d84d2a2f3a462fdf9812d5b7c67d0",
-      "chunks": [
-        {
-          "file": "chunks/outdoor-sign-frames.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "9daacbc62db334d19814217127b4a2745e1f327c942054e8dedb57eabc36721c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/outdoor-sign-frames.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "58f28f95180c32f5f6983d95d048ad9b95543310c9829fe838048e9304233066",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/outdoor-sign-frames.blend.002.b64",
-          "bytes": 35860,
-          "sha256": "8a694cd94d5ca37771cc269d7b34712ce11f61fb19946f01a29042d2cfe49371",
-          "encoding": "base64"
-        }
-      ]
-    },
-    {
-      "file": "lighthouse-chamber.blend",
-      "encoding": "gzip-blend",
-      "bytes": 154405,
-      "sha256": "ccc85c55aa851264cc36fc164bfd841f00aeb4e013b7dd494c729d34b48150cf",
-      "uncompressed_bytes": 1452904,
-      "uncompressed_sha256": "c49f667b6ee7164dafd483e28c3b3b45e6df3e92a10df730c1351c80dd1b5d50",
-      "chunks": [
-        {
-          "file": "chunks/lighthouse-chamber.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ad37de6f4d29b51da34e02e14159f9ffd026e10db02f1dd035c991e2099212a7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-chamber.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "6b538f61472e1ebd48d05d119dc9490f0fc4504c03b1a9e9f566e8b8eb00cf5f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-chamber.blend.002.b64",
-          "bytes": 23333,
-          "sha256": "1996d27bc9d26a9b5d464bb6cc7951b5e3fd0f14f772f6907df1051e28fe08e2",
-          "encoding": "base64"
-        }
-      ]
-    },
-    {
-      "file": "cable-backwalls.blend",
-      "encoding": "gzip-blend",
-      "bytes": 110034,
-      "sha256": "5a47ed4dd24356ee749ddddb175b1cafda849d70338b5a65e9a4b43747f3d99d",
-      "uncompressed_bytes": 823196,
-      "uncompressed_sha256": "06cca1be9e81c6bfd23327afbb930507cd8ac03a353d7f8d7bb06e5450c0a6b9",
-      "chunks": [
-        {
-          "file": "chunks/cable-backwalls.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "5338460a8daedc160af2bd0dfd6b97c89f1bcfeb511678600ca05a17ba763ff5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/cable-backwalls.blend.001.b64",
-          "bytes": 44498,
-          "sha256": "020914749b0ac128865ef85a52d1264b65de64f4277062608b48f44d80774894",
           "encoding": "base64"
         }
       ]

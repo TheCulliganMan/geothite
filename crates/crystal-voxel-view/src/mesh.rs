@@ -19,10 +19,20 @@ mod outdoor_signs;
 mod native_ground_bindings;
 #[path = "mesh/department_store.rs"]
 mod department_store;
+#[path = "mesh/facility_radio.rs"]
+mod facility_radio;
+#[path = "mesh/ship_rooms.rs"]
+mod ship_rooms;
+#[path = "mesh/traditional_room.rs"]
+mod traditional_room;
+#[path = "mesh/park_scenery.rs"]
+mod park_scenery;
 #[path = "mesh/modeled_dungeons.rs"]
 mod modeled_dungeons;
 #[path = "mesh/gym_scenery.rs"]
 mod gym_scenery;
+#[path = "mesh/train_station_scenery.rs"]
+mod train_station_scenery;
 #[path = "mesh/modeled_exteriors.rs"]
 mod modeled_exteriors;
 #[path = "mesh/modeled_interiors.rs"]
@@ -166,7 +176,10 @@ impl SurfaceMeshData {
             // the renderer instead of cloning and retaining its CPU buffers.
             RenderAssetUsages::RENDER_WORLD,
         );
-        if !self.cutaway_ranges.is_empty() {
+        if !self.cutaway_ranges.is_empty()
+            && crate::interior_cutaway::diagnostic_mode()
+                != crate::interior_cutaway::DiagnosticMode::OmitUv1
+        {
             let mut mask = vec![[0.0_f32, 0.0]; self.positions.len()];
             for range in self.cutaway_ranges {
                 mask[range].fill([1.0, 0.0]);
@@ -196,6 +209,10 @@ pub struct TerrainMeshData {
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
+    /// Triangle ordinals in the complete `solid` mesh that can be submitted
+    /// separately while reveal is active. Full geometry/coverage audits and
+    /// ordinary `into_meshes` consumers retain every original triangle.
+    pub(crate) reveal_join_batches: Vec<Vec<usize>>,
     pub animated_textured: SurfaceMeshData,
     pub animated_solid: SurfaceMeshData,
     pub footing_heights: Vec<f32>,
@@ -229,6 +246,30 @@ struct TreeMeshKey {
 }
 
 impl TerrainMeshData {
+    /// Runtime-only partition, performed once in the asynchronous terrain build.
+    /// Nothing is removed from the retained scene: secondary meshes keep every
+    /// deferred triangle with its exact original absolute attributes and mask.
+    pub(crate) fn take_reveal_join_batches(&mut self) -> Vec<SurfaceMeshData> {
+        let ordinals = std::mem::take(&mut self.reveal_join_batches);
+        if ordinals.is_empty() { return Vec::new(); }
+        let original = std::mem::take(&mut self.solid);
+        let mut marked = vec![false; original.positions.len()];
+        for range in &original.cutaway_ranges { marked[range.clone()].fill(true); }
+        let mut remap = vec![u32::MAX; original.positions.len()];
+        let mut retained = vec![true; original.indices.len() / 3];
+        let mut batches = Vec::with_capacity(ordinals.len());
+        for ordinals in ordinals {
+            for &ordinal in &ordinals { retained[ordinal] = false; }
+            let indices = ordinals.into_iter()
+                .flat_map(|ordinal| original.indices[ordinal * 3..ordinal * 3 + 3].iter().copied());
+            batches.push(select_surface_indices(&original, &marked, &mut remap, indices));
+        }
+        let indices = original.indices.chunks_exact(3).zip(retained)
+            .filter(|(_, keep)| *keep).flat_map(|(triangle, _)| triangle.iter().copied());
+        self.solid = select_surface_indices(&original, &marked, &mut remap, indices);
+        batches
+    }
+
     pub fn into_meshes(mut self) -> (Mesh, Mesh) {
         fn append(target: &mut SurfaceMeshData, mut source: SurfaceMeshData) {
             let base = target.positions.len() as u32;
@@ -250,6 +291,37 @@ impl TerrainMeshData {
         append(&mut self.solid, self.animated_solid);
         (self.textured.into_mesh(), self.solid.into_mesh())
     }
+}
+
+fn select_surface_indices(
+    source: &SurfaceMeshData, marked: &[bool], remap: &mut [u32],
+    indices: impl Iterator<Item = u32>,
+) -> SurfaceMeshData {
+    let mut selected = SurfaceMeshData::default();
+    let mut touched = Vec::new();
+    for index in indices {
+        let old = index as usize;
+        if remap[old] == u32::MAX {
+            let next = selected.positions.len();
+            remap[old] = next as u32;
+            touched.push(old);
+            selected.positions.push(source.positions[old]);
+            selected.normals.push(source.normals[old]);
+            selected.uvs.push(source.uvs[old]);
+            selected.colors.push(source.colors[old]);
+            if marked[old] {
+                if let Some(range) = selected.cutaway_ranges.last_mut()
+                    && range.end == next {
+                    range.end += 1;
+                } else {
+                    selected.cutaway_ranges.push(next..next + 1);
+                }
+            }
+        }
+        selected.indices.push(remap[old]);
+    }
+    for old in touched { remap[old] = u32::MAX; }
+    selected
 }
 
 /// Builds a combined textured surface mesh and a separate untextured solid
@@ -2070,9 +2142,13 @@ fn traditional_house_radio_placements(
 }
 
 fn traditional_house_cushion_placements(
+    map: &str,
     cells: &[&VisualTile],
     geometry: &GridGeometry,
 ) -> Vec<TreePlacement> {
+    // Native block 04 is continuous FLOOR in these two maps. Keep this
+    // explicit even if a future scene happens to supply flat source 50.
+    if traditional_room::floor_map(map) { return Vec::new(); }
     grouped_flat_card_placements(
         cells,
         geometry,
@@ -3368,7 +3444,7 @@ pub fn audit_cell_coverage_on_map(
     prop_cards.extend(player_room_fixture_placements(&cells, &geometry));
     prop_cards.extend(player_bed_placements(&cells, &geometry));
     prop_cards.extend(traditional_house_radio_placements(&cells, &geometry));
-    prop_cards.extend(traditional_house_cushion_placements(&cells, &geometry));
+    prop_cards.extend(traditional_house_cushion_placements(map_id, &cells, &geometry));
     prop_cards.extend(wise_trios_divider_placements(map_id, &cells, &geometry));
     if map_id == "SoulHouse" {
         prop_cards.extend(soul_house_bench_placements(&cells, &geometry));
@@ -7632,8 +7708,8 @@ fn append_park_fountain(
     const BASIN_HEIGHT_PIXELS: f32 = 5.0;
 
     let (origin_x, _, origin_z, _) = geometry.bounds(placement.column, placement.row);
-    // `$80/$90` are animated fountain cells at the metatile's east edge;
-    // the authored oval is centered on that boundary, not at (2, 2).
+    // `$80/$90` are the static west-half fountain center; the real animated
+    // spray is `$5f`. The oval centers on the block boundary, not at (2, 2).
     let center_x = origin_x + geometry.tile_width * 4.0;
     let center_z = origin_z + geometry.tile_height * 2.15;
     let radius_x = geometry.tile_width * RADIUS_X_TILES;
@@ -9352,3 +9428,7 @@ include!("mesh/regression_tests.rs");
 #[cfg(test)]
 #[path = "mesh/cutaway_tests.rs"]
 mod cutaway_tests;
+
+#[cfg(test)]
+#[path = "mesh/reveal_batch_tests.rs"]
+mod reveal_batch_tests;

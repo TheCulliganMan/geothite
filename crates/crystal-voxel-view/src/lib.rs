@@ -43,6 +43,7 @@ mod house;
 mod ice_path;
 mod interior;
 mod interior_cutaway;
+mod maze_reveal_batches;
 mod interior_models;
 mod johto_fence;
 mod kanto_cliff;
@@ -56,6 +57,7 @@ mod new_bark_actors;
 mod new_bark_models;
 mod olivine_gym;
 mod park;
+mod park_scenery_models;
 mod players_house;
 mod pokecenter;
 mod pokecom;
@@ -71,6 +73,7 @@ mod sign;
 mod terrain_tracking;
 mod tower;
 mod train_station;
+mod train_station_models;
 mod underground_boundary;
 mod underground_path;
 mod vermilion;
@@ -215,6 +218,7 @@ impl Plugin for VoxelViewPlugin {
                     .after(sync_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
+        maze_reveal_batches::register(app);
     }
 }
 
@@ -396,6 +400,7 @@ struct TerrainBuildResult {
 struct BuiltTerrain {
     background: Option<(Mesh, Handle<Image>)>,
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
+    reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
     footing_heights: Vec<f32>,
     textured_mesh: Mesh,
     solid_mesh: Mesh,
@@ -1000,6 +1005,19 @@ fn sync_terrain(
                 &profile_document,
             )
             .map(|mut terrain| {
+                // The public mesh stays complete until this explicit runtime
+                // partition. Both pieces are uploaded only with the revision.
+                let reveal_join_batches = terrain.take_reveal_join_batches().into_iter()
+                    .map(|data| {
+                        let mut min = Vec3::splat(f32::INFINITY);
+                        let mut max = Vec3::splat(f32::NEG_INFINITY);
+                        for &position in &data.positions {
+                            let position = Vec3::from_array(position);
+                            min = min.min(position);
+                            max = max.max(position);
+                        }
+                        (data.into_mesh(), maze_reveal_batches::MazeRevealBatch { min, max })
+                    }).collect();
                 let animated_textured_mesh =
                     std::mem::take(&mut terrain.animated_textured).into_mesh();
                 let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
@@ -1016,6 +1034,7 @@ fn sync_terrain(
                 BuiltTerrain {
                     background,
                     instances,
+                    reveal_join_batches,
                     footing_heights,
                     textured_mesh,
                     solid_mesh,
@@ -1220,6 +1239,21 @@ fn apply_built_terrain(
             .id();
         commands.entity(root).add_child(child);
     }
+    for (mesh, batch) in terrain.reveal_join_batches {
+        let child = commands.spawn((
+            MaterialMeshBundle::<VoxelMaterial> {
+                mesh: meshes.add(mesh),
+                material: solid_material_handle.clone(),
+                // Absolute built-grid coordinates are unchanged. Identity
+                // local transform inherits the same retained scrolling root.
+                visibility: Visibility::Inherited,
+                ..default()
+            },
+            RenderLayers::layer(VOXEL_RENDER_LAYER),
+            batch,
+        )).id();
+        commands.entity(root).add_child(child);
+    }
     for (mesh, origins) in terrain.instances {
         let mesh = meshes.add(mesh);
         for origin in origins {
@@ -1393,7 +1427,9 @@ fn sync_interior_cutaway(
     let Some(handle) = cache.solid_material.as_ref() else {
         return;
     };
-    let next = if status.active {
+    let next = if status.active
+        && interior_cutaway::diagnostic_mode() != interior_cutaway::DiagnosticMode::ZeroRadius
+    {
         frame
             .actors
             .iter()
@@ -1850,6 +1886,7 @@ mod renderer_tests {
             let terrain = BuiltTerrain {
                 background: None,
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
+                reveal_join_batches: Vec::new(),
                 footing_heights: Vec::new(),
                 textured_mesh: actor_quad_mesh(),
                 solid_mesh: actor_quad_mesh(),

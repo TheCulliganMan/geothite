@@ -76,6 +76,17 @@ fn build_terrain_mesh_internal(
         Vec::new()
     };
     let mut authored_reserved = vec![false; cell_count];
+    // Complete institutional apparatus supersedes only the exact old partial
+    // signature models; live custom profiles retain first refusal.
+    let facility_radio_placements = if images.is_some() && authored_enabled {
+        facility_radio::resolve(
+            &frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved,
+        )
+    } else { Vec::new() };
+    for placement in &facility_radio_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     // Complete joined store courses supersede older individual window models.
     // Their resolver still gives all customized live objects first refusal.
     let department_store_placements = if images.is_some() && authored_enabled {
@@ -108,6 +119,13 @@ fn build_terrain_mesh_internal(
     for placement in &cable_club_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
+    let train_placements = if images.is_some() && authored_enabled {
+        train_station_scenery::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &train_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     let outdoor_sign_placements = if images.is_some() && authored_enabled {
         outdoor_signs::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
     } else { Vec::new() };
@@ -119,6 +137,26 @@ fn build_terrain_mesh_internal(
             frame.grid_origin.to_array(), profiles, &authored_reserved)
     } else { Vec::new() };
     for placement in &gym_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let traditional_room_placements = if images.is_some() && authored_enabled {
+        traditional_room::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &traditional_room_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let ship_room_placements = if images.is_some() && authored_enabled {
+        ship_rooms::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &ship_room_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let park_placements = if images.is_some() && authored_enabled {
+        park_scenery::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &park_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
     let mut dungeon_placements = if images.is_some() && authored_enabled {
@@ -338,6 +376,12 @@ fn build_terrain_mesh_internal(
         .collect();
     let mut claimed_by_building = vec![false; cell_count];
     let mut claimed_by_tree = live_claimed;
+    for placement in &facility_radio_placements {
+        let appended = facility_radio::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated facility/radio reservation must append");
+    }
     for placement in &interior_placements {
         let appended = modeled_interiors::append(
             &mut mesh,
@@ -358,6 +402,12 @@ fn build_terrain_mesh_internal(
         let appended = cable_club::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
         debug_assert!(appended, "validated Cable Club reservation must append");
     }
+    for placement in &train_placements {
+        let appended = train_station_scenery::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated station train reservation must append");
+    }
     for placement in &outdoor_sign_placements {
         let appended = outdoor_signs::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
         debug_assert!(appended, "validated outdoor sign reservation must append");
@@ -367,11 +417,27 @@ fn build_terrain_mesh_internal(
             placement, &mut claimed_by_tree);
         debug_assert!(appended, "validated Gym reservation must append");
     }
+    for placement in &traditional_room_placements {
+        let appended = traditional_room::append(&mut mesh, &original_cells, &geometry,
+            placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated traditional-room reservation must append");
+    }
+    for placement in &park_placements {
+        let appended = park_scenery::append(&mut mesh, &original_cells, &geometry,
+            placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated park fixture reservation must append");
+    }
     for placement in &department_store_placements {
         let appended = department_store::append(
             &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated department store reservation must append");
+    }
+    for placement in &ship_room_placements {
+        let appended = ship_rooms::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated ship room reservation must append");
     }
     for placement in &dungeon_placements {
         modeled_dungeons::append(&mut mesh, &geometry, placement, &original_cells);
@@ -904,7 +970,7 @@ fn build_terrain_mesh_internal(
                 &mut overlay_claimed,
             )?;
         }
-        for placement in traditional_house_cushion_placements(&cells, &geometry) {
+        for placement in traditional_house_cushion_placements(&frame.map_id, &cells, &geometry) {
             if let Err(error) = append_shallow_top_group(
                 &mut mesh,
                 &cells,
@@ -1610,8 +1676,13 @@ fn build_terrain_mesh_internal(
         append_waterfall(&mut mesh.textured, &geometry, &cells, placement);
     }
 
-    for placement in fountain_placements(&cells, width, height) {
-        append_park_fountain(&mut mesh, &geometry, placement);
+    // Production uses the source-complete 3f+33 park kit. Preserve the old
+    // samples-only path for low-level diagnostic comparisons, never as an
+    // authored fallback on clipped, customized or incomplete beta drawings.
+    if !authored_enabled {
+        for placement in fountain_placements(&cells, width, height) {
+            append_park_fountain(&mut mesh, &geometry, placement);
+        }
     }
 
     for row in 0..height {

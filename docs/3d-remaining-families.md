@@ -6,48 +6,96 @@ percentage of finished scenes. Plot counts can include backing ground. Dynamic
 map states and individual species art remain separate work in the broader
 conversion checklist.
 
-The final-scenery production audit verifies all 388 base maps without a mesher
-error and records 254,371 cells consumed by authored geometry, including named
-surface finishes. This is +550 over the four-kit checkpoint: +462 Cable Club and
-+88 native ground bindings. Representative native appearance review is complete for the four Gyms, stores,
-sign families, Cable rooms, keeper room and exterior player reveal. Controller
-and per-map closure are tracked separately; coverage does not provide art signoff.
+The final institutional-scenery production audit verifies all 388 base maps
+without a mesher error and records 255,919 cells consumed by authored geometry,
+including named surface finishes. The increase from 254,371 is exactly 1,548:
+Facility/Radio 490, ship rooms 594, traditional rooms 136, train 120, park 52 and
+stool/bed binding corrections 156. All 788 voxel tests pass, with two existing
+benchmarks ignored. Further validation is tracked in
+[the conversion checkpoint](3d-coverage-checkpoint.md).
 
-The former seventeen-entry checklist now has ten open entries. The additional
-packages below are also required; the original list was not an exhaustive
-remaining-world denominator. Staged Facility/Radio, Ship and traditional-room
-kits remain open until integrated, audited and reviewed natively.
+Earlier representative native review covers the four Gyms, stores, sign
+families, Cable rooms, keeper room, corrected ground bindings and exterior
+player reveal. Those results do not certify every map. A further 48 native views cover the
+five latest kits, including reverse views of the captain/chair, bulkheads,
+stage, rail openings, reception counters and train shell. Static review found
+no additional blocking kit geometry defect. Twenty-eight more views inspect the
+stool/block36-bed corrections and close park placements from opposite sides.
+Eight final views also verify the four joined block38/39 beds. Train travel remains
+a separate gameplay blocker; static review does not certify whole-room art,
+animation or per-map gameplay.
 
-## Ten open entries from the former checklist
+## Former ten-entry queue: integrated source reconciliation
 
-| Family | Residual cells | Maps | Required result |
-| --- | ---: | ---: | --- |
-| Facility instrument cabinets | 208 | 5 | PowerPlant and related rooms; faithful equipment silhouettes |
-| Facility workstation plots | 152 | 4 | Complete desks/equipment and their native openings; plot count |
-| Radio desks/counter plots | 380 | 6 | Joined desks, consoles and counter returns; plot count |
-| Ship table/captain-desk plots | 272 | 4 | Complete cabin furniture; plot count, excluding the installed Lighthouse 6F table |
-| Timber divider screens | 40 | 1 | WiseTriosRoom; panels and separate returns |
-| Barn stall rails | 24 | 1 | Route39Barn; three complete panels |
-| Theater stage/backdrop | 240 | 1 | DanceTheater; coherent stage and backdrop over the existing raised treatment |
-| Magnet Train body/boarding plots | 128 | 2 | Both stations; preserve the boarding opening; plot count |
-| Park small round props | 44 | 3 | Confirm whole-object identity in native context before authoring |
-| Park fountain rim/basin | 48 | 3 | Refine the existing grouped animated treatment |
+The five latest kits address the ten remaining entries from the earlier
+seventeen-entry checklist. Retained selector cells below include legitimate
+surfaces and specific review exceptions. Representative static views support
+the new volumes and openings; actor animation, moving-camera reveal and
+relevant controller routes require their own checks. Additional packages remain
+open, so closing this selected queue is not whole-world completion.
 
-## Additional bounded object and architecture packages
+| Family | Prior selector → retained cells | Current source result |
+| --- | ---: | --- |
+| Facility instrument cabinets | 208 → 0 | 26 complete paired apparatus drawings integrated across five maps |
+| Facility workstation plots | 152 → 40 | 112 newly consumed cells and 40 native floor cells; the complete 120-cell bench ownership also replaces eight old LabCounter cells |
+| Radio desks/counter plots | 380 → 240 | 212 floor + 16 entrance carpet + 12 studio side-wall cells retained; the wall edges remain an architectural review item |
+| Ship table/captain-desk plots | 272 → 40 | 232 old-query furniture cells consumed; 40 checker-floor cells retained |
+| Timber divider screens | 40 → 0 | Six complete Wise Trio panels integrated |
+| Barn stall rails | 24 → 0 | Three complete panels integrated |
+| Theater stage/backdrop | 240 → 168 | 48 backdrop + 24 fascia object cells; 168 finished stage-floor cells intentionally receive no object credit |
+| Magnet Train body/boarding plots | 128 → 32 | 96 old-query body cells consumed; 16 door + 16 rail/backing cells retained |
+| Park small round props | 44 → 0 | Five litter bins (20 cells) and four pedestal fountains (24 cells) integrated |
+| Park fountain rim/basin | 48 → 44 | Four old-query basin cells consumed; 28 live water/spray and 16 beta-fragment cells retained |
+
+Complete drawings extend beyond several old selectors:
+
+- Facility/Radio owns 502 cells, replacing 12 prior model cells for a net 490.
+  The radio portion owns 174: 140 newly consumed old-query cells, 30 adjacent
+  new cells and four replaced BroadcastConsole cells. RadioTower2F correctly
+  has no desk placement; its eight studio edge cells are still architecture
+- Ship furniture owns 386: 232 old-query cells, 88 complete table-header cells,
+  and 66 previously omitted cup-table/chair cells. The 208-cell lower-deck
+  divider network is also integrated, producing the full 594-cell increase.
+  See [ship-room notes](art/ship-rooms.md)
+- Both complete train plots own 120 body cells and retain 16 live door plus
+  24 rail/backing cells. The center blocks omitted by the old selector supply
+  24 of those body and eight of those backing cells. Source door apertures,
+  platform approaches and travel behavior remain separate controller gates.
+  See [train-station notes](art/train-station.md)
+- Both complete pond groups own eight static basin cells, including four
+  east-half cells absent from the old selector. Their 40 water and 16 spray
+  cells remain live. Safari beta has no complete joined fountain: its three
+  disconnected fragments retain 48 cells (30 water, 12 spray, six static
+  fragments). Preserve that source topology; do not invent a missing half over
+  grass. This remains an explicit fidelity/appearance exception, not another
+  complete basin awaiting a generic model. See [park notes](art/park-scenery.md)
+
+## Additional bounded work still open
 
 | Package | Residual cells / maps | Source evidence and required result |
 | --- | --- | --- |
 | Café tables and service counters | 64 table + 86 counter / 3 | `cafe.rs` exact table/counter selectors; complete round tables and connected C-shaped counters, preserving the operator bay |
 | Game Corner rear architecture and counters | 288 rear-course + 88 counter / 2 | `casino.rs`; source-specific walls, payout equipment, pillars, doorways and connected counters |
+| Facility ordinary tables and chairs | 172 table + 88 chair / 5 maps in union | Separate from the 40 workstation-floor cells: table blocks `0f/29/10/11/14/15`, chair drawings in `10/11/14/15/27/35`; preserve native NPC overlap and FLOOR chair roles |
+| Power Plant equipment/track courses | 192 plot cells / 1 | Six block `12` plus six `16` plots; reconstruct connected equipment and track surfaces. Only 48 cells match the existing B2F west-half track drawing exactly |
 | Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; replace/refine the existing closed 16-pixel network |
+| Radio studio side-wall edges | 12 / 2 | LavRadioTower1F 4 and RadioTower2F 8; block `20`, rightmost column `8a/8b`; preserve the thin wall role rather than treating these as desks or floor |
 | Underground switch-room walls/gates | 904 / 1 | `elite_four_room.rs`, blocks `2a/37/3d/3e/3f`; validate all script-controlled gate and switch states |
 | Warehouse side walls | 288 / 2 | GoldenrodDeptStoreB1F and GoldenrodUndergroundWarehouse; `underground_boundary.rs`, block `0c` west halves and `0e` east halves |
-| Lower-deck ship dividers | 208 / 1 | FastShipB1F; `ship.rs`, 120 vertical + 88 horizontal cells; preserve passages and berth openings |
 | Center lobby counter ends and PC headers | 44 counter + 44 header / 22 | `pokecenter.rs`; narrow block `03` right-column `0f/25` return and two block `08` wall cells above each PC |
 | Rocket Base B1F plants | 12 / 1 | Two complete 2×3 plants in blocks `29/2a`; `rocket_base.rs::plant_local` has no modeled binding |
 | Flower Shop display assemblies | 44 / 1 | `flower_shop.rs::display_shape`; finish source-specific bent/corner planters and display tables |
 | Cerulean Gym pool props/borders | 176 / 1 | `port.rs`, blocks `2e..31/36..39`, art `0a/0b/22`; establish complete silhouettes in native context, retaining the waterline |
 | Vermilion Gym targets/gates | 64 / 1 | `vermilion.rs`, blocks `20/21`; preserve both puzzle states and real openings |
+
+Native views revealed ordinary facility tables/chairs, radio/ship stools and
+partial bed bodies outside the previous object selectors. The facility tables
+and chairs remain open even though their source is flat-classified. The targeted stool
+and all nineteen bed-foot bindings are corrected, as detailed below, including
+four source-complete compound berths. Several chairs and
+stools sit beneath authored actors on FLOOR cells; actor animation, all required
+facings and approaches must remain clear without changing footing, collision,
+object positions or script behavior.
 
 These are source-family counts, not additive object totals. Some families already
 have legacy dimensional geometry. For example, the 948 facility cells are called
@@ -57,11 +105,28 @@ native appearance remain prerequisites for closing these packages.
 
 ## Integrated source families and corrections
 
+The follow-up furniture correction reuses canonical assets for six additional
+Radio Tower stools (24 cells), fourteen additional Fast Ship stools (56 cells)
+and nineteen complete ship bed-foot sections (76 cells). The radio/ship stools
+keep FLOOR collision and are fitted north of the unchanged actor foot anchor.
+The ship's block `36` berth is guarded as one complete 2×4 drawing. Four other
+berths span block `38` and block `39`; those joined drawings are now guarded
+atomically, including their 16 previously flat foot cells. These binding
+corrections add no mesh assets. Exact source guards, custom-profile
+fallback and sampled rest-pose rig clearance do not prove animated/native
+clearance. The final production audit confirms the 156-cell increase. Twenty-eight
+fresh native views inspect the first corrections, ship cabin variants and close
+park fixtures; implemented geometry passes static review. Eight further views
+verify the four complete joined beds. Static views do not establish animated
+clearance or execute the bed's sleep/heal script.
+See [ship-room and furniture-binding notes](art/ship-rooms.md).
+
 Seven former entries now consume their intended drawings or deliberately retain
 the correct live surface: Gym planters (720 cells), Azalea's central tree (9),
 Viridian's maze (356), Celadon's hedges (168), outdoor signs (348), department
-wall courses and department U displays. Representative native views now cover all seven families. Movement/interaction
-and additional per-map compositions remain a separate closure requirement.
+wall courses and department U displays. Representative native views now cover
+all seven families. Movement/interaction and additional per-map compositions
+remain a separate closure requirement.
 
 The department kit owns 520 wall and 112 U-display cells. Of the previous
 704-cell wall selector, 184 cells intentionally retain elevator/threshold (96)
@@ -89,9 +154,10 @@ The native ground correction is integrated and production-audited: Route10South
 adds 8 land-rock cells, Route19 adds 32, and RuinsOfAlphOutside adds 48 tall-grass
 cells. These reuse existing meshes on proven same-atlas native ground, adding no
 new asset family. Land-boundary rock ownership is now 5,520 cells; shore and pale
-path ownership remain 2,488 and 1,168. Targeted native views now cover all three maps. Route19 review caught paving
-squares under offshore rocks; they now use verified block `43` water and its
-native datum, with both corrected groups reviewed. See [ground-binding notes](art/native-ground-bindings.md).
+path ownership remain 2,488 and 1,168. Targeted native views cover all three maps.
+Route19 review caught paving squares under offshore rocks; they now use verified
+block `43` water at its native datum, with both corrected groups reviewed.
+See [ground-binding notes](art/native-ground-bindings.md).
 
 Other established kits remain integrated:
 
@@ -101,8 +167,9 @@ Other established kits remain integrated:
   consumes 88; the existing ceramic finish adds no object-coverage credit
 - Lighthouse masonry consumes 4,176 plain and 640 window cells across six
   floors. The 6F tea table, cot and stool now consume 24, 8 and 4 cells; its
-  checker floor is a surface finish. The source long fixture is a tea table, not machinery; additional camera and
-  movement arrangements still need contextual review. See [chamber notes](art/lighthouse-chamber.md)
+  checker floor is a surface finish. The southwest long fixture is the tea table;
+  additional camera and movement arrangements still need contextual review.
+  See [chamber notes](art/lighthouse-chamber.md)
 - Route40/RuinsOfAlphOutside tree bindings (704 cells), department-store 4F
   shelf/fridge bindings (192), Kanto Center/Mart roles, house block-08 roles and
   Rocket Base B2F retired-divider sampling were corrected previously
@@ -118,19 +185,29 @@ reveal change presentation, not coverage. See [Gym floor notes](art/gym-floor.md
 
 ## Surface and backing review
 
-The 228 remaining cutout-classified cells are fully accounted for: 176 flat
-tatami cells, 40 Wise Trio screen cells and 12 Rocket Base B1F plant cells. The
-88 ground-binding leftovers and 40 beta PC cutout cells are now consumed.
-Facade (2,702), plane (10,266) and raised (9,614) classifications did not change
-in this last integration.
+The bright red/black bands near the facility instruments are 64 native block
+`0b` floor cells (MrPokemonsHouse 16, PowerPlant 48), alternating art `0c/0d` in
+indoor red palette slot 1. All collision quadrants are FLOOR. They are separate
+from cabinet ownership and need source-scoped material review, not pipe volume.
+The bank underlays are correct: native block `07`/art `01/26` checker for Mr
+Pokémon's room, and block `1b`/art `1c` diamond floor for Power Plant. The checker
+receives the existing stone finish; the blue diamond and striped courses retain
+live art. Broader room wall/floor skins remain visible and unfinished.
 
-The 176 traditional-house block `04` cells in Kurt's House and Dance Theater are
-continuous tatami floor. They currently stay flat despite the old “cushion”
-classifier: both cushion paths reject their unavailable zero-height `50`
-ground sample. Of those cells, 132 receive the existing tatami finish and 44
-edge cells (`46/56`) retain source art. Complete the strict continuous-floor
-finish and correct the classification; do not activate raised cushions by
-adding a broad ground fallback.
+The remaining 12 cutout-classified cells are the two Rocket Base B1F plants.
+The latest integration removes the 40 Wise Trio screen cells and reclassifies
+176 continuous tatami cells as flat. Current facade, plane and raised totals
+are 2,382, 10,266 and 9,446. Those classifier totals are not missing-object totals.
+
+All 176 traditional-house block `04` cells in Kurt's House and Dance Theater
+now receive the strict continuous zero-height tatami treatment, including the
+44 formerly retained `46/56` edge cells. The incorrect cushion grouping is
+explicitly disabled in those maps; a future ground sample cannot activate
+invented pads. The theater's 168 interior stage-floor cells retain the existing
+8-pixel datum and earn no object credit. Native front/reverse theater views
+show the five dancers meeting the retained stage datum and both access strips remaining readable. Older audience floor,
+cushion and fancy-panel surfaces still need material and complete-room review.
+See [traditional-room notes](art/traditional-room.md).
 
 Ordinary-house plain wall-art `00` remains on 258 cells across 56 maps, but
 `append_known_room_backing` already supplies room wall geometry. Review source
@@ -140,7 +217,7 @@ evidence of 258 missing walls.
 The 10,266 residual “plane” cells include tower depth/background (3,820), buoy
 courses (3,148), facility dividers (948), Elite Four boundaries/invisible fields
 (1,016), ruins boundary strips (512), Center landings (390), ship caps (146)
-and cave depth fields (286). Of 9,614 “raised” cells, 8,294 are existing outdoor
+and cave depth fields (286). Of 9,446 “raised” cells, 8,294 are existing outdoor
 cliff/bank terrain. Those terrain edge strips remain a material/coherence review
 queue; blanket extrusion or replacement would lose source semantics.
 

@@ -89,6 +89,7 @@ impl CrystalRuntime {
             pack_identity,
             data,
             runtime_files,
+            runtime_asset_mount: Arc::new(RuntimeAssetMountCache::default()),
             audio,
             viewport: GameViewport::default(),
             map_catalog,
@@ -129,34 +130,30 @@ impl CrystalRuntime {
             .map_err(|_| anyhow::anyhow!("browser runtime files were already installed"))
     }
 
-    /// Materialize the embedded non-audio presentation bundle into an
-    /// isolated runtime asset root.  The Bevy renderer still consumes the
-    /// existing path-based loaders, so mounting the pack here lets those
-    /// loaders work on a clean machine without the repository checkout.
+    /// Materialize the embedded presentation files into an owned asset root.
+    /// Runtime and AssetRoot clones retain this mount for lazy path-based
+    /// readers. Normal teardown removes it after the last owner is dropped.
     pub fn materialize_runtime_files(&self) -> Result<AssetRoot> {
-        let mount = std::env::temp_dir().join(format!(
-            "crystal-pack-assets-{}-{}",
-            std::process::id(),
-            self.pack_identity.content_hash
-        ));
+        self.materialize_runtime_files_in(&std::env::temp_dir())
+    }
+
+    fn materialize_runtime_files_in(&self, temporary_parent: &Path) -> Result<AssetRoot> {
         validate_compiled_runtime_files(&self.runtime_files)?;
-        let materialization_plan = self
-            .runtime_files
-            .iter()
-            .map(|(relative, bytes)| {
-                let path = if let Some(vendor_relative) = relative.strip_prefix("vendor/") {
-                    mount.join("vendor").join(vendor_relative)
-                } else {
-                    mount.join("apps/web/assets").join(relative)
-                };
-                (path, bytes)
-            })
-            .collect::<Vec<_>>();
-        let complete_marker = mount.join(".crystal-pack-assets-complete");
-        if complete_marker.is_file() {
-            return Ok(AssetRoot::new(mount));
+        if let Some(root) = self.runtime_asset_mount.root.get() {
+            return Ok(root.clone());
         }
-        for (path, bytes) in materialization_plan {
+
+        // Never reuse a directory found on disk, including mounts abandoned by
+        // an earlier process. Each attempt owns only its exclusively created
+        // directory; errors clean partial extraction without touching a source
+        // root, the original pack, or another runtime's files.
+        let root = AssetRoot::new_temporary_in(temporary_parent)?;
+        for (relative, bytes) in &self.runtime_files {
+            let path = if relative.starts_with("vendor/") {
+                root.repository_root.join(relative)
+            } else {
+                root.runtime_assets().join(relative)
+            };
             if let Some(parent) = path.parent() {
                 std::fs::create_dir_all(parent).with_context(|| {
                     format!("create embedded runtime asset mount {}", parent.display())
@@ -166,10 +163,26 @@ impl CrystalRuntime {
                 format!("materialize embedded runtime asset {}", path.display())
             })?;
         }
+        let complete_marker = root.repository_root.join(".crystal-pack-assets-complete");
         std::fs::write(&complete_marker, self.pack_identity.content_hash.as_bytes()).with_context(
-            || format!("finalize embedded runtime asset mount {}", mount.display()),
+            || {
+                format!(
+                    "finalize embedded runtime asset mount {}",
+                    root.repository_root.display()
+                )
+            },
         )?;
-        Ok(AssetRoot::new(mount))
+
+        // Concurrent first calls may extract independently. Publish only a
+        // complete mount; a losing attempt is dropped and removes only its own
+        // directory. Failed attempts leave the cache empty so callers can retry.
+        let _ = self.runtime_asset_mount.root.set(root);
+        Ok(self
+            .runtime_asset_mount
+            .root
+            .get()
+            .expect("published runtime asset mount")
+            .clone())
     }
 
     pub fn title_music_id(&self) -> Result<&str> {

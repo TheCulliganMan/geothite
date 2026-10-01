@@ -308,13 +308,8 @@ pub(super) fn resolve(
         r.groups(Kind::GymBin, 0x01, 12.0, 12.0, bins);
     }
     if map.starts_with("FastShip") {
-        r.groups(
-            Kind::ShipStool,
-            crate::ship::CABIN_FLOOR_TILE,
-            10.0,
-            12.0,
-            ship_stool_placements(map, cells, g),
-        );
+        // Complete stools and both berth drawings belong to ship_rooms, which
+        // validates the whole drawing and yields to every live custom profile.
         r.groups(
             Kind::ShipRack,
             crate::ship::CABIN_FLOOR_TILE,
@@ -328,18 +323,6 @@ pub(super) fn resolve(
             14.0,
             12.0,
             ship_barrel_placements(map, cells, g),
-        );
-        let bunks =
-            grouped_flat_card_placements(cells, g, crate::ship::CABIN_FLOOR_TILE, false, |s| {
-                crate::ship::bunk_shape(map, s)
-                    .map(|_| (s.subtile_column % 2, s.subtile_row % 2, 2, 2))
-            });
-        r.groups(
-            Kind::ShipBunk,
-            crate::ship::CABIN_FLOOR_TILE,
-            7.0,
-            16.0,
-            bunks,
         );
     }
     if let Some(floor) = crate::warehouse::floor_tile(map) {
@@ -1266,4 +1249,31 @@ mod tests {
         assert_eq!(neighbor_edge_heights(e, 1, 1.), [2., 2.]);
         assert_eq!(neighbor_edge_heights(e, 3, 1.), [10., 10.]);
     }
+    #[test]
+    fn ship_room_adapter_does_not_reclaim_partial_full_beds_or_stools() {
+        let g = GridGeometry { width: 4, height: 6, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
+        for (block, row_offset, drawing) in [
+            (0x36, 0, [[0x46, 0x47], [0x56, 0x57]]),
+            (0x38, 2, [[0x46, 0x47], [0x56, 0x57]]),
+            (0x07, 2, [[0x07, 0x08], [0x17, 0x18]]),
+        ] {
+            let mut cells: Vec<_> = (0..24).map(|i| VisualTile {
+                column: (i % 4) as u32, row: (i / 4) as u32, texture: Default::default(), priority: false,
+                source: VisualTileSource { tileset_id: std::sync::Arc::from("lighthouse"),
+                    metatile_id: 0x0b, subtile_column: (i % 4) as u8, subtile_row: (i / 4 % 4) as u8,
+                    tile_index: if (i % 4 + i / 4) % 2 == 0 { 0x0d } else { 0x1d } },
+            }).collect();
+            for y in 0..2 { for x in 0..2 {
+                cells[y * 4 + x].source = VisualTileSource {
+                    tileset_id: std::sync::Arc::from("lighthouse"), metatile_id: block,
+                    subtile_column: (x + 2) as u8, subtile_row: (y + row_offset) as u8,
+                    tile_index: drawing[y][x],
+                };
+            }}
+            let out = resolve("FastShipCabins_NNW_NNE_NE", &cells.iter().collect::<Vec<_>>(), &g, None);
+            assert_eq!(out.iter().filter(|p| matches!(p.form, Form::Model(Kind::ShipBunk | Kind::ShipStool))).count(),
+                0, "neither incomplete berth variant may bypass complete-source ownership");
+        }
+    }
+
 }

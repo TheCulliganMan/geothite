@@ -31,6 +31,7 @@ impl InteriorFloor {
 fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor> {
     use InteriorFloor::*;
     let style = match (source.tileset_id.as_ref(), source.tile_index) {
+        _ if traditional_room::tatami_source(map, source) => Tatami,
         _ if gym_floor_source(map, source).is_some() => gym_floor_source(map, source)?,
         ("players_room" | "players_house" | "house", 0x01) => Oak,
         ("traditional_house", 0x50 | 0x44 | 0x45 | 0x54 | 0x55) => Tatami,
@@ -211,7 +212,8 @@ pub(super) fn finish_surfaces_with_profiles(
     world_origin: [i32; 2],
     profiles: Option<&Document>,
 ) -> usize {
-    if !gym_floor_map(map) || g.width.checked_mul(g.height) != Some(cells.len()) {
+    if (!gym_floor_map(map) && !traditional_room::floor_map(map))
+        || g.width.checked_mul(g.height) != Some(cells.len()) {
         return finish_surfaces(mesh, map, cells, g, world_origin);
     }
     let mut excluded = vec![false; cells.len()];
@@ -237,6 +239,7 @@ fn finish_surfaces_excluding(
         return 0;
     }
     let gym_ground = gym_floor_underlays(mesh, map, cells, g, world_origin, excluded);
+    let tatami_floor = traditional_room::tatami_floor_mask(map, cells, g, world_origin, excluded);
     let source_styles: Vec<_> = cells
         .iter()
         .map(|tile| interior_floor(map, &tile.source))
@@ -317,6 +320,14 @@ fn finish_surfaces_excluding(
                 return None;
             }
             let destination = row as usize * g.width + column as usize;
+            let source_index = sr * g.width + sc;
+            if traditional_room::floor_map(map)
+                && (cells[destination].source.metatile_id == 0x04
+                    || cells[source_index].source.metatile_id == 0x04)
+                && (destination != source_index || !tatami_floor[destination] || !near(height, 0.0))
+            {
+                return None;
+            }
             let style = source_styles[sr * g.width + sc].or_else(|| {
                 // Old grouped fixtures used a wallpaper sample for masking.
                 // It is floor backing only under an actually appended model,

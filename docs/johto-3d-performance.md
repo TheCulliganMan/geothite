@@ -105,3 +105,46 @@ software renderer. Additional vertex/fragment work and cutaway eligibility are
 candidates for controlled measurement, not established causes. The two initial
 baseline medians were 53.27 and 84.93 ms, consistent with the rerun but not identical.
 The full per-frame traces and captures remain ignored local QA artifacts.
+
+## Reveal-aware scene submission follow-up
+
+A second paired twelve-second, no-readback run used the same llvmpipe adapter,
+window and camera. Its baseline is the optimized authored kit above, not the
+older source-art build. These are single paired samples, with raw per-frame
+traces retained locally.
+
+| Scene | Prior optimized kit, median / p95 | Reveal-aware candidate, median / p95 |
+| --- | ---: | ---: |
+| Viridian | 69.23 / 78.39 ms | 60.62 / 68.22 ms |
+| Goldenrod | 89.82 / 105.96 ms | 95.03 / 110.85 ms |
+
+The Viridian improvement is about 12.4% in this pair. Goldenrod did not improve;
+its remaining cost and the earlier source-art comparison remain open. These
+scenes are still not certified fluid on the software renderer.
+
+The public terrain mesh retains every maze face. At terrain construction, the
+runtime partitions source-proven covered joins into cached secondary draws.
+Selection conservatively restores joins whose projected bounds overlap the
+player's reveal capsule, including faces behind the player. It uses the shared
+material uniform and current propagated camera/terrain transforms, before
+visibility propagation. Uncertain projection restores all candidate faces.
+Camera/player movement changes visibility, without rebuilding or uploading
+geometry or mutating the material each frame.
+
+Keeping the secondary faces matters: deleting them permanently exposed missing
+stone courses inside the reveal. Six matching native camera/position views now
+retain that geometry, and the previously failing stone patch matches the
+original pixels exactly. Animated actors and isolated raster edges still vary
+between captures; this is not a claim of whole-frame pixel identity.
+
+Separately, the two planter imports omit only faces proven strictly inside an
+opaque, closed convex component. Coplanar, partially covered, nonconvex and
+transparent parts are retained. Full bounds and every retained indexed corner
+remain unchanged. Goldenrod solid geometry falls from 107,304 triangles /
+261,896 vertices to 98,867 / 244,077; that reduction has not established a
+frame-time benefit in these measurements.
+
+Native `CRYSTAL_CUTAWAY_DIAGNOSTIC=zero-radius` and `omit-uv1` are explicit
+comparison controls; unset/`normal` preserves the reveal, and the browser always
+uses normal rendering. Their controlled runs did not establish capsule arithmetic
+as the main cost. Disabling reveal is not an optimization used by the game.

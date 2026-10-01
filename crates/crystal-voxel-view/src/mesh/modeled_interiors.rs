@@ -435,7 +435,7 @@ pub(super) fn resolve(
         &|_| ModelKind::GiftShelf,
     );
     add(
-        traditional_house_cushion_placements(cells, geometry),
+        traditional_house_cushion_placements(map, cells, geometry),
         &|_| ModelKind::Cushion,
     );
     add(soul_house_bench_placements(cells, geometry), &|_| {

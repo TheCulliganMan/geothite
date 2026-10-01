@@ -24,6 +24,11 @@ jobs:
       - run: python3 tools/check-outdoor-sign-frames.py
       - run: python3 tools/check-lighthouse-masonry.py
       - run: python3 tools/check-lighthouse-chamber.py
+      - run: python3 tools/check-facility-radio.py
+      - run: python3 tools/check-ship-rooms.py
+      - run: python3 tools/check-traditional-room-models.py
+      - run: python3 tools/check-train-station-models.py
+      - run: python3 tools/check-park-scenery-models.py
       - run: python3 tools/check-structure-extensions.py
       - run: python3 tools/check-actor-props.py
       - run: python3 tools/check-battle-species.py
@@ -56,4 +61,6 @@ jobs:
             target
           key: voxel-${{ runner.os }}-1.94.0-${{ hashFiles('Cargo.lock') }}
       - run: cargo +1.94.0 test --locked -p crystal-render-api --lib
+      - run: cargo +1.94.0 test --locked -p crystal-assets --test asset_root_lifetime
+      - run: cargo +1.94.0 test --locked -p crystal-runtime --lib runtime_mount_
       - run: cargo +1.94.0 test --locked -p crystal-voxel-view --lib

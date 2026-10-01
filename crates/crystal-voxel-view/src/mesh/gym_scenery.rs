@@ -92,12 +92,21 @@ pub(super) fn append(
                     continue;
                 }
                 let bounds = g.bounds(p.column + x, p.row + y);
-                crate::dungeon_models::gym_model(4 + usize::from(p.open_mask(x, y))).append(
+                let triangle_start = mesh.solid.indices.len() / 3;
+                let exposed = p.open_mask(x, y);
+                crate::dungeon_models::gym_model(4 + usize::from(exposed)).append(
                     &mut mesh.solid,
                     bounds.into(),
                     0.,
                     rise,
                 );
+                let joins = crate::dungeon_models::gym_wall_join_triangles(
+                    exposed, p.covered_join_mask(x, y),
+                );
+                if !joins.is_empty() {
+                    mesh.reveal_join_batches.push(joins.iter()
+                        .map(|&ordinal| triangle_start + ordinal).collect());
+                }
             }
         }
         if mesh.solid.positions.len() > cutaway_start {

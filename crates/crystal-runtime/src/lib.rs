@@ -347,6 +347,7 @@ pub struct CrystalRuntime {
     pack_identity: CompiledGamePackIdentity,
     data: GameDataSet,
     runtime_files: BTreeMap<String, Vec<u8>>,
+    runtime_asset_mount: Arc<RuntimeAssetMountCache>,
     audio: RuntimeAudioCatalog,
     viewport: GameViewport,
     /// Immutable pack map catalogs shared by presentation snapshots. Runtime
@@ -354,6 +355,19 @@ pub struct CrystalRuntime {
     /// every map, scene, event, object, and block table each movement frame.
     map_catalog: Vec<Arc<RuntimeMapCatalogSnapshot>>,
     catalog_cache: Arc<OnceLock<RuntimeStaticCatalogCache>>,
+}
+
+/// Shared by runtime clones, but excluded from their semantic equality.
+/// Materializing presentation files must not change a runtime's identity.
+#[derive(Debug, Default)]
+struct RuntimeAssetMountCache {
+    root: OnceLock<AssetRoot>,
+}
+
+impl PartialEq for RuntimeAssetMountCache {
+    fn eq(&self, _other: &Self) -> bool {
+        true
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

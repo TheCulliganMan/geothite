@@ -117,3 +117,30 @@ mod tests {
         assert_eq!(second, first);
     }
 }
+
+/// Native opt-in A/B instrumentation; never changes the default or web reveal.
+/// `zero-radius` retains UV1/the discard-capable pipeline but skips capsule math;
+/// `omit-uv1` removes only the eligibility attribute to select the no-discard
+/// shader variant. Both modes deliberately hide the player reveal for diagnosis.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum DiagnosticMode {
+    Normal,
+    ZeroRadius,
+    OmitUv1,
+}
+
+pub(super) fn diagnostic_mode() -> DiagnosticMode {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        static MODE: std::sync::OnceLock<DiagnosticMode> = std::sync::OnceLock::new();
+        *MODE.get_or_init(|| {
+            match std::env::var("CRYSTAL_CUTAWAY_DIAGNOSTIC").as_deref() {
+                Ok("zero-radius") => DiagnosticMode::ZeroRadius,
+                Ok("omit-uv1") => DiagnosticMode::OmitUv1,
+                _ => DiagnosticMode::Normal,
+            }
+        })
+    }
+    #[cfg(target_arch = "wasm32")]
+    { DiagnosticMode::Normal }
+}

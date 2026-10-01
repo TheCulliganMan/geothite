@@ -8,14 +8,12 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 629 runtime model documents and 62 complete editable Blender sources
-- 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
-  63 exterior models, 19 dungeon models, 11 special-environment models,
-  23 special-room models, 17 joined-counter modules, three lighthouse shells,
-  four Cable Club room prototypes, twenty Gym scenery models, eight department-store
-  models, four outdoor-sign models, three lighthouse furniture models, and
-  220 additional exact battle species
-  alongside retained source models
+- 648 runtime model documents, one shared human-geometry library and
+  68 complete editable Blender sources
+- The latest 19 model documents cover six Facility/Radio, six ship-room,
+  three traditional-room, one stationary train and three park prototypes.
+  They add six editable Blender scenes; existing shared stools, beds and
+  lighthouse tea furniture are reused without inflating the asset count
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
   generic icon meshes are not counted as species models
@@ -29,18 +27,20 @@ review. The private inspection gallery is a review tool, not a quality certifica
   bytes without changing reconstructed f32 positions, normals, indices, colors,
   joints or runtime meshes
 
-The current pack-based headless audit processes all 388 base maps without a
-mesher error and counts 254,371 source cells consumed by authored geometry,
-including 9,176 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone,
-4,816 lighthouse masonry/window cells, 968 Cable Club partition cells and 88
-Time Capsule cells. This increment adds 1,253 Gym scenery, 632 store, 348 sign,
-36 keeper-room and 88 missing-ground cells, plus a net 462 Cable rear-fixture
-cells. The 374 Cable ceramic-floor, 108 lighthouse checker and 2,566 Gym floor
-cells receive no object credit.
-Cable Club replaces 48 earlier generic partition cells, for a net gain of 920.
-This is partial coverage, not 388 completed maps. Flat floors, water planes, source facades and fallback objects
-are reported separately. Dynamic decorations and changed block states require
-their own scene fixtures.
+The institutional-scenery production audit processes all 388 base maps without
+mesher errors and counts 255,919 source cells consumed by authored geometry,
+including named surface finishes. The net increase from 254,371 is 1,548:
+Facility/Radio 490, ship rooms 594, traditional rooms 136, stationary train 120,
+park fixtures 52 and stool/bed binding corrections 156. The latter consumes
+24 radio-stool, 56 ship-stool and 76 ship bed-foot cells; only the residual flat
+classification changes in that follow-up, falling from 262,509 to 262,353.
+
+The sixteen new editable-source chunks bring the manifest to 68 scenes and
+568 chunks. New kit geometry is original and editable; reused stools and bed
+meshes add no asset count. Surface finishes, backing floors and retained live
+water/door artwork must not be counted as additional objects. This is partial
+coverage, not 388 completed maps. Dynamic decorations and changed block states
+require their own scene fixtures.
 
 ## Still open
 
@@ -55,12 +55,19 @@ native review. Cable Club partitions are installed across eleven upstairs maps.
 Lighthouse masonry now has a camera-aware player reveal and source-scoped slate
 floors, with native 4F and 6F checks. Seven more source families now have exact installed kits and reviewed native
 views: the four Gym groups, outdoor signs, store walls and store display islands.
-Ten entries from the earlier checklist and additional source-specific architecture
-packages remain; the earlier checklist was not exhaustive.
+The latest five kits address the remaining ten entries from that selected
+checklist, with native water/door/floor roles explicitly retained. The selected
+list was not exhaustive: additional source-specific furniture and architecture
+packages remain open.
 See [the remaining-family checklist](3d-remaining-families.md).
 
-- Remaining source families and structures, including facility/radio furniture,
-  cabin fittings, traditional screens/stage, station trains, and park props
+- Remaining source furniture and architecture, including 172 facility table
+  cells, 88 facility chair cells, 192 Power Plant equipment/track plot cells,
+  café/game-corner fittings, divider networks, wall edges and puzzle fixtures
+- Latest kit volumes, corrected stool/block36 bed bindings and close park
+  placements have representative static native review. The train controller
+  route is still being verified; static views do not approve whole rooms,
+  idle poses or every approach
 - Cable Club live door/warp artwork, mobile-entry source bands and two negative
   corner cells per room remain intentional surfaces; original open doorway
   frames and console assemblies now preserve their distinct roles
@@ -102,18 +109,26 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 755 voxel tests pass (two existing benchmarks ignored), including exact source
-  guards, custom/cropped fallback, native grounding, open-door geometry, face
-  lighting and exterior player-reveal eligibility.
-  The native build succeeds. Prior 22 render-API and 19 focused source-row/bridge
-  tests remain applicable to unchanged attack logic; they were not all rerun
-- All 20 CI model/source validator programs pass. All 62 editable sources decode
-  in memory with verified chunk, compressed-file and expanded-file hashes, Blender
-  headers and 552 verified chunks with no orphans; this does not establish that every scene was
-  opened or visually approved in Blender
-- The complete Bevy test target type-checks and the normal browser-feature
-  WebAssembly check passes. The full monolithic Bevy test suite was not rerun;
-  its prior relink exceeded this preview machine's memory limits
+- All 788 voxel tests pass, with two existing benchmarks ignored, including
+  source guards, custom/cropped fallback, native grounding, open-door geometry,
+  face lighting, player reveal and the corrected stool/bed bindings
+- All 25 Python model/source CI commands pass. All 68 editable source archives
+  reconstruct successfully from 568 chunks, with verified chunk, compressed and
+  decoded SHA-256 hashes (35,039,372 compressed and 323,490,096 decoded bytes).
+  Source reconstruction does not certify every scene was opened or approved
+  in Blender
+- All five external-pack source scans pass the production matcher assertions.
+  The park scanner used a lower-optimization temporary Rust harness after the
+  optimized harness was killed under shared memory pressure; source and
+  assertions were unchanged. A separate actual-pack production ship-selector
+  scan verifies all 65 furniture/bulkhead assemblies and 850 owned cells.
+  The player's two exact sleep/heal background reads are deliberately retained
+  on its joined berth; all other background overlaps and all warp/coordinate
+  overlaps are rejected
+- The final optimized native examples build, the complete Bevy test target
+  type-checks, and the normal browser-feature WebAssembly check passes.
+  All 22 render-API regressions pass. The full monolithic Bevy test suite was
+  not rerun; its prior relink exceeded this preview machine's memory limits
 - Retained from the prior sound checkpoint: 33 immersive battle bridge/controller
   tests, four channel-mask tests, 24 audio
   synthesis tests and 12 audio/UI regressions pass; all use the current sound path
@@ -163,12 +178,41 @@ based on the production mesher rather than a map-name allowlist.
   stairs and a department-store stair. Movement traces record both source and
   destination maps; collision and warp logic are not replaced by a preview
 
+- Forty-eight native captures screen Facility/Radio, all four Fast Ship room
+  maps, traditional rooms, both stations and the three park maps. High-risk
+  captain/chair, bulkhead, stage, counter and reverse silhouettes were also
+  inspected at native size. No additional blocking defect was observed in
+  the five new kits; those captures predate the stool/bed correction
+- The new stage retains the dancers' 8px datum, Wise Trio/barn passages remain
+  visibly open, and the train shell keeps its live door recesses. Static images
+  cannot establish idle/spin clearance, moving-camera reveal or executed travel
+- Twenty-eight additional native captures inspect the corrected stools and
+  block36 beds, all ship cabin variants and close park fixtures from opposite
+  sides. No new clipping, actor intersection or bad joins were observed in the
+  implemented correction. Eight subsequent native views verify all four joined
+  block38/39 berths from opposite sides, including closed foot ends and clean
+  wall/trashcan joins. These static checks do not execute the bed's sleep/heal script
+- Four runtime pack-mount tests and three real-pack file integration tests pass.
+  An ordinary native screenshot session also observes its completed extracted
+  pack mount while alive and confirms no mount remains after normal AppExit.
+  The real battle controller regression verifies menus, an executed move and its
+  PP change. The New Bark controller test skipped because its required TUI pack
+  was absent; that skip is not a pass
+- The train controller example is diagnostic. Its mesh, power/PASS-denial and
+  door-approach checks pass; full travel remains an open gameplay blocker.
+  The published controller does not finish the retained train animation clock.
+  A separate experimental repair exposed map-load ordering and dropped
+  post-load source commands, including a 120-frame arrival hold. Those partial
+  engine fixes are excluded from this scenery checkpoint; a successful trip
+  without the complete authored tail is not accepted as a faithful repair
+
 These are representative checks, not every-map or every-species art approval.
 
-The optimized Gym kit still has a measured software-renderer cost versus the
-prior source-art baseline: Viridian 55.45→68.09 ms and Goldenrod 85.73→94.06 ms
-median frame time. This remains a priority optimization gap; see the detailed
-[comparison](johto-3d-performance.md).
+A paired reveal-aware follow-up measured Viridian at 69.23→60.62 ms median,
+while Goldenrod measured 89.82→95.03 ms on llvmpipe. These single paired samples
+compare against the optimized authored kit, not the older source-art baseline.
+The earlier source-art regression and Goldenrod cost remain open; this is not
+a fluid-performance certification. See [the timings and scope](johto-3d-performance.md).
 
 The software-rendered native preview is not a hardware performance benchmark.
 Recordings keep their actual timestamps; no interpolated frames or high-FPS claim

@@ -103,6 +103,30 @@ impl Match {
             })
         })
     }
+    /// Join faces entirely covered by a successfully resolved neighbor. A
+    /// neighbor with more exposed perpendicular edges can be narrower because
+    /// its courses are inset; preserve that asymmetric seam's complete faces.
+    pub(super) fn covered_join_mask(&self, x: usize, y: usize) -> u8 {
+        if !self.owns(x, y) {
+            return 0;
+        }
+        let exposed = self.open_mask(x, y);
+        let mut covered = 0;
+        for (bit, next, perpendicular) in [
+            (1, y.checked_sub(1).map(|ny| (x, ny)), 10),
+            (2, Some((x + 1, y)), 5),
+            (4, Some((x, y + 1)), 10),
+            (8, x.checked_sub(1).map(|nx| (nx, y)), 5),
+        ] {
+            if let Some((nx, ny)) = next
+                && self.owns(nx, ny)
+                && self.open_mask(nx, ny) & perpendicular & !exposed == 0
+            {
+                covered |= bit;
+            }
+        }
+        covered
+    }
     /// Exposed N/E/S/W faces; joined cells share the same coplanar top datum.
     pub(super) fn open_mask(&self, x: usize, y: usize) -> u8 {
         u8::from(y == 0 || !self.owns(x, y - 1))
@@ -258,4 +282,57 @@ pub(super) fn resolve(
         }
     }
     out
+}
+
+#[cfg(test)]
+mod join_tests {
+    use super::*;
+
+    #[test]
+    fn complete_maze_networks_preserve_open_and_asymmetric_seams() {
+        let mut modules = 0;
+        let mut covered = 0;
+        let mut preserved_asymmetric = 0;
+        for network in NETWORKS {
+            let p = Match {
+                column: 0,
+                row: 0,
+                width: network.width,
+                height: network.height,
+                kind: Kind::Maze,
+                ground: 0,
+                rows: Some(network.rows),
+                map: "ViridianGym",
+                tileset: "train_station",
+                fingerprint: network.fingerprint,
+            };
+            for y in 0..p.height {
+                for x in 0..p.width {
+                    if !p.owns(x, y) {
+                        assert_eq!(p.covered_join_mask(x, y), 0);
+                        continue;
+                    }
+                    modules += 1;
+                    let open = p.open_mask(x, y);
+                    let hidden = p.covered_join_mask(x, y);
+                    assert_eq!(open & hidden, 0, "an exposed face must never be removed");
+                    covered += hidden.count_ones();
+                    preserved_asymmetric += ((!open & !hidden) & 15).count_ones();
+                    for (bit, nx, ny, perpendicular) in [
+                        (1, x as i32, y as i32 - 1, 10),
+                        (2, x as i32 + 1, y as i32, 5),
+                        (4, x as i32, y as i32 + 1, 10),
+                        (8, x as i32 - 1, y as i32, 5),
+                    ] {
+                        if hidden & bit != 0 {
+                            assert!(nx >= 0 && ny >= 0 && p.owns(nx as usize, ny as usize));
+                            let neighbor = p.open_mask(nx as usize, ny as usize);
+                            assert_eq!(neighbor & perpendicular & !open, 0);
+                        }
+                    }
+                }
+            }
+        }
+        assert_eq!((modules, covered, preserved_asymmetric), (356, 1124, 36));
+    }
 }

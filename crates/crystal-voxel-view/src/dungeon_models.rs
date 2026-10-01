@@ -306,4 +306,8 @@ pub(crate) use special_rooms::{RoomAsset, room_model};
 
 #[path = "gym_scenery_models.rs"]
 mod gym_scenery;
-pub(crate) use gym_scenery::gym_model;
+pub(crate) use gym_scenery::{gym_model, gym_wall_join_triangles};
+
+#[path = "traditional_room_models.rs"]
+mod traditional_room;
+pub(crate) use traditional_room::traditional_model;
