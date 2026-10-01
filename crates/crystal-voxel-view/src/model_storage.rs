@@ -1,5 +1,6 @@
 //! Bounded decoding of build-generated gzip data inside each catalog's existing
-//! OnceLock loader. Parsed geometry is cached; temporary JSON is dropped.
+//! OnceLock loader. Canonical JSON and GLB are normal source files; compression
+//! exists only in Cargo's output directory. Binary GLB stays binary on decode.
 use serde::{de::DeserializeOwned, Deserialize};
 use sha2::{Digest, Sha256};
 use std::{borrow::Cow, io::Read};
@@ -56,7 +57,7 @@ fn valid_digest(digest: &str) -> bool {
             .bytes()
             .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
 }
-fn decode(source: Source<'_>) -> Result<Cow<'_, str>, String> {
+pub(crate) fn decode_bytes(source: Source<'_>) -> Result<Cow<'_, [u8]>, String> {
     let Source::Gzip { metadata, payload } = source else {
         let Source::Plain(source) = source else {
             unreachable!()
@@ -64,7 +65,7 @@ fn decode(source: Source<'_>) -> Result<Cow<'_, str>, String> {
         if source.is_empty() || source.len() > MAX_MODEL_BYTES {
             return Err("plain model exceeds bounded input size".into());
         }
-        return Ok(Cow::Borrowed(source));
+        return Ok(Cow::Borrowed(source.as_bytes()));
     };
     let envelope: Compressed<'_> = serde_json::from_str(metadata).map_err(|e| e.to_string())?;
     if envelope.storage != FORMAT
@@ -96,9 +97,18 @@ fn decode(source: Source<'_>) -> Result<Cow<'_, str>, String> {
     if format!("{:x}", Sha256::digest(&decoded)) != envelope.sha256 {
         return Err("model decoded SHA-256 differs".into());
     }
-    String::from_utf8(decoded)
-        .map(Cow::Owned)
-        .map_err(|e| e.to_string())
+    Ok(Cow::Owned(decoded))
+}
+
+fn decode(source: Source<'_>) -> Result<Cow<'_, str>, String> {
+    match decode_bytes(source)? {
+        Cow::Borrowed(bytes) => std::str::from_utf8(bytes)
+            .map(Cow::Borrowed)
+            .map_err(|e| e.to_string()),
+        Cow::Owned(bytes) => String::from_utf8(bytes)
+            .map(Cow::Owned)
+            .map_err(|e| e.to_string()),
+    }
 }
 
 pub(crate) fn parse<'a, T: DeserializeOwned>(source: impl Into<Source<'a>>) -> Result<T, String> {
@@ -117,7 +127,7 @@ mod tests {
         for (relative, source) in EMBEDDED_MODELS {
             let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(relative);
             let raw = std::fs::read(path).unwrap();
-            assert_eq!(decode(*source).unwrap().as_bytes(), raw, "{relative}");
+            assert_eq!(decode_bytes(*source).unwrap().as_ref(), raw, "{relative}");
             let Source::Gzip { payload, .. } = source else {
                 panic!("expected build artifact")
             };
@@ -162,6 +172,17 @@ mod tests {
             decode(Source::Plain("{\"primitives\":[]}")).unwrap(),
             Cow::Borrowed(_)
         ));
+    }
+
+    #[test]
+    fn binary_models_preserve_all_bytes_without_relaxing_json_validation() {
+        let bytes = b"glTF\x02\x00\xff\x80\x00\x01";
+        let stored = packed(bytes);
+        assert_eq!(decode_bytes(source(&stored)).unwrap().as_ref(), bytes);
+        assert!(parse::<serde_json::Value>(source(&stored)).is_err());
+        let mut corrupted = stored.clone();
+        corrupted.1[10] ^= 1;
+        assert!(decode_bytes(source(&corrupted)).is_err());
     }
     #[test]
     fn gzip_rejects_bad_metadata_and_compressed_identity() {

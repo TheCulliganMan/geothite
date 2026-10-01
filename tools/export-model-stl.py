@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export optional local static previews from canonical indexed model JSON.
+"""Export optional local static previews from canonical indexed model JSON and human GLB scenes.
 
 No dependencies. The input meshes are authoritative: preserve every indexed
 triangle, including degenerate triangles, in source order. Rig exports use their
@@ -8,6 +8,8 @@ is not used by the game. See docs/art/model-stl.md.
 """
 
 from __future__ import annotations
+
+from animated_glb import load_catalog, load_rig
 
 import argparse
 from dataclasses import dataclass
@@ -129,6 +131,10 @@ class ModelReader:
         return self.library
 
     def read(self, path: Path) -> tuple[Primitive, ...]:
+        # Virtual per-scene selectors preserve familiar preview filenames; the
+        # geometry itself comes only from the canonical GLB catalog.
+        if path.parent == self.root / "johto_characters" and path.name.endswith(".rig.json") and (path.parent / "catalog.glb").exists():
+            return self.read_rig(load_rig(path.parent, path.name.removesuffix(".rig.json")))
         source = json.loads(path.read_text())
         if "joints" in source:
             return self.read_rig(source)
@@ -251,7 +257,7 @@ def main(argv=None):
     parser.add_argument("--models-root", type=Path, default=default_root)
     parser.add_argument("--output-root", type=Path, default=repository_root / "output/model-stl",
                         help="default: ignored output/model-stl directory")
-    parser.add_argument("--model", action="append", help="one relative .mesh.json or .rig.json path; repeatable")
+    parser.add_argument("--model", action="append", help="relative .mesh.json or johto_characters/<scene>.rig.json selector; repeatable")
     parser.add_argument("--check", action="store_true", help="verify existing files without changing them")
     parser.add_argument("--list-output-paths", action="store_true", help="after successful verification, print only verified paths relative to output-root on stdout")
     args = parser.parse_args(argv)
@@ -260,6 +266,12 @@ def main(argv=None):
     if not root.is_dir():
         parser.error(f"models root does not exist: {root}")
     sources = sorted([root / p for p in args.model] if args.model else [*root.rglob("*.mesh.json"), *root.rglob("*.rig.json")])
+    if not args.model and (root / "johto_characters/catalog.glb").exists():
+        # A selector is not a second stored asset. It names one catalog scene.
+        sources = [p for p in sources if p.parent != root / "johto_characters" or not p.name.endswith(".rig.json")]
+        sources.extend(root / "johto_characters" / (name + ".rig.json")
+                       for name in load_catalog(root / "johto_characters"))
+        sources.sort()
     if not sources:
         parser.error("no canonical model documents found")
     # Full-tree runs have an exact one-to-one model/STL contract. Do not leave

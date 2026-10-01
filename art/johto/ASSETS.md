@@ -1,6 +1,6 @@
 # Johto source and model index
 
-Original editable Blender scenes and raw JSON runtime models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.
+Original editable Blender scenes, the animated human GLB catalog, and raw JSON static models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.
 
 Only PNG files that exist are displayed below. A missing preview does not imply that a scene has been visually reviewed.
 
@@ -41,16 +41,6 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 | [bedroom-cloth.blend](source/bedroom-cloth.blend) | 104,647 | Not rendered |
 | [cable-backwalls.blend](source/cable-backwalls.blend) | 110,034 | Not rendered |
 | [cable-club.blend](source/cable-club.blend) | 143,524 | Not rendered |
-| [character-families-01.blend](source/character-families-01.blend) | 1,160,310 | Not rendered |
-| [character-families-02.blend](source/character-families-02.blend) | 1,067,160 | Not rendered |
-| [character-families-03.blend](source/character-families-03.blend) | 1,040,971 | Not rendered |
-| [character-families-04.blend](source/character-families-04.blend) | 1,141,900 | Not rendered |
-| [character-families-05.blend](source/character-families-05.blend) | 1,089,807 | Not rendered |
-| [character-families-06.blend](source/character-families-06.blend) | 1,059,560 | Not rendered |
-| [character-families-07.blend](source/character-families-07.blend) | 1,089,194 | Not rendered |
-| [character-families-08.blend](source/character-families-08.blend) | 1,124,005 | Not rendered |
-| [character-families-09.blend](source/character-families-09.blend) | 994,234 | Not rendered |
-| [character-families-10.blend](source/character-families-10.blend) | 449,921 | Not rendered |
 | [characters.blend](source/characters.blend) | 1,294,528 | Not rendered |
 | [connected-johto.blend](source/connected-johto.blend) | 516,695 | Not rendered |
 | [department-store.blend](source/department-store.blend) | 154,445 | Not rendered |
@@ -79,13 +69,13 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 | [train-station.blend](source/train-station.blend) | 128,253 | Not rendered |
 | [world-exteriors.blend](source/world-exteriors.blend) | 2,899,107 | Not rendered |
 
-70 editable scenes; 1 rendered PNG previews.
+60 editable scenes; 1 rendered PNG previews.
 
 ## Runtime models
 
-Each model has a directly readable `.json` geometry document. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
+Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
 
-| Catalog | Models | Stored bytes | Decoded JSON bytes |
+| Catalog | Files | Stored bytes | Decoded JSON bytes |
 | --- | ---: | ---: | ---: |
 | [actor_props](../../crates/crystal-voxel-view/models/actor_props) | 73 | 10,070,221 | 10,070,221 |
 | [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,691,601 | 24,691,601 |
@@ -99,7 +89,7 @@ Each model has a directly readable `.json` geometry document. Duplicate static S
 | [gym_scenery](../../crates/crystal-voxel-view/models/gym_scenery) | 20 | 720,071 | 720,071 |
 | [interiors](../../crates/crystal-voxel-view/models/interiors) | 69 | 8,795,890 | 8,795,890 |
 | [johto](../../crates/crystal-voxel-view/models/johto) | 9 | 2,104,093 | 2,104,093 |
-| [johto_characters](../../crates/crystal-voxel-view/models/johto_characters) | 76 | 6,444,167 | 6,444,167 |
+| [johto_characters](../../crates/crystal-voxel-view/models/johto_characters) | 1 | 5,704,552 | 0 |
 | [lighthouse_chamber](../../crates/crystal-voxel-view/models/lighthouse_chamber) | 3 | 647,809 | 647,809 |
 | [lighthouse_masonry](../../crates/crystal-voxel-view/models/lighthouse_masonry) | 3 | 323,861 | 323,861 |
 | [new_bark](../../crates/crystal-voxel-view/models/new_bark) | 8 | 1,779,179 | 1,779,179 |
@@ -111,5 +101,7 @@ Each model has a directly readable `.json` geometry document. Duplicate static S
 | [traditional_room](../../crates/crystal-voxel-view/models/traditional_room) | 3 | 1,072,487 | 1,072,487 |
 | [train_station](../../crates/crystal-voxel-view/models/train_station) | 1 | 298,502 | 298,502 |
 | [world_exteriors](../../crates/crystal-voxel-view/models/world_exteriors) | 63 | 13,984,240 | 13,984,240 |
+
+The human GLB contains 75 distinct character scenes; geometry accessors are shared across scenes. GLB bytes are native binary data, so they are not counted as decoded JSON.
 
 Storage identity and validation details: [model storage](../../docs/art/model-storage.md).

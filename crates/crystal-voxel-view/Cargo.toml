@@ -20,6 +20,7 @@ serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 base64 = "0.22"
 flate2 = "1.1"
+gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "extras"] }
 sha2.workspace = true
 
 [features]

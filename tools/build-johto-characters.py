@@ -3,18 +3,21 @@
 blender -b --python tools/build-johto-characters.py -- target/johto-character-kit
 Use --skip-preview to export without the studio character lineup.
 
-The checked-in runtime JSON preserves rigid joint pivots and smooth corner
+The checked-in runtime GLB preserves rigid joint pivots and smooth corner
 normals. It is not a flattened animation: every limb has its own mesh, parent,
 and bind transform. Editable .blend sources are generated in bounded eight-family batches; previews remain development artifacts.
 Blender source: +Z up, front -Y. Runtime: +Y up, front +Z.
 """
-import bpy, json, math, sys
+import bpy, json, math, sys, tempfile
 from pathlib import Path
 from mathutils import Vector
 
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 OUT = Path(next((a for a in args if not a.startswith('--')), 'target/johto-character-kit')).resolve()
 OUT.mkdir(parents=True, exist_ok=True)
+# JSON exists only while authoring; the sole game input is catalog.glb.
+RIG_STAGE = tempfile.TemporaryDirectory(prefix='johto-rigs-')
+RIG_OUT = Path(RIG_STAGE.name)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
 scene = bpy.context.scene
 
@@ -589,7 +592,7 @@ def export_rig(name,parts):
    triangles+=len(indices)//3
   joints.append({'name':joint,'parent':next((i for i,j in enumerate(JOINTS) if j[0]==parent),None),'translation':convert(p-parent_p),'primitives':primitives})
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','joints':joints}
- (OUT/(name+'.rig.json')).write_text(json.dumps(data,separators=(',',':')))
+ (RIG_OUT/(name+'.rig.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {len(joints)} joints, {triangles} triangles',flush=True)
 
 # --only=a,b is useful for fast art iteration; the full catalog is the default.
@@ -646,5 +649,6 @@ for batch_index,start_index in enumerate(range(0,len(REQUESTED),8)):
 # Runtime packing is lossless: every source primitive and its material remains
 # independently editable; only identical exported geometry arrays are shared.
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from johto_character_geometry import pack_directory
-pack_directory(OUT,OUT)
+from animated_glb import export_directory
+export_directory(RIG_OUT, OUT/'catalog.glb')
+RIG_STAGE.cleanup()

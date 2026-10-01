@@ -2,7 +2,7 @@
 
 STL previews duplicate the canonical model geometry and cannot carry animation,
 rigs, materials or smooth vertex normals. They are not runtime inputs and are no
-longer tracked or required by CI. Raw JSON runtime models and editable Blender
+longer tracked or required by CI. The canonical human GLB, raw JSON static models, and editable Blender
 sources remain in the repository with their full data.
 
 The optional exporter writes deterministic binary STL files to ignored
@@ -24,8 +24,8 @@ All `.stl` output is ignored by Git, including custom output locations.
   Generic `dimensions` and `bounds` metadata never imply a scale. World-instance
   footprint fitting, clearances, elevation, and visual wall height are not baked
   into the standalone authored asset.
-- Character `.rig.json` exports resolve `shared.geometry.json` by its library
-  identity and primitive index. All sixteen joints are placed in their unanimated
+- Human previews read named scenes from `johto_characters/catalog.glb`.
+  The `.rig.json` CLI names are virtual scene selectors, not stored sidecars. All sixteen joints are placed in their unanimated
   bind pose by accumulating parent-relative translations, matching
   `johto_characters.rs`. Float32 conversion and each translation addition use
   the runtime's precision. No animation or world instance placement is applied.
@@ -36,7 +36,7 @@ All `.stl` output is ignored by Git, including custom output locations.
 - Standard STL stores one facet normal per triangle, not smooth per-vertex
   normals, colors, materials, named parts, or rigs. Facet normals are computed
   from the transformed indexed vertices and source winding. A degenerate
-  triangle gets a zero normal. The canonical raw JSON and Blender sources retain
+  triangle gets a zero normal. The canonical GLB, raw JSON, and Blender sources retain
   the full smooth-normal, color/material, and articulation data.
 - The exporter reads every written STL back and checks its count, byte length,
   every vertex/facet-normal float32 bit, and empty attribute bytes against the
@@ -58,10 +58,11 @@ just one:
 
 ```sh
 python3 tools/export-model-stl.py --model battle_species/gengar.mesh.json
+python3 tools/export-model-stl.py --model johto_characters/trainer.rig.json
 ```
 
 `--models-root` can point at another canonical model tree. The exporter uses
-only the Python standard library; it reads raw JSON directly and does not need
+only the Python standard library; it reads canonical GLB or raw JSON and does not need
 Blender or the game's runtime bundle.
 
 A full-tree run rejects unexpected/orphan `.stl` files in the selected output
@@ -72,4 +73,5 @@ on stdout are relative to the output root; verification summaries go to stderr.
 No path list is emitted if any model fails verification. Targeted `--model`
 runs verify only those requested models and do not classify unrelated STLs as
 orphans. CI checks the canonical model layout instead, rejecting duplicate STL
-previews and same-asset GLB/JSON pairs in the runtime model tree.
+previews, same-asset GLB/JSON pairs, and a human catalog alongside the retired
+rig JSON family in the runtime model tree.

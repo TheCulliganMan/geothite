@@ -1103,11 +1103,10 @@ def hoothoot():
 def bicycle_rider(female=False):
  # Import only this repository's original editable character geometry. Runtime
  # skeleton pivots are posed hierarchically before conversion into Blender.
- path=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/johto_characters'/('trainer_female.rig.json' if female else 'trainer.rig.json')
+ directory=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/johto_characters'
  sys.path.insert(0,str(Path(__file__).resolve().parent))
- from johto_character_geometry import expand_rig, load_library
- from model_asset_storage import read_model_json
- rig=expand_rig(read_model_json(path),load_library(path.parent));transforms=[]
+ from animated_glb import load_rig
+ rig=load_rig(directory,'trainer_female' if female else 'trainer');transforms=[]
  rotations={'torso':.17,'upper_arm_l':-1.02,'upper_arm_r':-1.02,'forearm_l':-.22,'forearm_r':-.22,'thigh_l':-1.09,'shin_l':1.92,'thigh_r':-1.30,'shin_r':1.70}
  for joint in rig['joints']:
   local=Matrix.Translation(Vector(joint['translation']))@Matrix.Rotation(rotations.get(joint['name'],0),4,'X')

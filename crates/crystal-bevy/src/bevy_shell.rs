@@ -337,6 +337,9 @@ pub struct BevyShellConfig {
     pub render_test_live: bool,
     #[cfg(feature = "location-tester")]
     pub render_test_walk: Option<String>,
+    /// Explicit developer capture viewport; normal play keeps its window settings.
+    #[cfg(feature = "location-tester")]
+    pub render_test_window_size: Option<(u32, u32)>,
     /// Native developer-only game-frame recording: output directory and seconds.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_record: Option<(PathBuf, u32)>,
@@ -5483,6 +5486,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walk = config.render_test_walk.clone();
     #[cfg(feature = "location-tester")]
+    let render_test_window_size = config.render_test_window_size;
+    #[cfg(feature = "location-tester")]
     let render_test_second_screenshot = config.render_test_second_screenshot.clone();
     #[cfg(feature = "location-tester")]
     let render_test_live = config.render_test_live;
@@ -5588,6 +5593,20 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let primary_window = {
         let mut window = primary_window;
+        if let Some((width, height)) = render_test_window_size {
+            anyhow::ensure!(
+                (320..=3840).contains(&width) && (288..=2160).contains(&height),
+                "capture viewport must be 320..3840 by 288..2160 pixels"
+            );
+            window.resolution = WindowResolution::new(width as f32, height as f32);
+            window.resizable = false;
+            window.resize_constraints = bevy::window::WindowResizeConstraints {
+                min_width: width as f32,
+                max_width: width as f32,
+                min_height: height as f32,
+                max_height: height as f32,
+            };
+        }
         // Restrict the measurement override to automated location captures.
         // Ordinary play always uses the normal presentation configuration.
         if render_test_screenshot.is_some() {

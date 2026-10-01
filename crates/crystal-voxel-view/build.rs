@@ -1,4 +1,5 @@
-//! Canonical meshes stay raw JSON in Git. Only compiled artifacts are compressed.
+//! Canonical static meshes stay raw JSON and articulated catalogs stay GLB in
+//! Git. Only compiled artifacts are compressed; hierarchy and clips stay intact.
 use flate2::{Compression, GzBuilder};
 use sha2::{Digest, Sha256};
 use std::{
@@ -16,7 +17,10 @@ fn collect(directory: &Path, paths: &mut Vec<PathBuf>) {
         let path = entry.path();
         if kind.is_dir() {
             collect(&path, paths);
-        } else if path.extension().is_some_and(|ext| ext == "json") {
+        } else if path
+            .extension()
+            .is_some_and(|ext| ext == "json" || ext == "glb")
+        {
             paths.push(path);
         }
     }
@@ -66,12 +70,27 @@ fn main() {
             !raw.is_empty() && raw.len() <= 16 * 1024 * 1024,
             "invalid model size"
         );
-        let text = std::str::from_utf8(&raw).expect("UTF-8 model JSON");
-        let json: serde_json::Value = serde_json::from_str(text).expect("raw model JSON");
-        assert!(
-            json.is_object() && json.get("storage").is_none(),
-            "canonical models must be raw JSON"
-        );
+        if path.extension().is_some_and(|ext| ext == "glb") {
+            assert!(raw.len() >= 20, "truncated canonical GLB");
+            assert_eq!(&raw[..4], b"glTF", "canonical GLB magic");
+            assert_eq!(
+                u32::from_le_bytes(raw[4..8].try_into().unwrap()),
+                2,
+                "canonical GLB version"
+            );
+            assert_eq!(
+                u32::from_le_bytes(raw[8..12].try_into().unwrap()) as usize,
+                raw.len(),
+                "canonical GLB length"
+            );
+        } else {
+            let text = std::str::from_utf8(&raw).expect("UTF-8 model JSON");
+            let json: serde_json::Value = serde_json::from_str(text).expect("raw model JSON");
+            assert!(
+                json.is_object() && json.get("storage").is_none(),
+                "canonical JSON must be raw"
+            );
+        }
         let mut encoder = GzBuilder::new()
             .mtime(0)
             .operating_system(255)

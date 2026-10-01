@@ -2,6 +2,7 @@
 """Verify repository-complete editable sources and embedded runtime model inputs."""
 from pathlib import Path
 from model_asset_storage import read_model_json, validate_storage
+from animated_glb import load_catalog
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -9,10 +10,19 @@ from johto_art_sources import load_sources
 editable = list(load_sources())
 
 models = ROOT / 'crates/crystal-voxel-view/models'
-model_files = sorted([*models.rglob('*.mesh.json'), *models.rglob('*.rig.json')])
+model_files = sorted([*models.rglob('*.mesh.json'), *models.rglob('*.rig.json'), *models.rglob('*.glb')])
+model_counts = {}
 validate_storage(models)
 assert model_files
 for path in model_files:
+    if path.suffix == '.glb':
+        assert path == models / 'johto_characters/catalog.glb', path
+        catalog = load_catalog(path.parent)
+        assert len(catalog) == 75
+        assert all(len(rig['joints']) == 16 for rig in catalog.values())
+        model_counts[path] = len(catalog)
+        continue
+    model_counts[path] = 1
     model = read_model_json(path)
     assert 'primitives' in model or 'joints' in model, path
     if 'joints' in model:
@@ -24,7 +34,7 @@ references = 0
 for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
     # Literal paths may be arguments to a small lazy-loader macro. Inspect the
     # actual paths rather than depending on rustfmt's include_str layout.
-    for relative in re.findall(r'"([^"\n]*models/[^"\n]+\.json(?:\.include\.rs)?)"', source.read_text()):
+    for relative in re.findall(r'"([^"\n]*models/[^"\n]+\.(?:json|glb)(?:\.include\.rs)?)"', source.read_text()):
         base = models.parent if relative.startswith('models/') else source.parent
         path = (base / relative.removesuffix('.include.rs')).resolve()
         assert path.is_file(), (source, relative)
@@ -33,7 +43,7 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
             read_model_json(path)
             continue
         if not (source.name == 'johto_actor_props.rs' and relative.endswith('.include.rs')):
-            references += 1
+            references += model_counts[path]
     # The prop catalog uses a declarative macro so source identities and
     # embedded mesh paths cannot drift. Verify every concrete expansion too.
     if source.name == 'johto_actor_props.rs':
@@ -52,6 +62,7 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
             assert path.is_file(), (source, label)
             assert path in model_files, path
             references += 1
-assert references >= len(model_files) - 3  # retained original character meshes are superseded by rigs
+model_count = sum(model_counts.values())
+assert references >= model_count - 3  # retained original character meshes are superseded by rigs
 print(f'Validated {len(editable)} complete editable Blender sources, '
-      f'{len(model_files)} runtime models and {references} embedded references')
+      f'{model_count} runtime models in {len(model_files)} files and {references} embedded references')

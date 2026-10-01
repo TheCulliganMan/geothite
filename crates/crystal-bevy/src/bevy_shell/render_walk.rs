@@ -18,6 +18,10 @@ pub(super) struct RenderWalk {
     capture_steps: bool,
 }
 impl RenderWalk {
+    pub(super) fn started(&self) -> bool {
+        self.first_builds.is_some() && self.tick > 0
+    }
+
     pub(super) fn settled(&self) -> bool {
         self.finished && self.settle >= 30
     }

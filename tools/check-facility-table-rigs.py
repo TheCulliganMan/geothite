@@ -6,6 +6,7 @@ The pose equations mirror new_bark_actors.rs. Native actor root remains at
 This geometric check supplements, rather than replaces, native scene review.
 """
 from pathlib import Path
+from animated_glb import load_rig
 from model_asset_storage import read_model_json as load
 import argparse,math
 import numpy as np
@@ -21,7 +22,7 @@ def target(phase,w,run):
  z=-1+tangent*swing+(6-3*tangent)*swing*swing+(2*tangent-4)*swing**3;lift=math.sin(math.pi*swing)**2
  return reach*z*w,.12+(.060*lift+(.170*1.04*lift/(.04+lift)-.060*lift)*run)*w
 
-def posed(rig,library,phase,elapsed,w=0,run=0):
+def posed(rig,phase,elapsed,w=0,run=0):
  translations=[np.array(j['translation'],dtype=float)for j in rig['joints']];rots=[np.eye(3)for _ in translations];scales=[np.ones(3)for _ in translations]
  walk_drop=.065+math.cos(phase)**2*.030;run_drop=.068+math.cos(phase)**2*.025
  hip=-.012-(walk_drop+(run_drop-walk_drop)*run-.012)*w*w;translations[0][1]+=hip
@@ -40,26 +41,23 @@ def posed(rig,library,phase,elapsed,w=0,run=0):
   local=np.eye(4);local[:3,:3]=rots[i]@np.diag(scales[i]);local[:3,3]=translations[i]
   world.append(local if j['parent']is None else world[j['parent']]@local)
   for p in j['primitives']:
-   vs=np.array(library['geometries'][p['geometry']]['positions']).reshape(-1,3)
+   vs=np.array(p['positions']).reshape(-1,3)
    parts.append((j['name'],(vs@world[i][:3,:3].T+world[i][:3,3])*16))
  return parts
 
 def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--assets-root',type=Path,default=ROOT);args=parser.parse_args()
- models=args.assets_root/'crates/crystal-voxel-view/models';library=load(models/'johto_characters/shared.geometry.json');chair=load(ROOT/'crates/crystal-voxel-view/models/facility_tables/facility_square_back_chair.mesh.json')
+ models=args.assets_root/'crates/crystal-voxel-view/models';chair=load(ROOT/'crates/crystal-voxel-view/models/facility_tables/facility_square_back_chair.mesh.json')
  chair_parts=[]
  for p in chair['primitives']:
   vs=np.array(p['positions']).reshape(-1,3)+np.array([2,0,0]);chair_parts.append((p['name'],vs.min(axis=0),vs.max(axis=0)))
  chair_lows=np.array([p[1]for p in chair_parts]);chair_highs=np.array([p[2]for p in chair_parts])
  checks=0
  for actor in['gentleman','gym_guide','receptionist','scientist','rocket','trainer','trainer_female']:
-  file=models/'johto_characters'/(actor+'.rig.json')
-  if not file.exists():
-   assert actor in['trainer','trainer_female'];continue
-  rig=load(file)
+  rig=load_rig(models/'johto_characters',actor)
   for motion,w,run in ([('idle',0,0)] if actor=='gentleman' else [('idle',0,0),('walk',1,0),('run',1,1)]):
    for sample in range(24):
-    phase=sample*math.tau/24;parts=posed(rig,library,phase,sample*4.8/24,w,run)
+    phase=sample*math.tau/24;parts=posed(rig,phase,sample*4.8/24,w,run)
     for degree in range(0,360,5):
      r=rotation(y=math.radians(degree))
      for label,vs in parts:

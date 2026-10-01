@@ -280,7 +280,94 @@ fn leg_angles(hip_height: f32, ankle_z: f32, ankle_y: f32) -> (f32, f32) {
     (hip, knee)
 }
 
+/// Blend absolute local glTF transforms without touching root placement or meshes.
+fn blend_transform(from: Transform, to: Transform, weight: f32) -> Transform {
+    let weight = weight.clamp(0.0, 1.0);
+    Transform {
+        translation: from.translation.lerp(to.translation, weight),
+        rotation: from.rotation.slerp(to.rotation, weight).normalize(),
+        scale: from.scale.lerp(to.scale, weight),
+    }
+}
+
 fn pose(kind: CharacterKind, motion: &Motion, elapsed: f32) -> [Transform; JOINT_COUNT] {
+    if matches!(kind, CharacterKind::SwimmerGirl | CharacterKind::SwimmerGuy) {
+        return swimming_pose(kind, motion, elapsed);
+    }
+    let model = rig(kind);
+    let bind = model.joints.each_ref().map(|joint| joint.bind);
+    let mut result = bind;
+    let weight = motion.walk_weight.clamp(0.0, 1.0);
+    let run = motion.run_weight.clamp(0.0, 1.0);
+    // This relaxed idle is live, so a stopped source can still breathe/blink.
+    // Locomotion phase never comes from elapsed/render time.
+    result[PELVIS].translation.y -= 0.012;
+    for (side, upper, forearm, hand) in [
+        (-1.0, UPPER_ARM_L, FOREARM_L, HAND_L),
+        (1.0, UPPER_ARM_R, FOREARM_R, HAND_R),
+    ] {
+        result[upper].rotation = Quat::from_euler(EulerRot::XYZ, -0.055, 0.0, side * 0.035);
+        result[forearm].rotation = Quat::from_rotation_x(-0.13);
+        result[hand].rotation = Quat::from_rotation_x(0.045);
+    }
+    if weight > 0.0 {
+        // Both clips share one normalized source-distance phase. Imported TRS
+        // channels are sampled directly into fixed stack arrays; the immutable
+        // rig, channel keys, meshes, and entities are reused for every frame.
+        let phase = motion.phase.rem_euclid(TAU) / TAU;
+        let walk_clip = model.locomotion_clip(false);
+        let run_clip = model.locomotion_clip(true);
+        let walk_pose = walk_clip
+            .sample(&bind, walk_clip.start + phase * walk_clip.duration)
+            .expect("validated walk clip must sample");
+        let run_pose = run_clip
+            .sample(&bind, run_clip.start + phase * run_clip.duration)
+            .expect("validated run clip must sample");
+        for joint in 0..JOINT_COUNT {
+            let moving = blend_transform(walk_pose[joint], run_pose[joint], run);
+            // Ease the crouch more gently than the limb blend on the first
+            // source sample, exactly as the planted-foot gait requires.
+            let blend = if joint == PELVIS {
+                weight * weight
+            } else {
+                weight
+            };
+            result[joint] = blend_transform(result[joint], moving, blend);
+        }
+    }
+    let breath = (elapsed * 2.1).sin() * 0.0025 * (1.0 - weight * 0.65);
+    result[TORSO].translation.y += breath;
+    result[HEAD].rotation = Quat::from_rotation_x((elapsed * 1.4).sin() * 0.008 * (1.0 - weight))
+        * result[HEAD].rotation;
+    for upper in [UPPER_ARM_L, UPPER_ARM_R] {
+        result[upper].rotation = Quat::from_rotation_x(breath * 2.0) * result[upper].rotation;
+    }
+    let blink_t = elapsed.rem_euclid(4.8);
+    result[EYES].scale.y *= if blink_t < 0.145 {
+        1.0 - (blink_t / 0.145 * PI).sin().powi(2) * 0.94
+    } else {
+        1.0
+    };
+    // Authored clips include complete leg rotations for standalone playback.
+    // Final two-bone contact correction makes the blended gait exact even
+    // between keys, during a speed blend, and while easing back to idle.
+    for (offset, thigh, shin, shoe) in [
+        (0.0, THIGH_L, SHIN_L, SHOE_L),
+        (PI, THIGH_R, SHIN_R, SHOE_R),
+    ] {
+        let (z, y) = foot_target(motion.phase + offset, weight, run);
+        let hip_height = result[PELVIS].translation.y + bind[thigh].translation.y;
+        let (hip, knee) = leg_angles(hip_height, z, y);
+        result[thigh].rotation = Quat::from_rotation_x(hip);
+        result[shin].rotation = Quat::from_rotation_x(knee);
+        result[shoe].rotation = Quat::from_rotation_x(-hip - knee);
+    }
+    result
+}
+
+// Water strokes keep their existing live presentation; walking clips must not
+// turn a source swimmer into a person standing on the water surface.
+fn swimming_pose(kind: CharacterKind, motion: &Motion, elapsed: f32) -> [Transform; JOINT_COUNT] {
     let mut result = rig(kind).joints.each_ref().map(|joint| joint.bind);
     let w = motion.walk_weight;
     let phase = motion.phase;
@@ -1277,5 +1364,173 @@ mod tests {
         let blink = pose(CharacterKind::Trainer, &motion, 0.0725);
         assert!(blink[EYES].scale.y < 0.1);
         assert_eq!(blink[HEAD].scale, Vec3::ONE);
+    }
+    #[test]
+    fn production_pose_uses_the_authored_walk_and_run_channels() {
+        let model = rig(CharacterKind::Trainer);
+        let bind = model.joints.each_ref().map(|joint| joint.bind);
+        for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
+            for phase in [0.0, 0.13, 0.75, 2.3, 5.91] {
+                let state = Motion {
+                    phase,
+                    walk_weight: 1.0,
+                    run_weight: run,
+                    ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
+                };
+                let walk = model.locomotion_clip(false);
+                let sprint = model.locomotion_clip(true);
+                let walk_pose = walk
+                    .sample(&bind, walk.start + phase / TAU * walk.duration)
+                    .unwrap();
+                let run_pose = sprint
+                    .sample(&bind, sprint.start + phase / TAU * sprint.duration)
+                    .unwrap();
+                // At elapsed zero there is no additive breathing/head motion.
+                let actual = pose(CharacterKind::Trainer, &state, 0.0);
+                for joint in [
+                    PELVIS,
+                    TORSO,
+                    HEAD,
+                    UPPER_ARM_L,
+                    UPPER_ARM_R,
+                    FOREARM_L,
+                    FOREARM_R,
+                    HAND_L,
+                    HAND_R,
+                ] {
+                    let expected = blend_transform(walk_pose[joint], run_pose[joint], run);
+                    assert!(actual[joint].translation.distance(expected.translation) < 0.000001);
+                    assert!(actual[joint].rotation.dot(expected.rotation).abs() > 0.999999);
+                    assert_eq!(actual[joint].scale, expected.scale);
+                }
+            }
+        }
+    }
+    #[test]
+    fn transform_blends_are_bounded_and_preserve_unit_rotations() {
+        let a = Transform::from_xyz(-1.0, 2.0, -3.0).with_rotation(Quat::from_rotation_y(-0.8));
+        let b = Transform::from_xyz(3.0, -2.0, 1.0)
+            .with_rotation(Quat::from_rotation_y(0.7))
+            .with_scale(Vec3::splat(1.2));
+        for weight in [-10.0, 0.0, 0.25, 0.5, 0.75, 1.0, 10.0] {
+            let value = blend_transform(a, b, weight);
+            let bounded = weight.clamp(0.0, 1.0);
+            assert_eq!(
+                value.translation,
+                a.translation.lerp(b.translation, bounded)
+            );
+            assert_eq!(value.scale, a.scale.lerp(b.scale, bounded));
+            assert!((value.rotation.length_squared() - 1.0).abs() < 0.000001);
+            assert!(
+                value
+                    .rotation
+                    .dot(a.rotation.slerp(b.rotation, bounded))
+                    .abs()
+                    > 0.999999
+            );
+        }
+    }
+    #[test]
+    fn clip_loop_seams_and_source_phase_are_independent_of_render_time() {
+        for weight in [0.0, 0.25, 0.5, 0.75, 1.0] {
+            for run in [0.0, 0.5, 1.0] {
+                let mut state = Motion {
+                    walk_weight: weight,
+                    run_weight: run,
+                    ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
+                };
+                let first = pose(CharacterKind::Trainer, &state, 1.0);
+                state.phase = TAU;
+                let looped = pose(CharacterKind::Trainer, &state, 1.0);
+                for joint in 0..JOINT_COUNT {
+                    assert!(
+                        first[joint].translation.distance(looped[joint].translation) < 0.000001
+                    );
+                    assert!(first[joint].rotation.dot(looped[joint].rotation).abs() > 0.999999);
+                }
+            }
+        }
+        let state = Motion {
+            phase: 0.71,
+            walk_weight: 1.0,
+            run_weight: 0.62,
+            ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
+        };
+        let first = pose(CharacterKind::Trainer, &state, 0.0);
+        for elapsed in [1.0 / 60.0, 1.0 / 30.0, 1.0 / 9.0, 172.0] {
+            let later = pose(CharacterKind::Trainer, &state, elapsed);
+            for joint in [PELVIS, THIGH_L, THIGH_R, SHIN_L, SHIN_R, SHOE_L, SHOE_R] {
+                assert_eq!(first[joint], later[joint]);
+            }
+            assert_eq!(first[TORSO].rotation, later[TORSO].rotation);
+            assert_eq!(first[HEAD].rotation, later[HEAD].rotation);
+        }
+    }
+    #[test]
+    fn clip_playback_preserves_planted_shoes_at_60_30_and_9_hz() {
+        let model = rig(CharacterKind::Trainer);
+        for hz in [60, 30, 9] {
+            for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
+                let stance = stance_fraction(run);
+                let mut previous = None;
+                for frame in 0..=hz {
+                    let phase = stance * TAU * frame as f32 / hz as f32;
+                    let state = Motion {
+                        phase,
+                        walk_weight: 1.0,
+                        run_weight: run,
+                        ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
+                    };
+                    let local = pose(CharacterKind::Trainer, &state, frame as f32 / hz as f32);
+                    let root_travel = phase / TAU * cycle_distance(run);
+                    let mut world = [Mat4::IDENTITY; JOINT_COUNT];
+                    for joint in 0..JOINT_COUNT {
+                        world[joint] = model.joints[joint]
+                            .parent
+                            .map(|parent| world[parent])
+                            .unwrap_or(Mat4::from_translation(Vec3::Z * root_travel))
+                            * local[joint].compute_matrix();
+                    }
+                    let ankle = world[SHOE_L].transform_point3(Vec3::ZERO);
+                    assert!((ankle.y - ANKLE_HEIGHT).abs() < 0.000001);
+                    if let Some(previous) = previous {
+                        assert!(
+                            ankle.distance(previous) < 0.000001,
+                            "{hz}Hz run={run}: foot slid"
+                        );
+                    }
+                    previous = Some(ankle);
+                }
+            }
+        }
+    }
+    #[test]
+    fn clip_playback_reuses_actor_entities_and_meshes_across_many_frames() {
+        use std::time::Duration;
+
+        let mut app = actor_test_app();
+        app.update();
+        let original =
+            app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].joints;
+        let mesh_count = app.world().resource::<Assets<Mesh>>().len();
+        for _ in 0..180 {
+            app.world_mut()
+                .resource_mut::<Time>()
+                .advance_by(Duration::from_secs_f32(1.0 / 60.0));
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0]
+                .center
+                .x += 0.4;
+            let source = app.world().resource::<VisualWorldFrame>().actors[0].center;
+            app.update();
+            assert_eq!(app.world().resource::<Assets<Mesh>>().len(), mesh_count);
+            assert_eq!(
+                app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].joints,
+                original
+            );
+            assert_eq!(
+                app.world().resource::<VisualWorldFrame>().actors[0].center,
+                source
+            );
+        }
     }
 }

@@ -5,6 +5,7 @@ External pack data is used only in temporary fixtures. No Cargo, Blender,
 GUI, new geometry, source catalog or gameplay changes are involved.
 """
 from pathlib import Path
+from animated_glb import load_rig
 from model_asset_storage import read_model_json as load
 import argparse, importlib.util, json, math, shutil, subprocess, tempfile
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,13 +38,12 @@ def fit(model, target):
 
 def check_geometry(root):
     models = root/'crates/crystal-voxel-view/models'
-    library = load(models/'johto_characters/shared.geometry.json')
     checks = 0
     for name, actors in [('interiors/arcade_stool',['super_nerd','gym_guide']),
                          ('dungeons/ship_stool',['sailor','teacher','youngster','pokefan_m','bug_catcher'])]:
         parts = fit(load(models/(name+'.mesh.json')), [2,14,0,12,7])
         for actor in actors:
-            rig = load(models/'johto_characters'/(actor+'.rig.json'))
+            rig = load_rig(models/'johto_characters', actor)
             translations, actor_parts = [], []
             for joint in rig['joints']:
                 t = joint['translation']
@@ -51,7 +51,7 @@ def check_geometry(root):
                     t = [v+w for v,w in zip(t, translations[joint['parent']])]
                 translations.append(t)
                 for p in joint['primitives']:
-                    actor_parts.append((joint['name'],[tuple((a+b)*16 for a,b in zip(v,t)) for v in vertices(library['geometries'][p['geometry']])]))
+                    actor_parts.append((joint['name'],[tuple((a+b)*16 for a,b in zip(v,t)) for v in vertices(p)]))
             for degree in range(0,360,5):
                 yaw = math.radians(degree)
                 for label, vv in actor_parts:

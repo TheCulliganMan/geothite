@@ -148,6 +148,7 @@ fn record(
     flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
+    walk: Option<Res<super::render_walk::RenderWalk>>,
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut screenshots: ResMut<ScreenshotManager>,
     images: Res<Assets<Image>>,
@@ -177,6 +178,12 @@ fn record(
     if recording.start.is_none() {
         let now = time.elapsed_seconds_f64();
         let armed_at = *recording.armed_at.get_or_insert(now);
+        // A short world-walk clip should begin with its first ordinary input,
+        // after the walk helper's shader/profile warmup. Timing-only runs keep
+        // their existing warmup. This does not drive or advance gameplay.
+        if recording.capture_images && walk.as_ref().is_some_and(|walk| !walk.started()) {
+            return;
+        }
         let world_ready = status.active && status.active_frames >= 30 && !status.profiles_pending;
         let battle_ready = recording_battle_ready(
             battle_frame.active,
@@ -208,6 +215,8 @@ fn record(
                     *flash_mode
                 );
             }
+        } else if recording.capture_images && walk.is_some() {
+            recording.trigger = "first scripted world-walk input after warmup; production controller; no synthetic pre-roll\n".into();
         }
         recording.start = Some(now);
         println!(

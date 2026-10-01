@@ -1,3 +1,4 @@
 # Native authoring files and source previews use ordinary Git.
 *.blend binary
 *.png binary
+*.glb binary

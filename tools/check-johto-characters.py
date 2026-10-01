@@ -10,9 +10,8 @@ import hashlib
 import json
 import math
 import re
-from johto_character_geometry import LIBRARY_FILE, expand_rig, load_library, compact_models, canonical
+from animated_glb import CATALOG_FILE, load_catalog, parse_glb
 from pathlib import Path
-from model_asset_storage import read_model_bytes, read_model_json, read_model_text, validate_storage
 
 ROOT = Path(__file__).resolve().parent.parent
 GENERATOR = ROOT / 'tools/build-johto-characters.py'
@@ -34,9 +33,9 @@ def check():
     assert len(designs) == 75
     assert len({tuple(v) for v in designs.values()}) == len(designs), 'Alias-only designs'
     rust = RUST.read_text()
-    references = re.findall(r'include(?:_str|_model)?!\(\s*"(?:\.\./)?models/johto_characters/([^\"]+)"\s*\)', rust)
+    references = re.findall(r'include(?:_str|_bytes|_model)?!\(\s*"(?:\.\./)?models/johto_characters/([^\"]+)"\s*\)', rust)
     references = [name.removesuffix('.include.rs') for name in references]
-    expected = {name + '.rig.json' for name in designs} | {LIBRARY_FILE}
+    expected = {CATALOG_FILE}
     assert expected == set(references), (expected - set(references), set(references) - expected)
     source_block = rust.split('pub(super) const SOURCE_KINDS:', 1)[1].split('];', 1)[0]
     sources = re.findall(r'\("([a-z_]+)", CharacterKind::([A-Za-z]+)\)', source_block)
@@ -46,17 +45,16 @@ def check():
     canonical_sources = {name for name in designs if name not in ('trainer', 'trainer_female', 'outdoorsman')}
     canonical_sources.update(('chris', 'kris'))
     assert canonical_sources == {source for source, _ in sources}
-    library = load_library(MODELS)
-    assert library is not None
-    expanded_models = {}
+    models = load_catalog(MODELS)
+    assert set(models) == set(designs)
+    doc, _ = parse_glb((MODELS / CATALOG_FILE).read_bytes())
+    geometries = {(p['attributes']['POSITION'], p['attributes']['NORMAL'], p['indices'])
+                  for mesh in doc['meshes'] for p in mesh['primitives']}
+    assert len(geometries) == 977, len(geometries)
     fingerprints = set()
     triangle_counts = []
     for name in designs:
-        path = MODELS / (name + '.rig.json')
-        packed = read_model_json(path)
-        assert packed['version'] == 2, (name, 'runtime catalog must use shared geometry')
-        model = expand_rig(packed, library)
-        expanded_models[path.name] = model
+        model = models[name]
         assert model['version'] == 1 and model['name'] == name
         assert len(model['joints']) == 16
         count = 0
@@ -92,10 +90,6 @@ def check():
         fingerprints.add(fingerprint)
         assert 1000 <= count <= 25000, (name, count)
         triangle_counts.append(count)
-    rebuilt_library, rebuilt_models = compact_models(expanded_models)
-    assert canonical(rebuilt_library) == read_model_bytes(MODELS / LIBRARY_FILE)
-    for filename, model in rebuilt_models.items():
-        assert canonical(model) == read_model_bytes(MODELS / filename), filename
     print(f'Validated {len(sources)} exact human source identities, {len(designs)} unique articulated shapes; '
           f'{min(triangle_counts):,}–{max(triangle_counts):,} triangles per model; fixed floor and gait pivots')
 

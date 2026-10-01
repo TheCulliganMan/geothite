@@ -23,6 +23,7 @@ fn main() -> Result<()> {
     let mut seconds = 30;
     let mut zoom = 0;
     let mut orbit = -1;
+    let mut window_size = None;
     while let Some(flag) = args.next() {
         if flag == "--classic" {
             modeled = false;
@@ -47,6 +48,12 @@ fn main() -> Result<()> {
             "--seconds" => seconds = value.parse::<u32>()?,
             "--zoom" => zoom = value.parse::<u8>()?,
             "--orbit" => orbit = value.parse::<i8>()?,
+            "--size" => {
+                let (width, height) = value
+                    .split_once('x')
+                    .context("--size expects WIDTHxHEIGHT")?;
+                window_size = Some((width.parse::<u32>()?, height.parse::<u32>()?));
+            }
             _ => anyhow::bail!("unknown option {flag}"),
         }
     }
@@ -134,6 +141,7 @@ fn main() -> Result<()> {
             render_test_screenshot: screenshot,
             render_test_second_screenshot: second_screenshot,
             render_test_walk: walk,
+            render_test_window_size: window_size,
             #[cfg(not(target_arch = "wasm32"))]
             render_test_record: record.map(|path| (path, seconds)),
             #[cfg(not(target_arch = "wasm32"))]
