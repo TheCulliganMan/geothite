@@ -795,15 +795,15 @@ mod tests {
     }
 
     #[test]
-    fn neutral_surface_matches_original_rust_json_loader_digest() {
+    fn neutral_surface_matches_reviewed_papercraft_geometry_digest() {
         let rig = rig();
-        assert_eq!(rig.neutral.positions.len(), 1274);
-        assert_eq!(rig.neutral.indices.len(), 5388);
-        // Frozen from the former JSON loader, after its Vec3::normalize call.
-        // No duplicate geometry fixture is needed once the JSON is removed.
+        assert_eq!(rig.neutral.positions.len(), 4538);
+        assert_eq!(rig.neutral.indices.len(), 5256);
+        // Reviewed papercraft refinement, including normalized runtime normals.
+        // The original migration comparison remains in the preceding commit.
         assert_eq!(
             digest(&rig.neutral),
-            "00507708cb46762547b119624694eab05102ad27ec2f21409add010e24505b4c"
+            "8077eba2833d45fef100978a510a75aefed66bf64dea96f3c680a769445fc28b"
         );
         assert_eq!(rig.anatomy.len(), PART_COUNT);
         assert_eq!(rig.anatomy[0].name, "Bird body");
@@ -955,14 +955,16 @@ mod tests {
     fn animated_bounds_include_every_sampled_pose_and_between_key_extrema() {
         let rig = rig();
         let (min, max) = rig.animated_bounds;
-        assert!(min.x < -0.84 && max.x > 0.84);
-        assert!(max.y > 1.08 && max.y < 1.09);
-        assert!(min.x > -0.86 && max.x < 0.86);
+        assert!(min.is_finite() && max.is_finite() && min.cmplt(max).all());
+        let mut sampled_min = Vec3::splat(f32::INFINITY);
+        let mut sampled_max = Vec3::splat(f32::NEG_INFINITY);
         for frame in 0..=1024 {
             let pose = rig.sample(rig.duration * frame as f32 / 1024.0).unwrap();
             for (group, transform) in rig.groups.iter().zip(pose) {
                 for &point in &group.mesh.positions {
                     let point = transform.transform_point(Vec3::from_array(point));
+                    sampled_min = sampled_min.min(point);
+                    sampled_max = sampled_max.max(point);
                     assert!(
                         point.cmpge(min).all() && point.cmple(max).all(),
                         "pose {frame}: {point:?} outside {min:?}..{max:?}"
@@ -970,6 +972,10 @@ mod tests {
                 }
             }
         }
+        // This gate follows authored geometry rather than freezing the old
+        // silhouette. Analytic bounds must be tight as well as conservative.
+        assert!((sampled_min - min).max_element() < 0.002);
+        assert!((max - sampled_max).max_element() < 0.002);
         // The analytic maximum is not only a union of keyframe boxes: rotate a
         // diagnostic wing tip across its exact X extremum between sparse keys.
         let mut groups = ["body", "wing_l", "wing_r"].map(|name| RigGroup {

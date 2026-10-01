@@ -69,8 +69,8 @@ and remain ignored output; see [local static previews](model-stl.md).
 `models/battle_species/pidgeotto.glb` is the single canonical Pidgeotto model.
 It retains 34 named anatomical parts and their materials, a shoulder hierarchy,
 and the standard `pidgeotto.idle_wings` clip. The 0.8-second loop has 65 quaternion
-keys per wing, exact closed endpoints, and smooth turnaround velocity. The
-source-neutral geometry matches the previous Rust-loaded model bit for bit.
+keys per wing, exact closed endpoints, and smooth turnaround velocity. The first migration preserved the former Rust-loaded geometry bit for bit;
+subsequent reviewed art changes keep explicit geometry fingerprints.
 
 The battle renderer uploads three immutable groups once: body, left wing, and
 right wing. Each battler owns its wing transforms and presentation clock; an
@@ -108,6 +108,20 @@ move PP consumption and original animation dispatch. The full browser client
 compiles for Wasm; browser rendering remains unverified in this environment.
 Native F3 round trips restore every part, and a real Gust turn retains its
 source objects and sounds with constant mesh/material counts throughout.
+
+The next papercraft art pass replaces the round bird face and comb with a swept
+coral crest, angular eye markings, a hooked pink beak, layered cream/brown
+feathers and an alternating tail fan. All 34 part identities and the idle clip
+remain intact. Neutral height stays 1.000 authored unit with Y=0 footing;
+the verified pack dimension still supplies the physical size. The broader wing
+and tail silhouette is framed by the same shared camera fitting.
+
+Triangles change from 1,796 to 1,752. Flat crease normals require 4,538 vertices
+instead of 1,274, and the canonical GLB grows from 81,500 to 159,404 bytes.
+The renderer still uses the same three immutable draw groups. A matching
+800×550 native recording captured 217 real frames over eight seconds, with
+median/p95 updates of 29.63/47.23 ms. This is a visual improvement with similar
+observed pacing in these single runs, not a claimed optimization.
 
 This is an idle wing clip, not a replacement for any original attack sequence.
 Other Pokémon retain their existing static-part or whole-body presentation

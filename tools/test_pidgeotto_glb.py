@@ -19,9 +19,9 @@ from test_animated_glb import primitive_contract, transforms, world_points
 
 REPO = Path(os.environ.get('GEOTHITE_REPO', Path(__file__).resolve().parents[1]))
 MODELS = REPO / glb.MODEL_ROOT
-# One migration fingerprint, not a second copy of the authored geometry. This
-# keeps the original name/order/f32/u32 gate meaningful after JSON retirement.
-ORIGINAL_ANATOMY_SHA256 = 'e2718a2a888eb6c3b70672ea6378aa260d16561f5ccadd2436c7e62488cc86a8'
+# Reviewed papercraft anatomy fingerprint, without a geometry sidecar.
+# The previous migration fingerprint remains in Git history.
+REVIEWED_ANATOMY_SHA256 = '77bd912933c950138a32804b7198c4a837f6b3d11c7632cf3961bf7f4886dbd8'
 
 
 def encode(doc, binary):
@@ -59,7 +59,7 @@ class PidgeottoGlbTests(unittest.TestCase):
             for key in (*glb.GEOMETRY_KEYS, 'base_color'):
                 fingerprint.update(struct.pack('<I', len(decoded[key])))
                 fingerprint.update(glb.packed(decoded[key], 'I' if key == 'indices' else 'f'))
-        self.assertEqual(fingerprint.hexdigest(), ORIGINAL_ANATOMY_SHA256)
+        self.assertEqual(fingerprint.hexdigest(), REVIEWED_ANATOMY_SHA256)
         neutral = world_points(self.doc, self.binary)
         for i, source in enumerate(self.source['primitives']):
             self.assertEqual([v for point in neutral[i + 5] for v in point], [glb.f32(v) for v in source['positions']])

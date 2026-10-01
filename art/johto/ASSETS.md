@@ -78,7 +78,7 @@ Human characters share one standard `catalog.glb` with named scenes, articulated
 | Catalog | Files | Stored bytes | Decoded JSON bytes |
 | --- | ---: | ---: | ---: |
 | [actor_props](../../crates/crystal-voxel-view/models/actor_props) | 73 | 10,070,221 | 10,070,221 |
-| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,686,391 | 24,604,891 |
+| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,764,295 | 24,604,891 |
 | [cable_club](../../crates/crystal-voxel-view/models/cable_club) | 4 | 456,230 | 456,230 |
 | [department_store](../../crates/crystal-voxel-view/models/department_store) | 8 | 535,550 | 535,550 |
 | [dungeon_extensions](../../crates/crystal-voxel-view/models/dungeon_extensions) | 11 | 718,847 | 718,847 |
