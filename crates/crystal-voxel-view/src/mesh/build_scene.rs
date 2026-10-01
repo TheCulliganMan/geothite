@@ -87,6 +87,15 @@ fn build_terrain_mesh_internal(
     for placement in &facility_radio_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
+    let facility_table_placements = if images.is_some() && authored_enabled {
+        facility_tables::resolve(
+            &frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved,
+        )
+    } else { Vec::new() };
+    for placement in &facility_table_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     // Complete joined store courses supersede older individual window models.
     // Their resolver still gives all customized live objects first refusal.
     let department_store_placements = if images.is_some() && authored_enabled {
@@ -157,6 +166,13 @@ fn build_terrain_mesh_internal(
             frame.grid_origin.to_array(), profiles, &authored_reserved)
     } else { Vec::new() };
     for placement in &park_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let rocket_plant_placements = if images.is_some() && authored_enabled {
+        rocket_plants::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &rocket_plant_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
     let mut dungeon_placements = if images.is_some() && authored_enabled {
@@ -382,6 +398,12 @@ fn build_terrain_mesh_internal(
         );
         debug_assert!(appended, "validated facility/radio reservation must append");
     }
+    for placement in &facility_table_placements {
+        let appended = facility_tables::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated facility table reservation must append");
+    }
     for placement in &interior_placements {
         let appended = modeled_interiors::append(
             &mut mesh,
@@ -438,6 +460,11 @@ fn build_terrain_mesh_internal(
             &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated ship room reservation must append");
+    }
+    for placement in &rocket_plant_placements {
+        let appended = rocket_plants::append(&mut mesh, &original_cells, &geometry,
+            placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated Rocket plant reservation must append");
     }
     for placement in &dungeon_placements {
         modeled_dungeons::append(&mut mesh, &geometry, placement, &original_cells);

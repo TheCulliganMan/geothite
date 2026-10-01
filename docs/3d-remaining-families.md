@@ -6,12 +6,11 @@ percentage of finished scenes. Plot counts can include backing ground. Dynamic
 map states and individual species art remain separate work in the broader
 conversion checklist.
 
-The final institutional-scenery production audit verifies all 388 base maps
-without a mesher error and records 255,919 cells consumed by authored geometry,
-including named surface finishes. The increase from 254,371 is exactly 1,548:
-Facility/Radio 490, ship rooms 594, traditional rooms 136, train 120, park 52 and
-stool/bed binding corrections 156. All 788 voxel tests pass, with two existing
-benchmarks ignored. Further validation is tracked in
+The latest production audit verifies all 388 base maps without mesher errors
+and records 256,191 cells consumed by authored geometry. This is 272 above the
+preceding 255,919 checkpoint: 172 facility table, 88 chair and 12 Rocket plant
+cells. Ship floor finishing adds no object credit. All 797 voxel tests pass,
+with two existing benchmarks ignored. Further validation is tracked in
 [the conversion checkpoint](3d-coverage-checkpoint.md).
 
 Earlier representative native review covers the four Gyms, stores, sign
@@ -76,21 +75,20 @@ Complete drawings extend beyond several old selectors:
 | --- | --- | --- |
 | Café tables and service counters | 64 table + 86 counter / 3 | `cafe.rs` exact table/counter selectors; complete round tables and connected C-shaped counters, preserving the operator bay |
 | Game Corner rear architecture and counters | 288 rear-course + 88 counter / 2 | `casino.rs`; source-specific walls, payout equipment, pillars, doorways and connected counters |
-| Facility ordinary tables and chairs | 172 table + 88 chair / 5 maps in union | Separate from the 40 workstation-floor cells: table blocks `0f/29/10/11/14/15`, chair drawings in `10/11/14/15/27/35`; preserve native NPC overlap and FLOOR chair roles |
+| Fast Ship B1F room fronts | 120 architecture / 1 | Ten all-WALL plots in row 3 retain cap/trim/return faces; four additional art 01 corners are intentional void/backing. Preserve the separate block 0b FLOOR mouths and ladder routes |
 | Power Plant equipment/track courses | 192 plot cells / 1 | Six block `12` plus six `16` plots; reconstruct connected equipment and track surfaces. Only 48 cells match the existing B2F west-half track drawing exactly |
 | Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; replace/refine the existing closed 16-pixel network |
 | Radio studio side-wall edges | 12 / 2 | LavRadioTower1F 4 and RadioTower2F 8; block `20`, rightmost column `8a/8b`; preserve the thin wall role rather than treating these as desks or floor |
 | Underground switch-room walls/gates | 904 / 1 | `elite_four_room.rs`, blocks `2a/37/3d/3e/3f`; validate all script-controlled gate and switch states |
 | Warehouse side walls | 288 / 2 | GoldenrodDeptStoreB1F and GoldenrodUndergroundWarehouse; `underground_boundary.rs`, block `0c` west halves and `0e` east halves |
 | Center lobby counter ends and PC headers | 44 counter + 44 header / 22 | `pokecenter.rs`; narrow block `03` right-column `0f/25` return and two block `08` wall cells above each PC |
-| Rocket Base B1F plants | 12 / 1 | Two complete 2×3 plants in blocks `29/2a`; `rocket_base.rs::plant_local` has no modeled binding |
 | Flower Shop display assemblies | 44 / 1 | `flower_shop.rs::display_shape`; finish source-specific bent/corner planters and display tables |
 | Cerulean Gym pool props/borders | 176 / 1 | `port.rs`, blocks `2e..31/36..39`, art `0a/0b/22`; establish complete silhouettes in native context, retaining the waterline |
 | Vermilion Gym targets/gates | 64 / 1 | `vermilion.rs`, blocks `20/21`; preserve both puzzle states and real openings |
 
 Native views revealed ordinary facility tables/chairs, radio/ship stools and
 partial bed bodies outside the previous object selectors. The facility tables
-and chairs remain open even though their source is flat-classified. The targeted stool
+and chairs are now modeled as exact source-complete forms. The targeted stool
 and all nineteen bed-foot bindings are corrected, as detailed below, including
 four source-complete compound berths. Several chairs and
 stools sit beneath authored actors on FLOOR cells; actor animation, all required
@@ -104,6 +102,23 @@ network. The Cerulean count is not 176 barrels. Whole-object reconstruction and
 native appearance remain prerequisites for closing these packages.
 
 ## Integrated source families and corrections
+
+The facility furniture kit completes 172 table and 88 chair cells across five
+maps with four meshes: square document table, shallow drawer desk, joined
+meeting table and square-backed chair. Native views and 32,832 pose checks
+support the placement; see [the source and rig notes](art/facility-tables.md).
+
+Both Rocket Base B1F plants now reuse the cached radial-frond sculpture with
+whole-block guards and native underlays. The base-map audit has zero remaining
+cutout cells, while other source-art categories remain. Paired 3D/classic views
+and one ordinary keyboard approach are verified; see [plant scope](art/rocket-room-plants.md).
+
+Ship cabin carpet, mess lino, corridor panels and border trim now finish 2,424
+native floor cells without changing heights, navigation art or custom profiles.
+Thirty-one new furniture/floor views pass static review. The black/blue B1F
+front bands are separately tracked architecture, and the small PC backing
+patch belongs to its own drawing rather than the floor mask.
+
 
 The follow-up furniture correction reuses canonical assets for six additional
 Radio Tower stools (24 cells), fourteen additional Fast Ship stools (56 cells)

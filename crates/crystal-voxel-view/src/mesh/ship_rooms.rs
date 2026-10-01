@@ -55,6 +55,10 @@ pub(super) struct Placement {
     ground: [usize; 2],
 }
 impl Placement {
+    pub(super) fn floor_sample_and_label(&self, source: &VisualTileSource) -> (usize, &'static str) {
+        let parity = usize::from((source.subtile_column + source.subtile_row) % 2);
+        (self.ground[parity], self.asset.label())
+    }
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
         let (w, h, _) = self.asset.size();
         (0..h).flat_map(move |y| {

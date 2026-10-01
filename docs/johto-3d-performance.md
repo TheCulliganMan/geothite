@@ -148,3 +148,23 @@ Native `CRYSTAL_CUTAWAY_DIAGNOSTIC=zero-radius` and `omit-uv1` are explicit
 comparison controls; unset/`normal` preserves the reveal, and the browser always
 uses normal rendering. Their controlled runs did not establish capsule arithmetic
 as the main cost. Disabling reveal is not an optimization used by the game.
+
+## Facility furniture and ship floor finishes
+
+A paired twelve-second run compares the published institutional checkpoint
+(`63579d8`, remote `f54f1d8`) with four source-specific facility furniture models
+and the restrained ship floor materials. Both builds use the optimized native
+profile, the same 1180×812 window, llvmpipe, default positions and orbit −1.
+No screenshot/recording readback or other build/render workload ran during the
+measurement windows. These are single paired samples, not a hardware benchmark.
+
+| Scene | Published checkpoint, median / p95 | Furniture/floor increment, median / p95 |
+| --- | ---: | ---: |
+| Fast Ship B1F | 85.74 / 97.71 ms | 81.97 / 91.06 ms |
+| Power Plant | 64.56 / 75.77 ms | 65.04 / 75.51 ms |
+
+The ship sample is modestly faster; Power Plant is approximately unchanged.
+This visual increment does not resolve the low software-renderer frame rate.
+The floors partition existing coplanar surfaces, with at most ten triangles
+per finished source cell and no per-frame geometry/material reconstruction.
+The four new furniture meshes total 2,784 authored triangles before placement.

@@ -11,6 +11,7 @@ enum InteriorFloor {
     GymRose,
     GymGreen,
     GymTimber,
+    Ship(ShipFloor),
 }
 impl InteriorFloor {
     fn palette(self) -> [f32; 3] {
@@ -25,6 +26,7 @@ impl InteriorFloor {
             Self::GymRose => [0.69, 0.60, 0.56],
             Self::GymGreen => [0.42, 0.50, 0.34],
             Self::GymTimber => [0.59, 0.48, 0.31],
+            Self::Ship(style) => style.palette(),
         }
     }
 }
@@ -33,6 +35,7 @@ fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor>
     let style = match (source.tileset_id.as_ref(), source.tile_index) {
         _ if traditional_room::tatami_source(map, source) => Tatami,
         _ if gym_floor_source(map, source).is_some() => gym_floor_source(map, source)?,
+        _ if ship_floor_source(map, source).is_some() => Ship(ship_floor_source(map, source)?),
         ("players_room" | "players_house" | "house", 0x01) => Oak,
         ("traditional_house", 0x50 | 0x44 | 0x45 | 0x54 | 0x55) => Tatami,
         ("traditional_house", 0x01) => Oak,
@@ -95,7 +98,9 @@ fn floor_cell(
     let d = z1 - z0;
     let [column, row] = world;
     let palette = style.palette();
-    if gym_floor_style(style) {
+    if let InteriorFloor::Ship(style) = style {
+        ship_floor_cell(mesh, b, height, style, world);
+    } else if gym_floor_style(style) {
         gym_floor_cell(mesh, b, height, style, world);
     } else if style == InteriorFloor::LighthouseChecker {
         lighthouse_chamber_floor_cell(mesh, b, height, world, [false; 4]);
@@ -202,7 +207,7 @@ pub(super) fn finish_surfaces(
 ) -> usize {
     finish_surfaces_excluding(mesh, map, cells, g, world_origin, &[])
 }
-/// Live source profiles have first refusal over the Gym material pass, including
+/// Live source profiles have first refusal over specialized material passes, including
 /// profiles whose drawings consist entirely of a recognized native floor.
 pub(super) fn finish_surfaces_with_profiles(
     mesh: &mut TerrainMeshData,
@@ -212,8 +217,9 @@ pub(super) fn finish_surfaces_with_profiles(
     world_origin: [i32; 2],
     profiles: Option<&Document>,
 ) -> usize {
-    if (!gym_floor_map(map) && !traditional_room::floor_map(map))
-        || g.width.checked_mul(g.height) != Some(cells.len()) {
+    if (!gym_floor_map(map) && !traditional_room::floor_map(map) && !ship_floor_map(map))
+        || g.width.checked_mul(g.height) != Some(cells.len())
+    {
         return finish_surfaces(mesh, map, cells, g, world_origin);
     }
     let mut excluded = vec![false; cells.len()];
@@ -239,6 +245,7 @@ fn finish_surfaces_excluding(
         return 0;
     }
     let gym_ground = gym_floor_underlays(mesh, map, cells, g, world_origin, excluded);
+    let ship_ground = ship_floor_underlays(mesh, map, cells, g, excluded);
     let tatami_floor = traditional_room::tatami_floor_mask(map, cells, g, world_origin, excluded);
     let source_styles: Vec<_> = cells
         .iter()
@@ -359,6 +366,20 @@ fn finish_surfaces_excluding(
                 )
             {
                 return None;
+            }
+            if let InteriorFloor::Ship(ship_style) = style {
+                if !ship_floor_destination(
+                    mesh,
+                    map,
+                    cells,
+                    destination,
+                    source_index,
+                    ship_style,
+                    &ship_ground,
+                    excluded,
+                ) {
+                    return None;
+                }
             }
             if style == InteriorFloor::LighthouseSlate
                 && !lighthouse_floor_destination(mesh, map, cells, destination)
@@ -694,3 +715,5 @@ mod surface_finish_tests {
 include!("lighthouse_floor.rs");
 
 include!("gym_floor.rs");
+
+include!("ship_floor.rs");

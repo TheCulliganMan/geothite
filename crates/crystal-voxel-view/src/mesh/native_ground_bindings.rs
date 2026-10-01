@@ -179,7 +179,7 @@ fn complete(cells: &[&VisualTile], g: &GridGeometry, p: &Placement) -> bool {
 }
 // Protect even a cropped custom object whose own ground is currently absent.
 // A same-art custom profile may own a different height, palette or silhouette.
-fn profile_owns(map: &str, source: &VisualTileSource, profiles: Option<&Document>) -> bool {
+pub(super) fn profile_owns(map: &str, source: &VisualTileSource, profiles: Option<&Document>) -> bool {
     profiles.is_some_and(|d| {
         d.objects.iter().any(|o| {
             o.map.as_deref().is_none_or(|m| m == map)

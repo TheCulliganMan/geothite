@@ -8,9 +8,9 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 648 runtime model documents, one shared human-geometry library and
-  68 complete editable Blender sources
-- The latest 19 model documents cover six Facility/Radio, six ship-room,
+- 652 runtime model documents, one shared human-geometry library and
+  69 complete editable Blender sources
+- The preceding 19 model documents cover six Facility/Radio, six ship-room,
   three traditional-room, one stationary train and three park prototypes.
   They add six editable Blender scenes; existing shared stools, beds and
   lighthouse tea furniture are reused without inflating the asset count
@@ -27,20 +27,18 @@ review. The private inspection gallery is a review tool, not a quality certifica
   bytes without changing reconstructed f32 positions, normals, indices, colors,
   joints or runtime meshes
 
-The institutional-scenery production audit processes all 388 base maps without
-mesher errors and counts 255,919 source cells consumed by authored geometry,
-including named surface finishes. The net increase from 254,371 is 1,548:
-Facility/Radio 490, ship rooms 594, traditional rooms 136, stationary train 120,
-park fixtures 52 and stool/bed binding corrections 156. The latter consumes
-24 radio-stool, 56 ship-stool and 76 ship bed-foot cells; only the residual flat
-classification changes in that follow-up, falling from 262,509 to 262,353.
+The latest production audit processes all 388 base maps without mesher errors
+and counts 256,191 source cells consumed by authored geometry. The preceding
+institutional checkpoint had 255,919; this increment adds 172 facility table,
+88 chair and 12 Rocket plant cells. The 2,424-cell ship floor treatment is a
+material finish and adds no object-coverage credit. This base-map audit now has
+zero unmodeled cutout cells; other native-art classifications, dynamic states
+and individual scene review remain open.
 
-The sixteen new editable-source chunks bring the manifest to 68 scenes and
-568 chunks. New kit geometry is original and editable; reused stools and bed
-meshes add no asset count. Surface finishes, backing floors and retained live
-water/door artwork must not be counted as additional objects. This is partial
-coverage, not 388 completed maps. Dynamic decorations and changed block states
-require their own scene fixtures.
+Four new original furniture meshes and one editable source bring the catalog
+to 652 model documents plus one shared library, 69 Blender scenes and 571 chunks.
+The two Rocket plants reuse the existing radial-frond model/cache. This is
+partial scene coverage, not 388 completed maps.
 
 ## Still open
 
@@ -61,9 +59,9 @@ list was not exhaustive: additional source-specific furniture and architecture
 packages remain open.
 See [the remaining-family checklist](3d-remaining-families.md).
 
-- Remaining source furniture and architecture, including 172 facility table
-  cells, 88 facility chair cells, 192 Power Plant equipment/track plot cells,
-  café/game-corner fittings, divider networks, wall edges and puzzle fixtures
+- Remaining source furniture and architecture, including 192 Power Plant
+  equipment/track plot cells, 120 Fast Ship B1F front-wall/cap cells,
+  café/game-corner fittings, divider networks, sofas, wall edges and puzzle fixtures
 - Latest kit volumes, corrected stool/block36 bed bindings and close park
   placements have representative static native review. The train controller
   route is still being verified; static views do not approve whole rooms,
@@ -109,12 +107,12 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- All 788 voxel tests pass, with two existing benchmarks ignored, including
+- All 797 voxel tests pass, with two existing benchmarks ignored, including
   source guards, custom/cropped fallback, native grounding, open-door geometry,
   face lighting, player reveal and the corrected stool/bed bindings
-- All 25 Python model/source CI commands pass. All 68 editable source archives
-  reconstruct successfully from 568 chunks, with verified chunk, compressed and
-  decoded SHA-256 hashes (35,039,372 compressed and 323,490,096 decoded bytes).
+- All 26 Python model/source CI commands pass. All 69 editable source archives
+  reconstruct successfully from 571 chunks, with verified chunk, compressed and
+  decoded SHA-256 hashes (35,178,139 compressed and 324,828,620 decoded bytes).
   Source reconstruction does not certify every scene was opened or approved
   in Blender
 - All five external-pack source scans pass the production matcher assertions.
@@ -205,6 +203,15 @@ based on the production mesher rather than a map-name allowlist.
   post-load source commands, including a 120-frame arrival hold. Those partial
   engine fixes are excluded from this scenery checkpoint; a successful trip
   without the complete authored tail is not accepted as a faithful repair
+
+- Thirty-one further native views inspect the four facility furniture forms,
+  occupied chairs, live book faces and finished ship floors from opposite and
+  side angles. Source guards cover five maps and two scripted Rocket states;
+  32,832 sampled actor poses clear the new chairs
+- Native front/back/side and classic 2D views verify both Rocket plants, their
+  floor and spacing. Ordinary held-Down input advances one tile to the next
+  native wall with no extra terrain rebuild. This local approach check does
+  not prove unrelated Rocket trainer/sensor sequences
 
 These are representative checks, not every-map or every-species art approval.
 

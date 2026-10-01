@@ -21,12 +21,16 @@ mod native_ground_bindings;
 mod department_store;
 #[path = "mesh/facility_radio.rs"]
 mod facility_radio;
+#[path = "mesh/facility_tables.rs"]
+mod facility_tables;
 #[path = "mesh/ship_rooms.rs"]
 mod ship_rooms;
 #[path = "mesh/traditional_room.rs"]
 mod traditional_room;
 #[path = "mesh/park_scenery.rs"]
 mod park_scenery;
+#[path = "mesh/rocket_plants.rs"]
+mod rocket_plants;
 #[path = "mesh/modeled_dungeons.rs"]
 mod modeled_dungeons;
 #[path = "mesh/gym_scenery.rs"]

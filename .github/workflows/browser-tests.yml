@@ -25,6 +25,7 @@ jobs:
       - run: python3 tools/check-lighthouse-masonry.py
       - run: python3 tools/check-lighthouse-chamber.py
       - run: python3 tools/check-facility-radio.py
+      - run: python3 tools/check-facility-tables.py
       - run: python3 tools/check-ship-rooms.py
       - run: python3 tools/check-traditional-room-models.py
       - run: python3 tools/check-train-station-models.py

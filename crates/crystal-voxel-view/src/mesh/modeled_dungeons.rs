@@ -38,6 +38,9 @@ pub(super) struct Placement {
     front_rows: f32,
 }
 impl Placement {
+    pub(super) fn floor_sample_and_label(&self) -> (usize, &'static str) {
+        (self.ground, self.kind_label())
+    }
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
         (0..self.height).flat_map(move |y| {
             (0..self.width).map(move |x| (self.row + y) * width + self.column + x)
