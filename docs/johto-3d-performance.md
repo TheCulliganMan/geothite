@@ -109,6 +109,10 @@ The full per-frame traces and captures remain ignored local QA artifacts.
 
 ## Reveal-aware scene submission follow-up
 
+These are historical measurements of the earlier capsule reveal. The current
+[whole-object translucency](occluder-translucency.md) keeps covered joins in their
+source-owned wall groups and no longer registers this secondary-draw selector.
+
 A second paired twelve-second, no-readback run used the same llvmpipe adapter,
 window and camera. Its baseline is the optimized authored kit above, not the
 older source-art build. These are single paired samples, with raw per-frame
@@ -145,10 +149,12 @@ remain unchanged. Goldenrod solid geometry falls from 107,304 triangles /
 261,896 vertices to 98,867 / 244,077; that reduction has not established a
 frame-time benefit in these measurements.
 
-Native `CRYSTAL_CUTAWAY_DIAGNOSTIC=zero-radius` and `omit-uv1` are explicit
-comparison controls; unset/`normal` preserves the reveal, and the browser always
-uses normal rendering. Their controlled runs did not establish capsule arithmetic
-as the main cost. Disabling reveal is not an optimization used by the game.
+Those earlier `CRYSTAL_CUTAWAY_DIAGNOSTIC=zero-radius` / `omit-uv1` runs did not
+establish capsule arithmetic as the main cost. In the current renderer,
+`zero-radius` disables blocker detection and `omit-uv1` removes only the legacy
+eligibility attribute; the forward fade shader no longer reads UV1. Unset/normal
+and browser builds use ordinary whole-object fading. Disabling reveal is not an
+optimization used by the game.
 
 ## Facility furniture and ship floor finishes
 
@@ -258,3 +264,28 @@ maps provide no clear gain in these samples. Neither diagnostic changes the
 shipping default, and the shadows-off figures are not the normal performance
 claim for this increment. All original geometry and real timestamp traces remain
 available for subsequent targeted work; no interpolation or time warping is used.
+
+## Whole-section camera translucency
+
+The current renderer replaces capsule-shaped fragment removal with source-owned
+wall/roof sections that ease toward 20% opacity when their actual triangles block
+the player. Empty U-room interiors do not count as walls. Multiple actors and
+props behind a faded section remain visible; unblocked sections restore opaque
+depth writes. Linked textured inscriptions follow their solid housings.
+
+The terrain worker builds bounded triangle BVHs and centered draw leaves once
+per revision. Each source group retains fixed opaque/blended material handles;
+movement changes only fade state and changed uniforms. Physical shadow alpha
+remains intact. The former capsule-only maze-join selector is no longer registered:
+all original joins stay in their source-owned wall sections. Source triangles,
+UVs, colors, winding and footing are preserved. The [behavior and review notes](occluder-translucency.md)
+cover lifecycle and geometry regressions plus the four same-camera ship views.
+
+This implementation previously passed 818 voxel tests, native and WebAssembly
+builds, and still-image reviews across ship, lighthouse, maze, store and exterior
+views. The execution workspace was replaced before that increment was published.
+The recovered source replays the original authoring steps and again passes all
+818 voxel tests, with two existing benchmarks ignored. Fresh native/WebAssembly
+builds, motion, timing and exact-checkout visual verification remain pending;
+the earlier raw traces are no longer available. Shipping shadow policy
+is unchanged.

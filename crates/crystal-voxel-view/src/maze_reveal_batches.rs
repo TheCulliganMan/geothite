@@ -1,5 +1,6 @@
-//! Retain original hidden maze faces in cached leaf draws. Only draw selection
-//! changes as the view/player moves; the mesh and shared material stay intact.
+//! Legacy projected-capsule join selection retained for regression coverage.
+//! The whole-object fade renderer does not register this system or spawn these
+//! batches: every original join now stays with its owning translucent wall.
 use crate::{
     TerrainRevisionCache, VoxelMaterial, VoxelViewStatus, VoxelWorldCamera,
     interior_cutaway::CutawayUniform,

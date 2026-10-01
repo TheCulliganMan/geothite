@@ -58,8 +58,9 @@ Its maximum height is the existing eight source pixels. Wall courses remain
 row. Models use exact source widths rather than stretching one pane across a
 long run. The staff floor inset stays at its original support height.
 
-All marked geometry and live plaques participate in the existing camera-aware
-cutaway. Underlays sample the same-atlas native `mart` block `$04`, tile `$01`.
+Marked housings and their live plaques share one authored camera-fade group,
+including when a player ray hits the housing but misses its small inscription.
+Both material domains retain their original geometry, texture UVs and colors. Underlays sample the same-atlas native `mart` block `$04`, tile `$01`.
 Custom live profiles take priority. A changed tileset, block, subtile phase,
 tile identity, map, source origin or incomplete guard rejects the entire
 corresponding network. The unchanged old renderer is then responsible for it.

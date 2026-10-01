@@ -85,12 +85,12 @@ pub(super) fn append(
     }
     let rise = p.kind.rise_pixels() * g.tile_height / SOURCE_TILE_HEIGHT;
     if p.kind == Kind::Maze {
-        let cutaway_start = mesh.solid.positions.len();
         for y in 0..p.height {
             for x in 0..p.width {
                 if !p.owns(x, y) {
                     continue;
                 }
+                let cutaway_start = mesh.solid.positions.len();
                 let bounds = g.bounds(p.column + x, p.row + y);
                 let triangle_start = mesh.solid.indices.len() / 3;
                 let exposed = p.open_mask(x, y);
@@ -107,12 +107,12 @@ pub(super) fn append(
                     mesh.reveal_join_batches.push(joins.iter()
                         .map(|&ordinal| triangle_start + ordinal).collect());
                 }
+                // Each owned wall cell is a coherent section. A single large
+                // maze range would fade the entire maze for one blocked player.
+                if mesh.solid.positions.len() > cutaway_start {
+                    mesh.solid.cutaway_ranges.push(cutaway_start..mesh.solid.positions.len());
+                }
             }
-        }
-        if mesh.solid.positions.len() > cutaway_start {
-            mesh.solid
-                .cutaway_ranges
-                .push(cutaway_start..mesh.solid.positions.len());
         }
     } else {
         let (w, _, n, _) = g.bounds(p.column, p.row);

@@ -86,8 +86,10 @@ diagonals. The former black/blue strips must read as connected steel/ivory
 caps and returns. Check the face seam, open mouths, joins into both existing
 U walls, porthole placement, reverse faces and the four intentionally retained
 corner voids. Move the camera through both front/back views and compare the
-local player cutaway: opaque floor and furniture must remain visible while
-only the relevant wall fades.
+whole-wall translucency: the blocking source-owned wall must remain faintly
+visible across its complete shape, with the player and other actors/props
+visible through it. Floor and furniture stay opaque. Unblocked walls restore
+solid depth rendering without a capsule hole or a lighting change.
 
 Walk both room mouths, the perimeter corridor and the two native ladder
 warps `(5,11)` and `(31,13)`. Exercise both sailor coordinate events

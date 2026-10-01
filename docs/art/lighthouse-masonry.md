@@ -69,12 +69,13 @@ chamber layout.
 
 ## Player reveal and floor finish
 
-Successful masonry appends now mark only their solid vertex ranges for a
-camera-aware player reveal. A projected capsule removes marked fragments in
-front of the player, with a fixed stippled boundary; walls behind the player
-remain opaque. The original 32px wall geometry, shadow geometry, collision and
-footing remain intact. Moving the player changes uniform data rather than
-rebuilding wall meshes. Missing player/support data disables the reveal.
+Successful masonry appends mark only their owned solid vertex ranges for
+[camera-aware whole-object fading](../occluder-translucency.md). Actual surface
+intersections identify blocking wall sections, which smoothly approach 20%
+opacity while retaining their shape. Unblocked sections restore to ordinary
+opaque depth rendering. The original 32px wall geometry, physical shadows,
+collision and footing remain intact. Movement updates cached material state
+without rebuilding geometry. Missing player/support data restores opacity.
 
 The [slate floor finish](lighthouse-floor.md) uses exact source guards and keeps
 floor fragments outside the cutaway mask. Current native 4F captures verify the

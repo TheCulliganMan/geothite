@@ -298,6 +298,7 @@ pub(super) fn append(
         mesh.textured
             .cutaway_ranges
             .push(textured_start..mesh.textured.positions.len());
+        mesh.cutaway_links.push((cutaway_start, textured_start));
     }
     for i in p.indices(g.width) {
         claimed[i] = true;

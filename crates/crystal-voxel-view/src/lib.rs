@@ -43,6 +43,7 @@ mod house;
 mod ice_path;
 mod interior;
 mod interior_cutaway;
+mod occluder_fade;
 mod maze_reveal_batches;
 mod interior_models;
 mod johto_fence;
@@ -219,7 +220,7 @@ impl Plugin for VoxelViewPlugin {
                     .after(sync_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
-        maze_reveal_batches::register(app);
+        occluder_fade::register(app);
     }
 }
 
@@ -400,6 +401,8 @@ struct BuiltTerrain {
     background: Option<(Mesh, Handle<Image>)>,
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
     reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
+    fade_textured_groups: Vec<occluder_fade::PreparedGroup>,
+    fade_solid_groups: Vec<occluder_fade::PreparedGroup>,
     footing_heights: Vec<f32>,
     textured_meshes: Vec<terrain_batches::PreparedBatch>,
     solid_meshes: Vec<terrain_batches::PreparedBatch>,
@@ -1014,17 +1017,11 @@ fn sync_terrain(
             .map(|mut terrain| {
                 // The public mesh stays complete until this explicit runtime
                 // partition. Both pieces are uploaded only with the revision.
-                let reveal_join_batches = terrain.take_reveal_join_batches().into_iter()
-                    .map(|data| {
-                        let mut min = Vec3::splat(f32::INFINITY);
-                        let mut max = Vec3::splat(f32::NEG_INFINITY);
-                        for &position in &data.positions {
-                            let position = Vec3::from_array(position);
-                            min = min.min(position);
-                            max = max.max(position);
-                        }
-                        (data.into_mesh(), maze_reveal_batches::MazeRevealBatch { min, max })
-                    }).collect();
+                // Whole-object translucency can expose every original join.
+                // Keep these triangles in their owning wall rather than applying
+                // the old capsule's camera-dependent hidden-face selection.
+                terrain.reveal_join_batches.clear();
+                let reveal_join_batches = Vec::new();
                 let animated_textured_mesh =
                     std::mem::take(&mut terrain.animated_textured).into_mesh();
                 let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
@@ -1037,14 +1034,16 @@ fn sync_terrain(
                     .map(|group| (group.mesh.into_mesh(), group.origins))
                     .collect();
                 let footing_heights = terrain.footing_heights.clone();
-                let textured_meshes =
-                    terrain_batches::prepare(terrain.textured, build_frame.tile_size);
-                let solid_meshes =
-                    terrain_batches::prepare(terrain.solid, build_frame.tile_size);
+                let (textured, solid, fade_textured_groups, fade_solid_groups) =
+                    occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
+                let textured_meshes = terrain_batches::prepare(textured, build_frame.tile_size);
+                let solid_meshes = terrain_batches::prepare(solid, build_frame.tile_size);
                 BuiltTerrain {
                     background,
                     instances,
                     reveal_join_batches,
+                    fade_textured_groups,
+                    fade_solid_groups,
                     footing_heights,
                     textured_meshes,
                     solid_meshes,
@@ -1283,6 +1282,10 @@ fn apply_built_terrain(
             commands.entity(root).add_child(child);
         }
     }
+    occluder_fade::spawn_groups(commands, meshes, materials, root,
+        terrain.fade_textured_groups, textured_material_handle.clone(), None);
+    occluder_fade::spawn_groups(commands, meshes, materials, root,
+        terrain.fade_solid_groups, solid_material_handle.clone(), Some(textured_material_handle.clone()));
     cache.instances_root = Some(root);
 
     if cache.animated_textured_entity.is_none() {
@@ -1470,8 +1473,8 @@ fn voxel_material(base: StandardMaterial) -> VoxelMaterial {
     }
 }
 
-/// Only uniform data changes while the player moves. The marked wall mesh
-/// stays intact and the shader reads the active camera's view every draw.
+/// Publish the resolved player support/capsule to the whole-object fade system.
+/// It uses the current propagated camera and cached authored triangles.
 fn sync_interior_cutaway(
     frame: Res<VisualWorldFrame>,
     status: Res<VoxelViewStatus>,
@@ -1941,6 +1944,8 @@ mod renderer_tests {
                 background: None,
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
                 reveal_join_batches: Vec::new(),
+                fade_textured_groups: Vec::new(),
+                fade_solid_groups: Vec::new(),
                 footing_heights: Vec::new(),
                 textured_meshes: vec![actor_quad_mesh().into()],
                 solid_meshes: vec![actor_quad_mesh().into()],

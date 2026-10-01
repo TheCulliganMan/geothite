@@ -10,7 +10,7 @@ The latest production audit verifies all 388 base maps without mesher errors
 and records 256,311 cells consumed by authored geometry, 120 above the preceding
 256,191 checkpoint. Complete Fast Ship B1F room fronts replace 36 old partial
 claims with 156 source-specific architecture cells; their entrances and four
-real corner voids remain untouched. All 805 voxel tests pass, with two existing
+real corner voids remain untouched. All 818 voxel tests pass, with two existing
 benchmarks ignored. This does not complete per-map art or gameplay review.
 Further validation is tracked in [the conversion checkpoint](3d-coverage-checkpoint.md).
 
@@ -212,10 +212,11 @@ Pokémon's room, and block `1b`/art `1c` diamond floor for Power Plant. The chec
 receives the existing stone finish; the blue diamond and striped courses retain
 live art. Broader room wall/floor skins remain visible and unfinished.
 
-The remaining 12 cutout-classified cells are the two Rocket Base B1F plants.
-The latest integration removes the 40 Wise Trio screen cells and reclassifies
-176 continuous tatami cells as flat. Current facade, plane and raised totals
-are 2,382, 10,266 and 9,446. Those classifier totals are not missing-object totals.
+The two Rocket Base B1F plants now consume the former 12 cutout-classified
+cells, leaving zero base-map cutout residuals. Wise Trio screen geometry owns
+its 40 former cells, and 176 continuous tatami cells remain correctly flat.
+Current facade, plane and raised totals are 2,382, 10,212 and 9,446.
+Those classifier totals are not missing-object totals.
 
 All 176 traditional-house block `04` cells in Kurt's House and Dance Theater
 now receive the strict continuous zero-height tatami treatment, including the

@@ -167,10 +167,11 @@ pub struct SurfaceMeshData {
     pub uvs: Vec<[f32; 2]>,
     pub colors: Vec<[f32; 4]>,
     pub indices: Vec<u32>,
-    /// Vertex ranges permitted to reveal the player through indoor scenery.
-    /// This is render metadata only; positions and footing are unchanged.
-    /// UV1 carries the mask through Bevy's stock mesh vertex shader. UV0
-    /// remains the native texture coordinate, and unmarked meshes omit UV1.
+    /// Authored source ranges allowed to fade when they obstruct the player.
+    /// Runtime groups retain this ownership before static spatial batching.
+    /// This metadata never changes positions or footing. UV1 remains available
+    /// as a compatibility/audit mask; the current fade shader does not read it.
+    /// UV0 remains the native texture coordinate; unmarked meshes omit UV1.
     pub cutaway_ranges: Vec<std::ops::Range<usize>>,
 }
 
@@ -215,9 +216,13 @@ pub struct TerrainMeshData {
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
-    /// Triangle ordinals in the complete `solid` mesh that can be submitted
-    /// separately while reveal is active. Full geometry/coverage audits and
-    /// ordinary `into_meshes` consumers retain every original triangle.
+    /// Authored ownership links between solid and textured fade ranges. Each
+    /// pair stores a vertex anchor inside the owning range of those domains.
+    /// A caption and its housing must share one camera-visibility state.
+    pub(crate) cutaway_links: Vec<(usize, usize)>,
+    /// Original buried-join ordinals retained for partition/coverage audits.
+    /// Whole-object translucency keeps these faces in their owning wall group;
+    /// ordinary `into_meshes` consumers also retain every original triangle.
     pub(crate) reveal_join_batches: Vec<Vec<usize>>,
     pub animated_textured: SurfaceMeshData,
     pub animated_solid: SurfaceMeshData,
@@ -252,9 +257,10 @@ struct TreeMeshKey {
 }
 
 impl TerrainMeshData {
-    /// Runtime-only partition, performed once in the asynchronous terrain build.
-    /// Nothing is removed from the retained scene: secondary meshes keep every
-    /// deferred triangle with its exact original absolute attributes and mask.
+    /// Legacy partition used by the indexed-geometry regression tests.
+    /// The current whole-object fade renderer keeps complete source groups.
+    /// This helper preserves all triangles and attributes if a consumer splits
+    /// the recorded joins for a coverage audit.
     pub(crate) fn take_reveal_join_batches(&mut self) -> Vec<SurfaceMeshData> {
         let ordinals = std::mem::take(&mut self.reveal_join_batches);
         if ordinals.is_empty() { return Vec::new(); }

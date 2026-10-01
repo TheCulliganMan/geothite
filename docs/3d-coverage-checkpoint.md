@@ -111,7 +111,7 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- All 805 voxel tests pass, with two existing benchmarks ignored, including
+- All 818 voxel tests pass, with two existing benchmarks ignored, including
   source guards, custom/cropped fallback, native grounding, open-door geometry,
   face lighting, player reveal and the corrected stool/bed bindings
 - All 27 Python model/source CI commands pass. All 70 editable source archives
@@ -173,8 +173,9 @@ based on the production mesher rather than a map-name allowlist.
 - Ten store views cover both store families and the closed 5F display/staff inset;
   ten sign views cover Kanto, modern Johto, park and forest frame/backing variants
 - Native Azalea default/side/reverse views verify the player remains visible
-  through foreground building fragments while backing, props and rear buildings
-  stay opaque. The reveal reuses the existing player-only camera capsule
+  through foreground buildings while backing, props and rear buildings stay
+  opaque. Those earlier captures used the player capsule; the current renderer
+  uses [whole-object translucency](occluder-translucency.md)
 
 - Six native controller routes cross the actual four Gym exits, beta Cable
   stairs and a department-store stair. Movement traces record both source and

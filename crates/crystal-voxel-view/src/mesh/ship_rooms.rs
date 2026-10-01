@@ -217,8 +217,8 @@ pub(super) fn append(
         _ => p.asset.model()
             .append_fitted(&mut mesh.solid, bounds, 0., rise * g.tile_height / 8.),
     }
-    // Only wall vertices participate in the local player reveal; floor and
-    // furniture stay opaque. This does not alter collision or support height.
+    // This complete source-owned wall participates in camera-aware fading;
+    // floor and furniture stay opaque. Collision and support are unchanged.
     if p.asset == Asset::BulkheadU && mesh.solid.positions.len() > start {
         mesh.solid
             .cutaway_ranges
