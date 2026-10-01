@@ -14,7 +14,7 @@ base_document=m.document
 def document(asset):
  d=base_document(asset);d["format"]="geothite-ship-rooms-v1";return d
 m.document=document
-m.PALETTE.update({'hull_ivory':(.60,.63,.60,1),'hull_trim':(.73,.75,.69,1),'hull_shadow':(.32,.38,.37,1),'navy_panel':(.22,.30,.32,1),'paper':(.82,.81,.68,1),'paper_edge':(.65,.64,.52,1),'book_cover':(.28,.22,.13,1),'book_ink':(.31,.35,.32,1)})
+m.PALETTE.update({'hull_ivory':(.60,.63,.60,1),'hull_trim':(.73,.75,.69,1),'hull_shadow':(.32,.38,.37,1),'navy_panel':(.22,.30,.32,1),'paper':(.82,.81,.68,1),'paper_edge':(.65,.64,.52,1),'book_cover':(.28,.22,.13,1),'book_ink':(.31,.35,.32,1),'bulkhead_cap':(.27,.36,.39,1)})
 DIMS={'tea_table_short':(32,14,32),'tea_table_long':(32,17,64),'tea_table_mess':(32,17,80),'captains_desk':(48,14,32),'lower_bulkhead_u':(192,16,128),'captains_chair':(16,24,24)}
 m.DIMS.update(DIMS)
 
@@ -108,7 +108,10 @@ def u_part(a,label,mat,y0,y1,recess=False):
  a.part(label,mat,v,f)
 
 def bulkhead():
- a=Asset('lower_bulkhead_u');u_part(a,'Continuous joined recessed steel room shell','hull_ivory',2.8,14.8,True);u_part(a,'Continuous deck skirting','hull_shadow',0,2.8);u_part(a,'Continuous ivory top rail','hull_trim',14.8,16)
+ a=Asset('lower_bulkhead_u');u_part(a,'Continuous joined recessed steel room shell','hull_ivory',2.8,14.8,True);u_part(a,'Continuous deck skirting','hull_shadow',0,2.8);u_part(a,'Continuous ivory top rail','hull_trim',14.8,15.2);u_part(a,'Continuous cool steel crown','bulkhead_cap',15.2,16,True)
+ # A cool inset crown leaves the thin ivory shoulder visible around the
+ # broad wall cap, keeping it distinct from the warm floor. The native outer
+ # footprint and 16px visual height are unchanged.
  # Recessed enamel panel courses along both full-depth side limbs. Vertical
  # stiles and foot bands create a joined nautical wall, not tile-sized cubes.
  for side in ['port','starboard']:

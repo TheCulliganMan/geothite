@@ -327,6 +327,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
     }
     if map.starts_with("FastShip") && ts == "lighthouse" {
         let floor = if map == "FastShip1F" { 0x04 } else { 0x0d };
+        let wall_height = crate::ship::visual_wall_height(map);
         if matches!(map, "FastShip1F" | "FastShipB1F") {
             let compounds = grouped_flat_card_placements(cells, g, floor, false, |s| {
                 if s.tileset_id.as_ref() != ts || s.subtile_row == 0 {
@@ -348,7 +349,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
                 };
                 valid_art.then_some((s.subtile_column, s.subtile_row - 1, 4, 3))
             });
-            groups(r, compounds, Detail::ShipCompound, floor, 16., 24.);
+            groups(r, compounds, Detail::ShipCompound, floor, wall_height, 24.);
         }
         let doors = grouped_flat_card_placements(cells, g, floor, false, |s| {
             if s.tileset_id.as_ref() != ts || !matches!(s.metatile_id, 0x09 | 0x19 | 0x37) {
@@ -362,7 +363,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
                 _ => None,
             }
         });
-        groups(r, doors, Detail::Model(Asset::ShipDoor), floor, 16., 3.);
+        groups(r, doors, Detail::Model(Asset::ShipDoor), floor, wall_height, 3.);
         let plains = grouped_flat_card_placements(cells, g, floor, false, |s| {
             if s.tileset_id.as_ref() != ts
                 || !matches!(
@@ -396,7 +397,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
             plains,
             Detail::Model(Asset::ShipBulkhead),
             floor,
-            16.,
+            wall_height,
             3.,
         );
     }
@@ -852,7 +853,7 @@ pub(super) fn append(
                 &mut mesh.solid,
                 [w, e, n, s - 3. * scale],
                 0.,
-                16. * scale,
+                rise,
                 [0.66, 0.70, 0.65, 1.],
             );
             let mut x = 0;
@@ -865,11 +866,12 @@ pub(super) fn append(
                 let width = if pair { 2 } else { 1 };
                 let x1 = x0 + width as f32 * g.tile_width;
                 if tile == 0x02 && pair {
-                    model(Kind::PortholeBulkhead).append(
+                    model(Kind::PortholeBulkhead).append_porthole(
                         &mut mesh.solid,
                         [x0, x1, s - 3. * scale, s],
                         0.,
                         16. * scale,
+                        rise,
                     );
                 } else {
                     extension_model(if tile == 0x0e && pair {
@@ -881,7 +883,7 @@ pub(super) fn append(
                         &mut mesh.solid,
                         [x0, x1, s - 3. * scale, s],
                         0.,
-                        16. * scale,
+                        rise,
                     );
                 }
                 x += width;

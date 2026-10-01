@@ -25,6 +25,8 @@ mod facility_radio;
 mod facility_tables;
 #[path = "mesh/ship_rooms.rs"]
 mod ship_rooms;
+#[path = "mesh/ship_fronts.rs"]
+mod ship_fronts;
 #[path = "mesh/traditional_room.rs"]
 mod traditional_room;
 #[path = "mesh/park_scenery.rs"]

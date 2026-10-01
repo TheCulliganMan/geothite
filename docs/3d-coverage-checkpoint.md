@@ -8,8 +8,8 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 652 runtime model documents, one shared human-geometry library and
-  69 complete editable Blender sources
+- 654 runtime model documents, one shared human-geometry library and
+  70 complete editable Blender sources
 - The preceding 19 model documents cover six Facility/Radio, six ship-room,
   three traditional-room, one stationary train and three park prototypes.
   They add six editable Blender scenes; existing shared stools, beds and
@@ -28,17 +28,21 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The latest production audit processes all 388 base maps without mesher errors
-and counts 256,191 source cells consumed by authored geometry. The preceding
-institutional checkpoint had 255,919; this increment adds 172 facility table,
-88 chair and 12 Rocket plant cells. The 2,424-cell ship floor treatment is a
-material finish and adds no object-coverage credit. This base-map audit now has
-zero unmodeled cutout cells; other native-art classifications, dynamic states
-and individual scene review remain open.
+and counts 256,311 source cells consumed by authored geometry, 120 above the
+previous 256,191 checkpoint. Two complete Fast Ship B1F room fronts own 156 wall
+cells in place of 36 prior partial face cells. All 32 entrance cells and four
+source void cells remain untouched. The preceding furniture/floor increment
+added 172 facility table, 88 chair and 12 Rocket plant cells; its 2,424-cell ship
+floor finish adds no object-coverage credit. Base-map cutout residuals remain
+zero; other source classifications, dynamic states and individual scene review
+are still open.
 
-Four new original furniture meshes and one editable source bring the catalog
-to 652 model documents plus one shared library, 69 Blender scenes and 571 chunks.
-The two Rocket plants reuse the existing radial-frond model/cache. This is
-partial scene coverage, not 388 completed maps.
+Two original front-shell meshes and one editable source bring the catalog to
+654 model documents plus one shared library, 70 Blender scenes and 574 chunks.
+Connected B1F wall fits now share 28px visual height, with dark crowns, ivory
+shoulders and original-sized round portholes. Source collision, actor footing,
+wall footprints and local reveal semantics remain unchanged. This is partial
+scene coverage, not 388 completed maps.
 
 ## Still open
 
@@ -60,7 +64,7 @@ packages remain open.
 See [the remaining-family checklist](3d-remaining-families.md).
 
 - Remaining source furniture and architecture, including 192 Power Plant
-  equipment/track plot cells, 120 Fast Ship B1F front-wall/cap cells,
+  equipment/track plot cells,
   café/game-corner fittings, divider networks, sofas, wall edges and puzzle fixtures
 - Latest kit volumes, corrected stool/block36 bed bindings and close park
   placements have representative static native review. The train controller
@@ -107,12 +111,12 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- All 797 voxel tests pass, with two existing benchmarks ignored, including
+- All 805 voxel tests pass, with two existing benchmarks ignored, including
   source guards, custom/cropped fallback, native grounding, open-door geometry,
   face lighting, player reveal and the corrected stool/bed bindings
-- All 26 Python model/source CI commands pass. All 69 editable source archives
-  reconstruct successfully from 571 chunks, with verified chunk, compressed and
-  decoded SHA-256 hashes (35,178,139 compressed and 324,828,620 decoded bytes).
+- All 27 Python model/source CI commands pass. All 70 editable source archives
+  reconstruct successfully from 574 chunks, with verified chunk, compressed and
+  decoded SHA-256 hashes (35,306,305 compressed and 325,888,248 decoded bytes).
   Source reconstruction does not certify every scene was opened or approved
   in Blender
 - All five external-pack source scans pass the production matcher assertions.

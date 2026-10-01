@@ -11,6 +11,17 @@ use crate::profile::{CellShape, SolidKind};
 const DECK_TILE: u16 = 0x04;
 const VOID_TILE: u16 = 0x01;
 const BULKHEAD_HEIGHT: f32 = 16.0;
+// Display geometry only. Native source folds and support stay at their
+// original height; all connected B1F wall models share this visual rise.
+pub(crate) const B1F_VISUAL_WALL_HEIGHT: f32 = 28.0;
+pub(crate) fn visual_wall_height(map: &str) -> f32 {
+    if map == "FastShipB1F" {
+        B1F_VISUAL_WALL_HEIGHT
+    } else {
+        BULKHEAD_HEIGHT
+    }
+}
+
 pub(crate) const CABIN_FLOOR_TILE: u16 = 0x0d;
 
 fn is_cabin_map(map_id: &str) -> bool {
@@ -249,6 +260,30 @@ mod tests {
             subtile_row: row,
             tile_index: tile,
         }
+    }
+
+    #[test]
+    fn b1f_taller_visual_wall_never_changes_native_source_height() {
+        assert_eq!(visual_wall_height("FastShipB1F"), 28.);
+        for map in [
+            "FastShip1F",
+            "FastShipCabins_NNW_NNE_NE",
+            "FastShipB1FBeta",
+            "OlivineLighthouse1F",
+        ] {
+            assert_eq!(visual_wall_height(map), 16.);
+        }
+        assert_eq!(
+            shape("FastShipB1F", &source(0x05, 0, 1, 0x11)),
+            Some(CellShape::PlaneAt { height: 16. })
+        );
+        assert_eq!(
+            shape("FastShipB1F", &source(0x20, 0, 0, 0x15)),
+            Some(CellShape::RaisedTop {
+                height: 16.,
+                solid: SolidKind::Prop
+            })
+        );
     }
 
     #[test]

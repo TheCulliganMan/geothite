@@ -106,6 +106,14 @@ fn ship_floor_destination(
             .is_none_or(Option::is_none)
         && ship_floor_source(map, &cells[destination].source) == Some(style)
 }
+// A source-complete room-front shell supplies its own backing with the same
+// material and global phase as the adjoining floor. This stays outside the
+// wall reveal and does not change native collision or support heights.
+pub(super) fn append_ship_front_backing(
+    mesh: &mut SurfaceMeshData, bounds: [f32; 4], world: [i32; 2],
+) {
+    ship_floor_cell(mesh, bounds, 0., ShipFloor::Mess, world);
+}
 fn ship_floor_cell(
     mesh: &mut SurfaceMeshData,
     b: [f32; 4],

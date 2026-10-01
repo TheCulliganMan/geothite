@@ -168,3 +168,24 @@ This visual increment does not resolve the low software-renderer frame rate.
 The floors partition existing coplanar surfaces, with at most ten triangles
 per finished source cell and no per-frame geometry/material reconstruction.
 The four new furniture meshes total 2,784 authored triangles before placement.
+
+## Ship room-front wall correction
+
+The connected B1F fronts add closed source-shaped wall shells where flat
+black/blue strips remained. Their dark steel crowns and ivory shoulders are
+fitted with all adjacent B1F wall pieces to a shared 28px display height; the
+original floor, source collision and actor support remain unchanged.
+
+Two 12-second native no-readback runs use the same 1180×812 window, default B1F
+player position, orbit −1 and llvmpipe adapter. The new closed fronts with 16px
+walls measured 95.66ms median/113.26ms p95; the 28px fit measured 94.75/110.77ms.
+No extra mesh topology is introduced by the height fit. These single samples
+show no additional measured height cost, but they are not a general speedup.
+The prior published floor/furniture checkpoint measured 81.97/91.06ms under
+the same setup. The current scene remains slower and does not meet a fluid
+frame-rate target. Static terrain submission/culling remains active work.
+
+Ordinary held keyboard input also passed both room entrances with zero
+additional terrain builds. The east route then reached a trainer sight event
+and displayed its source dialogue. Movement capture includes GPU readback and
+is not the static timing evidence above.

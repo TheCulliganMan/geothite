@@ -27,6 +27,7 @@ jobs:
       - run: python3 tools/check-facility-radio.py
       - run: python3 tools/check-facility-tables.py
       - run: python3 tools/check-ship-rooms.py
+      - run: python3 tools/check-ship-fronts.py
       - run: python3 tools/check-traditional-room-models.py
       - run: python3 tools/check-train-station-models.py
       - run: python3 tools/check-park-scenery-models.py

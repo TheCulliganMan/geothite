@@ -177,6 +177,12 @@ pub(super) fn append(
         );
     }
     let (width, height, rise) = p.asset.size();
+    let rise = if p.asset == Asset::BulkheadU {
+        crate::ship::B1F_VISUAL_WALL_HEIGHT
+    } else {
+        rise
+    };
+
     let (w, _, n, _) = g.bounds(p.column, p.row);
     let mut bounds = [
         w,

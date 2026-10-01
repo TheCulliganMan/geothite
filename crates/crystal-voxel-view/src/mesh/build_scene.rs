@@ -155,6 +155,13 @@ fn build_terrain_mesh_internal(
     for placement in &traditional_room_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
+    let ship_front_placements = if images.is_some() && authored_enabled {
+        ship_fronts::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &ship_front_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     let ship_room_placements = if images.is_some() && authored_enabled {
         ship_rooms::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
     } else { Vec::new() };
@@ -454,6 +461,11 @@ fn build_terrain_mesh_internal(
             &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated department store reservation must append");
+    }
+    for placement in &ship_front_placements {
+        let appended = ship_fronts::append(&mut mesh, &original_cells, &geometry,
+            placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated room-front reservation must append");
     }
     for placement in &ship_room_placements {
         let appended = ship_rooms::append(

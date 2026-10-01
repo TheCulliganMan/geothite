@@ -188,6 +188,66 @@ impl Model {
             .indices
             .extend(self.surface.indices.iter().map(|&i| i + base));
     }
+    /// Taller ship wall fit with an unchanged central window band. The
+    /// original round brass/glass/rivet assembly lies wholly inside native
+    /// y=5..14 of its 16px panel and translates upward without scaling. Only
+    /// the plain lower/upper wall is extended. No cached vertices are changed.
+    pub(crate) fn append_porthole(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        base_height: f32,
+        native_height: f32,
+        height: f32,
+    ) {
+        if height <= native_height || native_height <= 0. {
+            self.append(target, bounds, base_height, height);
+            return;
+        }
+        let [west, east, north, south] = bounds;
+        if east <= west || south <= north {
+            return;
+        }
+        let sx = (east - west) / (self.max[0] - self.min[0]);
+        let sy = native_height / (self.max[1] - self.min[1]);
+        let sz = (south - north) / (self.max[2] - self.min[2]);
+        let low = native_height * (5. / 16.);
+        let high = native_height * (14. / 16.);
+        let shift = (height - native_height) * 0.5;
+        let base = target.positions.len() as u32;
+        for ((&p, &n), &color) in self
+            .surface
+            .positions
+            .iter()
+            .zip(&self.surface.normals)
+            .zip(&self.surface.colors)
+        {
+            let old_y = (p[1] - self.min[1]) * sy;
+            let (y, derivative) = if old_y < low {
+                let d = (low + shift) / low;
+                (old_y * d, d)
+            } else if old_y > high {
+                let d = (native_height - high + shift) / (native_height - high);
+                (height - (native_height - old_y) * d, d)
+            } else {
+                (old_y + shift, 1.)
+            };
+            target.positions.push([
+                west + (p[0] - self.min[0]) * sx,
+                base_height + y,
+                north + (p[2] - self.min[2]) * sz,
+            ]);
+            let normal = (Vec3::from_array(n) / Vec3::new(sx, sy * derivative, sz)).normalize();
+            target.normals.push(normal.to_array());
+            target
+                .colors
+                .push(crate::interior_models::authored_face_color(color, normal));
+        }
+        target.uvs.extend_from_slice(&self.surface.uvs);
+        target
+            .indices
+            .extend(self.surface.indices.iter().map(|&i| i + base));
+    }
 }
 pub(crate) fn model(kind: Kind) -> &'static Model {
     static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
@@ -311,3 +371,57 @@ pub(crate) use gym_scenery::{gym_model, gym_wall_join_triangles};
 #[path = "traditional_room_models.rs"]
 mod traditional_room;
 pub(crate) use traditional_room::traditional_model;
+
+#[cfg(test)]
+mod ship_wall_height_tests {
+    use super::*;
+    #[test]
+    fn taller_porthole_keeps_window_band_round_and_native_height_is_bit_identical() {
+        let model = model(Kind::PortholeBulkhead);
+        for scale in [0.5, 1., 1.5] {
+            let bounds = [-8. * scale, 8. * scale, 3. * scale, 6. * scale];
+            let mut native = SurfaceMeshData::default();
+            let mut same = SurfaceMeshData::default();
+            let mut tall = SurfaceMeshData::default();
+            model.append(&mut native, bounds, 2., 16. * scale);
+            model.append_porthole(&mut same, bounds, 2., 16. * scale, 16. * scale);
+            model.append_porthole(&mut tall, bounds, 2., 16. * scale, 28. * scale);
+            assert_eq!(native, same);
+            assert_eq!(native.indices, tall.indices);
+            assert_eq!(native.uvs, tall.uvs);
+            assert_eq!(native.positions.len(), tall.positions.len());
+            let mut fixed = 0;
+            for (a, b) in native.positions.iter().zip(&tall.positions) {
+                assert_eq!((a[0], a[2]), (b[0], b[2]));
+                let y = (a[1] - 2.) / scale;
+                if (5. ..=14.).contains(&y) {
+                    assert!((b[1] - a[1] - 6. * scale).abs() < 0.0001);
+                    fixed += 1;
+                }
+                assert!((2. - 0.0001..=2. + 28. * scale + 0.0001).contains(&b[1]));
+            }
+            assert!(fixed > 100);
+            assert!(
+                (tall
+                    .positions
+                    .iter()
+                    .map(|p| p[1])
+                    .fold(f32::NEG_INFINITY, f32::max)
+                    - 2.
+                    - 28. * scale)
+                    .abs()
+                    < 0.0001
+            );
+            assert!(
+                tall.normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.0001)
+            );
+            assert!(
+                tall.colors
+                    .iter()
+                    .all(|c| c[3] == 1. && c.iter().all(|v| v.is_finite()))
+            );
+        }
+    }
+}

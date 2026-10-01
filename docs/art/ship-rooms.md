@@ -54,7 +54,8 @@ Inset navy enamel courses, outer gray-green panels and small brass rivets
 provide structure across joined courses. Panel faces stand clear of the core,
 avoiding coplanar hidden decoration.
 
-The 208 claimed divider cells retain the original 16px height. Only those wall
+The 208 claimed divider cells retain their original source/support semantics.
+Their wall models share the B1F-only 28px display height. Only those wall
 vertices join the existing local player reveal ranges; native floors and all
 furniture stay opaque. The complete sparse mask is checked again on append.
 Each claimed cell receives its matching parity of the verified zero-height
@@ -109,7 +110,7 @@ blender -b --threads 2 --python tools/build-ship-rooms.py -- target/ship-rooms
 cargo test -p crystal-voxel-view ship_rooms
 ```
 
-The generator uses 182 named, individually editable closed components. Runtime
+The generator uses 183 named, individually editable closed components. Runtime
 and Blender generation share the same geometry. Six compact runtime files
 are added, and the medium table reuses the existing lighthouse asset. The
 runtime importer is the existing `interior_models::Model`, including its
@@ -180,3 +181,24 @@ exclusion, canonical mesh fitting and sampled rig clearance. Run
 source counts and live/custom/ground guards. Native review must still check
 all actor approaches, idle/spin poses and the full bed silhouette from both
 camera sides; these lightweight checks do not claim that review passed.
+
+## Lower-deck cap readability and display height
+
+The U wall's broad former ivory top has an inset dark cool steel crown above
+a narrow ivory shoulder. The original X/Z footprint is unchanged. The shared
+`ship::B1F_VISUAL_WALL_HEIGHT` fits this model and all connected room-front,
+plain, porthole and north-corridor wall pieces to 28px in FastShipB1F. Native
+fold/support/collision heights stay unchanged. Other ship maps keep 16px walls.
+
+The original normalized asset and its editable source remain unchanged from
+the dark-cap revision: its nominal 16px authoring height is fitted to 28px at
+runtime. Consequently the 15.2px authored shoulder displays at 26.6px and the
+16px crown at 28px. X/Z and all source ownership remain unchanged. The same
+1.25–14.65px and 177.35–190.75px return cross-sections meet the room-front crowns.
+The dedicated cap material does not recolor unrelated ship furniture.
+
+Porthole glass, brass rings and rivets keep their existing dimensions. The
+central native y=5–14px band translates upward by 6px; only the upper/lower
+plain wall stretches to reach 28px. See `ship-fronts.md` for the exact display
+fit and reproduction contract. Same-camera native review remains necessary
+for perceived height, connected seams, clear openings and local player reveal.

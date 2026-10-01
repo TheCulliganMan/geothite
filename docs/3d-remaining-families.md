@@ -7,11 +7,12 @@ map states and individual species art remain separate work in the broader
 conversion checklist.
 
 The latest production audit verifies all 388 base maps without mesher errors
-and records 256,191 cells consumed by authored geometry. This is 272 above the
-preceding 255,919 checkpoint: 172 facility table, 88 chair and 12 Rocket plant
-cells. Ship floor finishing adds no object credit. All 797 voxel tests pass,
-with two existing benchmarks ignored. Further validation is tracked in
-[the conversion checkpoint](3d-coverage-checkpoint.md).
+and records 256,311 cells consumed by authored geometry, 120 above the preceding
+256,191 checkpoint. Complete Fast Ship B1F room fronts replace 36 old partial
+claims with 156 source-specific architecture cells; their entrances and four
+real corner voids remain untouched. All 805 voxel tests pass, with two existing
+benchmarks ignored. This does not complete per-map art or gameplay review.
+Further validation is tracked in [the conversion checkpoint](3d-coverage-checkpoint.md).
 
 Earlier representative native review covers the four Gyms, stores, sign
 families, Cable rooms, keeper room, corrected ground bindings and exterior
@@ -75,7 +76,6 @@ Complete drawings extend beyond several old selectors:
 | --- | --- | --- |
 | Café tables and service counters | 64 table + 86 counter / 3 | `cafe.rs` exact table/counter selectors; complete round tables and connected C-shaped counters, preserving the operator bay |
 | Game Corner rear architecture and counters | 288 rear-course + 88 counter / 2 | `casino.rs`; source-specific walls, payout equipment, pillars, doorways and connected counters |
-| Fast Ship B1F room fronts | 120 architecture / 1 | Ten all-WALL plots in row 3 retain cap/trim/return faces; four additional art 01 corners are intentional void/backing. Preserve the separate block 0b FLOOR mouths and ladder routes |
 | Power Plant equipment/track courses | 192 plot cells / 1 | Six block `12` plus six `16` plots; reconstruct connected equipment and track surfaces. Only 48 cells match the existing B2F west-half track drawing exactly |
 | Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; replace/refine the existing closed 16-pixel network |
 | Radio studio side-wall edges | 12 / 2 | LavRadioTower1F 4 and RadioTower2F 8; block `20`, rightmost column `8a/8b`; preserve the thin wall role rather than treating these as desks or floor |
@@ -115,9 +115,12 @@ and one ordinary keyboard approach are verified; see [plant scope](art/rocket-ro
 
 Ship cabin carpet, mess lino, corridor panels and border trim now finish 2,424
 native floor cells without changing heights, navigation art or custom profiles.
-Thirty-one new furniture/floor views pass static review. The black/blue B1F
-front bands are separately tracked architecture, and the small PC backing
-patch belongs to its own drawing rather than the floor mask.
+Thirty-one new furniture/floor views pass static review. The B1F front bands now have complete connected wall geometry, while the small
+PC backing patch belongs to its own drawing rather than the floor mask. Both
+room entrances and reciprocal ladders pass production-controller routes.
+Trashcan text lifetime and repeated-A release exposed separate baseline
+controller limitations, so whole-room gameplay is not yet signed off. See
+[the room-front notes](art/ship-fronts.md).
 
 
 The follow-up furniture correction reuses canonical assets for six additional
@@ -229,7 +232,7 @@ Ordinary-house plain wall-art `00` remains on 258 cells across 56 maps, but
 skins and seams against that geometry before suppressing anything. This is not
 evidence of 258 missing walls.
 
-The 10,266 residual “plane” cells include tower depth/background (3,820), buoy
+The 10,212 residual “plane” cells include tower depth/background (3,820), buoy
 courses (3,148), facility dividers (948), Elite Four boundaries/invisible fields
 (1,016), ruins boundary strips (512), Center landings (390), ship caps (146)
 and cave depth fields (286). Of 9,446 “raised” cells, 8,294 are existing outdoor
