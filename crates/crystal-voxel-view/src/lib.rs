@@ -3,11 +3,13 @@
 //! Optional, presentation-only voxel view for Crystal's Bevy shell.
 
 mod azalea_gym;
+mod battle_layout;
 mod barn;
 mod battle_species_models;
 mod battle_tower;
 mod battle_view;
 mod model_storage;
+pub use battle_layout::BattleSceneLayout;
 pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;
 mod building_style;
@@ -31,14 +33,16 @@ mod footing;
 mod forest;
 mod fuchsia_gym;
 mod gate;
+mod gate_counter_models;
+mod cable_club_models;
 mod goldenrod_underground;
 mod grass;
 mod hall_of_fame;
 mod house;
 mod ice_path;
 mod interior;
+mod interior_cutaway;
 mod interior_models;
-mod gate_counter_models;
 mod johto_fence;
 mod kanto_cliff;
 mod kanto_post;
@@ -198,6 +202,12 @@ impl Plugin for VoxelViewPlugin {
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
+            .add_systems(
+                Update,
+                sync_interior_cutaway
+                    .after(sync_voxel_view)
+                    .in_set(WorldRenderSet::RenderSync),
+            )
             .add_systems(
                 Update,
                 sync_player_silhouette_system
@@ -1354,7 +1364,10 @@ const VOXEL_SURFACE_SHADER_HANDLE: Handle<Shader> =
     Handle::weak_from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542);
 
 #[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default)]
-struct VoxelSurface {}
+struct VoxelSurface {
+    #[uniform(100)]
+    cutaway: interior_cutaway::CutawayUniform,
+}
 impl MaterialExtension for VoxelSurface {
     fn fragment_shader() -> ShaderRef {
         VOXEL_SURFACE_SHADER_HANDLE.into()
@@ -1364,7 +1377,46 @@ impl MaterialExtension for VoxelSurface {
 fn voxel_material(base: StandardMaterial) -> VoxelMaterial {
     ExtendedMaterial {
         base,
-        extension: VoxelSurface {},
+        extension: VoxelSurface::default(),
+    }
+}
+
+/// Only uniform data changes while the player moves. The marked wall mesh
+/// stays intact and the shader reads the active camera's view every draw.
+fn sync_interior_cutaway(
+    frame: Res<VisualWorldFrame>,
+    status: Res<VoxelViewStatus>,
+    cache: Res<TerrainRevisionCache>,
+    mut materials: ResMut<Assets<VoxelMaterial>>,
+) {
+    let Some(handle) = cache.solid_material.as_ref() else {
+        return;
+    };
+    let next = if status.active {
+        frame
+            .actors
+            .iter()
+            .find(|actor| actor.id == VisualActorId::Player)
+            .and_then(|actor| {
+                let foot = actor_foot(actor);
+                let height = resolved_footing_height(&frame, foot, &cache.footing_heights)?;
+                interior_cutaway::CutawayUniform::for_player(
+                    visual_point_to_voxel(foot, height + 0.04),
+                    frame.tile_size.y * 2.0,
+                )
+            })
+            .unwrap_or_default()
+    } else {
+        interior_cutaway::CutawayUniform::default()
+    };
+    // Avoid marking a material changed while the published player is idle.
+    if materials
+        .get(handle)
+        .is_some_and(|material| material.extension.cutaway != next)
+    {
+        if let Some(material) = materials.get_mut(handle) {
+            material.extension.cutaway = next;
+        }
     }
 }
 

@@ -1740,6 +1740,28 @@
       ]
     },
     {
+      "file": "cable-club.blend",
+      "encoding": "gzip-blend",
+      "bytes": 122303,
+      "sha256": "a7cbd9120f87a9bff4ba425aab3b7fad73572f8336ae331e62f964bd8f093c5a",
+      "uncompressed_bytes": 1059112,
+      "uncompressed_sha256": "9e2808a18893d19fe15213c400b18aebb3eb816c27e3ddd1c93fee86089d5793",
+      "chunks": [
+        {
+          "file": "chunks/cable-club.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "fd2c71fe05704d2ff870c0c51d1d0d06504bcefde6df25f31872a60f260eb873",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/cable-club.blend.001.b64",
+          "bytes": 56767,
+          "sha256": "7a8e8b34162cb14668ec939c6439e7770a858a845787c95307faf1c44d1d846a",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "character-families-01.blend",
       "encoding": "gzip-blend",
       "bytes": 1160310,

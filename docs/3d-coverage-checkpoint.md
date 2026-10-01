@@ -8,11 +8,11 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 590 runtime model documents and 56 complete editable Blender sources
+- 592 runtime model documents and 57 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
   63 exterior models, 19 dungeon models, 11 special-environment models,
   23 special-room models, 17 joined-counter modules, three lighthouse shells,
-  and 220 additional exact battle species
+  two Cable Club partition prototypes and 220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -28,10 +28,11 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The current pack-based headless audit processes all 388 base maps without a
-mesher error and counts 250,544 source cells consumed by authored geometry,
-including 9,136 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone
-and 4,816 lighthouse masonry/window cells. This is partial coverage, not 388
-completed maps. Flat floors, water planes, source facades and fallback objects
+mesher error and counts 251,464 source cells consumed by authored geometry,
+including 9,136 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone,
+4,816 lighthouse masonry/window cells and 968 Cable Club partition cells.
+Cable Club replaces 48 earlier generic partition cells, for a net gain of 920.
+This is partial coverage, not 388 completed maps. Flat floors, water planes, source facades and fallback objects
 are reported separately. Dynamic decorations and changed block states require
 their own scene fixtures.
 
@@ -44,15 +45,18 @@ two existing-model backing gaps are fixed, two describe legitimate animated or
 water-datum treatments, and 25 actionable geometry/refinement families were tracked. Three Kanto rock
 families now pass geometry/source-selection tests and native Route17, Route20
 and SilverCaveOutside review. Capped posts and gate counters/phones now pass
-native review; six-floor lighthouse masonry is installed, but its room visibility
-and surface polish remain open. Eighteen further structural families remain.
+native review. Cable Club partitions are installed across eleven upstairs maps.
+Lighthouse masonry now has a camera-aware player reveal and source-scoped slate
+floors, with native 4F and 6F checks. Seventeen further structural families and
+separate room-detailing gaps remain.
 See [the remaining-family checklist](3d-remaining-families.md).
 
-- Remaining source families and structures, including link partitions, gym
-  greenery and apparatus
-- Lighthouse camera occlusion, noisy source floors and 6F furnishings: the new
-  complete walls can hide the player at the default 4F camera; masonry coverage
-  alone does not close the scene-quality review
+- Remaining source families and structures, including gym greenery and apparatus
+- Cable Club Time Capsule machinery/backdrop and source floor strips beneath
+  counters and booths; partition coverage does not complete those rooms
+- Lighthouse 6F furnishings and its distinct central checker floor remain source
+  artwork. Review additional camera/movement layouts beyond the captured 4F/6F
+  cases; masonry, cutaway and floor coverage do not complete the scene
 - Dungeon topology and bespoke set dressing beyond the nineteen-model first kit
 - Per-map native review, including eliminating the remaining source-art strips in
   interiors and assessing outdoor silhouette/readability at the gameplay camera
@@ -62,6 +66,9 @@ See [the remaining-family checklist](3d-remaining-families.md).
   palettes and timing. Unverified companion volumes are suppressed; the artistic
   battlefield remains. Extracted-row/reveal phases and individual native review
   of every move remain open
+- The native-only Tackle/Water Gun row prototype and its separately gated capture
+  cache remain disabled by default; their integration does not close the general
+  extracted-row gap or establish a performance improvement
 - Native battle interruption/transition matrix: switching, fainting, capture,
   Pokédex and returning to overworld require continued end-to-end checks
 
@@ -83,9 +90,15 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 655 voxel tests pass (two existing benchmarks ignored), all 14 model/source
-  validator programs pass, and native examples plus the normal browser-feature
-  WebAssembly check build successfully
+- 702 voxel tests pass (two existing benchmarks ignored), 22 render-API tests and
+  19 focused source-row/conversion/bridge tests pass, and the native build succeeds
+- All 15 CI model/source validator programs pass. All 57 editable sources decode
+  in memory with verified chunk, compressed-file and expanded-file hashes, Blender
+  headers and no orphaned chunks; this does not establish that every scene was
+  opened or visually approved in Blender
+- The complete Bevy test target type-checks and the normal browser-feature
+  WebAssembly check passes. The full monolithic Bevy test suite was not rerun;
+  its prior relink exceeded this preview machine's memory limits
 - Retained from the prior sound checkpoint: 33 immersive battle bridge/controller
   tests, four channel-mask tests, 24 audio
   synthesis tests and 12 audio/UI regressions pass; all use the current sound path
@@ -105,9 +118,15 @@ based on the production mesher rather than a map-name allowlist.
 - Native Route2, Route35/National Park, Route29/46 and Ilex gates exposed a
   padded-frame source-boundary bug. The corrected source-origin mapping now has
   explicit base/padded/scrolled, crop and counterfeit-layout regression fixtures
-- All six lighthouse floors and Route4/Route13/Lavender posts were captured;
-  layout openings remain intact. Lighthouse wall occlusion and old floor/furniture
-  treatment remain visible gaps
+- Prior captures cover all six lighthouse floors and Route4/Route13/Lavender
+  posts. Current native 4F review verifies the player cutaway and slate; 6F review
+  verifies slate around the retained central checker/furniture zone
+- Current native Cable Club and Celadon beta-room captures verify the installed
+  partition kit. Time Capsule machinery/backdrop and source floor strips remain
+- Battle bodies now use pack-supplied physical dimensions with uniform scaling
+  and one shared camera fit. Native Cyndaquil/Sudowoodo and Onix/Diglett encounters
+  verify representative ordinary and extreme size differences; this does not
+  approve every species or attack composition
 - Kanto shallow ledges use coherent lawn/path caps and bank sides while retaining
   identical vertices, normals and footing; deeper cliffs and edge strips remain
 

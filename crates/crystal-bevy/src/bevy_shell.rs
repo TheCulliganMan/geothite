@@ -368,6 +368,9 @@ pub struct BevyShellConfig {
     /// Legal Totodile/HM03 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_surf: bool,
+    /// Disposable legal Diglett/Onix size-comparison fixture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_size_comparison: bool,
     /// Reduce only modeled battle palette contrast and object palette cycling.
     #[cfg(feature = "voxel-view")]
     pub battle_reduced_flashes: bool,
@@ -5493,6 +5496,8 @@ pub fn run_bevy_shell(
     let render_test_hyper_beam = config.render_test_hyper_beam;
     #[cfg(feature = "location-tester")]
     let render_test_surf = config.render_test_surf;
+    #[cfg(feature = "location-tester")]
+    let render_test_size_comparison = config.render_test_size_comparison;
     #[cfg(feature = "voxel-view")]
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
@@ -5542,6 +5547,7 @@ pub fn run_bevy_shell(
             render_test_psychic,
             render_test_hyper_beam,
             render_test_surf,
+            render_test_size_comparison,
         )?
     } else {
         runtime_shell

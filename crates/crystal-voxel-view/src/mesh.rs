@@ -9,14 +9,16 @@ mod live;
 
 #[path = "mesh/background.rs"]
 mod background;
+#[path = "mesh/gate_counters.rs"]
+mod gate_counters;
+#[path = "mesh/cable_club.rs"]
+mod cable_club;
 #[path = "mesh/modeled_dungeons.rs"]
 mod modeled_dungeons;
 #[path = "mesh/modeled_exteriors.rs"]
 mod modeled_exteriors;
 #[path = "mesh/modeled_interiors.rs"]
 mod modeled_interiors;
-#[path = "mesh/gate_counters.rs"]
-mod gate_counters;
 #[path = "mesh/new_bark.rs"]
 mod new_bark;
 #[path = "mesh/ordinary_house.rs"]
@@ -141,6 +143,11 @@ pub struct SurfaceMeshData {
     pub uvs: Vec<[f32; 2]>,
     pub colors: Vec<[f32; 4]>,
     pub indices: Vec<u32>,
+    /// Vertex ranges permitted to reveal the player through indoor scenery.
+    /// This is render metadata only; positions and footing are unchanged.
+    /// UV1 carries the mask through Bevy's stock mesh vertex shader. UV0
+    /// remains the native texture coordinate, and unmarked meshes omit UV1.
+    pub cutaway_ranges: Vec<std::ops::Range<usize>>,
 }
 
 impl SurfaceMeshData {
@@ -151,6 +158,13 @@ impl SurfaceMeshData {
             // the renderer instead of cloning and retaining its CPU buffers.
             RenderAssetUsages::RENDER_WORLD,
         );
+        if !self.cutaway_ranges.is_empty() {
+            let mut mask = vec![[0.0_f32, 0.0]; self.positions.len()];
+            for range in self.cutaway_ranges {
+                mask[range].fill([1.0, 0.0]);
+            }
+            mesh.insert_attribute(Mesh::ATTRIBUTE_UV_1, mask);
+        }
         mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, self.positions);
         mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, self.normals);
         mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, self.uvs);
@@ -210,6 +224,12 @@ impl TerrainMeshData {
     pub fn into_meshes(mut self) -> (Mesh, Mesh) {
         fn append(target: &mut SurfaceMeshData, mut source: SurfaceMeshData) {
             let base = target.positions.len() as u32;
+            target.cutaway_ranges.extend(
+                source
+                    .cutaway_ranges
+                    .into_iter()
+                    .map(|range| range.start + base as usize..range.end + base as usize),
+            );
             target.positions.append(&mut source.positions);
             target.normals.append(&mut source.normals);
             target.uvs.append(&mut source.uvs);
@@ -9320,3 +9340,7 @@ pub enum TerrainMeshError {
 }
 
 include!("mesh/regression_tests.rs");
+
+#[cfg(test)]
+#[path = "mesh/cutaway_tests.rs"]
+mod cutaway_tests;

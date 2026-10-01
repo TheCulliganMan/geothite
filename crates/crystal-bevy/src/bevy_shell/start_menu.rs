@@ -1592,6 +1592,10 @@ struct VisibleBattlerRowExtraction {
     top: bool,
     bg_rows_cleared: bool,
     render_extracted: bool,
+    // Each source pixel row contains one visibility bit per eight-pixel
+    // column. None retains the generic/Faint presentation behavior.
+    oam_row_masks: Option<[u8; 16]>,
+    oam_slot: Option<u8>,
 }
 
 fn visible_move_battler_row_extractions(
@@ -1621,6 +1625,8 @@ fn visible_move_battler_row_extractions(
                 top: false,
                 bg_rows_cleared: true,
                 render_extracted: false,
+                oam_row_masks: None,
+                oam_slot: None,
             };
             if target_player {
                 player = Some(extraction);
@@ -1658,6 +1664,8 @@ fn visible_move_battler_row_extractions(
             top: target_player,
             bg_rows_cleared: animation.frame > effect.frame && !redrawn,
             render_extracted: true,
+            oam_row_masks: None,
+            oam_slot: None,
         };
         if target_player {
             player = Some(extraction);
@@ -1666,6 +1674,64 @@ fn visible_move_battler_row_extractions(
         }
     }
     (player, enemy)
+}
+
+// The BG layer clears/redraws independently of the copied OAM strip. Keep
+// the BG state, but derive the strip's life and pixel rows from the shared VM.
+fn visible_live_battler_row_extractions(
+    animation: &VisibleMoveAnimation,
+    playback: &VisibleBattleObjects,
+) -> (
+    Option<VisibleBattlerRowExtraction>,
+    Option<VisibleBattlerRowExtraction>,
+) {
+    let (player, enemy) = visible_move_battler_row_extractions(Some(animation));
+    if !visible_battle_uses_implicit_rows(animation) {
+        return (player, enemy);
+    }
+    let mut result = [player, enemy];
+    for extraction in result.iter_mut().flatten() {
+        extraction.render_extracted = false;
+        extraction.oam_row_masks = Some([0; 16]);
+    }
+    for (slot, row) in playback.battler_rows.iter().enumerate() {
+        let Some(row) = row else { continue };
+        let index = usize::from(!row.player_side);
+        let source_left = if row.player_side { 16 } else { 96 };
+        let source_top = if row.player_side {
+            48
+        } else {
+            56 - 8 * i32::from(row.row_count)
+        };
+        let mut masks = [0_u8; 16];
+        for (entry, visible_rows) in row.oam.entries.iter().zip(&row.oam.rows) {
+            let x = i32::from(entry[1]) - 8 - source_left;
+            let y = i32::from(entry[0]) - 16 - source_top;
+            if x < 0 || x % 8 != 0 || x / 8 >= if row.player_side { 6 } else { 7 } {
+                continue;
+            }
+            for (offset, visible) in visible_rows.iter().enumerate() {
+                let target_y = y + offset as i32;
+                if *visible && (0..i32::from(row.row_count) * 8).contains(&target_y) {
+                    masks[target_y as usize] |= 1 << (x / 8);
+                }
+            }
+        }
+        result[index] = Some(VisibleBattlerRowExtraction {
+            rows: row.row_count,
+            top: row.player_side,
+            bg_rows_cleared: result[index].is_some_and(|old| old.bg_rows_cleared),
+            render_extracted: true,
+            oam_row_masks: Some(masks),
+            oam_slot: Some(slot as u8),
+        });
+    }
+    for extraction in &mut result {
+        if extraction.is_some_and(|row| !row.bg_rows_cleared && !row.render_extracted) {
+            *extraction = None;
+        }
+    }
+    (result[0], result[1])
 }
 
 fn visible_move_battler_bgps(animation: Option<&VisibleMoveAnimation>) -> (Option<u8>, Option<u8>) {
@@ -2806,7 +2872,24 @@ fn spawn_battle_battler_markers(
     let (move_player_remove_clip, move_enemy_remove_clip) =
         visible_remove_mon_clips(move_animation);
     let (move_player_row_extraction, move_enemy_row_extraction) =
-        visible_move_battler_row_extractions(move_animation);
+        if let Some(animation) = move_animation.filter(|animation| {
+            animation.started && visible_battle_uses_implicit_rows(animation)
+        }) {
+            // Battlers are drawn before explicit move objects. Advance the
+            // same cached player here; later classic/3D extraction is a no-op
+            // at this tick and sees identical allocation and OAM masks.
+            let bundle = battle_anim_render_bundle(rendered_art, snapshot)?;
+            let mut playback = match rendered_art.battle_object_runtime.take() {
+                Some(playback) => playback,
+                None => new_visible_battle_objects(&bundle, animation)?,
+            };
+            advance_visible_battle_objects(&mut playback, &bundle, animation)?;
+            let extraction = visible_live_battler_row_extractions(animation, &playback);
+            rendered_art.battle_object_runtime = Some(playback);
+            extraction
+        } else {
+            visible_move_battler_row_extractions(move_animation)
+        };
     let (move_player_bgp, move_enemy_bgp) = visible_move_battler_bgps(move_animation);
     let (move_player_art, move_enemy_art) = visible_move_battler_art_overrides(move_animation);
     let (move_player_species, move_enemy_species) =
@@ -3753,6 +3836,64 @@ fn spawn_battle_battler_texture(
     }
 }
 
+fn visible_battler_extracted_row_rects(
+    width: f32,
+    height: f32,
+    extraction: VisibleBattlerRowExtraction,
+) -> Vec<[f32; 4]> {
+    let source_height = (f32::from(extraction.rows) * SOURCE_TILE_SIZE as f32).min(height);
+    if source_height <= 0.0 || width <= 0.0 || !extraction.render_extracted {
+        return Vec::new();
+    }
+    let top = if extraction.top {
+        0.0
+    } else {
+        height - source_height
+    };
+    let full = [0.0, top, width, top + source_height];
+    let Some(masks) = extraction.oam_row_masks else {
+        return vec![full];
+    };
+    let columns = (width / SOURCE_TILE_SIZE as f32).ceil().min(7.0) as usize;
+    let pixel_rows = (source_height as usize).min(masks.len());
+    let full_mask = (1_u8 << columns) - 1;
+    if masks[..pixel_rows].iter().all(|mask| *mask == full_mask) {
+        return vec![full];
+    }
+    let mut rects = Vec::new();
+    for column in 0..columns {
+        let mut row = 0;
+        while row < pixel_rows {
+            if masks[row] & (1 << column) == 0 {
+                row += 1;
+                continue;
+            }
+            let start = row;
+            while row < pixel_rows && masks[row] & (1 << column) != 0 {
+                row += 1;
+            }
+            let x = column as f32 * SOURCE_TILE_SIZE as f32;
+            rects.push([
+                x,
+                top + start as f32,
+                (x + SOURCE_TILE_SIZE as f32).min(width),
+                top + row as f32,
+            ]);
+        }
+    }
+    rects
+}
+
+fn visible_battler_extracted_row_depth(
+    extraction: VisibleBattlerRowExtraction,
+    battler_depth: f32,
+) -> f32 {
+    extraction.oam_slot.map_or(battler_depth + 0.02, |slot| {
+        // Same source OAM order as explicit objects: lower slots are in front.
+        3.45 - f32::from(slot) * 0.001
+    })
+}
+
 fn spawn_visible_battler_extracted_rows(
     commands: &mut Commands,
     frame: &SpriteFrame,
@@ -3760,40 +3901,33 @@ fn spawn_visible_battler_extracted_rows(
     position: Vec3,
     extraction: VisibleBattlerRowExtraction,
 ) {
-    let source_height = (f32::from(extraction.rows) * SOURCE_TILE_SIZE as f32).min(frame.size.y);
-    if source_height <= 0.0 {
-        return;
-    }
-    let display_height = display_size.y * source_height / frame.size.y;
-    let (source_top, source_bottom, y) = if extraction.top {
-        (
-            0.0,
-            source_height,
-            position.y + (display_size.y - display_height) * 0.5,
-        )
-    } else {
-        (
-            frame.size.y - source_height,
-            frame.size.y,
-            position.y - (display_size.y - display_height) * 0.5,
-        )
-    };
-    commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
-                color: Color::WHITE,
-                rect: Some(Rect::new(0.0, source_top, frame.size.x, source_bottom)),
-                custom_size: Some(Vec2::new(display_size.x, display_height)),
+    for [left, top, right, bottom] in
+        visible_battler_extracted_row_rects(frame.size.x, frame.size.y, extraction)
+    {
+        let scale = display_size / frame.size;
+        let size = Vec2::new(right - left, bottom - top) * scale;
+        let center = Vec2::new((left + right) * 0.5, (top + bottom) * 0.5) * scale;
+        commands.spawn((
+            SpriteBundle {
+                texture: frame.handle.clone(),
+                sprite: Sprite {
+                    color: Color::WHITE,
+                    rect: Some(Rect::new(left, top, right, bottom)),
+                    custom_size: Some(size),
+                    ..default()
+                },
+                transform: Transform::from_xyz(
+                    position.x - display_size.x * 0.5 + center.x,
+                    position.y + display_size.y * 0.5 - center.y,
+                    visible_battler_extracted_row_depth(extraction, position.z),
+                ),
                 ..default()
             },
-            transform: Transform::from_xyz(position.x, y, position.z + 0.02),
-            ..default()
-        },
-        BattleCommandMarker,
-        #[cfg(feature = "voxel-view")]
-        ImmersiveBattleReplaced,
-    ));
+            BattleCommandMarker,
+            #[cfg(feature = "voxel-view")]
+            ImmersiveBattleReplaced,
+        ));
+    }
 }
 
 fn battle_minimize_frame<'a>(

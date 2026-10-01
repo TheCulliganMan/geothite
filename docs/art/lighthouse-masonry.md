@@ -65,7 +65,20 @@ Read-only inspection of the ignored base pack identifies 301 complete blocks:
 3,696 new cells beyond the previous 1,120: the old 3,504-cell facade residual
 plus 192 previously flat-classified 6F double-window cells. The production 388-map audit confirms these exact source claims. Native
 captures of all six floors preserve the stairs, entrance, central gaps and 6F
-chamber layout. This does not complete the room review: the retained 32px wall
-height hides the player in some default camera views, especially 4F; source
-floors and 6F furnishings also remain unfinished. A camera-aware visibility
-pass is required before treating the lighthouse scenes as polished.
+chamber layout.
+
+## Player reveal and floor finish
+
+Successful masonry appends now mark only their solid vertex ranges for a
+camera-aware player reveal. A projected capsule removes marked fragments in
+front of the player, with a fixed stippled boundary; walls behind the player
+remain opaque. The original 32px wall geometry, shadow geometry, collision and
+footing remain intact. Moving the player changes uniform data rather than
+rebuilding wall meshes. Missing player/support data disables the reveal.
+
+The [slate floor finish](lighthouse-floor.md) uses exact source guards and keeps
+floor fragments outside the cutaway mask. Current native 4F captures verify the
+reveal and quieter floor; 6F captures retain the original central checker zone
+and furnishings. Additional orbit/movement and floor-by-floor checks remain,
+and 6F furniture/machinery still needs its own bounded treatment. These changes
+do not certify every lighthouse scene as finished.

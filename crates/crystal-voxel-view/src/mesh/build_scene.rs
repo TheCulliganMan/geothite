@@ -91,6 +91,12 @@ fn build_terrain_mesh_internal(
             authored_reserved[index] = true;
         }
     }
+    let cable_club_placements = if images.is_some() && authored_enabled {
+        cable_club::resolve(&frame.map_id, &original_cells, &geometry, frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &cable_club_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     let mut dungeon_placements = if images.is_some() && authored_enabled {
         modeled_dungeons::resolve(&frame.map_id, &original_cells, &geometry, profiles)
     } else {
@@ -312,6 +318,10 @@ fn build_terrain_mesh_internal(
             &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated gate network reservation must append");
+    }
+    for placement in &cable_club_placements {
+        let appended = cable_club::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated Cable Club reservation must append");
     }
     for placement in &dungeon_placements {
         modeled_dungeons::append(&mut mesh, &geometry, placement, &original_cells);

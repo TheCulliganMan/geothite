@@ -19,7 +19,7 @@ separates verified source behavior from remaining work.
 | Surf | Corrected vertical SCY path, LCD-register lifetime and source-object clipping; source script has 185 presented frames | Immersive projection is captured; straight-root sound-tail wait now tested, wrapped Surf remains open |
 | Global BG scroll | Source register sign corrected; OAM remains outside the BG sampling pass | Verify both signs and zero crossings with the immersive camera |
 | Sound | Rust source sound engine plus original packed stereo metadata and Surf's channel-busy wait; canonical PCM stays unchanged | Native audible review and general channel replacement/priority/music arbitration remain open |
-| Species models | All 251 normal species have first-pass geometry | Continue individual visual review and sculpt refinement; counts do not establish polish |
+| Species models | All 251 normal species have first-pass geometry; pack dimensions now drive uniform body scale and shared camera fit, with native Cyndaquil/Sudowoodo and Onix/Diglett checks | Continue individual visual review and sculpt refinement; counts and representative pairings do not establish polish |
 | People and world assets | Source-aware complete-object bindings preserve ownership, spacing and footing | Finish residual families and review recognizability, proportions and occlusion without requiring pixel-copy palettes |
 | Special visual states | Shiny, Substitute, Minimize and some clipping/reveal phases retain source art | Validate each state before replacing it with a modeled appearance |
 
@@ -106,6 +106,9 @@ VM/OAM and source-art rendering tests verify the original enemy-side eight-pixel
 correction and prove that presentation text cannot alter attack identity.
 
 Extracted battler rows remain a separate modeled-rendering gap: 70 move roots
-can enter a whole-scene source-art fallback. An experimental row renderer stays
-outside this checkpoint until source footprint, object priority and native
-composition pass visual review.
+can enter a whole-scene source-art fallback. The integrated native-only
+Tackle/Water Gun prototype and its separately gated actor-capture cache remain
+disabled by default. Exact source structure and full two-row OAM ownership are
+required; unsupported roots and partial strips retain source rendering. Source
+footprint, object priority, alpha edges and native composition still need visual
+review, and cache A/B measurements are pending. See [the opt-in boundaries](immersive-battles.md#experimental-extracted-battler-rows).

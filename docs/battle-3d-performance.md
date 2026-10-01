@@ -1,9 +1,9 @@
 # Battle rendering and capture performance
 
 This checkpoint improves the existing work-in-progress renderer and captures.
-It does not certify OG visual fidelity. The original 2D reference governs all
-further changes; see the [source-faithfulness matrix](original-2d-fidelity.md)
-for known presentation drift and required corrections.
+It does not certify complete attack fidelity. The original 2D reference governs
+attack sequences; artistic world and battlefield styling remain. See the
+[source-faithfulness matrix](original-2d-fidelity.md) for known gaps.
 
 The renderer reuses translated source-effect textures, caches immutable battler
 palettes, and avoids writing unchanged GPU materials and visibility. Known
@@ -33,6 +33,36 @@ The current arena renders at 885×609 beneath the native HUD. The comparison als
 includes refined Raticate, Kadabra and Sudowoodo meshes; the published baseline
 used earlier sculptures. No scene objects were removed. The scaled profile is
 a quality/performance choice, not native-resolution 3D detail.
+
+## Experimental actor-capture reuse
+
+The physical-size/shared-camera integration has no new performance certification.
+The measurements above describe the earlier renderer and cannot establish the
+cost of the current framing or optional extracted-row path.
+
+`CRYSTAL_BATTLE_ROW_PROTOTYPE=1` enables only the native Tackle/Water Gun pilot
+listed in [immersive battles](immersive-battles.md). An additional
+`CRYSTAL_BATTLE_ROW_CAPTURE_CACHE=1` enables static actor-capture reuse for that
+pilot. Both switches are off by default and disabled in WebAssembly. Readiness
+requires a matching successful draw, output blit and submitted frame; a fixed
+frame delay never makes a capture valid. Appearance, camera, lighting, material,
+image and target-size changes invalidate the relevant capture. Pending or
+unsupported state retains the ordinary capture path.
+
+A matched native Tackle pair at the current physical sizes, 1180×812 window and
+885×609 arena captured 190 real frames each. Both cached actors were ready from
+the first recorded frame. The uncached first-row gap was 205.763 ms (source
+5→10); caching captured source 8 after 43.817 ms and the first nonzero row at
+source 10 after another 45.741 ms. Shared source frames 0, 3, 5, 10 and 13 have
+byte-identical actor and arena pixels; the only full-image differences are the
+random opponent sex glyph in the HUD. Prewarm cost precedes these recordings.
+
+Across all 189 timestamp intervals, median/p95 were 40.669/47.968 ms uncached
+and 42.435/52.250 ms cached (linear quantiles). This demonstrates removing the
+first row hitch in this pair, not a steady-state frame-rate improvement. Water
+Gun, cold/changed-target lifecycle, alpha-edge, resize and interruption checks
+remain open, so both flags stay opt-in. Source clocks and controller decisions
+stay outside this cache.
 
 ## Source timing and recording
 

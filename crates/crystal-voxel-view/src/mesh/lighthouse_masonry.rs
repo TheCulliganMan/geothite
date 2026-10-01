@@ -324,6 +324,7 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
         p.height as f32 * g.tile_height,
     );
     let origin = Vec3::new(west, 0., north);
+    let cutaway_start = mesh.solid.positions.len();
     for part in &model(detail.asset).parts {
         let side = world_side(part.side, detail);
         if side < 4 && !detail.open[side as usize] {
@@ -355,6 +356,13 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
                 .indices
                 .extend(if detail.reflect { [a, c, b] } else { [a, b, c] });
         }
+    }
+    // Only successfully owned masonry participates. The floor sample,
+    // stairs, pits, furniture, and unknown-source fallback stay opaque.
+    if mesh.solid.positions.len() > cutaway_start {
+        mesh.solid
+            .cutaway_ranges
+            .push(cutaway_start..mesh.solid.positions.len());
     }
 }
 
@@ -594,6 +602,11 @@ mod tests {
                 append(&mut mesh, &g, &p[0], d);
                 assert_eq!(mesh.footing_heights, vec![1.25; t.len()]);
                 assert_eq!(mesh.textured.indices.len() / 6, 16);
+                assert!(mesh.textured.cutaway_ranges.is_empty());
+                assert_eq!(
+                    mesh.solid.cutaway_ranges,
+                    vec![0..mesh.solid.positions.len()]
+                );
                 assert!(
                     mesh.solid
                         .positions

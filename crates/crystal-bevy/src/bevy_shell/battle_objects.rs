@@ -17,14 +17,40 @@ struct VisibleBattleObjectFrame {
     oam: VisibleBattleObjectOam,
 }
 
+// BG callbacks own these objects; they are not anim_obj script events.
+#[derive(Clone)]
+struct VisibleBattleBattlerRowFrame {
+    bg_event_index: usize,
+    spawn_frame: u16,
+    player_side: bool,
+    row_count: u8,
+    bytes: [u8; 24],
+    frameset: &'static str,
+    frame: usize,
+    oam: VisibleBattleObjectOam,
+}
+
+#[derive(Clone, Copy)]
+enum VisibleBattleObjectOwner {
+    Event(usize),
+    BattlerRow {
+        bg_event_index: usize,
+        player_side: bool,
+        row_count: u8,
+    },
+}
+
 struct VisibleBattleObjects {
     slots: [Option<VisibleBattleObjectFrame>; 10],
-    owners: [Option<usize>; 10],
+    battler_rows: [Option<VisibleBattleBattlerRowFrame>; 10],
+    owners: [Option<VisibleBattleObjectOwner>; 10],
     next_tick: u32,
     next_event: usize,
     last_id: u8,
     obp0_write: Option<(u32, u8)>,
     source: Vec<VisibleMoveObjectEvent>,
+    bg_source: Vec<VisibleMoveBgEvent>,
+    move_id: String,
     player: bool,
     label: String,
     machine: BattleObjectMachine,
@@ -46,6 +72,10 @@ fn battle_object_palette_id(name: &str) -> Result<u8> {
         "PAL_BATTLE_OB_GREEN" => Ok(3),
         "PAL_BATTLE_OB_BLUE" => Ok(4),
         "PAL_BATTLE_OB_BROWN" => Ok(5),
+        // Host palette slots follow the existing gray..brown mapping, not
+        // the cartridge's enemy/player/gray..brown numbering.
+        "PAL_BATTLE_OB_PLAYER" => Ok(6),
+        "PAL_BATTLE_OB_ENEMY" => Ok(7),
         _ => anyhow::bail!("unknown battle object palette {name}"),
     }
 }
@@ -182,6 +212,7 @@ fn new_visible_battle_objects(
     machine.write(battle_program::W_F_X_ANIM_I_D + 1, (move_id >> 8) as u8);
     Ok(VisibleBattleObjects {
         slots: std::array::from_fn(|_| None),
+        battler_rows: std::array::from_fn(|_| None),
         machine,
         owners: [None; 10],
         next_tick: 0,
@@ -189,9 +220,21 @@ fn new_visible_battle_objects(
         last_id: 0,
         obp0_write: None,
         source: animation.object_events.clone(),
+        bg_source: animation.bg_events.clone(),
+        move_id: animation.move_id.clone(),
         player: animation.player_move,
         label: animation.animation_label.clone(),
     })
+}
+
+fn visible_battle_uses_implicit_rows(animation: &VisibleMoveAnimation) -> bool {
+    matches!(
+        (
+            animation.move_id.as_str(),
+            animation.animation_label.as_str()
+        ),
+        ("TACKLE", "BattleAnim_Tackle") | ("WATER_GUN", "BattleAnim_WaterGun")
+    )
 }
 
 fn advance_visible_battle_objects(
@@ -199,6 +242,18 @@ fn advance_visible_battle_objects(
     bundle: &serde_json::Value,
     animation: &VisibleMoveAnimation,
 ) -> Result<()> {
+    // Extraction may repeat a tick or seek backwards. Rebuild on a new
+    // timeline or rewind so BG-owned allocations cannot accumulate.
+    if u32::from(animation.frame) + 1 < playback.next_tick
+        || playback.source != animation.object_events
+        || playback.bg_source != animation.bg_events
+        || playback.move_id != animation.move_id
+        || playback.player != animation.player_move
+        || playback.label != animation.animation_label
+    {
+        *playback = new_visible_battle_objects(bundle, animation)?;
+    }
+    let implicit_rows = visible_battle_uses_implicit_rows(animation);
     let VisibleBattleObjects {
         machine,
         owners,
@@ -207,6 +262,7 @@ fn advance_visible_battle_objects(
         next_event,
         next_tick,
         slots: output,
+        battler_rows,
         ..
     } = playback;
     for tick in *next_tick..=u32::from(animation.frame) {
@@ -246,13 +302,16 @@ fn advance_visible_battle_objects(
                             if animation.animation_label == "BattleAnim_ThrowPokeBall"
                                 && matches!(
                                     object_id.as_str(),
-                                    "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
+                                    "BATTLE_ANIM_OBJ_POKE_BALL"
+                                        | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
                                 )
                             {
                                 match animation.move_id.strip_prefix("THROW_").unwrap_or("") {
                                     "MASTER_BALL" => "PAL_BATTLE_OB_GREEN",
                                     "ULTRA_BALL" | "FRIEND_BALL" => "PAL_BATTLE_OB_YELLOW",
-                                    "GREAT_BALL" | "LURE_BALL" | "FAST_BALL" => "PAL_BATTLE_OB_BLUE",
+                                    "GREAT_BALL" | "LURE_BALL" | "FAST_BALL" => {
+                                        "PAL_BATTLE_OB_BLUE"
+                                    }
                                     "HEAVY_BALL" | "MOON_BALL" => "PAL_BATTLE_OB_GRAY",
                                     "LEVEL_BALL" => "PAL_BATTLE_OB_BROWN",
                                     _ => "PAL_BATTLE_OB_RED",
@@ -279,7 +338,7 @@ fn advance_visible_battle_objects(
                             *y as u8,
                             *param,
                         );
-                        owners[slot] = Some(event_index);
+                        owners[slot] = Some(VisibleBattleObjectOwner::Event(event_index));
                     }
                 }
                 VisibleMoveObjectCommand::Clear => machine.clear_objects(),
@@ -297,9 +356,76 @@ fn advance_visible_battle_objects(
                 }
             }
         }
+        // RunBattleAnimScript executes script commands, then BG callbacks,
+        // then DoBattleAnimFrame/OAM. BATTLEROBJ age zero queues an ordinary
+        // NULL object at absolute screen coordinates. It consumes the same
+        // slot and object ID as an explicit spawn, before later anim_incobj.
+        // This bounded path covers only the two verified unwrapped roots.
+        if implicit_rows {
+            for (bg_event_index, event) in animation.bg_events.iter().enumerate() {
+                if u32::from(event.frame) != tick || event.incremented || event.duration != 0 {
+                    continue;
+                }
+                let row_count = match event.effect_id.as_str() {
+                    "BATTLE_BG_EFFECT_BATTLEROBJ_1ROW" => 1,
+                    "BATTLE_BG_EFFECT_BATTLEROBJ_2ROW" => 2,
+                    _ => continue,
+                };
+                let target = parse_visible_battle_animation_int(&event.target)
+                    .context("invalid battler row target")?;
+                anyhow::ensure!(target == 0 || target == 1, "invalid battler row side");
+                let player_side = animation.player_move == (target == 1);
+                let object_id = match (player_side, row_count) {
+                    (true, 1) => "BATTLE_ANIM_OBJ_PLAYERHEAD_1ROW",
+                    (true, _) => "BATTLE_ANIM_OBJ_PLAYERHEAD_2ROW",
+                    (false, 1) => "BATTLE_ANIM_OBJ_ENEMYFEET_1ROW",
+                    (false, _) => "BATTLE_ANIM_OBJ_ENEMYFEET_2ROW",
+                };
+                if let Some(slot) = (0..10).find(|&slot| machine.object(slot)[0] == 0) {
+                    let object = &bundle["objects"][object_id];
+                    let function = battle_anim_object_function(object_id, object)?;
+                    anyhow::ensure!(
+                        function == "BATTLE_ANIM_FUNC_NULL",
+                        "battler row must use NULL"
+                    );
+                    let frameset = battle_program::FRAMESETS
+                        .iter()
+                        .position(|name| Some(*name) == object["frameset"].as_str())
+                        .context("missing battler row frameset")?
+                        as u8;
+                    let palette = battle_object_palette_id(
+                        object["palette"]
+                            .as_str()
+                            .context("missing battler row palette")?,
+                    )?;
+                    *last_id = last_id.wrapping_add(1);
+                    machine.initialize(
+                        slot,
+                        *last_id,
+                        [
+                            battle_object_byte(object, "flags")?,
+                            battle_object_byte(object, "fix_y")?,
+                            frameset,
+                            0,
+                            palette,
+                            0,
+                        ],
+                        if player_side { 48 } else { 132 },
+                        64,
+                        0,
+                    );
+                    owners[slot] = Some(VisibleBattleObjectOwner::BattlerRow {
+                        bg_event_index,
+                        player_side,
+                        row_count,
+                    });
+                }
+            }
+        }
         machine.obp0_write = None;
         machine.begin_oam();
         *output = std::array::from_fn(|_| None);
+        *battler_rows = std::array::from_fn(|_| None);
         let mut scanlines = [0_u8; 144];
         for slot in 0..10 {
             if machine.object(slot)[0] == 0 {
@@ -335,24 +461,46 @@ fn advance_visible_battle_objects(
             let y = machine
                 .read(battle_program::W_BATTLE_ANIM_TEMP_Y_COORD)
                 .wrapping_add(machine.read(battle_program::W_BATTLE_ANIM_TEMP_Y_OFFSET));
-            let event_index = owners[slot].context("active battle object has no creation event")?;
-            let event = &animation.object_events[event_index];
+            let owner = owners[slot].context("active battle object has no owner")?;
             // A function may deinitialize while still emitting this tick's OAM.
             if bytes[0] != 0 || !entries.is_empty() {
-                output[slot] = Some(VisibleBattleObjectFrame {
-                    event_index,
-                    spawn_frame: event.frame,
-                    bytes,
-                    frameset: *battle_program::FRAMESETS
-                        .get(usize::from(bytes[3]))
-                        .context("invalid live frameset ID")?,
-                    frame: usize::from(bytes[13]),
-                    oam: VisibleBattleObjectOam {
-                        entries,
-                        rows,
-                        origin: (i32::from(x), i32::from(y)),
-                    },
-                });
+                let frameset = *battle_program::FRAMESETS
+                    .get(usize::from(bytes[3]))
+                    .context("invalid live frameset ID")?;
+                let frame = usize::from(bytes[13]);
+                let oam = VisibleBattleObjectOam {
+                    entries,
+                    rows,
+                    origin: (i32::from(x), i32::from(y)),
+                };
+                match owner {
+                    VisibleBattleObjectOwner::Event(event_index) => {
+                        output[slot] = Some(VisibleBattleObjectFrame {
+                            event_index,
+                            spawn_frame: animation.object_events[event_index].frame,
+                            bytes,
+                            frameset,
+                            frame,
+                            oam,
+                        });
+                    }
+                    VisibleBattleObjectOwner::BattlerRow {
+                        bg_event_index,
+                        player_side,
+                        row_count,
+                    } => {
+                        battler_rows[slot] = Some(VisibleBattleBattlerRowFrame {
+                            bg_event_index,
+                            spawn_frame: animation.bg_events[bg_event_index].frame,
+                            player_side,
+                            row_count,
+                            bytes,
+                            frameset,
+                            frame,
+                            oam,
+                        });
+                    }
+                }
             }
             if full {
                 break;

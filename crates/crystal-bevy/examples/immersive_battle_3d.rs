@@ -24,6 +24,7 @@ fn main() -> Result<()> {
     let mut psychic = false;
     let mut hyper_beam = false;
     let mut surf = false;
+    let mut size_comparison = false;
     let mut reduced_flashes = false;
     while let Some(flag) = args.next() {
         match flag.as_str() {
@@ -34,6 +35,7 @@ fn main() -> Result<()> {
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
             "--surf" => surf = true,
+            "--size-comparison" => size_comparison = true,
             "--reduced-flashes" => reduced_flashes = true,
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(args.next().context("--screenshot path")?))
@@ -48,12 +50,12 @@ fn main() -> Result<()> {
         }
     }
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam, surf]
+        [shadow_ball, psychic, hyper_beam, surf, size_comparison]
             .into_iter()
             .filter(|active| *active)
             .count()
             <= 1,
-        "choose only one of --shadow-ball, --psychic, --hyper-beam or --surf"
+        "choose only one of --shadow-ball, --psychic, --hyper-beam --surf or --size-comparison"
     );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
@@ -78,14 +80,45 @@ fn main() -> Result<()> {
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
+    let (map_name, tile_x, tile_y) = if size_comparison {
+        let map_name = "UnionCave1F";
+        let (width, height) = runtime
+            .data()
+            .saved_map_tile_bounds(map_name)
+            .context("find size comparison map bounds")?;
+        let (x, y) = (0..height)
+            .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
+            .find(|&(x, y)| {
+                runtime
+                    .data()
+                    .overworld_session(
+                        map_name,
+                        crystal_runtime::core::world::map::TilePosition::new(x, y),
+                        0,
+                    )
+                    .is_ok()
+            })
+            .context("find a walkable size comparison preview tile")?;
+        (map_name, x, y)
+    } else {
+        ("Route36", 20, 8)
+    };
+    runtime
+        .data()
+        .overworld_session(
+            map_name,
+            crystal_runtime::core::world::map::TilePosition::new(tile_x, tile_y),
+            0,
+        )
+        .context("validate the disposable battle preview location")?;
     crystal_bevy::run_bevy_shell(
         root,
         runtime,
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier,
-            map_name: "Route36".into(),
-            tile_x: 20,
-            tile_y: 8,
+            map_name: map_name.into(),
+            tile_x,
+            tile_y,
         },
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
@@ -99,6 +132,7 @@ fn main() -> Result<()> {
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,
             render_test_surf: surf,
+            render_test_size_comparison: size_comparison,
             battle_reduced_flashes: reduced_flashes,
             render_test_hour: Some(16),
             render_test_screenshot: screenshot,

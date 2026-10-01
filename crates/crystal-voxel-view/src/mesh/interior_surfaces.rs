@@ -6,6 +6,7 @@ enum InteriorFloor {
     Ceramic,
     Stone,
     Marble,
+    LighthouseSlate,
 }
 impl InteriorFloor {
     fn palette(self) -> [f32; 3] {
@@ -15,6 +16,7 @@ impl InteriorFloor {
             Self::Ceramic => [0.66, 0.72, 0.69],
             Self::Stone => [0.58, 0.60, 0.57],
             Self::Marble => [0.72, 0.69, 0.61],
+            Self::LighthouseSlate => [0.38, 0.43, 0.44],
         }
     }
 }
@@ -40,6 +42,7 @@ fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor>
                 Stone
             }
         }
+        ("lighthouse", _) if lighthouse_floor_source(map, source) => LighthouseSlate,
         _ => return None,
     };
     matches!(
@@ -81,7 +84,9 @@ fn floor_cell(
     let d = z1 - z0;
     let [column, row] = world;
     let palette = style.palette();
-    if style == InteriorFloor::Oak {
+    if style == InteriorFloor::LighthouseSlate {
+        lighthouse_floor_cell(mesh, b, height, world);
+    } else if style == InteriorFloor::Oak {
         // Wide boards with staggered end joints. The low-contrast palette and
         // sparse joints avoid the old high-frequency striped source texture.
         for half in 0..2 {
@@ -265,6 +270,11 @@ pub(super) fn finish_surfaces(
                     _ => None,
                 }
             })?;
+            if style == InteriorFloor::LighthouseSlate
+                && !lighthouse_floor_destination(mesh, map, cells, destination)
+            {
+                return None;
+            }
             Some((
                 [x0, x1, z0, z1],
                 height,
@@ -579,3 +589,5 @@ mod surface_finish_tests {
         }
     }
 }
+
+include!("lighthouse_floor.rs");

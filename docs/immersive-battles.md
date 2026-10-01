@@ -28,6 +28,23 @@ This keeps their source sequence and palette while placing effects along the
 3D battler axis. F3 changes presentation without another interpreter, command
 path or reset of the authoritative frame.
 
+## Physical size and shared framing
+
+Modeled battlers take their physical dimension from the loaded pack's Pokédex
+feet/inches field, converted to meters at the presentation boundary. One common
+world-unit conversion and uniform per-model scaling preserve relative body sizes
+and proportions. Authored body references exclude Cyndaquil's flames and Diglett's
+soil, follow the current serpent centerlines, and use body length for the explicit
+fish/insect cases. These references describe original geometry; no duplicate
+species-size catalog is stored. Missing or invalid dimensions retain source art.
+
+One layout fits both complete neutral model bounds, adjusts separation for large
+bodies, and projects actors, source OAM, row effects and hit anchors through the
+same camera. Visibility changes or source offsets do not resize individual
+participants or reframe a held attack. Native Cyndaquil/Sudowoodo and Onix/Diglett
+encounters have been reviewed; every species pairing and move still needs its
+appropriate visual check.
+
 ## Original effects and row sampling
 
 `VisualBattleSourceFrame` retains current source frame, BGP/OBP-derived artwork,
@@ -58,6 +75,28 @@ contrast while keeping source ticks, positions, object lifetimes, sounds and bat
 rules. The presentation resources are never read by the controller. Current native
 comparison and regression results must be checked before claiming every effect
 or interruption is faithful.
+
+## Experimental extracted battler rows
+
+The default renderer still falls back to source presentation for extracted-row
+phases. A native-only pilot is available with
+`CRYSTAL_BATTLE_ROW_PROTOTYPE=1` for the exact `TACKLE`/`BattleAnim_Tackle` and
+`WATER_GUN`/`BattleAnim_WaterGun` roots. It requires normal modeled battlers,
+recognized source event structure and a complete two-row OAM rectangle. Partial
+or multiple strips, unsupported sequences and special appearances retain the
+source renderer. Live source OAM, including its final deinitialization frame,
+remains the lifetime authority.
+
+`CRYSTAL_BATTLE_ROW_CAPTURE_CACHE=1` is a separate opt-in that also requires the
+row prototype. It reuses eligible static actor captures only after the matching
+render draw, output blit and submission are acknowledged; changed appearance,
+scene or target state invalidates reuse. Both options are disabled by default
+and unavailable in WebAssembly. A matched native Tackle pair verifies identical
+actor/field pixels on shared source frames and removes the measured first-row
+hitch; it does not improve the median capture interval. See the
+[bounded timing result](battle-3d-performance.md#experimental-actor-capture-reuse).
+Water Gun, alpha-edge, resize, interruption and broader source-OAM review remain
+open. Neither pilot closes the general extracted-row/reveal gap.
 
 ## Specific source sequences
 

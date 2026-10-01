@@ -108,6 +108,7 @@ fn immersive_battle_extracts_presented_party_slot_without_mutating_authority() {
         frame.battlers[0].as_ref().unwrap().species_id.as_ref(),
         "CYNDAQUIL"
     );
+    assert!((frame.battlers[0].as_ref().unwrap().pokedex_size_m.unwrap() - 0.508).abs() < 0.00001);
     assert_eq!(
         shell.shell.snapshot().unwrap(),
         before,
@@ -129,6 +130,7 @@ fn immersive_battle_uses_retained_transform_without_sampling_future_authority() 
         frame.battlers[0].as_ref().unwrap().species_id.as_ref(),
         "TOTODILE"
     );
+    assert!((frame.battlers[0].as_ref().unwrap().pokedex_size_m.unwrap() - 0.6096).abs() < 0.00001);
     assert!(
         shell
             .shell
@@ -749,7 +751,7 @@ fn immersive_battle_move_preview_controller(
     )
     .unwrap();
     let shell =
-        prepare_immersive_battle_preview(shell, shadow_ball, psychic, hyper_beam, surf).unwrap();
+        prepare_immersive_battle_preview(shell, shadow_ball, psychic, hyper_beam, surf, false).unwrap();
     VisibleShellController { shell }
 }
 
@@ -1130,6 +1132,7 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
             ..default()
         })
         .init_resource::<crystal_render_api::VisualBattleCanvas>()
+        .init_resource::<crystal_voxel_view::BattleSceneLayout>()
         .add_systems(Update, sync_immersive_battle_source_object_layout);
     let mut originals = Vec::new();
     for object in &source.objects {
@@ -1175,6 +1178,7 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
                 );
                 if active {
                     let projected = crystal_voxel_view::battle_source_overlay_rect(
+                        app.world().resource::<crystal_voxel_view::BattleSceneLayout>(),
                         object.center,
                         object.size,
                         viewport,
@@ -1584,5 +1588,141 @@ fn immersive_audited_battle_sound_masks_preserve_source_programs_and_canonical_p
                 assert!(Arc::ptr_eq(&canonical, &decoded.samples));
             }
         }
+    }
+}
+
+#[test]
+fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+    for (move_id, show, retire) in [("TACKLE", 20, 25), ("WATER_GUN", 94, 98)] {
+        for player_move in [true, false] {
+            let mut animation = battler_row_regression_animation(&snapshot, move_id, player_move);
+            let player_strip = if move_id == "TACKLE" {
+                !player_move
+            } else {
+                player_move
+            };
+            let index = usize::from(!player_strip);
+            let mut playback = new_visible_battle_objects(&bundle, &animation).unwrap();
+            for frame in 0..=animation.total_frames {
+                animation.frame = frame;
+                advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
+                assert!(immersive_row_prototype_oam_supported(&playback.battler_rows));
+                if frame == 2 {
+                    let mut partial = playback.battler_rows.clone();
+                    partial.iter_mut().flatten().next().unwrap().oam.rows[0][0] = false;
+                    assert!(!immersive_row_prototype_oam_supported(&partial), "partial OAM must retain classic fallback");
+                }
+                let rows = immersive_row_prototype_rows(&animation, &playback.battler_rows);
+                assert!(rows[1 - index].is_none());
+                if (1..=retire).contains(&frame) {
+                    let row = rows[index].expect("source OAM owns lifetime, including deinit tick");
+                    assert_eq!(
+                        row.source_y,
+                        if player_strip {
+                            Vec2::new(48.0, 64.0)
+                        } else {
+                            Vec2::new(40.0, 56.0)
+                        }
+                    );
+                    assert_eq!(row.bg_cleared, frame > 1 && frame < show);
+                } else {
+                    assert!(rows[index].is_none());
+                }
+                advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
+                assert_eq!(
+                    immersive_row_prototype_rows(&animation, &playback.battler_rows),
+                    rows,
+                    "extracting F3 view at the same source frame is idempotent"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn immersive_row_prototype_tackle_uses_exact_source_scroll_band() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    for player_move in [true, false] {
+        let mut animation = battler_row_regression_animation(&snapshot, "TACKLE", player_move);
+        // Setup stores distance 0. Forward fill writes 0,2,4,6,8, then
+        // return starts at10; fill precedes the +/-2 register update.
+        for (age, distance) in [0, 0, 2, 4, 6, 8, 10, 8, 6, 4, 2, 0]
+            .into_iter()
+            .enumerate()
+        {
+            animation.frame = 7 + age as u16;
+            let rows = immersive_row_prototype_tackle_scx(&animation).unwrap();
+            for (row, value) in rows.into_iter().enumerate() {
+                let in_band = if player_move {
+                    (47..95).contains(&row)
+                } else {
+                    row < 55
+                };
+                assert_eq!(
+                    value,
+                    if in_band {
+                        if player_move { -distance } else { distance }
+                    } else {
+                        0
+                    }
+                );
+            }
+        }
+        animation.frame = 19;
+        assert!(immersive_row_prototype_tackle_scx(&animation).is_none());
+    }
+}
+
+#[test]
+fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let battler = |side| {
+        Some(VisualBattleBattler {
+            side,
+            species_id: Arc::from("GENGAR"),
+            pokedex_size_m: Some(1.4986),
+            party_index: None,
+            texture: Handle::weak_from_u128(15),
+            texture_size: Vec2::splat(56.0),
+            source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
+            source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
+            visible: true,
+            allow_species_model: true,
+            shiny: false,
+        })
+    };
+    let mut battlers = [
+        battler(VisualBattleSide::Player),
+        battler(VisualBattleSide::Enemy),
+    ];
+    for move_id in ["TACKLE", "WATER_GUN"] {
+        let mut animation = battler_row_regression_animation(&snapshot, move_id, true);
+        assert!(immersive_row_prototype_supported(&animation, &battlers));
+        animation.animation_label = format!(
+            "BattleAnim_SubstituteLower -> {}",
+            animation.animation_label
+        );
+        assert!(!immersive_row_prototype_supported(&animation, &battlers));
+    }
+    let animation = battler_row_regression_animation(&snapshot, "TACKLE", true);
+    battlers[0].as_mut().unwrap().allow_species_model = false;
+    assert!(!immersive_row_prototype_supported(&animation, &battlers));
+    battlers[0].as_mut().unwrap().allow_species_model = true;
+    battlers[0].as_mut().unwrap().shiny = true;
+    assert!(!immersive_row_prototype_supported(&animation, &battlers));
+    battlers[0].as_mut().unwrap().shiny = false;
+    battlers[1].as_mut().unwrap().visible = false;
+    assert!(!immersive_row_prototype_supported(&animation, &battlers));
+    battlers[1].as_mut().unwrap().visible = true;
+    for move_id in ["GROWL", "BODY_SLAM", "SURF"] {
+        assert!(!immersive_row_prototype_supported(
+            &battler_row_regression_animation(&snapshot, move_id, true),
+            &battlers
+        ));
     }
 }

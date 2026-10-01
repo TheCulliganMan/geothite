@@ -69,9 +69,6 @@ fn profile_kind(object: &Object) -> Option<ModelKind> {
         | ("pokecenter", "Pokecenter upstairs seat 29 0")
         | ("pokecenter", "Shared Pokecenter seat 2e")
         | ("pokecenter", "Shared Pokecenter seat 2f") => LinkSeat,
-        ("pokecenter", "Pokecenter2F booth partition 31-32")
-        | ("pokecenter", "Pokecenter2F booth partition 0b-28")
-        | ("pokecenter", "Pokecenter2F booth partition 0b-0f") => ClinicalPartition,
         ("pokecenter", "Shared Pokecenter healing machine") => HealingMachine,
         ("mart", "Shared Mart Ecruteak Mart refrigerator 0")
         | ("mart", "Shared Mart Ecruteak Mart refrigerator 2") => RetailRefrigerator,

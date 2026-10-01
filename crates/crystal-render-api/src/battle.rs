@@ -40,6 +40,10 @@ pub struct VisualBattleBattler {
     pub side: VisualBattleSide,
     /// Exact currently presented identity, including visible Transform.
     pub species_id: Arc<str>,
+    /// Listed physical dimension from the currently presented species' Pokédex
+    /// entry, in metres. Some long-bodied species are measured along the body.
+    /// None means the content does not establish a physical size.
+    pub pokedex_size_m: Option<f32>,
     pub party_index: Option<usize>,
     pub texture: Handle<Image>,
     pub texture_size: Vec2,
@@ -112,6 +116,16 @@ pub struct VisualBattleSourceObject {
     pub uv_rect: Rect,
 }
 
+/// A source BATTLEROBJ copy. This describes presentation only; it never owns
+/// a clock or advances the animation. Crops use the same LCD attack plane as SCX/SCY.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct VisualBattleBattlerRows {
+    /// Half-open LCD Y interval copied to stationary OAM.
+    pub source_y: Vec2,
+    /// The source clears the corresponding BG tiles one tick after allocation.
+    pub bg_cleared: bool,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct VisualBattleSourceFrame {
     pub frame: u16,
@@ -130,6 +144,9 @@ pub struct VisualBattleSourceFrame {
     /// Output row y samples row y + offset; OAM objects and HUD are unwarped.
     pub line_y_offsets: Option<[i8; 0x5f]>,
     pub objects: Vec<VisualBattleSourceObject>,
+    /// Opt-in, bounded Tackle/Water Gun prototype. None preserves the normal
+    /// scene path and avoids all extra actor rendering.
+    pub battler_rows: [Option<VisualBattleBattlerRows>; 2],
 }
 
 /// The immersive viewport size in the native 2D pass and physical pixels.
@@ -203,6 +220,12 @@ impl VisualBattleFrame {
             if !battler.texture_size.is_finite() || battler.texture_size.min_element() <= 0.0 {
                 return Err("battle texture geometry is invalid");
             }
+            if battler
+                .pokedex_size_m
+                .is_some_and(|size| !size.is_finite() || size <= 0.0)
+            {
+                return Err("battle physical size is invalid");
+            }
         }
         if self.cues.len() > 8 {
             return Err("unbounded battle cue frame");
@@ -230,6 +253,15 @@ impl VisualBattleFrame {
             {
                 return Err("invalid source battle presentation");
             }
+            for rows in source.battler_rows.iter().flatten() {
+                if !rows.source_y.is_finite()
+                    || rows.source_y.x < 0.0
+                    || rows.source_y.y > 144.0
+                    || rows.source_y.x >= rows.source_y.y
+                {
+                    return Err("invalid extracted battler rows");
+                }
+            }
             for object in &source.objects {
                 if object.slot >= 10
                     || object.texture == Handle::default()
@@ -254,6 +286,18 @@ impl VisualBattleFrame {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn physical_dimensions_reject_invalid_values_without_inventing_missing_data() {
+        let mut valid = frame();
+        assert_eq!(valid.validate(), Ok(()));
+        for size in [0.0, -1.0, f32::NAN, f32::INFINITY] {
+            valid.battlers[0].as_mut().unwrap().pokedex_size_m = Some(size);
+            assert_eq!(valid.validate(), Err("battle physical size is invalid"));
+        }
+        valid.battlers[0].as_mut().unwrap().pokedex_size_m = None;
+        valid.battlers[0].as_mut().unwrap().allow_species_model = false;
+        assert_eq!(valid.validate(), Ok(()));
+    }
     fn frame() -> VisualBattleFrame {
         VisualBattleFrame {
             active: true,
@@ -262,6 +306,7 @@ mod tests {
                 Some(VisualBattleBattler {
                     side: VisualBattleSide::Player,
                     species_id: Arc::from("CYNDAQUIL"),
+                    pokedex_size_m: Some(0.508),
                     party_index: Some(2),
                     texture: Handle::weak_from_u128(4),
                     texture_size: Vec2::splat(56.0),

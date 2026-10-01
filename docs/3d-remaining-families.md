@@ -7,21 +7,21 @@ backing ground. Dynamic map states and individual species art remain separate
 work in the broader conversion checklist.
 
 The latest production audit verifies all 388 base maps without a mesher error.
-It records 250,544 cells consumed by authored geometry, including named surface
+It records 251,464 cells consumed by authored geometry, including named surface
 finishes. Per-map source reports stay local under `target/`; no content pack,
 source image or generated audit manifest belongs in the shipped repository.
 
 ## Actionable families
 
-The 18 entries below still need integration or refinement plus native review.
-The installed lighthouse kit also has a separate scene-quality gap described below.
+The 17 entries below still need integration or refinement plus native review.
+Installed Cable Club and lighthouse kits retain separate room-detailing gaps
+described below.
 The three Kanto boundary-rock families are installed and tested, with native
 Route17, Route20 and SilverCaveOutside captures inspected. Source-aware water
 finishing removes mismatched underlay squares without changing the water datum.
 
 | Family | Residual cells | Representative scene / requirement |
 | --- | ---: | --- |
-| Cable Club partitions | 730 | Pokecenter2F and beta rooms; preserve booth openings |
 | Gym display-planter boxes | 720 | GoldenrodGym and AzaleaGym |
 | Broad central Gym tree | 9 | AzaleaGym; rounded canopy and trunk |
 | Gym maze walls | 356 | ViridianGym; retain all native gaps |
@@ -48,11 +48,19 @@ finishing removes mismatched underlay squares without changing the water datum.
   and 96 phone cells. The extra 52 counter cells close connected caps/continuations
   absent from the original residual estimate. Source-origin tests cover padded and
   scrolled native frames; representative native gates show their operator bays
+- Cable Club partitions: 33 complete networks, 66 shells and 968 owned cells
+  across eleven upstairs maps. Two cached prototypes replace the prior generic
+  partitions and include caps/returns beyond the original 730-cell estimate. Native
+  Cable Club and Celadon beta-room captures were reviewed. Time Capsule machinery
+  and backdrop, its separate source door/warp, and floor strips beneath counters
+  and booths remain outside this kit; see [the kit notes](art/cable-club.md)
 - Lighthouse masonry: 4,176 plain plus 640 window cells across six floors,
-  including 192 previously flat-classified 6F cells. All six floors are captured,
-  but high walls obscure the player in some default views, notably 4F. Camera-aware
-  visibility, floor finishes and 6F furnishings remain unfinished. This is geometry
-  coverage, not a completed-room signoff
+  including 192 previously flat-classified 6F cells. Camera-aware cutaway and
+  source-scoped slate finishing are integrated; current native 4F/6F captures
+  verify representative visibility and floor treatment. The 6F central checker
+  zone, furniture and machinery remain source art, and additional native movement
+  and camera layouts still need review. See [masonry](art/lighthouse-masonry.md)
+  and [floor](art/lighthouse-floor.md) notes; this is not a completed-room signoff
 
 ## Verified modeled boundary families
 

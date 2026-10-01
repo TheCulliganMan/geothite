@@ -107,7 +107,7 @@ pub(super) fn install(
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y,player_size_m,enemy_size_m,row_capture_ready,row_capture_pending\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -323,8 +323,15 @@ fn record(
             // 1x1 offscreen target is not its scene resolution.
             ("source_2d", "source", "native", output_size)
         };
+        let physical_size = |index: usize| {
+            battle_frame.battlers[index]
+                .as_ref()
+                .and_then(|battler| battler.pokedex_size_m)
+                .map_or_else(String::new, |meters| format!("{meters:.4}"))
+        };
+        let flags = |values: [bool; 2]| format!("{}|{}", u8::from(values[0]), u8::from(values[1]));
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             battle_frame.map_id,
             species(0),
             species(1),
@@ -349,6 +356,10 @@ fn record(
             view_mode,
             source_line_x,
             source_line_y,
+            physical_size(0),
+            physical_size(1),
+            flags(battle_status.row_capture_ready),
+            flags(battle_status.row_capture_pending),
         ));
     }
     if !recording.capture_images || !recording.cadence.due(elapsed, recording.outstanding) {

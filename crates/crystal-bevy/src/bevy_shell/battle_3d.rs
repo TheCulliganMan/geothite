@@ -2,9 +2,12 @@
 // snapshot selected by render_playfield after retained-dialog scene selection.
 // It never calls snapshot(), tick(), a command dispatcher, or turn resolution.
 use crystal_render_api::{
-    VisualBattleBattler, VisualBattleCue, VisualBattleCueKind, VisualBattleEnvironment,
-    VisualBattleFrame, VisualBattleSide, VisualBattleSourceFrame, VisualBattleSourceObject,
+    VisualBattleBattler, VisualBattleBattlerRows, VisualBattleCue, VisualBattleCueKind,
+    VisualBattleEnvironment, VisualBattleFrame, VisualBattleSide, VisualBattleSourceFrame,
+    VisualBattleSourceObject,
 };
+
+include!("battle_measurements.rs");
 
 #[derive(Component)]
 struct ImmersiveBattleReplaced;
@@ -245,9 +248,16 @@ fn capture_presented_battle(
                     .visible_capture_animation
                     .as_ref()
                     .is_some_and(VisibleCaptureAnimation::enemy_hidden));
+        let pokedex_size_m = snapshot
+            .presentation
+            .pokedex_entries
+            .get(species)
+            .filter(|entry| entry.species == species)
+            .and_then(|entry| pokedex_dimension_meters(entry.height_digits));
         frame.battlers[side.index()] = Some(VisualBattleBattler {
             side,
             species_id: Arc::from(species),
+            pokedex_size_m,
             party_index: if is_player {
                 battle.active_player_party_index
             } else {
@@ -260,7 +270,7 @@ fn capture_presented_battle(
             visible,
             // Authored models currently use the normal palette. Keep actual
             // shiny source art rather than claiming an incorrect shiny mesh.
-            allow_species_model: !substitute && !minimize && !shiny,
+            allow_species_model: !substitute && !minimize && !shiny && pokedex_size_m.is_some(),
             shiny,
         });
     }
@@ -277,6 +287,21 @@ fn capture_presented_battle(
         } else {
             None
         };
+        if immersive_row_prototype_enabled()
+            && immersive_row_prototype_supported(animation, &frame.battlers)
+            && art.battle_object_runtime.as_ref().is_some_and(|playback| {
+                immersive_row_prototype_oam_supported(&playback.battler_rows)
+            })
+            && let Some(source) = &mut frame.source
+        {
+            if animation.move_id == "TACKLE" {
+                // Tackle is a source LCD band scroll. Moving the whole actor
+                // as well would apply the same displacement twice.
+                source.battler_offsets = [Vec2::ZERO; 2];
+                source.line_x_offsets = immersive_row_prototype_tackle_scx(animation);
+            }
+            frame.use_source_scene = immersive_battle_requires_source_scene_inner(shell, true);
+        }
         let side = if animation.player_move {
             VisualBattleSide::Player
         } else {
@@ -398,6 +423,8 @@ fn capture_immersive_source_frame(
     let mut playback = match art.battle_object_runtime.take() {
         Some(playback)
             if playback.source == animation.object_events
+                && playback.bg_source == animation.bg_events
+                && playback.move_id == animation.move_id
                 && playback.player == animation.player_move
                 && playback.label == animation.animation_label
                 && u32::from(animation.frame) + 1 >= playback.next_tick =>
@@ -408,6 +435,7 @@ fn capture_immersive_source_frame(
     };
     advance_visible_battle_objects(&mut playback, &bundle, animation)?;
     let live_slots = playback.slots.clone();
+    let live_battler_rows = playback.battler_rows.clone();
     let object_obp0_write = playback.obp0_write;
     art.battle_object_runtime = Some(playback);
     let mut registers = visible_battle_dmg_palette_registers(Some(animation));
@@ -439,6 +467,13 @@ fn capture_immersive_source_frame(
         line_x_offsets: visible_battle_line_x_offsets(Some(animation)),
         line_y_offsets: visible_battle_line_y_offsets(Some(animation)),
         objects: Vec::with_capacity(10),
+        battler_rows: if immersive_row_prototype_enabled()
+            && immersive_row_prototype_supported(animation, battlers)
+        {
+            immersive_row_prototype_rows(animation, &live_battler_rows)
+        } else {
+            [None; 2]
+        },
     };
     for (index, battler) in battlers.iter().enumerate() {
         let Some(battler) = battler else {
@@ -865,9 +900,10 @@ fn prepare_immersive_battle_preview(
     psychic: bool,
     hyper_beam: bool,
     surf: bool,
+    size_comparison: bool,
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam, surf]
+        [shadow_ball, psychic, hyper_beam, surf, size_comparison]
             .into_iter()
             .filter(|active| *active)
             .count()
@@ -876,9 +912,14 @@ fn prepare_immersive_battle_preview(
     );
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
     let initial = shell.shell.snapshot()?;
+    let expected_map = if size_comparison {
+        "UnionCave1F"
+    } else {
+        "Route36"
+    };
     anyhow::ensure!(
-        initial.overworld.map_name == "Route36" && initial.party.slots.is_empty(),
-        "immersive battle preview requires a fresh empty-party Route36 session"
+        initial.overworld.map_name == expected_map && initial.party.slots.is_empty(),
+        "immersive battle preview requires a fresh empty-party {expected_map} session"
     );
     let trainer = initial.trainer;
     let move_fixture = if shadow_ball {
@@ -894,7 +935,17 @@ fn prepare_immersive_battle_preview(
     } else {
         None
     };
-    if let Some((species, level, tm, move_name)) = move_fixture {
+    if size_comparison {
+        shell.shell.add_party_pokemon(
+            "DIGLETT",
+            40,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+    } else if let Some((species, level, tm, move_name)) = move_fixture {
         shell.shell.add_party_pokemon(
             species,
             level,
@@ -974,9 +1025,17 @@ fn prepare_immersive_battle_preview(
         .set_engine_flag("ENGINE_POKEDEX", true)?;
     mark_runtime_snapshot_dirty(&mut shell);
     settle_visible_shell_smoke_until_idle(&mut shell)?;
-    shell
-        .shell
-        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)?;
+    if size_comparison {
+        // Use Daniel's actual level-11 Onix and original trainer script. The
+        // normal save-reference validator remains authoritative for the fixture.
+        shell
+            .shell
+            .start_scripted_trainer_battle("UnionCave1F", "TrainerHikerDaniel", 0)?;
+    } else {
+        shell
+            .shell
+            .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)?;
+    }
     prepare_visible_battle_entry(&mut shell)?;
     let mut controller = VisibleShellController { shell };
     for _ in 0..64 {
@@ -1048,6 +1107,13 @@ fn publish_immersive_battle_canvas(
 /// by the background-only 3D composite and do not trigger this fallback. Do not replace them
 /// with invented shrinking, rolling, recoil, particles or capture choreography.
 fn immersive_battle_requires_source_scene(shell: &BevyRuntimeShell) -> bool {
+    immersive_battle_requires_source_scene_inner(shell, false)
+}
+
+fn immersive_battle_requires_source_scene_inner(
+    shell: &BevyRuntimeShell,
+    allow_rows: bool,
+) -> bool {
     let animation = shell.visible_move_animations.front();
     let clips = visible_move_battler_clip_tiles(animation);
     let remove = visible_remove_mon_clips(animation);
@@ -1060,13 +1126,14 @@ fn immersive_battle_requires_source_scene(shell: &BevyRuntimeShell) -> bool {
         || clips.1.is_some()
         || remove.0.is_some()
         || remove.1.is_some()
-        || rows.0.is_some()
-        || rows.1.is_some()
+        || (!allow_rows && (rows.0.is_some() || rows.1.is_some()))
         || animation.is_some_and(|animation| {
             matches!(animation.move_id.as_str(), "FAINT_MON" | "RETURN_MON")
                 || animation.animation_label == "BattleAnim_ReturnMon"
         })
 }
+
+include!("battle_row_prototype.rs");
 
 fn immersive_source_opaque_bounds(pixels: &[u8], size: Vec2) -> Rect {
     let width = size.x as usize;
@@ -1330,6 +1397,7 @@ struct ImmersiveBattleSourceObjectLayout {
 /// OAM in the native overlay so BG scroll never distorts the objects twice.
 /// Store the original transform and size so F3 restores the classic presenter.
 fn sync_immersive_battle_source_object_layout(
+    layout: Res<crystal_voxel_view::BattleSceneLayout>,
     mut commands: Commands,
     status: Res<crystal_voxel_view::BattleViewStatus>,
     frame: Res<VisualBattleFrame>,
@@ -1349,7 +1417,12 @@ fn sync_immersive_battle_source_object_layout(
             .flatten()
             .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0));
         let projected = source.and_then(|source| {
-            crystal_voxel_view::battle_source_overlay_rect(source.center, source.size, canvas.size)
+            crystal_voxel_view::battle_source_overlay_rect(
+                &layout,
+                source.center,
+                source.size,
+                canvas.size,
+            )
         });
         if let Some(rect) = projected {
             if stored.is_none() {
