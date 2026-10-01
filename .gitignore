@@ -44,3 +44,6 @@ __pycache__/
 
 # Canonical editable art materialized from repository-contained source chunks.
 /art/johto/source/*.blend
+
+# Verified native source example; remaining source migration is in progress.
+!/art/johto/source/kanto-capped-posts.blend
