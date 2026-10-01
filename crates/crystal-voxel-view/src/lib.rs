@@ -71,6 +71,7 @@ mod saffron_gym;
 mod ship;
 mod sign;
 mod terrain_tracking;
+mod terrain_batches;
 mod tower;
 mod train_station;
 mod train_station_models;
@@ -372,8 +373,6 @@ struct TerrainRevisionCache {
     solid_entity: Option<Entity>,
     animated_textured_entity: Option<Entity>,
     animated_solid_entity: Option<Entity>,
-    textured_mesh: Option<Handle<Mesh>>,
-    solid_mesh: Option<Handle<Mesh>>,
     animated_textured_mesh: Option<Handle<Mesh>>,
     animated_solid_mesh: Option<Handle<Mesh>>,
     textured_material: Option<Handle<VoxelMaterial>>,
@@ -402,8 +401,8 @@ struct BuiltTerrain {
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
     reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
     footing_heights: Vec<f32>,
-    textured_mesh: Mesh,
-    solid_mesh: Mesh,
+    textured_meshes: Vec<terrain_batches::PreparedBatch>,
+    solid_meshes: Vec<terrain_batches::PreparedBatch>,
     animated_textured_mesh: Mesh,
     animated_solid_mesh: Mesh,
 }
@@ -513,7 +512,15 @@ fn setup_voxel_view(
     }
     // Face colors retain their authored shade; this light supplies only
     // the scene's depth-tested cast-shadow visibility.
-    commands.insert_resource(DirectionalLightShadowMap { size: 2048 });
+    #[cfg(not(target_arch = "wasm32"))]
+    let shadow_size = match std::env::var("CRYSTAL_MODELED_SHADOW_RESOLUTION").as_deref() {
+        Ok("512") => 512,
+        Ok("1024") => 1024,
+        _ => 2048,
+    };
+    #[cfg(target_arch = "wasm32")]
+    let shadow_size = 2048;
+    commands.insert_resource(DirectionalLightShadowMap { size: shadow_size });
     let initial_viewport = Vec2::new(160.0, 144.0);
     let pose = camera_pose(initial_viewport);
     let camera = commands
@@ -849,7 +856,7 @@ fn sync_voxel_atmosphere(
         .is_some_and(|adapter| software_renderer(&adapter.name));
     let mut shadows = !new_bark_models::supports_map(&frame.map_id) || !software;
     #[cfg(not(target_arch = "wasm32"))]
-    if new_bark_models::supports_map(&frame.map_id) {
+    {
         match std::env::var("CRYSTAL_MODELED_SHADOWS").as_deref() {
             Ok("on") => shadows = true,
             Ok("off") => shadows = false,
@@ -1030,14 +1037,17 @@ fn sync_terrain(
                     .map(|group| (group.mesh.into_mesh(), group.origins))
                     .collect();
                 let footing_heights = terrain.footing_heights.clone();
-                let (textured_mesh, solid_mesh) = terrain.into_meshes();
+                let textured_meshes =
+                    terrain_batches::prepare(terrain.textured, build_frame.tile_size);
+                let solid_meshes =
+                    terrain_batches::prepare(terrain.solid, build_frame.tile_size);
                 BuiltTerrain {
                     background,
                     instances,
                     reveal_join_batches,
                     footing_heights,
-                    textured_mesh,
-                    solid_mesh,
+                    textured_meshes,
+                    solid_meshes,
                     animated_textured_mesh,
                     animated_solid_mesh,
                 }
@@ -1145,6 +1155,11 @@ fn sync_terrain(
                 if *transform != live_transform {
                     *transform = live_transform;
                 }
+            } else {
+                // A completed asynchronous build queued these roots earlier in
+                // this system. Set their live scroll offset before Commands
+                // materializes them, rather than drawing the built pose once.
+                commands.entity(entity).insert((Visibility::Visible, live_transform));
             }
         }
     }
@@ -1170,9 +1185,6 @@ fn apply_built_terrain(
     cache.built_frame = Some(frame.clone());
     cache.built_footing_heights = terrain.footing_heights;
 
-    let textured_mesh_handle =
-        update_mesh_asset(meshes, &mut cache.textured_mesh, terrain.textured_mesh);
-    let solid_mesh_handle = update_mesh_asset(meshes, &mut cache.solid_mesh, terrain.solid_mesh);
     let animated_textured = update_mesh_asset(
         meshes,
         &mut cache.animated_textured_mesh,
@@ -1289,25 +1301,67 @@ fn apply_built_terrain(
             frame,
         ));
     }
-    if cache.textured_entity.is_none() {
-        cache.textured_entity = Some(spawn_terrain_entity(
-            commands,
-            textured_mesh_handle,
-            textured_material_handle,
-            frame,
-        ));
-    }
-    if cache.solid_entity.is_none() {
-        cache.solid_entity = Some(spawn_terrain_entity(
-            commands,
-            solid_mesh_handle,
-            solid_material_handle,
-            frame,
-        ));
-    }
+    replace_static_terrain_batches(
+        commands,
+        meshes,
+        &mut cache.textured_entity,
+        terrain.textured_meshes,
+        textured_material_handle,
+        frame,
+    );
+    replace_static_terrain_batches(
+        commands,
+        meshes,
+        &mut cache.solid_entity,
+        terrain.solid_meshes,
+        solid_material_handle,
+        frame,
+    );
 
     cache.key = Some(key);
     Ok(())
+}
+
+/// Static roots retain the same scrolling/visibility contract as the previous
+/// combined meshes. Only their children draw. Replacing the complete hierarchy
+/// also replaces every AABB, so no bound from an earlier map/revision survives.
+fn replace_static_terrain_batches(
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    cached_root: &mut Option<Entity>,
+    batches: Vec<terrain_batches::PreparedBatch>,
+    material: Handle<VoxelMaterial>,
+    frame: &VisualWorldFrame,
+) {
+    if let Some(root) = cached_root.take() {
+        commands.entity(root).despawn_recursive();
+    }
+    let root = commands
+        .spawn((
+            SpatialBundle {
+                transform: terrain_transform(frame),
+                ..default()
+            },
+            VoxelTerrain,
+        ))
+        .id();
+    for terrain_batches::PreparedBatch { mesh, bounds } in batches {
+        let mut child = commands.spawn((
+            MaterialMeshBundle::<VoxelMaterial> {
+                mesh: meshes.add(mesh),
+                material: material.clone(),
+                visibility: Visibility::Inherited,
+                ..default()
+            },
+            RenderLayers::layer(VOXEL_RENDER_LAYER),
+        ));
+        if let Some(bounds) = bounds {
+            child.insert(bounds);
+        }
+        let child = child.id();
+        commands.entity(root).add_child(child);
+    }
+    *cached_root = Some(root);
 }
 
 fn sync_terrain_texture(
@@ -1888,8 +1942,8 @@ mod renderer_tests {
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
                 reveal_join_batches: Vec::new(),
                 footing_heights: Vec::new(),
-                textured_mesh: actor_quad_mesh(),
-                solid_mesh: actor_quad_mesh(),
+                textured_meshes: vec![actor_quad_mesh().into()],
+                solid_meshes: vec![actor_quad_mesh().into()],
                 animated_textured_mesh: actor_quad_mesh(),
                 animated_solid_mesh: actor_quad_mesh(),
             };
@@ -1921,6 +1975,139 @@ mod renderer_tests {
             );
             previous.extend(children.iter().copied());
             previous.push(root);
+        }
+    }
+
+    #[test]
+    fn static_batches_replace_bounds_and_inherit_scroll_and_transition_visibility() {
+        use bevy::render::primitives::Aabb;
+        let mut app = App::new();
+        app.add_plugins((
+            MinimalPlugins,
+            bevy::transform::TransformPlugin,
+            bevy::render::view::VisibilityPlugin,
+        ))
+        .init_resource::<Assets<Mesh>>();
+        let material = Handle::<VoxelMaterial>::weak_from_u128(314159);
+        let mut root = None;
+        let mut old_entities = Vec::new();
+        for revision in 0..3 {
+            let frame = VisualWorldFrame {
+                center: Vec2::new(revision as f32 * 31.0, -17.0),
+                ..default()
+            };
+            let mut first = actor_quad_mesh();
+            let shift = revision as f32 * 100.0;
+            first.insert_attribute(
+                Mesh::ATTRIBUTE_POSITION,
+                vec![
+                    [shift - 0.5, 0.0, 0.0],
+                    [shift + 0.5, 0.0, 0.0],
+                    [shift + 0.5, 1.0, 0.0],
+                    [shift - 0.5, 1.0, 0.0],
+                ],
+            );
+            let expected_bounds = first.compute_aabb().unwrap();
+            app.world_mut()
+                .resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
+                    let mut queue = bevy::ecs::world::CommandQueue::default();
+                    let mut commands = Commands::new(&mut queue, world);
+                    replace_static_terrain_batches(
+                        &mut commands,
+                        &mut meshes,
+                        &mut root,
+                        vec![first.into(), actor_quad_mesh().into()],
+                        material.clone(),
+                        &frame,
+                    );
+                    queue.apply(world);
+                });
+            app.update();
+            for old in old_entities.drain(..) {
+                assert!(app.world().get_entity(old).is_none());
+            }
+            let root = root.unwrap();
+            assert!(app.world().get::<Handle<Mesh>>(root).is_none());
+            assert_eq!(
+                *app.world().get::<Transform>(root).unwrap(),
+                terrain_transform(&frame)
+            );
+            let children = app.world().get::<Children>(root).unwrap().to_vec();
+            assert_eq!(children.len(), 2);
+            assert_eq!(
+                *app.world().get::<Aabb>(children[0]).unwrap(),
+                expected_bounds
+            );
+            for &child in &children {
+                assert_eq!(
+                    app.world().get::<Handle<VoxelMaterial>>(child),
+                    Some(&material)
+                );
+                assert_eq!(
+                    *app.world().get::<Transform>(child).unwrap(),
+                    Transform::IDENTITY
+                );
+                assert_eq!(
+                    *app.world().get::<Visibility>(child).unwrap(),
+                    Visibility::Inherited
+                );
+                assert_eq!(
+                    app.world().get::<GlobalTransform>(child),
+                    app.world().get::<GlobalTransform>(root)
+                );
+                assert!(app.world().get::<InheritedVisibility>(child).unwrap().get());
+            }
+            let handles = children
+                .iter()
+                .map(|&child| app.world().get::<Handle<Mesh>>(child).unwrap().clone())
+                .collect::<Vec<_>>();
+            let count = app.world().resource::<Assets<Mesh>>().len();
+            app.world_mut()
+                .get_mut::<Transform>(root)
+                .unwrap()
+                .translation
+                .x += 11.0;
+            *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Hidden;
+            app.update();
+            for &child in &children {
+                assert!(!app.world().get::<InheritedVisibility>(child).unwrap().get());
+                assert_eq!(
+                    app.world().get::<GlobalTransform>(child),
+                    app.world().get::<GlobalTransform>(root)
+                );
+            }
+            *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Visible;
+            app.update();
+            app.world_mut().clear_trackers();
+            app.update();
+            assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
+            for (&child, handle) in children.iter().zip(handles) {
+                assert!(app.world().get::<InheritedVisibility>(child).unwrap().get());
+                assert_eq!(app.world().get::<Handle<Mesh>>(child), Some(&handle));
+                assert!(
+                    !app.world()
+                        .entity(child)
+                        .get_ref::<Handle<Mesh>>()
+                        .unwrap()
+                        .is_changed()
+                );
+            }
+            assert_eq!(
+                app.world_mut()
+                    .query_filtered::<Entity, With<VoxelTerrain>>()
+                    .iter(app.world())
+                    .count(),
+                1
+            );
+            assert_eq!(
+                app.world_mut()
+                    .query::<&Handle<Mesh>>()
+                    .iter(app.world())
+                    .count(),
+                2
+            );
+            old_entities.extend(children);
+            old_entities.push(root);
         }
     }
 
@@ -1975,6 +2162,61 @@ mod renderer_tests {
                 &mut entities
             ),
             Ok(TerrainSyncState::Ready)
+        );
+    }
+
+    #[test]
+    fn newly_queued_terrain_roots_receive_live_scroll_before_the_first_draw() {
+        let built = VisualWorldFrame {
+            center: Vec2::new(-8.0, 4.0),
+            grid_origin: IVec2::new(10, 20),
+            tile_size: Vec2::splat(8.0),
+            ..default()
+        };
+        let live = VisualWorldFrame {
+            center: Vec2::new(3.5, -1.25),
+            grid_origin: IVec2::new(12, 19),
+            ..built.clone()
+        };
+        let offset = terrain_tracking::offset(&built, &live);
+        let mut expected = terrain_transform(&live);
+        expected.translation += Vec3::new(offset.x, 0.0, offset.y);
+        let mut app = App::new();
+        app.insert_resource(TerrainRevisionCache {
+            key: Some(TerrainCacheKey::from_frame(&live)),
+            built_frame: Some(built),
+            footing_origin: Some(live.grid_origin),
+            ..default()
+        }).insert_resource(live)
+            .init_resource::<TerrainBuildQueue>()
+            .init_resource::<Assets<Image>>()
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>()
+            .add_systems(Update, |frame: Res<VisualWorldFrame>, mut commands: Commands,
+                mut cache: ResMut<TerrainRevisionCache>, mut builds: ResMut<TerrainBuildQueue>,
+                mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
+                mut materials: ResMut<Assets<VoxelMaterial>>,
+                mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>| {
+                let root = commands.spawn((VoxelTerrain, SpatialBundle {
+                    transform: terrain_transform(cache.built_frame.as_ref().unwrap()),
+                    visibility: Visibility::Hidden,
+                    ..default()
+                })).id();
+                cache.solid_entity = Some(root);
+                assert_eq!(sync_terrain(&frame, &live_profiles::LiveProfiles::default(),
+                    &mut commands, &mut cache, &mut builds, &mut images, &mut meshes,
+                    &mut materials, &mut entities), Ok(TerrainSyncState::Ready));
+            });
+        app.update();
+        let root = app
+            .world()
+            .resource::<TerrainRevisionCache>()
+            .solid_entity
+            .unwrap();
+        assert_eq!(*app.world().get::<Transform>(root).unwrap(), expected);
+        assert_eq!(
+            *app.world().get::<Visibility>(root).unwrap(),
+            Visibility::Visible
         );
     }
 
@@ -2400,16 +2642,59 @@ mod renderer_tests {
         first.map_texture = Handle::weak_from_u128(2);
         assert_eq!(first_key, TerrainCacheKey::from_frame(&first));
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn native_camera_inputs_work_across_modeled_maps_and_stop_when_world_is_hidden() {
+        for map in ["NewBarkTown", "FastShipB1F", "ViridianGym", "PowerPlant"] {
+            let mut app = App::new();
+            app.insert_resource(ButtonInput::<KeyCode>::default())
+                .insert_resource(VisualWorldFrame {
+                    active: true,
+                    map_id: map.into(),
+                    ..default()
+                })
+                .insert_resource(VoxelViewSettings {
+                    enabled: true,
+                    camera: VoxelCameraControls::new(0., 0.),
+                    ..default()
+                })
+                .add_systems(Update, native_model_camera);
+            {
+                let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
+                keys.press(KeyCode::KeyE);
+                keys.press(KeyCode::PageUp);
+            }
+            app.update();
+            let moved = app.world().resource::<VoxelViewSettings>().camera;
+            assert_eq!(moved, VoxelCameraControls::new(1., 1.), "{map}");
+
+            // Holding a key is not another orbit step. The input plugin clears
+            // these edge flags between frames in the real application.
+            app.world_mut().resource_mut::<ButtonInput<KeyCode>>().clear();
+            app.update();
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+
+            app.world_mut().resource_mut::<VisualWorldFrame>().active = false;
+            {
+                let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
+                keys.press(KeyCode::KeyQ);
+                keys.press(KeyCode::PageDown);
+            }
+            app.update();
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+        }
+    }
 }
 
-/// Native art-slice controls; browser camera controls remain authoritative there.
+/// Native modeled-world controls; browser camera controls remain authoritative there.
 #[cfg(not(target_arch = "wasm32"))]
 fn native_model_camera(
     keyboard: Res<ButtonInput<KeyCode>>,
     frame: Res<VisualWorldFrame>,
     mut settings: ResMut<VoxelViewSettings>,
 ) {
-    if !settings.enabled || !frame.active || frame.map_id.as_ref() != "NewBarkTown" {
+    if !settings.enabled || !frame.active {
         return;
     }
     static TRACE: std::sync::OnceLock<bool> = std::sync::OnceLock::new();

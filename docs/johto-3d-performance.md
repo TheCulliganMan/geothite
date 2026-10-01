@@ -14,8 +14,9 @@ comparison. These are local application-frame timings, not hardware-GPU claims.
 The final row retained 618 actual source frames, about 19.2 captured frames/s.
 The previous recorder retained 123 frames over 40 s, about 3.1 frames/s. Capture
 has no motion interpolation or artificial speedup; variable timestamps preserve
-real wall time. Known software adapters use baked contact grounding instead of
-rerendering the broad terrain halo into a dynamic shadow map; hardware adapters
+real wall time. In those six original outdoor maps, known software adapters use baked contact
+grounding instead of rerendering the broad terrain halo into a dynamic shadow
+map; hardware adapters
 retain dynamic shadows. A native-only `CRYSTAL_MODELED_SHADOWS=on|off` flag
 supports controlled comparisons.
 
@@ -189,3 +190,71 @@ Ordinary held keyboard input also passed both room entrances with zero
 additional terrain builds. The east route then reached a trainer sight event
 and displayed its source dialogue. Movement capture includes GPU readback and
 is not the static timing evidence above.
+
+## Static terrain batches and native camera controls
+
+Large static textured/solid surfaces now use bounded spatial draws. Each entire
+triangle keeps its exact positions, normals, UVs, colors and wall-reveal bits.
+The partition does not remove faces or source objects. Bevy applies its normal
+camera and shadow-frustum tests to each draw; off-camera shadow casters remain
+eligible for their light. Small or uncertain inputs stay in one mesh.
+
+Regions are nominally 16×16 source cells, capped at eight per axis and 64 per
+material domain. Mesh partition and full bounds are prepared once on the terrain
+worker. Each revision replaces the old hierarchy and bounds; retained frames
+reuse meshes/materials and only update the root transform. Deferred new roots
+receive the live scrolling offset before their first draw.
+
+Twelve-second no-readback samples below retain the same optimized native build,
+1180×812 window, default map position, orbit −1 and llvmpipe renderer. `off`
+uses the new hierarchy with one static draw per domain; `on` partitions it.
+Heavy local work was paused. The second ship run reverses the comparison order.
+
+| Scene / trial | Original median / p95 | Candidate off | Candidate on |
+| --- | ---: | ---: | ---: |
+| Fast Ship B1F / 1 | 97.26 / 113.26 ms | 101.00 / 146.67 ms | 93.23 / 111.51 ms |
+| Fast Ship B1F / 2 | 96.91 / 112.47 ms | 91.67 / 107.74 ms | 91.42 / 108.99 ms |
+| Viridian Gym | 60.21 / 70.31 ms | 62.38 / 71.15 ms | 60.52 / 72.31 ms |
+| New Bark / 1 | 89.75 / 113.32 ms | 88.96 / 102.51 ms | 78.79 / 88.31 ms |
+| New Bark / 2 | 97.05 / 116.06 ms | not repeated | 79.50 / 96.82 ms |
+
+New Bark's two medians fall by about 12–18% against their unchanged baseline
+samples. The ship gain is small and the Gym is approximately unchanged. These
+results do not establish a universal improvement or a fluid frame rate, and
+hardware-GPU performance has not been measured.
+
+The full 811-test voxel suite passes, with two existing benchmarks ignored.
+Tests retain exact triangle-corner/cutaway data, bounded fallback behavior,
+visible samples across 112 camera arrangements, fresh revision bounds,
+visibility inheritance, retained handles and first-draw scroll placement.
+Sixteen paired native views cover five maps, both ship-wall sides, New Bark
+and Viridian reverse views, and the unchanged busy Power Plant/Goldenrod
+surfaces. Scrolling crosses five grid origins without rebuilding terrain;
+a real B1F ladder transition changes maps with one expected rebuild. Native
+F3 roundtrip and viewport resize retain the scene. Visual review found no
+new seams, missing boundaries or coplanar-order defect in these cases.
+
+Native Q/E and PageUp/PageDown input now works across active 3D maps. The old
+single-map art-preview gate blocked those advertised controls outside New Bark.
+A real ship session verifies orbit/zoom and their reverse inputs; a regression
+covers four map families, one-step edge handling and hidden-world rejection.
+Browser controls and gameplay state remain unchanged.
+
+### Shadow diagnostic, with defaults preserved
+
+The historical software contact-shadow profile applies to the six original
+outdoor maps. Other maps still use dynamic shadows. Native diagnostic overrides
+now work on all maps: `CRYSTAL_MODELED_SHADOWS=on|off`, and
+`CRYSTAL_MODELED_SHADOW_RESOLUTION=512|1024|2048` (default 2048).
+
+| Scene | 2048 median / p95 | 1024 | 512 | Shadows off |
+| --- | ---: | ---: | ---: | ---: |
+| Fast Ship B1F | 90.17 / 102.27 ms | 87.39 / 100.03 ms | 94.09 / 116.08 ms | 51.93 / 61.12 ms |
+| Goldenrod Gym | 85.88 / 104.97 ms | 83.94 / 95.41 ms | 89.85 / 111.15 ms | 51.48 / 58.78 ms |
+
+Removing the pass has a large cost benefit but visibly changes the lighting and
+cast-shadow treatment. It is not a like-for-like graphics optimization. Smaller
+maps provide no clear gain in these samples. Neither diagnostic changes the
+shipping default, and the shadows-off figures are not the normal performance
+claim for this increment. All original geometry and real timestamp traces remain
+available for subsequent targeted work; no interpolation or time warping is used.
