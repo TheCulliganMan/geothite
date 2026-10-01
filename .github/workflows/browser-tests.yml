@@ -40,7 +40,7 @@ jobs:
       - run: python3 tools/test_johto_art_sources.py
       - run: python3 tools/test_asset_storage_migration.py
       - run: python3 tools/test_export_model_stl.py
-      - run: python3 tools/export-model-stl.py --check
+      - run: python3 tools/check-model-layout.py
   browser-tests:
     runs-on: ubuntu-latest
     steps:

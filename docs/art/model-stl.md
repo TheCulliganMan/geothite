@@ -1,13 +1,14 @@
-# Native GitHub 3D models
+# Optional local static model previews
 
-Each canonical `.mesh.json` or `.rig.json` has an adjacent `.stl` containing its
-actual indexed triangles. For example, open
-`crates/crystal-voxel-view/models/battle_species/gengar.stl` on GitHub to rotate
-and inspect the Gengar mesh. These are ordinary raw binary STL files, not
-Base64, compressed wrappers, Git LFS pointers, screenshots, or redesigned models.
+STL previews duplicate the canonical model geometry and cannot carry animation,
+rigs, materials or smooth vertex normals. They are not runtime inputs and are no
+longer tracked or required by CI. Raw JSON runtime models and editable Blender
+sources remain in the repository with their full data.
 
-[GitHub's native 3D viewer supports STL files up to 10 MB](https://docs.github.com/en/repositories/working-with-files/using-files/working-with-non-code-files#3d-file-viewer).
-The exporter refuses an oversized model; it never silently splits one.
+The optional exporter writes deterministic binary STL files to ignored
+`output/model-stl/` for local geometry inspection. Its existing 10 MB per-model
+limit is retained; it refuses oversized models rather than splitting geometry.
+All `.stl` output is ignored by Git, including custom output locations.
 
 ## Geometry fidelity
 
@@ -51,8 +52,9 @@ python3 tools/export-model-stl.py --check
 python3 tools/test_export_model_stl.py
 ```
 
-The default writes beside the canonical models. `--output-root /path/to/stl`
-keeps the same family/stem layout in a separate directory. To export just one:
+The default writes to `output/model-stl/`, preserving the family/stem layout.
+`--output-root /path/to/stl` selects another local output directory. To export
+just one:
 
 ```sh
 python3 tools/export-model-stl.py --model battle_species/gengar.mesh.json
@@ -62,9 +64,12 @@ python3 tools/export-model-stl.py --model battle_species/gengar.mesh.json
 only the Python standard library; it reads raw JSON directly and does not need
 Blender or the game's runtime bundle.
 
-A full-tree run rejects unexpected/orphan `.stl` files and `--check` also fails
-for any missing, stale, or damaged expected export. To obtain an exact staging
-list after all exports pass, use `--check --list-output-paths`. Paths on stdout
-are relative to the output root; verification summaries go to stderr. No path
-list is emitted if any model fails verification. Targeted `--model` runs verify
-only those requested models and do not classify unrelated STLs as orphans.
+A full-tree run rejects unexpected/orphan `.stl` files in the selected output
+directory, and `--check` fails for any missing, stale, or damaged expected local
+export. This is an opt-in check after generating previews, not a clean-checkout
+requirement. To list verified exports, use `--check --list-output-paths`. Paths
+on stdout are relative to the output root; verification summaries go to stderr.
+No path list is emitted if any model fails verification. Targeted `--model`
+runs verify only those requested models and do not classify unrelated STLs as
+orphans. CI checks the canonical model layout instead, rejecting duplicate STL
+previews and same-asset GLB/JSON pairs in the runtime model tree.

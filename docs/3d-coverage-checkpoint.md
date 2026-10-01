@@ -38,9 +38,10 @@ zero; other source classifications, dynamic states and individual scene review
 are still open.
 
 Two original front-shell meshes and one editable source bring the catalog to
-654 model documents plus one shared library, 70 native Blender scenes and 654
-adjacent GitHub-viewable STL meshes. Canonical model JSON is directly readable;
-compression exists only in ignored Cargo build output.
+654 model documents plus one shared library and 70 native Blender scenes.
+Duplicate static STL previews are no longer tracked or required by CI.
+Canonical model JSON is directly readable; compression exists only in ignored
+Cargo build output.
 Connected B1F wall fits now share 28px visual height, with dark crowns, ivory
 shoulders and original-sized round portholes. Source collision, actor footing,
 wall footprints and local reveal semantics remain unchanged. This is partial
@@ -119,7 +120,7 @@ based on the production mesher rather than a map-name allowlist.
 - The Python model/source checks pass. All 70 native Blender files have verified
   compressed and expanded SHA-256 hashes (35,306,305 stored and 325,888,248
   expanded bytes). All 655 raw JSON documents retain their exact original
-  decoded bytes. Every STL is checked against its actual indexed geometry.
+  decoded bytes. Static STL previews are optional local output.
   Storage validation does not certify every scene was visually approved
 - All five external-pack source scans pass the production matcher assertions.
   The park scanner used a lower-optimization temporary Rust harness after the

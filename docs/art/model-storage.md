@@ -1,7 +1,8 @@
 # Raw model source and compiled storage
 
-Each model also has an adjacent [GitHub-viewable STL](model-stl.md) with the
-exact indexed geometry, while JSON and Blender retain materials and rigs.
+Runtime JSON and editable Blender sources retain materials and rigs. Duplicate
+static STL previews are no longer tracked or required by the build; the optional
+[local preview exporter](model-stl.md) writes ignored output.
 
 Every canonical runtime model is a normal UTF-8 `.json` file under
 `crates/crystal-voxel-view/models/`. The 655 documents contain the exact original
@@ -23,6 +24,7 @@ zero and original float precision.
 
 ```sh
 python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
+python3 tools/check-model-layout.py
 python3 tools/test_model_asset_storage.py
 python3 tools/test_johto_art_sources.py
 python3 tools/check-johto-models.py

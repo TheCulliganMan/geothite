@@ -1,4 +1,3 @@
-# Native authoring files and interactive geometry use ordinary Git.
+# Native authoring files and source previews use ordinary Git.
 *.blend binary
-*.stl binary
 *.png binary

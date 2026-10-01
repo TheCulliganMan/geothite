@@ -83,7 +83,7 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 
 ## Runtime models
 
-Each model has a directly readable `.json` geometry document and an adjacent `.stl` that GitHub renders interactively. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
+Each model has a directly readable `.json` geometry document. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
 
 | Catalog | Models | Stored bytes | Decoded JSON bytes |
 | --- | ---: | ---: | ---: |

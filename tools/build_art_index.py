@@ -33,7 +33,7 @@ def build(root=ROOT):
         lines.append(f'| [{name}](source/{name}) | {len(payload):,} | {preview} |')
     lines += ['',f'{len(entries)} editable scenes; {previews} rendered PNG previews.','',
               '## Runtime models','',
-              'Each model has a directly readable `.json` geometry document and an adjacent `.stl` that GitHub renders interactively. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
+              'Each model has a directly readable `.json` geometry document. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
               '| Catalog | Models | Stored bytes | Decoded JSON bytes |','| --- | ---: | ---: | ---: |']
     catalogs=defaultdict(lambda:[0,0,0])
     modelroot=root/'crates/crystal-voxel-view/models'

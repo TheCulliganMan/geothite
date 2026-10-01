@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Export canonical indexed model JSON to deterministic GitHub-viewable binary STL.
+"""Export optional local static previews from canonical indexed model JSON.
 
 No dependencies. The input meshes are authoritative: preserve every indexed
 triangle, including degenerate triangles, in source order. Rig exports use their
-unanimated bind pose, matching johto_characters.rs. See MODEL-STL.md.
+unanimated bind pose, matching johto_characters.rs. Output is ignored by Git and
+is not used by the game. See docs/art/model-stl.md.
 """
 
 from __future__ import annotations
@@ -245,15 +246,17 @@ def output_path(source: Path, source_root: Path, output_root: Path) -> Path:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    default_root = Path(__file__).resolve().parents[1] / "crates/crystal-voxel-view/models"
+    repository_root = Path(__file__).resolve().parents[1]
+    default_root = repository_root / "crates/crystal-voxel-view/models"
     parser.add_argument("--models-root", type=Path, default=default_root)
-    parser.add_argument("--output-root", type=Path, help="default: adjacent to each canonical model")
+    parser.add_argument("--output-root", type=Path, default=repository_root / "output/model-stl",
+                        help="default: ignored output/model-stl directory")
     parser.add_argument("--model", action="append", help="one relative .mesh.json or .rig.json path; repeatable")
     parser.add_argument("--check", action="store_true", help="verify existing files without changing them")
     parser.add_argument("--list-output-paths", action="store_true", help="after successful verification, print only verified paths relative to output-root on stdout")
     args = parser.parse_args(argv)
     root = args.models_root.resolve()
-    output_root = (args.output_root or root).resolve()
+    output_root = args.output_root.resolve()
     if not root.is_dir():
         parser.error(f"models root does not exist: {root}")
     sources = sorted([root / p for p in args.model] if args.model else [*root.rglob("*.mesh.json"), *root.rglob("*.rig.json")])

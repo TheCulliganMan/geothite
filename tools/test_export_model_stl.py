@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression checks for the GitHub STL export (standard library only)."""
+"""Regression checks for optional local STL previews (standard library only)."""
 
 from contextlib import redirect_stderr, redirect_stdout
 import importlib.util
@@ -10,6 +10,7 @@ import struct
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 SPEC = importlib.util.spec_from_file_location("model_stl", Path(__file__).with_name("export-model-stl.py"))
@@ -208,10 +209,19 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(stl.main(args + ["--check"]), 1)
         self.assertEqual(destination.read_bytes(), before[:-1])
 
-    def test_output_paths_are_adjacent_to_each_source_stem(self):
+    def test_output_paths_preserve_each_source_stem(self):
         for suffix in ("mesh.json", "rig.json"):
             self.assertEqual(stl.output_path(self.root / f"family/name.{suffix}", self.root, self.root),
                              self.root / "family/name.stl")
+
+    def test_default_output_stays_outside_canonical_models(self):
+        source = self.write("crates/crystal-voxel-view/models/nested/model.mesh.json", self.static())
+        with patch.object(stl, "__file__", str(self.root / "tools/export-model-stl.py")):
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(stl.main([]), 0)
+                self.assertEqual(stl.main(["--check"]), 0)
+        self.assertTrue((self.root / "output/model-stl/nested/model.stl").is_file())
+        self.assertEqual(list(source.parent.rglob("*.stl")), [])
 
     def test_full_tree_rejects_unexpected_stl_and_missing_expected_stl(self):
         self.write("model.mesh.json", self.static())
