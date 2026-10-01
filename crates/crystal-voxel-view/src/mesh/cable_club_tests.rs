@@ -18,6 +18,7 @@ fn fixture(origin: [i32; 2], size: [usize; 2]) -> (Vec<VisualTile>, GridGeometry
         }
     }
     let network = Network {
+        finish: Finish::Partition,
         anchor: [5, 0],
         width: 4,
         height: 9,

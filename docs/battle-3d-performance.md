@@ -59,10 +59,22 @@ random opponent sex glyph in the HUD. Prewarm cost precedes these recordings.
 
 Across all 189 timestamp intervals, median/p95 were 40.669/47.968 ms uncached
 and 42.435/52.250 ms cached (linear quantiles). This demonstrates removing the
-first row hitch in this pair, not a steady-state frame-rate improvement. Water
-Gun, cold/changed-target lifecycle, alpha-edge, resize and interruption checks
-remain open, so both flags stay opt-in. Source clocks and controller decisions
-stay outside this cache.
+first row hitch in this pair, not a steady-state frame-rate improvement.
+
+A later matched Water Gun pair captured 192 uncached and 168 cached frames.
+Eight shared source frames (including the nonzero ripple at source 59) have
+pixel-identical actor and arena output; only the opponent sex glyph differs.
+Cached targets were ready from frame zero. Median/p95 intervals were
+40.701/53.459 ms uncached and 47.792/55.206 ms cached. The same source 5→14
+span took 156.233 versus 148.888 ms. This is mixed timing, with worse overall
+cached intervals; it does not support a general Water Gun speedup. Failed earlier
+attempts that ran out of scratch storage are excluded.
+
+Cold/changed-target lifecycle, alpha-edge and interruption checks remain open.
+A manual menu F3 round trip and a narrow-window resize retained both modeled
+actors and their relative sizes, but that recording reached its normal 180-second
+arming timeout before a move began; it is not a successful resized attack capture.
+Both flags stay opt-in. Source clocks and controller decisions stay outside this cache.
 
 ## Source timing and recording
 

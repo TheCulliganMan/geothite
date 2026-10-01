@@ -8,10 +8,10 @@ spec=importlib.util.spec_from_file_location('cable_club_art',ROOT/'tools/build-c
 kit=importlib.util.module_from_spec(spec);spec.loader.exec_module(kit)
 def check():
  triangles=0;parts=0;stored=0
- for name,depth,expected in [('divider_long',64,728),('vestibule_return',48,616)]:
-  path=ROOT/'crates/crystal-voxel-view/models/cable_club'/f'{name}.mesh.json';doc=read_model_json(path);asset=kit.make_asset(name,depth)
+ for name,height,depth,expected in [('divider_long',16,64,728),('vestibule_return',16,48,616),('time_capsule',22,32,1176)]:
+  path=ROOT/'crates/crystal-voxel-view/models/cable_club'/f'{name}.mesh.json';doc=read_model_json(path);asset=kit.make_time_capsule() if name=='time_capsule' else kit.make_asset(name,depth)
   assert doc==json.loads(json.dumps(kit.document(asset))),f'{name}: regenerate runtime from the editable geometry generator'
-  assert doc['bounds']=={'min':[0,0,0],'max':[16,16,depth]}
+  assert doc['bounds']=={'min':[0,0,0],'max':[16,height,depth]}
   assert doc['triangle_count']==expected
   for p in doc['primitives']:
    vs=[tuple(p['positions'][i:i+3])for i in range(0,len(p['positions']),3)]
@@ -48,5 +48,9 @@ def check():
  payload=b''.join(base64.b64decode((ROOT/'art/johto/source'/p['file']).read_bytes(),validate=True)for p in entry['chunks'])
  assert len(payload)==entry['bytes']and hashlib.sha256(payload).hexdigest()==entry['sha256']
  source=gzip.decompress(payload);assert source.startswith(b'BLENDER')and len(source)==entry['uncompressed_bytes']and hashlib.sha256(source).hexdigest()==entry['uncompressed_sha256']
- print(f'Cable Club: 2 deterministic cached models, {parts} closed positive-volume parts, {triangles:,} prototype triangles, {stored:,} stored bytes; exact six-shell openings and editable Blender chunks verified')
+ # The 2x4 machine footprint ends before the distinct 2x2 native warp.
+ capsule={(x,y)for x in range(26,28)for y in range(4)}
+ assert len(capsule)==8 and not capsule.intersection(owned)
+ assert not capsule.intersection((x,y)for x in range(26,28)for y in range(4,6))
+ print(f'Cable Club: 3 deterministic cached models, {parts} closed positive-volume parts, {triangles:,} prototype triangles, {stored:,} stored bytes; exact six-shell and capsule openings and editable Blender chunks verified')
 if __name__=='__main__':check()

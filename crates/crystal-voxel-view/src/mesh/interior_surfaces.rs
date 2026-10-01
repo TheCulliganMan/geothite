@@ -166,6 +166,10 @@ fn floor_cell(
         material_quad(mesh, [x0 + west, x1, z0 + north, z1], height, color);
     }
 }
+// Uses precisely the same grid phase and palette as the established room floor.
+pub(super) fn cable_club_floor_cell(mesh: &mut SurfaceMeshData, bounds: [f32; 4], world: [i32; 2]) {
+    floor_cell(mesh, bounds, 0.0, InteriorFloor::Ceramic, world);
+}
 fn near(a: f32, b: f32) -> bool {
     (a - b).abs() < 0.0001
 }

@@ -1742,21 +1742,27 @@
     {
       "file": "cable-club.blend",
       "encoding": "gzip-blend",
-      "bytes": 122303,
-      "sha256": "a7cbd9120f87a9bff4ba425aab3b7fad73572f8336ae331e62f964bd8f093c5a",
-      "uncompressed_bytes": 1059112,
-      "uncompressed_sha256": "9e2808a18893d19fe15213c400b18aebb3eb816c27e3ddd1c93fee86089d5793",
+      "bytes": 143524,
+      "sha256": "c3786c5c1eb5e2f2afc3fa6f09172426a5935ce37f0fd870df50598a2ac39004",
+      "uncompressed_bytes": 1432468,
+      "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4",
       "chunks": [
         {
           "file": "chunks/cable-club.blend.000.b64",
           "bytes": 65536,
-          "sha256": "fd2c71fe05704d2ff870c0c51d1d0d06504bcefde6df25f31872a60f260eb873",
+          "sha256": "b489adc88cbd1e591f3d390e7f833e6a15fbfce5a58182e89b1e3fa17b1f7a80",
           "encoding": "base64"
         },
         {
           "file": "chunks/cable-club.blend.001.b64",
-          "bytes": 56767,
-          "sha256": "7a8e8b34162cb14668ec939c6439e7770a858a845787c95307faf1c44d1d846a",
+          "bytes": 65536,
+          "sha256": "f9a771d705aa8cf7ced9dd9426867edceca35573be9da819412a872866735ea1",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/cable-club.blend.002.b64",
+          "bytes": 12452,
+          "sha256": "1b412748444edf6e08f061794757e35f6c2452ec3dc08bdb571730a4514fa6a9",
           "encoding": "base64"
         }
       ]

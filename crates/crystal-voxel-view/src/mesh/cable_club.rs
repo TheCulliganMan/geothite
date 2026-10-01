@@ -3,7 +3,14 @@
 use super::*;
 use crate::live_profiles::Document;
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum Finish {
+    Partition,
+    TimeCapsule,
+    CeramicFloor,
+}
 struct Network {
+    finish: Finish,
     anchor: [i32; 2],
     width: usize,
     height: usize,
@@ -116,7 +123,23 @@ pub(super) fn resolve(
     if !MAPS.contains(&map) {
         return Vec::new();
     }
-    resolve_networks(NETWORKS, map, cells, g, origin, profiles, reserved)
+    let mut placements = resolve_networks(NETWORKS, map, cells, g, origin, profiles, reserved);
+    let mut blocked = reserved.to_vec();
+    for p in &placements {
+        for i in p.indices(g.width) {
+            blocked[i] = true;
+        }
+    }
+    placements.extend(resolve_networks(
+        ROOM_FINISH,
+        map,
+        cells,
+        g,
+        origin,
+        profiles,
+        &blocked,
+    ));
+    placements
 }
 fn resolve_networks(
     networks: &'static [Network],
@@ -191,6 +214,23 @@ pub(super) fn append(
     {
         return false;
     }
+    if p.network.finish == Finish::CeramicFloor {
+        // This is a zero-height architectural finish, never object coverage.
+        // Sparse source ownership suppresses only verified native floor art.
+        for i in p.indices(g.width) {
+            let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
+            modeled_interiors::cable_club_floor_cell(
+                &mut mesh.solid,
+                [w, e, n, s],
+                [
+                    p.grid_origin[0] + (i % g.width) as i32,
+                    p.grid_origin[1] + (i / g.width) as i32,
+                ],
+            );
+            claimed[i] = true;
+        }
+        return true;
+    }
     let uv = g.uv(
         cells[p.ground].column as usize,
         cells[p.ground].row as usize,
@@ -201,7 +241,9 @@ pub(super) fn append(
     }
     for &[dx, dy, width, depth] in p.network.shells {
         let (west, _, north, _) = g.bounds(p.column + dx, p.row + dy);
-        let model = if depth == 8 {
+        let model = if p.network.finish == Finish::TimeCapsule {
+            crate::cable_club_models::time_capsule()
+        } else if depth == 8 {
             crate::cable_club_models::divider()
         } else {
             crate::cable_club_models::short_return()
@@ -215,7 +257,12 @@ pub(super) fn append(
                 north + depth as f32 * g.tile_height,
             ],
             0.0,
-            16.0 * g.tile_height / 8.0,
+            (if p.network.finish == Finish::TimeCapsule {
+                22.0
+            } else {
+                16.0
+            }) * g.tile_height
+                / 8.0,
         );
     }
     if p.network.record_sign {
@@ -243,7 +290,11 @@ pub(super) fn append(
     for i in p.indices(g.width) {
         claimed[i] = true;
         if mesh.authored_cells.len() == cells.len() {
-            mesh.authored_cells[i] = Some("pokecenter/cable_club_partition");
+            mesh.authored_cells[i] = Some(if p.network.finish == Finish::TimeCapsule {
+                "pokecenter/time_capsule"
+            } else {
+                "pokecenter/cable_club_partition"
+            });
         }
     }
     true
@@ -253,4 +304,5 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     include!("cable_club_tests.rs");
+    include!("cable_club_finish_tests.rs");
 }

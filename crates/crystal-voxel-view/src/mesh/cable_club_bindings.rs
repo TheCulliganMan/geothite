@@ -14,6 +14,7 @@ const MAPS: &[&str] = &[
 ];
 const NETWORKS: &[Network] = &[
     Network {
+        finish: Finish::Partition,
         anchor: [5, 0],
         width: 4,
         height: 9,
@@ -23,6 +24,7 @@ const NETWORKS: &[Network] = &[
         record_sign: false,
     },
     Network {
+        finish: Finish::Partition,
         anchor: [13, 0],
         width: 4,
         height: 9,
@@ -32,12 +34,69 @@ const NETWORKS: &[Network] = &[
         record_sign: true,
     },
     Network {
+        finish: Finish::Partition,
         anchor: [21, 0],
         width: 11,
         height: 9,
         fingerprint: 0x329df3471d9275b2,
         rows: &[1950, 1950, 1950, 1950, 1950, 1950, 1542, 1542, 0],
         shells: &[[1, 0, 2, 8], [3, 0, 2, 6], [7, 0, 2, 6], [9, 0, 2, 8]],
+        record_sign: false,
+    },
+];
+
+// The capsule guard includes the separate source doorway and its attendant
+// approach. The floor guards include the counters above each floor strip.
+// All rectangles use exact source-map coordinates, independent of viewport.
+const ROOM_FINISH: &[Network] = &[
+    Network {
+        finish: Finish::TimeCapsule,
+        anchor: [25, 0],
+        width: 4,
+        height: 7,
+        fingerprint: 0x69b5f270107140ee,
+        rows: &[6, 6, 6, 6, 0, 0, 0],
+        shells: &[[1, 0, 2, 4]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::CeramicFloor,
+        anchor: [0, 2],
+        width: 8,
+        height: 6,
+        fingerprint: 0x268b97bef023e886,
+        rows: &[63, 0, 0, 0, 63, 0],
+        shells: &[],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::CeramicFloor,
+        anchor: [8, 2],
+        width: 8,
+        height: 6,
+        fingerprint: 0x71baf867e0488199,
+        rows: &[15, 0, 0, 0, 51, 0],
+        shells: &[],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::CeramicFloor,
+        anchor: [16, 2],
+        width: 8,
+        height: 6,
+        fingerprint: 0x5525d5c0fe296e79,
+        rows: &[15, 0, 0, 0, 51, 0],
+        shells: &[],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::CeramicFloor,
+        anchor: [24, 2],
+        width: 8,
+        height: 6,
+        fingerprint: 0xd53d6db59fb211e3,
+        rows: &[0, 0, 0, 0, 63, 0],
+        shells: &[],
         record_sign: false,
     },
 ];

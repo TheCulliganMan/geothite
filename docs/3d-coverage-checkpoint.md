@@ -8,11 +8,11 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 592 runtime model documents and 57 complete editable Blender sources
+- 593 runtime model documents and 57 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
   63 exterior models, 19 dungeon models, 11 special-environment models,
   23 special-room models, 17 joined-counter modules, three lighthouse shells,
-  two Cable Club partition prototypes and 220 additional exact battle species
+  three Cable Club room prototypes and 220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -28,9 +28,10 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The current pack-based headless audit processes all 388 base maps without a
-mesher error and counts 251,464 source cells consumed by authored geometry,
+mesher error and counts 251,552 source cells consumed by authored geometry,
 including 9,136 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone,
-4,816 lighthouse masonry/window cells and 968 Cable Club partition cells.
+4,816 lighthouse masonry/window cells, 968 Cable Club partition cells and 88
+Time Capsule cells. The 374 new ceramic-floor cells receive no object credit.
 Cable Club replaces 48 earlier generic partition cells, for a net gain of 920.
 This is partial coverage, not 388 completed maps. Flat floors, water planes, source facades and fallback objects
 are reported separately. Dynamic decorations and changed block states require
@@ -52,8 +53,8 @@ separate room-detailing gaps remain.
 See [the remaining-family checklist](3d-remaining-families.md).
 
 - Remaining source families and structures, including gym greenery and apparatus
-- Cable Club Time Capsule machinery/backdrop and source floor strips beneath
-  counters and booths; partition coverage does not complete those rooms
+- Cable Club live door/warp artwork and two floor-like WALL cells per room remain
+  source surfaces; new capsule geometry and 34 FLOOR cells per room are reviewed
 - Lighthouse 6F furnishings and its distinct central checker floor remain source
   artwork. Review additional camera/movement layouts beyond the captured 4F/6F
   cases; masonry, cutaway and floor coverage do not complete the scene
@@ -90,8 +91,10 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 702 voxel tests pass (two existing benchmarks ignored), 22 render-API tests and
-  19 focused source-row/conversion/bridge tests pass, and the native build succeeds
+- 708 voxel tests pass (two existing benchmarks ignored), including the new
+  Amphy identity, capsule/floor ownership and stable projection regressions.
+  The native build succeeds. Prior 22 render-API and 19 focused source-row/bridge
+  tests remain applicable to unchanged attack logic; they were not all rerun
 - All 15 CI model/source validator programs pass. All 57 editable sources decode
   in memory with verified chunk, compressed-file and expanded-file hashes, Blender
   headers and no orphaned chunks; this does not establish that every scene was
@@ -121,8 +124,12 @@ based on the production mesher rather than a map-name allowlist.
 - Prior captures cover all six lighthouse floors and Route4/Route13/Lavender
   posts. Current native 4F review verifies the player cutaway and slate; 6F review
   verifies slate around the retained central checker/furniture zone
-- Current native Cable Club and Celadon beta-room captures verify the installed
-  partition kit. Time Capsule machinery/backdrop and source floor strips remain
+- Current native Cable Club and Celadon beta-room captures verify the joined
+  partitions, capsule and coherent floor strips. Live doorway art and two
+  WALL-quadrant strips per room remain
+- The exact lighthouse Amphy map object/script now publishes Ampharos identity;
+  other shared monster sprites retain their current model. Native 6F review
+  verifies the yellow Ampharos beside Jasmine, with original footing and facing
 - Battle bodies now use pack-supplied physical dimensions with uniform scaling
   and one shared camera fit. Native Cyndaquil/Sudowoodo and Onix/Diglett encounters
   verify representative ordinary and extreme size differences; this does not

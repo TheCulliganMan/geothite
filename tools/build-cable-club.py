@@ -12,6 +12,8 @@ import base64,gzip,hashlib,json,math,sys
 PALETTE={
  'powder_blue':(.36,.63,.74,1), 'blue_inset':(.22,.44,.57,1),
  'soft_ivory':(.82,.85,.76,1), 'slate_plinth':(.15,.27,.33,1),
+ 'timeglass':(.25,.70,.63,1), 'brass':(.77,.59,.29,1),
+ 'screen_ink':(.055,.17,.20,1), 'signal_ivory':(.93,.92,.74,1),
  'edge_highlight':(.58,.76,.78,1), 'brushed_metal':(.53,.60,.59,1),
 }
 def sub(a,b):return tuple(x-y for x,y in zip(a,b))
@@ -50,6 +52,38 @@ def make_asset(name,depth):
   for x0,x1 in [(1.0,1.7),(14.3,15.0)]:a.prism(end+' ivory end stile',(x0,x1,z0-.035,z1+.035),2.5,13.2,'soft_ivory',.05)
  return a
 
+def make_time_capsule():
+ a=Asset('time_capsule')
+ a.prism('Continuous sealed machine footing',(0,16,0,32),0,1.6,'slate_plinth',.65)
+ a.prism('Powder blue upright housing',(.2,15.8,.2,6.6),1.3,21.4,'powder_blue',.75)
+ a.prism('Ivory overhanging crown',(0,16,0,7.8),20.7,21.7,'soft_ivory',.6)
+ a.prism('Pale blue crown inset',(1.1,14.9,1.0,6.8),21.7,22,'edge_highlight',.4)
+ a.prism('Rear maintenance access cover',(2.4,13.6,.05,.3),3.0,17.8,'blue_inset',.05)
+ for side,x0,x1 in [('West',.4,3.0),('East',13.0,15.6)]:
+  a.prism(side+' low support rail',(x0,x1,6,30.8),1.4,3.8,'powder_blue',.55)
+  a.prism(side+' transceiver column',(x0+.2,x1-.2,7.5,15.2),3.6,18.4,'soft_ivory',.55)
+  a.prism(side+' inset jade transmitter',(x0+.55,x1-.55,8.0,14.6),4.1,17.9,'timeglass',.5)
+  for y in [4.0,10.5,17.4]:
+   a.prism(side+' brass transmitter band '+str(y),(x0+.04,x1-.04,7.3,15.4),y,y+.45,'brass',.4)
+  a.prism(side+' top receiver shoe',(x0-.12,x1+.12,7.2,15.7),18.0,19.3,'blue_inset',.5)
+ a.prism('Deep display bezel',(3.4,12.6,6.2,7.7),8.9,19.4,'slate_plinth',.25)
+ a.prism('Ivory inner display rim',(4.0,12.0,7.5,8.0),9.5,18.8,'soft_ivory',.1)
+ a.prism('Recessed dark chronometer screen',(4.5,11.5,7.95,8.13),10.0,18.3,'screen_ink',.06)
+ # A small original dimensional hourglass symbol. Separate closed slices make
+ # the icon editable, keep its silhouette crisp and avoid copied screen art.
+ for k,width in enumerate([4.4,3.7,2.8,1.8,1.1,1.8,2.8,3.7,4.4]):
+  a.prism('Chronometer hourglass slice '+str(k),(8-width/2,8+width/2,8.11,8.29),10.7+k*.7,11.4+k*.7,'signal_ivory',.04)
+ a.prism('Console body',(2.5,13.5,21,31.8),1.5,7.1,'powder_blue',.75)
+ a.prism('Console ivory control deck',(2.0,14.0,20.5,32),7.0,8.4,'soft_ivory',.6)
+ a.prism('Inset control screen',(3.0,9.5,22.0,28.5),8.4,8.65,'screen_ink',.4)
+ a.prism('Jade control readout',(3.5,9.0,22.5,26.6),8.65,8.80,'timeglass',.35)
+ for i in range(3):a.prism('Physical ivory key '+str(i),(3.6+i*1.65,4.8+i*1.65,27.3,28.0),8.65,8.92,'signal_ivory',.15)
+ for label,z,mat in [('Ready',23,'timeglass'),('Transfer',26,'brass')]:
+  a.prism(label+' raised round button',(10.7,12.5,z,z+1.8),8.4,9.0,mat,.45)
+ a.prism('South service panel',(4.4,11.6,31.75,31.94),2.8,5.9,'blue_inset',.05)
+ a.prism('South brass service latch',(7.1,8.9,31.92,32),4.3,4.8,'brass',.02)
+ return a
+
 def document(a):
  ps=[]
  for label,mat,vs,faces in a.parts:
@@ -86,6 +120,7 @@ def build_blender(assets,out,skip_preview):
    ob=src.copy();ob.data=src.data;gallery.objects.link(ob);ob.location=(x/16,-z/16,0)
  for x in [0,64,128,192]:instance('divider_long',x,0)
  for x in [144,176]:instance('vestibule_return',x,0)
+ instance('time_capsule',160,0)
  bpy.ops.mesh.primitive_plane_add(size=200,location=(6,-2,-.02));bpy.context.object.name='PREVIEW | Studio floor';m=bpy.data.materials.new('Preview neutral floor');m.diffuse_color=(.12,.16,.19,1);bpy.context.object.data.materials.append(m)
  scene.world.color=(.16,.18,.22)
  for name,loc,power,size in [('Key',(0,-6,10),1900,10),('Fill',(10,5,8),1300,8)]:
@@ -93,14 +128,18 @@ def build_blender(assets,out,skip_preview):
  bpy.ops.object.camera_add(location=(17,-16,12));camera=bpy.context.object;camera.name='PREVIEW | Camera';camera.data.type='ORTHO';camera.data.ortho_scale=15;scene.camera=camera
  camera.rotation_euler=(Vector((6.5,-2,.4))-camera.location).to_track_quat('-Z','Y').to_euler()
  scene.render.engine='CYCLES';scene.cycles.samples=24;scene.cycles.use_denoising=False;scene.render.resolution_x=1500;scene.render.resolution_y=800;scene.render.resolution_percentage=100;scene.render.image_settings.file_format='PNG';scene.view_settings.view_transform='AgX'
- scene['kit']='Original low-poly Cable Club partition and short vestibule returns';scene['provenance']='Pure authored geometry and colors; no copied game artwork, collision, events, ROM or textures';scene['rebuild']='tools/build-cable-club.py'
+ scene['kit']='Original low-poly Cable Club partitions, vestibule returns and Time Capsule';scene['provenance']='Pure authored geometry and colors; no copied game artwork, collision, events, ROM or textures';scene['rebuild']='tools/build-cable-club.py'
  bpy.ops.wm.save_as_mainfile(filepath=str(out/'cable-club.blend'),compress=False)
  if not skip_preview:
-  for name,pos in [('front',(17,-16,12)),('rear',(-3,10,7))]:
+  for name,pos in [('front',(17,-16,12))]:
    camera.location=pos;camera.rotation_euler=(Vector((6.5,-2,.4))-camera.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(out/('cable-club-'+name+'.png'));bpy.ops.render.render(write_still=True)
+  camera.location=(13.8,-5.2,4.0);camera.data.ortho_scale=5.7
+  camera.rotation_euler=(Vector((10.5,-1.1,.7))-camera.location).to_track_quat('-Z','Y').to_euler()
+  scene.render.resolution_x=1000;scene.render.resolution_y=1000
+  scene.render.filepath=str(out/'time-capsule-detail.png');bpy.ops.render.render(write_still=True)
 def main():
  args=sys.argv[sys.argv.index('--')+1:]if '--'in sys.argv else sys.argv[1:];out=Path(next((a for a in args if not a.startswith('--')),'target/cable-club'));out.mkdir(parents=True,exist_ok=True)
- assets=[make_asset('divider_long',64),make_asset('vestibule_return',48)]
+ assets=[make_asset('divider_long',64),make_asset('vestibule_return',48),make_time_capsule()]
  for a in assets:save_runtime(a,out);print(a.name,document(a)['triangle_count'],'triangles',document(a)['bounds'])
  if '--runtime-only'not in args:build_blender(assets,out,'--skip-preview'in args)
 if __name__=='__main__':main()

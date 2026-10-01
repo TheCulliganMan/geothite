@@ -909,10 +909,12 @@ fn sync_battle_target(
     }
     for (row, mut camera, mut projection, mut transform) in &mut row_cameras {
         transform.set_if_neq(layout.camera);
-        if let Projection::Perspective(p) = &mut *projection {
-            if p.far != layout.far {
-                p.far = layout.far;
-            }
+        // An unconditional mutable dereference marks Projection changed even
+        // when the far plane is stable, rerunning Bevy's camera/frustum work.
+        if matches!(&*projection, Projection::Perspective(p) if p.far != layout.far)
+            && let Projection::Perspective(p) = &mut *projection
+        {
+            p.far = layout.far;
         }
         let index = row.0;
         let row_active = active
@@ -3964,6 +3966,74 @@ mod tests {
             1
         );
     }
+    #[test]
+    fn row_targets_keep_stable_projection_ticks_and_refresh_dirty_inputs() {
+        let mut app = headless_battle_app();
+        let window = app
+            .world_mut()
+            .spawn((Window::default(), bevy::window::PrimaryWindow))
+            .id();
+        let mut source = source_test_frame(0xe4);
+        source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
+            source_y: Vec2::new(48.0, 64.0),
+            bg_cleared: true,
+        });
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source);
+        app.update();
+        let projection_ticks = |app: &mut App| {
+            let world = app.world_mut();
+            let mut ticks = [0; 2];
+            for (row, projection) in world
+                .query::<(&BattleRowCamera, Ref<Projection>)>()
+                .iter(world)
+            {
+                ticks[row.0] = projection.last_changed().get();
+            }
+            ticks
+        };
+        let stable = projection_ticks(&mut app);
+        app.update();
+        assert_eq!(
+            projection_ticks(&mut app),
+            stable,
+            "unchanged actor targets must not force camera/frustum recomputation"
+        );
+        {
+            let world = app.world_mut();
+            for mut projection in world
+                .query_filtered::<&mut Projection, With<BattleRowCamera>>()
+                .iter_mut(world)
+            {
+                if let Projection::Perspective(p) = &mut *projection {
+                    p.far = 0.5;
+                }
+            }
+        }
+        app.update();
+        let far = app.world().resource::<BattleSceneLayout>().far;
+        {
+            let world = app.world_mut();
+            assert!(world
+                .query_filtered::<&Projection, With<BattleRowCamera>>()
+                .iter(world)
+                .all(|projection| matches!(projection, Projection::Perspective(p) if p.far == far)));
+        }
+        let restored = projection_ticks(&mut app);
+        app.world_mut()
+            .get_mut::<Window>(window)
+            .unwrap()
+            .resolution
+            .set(1200.0, 800.0);
+        app.update();
+        let resized = projection_ticks(&mut app);
+        assert!(
+            resized.iter().zip(restored).all(|(new, old)| *new != old),
+            "target resize must still invalidate both camera projections"
+        );
+        app.update();
+        assert_eq!(projection_ticks(&mut app), resized);
+    }
+
     #[test]
     fn row_targets_initialize_pbr_clusters_on_the_first_active_frame() {
         let mut app = headless_battle_app();

@@ -6790,9 +6790,9 @@ fn render_playfield(
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
-            let model_source_id = visible_object_model_source_id(
+            let model_source_id = visible_map_object_model_source_id(
                 &snapshot.overworld.map_name,
-                &object.sprite,
+                object,
                 resolved_object_sprite,
                 &sprite_id,
                 &snapshot.script_events.variable_sprites,

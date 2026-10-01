@@ -4458,6 +4458,42 @@ fn resolve_visible_object_sprite_asset_id(
         .unwrap_or_else(|| normalized.replace('-', "_"))
 }
 
+/// Preserve the verified identity of the lighthouse's named Amphy object.
+/// Its compiled script uses AMPHAROS for both sick and healthy cries, although
+/// its source art is the shared SPRITE_MONSTER. Keep this exception at the
+/// publisher boundary: the model renderer must not guess from generic art.
+fn visible_map_object_model_source_id(
+    map: &str,
+    object: &crate::core::map::ObjectEvent,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    menu_icons: &BTreeMap<String, String>,
+) -> String {
+    // A replaced sprite wins over the named source identity. Do not turn a
+    // modded actor, a different shared monster, or an icon into Ampharos.
+    if map == "OlivineLighthouse6F"
+        && object.object_identifier.as_deref() == Some("OLIVINELIGHTHOUSE6F_MONSTER")
+        && object.script == "OlivineLighthouseAmphy"
+        && object.object_type == "OBJECTTYPE_SCRIPT"
+        && object.sprite == "SPRITE_MONSTER"
+        && visible_sprite == "SPRITE_MONSTER"
+        && bitmap_source == "monster"
+        && !variable_sprites.contains_key(visible_sprite)
+        && menu_icons.contains_key("AMPHAROS")
+    {
+        return format!("species:AMPHAROS:{bitmap_source}");
+    }
+    visible_object_model_source_id(
+        map,
+        &object.sprite,
+        visible_sprite,
+        bitmap_source,
+        variable_sprites,
+        menu_icons,
+    )
+}
+
 /// Render-only identity of the currently visible appearance. Variable and
 /// daycare resolution has already happened; no hidden/original actor identity
 /// is consulted. The bitmap source remains available for normal card fallback.
@@ -4932,5 +4968,224 @@ mod visible_species_source_tests {
             assert_eq!(visible_object_model_source_id("DayCare", slot, slot,
                 "icon_staryu", &variables, &icons), "species:STARMIE:icon_staryu");
         }
+    }
+}
+
+#[cfg(test)]
+mod named_object_species_source_tests {
+    use super::*;
+
+    fn amphy() -> crate::core::map::ObjectEvent {
+        crate::core::map::ObjectEvent {
+            sprite: "SPRITE_MONSTER".into(),
+            sprite_has_facings: true,
+            x: 9,
+            y: 8,
+            spritemovedata: "SPRITEMOVEDATA_STANDING_DOWN".into(),
+            move_range_x: 0,
+            move_range_y: 0,
+            hram_x: -1,
+            hram_y: -1,
+            pal: 11,
+            object_type: "OBJECTTYPE_SCRIPT".into(),
+            radius: 0,
+            script: "OlivineLighthouseAmphy".into(),
+            label: None,
+            event_flag: "-1".into(),
+            object_identifier: Some("OLIVINELIGHTHOUSE6F_MONSTER".into()),
+            sightline_direction_override: None,
+        }
+    }
+
+    #[test]
+    fn amphy_identity_requires_its_exact_map_object_script_and_visible_art() {
+        let icons = BTreeMap::from([("AMPHAROS".into(), "ICON_MONSTER".into())]);
+        let variables = BTreeMap::new();
+        let object = amphy();
+        let before = object.clone();
+        let source = |map, object: &crate::core::map::ObjectEvent, visible, art| {
+            visible_map_object_model_source_id(map, object, visible, art, &variables, &icons)
+        };
+        assert_eq!(
+            source("OlivineLighthouse6F", &object, "SPRITE_MONSTER", "monster"),
+            "species:AMPHAROS:monster"
+        );
+        assert_eq!(
+            object, before,
+            "presentation must not change the source object"
+        );
+        assert_eq!(
+            source("Route30", &object, "SPRITE_MONSTER", "monster"),
+            "monster"
+        );
+        assert_eq!(
+            source(
+                "OlivineLighthouse6F",
+                &object,
+                "SPRITE_MONSTER",
+                "icon_monster"
+            ),
+            "icon_monster"
+        );
+        assert_eq!(
+            source("OlivineLighthouse6F", &object, "SPRITE_LASS", "lass"),
+            "lass"
+        );
+        for changed in 0..4 {
+            let mut other = object.clone();
+            match changed {
+                0 => other.object_identifier = None,
+                1 => other.script = "OtherMonsterScript".into(),
+                2 => other.object_type = "OBJECTTYPE_ITEMBALL".into(),
+                3 => other.sprite = "SPRITE_COPYCAT".into(),
+                _ => unreachable!(),
+            }
+            assert_eq!(
+                source("OlivineLighthouse6F", &other, "SPRITE_MONSTER", "monster"),
+                "monster",
+                "changed identity field {changed}"
+            );
+        }
+        assert_eq!(
+            visible_map_object_model_source_id(
+                "OlivineLighthouse6F",
+                &object,
+                "SPRITE_MONSTER",
+                "monster",
+                &variables,
+                &BTreeMap::new()
+            ),
+            "monster"
+        );
+    }
+
+    #[test]
+    fn amphy_current_variable_sprite_wins_over_named_identity() {
+        let object = amphy();
+        let icons = BTreeMap::from([
+            ("AMPHAROS".into(), "ICON_MONSTER".into()),
+            ("GENGAR".into(), "ICON_GHOST".into()),
+        ]);
+        for (replacement, bitmap, expected) in [
+            ("SPRITE_GENGAR", "icon_ghost", "species:GENGAR:icon_ghost"),
+            ("SPRITE_LASS", "lass", "lass"),
+            ("SPRITE_MONSTER", "monster", "monster"),
+        ] {
+            let variables = BTreeMap::from([("SPRITE_MONSTER".into(), replacement.into())]);
+            assert_eq!(
+                visible_map_object_model_source_id(
+                    "OlivineLighthouse6F",
+                    &object,
+                    "SPRITE_MONSTER",
+                    bitmap,
+                    &variables,
+                    &icons
+                ),
+                expected
+            );
+        }
+    }
+}
+
+#[cfg(test)]
+mod compiled_amphy_identity_tests {
+    use super::*;
+
+    #[test]
+    fn compiled_amphy_script_confirms_species_and_only_its_object_is_reidentified() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("workspace root");
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"))
+            .canonicalize()
+            .expect("external Amphy identity test pack");
+        let assets = AssetRoot::new(root);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+            .expect("verified external Amphy identity test pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded)
+            .expect("desktop Amphy identity runtime");
+        let map = &runtime.data().maps["OlivineLighthouse6F"];
+        let object = map
+            .objects
+            .iter()
+            .find(|object| {
+                object.object_identifier.as_deref() == Some("OLIVINELIGHTHOUSE6F_MONSTER")
+            })
+            .expect("source Amphy object");
+        assert_eq!(object.script, "OlivineLighthouseAmphy");
+        assert_eq!((object.x, object.y), (9, 8));
+        assert_eq!(object.spritemovedata, "SPRITEMOVEDATA_STANDING_DOWN");
+        assert_eq!(object.event_flag, "-1");
+        let sick_cry_species = map
+            .script_variable_commands
+            .iter()
+            .find(|command| {
+                command.source_script == object.script
+                    && command.command == "setval"
+                    && command.value_tokens == ["AMPHAROS"]
+            })
+            .expect("Amphy's compiled sick cry selects Ampharos");
+        assert!(
+            map.script_runtime_commands
+                .iter()
+                .any(|command| command.source_script == object.script
+                    && command.command == "special"
+                    && command.args == ["PlaySlowCry"]
+                    && command.command_index == sick_cry_species.command_index + 1)
+        );
+        assert!(
+            map.script_audio_commands
+                .iter()
+                .any(
+                    |command| command.source_script == ".HealthyNow@OlivineLighthouseAmphy"
+                        && command.command == "cry"
+                        && command.audio_id.as_deref() == Some("AMPHAROS")
+                )
+        );
+
+        let variables = BTreeMap::new();
+        let icons = &runtime.data().menu_icons;
+        let mut changed = Vec::new();
+        for (map_name, map) in &runtime.data().maps {
+            for object in map
+                .objects
+                .iter()
+                .filter(|object| object.sprite == "SPRITE_MONSTER")
+            {
+                let before = object.clone();
+                let bitmap = resolve_visible_object_sprite_asset_id(
+                    &assets,
+                    &object.sprite,
+                    &variables,
+                    icons,
+                );
+                let generic = visible_object_model_source_id(
+                    map_name,
+                    &object.sprite,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                let named = visible_map_object_model_source_id(
+                    map_name,
+                    object,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                assert_eq!(object, &before, "render identity changed source state");
+                if named != generic {
+                    assert_eq!(generic, "monster");
+                    assert_eq!(named, "species:AMPHAROS:monster");
+                    changed.push((map_name.as_str(), object.script.as_str()));
+                }
+            }
+        }
+        assert_eq!(changed, [("OlivineLighthouse6F", "OlivineLighthouseAmphy")]);
     }
 }

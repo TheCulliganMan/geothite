@@ -110,5 +110,8 @@ can enter a whole-scene source-art fallback. The integrated native-only
 Tackle/Water Gun prototype and its separately gated actor-capture cache remain
 disabled by default. Exact source structure and full two-row OAM ownership are
 required; unsupported roots and partial strips retain source rendering. Source
-footprint, object priority, alpha edges and native composition still need visual
-review, and cache A/B measurements are pending. See [the opt-in boundaries](immersive-battles.md#experimental-extracted-battler-rows).
+footprint, object priority, alpha edges and broader native composition still need
+visual review. Matched native Tackle and Water Gun A/B captures verify
+sampled actor/field pixel equality; timing is mixed and does not establish a
+general speedup. See [the measurements](battle-3d-performance.md#experimental-actor-capture-reuse)
+and [opt-in boundaries](immersive-battles.md#experimental-extracted-battler-rows).

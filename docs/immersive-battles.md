@@ -95,8 +95,10 @@ and unavailable in WebAssembly. A matched native Tackle pair verifies identical
 actor/field pixels on shared source frames and removes the measured first-row
 hitch; it does not improve the median capture interval. See the
 [bounded timing result](battle-3d-performance.md#experimental-actor-capture-reuse).
-Water Gun, alpha-edge, resize, interruption and broader source-OAM review remain
-open. Neither pilot closes the general extracted-row/reveal gap.
+The matched Water Gun pair also retains identical actor/field pixels on eight
+shared ticks, including its ripple; its overall cached timing is worse. Alpha-edge,
+resized attack, interruption and broader source-OAM review remain open. Neither
+pilot closes the general extracted-row/reveal gap.
 
 ## Specific source sequences
 

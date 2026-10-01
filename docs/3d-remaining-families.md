@@ -7,7 +7,7 @@ backing ground. Dynamic map states and individual species art remain separate
 work in the broader conversion checklist.
 
 The latest production audit verifies all 388 base maps without a mesher error.
-It records 251,464 cells consumed by authored geometry, including named surface
+It records 251,552 cells consumed by authored geometry, including named surface
 finishes. Per-map source reports stay local under `target/`; no content pack,
 source image or generated audit manifest belongs in the shipped repository.
 
@@ -51,9 +51,10 @@ finishing removes mismatched underlay squares without changing the water datum.
 - Cable Club partitions: 33 complete networks, 66 shells and 968 owned cells
   across eleven upstairs maps. Two cached prototypes replace the prior generic
   partitions and include caps/returns beyond the original 730-cell estimate. Native
-  Cable Club and Celadon beta-room captures were reviewed. Time Capsule machinery
-  and backdrop, its separate source door/warp, and floor strips beneath counters
-  and booths remain outside this kit; see [the kit notes](art/cable-club.md)
+  Cable Club and Celadon beta-room captures were reviewed. The new capsule owns
+  88 additional cells and 374 floor cells receive a zero-height ceramic finish
+  without object-coverage credit. The separate source door/warp and two
+  floor-like WALL cells per room remain; see [the kit notes](art/cable-club.md)
 - Lighthouse masonry: 4,176 plain plus 640 window cells across six floors,
   including 192 previously flat-classified 6F cells. Camera-aware cutaway and
   source-scoped slate finishing are integrated; current native 4F/6F captures

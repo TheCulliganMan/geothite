@@ -414,6 +414,29 @@ mod tests {
 mod exact_visible_species_tests {
     use super::*;
     #[test]
+    fn published_amphy_identity_reuses_exact_ampharos_mesh_and_keeps_monsters_generic() {
+        let kind = prop_kind_for_source("species:AMPHAROS:monster").unwrap();
+        assert_eq!(kind, PropKind::ExactSpecies("AMPHAROS"));
+        assert_eq!(prop_kind_for_source("monster"), Some(PropKind::Monster));
+        assert_eq!(
+            prop_kind_for_source("icon_monster"),
+            Some(PropKind::IconMonster)
+        );
+        let model = mesh(kind);
+        let exact = crate::battle_species_models::mesh("AMPHAROS").unwrap();
+        assert_eq!(model.positions, exact.positions);
+        assert_eq!(model.indices, exact.indices);
+        assert_eq!(model.normals, exact.normals);
+        assert_eq!(model.colors, exact.colors);
+        let min_y = model
+            .positions
+            .iter()
+            .map(|point| point[1])
+            .fold(f32::INFINITY, f32::min);
+        assert!(min_y.abs() < 0.0001);
+    }
+
+    #[test]
     fn shared_icon_families_do_not_erase_current_species() {
         for (species, art) in [
             ("MAGIKARP", "icon_fish"),
