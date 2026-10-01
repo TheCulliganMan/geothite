@@ -2821,21 +2821,6 @@ fn append_facility_divider_network(
     if !crate::facility_divider::supports_map(map_id) {
         return Ok(());
     }
-    let find_tile = |tile_index| {
-        cells
-            .iter()
-            .position(|tile| tile.source.tile_index == tile_index)
-            .ok_or(TerrainMeshError::MissingGroundSample {
-                column: 0,
-                row: 0,
-                tile_index,
-            })
-    };
-    let ground = find_tile(crate::facility_divider::FLOOR_TILE)?;
-    let brown = find_tile(0x41)?;
-    let ground_uv = geometry.uv(ground % geometry.width, ground / geometry.width);
-    let brown_uv = geometry.uv(brown % geometry.width, brown / geometry.width);
-    let stripe_uv = facility_divider_stripe_uv(cells, geometry, 0, 0)?;
     let mut occupied = vec![false; geometry.width * geometry.height];
 
     for placement in facility_divider_placements(map_id, cells, geometry) {
@@ -2856,6 +2841,26 @@ fn append_facility_divider_network(
         }
     }
 
+    // Complete authored replacements can retire every legacy divider. In
+    // that case there is no remaining face requiring the old paint samples.
+    if !occupied.iter().any(|cell| *cell) {
+        return Ok(());
+    }
+    let find_tile = |tile_index| {
+        cells
+            .iter()
+            .position(|tile| tile.source.tile_index == tile_index)
+            .ok_or(TerrainMeshError::MissingGroundSample {
+                column: 0,
+                row: 0,
+                tile_index,
+            })
+    };
+    let ground = find_tile(crate::facility_divider::FLOOR_TILE)?;
+    let brown = find_tile(0x41)?;
+    let ground_uv = geometry.uv(ground % geometry.width, ground / geometry.width);
+    let brown_uv = geometry.uv(brown % geometry.width, brown / geometry.width);
+    let stripe_uv = facility_divider_stripe_uv(cells, geometry, 0, 0)?;
     let wall_height = crate::facility_divider::WALL_HEIGHT;
     for row in 0..geometry.height {
         for column in 0..geometry.width {

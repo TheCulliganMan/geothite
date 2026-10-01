@@ -36,6 +36,7 @@ const BATTLE_LAYER: usize = 29;
 // Layer 30 parks classic sprites, and 31 is the modeled overworld.
 const BATTLE_COMPOSITE_LAYER: usize = 0;
 const MODEL_SCALE: f32 = 2.65;
+const FALLBACK_CARD_HEIGHT: f32 = 1.9;
 const SOURCE_PIXEL_WORLD: f32 = 0.045;
 const BATTLE_CAMERA_FOV: f32 = 0.58;
 const PARTICLES: usize = 32;
@@ -523,7 +524,7 @@ fn setup_battle_scene(
         unlit: scene.vertex_lighting,
         ..default()
     });
-    scene.fallback_mesh = meshes.add(Rectangle::new(1.0, 1.0));
+    scene.fallback_mesh = meshes.add(Rectangle::new(FALLBACK_CARD_HEIGHT, FALLBACK_CARD_HEIGHT));
     scene.particle_mesh = meshes.add(
         Sphere::new(1.0)
             .mesh()
@@ -1611,8 +1612,10 @@ fn actor_pose(
         transform.rotation = Quat::from_rotation_y(facing.x.atan2(facing.z));
         transform.scale = Vec3::splat(MODEL_SCALE);
     } else {
-        transform.translation.y += 0.94;
         transform.rotation = camera_pose().rotation;
+        // Lift along the card's actual up vector, so the camera-facing bottom
+        // stays on the platform even with a pitched camera.
+        transform.translation += transform.rotation * Vec3::Y * (FALLBACK_CARD_HEIGHT * 0.5);
         transform.scale = Vec3::new(battler.texture_size.x / battler.texture_size.y, 1.0, 1.0);
     }
     if let Some(source) = source {
@@ -2429,7 +2432,8 @@ mod tests {
         };
         assert_eq!(
             actor_pose(&battler, &[cue], 0.0, None, None).translation,
-            side_position(battler.side) + Vec3::Y * 0.94
+            side_position(battler.side)
+                + camera_pose().rotation * Vec3::Y * (FALLBACK_CARD_HEIGHT * 0.5)
         );
     }
     #[test]
@@ -3489,6 +3493,35 @@ mod tests {
                 .len(),
             1
         );
+    }
+    #[test]
+    fn fallback_card_keeps_native_size_and_projected_bottom_footing() {
+        let app = headless_battle_app();
+        let frame = app.world().resource::<VisualBattleFrame>();
+        let camera_from_world = camera_pose().compute_matrix().inverse();
+        let screen = |point: Vec3| {
+            let view = camera_from_world.transform_point3(point);
+            Vec2::new(view.x / -view.z, view.y / -view.z)
+        };
+        for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
+            let mut battler = frame.battlers[0].as_ref().unwrap().clone();
+            battler.side = side;
+            battler.texture_size = Vec2::new(48.0, 56.0);
+            let mut source = source_test_frame(0xe4);
+            source.battler_offsets[side.index()] = Vec2::new(6.0, -3.0);
+            for source in [None, Some(&source)] {
+                let pose = actor_pose(&battler, &[], 0.0, None, source);
+                let bottom = pose.transform_point(Vec3::new(0.0, -FALLBACK_CARD_HEIGHT * 0.5, 0.0));
+                let expected = side_position(side)
+                    + source.map_or(Vec3::ZERO, |source| {
+                        source_battler_displacement(source.battler_offsets[side.index()])
+                    });
+                assert!(bottom.abs_diff_eq(expected, 0.00001));
+                assert!(screen(bottom).abs_diff_eq(screen(expected), 0.00001));
+                let top = pose.transform_point(Vec3::new(0.0, FALLBACK_CARD_HEIGHT * 0.5, 0.0));
+                assert!((top.distance(bottom) - 1.9).abs() < 0.00001);
+            }
+        }
     }
 }
 

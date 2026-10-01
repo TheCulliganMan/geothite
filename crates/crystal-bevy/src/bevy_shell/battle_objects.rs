@@ -169,10 +169,13 @@ fn new_visible_battle_objects(
     let mut machine = BattleObjectMachine::new(animation.player_move);
     install_battle_object_data(&mut machine, bundle)?;
     // InitBattleAnimBuffer's three move-ID adjustments are source-owned.
-    let move_id = match animation.animation_label.as_str() {
-        "BattleAnim_Kinesis" => 134_u16,
-        "BattleAnim_Softboiled" => 135,
-        "BattleAnim_MilkDrink" => 208,
+    // move_id retains the canonical invoked move (including called moves),
+    // while animation_label can join Substitute's lower/move/raise scripts.
+    // Never infer the source move from that composite presentation label.
+    let move_id = match animation.move_id.as_str() {
+        "KINESIS" => 134_u16,
+        "SOFTBOILED" => 135,
+        "MILK_DRINK" => 208,
         _ => 0,
     };
     machine.write(battle_program::W_F_X_ANIM_I_D, move_id as u8);

@@ -4458,6 +4458,41 @@ fn resolve_visible_object_sprite_asset_id(
         .unwrap_or_else(|| normalized.replace('-', "_"))
 }
 
+/// Render-only identity of the currently visible appearance. Variable and
+/// daycare resolution has already happened; no hidden/original actor identity
+/// is consulted. The bitmap source remains available for normal card fallback.
+fn visible_object_model_source_id(
+    map: &str,
+    original_sprite: &str,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    menu_icons: &BTreeMap<String, String>,
+) -> String {
+    let requested = variable_sprites
+        .get(visible_sprite)
+        .map(String::as_str)
+        .unwrap_or(visible_sprite);
+    let normalized = requested.trim().to_ascii_uppercase();
+    let species = normalized.strip_prefix("SPRITE_").unwrap_or(&normalized);
+    // The original decoration catalog calls the STARYU doll SPRITE_STARMIE.
+    // This exception belongs only to the two bedroom doll slots. A visible
+    // Starmie elsewhere remains Starmie, including Day Care and variable NPCs.
+    let species = if map == "PlayersHouse2F"
+        && matches!(original_sprite, "SPRITE_DOLL_1" | "SPRITE_DOLL_2")
+        && species == "STARMIE"
+    {
+        "STARYU"
+    } else {
+        species
+    };
+    if menu_icons.contains_key(species) {
+        format!("species:{species}:{bitmap_source}")
+    } else {
+        bitmap_source.to_string()
+    }
+}
+
 fn object_sprite_is_animated(spritemovedata: &str) -> bool {
     matches!(
         spritemovedata,
@@ -4815,5 +4850,87 @@ fn pokemon_asset_id_for_dvs(species_id: &str, dvs: Dv) -> String {
         format!("unown_{}", char::from(b'a' + dvs.unown_letter() - 1))
     } else {
         normalize_pokemon_asset_id(species_id)
+    }
+}
+
+#[cfg(test)]
+mod visible_species_source_tests {
+    use super::*;
+    #[test]
+    fn visible_identity_uses_current_replacement_and_keeps_card_art_source() {
+        let icons = BTreeMap::from([
+            ("MAGIKARP".into(), "ICON_FISH".into()),
+            ("GENGAR".into(), "ICON_GHOST".into()),
+            ("STARMIE".into(), "ICON_STARYU".into()),
+            ("STARYU".into(), "ICON_STARYU".into()),
+        ]);
+        let mut variables = BTreeMap::from([("SPRITE_COPYCAT".into(), "SPRITE_MAGIKARP".into())]);
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        variables.insert("SPRITE_COPYCAT".into(), "SPRITE_GENGAR".into());
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "icon_ghost", &variables, &icons), "species:GENGAR:icon_ghost");
+        variables.insert("SPRITE_COPYCAT".into(), "SPRITE_LASS".into());
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "lass", &variables, &icons), "lass");
+        assert_eq!(visible_object_model_source_id("DayCare", "SPRITE_DAY_CARE_MON_1",
+            "MAGIKARP", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        // A generic shared icon conveys no exact species and stays generic.
+        assert_eq!(visible_object_model_source_id("Route30", "SPRITE_MONSTER",
+            "SPRITE_MONSTER", "monster", &variables, &icons), "monster");
+    }
+    #[test]
+    fn compiled_catalog_publishes_all_30_live_actor_decoration_sources() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("workspace root");
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"))
+            .canonicalize()
+            .expect("external decoration test pack");
+        let assets = AssetRoot::new(root);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+            .expect("verified external decoration test pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded)
+            .expect("desktop decoration runtime");
+        let catalog = &runtime.data().decorations.decorations;
+        assert_eq!(catalog.len(), 45);
+        let icons = &runtime.data().menu_icons;
+        let mut count = 0;
+        for decoration in catalog.iter().filter(|d| d.sprite.starts_with("SPRITE_")) {
+            let slot = match decoration.category {
+                crystal_assets::DecorationCategory::GameConsole => "SPRITE_CONSOLE",
+                crystal_assets::DecorationCategory::BigDoll => "SPRITE_BIG_DOLL",
+                crystal_assets::DecorationCategory::Ornament => "SPRITE_DOLL_1",
+                _ => unreachable!("tile decorations cannot be actor sprites"),
+            };
+            let variables = BTreeMap::from([(slot.into(), decoration.sprite.clone())]);
+            let bitmap = resolve_visible_object_sprite_asset_id(&assets, slot, &variables, icons);
+            let model = visible_object_model_source_id("PlayersHouse2F", slot, slot, &bitmap, &variables, icons);
+            assert!(!model.contains(slot), "unresolved {}", decoration.id);
+            let requested = decoration.sprite.strip_prefix("SPRITE_").unwrap();
+            if icons.contains_key(requested) {
+                let species = if decoration.id == "DECO_STARYU_DOLL" { "STARYU" } else { requested };
+                assert_eq!(model, format!("species:{species}:{bitmap}"), "{}", decoration.id);
+            } else {
+                assert_eq!(model, bitmap, "{}", decoration.id);
+            }
+            count += 1;
+        }
+        assert_eq!(count, 30);
+    }
+    #[test]
+    fn catalog_staryu_alias_is_limited_to_the_current_bedroom_doll_slots() {
+        let icons = BTreeMap::from([("STARMIE".into(), "ICON_STARYU".into()),
+            ("STARYU".into(), "ICON_STARYU".into())]);
+        for slot in ["SPRITE_DOLL_1", "SPRITE_DOLL_2"] {
+            let variables = BTreeMap::from([(slot.into(), "SPRITE_STARMIE".into())]);
+            assert_eq!(visible_object_model_source_id("PlayersHouse2F", slot, slot,
+                "icon_staryu", &variables, &icons), "species:STARYU:icon_staryu");
+            assert_eq!(visible_object_model_source_id("DayCare", slot, slot,
+                "icon_staryu", &variables, &icons), "species:STARMIE:icon_staryu");
+        }
     }
 }

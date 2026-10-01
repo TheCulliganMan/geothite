@@ -85,11 +85,11 @@ fn parse_model(json: &str) -> Result<SurfaceMeshData, String> {
 macro_rules! authored_props {
     ($( $variant:ident => $label:literal ),+ $(,)?) => {
         #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-        pub(crate) enum PropKind { $( $variant ),+ }
+        pub(crate) enum PropKind { $( $variant ),+, ExactSpecies(&'static str) }
         pub(crate) const ALL_KINDS: &[PropKind] = &[$( PropKind::$variant ),+];
         impl PropKind {
             pub(crate) fn label(self) -> &'static str {
-                match self { $( Self::$variant => $label ),+ }
+                match self { $( Self::$variant => $label ),+, Self::ExactSpecies(species) => species }
             }
         }
         pub(crate) fn mesh(kind: PropKind) -> SurfaceMeshData {
@@ -99,7 +99,11 @@ macro_rules! authored_props {
                     MODEL.get_or_init(|| parse_model(include_str!(concat!("../models/actor_props/", $label, ".mesh.json")))
                         .expect(concat!("valid original actor asset: ", $label))).clone()
                 }
-            ),+ }
+            ),+ ,
+                PropKind::ExactSpecies(species) => crate::battle_species_models::mesh(species)
+                    .or_else(|| battle_species_kind(species).map(mesh))
+                    .expect("verified exact visible species"),
+            }
         }
     };
 }
@@ -182,6 +186,22 @@ authored_props! {
 /// Exact resolved source/path handling. In particular, gfx/icons/monster.png
 /// cannot accidentally claim the unrelated sprite family's representation.
 pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
+    // The publisher supplies only the currently resolved visible species and
+    // actual bitmap source. Never recover a species from a shared icon family.
+    if let Some(identity) = source.strip_prefix("species:") {
+        let (species, art) = identity.split_once(':')?;
+        if art.contains(':') || art.contains('/') {
+            return None;
+        }
+        let known_art = art == species.to_ascii_lowercase() || prop_kind_for_source(art).is_some();
+        if !known_art {
+            return None;
+        }
+        let exact = crate::battle_species_models::supported_species()
+            .chain(EXACT_SHARED_SPECIES.iter().copied())
+            .find(|candidate| *candidate == species)?;
+        return Some(PropKind::ExactSpecies(exact));
+    }
     let source = if let Some(path) = source.strip_prefix("gfx/sprites/") {
         let stem = path.strip_suffix(".png")?;
         if stem.starts_with("icon_") {
@@ -201,6 +221,40 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         .copied()
         .find(|kind| kind.label() == source)
 }
+
+pub(crate) const EXACT_SHARED_SPECIES: &[&str] = &[
+    "CHIKORITA",
+    "CYNDAQUIL",
+    "TOTODILE",
+    "PIDGEY",
+    "RATTATA",
+    "SENTRET",
+    "HOOTHOOT",
+    "ENTEI",
+    "RAIKOU",
+    "SUICUNE",
+    "ONIX",
+    "BULBASAUR",
+    "CHARMANDER",
+    "CLEFAIRY",
+    "DIGLETT",
+    "GEODUDE",
+    "GYARADOS",
+    "HO_OH",
+    "JIGGLYPUFF",
+    "LAPRAS",
+    "LUGIA",
+    "ODDISH",
+    "PIKACHU",
+    "POLIWAG",
+    "SLOWPOKE",
+    "SNORLAX",
+    "SQUIRTLE",
+    "STARYU",
+    "SUDOWOODO",
+    "UNOWN",
+    "VOLTORB",
+];
 
 /// These are exact battle species, separately authored from generic icon
 /// families. An unsupported species returns None rather than a false match.
@@ -353,5 +407,54 @@ mod tests {
     fn malformed_or_unanchored_exports_fail_closed() {
         assert!(parse_model(r#"{"primitives":[]}"#).is_err());
         assert!(parse_model(r#"{"primitives":[{"positions":[0,0,0],"normals":[0,1,0],"indices":[0,1,2],"base_color":[1,1,1,1]}]}"#).is_err());
+    }
+}
+
+#[cfg(test)]
+mod exact_visible_species_tests {
+    use super::*;
+    #[test]
+    fn shared_icon_families_do_not_erase_current_species() {
+        for (species, art) in [
+            ("MAGIKARP", "icon_fish"),
+            ("GENGAR", "icon_ghost"),
+            ("GRIMER", "icon_blob"),
+            ("WEEDLE", "icon_caterpillar"),
+            ("MACHOP", "icon_humanshape"),
+            ("TENTACOOL", "icon_jellyfish"),
+            ("SHELLDER", "icon_shell"),
+            ("STARYU", "icon_staryu"),
+        ] {
+            let kind = prop_kind_for_source(&format!("species:{species}:{art}")).unwrap();
+            assert_eq!(kind, PropKind::ExactSpecies(species));
+            assert_ne!(kind, prop_kind_for_source(art).unwrap());
+            let sculpt = mesh(kind);
+            assert!(!sculpt.indices.is_empty());
+            assert!(sculpt.positions.iter().any(|p| p[2] > 0.01));
+        }
+        for unknown in [
+            "species:MISSING:icon_fish",
+            "species:MAGIKARP:new_art",
+            "species:MAGIKARP:gfx/icons/fish.png",
+            "species:MAGIKARP:species:GENGAR:icon_ghost",
+        ] {
+            assert_eq!(prop_kind_for_source(unknown), None, "{unknown}");
+        }
+    }
+    #[test]
+    fn every_normal_species_has_a_bounded_reusable_visible_model() {
+        let mut species: Vec<_> = crate::battle_species_models::supported_species()
+            .chain(EXACT_SHARED_SPECIES.iter().copied())
+            .collect();
+        species.sort_unstable();
+        species.dedup();
+        assert_eq!(species.len(), 251);
+        for name in species {
+            let source = format!("species:{name}:icon_monster");
+            assert_eq!(
+                prop_kind_for_source(&source),
+                Some(PropKind::ExactSpecies(name))
+            );
+        }
     }
 }

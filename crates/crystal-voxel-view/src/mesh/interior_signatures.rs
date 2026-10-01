@@ -40,7 +40,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x01,
         kind: ModelKind::WindowWall,
     },
-    // house 08 0,0 WindowWall
+    // house 08 0,0 WallDomestic
     AuthoredInteriorDrawing {
         tileset: "house",
         block: 0x08,
@@ -48,9 +48,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x00, 0x00, 0x00, 0x00],
         ground: 0x01,
-        kind: ModelKind::WindowWall,
+        kind: ModelKind::WallDomestic,
     },
-    // house 08 2,0 WallDomestic
+    // house 08 2,0 WindowWall
     AuthoredInteriorDrawing {
         tileset: "house",
         block: 0x08,
@@ -58,7 +58,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x24, 0x4a, 0x34, 0x2c],
         ground: 0x01,
-        kind: ModelKind::WallDomestic,
+        kind: ModelKind::WindowWall,
     },
     // house 0e 0,0 WallDomestic
     AuthoredInteriorDrawing {
@@ -359,6 +359,116 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x02, 0x02, 0x02, 0x02],
         ground: 0x01,
         kind: ModelKind::WallDomestic,
+    },
+    // Live carpet fields. Each is an exact source-phase drawing; its colors
+    // and pattern remain on the live atlas, mounted on thin cloth geometry.
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x08,
+        origin: [0, 2],
+        size: [4, 2],
+        tiles: &[0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x09,
+        origin: [0, 0],
+        size: [4, 4],
+        tiles: &[0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0a,
+        origin: [0, 1],
+        size: [4, 3],
+        tiles: &[0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x0d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0b,
+        origin: [0, 2],
+        size: [4, 2],
+        tiles: &[0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0c,
+        origin: [0, 0],
+        size: [4, 4],
+        tiles: &[0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0d,
+        origin: [0, 1],
+        size: [4, 3],
+        tiles: &[0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0e,
+        origin: [0, 2],
+        size: [4, 2],
+        tiles: &[0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x0f,
+        origin: [0, 0],
+        size: [4, 4],
+        tiles: &[0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x10,
+        origin: [0, 1],
+        size: [4, 3],
+        tiles: &[0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x11,
+        origin: [0, 2],
+        size: [4, 2],
+        tiles: &[0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x12,
+        origin: [0, 0],
+        size: [4, 4],
+        tiles: &[0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "players_room",
+        block: 0x13,
+        origin: [0, 1],
+        size: [4, 3],
+        tiles: &[0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d, 0x3d],
+        ground: 0x01,
+        kind: ModelKind::CarpetCloth,
     },
     // players_room 20 2,0 PlantMagna
     AuthoredInteriorDrawing {
@@ -1497,12 +1607,62 @@ mod signature_tests {
     }
     #[test]
     fn selected_signatures_are_complete_bounded_drawings() {
-        assert_eq!(INTERIOR_DRAWINGS.len(), 128);
+        assert_eq!(INTERIOR_DRAWINGS.len(), 140);
         for d in INTERIOR_DRAWINGS {
             assert_eq!(d.tiles.len(), d.size[0] * d.size[1]);
             assert!(d.origin[0] as usize + d.size[0] <= 4);
             assert!(d.origin[1] as usize + d.size[1] <= 4);
             assert!(d.size.iter().all(|&v| v > 0));
+        }
+    }
+    #[test]
+    fn domestic_window_roles_follow_window_art_on_either_side() {
+        for block in [0x05, 0x08, 0x16] {
+            for drawing in INTERIOR_DRAWINGS.iter().filter(|d| d.tileset == "house" && d.block == block) {
+                let expected = if drawing.tiles == [0x24, 0x4a, 0x34, 0x2c] {
+                    ModelKind::WindowWall
+                } else {
+                    assert!(drawing.tiles.iter().all(|tile| *tile == 0));
+                    ModelKind::WallDomestic
+                };
+                let (tiles, geometry) = source_fixture(drawing);
+                let cells = tiles.iter().collect::<Vec<_>>();
+                assert!(resolve("CherrygroveMart", &cells, &geometry, None)
+                    .iter().any(|placement| placement.kind == expected
+                        && placement.column == 0 && placement.row == 0));
+            }
+        }
+    }
+    #[test]
+    fn every_live_bed_and_poster_selects_its_current_complete_source() {
+        for (block, kind, tiles) in [
+            (0x1b, ModelKind::BedFeathery, &[0x03,0x04,0x13,0x14,0x23,0x24,0x33,0x34][..]),
+            (0x1c, ModelKind::BedPink, &[0x03,0x04,0x09,0x0a,0x19,0x1a,0x33,0x34][..]),
+            (0x1d, ModelKind::BedPolkadot, &[0x03,0x04,0x29,0x2a,0x39,0x3a,0x33,0x34][..]),
+            (0x1e, ModelKind::BedPikachu, &[0x03,0x04,0x49,0x4a,0x59,0x5a,0x33,0x34][..]),
+        ] {
+            let d = AuthoredInteriorDrawing { tileset: "players_room", block, origin: [0,0],
+                size: [2,4], tiles, ground: 1, kind };
+            let (mut cells, g) = source_fixture(&d);
+            let refs: Vec<_> = cells.iter().collect();
+            assert_eq!(resolve("PlayersHouse2F", &refs, &g, None).iter().filter(|p| p.kind == kind).count(), 1);
+            cells[0].source.subtile_column = 1;
+            let refs: Vec<_> = cells.iter().collect();
+            assert!(!resolve("PlayersHouse2F", &refs, &g, None).iter().any(|p| p.kind == kind));
+        }
+        for block in [0x1f, 0x23, 0x24, 0x25] {
+            let d = INTERIOR_DRAWINGS.iter().find(|d| d.tileset == "players_room"
+                && d.block == block && d.kind == ModelKind::PictureFrame).unwrap();
+            let (mut cells, g) = source_fixture(d);
+            let refs: Vec<_> = cells.iter().collect();
+            let p = resolve("PlayersHouse2F", &refs, &g, None).into_iter()
+                .find(|p| p.kind == ModelKind::PictureFrame).unwrap();
+            let mut mesh = TerrainMeshData::default();
+            assert!(append(&mut mesh, &refs, &g, &p, &mut vec![false; cells.len()]));
+            assert_eq!(mesh.textured.quad_count(), 8);
+            cells[0].source.tile_index = 0xff;
+            let refs: Vec<_> = cells.iter().collect();
+            assert!(!resolve("PlayersHouse2F", &refs, &g, None).iter().any(|p| p.kind == ModelKind::PictureFrame));
         }
     }
     #[test]

@@ -15,6 +15,8 @@ fn main() -> Result<()> {
     let mut tile_x = None;
     let mut tile_y = None;
     let mut screenshot = None;
+    let mut second_screenshot = None;
+    let mut modeled = true;
     let mut record = None;
     let mut walk = None;
     let mut measure = None;
@@ -22,6 +24,10 @@ fn main() -> Result<()> {
     let mut zoom = 0;
     let mut orbit = -1;
     while let Some(flag) = args.next() {
+        if flag == "--classic" {
+            modeled = false;
+            continue;
+        }
         if !flag.starts_with('-') && screenshot.is_none() {
             screenshot = Some(PathBuf::from(flag));
             continue;
@@ -34,6 +40,7 @@ fn main() -> Result<()> {
             "--x" => tile_x = Some(value.parse::<i16>()?),
             "--y" => tile_y = Some(value.parse::<i16>()?),
             "--screenshot" => screenshot = Some(PathBuf::from(value)),
+            "--second" => second_screenshot = Some(PathBuf::from(value)),
             "--record" => record = Some(PathBuf::from(value)),
             "--walk" => walk = Some(value),
             "--measure" => measure = Some(PathBuf::from(value)),
@@ -43,6 +50,10 @@ fn main() -> Result<()> {
             _ => anyhow::bail!("unknown option {flag}"),
         }
     }
+    anyhow::ensure!(
+        second_screenshot.is_none() || screenshot.is_some(),
+        "--second needs --screenshot"
+    );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
             .into_iter()
@@ -114,13 +125,14 @@ fn main() -> Result<()> {
         },
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
-            voxel_view_enabled: Some(true),
+            voxel_view_enabled: Some(modeled),
             voxel_camera: Some((zoom, orbit)),
             window_title: Some(format!(
                 "Geothite | {map} 3D | Q/E orbit, PgUp/PgDn zoom, F3 2D/3D"
             )),
             render_test_hour: Some(16),
             render_test_screenshot: screenshot,
+            render_test_second_screenshot: second_screenshot,
             render_test_walk: walk,
             #[cfg(not(target_arch = "wasm32"))]
             render_test_record: record.map(|path| (path, seconds)),

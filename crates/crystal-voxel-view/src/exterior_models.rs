@@ -66,6 +66,9 @@ pub(crate) enum Kind {
     IceShelfStairRight,
     IceShelfStairCorner,
     IceShelfStairLeft,
+    KantoBoundaryLand,
+    KantoBoundaryShore,
+    KantoBoundaryPath,
 }
 impl Kind {
     pub(crate) fn label(self) -> &'static str {
@@ -129,6 +132,9 @@ impl Kind {
             Self::IceShelfStairRight => "world-exterior/ice_shelf_stair_right",
             Self::IceShelfStairCorner => "world-exterior/ice_shelf_stair_corner",
             Self::IceShelfStairLeft => "world-exterior/ice_shelf_stair_left",
+            Self::KantoBoundaryLand => "world-exterior/kanto_boundary_land",
+            Self::KantoBoundaryShore => "world-exterior/kanto_boundary_shore",
+            Self::KantoBoundaryPath => "world-exterior/kanto_boundary_path",
         }
     }
 }
@@ -193,6 +199,9 @@ pub(crate) const ALL: &[Kind] = &[
     Kind::IceShelfStairRight,
     Kind::IceShelfStairCorner,
     Kind::IceShelfStairLeft,
+    Kind::KantoBoundaryLand,
+    Kind::KantoBoundaryShore,
+    Kind::KantoBoundaryPath,
 ];
 const JSON: &[&str] = &[
     include_str!("../models/world_exteriors/east_gate.mesh.json"),
@@ -254,6 +263,9 @@ const JSON: &[&str] = &[
     include_str!("../models/world_exteriors/ice_shelf_stair_right.mesh.json"),
     include_str!("../models/world_exteriors/ice_shelf_stair_corner.mesh.json"),
     include_str!("../models/world_exteriors/ice_shelf_stair_left.mesh.json"),
+    include_str!("../models/world_exteriors/kanto_boundary_land.mesh.json"),
+    include_str!("../models/world_exteriors/kanto_boundary_shore.mesh.json"),
+    include_str!("../models/world_exteriors/kanto_boundary_path.mesh.json"),
 ];
 
 #[derive(Deserialize)]
@@ -484,5 +496,71 @@ mod tests {
     #[test]
     fn malformed_exterior_mesh_is_rejected() {
         assert!(Model::parse(r#"{"primitives":[]}"#).is_err());
+    }
+
+    #[test]
+    fn kanto_boundary_rocks_are_closed_volumes_below_five_hundred_triangles() {
+        for kind in [
+            Kind::KantoBoundaryLand,
+            Kind::KantoBoundaryShore,
+            Kind::KantoBoundaryPath,
+        ] {
+            let m = model(kind);
+            assert!(m.surface.indices.len() / 3 < 500, "{kind:?}");
+            assert!(m.max[0] - m.min[0] > 1.9);
+            assert!(m.max[2] - m.min[2] > 1.6);
+            assert!(m.max[1] - m.min[1] > 1.1);
+            assert_eq!(m.min[1], 0.0, "closed underside stays on ground");
+            let vertex =
+                |i: u32| m.surface.positions[i as usize].map(|v| (v * 1_000_000.0).round() as i32);
+            let mut edges = std::collections::BTreeMap::new();
+            let mut signed_volume = 0.0;
+            for triangle in m.surface.indices.chunks_exact(3) {
+                let a = Vec3::from_array(m.surface.positions[triangle[0] as usize]);
+                let b = Vec3::from_array(m.surface.positions[triangle[1] as usize]);
+                let c = Vec3::from_array(m.surface.positions[triangle[2] as usize]);
+                assert!((b - a).cross(c - a).length_squared() > 0.0000001);
+                signed_volume += a.dot(b.cross(c)) / 6.0;
+                for [from, to] in [
+                    [triangle[0], triangle[1]],
+                    [triangle[1], triangle[2]],
+                    [triangle[2], triangle[0]],
+                ] {
+                    let a = vertex(from);
+                    let b = vertex(to);
+                    let (key, direction) = if a < b {
+                        ((a, b), 1_i32)
+                    } else {
+                        ((b, a), -1_i32)
+                    };
+                    let entry = edges.entry(key).or_insert((0, 0));
+                    entry.0 += 1;
+                    entry.1 += direction;
+                }
+            }
+            assert!(
+                signed_volume > 1.0,
+                "{kind:?} has real outward-facing volume"
+            );
+            assert!(
+                edges
+                    .values()
+                    .all(|&(count, balance)| count == 2 && balance == 0),
+                "{kind:?} has no open rim or non-manifold backing"
+            );
+            assert!(m.surface.normals.iter().any(|v| v[1] < -0.99));
+            assert!(m.surface.normals.iter().any(|v| v[1] > 0.8));
+            for (axis, sign) in [(0, -1.0), (0, 1.0), (2, -1.0), (2, 1.0)] {
+                assert!(m.surface.normals.iter().any(|v| v[axis] * sign > 0.7));
+            }
+        }
+        assert_ne!(
+            model(Kind::KantoBoundaryLand).surface.colors,
+            model(Kind::KantoBoundaryShore).surface.colors
+        );
+        assert_ne!(
+            model(Kind::KantoBoundaryLand).surface.colors,
+            model(Kind::KantoBoundaryPath).surface.colors
+        );
     }
 }

@@ -976,7 +976,13 @@ fn immersive_battle_surf_preserves_source_program_axis_and_object_lifetime() {
     assert_eq!(animation.total_frames, 185);
     assert_eq!(
         animation.sound_events,
-        [1, 33, 65, 97].map(|frame| (frame, "SFX_SURF".to_string()))
+        [1, 33, 65, 97].map(|frame| (
+            frame,
+            VisibleMoveSound {
+                id: "SFX_SURF".to_string(),
+                args: Some(BattleSoundArgs::new(0, 1))
+            }
+        ))
     );
     assert!(animation.cry_events.is_empty());
     assert_eq!(animation.object_events.len(), 2);
@@ -1197,4 +1203,386 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
         }
     }
     assert_eq!(shell.shell.snapshot().unwrap(), snapshot);
+}
+
+#[test]
+fn immersive_surf_sound_events_keep_source_args_and_queue_once_at_source_frames() {
+    for player_move in [true, false] {
+        let mut shell = immersive_battle_fixture();
+        let snapshot = shell.shell.snapshot().unwrap();
+        let mut animation = immersive_source_animation(&snapshot, "SURF");
+        animation.player_move = player_move;
+        shell.pending_audio.clear();
+        shell.visible_move_animations.push_back(animation);
+        let mut dispatched = Vec::new();
+        for frame in 1..185 {
+            advance_visible_move_animation(&mut shell).unwrap();
+            for command in std::mem::take(&mut shell.pending_audio) {
+                if command.audio_id == "SFX_SURF" {
+                    let playback = command
+                        .battle_sound
+                        .expect("source operands must reach playback");
+                    assert_eq!(playback.args.packed, 1);
+                    assert_eq!(playback.player_move, player_move);
+                    dispatched.push(frame);
+                }
+            }
+            let before = shell.pending_audio.clone();
+            let _ = extract_immersive_battle_fixture(&shell, &snapshot, true);
+            assert_eq!(
+                shell.pending_audio, before,
+                "render extraction cannot replay sounds"
+            );
+        }
+        assert_eq!(dispatched, [1, 33, 65, 97]);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[test]
+fn immersive_surf_stereo_mask_preserves_pack_pcm_hash_format_and_frame_count() {
+    let shell = immersive_battle_fixture();
+    let command = BevyAudioCommand {
+        battle_sound: Some(BattleSoundPlayback {
+            args: BattleSoundArgs::new(0, 1),
+            player_move: true,
+        }),
+        cry_parameters: None,
+        audio_id: "SFX_SURF".into(),
+        kind: ModpackAudioKind::SoundEffect,
+        mode: ModpackAudioPlaybackMode::RawPcm,
+        looped: false,
+    };
+    let source = shell
+        .shell
+        .runtime()
+        .audio()
+        .require_sound_effect("SFX_SURF")
+        .unwrap()
+        .source
+        .clone();
+    let decoded = decoded_audio_program_source(&command, source).unwrap();
+    assert_eq!(decoded.format.sample_rate_hz, 22_050);
+    assert_eq!(decoded.format.channels, 2);
+    assert_eq!(decoded.format.bits_per_sample, 16);
+    assert_eq!(decoded.bytes.len(), 59_069 * 4);
+    let hash = decoded.bytes.iter().fold(0x811c9dc5_u32, |hash, byte| {
+        (hash ^ u32::from(*byte)).wrapping_mul(0x01000193)
+    });
+    assert_eq!(hash, 0x4b58b775);
+    assert!(decoded.loop_range.is_none());
+    let before = Arc::clone(&decoded.samples);
+    assert!(
+        before.chunks_exact(2).all(|frame| frame[0] == frame[1]),
+        "the source program must remain bilateral for this static mask shortcut"
+    );
+    let right = pcm_samples_for_audio_command(&before, Sound::Stereo, &command);
+    assert_eq!(right.len(), before.len());
+    assert!(
+        right
+            .chunks_exact(2)
+            .zip(before.chunks_exact(2))
+            .all(|(actual, expected)| { actual[0] == 0 && actual[1] == expected[1] })
+    );
+    assert!(Arc::ptr_eq(&before, &decoded.samples));
+}
+
+#[test]
+fn immersive_surf_source_busy_clock_uses_unpadded_channels_and_equal_priority_restarts() {
+    let shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let animation = immersive_source_animation(&snapshot, "SURF");
+    let source = &shell
+        .shell
+        .runtime()
+        .audio()
+        .require_sound_effect("SFX_SURF")
+        .unwrap()
+        .source;
+    let AudioProgramSource::Midi { midi_base64, .. } = source else {
+        panic!("source MIDI program");
+    };
+    let program = crystal_audio::synth::decode_midi(midi_base64).unwrap();
+    let timing = crystal_audio::synth::source_channel_timing(&program).unwrap();
+    assert_eq!(
+        timing.channel_frames,
+        BTreeMap::from([(5, 144), (6, 160), (8, 156)])
+    );
+    assert!(timing.looping_channels.is_empty());
+    let commands = animation
+        .sound_events
+        .iter()
+        .map(|(_, sound)| BevyAudioCommand {
+            battle_sound: sound.args.map(|args| BattleSoundPlayback {
+                args,
+                player_move: true,
+            }),
+            cry_parameters: None,
+            audio_id: sound.id.clone(),
+            kind: ModpackAudioKind::SoundEffect,
+            mode: ModpackAudioPlaybackMode::RawPcm,
+            looped: false,
+        })
+        .collect::<Vec<_>>();
+    let priorities = shell.shell.runtime().audio().sound_effect_priorities();
+    let priority = priorities["SFX_SURF"];
+    assert_eq!(priority, 83);
+    // Same-ID/equal-priority source requests are admitted while Surf is busy.
+    assert_eq!(
+        source_ordered_pending_audio(
+            commands.clone(),
+            Some(ModpackAudioKind::SoundEffect),
+            priority,
+            priorities
+        )
+        .unwrap(),
+        commands
+    );
+    assert_eq!(
+        animation
+            .sound_events
+            .iter()
+            .map(|(frame, _)| frame + 160)
+            .collect::<Vec<_>>(),
+        [161, 193, 225, 257]
+    );
+    assert_eq!(
+        visible_surf_source_audio_wait(&shell, &animation).unwrap(),
+        72
+    );
+    let mut unknown = animation.clone();
+    unknown.sound_events[0].1.args = Some(BattleSoundArgs::new(6, 2));
+    assert!(visible_surf_source_audio_wait(&shell, &unknown).is_err());
+}
+
+#[test]
+fn immersive_surf_waits_for_virtual_audio_after_script_return_without_extending_source_frames() {
+    for device_busy in [false, true] {
+        let mut shell = immersive_battle_fixture();
+        let snapshot = shell.shell.snapshot().unwrap();
+        shell.pending_audio.clear();
+        shell.transient_audio_playing = device_busy;
+        shell
+            .visible_move_animations
+            .push_back(immersive_source_animation(&snapshot, "SURF"));
+        for _ in 1..=184 {
+            advance_visible_move_animation(&mut shell).unwrap();
+        }
+        assert_eq!(shell.visible_move_animations.front().unwrap().frame, 184);
+        assert!(shell.visible_move_audio_wait.is_none());
+        advance_visible_move_animation(&mut shell).unwrap();
+        assert_eq!(shell.visible_move_audio_wait, Some(72));
+        let retained = shell.battle_message_scene.clone();
+        for elapsed in 0..72 {
+            let animation = shell
+                .visible_move_animations
+                .front()
+                .expect("wrapper still owns presentation");
+            assert_eq!((animation.frame, animation.total_frames), (185, 185));
+            assert_eq!(shell.visible_move_audio_wait, Some(72 - elapsed));
+            assert!(visible_battle_animation_owns_frame(&shell));
+            assert!(
+                extract_immersive_battle_fixture(&shell, &snapshot, true)
+                    .source
+                    .is_none(),
+                "OAM/script frame extraction ends at anim_ret, even while sound is busy"
+            );
+            assert_eq!(
+                shell.battle_message_scene, retained,
+                "HP scene cannot advance before WaitSFX"
+            );
+            advance_visible_move_animation(&mut shell).unwrap();
+        }
+        assert!(shell.visible_move_audio_wait.is_none());
+        assert!(
+            shell.visible_move_animations.is_empty(),
+            "source97+160 ends at wrapper tick257"
+        );
+        assert_eq!(
+            shell
+                .pending_audio
+                .iter()
+                .filter(|sound| sound.audio_id == "SFX_SURF")
+                .count(),
+            4
+        );
+        assert_eq!(
+            shell.shell.snapshot().unwrap(),
+            snapshot,
+            "presentation wait cannot mutate PP/HP/core state"
+        );
+    }
+}
+
+#[test]
+fn immersive_psychic_shadow_ball_source_sounds_keep_frames_actor_and_operands() {
+    for (move_id, sound_id, expected_frames) in [
+        (
+            "PSYCHIC_M",
+            "SFX_PSYCHIC",
+            vec![1, 9, 17, 25, 33, 41, 49, 57],
+        ),
+        ("SHADOW_BALL", "SFX_SLUDGE_BOMB", vec![1]),
+    ] {
+        for player_move in [true, false] {
+            let mut shell = immersive_battle_fixture();
+            let snapshot = shell.shell.snapshot().unwrap();
+            let mut animation = immersive_source_animation(&snapshot, move_id);
+            animation.player_move = player_move;
+            let total_frames = animation.total_frames;
+            assert_eq!(
+                animation
+                    .sound_events
+                    .iter()
+                    .map(|(f, _)| *f)
+                    .collect::<Vec<_>>(),
+                expected_frames
+            );
+            assert!(animation.sound_events.iter().all(|(_, sound)| {
+                sound.id == sound_id && sound.args == Some(BattleSoundArgs::new(6, 2))
+            }));
+            shell.pending_audio.clear();
+            shell.visible_move_animations.push_back(animation);
+            let mut dispatched = Vec::new();
+            for frame in 1..=total_frames {
+                advance_visible_move_animation(&mut shell).unwrap();
+                for command in std::mem::take(&mut shell.pending_audio) {
+                    if command.audio_id == sound_id {
+                        let playback = command.battle_sound.expect("source sound parameters");
+                        assert_eq!(playback.args.packed, 26);
+                        assert_eq!(playback.player_move, player_move);
+                        dispatched.push(frame);
+                    }
+                }
+            }
+            assert_eq!(dispatched, expected_frames);
+        }
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[test]
+fn immersive_audited_battle_sound_masks_preserve_source_programs_and_canonical_pcm() {
+    let shell = immersive_battle_fixture();
+    assert_eq!(
+        AUDITED_BATTLE_SOUND_IDS.len(),
+        24,
+        "23 audited mode-2/3 IDs plus Surf"
+    );
+    for &audio_id in AUDITED_BATTLE_SOUND_IDS {
+        let source = shell
+            .shell
+            .runtime()
+            .audio()
+            .require_sound_effect(audio_id)
+            .unwrap()
+            .source
+            .clone();
+        let AudioProgramSource::Midi {
+            midi_base64,
+            payload_hash,
+            byte_len,
+            loop_start_sample,
+            loop_end_sample,
+            ..
+        } = &source
+        else {
+            panic!("bounded mask audit requires the bundled source program");
+        };
+        let expected_hash = payload_hash.clone();
+        let expected_byte_len = *byte_len;
+        assert!(loop_start_sample.is_none() && loop_end_sample.is_none());
+        let program = crystal_audio::synth::decode_midi(midi_base64).unwrap();
+        assert!(!program.music_data.channels.is_empty());
+        assert!(
+            program
+                .music_data
+                .channels
+                .values()
+                .all(|source| { matches!(source.number, Some(5..=8)) })
+        );
+        for command in program
+            .music_data
+            .channels
+            .values()
+            .chain(program.music_data.subroutines.values())
+            .chain(program.music_data.shared_sources.values())
+            .flat_map(|source| source.commands.iter())
+        {
+            assert!(
+                !matches!(
+                    command.command.as_str(),
+                    "stereo_panning" | "force_stereo_panning" | "restart_channel" | "new_song"
+                ),
+                "a changed program requires a new panning audit: {audio_id}"
+            );
+        }
+        let mut command = BevyAudioCommand {
+            battle_sound: Some(BattleSoundPlayback {
+                args: BattleSoundArgs::new(6, 2),
+                player_move: true,
+            }),
+            cry_parameters: None,
+            audio_id: audio_id.into(),
+            kind: ModpackAudioKind::SoundEffect,
+            mode: ModpackAudioPlaybackMode::RawPcm,
+            looped: false,
+        };
+        // Production decoding validates synthesized hash/length against the
+        // pack before the canonical waveform can enter the cache.
+        let decoded = decoded_audio_program_source(&command, source).unwrap();
+        assert_eq!(decoded.format.sample_rate_hz, 22_050);
+        assert_eq!(decoded.format.channels, 2);
+        assert_eq!(decoded.format.bits_per_sample, 16);
+        assert_eq!(decoded.bytes.len(), expected_byte_len);
+        assert_eq!(
+            format!(
+                "{:08x}",
+                decoded.bytes.iter().fold(0x811c9dc5_u32, |hash, byte| {
+                    (hash ^ u32::from(*byte)).wrapping_mul(0x01000193)
+                })
+            ),
+            expected_hash
+        );
+        assert!(decoded.loop_range.is_none());
+        let canonical = Arc::clone(&decoded.samples);
+        let immutable = canonical.to_vec();
+        assert_eq!(canonical.len(), expected_byte_len / 2);
+        assert!(
+            canonical.chunks_exact(2).all(|f| f[0] == f[1]),
+            "{audio_id}"
+        );
+        let original_key = BevyAudioCacheKey::from_command(&command);
+        for player_move in [true, false] {
+            for tracks in 0..4 {
+                command.battle_sound = Some(BattleSoundPlayback {
+                    args: BattleSoundArgs::new(6, tracks),
+                    player_move,
+                });
+                assert_eq!(BevyAudioCacheKey::from_command(&command), original_key);
+                let routed = pcm_samples_for_audio_command(&canonical, Sound::Stereo, &command);
+                assert_eq!(routed.len(), canonical.len());
+                let right = (tracks == 1 || tracks == 3) == player_move;
+                assert!(
+                    routed
+                        .chunks_exact(2)
+                        .zip(canonical.chunks_exact(2))
+                        .all(|(r, c)| {
+                            if right {
+                                r[0] == 0 && r[1] == c[1]
+                            } else {
+                                r[0] == c[0] && r[1] == 0
+                            }
+                        }),
+                    "{audio_id}: player={player_move}, tracks={tracks}"
+                );
+                assert_eq!(
+                    pcm_samples_for_audio_command(&canonical, Sound::Mono, &command),
+                    pcm_samples_for_sound_option(&canonical, Sound::Mono)
+                );
+                assert_eq!(canonical.as_ref(), immutable.as_slice());
+                assert!(Arc::ptr_eq(&canonical, &decoded.samples));
+            }
+        }
+    }
 }

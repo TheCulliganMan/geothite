@@ -5,7 +5,7 @@ fn visible_move_animation_definition(
 ) -> Option<(
     String,
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -41,7 +41,7 @@ fn visible_battle_animation_definition(
 ) -> Option<(
     String,
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -70,7 +70,7 @@ fn visible_move_animation_definition_with_substitute(
 ) -> Option<(
     String,
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -142,7 +142,7 @@ fn visible_substitute_move_delay_definition(
 ) -> Option<(
     String,
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -185,7 +185,7 @@ fn visible_substitute_raise_after_delay_definition(
 ) -> Option<(
     String,
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -217,7 +217,7 @@ fn visible_substitute_raise_after_delay_definition(
 #[derive(Default)]
 struct VisibleBattleAnimationTimeline {
     frame: u16,
-    sounds: Vec<(u16, String)>,
+    sounds: Vec<(u16, VisibleMoveSound)>,
     cries: Vec<(u16, u8)>,
     objects: Vec<VisibleMoveObjectEvent>,
     bg_effects: Vec<VisibleMoveBgEvent>,
@@ -233,7 +233,7 @@ fn compile_visible_battle_animation_timeline(
     animation_param: i32,
 ) -> Option<(
     u16,
-    Vec<(u16, String)>,
+    Vec<(u16, VisibleMoveSound)>,
     Vec<(u16, u8)>,
     Vec<VisibleMoveObjectEvent>,
     Vec<VisibleMoveBgEvent>,
@@ -301,9 +301,15 @@ fn execute_visible_battle_animation_script(
             }
             "anim_sound" => {
                 if let Some(sound) = arguments.get(2) {
-                    timeline
-                        .sounds
-                        .push((timeline.frame.saturating_add(1), (*sound).to_string()));
+                    let duration = parse_visible_battle_animation_int(arguments.first()?)? as u8;
+                    let tracks = parse_visible_battle_animation_int(arguments.get(1)?)? as u8;
+                    timeline.sounds.push((
+                        timeline.frame.saturating_add(1),
+                        VisibleMoveSound {
+                            id: (*sound).to_string(),
+                            args: Some(BattleSoundArgs::new(duration, tracks)),
+                        },
+                    ));
                 }
             }
             "anim_cry" => {

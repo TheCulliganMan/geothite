@@ -326,6 +326,7 @@ fn queue_visible_trainer_encounter_music(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: music_id.to_string(),
             kind: ModpackAudioKind::Music,
@@ -5971,6 +5972,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
@@ -6228,6 +6230,7 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_enemy_hp_at_player_send_out = None;
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;

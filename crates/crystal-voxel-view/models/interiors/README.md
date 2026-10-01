@@ -1,6 +1,6 @@
 # Original full-volume interior kit
 
-68 independently authored reusable assets for domestic, care, retail and civic
+69 independently authored reusable assets for domestic, care, retail and civic
 interiors. Models contain only original geometry and flat material colors. They
 contain no game pixels, source textures, animation commands or content-pack data.
 
@@ -54,3 +54,11 @@ Final civic refinements: `broadcast_rack` and `tower_reception`. Their role-spec
 geometry avoids substituting a retail vending machine for radio equipment or an
 empty counter for a staffed service workstation. The Rust surface-finishing pass
 is separate from this mesh catalog and does not count floor materials as objects.
+
+The `carpet_cloth` backing is authored by `tools/build-bedroom-cloth.py`. It
+provides a closed thin textile body, rolled bindings, and editable side stitches.
+At runtime its upper surface uses the exact currently selected native carpet
+art and palette. Twelve complete source drawings cover the four live carpet
+states; cloth never takes ownership of the desk-foot source row or changes
+collision, footing, coordinates, warps, ownership flags, or decoration choice.
+The source artifact is `bedroom-cloth.blend` in the shared source manifest.

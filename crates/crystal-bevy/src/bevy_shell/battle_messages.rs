@@ -2252,7 +2252,7 @@ fn stage_visible_battle_messages(
                         // shifts with a two-frame delay after each one.
                         total_frames: 14,
                         sound_events: if *side == BattleSide::Enemy {
-                            vec![(0, "SFX_KINESIS".to_string()), (14, "SFX_FAINT".to_string())]
+                            vec![(0, "SFX_KINESIS".into()), (14, "SFX_FAINT".into())]
                         } else {
                             Vec::new()
                         },

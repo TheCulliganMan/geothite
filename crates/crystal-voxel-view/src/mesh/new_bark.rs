@@ -1037,6 +1037,156 @@ enum GroundMaterial {
     Ice,
 }
 
+/// Only the exposed cells of the two native checker plazas become paving.
+/// The southeast quadrant of $79 is a separate prop, including cropped views.
+fn kanto_plaza_material(source: &VisualTileSource) -> Option<GroundMaterial> {
+    let x = source.subtile_column;
+    let y = source.subtile_row;
+    if x >= 4 || y >= 4 || (source.metatile_id == 0x79 && x >= 2 && y >= 2) {
+        return None;
+    }
+    let expected = if (x + y) % 2 == 0 { 0x30 } else { 0x39 };
+    (matches!(source.metatile_id, 0x79 | 0x7b) && source.tile_index == expected)
+        .then_some(GroundMaterial::Pavers)
+}
+
+/// A bit is one source cell in a native 4x4 metatile, in row-major order.
+/// Masks deliberately omit prop, stair, wall and lettering cells.
+fn source_cell_in_mask(source: &VisualTileSource, mask: u16) -> bool {
+    source.subtile_column < 4
+        && source.subtile_row < 4
+        && mask & (1 << (source.subtile_row * 4 + source.subtile_column)) != 0
+}
+
+fn ice_path_ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
+    // Each 2x2 pool quadrant has four distinct diagonal-highlight samples.
+    // The mixed blocks replace exactly one quadrant with a separate boulder.
+    let pool = match source.metatile_id {
+        0x1f => 0xffff,
+        0x2c => 0xffcc,
+        0x2d => 0xccff,
+        0x2e => 0xff33,
+        0x2f => 0x33ff,
+        _ => 0,
+    };
+    if source_cell_in_mask(source, pool) {
+        let expected =
+            0xc6 + u16::from(source.subtile_column % 2) + u16::from(source.subtile_row % 2) * 0x10;
+        return (source.tile_index == expected).then_some(GroundMaterial::Ice);
+    }
+    // Exact locations of the four plain ground samples: rock grain $19 and
+    // dotted variations $9a/$9b/$aa. Dark rock fragments, ladders, entrances,
+    // and the Hall of Fame atlas reuse remain source art.
+    let masks: [u16; 4] = match source.metatile_id {
+        0x02 => [0x6ed2, 0x812d, 0x0000, 0x1000],
+        0x03 => [0x236c, 0x1093, 0x0000, 0x0000],
+        0x04 => [0x0000, 0xc4c0, 0x0800, 0x0000],
+        0x05 => [0x0000, 0x8df0, 0x4200, 0x3000],
+        0x06 => [0x0000, 0x3330, 0x0000, 0x0000],
+        0x07 => [0x2370, 0x1001, 0x0084, 0x0008],
+        0x08 => [0x0000, 0x4cc4, 0x8008, 0x0000],
+        0x09 => [0x8660, 0x5088, 0x0800, 0x2117],
+        0x0a => [0x0000, 0x3233, 0x0100, 0x0000],
+        0x0c => [0x0000, 0x00c4, 0x0008, 0x0000],
+        0x0d => [0x0000, 0x00ff, 0x0000, 0x0000],
+        0x0e => [0x0000, 0x0032, 0x0001, 0x0000],
+        0x10 => [0x0000, 0x113f, 0x0240, 0x0000],
+        0x11 => [0x0000, 0x88cf, 0x0010, 0x4420],
+        0x12 => [0x0000, 0x0000, 0x00d2, 0x0004],
+        0x13 => [0x0000, 0x0001, 0x0092, 0x0048],
+        0x14 => [0x8800, 0x0000, 0x0400, 0x4000],
+        0x15 => [0xd300, 0x0c00, 0x0000, 0x2000],
+        0x16 => [0x3100, 0x0200, 0x0000, 0x0000],
+        0x17 => [0xc421, 0x0846, 0x0000, 0x0098],
+        0x18 => [0x8cc4, 0x0008, 0x0000, 0x4000],
+        0x1a => [0x2222, 0x0000, 0x0010, 0x0101],
+        0x1b => [0x0622, 0xc811, 0x3000, 0x0100],
+        0x1c => [0x0080, 0x0040, 0x0000, 0x000c],
+        0x1d => [0x0073, 0x0000, 0x008c, 0x0000],
+        0x1e => [0x0001, 0x0000, 0x0002, 0x0030],
+        0x20 => [0xaec8, 0x0004, 0x0000, 0x5100],
+        0x21 => [0xc431, 0x0000, 0x0006, 0x08c8],
+        0x22 => [0xb532, 0x0000, 0x0800, 0x4201],
+        0x23 => [0x31e6, 0x0000, 0x0201, 0x0018],
+        0x24 => [0x0084, 0x0022, 0x0200, 0x0448],
+        0x25 => [0x0037, 0x0000, 0x0e00, 0x01c8],
+        0x26 => [0x0012, 0x0000, 0x0541, 0x0224],
+        0x27 => [0x4eae, 0x0000, 0x0000, 0xa040],
+        0x28 => [0x2010, 0x0120, 0x4447, 0x1200],
+        0x29 => [0x4fd6, 0x0009, 0x8020, 0x1000],
+        0x2a => [0x0020, 0x0000, 0xffc0, 0x0010],
+        0x37 => [0x0040, 0x0000, 0x001f, 0x1120],
+        0x38 => [0x0220, 0x0008, 0x0005, 0x10d2],
+        0x39 => [0x0000, 0x00cc, 0x0000, 0x0000],
+        0x3a => [0x0000, 0x0033, 0x0000, 0x0000],
+        0x3e => [0x0000, 0x00ef, 0x0010, 0x0000],
+        _ => return None,
+    };
+    let mask = match source.tile_index {
+        0x19 => masks[0],
+        0x9a => masks[1],
+        0x9b => masks[2],
+        0xaa => masks[3],
+        _ => return None,
+    };
+    source_cell_in_mask(source, mask).then_some(GroundMaterial::Stone)
+}
+
+fn port_water_source(source: &VisualTileSource) -> bool {
+    // Water-only cells from the native quay, ship and gym blocks. In
+    // particular, the four bollard tiles never become water or pavement.
+    let mask = match source.metatile_id {
+        0x02 => 0xcccc,
+        0x03 => 0x3333,
+        0x05 => 0xcc00,
+        0x06 => 0xff00,
+        0x07 => 0x3300,
+        0x08 => 0xfff0,
+        0x09 => 0xcccc,
+        0x0a => 0xffff,
+        0x0b => 0x3333,
+        0x0c => 0x00ff,
+        0x0d => 0x00cc,
+        0x0e => 0x00ff,
+        0x0f => 0x0033,
+        0x10 => 0x7777,
+        0x12 => 0xeeee,
+        0x13 => 0x3333,
+        0x14 => 0x3330,
+        0x15 => 0xfff0,
+        0x16 => 0x7770,
+        0x17 => 0x0033,
+        0x18 => 0x00ff,
+        0x19 => 0x0033,
+        0x1a => 0x000f,
+        0x1b => 0x88ef,
+        0x1c => 0xf100,
+        0x1d => 0xf000,
+        0x1e => 0xf000,
+        0x1f => 0xfec8,
+        0x20 => 0x3300,
+        0x22 => 0xcc00,
+        0x23 => 0x3300,
+        0x24 => 0xff00,
+        0x25 => 0xff00,
+        0x27 => 0xf000,
+        0x28 => 0xc000,
+        0x29 => 0x3000,
+        0x2c => 0x00cc,
+        0x2d => 0x0033,
+        0x2e => 0xcccc,
+        0x2f => 0x3333,
+        0x30 => 0xff00,
+        0x34 => 0xccc0,
+        0x36 => 0xfff0,
+        0x37 => 0xccc0,
+        0x38 => 0x3330,
+        0x39 => 0x00f0,
+        _ => return false,
+    };
+    source.tile_index == 0x14 && source_cell_in_mask(source, mask)
+}
+
 /// The atlas sample, not an object's plot, identifies the exposed ground under
 /// a modeled tree, house, sign or flower. Unknown art stays untouched.
 fn ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
@@ -1052,12 +1202,17 @@ fn ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
             | "cave"
             | "dark_cave"
             | "ice_path"
+            | "port"
     ) {
         return None;
     }
     match shape_for_source(source) {
         CellShape::Flat | CellShape::PlaneAt { height: 0.0 } => {
             match (tileset, source.tile_index) {
+                ("kanto", _) if matches!(source.metatile_id, 0x79 | 0x7b) => {
+                    kanto_plaza_material(source)
+                }
+                ("ice_path", _) => ice_path_ground_material(source),
                 ("johto" | "johto_modern" | "forest" | "battle_tower_outside", 0x05)
                 | ("kanto", 0x2c)
                 | ("park", 0x01) => Some(GroundMaterial::Lawn),
@@ -1067,10 +1222,12 @@ fn ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
                     Some(GroundMaterial::Pavers)
                 }
                 ("park", 0x00) => Some(GroundMaterial::Pavers),
-                ("cave" | "dark_cave", 0x16) | ("ice_path", 0x19) => Some(GroundMaterial::Stone),
-                ("ice_path", 0xc6) => Some(GroundMaterial::Ice),
+                ("cave" | "dark_cave", 0x16) => Some(GroundMaterial::Stone),
                 _ => None,
             }
+        }
+        CellShape::Water if tileset == "port" => {
+            port_water_source(source).then_some(GroundMaterial::Water)
         }
         CellShape::Water => Some(GroundMaterial::Water),
         CellShape::ShoreBand => Some(GroundMaterial::Shore),
@@ -1290,6 +1447,7 @@ fn surface_material(
     sample: &VisualTileSource,
     cells: &[&VisualTile],
     geometry: &GridGeometry,
+    authored_cells: &[Option<&str>],
 ) -> Option<GroundMaterial> {
     if let Some(material) = shallow_bank_surface(positions, normal, sample, cells, geometry) {
         return Some(material);
@@ -1326,10 +1484,27 @@ fn surface_material(
         if cells[world].source.tileset_id != sample.tileset_id {
             return None;
         }
-        // Sampled ground may be beneath any authored object. Water and shore
-        // must additionally agree with the actual source cell under this face.
+        // Water beds beneath the complete harbor models were authored at
+        // this same water datum. Their existing claims prove the underlay;
+        // a clipped, unknown or changed prop never gains a claim here.
+        let harbor_bed = material == GroundMaterial::Water
+            && sample.tileset_id.as_ref() == "port"
+            && matches!(
+                authored_cells.get(world).copied().flatten(),
+                Some("special:harbor-bollard" | "special:dock-railing" | "special:harbor-ferry")
+            );
+        // The closed Kanto shore-rock adapter proves a complete source drawing
+        // and supplies a live same-atlas water sample at the native datum.
+        let kanto_rock_bed = material == GroundMaterial::Water
+            && sample.tileset_id.as_ref() == "kanto"
+            && sample.tile_index == 0x14
+            && authored_cells.get(world).copied().flatten()
+                == Some("world-exterior/kanto_boundary_shore");
+        // Other water and shore faces must agree with the actual source cell.
         if matches!(material, GroundMaterial::Water | GroundMaterial::Shore)
             && ground_material(&cells[world].source) != Some(material)
+            && !harbor_bed
+            && !kanto_rock_bed
         {
             return None;
         }
@@ -1740,8 +1915,16 @@ pub(super) fn polish_world_surfaces(
         let positions: [[f32; 3]; 4] = old.positions[base..base + 4].try_into().unwrap();
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
-        let material = sampled_cell(&uvs, geometry)
-            .and_then(|i| surface_material(&positions, normal, &cells[i].source, cells, geometry));
+        let material = sampled_cell(&uvs, geometry).and_then(|i| {
+            surface_material(
+                &positions,
+                normal,
+                &cells[i].source,
+                cells,
+                geometry,
+                &mesh.authored_cells,
+            )
+        });
         if let Some(material) = material {
             if normal[1] > 0.999 && positions[0][1].abs() < 0.001 {
                 finish.append_surface(&mut mesh.solid, material, positions);
@@ -3051,5 +3234,313 @@ mod tests {
         );
         assert_eq!(mesh.footing_heights, vec![0.0]);
         assert_eq!(mesh.authored_cells, vec![None]);
+    }
+
+    fn material_source(tileset: &str, block: u16, x: u8, y: u8, tile: u16) -> VisualTileSource {
+        let mut source = source_with_tile(block, x, y, tile);
+        source.tileset_id = tileset.into();
+        source
+    }
+
+    #[test]
+    fn kanto_plaza_finishes_both_checker_samples_but_preserves_the_prop_quadrant() {
+        for block in [0x79, 0x7b] {
+            for y in 0..4 {
+                for x in 0..4 {
+                    let prop = block == 0x79 && x >= 2 && y >= 2;
+                    let tile = if prop {
+                        0x46 + u16::from(x - 2) + u16::from(y - 2) * 0x10
+                    } else if (x + y) % 2 == 0 {
+                        0x30
+                    } else {
+                        0x39
+                    };
+                    let source = material_source("kanto", block, x, y, tile);
+                    assert_eq!(
+                        ground_material(&source),
+                        (!prop).then_some(GroundMaterial::Pavers),
+                        "block {block:x}, source cell ({x}, {y})"
+                    );
+                    // A changed known tile at the wrong phase is not enough.
+                    let mut changed = source.clone();
+                    changed.tile_index = if tile == 0x30 { 0x39 } else { 0x30 };
+                    assert_eq!(ground_material(&changed), None);
+                }
+            }
+        }
+        assert_eq!(
+            ground_material(&material_source("kanto", 0x78, 0, 0, 0x30)),
+            None
+        );
+        assert_eq!(
+            ground_material(&material_source("unknown_mod", 0x7b, 0, 0, 0x30)),
+            None
+        );
+        assert_eq!(
+            ground_material(&material_source("kanto", 0x7b, 4, 0, 0x30)),
+            None
+        );
+    }
+
+    #[test]
+    fn ice_pools_finish_every_native_quadrant_and_reject_boulder_reuse() {
+        for (block, boulder) in [
+            (0x1f, None),
+            (0x2c, Some((0, 0))),
+            (0x2d, Some((0, 1))),
+            (0x2e, Some((1, 0))),
+            (0x2f, Some((1, 1))),
+        ] {
+            for y in 0..4 {
+                for x in 0..4 {
+                    let is_boulder = boulder == Some((x / 2, y / 2));
+                    let tile = if is_boulder { 0x82 } else { 0xc6 }
+                        + u16::from(x % 2)
+                        + u16::from(y % 2) * 0x10;
+                    let source = material_source("ice_path", block, x, y, tile);
+                    assert_eq!(
+                        ground_material(&source),
+                        (!is_boulder).then_some(GroundMaterial::Ice)
+                    );
+                    let mut changed = source.clone();
+                    changed.tile_index = if is_boulder { 0xc6 } else { 0x19 };
+                    assert_eq!(ground_material(&changed), None);
+                }
+            }
+        }
+        for source in [
+            material_source("ice_path", 0x1f, 0, 0, 0xc7),
+            material_source("ice_path", 0x30, 0, 0, 0xc6),
+            material_source("ice_path", 0x1f, 4, 0, 0xc6),
+            material_source("unknown_mod", 0x1f, 0, 0, 0xc6),
+        ] {
+            assert_eq!(ground_material(&source), None);
+        }
+    }
+
+    #[test]
+    fn ice_floor_variations_keep_ladder_rock_and_changed_cells_as_source_art() {
+        for (block, art) in [
+            (
+                0x02,
+                [
+                    0x9a, 0x19, 0x9a, 0x9a, 0x19, 0x9a, 0x19, 0x19, 0x9a, 0x19, 0x19, 0x19, 0xaa,
+                    0x19, 0x19, 0x9a,
+                ],
+            ),
+            (
+                0x14,
+                [
+                    0xc0, 0xc1, 0xc2, 0xc3, 0xd0, 0xd1, 0xd2, 0xd3, 0xc4, 0xc5, 0x9b, 0x19, 0xd4,
+                    0xd5, 0xaa, 0x19,
+                ],
+            ),
+            (
+                0x37,
+                [
+                    0x9b, 0x9b, 0x9b, 0x9b, 0x9b, 0xaa, 0x19, 0xab, 0xaa, 0x12, 0x0a, 0x0b, 0xaa,
+                    0x12, 0x1a, 0x1b,
+                ],
+            ),
+        ] {
+            for (i, tile) in art.into_iter().enumerate() {
+                let source = material_source("ice_path", block, (i % 4) as u8, (i / 4) as u8, tile);
+                assert_eq!(
+                    ground_material(&source),
+                    matches!(tile, 0x19 | 0x9a | 0x9b | 0xaa).then_some(GroundMaterial::Stone)
+                );
+                let mut changed = source;
+                changed.tile_index = if tile == 0x19 { 0x9a } else { 0x19 };
+                assert_eq!(ground_material(&changed), None);
+            }
+        }
+        assert_eq!(
+            ground_material(&material_source("ice_path", 0x30, 0, 0, 0x9a)),
+            None
+        );
+    }
+
+    #[test]
+    fn mixed_plaza_finishing_keeps_source_prop_faces_and_support_untouched() {
+        let art = [
+            0x30, 0x39, 0x30, 0x39, 0x39, 0x30, 0x39, 0x30, 0x30, 0x39, 0x46, 0x47, 0x39, 0x30,
+            0x56, 0x57,
+        ];
+        let sources = art
+            .into_iter()
+            .enumerate()
+            .map(|(i, tile)| material_source("kanto", 0x79, (i % 4) as u8, (i / 4) as u8, tile))
+            .collect();
+        let frame = frame(4, 4, sources);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = geometry(&frame);
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.0; 16],
+            authored_cells: vec![None; 16],
+            ..Default::default()
+        };
+        for i in 0..16 {
+            append_top(
+                &mut mesh.textured,
+                g.bounds(i % 4, i / 4).into(),
+                0.0,
+                g.uv(i % 4, i / 4),
+            );
+        }
+        let before = mesh.clone();
+        polish_world_surfaces(&mut mesh, "LavenderTown", &cells, &g, [0, 0]);
+        assert_eq!(mesh.textured.quad_count(), 4);
+        for (survivor, source) in [10, 11, 14, 15].into_iter().enumerate() {
+            assert_eq!(
+                mesh.textured.positions[survivor * 4..survivor * 4 + 4],
+                before.textured.positions[source * 4..source * 4 + 4]
+            );
+            assert_eq!(
+                mesh.textured.uvs[survivor * 4..survivor * 4 + 4],
+                before.textured.uvs[source * 4..source * 4 + 4]
+            );
+        }
+        assert_eq!(mesh.footing_heights, before.footing_heights);
+        assert_eq!(mesh.authored_cells, before.authored_cells);
+        assert!(mesh.solid.positions.iter().all(|p| p[1] == 0.0));
+        for p in &before.textured.positions {
+            assert!(mesh.solid.positions.contains(p) || mesh.textured.positions.contains(p));
+        }
+    }
+
+    #[test]
+    fn port_water_finish_requires_native_cells_and_preserves_bollards_and_hull() {
+        for source in [
+            material_source("port", 0x0a, 0, 0, 0x14),
+            material_source("port", 0x18, 3, 1, 0x14),
+            material_source("port", 0x1c, 0, 2, 0x14),
+        ] {
+            assert_eq!(ground_material(&source), Some(GroundMaterial::Water));
+        }
+        for source in [
+            material_source("port", 0x01, 0, 0, 0x01),
+            material_source("port", 0x01, 1, 0, 0x02),
+            material_source("port", 0x01, 0, 1, 0x11),
+            material_source("port", 0x01, 1, 1, 0x12),
+            material_source("port", 0x01, 0, 0, 0x14),
+            material_source("port", 0x18, 0, 2, 0x14),
+            material_source("port", 0x18, 0, 2, 0x2b),
+            material_source("port", 0x0a, 4, 0, 0x14),
+            material_source("unknown_mod", 0x0a, 0, 0, 0x14),
+        ] {
+            assert_eq!(ground_material(&source), None);
+        }
+    }
+
+    #[test]
+    fn harbor_water_underlays_use_existing_model_claims_and_keep_the_water_datum() {
+        let frame = frame(
+            5,
+            1,
+            vec![
+                material_source("port", 0x0a, 0, 0, 0x14),
+                material_source("port", 0x01, 0, 0, 0x01),
+                material_source("port", 0x08, 0, 0, 0x22),
+                material_source("port", 0x18, 0, 2, 0x2b),
+                material_source("port", 0x3f, 0, 0, 0x05),
+            ],
+        );
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = geometry(&frame);
+        let water = CellShape::Water.surface_height(g.tile_height);
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![water, 0.0, 0.0, crate::port::SHIP_HEIGHT, 0.0],
+            authored_cells: vec![
+                None,
+                Some("special:harbor-bollard"),
+                Some("special:dock-railing"),
+                Some("special:harbor-ferry"),
+                None,
+            ],
+            ..Default::default()
+        };
+        for i in 0..5 {
+            append_top(&mut mesh.textured, g.bounds(i, 0).into(), water, g.uv(0, 0));
+            // Prop/ship faces and raised surfaces are never ground finishes.
+            append_top(&mut mesh.textured, g.bounds(i, 0).into(), 4.0, g.uv(i, 0));
+        }
+        let before = mesh.clone();
+        let mut no_claims = mesh.clone();
+        no_claims.authored_cells.fill(None);
+        polish_world_surfaces(&mut no_claims, "OlivinePort", &cells, &g, [0, 0]);
+        assert_eq!(
+            no_claims.textured.quad_count(),
+            9,
+            "only actual source water can finish without claims"
+        );
+        polish_world_surfaces(&mut mesh, "OlivinePort", &cells, &g, [0, 0]);
+        assert_eq!(
+            mesh.textured.quad_count(),
+            6,
+            "five object faces and the unknown underlay remain"
+        );
+        assert_eq!(mesh.footing_heights, before.footing_heights);
+        assert_eq!(mesh.authored_cells, before.authored_cells);
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| (p[1] - water).abs() <= 0.0081)
+        );
+        for i in 0..4 {
+            for p in &before.textured.positions[i * 8..i * 8 + 4] {
+                assert!(
+                    mesh.solid.positions.contains(p),
+                    "water boundary changed: {p:?}"
+                );
+            }
+        }
+    }
+    #[test]
+    fn kanto_shore_rock_bed_uses_water_finish_only_with_complete_model_claim() {
+        let frame = frame(
+            3,
+            1,
+            vec![
+                material_source("kanto", 0x01, 0, 0, 0x14),
+                material_source("kanto", 0x19, 2, 0, 0x2a),
+                material_source("kanto", 0x19, 2, 0, 0x2a),
+            ],
+        );
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = geometry(&frame);
+        let water = CellShape::Water.surface_height(g.tile_height);
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![water, 0.0, 0.0],
+            authored_cells: vec![None, Some("world-exterior/kanto_boundary_shore"), None],
+            ..Default::default()
+        };
+        for i in 0..3 {
+            append_top(&mut mesh.textured, g.bounds(i, 0).into(), water, g.uv(0, 0));
+            append_top(&mut mesh.textured, g.bounds(i, 0).into(), 4.0, g.uv(0, 0));
+        }
+        let before = mesh.clone();
+        polish_world_surfaces(&mut mesh, "Route20", &cells, &g, [0, 0]);
+        assert_eq!(
+            mesh.textured.quad_count(),
+            4,
+            "raised faces and unclaimed rock underlay remain"
+        );
+        assert_eq!(mesh.footing_heights, before.footing_heights);
+        assert_eq!(mesh.authored_cells, before.authored_cells);
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| (p[1] - water).abs() <= 0.0081)
+        );
+        for i in 0..2 {
+            for p in &before.textured.positions[i * 8..i * 8 + 4] {
+                assert!(
+                    mesh.solid.positions.contains(p),
+                    "native water boundary changed: {p:?}"
+                );
+            }
+        }
     }
 }

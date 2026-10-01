@@ -11,7 +11,7 @@ IMPORTER = ROOT / 'crates/crystal-voxel-view/src/interior_models.rs'
 
 def validate():
     paths = sorted(MODELS.glob('*.mesh.json'))
-    assert len(paths) == 68, f'Expected 68 original assets, got {len(paths)}'
+    assert len(paths) == 69, f'Expected 69 original assets, got {len(paths)}'
     importer = IMPORTER.read_text()
     total_triangles = 0
     total_vertices = 0

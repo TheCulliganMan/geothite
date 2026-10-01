@@ -1114,6 +1114,8 @@ struct BevyRuntimeShell {
     visible_catch_tutorial: Option<VisibleCatchTutorial>,
     visible_capture_animation: Option<VisibleCaptureAnimation>,
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
+    // Presentation-owned source audio frames, independent of device/mute state.
+    visible_move_audio_wait: Option<u16>,
     battle_fainted_hud: [bool; 2],
     battle_retained_text: Vec<String>,
     visible_send_out_animation: Option<VisibleSendOutAnimation>,
@@ -1713,7 +1715,7 @@ impl NativeAudioBackend {
                 self.transient_audio_id.as_deref(),
             ));
         }
-        let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
+        let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = u16::from(audio.format.channels);
         let sample_rate = audio.format.sample_rate_hz;
         let frame_count = samples.len() / usize::from(channels);
@@ -1866,7 +1868,7 @@ impl BrowserAudioBackend {
             self.master_gain = Some(gain);
         }
         let destination = self.master_gain.as_ref().expect("master gain initialized");
-        let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
+        let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = usize::from(audio.format.channels);
         let frame_count = samples.len() / channels;
         let buffer = context
@@ -3413,7 +3415,7 @@ struct VisibleMoveAnimation {
     waiting_for_hp: bool,
     frame: u16,
     total_frames: u16,
-    sound_events: Vec<(u16, String)>,
+    sound_events: Vec<(u16, VisibleMoveSound)>,
     next_sound_event: usize,
     cry_events: Vec<(u16, u8)>,
     next_cry_event: usize,
@@ -4092,6 +4094,7 @@ enum PartyFieldMove {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct BevyAudioCommand {
+    battle_sound: Option<BattleSoundPlayback>,
     cry_parameters: Option<crystal_audio::pcm::CrySynthesisParameters>,
     audio_id: String,
     kind: ModpackAudioKind,
@@ -8002,6 +8005,7 @@ fn initialize_bevy_runtime_shell(
         visible_catch_tutorial: None,
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
+        visible_move_audio_wait: None,
         battle_fainted_hud: [false; 2],
         battle_retained_text: Vec::new(),
         visible_send_out_animation: None,
@@ -8234,6 +8238,7 @@ include!("bevy_shell/credits.rs");
 include!("bevy_shell/hall_of_fame.rs");
 include!("bevy_shell/script_callbacks.rs");
 include!("bevy_shell/economy.rs");
+include!("bevy_shell/battle_sound.rs");
 include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_entry.rs");

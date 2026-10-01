@@ -16,9 +16,9 @@ separates verified source behavior from remaining work.
 | Attack clock and live objects | Existing animation interpreter supplies source frames, OAM, BGP/OBP, displacement and SCX/SCY | Compare projected 3D effects on matching authoritative frames |
 | Arena, camera and HUD | Artistic environments, perspective camera, modeled actors and compact backed panels | Retain this immersive presentation while correcting attacks |
 | Psychic and Hyper Beam | Original source objects, palette changes, row deformation and screen displacement retained | Verify projected positions, Full/Reduced, interruption and native capture; unverified companion effects are suppressed |
-| Surf | Corrected vertical SCY path, LCD-register lifetime and source-object clipping; source script has 185 presented frames | Recheck immersive projection and source sound-tail wait |
+| Surf | Corrected vertical SCY path, LCD-register lifetime and source-object clipping; source script has 185 presented frames | Immersive projection is captured; straight-root sound-tail wait now tested, wrapped Surf remains open |
 | Global BG scroll | Source register sign corrected; OAM remains outside the BG sampling pass | Verify both signs and zero crossings with the immersive camera |
-| Sound | Existing Rust source sound engine; animation stereo metadata and Surf's final channel-busy wait are staged separately | Integrate and validate audio without changing canonical PCM or game state |
+| Sound | Rust source sound engine plus original packed stereo metadata and Surf's channel-busy wait; canonical PCM stays unchanged | Native audible review and general channel replacement/priority/music arbitration remain open |
 | Species models | All 251 normal species have first-pass geometry | Continue individual visual review and sculpt refinement; counts do not establish polish |
 | People and world assets | Source-aware complete-object bindings preserve ownership, spacing and footing | Finish residual families and review recognizability, proportions and occlusion without requiring pixel-copy palettes |
 | Special visual states | Shiny, Substitute, Minimize and some clipping/reveal phases retain source art | Validate each state before replacing it with a modeled appearance |
@@ -29,10 +29,9 @@ successful mesh test or positive map count alone cannot close that review.
 Source artwork, content packs and generated reference captures remain external
 or ignored; they are not bundled game content.
 
-The unpublished special-room batch also has confirmed object-identity errors:
-three department-store roof binoculars were modeled as plants, and Rocket Base
-instrument equipment as a bookcase. Correcting those identities is compatible
-with artistic 3D design; it does not require copying every original pixel.
+The special-room batch corrects three department-store roof binoculars and
+Rocket Base instrument equipment. Native captures verify those object identities
+while retaining the artistic 3D design.
 
 ## Recorded diagnostic reference
 
@@ -44,9 +43,9 @@ Median update was 23.65 ms, p95 29.80 ms and maximum 40.39 ms; no gap exceeded
 100 ms. These measurements describe that diagnostic composition on the cloud
 software renderer, not the restored immersive arena or a universal frame rate.
 
-The original wrapper's final sound-busy wait remains a separate pending
-correction. Matching the 185-frame animation script does not establish complete
-sound-to-HP timing. Silent preview videos do not verify audio fidelity.
+That recording predates the sound-busy wait correction below. Matching the
+185-frame animation script alone does not establish complete sound-to-HP timing.
+Silent preview videos do not verify audible fidelity.
 
 Before the immersive restoration, the integrated working tree passed 612 voxel
 tests (two existing benchmarks ignored), 21 render-API tests and focused source
@@ -76,3 +75,37 @@ checks invalidation and stable subsequent frames; an actual native capture
 verifies that the restored arena is visible. Optional
 `CRYSTAL_BATTLE_VISIBILITY_TRACE=1` records one camera/mesh visibility snapshot
 for diagnosing future GPU differences without changing gameplay.
+
+## Source sound and wrapper corrections
+
+Visible animation sound events now retain the original packed argument byte and
+sound identity through both native and browser command queues. The shared
+post-cache channel mask covers 24 inspected source sound programs. Every mode-2/3
+cue across 52 move roots is covered; modes 2/3 select static left/right routing in
+Crystal, just like modes 0/1, with enemy-side reversal. Their extra duration fields
+and flag are written but never read by the source engine. They are not invented
+pan sweeps or cutoffs. Mono remains unchanged. Eligibility is sound-routing
+coverage, not complete attack or hardware mixer fidelity.
+
+Tests decode the external pack, compare canonical PCM hashes, frame counts,
+format and loop metadata, exercise both actors and Mono, and confirm immutable
+cache identity. Whole transient replacement, priority filtering and music
+preemption remain different from a channel-accurate hardware mixer.
+
+For straight-root Surf, the sound interpreter computes source channel clocks
+without generating PCM or using audio-device wall time. The 185-frame visual
+script remains unchanged. Its final channel remains busy until tick257, so the
+controller holds72 virtual ticks before releasing damage. The original objects
+are cleared and the HUD restored during that hold. Muted and audible execution
+share the same timing. Wrapped Surf and general sound arbitration still need
+review. New silent videos cannot establish audible synchronization.
+
+Kinesis, Softboiled and Milk Drink now initialize their object buffers using the
+canonical move identity even when called through wrapper labels. Pack-backed
+VM/OAM and source-art rendering tests verify the original enemy-side eight-pixel
+correction and prove that presentation text cannot alter attack identity.
+
+Extracted battler rows remain a separate modeled-rendering gap: 70 move roots
+can enter a whole-scene source-art fallback. An experimental row renderer stays
+outside this checkpoint until source footprint, object priority and native
+composition pass visual review.

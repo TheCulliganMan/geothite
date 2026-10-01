@@ -92,6 +92,7 @@ fn queue_visible_hall_of_fame_music(shell: &mut BevyRuntimeShell) -> Result<()> 
     let id = "MUSIC_HALL_OF_FAME";
     let playback = shell.shell.runtime().audio().require_playback_entry(AudioKind::Music, id)?;
     enqueue_bevy_audio_command(&mut shell.pending_audio, BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None, audio_id: id.into(), kind: ModpackAudioKind::Music,
         mode: playback.mode,
         looped: matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop),

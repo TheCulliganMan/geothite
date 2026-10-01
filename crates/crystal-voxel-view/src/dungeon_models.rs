@@ -85,6 +85,10 @@ struct Primitive {
     normals: Vec<f32>,
     indices: Vec<u32>,
     base_color: [f32; 4],
+    // Optional semantic material anchor into a verified source drawing. Assets
+    // store coordinates only; palette pixels are always supplied by the runtime.
+    #[serde(default)]
+    source_pixel: Option<[u16; 2]>,
 }
 pub(crate) struct Model {
     surface: SurfaceMeshData,
@@ -120,7 +124,10 @@ impl Model {
                     max[a] = max[a].max(v[a]);
                 }
                 surface.positions.push(v);
-                surface.uvs.push([0.0; 2]);
+                surface.uvs.push(
+                    p.source_pixel
+                        .map_or([0.0; 2], |p| [p[0] as f32, p[1] as f32]),
+                );
                 surface.colors.push(p.base_color);
             }
             for n in p.normals.chunks_exact(3) {
@@ -250,3 +257,7 @@ mod tests {
 #[path = "dungeon_extension_models.rs"]
 mod extension;
 pub(crate) use extension::{ExtensionKind, extension_model};
+
+#[path = "special_room_models.rs"]
+mod special_rooms;
+pub(crate) use special_rooms::{RoomAsset, room_model};

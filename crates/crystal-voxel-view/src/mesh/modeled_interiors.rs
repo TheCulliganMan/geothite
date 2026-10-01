@@ -166,6 +166,7 @@ fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
             (3.0, source_depth.max(24.0))
         }
         PictureFrame => (2.0, source_depth),
+        CarpetCloth => (source_depth, 0.18),
         StairFlight => (16.0, 22.4),
         OfficePhone => (10.0, 6.0),
         BroadcastRack => (9.0, 30.0),
@@ -203,7 +204,7 @@ fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
     // Every axis stays within the source drawing, even for compact variants.
     (
         depth.min(source_depth).max(1.0),
-        rise.min(40.0).max(if width == 0 { 0.0 } else { 1.0 }),
+        rise.min(40.0).max(if width == 0 || kind == ModelKind::CarpetCloth { 0.0 } else { 1.0 }),
     )
 }
 fn ground_sample(
@@ -281,7 +282,14 @@ pub(super) fn resolve(
                 continue;
             }
         }
-        let Some(ground) = ground_sample(cells, map, &object.tileset, object.ground) else {
+        let ground_tile = if object.tileset == "mart"
+            && matches!(kind, ModelKind::RetailRefrigerator | ModelKind::RetailShelf)
+        {
+            crate::mart::ground_tile_for_map(map)
+        } else {
+            object.ground
+        };
+        let Some(ground) = ground_sample(cells, map, &object.tileset, ground_tile) else {
             continue;
         };
         let (w, h) = (object.tiles[0].len(), object.tiles.len());
@@ -686,7 +694,8 @@ pub(super) fn append(
     let north = south - p.depth_pixels * geometry.tile_height / 8.0;
     let inset = if matches!(
         p.kind,
-        ModelKind::WallPanel
+        ModelKind::CarpetCloth
+            | ModelKind::WallPanel
             | ModelKind::WindowWall
             | ModelKind::GateDoorFrame
             | ModelKind::RadioWall
@@ -729,6 +738,9 @@ pub(super) fn append(
             p.base_pixels * geometry.tile_height / 8.0,
             p.height_pixels * geometry.tile_height / 8.0,
         );
+    }
+    if p.kind == ModelKind::CarpetCloth {
+        append_live_carpet_art(mesh, geometry, p);
     }
     if p.kind == ModelKind::PictureFrame {
         append_framed_source_art(mesh, geometry, p, [west, east, north, south], repeats);
@@ -843,6 +855,27 @@ mod tests {
         assert!(mesh.footing_heights.iter().all(|&v| v == 0.0));
     }
     #[test]
+    fn department_fourth_floor_fixtures_use_their_actual_floor_sample() {
+        for name in ["Shared Mart Ecruteak Mart refrigerator 0",
+            "Shared Mart Ecruteak Mart refrigerator 2",
+            "Shared Mart Ecruteak Mart shelf 0", "Shared Mart Ecruteak Mart shelf 2"] {
+            let object = profile(name);
+            let expected = profile_kind(&object).unwrap();
+            let (mut tiles, geometry) = fixture(&object);
+            for tile in &mut tiles {
+                if tile.source.metatile_id == 0 {
+                    tile.source.tile_index = 0x01;
+                }
+            }
+            let cells = tiles.iter().collect::<Vec<_>>();
+            for map in ["CeladonDeptStore4F", "GoldenrodDeptStore4F"] {
+                let placements = resolve(map, &cells, &geometry, None);
+                let placement = placements.iter().find(|p| p.kind == expected).unwrap();
+                assert_eq!(cells[placement.ground].source.tile_index, 0x01);
+            }
+        }
+    }
+    #[test]
     fn changed_phase_wrong_art_and_missing_ground_are_unclaimed() {
         let object = profile("Shared Pokecenter healing machine");
         let (tiles, g) = fixture(&object);
@@ -913,3 +946,5 @@ mod tests {
 include!("interior_signatures.rs");
 
 include!("interior_surfaces.rs");
+
+include!("bedroom_carpet.rs");

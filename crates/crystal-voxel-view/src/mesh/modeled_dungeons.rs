@@ -6,11 +6,14 @@
 use super::*;
 #[path = "dungeon_extension.rs"]
 mod extension;
+#[path = "special_rooms.rs"]
+mod rooms;
 use crate::dungeon_models::{Kind, model};
 use crate::live_profiles::Document;
 
 #[derive(Clone, Copy, Debug)]
 enum Form {
+    Room(rooms::Detail),
     Special(extension::Detail),
     Model(Kind),
     RocketWall { open: [bool; 4] },
@@ -37,6 +40,7 @@ impl Placement {
     }
     pub(super) fn kind_label(&self) -> &'static str {
         match self.form {
+            Form::Room(detail) => detail.label(),
             Form::Special(detail) => detail.label(),
             Form::Model(k) => k.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
@@ -534,6 +538,7 @@ pub(super) fn resolve(
             });
         }
     }
+    rooms::resolve_into(&mut r);
     extension::resolve_into(&mut r);
     r.out
 }
@@ -544,6 +549,10 @@ pub(super) fn append(
     p: &Placement,
     cells: &[&VisualTile],
 ) {
+    if let Form::Room(detail) = p.form {
+        rooms::append(mesh, g, p, cells, detail);
+        return;
+    }
     if let Form::Special(detail) = p.form {
         extension::append(mesh, g, p, cells, detail);
         return;
@@ -562,6 +571,7 @@ pub(super) fn append(
     let s = n + p.front_rows * g.tile_height;
     let rise = p.rise_pixels * g.tile_height / SOURCE_TILE_HEIGHT;
     match p.form {
+        Form::Room(_) => unreachable!("room placements handled above"),
         Form::Special(_) => unreachable!("special placements handled above"),
         Form::Model(kind) => model(kind).append(
             &mut mesh.solid,

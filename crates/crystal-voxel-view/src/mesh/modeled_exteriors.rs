@@ -1,6 +1,8 @@
 //! Source-complete world exterior kits. Authoritative tiles, phases, native
 //! ground and door seams select art; collision and simulation are never read.
 use super::*;
+#[path = "kanto_boundary_rocks.rs"]
+mod kanto_boundary_rocks;
 #[path = "structure_extensions.rs"]
 mod structure_extensions;
 use crate::exterior_models::{Kind, model};
@@ -341,8 +343,8 @@ fn descriptor(
                 }
                 0x20 if p.height > 8 => Kind::KantoDepartment,
                 0x20 => match at(p.width - 4, p.height - 4) {
-                    0x72 => Kind::KantoMart,
-                    0x73 => Kind::KantoCenter,
+                    0x72 => Kind::KantoCenter,
+                    0x73 => Kind::KantoMart,
                     _ => {
                         if map == "Route19" {
                             Kind::KantoRouteGate
@@ -485,12 +487,39 @@ fn tree_kind(cells: &[&VisualTile], g: &GridGeometry, p: TreePlacement) -> Optio
         _ => return None,
     })
 }
+fn tree_ground(
+    map: &str,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    p: TreePlacement,
+) -> Option<usize> {
+    tree_kind(cells, g, p)?;
+    let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
+    ground(
+        cells,
+        shapes,
+        tileset,
+        p.ground_tile_index,
+        p.ground_metatile_id,
+    )
+    .or_else(|| {
+        // These native maps have complete standard trees and real path
+        // backing, but no lawn sample. Unknown maps and atlases still refuse.
+        (matches!(map, "Route40" | "RuinsOfAlphOutside")
+            && tileset == "johto"
+            && p.ground_tile_index == 0x05)
+            .then(|| ground(cells, shapes, "johto", 0x06, None))
+            .flatten()
+    })
+}
+
 pub(super) fn append_tree(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
     shapes: &[CellShape],
     g: &GridGeometry,
-    _map: &str,
+    map: &str,
     p: TreePlacement,
     claimed: &mut [bool],
     _map_origin: [i32; 2],
@@ -502,14 +531,7 @@ pub(super) fn append_tree(
     if !clear(claimed, g, rect) {
         return false;
     }
-    let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
-    let Some(sample) = ground(
-        cells,
-        shapes,
-        tileset,
-        p.ground_tile_index,
-        p.ground_metatile_id,
-    ) else {
+    let Some(sample) = tree_ground(map, cells, shapes, g, p) else {
         return false;
     };
     floor(mesh, cells, shapes, g, rect, sample, claimed);
@@ -705,6 +727,7 @@ pub(super) fn append_props(
     g: &GridGeometry,
     claimed: &mut [bool],
 ) {
+    kanto_boundary_rocks::append(mesh, cells, shapes, g, claimed);
     for p in props(cells, g) {
         if !clear(claimed, g, p.rect) {
             continue;
@@ -763,16 +786,7 @@ pub(super) fn preferred_cells(map: &str, cells: &[&VisualTile], g: &GridGeometry
         }
     }
     for p in complete_tree_placements(cells, g) {
-        if tree_kind(cells, g, p).is_some()
-            && ground(
-                cells,
-                &shapes,
-                cells[p.row * g.width + p.column].source.tileset_id.as_ref(),
-                p.ground_tile_index,
-                p.ground_metatile_id,
-            )
-            .is_some()
-        {
+        if tree_ground(map, cells, &shapes, g, p).is_some() {
             reserve([p.column, p.row, p.width, p.height]);
         }
     }
@@ -791,6 +805,9 @@ pub(super) fn preferred_cells(map: &str, cells: &[&VisualTile], g: &GridGeometry
         {
             reserve(p.rect);
         }
+    }
+    for p in kanto_boundary_rocks::resolve(cells, &shapes, g) {
+        reserve(p.rect);
     }
     reserved
 }
@@ -977,6 +994,64 @@ mod tests {
         )
     }
     #[test]
+    fn path_only_tree_maps_require_complete_art_and_same_atlas_backing() {
+        let sources = (0..4)
+            .flat_map(|row| {
+                (0..3).map(move |column| {
+                    if column < 2 {
+                        super::super::tests::source_with_tile(
+                            0x05,
+                            column,
+                            row,
+                            (if row == 0 {
+                                0x1e
+                            } else if row == 3 {
+                                0x3e
+                            } else {
+                                0x2e
+                            }) + u16::from(column),
+                        )
+                    } else {
+                        super::super::tests::source_with_tile(0x01, 0, 0, 0x06)
+                    }
+                })
+            })
+            .collect();
+        let mut f = super::super::tests::frame(3, 4, sources);
+        let g = GridGeometry {
+            width: 3,
+            height: 4,
+            tile_width: 8.0,
+            tile_height: 8.0,
+            origin_x: 0.0,
+            origin_z: 0.0,
+        };
+        for map in ["Route40", "RuinsOfAlphOutside"] {
+            let cells = f.tiles.iter().collect::<Vec<_>>();
+            let shapes = cells
+                .iter()
+                .map(|t| shape_for_source(&t.source))
+                .collect::<Vec<_>>();
+            let p = complete_tree_placements(&cells, &g)[0];
+            let ground = tree_ground(map, &cells, &shapes, &g, p).unwrap();
+            assert_eq!(cells[ground].source.tile_index, 0x06);
+            assert_eq!(shapes[ground].surface_height(g.tile_height), 0.0);
+            assert!(tree_ground("NewBarkTown", &cells, &shapes, &g, p).is_none());
+        }
+        for tile in &mut f.tiles {
+            if tile.source.tile_index == 0x06 {
+                tile.source.tileset_id = std::sync::Arc::from("kanto");
+            }
+        }
+        let cells = f.tiles.iter().collect::<Vec<_>>();
+        let shapes = cells
+            .iter()
+            .map(|t| shape_for_source(&t.source))
+            .collect::<Vec<_>>();
+        let p = complete_tree_placements(&cells, &g)[0];
+        assert!(tree_ground("Route40", &cells, &shapes, &g, p).is_none());
+    }
+    #[test]
     fn east_gate_keeps_side_entry_and_rejects_a_broken_native_phase() {
         let (mut tiles, g, p) = drawing_cells("johto", &[&[0x08, 0x09], &[0x10, 0x11]]);
         let d = descriptor("Route31", &tiles.iter().collect::<Vec<_>>(), &g, p).unwrap();
@@ -1009,6 +1084,27 @@ mod tests {
                 .asset,
             Asset::World(Kind::KantoCenter)
         );
+    }
+    #[test]
+    fn kanto_service_models_follow_the_native_poke_and_mart_signs() {
+        for (map, terminal, expected) in [
+            ("CinnabarIsland", 0x72, Kind::KantoCenter),
+            ("SilverCaveOutside", 0x72, Kind::KantoCenter),
+            ("CeruleanCity", 0x73, Kind::KantoMart),
+        ] {
+            let (mut tiles, geometry, placement) =
+                drawing_cells("kanto", &[&[0x20, 0x21], &[0x37, terminal]]);
+            assert_eq!(
+                descriptor(map, &tiles.iter().collect::<Vec<_>>(), &geometry, placement)
+                    .unwrap()
+                    .asset,
+                Asset::World(expected)
+            );
+            tiles[0].source.subtile_column = 1;
+            assert!(
+                descriptor(map, &tiles.iter().collect::<Vec<_>>(), &geometry, placement).is_none()
+            );
+        }
     }
     #[test]
     fn changing_a_named_live_profile_keeps_its_custom_renderer() {

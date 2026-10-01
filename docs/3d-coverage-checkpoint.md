@@ -6,14 +6,12 @@ sources. All 251 normal-palette species have a first-pass model; their silhouett
 faces, proportions and animation still need individual art direction and gameplay
 review. The private inspection gallery is a review tool, not a quality certification.
 
-The original 2D reference now governs all further changes. Current appearance
-is not certified faithful; see the [fidelity matrix](original-2d-fidelity.md).
-
 ## Included and checked
 
-- 542 runtime model documents and 48 complete editable Blender sources
-- 75 articulated human rigs, 73 creature/prop actor assets, 68 interior models,
-  59 exterior models, 19 dungeon models, 11 special-environment models, and 220 additional exact battle species
+- 569 runtime model documents and 52 complete editable Blender sources
+- 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
+  62 exterior models, 19 dungeon models, 11 special-environment models,
+  23 special-room models, and 220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -28,33 +26,35 @@ is not certified faithful; see the [fidelity matrix](original-2d-fidelity.md).
   bytes without changing reconstructed f32 positions, normals, indices, colors,
   joints or runtime meshes
 
-The pack-based headless audit processed all 388 base maps without a mesher error.
-371 maps consume at least one authored model, totaling 226,454 source cells. This
-means partial coverage, not 371 completed maps. Flat floors, water planes, source
-facades and fallback objects are reported separately. Dynamic decorations and
-changed block states require their own scene fixtures.
+The current pack-based headless audit processes all 388 base maps without a
+mesher error and counts 243,314 source cells consumed by authored geometry,
+including 9,136 Kanto boundary-rock cells. This is partial coverage, not 388
+completed maps. Flat floors, water planes, source facades and fallback objects
+are reported separately. Dynamic decorations and changed block states require
+their own scene fixtures.
 
 ## Still open
 
-Seventeen base maps still have no modeled static scenery: Battle Tower battle/
-elevator rooms, Blackthorn Gym 2F, both department-store elevators, Goldenrod's
-store roof, the Celadon prize room and Mansion roof, both mobile-link rooms,
-Colosseum/Time Capsule/Trade Center, Dragon Shrine, Fighting Dojo, the Bike Shop
-and Rocket Base B2F. Those kits are under active authoring. The other 371 maps
-also need remaining-family and visual checks; a positive count is not completion.
+The 23-model special-room kit now reaches the 17 previously uncovered maps,
+including Rocket Base B2F. It includes explicitly labeled surface finishes;
+their cells are not a count of complete furniture or architecture. Representative native roof, Rocket Base and three link-room reviews pass. The source-family audit initially identified 29 entries:
+two existing-model backing gaps are fixed, two describe legitimate animated or
+water-datum treatments, and 25 actionable geometry/refinement families were tracked. Three Kanto rock
+families now pass geometry/source-selection tests and native Route17, Route20
+and SilverCaveOutside review; 22 tracked families remain.
+See [the remaining-family checklist](3d-remaining-families.md).
 
-
-- Special rooms and structures: elite rooms, shrines, ruins chambers, ship/port
-  details, link rooms, department-store roof/elevators, special gyms, tower roof,
-  underground passage and selected remaining building facades
+- Remaining source families and structures, including Kanto posts,
+  lighthouse masonry, gate counters, link partitions, gym greenery and apparatus
 - Dungeon topology and bespoke set dressing beyond the nineteen-model first kit
 - Per-map native review, including eliminating the remaining source-art strips in
   interiors and assessing outdoor silhouette/readability at the gameplay camera
 - Species art refinement; shiny, Substitute, Minimize and other special
   presentations currently use faithful source art, not the normal-palette mesh
 - Move effects now follow the existing source interpreter's live objects,
-  palettes and timing, with additional 3D styling for Psychic and Hyper Beam.
-  Source-matched pose/effect corrections and individual review of every move remain open
+  palettes and timing. Unverified companion volumes are suppressed; the artistic
+  battlefield remains. Extracted-row/reveal phases and individual native review
+  of every move remain open
 - Native battle interruption/transition matrix: switching, fainting, capture,
   Pokédex and returning to overworld require continued end-to-end checks
 
@@ -76,39 +76,39 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-The battle performance and refined-sculpture increment is documented in
-[battle performance checks](battle-3d-performance.md). The source-animation
-checkpoint verification below remains the baseline for the ongoing conversion.
+- 628 voxel tests pass (two existing benchmarks ignored), all 12 model/source
+  validator programs pass, and native examples plus the normal browser-feature
+  WebAssembly check build successfully
+- 33 immersive battle bridge/controller tests, four channel-mask tests, 24 audio
+  synthesis tests and 12 audio/UI regressions pass; all use the current sound path
+- Three wrapped-attack identity/OAM/render regressions pass with the external pack
+- The Blackthorn Gym callback regression validates every installed scoped stone
+  table reference from the real pack; synthetic tests reject forged targets
+- Native roof, Rocket Base, link rooms, Kanto boundaries, bedroom and Blackthorn
+  Gym captures verify representative geometry and source identity. Unfinished
+  source terrain strips and room detailing remain visible and are tracked
+- Prior native Surf/Hyper Beam captures and frame-pacing results remain in the
+  attack-fidelity document. They predate this checkpoint's Surf sound-tail wait
+- The rebuilt Totodile is verified in the actual immersive arena with its
+  connected crocodile silhouette, angular eyes, splayed feet and dorsal plates;
+  native review also caught and corrected water-material seams around shore rocks
 
-- 569 voxel tests passed, two pre-existing benchmarks ignored
-- Twenty-one immersive-battle presentation/recording bridge tests and twenty-one
-  render API tests passed; the independent BGP/OBP palette cadence regression passed
-- Native build and the normal browser-feature Wasm check passed after the source
-  animation compiler was moved verbatim into its own file
-- Real production controller battle regression passed: commands, selected move,
-  authoritative PP mutation and retained battle dialogue
-- Six connected-world regressions passed
-- Production host-frame motion regression passed at 60, 30 and 9 Hz without
-  inventing interpolation progress or changing the authoritative movement rate
-- Character storage equivalence tests and all model/source validators passed
-- Native examples built and representative exterior/interior/cave/ice scenes were
-  inspected; twelve further native scenes verified the new structural and special
-  environment families. Remaining pixel floors/wall edges were identified for
-  refinement; this is representative review, not every-map visual approval
-- Native FIGHT → TACKLE produced the move dialogue, visible damage and effectiveness
-  text. F3 restored source battlers/HUD/text and returned to modeled presentation.
-  Party/cancel and Pack/cancel restored the original battle state and compact HUD
-- A real 12-second Tackle capture recorded 232 native frames with its original
-  timestamps, beginning at presented move progress 0.0. Median update time during
-  capture was 50.75 ms on software GL; this is not a hardware benchmark
-- Actual Psychic and Hyper Beam captures begin at presented move progress zero
-  and retain their frame timestamps. Source waves, deformation, palette changes,
-  beam segments and visible damage were inspected. The legal Hyper Beam fixture
-  also passes the real controller's recharge/PP regression. Native Shadow Ball
-  confirms the original single inversion and moving projectile; reduced-mode
-  timing/contrast/pose tests pass, with native comparison still in progress
+These are representative checks, not every-map or every-species art approval.
 
 The software-rendered native preview is not a hardware performance benchmark.
 Recordings keep their actual timestamps; no interpolated frames or high-FPS claim
 is used. The renderer's `--measure` mode excludes PNG/GPU readback, while
 `--record` measures the capture workload separately.
+
+
+## Current attack and art direction
+
+The immersive biome arena, perspective camera, compact HUD and artistic models
+are retained. Original-source fidelity applies to attack choreography, colors,
+flashes, object motion, sound and timing. See [the attack matrix](original-2d-fidelity.md)
+for source-art fallbacks and pending wrapper/audio work.
+
+The refined Gengar sculpture is the visual benchmark for further Pokémon
+refinement: broad connected volumes, controlled low-poly planes, inset facial
+features and clear silhouette. Registry completeness does not establish that
+every species has reached that standard.

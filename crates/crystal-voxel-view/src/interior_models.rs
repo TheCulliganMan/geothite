@@ -72,6 +72,7 @@ pub(crate) enum ModelKind {
     WallClinical,
     WallAcoustic,
     PictureFrame,
+    CarpetCloth,
     StairFlight,
     OfficePhone,
     BroadcastRack,
@@ -143,6 +144,7 @@ impl ModelKind {
         Self::WallClinical,
         Self::WallAcoustic,
         Self::PictureFrame,
+        Self::CarpetCloth,
         Self::StairFlight,
         Self::OfficePhone,
         Self::BroadcastRack,
@@ -213,6 +215,7 @@ impl ModelKind {
             Self::WallTraditional => "interior/wall_traditional",
             Self::WallClinical => "interior/wall_clinical",
             Self::WallAcoustic => "interior/wall_acoustic",
+            Self::CarpetCloth => "interior/carpet_cloth",
             Self::PictureFrame => "interior/picture_frame",
             Self::StairFlight => "interior/stair_flight",
             Self::OfficePhone => "interior/office_phone",
@@ -471,6 +474,7 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
         ModelKind::WallAcoustic => {
             load!(WALL_ACOUSTIC, "../models/interiors/wall_acoustic.mesh.json")
         }
+        ModelKind::CarpetCloth => load!(CARPET_CLOTH, "../models/interiors/carpet_cloth.mesh.json"),
         ModelKind::PictureFrame => {
             load!(PICTURE_FRAME, "../models/interiors/picture_frame.mesh.json")
         }

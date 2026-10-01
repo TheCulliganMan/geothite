@@ -528,6 +528,7 @@ fn waitsfx_keeps_a_sound_queued_earlier_in_the_same_audio_drain() {
     apply_pending_audio_action(
         &mut runtime_shell,
         BevyAudioAction::Play(BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: "SFX_ITEM".to_string(),
             kind: ModpackAudioKind::SoundEffect,
@@ -910,6 +911,7 @@ fn egg_hatch_runs_exact_hold_wobble_shell_and_frontpic_sequence() {
 #[test]
 fn playback_cache_keeps_canonical_pcm_without_an_audio_container() {
     let command = BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: "MUSIC_TEST".to_string(),
         kind: ModpackAudioKind::Music,
@@ -942,6 +944,7 @@ fn playback_cache_keeps_canonical_pcm_without_an_audio_container() {
 #[test]
 fn playback_cache_reuses_preconverted_samples() {
     let command = BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: "SFX_TEST".to_string(),
         kind: ModpackAudioKind::SoundEffect,
@@ -972,6 +975,7 @@ fn playback_cache_reuses_preconverted_samples() {
 #[test]
 fn playback_cache_rejects_noncanonical_mono_pcm() {
     let command = BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: "SFX_TEST".to_string(),
         kind: ModpackAudioKind::SoundEffect,
@@ -1089,6 +1093,7 @@ fn title_music_queues_and_spawns_cached_pcm() {
     {
         let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
         runtime_shell.pending_audio.push(BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: title_music.clone(),
             kind: ModpackAudioKind::Music,
@@ -1096,6 +1101,7 @@ fn title_music_queues_and_spawns_cached_pcm() {
             looped: true,
         });
         runtime_shell.pending_audio.push(BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: title_music.clone(),
             kind: ModpackAudioKind::Music,

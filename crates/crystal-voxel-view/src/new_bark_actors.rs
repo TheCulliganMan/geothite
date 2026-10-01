@@ -869,6 +869,61 @@ mod tests {
         assert!(app.world().resource::<ModeledActors>().props.is_empty());
     }
     #[test]
+    fn dynamic_species_decorations_replace_reuse_and_disappear_without_stale_entities() {
+        let mut app = actor_test_app();
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "PlayersHouse2F".into();
+        let mut doll = actor();
+        doll.id = VisualActorId::Object(19);
+        doll.source_id = "species:MAGIKARP:icon_fish".into();
+        let foot = actor_foot(&doll);
+        app.world_mut()
+            .resource_mut::<VisualWorldFrame>()
+            .actors
+            .push(doll);
+        app.update();
+        let old = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        let transform = *app.world().get::<Transform>(old).unwrap();
+        for source in [
+            "species:GENGAR:icon_ghost",
+            "species:GRIMER:icon_blob",
+            "species:MAGIKARP:icon_fish",
+        ] {
+            let previous =
+                app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id = source.into();
+            app.update();
+            let root =
+                app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+            assert_ne!(root, previous);
+            assert!(app.world().get_entity(previous).is_none());
+            assert_eq!(*app.world().get::<Transform>(root).unwrap(), transform);
+            assert_eq!(
+                actor_foot(&app.world().resource::<VisualWorldFrame>().actors[1]),
+                foot
+            );
+        }
+        let count = app.world().resource::<Assets<Mesh>>().len();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id =
+            "species:GENGAR:icon_ghost".into();
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id =
+            "species:UNKNOWN:icon_fish".into();
+        app.update();
+        assert!(app.world().resource::<ModeledActors>().props.is_empty());
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id =
+            "species:MAGIKARP:icon_fish".into();
+        app.update();
+        let root = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        app.world_mut()
+            .resource_mut::<VisualWorldFrame>()
+            .actors
+            .truncate(1);
+        app.update();
+        assert!(app.world().resource::<ModeledActors>().props.is_empty());
+        assert!(app.world().get_entity(root).is_none());
+    }
+    #[test]
     fn swimming_look_has_a_waterline_pose_without_moving_the_world_root() {
         let motion = Motion::new(Vec2::ZERO, Vec2::NEG_Y);
         let standing = pose(CharacterKind::Trainer, &motion, 1.0);

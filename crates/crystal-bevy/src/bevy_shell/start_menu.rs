@@ -4036,7 +4036,8 @@ fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeSh
     // and keep them erased until the next send-out.
     let mut cleared = shell.battle_fainted_hud;
     if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
-        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id)
+        animation.started && shell.visible_move_audio_wait.is_none()
+            && shell.runtime.data().moves.contains_key(&animation.move_id)
     }) {
         cleared[usize::from(!animation.player_move)] = true;
     }
@@ -5322,6 +5323,8 @@ fn spawn_visible_move_animation_objects(
     } else {
         return Ok(());
     };
+    // anim_ret clears OAM even when the wrapper still waits for source audio.
+    if runtime_shell.visible_move_audio_wait.is_some() { return Ok(()); }
     let bundle = battle_anim_render_bundle(rendered_art, snapshot)?;
     let mut playback = match rendered_art.battle_object_runtime.take() {
         Some(playback)

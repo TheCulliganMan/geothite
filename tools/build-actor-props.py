@@ -740,16 +740,164 @@ def cyndaquil():
   ico('Back flame red base',(x,y,z),(.10,.10,.14),'red',1);rod('Flame tongue',(x,y,z),(x*1.8,y+.10,z+.30),.088,.002,'orange');rod('Inner yellow flame',(x,y-.035,z+.02),(x*1.65,y+.035,z+.22),.046,.002,'yellow')
 
 def totodile():
- feet('teal',.135,s=(.10,.15,.055));sphere('Crocodile torso',(0,0,.32),(.20,.16,.27),'teal');sphere('Big crocodile head',(0,-.01,.66),(.24,.21,.24),'teal')
- box('Long upper crocodile jaw',(0,-.23,.62),(.39,.32,.14),'teal',.064);box('Cream lower jaw',(0,-.23,.50),(.35,.30,.09),'cream',.035)
- box('Dark open mouth seam',(0,-.34,.553),(.30,.08,.032),'ink',.006)
+ # One full, floor-rooted sculpture. Broad connected anatomy, an authored
+ # crocodile muzzle and inset facial planes follow the hero-sculpture kit.
+ # These original surfaces read no game pixels, packs or external meshes.
+ import bmesh
+ PALETTE.update({'totodile_blue':(.25,.64,.76),'totodile_throat':(.22,.58,.70),
+  'totodile_red':(.86,.27,.23),'totodile_eye':(.15,.18,.23),
+  'totodile_iris':(.62,.19,.15),'totodile_ochre':(.96,.80,.37)})
+ blue='totodile_blue'
+ def mesh_part(name,vertices,faces,color,smooth=True):
+  me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
+  bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
+  o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color))
+  for f in me.polygons:f.use_smooth=smooth
+  return o
+ def loft(name,profiles,color,axis='Z',seg=20,exponent=.78):
+  vertices=[]
+  for x,y,z,w,d in profiles:
+   for i in range(seg):
+    a=math.tau*i/seg;c=math.copysign(abs(math.cos(a))**exponent,math.cos(a));s=math.copysign(abs(math.sin(a))**exponent,math.sin(a))
+    vertices.append((x+w*c,y+d*s,z) if axis=='Z' else (x+w*c,y,z+d*s))
+  faces=[tuple(range(seg-1,-1,-1)),tuple(range((len(profiles)-1)*seg,len(profiles)*seg))]
+  for j in range(len(profiles)-1):
+   for i in range(seg):a=j*seg+i;b=j*seg+(i+1)%seg;faces.append((a,b,b+seg,a+seg))
+  return mesh_part(name,vertices,faces,color)
+ def canonical(o):
+  me=o.data;coordinates=[tuple(round(v,7) for v in vert.co) for vert in me.vertices]
+  ordered=sorted(set(coordinates));lookup={v:i for i,v in enumerate(ordered)};remap=[lookup[v] for v in coordinates];faces=[]
+  for f in me.polygons:
+   indices=tuple(remap[i] for i in f.vertices)
+   if len(set(indices))<3:continue
+   faces.append((min(indices[i:]+indices[:i] for i in range(len(indices))),f.use_smooth))
+  faces.sort();new=bpy.data.meshes.new(me.name+' / stable topology');new.from_pydata(ordered,[],[f[0] for f in faces]);new.update()
+  for m in me.materials:new.materials.append(m)
+  for f,source in zip(new.polygons,faces):f.use_smooth=source[1]
+  o.data=new
+ def joined(name,parts,voxel=.012):
+  bpy.ops.object.select_all(action='DESELECT')
+  for o in parts:o.select_set(True)
+  bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();o=bpy.context.object;o.name=name
+  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+  mod=o.modifiers.new('Connected clay silhouette','REMESH');mod.mode='VOXEL';mod.voxel_size=voxel;mod.use_smooth_shade=True;bpy.ops.object.modifier_apply(modifier=mod.name)
+  mod=o.modifiers.new('Sculpted transitions','SMOOTH');mod.factor=.55;mod.iterations=3;bpy.ops.object.modifier_apply(modifier=mod.name)
+  canonical(o);o.select_set(False);return o
+ def patch(name,outline,surface,color,depth=.006):
+  # Each closed inset follows the real head/body surface; no flat billboards.
+  outline=[(a[0]*(1-t)+b[0]*t,a[1]*(1-t)+b[1]*t) for a,b in zip(outline,outline[1:]+outline[:1]) for t in (0,.5)]
+  n=len(outline);cx=sum(x for x,z in outline)/n;cz=sum(z for x,z in outline)/n;v=[]
+  for offset in (0,depth):
+   v.append((cx,surface(cx,cz)+offset,cz))
+   for t in (.25,.5,.75,1):
+    for x,z in outline:
+     px=cx+(x-cx)*t;pz=cz+(z-cz)*t;v.append((px,surface(px,pz)+offset,pz))
+  layer=1+4*n;f=[]
+  for base,flip in ((0,False),(layer,True)):
+   for i in range(n):
+    tri=(base,base+1+i,base+1+(i+1)%n);f.append(tuple(reversed(tri)) if flip else tri)
+   for ring in range(3):
+    for i in range(n):
+     a=base+1+ring*n+i;b=base+1+ring*n+(i+1)%n;quad=(a,b,b+n,a+n);f.append(tuple(reversed(quad)) if flip else quad)
+  for i in range(n):a=1+3*n+i;b=1+3*n+(i+1)%n;f.append((a,b,b+layer,a+layer))
+  return mesh_part(name,v,f,color,False)
+ head=[(0,.005,.590,.160,.130),(0,.005,.660,.247,.179),
+  (0,.005,.750,.292,.209),(0,.005,.850,.291,.201),
+  (0,.010,.943,.249,.165),(0,.016,1.015,.167,.119),
+  (0,.018,1.042,.058,.052),(0,.018,1.045,.010,.012)]
+ clay=[loft('Broad shaped cranium and cheeks',head,blue),
+  loft('Compact pear shaped torso',[(0,.025,.13,.10,.10),(0,.018,.20,.19,.16),
+    (0,.008,.34,.211,.173),(0,0,.46,.181,.147),(0,.018,.59,.155,.132),(0,.02,.66,.13,.115)],blue),
+  loft('Continuous flattened upper crocodile muzzle',[
+   (0,.02,.735,.245,.105),(0,-.14,.736,.254,.105),
+   (0,-.29,.727,.255,.088),(0,-.43,.718,.247,.071),
+   (0,-.515,.704,.199,.050),(0,-.534,.704,.144,.035)],blue,'Y',24,.56)]
+ # Splayed, connected thighs and long planted feet, with a strong three-toe edge.
  for s in (-1,1):
-  eyes(s*.115,-.185,.79,.028,0,True)
-  for x in (.095,.155):rod('Exposed crocodile tooth',(s*x,-.397,.615),(s*x,-.402,.555),.021,.001,'white')
-  sphere('Nostril',(s*.09,-.391,.653),(.014,.009,.012),'ink');sphere('Clawed little arm',(s*.21,-.01,.35),(.065,.08,.14),'teal')
- prism('Yellow chest chevron',[(-.13,.40),(0,.31),(.13,.40),(.11,.23),(-.11,.23)],-.153,.027,'yellow')
- tube('Thick crocodile tail',[(0,.13,.19),(.08,.31,.13),(.18,.42,.21)],.075,'teal')
- for z,y in ((.25,.25),(.42,.16),(.59,.15),(.78,.12)):prism('Red dorsal spike',[(-.045,z-.07),(0,z+.09),(.045,z-.07)],y,.10,'red')
+  clay.extend([sphere('Connected haunch',(s*.155,.030,.215),(.117,.136,.162),blue,24,12),
+   sphere('Broad planted crocodile foot',(s*.165,-.085,.072),(.126,.191,.071),blue,24,12)])
+  for j in (-1,0,1):
+   clay.append(sphere('Integrated foot digit',(s*.165+j*.069,-.201-.016*(j==0),.047),(.043,.092,.043),blue,16,8))
+  # Elbows turn outward and wrists turn toward the opponent, rather than
+  # dropping separate cylinders vertically against the belly.
+  clay.extend([rod('Upper reaching arm',(s*.160,.005,.490),(s*.286,-.042,.405),.068,.060,blue,16),
+   sphere('Rounded elbow',(s*.284,-.041,.413),(.065,.067,.068),blue,16,8),
+   rod('Forearm',(s*.282,-.040,.419),(s*.345,-.134,.453),.062,.065,blue,16),
+   sphere('Broad small palm',(s*.351,-.138,.459),(.071,.070,.059),blue,16,8)])
+  for j in (-1,0,1):
+   clay.append(rod('Three tapered hand digits',(s*(.349+j*.021),-.160,.446+j*.025),(s*(.390+j*.019),-.223,.438+j*.033),.026,.010,blue,10))
+ # A tapered rear tail is deliberately visible from both battle perspectives.
+ clay.append(loft('Broad curved crocodile tail',[
+  (0,.100,.198,.124,.102),(0,.239,.169,.113,.085),
+  (.035,.359,.155,.093,.068),(.089,.485,.184,.068,.061),
+  (.125,.584,.243,.038,.043),(.123,.640,.296,.009,.010)],blue,'Y',18,.82))
+ body=joined('Totodile / continuous head muzzle torso limbs and tail',clay)
+ high_body_mesh=body.data.copy();body.data.calc_loop_triangles()
+ mod=body.modifiers.new('Bounded connected sculpture topology','DECIMATE');mod.ratio=min(1,3600/len(body.data.loop_triangles));mod.use_collapse_triangulate=True;bpy.context.view_layer.objects.active=body;bpy.ops.object.modifier_apply(modifier=mod.name)
+ canonical(body)
+
+ # The lower jaw shares the body blue. A shaped charcoal cavity gives the
+ # two ivory fangs a shallow crocodile grin instead of a rectangular box mouth.
+ loft('Sculpted rounded lower jaw',[(0,.012,.610,.226,.077),(0,-.165,.601,.239,.064),
+  (0,-.332,.559,.245,.041),(0,-.447,.576,.215,.030),(0,-.511,.598,.143,.019)],blue,'Y',24,.64)
+ loft('Recessed shallow mouth cavity',[(0,-.087,.661,.194,.039),(0,-.261,.632,.246,.046),
+  (0,-.426,.637,.239,.041),(0,-.516,.641,.150,.030)],'totodile_eye','Y',24,.63)
+ for s in (-1,1):
+  rod('Upper ivory crocodile fang',(s*.184,-.475,.678),(s*.184,-.486,.601),.023,.002,'white',10)
+  hit,point,normal,index=body.ray_cast(Vector((s*.147,-.487,2)),Vector((0,0,-1)))
+  if not hit:raise ValueError('Totodile nostril missed the muzzle')
+  nostril=sphere('Shallow inset nostril',point+normal*.003,(.013,.020,.0035),'totodile_eye',12,6);nostril.rotation_euler=normal.to_track_quat('Z','Y').to_euler()
+  # Restrained claws retain the three-digit silhouette at gameplay scale.
+  for j in (-1,0,1):rod('Ivory toe claw',(s*.165+j*.069,-.255-.016*(j==0),.052),(s*.165+j*.069,-.295-.016*(j==0),.037),.018,.002,'white',10)
+ def head_surface(x,z,offset=.0):
+  # Fit the inset to the connected sculpt instead of an approximate sphere.
+  hit,point,normal,index=body.ray_cast(Vector((x,-2,z)),Vector((0,1,0)))
+  if not hit:raise ValueError('Totodile facial detail missed the head')
+  return point.y-offset
+ for s in (-1,1):
+  # A tapered eye polygon sits inside the upper cheek. Blue lids meet the
+  # sclera edges; nothing is perched on the head as a separate eyeball.
+  outline=[(s*.095,.847),(s*.104,.916),(s*.146,.970),(s*.190,.979),(s*.238,.939),(s*.263,.867),(s*.227,.837),(s*.160,.831)]
+  patch('Inset ivory eye',outline,lambda x,z:head_surface(x,z,.008),'white',.007)
+  pupil=[(s*.176,.934),(s*.192,.948),(s*.209,.926),(s*.218,.874),(s*.204,.855),(s*.184,.862)]
+  patch('Warm narrow iris',pupil,lambda x,z:head_surface(x,z,.015),'totodile_iris',.005)
+  pupil=[(s*.184,.931),(s*.195,.938),(s*.207,.913),(s*.210,.872),(s*.199,.861),(s*.188,.872)]
+  patch('Tapered dark pupil',pupil,lambda x,z:head_surface(x,z,.022),'totodile_eye',.004)
+  patch('Small eye highlight',[(s*.192,.919),(s*.198,.924),(s*.204,.917),(s*.200,.904)],lambda x,z:head_surface(x,z,.027),'white',.003)
+ # The pointed chest marking follows the belly, rather than floating as a slab.
+ chest=[(-.137,.461),(-.094,.486),(0,.418),(.094,.486),(.137,.461),(.105,.300),(0,.265),(-.105,.300)]
+ def chest_surface(x,z):return -.170*math.sqrt(max(.04,1-(x/.218)**2-((z-.335)/.315)**2))-.008
+ patch('Golden chest chevron',chest,chest_surface,'totodile_ochre',.009)
+ # A single centered row of thick red dorsal plates is legible from the rear.
+ # Their swept triangle silhouettes are fins, with a raised central ridge.
+ for i,(outline,thick) in enumerate([
+  ([( .100,1.016),(.327,.973),(.191,.861)],.045),
+  ([(.187,.850),(.389,.754),(.187,.655)],.048),
+  ([(.150,.624),(.355,.510),(.163,.407)],.047),
+  ([(.243,.211),(.361,.336),(.422,.168)],.037),
+  ([(.446,.226),(.552,.330),(.596,.253)],.025)]):
+  # Dorsal fin outline lies in the Y/Z plane and tapers to a crisp outer edge.
+  cy=sum(y for y,z in outline)/3;cz=sum(z for y,z in outline)/3
+  x=0 if i<3 else (.049 if i==3 else .119)
+  vertices=[(x,y,z) for y,z in outline]+[(x-thick,cy,cz),(x+thick,cy,cz)]
+  mesh_part('Swept red dorsal plate '+str(i+1),vertices,[(0,1,3),(1,2,3),(2,0,3),(1,0,4),(2,1,4),(0,2,4)],'totodile_red',False)
+ # Retain editable detailed anatomy, and simplify only the runtime copy.
+ detailed=bpy.data.collections.new('battle_totodile / detailed authoring source (hidden)');SCENE.collection.children.link(detailed)
+ root=bpy.data.objects.new('battle_totodile / detailed source root',None);detailed.objects.link(root);root['authoring_only']=True
+ for o in list(COL.objects):
+  if o.type!='MESH':continue
+  canonical(o);source=o.copy();source.data=high_body_mesh if o==body else o.data.copy();source.name='AUTHORING / '+o.name;detailed.objects.link(source);source.parent=root
+  canonical(o)
+  bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.triangulate(bm,faces=list(bm.faces),quad_method='FIXED',ngon_method='EAR_CLIP');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+  bm.to_mesh(o.data);bm.free();o.data.update()
+  for attempt in range(3):
+   bad=[f for f in o.data.polygons if f.use_smooth and f.normal.dot(sum((o.data.corner_normals[i].vector for i in f.loop_indices),Vector()))<.000001]
+   if not bad:break
+   for f in bad:f.use_smooth=False
+   o.data.update()
+  o['authoring']='Original full 360-degree Totodile sculpture; connected clay anatomy and closed inset details'
+ detailed.hide_render=True;detailed.hide_viewport=True
 
 def pidgey():
  bird()

@@ -265,14 +265,18 @@ fn capture_presented_battle(
         });
     }
     if let Some(animation) = animation.filter(|animation| animation.started) {
-        frame.source = Some(capture_immersive_source_frame(
-            snapshot,
-            animation,
-            &frame.battlers,
-            art,
-            &shell.asset_root,
-            images,
-        )?);
+        frame.source = if shell.visible_move_audio_wait.is_none() {
+            Some(capture_immersive_source_frame(
+                snapshot,
+                animation,
+                &frame.battlers,
+                art,
+                &shell.asset_root,
+                images,
+            )?)
+        } else {
+            None
+        };
         let side = if animation.player_move {
             VisualBattleSide::Player
         } else {
@@ -674,7 +678,9 @@ fn sync_immersive_battle_layers(
     // mask to the underlying HUD entities before parking the eraser itself.
     let mut cleared = shell.battle_fainted_hud;
     if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
-        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id)
+        animation.started
+            && shell.visible_move_audio_wait.is_none()
+            && shell.runtime.data().moves.contains_key(&animation.move_id)
     }) {
         cleared[usize::from(!animation.player_move)] = true;
     }
@@ -1290,7 +1296,9 @@ fn sync_immersive_battle_ui_layout(
     }
     let mut cleared = shell.battle_fainted_hud;
     if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
-        animation.started && shell.runtime.data().moves.contains_key(&animation.move_id)
+        animation.started
+            && shell.visible_move_audio_wait.is_none()
+            && shell.runtime.data().moves.contains_key(&animation.move_id)
     }) {
         cleared[usize::from(!animation.player_move)] = true;
     }

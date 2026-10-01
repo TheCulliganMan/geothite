@@ -460,6 +460,118 @@
       ]
     },
     {
+      "file": "actor-props-totodile-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1066864,
+      "sha256": "4c5400f66e0c3f1cf06666853b48afe5f256ad2c9ea8d603fd3449042064c55b",
+      "uncompressed_bytes": 3028892,
+      "uncompressed_sha256": "746dda3a0c38cf42f0959a5fe4bfe86abe1470509bac71be0082aeb841ea6571",
+      "chunks": [
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "23a46de094cb36cd6563be6b12487776113d01296b1c1d8b9cfd4672bd981959",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "9ca9efe2e9621a8dd5c1c57a80265cf1d381e70291ca8ae477fce318a10ea782",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "b03aacd270d4a879b3df08fb52fdc794f211d2d463387e4485db2abf037a9336",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.003.b64",
+          "bytes": 65536,
+          "sha256": "1fc5b009620242cc455044a6f7a9945109b323845dd995e9f086e8e797666402",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.004.b64",
+          "bytes": 65536,
+          "sha256": "6129200cfe2fc504be8e5d76897cbe0900279cc2573152ee78e3838bdbd6f6c7",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.005.b64",
+          "bytes": 65536,
+          "sha256": "12a9deb817f8a7f36ea428eb42ac8e243987739f7688fbddd8e9d2f4912ae0b6",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.006.b64",
+          "bytes": 65536,
+          "sha256": "e2f2bef22147aaa0c882ebda68a3ca3de56529be16a7f00ebf2551fd0cef2b22",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.007.b64",
+          "bytes": 65536,
+          "sha256": "8e02070f65cbb228e04f804787a69933fa26bf82cc91f4537c1f4e1929da5346",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.008.b64",
+          "bytes": 65536,
+          "sha256": "533d6b5e443bc970bef1dc8f76293264c15da52c92df6e520b7cd320b1708e84",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.009.b64",
+          "bytes": 65536,
+          "sha256": "b05369c9c4e6c11ae3619747e8572511e1e0a1db984c7322ff6a063a8012847c",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.010.b64",
+          "bytes": 65536,
+          "sha256": "59ac01361019c2656a74e9bae3bc5265037d0f2e88bea226ac1c8885690945d1",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.011.b64",
+          "bytes": 65536,
+          "sha256": "a1bbd2e5411f71bd821a59d2b81f6e5bbcad1729c00c5a21d35ed0c85077d9af",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.012.b64",
+          "bytes": 65536,
+          "sha256": "dc9c6e63b35f5d48637eecc030f78919287879d3f1c01f04b5789c5235893e93",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.013.b64",
+          "bytes": 65536,
+          "sha256": "89605ca85230bc2fdb34d5d5ffa76781e7f6e0ad0a9c3f3dd8d9f6dcb2286802",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.014.b64",
+          "bytes": 65536,
+          "sha256": "eb293787526a63d979fe3ef5a90a4bb3caad9bc442d729e063a52befd5d357b7",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.015.b64",
+          "bytes": 65536,
+          "sha256": "b9edbe4eb3f137b71e6a1c2d3d8e5fd349911d6e62d0683d3b5d6bdee3040301",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/actor-props-totodile-refinement.blend.016.b64",
+          "bytes": 18288,
+          "sha256": "ae65aa45240e69c9794c7d4973ec124fe8b45ae64bb820cf561997e9b81f8132",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "battle-species-01.blend",
       "encoding": "gzip-blend",
       "bytes": 359034,
@@ -1387,6 +1499,28 @@
           "file": "chunks/battle-species-hero-refinements.blend.018.b64",
           "bytes": 64884,
           "sha256": "6387f498f02d4dbae7d9d46e188f1803502dda5d6967dc143861173881351914",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "bedroom-cloth.blend",
+      "encoding": "gzip-blend",
+      "bytes": 104647,
+      "sha256": "d6bc625f99caf2e1516868d8052e08a3cbb788241887c678876460b9f1fc5fb7",
+      "uncompressed_bytes": 747804,
+      "uncompressed_sha256": "4b9e0edf5ad01db27b6faefc6bea88a324bc77acf3f60367d4ae3973d147ce07",
+      "chunks": [
+        {
+          "file": "chunks/bedroom-cloth.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "a9c7bf379337580f54c483b796259279a463abb1fbf68cfa4e00dbd76de44c97",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/bedroom-cloth.blend.001.b64",
+          "bytes": 39111,
+          "sha256": "46cd163b9c9bbe8021b74904b71bf971890573891c6d607b3b9d50ea69a62f9a",
           "encoding": "base64"
         }
       ]
@@ -2790,6 +2924,28 @@
       ]
     },
     {
+      "file": "kanto-boundary-rocks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 117512,
+      "sha256": "4b72f489fe6047b9825c55785ec50424f8127e1a8303d2e283d243a9f7ce9f33",
+      "uncompressed_bytes": 937036,
+      "uncompressed_sha256": "75422272e1ce6138a0d32fab81855bc2d5338529ce925adcceb2ba39a04fbc70",
+      "chunks": [
+        {
+          "file": "chunks/kanto-boundary-rocks.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "4d625cd5a0445619de861b39f677ee996752a4ccd18eb9ef49ec0b28511b3c7c",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/kanto-boundary-rocks.blend.001.b64",
+          "bytes": 51976,
+          "sha256": "503a7a16ed087c8a2def2ca10e71be668dee05421cf7c9741c1b598563773b86",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
       "file": "new-bark-kit.blend",
       "encoding": "gzip-blend",
       "bytes": 271493,
@@ -2887,6 +3043,58 @@
           "file": "chunks/special-environments.blend.002.b64",
           "bytes": 47926,
           "sha256": "a50509a80ede3c8dca95525cd2ec20e12771ed62f11a1f3d0b0b2c450c30eb41",
+          "encoding": "base64"
+        }
+      ]
+    },
+    {
+      "file": "special-interiors.blend",
+      "encoding": "gzip-blend",
+      "bytes": 403979,
+      "sha256": "b3802133171fa1b0afac3ac4bf930db607129d90a15716a02ef7ecd79da6c624",
+      "uncompressed_bytes": 5430648,
+      "uncompressed_sha256": "d652d6b3e08a8546435c029c381bf7cea38afd2a6e3a22c30dcf56bb12f2bc82",
+      "chunks": [
+        {
+          "file": "chunks/special-interiors.blend.000.b64",
+          "bytes": 65536,
+          "sha256": "6c0bb2a99fb2e52067e98ffcac812bcd8bb56ee2be0d6fe356f0627af1318ff1",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.001.b64",
+          "bytes": 65536,
+          "sha256": "fbb624bb8b9ac65c79c36188627a5c62337e569e2050488e82a6e6b14e436807",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.002.b64",
+          "bytes": 65536,
+          "sha256": "4e3106ec7b649aa7bff4209261242dc19d6734bf446046d6b7d40fc0c1b41c85",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.003.b64",
+          "bytes": 65536,
+          "sha256": "e33424130e75639dbb919f289c4dbdd8fe1c2caeacc012b7d497e0f54eb8ef78",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.004.b64",
+          "bytes": 65536,
+          "sha256": "b45167f2d1bcea22b0235b26eaf00b229e8cc4b90f0e973f8327d4ec62947728",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.005.b64",
+          "bytes": 65536,
+          "sha256": "b2aa73da6f9ac8cd506744dff1d413a4d6efb1200a97081b19a6e6e5e3a3d5f9",
+          "encoding": "base64"
+        },
+        {
+          "file": "chunks/special-interiors.blend.006.b64",
+          "bytes": 10763,
+          "sha256": "29d75434224582ace610f1887c40dc7331a8c13fdec5dfe337a3501188493c39",
           "encoding": "base64"
         }
       ]

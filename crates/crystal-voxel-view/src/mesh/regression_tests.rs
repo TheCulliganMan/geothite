@@ -121,6 +121,25 @@ mod tests {
     }
 
     #[test]
+    fn fully_authored_facility_needs_no_retired_divider_paint() {
+        let scene = frame(2, 2, (0..4).map(|i| {
+            source_for_tileset("facility", u16::MAX, (i % 2) as u8,
+                (i / 2) as u8, if i == 0 { 0x01 } else { u16::MAX })
+        }).collect());
+        let cells = scene.tiles.iter().collect::<Vec<_>>();
+        let geometry = GridGeometry { width: 2, height: 2, tile_width: 8.0,
+            tile_height: 8.0, origin_x: 0.0, origin_z: 0.0 };
+        let mut claimed = vec![true; 4];
+        let mut mesh = TerrainMeshData { footing_heights: vec![0.0; 4], ..Default::default() };
+        append_facility_divider_network(&mut mesh, "TeamRocketBaseB2F", &cells,
+            &geometry, &mut claimed).expect("no old divider remains to sample");
+        assert_eq!(mesh.textured.quad_count(), 0);
+        assert_eq!(mesh.solid.quad_count(), 0);
+        assert_eq!(mesh.footing_heights, vec![0.0; 4]);
+        assert_eq!(claimed, vec![true; 4]);
+    }
+
+    #[test]
     fn viewport_edge_has_no_generated_skirt() {
         let mesh = build_terrain_mesh(&frame(1, 1, vec![flat_source()]))
             .expect("one unknown cell should remain a flat surface");

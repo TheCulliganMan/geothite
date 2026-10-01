@@ -5439,7 +5439,7 @@ fn final_wild_attack_retains_move_and_faint_presentation_before_rewards() {
     assert_eq!(shell.battle_message_scene.as_ref().unwrap().battle.as_ref().unwrap().enemy_pokemon.hp, 1,
         "the finishing move begins with the pre-damage battler visible");
     let faint = shell.visible_move_animations.iter().find(|animation| animation.move_id == "FAINT_MON").unwrap();
-    assert_eq!(faint.sound_events, vec![(0, "SFX_KINESIS".to_string()), (14, "SFX_FAINT".to_string())],
+    assert_eq!(faint.sound_events, vec![(0, "SFX_KINESIS".into()), (14, "SFX_FAINT".into())],
         "FaintEnemyPokemon plays KINESIS before the tile drop and FAINT afterward");
     let mut app = menu_render_test_app(shell);
     app.update();
@@ -6679,6 +6679,274 @@ fn ordinary_battle_menu_uses_source_bounds_and_leaves_the_left_textbox_blank() {
                 ),
                 "source2x2 option/cursor origin {tile:?} must remain occupied"
             );
+        }
+    }
+}
+
+fn wrapped_move_identity_regression_animation(
+    snapshot: &RuntimeShellSnapshot,
+    move_id: &str,
+    player_move: bool,
+    lower: bool,
+    raise: bool,
+) -> VisibleMoveAnimation {
+    let (label, frames, sounds, cries, objects, bg_events) =
+        visible_move_animation_definition_with_substitute(snapshot, move_id, 0, lower, raise)
+            .unwrap();
+    let mut animation = battle_anim_regression_timeline(objects, 0);
+    animation.move_id = move_id.into();
+    animation.animation_label = label;
+    animation.player_move = player_move;
+    animation.total_frames = frames;
+    animation.sound_events = sounds;
+    animation.cry_events = cries;
+    animation.bg_events = bg_events;
+    animation
+}
+
+#[test]
+fn battle_anim_substitute_wrappers_preserve_source_move_identity_and_oam() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+    let (_, lower_frames, _, _, lower_objects, _) =
+        visible_move_animation_definition(&snapshot, "SUBSTITUTE", 1).unwrap();
+    let (_, raise_frames, _, _, raise_objects, _) =
+        visible_move_animation_definition(&snapshot, "SUBSTITUTE", 2).unwrap();
+    assert!(lower_objects.is_empty() && raise_objects.is_empty());
+    for (move_id, source_id) in [
+        ("KINESIS", 134_u8),
+        ("SOFTBOILED", 135),
+        ("MILK_DRINK", 208),
+    ] {
+        let catalog_move = snapshot
+            .moves
+            .iter()
+            .find(|entry| entry.move_id == move_id)
+            .unwrap();
+        assert_eq!(catalog_move.source_index, source_id);
+        for player_move in [true, false] {
+            for (lower, raise) in [(false, false), (true, false), (false, true), (true, true)] {
+                let mut bare = wrapped_move_identity_regression_animation(
+                    &snapshot,
+                    move_id,
+                    player_move,
+                    false,
+                    false,
+                );
+                let mut wrapped = wrapped_move_identity_regression_animation(
+                    &snapshot,
+                    move_id,
+                    player_move,
+                    lower,
+                    raise,
+                );
+                let offset = if lower { lower_frames } else { 0 };
+                assert_eq!(
+                    wrapped.total_frames,
+                    offset + bare.total_frames + if raise { raise_frames } else { 0 }
+                );
+                assert_eq!(
+                    bare.animation_label,
+                    snapshot.presentation.battle_animation_table[usize::from(source_id)]
+                );
+                if lower || raise {
+                    assert_ne!(wrapped.animation_label, bare.animation_label);
+                }
+                let mut expected = new_visible_battle_objects(&bundle, &bare).unwrap();
+                // Independent source-register oracle: the catalog index, not a
+                // display label or the production identity-to-register match.
+                let [lo, hi] = u16::from(catalog_move.source_index).to_le_bytes();
+                expected.machine.write(battle_program::W_F_X_ANIM_I_D, lo);
+                expected
+                    .machine
+                    .write(battle_program::W_F_X_ANIM_I_D + 1, hi);
+                let mut without_adjustment = new_visible_battle_objects(&bundle, &bare).unwrap();
+                without_adjustment
+                    .machine
+                    .write(battle_program::W_F_X_ANIM_I_D, 0);
+                without_adjustment
+                    .machine
+                    .write(battle_program::W_F_X_ANIM_I_D + 1, 0);
+                let mut actual = new_visible_battle_objects(&bundle, &wrapped).unwrap();
+                let mut affected_pieces = 0;
+                for frame in 0..=bare.total_frames {
+                    bare.frame = frame;
+                    wrapped.frame = frame + offset;
+                    advance_visible_battle_objects(&mut expected, &bundle, &bare).unwrap();
+                    advance_visible_battle_objects(&mut without_adjustment, &bundle, &bare)
+                        .unwrap();
+                    advance_visible_battle_objects(&mut actual, &bundle, &wrapped).unwrap();
+                    assert_eq!(
+                        actual.machine.oam(),
+                        expected.machine.oam(),
+                        "{move_id} player={player_move} lower={lower} raise={raise} inner={frame}"
+                    );
+                    for slot in 0..10 {
+                        assert_eq!(actual.machine.object(slot), expected.machine.object(slot));
+                        match (
+                            &actual.slots[slot],
+                            &expected.slots[slot],
+                            &without_adjustment.slots[slot],
+                        ) {
+                            (Some(actual), Some(expected), Some(neutral)) => {
+                                assert_eq!(actual.frameset, expected.frameset);
+                                assert_eq!(actual.frame, expected.frame);
+                                assert_eq!(actual.spawn_frame, expected.spawn_frame + offset);
+                                assert_eq!(actual.oam.origin, expected.oam.origin);
+                                assert_eq!(actual.oam.entries, expected.oam.entries);
+                                assert_eq!(actual.oam.rows, expected.oam.rows);
+                                assert_eq!(expected.oam.entries.len(), neutral.oam.entries.len());
+                                // InitBattleAnimBuffer adjusts only enemy objects
+                                // with FIX_COORDS and a non-$ff FIX_Y value.
+                                let adjusted = !player_move
+                                    && expected.bytes[1] & 1 != 0
+                                    && expected.bytes[2] != 0xff;
+                                for (entry, neutral_entry) in
+                                    expected.oam.entries.iter().zip(&neutral.oam.entries)
+                                {
+                                    assert_eq!(&entry[1..], &neutral_entry[1..]);
+                                    assert_eq!(
+                                        entry[0],
+                                        neutral_entry[0].wrapping_sub(if adjusted { 8 } else { 0 })
+                                    );
+                                    affected_pieces += usize::from(adjusted);
+                                }
+                            }
+                            (None, None, None) => {}
+                            _ => panic!("{move_id} diverged at inner={frame} slot={slot}"),
+                        }
+                    }
+                }
+                assert_eq!(
+                    affected_pieces > 0,
+                    !player_move,
+                    "fixture must exercise the enemy's real eight-pixel correction: {move_id}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn battle_anim_move_identity_does_not_follow_presentation_labels() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+    let mut animation = battle_anim_regression_timeline(Vec::new(), 0);
+    for (move_id, source_id) in [
+        ("KINESIS", 134_u8),
+        ("SOFTBOILED", 135),
+        ("MILK_DRINK", 208),
+    ] {
+        animation.move_id = move_id.into();
+        animation.animation_label = "opaque presentation label".into();
+        let actual = new_visible_battle_objects(&bundle, &animation).unwrap();
+        assert_eq!(
+            actual.machine.read(battle_program::W_F_X_ANIM_I_D),
+            source_id as u8
+        );
+        assert_eq!(actual.machine.read(battle_program::W_F_X_ANIM_I_D + 1), 0);
+    }
+    for move_id in [
+        "TEST_KINESIS",
+        "SOFTBOILED_TEST",
+        "MILK_DRINK_TEST",
+        "SUBSTITUTE",
+    ] {
+        animation.move_id = move_id.into();
+        animation.animation_label =
+            "BattleAnim_Kinesis → BattleAnim_Softboiled → BattleAnim_MilkDrink".into();
+        let actual = new_visible_battle_objects(&bundle, &animation).unwrap();
+        assert_eq!(actual.machine.read(battle_program::W_F_X_ANIM_I_D), 0);
+    }
+}
+
+#[test]
+fn battle_anim_substitute_wrappers_preserve_source_art_fallback() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+    let assets = shell.asset_root.clone();
+    let (_, offset, _, _, _, _) =
+        visible_move_animation_definition(&snapshot, "SUBSTITUTE", 1).unwrap();
+    for (move_id, object_id) in [
+        ("KINESIS", "BATTLE_ANIM_OBJ_KINESIS"),
+        ("SOFTBOILED", "BATTLE_ANIM_OBJ_EGG"),
+        ("MILK_DRINK", "BATTLE_ANIM_OBJ_MILK_DRINK"),
+    ] {
+        for player_move in [true, false] {
+            let mut bare = wrapped_move_identity_regression_animation(
+                &snapshot,
+                move_id,
+                player_move,
+                false,
+                false,
+            );
+            let mut wrapped = wrapped_move_identity_regression_animation(
+                &snapshot,
+                move_id,
+                player_move,
+                true,
+                true,
+            );
+            let first_object = bare.object_events.iter().find(|event| matches!(
+                &event.command, VisibleMoveObjectCommand::Spawn { object_id: id, .. } if id == object_id
+            )).unwrap().frame;
+            for age in [0, 1, 8, 16] {
+                bare.frame = first_object + age;
+                wrapped.frame = bare.frame + offset;
+                let bare_objects = visible_battle_objects(&bundle, &bare).unwrap();
+                let wrapped_objects = visible_battle_objects(&bundle, &wrapped).unwrap();
+                let live = |objects: &VisibleBattleObjects, animation: &VisibleMoveAnimation| {
+                    objects.slots.iter().flatten().find(|live| matches!(
+                        &animation.object_events[live.event_index].command,
+                        VisibleMoveObjectCommand::Spawn { object_id: id, .. } if id == object_id
+                    )).unwrap().clone()
+                };
+                let bare_live = live(&bare_objects, &bare);
+                let wrapped_live = live(&wrapped_objects, &wrapped);
+                let render = |live: &VisibleBattleObjectFrame| {
+                    let mut art = RenderedTilesetArt::default();
+                    let mut images = Assets::<Image>::default();
+                    let frame = &bundle["framesets"][live.frameset][live.frame];
+                    let rendered = battle_anim_rendered_frame(
+                        &mut art,
+                        &bundle,
+                        &assets,
+                        object_id,
+                        &bundle["objects"][object_id],
+                        live.frameset,
+                        live.frame,
+                        frame,
+                        !player_move,
+                        false,
+                        false,
+                        None,
+                        0xe4,
+                        0xe4,
+                        Some(&live.oam),
+                        &mut images,
+                    )
+                    .unwrap();
+                    (
+                        (rendered.offset_x, rendered.offset_y),
+                        rendered.sprite.size,
+                        images.get(&rendered.sprite.handle).unwrap().data.clone(),
+                    )
+                };
+                let expected = render(&bare_live);
+                assert!(
+                    expected.2.chunks_exact(4).any(|pixel| pixel[3] != 0),
+                    "{move_id} age={age}"
+                );
+                assert_eq!(bare_live.oam.origin, wrapped_live.oam.origin);
+                assert_eq!(
+                    render(&wrapped_live),
+                    expected,
+                    "{move_id} player={player_move} age={age}"
+                );
+            }
         }
     }
 }

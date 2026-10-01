@@ -6790,6 +6790,14 @@ fn render_playfield(
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
+            let model_source_id = visible_object_model_source_id(
+                &snapshot.overworld.map_name,
+                &object.sprite,
+                resolved_object_sprite,
+                &sprite_id,
+                &snapshot.script_events.variable_sprites,
+                &snapshot.presentation.menu_icons,
+            );
             // ASM object_event palette 0 means "use the sprite's compiled
             // default", not palette bank 0.  The TS renderer resolves this
             // before instantiating the animation; doing a raw `pal & 7` here
@@ -7079,7 +7087,7 @@ fn render_playfield(
                     world_facing: direction,
                     object_index: index,
                     object_identifier: object.object_identifier.clone(),
-                    source_id: Arc::from(render_sprite_id.as_str()),
+                    source_id: Arc::from(model_source_id.as_str()),
                     above_priority: objects_above_priority.contains(&index),
                     standing: frame.handle.clone(),
                     walking: walking_frame.as_ref().map(|frame| frame.handle.clone()),
