@@ -37,6 +37,10 @@ jobs:
       - run: python3 tools/validate-battle-art.py
       - run: python3 tools/test_johto_character_geometry.py
       - run: python3 tools/test_model_asset_storage.py
+      - run: python3 tools/test_johto_art_sources.py
+      - run: python3 tools/test_asset_storage_migration.py
+      - run: python3 tools/test_export_model_stl.py
+      - run: python3 tools/export-model-stl.py --check
   browser-tests:
     runs-on: ubuntu-latest
     steps:
