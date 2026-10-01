@@ -167,16 +167,23 @@ impl Model {
         let origin = Vec3::new(west, base_height, north);
         let min = Vec3::from_array(self.min);
         let base = target.positions.len() as u32;
-        for (&p, &n) in self.surface.positions.iter().zip(&self.surface.normals) {
+        for ((&p, &n), &color) in self
+            .surface
+            .positions
+            .iter()
+            .zip(&self.surface.normals)
+            .zip(&self.surface.colors)
+        {
             target
                 .positions
                 .push((origin + (Vec3::from_array(p) - min) * scale).to_array());
+            let normal = (Vec3::from_array(n) / scale).normalize();
+            target.normals.push(normal.to_array());
             target
-                .normals
-                .push((Vec3::from_array(n) / scale).normalize().to_array());
+                .colors
+                .push(crate::interior_models::authored_face_color(color, normal));
         }
         target.uvs.extend_from_slice(&self.surface.uvs);
-        target.colors.extend_from_slice(&self.surface.colors);
         target
             .indices
             .extend(self.surface.indices.iter().map(|&i| i + base));
@@ -214,6 +221,41 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn authored_dungeon_faces_are_lit_once_after_nonuniform_normal_fitting() {
+        let source = model(Kind::CaveBoulder);
+        let original = source.surface.colors.clone();
+        let mut mesh = SurfaceMeshData::default();
+        source.append(&mut mesh, [-17.0, 11.0, -5.0, 2.0], 3.0, 19.0);
+        let length = mesh.colors.len();
+        let mut orientation_matters = false;
+        for (i, &base) in original.iter().enumerate() {
+            let fitted = Vec3::from_array(mesh.normals[i]);
+            let expected = crate::interior_models::authored_face_color(base, fitted);
+            assert_eq!(mesh.colors[i], expected);
+            assert_eq!(mesh.colors[i][3], base[3]);
+            orientation_matters |= expected
+                != crate::interior_models::authored_face_color(
+                    base,
+                    Vec3::from_array(source.surface.normals[i]),
+                );
+        }
+        assert!(
+            orientation_matters,
+            "lighting must use fitted world normals, not the export normals"
+        );
+        assert_ne!(
+            mesh.colors, original,
+            "unlit base colors would flatten the model"
+        );
+        source.append(&mut mesh, [-17.0, 11.0, -5.0, 2.0], 3.0, 19.0);
+        assert_eq!(mesh.colors[..length], mesh.colors[length..]);
+        assert_eq!(
+            source.surface.colors, original,
+            "cached source palettes must remain untouched"
+        );
+    }
+
     #[test]
     fn all_dungeon_assets_are_finite_full_volume_and_budgeted() {
         for kind in Kind::ALL {
@@ -261,3 +303,7 @@ pub(crate) use extension::{ExtensionKind, extension_model};
 #[path = "special_room_models.rs"]
 mod special_rooms;
 pub(crate) use special_rooms::{RoomAsset, room_model};
+
+#[path = "gym_scenery_models.rs"]
+mod gym_scenery;
+pub(crate) use gym_scenery::gym_model;

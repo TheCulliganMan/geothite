@@ -264,10 +264,10 @@ fn overlap_custom_profiles_and_missing_floor_reject_entire_network() {
         .iter()
         .find(|o| o.name == "Pokecenter2F booth partition 31-32")
         .unwrap();
-    assert!(canonical_partition(original));
+    assert!(canonical_replaced_profile(original));
     let mut changed = original.clone();
     changed.depth_pixels += 1.;
-    assert!(!canonical_partition(&changed));
+    assert!(!canonical_replaced_profile(&changed));
 }
 #[test]
 fn append_is_atomic_stays_in_bounds_and_preserves_footing() {

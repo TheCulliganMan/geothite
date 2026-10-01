@@ -304,7 +304,6 @@ impl Model {
             (south - north) / (self.max[2] - self.min[2]),
         );
         let base = target.positions.len() as u32;
-        let light = Vec3::new(-0.35, 0.85, 0.40).normalize();
         for ((p, n), c) in self
             .surface
             .positions
@@ -315,17 +314,63 @@ impl Model {
             let p = (Vec3::from_array(*p) - Vec3::from_array(self.min)) * scale
                 + Vec3::new(west, base_y, north);
             let normal = (Vec3::from_array(*n) / scale).normalize();
-            let shade = 0.64 + 0.36 * normal.dot(light).max(0.0);
             target.positions.push(p.to_array());
             target.normals.push(normal.to_array());
             target.uvs.push([0.0, 0.0]);
-            target
-                .colors
-                .push([c[0] * shade, c[1] * shade, c[2] * shade, c[3]]);
+            target.colors.push(authored_face_color(*c, normal));
         }
         target
             .indices
             .extend(self.surface.indices.iter().map(|&i| base + i));
+    }
+}
+
+/// Original model palettes need one face-light bake before the terrain shader,
+/// which intentionally adds only shadow visibility to already shaded colors.
+/// Call after normal fitting; legacy source terrain keeps its own baked shade.
+#[inline]
+pub(crate) fn authored_face_color(color: [f32; 4], normal: Vec3) -> [f32; 4] {
+    let light = Vec3::new(-0.35, 0.85, 0.40).normalize();
+    let shade = 0.64 + 0.36 * normal.dot(light).max(0.0);
+    [
+        color[0] * shade,
+        color[1] * shade,
+        color[2] * shade,
+        color[3],
+    ]
+}
+
+#[cfg(test)]
+mod face_shading_tests {
+    use super::*;
+
+    #[test]
+    fn shared_bake_preserves_existing_interior_response_and_alpha() {
+        let color = [0.4, 0.6, 0.8, 0.37];
+        let light = Vec3::new(-0.35, 0.85, 0.40).normalize();
+        for x in -1..=1 {
+            for y in -1..=1 {
+                for z in -1..=1 {
+                    let n = Vec3::new(x as f32, y as f32, z as f32);
+                    if n == Vec3::ZERO {
+                        continue;
+                    }
+                    let n = n.normalize();
+                    let shade = 0.64 + 0.36 * n.dot(light).max(0.0);
+                    let previous = [
+                        color[0] * shade,
+                        color[1] * shade,
+                        color[2] * shade,
+                        color[3],
+                    ];
+                    assert_eq!(
+                        authored_face_color(color, n).map(f32::to_bits),
+                        previous.map(f32::to_bits)
+                    );
+                }
+            }
+        }
+        assert!(authored_face_color(color, Vec3::Y)[0] > authored_face_color(color, -Vec3::Y)[0]);
     }
 }
 pub(crate) fn model(kind: ModelKind) -> &'static Model {

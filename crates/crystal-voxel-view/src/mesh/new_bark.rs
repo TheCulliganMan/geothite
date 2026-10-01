@@ -442,6 +442,7 @@ pub(super) fn append_building(
     let (west, _, north, _) = geometry.bounds(placement.column, placement.row);
     let east = west + placement.width as f32 * geometry.tile_width;
     let south = north + placement.height as f32 * geometry.tile_height;
+    let cutaway_start = mesh.solid.positions.len();
     model(descriptor.kind).append_fitted(
         &mut mesh.solid,
         [west, east, north, south],
@@ -449,6 +450,11 @@ pub(super) fn append_building(
         geometry.tile_height * 2.0,
         Some(west + descriptor.door_column as f32 * geometry.tile_width),
     );
+    // Mark only the successfully appended building. The backing was emitted
+    // above; later terrain, trees and props must keep their ordinary depth.
+    mesh.solid
+        .cutaway_ranges
+        .push(cutaway_start..mesh.solid.positions.len());
     mark_authored_rect(
         mesh,
         geometry,
@@ -1570,6 +1576,7 @@ fn shallow_bank_surface(
 }
 
 fn surface_material(
+    map: &str,
     positions: &[[f32; 3]],
     normal: [f32; 3],
     sample: &VisualTileSource,
@@ -1628,11 +1635,29 @@ fn surface_material(
             && sample.tile_index == 0x14
             && authored_cells.get(world).copied().flatten()
                 == Some("world-exterior/kanto_boundary_shore");
+        // Route19's two all-rock blocks are surrounded by native water. The
+        // exact binding keeps the land-rock sculpture, but supplies block $43
+        // water at the same datum as its neighbors, never a square paving island.
+        let route19_rock_bed = map == "Route19"
+            && material == GroundMaterial::Water
+            && sample.tileset_id.as_ref() == "kanto"
+            && sample.metatile_id == 0x43
+            && sample.tile_index == 0x14
+            && authored_cells.get(world).copied().flatten()
+                == Some("world-exterior/kanto_boundary_land")
+            && cells[world].source.metatile_id == 0x13
+            && cells[world].source.subtile_column < 4
+            && cells[world].source.subtile_row < 4
+            && cells[world].source.tile_index
+                == [[0x2a, 0x2b], [0x3a, 0x3b]]
+                    [cells[world].source.subtile_row as usize % 2]
+                    [cells[world].source.subtile_column as usize % 2];
         // Other water and shore faces must agree with the actual source cell.
         if matches!(material, GroundMaterial::Water | GroundMaterial::Shore)
             && ground_material(&cells[world].source) != Some(material)
             && !harbor_bed
             && !kanto_rock_bed
+            && !route19_rock_bed
         {
             return None;
         }
@@ -2055,6 +2080,7 @@ pub(super) fn polish_world_surfaces(
             )
             .or_else(|| {
                 surface_material(
+                    map,
                     &positions,
                     normal,
                     &cells[i].source,
@@ -3958,6 +3984,72 @@ mod tests {
                     "native water boundary changed: {p:?}"
                 );
             }
+        }
+    }
+    #[test]
+    fn route19_water_bed_requires_native_donor_complete_claim_and_rock_identity() {
+        let frame = frame(
+            3,
+            1,
+            vec![
+                material_source("kanto", 0x43, 0, 0, 0x14),
+                material_source("kanto", 0x13, 0, 0, 0x2a),
+                material_source("kanto", 0x13, 0, 0, 0x2a),
+            ],
+        );
+        let g = geometry(&frame);
+        let water = CellShape::Water.surface_height(g.tile_height);
+        let mut original = TerrainMeshData {
+            footing_heights: vec![water, 0.0, 0.0],
+            authored_cells: vec![None, Some("world-exterior/kanto_boundary_land"), None],
+            ..Default::default()
+        };
+        for i in 0..3 {
+            append_top(
+                &mut original.textured,
+                g.bounds(i, 0).into(),
+                water,
+                g.uv(0, 0),
+            );
+            append_top(
+                &mut original.textured,
+                g.bounds(i, 0).into(),
+                0.0,
+                g.uv(0, 0),
+            );
+        }
+        for mode in 0..5 {
+            let mut frame = frame.clone();
+            let mut mesh = original.clone();
+            let map = if mode == 1 { "Route10South" } else { "Route19" };
+            if mode == 2 {
+                frame.tiles[0].source.metatile_id = 0x44;
+            }
+            if mode == 3 {
+                frame.tiles[1].source.tile_index = 0x2b;
+            }
+            if mode == 4 {
+                mesh.authored_cells[1] = None;
+            }
+            polish_world_surfaces(
+                &mut mesh,
+                map,
+                &frame.tiles.iter().collect::<Vec<_>>(),
+                &g,
+                [0, 0],
+            );
+            assert_eq!(
+                mesh.textured.quad_count(),
+                if mode == 0 { 4 } else { 5 },
+                "mode {mode}"
+            );
+            assert_eq!(mesh.footing_heights, original.footing_heights);
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .all(|p| (p[1] - water).abs() < 0.001)
+            );
         }
     }
 }

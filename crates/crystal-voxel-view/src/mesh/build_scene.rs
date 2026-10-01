@@ -70,17 +70,28 @@ fn build_terrain_mesh_internal(
     resolve_rock_platform_tiers(&original_cells, &mut source_shapes, width);
     resolve_authored_mountain_tiers(&mut source_shapes, width, height);
     taper_johto_ledge_ends(&original_cells, &mut source_shapes, width);
-    let interior_placements = if images.is_some() && authored_enabled {
+    let mut interior_placements = if images.is_some() && authored_enabled {
         modeled_interiors::resolve(&frame.map_id, &original_cells, &geometry, profiles)
     } else {
         Vec::new()
     };
     let mut authored_reserved = vec![false; cell_count];
-    for placement in &interior_placements {
-        for index in placement.indices(width) {
-            authored_reserved[index] = true;
-        }
+    // Complete joined store courses supersede older individual window models.
+    // Their resolver still gives all customized live objects first refusal.
+    let department_store_placements = if images.is_some() && authored_enabled {
+        department_store::resolve(
+            &frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved,
+        )
+    } else { Vec::new() };
+    for placement in &department_store_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
     }
+    interior_placements.retain(|placement| {
+        if placement.indices(width).any(|index| authored_reserved[index]) { return false; }
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+        true
+    });
     let gate_placements = if images.is_some() && authored_enabled {
         gate_counters::resolve(&frame.map_id, &original_cells, &geometry, frame.grid_origin.to_array(), profiles, &authored_reserved)
     } else {
@@ -95,6 +106,19 @@ fn build_terrain_mesh_internal(
         cable_club::resolve(&frame.map_id, &original_cells, &geometry, frame.grid_origin.to_array(), profiles, &authored_reserved)
     } else { Vec::new() };
     for placement in &cable_club_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let outdoor_sign_placements = if images.is_some() && authored_enabled {
+        outdoor_signs::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &outdoor_sign_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
+    let gym_placements = if images.is_some() && authored_enabled {
+        gym_scenery::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { Vec::new() };
+    for placement in &gym_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
     let mut dungeon_placements = if images.is_some() && authored_enabled {
@@ -114,6 +138,17 @@ fn build_terrain_mesh_internal(
         }
         true
     });
+    // Three native maps lack the catalog lawn sample. Reserve only their
+    // source-complete objects with proven ground inside this map's bounds.
+    let native_ground_placements = if images.is_some() && authored_enabled {
+        native_ground_bindings::resolve(
+            &frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved,
+        )
+    } else { Vec::new() };
+    for placement in &native_ground_placements {
+        for index in placement.indices(width) { authored_reserved[index] = true; }
+    }
     let mut live_placements = live::resolve(
         &cells,
         width,
@@ -323,12 +358,33 @@ fn build_terrain_mesh_internal(
         let appended = cable_club::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
         debug_assert!(appended, "validated Cable Club reservation must append");
     }
+    for placement in &outdoor_sign_placements {
+        let appended = outdoor_signs::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated outdoor sign reservation must append");
+    }
+    for placement in &gym_placements {
+        let appended = gym_scenery::append(&mut mesh, &original_cells, &geometry,
+            placement, &mut claimed_by_tree);
+        debug_assert!(appended, "validated Gym reservation must append");
+    }
+    for placement in &department_store_placements {
+        let appended = department_store::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated department store reservation must append");
+    }
     for placement in &dungeon_placements {
         modeled_dungeons::append(&mut mesh, &geometry, placement, &original_cells);
         for index in placement.indices(width) {
             claimed_by_tree[index] = true;
             mesh.authored_cells[index] = Some(placement.kind_label());
         }
+    }
+    for placement in &native_ground_placements {
+        let appended = native_ground_bindings::append(
+            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated native ground binding must append");
     }
     if images.is_some() && authored_enabled {
         modeled_exteriors::append_props(
@@ -1591,12 +1647,13 @@ fn build_terrain_mesh_internal(
         );
     }
     if authored_enabled {
-        modeled_interiors::finish_surfaces(
+        modeled_interiors::finish_surfaces_with_profiles(
             &mut mesh,
             &frame.map_id,
             &original_cells,
             &geometry,
             frame.grid_origin.to_array(),
+            profiles,
         );
     }
     if let Some(started) = scenery_metrics {

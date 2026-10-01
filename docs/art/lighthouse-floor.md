@@ -25,8 +25,9 @@ model-underlay quads are counted. Every selected source quadrant has native
 No extracted source images or game catalogs belong in this change.
 
 The distinct `$0d`/`$1d` checker chamber on 6F is intentionally outside this
-finish. Its furniture, machine, Amphy, and alternate flooring need their own
-bounded treatment. Fast Ship shares the tileset but receives no change.
+finish. The checker and source furniture now have their own
+[bounded keeper-room finish](lighthouse-chamber.md); Amphy is an independent
+actor model. Fast Ship shares the tileset but receives no change.
 Unknown maps, tilesets, block identities, tile samples, and source phases stay
 on the original rendering path.
 
@@ -72,4 +73,5 @@ Remaining native review:
 4. Capture a Fast Ship room and an ordinary interior as negative controls.
    Verify stable joint placement when changing viewport origin or cropping.
 
-The floor finish does not complete the remaining 6F furnishing work.
+This slate pass does not own the 6F furnishings. Their separate finish and
+remaining native checks are described in [Lighthouse keeper room](lighthouse-chamber.md).

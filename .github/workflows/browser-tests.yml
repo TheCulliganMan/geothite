@@ -18,7 +18,12 @@ jobs:
       - run: python3 tools/check-special-rooms.py
       - run: python3 tools/check-gate-counter-models.py
       - run: python3 tools/check-cable-club.py
+      - run: python3 tools/check-cable-backwalls.py
+      - run: python3 tools/check-gym-scenery-models.py
+      - run: python3 tools/check-department-store.py
+      - run: python3 tools/check-outdoor-sign-frames.py
       - run: python3 tools/check-lighthouse-masonry.py
+      - run: python3 tools/check-lighthouse-chamber.py
       - run: python3 tools/check-structure-extensions.py
       - run: python3 tools/check-actor-props.py
       - run: python3 tools/check-battle-species.py

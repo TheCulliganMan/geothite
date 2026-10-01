@@ -100,3 +100,70 @@ const ROOM_FINISH: &[Network] = &[
         record_sign: false,
     },
 ];
+
+// The only added solid rear wall is above the PC. The two mobile warp
+// footprints (x12..14 and x20..22, y0..2) retain all live source art.
+// Console silhouettes leave their upper-left source negative space intact.
+// DOOR art gets open framing, not the former opaque picture backing.
+const REAR_FIXTURES: &[Network] = &[
+    Network {
+        finish: Finish::RearWall,
+        anchor: [3, 0],
+        width: 4,
+        height: 3,
+        fingerprint: 0x37753e193c7914e4,
+        rows: &[6, 6, 0],
+        shells: &[[1, 0, 2, 2]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::LinkConsole,
+        anchor: [12, 0],
+        width: 3,
+        height: 7,
+        fingerprint: 0x9034c6c061a5dc8f,
+        rows: &[0, 0, 2, 3, 3, 3, 0],
+        shells: &[[0, 2, 2, 4]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::LinkConsole,
+        anchor: [20, 0],
+        width: 3,
+        height: 7,
+        fingerprint: 0xde927a9cdebdb3e6,
+        rows: &[0, 0, 2, 3, 3, 3, 0],
+        shells: &[[0, 2, 2, 4]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::Doorway,
+        anchor: [8, 0],
+        width: 6,
+        height: 3,
+        fingerprint: 0x0eefc6d19419c433,
+        rows: &[12, 12, 0],
+        shells: &[[2, 0, 2, 2]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::Doorway,
+        anchor: [16, 0],
+        width: 6,
+        height: 3,
+        fingerprint: 0x3d5a0349f9cbff73,
+        rows: &[12, 12, 0],
+        shells: &[[2, 0, 2, 2]],
+        record_sign: false,
+    },
+    Network {
+        finish: Finish::Doorway,
+        anchor: [25, 3],
+        width: 4,
+        height: 4,
+        fingerprint: 0x9953195bb2187a4b,
+        rows: &[0, 6, 6, 0],
+        shells: &[[1, 1, 2, 2]],
+        record_sign: false,
+    },
+];

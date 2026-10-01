@@ -68,3 +68,40 @@ Use `CRYSTAL_SCENERY_METRICS=1` for native geometry/build diagnostics and
 `CRYSTAL_SCENERY_FULL_DETAIL=1` to compare the original full foliage geometry.
 Use `--measure <empty-directory> --seconds 32 --walk LLRR` for a no-readback trace,
 or `--record` for actual framebuffer captures. No captures are CI inputs.
+
+
+## Gym scenery checkpoint, October 1
+
+Stationary native checks used the same default camera, 1180×812 window, optimized
+development profile and llvmpipe adapter. Each run measured twelve seconds after
+initial settling, without framebuffer readback. Cargo, Blender and other heavy
+jobs were paused. This is the cost of the real scene, including its actors.
+
+| Scene / build | Median | p95 |
+| --- | ---: | ---: |
+| Viridian, published baseline (paired rerun) | 55.45 ms | 65.59 ms |
+| Viridian, first authored kit | 77.07 ms | 90.43 ms |
+| Viridian, optimized authored kit | 68.09 ms | 79.81 ms |
+| Goldenrod, published baseline (paired rerun) | 85.73 ms | 100.35 ms |
+| Goldenrod, first authored kit | 118.61 ms | 130.57 ms |
+| Goldenrod, optimized authored kit | 94.06 ms | 105.69 ms |
+
+The first comparison caught excessive small bevels repeated across planters and
+maze faces. The corrected exports retain all 364 closed components, complete
+bounds, foliage and major silhouettes. Bevels narrower than 0.03 model units are
+squared, and exact per-material attribute indexing preserves the expanded
+triangle stream. The twenty prototypes dropped from 12,620 to 6,220 triangles
+and 37,860 to 14,326 vertices. Actual production geometry is now:
+
+| Scene | First-kit solid triangles / vertices | Optimized solid triangles / vertices |
+| --- | ---: | ---: |
+| Goldenrod | 187,944 / 559,580 | 107,304 / 261,896 |
+| Viridian | 79,584 / 235,904 | 37,344 / 75,152 |
+
+The final paired rerun still costs 22.8% more median frame time in Viridian and
+9.7% more in Goldenrod than the published source-art baseline. This regression
+remains an optimization task; the new scenes are not certified fluid on this
+software renderer. Additional vertex/fragment work and cutaway eligibility are
+candidates for controlled measurement, not established causes. The two initial
+baseline medians were 53.27 and 84.93 ms, consistent with the rerun but not identical.
+The full per-frame traces and captures remain ignored local QA artifacts.

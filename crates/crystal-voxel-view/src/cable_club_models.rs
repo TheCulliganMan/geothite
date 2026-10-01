@@ -25,3 +25,11 @@ pub(crate) fn time_capsule() -> &'static Model {
             .expect("validated Cable Club Time Capsule")
     })
 }
+
+pub(crate) fn link_console() -> &'static Model {
+    static MODEL: OnceLock<Model> = OnceLock::new();
+    MODEL.get_or_init(|| {
+        Model::parse(include_str!("../models/cable_club/link_console.mesh.json"))
+            .expect("validated Cable Club link console")
+    })
+}

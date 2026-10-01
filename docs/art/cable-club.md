@@ -1,5 +1,10 @@
 # Cable Club room kit
 
+The later [rear-fixture pass](cable-rear-fixtures.md) adds original link consoles,
+reuses the verified PC/sign components in every beta room, and corrects the
+paired sign/DOOR profiles with actual open door frames. The source door art
+remains live and all mobile warp footprints stay clear.
+
 Three original full-volume models form four long partitions, two shorter Time
 Capsule vestibule returns, and the Time Capsule machine/backdrop. Powder-blue
 recessed panels, ivory crowns and dark toe plinths unify the room. The capsule

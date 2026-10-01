@@ -145,6 +145,12 @@ fn profile_kind(object: &Object) -> Option<ModelKind> {
     })
 }
 
+fn cable_club_fixture(object: &Object, map: &str) -> bool {
+    super::cable_club::is_map(map) && object.tileset == "pokecenter"
+        && matches!(object.name.as_str(), "Pokecenter upstairs complete PC"
+            | "Pokecenter upstairs wall displays 2b" | "Pokecenter upstairs wall displays 0a")
+}
+
 fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
     use ModelKind::*;
     let source_depth = height as f32 * 8.0;
@@ -243,6 +249,8 @@ pub(super) fn resolve(
                         .objects
                         .iter()
                         .any(|canonical| canonical.name == object.name && canonical != *object)
+                        || (super::cable_club::is_map(map)
+                            && !built_in_profiles().objects.iter().any(|canonical| canonical == *object))
                 })
                 .cloned()
                 .collect(),
@@ -264,11 +272,12 @@ pub(super) fn resolve(
         let Some(kind) = profile_kind(object) else {
             continue;
         };
-        if object.map.as_deref().is_some_and(|id| id != map)
+        let cable_fixture = cable_club_fixture(object, map);
+        if !cable_fixture && (object.map.as_deref().is_some_and(|id| id != map)
             || object
                 .maps
                 .as_ref()
-                .is_some_and(|ids| !ids.iter().any(|id| id == map))
+                .is_some_and(|ids| !ids.iter().any(|id| id == map)))
         {
             continue;
         }
@@ -320,7 +329,10 @@ pub(super) fn resolve(
                     kind,
                     column,
                     row,
-                    width: w,
+                    // Each paired profile is a sign next to a real DOOR.
+                    // Keep the full source guard, but give PictureFrame only
+                    // the sign half. cable_club supplies the open door frame.
+                    width: if cable_fixture && kind == ModelKind::PictureFrame { 2 } else { w },
                     height: h,
                     ground,
                     depth_pixels,
@@ -940,8 +952,14 @@ mod tests {
     }
 }
 
+#[cfg(test)]
+#[path = "cable_fixture_tests.rs"]
+mod cable_fixture_tests;
+
 include!("interior_signatures.rs");
 
 include!("interior_surfaces.rs");
+
+include!("lighthouse_chamber_floor.rs");
 
 include!("bedroom_carpet.rs");

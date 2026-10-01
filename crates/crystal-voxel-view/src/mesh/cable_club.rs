@@ -8,6 +8,9 @@ enum Finish {
     Partition,
     TimeCapsule,
     CeramicFloor,
+    RearWall,
+    LinkConsole,
+    Doorway,
 }
 struct Network {
     finish: Finish,
@@ -21,6 +24,10 @@ struct Network {
     record_sign: bool,
 }
 include!("cable_club_bindings.rs");
+
+pub(super) fn is_map(map: &str) -> bool {
+    MAPS.contains(&map)
+}
 
 pub(super) struct Placement {
     network: &'static Network,
@@ -92,10 +99,12 @@ fn valid_ground(cell: &VisualTile) -> bool {
         && s.subtile_column < 4
         && s.subtile_row < 4
 }
-fn canonical_partition(o: &crate::live_profiles::Object) -> bool {
+fn canonical_replaced_profile(o: &crate::live_profiles::Object) -> bool {
     if !matches!(
         o.name.as_str(),
-        "Pokecenter2F booth partition 31-32"
+        "Pokecenter upstairs wall displays 2b"
+            | "Pokecenter upstairs wall displays 0a"
+            | "Pokecenter2F booth partition 31-32"
             | "Pokecenter2F booth partition 0b-28"
             | "Pokecenter2F booth partition 0b-0f"
     ) {
@@ -139,6 +148,20 @@ pub(super) fn resolve(
         profiles,
         &blocked,
     ));
+    for p in &placements {
+        for i in p.indices(g.width) {
+            blocked[i] = true;
+        }
+    }
+    placements.extend(resolve_networks(
+        REAR_FIXTURES,
+        map,
+        cells,
+        g,
+        origin,
+        profiles,
+        &blocked,
+    ));
     placements
 }
 fn resolve_networks(
@@ -160,7 +183,7 @@ fn resolve_networks(
         objects: doc
             .objects
             .iter()
-            .filter(|o| !canonical_partition(o))
+            .filter(|o| !canonical_replaced_profile(o))
             .cloned()
             .collect(),
         atmosphere: None,
@@ -228,6 +251,71 @@ pub(super) fn append(
                 ],
             );
             claimed[i] = true;
+        }
+        return true;
+    }
+    if matches!(
+        p.network.finish,
+        Finish::RearWall | Finish::LinkConsole | Finish::Doorway
+    ) {
+        let is_door = p.network.finish == Finish::Doorway;
+        for i in p.indices(g.width) {
+            let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
+            // Doors retain their exact live source glyphs, on their original
+            // zero-height footprint beneath a genuinely open physical frame.
+            let uv = if is_door {
+                g.uv(i % g.width, i / g.width)
+            } else {
+                g.uv(
+                    cells[p.ground].column as usize,
+                    cells[p.ground].row as usize,
+                )
+            };
+            append_top(&mut mesh.textured, [w, e, n, s], 0.0, uv);
+        }
+        for &[dx, dy, width, depth] in p.network.shells {
+            let (w, _, n, _) = g.bounds(p.column + dx, p.row + dy);
+            let (model, rise, fitted_depth) = match p.network.finish {
+                Finish::RearWall => (
+                    crate::interior_models::model(crate::interior_models::ModelKind::WallClinical),
+                    24.0,
+                    3.0,
+                ),
+                Finish::Doorway => (
+                    crate::interior_models::model(crate::interior_models::ModelKind::GateDoorFrame),
+                    18.0,
+                    3.0,
+                ),
+                Finish::LinkConsole => (
+                    crate::cable_club_models::link_console(),
+                    20.0,
+                    depth as f32 * 8.0,
+                ),
+                _ => unreachable!(),
+            };
+            let south = n + depth as f32 * g.tile_height;
+            model.append_fitted(
+                &mut mesh.solid,
+                [
+                    w,
+                    w + width as f32 * g.tile_width,
+                    south - fitted_depth * g.tile_height / 8.0,
+                    south,
+                ],
+                0.0,
+                rise * g.tile_height / 8.0,
+            );
+        }
+        for i in p.indices(g.width) {
+            claimed[i] = true;
+            if mesh.authored_cells.len() == cells.len() {
+                mesh.authored_cells[i] = Some(match p.network.finish {
+                    Finish::RearWall => "pokecenter/cable_club_rear_wall",
+                    Finish::Doorway => "pokecenter/cable_club_open_doorway",
+                    Finish::LinkConsole => "pokecenter/cable_club_link_console",
+                    _ => unreachable!(),
+                });
+            }
         }
         return true;
     }
@@ -305,4 +393,5 @@ mod tests {
     use std::sync::Arc;
     include!("cable_club_tests.rs");
     include!("cable_club_finish_tests.rs");
+    include!("cable_backwall_tests.rs");
 }

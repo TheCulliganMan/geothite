@@ -37,7 +37,7 @@ fn room_finish_masks_preserve_source_doorway_and_partition_ownership() {
                     floors += 1;
                     assert!(y == 2 || y == 6);
                 }
-                Finish::Partition => panic!("room finish must not duplicate a partition"),
+                _ => panic!("room finish must not duplicate another fixture"),
             }
             // The live source doorway remains entirely outside the new kit.
             assert!(!(26..28).contains(&x) || !(4..6).contains(&y));

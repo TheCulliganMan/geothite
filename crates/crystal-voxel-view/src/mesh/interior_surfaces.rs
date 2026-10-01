@@ -7,6 +7,10 @@ enum InteriorFloor {
     Stone,
     Marble,
     LighthouseSlate,
+    LighthouseChecker,
+    GymRose,
+    GymGreen,
+    GymTimber,
 }
 impl InteriorFloor {
     fn palette(self) -> [f32; 3] {
@@ -17,12 +21,17 @@ impl InteriorFloor {
             Self::Stone => [0.58, 0.60, 0.57],
             Self::Marble => [0.72, 0.69, 0.61],
             Self::LighthouseSlate => [0.38, 0.43, 0.44],
+            Self::LighthouseChecker => [0.54, 0.56, 0.51],
+            Self::GymRose => [0.69, 0.60, 0.56],
+            Self::GymGreen => [0.42, 0.50, 0.34],
+            Self::GymTimber => [0.59, 0.48, 0.31],
         }
     }
 }
 fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor> {
     use InteriorFloor::*;
     let style = match (source.tileset_id.as_ref(), source.tile_index) {
+        _ if gym_floor_source(map, source).is_some() => gym_floor_source(map, source)?,
         ("players_room" | "players_house" | "house", 0x01) => Oak,
         ("traditional_house", 0x50 | 0x44 | 0x45 | 0x54 | 0x55) => Tatami,
         ("traditional_house", 0x01) => Oak,
@@ -43,6 +52,7 @@ fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor>
             }
         }
         ("lighthouse", _) if lighthouse_floor_source(map, source) => LighthouseSlate,
+        ("lighthouse", _) if lighthouse_chamber_floor_source(map, source) => LighthouseChecker,
         _ => return None,
     };
     matches!(
@@ -84,7 +94,11 @@ fn floor_cell(
     let d = z1 - z0;
     let [column, row] = world;
     let palette = style.palette();
-    if style == InteriorFloor::LighthouseSlate {
+    if gym_floor_style(style) {
+        gym_floor_cell(mesh, b, height, style, world);
+    } else if style == InteriorFloor::LighthouseChecker {
+        lighthouse_chamber_floor_cell(mesh, b, height, world, [false; 4]);
+    } else if style == InteriorFloor::LighthouseSlate {
         lighthouse_floor_cell(mesh, b, height, world);
     } else if style == InteriorFloor::Oak {
         // Wide boards with staggered end joints. The low-contrast palette and
@@ -185,9 +199,44 @@ pub(super) fn finish_surfaces(
     g: &GridGeometry,
     world_origin: [i32; 2],
 ) -> usize {
-    if cells.len() != g.width * g.height || cells.is_empty() {
+    finish_surfaces_excluding(mesh, map, cells, g, world_origin, &[])
+}
+/// Live source profiles have first refusal over the Gym material pass, including
+/// profiles whose drawings consist entirely of a recognized native floor.
+pub(super) fn finish_surfaces_with_profiles(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    world_origin: [i32; 2],
+    profiles: Option<&Document>,
+) -> usize {
+    if !gym_floor_map(map) || g.width.checked_mul(g.height) != Some(cells.len()) {
+        return finish_surfaces(mesh, map, cells, g, world_origin);
+    }
+    let mut excluded = vec![false; cells.len()];
+    for placement in live::resolve(cells, g.width, g.height, map, profiles) {
+        for index in placement.indices(g.width) {
+            excluded[index] = true;
+        }
+    }
+    finish_surfaces_excluding(mesh, map, cells, g, world_origin, &excluded)
+}
+fn finish_surfaces_excluding(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    world_origin: [i32; 2],
+    excluded: &[bool],
+) -> usize {
+    if g.width.checked_mul(g.height) != Some(cells.len())
+        || cells.is_empty()
+        || (!excluded.is_empty() && excluded.len() != cells.len())
+    {
         return 0;
     }
+    let gym_ground = gym_floor_underlays(mesh, map, cells, g, world_origin, excluded);
     let source_styles: Vec<_> = cells
         .iter()
         .map(|tile| interior_floor(map, &tile.source))
@@ -255,6 +304,18 @@ pub(super) fn finish_surfaces(
             if !near(min_u, u0) || !near(max_u, u1) || !near(min_v, v0) || !near(max_v, v1) {
                 return None;
             }
+            // Bounds alone also accept a clipped/distorted sample whose other
+            // corners still touch the original limits. Require all four actual
+            // atlas corners before replacing source artwork with a finish.
+            if [[u0, v0], [u0, v1], [u1, v0], [u1, v1]]
+                .iter()
+                .any(|corner| {
+                    !uvs.iter()
+                        .any(|uv| near(uv[0], corner[0]) && near(uv[1], corner[1]))
+                })
+            {
+                return None;
+            }
             let destination = row as usize * g.width + column as usize;
             let style = source_styles[sr * g.width + sc].or_else(|| {
                 // Old grouped fixtures used a wallpaper sample for masking.
@@ -274,20 +335,45 @@ pub(super) fn finish_surfaces(
                     _ => None,
                 }
             })?;
+            if gym_floor_style(style)
+                && !gym_floor_destination(
+                    mesh,
+                    map,
+                    cells,
+                    destination,
+                    sr * g.width + sc,
+                    style,
+                    &gym_ground,
+                    excluded,
+                )
+            {
+                return None;
+            }
             if style == InteriorFloor::LighthouseSlate
                 && !lighthouse_floor_destination(mesh, map, cells, destination)
             {
                 return None;
             }
+            if style == InteriorFloor::LighthouseChecker
+                && !lighthouse_chamber_floor_destination(mesh, map, cells, destination)
+            {
+                return None;
+            }
             Some((
+                destination,
                 [x0, x1, z0, z1],
                 height,
                 style,
                 [column + world_origin[0], row + world_origin[1]],
             ))
         })();
-        if let Some((bounds, height, style, world)) = candidate {
-            floor_cell(&mut mesh.solid, bounds, height, style, world);
+        if let Some((destination, bounds, height, style, world)) = candidate {
+            if style == InteriorFloor::LighthouseChecker {
+                let edges = lighthouse_chamber_floor_edges(mesh, map, cells, g, destination);
+                lighthouse_chamber_floor_cell(&mut mesh.solid, bounds, height, world, edges);
+            } else {
+                floor_cell(&mut mesh.solid, bounds, height, style, world);
+            }
             finished += 1;
         } else {
             mesh.textured.indices.extend_from_slice(quad);
@@ -595,3 +681,5 @@ mod surface_finish_tests {
 }
 
 include!("lighthouse_floor.rs");
+
+include!("gym_floor.rs");

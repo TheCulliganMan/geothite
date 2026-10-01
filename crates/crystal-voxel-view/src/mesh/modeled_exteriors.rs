@@ -459,6 +459,7 @@ pub(super) fn append_building(
             b[0] + offset * g.tile_width
         }
     });
+    let cutaway_start = mesh.solid.positions.len();
     match d.asset {
         Asset::World(kind) => {
             model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
@@ -467,6 +468,11 @@ pub(super) fn append_building(
             johto_model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
         }
     }
+    // Eligibility belongs only to this successful authored building append.
+    // Ground backing and the earlier cave/mesa/forecourt/ice branch stay opaque.
+    mesh.solid
+        .cutaway_ranges
+        .push(cutaway_start..mesh.solid.positions.len());
     mark_authored_rect(mesh, g, rect, d.asset.label());
     true
 }

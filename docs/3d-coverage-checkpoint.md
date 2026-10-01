@@ -8,11 +8,13 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 593 runtime model documents and 57 complete editable Blender sources
+- 629 runtime model documents and 62 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
   63 exterior models, 19 dungeon models, 11 special-environment models,
   23 special-room models, 17 joined-counter modules, three lighthouse shells,
-  three Cable Club room prototypes and 220 additional exact battle species
+  four Cable Club room prototypes, twenty Gym scenery models, eight department-store
+  models, four outdoor-sign models, three lighthouse furniture models, and
+  220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -28,10 +30,13 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The current pack-based headless audit processes all 388 base maps without a
-mesher error and counts 251,552 source cells consumed by authored geometry,
-including 9,136 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone,
+mesher error and counts 254,371 source cells consumed by authored geometry,
+including 9,176 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone,
 4,816 lighthouse masonry/window cells, 968 Cable Club partition cells and 88
-Time Capsule cells. The 374 new ceramic-floor cells receive no object credit.
+Time Capsule cells. This increment adds 1,253 Gym scenery, 632 store, 348 sign,
+36 keeper-room and 88 missing-ground cells, plus a net 462 Cable rear-fixture
+cells. The 374 Cable ceramic-floor, 108 lighthouse checker and 2,566 Gym floor
+cells receive no object credit.
 Cable Club replaces 48 earlier generic partition cells, for a net gain of 920.
 This is partial coverage, not 388 completed maps. Flat floors, water planes, source facades and fallback objects
 are reported separately. Dynamic decorations and changed block states require
@@ -48,16 +53,22 @@ families now pass geometry/source-selection tests and native Route17, Route20
 and SilverCaveOutside review. Capped posts and gate counters/phones now pass
 native review. Cable Club partitions are installed across eleven upstairs maps.
 Lighthouse masonry now has a camera-aware player reveal and source-scoped slate
-floors, with native 4F and 6F checks. Seventeen further structural families and
-separate room-detailing gaps remain.
+floors, with native 4F and 6F checks. Seven more source families now have exact installed kits and reviewed native
+views: the four Gym groups, outdoor signs, store walls and store display islands.
+Ten entries from the earlier checklist and additional source-specific architecture
+packages remain; the earlier checklist was not exhaustive.
 See [the remaining-family checklist](3d-remaining-families.md).
 
-- Remaining source families and structures, including gym greenery and apparatus
-- Cable Club live door/warp artwork and two floor-like WALL cells per room remain
-  source surfaces; new capsule geometry and 34 FLOOR cells per room are reviewed
-- Lighthouse 6F furnishings and its distinct central checker floor remain source
-  artwork. Review additional camera/movement layouts beyond the captured 4F/6F
-  cases; masonry, cutaway and floor coverage do not complete the scene
+- Remaining source families and structures, including facility/radio furniture,
+  cabin fittings, traditional screens/stage, station trains, and park props
+- Cable Club live door/warp artwork, mobile-entry source bands and two negative
+  corner cells per room remain intentional surfaces; original open doorway
+  frames and console assemblies now preserve their distinct roles
+- Lighthouse 6F furniture and its central checker floor are modeled/finished, with
+  a reviewed native chamber. Additional movement and camera arrangements remain
+  in the per-map review queue
+- Gym flowerbed surfaces and small source strips beneath older statues remain
+  a material/detail review queue; quieter floors do not complete those rooms
 - Dungeon topology and bespoke set dressing beyond the nineteen-model first kit
 - Per-map native review, including eliminating the remaining source-art strips in
   interiors and assessing outdoor silhouette/readability at the gameplay camera
@@ -91,13 +102,14 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 708 voxel tests pass (two existing benchmarks ignored), including the new
-  Amphy identity, capsule/floor ownership and stable projection regressions.
+- 755 voxel tests pass (two existing benchmarks ignored), including exact source
+  guards, custom/cropped fallback, native grounding, open-door geometry, face
+  lighting and exterior player-reveal eligibility.
   The native build succeeds. Prior 22 render-API and 19 focused source-row/bridge
   tests remain applicable to unchanged attack logic; they were not all rerun
-- All 15 CI model/source validator programs pass. All 57 editable sources decode
+- All 20 CI model/source validator programs pass. All 62 editable sources decode
   in memory with verified chunk, compressed-file and expanded-file hashes, Blender
-  headers and no orphaned chunks; this does not establish that every scene was
+  headers and 552 verified chunks with no orphans; this does not establish that every scene was
   opened or visually approved in Blender
 - The complete Bevy test target type-checks and the normal browser-feature
   WebAssembly check passes. The full monolithic Bevy test suite was not rerun;
@@ -125,8 +137,9 @@ based on the production mesher rather than a map-name allowlist.
   posts. Current native 4F review verifies the player cutaway and slate; 6F review
   verifies slate around the retained central checker/furniture zone
 - Current native Cable Club and Celadon beta-room captures verify the joined
-  partitions, capsule and coherent floor strips. Live doorway art and two
-  WALL-quadrant strips per room remain
+  partitions, capsule, new consoles, PCs, sign frames, open doorway frames and
+  coherent floor strips. Door art, mobile entrances and source-negative corners
+  remain intact
 - The exact lighthouse Amphy map object/script now publishes Ampharos identity;
   other shared monster sprites retain their current model. Native 6F review
   verifies the yellow Ampharos beside Jasmine, with original footing and facing
@@ -137,7 +150,25 @@ based on the production mesher rather than a map-name allowlist.
 - Kanto shallow ledges use coherent lawn/path caps and bank sides while retaining
   identical vertices, normals and footing; deeper cliffs and edge strips remain
 
+- Eight final native Gym views cover the four rooms from both camera directions.
+  Rounded shrubs now receive fitted-normal face lighting, and three rooms have
+  quiet continuous floor materials; Viridian's native stone treatment is retained
+- Ten store views cover both store families and the closed 5F display/staff inset;
+  ten sign views cover Kanto, modern Johto, park and forest frame/backing variants
+- Native Azalea default/side/reverse views verify the player remains visible
+  through foreground building fragments while backing, props and rear buildings
+  stay opaque. The reveal reuses the existing player-only camera capsule
+
+- Six native controller routes cross the actual four Gym exits, beta Cable
+  stairs and a department-store stair. Movement traces record both source and
+  destination maps; collision and warp logic are not replaced by a preview
+
 These are representative checks, not every-map or every-species art approval.
+
+The optimized Gym kit still has a measured software-renderer cost versus the
+prior source-art baseline: Viridian 55.45→68.09 ms and Goldenrod 85.73→94.06 ms
+median frame time. This remains a priority optimization gap; see the detailed
+[comparison](johto-3d-performance.md).
 
 The software-rendered native preview is not a hardware performance benchmark.
 Recordings keep their actual timestamps; no interpolated frames or high-FPS claim

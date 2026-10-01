@@ -8,6 +8,8 @@ use super::*;
 mod extension;
 #[path = "lighthouse_masonry.rs"]
 mod lighthouse;
+#[path = "lighthouse_chamber.rs"]
+mod lighthouse_chamber;
 #[path = "special_rooms.rs"]
 mod rooms;
 use crate::dungeon_models::{Kind, model};
@@ -20,6 +22,7 @@ enum Form {
     Model(Kind),
     RocketWall { open: [bool; 4] },
     Lighthouse(lighthouse::Detail),
+    LighthouseChamber(lighthouse_chamber::Asset),
     CaveCorner(crate::cave::DiagonalCorner),
 }
 #[derive(Clone, Debug)]
@@ -47,6 +50,7 @@ impl Placement {
             Form::Model(k) => k.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
             Form::Lighthouse(detail) => detail.label(),
+            Form::LighthouseChamber(asset) => asset.label(),
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
         }
     }
@@ -366,6 +370,7 @@ pub(super) fn resolve(
         timber_walls,
     );
     lighthouse::resolve_into(&mut r);
+    lighthouse_chamber::resolve_into(&mut r);
     // Reuse live whole-drawing resolution rather than copy/export its catalog.
     // Shape-specific vocabulary below guards the semantic conversion; profile
     // names alone are never authority to reinterpret a user-edited drawing.
@@ -507,6 +512,10 @@ pub(super) fn append(
     p: &Placement,
     cells: &[&VisualTile],
 ) {
+    if let Form::LighthouseChamber(asset) = p.form {
+        lighthouse_chamber::append(mesh, g, p, asset);
+        return;
+    }
     if let Form::Lighthouse(detail) = p.form {
         lighthouse::append(mesh, g, p, detail);
         return;
@@ -550,6 +559,7 @@ pub(super) fn append(
             append_connected_wall(&mut mesh.solid, [w, e, n, s], rise, open)
         }
         Form::Lighthouse(_) => unreachable!("lighthouse placements handled above"),
+        Form::LighthouseChamber(_) => unreachable!("lighthouse chamber handled above"),
         Form::CaveCorner(corner) => append_corner(
             &mut mesh.solid,
             [w, e, n, s],

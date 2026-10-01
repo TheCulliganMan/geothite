@@ -34,6 +34,7 @@ mod forest;
 mod fuchsia_gym;
 mod gate;
 mod gate_counter_models;
+mod outdoor_sign_models;
 mod cable_club_models;
 mod goldenrod_underground;
 mod grass;

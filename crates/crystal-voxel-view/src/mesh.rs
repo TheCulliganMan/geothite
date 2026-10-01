@@ -13,8 +13,16 @@ mod background;
 mod gate_counters;
 #[path = "mesh/cable_club.rs"]
 mod cable_club;
+#[path = "mesh/outdoor_signs.rs"]
+mod outdoor_signs;
+#[path = "mesh/native_ground_bindings.rs"]
+mod native_ground_bindings;
+#[path = "mesh/department_store.rs"]
+mod department_store;
 #[path = "mesh/modeled_dungeons.rs"]
 mod modeled_dungeons;
+#[path = "mesh/gym_scenery.rs"]
+mod gym_scenery;
 #[path = "mesh/modeled_exteriors.rs"]
 mod modeled_exteriors;
 #[path = "mesh/modeled_interiors.rs"]
