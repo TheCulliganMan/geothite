@@ -25,6 +25,8 @@ fn main() -> Result<()> {
     let mut hyper_beam = false;
     let mut surf = false;
     let mut size_comparison = false;
+    let mut pidgeotto = false;
+    let mut window_size = None;
     let mut reduced_flashes = false;
     while let Some(flag) = args.next() {
         match flag.as_str() {
@@ -36,6 +38,14 @@ fn main() -> Result<()> {
             "--hyper-beam" => hyper_beam = true,
             "--surf" => surf = true,
             "--size-comparison" => size_comparison = true,
+            "--pidgeotto" => pidgeotto = true,
+            "--size" => {
+                let value = args.next().context("--size WIDTHxHEIGHT")?;
+                let (width, height) = value
+                    .split_once('x')
+                    .context("--size expects WIDTHxHEIGHT")?;
+                window_size = Some((width.parse::<u32>()?, height.parse::<u32>()?));
+            }
             "--reduced-flashes" => reduced_flashes = true,
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(args.next().context("--screenshot path")?))
@@ -50,12 +60,19 @@ fn main() -> Result<()> {
         }
     }
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam, surf, size_comparison]
-            .into_iter()
-            .filter(|active| *active)
-            .count()
+        [
+            shadow_ball,
+            psychic,
+            hyper_beam,
+            surf,
+            size_comparison,
+            pidgeotto
+        ]
+        .into_iter()
+        .filter(|active| *active)
+        .count()
             <= 1,
-        "choose only one of --shadow-ball, --psychic, --hyper-beam --surf or --size-comparison"
+        "choose only one of --shadow-ball, --psychic, --hyper-beam --surf, --size-comparison or --pidgeotto"
     );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
@@ -133,6 +150,8 @@ fn main() -> Result<()> {
             render_test_hyper_beam: hyper_beam,
             render_test_surf: surf,
             render_test_size_comparison: size_comparison,
+            render_test_pidgeotto: pidgeotto,
+            render_test_window_size: window_size,
             battle_reduced_flashes: reduced_flashes,
             render_test_hour: Some(16),
             render_test_screenshot: screenshot,

@@ -105,6 +105,8 @@ const FLOOR_Y: f32 = 0.12;
 pub(crate) struct BattleBody {
     pub min: Vec3,
     pub max: Vec3,
+    /// Full animation envelope; neutral bounds still define grounding and size.
+    pub visual_bounds: Option<(Vec3, Vec3)>,
     pub scale: Vec3,
     pub reference_height: f32,
     pub modeled: bool,
@@ -120,6 +122,7 @@ impl BattleBody {
         Self {
             min,
             max,
+            visual_bounds: None,
             scale: Vec3::splat(scale),
             reference_height,
             modeled: true,
@@ -129,17 +132,19 @@ impl BattleBody {
         Self {
             min: Vec3::new(-0.95, -0.95, -0.001),
             max: Vec3::new(0.95, 0.95, 0.001),
+            visual_bounds: None,
             scale: Vec3::new(aspect, 1.0, 1.0),
             reference_height: 1.9,
             modeled: false,
         }
     }
     pub(crate) fn corners(self, pose: Transform) -> [Vec3; 8] {
+        let (min, max) = self.visual_bounds.unwrap_or((self.min, self.max));
         std::array::from_fn(|i| {
             pose.transform_point(Vec3::new(
-                if i & 1 == 0 { self.min.x } else { self.max.x },
-                if i & 2 == 0 { self.min.y } else { self.max.y },
-                if i & 4 == 0 { self.min.z } else { self.max.z },
+                if i & 1 == 0 { min.x } else { max.x },
+                if i & 2 == 0 { min.y } else { max.y },
+                if i & 4 == 0 { min.z } else { max.z },
             ))
         })
     }

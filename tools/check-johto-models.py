@@ -3,6 +3,7 @@
 from pathlib import Path
 from model_asset_storage import read_model_json, validate_storage
 from animated_glb import load_catalog
+from pidgeotto_glb import read_pidgeotto, species_paths
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -12,10 +13,15 @@ editable = list(load_sources())
 models = ROOT / 'crates/crystal-voxel-view/models'
 model_files = sorted([*models.rglob('*.mesh.json'), *models.rglob('*.rig.json'), *models.rglob('*.glb')])
 model_counts = {}
+species_files = species_paths(models / 'battle_species')
 validate_storage(models)
 assert model_files
 for path in model_files:
     if path.suffix == '.glb':
+        if path == models / 'battle_species/pidgeotto.glb':
+            assert len(read_pidgeotto(path)['primitives']) == 34
+            model_counts[path] = 1
+            continue
         assert path == models / 'johto_characters/catalog.glb', path
         catalog = load_catalog(path.parent)
         assert len(catalog) == 75
@@ -58,7 +64,7 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
         declaration = re.search(r'species_models!\s*\{(.*?)\n\}', source.read_text(), re.S)
         assert declaration, 'missing exact battle species catalog'
         for label in re.findall(r'=>\s*"([^"\n]+)"', declaration.group(1)):
-            path = models / 'battle_species' / (label + '.mesh.json')
+            path = species_files[label]
             assert path.is_file(), (source, label)
             assert path in model_files, path
             references += 1

@@ -730,6 +730,7 @@ fn immersive_battle_move_preview_controller(
     psychic: bool,
     hyper_beam: bool,
     surf: bool,
+    pidgeotto: bool,
 ) -> VisibleShellController {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -750,15 +751,23 @@ fn immersive_battle_move_preview_controller(
         BevyShellConfig::default(),
     )
     .unwrap();
-    let shell =
-        prepare_immersive_battle_preview(shell, shadow_ball, psychic, hyper_beam, surf, false).unwrap();
+    let shell = prepare_immersive_battle_preview(
+        shell,
+        shadow_ball,
+        psychic,
+        hyper_beam,
+        surf,
+        false,
+        pidgeotto,
+    )
+    .unwrap();
     VisibleShellController { shell }
 }
 
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(true, false, false, false);
+    let mut controller = immersive_battle_move_preview_controller(true, false, false, false, false);
     let before = controller.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "GENGAR");
     assert_eq!(before.party.slots[0].pokemon.moves[0].name, "SHADOW_BALL");
@@ -784,7 +793,7 @@ fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, true, false, false);
+    let mut controller = immersive_battle_move_preview_controller(false, true, false, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "KADABRA");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -815,7 +824,7 @@ fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, true, false);
+    let mut controller = immersive_battle_move_preview_controller(false, false, true, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "RATICATE");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -913,7 +922,7 @@ fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_surf_preview_teaches_nonconsumable_hm_and_uses_normal_turn() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, false, true);
+    let mut controller = immersive_battle_move_preview_controller(false, false, false, true, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "TOTODILE");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -1178,7 +1187,8 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
                 );
                 if active {
                     let projected = crystal_voxel_view::battle_source_overlay_rect(
-                        app.world().resource::<crystal_voxel_view::BattleSceneLayout>(),
+                        app.world()
+                            .resource::<crystal_voxel_view::BattleSceneLayout>(),
                         object.center,
                         object.size,
                         viewport,
@@ -1609,11 +1619,16 @@ fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
             for frame in 0..=animation.total_frames {
                 animation.frame = frame;
                 advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
-                assert!(immersive_row_prototype_oam_supported(&playback.battler_rows));
+                assert!(immersive_row_prototype_oam_supported(
+                    &playback.battler_rows
+                ));
                 if frame == 2 {
                     let mut partial = playback.battler_rows.clone();
                     partial.iter_mut().flatten().next().unwrap().oam.rows[0][0] = false;
-                    assert!(!immersive_row_prototype_oam_supported(&partial), "partial OAM must retain classic fallback");
+                    assert!(
+                        !immersive_row_prototype_oam_supported(&partial),
+                        "partial OAM must retain classic fallback"
+                    );
                 }
                 let rows = immersive_row_prototype_rows(&animation, &playback.battler_rows);
                 assert!(rows[1 - index].is_none());
@@ -1725,4 +1740,31 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
             &battlers
         ));
     }
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn immersive_battle_pidgeotto_preview_uses_legal_moves_and_normal_controller() {
+    let mut controller = immersive_battle_move_preview_controller(false, false, false, false, true);
+    let before = controller.snapshot().unwrap();
+    assert_eq!(before.party.slots[0].pokemon.species.id, "PIDGEOTTO");
+    assert_eq!(before.party.slots[0].pokemon.level, 25);
+    let move_name = before.party.slots[0].pokemon.moves[0].name.clone();
+    let pp = before.party.slots[0].pokemon.moves[0].current_pp;
+    controller.press(GameButton::A).unwrap();
+    controller.press(GameButton::A).unwrap();
+    let after = controller.snapshot().unwrap();
+    let pp_after = after
+        .battle
+        .as_ref()
+        .map(|battle| battle.player_moves[0].current_pp)
+        .unwrap_or(after.party.slots[0].pokemon.moves[0].current_pp);
+    assert_eq!(pp_after, pp - 1);
+    assert!(
+        controller
+            .shell
+            .visible_move_animations
+            .iter()
+            .any(|animation| animation.move_id == move_name)
+    );
 }

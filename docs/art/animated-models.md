@@ -1,4 +1,4 @@
-# Animated human model catalog
+# Animated model assets
 
 `crates/crystal-voxel-view/models/johto_characters/catalog.glb` is the canonical
 human runtime asset: 75 distinct named scenes, each with the original sixteen
@@ -64,6 +64,55 @@ loader, covering normalized normals, colors, indices, binds and UVs for all 75
 looks. Optional STL previews read the GLB bind pose
 and remain ignored output; see [local static previews](model-stl.md).
 
+## Pidgeotto battle articulation
+
+`models/battle_species/pidgeotto.glb` is the single canonical Pidgeotto model.
+It retains 34 named anatomical parts and their materials, a shoulder hierarchy,
+and the standard `pidgeotto.idle_wings` clip. The 0.8-second loop has 65 quaternion
+keys per wing, exact closed endpoints, and smooth turnaround velocity. The
+source-neutral geometry matches the previous Rust-loaded model bit for bit.
+
+The battle renderer uploads three immutable groups once: body, left wing, and
+right wing. Each battler owns its wing transforms and presentation clock; an
+individual switch resets only that actor. Camera fitting and source-row
+registration use one conservative animation envelope. Neutral geometry still
+sets canonical physical size, ground contact and hit anchors. The parent actor
+retains source-program displacement and visibility, and palette flashes cover
+all three groups in both full and reduced modes. Animated actors always use
+live row rendering rather than the optional static capture cache.
+
+The authoring recipe remains `tools/build-battle-species.py`; its Pidgeotto
+export writes GLB directly through `tools/pidgeotto_glb.py`. No JSON or STL
+sidecar is required. A clean game build uses the committed GLB without Blender.
+
+```sh
+python3 tools/test_pidgeotto_glb.py
+python3 tools/check-battle-species.py
+cargo test --locked -p crystal-voxel-view pidgeotto
+# Disposable native fixture with a legal level-25 Pidgeotto and production inputs.
+cargo run --locked -p crystal-bevy --example immersive_battle_3d --features location-tester -- /path/to/external.crystalpack --pidgeotto --live
+```
+
+Native battle verification used the production controller, an 800×550 window,
+and the automatic llvmpipe software profile. The eight-second clip contains
+224 actual captured frames (about 28 fps), with median/p95 update times of
+29.38/45.57 ms. Video timestamps differ from the recorded originals by at most
+0.5 ms due to encoding precision; no frames are interpolated. At 1180×812,
+recording averaged about 12 fps, while a separate measurement without game
+screenshots had median/p95 times of 42.17/65.40 ms. These viewport-specific
+measurements do not establish a general performance gain.
+
+The complete voxel suite passes 843 tests (two existing ignored), and all 36
+source-check commands pass. A real-pack controller regression verifies legal
+move PP consumption and original animation dispatch. The full browser client
+compiles for Wasm; browser rendering remains unverified in this environment.
+Native F3 round trips restore every part, and a real Gust turn retains its
+source objects and sounds with constant mesh/material counts throughout.
+
+This is an idle wing clip, not a replacement for any original attack sequence.
+Other Pokémon retain their existing static-part or whole-body presentation
+until their individual rigs and clips are authored and verified.
+
 ## Optional articulation proof
 
 ```sh
@@ -73,7 +122,7 @@ python3 tools/animated_glb.py --repo . --out target/animated-glb --human-catalog
 This compatibility command exports separate trainer-wave and Pidgeotto-wing
 proofs plus an optional human catalog with demo waves. Proof clips are clearly
 marked as demonstrations and are not production locomotion or original attack
-choreography. Pidgeotto's existing canonical JSON is unchanged by this command.
+choreography. The separate proof does not replace Pidgeotto's production idle clip.
 Proof outputs belong in ignored directories and are not additional tracked
 geometry. The exporter does not migrate any other Pokémon.
 

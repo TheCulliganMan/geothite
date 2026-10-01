@@ -1494,7 +1494,14 @@ def export(name,objects):
    for i in range(0,len(p['indices']),3):
     t=tuple(remap[j] for j in p['indices'][i:i+3]);tri.append(min(t,t[1:]+t[:1],t[2:]+t[:2]))
    p['positions']=[v for row in unique for v in row[:3]];p['normals']=[v for row in unique for v in row[3:]];p['indices']=[i for t in sorted(tri) for i in t]
- data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':prims};(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
+ data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':prims}
+ if name=='pidgeotto':
+  # Keep the production rigid hierarchy and idle clip as the one runtime asset.
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from pidgeotto_glb import export_pidgeotto
+  if (OUT/'pidgeotto.mesh.json').exists():raise ValueError('remove the reviewed obsolete Pidgeotto JSON before exporting its canonical GLB')
+  (OUT/'pidgeotto.glb').write_bytes(export_pidgeotto(data))
+ else:(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {len(prims)} named parts, {sum(len(p["indices"])//3 for p in prims)} triangles',flush=True)
 def reset():
  for o in list(bpy.data.objects):bpy.data.objects.remove(o,do_unlink=True)

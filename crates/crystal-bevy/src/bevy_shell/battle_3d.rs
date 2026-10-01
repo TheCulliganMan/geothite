@@ -901,12 +901,20 @@ fn prepare_immersive_battle_preview(
     hyper_beam: bool,
     surf: bool,
     size_comparison: bool,
+    pidgeotto: bool,
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
-        [shadow_ball, psychic, hyper_beam, surf, size_comparison]
-            .into_iter()
-            .filter(|active| *active)
-            .count()
+        [
+            shadow_ball,
+            psychic,
+            hyper_beam,
+            surf,
+            size_comparison,
+            pidgeotto
+        ]
+        .into_iter()
+        .filter(|active| *active)
+        .count()
             <= 1,
         "battle preview move fixtures are mutually exclusive"
     );
@@ -935,7 +943,17 @@ fn prepare_immersive_battle_preview(
     } else {
         None
     };
-    if size_comparison {
+    if pidgeotto {
+        shell.shell.add_party_pokemon(
+            "PIDGEOTTO",
+            25,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+    } else if size_comparison {
         shell.shell.add_party_pokemon(
             "DIGLETT",
             40,

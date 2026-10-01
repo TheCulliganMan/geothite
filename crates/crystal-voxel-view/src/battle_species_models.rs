@@ -80,18 +80,37 @@ fn parse_model<'a>(
     Ok(mesh)
 }
 
+// Retain one explicit identity catalogue while routing articulated species to
+// their canonical GLB. The rig also exposes an exact neutral surface to callers
+// that only need immutable bounds or an overworld prop.
+macro_rules! species_mesh {
+    ("pidgeotto") => {
+        Some(crate::pidgeotto_rig::rig().neutral.clone())
+    };
+    ($file:literal) => {{
+        static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
+        Some(
+            MODEL
+                .get_or_init(|| {
+                    parse_model(crate::model_storage::include_model!(concat!(
+                        "models/battle_species/",
+                        $file,
+                        ".mesh.json"
+                    )))
+                    .expect(concat!("valid original species: ", $file))
+                })
+                .clone(),
+        )
+    }};
+}
 macro_rules! species_models {
-    ($( $id:literal => $file:literal ),+ $(,)?) => {
+    ($( $id:literal => $file:tt ),+ $(,)?) => {
         pub(crate) fn supported_species() -> impl Iterator<Item = &'static str> {
             [$( $id ),+].into_iter()
         }
         pub(crate) fn mesh(species: &str) -> Option<SurfaceMeshData> {
             match species.to_ascii_uppercase().as_str() { $(
-                $id => {
-                    static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-                    Some(MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/battle_species/", $file, ".mesh.json")))
-                        .expect(concat!("valid original species: ", $id))).clone())
-                },
+                $id => species_mesh!($file),
             )+ _ => None }
         }
     };
@@ -348,10 +367,11 @@ mod tests {
             });
             assert!(lo[1].abs() < 0.0001, "{species}");
             assert!((0..3).all(|a| hi[a] - lo[a] > 0.005), "{species}");
-            assert!(m
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length_squared() - 1.0).abs() < 0.0001));
+            assert!(
+                m.normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length_squared() - 1.0).abs() < 0.0001)
+            );
         }
     }
 

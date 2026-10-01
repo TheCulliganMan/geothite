@@ -1,6 +1,6 @@
 # Johto source and model index
 
-Original editable Blender scenes, the animated human GLB catalog, and raw JSON static models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.
+Original editable Blender scenes, animated GLB characters, and raw JSON static models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.
 
 Only PNG files that exist are displayed below. A missing preview does not imply that a scene has been visually reviewed.
 
@@ -73,12 +73,12 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 
 ## Runtime models
 
-Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
+Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
 
 | Catalog | Files | Stored bytes | Decoded JSON bytes |
 | --- | ---: | ---: | ---: |
 | [actor_props](../../crates/crystal-voxel-view/models/actor_props) | 73 | 10,070,221 | 10,070,221 |
-| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,691,601 | 24,691,601 |
+| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,686,391 | 24,604,891 |
 | [cable_club](../../crates/crystal-voxel-view/models/cable_club) | 4 | 456,230 | 456,230 |
 | [department_store](../../crates/crystal-voxel-view/models/department_store) | 8 | 535,550 | 535,550 |
 | [dungeon_extensions](../../crates/crystal-voxel-view/models/dungeon_extensions) | 11 | 718,847 | 718,847 |

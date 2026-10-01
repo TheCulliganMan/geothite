@@ -3,8 +3,8 @@
 
 Rigid anatomy is animated with glTF node rotations. No pretend skin, baked
 root motion, vertex welding, decimation, normal repair or geometry recentering.
-The human catalog is canonical. JSON rigs are transient authoring inputs;
-optional Pokémon articulation proofs belong in ignored build output.
+The human catalog and production Pidgeotto wing rig are canonical. JSON rigs
+are transient authoring inputs; articulation demos remain optional exports.
 """
 import argparse
 import hashlib
@@ -278,16 +278,37 @@ def pidgeotto_groups(model):
     return groups, pivots
 
 
-def export_pidgeotto(model):
+def pidgeotto_idle_samples():
+    """A smooth 0.8-second cycle; duplicate seam keys are exact identities."""
+    times = [.8 * i / 64 for i in range(65)]
+    tracks = []
+    for sign in (1, -1):
+        values = []
+        for i, time in enumerate(times):
+            if i in (0, 64):
+                values.extend([0, 0, 0, 1])
+            else:
+                angle = sign * .42 * math.sin(2 * math.pi * time / .8)
+                values.extend([0, 0, math.sin(angle / 2), math.cos(angle / 2)])
+        tracks.append(values)
+    return times, tracks
+
+
+def export_pidgeotto(model, animation='demo'):
+    if animation not in ('demo', 'idle'):
+        raise ValueError('unsupported Pidgeotto animation')
     groups, pivots = pidgeotto_groups(model)
     glb = Glb()
     root = glb.node({'name': 'pidgeotto', 'extras': {'coordinateSystem': COORDINATES,
         'sourceSchemaVersion': 1, 'sourceMeshSha256': sha(canonical(model))}})
+    if animation == 'idle':
+        glb.doc['nodes'][root]['extras']['rigSchemaVersion'] = 1
     wing_parents, hinges = {}, {}
     for side in ('l', 'r'):
         pivot = pivots[side]
         hinge = glb.node({'name': f'wing_{side}_hinge', 'translation': pivot,
-            'extras': {'authoredForProof': True, 'pivotBasis': 'nearest-centerline source layered-wing vertex',
+            'extras': {('authoredForRuntime' if animation == 'idle' else 'authoredForProof'): True,
+                       'pivotBasis': 'nearest-centerline source layered-wing vertex',
                        'sourcePrimitiveIndices': groups[side]}}, root)
         hinges[side] = hinge
         # Cancellation node keeps every stored POSITION f32 bit untouched and
@@ -299,10 +320,17 @@ def export_pidgeotto(model):
         glb.node({'name': primitive['part'], 'mesh': glb.mesh(primitive['part'], [primitive]),
                   'extras': {'sourcePrimitive': index}}, wing_parents[side] if side else root)
     glb.doc['scenes'] = [{'name': 'pidgeotto', 'nodes': [root]}]
-    angles = [0, .42, 0, -.42, 0]
-    glb.clip('pidgeotto.wing_flap_demo', [0, .2, .4, .6, .8], [
-        (hinges['l'], [0, 0, 1], angles),
-        (hinges['r'], [0, 0, 1], [-v for v in angles])])
+    if animation == 'idle':
+        times, tracks = pidgeotto_idle_samples()
+        glb.sampled_clip('pidgeotto.idle_wings', times,
+                         [(hinges[side], 'rotation', values) for side, values in zip(('l', 'r'), tracks)],
+                         {'purpose': 'production idle wing articulation',
+                          'loopSuggested': True, 'durationSeconds': .8})
+    else:
+        angles = [0, .42, 0, -.42, 0]
+        glb.clip('pidgeotto.wing_flap_demo', [0, .2, .4, .6, .8], [
+            (hinges['l'], [0, 0, 1], angles),
+            (hinges['r'], [0, 0, 1], [-v for v in angles])])
     return glb.bytes()
 
 
@@ -525,8 +553,9 @@ def main():
             library = read_json(directory / 'shared.geometry.json')
             rigs = [read_json(p) for p in sorted(directory.glob('*.rig.json'))]
         trainer = next(rig for rig in rigs if rig['name'] == 'trainer')
+        from pidgeotto_glb import load_pidgeotto
         output = {args.out / 'trainer.glb': export_humans([trainer], library),
-                  args.out / 'pidgeotto.glb': export_pidgeotto(read_json(models / 'battle_species/pidgeotto.mesh.json'))}
+                  args.out / 'pidgeotto.glb': export_pidgeotto(load_pidgeotto(models / 'battle_species'))}
         if args.human_catalog:
             output[args.out / 'johto_characters.glb'] = export_humans(rigs, library)
     else:

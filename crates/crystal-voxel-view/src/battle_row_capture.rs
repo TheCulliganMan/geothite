@@ -293,6 +293,9 @@ fn sync_actor_captures(
             // Temporal/extra postprocessing or external light configurations
             // retain continuous rendering until separately proved cacheable.
             if !actor.key.modeled
+                // The exact-static-image cache is deliberately single-mesh.
+                // Articulated anatomy remains live through all source rows.
+                || actor.animated.is_some()
                 || !frame.battlers[index]
                     .as_ref()
                     .is_some_and(|actor| actor.visible && actor.allow_species_model && !actor.shiny)
@@ -633,6 +636,57 @@ mod tests {
             request.ticket.mark_drawn();
             request.ticket.mark_output();
             request.ticket.mark_submitted();
+        }
+    }
+
+    #[test]
+    fn pidgeotto_rows_remain_live_and_wing_motion_never_modifies_mesh_assets() {
+        let mut app = capture_app();
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1.0 / 30.0),
+        ));
+        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
+            .as_mut()
+            .unwrap()
+            .species_id = Arc::from("PIDGEOTTO");
+        app.update();
+        let (entities, meshes) = {
+            let actor = app.world().resource::<BattleScene>().actors[0]
+                .as_ref()
+                .unwrap();
+            let wings = &actor.animated.as_ref().unwrap().wings;
+            (
+                [actor.entity, wings[0].entity, wings[1].entity],
+                [
+                    actor.mesh.as_ref().unwrap().id(),
+                    wings[0].mesh.id(),
+                    wings[1].mesh.id(),
+                ],
+            )
+        };
+        let mut reader = bevy::ecs::event::ManualEventReader::<AssetEvent<Mesh>>::default();
+        reader.clear(app.world().resource::<Events<AssetEvent<Mesh>>>());
+        for _ in 0..12 {
+            app.update();
+            let world = app.world_mut();
+            assert!(
+                world
+                    .query::<&ActorCaptureRequest>()
+                    .iter(world)
+                    .all(|request| request.actor != entities[0])
+            );
+            for entity in entities {
+                assert_eq!(
+                    *world.get::<RenderLayers>(entity).unwrap(),
+                    RenderLayers::layer(BATTLE_ROW_LAYERS[0])
+                );
+            }
+            assert!(
+                reader
+                    .read(world.resource::<Events<AssetEvent<Mesh>>>())
+                    .all(|event| !meshes.contains(&changed_asset(event)))
+            );
+            assert!(active(&mut app)[0]);
         }
     }
 

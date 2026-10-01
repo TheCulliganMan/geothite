@@ -133,7 +133,8 @@ class AnimatedGlbProof(unittest.TestCase):
         cls.catalog = e.load_catalog(models / 'johto_characters')
         cls.library, cls.rigs = compact_models({name + '.rig.json': rig for name, rig in cls.catalog.items()})
         cls.rig = cls.rigs['trainer.rig.json']
-        cls.pokemon = e.read_json(models / 'battle_species/pidgeotto.mesh.json')
+        from pidgeotto_glb import load_pidgeotto
+        cls.pokemon = load_pidgeotto(models / 'battle_species')
         cls.human_blob = e.export_humans([cls.rig], cls.library)
         cls.pokemon_blob = e.export_pidgeotto(cls.pokemon)
 

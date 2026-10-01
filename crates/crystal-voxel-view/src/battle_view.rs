@@ -345,6 +345,7 @@ struct BattleModeledSourceEffect(usize);
 #[derive(Clone, PartialEq)]
 struct ActorKey {
     species: Arc<str>,
+    party_index: Option<usize>,
     modeled: bool,
 }
 struct ActorInstance {
@@ -359,7 +360,91 @@ struct ActorInstance {
     source_rect: Rect,
     source_opaque_rect: Rect,
     projected_registration: Option<(Vec2, Transform, Rect)>,
+    animated: Option<AnimatedActor>,
 }
+
+struct AnimatedPart {
+    entity: Entity,
+    mesh: Handle<Mesh>,
+    neutral_colors: Option<Vec<[f32; 4]>>,
+}
+
+struct AnimatedActor {
+    rig: &'static crate::pidgeotto_rig::PidgeottoRig,
+    wings: [AnimatedPart; 2],
+    elapsed: f32,
+}
+
+impl ActorInstance {
+    fn retire(
+        self,
+        commands: &mut Commands,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
+    ) {
+        commands.entity(self.entity).despawn_recursive();
+        materials.remove(self.material.id());
+        if let Some(mesh) = self.mesh {
+            meshes.remove(mesh.id());
+        }
+        if let Some(animated) = self.animated {
+            for part in animated.wings {
+                meshes.remove(part.mesh.id());
+            }
+        }
+    }
+}
+
+fn animated_species(species: &str) -> Option<&'static crate::pidgeotto_rig::PidgeottoRig> {
+    species
+        .eq_ignore_ascii_case("PIDGEOTTO")
+        .then(crate::pidgeotto_rig::rig)
+}
+
+fn actor_mesh(
+    data: &SurfaceMeshData,
+    rotation: Quat,
+    vertex_lighting: bool,
+    meshes: &mut Assets<Mesh>,
+) -> (Handle<Mesh>, Option<Vec<[f32; 4]>>) {
+    let neutral = vertex_lighting.then(|| vertex_lit_colors(data, rotation));
+    let mut mesh = data.clone().into_mesh();
+    if let Some(colors) = &neutral {
+        mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors.clone());
+    }
+    mesh.asset_usage = RenderAssetUsages::MAIN_WORLD | RenderAssetUsages::RENDER_WORLD;
+    (meshes.add(mesh), neutral)
+}
+
+fn apply_actor_palette(
+    mesh: &mut Mesh,
+    data: &SurfaceMeshData,
+    neutral: Option<&[[f32; 4]]>,
+    source: Option<&VisualBattleSourceFrame>,
+    side: usize,
+    bgp: u8,
+    flash_mode: BattleFlashMode,
+) {
+    let colors = data
+        .colors
+        .iter()
+        .enumerate()
+        .map(|(index, color)| {
+            let neutral = neutral.map_or(*color, |colors| colors[index]);
+            source.map_or(neutral, |source| {
+                let mapped = source_model_color(
+                    *color,
+                    bgp,
+                    &source.battler_palettes[side],
+                    BattleFlashMode::Full,
+                );
+                source_lit_color(neutral, mapped, bgp, flash_mode)
+            })
+        })
+        .collect::<Vec<_>>();
+    mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors);
+}
+
 /// Species geometry is immutable. Scan it once when loading that species,
 /// then reuse these bounds for every source-frontpic footprint and display frame.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -498,12 +583,14 @@ fn sync_battle_layout(
                     bounds.min,
                     bounds.max,
                 ) {
-                    return Some(BattleBody::modeled(
-                        &battler.species_id,
-                        bounds.min,
-                        bounds.max,
-                        scale,
-                    ));
+                    let mut body =
+                        BattleBody::modeled(&battler.species_id, bounds.min, bounds.max, scale);
+                    if let Some(rig) = animated_species(&battler.species_id) {
+                        // Fit every wing pose once without changing the neutral
+                        // height used for canonical size, feet or hit anchors.
+                        body.visual_bounds = Some(rig.animated_bounds);
+                    }
+                    return Some(body);
                 }
             }
         }
@@ -922,7 +1009,7 @@ fn sync_battle_target(
                 || (captures.prewarm_actor(&frame, index)
                     && scene.actors[index]
                         .as_ref()
-                        .is_some_and(|actor| actor.key.modeled)));
+                        .is_some_and(|actor| actor.key.modeled && actor.animated.is_none())));
         camera.is_active = row_active;
         if row_active && scene.row_sizes[index] != status.render_size {
             let target = scene.row_targets[index].clone();
@@ -1328,11 +1415,7 @@ fn sync_battle_scene(
         let index = side.index();
         let Some(battler) = frame.battlers[index].as_ref() else {
             if let Some(instance) = scene.actors[index].take() {
-                commands.entity(instance.entity).despawn_recursive();
-                materials.remove(instance.material.id());
-                if let Some(mesh) = instance.mesh {
-                    meshes.remove(mesh.id());
-                }
+                instance.retire(&mut commands, &mut meshes, &mut materials);
             }
             continue;
         };
@@ -1366,6 +1449,12 @@ fn sync_battle_scene(
             None
         };
         let modeled = modeled_data.is_some();
+        let rig = modeled
+            .then(|| animated_species(&battler.species_id))
+            .flatten();
+        let root_data = rig
+            .map(|rig| &rig.groups[0].mesh)
+            .or(modeled_data.as_deref());
         let modeled_bounds = modeled_data
             .as_ref()
             .and_then(|_| scene.species_bounds.get(&battler.species_id))
@@ -1379,6 +1468,7 @@ fn sync_battle_scene(
             .unwrap_or(&battler.texture);
         let key = ActorKey {
             species: battler.species_id.clone(),
+            party_index: battler.party_index,
             modeled,
         };
         if modeled {
@@ -1393,11 +1483,7 @@ fn sync_battle_scene(
             .is_none_or(|instance| instance.key != key)
         {
             if let Some(instance) = scene.actors[index].take() {
-                commands.entity(instance.entity).despawn_recursive();
-                materials.remove(instance.material.id());
-                if let Some(mesh) = instance.mesh {
-                    meshes.remove(mesh.id());
-                }
+                instance.retire(&mut commands, &mut meshes, &mut materials);
             }
             let material = materials.add(if modeled {
                 StandardMaterial {
@@ -1422,18 +1508,10 @@ fn sync_battle_scene(
             if let Some(source) = &frame.source {
                 transform.translation += layout.source_displacement(source.battler_offsets[index]);
             }
-            let neutral_colors = modeled_data
-                .as_ref()
-                .filter(|_| scene.vertex_lighting)
-                .map(|data| vertex_lit_colors(data, transform.rotation));
-            let mesh = modeled_data.as_ref().map(|data| {
-                let mut mesh = data.as_ref().clone().into_mesh();
-                if let Some(colors) = &neutral_colors {
-                    mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors.clone());
-                }
-                mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::MAIN_WORLD
-                    | bevy::render::render_asset::RenderAssetUsages::RENDER_WORLD;
-                meshes.add(mesh)
+            let (mesh, neutral_colors) = root_data.map_or((None, None), |data| {
+                let (mesh, colors) =
+                    actor_mesh(data, transform.rotation, scene.vertex_lighting, &mut meshes);
+                (Some(mesh), colors)
             });
             let entity = commands
                 .spawn((
@@ -1451,11 +1529,44 @@ fn sync_battle_scene(
                     battle_actor_layers(
                         &frame,
                         index,
-                        captures.prewarm_actor(&frame, index) && modeled,
+                        captures.prewarm_actor(&frame, index) && modeled && rig.is_none(),
                     ),
                     BattleActor,
                 ))
                 .id();
+            let animated = rig.map(|rig| {
+                let wings = std::array::from_fn(|wing| {
+                    let (mesh, neutral_colors) = actor_mesh(
+                        &rig.groups[wing + 1].mesh,
+                        transform.rotation,
+                        scene.vertex_lighting,
+                        &mut meshes,
+                    );
+                    let child = commands
+                        .spawn((
+                            PbrBundle {
+                                mesh: mesh.clone(),
+                                material: material.clone(),
+                                visibility: Visibility::Inherited,
+                                ..default()
+                            },
+                            battle_actor_layers(&frame, index, false),
+                            BattleActor,
+                        ))
+                        .id();
+                    commands.entity(entity).add_child(child);
+                    AnimatedPart {
+                        entity: child,
+                        mesh,
+                        neutral_colors,
+                    }
+                });
+                AnimatedActor {
+                    rig,
+                    wings,
+                    elapsed: 0.0,
+                }
+            });
             scene.actors[index] = Some(ActorInstance {
                 entity,
                 key,
@@ -1468,6 +1579,7 @@ fn sync_battle_scene(
                 source_rect: battler.source_rect,
                 source_opaque_rect: battler.source_opaque_rect,
                 projected_registration: None,
+                animated,
             });
         }
         let vertex_lighting = scene.vertex_lighting;
@@ -1501,29 +1613,32 @@ fn sync_battle_scene(
             if instance.palette_key != (bgp, *flash_mode)
                 || instance.palette_colors != palette_colors
             {
-                if let (Some(data), Some(mesh)) = (modeled_data.as_ref(), instance.mesh.as_ref()) {
-                    if let Some(mesh) = meshes.get_mut(mesh) {
-                        let colors = data
-                            .colors
-                            .iter()
-                            .enumerate()
-                            .map(|(index, color)| {
-                                let neutral = instance
-                                    .neutral_colors
-                                    .as_ref()
-                                    .map_or(*color, |colors| colors[index]);
-                                frame.source.as_ref().map_or(neutral, |source| {
-                                    let mapped = source_model_color(
-                                        *color,
-                                        bgp,
-                                        &source.battler_palettes[battler.side.index()],
-                                        BattleFlashMode::Full,
-                                    );
-                                    source_lit_color(neutral, mapped, bgp, *flash_mode)
-                                })
-                            })
-                            .collect::<Vec<_>>();
-                        mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors);
+                if let (Some(data), Some(handle)) = (root_data, instance.mesh.as_ref()) {
+                    if let Some(mesh) = meshes.get_mut(handle) {
+                        apply_actor_palette(
+                            mesh,
+                            data,
+                            instance.neutral_colors.as_deref(),
+                            frame.source.as_ref(),
+                            index,
+                            bgp,
+                            *flash_mode,
+                        );
+                    }
+                }
+                if let Some(animated) = &instance.animated {
+                    for (wing, part) in animated.wings.iter().enumerate() {
+                        if let Some(mesh) = meshes.get_mut(&part.mesh) {
+                            apply_actor_palette(
+                                mesh,
+                                &animated.rig.groups[wing + 1].mesh,
+                                part.neutral_colors.as_deref(),
+                                frame.source.as_ref(),
+                                index,
+                                bgp,
+                                *flash_mode,
+                            );
+                        }
                     }
                 }
                 instance.palette_key = (bgp, *flash_mode);
@@ -1551,7 +1666,7 @@ fn sync_battle_scene(
                 layers.set_if_neq(battle_actor_layers(
                     &frame,
                     index,
-                    captures.prewarm_actor(&frame, index) && modeled,
+                    captures.prewarm_actor(&frame, index) && modeled && instance.animated.is_none(),
                 ));
                 let mut pose = instance.base_pose;
                 if let Some(source) = &frame.source {
@@ -1563,6 +1678,33 @@ fn sync_battle_scene(
                 } else {
                     Visibility::Hidden
                 });
+            }
+            if actors.contains(instance.entity) {
+                if let Some(animated) = &mut instance.animated {
+                    // Idle presentation owns its instance clock. It never
+                    // reads/writes the authoritative move timeline or root.
+                    if battler.visible {
+                        animated.elapsed = (animated.elapsed + time.delta_seconds())
+                            .rem_euclid(animated.rig.duration);
+                    }
+                    let poses = animated
+                        .rig
+                        .sample(animated.elapsed)
+                        .expect("finite battle presentation clock");
+                    for (wing, part) in animated.wings.iter().enumerate() {
+                        if let Ok((mut transform, mut visibility, mut layers)) =
+                            actors.get_mut(part.entity)
+                        {
+                            transform.set_if_neq(poses[wing + 1]);
+                            visibility.set_if_neq(if battler.visible {
+                                Visibility::Inherited
+                            } else {
+                                Visibility::Hidden
+                            });
+                            layers.set_if_neq(battle_actor_layers(&frame, index, false));
+                        }
+                    }
+                }
             }
         }
     }
@@ -1647,9 +1789,25 @@ fn register_battle_row_actors(
                 [-FALLBACK_CARD_HEIGHT * 0.5, FALLBACK_CARD_HEIGHT * 0.5, 0.0],
                 [FALLBACK_CARD_HEIGHT * 0.5, FALLBACK_CARD_HEIGHT * 0.5, 0.0],
             ];
-            let points = data
-                .as_ref()
-                .map_or(fallback.as_slice(), |data| data.positions.as_slice());
+            // A single fixed envelope covers every wing pose. Row capture
+            // remains live; only the source-to-view registration is cached.
+            let animated_corners = actor.animated.as_ref().map(|animated| {
+                let (min, max) = animated.rig.animated_bounds;
+                std::array::from_fn::<_, 8, _>(|i| {
+                    [
+                        if i & 1 == 0 { min.x } else { max.x },
+                        if i & 2 == 0 { min.y } else { max.y },
+                        if i & 4 == 0 { min.z } else { max.z },
+                    ]
+                })
+            });
+            let points = animated_corners.as_ref().map_or_else(
+                || {
+                    data.as_ref()
+                        .map_or(fallback.as_slice(), |data| data.positions.as_slice())
+                },
+                |corners| corners.as_slice(),
+            );
             let bounds = projected_actor_footprint(&layout, points, actor.base_pose, viewport);
             actor.projected_registration = Some((viewport, layout.camera, bounds));
             bounds
@@ -2423,6 +2581,278 @@ fn capture_ball_mesh() -> SurfaceMeshData {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn pidgeotto_app(hz: u32) -> App {
+        let mut app = headless_battle_app();
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1.0 / f64::from(hz)),
+        ));
+        let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+        for battler in frame.battlers.iter_mut().flatten() {
+            battler.species_id = Arc::from("PIDGEOTTO");
+            battler.pokedex_size_m = Some(1.0922);
+        }
+        frame.source = Some(source_test_frame(0xe4));
+        app
+    }
+
+    fn actor_parts(app: &App, side: usize) -> [(Entity, Handle<Mesh>); 3] {
+        let actor = app.world().resource::<BattleScene>().actors[side]
+            .as_ref()
+            .unwrap();
+        let wings = &actor.animated.as_ref().unwrap().wings;
+        [
+            (actor.entity, actor.mesh.clone().unwrap()),
+            (wings[0].entity, wings[0].mesh.clone()),
+            (wings[1].entity, wings[1].mesh.clone()),
+        ]
+    }
+
+    #[test]
+    fn pidgeotto_battle_clips_use_elapsed_time_without_changing_source_or_meshes() {
+        let mut final_poses = Vec::new();
+        for hz in [60, 30, 9] {
+            let mut app = pidgeotto_app(hz);
+            app.update();
+            let source = app.world().resource::<VisualBattleFrame>().clone();
+            let layout = app.world().resource::<BattleSceneLayout>().clone();
+            let parts = actor_parts(&app, 0);
+            let root = *app.world().get::<Transform>(parts[0].0).unwrap();
+            let counts = (
+                app.world().entities().len(),
+                app.world().resource::<Assets<Mesh>>().len(),
+            );
+            let positions = parts.each_ref().map(|(_, handle)| {
+                app.world()
+                    .resource::<Assets<Mesh>>()
+                    .get(handle)
+                    .unwrap()
+                    .attribute(Mesh::ATTRIBUTE_POSITION)
+                    .unwrap()
+                    .get_bytes()
+                    .to_vec()
+            });
+            for _ in 0..hz {
+                app.update();
+            }
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), source);
+            assert_eq!(*app.world().resource::<BattleSceneLayout>(), layout);
+            assert_eq!(*app.world().get::<Transform>(parts[0].0).unwrap(), root);
+            assert_eq!(actor_parts(&app, 0), parts);
+            assert_eq!(
+                (
+                    app.world().entities().len(),
+                    app.world().resource::<Assets<Mesh>>().len()
+                ),
+                counts
+            );
+            for (i, (_, handle)) in parts.iter().enumerate() {
+                assert_eq!(
+                    app.world()
+                        .resource::<Assets<Mesh>>()
+                        .get(handle)
+                        .unwrap()
+                        .attribute(Mesh::ATTRIBUTE_POSITION)
+                        .unwrap()
+                        .get_bytes(),
+                    positions[i]
+                );
+            }
+            let pose = *app.world().get::<Transform>(parts[1].0).unwrap();
+            assert_ne!(pose.rotation, Quat::IDENTITY);
+            final_poses.push(pose);
+        }
+        for pose in final_poses.iter().skip(1) {
+            assert!(pose.rotation.abs_diff_eq(final_poses[0].rotation, 0.00001));
+            assert!(
+                pose.translation
+                    .abs_diff_eq(final_poses[0].translation, 0.00001)
+            );
+        }
+    }
+
+    #[test]
+    fn pidgeotto_switch_and_visibility_keep_independent_clocks_and_retire_all_parts() {
+        let mut app = pidgeotto_app(30);
+        app.update();
+        for _ in 0..7 {
+            app.update();
+        }
+        let old = actor_parts(&app, 0);
+        let other = actor_parts(&app, 1);
+        let old_material = app.world().resource::<BattleScene>().actors[0]
+            .as_ref()
+            .unwrap()
+            .material
+            .clone();
+        let other_time = app.world().resource::<BattleScene>().actors[1]
+            .as_ref()
+            .unwrap()
+            .animated
+            .as_ref()
+            .unwrap()
+            .elapsed;
+        // A different individual of the same species starts a fresh clip.
+        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
+            .as_mut()
+            .unwrap()
+            .party_index = Some(3);
+        app.update();
+        for (entity, handle) in old {
+            assert!(app.world().get_entity(entity).is_none());
+            assert!(!app.world().resource::<Assets<Mesh>>().contains(handle.id()));
+        }
+        assert!(
+            !app.world()
+                .resource::<Assets<StandardMaterial>>()
+                .contains(old_material.id())
+        );
+        assert_eq!(actor_parts(&app, 1), other);
+        let scene = app.world().resource::<BattleScene>();
+        assert_eq!(
+            scene.actors[0]
+                .as_ref()
+                .unwrap()
+                .animated
+                .as_ref()
+                .unwrap()
+                .elapsed,
+            0.0
+        );
+        assert!(
+            scene.actors[1]
+                .as_ref()
+                .unwrap()
+                .animated
+                .as_ref()
+                .unwrap()
+                .elapsed
+                > other_time
+        );
+        let parts = actor_parts(&app, 0);
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = false;
+        app.update();
+        for (entity, _) in &parts {
+            assert_eq!(
+                *app.world().get::<Visibility>(*entity).unwrap(),
+                Visibility::Hidden
+            );
+        }
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        app.update();
+        assert_eq!(
+            *app.world().get::<Visibility>(parts[0].0).unwrap(),
+            Visibility::Visible
+        );
+        for (entity, _) in &parts[1..] {
+            assert_eq!(
+                *app.world().get::<Visibility>(*entity).unwrap(),
+                Visibility::Inherited
+            );
+        }
+        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0] = None;
+        app.update();
+        for (entity, handle) in parts {
+            assert!(app.world().get_entity(entity).is_none());
+            assert!(!app.world().resource::<Assets<Mesh>>().contains(handle.id()));
+        }
+    }
+
+    #[test]
+    fn pidgeotto_source_palette_covers_every_part_without_touching_opponent() {
+        let mut app = pidgeotto_app(30);
+        app.update();
+        let all = [actor_parts(&app, 0), actor_parts(&app, 1)];
+        let colors = |app: &App, side: usize| {
+            all[side].each_ref().map(|(_, handle)| {
+                app.world()
+                    .resource::<Assets<Mesh>>()
+                    .get(handle)
+                    .unwrap()
+                    .attribute(Mesh::ATTRIBUTE_COLOR)
+                    .unwrap()
+                    .get_bytes()
+                    .to_vec()
+            })
+        };
+        let neutral = [colors(&app, 0), colors(&app, 1)];
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .source
+            .as_mut()
+            .unwrap()
+            .battler_bgps[0] = 0x1b;
+        let source = app.world().resource::<VisualBattleFrame>().clone();
+        app.update();
+        let full = colors(&app, 0);
+        for i in 0..3 {
+            assert_ne!(full[i], neutral[0][i]);
+        }
+        assert_eq!(colors(&app, 1), neutral[1]);
+        app.world_mut().insert_resource(BattleFlashMode::Reduced);
+        app.update();
+        for i in 0..3 {
+            assert_ne!(colors(&app, 0)[i], full[i]);
+        }
+        assert_eq!(*app.world().resource::<VisualBattleFrame>(), source);
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .source
+            .as_mut()
+            .unwrap()
+            .battler_bgps[0] = 0xe4;
+        app.update();
+        assert_eq!(colors(&app, 0), neutral[0]);
+    }
+
+    #[test]
+    fn pidgeotto_animated_envelope_preserves_neutral_size_ground_and_hit_anchor() {
+        let rig = crate::pidgeotto_rig::rig();
+        let bounds = BattleModelBounds::from_surface(&rig.neutral);
+        let scale =
+            crate::battle_layout::model_scale("PIDGEOTTO", Some(1.0922), bounds.min, bounds.max)
+                .unwrap();
+        let neutral = BattleBody::modeled("PIDGEOTTO", bounds.min, bounds.max, scale);
+        let mut animated = neutral;
+        animated.visual_bounds = Some(rig.animated_bounds);
+        for viewport in [Vec2::new(1180.0, 812.0), Vec2::new(600.0, 1000.0)] {
+            let before = BattleSceneLayout::for_bodies([Some(neutral), None], viewport);
+            let after = BattleSceneLayout::for_bodies([Some(animated), None], viewport);
+            let pose = after.body_poses[0].unwrap();
+            assert_eq!(pose.scale, before.body_poses[0].unwrap().scale);
+            assert_eq!(
+                pose.translation.y,
+                before.body_poses[0].unwrap().translation.y
+            );
+            assert_eq!(after.hit_anchors[0].y, before.hit_anchors[0].y);
+            let corners = animated
+                .corners(Transform::IDENTITY)
+                .map(|point| point.to_array());
+            let registration = projected_actor_footprint(&after, &corners, pose, viewport);
+            for frame in 0..65 {
+                let local = rig.sample(frame as f32 * rig.duration / 64.0).unwrap();
+                for (group, local) in rig.groups.iter().zip(local) {
+                    for vertex in &group.mesh.positions {
+                        let point = local.transform_point(Vec3::from_array(*vertex)).to_array();
+                        let projected = projected_actor_footprint(&after, &[point], pose, viewport);
+                        assert!(
+                            registration
+                                .min
+                                .cmple(projected.min + Vec2::splat(0.00001))
+                                .all()
+                        );
+                        assert!(
+                            registration
+                                .max
+                                .cmpge(projected.max - Vec2::splat(0.00001))
+                                .all()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
     #[test]
     fn battle_profile_defaults_only_reduce_known_software_renderers() {
         assert_eq!(

@@ -14,7 +14,7 @@ def build(root=ROOT):
     art=root/'art/johto';source=art/'source'
     entries=dict(load_sources(source))
     lines=['# Johto source and model index','',
-           'Original editable Blender scenes, the animated human GLB catalog, and raw JSON static models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.','',
+           'Original editable Blender scenes, animated GLB characters, and raw JSON static models are ordinary files in this repository. No reconstruction is needed to open a `.blend` file in Blender. Source previews are authoring views, not gameplay screenshots.','',
            'Only PNG files that exist are displayed below. A missing preview does not imply that a scene has been visually reviewed.','',
            '## Editable scenes','',
            '| Source | Native bytes | Authoring preview |','| --- | ---: | --- |']
@@ -34,7 +34,7 @@ def build(root=ROOT):
         lines.append(f'| [{name}](source/{name}) | {len(payload):,} | {preview} |')
     lines += ['',f'{len(entries)} editable scenes; {previews} rendered PNG previews.','',
               '## Runtime models','',
-              'Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
+              'Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
               '| Catalog | Files | Stored bytes | Decoded JSON bytes |','| --- | ---: | ---: | ---: |']
     catalogs=defaultdict(lambda:[0,0,0])
     modelroot=root/'crates/crystal-voxel-view/models'
