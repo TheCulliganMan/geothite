@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m pip install 'numpy>=1.24,<3'
       - run: python3 tools/check-johto-models.py
       - run: python3 tools/check-johto-characters.py
       - run: python3 tools/check-room-furniture-bindings.py
