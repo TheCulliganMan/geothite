@@ -1,10 +1,10 @@
 """Validate each named component's closed topology, winding and source bounds."""
 from pathlib import Path
+from model_asset_storage import read_model_json as decode
+from model_asset_storage import stored_model_size
 from collections import Counter
-import base64,gzip,hashlib,json,math,sys
+import json,math,sys
 NAMES=['tea_table','keeper_cot','red_stool']
-def decode(path):
- e=json.loads(path.read_text());assert e['storage']=='geothite-model-gzip-v1';raw=gzip.decompress(base64.b64decode(e['data'],validate=True));assert len(raw)==e['bytes'];assert hashlib.sha256(raw).hexdigest()==e['sha256'];return json.loads(raw)
 def sub(a,b):return tuple(x-y for x,y in zip(a,b))
 def cross(a,b):return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 def check(path):
@@ -24,7 +24,7 @@ def check(path):
  if d['name']=='tea_table':assert {'Teapot rising pouring spout','Teapot open handle','Cup loop handle','Linen tea runner'}<=labels
  if d['name']=='keeper_cot':assert {'Cream pillow broad facet','Folded sage blanket','Ivory mattress welt'}<=labels
  if d['name']=='red_stool':assert d['dimensions_pixels'][1]==6
- return {'asset':d['name'],'triangles':total,'closed_parts':len(parts),'runtime_bytes':path.stat().st_size,'materials':sorted(materials),'parts':parts}
+ return {'asset':d['name'],'triangles':total,'closed_parts':len(parts),'runtime_bytes':stored_model_size(path),'materials':sorted(materials),'parts':parts}
 if __name__=='__main__':
  root=Path(sys.argv[1]) if len(sys.argv)>1 else Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/lighthouse_chamber'
  print(json.dumps([check(root/(name+'.mesh.json')) for name in NAMES],indent=2))

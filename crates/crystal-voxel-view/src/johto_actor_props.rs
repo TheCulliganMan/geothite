@@ -24,7 +24,9 @@ struct Export {
 
 /// Parse our original authoring format without discarding smooth normals.
 /// Kept render-only so battle and world presentation can share the same art.
-fn parse_model(json: &str) -> Result<SurfaceMeshData, String> {
+fn parse_model<'a>(
+    json: impl Into<crate::model_storage::Source<'a>>,
+) -> Result<SurfaceMeshData, String> {
     let source: Export = crate::model_storage::parse(json)?;
     let mut mesh = SurfaceMeshData::default();
     for p in source.primitives {
@@ -96,7 +98,7 @@ macro_rules! authored_props {
             match kind { $(
                 PropKind::$variant => {
                     static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-                    MODEL.get_or_init(|| parse_model(include_str!(concat!("../models/actor_props/", $label, ".mesh.json")))
+                    MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/actor_props/", $label, ".mesh.json")))
                         .expect(concat!("valid original actor asset: ", $label))).clone()
                 }
             ),+ ,
@@ -390,12 +392,10 @@ mod tests {
                 .map(|p| p[1])
                 .fold(f32::INFINITY, f32::min);
             assert!(min_y.abs() < 0.0001, "{}: {min_y}", kind.label());
-            assert!(
-                model
-                    .indices
-                    .iter()
-                    .all(|&i| (i as usize) < model.positions.len())
-            );
+            assert!(model
+                .indices
+                .iter()
+                .all(|&i| (i as usize) < model.positions.len()));
             for n in model.normals {
                 assert!((Vec3::from_array(n).length() - 1.0).abs() < 0.0001);
             }

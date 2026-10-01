@@ -343,7 +343,7 @@ fn validate_geometry(positions: &[f32], normals: &[f32], indices: &[u32]) -> Res
 }
 
 impl GeometryLibrary {
-    fn parse(json: &str) -> Result<Self, String> {
+    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let library: Self = crate::model_storage::parse(json)?;
         if library.version != 1
             || library.id.len() != 64
@@ -365,8 +365,8 @@ impl GeometryLibrary {
 fn geometry_library() -> &'static GeometryLibrary {
     static LIBRARY: OnceLock<GeometryLibrary> = OnceLock::new();
     LIBRARY.get_or_init(|| {
-        GeometryLibrary::parse(include!(
-            "../models/johto_characters/shared.geometry.json.include.rs"
+        GeometryLibrary::parse(crate::model_storage::include_model!(
+            "models/johto_characters/shared.geometry.json"
         ))
         .expect("authored shared character geometry must be valid")
     })
@@ -408,7 +408,7 @@ pub(super) struct CharacterRig {
 }
 
 impl CharacterRig {
-    fn parse(json: &str) -> Result<Self, String> {
+    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: RigExport = crate::model_storage::parse(json)?;
         let library = (export.version == 2).then(geometry_library);
         Self::from_export(export, library)
@@ -497,15 +497,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Trainer => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/trainer.rig.json"))
-                    .expect("authored trainer rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/trainer.rig.json"
+                ))
+                .expect("authored trainer rig must be valid")
             })
         }
         CharacterKind::TrainerFemale => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/trainer_female.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/trainer_female.rig.json"
                 ))
                 .expect("authored trainer_female rig must be valid")
             })
@@ -513,15 +515,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Rival => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/rival.rig.json"))
-                    .expect("authored rival rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/rival.rig.json"
+                ))
+                .expect("authored rival rig must be valid")
             })
         }
         CharacterKind::Youngster => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/youngster.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/youngster.rig.json"
                 ))
                 .expect("authored youngster rig must be valid")
             })
@@ -529,22 +533,26 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Teacher => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/teacher.rig.json"))
-                    .expect("authored teacher rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/teacher.rig.json"
+                ))
+                .expect("authored teacher rig must be valid")
             })
         }
         CharacterKind::Lass => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/lass.rig.json"))
-                    .expect("authored lass rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/lass.rig.json"
+                ))
+                .expect("authored lass rig must be valid")
             })
         }
         CharacterKind::Scientist => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/scientist.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/scientist.rig.json"
                 ))
                 .expect("authored scientist rig must be valid")
             })
@@ -552,8 +560,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Outdoorsman => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/outdoorsman.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/outdoorsman.rig.json"
                 ))
                 .expect("authored outdoorsman rig must be valid")
             })
@@ -561,36 +569,44 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Elder => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/elder.rig.json"))
-                    .expect("authored elder rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/elder.rig.json"
+                ))
+                .expect("authored elder rig must be valid")
             })
         }
         CharacterKind::Beauty => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/beauty.rig.json"))
-                    .expect("authored beauty rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/beauty.rig.json"
+                ))
+                .expect("authored beauty rig must be valid")
             })
         }
         CharacterKind::Biker => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/biker.rig.json"))
-                    .expect("authored biker rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/biker.rig.json"
+                ))
+                .expect("authored biker rig must be valid")
             })
         }
         CharacterKind::Bill => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/bill.rig.json"))
-                    .expect("authored bill rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/bill.rig.json"
+                ))
+                .expect("authored bill rig must be valid")
             })
         }
         CharacterKind::BlackBelt => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/black_belt.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/black_belt.rig.json"
                 ))
                 .expect("authored black_belt rig must be valid")
             })
@@ -598,36 +614,44 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Blaine => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/blaine.rig.json"))
-                    .expect("authored blaine rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/blaine.rig.json"
+                ))
+                .expect("authored blaine rig must be valid")
             })
         }
         CharacterKind::Blue => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/blue.rig.json"))
-                    .expect("authored blue rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/blue.rig.json"
+                ))
+                .expect("authored blue rig must be valid")
             })
         }
         CharacterKind::Brock => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/brock.rig.json"))
-                    .expect("authored brock rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/brock.rig.json"
+                ))
+                .expect("authored brock rig must be valid")
             })
         }
         CharacterKind::Bruno => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/bruno.rig.json"))
-                    .expect("authored bruno rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/bruno.rig.json"
+                ))
+                .expect("authored bruno rig must be valid")
             })
         }
         CharacterKind::BugCatcher => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/bug_catcher.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/bug_catcher.rig.json"
                 ))
                 .expect("authored bug_catcher rig must be valid")
             })
@@ -635,50 +659,62 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Bugsy => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/bugsy.rig.json"))
-                    .expect("authored bugsy rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/bugsy.rig.json"
+                ))
+                .expect("authored bugsy rig must be valid")
             })
         }
         CharacterKind::Cal => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/cal.rig.json"))
-                    .expect("authored cal rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/cal.rig.json"
+                ))
+                .expect("authored cal rig must be valid")
             })
         }
         CharacterKind::Captain => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/captain.rig.json"))
-                    .expect("authored captain rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/captain.rig.json"
+                ))
+                .expect("authored captain rig must be valid")
             })
         }
         CharacterKind::Chuck => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/chuck.rig.json"))
-                    .expect("authored chuck rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/chuck.rig.json"
+                ))
+                .expect("authored chuck rig must be valid")
             })
         }
         CharacterKind::Clair => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/clair.rig.json"))
-                    .expect("authored clair rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/clair.rig.json"
+                ))
+                .expect("authored clair rig must be valid")
             })
         }
         CharacterKind::Clerk => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/clerk.rig.json"))
-                    .expect("authored clerk rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/clerk.rig.json"
+                ))
+                .expect("authored clerk rig must be valid")
             })
         }
         CharacterKind::CooltrainerF => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/cooltrainer_f.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/cooltrainer_f.rig.json"
                 ))
                 .expect("authored cooltrainer_f rig must be valid")
             })
@@ -686,8 +722,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::CooltrainerM => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/cooltrainer_m.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/cooltrainer_m.rig.json"
                 ))
                 .expect("authored cooltrainer_m rig must be valid")
             })
@@ -695,43 +731,53 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Daisy => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/daisy.rig.json"))
-                    .expect("authored daisy rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/daisy.rig.json"
+                ))
+                .expect("authored daisy rig must be valid")
             })
         }
         CharacterKind::Elm => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/elm.rig.json"))
-                    .expect("authored elm rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/elm.rig.json"
+                ))
+                .expect("authored elm rig must be valid")
             })
         }
         CharacterKind::Erika => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/erika.rig.json"))
-                    .expect("authored erika rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/erika.rig.json"
+                ))
+                .expect("authored erika rig must be valid")
             })
         }
         CharacterKind::Falkner => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/falkner.rig.json"))
-                    .expect("authored falkner rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/falkner.rig.json"
+                ))
+                .expect("authored falkner rig must be valid")
             })
         }
         CharacterKind::Fisher => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/fisher.rig.json"))
-                    .expect("authored fisher rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/fisher.rig.json"
+                ))
+                .expect("authored fisher rig must be valid")
             })
         }
         CharacterKind::FishingGuru => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/fishing_guru.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/fishing_guru.rig.json"
                 ))
                 .expect("authored fishing_guru rig must be valid")
             })
@@ -739,8 +785,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::GameboyKid => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/gameboy_kid.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/gameboy_kid.rig.json"
                 ))
                 .expect("authored gameboy_kid rig must be valid")
             })
@@ -748,8 +794,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Gentleman => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/gentleman.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/gentleman.rig.json"
                 ))
                 .expect("authored gentleman rig must be valid")
             })
@@ -757,22 +803,26 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Gramps => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/gramps.rig.json"))
-                    .expect("authored gramps rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/gramps.rig.json"
+                ))
+                .expect("authored gramps rig must be valid")
             })
         }
         CharacterKind::Granny => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/granny.rig.json"))
-                    .expect("authored granny rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/granny.rig.json"
+                ))
+                .expect("authored granny rig must be valid")
             })
         }
         CharacterKind::GymGuide => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/gym_guide.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/gym_guide.rig.json"
                 ))
                 .expect("authored gym_guide rig must be valid")
             })
@@ -780,29 +830,35 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Janine => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/janine.rig.json"))
-                    .expect("authored janine rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/janine.rig.json"
+                ))
+                .expect("authored janine rig must be valid")
             })
         }
         CharacterKind::Jasmine => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/jasmine.rig.json"))
-                    .expect("authored jasmine rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/jasmine.rig.json"
+                ))
+                .expect("authored jasmine rig must be valid")
             })
         }
         CharacterKind::Karen => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/karen.rig.json"))
-                    .expect("authored karen rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/karen.rig.json"
+                ))
+                .expect("authored karen rig must be valid")
             })
         }
         CharacterKind::KimonoGirl => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/kimono_girl.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/kimono_girl.rig.json"
                 ))
                 .expect("authored kimono_girl rig must be valid")
             })
@@ -810,22 +866,26 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Koga => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/koga.rig.json"))
-                    .expect("authored koga rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/koga.rig.json"
+                ))
+                .expect("authored koga rig must be valid")
             })
         }
         CharacterKind::Kurt => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/kurt.rig.json"))
-                    .expect("authored kurt rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/kurt.rig.json"
+                ))
+                .expect("authored kurt rig must be valid")
             })
         }
         CharacterKind::KurtOutside => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/kurt_outside.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/kurt_outside.rig.json"
                 ))
                 .expect("authored kurt_outside rig must be valid")
             })
@@ -833,15 +893,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Lance => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/lance.rig.json"))
-                    .expect("authored lance rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/lance.rig.json"
+                ))
+                .expect("authored lance rig must be valid")
             })
         }
         CharacterKind::LinkReceptionist => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/link_receptionist.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/link_receptionist.rig.json"
                 ))
                 .expect("authored link_receptionist rig must be valid")
             })
@@ -849,50 +911,62 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Misty => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/misty.rig.json"))
-                    .expect("authored misty rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/misty.rig.json"
+                ))
+                .expect("authored misty rig must be valid")
             })
         }
         CharacterKind::Mom => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/mom.rig.json"))
-                    .expect("authored mom rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/mom.rig.json"
+                ))
+                .expect("authored mom rig must be valid")
             })
         }
         CharacterKind::Morty => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/morty.rig.json"))
-                    .expect("authored morty rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/morty.rig.json"
+                ))
+                .expect("authored morty rig must be valid")
             })
         }
         CharacterKind::Nurse => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/nurse.rig.json"))
-                    .expect("authored nurse rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/nurse.rig.json"
+                ))
+                .expect("authored nurse rig must be valid")
             })
         }
         CharacterKind::Oak => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/oak.rig.json"))
-                    .expect("authored oak rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/oak.rig.json"
+                ))
+                .expect("authored oak rig must be valid")
             })
         }
         CharacterKind::Officer => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/officer.rig.json"))
-                    .expect("authored officer rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/officer.rig.json"
+                ))
+                .expect("authored officer rig must be valid")
             })
         }
         CharacterKind::OldLinkReceptionist => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/old_link_receptionist.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/old_link_receptionist.rig.json"
                 ))
                 .expect("authored old_link_receptionist rig must be valid")
             })
@@ -900,8 +974,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Pharmacist => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/pharmacist.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/pharmacist.rig.json"
                 ))
                 .expect("authored pharmacist rig must be valid")
             })
@@ -909,8 +983,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::PokefanF => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/pokefan_f.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/pokefan_f.rig.json"
                 ))
                 .expect("authored pokefan_f rig must be valid")
             })
@@ -918,8 +992,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::PokefanM => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/pokefan_m.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/pokefan_m.rig.json"
                 ))
                 .expect("authored pokefan_m rig must be valid")
             })
@@ -927,15 +1001,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Pryce => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/pryce.rig.json"))
-                    .expect("authored pryce rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/pryce.rig.json"
+                ))
+                .expect("authored pryce rig must be valid")
             })
         }
         CharacterKind::Receptionist => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/receptionist.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/receptionist.rig.json"
                 ))
                 .expect("authored receptionist rig must be valid")
             })
@@ -943,36 +1019,44 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Red => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/red.rig.json"))
-                    .expect("authored red rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/red.rig.json"
+                ))
+                .expect("authored red rig must be valid")
             })
         }
         CharacterKind::RedsMom => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/reds_mom.rig.json"))
-                    .expect("authored reds_mom rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/reds_mom.rig.json"
+                ))
+                .expect("authored reds_mom rig must be valid")
             })
         }
         CharacterKind::Rocker => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/rocker.rig.json"))
-                    .expect("authored rocker rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/rocker.rig.json"
+                ))
+                .expect("authored rocker rig must be valid")
             })
         }
         CharacterKind::Rocket => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/rocket.rig.json"))
-                    .expect("authored rocket rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/rocket.rig.json"
+                ))
+                .expect("authored rocket rig must be valid")
             })
         }
         CharacterKind::RocketGirl => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/rocket_girl.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/rocket_girl.rig.json"
                 ))
                 .expect("authored rocket_girl rig must be valid")
             })
@@ -980,29 +1064,35 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Sabrina => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/sabrina.rig.json"))
-                    .expect("authored sabrina rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/sabrina.rig.json"
+                ))
+                .expect("authored sabrina rig must be valid")
             })
         }
         CharacterKind::Sage => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/sage.rig.json"))
-                    .expect("authored sage rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/sage.rig.json"
+                ))
+                .expect("authored sage rig must be valid")
             })
         }
         CharacterKind::Sailor => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/sailor.rig.json"))
-                    .expect("authored sailor rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/sailor.rig.json"
+                ))
+                .expect("authored sailor rig must be valid")
             })
         }
         CharacterKind::StandingYoungster => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/standing_youngster.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/standing_youngster.rig.json"
                 ))
                 .expect("authored standing_youngster rig must be valid")
             })
@@ -1010,8 +1100,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::SuperNerd => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/super_nerd.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/super_nerd.rig.json"
                 ))
                 .expect("authored super_nerd rig must be valid")
             })
@@ -1019,15 +1109,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Surge => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/surge.rig.json"))
-                    .expect("authored surge rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/surge.rig.json"
+                ))
+                .expect("authored surge rig must be valid")
             })
         }
         CharacterKind::SwimmerGirl => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/swimmer_girl.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/swimmer_girl.rig.json"
                 ))
                 .expect("authored swimmer_girl rig must be valid")
             })
@@ -1035,8 +1127,8 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::SwimmerGuy => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/swimmer_guy.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/swimmer_guy.rig.json"
                 ))
                 .expect("authored swimmer_guy rig must be valid")
             })
@@ -1044,15 +1136,17 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Twin => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/twin.rig.json"))
-                    .expect("authored twin rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/twin.rig.json"
+                ))
+                .expect("authored twin rig must be valid")
             })
         }
         CharacterKind::UnusedGuy => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!(
-                    "../models/johto_characters/unused_guy.rig.json"
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/unused_guy.rig.json"
                 ))
                 .expect("authored unused_guy rig must be valid")
             })
@@ -1060,15 +1154,19 @@ pub(super) fn rig(kind: CharacterKind) -> &'static CharacterRig {
         CharacterKind::Whitney => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/whitney.rig.json"))
-                    .expect("authored whitney rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/whitney.rig.json"
+                ))
+                .expect("authored whitney rig must be valid")
             })
         }
         CharacterKind::Will => {
             static MODEL: OnceLock<CharacterRig> = OnceLock::new();
             MODEL.get_or_init(|| {
-                CharacterRig::parse(include_str!("../models/johto_characters/will.rig.json"))
-                    .expect("authored will rig must be valid")
+                CharacterRig::parse(crate::model_storage::include_model!(
+                    "models/johto_characters/will.rig.json"
+                ))
+                .expect("authored will rig must be valid")
             })
         }
     }
@@ -1150,8 +1248,10 @@ mod tests {
 
     #[test]
     fn shared_rig_and_legacy_rig_produce_identical_runtime_bits() {
-        let compact_json = include_str!("../models/johto_characters/trainer.rig.json");
-        let library_json = include!("../models/johto_characters/shared.geometry.json.include.rs");
+        let compact_json =
+            crate::model_storage::include_model!("models/johto_characters/trainer.rig.json");
+        let library_json =
+            crate::model_storage::include_model!("models/johto_characters/shared.geometry.json");
         let mut expanded: serde_json::Value = crate::model_storage::parse(compact_json).unwrap();
         let library: serde_json::Value = crate::model_storage::parse(library_json).unwrap();
         expanded["version"] = serde_json::json!(1);
@@ -1195,9 +1295,9 @@ mod tests {
 
     #[test]
     fn shared_rig_rejects_invalid_references_and_library_mismatch() {
-        let original: serde_json::Value = crate::model_storage::parse(include_str!(
-            "../models/johto_characters/trainer.rig.json"
-        ))
+        let original: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/johto_characters/trainer.rig.json"),
+        )
         .unwrap();
         let mut invalid = original.clone();
         invalid["joints"][0]["primitives"][0]["geometry"] = serde_json::json!(u64::MAX);
@@ -1223,9 +1323,9 @@ mod tests {
     #[test]
     fn shared_geometry_library_rejects_invalid_meshes() {
         assert!(GeometryLibrary::parse(r#"{"version":1,"id":"bad","geometries":[]}"#).is_err());
-        let mut library: serde_json::Value = crate::model_storage::parse(include!(
-            "../models/johto_characters/shared.geometry.json.include.rs"
-        ))
+        let mut library: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/johto_characters/shared.geometry.json"),
+        )
         .unwrap();
         library["geometries"][0]["indices"][0] = serde_json::json!(u32::MAX);
         assert!(GeometryLibrary::parse(&library.to_string()).is_err());
@@ -1234,9 +1334,9 @@ mod tests {
     #[test]
     fn rig_parser_rejects_missing_or_cyclic_joints() {
         assert!(CharacterRig::parse(r#"{"version":1,"joints":[]}"#).is_err());
-        let mut bad: serde_json::Value = crate::model_storage::parse(include_str!(
-            "../models/johto_characters/trainer.rig.json"
-        ))
+        let mut bad: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/johto_characters/trainer.rig.json"),
+        )
         .unwrap();
         assert!(bad["joints"][0]["parent"].is_null());
         bad["joints"][0]["parent"] = serde_json::json!(0);

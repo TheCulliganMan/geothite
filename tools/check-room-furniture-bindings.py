@@ -5,18 +5,9 @@ External pack data is used only in temporary fixtures. No Cargo, Blender,
 GUI, new geometry, source catalog or gameplay changes are involved.
 """
 from pathlib import Path
-import argparse, base64, gzip, hashlib, importlib.util, json, math, shutil, subprocess, tempfile
+from model_asset_storage import read_model_json as load
+import argparse, importlib.util, json, math, shutil, subprocess, tempfile
 ROOT = Path(__file__).resolve().parent.parent
-
-def load(path):
-    doc = json.loads(path.read_text())
-    if doc.get('storage') == 'geothite-model-text-chunks-v1':
-        doc = json.loads(''.join((path.parent / c['path']).read_text() for c in doc['chunks']))
-    if doc.get('storage') == 'geothite-model-gzip-v1':
-        raw = gzip.decompress(base64.b64decode(doc['data'], validate=True))
-        assert len(raw) == doc['bytes'] and hashlib.sha256(raw).hexdigest() == doc['sha256']
-        doc = json.loads(raw)
-    return doc
 
 def vertices(part):
     return list(zip(*[iter(part['positions'])] * 3))

@@ -27,10 +27,18 @@ fn model(kind: Kind) -> &'static Model {
     static MODELS: OnceLock<[Model; 4]> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../../models/facility_tables/facility_square_document_table.mesh.json"),
-            include_str!("../../models/facility_tables/facility_meeting_table.mesh.json"),
-            include_str!("../../models/facility_tables/facility_document_side_desk.mesh.json"),
-            include_str!("../../models/facility_tables/facility_square_back_chair.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/facility_tables/facility_square_document_table.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_tables/facility_meeting_table.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_tables/facility_document_side_desk.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_tables/facility_square_back_chair.mesh.json"
+            ),
         ]
         .map(|s| Model::parse(s).expect("validated original facility table mesh"))
     })[kind as usize]

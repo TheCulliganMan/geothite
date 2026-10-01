@@ -20,7 +20,9 @@ struct Export {
 
 /// Parse our original authoring format without discarding smooth normals.
 /// Kept render-only so battle and world presentation can share the same art.
-fn parse_model(json: &str) -> Result<SurfaceMeshData, String> {
+fn parse_model<'a>(
+    json: impl Into<crate::model_storage::Source<'a>>,
+) -> Result<SurfaceMeshData, String> {
     let source: Export = crate::model_storage::parse(json)?;
     let mut mesh = SurfaceMeshData::default();
     for p in source.primitives {
@@ -87,7 +89,7 @@ macro_rules! species_models {
             match species.to_ascii_uppercase().as_str() { $(
                 $id => {
                     static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-                    Some(MODEL.get_or_init(|| parse_model(include_str!(concat!("../models/battle_species/", $file, ".mesh.json")))
+                    Some(MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/battle_species/", $file, ".mesh.json")))
                         .expect(concat!("valid original species: ", $id))).clone())
                 },
             )+ _ => None }
@@ -346,11 +348,10 @@ mod tests {
             });
             assert!(lo[1].abs() < 0.0001, "{species}");
             assert!((0..3).all(|a| hi[a] - lo[a] > 0.005), "{species}");
-            assert!(
-                m.normals
-                    .iter()
-                    .all(|n| (Vec3::from_array(*n).length_squared() - 1.0).abs() < 0.0001)
-            );
+            assert!(m
+                .normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length_squared() - 1.0).abs() < 0.0001));
         }
     }
 

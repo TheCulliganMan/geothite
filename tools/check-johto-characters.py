@@ -34,7 +34,7 @@ def check():
     assert len(designs) == 75
     assert len({tuple(v) for v in designs.values()}) == len(designs), 'Alias-only designs'
     rust = RUST.read_text()
-    references = re.findall(r'include(?:_str)?!\(\s*"\.\./models/johto_characters/([^\"]+)"\s*\)', rust)
+    references = re.findall(r'include(?:_str|_model)?!\(\s*"(?:\.\./)?models/johto_characters/([^\"]+)"\s*\)', rust)
     references = [name.removesuffix('.include.rs') for name in references]
     expected = {name + '.rig.json' for name in designs} | {LIBRARY_FILE}
     assert expected == set(references), (expected - set(references), set(references) - expected)

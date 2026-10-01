@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Verify authored train geometry, both absolute boarding holes and source chunks."""
+"""Verify authored train geometry, both absolute boarding holes and source files."""
 from pathlib import Path
-import argparse,base64,collections,gzip,hashlib,importlib.util,json,math,sys
+from johto_art_sources import read_source
+import argparse,collections,importlib.util,json,math,sys
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'tools'))
 from model_asset_storage import read_model_json
@@ -27,12 +28,9 @@ def check(blender_required=True,source_manifest=None):
   assert set(edges.values())=={2},(p['name'],'unsealed geometry')
   assert all(directions[(y,x)]==1 for x,y in directions),(p['name'],'inconsistent winding')
  if blender_required:
-  manifest=json.loads((source_manifest or ROOT/'art/johto/source/manifest.json').read_text());entry=next(s for s in manifest.get('sources',[manifest])if s['file']=='train-station.blend')
-  parts=[]
-  for p in entry['chunks']:
-   b=base64.b64decode((ROOT/'art/johto/source'/p['file']).read_bytes(),validate=True);assert len(b)==p['bytes']<=65536 and hashlib.sha256(b).hexdigest()==p['sha256'];parts.append(b)
-  payload=b''.join(parts);assert len(payload)==entry['bytes']and hashlib.sha256(payload).hexdigest()==entry['sha256'];raw=gzip.decompress(payload)
-  assert raw.startswith(b'BLENDER')and len(raw)==entry['uncompressed_bytes']and hashlib.sha256(raw).hexdigest()==entry['uncompressed_sha256']
- print('PASS train: 82 positive-volume watertight parts, 2232 triangles, both 16x16 boarding apertures empty at every height; generator/runtime exact'+('; editable Blender chunks verified'if blender_required else''))
+  manifest_path=source_manifest or ROOT/'art/johto/source/manifest.json'
+  manifest=json.loads(manifest_path.read_text());entry=next(s for s in manifest.get('sources',[manifest])if s['file']=='train-station.blend')
+  read_source(manifest_path.parent,entry)
+ print('PASS train: 82 positive-volume watertight parts, 2232 triangles, both 16x16 boarding apertures empty at every height; generator/runtime exact'+('; editable Blender source verified'if blender_required else''))
 if __name__=='__main__':
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--runtime-only',action='store_true');parser.add_argument('--source-manifest',type=Path);args=parser.parse_args();check(not args.runtime_only,args.source_manifest)

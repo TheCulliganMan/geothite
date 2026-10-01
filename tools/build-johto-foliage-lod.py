@@ -17,6 +17,18 @@ import math
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools'))
+from model_asset_storage import read_model_json
+
+
+def read_foliage_sources(root):
+    """Read original geometry through the canonical storage-aware reader."""
+    return {
+        'tree': read_model_json(root / 'crates/crystal-voxel-view/models/new_bark/tree.mesh.json'),
+        'grass': read_model_json(root / 'crates/crystal-voxel-view/models/johto/grass.mesh.json'),
+    }
+
+
 # Reuse the original modeling vocabulary and authored make_tree() definition,
 # stopping before the kit's generation/export/presentation side effects.
 source = (ROOT / 'tools/build-new-bark-models.py').read_text()
@@ -26,8 +38,7 @@ import bmesh
 P = P.resolve()
 TREE_SOURCE = ROOT / 'crates/crystal-voxel-view/models/new_bark/tree.mesh.json'
 GRASS_SOURCE = ROOT / 'crates/crystal-voxel-view/models/johto/grass.mesh.json'
-references = {'tree': json.loads(TREE_SOURCE.read_text()),
-              'grass': json.loads(GRASS_SOURCE.read_text())}
+references = read_foliage_sources(ROOT)
 
 
 def active(obj):

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Validate the Cable Club terminal and the reused open portal's aperture."""
 from pathlib import Path
-import base64,collections,gzip,hashlib,importlib.util,json,math
+from johto_art_sources import read_source
+import collections,importlib.util,json,math
 from model_asset_storage import read_model_json
 ROOT=Path(__file__).resolve().parent.parent
 spec=importlib.util.spec_from_file_location('cable_backwalls',ROOT/'tools/build-cable-backwalls.py');kit=importlib.util.module_from_spec(spec);spec.loader.exec_module(kit)
@@ -30,8 +31,6 @@ def check():
    t=[vs[j]for j in p['indices'][i:i+3]]
    assert max(v[0]for v in t)<=4 or min(v[0]for v in t)>=12 or max(v[1]for v in t)<=1 or min(v[1]for v in t)>=15, 'Door frame fills central aperture'
  manifest=json.loads((ROOT/'art/johto/source/manifest.json').read_text());entry=next(s for s in manifest['sources']if s['file']=='cable-backwalls.blend')
- payload=b''.join(base64.b64decode((ROOT/'art/johto/source'/p['file']).read_bytes(),validate=True)for p in entry['chunks'])
- assert len(payload)==entry['bytes']and hashlib.sha256(payload).hexdigest()==entry['sha256']
- raw=gzip.decompress(payload);assert raw.startswith(b'BLENDER')and len(raw)==entry['uncompressed_bytes']and hashlib.sha256(raw).hexdigest()==entry['uncompressed_sha256']
+ read_source(ROOT/'art/johto/source',entry)
  print(f'Cable rear kit: {len(doc["primitives"])} closed positive-volume named parts, 812 triangles; exact negative-space corner, open doorway aperture and editable Blender source verified')
 if __name__=='__main__':check()

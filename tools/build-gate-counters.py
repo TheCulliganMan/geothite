@@ -3,8 +3,10 @@ blender -b --threads 2 --python tools/build-gate-counters.py -- OUTPUT [--skip-p
 NESW edge masks sculpt only exposed joinery; hidden module edges meet flush.
 The named mesh pieces and studio assemblies remain editable in the saved blend.
 """
-import bpy,bmesh,math,json,sys,hashlib,gzip,base64
+import bpy,bmesh,math,json,sys
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 from mathutils import Vector
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 out=Path(next((a for a in args if not a.startswith('--')),'target/gate-counters'));out.mkdir(parents=True,exist_ok=True)
@@ -143,8 +145,8 @@ def export(name,col):
   ev.to_mesh_clear()
  ps=list(groups.values());coords=[p['positions'][i:i+3] for p in ps for i in range(0,len(p['positions']),3)];lo=[min(v[i] for v in coords) for i in range(3)];hi=[max(v[i] for v in coords) for i in range(3)]
  d=dict(name=name,coordinate_system='right-handed; +Y up; front +Z',origin='floor-center',bounds=dict(min=lo,max=hi),triangle_count=sum(len(p['indices'])//3 for p in ps),primitives=ps)
- raw=(json.dumps(d,separators=(',',':'))+'\n').encode();stored=dict(storage='geothite-model-gzip-v1',bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),data=base64.b64encode(gzip.compress(raw,compresslevel=9,mtime=0)).decode())
- (out/(name+'.mesh.json')).write_text(json.dumps(stored,separators=(',',':'))+'\n');return dict(name=name,triangles=d['triangle_count'],bounds=d['bounds'],objects=len(col.objects),materials=len(ps))
+ raw=(json.dumps(d,separators=(',',':'))+'\n').encode()
+ path=out/(name+'.mesh.json');path.write_bytes(raw);validate_model(path);return dict(name=name,triangles=d['triangle_count'],bounds=d['bounds'],objects=len(col.objects),materials=len(ps))
 stats=[export(n,c) for n,c in assets.items()];(out/'asset-stats.json').write_text(json.dumps(stats,indent=2)+'\n')
 # A visible U desk, independent L desk, straight return and isolated cap show
 # true geometry joins and the intentional service opening. These are artist

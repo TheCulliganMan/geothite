@@ -1,5 +1,5 @@
 {
-  "format_version": 3,
+  "format_version": 4,
   "sources": [
     {
       "file": "actor-props-01.blend",
@@ -7,33 +7,7 @@
       "bytes": 231660,
       "sha256": "4c3e5e9ecabb5fd0aa262fc0b5894c2ee7e54f6c0c496750184b2d5185c6aed0",
       "uncompressed_bytes": 2250276,
-      "uncompressed_sha256": "b89f75a8d9973ab4df6abc49b0809898b5dc7a4ad4601b2c509bd86ce42f8737",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-01.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "5d73c5f2e0335d1b32ed4980b281da645eb5fe0389f00ff44a8dbf5b250a8c10",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-01.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "84d5bfa3790179eb4c2335e271c7a8ef51e6b23e6d0dbec2f996c685e224e877",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-01.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "7110d1ea4bd8cff2140a061575deaaf1a7067d5b600807c46a5ffd8cbdd9775d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-01.blend.003.b64",
-          "bytes": 35052,
-          "sha256": "512b8ba32cadeb1e3b00baa60ba5ce6b793d926df6099a55e1a724e533c0df48",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "b89f75a8d9973ab4df6abc49b0809898b5dc7a4ad4601b2c509bd86ce42f8737"
     },
     {
       "file": "actor-props-02.blend",
@@ -41,57 +15,7 @@
       "bytes": 482358,
       "sha256": "2cb6882f34bb5ac126bc53ad89b8295fe99cdce0a23e9d73f3d1a24ce658b6a6",
       "uncompressed_bytes": 4599400,
-      "uncompressed_sha256": "2a0bde0e471d338d14c49a40dda2ac3b544b25157fbd98075ead32dd719ed5df",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-02.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "a58963464a2b65b04491cd54141934111aedaa27e72cecf76c36aa9637753f43",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "3a03ed5c899e4fe084af5d8ed5ff22315683a35a953cf8d6ffee493dc5eb332b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "3b3536ab6cae78c7a18ece49c81ccd91612c3287ce3da1f4220ec27ab898a538",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "cba9ef6f56c0741b44c2da9d39afd2894ee756e629eaf22516bdcfae5697264d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "313954f55e67ab3fac62cbe8deed78eff185f09ba0dd82f03c76d4c37acda193",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "6a5ba1f3b2bd3302f4821210696a7e83847801cec9b553e00100e7dcf489d393",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "d5daad2df7df4fcc447df22594d4649e469970b94764baae79889e3701075018",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-02.blend.007.b64",
-          "bytes": 23606,
-          "sha256": "e413adcaae8780b3862a99bfbb4d2cf82f6809faff708fa11cf9cd9f305afbde",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "2a0bde0e471d338d14c49a40dda2ac3b544b25157fbd98075ead32dd719ed5df"
     },
     {
       "file": "actor-props-03.blend",
@@ -99,51 +23,7 @@
       "bytes": 421901,
       "sha256": "b511b9d61c30ec3ec425e272913cc008d3a200d9f54bde475b3448dc59f8328c",
       "uncompressed_bytes": 3682936,
-      "uncompressed_sha256": "1ea87217e6fb63cc837a72430f422d1c67b0b9dc3a427c1045924cbf1945e095",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-03.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "f980df255a3d9db6030cc9b2b8a34f552090fc35b681cf589633e72176094d6d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "401b1bf9e3eba3bb94f495ff2bb24c21b990e72297b73b2dea1a3a1e862a7a95",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "0e4fdaa52713520dfc597f41a46a632929b8f7497e40bcb1e00e1396639d1b9e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "f9a6b2ab4a24859f9320de264b5287f81f4c6a5f48b64055e38358f2c6baa56d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "fa360023e239323838157da4ecbcf46ca665ca403c6857ed78c6024c8195a731",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "5f65e060cceaffc701d389e88f2f2a1c6691ee8994ebcedbe95742e2f635aee9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-03.blend.006.b64",
-          "bytes": 28685,
-          "sha256": "f69d81e26c0ce55251f8a7800bf6cb5201ff196224bc3fd451f756748193cc52",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1ea87217e6fb63cc837a72430f422d1c67b0b9dc3a427c1045924cbf1945e095"
     },
     {
       "file": "actor-props-04.blend",
@@ -151,51 +31,7 @@
       "bytes": 402095,
       "sha256": "a77afc7761be50b20a61db1ecadef398e445f25cf225908a31862bd3516132d2",
       "uncompressed_bytes": 3650096,
-      "uncompressed_sha256": "1e08e9d58e31ba5a09fc4535b3a6dfc92db381b5f87a5dc3ca7c558f20b56d76",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-04.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "600ca8454c1345e56b96a16d754499807350056344ff6eb81d4f47575c94a20b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "b96e783a2f163fb7f260e5cc9524dffbff189757c4581a746a259811b044a5b5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "9c17eb5a2bc7f2fd70a5285908c640c0ec5c03e1a79d66036685f2772f6b88c4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "749117b5da25d5035acd158834e80fc419d0ac5528c039dc551c0f2db7611fb3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "a19fe8eee5f45bdb8140ae935fdca75125577d22fb872f2813c5d26b2fe81cf5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "b9dbf7e1cdd0dd4bff7ae00cb916726f273229d434b06c0736a2ed4cb21950ec",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-04.blend.006.b64",
-          "bytes": 8879,
-          "sha256": "4c16ca11785e64c904e060b3a0fa13589e5c99af1432284b620de2715c9be7a7",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1e08e9d58e31ba5a09fc4535b3a6dfc92db381b5f87a5dc3ca7c558f20b56d76"
     },
     {
       "file": "actor-props-05.blend",
@@ -203,75 +39,7 @@
       "bytes": 688826,
       "sha256": "d6fb7db311a9f665abd77bb3c5b7968b19e1d7c2952ff247faa1199bd0f4d637",
       "uncompressed_bytes": 5675060,
-      "uncompressed_sha256": "dd0351875258e4ddbf7f1071ea5799aae0db0b8f5c56c1e749809c06731b6eb7",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-05.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "1135f819d4bfeaeb5158c2af1e0a1cba399f6599cea24316eaee3a09e0acbbba",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "a3cd2af855a33be3216d325813bbf3b2488c5b9e6c0c21b0e051095d3ac1d97b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "ffae7dc14afa0c6ffd838356ed4c5add81ed416efa0a9548edc5dc43ff12f276",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "bededd01e0c2fa7dae10deb65aa875d6b6aaab194008ea1d100135efafa56a40",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "1f85b4462c0cad8101106540ec2ae16bdeac8d2ab5d823830a30007cbb571323",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "ea62b50d590279f5b42df96acccec23402910b491be48032e5ec846b9733bd75",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "9e9de0a4db342d0b86cd484c03c1eda54a284f29aced399705e5edc9ecc47766",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "36bfe28248c35860a656908697a561426fb6d1bb767e3ca1fcd8fb5f9e0bbf5b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "caa13779dd33a481ad88cd500e480187538a6cfa58eeb4df817eb9ec6f865ec9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "ff5776286f01635ad76976cfe4551b55afc3aa8f80ca37fe9d5d47b6d533446b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-05.blend.010.b64",
-          "bytes": 33466,
-          "sha256": "5184592b58009a4ede08b97292dc0fa25950214f9362d171b2d35409c5bee892",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "dd0351875258e4ddbf7f1071ea5799aae0db0b8f5c56c1e749809c06731b6eb7"
     },
     {
       "file": "actor-props-06.blend",
@@ -279,75 +47,7 @@
       "bytes": 694875,
       "sha256": "82710fe4a3cbde6303cb5a4d3d6881ce736c1419d9ca5a65594740f988758125",
       "uncompressed_bytes": 5920640,
-      "uncompressed_sha256": "fac6aeec5409de23e0e210c7fbc8a068b2fa345adba07f3a7d45c2d49ba050e4",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-06.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "90435264301709c0fc5f57dac02ebb9ab4eebe5d872d376c9b540f0e44bf29b3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "cc241a47b8294e6f43980f11ed7c5645e1f1a06c2b58a8c9019f382df196ef02",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "c7551c0d23a4f17994bcf1657bbee03c10e3dc4a73165741a1ad5d31e68337fe",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "ac833c5ce243262042291ae2e1551a0f14bdd98f56000aefdb79d0055558e19d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "fb79590806814268952b340172259fcc3e04cc1b6d09d48e58bce2d3e78162c4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "9a7139345c165e64710a5ce75a9f728ff49eb11d1861318fc48095a28ed7f407",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "b3adbff7d8ba1723f9de109d62251111faa51a15cdfd36c8c286509cefda2eee",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "5e1fa07e1df1867dba24b79178c5719361fb05f39b6bf7184116419b6bdc8672",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "f5df7893c500cbce5ee7f6f3b110e36459ae90c62e3b94657296e9079ea1e339",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "be14f573e6e2ca73af6fa77ff253d08c81834d3c90eac5a2d349cb75756f9600",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-06.blend.010.b64",
-          "bytes": 39515,
-          "sha256": "76d2916894690c29f716a5a5376e05c5e5dc8571e0f034f6e939dfa5f2b0d4a1",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "fac6aeec5409de23e0e210c7fbc8a068b2fa345adba07f3a7d45c2d49ba050e4"
     },
     {
       "file": "actor-props-07.blend",
@@ -355,27 +55,7 @@
       "bytes": 150241,
       "sha256": "9c0e53571da9b8f9c184ed1d04facce4bae53fba1c07225389b0ab933a2ccc58",
       "uncompressed_bytes": 1512808,
-      "uncompressed_sha256": "c03bb31d4ed95b3dfc0630e2fe9f24017b80e75d23f1fd6886603e2d440430f9",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-07.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "8de568caac2b5e92ce0a898c1071435804b4db7d94c5aa2a323eab5d9ea94cb9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-07.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "21350f1df7d3e7607c6a9e14086509291631eb8a33fe0189d62bf6da1ac5f659",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-07.blend.002.b64",
-          "bytes": 19169,
-          "sha256": "a242622c2bb0d11916a45d45670e2c3150c0b73090213ef6d5d1393af4686c33",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c03bb31d4ed95b3dfc0630e2fe9f24017b80e75d23f1fd6886603e2d440430f9"
     },
     {
       "file": "actor-props-cyndaquil-refinement.blend",
@@ -383,129 +63,7 @@
       "bytes": 1286945,
       "sha256": "7f194821f4b339fcd405833543edc241b7fc9041c43946d82fe04559fae51166",
       "uncompressed_bytes": 3405240,
-      "uncompressed_sha256": "c09e1c71a6836be63b1805284e078480d3e3d7bd9a14fd85ea77c865870f7340",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "147ba84ab94d8f715388fcabfbc51a11493b6f258fb585ae824338fbe93629a3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "56af08beb0cd9a5b253d1228c8bc255e9f8d75f6ce52f335007ce18b0c37acca",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "23731255c31b41ada65405f171a0005382c35b59d163d9d6160560eaeed86ee0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "d7c1e5d6d985b16cb4d331b00a3fbf7951c715594cbb669022c241fcf973aee2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "44f096f0800651a1992222b06f7dadda9f1c891943d253bb54d3eae6f54f9f52",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "51715f28e35a5afce1fed50e869144f248789c8a63bd9a11a823b991db1defa5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "d20267ced62d3d897d2811d52478e1d2e73893c681ead115fbd888a05b466841",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "ecf6bbb80faa679e5ba489832a97b38934c5a7c3e53013e1b80fc0c38b97f953",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "66f1344a1e503c17e02c5a8c0fa0f3a2014e5956132d7741fd45e0a6606b4c45",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "8cda5806c101d93033af2bc11895899b24cffefb19bcba3bdf5ec097ad334692",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "42243864902730af85a3c1136fe7772a605326c75b6836b29b188d533866c9dd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "b78f6c02e55782eb3bd06ae0e069dd305da29c94bee891938128451546a099e8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "bfe2567aad056e01a02ea67fee6d1853f29fdf93f8522ef371f7479edc906f6f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "bcfd00ac9224a4c741039c259925af81bd93f10449b0e124dcd47da28d06e2b9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "84a743c6cedd1b100abfda3005270cc136677eae430dc13c12198c159d396825",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "e78420b2c80ff840ea506b0e0c1a473908c65334445db287a4c86b0eb85d13d4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "22206e9c57a786f295c4e106867762c8dbd202c52166177262d749ade40928ac",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.017.b64",
-          "bytes": 65536,
-          "sha256": "189d4fdc6f7dc93fe7e167d3db6a1b12ec3ce3f0d82760aa4eb15570b2f00608",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.018.b64",
-          "bytes": 65536,
-          "sha256": "87d2bdc582269fcb67f5c7208c60167c7a41ad9714c171880adf101e571e61e7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-cyndaquil-refinement.blend.019.b64",
-          "bytes": 41761,
-          "sha256": "6f9952236b72c31f5edad2284e78fa6981c6e226f38d447a1b5779dea1c6928e",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c09e1c71a6836be63b1805284e078480d3e3d7bd9a14fd85ea77c865870f7340"
     },
     {
       "file": "actor-props-sudowoodo-refinement.blend",
@@ -513,165 +71,7 @@
       "bytes": 1646196,
       "sha256": "5ccb9634aca0e483b988f849939a6a9b1e8b0c3ea59bcde2754b20ada22b1484",
       "uncompressed_bytes": 5040380,
-      "uncompressed_sha256": "37b9543aad11aee082c2e1f82a99cfdde645d1d7e4a252b6f01fa42932a5d85d",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "dfe6e04c3fd009f5ee5e2d1094b5a6b026e215063437086af5857dd10181e5ae",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "6d5e363b80a538f8b95d33b20cbed9e8f31e1f4f18cea496af324ba2e2514edd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "b506aec128116f1cb160b926ab3e8e2dca91d06ddf4afe9a3a0967bc18d9d3ed",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "131eefe801ff4504a785cfc2dbea19acc73e9146eb4b0e7aace20301f458665d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "7fc2b9d6018b23d4bbd3bcb421a60b7a560d45911e109beb7253f6b2ed53a3fb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "821c75c5ab3c6f08437b084d125a4371250188cf4f8c6f8fc4af091e4255240e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "741caa30e5be7b60e51c5ba737972aff3e7bba7ebab4a6228d21aa64c91f5977",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "dddd2b72d565cfd8b2c9f446390f3f4c334ae85a3e4c7ddfdfaec701814ec5ad",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "9306f695cb3edb01b8e7a8606ab58dc3637f6af671621e3b58d9d5ec7a2ddcaf",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "91688968888689e7599a93e95ba5329f39e1e6eb022f75eb892e5f6db576324c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "61fea840468e6b637d60ac931d45d295fc0aad9db8d5f7373fb9d7f3a3e8941b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "21d1c3f39032e3b25de1c426924ad74313aa3c36f8314c4bc32409ae4a84412d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "6baac6b2efbffc3db10771907f52404512a05f484e833fbd94423421cfe260c0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "e83cbe210fd691db08bd117467b0ba26d62278716c5c40a9328ba696c3e0a9a9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "8110ee9255261c09e0df9ffea399017add9b64cd74610054f07002e199eb7f79",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "11054f3fdcf58675e5118ab040f241ff0e69fe04890104189c10afc5cb943471",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "d5bad34daeb4e4828663f030b67050bcfb1ba2e50eb09ba88e0425b107f150a0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.017.b64",
-          "bytes": 65536,
-          "sha256": "4fef22a82e2eb693b07d79a3ec1a18a743b2b68cddf8cfd0dc1c3b6b59fc5c1c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.018.b64",
-          "bytes": 65536,
-          "sha256": "6e23355b38a4f39d3b89295494fea00b6fe1dec3fc0b41363d2b5430519e99aa",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.019.b64",
-          "bytes": 65536,
-          "sha256": "be8a39d3d17a8b3440c11da502879d89329f6ff67aa27c1d914c15890bafd0ab",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.020.b64",
-          "bytes": 65536,
-          "sha256": "fc824dd8439f01dd524a815c9dd7e8ffde355d7c4cba7f784e69f1edf49cdf67",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.021.b64",
-          "bytes": 65536,
-          "sha256": "0ccc42e8b99ab9477b11db3384895a3f8162c6b0719d6aba19a80f4abaa17ee8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.022.b64",
-          "bytes": 65536,
-          "sha256": "73dd04507bbd9f9c30ec9a00e0352cf2d1b337fc8feab8124b033cbd9fe7a75e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.023.b64",
-          "bytes": 65536,
-          "sha256": "62b6f500c50f41edb2afbb787095faeb908a495093f7a0a868025ddd25cba399",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.024.b64",
-          "bytes": 65536,
-          "sha256": "f4614fc3b89f41a14580843b94b7dab53e8db0fece6fc34f97617d13d786a369",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-sudowoodo-refinement.blend.025.b64",
-          "bytes": 7796,
-          "sha256": "0e5992997bb3dd074be3727d3703a70720e4e5137bfe8a23fe160d903f03a53d",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "37b9543aad11aee082c2e1f82a99cfdde645d1d7e4a252b6f01fa42932a5d85d"
     },
     {
       "file": "actor-props-totodile-refinement.blend",
@@ -679,111 +79,7 @@
       "bytes": 1066864,
       "sha256": "4c5400f66e0c3f1cf06666853b48afe5f256ad2c9ea8d603fd3449042064c55b",
       "uncompressed_bytes": 3028892,
-      "uncompressed_sha256": "746dda3a0c38cf42f0959a5fe4bfe86abe1470509bac71be0082aeb841ea6571",
-      "chunks": [
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "23a46de094cb36cd6563be6b12487776113d01296b1c1d8b9cfd4672bd981959",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "9ca9efe2e9621a8dd5c1c57a80265cf1d381e70291ca8ae477fce318a10ea782",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "b03aacd270d4a879b3df08fb52fdc794f211d2d463387e4485db2abf037a9336",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "1fc5b009620242cc455044a6f7a9945109b323845dd995e9f086e8e797666402",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "6129200cfe2fc504be8e5d76897cbe0900279cc2573152ee78e3838bdbd6f6c7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "12a9deb817f8a7f36ea428eb42ac8e243987739f7688fbddd8e9d2f4912ae0b6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "e2f2bef22147aaa0c882ebda68a3ca3de56529be16a7f00ebf2551fd0cef2b22",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "8e02070f65cbb228e04f804787a69933fa26bf82cc91f4537c1f4e1929da5346",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "533d6b5e443bc970bef1dc8f76293264c15da52c92df6e520b7cd320b1708e84",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "b05369c9c4e6c11ae3619747e8572511e1e0a1db984c7322ff6a063a8012847c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "59ac01361019c2656a74e9bae3bc5265037d0f2e88bea226ac1c8885690945d1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "a1bbd2e5411f71bd821a59d2b81f6e5bbcad1729c00c5a21d35ed0c85077d9af",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "dc9c6e63b35f5d48637eecc030f78919287879d3f1c01f04b5789c5235893e93",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "89605ca85230bc2fdb34d5d5ffa76781e7f6e0ad0a9c3f3dd8d9f6dcb2286802",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "eb293787526a63d979fe3ef5a90a4bb3caad9bc442d729e063a52befd5d357b7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "b9edbe4eb3f137b71e6a1c2d3d8e5fd349911d6e62d0683d3b5d6bdee3040301",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/actor-props-totodile-refinement.blend.016.b64",
-          "bytes": 18288,
-          "sha256": "ae65aa45240e69c9794c7d4973ec124fe8b45ae64bb820cf561997e9b81f8132",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "746dda3a0c38cf42f0959a5fe4bfe86abe1470509bac71be0082aeb841ea6571"
     },
     {
       "file": "battle-species-01.blend",
@@ -791,45 +87,7 @@
       "bytes": 359034,
       "sha256": "f00c6036d8bf7143b75ba05e98ea14f3c56f2424d7fad5a99ce12c4db64764a1",
       "uncompressed_bytes": 3549760,
-      "uncompressed_sha256": "a98e17d90339c79b91c29a05c99a686a1dfec80112ec237b11d2dba7a8406175",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-01.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "b641e02e9ad9d15260d4e6e4ce53cc958507abb0a769f42daccff2ee3278870c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-01.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "7c200354a6eeaf97a64f733b9ac5e100369c2698decae39d87b4c3f7a2d7af2a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-01.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "3ffcd9efa3ff0b4d32ff043c1a81541f87cb0881f9dac0a1e1aab44835776907",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-01.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "e8edd657a6a8d806e29237487bdbc20617fb743814255090fd04f41852978570",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-01.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "d93ed43d39ead97cb2f96b82b7ccf3b4469a790ba7a24a93f7feb5b5913d419c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-01.blend.005.b64",
-          "bytes": 31354,
-          "sha256": "7e17edffce1c524fb065be38c7aa69291dd82446be6c45e114d62493f2d78e5d",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "a98e17d90339c79b91c29a05c99a686a1dfec80112ec237b11d2dba7a8406175"
     },
     {
       "file": "battle-species-02.blend",
@@ -837,39 +95,7 @@
       "bytes": 319999,
       "sha256": "f6a36a4a83ffae90c7e56fa9652a82b519df616e9e484869bc5a3a36c37de2b5",
       "uncompressed_bytes": 3369404,
-      "uncompressed_sha256": "a3765b86c02fe8651e430ace67aa237c92366d2bfa3919e67d0b98d0fa538019",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-02.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "be0778fcb5837f2ab7d79efd2204683ed15d61b1a25ffbfde38c32864202899c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-02.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "d4adc3eaa35e9a01a95414d79240ba0b93789d8d7e200171e066ee5dc1b0a30b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-02.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "68621c80165387c331f492b70f67f519e0f7602bd3867d0e2a8378b9f2b439af",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-02.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "099060ae03d279ef57d8119ad4222e358504fb8d331b9d21f1741e6d5365367f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-02.blend.004.b64",
-          "bytes": 57855,
-          "sha256": "c42a94600760ec02e21d7ccdeefe7f5aa4c48aafe441c294340adfc9f90b253c",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "a3765b86c02fe8651e430ace67aa237c92366d2bfa3919e67d0b98d0fa538019"
     },
     {
       "file": "battle-species-03.blend",
@@ -877,39 +103,7 @@
       "bytes": 326791,
       "sha256": "c2c652c6c182f43a7b9f5496f64ec08feac51fa5b65c0b6846d21db85cb096d2",
       "uncompressed_bytes": 3381260,
-      "uncompressed_sha256": "df10badab210b3681df85e45a406f69ec1642944a14520850080f51e01d31475",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-03.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "0a45c82d74a524a86cca77de7b0c07a01ae404a14ed9cb74c7145f8aa5f726d4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-03.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "f223bc68c85c5c1c5dd6c46c77a3fb2a5e221ac3f375e28d743378225e55ef19",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-03.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "b4f0aaff23a6f89d5daa14b63703f1fc19ce9157df0c7437eb8348e98189e985",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-03.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "48dcb9e624cc742ca9b9682df174f7494425f58646e753fec9c89d4c2a4b0740",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-03.blend.004.b64",
-          "bytes": 64647,
-          "sha256": "fe0af67a2e344cfae15f0dfbf2424465af4be4bd6d691dedf2f1d2ce8ac35b31",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "df10badab210b3681df85e45a406f69ec1642944a14520850080f51e01d31475"
     },
     {
       "file": "battle-species-04.blend",
@@ -917,39 +111,7 @@
       "bytes": 311915,
       "sha256": "3a4fcb17f32dae9501b7f6391ae312516ee70e3f64c5341a89c0b479189ec6df",
       "uncompressed_bytes": 3349248,
-      "uncompressed_sha256": "53afc9ba2be4b489c8446774595f77a12af6614d9da5b11aff8bd7e59ce1a18a",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-04.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ddb7dd92d433e0841b4268d3879549867886623a1a0e81b86518caee3db2bef6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-04.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "12290b6ffc39c8dfef2a5982a8f2e326f23ea3eccce9eb1b2fcd3459b70ae207",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-04.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "de2332a83b887ccb1e88687870f38208917cb620d1714e3fa60445cb97e4d9e6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-04.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "b0391b94e5bdb4d154ff614ff1d5bc9d70ff6dd87e7d65cee131b4807443ac43",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-04.blend.004.b64",
-          "bytes": 49771,
-          "sha256": "6c5d88bafe36d9b7b0c9c158e99ccf5286fdc2241f21704c32fe3a4990f00393",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "53afc9ba2be4b489c8446774595f77a12af6614d9da5b11aff8bd7e59ce1a18a"
     },
     {
       "file": "battle-species-05.blend",
@@ -957,39 +119,7 @@
       "bytes": 326551,
       "sha256": "63cac0f4a1c6e265b96aa7a682f01c0516c80379aaeba0b39a537fa0b047f024",
       "uncompressed_bytes": 3330492,
-      "uncompressed_sha256": "976de85cfaecce4724a16fbe56536c65dd5c69423273af9855502d0d44ac67e4",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-05.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "b8f9fa410b8344ecd22c0b9ac3ae96eae3ce64d3f151645c07e1ace0df3a2d3d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-05.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "57e1a9d89cf0c590a065629d56e2c3e483fd87492465633aecf078ed49e097ca",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-05.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "e30944642ce1253f12873b527a456c9c83ea6839cd1eaec6b7de26ef279b5a54",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-05.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "1b9da06ab2e2b59cae7435337de684eb976508176f7ca65743e1f618c156a8e2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-05.blend.004.b64",
-          "bytes": 64407,
-          "sha256": "0cebb2f1cbe19f02e91d9e4c5c30874b924e0899684849a8218e9536ded0cf22",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "976de85cfaecce4724a16fbe56536c65dd5c69423273af9855502d0d44ac67e4"
     },
     {
       "file": "battle-species-06.blend",
@@ -997,45 +127,7 @@
       "bytes": 336704,
       "sha256": "c71baf4fb01058215a584a47a3ffb8b2838bd52b06dbad04610fec5d00811d7c",
       "uncompressed_bytes": 3407856,
-      "uncompressed_sha256": "b2e800f442eb635b9d1b8d0b1ff3c25fed07a5453bdb57ac7f6a84f7bc532ce9",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-06.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ba4009f3a3897c5f3d4ca7670d3f8e4900c6e6cab940419e1b371f441c7eddd6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-06.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "7a64c5125dd8176d0f234aa698823d65e7af37c1fe09d91cb5a93426a079ca13",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-06.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "7acd34eac554e57412192a6cbabdc4ae1e9eae35ef3703af96c31ce1096226ec",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-06.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "0c7219a44605dd9d1b8f8cff076befed47c163cbe6badc11b6f0bcb101684017",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-06.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "daaa5cfb303310658498f48d980fa73fb4634982d961ab213ac7e6f3b27db2ff",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-06.blend.005.b64",
-          "bytes": 9024,
-          "sha256": "4ba8681fb9bd87aac3567ae2869f0e82b060edae095c968384995a1bb088850f",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "b2e800f442eb635b9d1b8d0b1ff3c25fed07a5453bdb57ac7f6a84f7bc532ce9"
     },
     {
       "file": "battle-species-07.blend",
@@ -1043,45 +135,7 @@
       "bytes": 356650,
       "sha256": "c0f2c80c85e6d8360d1ceaafc6ed3cd37745e6a18fcf9d82a14e468cf1cb1404",
       "uncompressed_bytes": 3291296,
-      "uncompressed_sha256": "84b9458834af3641f9666c5a454f63437685a52313b1f36a1e5de5d84cbe7c89",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-07.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "3f1904bc8df1e0b82a74c7829a1868fa1d22286181c0ee1a9cf21e90a0cbb627",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-07.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "3bd49a68d754cb4f93861b2e5388a119da805c77d02882d70cfa7252646c7871",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-07.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "bd73627502a65567af8e4922d07a9919a5cc51d0310939e675f4f62f2e0597b2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-07.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "6003181c62624db8d95557a49a5c8393b7de28783c5ecf95042ccf3c4dd65947",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-07.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "795a97e55ced436ebf7870db09147ef5edec320b6f6c7f71aa4e67a1d623ab86",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-07.blend.005.b64",
-          "bytes": 28970,
-          "sha256": "13c6d14046220702da3e39967f5a0f0190d40ba477b111f53d0a48a20f7d01f2",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "84b9458834af3641f9666c5a454f63437685a52313b1f36a1e5de5d84cbe7c89"
     },
     {
       "file": "battle-species-08.blend",
@@ -1089,45 +143,7 @@
       "bytes": 333056,
       "sha256": "43768d2518124d8de10031feade62a8b07b2b1814c1d8c67eaef354083e1bfae",
       "uncompressed_bytes": 3266048,
-      "uncompressed_sha256": "c93a9e6b662cad24430ccf5339b0fe6a6d9eb1de8727520471a2eedb607df5de",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-08.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "d652e8d80e0034d6f74c7951f6a534fa082097b4ab62629eeb58da93b59c2380",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-08.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "7692b10e4848a121ebdbfc7ee8626f19fc617fd0a8f397a9dde52aa876bfa0c3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-08.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "6ab5d2e53ceb58d28dc55a324cd30a6f083b40de5286ca2df40c672800ecdf87",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-08.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "8e355f75dc9c3128f1145fa7858842c9af6a354c410c0184ff6fcbc24d7ee0d3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-08.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "9f3e21ee7f302638df58b48c4b1cefe6b13bc0f5b2c895e8033c492844bc9756",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-08.blend.005.b64",
-          "bytes": 5376,
-          "sha256": "e6b6bf3e18c4b31822ac064ae97bd341e8d46f56131d93c27b77e4ca914cd2e0",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c93a9e6b662cad24430ccf5339b0fe6a6d9eb1de8727520471a2eedb607df5de"
     },
     {
       "file": "battle-species-09.blend",
@@ -1135,39 +151,7 @@
       "bytes": 319764,
       "sha256": "cc7a7b63ea53c95ac5db54cb57d51aaa058216c353ef99c6f5747add8e63084f",
       "uncompressed_bytes": 2994804,
-      "uncompressed_sha256": "b417b63af8ac43a3fd145f535ae44d37c260097f66b78131a1d416ed6eb3d53e",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-09.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "9b4e11a9faa08fb2d55ee046eaf37b274286166c131483c8068f4802eb7b4630",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-09.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "31a0b3cbd9e163ab1b6af9b83cc3499b31c994dc1cfb3072d180af47d62ff8da",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-09.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "0497a3657319f00fa3d616546d4ed9b59fc5578f07c002acaebb5bf4ff1d0d92",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-09.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "a3c7621cb628e090907eeb68da7427decd9eb4aa08ed806a86f34528f5d76ae2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-09.blend.004.b64",
-          "bytes": 57620,
-          "sha256": "311d6a9ebd2a192fbf56491a8ff2f05f7ac0b31bb984f5c3ceacbf77d8012a22",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "b417b63af8ac43a3fd145f535ae44d37c260097f66b78131a1d416ed6eb3d53e"
     },
     {
       "file": "battle-species-10.blend",
@@ -1175,45 +159,7 @@
       "bytes": 350788,
       "sha256": "a40df5c66e99feae0048e5b83d9c7f50ff67bf11779b56a6892db6c4b98bb124",
       "uncompressed_bytes": 3483344,
-      "uncompressed_sha256": "30f69a5765b2ced3506e246e02ae6a8860223932e78a6af79eaabc768eb88f4f",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-10.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "9534fbd5b7ba977d760277016e7dc24476033032e106e827057f7246bdd4342c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-10.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "450d3ef9490f58528f9689034b33941727cf6cf6b1847a2001d7556e327dea89",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-10.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "64dba7c120e57dea5578c87c1ec1c7abd44b9bde4b8503b9ef8192ad7c520fc1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-10.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "0c99063047a01cad0653696c4753b3243aa25c1479c26d5b14548466256bdf88",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-10.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "3f75e38b44f31c80a03150588426c47e95dd2f250d0b4858cad08098342d296e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-10.blend.005.b64",
-          "bytes": 23108,
-          "sha256": "5e911334013e7a5bde76b5f4bb700e744bb1368da72f252569d8bc68d78b8b71",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "30f69a5765b2ced3506e246e02ae6a8860223932e78a6af79eaabc768eb88f4f"
     },
     {
       "file": "battle-species-11.blend",
@@ -1221,39 +167,7 @@
       "bytes": 295506,
       "sha256": "83a2397ae8895684cb49bf60f1d59cc8cdf4864b3c0a5f40fe929696c66bfd5e",
       "uncompressed_bytes": 2970688,
-      "uncompressed_sha256": "6e1d8c52e1fc50912b5265f2bd8331a63918dd9e586c690d27d0b73f41d2d61f",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-11.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "bcd6469cdb8e4a16a433059420697028361264ebb9eb277869ed5e3dd10af5b8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-11.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "7f5f3bdf9aaf941860f084bb24708a9bcf6c00b384d35b7ae06d5d278d7b4bd6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-11.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "3a68dbac316ede655e1b444db7d80d25c6ecc183dd49c3c171e2116f39b6cc26",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-11.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "1f52539964602030dcedd2e24c9b577c73b7b234536c39ec0bdfb6861eb69fa0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-11.blend.004.b64",
-          "bytes": 33362,
-          "sha256": "cb980ec5ae090e48bdd4804500aeeef81a934f1bdc571d29935ba1fca512a5d7",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "6e1d8c52e1fc50912b5265f2bd8331a63918dd9e586c690d27d0b73f41d2d61f"
     },
     {
       "file": "battle-species-12.blend",
@@ -1261,45 +175,7 @@
       "bytes": 365013,
       "sha256": "25ce0ed5668d88e5d22e78864038c54fe2f4a931841596ca012fae89d619f2b8",
       "uncompressed_bytes": 3219004,
-      "uncompressed_sha256": "f65058c637a8a0f96985afb5da831a7cc60f2b17d46328e8c521753cd6b94c16",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-12.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "c503d972548d2a0d63b0ead2f7713f5f278e4f1cd97726aca236e1bf9ae2b96a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-12.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "4ff634c0188196fda4ed7582e9c56239bdaa7ced6d2cfc6b82469f5f2d55bbfe",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-12.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "14372a0ba83901374427d63ae81fa74a8f93137f6bc427ea389efc125b02aba9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-12.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "24cd6e5cfd98ef5d4b98e92f861210ae9b7022ecccbf5f1dc9c0c79476a16cbb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-12.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "752b0cef36d7db37b5a582aeb20ad2bab3a5972dbb7642364e7ff9a9d94b0602",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-12.blend.005.b64",
-          "bytes": 37333,
-          "sha256": "f122e467c1e70cf367298a71ac97772561ae72a76e035929edaef61123ed6864",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "f65058c637a8a0f96985afb5da831a7cc60f2b17d46328e8c521753cd6b94c16"
     },
     {
       "file": "battle-species-13.blend",
@@ -1307,45 +183,7 @@
       "bytes": 350808,
       "sha256": "bfd522d69856fcb973f5e0e536c4ce9dc7709e450c12dc0959aabe4575fa2e0a",
       "uncompressed_bytes": 3650132,
-      "uncompressed_sha256": "d6a91d5d4811d76bd6b83835bf1550cbfbe10c4d1eadbbd300594b10af1fc529",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-13.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "99c018b77353aaebd0f7a08f8c15bc031e18a6f4b8dfbcb5f6e9db18cdebb06a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-13.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "4024ec31c8eaf0c85fca1fe5dce6900c6d4e7f9fde609ddee7de04fc42b3a195",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-13.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "a78c457ef8b82f3a7f5c2ce0bc89d2d76bcc2b4b7c29d594f4db6d35c535a709",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-13.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "47e14f469fcc14c5f62b6b09ce5ca33407271d573271491b789d7d0291a9108c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-13.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "13e0a3e377bec9a170b519d2febc5af4e868f296dbc29abbf0162aed6f56c3ff",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-13.blend.005.b64",
-          "bytes": 23128,
-          "sha256": "8ce2e39aa8890c060bf67840aa503bb5534f39a4cb32bab1840d0f30281c9070",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "d6a91d5d4811d76bd6b83835bf1550cbfbe10c4d1eadbbd300594b10af1fc529"
     },
     {
       "file": "battle-species-14.blend",
@@ -1353,39 +191,7 @@
       "bytes": 288305,
       "sha256": "7768cd07dc21e0305ca577d839736af723cfd4fe8090a1a7ba94b776a267b48b",
       "uncompressed_bytes": 2806924,
-      "uncompressed_sha256": "9aa037bf75f902073f1306623bf4ccea175503df95964d60952cbce2f1f99e60",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-14.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "63fa83e67f8ec5bbf8ed24145454dd6770ffa524ce3dff43a1e587dd55c49c06",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-14.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "98796b2cc2c7711efb60d611b4127d1ad4d062835c536d9a32bb093a845e7f09",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-14.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "793af2ad1d040ac7008dc2244bd9101f5467c124256c01ffe3634ecdf8a59b64",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-14.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "7c603ddcb1124c29a97c005d68e255251e94a76bcb6c72b555efd984036a0c61",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-14.blend.004.b64",
-          "bytes": 26161,
-          "sha256": "45d4e171c266a74da027cee514d7e7fb346675078935f6bfad5e00033ee6d36c",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "9aa037bf75f902073f1306623bf4ccea175503df95964d60952cbce2f1f99e60"
     },
     {
       "file": "battle-species-15.blend",
@@ -1393,45 +199,7 @@
       "bytes": 362001,
       "sha256": "cc84c03ff1680de6da3f8af0845c86926b5aa007de6aca139e34df42a1136e66",
       "uncompressed_bytes": 3317900,
-      "uncompressed_sha256": "8a6757cd8a0cc6745f375209372c0fb0b8671031ec326beee02f20637afe9986",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-15.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "56f4b758839b3a9a8653a1c1fe8dbcb91efb7aa53e16331d85c7f66db142feec",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-15.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "0bd36979591280286f361b8a10384a1ea7af9fccd24175fe4f009cb2b31f1611",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-15.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "d57f29408eb3553b04e9d2a905c050425295e6a17c901ef3d593f671c8d1ec66",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-15.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "12c54eadc4853d99f88b4842494721a4e4c89e2df410b71a5b3e574d4b16dd92",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-15.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "32f87070cf1d4977c24feadb082d0e69955b71f99ab7113225ac78cb52700fcb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-15.blend.005.b64",
-          "bytes": 34321,
-          "sha256": "3738c7885beb40bd92ef4475bff1d1f2aa63566fc78a5d3b68a7c92b82f3d6e9",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "8a6757cd8a0cc6745f375209372c0fb0b8671031ec326beee02f20637afe9986"
     },
     {
       "file": "battle-species-16.blend",
@@ -1439,39 +207,7 @@
       "bytes": 320688,
       "sha256": "0874534e8e02f6054676a2a6e5193dfe63da0b5909b19c009d60dcf46bb547c8",
       "uncompressed_bytes": 3200648,
-      "uncompressed_sha256": "c532a6d9c88135c2b5eac4dbc19742e8ea1d3fb80d84d76e67a61fca82e35957",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-16.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "eda1a72f4065eb8ea00d623ac684934e06a72703ebf13f5dcfdbaa860064d630",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-16.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "10f87b4a772e2203b3b9deca0adc50763ce74615221366ee0926cdbbab168b94",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-16.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "65b55c345313c73e5a4120bb80f5ddbde51c77169197726897e215dc04f18746",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-16.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "7be94467d121bd7c35e9904dc959d447a26258e186f9bf029ceef30a0612beff",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-16.blend.004.b64",
-          "bytes": 58544,
-          "sha256": "b0f257dd81fbe75b85e2b2f38266d4b624c14d18c4feb5df9a5d144698d9d172",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c532a6d9c88135c2b5eac4dbc19742e8ea1d3fb80d84d76e67a61fca82e35957"
     },
     {
       "file": "battle-species-17.blend",
@@ -1479,39 +215,7 @@
       "bytes": 290255,
       "sha256": "ec186aa35b67faf3ce47c480a386644e2c84c579b7457733e0fb3c9a520980d2",
       "uncompressed_bytes": 2792716,
-      "uncompressed_sha256": "c3f52660fd4404a2eea55959221b4a2da9294af782c23071d931bad36753f798",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-17.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "cbe03e8cfbaab620184e9174c46b67d4c43af3741e31177db6d4a13b395a3c04",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-17.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "109544523b60f73acf8de324e690bcbe042eab0deeb33154dbd786710d250e20",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-17.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "1c0162c1aa4156b2f461f3f05ddd14f915053521223c32028711c7cf1bf55c59",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-17.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "cf8a99248ffbe5e07cdb4b5ea14b4c4f6d95fd503c61271acecdc7959b0ba7f8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-17.blend.004.b64",
-          "bytes": 28111,
-          "sha256": "ae598ec5065eccbfe85b1e61404f1979941c8c6a0342d5b079293d8744a7df0e",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c3f52660fd4404a2eea55959221b4a2da9294af782c23071d931bad36753f798"
     },
     {
       "file": "battle-species-18.blend",
@@ -1519,45 +223,7 @@
       "bytes": 332362,
       "sha256": "940e26d0c080087fe3486c9fb04098b224036fbd3997ecab5ee0be9ed6890d32",
       "uncompressed_bytes": 2947572,
-      "uncompressed_sha256": "098dfb68cc26a009578176a81a6d9b390be0317811e96496d7c20da44b567c89",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-18.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "658d9ad93811b5e2e18fe534c3b61c68831ca193d15dac7b4fa416c326ff1d34",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-18.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "8fd4fef770b56279176f94c738f79ba5cfbb7e3b8a23853e38fd226a6037a250",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-18.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "3efa7bfd5596afc1253cc99a4ea2b13b3b6be8d2de3bc176015189b64cbceb73",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-18.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "c9768e98c425473df46ddb3158c8373473218af0fa7d0b8a51d6902796bd5cc6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-18.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "d0b3c1e495b6e552fb0949aa5ec32e28113b19d4f287df556e12210be5cc10a5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-18.blend.005.b64",
-          "bytes": 4682,
-          "sha256": "4a2b9a5e81b24b37eed4515b58ce1dcef194d9f276fe855da87f9aac2ee05810",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "098dfb68cc26a009578176a81a6d9b390be0317811e96496d7c20da44b567c89"
     },
     {
       "file": "battle-species-19.blend",
@@ -1565,33 +231,7 @@
       "bytes": 198336,
       "sha256": "9758c0a4c28f8d6212cee316e5163484920a93bcddec54a02ec73ce05006c769",
       "uncompressed_bytes": 1855056,
-      "uncompressed_sha256": "2bfbabd4b87d98e9e971d85c86ad5d69e61552d3827733fa50730c30f56c9dfe",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-19.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ad28fd7888def5767695d5efe14c728ef0115576593ca29525b1799665dfdba8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-19.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "627c5380eb712bd8b16d929e48c0b8cc817a7c5296b02c0f957b7778d561071a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-19.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "8dae23f4dc0eddddc4c46f298ebc9dea04669e65aed2efd22a24cd3477c81f17",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-19.blend.003.b64",
-          "bytes": 1728,
-          "sha256": "c6f84781d69e1c582488e3bb9a0338e730bd6726669dcc216025bae845383502",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "2bfbabd4b87d98e9e971d85c86ad5d69e61552d3827733fa50730c30f56c9dfe"
     },
     {
       "file": "battle-species-hero-refinements.blend",
@@ -1599,123 +239,7 @@
       "bytes": 1244532,
       "sha256": "fbcdf85a062b5657c72677031b1e414c46bc0bce9236fc5fdf9b3ef5e441b0fd",
       "uncompressed_bytes": 5173104,
-      "uncompressed_sha256": "399cc516f1b1d443564d2e1e85f85ab92828ac7f9ed19c402dddf1274614fd18",
-      "chunks": [
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "2ca6b88b87bce51300dfffa3d363a4cf39eb85a18a31079147cb7e2e14458a83",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "d60d618cbfa15da2dc85d0299f58b408b30927e22c2418c540e38c2d3a4c2ff3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "1a07434ce549966458e02bcefd2f6ca6dd633b589281c795dae0ea52d4615ee8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "348162e6a2ec7f621d5537c3cb0335892b535ae61e1b4f27ee645417f6a50171",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "998e4cef8665d8241569e68d3f5b1e694d525c50ace2e1113ea488c0ea8a5fd0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "1e9c2b01fe3ea47dbac318fbb4bd25d79008af435a84dc36b5cde87d17265e1c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "b617b7471fb53f3dc7502c282661bb92e7085c7ffcb09d2168328c957ec73685",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "4698730c4464dd94bd474f1a7c59944c9cea405449cb70900d682ed784a42caf",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "f81751e1e6e855bdd9c2c9962699c43ff0196d3a8522aff845c05e63dea08ca1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "4f87086dce5de0b77fe59b1d581961a511f06350302d021302a77822ae3b011d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "da9ad69ebecbdb1c40ee61013ed58ab9253bb3887a28214c07288dbed7e37412",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "6f347f2cc88641834ca3c8cbf74177b8c342d24b07ebf8503ce08f01032143c0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "bd1dad2a544b3159c5a818ac3abfb962c81e25f104742b535810ea8dd2b758d9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "034df0036020092f3b1ae2a5d1001bc01140ef664c567669a5a50c20f09eddfd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "0a028d179832d466804f1882cc3ac844339f7908d19109c12b72aeed7287970a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "cc145061bad9a0030b4d52bd7f0ae2c2199e53b762d4096d3c59af90e4993fe8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "84f65fb4550d22313ba4bc54281349043a522f2188b1b61741ff1008747c9f92",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.017.b64",
-          "bytes": 65536,
-          "sha256": "1d4e9df3c5902d124e694473287a9d1df8be327fe31d2fd00f960391503be81d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/battle-species-hero-refinements.blend.018.b64",
-          "bytes": 64884,
-          "sha256": "6387f498f02d4dbae7d9d46e188f1803502dda5d6967dc143861173881351914",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "399cc516f1b1d443564d2e1e85f85ab92828ac7f9ed19c402dddf1274614fd18"
     },
     {
       "file": "bedroom-cloth.blend",
@@ -1723,21 +247,7 @@
       "bytes": 104647,
       "sha256": "d6bc625f99caf2e1516868d8052e08a3cbb788241887c678876460b9f1fc5fb7",
       "uncompressed_bytes": 747804,
-      "uncompressed_sha256": "4b9e0edf5ad01db27b6faefc6bea88a324bc77acf3f60367d4ae3973d147ce07",
-      "chunks": [
-        {
-          "file": "chunks/bedroom-cloth.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "a9c7bf379337580f54c483b796259279a463abb1fbf68cfa4e00dbd76de44c97",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/bedroom-cloth.blend.001.b64",
-          "bytes": 39111,
-          "sha256": "46cd163b9c9bbe8021b74904b71bf971890573891c6d607b3b9d50ea69a62f9a",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "4b9e0edf5ad01db27b6faefc6bea88a324bc77acf3f60367d4ae3973d147ce07"
     },
     {
       "file": "cable-backwalls.blend",
@@ -1745,21 +255,7 @@
       "bytes": 110034,
       "sha256": "5a47ed4dd24356ee749ddddb175b1cafda849d70338b5a65e9a4b43747f3d99d",
       "uncompressed_bytes": 823196,
-      "uncompressed_sha256": "06cca1be9e81c6bfd23327afbb930507cd8ac03a353d7f8d7bb06e5450c0a6b9",
-      "chunks": [
-        {
-          "file": "chunks/cable-backwalls.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "5338460a8daedc160af2bd0dfd6b97c89f1bcfeb511678600ca05a17ba763ff5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/cable-backwalls.blend.001.b64",
-          "bytes": 44498,
-          "sha256": "020914749b0ac128865ef85a52d1264b65de64f4277062608b48f44d80774894",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "06cca1be9e81c6bfd23327afbb930507cd8ac03a353d7f8d7bb06e5450c0a6b9"
     },
     {
       "file": "cable-club.blend",
@@ -1767,27 +263,7 @@
       "bytes": 143524,
       "sha256": "c3786c5c1eb5e2f2afc3fa6f09172426a5935ce37f0fd870df50598a2ac39004",
       "uncompressed_bytes": 1432468,
-      "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4",
-      "chunks": [
-        {
-          "file": "chunks/cable-club.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "b489adc88cbd1e591f3d390e7f833e6a15fbfce5a58182e89b1e3fa17b1f7a80",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/cable-club.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "f9a771d705aa8cf7ced9dd9426867edceca35573be9da819412a872866735ea1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/cable-club.blend.002.b64",
-          "bytes": 12452,
-          "sha256": "1b412748444edf6e08f061794757e35f6c2452ec3dc08bdb571730a4514fa6a9",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4"
     },
     {
       "file": "character-families-01.blend",
@@ -1795,117 +271,7 @@
       "bytes": 1160310,
       "sha256": "3fcfbea370d3e4b4f25d185663a02fccb1794101a1cc83ff6b1a3defdd62115d",
       "uncompressed_bytes": 9801308,
-      "uncompressed_sha256": "2bbc722fbcfffd3438c549ca735ac0a78107bce17b8b6229ab2f1ffea562a3ff",
-      "chunks": [
-        {
-          "file": "chunks/character-families-01.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "bce99c5f16e6d5bf6fb654ea8b39ec25d98f8ff9617b979273e629e11834fe49",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "9acd5120971d25f80d12988243c5ae94a365733be15c18f1b422693be6d4c0a3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "bbce23c84d83421a3afb095db8e529e7f97b13e85c547311d42bfa5b0b5928ff",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "5d5bfd82e5266e6e98fa10fcb9026cfcced9c5f9d5736671778aa0f224cdc5db",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "e82ac60c3ffdd8f56f2cb02c12d599bb57832f9f8ef03d4a9cb2eb4bae4c17c9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "d0d5bd63cbd5539c8da42976408c68c542ceb0c75fd967c783024d52b6ef9545",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "9a2e44b686da5c55b13cfefcb1eeb2998cb67f89f5eb2068d1a7b60af42ed4f8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "0e808325e76d7eeb28403a0ab8a3e32eab64b5ad1d51852b43c33f4058f3d00a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "feafebad33ac9b8643057bfb91497f019af952f0b6857b7483059f23b1038bdb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "3e41ec62df0c539944925c2f8349d2d04e3bc5bc198f65aa75c3a49cb2c91d89",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "dd101eeec5f0e10259889b1f6cd228cf0fedb6dd54027fdf04eb2a617430f502",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "21e44d73972b370ef275a9a2fdf4584ff215309707d619a4cb5cd8c9586b0fad",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "41a5e6c194b097dfd87bf0c612165cade6746b5babe63a98f0004310bb50f7c7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "e150d5f653db9f9eca4c8e30d72ad360836ccf386377a2df4b542578c2071240",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "17cea1d3234341e3f4992ab947d3de6eb7e3247cc0417b5f2b2cb51204a96c17",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "3e512f56a087b0c29ff5cc16709ade601630591e57ea509ba5c409dba2d32cbc",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "09b4eecfd538bb0ec0fc8c4dec65c729b9a68ba8af8e5266595ef576a5bdff80",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-01.blend.017.b64",
-          "bytes": 46198,
-          "sha256": "e971712a4c86c5e61daf9c297417bed477c8c130401fefb939f1f714fb987241",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "2bbc722fbcfffd3438c549ca735ac0a78107bce17b8b6229ab2f1ffea562a3ff"
     },
     {
       "file": "character-families-02.blend",
@@ -1913,111 +279,7 @@
       "bytes": 1067160,
       "sha256": "6d5de4d09b568173bd7ff107c55cca3d09e201d7f1649282666f8782f223395f",
       "uncompressed_bytes": 9348132,
-      "uncompressed_sha256": "faf1ad1560a275d449bee2957c1e9a595cfb2f73a50575f5af2588e4c8fb3162",
-      "chunks": [
-        {
-          "file": "chunks/character-families-02.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "978d4a9d58a9659695f9990d1a047ad1d0eb9f888b27be803d11d4ce732e9e7f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "f50b559ddad04e5af34066a447c992d254fcac419b3ad9cd09004f04f850e8f1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "e7eecc48da2353494a4c2b373a2186ae34876cb773017a156573def10633edb7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "600898b1a2e0de14b31fd7229ed02468759b3005cbdda3696e4642a71550a059",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "62cd5bb3eb954ee09b2cb3a832d14e22cdb85111c27731e0db7830c221890d0a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "db14c2ba5caeea873d0d469ea87b89bb86909bb75b8c152bed2f9411c092eb30",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "9c064eb49af075da72e5e75d0e3d0e7b4a718286c4ab731b44a0b12a2992a6ac",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "f99d8ee60920e67333d7cb470e7d9f40ae661db6199622eb690ce7e22da568d1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "df5a0e3ba019bbc21183525328e207dfc05fc1e4a4d3269c1e8dcc31dcf9619c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "56fd373fbae537df181023a8a6e10663b9485a25dcd32a92148bf6f9c1ff662f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "f8cdf672ecd7aae4299c03a77e78a06d717a3b88013fef3d6ac66849972eb191",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "4f42aeb6433b6375a5e520e6b690daa424d361db2cb372396f932acca0fbcf39",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "f6f225fe1542ee0e2afcf46d316be4bf4b599689d3c5964afd8d0672f31535e2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "72c1e634daf270d3faa716837027651684f83984b44281c5227c18750643959a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "a98d24238932f8d9bd412d37dbbb79332c82b4ee1dd9d0ffab1aa76f1059781e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "557cf9bca9669245da667e4ba94b56d1e0d5d4b741acb768fdf6e275f85ac7b1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-02.blend.016.b64",
-          "bytes": 18584,
-          "sha256": "96efbda4ffd8c4d793e034538ff7d036db9b50f8ab6bfc59de7f5a9002caf00d",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "faf1ad1560a275d449bee2957c1e9a595cfb2f73a50575f5af2588e4c8fb3162"
     },
     {
       "file": "character-families-03.blend",
@@ -2025,105 +287,7 @@
       "bytes": 1040971,
       "sha256": "e1dbf97cad1d429765da633e40bf075745d7861c4d40fc26ed1edf50f180b10c",
       "uncompressed_bytes": 8817020,
-      "uncompressed_sha256": "1aedf06a9d878832a16dc9cc008a5f292dae47e874b4fc1bc52c5365c2098434",
-      "chunks": [
-        {
-          "file": "chunks/character-families-03.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ed45f06ad501eaa8cb3cea3ce37a7e47f8220be9c2f738847e51a37aba2d8c9a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "6468a5bd6556be03498ef77f3dda6f36e5a159b633662c4fbc87493294f784cd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "08cb7b0279c20d9083dced91ea0c0037d877bbb45a48c91a525ac907803c1c11",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "f251ad2a4fd0fb01141e04c127bff8d77446dafe102d91a178974e0f4dd439b3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "85c7f13aa11cd7e1c2d19c51dcf2479357e64386a553413713aefdfc2a9e6dc5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "39b1012049d1be7a5bfa1986bc172ee45c204df40aceb121a36f932a312f5bfe",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "8a349876870841183f383523d125e3f50143c1e399dc9bdf5fe7f2e2241d1d98",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "609fd9abf1ab93f589c8693d6962e09719b1b1023574accdbe8727fd6975e7d5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "01858a19dda89c6464d76317ab7845a2d0e6ba038cb7127fc1c6be1c53cca0be",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "7e95d91a2a609e07659069c37adfc6fcacf99e659a16917f31969b33e12d2223",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "97a4fb11f8457b84d55901471780593f63ed7ca8a07fa9fe862b38e1c3873bc6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "2206e6aa4cf63710ce05af869dda360f62f789a302da9c9ed2f129ef52df6d57",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "8ba18a15df0688470194aa9be6eeef01e70908bca8b031f22ffea322a08a9828",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "4bbb96b5b0802f709593dace0185e7c92feb80f27cd1beb28e8ecc991bf589d8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "aba522e1734db18b34119f804a3039298ab3564fd1bc1a855eee5b8298c60ecd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-03.blend.015.b64",
-          "bytes": 57931,
-          "sha256": "00f503a21d4e825110667325aa28dcad9e0fb0407b94e958e315a9fb338950b0",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1aedf06a9d878832a16dc9cc008a5f292dae47e874b4fc1bc52c5365c2098434"
     },
     {
       "file": "character-families-04.blend",
@@ -2131,117 +295,7 @@
       "bytes": 1141900,
       "sha256": "8440f6dbe435826a1016db76c4143d7a69bec8ce36b80fd7846926e3c08e9009",
       "uncompressed_bytes": 10192288,
-      "uncompressed_sha256": "56db5941fd938eb7d08b1581e3203d6328fd82752ead502a46a5df11df48b28a",
-      "chunks": [
-        {
-          "file": "chunks/character-families-04.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "7bacc8722f2186bb88f2356ed574111ec3b1d105b6b9d51da423a06240f41569",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "36e2a5b78581e0c3435e823302355f32ffff35e9cbe35e7773ac94c475ee10d1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "c7b40f0dae7a49067e1ea40a7c97e8b1d0f7c08d4c345cefe10ef496146c5f8c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "561b0abf42dba65b8110f48dbf808f33254573b3a8ed00f3b0600460600da595",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "cf7fc55b5022b31606281d916b056d7babbaa792812ab4255bc2fe3359567d30",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "fbdba9c6eb58c18d2bf81d7e1d1091f353ffcc86c27ec4b118154561b0bb8e94",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "3e96c36a08716a70b6ea39bea193051a23fc0e80b5ebc5146daaea72c784be23",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "0824a801e7e0cff515c50f482d6fc83bb2e9d873071bc5b92706b16eaf73c65f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "ce2a8aa85246f65beea959f135d47293dddef8ebc5f2277f894a159e495bf03d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "7cb317b418f90c9ed93744dcd4c88889514596766862b2109993e2e436b555aa",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "498ade227ec0302309e124b98ee4aafc0d887eb808c95ba59ef306b6519785aa",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "1f958a210e894808b4b2ecfd15e73ea823b8b4b6d856ad983c9a6a9d8350dc09",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "932088d718bcf7b827824d29dfbb95c690a144bc35aae9ed76ee71fe8097e282",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "134ad4a4680a93f81d2fb43bda2f56ae2a9e5a2c7c2444a19c78b65f8cff29d0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "58bfeb9ff5d3b88e6ba3e63ed94eab109637d89c9024b6b7ee544be3691fa95c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "fbb36f6e09626b9771e4a4ab1017962c64d059ac2dfb2f4db74e7a327d635761",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "4ebb5471c7c71b9b7dd354315b0bfd44230e6c72d576d8be41d61baffcbc08b6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-04.blend.017.b64",
-          "bytes": 27788,
-          "sha256": "b5bf47e2b9484c548a3a657e6a70e60f22926c51266db686c36727ce6b310176",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "56db5941fd938eb7d08b1581e3203d6328fd82752ead502a46a5df11df48b28a"
     },
     {
       "file": "character-families-05.blend",
@@ -2249,111 +303,7 @@
       "bytes": 1089807,
       "sha256": "ec8a12270840a7111246ddcf043514ec3a8be45ad309bbb9c5be0bb7dc08f0f3",
       "uncompressed_bytes": 9218128,
-      "uncompressed_sha256": "9badb59e054049ffd3c0521d492eb6fd2e2a64b787e1e562cd68c2555d5d706f",
-      "chunks": [
-        {
-          "file": "chunks/character-families-05.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "74b1d147172c62c9e738037f5fb79cc802fede808f28dbf00a0955165008c772",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "ee78b5826f2fa58a162d5ef3a3431c487468be35d18c83e284dca559ed669e50",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "c51e9e5a226cde6d6ce959b2fbd859dec56cbc7e5c5844860ef2b4718ac18ea1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "a168c11d7cf4db592a3218fe98622708dd4c06d46cc89fd1d1b25dccc9640bcb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "61ecc9f721c2a79938319f5eac33b86fe58749ed0b7e632323a6be61d7d20338",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "448a80acf9471c6c0d863698b7a71d0afeb3142156c785e9e88a43ba487226a2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "810b6122041fa7dbe6ca28c7334c6a5c71a988d1e08fb5031269ae4302ca4e88",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "498523f57932c96da7b53632fb334c242ac1d2fd1f7cdf0ef0a0e6179dadd77c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "676d390fc2697774cce38dc1edf661d3e2e246c349ebf69365cbfa2f1458d3f4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "0efcc1ecf3c09d3e9e8bb5801c134c63bfc1aaf810ef7f212f95dd8088d525f3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "7728a18c85f78952ba71c0bdd960cd65b56a0baa97f5566868c25e76f07a4851",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "1ddd354f7fb097aca7e00c1d121bb1919af2aa026c27e047e51a08856bc7e48b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "d41d623640da11fcbe8c3c93394c1a3c12a36296f7f88f59601409564cc838b1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "ebb2a54029a5736a77ac631bddb83ebdabd55c657482178c27290084f71246cf",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "29a03be4e35904d637be453bb5df7fc2b1cee246ffd75e219cc21dca755dad84",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "ff387138f1b6bb990583cb5206c930b00b3dd1ce9f7dd12f83071596b9502f23",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-05.blend.016.b64",
-          "bytes": 41231,
-          "sha256": "0adc4e43d1be51febc5961c9d5b015b5a190aaf94bbf8b21a88b8c6f1a482b77",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "9badb59e054049ffd3c0521d492eb6fd2e2a64b787e1e562cd68c2555d5d706f"
     },
     {
       "file": "character-families-06.blend",
@@ -2361,111 +311,7 @@
       "bytes": 1059560,
       "sha256": "0e52777e4ce6dd1b711d144c8a0da3de18e4198e22f43fecc3e4f33536849d16",
       "uncompressed_bytes": 9344112,
-      "uncompressed_sha256": "65b39d0eab861fd5cfe7130236747265e2d2bd35f3ccaaf7c103639e4aafcd7c",
-      "chunks": [
-        {
-          "file": "chunks/character-families-06.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "0536594a64df3b11c9ca86bd51d2c131024b8554879bbc7477107ebf40bae0fa",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "8289d96834ce6225fc69d6f67a6910a0889ef4fec74129a57bcd79fba0b160ae",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "eb3c1dec627064b9e21ff2225db89f4f209c57e029af955df6ca9d041ca2db89",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "7c793c10962ec2aed7925da7a504e635141f309af3eaa7d347ad177605034f77",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "fdcff4c3c1c7ef768e5d9b84b40d12b3d6021677d4de86526780db588b24c9b9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "0d7b7d5e9c59e101d0e66f2d39322a8963ba0ede56748a5841e3b17afc9d8c5d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "76a72a9aaab7dbbdfad57b5de75707218d47d2b77bd3bf8e5bf1587b14b4fd95",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "9b464d48606e1dd242ce2e07e3f7e3debbaf160261f5a821422cc72844aa13ba",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "ca480f531c98013d13a35faa65b8215e9902d8622ba30563c7683fa2e8e9d0e6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "7228655c72c3d2c852ea89ea0f61839081ac69976d9f2b6b1bf1a0125a98b970",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "5c50e0a666fb94340d992e2ce35e4196171c19fd600869b3cc7947101b5b85a4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "ff14437a28d0953a57af78783921075044122afad2cca7ac439b6b4daa03de84",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "09ff1c720591acc2bf75980a5e3611b34e52551eb2c48a00201621ef262d71c4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "c683d0687bc3eb4de873037dd76980a76afdaca58fd0ae344e6d8339fc4a5d5c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "640ea294456b917508e0a71f7d4d4b69aaad639d5d39172597019760444b2ee5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "9aa37beb0d46baf1e840a7923794689d8319609d39fb2a8a6b40963dcc736d93",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-06.blend.016.b64",
-          "bytes": 10984,
-          "sha256": "4b87ecce589385dbbd842c96d64ce75cfe743140a408c200d8f24e3e74404343",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "65b39d0eab861fd5cfe7130236747265e2d2bd35f3ccaaf7c103639e4aafcd7c"
     },
     {
       "file": "character-families-07.blend",
@@ -2473,111 +319,7 @@
       "bytes": 1089194,
       "sha256": "58c1c3a44e3f818d2beb8694e14e5d4eebce33e416541e2b82a5ddec2dfe0b82",
       "uncompressed_bytes": 9514540,
-      "uncompressed_sha256": "ecb94d46225b2fc51b4828bc9ee468c0fd3727a0ef6199f81bb387168bdb9fc4",
-      "chunks": [
-        {
-          "file": "chunks/character-families-07.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "3a0191cfb69ecbd4c8c77cc23ca3184e313caa1f1d4a81b19a484119f58499f4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "d3e50d750063a416698f95dc18334862556ba71a4a9a12adaa4844a161212b0e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "fdf8b1395317ddecb19934748d61d73e3582cbba7e664e46033f6b8430835097",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "2c2f4f025816fb1c24df032ecc6f08a1688564a71ec12433550bc01094eae2cb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "8bbbf7a4e3b32b55578f564fada7cbd8ef04215325f41139ee9d71df7ea6a579",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "4ec36fa54901cfcf1116255f25a69bda360e8ed293e61d8cfae26d57973f9ee3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "4d47639921e45f22c4898d490a0c91eea3c7051f1f2de277e2dca450490536b9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "23df5c394a6bfab7fdd315ccd4655bd640a86518949f4165185ed23d59749e8b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "b2cbf172b88adcd8699045584b958c609deca59303fbddf57135a0c9b3f26f78",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "3a490ee6c6f9b845408eba3be432de73749c22c8d532b93af23ef830ce5e7a4d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "573318ac5f8572749877dca6caeb38d5136840f17c244ab72e73535685326046",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "14ef970adea9633c506d1c0b08fbbefd6922c6e0b2195b12cbacaef141d18478",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "6fe6daa231556ab08100196df5a58072c0f8db333502f100c9a03b47f6e3ba47",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "dd6933836fc309ae5021a8b66d1b2084358093348e645fdb8c083e64ee6469d3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "30b104d26035ec771ca652258b40ad36450b7db65984963fadc482f66c7d9794",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "b31c6749a800a2bf1bcd2e985d70395efaec3c34f576d16778e51d250ceae67f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-07.blend.016.b64",
-          "bytes": 40618,
-          "sha256": "0f951246fc4b82b25ffd61b673f82dedb199e5131960c95389babf4d5c1400cc",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "ecb94d46225b2fc51b4828bc9ee468c0fd3727a0ef6199f81bb387168bdb9fc4"
     },
     {
       "file": "character-families-08.blend",
@@ -2585,117 +327,7 @@
       "bytes": 1124005,
       "sha256": "61d5b3e5bae6d14c89ef576d61af7e0444802e0acaf7f0be59016859a9a15c72",
       "uncompressed_bytes": 9440092,
-      "uncompressed_sha256": "1810c5fb50b95b8eb7bb579b307a82f1e8ac8736208458c6e801923e99dc1318",
-      "chunks": [
-        {
-          "file": "chunks/character-families-08.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "55969202ba12b8373da22c08dd0bbdf3aecb43843acd14b75cde168569e80c26",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "14b6ed7ec6bd9eb75452183f572a36bc9570e90a880b7c7421fcf82fa1d48f9b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "6ec1b9de9e2a56c558b23a448b9d1b8799bbc738763ee4be7e5aa0e55a3ef4c6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "268da855e7b6e64e12a431b28f49c22722274c0bfec2fd25d8a9d81aaaef50e4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "4fbc7a51dbcf77ee8edbad7f412a8746d91f1ef774ea660aebdb022c757275e4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "9e829686b28531f791197f3c09f28386fead6d8087e45b3f94eaa1f3f6141855",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "2312fa5f25ce235718da3e27b8fa18e2f2b695f272befef2e0b62cb22d9085ea",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "857d3261a6a3b46c5b1ebb143eb67a39a94ed8e8011ef4542252d1fbb97588c2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "9ae3e32598ce3ee6cac00ce18527201d91438e34129e42186619b91101735fb5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "8173ead025c71ca8dad1d6e5c90925a4ab1483b3bc42346c8103c038a0b02d13",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "e8dc1476f73eb0d9e3c8817448997ffea4eb2e0fd618c97c796c663e0db0ba51",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "a17289c75196af74e43cb34b05451b753d888edadbffb34c78a9da6fffc3a6ac",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "d886f78561e0e807c90bdcc44e74c23d39c3e057c81cfe83af4314df3dc685c5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "0c38c5b01af18b6ff54605e14025e4de5c9852265373bbc0f6250ac8bf68c59b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "0c7d5aeabb7f6b0c1ba0d9e7b2b969027c5cd4fb7fa3677c9ddf66ae7b01d33f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "6784f75d197db044fcbe517e65ef1860e7201ac1d33b3a9a9a5a0cbbafa48464",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "c6411c8c337a6b464f2d46c8d46cccef083615d516daff95fd3cfc7e841ee878",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-08.blend.017.b64",
-          "bytes": 9893,
-          "sha256": "f092f1873f2ac492125f4150447fb76dc537797cfd8d4986b9f60fe3e0c3e454",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1810c5fb50b95b8eb7bb579b307a82f1e8ac8736208458c6e801923e99dc1318"
     },
     {
       "file": "character-families-09.blend",
@@ -2703,105 +335,7 @@
       "bytes": 994234,
       "sha256": "e812fc7c2d4260895224fa1f9563120f3a52441e1e612df279fa29ecc4b76338",
       "uncompressed_bytes": 8700840,
-      "uncompressed_sha256": "1ffb58495318c4de391a0c6679c7c00490a53620499073704103090e404980f9",
-      "chunks": [
-        {
-          "file": "chunks/character-families-09.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "c248d58afc4e0dbebca2702bf8af643dc5dea84108987f9c020a3d5a17156fb0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "a3868d8bafcdf8149ada37b0e469791db7fdb5a04f4cee2007087cacc8f8bc7f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "50e3584d86860b9d56dec26d17f1c6ed2eb9734a169a34ec9b0400576a011549",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "6bd858c402d51e9328023bef972d0c6dd0c0e1c32fd480a6112ca90a3750c66e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "b961cb5b9ed88cb6e0c4ea2af9b90b1dc334b4324ff27745447f7c3f444a6a52",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "a216f32744a3ec32612db7c45e7ee08ffd4fb5d644c59f2e6ea30311d931aa8e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "b63219d101af821fc2775881239b58f7af2613a324f7639cc8efe448f46a85b3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "b23973d66d88018362402c9bb6ffaa0b2981089bf2b22dcd9ce602c70a0c0ed8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "247c74a21957d835f673d8b0ee49fb60af449225829df49915b83351f032086d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "3e47a8a76733e69fdadf9c76a8d2c3a26645a2d160ff27a03f383480d1195c5a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "cc2ead9f5b8f120a91666131f21c159998095dea0ba0556b74e76a8d50690b80",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "6ac587ba07dc4265acedd125a566439d21131ff956ffb3c3baf2a6306566e3e5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "f27979a5d10085702f816bbac98fe96de04231a6371e81a346f7a64f01616481",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "18355e1f312be08d39e352296c180e11ade2ffdc3bef7eca6534a4cc66503171",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "611772add29133d01089a2b0239fc1dfe703462edd5a6db9523d66c08647132c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-09.blend.015.b64",
-          "bytes": 11194,
-          "sha256": "423158a53278802b745fea5d7de7a87111edf5e86731de802924ccbce332ea71",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1ffb58495318c4de391a0c6679c7c00490a53620499073704103090e404980f9"
     },
     {
       "file": "character-families-10.blend",
@@ -2809,51 +343,7 @@
       "bytes": 449921,
       "sha256": "08f1ab8d4d8fa5dd0f68dad849f1efbbc2684b8bb195f6a5e76145453e7f1795",
       "uncompressed_bytes": 3778996,
-      "uncompressed_sha256": "1d2a535add24c5d76ce74d691fbe10b6c63c3f1e22c42b2c9717c0262cef79ab",
-      "chunks": [
-        {
-          "file": "chunks/character-families-10.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "22bf92ac7ead7e6fe87b9a74a2249230f4823b34bb621a3eacc9d7274920fe95",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "95da7c6b7af21b8cc90c529b203d84837b4e7ddc2734daa4c5a645c26cae442c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "8915db5fa73d8f3e0e0aeba2e184067db9bbad6b071fea8f47cd88cef8e55d75",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "de3bdb53cc1b56bfb5a56381e59ef71969cd47fdfb7cd4dd34729504f5edaa34",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "5766ef93a28c528f3cf35e05bfd26f867653624344168d740a133312ee8de33c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "b95808bc154e9d727803d20a94ea9d3ba24f19e2c9b53acc3929a6bc72bf2fa5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/character-families-10.blend.006.b64",
-          "bytes": 56705,
-          "sha256": "435644c875048d3455b22c3ab681166676881fe315db19e5817ba5c0775ac4fc",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1d2a535add24c5d76ce74d691fbe10b6c63c3f1e22c42b2c9717c0262cef79ab"
     },
     {
       "file": "characters.blend",
@@ -2861,129 +351,7 @@
       "bytes": 1294528,
       "sha256": "dde434c073e7cf293917d284f4cd0ee9d99efc7e9d1d38f069e0bffb805238ea",
       "uncompressed_bytes": 11040728,
-      "uncompressed_sha256": "8ae53806628edb1c9e752aae609b9cfdc62d5e531be5a4e05ec1848ba31ab439",
-      "chunks": [
-        {
-          "file": "chunks/characters.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "b728f4adc37ab667b8ec39efc46429eee013c075601dd19ba36be2a645efe4ef",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "44c6956a1fa97773f9c3665e3c60c28978ea20c29585361a22eac463b88bbd44",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "b126748cc225d0e2d9947f777fb9c22ee3e439e23af7157afcdf8987753c21bc",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "f3f8643fd4b3e2c805b29b92d205ff325408d96e7bcba0d8020df40b6ee20c6d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "124b33d3a2fe915b89ee095b08541e66e12f290bdf55e639e489246722c1de7b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "c17ff32d5e25809e365663c2558d0564efd18b1f39e8a1feea04c49b8167013b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "fd000d1cb284019dd076e3d226633e137e653d67044245b9e94f498321454813",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "13c162f0b9efed44cb3dbbbe0098003221ceab8f5aa2bf0ce1ed7c8d9ad6c1be",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "63b2d2fa1744d4dc17d981bce9389e2fb5bacd7d0d7d30f4fa79b33178e0d2ab",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "bec67a5dbe73aea37a57a76ec5b7632db843294ca91b2993f0069619e1bc62ac",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "c189d12a84e99be4f9814686b21dbad5d4fbe50c87ac5bf3d1a92081dcc93a67",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "f615d59854ce49913fef4039ff01f2930e50defe281c919d033e26fd79982e56",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "7288d50cf5214c7c70f034ad341da36eb6363525c7957bacc21be79ebcc09df3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "3905415c7972470ff2bda768dacfec9a8c34638ad5eb90b9f9470557817de64e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "fcf491ef7dc1f414dd96d38759942800761f578f87e8e473c909dd5ebd21b229",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "f39eedf58deff634921889980ae98093c69a3fc69f598b839fbcec216a9795eb",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "968cb87e53bc9df0c4ec0aba4ebd1498ed46325dabc29a3779a3047dbe91fc9c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.017.b64",
-          "bytes": 65536,
-          "sha256": "b34cadd90673b4ce76c9161d8a626dcf9138dd7882c3e15dac74bc1c1ba8042f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.018.b64",
-          "bytes": 65536,
-          "sha256": "dad38a694509987a7ca41771a43833367cc1df2de9e2569f616b268d090d72ca",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/characters.blend.019.b64",
-          "bytes": 49344,
-          "sha256": "b6237db75fe5ca7b8a1a860054e2cafa3955ef66d8f6db3703fd63136e6cd225",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "8ae53806628edb1c9e752aae609b9cfdc62d5e531be5a4e05ec1848ba31ab439"
     },
     {
       "file": "connected-johto.blend",
@@ -2991,57 +359,7 @@
       "bytes": 516695,
       "sha256": "38e4d19c9a78040b669df9a5822f014d0d8e7a79f3722974c9d0721e3acb0783",
       "uncompressed_bytes": 7280936,
-      "uncompressed_sha256": "e9837f4c39fd2650995d131bb4d5e0f794e9a6cc7887cebd57a182772536c147",
-      "chunks": [
-        {
-          "file": "chunks/connected-johto.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "bb48c47f2f522b1fba9ba056d6f903ffc74b9422394733c3a4990e48b97c0b6f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "d0424703946b302af03533dd9329f7a82d24d87e20926d226f353e6cf431d277",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "414dd13440a1da1248059841d67b37f93c9df1cf9e72b5becf884c5cbc2de27e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "af7610f960be659d5519375bdbb333528a7539870dfbfbfeeb1e4a90278d8532",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "f18f63e67d9084ea07256825763f2060326cb3fb1e3b8383b7bc36542e9c8af8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "fca5c692338d2f25d0fc6250c33758c0b396ac00ff98cb9a3e3869c6a6c90e5e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "79009c7c9c945c69ad08c2282c5c7381e68cfe7f0b52f5b0038460387d6c7df5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/connected-johto.blend.007.b64",
-          "bytes": 57943,
-          "sha256": "37d22b45a78e0b2ef439901927dbfe86f261e4da26be7c8033b0473a309469fa",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "e9837f4c39fd2650995d131bb4d5e0f794e9a6cc7887cebd57a182772536c147"
     },
     {
       "file": "department-store.blend",
@@ -3049,27 +367,7 @@
       "bytes": 154445,
       "sha256": "8981b1bf3ea89033f5113c3e785c1f4c01c9a319995b62743a9399a853ee0686",
       "uncompressed_bytes": 1632916,
-      "uncompressed_sha256": "7f8de6baf1fba02ddeacd0eb9e56045c16cbf9cbb349f99b592adfa4c6e0565f",
-      "chunks": [
-        {
-          "file": "chunks/department-store.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "f02b66db27fee8a4f21564de3cab8d862c9b83869428ca57f5d7d5349fdebe4b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/department-store.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "bfb3396abf7f68041b84a7e6b4486b9e70269e5b72fbe771aebacc1f8c1cc8d8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/department-store.blend.002.b64",
-          "bytes": 23373,
-          "sha256": "66760f519e0cf34560c365d488032172ac0ac86aee6b1bd9106270bcab9c5fb2",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "7f8de6baf1fba02ddeacd0eb9e56045c16cbf9cbb349f99b592adfa4c6e0565f"
     },
     {
       "file": "dungeons.blend",
@@ -3077,33 +375,7 @@
       "bytes": 212935,
       "sha256": "d5d5dd76b7b987302132a4815c210901b058657f790d02b0e3962d19e63e0363",
       "uncompressed_bytes": 2413320,
-      "uncompressed_sha256": "bede11be2708bc584d5bf2ff2b027e0c2bb42f73162a9a0efa29c4165a9061aa",
-      "chunks": [
-        {
-          "file": "chunks/dungeons.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "b7092fbc3492935b4895ce44785a5cd6aa9720b48372e20feedcb3ca863d3e78",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/dungeons.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "c5ee6d8774060d8c5730d75b88cedabedbc16d919590bd8cd0d95810be8e0ff3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/dungeons.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "514e4489f2c6cb3a64452b99cc8956225357f1f34a2f9d323d35d8b2b9929e15",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/dungeons.blend.003.b64",
-          "bytes": 16327,
-          "sha256": "25df5c34e7d2e43f03c5a42b7bb2142ef20462c8b4c55e8dc8f7b8defa7cd4fc",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "bede11be2708bc584d5bf2ff2b027e0c2bb42f73162a9a0efa29c4165a9061aa"
     },
     {
       "file": "facility-tables.blend",
@@ -3111,27 +383,7 @@
       "bytes": 138767,
       "sha256": "8cffdfa9dd777bd14f1df14e892c003d678b59c1952d7d39606409c08f650c47",
       "uncompressed_bytes": 1338524,
-      "uncompressed_sha256": "90bbaf20cca73178a8f2ec68bfdad39bc5b12fa151475f3e3048eb55f09eb8cf",
-      "chunks": [
-        {
-          "file": "chunks/facility-tables.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "5689c14346dfa2d1a02e5c1e49bb1963c1d6f8c384d97c62033d38661f3a2ca2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/facility-tables.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "82f8cb1ecf677b444b201fc499ebc3b208b15886bbd69fb4458ec09188b102b5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/facility-tables.blend.002.b64",
-          "bytes": 7695,
-          "sha256": "6f4c535b56be87c7e31104a7ec0bd23ef7792468dc28f9f2adb4cd18bc0eb21e",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "90bbaf20cca73178a8f2ec68bfdad39bc5b12fa151475f3e3048eb55f09eb8cf"
     },
     {
       "file": "facility-workbench.blend",
@@ -3139,21 +391,7 @@
       "bytes": 118772,
       "sha256": "dd7dd6ca8c38090b3bf567385ba8cb3693f4d8e8979b07f31df24f2abbac9c11",
       "uncompressed_bytes": 966456,
-      "uncompressed_sha256": "33cbf96ce338b4d06020308f442341b833eff0ad6ca081a74c7cad043e0bd5f1",
-      "chunks": [
-        {
-          "file": "chunks/facility-workbench.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "c34d174045df1498e01d9c85723a31f73c8ace88e7ea2d9041f23a1d0ea44c71",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/facility-workbench.blend.001.b64",
-          "bytes": 53236,
-          "sha256": "2afba0c3d1bdf8f6037a8f931f2df016e9fe5fe344dcb552feec8e94cef1d5ee",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "33cbf96ce338b4d06020308f442341b833eff0ad6ca081a74c7cad043e0bd5f1"
     },
     {
       "file": "foliage-lod.blend",
@@ -3161,27 +399,7 @@
       "bytes": 139041,
       "sha256": "e0520289f674f729b16190fd1e261c0158b678acd6907bd05a8af420353c14f2",
       "uncompressed_bytes": 958216,
-      "uncompressed_sha256": "128a1aacb46f6f440ccdd2a74b3c530017cb55e3ade3b27e74048fe8ef8c42ad",
-      "chunks": [
-        {
-          "file": "chunks/foliage-lod.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "8009ae023ea06899ac703c1dfd2fd5c2764fd2b20d8d8cc461d7bbfe4aece205",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/foliage-lod.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "3583dacc74e550bd9b2e2ff6009a39e8330ee2ef49ed97feead8925d0bd6529e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/foliage-lod.blend.002.b64",
-          "bytes": 7969,
-          "sha256": "754142e883987c18fa0848c06f6000f3de073c31a1da1425f78ad3e440a899e4",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "128a1aacb46f6f440ccdd2a74b3c530017cb55e3ade3b27e74048fe8ef8c42ad"
     },
     {
       "file": "gate-counters.blend",
@@ -3189,39 +407,7 @@
       "bytes": 325746,
       "sha256": "ba856de7a76293a7ce6acb44d8b6c0d52fb0b6fe83b5bbccd1ab42569bf4bb21",
       "uncompressed_bytes": 5319620,
-      "uncompressed_sha256": "104d779ede2bde5f7568b4cd07106f04742de2873dfd01f49489a865198d47b9",
-      "chunks": [
-        {
-          "file": "chunks/gate-counters.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "05ad316695963cfb10f01b3407dcb4d1de4681c139324c43672c6f7ffb2af4af",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gate-counters.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "9cdf7589c0b5190cb13b9c2f161fa3a1456ba130dd22acd56c19b1efb6180c3f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gate-counters.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "6848a4e404cabcecef611d985740b57b52c97b0409474e0b822f8b58c4838217",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gate-counters.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "52309dac7c8c2e2a00cbdf0531131685a40e868d57f30b870044fd15055732c6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gate-counters.blend.004.b64",
-          "bytes": 63602,
-          "sha256": "917dabcf1a9377ffeb07efb2ab5ee200a9f1bc5328cba1f1999e33912358009b",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "104d779ede2bde5f7568b4cd07106f04742de2873dfd01f49489a865198d47b9"
     },
     {
       "file": "gym-scenery-kit.blend",
@@ -3229,33 +415,7 @@
       "bytes": 223439,
       "sha256": "679cb0e0afb98c81f20b0f9d192321732af0a8d18696c30f6a4ab73c6041e090",
       "uncompressed_bytes": 2868916,
-      "uncompressed_sha256": "7e117f38e1d418b8a4c0139f8b4a41073b174c8abe7b94e6b5d254fd21a35524",
-      "chunks": [
-        {
-          "file": "chunks/gym-scenery-kit.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "e3edb59f4c8afc04c126887efb225a643928168c8268e6b811bf32c52233000a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "25920f6b30e3abbeab1b2dd74cae025711604b44bef3d8f96888af6d21384b05",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "0b513dcd606884b713df371fc606ee699bca29a17ff3eeeb773ebf48cb38d994",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/gym-scenery-kit.blend.003.b64",
-          "bytes": 26831,
-          "sha256": "3fcd208acea331ece6c390c70e2c4bdb0a26d60819eeb44c6bd24ff5338a9571",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "7e117f38e1d418b8a4c0139f8b4a41073b174c8abe7b94e6b5d254fd21a35524"
     },
     {
       "file": "interiors.blend",
@@ -3263,81 +423,7 @@
       "bytes": 766389,
       "sha256": "82f1abddd047c884fd1d95de0cfb45f4b6db9e1f6dd2ae111d47d8361b7bd092",
       "uncompressed_bytes": 12809656,
-      "uncompressed_sha256": "7ff64e7facaf9b3182e96def25c6fbfd912104a9425d318c0ec7c8465f929684",
-      "chunks": [
-        {
-          "file": "chunks/interiors.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "beeb2384eb77436aa598d3c501e3f9cfd9f11de6a18a01054920aed9816d6d4e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "b55d69cd7c0fb1d844266a076a18544aebdba0188e7371d78f75c974397c18e0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "3e984b2b511f09bee33dfc9bdd3c004744399b2ec714a39efbe9c62dab80bbdf",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "4f42569f4cf86e6dc39fb9357b883e3135e4717c0406faac7a17d097ee813749",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "44225bbb3547947bbf1772ce74fda1a53e70221e1d8226f2c31fd96e615f9794",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "4ea9cfaf6656319f8941bffb8bf90b11e52434ab472bcc83a0709c92e8ae5a2e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "edef2af2c6a6b42eb2b4bb3914377b1075f286388ef241521b875adb07bb3b80",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "b41425bab3b1546b5f93f92247508a577e0a13cbe59adcb16e6a2a41d29ef8ff",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "9692ab5cafe8ddc88277b15ca98c3223d07a4e7449798afb7a31b6fb949b7962",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "67ef40ec3485d00a5ec5d49c8fc16b87fecd0ace4dc88d60531234233a980f83",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "c367885d62e5ca858648b6726ae8a6b57d917e031422f2da9f23f7f52bba5fd8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/interiors.blend.011.b64",
-          "bytes": 45493,
-          "sha256": "dc9f29ed6b2ddb29d6855809caef8b95e8192ca6483f27e4c6aec23d457ae520",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "7ff64e7facaf9b3182e96def25c6fbfd912104a9425d318c0ec7c8465f929684"
     },
     {
       "file": "kanto-boundary-rocks.blend",
@@ -3345,21 +431,7 @@
       "bytes": 117512,
       "sha256": "4b72f489fe6047b9825c55785ec50424f8127e1a8303d2e283d243a9f7ce9f33",
       "uncompressed_bytes": 937036,
-      "uncompressed_sha256": "75422272e1ce6138a0d32fab81855bc2d5338529ce925adcceb2ba39a04fbc70",
-      "chunks": [
-        {
-          "file": "chunks/kanto-boundary-rocks.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "4d625cd5a0445619de861b39f677ee996752a4ccd18eb9ef49ec0b28511b3c7c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/kanto-boundary-rocks.blend.001.b64",
-          "bytes": 51976,
-          "sha256": "503a7a16ed087c8a2def2ca10e71be668dee05421cf7c9741c1b598563773b86",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "75422272e1ce6138a0d32fab81855bc2d5338529ce925adcceb2ba39a04fbc70"
     },
     {
       "file": "kanto-capped-posts.blend",
@@ -3367,21 +439,7 @@
       "bytes": 102860,
       "sha256": "c6120f07880b63e4cbd4995519a491da1e0442c32a176c79750a8afde2da4001",
       "uncompressed_bytes": 682228,
-      "uncompressed_sha256": "84ffc137634a53357f5bf2d1316f49178d4fa6f8f02e0effeacedfbfb3c4dcc6",
-      "chunks": [
-        {
-          "file": "chunks/kanto-capped-posts.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "21bb8f73f15c23a63ff3c948e1e72f4fe07bc1a8f37075439669a79932e08462",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/kanto-capped-posts.blend.001.b64",
-          "bytes": 37324,
-          "sha256": "926aff8fdd0c36188ace216a02b8eeb2cc1a443495188dad6c1d8b8f1798a5e3",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "84ffc137634a53357f5bf2d1316f49178d4fa6f8f02e0effeacedfbfb3c4dcc6"
     },
     {
       "file": "lighthouse-chamber.blend",
@@ -3389,27 +447,7 @@
       "bytes": 154405,
       "sha256": "ccc85c55aa851264cc36fc164bfd841f00aeb4e013b7dd494c729d34b48150cf",
       "uncompressed_bytes": 1452904,
-      "uncompressed_sha256": "c49f667b6ee7164dafd483e28c3b3b45e6df3e92a10df730c1351c80dd1b5d50",
-      "chunks": [
-        {
-          "file": "chunks/lighthouse-chamber.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "ad37de6f4d29b51da34e02e14159f9ffd026e10db02f1dd035c991e2099212a7",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-chamber.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "6b538f61472e1ebd48d05d119dc9490f0fc4504c03b1a9e9f566e8b8eb00cf5f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-chamber.blend.002.b64",
-          "bytes": 23333,
-          "sha256": "1996d27bc9d26a9b5d464bb6cc7951b5e3fd0f14f772f6907df1051e28fe08e2",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c49f667b6ee7164dafd483e28c3b3b45e6df3e92a10df730c1351c80dd1b5d50"
     },
     {
       "file": "lighthouse-masonry.blend",
@@ -3417,51 +455,7 @@
       "bytes": 396645,
       "sha256": "330b43c74bbf584e0ab3ca25c93017c0d82e18d195557d28af7b72c37ec52746",
       "uncompressed_bytes": 5944552,
-      "uncompressed_sha256": "c7b526e44829c11d409384d4f07ca4217fba9fd089d1d6deff18e593b2619ed6",
-      "chunks": [
-        {
-          "file": "chunks/lighthouse-masonry.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "91a7b5d062751bc500aa7c8b40f9a43768db3a15553dc49f5115830113ec412a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "1fe2b975e8449bd36a3495117c4a241db0d8d3f431296562d67e7eb29507afb8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "42f2b75cfdb5bd797696d1d49769fc25418a40ee2f24bab8509ea369c482b6cd",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "cc8eacfcccfc7903d35b5266c297888547763e0fc08cc3fdcafc3deeff4b8ad0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "f6b0629d59bbee541ffbd8e5694cd5a474e23d8e47b14eeab3550dee63dbcd7a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "694c32129c676213823ec76b0a9f14e44c3dafd3255a707bebdd5de8dec9aa14",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/lighthouse-masonry.blend.006.b64",
-          "bytes": 3429,
-          "sha256": "b59ddaec09156deeadfa16166e122fc511f36b8e6f3b663fcab52c75c5bba134",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c7b526e44829c11d409384d4f07ca4217fba9fd089d1d6deff18e593b2619ed6"
     },
     {
       "file": "new-bark-kit.blend",
@@ -3469,39 +463,7 @@
       "bytes": 271493,
       "sha256": "5404eb084240b304622e786122ac15e9b5e2d10d408bd241a0457be8c7e455ef",
       "uncompressed_bytes": 2133772,
-      "uncompressed_sha256": "adb533fddb096c5618ee45cf206b28838034d914a515f2d9a8b3cf3616f0a0bb",
-      "chunks": [
-        {
-          "file": "chunks/new-bark-kit.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "909432d95208155af1f714826d4c42c0ba561eeb1e67fe5a56e0f3d092981003",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/new-bark-kit.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "95d51e757a9240a9927d2462deee069af125676300d56cb2b4379f5386b7edae",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/new-bark-kit.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "58ac52b466f48e2b2c61dc8e79ef8939d91fc01e4a5b9df28dcae732ef667107",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/new-bark-kit.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "314b5366aaf9d1535d0d937edc61160d467ce368ad0c43ca99cb284db6c2aa16",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/new-bark-kit.blend.004.b64",
-          "bytes": 9349,
-          "sha256": "fbe89df651145133a3239d941c8a1896f503830af4784b4b8aa3c196a6658a68",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "adb533fddb096c5618ee45cf206b28838034d914a515f2d9a8b3cf3616f0a0bb"
     },
     {
       "file": "outdoor-sign-frames.blend",
@@ -3509,27 +471,7 @@
       "bytes": 166932,
       "sha256": "1750ea07af3177c40585c1342d45668d57cac12af7d40d807db466f3203890da",
       "uncompressed_bytes": 1560484,
-      "uncompressed_sha256": "977972a3da650a320f358ffe1e05a37ccf6d84d2a2f3a462fdf9812d5b7c67d0",
-      "chunks": [
-        {
-          "file": "chunks/outdoor-sign-frames.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "9daacbc62db334d19814217127b4a2745e1f327c942054e8dedb57eabc36721c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/outdoor-sign-frames.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "58f28f95180c32f5f6983d95d048ad9b95543310c9829fe838048e9304233066",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/outdoor-sign-frames.blend.002.b64",
-          "bytes": 35860,
-          "sha256": "8a694cd94d5ca37771cc269d7b34712ce11f61fb19946f01a29042d2cfe49371",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "977972a3da650a320f358ffe1e05a37ccf6d84d2a2f3a462fdf9812d5b7c67d0"
     },
     {
       "file": "park-scenery.blend",
@@ -3537,21 +479,7 @@
       "bytes": 124635,
       "sha256": "9eaed4cec4f767c092b4dc646a1684a9824e321786e838a92bfbf7161c8d7c55",
       "uncompressed_bytes": 856064,
-      "uncompressed_sha256": "d977190c0d75aa687a38333da9b835a5fa4df9122ec13ea6ec74a14fb8b3db10",
-      "chunks": [
-        {
-          "file": "chunks/park-scenery.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "1c9b3834235c3110dde4bb03f592b3a5d072e12ae4477e7536b5d827cfa25b34",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/park-scenery.blend.001.b64",
-          "bytes": 59099,
-          "sha256": "1275e1935181622d02d25abe8ac51fb1841d614c82e32e8c849f340713ac2781",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "d977190c0d75aa687a38333da9b835a5fa4df9122ec13ea6ec74a14fb8b3db10"
     },
     {
       "file": "player-house.blend",
@@ -3559,33 +487,7 @@
       "bytes": 233604,
       "sha256": "f2a864d22e3eeee39f4087b71dee4886722271cc5822288a64e83ad165c5db25",
       "uncompressed_bytes": 2816324,
-      "uncompressed_sha256": "004f2efb5e9a45ece5682c46bc72528a75a60b3f305e8fa56e534431838e992f",
-      "chunks": [
-        {
-          "file": "chunks/player-house.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "f18e528d30b8fbe44d180429545486568c8891f700d8053fe95225aaf45e5d5d",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/player-house.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "beb62ce1cbfa913cd00aa276a9cff433c1119b47e315702be9eb18f59f85a08b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/player-house.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "35bec6a6467012cc710812c4b284053e1963aa410eb322c8cd8e18e094c1d525",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/player-house.blend.003.b64",
-          "bytes": 36996,
-          "sha256": "df677046a2f1e82997330fc86ed2ea588d61f7006b9c5f5271656ad0dfbdca30",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "004f2efb5e9a45ece5682c46bc72528a75a60b3f305e8fa56e534431838e992f"
     },
     {
       "file": "radio-desks.blend",
@@ -3593,27 +495,7 @@
       "bytes": 188551,
       "sha256": "ae04b2636d18d5ae74a851b30c71a32e56e1aae7aaab02846d5361161bba4ad2",
       "uncompressed_bytes": 2239636,
-      "uncompressed_sha256": "c686dcf2e5c3b50e986a79d679dbf944c406372889700e9dbe7c64db6b084c4d",
-      "chunks": [
-        {
-          "file": "chunks/radio-desks.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "134153e2950824a8d54013acb18a7d5789b811039e4bed76673bd17bde8b541f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/radio-desks.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "f7b78cb9d4cda748c0212be347fee0fa57755e3d35d85fccea19d685c386732a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/radio-desks.blend.002.b64",
-          "bytes": 57479,
-          "sha256": "6e5524414b32080bff2ee2bd82ab39d07de30d7ac0127fc5930460e883cd93b2",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "c686dcf2e5c3b50e986a79d679dbf944c406372889700e9dbe7c64db6b084c4d"
     },
     {
       "file": "ship-fronts.blend",
@@ -3621,21 +503,7 @@
       "bytes": 126019,
       "sha256": "a325304b7452361c29533b2697447cbd8525dbc2d3e6e028ae7b07f29a6762a0",
       "uncompressed_bytes": 1029816,
-      "uncompressed_sha256": "1d17f16f86d338f2e4fbf117e611059d524f05f7d32f04cd30e0cef1c1f4c517",
-      "chunks": [
-        {
-          "file": "chunks/ship-fronts.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "eafbdb33c087f51c36bcb6088025ec0cc84c9811c006da052601506f52387bca",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/ship-fronts.blend.001.b64",
-          "bytes": 60483,
-          "sha256": "77ebd05ae3d147509cad6a6965a37d38efede899efa91ddb37bb96e10c74dac1",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "1d17f16f86d338f2e4fbf117e611059d524f05f7d32f04cd30e0cef1c1f4c517"
     },
     {
       "file": "ship-rooms.blend",
@@ -3643,33 +511,7 @@
       "bytes": 196945,
       "sha256": "134051fdeda0e32a3401476dec47642810e1ce3a46471d1baf6e34ffbb834a16",
       "uncompressed_bytes": 2165572,
-      "uncompressed_sha256": "a244e7a07d212a3165d8881056bd17aa545b9e6f9d41e030eeb5878c51d9269e",
-      "chunks": [
-        {
-          "file": "chunks/ship-rooms.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "66a81484226316bd77edd6abe7c8157f71ddf83b16ccd9ef2c9bc06ecbc9310f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/ship-rooms.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "590e577b4c4fe70a1a81806ffa93730e8f5e2761342239b8ecfd346d5c938fc3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/ship-rooms.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "cf01f73e259e9c671ac512b1137721111252566ad55f57155336158a7c2ffeb0",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/ship-rooms.blend.003.b64",
-          "bytes": 337,
-          "sha256": "f4703b8c6b0f18ffe53d1ceba4d190064180bb89059d6057adb9dcfd67cae5c2",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "a244e7a07d212a3165d8881056bd17aa545b9e6f9d41e030eeb5878c51d9269e"
     },
     {
       "file": "special-environments.blend",
@@ -3677,27 +519,7 @@
       "bytes": 178998,
       "sha256": "ffe79248ba2fc4e6e699e5773403d703fb38d418be11abaa8bd724740c50e704",
       "uncompressed_bytes": 1794936,
-      "uncompressed_sha256": "fde42fd5512a1c512609c92e6be0efc62dacd6ab4de1487a97537111f5d3601d",
-      "chunks": [
-        {
-          "file": "chunks/special-environments.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "f1e4295dfcd6e64d6ad1e880ff97934c9f5671edabb04e9e3a2c69a5edbdc84e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-environments.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "661bab64288ee4663683dbefb44abd9a5a4b4cdac0c39308e27d7cc229704eb6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-environments.blend.002.b64",
-          "bytes": 47926,
-          "sha256": "a50509a80ede3c8dca95525cd2ec20e12771ed62f11a1f3d0b0b2c450c30eb41",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "fde42fd5512a1c512609c92e6be0efc62dacd6ab4de1487a97537111f5d3601d"
     },
     {
       "file": "special-interiors.blend",
@@ -3705,51 +527,7 @@
       "bytes": 403979,
       "sha256": "b3802133171fa1b0afac3ac4bf930db607129d90a15716a02ef7ecd79da6c624",
       "uncompressed_bytes": 5430648,
-      "uncompressed_sha256": "d652d6b3e08a8546435c029c381bf7cea38afd2a6e3a22c30dcf56bb12f2bc82",
-      "chunks": [
-        {
-          "file": "chunks/special-interiors.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "6c0bb2a99fb2e52067e98ffcac812bcd8bb56ee2be0d6fe356f0627af1318ff1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "fbb624bb8b9ac65c79c36188627a5c62337e569e2050488e82a6e6b14e436807",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "4e3106ec7b649aa7bff4209261242dc19d6734bf446046d6b7d40fc0c1b41c85",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "e33424130e75639dbb919f289c4dbdd8fe1c2caeacc012b7d497e0f54eb8ef78",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "b45167f2d1bcea22b0235b26eaf00b229e8cc4b90f0e973f8327d4ec62947728",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "b2aa73da6f9ac8cd506744dff1d413a4d6efb1200a97081b19a6e6e5e3a3d5f9",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/special-interiors.blend.006.b64",
-          "bytes": 10763,
-          "sha256": "29d75434224582ace610f1887c40dc7331a8c13fdec5dfe337a3501188493c39",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "d652d6b3e08a8546435c029c381bf7cea38afd2a6e3a22c30dcf56bb12f2bc82"
     },
     {
       "file": "structure-extensions.blend",
@@ -3757,57 +535,7 @@
       "bytes": 485109,
       "sha256": "5cd3d6ad13602a382662daa219a51e1b06b34cea087043ae8b87318b9bd30e08",
       "uncompressed_bytes": 7817680,
-      "uncompressed_sha256": "40cd9be0fbb2db6d17837695df5153e1df362731772f1736903329dc922b08de",
-      "chunks": [
-        {
-          "file": "chunks/structure-extensions.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "7e4fbf3f9bccf64b63f8fa3088ddd86c766c9a2c7e2f6d5bad8143004afc4e16",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "ed5e8821d7503b698fcca8c4e54bd7523ac33e5a83503a5a17d66d95a8262464",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "e9185c6a00a19a6d2b954c2ba74a423d075747d4d81e0e8fc675d7a15c51f209",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "164e6898be1f345f7cf1e6133526a1882e115686e9a8536e77921c1ec3271d1a",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "86d1dda913ba6a4eac283e60345c44ec377f7fa38f7d34d5c555fac061676131",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "73373008de9698894a066c0b846e01a69d044c739a7ccc0626901dfb7fd705b3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "8d52eb68e0bb2e60e2ab3d46cd9288b0e45c390b9c1e8fab9ba9c1b8caefeb8c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/structure-extensions.blend.007.b64",
-          "bytes": 26357,
-          "sha256": "23991c85768a1c3b784b32c41b68daf91e2f5ce98dc14fce4c6e1e79bc30a267",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "40cd9be0fbb2db6d17837695df5153e1df362731772f1736903329dc922b08de"
     },
     {
       "file": "traditional-room-scenery.blend",
@@ -3815,33 +543,7 @@
       "bytes": 204215,
       "sha256": "d7c237804f0bfb87b756d6fde9bfecd34b837dfdea293d1adb9f7f081b641641",
       "uncompressed_bytes": 2451552,
-      "uncompressed_sha256": "9aff138e90b197aa3d07c58823fe258434a0e2bb633f5638f07b1f70c53fdf15",
-      "chunks": [
-        {
-          "file": "chunks/traditional-room-scenery.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "4c87b435c88730bd7b069f2007293e9595196df7b3a2b704b3cd76d007147479",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/traditional-room-scenery.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "dcfb1d3b1806c332e2e41d634d45c54e432e15b75217845e71d1f32a2cdb2882",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/traditional-room-scenery.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "a632be895994776c28abb6eb026ab5f7b34099ec3fda4a8f95a0a2e0870224af",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/traditional-room-scenery.blend.003.b64",
-          "bytes": 7607,
-          "sha256": "6e15e061ea434d05c36b112f3a852b04202d87e640dc2e4a7acae09795f3b130",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "9aff138e90b197aa3d07c58823fe258434a0e2bb633f5638f07b1f70c53fdf15"
     },
     {
       "file": "train-station.blend",
@@ -3849,21 +551,7 @@
       "bytes": 128253,
       "sha256": "8e524d0ee2620a7106f9829beea03dc3ffd0b7c8761eecb67229e572c5efc840",
       "uncompressed_bytes": 1101816,
-      "uncompressed_sha256": "8b606878bb9e4d31c58ff7b5e74027a82e79140ab784a84273b3c19bd3562a3a",
-      "chunks": [
-        {
-          "file": "chunks/train-station.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "28646d92f70057bfa9bb690c38cc2cbe16ff70c611048af3205d934245f57ff5",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/train-station.blend.001.b64",
-          "bytes": 62717,
-          "sha256": "c8e5a9e02c236cf735a870e7c6c995d6cc80815847330334b1a10600ab9843b7",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "8b606878bb9e4d31c58ff7b5e74027a82e79140ab784a84273b3c19bd3562a3a"
     },
     {
       "file": "world-exteriors.blend",
@@ -3871,279 +559,7 @@
       "bytes": 2899107,
       "sha256": "9c0390f2ec25c227bc94931b87630c18f29234422362c623d47e658e6ab7b392",
       "uncompressed_bytes": 43562032,
-      "uncompressed_sha256": "70caa496ca396d8286e45ee6433c3a38a5d390e8d47f287f12cfd4ab5f4c6d31",
-      "chunks": [
-        {
-          "file": "chunks/world-exteriors.blend.000.b64",
-          "bytes": 65536,
-          "sha256": "bf10668c8ea1b82914a7d4eb7e9df49fdee2167f4314c5985308308ad177b7f2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.001.b64",
-          "bytes": 65536,
-          "sha256": "639732a47a88e9fc23ac60445ebe09c862d36071dfbee2948f871aed9e1a60b4",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.002.b64",
-          "bytes": 65536,
-          "sha256": "6be427bd7be447ff8ab87933eca19d6c5c2ab21558bb1d7c8957c2f4399f3277",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.003.b64",
-          "bytes": 65536,
-          "sha256": "703de33141249b341e9c036ce891e763cad026f681d38da1456d58dba6f0458c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.004.b64",
-          "bytes": 65536,
-          "sha256": "6b60e68455f424bb09ae9cd0f64fc2490f4945df10c3fbc97b364f2146b30f3c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.005.b64",
-          "bytes": 65536,
-          "sha256": "14499423e7d41e91357b5303eaf8636e459d960705780b1d48d08d1786bc4448",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.006.b64",
-          "bytes": 65536,
-          "sha256": "e46cab9e41c434b516d78f257c532848669a47c715298a4278f3007636853a23",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.007.b64",
-          "bytes": 65536,
-          "sha256": "342ec71ed12ff4c604ba8b15c0ce0ec245cab142c66b0752ab280093252821e8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.008.b64",
-          "bytes": 65536,
-          "sha256": "eafdda4bd626559920e2c60268573129a14206c5f4ef759299c89b5d4093011c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.009.b64",
-          "bytes": 65536,
-          "sha256": "63752d66297b2f9770505d8126a1dfc488956c62e601f6a7b3789c48f13296d6",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.010.b64",
-          "bytes": 65536,
-          "sha256": "869b9ea153654c9a6c2a6f9c18e9ccd198ef070784ff84cf116cfa869fcac732",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.011.b64",
-          "bytes": 65536,
-          "sha256": "962fe1585738e002eead8cf3d1c513645fd404789288ce8255ea78004cca63df",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.012.b64",
-          "bytes": 65536,
-          "sha256": "b0816fef5bf9c6051bf4362968cea18fc6966506b16a961d88e7eff06b11cd8e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.013.b64",
-          "bytes": 65536,
-          "sha256": "8dbd7e1d078135e924f7221bd5b109ccf743e1ca4014a8624156f6c880fa6e24",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.014.b64",
-          "bytes": 65536,
-          "sha256": "7d18685c7fafcd6446fd5924f0af1f8c411262595eb62e58d538842e9e587814",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.015.b64",
-          "bytes": 65536,
-          "sha256": "b068c55c1ab465e8901f812d48952ae02623ff5238d7882afcbe5e68640bd968",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.016.b64",
-          "bytes": 65536,
-          "sha256": "c4f3a68c60b880ac659b1eb484150e8e7b0b008c95599e83769356a7ce19b11c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.017.b64",
-          "bytes": 65536,
-          "sha256": "105bf5c2b8924ecd255ec1af5f3bbd65cd5b8788465b80e7b3d8029ee2fed68e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.018.b64",
-          "bytes": 65536,
-          "sha256": "d84f360dcc1bf61d1b628cf8ee76ed49a13d7b147a1ee3c19b42ff17522e5364",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.019.b64",
-          "bytes": 65536,
-          "sha256": "0e5492cff0897bcadaf13e2ce7862cda58ac766f42c6ee3b1df88683d529cd49",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.020.b64",
-          "bytes": 65536,
-          "sha256": "ecc655eec821fa1baaae45b16d9474d1da70cd5591a5cadbce45d50a934da3ea",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.021.b64",
-          "bytes": 65536,
-          "sha256": "8def1cad2ac6d8f6b49f21b4c0b52bdded215ff12eec8bf24720b157a4b09852",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.022.b64",
-          "bytes": 65536,
-          "sha256": "eb271a74f1f93357d7fa5431275103dba2ac7384fb443bb558329a20e4e253a3",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.023.b64",
-          "bytes": 65536,
-          "sha256": "a90641f5ecdde42fb810cd8e51dcddf3885cd5ede81f88b8aed851e5981b5580",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.024.b64",
-          "bytes": 65536,
-          "sha256": "5e4b582877c7c7b4da1051ae275ae1e9c62007650718a5c3568e63699ef72951",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.025.b64",
-          "bytes": 65536,
-          "sha256": "a7222507ff8c2567c650cf4d96ccae15abcb8e66af4df1d6f0daac1ef7f4fe37",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.026.b64",
-          "bytes": 65536,
-          "sha256": "1ad4c325f811b0de61707d836b954ed04676c75ad23b080135b4316063260f0f",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.027.b64",
-          "bytes": 65536,
-          "sha256": "7235273a4ee2dda38554bc73af9c11b510b48635320996d60a1baa13d438a00c",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.028.b64",
-          "bytes": 65536,
-          "sha256": "98e2711fb758df38a2726bc37be7d0e05486302475b2317ee95333c4d814ce97",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.029.b64",
-          "bytes": 65536,
-          "sha256": "7ee0c7486b1868556a16663749908eda81098e17d6fc8e607a1efec86f5e30d2",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.030.b64",
-          "bytes": 65536,
-          "sha256": "56c73378c344d28324c679467ff3ea54fd70b995aeb2fe0fdc4fb45af575471e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.031.b64",
-          "bytes": 65536,
-          "sha256": "2603fa4713003d9965fda3e8c86426eccb49683cb117416f1beb2890983efd75",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.032.b64",
-          "bytes": 65536,
-          "sha256": "3e665e9bc9d722bbed4630ce0cbcb786631b37fd054ad59c48ea3dc904e7a844",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.033.b64",
-          "bytes": 65536,
-          "sha256": "14a81d18a0c68c5d0989b4cc81557c9b67c70380530c41303b8051fac12e644b",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.034.b64",
-          "bytes": 65536,
-          "sha256": "ee778bb67257240ca54b498824447bcf460433d496af4c8a20127143fb21b588",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.035.b64",
-          "bytes": 65536,
-          "sha256": "4843272142dc0364b0a5c6cd9b9c3fc461c2317e8a6919685ca145c0741c0923",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.036.b64",
-          "bytes": 65536,
-          "sha256": "6efe794594973b7e4dfdda9c8ed043435c2303fb9cc155d5eac88c0cf30f8cab",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.037.b64",
-          "bytes": 65536,
-          "sha256": "23b1a99d733fbb24b8a6b77cb651ea87d012f2ed708dab211bbac258db08f978",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.038.b64",
-          "bytes": 65536,
-          "sha256": "c5d2e03d45ba3c445392e65cd973756ed90de234ea9146aa0109859262f9a3ac",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.039.b64",
-          "bytes": 65536,
-          "sha256": "436ca6d7b4dcb23d669337330f4386c8bd5bb0868676e7d8888a982156f2fcaa",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.040.b64",
-          "bytes": 65536,
-          "sha256": "9f0b4b9e07154e19ba556cb489ff83f41d027c40d04f43f9de06b195735ce7f1",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.041.b64",
-          "bytes": 65536,
-          "sha256": "61031bcfedc2aee294eb482f38c2f8c2bbf2fb918cd24e23f0201b3a84be96a8",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.042.b64",
-          "bytes": 65536,
-          "sha256": "c27efed0d33206a6f281223c9cc2ee5f03e74fb5b13918b7d424e2f349fa786e",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.043.b64",
-          "bytes": 65536,
-          "sha256": "40c077dabf7289bd61178b3c301bfed553e539767c4c4f024da63198af2b0d09",
-          "encoding": "base64"
-        },
-        {
-          "file": "chunks/world-exteriors.blend.044.b64",
-          "bytes": 15523,
-          "sha256": "07bec6199ab41f8f4c23430a15d7fd97889140baf018c81ff970e2600dbbe48f",
-          "encoding": "base64"
-        }
-      ]
+      "uncompressed_sha256": "70caa496ca396d8286e45ee6433c3a38a5d390e8d47f287f12cfd4ab5f4c6d31"
     }
   ]
 }

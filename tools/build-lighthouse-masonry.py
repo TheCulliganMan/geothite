@@ -8,7 +8,9 @@ only to one cardinal side, the cap or underside. The renderer omits shared
 sides, so every complete source drawing supplies its own corners and junctions.
 """
 from pathlib import Path
-import base64, gzip, hashlib, json, math, sys
+import hashlib, json, math, sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model, stored_model_size
 
 PALETTE = {
     'warm_limestone': (.56, .53, .43, 1.),
@@ -163,9 +165,7 @@ def document(asset):
 
 def save_runtime(asset,output):
     raw=(json.dumps(document(asset),separators=(',',':'))+'\n').encode()
-    compressed=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));compressed[9]=255
-    payload={'storage':'geothite-model-gzip-v1','bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'data':base64.b64encode(compressed).decode()}
-    (output/(asset.name+'.mesh.json')).write_text(json.dumps(payload,separators=(',',':'))+'\n')
+    path=output/(asset.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 
 
 def build_blender(assets,output,skip_preview):
@@ -252,6 +252,6 @@ def main():
     for a in assets:save_runtime(a,output)
     if '--runtime-only' not in args:build_blender(assets,output,'--skip-preview' in args)
     for a in assets:
-        d=document(a);print(a.name, sum(len(p['indices'])//3 for p in d['primitives']),'triangles', (output/(a.name+'.mesh.json')).stat().st_size,'bytes')
+        d=document(a);print(a.name, sum(len(p['indices'])//3 for p in d['primitives']),'triangles', stored_model_size(output/(a.name+'.mesh.json')),'bytes')
 
 if __name__=='__main__':main()

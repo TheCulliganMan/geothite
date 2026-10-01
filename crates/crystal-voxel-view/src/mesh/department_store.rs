@@ -22,14 +22,30 @@ impl Asset {
         static MODELS: OnceLock<[Model; 8]> = OnceLock::new();
         &MODELS.get_or_init(|| {
             [
-                include_str!("../../models/department_store/window_course_1.mesh.json"),
-                include_str!("../../models/department_store/window_course_2.mesh.json"),
-                include_str!("../../models/department_store/window_course_4.mesh.json"),
-                include_str!("../../models/department_store/window_course_8.mesh.json"),
-                include_str!("../../models/department_store/window_course_10.mesh.json"),
-                include_str!("../../models/department_store/lift_side.mesh.json"),
-                include_str!("../../models/department_store/directory.mesh.json"),
-                include_str!("../../models/department_store/closed_u_display.mesh.json"),
+                crate::model_storage::include_model!(
+                    "models/department_store/window_course_1.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/window_course_2.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/window_course_4.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/window_course_8.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/window_course_10.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/lift_side.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/directory.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/department_store/closed_u_display.mesh.json"
+                ),
             ]
             .map(|s| Model::parse(s).expect("validated department store kit"))
         })[self as usize]

@@ -7,26 +7,30 @@ pub(crate) fn gym_model(index: usize) -> &'static Model {
     static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../models/gym_scenery/planter_leafy.mesh.json"),
-            include_str!("../models/gym_scenery/planter_round.mesh.json"),
-            include_str!("../models/gym_scenery/azalea_broad_tree.mesh.json"),
-            include_str!("../models/gym_scenery/celadon_round_hedge.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_00.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_01.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_02.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_03.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_04.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_05.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_06.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_07.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_08.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_09.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0a.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0b.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0c.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0d.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0e.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0f.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/planter_leafy.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/gym_scenery/azalea_broad_tree.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/gym_scenery/celadon_round_hedge.mesh.json"
+            ),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_00.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_01.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_02.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_03.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_04.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_05.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_06.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_07.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_08.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_09.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0a.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0b.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0c.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0d.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0e.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0f.mesh.json"),
         ]
         .into_iter()
         .enumerate()
@@ -92,38 +96,37 @@ mod tests {
             let mut mesh = crate::mesh::SurfaceMeshData::default();
             gym_model(index).append(&mut mesh, [-8., 8., 16., 32.], 0., 12.);
             assert!(!mesh.indices.is_empty());
-            assert!(
-                mesh.positions
-                    .iter()
-                    .all(|p| p.iter().all(|v| v.is_finite())
-                        && p[0] >= -8.001
-                        && p[0] <= 8.001
-                        && p[1] >= -0.001
-                        && p[1] <= 12.001
-                        && p[2] >= 15.999
-                        && p[2] <= 32.001)
-            );
+            assert!(mesh
+                .positions
+                .iter()
+                .all(|p| p.iter().all(|v| v.is_finite())
+                    && p[0] >= -8.001
+                    && p[0] <= 8.001
+                    && p[1] >= -0.001
+                    && p[1] <= 12.001
+                    && p[2] >= 15.999
+                    && p[2] <= 32.001));
         }
     }
     #[test]
     fn every_removed_join_triangle_is_inside_the_actual_neighbor_prism() {
         let sources = [
-            include_str!("../models/gym_scenery/maze_wall_00.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_01.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_02.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_03.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_04.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_05.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_06.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_07.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_08.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_09.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0a.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0b.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0c.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0d.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0e.mesh.json"),
-            include_str!("../models/gym_scenery/maze_wall_0f.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_00.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_01.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_02.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_03.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_04.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_05.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_06.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_07.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_08.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_09.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0a.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0b.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0c.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0d.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0e.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0f.mesh.json"),
         ];
         let exports: Vec<super::super::Export> = sources
             .into_iter()

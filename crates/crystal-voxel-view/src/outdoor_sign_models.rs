@@ -32,7 +32,8 @@ pub(crate) struct SignModel {
     pub(crate) face: [f32; 5],
 }
 impl SignModel {
-    fn parse(data: &str) -> Result<Self, String> {
+    fn parse<'a>(data: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
+        let data = data.into();
         #[derive(Deserialize)]
         struct Face {
             live_face: [f32; 5],
@@ -58,14 +59,15 @@ pub(crate) fn model(kind: Kind) -> &'static SignModel {
         ($slot:ident, $path:literal) => {{
             static $slot: OnceLock<SignModel> = OnceLock::new();
             $slot.get_or_init(|| {
-                SignModel::parse(include_str!($path)).expect("validated outdoor sign")
+                SignModel::parse(crate::model_storage::include_model!($path))
+                    .expect("validated outdoor sign")
             })
         }};
     }
     match kind {
-        Kind::Modern => load!(MODERN, "../models/outdoor_signs/modern_frame.mesh.json"),
-        Kind::Kanto => load!(KANTO, "../models/outdoor_signs/kanto_board.mesh.json"),
-        Kind::Park => load!(PARK, "../models/outdoor_signs/park_frame.mesh.json"),
-        Kind::Forest => load!(FOREST, "../models/outdoor_signs/forest_timber.mesh.json"),
+        Kind::Modern => load!(MODERN, "models/outdoor_signs/modern_frame.mesh.json"),
+        Kind::Kanto => load!(KANTO, "models/outdoor_signs/kanto_board.mesh.json"),
+        Kind::Park => load!(PARK, "models/outdoor_signs/park_frame.mesh.json"),
+        Kind::Forest => load!(FOREST, "models/outdoor_signs/forest_timber.mesh.json"),
     }
 }

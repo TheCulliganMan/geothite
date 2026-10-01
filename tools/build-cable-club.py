@@ -8,7 +8,9 @@ No game images, ROMs, imported geometry or copied source artwork are used.
 The runtime and editable Blender meshes come from the same named closed parts.
 """
 from pathlib import Path
-import base64,gzip,hashlib,json,math,sys
+import hashlib,json,math,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 PALETTE={
  'powder_blue':(.36,.63,.74,1), 'blue_inset':(.22,.44,.57,1),
  'soft_ivory':(.82,.85,.76,1), 'slate_plinth':(.15,.27,.33,1),
@@ -97,9 +99,8 @@ def document(a):
  coords=[p['positions'][i:i+3] for p in ps for i in range(0,len(p['positions']),3)]
  return dict(name=a.name,coordinate_system='right-handed; +Y up; front +Z',origin='northwest-floor',bounds=dict(min=[min(v[i] for v in coords)for i in range(3)],max=[max(v[i] for v in coords)for i in range(3)]),triangle_count=sum(len(p['indices'])//3 for p in ps),primitives=ps)
 def save_runtime(a,out):
- raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode();compressed=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));compressed[9]=255
- payload=dict(storage='geothite-model-gzip-v1',bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),data=base64.b64encode(compressed).decode())
- (out/(a.name+'.mesh.json')).write_text(json.dumps(payload,separators=(',',':'))+'\n')
+ raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode()
+ path=out/(a.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 def build_blender(assets,out,skip_preview):
  import bpy
  from mathutils import Vector

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Check original partition geometry, source reconstruction and empty bay space."""
 from pathlib import Path
+from johto_art_sources import read_source
 import collections,importlib.util,json,math,sys
 from model_asset_storage import read_model_json
+from model_asset_storage import stored_model_size
 ROOT=Path(__file__).resolve().parent.parent
 spec=importlib.util.spec_from_file_location('cable_club_art',ROOT/'tools/build-cable-club.py')
 kit=importlib.util.module_from_spec(spec);spec.loader.exec_module(kit)
@@ -34,7 +36,7 @@ def check():
     fitted=[v/s for v,s in zip(n,[1.5,.8,1.2])];length=math.sqrt(sum(v*v for v in fitted));assert length>0
     assert abs(sum((v/length)**2 for v in fitted)-1)<1e-10
    parts+=1
-  triangles+=doc['triangle_count'];stored+=path.stat().st_size
+  triangles+=doc['triangle_count'];stored+=stored_model_size(path)
  # Physical source-layout gaps: each module stays exactly inside its sparse
  # ownership. No ceiling/cap or display geometry spans a service/warp opening.
  rects=[(6,0,2,8),(14,0,2,8),(22,0,2,8),(24,0,2,6),(28,0,2,6),(30,0,2,8)]
@@ -44,13 +46,10 @@ def check():
   assert not owned.intersection((x*2+dx,y*2+dy)for dx in range(2)for dy in range(2))
  assert all((x,y)not in owned for x in (26,27)for y in range(8))
  manifest=json.loads((ROOT/'art/johto/source/manifest.json').read_text());entry=next(s for s in manifest['sources']if s['file']=='cable-club.blend')
- import base64,gzip,hashlib
- payload=b''.join(base64.b64decode((ROOT/'art/johto/source'/p['file']).read_bytes(),validate=True)for p in entry['chunks'])
- assert len(payload)==entry['bytes']and hashlib.sha256(payload).hexdigest()==entry['sha256']
- source=gzip.decompress(payload);assert source.startswith(b'BLENDER')and len(source)==entry['uncompressed_bytes']and hashlib.sha256(source).hexdigest()==entry['uncompressed_sha256']
+ read_source(ROOT/'art/johto/source',entry)
  # The 2x4 machine footprint ends before the distinct 2x2 native warp.
  capsule={(x,y)for x in range(26,28)for y in range(4)}
  assert len(capsule)==8 and not capsule.intersection(owned)
  assert not capsule.intersection((x,y)for x in range(26,28)for y in range(4,6))
- print(f'Cable Club: 3 deterministic cached models, {parts} closed positive-volume parts, {triangles:,} prototype triangles, {stored:,} stored bytes; exact six-shell and capsule openings and editable Blender chunks verified')
+ print(f'Cable Club: 3 deterministic cached models, {parts} closed positive-volume parts, {triangles:,} prototype triangles, {stored:,} stored bytes; exact six-shell and capsule openings and editable Blender source verified')
 if __name__=='__main__':check()

@@ -111,7 +111,10 @@ fn retained_triangles(export: &Export) -> Vec<bool> {
     retained
 }
 
-pub(super) fn parse_planter(source: &str) -> Result<Model, String> {
+pub(super) fn parse_planter<'a>(
+    source: impl Into<crate::model_storage::Source<'a>>,
+) -> Result<Model, String> {
+    let source = source.into();
     // Normal importer validation precedes geometric indexing and remains the
     // authority for material attributes, normal normalization and fit bounds.
     let original = Model::parse(source)?;
@@ -149,9 +152,9 @@ pub(super) fn parse_planter(source: &str) -> Result<Model, String> {
 mod tests {
     use super::*;
 
-    const SOURCES: [&str; 2] = [
-        include_str!("../models/gym_scenery/planter_leafy.mesh.json"),
-        include_str!("../models/gym_scenery/planter_round.mesh.json"),
+    const SOURCES: [crate::model_storage::Source<'static>; 2] = [
+        crate::model_storage::include_model!("models/gym_scenery/planter_leafy.mesh.json"),
+        crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"),
     ];
 
     #[test]
@@ -159,12 +162,10 @@ mod tests {
         for (source, triangles, vertices) in [(SOURCES[0], 724, 1768), (SOURCES[1], 765, 1947)] {
             let original = Model::parse(source).unwrap();
             let export: Export = crate::model_storage::parse(source).unwrap();
-            assert!(
-                export
-                    .primitives
-                    .iter()
-                    .all(|part| ConvexPart::verified(part).is_some())
-            );
+            assert!(export
+                .primitives
+                .iter()
+                .all(|part| ConvexPart::verified(part).is_some()));
             let retained = retained_triangles(&export);
             let optimized = parse_planter(source).unwrap();
             assert_eq!(optimized.surface.indices.len() / 3, triangles);

@@ -27,12 +27,24 @@ fn model(index: usize) -> &'static Model {
     static MODELS: OnceLock<[Model; 6]> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../../models/facility_radio/facility_workbench.mesh.json"),
-            include_str!("../../models/facility_radio/radio_phone_desk.mesh.json"),
-            include_str!("../../models/facility_radio/radio_memo_desk.mesh.json"),
-            include_str!("../../models/facility_radio/radio_reception_u.mesh.json"),
-            include_str!("../../models/facility_radio/radio_reception_l.mesh.json"),
-            include_str!("../../models/facility_radio/radio_counter_extension.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/facility_radio/facility_workbench.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_radio/radio_phone_desk.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_radio/radio_memo_desk.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_radio/radio_reception_u.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_radio/radio_reception_l.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/facility_radio/radio_counter_extension.mesh.json"
+            ),
         ]
         .map(|s| Model::parse(s).expect("validated original facility and radio mesh"))
     })[index]
@@ -164,12 +176,8 @@ pub(super) fn append(
         .append_source_sampled(&mut mesh.textured, bounds, 0., rise * sy, |v| {
             pixel_uv(g, p, v[0] + 0.5, v[1] + 0.5)
         }),
-        Kind::Stool | Kind::RoundStool => crate::interior_models::model(ModelKind::ArcadeStool).append_fitted(
-            &mut mesh.solid,
-            bounds,
-            0.,
-            rise * sy,
-        ),
+        Kind::Stool | Kind::RoundStool => crate::interior_models::model(ModelKind::ArcadeStool)
+            .append_fitted(&mut mesh.solid, bounds, 0., rise * sy),
         kind => model(kind.model_index()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy),
     }
     let point = |x: f32, y: f32, z: f32| [west + x * sx, y * sy, north + z * sy];

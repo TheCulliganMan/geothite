@@ -6,16 +6,10 @@ The pose equations mirror new_bark_actors.rs. Native actor root remains at
 This geometric check supplements, rather than replaces, native scene review.
 """
 from pathlib import Path
-import argparse,base64,gzip,hashlib,json,math
+from model_asset_storage import read_model_json as load
+import argparse,math
 import numpy as np
 ROOT=Path(__file__).resolve().parent.parent
-
-def load(path):
- value=json.loads(path.read_bytes())
- if value.get('storage')=='geothite-model-text-chunks-v1':value=json.loads(b''.join((path.parent/c['path']).read_bytes()for c in value['chunks']))
- if value.get('storage')=='geothite-model-gzip-v1':
-  raw=gzip.decompress(base64.b64decode(value['data'],validate=True));assert len(raw)==value['bytes']and hashlib.sha256(raw).hexdigest()==value['sha256'];value=json.loads(raw)
- return value
 
 def rotation(x=0,y=0,z=0):
  cx,sx=math.cos(x),math.sin(x);cy,sy=math.cos(y),math.sin(y);cz,sz=math.cos(z),math.sin(z)

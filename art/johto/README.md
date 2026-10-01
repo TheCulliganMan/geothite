@@ -1,67 +1,56 @@
 # Editable Johto art
 
-Code, runtime meshes and editable authoring sources live in this repository.
-These are original geometric assets, without imported game textures, ROM data,
-content packs or third-party model files.
+The original geometric
+assets, editable Blender scenes, runtime meshes and generators live here without
+imported game textures, ROM data or external content packs.
 
-## Editable Blender sources
+## Open an editable source
 
-`source/manifest.json` lists 57 complete editable Blender sources. The original
-New Bark, player-house, connected-Johto, character and foliage kits remain,
-alongside human families, creature/prop actors, battle species and refinements,
-interiors, world exteriors, dungeons and specialty room/structure kits. The latest
-addition is `cable-club.blend`. The manifest is the complete filename inventory;
-source counts do not imply visual approval of every model or scene.
+The 70 files in [`source/`](source/) are ordinary `.blend` files. Download one and
+open it directly in Blender. Their native gzip compression is understood by
+Blender; no decoding script, base64 text, Git LFS server or credentials are needed.
+The source manifest records each complete compressed and expanded SHA-256.
 
-The complete Blender files use gzip compression and are stored in small,
-repository-contained base64 text chunks (at most 64 KiB decoded each). All `.b64`
-chunks are ordinary Git text blobs. A normal checkout contains everything; no LFS object server, credentials,
-network download or content pack is needed to reconstruct the sources.
-
-Run:
+The native sources total 35,306,305 bytes and expand to 325,888,248 bytes. The
+largest is `world-exteriors.blend`, at 2,899,107 bytes. Existing scene bytes are
+preserved exactly by the storage migration. Source counts and integrity checks
+do not imply visual approval of every scene.
 
 ```sh
-python3 tools/johto_art_sources.py
+python3 tools/johto_art_sources.py --check
+python3 tools/check-johto-models.py
 ```
 
-This verifies every chunk and the compressed and expanded complete-file SHA256,
-then reconstructs all canonical gzip-compressed `.blend` files in
-`art/johto/source/`. Blender opens these directly. Existing locally edited files
-are protected unless `--force` is explicitly supplied. `--output-dir` selects
-another destination; `--check` performs the same decoding, hash and Blender-header
-checks in memory without writing files. Reconstructed files are ignored by Git.
-The latest check validates all 57 sources and 536 chunks with no orphaned chunks;
-it does not claim a new Blender-open or visual review of every source.
+`--output-dir` optionally copies verified sources elsewhere. Locally edited
+outputs are protected unless `--force` is supplied. After editing an authored
+scene, `--store path/to/scene.blend --name existing-name.blend` replaces that
+native file and updates its identities. An uncompressed or Zstandard Blender
+save is normalized to native gzip; an existing gzip save is retained unchanged.
 
-`source/manifest.json` records order, sizes and hashes of every chunk plus the
-compressed and uncompressed complete-file identities. `python3
-tools/check-johto-models.py` validates the source bytes, Blender headers, runtime
-model JSON and the renderer's embedded references. CI runs this after an ordinary
-checkout. The gzip-compressed sources total 33,249,672 bytes (44,334,264 bytes
-as base64 text), expanding to 305,027,040 bytes. The largest reconstructed gzip
-file is 2,899,107 bytes. This bounded, fully in-repository format avoids missing
-LFS objects and retains the exact authored files. Future asset edits must
-regenerate affected chunks and manifest hashes before committing.
+## Runtime models and reproducible authoring
 
-## Reproducible generators and runtime assets
+The [`tools/`](../../tools/) generators retain individual authored objects and
+joint definitions. The runtime catalog lives under
+[`crates/crystal-voxel-view/models/`](../../crates/crystal-voxel-view/models/).
+Its `.json` files are the exact, directly readable original geometry documents.
+Cargo compresses them only into ignored build output; canonical source files
+contain no encoded payload or transport wrapper. See the
+[storage helpers](../../docs/art/model-storage.md) to read or regenerate a model.
 
-The original generators live in `tools/`:
+Character animation is implemented by the renderer; Blender files contain
+editable joint/mesh authoring data, not prerecorded gameplay. Shared human
+geometry and lazy catalog loading are retained.
 
-- `build-new-bark-models.py`
-- `build-new-bark-player-house.py`
-- `build-connected-johto-models.py`
-- `build-johto-characters.py`
-- `build-johto-foliage-lod.py`
+## PNG previews
 
-Additional `build-*.py` generators and their per-kit documentation cover the
-expanded catalog, including `build-cable-club.py`. Runtime model documents are
-committed under `crates/crystal-voxel-view/models/`, with per-kit READMEs. Plain
-JSON and lossless gzip/base64 envelopes stay in normal Git; use the
-[storage helpers](../../docs/art/model-storage.md) when reading or regenerating
-a compressed document.
-Character animation is implemented in `src/new_bark_actors.rs`; the `.blend`
-files contain editable joint/mesh authoring data, not prerecorded gameplay.
+The [gallery](ASSETS.md) displays only actual PNGs under `previews/`, named after
+their source scene. Missing previews are explicitly labeled. They are authoring
+views, not gameplay screenshots. Add a rendered PNG and run:
 
-See `docs/new-bark-3d.md` for generation, controls, model scope, captures,
-measured performance, verification and known limitations. Regenerated previews,
-GLBs, compiled binaries and game packs remain outside tracked source.
+```sh
+python3 tools/build_art_index.py
+```
+
+Previews are ordinary Git images. Source and runtime files are not regenerated by
+this index command. Game packs, compiled binaries and temporary render output
+remain outside tracked source.

@@ -1,0 +1,4 @@
+# Native authoring files and interactive geometry use ordinary Git.
+*.blend binary
+*.stl binary
+*.png binary

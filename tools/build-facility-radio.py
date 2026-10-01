@@ -5,7 +5,9 @@ blender -b --threads 2 --python tools/build-facility-radio.py -- OUTPUT
 Both editable objects and compact runtime triangles come from the same parts.
 """
 from pathlib import Path
-import base64,gzip,hashlib,json,math,sys
+import hashlib,json,math,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 PALETTE={
  'cream':(.73,.77,.65,1),'paper':(.92,.92,.79,1),'rim':(.62,.67,.55,1),
  'teal':(.22,.41,.39,1),'deep_teal':(.10,.24,.25,1),'ink':(.075,.13,.15,1),
@@ -140,12 +142,12 @@ def document(a):
  coords=[p['positions'][i:i+3]for p in ps for i in range(0,len(p['positions']),3)]
  return dict(name=a.name,coordinate_system='right-handed; +Y up; front +Z',origin='northwest-floor',bounds=dict(min=[min(v[i]for v in coords)for i in range(3)],max=[max(v[i]for v in coords)for i in range(3)]),triangle_count=sum(len(p['indices'])//3 for p in ps),primitives=ps)
 def save_runtime(a,out):
- raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode();compressed=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));compressed[9]=255
- payload=dict(storage='geothite-model-gzip-v1',bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),data=base64.b64encode(compressed).decode());(out/(a.name+'.mesh.json')).write_text(json.dumps(payload,separators=(',',':'))+'\n')
+ raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode()
+ path=out/(a.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 def build_blender(aa,out,skip_preview):
  import bpy
  from mathutils import Vector
- # Two editable chunks keep source review quick without duplicating any game art.
+ # Two editable source files keep review quick without duplicating any game art.
  for chunk,names in [('facility-workbench',['facility_workbench']),('radio-desks',[a.name for a in aa if a.name!='facility_workbench'])]:
   bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
   for col in list(bpy.data.collections):bpy.data.collections.remove(col)

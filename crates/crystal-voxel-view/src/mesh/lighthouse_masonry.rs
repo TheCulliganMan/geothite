@@ -222,7 +222,7 @@ struct Model {
     parts: Vec<Part>,
 }
 impl Model {
-    fn parse(source: &str) -> Result<Self, String> {
+    fn parse<'a>(source: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(source)?;
         let mut parts = Vec::new();
         let mut roles = [false; 6];
@@ -276,9 +276,15 @@ fn model(asset: Asset) -> &'static Model {
     static MODELS: OnceLock<[Model; 3]> = OnceLock::new();
     let models = MODELS.get_or_init(|| {
         [
-            include_str!("../../models/lighthouse_masonry/ashlar.mesh.json"),
-            include_str!("../../models/lighthouse_masonry/window_single.mesh.json"),
-            include_str!("../../models/lighthouse_masonry/window_double.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/lighthouse_masonry/ashlar.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/lighthouse_masonry/window_single.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/lighthouse_masonry/window_double.mesh.json"
+            ),
         ]
         .map(|source| Model::parse(source).expect("validated lighthouse masonry model"))
     });
@@ -607,14 +613,13 @@ mod tests {
                     mesh.solid.cutaway_ranges,
                     vec![0..mesh.solid.positions.len()]
                 );
-                assert!(
-                    mesh.solid
-                        .positions
-                        .iter()
-                        .all(|p| (32.0..=64.0).contains(&p[0])
-                            && (0.0..=32.0).contains(&p[1])
-                            && (32.0..=64.0).contains(&p[2]))
-                );
+                assert!(mesh
+                    .solid
+                    .positions
+                    .iter()
+                    .all(|p| (32.0..=64.0).contains(&p[0])
+                        && (0.0..=32.0).contains(&p[1])
+                        && (32.0..=64.0).contains(&p[2])));
                 assert!(mesh.solid.indices.len() / 3 <= 1100);
                 for tri in mesh.solid.indices.chunks_exact(3) {
                     let a = Vec3::from_array(mesh.solid.positions[tri[0] as usize]);
@@ -622,7 +627,9 @@ mod tests {
                     let c = Vec3::from_array(mesh.solid.positions[tri[2] as usize]);
                     let n = (b - a).cross(c - a);
                     assert!(n.length_squared() > 1e-8);
-                    assert!(tri.iter().all(|&i| n.dot(Vec3::from_array(mesh.solid.normals[i as usize]))>0.0));
+                    assert!(tri
+                        .iter()
+                        .all(|&i| n.dot(Vec3::from_array(mesh.solid.normals[i as usize])) > 0.0));
                 }
             }
         }

@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Verify repository-complete editable sources and embedded runtime model inputs."""
 from pathlib import Path
-from model_asset_storage import read_model_bytes, read_model_json, read_model_text, validate_storage
-import gzip
-import hashlib
-import json
+from model_asset_storage import read_model_json, validate_storage
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,7 +25,8 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
     # Literal paths may be arguments to a small lazy-loader macro. Inspect the
     # actual paths rather than depending on rustfmt's include_str layout.
     for relative in re.findall(r'"([^"\n]*models/[^"\n]+\.json(?:\.include\.rs)?)"', source.read_text()):
-        path = (source.parent / relative.removesuffix('.include.rs')).resolve()
+        base = models.parent if relative.startswith('models/') else source.parent
+        path = (base / relative.removesuffix('.include.rs')).resolve()
         assert path.is_file(), (source, relative)
         if path not in model_files:
             assert path in (models / 'battle/arenas.json', models / 'johto_characters/shared.geometry.json'), path

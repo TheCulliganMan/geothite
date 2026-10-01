@@ -1,12 +1,9 @@
 """Validate geometry, opacity, closed unit bounds, face roles and compact storage."""
 from pathlib import Path
+from model_asset_storage import read_model_json as decode
+from model_asset_storage import stored_model_size
 from collections import Counter
-import base64,gzip,hashlib,json,math,sys
-
-def decode(path):
-    e=json.loads(path.read_text());assert e['storage']=='geothite-model-gzip-v1'
-    raw=gzip.decompress(base64.b64decode(e['data'],validate=True));assert len(raw)==e['bytes'];assert hashlib.sha256(raw).hexdigest()==e['sha256']
-    return json.loads(raw)
+import hashlib,json,math,sys
 
 def cross(a,b):return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 def minus(a,b):return tuple(x-y for x,y in zip(a,b))
@@ -37,7 +34,7 @@ def check(path):
     for mask in range(16):
         keep=[p for p in d['primitives'] if p['side']>=4 or mask&(1<<p['side'])]
         assert all(-1e-7<=v<=1+1e-7 for p in keep for v in p['positions'])
-    return {'asset':path.stem,'triangles':triangles,'triangles_by_side':dict(side_counts),'welded_edges':len(edges),'signed_volume':volume,'runtime_bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+    return {'asset':path.stem,'triangles':triangles,'triangles_by_side':dict(side_counts),'welded_edges':len(edges),'signed_volume':volume,'runtime_bytes':stored_model_size(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 
 if __name__=='__main__':
     root=Path(sys.argv[1]) if len(sys.argv)>1 else Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/lighthouse_masonry'

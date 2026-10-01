@@ -206,70 +206,84 @@ pub(crate) const ALL: &[Kind] = &[
     Kind::KantoBoundaryPath,
     Kind::KantoCappedPost,
 ];
-const JSON: &[&str] = &[
-    include_str!("../models/world_exteriors/east_gate.mesh.json"),
-    include_str!("../models/world_exteriors/tin_tower.mesh.json"),
-    include_str!("../models/world_exteriors/burned_tower.mesh.json"),
-    include_str!("../models/world_exteriors/lighthouse.mesh.json"),
-    include_str!("../models/world_exteriors/johto_barn.mesh.json"),
-    include_str!("../models/world_exteriors/forest_shrine.mesh.json"),
-    include_str!("../models/world_exteriors/radio_tower.mesh.json"),
-    include_str!("../models/world_exteriors/battle_tower.mesh.json"),
-    include_str!("../models/world_exteriors/modern_house.mesh.json"),
-    include_str!("../models/world_exteriors/modern_blank.mesh.json"),
-    include_str!("../models/world_exteriors/modern_shop.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_house.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_flat_house.mesh.json"),
-    include_str!("../models/world_exteriors/modern_center.mesh.json"),
-    include_str!("../models/world_exteriors/modern_mart.mesh.json"),
-    include_str!("../models/world_exteriors/modern_gym.mesh.json"),
-    include_str!("../models/world_exteriors/modern_station.mesh.json"),
-    include_str!("../models/world_exteriors/modern_department.mesh.json"),
-    include_str!("../models/world_exteriors/modern_arcade.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_center.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_mart.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_gym.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_station.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_department.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_arcade.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_museum.mesh.json"),
-    include_str!("../models/world_exteriors/silph.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_mansion.mesh.json"),
-    include_str!("../models/world_exteriors/power_plant.mesh.json"),
-    include_str!("../models/world_exteriors/modern_daycare.mesh.json"),
-    include_str!("../models/world_exteriors/forest_conifer.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_canopy.mesh.json"),
-    include_str!("../models/world_exteriors/cut_tree.mesh.json"),
-    include_str!("../models/world_exteriors/park_hedge.mesh.json"),
-    include_str!("../models/world_exteriors/shore_boulder.mesh.json"),
-    include_str!("../models/world_exteriors/route_sign.mesh.json"),
-    include_str!("../models/world_exteriors/park_bench.mesh.json"),
-    include_str!("../models/world_exteriors/timber_fence.mesh.json"),
-    include_str!("../models/world_exteriors/stone_post.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_blank.mesh.json"),
-    include_str!("../models/world_exteriors/forest_gate.mesh.json"),
-    include_str!("../models/world_exteriors/forest_gate_closed.mesh.json"),
-    include_str!("../models/world_exteriors/highland_mesa.mesh.json"),
-    include_str!("../models/world_exteriors/diglett_cave.mesh.json"),
-    include_str!("../models/world_exteriors/tower_forecourt.mesh.json"),
-    include_str!("../models/world_exteriors/lavender_radio_tower.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_route_gate.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_northwest.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_north.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_northeast.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_interior.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_southwest.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_south.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_southeast.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_notch_east.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_notch_west.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_stair_right.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_stair_corner.mesh.json"),
-    include_str!("../models/world_exteriors/ice_shelf_stair_left.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_boundary_land.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_boundary_shore.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_boundary_path.mesh.json"),
-    include_str!("../models/world_exteriors/kanto_capped_post.mesh.json"),
+const JSON: &[crate::model_storage::Source<'static>] = &[
+    crate::model_storage::include_model!("models/world_exteriors/east_gate.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/tin_tower.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/burned_tower.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/lighthouse.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/johto_barn.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/forest_shrine.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/radio_tower.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/battle_tower.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_house.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_blank.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_shop.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_house.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_flat_house.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_center.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_mart.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_gym.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_station.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_department.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_arcade.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_center.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_mart.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_gym.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_station.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_department.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_arcade.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_museum.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/silph.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_mansion.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/power_plant.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/modern_daycare.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/forest_conifer.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_canopy.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/cut_tree.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/park_hedge.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/shore_boulder.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/route_sign.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/park_bench.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/timber_fence.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/stone_post.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_blank.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/forest_gate.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/forest_gate_closed.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/highland_mesa.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/diglett_cave.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/tower_forecourt.mesh.json"),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/lavender_radio_tower.mesh.json"
+    ),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_route_gate.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_northwest.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_north.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_northeast.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_interior.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_southwest.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_south.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_southeast.mesh.json"),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/ice_shelf_notch_east.mesh.json"
+    ),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/ice_shelf_notch_west.mesh.json"
+    ),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/ice_shelf_stair_right.mesh.json"
+    ),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/ice_shelf_stair_corner.mesh.json"
+    ),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/ice_shelf_stair_left.mesh.json"
+    ),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_boundary_land.mesh.json"),
+    crate::model_storage::include_model!(
+        "models/world_exteriors/kanto_boundary_shore.mesh.json"
+    ),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_boundary_path.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_capped_post.mesh.json"),
 ];
 
 #[derive(Deserialize)]
@@ -293,7 +307,7 @@ pub(crate) struct Model {
     east: bool,
 }
 impl Model {
-    fn parse(json: &str) -> Result<Self, String> {
+    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut min = [f32::INFINITY; 3];
@@ -474,16 +488,14 @@ mod tests {
         assert_eq!(m.anchor.unwrap()[0], m.max[0]);
         let mut out = SurfaceMeshData::default();
         m.append_fitted(&mut out, [0.0, 64.0, 0.0, 64.0], 0.0, 16.0, Some(48.0));
-        assert!(
-            out.positions
-                .iter()
-                .all(|v| v[0] >= -0.001 && v[0] <= 64.001 && v[2] >= -0.001 && v[2] <= 64.001)
-        );
-        assert!(
-            out.positions
-                .iter()
-                .any(|v| (v[0] - 64.0).abs() < 0.001 && v[1] < 4.0)
-        );
+        assert!(out
+            .positions
+            .iter()
+            .all(|v| v[0] >= -0.001 && v[0] <= 64.001 && v[2] >= -0.001 && v[2] <= 64.001));
+        assert!(out
+            .positions
+            .iter()
+            .any(|v| (v[0] - 64.0).abs() < 0.001 && v[1] < 4.0));
     }
     #[test]
     fn all_door_bands_preserve_center_without_reversing_side_wings() {

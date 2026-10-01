@@ -7,7 +7,9 @@ Runtime triangles and editable Blender objects share the same original parts.
 No game art, source textures, or content pack are imported into the asset.
 """
 from pathlib import Path
-import base64,gzip,hashlib,json,math,sys
+import hashlib,json,math,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 PALETTE={
  'oak':(.56,.43,.20,1),'grain':(.62,.49,.25,1),'edge':(.79,.66,.37,1),
  'shadow':(.27,.23,.15,1),'rail':(.40,.32,.18,1),'foot':(.17,.20,.18,1),
@@ -113,8 +115,8 @@ def document(a):
  coords=[p['positions'][i:i+3]for p in ps for i in range(0,len(p['positions']),3)]
  return dict(name=a.name,coordinate_system='right-handed; +Y up; front +Z',origin='northwest-floor',bounds=dict(min=[min(v[i]for v in coords)for i in range(3)],max=[max(v[i]for v in coords)for i in range(3)]),triangle_count=sum(len(p['indices'])//3 for p in ps),primitives=ps)
 def save_runtime(a,out):
- raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode();compressed=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));compressed[9]=255
- payload=dict(storage='geothite-model-gzip-v1',bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),data=base64.b64encode(compressed).decode());(out/(a.name+'.mesh.json')).write_text(json.dumps(payload,separators=(',',':'))+'\n')
+ raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode()
+ path=out/(a.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 def build_blender(aa,out,skip_preview):
  import bpy
  from mathutils import Vector

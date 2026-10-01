@@ -84,7 +84,7 @@ pub(crate) struct Model {
 }
 
 impl Model {
-    fn parse(json: &str) -> Result<Self, String> {
+    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut min = [f32::INFINITY; 3];
@@ -275,47 +275,62 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
     static TREE: OnceLock<Model> = OnceLock::new();
     static FLOWERS: OnceLock<Model> = OnceLock::new();
     let (cache, json) = match kind {
-        ModelKind::House => (&HOUSE, include_str!("../models/new_bark/house.mesh.json")),
+        ModelKind::House => (
+            &HOUSE,
+            crate::model_storage::include_model!("models/new_bark/house.mesh.json"),
+        ),
         ModelKind::PlayerHouse => (
             &PLAYER_HOUSE,
-            include_str!("../models/new_bark/player_house.mesh.json"),
+            crate::model_storage::include_model!("models/new_bark/player_house.mesh.json"),
         ),
-        ModelKind::Lab => (&LAB, include_str!("../models/new_bark/lab.mesh.json")),
+        ModelKind::Lab => (
+            &LAB,
+            crate::model_storage::include_model!("models/new_bark/lab.mesh.json"),
+        ),
         ModelKind::Pokecenter => (
             &POKECENTER,
-            include_str!("../models/johto/pokecenter.mesh.json"),
+            crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
         ),
-        ModelKind::Mart => (&MART, include_str!("../models/johto/mart.mesh.json")),
+        ModelKind::Mart => (
+            &MART,
+            crate::model_storage::include_model!("models/johto/mart.mesh.json"),
+        ),
         ModelKind::RouteGate => (
             &ROUTE_GATE,
-            include_str!("../models/johto/route_gate.mesh.json"),
+            crate::model_storage::include_model!("models/johto/route_gate.mesh.json"),
         ),
         ModelKind::TraditionalHouse => (
             &TRADITIONAL_HOUSE,
-            include_str!("../models/johto/traditional_house.mesh.json"),
+            crate::model_storage::include_model!("models/johto/traditional_house.mesh.json"),
         ),
         ModelKind::VioletGym => (
             &VIOLET_GYM,
-            include_str!("../models/johto/violet_gym.mesh.json"),
+            crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),
         ),
         ModelKind::SproutTower => (
             &SPROUT_TOWER,
-            include_str!("../models/johto/sprout_tower.mesh.json"),
+            crate::model_storage::include_model!("models/johto/sprout_tower.mesh.json"),
         ),
-        ModelKind::Grass => (&GRASS, include_str!("../models/johto/grass.mesh.json")),
+        ModelKind::Grass => (
+            &GRASS,
+            crate::model_storage::include_model!("models/johto/grass.mesh.json"),
+        ),
 
         ModelKind::TreeLod => (
             &TREE_LOD,
-            include_str!("../models/johto/tree_lod.mesh.json"),
+            crate::model_storage::include_model!("models/johto/tree_lod.mesh.json"),
         ),
         ModelKind::GrassLod => (
             &GRASS_LOD,
-            include_str!("../models/johto/grass_lod.mesh.json"),
+            crate::model_storage::include_model!("models/johto/grass_lod.mesh.json"),
         ),
-        ModelKind::Tree => (&TREE, include_str!("../models/new_bark/tree.mesh.json")),
+        ModelKind::Tree => (
+            &TREE,
+            crate::model_storage::include_model!("models/new_bark/tree.mesh.json"),
+        ),
         ModelKind::Flowers => (
             &FLOWERS,
-            include_str!("../models/new_bark/flowers.mesh.json"),
+            crate::model_storage::include_model!("models/new_bark/flowers.mesh.json"),
         ),
     };
     cache.get_or_init(|| Model::parse(json).expect("checked-in authored mesh must be valid"))
@@ -348,20 +363,16 @@ mod tests {
             assert_eq!(model.surface.positions.len(), model.surface.normals.len());
             assert_eq!(model.surface.positions.len(), model.surface.colors.len());
             assert_eq!(model.surface.positions.len(), model.surface.uvs.len());
-            assert!(
-                model
-                    .surface
-                    .indices
-                    .iter()
-                    .all(|&i| (i as usize) < model.surface.positions.len())
-            );
-            assert!(
-                model
-                    .surface
-                    .normals
-                    .iter()
-                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001)
-            );
+            assert!(model
+                .surface
+                .indices
+                .iter()
+                .all(|&i| (i as usize) < model.surface.positions.len()));
+            assert!(model
+                .surface
+                .normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001));
         }
     }
 

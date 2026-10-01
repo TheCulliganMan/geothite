@@ -49,17 +49,39 @@ pub(crate) fn extension_model(kind: ExtensionKind) -> &'static Model {
     static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../models/dungeon_extensions/ruins_frieze.mesh.json"),
-            include_str!("../models/dungeon_extensions/league_wall.mesh.json"),
-            include_str!("../models/dungeon_extensions/passage_wall.mesh.json"),
-            include_str!("../models/dungeon_extensions/champion_dragon.mesh.json"),
-            include_str!("../models/dungeon_extensions/ship_bulkhead.mesh.json"),
-            include_str!("../models/dungeon_extensions/ship_door.mesh.json"),
-            include_str!("../models/dungeon_extensions/harbor_bollard.mesh.json"),
-            include_str!("../models/dungeon_extensions/dock_railing.mesh.json"),
-            include_str!("../models/dungeon_extensions/hall_of_fame_terminal.mesh.json"),
-            include_str!("../models/dungeon_extensions/puzzle_dais.mesh.json"),
-            include_str!("../models/dungeon_extensions/harbor_ferry.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/ruins_frieze.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/league_wall.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/passage_wall.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/champion_dragon.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/ship_bulkhead.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/ship_door.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/harbor_bollard.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/dock_railing.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/hall_of_fame_terminal.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/puzzle_dais.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/dungeon_extensions/harbor_ferry.mesh.json"
+            ),
         ]
         .into_iter()
         .map(|s| Model::parse(s).expect("validated original extension mesh"))

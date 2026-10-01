@@ -5,12 +5,12 @@ python3 tools/check-department-store.py [--pack content-packs/core-modular.brows
 The external pack is read in memory only. No source catalog or audit is exported.
 """
 from pathlib import Path
-import argparse,base64,collections,gzip,hashlib,importlib.util,json,math,re,struct
+from johto_art_sources import read_source
+from model_asset_storage import read_model_json as model
+from model_asset_storage import stored_model_size
+import argparse,collections,importlib.util,json,math,re,struct
 ROOT=Path(__file__).resolve().parent.parent
 spec=importlib.util.spec_from_file_location('department_art',ROOT/'tools/build-department-store.py');kit=importlib.util.module_from_spec(spec);spec.loader.exec_module(kit)
-def sha(b):return hashlib.sha256(b).hexdigest()
-def model(path):
- v=json.loads(path.read_bytes());assert v['storage']=='geothite-model-gzip-v1';raw=gzip.decompress(base64.b64decode(v['data'],validate=True));assert len(raw)==v['bytes']and sha(raw)==v['sha256'];return json.loads(raw)
 def check_models():
  count=tris=stored=0
  for a in kit.assets():
@@ -33,11 +33,11 @@ def check_models():
     x0,x1=min(v[0]for v in vs),max(v[0]for v in vs);z0,z1=min(v[2]for v in vs),max(v[2]for v in vs)
     assert x1<=16 or x0>=48 or z1<=16 or z0>=32,(p['name'],'covers floor inset')
    count+=1
-  tris+=doc['triangle_count'];stored+=path.stat().st_size
+  tris+=doc['triangle_count'];stored+=stored_model_size(path)
  # Lower centre is a closed supporting body, regardless of its dark lid finish.
  body=next(p for p in kit.u_display().parts if p[0]=='Closed lower display sealed body');vs=body[2]
  assert min(v[2]for v in vs)==32 and max(v[2]for v in vs)==63.5 and max(v[1]for v in vs)==7.6
- print(f'Geometry: 8 deterministic models, {count} closed positive-volume parts, {tris:,} triangles, {stored:,} compressed-text bytes; upper floor inset and closed lower centre verified')
+ print(f'Geometry: 8 deterministic models, {count} closed positive-volume parts, {tris:,} triangles, {stored:,} stored bytes; upper floor inset and closed lower centre verified')
 class Decoder:
  def __init__(self,b):self.b=b;self.i=0
  def read(self,n):v=self.b[self.i:self.i+n];self.i+=n;return v
@@ -122,11 +122,9 @@ def check_source():
  manifest=ROOT/'art/johto/source/manifest.json';entry_file=ROOT/'source-manifest-entry.json'
  if manifest.exists():entry=next(s for s in json.loads(manifest.read_text())['sources']if s['file']=='department-store.blend')
  elif entry_file.exists():entry=json.loads(entry_file.read_text())
- else:raise AssertionError('editable Blender source has not been packed')
- payload=b''.join(base64.b64decode((ROOT/'art/johto/source'/p['file']).read_bytes(),validate=True)for p in entry['chunks'])
- assert len(payload)==entry['bytes']and sha(payload)==entry['sha256'];raw=gzip.decompress(payload)
- assert raw.startswith(b'BLENDER')and len(raw)==entry['uncompressed_bytes']and sha(raw)==entry['uncompressed_sha256']
- print(f'Editable Blender source: {len(entry["chunks"])} verified chunks, {len(payload):,} compressed bytes')
+ else:raise AssertionError('editable Blender source has not been stored')
+ payload=read_source(ROOT/'art/johto/source',entry)
+ print(f'Editable Blender source: {entry["file"]}, {len(payload):,} compressed bytes')
 if __name__=='__main__':
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--pack',type=Path);p.add_argument('--skip-source',action='store_true');args=p.parse_args();check_models()
  if args.pack:check_pack(args.pack)

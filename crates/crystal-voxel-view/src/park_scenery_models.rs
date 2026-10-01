@@ -5,9 +5,11 @@ pub(crate) fn model(index: usize) -> &'static Model {
     static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../models/park_scenery/litter_bin.mesh.json"),
-            include_str!("../models/park_scenery/pedestal_fountain.mesh.json"),
-            include_str!("../models/park_scenery/pond_basin.mesh.json"),
+            crate::model_storage::include_model!("models/park_scenery/litter_bin.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/park_scenery/pedestal_fountain.mesh.json"
+            ),
+            crate::model_storage::include_model!("models/park_scenery/pond_basin.mesh.json"),
         ]
         .into_iter()
         .map(|data| Model::parse(data).expect("validated original park model"))

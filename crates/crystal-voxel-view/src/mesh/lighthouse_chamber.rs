@@ -138,7 +138,7 @@ struct Model {
     surface: SurfaceMeshData,
 }
 impl Model {
-    fn parse(source: &str) -> Result<Self, String> {
+    fn parse<'a>(source: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(source)?;
         let mut surface = SurfaceMeshData::default();
         for p in export.primitives {
@@ -187,9 +187,15 @@ fn model(asset: Asset) -> &'static Model {
     static MODELS: OnceLock<[Model; 3]> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../../models/lighthouse_chamber/tea_table.mesh.json"),
-            include_str!("../../models/lighthouse_chamber/keeper_cot.mesh.json"),
-            include_str!("../../models/lighthouse_chamber/red_stool.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/lighthouse_chamber/tea_table.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/lighthouse_chamber/keeper_cot.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/lighthouse_chamber/red_stool.mesh.json"
+            ),
         ]
         .map(|s| Model::parse(s).expect("validated lighthouse chamber model"))
     })[asset as usize]

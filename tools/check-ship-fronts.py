@@ -6,27 +6,21 @@ This checks authored geometry and the external source contract, not native UI,
 the Rust adapter, player movement, cutaway animation or performance.
 """
 import argparse
-import base64
 from collections import Counter
-import gzip
 import hashlib
 import importlib.util
 import json
 import math
 import os
 from pathlib import Path
+from model_asset_storage import read_model_json as decode
+from model_asset_storage import stored_model_size
 
 ROOT=Path(__file__).resolve().parents[1]
 def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path)
     result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result)
     return result
-def decode(path):
-    entry=json.loads(path.read_text())
-    assert entry['storage']=='geothite-model-gzip-v1'
-    raw=gzip.decompress(base64.b64decode(entry['data'],validate=True))
-    assert len(raw)==entry['bytes'] and hashlib.sha256(raw).hexdigest()==entry['sha256']
-    return json.loads(raw)
 def cross(a,b): return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 def sub(a,b): return tuple(x-y for x,y in zip(a,b))
 def owns(side,x,y):
@@ -72,7 +66,7 @@ def check_models():
         assert all(any(n[a]>.99 for n in all_normals) and any(n[a]<-.99 for n in all_normals)for a in range(3))
         assert all(min(p[a]for p in points)==0 and max(p[a]for p in points)==1 for a in range(3))
         assert count<3000
-        results.append({'asset':asset.name,'closed_components':len(labels),'triangles':count,'bytes':path.stat().st_size})
+        results.append({'asset':asset.name,'closed_components':len(labels),'triangles':count,'bytes':stored_model_size(path)})
     return results
 def check_pack(pack_path):
     helper=ROOT/'tools/check-ship-floor-source.py'

@@ -18,13 +18,27 @@ impl Asset {
         static MODELS: OnceLock<[Model; 7]> = OnceLock::new();
         &MODELS.get_or_init(|| {
             [
-                include_str!("../../models/ship_rooms/tea_table_short.mesh.json"),
-                include_str!("../../models/lighthouse_chamber/tea_table.mesh.json"),
-                include_str!("../../models/ship_rooms/tea_table_long.mesh.json"),
-                include_str!("../../models/ship_rooms/tea_table_mess.mesh.json"),
-                include_str!("../../models/ship_rooms/captains_desk.mesh.json"),
-                include_str!("../../models/ship_rooms/lower_bulkhead_u.mesh.json"),
-                include_str!("../../models/ship_rooms/captains_chair.mesh.json"),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/tea_table_short.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/lighthouse_chamber/tea_table.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/tea_table_long.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/tea_table_mess.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/captains_desk.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/lower_bulkhead_u.mesh.json"
+                ),
+                crate::model_storage::include_model!(
+                    "models/ship_rooms/captains_chair.mesh.json"
+                ),
             ]
             .map(|s| Model::parse(s).expect("validated original ship room asset"))
         })[if self == Self::CaptainsChair {
@@ -55,7 +69,10 @@ pub(super) struct Placement {
     ground: [usize; 2],
 }
 impl Placement {
-    pub(super) fn floor_sample_and_label(&self, source: &VisualTileSource) -> (usize, &'static str) {
+    pub(super) fn floor_sample_and_label(
+        &self,
+        source: &VisualTileSource,
+    ) -> (usize, &'static str) {
         let parity = usize::from((source.subtile_column + source.subtile_row) % 2);
         (self.ground[parity], self.asset.label())
     }
@@ -193,9 +210,16 @@ pub(super) fn append(
     if matches!(p.asset, Asset::StoolEast | Asset::StoolWest) {
         // A round 12px seat stays north of the unchanged native foot anchor
         // at local (8,16), clearing stationary and spinning operator rigs.
-        bounds = [w + 2. * g.tile_width / 8., w + 14. * g.tile_width / 8.,
-            n, n + 12. * g.tile_height / 8.];
-    } else if !matches!(p.asset, Asset::BulkheadU | Asset::FullBunk | Asset::JoinedBunk) {
+        bounds = [
+            w + 2. * g.tile_width / 8.,
+            w + 14. * g.tile_width / 8.,
+            n,
+            n + 12. * g.tile_height / 8.,
+        ];
+    } else if !matches!(
+        p.asset,
+        Asset::BulkheadU | Asset::FullBunk | Asset::JoinedBunk
+    ) {
         bounds[0] += 1.1 * g.tile_width / 8.;
         bounds[1] -= 1.1 * g.tile_width / 8.;
         bounds[2] += 1.3 * g.tile_height / 8.;
@@ -211,10 +235,16 @@ pub(super) fn append(
             };
             // Reuse the canonical cache and original editable geometry. The
             // full berth fits its complete 16x32 plot at the same 7px rise.
-            crate::dungeon_models::model(kind)
-                .append(&mut mesh.solid, bounds, 0., rise * g.tile_height / 8.);
+            crate::dungeon_models::model(kind).append(
+                &mut mesh.solid,
+                bounds,
+                0.,
+                rise * g.tile_height / 8.,
+            );
         }
-        _ => p.asset.model()
+        _ => p
+            .asset
+            .model()
             .append_fitted(&mut mesh.solid, bounds, 0., rise * g.tile_height / 8.),
     }
     // This complete source-owned wall participates in camera-aware fading;
@@ -384,12 +414,11 @@ mod tests {
                     }
                 }
                 let (w, _, n, _) = g.bounds(4, 4);
-                assert!(
-                    mesh.solid
-                        .positions
-                        .iter()
-                        .all(|v| sources::bulkhead_contains(v[0] - w, v[2] - n))
-                );
+                assert!(mesh
+                    .solid
+                    .positions
+                    .iter()
+                    .all(|v| sources::bulkhead_contains(v[0] - w, v[2] - n)));
             }
             let before = mesh.clone();
             assert!(!append(&mut mesh, &refs, &g, &p, &mut claimed));
@@ -398,33 +427,65 @@ mod tests {
     }
     #[test]
     fn ship_rooms_round_stools_and_full_bunks_reuse_original_cached_geometry() {
-        for asset in [Asset::StoolEast, Asset::StoolWest, Asset::FullBunk, Asset::JoinedBunk] {
+        for asset in [
+            Asset::StoolEast,
+            Asset::StoolWest,
+            Asset::FullBunk,
+            Asset::JoinedBunk,
+        ] {
             let (cells, g) = fixture(asset);
             let refs: Vec<_> = cells.iter().collect();
-            let p = Placement { asset, column: 4, row: 4, ground: [0, 1] };
+            let p = Placement {
+                asset,
+                column: 4,
+                row: 4,
+                ground: [0, 1],
+            };
             let mut mesh = TerrainMeshData::default();
             let mut claimed = vec![false; cells.len()];
             assert!(append(&mut mesh, &refs, &g, &p, &mut claimed));
             let (w, _, n, _) = g.bounds(4, 4);
             let (kind, bounds) = if matches!(asset, Asset::FullBunk | Asset::JoinedBunk) {
-                (crate::dungeon_models::Kind::ShipBunk, [w, w + 16., n, n + 32.])
+                (
+                    crate::dungeon_models::Kind::ShipBunk,
+                    [w, w + 16., n, n + 32.],
+                )
             } else {
-                (crate::dungeon_models::Kind::ShipStool, [w + 2., w + 14., n, n + 12.])
+                (
+                    crate::dungeon_models::Kind::ShipStool,
+                    [w + 2., w + 14., n, n + 12.],
+                )
             };
             let mut cached = SurfaceMeshData::default();
             crate::dungeon_models::model(kind).append(&mut cached, bounds, 0., 7.);
-            assert_eq!(mesh.solid, cached, "reuse must use the canonical mesh/cache/fitting");
-            assert_eq!(claimed.iter().filter(|&&v| v).count(), if matches!(asset, Asset::FullBunk | Asset::JoinedBunk) { 8 } else { 4 });
+            assert_eq!(
+                mesh.solid, cached,
+                "reuse must use the canonical mesh/cache/fitting"
+            );
+            assert_eq!(
+                claimed.iter().filter(|&&v| v).count(),
+                if matches!(asset, Asset::FullBunk | Asset::JoinedBunk) {
+                    8
+                } else {
+                    4
+                }
+            );
         }
     }
     #[test]
     fn ship_rooms_new_furniture_yields_to_every_custom_profile_and_rejects_stale_feet() {
-        for asset in [Asset::StoolEast, Asset::StoolWest, Asset::FullBunk, Asset::JoinedBunk] {
+        for asset in [
+            Asset::StoolEast,
+            Asset::StoolWest,
+            Asset::FullBunk,
+            Asset::JoinedBunk,
+        ] {
             let (mut cells, g) = fixture(asset);
             let (w, h, _) = asset.size();
             let (block, x, y, _) = asset.expected(0, 0).unwrap();
-            let tiles: Vec<Vec<_>> = (0..h).map(|dy| (0..w)
-                .map(|dx| asset.expected(dx, dy).unwrap().3).collect()).collect();
+            let tiles: Vec<Vec<_>> = (0..h)
+                .map(|dy| (0..w).map(|dx| asset.expected(dx, dy).unwrap().3).collect())
+                .collect();
             let custom: Document = serde_json::from_value(serde_json::json!({"objects":[{
                 "name":"My source-complete ship furniture", "map":"FastShipB1F",
                 "tileset":"lighthouse", "metatile":block, "origin":[x,y], "tiles":tiles,
@@ -432,8 +493,14 @@ mod tests {
                 "ground":13, "top_pixels":8, "depth_pixels":12
             }]})).unwrap();
             let empty = vec![false; cells.len()];
-            assert!(resolve("FastShipB1F", &cells.iter().collect::<Vec<_>>(), &g,
-                Some(&custom), &empty).is_empty());
+            assert!(resolve(
+                "FastShipB1F",
+                &cells.iter().collect::<Vec<_>>(),
+                &g,
+                Some(&custom),
+                &empty
+            )
+            .is_empty());
             if asset == Asset::JoinedBunk {
                 for start in [0, 2] {
                     // A custom upper or lower half owns the entire compound
@@ -443,13 +510,26 @@ mod tests {
                     half.objects[0].metatiles = None;
                     half.objects[0].metatile = block;
                     half.objects[0].origin = [x, y];
-                    half.objects[0].tiles = (start..start + 2).map(|dy| (0..2)
-                        .map(|dx| asset.expected(dx, dy).unwrap().3).collect()).collect();
-                    assert!(resolve("FastShipB1F", &cells.iter().collect::<Vec<_>>(), &g,
-                        Some(&half), &empty).is_empty());
+                    half.objects[0].tiles = (start..start + 2)
+                        .map(|dy| (0..2).map(|dx| asset.expected(dx, dy).unwrap().3).collect())
+                        .collect();
+                    assert!(resolve(
+                        "FastShipB1F",
+                        &cells.iter().collect::<Vec<_>>(),
+                        &g,
+                        Some(&half),
+                        &empty
+                    )
+                    .is_empty());
                 }
             }
-            let out = resolve("FastShipB1F", &cells.iter().collect::<Vec<_>>(), &g, None, &empty);
+            let out = resolve(
+                "FastShipB1F",
+                &cells.iter().collect::<Vec<_>>(),
+                &g,
+                None,
+                &empty,
+            );
             assert_eq!(out.len(), 1);
             for y in 0..h {
                 for x in 0..w {
@@ -457,7 +537,13 @@ mod tests {
                     cells[i].source.tile_index ^= 1;
                     let mut mesh = TerrainMeshData::default();
                     let mut claimed = empty.clone();
-                    assert!(!append(&mut mesh, &cells.iter().collect::<Vec<_>>(), &g, &out[0], &mut claimed));
+                    assert!(!append(
+                        &mut mesh,
+                        &cells.iter().collect::<Vec<_>>(),
+                        &g,
+                        &out[0],
+                        &mut claimed
+                    ));
                     assert_eq!(mesh, TerrainMeshData::default());
                     assert_eq!(claimed, empty);
                     cells[i].source.tile_index ^= 1;
@@ -465,5 +551,4 @@ mod tests {
             }
         }
     }
-
 }

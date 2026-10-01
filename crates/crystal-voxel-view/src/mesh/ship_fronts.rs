@@ -29,8 +29,12 @@ fn shell(kind: Kind) -> &'static Model {
     static MODELS: OnceLock<[Model; 2]> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../../models/ship_fronts/room_front_west.mesh.json"),
-            include_str!("../../models/ship_fronts/room_front_east.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/ship_fronts/room_front_west.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/ship_fronts/room_front_east.mesh.json"
+            ),
         ]
         .map(|s| Model::parse(s).expect("validated original room-front shell"))
     })[kind as usize]

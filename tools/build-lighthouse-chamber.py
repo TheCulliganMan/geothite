@@ -9,7 +9,9 @@ this generator. Model coordinates are normalized inside each source footprint;
 Y is up and +Z is south. Gaps around furniture remain actual empty space.
 """
 from pathlib import Path
-import base64, gzip, hashlib, json, math, sys
+import hashlib, json, math, sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 PALETTE={
  'walnut':(.26,.155,.085,1), 'wood_cut':(.40,.27,.14,1),
  'wood_highlight':(.53,.37,.19,1), 'dark_joinery':(.17,.105,.065,1),
@@ -127,8 +129,8 @@ def document(asset):
   primitives.append(p)
  return {'format':'geothite-lighthouse-chamber-v1','name':asset.name,'dimensions_pixels':dims,'primitives':primitives}
 def save_runtime(asset,out):
- raw=(json.dumps(document(asset),separators=(',',':'))+'\n').encode();c=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));c[9]=255
- (out/(asset.name+'.mesh.json')).write_text(json.dumps({'storage':'geothite-model-gzip-v1','bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'data':base64.b64encode(c).decode()},separators=(',',':'))+'\n')
+ raw=(json.dumps(document(asset),separators=(',',':'))+'\n').encode()
+ path=out/(asset.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 def build_blender(models,out,skip_preview):
  import bpy
  from mathutils import Vector

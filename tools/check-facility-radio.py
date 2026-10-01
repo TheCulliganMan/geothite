@@ -4,11 +4,12 @@ external Crystalpack. Pack source stays in memory and temporary Rust fixtures
 are removed. No Cargo, native GUI, Blender or source catalog is required.
 """
 from pathlib import Path
-import argparse,base64,collections,gzip,hashlib,importlib.util,json,math,os,shutil,struct,subprocess,tempfile
+from johto_art_sources import read_source
+from model_asset_storage import read_model_json as read_model
+from model_asset_storage import stored_model_size
+import argparse,collections,importlib.util,json,math,os,shutil,struct,subprocess,tempfile
 ROOT=Path(__file__).resolve().parent.parent
 spec=importlib.util.spec_from_file_location('facility_radio_art',ROOT/'tools/build-facility-radio.py');kit=importlib.util.module_from_spec(spec);spec.loader.exec_module(kit)
-def read_model(path):
- v=json.loads(path.read_bytes());assert v['storage']=='geothite-model-gzip-v1';raw=gzip.decompress(base64.b64decode(v['data'],validate=True));assert len(raw)==v['bytes']and hashlib.sha256(raw).hexdigest()==v['sha256'];return json.loads(raw)
 def check_models():
  tris=stored=parts=0
  for a in kit.assets():
@@ -32,7 +33,7 @@ def check_models():
    if doc['name']=='radio_reception_l':assert x1<=16 or z1<=16,(p['name'],'covers L staff opening')
    if doc['name']=='radio_reception_u':assert x1<=16 or x0>=144 or z1<=16 or (x0>=80 and x1<=96 and z1<=24),(p['name'],'covers U staff opening')
    parts+=1
-  tris+=doc['triangle_count'];stored+=path.stat().st_size
+  tris+=doc['triangle_count'];stored+=stored_model_size(path)
  print(f'PASS geometry: 6 deterministic models, {parts} closed positive-volume parts, {tris} triangles, {stored} compact bytes; native staff spaces empty')
 class Decoder:
  def __init__(self,b):self.b=b;self.i=0
@@ -150,16 +151,11 @@ def check_source():
  manifest=ROOT/'art/johto/source/manifest.json';entries_file=ROOT/'source-manifest-entries.json'
  if manifest.exists():entries=[s for s in json.loads(manifest.read_text())['sources']if s['file']in['facility-workbench.blend','radio-desks.blend']]
  elif entries_file.exists():entries=json.loads(entries_file.read_text())
- else:raise AssertionError('editable Blender source has not been packed; use --skip-source only while staging')
+ else:raise AssertionError('editable Blender source has not been stored; use --skip-source only while staging')
  assert {e['file']for e in entries}=={'facility-workbench.blend','radio-desks.blend'}
  for entry in entries:
-  parts=[]
-  for part in entry['chunks']:
-   payload=base64.b64decode((ROOT/'art/johto/source'/part['file']).read_bytes(),validate=True)
-   assert len(payload)==part['bytes']<=65536 and hashlib.sha256(payload).hexdigest()==part['sha256'];parts.append(payload)
-  payload=b''.join(parts);assert len(payload)==entry['bytes']and hashlib.sha256(payload).hexdigest()==entry['sha256'];raw=gzip.decompress(payload)
-  assert raw.startswith(b'BLENDER')and len(raw)==entry['uncompressed_bytes']and hashlib.sha256(raw).hexdigest()==entry['uncompressed_sha256']
-  print(f"PASS editable source: {entry['file']}, {len(entry['chunks'])} chunks, {len(payload)} compressed bytes")
+  payload=read_source(ROOT/'art/johto/source',entry)
+  print(f"PASS editable source: {entry['file']}, {len(payload)} compressed bytes")
 def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--pack',type=Path);parser.add_argument('--rustc',default=os.getenv('RUSTC')or shutil.which('rustc'));parser.add_argument('--skip-source',action='store_true');args=parser.parse_args();check_models()
  if args.pack:assert args.rustc,'pass --rustc';check_pack(args.pack,args.rustc)

@@ -6,7 +6,9 @@ No pack pixels, source textures, scripts, collision or game meshes are imported.
 Every part is a named editable manifold mesh. Runtime Y-up, +Z south.
 """
 from pathlib import Path
-import base64,gzip,hashlib,json,math,sys
+import hashlib,json,math,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from model_asset_storage import validate_model
 PALETTE={'walnut':(.25,.15,.09,1),'oak':(.48,.32,.17,1),'oak_cut':(.63,.47,.26,1),'edge':(.33,.225,.135,1),'paper':(.78,.77,.61,1),'paper_light':(.85,.82,.66,1),'reed':(.57,.57,.34,1),'reed_light':(.61,.61,.37,1),'ink':(.245,.32,.22,1),'plum':(.62,.37,.29,1),'brass':(.61,.49,.25,1)}
 DIMS={'slatted_rail_bay':(8,16,2.5),'theater_platform':(192,8,80),'theater_backdrop':(192,16,4)}
 def sub(a,b):return tuple(x-y for x,y in zip(a,b))
@@ -103,8 +105,8 @@ def document(asset):
   primitives.append(p)
  return {'format':'geothite-traditional-room-v1','name':asset.name,'dimensions_pixels':dims,'primitives':primitives}
 def save_runtime(a,out):
- raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode();c=bytearray(gzip.compress(raw,compresslevel=9,mtime=0));c[9]=255
- (out/(a.name+'.mesh.json')).write_text(json.dumps({'storage':'geothite-model-gzip-v1','bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'data':base64.b64encode(c).decode()},separators=(',',':'))+'\n')
+ raw=(json.dumps(document(a),separators=(',',':'))+'\n').encode()
+ path=out/(a.name+'.mesh.json');path.write_bytes(raw);validate_model(path)
 def build_blender(models,out,skip):
  import bpy
  from mathutils import Vector

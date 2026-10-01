@@ -42,8 +42,8 @@ part remains named and editable, with one floor-root empty per asset. Batches
 bound the scene's memory and dependency-graph cost. Without `--skip-preview`,
 the generator also renders each source batch's studio preview.
 
-Canonical runtime exports live here. Editable scene chunks are maintained by
-the repository's shared art-source packaging workflow; regenerate those chunks
+Canonical runtime exports live here. Editable native `.blend` files are maintained by
+the repository's shared art-source storage helper; update those files
 after changing the geometry. Temporary previews are not build inputs.
 
 ## Verification

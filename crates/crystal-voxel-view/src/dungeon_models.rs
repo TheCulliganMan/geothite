@@ -96,7 +96,7 @@ pub(crate) struct Model {
     max: [f32; 3],
 }
 impl Model {
-    fn parse(json: &str) -> Result<Self, String> {
+    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut min = [f32::INFINITY; 3];
@@ -253,25 +253,25 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
     static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
     &MODELS.get_or_init(|| {
         [
-            include_str!("../models/dungeons/cave_boulder.mesh.json"),
-            include_str!("../models/dungeons/dark_boulder.mesh.json"),
-            include_str!("../models/dungeons/ice_boulder.mesh.json"),
-            include_str!("../models/dungeons/ice_mass.mesh.json"),
-            include_str!("../models/dungeons/tower_guardian.mesh.json"),
-            include_str!("../models/dungeons/alph_guardian.mesh.json"),
-            include_str!("../models/dungeons/stone_tablet.mesh.json"),
-            include_str!("../models/dungeons/gym_plaque.mesh.json"),
-            include_str!("../models/dungeons/warehouse_crate.mesh.json"),
-            include_str!("../models/dungeons/ship_barrel.mesh.json"),
-            include_str!("../models/dungeons/ship_stool.mesh.json"),
-            include_str!("../models/dungeons/ship_rack.mesh.json"),
-            include_str!("../models/dungeons/ship_bunk.mesh.json"),
-            include_str!("../models/dungeons/porthole_bulkhead.mesh.json"),
-            include_str!("../models/dungeons/timber_column.mesh.json"),
-            include_str!("../models/dungeons/warning_beacon.mesh.json"),
-            include_str!("../models/dungeons/gym_bin.mesh.json"),
-            include_str!("../models/dungeons/league_podium.mesh.json"),
-            include_str!("../models/dungeons/timber_wall.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/cave_boulder.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/dark_boulder.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ice_boulder.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ice_mass.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/tower_guardian.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/alph_guardian.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/stone_tablet.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/gym_plaque.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/warehouse_crate.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ship_barrel.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ship_stool.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ship_rack.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/ship_bunk.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/porthole_bulkhead.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/timber_column.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/warning_beacon.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/gym_bin.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/league_podium.mesh.json"),
+            crate::model_storage::include_model!("models/dungeons/timber_wall.mesh.json"),
         ]
         .into_iter()
         .map(|s| Model::parse(s).expect("checked dungeon mesh"))
@@ -322,12 +322,11 @@ mod tests {
             let m = model(kind);
             assert!(m.surface.indices.len() / 3 >= 24, "{kind:?}");
             assert!(m.surface.indices.len() / 3 < 8000, "{kind:?}");
-            assert!(
-                m.surface
-                    .normals
-                    .iter()
-                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
-            );
+            assert!(m
+                .surface
+                .normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4));
             assert_eq!(m.surface.positions.len(), m.surface.colors.len());
             assert_eq!(m.surface.positions.len(), m.surface.uvs.len());
         }
@@ -342,11 +341,10 @@ mod tests {
                 assert!(p[1] >= 2.999 && p[1] <= 22.001);
                 assert!(p[2] >= -5.001 && p[2] <= 2.001);
             }
-            assert!(
-                mesh.normals
-                    .iter()
-                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
-            );
+            assert!(mesh
+                .normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4));
         }
     }
     #[test]
@@ -358,11 +356,11 @@ mod tests {
 
 #[path = "dungeon_extension_models.rs"]
 mod extension;
-pub(crate) use extension::{ExtensionKind, extension_model};
+pub(crate) use extension::{extension_model, ExtensionKind};
 
 #[path = "special_room_models.rs"]
 mod special_rooms;
-pub(crate) use special_rooms::{RoomAsset, room_model};
+pub(crate) use special_rooms::{room_model, RoomAsset};
 
 #[path = "gym_scenery_models.rs"]
 mod gym_scenery;
@@ -412,16 +410,14 @@ mod ship_wall_height_tests {
                     .abs()
                     < 0.0001
             );
-            assert!(
-                tall.normals
-                    .iter()
-                    .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.0001)
-            );
-            assert!(
-                tall.colors
-                    .iter()
-                    .all(|c| c[3] == 1. && c.iter().all(|v| v.is_finite()))
-            );
+            assert!(tall
+                .normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.0001));
+            assert!(tall
+                .colors
+                .iter()
+                .all(|c| c[3] == 1. && c.iter().all(|v| v.is_finite())));
         }
     }
 }
