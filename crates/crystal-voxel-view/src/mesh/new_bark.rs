@@ -1373,6 +1373,134 @@ fn shallow_bank_source(source: &VisualTileSource) -> bool {
     source.tile_index == expected
 }
 
+/// Require the complete native $07/$1a/$2f drawing, including $2f's flat
+/// eastern half. A clipped or changed block cannot authorize a bank finish.
+fn complete_kanto_shallow_bank(index: usize, cells: &[&VisualTile], g: &GridGeometry) -> bool {
+    let source = &cells[index].source;
+    if source.tileset_id.as_ref() != "kanto"
+        || !matches!(source.metatile_id, 0x07 | 0x1a | 0x2f)
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
+        return false;
+    }
+    let Some(west) = (index % g.width).checked_sub(usize::from(source.subtile_column)) else {
+        return false;
+    };
+    let Some(north) = (index / g.width).checked_sub(usize::from(source.subtile_row)) else {
+        return false;
+    };
+    west + 4 <= g.width
+        && north + 4 <= g.height
+        && (0..4).all(|y| {
+            (0..4).all(|x| {
+                let candidate = &cells[(north + y) * g.width + west + x].source;
+                let expected = if y < 3 {
+                    if source.metatile_id == 0x1a {
+                        0x39
+                    } else {
+                        0x2c
+                    }
+                } else if source.metatile_id == 0x2f {
+                    [0x37, 0x34, 0x04, 0x04][x]
+                } else {
+                    0x37
+                };
+                candidate.tileset_id == source.tileset_id
+                    && candidate.metatile_id == source.metatile_id
+                    && usize::from(candidate.subtile_column) == x
+                    && usize::from(candidate.subtile_row) == y
+                    && candidate.tile_index == expected
+            })
+        })
+}
+
+/// Match the native bank mesher's complete cell quads and cropped face UVs.
+/// Tops may borrow cap paint across a connected run; exposed sides sample the
+/// authored $37/$34 front course (including the east/west fallback). Never
+/// recolor a facade, partial/custom quad, deeper cliff, or claimed model cell.
+fn kanto_shallow_bank_surface(
+    positions: &[[f32; 3]],
+    normal: [f32; 3],
+    uvs: &[[f32; 2]],
+    sample: usize,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    authored_cells: &[Option<&str>],
+) -> Option<GroundMaterial> {
+    if !complete_kanto_shallow_bank(sample, cells, g) {
+        return None;
+    }
+    let center = positions.iter().fold([0.0; 3], |mut sum, p| {
+        for a in 0..3 {
+            sum[a] += p[a] * 0.25;
+        }
+        sum
+    });
+    let world = cell_at(
+        g,
+        center[0] - normal[0] * g.tile_width * 0.001,
+        center[2] - normal[2] * g.tile_height * 0.001,
+    )?;
+    if !complete_kanto_shallow_bank(world, cells, g)
+        || [world, sample]
+            .into_iter()
+            .any(|i| authored_cells.get(i).is_some_and(Option::is_some))
+    {
+        return None;
+    }
+    let height = g.tile_height * crate::profile::JUMP_LEDGE_HEIGHT / SOURCE_TILE_HEIGHT;
+    if shape_for_source(&cells[world].source).surface_height(g.tile_height) != height {
+        return None;
+    }
+    let (w, e, n, s) = g.bounds(world % g.width, world / g.width);
+    let (u0, u1, v0, v1) = g.uv(sample % g.width, sample / g.width);
+    let tile = cells[sample].source.tile_index;
+    if normal == [0.0, 1.0, 0.0] {
+        // These are append_top_shaded's original vertices and UV order.
+        return (positions
+            == [
+                [w, height, n],
+                [w, height, s],
+                [e, height, s],
+                [e, height, n],
+            ]
+            && uvs == [[u0, v0], [u0, v1], [u1, v1], [u1, v0]]
+            && cells[sample].source.subtile_row < 3)
+            .then_some(match tile {
+                0x2c => GroundMaterial::Lawn,
+                0x39 => GroundMaterial::Path,
+                _ => return None,
+            });
+    }
+    if !matches!(tile, 0x37 | 0x34) {
+        return None;
+    }
+    // append_bank_run_side crops the one native course to JUMP_LEDGE_HEIGHT.
+    let cv0 = v0 + (v1 - v0) * ((g.tile_height - height) / g.tile_height);
+    let cv1 = v0 + (v1 - v0);
+    let (expected_positions, expected_uvs) = match normal {
+        [0.0, 0.0, 1.0] => (
+            [[e, 0.0, s], [e, height, s], [w, height, s], [w, 0.0, s]],
+            [[u1, cv1], [u1, cv0], [u0, cv0], [u0, cv1]],
+        ),
+        [0.0, 0.0, -1.0] => (
+            [[w, 0.0, n], [w, height, n], [e, height, n], [e, 0.0, n]],
+            [[u0, cv1], [u0, cv0], [u1, cv0], [u1, cv1]],
+        ),
+        [-1.0, 0.0, 0.0] => (
+            [[w, 0.0, s], [w, height, s], [w, height, n], [w, 0.0, n]],
+            [[u1, cv1], [u1, cv0], [u0, cv0], [u0, cv1]],
+        ),
+        [1.0, 0.0, 0.0] => (
+            [[e, 0.0, n], [e, height, n], [e, height, s], [e, 0.0, s]],
+            [[u0, cv1], [u0, cv0], [u1, cv0], [u1, cv1]],
+        ),
+        _ => return None,
+    };
+    (positions == expected_positions && uvs == expected_uvs).then_some(GroundMaterial::Bank)
+}
+
 /// A finish on the exact native shallow-bank surfaces, never a new cliff.
 /// Explicit source blocks and their paint distinguish these low jumps from
 /// doors, tower platforms, deep mountain faces and shoreline reuse.
@@ -1916,14 +2044,25 @@ pub(super) fn polish_world_surfaces(
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
         let material = sampled_cell(&uvs, geometry).and_then(|i| {
-            surface_material(
+            kanto_shallow_bank_surface(
                 &positions,
                 normal,
-                &cells[i].source,
+                &uvs,
+                i,
                 cells,
                 geometry,
                 &mesh.authored_cells,
             )
+            .or_else(|| {
+                surface_material(
+                    &positions,
+                    normal,
+                    &cells[i].source,
+                    cells,
+                    geometry,
+                    &mesh.authored_cells,
+                )
+            })
         });
         if let Some(material) = material {
             if normal[1] > 0.999 && positions[0][1].abs() < 0.001 {
@@ -2308,6 +2447,284 @@ mod tests {
         assert!(
             !sprout_platform(&cells, &g, p),
             "modified native stair art is not promoted"
+        );
+    }
+
+    // Literal pack signatures, independent of the finish classifier.
+    fn kanto_bank_fixture(blocks: &[u16]) -> VisualWorldFrame {
+        let height = blocks.len() * 4 + 2;
+        frame(
+            6,
+            height as u32,
+            (0..height)
+                .flat_map(|y| {
+                    (0..6).map(move |x| {
+                        if x == 0 || x == 5 || y == 0 || y == height - 1 {
+                            return material_source("unknown_mod", 0, 0, 0, 0);
+                        }
+                        let block = blocks[(y - 1) / 4];
+                        let art = match block {
+                            0x07 => [
+                                0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c,
+                                0x2c, 0x37, 0x37, 0x37, 0x37,
+                            ],
+                            0x1a => [
+                                0x39, 0x39, 0x39, 0x39, 0x39, 0x39, 0x39, 0x39, 0x39, 0x39, 0x39,
+                                0x39, 0x37, 0x37, 0x37, 0x37,
+                            ],
+                            0x2f => [
+                                0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c,
+                                0x2c, 0x37, 0x34, 0x04, 0x04,
+                            ],
+                            _ => unreachable!(),
+                        };
+                        let sx = x - 1;
+                        let sy = (y - 1) % 4;
+                        material_source("kanto", block, sx as u8, sy as u8, art[sy * 4 + sx])
+                    })
+                })
+                .collect(),
+        )
+    }
+
+    fn kanto_bank_geometry(f: &VisualWorldFrame) -> GridGeometry {
+        GridGeometry {
+            origin_x: -f.viewport_size.x * 0.5,
+            origin_z: -f.viewport_size.y * 0.5,
+            ..geometry(f)
+        }
+    }
+
+    #[test]
+    fn kanto_shallow_banks_finish_actual_mesher_caps_and_all_four_sides() {
+        for (block, cap, top_count, side_count) in [
+            (0x07, GroundMaterial::Lawn, 16, 16),
+            (0x1a, GroundMaterial::Path, 16, 16),
+            (0x2f, GroundMaterial::Lawn, 8, 12),
+        ] {
+            let f = kanto_bank_fixture(&[block]);
+            let g = kanto_bank_geometry(&f);
+            let cells: Vec<_> = f.tiles.iter().collect();
+            let raw = build_terrain_mesh(&f).unwrap();
+            let mut counts = [0; 5];
+            let mut mesh = TerrainMeshData {
+                footing_heights: raw.footing_heights.clone(),
+                authored_cells: raw.authored_cells.clone(),
+                ..Default::default()
+            };
+            for base in (0..raw.textured.positions.len()).step_by(4) {
+                let p = &raw.textured.positions[base..base + 4];
+                let n = raw.textured.normals[base];
+                let uv = &raw.textured.uvs[base..base + 4];
+                let sample = sampled_cell(uv, &g).unwrap();
+                let material = kanto_shallow_bank_surface(p, n, uv, sample, &cells, &g, &[]);
+                if p.iter().all(|v| v[1] == 0.0) {
+                    assert_eq!(material, None, "flat ground, including $2f's east half");
+                    continue;
+                }
+                assert_eq!(
+                    material,
+                    Some(if n[1] == 1.0 {
+                        cap
+                    } else {
+                        GroundMaterial::Bank
+                    })
+                );
+                let direction = match n {
+                    [0.0, 1.0, 0.0] => 0,
+                    [0.0, 0.0, -1.0] => 1,
+                    [0.0, 0.0, 1.0] => 2,
+                    [-1.0, 0.0, 0.0] => 3,
+                    [1.0, 0.0, 0.0] => 4,
+                    _ => panic!("unexpected native bank normal"),
+                };
+                counts[direction] += 1;
+                for axis in 0..3 {
+                    let mut changed = p.to_vec();
+                    changed[0][axis] += 0.25;
+                    assert_eq!(
+                        kanto_shallow_bank_surface(&changed, n, uv, sample, &cells, &g, &[]),
+                        None,
+                        "clipped/custom geometry must retain source art"
+                    );
+                }
+                append_quad_colors(
+                    &mut mesh.textured,
+                    p.try_into().unwrap(),
+                    n,
+                    uv.try_into().unwrap(),
+                    raw.textured.colors[base..base + 4].try_into().unwrap(),
+                );
+            }
+            assert_eq!(counts[0], top_count);
+            assert_eq!(counts[1..].iter().sum::<usize>(), side_count);
+            assert!(counts.iter().all(|&count| count > 0));
+            // Apply the real finish to every original bank quad together.
+            // The existing flat-ground subdivision pass is outside this change.
+            let before = mesh.clone();
+            polish_world_surfaces(&mut mesh, "Route4", &cells, &g, [0, 0]);
+            assert!(mesh.textured.positions.is_empty());
+            assert_eq!(mesh.solid.positions, before.textured.positions);
+            assert_eq!(mesh.solid.normals, before.textured.normals);
+            assert_eq!(mesh.solid.indices, before.textured.indices);
+            assert_eq!(mesh.footing_heights, before.footing_heights);
+            assert_eq!(mesh.authored_cells, before.authored_cells);
+            assert!(mesh.animated_textured.positions.is_empty());
+            assert!(mesh.animated_solid.positions.is_empty());
+            if block == 0x2f {
+                for y in 1..5 {
+                    assert_eq!(&mesh.footing_heights[y * 6 + 3..y * 6 + 5], &[0.0, 0.0]);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn kanto_shallow_bank_finish_uses_the_actual_connected_run_uv_sample() {
+        let f = kanto_bank_fixture(&[0x07, 0x1a]);
+        let g = kanto_bank_geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let mesh = build_terrain_mesh(&f).unwrap();
+        let mut borrowed = 0;
+        for base in (0..mesh.textured.positions.len()).step_by(4) {
+            let p = &mesh.textured.positions[base..base + 4];
+            let n = mesh.textured.normals[base];
+            if n != [0.0, 1.0, 0.0] || p[0][1] == 0.0 {
+                continue;
+            }
+            let uv = &mesh.textured.uvs[base..base + 4];
+            let sample = sampled_cell(uv, &g).unwrap();
+            let expected = if cells[sample].source.tile_index == 0x2c {
+                GroundMaterial::Lawn
+            } else {
+                GroundMaterial::Path
+            };
+            assert_eq!(
+                kanto_shallow_bank_surface(p, n, uv, sample, &cells, &g, &[]),
+                Some(expected)
+            );
+            let owner = cell_at(&g, (p[0][0] + p[2][0]) * 0.5, (p[0][2] + p[2][2]) * 0.5).unwrap();
+            borrowed +=
+                usize::from(cells[owner].source.metatile_id != cells[sample].source.metatile_id);
+        }
+        assert!(
+            borrowed > 0,
+            "the mesher really borrows cap UVs across a mixed bank run"
+        );
+    }
+
+    #[test]
+    fn kanto_shallow_bank_finish_rejects_changed_clipped_unknown_and_claimed_sources() {
+        for block in [0x07, 0x1a, 0x2f] {
+            let f = kanto_bank_fixture(&[block]);
+            let g = kanto_bank_geometry(&f);
+            let source_index = 7;
+            assert!(complete_kanto_shallow_bank(
+                source_index,
+                &f.tiles.iter().collect::<Vec<_>>(),
+                &g
+            ));
+            for y in 1..5 {
+                for x in 1..5 {
+                    for field in 0..4 {
+                        let mut changed = f.clone();
+                        let source = &mut changed.tiles[y * 6 + x].source;
+                        match field {
+                            0 => source.tile_index ^= 1,
+                            1 => source.subtile_column = 4,
+                            2 => source.subtile_row = 4,
+                            _ => source.tileset_id = std::sync::Arc::from("unknown_mod"),
+                        }
+                        assert!(!complete_kanto_shallow_bank(
+                            source_index,
+                            &changed.tiles.iter().collect::<Vec<_>>(),
+                            &g
+                        ));
+                    }
+                }
+            }
+            for (width, height, dx, dy) in [(3, 4, 0, 0), (3, 4, 1, 0), (4, 3, 0, 0), (4, 3, 0, 1)]
+            {
+                let sources = (0..height)
+                    .flat_map(|y| {
+                        (0..width).map({
+                            let f = &f;
+                            move |x| f.tiles[(y + 1 + dy) * 6 + x + 1 + dx].source.clone()
+                        })
+                    })
+                    .collect();
+                let cropped = frame(width as u32, height as u32, sources);
+                let cg = kanto_bank_geometry(&cropped);
+                let cells: Vec<_> = cropped.tiles.iter().collect();
+                for i in 0..cells.len() {
+                    assert!(!complete_kanto_shallow_bank(i, &cells, &cg));
+                }
+            }
+        }
+        let f = kanto_bank_fixture(&[0x07]);
+        let g = kanto_bank_geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let mut top = SurfaceMeshData::default();
+        append_top(
+            &mut top,
+            g.bounds(1, 1).into(),
+            crate::profile::JUMP_LEDGE_HEIGHT,
+            g.uv(1, 1),
+        );
+        let p = &top.positions;
+        let uv = &top.uvs;
+        let n = [0.0, 1.0, 0.0];
+        for block in [0x06, 0x28, 0x3f, 0x57, 0x79] {
+            let mut changed = f.clone();
+            for t in &mut changed.tiles {
+                t.source.metatile_id = block;
+            }
+            assert_eq!(
+                kanto_shallow_bank_surface(
+                    p,
+                    n,
+                    uv,
+                    7,
+                    &changed.tiles.iter().collect::<Vec<_>>(),
+                    &g,
+                    &[]
+                ),
+                None
+            );
+        }
+        let mut claims = vec![None; cells.len()];
+        claims[7] = Some("custom/model");
+        assert_eq!(
+            kanto_shallow_bank_surface(p, n, uv, 7, &cells, &g, &claims),
+            None
+        );
+        for axis in 0..3 {
+            let mut changed = p.clone();
+            changed[0][axis] += 0.25;
+            assert_eq!(
+                kanto_shallow_bank_surface(&changed, n, uv, 7, &cells, &g, &[]),
+                None
+            );
+        }
+        for height in [0.0, 3.0, 8.0, 16.0] {
+            let mut changed = p.clone();
+            for v in &mut changed {
+                v[1] = height;
+            }
+            assert_eq!(
+                kanto_shallow_bank_surface(&changed, n, uv, 7, &cells, &g, &[]),
+                None
+            );
+        }
+        let mut changed_uv = uv.clone();
+        changed_uv[0][0] += 0.01;
+        assert_eq!(
+            kanto_shallow_bank_surface(p, n, &changed_uv, 7, &cells, &g, &[]),
+            None
+        );
+        assert_eq!(
+            kanto_shallow_bank_surface(p, [0.1, 0.99, 0.0], uv, 7, &cells, &g, &[]),
+            None
         );
     }
 

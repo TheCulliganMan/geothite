@@ -15,6 +15,8 @@ mod modeled_dungeons;
 mod modeled_exteriors;
 #[path = "mesh/modeled_interiors.rs"]
 mod modeled_interiors;
+#[path = "mesh/gate_counters.rs"]
+mod gate_counters;
 #[path = "mesh/new_bark.rs"]
 mod new_bark;
 #[path = "mesh/ordinary_house.rs"]

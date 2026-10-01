@@ -278,137 +278,162 @@ def slowpoke():
  smile(-.553,.25,.12)
 
 def sudowoodo():
- # Sculpted from an authored ring cage. The broad, softly squared face follows
- # the trunk rather than being a separate head, and stays legible at 3/4 view.
- # No reference pixels/textures/models are read by this generator.
- PALETTE.update({'sudowoodo_bark':(.61,.405,.285),
-                 'sudowoodo_cut':(.68,.48,.34),
-                 'sudowoodo_groove':(.32,.20,.13),
-                 'sudowoodo_ochre':(.91,.73,.29),
-                 'sudowoodo_leaf':(.32,.62,.235),
-                 'sudowoodo_leaf_light':(.39,.67,.28),
-                 'sudowoodo_mouth':(.79,.43,.34),
-                 'sudowoodo_eye':(.075,.052,.041)})
+ # One sculpted silhouette carries the face, shoulders, branch crown and roots.
+ # Broad low-poly planes and inset details stay legible at battle-camera scale.
+ # The authoring cage is original geometry; no images or textures are embedded.
+ import bmesh
+ PALETTE.update({'sudowoodo_bark':(.66,.445,.295),
+                 'sudowoodo_cut':(.77,.555,.36),
+                 'sudowoodo_groove':(.36,.225,.145),
+                 'sudowoodo_ochre':(.96,.755,.29),
+                 'sudowoodo_leaf':(.30,.60,.205),
+                 'sudowoodo_leaf_light':(.395,.685,.265),
+                 'sudowoodo_mouth':(.82,.45,.335),
+                 'sudowoodo_eye':(.08,.055,.035)})
  bark='sudowoodo_bark';groove='sudowoodo_groove'
- def mesh_part(name,verts,faces,color):
+ def mesh_part(name,verts,faces,color,smooth=True):
   me=bpy.data.meshes.new(name+' / authored cage');me.from_pydata(verts,[],faces);me.update()
   o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color))
-  for face in me.polygons:face.use_smooth=len(face.vertices)<=4
+  bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=bm.faces)
+  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=bm.faces)
+  bm.to_mesh(me);bm.free()
+  for face in me.polygons:face.use_smooth=smooth
   return o
- def sampled(nodes,steps=4):
+ def sampled(nodes,steps=3):
   controls=[Vector(n) for n in nodes];values=[]
   for i in range(len(controls)-1):
    a,b,c,d=controls[max(i-1,0)],controls[i],controls[i+1],controls[min(i+2,len(controls)-1)]
    for j in range(steps):
     t=j/steps;values.append(.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t))
   return values+[controls[-1]]
- def branch(name,nodes,color=bark,seg=16,steps=4):
+ def branch(name,nodes,seg=14,steps=3):
   nodes=sampled(nodes,steps);verts=[]
-  overall=(Vector(nodes[-1][:3])-Vector(nodes[0][:3])).normalized()
-  reference=Vector((0,1,0)) if abs(overall.y)<.8 else Vector((1,0,0))
+  reference=Vector((0,1,0))
   for i,n in enumerate(nodes):
    p=Vector(n[:3]);t=(Vector(nodes[min(i+1,len(nodes)-1)][:3])-Vector(nodes[max(i-1,0)][:3])).normalized()
    axis_x=reference.cross(t).normalized();axis_y=t.cross(axis_x).normalized()
    for j in range(seg):
-    a=math.tau*j/seg;r=max(.001,n[3])*(1+.022*math.sin(3*a+i*.43))
-    verts.append(p+(axis_x*math.cos(a)+axis_y*math.sin(a))*r)
+    a=math.tau*j/seg;verts.append(p+(axis_x*math.cos(a)+axis_y*math.sin(a))*max(.003,n[3]))
   faces=[tuple(range(seg-1,-1,-1))]
   for i in range(len(nodes)-1):
    for j in range(seg):
     a=i*seg+j;b=i*seg+(j+1)%seg;faces.append((a,b,b+seg,a+seg))
   faces.append(tuple(range((len(nodes)-1)*seg,len(nodes)*seg)))
-  return mesh_part(name,verts,faces,color)
- # Independent profiles let the tree lean, flare at the hips and taper at the
- # neck. Subtle unevenness is geometry; the face center remains gently convex.
+  return mesh_part(name,verts,faces,bark)
  profiles=sampled([
-  (-.042,.020,.155,.068,.074),(-.053,.012,.190,.118,.100),
-  (-.055,.010,.255,.153,.120),(-.043,.014,.345,.148,.113),
-  (-.007,.016,.465,.118,.103),(.023,.014,.610,.109,.099),
-  (.029,.005,.740,.116,.105),(.023,0,.880,.125,.117),
-  (.012,0,1.000,.128,.118),(.003,.004,1.061,.108,.103),
-  (-.002,.009,1.089,.056,.060),(-.003,.010,1.098,.007,.008)],3)
- seg=36;verts=[]
- for i,(cx,cy,z,rx,ry) in enumerate(profiles):
+  (-.039,.018,.155,.047,.054),(-.043,.015,.198,.108,.095),
+  (-.043,.012,.270,.158,.128),(-.030,.016,.385,.174,.137),
+  (-.005,.017,.530,.164,.132),(.015,.013,.690,.160,.137),
+  (.019,.003,.845,.182,.151),(.010,0,.997,.181,.151),
+  (.003,.003,1.065,.153,.133),(-.003,.007,1.095,.099,.095),
+  (-.007,.009,1.108,.024,.028)],3)
+ seg=24;verts=[]
+ for cx,cy,z,rx,ry in profiles:
   for j in range(seg):
-   a=math.tau*j/seg;c=math.cos(a);s=math.sin(a)
-   # A rounded rectangle cross section makes the face readable in 3/4 views.
-   exponent=.63 if z>.79 else .86
-   rough=1+.017*math.sin(a*5+z*7)+.013*math.sin(a*3-z*9)
-   x=rx*math.copysign(abs(c)**exponent,c)*rough
-   y=ry*math.copysign(abs(s)**exponent,s)*rough
+   a=math.tau*j/seg;c=math.cos(a);s=math.sin(a);exponent=.72 if z>.78 else .88
+   # The broad forehead and flattened cheek planes are part of the trunk.
+   x=rx*math.copysign(abs(c)**exponent,c);y=ry*math.copysign(abs(s)**exponent,s)
    verts.append((cx+x,cy+y,z))
  faces=[tuple(range(seg-1,-1,-1))]
  for i in range(len(profiles)-1):
   for j in range(seg):
    a=i*seg+j;b=i*seg+(j+1)%seg;faces.append((a,b,b+seg,a+seg))
  faces.append(tuple(range((len(profiles)-1)*seg,len(profiles)*seg)))
- mesh_part('Continuous leaning trunk and broad face',verts,faces,bark)
- # One narrow stalk splits into the unmistakable bare Y-shaped crown.
- branch('Crown stalk',[(-.018,.014,1.043,.034),(-.023,.014,1.107,.031),(-.041,.014,1.163,.032),(-.043,.014,1.190,.028)])
- branch('Crown left rounded fork',[(-.036,.014,1.174,.030),(-.096,.010,1.185,.035),(-.167,.011,1.213,.036),(-.202,.011,1.230,.034)])
- branch('Crown right ascending fork',[(-.044,.014,1.176,.032),(.017,.019,1.213,.034),(.067,.021,1.269,.035),(.086,.021,1.302,.034)])
- # Slightly inset rounded ends identify blunt wood branches, not horns.
- for name,p,normal in [('Left crown cut',(-.202,.011,1.230),(-.86,-.02,.48)),('Right crown cut',(.086,.021,1.302),(.47,.02,.88))]:
-  o=sphere(name,p,(.032,.032,.0025),'sudowoodo_cut',20,8);o.rotation_euler=Vector(normal).to_track_quat('Z','Y').to_euler()
- # Bent branch limbs with a thinner elbow and full three-way finger stems.
+ clay=[mesh_part('Broad gently leaning trunk and cheek planes',verts,faces,bark)]
+ clay.append(branch('Crown stalk',[(-.020,.015,1.055,.046),(-.025,.014,1.115,.040),(-.037,.015,1.177,.038)]))
+ clay.append(branch('Left blunt crown fork',[(-.037,.015,1.165,.039),(-.105,.017,1.189,.043),(-.172,.018,1.232,.039),(-.190,.018,1.250,.035)]))
+ clay.append(branch('Right blunt crown fork',[(-.039,.015,1.166,.040),(.027,.016,1.213,.042),(.085,.017,1.267,.041),(.108,.017,1.302,.035)]))
+ hands=[]
  for side in (-1,1):
-  dz=.026 if side<0 else -.008
-  shoulder=(side*.088,.011,.733)
-  elbow=(side*.297,.016,.759+dz)
-  wrist=(side*.445,-.008,.880+dz)
-  branch(('Left' if side<0 else 'Right')+' articulated branch arm',[
-   (*shoulder,.050),(side*.190,.011,.728+dz,.035),(*elbow,.031),
-   (side*.384,.004,.811+dz,.034),(*wrist,.039)],seg=18)
-  buds=[(side*.486,-.009,.986+dz),(side*.552,-.048,.867+dz),(side*.399,-.048,.932+dz)]
+  label='Left' if side<0 else 'Right';dz=.035 if side<0 else -.013
+  wrist=(side*.438,-.014,.872+dz)
+  clay.append(branch(label+' continuous shoulder and bent branch arm',[
+   (side*.115,.002,.740,.074),(side*.209,.004,.735+dz,.056),
+   (side*.313,-.003,.764+dz,.045),(side*.386,-.010,.812+dz,.045),(*wrist,.052)]))
+  buds=[(side*.458,-.018,.997+dz),(side*.537,-.048,.888+dz),(side*.365,-.068,.926+dz)]
   for k,(x,y,z) in enumerate(buds):
-   branch(('Left' if side<0 else 'Right')+' hand finger '+str(k+1),[
-    (*wrist,.024),(wrist[0]*.45+x*.55,wrist[1]*.5+y*.5,wrist[2]*.45+z*.55,.019),(x,y,z,.013)],seg=12,steps=3)
-   o=sphere(('Left' if side<0 else 'Right')+' green ball '+str(k+1),(x,y,z),(.068,.065,.069),'sudowoodo_leaf_light' if k==0 else 'sudowoodo_leaf',24,12)
-   for v in o.data.vertices:
-    n=v.co.normalized();v.co*=1+.012*math.sin(n.x*11+n.z*4)*math.cos(n.y*9-n.z*3)
-  # Low rooted legs arc outward at the knee and turn into broad twig feet.
-  branch(('Left' if side<0 else 'Right')+' crooked root leg',[
-   (side*.070,.015,.237,.050),(side*.133,.011,.173,.040),
-   (side*.185,-.002,.100,.027),(side*.172,-.041,.054,.027)],seg=18)
-  branch(('Left' if side<0 else 'Right')+' planted root foot',[
-   (side*.175,.018,.052,.027),(side*.178,-.033,.047,.044),
-   (side*.210,-.090,.036,.045),(side*.229,-.133,.028,.029),
-   (side*.234,-.151,.025,.006)],seg=18)
- # Map sculpted facial features onto the real trunk surface. Paired raised
- # charcoal eyes and a wide shallow mouth are visible from either front side.
- def front_y(x,z,offset=0):
-  p=min(profiles,key=lambda n:abs(n[2]-z));cx,cy,zz,rx,ry=p
-  exponent=.63 if z>.79 else .86;u=min(.998,abs((x-cx)/rx))
-  s=max(.001,1-u**(2/exponent))**.5
-  return cy-ry*s**exponent-offset
+   clay.append(branch(label+' hand finger '+str(k+1),[
+    (*wrist,.029),(wrist[0]*.4+x*.6,wrist[1]*.4+y*.6,wrist[2]*.4+z*.6,.024),(x,y,z,.018)],seg=12,steps=2))
+   hands.append((label,k,(x,y,z)))
+  clay.append(branch(label+' connected root leg',[
+   (side*.079,.020,.242,.070),(side*.127,.016,.181,.063),
+   (side*.178,-.008,.108,.047),(side*.176,-.043,.063,.047)],seg=16))
+  foot=sphere(label+' broad planted root foot',(side*.187,-.073,.053),(.089,.143,.055),bark,20,10)
+  foot.rotation_euler[2]=side*.20;clay.append(foot)
+  for toe in (-1,1):
+   clay.append(branch(label+' blunt root toe '+str(toe),[
+    (side*.18+toe*.038,-.127,.046,.034),(side*.19+toe*.038,-.180,.035,.027),
+    (side*.197+toe*.037,-.202,.031,.008)],seg=12,steps=2))
+ # Fuse the anatomical cage so roots, shoulders and crown grow out of the trunk.
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in clay:o.select_set(True)
+ bpy.context.view_layer.objects.active=clay[0];bpy.ops.object.join();core=bpy.context.object
+ core.name='Continuous leaning trunk / integrated crown arms and roots'
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ m=core.modifiers.new('Continuous wood sculpture','REMESH');m.mode='VOXEL';m.voxel_size=.0105;m.use_smooth_shade=True;bpy.ops.object.modifier_apply(modifier=m.name)
+ m=core.modifiers.new('Soften sculpt junctions','SMOOTH');m.factor=.62;m.iterations=3;bpy.ops.object.modifier_apply(modifier=m.name)
+ core.select_set(False)
+ # Round low-poly green finger orbs remain distinct, with broad planned facets.
+ for label,k,p in hands:
+  o=ico(label+' green ball '+str(k+1),p,(.082,.078,.083),'sudowoodo_leaf_light' if k==0 else 'sudowoodo_leaf',3)
+  for f in o.data.polygons:f.use_smooth=True
+ # Blunt cut faces are narrow closed volumes fitted to the actual fork ends.
+ for label,p,n in [('Left',(-.189,.018,1.249),(-.71,0,.70)),('Right',(.107,.017,1.300),(.55,0,.84))]:
+  o=sphere(label+' crown end grain',p,(.031,.030,.003),'sudowoodo_cut',16,6);o.rotation_euler=Vector(n).to_track_quat('Z','Y').to_euler()
+ def front_y(x,z):
+  hit,point,normal,index=core.ray_cast(Vector((x,-1,z)),Vector((0,1,0)))
+  if hit:return point.y
+  lower=profiles[0];upper=profiles[-1]
+  for a,b in zip(profiles,profiles[1:]):
+   if a[2]<=z<=b[2]:lower,upper=a,b;break
+  t=max(0,min(1,(z-lower[2])/max(.000001,upper[2]-lower[2])))
+  cx,cy,zz,rx,ry=lower.lerp(upper,t)
+  exponent=.72 if z>.78 else .88;u=min(.997,abs((x-cx)/rx))
+  return cy-ry*max(.001,1-u**(2/exponent))**(exponent*.5)
+ def patch(name,outline,color,offset=.008,depth=.008):
+  # Closed radial surface follows the cheek volume, never a floating flat card.
+  k=len(outline);cx=sum(p[0] for p in outline)/k;cz=sum(p[1] for p in outline)/k;vs=[]
+  for layer in (0,depth):
+   vs.append((cx,front_y(cx,cz)-offset+layer,cz))
+   for t in (.50,1):
+    for x,z in outline:
+     px=cx+(x-cx)*t;pz=cz+(z-cz)*t;vs.append((px,front_y(px,pz)-offset+layer,pz))
+  n=1+k*2;fs=[]
+  for base in (0,n):
+   for j in range(k):
+    fs.append((base,base+1+j,base+1+(j+1)%k))
+    a=base+1+j;b=base+1+(j+1)%k;fs.append((a,b,b+k,a+k))
+  for j in range(k):a=1+k+j;b=1+k+(j+1)%k;fs.append((a,b,b+n,a+n))
+  return mesh_part(name,vs,fs,color,False)
+ def oval(cx,cz,rx,rz,tilt=0,n=16):
+  return [(cx+rx*math.cos(a)*math.cos(tilt)+rz*math.sin(a)*math.sin(tilt),
+           cz-rx*math.cos(a)*math.sin(tilt)+rz*math.sin(a)*math.cos(tilt)) for a in (math.tau*j/n for j in range(n))]
  for side in (-1,1):
-  x=.015+side*.048;z=.976
-  y=front_y(x,z,.005)
-  o=sphere(('Left' if side<0 else 'Right')+' raised oval eye',(x,y,z),(.0127,.0067,.0215),'sudowoodo_eye',20,10)
-  o.rotation_euler[2]=-side*.095
-  sphere(('Left' if side<0 else 'Right')+' eye catchlight',(x-.003,y-.006,z+.008),(.0033,.0018,.0054),'white',12,6)
- # The lip is a true round ribbon inset against a larger charcoal smile seam.
+  label='Left' if side<0 else 'Right';x=.009+side*.073;z=.997
+  patch(label+' carved oval eye socket',oval(x,z,.030,.043),'sudowoodo_groove',.007,.011)
+  patch(label+' inset oval eye',oval(x,z,.0235,.0355),'sudowoodo_eye',.009,.006)
+  patch(label+' eye catchlight',oval(x-.005,z+.014,.0051,.0082,n=10),'white',.012,.004)
+  # A shallow upper lid shades the socket and makes the expression intentional.
+  outline=[(x-.032,z+.015),(x-.023,z+.043),(x+.016,z+.048),(x+.031,z+.030),
+           (x+.025,z+.027),(x+.012,z+.039),(x-.018,z+.036),(x-.026,z+.013)]
+  patch(label+' sculpted upper eyelid',outline,bark,.012,.010)
  mouth=[]
- for i in range(17):
-  t=-1+2*i/16;x=.017+.082*t;z=.902+.023*t*t+.002*t
-  mouth.append((x,front_y(x,z,.008),z))
- tube('Wide charcoal smile rim',mouth,.0095,'sudowoodo_eye')
- tube('Warm inner smile',[(x,y-.0075,z+.001) for x,y,z in mouth[1:-1]],.0052,'sudowoodo_mouth')
- # Yellow ochre oval bark spots, each fitted to the trunk, have a thin dark edge.
- for j,(x,z,rx,rz,tilt) in enumerate([(-.077,.306,.021,.054,-.16),(.030,.412,.020,.050,.17),
-   (-.047,.557,.021,.053,.30),(.072,.562,.013,.032,.24),(.054,.687,.021,.055,.22)]):
-  y=front_y(x,z,.003)
-  for border in (True,False):
-   o=sphere(('Bark spot edge ' if border else 'Ochre bark spot ')+str(j+1),(x,y-(0 if border else .004),z),(rx+( .0025 if border else 0),.0045,rz+( .0025 if border else 0)),groove if border else 'sudowoodo_ochre',20,10)
-   o.rotation_euler[1]=tilt
- # A few restrained growth creases add branch articulation without busy bark.
+ for i in range(17):t=-1+2*i/16;mouth.append((.009+.117*t,.927+.023*t*t))
+ for i in range(16,-1,-1):t=-1+2*i/16;mouth.append((.009+.117*t,.891+.059*t*t))
+ patch('Inset broad smiling mouth',mouth,'sudowoodo_eye',.010,.010)
+ lower=[]
+ for i in range(13):t=-.86+1.72*i/12;lower.append((.009+.117*t,.902+.047*t*t))
+ for i in range(12,-1,-1):t=-.86+1.72*i/12;lower.append((.009+.117*t,.895+.054*t*t))
+ patch('Warm lower inner smile',lower,'sudowoodo_mouth',.013,.004)
+ # Ocher bark inlays wrap the trunk. Larger quiet shapes survive battle scale.
+ for j,(x,z,rx,rz,tilt) in enumerate([(-.087,.312,.031,.059,-.20),(.051,.414,.028,.057,.19),
+   (-.058,.563,.034,.060,.22),(.096,.570,.020,.036,.20),(.040,.726,.031,.063,.18)]):
+  inlay=patch('Ochre bark inlay '+str(j+1),oval(x,z,rx,rz,tilt),'sudowoodo_ochre',.0015,.005)
+  inlay['trunk_surface_inlay']=True
+ # Restrained rear grain reinforces the curved, fully volumetric back.
  for side in (-1,1):
-  x=side*.096+.019
-  pts=[(x,front_y(x,z,.003),z) for z in (.695,.717,.739)]
-  tube(('Left' if side<0 else 'Right')+' shoulder bark crease',pts,.0027,groove)
- for x,z in [(-.133,.301),(.105,.316)]:
-  pts=[(x+.012*t,front_y(x+.012*t,z+.065*t,.001),z+.065*t) for t in (0,.3,.7,1)]
-  tube('Root growth crease',pts,.0025,groove)
+  pts=[(side*.092+.004*t,.125+.007*math.sin(t*math.pi),.42+.23*t) for t in (0,.33,.67,1)]
+  tube(('Left' if side<0 else 'Right')+' rear growth crease',pts,.0024,groove)
 
 def pikachu(surf=False):
  feet('yellow',.125,s=(.083,.13,.054));sphere('Pear shaped body',(0,0,.31),(.205,.15,.23),'yellow');sphere('Mouse head',(0,-.015,.56),(.23,.18,.20),'yellow')
@@ -732,12 +757,148 @@ def chikorita():
  leaf('Sweeping head leaf',(.04,-.12,.77),(.40,.20,1.12),.20,'green');tube('Leaf central vein',[(.04,-.13,.78),(.22,.04,.96),(.40,.20,1.12)],.014,'leaf')
 
 def cyndaquil():
- feet('cream',.12,s=(.09,.13,.05));sphere('Cyndaquil cream body',(0,.035,.29),(.22,.20,.25),'cream');sphere('Deep blue back',(0,.125,.37),(.20,.16,.25),'navy')
- sphere('Long shrew head',(0,-.13,.57),(.21,.19,.18),'cream');rod('Long tapered snout',(0,-.22,.55),(0,-.47,.48),.13,.053,'cream');sphere('Nose',(0,-.473,.49),(.036,.015,.023),'ink')
+ # A single connected shrew silhouette, with a fitted midnight dorsal coat
+ # and folded flame quills. All surfaces are original full 360-degree geometry.
+ import bmesh
+ PALETTE.update({'cyndaquil_cream':(.94,.83,.56),'cyndaquil_back':(.14,.30,.34),
+  'cyndaquil_ink':(.095,.12,.15),'cyndaquil_ember':(.86,.18,.12),
+  'cyndaquil_flame':(.98,.47,.075),'cyndaquil_gold':(1.,.78,.22)})
+ cream='cyndaquil_cream';ink='cyndaquil_ink'
+ def mesh_part(name,vertices,faces,color,smooth=True):
+  me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
+  bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
+  o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color))
+  for f in me.polygons:f.use_smooth=smooth
+  return o
+ def canonical(o):
+  me=o.data;coordinates=[tuple(round(v,7) for v in vert.co) for vert in me.vertices]
+  ordered=sorted(set(coordinates));lookup={v:i for i,v in enumerate(ordered)};remap=[lookup[v] for v in coordinates];faces=[]
+  for f in me.polygons:
+   indices=tuple(remap[i] for i in f.vertices)
+   if len(set(indices))<3:continue
+   faces.append((min(indices[i:]+indices[:i] for i in range(len(indices))),f.use_smooth))
+  faces.sort();new=bpy.data.meshes.new(me.name+' / stable topology');new.from_pydata(ordered,[],[f[0] for f in faces]);new.update()
+  for m in me.materials:new.materials.append(m)
+  for f,source in zip(new.polygons,faces):f.use_smooth=source[1]
+  o.data=new
+ def loft(name,profiles,color,seg=24):
+  vertices=[]
+  for x,y,z,w,h in profiles:
+   for i in range(seg):
+    a=math.tau*i/seg;vertices.append((x+w*math.cos(a),y,z+h*math.sin(a)))
+  faces=[tuple(range(seg-1,-1,-1)),tuple(range((len(profiles)-1)*seg,len(profiles)*seg))]
+  for j in range(len(profiles)-1):
+   for i in range(seg):a=j*seg+i;b=j*seg+(i+1)%seg;faces.append((a,b,b+seg,a+seg))
+  return mesh_part(name,vertices,faces,color)
+ # The pointed muzzle is lofted into the cheeks; the neck falls into a pear
+ # torso, without a bead joint or a separate cylindrical snout.
+ clay=[loft('Long continuous tapered shrew muzzle',[
+  (0,-.592,.520,.024,.027),(0,-.550,.523,.047,.040),
+  (0,-.455,.540,.084,.069),(0,-.349,.568,.136,.109),
+  (0,-.243,.601,.198,.150),(0,-.144,.613,.220,.180),
+  (0,-.045,.589,.198,.170),(0,.034,.532,.158,.138)],cream),
+  sphere('Broad connected pear torso',(0,.075,.340),(.226,.230,.293),cream,32,16),
+  sphere('Flowing nape and chest',(0,-.047,.491),(.189,.182,.212),cream,24,12)]
  for s in (-1,1):
-  tube('Sleepy closed eye',[(s*.08,-.303,.635),(s*.13,-.282,.648),(s*.16,-.254,.637)],.010,'ink');sphere('Small front arm',(s*.19,-.065,.31),(.052,.067,.12),'cream')
- for x,y,z in [(-.16,.18,.43),(.16,.18,.43),(-.09,.22,.55),(.09,.22,.57),(0,.24,.44)]:
-  ico('Back flame red base',(x,y,z),(.10,.10,.14),'red',1);rod('Flame tongue',(x,y,z),(x*1.8,y+.10,z+.30),.088,.002,'orange');rod('Inner yellow flame',(x,y-.035,z+.02),(x*1.65,y+.035,z+.22),.046,.002,'yellow')
+  clay.extend([sphere('Small connected haunch',(s*.141,.101,.166),(.117,.141,.146),cream,20,10),
+   sphere('Grounded long rear paw',(s*.160,.013,.054),(.089,.155,.053),cream,20,10),
+   rod('Short descending forelimb',(s*.181,-.085,.385),(s*.223,-.170,.247),.052,.045,cream,16),
+   sphere('Soft forelimb elbow',(s*.214,-.141,.289),(.052,.052,.084),cream,16,8),
+   sphere('Small rounded forepaw',(s*.223,-.188,.230),(.051,.076,.043),cream,16,8)])
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in clay:o.select_set(True)
+ bpy.context.view_layer.objects.active=clay[0];bpy.ops.object.join();body=bpy.context.object;body.name='Cyndaquil / continuous muzzle head torso and limbs'
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ mod=body.modifiers.new('Connected clay anatomy','REMESH');mod.mode='VOXEL';mod.voxel_size=.009;mod.use_smooth_shade=True;bpy.ops.object.modifier_apply(modifier=mod.name)
+ mod=body.modifiers.new('Soft sculpted anatomical transitions','SMOOTH');mod.factor=.52;mod.iterations=4;bpy.ops.object.modifier_apply(modifier=mod.name)
+ canonical(body);high_body=body.data.copy();body.data.calc_loop_triangles()
+ mod=body.modifiers.new('Bounded sculpture silhouette','DECIMATE');mod.ratio=min(1,3300/len(body.data.loop_triangles));mod.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=mod.name);canonical(body);body.select_set(False)
+ # The dorsal coat is a closed thin shell fitted to the actual final body.
+ # Ring widths carry the continuous dark cap from brow through rounded rump.
+ profiles=[(-.404,.051),(-.345,.106),(-.265,.158),(-.175,.198),(-.075,.173),
+  (.015,.180),(.105,.212),(.192,.189),(.251,.132),(.281,.061)]
+ profiles=[(ay+(by-ay)*t,aw+(bw-aw)*t) for (ay,aw),(by,bw) in zip(profiles,profiles[1:]) for t in (0,1/3,2/3)]+[profiles[-1]]
+ vertices=[];inside=[];across=28
+ for y,w in profiles:
+  for j in range(across+1):
+   x=w*(2*j/across-1);hit,p,n,face=body.ray_cast(Vector((x,y,2)),Vector((0,0,-1)))
+   if not hit:raise ValueError('Cyndaquil dorsal coat missed continuous body')
+   vertices.append(tuple(p+n*.008));inside.append(tuple(p-n*.006))
+ n=len(vertices);vertices += inside;faces=[]
+ for row in range(len(profiles)-1):
+  for j in range(across):
+   a=row*(across+1)+j;b=a+1;c=b+across+1;d=a+across+1
+   faces.extend([(a,b,c,d),(d+n,c+n,b+n,a+n)])
+ perimeter=list(range(across+1))+[r*(across+1)+across for r in range(1,len(profiles))]+list(range(n-2,n-across-2,-1))+[r*(across+1) for r in range(len(profiles)-2,0,-1)]
+ for a,b in zip(perimeter,perimeter[1:]+perimeter[:1]):faces.append((a,a+n,b+n,b))
+ mesh_part('Fitted midnight brow nape and back',vertices,faces,'cyndaquil_back')
+ # Slender, tapered closed eyes rest in the two side cheeks. Their expressive
+ # upward sweep reads in front and three-quarter views without raised eyeballs.
+ for s in (-1,1):
+  points=[]
+  for x,z in [(.098,.635),(.135,.641),(.170,.653),(.188,.663)]:
+   hit,p,n,face=body.ray_cast(Vector((s*x,-2,z)),Vector((0,1,0)))
+   if not hit:raise ValueError('Cyndaquil eyelid missed cheek')
+   points.append(tuple(p+n*.004))
+  # A closed four-sided ribbon keeps a crisp paper-cut expression and depth.
+  v=[]
+  for i,p in enumerate(points):
+   p=Vector(p);w=[.002,.010,.009,.002][i]
+   v.extend([tuple(p+Vector((0,-.003,w))),tuple(p+Vector((0,-.003,-w))),tuple(p+Vector((0,.006,-w))),tuple(p+Vector((0,.006,w)))])
+  f=[(3,2,1,0),(12,13,14,15)]
+  for j in range(3):
+   for k in range(4):a=j*4+k;b=j*4+(k+1)%4;f.append((a,b,b+4,a+4))
+  mesh_part('Tapered sleepy closed eyelid',v,f,ink,False)
+ nose=ico('Small soft charcoal nose',(0,-.595,.521),(.025,.012,.017),ink,2)
+ # Five broad folded quills share the back. Each is a closed, asymmetric
+ # flame silhouette with an actual central ridge and a tapered outer edge.
+ def quill(name,root,tip,width,depth,bend):
+  root=Vector(root);tip=Vector(tip);axis=tip-root;side=Vector((1,0,0));side=(side-axis.normalized()*side.dot(axis.normalized())).normalized()
+  forward=side.cross(axis.normalized()).normalized()
+  if forward.y>0:forward=-forward
+  # Coordinates deliberately articulate a lick, a short shoulder and a long
+  # sweeping tip, so the flame is neither a cone nor a row of equal spikes.
+  outline=[(-.38,.0),(-.94,.24),(-.78,.49),(-.43,.43),(-.36,.72),
+   (bend,1.),(.19,.68),(.63,.53),(.40,.31),(.48,.07)]
+  ring=[root+axis*t+side*(x*width) for x,t in outline]
+  center=root+axis*.41+forward*depth
+  back=root+axis*.41-forward*depth*.58
+  vs=[tuple(p) for p in ring]+[tuple(center),tuple(back)];n=len(ring)
+  fs=[(i,(i+1)%n,n) for i in range(n)]+[((i+1)%n,i,n+1) for i in range(n)]
+  mesh_part(name+' / ember silhouette',vs,fs,'cyndaquil_ember',False)
+  # Smaller closed nested fold volumes sit on the front ridge. These are
+  # sculptural color layers, not billboards or emissive attack effects.
+  for face_label,ridge,outward,thick in [('front',center,forward,depth),('back',back,-forward,depth*.58)]:
+   for label,scale,offset,color in [('orange fold',.82,.002,'cyndaquil_flame'),('golden heart',.51,.004,'cyndaquil_gold')]:
+    nested=[ridge+(p-ridge)*scale+outward*offset for p in ring]
+    peak=ridge+outward*offset
+    inner=ridge-outward*(thick*scale+.002)+outward*offset
+    nv=[tuple(p) for p in nested]+[tuple(peak),tuple(inner)]
+    mesh_part(name+' / '+face_label+' '+label,nv,fs,color,False)
+ quill('Upper left flame quill',(-.071,.060,.604),(-.247,.304,1.018),.118,.034,-.12)
+ quill('Upper right flame quill',(.071,.060,.604),(.237,.332,.976),.117,.035,.21)
+ quill('Lower left flame quill',(-.138,.186,.450),(-.339,.465,.776),.140,.040,-.22)
+ quill('Lower right flame quill',(.138,.186,.450),(.333,.488,.752),.141,.040,.22)
+ quill('Central rear flame quill',(0,.252,.432),(.024,.587,.891),.142,.041,-.19)
+ # Preserve editable detailed anatomy. The high resolution copy and all detail
+ # parts get their own true floor root in the same dimensions as runtime.
+ detailed=bpy.data.collections.new('battle_cyndaquil / detailed authoring source (hidden)');SCENE.collection.children.link(detailed)
+ root=bpy.data.objects.new('battle_cyndaquil / detailed floor root',None);detailed.objects.link(root);root['authoring_only']=True;root['source_family']='battle_cyndaquil'
+ copies=[]
+ for o in list(COL.objects):
+  if o.type!='MESH':continue
+  canonical(o);source=o.copy();source.data=high_body if o==body else o.data.copy();source.name='AUTHORING / '+o.name;detailed.objects.link(source);source.parent=root;copies.append(source)
+  bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.triangulate(bm,faces=list(bm.faces),quad_method='FIXED',ngon_method='EAR_CLIP');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+  bm.to_mesh(o.data);bm.free();o.data.update()
+  for attempt in range(3):
+   bad=[f for f in o.data.polygons if f.use_smooth and f.normal.dot(sum((o.data.corner_normals[i].vector for i in f.loop_indices),Vector()))<.000001]
+   if not bad:break
+   for f in bad:f.use_smooth=False
+   o.data.update()
+  o['authoring']='Original connected Cyndaquil sculpture with fitted dorsal coat and folded volumetric flame quills'
+ normalize('battle_cyndaquil',copies)
+ detailed.hide_render=True;detailed.hide_viewport=True
 
 def totodile():
  # One full, floor-rooted sculpture. Broad connected anatomy, an authored
@@ -1052,32 +1213,53 @@ def normalize(name,objects):
  for o in objects:o.location=(o.location-center)*scale;o.scale*=scale
 
 def sudowoodo_runtime_lod(name,objects):
- # Preserve the fully editable sculpt, then reduce only the emitted copy.
- # This collection is deliberately hidden in the shipped authoring scene.
+ # Preserve editable detailed anatomy, then produce bounded game geometry.
+ # Stable topology removes allocator-order ties before QEM simplification.
+ import bmesh
  detailed=bpy.data.collections.new(name+' / detailed authoring source (hidden)')
  SCENE.collection.children.link(detailed);copies=[]
  for o in objects:
   source=o.copy();source.data=o.data.copy();source.name='AUTHORING / '+o.name
   detailed.objects.link(source);copies.append(source)
   if o.type!='MESH':continue
-  o.data.calc_loop_triangles();count=len(o.data.loop_triangles)
-  ratio=.33
-  if 'Continuous leaning trunk' in o.name:ratio=.40
-  elif 'green ball' in o.name:ratio=.40
-  elif 'smile' in o.name:ratio=.20
-  elif 'Bark spot' in o.name or 'Ochre bark' in o.name:ratio=.24
-  elif 'eye catchlight' in o.name:ratio=.50
-  elif 'raised oval eye' in o.name:ratio=.40
-  if count<100:continue
-  # Sub-pixel, deterministic tie breaking avoids equal-cost QEM collapses
-  # choosing different triangles on the symmetric oval bark spots.
-  for index,vertex in enumerate(o.data.vertices):
-   vertex.co+=Vector((math.sin(index*12.9898+.31),math.sin(index*78.233+.67),math.sin(index*37.719+.91)))*.000007
-  bpy.context.view_layer.objects.active=o
-  modifier=o.modifiers.new('Game resolution / silhouette preserving collapse','DECIMATE')
-  modifier.decimate_type='COLLAPSE';modifier.ratio=ratio;modifier.use_collapse_triangulate=True
-  bpy.ops.object.modifier_apply(modifier=modifier.name)
-  o['runtime_lod']='Silhouette preserving; full sculpt in hidden authoring collection'
+  if o.get('trunk_surface_inlay'):
+   # Refit to the final runtime trunk, so color rests flush on its facets.
+   core=next(p for p in objects if 'Continuous leaning trunk' in p.name)
+   bpy.context.view_layer.update();layer=len(o.data.vertices)//2
+   for i,v in enumerate(o.data.vertices):
+    hit,point,normal,index=core.ray_cast(Vector((v.co.x,-1,v.co.z)),Vector((0,1,0)))
+    if not hit:raise ValueError('Bark inlay missed the runtime trunk')
+    v.co.y=point.y-.0015+(.005 if i>=layer else 0)
+  me=o.data;coords=[tuple(round(v,7) for v in vert.co) for vert in me.vertices]
+  ordered=sorted(set(coords));lookup={v:i for i,v in enumerate(ordered)};remap=[lookup[v] for v in coords];faces=[]
+  for f in me.polygons:
+   indices=tuple(remap[i] for i in f.vertices)
+   if len(set(indices))<3:continue
+   indices=min(indices[i:]+indices[:i] for i in range(len(indices)))
+   faces.append((indices,f.use_smooth,f.material_index))
+  faces.sort();stable=bpy.data.meshes.new(me.name+' / stable topology');stable.from_pydata(ordered,[],[f[0] for f in faces]);stable.update()
+  for mat in me.materials:stable.materials.append(mat)
+  for f,old in zip(stable.polygons,faces):f.use_smooth=old[1];f.material_index=old[2]
+  o.data=stable;stable.calc_loop_triangles();count=len(stable.loop_triangles)
+  ratio=.095 if 'Continuous leaning trunk' in o.name else (.52 if 'green ball' in o.name else 1)
+  if ratio<1 and count>=100:
+   bpy.context.view_layer.objects.active=o
+   m=o.modifiers.new('Game resolution / sculpted silhouette','DECIMATE');m.ratio=ratio;m.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=m.name)
+  # Explicit winding and stable flat normals on delicate inset edges prevent
+  # a smoothed corner from pointing back into the face after triangulation.
+  me=o.data;bm=bmesh.new();bm.from_mesh(me)
+  bmesh.ops.triangulate(bm,faces=list(bm.faces),quad_method='FIXED',ngon_method='EAR_CLIP')
+  bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+  bm.to_mesh(me);bm.free();me.update()
+  for attempt in range(3):
+   bad=[]
+   for f in me.polygons:
+    if f.use_smooth and f.normal.dot(sum((me.corner_normals[i].vector for i in f.loop_indices),Vector()))<.000001:bad.append(f)
+   if not bad:break
+   for f in bad:f.use_smooth=False
+   me.update()
+  o['runtime_lod']='Bounded continuous sculpture; detailed source in hidden collection'
  detailed.hide_render=True;detailed.hide_viewport=True
  normalize(name,objects)
  return copies

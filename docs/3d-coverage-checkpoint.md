@@ -8,10 +8,11 @@ review. The private inspection gallery is a review tool, not a quality certifica
 
 ## Included and checked
 
-- 569 runtime model documents and 52 complete editable Blender sources
+- 590 runtime model documents and 56 complete editable Blender sources
 - 75 articulated human rigs, 73 creature/prop actor assets, 69 interior models,
-  62 exterior models, 19 dungeon models, 11 special-environment models,
-  23 special-room models, and 220 additional exact battle species
+  63 exterior models, 19 dungeon models, 11 special-environment models,
+  23 special-room models, 17 joined-counter modules, three lighthouse shells,
+  and 220 additional exact battle species
   alongside retained source models
 - All 140 packed sprite/icon source identities resolve to a modeled actor
 - All 251 normal-palette battle species resolve to an exact species mesh;
@@ -27,8 +28,9 @@ review. The private inspection gallery is a review tool, not a quality certifica
   joints or runtime meshes
 
 The current pack-based headless audit processes all 388 base maps without a
-mesher error and counts 243,314 source cells consumed by authored geometry,
-including 9,136 Kanto boundary-rock cells. This is partial coverage, not 388
+mesher error and counts 250,544 source cells consumed by authored geometry,
+including 9,136 Kanto boundary-rock, 1,904 capped-post, 1,630 joined-counter/phone
+and 4,816 lighthouse masonry/window cells. This is partial coverage, not 388
 completed maps. Flat floors, water planes, source facades and fallback objects
 are reported separately. Dynamic decorations and changed block states require
 their own scene fixtures.
@@ -41,11 +43,16 @@ their cells are not a count of complete furniture or architecture. Representativ
 two existing-model backing gaps are fixed, two describe legitimate animated or
 water-datum treatments, and 25 actionable geometry/refinement families were tracked. Three Kanto rock
 families now pass geometry/source-selection tests and native Route17, Route20
-and SilverCaveOutside review; 22 tracked families remain.
+and SilverCaveOutside review. Capped posts and gate counters/phones now pass
+native review; six-floor lighthouse masonry is installed, but its room visibility
+and surface polish remain open. Eighteen further structural families remain.
 See [the remaining-family checklist](3d-remaining-families.md).
 
-- Remaining source families and structures, including Kanto posts,
-  lighthouse masonry, gate counters, link partitions, gym greenery and apparatus
+- Remaining source families and structures, including link partitions, gym
+  greenery and apparatus
+- Lighthouse camera occlusion, noisy source floors and 6F furnishings: the new
+  complete walls can hide the player at the default 4F camera; masonry coverage
+  alone does not close the scene-quality review
 - Dungeon topology and bespoke set dressing beyond the nineteen-model first kit
 - Per-map native review, including eliminating the remaining source-art strips in
   interiors and assessing outdoor silhouette/readability at the gameplay camera
@@ -76,10 +83,11 @@ based on the production mesher rather than a map-name allowlist.
 
 ## Verified on this checkpoint
 
-- 628 voxel tests pass (two existing benchmarks ignored), all 12 model/source
+- 655 voxel tests pass (two existing benchmarks ignored), all 14 model/source
   validator programs pass, and native examples plus the normal browser-feature
   WebAssembly check build successfully
-- 33 immersive battle bridge/controller tests, four channel-mask tests, 24 audio
+- Retained from the prior sound checkpoint: 33 immersive battle bridge/controller
+  tests, four channel-mask tests, 24 audio
   synthesis tests and 12 audio/UI regressions pass; all use the current sound path
 - Three wrapped-attack identity/OAM/render regressions pass with the external pack
 - The Blackthorn Gym callback regression validates every installed scoped stone
@@ -92,6 +100,16 @@ based on the production mesher rather than a map-name allowlist.
 - The rebuilt Totodile is verified in the actual immersive arena with its
   connected crocodile silhouette, angular eyes, splayed feet and dorsal plates;
   native review also caught and corrected water-material seams around shore rocks
+- Refined Cyndaquil and both Sudowoodo identities pass closed-volume and byte-exact
+  rebuild checks and appear in the actual arena. These replace earlier meshes
+- Native Route2, Route35/National Park, Route29/46 and Ilex gates exposed a
+  padded-frame source-boundary bug. The corrected source-origin mapping now has
+  explicit base/padded/scrolled, crop and counterfeit-layout regression fixtures
+- All six lighthouse floors and Route4/Route13/Lavender posts were captured;
+  layout openings remain intact. Lighthouse wall occlusion and old floor/furniture
+  treatment remain visible gaps
+- Kanto shallow ledges use coherent lawn/path caps and bank sides while retaining
+  identical vertices, normals and footing; deeper cliffs and edge strips remain
 
 These are representative checks, not every-map or every-species art approval.
 

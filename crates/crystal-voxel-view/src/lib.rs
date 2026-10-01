@@ -38,6 +38,7 @@ mod house;
 mod ice_path;
 mod interior;
 mod interior_models;
+mod gate_counter_models;
 mod johto_fence;
 mod kanto_cliff;
 mod kanto_post;

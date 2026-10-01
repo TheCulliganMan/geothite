@@ -7,23 +7,20 @@ backing ground. Dynamic map states and individual species art remain separate
 work in the broader conversion checklist.
 
 The latest production audit verifies all 388 base maps without a mesher error.
-It records 243,314 cells consumed by authored geometry, including named surface
+It records 250,544 cells consumed by authored geometry, including named surface
 finishes. Per-map source reports stay local under `target/`; no content pack,
 source image or generated audit manifest belongs in the shipped repository.
 
 ## Actionable families
 
-All 22 entries below still need integration or refinement plus native review.
+The 18 entries below still need integration or refinement plus native review.
+The installed lighthouse kit also has a separate scene-quality gap described below.
 The three Kanto boundary-rock families are installed and tested, with native
 Route17, Route20 and SilverCaveOutside captures inspected. Source-aware water
 finishing removes mismatched underlay squares without changing the water datum.
 
 | Family | Residual cells | Representative scene / requirement |
 | --- | ---: | --- |
-| Kanto capped posts | 1,904 | Route13; narrow two-row courses |
-| Lighthouse perimeter | 3,504 | Six floors; add junction, end, corner and window orientations |
-| Gate counters | 1,482 | 28 maps; connected straight/return/cap topology |
-| Gate phone consoles | 96 | 24 maps; handset and keypad forms |
 | Cable Club partitions | 730 | Pokecenter2F and beta rooms; preserve booth openings |
 | Gym display-planter boxes | 720 | GoldenrodGym and AzaleaGym |
 | Broad central Gym tree | 9 | AzaleaGym; rounded canopy and trunk |
@@ -42,6 +39,20 @@ finishing removes mismatched underlay squares without changing the water datum.
 | Magnet Train body/boarding plots | 128 | Both stations; retain boarding opening; plot count |
 | Park small round props | 44 | Three maps; confirm identity in native context |
 | Park fountain rim/basin | 48 | Three maps; refine existing grouped animated treatment |
+
+## Newly installed structural kits
+
+- Kanto capped posts: 952 closed posts consume 1,904 cells across 21 maps. Native
+  Route4, Route13 and Lavender views cover both supported backing-ground sources
+- Gate counters/phones: 57 complete networks across 28 maps consume 1,534 counter
+  and 96 phone cells. The extra 52 counter cells close connected caps/continuations
+  absent from the original residual estimate. Source-origin tests cover padded and
+  scrolled native frames; representative native gates show their operator bays
+- Lighthouse masonry: 4,176 plain plus 640 window cells across six floors,
+  including 192 previously flat-classified 6F cells. All six floors are captured,
+  but high walls obscure the player in some default views, notably 4F. Camera-aware
+  visibility, floor finishes and 6F furnishings remain unfinished. This is geometry
+  coverage, not a completed-room signoff
 
 ## Verified modeled boundary families
 

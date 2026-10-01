@@ -241,7 +241,7 @@ pub(crate) struct Model {
     max: [f32; 3],
 }
 impl Model {
-    fn parse(json: &str) -> Result<Self, String> {
+    pub(crate) fn parse(json: &str) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut min = [f32::INFINITY; 3];

@@ -69,6 +69,7 @@ pub(crate) enum Kind {
     KantoBoundaryLand,
     KantoBoundaryShore,
     KantoBoundaryPath,
+    KantoCappedPost,
 }
 impl Kind {
     pub(crate) fn label(self) -> &'static str {
@@ -135,6 +136,7 @@ impl Kind {
             Self::KantoBoundaryLand => "world-exterior/kanto_boundary_land",
             Self::KantoBoundaryShore => "world-exterior/kanto_boundary_shore",
             Self::KantoBoundaryPath => "world-exterior/kanto_boundary_path",
+            Self::KantoCappedPost => "world-exterior/kanto_capped_post",
         }
     }
 }
@@ -202,6 +204,7 @@ pub(crate) const ALL: &[Kind] = &[
     Kind::KantoBoundaryLand,
     Kind::KantoBoundaryShore,
     Kind::KantoBoundaryPath,
+    Kind::KantoCappedPost,
 ];
 const JSON: &[&str] = &[
     include_str!("../models/world_exteriors/east_gate.mesh.json"),
@@ -266,6 +269,7 @@ const JSON: &[&str] = &[
     include_str!("../models/world_exteriors/kanto_boundary_land.mesh.json"),
     include_str!("../models/world_exteriors/kanto_boundary_shore.mesh.json"),
     include_str!("../models/world_exteriors/kanto_boundary_path.mesh.json"),
+    include_str!("../models/world_exteriors/kanto_capped_post.mesh.json"),
 ];
 
 #[derive(Deserialize)]

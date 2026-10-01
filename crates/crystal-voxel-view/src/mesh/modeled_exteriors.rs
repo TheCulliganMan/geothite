@@ -3,6 +3,8 @@
 use super::*;
 #[path = "kanto_boundary_rocks.rs"]
 mod kanto_boundary_rocks;
+#[path = "kanto_capped_posts.rs"]
+mod kanto_capped_posts;
 #[path = "structure_extensions.rs"]
 mod structure_extensions;
 use crate::exterior_models::{Kind, model};
@@ -728,6 +730,7 @@ pub(super) fn append_props(
     claimed: &mut [bool],
 ) {
     kanto_boundary_rocks::append(mesh, cells, shapes, g, claimed);
+    kanto_capped_posts::append(mesh, cells, shapes, g, claimed);
     for p in props(cells, g) {
         if !clear(claimed, g, p.rect) {
             continue;
@@ -807,6 +810,9 @@ pub(super) fn preferred_cells(map: &str, cells: &[&VisualTile], g: &GridGeometry
         }
     }
     for p in kanto_boundary_rocks::resolve(cells, &shapes, g) {
+        reserve(p.rect);
+    }
+    for p in kanto_capped_posts::resolve(cells, &shapes, g) {
         reserve(p.rect);
     }
     reserved

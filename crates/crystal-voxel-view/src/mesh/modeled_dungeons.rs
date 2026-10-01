@@ -6,6 +6,8 @@
 use super::*;
 #[path = "dungeon_extension.rs"]
 mod extension;
+#[path = "lighthouse_masonry.rs"]
+mod lighthouse;
 #[path = "special_rooms.rs"]
 mod rooms;
 use crate::dungeon_models::{Kind, model};
@@ -17,7 +19,7 @@ enum Form {
     Special(extension::Detail),
     Model(Kind),
     RocketWall { open: [bool; 4] },
-    LighthouseWall { open: [bool; 4] },
+    Lighthouse(lighthouse::Detail),
     CaveCorner(crate::cave::DiagonalCorner),
 }
 #[derive(Clone, Debug)]
@@ -44,7 +46,7 @@ impl Placement {
             Form::Special(detail) => detail.label(),
             Form::Model(k) => k.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
-            Form::LighthouseWall { .. } => "dungeon:lighthouse-masonry",
+            Form::Lighthouse(detail) => detail.label(),
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
         }
     }
@@ -363,51 +365,7 @@ pub(super) fn resolve(
         3.0,
         timber_walls,
     );
-    // Complete lighthouse side courses require four genuine floor neighbors
-    // on a flank. Preserve mixed corners and doorway/window blocks unchanged.
-    let lighthouse_walls = grouped_flat_card_placements(cells, g, 0x2e, false, |source| {
-        if source.tileset_id.as_ref() != "lighthouse" || source.metatile_id != 0x3e {
-            return None;
-        }
-        let art = [[0x5e, 0x5f, 0x5e, 0x5f], [0x4a, 0x4b, 0x4a, 0x4b]];
-        (source.tile_index == art[source.subtile_row as usize % 2][source.subtile_column as usize])
-            .then_some((source.subtile_column, source.subtile_row, 4, 4))
-    });
-    for p in lighthouse_walls {
-        if !phase_consistent(cells, g, p) {
-            continue;
-        }
-        let Some(ground) = ground(map, cells, "lighthouse", 0x2e) else {
-            continue;
-        };
-        let floor_at = |x: usize, y: usize| {
-            let source = &cells[y * g.width + x].source;
-            source.tileset_id.as_ref() == "lighthouse" && source.metatile_id == 0x27
-        };
-        if (p.row > 0 && (0..4).any(|x| floor_at(p.column + x, p.row - 1)))
-            || (p.row + 4 < g.height && (0..4).any(|x| floor_at(p.column + x, p.row + 4)))
-        {
-            continue;
-        }
-        let west = p.column > 0 && (0..4).all(|y| floor_at(p.column - 1, p.row + y));
-        let east = p.column + 4 < g.width && (0..4).all(|y| floor_at(p.column + 4, p.row + y));
-        if !west && !east {
-            continue;
-        }
-        r.add(Placement {
-            column: p.column,
-            row: p.row,
-            width: 4,
-            height: 4,
-            ground,
-            form: Form::LighthouseWall {
-                open: [false, east, false, west],
-            },
-            rise_pixels: 32.0,
-            depth_pixels: 32.0,
-            front_rows: 4.0,
-        });
-    }
+    lighthouse::resolve_into(&mut r);
     // Reuse live whole-drawing resolution rather than copy/export its catalog.
     // Shape-specific vocabulary below guards the semantic conversion; profile
     // names alone are never authority to reinterpret a user-edited drawing.
@@ -549,6 +507,10 @@ pub(super) fn append(
     p: &Placement,
     cells: &[&VisualTile],
 ) {
+    if let Form::Lighthouse(detail) = p.form {
+        lighthouse::append(mesh, g, p, detail);
+        return;
+    }
     if let Form::Room(detail) = p.form {
         rooms::append(mesh, g, p, cells, detail);
         return;
@@ -587,7 +549,7 @@ pub(super) fn append(
         Form::RocketWall { open } => {
             append_connected_wall(&mut mesh.solid, [w, e, n, s], rise, open)
         }
-        Form::LighthouseWall { open } => append_masonry(&mut mesh.solid, [w, e, n, s], rise, open),
+        Form::Lighthouse(_) => unreachable!("lighthouse placements handled above"),
         Form::CaveCorner(corner) => append_corner(
             &mut mesh.solid,
             [w, e, n, s],
@@ -1198,7 +1160,7 @@ mod tests {
         assert!(resolve("VermilionGym", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
     }
     #[test]
-    fn lighthouse_requires_complete_masonry_and_a_known_four_cell_floor_flank() {
+    fn lighthouse_requires_complete_masonry_and_a_known_native_floor_sample() {
         let mut t = tiles(5, 4, "lighthouse");
         for y in 0..4 {
             for x in 0..4 {
@@ -1221,7 +1183,7 @@ mod tests {
         );
         assert_eq!(p.len(), 1);
         assert_eq!(p[0].kind_label(), "dungeon:lighthouse-masonry");
-        t[9].source.metatile_id = 0x00;
+        t[7].source.tile_index = 0xff;
         assert!(
             resolve(
                 "OlivineLighthouse1F",
