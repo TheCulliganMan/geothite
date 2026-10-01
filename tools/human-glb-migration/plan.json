@@ -1,0 +1,773 @@
+{
+  "base_commit": "9eabe6c69e8c899f07658004b357526779a330aa",
+  "base_tree": "268dd7defafc4e60b2fcb93a4b4b8f1d4c42214b",
+  "branch": "feat/connected-johto-3d",
+  "candidate_commit": "f2aa3f7054dbc1efb27557b77369c989e7f939fe",
+  "catalog": {
+    "bytes": 5704552,
+    "git_blob_sha": "dd6cf6966aabadde46b11b925fd95d46c1f4071d",
+    "mode": "100644",
+    "path": "crates/crystal-voxel-view/models/johto_characters/catalog.glb",
+    "sha256": "e068ca3f206ccb5d43ad662299d007f00601c4fa0765750cc4f86b5c1a584e31"
+  },
+  "changed_paths": [
+    ".gitattributes",
+    ".github/workflows/browser-tests.yml",
+    "Cargo.lock",
+    "art/johto/ASSETS.md",
+    "art/johto/source/character-families-01.blend",
+    "art/johto/source/character-families-02.blend",
+    "art/johto/source/character-families-03.blend",
+    "art/johto/source/character-families-04.blend",
+    "art/johto/source/character-families-05.blend",
+    "art/johto/source/character-families-06.blend",
+    "art/johto/source/character-families-07.blend",
+    "art/johto/source/character-families-08.blend",
+    "art/johto/source/character-families-09.blend",
+    "art/johto/source/character-families-10.blend",
+    "art/johto/source/manifest.json",
+    "crates/crystal-bevy/examples/new_bark_3d.rs",
+    "crates/crystal-bevy/src/bevy_shell.rs",
+    "crates/crystal-bevy/src/bevy_shell/render_record.rs",
+    "crates/crystal-bevy/src/bevy_shell/render_walk.rs",
+    "crates/crystal-voxel-view/Cargo.toml",
+    "crates/crystal-voxel-view/build.rs",
+    "crates/crystal-voxel-view/models/johto_characters/beauty.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/biker.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/bill.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/black_belt.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/blaine.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/blue.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/brock.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/bruno.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/bug_catcher.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/bugsy.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/cal.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/captain.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/catalog.glb",
+    "crates/crystal-voxel-view/models/johto_characters/chuck.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/clair.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/clerk.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/cooltrainer_f.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/cooltrainer_m.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/daisy.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/elder.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/elm.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/erika.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/falkner.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/fisher.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/fishing_guru.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/gameboy_kid.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/gentleman.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/gramps.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/granny.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/gym_guide.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/janine.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/jasmine.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/karen.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/kimono_girl.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/koga.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/kurt.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/kurt_outside.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/lance.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/lass.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/link_receptionist.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/misty.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/mom.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/morty.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/nurse.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/oak.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/officer.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/old_link_receptionist.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/outdoorsman.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/pharmacist.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/pokefan_f.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/pokefan_m.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/pryce.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/receptionist.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/red.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/reds_mom.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/rival.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/rocker.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/rocket.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/rocket_girl.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/sabrina.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/sage.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/sailor.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/scientist.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/shared.geometry.json",
+    "crates/crystal-voxel-view/models/johto_characters/standing_youngster.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/super_nerd.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/surge.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/swimmer_girl.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/swimmer_guy.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/teacher.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/trainer.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/trainer_female.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/twin.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/unused_guy.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/whitney.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/will.rig.json",
+    "crates/crystal-voxel-view/models/johto_characters/youngster.rig.json",
+    "crates/crystal-voxel-view/src/human_glb.rs",
+    "crates/crystal-voxel-view/src/johto_characters.rs",
+    "crates/crystal-voxel-view/src/model_storage.rs",
+    "crates/crystal-voxel-view/src/new_bark_actors.rs",
+    "docs/art/animated-models.md",
+    "docs/art/model-stl.md",
+    "docs/art/model-storage.md",
+    "tools/animated_glb.py",
+    "tools/build-actor-props.py",
+    "tools/build-johto-characters.py",
+    "tools/build_art_index.py",
+    "tools/check-facility-table-rigs.py",
+    "tools/check-johto-characters.py",
+    "tools/check-johto-models.py",
+    "tools/check-model-layout.py",
+    "tools/check-room-furniture-bindings.py",
+    "tools/export-model-stl.py",
+    "tools/human_locomotion.py",
+    "tools/test_animated_glb.py"
+  ],
+  "final_tree": "31787f8f91c7baa430ec10036b3442160494b7a7",
+  "human_directory": "crates/crystal-voxel-view/models/johto_characters",
+  "patch_sha256": "3391892b261e58fb9ff7b23e8de138d2a7ad481d79d1d669840d5155e6f4b6c8",
+  "pr": 5,
+  "repository": "TheCulliganMan/geothite",
+  "retired": [
+    {
+      "bytes": 1160310,
+      "git_blob_sha": "f97421a58a7387ef6b6180fdfca93af6785156d8",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-01.blend",
+      "sha256": "3fcfbea370d3e4b4f25d185663a02fccb1794101a1cc83ff6b1a3defdd62115d"
+    },
+    {
+      "bytes": 1067160,
+      "git_blob_sha": "3a3672dcd487f9b7c0d78fee73abf00e26e8cd33",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-02.blend",
+      "sha256": "6d5de4d09b568173bd7ff107c55cca3d09e201d7f1649282666f8782f223395f"
+    },
+    {
+      "bytes": 1040971,
+      "git_blob_sha": "9394f607fff1d8260d3264232837a104d3a9dca2",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-03.blend",
+      "sha256": "e1dbf97cad1d429765da633e40bf075745d7861c4d40fc26ed1edf50f180b10c"
+    },
+    {
+      "bytes": 1141900,
+      "git_blob_sha": "c280701f38b242ec3a11c40aec5acacaecdbfe0f",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-04.blend",
+      "sha256": "8440f6dbe435826a1016db76c4143d7a69bec8ce36b80fd7846926e3c08e9009"
+    },
+    {
+      "bytes": 1089807,
+      "git_blob_sha": "0704d5a684bbcec9330d00fa70a64c0310a86ff1",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-05.blend",
+      "sha256": "ec8a12270840a7111246ddcf043514ec3a8be45ad309bbb9c5be0bb7dc08f0f3"
+    },
+    {
+      "bytes": 1059560,
+      "git_blob_sha": "0890aec3ffc8ab7e46a555e9e48070d21a9267fe",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-06.blend",
+      "sha256": "0e52777e4ce6dd1b711d144c8a0da3de18e4198e22f43fecc3e4f33536849d16"
+    },
+    {
+      "bytes": 1089194,
+      "git_blob_sha": "625a169fcf3995cb5a0cb25d7a88cfd2912c799b",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-07.blend",
+      "sha256": "58c1c3a44e3f818d2beb8694e14e5d4eebce33e416541e2b82a5ddec2dfe0b82"
+    },
+    {
+      "bytes": 1124005,
+      "git_blob_sha": "9d1f4db9b866f010f7f999cca5d1b9d70b970dce",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-08.blend",
+      "sha256": "61d5b3e5bae6d14c89ef576d61af7e0444802e0acaf7f0be59016859a9a15c72"
+    },
+    {
+      "bytes": 994234,
+      "git_blob_sha": "4aa80c24fa2ce79432d5327ec81d12e9460fc67e",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-09.blend",
+      "sha256": "e812fc7c2d4260895224fa1f9563120f3a52441e1e612df279fa29ecc4b76338"
+    },
+    {
+      "bytes": 449921,
+      "git_blob_sha": "b5951891f07bb17d42769a8edd5288843ac603d0",
+      "mode": "100644",
+      "path": "art/johto/source/character-families-10.blend",
+      "sha256": "08f1ab8d4d8fa5dd0f68dad849f1efbbc2684b8bb195f6a5e76145453e7f1795"
+    },
+    {
+      "bytes": 6625,
+      "git_blob_sha": "7b8a62ae166c7103b49dcaed1acbf5c54dfa8a81",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/beauty.rig.json",
+      "sha256": "5adbbe6c64cd2966939c80ac0eb2e546a8bfdcca34fadfa4035f46bc36caedf2"
+    },
+    {
+      "bytes": 6239,
+      "git_blob_sha": "2fe85e47fa6c082f1f13f0278aad2f3517c4de02",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/biker.rig.json",
+      "sha256": "6df19f152c6248db12f4da11ccf51c4fe9aadf6451962beb1985a051a0d72660"
+    },
+    {
+      "bytes": 5566,
+      "git_blob_sha": "fa10bc348a2781ba33bdb0a88425a135c0ef52b0",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/bill.rig.json",
+      "sha256": "5492925d0754bfc4b8115b021529d31f8dff5ae3f341992ed42f9ab5f38440ab"
+    },
+    {
+      "bytes": 5513,
+      "git_blob_sha": "ccd8a488ef1e4ddf62e538557cab24c3972376ec",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/black_belt.rig.json",
+      "sha256": "5c83ccc12a44fc67eff7db82dca97e9a309e03ce501dff674ec8bb1d8b8bbeaf"
+    },
+    {
+      "bytes": 5994,
+      "git_blob_sha": "e6fa14148924001d215af40c9d09ac175fc6edcf",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/blaine.rig.json",
+      "sha256": "a2259a94520bcd585d476bc17188e0a0368126c6a003f7abf8685da86b6d2345"
+    },
+    {
+      "bytes": 5998,
+      "git_blob_sha": "4259b36706716134b954648c54104e7d8a8449a0",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/blue.rig.json",
+      "sha256": "483d7a7b85226f2851f1679423f9b572b17a2551abde414e21edfdaa6db6a491"
+    },
+    {
+      "bytes": 6321,
+      "git_blob_sha": "2b7ce9369f2d13efe56dfd2c37ad05ec72bd11e2",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/brock.rig.json",
+      "sha256": "0e3bb67eb86d61446d1e4fcc28ef503213a7d66301077eb4001c767c50c2f1a4"
+    },
+    {
+      "bytes": 5065,
+      "git_blob_sha": "bbae4c0c9b31f3617ab13a61a75b72f33b93fa77",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/bruno.rig.json",
+      "sha256": "e5e3fe9c40dc30e9d56d7eb3601bf34f18558c65765509da25b7149b057ab453"
+    },
+    {
+      "bytes": 6706,
+      "git_blob_sha": "f4aa2b6e4f25e35f7915253b58a7749cf0f28193",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/bug_catcher.rig.json",
+      "sha256": "06ad34192e114e072d6405288246a1c888ba5db4f669819bc0b27b739abe571b"
+    },
+    {
+      "bytes": 5625,
+      "git_blob_sha": "8ba0c1a89157d9b7ec0e60642a882c0142729653",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/bugsy.rig.json",
+      "sha256": "0980fc9cf37bd6b028c7ca609bd232b295d4bb6c664355a7fd7fb18a2ea9fd69"
+    },
+    {
+      "bytes": 6507,
+      "git_blob_sha": "213f1cc22023c1667d02a9b69375b26dfb645c03",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/cal.rig.json",
+      "sha256": "3b2b15b6cfb25e815f5844724de788dbb8fdeef772c7e879e0eaa9ca9670ca64"
+    },
+    {
+      "bytes": 6218,
+      "git_blob_sha": "9c773bd462f91d4a0c1b0054a5033c93cfe0b4c2",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/captain.rig.json",
+      "sha256": "19a0eafdbf5a1c8524353dffc113497dd76d83232a1e2ee06e4f02f4ccd0630d"
+    },
+    {
+      "bytes": 5066,
+      "git_blob_sha": "bc0fe5396812f24860b6ba3f6322d4308118cf9b",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/chuck.rig.json",
+      "sha256": "7d1824fcca18e3eac4bf3e57842617763120922b33e1b5c572a4804756f3bf63"
+    },
+    {
+      "bytes": 5692,
+      "git_blob_sha": "d4f054f03099f67ad31af0766ce29b957010f497",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/clair.rig.json",
+      "sha256": "d566b11fbaad4594eef5d3f4be551000e22430a6444eec2b2d6823c0fdbf3515"
+    },
+    {
+      "bytes": 5378,
+      "git_blob_sha": "acf4f5cd8037f24c18235e38951c035631329f39",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/clerk.rig.json",
+      "sha256": "ef4b894123c2ff06a7c97075d4db31339b6969f6db630e21f54528ac84a97a53"
+    },
+    {
+      "bytes": 6269,
+      "git_blob_sha": "5fc07b00044cb8684d07a35be5123a34da0c4b36",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/cooltrainer_f.rig.json",
+      "sha256": "bd230a04328dd2e87465fbc8296b39a76b97c16e0f106a45bd0afb0d6da6b874"
+    },
+    {
+      "bytes": 5949,
+      "git_blob_sha": "0c6fc97c1d1d5024d947b3d8bb49284792611244",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/cooltrainer_m.rig.json",
+      "sha256": "51ec89de17b1ef2f49fa07221ab29cdd6b8c90e0ee367d7a2b80775614e0f22e"
+    },
+    {
+      "bytes": 6629,
+      "git_blob_sha": "7ffad464c5e7fc1576694ad7fbba8e5a7c3c8623",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/daisy.rig.json",
+      "sha256": "840d59ec4b56601867d8f66b46602bcd9fb766526b6b19a3d02dd0de31b1cc9c"
+    },
+    {
+      "bytes": 5620,
+      "git_blob_sha": "7628f24d43b94b0a6918b625b2f44516f857c398",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/elder.rig.json",
+      "sha256": "492f867e0c8f1df55a153d7a9bebdd72c618cd8d081ba2bc3afc8433e2c247b6"
+    },
+    {
+      "bytes": 6697,
+      "git_blob_sha": "40a10a8d16aa87b27d133444f985dd83e6312152",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/elm.rig.json",
+      "sha256": "f561588bb2d2abe0462f1684d8b229ca331e652aed48995e2b37af8573ecab71"
+    },
+    {
+      "bytes": 6604,
+      "git_blob_sha": "dc7fb56e8ae3f9a677b618f83de268feff0757a2",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/erika.rig.json",
+      "sha256": "47490586ad85446b774f36a0b794722b784c1655e1466c71759ebe22de7dd200"
+    },
+    {
+      "bytes": 6007,
+      "git_blob_sha": "a9c967cad284a48395c1256a714985a99c961d15",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/falkner.rig.json",
+      "sha256": "d7a0b6174796d50850d1b2bf6317d427015ed7b8da0d4151f1ecb70328b54913"
+    },
+    {
+      "bytes": 6007,
+      "git_blob_sha": "2d365cb49a07274f74d5eaf3a177d1fd9078c453",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/fisher.rig.json",
+      "sha256": "8cf6a18e0faa749221f0739378b505a66d786f6cb2dd5e8145c7ac542376443b"
+    },
+    {
+      "bytes": 5916,
+      "git_blob_sha": "e627376fbd6514b66a4f1b39eb4a5df964f51d82",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/fishing_guru.rig.json",
+      "sha256": "c7fd7d3a35312d180e794003a1cf2087ddff6e03485ab869db5a4a159c982a4f"
+    },
+    {
+      "bytes": 5317,
+      "git_blob_sha": "b2a8210122047519d7c7974478559ff295b2a5b4",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/gameboy_kid.rig.json",
+      "sha256": "daa6055d3f2f9535f4466f6e588a4acb088dbd817bb6da94e6944462517b4612"
+    },
+    {
+      "bytes": 6042,
+      "git_blob_sha": "bd266d6fcb7eeef39b1378f579471028fb98fbbe",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/gentleman.rig.json",
+      "sha256": "bb246bcc7c992f074ff5a39bc5b0fee90bd23aa4c21545a5d623f527eb28b476"
+    },
+    {
+      "bytes": 5927,
+      "git_blob_sha": "2cf8fc808b33444f4b8482ce4df5231f31c0dcf9",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/gramps.rig.json",
+      "sha256": "c4b14627167241895507fb992b20abc49a4300d03d3ccf013177c880e8d5f43e"
+    },
+    {
+      "bytes": 6209,
+      "git_blob_sha": "3d60e2a5fb14dffa99197f604a60bdd3c6ff3d57",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/granny.rig.json",
+      "sha256": "6ac78c6ccd08f4ddd325cd441f132810aceed1636aa23b9680672e8d0bb72cfe"
+    },
+    {
+      "bytes": 5700,
+      "git_blob_sha": "ecc2f14d07a0b9697b25d6fe9671e19f63127e56",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/gym_guide.rig.json",
+      "sha256": "73f8db5a5362e5655830c55e5d7344dd45946b9d74796262a47b3c483ce3afe3"
+    },
+    {
+      "bytes": 5683,
+      "git_blob_sha": "18a64cefacc863339a765e07821a663ec2730d55",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/janine.rig.json",
+      "sha256": "79af4df99f082bdc10d4f5125ca2dc36fdf2e37507ff9ad1865ebeb7bec512d1"
+    },
+    {
+      "bytes": 6008,
+      "git_blob_sha": "77ecde3ff1ef562c226b51a30e17f9ff7cd92bf0",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/jasmine.rig.json",
+      "sha256": "a416b84d49834a97f3f023b8a3da1067336f251e126c3f19c94544de47bba3dd"
+    },
+    {
+      "bytes": 6577,
+      "git_blob_sha": "1459b384c134c97d619d5edd25db2edca0b9f038",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/karen.rig.json",
+      "sha256": "1c7615c06615e5a63b0687e7bcf57f39eecc9661b7d5c73b188f0d1ce88deba7"
+    },
+    {
+      "bytes": 6512,
+      "git_blob_sha": "3dadc239791ec6b4d72e93fdb3eb03ab292642a1",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/kimono_girl.rig.json",
+      "sha256": "7d6f444af28c4838f3bfeac8d5ea7fe44f4b590ee6f23b4954583a6ac258ad3a"
+    },
+    {
+      "bytes": 5936,
+      "git_blob_sha": "53b8e3e9d76c88350a2e07835851c6d5e711f401",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/koga.rig.json",
+      "sha256": "3bb981790496a01845a1a8fe111fc4d2959fac63ff96c2499372756bad07ac58"
+    },
+    {
+      "bytes": 5675,
+      "git_blob_sha": "f6f492df180899c8005a9fc7f94525e8ecc5542d",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/kurt.rig.json",
+      "sha256": "53628f371be818b3a73595214f66ee140de39e215aa40c9db883ec5b21f56e5a"
+    },
+    {
+      "bytes": 5877,
+      "git_blob_sha": "d52588dd653f6dd7573ba0a93cc3b4efdd8dcacd",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/kurt_outside.rig.json",
+      "sha256": "cc286ebaa9b6658e25d9b6017de164cebc081aff0a44527103f319a85bd8f843"
+    },
+    {
+      "bytes": 6380,
+      "git_blob_sha": "5ef85999c41927c95ec03baf7b79ed5ef176255e",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/lance.rig.json",
+      "sha256": "e14d8dece3147baffd5a152342572e51ef0fe935d484cc5d3c975200db101089"
+    },
+    {
+      "bytes": 5941,
+      "git_blob_sha": "f440a59ed8bc77ef122a972e5781b1524ef25406",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/lass.rig.json",
+      "sha256": "f8ddcaa328b3801c7d5815a586ea0e51f051762468fef54a29119303ae4f5008"
+    },
+    {
+      "bytes": 6138,
+      "git_blob_sha": "f8f477c0cc9fc73bfa46928eb93a4f60b794387d",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/link_receptionist.rig.json",
+      "sha256": "51483a1c145f13a66e1b3066439a0c4a7583b9d3d5735d2608689d904583603b"
+    },
+    {
+      "bytes": 5372,
+      "git_blob_sha": "33878c62ff45b9ce1aff3fbed29d9d09a9221f00",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/misty.rig.json",
+      "sha256": "3b9ad128807c131c16cddc732481855da3fa7679d212bb81b1d22dd7a5920812"
+    },
+    {
+      "bytes": 6126,
+      "git_blob_sha": "d72056304b1bdf64e6129b3db01d8e64eca69ee6",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/mom.rig.json",
+      "sha256": "b5e45c7c6027484ccff112e2f92ad18f22f05eb03d8cd123792a02703a1f5a62"
+    },
+    {
+      "bytes": 5443,
+      "git_blob_sha": "b413744604b5dad9abc3e2248fcedf0fa74504a4",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/morty.rig.json",
+      "sha256": "aab0ed5ac5fb45c6e0a7504dd8c694c977f547f1872ebb9a726ae7737dc5f4ca"
+    },
+    {
+      "bytes": 6319,
+      "git_blob_sha": "b72df2f26d39d192106e4cb083eafec855c80ee5",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/nurse.rig.json",
+      "sha256": "d45ea850c2f780bdb0fff71a763a5478894730bbc47a210440ca44fd9a7ca769"
+    },
+    {
+      "bytes": 6022,
+      "git_blob_sha": "e1b2a56ded3f5e09d16d32ddedcdff4490bf2fea",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/oak.rig.json",
+      "sha256": "a431383f45782c73b49a16a6992705329bcdba520ca44bfde9b227b6400094bd"
+    },
+    {
+      "bytes": 6009,
+      "git_blob_sha": "fe70592c431d868a9c15492810f0b811484acd92",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/officer.rig.json",
+      "sha256": "bb59dcd132716da5ce116a0813a582a0ae5f3aebb5fe319198d8b0ac266408cb"
+    },
+    {
+      "bytes": 6027,
+      "git_blob_sha": "d5a33b3fd1c4287ffd6565351128248316a480ea",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/old_link_receptionist.rig.json",
+      "sha256": "6166ec9b645227601d1bc9fb9087124166c262065ff297fca3c4315732889f13"
+    },
+    {
+      "bytes": 6393,
+      "git_blob_sha": "e55714fa2f3a35fb6ef3fc17e1b715b543831559",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/outdoorsman.rig.json",
+      "sha256": "d7467cf013ee7e58c1a0af6027b6e7574156123547c6ca0217321a8102695809"
+    },
+    {
+      "bytes": 6189,
+      "git_blob_sha": "697efb8bbeb67bc6a77bc23e32d2fccc176fb252",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/pharmacist.rig.json",
+      "sha256": "f4696bcb7cc2fec1e4f813ec44258b5c0ac46f272ed788d851f2b901b1f86c0e"
+    },
+    {
+      "bytes": 5944,
+      "git_blob_sha": "0cda9794e5ff8345e6fa71649e1baea526ba2e4c",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/pokefan_f.rig.json",
+      "sha256": "98ff703715a768e538be43a542f70b89225e58964787f55fb587f49b1177748c"
+    },
+    {
+      "bytes": 6010,
+      "git_blob_sha": "33cf35469cb277be634585988f12c2e602371234",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/pokefan_m.rig.json",
+      "sha256": "49c325718b600e2d2106feaa7c672d435126b5bc955f109f736e948ed5d4cf5a"
+    },
+    {
+      "bytes": 5587,
+      "git_blob_sha": "5f1b69d353d6daea115aa7977485bb43ea141986",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/pryce.rig.json",
+      "sha256": "780e9020c423c7342e19a83753e37a3d3f1618082b0bef67d11d326e3f0e6a57"
+    },
+    {
+      "bytes": 6453,
+      "git_blob_sha": "8e63f06e4603da139f46ffa29e334e48bd82f63b",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/receptionist.rig.json",
+      "sha256": "6e08e4c8e817084dffac3f356b00e9dde50770ae6d48d393a49d9f3c30fa420a"
+    },
+    {
+      "bytes": 6432,
+      "git_blob_sha": "cf00ec3e88ff819a142048c2eb5d7d3237a1b820",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/red.rig.json",
+      "sha256": "8f9938150aea676c97eb0a2944abb3329395b98c143167f081ffba12f63070a0"
+    },
+    {
+      "bytes": 6504,
+      "git_blob_sha": "fd6262c8e422387b2a1632e2b90389f46b6ac051",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/reds_mom.rig.json",
+      "sha256": "e9e58c300f2b2c37c317066e99328cd3fcefe6eb694ab71d79cb31030bf7dd68"
+    },
+    {
+      "bytes": 5815,
+      "git_blob_sha": "019c89bd1446fa5a972a9741a68398c151b08cea",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/rival.rig.json",
+      "sha256": "d20c4030a642796e198f4f4325fcfed66dec0eb3aac5b42fe8d26c5aae1d332e"
+    },
+    {
+      "bytes": 5561,
+      "git_blob_sha": "f5c29095845f85c041ce482c8202af050171df67",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/rocker.rig.json",
+      "sha256": "cdb47e89223eeaea30c262a8e206f91e24540786825e1c4e896f2288fa6fdc5f"
+    },
+    {
+      "bytes": 5759,
+      "git_blob_sha": "5f949339822546dc55aa0c315e7f0225bd81c4f0",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/rocket.rig.json",
+      "sha256": "3b3b1d973f0455757473bb834ed3da8c92abff7780be053dfc728f096901f504"
+    },
+    {
+      "bytes": 6439,
+      "git_blob_sha": "3decc50aec4c8eb1c03b5e896afd178ca6b9a8b9",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/rocket_girl.rig.json",
+      "sha256": "88ece845cad566c742f15b50ab1ee351720098bf398cfc9e29136bb83013e318"
+    },
+    {
+      "bytes": 5733,
+      "git_blob_sha": "1cc5497e3529c2663ef5892ea091469a152c31e4",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/sabrina.rig.json",
+      "sha256": "e71115af9c6867461dc97ecb3f71c80fbb4e820e7233f39e834be91093c31183"
+    },
+    {
+      "bytes": 5869,
+      "git_blob_sha": "a057009f0b255fe9c0f7520bc07485f2dca30c02",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/sage.rig.json",
+      "sha256": "9151642ef107f76dce7ced4209a8998f54c3f6e469c288e1ace876811718b12b"
+    },
+    {
+      "bytes": 5696,
+      "git_blob_sha": "07a04bcca63828ec9e75a2d8f01305379c69da7c",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/sailor.rig.json",
+      "sha256": "cb97dc2f6285a312e12751c62696fa2a6a4f3a0d543f9671c03eabf5a4e5f95d"
+    },
+    {
+      "bytes": 6238,
+      "git_blob_sha": "77e029d4b05fca3fa047f561cd9e833a20cfd96a",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/scientist.rig.json",
+      "sha256": "5865d5176a89bab0622971bd74d29cece1099989785ad28389f7e4abd5fad79b"
+    },
+    {
+      "bytes": 5997082,
+      "git_blob_sha": "0eca51a3925d1494a3fc5b6b32c48dd5de889458",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/shared.geometry.json",
+      "sha256": "baa000ca0c7620251d2ebf25f27521f73a827bf5788576dd9d484eee2b884050"
+    },
+    {
+      "bytes": 5201,
+      "git_blob_sha": "055748c06aca1743029914de957caf0204739cde",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/standing_youngster.rig.json",
+      "sha256": "d5de0588d247246184f3f897ebb8dd14132ff63c24cb6203316efab89b4ba116"
+    },
+    {
+      "bytes": 5948,
+      "git_blob_sha": "b7aa49d21a8a5fa0a12e841fdebc0dc5da48f0f2",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/super_nerd.rig.json",
+      "sha256": "73c427897e60d3a7e8a518580ba01f22175844172fbee3b02d517dafe4f85927"
+    },
+    {
+      "bytes": 6311,
+      "git_blob_sha": "5597ed57646b10cdedf5227da938442b75df2a2e",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/surge.rig.json",
+      "sha256": "740cd2deeb9e1ec4e6d9714dac5646e4051e478c737b3a1891248aa0360c3de5"
+    },
+    {
+      "bytes": 4942,
+      "git_blob_sha": "511723ab8ec2867db89711a81a1942327a4c449d",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/swimmer_girl.rig.json",
+      "sha256": "fd34b6b9dd59c5f585074139b274eaed4e6558966a4f4b742bc428754b191f77"
+    },
+    {
+      "bytes": 4753,
+      "git_blob_sha": "adc2294c142a388f12f58af94aecc9e0eb33f79b",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/swimmer_guy.rig.json",
+      "sha256": "2e492709778b5cc6cf6fbb3c99933f5cd6b2fe94b09877c03a25bcc7d5496571"
+    },
+    {
+      "bytes": 6135,
+      "git_blob_sha": "b24c4697178e8be95083c210c11e8c1983e7875b",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/teacher.rig.json",
+      "sha256": "6ce6f414a50026ed78ef549917efe41aacc965fdd6ff55b3144d58001bba3e40"
+    },
+    {
+      "bytes": 6633,
+      "git_blob_sha": "9d319d1134c2cfdb6f56d1f652d5accab2c82354",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/trainer.rig.json",
+      "sha256": "190226ece4ac3edf5614eb7a18d47009041c90992b32f33482909e7c4f8a5797"
+    },
+    {
+      "bytes": 6890,
+      "git_blob_sha": "9945e58549b8158b4b35eb0b2b32249a0e342790",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/trainer_female.rig.json",
+      "sha256": "f6ff936cdc58c17df8239e4de7225ebb55345210e50860ea9a552c613857bf5a"
+    },
+    {
+      "bytes": 5945,
+      "git_blob_sha": "d06bc2f704758844fbd3f1d503a39fc16f9c2e54",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/twin.rig.json",
+      "sha256": "8a1958370e8329f8de242bfe2f0397ea4eeb0c641523eaaae9496ed8180cc0f2"
+    },
+    {
+      "bytes": 5697,
+      "git_blob_sha": "d18f49fa1b6805c1b4698e4169a76596117e529d",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/unused_guy.rig.json",
+      "sha256": "2dfadf81d911ba91f300e15b96156ce05b50d6582deab1cc6d453f9397ca51b9"
+    },
+    {
+      "bytes": 5379,
+      "git_blob_sha": "bf78aba2810d3d2a0d4fda0a0047762037936a3f",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/whitney.rig.json",
+      "sha256": "11b7b9edfac01c498f4176b59ff6ea8e141b76ac9addb821a63518a85cb468ce"
+    },
+    {
+      "bytes": 5735,
+      "git_blob_sha": "55f80c6a9d051f1151e5fd0b44029eb914df77cd",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/will.rig.json",
+      "sha256": "9d29f4d8bc98834d214790dc1061133e5dd9703daa06328a797dc6b63c8e0302"
+    },
+    {
+      "bytes": 5443,
+      "git_blob_sha": "9a75b33d116270cfe6809eba8c49cc9dfbce5a78",
+      "mode": "100644",
+      "path": "crates/crystal-voxel-view/models/johto_characters/youngster.rig.json",
+      "sha256": "afe6a2efeca5235821ff193e8820b236ef8cf05ba08ed72518efb5b632eee7c8"
+    }
+  ],
+  "source_paths": [
+    ".gitattributes",
+    ".github/workflows/browser-tests.yml",
+    "Cargo.lock",
+    "art/johto/ASSETS.md",
+    "art/johto/source/manifest.json",
+    "crates/crystal-bevy/examples/new_bark_3d.rs",
+    "crates/crystal-bevy/src/bevy_shell.rs",
+    "crates/crystal-bevy/src/bevy_shell/render_record.rs",
+    "crates/crystal-bevy/src/bevy_shell/render_walk.rs",
+    "crates/crystal-voxel-view/Cargo.toml",
+    "crates/crystal-voxel-view/build.rs",
+    "crates/crystal-voxel-view/src/human_glb.rs",
+    "crates/crystal-voxel-view/src/johto_characters.rs",
+    "crates/crystal-voxel-view/src/model_storage.rs",
+    "crates/crystal-voxel-view/src/new_bark_actors.rs",
+    "docs/art/animated-models.md",
+    "docs/art/model-stl.md",
+    "docs/art/model-storage.md",
+    "tools/animated_glb.py",
+    "tools/build-actor-props.py",
+    "tools/build-johto-characters.py",
+    "tools/build_art_index.py",
+    "tools/check-facility-table-rigs.py",
+    "tools/check-johto-characters.py",
+    "tools/check-johto-models.py",
+    "tools/check-model-layout.py",
+    "tools/check-room-furniture-bindings.py",
+    "tools/export-model-stl.py",
+    "tools/human_locomotion.py",
+    "tools/test_animated_glb.py"
+  ]
+}
