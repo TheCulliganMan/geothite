@@ -3574,6 +3574,7 @@ fn use_visible_itemfinder(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn use_visible_squirtbottle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    runtime_shell.battle_origin.static_candidate = None;
     let snapshot = runtime_shell.shell.snapshot()?;
     let item_id = carried_field_rule_item(&snapshot, &runtime_shell.shell, "squirtbottle")?;
     record_visible_runtime_action(runtime_shell, format!("field:item:{item_id}:squirtbottle"))?;
@@ -3604,8 +3605,12 @@ fn use_visible_squirtbottle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
             item_use.target_object_identifier
         ),
     );
+    stage_visible_squirtbottle_candidate(runtime_shell, &snapshot, &item_use);
     close_visible_field_pack_without_log(runtime_shell);
-    consume_visible_dispatched_field_script(runtime_shell)?;
+    if let Err(error) = consume_visible_dispatched_field_script(runtime_shell) {
+        runtime_shell.battle_origin.static_candidate = None;
+        return Err(error);
+    }
     Ok(())
 }
 

@@ -9,8 +9,10 @@
 //! into simulation.
 
 mod battle;
+mod battle_location;
 mod streamed_images;
 pub use battle::*;
+pub use battle_location::*;
 pub use streamed_images::stream_composed_image;
 
 use std::{collections::HashSet, sync::Arc};

@@ -5761,6 +5761,7 @@ pub fn run_bevy_shell(
         .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
         .insert_resource(VisibleSequenceTickClock::realtime())
         .insert_resource(BattlePresentationOriginFrame::default())
+        .init_resource::<crystal_render_api::BattleLocationFrame>()
         .insert_resource(RenderedViewport::default())
         .insert_resource(RenderedTilesetArt::default())
         .insert_resource(HudMode::Status)
@@ -5847,7 +5848,15 @@ pub fn run_bevy_shell(
         .add_systems(Update, play_pending_audio.after(queue_battle_intro_cry))
         .add_systems(
             Update,
+            publish_visible_battle_location
+                .after(play_pending_audio)
+                .after(tick_visible_screen_fade)
+                .before(render_playfield),
+        )
+        .add_systems(
+            Update,
             publish_visible_battle_origin
+                .after(publish_visible_battle_location)
                 .after(play_pending_audio)
                 .after(tick_visible_screen_fade)
                 .before(render_playfield),
@@ -8397,6 +8406,7 @@ include!("bevy_shell/battle_sound.rs");
 include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_origin.rs");
+include!("bevy_shell/encounter_anchor.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
 #[cfg(feature = "voxel-view")]

@@ -13,6 +13,7 @@ include!("tests/quests.rs");
 include!("tests/art_text_and_determinism.rs");
 include!("tests/battle_render_regressions.rs");
 include!("tests/battle_origin.rs");
+include!("tests/encounter_anchor.rs");
 include!("tests/battle_origin_fishing.rs");
 include!("tests/battle_timeline_clock.rs");
 include!("tests/battle_capture_palettes.rs");

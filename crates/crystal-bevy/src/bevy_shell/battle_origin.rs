@@ -28,6 +28,12 @@ pub enum BattleOriginContact {
         tile: TilePosition,
         surface: crate::core::world::encounters::EncounterSurface,
     },
+    ScriptedObjectTarget {
+        map_id: String,
+        tile: TilePosition,
+        object_identifier: String,
+        trigger_script: String,
+    },
     FishingWaterTarget {
         map_id: String,
         tile: TilePosition,
@@ -80,6 +86,8 @@ struct VisibleBattleOriginState {
     generation: u64,
     pending: Option<Arc<BattlePresentationOrigin>>,
     active: Option<Arc<BattlePresentationOrigin>>,
+    static_candidate: Option<VisibleStaticEncounterCandidate>,
+    bound_static: Option<VisibleBoundStaticEncounter>,
 }
 
 impl VisibleBattleOriginState {
@@ -90,6 +98,8 @@ impl VisibleBattleOriginState {
     fn clear(&mut self) {
         self.pending = None;
         self.active = None;
+        self.static_candidate = None;
+        self.bound_static = None;
         // Preserve the serial across reload so a renderer cannot alias a later
         // encounter with a scene it retained before the load.
     }
@@ -137,6 +147,14 @@ fn capture_visible_wild_battle_origin(
     shell: &mut BevyRuntimeShell,
     frame: &crate::RuntimeOverworldFrame,
 ) {
+    if shell
+        .battle_origin
+        .static_candidate
+        .as_ref()
+        .is_some_and(|candidate| !same_static_encounter_pose(&candidate.source, &frame.snapshot))
+    {
+        shell.battle_origin.static_candidate = None;
+    }
     let Some(battle) = frame.wild_battle.as_ref() else {
         return;
     };
@@ -166,6 +184,32 @@ fn take_visible_battle_origin_for_entry(
     }
     if let Some(origin) = shell.battle_origin.active.take() {
         // Re-preparing the same battle must never follow a later live pose.
+        return origin;
+    }
+    if let Some(candidate) = take_matching_static_encounter_candidate(shell, snapshot, battle) {
+        stage_visible_battle_origin(
+            shell,
+            &candidate.source,
+            BattleOriginKind::StaticWild,
+            &battle.battle_type,
+            Some(BattleOriginContact::ScriptedObjectTarget {
+                map_id: candidate.source.map_name.clone(),
+                tile: candidate.target_tile,
+                object_identifier: candidate.target_identifier.clone(),
+                trigger_script: candidate.trigger_script.clone(),
+            }),
+            None,
+        );
+        let origin = shell
+            .battle_origin
+            .pending
+            .take()
+            .expect("origin just staged");
+        shell.battle_origin.bound_static = Some(VisibleBoundStaticEncounter {
+            generation: origin.generation,
+            candidate,
+            publication: None,
+        });
         return origin;
     }
     // Scripted/trainer/link/tower entries have exact source pose, but no checked

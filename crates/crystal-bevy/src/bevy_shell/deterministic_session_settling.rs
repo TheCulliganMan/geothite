@@ -2889,6 +2889,7 @@ fn confirm_visible_day_of_week(runtime_shell: &mut BevyRuntimeShell) -> Result<(
         runtime_inputs,
         phone_inputs,
     )?;
+    observe_visible_static_encounter_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     runtime_shell.pending_day_of_week = None;
     trim_event_log(&mut runtime_shell.last_audio_events);
@@ -4193,6 +4194,7 @@ fn resolve_visible_phone_prompt(
         resolved.run.steps.len(),
         resolved.step.mutation.state_checksum
     ));
+    observe_visible_static_encounter_step(runtime_shell, &resolved.step);
     integrate_visible_script_mutation_outcome(runtime_shell, &resolved.step.mutation)?;
     runtime_shell.pending_phone_prompt = None;
     runtime_shell.yes_no_cursor = None;
@@ -4214,6 +4216,9 @@ fn resolve_visible_pending_yes_no(
     runtime_shell: &mut BevyRuntimeShell,
     accepted: bool,
 ) -> Result<()> {
+    if !accepted {
+        runtime_shell.battle_origin.static_candidate = None;
+    }
     if runtime_shell
         .shell
         .snapshot()?
@@ -4510,6 +4515,7 @@ fn execute_visible_deferred_field_move_source_command(
         "field-move source boundary expected {expected_command}, found {}",
         stepped.command
     );
+    observe_visible_static_encounter_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     runtime_shell.last_audio_events.push(format!(
         "script step={source_script} command={command_index} result={} checksum={:?}",
