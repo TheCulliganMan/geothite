@@ -795,6 +795,7 @@ mod tests {
         for row in 0..height {
             for column in 0..width {
                 tiles.push(VisualTile {
+                    animation_frames: None,
                     column: column as u32,
                     row: row as u32,
                     texture: Handle::default(),

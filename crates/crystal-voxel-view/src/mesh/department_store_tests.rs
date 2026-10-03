@@ -46,6 +46,7 @@ fn fixture(
                 }
             };
             VisualTile {
+                animation_frames: None,
                 column: x as u32,
                 row: y as u32,
                 source,

@@ -391,6 +391,7 @@ mod tests {
                     (id, expected(tileset, id).unwrap()[(y % 4) * 4 + x % 4])
                 };
                 tiles.push(VisualTile {
+                    animation_frames: None,
                     column: x as u32,
                     row: y as u32,
                     source: VisualTileSource {

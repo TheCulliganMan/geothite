@@ -19,6 +19,7 @@ fn fixture(b: &'static Binding, origin: [i32; 2]) -> (Vec<VisualTile>, GridGeome
             let dy = wy - 4 - i32::from(b.origin[1]);
             let object = (0..b.size as i32).contains(&dx) && (0..b.size as i32).contains(&dy);
             cells.push(VisualTile {
+                animation_frames: None,
                 column: x as u32,
                 row: y as u32,
                 source: VisualTileSource {

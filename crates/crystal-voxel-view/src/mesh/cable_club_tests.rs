@@ -45,6 +45,7 @@ fn fixture(origin: [i32; 2], size: [usize; 2]) -> (Vec<VisualTile>, GridGeometry
                 }
             };
             VisualTile {
+                animation_frames: None,
                 column: x as u32,
                 row: y as u32,
                 source: src,

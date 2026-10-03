@@ -562,6 +562,7 @@ mod render_mod_tests {
                     texture: Handle::weak_from_u128(
                         1 + u128::from(row * VISUAL_WORLD_TILES_X as u32 + column),
                     ),
+                    animation_frames: None,
                     priority: false,
                 })
             })

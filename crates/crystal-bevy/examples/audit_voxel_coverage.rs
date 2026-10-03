@@ -166,6 +166,7 @@ fn main() -> Result<()> {
                                 tile_index,
                             },
                             texture: Handle::<Image>::default(),
+                            animation_frames: None,
                             priority: false,
                         });
                     }

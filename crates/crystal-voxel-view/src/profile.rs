@@ -961,6 +961,7 @@ mod tests {
         VisualWorldFrame {
             map_id: Arc::from(map_id),
             tiles: vec![VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 0,
                 source: tile_source,

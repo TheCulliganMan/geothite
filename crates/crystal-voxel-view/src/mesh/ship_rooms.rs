@@ -279,6 +279,7 @@ mod tests {
         };
         let mut cells: Vec<_> = (0..g.width * g.height)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % g.width) as u32,
                 row: (i / g.width) as u32,
                 texture: Default::default(),

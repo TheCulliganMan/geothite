@@ -373,6 +373,8 @@ impl TerrainCacheKey {
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
     built_frame: Option<VisualWorldFrame>,
+    // Exact profile document consumed by the completed build, never a desired revision.
+    built_profiles: Option<std::sync::Arc<live_profiles::Document>>,
     // Original compositor handle at build submission; built_frame owns its atlas copy.
     built_source_texture: Option<Handle<Image>>,
     // Exact current bounds for the two mutable flower domains.
@@ -406,6 +408,7 @@ struct TerrainBuildResult {
     key: TerrainCacheKey,
     frame: VisualWorldFrame,
     source_texture: Handle<Image>,
+    profiles: std::sync::Arc<live_profiles::Document>,
     terrain: Result<BuiltTerrain, TerrainMeshError>,
 }
 
@@ -973,6 +976,7 @@ fn sync_terrain(
     {
         cache.key = None;
         cache.built_frame = None;
+        cache.built_profiles = None;
         for entity in [
             cache.instances_root,
             cache.textured_entity,
@@ -1077,6 +1081,7 @@ fn sync_terrain(
                 key: build_key,
                 frame: build_frame,
                 source_texture,
+                profiles: profile_document,
                 terrain,
             }
         };
@@ -1123,6 +1128,7 @@ fn sync_terrain(
                 images,
             )?;
             cache.built_source_texture = Some(completed.source_texture);
+            cache.built_profiles = Some(completed.profiles);
             if profile_changed {
                 println!(
                     "geometry profile mesh applied: revision {}",
@@ -1207,6 +1213,7 @@ fn apply_built_terrain(
 ) -> Result<(), TerrainSyncError> {
     cache.footing_origin = None;
     cache.built_frame = Some(frame.clone());
+    cache.built_profiles = None;
     cache.built_source_texture = Some(frame.map_texture.clone());
     cache.built_animated_bounds = [terrain.animated_textured_mesh.compute_aabb(),
         terrain.animated_solid_mesh.compute_aabb()];
@@ -2482,6 +2489,7 @@ mod renderer_tests {
     fn cave_clear_color_is_enclosed_void_not_outdoor_horizon() {
         let mut frame = VisualWorldFrame::default();
         frame.tiles.push(crystal_render_api::VisualTile {
+            animation_frames: None,
             column: 0,
             row: 0,
             source: crystal_render_api::VisualTileSource {

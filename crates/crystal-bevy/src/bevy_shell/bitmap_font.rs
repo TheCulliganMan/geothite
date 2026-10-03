@@ -847,7 +847,7 @@ fn load_common_tileset_animations(
         animated.insert(
             LEFT_TILE,
             TilesetAnimatedTile {
-                frames: left_frames,
+                frames: left_frames.into(),
                 frame_ticks: 1,
                 phase_offset: 0,
                 requires_forest_restless: true,
@@ -859,7 +859,7 @@ fn load_common_tileset_animations(
         animated.insert(
             RIGHT_TILE,
             TilesetAnimatedTile {
-                frames: right_frames,
+                frames: right_frames.into(),
                 frame_ticks: 1,
                 phase_offset: 0,
                 requires_forest_restless: true,
@@ -877,7 +877,7 @@ fn load_common_tileset_animations(
             .map(|animation| animation.frames.clone())
             .context("cave scroll animation requires the four water frames")?;
         let mut composite_frames = Vec::with_capacity(32);
-        for source in &water_sources {
+        for source in water_sources.iter() {
             for shift in 0..8 {
                 composite_frames.push(shifted_tileset_tile_handle(source, shift, 0, images)?);
             }
@@ -885,7 +885,7 @@ fn load_common_tileset_animations(
         animated.insert(
             HORIZONTAL_TILE,
             TilesetAnimatedTile {
-                frames: composite_frames,
+                frames: composite_frames.into(),
                 frame_ticks: 22,
                 phase_offset: 0,
                 requires_forest_restless: false,
@@ -929,7 +929,7 @@ fn sequential_tileset_animation(
     phase_offset: u64,
 ) -> TilesetAnimatedTile {
     TilesetAnimatedTile {
-        frames,
+        frames: frames.into(),
         frame_ticks,
         phase_offset,
         requires_forest_restless: false,
@@ -958,7 +958,7 @@ fn scrolled_tileset_animation(
         )?);
     }
     Ok(TilesetAnimatedTile {
-        frames,
+        frames: frames.into(),
         frame_ticks,
         phase_offset,
         requires_forest_restless: false,

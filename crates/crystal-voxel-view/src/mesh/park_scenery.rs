@@ -208,6 +208,7 @@ mod tests {
                 let x = i % width;
                 let y = i / width;
                 VisualTile {
+                    animation_frames: None,
                     column: x as u32,
                     row: y as u32,
                     source: crystal_render_api::VisualTileSource {

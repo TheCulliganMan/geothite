@@ -335,6 +335,7 @@ mod tests {
         frame.tiles = (0..height)
             .flat_map(|row| {
                 (0..width).map(move |column| VisualTile {
+                    animation_frames: None,
                     column: column as u32,
                     row: row as u32,
                     source: VisualTileSource {

@@ -186,6 +186,7 @@ mod lighthouse_chamber_floor_tests {
             .into_iter()
             .enumerate()
             .map(|(i, source)| VisualTile {
+                animation_frames: None,
                 column: i as u32,
                 row: 0,
                 texture: Default::default(),

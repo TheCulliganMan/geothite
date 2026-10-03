@@ -11,6 +11,7 @@ fn frame_fixture(
     for y in 0..height {
         for x in 0..width {
             cells.push(VisualTile {
+                animation_frames: None,
                 column: x as u32,
                 row: y as u32,
                 texture: Default::default(),

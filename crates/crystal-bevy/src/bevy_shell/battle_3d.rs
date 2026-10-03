@@ -1330,57 +1330,187 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     Ok(shell)
 }
 
-/// Fresh, disposable grass-edge setup. The preview never starts a battle: an
+#[cfg(feature = "location-tester")]
+#[derive(Clone, Copy)]
+enum WalkingEncounterPreviewMap {
+    Route29Grass,
+    UnionCaveFloor,
+}
+
+/// Fresh, disposable source-map setup. The preview never starts a battle: an
 /// ordinary movement input must pass the real step and encounter rules.
 #[cfg(feature = "location-tester")]
-fn prepare_walking_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+fn prepare_walking_encounter_preview(
+    mut shell: BevyRuntimeShell,
+    preview: WalkingEncounterPreviewMap,
+) -> Result<BevyRuntimeShell> {
     use crate::core::world::collision::{is_grass_encounter_permission, sample_collision};
-    anyhow::ensure!(shell.quick_save_path.is_none(), "walking preview cannot write a user save");
+    anyhow::ensure!(
+        shell.quick_save_path.is_none(),
+        "walking preview cannot write a user save"
+    );
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
     let initial = shell.shell.snapshot()?;
-    anyhow::ensure!(initial.party.slots.is_empty() && initial.battle.is_none(), "walking preview requires a fresh empty-party field session");
+    anyhow::ensure!(
+        initial.party.slots.is_empty() && initial.battle.is_none(),
+        "walking preview requires a fresh empty-party field session"
+    );
     let runtime = shell.shell.runtime().clone();
     let data = runtime.data();
-    let map = data.overworld_map("Route29").context("compiled grass route")?;
-    let tileset = data.tileset_collision(data.map_tileset_name("Route29")?)?;
-    let (width, height) = map.tile_bounds();
-    let occupied: std::collections::HashSet<_> = data.maps["Route29"].objects.iter()
-        .filter_map(object_tile_position_checked).collect();
-    let plain = |tile: TilePosition| {
-        !occupied.contains(&tile) && sample_collision(&map, &tileset, tile)
-            .is_some_and(|sample| walking_plain_support(sample.permission))
+    let map_name = match preview {
+        WalkingEncounterPreviewMap::Route29Grass => "Route29",
+        WalkingEncounterPreviewMap::UnionCaveFloor => "UnionCave1F",
     };
-    let mut selected: Option<(usize, TilePosition)> = None;
-    for y in 0..height {
-        for x in 0..width {
-            let from = TilePosition::new(x as i16, y as i16);
-            let Some(to) = crate::core::world::movement::checked_move_by_stride(from, Direction::Right, 1) else { continue; };
-            if !plain(from) || !plain(to) || !sample_collision(&map, &tileset, to)
-                .is_some_and(|sample| is_grass_encounter_permission(sample.permission)) { continue; }
-            let core = IVec2::new(i32::from(to.x), i32::from(to.y));
-            let mut walkable = Vec::new();
-            for dy in -3..=3 {
-                for dx in -3..=3 {
-                    let p = core + IVec2::new(dx, dy);
-                    if p.x < 0 || p.y < 0 || p.x >= i32::from(width) || p.y >= i32::from(height) { continue; }
-                    if plain(TilePosition::new(p.x as i16, p.y as i16)) { walkable.push(p); }
-                }
-            }
-            if walking_presentation_tile(core, IVec2::X, &walkable).is_none() { continue; }
-            // Prefer an open representative neighborhood; ties remain row-major.
-            // This selects only the preview's starting point, not an encounter.
-            if selected.is_none_or(|(score, _)| walkable.len() > score) {
-                selected = Some((walkable.len(), from));
+    let map = data
+        .overworld_map(map_name)
+        .context("compiled walking encounter map")?;
+    let tileset = data.tileset_collision(data.map_tileset_name(map_name)?)?;
+    let (width, height) = map
+        .checked_tile_bounds()
+        .context("checked walking map bounds")?;
+    let occupied: std::collections::HashSet<_> = data.maps[map_name]
+        .objects
+        .iter()
+        .filter_map(object_tile_position_checked)
+        .collect();
+    let plain = |tile: TilePosition| {
+        !occupied.contains(&tile)
+            && sample_collision(&map, &tileset, tile)
+                .is_some_and(|sample| walking_plain_support(sample.permission))
+    };
+    let from = if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
+        // Collision alone also admits Union Cave's isolated pale plateau:
+        // block $09 is FLOOR, while the lower half of its $0d edge is WALL.
+        // Use this bounded source-drawn floor strip for the disposable preview;
+        // ordinary play and the later complete-body terrain check are unchanged.
+        anyhow::ensure!(
+            data.map_tileset_name(map_name)? == "cave",
+            "Union Cave preview requires the checked cave tileset"
+        );
+        let layout = crate::read_runtime_asset(
+            &shell
+                .asset_root
+                .runtime_assets()
+                .join("data/tilesets/cave_metatiles.bin"),
+        )
+        .context("read compiled cave drawing for preview support")?;
+        anyhow::ensure!(
+            layout.get(0x02 * METATILE_TILE_COUNT..0x03 * METATILE_TILE_COUNT)
+                == Some(&[0x01; METATILE_TILE_COUNT][..]),
+            "Union Cave preview floor drawing differs from its checked source"
+        );
+        // This connected two-row band supports the ordinary (8,26)<->(9,26)
+        // steps and both deterministic facing corridors (6,26) and (11,26).
+        // Check actual collision and drawing identity, including body margins.
+        for y in 26..=27 {
+            for x in 5..=12 {
+                let tile = TilePosition::new(x, y);
+                anyhow::ensure!(
+                    plain(tile)
+                        && sample_collision(&map, &tileset, tile).is_some_and(|sample| {
+                            sample.permission == crate::core::world::collision::permissions::FLOOR
+                                && sample.metatile_id == 0x02
+                        }),
+                    "Union Cave preview requires its original unoccupied floor band at ({x},{y})"
+                );
             }
         }
-    }
-    let (_, from) = selected.context("Route29 has no checked grass step with an open corridor")?;
-    shell.shell.add_party_pokemon("CYNDAQUIL", 20, None, None,
-        &initial.trainer.player_name, initial.trainer.player_id, Dv::from_non_hp(9, 9, 9, 9))?;
+        let from = TilePosition::new(8, 26);
+        let to = TilePosition::new(9, 26);
+        anyhow::ensure!(
+            !data.maps[map_name].objects.iter().any(|object| {
+                object.object_type == "OBJECTTYPE_TRAINER"
+                    && object_tile_position_checked(object).is_some_and(|tile| {
+                        [from, to].into_iter().any(|player| {
+                            let dx = (i32::from(player.x) - i32::from(tile.x)).abs();
+                            let dy = (i32::from(player.y) - i32::from(tile.y)).abs();
+                            (dx == 0 || dy == 0) && dx + dy <= i32::from(object.radius)
+                        })
+                    })
+            }),
+            "Union Cave preview step is covered by trainer sight"
+        );
+        from
+    } else {
+        let mut selected: Option<(usize, TilePosition)> = None;
+        for y in 0..height {
+            for x in 0..width {
+                let from = TilePosition::new(x as i16, y as i16);
+                let Some(to) =
+                    crate::core::world::movement::checked_move_by_stride(from, Direction::Right, 1)
+                else {
+                    continue;
+                };
+                if !plain(from)
+                    || !plain(to)
+                    || !sample_collision(&map, &tileset, to)
+                        .is_some_and(|sample| is_grass_encounter_permission(sample.permission))
+                {
+                    continue;
+                }
+                // Keep the disposable starting step outside nearby trainers' sight
+                // in either facing, without changing their ordinary runtime state.
+                if data.maps[map_name].objects.iter().any(|object| {
+                    object.object_type == "OBJECTTYPE_TRAINER"
+                        && object_tile_position_checked(object).is_some_and(|tile| {
+                            [from, to].into_iter().any(|player| {
+                                let dx = (i32::from(player.x) - i32::from(tile.x)).abs();
+                                let dy = (i32::from(player.y) - i32::from(tile.y)).abs();
+                                (dx == 0 || dy == 0) && dx + dy <= i32::from(object.radius)
+                            })
+                        })
+                }) {
+                    continue;
+                }
+                let core = IVec2::new(i32::from(to.x), i32::from(to.y));
+                let mut walkable = Vec::new();
+                for dy in -3..=3 {
+                    for dx in -3..=3 {
+                        let p = core + IVec2::new(dx, dy);
+                        if p.x < 0 || p.y < 0 || p.x >= i32::from(width) || p.y >= i32::from(height)
+                        {
+                            continue;
+                        }
+                        if plain(TilePosition::new(p.x as i16, p.y as i16)) {
+                            walkable.push(p);
+                        }
+                    }
+                }
+                if walking_presentation_tile(core, IVec2::X, &walkable).is_none() {
+                    continue;
+                }
+                // Prefer an open representative neighborhood; ties remain row-major.
+                // This selects only the preview's starting point, not an encounter.
+                if selected.is_none_or(|(score, _)| walkable.len() > score) {
+                    selected = Some((walkable.len(), from));
+                }
+            }
+        }
+        selected
+            .with_context(|| {
+                format!("{map_name} has no checked encounter step with an open corridor")
+            })?
+            .1
+    };
+    shell.shell.add_party_pokemon(
+        "CYNDAQUIL",
+        20,
+        None,
+        None,
+        &initial.trainer.player_name,
+        initial.trainer.player_id,
+        Dv::from_non_hp(9, 9, 9, 9),
+    )?;
     {
         let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
-        data.transition_overworld_session(state, overworld, "Route29", from,
-            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids())?;
+        data.transition_overworld_session(
+            state,
+            overworld,
+            map_name,
+            from,
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+            &runtime.music_ids(),
+        )?;
         overworld.set_player_facing(Direction::Right);
         state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
     }
@@ -1388,10 +1518,21 @@ fn prepare_walking_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     mark_runtime_snapshot_dirty(&mut shell);
     settle_visible_shell_smoke_until_idle(&mut shell)?;
     let ready = shell.shell.snapshot()?;
-    anyhow::ensure!(ready.battle.is_none() && ready.overworld.map_name == "Route29"
-        && ready.overworld.tile == from && ready.overworld.facing == Direction::Right
-        && ready.overworld.mode == MovementMode::Normal,
-        "walking fixture must await an ordinary step at its checked source tile");
+    anyhow::ensure!(
+        ready.battle.is_none()
+            && ready.overworld.map_name == map_name
+            && ready.overworld.tile == from
+            && ready.overworld.facing == Direction::Right
+            && ready.overworld.mode == MovementMode::Normal,
+        "walking fixture must await an ordinary step at its checked source tile"
+    );
+    if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
+        anyhow::ensure!(
+            shell.shell.current_encounter_surface_checked()?
+                == Some(crate::core::world::encounters::EncounterSurface::Grass),
+            "cave fixture requires verified source land-encounter classification"
+        );
+    }
     mark_runtime_snapshot_dirty(&mut shell);
     Ok(shell)
 }

@@ -480,30 +480,42 @@ fn walking_anchor_settled_pre_step_frame_derives_landing_inside_original_grid() 
     assert_ne!(bound.origin.source.tile, bound.from);
 }
 
-fn walking_anchor_route29_app() -> (App, TilePosition, TilePosition, Direction) {
-    walking_anchor_route29_app_with_run(1)
+fn walking_anchor_route29_app_with_run(
+    run_steps: i16,
+) -> (App, TilePosition, TilePosition, Direction) {
+    walking_anchor_map_app_with_run("Route29", run_steps)
 }
 
-fn walking_anchor_route29_app_with_run(
+fn walking_anchor_map_app_with_run(
+    map_name: &str,
     run_steps: i16,
 ) -> (App, TilePosition, TilePosition, Direction) {
     use crate::core::world::collision::{is_grass_encounter_permission, sample_collision};
     let mut shell = route36_overworld_shell_for_battle_render_regression();
     let runtime = shell.shell.runtime().clone();
     let data = runtime.data();
-    let map = data.overworld_map("Route29").unwrap();
+    let map = data.overworld_map(map_name).unwrap();
     let tileset = data
-        .tileset_collision(data.map_tileset_name("Route29").unwrap())
+        .tileset_collision(data.map_tileset_name(map_name).unwrap())
         .unwrap();
     let (width, height) = map.checked_tile_bounds().unwrap();
+    let encounter_permission = |permission| match map_name {
+        "Route29" => is_grass_encounter_permission(permission),
+        "UnionCave1F" => permission == crate::core::world::collision::permissions::FLOOR,
+        _ => panic!("walking fixture requires an explicitly selected compiled map"),
+    };
     let is_open = |tile: TilePosition| {
         sample_collision(&map, &tileset, tile)
             .is_some_and(|sample| walking_plain_support(sample.permission))
-            && !data.maps["Route29"].objects.iter().any(|object| {
+            && !data.maps[map_name].objects.iter().any(|object| {
                 crate::core::world::session::object_tile_position_checked(object).is_some_and(
                     |other| {
-                        (i32::from(other.x) - i32::from(tile.x)).abs() <= 1
-                            && (i32::from(other.y) - i32::from(tile.y)).abs() <= 1
+                        let dx = (i32::from(other.x) - i32::from(tile.x)).abs();
+                        let dy = (i32::from(other.y) - i32::from(tile.y)).abs();
+                        (dx <= 1 && dy <= 1)
+                            || (object.object_type == "OBJECTTYPE_TRAINER"
+                                && (dx == 0 || dy == 0)
+                                && dx + dy <= i32::from(object.radius))
                     },
                 )
             })
@@ -514,7 +526,7 @@ fn walking_anchor_route29_app_with_run(
             let target = TilePosition::new(x as i16, y as i16);
             if !is_open(target)
                 || !sample_collision(&map, &tileset, target)
-                    .is_some_and(|sample| is_grass_encounter_permission(sample.permission))
+                    .is_some_and(|sample| encounter_permission(sample.permission))
             {
                 continue;
             }
@@ -539,7 +551,7 @@ fn walking_anchor_route29_app_with_run(
                         target.y + dy * step,
                     ))
                 }) || !sample_collision(&map, &tileset, encounter)
-                    .is_some_and(|sample| is_grass_encounter_permission(sample.permission))
+                    .is_some_and(|sample| encounter_permission(sample.permission))
                 {
                     continue;
                 }
@@ -562,13 +574,13 @@ fn walking_anchor_route29_app_with_run(
         }
     }
     let (from, target, facing) =
-        selected.expect("compiled Route29 has an unoccupied grass step and presentation corridor");
+        selected.expect("compiled map has an unoccupied encounter step and presentation corridor");
     {
         let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
         data.transition_overworld_session(
             state,
             overworld,
-            "Route29",
+            map_name,
             from,
             crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
             &runtime.music_ids(),
@@ -610,8 +622,34 @@ fn walking_anchor_route29_app_with_run(
 
 #[test]
 fn walking_anchor_real_route29_keyboard_encounter_retains_landing_and_replays_journal() {
+    walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal("Route29");
+}
+
+#[test]
+fn walking_anchor_real_union_cave_keyboard_encounter_retains_landing_and_replays_journal() {
+    walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal("UnionCave1F");
+}
+
+fn walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal(map_name: &str) {
     use bevy::ecs::system::RunSystemOnce;
-    let (mut app, from, to, facing) = walking_anchor_route29_app();
+    let (mut app, from, to, facing) = walking_anchor_map_app_with_run(map_name, 1);
+    if map_name == "UnionCave1F" {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let overworld = shell.shell.session().overworld();
+        assert_eq!(
+            crate::core::world::collision::sample_collision(&overworld.map, &overworld.tileset, to)
+                .unwrap()
+                .permission,
+            crate::core::world::collision::permissions::FLOOR,
+            "the actual compiled cave encounter tile is ordinary floor"
+        );
+        assert_eq!(overworld.current_encounter_surface_checked().unwrap(), None);
+        assert_eq!(
+            shell.shell.current_encounter_surface_checked().unwrap(),
+            Some(crate::core::world::encounters::EncounterSurface::Grass),
+            "verified runtime cave metadata establishes the source land surface"
+        );
+    }
     let (mut replay, commands_before) = {
         let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
         // A finite fixture trace feeds the ordinary source Random calls. The
@@ -671,7 +709,7 @@ fn walking_anchor_real_route29_keyboard_encounter_retains_landing_and_replays_jo
         .resource::<BevyRuntimeShell>()
         .battle_origin
         .published()
-        .expect("ordinary Route29 grass step produced a source encounter")
+        .expect("ordinary compiled-map step produced a source encounter")
         .clone();
     assert_eq!(origin.kind, BattleOriginKind::Wild);
     assert_eq!(origin.source.mode, MovementMode::Normal);
@@ -688,7 +726,7 @@ fn walking_anchor_real_route29_keyboard_encounter_retains_landing_and_replays_jo
     assert_eq!(
         origin.contact,
         Some(BattleOriginContact::OverworldEncounter {
-            map_id: "Route29".into(),
+            map_id: map_name.into(),
             tile: actual_to,
             surface: crate::core::world::encounters::EncounterSurface::Grass,
         })
@@ -741,9 +779,23 @@ fn walking_anchor_real_route29_keyboard_encounter_retains_landing_and_replays_jo
     let anchors = location
         .anchors
         .as_ref()
-        .expect("the original grass walk published an actual matching source frame");
+        .expect("the original walk published an actual matching source frame");
     assert_eq!(location.source.core_tile, location.target.core_tile());
     assert_eq!(anchors.target_actor, None);
+    assert_eq!(anchors.terrain.map_id.as_ref(), map_name);
+    let overworld = app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .session()
+        .overworld();
+    assert_eq!(
+        anchors.terrain.source_map_size_core_tiles,
+        overworld
+            .map
+            .checked_tile_bounds()
+            .map(|(width, height)| UVec2::new(u32::from(width), u32::from(height)))
+    );
     let crystal_render_api::VisualBattleTarget::WalkingGrass { presentation, .. } =
         &location.target
     else {
@@ -967,4 +1019,283 @@ fn walking_anchor_continuous_steps_capture_the_retained_field_before_battle_repl
             .next()
             .is_some()
     );
+}
+
+// Typed binding-gate fixture over actual compiled map/collision and its warm
+// rendered frame. Only the real keyboard regression above proves commitment;
+// these tests deliberately vary rejected evidence without starting a battle.
+fn walking_anchor_binding_gate_fixture(
+    map_name: &str,
+) -> (
+    BevyRuntimeShell,
+    crate::RuntimeOverworldFrame,
+    RenderedViewport,
+    crystal_render_api::VisualWorldFrame,
+) {
+    let (mut app, from, to, _) = walking_anchor_map_app_with_run(map_name, 1);
+    let rendered = app
+        .world_mut()
+        .remove_resource::<RenderedViewport>()
+        .unwrap();
+    let world_frame = app
+        .world_mut()
+        .remove_resource::<crystal_render_api::VisualWorldFrame>()
+        .unwrap();
+    let mut shell = app
+        .world_mut()
+        .remove_resource::<BevyRuntimeShell>()
+        .unwrap();
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        overworld.player.tile = to;
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    let snapshot = shell.shell.snapshot().unwrap();
+    let mut origin = battle_origin_test_value();
+    origin.source = snapshot.overworld.clone();
+    origin.contact = Some(BattleOriginContact::OverworldEncounter {
+        map_id: map_name.into(),
+        tile: to,
+        surface: crate::core::world::encounters::EncounterSurface::Grass,
+    });
+    origin.authoritative_step = Some(StepOutcome::Moved {
+        from,
+        to,
+        speed_multiplier: 1,
+    });
+    let frame = crate::RuntimeOverworldFrame {
+        snapshot: origin.source.clone(),
+        input_mask: 0,
+        pressed_mask: 0,
+        autonomous_objects_changed: false,
+        movement: origin.authoritative_step.clone(),
+        ledge_jump: None,
+        grass_rustle: None,
+        phone_call: None,
+        step_events: None,
+        coord_event: None,
+        trainer_sight: None,
+        interaction: None,
+        warp: None,
+        connection: None,
+        wild_encounter: None,
+        wild_battle: None,
+        state_checksum: snapshot.state_checksum,
+    };
+    shell.battle_origin.stage(origin);
+    (shell, frame, rendered, world_frame)
+}
+
+#[test]
+fn walking_anchor_union_cave_requires_plain_collision_even_on_source_encounter_land() {
+    use crate::core::world::collision::{permissions as p, sample_collision};
+    let (mut shell, frame, _, _) = walking_anchor_binding_gate_fixture("UnionCave1F");
+    let (from, to) = walking_origin_step(shell.battle_origin.pending.as_ref().unwrap()).unwrap();
+    let samples = [from, to].map(|tile| {
+        let overworld = shell.shell.session().overworld();
+        sample_collision(&overworld.map, &overworld.tileset, tile).unwrap()
+    });
+    assert!(samples.iter().all(|sample| sample.permission == p::FLOOR));
+    bind_visible_walking_encounter(&mut shell, &frame);
+    assert!(shell.battle_origin.bound_walking.is_some());
+    for sample in samples {
+        for permission in [
+            p::WATER,
+            p::ICE,
+            p::ICE_2B,
+            p::WALK_RIGHT,
+            p::HOP_DOWN,
+            p::WARP_PANEL,
+            p::LADDER,
+            p::CAVE,
+            p::STAIRCASE,
+            p::DOOR,
+            p::WALL,
+        ] {
+            shell.battle_origin.bound_walking = None;
+            shell.shell.session_mut().overworld_mut().tileset.metatiles
+                [usize::from(sample.metatile_id)]
+            .collision[sample.quadrant] = permission;
+            let before = shell.shell.session().clone();
+            let commands = shell.shell.retained_runtime_commands().to_vec();
+            let results = shell.shell.retained_runtime_results().to_vec();
+            bind_visible_walking_encounter(&mut shell, &frame);
+            assert!(
+                shell.battle_origin.bound_walking.is_none(),
+                "special cave collision {permission:#x}"
+            );
+            assert_eq!(
+                shell.shell.session(),
+                &before,
+                "binding cannot change RNG or source clocks"
+            );
+            assert_eq!(shell.shell.retained_runtime_commands(), commands);
+            assert_eq!(shell.shell.retained_runtime_results(), results);
+        }
+        shell.shell.session_mut().overworld_mut().tileset.metatiles
+            [usize::from(sample.metatile_id)]
+        .collision[sample.quadrant] = p::FLOOR;
+    }
+    let mut scripted_frame = frame.clone();
+    scripted_frame.coord_event = Some(crate::core::world::session::CoordEventTrigger {
+        map_name: frame.snapshot.map_name.clone(),
+        tile: frame.snapshot.tile,
+        scene_id: "SCENE_TEST".into(),
+        script_name: "TestCoordinateEvent".into(),
+    });
+    bind_visible_walking_encounter(&mut shell, &scripted_frame);
+    assert!(shell.battle_origin.bound_walking.is_none());
+    bind_visible_walking_encounter(&mut shell, &frame);
+    assert!(
+        shell.battle_origin.bound_walking.is_some(),
+        "plain unclaimed cave floor remains eligible"
+    );
+}
+
+#[test]
+fn walking_anchor_floor_requires_verified_cave_metadata() {
+    use crate::core::world::collision::{permissions, sample_collision};
+    let (mut shell, frame, _, _) = walking_anchor_binding_gate_fixture("Route29");
+    {
+        let overworld = shell.shell.session_mut().overworld_mut();
+        let sample =
+            sample_collision(&overworld.map, &overworld.tileset, frame.snapshot.tile).unwrap();
+        overworld.tileset.metatiles[usize::from(sample.metatile_id)].collision[sample.quadrant] =
+            permissions::FLOOR;
+    }
+    assert_eq!(
+        shell.shell.current_encounter_surface_checked().unwrap(),
+        None
+    );
+    bind_visible_walking_encounter(&mut shell, &frame);
+    assert!(
+        shell.battle_origin.bound_walking.is_none(),
+        "ordinary route floor cannot claim a Grass encounter surface"
+    );
+
+    // A cave-looking name without verified runtime metadata also fails closed.
+    let mut unknown_frame = frame;
+    unknown_frame.snapshot.map_name = "UnknownCave".into();
+    shell.shell.session_mut().overworld_mut().map.name = unknown_frame.snapshot.map_name.clone();
+    let mut origin = shell
+        .battle_origin
+        .pending
+        .as_ref()
+        .unwrap()
+        .as_ref()
+        .clone();
+    origin.source = unknown_frame.snapshot.clone();
+    origin.contact = Some(BattleOriginContact::OverworldEncounter {
+        map_id: unknown_frame.snapshot.map_name.clone(),
+        tile: unknown_frame.snapshot.tile,
+        surface: crate::core::world::encounters::EncounterSurface::Grass,
+    });
+    shell.battle_origin.pending = Some(Arc::new(origin));
+    assert!(shell.shell.current_encounter_surface_checked().is_err());
+    bind_visible_walking_encounter(&mut shell, &unknown_frame);
+    assert!(shell.battle_origin.bound_walking.is_none());
+}
+
+#[test]
+fn walking_anchor_union_cave_rejects_cold_or_stale_frames_without_late_repair() {
+    let (mut shell, frame, rendered, world_frame) =
+        walking_anchor_binding_gate_fixture("UnionCave1F");
+    bind_visible_walking_encounter(&mut shell, &frame);
+    let prototype = shell.battle_origin.bound_walking.take().unwrap();
+    let mut valid = prototype.clone();
+    freeze_visible_walking_anchors(&mut valid, &rendered, Some(&world_frame), true);
+    assert!(
+        valid.anchors.is_some(),
+        "warm actual cave acreage supplies both supports"
+    );
+    for defect in 0..6 {
+        let mut candidate = world_frame.clone();
+        let mut bound = prototype.clone();
+        match defect {
+            0 => candidate.active = false,
+            1 => candidate.terrain_revision += 1,
+            2 => candidate.grid_origin.x += 1,
+            3 => candidate.source_map_size_core_tiles = None,
+            4 => candidate
+                .actors
+                .retain(|actor| actor.id != crystal_render_api::VisualActorId::Player),
+            5 => {}
+            _ => unreachable!(),
+        }
+        freeze_visible_walking_anchors(
+            &mut bound,
+            &rendered,
+            (defect != 5).then_some(&candidate),
+            true,
+        );
+        assert!(bound.capture_attempted, "cave witness defect {defect}");
+        assert!(bound.anchors.is_none(), "cave witness defect {defect}");
+        freeze_visible_walking_anchors(&mut bound, &rendered, Some(&world_frame), true);
+        assert!(
+            bound.anchors.is_none(),
+            "later cave terrain cannot repair initial defect {defect}"
+        );
+    }
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn walking_anchor_cave_preview_starts_on_verified_floor_and_awaits_input() {
+    let asset_root = AssetRoot::new(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap(),
+    );
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route36".into(),
+            tile_x: 20,
+            tile_y: 8,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("CHRIS".into()),
+            quick_save_path: None,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let shell =
+        prepare_walking_encounter_preview(shell, WalkingEncounterPreviewMap::UnionCaveFloor)
+            .expect("compiled floor drawing and clear two-row corridor");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "UnionCave1F");
+    assert_eq!(snapshot.overworld.tile, TilePosition::new(8, 26));
+    assert_eq!(snapshot.overworld.facing, Direction::Right);
+    assert_eq!(snapshot.overworld.mode, MovementMode::Normal);
+    assert_eq!(snapshot.party.slots.len(), 1);
+    assert_eq!(snapshot.party.slots[0].pokemon.species.id, "CYNDAQUIL");
+    assert!(snapshot.battle.is_none());
+    assert!(shell.battle_origin.published().is_none());
+    assert_eq!(shell.player_walk_frame_ticks, 0);
+    assert_eq!(shell.shell.session().state().wild_encounter_cooldown, 5);
+    let overworld = shell.shell.session().overworld();
+    for tile in [
+        TilePosition::new(8, 26),
+        TilePosition::new(9, 26),
+        TilePosition::new(6, 26),
+        TilePosition::new(11, 26),
+    ] {
+        let sample = crate::core::world::collision::sample_collision(
+            &overworld.map,
+            &overworld.tileset,
+            tile,
+        )
+        .unwrap();
+        assert_eq!(sample.metatile_id, 0x02);
+        assert_eq!(
+            sample.permission,
+            crate::core::world::collision::permissions::FLOOR
+        );
+    }
 }

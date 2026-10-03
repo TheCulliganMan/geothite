@@ -126,6 +126,7 @@ fn main() -> Result<()> {
                         tile_index,
                     },
                     texture,
+                    animation_frames: None,
                     priority: false,
                 });
             }

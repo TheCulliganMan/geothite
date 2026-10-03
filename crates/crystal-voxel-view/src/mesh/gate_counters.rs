@@ -247,6 +247,7 @@ mod tests {
         for y in 0..4 {
             for x in 0..4 {
                 cells.push(VisualTile {
+                    animation_frames: None,
                     column: x,
                     row: y,
                     source: VisualTileSource {

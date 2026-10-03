@@ -174,6 +174,7 @@ mod tests {
                     CellShape::Flat
                 });
                 tiles.push(VisualTile {
+                    animation_frames: None,
                     column: x,
                     row: u32::from(row),
                     source,

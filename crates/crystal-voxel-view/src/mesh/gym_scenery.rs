@@ -140,6 +140,7 @@ mod tests {
     fn fixture() -> (Vec<VisualTile>, GridGeometry) {
         let tiles = (0..16)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % 4) as u32,
                 row: (i / 4) as u32,
                 source: crystal_render_api::VisualTileSource {

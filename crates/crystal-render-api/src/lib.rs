@@ -79,10 +79,22 @@ pub struct VisualTile {
     pub column: u32,
     pub row: u32,
     pub source: VisualTileSource,
-    /// Exact live 8x8 image used by the classic renderer for this cell. This
-    /// gives optional renderers non-stretched top/edge source art without
-    /// exposing asset-root paths or gameplay data.
+    /// Exact 8x8 image sampled from the classic renderer when this cell was
+    /// published. A retained grid may keep an earlier authenticated animation
+    /// phase. This gives optional renderers non-stretched top/edge source art
+    /// without exposing asset-root paths or gameplay data.
     pub texture: Handle<Image>,
+    /// Complete immutable authored texture-phase family, shared by every cell
+    /// using this animation from the same host art-cache entry. `texture` is
+    /// always a member. Static or otherwise unproven art has no family.
+    ///
+    /// This authenticates texture provenance only, never geometry. Consumers
+    /// may accept different member phases only when their validated source
+    /// profile proves geometry invariant across this exact family. Overlapping
+    /// families do not establish correspondence, and palette/art-cache changes
+    /// must publish a distinct family. Phase changes do not change geometry
+    /// revisions or require cloning the complete published grid.
+    pub animation_frames: Option<Arc<[Handle<Image>]>>,
     /// Whether the tile belongs to the classic map foreground-priority layer.
     /// This is compositing metadata, not a height or shape signal.
     pub priority: bool,
@@ -335,6 +347,7 @@ mod tests {
                 tile_index,
             },
             texture: Handle::weak_from_u128(100 + u128::from(tile_index)),
+            animation_frames: None,
             priority: false,
         }
     }

@@ -106,6 +106,7 @@ mod tests {
                 .into_iter()
                 .enumerate()
                 .map(|(index, source)| VisualTile {
+                    animation_frames: None,
                     column: index as u32 % width,
                     row: index as u32 / width,
                     source,

@@ -116,6 +116,7 @@ mod lighthouse_floor_tests {
             .into_iter()
             .enumerate()
             .map(|(i, source)| VisualTile {
+                animation_frames: None,
                 column: i as _,
                 row: 0,
                 texture: Handle::default(),

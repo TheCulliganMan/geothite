@@ -30,7 +30,7 @@ mod bedroom_carpet_tests {
                 let art = if block == base && local_y < 2 { 2 }
                     else if block == base + 2 && local_y == 0 { [0x30, 0x31, 0x31, 0x32][x % 4] }
                     else if (base..=base + 2).contains(&block) { tile } else { 1 };
-                cells.push(VisualTile { column: x as u32, row: y as u32,
+                cells.push(VisualTile { animation_frames: None, column: x as u32, row: y as u32,
                     texture: Handle::default(), priority: false,
                     source: VisualTileSource { tileset_id: Arc::from("players_room"),
                         metatile_id: block, subtile_column: (x % 4) as u8,

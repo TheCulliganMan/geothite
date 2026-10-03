@@ -146,6 +146,7 @@ mod tests {
             for x in 0..width {
                 let id = ((origin.y + y as i32) * 100 + origin.x + x as i32 + 10000) as u16;
                 frame.tiles.push(VisualTile {
+                    animation_frames: None,
                     column: x,
                     row: y,
                     source: VisualTileSource {

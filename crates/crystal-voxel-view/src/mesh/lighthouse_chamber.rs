@@ -259,6 +259,7 @@ mod tests {
     fn floor() -> Vec<VisualTile> {
         (0..144)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % 12) as u32,
                 row: (i / 12) as u32,
                 texture: Default::default(),

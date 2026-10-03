@@ -7,6 +7,7 @@ fn fixture() -> (Vec<VisualTile>, GridGeometry) {
             let y = i / 8;
             let plant = (2..6).contains(&x) && y < 3;
             VisualTile {
+                animation_frames: None,
                 column: x as u32,
                 row: y as u32,
                 texture: Default::default(),

@@ -421,7 +421,9 @@ fn resolve_context(
         // overlapping source cell against those actual built inputs, then use
         // the same rigid translation as the live terrain renderer. A desired
         // asynchronous cache key never participates in this correspondence.
-        Some(retained_correspondence::resolve(&evidence, built)?)
+        Some(retained_correspondence::resolve_with_profiles(
+            &evidence, built, cache.built_profiles.as_deref(),
+        )?)
     } else {
         return Err("actual built terrain does not match encounter evidence");
     };
@@ -1179,7 +1181,7 @@ mod tests {
             frame.tiles = (0..frame.grid_size.y).flat_map(|row| (0..frame.grid_size.x).map(move |column| (column, row))).map(|(column, row)| {
                 let source = frame.grid_origin + IVec2::new(column as i32, row as i32);
                 let id = ((source.y + 100) * 256 + source.x + 100) as u16;
-                VisualTile { column, row, source: VisualTileSource {
+                VisualTile { animation_frames: None, column, row, source: VisualTileSource {
                     tileset_id: "walking-fixture".into(), metatile_id: id,
                     subtile_column: 0, subtile_row: 0, tile_index: id,
                 }, texture: Handle::weak_from_u128(u128::from(id) + 1000), priority: false }

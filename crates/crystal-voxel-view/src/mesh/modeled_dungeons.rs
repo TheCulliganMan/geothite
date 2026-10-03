@@ -934,6 +934,7 @@ mod tests {
     fn tiles(w: usize, h: usize, tileset: &str) -> Vec<VisualTile> {
         (0..w * h)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % w) as u32,
                 row: (i / w) as u32,
                 source: VisualTileSource {
@@ -1261,6 +1262,7 @@ mod tests {
             (0x07, 2, [[0x07, 0x08], [0x17, 0x18]]),
         ] {
             let mut cells: Vec<_> = (0..24).map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % 4) as u32, row: (i / 4) as u32, texture: Default::default(), priority: false,
                 source: VisualTileSource { tileset_id: std::sync::Arc::from("lighthouse"),
                     metatile_id: 0x0b, subtile_column: (i % 4) as u8, subtile_row: (i / 4 % 4) as u8,

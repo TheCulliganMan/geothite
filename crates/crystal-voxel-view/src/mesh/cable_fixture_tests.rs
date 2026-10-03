@@ -20,6 +20,7 @@ fn fixture(name: &str) -> (Object, Vec<VisualTile>, GridGeometry) {
     let mut cells = (0..height)
         .flat_map(|y| (0..width).map(move |x| (x, y)))
         .map(|(x, y)| VisualTile {
+            animation_frames: None,
             column: x as u32,
             row: y as u32,
             texture: Default::default(),

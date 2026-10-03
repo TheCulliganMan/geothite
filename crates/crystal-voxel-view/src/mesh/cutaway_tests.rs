@@ -117,6 +117,7 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
                         0
                     };
                 cells.push(VisualTile {
+                    animation_frames: None,
                     column: column as u32,
                     row: row as u32,
                     source: VisualTileSource {

@@ -1,4 +1,4 @@
-// Observe one already committed ordinary grass step. No runtime command,
+// Observe one already committed ordinary land encounter step. No runtime command,
 // movement mutation, RNG/divider read, or source animation-clock change.
 #[derive(Debug, Clone)]
 struct VisibleBoundWalkingEncounter {
@@ -107,9 +107,21 @@ fn bind_visible_walking_encounter(
         Some((width, height)) if width > 0 && height > 0 => (width, height),
         _ => return,
     };
-    use crate::core::world::collision::{is_grass_encounter_permission, sample_collision};
-    if !sample_collision(&overworld.map, &overworld.tileset, to).is_some_and(|sample| {
-        walking_plain_support(sample.permission) && is_grass_encounter_permission(sample.permission)
+    use crate::core::world::collision::sample_collision;
+    // Grass is the source land-encounter surface, including plain cave/dungeon
+    // floors. Ask the same verified metadata/collision query as gameplay; a
+    // map name or an ordinary FLOOR alone cannot establish encounter land.
+    // Plain support remains a separate gate: ice, forced movement, warps and
+    // other special land collision never gain presentation support here,
+    // including a forced step leaving those surfaces for an ordinary floor.
+    if !matches!(
+        shell.shell.current_encounter_surface_checked(),
+        Ok(Some(
+            crate::core::world::encounters::EncounterSurface::Grass
+        ))
+    ) || ![from, to].into_iter().all(|tile| {
+        sample_collision(&overworld.map, &overworld.tileset, tile)
+            .is_some_and(|sample| walking_plain_support(sample.permission))
     }) {
         return;
     }
@@ -271,6 +283,8 @@ fn publish_visible_walking_location(
             facing: IVec2::new(i32::from(dx), i32::from(dy)),
             movement: crystal_render_api::VisualBattleSourceMovement::Normal,
         },
+        // WalkingGrass names the canonical source Grass encounter surface;
+        // verified cave/dungeon floor encounters share that source identity.
         target: crystal_render_api::VisualBattleTarget::WalkingGrass {
             core_tile: IVec2::new(i32::from(source.tile.x), i32::from(source.tile.y)),
             presentation: bound.placement.clone(),

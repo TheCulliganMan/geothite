@@ -213,6 +213,7 @@ mod gym_floor_tests {
     }
     fn tile(source: VisualTileSource, i: usize, width: usize) -> VisualTile {
         VisualTile {
+            animation_frames: None,
             column: (i % width) as u32,
             row: (i / width) as u32,
             source,

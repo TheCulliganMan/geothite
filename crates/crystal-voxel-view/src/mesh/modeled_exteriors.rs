@@ -967,6 +967,7 @@ mod tests {
         for y in 0..height {
             for x in 0..width {
                 cells.push(VisualTile {
+                    animation_frames: None,
                     column: x as u32,
                     row: y as u32,
                     source: VisualTileSource {
@@ -1178,6 +1179,7 @@ mod structure_underlay_tests {
     use std::sync::Arc;
     fn tile(tileset: &str, block: u16, index: u16) -> VisualTile {
         VisualTile {
+            animation_frames: None,
             column: 0,
             row: 0,
             source: VisualTileSource {

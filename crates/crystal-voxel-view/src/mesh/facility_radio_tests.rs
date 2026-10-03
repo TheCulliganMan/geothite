@@ -7,6 +7,7 @@ fn workbench_fixture() -> (Vec<VisualTile>, GridGeometry) {
     ];
     let tiles = (0..16)
         .map(|i| VisualTile {
+            animation_frames: None,
             column: (i % 4) as u32,
             row: (i / 4) as u32,
             source: VisualTileSource {
@@ -209,6 +210,7 @@ fn live_display_triangles_face_outward_and_remain_inside_the_live_source_drawing
 fn round_stool_fixture() -> (Vec<VisualTile>, GridGeometry) {
     let g = GridGeometry { width: 6, height: 6, tile_width: 8., tile_height: 8., origin_x: -8., origin_z: 13. };
     let mut cells: Vec<_> = (0..36).map(|i| VisualTile {
+        animation_frames: None,
         column: (i % 6) as u32, row: (i / 6) as u32, texture: Default::default(), priority: false,
         source: VisualTileSource { tileset_id: Arc::from("radio_tower"), metatile_id: 1,
             subtile_column: (i % 6 % 4) as u8, subtile_row: (i / 6 % 4) as u8, tile_index: 1 },

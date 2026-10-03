@@ -85,6 +85,20 @@ An offset outside the proven region retains the original source presentation.
 The disposable `--walking-encounter` fixture starts on a checked Route29 grass
 edge and awaits ordinary movement. It never starts or forces an encounter.
 
+## Ordinary cave-floor encounters
+
+The same walking bridge asks the runtime's checked encounter-surface query,
+which uses verified cave/dungeon metadata for ordinary land encounters. Both
+the moved-from and landed collision must still be plain floor or grass;
+water, ice, forced movement, doors, ladders and other special surfaces remain
+outside this increment. A cave-looking map name or ordinary route floor is
+insufficient. Source collision, occupancy, landing evidence and full animated
+body clearance remain independent checks.
+
+The disposable `--cave-encounter` option selects a checked UnionCave1F floor step
+through the shared walking preview and awaits ordinary movement/encounter rolls.
+It does not start a battle or alter encounter odds.
+
 ## Actual encounter geometry
 
 The renderer pins the matching built terrain, footing and source texture for an
@@ -93,7 +107,14 @@ For a walking encounter, an older mesh grid can be reused only after exact
 source, texture and priority correspondence across its full overlap with the
 witnessed grid. Both grids, source extent and scroll allowance are checked. The terrain
 revision is a live-viewport key and can change while the retained grid remains;
-exact immutable per-cell correspondence supplies the scrolling proof. Feet are sampled in the actual built grid and translated back exactly
+exact immutable per-cell correspondence supplies the scrolling proof. For authored
+animated textures, two phases are equivalent only when both belong to the same
+complete immutable image family. The actual completed build must also prove a
+geometry-invariant Flat/Water/Waterfall profile; any applicable live drawing or
+ground-sample override disables this exemption. Static/unproven textures and all
+source/priority metadata still require equality. Palette mappings and time of
+day participate in the art cache identity, so unrelated art cannot inherit a
+water-animation exemption. Feet are sampled in the actual built grid and translated back exactly
 once; only the shared original-map acreage can support the battle camera.
 The rendered frame includes the authoritative map extent separately from its
 padded cache grid. Terrain crossing that extent is split into inside/outside
@@ -178,11 +199,12 @@ at landed tile (46,12), facing north. Both original supports and canonical
 species scales remained fixed. Ember played with its original cues and real
 super-effective damage. Its source-only result presentation remains a fallback.
 The short unretimed capture contains 88 frames over 4.13 seconds (update median
-29.13 ms, p95 84.63 ms) on software OpenGL. The recorder ended that session;
-a separate native walking-battle return capture is still pending.
+29.13 ms, p95 84.63 ms) on software OpenGL. The recorder ended that session. A separate native Pidgey encounter facing
+south also accepted the original route terrain; Run and its result text returned
+to the complete same field, and ordinary walking controls resumed.
 
 Browser GPU review, Surf scene placement, broad walking-location visual coverage, trainer
-encounters, gyms, caves and ice rooms remain separate visual and provenance
+encounters, gyms, other cave layouts and ice rooms remain separate visual and provenance
 gates; this is not whole-game location coverage.
 
 
@@ -200,5 +222,33 @@ They verify exact runtime state, command history, random-divider trace, source
 clock and repeated extraction stability. These passed within 58 focused
 controller checks, alongside native compilation and the full-feature Wasm
 check. The motivating Route29 Ember recording showed the premature switch at
-HP drain before fainting began. Native review of the corrected terminal sequence
-remains separate from the passing controller assertions.
+HP drain before fainting began. A corrected native Ember KO retained the modeled scene through all 48 HP-loss
+updates and the critical-hit result text. The unretimed capture contains 172
+frames over 6.07 seconds (update median 30.95 ms, p95 39.11 ms) on the same cloud
+software renderer. That result uses the existing generic cave arena: actual
+location acceptance and visual quality remain a separate gate.
+
+
+## Cave-floor visual gate and remaining cost
+
+The floor bridge and authenticated texture-phase proof pass 917 voxel checks,
+24 render-API checks and 62 focused controller/producer checks, plus native
+compilation and full-feature WebAssembly. The producer tests drive the real
+compositor across cave water/scroll boundaries, preserve retained-grid
+allocation and source clocks, and distinguish palette/time art-cache families.
+
+An ordinary native UnionCave1F step from (7,26) to (8,26), facing east, produced
+a real Zubat encounter. Its exact retained floor, rocks, walls and nearby water
+passed the scene proof with original supports and canonical species sizes.
+Ember applied real damage and KO. The source renderer handled the six recorded
+updates of actual FAINT_MON row removal; the retained cave then returned for
+the faint-result text. The recorder ended this short session, so this is not a
+separate native cave exit test.
+
+Performance remains a material gap: the unretimed 800×600 software-OpenGL
+recording captured 58 frames over 6.24 seconds, with update median 83.21 ms and
+p95 196.56 ms (about 9 captured frames/second). The retained cave scene is much
+more expensive than the earlier generic-arena run; this is functional,
+incremental location coverage, not a smooth-performance or polished-cave claim.
+Geometry-derived animated profiles, unsupported layouts and incomplete body
+clearance continue to use the existing fallback.

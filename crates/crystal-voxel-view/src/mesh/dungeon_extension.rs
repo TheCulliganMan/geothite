@@ -1106,6 +1106,7 @@ mod tests {
     fn tiles(w: usize, h: usize, ts: &str, floor: u16) -> Vec<VisualTile> {
         (0..w * h)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % w) as u32,
                 row: (i / w) as u32,
                 texture: Default::default(),

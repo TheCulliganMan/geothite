@@ -372,6 +372,9 @@ pub struct BevyShellConfig {
     /// Fresh source grass edge; ordinary movement rolls the encounter.
     #[cfg(feature = "location-tester")]
     pub render_test_walking_encounter: bool,
+    /// Fresh UnionCave1F floor; ordinary movement rolls the land encounter.
+    #[cfg(feature = "location-tester")]
+    pub render_test_cave_encounter: bool,
     /// Legal Gengar/TM30 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_shadow_ball: bool,
@@ -4782,6 +4785,9 @@ struct RenderedTilesetArt {
 struct TilesetArtKey {
     tileset_id: String,
     time_of_day: String,
+    // Exact palette remapping is part of the cached art's identity, including
+    // the immutable animation family emitted to optional renderers.
+    palette_map: Vec<u8>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -5058,7 +5064,9 @@ struct TilesetArt {
 }
 
 struct TilesetAnimatedTile {
-    frames: Vec<Handle<Image>>,
+    // Allocate once when the art is loaded; every visual cell shares this same
+    // authoritative family instead of building a second per-cell phase list.
+    frames: Arc<[Handle<Image>]>,
     frame_ticks: u64,
     phase_offset: u64,
     requires_forest_restless: bool,
@@ -5622,6 +5630,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walking_encounter = config.render_test_walking_encounter;
     #[cfg(feature = "location-tester")]
+    let render_test_cave_encounter = config.render_test_cave_encounter;
+    #[cfg(feature = "location-tester")]
     let render_test_shadow_ball = config.render_test_shadow_ball;
     #[cfg(feature = "location-tester")]
     let render_test_psychic = config.render_test_psychic;
@@ -5643,7 +5653,7 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter)
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5677,12 +5687,18 @@ pub fn run_bevy_shell(
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
     #[cfg(feature = "location-tester")]
-    let runtime_shell = if render_test_walking_encounter {
+    let runtime_shell = if render_test_walking_encounter || render_test_cave_encounter {
         anyhow::ensure!(
-            !render_test_battle && !render_test_route36_encounter && !render_test_fishing_encounter,
+            !render_test_battle && !render_test_route36_encounter && !render_test_fishing_encounter
+                && !(render_test_walking_encounter && render_test_cave_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
-        prepare_walking_encounter_preview(runtime_shell)?
+        let preview = if render_test_cave_encounter {
+            WalkingEncounterPreviewMap::UnionCaveFloor
+        } else {
+            WalkingEncounterPreviewMap::Route29Grass
+        };
+        prepare_walking_encounter_preview(runtime_shell, preview)?
     } else if render_test_fishing_encounter {
         anyhow::ensure!(
             !render_test_battle && !render_test_route36_encounter,

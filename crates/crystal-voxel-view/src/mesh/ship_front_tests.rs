@@ -64,6 +64,7 @@ fn fixture(kind: Kind) -> (Vec<VisualTile>, GridGeometry, [i32; 2]) {
             let x = (i % g.width) as i32 + origin[0];
             let y = (i / g.width) as i32 + origin[1];
             VisualTile {
+                animation_frames: None,
                 column: (i % g.width) as u32,
                 row: (i / g.width) as u32,
                 texture: Default::default(),

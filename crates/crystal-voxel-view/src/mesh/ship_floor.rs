@@ -251,6 +251,7 @@ mod ship_floor_tests {
             .into_iter()
             .enumerate()
             .map(|(i, source)| VisualTile {
+                animation_frames: None,
                 column: i as _,
                 row: 0,
                 texture: Handle::default(),
@@ -355,6 +356,7 @@ mod ship_floor_tests {
         };
         let mut tiles: Vec<_> = (0..64)
             .map(|i| VisualTile {
+                animation_frames: None,
                 column: (i % 8) as _,
                 row: (i / 8) as _,
                 texture: Handle::default(),

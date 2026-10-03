@@ -25,6 +25,7 @@ fn fixture(b: &'static Binding) -> (Vec<VisualTile>, GridGeometry) {
                 }
             };
             cells.push(VisualTile {
+                animation_frames: None,
                 column: x,
                 row: y,
                 source,

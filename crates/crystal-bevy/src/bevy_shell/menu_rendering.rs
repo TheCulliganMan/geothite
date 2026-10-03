@@ -5864,6 +5864,7 @@ fn render_playfield(
     let tileset_art_key = TilesetArtKey {
         tileset_id: tileset.tileset_id.clone(),
         time_of_day: effective_time_of_day.to_string(),
+        palette_map: tileset.palette_map.clone(),
     };
     let map_visual_key =
         {
@@ -6157,6 +6158,7 @@ fn render_playfield(
                 flash_active,
             )
             .to_string(),
+            palette_map: target_tileset.palette_map.clone(),
         };
         if !tileset_art.cache.contains_key(&target_art_key) {
             match load_tileset_art(
@@ -6398,6 +6400,12 @@ fn render_playfield(
                         tile_index: u16::from(source_tile_index),
                     },
                     texture: tile_handle.clone(),
+                    animation_frames: tileset_art.cache.get(source_art_key).and_then(|art| {
+                        art.animated_tiles
+                            .get(&(source_tile_index as usize))
+                            .filter(|animation| !animation.frames.is_empty())
+                            .map(|animation| Arc::clone(&animation.frames))
+                    }),
                     priority,
                 });
             }
@@ -6584,6 +6592,7 @@ fn render_playfield(
                     flash_active,
                 )
                 .to_string(),
+                palette_map: target_tileset.palette_map.clone(),
             });
         }
     }
@@ -6591,6 +6600,7 @@ fn render_playfield(
         left.tileset_id
             .cmp(&right.tileset_id)
             .then_with(|| left.time_of_day.cmp(&right.time_of_day))
+            .then_with(|| left.palette_map.cmp(&right.palette_map))
     });
     visible_tileset_art_keys.dedup();
     runtime_shell.ambient_tileset_animation_active = visible_tileset_art_keys.iter().any(|key| {
@@ -8499,6 +8509,13 @@ fn spawn_visible_headbutt_animation(
     let tileset_key = TilesetArtKey {
         tileset_id: map.attributes.tileset_name.clone(),
         time_of_day: time_of_day.to_string(),
+        palette_map: snapshot
+            .tilesets
+            .iter()
+            .find(|tileset| tileset.tileset_id == map.attributes.tileset_name)
+            .context("HEADBUTT requires the source tileset palette map")?
+            .palette_map
+            .clone(),
     };
     let grass = rendered_art
         .cache

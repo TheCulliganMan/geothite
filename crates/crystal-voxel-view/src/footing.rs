@@ -118,6 +118,7 @@ mod tests {
             grid_size: UVec2::new(2, 1),
             tiles: vec![
                 VisualTile {
+                    animation_frames: None,
                     column: 1,
                     row: 0,
                     source: source(0x54, 0),
@@ -125,6 +126,7 @@ mod tests {
                     priority: true,
                 },
                 VisualTile {
+                    animation_frames: None,
                     column: 0,
                     row: 0,
                     source: source(0x01, 0),
@@ -185,6 +187,7 @@ mod tests {
         frame.grid_size = UVec2::new(1, 2);
         frame.tiles = vec![
             VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 0,
                 source: source(0x16, 3),
@@ -192,6 +195,7 @@ mod tests {
                 priority: true,
             },
             VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 1,
                 source: source(0x01, 0),

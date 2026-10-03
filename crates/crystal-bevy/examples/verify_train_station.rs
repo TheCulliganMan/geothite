@@ -388,6 +388,7 @@ fn mesh_clearance(runtime: &CrystalRuntime, map: &str) -> Result<Value> {
                     tile_index: index,
                 },
                 texture: handles[sample].clone(),
+                animation_frames: None,
                 priority: false,
             });
         }

@@ -2,6 +2,7 @@ use super::*;
 use std::sync::Arc;
 fn tile(x: usize, y: usize, block: u16, art: u16) -> VisualTile {
     VisualTile {
+        animation_frames: None,
         column: x as u32,
         row: y as u32,
         source: VisualTileSource {

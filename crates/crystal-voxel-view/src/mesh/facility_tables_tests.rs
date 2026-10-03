@@ -58,6 +58,7 @@ fn fixture(kind: Kind) -> (Vec<VisualTile>, GridGeometry, &'static str) {
     };
     let mut cells: Vec<_> = (0..w * h)
         .map(|i| VisualTile {
+            animation_frames: None,
             column: (i % w) as u32,
             row: (i / w) as u32,
             texture: Default::default(),

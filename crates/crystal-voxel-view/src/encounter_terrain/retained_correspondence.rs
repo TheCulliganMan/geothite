@@ -3,10 +3,12 @@
 //! `terrain_tracking::refresh_animation` stamps the current live viewport's
 //! revision onto the retained frame without replacing its grid. An earlier
 //! witness can therefore have a different revision while describing identical
-//! source cells. Exact overlapping source/art/priority, not revision equality,
-//! proves correspondence; a matching revision cannot excuse a changed cell.
+//! source cells. Exact overlapping source/priority and proven art correspondence,
+//! not revision equality, are required. Different authored phases are equivalent
+//! only with an exact shared family and verified geometry-invariant built profiles.
 use bevy::prelude::{Handle, IVec2, Image, UVec2, Vec2};
 use crystal_render_api::{VisualBattleTerrainEvidence, VisualTile, VisualWorldFrame};
+use std::{collections::HashSet, sync::Arc};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub(super) struct Correspondence {
@@ -17,11 +19,21 @@ pub(super) struct Correspondence {
     pub(super) max: IVec2,
 }
 
-/// The caller restricts this relaxation to walking and separately checks the
-/// original atlas provenance. Owned built/live atlas handles need not equal.
-pub(super) fn resolve(
+#[cfg(test)]
+fn resolve(
     evidence: &VisualBattleTerrainEvidence,
     built: &VisualWorldFrame,
+) -> Result<Correspondence, &'static str> {
+    resolve_with_profiles(evidence, built, None)
+}
+
+/// The caller restricts this relaxation to walking and separately checks the
+/// original atlas provenance. Profiles must come from the actual completed
+/// build; absent provenance retains strict texture equality.
+pub(super) fn resolve_with_profiles(
+    evidence: &VisualBattleTerrainEvidence,
+    built: &VisualWorldFrame,
+    profiles: Option<&crate::live_profiles::Document>,
 ) -> Result<Correspondence, &'static str> {
     if !built.active {
         return Err("retained walking terrain is inactive");
@@ -126,6 +138,7 @@ pub(super) fn resolve(
         let local = point - origin;
         local.y as usize * width + local.x as usize
     };
+    let mut checked_families = HashSet::new();
     // Check the whole overlap, including its halo, rather than blessing
     // mismatched retained geometry just because its cell is outside acreage.
     for y in overlap_min.y..overlap_max.y {
@@ -133,7 +146,12 @@ pub(super) fn resolve(
             let point = IVec2::new(x, y);
             let a = old[index(point, built.grid_origin)];
             let b = live[index(point, evidence.grid_origin)];
-            if a.source != b.source || a.texture != b.texture || a.priority != b.priority {
+            if a.source != b.source
+                || a.priority != b.priority
+                || !phase_compatible_textures(&built.map_id, a, b, profiles, &mut checked_families)
+            {
+                #[cfg(not(target_arch = "wasm32"))]
+                trace_first_mismatch(evidence, built, &old, &live, overlap_min, overlap_max);
                 return Err("retained terrain cells do not match walking evidence");
             }
         }
@@ -144,6 +162,152 @@ pub(super) fn resolve(
         return Err("retained walking terrain aligned center is nonfinite");
     }
     Ok(Correspondence { center, min, max })
+}
+
+/// Only the current authored program families (at most 32 frames) can prove a
+/// phase change. Equal textures keep the old strict path without needing a family.
+fn phase_compatible_textures(
+    map: &str,
+    a: &VisualTile,
+    b: &VisualTile,
+    profiles: Option<&crate::live_profiles::Document>,
+    checked: &mut HashSet<(usize, usize)>,
+) -> bool {
+    if a.texture == b.texture {
+        return true;
+    }
+    let Some(profiles) = profiles else {
+        return false;
+    };
+    if !matches!(
+        crate::profile::shape_for_source_on_map(map, &a.source),
+        crate::profile::CellShape::Flat
+            | crate::profile::CellShape::Water
+            | crate::profile::CellShape::Waterfall
+    ) {
+        return false;
+    }
+    // A live drawing can override otherwise flat cells or derive its mask
+    // from a ground sample. Conservatively deny any matching profile reference,
+    // even when the complete drawing may not be placed in this particular grid.
+    if profiles.objects.iter().any(|object| {
+        object.tileset == a.source.tileset_id.as_ref()
+            && object.map.as_deref().is_none_or(|id| id == map)
+            && object
+                .maps
+                .as_ref()
+                .is_none_or(|ids| ids.iter().any(|id| id == map))
+            && (object.ground == a.source.tile_index
+                || object
+                    .tiles
+                    .iter()
+                    .flatten()
+                    .any(|&id| id == a.source.tile_index))
+    }) {
+        return false;
+    }
+    let (Some(first), Some(second)) = (&a.animation_frames, &b.animation_frames) else {
+        return false;
+    };
+    if first.is_empty() || first.len() > 32 || second.is_empty() || second.len() > 32 {
+        return false;
+    }
+    // The slices are held by the two frozen frame inputs for this entire call.
+    // Validate each shared pair once; never allocate/copy frame handles per cell.
+    let key = (
+        Arc::as_ptr(first) as *const () as usize,
+        Arc::as_ptr(second) as *const () as usize,
+    );
+    if !checked.contains(&key) {
+        if !(Arc::ptr_eq(first, second) || first.as_ref() == second.as_ref())
+            || first
+                .iter()
+                .any(|handle| *handle == Handle::<Image>::default())
+        {
+            return false;
+        }
+        checked.insert(key);
+    }
+    first.contains(&a.texture) && first.contains(&b.texture)
+}
+
+/// One opt-in report per native process, even if a rejected encounter retries
+/// every render tick. Raw difference classification is diagnostic only; failed
+/// proofs still reject, and neither source evidence nor retained cells change.
+#[cfg(not(target_arch = "wasm32"))]
+fn trace_first_mismatch(
+    evidence: &VisualBattleTerrainEvidence,
+    built: &VisualWorldFrame,
+    old: &[&VisualTile],
+    live: &[&VisualTile],
+    min: IVec2,
+    max: IVec2,
+) {
+    use std::sync::atomic::{AtomicBool, Ordering};
+    static REPORTED: AtomicBool = AtomicBool::new(false);
+    if std::env::var_os("CRYSTAL_ENCOUNTER_TRACE").is_none()
+        || REPORTED.swap(true, Ordering::Relaxed)
+    {
+        return;
+    }
+    let width = built.grid_size.x as usize;
+    let index = |point: IVec2, origin: IVec2| {
+        let local = point - origin;
+        local.y as usize * width + local.x as usize
+    };
+    let mut total = 0;
+    let mut source = 0;
+    let mut texture = 0;
+    let mut priority = 0;
+    let mut texture_only = 0;
+    let mut samples = Vec::with_capacity(4);
+    for y in min.y..max.y {
+        for x in min.x..max.x {
+            let point = IVec2::new(x, y);
+            let a = old[index(point, built.grid_origin)];
+            let b = live[index(point, evidence.grid_origin)];
+            let changed_source = a.source != b.source;
+            let changed_texture = a.texture != b.texture;
+            let changed_priority = a.priority != b.priority;
+            if changed_source || changed_texture || changed_priority {
+                total += 1;
+                source += usize::from(changed_source);
+                texture += usize::from(changed_texture);
+                priority += usize::from(changed_priority);
+                texture_only +=
+                    usize::from(changed_texture && !changed_source && !changed_priority);
+                if samples.len() < 4 {
+                    samples.push((point, a, b));
+                }
+            }
+        }
+    }
+    eprintln!(
+        "retained correspondence mismatch (one-shot): map={} map_extent={:?} grid={:?} overlap={min:?}..{max:?} built_origin={:?} witness_origin={:?} built_center={:?} witness_center={:?} built_revision={} witness_revision={} total={total} source={source} texture={texture} priority={priority} texture_only={texture_only}",
+        evidence.map_id,
+        evidence.source_map_size_core_tiles,
+        built.grid_size,
+        built.grid_origin,
+        evidence.grid_origin,
+        built.center,
+        evidence.center,
+        built.terrain_revision,
+        evidence.terrain_revision,
+    );
+    for (point, a, b) in samples {
+        let in_map = evidence.source_map_size_core_tiles.is_some_and(|size| {
+            point.cmpge(IVec2::ZERO).all() && point.cmplt(size.as_ivec2() * 2).all()
+        });
+        eprintln!(
+            "retained correspondence mismatch cell={point:?} original_map={in_map} built_source={:?} witness_source={:?} built_texture={:?} witness_texture={:?} built_priority={} witness_priority={}",
+            a.source,
+            b.source,
+            a.texture.id(),
+            b.texture.id(),
+            a.priority,
+            b.priority,
+        );
+    }
 }
 
 /// Grid order is not an API guarantee. Index explicit coordinates, rejecting
@@ -203,6 +367,7 @@ mod tests {
                 let point = origin + IVec2::new(column as i32, row as i32);
                 let identity = ((point.y + 100) * 1000 + point.x + 100) as u32;
                 frame.tiles.push(VisualTile {
+                    animation_frames: None,
                     column,
                     row,
                     source: VisualTileSource {
@@ -233,6 +398,236 @@ mod tests {
             map_texture: frame.map_texture.clone(),
             tiles: frame.tiles.clone().into(),
         }
+    }
+
+    fn phase_pair(
+        tileset: &str,
+        metatile: u16,
+        art: u16,
+    ) -> (VisualWorldFrame, VisualBattleTerrainEvidence) {
+        let mut built = frame(IVec2::new(6, 5));
+        let mut witness = evidence(&frame(IVec2::new(8, 5)));
+        built.map_id = "UnionCave1F".into();
+        witness.map_id = built.map_id.clone();
+        let family: Arc<[Handle<Image>]> = (0..32)
+            .map(|i| Handle::weak_from_u128(700_000 + i))
+            .collect::<Vec<_>>()
+            .into();
+        let source = VisualTileSource {
+            tileset_id: tileset.into(),
+            metatile_id: metatile,
+            subtile_column: 1,
+            subtile_row: 1,
+            tile_index: art,
+        };
+        // These slots represent the same absolute source cell (8,5).
+        built.tiles[2].source = source.clone();
+        built.tiles[2].texture = family[0].clone();
+        built.tiles[2].animation_frames = Some(family.clone());
+        let tile = &mut Arc::make_mut(&mut witness.tiles)[0];
+        tile.source = source;
+        tile.texture = family[17].clone();
+        tile.animation_frames = Some(family);
+        (built, witness)
+    }
+
+    #[test]
+    fn retained_correspondence_accepts_only_proven_invariant_phase_families() {
+        let profiles = crate::live_profiles::LiveProfiles::default();
+        for (tileset, metatile, art) in [
+            ("cave", 0x3e, 0x14),
+            ("johto", 0x54, 0x14),
+            ("cave", 0x2c, 0x40),
+        ] {
+            let (built, mut witness) = phase_pair(tileset, metatile, art);
+            assert!(
+                resolve(&witness, &built).is_err(),
+                "missing actual build profiles"
+            );
+            let accepted =
+                resolve_with_profiles(&witness, &built, Some(&profiles.document)).unwrap();
+            assert_eq!(accepted.min, IVec2::new(8, 5));
+            // Equivalent complete families need not share an allocation.
+            let original = witness.tiles[0].animation_frames.as_ref().unwrap().clone();
+            Arc::make_mut(&mut witness.tiles)[0].animation_frames = Some(original.to_vec().into());
+            assert!(!Arc::ptr_eq(
+                &original,
+                witness.tiles[0].animation_frames.as_ref().unwrap()
+            ));
+            assert_eq!(
+                resolve_with_profiles(&witness, &built, Some(&profiles.document)).unwrap(),
+                accepted
+            );
+        }
+        for (tileset, metatile, art) in [
+            ("johto", 0, 3),
+            ("forest", 0x20, 0x0c),
+            ("cave", 0x18, 0x1d),
+        ] {
+            let (built, witness) = phase_pair(tileset, metatile, art);
+            let empty_profiles = crate::live_profiles::Document::default();
+            assert!(
+                resolve_with_profiles(&witness, &built, Some(&empty_profiles)).is_err(),
+                "geometry-derived {tileset}/{metatile}/{art}"
+            );
+        }
+    }
+
+    #[test]
+    fn retained_correspondence_rejects_missing_malformed_and_different_phase_families() {
+        let profiles = crate::live_profiles::Document::default();
+        let (built, witness) = phase_pair("cave", 0x3e, 0x14);
+        for case in 0..9 {
+            let mut bad = witness.clone();
+            let tile = &mut Arc::make_mut(&mut bad.tiles)[0];
+            let mut family = tile.animation_frames.as_ref().unwrap().to_vec();
+            match case {
+                0 => tile.animation_frames = None,
+                1 => tile.animation_frames = Some(Arc::from([])),
+                2 => {
+                    family[31] = Handle::default();
+                    tile.animation_frames = Some(family.into());
+                }
+                3 => {
+                    family.push(Handle::weak_from_u128(900_000));
+                    tile.animation_frames = Some(family.into());
+                }
+                4 => {
+                    tile.texture = family[1].clone();
+                    family.truncate(16);
+                    tile.animation_frames = Some(family.into());
+                }
+                5 => {
+                    family.reverse();
+                    tile.animation_frames = Some(family.into());
+                }
+                6 => tile.texture = Handle::weak_from_u128(900_001),
+                7 => {
+                    family[31] = Handle::weak_from_u128(900_002);
+                    tile.animation_frames = Some(family.into());
+                }
+                _ => {
+                    tile.texture = Handle::weak_from_u128(900_003);
+                    tile.animation_frames =
+                        Some(vec![built.tiles[2].texture.clone(), tile.texture.clone()].into());
+                }
+            }
+            assert!(
+                resolve_with_profiles(&bad, &built, Some(&profiles)).is_err(),
+                "case {case}"
+            );
+        }
+        let mut static_built = built.clone();
+        static_built.tiles[2].animation_frames = None;
+        assert!(resolve_with_profiles(&witness, &static_built, Some(&profiles)).is_err());
+        let mut equal_texture = witness.clone();
+        let tile = &mut Arc::make_mut(&mut equal_texture.tiles)[0];
+        tile.texture = built.tiles[2].texture.clone();
+        tile.animation_frames = None;
+        assert!(
+            resolve(&equal_texture, &static_built).is_ok(),
+            "strict static equality remains sufficient"
+        );
+    }
+
+    #[test]
+    fn retained_correspondence_family_never_excuses_source_priority_or_palette_change() {
+        let profiles = crate::live_profiles::Document::default();
+        let (built, witness) = phase_pair("cave", 0x3e, 0x14);
+        for case in 0..3 {
+            let mut bad = witness.clone();
+            let tile = &mut Arc::make_mut(&mut bad.tiles)[0];
+            match case {
+                0 => tile.source.metatile_id += 1,
+                1 => tile.priority ^= true,
+                _ => {
+                    let other: Arc<[Handle<Image>]> = (0..32)
+                        .map(|i| Handle::weak_from_u128(800_000 + i))
+                        .collect::<Vec<_>>()
+                        .into();
+                    tile.texture = other[17].clone();
+                    tile.animation_frames = Some(other);
+                }
+            }
+            assert!(
+                resolve_with_profiles(&bad, &built, Some(&profiles)).is_err(),
+                "case {case}"
+            );
+        }
+    }
+
+    #[test]
+    fn retained_correspondence_denies_actual_live_profile_drawings_and_ground_dependencies() {
+        let (built, witness) = phase_pair("cave", 0x3e, 0x14);
+        let mut profiles: crate::live_profiles::Document =
+            serde_json::from_value(serde_json::json!({
+                "objects": [{"name": "water override", "tileset": "cave", "map": "UnionCave1F",
+                    "metatile": 62, "origin": [0, 0], "tiles": [[20]], "ground": 22,
+                    "top_pixels": 0, "depth_pixels": 1.0}]
+            }))
+            .unwrap();
+        assert!(resolve_with_profiles(&witness, &built, Some(&profiles)).is_err());
+        profiles.objects[0].tiles = vec![vec![12]];
+        profiles.objects[0].ground = 20;
+        assert!(
+            resolve_with_profiles(&witness, &built, Some(&profiles)).is_err(),
+            "mask ground can affect geometry"
+        );
+        profiles.objects[0].map = Some("OtherMap".into());
+        assert!(resolve_with_profiles(&witness, &built, Some(&profiles)).is_ok());
+        profiles.objects[0].map = None;
+        profiles.objects[0].maps = Some(vec!["UnionCave1F".into()]);
+        assert!(resolve_with_profiles(&witness, &built, Some(&profiles)).is_err());
+    }
+
+    #[test]
+    fn retained_correspondence_old_witness_survives_actual_shifted_phase_refresh() {
+        use bevy::render::{
+            render_asset::RenderAssetUsages,
+            render_resource::{Extent3d, TextureDimension, TextureFormat},
+        };
+        let (mut built, witness) = phase_pair("cave", 0x3e, 0x14);
+        let profiles = crate::live_profiles::Document::default();
+        let family = built.tiles[2].animation_frames.as_ref().unwrap().clone();
+        let mut live = frame(IVec2::new(7, 5));
+        live.map_id = built.map_id.clone();
+        live.terrain_revision += 1;
+        live.tiles[1].source = built.tiles[2].source.clone();
+        live.tiles[1].texture = family[31].clone();
+        live.tiles[1].animation_frames = Some(family.clone());
+        let image = |size: UVec2, color: [u8; 4]| {
+            Image::new_fill(
+                Extent3d {
+                    width: size.x,
+                    height: size.y,
+                    depth_or_array_layers: 1,
+                },
+                TextureDimension::D2,
+                &color,
+                TextureFormat::Rgba8UnormSrgb,
+                RenderAssetUsages::default(),
+            )
+        };
+        let mut images = bevy::prelude::Assets::<Image>::default();
+        images.insert(
+            built.map_texture.id(),
+            image(built.grid_size * 8, [0, 0, 0, 255]),
+        );
+        images.insert(family[31].id(), image(UVec2::splat(8), [17, 31, 47, 255]));
+        assert!(crate::terrain_tracking::can_reuse(&built, &live));
+        assert!(
+            !crate::terrain_tracking::refresh_animation(&mut built, &live, &mut images).unwrap()
+        );
+        assert_eq!(built.tiles[2].texture, family[31]);
+        assert!(Arc::ptr_eq(
+            built.tiles[2].animation_frames.as_ref().unwrap(),
+            &family
+        ));
+        assert_ne!(built.terrain_revision, witness.terrain_revision);
+        assert!(resolve_with_profiles(&witness, &built, Some(&profiles)).is_ok());
+        let mut changed = witness.clone();
+        Arc::make_mut(&mut changed.tiles)[0].priority ^= true;
+        assert!(resolve_with_profiles(&changed, &built, Some(&profiles)).is_err());
     }
 
     #[test]

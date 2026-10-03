@@ -1,6 +1,7 @@
 include!("tests/shell_basics.rs");
 include!("tests/multiplayer_rendering.rs");
 include!("tests/overworld_rendering.rs");
+include!("tests/tile_animation_provenance.rs");
 include!("tests/intro_title_rendering.rs");
 include!("tests/title_flow.rs");
 include!("tests/runtime_surfaces.rs");

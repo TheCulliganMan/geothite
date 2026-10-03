@@ -632,6 +632,7 @@ mod surface_finish_tests {
     fn floor() -> (Vec<VisualTile>, GridGeometry) {
         (
             vec![VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 0,
                 texture: Handle::default(),

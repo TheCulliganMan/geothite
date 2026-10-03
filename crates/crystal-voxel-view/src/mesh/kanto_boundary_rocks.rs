@@ -141,6 +141,7 @@ mod tests {
             for x in 0..3 {
                 let ground = x == 2;
                 cells.push(VisualTile {
+                    animation_frames: None,
                     column: x as u32,
                     row: row as u32,
                     source: VisualTileSource {
