@@ -922,57 +922,6 @@ mod immersive_battle_bridge_tests {
     }
 }
 
-/// Disposable source-location setup. All watering, narration and battle entry
-/// remain ordinary controller actions; this helper never starts a battle.
-#[cfg(feature = "location-tester")]
-fn prepare_route36_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
-    anyhow::ensure!(
-        shell.quick_save_path.is_none(),
-        "encounter preview cannot write a user save"
-    );
-    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
-    let initial = shell.shell.snapshot()?;
-    anyhow::ensure!(
-        initial.overworld.map_name == "Route36"
-            && initial.overworld.tile == TilePosition::new(35, 10)
-            && initial.party.slots.is_empty()
-            && initial.battle.is_none(),
-        "encounter preview requires a fresh empty-party Route36 path session"
-    );
-    // DVs 10/10/10/10 are shiny and correctly use the source-art fallback.
-    // Use the same ordinary appearance as the other modeled native fixtures.
-    shell.shell.add_party_pokemon(
-        "CYNDAQUIL",
-        20,
-        None,
-        None,
-        &initial.trainer.player_name,
-        initial.trainer.player_id,
-        Dv::from_non_hp(9, 9, 9, 9),
-    )?;
-    shell.shell.add_bag_item("SQUIRTBOTTLE", 1)?;
-    shell.shell.register_key_item("SQUIRTBOTTLE")?;
-    settle_visible_shell_smoke_until_idle(&mut shell)?;
-    {
-        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
-        overworld.set_player_facing(Direction::Up);
-        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
-    }
-    anyhow::ensure!(
-        shell
-            .shell
-            .current_overworld_interaction_checked()?
-            .is_some_and(|interaction| interaction.script == "SudowoodoScript"),
-        "encounter preview must face the actual checked Weird Tree"
-    );
-    anyhow::ensure!(
-        shell.shell.snapshot()?.battle.is_none(),
-        "field fixture must remain outside battle"
-    );
-    mark_runtime_snapshot_dirty(&mut shell);
-    Ok(shell)
-}
-
 /// Opt-in fresh-session native preview fixture. It seeds only this disposable
 /// location-test session, then reaches battle commands through the production
 /// controller. Normal play, loaded saves and the battle renderer never call it.
@@ -1261,6 +1210,57 @@ fn prepare_immersive_battle_preview(
         controller.press(GameButton::A)?;
     }
     anyhow::bail!("production battle introduction did not reach a command menu in preview fixture")
+}
+
+/// Disposable source-location setup. All watering, narration and battle entry
+/// remain ordinary controller actions; this helper never starts a battle.
+#[cfg(feature = "location-tester")]
+fn prepare_route36_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(
+        shell.quick_save_path.is_none(),
+        "encounter preview cannot write a user save"
+    );
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
+    let initial = shell.shell.snapshot()?;
+    anyhow::ensure!(
+        initial.overworld.map_name == "Route36"
+            && initial.overworld.tile == TilePosition::new(35, 10)
+            && initial.party.slots.is_empty()
+            && initial.battle.is_none(),
+        "encounter preview requires a fresh empty-party Route36 path session"
+    );
+    // DVs 10/10/10/10 are shiny and correctly use the source-art fallback.
+    // Use the same ordinary appearance as the other modeled native fixtures.
+    shell.shell.add_party_pokemon(
+        "CYNDAQUIL",
+        20,
+        None,
+        None,
+        &initial.trainer.player_name,
+        initial.trainer.player_id,
+        Dv::from_non_hp(9, 9, 9, 9),
+    )?;
+    shell.shell.add_bag_item("SQUIRTBOTTLE", 1)?;
+    shell.shell.register_key_item("SQUIRTBOTTLE")?;
+    settle_visible_shell_smoke_until_idle(&mut shell)?;
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        overworld.set_player_facing(Direction::Up);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    anyhow::ensure!(
+        shell
+            .shell
+            .current_overworld_interaction_checked()?
+            .is_some_and(|interaction| interaction.script == "SudowoodoScript"),
+        "encounter preview must face the actual checked Weird Tree"
+    );
+    anyhow::ensure!(
+        shell.shell.snapshot()?.battle.is_none(),
+        "field fixture must remain outside battle"
+    );
+    mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
 }
 
 /// Publish the full immersive viewport in the native HUD pass.
