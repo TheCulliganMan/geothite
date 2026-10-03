@@ -22,6 +22,7 @@ fn main() -> Result<()> {
     let mut live = false;
     let mut enabled = true;
     let mut route36_encounter = false;
+    let mut fishing_encounter = false;
     let mut shadow_ball = false;
     let mut psychic = false;
     let mut hyper_beam = false;
@@ -40,6 +41,7 @@ fn main() -> Result<()> {
             "--record-on-capture" => record_on_capture = true,
             "--classic" => enabled = false,
             "--route36-encounter" => route36_encounter = true,
+            "--fishing-encounter" => fishing_encounter = true,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
@@ -82,6 +84,7 @@ fn main() -> Result<()> {
     anyhow::ensure!(
         [
             route36_encounter,
+            fishing_encounter,
             shadow_ball,
             psychic,
             hyper_beam,
@@ -95,7 +98,7 @@ fn main() -> Result<()> {
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --route36-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one of --route36-encounter, --fishing-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
@@ -177,13 +180,16 @@ fn main() -> Result<()> {
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
-            window_title: Some(if route36_encounter {
+            window_title: Some(if fishing_encounter {
+                "Geothite | Route32 fishing | Right Shift rod / Z confirm / F3 view".into()
+            } else if route36_encounter {
                 "Geothite | Route36 | Right Shift bottle / Z confirm / F3 view".into()
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !route36_encounter,
+            render_test_battle: !(route36_encounter || fishing_encounter),
             render_test_route36_encounter: route36_encounter,
+            render_test_fishing_encounter: fishing_encounter,
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,

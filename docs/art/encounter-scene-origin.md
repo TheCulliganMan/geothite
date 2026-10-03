@@ -30,8 +30,31 @@ The checked SquirtBottle path also freezes the actual object identifier, object
 script, visible feet, dispatched interaction script and executed `startbattle`
 command. It binds only when those witnesses agree with the resulting static
 encounter. Refused, cancelled, stale or unrelated interactions cannot reuse a
-candidate. Fishing contact metadata is retained, but fishing scene placement is
-not yet enabled by this bridge.
+candidate. Fishing supplies a separately typed checked-water target, with no
+invented object identifier or enemy actor.
+
+## Fishing from the actual shore
+
+Registered-rod and Pack USE casts share the existing authoritative cast result.
+Only a cast that really commits a wild battle can bind its checked water tile.
+The player and gameplay encounter remain on the original shore tile. The
+presentation uses the actual settled player support and the checked adjacent
+water support, both inside the verified source map and completed terrain grid.
+The water pose is a neutral supported battle stance, not a swimming animation.
+
+Pack is a full-screen source surface. When a carried rod is available, its opening
+boundary can retain one validated source-only terrain frame. That private value
+does not publish a battle. A successful cast consumes it only if the original
+pose, extent and terrain revision still agree. Closing Pack, navigation, load,
+or stale evidence clears it; a cold opening cannot adopt a later frame. The
+registered shortcut uses its immediate pre-cast field frame.
+
+The committed battle remains hidden through the rod animation and bite notice.
+The shared scene selector keeps the retained field until acknowledgment, then
+releases the ordinary source battle entry. This fixes a premature battle-HUD
+frame without changing fishing phases, gameplay ticks, DIV reads or outcomes.
+The 3D world publisher also restores the validated field after Pack has hidden
+its prior publication; an already active fishing field remains held unchanged.
 
 ## Actual encounter geometry
 
@@ -60,7 +83,10 @@ move clocks and original effect projection remain controller-owned.
 The first visual gate is the real Route36 SquirtBottle interaction with the
 overworld geometry warmed beforehand. The disposable `immersive_battle_3d`
 example accepts `--route36-encounter`; use the registered bottle and normal
-confirmation controls to enter the actual source battle. Its optional recorder
+confirmation controls to enter the actual source battle. The example
+also supports `--fishing-encounter`, which places a fresh session at a compiled
+Route32 shoreline with a carried Good Rod. Use either Pack USE or the registered
+shortcut; bite and species selection keep their ordinary random path. The recorder
 can wait 30–900 seconds for the first requested cue with
 `CRYSTAL_CAPTURE_ARM_SECONDS` (default 180). This only bounds the pre-recording
 wait and does not change game or recorded time.
@@ -87,7 +113,7 @@ damage. This is a functional smoke check, not a new scene or performance result.
 The renderer-neutral controller does not advance the fishing animation itself;
 the input tests drive its existing renderer-owned clock before acknowledging
 the notice through controller A. Text-client fishing-clock coverage remains a
-separate gap. The terrain increment passes 900 voxel regressions, 24 render-API
+separate gap. The terrain increment passes 901 voxel regressions, 24 render-API
 checks and focused controller/recorder checks, plus native compilation and the
 full-feature WebAssembly check. Native visual evidence is tracked separately
 from these tests. An 800×600 native run entered the real Route36 encounter through
@@ -97,6 +123,16 @@ corridor, then executed Ember and its actual damage response. The unretimed
 79.80 ms on the cloud software renderer. That is functional incremental evidence,
 not a fluid-60-fps claim or a matched performance improvement.
 
-Browser GPU review, fishing/Surf scene placement, trainer
+Native registered-rod and Pack USE sessions have both reached genuine Route32
+water battles. The Pack session also ran from the encounter through the normal
+result text and returned to the same complete shoreline. The earlier registered
+capture contained 323 frames over 12.07 seconds, with update median 34.94 ms and
+p95 48.65 ms; its missed Supersonic is ordinary gameplay, not a substituted hit.
+Fishing tests cover both input paths, exact source command replay, no bite,
+cancel, stale/missing evidence, reload and retained entry/exit lifetime. Separate
+presentation checks require the field, rather than battle HUD/commands, through
+the rod's existing phase clock.
+
+Browser GPU review, Surf scene placement, ordinary walking encounters, trainer
 encounters, gyms, caves and ice rooms remain separate visual and provenance
 gates; this is not whole-game location coverage.

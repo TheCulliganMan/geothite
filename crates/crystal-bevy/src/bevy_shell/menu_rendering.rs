@@ -5173,6 +5173,9 @@ fn render_playfield(
         .as_ref()
         .filter(|_| {
             runtime_shell.field_notice.is_some()
+                // Fishing commits its battle before Cast/Hook/Pause finish.
+                // Keep the original field visible until its bite text is acknowledged.
+                || runtime_shell.visible_fishing_animation.is_some()
                 || runtime_shell.pending_field_notice_effect_frames.is_some()
                 || matches!(
                     runtime_shell.visible_fly_animation,

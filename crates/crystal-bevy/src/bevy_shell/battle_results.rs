@@ -5947,6 +5947,7 @@ fn load_visible_runtime_save(
 
 fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_origin.static_candidate = None;
+    runtime_shell.battle_origin.fishing_pack_scene = None;
     reset_visible_script_navigation_state(runtime_shell);
     reset_visible_selection_cursors(runtime_shell);
     runtime_shell.pending_name_input = None;

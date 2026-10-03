@@ -3508,6 +3508,7 @@ fn present_visible_fishing_cast(
     scene: &RuntimeShellSnapshot,
     cast: &crate::RuntimeFishingCast,
 ) -> Result<()> {
+    runtime_shell.battle_origin.bound_fishing = None;
     // Both Pack USE and the registered-item shortcut reach this helper. Freeze
     // the exact validated water contact before presentation advances the clock.
     if let Some(battle) = cast.wild_battle.as_ref() {
@@ -3522,6 +3523,7 @@ fn present_visible_fishing_cast(
             }),
             None,
         );
+        bind_visible_fishing_encounter(runtime_shell, &scene.overworld, cast.checked_water_target);
     }
     retain_visible_field_notice_scene(runtime_shell, scene);
     runtime_shell.field_notice_queue.clear();

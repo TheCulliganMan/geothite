@@ -327,7 +327,7 @@ fn freeze_visible_static_encounter_anchors(
             tiles: frame.tiles.clone().into(),
         },
         source_actor: VisualActorId::Player,
-        target_actor: target_id,
+        target_actor: Some(target_id),
         source_foot: foot(source_actor),
         target_foot: foot(target_actor),
     }));
@@ -350,7 +350,16 @@ fn publish_visible_battle_location(
     objects: Query<&VisibleObjectSprite>,
     mut published: ResMut<crystal_render_api::BattleLocationFrame>,
 ) {
-    if shell.battle_origin.static_candidate.is_none() && shell.battle_origin.bound_static.is_none()
+    capture_visible_fishing_pack_scene(&mut shell, &rendered, world_frame.as_deref());
+    if shell.battle_origin.bound_fishing.as_ref().is_some_and(|bound| {
+        !shell.battle_origin.published()
+            .is_some_and(|origin| Arc::ptr_eq(origin, &bound.origin))
+    }) {
+        shell.battle_origin.bound_fishing = None;
+    }
+    if shell.battle_origin.static_candidate.is_none()
+        && shell.battle_origin.bound_static.is_none()
+        && shell.battle_origin.bound_fishing.is_none()
     {
         if published.location.is_some() {
             published.location = None;
@@ -404,12 +413,16 @@ fn publish_visible_battle_location(
             );
         }
     }
-    let next = shell.battle_origin.bound_static.as_mut().map(|bound| {
+    let fishing = shell.battle_origin.bound_fishing.as_mut().map(|bound| {
+        freeze_visible_fishing_encounter_anchors(bound, &rendered, world_frame.as_deref());
+        fishing_encounter_location(bound)
+    });
+    let static_location = shell.battle_origin.bound_static.as_mut().map(|bound| {
         bound
             .publication
             .get_or_insert_with(|| {
                 use crystal_render_api::{
-                    VisualBattleLocation, VisualBattleObjectTarget,
+                    VisualBattleLocation, VisualBattleObjectTarget, VisualBattleTarget,
                     VisualBattleSourceMovement as Mode, VisualBattleSourcePose,
                 };
                 let candidate = &bound.candidate;
@@ -440,7 +453,7 @@ fn publish_visible_battle_location(
                             MovementMode::SurfPika => Mode::SurfPika,
                         },
                     },
-                    target: VisualBattleObjectTarget {
+                    target: VisualBattleTarget::Object(VisualBattleObjectTarget {
                         object_identifier: Arc::from(candidate.target_identifier.as_str()),
                         object_script: Arc::from(candidate.object_script.as_str()),
                         core_tile: IVec2::new(
@@ -450,13 +463,14 @@ fn publish_visible_battle_location(
                         trigger_script: Arc::from(candidate.trigger_script.as_str()),
                         battle_source_script: Arc::from(witness.source_script.as_str()),
                         startbattle_command_index: witness.command_index,
-                    },
+                    }),
                     source_map_size_core_tiles: candidate.map_size,
                     anchors: candidate.anchors.clone(),
                 })
             })
             .clone()
     });
+    let next = fishing.or(static_location);
     let unchanged = match (&published.location, &next) {
         (Some(old), Some(new)) => Arc::ptr_eq(old, new),
         (None, None) => true,

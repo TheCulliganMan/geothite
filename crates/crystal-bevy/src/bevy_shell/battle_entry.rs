@@ -23,9 +23,12 @@ fn prepare_visible_battle_entry_with_music_reset(
     let origin = take_visible_battle_origin_for_entry(runtime_shell, &snapshot, battle);
     let bound_static = runtime_shell.battle_origin.bound_static.take()
         .filter(|bound| bound.generation == origin.generation);
+    let bound_fishing = runtime_shell.battle_origin.bound_fishing.take()
+        .filter(|bound| bound.origin.generation == origin.generation);
     reset_visible_battle_presentation(runtime_shell);
     runtime_shell.battle_origin.active = Some(origin);
     runtime_shell.battle_origin.bound_static = bound_static;
+    runtime_shell.battle_origin.bound_fishing = bound_fishing;
     if reset_music {
         reset_visible_music_state(runtime_shell);
     }

@@ -88,6 +88,8 @@ struct VisibleBattleOriginState {
     active: Option<Arc<BattlePresentationOrigin>>,
     static_candidate: Option<VisibleStaticEncounterCandidate>,
     bound_static: Option<VisibleBoundStaticEncounter>,
+    bound_fishing: Option<VisibleBoundFishingEncounter>,
+    fishing_pack_scene: Option<VisibleFishingPackScene>,
 }
 
 impl VisibleBattleOriginState {
@@ -100,6 +102,8 @@ impl VisibleBattleOriginState {
         self.active = None;
         self.static_candidate = None;
         self.bound_static = None;
+        self.bound_fishing = None;
+        self.fishing_pack_scene = None;
         // Preserve the serial across reload so a renderer cannot alias a later
         // encounter with a scene it retained before the load.
     }

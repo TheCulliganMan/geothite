@@ -170,18 +170,21 @@ fn encounter_anchor_registered_input_binds_only_real_script_battle_and_keeps_fro
     let origin = shell.battle_origin.active.as_ref().unwrap();
     assert_eq!(origin.source, source);
     assert_eq!(location.generation, origin.generation);
-    assert_eq!(location.target.object_script.as_ref(), "SudowoodoScript");
+    let crystal_render_api::VisualBattleTarget::Object(target) = &location.target else {
+        panic!("checked SquirtBottle must retain object provenance");
+    };
+    assert_eq!(target.object_script.as_ref(), "SudowoodoScript");
     assert_eq!(
-        location.target.trigger_script.as_ref(),
+        target.trigger_script.as_ref(),
         "WateredWeirdTreeScript"
     );
     assert_eq!(
-        location.target.battle_source_script.as_ref(),
+        target.battle_source_script.as_ref(),
         "WateredWeirdTreeScript"
     );
-    assert_eq!(location.target.startbattle_command_index, 12);
+    assert_eq!(target.startbattle_command_index, 12);
     assert_eq!(location.source.core_tile, IVec2::new(35, 10));
-    assert_eq!(location.target.core_tile, IVec2::new(35, 9));
+    assert_eq!(target.core_tile, IVec2::new(35, 9));
     let (width, height) = shell.shell.session().overworld().map.tile_bounds();
     assert_eq!(
         location.source_map_size_core_tiles,
@@ -412,7 +415,7 @@ fn encounter_anchor_checked_capture_rejects_stale_identity_pose_and_missing_fram
         .0;
     assert_eq!(
         anchors.target_actor,
-        crystal_render_api::VisualActorId::Object(target_slot as u32)
+        Some(crystal_render_api::VisualActorId::Object(target_slot as u32))
     );
     assert_eq!(
         shell.shell.session(),

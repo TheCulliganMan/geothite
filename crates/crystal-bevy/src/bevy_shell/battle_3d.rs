@@ -1263,6 +1263,73 @@ fn prepare_route36_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     Ok(shell)
 }
 
+/// Disposable shoreline setup using the compiled map's actual collision. The
+/// player casts with ordinary inputs; bite, species and combat remain untouched.
+#[cfg(feature = "location-tester")]
+fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    use crate::core::world::collision::{Terrain, describe_collision, sample_collision};
+    anyhow::ensure!(shell.quick_save_path.is_none(), "fishing preview cannot write a user save");
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
+    let initial = shell.shell.snapshot()?;
+    anyhow::ensure!(
+        initial.party.slots.is_empty() && initial.battle.is_none(),
+        "fishing preview requires a fresh empty-party field session"
+    );
+    let runtime = shell.shell.runtime().clone();
+    let data = runtime.data();
+    let map = data.overworld_map("Route32").context("compiled fishing map")?;
+    let tileset = data.tileset_collision(data.map_tileset_name("Route32")?)
+        .context("compiled shoreline collision")?;
+    let (width, height) = map.tile_bounds();
+    let mut shoreline = None;
+    'tiles: for y in 0..height {
+        for x in 0..width {
+            let shore = TilePosition::new(x as i16, y as i16);
+            if !sample_collision(&map, &tileset, shore).is_some_and(|sample| {
+                sample.permission == crate::core::world::collision::permissions::FLOOR
+            }) || data.maps["Route32"].objects.iter().any(|object| {
+                object_tile_position_checked(object) == Some(shore)
+            }) {
+                continue;
+            }
+            for facing in [Direction::Right, Direction::Down, Direction::Left, Direction::Up] {
+                let Some(water) = crate::core::world::movement::checked_move_by_stride(
+                    shore, facing, crate::core::world::movement::StepOptions::default().stride_tiles,
+                ) else { continue; };
+                if sample_collision(&map, &tileset, water).is_some_and(|sample| {
+                    describe_collision(sample.permission).terrain == Terrain::Water
+                }) {
+                    shoreline = Some((shore, facing));
+                    break 'tiles;
+                }
+            }
+        }
+    }
+    let (shore, facing) = shoreline.context("Route32 has no unoccupied land/water edge")?;
+    shell.shell.add_party_pokemon(
+        "CYNDAQUIL", 20, None, None, &initial.trainer.player_name,
+        initial.trainer.player_id, Dv::from_non_hp(9, 9, 9, 9),
+    )?;
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        data.transition_overworld_session(
+            state, overworld, "Route32", shore,
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+            &runtime.music_ids(),
+        )?;
+        overworld.set_player_facing(facing);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    settle_visible_shell_smoke_until_idle(&mut shell)?;
+    shell.shell.add_bag_item("GOOD_ROD", 1)?;
+    shell.shell.register_key_item("GOOD_ROD")?;
+    anyhow::ensure!(shell.shell.snapshot()?.battle.is_none(), "fishing fixture must await input");
+    mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
+}
+
 /// Publish the full immersive viewport in the native HUD pass.
 /// Source attack coordinates are mapped into this presentation canvas.
 fn publish_immersive_battle_canvas(

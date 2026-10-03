@@ -36,6 +36,24 @@ pub struct VisualBattleObjectTarget {
     pub startbattle_command_index: usize,
 }
 
+/// Authoritative contact supplied by the encounter's checked production path.
+/// A water target is a map contact, not a rendered actor or a claim that the
+/// selected species can swim. Missing target evidence is never synthesized.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum VisualBattleTarget {
+    Object(VisualBattleObjectTarget),
+    FishingWater { core_tile: IVec2 },
+}
+
+impl VisualBattleTarget {
+    pub fn core_tile(&self) -> IVec2 {
+        match self {
+            Self::Object(target) => target.core_tile,
+            Self::FishingWater { core_tile } => *core_tile,
+        }
+    }
+}
+
 /// A frozen terrain-only frame. Retain only once per checked candidate, not
 /// once per tick. Texture handles and exact cells identify the rendered inputs.
 /// Handles do not freeze asset pixels: the classic compositor may update the
@@ -81,9 +99,13 @@ impl VisualBattleTerrainEvidence {
 pub struct VisualBattleAnchorFrame {
     pub terrain: VisualBattleTerrainEvidence,
     pub source_actor: VisualActorId,
-    pub target_actor: VisualActorId,
+    /// None for checked map contact (for example fishing water). Never invent
+    /// an actor slot for an encounter that had no visible overworld enemy.
+    pub target_actor: Option<VisualActorId>,
     /// Frozen feet in VisualWorldFrame world-pixel coordinates (+Y north).
-    /// These are sprite support points, not a promise of terrain elevation.
+    /// The source is verified sprite footing. An object target uses its sprite
+    /// footing; fishing uses the checked water tile's south-center support
+    /// point. Neither is a promise of built terrain elevation.
     pub source_foot: Vec2,
     pub target_foot: Vec2,
 }
@@ -94,7 +116,7 @@ pub struct VisualBattleLocation {
     /// save, replay, or gameplay identity.
     pub generation: u64,
     pub source: VisualBattleSourcePose,
-    pub target: VisualBattleObjectTarget,
+    pub target: VisualBattleTarget,
     /// Actual source map extent in core tiles, northwest origin (0, 0),
     /// exclusive southeast bound. Border/connection halo is not map acreage.
     pub source_map_size_core_tiles: Option<UVec2>,

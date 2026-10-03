@@ -197,6 +197,7 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         FieldPackPocket::Items
     };
     open_visible_field_pack_pocket(runtime_shell, pocket.clone())?;
+    stage_visible_fishing_pack_scene(runtime_shell, &snapshot);
     runtime_shell.last_audio_events.push(format!(
         "opened Pack pocket {}",
         field_pack_pocket_label(&pocket)

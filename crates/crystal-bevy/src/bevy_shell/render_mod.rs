@@ -60,7 +60,20 @@ fn publish_visual_world_frame(
     // interrupts a manually selected 2.5D view for the duration of an
     // emote, jump, fishing motion, or dust puff. The screen-space effect still
     // composites above the retained world through the normal layer-0 camera.
-    if !voxel_spatial_effects_supported(&runtime_shell) {
+    // Pack hides the world before USE. If fishing starts from that inactive
+    // publication, there is no complete frame to retain yet. Extract the actual
+    // restored field once, subject to every ordinary entity/texture/grid check
+    // below. This is display recovery only; it never supplies battle anchors.
+    let restore_fishing_field = !published.active
+        && runtime_shell.visible_fishing_animation.is_some()
+        && runtime_shell.field_notice_scene.as_ref().is_some_and(|scene| {
+            scene.battle.is_none()
+                && rendered.map_name.as_deref() == Some(scene.overworld.map_name.as_str())
+                && rendered.tile == Some(scene.overworld.tile)
+                && rendered.player_sprite_facing == Some(scene.overworld.facing)
+                && rendered.player_sprite_mode == Some(scene.overworld.mode)
+        });
+    if !voxel_spatial_effects_supported(&runtime_shell) && !restore_fishing_field {
         return;
     }
 

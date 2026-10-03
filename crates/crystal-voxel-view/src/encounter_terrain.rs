@@ -403,7 +403,7 @@ fn resolve_context(
     if map.min_element() == 0 || map.max_element() > i32::MAX as u32 / 2 {
         return Err("invalid source map extent");
     }
-    for point in [location.source.core_tile, location.target.core_tile] {
+    for point in [location.source.core_tile, location.target.core_tile()] {
         if point.cmplt(IVec2::ZERO).any() || point.cmpge(map.as_ivec2()).any() {
             return Err("encounter core tile is outside source map");
         }
@@ -958,7 +958,7 @@ pub(super) fn sync(
 mod tests {
     use super::*;
     use crystal_render_api::{
-        VisualActorId, VisualBattleAnchorFrame, VisualBattleObjectTarget,
+        VisualActorId, VisualBattleAnchorFrame, VisualBattleObjectTarget, VisualBattleTarget,
         VisualBattleSourceMovement, VisualBattleSourcePose, VisualBattleTerrainEvidence,
     };
     use std::sync::Arc;
@@ -1014,19 +1014,19 @@ mod tests {
                 facing: IVec2::NEG_Y,
                 movement: VisualBattleSourceMovement::Normal,
             },
-            target: VisualBattleObjectTarget {
+            target: VisualBattleTarget::Object(VisualBattleObjectTarget {
                 object_identifier: Arc::from("tree"),
                 object_script: Arc::from("SudowoodoScript"),
                 core_tile: IVec2::new(12, 7),
                 trigger_script: Arc::from("WateredWeirdTreeScript"),
                 battle_source_script: Arc::from("WateredWeirdTreeScript"),
                 startbattle_command_index: 12,
-            },
+            }),
             source_map_size_core_tiles: Some(UVec2::new(24, 16)),
             anchors: Some(Arc::new(VisualBattleAnchorFrame {
                 terrain: evidence,
                 source_actor: VisualActorId::Player,
-                target_actor: VisualActorId::Object(0),
+                target_actor: Some(VisualActorId::Object(0)),
                 source_foot: Vec2::new(132.0, -124.0),
                 target_foot: Vec2::new(132.0, -60.0),
             })),
@@ -1086,6 +1086,32 @@ mod tests {
             resolve_context(&location, &retained).is_err(),
             "a matching desired key cannot authorize stale built geometry"
         );
+    }
+    #[test]
+    fn fishing_water_contact_keeps_real_support_and_rejects_missing_target_height() {
+        let (frame, mut location, mut heights) = fixture();
+        location.target = VisualBattleTarget::FishingWater {
+            core_tile: IVec2::new(12, 7),
+        };
+        let anchors = Arc::make_mut(location.anchors.as_mut().unwrap());
+        anchors.target_actor = None;
+        let target = crate::tile_at_visual_point(
+            &frame,
+            anchors.target_foot + Vec2::Y * 0.01,
+        ).unwrap();
+        let index = (target.y * frame.grid_size.x + target.x) as usize;
+        heights[index] = 16.0;
+        let mut retained = cache(&frame, heights);
+        let (feet, _, _) = resolve_context(&location, &retained).unwrap();
+        assert_eq!(feet, [Vec3::new(0.0, -0.5, 2.0), Vec3::new(0.0, 0.5, -2.0)]);
+        assert!(location.anchors.as_ref().unwrap().target_actor.is_none());
+        retained.built_footing_heights[index] = f32::NAN;
+        assert_eq!(
+            resolve_context(&location, &retained).unwrap_err(),
+            "target footing is outside actual built terrain"
+        );
+        retained.built_footing_heights.pop();
+        assert!(resolve_context(&location, &retained).is_err());
     }
     #[test]
     fn elevation_and_nonzero_frame_centers_share_one_transform() {
