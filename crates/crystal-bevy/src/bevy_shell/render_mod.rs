@@ -77,6 +77,28 @@ fn publish_visual_world_frame(
         return;
     }
 
+    // A walking encounter commits core battle state before its original walk
+    // lands. Keep extracting that genuinely rendered field so a moving
+    // pre-step witness can observe the committed walk on the next update.
+    // This exception belongs only to the current bound encounter and ends
+    // when the existing transition replaces the map; all scene guards below
+    // still apply.
+    let walking_field_visible = runtime_shell
+        .battle_origin
+        .bound_walking
+        .as_ref()
+        .is_some_and(|bound| {
+            runtime_shell
+                .battle_origin
+                .published()
+                .is_some_and(|origin| Arc::ptr_eq(origin, &bound.origin))
+        })
+        && (matches!(
+            runtime_shell.pending_overworld_step_boundary,
+            Some(PendingOverworldStepBoundary::WildBattle)
+        ) || runtime_shell
+            .visible_battle_transition
+            .is_some_and(|transition| transition.frame < 3));
     if rendered.title_active
         // The naming screen is committed through Commands later in the classic
         // render pass. Check its live state too: waiting for the presenter
@@ -85,7 +107,7 @@ fn publish_visual_world_frame(
         || naming_screen_blocks_world_presentation(runtime_shell.pending_name_input.as_ref())
         || runtime_shell.pending_mail_input.is_some()
         || runtime_shell.pending_mail_read.is_some()
-        || runtime_shell.battle_lcd_animation_active
+        || (runtime_shell.battle_lcd_animation_active && !walking_field_visible)
         || battle_entities.iter().next().is_some()
         || fullscreen_entities.iter().next().is_some()
         || rendered.map_name.is_none()

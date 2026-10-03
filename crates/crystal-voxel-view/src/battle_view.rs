@@ -1353,11 +1353,16 @@ fn sync_battle_scene(
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
+    let ground_clearance = scenery.permits_displacements(
+        &layout,
+        frame.source.as_ref().map_or([Vec2::ZERO; 2], |source| source.battler_offsets),
+    );
     let active = settings.enabled
         && frame.active
         && !frame.use_source_scene
         && valid.is_ok()
-        && capture_bridge.allows_scene();
+        && capture_bridge.allows_scene()
+        && ground_clearance;
     status.active = active;
     status.active_frames = if active {
         status.active_frames.saturating_add(1)
@@ -1425,7 +1430,7 @@ fn sync_battle_scene(
         }
         scene.was_active = false;
         status.modeled_species.clear();
-        status.source_art_species = if frame.active && frame.use_source_scene {
+        status.source_art_species = if frame.active && (frame.use_source_scene || !ground_clearance) {
             frame
                 .battlers
                 .iter()

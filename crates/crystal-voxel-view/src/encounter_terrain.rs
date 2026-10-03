@@ -14,6 +14,8 @@ use crystal_render_api::{
     BattleFlashMode, BattleLocationFrame, VisualBattleFrame, VisualBattleLocation, VisualWorldFrame,
 };
 use std::collections::HashMap;
+mod walking_ground;
+use walking_ground::WalkingGround;
 
 const BATTLE_LAYER: usize = 29;
 /// Four retained-world units per source pixel and sixteen pixels per core tile
@@ -198,6 +200,8 @@ struct FrozenScene {
     // Only encounter-owned copies of the two mutable flower domains.
     meshes: Vec<Handle<Mesh>>,
     ground: f32,
+    walking: Option<WalkingGround>,
+    bodies: [Option<BattleBody>; 2],
 }
 
 #[derive(Resource, Default)]
@@ -235,6 +239,19 @@ impl EncounterTerrain {
         self.reason = Some(reason);
     }
 
+    /// Check transient source offsets against the same fixed terrain and body
+    /// envelope. Failure uses the original source presentation for that frame;
+    /// it never moves the camera, scales a species, or rebuilds geometry.
+    pub(super) fn permits_displacements(&self, layout: &BattleSceneLayout, offsets: [Vec2; 2]) -> bool {
+        let Some(scene) = self.frozen.as_ref().filter(|_| self.accepted) else { return true; };
+        let Some(ground) = &scene.walking else { return true; };
+        scene.bodies.iter().zip(layout.body_poses).enumerate().all(|(index, (body, pose))| {
+            let (Some(body), Some(mut pose)) = (body, pose) else { return true; };
+            pose.translation += layout.source_displacement(offsets[index]);
+            ground.contains(*body, pose, scene.anchors[index].y)
+        })
+    }
+
     /// A finite genuine neighborhood is eligible only when every visible ray
     /// and every possible omitted shadow stays inside the retained evidence.
     pub(super) fn constrain_layout(
@@ -255,8 +272,12 @@ impl EncounterTerrain {
         let view = layout.camera.rotation.inverse();
         let mut deepest: f32 = 0.0;
         let mut body_distance: f32 = 0.0;
-        for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
+        for (index, (body, pose)) in bodies.into_iter().zip(layout.body_poses).enumerate() {
             if let (Some(body), Some(pose)) = (body, pose) {
+                if scene.walking.as_ref().is_some_and(|ground| !ground.contains(body, pose, scene.anchors[index].y)) {
+                    self.reason = Some("complete animated battler exceeds checked walking ground");
+                    return false;
+                }
                 for point in body.corners(pose) {
                     if !scene.authentic.point(point) {
                         self.reason = Some("battler exceeds authentic terrain bounds");
@@ -304,6 +325,7 @@ impl EncounterTerrain {
                         .segment(layout.camera.translation, point + Vec3::Y * 0.5)
             });
         }
+        scene.bodies = bodies;
         layout.far = far;
         self.fog = Some((body_distance + 0.5, far - 0.1));
         self.reason = None;
@@ -685,6 +707,7 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         .get_resource::<TerrainRevisionCache>()
         .ok_or("voxel terrain cache is unavailable")?;
     let (anchors, root_pose, authentic) = resolve_context(location, cache)?;
+    let walking = WalkingGround::from_context(location, cache, root_pose)?;
     let mut leaves = Vec::new();
     let mut omitted = Vec::new();
     let instances = cache
@@ -898,6 +921,8 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         images: image_handles.into_values().collect(),
         meshes: mutable_mesh_handles.into_values().collect(),
         ground,
+        walking,
+        bodies: [None; 2],
     })
 }
 
@@ -1041,6 +1066,93 @@ mod tests {
             built_footing_heights: heights,
             ..default()
         }
+    }
+    fn walking_fixture() -> (VisualWorldFrame, VisualBattleLocation, Vec<f32>) {
+        let (frame, mut location, heights) = fixture();
+        let source = location.source.core_tile;
+        location.target = VisualBattleTarget::WalkingGrass {
+            core_tile: source,
+            presentation: crystal_render_api::VisualBattleDerivedGrassPlacement {
+                step_from_core_tile: source + IVec2::Y,
+                witnessed_player_foot: Some(Vec2::new(132.0, -156.0)),
+                presentation_core_tile: source - IVec2::Y * 2,
+                walkable_core_tiles: (-3..=3).flat_map(|y| (-3..=3).map(move |x| source + IVec2::new(x, y))).collect::<Vec<_>>().into(),
+            },
+        };
+        let anchors = Arc::make_mut(location.anchors.as_mut().unwrap());
+        anchors.target_actor = None;
+        anchors.target_foot = Vec2::new(132.0, 4.0);
+        (frame, location, heights)
+    }
+    fn walking_region(location: &VisualBattleLocation, cache: &TerrainRevisionCache) -> WalkingGround {
+        let (_, root, _) = resolve_context(location, cache).unwrap();
+        WalkingGround::from_context(location, cache, root).unwrap().unwrap()
+    }
+    #[test]
+    fn walking_clearance_maps_actual_grid_and_full_animated_body_without_rescaling() {
+        let (frame, location, heights) = walking_fixture();
+        let cache = cache(&frame, heights);
+        let (feet, _, _) = resolve_context(&location, &cache).unwrap();
+        assert_eq!(feet, [Vec3::new(0.0, 0.0, 4.0), Vec3::new(0.0, 0.0, -4.0)]);
+        let ground = walking_region(&location, &cache);
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        let pose = Transform::from_translation(feet[0]);
+        assert!(ground.contains(body, pose, 0.0));
+        body.visual_bounds = Some((Vec3::new(-20.0, 0.0, -0.5), Vec3::new(20.0, 1.0, 0.5)));
+        assert!(!ground.contains(body, pose, 0.0), "neutral feet cannot authorize the wing envelope");
+        assert_eq!(pose.scale, Vec3::ONE);
+    }
+    #[test]
+    fn walking_clearance_rejects_holes_between_approved_tiles() {
+        let (frame, mut location, heights) = walking_fixture();
+        let VisualBattleTarget::WalkingGrass { presentation, .. } = &mut location.target else { panic!() };
+        presentation.walkable_core_tiles = presentation.walkable_core_tiles.iter().copied().filter(|p| *p != IVec2::new(12, 9)).collect::<Vec<_>>().into();
+        let cache = cache(&frame, heights);
+        let ground = walking_region(&location, &cache);
+        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        assert!(!ground.contains(body, Transform::from_xyz(0.0, 0.0, 4.0), 0.0), "south-center footprint touches the missing next row");
+        assert!(ground.contains(body, Transform::from_xyz(0.0, 0.0, -4.0), 0.0));
+    }
+    #[test]
+    fn walking_clearance_rejects_incompatible_built_elevation_and_invalid_evidence() {
+        let (frame, location, mut heights) = walking_fixture();
+        let grid = IVec2::new(24, 18) - frame.grid_origin;
+        heights[(grid.y as u32 * frame.grid_size.x + grid.x as u32) as usize] = 8.0;
+        let cache = cache(&frame, heights);
+        let ground = walking_region(&location, &cache);
+        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        assert!(!ground.contains(body, Transform::from_xyz(0.0, 0.0, 4.0), 0.0));
+        let (_, root, _) = resolve_context(&location, &cache).unwrap();
+        for case in 0..5 {
+            let mut bad = location.clone();
+            let VisualBattleTarget::WalkingGrass { core_tile, presentation } = &mut bad.target else { panic!() };
+            match case {
+                0 => *core_tile += IVec2::X,
+                1 => presentation.presentation_core_tile += IVec2::X,
+                2 => presentation.witnessed_player_foot = Some(Vec2::splat(f32::NAN)),
+                3 => presentation.witnessed_player_foot = Some(Vec2::new(140.0, -156.0)),
+                _ => presentation.walkable_core_tiles = vec![IVec2::new(12, 8); 50].into(),
+            }
+            assert!(WalkingGround::from_context(&bad, &cache, root).is_err(), "case {case}");
+        }
+    }
+    #[test]
+    fn walking_clearance_source_offsets_do_not_reframe_or_move_original_supports() {
+        let (frame, location, heights) = walking_fixture();
+        let cache = cache(&frame, heights);
+        let ground = walking_region(&location, &cache);
+        let (feet, _, _) = resolve_context(&location, &cache).unwrap();
+        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        let layout = BattleSceneLayout::for_anchored_bodies([Some(body); 2], feet, Vec2::new(800.0, 600.0)).unwrap();
+        let original = layout.clone();
+        for index in 0..2 {
+            let mut pose = layout.body_poses[index].unwrap();
+            pose.translation += layout.source_displacement(Vec2::new(3.0, 4.0));
+            assert!(ground.contains(body, pose, feet[index].y));
+            pose.translation += layout.source_displacement(Vec2::new(500.0, 0.0));
+            assert!(!ground.contains(body, pose, feet[index].y));
+        }
+        assert_eq!(layout, original);
     }
     #[test]
     fn strict_support_rejects_off_grid_truncation_and_nonfinite_heights() {

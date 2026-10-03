@@ -1,5 +1,5 @@
 //! Disposable native battle preview using the real production controller.
-//! Starts at battle commands, or at a real Route36 field interaction for scenery QA.
+//! Starts at battle commands, or at a real field interaction for scenery QA.
 use anyhow::{Context, Result};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_bevy::{BevyShellConfig, BevyShellStart};
@@ -23,6 +23,7 @@ fn main() -> Result<()> {
     let mut enabled = true;
     let mut route36_encounter = false;
     let mut fishing_encounter = false;
+    let mut walking_encounter = false;
     let mut shadow_ball = false;
     let mut psychic = false;
     let mut hyper_beam = false;
@@ -42,6 +43,7 @@ fn main() -> Result<()> {
             "--classic" => enabled = false,
             "--route36-encounter" => route36_encounter = true,
             "--fishing-encounter" => fishing_encounter = true,
+            "--walking-encounter" => walking_encounter = true,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
@@ -85,6 +87,7 @@ fn main() -> Result<()> {
         [
             route36_encounter,
             fishing_encounter,
+            walking_encounter,
             shadow_ball,
             psychic,
             hyper_beam,
@@ -98,7 +101,7 @@ fn main() -> Result<()> {
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --route36-encounter, --fishing-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
@@ -180,16 +183,19 @@ fn main() -> Result<()> {
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
-            window_title: Some(if fishing_encounter {
+            window_title: Some(if walking_encounter {
+                "Geothite | Route29 | Right into grass / Z confirm / F3 view".into()
+            } else if fishing_encounter {
                 "Geothite | Route32 fishing | Right Shift rod / Z confirm / F3 view".into()
             } else if route36_encounter {
                 "Geothite | Route36 | Right Shift bottle / Z confirm / F3 view".into()
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !(route36_encounter || fishing_encounter),
+            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter),
             render_test_route36_encounter: route36_encounter,
             render_test_fishing_encounter: fishing_encounter,
+            render_test_walking_encounter: walking_encounter,
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,

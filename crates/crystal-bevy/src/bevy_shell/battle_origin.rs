@@ -89,6 +89,7 @@ struct VisibleBattleOriginState {
     static_candidate: Option<VisibleStaticEncounterCandidate>,
     bound_static: Option<VisibleBoundStaticEncounter>,
     bound_fishing: Option<VisibleBoundFishingEncounter>,
+    bound_walking: Option<VisibleBoundWalkingEncounter>,
     fishing_pack_scene: Option<VisibleFishingPackScene>,
 }
 
@@ -103,6 +104,7 @@ impl VisibleBattleOriginState {
         self.static_candidate = None;
         self.bound_static = None;
         self.bound_fishing = None;
+        self.bound_walking = None;
         self.fishing_pack_scene = None;
         // Preserve the serial across reload so a renderer cannot alias a later
         // encounter with a scene it retained before the load.
@@ -176,6 +178,7 @@ fn capture_visible_wild_battle_origin(
         }),
         frame.movement.clone(),
     );
+    bind_visible_walking_encounter(shell, frame);
 }
 
 fn take_visible_battle_origin_for_entry(

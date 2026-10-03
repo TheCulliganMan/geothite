@@ -1330,6 +1330,72 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     Ok(shell)
 }
 
+/// Fresh, disposable grass-edge setup. The preview never starts a battle: an
+/// ordinary movement input must pass the real step and encounter rules.
+#[cfg(feature = "location-tester")]
+fn prepare_walking_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    use crate::core::world::collision::{is_grass_encounter_permission, sample_collision};
+    anyhow::ensure!(shell.quick_save_path.is_none(), "walking preview cannot write a user save");
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
+    let initial = shell.shell.snapshot()?;
+    anyhow::ensure!(initial.party.slots.is_empty() && initial.battle.is_none(), "walking preview requires a fresh empty-party field session");
+    let runtime = shell.shell.runtime().clone();
+    let data = runtime.data();
+    let map = data.overworld_map("Route29").context("compiled grass route")?;
+    let tileset = data.tileset_collision(data.map_tileset_name("Route29")?)?;
+    let (width, height) = map.tile_bounds();
+    let occupied: std::collections::HashSet<_> = data.maps["Route29"].objects.iter()
+        .filter_map(object_tile_position_checked).collect();
+    let plain = |tile: TilePosition| {
+        !occupied.contains(&tile) && sample_collision(&map, &tileset, tile)
+            .is_some_and(|sample| walking_plain_support(sample.permission))
+    };
+    let mut selected: Option<(usize, TilePosition)> = None;
+    for y in 0..height {
+        for x in 0..width {
+            let from = TilePosition::new(x as i16, y as i16);
+            let Some(to) = crate::core::world::movement::checked_move_by_stride(from, Direction::Right, 1) else { continue; };
+            if !plain(from) || !plain(to) || !sample_collision(&map, &tileset, to)
+                .is_some_and(|sample| is_grass_encounter_permission(sample.permission)) { continue; }
+            let core = IVec2::new(i32::from(to.x), i32::from(to.y));
+            let mut walkable = Vec::new();
+            for dy in -3..=3 {
+                for dx in -3..=3 {
+                    let p = core + IVec2::new(dx, dy);
+                    if p.x < 0 || p.y < 0 || p.x >= i32::from(width) || p.y >= i32::from(height) { continue; }
+                    if plain(TilePosition::new(p.x as i16, p.y as i16)) { walkable.push(p); }
+                }
+            }
+            if walking_presentation_tile(core, IVec2::X, &walkable).is_none() { continue; }
+            // Prefer an open representative neighborhood; ties remain row-major.
+            // This selects only the preview's starting point, not an encounter.
+            if selected.is_none_or(|(score, _)| walkable.len() > score) {
+                selected = Some((walkable.len(), from));
+            }
+        }
+    }
+    let (_, from) = selected.context("Route29 has no checked grass step with an open corridor")?;
+    shell.shell.add_party_pokemon("CYNDAQUIL", 20, None, None,
+        &initial.trainer.player_name, initial.trainer.player_id, Dv::from_non_hp(9, 9, 9, 9))?;
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        data.transition_overworld_session(state, overworld, "Route29", from,
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids())?;
+        overworld.set_player_facing(Direction::Right);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    settle_visible_shell_smoke_until_idle(&mut shell)?;
+    let ready = shell.shell.snapshot()?;
+    anyhow::ensure!(ready.battle.is_none() && ready.overworld.map_name == "Route29"
+        && ready.overworld.tile == from && ready.overworld.facing == Direction::Right
+        && ready.overworld.mode == MovementMode::Normal,
+        "walking fixture must await an ordinary step at its checked source tile");
+    mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
+}
+
 /// Publish the full immersive viewport in the native HUD pass.
 /// Source attack coordinates are mapped into this presentation canvas.
 fn publish_immersive_battle_canvas(

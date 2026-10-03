@@ -36,20 +36,44 @@ pub struct VisualBattleObjectTarget {
     pub startbattle_command_index: usize,
 }
 
+/// Deterministic presentation placement for a random grass encounter. There
+/// was no overworld enemy actor here. These are source collision/occupancy
+/// observations, not a promise of rendered geometry or species-sized clearance.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleDerivedGrassPlacement {
+    /// Original moved-from tile; the encounter contact is the landed tile.
+    pub step_from_core_tile: IVec2,
+    /// Actual player feet in the witnessed rendered frame. This may precede
+    /// the landed source_foot; never move the overworld player to this value.
+    pub witnessed_player_foot: Option<Vec2>,
+    pub presentation_core_tile: IVec2,
+    /// Exact original-map tiles approved by the bounded source collision check.
+    /// Consumers must reject every body footprint that touches an absent tile.
+    pub walkable_core_tiles: Arc<[IVec2]>,
+}
+
 /// Authoritative contact supplied by the encounter's checked production path.
 /// A water target is a map contact, not a rendered actor or a claim that the
 /// selected species can swim. Missing target evidence is never synthesized.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum VisualBattleTarget {
     Object(VisualBattleObjectTarget),
-    FishingWater { core_tile: IVec2 },
+    FishingWater {
+        core_tile: IVec2,
+    },
+    /// The encounter contact remains the committed player tile. The enemy's
+    /// presentation position is explicitly derived and is never a checked target.
+    WalkingGrass {
+        core_tile: IVec2,
+        presentation: VisualBattleDerivedGrassPlacement,
+    },
 }
 
 impl VisualBattleTarget {
     pub fn core_tile(&self) -> IVec2 {
         match self {
             Self::Object(target) => target.core_tile,
-            Self::FishingWater { core_tile } => *core_tile,
+            Self::FishingWater { core_tile } | Self::WalkingGrass { core_tile, .. } => *core_tile,
         }
     }
 }
@@ -105,7 +129,9 @@ pub struct VisualBattleAnchorFrame {
     /// Frozen feet in VisualWorldFrame world-pixel coordinates (+Y north).
     /// The source is verified sprite footing. An object target uses its sprite
     /// footing; fishing uses the checked water tile's south-center support
-    /// point. Neither is a promise of built terrain elevation.
+    /// point. Walking uses the original step's landed support point resolved
+    /// inside the witnessed frame, even if its player sprite was interpolating.
+    /// None of these is a promise of built terrain elevation.
     pub source_foot: Vec2,
     pub target_foot: Vec2,
 }

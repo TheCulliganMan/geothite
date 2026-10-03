@@ -56,6 +56,29 @@ frame without changing fishing phases, gameplay ticks, DIV reads or outcomes.
 The 3D world publisher also restores the validated field after Pack has hidden
 its prior publication; an already active fishing field remains held unchanged.
 
+## Ordinary walking grass encounters
+
+A normal one-tile grass step can bind its committed source contact without
+changing encounter rolls, walk interpolation, entry timing or command replay.
+The frozen witness comes from the exact settled moved-from sprite or its
+original interpolation segment. Missing or stale initial evidence is not
+repaired from an unrelated later frame. The landed source support is resolved
+inside that genuinely witnessed terrain grid.
+
+Random encounters have no overworld enemy actor. The enemy support is explicitly
+derived: two source tiles away in facing, right, left, then back order. Both
+corridor cells must be unoccupied plain land. A bounded 7×7 source collision
+sample records the precise approved cells; it is not a claim that any species
+will fit there. The renderer separately requires the complete animated body
+footprint to fit the union of those cells and the matching built elevation.
+Holes, absent built ground, excessive body size and incompatible heights reject
+the location. Source move offsets are checked against the same fixed supports
+without camera movement, species resizing or per-frame mesh reconstruction.
+An offset outside the proven region retains the original source presentation.
+
+The disposable `--walking-encounter` fixture starts on a checked Route29 grass
+edge and awaits ordinary movement. It never starts or forces an encounter.
+
 ## Actual encounter geometry
 
 The renderer pins the matching built terrain, footing and source texture for an
@@ -133,6 +156,6 @@ cancel, stale/missing evidence, reload and retained entry/exit lifetime. Separat
 presentation checks require the field, rather than battle HUD/commands, through
 the rod's existing phase clock.
 
-Browser GPU review, Surf scene placement, ordinary walking encounters, trainer
+Browser GPU review, Surf scene placement, broad walking-location visual coverage, trainer
 encounters, gyms, caves and ice rooms remain separate visual and provenance
 gates; this is not whole-game location coverage.
