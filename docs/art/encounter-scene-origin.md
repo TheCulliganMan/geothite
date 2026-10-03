@@ -65,6 +65,12 @@ original interpolation segment. Missing or stale initial evidence is not
 repaired from an unrelated later frame. The landed source support is resolved
 inside that genuinely witnessed terrain grid.
 
+During continuous walking, core battle commitment does not clear the optional
+world frame before the visible step has landed. Extraction continues only for
+the current bound encounter while the existing field presentation owns the map;
+actual battle/full-screen entities and the original replacement boundary still
+clear it. The battle LCD flag and source clocks retain their original meaning.
+
 Random encounters have no overworld enemy actor. The enemy support is explicitly
 derived: two source tiles away in facing, right, left, then back order. Both
 corridor cells must be unoccupied plain land. A bounded 7×7 source collision
@@ -83,6 +89,12 @@ edge and awaits ordinary movement. It never starts or forces an encounter.
 
 The renderer pins the matching built terrain, footing and source texture for an
 encounter generation. A desired asynchronous cache key alone is insufficient.
+For a walking encounter, an older mesh grid can be reused only after exact
+source, texture and priority correspondence across its full overlap with the
+witnessed grid. Both grids, source extent and scroll allowance are checked. The terrain
+revision is a live-viewport key and can change while the retained grid remains;
+exact immutable per-cell correspondence supplies the scrolling proof. Feet are sampled in the actual built grid and translated back exactly
+once; only the shared original-map acreage can support the battle camera.
 The rendered frame includes the authoritative map extent separately from its
 padded cache grid. Terrain crossing that extent is split into inside/outside
 domains while preserving the complete overworld surface. Unsafe mixed-attribute
@@ -155,6 +167,19 @@ Fishing tests cover both input paths, exact source command replay, no bite,
 cancel, stale/missing evidence, reload and retained entry/exit lifetime. Separate
 presentation checks require the field, rather than battle HUD/commands, through
 the rod's existing phase clock.
+
+The walking handoff has 33 passing focused controller checks, including a real
+continuous-input Route29 sequence, exact source journal replay, immutable
+witnesses and the field-to-battle extraction boundary. Retained-grid proofs
+pass 912 voxel regressions and 24 render-API checks, plus native compilation
+and the full-feature WebAssembly check. A native Route29 walk produced Hoppip
+through ordinary encounter rolls and accepted the actual grass/path geometry
+at landed tile (46,12), facing north. Both original supports and canonical
+species scales remained fixed. Ember played with its original cues and real
+super-effective damage. Its source-only result presentation remains a fallback.
+The short unretimed capture contains 88 frames over 4.13 seconds (update median
+29.13 ms, p95 84.63 ms) on software OpenGL. The recorder ended that session;
+a separate native walking-battle return capture is still pending.
 
 Browser GPU review, Surf scene placement, broad walking-location visual coverage, trainer
 encounters, gyms, caves and ice rooms remain separate visual and provenance

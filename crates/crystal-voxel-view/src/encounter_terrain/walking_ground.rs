@@ -47,11 +47,14 @@ impl WalkingGround {
         {
             return Err(invalid);
         }
+        let grid_delta =
+            (frame.grid_origin - anchors.terrain.grid_origin).as_vec2() * frame.tile_size;
+        let center = anchors.terrain.center + Vec2::new(grid_delta.x, -grid_delta.y);
         let local_zero = -frame.grid_size.as_vec2() * frame.tile_size * 0.5
             - frame.grid_origin.as_vec2() * frame.tile_size;
         let source_foot = |tile: IVec2| {
             let local = local_zero + (tile.as_vec2() * 2.0 + Vec2::new(1.0, 2.0)) * frame.tile_size;
-            Vec2::new(local.x + frame.center.x, -local.y + frame.center.y)
+            Vec2::new(local.x + center.x, -local.y + center.y)
         };
         let start = source_foot(presentation.step_from_core_tile);
         let landed = source_foot(source);
