@@ -184,3 +184,21 @@ a separate native walking-battle return capture is still pending.
 Browser GPU review, Surf scene placement, broad walking-location visual coverage, trainer
 encounters, gyms, caves and ice rooms remain separate visual and provenance
 gates; this is not whole-game location coverage.
+
+
+## Queued faint and withdrawal presentation
+
+A future queued faint or withdrawal does not force the current HP/result scene
+back to the source renderer. The fallback now reads only the animation that has
+actually started. Original faint row removal and recall clipping still use the
+source presentation when their authored sequence starts; capture, send-out and
+trainer-exit gates remain independent.
+
+Four focused regressions cover production faint staging, recall and its label
+alias, the real terminal KO controller path, and independent source-only gates.
+They verify exact runtime state, command history, random-divider trace, source
+clock and repeated extraction stability. These passed within 58 focused
+controller checks, alongside native compilation and the full-feature Wasm
+check. The motivating Route29 Ember recording showed the premature switch at
+HP drain before fainting began. Native review of the corrected terminal sequence
+remains separate from the passing controller assertions.

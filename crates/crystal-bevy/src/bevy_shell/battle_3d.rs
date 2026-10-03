@@ -1445,7 +1445,12 @@ fn immersive_battle_requires_source_scene_supported(
     allow_rows: bool,
     allow_capture: bool,
 ) -> bool {
-    let animation = shell.visible_move_animations.front();
+    // A queued faint or withdrawal still waits behind the real HP/text clock.
+    // Its future clipping cannot replace the currently presented scene.
+    let animation = shell
+        .visible_move_animations
+        .front()
+        .filter(|animation| animation.started);
     let clips = visible_move_battler_clip_tiles(animation);
     let remove = visible_remove_mon_clips(animation);
     let rows = visible_move_battler_row_extractions(animation);
