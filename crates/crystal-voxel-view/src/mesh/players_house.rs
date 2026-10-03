@@ -288,6 +288,7 @@ mod tests {
 
     fn tile(column: u32, row: u32) -> VisualTile {
         VisualTile {
+            animation_frames: None,
             column,
             row,
             source: VisualTileSource {

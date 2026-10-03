@@ -599,7 +599,9 @@ fn load_tileset_art(
                     ((source_tile_index % columns) * 8 + x) as u32,
                     ((source_tile_index / columns) * 8 + y) as u32,
                 );
-                indices[y * 8 + x] = if pixel[3] == 0 { 0 } else {
+                indices[y * 8 + x] = if pixel[3] == 0 {
+                    0
+                } else {
                     palette_index_from_gray(pixel[0]) as u8
                 };
             }
@@ -607,7 +609,9 @@ fn load_tileset_art(
         transition_tiles.push(BattleTransitionTile {
             priority_from_row: None,
             indices,
-            palette: palette.copied().unwrap_or([[255; 3], [170; 3], [85; 3], [0; 3]]),
+            palette: palette
+                .copied()
+                .unwrap_or([[255; 3], [170; 3], [85; 3], [0; 3]]),
         });
         let mut priority_data = data.clone();
         clear_source_tile_palette_zero_alpha(
@@ -843,7 +847,7 @@ fn load_common_tileset_animations(
         animated.insert(
             LEFT_TILE,
             TilesetAnimatedTile {
-                frames: left_frames,
+                frames: left_frames.into(),
                 frame_ticks: 1,
                 phase_offset: 0,
                 requires_forest_restless: true,
@@ -855,7 +859,7 @@ fn load_common_tileset_animations(
         animated.insert(
             RIGHT_TILE,
             TilesetAnimatedTile {
-                frames: right_frames,
+                frames: right_frames.into(),
                 frame_ticks: 1,
                 phase_offset: 0,
                 requires_forest_restless: true,
@@ -873,7 +877,7 @@ fn load_common_tileset_animations(
             .map(|animation| animation.frames.clone())
             .context("cave scroll animation requires the four water frames")?;
         let mut composite_frames = Vec::with_capacity(32);
-        for source in &water_sources {
+        for source in water_sources.iter() {
             for shift in 0..8 {
                 composite_frames.push(shifted_tileset_tile_handle(source, shift, 0, images)?);
             }
@@ -881,7 +885,7 @@ fn load_common_tileset_animations(
         animated.insert(
             HORIZONTAL_TILE,
             TilesetAnimatedTile {
-                frames: composite_frames,
+                frames: composite_frames.into(),
                 frame_ticks: 22,
                 phase_offset: 0,
                 requires_forest_restless: false,
@@ -925,7 +929,7 @@ fn sequential_tileset_animation(
     phase_offset: u64,
 ) -> TilesetAnimatedTile {
     TilesetAnimatedTile {
-        frames,
+        frames: frames.into(),
         frame_ticks,
         phase_offset,
         requires_forest_restless: false,
@@ -954,7 +958,7 @@ fn scrolled_tileset_animation(
         )?);
     }
     Ok(TilesetAnimatedTile {
-        frames,
+        frames: frames.into(),
         frame_ticks,
         phase_offset,
         requires_forest_restless: false,
@@ -1155,7 +1159,13 @@ fn clear_source_tile_palette_zero_alpha(
     }
 }
 
-fn resolve_tileset_tile_index(source_tile_count: usize, tile_index: usize, vram_bank: u8) -> usize {
+/// Shared source-art bank addressing for the renderer and pack-contained
+/// geometry auditor. Source identity remains the original tile index.
+pub fn resolve_tileset_tile_index(
+    source_tile_count: usize,
+    tile_index: usize,
+    vram_bank: u8,
+) -> usize {
     if source_tile_count == 0 {
         return 0;
     }
@@ -1332,10 +1342,8 @@ fn intro_scene_frame_for_art(
     let title_path = asset_root
         .runtime_assets()
         .join("data/content-packs/core-modular/runtime_title_screen/title.json");
-    let title: crystal_assets::RuntimeTitleScreen = serde_json::from_str(
-        &crate::read_runtime_asset_to_string(&title_path).ok()?,
-    )
-    .ok()?;
+    let title: crystal_assets::RuntimeTitleScreen =
+        serde_json::from_str(&crate::read_runtime_asset_to_string(&title_path).ok()?).ok()?;
     let mut render_intro = intro.clone();
     apply_visible_intro_background_binding(&mut render_intro, &title.program).ok()?;
     intro_scene_frame_for_art_with_bundle(
@@ -1411,7 +1419,10 @@ fn load_intro_scene_frame(
     })
 }
 
-fn apply_visible_intro_scanline_scroll(intro: &VisibleIntroScreen, target: &mut [u8]) -> Result<()> {
+fn apply_visible_intro_scanline_scroll(
+    intro: &VisibleIntroScreen,
+    target: &mut [u8],
+) -> Result<()> {
     const INTRO_BACKING_WIDTH: usize = 32 * SOURCE_TILE_SIZE;
     if intro.lcdc_pointer == 0 {
         return Ok(());
@@ -1508,16 +1519,10 @@ fn draw_intro_tilemap(
 ) -> Result<()> {
     const INTRO_SURFACE_TILES: usize = 32;
     let intro_root = asset_root.runtime_assets().join("gfx/intro");
-    let tilemap_path = visible_intro_resource_path(
-        &intro_root,
-        &background.tilemap_resource,
-        ".tilemap",
-    )?;
-    let attrmap_path = visible_intro_resource_path(
-        &intro_root,
-        &background.attrmap_resource,
-        ".attrmap",
-    )?;
+    let tilemap_path =
+        visible_intro_resource_path(&intro_root, &background.tilemap_resource, ".tilemap")?;
+    let attrmap_path =
+        visible_intro_resource_path(&intro_root, &background.attrmap_resource, ".attrmap")?;
     let palette_name = visible_intro_resource_stem(&background.palette_resource, ".pal")?;
     let tilemap = crate::read_runtime_asset(&tilemap_path)
         .with_context(|| format!("read {}", tilemap_path.display()))?;
@@ -1608,11 +1613,7 @@ fn draw_intro_tilemap(
     Ok(())
 }
 
-fn visible_intro_resource_path(
-    intro_root: &Path,
-    resource: &str,
-    suffix: &str,
-) -> Result<PathBuf> {
+fn visible_intro_resource_path(intro_root: &Path, resource: &str, suffix: &str) -> Result<PathBuf> {
     let relative = resource
         .strip_prefix("gfx/intro/")
         .with_context(|| format!("intro resource {resource} is outside gfx/intro"))?;
@@ -1684,12 +1685,10 @@ fn draw_visible_intro_sprites(
             let attr = (base_attr & !0xe0) | flipped_attr;
             let offset_x = apply_visible_intro_frame_flip(piece_x, (frame_flags & 0x20) != 0);
             let offset_y = apply_visible_intro_frame_flip(piece_y, (frame_flags & 0x40) != 0);
-            let draw_x = (sprite.x
-                + sprite.x_offset
-                + i16::from(intro.global_anim_x_offset)
-                + offset_x)
-                .rem_euclid(256)
-                - 8;
+            let draw_x =
+                (sprite.x + sprite.x_offset + i16::from(intro.global_anim_x_offset) + offset_x)
+                    .rem_euclid(256)
+                    - 8;
             let draw_y = (sprite.y + sprite.y_offset + offset_y).rem_euclid(256) - 16;
             let tile_id = sprite
                 .tile_id
@@ -2024,9 +2023,7 @@ fn visible_intro_effective_palette_cached(
         VisibleIntroPaletteEffect::UnownFade {
             palette_idx,
             colors,
-        }
-            if !is_obj_palette && palette_name == "unowns" =>
-        {
+        } if !is_obj_palette && palette_name == "unowns" => {
             let target = usize::from(*palette_idx & 0x07);
             if palette_index != target {
                 black
@@ -2070,7 +2067,10 @@ fn visible_intro_effective_palette_cached(
         VisibleIntroPaletteEffect::Scene24Fade { .. } => *base_palette,
         VisibleIntroPaletteEffect::CrystalWordFade { palette_colors }
             if palette_name == "crystal_unowns"
-                && palette_colors.get(palette_index).is_some_and(Option::is_some) => {
+                && palette_colors
+                    .get(palette_index)
+                    .is_some_and(Option::is_some) =>
+        {
             let colors = palette_colors[palette_index]
                 .context("intro Crystal-word palette disappeared after validation")?;
             let mut palette = *base_palette;
@@ -2328,8 +2328,8 @@ fn blit_intro_sprite_source_tile(
             if transparent_zero && palette_index == 0 {
                 continue;
             }
-            let priority = background_priority
-                [target_y as usize * INTRO_SURFACE_SIZE + target_x as usize];
+            let priority =
+                background_priority[target_y as usize * INTRO_SURFACE_SIZE + target_x as usize];
             if priority != 0 && attr & 0x80 != 0 {
                 continue;
             }
@@ -3050,7 +3050,11 @@ fn load_pokemon_animation_frame(
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let species_id = normalize_pokemon_asset_id(species_id);
-    let image_species = if species_id == "unown" { "unown_a" } else { &species_id };
+    let image_species = if species_id == "unown" {
+        "unown_a"
+    } else {
+        &species_id
+    };
     let image_path = pokemon_asset_path(asset_root, image_species, side, "png");
     let source = crate::open_runtime_image(&image_path)
         .with_context(|| format!("decode Pokemon sprite PNG {}", image_path.display()))?
@@ -3139,7 +3143,11 @@ fn load_pokemon_palette(
     shiny: bool,
 ) -> Result<Palette> {
     if shiny {
-        let species_id = if species_id.starts_with("unown_") { "unown" } else { species_id };
+        let species_id = if species_id.starts_with("unown_") {
+            "unown"
+        } else {
+            species_id
+        };
         let palette_path = asset_root
             .runtime_assets()
             .join("gfx/pokemon")
@@ -3151,14 +3159,21 @@ fn load_pokemon_palette(
         // supplies the endpoints. These are not four-color palette files.
         let mut colors = Vec::new();
         for raw_line in content.lines() {
-            let line = raw_line.split_once(';').map_or(raw_line, |(line, _)| line).trim();
+            let line = raw_line
+                .split_once(';')
+                .map_or(raw_line, |(line, _)| line)
+                .trim();
             if line.starts_with("RGB") {
                 let values = parse_rgb_values(line)?;
                 anyhow::ensure!(values.len() == 3, "invalid Pokemon palette line {line:?}");
                 colors.push(rgb_triplet_to_u8(&values)?);
             }
         }
-        anyhow::ensure!(colors.len() == 2, "Pokemon palette {} must contain two colors", palette_path.display());
+        anyhow::ensure!(
+            colors.len() == 2,
+            "Pokemon palette {} must contain two colors",
+            palette_path.display()
+        );
         return Ok([[255, 255, 255], colors[0], colors[1], [0, 0, 0]]);
     }
     let side_palette_path = pokemon_asset_path(asset_root, species_id, side, "gbcpal");
@@ -3596,9 +3611,13 @@ fn load_town_map_frame_with_nests(
 
 fn apply_pokegear_card_tabs(tilemap: &mut [u8], unlocked_mask: u8) {
     // Pokegear_FinishTilemap uses $4f for missing cards, not font-space $7f.
-    for row in 0..2 { tilemap[row * 20..row * 20 + 8].fill(0x4f); }
+    for row in 0..2 {
+        tilemap[row * 20..row * 20 + 8].fill(0x4f);
+    }
     for (bit, x, base) in [(0, 0, 0x46_u8), (1, 2, 0x40), (2, 4, 0x44), (3, 6, 0x42)] {
-        if bit != 0 && unlocked_mask & (1 << bit) == 0 { continue; }
+        if bit != 0 && unlocked_mask & (1 << bit) == 0 {
+            continue;
+        }
         tilemap[x] = base;
         tilemap[x + 1] = base + 1;
         tilemap[20 + x] = base + 0x10;
@@ -3664,7 +3683,10 @@ fn pokegear_card_frame_for_art(
     if let Some(error) = rendered_art.town_map_errors.get(&key) {
         anyhow::bail!("{error}");
     }
-    rendered_art.town_map_cache.get(&key).cloned()
+    rendered_art
+        .town_map_cache
+        .get(&key)
+        .cloned()
         .with_context(|| format!("Pokégear card {key:?} has no rendered frame"))
 }
 
@@ -4261,8 +4283,7 @@ fn grass_rustle_frames_for_art(
              -> SpriteFrame {
                 let canvas_width = GRASS_RUSTLE_CANVAS_SOURCE_SIZE.x;
                 let canvas_height = GRASS_RUSTLE_CANVAS_SOURCE_SIZE.y;
-                let mut pixels =
-                    vec![0; canvas_width as usize * canvas_height as usize * 4];
+                let mut pixels = vec![0; canvas_width as usize * canvas_height as usize * 4];
                 for piece in layout {
                     for y in 0..height {
                         for x in 0..width {
@@ -4273,9 +4294,8 @@ fn grass_rustle_frames_for_art(
                             }
                             let target_x = piece.x + x;
                             let target_y = piece.y + y;
-                            let offset = (target_y as usize * canvas_width as usize
-                                + target_x as usize)
-                                * 4;
+                            let offset =
+                                (target_y as usize * canvas_width as usize + target_x as usize) * 4;
                             let color = palette[palette_index_from_gray(pixel[0])];
                             pixels[offset] = color[0];
                             pixels[offset + 1] = color[1];
@@ -4438,6 +4458,77 @@ fn resolve_visible_object_sprite_asset_id(
         .unwrap_or_else(|| normalized.replace('-', "_"))
 }
 
+/// Preserve the verified identity of the lighthouse's named Amphy object.
+/// Its compiled script uses AMPHAROS for both sick and healthy cries, although
+/// its source art is the shared SPRITE_MONSTER. Keep this exception at the
+/// publisher boundary: the model renderer must not guess from generic art.
+fn visible_map_object_model_source_id(
+    map: &str,
+    object: &crate::core::map::ObjectEvent,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    menu_icons: &BTreeMap<String, String>,
+) -> String {
+    // A replaced sprite wins over the named source identity. Do not turn a
+    // modded actor, a different shared monster, or an icon into Ampharos.
+    if map == "OlivineLighthouse6F"
+        && object.object_identifier.as_deref() == Some("OLIVINELIGHTHOUSE6F_MONSTER")
+        && object.script == "OlivineLighthouseAmphy"
+        && object.object_type == "OBJECTTYPE_SCRIPT"
+        && object.sprite == "SPRITE_MONSTER"
+        && visible_sprite == "SPRITE_MONSTER"
+        && bitmap_source == "monster"
+        && !variable_sprites.contains_key(visible_sprite)
+        && menu_icons.contains_key("AMPHAROS")
+    {
+        return format!("species:AMPHAROS:{bitmap_source}");
+    }
+    visible_object_model_source_id(
+        map,
+        &object.sprite,
+        visible_sprite,
+        bitmap_source,
+        variable_sprites,
+        menu_icons,
+    )
+}
+
+/// Render-only identity of the currently visible appearance. Variable and
+/// daycare resolution has already happened; no hidden/original actor identity
+/// is consulted. The bitmap source remains available for normal card fallback.
+fn visible_object_model_source_id(
+    map: &str,
+    original_sprite: &str,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    menu_icons: &BTreeMap<String, String>,
+) -> String {
+    let requested = variable_sprites
+        .get(visible_sprite)
+        .map(String::as_str)
+        .unwrap_or(visible_sprite);
+    let normalized = requested.trim().to_ascii_uppercase();
+    let species = normalized.strip_prefix("SPRITE_").unwrap_or(&normalized);
+    // The original decoration catalog calls the STARYU doll SPRITE_STARMIE.
+    // This exception belongs only to the two bedroom doll slots. A visible
+    // Starmie elsewhere remains Starmie, including Day Care and variable NPCs.
+    let species = if map == "PlayersHouse2F"
+        && matches!(original_sprite, "SPRITE_DOLL_1" | "SPRITE_DOLL_2")
+        && species == "STARMIE"
+    {
+        "STARYU"
+    } else {
+        species
+    };
+    if menu_icons.contains_key(species) {
+        format!("species:{species}:{bitmap_source}")
+    } else {
+        bitmap_source.to_string()
+    }
+}
+
 fn object_sprite_is_animated(spritemovedata: &str) -> bool {
     matches!(
         spritemovedata,
@@ -4484,13 +4575,19 @@ fn parse_npc_sprite_palette_bank(content: &str, time_of_day: &str) -> Result<Vec
     let normalized = normalize_tileset_time_of_day(time_of_day);
     // The renderer's indoor art mode uses the PALETTE_DAY object bank;
     // indoor is not a fifth wTimeOfDayPal value.
-    let group = if normalized == "indoor" { "day" } else { normalized.as_str() };
+    let group = if normalized == "indoor" {
+        "day"
+    } else {
+        normalized.as_str()
+    };
     // LoadMapPals indexes exactly eight palettes by wTimeOfDayPal.
     // A missing bank is invalid data, not permission to change the time.
     let palettes = parse_palette_file(content, Some(group))?;
-    anyhow::ensure!(palettes.len() == 8,
+    anyhow::ensure!(
+        palettes.len() == 8,
         "NPC sprite palette group {group} requires eight source palettes, got {}",
-        palettes.len());
+        palettes.len()
+    );
     Ok(palettes)
 }
 
@@ -4789,5 +4886,306 @@ fn pokemon_asset_id_for_dvs(species_id: &str, dvs: Dv) -> String {
         format!("unown_{}", char::from(b'a' + dvs.unown_letter() - 1))
     } else {
         normalize_pokemon_asset_id(species_id)
+    }
+}
+
+#[cfg(test)]
+mod visible_species_source_tests {
+    use super::*;
+    #[test]
+    fn visible_identity_uses_current_replacement_and_keeps_card_art_source() {
+        let icons = BTreeMap::from([
+            ("MAGIKARP".into(), "ICON_FISH".into()),
+            ("GENGAR".into(), "ICON_GHOST".into()),
+            ("STARMIE".into(), "ICON_STARYU".into()),
+            ("STARYU".into(), "ICON_STARYU".into()),
+        ]);
+        let mut variables = BTreeMap::from([("SPRITE_COPYCAT".into(), "SPRITE_MAGIKARP".into())]);
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        variables.insert("SPRITE_COPYCAT".into(), "SPRITE_GENGAR".into());
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "icon_ghost", &variables, &icons), "species:GENGAR:icon_ghost");
+        variables.insert("SPRITE_COPYCAT".into(), "SPRITE_LASS".into());
+        assert_eq!(visible_object_model_source_id("CopycatsHouse2F", "SPRITE_COPYCAT",
+            "SPRITE_COPYCAT", "lass", &variables, &icons), "lass");
+        assert_eq!(visible_object_model_source_id("DayCare", "SPRITE_DAY_CARE_MON_1",
+            "MAGIKARP", "icon_fish", &variables, &icons), "species:MAGIKARP:icon_fish");
+        // A generic shared icon conveys no exact species and stays generic.
+        assert_eq!(visible_object_model_source_id("Route30", "SPRITE_MONSTER",
+            "SPRITE_MONSTER", "monster", &variables, &icons), "monster");
+    }
+    #[test]
+    fn compiled_catalog_publishes_all_30_live_actor_decoration_sources() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("workspace root");
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"))
+            .canonicalize()
+            .expect("external decoration test pack");
+        let assets = AssetRoot::new(root);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+            .expect("verified external decoration test pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded)
+            .expect("desktop decoration runtime");
+        let catalog = &runtime.data().decorations.decorations;
+        assert_eq!(catalog.len(), 45);
+        let icons = &runtime.data().menu_icons;
+        let mut count = 0;
+        for decoration in catalog.iter().filter(|d| d.sprite.starts_with("SPRITE_")) {
+            let slot = match decoration.category {
+                crystal_assets::DecorationCategory::GameConsole => "SPRITE_CONSOLE",
+                crystal_assets::DecorationCategory::BigDoll => "SPRITE_BIG_DOLL",
+                crystal_assets::DecorationCategory::Ornament => "SPRITE_DOLL_1",
+                _ => unreachable!("tile decorations cannot be actor sprites"),
+            };
+            let variables = BTreeMap::from([(slot.into(), decoration.sprite.clone())]);
+            let bitmap = resolve_visible_object_sprite_asset_id(&assets, slot, &variables, icons);
+            let model = visible_object_model_source_id("PlayersHouse2F", slot, slot, &bitmap, &variables, icons);
+            assert!(!model.contains(slot), "unresolved {}", decoration.id);
+            let requested = decoration.sprite.strip_prefix("SPRITE_").unwrap();
+            if icons.contains_key(requested) {
+                let species = if decoration.id == "DECO_STARYU_DOLL" { "STARYU" } else { requested };
+                assert_eq!(model, format!("species:{species}:{bitmap}"), "{}", decoration.id);
+            } else {
+                assert_eq!(model, bitmap, "{}", decoration.id);
+            }
+            count += 1;
+        }
+        assert_eq!(count, 30);
+    }
+    #[test]
+    fn catalog_staryu_alias_is_limited_to_the_current_bedroom_doll_slots() {
+        let icons = BTreeMap::from([("STARMIE".into(), "ICON_STARYU".into()),
+            ("STARYU".into(), "ICON_STARYU".into())]);
+        for slot in ["SPRITE_DOLL_1", "SPRITE_DOLL_2"] {
+            let variables = BTreeMap::from([(slot.into(), "SPRITE_STARMIE".into())]);
+            assert_eq!(visible_object_model_source_id("PlayersHouse2F", slot, slot,
+                "icon_staryu", &variables, &icons), "species:STARYU:icon_staryu");
+            assert_eq!(visible_object_model_source_id("DayCare", slot, slot,
+                "icon_staryu", &variables, &icons), "species:STARMIE:icon_staryu");
+        }
+    }
+}
+
+#[cfg(test)]
+mod named_object_species_source_tests {
+    use super::*;
+
+    fn amphy() -> crate::core::map::ObjectEvent {
+        crate::core::map::ObjectEvent {
+            sprite: "SPRITE_MONSTER".into(),
+            sprite_has_facings: true,
+            x: 9,
+            y: 8,
+            spritemovedata: "SPRITEMOVEDATA_STANDING_DOWN".into(),
+            move_range_x: 0,
+            move_range_y: 0,
+            hram_x: -1,
+            hram_y: -1,
+            pal: 11,
+            object_type: "OBJECTTYPE_SCRIPT".into(),
+            radius: 0,
+            script: "OlivineLighthouseAmphy".into(),
+            label: None,
+            event_flag: "-1".into(),
+            object_identifier: Some("OLIVINELIGHTHOUSE6F_MONSTER".into()),
+            sightline_direction_override: None,
+        }
+    }
+
+    #[test]
+    fn amphy_identity_requires_its_exact_map_object_script_and_visible_art() {
+        let icons = BTreeMap::from([("AMPHAROS".into(), "ICON_MONSTER".into())]);
+        let variables = BTreeMap::new();
+        let object = amphy();
+        let before = object.clone();
+        let source = |map, object: &crate::core::map::ObjectEvent, visible, art| {
+            visible_map_object_model_source_id(map, object, visible, art, &variables, &icons)
+        };
+        assert_eq!(
+            source("OlivineLighthouse6F", &object, "SPRITE_MONSTER", "monster"),
+            "species:AMPHAROS:monster"
+        );
+        assert_eq!(
+            object, before,
+            "presentation must not change the source object"
+        );
+        assert_eq!(
+            source("Route30", &object, "SPRITE_MONSTER", "monster"),
+            "monster"
+        );
+        assert_eq!(
+            source(
+                "OlivineLighthouse6F",
+                &object,
+                "SPRITE_MONSTER",
+                "icon_monster"
+            ),
+            "icon_monster"
+        );
+        assert_eq!(
+            source("OlivineLighthouse6F", &object, "SPRITE_LASS", "lass"),
+            "lass"
+        );
+        for changed in 0..4 {
+            let mut other = object.clone();
+            match changed {
+                0 => other.object_identifier = None,
+                1 => other.script = "OtherMonsterScript".into(),
+                2 => other.object_type = "OBJECTTYPE_ITEMBALL".into(),
+                3 => other.sprite = "SPRITE_COPYCAT".into(),
+                _ => unreachable!(),
+            }
+            assert_eq!(
+                source("OlivineLighthouse6F", &other, "SPRITE_MONSTER", "monster"),
+                "monster",
+                "changed identity field {changed}"
+            );
+        }
+        assert_eq!(
+            visible_map_object_model_source_id(
+                "OlivineLighthouse6F",
+                &object,
+                "SPRITE_MONSTER",
+                "monster",
+                &variables,
+                &BTreeMap::new()
+            ),
+            "monster"
+        );
+    }
+
+    #[test]
+    fn amphy_current_variable_sprite_wins_over_named_identity() {
+        let object = amphy();
+        let icons = BTreeMap::from([
+            ("AMPHAROS".into(), "ICON_MONSTER".into()),
+            ("GENGAR".into(), "ICON_GHOST".into()),
+        ]);
+        for (replacement, bitmap, expected) in [
+            ("SPRITE_GENGAR", "icon_ghost", "species:GENGAR:icon_ghost"),
+            ("SPRITE_LASS", "lass", "lass"),
+            ("SPRITE_MONSTER", "monster", "monster"),
+        ] {
+            let variables = BTreeMap::from([("SPRITE_MONSTER".into(), replacement.into())]);
+            assert_eq!(
+                visible_map_object_model_source_id(
+                    "OlivineLighthouse6F",
+                    &object,
+                    "SPRITE_MONSTER",
+                    bitmap,
+                    &variables,
+                    &icons
+                ),
+                expected
+            );
+        }
+    }
+}
+
+#[cfg(test)]
+mod compiled_amphy_identity_tests {
+    use super::*;
+
+    #[test]
+    fn compiled_amphy_script_confirms_species_and_only_its_object_is_reidentified() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("workspace root");
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"))
+            .canonicalize()
+            .expect("external Amphy identity test pack");
+        let assets = AssetRoot::new(root);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+            .expect("verified external Amphy identity test pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded)
+            .expect("desktop Amphy identity runtime");
+        let map = &runtime.data().maps["OlivineLighthouse6F"];
+        let object = map
+            .objects
+            .iter()
+            .find(|object| {
+                object.object_identifier.as_deref() == Some("OLIVINELIGHTHOUSE6F_MONSTER")
+            })
+            .expect("source Amphy object");
+        assert_eq!(object.script, "OlivineLighthouseAmphy");
+        assert_eq!((object.x, object.y), (9, 8));
+        assert_eq!(object.spritemovedata, "SPRITEMOVEDATA_STANDING_DOWN");
+        assert_eq!(object.event_flag, "-1");
+        let sick_cry_species = map
+            .script_variable_commands
+            .iter()
+            .find(|command| {
+                command.source_script == object.script
+                    && command.command == "setval"
+                    && command.value_tokens == ["AMPHAROS"]
+            })
+            .expect("Amphy's compiled sick cry selects Ampharos");
+        assert!(
+            map.script_runtime_commands
+                .iter()
+                .any(|command| command.source_script == object.script
+                    && command.command == "special"
+                    && command.args == ["PlaySlowCry"]
+                    && command.command_index == sick_cry_species.command_index + 1)
+        );
+        assert!(
+            map.script_audio_commands
+                .iter()
+                .any(
+                    |command| command.source_script == ".HealthyNow@OlivineLighthouseAmphy"
+                        && command.command == "cry"
+                        && command.audio_id.as_deref() == Some("AMPHAROS")
+                )
+        );
+
+        let variables = BTreeMap::new();
+        let icons = &runtime.data().menu_icons;
+        let mut changed = Vec::new();
+        for (map_name, map) in &runtime.data().maps {
+            for object in map
+                .objects
+                .iter()
+                .filter(|object| object.sprite == "SPRITE_MONSTER")
+            {
+                let before = object.clone();
+                let bitmap = resolve_visible_object_sprite_asset_id(
+                    &assets,
+                    &object.sprite,
+                    &variables,
+                    icons,
+                );
+                let generic = visible_object_model_source_id(
+                    map_name,
+                    &object.sprite,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                let named = visible_map_object_model_source_id(
+                    map_name,
+                    object,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                assert_eq!(object, &before, "render identity changed source state");
+                if named != generic {
+                    assert_eq!(generic, "monster");
+                    assert_eq!(named, "species:AMPHAROS:monster");
+                    changed.push((map_name.as_str(), object.script.as_str()));
+                }
+            }
+        }
+        assert_eq!(changed, [("OlivineLighthouse6F", "OlivineLighthouseAmphy")]);
     }
 }

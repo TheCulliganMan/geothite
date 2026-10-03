@@ -562,6 +562,7 @@ fn bevy_audio_action(kind: &RuntimeResolvedAudioPlaybackKind) -> Option<BevyAudi
         }
         RuntimeResolvedAudioPlaybackKind::Play { audio_id, playback } => {
             Some(BevyAudioAction::Play(BevyAudioCommand {
+                battle_sound: None,
                 cry_parameters: None,
                 audio_id: audio_id.clone(),
                 kind: playback.kind,

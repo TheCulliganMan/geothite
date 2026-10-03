@@ -6,7 +6,7 @@
     <title>Geothite</title>
     <meta name="application-name" content="Geothite">
     <meta name="apple-mobile-web-app-title" content="Geothite">
-    <meta name="description" content="Play Geothite: a Pokémon Crystal adventure with online multiplayer and classic 2D or 2.5D views.">
+    <meta name="description" content="Play Geothite: a Pokémon Crystal adventure with online multiplayer and classic 2D or 3D views.">
     <meta name="theme-color" content="#09090d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="color-scheme" content="dark">
@@ -141,13 +141,13 @@
     <div id="settings-backdrop" aria-hidden="true"></div>
     <nav id="controls" aria-label="Game settings">
       <div class="settings-heading"><strong>Settings</strong><button id="close-settings" type="button">Done</button></div>
-      <button id="view-toggle" type="button" aria-label="Switch to 2.5D view" aria-pressed="false" title="Switch to 2.5D view" disabled>2.5D view</button>
+      <button id="view-toggle" type="button" aria-label="Switch to 3D view" aria-pressed="false" title="Switch to 3D view" disabled>3D view</button>
       <button id="save-games" type="button" disabled>Save games</button>
       <button id="personalization" type="button" hidden>Personalization</button>
       <span id="personalization-notice" role="status"></span>
       <button id="fullscreen" type="button" aria-label="Fullscreen">Fullscreen</button>
       <button id="help" type="button" aria-label="Controls">How to play</button>
-      <div id="camera-controls" role="group" aria-label="2.5D camera controls" hidden>
+      <div id="camera-controls" role="group" aria-label="3D camera controls" hidden>
         <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out" disabled>−</button>
         <button id="camera-reset" type="button" aria-label="Reset camera" title="Reset camera" disabled>100%</button>
         <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in" disabled>+</button>
@@ -217,7 +217,7 @@
       <div class="menu-body">
         <p class="menu-caption">Move, explore, and meet other trainers.</p>
         <dl class="help-controls"><dt>D-pad</dt><dd>Move. Slide to change direction.</dd><dt>A</dt><dd>Talk, interact, confirm.</dd><dt>B</dt><dd>Go back.</dd><dt>START</dt><dd>Open the game menu.</dd></dl>
-        <details open><summary>2.5D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
+        <details open><summary>3D camera</summary><p>Drag the world left or right to orbit, up or down to zoom. Camera buttons are in Settings. Tap the percentage to reset.</p></details>
         <details><summary>Keyboard &amp; controller</summary><p>Arrow keys / WASD / left stick: move. Z / bottom face button: confirm. X / right face button: back. <span data-start-key>Space</span> / Start: menu. <span data-select-key>Backspace</span> / Back / View: Select. Right stick: orbit and zoom. On Steam Deck, use a Gamepad layout.</p></details>
         <details><summary>Online &amp; chat</summary><p>Face a trainer and press A to interact. <span data-chat-key>Enter</span> opens chat; Escape returns to the game.</p></details>
         <details><summary>Agent tools</summary><p id="webmcp-status" role="status">Checking availability…</p></details>
@@ -367,6 +367,7 @@
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             startIn2D: document.documentElement.classList.contains("flygon-embedded"),
+            startIn3D: new URLSearchParams(location.search).get("preview") === "new-bark",
             cameraControls: {
               group: document.querySelector('#camera-controls'),
               zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),

@@ -6,6 +6,50 @@ on:
 permissions:
   contents: read
 jobs:
+  model-source-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install 'numpy>=1.24,<3'
+      - run: python3 tools/check-johto-models.py
+      - run: python3 tools/check-johto-characters.py
+      - run: python3 tools/check-room-furniture-bindings.py
+      - run: python3 tools/check-facility-table-rigs.py
+      - run: python3 tools/check-interior-models.py
+      - run: python3 tools/check-dungeon-models.py
+      - run: python3 tools/check-special-environments.py
+      - run: python3 tools/check-special-rooms.py
+      - run: python3 tools/check-gate-counter-models.py
+      - run: python3 tools/check-cable-club.py
+      - run: python3 tools/check-cable-backwalls.py
+      - run: python3 tools/check-gym-scenery-models.py
+      - run: python3 tools/check-department-store.py
+      - run: python3 tools/check-outdoor-sign-frames.py
+      - run: python3 tools/check-lighthouse-masonry.py
+      - run: python3 tools/check-lighthouse-chamber.py
+      - run: python3 tools/check-facility-radio.py
+      - run: python3 tools/check-facility-tables.py
+      - run: python3 tools/check-ship-rooms.py
+      - run: python3 tools/check-ship-fronts.py
+      - run: python3 tools/check-traditional-room-models.py
+      - run: python3 tools/check-train-station-models.py
+      - run: python3 tools/check-park-scenery-models.py
+      - run: python3 tools/check-structure-extensions.py
+      - run: python3 tools/check-actor-props.py
+      - run: python3 tools/check-battle-species.py
+      - run: python3 tools/validate-battle-art.py
+      - run: python3 tools/test_johto_character_geometry.py
+      - run: python3 tools/test_animated_glb.py
+      - run: python3 tools/test_pidgeotto_glb.py
+      - run: python3 tools/test_cyndaquil_glb.py
+      - run: python3 tools/test_totodile_glb.py
+      - run: python3 tools/test_gengar_glb.py
+      - run: python3 tools/human_locomotion.py
+      - run: python3 tools/test_model_asset_storage.py
+      - run: python3 tools/test_johto_art_sources.py
+      - run: python3 tools/test_asset_storage_migration.py
+      - run: python3 tools/test_export_model_stl.py
+      - run: python3 tools/check-model-layout.py
   browser-tests:
     runs-on: ubuntu-latest
     steps:
@@ -31,4 +75,7 @@ jobs:
             ~/.cargo/git
             target
           key: voxel-${{ runner.os }}-1.94.0-${{ hashFiles('Cargo.lock') }}
+      - run: cargo +1.94.0 test --locked -p crystal-render-api --lib
+      - run: cargo +1.94.0 test --locked -p crystal-assets --test asset_root_lifetime
+      - run: cargo +1.94.0 test --locked -p crystal-runtime --lib runtime_mount_
       - run: cargo +1.94.0 test --locked -p crystal-voxel-view --lib

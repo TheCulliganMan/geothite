@@ -21,6 +21,8 @@ pub mod bevy_shell;
 #[cfg(feature = "bevy-shell")]
 pub use bevy_shell::{
     BevyHostedMultiplayerConfig, BevyMeshtasticConfig, BevyMeshtasticConnection,
+    BattleOriginContact, BattleOriginKind, BattleOriginVisualStep,
+    BattlePresentationOrigin, BattlePresentationOriginFrame,
     BevyMultiplayerConfig, BevyShellConfig, BevyShellStart, VisibleShellBattleSmoke,
     VisibleShellBattleSmokeRef, VisibleShellController, VisibleShellOverworldSmoke,
     VisibleShellPartySmoke, VisibleShellSmokeItem, VisibleShellSmokePokemon,

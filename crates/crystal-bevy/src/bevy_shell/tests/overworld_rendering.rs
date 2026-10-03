@@ -447,6 +447,7 @@ fn overworld_emote_targets_use_each_actors_independent_live_stride() {
 #[test]
 fn finite_pcm_music_does_not_restart_when_its_playback_plan_requests_looping() {
     let pcm_music = BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: "MUSIC_CRYSTAL_OPENING".to_string(),
         kind: ModpackAudioKind::Music,
@@ -1132,6 +1133,101 @@ fn host_frames_interpolate_between_authoritative_walk_ticks() {
     assert!(halfway_to_next_tick < at_next_tick);
     assert_eq!(halfway_to_next_tick, (at_tick + at_next_tick) * 0.5);
     assert_eq!(visible_movement_progress_with_subframe(0, 8, 0.5), 1.0);
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
+fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
+    for host_hz in [60.0, 30.0, 9.0] {
+        let asset_root = AssetRoot::new(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../..")
+                .canonicalize()
+                .unwrap(),
+        );
+        let runtime = workspace_desktop_runtime(&asset_root);
+        let shell = initialize_bevy_runtime_shell(
+            asset_root,
+            runtime,
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier: 14,
+                map_name: "CherrygroveCity".into(),
+                tile_x: 29,
+                tile_y: 4,
+            },
+            BevyShellConfig::default(),
+        )
+        .unwrap();
+        let mut app = integrated_shell_test_app(shell);
+        app.init_resource::<crystal_render_api::VisualWorldFrame>()
+            .add_systems(
+                Update,
+                publish_visual_world_frame
+                    .after(render_playfield)
+                    .after(sync_visible_player_sprite)
+                    .after(sync_visible_object_sprites),
+            );
+        app.update();
+        app.update();
+        app.insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)));
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            Duration::from_secs_f64(1.0 / host_hz),
+        ));
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::ArrowLeft);
+
+        let mut samples = 0;
+        let mut previous = None;
+        let mut minimum_delta = f32::INFINITY;
+        let mut maximum_delta = 0.0_f32;
+        let mut sampled_distance = 0.0_f32;
+        for host_frame in 0..64 {
+            app.update();
+            let world = app.world();
+            let shell = world.resource::<BevyRuntimeShell>();
+            assert_eq!(shell.last_error, None);
+            let rendered = world.resource::<RenderedViewport>();
+            let published = world.resource::<crystal_render_api::VisualWorldFrame>();
+            let subframe = world.resource::<RuntimeTickTimer>().presentation_subframe();
+            let expected = visible_overworld_camera_offset(rendered, shell, subframe);
+            assert!(published.active);
+            assert!(
+                published.center.abs_diff_eq(expected, 0.001),
+                "{host_hz} Hz frame {host_frame}: movement timer advanced to {}, but published camera froze at {:?} instead of {expected:?}",
+                shell.player_walk_frame_ticks,
+                published.center,
+            );
+            let player = published.actors.iter()
+                .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+                .expect("published player");
+            // Remove camera scroll and restore the map origin before measuring
+            // distance. A camera pan cannot manufacture actor travel.
+            let player_world_x = player.center.x - published.center.x
+                + published.grid_origin.x as f32 * TILE_SIZE;
+            if shell.player_walk_frame_ticks > 0 {
+                if let Some(previous) = previous {
+                    let delta = previous - player_world_x;
+                    assert!(delta > 0.0, "{host_hz} Hz frame {host_frame} retained a walking sample: delta={delta}");
+                    assert!(delta <= 2.0 * TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE)
+                        / f32::from(WALK_FRAME_HOLD_TICKS) + 0.001,
+                        "{host_hz} Hz frame {host_frame} skipped presentation samples: delta={delta}");
+                    minimum_delta = minimum_delta.min(delta);
+                    maximum_delta = maximum_delta.max(delta);
+                    sampled_distance += delta;
+                    samples += 1;
+                }
+                previous = Some(player_world_x);
+            } else {
+                previous = None;
+            }
+        }
+        assert!(samples >= 48, "{host_hz} Hz did not exercise enough live walking samples: {samples}");
+        let gameplay_tile_size = TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE);
+        let tiles_per_second = sampled_distance / gameplay_tile_size
+            / (samples as f32 / host_hz as f32);
+        println!("expanded-world walk: {host_hz} Hz, {samples} moving samples, delta range {minimum_delta:.3}..{maximum_delta:.3}, speed {tiles_per_second:.4} gameplay tiles/s");
+    }
 }
 
 #[test]

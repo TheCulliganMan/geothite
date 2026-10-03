@@ -8,7 +8,11 @@
 //! [`WorldRenderSet::RenderSync`] and must not feed presentation state back
 //! into simulation.
 
+mod battle;
+mod battle_location;
 mod streamed_images;
+pub use battle::*;
+pub use battle_location::*;
 pub use streamed_images::stream_composed_image;
 
 use std::{collections::HashSet, sync::Arc};
@@ -75,10 +79,22 @@ pub struct VisualTile {
     pub column: u32,
     pub row: u32,
     pub source: VisualTileSource,
-    /// Exact live 8x8 image used by the classic renderer for this cell. This
-    /// gives optional renderers non-stretched top/edge source art without
-    /// exposing asset-root paths or gameplay data.
+    /// Exact 8x8 image sampled from the classic renderer when this cell was
+    /// published. A retained grid may keep an earlier authenticated animation
+    /// phase. This gives optional renderers non-stretched top/edge source art
+    /// without exposing asset-root paths or gameplay data.
     pub texture: Handle<Image>,
+    /// Complete immutable authored texture-phase family, shared by every cell
+    /// using this animation from the same host art-cache entry. `texture` is
+    /// always a member. Static or otherwise unproven art has no family.
+    ///
+    /// This authenticates texture provenance only, never geometry. Consumers
+    /// may accept different member phases only when their validated source
+    /// profile proves geometry invariant across this exact family. Overlapping
+    /// families do not establish correspondence, and palette/art-cache changes
+    /// must publish a distinct family. Phase changes do not change geometry
+    /// revisions or require cloning the complete published grid.
+    pub animation_frames: Option<Arc<[Handle<Image>]>>,
     /// Whether the tile belongs to the classic map foreground-priority layer.
     /// This is compositing metadata, not a height or shape signal.
     pub priority: bool,
@@ -115,6 +131,9 @@ pub struct VisualActor {
     pub flip_x: bool,
     /// Whether this actor is drawn above foreground-priority map tiles.
     pub above_priority: bool,
+    /// Authoritative world-facing vector (+X east, +Y north), independent of camera orbit.
+    /// None for presentation effects and legacy remote actors.
+    pub facing: Option<Vec2>,
 }
 
 /// Immutable-by-convention snapshot consumed by optional world renderers.
@@ -127,6 +146,12 @@ pub struct VisualWorldFrame {
     pub active: bool,
     /// Stable compiled map identifier for presentation-profile selection.
     pub map_id: Arc<str>,
+    /// Actual source-map extent captured with this rendered terrain grid, in
+    /// core 16x16 source-pixel tiles (+X east, +Y south). Northwest is (0, 0);
+    /// the southeast bound is exclusive. Border/connection halo is excluded.
+    /// None preserves legacy/unknown evidence; never infer bounds from grid_size.
+    /// Consumers must include this value in built-terrain cache compatibility.
+    pub source_map_size_core_tiles: Option<UVec2>,
     /// Changes whenever the visible tile sources or their live art change.
     pub terrain_revision: u64,
     /// Map tile coordinate of the grid northwest corner; independent of camera interpolation.
@@ -155,6 +180,12 @@ impl VisualWorldFrame {
 
         if self.map_id.is_empty() {
             return Err(VisualWorldFrameError::EmptyMapId);
+        }
+        if self
+            .source_map_size_core_tiles
+            .is_some_and(|size| size.x == 0 || size.y == 0)
+        {
+            return Err(VisualWorldFrameError::InvalidSourceMapSize);
         }
         if self.map_texture == Handle::<Image>::default() {
             return Err(VisualWorldFrameError::MissingMapTexture);
@@ -235,6 +266,11 @@ impl VisualWorldFrame {
             if !is_positive_finite(actor.size) {
                 return Err(VisualWorldFrameError::InvalidActorSize(actor.id));
             }
+            if actor.facing.is_some_and(|direction| {
+                !direction.is_finite() || direction.length_squared() < 0.0001
+            }) {
+                return Err(VisualWorldFrameError::InvalidActorFacing(actor.id));
+            }
             if !actor_ids.insert(actor.id) {
                 return Err(VisualWorldFrameError::DuplicateActor(actor.id));
             }
@@ -252,6 +288,7 @@ fn is_positive_finite(value: Vec2) -> bool {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VisualWorldFrameError {
     EmptyMapId,
+    InvalidSourceMapSize,
     MissingMapTexture,
     NonFiniteCenter,
     InvalidViewportSize,
@@ -288,6 +325,7 @@ pub enum VisualWorldFrameError {
     MissingActorTexture(VisualActorId),
     NonFiniteActorCenter(VisualActorId),
     InvalidActorSize(VisualActorId),
+    InvalidActorFacing(VisualActorId),
     DuplicateActor(VisualActorId),
 }
 
@@ -309,6 +347,7 @@ mod tests {
                 tile_index,
             },
             texture: Handle::weak_from_u128(100 + u128::from(tile_index)),
+            animation_frames: None,
             priority: false,
         }
     }
@@ -317,6 +356,7 @@ mod tests {
         VisualWorldFrame {
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_map_size_core_tiles: None,
             terrain_revision: 7,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::weak_from_u128(1),
@@ -339,6 +379,7 @@ mod tests {
                 size: Vec2::splat(16.0),
                 flip_x: false,
                 above_priority: false,
+                facing: None,
             }],
         }
     }
@@ -349,6 +390,7 @@ mod tests {
 
         assert!(!frame.active);
         assert!(frame.map_id.is_empty());
+        assert_eq!(frame.source_map_size_core_tiles, None);
         assert_eq!(frame.terrain_revision, 0);
         assert_eq!(frame.map_texture, Handle::<Image>::default());
         assert!(frame.tiles.is_empty());
@@ -480,12 +522,29 @@ mod tests {
             size: Vec2::splat(16.0),
             flip_x: true,
             above_priority: true,
+            facing: None,
         });
 
         assert_eq!(
             frame.validate(),
             Err(VisualWorldFrameError::DuplicateActor(VisualActorId::Player))
         );
+    }
+
+    #[test]
+    fn active_frame_rejects_invalid_model_facing() {
+        let mut frame = active_frame();
+        for facing in [Vec2::ZERO, Vec2::new(f32::NAN, 0.0)] {
+            frame.actors[0].facing = Some(facing);
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidActorFacing(
+                    VisualActorId::Player
+                ))
+            );
+        }
+        frame.actors[0].facing = Some(Vec2::NEG_Y);
+        assert_eq!(frame.validate(), Ok(()));
     }
 
     #[test]
@@ -512,6 +571,7 @@ mod tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: true,
+            facing: None,
         };
         frame.actors.push(grass_rustle.clone());
 
@@ -524,6 +584,52 @@ mod tests {
                 VisualActorId::Effect(VisualEffectId::GrassRustle)
             ))
         );
+    }
+
+    #[test]
+    fn source_map_extent_is_optional_positive_and_independent_of_rendered_halo() {
+        let mut frame = active_frame();
+        assert_eq!(frame.source_map_size_core_tiles, None);
+        assert!(
+            frame.validate().is_ok(),
+            "legacy unknown bounds remain valid"
+        );
+        frame.source_map_size_core_tiles = Some(UVec2::ONE);
+        frame.grid_origin = bevy::prelude::IVec2::new(-4, -4);
+        assert!(
+            frame.validate().is_ok(),
+            "rendered halo may lie outside actual map bounds"
+        );
+        for size in [UVec2::ZERO, UVec2::new(1, 0), UVec2::new(0, 1)] {
+            frame.source_map_size_core_tiles = Some(size);
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidSourceMapSize)
+            );
+        }
+    }
+
+    #[test]
+    fn battle_terrain_correspondence_rejects_missing_or_different_source_extent() {
+        let mut frame = active_frame();
+        frame.source_map_size_core_tiles = Some(UVec2::new(30, 18));
+        let evidence = VisualBattleTerrainEvidence {
+            map_id: frame.map_id.clone(),
+            source_map_size_core_tiles: frame.source_map_size_core_tiles,
+            terrain_revision: frame.terrain_revision,
+            grid_origin: frame.grid_origin,
+            grid_size: frame.grid_size,
+            center: frame.center,
+            viewport_size: frame.viewport_size,
+            tile_size: frame.tile_size,
+            map_texture: frame.map_texture.clone(),
+            tiles: frame.tiles.clone().into(),
+        };
+        assert!(evidence.matches_built_frame(&frame));
+        frame.source_map_size_core_tiles = Some(UVec2::new(30, 20));
+        assert!(!evidence.matches_built_frame(&frame));
+        frame.source_map_size_core_tiles = None;
+        assert!(!evidence.matches_built_frame(&frame));
     }
 
     #[derive(Resource, Default)]

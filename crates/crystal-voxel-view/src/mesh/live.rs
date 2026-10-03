@@ -3,10 +3,10 @@ use super::*;
 use crate::live_profiles::{Document, Mask, Object, Part};
 
 pub(super) struct Placement<'a> {
-    object: &'a Object,
-    column: usize,
-    row: usize,
-    ground: usize,
+    pub(super) object: &'a Object,
+    pub(super) column: usize,
+    pub(super) row: usize,
+    pub(super) ground: usize,
 }
 
 impl Placement<'_> {
@@ -32,11 +32,16 @@ pub(super) fn resolve<'a>(
     let mut claimed = vec![false; cells.len()];
     for object in &document.objects {
         if object.map.as_deref().is_some_and(|id| id != map)
-            || object.maps.as_ref().is_some_and(|ids| !ids.iter().any(|id| id == map))
+            || object
+                .maps
+                .as_ref()
+                .is_some_and(|ids| !ids.iter().any(|id| id == map))
         {
             continue;
         }
-        let tracing = trace.as_ref().is_some_and(|filter| object.name.contains(filter));
+        let tracing = trace
+            .as_ref()
+            .is_some_and(|filter| object.name.contains(filter));
         let before = placements.len();
         let Some(ground) = cells.iter().position(|tile| {
             tile.source.tileset_id.as_ref() == object.tileset
@@ -47,14 +52,20 @@ pub(super) fn resolve<'a>(
                 )
         }) else {
             if tracing {
-                eprintln!("profile placement: map={map} name={:?} skipped=no-flat-water-ground tile={}", object.name, object.ground);
+                eprintln!(
+                    "profile placement: map={map} name={:?} skipped=no-flat-water-ground tile={}",
+                    object.name, object.ground
+                );
             }
             continue;
         };
         let (w, h) = (object.tiles[0].len(), object.tiles.len());
         if w > width || h > height {
             if tracing {
-                eprintln!("profile placement: map={map} name={:?} skipped=drawing-larger-than-grid", object.name);
+                eprintln!(
+                    "profile placement: map={map} name={:?} skipped=drawing-larger-than-grid",
+                    object.name
+                );
             }
             continue;
         }
@@ -93,7 +104,11 @@ pub(super) fn resolve<'a>(
             }
         }
         if tracing {
-            eprintln!("profile placement: map={map} name={:?} matches={} ground-cell={ground}", object.name, placements.len() - before);
+            eprintln!(
+                "profile placement: map={map} name={:?} matches={} ground-cell={ground}",
+                object.name,
+                placements.len() - before
+            );
         }
     }
     placements

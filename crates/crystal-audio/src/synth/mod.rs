@@ -177,13 +177,36 @@ struct Renderer<'a> {
     primary: u8,
     sample_remainder: usize,
     perfect_pitch: bool,
+    timing_only: bool,
     volume: BTreeMap<usize, [i32; 2]>,
     loops: BTreeMap<u8, (usize, usize)>,
     frames: BTreeMap<u8, usize>,
     samples: BTreeMap<u8, usize>,
     channels: BTreeMap<u8, Vec<Segment>>,
 }
-pub fn render(program: &Program, context: SynthContext) -> Result<Rendered> {
+/// Original channel busy clocks before PCM synchronization/tail padding.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SourceChannelTiming {
+    pub channel_frames: BTreeMap<u8, usize>,
+    pub looping_channels: Vec<u8>,
+}
+
+/// Use the existing command/control-flow and note-duration interpreter without
+/// generating PCM. Unsupported commands remain errors; infinite loops remain
+/// explicit and cannot be mistaken for finite WaitSFX completion.
+pub fn source_channel_timing(program: &Program) -> Result<SourceChannelTiming> {
+    let renderer = interpret(program, SynthContext::cartridge()?, true)?;
+    Ok(SourceChannelTiming {
+        channel_frames: renderer.frames,
+        looping_channels: renderer.loops.into_keys().collect(),
+    })
+}
+
+fn interpret<'a>(
+    program: &'a Program,
+    context: SynthContext,
+    timing_only: bool,
+) -> Result<Renderer<'a>> {
     ensure!(
         program.profile == "pokecrystal-midi-v1",
         "unsupported audio program profile"
@@ -210,6 +233,7 @@ pub fn render(program: &Program, context: SynthContext) -> Result<Rendered> {
         primary,
         sample_remainder: 0,
         perfect_pitch: false,
+        timing_only,
         volume: BTreeMap::from([(0, [7, 7])]),
         loops: BTreeMap::new(),
         frames: BTreeMap::new(),
@@ -236,6 +260,11 @@ pub fn render(program: &Program, context: SynthContext) -> Result<Rendered> {
         let out = r.channel(number, &stream)?;
         r.channels.insert(number, out);
     }
+    Ok(r)
+}
+
+pub fn render(program: &Program, context: SynthContext) -> Result<Rendered> {
+    let mut r = interpret(program, context, false)?;
     let nonzero = r
         .channels
         .iter()
@@ -329,4 +358,89 @@ fn pitch(name: &str, s: &State) -> Result<i32> {
 }
 fn frequency(reg: i32, wave: bool) -> f64 {
     (if wave { 65536.0 } else { 131072.0 }) / (2048 - reg.clamp(0, 2047)) as f64
+}
+
+#[cfg(test)]
+mod source_timing_tests {
+    use super::*;
+
+    fn fixture(loop_count: &str) -> Program {
+        let command = |name: &str, args: &[&str]| AudioCommand {
+            command: name.into(),
+            args: args.iter().map(|arg| (*arg).into()).collect(),
+        };
+        Program {
+            profile: "pokecrystal-midi-v1".into(),
+            cry_pitch: None,
+            cry_length: None,
+            music_data: MusicData {
+                channel_count: 2,
+                channels: BTreeMap::from([
+                    (
+                        "Counter5".into(),
+                        AudioSource {
+                            number: Some(5),
+                            commands: vec![
+                                command("label", &["Counter5"]),
+                                command("square_note", &["0", "8", "0", "1024"]),
+                                command("square_note", &["2", "8", "0", "1024"]),
+                                command("sound_loop", &[loop_count, "Counter5"]),
+                                command("sound_ret", &[]),
+                            ],
+                        },
+                    ),
+                    (
+                        "Counter6".into(),
+                        AudioSource {
+                            number: Some(6),
+                            commands: vec![
+                                command("square_note", &["8", "8", "0", "1024"]),
+                                command("sound_ret", &[]),
+                            ],
+                        },
+                    ),
+                ]),
+                subroutines: BTreeMap::new(),
+                shared_sources: BTreeMap::new(),
+            },
+        }
+    }
+
+    #[test]
+    fn source_busy_frames_match_existing_interpreter_before_pcm_padding() {
+        let program = fixture("3");
+        let timing = source_channel_timing(&program).unwrap();
+        let pcm_interpreter =
+            interpret(&program, SynthContext::cartridge().unwrap(), false).unwrap();
+        assert_eq!(timing.channel_frames, pcm_interpreter.frames);
+        assert_eq!(timing.channel_frames, BTreeMap::from([(5, 12), (6, 9)]));
+        assert!(timing.looping_channels.is_empty());
+        let padded = render(&program, SynthContext::cartridge().unwrap()).unwrap();
+        assert_eq!(padded.channel_frames, BTreeMap::from([(5, 12), (6, 12)]));
+    }
+
+    #[test]
+    fn source_timing_keeps_infinite_loops_explicit_and_rejects_unknown_commands() {
+        assert_eq!(
+            source_channel_timing(&fixture("0"))
+                .unwrap()
+                .looping_channels,
+            [5]
+        );
+        let mut invalid = fixture("3");
+        invalid
+            .music_data
+            .channels
+            .get_mut("Counter5")
+            .unwrap()
+            .commands
+            .insert(
+                0,
+                AudioCommand {
+                    command: "unreviewed_clock_change".into(),
+                    args: vec![],
+                },
+            );
+        assert!(source_channel_timing(&invalid).is_err());
+    }
 }

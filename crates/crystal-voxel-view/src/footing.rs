@@ -108,6 +108,7 @@ mod tests {
         VisualWorldFrame {
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_map_size_core_tiles: None,
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::weak_from_u128(1),
@@ -117,6 +118,7 @@ mod tests {
             grid_size: UVec2::new(2, 1),
             tiles: vec![
                 VisualTile {
+                    animation_frames: None,
                     column: 1,
                     row: 0,
                     source: source(0x54, 0),
@@ -124,6 +126,7 @@ mod tests {
                     priority: true,
                 },
                 VisualTile {
+                    animation_frames: None,
                     column: 0,
                     row: 0,
                     source: source(0x01, 0),
@@ -145,6 +148,7 @@ mod tests {
             size: Vec2::new(8.0, 16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         assert_eq!(actor_foot(&actor), Vec2::new(10.0, 12.0));
     }
@@ -183,6 +187,7 @@ mod tests {
         frame.grid_size = UVec2::new(1, 2);
         frame.tiles = vec![
             VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 0,
                 source: source(0x16, 3),
@@ -190,6 +195,7 @@ mod tests {
                 priority: true,
             },
             VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 1,
                 source: source(0x01, 0),

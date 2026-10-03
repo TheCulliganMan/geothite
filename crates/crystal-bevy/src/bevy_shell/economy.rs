@@ -900,12 +900,7 @@ fn use_visible_field_bag_item_by_id(
             ),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        present_visible_fishing_cast(
-            runtime_shell,
-            &scene,
-            item_use.cast.bite,
-            item_use.cast.wild_battle.is_some(),
-        )?;
+        present_visible_fishing_cast(runtime_shell, &scene, &item_use.cast)?;
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "bicycle", &item_id) {
@@ -1003,6 +998,7 @@ fn use_visible_field_bag_item_by_id(
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "squirtbottle", &item_id) {
+        runtime_shell.battle_origin.static_candidate = None;
         let item_use = match runtime_shell.shell.use_bag_squirtbottle_in_field(&item_id) {
             Ok(item_use) => item_use,
             Err(error) if party_field_move_error_is_play_refusal(&error) => {
@@ -1030,8 +1026,12 @@ fn use_visible_field_bag_item_by_id(
                 item_use.target_object_identifier
             ),
         );
+        stage_visible_squirtbottle_candidate(runtime_shell, &snapshot, &item_use);
         close_visible_field_pack_without_log(runtime_shell);
-        consume_visible_dispatched_field_script(runtime_shell)?;
+        if let Err(error) = consume_visible_dispatched_field_script(runtime_shell) {
+            runtime_shell.battle_origin.static_candidate = None;
+            return Err(error);
+        }
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "card_key", &item_id)
@@ -1298,6 +1298,7 @@ fn handle_visible_field_action_refusal(
     status: impl Into<String>,
     error: anyhow::Error,
 ) -> Result<()> {
+    runtime_shell.battle_origin.static_candidate = None;
     let status = status.into();
     runtime_shell
         .last_audio_events

@@ -76,6 +76,7 @@ mod tests {
 
     fn tile(tileset: &str, metatile_id: u16) -> VisualTile {
         VisualTile {
+            animation_frames: None,
             column: 0,
             row: 0,
             source: VisualTileSource {

@@ -8,6 +8,7 @@ pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 
 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
     if built.map_id != live.map_id
+        || built.source_map_size_core_tiles != live.source_map_size_core_tiles
         || built.grid_size != live.grid_size
         || built.tile_size != live.tile_size
         || built.viewport_size != live.viewport_size
@@ -145,6 +146,7 @@ mod tests {
             for x in 0..width {
                 let id = ((origin.y + y as i32) * 100 + origin.x + x as i32 + 10000) as u16;
                 frame.tiles.push(VisualTile {
+                    animation_frames: None,
                     column: x,
                     row: y,
                     source: VisualTileSource {
@@ -176,6 +178,9 @@ mod tests {
         changed = frame(IVec2::new(2, 0));
         changed.map_id = "other".into();
         assert!(!can_reuse(&built, &changed));
+        changed = frame(IVec2::new(2, 0));
+        changed.source_map_size_core_tiles = Some(UVec2::splat(20));
+        assert!(!can_reuse(&built, &changed), "changed source acreage requires a new partition");
     }
     #[test]
     fn flower_animation_does_not_rebuild_static_terrain() {
