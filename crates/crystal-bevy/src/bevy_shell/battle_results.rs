@@ -6221,6 +6221,8 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     if !runtime_shell.battle_messages.is_empty() {
         return;
     }
+    // Terminal narration keeps the same origin until its actual visible exit.
+    runtime_shell.battle_origin.clear();
     runtime_shell.battle_trainer_result = None;
     runtime_shell.party_move_cursor = None;
     runtime_shell.last_battle_cry_key = None;

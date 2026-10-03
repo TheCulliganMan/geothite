@@ -5111,6 +5111,7 @@ fn advance_visible_pc_item_move_sequence(runtime_shell: &mut BevyRuntimeShell) -
 
 // Presentation belongs to one battle/session and must not survive loading a save.
 fn reset_visible_battle_presentation(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.battle_origin.clear();
     runtime_shell.victory_music_after_messages = None;
     runtime_shell.visible_catch_tutorial = None;
     runtime_shell.visible_battle_transition = None;

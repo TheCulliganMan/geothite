@@ -3484,12 +3484,7 @@ fn use_visible_fishing_rod(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         ),
     );
     close_visible_field_pack_without_log(runtime_shell);
-    present_visible_fishing_cast(
-        runtime_shell,
-        &scene,
-        item_use.cast.bite,
-        item_use.cast.wild_battle.is_some(),
-    )?;
+    present_visible_fishing_cast(runtime_shell, &scene, &item_use.cast)?;
     Ok(())
 }
 
@@ -3511,9 +3506,23 @@ fn visible_fishing_cant_cast_text() -> String {
 fn present_visible_fishing_cast(
     runtime_shell: &mut BevyRuntimeShell,
     scene: &RuntimeShellSnapshot,
-    bite: Option<bool>,
-    starts_battle: bool,
+    cast: &crate::RuntimeFishingCast,
 ) -> Result<()> {
+    // Both Pack USE and the registered-item shortcut reach this helper. Freeze
+    // the exact validated water contact before presentation advances the clock.
+    if let Some(battle) = cast.wild_battle.as_ref() {
+        stage_visible_battle_origin(
+            runtime_shell,
+            &scene.overworld,
+            BattleOriginKind::Wild,
+            &battle.battle_type,
+            Some(BattleOriginContact::FishingWaterTarget {
+                map_id: scene.overworld.map_name.clone(),
+                tile: cast.checked_water_target,
+            }),
+            None,
+        );
+    }
     retain_visible_field_notice_scene(runtime_shell, scene);
     runtime_shell.field_notice_queue.clear();
     runtime_shell.field_notice = None;
@@ -3522,8 +3531,8 @@ fn present_visible_fishing_cast(
         phase: VisibleFishingPhase::Cast,
         frame: 0,
         facing_up: scene.overworld.facing == Direction::Up,
-        bite: bite == Some(true),
-        starts_battle,
+        bite: cast.bite == Some(true),
+        starts_battle: cast.wild_battle.is_some(),
     });
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())

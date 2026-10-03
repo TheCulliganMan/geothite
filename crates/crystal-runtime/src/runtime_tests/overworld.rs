@@ -5128,9 +5128,16 @@ fn runtime_casts_fishing_rod_from_current_map_compiled_group() {
     assert_eq!(session.state, before_bad_rod_state);
     assert_eq!(session.overworld.snapshot(), before_bad_rod_snapshot);
 
+    let source = session.overworld.snapshot();
+    let checked_target = crystal_core::world::movement::checked_move_by_stride(
+        source.tile, source.facing,
+        crystal_core::world::movement::StepOptions::default().stride_tiles,
+    ).expect("checked facing target");
     let cast = session
         .cast_fishing_rod(&runtime, ROD_GOOD)
         .expect("cast good rod");
+    assert_eq!(cast.checked_water_target, checked_target);
+    assert_ne!(cast.checked_water_target, source.tile);
 
     assert_eq!(cast.session.group.as_deref(), Some("FISHGROUP_RUNTIME"));
     assert_eq!(cast.bite, Some(true));
@@ -5140,6 +5147,7 @@ fn runtime_casts_fishing_rod_from_current_map_compiled_group() {
     assert_eq!(battle.enemy_pokemon.species.id, "CHIKORITA");
     assert_eq!(battle.enemy_pokemon.level, 9);
     assert_eq!(battle.encounter.surface, EncounterSurface::Water);
+    assert_eq!(battle.encounter.tile, source.tile, "core catch coordinates stay on shore");
     assert_eq!(session.state.battle, BattleMemory::from(&battle));
     assert!(session.state.pokedex.has_seen("CHIKORITA"));
     assert_eq!(session.state.battle_active_party_index, Some(0));
@@ -5202,9 +5210,10 @@ fn runtime_fishing_records_and_atomically_replays_the_exact_divider_trace() {
     let replay_base = shell.session().clone();
     let before = shell.session().state().clone();
 
-    shell
+    let cast = shell
         .cast_fishing_rod(ROD_GOOD)
         .expect("stage exact fishing cast");
+    assert_ne!(cast.checked_water_target, cast.wild_battle.as_ref().unwrap().encounter.tile);
 
     let frame = shell.retained_runtime_commands()[0].clone();
     let command = crystal_assets::decode_runtime_mutation_command_frame(&frame, &before)
@@ -5215,10 +5224,24 @@ fn runtime_fishing_records_and_atomically_replays_the_exact_divider_trace() {
     assert_eq!(recorded.divider_trace.samples, vec![0; 10]);
 
     let mut replayed = replay_base.clone();
-    replayed
+    let mutation = replayed
         .apply_runtime_command_frame(&runtime, &frame)
         .expect("replay exact fishing trace");
     assert_eq!(replayed.state, shell.session().state);
+    assert_eq!(replayed.state.random_state, shell.session().state.random_state);
+    let journal_result = replayed.runtime_mutation_result_frame(frame.clone(), &mutation)
+        .expect("journal result");
+    let mut presentation_only_change = mutation.clone();
+    let RuntimeMutationResult::FishingRodCast(ref mut result) = presentation_only_change.result else {
+        panic!("expected fishing result");
+    };
+    result.checked_water_target = TilePosition { x: 999, y: 999 };
+    assert_eq!(
+        replayed.runtime_mutation_result_frame(frame.clone(), &presentation_only_change)
+            .expect("journal ignores presentation metadata"),
+        journal_result,
+        "checked water provenance must not change journal tags, payloads or checksums",
+    );
 
     for (samples, message) in [
         (vec![0; 9], "divider replay exhausted after 9 samples"),

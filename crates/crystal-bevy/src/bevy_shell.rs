@@ -680,6 +680,12 @@ impl VisibleShellController {
         Ok(snapshot)
     }
 
+    /// Frozen presentation provenance for the pending or displayed battle.
+    /// Reading this never advances gameplay, RNG or visual interpolation.
+    pub fn battle_presentation_origin(&self) -> Option<&BattlePresentationOrigin> {
+        self.shell.battle_origin.published().map(Arc::as_ref)
+    }
+
     pub fn presentation_snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
         self.snapshot()
     }
@@ -1132,6 +1138,7 @@ struct BevyRuntimeShell {
     visible_magnet_train: Option<VisibleMagnetTrain>,
     visible_unown_words: Option<String>,
     visible_diploma: Option<u8>,
+    battle_origin: VisibleBattleOriginState,
     visible_battle_transition: Option<VisibleBattleTransition>,
     visible_battle_sliding_intro: Option<u8>,
     visible_catch_tutorial: Option<VisibleCatchTutorial>,
@@ -5753,6 +5760,7 @@ pub fn run_bevy_shell(
         .insert_resource(native_rtc_source)
         .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
         .insert_resource(VisibleSequenceTickClock::realtime())
+        .insert_resource(BattlePresentationOriginFrame::default())
         .insert_resource(RenderedViewport::default())
         .insert_resource(RenderedTilesetArt::default())
         .insert_resource(HudMode::Status)
@@ -5837,6 +5845,13 @@ pub fn run_bevy_shell(
             queue_battle_intro_cry.after(sync_runtime_current_music),
         )
         .add_systems(Update, play_pending_audio.after(queue_battle_intro_cry))
+        .add_systems(
+            Update,
+            publish_visible_battle_origin
+                .after(play_pending_audio)
+                .after(tick_visible_screen_fade)
+                .before(render_playfield),
+        )
         .add_systems(
             Update,
             render_playfield
@@ -7249,6 +7264,9 @@ fn apply_visible_shell_smoke_frame(
     } else {
         Some(runtime_shell.shell.tick(overworld_buttons)?.clone())
     };
+    if let Some(frame) = frame.as_ref() {
+        capture_visible_wild_battle_origin(runtime_shell, frame);
+    }
     if frame
         .as_ref()
         .and_then(|frame| frame.interaction.as_ref())
@@ -8136,6 +8154,7 @@ fn initialize_bevy_runtime_shell(
         visible_magnet_train: None,
         visible_unown_words: None,
         visible_diploma: None,
+        battle_origin: VisibleBattleOriginState::default(),
         visible_battle_transition: None,
         visible_battle_sliding_intro: None,
         visible_catch_tutorial: None,
@@ -8377,6 +8396,7 @@ include!("bevy_shell/economy.rs");
 include!("bevy_shell/battle_sound.rs");
 include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
+include!("bevy_shell/battle_origin.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
 #[cfg(feature = "voxel-view")]

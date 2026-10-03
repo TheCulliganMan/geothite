@@ -99,6 +99,7 @@ impl GameDataSet {
         next_state.random_state = rng.state();
         *state = next_state;
         Ok(FishingCastOutcome {
+            checked_water_target: target,
             session: fishing_session,
             bite,
             wild_battle,

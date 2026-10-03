@@ -900,12 +900,7 @@ fn use_visible_field_bag_item_by_id(
             ),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        present_visible_fishing_cast(
-            runtime_shell,
-            &scene,
-            item_use.cast.bite,
-            item_use.cast.wild_battle.is_some(),
-        )?;
+        present_visible_fishing_cast(runtime_shell, &scene, &item_use.cast)?;
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "bicycle", &item_id) {

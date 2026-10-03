@@ -3109,6 +3109,7 @@ impl RuntimeOverworldSession {
             anyhow::bail!("runtime mutation returned non-fishing-cast result");
         };
         Ok(RuntimeFishingCast {
+            checked_water_target: outcome.checked_water_target,
             session: outcome.session,
             bite: outcome.bite,
             wild_battle: outcome.wild_battle,
@@ -3130,6 +3131,7 @@ impl RuntimeOverworldSession {
             item_use: outcome.item_use,
             rod: outcome.rod,
             cast: RuntimeFishingCast {
+                checked_water_target: outcome.cast.checked_water_target,
                 session: outcome.cast.session,
                 bite: outcome.cast.bite,
                 wild_battle: outcome.cast.wild_battle,

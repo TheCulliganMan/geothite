@@ -3916,6 +3916,9 @@ pub struct RuntimeTrainerBattleAdvance {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeFishingCast {
+    /// Source-validated water contact; distinct from the core's shore catch tile.
+    /// This result is transient and is not part of a save or replay schema.
+    pub checked_water_target: TilePosition,
     pub session: FishingSession,
     pub bite: Option<bool>,
     pub wild_battle: Option<WildBattleStart>,

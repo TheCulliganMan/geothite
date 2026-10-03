@@ -2415,6 +2415,7 @@ fn apply_keyboard_input(
                 && !shell_consumes_a
                 && frame.interaction.is_none()
                 && frame.wild_battle.is_none();
+            capture_visible_wild_battle_origin(&mut runtime_shell, &frame);
             execute_wild_battle_boundary = frame.wild_battle.is_some();
             visible_step_event = frame.step_events.clone().filter(|events| {
                 events.repel_expired.is_some()

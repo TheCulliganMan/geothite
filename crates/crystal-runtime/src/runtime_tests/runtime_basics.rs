@@ -1589,9 +1589,10 @@ fn populate_minimal_runtime_presence_catalogs(data: &mut GameDataSet) {
                 {"command":"def_object_events","args":[]}
             ])
         });
+    // Compiled map payloads encode bytes; this fixture contains two zero blocks.
     data.map_blocks
         .entry("RuntimeMap_Blocks".to_string())
-        .or_insert_with(|| "00 00".to_string());
+        .or_insert_with(|| "AAA=".to_string());
     data.npcs
         .entry("RuntimeMap".to_string())
         .or_insert_with(|| serde_json::json!({ "objects": ["RuntimeNpc"] }));

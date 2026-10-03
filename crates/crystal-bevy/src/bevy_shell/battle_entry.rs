@@ -12,15 +12,20 @@ fn prepare_visible_battle_entry_with_music_reset(
     runtime_shell: &mut BevyRuntimeShell,
     reset_music: bool,
 ) -> Result<()> {
-    reset_visible_battle_presentation(runtime_shell);
-    if reset_music {
-        reset_visible_music_state(runtime_shell);
-    }
+    // Validate first. A failed entry must not erase a retained terminal scene.
     let snapshot = runtime_shell.shell.snapshot()?;
     let battle = snapshot
         .battle
         .as_ref()
         .context("battle entry requires an active battle snapshot")?;
+    // A wild step or checked fishing cast may have committed before its visible
+    // landing/notice. Adopt that exact source, and preserve it on repeated entry.
+    let origin = take_visible_battle_origin_for_entry(runtime_shell, &snapshot, battle);
+    reset_visible_battle_presentation(runtime_shell);
+    runtime_shell.battle_origin.active = Some(origin);
+    if reset_music {
+        reset_visible_music_state(runtime_shell);
+    }
     runtime_shell.battle_enemy_hp_at_player_send_out = Some(battle.enemy_pokemon.hp);
     let active_player = battle
         .active_player_party_index
