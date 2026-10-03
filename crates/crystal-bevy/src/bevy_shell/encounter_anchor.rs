@@ -224,6 +224,8 @@ fn freeze_visible_static_encounter_anchors(
         return;
     };
     if frame.map_id.as_ref() != candidate.source.map_name
+        || frame.source_map_size_core_tiles != candidate.map_size
+        || frame.source_map_size_core_tiles != rendered.source_map_size_core_tiles
         || rendered.map_name.as_deref() != Some(candidate.source.map_name.as_str())
         || rendered.tile != Some(candidate.source.tile)
         || rendered.player_sprite_facing != Some(candidate.source.facing)
@@ -314,6 +316,7 @@ fn freeze_visible_static_encounter_anchors(
     candidate.anchors = Some(Arc::new(VisualBattleAnchorFrame {
         terrain: VisualBattleTerrainEvidence {
             map_id: frame.map_id.clone(),
+            source_map_size_core_tiles: frame.source_map_size_core_tiles,
             terrain_revision: frame.terrain_revision,
             grid_origin: frame.grid_origin,
             grid_size: frame.grid_size,

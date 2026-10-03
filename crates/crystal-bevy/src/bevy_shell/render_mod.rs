@@ -318,6 +318,7 @@ fn publish_visual_world_frame(
 
     let terrain_unchanged = published.active
         && published.map_id.as_ref() == map_id
+        && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
         && published.terrain_revision == terrain_revision
         && published.map_texture == published_map_texture
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
@@ -338,6 +339,7 @@ fn publish_visual_world_frame(
     let next = crystal_render_api::VisualWorldFrame {
         active: true,
         map_id: Arc::from(map_id),
+        source_map_size_core_tiles: rendered.source_map_size_core_tiles,
         terrain_revision,
         grid_origin: {
             let (x, y) = rendered

@@ -1,5 +1,5 @@
 //! Disposable native battle preview using the real production controller.
-//! Starts at battle commands after the controller completes the normal intro.
+//! Starts at battle commands, or at a real Route36 field interaction for scenery QA.
 use anyhow::{Context, Result};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_bevy::{BevyShellConfig, BevyShellStart};
@@ -21,6 +21,7 @@ fn main() -> Result<()> {
     let mut seconds = 20;
     let mut live = false;
     let mut enabled = true;
+    let mut route36_encounter = false;
     let mut shadow_ball = false;
     let mut psychic = false;
     let mut hyper_beam = false;
@@ -38,6 +39,7 @@ fn main() -> Result<()> {
             "--record-on-move" => record_on_move = true,
             "--record-on-capture" => record_on_capture = true,
             "--classic" => enabled = false,
+            "--route36-encounter" => route36_encounter = true,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
@@ -46,9 +48,14 @@ fn main() -> Result<()> {
             "--pidgeotto" => pidgeotto = true,
             "--enemy-gust" => enemy_gust = true,
             "--starter" => {
-                let name = args.next().context("--starter cyndaquil|totodile")?.to_ascii_uppercase();
-                anyhow::ensure!(matches!(name.as_str(), "CYNDAQUIL" | "TOTODILE"),
-                    "--starter expects cyndaquil or totodile");
+                let name = args
+                    .next()
+                    .context("--starter cyndaquil|totodile")?
+                    .to_ascii_uppercase();
+                anyhow::ensure!(
+                    matches!(name.as_str(), "CYNDAQUIL" | "TOTODILE"),
+                    "--starter expects cyndaquil or totodile"
+                );
                 starter = Some(name);
             }
             "--poke-ball-failure" => poke_ball_failure = true,
@@ -74,6 +81,7 @@ fn main() -> Result<()> {
     }
     anyhow::ensure!(
         [
+            route36_encounter,
             shadow_ball,
             psychic,
             hyper_beam,
@@ -87,7 +95,7 @@ fn main() -> Result<()> {
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one of --route36-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
@@ -124,7 +132,9 @@ fn main() -> Result<()> {
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
-    let (map_name, tile_x, tile_y) = if size_comparison || enemy_gust {
+    let (map_name, tile_x, tile_y) = if route36_encounter {
+        ("Route36", 35, 10)
+    } else if size_comparison || enemy_gust {
         let map_name = if enemy_gust { "Route44" } else { "UnionCave1F" };
         let (width, height) = runtime
             .data()
@@ -167,11 +177,13 @@ fn main() -> Result<()> {
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
-            window_title: Some(
-                "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes"
-                    .into(),
-            ),
-            render_test_battle: true,
+            window_title: Some(if route36_encounter {
+                "Geothite | Route36 | Right Shift bottle / Z confirm / F3 view".into()
+            } else {
+                "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
+            }),
+            render_test_battle: !route36_encounter,
+            render_test_route36_encounter: route36_encounter,
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,

@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 type Completions = Arc<Mutex<Vec<Result<(), String>>>>;
 const MAX_READBACKS: usize = 8;
 const DEFAULT_CAPTURE_HZ: u32 = 30;
-const ARM_TIMEOUT_SECONDS: f64 = 180.0;
+const DEFAULT_ARM_TIMEOUT_SECONDS: u32 = 180;
 const CAPTURE_TIME_EPSILON: f64 = 1.0e-9;
 
 struct CaptureCadence {
@@ -56,6 +56,12 @@ fn requested_capture_hz(value: Option<&str>) -> Result<u32> {
     }
 }
 
+fn requested_arm_timeout(value: Option<&str>) -> Result<f64> {
+    let seconds = value.map_or(Ok(DEFAULT_ARM_TIMEOUT_SECONDS), str::parse::<u32>)?;
+    anyhow::ensure!((30..=900).contains(&seconds), "CRYSTAL_CAPTURE_ARM_SECONDS must be 30–900");
+    Ok(f64::from(seconds))
+}
+
 #[derive(Resource)]
 struct Recording {
     directory: PathBuf,
@@ -64,6 +70,7 @@ struct Recording {
     on_move: bool,
     on_capture: bool,
     armed_at: Option<f64>,
+    arm_timeout_seconds: f64,
     trigger: String,
     start: Option<f64>,
     presented_battle_frames: u32,
@@ -92,6 +99,9 @@ pub(super) fn install(
     anyhow::ensure!(!(on_move && on_capture), "recording triggers are mutually exclusive");
     anyhow::ensure!(!on_capture || capture_images, "capture trigger requires image recording");
     let capture_hz = requested_capture_hz(std::env::var("CRYSTAL_CAPTURE_FPS").ok().as_deref())?;
+    let arm_timeout_seconds = requested_arm_timeout(
+        std::env::var("CRYSTAL_CAPTURE_ARM_SECONDS").ok().as_deref(),
+    )?;
     std::fs::create_dir_all(directory)?;
     anyhow::ensure!(
         std::fs::read_dir(directory)?.next().is_none(),
@@ -105,6 +115,7 @@ pub(super) fn install(
         on_move,
         on_capture,
         armed_at: None,
+        arm_timeout_seconds,
         trigger: String::new(),
         start: None,
         presented_battle_frames: 0,
@@ -206,9 +217,9 @@ fn record(
             battle_status.active_frames,
         );
         if !recording_start_ready(recording.on_move, recording.on_capture, world_ready, battle_ready, &battle_frame) {
-            if (recording.on_move || recording.on_capture) && now - armed_at >= ARM_TIMEOUT_SECONDS {
+            if (recording.on_move || recording.on_capture) && now - armed_at >= recording.arm_timeout_seconds {
                 eprintln!(
-                    "capture cancelled: no requested presented battle cue observed within {ARM_TIMEOUT_SECONDS}s"
+                    "capture cancelled: no requested presented battle cue observed within {}s", recording.arm_timeout_seconds
                 );
                 exit.send(AppExit::error());
             }
@@ -543,6 +554,15 @@ fn finish(recording: &Recording, elapsed: f64) -> std::io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn capture_arm_wait_has_a_fixed_default_and_bounded_operator_override() {
+        assert_eq!(requested_arm_timeout(None).unwrap(), 180.0);
+        assert_eq!(requested_arm_timeout(Some("600")).unwrap(), 600.0);
+        for invalid in ["0", "29", "901", "-1", "NaN", "inf", "1.5", ""] {
+            assert!(requested_arm_timeout(Some(invalid)).is_err());
+        }
+    }
     use crystal_render_api::{
         VisualBattleCue, VisualBattleCueKind, VisualBattleFrame, VisualBattleSide,
     };

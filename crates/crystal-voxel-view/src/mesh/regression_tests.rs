@@ -94,6 +94,7 @@ mod tests {
             // Generic mesher fixtures must not opt into a named map's
             // authored scenery/material override. Map-specific tests opt in.
             map_id: Arc::from("UnmodeledTestMap"),
+            source_map_size_core_tiles: None,
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::weak_from_u128(1),

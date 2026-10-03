@@ -108,6 +108,7 @@ mod tests {
         VisualWorldFrame {
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_map_size_core_tiles: None,
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::weak_from_u128(1),

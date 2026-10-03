@@ -4,6 +4,7 @@
 
 mod azalea_gym;
 mod battle_layout;
+mod encounter_terrain;
 mod battle_source_projection;
 pub use battle_source_projection::BattleSourceProjection;
 mod barn;
@@ -342,6 +343,7 @@ struct VoxelScene {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TerrainCacheKey {
     map_id: std::sync::Arc<str>,
+    source_map_size_core_tiles: Option<UVec2>,
     grid_origin: IVec2,
     revision: u64,
     profiles_revision: u64,
@@ -354,6 +356,7 @@ impl TerrainCacheKey {
     fn from_frame(frame: &VisualWorldFrame) -> Self {
         Self {
             map_id: frame.map_id.clone(),
+            source_map_size_core_tiles: frame.source_map_size_core_tiles,
             grid_origin: frame.grid_origin,
             revision: frame.terrain_revision,
             profiles_revision: 0,
@@ -370,6 +373,10 @@ impl TerrainCacheKey {
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
     built_frame: Option<VisualWorldFrame>,
+    // Original compositor handle at build submission; built_frame owns its atlas copy.
+    built_source_texture: Option<Handle<Image>>,
+    // Exact current bounds for the two mutable flower domains.
+    built_animated_bounds: [Option<bevy::render::primitives::Aabb>; 2],
     built_footing_heights: Vec<f32>,
     footing_origin: Option<IVec2>,
     key: Option<TerrainCacheKey>,
@@ -398,6 +405,7 @@ struct TerrainBuildQueue {
 struct TerrainBuildResult {
     key: TerrainCacheKey,
     frame: VisualWorldFrame,
+    source_texture: Handle<Image>,
     terrain: Result<BuiltTerrain, TerrainMeshError>,
 }
 
@@ -995,6 +1003,7 @@ fn sync_terrain(
     if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
         builds.started += 1;
         let mut build_frame = frame.clone();
+        let source_texture = frame.map_texture.clone();
         // The host overwrites its viewport image during every scroll. Own an
         // immutable copy for the lifetime of this mesh, including async work.
         let atlas = images
@@ -1040,8 +1049,17 @@ fn sync_terrain(
                 let footing_heights = terrain.footing_heights.clone();
                 let (textured, solid, fade_textured_groups, fade_solid_groups) =
                     occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
-                let textured_meshes = terrain_batches::prepare(textured, build_frame.tile_size);
-                let solid_meshes = terrain_batches::prepare(solid, build_frame.tile_size);
+                let source_bounds = authentic_mesh_bounds(&build_frame);
+                let textured_meshes = terrain_batches::prepare_with_authentic_bounds(
+                    textured,
+                    build_frame.tile_size,
+                    source_bounds,
+                );
+                let solid_meshes = terrain_batches::prepare_with_authentic_bounds(
+                    solid,
+                    build_frame.tile_size,
+                    source_bounds,
+                );
                 BuiltTerrain {
                     background,
                     instances,
@@ -1058,6 +1076,7 @@ fn sync_terrain(
             TerrainBuildResult {
                 key: build_key,
                 frame: build_frame,
+                source_texture,
                 terrain,
             }
         };
@@ -1103,6 +1122,7 @@ fn sync_terrain(
                 materials,
                 images,
             )?;
+            cache.built_source_texture = Some(completed.source_texture);
             if profile_changed {
                 println!(
                     "geometry profile mesh applied: revision {}",
@@ -1121,8 +1141,9 @@ fn sync_terrain(
                 if flowers_changed {
                     let (textured, solid) = mesh::build_animated_flowers(built, images)
                         .map_err(TerrainSyncError::Mesh)?;
-                    update_mesh_asset(meshes, &mut cache.animated_textured_mesh, textured);
-                    update_mesh_asset(meshes, &mut cache.animated_solid_mesh, solid);
+                    cache.built_animated_bounds = [textured.compute_aabb(), solid.compute_aabb()];
+                    update_mesh_asset(meshes, &mut cache.animated_textured_mesh, retain_animated_mesh_cpu(textured));
+                    update_mesh_asset(meshes, &mut cache.animated_solid_mesh, retain_animated_mesh_cpu(solid));
                 }
             }
         }
@@ -1186,17 +1207,20 @@ fn apply_built_terrain(
 ) -> Result<(), TerrainSyncError> {
     cache.footing_origin = None;
     cache.built_frame = Some(frame.clone());
+    cache.built_source_texture = Some(frame.map_texture.clone());
+    cache.built_animated_bounds = [terrain.animated_textured_mesh.compute_aabb(),
+        terrain.animated_solid_mesh.compute_aabb()];
     cache.built_footing_heights = terrain.footing_heights;
 
     let animated_textured = update_mesh_asset(
         meshes,
         &mut cache.animated_textured_mesh,
-        terrain.animated_textured_mesh,
+        retain_animated_mesh_cpu(terrain.animated_textured_mesh),
     );
     let animated_solid = update_mesh_asset(
         meshes,
         &mut cache.animated_solid_mesh,
-        terrain.animated_solid_mesh,
+        retain_animated_mesh_cpu(terrain.animated_solid_mesh),
     );
     let textured_material_handle = if let Some(handle) = cache.textured_material.as_ref() {
         sync_terrain_texture(materials, handle, &frame.map_texture)?;
@@ -1250,6 +1274,7 @@ fn apply_built_terrain(
                     ..default()
                 },
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
+                encounter_terrain::SyntheticTerrainApron,
             ))
             .id();
         commands.entity(root).add_child(child);
@@ -1352,7 +1377,11 @@ fn replace_static_terrain_batches(
             VoxelTerrain,
         ))
         .id();
-    for terrain_batches::PreparedBatch { mesh, bounds } in batches {
+    for terrain_batches::PreparedBatch {
+        mesh,
+        bounds,
+        authentic_domain,
+    } in batches {
         let mut child = commands.spawn((
             MaterialMeshBundle::<VoxelMaterial> {
                 mesh: meshes.add(mesh),
@@ -1361,6 +1390,7 @@ fn replace_static_terrain_batches(
                 ..default()
             },
             RenderLayers::layer(VOXEL_RENDER_LAYER),
+            authentic_domain,
         ));
         if let Some(bounds) = bounds {
             child.insert(bounds);
@@ -1389,6 +1419,13 @@ fn sync_terrain_texture(
             .base_color_texture = Some(texture.clone());
     }
     Ok(())
+}
+
+// Only the two mutable flower domains retain CPU data. A checked encounter
+// takes one exact private copy; all ordinary static terrain stays render-only.
+fn retain_animated_mesh_cpu(mut mesh: Mesh) -> Mesh {
+    mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::default();
+    mesh
 }
 
 fn update_mesh_asset(
@@ -1872,6 +1909,30 @@ fn terrain_transform(frame: &VisualWorldFrame) -> Transform {
     Transform::from_xyz(frame.center.x, 0.0, -frame.center.y)
 }
 
+/// The intersection of actual source acreage and the built grid, in the mesh's
+/// local X/Z coordinates. Screen center/camera movement cannot change it.
+fn authentic_mesh_bounds(frame: &VisualWorldFrame) -> Option<terrain_batches::AuthenticBounds> {
+    let source = frame.source_map_size_core_tiles?;
+    if source.min_element() == 0
+        || !frame.tile_size.is_finite()
+        || frame.tile_size.min_element() <= 0.0
+    {
+        return None;
+    }
+    let start = frame.grid_origin.as_vec2();
+    let size = frame.grid_size.as_vec2();
+    let lo = start.max(Vec2::ZERO);
+    let hi = (start + size).min(source.as_vec2() * 2.0);
+    if hi.cmple(lo).any() {
+        return None;
+    }
+    let origin = -size * frame.tile_size * 0.5;
+    let min = origin + (lo - start) * frame.tile_size;
+    let max = origin + (hi - start) * frame.tile_size;
+    (min.is_finite() && max.is_finite())
+        .then_some(terrain_batches::AuthenticBounds { min, max })
+}
+
 fn retained_terrain_transform(
     frame: &VisualWorldFrame,
     cache: &TerrainRevisionCache,
@@ -1931,6 +1992,32 @@ mod renderer_tests {
     use bevy::render::render_resource::{DepthBiasState, StencilState, TextureFormat};
 
     use super::*;
+
+    #[test]
+    fn authentic_source_bounds_use_core_tiles_and_ignore_camera_center() {
+        let mut frame = VisualWorldFrame {
+            source_map_size_core_tiles: Some(UVec2::new(4, 3)),
+            grid_origin: IVec2::new(-2, -3),
+            grid_size: UVec2::splat(10),
+            tile_size: Vec2::splat(32.0),
+            ..default()
+        };
+        let bounds = authentic_mesh_bounds(&frame).unwrap();
+        assert_eq!(bounds.min, Vec2::new(-96.0, -64.0));
+        assert_eq!(bounds.max, Vec2::new(160.0, 128.0));
+        frame.center = Vec2::new(800.0, -1400.0);
+        let moved = authentic_mesh_bounds(&frame).unwrap();
+        assert_eq!(moved.min, bounds.min);
+        assert_eq!(moved.max, bounds.max);
+        let key = TerrainCacheKey::from_frame(&frame);
+        frame.source_map_size_core_tiles = Some(UVec2::new(4, 4));
+        assert_ne!(TerrainCacheKey::from_frame(&frame), key);
+        frame.grid_origin = IVec2::splat(100);
+        assert!(authentic_mesh_bounds(&frame).is_none());
+        frame.grid_origin = IVec2::ZERO;
+        frame.source_map_size_core_tiles = None;
+        assert!(authentic_mesh_bounds(&frame).is_none());
+    }
 
     #[test]
     fn tree_instances_share_meshes_and_replacement_removes_the_old_hierarchy() {
@@ -2458,6 +2545,7 @@ mod renderer_tests {
         ));
         cache.key = Some(TerrainCacheKey {
             map_id: Default::default(),
+            source_map_size_core_tiles: None,
             grid_origin: IVec2::ZERO,
             revision: 1,
             profiles_revision: 0,
@@ -2487,6 +2575,7 @@ mod renderer_tests {
     fn movement_coalesces_terrain_rebuilds_while_one_is_in_flight() {
         let key = |revision| TerrainCacheKey {
             map_id: Default::default(),
+            source_map_size_core_tiles: None,
             grid_origin: IVec2::ZERO,
             revision,
             profiles_revision: 0,

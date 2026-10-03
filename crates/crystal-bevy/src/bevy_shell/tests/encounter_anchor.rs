@@ -187,6 +187,10 @@ fn encounter_anchor_registered_input_binds_only_real_script_battle_and_keeps_fro
         location.source_map_size_core_tiles,
         Some(UVec2::new(width.into(), height.into()))
     );
+    assert_eq!(
+        frozen.terrain.source_map_size_core_tiles,
+        location.source_map_size_core_tiles
+    );
     assert!(Arc::ptr_eq(location.anchors.as_ref().unwrap(), &frozen));
     let state_after_start = shell.shell.session().clone();
     // Publication alone cannot consume a DIV sample, modify a command/result,
@@ -329,7 +333,7 @@ fn encounter_anchor_checked_capture_rejects_stale_identity_pose_and_missing_fram
         .collect();
     // Each case starts from the same actual checked runtime result and warmed
     // scene. Only the untrusted presentation evidence changes.
-    for defect in 0..8 {
+    for defect in 0..10 {
         stage_visible_squirtbottle_candidate(&mut shell, &before, &checked);
         let candidate = shell.battle_origin.static_candidate.as_mut().unwrap();
         let mut bad = frame.clone();
@@ -356,6 +360,11 @@ fn encounter_anchor_checked_capture_rejects_stale_identity_pose_and_missing_fram
             5 => bad.terrain_revision = bad.terrain_revision.wrapping_add(1),
             6 => bad.active = false,
             7 => {} // absent resource
+            8 => {
+                bad.source_map_size_core_tiles =
+                    bad.source_map_size_core_tiles.map(|size| size + UVec2::X)
+            }
+            9 => bad.source_map_size_core_tiles = None,
             _ => unreachable!(),
         }
         freeze_visible_static_encounter_anchors(
@@ -561,6 +570,107 @@ fn encounter_anchor_observer_requires_exact_actual_compiled_continuation() {
         step.next_cursor
     );
     assert!(shell.battle_origin.published().is_none());
+    assert_eq!(shell.shell.session(), &session);
+    assert_eq!(shell.shell.retained_runtime_commands(), commands);
+    assert_eq!(shell.shell.retained_runtime_results(), results);
+}
+
+#[test]
+fn visual_world_source_extent_belongs_to_the_built_scene_and_republishes_metadata_changes() {
+    use bevy::ecs::system::RunSystemOnce;
+
+    let mut app = encounter_anchor_app();
+    let source = app
+        .world()
+        .resource::<crystal_render_api::VisualWorldFrame>()
+        .clone();
+    let expected_size = {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        let (width, height) = shell
+            .shell
+            .runtime()
+            .data()
+            .saved_map_tile_bounds(source.map_id.as_ref())
+            .unwrap();
+        UVec2::new(u32::from(width), u32::from(height))
+    };
+    assert_eq!(source.source_map_size_core_tiles, Some(expected_size));
+    assert_eq!(
+        app.world()
+            .resource::<RenderedViewport>()
+            .source_map_size_core_tiles,
+        Some(expected_size)
+    );
+    // Advance the authority to another real map without rendering its scene.
+    // Extraction must describe the already built Route36 terrain, not the live
+    // map's dimensions or a queued terrain request.
+    let (session, commands, results) = {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let runtime = shell.shell.runtime().clone();
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime
+            .data()
+            .transition_overworld_session(
+                state,
+                overworld,
+                "NewBarkTown",
+                TilePosition::new(13, 6),
+                crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
+                &runtime.music_ids(),
+            )
+            .unwrap();
+        let other_bounds = runtime.data().saved_map_tile_bounds("NewBarkTown").unwrap();
+        assert_ne!(
+            expected_size,
+            UVec2::new(other_bounds.0.into(), other_bounds.1.into())
+        );
+        (
+            shell.shell.session().clone(),
+            shell.shell.retained_runtime_commands().to_vec(),
+            shell.shell.retained_runtime_results().to_vec(),
+        )
+    };
+    app.world_mut().run_system_once(publish_visual_world_frame);
+    let retained = app
+        .world()
+        .resource::<crystal_render_api::VisualWorldFrame>();
+    assert_eq!(retained.map_id, source.map_id);
+    assert_eq!(retained.source_map_size_core_tiles, Some(expected_size));
+    assert_eq!(retained.grid_origin, source.grid_origin);
+    assert_eq!(retained.terrain_revision, source.terrain_revision);
+
+    // A metadata-only change must not disappear behind the unchanged-terrain
+    // fast path. Unknown bounds preserve ordinary legacy frame publication.
+    app.world_mut()
+        .resource_mut::<RenderedViewport>()
+        .source_map_size_core_tiles = None;
+    app.world_mut().run_system_once(publish_visual_world_frame);
+    let unknown = app
+        .world()
+        .resource::<crystal_render_api::VisualWorldFrame>();
+    assert!(unknown.active);
+    assert_eq!(unknown.source_map_size_core_tiles, None);
+    assert_eq!(unknown.tiles, source.tiles);
+    app.world_mut()
+        .resource_mut::<RenderedViewport>()
+        .source_map_size_core_tiles = Some(expected_size);
+    app.world_mut().run_system_once(publish_visual_world_frame);
+    assert_eq!(
+        app.world()
+            .resource::<crystal_render_api::VisualWorldFrame>()
+            .source_map_size_core_tiles,
+        Some(expected_size)
+    );
+    app.world_mut()
+        .resource_mut::<RenderedViewport>()
+        .source_map_size_core_tiles = Some(UVec2::ZERO);
+    app.world_mut().run_system_once(publish_visual_world_frame);
+    assert!(
+        !app.world()
+            .resource::<crystal_render_api::VisualWorldFrame>()
+            .active
+    );
+    let shell = app.world().resource::<BevyRuntimeShell>();
     assert_eq!(shell.shell.session(), &session);
     assert_eq!(shell.shell.retained_runtime_commands(), commands);
     assert_eq!(shell.shell.retained_runtime_results(), results);

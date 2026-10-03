@@ -1,6 +1,7 @@
 //! A render-only arena. Presentation cues come from the production shell's
 //! retained visible scene; this module has no runtime or battle-engine imports.
 use crate::battle_layout::{BattleBody, BattleSceneLayout};
+use crate::encounter_terrain::{self, EncounterTerrain};
 use crate::{VoxelViewSettings, mesh::SurfaceMeshData};
 use bevy::{
     asset::load_internal_asset,
@@ -9,8 +10,8 @@ use bevy::{
     prelude::*,
     reflect::TypePath,
     render::{
-        mesh::skinning::SkinnedMeshInverseBindposes,
         camera::{CameraUpdateSystem, ClearColorConfig, RenderTarget},
+        mesh::skinning::SkinnedMeshInverseBindposes,
         render_asset::RenderAssetUsages,
         render_resource::{
             AsBindGroup, Extent3d, ShaderRef, ShaderType, TextureDimension, TextureFormat,
@@ -45,15 +46,15 @@ const SOURCE_PIXEL_WORLD: f32 = crate::battle_layout::SOURCE_PIXEL_WORLD;
 const BATTLE_CAMERA_FOV: f32 = crate::battle_layout::CAMERA_FOV;
 const PARTICLES: usize = 32;
 
-#[path = "battle_row_capture.rs"]
-mod row_capture;
-#[path = "battle_skinning.rs"]
-mod skinning;
 #[path = "battle_capture_bridge.rs"]
 mod capture_bridge;
 #[cfg(test)]
 #[path = "battle_capture_tiles.rs"]
 mod capture_tiles;
+#[path = "battle_row_capture.rs"]
+mod row_capture;
+#[path = "battle_skinning.rs"]
+mod skinning;
 
 #[derive(Default)]
 pub struct BattleViewPlugin;
@@ -93,6 +94,8 @@ impl Plugin for BattleViewPlugin {
             Shader::from_wgsl
         );
         app.init_resource::<VisualBattleFrame>()
+            .init_resource::<crystal_render_api::BattleLocationFrame>()
+            .init_resource::<EncounterTerrain>()
             .init_resource::<BattleFlashMode>()
             .init_resource::<VisualBattleCanvas>()
             .init_resource::<BattleViewStatus>()
@@ -125,15 +128,18 @@ impl Plugin for BattleViewPlugin {
                 Update,
                 (
                     toggle_battle_flash_mode,
+                    encounter_terrain::prepare,
                     sync_battle_layout,
                     capture_bridge::select_capture_bridge,
                     sync_battle_scene,
+                    encounter_terrain::sync,
                     skinning::sync,
                     sync_source_objects,
                     sync_modeled_source_effects,
                 )
                     .chain()
                     .after(crate::toggle_voxel_view)
+                    .after(crate::sync_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
         app.add_plugins(row_capture::BattleRowCapturePlugin);
@@ -235,9 +241,18 @@ fn battle_composite_uniform(
     if let Some(capture) = frame.capture.as_ref().filter(|capture| capture.presented)
         && let Some(enemy) = frame.battlers[1].as_ref()
     {
-        out.capture_enemy = Vec4::new(f32::from(capture_bridge::picture_tiles(capture)), 7.0, 1.0, 0.0);
-        out.capture_slot = Vec4::new(enemy.source_rect.min.x, enemy.source_rect.min.y,
-            enemy.source_rect.max.x, enemy.source_rect.max.y);
+        out.capture_enemy = Vec4::new(
+            f32::from(capture_bridge::picture_tiles(capture)),
+            7.0,
+            1.0,
+            0.0,
+        );
+        out.capture_slot = Vec4::new(
+            enemy.source_rect.min.x,
+            enemy.source_rect.min.y,
+            enemy.source_rect.max.x,
+            enemy.source_rect.max.y,
+        );
     }
     let Some(source) = &frame.source else {
         return out;
@@ -403,7 +418,9 @@ struct AnimatedActor {
 }
 
 impl ActorInstance {
-    fn is_articulated(&self) -> bool { self.animated.is_some() || self.skinned.is_some() }
+    fn is_articulated(&self) -> bool {
+        self.animated.is_some() || self.skinned.is_some()
+    }
 
     fn retire(
         self,
@@ -568,7 +585,8 @@ fn sync_battle_layout(
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     mut scene: ResMut<BattleScene>,
     mut layout: ResMut<BattleSceneLayout>,
-    mut previous: Local<Option<([Option<BattleBody>; 2], Vec2)>>,
+    mut scenery: ResMut<EncounterTerrain>,
+    mut previous: Local<Option<([Option<BattleBody>; 2], Vec2, (Option<u64>, bool))>>,
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
         return;
@@ -631,9 +649,33 @@ fn sync_battle_layout(
             battler.texture_size.x / battler.texture_size.y,
         ))
     });
-    if previous.as_ref() != Some(&(bodies, viewport)) {
-        layout.set_if_neq(BattleSceneLayout::for_bodies(bodies, viewport));
-        *previous = Some((bodies, viewport));
+    let key = (bodies, viewport, scenery.layout_key());
+    if previous.as_ref() != Some(&key) {
+        let anchored = scenery.anchors().and_then(|anchors| {
+            scenery.reject_layout("battlers do not fit the checked encounter anchors");
+            BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport)
+        });
+        let next = if let Some(mut anchored) = anchored {
+            if scenery.constrain_layout(&mut anchored, bodies, viewport) {
+                anchored
+            } else {
+                BattleSceneLayout::for_bodies(bodies, viewport)
+            }
+        } else {
+            BattleSceneLayout::for_bodies(bodies, viewport)
+        };
+        #[cfg(not(target_arch = "wasm32"))]
+        if std::env::var_os("CRYSTAL_ENCOUNTER_TRACE").is_some() {
+            eprintln!(
+                "encounter terrain: generation={:?} accepted={} reason={:?} anchors={:?}",
+                scenery.generation(),
+                scenery.accepted(),
+                scenery.reason(),
+                scenery.anchors()
+            );
+        }
+        layout.set_if_neq(next);
+        *previous = Some(key);
     }
 }
 
@@ -1183,8 +1225,16 @@ fn sync_battle_composite(
             // and slot as explicit OAM. Validation rejects different depths
             // within this shared row quad; future multi-depth rows need quads
             // of their own rather than silently taking the first row's order.
-            pose.translation.z = frame.source.as_ref().unwrap().battler_rows
-                .iter().flatten().next().unwrap().oam_depth;
+            pose.translation.z = frame
+                .source
+                .as_ref()
+                .unwrap()
+                .battler_rows
+                .iter()
+                .flatten()
+                .next()
+                .unwrap()
+                .oam_depth;
         }
         if materials
             .get(material)
@@ -1207,6 +1257,7 @@ fn sync_battle_scene(
         Res<row_capture::ActorCaptures>,
         Res<capture_bridge::BattleCaptureBridge>,
         ResMut<Assets<SkinnedMeshInverseBindposes>>,
+        Res<EncounterTerrain>,
     ),
     flash_mode: Res<BattleFlashMode>,
     time: Res<Time>,
@@ -1298,12 +1349,15 @@ fn sync_battle_scene(
         ),
     >,
 ) {
-    let (settings, layout, captures, capture_bridge, mut inverse_binds) = presentation;
+    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery) = presentation;
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
-    let active = settings.enabled && frame.active && !frame.use_source_scene
-        && valid.is_ok() && capture_bridge.allows_scene();
+    let active = settings.enabled
+        && frame.active
+        && !frame.use_source_scene
+        && valid.is_ok()
+        && capture_bridge.allows_scene();
     status.active = active;
     status.active_frames = if active {
         status.active_frames.saturating_add(1)
@@ -1322,9 +1376,12 @@ fn sync_battle_scene(
                     p.far = layout.far;
                 }
             }
+            let (fog_start, fog_end) = scenery
+                .fog_range()
+                .unwrap_or((layout.distance + 10.0, layout.distance + 30.0));
             fog.falloff = FogFalloff::Linear {
-                start: layout.distance + 10.0,
-                end: layout.distance + 30.0,
+                start: fog_start,
+                end: fog_end,
             };
             let (dark, light) = source_environment_palette(frame.source.as_ref(), *flash_mode);
             let sky = rgb(palette(frame.environment).sky)
@@ -1347,7 +1404,7 @@ fn sync_battle_scene(
     }
     for (mut visibility, mut transform) in &mut arenas {
         transform.scale = Vec3::new(layout.arena_scale, 1.0, layout.arena_scale);
-        visibility.set_if_neq(if active {
+        visibility.set_if_neq(if active && !scenery.accepted() {
             Visibility::Visible
         } else {
             Visibility::Hidden
@@ -1426,6 +1483,11 @@ fn sync_battle_scene(
                             1.0,
                             layout.arena_scale,
                         )),
+                        visibility: if scenery.accepted() {
+                            Visibility::Hidden
+                        } else {
+                            Visibility::Visible
+                        },
                         ..default()
                     },
                     RenderLayers::layer(BATTLE_LAYER),
@@ -1497,7 +1559,9 @@ fn sync_battle_scene(
         let rig = modeled
             .then(|| animated_species(&battler.species_id))
             .flatten();
-        let skin_rig = modeled.then(|| crate::species_rig::for_species(&battler.species_id)).flatten();
+        let skin_rig = modeled
+            .then(|| crate::species_rig::for_species(&battler.species_id))
+            .flatten();
         let root_data = rig
             .map(|rig| &rig.groups[0].mesh)
             .or(modeled_data.as_deref());
@@ -1575,7 +1639,10 @@ fn sync_battle_scene(
                     battle_actor_layers(
                         &frame,
                         index,
-                        captures.prewarm_actor(&frame, index) && modeled && rig.is_none() && skin_rig.is_none(),
+                        captures.prewarm_actor(&frame, index)
+                            && modeled
+                            && rig.is_none()
+                            && skin_rig.is_none(),
                     ),
                     BattleActor,
                 ))
@@ -1613,11 +1680,18 @@ fn sync_battle_scene(
                     elapsed: 0.0,
                 }
             });
-            let skinned = skin_rig.map(|rig| skinning::spawn(
-                &mut commands, entity,
-                meshes.get_mut(mesh.as_ref().expect("modeled skin mesh")).expect("new skin mesh asset"),
-                &mut inverse_binds, &mut scene.skin_inverse_binds, rig,
-            ));
+            let skinned = skin_rig.map(|rig| {
+                skinning::spawn(
+                    &mut commands,
+                    entity,
+                    meshes
+                        .get_mut(mesh.as_ref().expect("modeled skin mesh"))
+                        .expect("new skin mesh asset"),
+                    &mut inverse_binds,
+                    &mut scene.skin_inverse_binds,
+                    rig,
+                )
+            });
             scene.actors[index] = Some(ActorInstance {
                 entity,
                 key,
@@ -1763,8 +1837,12 @@ fn sync_battle_scene(
         }
     }
     for (shadow, mut transform, mut visibility) in &mut contact_shadows {
-        if shadow.0 == VisualBattleSide::Enemy && capture_bridge.image_active()
-            && frame.capture.as_ref().is_some_and(|capture| capture_bridge::picture_tiles(capture) < 7)
+        if shadow.0 == VisualBattleSide::Enemy
+            && capture_bridge.image_active()
+            && frame
+                .capture
+                .as_ref()
+                .is_some_and(|capture| capture_bridge::picture_tiles(capture) < 7)
         {
             visibility.set_if_neq(Visibility::Hidden);
             continue;
@@ -1780,7 +1858,12 @@ fn sync_battle_scene(
         if let Some(source) = &frame.source {
             position += layout.source_displacement(source.battler_offsets[battler.side.index()]);
         }
-        transform.translation = Vec3::new(position.x, 0.086, position.z);
+        let ground_y = if scenery.accepted() {
+            layout.origin(battler.side.index()).y + 0.006
+        } else {
+            0.086
+        };
+        transform.translation = Vec3::new(position.x, ground_y, position.z);
         if let Some(actor) = scene.actors[shadow.0.index()].as_ref() {
             if let Some(bounds) = scene
                 .species_bounds
@@ -1923,7 +2006,12 @@ fn battle_has_rows(frame: &VisualBattleFrame) -> bool {
 }
 
 fn battle_actor_layers(frame: &VisualBattleFrame, index: usize, prewarm: bool) -> RenderLayers {
-    if index == 1 && frame.capture.as_ref().is_some_and(|capture| capture.presented) {
+    if index == 1
+        && frame
+            .capture
+            .as_ref()
+            .is_some_and(|capture| capture.presented)
+    {
         // The immutable enemy image is composited once. Its original mesh
         // remains available for restoration and keeps its canonical transform.
         RenderLayers::layer(BATTLE_ROW_LAYERS[index])
@@ -1952,7 +2040,7 @@ fn toggle_battle_flash_mode(
     }
 }
 
-fn source_environment_palette(
+pub(super) fn source_environment_palette(
     source: Option<&VisualBattleSourceFrame>,
     mode: BattleFlashMode,
 ) -> (f32, f32) {
@@ -2079,7 +2167,10 @@ pub fn battle_source_overlay_rect(
 ) -> Option<Rect> {
     let projection = crate::BattleSourceProjection::new(layout, viewport)?;
     let bounds = projection.coverage(Rect::from_center_size(center, size))?;
-    Some(Rect::from_corners(bounds.min * viewport, bounds.max * viewport))
+    Some(Rect::from_corners(
+        bounds.min * viewport,
+        bounds.max * viewport,
+    ))
 }
 
 fn source_battler_displacement(offset: Vec2) -> Vec3 {
@@ -4130,12 +4221,17 @@ mod tests {
                     .unwrap();
                 assert!(uv.cmpge(oam.min / viewport).all() && uv.cmple(oam.max / viewport).all());
                 let source_rect = Rect::from_center_size(center, Vec2::splat(16.0));
-                for corner in [source_rect.min, source_rect.max,
+                for corner in [
+                    source_rect.min,
+                    source_rect.max,
                     Vec2::new(source_rect.min.x, source_rect.max.y),
-                    Vec2::new(source_rect.max.x, source_rect.min.y)] {
+                    Vec2::new(source_rect.max.x, source_rect.min.y),
+                ] {
                     let point = project_source_point(projection, corner) * viewport;
-                    assert!(point.cmpge(oam.min - Vec2::splat(0.001)).all()
-                        && point.cmple(oam.max + Vec2::splat(0.001)).all());
+                    assert!(
+                        point.cmpge(oam.min - Vec2::splat(0.001)).all()
+                            && point.cmple(oam.max + Vec2::splat(0.001)).all()
+                    );
                 }
                 for offset in [
                     Vec2::new(5.0, 0.0),
@@ -4633,7 +4729,10 @@ mod tests {
         {
             let world = app.world_mut();
             let overlay = world.query_filtered::<(&Handle<BattleCompositeMaterial>, &Transform, &Visibility), With<BattleRowCompositeSprite>>().single(world);
-            assert_eq!(overlay.1.translation.z, 3.9, "row overlay must inherit the current source OAM depth");
+            assert_eq!(
+                overlay.1.translation.z, 3.9,
+                "row overlay must inherit the current source OAM depth"
+            );
             assert_eq!(*overlay.2, Visibility::Visible);
             assert_eq!(world.resource::<Assets<BattleCompositeMaterial>>().len(), 1);
         }

@@ -45,6 +45,9 @@ pub struct VisualBattleObjectTarget {
 #[derive(Clone, Debug, PartialEq)]
 pub struct VisualBattleTerrainEvidence {
     pub map_id: Arc<str>,
+    /// Source extent carried by the exact rendered terrain, in core tiles.
+    /// None is unknown; the rendered border/connection halo is never substituted.
+    pub source_map_size_core_tiles: Option<UVec2>,
     pub terrain_revision: u64,
     /// Coordinates are source 8x8 tiles, NOT core 16x16 tiles.
     pub grid_origin: IVec2,
@@ -62,6 +65,7 @@ impl VisualBattleTerrainEvidence {
     pub fn matches_built_frame(&self, frame: &VisualWorldFrame) -> bool {
         frame.active
             && self.map_id == frame.map_id
+            && self.source_map_size_core_tiles == frame.source_map_size_core_tiles
             && self.terrain_revision == frame.terrain_revision
             && self.grid_origin == frame.grid_origin
             && self.grid_size == frame.grid_size

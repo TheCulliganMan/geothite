@@ -134,6 +134,12 @@ pub struct VisualWorldFrame {
     pub active: bool,
     /// Stable compiled map identifier for presentation-profile selection.
     pub map_id: Arc<str>,
+    /// Actual source-map extent captured with this rendered terrain grid, in
+    /// core 16x16 source-pixel tiles (+X east, +Y south). Northwest is (0, 0);
+    /// the southeast bound is exclusive. Border/connection halo is excluded.
+    /// None preserves legacy/unknown evidence; never infer bounds from grid_size.
+    /// Consumers must include this value in built-terrain cache compatibility.
+    pub source_map_size_core_tiles: Option<UVec2>,
     /// Changes whenever the visible tile sources or their live art change.
     pub terrain_revision: u64,
     /// Map tile coordinate of the grid northwest corner; independent of camera interpolation.
@@ -162,6 +168,12 @@ impl VisualWorldFrame {
 
         if self.map_id.is_empty() {
             return Err(VisualWorldFrameError::EmptyMapId);
+        }
+        if self
+            .source_map_size_core_tiles
+            .is_some_and(|size| size.x == 0 || size.y == 0)
+        {
+            return Err(VisualWorldFrameError::InvalidSourceMapSize);
         }
         if self.map_texture == Handle::<Image>::default() {
             return Err(VisualWorldFrameError::MissingMapTexture);
@@ -264,6 +276,7 @@ fn is_positive_finite(value: Vec2) -> bool {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VisualWorldFrameError {
     EmptyMapId,
+    InvalidSourceMapSize,
     MissingMapTexture,
     NonFiniteCenter,
     InvalidViewportSize,
@@ -330,6 +343,7 @@ mod tests {
         VisualWorldFrame {
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_map_size_core_tiles: None,
             terrain_revision: 7,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::weak_from_u128(1),
@@ -363,6 +377,7 @@ mod tests {
 
         assert!(!frame.active);
         assert!(frame.map_id.is_empty());
+        assert_eq!(frame.source_map_size_core_tiles, None);
         assert_eq!(frame.terrain_revision, 0);
         assert_eq!(frame.map_texture, Handle::<Image>::default());
         assert!(frame.tiles.is_empty());
@@ -556,6 +571,52 @@ mod tests {
                 VisualActorId::Effect(VisualEffectId::GrassRustle)
             ))
         );
+    }
+
+    #[test]
+    fn source_map_extent_is_optional_positive_and_independent_of_rendered_halo() {
+        let mut frame = active_frame();
+        assert_eq!(frame.source_map_size_core_tiles, None);
+        assert!(
+            frame.validate().is_ok(),
+            "legacy unknown bounds remain valid"
+        );
+        frame.source_map_size_core_tiles = Some(UVec2::ONE);
+        frame.grid_origin = bevy::prelude::IVec2::new(-4, -4);
+        assert!(
+            frame.validate().is_ok(),
+            "rendered halo may lie outside actual map bounds"
+        );
+        for size in [UVec2::ZERO, UVec2::new(1, 0), UVec2::new(0, 1)] {
+            frame.source_map_size_core_tiles = Some(size);
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidSourceMapSize)
+            );
+        }
+    }
+
+    #[test]
+    fn battle_terrain_correspondence_rejects_missing_or_different_source_extent() {
+        let mut frame = active_frame();
+        frame.source_map_size_core_tiles = Some(UVec2::new(30, 18));
+        let evidence = VisualBattleTerrainEvidence {
+            map_id: frame.map_id.clone(),
+            source_map_size_core_tiles: frame.source_map_size_core_tiles,
+            terrain_revision: frame.terrain_revision,
+            grid_origin: frame.grid_origin,
+            grid_size: frame.grid_size,
+            center: frame.center,
+            viewport_size: frame.viewport_size,
+            tile_size: frame.tile_size,
+            map_texture: frame.map_texture.clone(),
+            tiles: frame.tiles.clone().into(),
+        };
+        assert!(evidence.matches_built_frame(&frame));
+        frame.source_map_size_core_tiles = Some(UVec2::new(30, 20));
+        assert!(!evidence.matches_built_frame(&frame));
+        frame.source_map_size_core_tiles = None;
+        assert!(!evidence.matches_built_frame(&frame));
     }
 
     #[derive(Resource, Default)]

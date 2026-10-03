@@ -242,13 +242,151 @@ impl BattleSceneLayout {
         if points.is_empty() {
             return layout;
         }
-        let rotation = layout.camera.rotation;
+        layout.fit_camera(&points);
+        layout
+    }
+
+    /// Fit a modeled pair to exact map support points. Geometry that cannot
+    /// occupy those points is ineligible; this never expands the corridor or
+    /// changes a participant's physical scale. Terrain support is checked by
+    /// the caller, independently of this render-only geometry validation.
+    pub(crate) fn for_anchored_bodies(
+        bodies: [Option<BattleBody>; 2],
+        anchors: [Vec3; 2],
+        viewport: Vec2,
+    ) -> Option<Self> {
+        if !viewport.is_finite()
+            || viewport.min_element() <= 0.0
+            || anchors.iter().any(|anchor| !anchor.is_finite())
+        {
+            return None;
+        }
+        let bodies = [bodies[0]?, bodies[1]?];
+        let valid_bounds = |min: Vec3, max: Vec3| {
+            min.is_finite()
+                && max.is_finite()
+                && (max - min).is_finite()
+                && (max - min).min_element() > 0.0
+        };
+        for body in &bodies {
+            if !body.modeled
+                || !valid_bounds(body.min, body.max)
+                || !body.scale.is_finite()
+                || body.scale.min_element() <= 0.0
+                || !body.reference_height.is_finite()
+                || body.reference_height <= 0.0
+                || body.reference_height > (body.max - body.min).y
+            {
+                return None;
+            }
+            if let Some((min, max)) = body.visual_bounds {
+                // An animation envelope includes the neutral pose too. An
+                // incomplete envelope cannot prove the fixed pair will fit.
+                if !valid_bounds(min, max)
+                    || !min.cmple(body.min).all()
+                    || !max.cmpge(body.max).all()
+                {
+                    return None;
+                }
+            }
+        }
+        let delta = anchors[1] - anchors[0];
+        let corridor = Vec3::new(delta.x, 0.0, delta.z);
+        let separation = corridor.length();
+        if !delta.is_finite() || !separation.is_finite() || separation <= 0.0001 {
+            return None;
+        }
+        let axis = corridor / separation;
+        let poses: [Transform; 2] = std::array::from_fn(|i| {
+            let facing = axis * if i == 0 { 1.0 } else { -1.0 };
+            let rotation = Quat::from_rotation_y(facing.x.atan2(facing.z));
+            Transform {
+                translation: anchors[i]
+                    - rotation * (Vec3::Y * bodies[i].min.y * bodies[i].scale.y),
+                rotation,
+                scale: bodies[i].scale,
+            }
+        });
+        let corners: [[Vec3; 8]; 2] = std::array::from_fn(|i| bodies[i].corners(poses[i]));
+        if corners.iter().flatten().any(|point| !point.is_finite()) {
+            return None;
+        }
+        // These boxes only rotate around Y, so Y and each box's horizontal
+        // edge normals are the complete separating-axis test. Using the full
+        // animated boxes catches wing/limb collisions as well as neutral ones.
+        let separated = [
+            Vec3::Y,
+            poses[0].rotation * Vec3::X,
+            poses[0].rotation * Vec3::Z,
+            poses[1].rotation * Vec3::X,
+            poses[1].rotation * Vec3::Z,
+        ]
+        .into_iter()
+        .any(|axis| {
+            let intervals = corners.map(|points| {
+                points
+                    .iter()
+                    .fold((f32::INFINITY, f32::NEG_INFINITY), |(min, max), point| {
+                        let position = point.dot(axis);
+                        (min.min(position), max.max(position))
+                    })
+            });
+            intervals[0].1 < intervals[1].0 || intervals[1].1 < intervals[0].0
+        });
+        if !separated {
+            return None;
+        }
+        let mut layout = Self {
+            origins: anchors,
+            body_poses: poses.map(Some),
+            viewport,
+            // Look along the actual encounter corridor from behind the player.
+            // A global diagonal looked through Route36's neighboring crowns.
+            // Keep a small side angle, without moving either authentic anchor.
+            camera: Transform::from_translation(
+                -axis * 11.6 + Vec3::Y * 13.0 + Vec3::Y.cross(-axis) * 1.5,
+            )
+            .looking_at(Vec3::ZERO, Vec3::Y),
+            ..default()
+        };
+        layout.hit_anchors = std::array::from_fn(|i| {
+            let center = (bodies[i].min + bodies[i].max) * 0.5;
+            poses[i].transform_point(Vec3::new(
+                center.x,
+                bodies[i].min.y + bodies[i].reference_height * 0.5,
+                center.z,
+            ))
+        });
+        let points: Vec<Vec3> = corners.into_iter().flatten().collect();
+        layout.fit_camera(&points);
+        if !layout.camera.translation.is_finite()
+            || !layout.distance.is_finite()
+            || !layout.far.is_finite()
+            || layout.hit_anchors.iter().any(|point| !point.is_finite())
+            || points.iter().any(|point| {
+                let uv = layout.project_point(*point, viewport);
+                !uv.is_finite() || uv.x < 0.0899 || uv.x > 0.9101 || uv.y < 0.2299 || uv.y > 0.7501
+            })
+        {
+            return None;
+        }
+        // Coincident screen-space hit points would collapse the shared source
+        // canvas even when the world-space boxes are separate.
+        let projection = layout.source_projection(viewport);
+        if !projection.is_finite() || !projection.inverse().is_finite() {
+            return None;
+        }
+        Some(layout)
+    }
+
+    fn fit_camera(&mut self, points: &[Vec3]) {
+        let rotation = self.camera.rotation;
         let camera_from_world = rotation.inverse();
         // Center in the fixed camera's axes, then solve every frustum half-plane
         // analytically. A sphere-fit would waste the narrow viewport's width.
         let mut lo = Vec3::splat(f32::INFINITY);
         let mut hi = Vec3::splat(f32::NEG_INFINITY);
-        for point in &points {
+        for point in points {
             let p = camera_from_world * *point;
             lo = lo.min(p);
             hi = hi.max(p);
@@ -256,12 +394,12 @@ impl BattleSceneLayout {
         let target_view = (lo + hi) * 0.5;
         let target = rotation * target_view;
         let tangent = (CAMERA_FOV * 0.5).tan();
-        let horizontal = tangent * (viewport.x / viewport.y) * 0.82;
+        let horizontal = tangent * (self.viewport.x / self.viewport.y) * 0.82;
         // Reserve the HP panels above and command window below. The slightly
         // asymmetric half-planes put every neutral corner in y=.23..75.
         let vertical_up = tangent * 0.54;
         let vertical_down = tangent * 0.50;
-        let distance = points.iter().fold(layout.distance, |distance, point| {
+        let distance = points.iter().fold(self.distance, |distance, point| {
             let p = camera_from_world * (*point - target);
             distance.max(
                 p.z + (p.x.abs() / horizontal).max(if p.y >= 0.0 {
@@ -271,14 +409,13 @@ impl BattleSceneLayout {
                 }) + 0.15,
             )
         });
-        layout.camera = Transform {
+        self.camera = Transform {
             translation: target + rotation * Vec3::Z * distance,
             rotation,
             ..default()
         };
-        layout.distance = distance;
-        layout.far = 100.0_f32.max(distance + (hi - lo).length() + 30.0);
-        layout
+        self.distance = distance;
+        self.far = 100.0_f32.max(distance + (hi - lo).length() + 30.0);
     }
     pub(crate) fn origin(&self, index: usize) -> Vec3 {
         self.origins[index]
@@ -319,8 +456,11 @@ impl BattleSceneLayout {
         // This keeps both original battler anchors exact. Away from those
         // anchors, source paths retain their original shape rather than the
         // former world-plane shear/perspective distortion.
-        Mat3::from_cols((dx / viewport).extend(0.0),
-            (dy / viewport).extend(0.0), (origin / viewport).extend(1.0))
+        Mat3::from_cols(
+            (dx / viewport).extend(0.0),
+            (dy / viewport).extend(0.0),
+            (origin / viewport).extend(1.0),
+        )
     }
     pub(crate) fn project_point(&self, point: Vec3, viewport: Vec2) -> Vec2 {
         let p = self
@@ -463,8 +603,14 @@ mod source_registration_tests {
                     let h = projection * pixel.extend(1.0);
                     h.truncate() / h.z
                 };
-                assert!((map(start) - layout.project_point(layout.hit_anchors[0], viewport)).length() < 0.00001);
-                assert!((map(end) - layout.project_point(layout.hit_anchors[1], viewport)).length() < 0.00001);
+                assert!(
+                    (map(start) - layout.project_point(layout.hit_anchors[0], viewport)).length()
+                        < 0.00001
+                );
+                assert!(
+                    (map(end) - layout.project_point(layout.hit_anchors[1], viewport)).length()
+                        < 0.00001
+                );
                 for source in [
                     Vec2::ZERO,
                     Vec2::new(48.0, 88.0),
@@ -505,5 +651,340 @@ mod source_registration_tests {
             .transform_point3(layout.hit_anchors[0]);
         assert!((local.y - 0.716729 * 0.5).abs() < 1e-5);
         assert!(local.y < 0.716729 && local.y > 0.0);
+    }
+}
+
+#[cfg(test)]
+mod anchored_layout_tests {
+    use super::*;
+
+    fn route36_pair() -> [Option<BattleBody>; 2] {
+        [
+            ("CYNDAQUIL", 0.508, Vec3::new(0.65451, 0.91, 1.073912)),
+            ("SUDOWOODO", 1.1938, Vec3::new(0.770198, 0.82, 0.226966)),
+        ]
+        .map(|(species, meters, extent)| {
+            // A nonzero local floor proves that grounding uses neutral bounds,
+            // independently of authored root height and animation envelopes.
+            let min = Vec3::new(-extent.x * 0.5, -0.125, -extent.z * 0.5);
+            let max = min + extent;
+            Some(BattleBody::modeled(
+                species,
+                min,
+                max,
+                model_scale(species, Some(meters), min, max).unwrap(),
+            ))
+        })
+    }
+
+    fn anchors() -> [Vec3; 2] {
+        // One adjacent core tile is four battle units after the map root scale.
+        [Vec3::new(28.0, 1.5, 44.0), Vec3::new(28.0, 1.5, 40.0)]
+    }
+
+    fn assert_close(actual: Vec3, expected: Vec3) {
+        assert!(
+            actual.abs_diff_eq(expected, 0.00001),
+            "{actual:?} != {expected:?}"
+        );
+    }
+
+    #[test]
+    fn encounter_camera_follows_each_source_corridor_without_moving_the_pair() {
+        for axis in [Vec3::X, Vec3::NEG_X, Vec3::Z, Vec3::NEG_Z] {
+            let anchors = [-axis * 2.0, axis * 2.0];
+            let layout = BattleSceneLayout::for_anchored_bodies(
+                route36_pair(),
+                anchors,
+                Vec2::new(800.0, 600.0),
+            )
+            .unwrap();
+            let forward = *layout.camera.forward();
+            let ground_direction = Vec3::new(forward.x, 0.0, forward.z).normalize();
+            assert!(ground_direction.dot(axis) > 0.985);
+            assert_eq!(layout.origins, anchors);
+            assert_eq!(layout.arena_scale, 1.0);
+        }
+    }
+
+    #[test]
+    fn route36_fixed_anchors_keep_neutral_feet_scale_and_corridor_facing() {
+        let bodies = route36_pair();
+        let anchors = anchors();
+        let layout =
+            BattleSceneLayout::for_anchored_bodies(bodies, anchors, Vec2::new(1600.0, 900.0))
+                .unwrap();
+        assert_eq!(layout.origins, anchors);
+        assert_eq!(layout.arena_scale, 1.0);
+        assert_eq!(layout.origins[0].distance(layout.origins[1]), 4.0);
+        for i in 0..2 {
+            let body = bodies[i].unwrap();
+            let pose = layout.body_poses[i].unwrap();
+            assert_eq!(pose.scale, body.scale);
+            assert_close(pose.transform_point(Vec3::Y * body.min.y), anchors[i]);
+            assert_close(
+                pose.rotation * Vec3::Z,
+                Vec3::Z * if i == 0 { -1.0 } else { 1.0 },
+            );
+            let center = (body.min + body.max) * 0.5;
+            assert_close(
+                layout.hit_anchors[i],
+                pose.transform_point(Vec3::new(
+                    center.x,
+                    body.min.y + body.reference_height * 0.5,
+                    center.z,
+                )),
+            );
+            let meters = [0.508, 1.1938][i];
+            assert!(
+                (body.reference_height * pose.scale.y / WORLD_UNITS_PER_METER - meters).abs()
+                    < 0.00001
+            );
+        }
+        let player = bodies[0].unwrap();
+        let target = bodies[1].unwrap();
+        assert!(
+            (target.reference_height * target.scale.y / (player.reference_height * player.scale.y)
+                - 2.35)
+                .abs()
+                < 0.00001
+        );
+    }
+
+    #[test]
+    fn animated_corners_fit_hud_margins_without_regrounding_or_camera_motion() {
+        let neutral = route36_pair();
+        let animated = neutral.map(|body| {
+            let mut body = body.unwrap();
+            body.visual_bounds = Some((
+                body.min - Vec3::new(0.05, 0.15, 0.10),
+                body.max + Vec3::new(0.10, 0.35, 0.10),
+            ));
+            Some(body)
+        });
+        let mut elevated = anchors();
+        elevated[0].y = 2.5;
+        elevated[1].y = 3.25;
+        let mut rotation = None;
+        for anchors in [anchors(), elevated] {
+            for viewport in [
+                Vec2::new(1600.0, 900.0),
+                Vec2::new(500.0, 1200.0),
+                Vec2::new(1200.0, 500.0),
+                Vec2::new(300.0, 1600.0),
+            ] {
+                let before =
+                    BattleSceneLayout::for_anchored_bodies(neutral, anchors, viewport).unwrap();
+                let layout =
+                    BattleSceneLayout::for_anchored_bodies(animated, anchors, viewport).unwrap();
+                assert_eq!(layout.origins, anchors);
+                assert_eq!(layout.body_poses, before.body_poses);
+                assert_eq!(layout.hit_anchors, before.hit_anchors);
+                assert_eq!(
+                    layout,
+                    BattleSceneLayout::for_anchored_bodies(animated, anchors, viewport).unwrap()
+                );
+                if let Some(rotation) = rotation {
+                    assert_eq!(layout.camera.rotation, rotation);
+                }
+                rotation = Some(layout.camera.rotation);
+                for i in 0..2 {
+                    let body = animated[i].unwrap();
+                    let pose = layout.body_poses[i].unwrap();
+                    assert_close(pose.transform_point(Vec3::Y * body.min.y), anchors[i]);
+                    let corners = body.corners(pose);
+                    assert!(corners.iter().any(|point| point.y < anchors[i].y));
+                    for point in corners {
+                        let uv = layout.project_point(point, viewport);
+                        let view =
+                            layout.camera.rotation.inverse() * (point - layout.camera.translation);
+                        assert!(view.z < 0.0 && -view.z < layout.far);
+                        assert!(
+                            uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= 0.2299 && uv.y <= 0.7501,
+                            "{anchors:?} {viewport:?} {uv:?}"
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn fixed_separation_rejects_neutral_and_animated_intersections() {
+        let bodies = route36_pair();
+        let viewport = Vec2::new(1600.0, 900.0);
+        let near = [Vec3::ZERO, Vec3::new(0.0, 0.0, -0.5)];
+        assert!(BattleSceneLayout::for_anchored_bodies(bodies, near, viewport).is_none());
+        let giant = bodies.map(|body| {
+            body.map(|mut body| {
+                body.scale *= 4.0;
+                body
+            })
+        });
+        assert!(BattleSceneLayout::for_anchored_bodies(giant, anchors(), viewport).is_none());
+        let mut animated = bodies;
+        let body = animated[0].as_mut().unwrap();
+        body.visual_bounds = Some((body.min - Vec3::Z * 3.0, body.max + Vec3::Z * 3.0));
+        assert!(BattleSceneLayout::for_anchored_bodies(animated, anchors(), viewport).is_none());
+        assert!(BattleSceneLayout::for_anchored_bodies(bodies, anchors(), viewport).is_some());
+        // The generic arena retains its existing automatic widening behavior.
+        let generic = BattleSceneLayout::for_bodies(giant, viewport);
+        assert!(generic.arena_scale > 1.0);
+        for i in 0..2 {
+            assert_eq!(
+                generic.body_poses[i].unwrap().scale,
+                giant[i].unwrap().scale
+            );
+        }
+    }
+
+    #[test]
+    fn invalid_inputs_cannot_enable_an_anchored_scene() {
+        let bodies = route36_pair();
+        let viewport = Vec2::new(1600.0, 900.0);
+        let fit = |bodies, anchors, viewport| {
+            BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport)
+        };
+        for pair in [
+            [None, bodies[1]],
+            [bodies[0], None],
+            [Some(BattleBody::source_card(1.0)), bodies[1]],
+        ] {
+            assert!(fit(pair, anchors(), viewport).is_none());
+        }
+        for invalid in [
+            Vec2::ZERO,
+            Vec2::new(-1.0, 900.0),
+            Vec2::new(f32::NAN, 900.0),
+            Vec2::new(1600.0, f32::INFINITY),
+        ] {
+            assert!(fit(bodies, anchors(), invalid).is_none());
+        }
+        for invalid in [
+            [Vec3::ZERO; 2],
+            [Vec3::ZERO, Vec3::Y],
+            [Vec3::splat(f32::NAN), Vec3::ZERO],
+            [Vec3::ZERO, Vec3::splat(f32::INFINITY)],
+        ] {
+            assert!(fit(bodies, invalid, viewport).is_none());
+        }
+        let base = bodies[0].unwrap();
+        let mut invalid_bodies = Vec::new();
+        for scale in [
+            Vec3::ZERO,
+            Vec3::new(-1.0, 1.0, 1.0),
+            Vec3::splat(f32::NAN),
+            Vec3::splat(f32::INFINITY),
+        ] {
+            invalid_bodies.push(BattleBody { scale, ..base });
+        }
+        for reference_height in [0.0, -1.0, f32::NAN, f32::INFINITY, 100.0] {
+            invalid_bodies.push(BattleBody {
+                reference_height,
+                ..base
+            });
+        }
+        invalid_bodies.extend([
+            BattleBody {
+                min: base.max,
+                ..base
+            },
+            BattleBody {
+                max: base.min - Vec3::ONE,
+                ..base
+            },
+            BattleBody {
+                min: Vec3::splat(f32::NAN),
+                ..base
+            },
+            BattleBody {
+                max: Vec3::splat(f32::INFINITY),
+                ..base
+            },
+            BattleBody {
+                visual_bounds: Some((base.max, base.min)),
+                ..base
+            },
+            BattleBody {
+                visual_bounds: Some((Vec3::splat(f32::NAN), base.max)),
+                ..base
+            },
+            BattleBody {
+                visual_bounds: Some((base.min + Vec3::splat(0.01), base.max)),
+                ..base
+            },
+        ]);
+        for body in invalid_bodies {
+            assert!(
+                fit([Some(body), bodies[1]], anchors(), viewport).is_none(),
+                "{body:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn anchored_source_mapping_keeps_hits_round_shapes_and_shared_tile_edges() {
+        let mut anchors = anchors();
+        anchors[1].y += 0.75;
+        for (bodies, anchors) in [
+            (route36_pair(), anchors),
+            (
+                [route36_pair()[1], route36_pair()[0]],
+                [anchors[1], anchors[0]],
+            ),
+        ] {
+            for viewport in [Vec2::new(1600.0, 900.0), Vec2::new(500.0, 1200.0)] {
+                let layout =
+                    BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport).unwrap();
+                let projection = layout.source_projection(viewport);
+                let map = |source: Vec2| {
+                    let point = projection * source.extend(1.0);
+                    point.truncate() / point.z
+                };
+                for (i, source) in [Vec2::new(40.0, 72.0), Vec2::new(124.0, 32.0)]
+                    .into_iter()
+                    .enumerate()
+                {
+                    assert_close(layout.source_position(source), layout.hit_anchors[i]);
+                    assert!(map(source).abs_diff_eq(
+                        layout.project_point(layout.hit_anchors[i], viewport),
+                        0.00001
+                    ));
+                    let pose = layout.source_pose(source, Vec2::splat(8.0));
+                    assert_eq!(pose.rotation, layout.camera.rotation);
+                    assert_close(pose.translation, layout.hit_anchors[i]);
+                }
+                assert_close(
+                    layout.source_position(Vec2::new(82.0, 52.0)),
+                    layout.hit_anchors[0].lerp(layout.hit_anchors[1], 0.5),
+                );
+                assert_close(
+                    layout.source_displacement(Vec2::new(8.0, 3.0)),
+                    (anchors[1] - anchors[0]).normalize() * 8.0 * SOURCE_PIXEL_WORLD
+                        + Vec3::Y * 3.0 * SOURCE_PIXEL_WORLD,
+                );
+                for source in [
+                    Vec2::ZERO,
+                    Vec2::new(48.0, 88.0),
+                    Vec2::new(90.0, 68.0),
+                    Vec2::new(160.0, 95.0),
+                ] {
+                    let dx = (map(source + Vec2::X * 8.0) - map(source)) * viewport;
+                    let dy = (map(source + Vec2::Y * 8.0) - map(source)) * viewport;
+                    assert!((dx.length() / dy.length() - 1.0).abs() < 0.00005);
+                    assert!(dx.normalize().dot(dy.normalize()).abs() < 0.00005);
+                    let inverse = projection.inverse() * map(source).extend(1.0);
+                    assert!((inverse.truncate() / inverse.z).abs_diff_eq(source, 0.005));
+                    // Reconstruct both sides of neighboring OAM tiles using
+                    // their centers and the same global effect-canvas basis.
+                    let left_edge = map(source + Vec2::splat(4.0)) * viewport + dx * 0.5;
+                    let right_edge = map(source + Vec2::new(12.0, 4.0)) * viewport - dx * 0.5;
+                    let top_edge = map(source + Vec2::splat(4.0)) * viewport + dy * 0.5;
+                    let bottom_edge = map(source + Vec2::new(4.0, 12.0)) * viewport - dy * 0.5;
+                    assert!(left_edge.abs_diff_eq(right_edge, 0.0005));
+                    assert!(top_edge.abs_diff_eq(bottom_edge, 0.0005));
+                }
+            }
+        }
     }
 }

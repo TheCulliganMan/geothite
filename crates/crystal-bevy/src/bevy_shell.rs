@@ -363,6 +363,9 @@ pub struct BevyShellConfig {
     /// Fresh disposable Route36 battle preview; never used for normal play.
     #[cfg(feature = "location-tester")]
     pub render_test_battle: bool,
+    /// Fresh Route36 field setup; the ordinary registered-item input starts battle.
+    #[cfg(feature = "location-tester")]
+    pub render_test_route36_encounter: bool,
     /// Legal Gengar/TM30 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_shadow_ball: bool,
@@ -4524,6 +4527,10 @@ struct RenderedViewport {
     /// rehashing every source tile during camera/actor interpolation.
     #[cfg(any(test, feature = "voxel-view"))]
     visual_tiles_revision: Option<u64>,
+    /// Actual map extent recorded alongside the successfully built visual grid.
+    /// This follows the rendered scene even while the live session transitions.
+    #[cfg(any(test, feature = "voxel-view"))]
+    source_map_size_core_tiles: Option<UVec2>,
     /// Feature-gated terrain surface extending beyond the Game Boy viewport.
     /// It is consumed only by the optional voxel renderer and never displayed
     /// or consulted by the faithful 2D path.
@@ -5603,6 +5610,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_battle = config.render_test_battle;
     #[cfg(feature = "location-tester")]
+    let render_test_route36_encounter = config.render_test_route36_encounter;
+    #[cfg(feature = "location-tester")]
     let render_test_shadow_ball = config.render_test_shadow_ball;
     #[cfg(feature = "location-tester")]
     let render_test_psychic = config.render_test_psychic;
@@ -5624,7 +5633,8 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !render_test_battle || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
+        !(render_test_battle || render_test_route36_encounter)
+            || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -5657,7 +5667,10 @@ pub fn run_bevy_shell(
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
     #[cfg(feature = "location-tester")]
-    let runtime_shell = if render_test_battle {
+    let runtime_shell = if render_test_route36_encounter {
+        anyhow::ensure!(!render_test_battle, "field and direct battle fixtures are mutually exclusive");
+        prepare_route36_encounter_preview(runtime_shell)?
+    } else if render_test_battle {
         prepare_immersive_battle_preview(
             runtime_shell,
             render_test_shadow_ball,

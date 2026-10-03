@@ -31,8 +31,13 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
                 surface.world_position, surface.world_normal, view_position.z));
         }
     }
+    // y/z are zero for every ordinary world material. Encounter-owned clones
+    // carry the source black/white cue without altering the shared world atlas.
+    let shaded = surface.material.base_color.rgb * mix(0.55, 1.0, visibility);
+    let darkened = mix(shaded, vec3<f32>(0.0), clamp(cutaway.fade.y, 0.0, 1.0));
+    let palette_color = mix(darkened, vec3<f32>(1.0), clamp(cutaway.fade.z, 0.0, 1.0));
     var out: FragmentOutput;
-    out.color = vec4<f32>(surface.material.base_color.rgb * mix(0.55, 1.0, visibility),
+    out.color = vec4<f32>(palette_color,
         surface.material.base_color.a * (1.0 - cutaway.fade.x));
     out.color = main_pass_post_lighting_processing(surface, out.color);
     return out;

@@ -2,10 +2,9 @@
 // snapshot selected by render_playfield after retained-dialog scene selection.
 // It never calls snapshot(), tick(), a command dispatcher, or turn resolution.
 use crystal_render_api::{
-    VisualBattleBattler, VisualBattleBattlerRows, VisualBattleCapture, VisualCapturePicture,
-    VisualBattleCue, VisualBattleCueKind,
-    VisualBattleEnvironment, VisualBattleFrame, VisualBattleSide, VisualBattleSourceFrame,
-    VisualBattleSourceObject,
+    VisualBattleBattler, VisualBattleBattlerRows, VisualBattleCapture, VisualBattleCue,
+    VisualBattleCueKind, VisualBattleEnvironment, VisualBattleFrame, VisualBattleSide,
+    VisualBattleSourceFrame, VisualBattleSourceObject, VisualCapturePicture,
 };
 
 include!("battle_measurements.rs");
@@ -280,7 +279,8 @@ fn capture_presented_battle(
         if immersive_capture_prototype_enabled()
             && immersive_capture_source_supported(shell, snapshot, &frame.battlers)
         {
-            frame.use_source_scene = immersive_battle_requires_source_scene_supported(shell, false, true);
+            frame.use_source_scene =
+                immersive_battle_requires_source_scene_supported(shell, false, true);
         }
     }
     if let Some(animation) = animation.filter(|animation| animation.started) {
@@ -345,13 +345,20 @@ fn capture_presented_battle(
     if !animation.is_some_and(|animation| animation.started)
         && shell.visible_send_out_animation.is_none()
         && shell.visible_move_audio_wait.is_none()
-        && let Some(capture) = shell.visible_capture_animation.as_ref()
+        && let Some(capture) = shell
+            .visible_capture_animation
+            .as_ref()
             .filter(|capture| capture.retained_objects_visible())
     {
         let source_animation = visible_capture_source_animation(capture);
         frame.source = Some(capture_immersive_source_frame_with_capture(
-            snapshot, &source_animation, &frame.battlers, art,
-            &shell.asset_root, images, Some(capture),
+            snapshot,
+            &source_animation,
+            &frame.battlers,
+            art,
+            &shell.asset_root,
+            images,
+            Some(capture),
         )?);
     }
     if let Some(send_out) = shell.visible_send_out_animation.as_ref() {
@@ -444,8 +451,9 @@ fn capture_immersive_source_frame(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<VisualBattleSourceFrame> {
-    capture_immersive_source_frame_with_capture(snapshot, animation, battlers, art,
-        asset_root, images, None)
+    capture_immersive_source_frame_with_capture(
+        snapshot, animation, battlers, art, asset_root, images, None,
+    )
 }
 
 fn capture_immersive_source_frame_with_capture(
@@ -476,8 +484,8 @@ fn capture_immersive_source_frame_with_capture(
     advance_visible_battle_objects(&mut playback, &bundle, animation)?;
     let oam_layer = visible_battle_oam_layer(&playback);
     let live_slots = visible_capture_oam_slots(&playback, capture);
-    let battler_palettes = visible_battle_object_battler_palettes(
-        snapshot, asset_root, animation, &live_slots)?;
+    let battler_palettes =
+        visible_battle_object_battler_palettes(snapshot, asset_root, animation, &live_slots)?;
     let live_battler_rows = playback.battler_rows.clone();
     let object_obp0_write = playback.obp0_write;
     art.battle_object_runtime = Some(playback);
@@ -914,6 +922,57 @@ mod immersive_battle_bridge_tests {
     }
 }
 
+/// Disposable source-location setup. All watering, narration and battle entry
+/// remain ordinary controller actions; this helper never starts a battle.
+#[cfg(feature = "location-tester")]
+fn prepare_route36_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(
+        shell.quick_save_path.is_none(),
+        "encounter preview cannot write a user save"
+    );
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
+    let initial = shell.shell.snapshot()?;
+    anyhow::ensure!(
+        initial.overworld.map_name == "Route36"
+            && initial.overworld.tile == TilePosition::new(35, 10)
+            && initial.party.slots.is_empty()
+            && initial.battle.is_none(),
+        "encounter preview requires a fresh empty-party Route36 path session"
+    );
+    // DVs 10/10/10/10 are shiny and correctly use the source-art fallback.
+    // Use the same ordinary appearance as the other modeled native fixtures.
+    shell.shell.add_party_pokemon(
+        "CYNDAQUIL",
+        20,
+        None,
+        None,
+        &initial.trainer.player_name,
+        initial.trainer.player_id,
+        Dv::from_non_hp(9, 9, 9, 9),
+    )?;
+    shell.shell.add_bag_item("SQUIRTBOTTLE", 1)?;
+    shell.shell.register_key_item("SQUIRTBOTTLE")?;
+    settle_visible_shell_smoke_until_idle(&mut shell)?;
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        overworld.set_player_facing(Direction::Up);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    anyhow::ensure!(
+        shell
+            .shell
+            .current_overworld_interaction_checked()?
+            .is_some_and(|interaction| interaction.script == "SudowoodoScript"),
+        "encounter preview must face the actual checked Weird Tree"
+    );
+    anyhow::ensure!(
+        shell.shell.snapshot()?.battle.is_none(),
+        "field fixture must remain outside battle"
+    );
+    mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
+}
+
 /// Opt-in fresh-session native preview fixture. It seeds only this disposable
 /// location-test session, then reaches battle commands through the production
 /// controller. Normal play, loaded saves and the battle renderer never call it.
@@ -930,8 +989,10 @@ fn prepare_immersive_battle_preview(
     poke_ball_failure: bool,
     starter: Option<&str>,
 ) -> Result<BevyRuntimeShell> {
-    anyhow::ensure!(starter.is_none() || (enemy_gust && matches!(starter, Some("CYNDAQUIL" | "TOTODILE"))),
-        "starter rig preview requires enemy Gust and CYNDAQUIL or TOTODILE");
+    anyhow::ensure!(
+        starter.is_none() || (enemy_gust && matches!(starter, Some("CYNDAQUIL" | "TOTODILE"))),
+        "starter rig preview requires enemy Gust and CYNDAQUIL or TOTODILE"
+    );
     anyhow::ensure!(
         [
             shadow_ball,
@@ -1109,13 +1170,17 @@ fn prepare_immersive_battle_preview(
             .shell
             .start_scripted_trainer_battle("Route44", "TrainerBirdKeeperVance1", 0)?;
         let snapshot = shell.shell.snapshot()?;
-        let battle = snapshot.battle.as_ref().context("enemy Gust preview battle")?;
+        let battle = snapshot
+            .battle
+            .as_ref()
+            .context("enemy Gust preview battle")?;
         anyhow::ensure!(
             battle.enemy_pokemon.species.id == "PIDGEOTTO"
                 && battle.enemy_pokemon.level == 25
-                && battle.enemy_moves.get(1).is_some_and(|learned| {
-                    learned.name == "GUST" && learned.current_pp == 35
-                }),
+                && battle
+                    .enemy_moves
+                    .get(1)
+                    .is_some_and(|learned| { learned.name == "GUST" && learned.current_pp == 35 }),
             "Vance's compiled lead must naturally know Gust with its legal PP"
         );
     } else {
@@ -1146,10 +1211,8 @@ fn prepare_immersive_battle_preview(
                 // Restart this disposable preview before another attempt.
                 const DIV_SAMPLE_BUDGET: usize = 65_536;
                 let session = controller.shell.shell.session_mut();
-                session.state_mut().random_state = crystal_core::random::CrystalRandomState {
-                    add: 0,
-                    sub: 253,
-                };
+                session.state_mut().random_state =
+                    crystal_core::random::CrystalRandomState { add: 0, sub: 253 };
                 *session.divider_mut_for_tests() =
                     crystal_core::random::RuntimeDividerSource::replay([0; DIV_SAMPLE_BUDGET]);
             } else if hyper_beam {
@@ -1277,15 +1340,21 @@ fn visible_capture_present_state(capture: &VisibleCaptureAnimation) -> VisualBat
             VisualCapturePicture::Hidden
         } else if let Some(tiles) = capture.enemy_clip_tiles() {
             VisualCapturePicture::Tiles(tiles)
-        } else { VisualCapturePicture::Full },
+        } else {
+            VisualCapturePicture::Full
+        },
     }
 }
 
 fn immersive_capture_prototype_enabled() -> bool {
     #[cfg(not(target_arch = "wasm32"))]
-    { std::env::var("CRYSTAL_BATTLE_CAPTURE_PROTOTYPE").as_deref() == Ok("1") }
+    {
+        std::env::var("CRYSTAL_BATTLE_CAPTURE_PROTOTYPE").as_deref() == Ok("1")
+    }
     #[cfg(target_arch = "wasm32")]
-    { false }
+    {
+        false
+    }
 }
 
 fn immersive_capture_source_supported(

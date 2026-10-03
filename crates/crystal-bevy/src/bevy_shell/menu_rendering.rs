@@ -6550,6 +6550,13 @@ fn render_playfield(
         rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
+        // Capture the verified bounds of the map used for THIS terrain build.
+        // The live session can already point elsewhere during a retained scene;
+        // neither its current map nor the padded viewport defines source bounds.
+        rendered.source_map_size_core_tiles = runtime_shell.shell.runtime().data()
+            .saved_map_tile_bounds(&map.map_name)
+            .filter(|(width, height)| *width > 0 && *height > 0)
+            .map(|(width, height)| UVec2::new(u32::from(width), u32::from(height)));
     }
     rendered.viewport_origin = Some((start_x, start_y));
     rendered.walk_viewport_origin = next_walk_viewport_origin;
