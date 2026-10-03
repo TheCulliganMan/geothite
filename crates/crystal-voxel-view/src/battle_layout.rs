@@ -284,8 +284,9 @@ impl BattleSceneLayout {
         self.origins[index]
     }
     pub(crate) fn source_position(&self, center: Vec2) -> Vec3 {
-        let across = (center.x - 48.0) / 84.0;
-        let baseline_y = 88.0 - across * 40.0;
+        // The bridge publishes displayed LCD coordinates after OAM (8,16).
+        let across = (center.x - 40.0) / 84.0;
+        let baseline_y = 72.0 - across * 40.0;
         self.hit_anchors[0].lerp(self.hit_anchors[1], across)
             + Vec3::Y * (baseline_y - center.y) * SOURCE_PIXEL_WORLD
     }
@@ -298,26 +299,28 @@ impl BattleSceneLayout {
             .with_rotation(self.camera.rotation)
             .with_scale((size * SOURCE_PIXEL_WORLD).extend(1.0))
     }
+    /// One camera-facing similarity for the complete source effect canvas.
+    /// Fit in physical pixels before normalizing UV: fitting directly in UV
+    /// would squash circles on non-square viewports. A single global mapping
+    /// preserves seams even when one source picture spans several OAM slots.
     pub(crate) fn source_projection(&self, viewport: Vec2) -> Mat3 {
         let viewport = viewport.max(Vec2::ONE);
-        let camera = self.camera.compute_matrix().inverse();
-        let origin = self.source_position(Vec2::ZERO);
-        let dx = self.source_position(Vec2::X) - origin;
-        let dy = self.source_position(Vec2::Y) - origin;
-        let tangent = (CAMERA_FOV * 0.5).tan();
-        let aspect = viewport.x / viewport.y;
-        let homogeneous = |view: Vec3| {
-            Vec3::new(
-                view.x / (2.0 * tangent * aspect) - view.z * 0.5,
-                -view.y / (2.0 * tangent) - view.z * 0.5,
-                -view.z,
-            )
-        };
-        Mat3::from_cols(
-            homogeneous(camera.transform_vector3(dx)),
-            homogeneous(camera.transform_vector3(dy)),
-            homogeneous(camera.transform_point3(origin)),
-        )
+        let source_start = Vec2::new(40.0, 72.0);
+        let source_delta = Vec2::new(84.0, -40.0);
+        let start = self.project_point(self.hit_anchors[0], viewport) * viewport;
+        let end = self.project_point(self.hit_anchors[1], viewport) * viewport;
+        let target_delta = end - start;
+        let denominator = source_delta.length_squared();
+        let a = source_delta.dot(target_delta) / denominator;
+        let b = source_delta.perp_dot(target_delta) / denominator;
+        let dx = Vec2::new(a, b);
+        let dy = Vec2::new(-b, a);
+        let origin = start - dx * source_start.x - dy * source_start.y;
+        // This keeps both original battler anchors exact. Away from those
+        // anchors, source paths retain their original shape rather than the
+        // former world-plane shear/perspective distortion.
+        Mat3::from_cols((dx / viewport).extend(0.0),
+            (dy / viewport).extend(0.0), (origin / viewport).extend(1.0))
     }
     pub(crate) fn project_point(&self, point: Vec3, viewport: Vec2) -> Vec2 {
         let p = self
@@ -392,19 +395,19 @@ mod framing_tests {
         let layout = BattleSceneLayout::for_bodies(pair(), Vec2::new(1200.0, 900.0));
         assert!(
             layout
-                .source_position(Vec2::new(48.0, 88.0))
+                .source_position(Vec2::new(40.0, 72.0))
                 .distance(layout.hit_anchors[0])
                 < 1e-5
         );
         assert!(
             layout
-                .source_position(Vec2::new(132.0, 48.0))
+                .source_position(Vec2::new(124.0, 32.0))
                 .distance(layout.hit_anchors[1])
                 < 1e-5
         );
         assert!(
             layout
-                .source_position(Vec2::new(90.0, 68.0))
+                .source_position(Vec2::new(82.0, 52.0))
                 .distance(layout.hit_anchors[0].lerp(layout.hit_anchors[1], 0.5))
                 < 1e-5
         );
@@ -433,7 +436,7 @@ mod framing_tests {
 mod source_registration_tests {
     use super::*;
     #[test]
-    fn homography_matches_fitted_camera_for_attacks_in_both_directions() {
+    fn similarity_matches_fitted_anchors_and_source_shapes_in_both_directions() {
         let min = Vec3::new(-0.388217, 0.0, -0.351834);
         let max = Vec3::new(0.388217, 1.72, 0.351834);
         let onix = BattleBody::modeled(
@@ -454,6 +457,14 @@ mod source_registration_tests {
             for viewport in [Vec2::new(1600.0, 900.0), Vec2::new(500.0, 1200.0)] {
                 let layout = BattleSceneLayout::for_bodies(bodies, viewport);
                 let projection = layout.source_projection(viewport);
+                let start = Vec2::new(40.0, 72.0);
+                let end = Vec2::new(124.0, 32.0);
+                let map = |pixel: Vec2| {
+                    let h = projection * pixel.extend(1.0);
+                    h.truncate() / h.z
+                };
+                assert!((map(start) - layout.project_point(layout.hit_anchors[0], viewport)).length() < 0.00001);
+                assert!((map(end) - layout.project_point(layout.hit_anchors[1], viewport)).length() < 0.00001);
                 for source in [
                     Vec2::ZERO,
                     Vec2::new(48.0, 88.0),
@@ -463,11 +474,10 @@ mod source_registration_tests {
                 ] {
                     let homogeneous = projection * source.extend(1.0);
                     let projected = homogeneous.truncate() / homogeneous.z;
-                    let direct = layout.project_point(layout.source_position(source), viewport);
-                    assert!(
-                        projected.abs_diff_eq(direct, 0.00005),
-                        "{source:?}: {projected:?} vs {direct:?}"
-                    );
+                    let dx = (map(source + Vec2::X * 8.0) - projected) * viewport;
+                    let dy = (map(source + Vec2::Y * 8.0) - projected) * viewport;
+                    assert!((dx.length() / dy.length() - 1.0).abs() < 0.00005);
+                    assert!(dx.normalize().dot(dy.normalize()).abs() < 0.00005);
                     let inverse = projection.inverse() * projected.extend(1.0);
                     assert!((inverse.truncate() / inverse.z).abs_diff_eq(source, 0.005));
                 }

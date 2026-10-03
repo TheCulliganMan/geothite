@@ -4,9 +4,12 @@
 
 mod azalea_gym;
 mod battle_layout;
+mod battle_source_projection;
+pub use battle_source_projection::BattleSourceProjection;
 mod barn;
 mod battle_species_models;
 mod pidgeotto_rig;
+mod species_rig;
 mod battle_tower;
 mod battle_view;
 mod model_storage;

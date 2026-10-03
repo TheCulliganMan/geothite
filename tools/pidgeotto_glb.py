@@ -249,16 +249,9 @@ def load_pidgeotto(directory):
 
 
 def species_paths(directory):
-    """Resolve one canonical file per species; reject duplicate geometry."""
-    directory = Path(directory)
-    paths = {p.name.removesuffix('.mesh.json'): p for p in directory.glob('*.mesh.json')}
-    for path in directory.glob('*.glb'):
-        if path.name != FILE:
-            raise ValueError(f'unsupported battle species GLB: {path.name}')
-        if path.stem in paths:
-            raise ValueError('duplicate canonical Pidgeotto JSON and GLB geometry')
-        paths[path.stem] = path
-    return paths
+    """Compatibility entry point; canonical selection is shared by all species."""
+    from battle_model_assets import species_paths as canonical_paths
+    return canonical_paths(directory)
 
 
 def main():

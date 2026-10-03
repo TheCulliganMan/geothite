@@ -17,6 +17,7 @@ fn main() -> Result<()> {
     let mut record = None;
     let mut measure = None;
     let mut record_on_move = false;
+    let mut record_on_capture = false;
     let mut seconds = 20;
     let mut live = false;
     let mut enabled = true;
@@ -26,12 +27,16 @@ fn main() -> Result<()> {
     let mut surf = false;
     let mut size_comparison = false;
     let mut pidgeotto = false;
+    let mut enemy_gust = false;
+    let mut starter = None;
+    let mut poke_ball_failure = false;
     let mut window_size = None;
     let mut reduced_flashes = false;
     while let Some(flag) = args.next() {
         match flag.as_str() {
             "--live" => live = true,
             "--record-on-move" => record_on_move = true,
+            "--record-on-capture" => record_on_capture = true,
             "--classic" => enabled = false,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
@@ -39,6 +44,14 @@ fn main() -> Result<()> {
             "--surf" => surf = true,
             "--size-comparison" => size_comparison = true,
             "--pidgeotto" => pidgeotto = true,
+            "--enemy-gust" => enemy_gust = true,
+            "--starter" => {
+                let name = args.next().context("--starter cyndaquil|totodile")?.to_ascii_uppercase();
+                anyhow::ensure!(matches!(name.as_str(), "CYNDAQUIL" | "TOTODILE"),
+                    "--starter expects cyndaquil or totodile");
+                starter = Some(name);
+            }
+            "--poke-ball-failure" => poke_ball_failure = true,
             "--size" => {
                 let value = args.next().context("--size WIDTHxHEIGHT")?;
                 let (width, height) = value
@@ -66,13 +79,19 @@ fn main() -> Result<()> {
             hyper_beam,
             surf,
             size_comparison,
-            pidgeotto
+            pidgeotto,
+            enemy_gust,
+            poke_ball_failure
         ]
         .into_iter()
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --shadow-ball, --psychic, --hyper-beam --surf, --size-comparison or --pidgeotto"
+        "choose only one of --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+    );
+    anyhow::ensure!(
+        starter.is_none() || enemy_gust,
+        "--starter requires --enemy-gust"
     );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
@@ -90,6 +109,14 @@ fn main() -> Result<()> {
         !record_on_move || record.is_some(),
         "--record-on-move needs --record"
     );
+    anyhow::ensure!(
+        !record_on_capture || record.is_some(),
+        "--record-on-capture needs --record"
+    );
+    anyhow::ensure!(
+        !(record_on_move && record_on_capture),
+        "choose only one of --record-on-move or --record-on-capture"
+    );
     let pack = pack
         .canonicalize()
         .context("find compatible external Crystalpack")?;
@@ -97,12 +124,12 @@ fn main() -> Result<()> {
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
-    let (map_name, tile_x, tile_y) = if size_comparison {
-        let map_name = "UnionCave1F";
+    let (map_name, tile_x, tile_y) = if size_comparison || enemy_gust {
+        let map_name = if enemy_gust { "Route44" } else { "UnionCave1F" };
         let (width, height) = runtime
             .data()
             .saved_map_tile_bounds(map_name)
-            .context("find size comparison map bounds")?;
+            .context("find battle preview map bounds")?;
         let (x, y) = (0..height)
             .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
             .find(|&(x, y)| {
@@ -115,7 +142,7 @@ fn main() -> Result<()> {
                     )
                     .is_ok()
             })
-            .context("find a walkable size comparison preview tile")?;
+            .context("find a walkable battle preview tile")?;
         (map_name, x, y)
     } else {
         ("Route36", 20, 8)
@@ -151,6 +178,9 @@ fn main() -> Result<()> {
             render_test_surf: surf,
             render_test_size_comparison: size_comparison,
             render_test_pidgeotto: pidgeotto,
+            render_test_enemy_gust: enemy_gust,
+            render_test_battle_starter: starter,
+            render_test_poke_ball_failure: poke_ball_failure,
             render_test_window_size: window_size,
             battle_reduced_flashes: reduced_flashes,
             render_test_hour: Some(16),
@@ -161,6 +191,8 @@ fn main() -> Result<()> {
             render_test_record: record.map(|path| (path, seconds)),
             #[cfg(not(target_arch = "wasm32"))]
             render_test_record_on_move: record_on_move,
+            #[cfg(not(target_arch = "wasm32"))]
+            render_test_record_on_capture: record_on_capture,
             #[cfg(not(target_arch = "wasm32"))]
             render_test_measure: measure.map(|path| (path, seconds)),
             quick_save_path: None,

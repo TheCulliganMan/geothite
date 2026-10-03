@@ -58,6 +58,25 @@ pub struct VisualBattleBattler {
     pub shiny: bool,
 }
 
+/// Current source picture operation. These phases never advance a clock.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum VisualCapturePicture {
+    Full,
+    /// ReturnMon/EnterMon's intact 8x8 tiles in the fixed 7x7 front slot.
+    Tiles(u8),
+    Hidden,
+}
+
+/// Present capture state only: no RNG, predicted result, or completion command.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct VisualBattleCapture {
+    pub frame: u16,
+    pub ball_id: Arc<str>,
+    /// False while the existing narration still owns the start boundary.
+    pub presented: bool,
+    pub enemy_picture: VisualCapturePicture,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VisualBattleCueKind {
     Move,
@@ -124,6 +143,9 @@ pub struct VisualBattleBattlerRows {
     pub source_y: Vec2,
     /// The source clears the corresponding BG tiles one tick after allocation.
     pub bg_cleared: bool,
+    /// Native HUD depth derived from the same source slot and whole-frame
+    /// OBJ/BG-priority decision as explicit source OAM, never inferred in 3D.
+    pub oam_depth: f32,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -180,6 +202,8 @@ pub struct VisualBattleFrame {
     pub battlers: [Option<VisualBattleBattler>; 2],
     pub cues: Vec<VisualBattleCue>,
     pub source: Option<VisualBattleSourceFrame>,
+    /// The entire visible capture lifetime, independent of OAM or cue presence.
+    pub capture: Option<VisualBattleCapture>,
 }
 impl VisualBattleFrame {
     /// Source LCD scroll applies to the rendered BG battlers, never OBJ/HUD.
@@ -227,6 +251,14 @@ impl VisualBattleFrame {
                 return Err("battle physical size is invalid");
             }
         }
+        if let Some(capture) = &self.capture {
+            if capture.ball_id.is_empty()
+                || matches!(capture.enemy_picture, VisualCapturePicture::Tiles(n) if ![3, 5, 7].contains(&n))
+                || (!capture.presented && capture.enemy_picture != VisualCapturePicture::Full)
+            {
+                return Err("invalid current capture picture");
+            }
+        }
         if self.cues.len() > 8 {
             return Err("unbounded battle cue frame");
         }
@@ -254,12 +286,17 @@ impl VisualBattleFrame {
                 return Err("invalid source battle presentation");
             }
             for rows in source.battler_rows.iter().flatten() {
-                if !rows.source_y.is_finite()
+                if !rows.oam_depth.is_finite() || !rows.source_y.is_finite()
                     || rows.source_y.x < 0.0
                     || rows.source_y.y > 144.0
                     || rows.source_y.x >= rows.source_y.y
                 {
                     return Err("invalid extracted battler rows");
+                }
+            }
+            if let [Some(player), Some(enemy)] = source.battler_rows {
+                if player.oam_depth != enemy.oam_depth {
+                    return Err("mixed extracted row depths require separate overlays");
                 }
             }
             for object in &source.objects {

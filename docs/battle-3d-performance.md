@@ -129,3 +129,32 @@ semantics, translated texture reuse, stable materials, one HUD pass,
 landscape/portrait resize, shake/depth alignment, capture caps at 30/40/60/120-Hz
 render rates, stalls and readback backpressure. Captures and pack-derived reports
 remain verification output outside the committed bundle.
+
+## Capture image and source-shape checkpoint
+
+These are observations on the recovered native build, not a matched speedup
+comparison with the earlier tables. The cloud adapter is llvmpipe/OpenGL;
+shadows are disabled, vertex lighting and the balanced 0.75 scene scale are
+active, and the requested capture ceiling is30Hz. An 800x600 window therefore
+uses a600x450 arena under the native HUD. No compilation or encoding ran during
+these captures, and no frame interpolation was used.
+
+| Actual scene | Median update | p95 update | Captured frames / elapsed |
+| --- | ---: | ---: | --- |
+| Master Ball, modeled arena | 32.25ms | 45.22ms | 386 / 14.10s |
+| Ordinary failed Ball, modeled arena | 37.60ms | 65.03ms | 194 / 8.08s |
+| Player Gust | 30.43ms | 41.53ms | 170 / 6.11s |
+| Enemy Gust | 31.34ms | 50.41ms | 160 / 6.08s |
+
+Every active capture update in the first two recordings admitted the static
+image lease; no classic fallback occurred. Mesh/material counts stayed fixed.
+Original effect texture caches still grow when a previously unseen source
+frame or palette is first requested. These results do not establish smooth
+frame pacing, cold-start cost, hardware-GPU performance or a benefit for all moves.
+
+At1180x812 (885x609 arena), the Reduced capture retained260 frames in14.0s,
+median50.88ms. The later Full capture retained649 frames in30.11s,
+median44.57ms. They are separate observations, not an isolated Full/Reduced
+performance comparison. Both completed the source capture at frame508. Attempts
+to resize that native window did not change its dimensions, so they are not
+successful resize tests. The image pilot stays opt-in.

@@ -946,6 +946,7 @@ fn faint_mon_drops_one_tile_every_two_frames_then_disappears() {
             render_extracted: false,
             oam_row_masks: None,
             oam_slot: None,
+            oam_layer: VisibleBattleOamLayer::Legacy,
         })
     );
     animation.frame = 12;
@@ -958,6 +959,7 @@ fn faint_mon_drops_one_tile_every_two_frames_then_disappears() {
             render_extracted: false,
             oam_row_masks: None,
             oam_slot: None,
+            oam_layer: VisibleBattleOamLayer::Legacy,
         })
     );
     animation.frame = 13;
@@ -2326,12 +2328,12 @@ fn battlerobj_extracts_fixed_head_or_feet_rows_instead_of_resizing_the_battler()
     assert_eq!(visible_move_battler_clip_tiles(Some(&animation)), (None, None));
     assert_eq!(
         visible_move_battler_row_extractions(Some(&animation)).0,
-        Some(VisibleBattlerRowExtraction { rows: 1, top: true, bg_rows_cleared: false, render_extracted: true, oam_row_masks: None, oam_slot: None })
+        Some(VisibleBattlerRowExtraction { rows: 1, top: true, bg_rows_cleared: false, render_extracted: true, oam_row_masks: None, oam_slot: None, oam_layer: VisibleBattleOamLayer::Legacy })
     );
     animation.frame = 1;
     assert_eq!(
         visible_move_battler_row_extractions(Some(&animation)).0,
-        Some(VisibleBattlerRowExtraction { rows: 1, top: true, bg_rows_cleared: true, render_extracted: true, oam_row_masks: None, oam_slot: None })
+        Some(VisibleBattlerRowExtraction { rows: 1, top: true, bg_rows_cleared: true, render_extracted: true, oam_row_masks: None, oam_slot: None, oam_layer: VisibleBattleOamLayer::Legacy })
     );
     animation.bg_events.push(VisibleMoveBgEvent {
         frame: 5, effect_id: "BATTLE_BG_EFFECT_SHOW_MON".to_string(), duration: 0,
@@ -2355,7 +2357,7 @@ fn battlerobj_extracts_fixed_head_or_feet_rows_instead_of_resizing_the_battler()
     animation.frame = 1;
     assert_eq!(
         visible_move_battler_row_extractions(Some(&animation)).1,
-        Some(VisibleBattlerRowExtraction { rows: 2, top: false, bg_rows_cleared: true, render_extracted: true, oam_row_masks: None, oam_slot: None })
+        Some(VisibleBattlerRowExtraction { rows: 2, top: false, bg_rows_cleared: true, render_extracted: true, oam_row_masks: None, oam_slot: None, oam_layer: VisibleBattleOamLayer::Legacy })
     );
 }
 
@@ -2379,6 +2381,7 @@ fn extracted_battler_rows_render_as_an_independent_oam_strip() {
                 render_extracted: true,
                 oam_row_masks: None,
                 oam_slot: None,
+                oam_layer: VisibleBattleOamLayer::Legacy,
             },
         );
     });
@@ -2524,21 +2527,21 @@ fn master_ball_capture_timeline_includes_the_full_sparkle_wait() {
         frame: 0,
     };
 
-    assert_eq!(capture.master_ball_special_frame(), Some(92));
-    assert_eq!(capture.shake_entry_frame(), 156);
-    assert_eq!(capture.change_dex_sound_frame(), 180);
-    assert_eq!(capture.bounce_sound_frame(), 212);
-    assert_eq!(capture.shake_setup_frame(), 316);
-    assert_eq!(capture.first_shake_check_frame(), 364);
+    assert_eq!(capture.master_ball_special_frame(), Some(79));
+    assert_eq!(capture.shake_entry_frame(), 144);
+    assert_eq!(capture.change_dex_sound_frame(), 170);
+    assert_eq!(capture.bounce_sound_frame(), 203);
+    assert_eq!(capture.shake_setup_frame(), 311);
+    assert_eq!(capture.first_shake_check_frame(), 360);
     assert_eq!(capture.total_frames(), 508);
 
     let mut visibility = capture.clone();
-    visibility.frame = 155;
+    visibility.frame = 143;
     assert!(!visibility.enemy_hidden());
     assert_eq!(visibility.enemy_clip_tiles(), None);
-    visibility.frame = 156;
+    visibility.frame = 144;
     assert_eq!(visibility.enemy_clip_tiles(), Some(7));
-    visibility.frame = 164;
+    visibility.frame = 156;
     assert!(visibility.enemy_hidden());
 }
 
@@ -3252,20 +3255,20 @@ fn caught_capture_retains_then_clears_sprites_without_revealing_enemy_before_com
     runtime_shell.visible_capture_animation = Some(VisibleCaptureAnimation {
         trigger_message: "Player used POKé BALL!".to_string(),
         ball_id: "POKE_BALL".to_string(),
-        animation_shakes: 3,
+        animation_shakes: 4,
         blocked: false,
         caught: true,
         started: false,
         complete: true,
         sprites_cleared: false,
-        frame: 228 + 48 * 3,
+        frame: 435,
     });
     let outcome = crate::core::battle::capture::CaptureOutcome {
         caught: true,
         blocked: false,
         storage_full: false,
         wobble_count: 3,
-        animation_shakes: 3,
+        animation_shakes: 4,
         final_catch_rate: u8::MAX,
         ball_id: Some("POKE_BALL".to_string()),
     };
@@ -4203,12 +4206,15 @@ fn battle_animation_shared_graphics_use_authored_tile_offsets() {
 }
 
 fn battle_anim_regression_bundle() -> serde_json::Value {
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
-    serde_json::from_slice(
-        &crate::read_runtime_asset(&assets.runtime_assets().join("data/battle_anim_bundle.json"))
-            .unwrap(),
-    )
-    .unwrap()
+    // Exercise the same installed external pack as production. A clean
+    // checkout intentionally contains no exported battle animation catalog.
+    static BUNDLE: std::sync::OnceLock<serde_json::Value> = std::sync::OnceLock::new();
+    BUNDLE.get_or_init(|| {
+        let shell = route36_battle_shell_for_render_regression();
+        let snapshot = shell.shell.snapshot().unwrap();
+        let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+        (*bundle).clone()
+    }).clone()
 }
 
 fn battle_anim_regression_timeline(
@@ -5204,7 +5210,8 @@ fn battle_anim_incremental_playback_matches_uninterrupted_command_history() {
 #[test]
 fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector() {
     let bundle = battle_anim_regression_bundle();
-    let assets = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let shell = route36_battle_shell_for_render_regression();
+    let assets = &shell.asset_root;
     let animation = battle_anim_regression_timeline(
         vec![VisibleMoveObjectEvent {
             frame: 0,
@@ -5249,12 +5256,14 @@ fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector(
         .unwrap();
         images.get(&result.sprite.handle).unwrap().data.clone()
     };
-    let red = render(2, 0xe4, 0xe4);
+    // Cartridge palette4 is red; palette2 is gray. Keep raw OAM indices
+    // original, and verify only gray obeys BattleAnim_SetOBPals remapping.
+    let red = render(4, 0xe4, 0xe4);
     assert!(red.chunks_exact(4).any(|pixel| pixel[3] != 0));
-    assert_eq!(red, render(2, 0, 0));
-    assert_ne!(red, render(0, 0xe4, 0xe4));
-    assert_eq!(render(0, 0xe4, 0), render(0, 0xe4, 0xe4));
-    assert_ne!(render(0, 0, 0xe4), render(0, 0xe4, 0xe4));
+    assert_eq!(red, render(4, 0, 0));
+    assert_ne!(red, render(2, 0xe4, 0xe4));
+    assert_eq!(render(2, 0xe4, 0), render(2, 0xe4, 0xe4));
+    assert_ne!(render(2, 0, 0xe4), render(2, 0xe4, 0xe4));
 }
 
 #[test]
@@ -6309,6 +6318,9 @@ fn battle_redraws_remove_retired_sprites_from_fullscreen_parents() {
 fn capture_throw_keeps_both_ball_halves_and_runs_object_callbacks() {
     for ball in ["POKE_BALL", "GREAT_BALL", "ULTRA_BALL", "MASTER_BALL"] {
         for (caught, blocked) in [(false, false), (true, false), (false, true)] {
+            if ball == "MASTER_BALL" && !caught && !blocked {
+                continue;
+            }
             let mut shell = route36_battle_shell_for_render_regression();
             shell.visible_battle_transition = None;
             shell.battle_entry_messages_remaining = 0;
@@ -6319,7 +6331,7 @@ fn capture_throw_keeps_both_ball_halves_and_runs_object_callbacks() {
             shell.visible_capture_animation = Some(VisibleCaptureAnimation {
                 trigger_message: String::new(),
                 ball_id: ball.into(),
-                animation_shakes: 3,
+                animation_shakes: if caught { 4 } else { 3 },
                 blocked,
                 caught,
                 started: true,
@@ -6348,11 +6360,11 @@ fn capture_throw_keeps_both_ball_halves_and_runs_object_callbacks() {
                 );
                 if ball == "POKE_BALL"
                     && caught
-                    && [0, 36, 52, 68, 92, 124, 228, 284].contains(&frame)
+                    && [0, 37, 54, 71, 97, 130, 238, 287].contains(&frame)
                 {
                     save_live_battle_canvas_for_test(world, &format!("capture-ball-{frame}.png"));
                 }
-                if frame == 36 && !blocked {
+                if frame == 37 && !blocked {
                     assert_eq!(
                         capture_ball_sprite_count(world),
                         2,
@@ -6982,7 +6994,7 @@ fn battle_anim_battler_rows_reserve_source_object_one() {
     let shell = route36_battle_shell_for_render_regression();
     let snapshot = shell.shell.snapshot().unwrap();
     let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
-    for (move_id, first_spawn) in [("TACKLE", 11), ("WATER_GUN", 5)] {
+    for (move_id, first_spawn) in [("TACKLE", 13), ("WATER_GUN", 6)] {
         for player_move in [true, false] {
             let mut animation = battler_row_regression_animation(&snapshot, move_id, player_move);
             animation.frame = first_spawn;
@@ -7004,7 +7016,7 @@ fn battle_anim_battler_rows_match_source_queue_lifetime_and_oam() {
     let shell = route36_battle_shell_for_render_regression();
     let snapshot = shell.shell.snapshot().unwrap();
     let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
-    for (move_id, retire_frame) in [("TACKLE", 25), ("WATER_GUN", 98)] {
+    for (move_id, retire_frame) in [("TACKLE", 30), ("WATER_GUN", 107)] {
         for player_move in [true, false] {
             let mut animation = battler_row_regression_animation(&snapshot, move_id, player_move);
             // Source Tackle uses TARGET; Water Gun uses USER. Both queue at 1.
@@ -7020,6 +7032,10 @@ fn battle_anim_battler_rows_match_source_queue_lifetime_and_oam() {
             };
             let mut oracle = animation.clone();
             oracle.move_id = "ROW_ORACLE".into();
+            // This explicit spawn replaces the source BG-owned allocation.
+            // Move identity does not suppress that allocation anymore.
+            oracle.bg_events.retain(|event| !matches!(event.effect_id.as_str(),
+                "BATTLE_BG_EFFECT_BATTLEROBJ_1ROW" | "BATTLE_BG_EFFECT_BATTLEROBJ_2ROW"));
             oracle.object_events.insert(
                 0,
                 VisibleMoveObjectEvent {
@@ -7034,7 +7050,7 @@ fn battle_anim_battler_rows_match_source_queue_lifetime_and_oam() {
             );
             let mut actual = new_visible_battle_objects(&bundle, &animation).unwrap();
             let mut expected = new_visible_battle_objects(&bundle, &oracle).unwrap();
-            for frame in 0..=animation.total_frames {
+            for frame in 0..animation.total_frames {
                 animation.frame = frame;
                 oracle.frame = frame;
                 advance_visible_battle_objects(&mut actual, &bundle, &animation).unwrap();
@@ -7062,7 +7078,7 @@ fn battle_anim_battler_rows_match_source_queue_lifetime_and_oam() {
                     assert_eq!(row.spawn_frame, 1);
                     assert_eq!(animation.bg_events[row.bg_event_index].frame, 1);
                     assert_eq!(row.bytes[0], u8::from(frame < retire_frame));
-                    assert_eq!(row.bytes[5], if player_side { 6 } else { 7 });
+                    assert_eq!(row.bytes[5], if player_side { 1 } else { 0 });
                     assert_eq!(row.oam.origin, (if player_side { 48 } else { 132 }, 64));
                     assert_eq!(row.oam.entries.len(), if player_side { 12 } else { 14 });
                     assert_eq!(row.frameset, reference.frameset);
@@ -7212,7 +7228,7 @@ fn battle_anim_battler_rows_duplicate_extraction_and_rewind_are_stable() {
 }
 
 #[test]
-fn battle_anim_battler_rows_leave_other_roots_and_wrappers_unchanged() {
+fn battle_anim_battler_rows_keep_other_visuals_in_fallback() {
     let shell = route36_battle_shell_for_render_regression();
     let snapshot = shell.shell.snapshot().unwrap();
     let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
@@ -7227,12 +7243,13 @@ fn battle_anim_battler_rows_leave_other_roots_and_wrappers_unchanged() {
             reference.move_id = "UNRELATED_ROOT".into();
             let mut actual = new_visible_battle_objects(&bundle, &animation).unwrap();
             let mut expected = new_visible_battle_objects(&bundle, &reference).unwrap();
-            for frame in 0..=animation.total_frames {
+            for frame in 0..animation.total_frames {
                 animation.frame = frame;
                 reference.frame = frame;
                 advance_visible_battle_objects(&mut actual, &bundle, &animation).unwrap();
                 advance_visible_battle_objects(&mut expected, &bundle, &reference).unwrap();
-                assert!(actual.battler_rows.iter().all(Option::is_none));
+                assert!(visible_battle_row_plan(&animation).is_none());
+                assert!(!visible_battle_uses_implicit_rows(&animation));
                 assert_eq!(actual.machine.oam(), expected.machine.oam());
                 assert_eq!(actual.machine.instructions, expected.machine.instructions);
                 for slot in 0..10 {
@@ -7248,7 +7265,7 @@ fn battle_anim_battler_rows_classic_consumes_live_terminal_oam() {
     let shell = route36_battle_shell_for_render_regression();
     let snapshot = shell.shell.snapshot().unwrap();
     let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
-    for (move_id, redraw, retire) in [("TACKLE", 20, 25), ("WATER_GUN", 94, 98)] {
+    for (move_id, redraw, retire) in [("TACKLE", 24, 30), ("WATER_GUN", 102, 107)] {
         for player_move in [true, false] {
             let mut animation = battler_row_regression_animation(&snapshot, move_id, player_move);
             let player_side = if move_id == "TACKLE" {
@@ -7257,7 +7274,7 @@ fn battle_anim_battler_rows_classic_consumes_live_terminal_oam() {
                 player_move
             };
             let mut playback = new_visible_battle_objects(&bundle, &animation).unwrap();
-            for frame in 0..=animation.total_frames {
+            for frame in 0..animation.total_frames {
                 animation.frame = frame;
                 advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
                 let (player, enemy) = visible_live_battler_row_extractions(&animation, &playback);
@@ -7272,11 +7289,11 @@ fn battle_anim_battler_rows_classic_consumes_live_terminal_oam() {
                     assert!(extraction.render_extracted);
                     assert_eq!(extraction.oam_slot, Some(0));
                     let row_depth = visible_battler_extracted_row_depth(extraction, 3.0);
-                    assert_eq!(row_depth, 3.45);
+                    assert_eq!(row_depth, VisibleBattleOamLayer::Foreground.depth(0));
                     for (slot, explicit) in playback.slots.iter().enumerate() {
                         if explicit.is_some() {
                             assert!(
-                                row_depth > 3.45 - slot as f32 * 0.001,
+                                row_depth > VisibleBattleOamLayer::Foreground.depth(slot),
                                 "the source strip must precede later OAM objects"
                             );
                         }
@@ -7352,8 +7369,11 @@ fn battle_anim_battler_rows_classic_respects_same_tick_oam_priority() {
         let extraction = if player_move { player } else { enemy }.unwrap();
         assert_eq!(extraction.oam_slot, Some(1));
         let row_depth = visible_battler_extracted_row_depth(extraction, 3.0);
-        assert_eq!(row_depth, 3.45 - 0.001);
-        assert!(row_depth < 3.45, "earlier explicit OAM must cover the row");
+        assert_eq!(row_depth, VisibleBattleOamLayer::Foreground.depth(1));
+        assert!(
+                row_depth < VisibleBattleOamLayer::Foreground.depth(0),
+                "earlier explicit OAM must cover the row"
+            );
         let columns = if player_move { 4 } else { 3 };
         assert_eq!(extraction.oam_row_masks, Some([(1 << columns) - 1; 16]));
         let side_size = if player_move { 48.0 } else { 56.0 };
@@ -7401,6 +7421,7 @@ fn battle_anim_battler_rows_classic_draw_crops_to_oam_pixel_rows() {
                 render_extracted: true,
                 oam_row_masks: Some(masks),
                 oam_slot: None,
+                oam_layer: VisibleBattleOamLayer::Legacy,
             },
         );
     });
@@ -7419,8 +7440,8 @@ fn battle_anim_battler_rows_classic_draw_crops_to_oam_pixel_rows() {
 #[test]
 fn battle_anim_battler_rows_classic_draw_uses_oam_depth_for_all_piece_shapes() {
     for (slot, mask, expected_depth, expected_pieces) in [
-        (Some(0), 0x3f, 3.45, 1),
-        (Some(1), 0x05, 3.45 - 0.001, 2),
+        (Some(0), 0x3f, VisibleBattleOamLayer::Foreground.depth(0), 1),
+        (Some(1), 0x05, VisibleBattleOamLayer::Foreground.depth(1), 2),
         (None, 0x3f, 3.02, 1),
     ] {
         let frame = SpriteFrame {
@@ -7441,6 +7462,7 @@ fn battle_anim_battler_rows_classic_draw_uses_oam_depth_for_all_piece_shapes() {
                     render_extracted: true,
                     oam_row_masks: Some([mask; 16]),
                     oam_slot: slot,
+                    oam_layer: VisibleBattleOamLayer::Foreground,
                 },
             );
         });
@@ -7455,5 +7477,114 @@ fn battle_anim_battler_rows_classic_draw_uses_oam_depth_for_all_piece_shapes() {
                 .iter()
                 .all(|piece| piece.translation.z == expected_depth)
         );
+    }
+}
+
+#[test]
+fn battle_anim_recover_retires_the_bg_row_without_incrementing_a_bubble() {
+    let shell = route36_battle_shell_for_render_regression();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
+    for player_move in [true, false] {
+        let mut animation = battler_row_regression_animation(&snapshot, "RECOVER", player_move);
+        // TargetObj_1Row waits6; Recover waits64; ShowMon_0 waits1/5/1.
+        // Including command ticks gives row1, bubbles8, show75, retire81,
+        // return83 and the exclusive completion boundary84.
+        assert_eq!(animation.total_frames, 84);
+        let mut expected_events = (0x30..=0x37)
+            .map(|param| VisibleMoveObjectEvent {
+                frame: 8,
+                command: VisibleMoveObjectCommand::Spawn {
+                    object_id: "BATTLE_ANIM_OBJ_RECOVER".into(),
+                    x: 44,
+                    y: 88,
+                    param,
+                },
+            })
+            .collect::<Vec<_>>();
+        expected_events.push(VisibleMoveObjectEvent {
+            frame: 81,
+            command: VisibleMoveObjectCommand::Increment { index: 1 },
+        });
+        assert_eq!(animation.object_events, expected_events);
+        assert_eq!(
+            animation.bg_events.iter().filter_map(|event| match event.effect_id.as_str() {
+                "BATTLE_BG_EFFECT_BATTLEROBJ_1ROW" | "BATTLE_BG_EFFECT_SHOW_MON" =>
+                    Some((event.frame, event.effect_id.as_str(), event.target.as_str())),
+                _ => None,
+            }).collect::<Vec<_>>(),
+            vec![
+                (1, "BATTLE_BG_EFFECT_BATTLEROBJ_1ROW", "BG_EFFECT_TARGET"),
+                (75, "BATTLE_BG_EFFECT_SHOW_MON", "BG_EFFECT_TARGET"),
+            ]
+        );
+        // Correct allocation does not opt Recover into row rendering or the
+        // immersive pilot; the existing visual fallback remains responsible.
+        assert!(visible_battle_row_plan(&animation).is_none());
+        let plan = visible_battle_source_row_plan(&animation).unwrap();
+        assert_eq!(plan.spawn_frame, 1);
+        assert_eq!(plan.row_count, 1);
+        assert_eq!(plan.player_side, !player_move);
+        let mut playback = new_visible_battle_objects(&bundle, &animation).unwrap();
+        for frame in 0..animation.total_frames {
+            animation.frame = frame;
+            advance_visible_battle_objects(&mut playback, &bundle, &animation)
+                .unwrap_or_else(|error| panic!("Recover player={player_move} frame={frame}: {error:#}"));
+            if (1..=81).contains(&frame) {
+                let row = playback.battler_rows[0].as_ref().unwrap();
+                assert_eq!(row.bytes[4], 0, "source NULL callback");
+                assert_eq!(row.bytes[0], u8::from(frame < 81));
+                assert_eq!(row.row_count, 1);
+                assert_eq!(row.player_side, !player_move);
+                assert!(
+                    !row.oam.entries.is_empty(),
+                    "retiring row keeps final-tick OAM"
+                );
+            } else {
+                assert!(playback.battler_rows.iter().all(Option::is_none));
+            }
+            if frame >= 8 {
+                assert_eq!(playback.last_id, 9, "one BG row plus eight bubbles");
+                for slot in 1..=8 {
+                    let bubble = playback.machine.object(slot);
+                    assert_eq!(bubble[0], slot as u8 + 1, "bubble creation ID");
+                    assert_eq!(
+                        battle_program::FUNCTIONS[usize::from(bubble[4])],
+                        "BATTLE_ANIM_FUNC_RECOVER"
+                    );
+                    assert_eq!(
+                        bubble[14], 1,
+                        "anim_incobj1 must retire the row, not change a bubble state"
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn battle_anim_source_row_plan_rejects_ambiguous_and_noninitial_effects() {
+    for player_move in [true, false] {
+        for row_count in [1, 2] {
+            let mut animation = battler_row_regression_synthetic(player_move, row_count);
+            animation.move_id = "UNVALIDATED_VISUAL".into();
+            animation.animation_label = "BattleAnim_UnvalidatedVisual".into();
+            assert!(visible_battle_row_plan(&animation).is_none());
+            assert!(visible_battle_source_row_plan(&animation).is_some());
+            let mut multiple = animation.clone();
+            multiple.bg_events.push(multiple.bg_events[0].clone());
+            assert!(visible_battle_source_row_plan(&multiple).is_none());
+            for mutation in 0..4 {
+                let mut invalid = animation.clone();
+                let event = &mut invalid.bg_events[0];
+                match mutation {
+                    0 => event.duration = 1,
+                    1 => event.param = 1,
+                    2 => event.incremented = true,
+                    _ => event.target = "UNKNOWN_TARGET".into(),
+                }
+                assert!(visible_battle_source_row_plan(&invalid).is_none());
+            }
+        }
     }
 }

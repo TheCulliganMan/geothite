@@ -3782,3 +3782,29 @@ fn every_empty_field_pack_pocket_cancel_closes_cleanly_and_can_be_observed() {
         webmcp_observation(shell, None).expect("closed Pack must remain observable");
     }
 }
+
+#[test]
+fn explicit_render_fixture_clock_is_retained_for_hosted_pack() {
+    let sample = RuntimeRtcSample {
+        date: GameDate::new(2000, 1, 1),
+        hour: 16,
+        minute: 0,
+        second: 0,
+    };
+    let fixed = NativeRtcSource::fixed(sample);
+    for requires_server in [false, true] {
+        let selected = select_native_rtc_source(requires_server, fixed).unwrap();
+        assert_eq!(selected, fixed);
+        assert_eq!(selected.try_sample(), Some(sample));
+    }
+}
+
+#[test]
+#[cfg(not(target_arch = "wasm32"))]
+fn normal_native_clock_never_substitutes_device_time_for_hosted_time() {
+    assert!(select_native_rtc_source(true, NativeRtcSource::system_local()).is_err());
+    assert_eq!(
+        select_native_rtc_source(false, NativeRtcSource::system_local()).unwrap(),
+        NativeRtcSource::SystemLocal
+    );
+}

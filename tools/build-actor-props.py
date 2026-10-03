@@ -1199,7 +1199,13 @@ def export(name,objects):
      idx.append(lookup[key])
    if idx:primitives.append({'positions':pos,'normals':nor,'indices':idx,'base_color':[round(v,6) for v in mat.diffuse_color]});tri_count+=len(idx)//3
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':canonical_primitives(primitives)}
- (OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
+ if name in ('battle_cyndaquil','battle_totodile'):
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from cyndaquil_glb import export_cyndaquil
+  from totodile_glb import export_totodile
+  blob=(export_cyndaquil if name=='battle_cyndaquil' else export_totodile)(data)
+  (OUT/(name+'.glb')).write_bytes(blob)
+ else:(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {tri_count} triangles, {len(primitives)} primitives')
 
 def normalize(name,objects):

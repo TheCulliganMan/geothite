@@ -2,6 +2,7 @@
 mod render_record;
 #[cfg(feature = "location-tester")]
 mod render_walk;
+mod battle_anim_graphics;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -346,6 +347,9 @@ pub struct BevyShellConfig {
     /// Arm recording until the first actually presented battle move; never drives input.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_record_on_move: bool,
+    /// Arm until the first actually presented Capture/Deflect cue; never drives input.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record_on_capture: bool,
     /// Native frame/position measurement without GPU screenshots.
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     pub render_test_measure: Option<(PathBuf, u32)>,
@@ -374,6 +378,16 @@ pub struct BevyShellConfig {
     /// Legal level-25 Pidgeotto fixture for articulated wing playback.
     #[cfg(feature = "location-tester")]
     pub render_test_pidgeotto: bool,
+    /// Fresh Route44 fixture: Vance's legal Pidgeotto uses enemy-side Gust.
+    #[cfg(feature = "location-tester")]
+    pub render_test_enemy_gust: bool,
+    /// Optional legal starter in the disposable Vance rig-motion preview.
+    #[cfg(feature = "location-tester")]
+    pub render_test_battle_starter: Option<String>,
+    /// One deterministic ordinary failed throw in the fresh Route36 preview.
+    /// Supplies hardware DIV samples only; the real PACK action resolves capture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_poke_ball_failure: bool,
     /// Disposable legal Diglett/Onix size-comparison fixture.
     #[cfg(feature = "location-tester")]
     pub render_test_size_comparison: bool,
@@ -3536,6 +3550,13 @@ impl VisibleTrainerExitAnimation {
 }
 
 impl VisibleCaptureAnimation {
+    // Capture starts at command tick zero. Loading anim_wait N yields once,
+    // then each of its N timer ticks yields again, including decrement to zero.
+    // These are script waits only; item/text/audio wrapper delays are unchanged.
+    const fn wait_ticks(delay: u16) -> u16 {
+        delay + 1
+    }
+
     fn object_events(&self) -> Vec<VisibleMoveObjectEvent> {
         use VisibleMoveObjectCommand::{Increment, Set, Spawn};
         let master = self.ball_id.eq_ignore_ascii_case("MASTER_BALL");
@@ -3556,7 +3577,7 @@ impl VisibleCaptureAnimation {
         let mut push = |frame, command| events.push(VisibleMoveObjectEvent { frame, command });
         if self.blocked {
             push(
-                20,
+                self.blocked_hit_frame(),
                 Spawn {
                     object_id: "BATTLE_ANIM_OBJ_HIT_YFIX".into(),
                     x: 112,
@@ -3569,7 +3590,7 @@ impl VisibleCaptureAnimation {
         // Keep the retained lower half and the opening lid as separate
         // objects. The shared object machine owns motion and framesets.
         push(
-            36,
+            self.opening_lid_frame(),
             Spawn {
                 object_id: "BATTLE_ANIM_OBJ_POKE_BALL".into(),
                 x: 136,
@@ -3577,9 +3598,9 @@ impl VisibleCaptureAnimation {
                 param: 0,
             },
         );
-        push(36, Set { index: 2, value: 7 });
+        push(self.opening_lid_frame(), Set { index: 2, value: 7 });
         push(
-            52,
+            self.initial_poof_frame(),
             Spawn {
                 object_id: "BATTLE_ANIM_OBJ_BALL_POOF".into(),
                 x: 136,
@@ -3600,21 +3621,13 @@ impl VisibleCaptureAnimation {
                 );
             }
         }
-        push(self.shake_entry_frame() + 8, Increment { index: 2 });
+        push(self.lid_increment_frame(), Increment { index: 2 });
         push(self.change_dex_sound_frame(), Increment { index: 1 });
-        let wobbles = if self.caught {
-            self.animation_shakes.saturating_sub(1)
-        } else {
-            self.animation_shakes
-        };
-        for check in 0..u16::from(wobbles) {
-            push(
-                self.first_shake_check_frame() + 48 * check,
-                Increment { index: 1 },
-            );
+        for check in 0..self.visible_wobbles() {
+            push(self.shake_check_frame(check), Increment { index: 1 });
         }
         if !self.caught {
-            let frame = self.total_frames().saturating_sub(34);
+            let frame = self.break_free_frame();
             push(
                 frame,
                 Set {
@@ -3649,93 +3662,157 @@ impl VisibleCaptureAnimation {
         self.throw_active() || (self.complete && !self.sprites_cleared)
     }
 
-    fn shake_entry_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            156
-        } else {
-            68
-        }
+    fn blocked_hit_frame(&self) -> u16 {
+        Self::wait_ticks(20)
     }
 
-    fn shake_setup_frame(&self) -> u16 {
-        // Ordinary branches enter .Shake at 68. Master Ball then waits 24,
-        // creates its sparkles at 92, and waits another 64, entering at 156.
-        // .Shake then spends 160 frames before the first 48-frame check loop.
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            316
-        } else {
-            228
-        }
+    fn opening_lid_frame(&self) -> u16 {
+        Self::wait_ticks(36)
+    }
+
+    fn initial_poof_frame(&self) -> u16 {
+        self.opening_lid_frame() + Self::wait_ticks(16)
     }
 
     fn master_ball_special_frame(&self) -> Option<u16> {
         self.ball_id
             .eq_ignore_ascii_case("MASTER_BALL")
-            .then_some(92)
+            .then(|| self.initial_poof_frame() + Self::wait_ticks(24))
+    }
+
+    fn shake_entry_frame(&self) -> u16 {
+        // Master branches directly from the poof into its sparkle waits;
+        // the ordinary post-poof wait does not run on that branch.
+        match self.master_ball_special_frame() {
+            Some(sparkles) => sparkles + Self::wait_ticks(64),
+            None => self.initial_poof_frame() + Self::wait_ticks(16),
+        }
+    }
+
+    fn lid_increment_frame(&self) -> u16 {
+        self.shake_entry_frame() + Self::wait_ticks(8)
     }
 
     fn change_dex_sound_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            180
-        } else {
-            92
-        }
+        self.lid_increment_frame() + Self::wait_ticks(16)
     }
 
     fn bounce_sound_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            212
-        } else {
-            124
-        }
+        self.change_dex_sound_frame() + Self::wait_ticks(32)
+    }
+
+    fn shake_setup_frame(&self) -> u16 {
+        self.bounce_sound_frame() + 3 * Self::wait_ticks(32) + Self::wait_ticks(8)
     }
 
     fn first_shake_check_frame(&self) -> u16 {
-        self.shake_setup_frame().saturating_add(48)
+        self.shake_setup_frame() + Self::wait_ticks(48)
+    }
+
+    fn shake_check_frame(&self, check: u8) -> u16 {
+        self.first_shake_check_frame() + Self::wait_ticks(48) * u16::from(check)
+    }
+
+    fn visible_wobbles(&self) -> u8 {
+        if self.caught {
+            self.animation_shakes.saturating_sub(1)
+        } else {
+            self.animation_shakes
+        }
+    }
+
+    fn break_free_frame(&self) -> u16 {
+        self.shake_check_frame(self.animation_shakes)
+    }
+
+    fn expansion_start_frame(&self) -> u16 {
+        self.break_free_frame() + Self::wait_ticks(2)
+    }
+
+    fn return_frame(&self) -> u16 {
+        if self.blocked {
+            self.blocked_hit_frame() + Self::wait_ticks(32)
+        } else if self.caught {
+            self.shake_check_frame(self.animation_shakes.max(1) - 1)
+        } else {
+            self.expansion_start_frame() + Self::wait_ticks(32)
+        }
     }
 
     fn total_frames(&self) -> u16 {
+        // anim_ret still processes BG/OAM for this tick. Completion is the
+        // exclusive next boundary, where the existing result handoff runs.
+        self.return_frame() + 1
+    }
+
+    fn object_frame(&self) -> u16 {
+        // Retained capture extraction must not run a callback after anim_ret.
+        // The kept OAM's source palette reset remains a separate concern.
+        self.frame.min(self.return_frame())
+    }
+
+    fn sound_at_frame(&self, frame: u16) -> Option<&'static str> {
         if self.blocked {
-            52
-        } else if self.caught {
-            self.shake_setup_frame() + 48 * u16::from(self.animation_shakes.max(1))
+            return None;
+        }
+        if self.master_ball_special_frame() == Some(frame) {
+            Some("SFX_MASTER_BALL")
+        } else if frame == self.initial_poof_frame() {
+            Some("SFX_BALL_POOF")
+        } else if frame == self.change_dex_sound_frame() {
+            Some("SFX_CHANGE_DEX_MODE")
+        } else if frame == self.bounce_sound_frame() {
+            Some("SFX_BALL_BOUNCE")
+        } else if frame >= self.first_shake_check_frame()
+            && (frame - self.first_shake_check_frame()) % Self::wait_ticks(48) == 0
+        {
+            let check = (frame - self.first_shake_check_frame()) / Self::wait_ticks(48);
+            if check < u16::from(self.visible_wobbles()) {
+                Some("SFX_BALL_WOBBLE")
+            } else if !self.caught && check == u16::from(self.animation_shakes) {
+                Some("SFX_BALL_POOF")
+            } else {
+                None
+            }
         } else {
-            self.shake_setup_frame() + 48 * (u16::from(self.animation_shakes) + 1) + 34
+            None
         }
     }
 
+    fn enemy_hidden_frame(&self) -> u16 {
+        self.shake_entry_frame() + 12
+    }
+
     fn enemy_hidden(&self) -> bool {
-        let hidden_frame = self.shake_entry_frame().saturating_add(8);
-        if (!self.started && !self.complete) || self.blocked || self.frame < hidden_frame {
+        if (!self.started && !self.complete)
+            || self.blocked
+            || self.frame < self.enemy_hidden_frame()
+        {
             return false;
         }
-        self.caught || self.frame + 32 < self.total_frames()
+        self.caught || self.frame < self.expansion_start_frame()
     }
 
     fn enemy_clip_tiles(&self) -> Option<u8> {
         let shake_entry = self.shake_entry_frame();
-        let hidden_frame = shake_entry.saturating_add(8);
         if (!self.started && !self.complete) || self.blocked || self.frame < shake_entry {
             return None;
         }
-        if self.frame < hidden_frame {
-            return match self.frame - shake_entry {
+        if self.frame < self.enemy_hidden_frame() {
+            return match (self.frame - shake_entry) / 4 {
                 0 => Some(7),
                 1 => Some(5),
                 _ => Some(3),
             };
         }
-        if self.caught {
+        if self.caught || self.frame < self.expansion_start_frame() {
             return None;
         }
-        let expansion_start = self.total_frames().saturating_sub(32);
-        if self.frame < expansion_start {
-            return None;
-        }
-        match self.frame - expansion_start {
+        match (self.frame - self.expansion_start_frame()) / 4 {
             0 => Some(3),
             1 => Some(5),
-            _ => Some(7),
+            2 => Some(7),
+            _ => None,
         }
     }
 }
@@ -4352,6 +4429,28 @@ impl NativeRtcSource {
             }
             Self::Fixed(sample) => sample,
         }
+    }
+}
+
+// An explicitly configured location-test clock is deterministic even when the
+// external pack is the hosted browser variant. Normal play still requires its
+// synchronized server clock and must never silently fall back to device time.
+fn select_native_rtc_source(
+    requires_server: bool,
+    configured: NativeRtcSource,
+) -> Result<NativeRtcSource> {
+    #[cfg(any(test, feature = "location-tester"))]
+    if matches!(configured, NativeRtcSource::Fixed(_)) {
+        return Ok(configured);
+    }
+    if requires_server {
+        anyhow::ensure!(
+            NativeRtcSource::Server.try_sample().is_some(),
+            "real-time clock modpack requires a synchronized hosted server clock"
+        );
+        Ok(NativeRtcSource::Server)
+    } else {
+        Ok(configured)
     }
 }
 
@@ -5508,6 +5607,12 @@ pub fn run_bevy_shell(
     let render_test_size_comparison = config.render_test_size_comparison;
     #[cfg(feature = "location-tester")]
     let render_test_pidgeotto = config.render_test_pidgeotto;
+    #[cfg(feature = "location-tester")]
+    let render_test_enemy_gust = config.render_test_enemy_gust;
+    #[cfg(feature = "location-tester")]
+    let render_test_battle_starter = config.render_test_battle_starter.clone();
+    #[cfg(feature = "location-tester")]
+    let render_test_poke_ball_failure = config.render_test_poke_ball_failure;
     #[cfg(feature = "voxel-view")]
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
@@ -5519,6 +5624,8 @@ pub fn run_bevy_shell(
     let render_test_record = config.render_test_record.clone();
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let render_test_record_on_move = config.render_test_record_on_move;
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record_on_capture = config.render_test_record_on_capture;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let render_test_measure = config.render_test_measure.clone();
     #[cfg(feature = "location-tester")]
@@ -5535,15 +5642,8 @@ pub fn run_bevy_shell(
         .unwrap_or_else(NativeRtcSource::system_local);
     #[cfg(not(feature = "location-tester"))]
     let native_rtc_source = NativeRtcSource::system_local();
-    let native_rtc_source = if runtime.data().server_clock {
-        anyhow::ensure!(
-            NativeRtcSource::Server.try_sample().is_some(),
-            "real-time clock modpack requires a synchronized hosted server clock"
-        );
-        NativeRtcSource::Server
-    } else {
-        native_rtc_source
-    };
+    let native_rtc_source =
+        select_native_rtc_source(runtime.data().server_clock, native_rtc_source)?;
     let runtime_shell = {
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_shell_initialize").entered();
@@ -5559,6 +5659,9 @@ pub fn run_bevy_shell(
             render_test_surf,
             render_test_size_comparison,
             render_test_pidgeotto,
+            render_test_enemy_gust,
+            render_test_poke_ball_failure,
+            render_test_battle_starter.as_deref(),
         )?
     } else {
         runtime_shell
@@ -5790,6 +5893,7 @@ pub fn run_bevy_shell(
     );
     #[cfg(feature = "voxel-view")]
     {
+        projected_source_oam::install(&mut app);
         let battle_ui_layout = (
             publish_immersive_battle_canvas,
             sync_immersive_battle_ui_layout,
@@ -5944,11 +6048,12 @@ pub fn run_bevy_shell(
             *seconds,
             true,
             render_test_record_on_move,
+            render_test_record_on_capture,
         )?;
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if let Some((directory, seconds)) = render_test_measure.as_ref() {
-        render_record::install(&mut app, directory, *seconds, false, false)?;
+        render_record::install(&mut app, directory, *seconds, false, false, false)?;
     }
     let app_exit = app.run();
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
@@ -8274,6 +8379,9 @@ include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
+#[cfg(feature = "voxel-view")]
+#[path = "bevy_shell/battle_source_overlay.rs"]
+mod projected_source_oam;
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/battle_3d.rs");
 include!("bevy_shell/menu_rendering.rs");

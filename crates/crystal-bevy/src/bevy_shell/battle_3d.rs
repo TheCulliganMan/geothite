@@ -2,7 +2,8 @@
 // snapshot selected by render_playfield after retained-dialog scene selection.
 // It never calls snapshot(), tick(), a command dispatcher, or turn resolution.
 use crystal_render_api::{
-    VisualBattleBattler, VisualBattleBattlerRows, VisualBattleCue, VisualBattleCueKind,
+    VisualBattleBattler, VisualBattleBattlerRows, VisualBattleCapture, VisualCapturePicture,
+    VisualBattleCue, VisualBattleCueKind,
     VisualBattleEnvironment, VisualBattleFrame, VisualBattleSide, VisualBattleSourceFrame,
     VisualBattleSourceObject,
 };
@@ -274,6 +275,14 @@ fn capture_presented_battle(
             shiny,
         });
     }
+    if let Some(capture) = shell.visible_capture_animation.as_ref() {
+        frame.capture = Some(visible_capture_present_state(capture));
+        if immersive_capture_prototype_enabled()
+            && immersive_capture_source_supported(shell, snapshot, &frame.battlers)
+        {
+            frame.use_source_scene = immersive_battle_requires_source_scene_supported(shell, false, true);
+        }
+    }
     if let Some(animation) = animation.filter(|animation| animation.started) {
         frame.source = if shell.visible_move_audio_wait.is_none() {
             Some(capture_immersive_source_frame(
@@ -331,6 +340,20 @@ fn capture_presented_battle(
             damaging: move_data.is_some_and(|entry| entry.power > 0),
         });
     }
+    // Failure EnterMon and retained success outlive the old capture cue. OAM
+    // publication follows its real lifetime and shares classic's exact clock.
+    if !animation.is_some_and(|animation| animation.started)
+        && shell.visible_send_out_animation.is_none()
+        && shell.visible_move_audio_wait.is_none()
+        && let Some(capture) = shell.visible_capture_animation.as_ref()
+            .filter(|capture| capture.retained_objects_visible())
+    {
+        let source_animation = visible_capture_source_animation(capture);
+        frame.source = Some(capture_immersive_source_frame_with_capture(
+            snapshot, &source_animation, &frame.battlers, art,
+            &shell.asset_root, images, Some(capture),
+        )?);
+    }
     if let Some(send_out) = shell.visible_send_out_animation.as_ref() {
         frame.cues.push(VisualBattleCue {
             kind: VisualBattleCueKind::SendOut,
@@ -351,7 +374,7 @@ fn capture_presented_battle(
     if let Some(capture) = shell.visible_capture_animation.as_ref().filter(|capture| {
         capture.retained_objects_visible()
             && (capture.blocked
-                || capture.frame < capture.shake_entry_frame() + 8
+                || capture.frame < capture.enemy_hidden_frame()
                 || capture.enemy_hidden())
     }) {
         frame.cues.push(VisualBattleCue {
@@ -365,7 +388,11 @@ fn capture_presented_battle(
             element: Arc::from("NORMAL"),
             progress: immersive_battle_progress(
                 u32::from(capture.frame),
-                if capture.blocked { 52 } else { 36 },
+                u32::from(if capture.blocked {
+                    capture.total_frames()
+                } else {
+                    capture.opening_lid_frame()
+                }),
             ),
             damaging: false,
         });
@@ -417,6 +444,19 @@ fn capture_immersive_source_frame(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<VisualBattleSourceFrame> {
+    capture_immersive_source_frame_with_capture(snapshot, animation, battlers, art,
+        asset_root, images, None)
+}
+
+fn capture_immersive_source_frame_with_capture(
+    snapshot: &RuntimeShellSnapshot,
+    animation: &VisibleMoveAnimation,
+    battlers: &[Option<VisualBattleBattler>; 2],
+    art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    capture: Option<&VisibleCaptureAnimation>,
+) -> Result<VisualBattleSourceFrame> {
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_source_extract").entered();
     let bundle = battle_anim_render_bundle(art, snapshot)?;
@@ -434,7 +474,10 @@ fn capture_immersive_source_frame(
         _ => new_visible_battle_objects(&bundle, animation)?,
     };
     advance_visible_battle_objects(&mut playback, &bundle, animation)?;
-    let live_slots = playback.slots.clone();
+    let oam_layer = visible_battle_oam_layer(&playback);
+    let live_slots = visible_capture_oam_slots(&playback, capture);
+    let battler_palettes = visible_battle_object_battler_palettes(
+        snapshot, asset_root, animation, &live_slots)?;
     let live_battler_rows = playback.battler_rows.clone();
     let object_obp0_write = playback.obp0_write;
     art.battle_object_runtime = Some(playback);
@@ -470,7 +513,7 @@ fn capture_immersive_source_frame(
         battler_rows: if immersive_row_prototype_enabled()
             && immersive_row_prototype_supported(animation, battlers)
         {
-            immersive_row_prototype_rows(animation, &live_battler_rows)
+            immersive_row_prototype_rows(animation, &live_battler_rows, oam_layer)
         } else {
             [None; 2]
         },
@@ -519,17 +562,9 @@ fn capture_immersive_source_frame(
         };
         let object = &bundle["objects"][object_id];
         let frame = &bundle["framesets"][live.frameset][live.frame];
-        let palette = match live.bytes[5] & 7 {
-            0 => "PAL_BATTLE_OB_GRAY",
-            1 => "PAL_BATTLE_OB_YELLOW",
-            2 => "PAL_BATTLE_OB_RED",
-            3 => "PAL_BATTLE_OB_GREEN",
-            4 => "PAL_BATTLE_OB_BLUE",
-            5 => "PAL_BATTLE_OB_BROWN",
-            other => anyhow::bail!("invalid current source object palette {other}"),
-        };
+        let palette = battle_object_palette_name(live.bytes[5] & 7)?;
         let mut render = |obp0, obp1| {
-            battle_anim_rendered_frame(
+            battle_anim_rendered_frame_with_battler_palettes(
                 art,
                 &bundle,
                 asset_root,
@@ -545,6 +580,7 @@ fn capture_immersive_source_frame(
                 obp0,
                 obp1,
                 Some(&live.oam),
+                &battler_palettes,
                 images,
             )
         };
@@ -633,7 +669,6 @@ fn sync_immersive_battle_layers(
     mut commands: Commands,
     status: Res<crystal_voxel_view::BattleViewStatus>,
     frame: Res<VisualBattleFrame>,
-    mode: Res<crystal_render_api::BattleFlashMode>,
     world_status: Res<crystal_voxel_view::VoxelViewStatus>,
     mut cameras: Query<&mut Camera, With<MainCameraMarker>>,
     settings: Res<crystal_voxel_view::VoxelViewSettings>,
@@ -660,7 +695,7 @@ fn sync_immersive_battle_layers(
             With<ImmersiveBattleReplaced>,
         )>,
     >,
-    mut source_objects: Query<(&ImmersiveBattleSourceObject, &mut Handle<Image>)>,
+    overlay_enabled: Option<ResMut<ImmersiveBattleSourceOverlayEnabled>>,
 ) {
     // Only the modeled world renders directly to the window. Battle is an
     // offscreen LCD quad, so clear its uncovered margins on every frame.
@@ -693,20 +728,9 @@ fn sync_immersive_battle_layers(
             active && !(retain_source_objects && source_object.is_some()),
         );
     }
-    if retain_source_objects {
-        for (slot, mut texture) in &mut source_objects {
-            if let Some(object) = frame
-                .source
-                .as_ref()
-                .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0))
-            {
-                texture.set_if_neq(if *mode == crystal_render_api::BattleFlashMode::Reduced {
-                    object.neutral_texture.clone()
-                } else {
-                    object.texture.clone()
-                });
-            }
-        }
+    if let Some(mut enabled) = overlay_enabled {
+        enabled.enabled = retain_source_objects;
+        enabled.park_classic = active && !retain_source_objects;
     }
     // The classic clear sprites are opaque erasers. Hiding only the white
     // eraser would resurrect the erased HUD. Apply the same source-space
@@ -902,7 +926,12 @@ fn prepare_immersive_battle_preview(
     surf: bool,
     size_comparison: bool,
     pidgeotto: bool,
+    enemy_gust: bool,
+    poke_ball_failure: bool,
+    starter: Option<&str>,
 ) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(starter.is_none() || (enemy_gust && matches!(starter, Some("CYNDAQUIL" | "TOTODILE"))),
+        "starter rig preview requires enemy Gust and CYNDAQUIL or TOTODILE");
     anyhow::ensure!(
         [
             shadow_ball,
@@ -910,7 +939,9 @@ fn prepare_immersive_battle_preview(
             hyper_beam,
             surf,
             size_comparison,
-            pidgeotto
+            pidgeotto,
+            enemy_gust,
+            poke_ball_failure
         ]
         .into_iter()
         .filter(|active| *active)
@@ -918,10 +949,16 @@ fn prepare_immersive_battle_preview(
             <= 1,
         "battle preview move fixtures are mutually exclusive"
     );
+    anyhow::ensure!(
+        !(enemy_gust || poke_ball_failure) || shell.quick_save_path.is_none(),
+        "deterministic battle preview must not have a save destination"
+    );
     complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
     let initial = shell.shell.snapshot()?;
     let expected_map = if size_comparison {
         "UnionCave1F"
+    } else if enemy_gust {
+        "Route44"
     } else {
         "Route36"
     };
@@ -931,7 +968,10 @@ fn prepare_immersive_battle_preview(
     );
     let trainer = initial.trainer;
     let move_fixture = if shadow_ball {
-        Some(("GENGAR", 40, "TM_SHADOW_BALL", "SHADOW_BALL"))
+        // A legal level-25 actor keeps the level-20 Sudowoodo alive on this
+        // first turn, including a critical hit, so the rig can settle back
+        // to idle instead of the preview immediately entering classic faint.
+        Some(("GENGAR", 25, "TM_SHADOW_BALL", "SHADOW_BALL"))
     } else if psychic {
         Some(("KADABRA", 20, "TM_PSYCHIC_M", "PSYCHIC_M"))
     } else if hyper_beam {
@@ -943,7 +983,20 @@ fn prepare_immersive_battle_preview(
     } else {
         None
     };
-    if pidgeotto {
+    if enemy_gust {
+        // Grass typing lets Vance's unchanged trainer AI prefer Gust. The
+        // level-25 lead is slower than his Pidgeotto and survives this first
+        // noncritical hit; it keeps its complete natural learnset and legal PP.
+        shell.shell.add_party_pokemon(
+            starter.unwrap_or("CHIKORITA"),
+            25,
+            None,
+            None,
+            &trainer.player_name,
+            trainer.player_id,
+            Dv::from_non_hp(9, 9, 9, 9),
+        )?;
+    } else if pidgeotto {
         shell.shell.add_party_pokemon(
             "PIDGEOTTO",
             25,
@@ -1049,6 +1102,22 @@ fn prepare_immersive_battle_preview(
         shell
             .shell
             .start_scripted_trainer_battle("UnionCave1F", "TrainerHikerDaniel", 0)?;
+    } else if enemy_gust {
+        // Use Vance's original trainer-table entry, original party, and AI.
+        // His first level-25 Pidgeotto naturally retains Gust in slot one.
+        shell
+            .shell
+            .start_scripted_trainer_battle("Route44", "TrainerBirdKeeperVance1", 0)?;
+        let snapshot = shell.shell.snapshot()?;
+        let battle = snapshot.battle.as_ref().context("enemy Gust preview battle")?;
+        anyhow::ensure!(
+            battle.enemy_pokemon.species.id == "PIDGEOTTO"
+                && battle.enemy_pokemon.level == 25
+                && battle.enemy_moves.get(1).is_some_and(|learned| {
+                    learned.name == "GUST" && learned.current_pp == 35
+                }),
+            "Vance's compiled lead must naturally know Gust with its legal PP"
+        );
     } else {
         shell
             .shell
@@ -1064,7 +1133,26 @@ fn prepare_immersive_battle_preview(
             && controller.shell.visible_send_out_animation.is_none()
             && controller.shell.battle_action_cursor.is_some();
         if ready {
-            if hyper_beam {
+            if enemy_gust {
+                // Bounded first-turn QA stimulus through the exact Random
+                // implementation, never a forced enemy action. With add=0,
+                // sub=253 and zero DIV samples, BattleRandom returns 253:
+                // slot 1 for the ordinary AI, a hit for 100%-accuracy Gust,
+                // no critical hit, and an accepted source damage roll.
+                // Normal VBlank Random(false) preserves this stimulus too.
+                // Keep the original zero input repeated for a bounded 180s
+                // arming + 300s recording at 60 VBlanks/s (two samples per
+                // normal VBlank), with 7,936 samples left for the real turn.
+                // Restart this disposable preview before another attempt.
+                const DIV_SAMPLE_BUDGET: usize = 65_536;
+                let session = controller.shell.shell.session_mut();
+                session.state_mut().random_state = crystal_core::random::CrystalRandomState {
+                    add: 0,
+                    sub: 253,
+                };
+                *session.divider_mut_for_tests() =
+                    crystal_core::random::RuntimeDividerSource::replay([0; DIV_SAMPLE_BUDGET]);
+            } else if hyper_beam {
                 // Reproducible developer DIV stimuli, using the same LFSR as
                 // controller regressions. This is not captured cartridge
                 // timing: normal play retains its live divider and the core
@@ -1078,6 +1166,27 @@ fn prepare_immersive_battle_preview(
                     }
                     divider_state as u8
                 });
+                let session = controller.shell.shell.session_mut();
+                session.state_mut().random_state = Default::default();
+                *session.divider_mut_for_tests() =
+                    crystal_core::random::RuntimeDividerSource::replay(samples);
+            }
+            if poke_ball_failure {
+                // A bounded hardware-stimulus replay for one ordinary throw.
+                // Starting from zero, DIV [0, 3] produces hRandomSub=253;
+                // zero DIV pairs retain 253 through normal VBlanks and capture.
+                // It selects legal enemy slot 1, exceeds the catch/wobble
+                // thresholds, and rotate_right(1)=254 passes DamageVariation's
+                // >=217 rejection gate. The former byte 248 rotated to 124
+                // and could never leave that gate. No core RNG, catch
+                // rule, action, or presentation outcome is changed. 65,536
+                // samples cover 180s arming + 300s recording at 60 VBlanks/s
+                // (two samples per normal VBlank), with 7,936 for the turn.
+                // Restart this disposable preview before another attempt.
+                const DIV_SAMPLE_BUDGET: usize = 65_536;
+                let samples = [0, 3]
+                    .into_iter()
+                    .chain(std::iter::repeat_n(0, DIV_SAMPLE_BUDGET - 2));
                 let session = controller.shell.shell.session_mut();
                 session.state_mut().random_state = Default::default();
                 *session.divider_mut_for_tests() =
@@ -1132,12 +1241,20 @@ fn immersive_battle_requires_source_scene_inner(
     shell: &BevyRuntimeShell,
     allow_rows: bool,
 ) -> bool {
+    immersive_battle_requires_source_scene_supported(shell, allow_rows, false)
+}
+
+fn immersive_battle_requires_source_scene_supported(
+    shell: &BevyRuntimeShell,
+    allow_rows: bool,
+    allow_capture: bool,
+) -> bool {
     let animation = shell.visible_move_animations.front();
     let clips = visible_move_battler_clip_tiles(animation);
     let remove = visible_remove_mon_clips(animation);
     let rows = visible_move_battler_row_extractions(animation);
     shell.visible_send_out_animation.is_some()
-        || shell.visible_capture_animation.is_some()
+        || (!allow_capture && shell.visible_capture_animation.is_some())
         || shell.visible_trainer_exit_animation.is_some()
         || visible_beta_send_out_mon1_line_bgps(animation).is_some()
         || clips.0.is_some()
@@ -1148,6 +1265,53 @@ fn immersive_battle_requires_source_scene_inner(
         || animation.is_some_and(|animation| {
             matches!(animation.move_id.as_str(), "FAINT_MON" | "RETURN_MON")
                 || animation.animation_label == "BattleAnim_ReturnMon"
+        })
+}
+
+fn visible_capture_present_state(capture: &VisibleCaptureAnimation) -> VisualBattleCapture {
+    VisualBattleCapture {
+        frame: capture.frame,
+        ball_id: Arc::from(capture.ball_id.as_str()),
+        presented: capture.started || capture.complete,
+        enemy_picture: if capture.enemy_hidden() {
+            VisualCapturePicture::Hidden
+        } else if let Some(tiles) = capture.enemy_clip_tiles() {
+            VisualCapturePicture::Tiles(tiles)
+        } else { VisualCapturePicture::Full },
+    }
+}
+
+fn immersive_capture_prototype_enabled() -> bool {
+    #[cfg(not(target_arch = "wasm32"))]
+    { std::env::var("CRYSTAL_BATTLE_CAPTURE_PROTOTYPE").as_deref() == Ok("1") }
+    #[cfg(target_arch = "wasm32")]
+    { false }
+}
+
+fn immersive_capture_source_supported(
+    shell: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    battlers: &[Option<VisualBattleBattler>; 2],
+) -> bool {
+    // First-command native pilot only. The retained snapshot does not yet
+    // expose persistent Minimize; do not infer a normal image after enemy turns.
+    snapshot.battle.as_ref().is_some_and(|battle| {
+        battle.enemy_turns_taken == 0
+            && battle.enemy_transformed_species.is_none()
+            && battle.enemy_substitute_hp == 0
+            && !battle.enemy_semi_invulnerable
+            && battle.battle_type != "BATTLETYPE_TUTORIAL"
+    })
+        // Ball resolution queues the future enemy response before the throw.
+        // Only the started front animation owns move presentation, matching
+        // capture source publication and the authoritative animation dispatcher.
+        && !shell.visible_move_animations.front().is_some_and(|animation| animation.started)
+        && shell.visible_move_audio_wait.is_none()
+        && shell.visible_send_out_animation.is_none()
+        && battlers[1].as_ref().is_some_and(|enemy| {
+            enemy.allow_species_model && !enemy.shiny
+                && enemy.texture_size == Vec2::splat(56.0)
+                && enemy.source_rect == Rect::new(96.0, 0.0, 152.0, 56.0)
         })
 }
 
@@ -1405,63 +1569,7 @@ fn sync_immersive_battle_ui_layout(
     }
 }
 
-#[derive(Component, Clone, Copy)]
-struct ImmersiveBattleSourceObjectLayout {
-    transform: Transform,
-    size: Option<Vec2>,
-}
-
-/// Project the source attack plane through the immersive camera, but render its
-/// OAM in the native overlay so BG scroll never distorts the objects twice.
-/// Store the original transform and size so F3 restores the classic presenter.
-fn sync_immersive_battle_source_object_layout(
-    layout: Res<crystal_voxel_view::BattleSceneLayout>,
-    mut commands: Commands,
-    status: Res<crystal_voxel_view::BattleViewStatus>,
-    frame: Res<VisualBattleFrame>,
-    canvas: Res<crystal_render_api::VisualBattleCanvas>,
-    mut objects: Query<(
-        Entity,
-        &ImmersiveBattleSourceObject,
-        &mut Transform,
-        &mut Sprite,
-        Option<&ImmersiveBattleSourceObjectLayout>,
-    )>,
-) {
-    for (entity, slot, mut transform, mut sprite, stored) in &mut objects {
-        let source = status
-            .active
-            .then_some(frame.source.as_ref())
-            .flatten()
-            .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0));
-        let projected = source.and_then(|source| {
-            crystal_voxel_view::battle_source_overlay_rect(
-                &layout,
-                source.center,
-                source.size,
-                canvas.size,
-            )
-        });
-        if let Some(rect) = projected {
-            if stored.is_none() {
-                commands
-                    .entity(entity)
-                    .insert(ImmersiveBattleSourceObjectLayout {
-                        transform: *transform,
-                        size: sprite.custom_size,
-                    });
-            }
-            commands.entity(entity).remove_parent();
-            transform.translation.x = rect.center().x - canvas.size.x * 0.5;
-            transform.translation.y = canvas.size.y * 0.5 - rect.center().y;
-            transform.scale = Vec3::ONE;
-            sprite.custom_size = Some(rect.size());
-        } else if let Some(stored) = stored {
-            *transform = stored.transform;
-            sprite.custom_size = stored.size;
-            commands
-                .entity(entity)
-                .remove::<ImmersiveBattleSourceObjectLayout>();
-        }
-    }
-}
+use projected_source_oam::{
+    ImmersiveBattleSourceObjectLayout, ImmersiveBattleSourceOverlayEnabled,
+    sync_immersive_battle_source_object_layout,
+};

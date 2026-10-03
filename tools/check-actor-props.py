@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Check the original actor kit's public source registry and mesh invariants.
 
-Reads only editable generators and our original runtime mesh JSON. No packs or
+Reads only editable generators and our canonical runtime JSON/GLB models. No packs or
 external images are needed; this does not claim coverage of unknown species.
 """
 import argparse, ast, hashlib, json, math, re
 from pathlib import Path
+from cyndaquil_glb import read_cyndaquil
+from totodile_glb import read_totodile
 from model_asset_storage import read_model_bytes, read_model_json, read_model_text, validate_storage
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +21,9 @@ def verify(directory):
  assert set(authored)==set(registry), 'Generator and Rust registry differ'
  total_tri=0; total_vertices=0; digests=set(); biggest=(0,'')
  for name in registry:
-  path=directory/(name+'.mesh.json');raw=read_model_bytes(path);data=json.loads(raw)
+  if name=='battle_cyndaquil':data=read_cyndaquil(directory/(name+'.glb'))
+  elif name=='battle_totodile':data=read_totodile(directory/(name+'.glb'))
+  else:data=read_model_json(directory/(name+'.mesh.json'))
   assert data['name']==name and data['version']==1
   digest=hashlib.sha256(json.dumps(data['primitives'],sort_keys=True,separators=(',',':')).encode()).hexdigest();assert digest not in digests, f'Duplicate model bytes: {name}';digests.add(digest)
   assert data['coordinate_system']=='+Y up; front +Z; floor-centered root'

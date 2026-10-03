@@ -1614,6 +1614,11 @@ def export(name,objects):
   from pidgeotto_glb import export_pidgeotto
   if (OUT/'pidgeotto.mesh.json').exists():raise ValueError('remove the reviewed obsolete Pidgeotto JSON before exporting its canonical GLB')
   (OUT/'pidgeotto.glb').write_bytes(export_pidgeotto(data))
+ elif name=='gengar':
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from gengar_glb import export_gengar
+  if (OUT/'gengar.mesh.json').exists():raise ValueError('remove the reviewed obsolete Gengar JSON before exporting its canonical GLB')
+  (OUT/'gengar.glb').write_bytes(export_gengar(data))
  else:(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {len(prims)} named parts, {sum(len(p["indices"])//3 for p in prims)} triangles',flush=True)
 def reset():

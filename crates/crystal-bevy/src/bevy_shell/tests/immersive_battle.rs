@@ -390,11 +390,8 @@ fn immersive_battle_native_oam_stays_unscrolled_through_zero_crossings_and_palet
                 assert_eq!((sprite.rect, sprite.custom_size), (*rect, *size));
                 assert_eq!(
                     app.world().get::<Handle<Image>>(*entity),
-                    Some(if mode == BattleFlashMode::Reduced {
-                        &object.neutral_texture
-                    } else {
-                        &object.texture
-                    })
+                    Some(&object.texture),
+                    "projected overlays choose their own palette without mutating fallback Sprites"
                 );
             }
             assert_eq!(
@@ -731,6 +728,31 @@ fn immersive_battle_move_preview_controller(
     hyper_beam: bool,
     surf: bool,
     pidgeotto: bool,
+    enemy_gust: bool,
+) -> VisibleShellController {
+    immersive_battle_move_and_ball_preview_controller(
+        shadow_ball, psychic, hyper_beam, surf, pidgeotto, enemy_gust, false,
+    )
+}
+
+#[cfg(feature = "location-tester")]
+fn immersive_battle_move_and_ball_preview_controller(
+    shadow_ball: bool,
+    psychic: bool,
+    hyper_beam: bool,
+    surf: bool,
+    pidgeotto: bool,
+    enemy_gust: bool,
+    poke_ball_failure: bool,
+) -> VisibleShellController {
+    immersive_battle_starter_preview_controller(shadow_ball, psychic, hyper_beam, surf,
+        pidgeotto, enemy_gust, poke_ball_failure, None)
+}
+
+#[cfg(feature = "location-tester")]
+fn immersive_battle_starter_preview_controller(
+    shadow_ball: bool, psychic: bool, hyper_beam: bool, surf: bool,
+    pidgeotto: bool, enemy_gust: bool, poke_ball_failure: bool, starter: Option<&str>,
 ) -> VisibleShellController {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -739,14 +761,31 @@ fn immersive_battle_move_preview_controller(
     let asset_root = AssetRoot::new(root);
     let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let (map_name, tile_x, tile_y) = if enemy_gust {
+        let map_name = "Route44";
+        let (width, height) = runtime.data().saved_map_tile_bounds(map_name).unwrap();
+        let (x, y) = (0..height)
+            .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
+            .find(|&(x, y)| {
+                runtime.data().overworld_session(
+                    map_name,
+                    TilePosition::new(x, y),
+                    0,
+                ).is_ok()
+            })
+            .expect("a walkable Route44 fixture tile");
+        (map_name, x, y)
+    } else {
+        ("Route36", 20, 8)
+    };
     let shell = initialize_bevy_runtime_shell(
         asset_root,
         runtime,
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier,
-            map_name: "Route36".into(),
-            tile_x: 20,
-            tile_y: 8,
+            map_name: map_name.into(),
+            tile_x,
+            tile_y,
         },
         BevyShellConfig::default(),
     )
@@ -759,6 +798,9 @@ fn immersive_battle_move_preview_controller(
         surf,
         false,
         pidgeotto,
+        enemy_gust,
+        poke_ball_failure,
+        starter,
     )
     .unwrap();
     VisibleShellController { shell }
@@ -767,14 +809,17 @@ fn immersive_battle_move_preview_controller(
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(true, false, false, false, false);
+    let mut controller = immersive_battle_move_preview_controller(true, false, false, false, false, false);
     let before = controller.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "GENGAR");
+    assert_eq!(before.party.slots[0].pokemon.level, 25);
     assert_eq!(before.party.slots[0].pokemon.moves[0].name, "SHADOW_BALL");
     let pp = before.party.slots[0].pokemon.moves[0].current_pp;
     controller.press(GameButton::A).unwrap();
     controller.press(GameButton::A).unwrap();
     let after = controller.snapshot().unwrap();
+    assert!(after.battle.as_ref().is_some_and(|battle| battle.enemy_pokemon.hp > 0),
+        "the legal Shadow Ball preview must keep a live opponent for joint playback");
     let pp_after = after
         .battle
         .as_ref()
@@ -793,7 +838,7 @@ fn immersive_battle_shadow_ball_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, true, false, false, false);
+    let mut controller = immersive_battle_move_preview_controller(false, true, false, false, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "KADABRA");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -824,7 +869,7 @@ fn immersive_battle_psychic_preview_uses_legal_tm_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, true, false, false);
+    let mut controller = immersive_battle_move_preview_controller(false, false, true, false, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "RATICATE");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -922,7 +967,7 @@ fn immersive_battle_hyper_beam_preview_recharges_through_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_surf_preview_teaches_nonconsumable_hm_and_uses_normal_turn() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, false, true, false);
+    let mut controller = immersive_battle_move_preview_controller(false, false, false, true, false, false);
     let before = controller.shell.shell.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "TOTODILE");
     assert_eq!(before.party.slots[0].pokemon.level, 20);
@@ -1136,13 +1181,20 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
     let mut app = App::new();
     app.add_plugins(MinimalPlugins)
         .insert_resource(frame.clone())
+        .insert_resource(shell)
+        .init_resource::<RenderedViewport>()
+        .init_resource::<crystal_voxel_view::VoxelViewStatus>()
+        .insert_resource(crystal_voxel_view::VoxelViewSettings { enabled: true, ..default() })
         .insert_resource(crystal_voxel_view::BattleViewStatus {
             active: true,
             ..default()
         })
+        .init_resource::<Assets<Mesh>>()
+        .init_resource::<crystal_render_api::BattleFlashMode>()
         .init_resource::<crystal_render_api::VisualBattleCanvas>()
         .init_resource::<crystal_voxel_view::BattleSceneLayout>()
-        .add_systems(Update, sync_immersive_battle_source_object_layout);
+        .add_systems(Update, (sync_immersive_battle_layers, sync_immersive_battle_source_object_layout).chain());
+    projected_source_oam::install(&mut app);
     let mut originals = Vec::new();
     for object in &source.objects {
         let transform = Transform::from_xyz(
@@ -1165,58 +1217,53 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
                     ..default()
                 },
                 ImmersiveBattleSourceObject(object.slot),
+                ImmersiveBattleReplaced,
             ))
             .id();
         originals.push((entity, transform, size, crop));
     }
     for viewport in [Vec2::new(1180.0, 812.0), Vec2::new(720.0, 960.0)] {
-        app.world_mut()
-            .resource_mut::<crystal_render_api::VisualBattleCanvas>()
-            .size = viewport;
+        *app.world_mut().resource_mut::<crystal_render_api::VisualBattleCanvas>() =
+            crystal_render_api::VisualBattleCanvas { size: viewport, physical_size: (viewport * 2.0).as_uvec2() };
         for active in [true, false, true, false] {
             app.world_mut()
                 .resource_mut::<crystal_voxel_view::BattleViewStatus>()
                 .active = active;
             app.update();
-            for ((entity, original, size, crop), object) in originals.iter().zip(&source.objects) {
+            for (entity, original, size, crop) in &originals {
                 let pose = app.world().get::<Transform>(*entity).unwrap();
                 let sprite = app.world().get::<Sprite>(*entity).unwrap();
                 assert_eq!(
                     sprite.rect, *crop,
                     "projection cannot alter source UV clipping"
                 );
-                if active {
-                    let projected = crystal_voxel_view::battle_source_overlay_rect(
-                        app.world()
-                            .resource::<crystal_voxel_view::BattleSceneLayout>(),
-                        object.center,
-                        object.size,
-                        viewport,
-                    )
-                    .unwrap();
-                    assert_eq!(
-                        pose.translation.truncate(),
-                        Vec2::new(
-                            projected.center().x - viewport.x * 0.5,
-                            viewport.y * 0.5 - projected.center().y
-                        )
-                    );
-                    assert_eq!(sprite.custom_size, Some(projected.size()));
-                    assert_eq!(pose.translation.z, original.translation.z);
-                } else {
-                    assert_eq!(pose, original);
-                    assert_eq!(sprite.custom_size, Some(*size));
-                    assert!(
-                        app.world()
-                            .get::<ImmersiveBattleSourceObjectLayout>(*entity)
-                            .is_none()
-                    );
-                }
+                assert_eq!(pose, original, "source Sprite transform must never be repurposed for 3D");
+                assert_eq!(sprite.custom_size, Some(*size));
+                assert_eq!(app.world().get::<ImmersiveBattleSourceObjectLayout>(*entity).is_some(), active);
+                assert_eq!(app.world().get::<bevy::render::view::RenderLayers>(*entity).cloned(),
+                    active.then(|| bevy::render::view::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
             }
             assert_eq!(*app.world().resource::<VisualBattleFrame>(), frame);
         }
     }
-    assert_eq!(shell.shell.snapshot().unwrap(), snapshot);
+    // If the immersive scene stays up after a source phase ends, the earlier
+    // layer system parks replaced Sprites. Overlay restoration must preserve
+    // that decision; returning to classic subsequently unparks them.
+    app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = true;
+    app.update();
+    app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
+    app.update();
+    for (entity, ..) in &originals {
+        assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(*entity).is_none());
+        assert_eq!(app.world().get::<bevy::render::view::RenderLayers>(*entity),
+            Some(&bevy::render::view::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
+    }
+    app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = false;
+    app.update();
+    for (entity, ..) in &originals {
+        assert!(app.world().get::<bevy::render::view::RenderLayers>(*entity).is_none());
+    }
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap(), snapshot);
 }
 
 #[test]
@@ -1606,7 +1653,7 @@ fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
     let shell = route36_battle_shell_for_render_regression();
     let snapshot = shell.shell.snapshot().unwrap();
     let bundle = battle_anim_render_bundle(&mut RenderedTilesetArt::default(), &snapshot).unwrap();
-    for (move_id, show, retire) in [("TACKLE", 20, 25), ("WATER_GUN", 94, 98)] {
+    for (move_id, show, retire) in [("TACKLE", 24, 30), ("WATER_GUN", 102, 107)] {
         for player_move in [true, false] {
             let mut animation = battler_row_regression_animation(&snapshot, move_id, player_move);
             let player_strip = if move_id == "TACKLE" {
@@ -1616,7 +1663,7 @@ fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
             };
             let index = usize::from(!player_strip);
             let mut playback = new_visible_battle_objects(&bundle, &animation).unwrap();
-            for frame in 0..=animation.total_frames {
+            for frame in 0..animation.total_frames {
                 animation.frame = frame;
                 advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
                 assert!(immersive_row_prototype_oam_supported(
@@ -1630,7 +1677,7 @@ fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
                         "partial OAM must retain classic fallback"
                     );
                 }
-                let rows = immersive_row_prototype_rows(&animation, &playback.battler_rows);
+                let rows = immersive_row_prototype_rows(&animation, &playback.battler_rows, visible_battle_oam_layer(&playback));
                 assert!(rows[1 - index].is_none());
                 if (1..=retire).contains(&frame) {
                     let row = rows[index].expect("source OAM owns lifetime, including deinit tick");
@@ -1643,12 +1690,13 @@ fn immersive_row_prototype_consumes_source_oam_through_terminal_tick() {
                         }
                     );
                     assert_eq!(row.bg_cleared, frame > 1 && frame < show);
+                    assert_eq!(row.oam_depth, visible_battle_oam_layer(&playback).depth(0));
                 } else {
                     assert!(rows[index].is_none());
                 }
                 advance_visible_battle_objects(&mut playback, &bundle, &animation).unwrap();
                 assert_eq!(
-                    immersive_row_prototype_rows(&animation, &playback.battler_rows),
+                    immersive_row_prototype_rows(&animation, &playback.battler_rows, visible_battle_oam_layer(&playback)),
                     rows,
                     "extracting F3 view at the same source frame is idempotent"
                 );
@@ -1663,13 +1711,16 @@ fn immersive_row_prototype_tackle_uses_exact_source_scroll_band() {
     let snapshot = shell.shell.snapshot().unwrap();
     for player_move in [true, false] {
         let mut animation = battler_row_regression_animation(&snapshot, "TACKLE", player_move);
+        // TargetObj waits6 plus its command update; TACKLE starts at8.
+        assert_eq!(animation.bg_events.iter().find(|event|
+            event.effect_id == "BATTLE_BG_EFFECT_TACKLE").unwrap().frame, 8);
         // Setup stores distance 0. Forward fill writes 0,2,4,6,8, then
         // return starts at10; fill precedes the +/-2 register update.
         for (age, distance) in [0, 0, 2, 4, 6, 8, 10, 8, 6, 4, 2, 0]
             .into_iter()
             .enumerate()
         {
-            animation.frame = 7 + age as u16;
+            animation.frame = 8 + age as u16;
             let rows = immersive_row_prototype_tackle_scx(&animation).unwrap();
             for (row, value) in rows.into_iter().enumerate() {
                 let in_band = if player_move {
@@ -1687,7 +1738,7 @@ fn immersive_row_prototype_tackle_uses_exact_source_scroll_band() {
                 );
             }
         }
-        animation.frame = 19;
+        animation.frame = 20;
         assert!(immersive_row_prototype_tackle_scx(&animation).is_none());
     }
 }
@@ -1745,7 +1796,7 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_battle_pidgeotto_preview_uses_legal_moves_and_normal_controller() {
-    let mut controller = immersive_battle_move_preview_controller(false, false, false, false, true);
+    let mut controller = immersive_battle_move_preview_controller(false, false, false, false, true, false);
     let before = controller.snapshot().unwrap();
     assert_eq!(before.party.slots[0].pokemon.species.id, "PIDGEOTTO");
     assert_eq!(before.party.slots[0].pokemon.level, 25);
@@ -1768,3 +1819,217 @@ fn immersive_battle_pidgeotto_preview_uses_legal_moves_and_normal_controller() {
             .any(|animation| animation.move_id == move_name)
     );
 }
+
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
+    for (species, move_name) in [("CYNDAQUIL", "EMBER"), ("TOTODILE", "WATER_GUN")] {
+        let mut controller = immersive_battle_starter_preview_controller(
+            false, false, false, false, false, true, false, Some(species));
+        assert!(controller.shell.quick_save_path.is_none());
+        let before = controller.shell.shell.snapshot().unwrap();
+        let battle_before = before.battle.as_ref().unwrap();
+        let player = &before.party.slots[0].pokemon;
+        assert_eq!(player.species.id, species);
+        assert_eq!(player.level, 25);
+        assert_eq!(battle_before.enemy_pokemon.species.id, "PIDGEOTTO");
+        let slot = battle_before.player_moves.iter().position(|m| m.name == move_name)
+            .expect("the starter must naturally know its selected move");
+        let pp = battle_before.player_moves[slot].current_pp;
+        controller.press(GameButton::A).unwrap();
+        for _ in 0..slot { controller.press(GameButton::Down).unwrap(); }
+        controller.press(GameButton::A).unwrap();
+        let after = controller.shell.shell.snapshot().unwrap();
+        let battle_after = after.battle.as_ref().expect("both legal actors survive this showcase turn");
+        assert_eq!(battle_after.player_last_move.as_deref(), Some(move_name));
+        assert_eq!(battle_after.enemy_last_move.as_deref(), Some("GUST"));
+        assert_eq!(battle_after.player_moves[slot].current_pp, pp - 1);
+        assert_eq!(battle_after.enemy_moves[1].current_pp, 34);
+        assert!(after.party.slots[0].pokemon.hp > 0);
+        assert!(after.party.slots[0].pokemon.hp < player.hp);
+        assert!(battle_after.enemy_pokemon.hp < battle_before.enemy_pokemon.hp);
+        assert_eq!(battle_after.player_turns_taken, battle_before.player_turns_taken + 1);
+        assert_eq!(battle_after.enemy_turns_taken, battle_before.enemy_turns_taken + 1);
+        assert_eq!(controller.shell.visible_move_animations.front().unwrap().move_id, "GUST");
+        assert!(!controller.shell.visible_move_animations.front().unwrap().player_move);
+        assert!(controller.shell.visible_move_animations.iter()
+            .any(|animation| animation.move_id == move_name && animation.player_move));
+    }
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn immersive_battle_enemy_gust_preview_uses_trainer_ai_pp_and_enemy_source() {
+    let mut controller =
+        immersive_battle_move_preview_controller(false, false, false, false, false, true);
+    assert!(controller.shell.quick_save_path.is_none());
+    let divider_counts = |controller: &VisibleShellController| {
+        let crystal_core::random::RuntimeDividerSource::Replay(divider) =
+            controller.shell.shell.session().divider_for_tests()
+        else {
+            panic!("enemy Gust fixture must retain its bounded DIV replay");
+        };
+        (divider.consumed(), divider.remaining())
+    };
+    assert_eq!(divider_counts(&controller), (0, 65_536));
+    assert!(!visible_special_vblank_handler_active(&controller.shell));
+    let random_before = controller.shell.shell.session().state().random_state;
+    assert_eq!(random_before, crystal_core::random::CrystalRandomState { add: 0, sub: 253 });
+    let vblank_before = controller.shell.shell.session().state().vblank_counter;
+    let actions_before = controller.shell.deterministic_battle_actions.len();
+    // Exercise the exact authoritative hook used by native frame advancement.
+    // wait_frames alone would not consume VBlank_Normal DIV and could hide
+    // exhaustion while waiting for the real recorder trigger/menu input.
+    const ARM_VBLANKS: u32 = 180 * 60;
+    controller.shell.shell.advance_vblanks(ARM_VBLANKS, ARM_VBLANKS).unwrap();
+    assert_eq!(divider_counts(&controller), (21_600, 43_936));
+    assert_eq!(controller.shell.shell.session().state().vblank_counter,
+        vblank_before.wrapping_add(ARM_VBLANKS as u8));
+    assert_eq!(controller.shell.shell.session().state().random_state, random_before);
+    assert_eq!(controller.shell.deterministic_battle_actions.len(), actions_before);
+
+    // Continue with the original real AI/PP/damage/source-render assertions,
+    // without resetting the random state or replacing the DIV replay.
+    let before = controller.shell.shell.snapshot().unwrap();
+    assert_eq!(before.overworld.map_name, "Route44");
+    let battle_before = before.battle.as_ref().unwrap();
+    assert!(matches!(
+        &battle_before.kind,
+        RuntimeBattleKind::Trainer { trainer_id, .. } if trainer_id == "VANCE1"
+    ));
+    assert_eq!(battle_before.active_enemy_party_index, Some(0));
+    assert_eq!(battle_before.active_player_party_index, Some(0));
+    assert_eq!(battle_before.enemy_pokemon.species.id, "PIDGEOTTO");
+    assert_eq!(battle_before.enemy_pokemon.level, 25);
+    assert_eq!(
+        battle_before.enemy_moves.iter().map(|m| m.name.as_str()).collect::<Vec<_>>(),
+        ["SAND_ATTACK", "GUST", "QUICK_ATTACK", "WHIRLWIND"]
+    );
+    assert_eq!(battle_before.enemy_moves[1].current_pp, 35);
+    assert_eq!(battle_before.enemy_moves[1].pp_ups, 0);
+    let player_before = &before.party.slots[0].pokemon;
+    assert_eq!(player_before.species.id, "CHIKORITA");
+    assert_eq!(player_before.level, 25);
+    assert_eq!(battle_before.player_moves[0].name, "RAZOR_LEAF");
+    assert_eq!(battle_before.player_moves[0].current_pp, 25);
+    assert!(battle_before.enemy_pokemon.speed > player_before.speed);
+
+    controller.set_runtime_journal_enabled(true);
+    controller.shell.shell.clear_retained_runtime_commands();
+    controller.press(GameButton::A).unwrap(); // FIGHT
+    controller.press(GameButton::A).unwrap(); // legal first-slot RAZOR LEAF
+
+    let after = controller.shell.shell.snapshot().unwrap();
+    let battle_after = after.battle.as_ref().expect("both actors survive the first turn");
+    assert_eq!(battle_after.active_enemy_party_index, Some(0));
+    assert_eq!(battle_after.active_player_party_index, Some(0));
+    assert_eq!(battle_after.enemy_last_move.as_deref(), Some("GUST"));
+    assert_eq!(battle_after.player_last_move.as_deref(), Some("RAZOR_LEAF"));
+    assert_eq!(battle_after.enemy_moves[1].current_pp, 34);
+    assert_eq!(battle_after.player_moves[0].current_pp, 24);
+    assert_eq!(battle_after.enemy_turns_taken, battle_before.enemy_turns_taken + 1);
+    assert_eq!(battle_after.player_turns_taken, battle_before.player_turns_taken + 1);
+    assert!(battle_after.enemy_pokemon.hp > 0);
+    assert!(after.party.slots[0].pokemon.hp > 0);
+    assert!(after.party.slots[0].pokemon.hp < player_before.hp);
+    for slot in [0, 2, 3] {
+        assert_eq!(battle_after.enemy_moves[slot], battle_before.enemy_moves[slot]);
+    }
+
+    let turns = controller.shell.shell.retained_runtime_commands().iter()
+        .filter_map(|frame| {
+            match crystal_assets::decode_runtime_mutation_command_payload(frame.payload()).unwrap() {
+                crystal_assets::RuntimeMutationCommand::ResolveActiveBattleTurn(turn) => Some(turn),
+                _ => None,
+            }
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(turns.len(), 1, "two menu confirms must execute exactly one real turn");
+    let turn = &turns[0];
+    assert_eq!(turn.player_action, BattleAction::Move { slot: 0 });
+    assert_eq!(turn.enemy_action, BattleAction::Move { slot: 1 });
+    assert_eq!(turn.enemy_ai_selected_move_slot, Some(1));
+    assert!(turn.enemy_move_ai_random_calls > 0);
+    assert!(turn.player_bag_item_id.is_none());
+    assert!(!turn.divider_trace.samples.is_empty());
+    let (after_turn, remaining) = divider_counts(&controller);
+    assert!((1..=64).contains(&(after_turn - 21_600)),
+        "the actual AI-selected Gust/player turn must use a finite DIV trace");
+    assert_eq!(after_turn + remaining, 65_536);
+    assert_eq!(controller.shell.shell.session().state().random_state, random_before);
+
+    let animation = controller.shell.visible_move_animations.front()
+        .expect("the first original move animation is enemy Gust").clone();
+    assert_eq!(animation.move_id, "GUST");
+    assert!(!animation.player_move, "enemy attacks must use source enemy facing");
+    let (label, frames, sounds, cries, objects, background) =
+        visible_move_animation_definition(&before, "GUST", 0).unwrap();
+    assert_eq!(animation.animation_label, label);
+    assert_eq!(animation.total_frames, frames);
+    assert_eq!(animation.sound_events, sounds);
+    assert_eq!(animation.cry_events, cries);
+    assert_eq!(animation.object_events, objects);
+    assert_eq!(animation.bg_events, background);
+    assert!(animation.trigger_message.contains("PIDGEOTTO"));
+    assert!(animation.trigger_message.ends_with("used GUST!"));
+    assert!(animation.actor_species_override.is_none());
+    assert!(animation.actor_shiny_override.is_none());
+
+    // Sample the actual controller-emitted source program at the two known
+    // gust/HIT OAM frames. This never queues a replacement animation or cue,
+    // changes combat state, or advances another battle turn.
+    let checksum = controller.shell.shell.state_checksum().unwrap();
+    // Retain the exact image store that owns the extracted battler handles.
+    // The metadata-only helper intentionally drops its temporary store.
+    let mut art = RenderedTilesetArt::default();
+    let mut images = Assets::<Image>::default();
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    capture_presented_battle(
+        &mut Commands::new(&mut queue, &world),
+        &before,
+        &controller.shell,
+        true,
+        &mut art,
+        &mut images,
+    )
+    .unwrap();
+    queue.apply(&mut world);
+    let battlers = world.remove_resource::<VisualBattleFrame>().unwrap().battlers;
+    assert_eq!(battlers[VisualBattleSide::Enemy.index()].as_ref().unwrap().species_id.as_ref(), "PIDGEOTTO");
+    assert_eq!(battlers[VisualBattleSide::Player.index()].as_ref().unwrap().species_id.as_ref(), "CHIKORITA");
+    for source_frame in [58, 67] {
+        let mut sample = animation.clone();
+        sample.frame = source_frame;
+        let source = capture_immersive_source_frame(
+            &before, &sample, &battlers, &mut art,
+            &controller.shell.asset_root, &mut images,
+        ).unwrap();
+        assert_eq!(source.frame, source_frame);
+        assert!(!source.objects.is_empty());
+        assert!(!art.battle_object_runtime.as_ref().unwrap().player);
+    }
+    assert_eq!(controller.shell.shell.state_checksum().unwrap(), checksum);
+
+    // All 300 permitted recorder seconds still use the same native hook and
+    // the same zero repetition. This verifies the budget, not rendered video.
+    assert!(!visible_special_vblank_handler_active(&controller.shell));
+    let vblank_before_recording = controller.shell.shell.session().state().vblank_counter;
+    const RECORD_VBLANKS: u32 = 300 * 60;
+    controller.shell.shell.advance_vblanks(RECORD_VBLANKS, RECORD_VBLANKS).unwrap();
+    let (after_recording, remaining) = divider_counts(&controller);
+    assert_eq!(after_recording, after_turn + 36_000);
+    assert_eq!(after_recording + remaining, 65_536);
+    assert!(remaining > 0, "native warmup, real turn and recording must fit the bounded replay");
+    assert_eq!(controller.shell.shell.session().state().vblank_counter,
+        vblank_before_recording.wrapping_add(RECORD_VBLANKS as u8));
+    assert_eq!(controller.shell.shell.session().state().random_state, random_before);
+    assert_eq!(controller.shell.deterministic_battle_actions.len(), actions_before + 1);
+    assert!(controller.shell.last_error.is_none());
+}
+
+#[cfg(feature = "location-tester")]
+include!("capture_fixture.rs");
+
+include!("immersive_capture_bridge.rs");

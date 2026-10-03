@@ -1,3 +1,5 @@
+include!("battle_pic_resize.rs");
+
 fn visible_start_menu_entries(runtime_shell: &BevyRuntimeShell) -> Result<Vec<String>> {
     let snapshot = runtime_shell.shell.snapshot()?;
     let options = visible_start_menu_options(runtime_shell, &snapshot);
@@ -1586,6 +1588,54 @@ fn visible_move_battler_clip_tiles(
     (player, enemy)
 }
 
+// Classic battle composition: the HUD clear replaces BG/HUD pixels, but must
+// not erase foreground OBJ pixels. Keep the entire ten-slot foreground band
+// above that clear, and retain the separate capture-ball presentation layer.
+// Source BattleAnimClearHud changes the tilemap, not OAM. The battle textbox
+// is also BG, so foreground OBJ priority has no special bottom-text cutoff.
+const BATTLE_HUD_TOP_Z: f32 = 3.75;
+const BATTLE_HUD_CLEAR_Z: f32 = 3.8;
+const BATTLE_OAM_FOREGROUND_Z: f32 = 3.9;
+const BATTLE_OAM_LEGACY_Z: f32 = 3.45;
+const BATTLE_CAPTURE_BALL_Z: f32 = 4.1;
+const BATTLE_OAM_SLOT_Z_STEP: f32 = 0.001;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum VisibleBattleOamLayer {
+    Legacy,
+    Foreground,
+}
+
+impl VisibleBattleOamLayer {
+    fn depth(self, slot: usize) -> f32 {
+        let front = match self {
+            Self::Legacy => BATTLE_OAM_LEGACY_Z,
+            Self::Foreground => BATTLE_OAM_FOREGROUND_Z,
+        };
+        // Source OAM is first-entry-first, including implicit battler rows.
+        front - slot as f32 * BATTLE_OAM_SLOT_Z_STEP
+    }
+}
+
+fn visible_battle_oam_layer(playback: &VisibleBattleObjects) -> VisibleBattleOamLayer {
+    let all_foreground = playback
+        .slots
+        .iter()
+        .flatten()
+        .map(|live| &live.oam)
+        .chain(playback.battler_rows.iter().flatten().map(|row| &row.oam))
+        .flat_map(|oam| &oam.entries)
+        .all(|entry| entry[3] & 0x80 == 0);
+    if all_foreground {
+        VisibleBattleOamLayer::Foreground
+    } else {
+        // A single composite texture cannot resolve per-pixel OBJ/BG
+        // priority. Preserve the previous layer for the WHOLE mixed or
+        // behind-BG frame, rather than invert its source OBJ/row ordering.
+        VisibleBattleOamLayer::Legacy
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct VisibleBattlerRowExtraction {
     rows: u8,
@@ -1596,6 +1646,7 @@ struct VisibleBattlerRowExtraction {
     // column. None retains the generic/Faint presentation behavior.
     oam_row_masks: Option<[u8; 16]>,
     oam_slot: Option<u8>,
+    oam_layer: VisibleBattleOamLayer,
 }
 
 fn visible_move_battler_row_extractions(
@@ -1627,6 +1678,7 @@ fn visible_move_battler_row_extractions(
                 render_extracted: false,
                 oam_row_masks: None,
                 oam_slot: None,
+                oam_layer: VisibleBattleOamLayer::Legacy,
             };
             if target_player {
                 player = Some(extraction);
@@ -1666,6 +1718,7 @@ fn visible_move_battler_row_extractions(
             render_extracted: true,
             oam_row_masks: None,
             oam_slot: None,
+            oam_layer: VisibleBattleOamLayer::Legacy,
         };
         if target_player {
             player = Some(extraction);
@@ -1694,6 +1747,7 @@ fn visible_live_battler_row_extractions(
         extraction.render_extracted = false;
         extraction.oam_row_masks = Some([0; 16]);
     }
+    let oam_layer = visible_battle_oam_layer(playback);
     for (slot, row) in playback.battler_rows.iter().enumerate() {
         let Some(row) = row else { continue };
         let index = usize::from(!row.player_side);
@@ -1724,6 +1778,7 @@ fn visible_live_battler_row_extractions(
             render_extracted: true,
             oam_row_masks: Some(masks),
             oam_slot: Some(slot as u8),
+            oam_layer,
         });
     }
     for extraction in &mut result {
@@ -3523,6 +3578,19 @@ fn spawn_battler_marker(
     } else {
         frame
     };
+    // Normal pictures already occupy the source's full 7x7/6x6 tile bank.
+    // Remap pixels inside that unchanged slot before either sprite or scanline
+    // rendering; both paths then share the source's bottom-center placement.
+    // Small substitute/minimize art needs its own bank normalization first.
+    let (frame, clip_tiles) = if !minimize && !substitute {
+        if let Some(tiles) = clip_tiles {
+            (battle_pic_resize_frame(rendered_art, images, &frame, side, tiles)?, None)
+        } else {
+            (frame, None)
+        }
+    } else {
+        (frame, clip_tiles)
+    };
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     let native_size = if minimize || substitute {
         Vec2::splat(TILE_SIZE * 2.0)
@@ -3537,8 +3605,8 @@ fn spawn_battler_marker(
             PLAYFIELD_TOP - TILE_SIZE * 6.0,
         ),
     };
-    // True send-out scaling and square pic-resize clipping both retain the
-    // full native frame's center.
+    // The resized raster already contains the bottom-anchored tile placement.
+    // Keep the full native slot's transform fixed.
     let position = Vec3::new(
         anchor_x + native_size.x * 0.5,
         anchor_y - native_size.y * 0.5,
@@ -3889,8 +3957,7 @@ fn visible_battler_extracted_row_depth(
     battler_depth: f32,
 ) -> f32 {
     extraction.oam_slot.map_or(battler_depth + 0.02, |slot| {
-        // Same source OAM order as explicit objects: lower slots are in front.
-        3.45 - f32::from(slot) * 0.001
+        extraction.oam_layer.depth(usize::from(slot))
     })
 }
 
@@ -4190,7 +4257,7 @@ fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeSh
                     custom_size: Some(Vec2::new(width * TILE_SIZE, height * TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
+                transform: Transform::from_xyz(x, y, BATTLE_HUD_CLEAR_Z),
                 ..default()
             },
             BattleHudMarker,
@@ -4395,7 +4462,7 @@ fn spawn_battle_party_balls(
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.75),
+                transform: Transform::from_xyz(x, y, BATTLE_HUD_TOP_Z),
                 ..default()
             },
             BattleHudMarker,
@@ -5434,25 +5501,7 @@ fn spawn_visible_move_animation_objects(
         .as_ref()
         .filter(|animation| animation.retained_objects_visible())
     {
-        let object_events = capture.object_events();
-        synthetic_shiny = VisibleMoveAnimation {
-            trigger_message: String::new(),
-            move_id: format!("THROW_{}", capture.ball_id),
-            animation_label: "BattleAnim_ThrowPokeBall".to_string(),
-            player_move: true,
-            started: true,
-            waiting_for_hp: false,
-            frame: capture.frame,
-            total_frames: capture.total_frames(),
-            sound_events: Vec::new(),
-            next_sound_event: 0,
-            cry_events: Vec::new(),
-            next_cry_event: 0,
-            object_events,
-            bg_events: Vec::new(),
-            actor_species_override: None,
-            actor_shiny_override: None,
-        };
+        synthetic_shiny = visible_capture_source_animation(capture);
         &synthetic_shiny
     } else {
         return Ok(());
@@ -5463,6 +5512,7 @@ fn spawn_visible_move_animation_objects(
     let mut playback = match rendered_art.battle_object_runtime.take() {
         Some(playback)
             if playback.source == animation.object_events
+                && playback.move_id == animation.move_id
                 && playback.player == animation.player_move
                 && playback.label == animation.animation_label
                 && u32::from(animation.frame) + 1 >= playback.next_tick =>
@@ -5472,7 +5522,18 @@ fn spawn_visible_move_animation_objects(
         _ => new_visible_battle_objects(&bundle, animation)?,
     };
     advance_visible_battle_objects(&mut playback, &bundle, animation)?;
-    let live_slots = playback.slots.clone();
+    // Match BattleAnimClearHud's real-move scope. Synthetic send-out and
+    // capture effects retain their existing layers and lifecycle.
+    let oam_layer = if runtime_shell.runtime.data().moves.contains_key(&animation.move_id) {
+        visible_battle_oam_layer(&playback)
+    } else {
+        VisibleBattleOamLayer::Legacy
+    };
+    let capture = runtime_shell.visible_capture_animation.as_ref()
+        .filter(|_| animation.animation_label == "BattleAnim_ThrowPokeBall");
+    let live_slots = visible_capture_oam_slots(&playback, capture);
+    let battler_palettes = visible_battle_object_battler_palettes(
+        snapshot, asset_root, animation, &live_slots)?;
     let object_obp0_write = playback.obp0_write;
     rendered_art.battle_object_runtime = Some(playback);
     let mut dmg_palettes = visible_battle_dmg_palette_registers(Some(animation));
@@ -5504,16 +5565,8 @@ fn spawn_visible_move_animation_objects(
             .as_array()
             .and_then(|frames| frames.get(frame_index))
             .context("live battle frameset overran")?;
-        let palette_override = Some(match live.bytes[5] & 7 {
-            0 => "PAL_BATTLE_OB_GRAY",
-            1 => "PAL_BATTLE_OB_YELLOW",
-            2 => "PAL_BATTLE_OB_RED",
-            3 => "PAL_BATTLE_OB_GREEN",
-            4 => "PAL_BATTLE_OB_BLUE",
-            5 => "PAL_BATTLE_OB_BROWN",
-            other => anyhow::bail!("invalid live battle palette {other}"),
-        });
-        let rendered = battle_anim_rendered_frame(
+        let palette_override = Some(battle_object_palette_name(live.bytes[5] & 7)?);
+        let rendered = battle_anim_rendered_frame_with_battler_palettes(
             rendered_art,
             &bundle,
             asset_root,
@@ -5529,6 +5582,7 @@ fn spawn_visible_move_animation_objects(
             dmg_palettes.obp0,
             dmg_palettes.obp1,
             Some(&live.oam),
+            &battler_palettes,
             images,
         )?;
         let (source_x, source_y) = live.oam.origin;
@@ -5558,9 +5612,9 @@ fn spawn_visible_move_animation_objects(
                             "BATTLE_ANIM_OBJ_POKE_BALL" | "BATTLE_ANIM_OBJ_POKE_BALL_BLOCKED"
                         )
                     {
-                        4.1 - slot_index as f32 * 0.001
+                        BATTLE_CAPTURE_BALL_Z - slot_index as f32 * BATTLE_OAM_SLOT_Z_STEP
                     } else {
-                        3.45 - slot_index as f32 * 0.001
+                        oam_layer.depth(slot_index)
                     },
                 ),
                 ..default()
@@ -5751,6 +5805,31 @@ fn battle_anim_rendered_frame(
     runtime_oam: Option<&VisibleBattleObjectOam>,
     images: &mut Assets<Image>,
 ) -> Result<BattleAnimRenderedFrame> {
+    battle_anim_rendered_frame_with_battler_palettes(rendered_art, bundle, asset_root,
+        object_id, object, frameset_name, frame_index, frame, enemy_move,
+        extra_yflip, suppress_enemy_flips, palette_override, obp0, obp1,
+        runtime_oam, &[None, None], images)
+}
+
+fn battle_anim_rendered_frame_with_battler_palettes(
+    rendered_art: &mut RenderedTilesetArt,
+    bundle: &serde_json::Value,
+    asset_root: &AssetRoot,
+    object_id: &str,
+    object: &serde_json::Value,
+    frameset_name: &str,
+    frame_index: usize,
+    frame: &serde_json::Value,
+    enemy_move: bool,
+    extra_yflip: bool,
+    suppress_enemy_flips: bool,
+    palette_override: Option<&str>,
+    obp0: u8,
+    obp1: u8,
+    runtime_oam: Option<&VisibleBattleObjectOam>,
+    battler_palettes: &[Option<Palette>; 2],
+    images: &mut Assets<Image>,
+) -> Result<BattleAnimRenderedFrame> {
     let flags = object
         .get("flags")
         .and_then(serde_json::Value::as_i64)
@@ -5773,6 +5852,9 @@ fn battle_anim_rendered_frame(
         "{object_id}:{frameset_name}:{frame_index}:{frame_xflip}:{frame_yflip}:{}:{obp0:02x}:{obp1:02x}",
         palette_override.unwrap_or("default"),
     );
+    // Species, transform, and shiny colors can change while final OAM is
+    // identical. Cache the resolved colors rather than a species-only label.
+    let cache_key = format!("{cache_key}:{battler_palettes:?}");
     let cache_key = if let Some(oam) = runtime_oam {
         format!("{cache_key}:{}", battle_anim_runtime_oam_cache_key(oam))
     } else {
@@ -5840,20 +5922,24 @@ fn battle_anim_rendered_frame(
                 raw_path.display()
             );
         }
+        let declared_tiles = gfx_entry
+            .first()
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|count| usize::try_from(count).ok())
+            .with_context(|| format!("battle animation gfx table entry {gfx_id} has no tile count"))?;
+        let sheet_name = raw_path
+            .file_stem()
+            .and_then(|name| name.to_str())
+            .context("battle animation graphics path has no sheet name")?;
+        let tile_data = battle_anim_graphics::normalize(sheet_name, tile_data, declared_tiles)
+            .map_err(anyhow::Error::msg)
+            .with_context(|| format!("compile battle animation graphics {gfx_label}"))?;
         let declared_palette = object
             .get("palette")
             .and_then(serde_json::Value::as_str)
             .with_context(|| format!("battle animation object {object_id} has no palette"))?;
-        let palette_name = match palette_override.unwrap_or(declared_palette) {
-            "PAL_BATTLE_OB_GRAY" => "gray",
-            "PAL_BATTLE_OB_YELLOW" => "yellow",
-            "PAL_BATTLE_OB_RED" => "red",
-            "PAL_BATTLE_OB_GREEN" => "green",
-            "PAL_BATTLE_OB_BLUE" => "blue",
-            "PAL_BATTLE_OB_BROWN" => "brown",
-            other => anyhow::bail!("unknown battle animation palette {other}"),
-        };
-        let palette = load_battle_anim_palette(asset_root, palette_name)?;
+        let palette_id = battle_object_palette_id(palette_override.unwrap_or(declared_palette))?;
+        let palette = load_battle_object_palette(asset_root, palette_id, battler_palettes)?;
         let mut pieces = Vec::<(i32, i32, [u8; 8 * 8 * 4])>::new();
         let mut min_x = 0_i32;
         let mut min_y = 0_i32;
@@ -5919,11 +6005,8 @@ fn battle_anim_rendered_frame(
                 // CGB uses OAM palette bits, not the DMG OBP selector. The
                 // source's BattleAnim_SetOBPals remaps only gray and yellow.
                 let palette_id = piece[3] & 7;
-                object_palette = if palette_id < 2 { obp0 } else { 0xe4 };
-                let name = ["gray", "yellow", "red", "green", "blue", "brown"]
-                    .get(usize::from(palette_id))
-                    .context("unsupported CGB object palette")?;
-                load_battle_anim_palette(asset_root, name)?
+                object_palette = if matches!(palette_id, 2 | 3) { obp0 } else { 0xe4 };
+                load_battle_object_palette(asset_root, palette_id, battler_palettes)?
             } else {
                 palette
             };
@@ -6088,7 +6171,12 @@ fn load_battle_anim_palette(asset_root: &AssetRoot, requested: &str) -> Result<[
 
 fn visible_battle_command_animation_active(runtime_shell: &BevyRuntimeShell) -> bool {
     runtime_shell.visible_battle_sliding_intro.is_some()
-        || runtime_shell.visible_capture_animation.is_some()
+        || runtime_shell.visible_capture_animation.as_ref().is_some_and(|capture| {
+            // Only an active throw retains text over a queued narration page.
+            // With no narration, capture still owns the backdrop (including
+            // Dex/nickname handoff); no battle-action cursor exists there.
+            capture.throw_active() || runtime_shell.battle_messages.is_empty()
+        })
         || runtime_shell.visible_frontpic_animation.is_some()
         || runtime_shell
             .visible_move_animations

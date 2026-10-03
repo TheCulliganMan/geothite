@@ -48,12 +48,13 @@ fn visible_battle_animation_definition(
 )> {
     let (timeline_frame, sound_events, cry_events, object_events, bg_events) =
         compile_visible_battle_animation_timeline(snapshot, &label, animation_param)?;
-    // RunBattleAnimCommand stops the root script at anim_ret. Live objects
-    // and BG effects do not extend it; RunBattleAnimScript clears OAM as soon
-    // as that tick completes. Events are one-based, so include the return tick.
+    // Events are one-based. anim_ret still runs BG/OAM callbacks and transfers
+    // that update during VBlank before clearing shadow OAM. The controller's
+    // total_frames is an exclusive completion boundary, so retain the return
+    // update as well as the initial frame zero. Reject an unrepresentable end.
     Some((
         label,
-        timeline_frame.saturating_add(1),
+        timeline_frame.checked_add(2)?,
         sound_events,
         cry_events,
         object_events,
@@ -125,11 +126,13 @@ fn visible_move_animation_definition_with_substitute(
             event.frame = event.frame.saturating_add(total_frames);
             event
         }));
-        total_frames = total_frames.saturating_add(frames);
+        // Parts share their boundary update; an initial frame zero is not
+        // inserted between consecutive source programs.
+        total_frames = total_frames.checked_add(frames.checked_sub(1)?)?;
     }
     Some((
         labels.join(" → "),
-        total_frames,
+        total_frames.checked_add(1)?,
         sounds,
         cries,
         objects,
@@ -151,7 +154,7 @@ fn visible_substitute_move_delay_definition(
         visible_move_animation_definition(snapshot, "SUBSTITUTE", 1)?;
     let (_, raise_frames, raise_sounds, raise_cries, raise_objects, raise_bg_effects) =
         visible_move_animation_definition(snapshot, "SUBSTITUTE", 2)?;
-    let raise_offset = lower_frames.saturating_add(40);
+    let raise_offset = lower_frames.checked_sub(1)?.checked_add(40)?;
     sounds.extend(
         raise_sounds
             .into_iter()
@@ -172,7 +175,7 @@ fn visible_substitute_move_delay_definition(
     }));
     Some((
         "BattleCommand_LowerSub_MoveDelay_RaiseSub".to_string(),
-        raise_offset.saturating_add(raise_frames),
+        raise_offset.checked_add(raise_frames)?,
         sounds,
         cries,
         objects,
@@ -206,7 +209,7 @@ fn visible_substitute_raise_after_delay_definition(
     }
     Some((
         "BattleCommand_MoveDelay_RaiseSub".to_string(),
-        40_u16.saturating_add(raise_frames),
+        40_u16.checked_add(raise_frames)?,
         sounds,
         cries,
         objects,
@@ -297,7 +300,9 @@ fn execute_visible_battle_animation_script(
                     .first()
                     .and_then(|argument| parse_visible_battle_animation_int(argument))
                     .and_then(|frames| u16::try_from(frames).ok())?;
-                timeline.frame = timeline.frame.saturating_add(frames);
+                // The wait command's own update precedes its N delayed
+                // updates. In particular, anim_wait0 still yields one frame.
+                timeline.frame = timeline.frame.saturating_add(frames.saturating_add(1));
             }
             "anim_sound" => {
                 if let Some(sound) = arguments.get(2) {

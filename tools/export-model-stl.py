@@ -10,7 +10,7 @@ is not used by the game. See docs/art/model-stl.md.
 from __future__ import annotations
 
 from animated_glb import load_catalog, load_rig
-from pidgeotto_glb import read_pidgeotto, species_paths
+from battle_model_assets import read_species_model, species_paths, GLB_READERS
 
 import argparse
 from dataclasses import dataclass
@@ -136,8 +136,8 @@ class ModelReader:
         # geometry itself comes only from the canonical GLB catalog.
         if path.parent == self.root / "johto_characters" and path.name.endswith(".rig.json") and (path.parent / "catalog.glb").exists():
             return self.read_rig(load_rig(path.parent, path.name.removesuffix(".rig.json")))
-        if path == self.root / 'battle_species/pidgeotto.glb':
-            source = read_pidgeotto(path)
+        if path.parent == self.root / 'battle_species' and path.suffix == '.glb':
+            source = read_species_model(path)
         else:
             source = json.loads(path.read_text())
         if "joints" in source:
@@ -248,7 +248,7 @@ def validate_stl(data: bytes, primitives: tuple[Primitive, ...]):
 
 def output_path(source: Path, source_root: Path, output_root: Path) -> Path:
     relative = source.relative_to(source_root)
-    if relative.as_posix() == 'battle_species/pidgeotto.glb':
+    if relative.parent.as_posix() == 'battle_species' and relative.name in GLB_READERS:
         return output_root / relative.with_suffix('.stl')
     for suffix in (".mesh.json", ".rig.json"):
         if relative.name.endswith(suffix):
@@ -263,7 +263,7 @@ def main(argv=None):
     parser.add_argument("--models-root", type=Path, default=default_root)
     parser.add_argument("--output-root", type=Path, default=repository_root / "output/model-stl",
                         help="default: ignored output/model-stl directory")
-    parser.add_argument("--model", action="append", help="relative .mesh.json, battle_species/pidgeotto.glb, or johto_characters/<scene>.rig.json selector; repeatable")
+    parser.add_argument("--model", action="append", help="relative .mesh.json, supported battle species .glb, or johto_characters/<scene>.rig.json selector; repeatable")
     parser.add_argument("--check", action="store_true", help="verify existing files without changing them")
     parser.add_argument("--list-output-paths", action="store_true", help="after successful verification, print only verified paths relative to output-root on stdout")
     args = parser.parse_args(argv)

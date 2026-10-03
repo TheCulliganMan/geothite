@@ -41,6 +41,9 @@ jobs:
       - run: python3 tools/test_johto_character_geometry.py
       - run: python3 tools/test_animated_glb.py
       - run: python3 tools/test_pidgeotto_glb.py
+      - run: python3 tools/test_cyndaquil_glb.py
+      - run: python3 tools/test_totodile_glb.py
+      - run: python3 tools/test_gengar_glb.py
       - run: python3 tools/human_locomotion.py
       - run: python3 tools/test_model_asset_storage.py
       - run: python3 tools/test_johto_art_sources.py

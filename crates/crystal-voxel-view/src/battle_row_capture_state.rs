@@ -110,6 +110,10 @@ impl<K: PartialEq> CaptureCache<K> {
         })
     }
 
+    pub(super) fn settled_key(&self) -> Option<&K> {
+        self.settled().then_some(self.key.as_ref()).flatten()
+    }
+
     pub(super) fn settled(&self) -> bool {
         let outcome = self
             .receipt

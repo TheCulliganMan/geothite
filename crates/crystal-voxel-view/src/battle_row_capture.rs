@@ -89,7 +89,7 @@ impl Plugin for BattleRowCapturePlugin {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(Clone, PartialEq)]
 struct CaptureKey {
     actor: Entity,
     mesh: AssetId<Mesh>,
@@ -112,6 +112,7 @@ struct CaptureKey {
 #[derive(Resource)]
 pub(super) struct ActorCaptures {
     enabled: bool,
+    capture_only: bool,
     actors: [CaptureCache<CaptureKey>; 2],
 }
 impl Default for ActorCaptures {
@@ -119,16 +120,52 @@ impl Default for ActorCaptures {
         Self {
             // Separate opt-in until native capture/alpha/resize QA is green.
             enabled: cfg!(not(target_arch = "wasm32"))
-                && std::env::var("CRYSTAL_BATTLE_ROW_PROTOTYPE").as_deref() == Ok("1")
-                && std::env::var("CRYSTAL_BATTLE_ROW_CAPTURE_CACHE").as_deref() == Ok("1"),
+                && ((std::env::var("CRYSTAL_BATTLE_ROW_PROTOTYPE").as_deref() == Ok("1")
+                    && std::env::var("CRYSTAL_BATTLE_ROW_CAPTURE_CACHE").as_deref() == Ok("1"))
+                    || std::env::var("CRYSTAL_BATTLE_CAPTURE_PROTOTYPE").as_deref() == Ok("1")),
+            capture_only: std::env::var("CRYSTAL_BATTLE_CAPTURE_PROTOTYPE").as_deref() == Ok("1")
+                && !(std::env::var("CRYSTAL_BATTLE_ROW_PROTOTYPE").as_deref() == Ok("1")
+                    && std::env::var("CRYSTAL_BATTLE_ROW_CAPTURE_CACHE").as_deref() == Ok("1")),
             actors: std::array::from_fn(|_| CaptureCache::default()),
         }
     }
 }
 
+/// Immutable facts certified by the last submitted writer. The consumer pins
+/// this target against further writes; a ready boolean alone is insufficient.
+#[derive(Clone)]
+pub(super) struct SettledActorImage {
+    pub actor: Entity,
+    pub mesh: AssetId<Mesh>,
+    pub material: AssetId<StandardMaterial>,
+    pub pose: Mat4,
+    pub camera: Mat4,
+    pub target: AssetId<Image>,
+    pub render_size: UVec2,
+    pub output_size: UVec2,
+    pub msaa_samples: u32,
+    pub projection: [f32; 4],
+    pub camera_changes: [u32; 5],
+    pub light: (Entity, u32, Mat4),
+    pub ambient: Option<(Color, f32)>,
+}
+
 impl ActorCaptures {
+    pub(super) fn settled_image(&self, index: usize) -> Option<SettledActorImage> {
+        let key = self.actors[index].settled_key()?;
+        (self.enabled && key.palette.0 == 0xe4).then_some(SettledActorImage {
+            actor: key.actor, mesh: key.mesh, material: key.material,
+            pose: key.actor_pose, camera: key.camera_pose, target: key.target,
+            render_size: key.render_size, output_size: key.output_size,
+            msaa_samples: key.msaa_samples,
+            projection: key.projection, camera_changes: key.camera_changes,
+            light: key.light, ambient: key.ambient,
+        })
+    }
+
     pub(super) fn prewarm_actor(&self, frame: &VisualBattleFrame, index: usize) -> bool {
         self.enabled
+            && (!self.capture_only || index == 1)
             && frame.active
             && !frame.use_source_scene
             && frame.battlers[index]
@@ -147,7 +184,7 @@ struct ActorCaptureRequest {
     ticket: CaptureTicket,
 }
 
-fn changed_asset<A: Asset>(event: &AssetEvent<A>) -> AssetId<A> {
+pub(super) fn changed_asset<A: Asset>(event: &AssetEvent<A>) -> AssetId<A> {
     match event {
         AssetEvent::Added { id }
         | AssetEvent::Modified { id }
@@ -159,11 +196,11 @@ fn changed_asset<A: Asset>(event: &AssetEvent<A>) -> AssetId<A> {
 
 #[allow(clippy::too_many_arguments)]
 #[derive(SystemParam)]
-struct CaptureAssetEvents<'w, 's> {
-    meshes: EventReader<'w, 's, AssetEvent<Mesh>>,
-    materials: EventReader<'w, 's, AssetEvent<StandardMaterial>>,
-    images: EventReader<'w, 's, AssetEvent<Image>>,
-    shaders: EventReader<'w, 's, AssetEvent<Shader>>,
+pub(super) struct CaptureAssetEvents<'w, 's> {
+    pub(super) meshes: EventReader<'w, 's, AssetEvent<Mesh>>,
+    pub(super) materials: EventReader<'w, 's, AssetEvent<StandardMaterial>>,
+    pub(super) images: EventReader<'w, 's, AssetEvent<Image>>,
+    pub(super) shaders: EventReader<'w, 's, AssetEvent<Shader>>,
 }
 
 fn sync_actor_captures(
@@ -295,7 +332,7 @@ fn sync_actor_captures(
             if !actor.key.modeled
                 // The exact-static-image cache is deliberately single-mesh.
                 // Articulated anatomy remains live through all source rows.
-                || actor.animated.is_some()
+                || actor.is_articulated()
                 || !frame.battlers[index]
                     .as_ref()
                     .is_some_and(|actor| actor.visible && actor.allow_species_model && !actor.shiny)
@@ -602,10 +639,14 @@ mod tests {
         source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
             source_y: Vec2::new(48.0, 64.0),
             bg_cleared: true,
+            oam_depth: 3.45,
         });
         let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
         frame.source = Some(source);
-        frame.battlers[1].as_mut().unwrap().species_id = Arc::from("GENGAR");
+        // Static-image cache tests use a static species. The starter skins
+        // have live joints and must never be frozen by this cache.
+        frame.battlers[0].as_mut().unwrap().species_id = Arc::from("SUDOWOODO");
+        frame.battlers[1].as_mut().unwrap().species_id = Arc::from("RATICATE");
         app.update();
         app
     }
@@ -691,6 +732,26 @@ mod tests {
     }
 
     #[test]
+    fn weighted_skins_keep_live_row_targets_and_never_acquire_static_captures() {
+        for species in ["CYNDAQUIL", "TOTODILE", "GENGAR"] {
+            let mut app = capture_app();
+            app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
+                .as_mut().unwrap().species_id = Arc::from(species);
+            app.update();
+            let entity = app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().entity;
+            for _ in 0..12 {
+                app.update();
+                let world = app.world_mut();
+                assert!(world.query::<&ActorCaptureRequest>().iter(world)
+                    .all(|request| request.actor != entity));
+                assert_eq!(*world.get::<RenderLayers>(entity).unwrap(),
+                    RenderLayers::layer(BATTLE_ROW_LAYERS[0]));
+                assert!(active(&mut app)[0]);
+            }
+        }
+    }
+
+    #[test]
     fn capture_cache_reuses_images_while_source_rows_scroll_and_change_sides() {
         let mut app = capture_app();
         assert_eq!(active(&mut app), [true; 2]);
@@ -722,6 +783,7 @@ mod tests {
                     Vec2::new(40.0, 56.0)
                 },
                 bg_cleared: tick % 3 == 0,
+                oam_depth: 3.45,
             });
             app.update();
             assert_eq!(active(&mut app), [false; 2]);
@@ -851,7 +913,7 @@ mod tests {
         app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
             .as_mut()
             .unwrap()
-            .species_id = Arc::from("GENGAR");
+            .species_id = Arc::from("KADABRA");
         app.update();
         assert_ne!(*app.world().resource::<BattleSceneLayout>(), before_layout);
         assert_eq!(
@@ -947,6 +1009,7 @@ mod tests {
         source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
             source_y: Vec2::new(48.0, 64.0),
             bg_cleared: true,
+            oam_depth: 3.45,
         });
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source.clone());
         app.update();
@@ -1115,4 +1178,359 @@ mod tests {
             "restoring the model restores framing for both participants"
         );
     }
+    fn capture_bridge_app() -> App {
+        let mut app = capture_app();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
+        app.world_mut().resource_mut::<capture_bridge::BattleCaptureBridge>().enabled = true;
+        app.update();
+        submit(&mut app);
+        app.update();
+        app.update();
+        assert!(app.world().resource::<ActorCaptures>().settled_image(1).is_some(),
+            "fixture must have a settled final-writer receipt before admission");
+        app
+    }
+
+    fn show_capture(app: &mut App, tick: u16, picture: crystal_render_api::VisualCapturePicture) {
+        let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+        frame.capture = Some(crystal_render_api::VisualBattleCapture {
+            frame: tick, ball_id: Arc::from("POKE_BALL"), presented: true,
+            enemy_picture: picture,
+        });
+        frame.battlers[1].as_mut().unwrap().visible = picture != crystal_render_api::VisualCapturePicture::Hidden;
+    }
+
+    #[test]
+    fn capture_bridge_pins_hidden_target_without_mesh_growth_or_camera_refit() {
+        use crystal_render_api::VisualCapturePicture::{Full, Hidden, Tiles};
+        let mut app = capture_bridge_app();
+        let layout = app.world().resource::<BattleSceneLayout>().clone();
+        let (target, actor, pose) = {
+            let scene = app.world().resource::<BattleScene>();
+            let actor = scene.actors[1].as_ref().unwrap();
+            (scene.row_targets[1].clone(), actor.entity, actor.base_pose)
+        };
+        let counts = (app.world().resource::<Assets<Mesh>>().len(),
+            app.world().resource::<Assets<Image>>().len(),
+            app.world().resource::<Assets<StandardMaterial>>().len(), app.world().entities().len());
+        for (tick, picture) in [(0, Full), (71, Tiles(7)), (75, Tiles(5)), (79, Tiles(3)),
+            (83, Hidden), (434, Hidden), (437, Tiles(3)), (441, Tiles(5)), (445, Tiles(7)), (449, Full)] {
+            show_capture(&mut app, tick, picture);
+            for _ in 0..4 {
+                app.update();
+                let world = app.world_mut();
+                assert!(world.resource::<BattleViewStatus>().capture_image_active,
+                    "admitted capture lost its lease at {tick}: {:?}", world.resource::<BattleViewStatus>().capture_fallback_reason);
+                assert!(world.resource::<BattleViewStatus>().active);
+                assert_eq!(*world.resource::<BattleSceneLayout>(), layout);
+                assert_eq!(world.resource::<BattleScene>().row_targets[1], target);
+                assert_eq!(*world.get::<Transform>(actor).unwrap(), pose);
+                assert_eq!(*world.get::<RenderLayers>(actor).unwrap(), RenderLayers::layer(BATTLE_ROW_LAYERS[1]));
+                assert_eq!(*world.get::<Visibility>(actor).unwrap(), if picture == Hidden { Visibility::Hidden } else { Visibility::Visible });
+                assert!(world.query::<(&BattleRowCamera, &Camera)>().iter(world).all(|(row, camera)| row.0 != 1 || !camera.is_active));
+                assert_eq!((world.resource::<Assets<Mesh>>().len(), world.resource::<Assets<Image>>().len(),
+                    world.resource::<Assets<StandardMaterial>>().len(), world.entities().len()), counts);
+            }
+        }
+        app.world_mut().resource_mut::<VisualBattleFrame>().capture = None;
+        app.update();
+        assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+        assert!(app.world().get::<RenderLayers>(actor).unwrap().intersects(&RenderLayers::layer(BATTLE_LAYER)));
+        assert!(active(&mut app)[1], "retired image can prewarm for the next capture");
+    }
+
+    #[test]
+    fn capture_bridge_f3_resize_and_changed_mesh_latch_classic_until_retirement() {
+        use crystal_render_api::VisualCapturePicture::{Full, Hidden};
+        for interruption in 0..4 {
+            let mut app = capture_bridge_app();
+            show_capture(&mut app, 0, Full);
+            app.update();
+            assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+            show_capture(&mut app, 83, Hidden);
+            match interruption {
+                0 => app.world_mut().resource_mut::<VoxelViewSettings>().enabled = false,
+                1 => {
+                    let world = app.world_mut();
+                    world.query::<&mut Window>().single_mut(world).resolution.set(900.0, 600.0);
+                }
+                2 => app.world_mut().resource_mut::<VisualBattleCanvas>().physical_size = UVec2::new(400, 300),
+                _ => {
+                    let mesh = app.world().resource::<BattleScene>().actors[1].as_ref().unwrap().mesh.clone().unwrap();
+                    app.world_mut().resource_mut::<Assets<Mesh>>().get_mut(&mesh).unwrap();
+                }
+            }
+            app.update();
+            if interruption == 3 { app.update(); } // AssetEvents flush in Last.
+            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+            assert!(!app.world().resource::<BattleViewStatus>().active);
+            app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+            for tick in [84, 437, 449, 470] {
+                show_capture(&mut app, tick, Full);
+                app.update();
+                assert!(!app.world().resource::<BattleViewStatus>().active);
+                assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_some());
+                assert_eq!(app.world().resource::<VisualBattleFrame>().capture.as_ref().unwrap().frame, tick);
+            }
+            app.world_mut().resource_mut::<VisualBattleFrame>().capture = None;
+            app.update();
+            assert!(app.world().resource::<BattleViewStatus>().active);
+            assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_none());
+        }
+    }
+
+    #[test]
+    fn capture_bridge_unready_target_never_hides_actor_or_admits_late_receipt() {
+        use crystal_render_api::VisualCapturePicture::Full;
+        let mut app = capture_app();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
+        app.world_mut().resource_mut::<capture_bridge::BattleCaptureBridge>().enabled = true;
+        let late: Vec<_> = {
+            let world = app.world_mut();
+            world.query::<&ActorCaptureRequest>().iter(world).cloned().collect()
+        };
+        show_capture(&mut app, 0, Full);
+        app.update();
+        assert!(!app.world().resource::<BattleViewStatus>().active);
+        for request in late {
+            request.ticket.mark_drawn(); request.ticket.mark_output(); request.ticket.mark_submitted();
+        }
+        for tick in [1, 71, 83, 437] {
+            show_capture(&mut app, tick, Full); app.update();
+            assert!(!app.world().resource::<BattleViewStatus>().active);
+            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+        }
+    }
+
+    #[test]
+    fn capture_bridge_ignores_unrelated_oam_materials_and_neutral_flash_mode_changes() {
+        use crystal_render_api::VisualCapturePicture::Full;
+        let mut app = capture_bridge_app();
+        let unrelated = app.world_mut().resource_mut::<Assets<StandardMaterial>>()
+            .add(StandardMaterial::default());
+        app.update(); app.update();
+        show_capture(&mut app, 0, Full); app.update();
+        assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+        for (index, mode) in [BattleFlashMode::Reduced, BattleFlashMode::Full,
+            BattleFlashMode::Reduced, BattleFlashMode::Full].into_iter().enumerate() {
+            app.world_mut().insert_resource(mode);
+            app.world_mut().resource_mut::<Assets<StandardMaterial>>()
+                .get_mut(&unrelated).unwrap().base_color = Color::srgb(index as f32 / 4.0, 0.2, 0.3);
+            show_capture(&mut app, index as u16 + 1, Full);
+            app.update(); app.update();
+            assert!(app.world().resource::<BattleViewStatus>().capture_image_active,
+                "unrelated OAM material or neutral intensity change cannot revoke enemy image");
+        }
+    }
+
+    fn capture_bridge_battle_light(app: &mut App) -> Entity {
+        let world = app.world_mut();
+        world.query_filtered::<Entity, With<BattleLight>>().single(world)
+    }
+
+    fn assert_capture_bridge_classic(app: &App) {
+        let status = app.world().resource::<BattleViewStatus>();
+        assert!(!status.active);
+        assert!(!status.capture_image_active);
+        assert!(status.capture_fallback_reason.is_some());
+    }
+
+    #[test]
+    fn capture_bridge_rejects_rotated_or_removed_light_before_admission_and_while_held() {
+        use crystal_render_api::VisualCapturePicture::Full;
+
+        for held in [false, true] {
+            for remove_light in [false, true] {
+                let mut app = capture_bridge_app();
+                let sun = capture_bridge_battle_light(&mut app);
+                let original_pose = *app.world().get::<Transform>(sun).unwrap();
+                let original_light = app.world().get::<DirectionalLight>(sun).unwrap().clone();
+
+                if held {
+                    show_capture(&mut app, 0, Full);
+                    app.update();
+                    assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+                }
+
+                if remove_light {
+                    app.world_mut().entity_mut(sun).remove::<DirectionalLight>();
+                } else {
+                    // Only Transform changes: DirectionalLight's change tick stays intact.
+                    app.world_mut().get_mut::<Transform>(sun).unwrap().rotate_y(0.3);
+                }
+                show_capture(&mut app, if held { 1 } else { 0 }, Full);
+                app.update();
+                assert_capture_bridge_classic(&app);
+
+                // Restoring compatible inputs cannot reverse the per-capture decision.
+                app.world_mut().entity_mut(sun).insert((original_pose, original_light));
+                for tick in [2, 71, 83, 437, 449] {
+                    show_capture(&mut app, tick, Full);
+                    app.update();
+                    assert_capture_bridge_classic(&app);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn capture_bridge_ignores_an_unrelated_mutated_layer_31_sun() {
+        use crystal_render_api::VisualCapturePicture::{Full, Hidden, Tiles};
+
+        let mut app = capture_bridge_app();
+        let unrelated = app.world_mut().spawn((
+            DirectionalLightBundle {
+                transform: Transform::from_xyz(180.0, 320.0, 220.0)
+                    .looking_at(Vec3::ZERO, Vec3::Y),
+                ..default()
+            },
+            RenderLayers::layer(31),
+        )).id();
+
+        // Matches the production overworld atmosphere's mutable light assignment.
+        // Admission itself, not merely an existing held lease, must ignore it.
+        for (tick, picture) in [
+            (0, Full), (71, Tiles(7)), (75, Tiles(5)), (79, Tiles(3)),
+            (83, Hidden), (437, Tiles(3)), (449, Full),
+        ] {
+            for _ in 0..3 {
+                app.world_mut().get_mut::<DirectionalLight>(unrelated).unwrap()
+                    .shadows_enabled = true;
+                show_capture(&mut app, tick, picture);
+                app.update();
+                let status = app.world().resource::<BattleViewStatus>();
+                assert!(status.active, "unrelated sun rejected capture at tick {tick}");
+                assert!(status.capture_image_active);
+                assert!(status.capture_fallback_reason.is_none());
+            }
+        }
+    }
+
+    #[test]
+    fn capture_bridge_does_not_admit_a_settled_image_from_a_previous_party_identity() {
+        use crystal_render_api::VisualCapturePicture::Full;
+
+        let mut app = capture_bridge_app();
+        let original_actor = app.world().resource::<BattleScene>().actors[1]
+            .as_ref().unwrap().entity;
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let enemy = frame.battlers[1].as_mut().unwrap();
+            enemy.party_index = Some(enemy.party_index.unwrap_or(0).wrapping_add(1));
+        }
+        show_capture(&mut app, 0, Full);
+        app.update();
+        assert_capture_bridge_classic(&app);
+        // Selection precedes actor synchronization, so rejection must happen before
+        // replacing the cached actor or compositing one frame of its former image.
+        assert_eq!(app.world().resource::<BattleScene>().actors[1]
+            .as_ref().unwrap().entity, original_actor);
+        for tick in [1, 71, 83, 437, 449] {
+            show_capture(&mut app, tick, Full);
+            app.update();
+            assert_capture_bridge_classic(&app);
+        }
+    }
+
+    #[test]
+    fn capture_bridge_rejects_competing_row_writer_and_aliased_target_handle() {
+        use crystal_render_api::VisualCapturePicture::Full;
+        for held in [false, true] {
+            for shared_handle in [false, true] {
+                let mut app = capture_bridge_app();
+                let targets = app.world().resource::<BattleScene>().row_targets.clone();
+                if held {
+                    show_capture(&mut app, 0, Full);
+                    app.update();
+                    assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+                }
+                if shared_handle {
+                    app.world_mut().resource_mut::<BattleScene>().row_targets[0] = targets[1].clone();
+                } else {
+                    // Handles in BattleScene remain distinct. The other camera
+                    // alone is redirected, so checking the handles cannot catch it.
+                    let world = app.world_mut();
+                    let mut cameras = world.query::<(&BattleRowCamera, &mut Camera)>();
+                    for (row, mut camera) in cameras.iter_mut(world) {
+                        if row.0 == 0 {
+                            camera.target = RenderTarget::Image(targets[1].clone());
+                            camera.is_active = true;
+                        }
+                    }
+                }
+                show_capture(&mut app, if held { 1 } else { 0 }, Full);
+                app.update();
+                assert_capture_bridge_classic(&app);
+
+                app.world_mut().resource_mut::<BattleScene>().row_targets[0] = targets[0].clone();
+                {
+                    let world = app.world_mut();
+                    let mut cameras = world.query::<(&BattleRowCamera, &mut Camera)>();
+                    for (row, mut camera) in cameras.iter_mut(world) {
+                        if row.0 == 0 {
+                            camera.target = RenderTarget::Image(targets[0].clone());
+                            camera.is_active = false;
+                        }
+                    }
+                }
+                for tick in [2, 71, 83, 437, 449] {
+                    show_capture(&mut app, tick, Full);
+                    app.update();
+                    assert_capture_bridge_classic(&app);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn capture_bridge_drains_initial_events_before_admission_but_rejects_new_relevant_events() {
+        use bevy::ecs::system::{IntoSystem, System};
+        use crystal_render_api::VisualCapturePicture::Full;
+        for pending in [false, true] {
+            let mut app = capture_bridge_app();
+            let stamp = app.world().resource::<ActorCaptures>().settled_image(1).unwrap();
+            if pending {
+                show_capture(&mut app, 0, Full);
+                app.world_mut().resource_mut::<VisualBattleFrame>().capture.as_mut().unwrap()
+                    .presented = false;
+            }
+            // A persistent selector and a retained Events buffer avoid relying
+            // on wall-clock event expiry or extra app warmup frames. These are
+            // initialization notifications for the image already certified by
+            // the fixture's final draw/output/submission receipt.
+            let mut selector = IntoSystem::into_system(capture_bridge::select_capture_bridge);
+            selector.initialize(app.world_mut());
+            for _ in 0..2 {
+                app.world_mut().resource_mut::<Events<AssetEvent<Mesh>>>()
+                    .send(AssetEvent::Added { id: stamp.mesh });
+                app.world_mut().resource_mut::<Events<AssetEvent<StandardMaterial>>>()
+                    .send(AssetEvent::Added { id: stamp.material });
+                app.world_mut().resource_mut::<Events<AssetEvent<Image>>>()
+                    .send(AssetEvent::Added { id: stamp.target });
+                app.world_mut().resource_mut::<Events<AssetEvent<Shader>>>()
+                    .send(AssetEvent::Added { id: BATTLE_COMPOSITE_SHADER.id() });
+            }
+            selector.run((), app.world_mut());
+            assert!(app.world().resource::<ActorCaptures>().settled_image(1).is_some());
+            show_capture(&mut app, 0, Full);
+            selector.run((), app.world_mut());
+            assert!(app.world().resource::<BattleViewStatus>().capture_image_active,
+                "idle/pending initialization events cannot reject a certified current image: {:?}",
+                app.world().resource::<BattleViewStatus>().capture_fallback_reason);
+
+            // A genuinely new relevant event is still a revocation, even while
+            // the previous receipt remains available until Last processes it.
+            app.world_mut().resource_mut::<Events<AssetEvent<Mesh>>>()
+                .send(AssetEvent::Modified { id: stamp.mesh });
+            show_capture(&mut app, 1, Full);
+            selector.run((), app.world_mut());
+            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+            assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_some());
+            show_capture(&mut app, 2, Full);
+            selector.run((), app.world_mut());
+            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active,
+                "draining an event does not reverse a capture-wide fallback decision");
+        }
+    }
+
 }

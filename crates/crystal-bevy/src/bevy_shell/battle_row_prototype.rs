@@ -115,9 +115,10 @@ fn immersive_row_prototype_oam_supported(
 fn immersive_row_prototype_rows(
     animation: &VisibleMoveAnimation,
     live: &[Option<VisibleBattleBattlerRowFrame>; 10],
+    oam_layer: VisibleBattleOamLayer,
 ) -> [Option<VisualBattleBattlerRows>; 2] {
     let mut rows = [None; 2];
-    for row in live.iter().flatten() {
+    for (slot, row) in live.iter().enumerate().filter_map(|(slot, row)| row.as_ref().map(|row| (slot, row))) {
         if row.oam.entries.is_empty() {
             continue;
         }
@@ -150,6 +151,7 @@ fn immersive_row_prototype_rows(
         rows[usize::from(!row.player_side)] = Some(VisualBattleBattlerRows {
             source_y: Vec2::new(y_start as f32, y_end as f32),
             bg_cleared: animation.frame > row.spawn_frame && !redrawn,
+            oam_depth: oam_layer.depth(slot),
         });
     }
     rows

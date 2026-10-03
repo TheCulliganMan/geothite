@@ -3,7 +3,11 @@
 from pathlib import Path
 from model_asset_storage import read_model_json, validate_storage
 from animated_glb import load_catalog
-from pidgeotto_glb import read_pidgeotto, species_paths
+from pidgeotto_glb import read_pidgeotto
+from battle_model_assets import species_paths
+from gengar_glb import read_gengar
+from cyndaquil_glb import read_cyndaquil
+from totodile_glb import read_totodile
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -11,6 +15,11 @@ from johto_art_sources import load_sources
 editable = list(load_sources())
 
 models = ROOT / 'crates/crystal-voxel-view/models'
+weighted_skins = {
+    models / 'actor_props/battle_cyndaquil.glb': (read_cyndaquil, 30),
+    models / 'actor_props/battle_totodile.glb': (read_totodile, 27),
+    models / 'battle_species/gengar.glb': (read_gengar, 27),
+}
 model_files = sorted([*models.rglob('*.mesh.json'), *models.rglob('*.rig.json'), *models.rglob('*.glb')])
 model_counts = {}
 species_files = species_paths(models / 'battle_species')
@@ -18,6 +27,12 @@ validate_storage(models)
 assert model_files
 for path in model_files:
     if path.suffix == '.glb':
+        if path in weighted_skins:
+            reader, part_count = weighted_skins[path]
+            model = reader(path)
+            assert model['name'] == path.stem and len(model['primitives']) == part_count, path
+            model_counts[path] = 1
+            continue
         if path == models / 'battle_species/pidgeotto.glb':
             assert len(read_pidgeotto(path)['primitives']) == 34
             model_counts[path] = 1
@@ -41,6 +56,11 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
     # Literal paths may be arguments to a small lazy-loader macro. Inspect the
     # actual paths rather than depending on rustfmt's include_str layout.
     for relative in re.findall(r'"([^"\n]*models/[^"\n]+\.(?:json|glb)(?:\.include\.rs)?)"', source.read_text()):
+        # Test readers may build a filesystem path with format!; that is not
+        # an embedded asset reference. Production include paths stay literal.
+        if '{' in relative or '}' in relative:
+            assert source.name.endswith('_tests.rs'), (source, relative)
+            continue
         base = models.parent if relative.startswith('models/') else source.parent
         path = (base / relative.removesuffix('.include.rs')).resolve()
         assert path.is_file(), (source, relative)
@@ -57,6 +77,10 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
         assert declaration, 'missing source-scoped actor model catalog'
         for label in re.findall(r'=>\s*"([^"\n]+)"', declaration.group(1)):
             path = models / 'actor_props' / (label + '.mesh.json')
+            skin = path.with_name(label + '.glb')
+            if skin in weighted_skins:
+                assert not path.exists(), 'canonical skin must not retain duplicate JSON geometry'
+                path = skin
             assert path.is_file(), (source, label)
             assert path in model_files, path
             references += 1

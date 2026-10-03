@@ -3,8 +3,10 @@
 Animated humans use one standard glTF 2.0 binary catalog at
 `crates/crystal-voxel-view/models/johto_characters/catalog.glb`. Its named scenes
 preserve all 75 character identities, rigid joint hierarchies, linear RGBA
-materials, shared geometry, and node animation channels. Static scenery and
-Pokémon awaiting articulation keep their existing raw JSON representation.
+materials, shared geometry, and node animation channels. The canonical Pidgeotto
+GLB carries rigid wing animation; Cyndaquil, Totodile and Gengar GLBs carry
+standard weighted skins and idle/attack/hit channels.
+Static scenery and Pokémon awaiting articulation keep raw JSON.
 There is one canonical geometry representation for each asset. GitHub-only STL
 copies and expanded human JSON copies are not tracked.
 

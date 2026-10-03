@@ -84,8 +84,18 @@ fn parse_model<'a>(
     Ok(mesh)
 }
 
+macro_rules! prop_mesh {
+    ("battle_cyndaquil") => { crate::species_rig::rig(crate::species_rig::Species::Cyndaquil).neutral.clone() };
+    ("battle_totodile") => { crate::species_rig::rig(crate::species_rig::Species::Totodile).neutral.clone() };
+    ($label:literal) => {{
+        static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
+        MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/actor_props/", $label, ".mesh.json")))
+            .expect(concat!("valid original actor asset: ", $label))).clone()
+    }};
+}
+
 macro_rules! authored_props {
-    ($( $variant:ident => $label:literal ),+ $(,)?) => {
+    ($( $variant:ident => $label:tt ),+ $(,)?) => {
         #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
         pub(crate) enum PropKind { $( $variant ),+, ExactSpecies(&'static str) }
         pub(crate) const ALL_KINDS: &[PropKind] = &[$( PropKind::$variant ),+];
@@ -96,11 +106,7 @@ macro_rules! authored_props {
         }
         pub(crate) fn mesh(kind: PropKind) -> SurfaceMeshData {
             match kind { $(
-                PropKind::$variant => {
-                    static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-                    MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/actor_props/", $label, ".mesh.json")))
-                        .expect(concat!("valid original actor asset: ", $label))).clone()
-                }
+                PropKind::$variant => prop_mesh!($label)
             ),+ ,
                 PropKind::ExactSpecies(species) => crate::battle_species_models::mesh(species)
                     .or_else(|| battle_species_kind(species).map(mesh))

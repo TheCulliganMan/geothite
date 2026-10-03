@@ -22,10 +22,12 @@ retain their actual source art where a correct modeled appearance is unavailable
 Source clipping, extracted rows and some faint/withdraw/reveal/capture phases
 currently retain the original presentation as explicit remaining 3D gaps.
 
-The arena renders into a full-window target. Source attack objects are projected
-through its camera into the native overlay, outside background scroll sampling.
-This keeps their source sequence and palette while placing effects along the
-3D battler axis. F3 changes presentation without another interpreter, command
+The arena renders into an offscreen target. One camera-facing similarity maps
+the complete source effect canvas between the projected battler hit anchors.
+It is fitted in physical pixels, then normalized to viewport coordinates, so
+circles stay round at every aspect ratio and separately allocated OAM tiles keep
+their shared edges. Source objects remain above background scroll sampling.
+This preserves their source sequence, shape and palette along the battler axis. F3 changes presentation without another interpreter, command
 path or reset of the authoritative frame.
 
 ## Physical size and shared framing
@@ -52,15 +54,18 @@ battler displacement, screen displacement, live object slots and SCX/SCY buffers
 No move-name text parsing, guessed hit or renderer-owned duration is used.
 
 Surf and Psychic keep modeled battlers during source scanline effects. A Material2d
-quad samples the arena target in the same native HUD pass. A shared homography
-maps the source attack plane into the perspective view. Output pixels are
-inverse-mapped to source coordinates, then `(x, y)` samples
+quad samples the arena target in the same native HUD pass. The same global
+camera-facing similarity maps source OAM and background register sampling.
+Output pixels are inverse-mapped to source coordinates, then `(x, y)` samples
 `(x + SCX[y], y + SCY[y])` before reprojection. Rows outside the source effect
 buffer stay unwarped. Source tilemap wrapping applies inside the projected LCD
 footprint; the artistic arena continues beyond it. Exposed samples use the
-palette-adjusted arena sky. OAM anchors share this mapping while their original
-silhouettes remain camera-facing rectangles. The restored native Surf capture verifies the crest, displaced background and
-neutral return. Other attack mappings still need their own native review.
+palette-adjusted arena sky. Both original anchors, `(40,72)` and `(124,32)`,
+land exactly on the projected model hit points. Off-anchor paths intentionally
+follow the original source geometry instead of the old sheared world-plane map.
+The earlier Surf capture predates this shape correction; Surf and other row
+mappings need renewed native review. Model root/contact-shadow displacement is
+still a separate world-space path and is not certified by the OAM correction.
 Projected source OAM remains separate above this sampled background. The renderer
 must not distort that OAM a second time or bend geometry with the opposite sign.
 
@@ -100,22 +105,56 @@ shared ticks, including its ripple; its overall cached timing is worse. Alpha-ed
 resized attack, interruption and broader source-OAM review remain open. Neither
 pilot closes the general extracted-row/reveal gap.
 
+## Experimental native capture images
+
+`CRYSTAL_BATTLE_CAPTURE_PROTOTYPE=1` enables a native-only, first-command capture
+pilot. It independently prewarms a static enemy image and admits it only after
+the corresponding draw, output blit and submission are acknowledged. A pending
+or incompatible image uses the classic renderer for the complete capture.
+The default remains classic capture; WebAssembly and unsupported appearances
+retain that path. Normal, nonshiny, untransformed static enemies are eligible;
+articulated targets, Substitute, later-turn appearance state and tutorial captures
+are outside this first slice. Future queued enemy responses do not count as an
+active move and must not prevent an otherwise eligible failed throw.
+
+The image lease uses the source ReturnMon/EnterMon whole-tile selections, not a
+center crop or a uniform shrinking model. Enemy pictures select 7/5/3 tile rows
+and columns with the original four-tick phases, then hide or restore. Original
+ball OAM, current-item palette, object clock, shakes and outcome remain controller
+owned. The caught ball stays through the Gotcha page; failed catches restore the
+model without leaking future response HP. F3 or an incompatible view retires the
+lease and latches classic presentation until that capture ends.
+
+At the current checkpoint, real Master Ball success and ordinary failure remain
+in the modeled arena; the failed attempt retains its queued Mimic response.
+An actual F3 interruption safely falls back. Full captures were checked at
+800x600; both Full and Reduced captures completed at1180x812. Resize invalidation passes renderer tests, but a new
+actual native resize during capture has not been verified. The viewed fixture
+places the final ball inside the enemy foot ring; that is not a general
+pixel-perfect registration proof between model compaction and source OAM.
+
+Gust's shared wait/return clock, original OAM assembly and foreground priority
+were checked against the pinned original source in both directions. After the
+shape correction, native wind and both hit phases were visually compared with
+that independent assembly. Those newer captures did not sample terminal tick90;
+earlier classic captures and source-clock tests cover it. Do not turn a selected
+visual comparison into an all-frame or all-move fidelity claim.
+
 ## Specific source sequences
 
-- Shadow Ball changes BGP to `$1b` on frame 1 and spawns its blue Barrage Ball
-  with `WAVE_TO_TARGET`; the poof starts at frame 33 and the script returns at 57.
-  Its source does not request a repeated flashing background effect.
-- Psychic uses `PSYCHIC_M`: eight WAVE objects start at frames 1, 9, 17, 25, 33,
-  41, 49 and 57. Source palette changes and horizontal row deformation continue
-  through frame 160; the script completes at 165. The added target aura is removed.
-- Hyper Beam's segments start at frames 1, 5, 9 and 13, with its tip at 13.
-  Original flashes and source screen displacement are retained; the script
-  completes at 61. Recharge is a production battle rule, not a renderer delay.
-- Surf uses move 57 and `BattleAnim_Surf`. Its blue 22-piece OAM crest follows
-  the source object VM with vertical background sampling. Events occur at
-  presented frames 1, 33, 65 and 97, and the object enters its exit state at 129.
-  Total duration is 185 presented frames including return. No extra rolling water
+- Shadow Ball uses BGP `$1b`, a blue Barrage Ball with `WAVE_TO_TARGET`, and a
+  later poof. Its source does not request a repeated flashing background effect.
+- Psychic uses `PSYCHIC_M`: eight WAVE objects, source palette changes and
+  horizontal row deformation. The added target aura is removed.
+- Hyper Beam uses the original beam segments, tip, flashes and source screen
+  displacement. Recharge is a production battle rule, not a renderer delay.
+- Surf uses move57 and `BattleAnim_Surf`: its blue 22-piece OAM crest follows
+  the source object VM with vertical background sampling. No extra rolling water
   wall, foam, spray or impact object is added.
+
+The older per-move frame-number examples predated the shared N+1 wait/return
+correction. Exact current timing comes from the source program and controller
+trace; those historical numbers are not a current validation result.
 
 The existing Rust sound engine remains authoritative. The source sound-ID/frame
 sequence is retained; animation-command stereo arguments are under a separate

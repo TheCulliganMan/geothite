@@ -544,35 +544,9 @@ fn advance_visible_capture_animation(runtime_shell: &mut BevyRuntimeShell) -> Re
     }
     animation.frame = animation.frame.saturating_add(1);
     let frame = animation.frame;
-    let blocked = animation.blocked;
     let caught = animation.caught;
-    let shakes = animation.animation_shakes;
     let total_frames = animation.total_frames();
-
-    let shake_start = animation.shake_setup_frame();
-    let first_check = animation.first_shake_check_frame();
-    let change_dex_frame = animation.change_dex_sound_frame();
-    let bounce_frame = animation.bounce_sound_frame();
-    let sound = if !blocked && animation.master_ball_special_frame() == Some(frame) {
-        Some("SFX_MASTER_BALL")
-    } else if !blocked && frame == 52 {
-        Some("SFX_BALL_POOF")
-    } else if !blocked && frame == change_dex_frame {
-        Some("SFX_CHANGE_DEX_MODE")
-    } else if !blocked && frame == bounce_frame {
-        Some("SFX_BALL_BOUNCE")
-    } else if !blocked && frame >= first_check && (frame - shake_start) % 48 == 0 {
-        let check = ((frame - shake_start) / 48) as u8;
-        if (!caught && check <= shakes) || (caught && check < shakes) {
-            Some("SFX_BALL_WOBBLE")
-        } else if !caught && check == shakes.saturating_add(1) {
-            Some("SFX_BALL_POOF")
-        } else {
-            None
-        }
-    } else {
-        None
-    };
+    let sound = animation.sound_at_frame(frame);
     if let Some(sound) = sound {
         queue_visible_shell_sound_effect(runtime_shell, sound)?;
     }

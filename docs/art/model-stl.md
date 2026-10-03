@@ -57,7 +57,7 @@ The default writes to `output/model-stl/`, preserving the family/stem layout.
 just one:
 
 ```sh
-python3 tools/export-model-stl.py --model battle_species/gengar.mesh.json
+python3 tools/export-model-stl.py --model battle_species/gengar.glb
 python3 tools/export-model-stl.py --model johto_characters/trainer.rig.json
 ```
 

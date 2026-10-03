@@ -5875,7 +5875,19 @@ fn throw_visible_battle_ball_id(
             })
             .cloned()
             .collect::<Vec<_>>();
+        // The generic stager builds per-message scenes from an empty queue.
+        // Stage the actual enemy response there first, then prepend the ball's
+        // authored narration with the pre-turn scene. Otherwise its nonempty
+        // prefix selects the stager's unsequenced path and leaks future HP.
+        let capture_messages = std::mem::take(&mut runtime_shell.battle_messages);
         stage_visible_battle_messages(runtime_shell, &snapshot, &response_events);
+        let capture_scene = Arc::new(snapshot.clone());
+        for message in capture_messages.into_iter().rev() {
+            runtime_shell.battle_messages.push_front(message);
+            runtime_shell.battle_message_scenes.push_front(Arc::clone(&capture_scene));
+        }
+        runtime_shell.battle_message_scene = Some(capture_scene);
+        retarget_visible_battle_hp_tween(runtime_shell, &snapshot);
         if !outcome.caught {
             settle_visible_resolved_battle_turn(runtime_shell, &battle_before_turn)?;
         }
