@@ -358,25 +358,61 @@ impl BattleSceneLayout {
             ))
         });
         let points: Vec<Vec3> = corners.into_iter().flatten().collect();
-        layout.fit_camera(&points);
-        if !layout.camera.translation.is_finite()
-            || !layout.distance.is_finite()
-            || !layout.far.is_finite()
-            || layout.hit_anchors.iter().any(|point| !point.is_finite())
+        layout.fit_anchored_camera(&points).then_some(layout)
+    }
+
+    /// A bounded lateral view for an authentic map edge. Only the camera
+    /// changes: exact feet, body rotations/scales, and hit anchors stay fixed.
+    /// The terrain consumer must independently accept every candidate.
+    pub(crate) fn side_camera(
+        &self,
+        bodies: [Option<BattleBody>; 2],
+        clockwise: bool,
+    ) -> Option<Self> {
+        let mut points = Vec::with_capacity(16);
+        for (body, pose) in bodies.into_iter().zip(self.body_poses) {
+            points.extend(body?.corners(pose?));
+        }
+        if points.iter().any(|point| !point.is_finite()) {
+            return None;
+        }
+        let back = self.camera.rotation * Vec3::Z;
+        let horizontal = Vec3::new(back.x, 0.0, back.z).try_normalize()?;
+        let yaw = if clockwise {
+            std::f32::consts::FRAC_PI_2
+        } else {
+            -std::f32::consts::FRAC_PI_2
+        };
+        let horizontal = Quat::from_rotation_y(yaw) * horizontal;
+        let elevation = 75.0_f32.to_radians();
+        let direction = horizontal * elevation.cos() + Vec3::Y * elevation.sin();
+        let mut alternative = self.clone();
+        alternative.camera = Transform::from_translation(direction).looking_at(Vec3::ZERO, Vec3::Y);
+        // Fit anew with the same baseline as the primary camera, rather than
+        // inheriting a distance needed only by the other orientation.
+        alternative.distance = Self::default().distance;
+        alternative
+            .fit_anchored_camera(&points)
+            .then_some(alternative)
+    }
+
+    fn fit_anchored_camera(&mut self, points: &[Vec3]) -> bool {
+        self.fit_camera(points);
+        if !self.camera.translation.is_finite()
+            || !self.distance.is_finite()
+            || !self.far.is_finite()
+            || self.hit_anchors.iter().any(|point| !point.is_finite())
             || points.iter().any(|point| {
-                let uv = layout.project_point(*point, viewport);
+                let uv = self.project_point(*point, self.viewport);
                 !uv.is_finite() || uv.x < 0.0899 || uv.x > 0.9101 || uv.y < 0.2299 || uv.y > 0.7501
             })
         {
-            return None;
+            return false;
         }
         // Coincident screen-space hit points would collapse the shared source
         // canvas even when the world-space boxes are separate.
-        let projection = layout.source_projection(viewport);
-        if !projection.is_finite() || !projection.inverse().is_finite() {
-            return None;
-        }
-        Some(layout)
+        let projection = self.source_projection(self.viewport);
+        projection.is_finite() && projection.inverse().is_finite()
     }
 
     fn fit_camera(&mut self, points: &[Vec3]) {
@@ -704,6 +740,69 @@ mod anchored_layout_tests {
             assert!(ground_direction.dot(axis) > 0.985);
             assert_eq!(layout.origins, anchors);
             assert_eq!(layout.arena_scale, 1.0);
+        }
+    }
+
+    #[test]
+    fn alternate_camera_keeps_body_contact_scale_and_one_source_similarity() {
+        let mut bodies = route36_pair();
+        for body in bodies.iter_mut().flatten() {
+            body.visual_bounds = Some((body.min - Vec3::splat(0.10), body.max + Vec3::splat(0.20)));
+        }
+        for axis in [Vec3::X, Vec3::NEG_X, Vec3::Z, Vec3::NEG_Z] {
+            for viewport in [Vec2::new(800.0, 600.0), Vec2::new(600.0, 1200.0)] {
+                let original = BattleSceneLayout::for_anchored_bodies(
+                    bodies,
+                    [-axis * 4.0, axis * 4.0],
+                    viewport,
+                )
+                .unwrap();
+                for clockwise in [false, true] {
+                    let opposite = original.side_camera(bodies, clockwise).unwrap();
+                    assert_eq!(opposite.origins, original.origins);
+                    assert_eq!(opposite.body_poses, original.body_poses);
+                    assert_eq!(opposite.hit_anchors, original.hit_anchors);
+                    assert_eq!(opposite.arena_scale, 1.0);
+                    assert_eq!(opposite, original.side_camera(bodies, clockwise).unwrap());
+                    assert!(
+                        Vec3::new(
+                            opposite.camera.forward().x,
+                            0.0,
+                            opposite.camera.forward().z
+                        )
+                        .normalize()
+                        .dot(axis)
+                        .abs()
+                            < 0.13
+                    );
+                    for (body, pose) in bodies.into_iter().zip(opposite.body_poses) {
+                        for point in body.unwrap().corners(pose.unwrap()) {
+                            let uv = opposite.project_point(point, viewport);
+                            assert!(
+                                uv.x >= 0.0899
+                                    && uv.x <= 0.9101
+                                    && uv.y >= 0.2299
+                                    && uv.y <= 0.7501
+                            );
+                        }
+                    }
+                    let mapping = opposite.source_projection(viewport);
+                    let start = mapping * Vec3::new(40.0, 72.0, 1.0);
+                    let end = mapping * Vec3::new(124.0, 32.0, 1.0);
+                    assert!(start.truncate().abs_diff_eq(
+                        opposite.project_point(opposite.hit_anchors[0], viewport),
+                        0.00001
+                    ));
+                    assert!(end.truncate().abs_diff_eq(
+                        opposite.project_point(opposite.hit_anchors[1], viewport),
+                        0.00001
+                    ));
+                    let dx = (mapping * Vec3::X).truncate() * viewport;
+                    let dy = (mapping * Vec3::Y).truncate() * viewport;
+                    assert!((dx.length() - dy.length()).abs() < 0.00001);
+                    assert!(dx.dot(dy).abs() < 0.00001);
+                }
+            }
         }
     }
 

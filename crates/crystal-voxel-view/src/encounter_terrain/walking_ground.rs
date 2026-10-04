@@ -94,7 +94,17 @@ impl WalkingGround {
             VisualBattleTarget::Trainer { contact, .. } => {
                 // The trainer remains a separately witnessed field actor. Its
                 // occupied tile can never authorize the Pokémon's floor area.
-                // This bounded sight path has settled adjacent, facing actors.
+                // Both checked entry paths have settled adjacent, facing actors.
+                // A scripted start has no invented trainer-table defeat flag.
+                let provenance_valid = match contact.provenance {
+                    crystal_render_api::VisualBattleTrainerProvenance::TrainerTable { .. } => {
+                        !contact.event_flag.is_empty()
+                    }
+                    crystal_render_api::VisualBattleTrainerProvenance::Scripted {
+                        loadtrainer_command_index,
+                        startbattle_command_index,
+                    } => loadtrainer_command_index < startbattle_command_index,
+                };
                 let witness = contact.witnessed_foot.ok_or(invalid)?;
                 if location.source.movement
                     != crystal_render_api::VisualBattleSourceMovement::Normal
@@ -108,7 +118,7 @@ impl WalkingGround {
                     || contact.object_script.is_empty()
                     || contact.trainer_class.is_empty()
                     || contact.trainer_id.is_empty()
-                    || contact.event_flag.is_empty()
+                    || !provenance_valid
                     || contact.battle_source_script.is_empty()
                 {
                     return Err(invalid);

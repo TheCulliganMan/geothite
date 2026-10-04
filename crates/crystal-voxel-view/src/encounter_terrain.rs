@@ -261,6 +261,30 @@ impl EncounterTerrain {
         bodies: [Option<BattleBody>; 2],
         viewport: Vec2,
     ) -> bool {
+        if self.constrain_camera(layout, bodies, viewport) {
+            return true;
+        }
+        // Keep a valid primary view exactly unchanged. At an authentic map
+        // edge, try at most two fixed lateral views through the identical
+        // proof below. Missing floor, scale or omitted geometry never relaxes.
+        for clockwise in [false, true] {
+            let Some(mut candidate) = layout.side_camera(bodies, clockwise) else {
+                continue;
+            };
+            if self.constrain_camera(&mut candidate, bodies, viewport) {
+                *layout = candidate;
+                return true;
+            }
+        }
+        false
+    }
+
+    fn constrain_camera(
+        &mut self,
+        layout: &mut BattleSceneLayout,
+        bodies: [Option<BattleBody>; 2],
+        viewport: Vec2,
+    ) -> bool {
         self.accepted = false;
         self.fog = None;
         let Some(scene) = &mut self.frozen else {
@@ -1119,7 +1143,7 @@ mod tests {
                 trainer_id: "ABE".into(),
                 event_flag: "EVENT_BEAT_BIRD_KEEPER_ABE".into(),
                 battle_source_script: "TrainerTable".into(),
-                trainer_command_index: 0,
+                provenance: crystal_render_api::VisualBattleTrainerProvenance::TrainerTable { command_index: 0 },
                 witnessed_actor: Some(VisualActorId::Object(0)),
                 witnessed_foot: Some(Vec2::new(68.0, -124.0)),
             },
@@ -1177,6 +1201,31 @@ mod tests {
             }
             assert!(WalkingGround::from_context(&bad, &cache, root).is_err(), "case {case}");
         }
+    }
+
+    #[test]
+    fn scripted_trainer_ground_keeps_real_empty_flag_and_ordered_command_provenance() {
+        let (frame, mut location, heights) = trainer_fixture();
+        let cache = cache(&frame, heights);
+        let (_, root, _) = resolve_context(&location, &cache).unwrap();
+        let VisualBattleTarget::Trainer { contact, .. } = &mut location.target else { panic!() };
+        contact.event_flag = Arc::from("");
+        assert!(WalkingGround::from_context(&location, &cache, root).is_err(),
+            "ordinary trainer-table contact still requires its actual defeat flag");
+        for (load, start, valid) in [(8, 9, true), (9, 9, false), (10, 9, false)] {
+            let VisualBattleTarget::Trainer { contact, .. } = &mut location.target else { panic!() };
+            contact.provenance = crystal_render_api::VisualBattleTrainerProvenance::Scripted {
+                loadtrainer_command_index: load, startbattle_command_index: start,
+            };
+            assert_eq!(WalkingGround::from_context(&location, &cache, root).is_ok(), valid);
+        }
+        let VisualBattleTarget::Trainer { contact, .. } = &mut location.target else { panic!() };
+        contact.provenance = crystal_render_api::VisualBattleTrainerProvenance::Scripted {
+            loadtrainer_command_index: 8, startbattle_command_index: 9,
+        };
+        contact.witnessed_actor = None;
+        assert!(WalkingGround::from_context(&location, &cache, root).is_err(),
+            "script lineage never substitutes for the settled field actor witness");
     }
 
     #[test]
@@ -1700,6 +1749,72 @@ mod tests {
             RenderLayers::layer(crate::VOXEL_RENDER_LAYER)
         );
     }
+    #[test]
+    fn finite_side_camera_fits_real_rigs_without_relaxing_authentic_or_omission_limits() {
+        let cyndaquil = crate::species_rig::for_species("CYNDAQUIL").unwrap();
+        let bird = crate::pidgeotto_rig::rig();
+        let bird_min = bird.neutral.positions.iter().map(|p| Vec3::from_array(*p))
+            .fold(Vec3::splat(f32::INFINITY), Vec3::min);
+        let bird_max = bird.neutral.positions.iter().map(|p| Vec3::from_array(*p))
+            .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+        // Sizes are the current pack values used by this two-party fixture.
+        let bodies = [
+            ("CYNDAQUIL", 0.508, cyndaquil.neutral_bounds, cyndaquil.animated_bounds),
+            ("PIDGEOTTO", 1.0922, (bird_min, bird_max), bird.animated_bounds),
+        ].map(|(species, meters, (min, max), envelope)| {
+            let scale = crate::battle_layout::model_scale(species, Some(meters), min, max).unwrap();
+            let mut body = BattleBody::modeled(species, min, max, scale);
+            body.visual_bounds = Some(envelope);
+            Some(body)
+        });
+        let anchors = [Vec3::new(0.0, 0.0, -4.0), Vec3::new(0.0, 0.0, 4.0)];
+        let viewport = Vec2::new(800.0, 600.0);
+        let primary = BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport).unwrap();
+        let mut state = EncounterTerrain {
+            frozen: Some(FrozenScene {
+                root: Entity::from_raw(1), anchors,
+                authentic: AuthenticBounds { min: Vec2::new(-18.0, -12.0), max: Vec2::new(22.0, 52.0) },
+                omitted: Vec::new(), objects: HashMap::new(), materials: Vec::new(),
+                images: Vec::new(), meshes: Vec::new(), ground: 0.0,
+                walking: None, bodies: [None, None],
+            }),
+            ..default()
+        };
+        let mut layout = primary.clone();
+        assert!(!state.constrain_camera(&mut layout, bodies, viewport));
+        assert_eq!(layout, primary);
+        assert!(state.constrain_layout(&mut layout, bodies, viewport), "{:?}", state.reason());
+        assert_ne!(layout.camera, primary.camera);
+        assert_eq!(layout.origins, primary.origins);
+        assert_eq!(layout.body_poses, primary.body_poses);
+        assert_eq!(layout.hit_anchors, primary.hit_anchors);
+        let scene = state.frozen.as_ref().unwrap();
+        assert!(scene.authentic.camera_limit(layout.camera, viewport).unwrap() >= layout.far);
+        for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
+            for point in body.unwrap().corners(pose.unwrap()) {
+                assert!(scene.authentic.point(point));
+                assert!(layout.far >= point.distance(layout.camera.translation) + 2.0);
+            }
+        }
+        // An omitted object crossing the entire scene blocks every view. No
+        // alternate camera may turn that missing evidence into a visible hole.
+        state.frozen.as_mut().unwrap().omitted.push(Bounds {
+            min: Vec3::splat(-100.0), max: Vec3::splat(100.0),
+        });
+        let mut rejected = primary.clone();
+        assert!(!state.constrain_layout(&mut rejected, bodies, viewport));
+        assert_eq!(rejected, primary);
+        assert!(!state.accepted());
+        assert!(state.fog_range().is_none());
+        state.frozen.as_mut().unwrap().omitted.clear();
+        state.frozen.as_mut().unwrap().authentic = AuthenticBounds {
+            min: Vec2::splat(-100.0), max: Vec2::splat(100.0),
+        };
+        let mut ordinary = primary.clone();
+        assert!(state.constrain_layout(&mut ordinary, bodies, viewport));
+        assert_eq!(ordinary.camera, primary.camera, "an already valid primary view must stay exact");
+    }
+
     #[test]
     fn eligibility_sets_fog_beyond_complete_bodies_and_a_rejected_layout_hides_context() {
         let (mut app, _, _, _, _) = app_fixture();

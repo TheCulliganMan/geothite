@@ -366,3 +366,57 @@ then the same actual icy scene returned. The unretimed 800×600 capture contains
 Those figures mix source and modeled presentation and are not a steady 3D
 performance comparison. Endure is not claimed fully 3D by this fixture. Species
 art, remaining source fallbacks and sliding-ice coverage remain separate gaps.
+
+
+## Direct scripted trainer contact
+
+Direct object battles have a separate candidate lifetime from trainer-table
+sight. A successful OBJECTTYPE_SCRIPT dispatch identifies the exact original
+object and script metadata. The production compiled-step observer must then
+witness faceplayer, the completed dialogue boundary, loadtrainer and the
+matching successful startbattle in that same forward script lineage. An
+already-defeated branch, changed contact, mismatched cursor or missing rendered
+actor cannot supply a battle anchor. The actual request event flag is retained;
+scripted battles with an empty flag do not invent a trainer-table defeat flag.
+
+The public trainer target distinguishes TrainerTable command provenance from
+Scripted loadtrainer/startbattle indices. Both use the same settled actor/foot
+witness and bounded original floor placement. Scripted publication retains only
+that frozen evidence during held dialogue and battle entry; it does not alter
+script execution, movement, RNG, journal state or save data.
+
+The disposable `--falkner-encounter` fixture starts beside Falkner at (4,1), facing
+right. Original faceplayer turns the trainer at (5,1) left. The source script
+loads FALKNER/FALKNER1 at command 8 and starts battle at command 9, with Pidgey
+level 7 followed by Pidgeotto level 9. Derived Pokémon support is (4,3), through
+(4,2); it does not move Falkner or create a field Pokémon. The natural front
+approach retains its separate source footprint, including the narrow floor
+that may reject the full Pidgeotto wing envelope.
+
+At an authentic map edge, the renderer can try two fixed 75-degree lateral
+camera views after the existing primary view fails. It leaves an already valid
+primary view unchanged. Each alternate fits the complete animated bounds and
+keeps the same feet, body rotations, physical scales and source-effect anchors.
+The original ground, source-acreage, frustum, omitted-geometry and shadow tests
+must still pass. Only a selected camera changes; no meshes are rebuilt and
+transient source displacements continue to use the same ground proof.
+
+Validation passed 69 distinct focused controller regressions, all 923 voxel
+checks and 24 render-API checks, plus full-feature WebAssembly and native
+compilation. The native 800×600 gate used ordinary Z through Falkner's original
+introduction. Pidgey level 7 occupied the genuine gym floor; a real Ember KO
+then triggered the original Pidgeotto level-9 replacement. Both complete rigs
+passed the original-floor, retained-scene and alternate-camera checks at the
+same fixed supports. Their actual listed dimensions remained 0.508, 0.3048 and
+1.0922 meters for Cyndaquil, Pidgey and Pidgeotto respectively.
+
+The 60.08-second recording contains 1,593 actual images and 1,688 updates:
+median 32.97 ms, p95 49.21 ms, on software OpenGL at a 600×450 scene target.
+These numbers include held menus, capture and native UI observation and are not
+a steady-render benchmark. There were 1,655 modeled updates and 33 source
+updates during the existing faint/send-out fallbacks; the same gym context
+returned afterward. Asset counts stayed fixed for the final 300 updates.
+The recorder ended at its configured timer before victory/reward/field return;
+those later native steps are not claimed by this capture. The high lateral
+angle fits the constrained room; broader camera composition, model refinement
+and source-only animation phases remain separate work.

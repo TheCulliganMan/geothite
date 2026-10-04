@@ -381,6 +381,9 @@ pub struct BevyShellConfig {
     /// Fresh Violet Gym field setup; ordinary movement triggers trainer sight.
     #[cfg(feature = "location-tester")]
     pub render_test_gym_encounter: bool,
+    /// Fresh Violet Gym side contact; ordinary A runs Falkner's authored script.
+    #[cfg(feature = "location-tester")]
+    pub render_test_falkner_encounter: bool,
     /// Legal Gengar/TM30 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_shadow_ball: bool,
@@ -5641,6 +5644,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_gym_encounter = config.render_test_gym_encounter;
     #[cfg(feature = "location-tester")]
+    let render_test_falkner_encounter = config.render_test_falkner_encounter;
+    #[cfg(feature = "location-tester")]
     let render_test_shadow_ball = config.render_test_shadow_ball;
     #[cfg(feature = "location-tester")]
     let render_test_psychic = config.render_test_psychic;
@@ -5662,7 +5667,7 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter)
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5696,7 +5701,15 @@ pub fn run_bevy_shell(
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
     #[cfg(feature = "location-tester")]
-    let runtime_shell = if render_test_gym_encounter {
+    let runtime_shell = if render_test_falkner_encounter {
+        anyhow::ensure!(
+            !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
+                || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter
+                || render_test_gym_encounter),
+            "field and direct battle fixtures are mutually exclusive"
+        );
+        prepare_falkner_encounter_preview(runtime_shell)?
+    } else if render_test_gym_encounter {
         anyhow::ensure!(
             !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
                 || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
@@ -8480,6 +8493,7 @@ include!("bevy_shell/encounter_anchor.rs");
 include!("bevy_shell/fishing_anchor.rs");
 include!("bevy_shell/walking_anchor.rs");
 include!("bevy_shell/trainer_anchor.rs");
+include!("bevy_shell/scripted_trainer_anchor.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
 #[cfg(feature = "voxel-view")]

@@ -653,7 +653,7 @@ fn apply_visible_script_entry_command(
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
-    observe_visible_static_encounter_step(runtime_shell, &stepped);
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     if stepped.command == "waitsfx" {
         runtime_shell.visible_wait_sfx_boundary = true;
@@ -1178,7 +1178,7 @@ fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> R
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
-    observe_visible_static_encounter_step(runtime_shell, &stepped);
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     trim_event_log(&mut runtime_shell.last_audio_events);
     if cursor.source_script == "HeadbuttScript"
@@ -1275,7 +1275,7 @@ fn integrate_visible_compiled_script_run(
             step.mutation.result.result_tag(),
             step.mutation.state_checksum
         ));
-        observe_visible_static_encounter_step(runtime_shell, &step);
+        observe_visible_encounter_script_step(runtime_shell, &step);
         integrate_visible_script_mutation_outcome(runtime_shell, &step.mutation)?;
         if matches!(
             &step.mutation.result,
@@ -5176,6 +5176,7 @@ fn dispatch_visible_overworld_interaction(
     let dispatch = runtime_shell
         .shell
         .dispatch_interaction_script(&interaction)?;
+    stage_visible_scripted_trainer_candidate(runtime_shell, &interaction, &dispatch);
     runtime_shell.last_audio_events.push(format!(
         "interaction script={} target={:?} last_talked={:?} checksum={:?}",
         interaction.script,
@@ -5949,6 +5950,7 @@ fn load_visible_runtime_save(
 }
 
 fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.battle_origin.scripted_trainer_candidate = None;
     runtime_shell.battle_origin.static_candidate = None;
     runtime_shell.battle_origin.trainer_candidate = None;
     runtime_shell.battle_origin.fishing_pack_scene = None;

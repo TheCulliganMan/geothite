@@ -167,7 +167,7 @@ fn trainer_anchor_real_abe_sight_preserves_settled_contact_and_read_only_publica
         contact.battle_source_script.as_ref(),
         "TrainerBirdKeeperAbe"
     );
-    assert_eq!(contact.trainer_command_index, 0);
+    assert_eq!(contact.provenance, crystal_render_api::VisualBattleTrainerProvenance::TrainerTable { command_index: 0 });
     assert_eq!(contact.trainer_class.as_ref(), "BIRD_KEEPER");
     assert_eq!(contact.trainer_id.as_ref(), candidate.request.trainer_id);
     assert_eq!(contact.facing, IVec2::X);

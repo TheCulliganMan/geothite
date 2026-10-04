@@ -52,7 +52,19 @@ pub struct VisualBattleDerivedGrassPlacement {
     pub walkable_core_tiles: Arc<[IVec2]>,
 }
 
-/// A checked, settled trainer-table contact. The trainer is an actual field
+/// Exact authored command provenance, observed on the production entry path.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum VisualBattleTrainerProvenance {
+    TrainerTable {
+        command_index: usize,
+    },
+    Scripted {
+        loadtrainer_command_index: usize,
+        startbattle_command_index: usize,
+    },
+}
+
+/// A checked, settled trainer contact. The trainer is an actual field
 /// actor; its Pokémon has no overworld actor. Witnesses are both present or
 /// both absent and describe the completed seen-text scene.
 #[derive(Clone, Debug, PartialEq)]
@@ -65,8 +77,7 @@ pub struct VisualBattleTrainerTarget {
     pub trainer_id: Arc<str>,
     pub event_flag: Arc<str>,
     pub battle_source_script: Arc<str>,
-    /// The trainer-table command, not a synthesized startbattle opcode.
-    pub trainer_command_index: usize,
+    pub provenance: VisualBattleTrainerProvenance,
     pub witnessed_actor: Option<VisualActorId>,
     pub witnessed_foot: Option<Vec2>,
 }

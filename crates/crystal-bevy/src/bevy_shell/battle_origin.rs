@@ -38,6 +38,15 @@ pub enum BattleOriginContact {
         map_id: String,
         tile: TilePosition,
     },
+    ScriptedTrainerObjectTarget {
+        map_id: String,
+        tile: TilePosition,
+        object_identifier: String,
+        trainer_id: String,
+        source_script: String,
+        loadtrainer_command_index: usize,
+        startbattle_command_index: usize,
+    },
     TrainerObjectTarget {
         map_id: String,
         tile: TilePosition,
@@ -99,6 +108,7 @@ struct VisibleBattleOriginState {
     bound_fishing: Option<VisibleBoundFishingEncounter>,
     bound_walking: Option<VisibleBoundWalkingEncounter>,
     trainer_candidate: Option<VisibleTrainerEncounterCandidate>,
+    scripted_trainer_candidate: Option<VisibleScriptedTrainerEncounterCandidate>,
     bound_trainer: Option<VisibleBoundTrainerEncounter>,
     fishing_pack_scene: Option<VisibleFishingPackScene>,
 }
@@ -116,6 +126,7 @@ impl VisibleBattleOriginState {
         self.bound_fishing = None;
         self.bound_walking = None;
         self.trainer_candidate = None;
+        self.scripted_trainer_candidate = None;
         self.bound_trainer = None;
         self.fishing_pack_scene = None;
         // Preserve the serial across reload so a renderer cannot alias a later

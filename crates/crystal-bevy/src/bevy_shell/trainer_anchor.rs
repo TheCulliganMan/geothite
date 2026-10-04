@@ -2,9 +2,10 @@
 // final contact is observed after writeobjectxy; the sight event's target tile
 // belongs to the pre-approach pose and never supplies the settled anchor.
 #[derive(Debug, Clone)]
-struct VisibleTrainerEncounterCandidate {
+struct VisibleTrainerEncounterEvidence {
+    object_script: String,
+    provenance: crystal_render_api::VisualBattleTrainerProvenance,
     source: crate::core::world::session::OverworldSnapshot,
-    intro: PendingTrainerIntro,
     request: crate::core::battle::start::TrainerBattleRequest,
     target_identifier: String,
     target_movement: String,
@@ -21,15 +22,35 @@ struct VisibleTrainerEncounterCandidate {
     anchors: Option<Arc<crystal_render_api::VisualBattleAnchorFrame>>,
 }
 
+// The ordinary table intro remains separate from scripted object lineage.
+#[derive(Debug, Clone)]
+struct VisibleTrainerEncounterCandidate {
+    intro: PendingTrainerIntro,
+    evidence: VisibleTrainerEncounterEvidence,
+}
+
+impl std::ops::Deref for VisibleTrainerEncounterCandidate {
+    type Target = VisibleTrainerEncounterEvidence;
+    fn deref(&self) -> &Self::Target {
+        &self.evidence
+    }
+}
+
+impl std::ops::DerefMut for VisibleTrainerEncounterCandidate {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.evidence
+    }
+}
+
 #[derive(Debug)]
 struct VisibleBoundTrainerEncounter {
     origin: Arc<BattlePresentationOrigin>,
-    candidate: VisibleTrainerEncounterCandidate,
+    candidate: VisibleTrainerEncounterEvidence,
     publication: Option<Arc<crystal_render_api::VisualBattleLocation>>,
 }
 
 fn trainer_candidate_matches_snapshot(
-    candidate: &VisibleTrainerEncounterCandidate,
+    candidate: &VisibleTrainerEncounterEvidence,
     snapshot: &RuntimeShellSnapshot,
 ) -> bool {
     same_static_encounter_pose(&candidate.source, &snapshot.overworld)
@@ -40,14 +61,22 @@ fn trainer_candidate_matches_snapshot(
             &candidate.target_identifier,
             candidate.target_tile,
             &candidate.target_movement,
-            &candidate.intro.source_script,
+            &candidate.object_script,
         )
         && snapshot
             .visible_objects
             .get(candidate.target_index)
             .is_some_and(|object| {
                 object.object_identifier.as_deref() == Some(candidate.target_identifier.as_str())
-                    && object.object_type == "OBJECTTYPE_TRAINER"
+                    && object.object_type
+                        == match candidate.provenance {
+                            crystal_render_api::VisualBattleTrainerProvenance::TrainerTable {
+                                ..
+                            } => "OBJECTTYPE_TRAINER",
+                            crystal_render_api::VisualBattleTrainerProvenance::Scripted {
+                                ..
+                            } => "OBJECTTYPE_SCRIPT",
+                        }
             })
         && snapshot
             .visible_object_facings
@@ -57,7 +86,7 @@ fn trainer_candidate_matches_snapshot(
 
 fn trainer_candidate_unbeaten(
     shell: &BevyRuntimeShell,
-    candidate: &VisibleTrainerEncounterCandidate,
+    candidate: &VisibleTrainerEncounterEvidence,
 ) -> bool {
     !candidate.request.event_flag.is_empty()
         && matches!(
@@ -69,6 +98,67 @@ fn trainer_candidate_unbeaten(
                 .is_event_flag_set(&candidate.request.event_flag),
             Ok(false)
         )
+}
+
+fn visible_trainer_floor_placement(
+    shell: &BevyRuntimeShell,
+    source: &crate::core::world::session::OverworldSnapshot,
+    target_tile: TilePosition,
+) -> Option<(
+    UVec2,
+    crystal_render_api::VisualBattleDerivedTrainerPlacement,
+)> {
+    let overworld = shell.shell.session().overworld();
+    let Some((width, height)) = overworld.map.checked_tile_bounds() else {
+        return None;
+    };
+    if width == 0 || height == 0 {
+        return None;
+    }
+    let map_size = UVec2::new(u32::from(width), u32::from(height));
+    use crate::core::world::collision::sample_collision;
+    if ![source.tile, target_tile].into_iter().all(|tile| {
+        sample_collision(&overworld.map, &overworld.tileset, tile)
+            .is_some_and(|sample| walking_plain_support(sample.permission))
+    }) {
+        return None;
+    }
+    let Ok(occupied) = overworld.occupied_tiles_checked() else {
+        return None;
+    };
+    let core = IVec2::new(i32::from(source.tile.x), i32::from(source.tile.y));
+    let mut walkable = Vec::new();
+    // Same fixed 7x7 source occupancy budget as ordinary walking encounters.
+    // The settled trainer remains occupied and cannot be a Pokémon support.
+    for y in -3..=3 {
+        for x in -3..=3 {
+            let p = core + IVec2::new(x, y);
+            if p.cmplt(IVec2::ZERO).any() || p.cmpge(map_size.as_ivec2()).any() {
+                continue;
+            }
+            let tile = TilePosition::new(p.x as i16, p.y as i16);
+            if tile != target_tile
+                && !occupied.iter().any(|entry| entry.tile == tile)
+                && sample_collision(&overworld.map, &overworld.tileset, tile)
+                    .is_some_and(|sample| walking_plain_support(sample.permission))
+            {
+                walkable.push(p);
+            }
+        }
+    }
+    let (dx, dy) = source.facing.delta();
+    let Some(presentation_core_tile) =
+        walking_presentation_tile(core, IVec2::new(i32::from(dx), i32::from(dy)), &walkable)
+    else {
+        return None;
+    };
+    Some((
+        map_size,
+        crystal_render_api::VisualBattleDerivedTrainerPlacement {
+            presentation_core_tile,
+            walkable_core_tiles: walkable.into(),
+        },
+    ))
 }
 
 fn stage_visible_trainer_candidate(
@@ -161,70 +251,33 @@ fn stage_visible_trainer_candidate(
     {
         return;
     }
-    let overworld = shell.shell.session().overworld();
-    let Some((width, height)) = overworld.map.checked_tile_bounds() else {
-        return;
-    };
-    if width == 0 || height == 0 {
-        return;
-    }
-    let map_size = UVec2::new(u32::from(width), u32::from(height));
-    use crate::core::world::collision::sample_collision;
-    if ![source.tile, target_tile].into_iter().all(|tile| {
-        sample_collision(&overworld.map, &overworld.tileset, tile)
-            .is_some_and(|sample| walking_plain_support(sample.permission))
-    }) {
-        return;
-    }
-    let Ok(occupied) = overworld.occupied_tiles_checked() else {
-        return;
-    };
-    let core = IVec2::new(i32::from(source.tile.x), i32::from(source.tile.y));
-    let mut walkable = Vec::new();
-    // Same fixed 7x7 source occupancy budget as ordinary walking encounters.
-    // The settled trainer remains occupied and cannot be a Pokémon support.
-    for y in -3..=3 {
-        for x in -3..=3 {
-            let p = core + IVec2::new(x, y);
-            if p.cmplt(IVec2::ZERO).any() || p.cmpge(map_size.as_ivec2()).any() {
-                continue;
-            }
-            let tile = TilePosition::new(p.x as i16, p.y as i16);
-            if tile != target_tile
-                && !occupied.iter().any(|entry| entry.tile == tile)
-                && sample_collision(&overworld.map, &overworld.tileset, tile)
-                    .is_some_and(|sample| walking_plain_support(sample.permission))
-            {
-                walkable.push(p);
-            }
-        }
-    }
-    let (dx, dy) = source.facing.delta();
-    let Some(presentation_core_tile) =
-        walking_presentation_tile(core, IVec2::new(i32::from(dx), i32::from(dy)), &walkable)
+    let Some((map_size, placement)) = visible_trainer_floor_placement(shell, source, target_tile)
     else {
         return;
     };
     let candidate = VisibleTrainerEncounterCandidate {
-        source: source.clone(),
-        intro,
-        request,
-        target_identifier: identifier.clone(),
-        target_movement: target.spritemovedata.clone(),
-        target_index,
-        target_tile,
-        target_facing,
-        map_size,
-        placement: crystal_render_api::VisualBattleDerivedTrainerPlacement {
-            presentation_core_tile,
-            walkable_core_tiles: walkable.into(),
+        evidence: VisibleTrainerEncounterEvidence {
+            source: source.clone(),
+            object_script: intro.source_script.clone(),
+            provenance: crystal_render_api::VisualBattleTrainerProvenance::TrainerTable {
+                command_index: intro.command_index,
+            },
+            request,
+            target_identifier: identifier.clone(),
+            target_movement: target.spritemovedata.clone(),
+            target_index,
+            target_tile,
+            target_facing,
+            map_size,
+            placement,
+            minimum_snapshot_revision: shell.snapshot_revision,
+            warm_checked: false,
+            capture_attempted: false,
+            witnessed_actor: None,
+            witnessed_foot: None,
+            anchors: None,
         },
-        minimum_snapshot_revision: shell.snapshot_revision,
-        warm_checked: false,
-        capture_attempted: false,
-        witnessed_actor: None,
-        witnessed_foot: None,
-        anchors: None,
+        intro,
     };
     if trainer_candidate_matches_snapshot(&candidate, &snapshot)
         && trainer_candidate_unbeaten(shell, &candidate)
@@ -236,6 +289,16 @@ fn stage_visible_trainer_candidate(
 fn trainer_candidate_matches_start(
     candidate: &VisibleTrainerEncounterCandidate,
     pending: &PendingTrainerIntro,
+    start: &crate::core::battle::start::TrainerBattleStart,
+    battle: &crate::RuntimeBattleSnapshot,
+) -> bool {
+    &candidate.intro == pending
+        && candidate.source.map_name == pending.origin_map_name
+        && trainer_evidence_matches_start(&candidate.evidence, start, battle)
+}
+
+fn trainer_evidence_matches_start(
+    candidate: &VisibleTrainerEncounterEvidence,
     start: &crate::core::battle::start::TrainerBattleStart,
     battle: &crate::RuntimeBattleSnapshot,
 ) -> bool {
@@ -254,9 +317,7 @@ fn trainer_candidate_matches_start(
         return false;
     };
     let request = &candidate.request;
-    &candidate.intro == pending
-        && candidate.source.map_name == pending.origin_map_name
-        && start.battle_type == request.battle_type
+    start.battle_type == request.battle_type
         && battle.battle_type == request.battle_type
         && start.trainer_class == request.trainer_class
         && trainer_class == &request.trainer_class
@@ -344,14 +405,14 @@ fn bind_visible_trainer_encounter(
     }
     shell.battle_origin.bound_trainer = Some(VisibleBoundTrainerEncounter {
         origin,
-        candidate,
+        candidate: candidate.evidence,
         publication: None,
     });
 }
 
 #[cfg(any(test, feature = "voxel-view"))]
 fn freeze_visible_trainer_anchors(
-    candidate: &mut VisibleTrainerEncounterCandidate,
+    candidate: &mut VisibleTrainerEncounterEvidence,
     rendered: &RenderedViewport,
     frame: Option<&crystal_render_api::VisualWorldFrame>,
     objects: &[(usize, Option<&str>, &str)],
@@ -443,7 +504,7 @@ fn freeze_visible_trainer_anchors(
 
 #[cfg(not(any(test, feature = "voxel-view")))]
 fn freeze_visible_trainer_anchors(
-    candidate: &mut VisibleTrainerEncounterCandidate,
+    candidate: &mut VisibleTrainerEncounterEvidence,
     _rendered: &RenderedViewport,
     _frame: Option<&crystal_render_api::VisualWorldFrame>,
     _objects: &[(usize, Option<&str>, &str)],
@@ -457,6 +518,7 @@ fn publish_visible_trainer_location(
     frame: Option<&crystal_render_api::VisualWorldFrame>,
     objects: &Query<&VisibleObjectSprite>,
 ) -> Option<Arc<crystal_render_api::VisualBattleLocation>> {
+    freeze_pending_visible_scripted_trainer(shell, rendered, frame, objects);
     if let Some(mut candidate) = shell.battle_origin.trainer_candidate.take() {
         if shell.pending_trainer_intro.as_ref() == Some(&candidate.intro)
             && trainer_candidate_unbeaten(shell, &candidate)
@@ -512,7 +574,7 @@ fn publish_visible_trainer_location(
                     target: crystal_render_api::VisualBattleTarget::Trainer {
                         contact: crystal_render_api::VisualBattleTrainerTarget {
                             object_identifier: Arc::from(candidate.target_identifier.as_str()),
-                            object_script: Arc::from(candidate.intro.source_script.as_str()),
+                            object_script: Arc::from(candidate.object_script.as_str()),
                             core_tile: IVec2::new(
                                 i32::from(candidate.target_tile.x),
                                 i32::from(candidate.target_tile.y),
@@ -521,8 +583,8 @@ fn publish_visible_trainer_location(
                             trainer_class: Arc::from(candidate.request.trainer_class.as_str()),
                             trainer_id: Arc::from(candidate.request.trainer_id.as_str()),
                             event_flag: Arc::from(candidate.request.event_flag.as_str()),
-                            battle_source_script: Arc::from(candidate.intro.source_script.as_str()),
-                            trainer_command_index: candidate.intro.command_index,
+                            battle_source_script: Arc::from(candidate.object_script.as_str()),
+                            provenance: candidate.provenance,
                             witnessed_actor: candidate.witnessed_actor,
                             witnessed_foot: candidate.witnessed_foot,
                         },

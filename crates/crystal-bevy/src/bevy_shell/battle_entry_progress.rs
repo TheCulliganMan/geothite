@@ -1422,7 +1422,7 @@ fn resolve_visible_script_party_selection(
                 stepped.mutation.result.result_tag(),
                 stepped.mutation.state_checksum
             ));
-            observe_visible_static_encounter_step(runtime_shell, &stepped);
+            observe_visible_encounter_script_step(runtime_shell, &stepped);
             integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
         }
         (
