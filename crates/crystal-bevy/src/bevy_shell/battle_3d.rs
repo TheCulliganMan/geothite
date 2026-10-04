@@ -1335,6 +1335,7 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
 enum WalkingEncounterPreviewMap {
     Route29Grass,
     UnionCaveFloor,
+    IcePathFloor,
 }
 
 /// Fresh, disposable source-map setup. The preview never starts a battle: an
@@ -1360,6 +1361,7 @@ fn prepare_walking_encounter_preview(
     let map_name = match preview {
         WalkingEncounterPreviewMap::Route29Grass => "Route29",
         WalkingEncounterPreviewMap::UnionCaveFloor => "UnionCave1F",
+        WalkingEncounterPreviewMap::IcePathFloor => "IcePath1F",
     };
     let map = data
         .overworld_map(map_name)
@@ -1378,7 +1380,54 @@ fn prepare_walking_encounter_preview(
             && sample_collision(&map, &tileset, tile)
                 .is_some_and(|sample| walking_plain_support(sample.permission))
     };
-    let from = if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
+    let from = if matches!(preview, WalkingEncounterPreviewMap::IcePathFloor) {
+        // This is original ordinary lower floor beside real ICE. Do not turn
+        // sliding ice or the gaps between shelves into presentation support.
+        anyhow::ensure!(data.map_tileset_name(map_name)? == "ice_path"
+            && (width, height) == (40, 36),
+            "Ice Path preview requires its compiled tileset and source extent");
+        let module = &data.maps[map_name];
+        anyhow::ensure!(module.events.coord_events.is_empty()
+            && !module.objects.iter().any(|object| object.object_type == "OBJECTTYPE_TRAINER")
+            && !module.events.warps.iter().any(|warp| warp_tile_position_checked(warp)
+                .is_some_and(|tile| (6..=13).contains(&tile.x) && (16..=17).contains(&tile.y))),
+            "Ice Path preview floor must stay outside trainer, coordinate-event and warp triggers");
+        let layout = crate::read_runtime_asset(&shell.asset_root.runtime_assets()
+            .join("data/tilesets/ice_path_metatiles.bin"))
+            .context("read compiled Ice Path drawing for preview support")?;
+        const FLOOR_DRAWING: [u8; METATILE_TILE_COUNT] = [
+            0x9a,0x19,0x9a,0x9a, 0x19,0x9a,0x19,0x19,
+            0x9a,0x19,0x19,0x19, 0xaa,0x19,0x19,0x9a,
+        ];
+        anyhow::ensure!(layout.get(0x02 * METATILE_TILE_COUNT..0x03 * METATILE_TILE_COUNT)
+            == Some(&FLOOR_DRAWING[..]),
+            "Ice Path preview lower-floor drawing differs from its checked source");
+        for y in 16..=17 {
+            for x in 6..=13 {
+                let tile = TilePosition::new(x, y);
+                anyhow::ensure!(plain(tile) && sample_collision(&map, &tileset, tile)
+                    .is_some_and(|sample| sample.permission == crate::core::world::collision::permissions::FLOOR
+                        && sample.metatile_id == 0x02),
+                    "Ice Path preview requires its unoccupied two-row floor band at ({x},{y})");
+            }
+        }
+        for y in 16..=17 {
+            let ice = sample_collision(&map, &tileset, TilePosition::new(14, y))
+                .context("Ice Path preview neighboring source ice")?;
+            anyhow::ensure!(ice.metatile_id == 0x1f
+                && ice.permission == crate::core::world::collision::permissions::ICE
+                && !walking_plain_support(ice.permission),
+                "Ice Path preview must retain neighboring unsupported sliding ice");
+        }
+        // Verify the actual ice drawing next to the corridor without imposing
+        // a uniform-ground mask on the mixed source floor art.
+        for (offset, tile) in [(0,0xc6),(1,0xc7),(4,0xd6),(5,0xd7),
+            (8,0xc6),(9,0xc7),(12,0xd6),(13,0xd7)] {
+            anyhow::ensure!(layout.get(0x1f * METATILE_TILE_COUNT + offset) == Some(&tile),
+                "Ice Path preview neighboring ice drawing changed");
+        }
+        TilePosition::new(8, 16)
+    } else if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
         // Collision alone also admits Union Cave's isolated pale plateau:
         // block $09 is FLOOR, while the lower half of its $0d edge is WALL.
         // Use this bounded source-drawn floor strip for the disposable preview;
@@ -1526,7 +1575,7 @@ fn prepare_walking_encounter_preview(
             && ready.overworld.mode == MovementMode::Normal,
         "walking fixture must await an ordinary step at its checked source tile"
     );
-    if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
+    if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor | WalkingEncounterPreviewMap::IcePathFloor) {
         anyhow::ensure!(
             shell.shell.current_encounter_surface_checked()?
                 == Some(crate::core::world::encounters::EncounterSurface::Grass),

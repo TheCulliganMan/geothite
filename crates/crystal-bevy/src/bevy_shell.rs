@@ -375,6 +375,9 @@ pub struct BevyShellConfig {
     /// Fresh UnionCave1F floor; ordinary movement rolls the land encounter.
     #[cfg(feature = "location-tester")]
     pub render_test_cave_encounter: bool,
+    /// Fresh IcePath1F ordinary floor; ice sliding remains outside this fixture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_ice_encounter: bool,
     /// Fresh Violet Gym field setup; ordinary movement triggers trainer sight.
     #[cfg(feature = "location-tester")]
     pub render_test_gym_encounter: bool,
@@ -5634,6 +5637,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_cave_encounter = config.render_test_cave_encounter;
     #[cfg(feature = "location-tester")]
+    let render_test_ice_encounter = config.render_test_ice_encounter;
+    #[cfg(feature = "location-tester")]
     let render_test_gym_encounter = config.render_test_gym_encounter;
     #[cfg(feature = "location-tester")]
     let render_test_shadow_ball = config.render_test_shadow_ball;
@@ -5657,7 +5662,7 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_gym_encounter)
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5694,17 +5699,20 @@ pub fn run_bevy_shell(
     let runtime_shell = if render_test_gym_encounter {
         anyhow::ensure!(
             !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-                || render_test_walking_encounter || render_test_cave_encounter),
+                || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
         prepare_gym_encounter_preview(runtime_shell)?
-    } else if render_test_walking_encounter || render_test_cave_encounter {
+    } else if render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter {
         anyhow::ensure!(
             !render_test_battle && !render_test_route36_encounter && !render_test_fishing_encounter
-                && !(render_test_walking_encounter && render_test_cave_encounter),
+                && [render_test_walking_encounter, render_test_cave_encounter, render_test_ice_encounter]
+                    .into_iter().filter(|selected| *selected).count() == 1,
             "field and direct battle fixtures are mutually exclusive"
         );
-        let preview = if render_test_cave_encounter {
+        let preview = if render_test_ice_encounter {
+            WalkingEncounterPreviewMap::IcePathFloor
+        } else if render_test_cave_encounter {
             WalkingEncounterPreviewMap::UnionCaveFloor
         } else {
             WalkingEncounterPreviewMap::Route29Grass

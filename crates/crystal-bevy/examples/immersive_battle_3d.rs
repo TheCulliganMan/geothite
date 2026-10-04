@@ -26,6 +26,7 @@ fn main() -> Result<()> {
     let mut walking_encounter = false;
     let mut cave_encounter = false;
     let mut gym_encounter = false;
+    let mut ice_encounter = false;
     let mut shadow_ball = false;
     let mut psychic = false;
     let mut hyper_beam = false;
@@ -48,6 +49,7 @@ fn main() -> Result<()> {
             "--walking-encounter" => walking_encounter = true,
             "--cave-encounter" => cave_encounter = true,
             "--gym-encounter" => gym_encounter = true,
+            "--ice-encounter" => ice_encounter = true,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
             "--hyper-beam" => hyper_beam = true,
@@ -94,6 +96,7 @@ fn main() -> Result<()> {
             walking_encounter,
             cave_encounter,
             gym_encounter,
+            ice_encounter,
             shadow_ball,
             psychic,
             hyper_beam,
@@ -107,7 +110,7 @@ fn main() -> Result<()> {
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --cave-encounter, --gym-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --cave-encounter, --gym-encounter, --ice-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
@@ -191,7 +194,9 @@ fn main() -> Result<()> {
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
-            window_title: Some(if gym_encounter {
+            window_title: Some(if ice_encounter {
+                "Geothite | Ice Path | Walk on floor / Z confirm / F3 view".into()
+            } else if gym_encounter {
                 "Geothite | Violet Gym | Up into trainer sight / Z confirm / F3 view".into()
             } else if cave_encounter {
                 "Geothite | UnionCave1F | Walk on floor / Z confirm / F3 view".into()
@@ -204,12 +209,13 @@ fn main() -> Result<()> {
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || cave_encounter || gym_encounter),
+            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || cave_encounter || gym_encounter || ice_encounter),
             render_test_route36_encounter: route36_encounter,
             render_test_fishing_encounter: fishing_encounter,
             render_test_walking_encounter: walking_encounter,
             render_test_cave_encounter: cave_encounter,
             render_test_gym_encounter: gym_encounter,
+            render_test_ice_encounter: ice_encounter,
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
             render_test_hyper_beam: hyper_beam,

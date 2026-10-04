@@ -323,7 +323,46 @@ along with native compilation and full-feature WebAssembly. The native Ember
 recording captured 209 real frames over 8.08 seconds at 800×600, with a 600×450
 3D target on software OpenGL: update median 36.34 ms, p95 49.04 ms. Nine updates
 used the original faint-row removal before the actual gym returned for result
-text. The recorder then ended the session; this is not a separate native
-post-victory field-return test. Room/model polish and first-use stalls remain
-open. Falkner's explicit scripted battle path and other gym layouts are not
-claimed by this trainer-sight gate.
+text. That recorder ended the session. A separate native run then completed
+Abe's original victory, experience/reward and post-battle dialogue, restored
+the same gym field, and responded to a directional turn after text closed.
+It ended before a second movement press, so no extra post-battle tile step is
+claimed. Room/model polish and first-use stalls remain open. Falkner's explicit
+scripted battle path and other gym layouts are not claimed by this sight gate.
+
+
+## Ice Path floor fixture
+
+`--ice-encounter` prepares a fresh IcePath1F session at (8,16), facing right,
+beside the original sliding ice. It does not start a battle, choose an opponent
+or change RNG. Ordinary steps within (8,16)/(9,16) must consume the source
+cooldown and encounter rules. This CAVE map already uses the checked ordinary
+land path; no production collision or renderer gate is widened for its name.
+
+The fixture checks the mixed drawing of metatile $02 and its complete unoccupied
+FLOOR band at x=6..13, y=16..17. Neighboring $1f ICE cells retain permission $23
+and their original drawing. The 7×7 area around (9,16) has exactly 24 approved
+floor cells, with intervening ICE, WALL and UP_WALL cells excluded. The initial
+forward presentation corridor reaches (11,16); a real reverse encounter uses
+its independently checked opposite corridor. All final species footprint,
+built-height, retained-scene, camera and omission checks remain authoritative.
+Sliding encounters, forced movement and cold or stale evidence keep their
+existing fallback. The original ice boulders, masses and shelf models are
+reused; this fixture adds no generic environment or duplicate geometry.
+
+
+The native gate then rolled a real level-23 Swinub after a floor step from
+(10,16) to (11,16), facing right, with derived enemy support at (13,16). The
+operator walked normally after the fixed starting setup; the realized contact
+was not forced to be the first pair. Original icy boulders, shelf edges and
+adjacent ice passed the complete built-ground, camera and omission checks.
+The 17 walking/source regressions and four trainer regressions passed, along
+with full-feature WebAssembly and native compilation.
+
+Swinub's priority Endure acted before the selected Ember. Its existing source
+fallback remained visible for 87 updates from 0.037930 to 2.206090 seconds,
+then the same actual icy scene returned. The unretimed 800×600 capture contains
+225 real images over 8.13 seconds; update median was 27.62 ms and p95 42.82 ms.
+Those figures mix source and modeled presentation and are not a steady 3D
+performance comparison. Endure is not claimed fully 3D by this fixture. Species
+art, remaining source fallbacks and sliding-ice coverage remain separate gaps.

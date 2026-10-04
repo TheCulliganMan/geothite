@@ -501,7 +501,7 @@ fn walking_anchor_map_app_with_run(
     let (width, height) = map.checked_tile_bounds().unwrap();
     let encounter_permission = |permission| match map_name {
         "Route29" => is_grass_encounter_permission(permission),
-        "UnionCave1F" => permission == crate::core::world::collision::permissions::FLOOR,
+        "UnionCave1F" | "IcePath1F" => permission == crate::core::world::collision::permissions::FLOOR,
         _ => panic!("walking fixture requires an explicitly selected compiled map"),
     };
     let is_open = |tile: TilePosition| {
@@ -524,6 +524,9 @@ fn walking_anchor_map_app_with_run(
     'tiles: for y in 2..height.saturating_sub(2) {
         for x in 2..width.saturating_sub(2) {
             let target = TilePosition::new(x as i16, y as i16);
+            if map_name == "IcePath1F" && target != TilePosition::new(9, 16) {
+                continue;
+            }
             if !is_open(target)
                 || !sample_collision(&map, &tileset, target)
                     .is_some_and(|sample| encounter_permission(sample.permission))
@@ -630,10 +633,15 @@ fn walking_anchor_real_union_cave_keyboard_encounter_retains_landing_and_replays
     walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal("UnionCave1F");
 }
 
+#[test]
+fn walking_anchor_real_ice_path_keyboard_encounter_retains_landing_and_replays_journal() {
+    walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal("IcePath1F");
+}
+
 fn walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal(map_name: &str) {
     use bevy::ecs::system::RunSystemOnce;
     let (mut app, from, to, facing) = walking_anchor_map_app_with_run(map_name, 1);
-    if map_name == "UnionCave1F" {
+    if matches!(map_name, "UnionCave1F" | "IcePath1F") {
         let shell = app.world().resource::<BevyRuntimeShell>();
         let overworld = shell.shell.session().overworld();
         assert_eq!(
@@ -736,6 +744,17 @@ fn walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal(ma
     let shell = app.world().resource::<BevyRuntimeShell>();
     let source_frame = shell.shell.last_frame().unwrap();
     assert!(source_frame.wild_battle.is_some());
+    if map_name == "IcePath1F" {
+        assert_eq!(from, TilePosition::new(8, 16));
+        assert_eq!(to, TilePosition::new(9, 16));
+        assert_eq!(facing, Direction::Right);
+        assert!((actual_from == from && actual_to == to && origin.source.facing == facing)
+            || (actual_from == to && actual_to == from && origin.source.facing == reverse),
+            "the actual encounter must be an ordinary step within the original pair, in either direction");
+        assert!(source_frame.warp.is_none() && source_frame.connection.is_none()
+            && source_frame.coord_event.is_none() && source_frame.trainer_sight.is_none()
+            && source_frame.ledge_jump.is_none());
+    }
     assert_eq!(source_frame.movement, origin.authoritative_step);
     let runtime = shell.shell.runtime().clone();
     let mut inputs = 0;
@@ -1298,4 +1317,69 @@ fn walking_anchor_cave_preview_starts_on_verified_floor_and_awaits_input() {
             crate::core::world::collision::permissions::FLOOR
         );
     }
+}
+
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn walking_anchor_ice_preview_keeps_source_floor_and_excludes_real_sliding_ice() {
+    use crate::core::world::collision::{sample_collision, permissions};
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile { spawn_identifier,
+            map_name: "Route36".into(), tile_x: 20, tile_y: 8 },
+        BevyShellConfig { smoke_player_name: Some("CHRIS".into()),
+            quick_save_path: None, ..Default::default() }).unwrap();
+    let shell = prepare_walking_encounter_preview(shell, WalkingEncounterPreviewMap::IcePathFloor)
+        .expect("original mixed Ice Path floor beside unchanged sliding ice");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "IcePath1F");
+    assert_eq!(snapshot.overworld.tile, TilePosition::new(8, 16));
+    assert_eq!(snapshot.overworld.facing, Direction::Right);
+    assert_eq!(snapshot.overworld.mode, MovementMode::Normal);
+    assert_eq!(snapshot.party.slots.len(), 1);
+    assert_eq!(snapshot.party.slots[0].pokemon.species.id, "CYNDAQUIL");
+    assert!(snapshot.battle.is_none() && shell.battle_origin.published().is_none());
+    assert_eq!(shell.player_walk_frame_ticks, 0);
+    assert_eq!(shell.shell.session().state().wild_encounter_cooldown, 5);
+    assert_eq!(shell.shell.current_encounter_surface_checked().unwrap(),
+        Some(crate::core::world::encounters::EncounterSurface::Grass));
+    let overworld = shell.shell.session().overworld();
+    assert_eq!(overworld.map.checked_tile_bounds(), Some((40, 36)));
+    for y in 16..=17 {
+        for x in 6..=13 {
+            let sample = sample_collision(&overworld.map, &overworld.tileset, TilePosition::new(x, y)).unwrap();
+            assert_eq!(sample.metatile_id, 0x02);
+            assert_eq!(sample.permission, permissions::FLOOR);
+        }
+    }
+    for tile in [TilePosition::new(14,16), TilePosition::new(14,17), TilePosition::new(10,13)] {
+        let sample = sample_collision(&overworld.map, &overworld.tileset, tile).unwrap();
+        assert_eq!(sample.permission, permissions::ICE);
+        assert!(!walking_plain_support(sample.permission), "sliding ice stays unsupported by this floor path");
+    }
+    let occupied = overworld.occupied_tiles_checked().unwrap();
+    let mut actual = Vec::new();
+    for y in 13..=19 {
+        for x in 6..=12 {
+            let tile = TilePosition::new(x, y);
+            if sample_collision(&overworld.map, &overworld.tileset, tile)
+                .is_some_and(|sample| walking_plain_support(sample.permission))
+                && !occupied.iter().any(|entry| entry.tile == tile) {
+                actual.push(IVec2::new(i32::from(x), i32::from(y)));
+            }
+        }
+    }
+    let expected: Vec<_> = [(15,9,12),(16,6,12),(17,6,12),(19,7,12)].into_iter()
+        .flat_map(|(y,lo,hi)| (lo..=hi).map(move |x| IVec2::new(x,y))).collect();
+    assert_eq!(actual, expected, "the intervening ICE/WALL/UP_WALL rows are not floor");
+    assert_eq!(walking_presentation_tile(IVec2::new(9,16), IVec2::X, &actual), Some(IVec2::new(11,16)));
+    let map = &shell.shell.runtime().data().maps["IcePath1F"];
+    assert!(map.events.coord_events.is_empty());
+    assert!(!map.objects.iter().any(|object| object.object_type == "OBJECTTYPE_TRAINER"));
+    assert!(!map.events.warps.iter().any(|warp| warp_tile_position_checked(warp)
+        .is_some_and(|tile| [TilePosition::new(8,16),TilePosition::new(9,16)].contains(&tile))));
 }
