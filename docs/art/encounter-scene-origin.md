@@ -247,8 +247,27 @@ separate native cave exit test.
 
 Performance remains a material gap: the unretimed 800×600 software-OpenGL
 recording captured 58 frames over 6.24 seconds, with update median 83.21 ms and
-p95 196.56 ms (about 9 captured frames/second). The retained cave scene is much
-more expensive than the earlier generic-arena run; this is functional,
+p95 196.56 ms (about 9 captured frames/second). That capture is substantially slower
+than the earlier generic-arena capture; this is functional,
 incremental location coverage, not a smooth-performance or polished-cave claim.
 Geometry-derived animated profiles, unsupported layouts and incomplete body
 clearance continue to use the existing fallback.
+
+
+A separate no-readback measurement at the same source contact and settings
+reached a Sandshrew battle. Its quiet held-menu interval contained 1,882
+consecutive samples with median 28.13 ms and p95 72.73 ms; occasional stalls
+remained. The opponent and fitted camera differed from the Zubat recording, so
+this is not an exact A/B comparison and does not assign all overhead to capture.
+The slow capture alone does not establish the steady gameplay rate.
+
+The native location tester now has a default-off
+`CRYSTAL_CAPTURE_PACING_PROBE=1` measurement. With image recording,
+`--record-on-move` and at least 36 seconds, it holds the ordinary scene and
+admits screenshot readbacks only during seconds 14–22 of the real move-triggered
+recording clock. Separate baseline, capture and drain intervals record focus,
+request/completion counts and callback latency. Analysis excludes pending work
+and phase boundaries. Probe images retain actual timestamps and deliberately
+have no continuous-video manifest across the unrecorded intervals. This tool
+never drives inputs, pauses source animation, changes geometry or changes game
+state. Its purpose is to isolate capture cost before choosing an optimization.
