@@ -38,6 +38,14 @@ pub enum BattleOriginContact {
         map_id: String,
         tile: TilePosition,
     },
+    TrainerObjectTarget {
+        map_id: String,
+        tile: TilePosition,
+        object_identifier: String,
+        trainer_id: String,
+        source_script: String,
+        trainer_command_index: usize,
+    },
 }
 
 /// Visual interpolation at core commitment. This is not a world-space support
@@ -90,6 +98,8 @@ struct VisibleBattleOriginState {
     bound_static: Option<VisibleBoundStaticEncounter>,
     bound_fishing: Option<VisibleBoundFishingEncounter>,
     bound_walking: Option<VisibleBoundWalkingEncounter>,
+    trainer_candidate: Option<VisibleTrainerEncounterCandidate>,
+    bound_trainer: Option<VisibleBoundTrainerEncounter>,
     fishing_pack_scene: Option<VisibleFishingPackScene>,
 }
 
@@ -105,6 +115,8 @@ impl VisibleBattleOriginState {
         self.bound_static = None;
         self.bound_fishing = None;
         self.bound_walking = None;
+        self.trainer_candidate = None;
+        self.bound_trainer = None;
         self.fishing_pack_scene = None;
         // Preserve the serial across reload so a renderer cannot alias a later
         // encounter with a scene it retained before the load.
@@ -219,8 +231,8 @@ fn take_visible_battle_origin_for_entry(
         });
         return origin;
     }
-    // Scripted/trainer/link/tower entries have exact source pose, but no checked
-    // encounter contact supplied by this bounded patch. Keep that absence.
+    // Other scripted/trainer/link/tower entries have exact source pose, but no
+    // checked contact. Trainer-table sight binds explicitly at successful start.
     stage_visible_battle_origin(
         shell,
         &snapshot.overworld,

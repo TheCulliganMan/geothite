@@ -276,7 +276,7 @@ impl EncounterTerrain {
         for (index, (body, pose)) in bodies.into_iter().zip(layout.body_poses).enumerate() {
             if let (Some(body), Some(pose)) = (body, pose) {
                 if scene.walking.as_ref().is_some_and(|ground| !ground.contains(body, pose, scene.anchors[index].y)) {
-                    self.reason = Some("complete animated battler exceeds checked walking ground");
+                    self.reason = Some("complete animated battler exceeds checked source ground");
                     return false;
                 }
                 for point in body.corners(pose) {
@@ -416,7 +416,7 @@ fn resolve_context(
     evidence.map_texture = built.map_texture.clone();
     let correspondence = if evidence.matches_built_frame(built) {
         None
-    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. }) {
+    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. }) {
         // A scrolling overworld can retain an older mesh grid. Prove every
         // overlapping source cell against those actual built inputs, then use
         // the same rigid translation as the live terrain renderer. A desired
@@ -1104,6 +1104,117 @@ mod tests {
         anchors.target_foot = Vec2::new(132.0, 4.0);
         (frame, location, heights)
     }
+    fn trainer_fixture() -> (VisualWorldFrame, VisualBattleLocation, Vec<f32>) {
+        let (frame, mut location, heights) = walking_fixture();
+        let source = location.source.core_tile;
+        let contact_tile = source - IVec2::X;
+        location.source.facing = IVec2::NEG_X;
+        location.target = VisualBattleTarget::Trainer {
+            contact: crystal_render_api::VisualBattleTrainerTarget {
+                object_identifier: "TRAINER_OBJECT".into(),
+                object_script: "TrainerTable".into(),
+                core_tile: contact_tile,
+                facing: IVec2::X,
+                trainer_class: "BIRD_KEEPER".into(),
+                trainer_id: "ABE".into(),
+                event_flag: "EVENT_BEAT_BIRD_KEEPER_ABE".into(),
+                battle_source_script: "TrainerTable".into(),
+                trainer_command_index: 0,
+                witnessed_actor: Some(VisualActorId::Object(0)),
+                witnessed_foot: Some(Vec2::new(68.0, -124.0)),
+            },
+            presentation: crystal_render_api::VisualBattleDerivedTrainerPlacement {
+                presentation_core_tile: source + IVec2::Y * 2,
+                walkable_core_tiles: (-3..=3)
+                    .flat_map(|y| (-3..=3).map(move |x| source + IVec2::new(x, y)))
+                    .filter(|tile| *tile != contact_tile).collect::<Vec<_>>().into(),
+            },
+        };
+        let anchors = Arc::make_mut(location.anchors.as_mut().unwrap());
+        anchors.target_foot = Vec2::new(132.0, -252.0);
+        (frame, location, heights)
+    }
+
+    #[test]
+    fn trainer_ground_keeps_field_contact_separate_from_derived_pokemon_support() {
+        let (frame, location, heights) = trainer_fixture();
+        let cache = cache(&frame, heights);
+        let (feet, root, _) = resolve_context(&location, &cache).unwrap();
+        let ground = WalkingGround::from_context(&location, &cache, root).unwrap().unwrap();
+        assert_eq!(location.target.core_tile(), IVec2::new(11, 8));
+        assert_eq!(feet, [Vec3::new(0.0, 0.0, -4.0), Vec3::new(0.0, 0.0, 4.0)]);
+        assert!(location.anchors.as_ref().unwrap().target_actor.is_none());
+        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        for foot in feet {
+            assert!(ground.contains(body, Transform::from_translation(foot), 0.0));
+        }
+        assert!(!ground.contains(body, Transform::from_xyz(-4.0, 0.0, -4.0), 0.0),
+            "the trainer's occupied floor cannot support a Pokémon body");
+    }
+
+    #[test]
+    fn trainer_ground_requires_settled_paired_actor_witness_and_safe_corridor() {
+        let (frame, location, heights) = trainer_fixture();
+        let cache = cache(&frame, heights);
+        let (_, root, _) = resolve_context(&location, &cache).unwrap();
+        for case in 0..11 {
+            let mut bad = location.clone();
+            let VisualBattleTarget::Trainer { contact, presentation } = &mut bad.target else { panic!() };
+            match case {
+                0 => contact.core_tile -= IVec2::X, // pre-approach identity is stale
+                1 => contact.facing = IVec2::NEG_X,
+                2 => contact.witnessed_actor = None,
+                3 => contact.witnessed_foot = None,
+                4 => contact.witnessed_actor = Some(VisualActorId::Player),
+                5 => contact.witnessed_foot = Some(Vec2::splat(f32::NAN)),
+                6 => contact.witnessed_foot = Some(Vec2::new(68.0, -123.0)),
+                7 => presentation.walkable_core_tiles = vec![contact.core_tile, bad.source.core_tile,
+                    bad.source.core_tile + IVec2::Y, presentation.presentation_core_tile].into(),
+                8 => presentation.presentation_core_tile += IVec2::X,
+                9 => presentation.walkable_core_tiles = vec![bad.source.core_tile,
+                    presentation.presentation_core_tile].into(),
+                _ => bad.source.movement = VisualBattleSourceMovement::Surf,
+            }
+            assert!(WalkingGround::from_context(&bad, &cache, root).is_err(), "case {case}");
+        }
+    }
+
+    #[test]
+    fn trainer_ground_preserves_body_envelopes_elevations_and_source_displacement() {
+        let (frame, location, mut heights) = trainer_fixture();
+        let cell = IVec2::new(24, 22) - frame.grid_origin;
+        heights[(cell.y as u32 * frame.grid_size.x + cell.x as u32) as usize] = 8.0;
+        let cache = cache(&frame, heights);
+        let (feet, root, _) = resolve_context(&location, &cache).unwrap();
+        let ground = WalkingGround::from_context(&location, &cache, root).unwrap().unwrap();
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        assert!(ground.contains(body, Transform::from_translation(feet[0]), 0.0));
+        assert!(!ground.contains(body, Transform::from_translation(feet[1]), 0.0),
+            "the south-center body reaches a real different-height cell");
+        body.visual_bounds = Some((Vec3::new(-12.0, 0.0, -0.5), Vec3::new(12.0, 1.0, 0.5)));
+        assert!(!ground.contains(body, Transform::from_translation(feet[0]), 0.0));
+        let layout = BattleSceneLayout::for_anchored_bodies([Some(body); 2], feet, Vec2::new(800.0, 600.0));
+        assert!(layout.is_some(), "camera fit must not silently shrink the large body");
+        let layout = layout.unwrap();
+        assert_eq!(layout.body_poses[0].unwrap().scale, Vec3::ONE);
+        body.visual_bounds = None;
+        let layout = BattleSceneLayout::for_anchored_bodies([Some(body); 2], feet, Vec2::new(800.0, 600.0)).unwrap();
+        let original = layout.clone();
+        let neutral = layout.body_poses[0].unwrap();
+        assert!(ground.contains(body, neutral, 0.0));
+        let mut small = neutral;
+        small.translation += layout.source_displacement(Vec2::new(3.0, 0.0));
+        assert!(ground.contains(body, small, 0.0));
+        let mut translated = neutral;
+        translated.translation += layout.source_displacement(Vec2::new(
+            8.0 / crate::battle_layout::SOURCE_PIXEL_WORLD, 0.0,
+        ));
+        assert!(translated.translation.abs_diff_eq(feet[1], 0.0001));
+        assert!(!ground.contains(body, translated, 0.0),
+            "a previously valid body must reject displacement onto the raised cell");
+        assert_eq!(layout, original);
+    }
+
     fn walking_region(location: &VisualBattleLocation, cache: &TerrainRevisionCache) -> WalkingGround {
         let (_, root, _) = resolve_context(location, cache).unwrap();
         WalkingGround::from_context(location, cache, root).unwrap().unwrap()
@@ -1175,52 +1286,90 @@ mod tests {
         assert_eq!(layout, original);
     }
     #[test]
-    fn walking_retained_grid_translation_preserves_source_feet_geometry_and_clearance() {
+    fn derived_ground_retained_grid_translation_preserves_source_feet_geometry_and_clearance() {
         use crystal_render_api::{VisualTile, VisualTileSource};
         fn fill(frame: &mut VisualWorldFrame) {
-            frame.tiles = (0..frame.grid_size.y).flat_map(|row| (0..frame.grid_size.x).map(move |column| (column, row))).map(|(column, row)| {
-                let source = frame.grid_origin + IVec2::new(column as i32, row as i32);
-                let id = ((source.y + 100) * 256 + source.x + 100) as u16;
-                VisualTile { animation_frames: None, column, row, source: VisualTileSource {
-                    tileset_id: "walking-fixture".into(), metatile_id: id,
-                    subtile_column: 0, subtile_row: 0, tile_index: id,
-                }, texture: Handle::weak_from_u128(u128::from(id) + 1000), priority: false }
-            }).collect();
+            frame.tiles = (0..frame.grid_size.y)
+                .flat_map(|row| (0..frame.grid_size.x).map(move |column| (column, row)))
+                .map(|(column, row)| {
+                    let source = frame.grid_origin + IVec2::new(column as i32, row as i32);
+                    let id = ((source.y + 100) * 256 + source.x + 100) as u16;
+                    VisualTile {
+                        animation_frames: None,
+                        column,
+                        row,
+                        source: VisualTileSource {
+                            tileset_id: "walking-fixture".into(),
+                            metatile_id: id,
+                            subtile_column: 0,
+                            subtile_row: 0,
+                            tile_index: id,
+                        },
+                        texture: Handle::weak_from_u128(u128::from(id) + 1000),
+                        priority: false,
+                    }
+                })
+                .collect();
         }
-        let (mut frame, mut location, heights) = walking_fixture();
-        fill(&mut frame);
-        Arc::make_mut(location.anchors.as_mut().unwrap()).terrain.tiles = frame.tiles.clone().into();
-        let retained = cache(&frame, heights);
-        let (original_feet, original_pose, original_bounds) = resolve_context(&location, &retained).unwrap();
-        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
-        for shift in [IVec2::new(2, -2), IVec2::new(-2, 2), IVec2::X * 3, IVec2::NEG_Y * 3] {
-            let mut live = frame.clone();
-            live.grid_origin += shift;
-            live.center += Vec2::new(27.0, -23.0);
-            fill(&mut live);
-            let foot_delta = live.center - frame.center + Vec2::new(-shift.x as f32, shift.y as f32) * frame.tile_size;
-            let mut moved = location.clone();
-            let anchors = Arc::make_mut(moved.anchors.as_mut().unwrap());
-            anchors.terrain.grid_origin = live.grid_origin;
-            anchors.terrain.center = live.center;
-            anchors.terrain.tiles = live.tiles.clone().into();
-            anchors.source_foot += foot_delta;
-            anchors.target_foot += foot_delta;
-            let VisualBattleTarget::WalkingGrass { presentation, .. } = &mut moved.target else { panic!() };
-            *presentation.witnessed_player_foot.as_mut().unwrap() += foot_delta;
-            let (feet, pose, bounds) = resolve_context(&moved, &retained).unwrap();
-            assert_eq!(feet, original_feet);
-            assert_eq!(pose, original_pose);
-            assert_eq!(bounds.min, original_bounds.min);
-            assert_eq!(bounds.max, original_bounds.max);
-            let ground = walking_region(&moved, &retained);
-            for foot in feet { assert!(ground.contains(body, Transform::from_translation(foot), foot.y)); }
-            // A desired key or matching live scene still cannot replace an altered actual tile.
-            let mut bad = cache(&frame, retained.built_footing_heights.clone());
-            let tile = &mut bad.built_frame.as_mut().unwrap().tiles[(24 * frame.grid_size.x + 32) as usize];
-            tile.source.tile_index ^= 1;
-            bad.key = Some(crate::TerrainCacheKey::from_frame(&live));
-            assert!(resolve_context(&moved, &bad).is_err());
+        for (mut frame, mut location, heights) in [walking_fixture(), trainer_fixture()] {
+            fill(&mut frame);
+            Arc::make_mut(location.anchors.as_mut().unwrap())
+                .terrain
+                .tiles = frame.tiles.clone().into();
+            let retained = cache(&frame, heights);
+            let (original_feet, original_pose, original_bounds) =
+                resolve_context(&location, &retained).unwrap();
+            let body = BattleBody::modeled(
+                "TEST",
+                Vec3::new(-0.5, 0.0, -0.5),
+                Vec3::new(0.5, 1.0, 0.5),
+                1.0,
+            );
+            for shift in [
+                IVec2::new(2, -2),
+                IVec2::new(-2, 2),
+                IVec2::X * 3,
+                IVec2::NEG_Y * 3,
+            ] {
+                let mut live = frame.clone();
+                live.grid_origin += shift;
+                live.center += Vec2::new(27.0, -23.0);
+                fill(&mut live);
+                let foot_delta = live.center - frame.center
+                    + Vec2::new(-shift.x as f32, shift.y as f32) * frame.tile_size;
+                let mut moved = location.clone();
+                let anchors = Arc::make_mut(moved.anchors.as_mut().unwrap());
+                anchors.terrain.grid_origin = live.grid_origin;
+                anchors.terrain.center = live.center;
+                anchors.terrain.tiles = live.tiles.clone().into();
+                anchors.source_foot += foot_delta;
+                anchors.target_foot += foot_delta;
+                match &mut moved.target {
+                    VisualBattleTarget::WalkingGrass { presentation, .. } => {
+                        *presentation.witnessed_player_foot.as_mut().unwrap() += foot_delta
+                    }
+                    VisualBattleTarget::Trainer { contact, .. } => {
+                        *contact.witnessed_foot.as_mut().unwrap() += foot_delta
+                    }
+                    _ => panic!("expected derived placement fixture"),
+                }
+                let (feet, pose, bounds) = resolve_context(&moved, &retained).unwrap();
+                assert_eq!(feet, original_feet);
+                assert_eq!(pose, original_pose);
+                assert_eq!(bounds.min, original_bounds.min);
+                assert_eq!(bounds.max, original_bounds.max);
+                let ground = walking_region(&moved, &retained);
+                for foot in feet {
+                    assert!(ground.contains(body, Transform::from_translation(foot), foot.y));
+                }
+                // A desired key or matching live scene still cannot replace an altered actual tile.
+                let mut bad = cache(&frame, retained.built_footing_heights.clone());
+                let tile = &mut bad.built_frame.as_mut().unwrap().tiles
+                    [(24 * frame.grid_size.x + 32) as usize];
+                tile.source.tile_index ^= 1;
+                bad.key = Some(crate::TerrainCacheKey::from_frame(&live));
+                assert!(resolve_context(&moved, &bad).is_err());
+            }
         }
     }
     #[test]

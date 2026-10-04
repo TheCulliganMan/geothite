@@ -27,11 +27,14 @@ fn prepare_visible_battle_entry_with_music_reset(
         .filter(|bound| bound.origin.generation == origin.generation);
     let bound_walking = runtime_shell.battle_origin.bound_walking.take()
         .filter(|bound| bound.origin.generation == origin.generation);
+    let bound_trainer = runtime_shell.battle_origin.bound_trainer.take()
+        .filter(|bound| bound.origin.generation == origin.generation);
     reset_visible_battle_presentation(runtime_shell);
     runtime_shell.battle_origin.active = Some(origin);
     runtime_shell.battle_origin.bound_static = bound_static;
     runtime_shell.battle_origin.bound_fishing = bound_fishing;
     runtime_shell.battle_origin.bound_walking = bound_walking;
+    runtime_shell.battle_origin.bound_trainer = bound_trainer;
     if reset_music {
         reset_visible_music_state(runtime_shell);
     }

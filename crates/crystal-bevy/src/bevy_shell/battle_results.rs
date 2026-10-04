@@ -202,6 +202,7 @@ fn begin_visible_map_trainer_intro(
     runtime_shell: &mut BevyRuntimeShell,
     already_prepared: bool,
 ) -> Result<bool> {
+    runtime_shell.battle_origin.trainer_candidate = None;
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     let Some(next) = snapshot.script_events.next_script.as_ref() else {
         return Ok(false);
@@ -429,6 +430,7 @@ fn finish_visible_map_trainer_intro(runtime_shell: &mut BevyRuntimeShell) -> Res
         &pending.source_script,
         pending.command_index,
     )?;
+    bind_visible_trainer_encounter(runtime_shell, &pending, &started);
     anyhow::ensure!(
         matches!(started, crate::TrainerBattleStartStatus::Started(_)),
         "trainer became defeated while its seen text was active"
@@ -5318,6 +5320,7 @@ fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> 
         begin_visible_map_trainer_intro(runtime_shell, true)?,
         "prepared SeenByTrainerScript did not dispatch a trainer intro"
     );
+    stage_visible_trainer_candidate(runtime_shell, &pending.interaction);
     Ok(())
 }
 
@@ -5947,6 +5950,7 @@ fn load_visible_runtime_save(
 
 fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_origin.static_candidate = None;
+    runtime_shell.battle_origin.trainer_candidate = None;
     runtime_shell.battle_origin.fishing_pack_scene = None;
     reset_visible_script_navigation_state(runtime_shell);
     reset_visible_selection_cursors(runtime_shell);

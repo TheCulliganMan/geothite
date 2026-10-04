@@ -271,3 +271,59 @@ and phase boundaries. Probe images retain actual timestamps and deliberately
 have no continuous-video manifest across the unrecorded intervals. This tool
 never drives inputs, pauses source animation, changes geometry or changes game
 state. Its purpose is to isolate capture cost before choosing an optimization.
+
+
+A synchronized repeat on the unchanged native executable measured the same
+accepted Zubat cave scene before, during and after screenshot admission. The
+two eligible no-readback baseline means were both 28.8 ms per update; capture
+averaged 35.46 ms. All measured windows stayed focused. Native process/cgroup
+sampling recorded no throttle increments, major faults, reclamation or memory
+limit events during those windows. This warmed run visited a generic Onix
+battle first, so it does not rule out first-use pipeline costs. The earlier
+severe stalls remain unresolved; no renderer optimization occurred between
+these measurements.
+
+The capture files were effectively uncompressed at 1,440,773 bytes per 800×600
+frame. A paired offline test on six actual frames compared the existing
+Fast/NoFilter PNG path with Fast/Sub. All 240 roundtrips preserved the exact
+RGB bytes, and Sub reduced file size by 76.3%, but its production encoder-to-file
+mean rose from 4.093 to 5.262 ms. It was slower in 43 of 48 measured pairs. That
+filter change was rejected as a pacing optimization. The game keeps its
+geometry, materials, scale, resolution and existing recorder filter.
+
+
+## Settled trainer-table contact
+
+Ordinary trainer sight can now freeze its completed seen-text scene. The contact
+records the actual trainer after approach and `writeobjectxy`, its object/script
+identity, facing, trainer class/ID/event and exact trainer-table command. It
+binds only when that matching authoritative trainer start succeeds. The prior
+sight event's pre-approach tile cannot substitute for the settled contact.
+Cold, stale, missing or mismatched player/object/terrain evidence retains the
+existing fallback. The candidate does not publish a battle during seen text.
+
+The trainer's occupied tile is separate from a derived Pokémon support. A
+bounded set of original-map, unoccupied floor cells supplies the presentation
+corridor. The consumer checks exact settled feet, the separate trainer witness,
+actual built elevations and every cell under the complete animated body. Source
+attack displacements use that same clearance without rescaling or repositioning
+a creature. Entry preparation preserves the bound witness; terminal narration
+retains it until the ordinary visible exit.
+
+The first native gate used `--gym-encounter`: a fresh player at VioletGym (5,11)
+walked Up into Abe's original sight line. Abe moved from (2,10) to (4,10), facing
+right; the player stopped at (5,10), facing left. `TrainerBirdKeeperAbe` command 0
+is the original trainer-table command for BIRD_KEEPER/ABE and his level-9
+Spearow. The Pokémon support was derived at (5,12), not at Abe's field position.
+The renderer accepted the actual blue gym floor, openings and entrance statues
+with original terrain coordinates and canonical species sizes.
+
+All 920 voxel checks, 24 render-API checks and 63 focused controller checks pass,
+along with native compilation and full-feature WebAssembly. The native Ember
+recording captured 209 real frames over 8.08 seconds at 800×600, with a 600×450
+3D target on software OpenGL: update median 36.34 ms, p95 49.04 ms. Nine updates
+used the original faint-row removal before the actual gym returned for result
+text. The recorder then ended the session; this is not a separate native
+post-victory field-return test. Room/model polish and first-use stalls remain
+open. Falkner's explicit scripted battle path and other gym layouts are not
+claimed by this trainer-sight gate.

@@ -7103,7 +7103,6 @@ fn render_playfield(
                 let next_visible = VisibleObjectSprite {
                     #[cfg(feature = "voxel-view")]
                     directional_frames,
-                    #[cfg(feature = "voxel-view")]
                     world_facing: direction,
                     object_index: index,
                     object_identifier: object.object_identifier.clone(),

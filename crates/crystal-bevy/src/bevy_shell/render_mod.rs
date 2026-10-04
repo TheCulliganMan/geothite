@@ -318,10 +318,7 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
-        #[cfg(feature = "voxel-view")]
-        {
-            actor.facing = Some(visual_facing(object.world_facing));
-        }
+        actor.facing = Some(visual_facing(object.world_facing));
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }

@@ -52,6 +52,34 @@ pub struct VisualBattleDerivedGrassPlacement {
     pub walkable_core_tiles: Arc<[IVec2]>,
 }
 
+/// A checked, settled trainer-table contact. The trainer is an actual field
+/// actor; its Pokémon has no overworld actor. Witnesses are both present or
+/// both absent and describe the completed seen-text scene.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleTrainerTarget {
+    pub object_identifier: Arc<str>,
+    pub object_script: Arc<str>,
+    pub core_tile: IVec2,
+    pub facing: IVec2,
+    pub trainer_class: Arc<str>,
+    pub trainer_id: Arc<str>,
+    pub event_flag: Arc<str>,
+    pub battle_source_script: Arc<str>,
+    /// The trainer-table command, not a synthesized startbattle opcode.
+    pub trainer_command_index: usize,
+    pub witnessed_actor: Option<VisualActorId>,
+    pub witnessed_foot: Option<Vec2>,
+}
+
+/// Pokémon placement derived from bounded, unoccupied source floor cells.
+/// The consumer must prove the complete body footprint against these cells
+/// and the exact built terrain. This is never the trainer's contact tile.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleDerivedTrainerPlacement {
+    pub presentation_core_tile: IVec2,
+    pub walkable_core_tiles: Arc<[IVec2]>,
+}
+
 /// Authoritative contact supplied by the encounter's checked production path.
 /// A water target is a map contact, not a rendered actor or a claim that the
 /// selected species can swim. Missing target evidence is never synthesized.
@@ -67,6 +95,10 @@ pub enum VisualBattleTarget {
         core_tile: IVec2,
         presentation: VisualBattleDerivedGrassPlacement,
     },
+    Trainer {
+        contact: VisualBattleTrainerTarget,
+        presentation: VisualBattleDerivedTrainerPlacement,
+    },
 }
 
 impl VisualBattleTarget {
@@ -74,6 +106,7 @@ impl VisualBattleTarget {
         match self {
             Self::Object(target) => target.core_tile,
             Self::FishingWater { core_tile } | Self::WalkingGrass { core_tile, .. } => *core_tile,
+            Self::Trainer { contact, .. } => contact.core_tile,
         }
     }
 }

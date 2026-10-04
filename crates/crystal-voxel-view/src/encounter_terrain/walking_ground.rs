@@ -1,5 +1,6 @@
 //! Source-approved ground cells combined with the exact built elevation grid.
 //! A complete animated footprint must fit; a union AABB cannot fill holes.
+//! Walking steps and settled trainer contacts keep separate witness contracts.
 use super::*;
 use crystal_render_api::{VisualActorId, VisualBattleTarget};
 
@@ -13,29 +14,36 @@ impl WalkingGround {
         cache: &TerrainRevisionCache,
         pose: Transform,
     ) -> Result<Option<Self>, &'static str> {
-        let VisualBattleTarget::WalkingGrass {
-            core_tile,
-            presentation,
-        } = &location.target
-        else {
-            return Ok(None);
+        let (target, tiles) = match &location.target {
+            VisualBattleTarget::WalkingGrass { presentation, .. } => (
+                presentation.presentation_core_tile,
+                &presentation.walkable_core_tiles,
+            ),
+            VisualBattleTarget::Trainer { presentation, .. } => (
+                presentation.presentation_core_tile,
+                &presentation.walkable_core_tiles,
+            ),
+            _ => return Ok(None),
         };
-        let invalid = "walking presentation lacks checked source ground";
+        let invalid = "derived battle presentation lacks checked source ground";
         let frame = cache.built_frame.as_ref().ok_or(invalid)?;
-        let map = location
-            .source_map_size_core_tiles
-            .ok_or(invalid)?
-            .as_ivec2();
+        let map_size = location.source_map_size_core_tiles.ok_or(invalid)?;
+        if map_size.min_element() == 0 || map_size.max_element() > i32::MAX as u32 / 2 {
+            return Err(invalid);
+        }
+        let map = map_size.as_ivec2();
         let anchors = location.anchors.as_ref().ok_or(invalid)?;
         let source = location.source.core_tile;
         let facing = location.source.facing;
-        let target = presentation.presentation_core_tile;
+        if [source, target]
+            .into_iter()
+            .any(|tile| tile.cmplt(IVec2::ZERO).any() || tile.cmpge(map).any())
+            || ![IVec2::X, IVec2::NEG_X, IVec2::Y, IVec2::NEG_Y].contains(&facing)
+        {
+            return Err(invalid);
+        }
         let delta = target - source;
-        let tiles = &presentation.walkable_core_tiles;
-        if *core_tile != source
-            || facing.abs().element_sum() != 1
-            || presentation.step_from_core_tile + facing != source
-            || delta.abs().element_sum() != 2
+        if delta.abs().element_sum() != 2
             || (delta.x != 0 && delta.y != 0)
             || tiles.is_empty()
             || tiles.len() > 49
@@ -56,18 +64,57 @@ impl WalkingGround {
             let local = local_zero + (tile.as_vec2() * 2.0 + Vec2::new(1.0, 2.0)) * frame.tile_size;
             Vec2::new(local.x + center.x, -local.y + center.y)
         };
-        let start = source_foot(presentation.step_from_core_tile);
         let landed = source_foot(source);
-        let witness = presentation.witnessed_player_foot.ok_or(invalid)?;
-        let step = landed - start;
-        let progress = (witness - start).dot(step) / step.length_squared();
-        if !witness.is_finite()
-            || !(-0.0001..=1.0001).contains(&progress)
-            || witness.distance_squared(start + step * progress) > 0.0001
+        if !anchors.source_foot.is_finite()
+            || !anchors.target_foot.is_finite()
             || anchors.source_foot.distance_squared(landed) > 0.0001
             || anchors.target_foot.distance_squared(source_foot(target)) > 0.0001
         {
             return Err(invalid);
+        }
+        match &location.target {
+            VisualBattleTarget::WalkingGrass {
+                core_tile,
+                presentation,
+            } => {
+                if *core_tile != source || presentation.step_from_core_tile + facing != source {
+                    return Err(invalid);
+                }
+                let start = source_foot(presentation.step_from_core_tile);
+                let witness = presentation.witnessed_player_foot.ok_or(invalid)?;
+                let step = landed - start;
+                let progress = (witness - start).dot(step) / step.length_squared();
+                if !witness.is_finite()
+                    || !(-0.0001..=1.0001).contains(&progress)
+                    || witness.distance_squared(start + step * progress) > 0.0001
+                {
+                    return Err(invalid);
+                }
+            }
+            VisualBattleTarget::Trainer { contact, .. } => {
+                // The trainer remains a separately witnessed field actor. Its
+                // occupied tile can never authorize the Pokémon's floor area.
+                // This bounded sight path has settled adjacent, facing actors.
+                let witness = contact.witnessed_foot.ok_or(invalid)?;
+                if location.source.movement
+                    != crystal_render_api::VisualBattleSourceMovement::Normal
+                    || contact.core_tile != source + facing
+                    || contact.facing != -facing
+                    || !matches!(contact.witnessed_actor, Some(VisualActorId::Object(_)))
+                    || !witness.is_finite()
+                    || witness.distance_squared(source_foot(contact.core_tile)) > 0.0001
+                    || tiles.contains(&contact.core_tile)
+                    || contact.object_identifier.is_empty()
+                    || contact.object_script.is_empty()
+                    || contact.trainer_class.is_empty()
+                    || contact.trainer_id.is_empty()
+                    || contact.event_flag.is_empty()
+                    || contact.battle_source_script.is_empty()
+                {
+                    return Err(invalid);
+                }
+            }
+            _ => unreachable!("derived ground variants selected above"),
         }
         let origin = pose.transform_point(Vec3::new(local_zero.x, 0.0, local_zero.y));
         let mut cells = HashMap::new();
