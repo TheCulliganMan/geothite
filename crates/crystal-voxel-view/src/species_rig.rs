@@ -27,6 +27,7 @@ const FLOAT_MARGIN: f32 = 0.0001;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Species {
     Chikorita,
+    Bayleef,
     Cyndaquil,
     Totodile,
     Gengar,
@@ -34,8 +35,9 @@ pub(crate) enum Species {
 }
 
 impl Species {
-    pub const ALL: [Self; 5] = [
+    pub const ALL: [Self; 6] = [
         Self::Chikorita,
+        Self::Bayleef,
         Self::Cyndaquil,
         Self::Totodile,
         Self::Gengar,
@@ -45,6 +47,7 @@ impl Species {
     pub fn name(self) -> &'static str {
         match self {
             Self::Chikorita => "chikorita",
+            Self::Bayleef => "bayleef",
             Self::Cyndaquil => "cyndaquil",
             Self::Totodile => "totodile",
             Self::Gengar => "gengar",
@@ -66,6 +69,12 @@ impl Species {
                 "leaf_petiole",
                 "leaf_mid_fold",
                 "leaf_tip_fold",
+            ],
+            Self::Bayleef => &[
+                "root", "pelvis", "chest", "neck_base", "head",
+                "foreleg_left", "foreleg_right", "hindleg_left", "hindleg_right",
+                "tail_base", "tail_tip", "crown_petiole", "crown_mid_fold",
+                "crown_tip_fold", "collar_left", "collar_right",
             ],
             Self::Cyndaquil => &[
                 "root",
@@ -135,6 +144,11 @@ impl Species {
                 Some(8),
                 Some(9),
             ],
+            Self::Bayleef => &[
+                None, Some(0), Some(1), Some(2), Some(3), Some(2), Some(2),
+                Some(1), Some(1), Some(1), Some(9), Some(4), Some(11), Some(12),
+                Some(3), Some(3),
+            ],
             Self::Cyndaquil => &[
                 None,
                 Some(0),
@@ -191,6 +205,7 @@ impl Species {
     fn part_count(self) -> usize {
         match self {
             Self::Chikorita => 19,
+            Self::Bayleef => 33,
             Self::Cyndaquil => 30,
             Self::Totodile => 27,
             Self::Gengar => 27,
@@ -201,6 +216,7 @@ impl Species {
     fn neutral_digest(self) -> &'static str {
         match self {
             Self::Chikorita => "e6f4c6ed5c602ef3562f3bc4b19bd800944abdd2d5722ecd5df832d3bf49bc96",
+            Self::Bayleef => "e5eb4bc7000f869044b9a4b9ce38847f8dab69d8509151f9e37efd140ef6f7de",
             Self::Cyndaquil => "551051e53987f2461c2e5ed22187b44b336be64f300b469950d381b5b174b397",
             Self::Totodile => "3e3f8de35f5d7cabcc889604baff4103f050f6abf2a24f6336f9ea3fea9a47d0",
             Self::Gengar => "d458acb7c2853288efef3b83c24ac453bcb409f9db01d24a96008e9a937485aa",
@@ -300,12 +316,14 @@ pub(crate) struct SpeciesRig {
 
 pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static CHIKORITA: OnceLock<SpeciesRig> = OnceLock::new();
+    static BAYLEEF: OnceLock<SpeciesRig> = OnceLock::new();
     static CYNDAQUIL: OnceLock<SpeciesRig> = OnceLock::new();
     static TOTODILE: OnceLock<SpeciesRig> = OnceLock::new();
     static GENGAR: OnceLock<SpeciesRig> = OnceLock::new();
     static SPEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
         Species::Chikorita => &CHIKORITA,
+        Species::Bayleef => &BAYLEEF,
         Species::Cyndaquil => &CYNDAQUIL,
         Species::Totodile => &TOTODILE,
         Species::Gengar => &GENGAR,
@@ -315,6 +333,9 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         let source = match species {
             Species::Chikorita => {
                 crate::model_storage::include_model!("models/actor_props/battle_chikorita.glb")
+            }
+            Species::Bayleef => {
+                crate::model_storage::include_model!("models/battle_species/bayleef.glb")
             }
             Species::Cyndaquil => {
                 crate::model_storage::include_model!("models/actor_props/battle_cyndaquil.glb")
@@ -338,6 +359,8 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
 pub(crate) fn for_species(species: &str) -> Option<&'static SpeciesRig> {
     if species.eq_ignore_ascii_case("CHIKORITA") {
         Some(rig(Species::Chikorita))
+    } else if species.eq_ignore_ascii_case("BAYLEEF") {
+        Some(rig(Species::Bayleef))
     } else if species.eq_ignore_ascii_case("CYNDAQUIL") {
         Some(rig(Species::Cyndaquil))
     } else if species.eq_ignore_ascii_case("TOTODILE") {
@@ -681,7 +704,7 @@ impl SpeciesRig {
             // whole camera box. This runs once when the GLB is loaded; frame
             // playback still uses the authored keys and original cue clock.
             let envelope_hz = match self.species {
-                Species::Chikorita => 90.0,
+                Species::Chikorita | Species::Bayleef => 90.0,
                 _ => ENVELOPE_HZ,
             };
             let steps = (clip.duration * envelope_hz).ceil() as usize;

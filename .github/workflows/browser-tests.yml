@@ -42,6 +42,7 @@ jobs:
       - run: python3 tools/test_animated_glb.py
       - run: python3 tools/test_pidgeotto_glb.py
       - run: python3 tools/test_chikorita_glb.py
+      - run: python3 tools/test_bayleef_glb.py
       - run: python3 tools/test_cyndaquil_glb.py
       - run: python3 tools/test_totodile_glb.py
       - run: python3 tools/test_gengar_glb.py

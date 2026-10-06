@@ -371,3 +371,10 @@ hit articulation. Four planted feet and three leaf joints give it distinct
 quadruped mechanics. The original pack-derived physical height and battle
 cue clock remain authoritative. This is one reviewed species increment;
 the remaining static Pokémon still require their own art and animation work.
+
+## Bayleef increment
+
+[Bayleef](bayleef-papercraft.md) now uses its own connected long-neck sculpture
+and a 16-joint anatomical skin, with a folded notched crown, curled collar and
+planted quadruped motion. Its canonical GLB replaces the former static JSON;
+this is a separate species pass after Chikorita.

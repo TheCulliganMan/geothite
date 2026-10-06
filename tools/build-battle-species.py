@@ -1636,6 +1636,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ if 'bayleef' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from bayleef_glb import export_bayleef
+  if (OUT/'bayleef.mesh.json').exists():raise ValueError('remove the reviewed obsolete Bayleef JSON before exporting its canonical GLB')
+  (OUT/'bayleef.glb').write_bytes(export_bayleef())
+  names.remove('bayleef')
+  print('bayleef: canonical folded-paper sculpture and three anatomical clips',flush=True)
  if 'spearow' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from spearow_glb import export_spearow

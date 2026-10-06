@@ -84,6 +84,9 @@ fn parse_model<'a>(
 // their canonical GLB. The rig also exposes an exact neutral surface to callers
 // that only need immutable bounds or an overworld prop.
 macro_rules! species_mesh {
+    ("bayleef") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Bayleef).neutral.clone())
+    };
     ("gengar") => {
         Some(crate::species_rig::rig(crate::species_rig::Species::Gengar).neutral.clone())
     };

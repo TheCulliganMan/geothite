@@ -942,8 +942,8 @@ fn prepare_immersive_battle_preview(
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
         starter.is_none()
-            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "CYNDAQUIL" | "TOTODILE"))),
-        "starter rig preview requires enemy Gust and CHIKORITA, CYNDAQUIL or TOTODILE"
+            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "BAYLEEF" | "CYNDAQUIL" | "TOTODILE"))),
+        "starter-family rig preview requires enemy Gust and CHIKORITA, BAYLEEF, CYNDAQUIL or TOTODILE"
     );
     anyhow::ensure!(
         [
@@ -1166,8 +1166,8 @@ fn prepare_immersive_battle_preview(
                 // correctly misses. 233 still selects AI slot 1, stays above
                 // both critical thresholds, passes Razor Leaf's real accuracy
                 // check, and rotates to 244 for accepted damage variation.
-                // Only the explicit Chikorita rig showcase uses this input.
-                let sub = if starter == Some("CHIKORITA") { 233 } else { 253 };
+                // Only the explicit Razor Leaf rig showcases use this input.
+                let sub = if matches!(starter, Some("CHIKORITA" | "BAYLEEF")) { 233 } else { 253 };
                 let session = controller.shell.shell.session_mut();
                 session.state_mut().random_state =
                     crystal_core::random::CrystalRandomState { add: 0, sub };

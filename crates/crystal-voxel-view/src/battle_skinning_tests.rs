@@ -218,6 +218,17 @@ fn spearow_instances_activate_generic_gpu_skinning_at_pack_size() {
 
 #[test]
 fn chikorita_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("CHIKORITA", Species::Chikorita, 11, 0.889);
+}
+
+#[test]
+fn bayleef_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("BAYLEEF", Species::Bayleef, 16, 1.1938);
+}
+
+fn assert_species_gpu_at_pack_size(
+    species_name: &'static str, species: Species, joint_count: usize, size_m: f32,
+) {
     let mut app = pair_app(60);
     for battler in app
         .world_mut()
@@ -226,8 +237,8 @@ fn chikorita_instances_activate_generic_gpu_skinning_at_pack_size() {
         .iter_mut()
         .flatten()
     {
-        battler.species_id = Arc::from("CHIKORITA");
-        battler.pokedex_size_m = Some(0.889);
+        battler.species_id = Arc::from(species_name);
+        battler.pokedex_size_m = Some(size_m);
     }
     app.update();
     app.update();
@@ -240,15 +251,15 @@ fn chikorita_instances_activate_generic_gpu_skinning_at_pack_size() {
         let skin = actor
             .skinned
             .as_ref()
-            .expect("Chikorita must be articulated");
-        assert_eq!(skin.rig.species, Species::Chikorita);
-        assert_eq!(skin.joints.len(), 11);
+            .expect("registered species must be articulated");
+        assert_eq!(skin.rig.species, species);
+        assert_eq!(skin.joints.len(), joint_count);
         let component = world.get::<SkinnedMesh>(actor.entity).unwrap();
         bind_handles.push(component.inverse_bindposes.clone());
         let pose = world.get::<Transform>(actor.entity).unwrap();
         let (min, max) = skin.rig.neutral_bounds;
         assert!(
-            ((max.y - min.y) * pose.scale.y / crate::battle_layout::WORLD_UNITS_PER_METER - 0.889)
+            ((max.y - min.y) * pose.scale.y / crate::battle_layout::WORLD_UNITS_PER_METER - size_m)
                 .abs()
                 < 0.000001
         );

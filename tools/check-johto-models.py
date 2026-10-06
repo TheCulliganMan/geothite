@@ -5,6 +5,7 @@ from model_asset_storage import read_model_json, validate_storage
 from animated_glb import load_catalog
 from pidgeotto_glb import read_pidgeotto
 from battle_model_assets import species_paths
+from bayleef_glb import read_bayleef
 from gengar_glb import read_gengar
 from chikorita_glb import read_chikorita
 from cyndaquil_glb import read_cyndaquil
@@ -18,6 +19,7 @@ editable = list(load_sources())
 
 models = ROOT / 'crates/crystal-voxel-view/models'
 weighted_skins = {
+    models / 'battle_species/bayleef.glb': (read_bayleef, 33),
     models / 'actor_props/battle_chikorita.glb': (read_chikorita, 19),
     models / 'actor_props/battle_cyndaquil.glb': (read_cyndaquil, 30),
     models / 'actor_props/battle_totodile.glb': (read_totodile, 27),

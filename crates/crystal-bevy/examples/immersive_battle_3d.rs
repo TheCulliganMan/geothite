@@ -64,11 +64,11 @@ fn main() -> Result<()> {
             "--starter" => {
                 let name = args
                     .next()
-                    .context("--starter chikorita|cyndaquil|totodile")?
+                    .context("--starter chikorita|bayleef|cyndaquil|totodile")?
                     .to_ascii_uppercase();
                 anyhow::ensure!(
-                    matches!(name.as_str(), "CHIKORITA" | "CYNDAQUIL" | "TOTODILE"),
-                    "--starter expects chikorita, cyndaquil or totodile"
+                    matches!(name.as_str(), "CHIKORITA" | "BAYLEEF" | "CYNDAQUIL" | "TOTODILE"),
+                    "--starter expects chikorita, bayleef, cyndaquil or totodile"
                 );
                 starter = Some(name);
             }

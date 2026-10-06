@@ -1826,6 +1826,7 @@ fn immersive_battle_pidgeotto_preview_uses_legal_moves_and_normal_controller() {
 fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
     for (species, move_name) in [
         ("CHIKORITA", "RAZOR_LEAF"),
+        ("BAYLEEF", "RAZOR_LEAF"),
         ("CYNDAQUIL", "EMBER"),
         ("TOTODILE", "WATER_GUN"),
     ] {
@@ -1834,7 +1835,7 @@ fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
         assert!(controller.shell.quick_save_path.is_none());
         let expected_random = crystal_core::random::CrystalRandomState {
             add: 0,
-            sub: if species == "CHIKORITA" { 233 } else { 253 },
+            sub: if matches!(species, "CHIKORITA" | "BAYLEEF") { 233 } else { 253 },
         };
         assert_eq!(controller.shell.shell.session().state().random_state, expected_random);
         // Normal preview arming must preserve the bounded real DIV stimulus.

@@ -8,7 +8,7 @@ fn candidate(species: Species) -> Vec<u8> {
         Species::Chikorita | Species::Cyndaquil | Species::Totodile => {
             format!("models/actor_props/battle_{}.glb", species.name())
         }
-        Species::Gengar | Species::Spearow => {
+        Species::Bayleef | Species::Gengar | Species::Spearow => {
             format!("models/battle_species/{}.glb", species.name())
         }
     });
@@ -20,12 +20,14 @@ fn candidate(species: Species) -> Vec<u8> {
 
 fn fixture(species: Species) -> &'static SpeciesRig {
     static CHIKORITA: OnceLock<SpeciesRig> = OnceLock::new();
+    static BAYLEEF: OnceLock<SpeciesRig> = OnceLock::new();
     static CYNDAQUIL: OnceLock<SpeciesRig> = OnceLock::new();
     static TOTODILE: OnceLock<SpeciesRig> = OnceLock::new();
     static GENGAR: OnceLock<SpeciesRig> = OnceLock::new();
     static SPEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
         Species::Chikorita => &CHIKORITA,
+        Species::Bayleef => &BAYLEEF,
         Species::Cyndaquil => &CYNDAQUIL,
         Species::Totodile => &TOTODILE,
         Species::Gengar => &GENGAR,
@@ -61,6 +63,7 @@ fn assert_bits(a: impl Iterator<Item = f32>, b: impl Iterator<Item = f32>) {
 fn species_schema_retains_anatomy_skin_order_and_physical_size() {
     for (species, vertices, triangles, height) in [
         (Species::Chikorita, 7463, 3220, 1.0_f32),
+        (Species::Bayleef, 9626, 3836, 1.15_f32),
         (Species::Cyndaquil, 4506, 2086, 0.91_f32),
         (Species::Totodile, 5714, 6374, 1.02_f32),
         (Species::Gengar, 6952, 5560, 1.05_f32),
@@ -702,4 +705,57 @@ fn chikorita_registry_shares_the_authored_skin_and_keeps_four_ground_contacts() 
     }
     assert_eq!(rig.neutral_bounds.0.y, 0.0);
     assert_eq!(rig.neutral_bounds.1.y, 1.0);
+}
+
+#[test]
+fn bayleef_registry_shares_the_authored_skin_and_keeps_four_ground_contacts() {
+    let rig = fixture(Species::Bayleef);
+    for name in ["BAYLEEF", "bayleef", "BaYlEeF"] {
+        assert!(std::ptr::eq(
+            for_species(name).unwrap(),
+            super::rig(Species::Bayleef)
+        ));
+    }
+    assert_eq!(
+        crate::battle_species_models::mesh("BAYLEEF").unwrap(),
+        rig.neutral
+    );
+    let sole_vertices: Vec<_> = rig
+        .neutral
+        .positions
+        .iter()
+        .enumerate()
+        .filter(|(_, point)| point[1] == 0.0)
+        .collect();
+    let quadrants: std::collections::HashSet<_> = sole_vertices
+        .iter()
+        .map(|(_, point)| (point[0] > 0.0, point[2] > -0.020))
+        .collect();
+    assert_eq!(
+        quadrants.len(),
+        4,
+        "each authored leg must retain a grounded sole"
+    );
+    let (mut pose, mut matrices) = storage(rig);
+    for clip in Clip::ALL {
+        for sample in 0..=61 {
+            rig.sample_into(
+                clip,
+                rig.clip(clip).duration * sample as f32 / 61.0,
+                Playback::Clamp,
+                &mut pose,
+            )
+            .unwrap();
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            for (index, point) in &sole_vertices {
+                assert_vec_close(
+                    rig.skin_point(*index, &matrices),
+                    Vec3::from_array(**point),
+                    0.000001,
+                );
+            }
+        }
+    }
+    assert_eq!(rig.neutral_bounds.0.y, 0.0);
+    assert_eq!(rig.neutral_bounds.1.y, 1.15);
 }
