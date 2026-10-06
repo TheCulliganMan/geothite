@@ -107,6 +107,7 @@ struct VisibleBattleOriginState {
     bound_static: Option<VisibleBoundStaticEncounter>,
     bound_fishing: Option<VisibleBoundFishingEncounter>,
     bound_walking: Option<VisibleBoundWalkingEncounter>,
+    bound_surf: Option<VisibleBoundSurfEncounter>,
     trainer_candidate: Option<VisibleTrainerEncounterCandidate>,
     scripted_trainer_candidate: Option<VisibleScriptedTrainerEncounterCandidate>,
     bound_trainer: Option<VisibleBoundTrainerEncounter>,
@@ -125,6 +126,7 @@ impl VisibleBattleOriginState {
         self.bound_static = None;
         self.bound_fishing = None;
         self.bound_walking = None;
+        self.bound_surf = None;
         self.trainer_candidate = None;
         self.scripted_trainer_candidate = None;
         self.bound_trainer = None;
@@ -202,6 +204,7 @@ fn capture_visible_wild_battle_origin(
         frame.movement.clone(),
     );
     bind_visible_walking_encounter(shell, frame);
+    bind_visible_surf_encounter(shell, frame);
 }
 
 fn take_visible_battle_origin_for_entry(

@@ -352,6 +352,7 @@ fn publish_visible_battle_location(
 ) {
     capture_visible_fishing_pack_scene(&mut shell, &rendered, world_frame.as_deref());
     let walking = publish_visible_walking_location(&mut shell, &rendered, world_frame.as_deref());
+    let surf = publish_visible_surf_location(&mut shell, &rendered, world_frame.as_deref());
     let trainer = publish_visible_trainer_location(
         &mut shell, &rendered, world_frame.as_deref(), &objects,
     );
@@ -365,6 +366,7 @@ fn publish_visible_battle_location(
         && shell.battle_origin.bound_static.is_none()
         && shell.battle_origin.bound_fishing.is_none()
         && shell.battle_origin.bound_walking.is_none()
+        && shell.battle_origin.bound_surf.is_none()
         && shell.battle_origin.bound_trainer.is_none()
     {
         if published.location.is_some() {
@@ -476,7 +478,7 @@ fn publish_visible_battle_location(
             })
             .clone()
     });
-    let next = trainer.or(walking).or(fishing).or(static_location);
+    let next = trainer.or(surf).or(walking).or(fishing).or(static_location);
     let unchanged = match (&published.location, &next) {
         (Some(old), Some(new)) => Arc::ptr_eq(old, new),
         (None, None) => true,

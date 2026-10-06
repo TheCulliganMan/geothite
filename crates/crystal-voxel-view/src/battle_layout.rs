@@ -109,6 +109,9 @@ pub(crate) struct BattleBody {
     pub visual_bounds: Option<(Vec3, Vec3)>,
     pub scale: Vec3,
     pub reference_height: f32,
+    /// Neutral model-space contact datum. Ground bodies use min.y; an authored
+    /// stationary water stance can put its waterline at the sampled surface.
+    pub support_y: f32,
     pub modeled: bool,
 }
 impl BattleBody {
@@ -125,6 +128,7 @@ impl BattleBody {
             visual_bounds: None,
             scale: Vec3::splat(scale),
             reference_height,
+            support_y: min.y,
             modeled: true,
         }
     }
@@ -135,6 +139,7 @@ impl BattleBody {
             visual_bounds: None,
             scale: Vec3::new(aspect, 1.0, 1.0),
             reference_height: 1.9,
+            support_y: -0.95,
             modeled: false,
         }
     }
@@ -226,7 +231,7 @@ impl BattleSceneLayout {
             };
             let pose = Transform {
                 translation: layout.origins[i]
-                    - rotations[i] * (Vec3::Y * body.min.y * body.scale.y),
+                    - rotations[i] * (Vec3::Y * body.support_y * body.scale.y),
                 rotation: rotations[i],
                 scale: body.scale,
             };
@@ -276,6 +281,9 @@ impl BattleSceneLayout {
                 || !body.reference_height.is_finite()
                 || body.reference_height <= 0.0
                 || body.reference_height > (body.max - body.min).y
+                || !body.support_y.is_finite()
+                || body.support_y < body.min.y
+                || body.support_y > body.max.y
             {
                 return None;
             }
@@ -302,7 +310,7 @@ impl BattleSceneLayout {
             let rotation = Quat::from_rotation_y(facing.x.atan2(facing.z));
             Transform {
                 translation: anchors[i]
-                    - rotation * (Vec3::Y * bodies[i].min.y * bodies[i].scale.y),
+                    - rotation * (Vec3::Y * bodies[i].support_y * bodies[i].scale.y),
                 rotation,
                 scale: bodies[i].scale,
             }
@@ -982,6 +990,14 @@ mod anchored_layout_tests {
                 reference_height,
                 ..base
             });
+        }
+        for support_y in [
+            f32::NAN,
+            f32::INFINITY,
+            base.min.y - 0.01,
+            base.max.y + 0.01,
+        ] {
+            invalid_bodies.push(BattleBody { support_y, ..base });
         }
         invalid_bodies.extend([
             BattleBody {

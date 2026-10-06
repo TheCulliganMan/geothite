@@ -420,3 +420,79 @@ The recorder ended at its configured timer before victory/reward/field return;
 those later native steps are not claimed by this capture. The high lateral
 angle fits the constrained room; broader camera composition, model refinement
 and source-only animation phases remain separate work.
+
+
+A separate untimed native session subsequently closed the post-battle gate:
+ordinary victory and experience, the Zephyr Badge/TM31 reward messages and
+the original closing dialogue completed. The same gym field returned. A fresh
+directional press turned the player, and another visibly walked a step relative
+to the unchanged trainer and room props. Talking again used the already-defeated
+dialogue instead of another battle. No exact numeric money total or post-return
+core coordinate is inferred from that UI observation. This used unchanged game
+code; the bounded capture above still ended before those later steps.
+
+
+## Surf-origin water support
+
+Surf encounters have a distinct SurfWater target and committed-step classifier.
+Ordinary Surf, speed one, one-tile movement and the source Water encounter result
+must agree. Both movement endpoints and each approved support cell must be plain
+WATER ($29); the shore-to-water mounting step and currents, waterfalls, buoys,
+whirlpools, warps, connections, coordinate events, trainer sight and other
+interruptions do not gain support through this path. WalkingGrass remains the
+separate Normal/Grass contract. SurfPika is not admitted by this first slice.
+
+The shared finite step witness retains the actual Surf avatar, facing, mode and
+interpolated feet. Cold, stale, wrong-avatar or off-step evidence cannot recover
+from a later arbitrary frame. The renderer checks each covered source cell
+against the actual built Water shape, sampled elevation and pinned live-profile
+provenance. A bank or custom-profile dependency leaves an unsupported hole;
+producer collision permission alone never creates a broad water plane.
+
+A neutral waterline is authored for the current Totodile, Poliwag and Remoraid
+models. It moves only each model's support datum relative to the sampled water
+surface. Canonical physical scale, every vertex, neutral bounds and full rig
+envelope remain unchanged. These are stationary presentation stances, not
+swimming clips; unsupported species keep the existing fallback. The existing
+Surf field model is a generic aquatic mount without a rider, a separate art gap.
+
+`--surf-encounter` prepares a fresh Route44 player at (38,3), facing down on
+original shore floor, with Totodile level20, Surf taught through the ordinary
+HM item operation, and the required Fog Badge. It waits for normal A/Yes and the
+original UsedSurfScript. Mounting takes its original sixteen-frame slow step
+onto (38,4); later ordinary Surf steps use the source speed-one path. The fixture
+keeps the original water rate, time tables and variable enemy levels, without
+forcing an encounter, species or RNG samples. The old `--surf` option remains
+the separate combat-move preview.
+
+The ordinary entry gate exposed and corrected three existing presentation
+defects: contextual prompts now resolve the pack's exact pure TX_FAR wrappers;
+the opening A press cannot also answer the newly opened prompt, and the shared
+controller dispatches the same contextual action; retained player art updates
+its source identity together with the selected mounted or standing textures.
+The renderer-neutral settler also advances queued terminal battle narration
+after core battle ends, retaining its input and origin until ordinary dismissal.
+
+Validation passed 87 distinct focused controller tests, including twelve Surf
+tests, all 927 voxel tests and 24 render-API tests, plus full-feature WebAssembly
+and native compilation. The tests cover A/No/fresh Yes, simultaneous and held
+input, original mounting duration, actual avatar identity, journal replay,
+retained terminal narration, RUN return and ordinary shore dismount.
+
+The native gate used normal A/Yes and water travel to roll a real level-20
+Remoraid. The actual Route44 water, banks and nearby scenery passed the retained
+geometry and camera checks. Totodile and Remoraid kept their listed 0.6096-meter
+dimensions and the explicit neutral waterline stances. FIGHT displayed Surf at
+15/15 PP; the faster Remoraid's original Lock-On response ran first. The bounded
+8.09-second recording ended before completing Totodile's queued action or the
+return to shore. Those later native steps are not claimed by this recording.
+
+The 800×600 capture contains 166 actual images and 174 updates, all using the
+modeled scene. Median update time was 35.48 ms and p95 118.10 ms with software
+OpenGL, vertex lighting, balanced quality and a 600×450 scene target. These
+figures include the first-use move work and capture; they are not a warmed
+performance comparison or a fluid-animation claim. The last sixty updates
+retained 751 images, 13 meshes and 36 materials. The current high camera keeps
+the source surroundings visible but leaves the small creatures distant; closer
+composition, swimming/rider animation, broader species coverage and first-use
+stalls remain separate gaps. An untimed native return gate remains pending.

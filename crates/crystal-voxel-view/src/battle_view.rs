@@ -586,7 +586,7 @@ fn sync_battle_layout(
     mut scene: ResMut<BattleScene>,
     mut layout: ResMut<BattleSceneLayout>,
     mut scenery: ResMut<EncounterTerrain>,
-    mut previous: Local<Option<([Option<BattleBody>; 2], Vec2, (Option<u64>, bool))>>,
+    mut previous: Local<Option<([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, (Option<u64>, bool))>>,
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
         return;
@@ -649,14 +649,21 @@ fn sync_battle_layout(
             battler.texture_size.x / battler.texture_size.y,
         ))
     });
-    let key = (bodies, viewport, scenery.layout_key());
+    let supported = scenery.supported_bodies(bodies,
+        std::array::from_fn(|index| frame.battlers[index].as_ref().map(|b| b.species_id.as_ref())));
+    let key = (bodies, supported, viewport, scenery.layout_key());
     if previous.as_ref() != Some(&key) {
         let anchored = scenery.anchors().and_then(|anchors| {
+            let Some(supported) = supported else {
+                scenery.reject_layout("battler lacks an authored neutral water stance");
+                return None;
+            };
             scenery.reject_layout("battlers do not fit the checked encounter anchors");
-            BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport)
+            BattleSceneLayout::for_anchored_bodies(supported, anchors, viewport)
+                .map(|layout| (layout, supported))
         });
-        let next = if let Some(mut anchored) = anchored {
-            if scenery.constrain_layout(&mut anchored, bodies, viewport) {
+        let next = if let Some((mut anchored, supported)) = anchored {
+            if scenery.constrain_layout(&mut anchored, supported, viewport) {
                 anchored
             } else {
                 BattleSceneLayout::for_bodies(bodies, viewport)

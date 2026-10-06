@@ -24,6 +24,7 @@ fn main() -> Result<()> {
     let mut route36_encounter = false;
     let mut fishing_encounter = false;
     let mut walking_encounter = false;
+    let mut surf_encounter = false;
     let mut cave_encounter = false;
     let mut gym_encounter = false;
     let mut falkner_encounter = false;
@@ -48,6 +49,7 @@ fn main() -> Result<()> {
             "--route36-encounter" => route36_encounter = true,
             "--fishing-encounter" => fishing_encounter = true,
             "--walking-encounter" => walking_encounter = true,
+            "--surf-encounter" => surf_encounter = true,
             "--cave-encounter" => cave_encounter = true,
             "--gym-encounter" => gym_encounter = true,
             "--falkner-encounter" => falkner_encounter = true,
@@ -96,6 +98,7 @@ fn main() -> Result<()> {
             route36_encounter,
             fishing_encounter,
             walking_encounter,
+            surf_encounter,
             cave_encounter,
             gym_encounter,
             falkner_encounter,
@@ -113,7 +116,7 @@ fn main() -> Result<()> {
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --cave-encounter, --gym-encounter, --falkner-encounter, --ice-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --surf-encounter, --cave-encounter, --gym-encounter, --falkner-encounter, --ice-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
@@ -150,7 +153,9 @@ fn main() -> Result<()> {
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
-    let (map_name, tile_x, tile_y) = if falkner_encounter {
+    let (map_name, tile_x, tile_y) = if surf_encounter {
+        ("Route44", 38, 3)
+    } else if falkner_encounter {
         ("VioletGym", 4, 1)
     } else if gym_encounter {
         ("VioletGym", 5, 11)
@@ -199,7 +204,9 @@ fn main() -> Result<()> {
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
             voxel_view_enabled: Some(enabled),
-            window_title: Some(if falkner_encounter {
+            window_title: Some(if surf_encounter {
+                "Geothite | Route44 Surf | Z / Yes / Down into water / Arrows / F3 view".into()
+            } else if falkner_encounter {
                 "Geothite | Falkner | Z talk / confirm / F3 view".into()
             } else if ice_encounter {
                 "Geothite | Ice Path | Walk on floor / Z confirm / F3 view".into()
@@ -216,10 +223,11 @@ fn main() -> Result<()> {
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || cave_encounter || gym_encounter || falkner_encounter || ice_encounter),
+            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || surf_encounter || cave_encounter || gym_encounter || falkner_encounter || ice_encounter),
             render_test_route36_encounter: route36_encounter,
             render_test_fishing_encounter: fishing_encounter,
             render_test_walking_encounter: walking_encounter,
+            render_test_surf_encounter: surf_encounter,
             render_test_cave_encounter: cave_encounter,
             render_test_gym_encounter: gym_encounter,
             render_test_falkner_encounter: falkner_encounter,

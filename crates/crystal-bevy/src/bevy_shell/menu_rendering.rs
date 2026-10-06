@@ -4340,6 +4340,9 @@ fn update_player_facing_art_in_place(
         })
         .collect();
     }
+    if retained_frames.source_id.as_ref() != sprite_id {
+        retained_frames.source_id = Arc::from(sprite_id);
+    }
     retained_frames.standing = standing.handle;
     retained_frames.walking = Some(walking.handle);
     retained_frames.mirror_walking =
@@ -7722,6 +7725,9 @@ fn render_playfield(
                 #[cfg(feature = "voxel-view")]
                 {
                     frames.directional_frames = directional_frames;
+                }
+                if frames.source_id.as_ref() != player_sprite_id {
+                    frames.source_id = Arc::from(player_sprite_id);
                 }
                 frames.standing = standing_frame.handle.clone();
                 frames.walking = walking_frame.as_ref().map(|frame| frame.handle.clone());

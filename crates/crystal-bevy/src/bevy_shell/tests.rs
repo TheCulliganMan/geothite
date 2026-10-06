@@ -18,6 +18,7 @@ include!("tests/encounter_anchor.rs");
 include!("tests/battle_origin_fishing.rs");
 include!("tests/fishing_anchor.rs");
 include!("tests/walking_anchor.rs");
+include!("tests/surf_anchor.rs");
 include!("tests/trainer_anchor.rs");
 include!("tests/scripted_trainer_anchor.rs");
 include!("tests/fishing_presentation.rs");

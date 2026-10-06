@@ -2589,7 +2589,13 @@ fn apply_keyboard_input(
         });
     } else if execute_contextual_field_move {
         match execute_visible_contextual_field_move(&mut runtime_shell) {
-            Ok(true) => {}
+            Ok(true) => {
+                // The overworld A owns opening this prompt. The later UI pass
+                // must not confirm it (or cancel with a simultaneous B) using
+                // the same physical press that just created the surface.
+                runtime_shell.overworld_interaction_consumed_a = true;
+                runtime_shell.field_text_consumed_b |= keys.just_pressed(KeyCode::KeyX);
+            }
             Ok(false) => match advance_visible_script_until_player_boundary(&mut runtime_shell) {
                 Ok(()) => {}
                 Err(error) => {
@@ -4498,6 +4504,16 @@ fn apply_visible_runtime_controls(
     runtime_shell: &mut BevyRuntimeShell,
     advance_repeat: bool,
 ) {
+    if runtime_shell.pending_contextual_field_move.is_some()
+        && runtime_shell.overworld_interaction_consumed_a
+    {
+        // Source overworld A selected the new prompt before UI sampling. Do
+        // not reuse this opening-frame A/B/direction to answer or move it.
+        runtime_shell.overworld_interaction_consumed_a = false;
+        runtime_shell.ui_held_direction = None;
+        runtime_shell.ui_direction_repeat_ticks = 0;
+        return;
+    }
     if runtime_shell.visible_script_movement.is_some()
         || runtime_shell.incoming_phone_sequence.is_some()
         || visible_noninteractive_field_animation_owns_input(runtime_shell)

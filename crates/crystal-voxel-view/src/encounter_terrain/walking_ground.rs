@@ -19,6 +19,10 @@ impl WalkingGround {
                 presentation.presentation_core_tile,
                 &presentation.walkable_core_tiles,
             ),
+            VisualBattleTarget::SurfWater { presentation, .. } => (
+                presentation.presentation_core_tile,
+                &presentation.water_core_tiles,
+            ),
             VisualBattleTarget::Trainer { presentation, .. } => (
                 presentation.presentation_core_tile,
                 &presentation.walkable_core_tiles,
@@ -26,7 +30,14 @@ impl WalkingGround {
             _ => return Ok(None),
         };
         let invalid = "derived battle presentation lacks checked source ground";
+        let water = matches!(location.target, VisualBattleTarget::SurfWater { .. });
+        if water && cache.built_profiles.is_none() {
+            return Err("water support lacks actual build profile provenance");
+        }
         let frame = cache.built_frame.as_ref().ok_or(invalid)?;
+        if water && frame.validate().is_err() {
+            return Err(invalid);
+        }
         let map_size = location.source_map_size_core_tiles.ok_or(invalid)?;
         if map_size.min_element() == 0 || map_size.max_element() > i32::MAX as u32 / 2 {
             return Err(invalid);
@@ -77,7 +88,32 @@ impl WalkingGround {
                 core_tile,
                 presentation,
             } => {
-                if *core_tile != source || presentation.step_from_core_tile + facing != source {
+                if location.source.movement
+                    != crystal_render_api::VisualBattleSourceMovement::Normal
+                    || *core_tile != source
+                    || presentation.step_from_core_tile + facing != source
+                {
+                    return Err(invalid);
+                }
+                let start = source_foot(presentation.step_from_core_tile);
+                let witness = presentation.witnessed_player_foot.ok_or(invalid)?;
+                let step = landed - start;
+                let progress = (witness - start).dot(step) / step.length_squared();
+                if !witness.is_finite()
+                    || !(-0.0001..=1.0001).contains(&progress)
+                    || witness.distance_squared(start + step * progress) > 0.0001
+                {
+                    return Err(invalid);
+                }
+            }
+            VisualBattleTarget::SurfWater {
+                core_tile,
+                presentation,
+            } => {
+                if location.source.movement != crystal_render_api::VisualBattleSourceMovement::Surf
+                    || *core_tile != source
+                    || presentation.step_from_core_tile + facing != source
+                {
                     return Err(invalid);
                 }
                 let start = source_foot(presentation.step_from_core_tile);
@@ -143,6 +179,24 @@ impl WalkingGround {
                     continue;
                 }
                 let index = grid.y as usize * frame.grid_size.x as usize + grid.x as usize;
+                if water {
+                    let at_cell = |tile: &&crystal_render_api::VisualTile| {
+                        tile.column == grid.x as u32 && tile.row == grid.y as u32
+                    };
+                    let tile = frame
+                        .tiles
+                        .get(index)
+                        .filter(at_cell)
+                        .or_else(|| frame.tiles.iter().find(at_cell))
+                        .ok_or(invalid)?;
+                    let profiles = cache.built_profiles.as_deref().ok_or(invalid)?;
+                    if !proven_water_cell(location.source.map_id.as_ref(), &tile.source, profiles) {
+                        // An approved collision tile may contain a drawn bank.
+                        // Keep a hole here; only a body's actually covered cells
+                        // must prove water. Never fill an outer ring by its AABB.
+                        continue;
+                    }
+                }
                 let height = *cache.built_footing_heights.get(index).ok_or(invalid)?;
                 if !height.is_finite() {
                     return Err(invalid);
@@ -194,4 +248,28 @@ impl WalkingGround {
         }
         true
     }
+}
+
+/// Collision permission alone cannot prove the shape actually built beneath
+/// the waterline. A live profile can override either the drawing or its ground.
+fn proven_water_cell(
+    map: &str,
+    source: &crystal_render_api::VisualTileSource,
+    profiles: &crate::live_profiles::Document,
+) -> bool {
+    crate::profile::shape_for_source_on_map(map, source) == crate::profile::CellShape::Water
+        && !profiles.objects.iter().any(|object| {
+            object.tileset == source.tileset_id.as_ref()
+                && object.map.as_deref().is_none_or(|id| id == map)
+                && object
+                    .maps
+                    .as_ref()
+                    .is_none_or(|ids| ids.iter().any(|id| id == map))
+                && (object.ground == source.tile_index
+                    || object
+                        .tiles
+                        .iter()
+                        .flatten()
+                        .any(|&id| id == source.tile_index))
+        })
 }

@@ -52,6 +52,24 @@ pub struct VisualBattleDerivedGrassPlacement {
     pub walkable_core_tiles: Arc<[IVec2]>,
 }
 
+/// Presentation placement for an ordinary Surf encounter. The enemy had no
+/// overworld actor. Exact source water cells are contact evidence, not a claim
+/// of swimming animation or rendered surface height; consumers prove the full
+/// species body footprint against the frozen built water before using them.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualBattleDerivedSurfPlacement {
+    /// Original moved-from water tile; contact remains the committed landing.
+    pub step_from_core_tile: IVec2,
+    /// Actual mounted-player feet in the witnessed frame, possibly still
+    /// interpolating. Never substitute these for the authoritative landing.
+    pub witnessed_player_foot: Option<Vec2>,
+    /// Derived opponent location, with no corresponding overworld actor.
+    pub presentation_core_tile: IVec2,
+    /// Exact original plain-water cells that passed bounded occupancy checks.
+    /// Reject any body footprint touching an absent or non-water built cell.
+    pub water_core_tiles: Arc<[IVec2]>,
+}
+
 /// Exact authored command provenance, observed on the production entry path.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VisualBattleTrainerProvenance {
@@ -106,6 +124,12 @@ pub enum VisualBattleTarget {
         core_tile: IVec2,
         presentation: VisualBattleDerivedGrassPlacement,
     },
+    /// The contact is the committed player water tile. The enemy position is
+    /// derived from plain, unoccupied original water, never an observed actor.
+    SurfWater {
+        core_tile: IVec2,
+        presentation: VisualBattleDerivedSurfPlacement,
+    },
     Trainer {
         contact: VisualBattleTrainerTarget,
         presentation: VisualBattleDerivedTrainerPlacement,
@@ -116,7 +140,9 @@ impl VisualBattleTarget {
     pub fn core_tile(&self) -> IVec2 {
         match self {
             Self::Object(target) => target.core_tile,
-            Self::FishingWater { core_tile } | Self::WalkingGrass { core_tile, .. } => *core_tile,
+            Self::FishingWater { core_tile }
+            | Self::WalkingGrass { core_tile, .. }
+            | Self::SurfWater { core_tile, .. } => *core_tile,
             Self::Trainer { contact, .. } => contact.core_tile,
         }
     }
@@ -173,7 +199,7 @@ pub struct VisualBattleAnchorFrame {
     /// Frozen feet in VisualWorldFrame world-pixel coordinates (+Y north).
     /// The source is verified sprite footing. An object target uses its sprite
     /// footing; fishing uses the checked water tile's south-center support
-    /// point. Walking uses the original step's landed support point resolved
+    /// point. Walking and Surf use the original step's landed support point resolved
     /// inside the witnessed frame, even if its player sprite was interpolating.
     /// None of these is a promise of built terrain elevation.
     pub source_foot: Vec2,

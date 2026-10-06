@@ -16,6 +16,7 @@ use crystal_render_api::{
 use std::collections::HashMap;
 mod walking_ground;
 mod retained_correspondence;
+mod water_stance;
 use walking_ground::WalkingGround;
 
 const BATTLE_LAYER: usize = 29;
@@ -202,6 +203,7 @@ struct FrozenScene {
     meshes: Vec<Handle<Mesh>>,
     ground: f32,
     walking: Option<WalkingGround>,
+    water: bool,
     bodies: [Option<BattleBody>; 2],
 }
 
@@ -227,6 +229,16 @@ impl EncounterTerrain {
     }
     pub(super) fn accepted(&self) -> bool {
         self.accepted
+    }
+    pub(super) fn supported_bodies(
+        &self,
+        bodies: [Option<BattleBody>; 2],
+        species: [Option<&str>; 2],
+    ) -> Option<[Option<BattleBody>; 2]> {
+        if !self.frozen.as_ref().is_some_and(|scene| scene.water) {
+            return Some(bodies);
+        }
+        water_stance::supported_bodies(bodies, species)
     }
     pub(super) fn fog_range(&self) -> Option<(f32, f32)> {
         self.accepted.then_some(self.fog).flatten()
@@ -440,7 +452,7 @@ fn resolve_context(
     evidence.map_texture = built.map_texture.clone();
     let correspondence = if evidence.matches_built_frame(built) {
         None
-    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. }) {
+    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. } | crystal_render_api::VisualBattleTarget::SurfWater { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. }) {
         // A scrolling overworld can retain an older mesh grid. Prove every
         // overlapping source cell against those actual built inputs, then use
         // the same rigid translation as the live terrain renderer. A desired
@@ -966,6 +978,7 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         meshes: mutable_mesh_handles.into_values().collect(),
         ground,
         walking,
+        water: matches!(location.target, crystal_render_api::VisualBattleTarget::SurfWater { .. }),
         bodies: [None; 2],
     })
 }
@@ -1128,6 +1141,110 @@ mod tests {
         anchors.target_foot = Vec2::new(132.0, 4.0);
         (frame, location, heights)
     }
+    fn surf_fixture() -> (VisualWorldFrame, VisualBattleLocation, TerrainRevisionCache) {
+        let (mut frame, mut location, mut heights) = walking_fixture();
+        frame.tiles = (0..frame.grid_size.y).flat_map(|row| (0..frame.grid_size.x).map(move |column| {
+            crystal_render_api::VisualTile {
+                column, row,
+                source: crystal_render_api::VisualTileSource {
+                    tileset_id: Arc::from("johto"), metatile_id: 0,
+                    subtile_column: (column % 4) as u8, subtile_row: (row % 4) as u8,
+                    tile_index: 0x14,
+                },
+                texture: Handle::weak_from_u128(71), animation_frames: None, priority: false,
+            }
+        })).collect();
+        heights.fill(-8.0);
+        location.source.movement = VisualBattleSourceMovement::Surf;
+        let VisualBattleTarget::WalkingGrass { core_tile, presentation } = location.target else { panic!() };
+        location.target = VisualBattleTarget::SurfWater {
+            core_tile,
+            presentation: crystal_render_api::VisualBattleDerivedSurfPlacement {
+                step_from_core_tile: presentation.step_from_core_tile,
+                witnessed_player_foot: presentation.witnessed_player_foot,
+                presentation_core_tile: presentation.presentation_core_tile,
+                water_core_tiles: presentation.walkable_core_tiles,
+            },
+        };
+        Arc::make_mut(location.anchors.as_mut().unwrap()).terrain.tiles = frame.tiles.clone().into();
+        let mut retained = cache(&frame, heights);
+        retained.built_profiles = Some(Arc::new(crate::live_profiles::Document::default()));
+        (frame, location, retained)
+    }
+
+    #[test]
+    fn surf_support_requires_actual_water_cells_profile_provenance_and_sampled_heights() {
+        let (frame, location, retained) = surf_fixture();
+        let (feet, pose, _) = resolve_context(&location, &retained).unwrap();
+        let body = BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0);
+        let fits = |cache: &TerrainRevisionCache| {
+            WalkingGround::from_context(&location, cache, pose).ok().flatten()
+                .is_some_and(|ground| ground.contains(body, Transform::from_translation(feet[0]), feet[0].y))
+        };
+        assert!(fits(&retained));
+        assert_eq!(feet[0].y, 0.0, "real sampled water heights are rebased, not replaced by a guessed datum");
+        let mut bad = cache(&frame, retained.built_footing_heights.clone());
+        assert!(!fits(&bad), "absent actual profile provenance cannot prove water geometry");
+        bad.built_profiles = retained.built_profiles.clone();
+        let cell = IVec2::new(25,18) - frame.grid_origin;
+        let index = cell.y as usize * frame.grid_size.x as usize + cell.x as usize;
+        bad.built_frame.as_mut().unwrap().tiles[index].source.tile_index = 0;
+        assert!(!fits(&bad), "a bank/flat drawing is not water despite producer collision approval");
+        bad.built_frame = Some(frame.clone());
+        bad.built_footing_heights[index] += 16.0;
+        assert!(!fits(&bad), "one covered cell at another elevation is not a level water surface");
+        bad.built_footing_heights = retained.built_footing_heights.clone();
+        bad.built_frame.as_mut().unwrap().tiles.reverse();
+        assert!(fits(&bad), "valid coordinate order does not become an implicit tile-index identity");
+        bad.built_frame.as_mut().unwrap().tiles.pop();
+        assert!(!fits(&bad), "an incomplete grid cannot establish water support");
+        let mut profile = crate::live_profiles::Document::default();
+        profile.objects.push(crate::live_profiles::Object {
+            name: "Water override".into(), tileset: "johto".into(), map: Some("Route36".into()), maps: None,
+            metatile: 0, metatiles: None, origin: [0,0], tiles: vec![vec![0x14]], ground: 1,
+            top_pixels: 0, depth_pixels: 4.0, footing_pixels: Some(8.0),
+            mask: crate::live_profiles::Mask::None, parts: Vec::new(),
+        });
+        bad.built_frame = Some(frame.clone());
+        bad.built_profiles = Some(Arc::new(profile.clone()));
+        assert!(!fits(&bad), "an applicable custom drawing cannot inherit a Water label");
+        profile.objects[0].tiles = vec![vec![1]]; profile.objects[0].ground = 0x14;
+        bad.built_profiles = Some(Arc::new(profile.clone()));
+        assert!(!fits(&bad), "custom ground samples also make the geometry proof unavailable");
+        profile.objects[0].map = Some("DifferentMap".into());
+        bad.built_profiles = Some(Arc::new(profile));
+        assert!(fits(&bad), "unrelated map profiles do not affect this actual build");
+    }
+
+    #[test]
+    fn surf_support_keeps_movement_witness_and_body_displacement_inside_checked_water() {
+        let (_, location, retained) = surf_fixture();
+        let (feet, pose, _) = resolve_context(&location, &retained).unwrap();
+        for case in 0..6 {
+            let mut bad = location.clone();
+            let VisualBattleTarget::SurfWater { core_tile, presentation } = &mut bad.target else { panic!() };
+            match case {
+                0 => bad.source.movement = VisualBattleSourceMovement::Normal,
+                1 => bad.source.movement = VisualBattleSourceMovement::SurfPika,
+                2 => *core_tile += IVec2::X,
+                3 => presentation.witnessed_player_foot = None,
+                4 => presentation.witnessed_player_foot = Some(Vec2::splat(f32::NAN)),
+                _ => presentation.step_from_core_tile += IVec2::X,
+            }
+            assert!(WalkingGround::from_context(&bad, &retained, pose).is_err(), "case{case}");
+        }
+        let ground = WalkingGround::from_context(&location, &retained, pose).unwrap().unwrap();
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.5,0.0,-0.5), Vec3::new(0.5,1.0,0.5), 1.0);
+        let layout = BattleSceneLayout::for_anchored_bodies([Some(body);2], feet, Vec2::new(800.0,600.0)).unwrap();
+        let original = layout.body_poses[0].unwrap();
+        assert!(ground.contains(body, original, feet[0].y));
+        let mut far = original;
+        far.translation += layout.source_displacement(Vec2::new(20.0 / crate::battle_layout::SOURCE_PIXEL_WORLD,0.0));
+        assert!(!ground.contains(body, far, feet[0].y), "attack offsets may not cross the approved water boundary");
+        body.visual_bounds = Some((Vec3::new(-16.0,0.0,-0.5),Vec3::new(16.0,1.0,0.5)));
+        assert!(!ground.contains(body, original, feet[0].y), "full animated envelopes cannot be clamped to fit the lake");
+    }
+
     fn trainer_fixture() -> (VisualWorldFrame, VisualBattleLocation, Vec<f32>) {
         let (frame, mut location, heights) = walking_fixture();
         let source = location.source.core_tile;
@@ -1776,7 +1893,7 @@ mod tests {
                 authentic: AuthenticBounds { min: Vec2::new(-18.0, -12.0), max: Vec2::new(22.0, 52.0) },
                 omitted: Vec::new(), objects: HashMap::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
-                walking: None, bodies: [None, None],
+                walking: None, water: false, bodies: [None, None],
             }),
             ..default()
         };

@@ -369,6 +369,9 @@ pub struct BevyShellConfig {
     /// Fresh checked shoreline setup; the ordinary rod input commits the cast.
     #[cfg(feature = "location-tester")]
     pub render_test_fishing_encounter: bool,
+    /// Fresh Route44 shore; ordinary A/Yes mounts Surf, then movement rolls water.
+    #[cfg(feature = "location-tester")]
+    pub render_test_surf_encounter: bool,
     /// Fresh source grass edge; ordinary movement rolls the encounter.
     #[cfg(feature = "location-tester")]
     pub render_test_walking_encounter: bool,
@@ -5638,6 +5641,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walking_encounter = config.render_test_walking_encounter;
     #[cfg(feature = "location-tester")]
+    let render_test_surf_encounter = config.render_test_surf_encounter;
+    #[cfg(feature = "location-tester")]
     let render_test_cave_encounter = config.render_test_cave_encounter;
     #[cfg(feature = "location-tester")]
     let render_test_ice_encounter = config.render_test_ice_encounter;
@@ -5667,7 +5672,7 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter)
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5701,10 +5706,17 @@ pub fn run_bevy_shell(
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
     #[cfg(feature = "location-tester")]
-    let runtime_shell = if render_test_falkner_encounter {
+    let runtime_shell = if render_test_surf_encounter {
+        anyhow::ensure!(!(render_test_battle || render_test_route36_encounter
+            || render_test_fishing_encounter || render_test_walking_encounter
+            || render_test_cave_encounter || render_test_ice_encounter
+            || render_test_gym_encounter || render_test_falkner_encounter),
+            "field and direct battle fixtures are mutually exclusive");
+        prepare_surf_encounter_preview(runtime_shell)?
+    } else if render_test_falkner_encounter {
         anyhow::ensure!(
             !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-                || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter
+                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter
                 || render_test_gym_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
@@ -5712,7 +5724,7 @@ pub fn run_bevy_shell(
     } else if render_test_gym_encounter {
         anyhow::ensure!(
             !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-                || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
+                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
         prepare_gym_encounter_preview(runtime_shell)?
@@ -7351,6 +7363,7 @@ fn apply_visible_shell_smoke_frame(
             button => overworld_buttons.push(button),
         }
     }
+    let overworld_a = overworld_buttons.contains(&GameButton::A);
     let frame = if overworld_buttons.is_empty() {
         None
     } else {
@@ -7370,6 +7383,18 @@ fn apply_visible_shell_smoke_frame(
         // route them through modal UI ownership merely to make tests pass.
         interaction = true;
         execute_last_interaction_script(runtime_shell)?;
+    } else if overworld_a
+        && runtime_shell.player_walk_frame_ticks == 0
+        && runtime_shell.visible_ledge_jump.is_none()
+        && frame.as_ref().is_some_and(|frame| {
+            !overworld_frame_reaches_presentation_boundary(frame)
+                && !overworld_boundary_waits_for_visible_landing(frame, 0, false)
+        })
+    {
+        // Match graphical contextual A after its authoritative overworld tick.
+        // Existing modal ownership ran above; ordinary NPC/script and other
+        // higher-priority source boundaries cannot dispatch a second action.
+        interaction = execute_visible_contextual_field_move(runtime_shell)?;
     }
     Ok(VisibleShellSmokeFrameOutcome { frame, interaction })
 }
@@ -7626,10 +7651,10 @@ fn settle_visible_shell_controller(
             }
         }
         let snapshot = runtime_shell.shell.snapshot()?;
-        // An active battle is a player-owned boundary. Smoke settling may
-        // present the script up to StartBattle, but must not resume the
-        // retained post-battle cursor until a battle result is supplied.
-        if snapshot.battle.is_some() {
+        // A live battle or retained terminal narration owns input. RUN and
+        // final turns can end core battle before their text is revealed; keep
+        // advancing that printer, then await the ordinary acknowledgement.
+        if snapshot.battle.is_some() || !runtime_shell.battle_messages.is_empty() {
             if let Some(message) = runtime_shell.battle_messages.front().cloned()
                 && !visible_battle_message_is_complete(runtime_shell, &message)
             {
@@ -8492,6 +8517,8 @@ include!("bevy_shell/battle_origin.rs");
 include!("bevy_shell/encounter_anchor.rs");
 include!("bevy_shell/fishing_anchor.rs");
 include!("bevy_shell/walking_anchor.rs");
+include!("bevy_shell/surf_anchor.rs");
+include!("bevy_shell/surf_anchor_preview.rs");
 include!("bevy_shell/trainer_anchor.rs");
 include!("bevy_shell/scripted_trainer_anchor.rs");
 include!("bevy_shell/battle_entry.rs");

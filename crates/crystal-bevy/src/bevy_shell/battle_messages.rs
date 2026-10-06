@@ -3888,12 +3888,50 @@ fn snapshot_has_field_move_block_replacement(
     ))
 }
 
+/// Resolve only a contextual prompt's exported pure TX_FAR wrappers. Some
+/// source definitions, including AskSurfText, are outside executable global
+/// roots and therefore have no materialized RuntimeTextSnapshot body.
+fn visible_contextual_field_text_label(
+    label: &str,
+    asm_text: &BTreeMap<String, String>,
+    definitions: Option<&BTreeMap<String, serde_json::Value>>,
+) -> Result<String> {
+    let mut current = label.to_string();
+    let mut visited = BTreeSet::new();
+    for _ in 0..8 {
+        anyhow::ensure!(visited.insert(current.clone()),
+            "contextual field text TX_FAR cycle at {current}");
+        // Preserve direct catalog resolution, including packs without wrappers.
+        if asm_text.contains_key(&current) {
+            return Ok(current);
+        }
+        let commands = definitions.and_then(|definitions| definitions.get(&current))
+            .and_then(serde_json::Value::as_array)
+            .with_context(|| format!("contextual field text {current} has no exported body"))?;
+        anyhow::ensure!(commands.len() == 2
+            && commands[0].get("command").and_then(serde_json::Value::as_str) == Some("text_far")
+            && commands[1].get("command").and_then(serde_json::Value::as_str) == Some("text_end")
+            && commands[1].get("args").and_then(serde_json::Value::as_array).is_some_and(Vec::is_empty),
+            "contextual field text {current} is not a pure TX_FAR wrapper");
+        let args = commands[0].get("args").and_then(serde_json::Value::as_array)
+            .with_context(|| format!("contextual field text {current} has no TX_FAR operand"))?;
+        anyhow::ensure!(args.len() == 1, "contextual field text {current} needs one TX_FAR operand");
+        current = args[0].as_str().filter(|target| !target.is_empty() && target.trim() == *target)
+            .with_context(|| format!("contextual field text {current} has no exact TX_FAR label"))?
+            .to_string();
+    }
+    anyhow::bail!("contextual field text TX_FAR chain exceeds eight bodies")
+}
+
 fn open_visible_contextual_field_move_prompt(
     runtime_shell: &mut BevyRuntimeShell,
     field_move: PartyFieldMove,
     text_label: &str,
 ) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
+    let resolved = visible_contextual_field_text_label(text_label, &snapshot.presentation.asm_text,
+        runtime_shell.shell.runtime().data().global_scripts.as_ref().map(|module| &module.definitions))?;
+    let notice = visible_asm_text(&snapshot, &resolved)?;
     runtime_shell.party_cursor = party_index_for_field_move_rule(
         &snapshot,
         &runtime_shell.shell,
@@ -3912,7 +3950,7 @@ fn open_visible_contextual_field_move_prompt(
         surface_id: "field:move-confirm".to_string(),
         option_index: 0,
     });
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, text_label)?);
+    runtime_shell.field_notice = Some(notice);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }

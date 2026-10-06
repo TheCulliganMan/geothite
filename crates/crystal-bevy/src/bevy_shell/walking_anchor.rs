@@ -303,43 +303,84 @@ fn freeze_visible_walking_anchors(
     frame: Option<&crystal_render_api::VisualWorldFrame>,
     entry_window: bool,
 ) {
-    if bound.capture_attempted {
-        return;
+    if let Some(scene) = freeze_visible_step_source_frame(
+        &bound.origin.source,
+        bound.from,
+        bound.map_size,
+        bound.minimum_snapshot_revision,
+        &mut bound.warm_checked,
+        &mut bound.capture_attempted,
+        None,
+        rendered,
+        frame,
+        entry_window,
+    ) {
+        finish_visible_walking_anchors(bound, scene);
     }
-    let source = &bound.origin.source;
-    if !bound.warm_checked {
-        bound.warm_checked = true;
+}
+
+/// Shared finite renderer correspondence only. Walking and Surf keep separate
+/// source classifiers, state and public targets. The optional actor identity is
+/// an extra Surf witness; walking preserves its existing avatar contract.
+#[cfg(any(test, feature = "voxel-view"))]
+fn freeze_visible_step_source_frame(
+    source: &crate::core::world::session::OverworldSnapshot,
+    from: TilePosition,
+    map_size: UVec2,
+    minimum_snapshot_revision: u64,
+    warm_checked: &mut bool,
+    capture_attempted: &mut bool,
+    required_source_id: Option<&str>,
+    rendered: &RenderedViewport,
+    frame: Option<&crystal_render_api::VisualWorldFrame>,
+    entry_window: bool,
+) -> Option<VisibleFishingSourceFrame> {
+    if *capture_attempted {
+        return None;
+    }
+    if required_source_id.is_some_and(|expected| {
+        !frame.is_some_and(|frame| {
+            frame.actors.iter().any(|actor| {
+                actor.id == crystal_render_api::VisualActorId::Player
+                    && actor.source_id.as_ref() == expected
+            })
+        })
+    }) {
+        *capture_attempted = true;
+        return None;
+    }
+    if !*warm_checked {
+        *warm_checked = true;
         // An initially cold or unrelated renderer cannot be rehabilitated by
         // an arbitrary later same-map frame after encounter commitment.
         if !frame.is_some_and(|frame| {
             frame.active
                 && frame.validate().is_ok()
                 && frame.map_id.as_ref() == source.map_name
-                && frame.source_map_size_core_tiles == Some(bound.map_size)
+                && frame.source_map_size_core_tiles == Some(map_size)
         }) || rendered.map_name.as_deref() != Some(source.map_name.as_str())
-            || ![Some(bound.from), Some(source.tile)].contains(&rendered.tile)
+            || ![Some(from), Some(source.tile)].contains(&rendered.tile)
         {
-            bound.capture_attempted = true;
-            return;
+            *capture_attempted = true;
+            return None;
         }
     }
     if !entry_window {
-        bound.capture_attempted = true;
-        return;
+        *capture_attempted = true;
+        return None;
     }
-    if rendered.tile == Some(bound.from) {
+    if rendered.tile == Some(from) {
         // An exact settled pre-step sprite is already a sufficient witness.
         // Its expected tile comes from this committed StepOutcome.from. The
         // authoritative origin is unchanged, and both eventual support points
         // are resolved inside this genuinely rendered grid. A prior step still
         // interpolating toward `from` cannot claim this branch.
         let mut previous = source.clone();
-        previous.tile = bound.from;
+        previous.tile = from;
         if let Some(scene) =
-            capture_visible_fishing_source_frame(&previous, Some(bound.map_size), rendered, frame)
+            capture_visible_fishing_source_frame(&previous, Some(map_size), rendered, frame)
         {
-            finish_visible_walking_anchors(bound, scene);
-            return;
+            return Some(scene);
         }
         // Only a coherent preceding walk may wait for this step's frame.
         // A missing player or stale terrain/texture/grid is a failed witness,
@@ -347,37 +388,36 @@ fn freeze_visible_walking_anchors(
         let approaching_from = rendered.player_sprite_facing.and_then(|facing| {
             previous.facing = facing;
             let previous_from = crate::core::world::movement::checked_move_by_stride(
-                bound.from,
+                from,
                 visible_opposite_direction(facing),
                 1,
             )?;
             capture_visible_walking_source_frame(
                 &previous,
                 previous_from,
-                bound.map_size,
+                map_size,
                 rendered,
                 frame,
             )
         });
         if approaching_from.is_none() {
-            bound.capture_attempted = true;
+            *capture_attempted = true;
         }
-        return;
+        return None;
     }
     // The destination must belong to this committed snapshot. Wait for its
     // existing classic-world publication, never a desired cache key.
     if rendered.tile != Some(source.tile)
-        || !walking_snapshot_is_current(rendered.snapshot_revision, bound.minimum_snapshot_revision)
+        || !walking_snapshot_is_current(rendered.snapshot_revision, minimum_snapshot_revision)
     {
-        return;
+        return None;
     }
-    bound.capture_attempted = true;
-    let Some(scene) =
-        capture_visible_walking_source_frame(source, bound.from, bound.map_size, rendered, frame)
+    *capture_attempted = true;
+    let Some(scene) = capture_visible_walking_source_frame(source, from, map_size, rendered, frame)
     else {
-        return;
+        return None;
     };
-    finish_visible_walking_anchors(bound, scene);
+    Some(scene)
 }
 
 #[cfg(any(test, feature = "voxel-view"))]
