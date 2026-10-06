@@ -8,6 +8,7 @@ from battle_model_assets import species_paths
 from gengar_glb import read_gengar
 from cyndaquil_glb import read_cyndaquil
 from totodile_glb import read_totodile
+from spearow_glb import read_spearow
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -19,6 +20,7 @@ weighted_skins = {
     models / 'actor_props/battle_cyndaquil.glb': (read_cyndaquil, 30),
     models / 'actor_props/battle_totodile.glb': (read_totodile, 27),
     models / 'battle_species/gengar.glb': (read_gengar, 27),
+    models / 'battle_species/spearow.glb': (read_spearow, 28),
 }
 model_files = sorted([*models.rglob('*.mesh.json'), *models.rglob('*.rig.json'), *models.rglob('*.glb')])
 model_counts = {}

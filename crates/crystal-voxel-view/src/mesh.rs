@@ -37,6 +37,8 @@ mod rocket_plants;
 mod modeled_dungeons;
 #[path = "mesh/gym_scenery.rs"]
 mod gym_scenery;
+#[path = "mesh/violet_gym_pits.rs"]
+mod violet_gym_pits;
 #[path = "mesh/train_station_scenery.rs"]
 mod train_station_scenery;
 #[path = "mesh/modeled_exteriors.rs"]

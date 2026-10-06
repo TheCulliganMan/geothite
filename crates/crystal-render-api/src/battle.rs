@@ -118,6 +118,30 @@ impl BattleFlashMode {
     }
 }
 
+/// Identity of one source-proven complete effect assembly.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct VisualBattleSourceAssembly {
+    /// Source spawn event identity; a reused OAM slot is not an assembly.
+    pub event_index: usize,
+    pub spawn_frame: u16,
+}
+
+/// Placement is admitted only by verified source callback semantics. All
+/// pieces of an assembly retain one mapping; this data never owns a clock.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum VisualBattleSourcePlacement {
+    BattlerLocal {
+        side: VisualBattleSide,
+    },
+    IndependentTransport {
+        from: VisualBattleSide,
+        assembly: VisualBattleSourceAssembly,
+        /// Current, unclipped displayed LCD pivot, after the original turn
+        /// coordinate fix. Clipping must not move this registration point.
+        pivot: Vec2,
+    },
+}
+
 /// A currently visible source object, after source callbacks, framesets,
 /// mirroring, clipping and palette writes. No future spawn event is exposed.
 #[derive(Clone, Debug, PartialEq)]
@@ -133,6 +157,8 @@ pub struct VisualBattleSourceObject {
     /// Normalized source texture crop after clipping to the original LCD.
     /// Texture handles remain shared; this never resizes/reuploads their pixels.
     pub uv_rect: Rect,
+    /// None retains the complete existing source-canvas projection.
+    pub placement: Option<VisualBattleSourcePlacement>,
 }
 
 /// A source BATTLEROBJ copy. This describes presentation only; it never owns

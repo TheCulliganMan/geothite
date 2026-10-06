@@ -6,7 +6,9 @@ mod azalea_gym;
 mod battle_layout;
 mod encounter_terrain;
 mod battle_source_projection;
-pub use battle_source_projection::BattleSourceProjection;
+pub use battle_source_projection::{
+    BattleSourceBodyRegistration, BattleSourceBodyRegistrations, BattleSourceProjection,
+};
 mod barn;
 mod battle_species_models;
 mod pidgeotto_rig;

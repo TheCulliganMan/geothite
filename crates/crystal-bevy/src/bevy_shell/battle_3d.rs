@@ -616,8 +616,10 @@ fn capture_immersive_source_frame_with_capture(
             center: clip.screen.center(),
             size: clip.screen.size(),
             uv_rect: Rect::from_corners(clip.texture.min / size, clip.texture.max / size),
+            placement: immersive_battle_source_placement(animation, &bundle, live),
         });
     }
+    retain_complete_immersive_source_placement(&mut source.objects);
     Ok(source)
 }
 

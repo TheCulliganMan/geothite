@@ -8528,6 +8528,8 @@ include!("bevy_shell/battle_sliding_intro.rs");
 mod projected_source_oam;
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/battle_3d.rs");
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/battle_source_placement.rs");
 include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]

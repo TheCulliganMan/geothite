@@ -1,4 +1,5 @@
-// One global inverse projection for all source OAM slots in the native HUD.
+// A common inverse for each proven source assembly; unknown effects retain
+// the complete global canvas. Pixel ownership is never decided per tile.
 #import bevy_sprite::mesh2d_vertex_output::VertexOutput
 
 struct SourceUniform {

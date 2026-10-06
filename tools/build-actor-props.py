@@ -757,148 +757,22 @@ def chikorita():
  leaf('Sweeping head leaf',(.04,-.12,.77),(.40,.20,1.12),.20,'green');tube('Leaf central vein',[(.04,-.13,.78),(.22,.04,.96),(.40,.20,1.12)],.014,'leaf')
 
 def cyndaquil():
- # A single connected shrew silhouette, with a fitted midnight dorsal coat
- # and folded flame quills. All surfaces are original full 360-degree geometry.
- import bmesh
- PALETTE.update({'cyndaquil_cream':(.94,.83,.56),'cyndaquil_back':(.14,.30,.34),
-  'cyndaquil_ink':(.095,.12,.15),'cyndaquil_ember':(.86,.18,.12),
-  'cyndaquil_flame':(.98,.47,.075),'cyndaquil_gold':(1.,.78,.22)})
- cream='cyndaquil_cream';ink='cyndaquil_ink'
- def mesh_part(name,vertices,faces,color,smooth=True):
+ # The current sculpture is authored as explicit paper panels in a dependency-
+ # free recipe. Import those same panels for a fully editable Blender preview.
+ # The archived refinement .blend preserves the previous detailed clay source.
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from cyndaquil_sculpt import sculpt
+ for part in sculpt()['primitives']:
+  name=part['part'];p=part['positions'];ind=part['indices']
+  vertices=[(p[i],-p[i+2],p[i+1]) for i in range(0,len(p),3)]
+  faces=[tuple(ind[i:i+3]) for i in range(0,len(ind),3)]
   me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
-  bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
-  o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color))
-  for f in me.polygons:f.use_smooth=smooth
-  return o
- def canonical(o):
-  me=o.data;coordinates=[tuple(round(v,7) for v in vert.co) for vert in me.vertices]
-  ordered=sorted(set(coordinates));lookup={v:i for i,v in enumerate(ordered)};remap=[lookup[v] for v in coordinates];faces=[]
-  for f in me.polygons:
-   indices=tuple(remap[i] for i in f.vertices)
-   if len(set(indices))<3:continue
-   faces.append((min(indices[i:]+indices[:i] for i in range(len(indices))),f.use_smooth))
-  faces.sort();new=bpy.data.meshes.new(me.name+' / stable topology');new.from_pydata(ordered,[],[f[0] for f in faces]);new.update()
-  for m in me.materials:new.materials.append(m)
-  for f,source in zip(new.polygons,faces):f.use_smooth=source[1]
-  o.data=new
- def loft(name,profiles,color,seg=24):
-  vertices=[]
-  for x,y,z,w,h in profiles:
-   for i in range(seg):
-    a=math.tau*i/seg;vertices.append((x+w*math.cos(a),y,z+h*math.sin(a)))
-  faces=[tuple(range(seg-1,-1,-1)),tuple(range((len(profiles)-1)*seg,len(profiles)*seg))]
-  for j in range(len(profiles)-1):
-   for i in range(seg):a=j*seg+i;b=j*seg+(i+1)%seg;faces.append((a,b,b+seg,a+seg))
-  return mesh_part(name,vertices,faces,color)
- # The pointed muzzle is lofted into the cheeks; the neck falls into a pear
- # torso, without a bead joint or a separate cylindrical snout.
- clay=[loft('Long continuous tapered shrew muzzle',[
-  (0,-.592,.520,.024,.027),(0,-.550,.523,.047,.040),
-  (0,-.455,.540,.084,.069),(0,-.349,.568,.136,.109),
-  (0,-.243,.601,.198,.150),(0,-.144,.613,.220,.180),
-  (0,-.045,.589,.198,.170),(0,.034,.532,.158,.138)],cream),
-  sphere('Broad connected pear torso',(0,.075,.340),(.226,.230,.293),cream,32,16),
-  sphere('Flowing nape and chest',(0,-.047,.491),(.189,.182,.212),cream,24,12)]
- for s in (-1,1):
-  clay.extend([sphere('Small connected haunch',(s*.141,.101,.166),(.117,.141,.146),cream,20,10),
-   sphere('Grounded long rear paw',(s*.160,.013,.054),(.089,.155,.053),cream,20,10),
-   rod('Short descending forelimb',(s*.181,-.085,.385),(s*.223,-.170,.247),.052,.045,cream,16),
-   sphere('Soft forelimb elbow',(s*.214,-.141,.289),(.052,.052,.084),cream,16,8),
-   sphere('Small rounded forepaw',(s*.223,-.188,.230),(.051,.076,.043),cream,16,8)])
- bpy.ops.object.select_all(action='DESELECT')
- for o in clay:o.select_set(True)
- bpy.context.view_layer.objects.active=clay[0];bpy.ops.object.join();body=bpy.context.object;body.name='Cyndaquil / continuous muzzle head torso and limbs'
- bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
- mod=body.modifiers.new('Connected clay anatomy','REMESH');mod.mode='VOXEL';mod.voxel_size=.009;mod.use_smooth_shade=True;bpy.ops.object.modifier_apply(modifier=mod.name)
- mod=body.modifiers.new('Soft sculpted anatomical transitions','SMOOTH');mod.factor=.52;mod.iterations=4;bpy.ops.object.modifier_apply(modifier=mod.name)
- canonical(body);high_body=body.data.copy();body.data.calc_loop_triangles()
- mod=body.modifiers.new('Bounded sculpture silhouette','DECIMATE');mod.ratio=min(1,3300/len(body.data.loop_triangles));mod.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=mod.name);canonical(body);body.select_set(False)
- # The dorsal coat is a closed thin shell fitted to the actual final body.
- # Ring widths carry the continuous dark cap from brow through rounded rump.
- profiles=[(-.404,.051),(-.345,.106),(-.265,.158),(-.175,.198),(-.075,.173),
-  (.015,.180),(.105,.212),(.192,.189),(.251,.132),(.281,.061)]
- profiles=[(ay+(by-ay)*t,aw+(bw-aw)*t) for (ay,aw),(by,bw) in zip(profiles,profiles[1:]) for t in (0,1/3,2/3)]+[profiles[-1]]
- vertices=[];inside=[];across=28
- for y,w in profiles:
-  for j in range(across+1):
-   x=w*(2*j/across-1);hit,p,n,face=body.ray_cast(Vector((x,y,2)),Vector((0,0,-1)))
-   if not hit:raise ValueError('Cyndaquil dorsal coat missed continuous body')
-   vertices.append(tuple(p+n*.008));inside.append(tuple(p-n*.006))
- n=len(vertices);vertices += inside;faces=[]
- for row in range(len(profiles)-1):
-  for j in range(across):
-   a=row*(across+1)+j;b=a+1;c=b+across+1;d=a+across+1
-   faces.extend([(a,b,c,d),(d+n,c+n,b+n,a+n)])
- perimeter=list(range(across+1))+[r*(across+1)+across for r in range(1,len(profiles))]+list(range(n-2,n-across-2,-1))+[r*(across+1) for r in range(len(profiles)-2,0,-1)]
- for a,b in zip(perimeter,perimeter[1:]+perimeter[:1]):faces.append((a,a+n,b+n,b))
- mesh_part('Fitted midnight brow nape and back',vertices,faces,'cyndaquil_back')
- # Slender, tapered closed eyes rest in the two side cheeks. Their expressive
- # upward sweep reads in front and three-quarter views without raised eyeballs.
- for s in (-1,1):
-  points=[]
-  for x,z in [(.098,.635),(.135,.641),(.170,.653),(.188,.663)]:
-   hit,p,n,face=body.ray_cast(Vector((s*x,-2,z)),Vector((0,1,0)))
-   if not hit:raise ValueError('Cyndaquil eyelid missed cheek')
-   points.append(tuple(p+n*.004))
-  # A closed four-sided ribbon keeps a crisp paper-cut expression and depth.
-  v=[]
-  for i,p in enumerate(points):
-   p=Vector(p);w=[.002,.010,.009,.002][i]
-   v.extend([tuple(p+Vector((0,-.003,w))),tuple(p+Vector((0,-.003,-w))),tuple(p+Vector((0,.006,-w))),tuple(p+Vector((0,.006,w)))])
-  f=[(3,2,1,0),(12,13,14,15)]
-  for j in range(3):
-   for k in range(4):a=j*4+k;b=j*4+(k+1)%4;f.append((a,b,b+4,a+4))
-  mesh_part('Tapered sleepy closed eyelid',v,f,ink,False)
- nose=ico('Small soft charcoal nose',(0,-.595,.521),(.025,.012,.017),ink,2)
- # Five broad folded quills share the back. Each is a closed, asymmetric
- # flame silhouette with an actual central ridge and a tapered outer edge.
- def quill(name,root,tip,width,depth,bend):
-  root=Vector(root);tip=Vector(tip);axis=tip-root;side=Vector((1,0,0));side=(side-axis.normalized()*side.dot(axis.normalized())).normalized()
-  forward=side.cross(axis.normalized()).normalized()
-  if forward.y>0:forward=-forward
-  # Coordinates deliberately articulate a lick, a short shoulder and a long
-  # sweeping tip, so the flame is neither a cone nor a row of equal spikes.
-  outline=[(-.38,.0),(-.94,.24),(-.78,.49),(-.43,.43),(-.36,.72),
-   (bend,1.),(.19,.68),(.63,.53),(.40,.31),(.48,.07)]
-  ring=[root+axis*t+side*(x*width) for x,t in outline]
-  center=root+axis*.41+forward*depth
-  back=root+axis*.41-forward*depth*.58
-  vs=[tuple(p) for p in ring]+[tuple(center),tuple(back)];n=len(ring)
-  fs=[(i,(i+1)%n,n) for i in range(n)]+[((i+1)%n,i,n+1) for i in range(n)]
-  mesh_part(name+' / ember silhouette',vs,fs,'cyndaquil_ember',False)
-  # Smaller closed nested fold volumes sit on the front ridge. These are
-  # sculptural color layers, not billboards or emissive attack effects.
-  for face_label,ridge,outward,thick in [('front',center,forward,depth),('back',back,-forward,depth*.58)]:
-   for label,scale,offset,color in [('orange fold',.82,.002,'cyndaquil_flame'),('golden heart',.51,.004,'cyndaquil_gold')]:
-    nested=[ridge+(p-ridge)*scale+outward*offset for p in ring]
-    peak=ridge+outward*offset
-    inner=ridge-outward*(thick*scale+.002)+outward*offset
-    nv=[tuple(p) for p in nested]+[tuple(peak),tuple(inner)]
-    mesh_part(name+' / '+face_label+' '+label,nv,fs,color,False)
- quill('Upper left flame quill',(-.071,.060,.604),(-.247,.304,1.018),.118,.034,-.12)
- quill('Upper right flame quill',(.071,.060,.604),(.237,.332,.976),.117,.035,.21)
- quill('Lower left flame quill',(-.138,.186,.450),(-.339,.465,.776),.140,.040,-.22)
- quill('Lower right flame quill',(.138,.186,.450),(.333,.488,.752),.141,.040,.22)
- quill('Central rear flame quill',(0,.252,.432),(.024,.587,.891),.142,.041,-.19)
- # Preserve editable detailed anatomy. The high resolution copy and all detail
- # parts get their own true floor root in the same dimensions as runtime.
- detailed=bpy.data.collections.new('battle_cyndaquil / detailed authoring source (hidden)');SCENE.collection.children.link(detailed)
- root=bpy.data.objects.new('battle_cyndaquil / detailed floor root',None);detailed.objects.link(root);root['authoring_only']=True;root['source_family']='battle_cyndaquil'
- copies=[]
- for o in list(COL.objects):
-  if o.type!='MESH':continue
-  canonical(o);source=o.copy();source.data=high_body if o==body else o.data.copy();source.name='AUTHORING / '+o.name;detailed.objects.link(source);source.parent=root;copies.append(source)
-  bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.triangulate(bm,faces=list(bm.faces),quad_method='FIXED',ngon_method='EAR_CLIP');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
-  if bm.calc_volume(signed=True)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
-  bm.to_mesh(o.data);bm.free();o.data.update()
-  for attempt in range(3):
-   bad=[f for f in o.data.polygons if f.use_smooth and f.normal.dot(sum((o.data.corner_normals[i].vector for i in f.loop_indices),Vector()))<.000001]
-   if not bad:break
-   for f in bad:f.use_smooth=False
-   o.data.update()
-  o['authoring']='Original connected Cyndaquil sculpture with fitted dorsal coat and folded volumetric flame quills'
- normalize('battle_cyndaquil',copies)
- detailed.hide_render=True;detailed.hide_viewport=True
+  o=bpy.data.objects.new(name,me);COL.objects.link(o)
+  mat=bpy.data.materials.new(name+' / paper');mat.diffuse_color=part['base_color'];mat.use_nodes=True
+  bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=part['base_color'];bs.inputs['Roughness'].default_value=1.
+  me.materials.append(mat)
+  o['authoring']='Original explicit folded panels; edit tools/cyndaquil_sculpt.py to regenerate canonical runtime geometry'
+  o['skin']='tools/cyndaquil_glb.py; ten rotation-only joints; source-clock-driven idle/attack/hit'
 
 def totodile():
  # One full, floor-rooted sculpture. Broad connected anatomy, an authored
@@ -1184,6 +1058,12 @@ def canonical_primitives(primitives):
  return sorted((canonical_primitive(p) for p in primitives),key=lambda p:json.dumps(p,sort_keys=True,separators=(',',':')))
 
 def export(name,objects):
+ if name=='battle_cyndaquil':
+  from cyndaquil_sculpt import sculpt
+  from cyndaquil_glb import export_cyndaquil
+  data=sculpt();(OUT/(name+'.glb')).write_bytes(export_cyndaquil(data))
+  print(f'{name}: {sum(len(p["indices"])//3 for p in data["primitives"])} triangles, 30 folded-panel assemblies')
+  return
  bpy.context.view_layer.update();primitives=[];tri_count=0
  for o in objects:
   if o.type!='MESH':continue
@@ -1199,16 +1079,16 @@ def export(name,objects):
      idx.append(lookup[key])
    if idx:primitives.append({'positions':pos,'normals':nor,'indices':idx,'base_color':[round(v,6) for v in mat.diffuse_color]});tri_count+=len(idx)//3
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':canonical_primitives(primitives)}
- if name in ('battle_cyndaquil','battle_totodile'):
+ if name=='battle_totodile':
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from cyndaquil_glb import export_cyndaquil
   from totodile_glb import export_totodile
-  blob=(export_cyndaquil if name=='battle_cyndaquil' else export_totodile)(data)
+  blob=export_totodile(data)
   (OUT/(name+'.glb')).write_bytes(blob)
  else:(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
  print(f'{name}: {tri_count} triangles, {len(primitives)} primitives')
 
 def normalize(name,objects):
+ if name=='battle_cyndaquil':return # Exact body-height datum is authored by its panel recipe.
  bpy.context.view_layer.update();corners=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
  lo=Vector(tuple(min(c[a] for c in corners) for a in range(3)));hi=Vector(tuple(max(c[a] for c in corners) for a in range(3)))
  height=HEIGHTS.get(name,.82);scale=height/(hi.z-lo.z)

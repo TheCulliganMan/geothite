@@ -148,6 +148,12 @@ fn build_terrain_mesh_internal(
     for placement in &gym_placements {
         for index in placement.indices(width) { authored_reserved[index] = true; }
     }
+    let violet_pits = if images.is_some() && authored_enabled {
+        violet_gym_pits::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
+    } else { None };
+    if let Some(p) = &violet_pits {
+        for index in p.indices() { authored_reserved[index] = true; }
+    }
     let traditional_room_placements = if images.is_some() && authored_enabled {
         traditional_room::resolve(&frame.map_id, &original_cells, &geometry,
             frame.grid_origin.to_array(), profiles, &authored_reserved)
@@ -445,6 +451,10 @@ fn build_terrain_mesh_internal(
         let appended = gym_scenery::append(&mut mesh, &original_cells, &geometry,
             placement, &mut claimed_by_tree);
         debug_assert!(appended, "validated Gym reservation must append");
+    }
+    if let Some(p) = &violet_pits {
+        let appended = violet_gym_pits::append(&mut mesh, &original_cells, &geometry, p, &mut claimed_by_tree);
+        debug_assert!(appended, "validated Violet recess reservation must append");
     }
     for placement in &traditional_room_placements {
         let appended = traditional_room::append(&mut mesh, &original_cells, &geometry,

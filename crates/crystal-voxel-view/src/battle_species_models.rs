@@ -87,6 +87,13 @@ macro_rules! species_mesh {
     ("gengar") => {
         Some(crate::species_rig::rig(crate::species_rig::Species::Gengar).neutral.clone())
     };
+    ("spearow") => {
+        Some(
+            crate::species_rig::rig(crate::species_rig::Species::Spearow)
+                .neutral
+                .clone(),
+        )
+    };
     ("pidgeotto") => {
         Some(crate::pidgeotto_rig::rig().neutral.clone())
     };

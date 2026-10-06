@@ -369,6 +369,30 @@ impl BattleSceneLayout {
         layout.fit_anchored_camera(&points).then_some(layout)
     }
 
+    /// Stage the pair across the frame at similar depth, while preserving
+    /// physical size, exact support, facing and the full animation envelope.
+    /// The terrain consumer must still prove this camera's complete frustum.
+    pub(crate) fn three_quarter_camera(&self, bodies: [Option<BattleBody>; 2]) -> Option<Self> {
+        let delta = self.origins[1] - self.origins[0];
+        let axis = Vec3::new(delta.x, 0.0, delta.z).try_normalize()?;
+        let mut points = Vec::with_capacity(16);
+        for (body, pose) in bodies.into_iter().zip(self.body_poses) {
+            points.extend(body?.corners(pose?));
+        }
+        if points.iter().any(|point| !point.is_finite()) {
+            return None;
+        }
+        let yaw = 80.0_f32.to_radians();
+        let elevation = 35.0_f32.to_radians();
+        let horizontal = -axis * yaw.cos() + axis.cross(Vec3::Y) * yaw.sin();
+        let back = horizontal * elevation.cos() + Vec3::Y * elevation.sin();
+        let mut candidate = self.clone();
+        candidate.camera = Transform::from_translation(back).looking_at(Vec3::ZERO, Vec3::Y);
+        // The old orientation's fitted distance must not constrain this view.
+        candidate.distance = Self::default().distance;
+        candidate.fit_anchored_camera(&points).then_some(candidate)
+    }
+
     /// A bounded lateral view for an authentic map edge. Only the camera
     /// changes: exact feet, body rotations/scales, and hit anchors stay fixed.
     /// The terrain consumer must independently accept every candidate.
@@ -810,6 +834,61 @@ mod anchored_layout_tests {
                     assert!((dx.length() - dy.length()).abs() < 0.00001);
                     assert!(dx.dot(dy).abs() < 0.00001);
                 }
+            }
+        }
+    }
+
+    #[test]
+    fn three_quarter_view_keeps_support_scale_and_source_canvas_in_each_corridor() {
+        let mut bodies = route36_pair();
+        for body in bodies.iter_mut().flatten() {
+            body.visual_bounds = Some((body.min - Vec3::splat(0.10), body.max + Vec3::splat(0.20)));
+        }
+        for axis in [Vec3::X, Vec3::NEG_X, Vec3::Z, Vec3::NEG_Z] {
+            for viewport in [Vec2::new(800.0, 600.0), Vec2::new(600.0, 1200.0)] {
+                let original = BattleSceneLayout::for_anchored_bodies(
+                    bodies,
+                    [-axis * 4.0, axis * 4.0],
+                    viewport,
+                )
+                .unwrap();
+                let camera = original.three_quarter_camera(bodies).unwrap();
+                assert_eq!(camera.origins, original.origins);
+                assert_eq!(camera.body_poses, original.body_poses);
+                assert_eq!(camera.hit_anchors, original.hit_anchors);
+                assert_eq!(camera.arena_scale, original.arena_scale);
+                assert_eq!(camera, original.three_quarter_camera(bodies).unwrap());
+                let back = camera.camera.rotation * Vec3::Z;
+                assert!((back.y.asin().to_degrees() - 35.0).abs() < 0.0001);
+                let player = camera.project_point(camera.hit_anchors[0], viewport);
+                let enemy = camera.project_point(camera.hit_anchors[1], viewport);
+                assert!(
+                    player.x < enemy.x,
+                    "the pair must retain readable left/right staging"
+                );
+                for (body, pose) in bodies.into_iter().zip(camera.body_poses) {
+                    for point in body.unwrap().corners(pose.unwrap()) {
+                        let uv = camera.project_point(point, viewport);
+                        assert!(
+                            uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= 0.2299 && uv.y <= 0.7501
+                        );
+                    }
+                }
+                let mapping = camera.source_projection(viewport);
+                assert!(
+                    (mapping * Vec3::new(40.0, 72.0, 1.0))
+                        .truncate()
+                        .abs_diff_eq(player, 0.00001)
+                );
+                assert!(
+                    (mapping * Vec3::new(124.0, 32.0, 1.0))
+                        .truncate()
+                        .abs_diff_eq(enemy, 0.00001)
+                );
+                let dx = (mapping * Vec3::X).truncate() * viewport;
+                let dy = (mapping * Vec3::Y).truncate() * viewport;
+                assert!((dx.length() - dy.length()).abs() < 0.00001);
+                assert!(dx.dot(dy).abs() < 0.00001);
             }
         }
     }

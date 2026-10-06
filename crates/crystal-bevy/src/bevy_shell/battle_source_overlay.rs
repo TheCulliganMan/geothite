@@ -7,7 +7,7 @@ use bevy::{
     render::{render_resource::{AsBindGroup, ShaderRef, ShaderType}, view::RenderLayers},
     sprite::{Material2d, Material2dPlugin, MaterialMesh2dBundle},
 };
-use crystal_voxel_view::BattleSourceProjection;
+use crystal_voxel_view::{BattleSourceBodyRegistrations, BattleSourceProjection};
 
 const SOURCE_SLOTS: usize = 10;
 const SOURCE_SHADER: Handle<Shader> = Handle::weak_from_u128(0x94aa7509_6eae_448a_a8a5_72ee8f7f3c29);
@@ -126,8 +126,45 @@ fn slot_frame(projection: BattleSourceProjection, object: &VisualBattleSourceObj
     }))
 }
 
+/// Admit a complete current set, never move only the known pieces of an
+/// uncertain assembly. The shader still samples all pieces through the same
+/// source-pixel inverse within each proven assembly.
+fn registered_frame_projections(
+    source: &crystal_render_api::VisualBattleSourceFrame,
+    bodies: &BattleSourceBodyRegistrations,
+    layout: &crystal_voxel_view::BattleSceneLayout,
+    viewport: Vec2,
+) -> Option<[Option<BattleSourceProjection>; SOURCE_SLOTS]> {
+    use crystal_render_api::VisualBattleSourcePlacement::IndependentTransport;
+    if source.objects.is_empty() || source.objects.len() > SOURCE_SLOTS {
+        return None;
+    }
+    let mut projections = [None; SOURCE_SLOTS];
+    for (index, object) in source.objects.iter().enumerate() {
+        if object.slot >= SOURCE_SLOTS || projections[object.slot].is_some() {
+            return None;
+        }
+        let placement = object.placement?;
+        if let IndependentTransport { assembly, .. } = placement {
+            for previous in &source.objects[..index] {
+                if let Some(IndependentTransport {
+                    assembly: other, ..
+                }) = previous.placement
+                    && assembly == other
+                    && previous.placement != object.placement
+                {
+                    return None;
+                }
+            }
+        }
+        projections[object.slot] = Some(bodies.projection(placement, layout, viewport)?);
+    }
+    Some(projections)
+}
+
 pub(super) fn sync_immersive_battle_source_object_layout(
     layout: Res<crystal_voxel_view::BattleSceneLayout>,
+    registrations: Option<Res<BattleSourceBodyRegistrations>>,
     mut commands: Commands,
     status: Res<crystal_voxel_view::BattleViewStatus>,
     enabled: Res<ImmersiveBattleSourceOverlayEnabled>,
@@ -142,6 +179,12 @@ pub(super) fn sync_immersive_battle_source_object_layout(
 ) {
     let projection = (enabled.enabled && status.active)
         .then(|| BattleSourceProjection::new(&layout, canvas.size)).flatten();
+    let registered = projection.and_then(|_| {
+        registered_frame_projections(
+            frame.source.as_ref()?, registrations.as_deref()?, &layout,
+            canvas.physical_size.as_vec2(),
+        )
+    });
     let mut slots: [Option<SlotFrame>; SOURCE_SLOTS] = std::array::from_fn(|_| None);
     // WOBBLE_SCREEN can move the native camera. Follow it for coverage only;
     // the common screen-space inverse projection never receives BG shake.
@@ -152,7 +195,8 @@ pub(super) fn sync_immersive_battle_source_object_layout(
         let projected = projection.filter(|_| slot.0 < SOURCE_SLOTS && available[slot.0])
             .and_then(|projection| frame.source.as_ref().and_then(|source| source.objects.iter()
                 .find(|object| object.slot == slot.0)).and_then(|object|
-                    slot_frame(projection, object, &canvas, *mode, transform.translation.z)));
+                    slot_frame(registered.as_ref().and_then(|slots| slots[slot.0])
+                        .unwrap_or(projection), object, &canvas, *mode, transform.translation.z)));
         if let Some(projected) = projected {
             if stored.is_none() {
                 commands.entity(entity).insert(ImmersiveBattleSourceObjectLayout(layers.cloned()));
@@ -189,6 +233,72 @@ pub(super) fn sync_immersive_battle_source_object_layout(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn verified_assemblies_share_maps_and_uncertain_sets_fall_back_together() {
+        use crystal_render_api::{VisualBattleSourceAssembly, VisualBattleSourcePlacement};
+        use crystal_voxel_view::BattleSourceBodyRegistration;
+        let layout = crystal_voxel_view::BattleSceneLayout::default();
+        let viewport = Vec2::new(800.0, 600.0);
+        let bodies = BattleSourceBodyRegistrations {
+            viewport, camera: layout.camera,
+            bodies: [
+                Some(BattleSourceBodyRegistration {
+                    source: Rect::new(18.0, 52.0, 64.0, 96.0),
+                    slot: Rect::new(16.0, 48.0, 64.0, 96.0),
+                    view: Rect::new(0.10, 0.35, 0.30, 0.60),
+                }),
+                Some(BattleSourceBodyRegistration {
+                    source: Rect::new(108.0, 18.0, 144.0, 53.0),
+                    slot: Rect::new(96.0, 0.0, 152.0, 56.0),
+                    view: Rect::new(0.77, 0.40, 0.83, 0.48),
+                }),
+            ],
+        };
+        let target = VisualBattleSourcePlacement::BattlerLocal { side: crystal_render_api::VisualBattleSide::Enemy };
+        let object = |slot, center, placement| VisualBattleSourceObject {
+            slot, object_id: Arc::from("VERIFIED_ASSEMBLY"),
+            texture: Handle::weak_from_u128(100), neutral_texture: Handle::weak_from_u128(101),
+            center, size: Vec2::splat(8.0),
+            uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE), placement: Some(placement),
+        };
+        let transit = VisualBattleSourcePlacement::IndependentTransport {
+            from: crystal_render_api::VisualBattleSide::Player,
+            assembly: VisualBattleSourceAssembly { event_index: 4, spawn_frame: 11 },
+            pivot: Vec2::new(80.0, 60.0),
+        };
+        let mut source = VisualBattleSourceFrame {
+            frame: 30, bgp: 0xe4, battler_bgps: [0xe4; 2],
+            battler_palettes: [[[1.0; 4]; 4]; 2],
+            battler_textures: [Handle::default(), Handle::default()],
+            battler_offsets: [Vec2::ZERO; 2], screen_offset: Vec2::ZERO,
+            line_x_offsets: None, line_y_offsets: None, battler_rows: [None; 2],
+            objects: vec![
+                object(0, Vec2::new(112.0, 52.0), target),
+                object(1, Vec2::new(124.0, 52.0), target),
+                object(2, Vec2::new(76.0, 60.0), transit),
+                object(3, Vec2::new(84.0, 60.0), transit),
+            ],
+        };
+        let maps = registered_frame_projections(&source, &bodies, &layout, viewport).unwrap();
+        assert_eq!(maps[0], maps[1], "one target chart preserves burst adjacency");
+        assert_eq!(maps[2], maps[3], "partitioning one projectile must not change its map");
+        let intact = source.clone();
+        if let Some(VisualBattleSourcePlacement::IndependentTransport { ref mut pivot, .. }) = source.objects[3].placement {
+            pivot.x += 1.0;
+        }
+        assert!(registered_frame_projections(&source, &bodies, &layout, viewport).is_none());
+        source = intact.clone();
+        source.objects[1].placement = None;
+        assert!(registered_frame_projections(&source, &bodies, &layout, viewport).is_none());
+        source = intact.clone();
+        source.objects[1].slot = 0;
+        assert!(registered_frame_projections(&source, &bodies, &layout, viewport).is_none());
+        assert!(registered_frame_projections(&intact, &bodies, &layout, viewport * 2.0).is_none());
+        let mut missing = bodies;
+        missing.bodies[1] = None;
+        assert!(registered_frame_projections(&intact, &missing, &layout, viewport).is_none());
+    }
     #[test]
     fn projected_oam_cache_is_fixed_and_palette_modes_only_change_texture() {
         let mut app = App::new();
@@ -212,6 +322,7 @@ mod tests {
             texture: Handle::weak_from_u128(100), neutral_texture: Handle::weak_from_u128(101),
             center: Vec2::new(124.0, 32.0), size: Vec2::splat(8.0),
             uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
+            placement: None,
         };
         let canvas = crystal_render_api::VisualBattleCanvas { size: Vec2::new(800.0,600.0), physical_size: UVec2::new(1600,1200) };
         let projection = BattleSourceProjection::new(&crystal_voxel_view::BattleSceneLayout::default(), canvas.size).unwrap();
@@ -283,12 +394,32 @@ mod tests {
             assert_eq!(world.resource::<Assets<Mesh>>().len(), mesh_count);
             assert_eq!(world.resource::<VisualBattleFrame>().source.as_ref(), Some(&source));
         }
-        // Fully offscreen projection still owns (and hides) its classic
-        // Sprite. It must not pop back into the unprojected LCD layout.
+        // The upper-left source tile partly crosses the viewport corner.
+        // Partial raster coverage must remain visible, never be mistaken for
+        // a wholly offscreen object merely because its center is outside.
         *app.world_mut().resource_mut::<crystal_render_api::VisualBattleCanvas>() =
             crystal_render_api::VisualBattleCanvas { size: Vec2::new(600.0, 900.0), physical_size: UVec2::new(600, 900) };
+        let edge_projection = BattleSourceProjection::new(
+            &crystal_voxel_view::BattleSceneLayout::default(), Vec2::new(600.0, 900.0),
+        ).unwrap();
+        assert!(edge_projection.raster_coverage(
+            Rect::from_center_size(Vec2::new(4.0, 4.0), Vec2::splat(8.0)), UVec2::new(600, 900),
+        ).is_some());
         app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().objects[0].center = Vec2::new(4.0, 4.0);
         app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = true;
+        app.update();
+        assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some());
+        {
+            let world = app.world_mut();
+            assert_eq!(world.query_filtered::<&Visibility, With<SourceOverlaySlot>>().iter(world)
+                .filter(|v| **v == Visibility::Visible).count(), 1);
+        }
+        // A genuinely offscreen source tile still owns (and hides) its classic
+        // Sprite. It must not pop back into the unprojected LCD layout.
+        assert!(edge_projection.raster_coverage(
+            Rect::from_center_size(Vec2::new(156.0, 4.0), Vec2::splat(8.0)), UVec2::new(600, 900),
+        ).is_none());
+        app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().objects[0].center = Vec2::new(156.0, 4.0);
         app.update();
         assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some());
         {

@@ -1,6 +1,7 @@
 //! A render-only arena. Presentation cues come from the production shell's
 //! retained visible scene; this module has no runtime or battle-engine imports.
 use crate::battle_layout::{BattleBody, BattleSceneLayout};
+use crate::{BattleSourceBodyRegistration, BattleSourceBodyRegistrations};
 use crate::encounter_terrain::{self, EncounterTerrain};
 use crate::{VoxelViewSettings, mesh::SurfaceMeshData};
 use bevy::{
@@ -101,6 +102,7 @@ impl Plugin for BattleViewPlugin {
             .init_resource::<BattleViewStatus>()
             .init_resource::<BattleScene>()
             .init_resource::<BattleSceneLayout>()
+            .init_resource::<BattleSourceBodyRegistrations>()
             .init_resource::<capture_bridge::BattleCaptureBridge>()
             .add_systems(Startup, setup_battle_scene)
             .add_systems(
@@ -132,6 +134,7 @@ impl Plugin for BattleViewPlugin {
                     sync_battle_layout,
                     capture_bridge::select_capture_bridge,
                     sync_battle_scene,
+                    sync_battle_source_registration,
                     encounter_terrain::sync,
                     skinning::sync,
                     sync_source_objects,
@@ -401,6 +404,7 @@ struct ActorInstance {
     source_rect: Rect,
     source_opaque_rect: Rect,
     projected_registration: Option<(Vec2, Transform, Rect)>,
+    neutral_effect_registration: Option<(Vec2, Transform, Transform, Rect)>,
     animated: Option<AnimatedActor>,
     skinned: Option<skinning::SkinnedActor>,
 }
@@ -453,7 +457,7 @@ fn actor_mesh(
     vertex_lighting: bool,
     meshes: &mut Assets<Mesh>,
 ) -> (Handle<Mesh>, Option<Vec<[f32; 4]>>) {
-    let neutral = vertex_lighting.then(|| vertex_lit_colors(data, rotation));
+    let neutral = vertex_lighting.then(|| actor_vertex_lit_colors(data, rotation));
     let mut mesh = data.clone().into_mesh();
     if let Some(colors) = &neutral {
         mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors.clone());
@@ -1716,6 +1720,7 @@ fn sync_battle_scene(
                 source_rect: battler.source_rect,
                 source_opaque_rect: battler.source_opaque_rect,
                 projected_registration: None,
+                neutral_effect_registration: None,
                 animated,
                 skinned,
             });
@@ -1905,6 +1910,78 @@ fn sync_battle_scene(
     for (_, mut visibility) in &mut balls {
         visibility.set_if_neq(Visibility::Hidden);
     }
+}
+
+/// Register verified source effects to a stable neutral sculpture. The cached
+/// footprint is independent of idle, attack, palette and clipping changes.
+fn sync_battle_source_registration(
+    layout: Res<BattleSceneLayout>,
+    frame: Res<VisualBattleFrame>,
+    status: Res<BattleViewStatus>,
+    canvas: Res<VisualBattleCanvas>,
+    windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
+    mut scene: ResMut<BattleScene>,
+    mut registrations: ResMut<BattleSourceBodyRegistrations>,
+) {
+    let verified = status.active
+        && frame.active
+        && !frame.use_source_scene
+        && frame.source.as_ref().is_some_and(|source| {
+            !source.objects.is_empty()
+                && source
+                    .objects
+                    .iter()
+                    .all(|object| object.placement.is_some())
+        });
+    if !verified {
+        registrations.set_if_neq(BattleSourceBodyRegistrations::default());
+        return;
+    }
+    let viewport = windows
+        .get_single()
+        .map_or(canvas.physical_size.as_vec2(), |window| {
+            Vec2::new(
+                window.physical_width() as f32,
+                window.physical_height() as f32,
+            )
+        });
+    if !viewport.is_finite() || viewport.min_element() <= 0.0 {
+        registrations.set_if_neq(BattleSourceBodyRegistrations::default());
+        return;
+    }
+    let bodies = std::array::from_fn(|index| {
+        let data = scene.actors[index]
+            .as_ref()
+            .filter(|actor| actor.key.modeled)
+            .and_then(|actor| scene.species_meshes.get(&actor.key.species))
+            .cloned()
+            .flatten()?;
+        let actor = scene.actors[index].as_mut()?;
+        let view = if let Some((_, _, _, bounds)) =
+            actor
+                .neutral_effect_registration
+                .filter(|(size, camera, pose, _)| {
+                    *size == viewport && *camera == layout.camera && *pose == actor.base_pose
+                }) {
+            bounds
+        } else {
+            let bounds =
+                projected_actor_footprint(&layout, &data.positions, actor.base_pose, viewport);
+            actor.neutral_effect_registration =
+                Some((viewport, layout.camera, actor.base_pose, bounds));
+            bounds
+        };
+        Some(BattleSourceBodyRegistration {
+            source: actor.source_opaque_rect,
+            slot: actor.source_rect,
+            view,
+        })
+    });
+    registrations.set_if_neq(BattleSourceBodyRegistrations {
+        bodies,
+        viewport,
+        camera: layout.camera,
+    });
 }
 
 /// Register source row identity to the sculpture's projected opaque footprint.
@@ -2100,6 +2177,24 @@ fn source_model_color(
 /// a rough-surface BRDF for every covered pixel on software renderers. The
 /// source mesh and its normals remain unchanged, including during LCD waves.
 fn vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
+    diffuse_vertex_colors(data, rotation, [0.18, 0.20, 0.23], 0.72, 0.16)
+}
+
+/// A soft studio fill keeps shaded paper faces readable against the actual
+/// encounter terrain. Bake only on actor creation; move palettes still replace
+/// these neutral colors through the unchanged source-flash path. Arena/ball
+/// lighting keeps its established values and hardware PBR is unaffected.
+fn actor_vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
+    diffuse_vertex_colors(data, rotation, [0.30, 0.31, 0.33], 0.60, 0.22)
+}
+
+fn diffuse_vertex_colors(
+    data: &SurfaceMeshData,
+    rotation: Quat,
+    ambient: [f32; 3],
+    key_strength: f32,
+    fill_strength: f32,
+) -> Vec<[f32; 4]> {
     let key = Vec3::new(6.0, 12.0, 8.0).normalize();
     let fill = Vec3::new(-5.0, 7.0, -3.0).normalize();
     data.colors
@@ -2107,12 +2202,12 @@ fn vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
         .zip(&data.normals)
         .map(|(color, normal)| {
             let normal = rotation * Vec3::from_array(*normal);
-            let diffuse = normal.dot(key).max(0.0) * 0.72;
-            let fill = normal.dot(fill).max(0.0) * 0.16;
+            let diffuse = normal.dot(key).max(0.0) * key_strength;
+            let fill = normal.dot(fill).max(0.0) * fill_strength;
             [
-                color[0] * (0.18 + diffuse + fill),
-                color[1] * (0.20 + diffuse * 0.96 + fill),
-                color[2] * (0.23 + diffuse * 0.88 + fill),
+                color[0] * (ambient[0] + diffuse + fill),
+                color[1] * (ambient[1] + diffuse * 0.96 + fill),
+                color[2] * (ambient[2] + diffuse * 0.88 + fill),
                 color[3],
             ]
         })
@@ -3402,6 +3497,56 @@ mod tests {
     }
 
     #[test]
+    fn actor_fill_reveals_shaded_faces_without_flattening_paper_planes() {
+        let data = SurfaceMeshData {
+            positions: vec![[0.0, 0.0, 0.0]; 6],
+            normals: [Vec3::Y, -Vec3::Y, Vec3::X, -Vec3::X, Vec3::Z, -Vec3::Z]
+                .map(|normal| normal.to_array())
+                .to_vec(),
+            colors: vec![[0.8, 0.4, 0.2, 0.7]; 6],
+            ..default()
+        };
+        let original = data.clone();
+        for rotation in [Quat::IDENTITY, Quat::from_rotation_y(PI)] {
+            let previous = vertex_lit_colors(&data, rotation);
+            let filled = actor_vertex_lit_colors(&data, rotation);
+            for (before, after) in previous.iter().zip(&filled) {
+                assert_eq!(after[3], before[3]);
+                assert!(after[..3].iter().all(|value| value.is_finite()));
+                assert!(after[0] > before[0], "both opposed actors gain readable fill");
+            }
+            let top_gain = filled[0][0] / previous[0][0];
+            let underside_gain = filled[1][0] / previous[1][0];
+            assert!(underside_gain > top_gain, "lift shade more than highlights");
+            assert!(top_gain < 1.15, "do not overexpose the lit paper planes");
+            assert!(filled[0][0] > filled[1][0] * 2.0, "retain directional volume");
+        }
+        assert_eq!(data, original, "lighting never changes authored mesh data");
+    }
+
+    #[test]
+    fn actor_fill_keeps_black_ink_and_exact_full_source_flashes() {
+        let data = SurfaceMeshData {
+            positions: vec![[0.0, 0.0, 0.0]; 2],
+            normals: vec![[0.0, 1.0, 0.0]; 2],
+            colors: vec![[0.0, 0.0, 0.0, 0.7], [0.8, 0.4, 0.2, 0.7]],
+            ..default()
+        };
+        let lit = actor_vertex_lit_colors(&data, Quat::IDENTITY);
+        assert_eq!(lit[0], [0.0, 0.0, 0.0, 0.7]);
+        for mapped in [[0.0, 0.0, 0.0, 0.7], [1.0, 1.0, 1.0, 0.7]] {
+            assert_eq!(source_lit_color(lit[1], mapped, 0x00, BattleFlashMode::Full), mapped);
+            assert_eq!(source_lit_color(lit[1], mapped, 0xe4, BattleFlashMode::Full), lit[1]);
+            let reduced = source_lit_color(lit[1], mapped, 0x00, BattleFlashMode::Reduced);
+            for channel in 0..3 {
+                assert!(reduced[channel] > lit[1][channel].min(mapped[channel]));
+                assert!(reduced[channel] < lit[1][channel].max(mapped[channel]));
+            }
+            assert_eq!(reduced[3], 0.7);
+        }
+    }
+
+    #[test]
     fn stable_battle_frames_do_not_modify_material_assets() {
         let mut app = headless_battle_app();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
@@ -3597,6 +3742,98 @@ mod tests {
     }
 
     #[test]
+    fn verified_effect_registration_caches_neutral_geometry_and_resets_with_the_scene() {
+        let mut app = headless_battle_app();
+        let window = app
+            .world_mut()
+            .spawn((
+                Window {
+                    resolution: (800.0, 600.0).into(),
+                    ..default()
+                },
+                bevy::window::PrimaryWindow,
+            ))
+            .id();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let player = frame.battlers[0].as_mut().unwrap();
+            player.source_rect = Rect::new(16.0, 48.0, 64.0, 96.0);
+            player.source_opaque_rect = Rect::new(18.0, 52.0, 64.0, 96.0);
+            let enemy = frame.battlers[1].as_mut().unwrap();
+            enemy.species_id = Arc::from("SPEAROW");
+            enemy.pokedex_size_m = Some(0.3048);
+            enemy.source_opaque_rect = Rect::new(108.0, 18.0, 144.0, 53.0);
+            let mut source = source_test_frame(0xe4);
+            source.battler_offsets = [Vec2::ZERO; 2];
+            source.objects[0].placement = Some(
+                crystal_render_api::VisualBattleSourcePlacement::BattlerLocal {
+                    side: VisualBattleSide::Enemy,
+                },
+            );
+            frame.source = Some(source);
+        }
+        app.update();
+        let registration = app
+            .world()
+            .resource::<BattleSourceBodyRegistrations>()
+            .clone();
+        assert!(registration.bodies.iter().all(Option::is_some));
+        assert_eq!(registration.viewport, Vec2::new(800.0, 600.0));
+        let cached = |app: &App| {
+            app.world()
+                .resource::<BattleScene>()
+                .actors
+                .each_ref()
+                .map(|actor| actor.as_ref().unwrap().neutral_effect_registration)
+        };
+        let initial_cache = cached(&app);
+        assert!(initial_cache.iter().all(Option::is_some));
+        let counts = |app: &App| {
+            (
+                app.world().resource::<Assets<Mesh>>().len(),
+                app.world().resource::<Assets<Image>>().len(),
+                app.world().resource::<Assets<StandardMaterial>>().len(),
+            )
+        };
+        let initial_assets = counts(&app);
+        for tick in 1..24 {
+            let before = {
+                let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+                let source = frame.source.as_mut().unwrap();
+                source.frame = tick;
+                source.objects[0].center.x += 1.0;
+                source.battler_bgps = if tick % 2 == 0 { [0xe4; 2] } else { [0x1b; 2] };
+                frame.clone()
+            };
+            app.update();
+            assert_eq!(app.world().resource::<VisualBattleFrame>(), &before);
+            assert_eq!(
+                app.world().resource::<BattleSourceBodyRegistrations>(),
+                &registration
+            );
+            assert_eq!(cached(&app), initial_cache);
+            assert_eq!(counts(&app), initial_assets);
+        }
+        app.world_mut()
+            .get_mut::<Window>(window)
+            .unwrap()
+            .resolution
+            .set(1000.0, 700.0);
+        app.update();
+        let resized = app.world().resource::<BattleSourceBodyRegistrations>();
+        assert_eq!(resized.viewport, Vec2::new(1000.0, 700.0));
+        assert_ne!(resized, &registration);
+        assert!(resized.bodies.iter().all(Option::is_some));
+        assert_eq!(counts(&app), initial_assets);
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
+        app.update();
+        assert_eq!(
+            app.world().resource::<BattleSourceBodyRegistrations>(),
+            &BattleSourceBodyRegistrations::default()
+        );
+    }
+
+    #[test]
     fn unchanged_source_frame_holds_camera_and_idle_actor_poses() {
         let mut app = headless_battle_app();
         app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
@@ -3709,6 +3946,7 @@ mod tests {
                 center: Vec2::new(92.0, 68.0),
                 size: Vec2::splat(16.0),
                 uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
+                placement: None,
             }],
         }
     }

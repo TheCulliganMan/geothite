@@ -174,6 +174,48 @@ fn gengar_instances_share_bind_assets_but_have_independent_live_joints() {
     assert_pair_gpu(app);
 }
 
+#[test]
+fn spearow_instances_activate_generic_gpu_skinning_at_pack_size() {
+    let mut app = pair_app(60);
+    for battler in app
+        .world_mut()
+        .resource_mut::<VisualBattleFrame>()
+        .battlers
+        .iter_mut()
+        .flatten()
+    {
+        battler.species_id = Arc::from("SPEAROW");
+        battler.pokedex_size_m = Some(0.3048);
+    }
+    app.update();
+    app.update();
+    let world = app.world();
+    let layout = world.resource::<BattleSceneLayout>();
+    let scene = world.resource::<BattleScene>();
+    let mut bind_handles = Vec::new();
+    for (side, actor) in scene.actors.iter().enumerate() {
+        let actor = actor.as_ref().unwrap();
+        let skin = actor.skinned.as_ref().expect("Spearow must be articulated");
+        assert_eq!(skin.rig.species, Species::Spearow);
+        assert_eq!(skin.joints.len(), 10);
+        let component = world.get::<SkinnedMesh>(actor.entity).unwrap();
+        bind_handles.push(component.inverse_bindposes.clone());
+        let pose = world.get::<Transform>(actor.entity).unwrap();
+        let (min, max) = skin.rig.neutral_bounds;
+        assert!(
+            ((max.y - min.y) * pose.scale.y / crate::battle_layout::WORLD_UNITS_PER_METER - 0.3048)
+                .abs()
+                < 0.000001
+        );
+        assert_eq!(pose.scale, Vec3::splat(pose.scale.y));
+        assert!(
+            (pose.transform_point(Vec3::Y * min.y).y - layout.origins[side].y).abs() < 0.000001
+        );
+    }
+    assert_eq!(bind_handles[0], bind_handles[1]);
+    assert_pair_gpu(app);
+}
+
 fn assert_pair_gpu(mut app: App) {
     let world = app.world();
     let scene = world.resource::<BattleScene>();

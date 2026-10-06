@@ -17,6 +17,7 @@ use std::collections::HashMap;
 mod walking_ground;
 mod retained_correspondence;
 mod water_stance;
+mod floor_palette;
 use walking_ground::WalkingGround;
 
 const BATTLE_LAYER: usize = 29;
@@ -26,6 +27,24 @@ const RETAINED_SCALE: f32 = 1.0 / 16.0;
 const SOURCE_CELL_SIZE: f32 = 32.0;
 const BORDER_MARGIN: f32 = 0.25;
 const RESIDUAL_OPACITY: f32 = 0.20;
+
+fn camera_trial_requested(value: Option<&str>) -> bool {
+    value == Some("1")
+}
+
+fn camera_trial_enabled() -> bool {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+        *ENABLED.get_or_init(|| {
+            camera_trial_requested(std::env::var("CRYSTAL_BATTLE_CAMERA_TRIAL").ok().as_deref())
+        })
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        false
+    }
+}
 
 fn trace(message: std::fmt::Arguments<'_>) {
     #[cfg(not(target_arch = "wasm32"))]
@@ -273,10 +292,31 @@ impl EncounterTerrain {
         bodies: [Option<BattleBody>; 2],
         viewport: Vec2,
     ) -> bool {
+        self.constrain_layout_with_trial(layout, bodies, viewport, camera_trial_enabled())
+    }
+
+    fn constrain_layout_with_trial(
+        &mut self,
+        layout: &mut BattleSceneLayout,
+        bodies: [Option<BattleBody>; 2],
+        viewport: Vec2,
+        trial: bool,
+    ) -> bool {
+        // The lower composition has native Ember evidence, but has not been
+        // reviewed against every source move's projection. Keep ordinary play
+        // on the established camera; an explicit native startup flag enables
+        // the experiment through the exact same terrain/body/frustum proofs.
+        if trial
+            && let Some(mut candidate) = layout.three_quarter_camera(bodies)
+            && self.constrain_camera(&mut candidate, bodies, viewport)
+        {
+            *layout = candidate;
+            return true;
+        }
         if self.constrain_camera(layout, bodies, viewport) {
             return true;
         }
-        // Keep a valid primary view exactly unchanged. At an authentic map
+        // Keep the existing primary and edge views as conservative fallbacks. At an authentic map
         // edge, try at most two fixed lateral views through the identical
         // proof below. Missing floor, scale or omitted geometry never relaxes.
         for clockwise in [false, true] {
@@ -912,6 +952,20 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         // battle reveal is computed from this encounter camera independently.
         material.base.alpha_mode = AlphaMode::Opaque;
         material_copies.insert(key, material);
+    }
+    // The encounter owns this atlas copy. A narrowly proven floor grade makes
+    // the bright repeating gym floor recede without repainting source art,
+    // props, pits, actors or move effects. Use the actual built grid rather
+    // than a shifted live frame or the earlier encounter witness.
+    if let Some(built) = cache.built_frame.as_ref() {
+        if let Some(atlas) = image_copies.get_mut(&built.map_texture.id()) {
+            let graded = floor_palette::grade_violet_floor(
+                built, cache.built_profiles.as_deref(), atlas,
+            );
+            if graded != 0 {
+                trace(format_args!("encounter-owned Violet floor grade: {graded} source cells"));
+            }
+        }
     }
     let image_handles: HashMap<_, _> = image_copies
         .into_iter()
@@ -1900,6 +1954,18 @@ mod tests {
         let mut layout = primary.clone();
         assert!(!state.constrain_camera(&mut layout, bodies, viewport));
         assert_eq!(layout, primary);
+        // Exercise the existing 75-degree fallback directly even when the
+        // preferred lower view also fits this fixture's authentic bounds.
+        let mut side_accepted = false;
+        for clockwise in [false, true] {
+            let mut side = primary.side_camera(bodies, clockwise).unwrap();
+            if state.constrain_camera(&mut side, bodies, viewport) {
+                side_accepted = true;
+                assert_eq!(side.body_poses, primary.body_poses);
+                assert_eq!(side.hit_anchors, primary.hit_anchors);
+            }
+        }
+        assert!(side_accepted);
         assert!(state.constrain_layout(&mut layout, bodies, viewport), "{:?}", state.reason());
         assert_ne!(layout.camera, primary.camera);
         assert_eq!(layout.origins, primary.origins);
@@ -1928,8 +1994,24 @@ mod tests {
             min: Vec2::splat(-100.0), max: Vec2::splat(100.0),
         };
         let mut ordinary = primary.clone();
-        assert!(state.constrain_layout(&mut ordinary, bodies, viewport));
-        assert_eq!(ordinary.camera, primary.camera, "an already valid primary view must stay exact");
+        assert!(state.constrain_layout_with_trial(&mut ordinary, bodies, viewport, false));
+        assert_eq!(ordinary.camera, primary.camera, "ordinary play keeps the established camera");
+        assert_eq!(ordinary.body_poses, primary.body_poses);
+        assert_eq!(ordinary.hit_anchors, primary.hit_anchors);
+        let mut trial = primary.clone();
+        assert!(state.constrain_layout_with_trial(&mut trial, bodies, viewport, true));
+        let preferred = primary.three_quarter_camera(bodies).unwrap();
+        assert_eq!(trial.camera, preferred.camera, "the explicit trial uses the proven lower view");
+        assert_eq!(trial.body_poses, primary.body_poses);
+        assert_eq!(trial.hit_anchors, primary.hit_anchors);
+    }
+
+    #[test]
+    fn experimental_camera_requires_the_exact_explicit_startup_flag() {
+        for value in [None, Some(""), Some("0"), Some("false"), Some("true"), Some("01")] {
+            assert!(!camera_trial_requested(value));
+        }
+        assert!(camera_trial_requested(Some("1")));
     }
 
     #[test]

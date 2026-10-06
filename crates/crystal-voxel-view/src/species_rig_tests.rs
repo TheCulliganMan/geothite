@@ -4,10 +4,13 @@ use std::{path::PathBuf, sync::OnceLock};
 
 fn candidate(species: Species) -> Vec<u8> {
     let key = format!("{}_GLB", species.name().to_uppercase());
-    let canonical = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(if species == Species::Gengar {
-        "models/battle_species/gengar.glb".to_string()
-    } else {
-        format!("models/actor_props/battle_{}.glb", species.name())
+    let canonical = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(match species {
+        Species::Cyndaquil | Species::Totodile => {
+            format!("models/actor_props/battle_{}.glb", species.name())
+        }
+        Species::Gengar | Species::Spearow => {
+            format!("models/battle_species/{}.glb", species.name())
+        }
     });
     let path = std::env::var_os(key)
         .map(PathBuf::from)
@@ -19,10 +22,12 @@ fn fixture(species: Species) -> &'static SpeciesRig {
     static CYNDAQUIL: OnceLock<SpeciesRig> = OnceLock::new();
     static TOTODILE: OnceLock<SpeciesRig> = OnceLock::new();
     static GENGAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static SPEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
         Species::Cyndaquil => &CYNDAQUIL,
         Species::Totodile => &TOTODILE,
         Species::Gengar => &GENGAR,
+        Species::Spearow => &SPEAROW,
     };
     cache.get_or_init(|| {
         SpeciesRig::parse(species, &candidate(species)).expect("authored skin parses")
@@ -53,9 +58,10 @@ fn assert_bits(a: impl Iterator<Item = f32>, b: impl Iterator<Item = f32>) {
 #[test]
 fn species_schema_retains_anatomy_skin_order_and_physical_size() {
     for (species, vertices, triangles, height) in [
-        (Species::Cyndaquil, 5128, 7180, 0.91_f32),
+        (Species::Cyndaquil, 4506, 2086, 0.91_f32),
         (Species::Totodile, 5714, 6374, 1.02_f32),
         (Species::Gengar, 6952, 5560, 1.05_f32),
+        (Species::Spearow, 2139, 1929, 0.75_f32),
     ] {
         let rig = fixture(species);
         assert_eq!(rig.species, species);
@@ -92,6 +98,173 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
                 Vec3::from_array(source).normalize().to_array().into_iter(),
                 normal.into_iter(),
             );
+        }
+    }
+}
+
+#[test]
+fn spearow_lookup_keeps_canonical_geometry_and_authored_clip_data() {
+    let rig = fixture(Species::Spearow);
+    for name in ["SPEAROW", "spearow", "SpEaRoW"] {
+        let registered = for_species(name).expect("Spearow uses the generic skin runtime");
+        assert!(std::ptr::eq(registered, super::rig(Species::Spearow)));
+        assert_eq!(registered.neutral, rig.neutral);
+        assert_eq!(
+            crate::battle_species_models::mesh(name).unwrap(),
+            rig.neutral
+        );
+    }
+    assert_eq!(rig.neutral_bounds.0, Vec3::new(-0.368, 0.0, -0.425));
+    assert_eq!(rig.neutral_bounds.1, Vec3::new(0.368, 0.75, 0.425));
+
+    let bytes = candidate(Species::Spearow);
+    let gltf = gltf::Gltf::from_slice(&bytes).unwrap();
+    let binary = gltf.blob.as_deref().unwrap();
+    for ((animation, kind), (duration, keys)) in
+        gltf.animations()
+            .zip(Clip::ALL)
+            .zip([(2.8_f32, 73), (1.0, 65), (1.0, 65)])
+    {
+        let clip = rig.clip(kind);
+        assert_eq!(clip.duration, duration);
+        assert_eq!(clip.times.len(), keys);
+        assert_eq!(clip.extras, animation.extras().as_ref().unwrap().get());
+        for channel in animation.channels() {
+            let reader = channel.reader(|_| Some(binary));
+            assert_bits(reader.read_inputs().unwrap(), clip.times.iter().copied());
+            let Some(gltf::animation::util::ReadOutputs::Rotations(rotations)) =
+                reader.read_outputs()
+            else {
+                panic!("Spearow clip must retain rotation channels");
+            };
+            assert_bits(
+                rotations.into_f32().flatten(),
+                clip.rotations[channel.target().node().index() - 1]
+                    .iter()
+                    .flat_map(|q| q.to_array()),
+            );
+        }
+    }
+}
+
+#[test]
+fn spearow_each_joint_deforms_its_anatomy_while_feet_stay_planted() {
+    let rig = fixture(Species::Spearow);
+    let feet: Vec<_> = rig
+        .anatomy
+        .iter()
+        .filter(|part| part.name.starts_with("Feet /"))
+        .collect();
+    assert_eq!(feet.len(), 4);
+    let feet: Vec<_> = feet.iter().flat_map(|part| part.vertices.clone()).collect();
+    for &vertex in &feet {
+        assert_eq!(rig.joint_indices[vertex], [0; 4]);
+        assert_eq!(rig.joint_weights[vertex], [1.0, 0.0, 0.0, 0.0]);
+    }
+    let bind: Vec<_> = rig.joints.iter().map(|joint| joint.bind).collect();
+    let (mut pose, mut matrices) = storage(rig);
+    for clip in Clip::ALL {
+        let mut peak_angles = vec![0.0_f32; rig.joints.len()];
+        let mut peak_rotations = vec![Quat::IDENTITY; rig.joints.len()];
+        let frames = (rig.clip(clip).duration * 60.0).ceil() as usize;
+        for frame in 0..=frames {
+            rig.sample_into(
+                clip,
+                rig.clip(clip).duration * frame as f32 / frames as f32,
+                Playback::Clamp,
+                &mut pose,
+            )
+            .unwrap();
+            assert_eq!(pose[0], Transform::IDENTITY);
+            for joint in 1..pose.len() {
+                let angle = pose[joint].rotation.angle_between(bind[joint].rotation);
+                if angle > peak_angles[joint] {
+                    peak_angles[joint] = angle;
+                    peak_rotations[joint] = pose[joint].rotation;
+                }
+            }
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            for &vertex in &feet {
+                assert_vec_close(
+                    rig.skin_point(vertex, &matrices),
+                    Vec3::from_array(rig.neutral.positions[vertex]),
+                    0.000001,
+                );
+            }
+        }
+        for joint in 1..rig.joints.len() {
+            assert!(
+                peak_angles[joint] > 0.01,
+                "{} lacks local articulation of {}",
+                rig.clip(clip).name,
+                rig.joints[joint].name
+            );
+            // Isolate this joint's own rotation. An ancestor or whole-body
+            // motion cannot satisfy the anatomical displacement requirement.
+            pose.copy_from_slice(&bind);
+            pose[joint].rotation = peak_rotations[joint];
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            let displacement = (0..rig.neutral.positions.len())
+                .filter(|&vertex| {
+                    rig.joint_indices[vertex]
+                        .iter()
+                        .zip(rig.joint_weights[vertex])
+                        .any(|(&id, weight)| id as usize == joint && weight > 0.0)
+                })
+                .map(|vertex| {
+                    rig.skin_point(vertex, &matrices)
+                        .distance(Vec3::from_array(rig.neutral.positions[vertex]))
+                })
+                .fold(0.0_f32, f32::max);
+            assert!(
+                displacement > 0.0005,
+                "{} does not move the geometry owned by {}: {displacement}",
+                rig.clip(clip).name,
+                rig.joints[joint].name
+            );
+        }
+    }
+}
+
+#[test]
+fn spearow_pack_scale_and_contact_ignore_animation_envelope() {
+    use crate::battle_layout::{
+        model_scale, reference_span, BattleBody, BattleSceneLayout, WORLD_UNITS_PER_METER,
+    };
+    use bevy::prelude::Vec2;
+
+    let rig = fixture(Species::Spearow);
+    let (min, max) = rig.neutral_bounds;
+    assert_eq!(reference_span("SPEAROW", min, max), 0.75);
+    assert!(model_scale("SPEAROW", None, min, max).is_none());
+    // The current pack supplies 0.3048 m. Also check another supplied value
+    // so a hidden per-species constant cannot satisfy the physical-size test.
+    for meters in [0.3048_f32, 0.6096] {
+        let scale = model_scale("SPEAROW", Some(meters), min, max).unwrap();
+        assert!(((max.y - min.y) * scale / WORLD_UNITS_PER_METER - meters).abs() < 0.000001);
+        let neutral = BattleBody::modeled("SPEAROW", min, max, scale);
+        let mut animated = neutral;
+        animated.visual_bounds = Some(rig.animated_bounds);
+        for viewport in [Vec2::new(1180.0, 812.0), Vec2::new(600.0, 1000.0)] {
+            let before = BattleSceneLayout::for_bodies([Some(neutral); 2], viewport);
+            let after = BattleSceneLayout::for_bodies([Some(animated); 2], viewport);
+            for side in 0..2 {
+                let pose = after.body_poses[side].unwrap();
+                assert_eq!(pose.scale, Vec3::splat(scale));
+                assert_eq!(pose.scale, before.body_poses[side].unwrap().scale);
+                assert_eq!(
+                    pose.translation.y,
+                    before.body_poses[side].unwrap().translation.y
+                );
+                assert_eq!(after.hit_anchors[side].y, before.hit_anchors[side].y);
+                let contact_y = rig
+                    .neutral
+                    .positions
+                    .iter()
+                    .map(|point| pose.transform_point(Vec3::from_array(*point)).y)
+                    .fold(f32::INFINITY, f32::min);
+                assert!((contact_y - after.origins[side].y).abs() < 0.000001);
+            }
         }
     }
 }
@@ -421,7 +594,9 @@ fn parser_rejects_nonfinite_keys_bad_weights_invalid_binds_and_changed_geometry(
 #[test]
 #[ignore = "one-time migration audit: set CYNDAQUIL_MESH_SOURCE, TOTODILE_MESH_SOURCE and GENGAR_MESH_SOURCE to retired source JSON"]
 fn exact_neutral_equivalence_to_surviving_source_json() {
-    for species in Species::ALL {
+    // These three assets migrated unchanged from JSON. Spearow's canonical
+    // sculpture was authored directly as GLB and has no equivalent JSON asset.
+    for species in [Species::Cyndaquil, Species::Totodile, Species::Gengar] {
         let rig = fixture(species);
         let path = std::env::var(format!("{}_MESH_SOURCE", species.name().to_uppercase()))
             .expect("source path required");

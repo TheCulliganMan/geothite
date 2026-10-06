@@ -702,7 +702,7 @@ def papercraft_pidgeotto():
   name='Head crest'+('' if index==0 else '.'+str(index).zfill(3))
   part(name,[folded(crest,.015)],red if side==0 else 'pidgeotto_red_dark')
 
-@register('PIDGEOTTO PIDGEOT SPEAROW FEAROW FARFETCH_D MURKROW DELIBIRD',1.10)
+@register('PIDGEOTTO PIDGEOT FEAROW FARFETCH_D MURKROW DELIBIRD',1.10)
 def birds(n):
  if n=='PIDGEOTTO':papercraft_pidgeotto();return
  fear=n=='FEAROW';murk=n=='MURKROW';deli=n=='DELIBIRD';c='navy' if murk else ('red' if deli else 'brown');sph('Bird body',(0,.03,.42),(.23,.21,.31),c);sph('Light breast',(0,-.155,.43),(.18,.055,.23),'white' if deli else ('brown' if murk else 'cream'));hz=.97 if fear else .77
@@ -1565,6 +1565,12 @@ def psychic_cats(n):
  tube('Long curved psychic tail',[(0,.14,.28),(0,.40,.29),(.24,.63,.52),(.43,.48,.89),(.39,.27,1.14)],[.115 if large else .04,.10 if large else .035,.065 if large else .025,.05 if large else .018,.03 if large else .014],'purple' if large else 'pink')
  if large:tube('Back neck tube',[(0,.11,.73),(0,.24,.85),(0,.13,1.03)],.036,'lilac')
 
+# Spearow has its own compact canonical GLB recipe. It is emitted before
+# Blender batching and never recreated as a generic bird or duplicate .blend.
+@register('SPEAROW', .75)
+def papercraft_spearow(n):
+ raise RuntimeError('Spearow is exported by its canonical GLB recipe before Blender batching')
+
 # All 220 complementary exact species have explicit authored builders.
 HEIGHTS.update({
  'mew':.78,'mewtwo':1.45,'dragonite':1.40,'aerodactyl':1.30,
@@ -1630,6 +1636,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ if 'spearow' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from spearow_glb import export_spearow
+  if (OUT/'spearow.mesh.json').exists():raise ValueError('remove the obsolete Spearow JSON before exporting its canonical GLB')
+  (OUT/'spearow.glb').write_bytes(export_spearow())
+  names.remove('spearow')
+  print('spearow: canonical folded-paper sculpture and three anatomical clips',flush=True)
  for start in range(0,len(names),args.batch_size):
   reset();scene=bpy.context.scene;roots=[]
   for name in names[start:start+args.batch_size]:

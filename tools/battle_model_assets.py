@@ -4,8 +4,9 @@ from pathlib import Path
 from gengar_glb import read_gengar
 from model_asset_storage import read_model_json
 from pidgeotto_glb import read_pidgeotto
+from spearow_glb import read_spearow
 
-GLB_READERS = {'pidgeotto.glb': read_pidgeotto, 'gengar.glb': read_gengar}
+GLB_READERS = {'pidgeotto.glb': read_pidgeotto, 'gengar.glb': read_gengar, 'spearow.glb': read_spearow}
 
 
 def species_paths(directory):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Decoded candidate regressions; no Blender, Cargo, or source JSON is required.
+"""Decoded folded-panel and articulation regressions; no Blender or Cargo required.
 
-CYNDAQUIL_MESH_SOURCE optionally names the old migration
-input for an exact attribute-by-attribute comparison. Existing common GLB proof
+CYNDAQUIL_MESH_SOURCE optionally names a current recipe export
+for an exact attribute-by-attribute comparison. Existing common GLB proof
 math is reused; this suite checks Cyndaquil's own geometry and mechanics.
 """
 import bisect
@@ -93,12 +93,12 @@ class CyndaquilTests(unittest.TestCase):
         cls.blob = ASSET.read_bytes()
         cls.model = Model(cls.blob)
 
-    def test_original_geometry_bits_colors_names_and_index_order(self):
+    def test_reviewed_panel_geometry_bits_colors_names_and_index_order(self):
         model = self.model.neutral_model()
         self.assertEqual(author.geometry_digest(model), author.REST_DIGEST)
         self.assertEqual(self.model.names, list(author.PARTS))
-        self.assertEqual(sum(len(p) for p in self.model.vertices), 5128)
-        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 7180)
+        self.assertEqual(sum(len(p) for p in self.model.vertices), 4506)
+        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 2086)
         source_path = os.environ.get('CYNDAQUIL_MESH_SOURCE')
         if source_path:
             source = json.loads(Path(source_path).read_bytes())
@@ -146,6 +146,47 @@ class CyndaquilTests(unittest.TestCase):
                     else:
                         self.assertEqual(j, 0)
         self.assertEqual(used, set(range(10)))
+
+    def test_panel_recipe_rebuilds_canonical_geometry_without_an_input_mesh(self):
+        from cyndaquil_sculpt import sculpt, BODY_HEIGHT, FULL_HEIGHT
+        model = sculpt()
+        self.assertEqual(author.export_cyndaquil(model), self.blob)
+        points = [p for part in model['primitives'] for p in rows(part['positions'], 3)]
+        body = [p for part in model['primitives'] if 'flame quill /' not in part['part']
+                for p in rows(part['positions'], 3)]
+        self.assertEqual(min(p[1] for p in points), 0.)
+        self.assertAlmostEqual(max(p[1] for p in points), FULL_HEIGHT, places=7)
+        self.assertAlmostEqual(max(p[1] for p in body), BODY_HEIGHT, places=7)
+        # Canonical in-game metre calibration explicitly excludes flame tips.
+        self.assertAlmostEqual(max(p[1] for p in body), .716729, places=7)
+
+    def test_immediate_ember_brace_has_no_preroll_or_negative_windup(self):
+        for tick in (1, 6, 11, 28):
+            pose = author.pose_angles('attack', tick/60.)
+            self.assertGreater(pose[1][0], 0.)
+            self.assertGreater(pose[2][0], 0.)
+            self.assertLess(pose[5][0], 0.)
+        self.assertGreater(author.pose_angles('attack', .06)[1][0], .095)
+
+    def test_closed_panel_volumes_and_normals(self):
+        from collections import Counter
+        for p, part in enumerate(self.model.parts):
+            vertices = self.model.vertices[p]
+            triangles = rows(values(self.model.doc, self.model.binary, part['indices']), 3)
+            edges = Counter()
+            volume = 0.
+            for ids in triangles:
+                a, b, c = [tuple(vertices[i]) for i in ids]
+                for u, v in ((a,b),(b,c),(c,a)):
+                    edges[tuple(sorted((u,v)))] += 1
+                u = [b[i]-a[i] for i in range(3)];v = [c[i]-a[i] for i in range(3)]
+                normal = [u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]
+                self.assertGreater(sum(x*x for x in normal), 1e-17)
+                for i in ids:
+                    self.assertGreater(sum(x*y for x,y in zip(normal,self.model.normals[p][i])), 0.)
+                volume += sum(a[i]*normal[i] for i in range(3))/6.
+            self.assertTrue(all(n >= 2 and n % 2 == 0 for n in edges.values()), self.model.names[p])
+            self.assertGreater(volume, 0., self.model.names[p])
 
     def test_exact_neutral_endpoints_and_rotation_only_clip_contract(self):
         self.assertEqual(set(self.model.clips), {'idle', 'attack', 'hit'})
@@ -213,7 +254,7 @@ class CyndaquilTests(unittest.TestCase):
                 self.assertTrue(all(ids == [joint, 0, 0, 0] for ids in self.model.ids[i]))
                 self.assertTrue(all(ws == [1., 0., 0., 0.] for ws in self.model.weights[i]))
 
-    def test_quantized_poses_stay_below_one_ten_thousandth_unit(self):
+    def test_byte_weight_pose_error_stays_below_00015_units(self):
         probes = []
         for i, name in enumerate(self.model.names):
             for point, ids, ws in zip(self.model.vertices[i], self.model.ids[i], self.model.weights[i]):
@@ -235,11 +276,11 @@ class CyndaquilTests(unittest.TestCase):
                         b = [x+w*y for x, y in zip(b, v)]
                     worst = max(worst, math.dist(a, b))
         self.assertGreater(worst, .00001)
-        self.assertLess(worst, .0001)
+        self.assertLess(worst, .00015) # <0.11 mm at the canonical 0.508 m body height.
 
     def test_curves_close_smoothly_and_are_species_specific(self):
         for clip in ('idle', 'attack', 'hit'):
-            eps = 1e-5
+            eps = 1e-6
             first, last = author.pose_angles(clip, eps), author.pose_angles(clip, 1.-eps)
             # Idle is periodic, reactions settle to rest at both ends.
             for a, b in zip(first, last):

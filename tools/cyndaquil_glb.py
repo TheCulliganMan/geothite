@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Articulate the refined Cyndaquil sculpture without changing its neutral mesh.
+"""Export the authored folded-paper Cyndaquil with its ten-joint skin.
 
-The common binary writer and math helpers are imported from gengar_glb; anatomy,
-weights, hinges, and motion here are specific to Cyndaquil. No Blender or third
-party Python package is required. Named source primitives may be supplied by the
-recipe. The retired nameless JSON can only be mapped when its geometry digest
-matches the individually reviewed sculpture.
+Geometry is reproducible from cyndaquil_sculpt.py without Blender, inputs or
+third-party packages. The bounded canonical reader rejects unreviewed geometry
+and altered skin storage; all cue clocks remain owned by the runtime.
 """
 import argparse
 import copy
@@ -19,7 +17,7 @@ from animated_glb import parse_glb
 from skin_glb import (COORDINATES, Glb, envelope, packed,
                         quantized_weights, quaternion_xyz, smoothstep)
 
-REST_DIGEST = '10b1c66e9e91a1f3b590a914278f4330cd44d77797c74c12706eab6a0f14202e'
+REST_DIGEST = '551051e53987f2461c2e5ed22187b44b336be64f300b469950d381b5b174b397'
 FILE = 'cyndaquil.glb'
 PARTS = (
     'Small soft charcoal nose',
@@ -54,8 +52,8 @@ PARTS = (
     'Upper left flame quill / front golden heart',
 )
 
-# These pivots are in the existing runtime coordinate system. The five flame
-# roots are the actual recipe roots transformed by the source object's bind.
+# Keep the original source-to-runtime rig datum. The three lower flame roots
+# are refitted into the new folded back; the rest of the rig pivots are stable.
 SOURCE_SCALE = .8989177942276001
 SOURCE_OFFSET = (.002550057601183653, -.001327162142843008, -.008687515743076801)
 
@@ -69,9 +67,9 @@ def source_point(x, y, z):
 QUILLS = (
     ('Upper left flame quill', (-.071, .060, .604)),
     ('Upper right flame quill', (.071, .060, .604)),
-    ('Lower left flame quill', (-.138, .186, .450)),
-    ('Lower right flame quill', (.138, .186, .450)),
-    ('Central rear flame quill', (0., .252, .432)),
+    ('Lower left flame quill', (-.138, .123, .450)),
+    ('Lower right flame quill', (.138, .123, .450)),
+    ('Central rear flame quill', (0., .183, .432)),
 )
 JOINTS = (
     ('root', None, (0., 0., 0.)),
@@ -94,7 +92,7 @@ def geometry_digest(model):
 
 
 def named_model(model):
-    """Names came from geometric matching to the real editable Blender objects."""
+    """Stable anatomy identities match the reviewed procedural sculpture."""
     if model.get('name') not in ('battle_cyndaquil', 'cyndaquil') or model.get('version') != 1:
         raise ValueError('expected Cyndaquil source schema version 1')
     if model.get('coordinate_system') != COORDINATES or len(model.get('primitives', [])) != len(PARTS):
@@ -122,8 +120,8 @@ def body_weights(position):
     arm = (smoothstep(.130, .182, abs(x - .002550))
            * smoothstep(.040, .110, z) * smoothstep(.130, .178, y)
            * (1. - smoothstep(.265, .360, y)))
-    upper = max(smoothstep(.105, .245, y), arm)
-    head = smoothstep(.025, .170, z) * smoothstep(.310, .430, y)
+    upper = max(smoothstep(.105, .200, y), arm)
+    head = smoothstep(-.140, .030, z) * smoothstep(.310, .430, y)
     active = [(j, w) for j, w in ((0, 1. - upper),
                (1, upper * (1. - head) * (1. - arm)),
                (2, upper * head * (1. - arm)), (side, upper * arm)) if w > 0.]
@@ -149,46 +147,52 @@ def pose_angles(clip, t):
         return [(0., 0., 0.)] * len(JOINTS)
     a, b = math.sin(math.tau * t), math.sin(2. * math.tau * t)
     if clip == 'idle':
-        nod = .5 - .5 * math.cos(math.tau * t)
-        pose = [(0., 0., 0.), (.006 * a, 0., .004 * b),
-                (-.022 * nod, .032 * a, .014 * a),
-                (-.035 * nod, .010 * b, -.017 * a),
-                (-.026 * nod, -.008 * b, .013 * a)]
-        pose += [(.010 * a + .003 * b, .003 * b, -.010 * a),
-                 (.008 * a - .003 * b, -.003 * b, .010 * a),
-                 (.009 * b, .004 * a, -.008 * b),
-                 (-.008 * b, -.004 * a, .008 * b),
-                 (.011 * a, .003 * b, .005 * b)]
+        breathe = .5 - .5 * math.cos(math.tau * t)
+        # A quiet shrew sniff: nose leads the turn, one forepaw curls, then the
+        # other. Root and rear contact never bob to simulate breathing.
+        pose = [(0., 0., 0.), (.014 * a, 0., .009 * b),
+                (-.065 * breathe, .085 * a, .020 * a),
+                (-.075 * breathe, .018 * b, -.033 * a),
+                (-.055 * breathe, -.015 * b, .029 * a)]
+        pose += [(.035 * a + .012 * b, .008 * b, -.031 * a),
+                 (.026 * a - .012 * b, -.008 * b, .037 * a),
+                 (.030 * b, .016 * a, -.025 * b),
+                 (-.027 * b, -.016 * a, .025 * b),
+                 (.040 * a, .015 * b, .016 * b)]
         return pose
     if clip == 'attack':
-        brace = envelope(t, ((0., 0.), (.18, -.16), (.43, 1.), (.66, .56), (1., 0.)))
-        pose = [(0., 0., 0.), (.040 * brace, 0., 0.),
-                (.060 * brace, .012 * brace, 0.),
-                (.105 * brace, -.014 * brace, -.040 * brace),
-                (.090 * brace, .014 * brace, .035 * brace)]
-        pose += [(-.020 * brace, 0., -.018 * brace),
-                 (-.018 * brace, 0., .018 * brace),
-                 (-.023 * brace, 0., -.014 * brace),
-                 (-.021 * brace, 0., .014 * brace),
-                 (-.026 * brace, .006 * brace, 0.)]
+        # Immediate planted chest brace and settle. This curve is sampled
+        # only by normalized source cue progress; it schedules no effect.
+        brace = envelope(t, ((0., 0.), (.06, .92), (.20, 1.), (.62, .54), (1., 0.)))
+        flare = envelope(t, ((0., 0.), (.07, .45), (.18, 1.), (.62, .34), (1., 0.)))
+        pose = [(0., 0., 0.), (.110 * brace, 0., 0.),
+                (.120 * brace, .023 * brace, 0.),
+                (.218 * brace, -.025 * brace, -.080 * brace),
+                (.198 * brace, .025 * brace, .069 * brace)]
+        pose += [(-.095 * flare, -.030 * flare, -.082 * flare),
+                 (-.078 * flare, .030 * flare, .076 * flare),
+                 (-.104 * flare, -.025 * flare, -.061 * flare),
+                 (-.087 * flare, .025 * flare, .063 * flare),
+                 (-.129 * flare, .025 * flare, 0.)]
         return pose
-    recoil = envelope(t, ((0., 0.), (.20, 1.), (.48, .28), (.72, -.10), (1., 0.)))
-    pose = [(0., 0., 0.), (-.045 * recoil, .006 * recoil, .010 * recoil),
-            (-.052 * recoil, -.018 * recoil, -.015 * recoil),
-            (-.070 * recoil, .015 * recoil, .025 * recoil),
-            (-.061 * recoil, -.015 * recoil, -.023 * recoil)]
-    pose += [(.024 * recoil, .003 * recoil, .012 * recoil),
-             (.021 * recoil, -.003 * recoil, -.012 * recoil),
-             (.018 * recoil, .004 * recoil, .010 * recoil),
-             (.021 * recoil, -.004 * recoil, -.010 * recoil),
-             (.028 * recoil, 0., .005 * recoil)]
+    recoil = envelope(t, ((0., 0.), (.17, 1.), (.40, .32), (.65, -.16), (1., 0.)))
+    trail = envelope(t, ((0., 0.), (.24, 1.), (.49, .17), (.72, -.09), (1., 0.)))
+    pose = [(0., 0., 0.), (-.098 * recoil, .014 * recoil, .023 * recoil),
+            (-.120 * recoil, -.045 * recoil, -.035 * recoil),
+            (-.194 * recoil, .039 * recoil, .067 * recoil),
+            (-.161 * recoil, -.033 * recoil, -.060 * recoil)]
+    pose += [(.116 * trail, .018 * trail, .051 * trail),
+             (.094 * trail, -.018 * trail, -.046 * trail),
+             (.080 * trail, .020 * trail, .045 * trail),
+             (.099 * trail, -.020 * trail, -.045 * trail),
+             (.138 * trail, 0., .027 * trail)]
     return pose
 
 
 def export_cyndaquil(model):
     model = named_model(model)
     glb = Glb()
-    glb.doc['asset']['generator'] = 'Geothite Cyndaquil skin authoring v1'
+    glb.doc['asset']['generator'] = 'Geothite Cyndaquil folded-paper authoring v2'
     nodes = glb.doc['nodes']
     inverse = []
     for name, parent, pivot in JOINTS:
@@ -234,10 +238,12 @@ def export_cyndaquil(model):
             samplers.append({'input': times, 'output': glb.accessor(rotations, 'VEC4'), 'interpolation': 'LINEAR'})
         glb.doc['animations'].append({'name': f'cyndaquil.{clip}', 'channels': channels, 'samplers': samplers,
             'extras': {'loopSuggested': clip == 'idle', 'cueRelative': clip != 'idle',
-                'purpose': 'curious head and raised forepaws, grounded rear paws, restrained paper quills; battle cues remain external'}})
+                'purpose': 'nose-led sniff, planted chest brace and delayed folded-quill recoil; battle cue clocks remain external'}})
     glb.doc['extras'] = {'coordinate_system': COORDINATES, 'source_name': model['name'],
         'source_sha256': geometry_digest(model),
-        'geometry_preservation': 'exact original primitive order, f32 geometry/colors and index order; names matched from Blender source',
+        'body_reference_height': .716729, 'full_silhouette_height': .91,
+        'geometry_source': 'tools/cyndaquil_sculpt.py',
+        'geometry_preservation': 'explicit authored panels regenerated by tools/cyndaquil_sculpt.py; retained anatomy identities and physical height datum',
         'animation_contract': 'identity root, planted rear feet, attached face/coat, five rigid folded quills, rotation-only joints'}
     return glb.bytes()
 
@@ -301,10 +307,14 @@ def read_cyndaquil(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--input', type=Path, required=True, help='canonical GLB, or the original migration JSON')
+    parser.add_argument('--input', type=Path, help='optional canonical GLB to validate and regenerate; omit to build from sculpture recipe')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    model = read_cyndaquil(args.input) if args.input.suffix == '.glb' else json.loads(args.input.read_bytes())
+    if args.input is None:
+        from cyndaquil_sculpt import sculpt
+        model = sculpt()
+    else:
+        model = read_cyndaquil(args.input) if args.input.suffix == '.glb' else json.loads(args.input.read_bytes())
     blob = export_cyndaquil(model)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(blob)

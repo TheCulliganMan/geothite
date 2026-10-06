@@ -130,8 +130,9 @@ or whole-body presentation until their individual rigs and clips are verified.
 ## Cyndaquil and Totodile GPU skins
 
 `models/actor_props/battle_cyndaquil.glb` and `battle_totodile.glb` replace their
-former JSON models. They retain the exact neutral geometry, vertex colors and
-flat normals, with standard glTF skins and named idle, attack and hit clips.
+former JSON models. Totodile retains its reviewed neutral geometry. Cyndaquil
+now uses the explicit folded-panel sculpture described below. Both have standard
+glTF skins and named idle, attack and hit clips.
 Cyndaquil has ten joints, including five separate layered flame quills and two
 forelegs. Totodile has eight joints, including a hinged jaw, separate forepaws
 and a two-part tail. Rear paws and toe contacts stay planted. Body/coat/inlay
@@ -155,7 +156,8 @@ Hidden actors pause idle and observe cue retirement so F3 does not replay an
 old hit. Articulated actors cannot enter the optional static image cache.
 
 Normal builds consume the checked-in GLBs without Blender. The actor authoring
-recipe exports both through `cyndaquil_glb.py` and `totodile_glb.py`; JSON
+recipe exports both through `cyndaquil_glb.py` and `totodile_glb.py`. Cyndaquil can
+also regenerate directly from `cyndaquil_sculpt.py` without Blender; JSON
 intermediates and optional geometry previews remain ignored. No duplicate
 runtime geometry is checked in.
 
@@ -300,3 +302,63 @@ The preview accepts `--size WIDTHxHEIGHT` for explicit capture dimensions.
 Recording a scripted walk waits for its first ordinary input after warmup;
 measurement-only runs keep their existing start condition. Normal play and
 the authoritative movement clock are unchanged.
+
+
+## Cyndaquil folded-panel refinement
+
+The canonical Cyndaquil is now rebuilt from original, explicit paper panels in
+`tools/cyndaquil_sculpt.py`. This replaces the previous remeshed clay body with
+an authored wedge muzzle, broad cheek and chest folds, asymmetrically tucked forepaws, slimmer
+planted toes and a coat following the exact head/back fold vertices. The closed
+sleepy-eye ribbons sit on the cheeks, below the cap. Five flame assemblies have
+unequal licks, thinner ridges, tapered embedded roots and different twists so
+large colored facets remain legible from the runtime flank. They are permanent
+sculpture anatomy; the game still owns all emitted Ember sprites and timing.
+
+The stable 30 anatomy identities and ten-joint hierarchy are preserved. Source
+geometry has 4,506 split-normal vertices and 2,086 triangles, versus 5,128 and
+7,180 previously. `battle_cyndaquil.glb` is the only canonical runtime geometry.
+The earlier refinement Blender file is retained as historical editable work;
+no new duplicate `.blend`, STL, mesh JSON or encoded geometry is checked in.
+The actor recipe imports the same authored panels for optional Blender editing
+and review. Make canonical sculpture changes in the Python recipe, then review
+and update the pinned geometry digest deliberately.
+
+```sh
+python3 tools/cyndaquil_glb.py --output crates/crystal-voxel-view/models/actor_props/battle_cyndaquil.glb
+python3 tools/test_cyndaquil_glb.py
+python3 tools/check-actor-props.py
+python3 tools/check-johto-models.py
+```
+
+The body-height reference remains bit-identical at `0.7167289853096008` and the
+full silhouette height remains `0.9100000262260437`. The existing runtime metre
+calibration, `0.716729 / 0.91`, is unchanged. Both meshes have exactly zero as
+their minimum Y. Neutral bounds before and after are:
+
+| Coordinate | Previous minimum / maximum | Folded-panel minimum / maximum |
+| --- | --- | --- |
+| X | -0.32725501 / 0.32725501 | -0.34094277 / 0.34557807 |
+| Y | 0 / 0.91000003 | 0 / 0.91000003 |
+| Z | -0.53695601 / 0.53695601 | -0.54588354 / 0.47300000 |
+
+Idle remains 3.2 seconds and attack/hit remain one-second normalized clips.
+Idle adds a nose-led sniff and asymmetric paw curls. The attack braces
+immediately, without a preparatory windup that would conflict with Ember's
+first source emission. The flame sheets follow the brace, and a hit produces a
+short recoil with delayed quill recovery. These curves create no move events,
+change no source ticks and do not move the root. All 480 vertices at or below
+Y=0.105 stay exactly planted through every sampled clip; loop endpoints return
+to the exact neutral pose. Byte-weight pose error remains below 0.00015 model units (under 0.11 mm
+at the canonical 0.508 m body height); this bound accommodates the larger
+articulation while retaining the compact normalized-byte skin format.
+
+The fourteen Python model checks cover full recipe-to-GLB reproducibility,
+reviewed geometry/order, closed panel volumes and normal winding, normalized
+influences, rigid face/quill attachment, planted feet, smooth loop closure,
+immediate attack bracing, the unchanged height datum and rejection of altered
+storage. Actor and full source-registry checks also pass. Neutral views are
+reviewed from the actual GLB in Blender and a simple software rasterizer;
+posed raster views use decoded GLB animation keys. Production battle timing
+and full scene readability still require the native integration capture, not
+just these model-level renders.

@@ -29,16 +29,18 @@ pub(crate) enum Species {
     Cyndaquil,
     Totodile,
     Gengar,
+    Spearow,
 }
 
 impl Species {
-    pub const ALL: [Self; 3] = [Self::Cyndaquil, Self::Totodile, Self::Gengar];
+    pub const ALL: [Self; 4] = [Self::Cyndaquil, Self::Totodile, Self::Gengar, Self::Spearow];
 
     pub fn name(self) -> &'static str {
         match self {
             Self::Cyndaquil => "cyndaquil",
             Self::Totodile => "totodile",
             Self::Gengar => "gengar",
+            Self::Spearow => "spearow",
         }
     }
 
@@ -81,6 +83,18 @@ impl Species {
                 "dorsal_right",
                 "dorsal_lower",
                 "tail_spine",
+            ],
+            Self::Spearow => &[
+                "root",
+                "torso",
+                "head",
+                "lower_beak",
+                "wing_left",
+                "flight_feathers_left",
+                "wing_right",
+                "flight_feathers_right",
+                "tail_fan",
+                "crown",
             ],
         }
     }
@@ -125,6 +139,18 @@ impl Species {
                 Some(1),
                 Some(1),
             ],
+            Self::Spearow => &[
+                None,
+                Some(0),
+                Some(1),
+                Some(2),
+                Some(1),
+                Some(4),
+                Some(1),
+                Some(6),
+                Some(1),
+                Some(2),
+            ],
         }
     }
 
@@ -133,14 +159,16 @@ impl Species {
             Self::Cyndaquil => 30,
             Self::Totodile => 27,
             Self::Gengar => 27,
+            Self::Spearow => 28,
         }
     }
 
     fn neutral_digest(self) -> &'static str {
         match self {
-            Self::Cyndaquil => "10b1c66e9e91a1f3b590a914278f4330cd44d77797c74c12706eab6a0f14202e",
+            Self::Cyndaquil => "551051e53987f2461c2e5ed22187b44b336be64f300b469950d381b5b174b397",
             Self::Totodile => "3e3f8de35f5d7cabcc889604baff4103f050f6abf2a24f6336f9ea3fea9a47d0",
             Self::Gengar => "d458acb7c2853288efef3b83c24ac453bcb409f9db01d24a96008e9a937485aa",
+            Self::Spearow => "42ad1c0255af66f84d1770d9050c2d5b8fa7833a1a38180fa380665915b09fe7",
         }
     }
 }
@@ -238,10 +266,12 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static CYNDAQUIL: OnceLock<SpeciesRig> = OnceLock::new();
     static TOTODILE: OnceLock<SpeciesRig> = OnceLock::new();
     static GENGAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static SPEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
         Species::Cyndaquil => &CYNDAQUIL,
         Species::Totodile => &TOTODILE,
         Species::Gengar => &GENGAR,
+        Species::Spearow => &SPEAROW,
     };
     cache.get_or_init(|| {
         let source = match species {
@@ -253,6 +283,9 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             }
             Species::Gengar => {
                 crate::model_storage::include_model!("models/battle_species/gengar.glb")
+            }
+            Species::Spearow => {
+                crate::model_storage::include_model!("models/battle_species/spearow.glb")
             }
         };
         let bytes =
@@ -268,6 +301,8 @@ pub(crate) fn for_species(species: &str) -> Option<&'static SpeciesRig> {
         Some(rig(Species::Totodile))
     } else if species.eq_ignore_ascii_case("GENGAR") {
         Some(rig(Species::Gengar))
+    } else if species.eq_ignore_ascii_case("SPEAROW") {
+        Some(rig(Species::Spearow))
     } else {
         None
     }

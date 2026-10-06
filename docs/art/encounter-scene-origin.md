@@ -495,4 +495,19 @@ performance comparison or a fluid-animation claim. The last sixty updates
 retained 751 images, 13 meshes and 36 materials. The current high camera keeps
 the source surroundings visible but leaves the small creatures distant; closer
 composition, swimming/rider animation, broader species coverage and first-use
-stalls remain separate gaps. An untimed native return gate remains pending.
+stalls remain separate gaps.
+
+A separate untimed native session subsequently closed the return gate. A real
+level-20 Poliwag used Hypnosis first; the sleeping Totodile correctly retained
+Surf at 15/15 PP. After waking normally, it executed Surf, damaged Poliwag and
+showed 14/15 PP in the reopened move menu. The first RUN attempt failed; the
+second produced the original escape narration and restored the field with the
+Surf mount. An ordinary shore step restored the human avatar, then fresh
+directional inputs turned it and visibly walked along the shore. No exact
+post-return core coordinate is inferred from the native images.
+
+That second encounter did not qualify for original scenery: its complete
+animated footprint exceeded the checked source ground, so the existing generic
+scene remained as a conservative fallback. The earlier Remoraid capture is the
+verified Route44-water example. This distinction is retained rather than
+loosening support checks, clipping anatomy or resizing the creatures.
