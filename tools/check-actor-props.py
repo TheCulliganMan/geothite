@@ -6,6 +6,7 @@ external images are needed; this does not claim coverage of unknown species.
 """
 import argparse, ast, hashlib, json, math, re
 from pathlib import Path
+from chikorita_glb import read_chikorita
 from cyndaquil_glb import read_cyndaquil
 from totodile_glb import read_totodile
 from model_asset_storage import read_model_bytes, read_model_json, read_model_text, validate_storage
@@ -21,7 +22,8 @@ def verify(directory):
  assert set(authored)==set(registry), 'Generator and Rust registry differ'
  total_tri=0; total_vertices=0; digests=set(); biggest=(0,'')
  for name in registry:
-  if name=='battle_cyndaquil':data=read_cyndaquil(directory/(name+'.glb'))
+  if name=='battle_chikorita':data=read_chikorita(directory/(name+'.glb'))
+  elif name=='battle_cyndaquil':data=read_cyndaquil(directory/(name+'.glb'))
   elif name=='battle_totodile':data=read_totodile(directory/(name+'.glb'))
   else:data=read_model_json(directory/(name+'.mesh.json'))
   assert data['name']==name and data['version']==1

@@ -1824,10 +1824,22 @@ fn immersive_battle_pidgeotto_preview_uses_legal_moves_and_normal_controller() {
 #[cfg(feature = "location-tester")]
 #[test]
 fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
-    for (species, move_name) in [("CYNDAQUIL", "EMBER"), ("TOTODILE", "WATER_GUN")] {
+    for (species, move_name) in [
+        ("CHIKORITA", "RAZOR_LEAF"),
+        ("CYNDAQUIL", "EMBER"),
+        ("TOTODILE", "WATER_GUN"),
+    ] {
         let mut controller = immersive_battle_starter_preview_controller(
             false, false, false, false, false, true, false, Some(species));
         assert!(controller.shell.quick_save_path.is_none());
+        let expected_random = crystal_core::random::CrystalRandomState {
+            add: 0,
+            sub: if species == "CHIKORITA" { 233 } else { 253 },
+        };
+        assert_eq!(controller.shell.shell.session().state().random_state, expected_random);
+        // Normal preview arming must preserve the bounded real DIV stimulus.
+        controller.shell.shell.advance_vblanks(600, 600).unwrap();
+        assert_eq!(controller.shell.shell.session().state().random_state, expected_random);
         let before = controller.shell.shell.snapshot().unwrap();
         let battle_before = before.battle.as_ref().unwrap();
         let player = &before.party.slots[0].pokemon;

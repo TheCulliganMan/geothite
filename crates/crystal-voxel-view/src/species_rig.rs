@@ -8,7 +8,7 @@ use bevy::prelude::{Mat4, Quat, Transform, Vec3};
 use gltf::{
     accessor::{DataType, Dimensions},
     animation::{Interpolation, Property},
-    mesh::{util::ReadWeights, Semantic},
+    mesh::{Semantic, util::ReadWeights},
 };
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
@@ -26,6 +26,7 @@ const FLOAT_MARGIN: f32 = 0.0001;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Species {
+    Chikorita,
     Cyndaquil,
     Totodile,
     Gengar,
@@ -33,10 +34,17 @@ pub(crate) enum Species {
 }
 
 impl Species {
-    pub const ALL: [Self; 4] = [Self::Cyndaquil, Self::Totodile, Self::Gengar, Self::Spearow];
+    pub const ALL: [Self; 5] = [
+        Self::Chikorita,
+        Self::Cyndaquil,
+        Self::Totodile,
+        Self::Gengar,
+        Self::Spearow,
+    ];
 
     pub fn name(self) -> &'static str {
         match self {
+            Self::Chikorita => "chikorita",
             Self::Cyndaquil => "cyndaquil",
             Self::Totodile => "totodile",
             Self::Gengar => "gengar",
@@ -46,6 +54,19 @@ impl Species {
 
     fn joint_names(self) -> &'static [&'static str] {
         match self {
+            Self::Chikorita => &[
+                "root",
+                "torso",
+                "head",
+                "foreleg_left",
+                "foreleg_right",
+                "hindleg_left",
+                "hindleg_right",
+                "tail_nub",
+                "leaf_petiole",
+                "leaf_mid_fold",
+                "leaf_tip_fold",
+            ],
             Self::Cyndaquil => &[
                 "root",
                 "torso",
@@ -101,6 +122,19 @@ impl Species {
 
     fn parents(self) -> &'static [Option<usize>] {
         match self {
+            Self::Chikorita => &[
+                None,
+                Some(0),
+                Some(1),
+                Some(1),
+                Some(1),
+                Some(1),
+                Some(1),
+                Some(1),
+                Some(2),
+                Some(8),
+                Some(9),
+            ],
             Self::Cyndaquil => &[
                 None,
                 Some(0),
@@ -156,6 +190,7 @@ impl Species {
 
     fn part_count(self) -> usize {
         match self {
+            Self::Chikorita => 19,
             Self::Cyndaquil => 30,
             Self::Totodile => 27,
             Self::Gengar => 27,
@@ -165,6 +200,7 @@ impl Species {
 
     fn neutral_digest(self) -> &'static str {
         match self {
+            Self::Chikorita => "e6f4c6ed5c602ef3562f3bc4b19bd800944abdd2d5722ecd5df832d3bf49bc96",
             Self::Cyndaquil => "551051e53987f2461c2e5ed22187b44b336be64f300b469950d381b5b174b397",
             Self::Totodile => "3e3f8de35f5d7cabcc889604baff4103f050f6abf2a24f6336f9ea3fea9a47d0",
             Self::Gengar => "d458acb7c2853288efef3b83c24ac453bcb409f9db01d24a96008e9a937485aa",
@@ -263,11 +299,13 @@ pub(crate) struct SpeciesRig {
 }
 
 pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
+    static CHIKORITA: OnceLock<SpeciesRig> = OnceLock::new();
     static CYNDAQUIL: OnceLock<SpeciesRig> = OnceLock::new();
     static TOTODILE: OnceLock<SpeciesRig> = OnceLock::new();
     static GENGAR: OnceLock<SpeciesRig> = OnceLock::new();
     static SPEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
+        Species::Chikorita => &CHIKORITA,
         Species::Cyndaquil => &CYNDAQUIL,
         Species::Totodile => &TOTODILE,
         Species::Gengar => &GENGAR,
@@ -275,6 +313,9 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     };
     cache.get_or_init(|| {
         let source = match species {
+            Species::Chikorita => {
+                crate::model_storage::include_model!("models/actor_props/battle_chikorita.glb")
+            }
             Species::Cyndaquil => {
                 crate::model_storage::include_model!("models/actor_props/battle_cyndaquil.glb")
             }
@@ -295,7 +336,9 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
 }
 
 pub(crate) fn for_species(species: &str) -> Option<&'static SpeciesRig> {
-    if species.eq_ignore_ascii_case("CYNDAQUIL") {
+    if species.eq_ignore_ascii_case("CHIKORITA") {
+        Some(rig(Species::Chikorita))
+    } else if species.eq_ignore_ascii_case("CYNDAQUIL") {
         Some(rig(Species::Cyndaquil))
     } else if species.eq_ignore_ascii_case("TOTODILE") {
         Some(rig(Species::Totodile))
@@ -633,7 +676,15 @@ impl SpeciesRig {
                 }
                 maximum_speed = maximum_speed.max(speed);
             }
-            let steps = (clip.duration * ENVELOPE_HZ).ceil() as usize;
+            // The longer three-joint leaf needs a finer cached envelope to
+            // keep the same conservative speed bound from enlarging the
+            // whole camera box. This runs once when the GLB is loaded; frame
+            // playback still uses the authored keys and original cue clock.
+            let envelope_hz = match self.species {
+                Species::Chikorita => 90.0,
+                _ => ENVELOPE_HZ,
+            };
+            let steps = (clip.duration * envelope_hz).ceil() as usize;
             let margin =
                 Vec3::splat(maximum_speed * (clip.duration / steps as f32) * 0.5 + FLOAT_MARGIN);
             let mut clip_bounds = self.neutral_bounds;

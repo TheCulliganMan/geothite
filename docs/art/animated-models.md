@@ -362,3 +362,12 @@ reviewed from the actual GLB in Blender and a simple software rasterizer;
 posed raster views use decoded GLB animation keys. Production battle timing
 and full scene readability still require the native integration capture, not
 just these model-level renders.
+
+## Chikorita increment
+
+The [Chikorita sculpture and skin](chikorita-papercraft.md) replaces its static
+JSON with a reproducible canonical GLB and species-specific idle, attack and
+hit articulation. Four planted feet and three leaf joints give it distinct
+quadruped mechanics. The original pack-derived physical height and battle
+cue clock remain authoritative. This is one reviewed species increment;
+the remaining static Pokémon still require their own art and animation work.

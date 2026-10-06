@@ -941,8 +941,9 @@ fn prepare_immersive_battle_preview(
     starter: Option<&str>,
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
-        starter.is_none() || (enemy_gust && matches!(starter, Some("CYNDAQUIL" | "TOTODILE"))),
-        "starter rig preview requires enemy Gust and CYNDAQUIL or TOTODILE"
+        starter.is_none()
+            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "CYNDAQUIL" | "TOTODILE"))),
+        "starter rig preview requires enemy Gust and CHIKORITA, CYNDAQUIL or TOTODILE"
     );
     anyhow::ensure!(
         [
@@ -1161,9 +1162,15 @@ fn prepare_immersive_battle_preview(
                 // normal VBlank), with 7,936 samples left for the real turn.
                 // Restart this disposable preview before another attempt.
                 const DIV_SAMPLE_BUDGET: usize = 65_536;
+                // Razor Leaf has 95% accuracy, so the former 253 stimulus
+                // correctly misses. 233 still selects AI slot 1, stays above
+                // both critical thresholds, passes Razor Leaf's real accuracy
+                // check, and rotates to 244 for accepted damage variation.
+                // Only the explicit Chikorita rig showcase uses this input.
+                let sub = if starter == Some("CHIKORITA") { 233 } else { 253 };
                 let session = controller.shell.shell.session_mut();
                 session.state_mut().random_state =
-                    crystal_core::random::CrystalRandomState { add: 0, sub: 253 };
+                    crystal_core::random::CrystalRandomState { add: 0, sub };
                 *session.divider_mut_for_tests() =
                     crystal_core::random::RuntimeDividerSource::replay([0; DIV_SAMPLE_BUDGET]);
             } else if hyper_beam {

@@ -747,14 +747,22 @@ def surf_mount():
  sphere('Recessed saddle',(0,.06,.355),(.20,.23,.04),'navy');tube('Crescent tail',[(0,.37,.18),(0,.59,.19),(.12,.67,.28)],.075,'blue')
 
 def chikorita():
- sphere('Chikorita pear body',(0,.025,.28),(.23,.29,.24),'leaf')
- for x in (-.16,.16):
-  for y in (-.17,.21):sphere('Chikorita rounded foot',(x,y,.075),(.075,.095,.077),'leaf')
- sphere('Chikorita round head',(0,-.22,.49),(.21,.18,.21),'leaf');eyes(0,-.390,.55,.025,.091,True);smile(-.396,.42,.056)
- for i in range(7):
-  a=i*math.tau/7;sphere('Neck seed bud',(.19*math.cos(a),-.135+.115*math.sin(a),.35),(.038,.034,.049),'darkgreen')
- tube('Head leaf stem',[(0,-.19,.65),(.01,-.16,.75),(.07,-.08,.86)],.028,'darkgreen')
- leaf('Sweeping head leaf',(.04,-.12,.77),(.40,.20,1.12),.20,'green');tube('Leaf central vein',[(.04,-.13,.78),(.22,.04,.96),(.40,.20,1.12)],.014,'leaf')
+ # The current sculpture is authored as explicit paper panels in a dependency-
+ # free recipe. Import those same panels for a fully editable Blender preview.
+ # The archived multi-asset Blender scene remains available as earlier source.
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from chikorita_sculpt import sculpt
+ for part in sculpt()['primitives']:
+  name=part['part'];p=part['positions'];ind=part['indices']
+  vertices=[(p[i],-p[i+2],p[i+1]) for i in range(0,len(p),3)]
+  faces=[tuple(ind[i:i+3]) for i in range(0,len(ind),3)]
+  me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
+  o=bpy.data.objects.new(name,me);COL.objects.link(o)
+  mat=bpy.data.materials.new(name+' / paper');mat.diffuse_color=part['base_color'];mat.use_nodes=True
+  bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=part['base_color'];bs.inputs['Roughness'].default_value=1.
+  me.materials.append(mat)
+  o['authoring']='Original explicit folded panels; edit tools/chikorita_sculpt.py to regenerate canonical runtime geometry'
+  o['skin']='tools/chikorita_glb.py; eleven rotation-only joints; source-clock-driven idle/attack/hit'
 
 def cyndaquil():
  # The current sculpture is authored as explicit paper panels in a dependency-
@@ -1058,6 +1066,12 @@ def canonical_primitives(primitives):
  return sorted((canonical_primitive(p) for p in primitives),key=lambda p:json.dumps(p,sort_keys=True,separators=(',',':')))
 
 def export(name,objects):
+ if name=='battle_chikorita':
+  from chikorita_sculpt import sculpt
+  from chikorita_glb import export_chikorita
+  data=sculpt();(OUT/(name+'.glb')).write_bytes(export_chikorita(data))
+  print(f'{name}: {sum(len(p["indices"])//3 for p in data["primitives"])} triangles, 19 authored assemblies')
+  return
  if name=='battle_cyndaquil':
   from cyndaquil_sculpt import sculpt
   from cyndaquil_glb import export_cyndaquil
@@ -1088,7 +1102,7 @@ def export(name,objects):
  print(f'{name}: {tri_count} triangles, {len(primitives)} primitives')
 
 def normalize(name,objects):
- if name=='battle_cyndaquil':return # Exact body-height datum is authored by its panel recipe.
+ if name in ('battle_chikorita','battle_cyndaquil'):return # Exact height/root datums are authored by the panel recipes.
  bpy.context.view_layer.update();corners=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
  lo=Vector(tuple(min(c[a] for c in corners) for a in range(3)));hi=Vector(tuple(max(c[a] for c in corners) for a in range(3)))
  height=HEIGHTS.get(name,.82);scale=height/(hi.z-lo.z)

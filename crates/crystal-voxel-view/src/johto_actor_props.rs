@@ -85,6 +85,7 @@ fn parse_model<'a>(
 }
 
 macro_rules! prop_mesh {
+    ("battle_chikorita") => { crate::species_rig::rig(crate::species_rig::Species::Chikorita).neutral.clone() };
     ("battle_cyndaquil") => { crate::species_rig::rig(crate::species_rig::Species::Cyndaquil).neutral.clone() };
     ("battle_totodile") => { crate::species_rig::rig(crate::species_rig::Species::Totodile).neutral.clone() };
     ($label:literal) => {{
