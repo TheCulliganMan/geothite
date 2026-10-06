@@ -8,10 +8,10 @@ function savedStep(storage, key, defaultValue, maximum) {
   return Number.isFinite(value) && value >= 0 && value <= maximum ? value : defaultValue;
 }
 
-export function mountViewToggle(wasm, { button, canvas, storage, cameraControls, startIn2D = false }) {
-  let enabled = !startIn2D && storage.getItem(VIEW_KEY) === 'true';
-  let zoom = savedStep(storage, ZOOM_KEY, 1, 5);
-  let rotation = savedStep(storage, ROTATION_KEY, 0, 8);
+export function mountViewToggle(wasm, { button, canvas, storage, cameraControls, startIn2D = false, startIn3D = false }) {
+  let enabled = !startIn2D && (startIn3D || storage.getItem(VIEW_KEY) === 'true');
+  let zoom = savedStep(storage, ZOOM_KEY, startIn3D ? 0 : 1, 5);
+  let rotation = savedStep(storage, ROTATION_KEY, startIn3D ? 7.5 : 0, 8);
   const updateCamera = () => {
     wasm.crystal_set_voxel_camera(zoom, rotation);
     cameraControls.group.hidden = !enabled;
@@ -51,8 +51,8 @@ export function mountViewToggle(wasm, { button, canvas, storage, cameraControls,
     wasm.crystal_set_voxel_view(enabled);
     updateCamera();
     button.setAttribute('aria-pressed', String(enabled));
-    button.setAttribute('aria-label', enabled ? 'Switch to 2D view' : 'Switch to 2.5D view');
-    button.title = enabled ? 'Switch to 2D view' : 'Switch to 2.5D view';
+    button.setAttribute('aria-label', enabled ? 'Switch to 2D view' : 'Switch to 3D view');
+    button.title = enabled ? 'Switch to 2D view' : 'Switch to 3D view';
   };
   update();
   button.disabled = false;

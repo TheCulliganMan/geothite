@@ -1,6 +1,7 @@
 include!("tests/shell_basics.rs");
 include!("tests/multiplayer_rendering.rs");
 include!("tests/overworld_rendering.rs");
+include!("tests/tile_animation_provenance.rs");
 include!("tests/intro_title_rendering.rs");
 include!("tests/title_flow.rs");
 include!("tests/runtime_surfaces.rs");
@@ -12,6 +13,18 @@ include!("tests/story_progression.rs");
 include!("tests/quests.rs");
 include!("tests/art_text_and_determinism.rs");
 include!("tests/battle_render_regressions.rs");
+include!("tests/battle_origin.rs");
+include!("tests/encounter_anchor.rs");
+include!("tests/battle_origin_fishing.rs");
+include!("tests/fishing_anchor.rs");
+include!("tests/walking_anchor.rs");
+include!("tests/surf_anchor.rs");
+include!("tests/trainer_anchor.rs");
+include!("tests/scripted_trainer_anchor.rs");
+include!("tests/fishing_presentation.rs");
+include!("tests/battle_timeline_clock.rs");
+include!("tests/battle_capture_palettes.rs");
+include!("tests/battle_oam_layers.rs");
 include!("tests/battle_sliding_intro.rs");
 include!("tests/shop_rendering.rs");
 include!("tests/heal_machine_rendering.rs");
@@ -122,3 +135,7 @@ fn external_oracle_fixture_text(name: &str) -> String {
 }
 
 include!("tests/runtime_frontend_smoke.rs");
+#[cfg(feature = "voxel-view")]
+include!("tests/immersive_battle.rs");
+#[cfg(feature = "voxel-view")]
+include!("tests/queued_source_scene.rs");

@@ -6,16 +6,89 @@ const COMPILED_GAME_PACK_PAYLOAD_LENGTH_OFFSET: usize = COMPILED_GAME_PACK_VERSI
 const COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET: usize = COMPILED_GAME_PACK_PAYLOAD_LENGTH_OFFSET + 4;
 const COMPILED_GAME_PACK_HEADER_LEN: usize = COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET + 4;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+/// A source directory or an owned temporary asset mount.
+///
+/// Keep this value (or a clone) alive while using paths resolved from it. Path
+/// copies and serialization do not transfer temporary-directory ownership.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssetRoot {
     pub repository_root: PathBuf,
+    #[serde(skip)]
+    _temporary_mount: Option<std::sync::Arc<TemporaryAssetMount>>,
+}
+
+// Ownership is process-local bookkeeping, not part of an asset root's identity.
+impl PartialEq for AssetRoot {
+    fn eq(&self, other: &Self) -> bool {
+        self.repository_root == other.repository_root
+    }
+}
+
+impl Eq for AssetRoot {}
+
+#[derive(Debug)]
+struct TemporaryAssetMount {
+    // Retain the exclusively created path independently of the public lookup
+    // path: changing repository_root must never redirect cleanup to user data.
+    path: PathBuf,
+}
+
+impl Drop for TemporaryAssetMount {
+    fn drop(&mut self) {
+        // Best effort: never panic during teardown or print into the TUI. The
+        // OS may reject removal, and abort/kill cannot run this destructor.
+        let _ = std::fs::remove_dir_all(&self.path);
+    }
 }
 
 impl AssetRoot {
+    /// Reference an existing source directory without taking ownership of it.
     pub fn new(repository_root: impl Into<PathBuf>) -> Self {
         Self {
             repository_root: repository_root.into(),
+            _temporary_mount: None,
         }
+    }
+
+    /// Create an exclusive temporary child of `parent`, removed after its last
+    /// clone is dropped. Existing directories are never adopted or removed.
+    pub fn new_temporary_in(parent: impl AsRef<Path>) -> Result<Self> {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        static NEXT_MOUNT: AtomicUsize = AtomicUsize::new(0);
+        let parent = std::fs::canonicalize(parent.as_ref())
+            .context("resolve temporary asset mount parent")?;
+        let nonce = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos();
+        for _ in 0..128 {
+            let sequence = NEXT_MOUNT.fetch_add(1, Ordering::Relaxed);
+            let path = parent.join(format!(
+                "crystal-pack-assets-{}-{nonce}-{sequence}",
+                std::process::id()
+            ));
+            let mut builder = std::fs::DirBuilder::new();
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::DirBuilderExt;
+                builder.mode(0o700);
+            }
+            match builder.create(&path) {
+                Ok(()) => {
+                    return Ok(Self {
+                        repository_root: path.clone(),
+                        _temporary_mount: Some(std::sync::Arc::new(TemporaryAssetMount { path })),
+                    });
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                Err(error) => {
+                    return Err(error).with_context(|| {
+                        format!("create temporary asset mount {}", path.display())
+                    });
+                }
+            }
+        }
+        anyhow::bail!("could not create a unique temporary asset mount")
     }
 
     pub fn vendor_pokecrystal(&self) -> PathBuf {

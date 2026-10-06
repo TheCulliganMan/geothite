@@ -7,9 +7,9 @@ use std::{
 
 use anyhow::{Context, Result, bail};
 use bevy::prelude::{Handle, Image};
-use crystal_runtime::CrystalRuntime;
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_render_api::{VisualTile, VisualTileSource};
+use crystal_runtime::CrystalRuntime;
 use crystal_voxel_view::audit_cell_coverage_on_map;
 use serde_json::json;
 
@@ -87,11 +87,10 @@ fn main() -> Result<()> {
     let pack_path = pack_path
         .canonicalize()
         .with_context(|| format!("resolve compiled pack {}", pack_path.display()))?;
-    let repository_root = pack_path
-        .ancestors()
-        .find(|ancestor| ancestor.join("apps/web/assets/data/tilesets").is_dir())
-        .context("locate repository runtime assets above compiled pack")?;
-    let asset_root = AssetRoot::new(repository_root.to_path_buf());
+    // A verified content pack already owns every runtime asset. Auditing it
+    // must not require an external disassembly/export checkout or write a
+    // duplicate game-content catalog into the repository.
+    let asset_root = AssetRoot::new(pack_path.parent().context("pack directory")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack_path)
         .with_context(|| format!("load compiled pack {}", pack_path.display()))?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
@@ -119,12 +118,11 @@ fn main() -> Result<()> {
         let layout = if let Some(layout) = layouts.get(tileset) {
             layout
         } else {
-            let path = asset_root
-                .runtime_assets()
-                .join("data/tilesets")
-                .join(format!("{tileset}_metatiles.bin"));
-            let bytes = fs::read(&path)
-                .with_context(|| format!("read tileset layout {}", path.display()))?;
+            let path = format!("data/tilesets/{tileset}_metatiles.bin");
+            let bytes = runtime
+                .runtime_file(&path)
+                .with_context(|| format!("read tileset layout {path} from verified pack"))?
+                .to_vec();
             anyhow::ensure!(
                 bytes.len() % 16 == 0,
                 "tileset {tileset} layout length {} is not divisible by 16",
@@ -168,6 +166,7 @@ fn main() -> Result<()> {
                                 tile_index,
                             },
                             texture: Handle::<Image>::default(),
+                            animation_frames: None,
                             priority: false,
                         });
                     }

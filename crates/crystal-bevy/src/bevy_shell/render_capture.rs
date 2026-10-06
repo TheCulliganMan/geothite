@@ -1,5 +1,7 @@
 //! Automated captures share a GPU session and finish on readback, not a timer.
 use super::*;
+// Location-test startup is also available in local browser builds.
+use bevy::utils::Instant;
 use std::sync::{Arc, Mutex};
 
 type Completion = Arc<Mutex<Option<Result<(), String>>>>;
@@ -71,6 +73,8 @@ fn capture(
     keyboard: Res<ButtonInput<KeyCode>>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     status: Res<crystal_voxel_view::VoxelViewStatus>,
+    battle_status: Res<crystal_voxel_view::BattleViewStatus>,
+    battle_frame: Res<crystal_render_api::VisualBattleFrame>,
     mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
     mut screenshots: ResMut<ScreenshotManager>,
@@ -162,7 +166,8 @@ fn capture(
     // Preserve the established 30 active-frame GPU warmup, but drop the
     // unconditional 90-frame startup and 60-frame post-save waits.
     let settled = if settings.enabled {
-        status.active && !status.profiles_pending && status.active_frames >= 30
+        (status.active && !status.profiles_pending && status.active_frames >= 30)
+            || (battle_status.active && battle_status.active_frames >= 30)
     } else {
         status.inactive_reason.as_deref() == Some("disabled")
     };
@@ -177,7 +182,16 @@ fn capture(
         return;
     };
     if capture.identity.is_empty() {
-        capture.identity = format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera);
+        capture.identity = if battle_status.active {
+            format!(
+                "battle|{}|modeled={:?}|source={:?}",
+                battle_frame.map_id,
+                battle_status.modeled_species,
+                battle_status.source_art_species
+            )
+        } else {
+            format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera)
+        };
     }
     let path = capture.path.clone();
     let completion = capture.completion.clone();

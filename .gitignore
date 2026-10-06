@@ -41,3 +41,8 @@ blob-report/
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Editable .blend files and published PNG previews are ordinary tracked assets.
+
+# Optional static model previews duplicate runtime geometry and stay local.
+*.stl

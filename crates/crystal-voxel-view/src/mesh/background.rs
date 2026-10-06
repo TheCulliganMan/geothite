@@ -322,6 +322,7 @@ mod tests {
             active: true,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_id: Arc::from("test"),
+            source_map_size_core_tiles: None,
             map_texture: Handle::default(),
             center: Vec2::ZERO,
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),
@@ -334,6 +335,7 @@ mod tests {
         frame.tiles = (0..height)
             .flat_map(|row| {
                 (0..width).map(move |column| VisualTile {
+                    animation_frames: None,
                     column: column as u32,
                     row: row as u32,
                     source: VisualTileSource {

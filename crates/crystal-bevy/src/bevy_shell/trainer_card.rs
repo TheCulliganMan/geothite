@@ -197,6 +197,7 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         FieldPackPocket::Items
     };
     open_visible_field_pack_pocket(runtime_shell, pocket.clone())?;
+    stage_visible_fishing_pack_scene(runtime_shell, &snapshot);
     runtime_shell.last_audio_events.push(format!(
         "opened Pack pocket {}",
         field_pack_pocket_label(&pocket)
@@ -1415,7 +1416,7 @@ fn visible_pokegear_radio_exit_song(shell: &BevyRuntimeShell) -> Result<Option<S
 
 fn queue_visible_pokegear_restored_music(shell: &mut BevyRuntimeShell, song: String) -> Result<()> {
     let playback = shell.shell.runtime().audio().require_playback_entry(AudioKind::Music, &song)?;
-    let command = BevyAudioCommand { cry_parameters: None,audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
+    let command = BevyAudioCommand { battle_sound: None, cry_parameters: None,audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
         looped: matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop)};
     enqueue_bevy_audio_command(&mut shell.pending_audio, command);
     shell.active_music = Some(song);

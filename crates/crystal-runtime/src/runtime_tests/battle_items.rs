@@ -4084,14 +4084,18 @@ fn runtime_save_rejects_script_runtime_references_missing_from_compiled_pack_imp
     pending_species_mismatch_data
         .pokedex_entries
         .insert("BAYLEEF".to_string(), bayleef_pokedex);
-    pending_species_mismatch_data.pokemon_frontpic_anim.insert(
-        "BAYLEEF".to_string(),
-        pending_species_mismatch_data
-            .pokemon_frontpic_anim
-            .get("CHIKORITA")
-            .expect("chikorita frontpic anim")
-            .clone(),
-    );
+    // This fixture tests the saved species reference, so both required art
+    // programs must be valid before runtime validation reaches that boundary.
+    for suffix in ["", "_IDLE"] {
+        pending_species_mismatch_data.pokemon_frontpic_anim.insert(
+            format!("BAYLEEF{suffix}"),
+            pending_species_mismatch_data
+                .pokemon_frontpic_anim
+                .get(&format!("CHIKORITA{suffix}"))
+                .expect("chikorita frontpic animation program")
+                .clone(),
+        );
+    }
     let pending_species_mismatch_report = report_for(&pending_species_mismatch_data);
     let pending_species_mismatch_runtime = CrystalRuntime::from_compiled_pack(
         &asset_root,

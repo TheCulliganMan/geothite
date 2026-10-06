@@ -90,6 +90,7 @@ mod tests {
         for row in 0..8 {
             for column in 0..12 {
                 cells.push(VisualTile {
+                    animation_frames: None,
                     column,
                     row,
                     source: VisualTileSource {

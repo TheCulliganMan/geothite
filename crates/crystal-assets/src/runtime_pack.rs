@@ -91,6 +91,10 @@ pub struct SweetScentEncounterOutcome {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FishingCastOutcome {
+    /// The facing tile already validated as water by the cast transaction.
+    /// Transient result metadata, never GameState, save or journal payload data.
+    /// The core encounter/catch tile intentionally remains the player's tile.
+    pub checked_water_target: TilePosition,
     pub session: FishingSession,
     pub bite: Option<bool>,
     pub wild_battle: Option<WildBattleStart>,

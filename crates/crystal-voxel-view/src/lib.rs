@@ -3,21 +3,35 @@
 //! Optional, presentation-only voxel view for Crystal's Bevy shell.
 
 mod azalea_gym;
+mod battle_layout;
+mod encounter_terrain;
+mod battle_source_projection;
+pub use battle_source_projection::{
+    BattleSourceBodyRegistration, BattleSourceBodyRegistrations, BattleSourceProjection,
+};
 mod barn;
+mod battle_species_models;
+mod pidgeotto_rig;
+mod species_rig;
 mod battle_tower;
+mod battle_view;
+mod model_storage;
+pub use battle_layout::BattleSceneLayout;
+pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;
 mod building_style;
 mod cafe;
 mod camera;
-mod live_profiles;
 mod casino;
 mod cave;
 mod celadon_gym;
 mod cerulean_gym;
 mod cut_tree;
 mod dance_theater;
+mod dungeon_models;
 mod elevation;
 mod elite_four_room;
+mod exterior_models;
 mod facility;
 mod facility_divider;
 mod flower;
@@ -26,21 +40,32 @@ mod footing;
 mod forest;
 mod fuchsia_gym;
 mod gate;
+mod gate_counter_models;
+mod outdoor_sign_models;
+mod cable_club_models;
 mod goldenrod_underground;
 mod grass;
 mod hall_of_fame;
 mod house;
 mod ice_path;
 mod interior;
+mod interior_cutaway;
+mod occluder_fade;
+mod maze_reveal_batches;
+mod interior_models;
 mod johto_fence;
 mod kanto_cliff;
 mod kanto_post;
 mod lab;
+mod live_profiles;
 mod mart;
 mod mesh;
 mod modern_route;
+mod new_bark_actors;
+mod new_bark_models;
 mod olivine_gym;
 mod park;
+mod park_scenery_models;
 mod players_house;
 mod pokecenter;
 mod pokecom;
@@ -54,8 +79,10 @@ mod saffron_gym;
 mod ship;
 mod sign;
 mod terrain_tracking;
+mod terrain_batches;
 mod tower;
 mod train_station;
+mod train_station_models;
 mod underground_boundary;
 mod underground_path;
 mod vermilion;
@@ -74,10 +101,12 @@ use bevy::tasks::AsyncComputeTaskPool;
 use bevy::tasks::Task;
 use bevy::{
     asset::{AssetId, load_internal_asset},
+    core_pipeline::fxaa::Fxaa,
     core_pipeline::tonemapping::{DebandDither, Tonemapping},
     pbr::{
-        CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, FogFalloff, FogSettings, Material,
-        MaterialExtension, MaterialPipeline, MaterialPipelineKey, MaterialPlugin,
+        CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, FogFalloff,
+        FogSettings, Material, MaterialExtension, MaterialPipeline, MaterialPipelineKey,
+        MaterialPlugin,
     },
     prelude::*,
     render::{
@@ -87,6 +116,7 @@ use bevy::{
             AsBindGroup, CompareFunction, DepthStencilState, Face, RenderPipelineDescriptor,
             ShaderRef, SpecializedMeshPipelineError,
         },
+        renderer::RenderAdapterInfo,
         view::RenderLayers,
     },
     tasks::futures_lite::future,
@@ -100,14 +130,26 @@ pub use footing::{
 };
 pub use mesh::{
     CellCoverageKind, SurfaceMeshData, TerrainImageSamples, TerrainMeshError, audit_cell_coverage,
-    audit_cell_coverage_on_map, build_terrain_mesh, build_terrain_mesh_with_images,
-    build_terrain_mesh_with_samples,
+    audit_cell_coverage_on_map, audit_terrain_mesh_with_images, build_terrain_mesh,
+    build_terrain_mesh_with_images, build_terrain_mesh_with_samples,
 };
 pub use profile::{
     COMPACT_BUILDING_HEIGHT, CellShape, GROUND_HEIGHT, LARGE_BUILDING_HEIGHT, MAX_PROFILE_HEIGHT,
     MIN_PROFILE_HEIGHT, SOURCE_TILE_HEIGHT, SolidKind, WATER_HEIGHT, shape_for_source,
     support_height, supports_frame_profile,
 };
+
+/// Exact resolved actor-source coverage for diagnostics. This does not accept
+/// script tokens, infer identities from an object slot, or guess species.
+pub fn authored_actor_source(source: &str) -> Option<&'static str> {
+    new_bark_actors::authored_source(source)
+}
+
+/// Exact normal-palette battle mesh availability, excluding generic icons.
+pub fn has_authored_battle_species(species: &str) -> bool {
+    battle_species_models::supported_species().any(|id| id.eq_ignore_ascii_case(species))
+        || new_bark_actors::actor_props::battle_species_kind(species).is_some()
+}
 
 /// Parking layer used to keep the classic overworld out of every active
 /// camera while the user has manually selected 2.5D.
@@ -129,6 +171,7 @@ pub struct VoxelViewPlugin;
 
 impl Plugin for VoxelViewPlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(BattleViewPlugin);
         load_internal_asset!(
             app,
             VOXEL_SURFACE_SHADER_HANDLE,
@@ -136,6 +179,8 @@ impl Plugin for VoxelViewPlugin {
             Shader::from_wgsl
         );
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
+        #[cfg(not(target_arch = "wasm32"))]
+        app.add_systems(Update, native_model_camera.before(sync_voxel_view));
         load_internal_asset!(
             app,
             SILHOUETTE_SHADER_HANDLE,
@@ -143,7 +188,14 @@ impl Plugin for VoxelViewPlugin {
             Shader::from_wgsl
         );
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
-        app.init_resource::<VoxelViewSettings>()
+        app.init_resource::<new_bark_actors::ModeledActors>()
+            .add_systems(
+                Update,
+                new_bark_actors::sync
+                    .after(sync_voxel_view)
+                    .in_set(WorldRenderSet::RenderSync),
+            )
+            .init_resource::<VoxelViewSettings>()
             .init_resource::<VoxelViewStatus>()
             .init_resource::<live_profiles::LiveProfiles>()
             .add_systems(Update, live_profiles::reload.before(sync_voxel_view))
@@ -153,17 +205,29 @@ impl Plugin for VoxelViewPlugin {
             .init_resource::<TerrainBuildQueue>()
             .init_resource::<ActorIdCache>()
             .init_resource::<PlayerSilhouetteCache>()
-            .add_systems(PostUpdate, project_actor_heads.after(bevy::transform::TransformSystem::TransformPropagate).in_set(ActorHeadProjection))
+            .add_systems(
+                PostUpdate,
+                project_actor_heads
+                    .after(bevy::transform::TransformSystem::TransformPropagate)
+                    .in_set(ActorHeadProjection),
+            )
             .add_systems(Startup, setup_voxel_view)
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
             .add_systems(
                 Update,
+                sync_interior_cutaway
+                    .after(sync_voxel_view)
+                    .in_set(WorldRenderSet::RenderSync),
+            )
+            .add_systems(
+                Update,
                 sync_player_silhouette_system
                     .after(sync_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
+        occluder_fade::register(app);
     }
 }
 
@@ -183,21 +247,38 @@ pub struct ActorScreenHeads(pub HashMap<VisualActorId, Vec2>);
 pub struct ActorHeadProjection;
 
 fn project_actor_heads(
-    status: Res<VoxelViewStatus>, cache: Res<ActorIdCache>,
+    status: Res<VoxelViewStatus>,
+    cache: Res<ActorIdCache>,
     cameras: Query<(&Camera, &GlobalTransform), With<VoxelWorldCamera>>,
     cards: Query<&GlobalTransform, With<VoxelActorCard>>,
     mut heads: ResMut<ActorScreenHeads>,
 ) {
     heads.0.clear();
-    if !status.active { return; }
-    let Ok((camera, camera_transform)) = cameras.get_single() else { return; };
-    let (Some(size), Some(rect)) = (camera.logical_target_size(), camera.logical_viewport_rect()) else { return; };
+    if !status.active {
+        return;
+    }
+    let Ok((camera, camera_transform)) = cameras.get_single() else {
+        return;
+    };
+    let (Some(size), Some(rect)) = (camera.logical_target_size(), camera.logical_viewport_rect())
+    else {
+        return;
+    };
     for (id, entity) in &cache.entities {
-        if !matches!(id, VisualActorId::Player | VisualActorId::RemotePlayer(_)) { continue; }
-        let Ok(transform) = cards.get(*entity) else { continue; };
-        if let Some(point) = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y)) {
+        if !matches!(id, VisualActorId::Player | VisualActorId::RemotePlayer(_)) {
+            continue;
+        }
+        let Ok(transform) = cards.get(*entity) else {
+            continue;
+        };
+        if let Some(point) =
+            camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y))
+        {
             let normalized = (point + rect.min) / size;
-            if normalized.is_finite() && normalized.cmpge(Vec2::ZERO).all() && normalized.cmple(Vec2::ONE).all() {
+            if normalized.is_finite()
+                && normalized.cmpge(Vec2::ZERO).all()
+                && normalized.cmple(Vec2::ONE).all()
+            {
                 heads.0.insert(*id, normalized);
             }
         }
@@ -237,6 +318,9 @@ fn toggle_voxel_view(keyboard: Res<ButtonInput<KeyCode>>, mut settings: ResMut<V
 struct VoxelWorldCamera;
 
 #[derive(Component)]
+struct VoxelSun;
+
+#[derive(Component)]
 struct VoxelTerrain;
 
 #[derive(Component)]
@@ -261,6 +345,7 @@ struct VoxelScene {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TerrainCacheKey {
     map_id: std::sync::Arc<str>,
+    source_map_size_core_tiles: Option<UVec2>,
     grid_origin: IVec2,
     revision: u64,
     profiles_revision: u64,
@@ -273,6 +358,7 @@ impl TerrainCacheKey {
     fn from_frame(frame: &VisualWorldFrame) -> Self {
         Self {
             map_id: frame.map_id.clone(),
+            source_map_size_core_tiles: frame.source_map_size_core_tiles,
             grid_origin: frame.grid_origin,
             revision: frame.terrain_revision,
             profiles_revision: 0,
@@ -289,6 +375,12 @@ impl TerrainCacheKey {
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
     built_frame: Option<VisualWorldFrame>,
+    // Exact profile document consumed by the completed build, never a desired revision.
+    built_profiles: Option<std::sync::Arc<live_profiles::Document>>,
+    // Original compositor handle at build submission; built_frame owns its atlas copy.
+    built_source_texture: Option<Handle<Image>>,
+    // Exact current bounds for the two mutable flower domains.
+    built_animated_bounds: [Option<bevy::render::primitives::Aabb>; 2],
     built_footing_heights: Vec<f32>,
     footing_origin: Option<IVec2>,
     key: Option<TerrainCacheKey>,
@@ -297,8 +389,6 @@ struct TerrainRevisionCache {
     solid_entity: Option<Entity>,
     animated_textured_entity: Option<Entity>,
     animated_solid_entity: Option<Entity>,
-    textured_mesh: Option<Handle<Mesh>>,
-    solid_mesh: Option<Handle<Mesh>>,
     animated_textured_mesh: Option<Handle<Mesh>>,
     animated_solid_mesh: Option<Handle<Mesh>>,
     textured_material: Option<Handle<VoxelMaterial>>,
@@ -319,15 +409,20 @@ struct TerrainBuildQueue {
 struct TerrainBuildResult {
     key: TerrainCacheKey,
     frame: VisualWorldFrame,
+    source_texture: Handle<Image>,
+    profiles: std::sync::Arc<live_profiles::Document>,
     terrain: Result<BuiltTerrain, TerrainMeshError>,
 }
 
 struct BuiltTerrain {
     background: Option<(Mesh, Handle<Image>)>,
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
+    reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
+    fade_textured_groups: Vec<occluder_fade::PreparedGroup>,
+    fade_solid_groups: Vec<occluder_fade::PreparedGroup>,
     footing_heights: Vec<f32>,
-    textured_mesh: Mesh,
-    solid_mesh: Mesh,
+    textured_meshes: Vec<terrain_batches::PreparedBatch>,
+    solid_meshes: Vec<terrain_batches::PreparedBatch>,
     animated_textured_mesh: Mesh,
     animated_solid_mesh: Mesh,
 }
@@ -424,10 +519,28 @@ fn setup_voxel_view(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut scene: ResMut<VoxelScene>,
+    adapter: Option<Res<RenderAdapterInfo>>,
 ) {
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some() {
+        if let Some(adapter) = adapter.as_ref() {
+            eprintln!(
+                "modeled renderer adapter: name={} device={:?} backend={:?}",
+                adapter.name, adapter.device_type, adapter.backend
+            );
+        }
+    }
     // Face colors retain their authored shade; this light supplies only
     // the scene's depth-tested cast-shadow visibility.
-    commands.insert_resource(DirectionalLightShadowMap { size: 2048 });
+    #[cfg(not(target_arch = "wasm32"))]
+    let shadow_size = match std::env::var("CRYSTAL_MODELED_SHADOW_RESOLUTION").as_deref() {
+        Ok("512") => 512,
+        Ok("1024") => 1024,
+        _ => 2048,
+    };
+    #[cfg(target_arch = "wasm32")]
+    let shadow_size = 2048;
+    commands.insert_resource(DirectionalLightShadowMap { size: shadow_size });
     let initial_viewport = Vec2::new(160.0, 144.0);
     let pose = camera_pose(initial_viewport);
     let camera = commands
@@ -463,6 +576,12 @@ fn setup_voxel_view(
                 directional_light_color: Color::NONE,
                 ..default()
             },
+            // Smooth modeled silhouette edges without changing the faithful
+            // 2D camera or its nearest-neighbor sprite textures.
+            Fxaa {
+                enabled: false,
+                ..default()
+            },
             VoxelWorldCamera,
         ))
         .id();
@@ -494,6 +613,7 @@ fn setup_voxel_view(
             ..default()
         },
         RenderLayers::layer(VOXEL_RENDER_LAYER),
+        VoxelSun,
     ));
 
     scene.camera = Some(camera);
@@ -533,9 +653,13 @@ fn sync_voxel_view(
     >,
 ) {
     let (settings, profiles) = presentation;
-    status.profiles_pending = terrain_cache.key.as_ref()
+    status.profiles_pending = terrain_cache
+        .key
+        .as_ref()
         .is_none_or(|key| key.profiles_revision != profiles.revision);
-    if status.profiles_pending { status.active_frames = 0; }
+    if status.profiles_pending {
+        status.active_frames = 0;
+    }
     if status.active
         && !profiles.is_changed()
         && !status.profiles_pending
@@ -728,16 +852,43 @@ fn sync_voxel_atmosphere(
     frame: Res<VisualWorldFrame>,
     profiles: Res<live_profiles::LiveProfiles>,
     settings: Res<VoxelViewSettings>,
-    mut cameras: Query<&mut FogSettings, With<VoxelWorldCamera>>,
+    adapter: Option<Res<RenderAdapterInfo>>,
+    mut lights: Query<&mut DirectionalLight, With<VoxelSun>>,
+    mut cameras: Query<(&mut FogSettings, &mut Fxaa), With<VoxelWorldCamera>>,
 ) {
     if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed() {
         return;
     }
     let atmosphere = profiles.document.atmosphere.as_ref().filter(|atmosphere| {
-        frame.active && settings.enabled
-            && atmosphere.maps.iter().any(|map| map == frame.map_id.as_ref())
+        frame.active
+            && settings.enabled
+            && atmosphere
+                .maps
+                .iter()
+                .any(|map| map == frame.map_id.as_ref())
     });
-    for mut fog in &mut cameras {
+    // CPU rasterizers pay for the entire broad terrain halo again in the
+    // shadow pass. Authored contact shading already grounds these scenes;
+    // retain dynamic shadows on hardware and use that baked support on known
+    // software drivers. This changes rendering only, never world state.
+    let software = adapter
+        .as_ref()
+        .is_some_and(|adapter| software_renderer(&adapter.name));
+    let mut shadows = !new_bark_models::supports_map(&frame.map_id) || !software;
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        match std::env::var("CRYSTAL_MODELED_SHADOWS").as_deref() {
+            Ok("on") => shadows = true,
+            Ok("off") => shadows = false,
+            _ => {}
+        }
+    }
+    for mut light in &mut lights {
+        light.shadows_enabled = shadows;
+    }
+    for (mut fog, mut fxaa) in &mut cameras {
+        fxaa.enabled =
+            frame.active && settings.enabled && new_bark_models::supports_map(&frame.map_id);
         if let Some(atmosphere) = atmosphere {
             let pose = settings.camera.pose(frame.viewport_size);
             let target_distance = pose.eye.distance(pose.target);
@@ -750,6 +901,23 @@ fn sync_voxel_atmosphere(
             fog.color = Color::NONE;
         }
     }
+}
+
+fn software_renderer(name: &str) -> bool {
+    let name = name.to_ascii_lowercase();
+    ["llvmpipe", "softpipe", "swiftshader", "software rasterizer"]
+        .iter()
+        .any(|label| name.contains(label))
+}
+
+#[cfg(test)]
+#[test]
+fn modeled_software_shadow_profile_does_not_match_hardware_adapters() {
+    assert!(software_renderer("llvmpipe (LLVM 19, 256 bits)"));
+    assert!(software_renderer("Google SwiftShader"));
+    assert!(!software_renderer("Apple M3"));
+    assert!(!software_renderer("NVIDIA RTX 4080"));
+    assert!(!software_renderer("Intel Iris Xe"));
 }
 
 fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
@@ -810,6 +978,7 @@ fn sync_terrain(
     {
         cache.key = None;
         cache.built_frame = None;
+        cache.built_profiles = None;
         for entity in [
             cache.instances_root,
             cache.textured_entity,
@@ -826,7 +995,10 @@ fn sync_terrain(
         }
     }
     if cache.key.as_ref() != Some(&next_key)
-        && cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
+        && cache
+            .key
+            .as_ref()
+            .is_some_and(|key| key.profiles_revision == profiles.revision)
         && cache
             .built_frame
             .as_ref()
@@ -837,6 +1009,7 @@ fn sync_terrain(
     if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
         builds.started += 1;
         let mut build_frame = frame.clone();
+        let source_texture = frame.map_texture.clone();
         // The host overwrites its viewport image during every scroll. Own an
         // immutable copy for the lifetime of this mesh, including async work.
         let atlas = images
@@ -855,35 +1028,62 @@ fn sync_terrain(
             // vertex/index buffer. Keep that work on the compute task too;
             // doing it when polling the completed build caused a deterministic
             // 30-45 ms main-thread hitch several seconds into 2.5D movement.
-            let terrain = mesh::build_instanced_terrain_mesh_with_profiles(&build_frame, &samples, &profile_document)
-                .map(|mut terrain| {
-                    let animated_textured_mesh =
-                        std::mem::take(&mut terrain.animated_textured).into_mesh();
-                    let animated_solid_mesh =
-                        std::mem::take(&mut terrain.animated_solid).into_mesh();
-                    let background = terrain
-                        .background
-                        .take()
-                        .map(|b| (b.mesh.into_mesh(), b.texture));
-                    let instances = std::mem::take(&mut terrain.tree_instances)
-                        .into_iter()
-                        .map(|group| (group.mesh.into_mesh(), group.origins))
-                        .collect();
-                    let footing_heights = terrain.footing_heights.clone();
-                    let (textured_mesh, solid_mesh) = terrain.into_meshes();
-                    BuiltTerrain {
-                        background,
-                        instances,
-                        footing_heights,
-                        textured_mesh,
-                        solid_mesh,
-                        animated_textured_mesh,
-                        animated_solid_mesh,
-                    }
-                });
+            let terrain = mesh::build_instanced_terrain_mesh_with_profiles(
+                &build_frame,
+                &samples,
+                &profile_document,
+            )
+            .map(|mut terrain| {
+                // The public mesh stays complete until this explicit runtime
+                // partition. Both pieces are uploaded only with the revision.
+                // Whole-object translucency can expose every original join.
+                // Keep these triangles in their owning wall rather than applying
+                // the old capsule's camera-dependent hidden-face selection.
+                terrain.reveal_join_batches.clear();
+                let reveal_join_batches = Vec::new();
+                let animated_textured_mesh =
+                    std::mem::take(&mut terrain.animated_textured).into_mesh();
+                let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
+                let background = terrain
+                    .background
+                    .take()
+                    .map(|b| (b.mesh.into_mesh(), b.texture));
+                let instances = std::mem::take(&mut terrain.tree_instances)
+                    .into_iter()
+                    .map(|group| (group.mesh.into_mesh(), group.origins))
+                    .collect();
+                let footing_heights = terrain.footing_heights.clone();
+                let (textured, solid, fade_textured_groups, fade_solid_groups) =
+                    occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
+                let source_bounds = authentic_mesh_bounds(&build_frame);
+                let textured_meshes = terrain_batches::prepare_with_authentic_bounds(
+                    textured,
+                    build_frame.tile_size,
+                    source_bounds,
+                );
+                let solid_meshes = terrain_batches::prepare_with_authentic_bounds(
+                    solid,
+                    build_frame.tile_size,
+                    source_bounds,
+                );
+                BuiltTerrain {
+                    background,
+                    instances,
+                    reveal_join_batches,
+                    fade_textured_groups,
+                    fade_solid_groups,
+                    footing_heights,
+                    textured_meshes,
+                    solid_meshes,
+                    animated_textured_mesh,
+                    animated_solid_mesh,
+                }
+            });
             TerrainBuildResult {
                 key: build_key,
                 frame: build_frame,
+                source_texture,
+                profiles: profile_document,
                 terrain,
             }
         };
@@ -910,10 +1110,14 @@ fn sync_terrain(
             builds.task = None;
         }
         builds.key = None;
-        if completed.key == next_key || (completed.key.profiles_revision == profiles.revision
-            && terrain_tracking::can_reuse(&completed.frame, frame)) {
+        if completed.key == next_key
+            || (completed.key.profiles_revision == profiles.revision
+                && terrain_tracking::can_reuse(&completed.frame, frame))
+        {
             let terrain = completed.terrain.map_err(TerrainSyncError::Mesh)?;
-            let profile_changed = cache.key.as_ref()
+            let profile_changed = cache
+                .key
+                .as_ref()
                 .is_none_or(|key| key.profiles_revision != next_key.profiles_revision);
             apply_built_terrain(
                 &completed.frame,
@@ -925,8 +1129,13 @@ fn sync_terrain(
                 materials,
                 images,
             )?;
+            cache.built_source_texture = Some(completed.source_texture);
+            cache.built_profiles = Some(completed.profiles);
             if profile_changed {
-                println!("geometry profile mesh applied: revision {}", next_key.profiles_revision);
+                println!(
+                    "geometry profile mesh applied: revision {}",
+                    next_key.profiles_revision
+                );
             }
         }
     }
@@ -940,8 +1149,9 @@ fn sync_terrain(
                 if flowers_changed {
                     let (textured, solid) = mesh::build_animated_flowers(built, images)
                         .map_err(TerrainSyncError::Mesh)?;
-                    update_mesh_asset(meshes, &mut cache.animated_textured_mesh, textured);
-                    update_mesh_asset(meshes, &mut cache.animated_solid_mesh, solid);
+                    cache.built_animated_bounds = [textured.compute_aabb(), solid.compute_aabb()];
+                    update_mesh_asset(meshes, &mut cache.animated_textured_mesh, retain_animated_mesh_cpu(textured));
+                    update_mesh_asset(meshes, &mut cache.animated_solid_mesh, retain_animated_mesh_cpu(solid));
                 }
             }
         }
@@ -977,6 +1187,11 @@ fn sync_terrain(
                 if *transform != live_transform {
                     *transform = live_transform;
                 }
+            } else {
+                // A completed asynchronous build queued these roots earlier in
+                // this system. Set their live scroll offset before Commands
+                // materializes them, rather than drawing the built pose once.
+                commands.entity(entity).insert((Visibility::Visible, live_transform));
             }
         }
     }
@@ -1000,20 +1215,21 @@ fn apply_built_terrain(
 ) -> Result<(), TerrainSyncError> {
     cache.footing_origin = None;
     cache.built_frame = Some(frame.clone());
+    cache.built_profiles = None;
+    cache.built_source_texture = Some(frame.map_texture.clone());
+    cache.built_animated_bounds = [terrain.animated_textured_mesh.compute_aabb(),
+        terrain.animated_solid_mesh.compute_aabb()];
     cache.built_footing_heights = terrain.footing_heights;
 
-    let textured_mesh_handle =
-        update_mesh_asset(meshes, &mut cache.textured_mesh, terrain.textured_mesh);
-    let solid_mesh_handle = update_mesh_asset(meshes, &mut cache.solid_mesh, terrain.solid_mesh);
     let animated_textured = update_mesh_asset(
         meshes,
         &mut cache.animated_textured_mesh,
-        terrain.animated_textured_mesh,
+        retain_animated_mesh_cpu(terrain.animated_textured_mesh),
     );
     let animated_solid = update_mesh_asset(
         meshes,
         &mut cache.animated_solid_mesh,
-        terrain.animated_solid_mesh,
+        retain_animated_mesh_cpu(terrain.animated_solid_mesh),
     );
     let textured_material_handle = if let Some(handle) = cache.textured_material.as_ref() {
         sync_terrain_texture(materials, handle, &frame.map_texture)?;
@@ -1067,8 +1283,24 @@ fn apply_built_terrain(
                     ..default()
                 },
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
+                encounter_terrain::SyntheticTerrainApron,
             ))
             .id();
+        commands.entity(root).add_child(child);
+    }
+    for (mesh, batch) in terrain.reveal_join_batches {
+        let child = commands.spawn((
+            MaterialMeshBundle::<VoxelMaterial> {
+                mesh: meshes.add(mesh),
+                material: solid_material_handle.clone(),
+                // Absolute built-grid coordinates are unchanged. Identity
+                // local transform inherits the same retained scrolling root.
+                visibility: Visibility::Inherited,
+                ..default()
+            },
+            RenderLayers::layer(VOXEL_RENDER_LAYER),
+            batch,
+        )).id();
         commands.entity(root).add_child(child);
     }
     for (mesh, origins) in terrain.instances {
@@ -1088,6 +1320,10 @@ fn apply_built_terrain(
             commands.entity(root).add_child(child);
         }
     }
+    occluder_fade::spawn_groups(commands, meshes, materials, root,
+        terrain.fade_textured_groups, textured_material_handle.clone(), None);
+    occluder_fade::spawn_groups(commands, meshes, materials, root,
+        terrain.fade_solid_groups, solid_material_handle.clone(), Some(textured_material_handle.clone()));
     cache.instances_root = Some(root);
 
     if cache.animated_textured_entity.is_none() {
@@ -1106,25 +1342,72 @@ fn apply_built_terrain(
             frame,
         ));
     }
-    if cache.textured_entity.is_none() {
-        cache.textured_entity = Some(spawn_terrain_entity(
-            commands,
-            textured_mesh_handle,
-            textured_material_handle,
-            frame,
-        ));
-    }
-    if cache.solid_entity.is_none() {
-        cache.solid_entity = Some(spawn_terrain_entity(
-            commands,
-            solid_mesh_handle,
-            solid_material_handle,
-            frame,
-        ));
-    }
+    replace_static_terrain_batches(
+        commands,
+        meshes,
+        &mut cache.textured_entity,
+        terrain.textured_meshes,
+        textured_material_handle,
+        frame,
+    );
+    replace_static_terrain_batches(
+        commands,
+        meshes,
+        &mut cache.solid_entity,
+        terrain.solid_meshes,
+        solid_material_handle,
+        frame,
+    );
 
     cache.key = Some(key);
     Ok(())
+}
+
+/// Static roots retain the same scrolling/visibility contract as the previous
+/// combined meshes. Only their children draw. Replacing the complete hierarchy
+/// also replaces every AABB, so no bound from an earlier map/revision survives.
+fn replace_static_terrain_batches(
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    cached_root: &mut Option<Entity>,
+    batches: Vec<terrain_batches::PreparedBatch>,
+    material: Handle<VoxelMaterial>,
+    frame: &VisualWorldFrame,
+) {
+    if let Some(root) = cached_root.take() {
+        commands.entity(root).despawn_recursive();
+    }
+    let root = commands
+        .spawn((
+            SpatialBundle {
+                transform: terrain_transform(frame),
+                ..default()
+            },
+            VoxelTerrain,
+        ))
+        .id();
+    for terrain_batches::PreparedBatch {
+        mesh,
+        bounds,
+        authentic_domain,
+    } in batches {
+        let mut child = commands.spawn((
+            MaterialMeshBundle::<VoxelMaterial> {
+                mesh: meshes.add(mesh),
+                material: material.clone(),
+                visibility: Visibility::Inherited,
+                ..default()
+            },
+            RenderLayers::layer(VOXEL_RENDER_LAYER),
+            authentic_domain,
+        ));
+        if let Some(bounds) = bounds {
+            child.insert(bounds);
+        }
+        let child = child.id();
+        commands.entity(root).add_child(child);
+    }
+    *cached_root = Some(root);
 }
 
 fn sync_terrain_texture(
@@ -1145,6 +1428,13 @@ fn sync_terrain_texture(
             .base_color_texture = Some(texture.clone());
     }
     Ok(())
+}
+
+// Only the two mutable flower domains retain CPU data. A checked encounter
+// takes one exact private copy; all ordinary static terrain stays render-only.
+fn retain_animated_mesh_cpu(mut mesh: Mesh) -> Mesh {
+    mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::default();
+    mesh
 }
 
 fn update_mesh_asset(
@@ -1216,7 +1506,10 @@ const VOXEL_SURFACE_SHADER_HANDLE: Handle<Shader> =
     Handle::weak_from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542);
 
 #[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default)]
-struct VoxelSurface {}
+struct VoxelSurface {
+    #[uniform(100)]
+    cutaway: interior_cutaway::CutawayUniform,
+}
 impl MaterialExtension for VoxelSurface {
     fn fragment_shader() -> ShaderRef {
         VOXEL_SURFACE_SHADER_HANDLE.into()
@@ -1226,7 +1519,48 @@ impl MaterialExtension for VoxelSurface {
 fn voxel_material(base: StandardMaterial) -> VoxelMaterial {
     ExtendedMaterial {
         base,
-        extension: VoxelSurface {},
+        extension: VoxelSurface::default(),
+    }
+}
+
+/// Publish the resolved player support/capsule to the whole-object fade system.
+/// It uses the current propagated camera and cached authored triangles.
+fn sync_interior_cutaway(
+    frame: Res<VisualWorldFrame>,
+    status: Res<VoxelViewStatus>,
+    cache: Res<TerrainRevisionCache>,
+    mut materials: ResMut<Assets<VoxelMaterial>>,
+) {
+    let Some(handle) = cache.solid_material.as_ref() else {
+        return;
+    };
+    let next = if status.active
+        && interior_cutaway::diagnostic_mode() != interior_cutaway::DiagnosticMode::ZeroRadius
+    {
+        frame
+            .actors
+            .iter()
+            .find(|actor| actor.id == VisualActorId::Player)
+            .and_then(|actor| {
+                let foot = actor_foot(actor);
+                let height = resolved_footing_height(&frame, foot, &cache.footing_heights)?;
+                interior_cutaway::CutawayUniform::for_player(
+                    visual_point_to_voxel(foot, height + 0.04),
+                    frame.tile_size.y * 2.0,
+                )
+            })
+            .unwrap_or_default()
+    } else {
+        interior_cutaway::CutawayUniform::default()
+    };
+    // Avoid marking a material changed while the published player is idle.
+    if materials
+        .get(handle)
+        .is_some_and(|material| material.extension.cutaway != next)
+    {
+        if let Some(material) = materials.get_mut(handle) {
+            material.extension.cutaway = next;
+        }
     }
 }
 
@@ -1371,7 +1705,9 @@ fn sync_player_silhouette_system(
     let Some(actor_quad) = scene.actor_quad.as_ref() else {
         return;
     };
-    if !status.active {
+    // A card silhouette would be occluded by the player's own 3D body and
+    // incorrectly paint the old pixel sprite across its front.
+    if !status.active || new_bark_actors::has_modeled_player(&frame) {
         if let Some(entity) = cache.entity
             && let Ok((_, mut visibility, _)) = entities.get_mut(entity)
         {
@@ -1529,14 +1865,18 @@ fn actor_transform(
     let foot = actor_foot(actor);
     let height = resolved_footing_height(frame, foot, footing_heights)?;
     let mut position = visual_point_to_voxel(foot, height + 0.05);
-    let rotation = if matches!(actor.id, VisualActorId::Object(_) | VisualActorId::Player) {
+    let rotation = if matches!(
+        actor.id,
+        VisualActorId::Object(_) | VisualActorId::Player | VisualActorId::RemotePlayer(_)
+    ) {
         // Directional character artwork supplies the visible side. Keep the card
         // vertical and its bottom pivot on the footing, with no camera pull.
         let toward_eye = pose.eye - pose.target;
         Quat::from_rotation_y(toward_eye.x.atan2(toward_eye.z))
     } else {
         let profile_scale = frame.tile_size.y / SOURCE_TILE_HEIGHT;
-        let camera_pull = actor_camera_pull(actor, CAMERA_PITCH_DEGREES.to_radians()) * profile_scale;
+        let camera_pull =
+            actor_camera_pull(actor, CAMERA_PITCH_DEGREES.to_radians()) * profile_scale;
         position += (pose.eye - pose.target).normalize_or_zero() * camera_pull;
         camera::card_rotation_toward_camera(pose)
     };
@@ -1547,7 +1887,10 @@ fn actor_transform(
         } else {
             actor.size.x
         },
-        if matches!(actor.id, VisualActorId::Object(_) | VisualActorId::Player) {
+        if matches!(
+            actor.id,
+            VisualActorId::Object(_) | VisualActorId::Player | VisualActorId::RemotePlayer(_)
+        ) {
             // Preserve authored front-on proportions under the fixed terrain
             // pitch without leaning the sprite or lifting its bottom pivot.
             actor.size.y / CAMERA_PITCH_DEGREES.to_radians().cos()
@@ -1573,6 +1916,30 @@ fn actor_camera_pull(actor: &VisualActor, pitch_radians: f32) -> f32 {
 
 fn terrain_transform(frame: &VisualWorldFrame) -> Transform {
     Transform::from_xyz(frame.center.x, 0.0, -frame.center.y)
+}
+
+/// The intersection of actual source acreage and the built grid, in the mesh's
+/// local X/Z coordinates. Screen center/camera movement cannot change it.
+fn authentic_mesh_bounds(frame: &VisualWorldFrame) -> Option<terrain_batches::AuthenticBounds> {
+    let source = frame.source_map_size_core_tiles?;
+    if source.min_element() == 0
+        || !frame.tile_size.is_finite()
+        || frame.tile_size.min_element() <= 0.0
+    {
+        return None;
+    }
+    let start = frame.grid_origin.as_vec2();
+    let size = frame.grid_size.as_vec2();
+    let lo = start.max(Vec2::ZERO);
+    let hi = (start + size).min(source.as_vec2() * 2.0);
+    if hi.cmple(lo).any() {
+        return None;
+    }
+    let origin = -size * frame.tile_size * 0.5;
+    let min = origin + (lo - start) * frame.tile_size;
+    let max = origin + (hi - start) * frame.tile_size;
+    (min.is_finite() && max.is_finite())
+        .then_some(terrain_batches::AuthenticBounds { min, max })
 }
 
 fn retained_terrain_transform(
@@ -1636,6 +2003,32 @@ mod renderer_tests {
     use super::*;
 
     #[test]
+    fn authentic_source_bounds_use_core_tiles_and_ignore_camera_center() {
+        let mut frame = VisualWorldFrame {
+            source_map_size_core_tiles: Some(UVec2::new(4, 3)),
+            grid_origin: IVec2::new(-2, -3),
+            grid_size: UVec2::splat(10),
+            tile_size: Vec2::splat(32.0),
+            ..default()
+        };
+        let bounds = authentic_mesh_bounds(&frame).unwrap();
+        assert_eq!(bounds.min, Vec2::new(-96.0, -64.0));
+        assert_eq!(bounds.max, Vec2::new(160.0, 128.0));
+        frame.center = Vec2::new(800.0, -1400.0);
+        let moved = authentic_mesh_bounds(&frame).unwrap();
+        assert_eq!(moved.min, bounds.min);
+        assert_eq!(moved.max, bounds.max);
+        let key = TerrainCacheKey::from_frame(&frame);
+        frame.source_map_size_core_tiles = Some(UVec2::new(4, 4));
+        assert_ne!(TerrainCacheKey::from_frame(&frame), key);
+        frame.grid_origin = IVec2::splat(100);
+        assert!(authentic_mesh_bounds(&frame).is_none());
+        frame.grid_origin = IVec2::ZERO;
+        frame.source_map_size_core_tiles = None;
+        assert!(authentic_mesh_bounds(&frame).is_none());
+    }
+
+    #[test]
     fn tree_instances_share_meshes_and_replacement_removes_the_old_hierarchy() {
         let mut world = World::new();
         let mut images = Assets::<Image>::default();
@@ -1650,9 +2043,12 @@ mod renderer_tests {
             let terrain = BuiltTerrain {
                 background: None,
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
+                reveal_join_batches: Vec::new(),
+                fade_textured_groups: Vec::new(),
+                fade_solid_groups: Vec::new(),
                 footing_heights: Vec::new(),
-                textured_mesh: actor_quad_mesh(),
-                solid_mesh: actor_quad_mesh(),
+                textured_meshes: vec![actor_quad_mesh().into()],
+                solid_meshes: vec![actor_quad_mesh().into()],
                 animated_textured_mesh: actor_quad_mesh(),
                 animated_solid_mesh: actor_quad_mesh(),
             };
@@ -1684,6 +2080,139 @@ mod renderer_tests {
             );
             previous.extend(children.iter().copied());
             previous.push(root);
+        }
+    }
+
+    #[test]
+    fn static_batches_replace_bounds_and_inherit_scroll_and_transition_visibility() {
+        use bevy::render::primitives::Aabb;
+        let mut app = App::new();
+        app.add_plugins((
+            MinimalPlugins,
+            bevy::transform::TransformPlugin,
+            bevy::render::view::VisibilityPlugin,
+        ))
+        .init_resource::<Assets<Mesh>>();
+        let material = Handle::<VoxelMaterial>::weak_from_u128(314159);
+        let mut root = None;
+        let mut old_entities = Vec::new();
+        for revision in 0..3 {
+            let frame = VisualWorldFrame {
+                center: Vec2::new(revision as f32 * 31.0, -17.0),
+                ..default()
+            };
+            let mut first = actor_quad_mesh();
+            let shift = revision as f32 * 100.0;
+            first.insert_attribute(
+                Mesh::ATTRIBUTE_POSITION,
+                vec![
+                    [shift - 0.5, 0.0, 0.0],
+                    [shift + 0.5, 0.0, 0.0],
+                    [shift + 0.5, 1.0, 0.0],
+                    [shift - 0.5, 1.0, 0.0],
+                ],
+            );
+            let expected_bounds = first.compute_aabb().unwrap();
+            app.world_mut()
+                .resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
+                    let mut queue = bevy::ecs::world::CommandQueue::default();
+                    let mut commands = Commands::new(&mut queue, world);
+                    replace_static_terrain_batches(
+                        &mut commands,
+                        &mut meshes,
+                        &mut root,
+                        vec![first.into(), actor_quad_mesh().into()],
+                        material.clone(),
+                        &frame,
+                    );
+                    queue.apply(world);
+                });
+            app.update();
+            for old in old_entities.drain(..) {
+                assert!(app.world().get_entity(old).is_none());
+            }
+            let root = root.unwrap();
+            assert!(app.world().get::<Handle<Mesh>>(root).is_none());
+            assert_eq!(
+                *app.world().get::<Transform>(root).unwrap(),
+                terrain_transform(&frame)
+            );
+            let children = app.world().get::<Children>(root).unwrap().to_vec();
+            assert_eq!(children.len(), 2);
+            assert_eq!(
+                *app.world().get::<Aabb>(children[0]).unwrap(),
+                expected_bounds
+            );
+            for &child in &children {
+                assert_eq!(
+                    app.world().get::<Handle<VoxelMaterial>>(child),
+                    Some(&material)
+                );
+                assert_eq!(
+                    *app.world().get::<Transform>(child).unwrap(),
+                    Transform::IDENTITY
+                );
+                assert_eq!(
+                    *app.world().get::<Visibility>(child).unwrap(),
+                    Visibility::Inherited
+                );
+                assert_eq!(
+                    app.world().get::<GlobalTransform>(child),
+                    app.world().get::<GlobalTransform>(root)
+                );
+                assert!(app.world().get::<InheritedVisibility>(child).unwrap().get());
+            }
+            let handles = children
+                .iter()
+                .map(|&child| app.world().get::<Handle<Mesh>>(child).unwrap().clone())
+                .collect::<Vec<_>>();
+            let count = app.world().resource::<Assets<Mesh>>().len();
+            app.world_mut()
+                .get_mut::<Transform>(root)
+                .unwrap()
+                .translation
+                .x += 11.0;
+            *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Hidden;
+            app.update();
+            for &child in &children {
+                assert!(!app.world().get::<InheritedVisibility>(child).unwrap().get());
+                assert_eq!(
+                    app.world().get::<GlobalTransform>(child),
+                    app.world().get::<GlobalTransform>(root)
+                );
+            }
+            *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Visible;
+            app.update();
+            app.world_mut().clear_trackers();
+            app.update();
+            assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
+            for (&child, handle) in children.iter().zip(handles) {
+                assert!(app.world().get::<InheritedVisibility>(child).unwrap().get());
+                assert_eq!(app.world().get::<Handle<Mesh>>(child), Some(&handle));
+                assert!(
+                    !app.world()
+                        .entity(child)
+                        .get_ref::<Handle<Mesh>>()
+                        .unwrap()
+                        .is_changed()
+                );
+            }
+            assert_eq!(
+                app.world_mut()
+                    .query_filtered::<Entity, With<VoxelTerrain>>()
+                    .iter(app.world())
+                    .count(),
+                1
+            );
+            assert_eq!(
+                app.world_mut()
+                    .query::<&Handle<Mesh>>()
+                    .iter(app.world())
+                    .count(),
+                2
+            );
+            old_entities.extend(children);
+            old_entities.push(root);
         }
     }
 
@@ -1738,6 +2267,61 @@ mod renderer_tests {
                 &mut entities
             ),
             Ok(TerrainSyncState::Ready)
+        );
+    }
+
+    #[test]
+    fn newly_queued_terrain_roots_receive_live_scroll_before_the_first_draw() {
+        let built = VisualWorldFrame {
+            center: Vec2::new(-8.0, 4.0),
+            grid_origin: IVec2::new(10, 20),
+            tile_size: Vec2::splat(8.0),
+            ..default()
+        };
+        let live = VisualWorldFrame {
+            center: Vec2::new(3.5, -1.25),
+            grid_origin: IVec2::new(12, 19),
+            ..built.clone()
+        };
+        let offset = terrain_tracking::offset(&built, &live);
+        let mut expected = terrain_transform(&live);
+        expected.translation += Vec3::new(offset.x, 0.0, offset.y);
+        let mut app = App::new();
+        app.insert_resource(TerrainRevisionCache {
+            key: Some(TerrainCacheKey::from_frame(&live)),
+            built_frame: Some(built),
+            footing_origin: Some(live.grid_origin),
+            ..default()
+        }).insert_resource(live)
+            .init_resource::<TerrainBuildQueue>()
+            .init_resource::<Assets<Image>>()
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>()
+            .add_systems(Update, |frame: Res<VisualWorldFrame>, mut commands: Commands,
+                mut cache: ResMut<TerrainRevisionCache>, mut builds: ResMut<TerrainBuildQueue>,
+                mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
+                mut materials: ResMut<Assets<VoxelMaterial>>,
+                mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>| {
+                let root = commands.spawn((VoxelTerrain, SpatialBundle {
+                    transform: terrain_transform(cache.built_frame.as_ref().unwrap()),
+                    visibility: Visibility::Hidden,
+                    ..default()
+                })).id();
+                cache.solid_entity = Some(root);
+                assert_eq!(sync_terrain(&frame, &live_profiles::LiveProfiles::default(),
+                    &mut commands, &mut cache, &mut builds, &mut images, &mut meshes,
+                    &mut materials, &mut entities), Ok(TerrainSyncState::Ready));
+            });
+        app.update();
+        let root = app
+            .world()
+            .resource::<TerrainRevisionCache>()
+            .solid_entity
+            .unwrap();
+        assert_eq!(*app.world().get::<Transform>(root).unwrap(), expected);
+        assert_eq!(
+            *app.world().get::<Visibility>(root).unwrap(),
+            Visibility::Visible
         );
     }
 
@@ -1907,6 +2491,7 @@ mod renderer_tests {
     fn cave_clear_color_is_enclosed_void_not_outdoor_horizon() {
         let mut frame = VisualWorldFrame::default();
         frame.tiles.push(crystal_render_api::VisualTile {
+            animation_frames: None,
             column: 0,
             row: 0,
             source: crystal_render_api::VisualTileSource {
@@ -1970,6 +2555,7 @@ mod renderer_tests {
         ));
         cache.key = Some(TerrainCacheKey {
             map_id: Default::default(),
+            source_map_size_core_tiles: None,
             grid_origin: IVec2::ZERO,
             revision: 1,
             profiles_revision: 0,
@@ -1999,6 +2585,7 @@ mod renderer_tests {
     fn movement_coalesces_terrain_rebuilds_while_one_is_in_flight() {
         let key = |revision| TerrainCacheKey {
             map_id: Default::default(),
+            source_map_size_core_tiles: None,
             grid_origin: IVec2::ZERO,
             revision,
             profiles_revision: 0,
@@ -2063,6 +2650,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let pull = actor_camera_pull(&player, 45.0_f32.to_radians());
         let expected = ACTOR_BASE_CAMERA_PULL
@@ -2083,6 +2671,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let remote = VisualActor {
             id: VisualActorId::RemotePlayer(7),
@@ -2123,6 +2712,7 @@ mod renderer_tests {
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
         let heights = vec![0.0; 4];
         let actor_before =
@@ -2159,5 +2749,89 @@ mod renderer_tests {
         let first_key = TerrainCacheKey::from_frame(&first);
         first.map_texture = Handle::weak_from_u128(2);
         assert_eq!(first_key, TerrainCacheKey::from_frame(&first));
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn native_camera_inputs_work_across_modeled_maps_and_stop_when_world_is_hidden() {
+        for map in ["NewBarkTown", "FastShipB1F", "ViridianGym", "PowerPlant"] {
+            let mut app = App::new();
+            app.insert_resource(ButtonInput::<KeyCode>::default())
+                .insert_resource(VisualWorldFrame {
+                    active: true,
+                    map_id: map.into(),
+                    ..default()
+                })
+                .insert_resource(VoxelViewSettings {
+                    enabled: true,
+                    camera: VoxelCameraControls::new(0., 0.),
+                    ..default()
+                })
+                .add_systems(Update, native_model_camera);
+            {
+                let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
+                keys.press(KeyCode::KeyE);
+                keys.press(KeyCode::PageUp);
+            }
+            app.update();
+            let moved = app.world().resource::<VoxelViewSettings>().camera;
+            assert_eq!(moved, VoxelCameraControls::new(1., 1.), "{map}");
+
+            // Holding a key is not another orbit step. The input plugin clears
+            // these edge flags between frames in the real application.
+            app.world_mut().resource_mut::<ButtonInput<KeyCode>>().clear();
+            app.update();
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+
+            app.world_mut().resource_mut::<VisualWorldFrame>().active = false;
+            {
+                let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
+                keys.press(KeyCode::KeyQ);
+                keys.press(KeyCode::PageDown);
+            }
+            app.update();
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+        }
+    }
+}
+
+/// Native modeled-world controls; browser camera controls remain authoritative there.
+#[cfg(not(target_arch = "wasm32"))]
+fn native_model_camera(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    frame: Res<VisualWorldFrame>,
+    mut settings: ResMut<VoxelViewSettings>,
+) {
+    if !settings.enabled || !frame.active {
+        return;
+    }
+    static TRACE: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    if *TRACE.get_or_init(|| std::env::var_os("CRYSTAL_MODEL_INPUT_TRACE").is_some())
+        && (keyboard.get_just_pressed().next().is_some()
+            || keyboard.get_just_released().next().is_some())
+    {
+        bevy::log::info!(
+            "model input pressed={:?} just_pressed={:?} released={:?}",
+            keyboard.get_pressed().collect::<Vec<_>>(),
+            keyboard.get_just_pressed().collect::<Vec<_>>(),
+            keyboard.get_just_released().collect::<Vec<_>>()
+        );
+    }
+    let mut camera = settings.camera;
+    if keyboard.just_pressed(KeyCode::KeyQ) {
+        camera.rotation_step -= 1.0;
+    }
+    if keyboard.just_pressed(KeyCode::KeyE) {
+        camera.rotation_step += 1.0;
+    }
+    if keyboard.just_pressed(KeyCode::PageUp) {
+        camera.zoom_step += 1.0;
+    }
+    if keyboard.just_pressed(KeyCode::PageDown) {
+        camera.zoom_step -= 1.0;
+    }
+    let camera = VoxelCameraControls::new(camera.zoom_step, camera.rotation_step);
+    if settings.camera != camera {
+        settings.camera = camera;
     }
 }

@@ -168,6 +168,7 @@ mod tests {
     fn complete_fountain_metatile_produces_one_grouped_placement() {
         let tiles = (0..16)
             .map(|index| VisualTile {
+                animation_frames: None,
                 column: (index % 4) as u32,
                 row: (index / 4) as u32,
                 source: VisualTileSource {

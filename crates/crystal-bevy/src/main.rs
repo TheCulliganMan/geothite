@@ -101,6 +101,38 @@ async fn run_browser() -> Result<()> {
     let asset_root = AssetRoot::new(".");
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
+    // Explicit local location-test entry, compiled out of normal browser builds.
+    // This uses the same production shell and content pack as normal play.
+    #[cfg(feature = "location-tester")]
+    {
+        let params = web_sys::UrlSearchParams::new_with_str(
+            &web_sys::window().context("browser window is unavailable")?
+                .location().search().unwrap_or_default(),
+        ).map_err(|error| anyhow::anyhow!("read preview parameters: {error:?}"))?;
+        if params.get("preview").as_deref() == Some("new-bark") {
+            anyhow::ensure!(params.get("multiplayer").as_deref() == Some("off"),
+                "New Bark location preview requires multiplayer=off");
+            return crystal_bevy::run_bevy_shell(
+                asset_root,
+                runtime,
+                BevyShellStart::NewGameAtRuntimeTile {
+                    spawn_identifier,
+                    map_name: "NewBarkTown".to_string(),
+                    tile_x: 13,
+                    tile_y: 6,
+                },
+                BevyShellConfig {
+                    smoke_player_name: Some("CHRIS".to_string()),
+                    voxel_view_enabled: Some(true),
+                    voxel_camera: Some((0, -1)),
+                    render_test_hour: Some(16),
+                    // No persistence: an art preview must not overwrite a save.
+                    quick_save_path: None,
+                    ..Default::default()
+                },
+            );
+        }
+    }
     let multiplayer = browser_multiplayer_config()?;
     let save_path = browser_save_path_for_identity(
         runtime.modpack().id(),

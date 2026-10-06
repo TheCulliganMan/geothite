@@ -20,6 +20,9 @@ relief profile covering New Bark's Johto artwork:
 - player and NPC textures are vertical cards anchored at their feet;
 - tall-grass rustle is exported as a foot-anchored world card, so it follows
   the pitched scene instead of forcing a switch back to screen-space 2D;
+- authored walls and roofs that block the player fade as coherent source-owned
+  objects/sections toward 20% opacity, then smoothly return solid; actual surface
+  tests keep open room interiors and walls behind the player from fading;
 - a dedicated reverse-depth material reveals a translucent player silhouette
   only through closer authored geometry, leaving visible player pixels intact;
 - the optional 3D camera uses a focal-length-matched 45-degree perspective

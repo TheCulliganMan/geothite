@@ -202,6 +202,7 @@ fn begin_visible_map_trainer_intro(
     runtime_shell: &mut BevyRuntimeShell,
     already_prepared: bool,
 ) -> Result<bool> {
+    runtime_shell.battle_origin.trainer_candidate = None;
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     let Some(next) = snapshot.script_events.next_script.as_ref() else {
         return Ok(false);
@@ -326,6 +327,7 @@ fn queue_visible_trainer_encounter_music(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: music_id.to_string(),
             kind: ModpackAudioKind::Music,
@@ -428,6 +430,7 @@ fn finish_visible_map_trainer_intro(runtime_shell: &mut BevyRuntimeShell) -> Res
         &pending.source_script,
         pending.command_index,
     )?;
+    bind_visible_trainer_encounter(runtime_shell, &pending, &started);
     anyhow::ensure!(
         matches!(started, crate::TrainerBattleStartStatus::Started(_)),
         "trainer became defeated while its seen text was active"
@@ -650,6 +653,7 @@ fn apply_visible_script_entry_command(
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     if stepped.command == "waitsfx" {
         runtime_shell.visible_wait_sfx_boundary = true;
@@ -1174,6 +1178,7 @@ fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> R
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     trim_event_log(&mut runtime_shell.last_audio_events);
     if cursor.source_script == "HeadbuttScript"
@@ -1270,6 +1275,7 @@ fn integrate_visible_compiled_script_run(
             step.mutation.result.result_tag(),
             step.mutation.state_checksum
         ));
+        observe_visible_encounter_script_step(runtime_shell, &step);
         integrate_visible_script_mutation_outcome(runtime_shell, &step.mutation)?;
         if matches!(
             &step.mutation.result,
@@ -5170,6 +5176,7 @@ fn dispatch_visible_overworld_interaction(
     let dispatch = runtime_shell
         .shell
         .dispatch_interaction_script(&interaction)?;
+    stage_visible_scripted_trainer_candidate(runtime_shell, &interaction, &dispatch);
     runtime_shell.last_audio_events.push(format!(
         "interaction script={} target={:?} last_talked={:?} checksum={:?}",
         interaction.script,
@@ -5314,6 +5321,7 @@ fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> 
         begin_visible_map_trainer_intro(runtime_shell, true)?,
         "prepared SeenByTrainerScript did not dispatch a trainer intro"
     );
+    stage_visible_trainer_candidate(runtime_shell, &pending.interaction);
     Ok(())
 }
 
@@ -5942,6 +5950,10 @@ fn load_visible_runtime_save(
 }
 
 fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.battle_origin.scripted_trainer_candidate = None;
+    runtime_shell.battle_origin.static_candidate = None;
+    runtime_shell.battle_origin.trainer_candidate = None;
+    runtime_shell.battle_origin.fishing_pack_scene = None;
     reset_visible_script_navigation_state(runtime_shell);
     reset_visible_selection_cursors(runtime_shell);
     runtime_shell.pending_name_input = None;
@@ -5971,6 +5983,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
@@ -6219,6 +6232,8 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     if !runtime_shell.battle_messages.is_empty() {
         return;
     }
+    // Terminal narration keeps the same origin until its actual visible exit.
+    runtime_shell.battle_origin.clear();
     runtime_shell.battle_trainer_result = None;
     runtime_shell.party_move_cursor = None;
     runtime_shell.last_battle_cry_key = None;
@@ -6228,6 +6243,7 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_enemy_hp_at_player_send_out = None;
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;

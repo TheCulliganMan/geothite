@@ -2390,7 +2390,7 @@ fn sync_multiplayer_ghosts(
         }
         let walking = ghost.display_tile.distance_squared(target) > 0.0001
             && (time.elapsed_seconds() * 8.0) as u64 & 1 == 1;
-        let Some(frame) = multiplayer_ghost_frame(
+        let Some((frame, source_id, facing)) = multiplayer_ghost_frame(
             &snapshot,
             &runtime_shell,
             presence,
@@ -2402,6 +2402,8 @@ fn sync_multiplayer_ghosts(
             continue;
         };
         let size = frame.size;
+        ghost.source_id = source_id;
+        ghost.facing = facing;
         let (base_x, base_y) = remote_tile_playfield_position(ghost.display_tile, start_x, start_y);
         let Some(_) = player_sprite.custom_size else {
             commands.entity(entity).despawn_recursive();
@@ -2431,7 +2433,7 @@ fn sync_multiplayer_ghosts(
         let Some((base_x, base_y)) = runtime_tile_playfield_position(tile, start_x, start_y) else {
             continue;
         };
-        let Some(frame) = multiplayer_ghost_frame(
+        let Some((frame, source_id, facing)) = multiplayer_ghost_frame(
             &snapshot,
             &runtime_shell,
             presence,
@@ -2461,6 +2463,8 @@ fn sync_multiplayer_ghosts(
             MultiplayerGhost {
                 user_id: user_id.clone(),
                 display_tile: Vec2::new(f32::from(presence.tile_x), f32::from(presence.tile_y)),
+                source_id,
+                facing,
             },
             Name::new(format!("Multiplayer ghost: {}", presence.display_name)),
         ));
@@ -2491,7 +2495,7 @@ fn multiplayer_ghost_frame(
     walking: bool,
     tileset_art: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
-) -> Option<SpriteFrame> {
+) -> Option<(SpriteFrame, Arc<str>, Direction)> {
     let direction = match presence.direction.as_str() {
         "up" => Direction::Up,
         "down" => Direction::Down,
@@ -2550,6 +2554,7 @@ fn multiplayer_ghost_frame(
         walking,
         images,
     )
+    .map(|frame| (frame, Arc::from(sprite_id), direction))
 }
 
 fn multiplayer_ghost_color() -> Color {

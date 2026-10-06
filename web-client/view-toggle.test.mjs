@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { mountViewToggle } from './view-toggle.js';
 
-function mount(saved, savedCamera = {}, startIn2D = false) {
+function mount(saved, savedCamera = {}, startIn2D = false, startIn3D = false) {
   const values = new Map(saved === undefined ? [] : [['crystal.display.voxel', saved]]);
   for (const [key, value] of Object.entries(savedCamera)) values.set(key, value);
   const calls = [];
@@ -35,6 +35,7 @@ function mount(saved, savedCamera = {}, startIn2D = false) {
   const controller = mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
     cameraControls,
     startIn2D,
+    startIn3D,
     button,
     canvas,
     storage: { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) },
@@ -55,7 +56,7 @@ test('starts in 2D, toggles the renderer both ways, and returns keyboard focus t
   ui.click();
   assert.deepEqual(ui.calls, [false, true, false]);
   assert.equal(ui.attributes.get('aria-pressed'), 'false');
-  assert.equal(ui.button.title, 'Switch to 2.5D view');
+  assert.equal(ui.button.title, 'Switch to 3D view');
   assert.equal(ui.values.get('crystal.display.voxel'), 'false');
 });
 
@@ -67,7 +68,7 @@ test('restores the selected renderer on reload', () => {
 });
 
 
-test('camera controls are shown only in 2.5D and clamp zoom, wrap rotation, and reset', () => {
+test('camera controls are shown only in 3D and clamp zoom, wrap rotation, and reset', () => {
   const ui = mount();
   const controls = ui.cameraControls;
   assert.equal(controls.group.hidden, true);
@@ -117,7 +118,7 @@ test('analog camera integrates elapsed time and keeps fractional angles without 
 });
 
 
-test('touch drag orbits and zooms only in 2.5D and persists on release', () => {
+test('touch drag orbits and zooms only in 3D and persists on release', () => {
   const ui = mount();
   assert.equal(ui.pointer('pointerdown', 0, 100).defaultPrevented, false);
   ui.pointer('pointermove', 100, 0);
@@ -151,7 +152,7 @@ test('drag ignores mouse and extra fingers and stops on cancellation, blur, and 
 });
 
 
-test('Flygon starts in 2D despite saved 2.5D and still permits a manual switch', () => {
+test('Flygon starts in 2D despite saved 3D and still permits a manual switch', () => {
   const ui = mount('true', {}, true);
   assert.deepEqual(ui.calls, [false]);
   assert.equal(ui.cameraControls.group.hidden, true);
@@ -161,4 +162,13 @@ test('Flygon starts in 2D despite saved 2.5D and still permits a manual switch',
   assert.equal(ui.cameraControls.group.hidden, false);
   assert.deepEqual(mount('true', {}, true).calls, [false]);
   assert.deepEqual(mount('true').calls, [true]);
+});
+
+
+test('explicit local modeled preview starts in 3D without rewriting saved preference', () => {
+  const ui = mount('false', {}, false, true);
+  assert.deepEqual(ui.calls, [true]);
+  assert.equal(ui.values.get('crystal.display.voxel'), 'false');
+  assert.deepEqual(ui.cameraCalls[0], [0, 7.5]);
+  assert.deepEqual(mount('false', {}, true, true).calls, [false]);
 });

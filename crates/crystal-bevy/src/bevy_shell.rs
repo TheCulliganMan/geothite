@@ -1,5 +1,8 @@
+#[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+mod render_record;
 #[cfg(feature = "location-tester")]
 mod render_walk;
+mod battle_anim_graphics;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -322,6 +325,8 @@ pub struct BevyShellConfig {
     /// `None` keeps the optional voxel feature's normal enabled behavior;
     /// location tools can force either side of a 2D/2.5D comparison.
     pub voxel_view_enabled: Option<bool>,
+    /// Optional preview framing: zoom step and signed 22.5-degree orbit steps.
+    pub voxel_camera: Option<(u8, i8)>,
     pub window_title: Option<String>,
     pub multiplayer: Option<BevyMultiplayerConfig>,
     #[cfg(feature = "location-tester")]
@@ -333,6 +338,21 @@ pub struct BevyShellConfig {
     pub render_test_live: bool,
     #[cfg(feature = "location-tester")]
     pub render_test_walk: Option<String>,
+    /// Explicit developer capture viewport; normal play keeps its window settings.
+    #[cfg(feature = "location-tester")]
+    pub render_test_window_size: Option<(u32, u32)>,
+    /// Native developer-only game-frame recording: output directory and seconds.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record: Option<(PathBuf, u32)>,
+    /// Arm recording until the first actually presented battle move; never drives input.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record_on_move: bool,
+    /// Arm until the first actually presented Capture/Deflect cue; never drives input.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_record_on_capture: bool,
+    /// Native frame/position measurement without GPU screenshots.
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    pub render_test_measure: Option<(PathBuf, u32)>,
     /// Fixed 24-hour clock used by deterministic location screenshots.
     /// Normal play continues to use the live/new-game clock path.
     #[cfg(feature = "location-tester")]
@@ -340,6 +360,64 @@ pub struct BevyShellConfig {
     /// Seed the location renderer's fresh session for incidental encounters.
     #[cfg(feature = "location-tester")]
     pub render_test_party: bool,
+    /// Fresh disposable Route36 battle preview; never used for normal play.
+    #[cfg(feature = "location-tester")]
+    pub render_test_battle: bool,
+    /// Fresh Route36 field setup; the ordinary registered-item input starts battle.
+    #[cfg(feature = "location-tester")]
+    pub render_test_route36_encounter: bool,
+    /// Fresh checked shoreline setup; the ordinary rod input commits the cast.
+    #[cfg(feature = "location-tester")]
+    pub render_test_fishing_encounter: bool,
+    /// Fresh Route44 shore; ordinary A/Yes mounts Surf, then movement rolls water.
+    #[cfg(feature = "location-tester")]
+    pub render_test_surf_encounter: bool,
+    /// Fresh source grass edge; ordinary movement rolls the encounter.
+    #[cfg(feature = "location-tester")]
+    pub render_test_walking_encounter: bool,
+    /// Fresh UnionCave1F floor; ordinary movement rolls the land encounter.
+    #[cfg(feature = "location-tester")]
+    pub render_test_cave_encounter: bool,
+    /// Fresh IcePath1F ordinary floor; ice sliding remains outside this fixture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_ice_encounter: bool,
+    /// Fresh Violet Gym field setup; ordinary movement triggers trainer sight.
+    #[cfg(feature = "location-tester")]
+    pub render_test_gym_encounter: bool,
+    /// Fresh Violet Gym side contact; ordinary A runs Falkner's authored script.
+    #[cfg(feature = "location-tester")]
+    pub render_test_falkner_encounter: bool,
+    /// Legal Gengar/TM30 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_shadow_ball: bool,
+    /// Legal Kadabra/TM29 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_psychic: bool,
+    /// Legal Raticate/TM15 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_hyper_beam: bool,
+    /// Legal Totodile/HM03 fixture in the disposable battle preview only.
+    #[cfg(feature = "location-tester")]
+    pub render_test_surf: bool,
+    /// Legal level-25 Pidgeotto fixture for articulated wing playback.
+    #[cfg(feature = "location-tester")]
+    pub render_test_pidgeotto: bool,
+    /// Fresh Route44 fixture: Vance's legal Pidgeotto uses enemy-side Gust.
+    #[cfg(feature = "location-tester")]
+    pub render_test_enemy_gust: bool,
+    /// Optional legal starter in the disposable Vance rig-motion preview.
+    #[cfg(feature = "location-tester")]
+    pub render_test_battle_starter: Option<String>,
+    /// One deterministic ordinary failed throw in the fresh Route36 preview.
+    /// Supplies hardware DIV samples only; the real PACK action resolves capture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_poke_ball_failure: bool,
+    /// Disposable legal Diglett/Onix size-comparison fixture.
+    #[cfg(feature = "location-tester")]
+    pub render_test_size_comparison: bool,
+    /// Reduce only modeled battle palette contrast and object palette cycling.
+    #[cfg(feature = "voxel-view")]
+    pub battle_reduced_flashes: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -624,6 +702,12 @@ impl VisibleShellController {
             }
         }
         Ok(snapshot)
+    }
+
+    /// Frozen presentation provenance for the pending or displayed battle.
+    /// Reading this never advances gameplay, RNG or visual interpolation.
+    pub fn battle_presentation_origin(&self) -> Option<&BattlePresentationOrigin> {
+        self.shell.battle_origin.published().map(Arc::as_ref)
     }
 
     pub fn presentation_snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
@@ -1078,11 +1162,14 @@ struct BevyRuntimeShell {
     visible_magnet_train: Option<VisibleMagnetTrain>,
     visible_unown_words: Option<String>,
     visible_diploma: Option<u8>,
+    battle_origin: VisibleBattleOriginState,
     visible_battle_transition: Option<VisibleBattleTransition>,
     visible_battle_sliding_intro: Option<u8>,
     visible_catch_tutorial: Option<VisibleCatchTutorial>,
     visible_capture_animation: Option<VisibleCaptureAnimation>,
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
+    // Presentation-owned source audio frames, independent of device/mute state.
+    visible_move_audio_wait: Option<u16>,
     battle_fainted_hud: [bool; 2],
     battle_retained_text: Vec<String>,
     visible_send_out_animation: Option<VisibleSendOutAnimation>,
@@ -1682,7 +1769,7 @@ impl NativeAudioBackend {
                 self.transient_audio_id.as_deref(),
             ));
         }
-        let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
+        let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = u16::from(audio.format.channels);
         let sample_rate = audio.format.sample_rate_hz;
         let frame_count = samples.len() / usize::from(channels);
@@ -1835,7 +1922,7 @@ impl BrowserAudioBackend {
             self.master_gain = Some(gain);
         }
         let destination = self.master_gain.as_ref().expect("master gain initialized");
-        let samples = pcm_samples_for_sound_option(&pcm_i16_samples(audio)?, sound);
+        let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = usize::from(audio.format.channels);
         let frame_count = samples.len() / channels;
         let buffer = context
@@ -3382,7 +3469,7 @@ struct VisibleMoveAnimation {
     waiting_for_hp: bool,
     frame: u16,
     total_frames: u16,
-    sound_events: Vec<(u16, String)>,
+    sound_events: Vec<(u16, VisibleMoveSound)>,
     next_sound_event: usize,
     cry_events: Vec<(u16, u8)>,
     next_cry_event: usize,
@@ -3494,6 +3581,13 @@ impl VisibleTrainerExitAnimation {
 }
 
 impl VisibleCaptureAnimation {
+    // Capture starts at command tick zero. Loading anim_wait N yields once,
+    // then each of its N timer ticks yields again, including decrement to zero.
+    // These are script waits only; item/text/audio wrapper delays are unchanged.
+    const fn wait_ticks(delay: u16) -> u16 {
+        delay + 1
+    }
+
     fn object_events(&self) -> Vec<VisibleMoveObjectEvent> {
         use VisibleMoveObjectCommand::{Increment, Set, Spawn};
         let master = self.ball_id.eq_ignore_ascii_case("MASTER_BALL");
@@ -3514,7 +3608,7 @@ impl VisibleCaptureAnimation {
         let mut push = |frame, command| events.push(VisibleMoveObjectEvent { frame, command });
         if self.blocked {
             push(
-                20,
+                self.blocked_hit_frame(),
                 Spawn {
                     object_id: "BATTLE_ANIM_OBJ_HIT_YFIX".into(),
                     x: 112,
@@ -3527,7 +3621,7 @@ impl VisibleCaptureAnimation {
         // Keep the retained lower half and the opening lid as separate
         // objects. The shared object machine owns motion and framesets.
         push(
-            36,
+            self.opening_lid_frame(),
             Spawn {
                 object_id: "BATTLE_ANIM_OBJ_POKE_BALL".into(),
                 x: 136,
@@ -3535,9 +3629,9 @@ impl VisibleCaptureAnimation {
                 param: 0,
             },
         );
-        push(36, Set { index: 2, value: 7 });
+        push(self.opening_lid_frame(), Set { index: 2, value: 7 });
         push(
-            52,
+            self.initial_poof_frame(),
             Spawn {
                 object_id: "BATTLE_ANIM_OBJ_BALL_POOF".into(),
                 x: 136,
@@ -3558,21 +3652,13 @@ impl VisibleCaptureAnimation {
                 );
             }
         }
-        push(self.shake_entry_frame() + 8, Increment { index: 2 });
+        push(self.lid_increment_frame(), Increment { index: 2 });
         push(self.change_dex_sound_frame(), Increment { index: 1 });
-        let wobbles = if self.caught {
-            self.animation_shakes.saturating_sub(1)
-        } else {
-            self.animation_shakes
-        };
-        for check in 0..u16::from(wobbles) {
-            push(
-                self.first_shake_check_frame() + 48 * check,
-                Increment { index: 1 },
-            );
+        for check in 0..self.visible_wobbles() {
+            push(self.shake_check_frame(check), Increment { index: 1 });
         }
         if !self.caught {
-            let frame = self.total_frames().saturating_sub(34);
+            let frame = self.break_free_frame();
             push(
                 frame,
                 Set {
@@ -3607,93 +3693,157 @@ impl VisibleCaptureAnimation {
         self.throw_active() || (self.complete && !self.sprites_cleared)
     }
 
-    fn shake_entry_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            156
-        } else {
-            68
-        }
+    fn blocked_hit_frame(&self) -> u16 {
+        Self::wait_ticks(20)
     }
 
-    fn shake_setup_frame(&self) -> u16 {
-        // Ordinary branches enter .Shake at 68. Master Ball then waits 24,
-        // creates its sparkles at 92, and waits another 64, entering at 156.
-        // .Shake then spends 160 frames before the first 48-frame check loop.
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            316
-        } else {
-            228
-        }
+    fn opening_lid_frame(&self) -> u16 {
+        Self::wait_ticks(36)
+    }
+
+    fn initial_poof_frame(&self) -> u16 {
+        self.opening_lid_frame() + Self::wait_ticks(16)
     }
 
     fn master_ball_special_frame(&self) -> Option<u16> {
         self.ball_id
             .eq_ignore_ascii_case("MASTER_BALL")
-            .then_some(92)
+            .then(|| self.initial_poof_frame() + Self::wait_ticks(24))
+    }
+
+    fn shake_entry_frame(&self) -> u16 {
+        // Master branches directly from the poof into its sparkle waits;
+        // the ordinary post-poof wait does not run on that branch.
+        match self.master_ball_special_frame() {
+            Some(sparkles) => sparkles + Self::wait_ticks(64),
+            None => self.initial_poof_frame() + Self::wait_ticks(16),
+        }
+    }
+
+    fn lid_increment_frame(&self) -> u16 {
+        self.shake_entry_frame() + Self::wait_ticks(8)
     }
 
     fn change_dex_sound_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            180
-        } else {
-            92
-        }
+        self.lid_increment_frame() + Self::wait_ticks(16)
     }
 
     fn bounce_sound_frame(&self) -> u16 {
-        if self.ball_id.eq_ignore_ascii_case("MASTER_BALL") {
-            212
-        } else {
-            124
-        }
+        self.change_dex_sound_frame() + Self::wait_ticks(32)
+    }
+
+    fn shake_setup_frame(&self) -> u16 {
+        self.bounce_sound_frame() + 3 * Self::wait_ticks(32) + Self::wait_ticks(8)
     }
 
     fn first_shake_check_frame(&self) -> u16 {
-        self.shake_setup_frame().saturating_add(48)
+        self.shake_setup_frame() + Self::wait_ticks(48)
+    }
+
+    fn shake_check_frame(&self, check: u8) -> u16 {
+        self.first_shake_check_frame() + Self::wait_ticks(48) * u16::from(check)
+    }
+
+    fn visible_wobbles(&self) -> u8 {
+        if self.caught {
+            self.animation_shakes.saturating_sub(1)
+        } else {
+            self.animation_shakes
+        }
+    }
+
+    fn break_free_frame(&self) -> u16 {
+        self.shake_check_frame(self.animation_shakes)
+    }
+
+    fn expansion_start_frame(&self) -> u16 {
+        self.break_free_frame() + Self::wait_ticks(2)
+    }
+
+    fn return_frame(&self) -> u16 {
+        if self.blocked {
+            self.blocked_hit_frame() + Self::wait_ticks(32)
+        } else if self.caught {
+            self.shake_check_frame(self.animation_shakes.max(1) - 1)
+        } else {
+            self.expansion_start_frame() + Self::wait_ticks(32)
+        }
     }
 
     fn total_frames(&self) -> u16 {
+        // anim_ret still processes BG/OAM for this tick. Completion is the
+        // exclusive next boundary, where the existing result handoff runs.
+        self.return_frame() + 1
+    }
+
+    fn object_frame(&self) -> u16 {
+        // Retained capture extraction must not run a callback after anim_ret.
+        // The kept OAM's source palette reset remains a separate concern.
+        self.frame.min(self.return_frame())
+    }
+
+    fn sound_at_frame(&self, frame: u16) -> Option<&'static str> {
         if self.blocked {
-            52
-        } else if self.caught {
-            self.shake_setup_frame() + 48 * u16::from(self.animation_shakes.max(1))
+            return None;
+        }
+        if self.master_ball_special_frame() == Some(frame) {
+            Some("SFX_MASTER_BALL")
+        } else if frame == self.initial_poof_frame() {
+            Some("SFX_BALL_POOF")
+        } else if frame == self.change_dex_sound_frame() {
+            Some("SFX_CHANGE_DEX_MODE")
+        } else if frame == self.bounce_sound_frame() {
+            Some("SFX_BALL_BOUNCE")
+        } else if frame >= self.first_shake_check_frame()
+            && (frame - self.first_shake_check_frame()) % Self::wait_ticks(48) == 0
+        {
+            let check = (frame - self.first_shake_check_frame()) / Self::wait_ticks(48);
+            if check < u16::from(self.visible_wobbles()) {
+                Some("SFX_BALL_WOBBLE")
+            } else if !self.caught && check == u16::from(self.animation_shakes) {
+                Some("SFX_BALL_POOF")
+            } else {
+                None
+            }
         } else {
-            self.shake_setup_frame() + 48 * (u16::from(self.animation_shakes) + 1) + 34
+            None
         }
     }
 
+    fn enemy_hidden_frame(&self) -> u16 {
+        self.shake_entry_frame() + 12
+    }
+
     fn enemy_hidden(&self) -> bool {
-        let hidden_frame = self.shake_entry_frame().saturating_add(8);
-        if (!self.started && !self.complete) || self.blocked || self.frame < hidden_frame {
+        if (!self.started && !self.complete)
+            || self.blocked
+            || self.frame < self.enemy_hidden_frame()
+        {
             return false;
         }
-        self.caught || self.frame + 32 < self.total_frames()
+        self.caught || self.frame < self.expansion_start_frame()
     }
 
     fn enemy_clip_tiles(&self) -> Option<u8> {
         let shake_entry = self.shake_entry_frame();
-        let hidden_frame = shake_entry.saturating_add(8);
         if (!self.started && !self.complete) || self.blocked || self.frame < shake_entry {
             return None;
         }
-        if self.frame < hidden_frame {
-            return match self.frame - shake_entry {
+        if self.frame < self.enemy_hidden_frame() {
+            return match (self.frame - shake_entry) / 4 {
                 0 => Some(7),
                 1 => Some(5),
                 _ => Some(3),
             };
         }
-        if self.caught {
+        if self.caught || self.frame < self.expansion_start_frame() {
             return None;
         }
-        let expansion_start = self.total_frames().saturating_sub(32);
-        if self.frame < expansion_start {
-            return None;
-        }
-        match self.frame - expansion_start {
+        match (self.frame - self.expansion_start_frame()) / 4 {
             0 => Some(3),
             1 => Some(5),
-            _ => Some(7),
+            2 => Some(7),
+            _ => None,
         }
     }
 }
@@ -4061,6 +4211,7 @@ enum PartyFieldMove {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct BevyAudioCommand {
+    battle_sound: Option<BattleSoundPlayback>,
     cry_parameters: Option<crystal_audio::pcm::CrySynthesisParameters>,
     audio_id: String,
     kind: ModpackAudioKind,
@@ -4312,6 +4463,28 @@ impl NativeRtcSource {
     }
 }
 
+// An explicitly configured location-test clock is deterministic even when the
+// external pack is the hosted browser variant. Normal play still requires its
+// synchronized server clock and must never silently fall back to device time.
+fn select_native_rtc_source(
+    requires_server: bool,
+    configured: NativeRtcSource,
+) -> Result<NativeRtcSource> {
+    #[cfg(any(test, feature = "location-tester"))]
+    if matches!(configured, NativeRtcSource::Fixed(_)) {
+        return Ok(configured);
+    }
+    if requires_server {
+        anyhow::ensure!(
+            NativeRtcSource::Server.try_sample().is_some(),
+            "real-time clock modpack requires a synchronized hosted server clock"
+        );
+        Ok(NativeRtcSource::Server)
+    } else {
+        Ok(configured)
+    }
+}
+
 fn required_native_rtc_sample(runtime_shell: &BevyRuntimeShell) -> Result<RuntimeRtcSample> {
     runtime_shell
         .latest_rtc_sample
@@ -4375,6 +4548,10 @@ struct RenderedViewport {
     /// rehashing every source tile during camera/actor interpolation.
     #[cfg(any(test, feature = "voxel-view"))]
     visual_tiles_revision: Option<u64>,
+    /// Actual map extent recorded alongside the successfully built visual grid.
+    /// This follows the rendered scene even while the live session transitions.
+    #[cfg(any(test, feature = "voxel-view"))]
+    source_map_size_core_tiles: Option<UVec2>,
     /// Feature-gated terrain surface extending beyond the Game Boy viewport.
     /// It is consumed only by the optional voxel renderer and never displayed
     /// or consulted by the faithful 2D path.
@@ -4530,6 +4707,9 @@ struct RenderedTilesetArt {
     battle_anim_object_errors: HashMap<String, String>,
     battle_battler_overlay_cache: HashMap<(AssetId<Image>, [u8; 3]), SpriteFrame>,
     battle_battler_bgp_cache: HashMap<(AssetId<Image>, u8), SpriteFrame>,
+    #[cfg(feature = "voxel-view")]
+    battle_source_palette_cache: HashMap<AssetId<Image>, [[f32; 4]; 4]>,
+    battle_source_bounds_cache: HashMap<AssetId<Image>, Rect>,
     fishing_rod_cache: Option<[SpriteFrame; 3]>,
     fishing_rod_error: Option<String>,
     fishing_player_cache: HashMap<String, SpriteFrame>,
@@ -4617,6 +4797,9 @@ struct RenderedTilesetArt {
 struct TilesetArtKey {
     tileset_id: String,
     time_of_day: String,
+    // Exact palette remapping is part of the cached art's identity, including
+    // the immutable animation family emitted to optional renderers.
+    palette_map: Vec<u8>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -4893,7 +5076,9 @@ struct TilesetArt {
 }
 
 struct TilesetAnimatedTile {
-    frames: Vec<Handle<Image>>,
+    // Allocate once when the art is loaded; every visual cell shares this same
+    // authoritative family instead of building a second per-cell phase list.
+    frames: Arc<[Handle<Image>]>,
     frame_ticks: u64,
     phase_offset: u64,
     requires_forest_restless: bool,
@@ -5281,12 +5466,18 @@ struct PlayerMarker;
 struct MultiplayerGhost {
     user_id: String,
     display_tile: Vec2,
+    /// The actual sprite chosen by the presentation compositor, including
+    /// gender and riding mode. Optional renderers must never guess it.
+    source_id: Arc<str>,
+    facing: Direction,
 }
 
 /// The player has one retained entity; walking animation swaps its texture
 /// instead of forcing `render_playfield` to rebuild the complete map.
 #[derive(Component)]
 struct PlayerSpriteFrames {
+    /// Presentation identity of the sprite already selected by the host.
+    source_id: Arc<str>,
     #[cfg(feature = "voxel-view")]
     directional_frames: Vec<(Handle<Image>, Handle<Image>)>,
     standing: Handle<Image>,
@@ -5321,7 +5512,6 @@ struct ObjectMarker;
 struct VisibleObjectSprite {
     #[cfg(feature = "voxel-view")]
     directional_frames: Vec<(Handle<Image>, Option<Handle<Image>>)>,
-    #[cfg(feature = "voxel-view")]
     world_facing: Direction,
     /// Original visible-object index, stable even when ASM leaves the object
     /// identifier blank.  Identifiers are useful for runtime lookups, but
@@ -5390,6 +5580,10 @@ struct BattleHudMarker;
 #[derive(Component)]
 struct BattleCommandMarker;
 
+// Original OAM sprites are independent of the background SCX/SCY registers.
+#[derive(Component)]
+struct BattleSourceObjectMarker;
+
 #[derive(Component)]
 struct FixedBattleCanvasMarker;
 
@@ -5422,6 +5616,8 @@ pub fn run_bevy_shell(
     let multiplayer_config = config.multiplayer.clone();
     #[cfg(feature = "voxel-view")]
     let voxel_view_enabled = config.voxel_view_enabled.unwrap_or(false);
+    #[cfg(feature = "voxel-view")]
+    let voxel_camera = config.voxel_camera;
     let window_title = config
         .window_title
         .clone()
@@ -5431,9 +5627,63 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walk = config.render_test_walk.clone();
     #[cfg(feature = "location-tester")]
+    let render_test_window_size = config.render_test_window_size;
+    #[cfg(feature = "location-tester")]
     let render_test_second_screenshot = config.render_test_second_screenshot.clone();
     #[cfg(feature = "location-tester")]
     let render_test_live = config.render_test_live;
+    #[cfg(feature = "location-tester")]
+    let render_test_battle = config.render_test_battle;
+    #[cfg(feature = "location-tester")]
+    let render_test_route36_encounter = config.render_test_route36_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_fishing_encounter = config.render_test_fishing_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_walking_encounter = config.render_test_walking_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_surf_encounter = config.render_test_surf_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_cave_encounter = config.render_test_cave_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_ice_encounter = config.render_test_ice_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_gym_encounter = config.render_test_gym_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_falkner_encounter = config.render_test_falkner_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_shadow_ball = config.render_test_shadow_ball;
+    #[cfg(feature = "location-tester")]
+    let render_test_psychic = config.render_test_psychic;
+    #[cfg(feature = "location-tester")]
+    let render_test_hyper_beam = config.render_test_hyper_beam;
+    #[cfg(feature = "location-tester")]
+    let render_test_surf = config.render_test_surf;
+    #[cfg(feature = "location-tester")]
+    let render_test_size_comparison = config.render_test_size_comparison;
+    #[cfg(feature = "location-tester")]
+    let render_test_pidgeotto = config.render_test_pidgeotto;
+    #[cfg(feature = "location-tester")]
+    let render_test_enemy_gust = config.render_test_enemy_gust;
+    #[cfg(feature = "location-tester")]
+    let render_test_battle_starter = config.render_test_battle_starter.clone();
+    #[cfg(feature = "location-tester")]
+    let render_test_poke_ball_failure = config.render_test_poke_ball_failure;
+    #[cfg(feature = "voxel-view")]
+    let battle_reduced_flashes = config.battle_reduced_flashes;
+    #[cfg(feature = "location-tester")]
+    anyhow::ensure!(
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter)
+            || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
+        "battle preview only supports a fresh disposable location session"
+    );
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record = config.render_test_record.clone();
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record_on_move = config.render_test_record_on_move;
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_record_on_capture = config.render_test_record_on_capture;
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let render_test_measure = config.render_test_measure.clone();
     #[cfg(feature = "location-tester")]
     let native_rtc_source = config
         .render_test_hour
@@ -5448,19 +5698,75 @@ pub fn run_bevy_shell(
         .unwrap_or_else(NativeRtcSource::system_local);
     #[cfg(not(feature = "location-tester"))]
     let native_rtc_source = NativeRtcSource::system_local();
-    let native_rtc_source = if runtime.data().server_clock {
-        anyhow::ensure!(
-            NativeRtcSource::Server.try_sample().is_some(),
-            "real-time clock modpack requires a synchronized hosted server clock"
-        );
-        NativeRtcSource::Server
-    } else {
-        native_rtc_source
-    };
+    let native_rtc_source =
+        select_native_rtc_source(runtime.data().server_clock, native_rtc_source)?;
     let runtime_shell = {
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_shell_initialize").entered();
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
+    };
+    #[cfg(feature = "location-tester")]
+    let runtime_shell = if render_test_surf_encounter {
+        anyhow::ensure!(!(render_test_battle || render_test_route36_encounter
+            || render_test_fishing_encounter || render_test_walking_encounter
+            || render_test_cave_encounter || render_test_ice_encounter
+            || render_test_gym_encounter || render_test_falkner_encounter),
+            "field and direct battle fixtures are mutually exclusive");
+        prepare_surf_encounter_preview(runtime_shell)?
+    } else if render_test_falkner_encounter {
+        anyhow::ensure!(
+            !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
+                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter
+                || render_test_gym_encounter),
+            "field and direct battle fixtures are mutually exclusive"
+        );
+        prepare_falkner_encounter_preview(runtime_shell)?
+    } else if render_test_gym_encounter {
+        anyhow::ensure!(
+            !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
+                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
+            "field and direct battle fixtures are mutually exclusive"
+        );
+        prepare_gym_encounter_preview(runtime_shell)?
+    } else if render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter {
+        anyhow::ensure!(
+            !render_test_battle && !render_test_route36_encounter && !render_test_fishing_encounter
+                && [render_test_walking_encounter, render_test_cave_encounter, render_test_ice_encounter]
+                    .into_iter().filter(|selected| *selected).count() == 1,
+            "field and direct battle fixtures are mutually exclusive"
+        );
+        let preview = if render_test_ice_encounter {
+            WalkingEncounterPreviewMap::IcePathFloor
+        } else if render_test_cave_encounter {
+            WalkingEncounterPreviewMap::UnionCaveFloor
+        } else {
+            WalkingEncounterPreviewMap::Route29Grass
+        };
+        prepare_walking_encounter_preview(runtime_shell, preview)?
+    } else if render_test_fishing_encounter {
+        anyhow::ensure!(
+            !render_test_battle && !render_test_route36_encounter,
+            "field and direct battle fixtures are mutually exclusive"
+        );
+        prepare_fishing_encounter_preview(runtime_shell)?
+    } else if render_test_route36_encounter {
+        anyhow::ensure!(!render_test_battle, "field and direct battle fixtures are mutually exclusive");
+        prepare_route36_encounter_preview(runtime_shell)?
+    } else if render_test_battle {
+        prepare_immersive_battle_preview(
+            runtime_shell,
+            render_test_shadow_ball,
+            render_test_psychic,
+            render_test_hyper_beam,
+            render_test_surf,
+            render_test_size_comparison,
+            render_test_pidgeotto,
+            render_test_enemy_gust,
+            render_test_poke_ball_failure,
+            render_test_battle_starter.as_deref(),
+        )?
+    } else {
+        runtime_shell
     };
     let multiplayer_runtime = match multiplayer_config {
         Some(BevyMultiplayerConfig::Hosted(config)) => {
@@ -5481,6 +5787,8 @@ pub fn run_bevy_shell(
     };
 
     let mut app = App::new();
+    #[cfg(not(target_arch = "wasm32"))]
+    native_navigation::install(&mut app);
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
         #[cfg(feature = "operation-trace")]
@@ -5496,6 +5804,20 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let primary_window = {
         let mut window = primary_window;
+        if let Some((width, height)) = render_test_window_size {
+            anyhow::ensure!(
+                (320..=3840).contains(&width) && (288..=2160).contains(&height),
+                "capture viewport must be 320..3840 by 288..2160 pixels"
+            );
+            window.resolution = WindowResolution::new(width as f32, height as f32);
+            window.resizable = false;
+            window.resize_constraints = bevy::window::WindowResizeConstraints {
+                min_width: width as f32,
+                max_width: width as f32,
+                min_height: height as f32,
+                max_height: height as f32,
+            };
+        }
         // Restrict the measurement override to automated location captures.
         // Ordinary play always uses the normal presentation configuration.
         if render_test_screenshot.is_some() {
@@ -5533,6 +5855,8 @@ pub fn run_bevy_shell(
         .insert_resource(native_rtc_source)
         .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
         .insert_resource(VisibleSequenceTickClock::realtime())
+        .insert_resource(BattlePresentationOriginFrame::default())
+        .init_resource::<crystal_render_api::BattleLocationFrame>()
         .insert_resource(RenderedViewport::default())
         .insert_resource(RenderedTilesetArt::default())
         .insert_resource(HudMode::Status)
@@ -5619,6 +5943,21 @@ pub fn run_bevy_shell(
         .add_systems(Update, play_pending_audio.after(queue_battle_intro_cry))
         .add_systems(
             Update,
+            publish_visible_battle_location
+                .after(play_pending_audio)
+                .after(tick_visible_screen_fade)
+                .before(render_playfield),
+        )
+        .add_systems(
+            Update,
+            publish_visible_battle_origin
+                .after(publish_visible_battle_location)
+                .after(play_pending_audio)
+                .after(tick_visible_screen_fade)
+                .before(render_playfield),
+        )
+        .add_systems(
+            Update,
             render_playfield
                 .after(play_pending_audio)
                 .in_set(crystal_render_api::WorldRenderSet::ClassicWorld),
@@ -5643,6 +5982,16 @@ pub fn run_bevy_shell(
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
         .add_systems(
             Update,
+            sync_immersive_battle_layers.after(crystal_render_api::WorldRenderSet::RenderSync),
+        )
+        .add_systems(
+            Update,
+            clear_inactive_visual_battle
+                .after(render_playfield)
+                .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+        )
+        .add_systems(
+            Update,
             publish_visual_world_frame
                 .after(sync_visible_player_sprite)
                 .after(sync_multiplayer_ghosts)
@@ -5661,6 +6010,22 @@ pub fn run_bevy_shell(
             .after(bevy::transform::TransformSystem::TransformPropagate)
             .after(crystal_voxel_view::ActorHeadProjection),
     );
+    #[cfg(feature = "voxel-view")]
+    {
+        projected_source_oam::install(&mut app);
+        let battle_ui_layout = (
+            publish_immersive_battle_canvas,
+            sync_immersive_battle_ui_layout,
+            sync_immersive_battle_source_object_layout,
+        )
+            .chain()
+            .in_set(crystal_render_api::BattleCanvasExtract)
+            .before(bevy::render::camera::CameraUpdateSystem)
+            .before(bevy::transform::TransformSystem::TransformPropagate);
+        #[cfg(feature = "fullscreen-scaling")]
+        let battle_ui_layout = battle_ui_layout.after(sync_fullscreen_world_layout);
+        app.add_systems(PostUpdate, battle_ui_layout);
+    }
     #[cfg(not(feature = "voxel-view"))]
     app.add_systems(
         PostUpdate,
@@ -5697,7 +6062,19 @@ pub fn run_bevy_shell(
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
         enabled: voxel_view_enabled,
         allow_f3_toggle: !cfg!(target_arch = "wasm32"),
-        camera: Default::default(),
+        camera: voxel_camera
+            .map(|(zoom, rotation)| {
+                crystal_voxel_view::VoxelCameraControls::new(
+                    f32::from(zoom),
+                    f32::from(rotation) * 0.5,
+                )
+            })
+            .unwrap_or_default(),
+    })
+    .insert_resource(if battle_reduced_flashes {
+        crystal_render_api::BattleFlashMode::Reduced
+    } else {
+        crystal_render_api::BattleFlashMode::Full
     })
     .add_plugins(crystal_voxel_view::VoxelViewPlugin)
     .add_systems(
@@ -5761,13 +6138,41 @@ pub fn run_bevy_shell(
     }
     #[cfg(feature = "location-tester")]
     if let Some(route) = render_test_walk.as_deref() {
+        let walk_path = render_test_screenshot.clone();
+        #[cfg(not(target_arch = "wasm32"))]
+        let walk_path = walk_path.or_else(|| {
+            render_test_record
+                .as_ref()
+                .or(render_test_measure.as_ref())
+                .map(|(path, _)| path.join("walk.png"))
+        });
+        #[cfg(not(target_arch = "wasm32"))]
+        let capture_steps = render_test_measure.is_none();
+        #[cfg(target_arch = "wasm32")]
+        let capture_steps = true;
         render_walk::install(
             &mut app,
             route,
-            render_test_screenshot
+            walk_path
                 .as_deref()
-                .context("--walk requires a screenshot path")?,
+                .context("--walk requires a screenshot or recording path")?,
+            capture_steps,
         )?;
+    }
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    if let Some((directory, seconds)) = render_test_record.as_ref() {
+        render_record::install(
+            &mut app,
+            directory,
+            *seconds,
+            true,
+            render_test_record_on_move,
+            render_test_record_on_capture,
+        )?;
+    }
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    if let Some((directory, seconds)) = render_test_measure.as_ref() {
+        render_record::install(&mut app, directory, *seconds, false, false, false)?;
     }
     let app_exit = app.run();
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
@@ -6958,11 +7363,15 @@ fn apply_visible_shell_smoke_frame(
             button => overworld_buttons.push(button),
         }
     }
+    let overworld_a = overworld_buttons.contains(&GameButton::A);
     let frame = if overworld_buttons.is_empty() {
         None
     } else {
         Some(runtime_shell.shell.tick(overworld_buttons)?.clone())
     };
+    if let Some(frame) = frame.as_ref() {
+        capture_visible_wild_battle_origin(runtime_shell, frame);
+    }
     if frame
         .as_ref()
         .and_then(|frame| frame.interaction.as_ref())
@@ -6974,6 +7383,18 @@ fn apply_visible_shell_smoke_frame(
         // route them through modal UI ownership merely to make tests pass.
         interaction = true;
         execute_last_interaction_script(runtime_shell)?;
+    } else if overworld_a
+        && runtime_shell.player_walk_frame_ticks == 0
+        && runtime_shell.visible_ledge_jump.is_none()
+        && frame.as_ref().is_some_and(|frame| {
+            !overworld_frame_reaches_presentation_boundary(frame)
+                && !overworld_boundary_waits_for_visible_landing(frame, 0, false)
+        })
+    {
+        // Match graphical contextual A after its authoritative overworld tick.
+        // Existing modal ownership ran above; ordinary NPC/script and other
+        // higher-priority source boundaries cannot dispatch a second action.
+        interaction = execute_visible_contextual_field_move(runtime_shell)?;
     }
     Ok(VisibleShellSmokeFrameOutcome { frame, interaction })
 }
@@ -7230,10 +7651,10 @@ fn settle_visible_shell_controller(
             }
         }
         let snapshot = runtime_shell.shell.snapshot()?;
-        // An active battle is a player-owned boundary. Smoke settling may
-        // present the script up to StartBattle, but must not resume the
-        // retained post-battle cursor until a battle result is supplied.
-        if snapshot.battle.is_some() {
+        // A live battle or retained terminal narration owns input. RUN and
+        // final turns can end core battle before their text is revealed; keep
+        // advancing that printer, then await the ordinary acknowledgement.
+        if snapshot.battle.is_some() || !runtime_shell.battle_messages.is_empty() {
             if let Some(message) = runtime_shell.battle_messages.front().cloned()
                 && !visible_battle_message_is_complete(runtime_shell, &message)
             {
@@ -7602,6 +8023,17 @@ fn initialize_bevy_runtime_shell(
         } => RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), spawn_identifier)?,
     };
     #[cfg(feature = "location-tester")]
+    if runtime_tile_start {
+        if let Some(name) = config
+            .smoke_player_name
+            .as_deref()
+            .filter(|name| !name.is_empty())
+        {
+            let player_id = shell.snapshot()?.trainer.player_id;
+            shell.set_trainer_identity(name, player_id)?;
+        }
+    }
+    #[cfg(feature = "location-tester")]
     if config.render_test_party {
         anyhow::ensure!(
             runtime_tile_start,
@@ -7839,11 +8271,13 @@ fn initialize_bevy_runtime_shell(
         visible_magnet_train: None,
         visible_unown_words: None,
         visible_diploma: None,
+        battle_origin: VisibleBattleOriginState::default(),
         visible_battle_transition: None,
         visible_battle_sliding_intro: None,
         visible_catch_tutorial: None,
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
+        visible_move_audio_wait: None,
         battle_fainted_hud: [false; 2],
         battle_retained_text: Vec::new(),
         visible_send_out_animation: None,
@@ -8076,10 +8510,26 @@ include!("bevy_shell/credits.rs");
 include!("bevy_shell/hall_of_fame.rs");
 include!("bevy_shell/script_callbacks.rs");
 include!("bevy_shell/economy.rs");
+include!("bevy_shell/battle_sound.rs");
 include!("bevy_shell/battle_messages.rs");
 include!("bevy_shell/battle_results.rs");
+include!("bevy_shell/battle_origin.rs");
+include!("bevy_shell/encounter_anchor.rs");
+include!("bevy_shell/fishing_anchor.rs");
+include!("bevy_shell/walking_anchor.rs");
+include!("bevy_shell/surf_anchor.rs");
+include!("bevy_shell/surf_anchor_preview.rs");
+include!("bevy_shell/trainer_anchor.rs");
+include!("bevy_shell/scripted_trainer_anchor.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
+#[cfg(feature = "voxel-view")]
+#[path = "bevy_shell/battle_source_overlay.rs"]
+mod projected_source_oam;
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/battle_3d.rs");
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/battle_source_placement.rs");
 include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]
@@ -8107,3 +8557,6 @@ include!("bevy_shell/browser_preferences.rs");
 include!("bevy_shell/battle_objects.rs");
 
 include!("bevy_shell/catch_tutorial.rs");
+
+#[cfg(not(target_arch = "wasm32"))]
+mod native_navigation;

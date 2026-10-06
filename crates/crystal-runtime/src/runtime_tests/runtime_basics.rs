@@ -929,6 +929,20 @@ fn load_minimal_compiled_runtime_with_runtime_files(
 }
 
 fn complete_required_runtime_files() -> BTreeMap<String, Vec<u8>> {
+    if let Some(path) = std::env::var_os("CRYSTAL_RENDER_TEST_PACK") {
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path)
+            .expect("verify CRYSTAL_RENDER_TEST_PACK for runtime-file fixtures");
+        return crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS
+            .iter()
+            .chain(crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS.iter())
+            .map(|&key| {
+                let bytes = loaded.pack().runtime_files().get(key).unwrap_or_else(|| {
+                    panic!("verified external pack is missing runtime file {key}")
+                });
+                (key.to_string(), bytes.clone())
+            })
+            .collect();
+    }
     let repository_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")
         .canonicalize()
@@ -1575,9 +1589,10 @@ fn populate_minimal_runtime_presence_catalogs(data: &mut GameDataSet) {
                 {"command":"def_object_events","args":[]}
             ])
         });
+    // Compiled map payloads encode bytes; this fixture contains two zero blocks.
     data.map_blocks
         .entry("RuntimeMap_Blocks".to_string())
-        .or_insert_with(|| "00 00".to_string());
+        .or_insert_with(|| "AAA=".to_string());
     data.npcs
         .entry("RuntimeMap".to_string())
         .or_insert_with(|| serde_json::json!({ "objects": ["RuntimeNpc"] }));
@@ -3998,19 +4013,6 @@ fn runtime_file_bytes_partition_materialization_cache_identity() {
         load_minimal_compiled_runtime_with_runtime_files("runtime-file-cache-a", runtime_files_a);
     let (root_b, _, runtime_b) =
         load_minimal_compiled_runtime_with_runtime_files("runtime-file-cache-b", runtime_files_b);
-    let expected_mount_a = std::env::temp_dir().join(format!(
-        "crystal-pack-assets-{}-{}",
-        std::process::id(),
-        runtime_a.pack_identity().content_hash
-    ));
-    let expected_mount_b = std::env::temp_dir().join(format!(
-        "crystal-pack-assets-{}-{}",
-        std::process::id(),
-        runtime_b.pack_identity().content_hash
-    ));
-    let _ = std::fs::remove_dir_all(&expected_mount_a);
-    let _ = std::fs::remove_dir_all(&expected_mount_b);
-
     let mounted_a = runtime_a
         .materialize_runtime_files()
         .expect("materialize pack A runtime files");
@@ -4041,8 +4043,6 @@ fn runtime_file_bytes_partition_materialization_cache_identity() {
     );
     assert_ne!(mounted_a.repository_root, mounted_b.repository_root);
 
-    let _ = std::fs::remove_dir_all(expected_mount_a);
-    let _ = std::fs::remove_dir_all(expected_mount_b);
     let _ = std::fs::remove_dir_all(root_a);
     let _ = std::fs::remove_dir_all(root_b);
 }
@@ -4068,13 +4068,6 @@ fn runtime_file_bundle_materializes_exact_vendor_dependency_closure_from_empty_r
             .chain(crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS)
             .copied().collect::<BTreeSet<_>>()
     );
-    let expected_mount = std::env::temp_dir().join(format!(
-        "crystal-pack-assets-{}-{}",
-        std::process::id(),
-        runtime.pack_identity().content_hash
-    ));
-    let _ = std::fs::remove_dir_all(&expected_mount);
-
     let mounted = runtime
         .materialize_runtime_files()
         .expect("materialize complete vendor runtime bundle");
@@ -4092,7 +4085,6 @@ fn runtime_file_bundle_materializes_exact_vendor_dependency_closure_from_empty_r
         assert_eq!(std::fs::read(mounted.runtime_assets().join(key)).unwrap(),
             runtime_files[key], "materialized Pokégear source layout: {key}");
     }
-    let _ = std::fs::remove_dir_all(expected_mount);
     let _ = std::fs::remove_dir_all(root);
 }
 
@@ -4144,20 +4136,16 @@ fn runtime_file_materialization_rejects_path_aliases_before_writing() {
     for (key, expected) in cases {
         let mut invalid_runtime = runtime.clone();
         invalid_runtime.runtime_files = BTreeMap::from([(key.clone(), b"must-not-write".to_vec())]);
-        let mount = std::env::temp_dir().join(format!(
-            "crystal-pack-assets-{}-{}",
-            std::process::id(),
-            invalid_runtime.pack_identity().content_hash
-        ));
-        let _ = std::fs::remove_dir_all(&mount);
+        let parent = AssetRoot::new_temporary_in(&root).expect("isolated mount parent");
 
         let error = invalid_runtime
-            .materialize_runtime_files()
+            .materialize_runtime_files_in(&parent.repository_root)
             .expect_err("aliased runtime-file key must be rejected")
             .to_string();
         assert!(error.contains(expected) && error.contains(&key), "{error}");
-        assert!(
-            !mount.exists(),
+        assert_eq!(
+            std::fs::read_dir(&parent.repository_root).unwrap().count(),
+            0,
             "runtime-file validation must finish before creating the mount"
         );
         assert!(
@@ -9283,4 +9271,245 @@ fn runtime_load_rejects_corrupted_pack_identity() {
     let corrupt: CompiledGamePack = serde_json::from_value(encoded).unwrap();
     assert!(CrystalRuntime::from_compiled_pack(&asset_root, corrupt, identity()).is_err());
     std::fs::remove_dir_all(root).unwrap();
+}
+
+// These tests exercise mount I/O and ownership, not gameplay/source fidelity.
+// The production file validator accepts opaque nonempty payloads for these
+// required keys. Keep this fixture independent of vendor trees and full-pack
+// gameplay verification, which belong to the separate runtime_file_ checks.
+#[cfg(test)]
+fn synthetic_runtime_mount_fixture(name: &str) -> (PathBuf, AssetRoot, CrystalRuntime) {
+    let data = GameDataSet::default();
+    let runtime_files = crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS
+        .iter()
+        .chain(crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS.iter())
+        .map(|&key| {
+            (
+                key.to_string(),
+                format!("mount fixture: {key}\n").into_bytes(),
+            )
+        })
+        .collect();
+    crystal_assets::validate_compiled_runtime_files(&runtime_files)
+        .expect("synthetic mount files obey the production path/presence contract");
+    let pack = CompiledGamePack::new_unchecked_for_tests(data.clone(), report_for(&data))
+        .with_runtime_files_for_tests(runtime_files);
+    let root = temp_repository_root(name);
+    let source = AssetRoot::new(&root);
+    crystal_assets::write_compiled_game_pack_for_tests(
+        source.runtime_assets().join("data/runtime.crystalpack"),
+        &pack,
+    )
+    .expect("write synthetic source pack for preservation checks");
+    let (_, data, compiled_audio, manifest, compression, runtime_files, _, pack_identity) =
+        pack.into_parts();
+    let playback = ModpackAudioPlaybackPlan::from_manifest(&manifest).unwrap();
+    let audio = RuntimeAudioCatalog::from_game_data_owned(
+        &data,
+        compiled_audio,
+        manifest,
+        playback,
+        compression.as_deref(),
+    )
+    .unwrap();
+    let runtime = CrystalRuntime {
+        modpack: SaveModpackIdentity::new(
+            pack_identity.runtime_modpack_id.clone(),
+            pack_identity.content_hash.clone(),
+        )
+        .unwrap(),
+        pack_identity,
+        data,
+        runtime_files,
+        runtime_asset_mount: Arc::new(RuntimeAssetMountCache::default()),
+        audio,
+        viewport: GameViewport::default(),
+        map_catalog: Vec::new(),
+        catalog_cache: Arc::new(OnceLock::new()),
+    };
+    (root, source, runtime)
+}
+
+#[test]
+fn runtime_mount_lives_until_runtime_and_lazy_reader_clones_are_dropped() {
+    let (source_path, source, runtime) = synthetic_runtime_mount_fixture("runtime-mount-lifetime");
+    let pack_path = source.runtime_assets().join("data/runtime.crystalpack");
+    let pack_bytes = std::fs::read(&pack_path).unwrap();
+    let retained_runtime = runtime.clone();
+    let mounted = runtime.materialize_runtime_files().unwrap();
+    let mounted_path = mounted.repository_root.clone();
+    let lazy_reader = mounted.clone();
+    let mut semantically_equal = runtime.clone();
+    semantically_equal.runtime_asset_mount = Arc::new(RuntimeAssetMountCache::default());
+    assert_eq!(runtime, semantically_equal);
+    drop(semantically_equal);
+    drop(mounted);
+    drop(runtime);
+    assert!(mounted_path.is_dir());
+    let repeated = retained_runtime.materialize_runtime_files().unwrap();
+    assert_eq!(repeated.repository_root, mounted_path);
+    drop(repeated);
+    drop(retained_runtime);
+    let key = crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS[0];
+    assert!(
+        !std::fs::read(lazy_reader.repository_root.join(key))
+            .unwrap()
+            .is_empty()
+    );
+    drop(lazy_reader);
+    assert!(
+        !mounted_path.exists(),
+        "last owner must remove the extracted mount"
+    );
+    assert_eq!(std::fs::read(&pack_path).unwrap(), pack_bytes);
+    drop(source);
+    assert!(source_path.is_dir(), "source roots are never owned mounts");
+    let _ = std::fs::remove_dir_all(source_path);
+}
+
+#[test]
+fn runtime_mount_concurrent_calls_publish_one_complete_owned_directory() {
+    let (source_path, _, runtime) = synthetic_runtime_mount_fixture("runtime-mount-concurrent");
+    let parent = AssetRoot::new_temporary_in(&source_path).unwrap();
+    let barrier = Arc::new(std::sync::Barrier::new(6));
+    let handles = (0..6)
+        .map(|_| {
+            let runtime = runtime.clone();
+            let barrier = barrier.clone();
+            let parent = parent.clone();
+            std::thread::spawn(move || {
+                barrier.wait();
+                runtime
+                    .materialize_runtime_files_in(&parent.repository_root)
+                    .unwrap()
+            })
+        })
+        .collect::<Vec<_>>();
+    let roots = handles
+        .into_iter()
+        .map(|handle| handle.join().unwrap())
+        .collect::<Vec<_>>();
+    assert!(
+        roots
+            .iter()
+            .all(|root| root.repository_root == roots[0].repository_root)
+    );
+    assert_eq!(
+        std::fs::read_dir(&parent.repository_root).unwrap().count(),
+        1
+    );
+    for (key, expected) in &runtime.runtime_files {
+        let path = if key.starts_with("vendor/") {
+            roots[0].repository_root.join(key)
+        } else {
+            roots[0].runtime_assets().join(key)
+        };
+        assert_eq!(std::fs::read(path).unwrap(), *expected);
+    }
+    assert_eq!(
+        std::fs::read(
+            roots[0]
+                .repository_root
+                .join(".crystal-pack-assets-complete")
+        )
+        .unwrap(),
+        runtime.pack_identity().content_hash.as_bytes()
+    );
+    drop(runtime);
+    assert!(roots[0].repository_root.is_dir());
+    drop(roots);
+    assert_eq!(
+        std::fs::read_dir(&parent.repository_root).unwrap().count(),
+        0
+    );
+    drop(parent);
+    let _ = std::fs::remove_dir_all(source_path);
+}
+
+#[test]
+fn runtime_mount_independent_runtimes_never_adopt_or_remove_each_others_assets() {
+    let (source_path, _, runtime) = synthetic_runtime_mount_fixture("runtime-mount-independent");
+    let (independent_source_path, _, independent) =
+        synthetic_runtime_mount_fixture("runtime-mount-independent-second");
+    assert_eq!(runtime.pack_identity(), independent.pack_identity());
+    let parent = AssetRoot::new_temporary_in(&source_path).unwrap();
+    // Even a marker matching this exact pack must not let us adopt another
+    // process's or user's directory as an owned mount.
+    let unrelated = parent.repository_root.join(format!(
+        "crystal-pack-assets-{}-{}",
+        std::process::id(),
+        runtime.pack_identity().content_hash
+    ));
+    std::fs::create_dir(&unrelated).unwrap();
+    std::fs::write(
+        unrelated.join(".crystal-pack-assets-complete"),
+        runtime.pack_identity().content_hash.as_bytes(),
+    )
+    .unwrap();
+    let first = runtime
+        .materialize_runtime_files_in(&parent.repository_root)
+        .unwrap();
+    let second = independent
+        .materialize_runtime_files_in(&parent.repository_root)
+        .unwrap();
+    let first_path = first.repository_root.clone();
+    let second_path = second.repository_root.clone();
+    assert_ne!(first_path, second_path);
+    assert_ne!(first_path, unrelated);
+    drop(runtime);
+    drop(first);
+    assert!(!first_path.exists());
+    assert!(second_path.is_dir());
+    assert!(unrelated.is_dir());
+    drop(independent);
+    drop(second);
+    assert!(!second_path.exists());
+    assert!(unrelated.join(".crystal-pack-assets-complete").is_file());
+    drop(parent);
+    let _ = std::fs::remove_dir_all(source_path);
+    let _ = std::fs::remove_dir_all(independent_source_path);
+}
+
+#[test]
+fn runtime_mount_write_failure_cleans_partial_files_and_allows_retry() {
+    let (source_path, _, mut runtime) =
+        synthetic_runtime_mount_fixture("runtime-mount-write-failure");
+    let parent = AssetRoot::new_temporary_in(&source_path).unwrap();
+    // Individually valid keys whose file/directory collision fails only after
+    // extraction has started. No permissions assumptions or global TMPDIR edit.
+    runtime
+        .runtime_files
+        .insert("data/mount-collision".into(), b"file".to_vec());
+    runtime
+        .runtime_files
+        .insert("data/mount-collision/child".into(), b"child".to_vec());
+    let error = runtime
+        .materialize_runtime_files_in(&parent.repository_root)
+        .unwrap_err();
+    assert!(
+        error
+            .to_string()
+            .contains("create embedded runtime asset mount")
+    );
+    assert_eq!(
+        std::fs::read_dir(&parent.repository_root).unwrap().count(),
+        0
+    );
+    assert!(runtime.runtime_asset_mount.root.get().is_none());
+    runtime.runtime_files.remove("data/mount-collision");
+    let mounted = runtime
+        .materialize_runtime_files_in(&parent.repository_root)
+        .unwrap();
+    assert_eq!(
+        std::fs::read(mounted.runtime_assets().join("data/mount-collision/child")).unwrap(),
+        b"child"
+    );
+    drop(runtime);
+    drop(mounted);
+    assert_eq!(
+        std::fs::read_dir(&parent.repository_root).unwrap().count(),
+        0
+    );
+    drop(parent);
+    let _ = std::fs::remove_dir_all(source_path);
 }
