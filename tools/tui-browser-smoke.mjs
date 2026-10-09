@@ -6,6 +6,7 @@ import { resolve, extname } from 'node:path';
 import { chromium, webkit } from 'playwright';
 import { checkMenus } from './tui-menu-checks.mjs';
 import { checkVisibleInkMotion } from './tui-motion-checks.mjs';
+import { checkHome } from './tui-home-checks.mjs';
 
 const root = resolve(process.env.TUI_TEST_ROOT ?? 'target/tui-web');
 const pack = resolve(process.env.TUI_TEST_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
@@ -117,15 +118,15 @@ try {
         `Blocked ${button}: ${after.status_line}`);
     }
   }
-  await move('right', 4); await move('up', 3); await move('down', 4);
-  const mom = await observe();
-  assert.match(mom.status_line, /Text.*PlayersHouse1F/);
-  assert(mom.dialogue.some(line => line.text.includes('CHRIS')));
-  await press('right');
-  assert.deepEqual((await observe()).marker, mom.marker);
-  await press('a');
-  assert.notDeepEqual((await observe()).dialogue, mom.dialogue);
-  for (let i = 0; i < 128 && !(await observe()).status_line.startsWith('Overworld'); i++) await press('a');
+  await checkHome(observe, async button => {
+    // In the field, lowercase a is WASD-left. Z initiates interaction;
+    // lowercase a must confirm every dialogue-only page thereafter.
+    if (button === 'a') await page.keyboard.press((await observe()).status_line.startsWith('Overworld') ? 'z' : 'a');
+    else await page.evaluate(async button => {
+      const tool = (await document.modelContext.getTools()).find(t => t.name === 'geothite_tui_press');
+      await document.modelContext.executeTool(tool, { button });
+    }, button);
+  });
   await move('down', 2); await move('left', 2); await move('down', 4);
   await move('left', 11); await move('down', 1); await move('left', 1);
   assert((await observe()).dialogue.some(line => line.text.includes('Wait, CHRIS!')));
@@ -285,6 +286,12 @@ try {
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('#touch-controls [data-button="b"]').tap();
+    const mobileObserve = () => page.evaluate(() => window.geothiteTui.observe());
+    for (let i = 0; i < 4 && !(await mobileObserve()).status_line.includes('(3, 3)'); i++) {
+      await page.locator('#touch-controls [data-button="left"]').tap();
+    }
+    await checkHome(mobileObserve, button => page.locator(`#touch-controls [data-button="${button}"]`).tap());
+    console.log('Mobile WebKit touch: Mom repeat conversations, Start and movement left of the doormat passed.');
     await page.evaluate(base64 => {
       window.geothiteTui.save();
       const key = Object.keys(localStorage).find(key => key.startsWith('crystal.save.v1.') && key.endsWith('-tui-local.crystalsave'));
@@ -292,7 +299,6 @@ try {
     }, fixture.toString('base64'));
     await page.reload();
     await page.waitForFunction(() => !document.getElementById('screen').hidden, { timeout: 120000 });
-    const mobileObserve = () => page.evaluate(() => window.geothiteTui.observe());
     const tap = button => page.locator(`#touch-controls [data-button="${button}"]`).tap();
     assert.match((await mobileObserve()).status_line, /Route29.*\(46, 12\)/);
     for (let i=0; i<256 && !(await mobileObserve()).status_line.includes('Battle'); i++) await tap(Math.floor(i/2)%2 ? 'right' : 'left');

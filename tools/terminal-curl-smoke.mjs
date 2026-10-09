@@ -6,6 +6,7 @@ import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
+import { checkHome } from './tui-home-checks.mjs';
 const root = await mkdtemp(join(tmpdir(), 'geothite-curl-smoke-'));
 const base = process.env.GEOTHITE_DOWNLOAD_URL ?? 'https://geothite.ryanculligan.com';
 const shell = process.env.GEOTHITE_TEST_INTEL === '1' ? ['arch', '-x86_64', 'sh'] : ['sh'];
@@ -145,8 +146,15 @@ try {
       assert(moved, `Installed MCP changes authoritative player position: ${JSON.stringify(await call('observe'))}`);
       await call('press', { button: 'start' });
       assert((await call('observe')).menu.some(line => line.text.includes('SAVE')));
+      await call('press', { button: 'b' });
+      for (let i = 0; i < 16; i++) {
+        const [x, y] = (await call('observe')).marker;
+        if (x === 3 && y === 3) break;
+        await call('press', { button: x > 3 ? 'left' : x < 3 ? 'right' : y > 3 ? 'up' : 'down' });
+      }
+      await checkHome(() => call('observe'), button => call('press', { button }));
       assert.equal(stderr, '');
-      console.log('Actual curl reinstall preserved the save; installed MCP resumed it, moved and opened production Start.');
+      console.log('Actual curl reinstall preserved the save; installed MCP resumed, moved, opened Start and passed Mom/repeat-dialogue/doormat regressions.');
     } finally { mcp.stdin.end(); mcp.kill('SIGTERM'); }
   }
   if (process.env.GEOTHITE_KEEP_INSTALL === '1') console.log(`Verified install retained at ${root}/installed`);

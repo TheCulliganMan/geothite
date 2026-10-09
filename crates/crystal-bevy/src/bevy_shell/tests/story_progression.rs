@@ -5308,6 +5308,46 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
     }
     assert_eq!(controller.snapshot().unwrap().phase, RuntimeShellPhase::Overworld);
 
+    assert!(controller.shell.visible_script_movement.is_none());
+    assert!(controller.shell.visible_script_movement_scene.is_none(),
+        "Mom's return walk must release its retained scene without idle frames");
+    for _ in 0..2 {
+        controller.press(GameButton::Start).unwrap();
+        assert!(controller.snapshot().unwrap().ui.menu.is_some(),
+            "Start must work immediately after talking to Mom");
+        controller.press(GameButton::B).unwrap();
+        move_tiles(&mut controller, GameButton::Left, 1);
+        controller.press(GameButton::A).unwrap();
+        assert_ne!(controller.snapshot().unwrap().phase, RuntimeShellPhase::Overworld,
+            "interacting with Mom must actually open her authored dialogue");
+        for _ in 0..128 {
+            if controller.snapshot().unwrap().phase == RuntimeShellPhase::Overworld { break; }
+            controller.press(GameButton::A).unwrap();
+        }
+        assert_eq!(controller.snapshot().unwrap().phase, RuntimeShellPhase::Overworld);
+        assert!(controller.shell.visible_script_movement_scene.is_none());
+        move_tiles(&mut controller, GameButton::Right, 1);
+    }
+    // Explore left of the doormat after Mom's introduction, rather than only
+    // following the shortest route out of the house.
+    move_tiles(&mut controller, GameButton::Down, 3);
+    move_tiles(&mut controller, GameButton::Left, 4);
+    assert_eq!(controller.snapshot().unwrap().overworld.tile, TilePosition { x: 5, y: 7 });
+    controller.press(GameButton::Start).unwrap();
+    assert!(controller.snapshot().unwrap().ui.menu.is_some(), "Start left of the doormat");
+    controller.press(GameButton::B).unwrap();
+    move_tiles(&mut controller, GameButton::Left, 3);
+    controller.press(GameButton::Start).unwrap();
+    assert!(controller.snapshot().unwrap().ui.menu.is_some(),
+        "first-floor input lock: cursor={:?} movement={:?} retained_scene={} reveal={}",
+        controller.shell.active_script_cursor,
+        controller.shell.visible_script_movement,
+        controller.shell.visible_script_movement_scene.is_some(),
+        controller.shell.field_text_reveal.is_some());
+    controller.press(GameButton::B).unwrap();
+    move_tiles(&mut controller, GameButton::Right, 7);
+    move_tiles(&mut controller, GameButton::Up, 3);
+
     move_tiles(&mut controller, GameButton::Down, 2);
     move_tiles(&mut controller, GameButton::Left, 2);
     move_tiles(&mut controller, GameButton::Down, 2);

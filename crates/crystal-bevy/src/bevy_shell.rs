@@ -7129,6 +7129,15 @@ fn settle_visible_shell_controller(
             advance_visible_walk_timers(runtime_shell, 1);
             continue;
         }
+        if runtime_shell.visible_script_movement.is_some() {
+            // Bevy Update advances authored actor movement and releases its
+            // retained scene on completion. Renderer-neutral clients have no
+            // Update loop: draining walk timers alone leaves queued programs
+            // (including movement after closetext/end) owning input forever.
+            // Use the same completion handler, not a map-specific fence reset.
+            advance_visible_script_movement(runtime_shell)?;
+            continue;
+        }
         // Smoke execution has no Bevy `Time` system, but ASM delays, emotes,
         // and earthquakes still consume frames. Advance their presentation
         // clocks exactly one frame per settle iteration so script commands

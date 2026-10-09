@@ -286,6 +286,19 @@
   Browser reduced-motion skips replay (not state updates); native users can
   set `GEOTHITE_REDUCED_MOTION=1`. MCP/text-only clients do not generate frames.
   Never turn a replay failure or missing art/audio into an input fence.
+- Settle authored actor movement with `advance_visible_script_movement`, not
+  only walk timers. Its queued programs and retained scene can survive
+  `closetext`/script end (Mom's return walk was a real example). Leaving that
+  scene alive retains stale text input ownership while the UI says Overworld;
+  it can lock Start immediately and movement after crossing the first-floor
+  doormat. Run the production movement completion handler in the shared
+  controller; never clear scene/input fences in a frontend or special-case Mom.
+  Test repeat conversations and exploration, not only the shortest house exit:
+  `TUI_NATIVE_HOME=1 node tools/tui-stdio-smoke.mjs` and
+  `TUI_NATIVE_HOME=1 GEOTHITE_TUI_GRAPHICS=off node tools/tui-terminal-smoke.mjs`.
+  Browser smoke covers this same route with DOM lowercase A and real WebMCP,
+  requires immediate Start after Mom and at `(5, 7)` left of the doormat, and
+  authoritative movement back across the room without idle gameplay frames.
 - Text clients also have no audio device or Bevy Update loop. Reveal the
   current printer page before polling WaitSFX; an unread paragraph/CONT must
   remain player-owned, and A/B must still advance it while the audio fence is

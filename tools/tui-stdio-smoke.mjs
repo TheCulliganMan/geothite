@@ -4,9 +4,10 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { resolve } from 'node:path';
 import { checkMenus } from './tui-menu-checks.mjs';
+import { checkHome } from './tui-home-checks.mjs';
 const child = spawn(resolve(process.env.TUI_NATIVE_BIN ?? 'target/release/geothite'), [
   'mcp', resolve(process.env.TUI_NATIVE_PACK ?? 'content-packs/realtime-clock.browser.crystalpack'),
-  '--load', resolve(process.env.TUI_NATIVE_MENU_FIXTURE ?? process.env.TUI_NATIVE_FIXTURE ?? 'target/tui-smoke/lowlevel.crystalsave'),
+  ...(process.env.TUI_NATIVE_HOME ? [] : ['--load', resolve(process.env.TUI_NATIVE_MENU_FIXTURE ?? process.env.TUI_NATIVE_FIXTURE ?? 'target/tui-smoke/lowlevel.crystalsave')]),
 ], { stdio: ['pipe', 'pipe', 'pipe'] });
 const pending = new Map();
 let id = 0, stderr = '';
@@ -29,7 +30,11 @@ async function call(name, args = {}) {
 try {
   const observe = () => call('observe');
   const press = button => call('press', { button });
-  if (process.env.TUI_NATIVE_MENU_FIXTURE) {
+  if (process.env.TUI_NATIVE_HOME) {
+    await checkHome(observe, press);
+    assert.equal(stderr, '', 'Mom movement/dialogue cannot corrupt terminal output');
+    console.log('Native MCP: Mom introduction and repeat conversations, immediate Start, movement left of the doormat passed.');
+  } else if (process.env.TUI_NATIVE_MENU_FIXTURE) {
     await checkMenus(observe, press);
     assert.equal(stderr, '', 'Menus/audio cannot corrupt terminal output');
     console.log('Native MCP: Potion HP/count, all Pack pockets, Itemfinder, Dex entry/area/cry/printer/options/search, Gear map/phone/radio and movement passed.');
