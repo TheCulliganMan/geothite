@@ -72,15 +72,14 @@ pub(crate) fn tile(
             diameters[usize::from(row) * usize::from(a.width) + usize::from(col)] =
                 (2. * (coverage[step] / std::f64::consts::PI).sqrt() * shape.sqrt() * 255.)
                     .clamp(0., 250.) as u8;
-            // Same RGB ray, compensated for ink area; no replacement palette.
-            let foreground_scale = 255. / peak;
-            let color = |scale: f64| {
-                let p = rgb.map(|v| (v * scale).round().clamp(0., 255.) as u8);
-                Color::Rgb(p[0], p[1], p[2])
-            };
+            // Keep source brightness instead of promoting every brown/shadow
+            // to full-bright yellow/orange. Softer ink retains the source hue
+            // (equal-channel neutral mixing), without replacing its palette.
+            let neutral = rgb.iter().sum::<f64>() / 3.;
+            let p = rgb.map(|v| (v * 0.72 + neutral * 0.28).round().clamp(0., 255.) as u8);
             b[(a.x + col, a.y + row)]
                 .set_symbol(DOTS[step])
-                .set_fg(color(foreground_scale))
+                .set_fg(Color::Rgb(p[0], p[1], p[2]))
                 .set_bg(PAPER);
         }
     }
@@ -364,6 +363,14 @@ mod tests {
         assert!(b.content.iter().any(|c| c.symbol() == "•"));
         assert!(b.content.iter().any(|c| c.symbol() == "·"));
         assert!(b.content.iter().all(|c| c.bg == PAPER));
+    }
+    #[test]
+    fn warm_shadows_are_not_promoted_to_full_bright_yellow() {
+        let mut b = Buffer::empty(Rect::new(0, 0, 16, 16));
+        tile(&mut b, Rect::new(0, 0, 16, 16), &[[100, 80, 40]; 256], 0, 0, 0.);
+        assert!(b.content.iter().all(|c| c.fg == Color::Rgb(93, 78, 49)));
+        tile(&mut b, Rect::new(0, 0, 16, 16), &[[128; 3]; 256], 0, 0, 0.);
+        assert!(b.content.iter().all(|c| c.fg == Color::Rgb(128, 128, 128)));
     }
     #[test]
     fn moving_the_viewport_does_not_swim_the_dither() {

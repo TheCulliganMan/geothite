@@ -148,7 +148,15 @@ impl PaintedRenderer {
         ))
     }
     pub fn advance_ink(&mut self) {
-        self.ink_phase = (self.ink_phase + 0.08) % (std::f64::consts::TAU * 100.);
+        self.advance_ink_by(0.1);
+    }
+    /// Shared seconds-based cosmetic clock. Never advances the controller.
+    /// Bound discontinuities after hidden tabs, suspension or slow transports.
+    pub fn advance_ink_by(&mut self, seconds: f64) {
+        if seconds.is_finite() && seconds > 0. {
+            self.ink_phase = (self.ink_phase + seconds.min(0.25) * 1.6)
+                % (std::f64::consts::TAU * 100.);
+        }
     }
     pub fn animated_dot_sizes(&self) -> Vec<u8> {
         let Some(scene) = self.scene else {
@@ -165,9 +173,12 @@ impl PaintedRenderer {
                     + (i % usize::from(self.dot_width)) as f64 / f64::from(scene.cw * 2);
                 let y = f64::from(scene.top)
                     + (i / usize::from(self.dot_width)) as f64 / f64::from(scene.ch * 4);
-                let wave = 1.
-                    + 0.12 * (x * 0.43 + y * 0.31 + self.ink_phase).sin()
-                    + 0.06 * (x * 0.21 - y * 0.37 - self.ink_phase * 0.71).sin();
+                // Broad travelling breaths, visible at normal viewing size.
+                // A downward-biased range gives large dots room to move rather
+                // than pinning their whole animation against the 250 cap.
+                let wave = 0.84
+                    + 0.28 * (x * 0.43 + y * 0.31 + self.ink_phase).sin()
+                    + 0.12 * (x * 0.21 - y * 0.37 - self.ink_phase * 0.71).sin();
                 (f64::from(*size) * wave).clamp(0., 250.) as u8
             })
             .collect()
@@ -1285,6 +1296,19 @@ mod tests {
         }
     }
     #[test]
+    fn cosmetic_clock_is_elapsed_time_not_frontend_frame_count() {
+        let mut terminal = PaintedRenderer::default();
+        let mut browser = PaintedRenderer::default();
+        for _ in 0..8 { terminal.advance_ink_by(0.1); }
+        for _ in 0..5 { browser.advance_ink_by(0.16); }
+        assert!((terminal.ink_phase - browser.ink_phase).abs() < 1e-10);
+        let phase = terminal.ink_phase;
+        for seconds in [f64::NAN, f64::INFINITY, -1., 0.] { terminal.advance_ink_by(seconds); }
+        assert_eq!(terminal.ink_phase, phase);
+        terminal.advance_ink_by(1000.);
+        assert!((terminal.ink_phase - phase - 0.4).abs() < 1e-10, "No resume catch-up burst");
+    }
+    #[test]
     fn palettes_and_square_sampling_keep_real_colors() {
         let palettes = parse_palettes(
             "; day\nRGB 31, 31, 31, 20, 10, 0, 5, 5, 5, 0, 0, 0\n; nite\nRGB 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3",
@@ -1410,17 +1434,27 @@ mod tests {
             for _ in 0..10 {
                 painter.advance_ink();
             }
-            assert_ne!(
-                sizes,
-                painter.animated_dot_sizes(),
-                "Cosmetic breathing varies dot sizes"
-            );
+            let after = painter.animated_dot_sizes();
+            let visible_changes = sizes.iter().zip(&after)
+                .filter(|(a, b)| **a > 0 && a.abs_diff(**b) >= 24).count();
+            assert!(visible_changes > sizes.len() / 10,
+                "One second must visibly change dot diameters, not just frame hashes");
         }
         for (cols, rows) in [(80, 24), (93, 34), (128, 43)] {
             let buffer = painter.draw(&source, &text, cols, rows, None, false, false);
             let viewport = painter.viewport;
             let area = painter.scene.unwrap().area;
             let terminal = painter.draw_native(&source, &text, cols, rows, None, false);
+            let phase = painter.ink_phase;
+            let image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
+            for _ in 0..10 { painter.advance_ink(); }
+            let animated = painter.circle_image(image.width(), image.height()).unwrap();
+            let pixel_change = image.pixels().zip(animated.pixels()).map(|(a,b)|
+                (0..3).map(|c| a[c].abs_diff(b[c])).max().unwrap() as f64
+            ).sum::<f64>() / f64::from(image.width() * image.height());
+            assert!(pixel_change > 6., "Native circle motion must be visibly substantial: {pixel_change}");
+            // Restore the phase for the existing unchanged-adapter comparison.
+            painter.ink_phase = phase;
             assert_eq!(painter.viewport, viewport);
             assert!(
                 terminal.content.iter().any(|cell| cell

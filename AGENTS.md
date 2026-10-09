@@ -142,6 +142,10 @@
   replace actors with generic figures. Those approaches lost the map's art.
   Rust `ink.rs` area-samples pack pixels into same-hue dot ink on flat paper;
   Bayer thresholds choose dot coverage, not colored rectangular backgrounds.
+  Ink must keep source brightness; normalizing every shade's peak to 255 made
+  Home's brown/tan shadows look neon yellow. The shared ink gently reduces
+  chroma by neutral mixing, retaining hue families, source silhouettes and the
+  authored indoor/time-of-day palette. Do not apply this to battle portraits.
   Browser art may use a denser square-cell canvas piece composited inside the
   same TUI, while captions and menus remain large. Painted maps must not have
   floating #/D/@ labels: real tiles/sprites carry the scene; ledge/barrier cues
@@ -184,6 +188,14 @@
   while idle and under repeated unmapped keys; cursor-only traffic is not
   animation. Discard the trailing idle redraw before measuring busy input so
   the old idle-timeout-only implementation cannot falsely pass.
+  Browser redraws must retain their pending cosmetic deadline too: cancelling
+  and rescheduling on every input/resize freezes ambient ink during play. Both
+  frontends pass elapsed seconds into the shared radius field, with bounded
+  resume deltas. `tools/tui-motion-checks.mjs` measures actual dot-layer pixel
+  changes over one second, both idle and during repeated R redraws, and requires
+  unchanged authoritative observations. Sample the current offscreen canvas,
+  not a detached canvas replaced by draw/preference changes. Reduced motion
+  must remain still. Hash inequality alone accepted motion too subtle to see.
   V selects text/paint. Keep the map flat and north-up. The experimental 2.5D
   offset/compression pass and its P toggle were rejected and removed: do not
   bring back a diamond rotation or fake depth offsets without a new user request

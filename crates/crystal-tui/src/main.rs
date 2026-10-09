@@ -699,13 +699,17 @@ fn run_tui(
     let mut painted = true;
     let reduced_motion = std::env::var("GEOTHITE_REDUCED_MOTION").as_deref() == Ok("1");
     let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_millis(100));
+    let mut last_ink = Instant::now();
     let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
     game.set_battle_replay_enabled(!reduced_motion);
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
     'tui: loop {
         let now = Instant::now();
         if ink_clock.tick(now, painted && !reduced_motion) {
-            painter.advance_ink();
+            painter.advance_ink_by(now.duration_since(last_ink).as_secs_f64());
+            last_ink = now;
+        } else if !painted || reduced_motion {
+            last_ink = now;
         }
         if replay_clock.tick(now, painted && !reduced_motion && painter.replay_active()) {
             painter.advance_replay();
@@ -1069,18 +1073,34 @@ mod tests {
             "MCP did not enter a grass encounter"
         );
         for _ in 0..256 {
+            let shown = game.presentation_snapshot().unwrap();
+            let view = renderer.render(&shown);
+            if shown.battle.is_none() && !view.confirmation_input_owned() {
+                break;
+            }
+            // Level-50 learnsets need not put a damaging move in slot zero.
+            // Choose a displayed attack through the real menu instead of
+            // spending 256 A presses on SCREECH instead of attacking.
+            let attack = view.menu.iter().position(|line| {
+                line.text.contains("PP") && ["SLASH", "WATER GUN", "HYDRO PUMP", "RAGE", "BITE", "SCRATCH"]
+                    .iter().any(|name| line.text.contains(name))
+            });
+            let selected = view.menu.iter().position(|line| line.kind == geothite::LineKind::Selected).unwrap_or(0);
+            let button = attack.filter(|index| *index != selected)
+                .map_or("a", |index| if index > selected { "down" } else { "up" });
             call_mcp_tool(
                 &mut game,
                 &mut renderer,
                 &mut cursor,
                 Some("press"),
-                &json!({"button": "a"}),
+                &json!({"button": button}),
                 None,
             )
             .unwrap();
         }
         let before = game.snapshot().unwrap();
-        assert!(before.battle.is_none(), "MCP battle did not finish");
+        assert!(before.battle.is_none(), "MCP battle did not finish: {}",
+            render_snapshot_text(&renderer.render(&game.presentation_snapshot().unwrap()), false));
         call_mcp_tool(
             &mut game,
             &mut renderer,

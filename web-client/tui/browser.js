@@ -14,16 +14,24 @@ let game, observation, registration;
 let phoneLayout;
 let visualTimer;
 let inkTimer;
+let inkLast = performance.now();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 function stopVisual() { clearTimeout(visualTimer); visualTimer = undefined; game?.cancel_visual(); }
-function stopInk() {clearTimeout(inkTimer);inkTimer=undefined;}
+function stopInk() {clearTimeout(inkTimer);inkTimer=undefined;inkLast=performance.now();}
 function animateInk() {
-  stopInk();
-  if (!painted || reducedMotion.matches || document.hidden || !game.world_bounds().length) return;
+  if (!painted || reducedMotion.matches || document.hidden || !game.world_bounds().length) {stopInk();return;}
+  // Input/resize redraws replace the cached painter, not this pending deadline.
+  // Restarting the timeout on every redraw makes held movement freeze the ink.
+  if (inkTimer !== undefined) return;
   inkTimer=setTimeout(()=>{
-    try {game.advance_ink();stopPainting?.updateDots(game.world_dot_sizes());animateInk();}
+    inkTimer=undefined;
+    try {
+      const now=performance.now();
+      game.advance_ink((now-inkLast)/1000);inkLast=now;
+      stopPainting?.updateDots(game.world_dot_sizes());animateInk();
+    }
     catch(error) {stopInk();report(error);}
-  },160);
+  },100);
 }
 function replayVisual() {
   // Finite Rust-produced frames. No RAF game loop, inputs always interrupt.
@@ -37,7 +45,6 @@ reducedMotion.addEventListener('change', () => { if (game) { stopVisual(); draw(
 const report = error => { status.textContent = `Geothite: ${error?.message ?? error}`; status.hidden = false; };
 
 function draw() {
-  stopInk();
   screen.dataset.animation = String(game.visual_active());
   const probe = document.createElement('span');
   probe.textContent = 'MMMMMMMMMM';

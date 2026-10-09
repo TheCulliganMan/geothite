@@ -191,7 +191,7 @@ mod wasm {
             Ok(self.painted.detailed_world(&source).map(|b|buffer_html(&b)).unwrap_or_default())
         }
         pub fn world_bounds(&self) -> Vec<u16> {self.painted.scene_bounds()}
-        pub fn advance_ink(&mut self) {self.painted.advance_ink();}
+        pub fn advance_ink(&mut self, seconds: f64) {self.painted.advance_ink_by(seconds);}
         pub fn world_dot_sizes(&self)->Vec<u8> {self.painted.animated_dot_sizes()}
 
         pub fn render(&mut self, columns: u16, rows: u16) -> Result<String, JsValue> {

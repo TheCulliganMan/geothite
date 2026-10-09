@@ -5,6 +5,7 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, extname } from 'node:path';
 import { chromium, webkit } from 'playwright';
 import { checkMenus } from './tui-menu-checks.mjs';
+import { checkVisibleInkMotion } from './tui-motion-checks.mjs';
 
 const root = resolve(process.env.TUI_TEST_ROOT ?? 'target/tui-web');
 const pack = resolve(process.env.TUI_TEST_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
@@ -56,6 +57,7 @@ try {
     return fine && fine.width > 0 && fine.height > 0;
   }), 'Browser paints the Rust high-density dot scene, independently of the readable text grid');
   const beforeToggle = await page.evaluate(() => window.geothiteTui.observe());
+  await checkVisibleInkMotion(page);
   const canvasHash=()=>page.evaluate(async()=>{
     const c=document.getElementById('ascii');
     return [...new Uint8Array(await crypto.subtle.digest('SHA-256',c.getContext('2d').getImageData(0,0,c.width,c.height).data))].join(',');
@@ -249,6 +251,8 @@ try {
     await page.waitForFunction(() => !document.getElementById('screen').hidden, { timeout: 120000 });
     assert.equal(await page.locator('#touch-controls button:visible').count(), 8, 'Game Boy buttons are mobile-only');
     assert.equal(await page.locator('#screen').getAttribute('data-view'), 'painted', 'Painted is default on mobile');
+    await checkVisibleInkMotion(page, false);
+    await page.emulateMedia({reducedMotion:'no-preference'});
     const toggleMarker = (await page.evaluate(() => window.geothiteTui.observe())).marker;
     await page.locator('#view-toggle').tap();
     assert.equal(await page.locator('#screen').getAttribute('data-view'), 'text');
