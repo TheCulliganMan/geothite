@@ -5,6 +5,8 @@ import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+import {StringDecoder} from 'node:string_decoder';
+import {PtyScreen} from './tui-pty-screen.mjs';
 const binary=resolve(process.env.TUI_NATIVE_BIN ?? 'target/release/geothite');
 const pack=resolve(process.env.TUI_NATIVE_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
 const fixture=resolve(process.env.TUI_NATIVE_FIXTURE ?? 'target/tui-smoke/lowlevel.crystalsave');
@@ -42,9 +44,10 @@ finally:
     game.wait()
 `,binary,'play',pack,'--load',fixture],{env:{...process.env,GEOTHITE_TUI_GRAPHICS:'kitty',GEOTHITE_REDUCED_MOTION:reduced?'1':'0'},stdio:['pipe','pipe','pipe']});
   let raw='',errors='',encoded='',current=null,commands=[];
+  const screen=new PtyScreen(),decoder=new StringDecoder('utf8');
   const frames=[];let pending='';
   child.stdout.on('data',bytes=>{
-    const text=bytes.toString();raw+=text;pending+=text;
+    const text=decoder.write(bytes);raw+=text;pending+=text;screen.feed(text);
     for(;;) {
       const start=pending.indexOf('\x1b_G');if(start<0) {pending=pending.slice(-3);break;}
       const end=pending.indexOf('\x1b\\',start);if(end<0) {pending=pending.slice(start);break;}
@@ -64,7 +67,7 @@ finally:
     }
   });
   child.stderr.on('data',bytes=>errors+=bytes);
-  const visible=()=>raw.replace(/\x1b_G[^]*?\x1b\\/g,'').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'');
+  const visible=()=>screen.text();
   async function waitFor(condition,message) {for(let i=0;i<300&&!condition();i++){if(child.exitCode!==null)break;await pause(50);}assert(condition(),`${message}: ${errors}\n${visible().slice(-1200)}`);}
   async function key(value) {child.stdin.write(value);await pause(180);}
   try {
@@ -72,14 +75,23 @@ finally:
     assert(raw.startsWith('\x1b[?1049h'),'No logs before fullscreen');
     assert(visible().includes('Route29'));
     await writeFile(resolve(output,reduced?'pty-canvas-reduced.png':'pty-canvas.png'),frames[0].png);
-    await pause(captureAnimation&&!reduced?4000:700);
+    await pause(reduced?700:8500);
+    if(!reduced) {
+      const steps=frames.slice(1).map((f,i)=>f.time-frames[i].time);
+      const maxGap=Math.max(...steps);
+      assert(frames.length>140,`Actual PNG transport must sustain smooth motion, not 10fps steps: ${frames.length} frames`);
+      assert(maxGap<250,`No hold then burst in the emitted terminal frames: ${maxGap.toFixed(0)}ms`);
+      assert(frames.every((f,i)=>i===0||f.hash!==frames[i-1].hash),'Every delivered visual frame changes, not a peak plateau');
+      console.log(`Continuous native PNGs: ${frames.length} frames over a full slow cycle, max gap ${maxGap.toFixed(0)}ms.`);
+    }
     if(captureAnimation&&!reduced) {
       const directory=resolve(output,'animation');
       await mkdir(directory,{recursive:true});
-      for(const [index,frame] of frames.entries()) {
+      const captured=[...frames];
+      for(const [index,frame] of captured.entries()) {
         await writeFile(resolve(directory,`${String(index).padStart(4,'0')}.png`),frame.png);
       }
-      await writeFile(resolve(directory,'timing.json'),JSON.stringify(frames.map((f,index)=>({index,ms:f.time-frames[0].time,hash:f.hash})),null,2));
+      await writeFile(resolve(directory,'timing.json'),JSON.stringify(captured.map((f,index)=>({index,ms:f.time-captured[0].time,hash:f.hash})),null,2));
     }
     if(reduced) assert.equal(frames.length,1,'Reduced-motion sends one unchanged frame, not an animation');
     else assert(new Set(frames.map(f=>f.hash)).size>1,'The actual console circle sizes animate');
@@ -94,7 +106,7 @@ finally:
     assert(raw.slice(offset).includes('a=d,d=I,i='),'Text toggle removes only owned canvas images');
     const count=frames.length;await pause(300);assert.equal(frames.length,count,'Text view stops the canvas');
     await key('v');await waitFor(()=>frames.length>count,'V restores shared painted canvas');
-    child.kill('SIGUSR1');
+    screen.resize(100,32);child.kill('SIGUSR1');
     await waitFor(()=>frames.some(f=>f.png.readUInt32BE(16)>1000),'Resize repositions and scales the shared scene');
     await key('\r');await waitFor(()=>visible().includes('SAVE'),'Production Start still opens');
     await key('x');
@@ -107,10 +119,18 @@ finally:
       assert.equal(frames.length,battleFrames,'No overworld canvas over battle portraits');
       for(let i=0;i<4;i++)await key('x');
       await key('\x1b[A');await key('\x1b[D');
-      for(let i=0;i<256&&!raw.slice(entry).includes('Overworld');i++)await key('a');
+      // Core Overworld and a restored image can precede the last player-owned
+      // victory/EXP page. Finish the visible dialogue, not just the core phase.
+      for(let i=0;i<256&&(!visible().includes('Overworld')||visible().includes('DIALOGUE'));i++)await key('a');
+      await waitFor(()=>visible().includes('Overworld')&&!visible().includes('DIALOGUE'),'Retained battle narration finishes');
       await waitFor(()=>frames.length>battleFrames,'Victory restores the overworld canvas');
-      await key('\x1b[A');await key('\x1b[A');await key('\r');
-      assert(visible().slice(visible().indexOf('WildBattle')).includes('SAVE'),'Post-battle Start remains playable');
+      await key('\r');
+      await waitFor(()=>visible().includes('SAVE'),'Post-battle Start remains playable');
+      await key('x');
+      const position=()=>visible().split('\n')[0].match(/\d+,\d+/)?.[0];
+      const before=position();assert(before,'Actual player coordinates in terminal header');
+      await key('\x1b[A');await key('\x1b[A');
+      await waitFor(()=>position()!==before,'Directional input changes the actual post-battle position');
     }
     assert.equal(errors,'');
     const exitOffset=raw.length;

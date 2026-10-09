@@ -8,6 +8,38 @@ export async function checkVisibleInkMotion(page, captureOutput=true) {
   const before = await page.evaluate(() => window.geothiteTui.observe());
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.waitForTimeout(200); // Allow preference-driven painter replacement.
+  // Record EVERY actual dot-layer compose, not two snapshots seconds apart.
+  // That old check accepted a long hold followed by a sudden change.
+  const cadence = await page.evaluate(async () => {
+    const prototype=CanvasRenderingContext2D.prototype;
+    const fillRect=prototype.fillRect;
+    const frames=[];
+    let previous;
+    prototype.fillRect=function(x,y,w,h) {
+      const result=fillRect.call(this,x,y,w,h);
+      if(this.canvas.id!=='ascii' && x===0 && y===0 && w===this.canvas.width && h===this.canvas.height) {
+        const ctx=this;
+        queueMicrotask(()=>{
+          const pixels=ctx.getImageData(0,0,w,h).data;
+          let sum=0;
+          if(previous) for(let i=0;i<pixels.length;i+=4) sum+=Math.max(
+            Math.abs(pixels[i]-previous[i]),Math.abs(pixels[i+1]-previous[i+1]),Math.abs(pixels[i+2]-previous[i+2]));
+          frames.push({time:performance.now(),change:previous?sum/(pixels.length/4):null});
+          previous=pixels;
+        });
+      }
+      return result;
+    };
+    try { await new Promise(resolve=>setTimeout(resolve,8500)); }
+    finally {prototype.fillRect=fillRect;}
+    const steps=frames.slice(1).map((f,i)=>({gap:f.time-frames[i].time,change:f.change}));
+    return {count:frames.length,minChange:Math.min(...steps.map(s=>s.change)),
+      maxChange:Math.max(...steps.map(s=>s.change)),maxGap:Math.max(...steps.map(s=>s.gap))};
+  });
+  assert(cadence.count>140,`Slow motion still needs a smooth visual cadence: ${JSON.stringify(cadence)}`);
+  assert(cadence.minChange>0.02,`Every painted frame must drift, with no peak plateau: ${JSON.stringify(cadence)}`);
+  assert(cadence.maxChange<8,`No sudden catch-up frame: ${JSON.stringify(cadence)}`);
+  assert(cadence.maxGap<250,`No long visual hold: ${JSON.stringify(cadence)}`);
   const measure = () => page.evaluate(async () => {
     const canvas=[...document.querySelectorAll('canvas')].find(c=>c.id!=='ascii');
     if(!canvas) throw new Error('Missing real Rust dot layer');
@@ -51,5 +83,5 @@ export async function checkVisibleInkMotion(page, captureOutput=true) {
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.waitForTimeout(200);
   assert.deepEqual(await measure(),{mean:0,strong:0},'Reduced motion stays still while retaining state updates');
-  console.log(`Visible ink pixels: idle ${idle.mean.toFixed(1)}, busy ${busy.mean.toFixed(1)} mean change; reduced motion still.`);
+  console.log(`Continuous ink: ${cadence.count} frames, ${cadence.minChange.toFixed(2)}–${cadence.maxChange.toFixed(2)} pixel change/frame, max gap ${cadence.maxGap.toFixed(0)}ms. Idle ${idle.mean.toFixed(1)}, busy ${busy.mean.toFixed(1)}; reduced motion still.`);
 }

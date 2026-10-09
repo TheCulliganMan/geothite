@@ -196,11 +196,22 @@
   unchanged authoritative observations. Sample the current offscreen canvas,
   not a detached canvas replaced by draw/preference changes. Reduced motion
   must remain still. Hash inequality alone accepted motion too subtle to see.
-  Keep ambient motion gentle: the shared Rust field uses an approximately
-  eight-second primary breath and half the earlier radius swing. Regression
-  tests bound both radius range and per-update jumps; do not speed it back up
-  merely to meet a short observation window. Preserve the current softened
+  Keep ambient motion gentle AND continuous: an approximately eight-second
+  constant-speed travelling wave at 30 visual updates/second. Pass fractional
+  Rust radii through WASM and native adapters, not byte-quantized sizes. Stay
+  below the radius cap; clipped peaks and sine easing created long holds then
+  quick changes even when two-second pixel comparisons passed. Check every
+  actual canvas compose across a full cycle for nonzero small changes and
+  bounded frame gaps, plus native PNG cadence. Regression tests bound radius
+  range and per-update jumps; do not speed the wave up just to meet a short
+  observation window. Preserve the current softened
   source colors and keep gameplay clocks independent of this cosmetic field.
+  Native input polling must use at least 1ms even after a visual deadline
+  overrun: Crossterm's use-dev-tty source skips reads with a zero timeout.
+  Large/slow PNG frames otherwise animate while all keys appear ignored.
+  The real PTY smoke must resize then open Start and complete a battle; read
+  its reconstructed character screen (`tui-pty-screen.mjs`), not concatenated
+  Ratatui diffs or base64 graphics as if they were semantic text.
   V selects text/paint. Keep the map flat and north-up. The experimental 2.5D
   offset/compression pass and its P toggle were rejected and removed: do not
   bring back a diamond rotation or fake depth offsets without a new user request

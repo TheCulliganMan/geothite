@@ -31,7 +31,7 @@ function animateInk() {
       stopPainting?.updateDots(game.world_dot_sizes());animateInk();
     }
     catch(error) {stopInk();report(error);}
-  },100);
+  },Math.max(0,1000/30-(performance.now()-inkLast)));
 }
 function replayVisual() {
   // Finite Rust-produced frames. No RAF game loop, inputs always interrupt.

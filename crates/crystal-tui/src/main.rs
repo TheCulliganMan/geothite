@@ -653,6 +653,13 @@ impl VisualClock {
     }
 }
 
+fn terminal_poll_timeout(remaining: Duration) -> Duration {
+    // The use-dev-tty poller skips even buffered keys when its timeout is
+    // zero. Large PNG frames can overrun a visual deadline: always give the
+    // input source time to check readiness instead of starving controls.
+    remaining.max(Duration::from_millis(1))
+}
+
 impl TerminalGuard {
     fn enter() -> Result<Self> {
         enable_raw_mode().context("enable terminal raw mode")?;
@@ -698,7 +705,7 @@ fn run_tui(
     let mut command_buffer: Option<String> = None;
     let mut painted = true;
     let reduced_motion = std::env::var("GEOTHITE_REDUCED_MOTION").as_deref() == Ok("1");
-    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_millis(100));
+    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_secs_f64(1. / 30.));
     let mut last_ink = Instant::now();
     let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
     game.set_battle_replay_enabled(!reduced_motion);
@@ -778,7 +785,7 @@ fn run_tui(
         } else {
             ink_clock.wait(now)
         };
-        if !event::poll(timeout).context("poll terminal input")? {
+        if !event::poll(terminal_poll_timeout(timeout)).context("poll terminal input")? {
             continue;
         }
         let Event::Key(key) = event::read().context("read terminal input")? else {
@@ -914,6 +921,16 @@ fn apply_button(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn overrun_visual_frames_still_poll_real_input() {
+        let start = Instant::now();
+        let clock = VisualClock::new(start, Duration::from_secs_f64(1. / 30.));
+        let expired = clock.wait(start + Duration::from_millis(80));
+        assert!(expired.is_zero(), "A large frame missed its visual deadline");
+        assert_eq!(terminal_poll_timeout(expired), Duration::from_millis(1));
+        assert_eq!(terminal_poll_timeout(Duration::from_millis(20)), Duration::from_millis(20));
+    }
 
     #[test]
     fn cosmetic_deadlines_survive_continuous_input() {

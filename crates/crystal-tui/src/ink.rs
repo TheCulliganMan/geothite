@@ -93,7 +93,7 @@ pub(crate) fn pack_terminal_dots(
     b: &mut Buffer,
     a: Rect,
     fine: &Buffer,
-    sizes: &[u8],
+    sizes: &[f64],
     left: i16,
     top: i16,
 ) {
@@ -110,9 +110,7 @@ pub(crate) fn pack_terminal_dots(
                 for dx in 0..2 {
                     let x = col * 2 + dx;
                     let y = row * 4 + dy;
-                    let size = f64::from(
-                        sizes[usize::from(y) * usize::from(fine.area.width) + usize::from(x)],
-                    ) / 255.;
+                    let size = sizes[usize::from(y) * usize::from(fine.area.width) + usize::from(x)] / 255.;
                     let area = size * size;
                     // A Braille dot cannot change diameter. Ordered density
                     // encodes circle area on its 2x4 subcell lattice instead.
@@ -155,7 +153,7 @@ pub(crate) fn pack_terminal_dots(
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn rasterize_dots(
     fine: &Buffer,
-    sizes: &[u8],
+    sizes: &[f64],
     width: u32,
     height: u32,
 ) -> image::RgbImage {
@@ -166,14 +164,14 @@ pub(crate) fn rasterize_dots(
     let cw = f64::from(width) / f64::from(fine.area.width);
     let ch = f64::from(height) / f64::from(fine.area.height);
     for (i, size) in sizes.iter().enumerate() {
-        if *size == 0 {
+        if *size == 0. {
             continue;
         }
         let x = (i % usize::from(fine.area.width)) as f64;
         let y = (i / usize::from(fine.area.width)) as f64;
         let center_x = (x + 0.5) * cw;
         let center_y = (y + 0.5) * ch;
-        let radius = f64::from(*size) / 255. * cw * 0.5;
+        let radius = *size / 255. * cw * 0.5;
         let Color::Rgb(r, g, b) = fine.content[i].fg else {
             continue;
         };
@@ -266,8 +264,8 @@ mod tests {
         let bits = [[0, 3], [1, 4], [2, 5], [6, 7]];
         for y in 0..4 {
             for x in 0..2 {
-                let mut sizes = vec![0; 8];
-                sizes[y * 2 + x] = 255;
+                let mut sizes = vec![0.; 8];
+                sizes[y * 2 + x] = 255.;
                 let mut output = Buffer::empty(Rect::new(0, 0, 3, 3));
                 pack_terminal_dots(&mut output, Rect::new(1, 1, 1, 1), &fine, &sizes, 46, 12);
                 assert_eq!(
@@ -300,7 +298,9 @@ mod tests {
             12,
             0.,
         );
-        let mut sizes = vec![0; 24 * 12];
+        let first: Vec<f64> = first.into_iter().map(f64::from).collect();
+        let second: Vec<f64> = second.into_iter().map(f64::from).collect();
+        let mut sizes = vec![0.; 24 * 12];
         for y in 0..12 {
             sizes[y * 24..y * 24 + 12].copy_from_slice(&first[y * 12..y * 12 + 12]);
             sizes[y * 24 + 12..y * 24 + 24].copy_from_slice(&second[y * 12..y * 12 + 12]);
