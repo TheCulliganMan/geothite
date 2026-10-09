@@ -93,10 +93,10 @@ finally:
     if(!reduced) {
       const steps=frames.slice(1).map((f,i)=>f.time-frames[i].time);
       const maxGap=Math.max(...steps);
-      assert(frames.length>140,`Actual PNG transport must sustain smooth motion, not 10fps steps: ${frames.length} frames`);
-      assert(maxGap<250,`No hold then burst in the emitted terminal frames: ${maxGap.toFixed(0)}ms`);
+      assert(frames.length>=8&&frames.length<=10,`Idle terminal artwork refreshes once a second: ${frames.length} frames`);
+      assert(Math.min(...steps)>900&&maxGap<1250,`One-second cadence, not bursts: ${maxGap.toFixed(0)}ms maximum`);
       assert(frames.every((f,i)=>i===0||f.hash!==frames[i-1].hash),'Every delivered visual frame changes, not a peak plateau');
-      console.log(`Continuous native circle frames: ${frames.length} over a full slow cycle, max gap ${maxGap.toFixed(0)}ms.`);
+      console.log(`One-second native refresh: ${frames.length} frames over a slow cycle, max gap ${maxGap.toFixed(0)}ms.`);
     }
     if(captureAnimation&&!reduced) {
       const directory=resolve(output,'animation');
@@ -113,7 +113,7 @@ finally:
     const repeat=setInterval(()=>child.stdin.write('p'),15); // Unmapped key, no game action.
     try {await pause(1000);} finally {clearInterval(repeat);}
     if(reduced) assert.equal(frames.length,inputFrames,'Reduced motion also stays still under repeated input');
-    else assert(new Set(frames.slice(inputFrames).map(f=>f.hash)).size>1,'Input faster than the idle timeout must not freeze dot animation');
+    else assert(frames.slice(inputFrames).some(f=>f.hash!==frames[inputFrames-1].hash),'Input faster than the idle timeout must not freeze dot animation');
     assert(new Set(frames.map(f=>f.fields.i)).size<=2,'Bounded image IDs');
     const offset=raw.length;
     await key('v');await waitFor(()=>visible().includes('GAME BOY'),'V still switches to text');

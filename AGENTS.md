@@ -196,13 +196,20 @@
   unchanged authoritative observations. Sample the current offscreen canvas,
   not a detached canvas replaced by draw/preference changes. Reduced motion
   must remain still. Hash inequality alone accepted motion too subtle to see.
-  Keep ambient motion gentle AND continuous: an approximately eight-second
-  constant-speed travelling wave at 30 visual updates/second. Pass fractional
+  Keep the browser's ambient motion gentle AND continuous: an approximately eight-second
+  constant-speed travelling wave at 30 visual updates/second. Native idle art
+  refreshes ONCE PER SECOND at the user's request; keys, movement, dialogue,
+  menus, resize and V still redraw immediately, not behind a one-second wait.
+  Keep finite battle replay timing separate. Preserve the same elapsed-time
+  wave by subdividing the terminal's one-second cosmetic delta through the
+  shared 250ms resume guard, without rendering intermediate frames or ticking
+  gameplay. Native PTY checks require roughly 1fps idle art even during held
+  unmapped input, plus responsive real Start/menu inputs. Pass fractional
   Rust radii through WASM and native adapters, not byte-quantized sizes. Stay
   below the radius cap; clipped peaks and sine easing created long holds then
   quick changes even when two-second pixel comparisons passed. Check every
-  actual canvas compose across a full cycle for nonzero small changes and
-  bounded frame gaps, plus native PNG cadence. Regression tests bound radius
+  actual browser canvas compose across a full cycle for nonzero small changes
+  and bounded frame gaps, plus the native one-second cadence. Regression tests bound radius
   range and per-update jumps; do not speed the wave up just to meet a short
   observation window. Preserve the current softened
   source colors and keep gameplay clocks independent of this cosmetic field.

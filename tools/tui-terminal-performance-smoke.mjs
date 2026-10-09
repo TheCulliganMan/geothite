@@ -67,7 +67,7 @@ try {
   console.log(JSON.stringify(result,null,2));
   if(process.env.TUI_PERF_OUTPUT)await writeFile(resolve(process.env.TUI_PERF_OUTPUT),JSON.stringify(result,null,2));
   if(process.env.TUI_PERF_ASSERT==='1') {
-    assert(result.idleFps>24,'Large-window animation must keep up without dropping resolution');
+    assert(result.idleFps>=.75&&result.idleFps<=1.3,'Idle art refreshes once a second; gameplay inputs stay immediate');
     assert.equal(result.ambientGlyphs,0,'No hidden animated Braille underneath the PNG');
     assert(result.wireMBps<.05,'Local graphics must not flood the PTY with pixel data');
     assert(result.maxLatencyMs<150,'Start must not wait behind cosmetic rendering');

@@ -663,6 +663,16 @@ fn terminal_poll_timeout(remaining: Duration) -> Duration {
     remaining.max(Duration::from_millis(1))
 }
 
+fn advance_terminal_ink(painter: &mut PaintedRenderer, elapsed: Duration) {
+    // One cosmetic repaint/second, without making the shared travelling wave
+    // four times slower because its resume guard bounds each delta to 250ms.
+    // No rendered intermediate frames, gameplay ticks or catch-up queue.
+    let seconds = elapsed.as_secs_f64().min(1.);
+    for step in 0..4 {
+        painter.advance_ink_by((seconds - f64::from(step) * 0.25).clamp(0., 0.25));
+    }
+}
+
 impl TerminalGuard {
     fn enter() -> Result<Self> {
         enable_raw_mode().context("enable terminal raw mode")?;
@@ -708,7 +718,7 @@ fn run_tui(
     let mut command_buffer: Option<String> = None;
     let mut painted = true;
     let reduced_motion = std::env::var("GEOTHITE_REDUCED_MOTION").as_deref() == Ok("1");
-    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_secs_f64(1. / 30.));
+    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_secs(1));
     let mut last_ink = Instant::now();
     let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
     game.set_battle_replay_enabled(!reduced_motion);
@@ -723,7 +733,7 @@ fn run_tui(
         let now = Instant::now();
         let ink_changed = ink_clock.tick(now, painted && !reduced_motion);
         if ink_changed {
-            painter.advance_ink_by(now.duration_since(last_ink).as_secs_f64());
+            advance_terminal_ink(&mut painter, now.duration_since(last_ink));
             last_ink = now;
         } else if !painted || reduced_motion {
             last_ink = now;
@@ -971,6 +981,20 @@ fn apply_button(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn one_second_idle_refresh_does_not_wait_for_keys_to_stop() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_secs(1));
+        let frames = (10..=4000)
+            .step_by(10)
+            .filter(|millis| clock.tick(start + Duration::from_millis(*millis), true))
+            .count();
+        assert_eq!(
+            frames, 4,
+            "Only idle cosmetics are throttled; inputs have their own immediate redraw path"
+        );
+    }
 
     #[test]
     fn overrun_visual_frames_still_poll_real_input() {
