@@ -14,7 +14,9 @@ Downloads a prebuilt client and launches immediately—no Rust or sudo. Supports
 Apple Silicon/Intel macOS and x86-64 Linux (glibc 2.34+; Windows via WSL).
 Arrows/WASD move, A/Z/Space confirm, Enter opens Start, and F5 saves.
 Launch again with `~/.local/share/geothite/bin/geothite`; add `mcp` to drive the
-same game through stdio MCP. See [terminal instructions](docs/tui.md) for saves,
+same game through stdio MCP. Native MCP and browser WebMCP also support
+JavaScript code mode (`search`/`execute`) for visible-tool loops and conditionals.
+See [terminal instructions](docs/tui.md) for code-mode examples, saves,
 installation options, and native release publishing.
 
 ## Features

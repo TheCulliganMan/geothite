@@ -181,6 +181,36 @@ mod wasm {
             let snapshot = self.game.presentation_snapshot().map_err(js_error)?;
             serde_json::to_string(&self.renderer.render(&snapshot)).map_err(js_error)
         }
+        /// Code mode runs in the same Rust interpreter as native stdio MCP.
+        pub fn search(&self, query: &str) -> Result<String, JsValue> {
+            if query.len() > 512 {
+                return Err(js_error("query exceeds 512 bytes"));
+            }
+            serde_json::to_string(&crate::code_mode_catalog(query)).map_err(js_error)
+        }
+        pub fn execute_code(&mut self, code: &str) -> Result<String, JsValue> {
+            let result = crate::execute_code(code, |name, args| {
+                let result = crate::call_code_mode_tool(
+                    &mut self.game,
+                    &mut self.renderer,
+                    name,
+                    args,
+                    |game| {
+                        game.save(&self.save_path)?;
+                        Ok(())
+                    },
+                );
+                // Batching never makes animation input-owning. Retain only the
+                // last input's cosmetic replay, not an unbounded replay queue.
+                if matches!(name, "press" | "move") {
+                    self.painted.cancel_replay();
+                    self.painted.replay(self.game.take_battle_replays());
+                    self.ui.notice = None;
+                }
+                result
+            });
+            serde_json::to_string(&result.map_err(js_error)?).map_err(js_error)
+        }
         /// A cosmetic clock only. Never ticks the controller or owns input.
         pub fn advance_visual(&mut self) -> bool { self.painted.advance_replay() }
         pub fn visual_active(&self) -> bool { self.painted.replay_active() }

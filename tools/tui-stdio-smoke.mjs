@@ -5,6 +5,7 @@ import { createInterface } from 'node:readline';
 import { resolve } from 'node:path';
 import { checkMenus } from './tui-menu-checks.mjs';
 import { checkHome } from './tui-home-checks.mjs';
+import { checkCodeMode, checkCodeBattle } from './tui-codemode-checks.mjs';
 const child = spawn(resolve(process.env.TUI_NATIVE_BIN ?? 'target/release/geothite'), [
   'mcp', resolve(process.env.TUI_NATIVE_PACK ?? 'content-packs/realtime-clock.browser.crystalpack'),
   ...(process.env.TUI_NATIVE_HOME ? [] : ['--load', resolve(process.env.TUI_NATIVE_MENU_FIXTURE ?? process.env.TUI_NATIVE_FIXTURE ?? 'target/tui-smoke/lowlevel.crystalsave')]),
@@ -22,14 +23,25 @@ async function call(name, args = {}) {
     const timeout = setTimeout(() => { pending.delete(requestId); reject(new Error(`MCP timed out: ${name}; stderr=${stderr}`)); }, 10000);
     pending.set(requestId, reply => { clearTimeout(timeout); resolve(reply); });
   });
-  child.stdin.write(`${JSON.stringify({ jsonrpc: '2.0', id: requestId, method: 'tools/call', params: { name, arguments: args } })}\n`);
+  child.stdin.write(`${JSON.stringify({ jsonrpc: '2.0', id: requestId, method: 'tools/call', params: { name, ...(args === null ? {} : { arguments: args }) } })}\n`);
   const reply = await response;
+  if (reply.error || reply.result?.isError) throw new Error(JSON.stringify(reply));
   assert(!reply.error && !reply.result?.isError, JSON.stringify(reply));
   return reply.result.structuredContent;
 }
 try {
   const observe = () => call('observe');
-  const press = button => call('press', { button });
+  const execute = code => call('execute', { code });
+  const press = button => process.env.TUI_CODEMODE
+    ? execute(`return await tools.press({button:${JSON.stringify(button)}});`).then(result=>result.value)
+    : call('press', { button });
+  if (process.env.TUI_CODEMODE) {
+    const catalog = await call('search', null); // MCP allows omitted arguments.
+    assert.deepEqual(catalog.tools.map(tool=>tool.name), ['observe','press','move','save']);
+    assert.equal((await call('search', {query:'press'})).tools[0].name,'press');
+    await assert.rejects(execute('await tools.save();'), /save requires/);
+    if (process.env.TUI_NATIVE_HOME) await checkCodeMode(execute, observe);
+  }
   if (process.env.TUI_NATIVE_HOME) {
     await checkHome(observe, press);
     assert.equal(stderr, '', 'Mom movement/dialogue cannot corrupt terminal output');
@@ -44,6 +56,11 @@ try {
     await press(Math.floor(step / 2) % 2 ? 'right' : 'left');
   }
   assert.match((await observe()).status_line, /Battle/);
+  if (process.env.TUI_CODEMODE) {
+    await checkCodeBattle(execute);
+    assert.equal(stderr, '');
+    console.log('Native code mode: real multi-turn battle, rewards, post-battle movement and Start passed.');
+  } else {
   let turns = 0, repeats = 0;
   for (let step = 0; step < 256; step++) {
     const before = await observe();
@@ -64,5 +81,6 @@ try {
   assert((await observe()).menu.some(line => line.text.includes('SAVE')));
   assert.equal(stderr, '', 'Native gameplay must not corrupt terminal output');
   console.log(`Native executable: ${turns} real battle turns, no animation stall, post-battle movement and Start passed.`);
+  }
   }
 } finally { child.stdin.end(); child.kill('SIGTERM'); }

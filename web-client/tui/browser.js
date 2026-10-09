@@ -16,7 +16,8 @@ let visualTimer;
 let inkTimer;
 let inkLast = performance.now();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-function stopVisual() { clearTimeout(visualTimer); visualTimer = undefined; game?.cancel_visual(); }
+function pauseVisual() { clearTimeout(visualTimer); visualTimer = undefined; }
+function stopVisual() { pauseVisual(); game?.cancel_visual(); }
 function stopInk() {clearTimeout(inkTimer);inkTimer=undefined;inkLast=performance.now();}
 function animateInk() {
   if (!painted || reducedMotion.matches || document.hidden || !game.world_bounds().length) {stopInk();return;}
@@ -129,6 +130,17 @@ window.geothiteTui = Object.freeze({
   ready,
   observe() { if (!game) throw new Error('Game is still loading.'); return JSON.parse(game.observe()); },
   press,
+  search(query = '') { if (!game) throw new Error('Game is still loading.'); return JSON.parse(game.search(query)); },
+  execute(code) {
+    if (!game) throw new Error('Game is still loading.');
+    pauseVisual();
+    try { return JSON.parse(game.execute_code(code)); }
+    finally {
+      // Failed scripts can have applied earlier inputs: paint the actual state.
+      if (!painted || reducedMotion.matches) game.cancel_visual();
+      draw(); replayVisual();
+    }
+  },
   save() { if (!game) throw new Error('Game is still loading.'); stopVisual(); game.save(); draw(); return observation; },
 });
 // Register before downloading assets. Executions await this same live session.

@@ -372,6 +372,26 @@
 
 ### Non-negotiable TUI/MCP architecture
 
+- Native MCP `search`/`execute`, browser WebMCP `geothite_tui_search`/
+  `geothite_tui_execute`, and `window.geothiteTui.execute(code)` use the same
+  pinned Rust Boa code-mode interpreter in `crystal-tui/src/codemode.rs`.
+  Accept an async JavaScript function BODY with sequential `await tools.*`
+  (alias `codemode`), returning `{value,calls}`. Only visible observe/press/move/
+  save capabilities are available; all game inputs use the shared production
+  controller. Move is 1–20 taps, stopping at modal input, not exact tile travel.
+  Never add browser eval, Node subprocess execution, filesystem/network globals,
+  cheat capabilities, or a second game/menu dispatcher. Keep direct MCP tools.
+  Fresh contexts and source/tool/VM/JSON/ArrayBuffer limits bound routine agent
+  programs; do not describe Boa as a hostile-code sandbox (no total heap cap).
+  Save only to the configured session destination. Errors preserve prior inputs,
+  configured native autosaves and the browser's real rendered state; do not claim
+  rollback or mid-batch cancellation. WebMCP checks abort before execution.
+  Verify `TUI_CODEMODE=1 TUI_NATIVE_HOME=1 node tools/tui-stdio-smoke.mjs` and
+  `TUI_CODEMODE=1 node tools/tui-stdio-smoke.mjs` after building release. Real
+  browser smoke must discover all six registered tools and execute a complete
+  starter-level battle/rewards/post-battle movement/Start in one code-mode call,
+  not merely test a mock or a returned string. Retain keyboard/mobile regressions.
+
 - The standalone text client must construct and drive
   `crystal_bevy::VisibleShellController`. This is the supported production
   controller boundary shared with the graphical client. It owns authored

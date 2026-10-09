@@ -29,7 +29,9 @@ test('A confirms battle and dialogue even when there is no menu', () => {
 test('WebMCP tools call the live input bridge and reject invalid inputs', async () => {
   const calls = [];
   const bridge = { observe: () => ({ viewport_title: 'Route29' }), press: button => { calls.push(button); return { status_line: 'moved' }; } };
-  const [observe, press] = tuiTools(bridge);
+  const tools = tuiTools(bridge);
+  const observe = tools.find(tool => tool.name === 'geothite_tui_observe');
+  const press = tools.find(tool => tool.name === 'geothite_tui_press');
   assert.deepEqual(await observe.execute({}), { viewport_title: 'Route29' });
   assert.deepEqual(await press.execute({ button: 'right' }), { status_line: 'moved' });
   assert.deepEqual(calls, ['right']);
@@ -45,9 +47,9 @@ test('WebMCP registers on arrival, awaits readiness, cancels and cleans up failu
   const registrations = [];
   const document = { modelContext: { registerTool: async (tool, options) => { registrations.push({ tool, options }); } } };
   const registration = await registerTuiTools(document, bridge);
-  assert.equal(registration.names.length, 4);
+  assert.equal(registration.names.length, 6);
   const controller = new AbortController();
-  const pending = registrations[1].tool.execute({ button: 'a' }, { signal: controller.signal });
+  const pending = registrations.find(({ tool }) => tool.name === 'geothite_tui_press').tool.execute({ button: 'a' }, { signal: controller.signal });
   controller.abort(); finish();
   await assert.rejects(pending, { name: 'AbortError' });
   assert.equal(pressed, 0);
@@ -59,6 +61,30 @@ test('WebMCP registers on arrival, awaits readiness, cancels and cleans up failu
   let signal;
   await assert.rejects(registerTuiTools({ modelContext: { registerTool: async (_, options) => { signal = options.signal; throw new Error('denied'); } } }, bridge));
   assert(signal.aborted);
+});
+
+test('code-mode discovery and execution await readiness, validate and cancel', async () => {
+  let ready;
+  const calls = [];
+  const bridge = {
+    ready: new Promise(resolve => { ready = resolve; }),
+    search: query => ({ query }),
+    execute: code => { calls.push(code); return { value: 7, calls: 1 }; },
+  };
+  const tools = tuiTools(bridge);
+  const search = tools.find(t => t.name === 'geothite_tui_search');
+  const execute = tools.find(t => t.name === 'geothite_tui_execute');
+  const pending = execute.execute({ code: 'return 7;' });
+  assert.equal(calls.length, 0);
+  ready();
+  assert.deepEqual(await pending, { value: 7, calls: 1 });
+  assert.deepEqual(await search.execute({ query: 'press' }), { query: 'press' });
+  assert.throws(() => search.execute({ query: 3 }));
+  assert.throws(() => execute.execute({ code: 'return 1;', path: '/tmp' }));
+  assert.throws(() => execute.execute({ code: ' '.repeat(16385) }));
+  const controller = new AbortController(); controller.abort();
+  await assert.rejects(execute.execute({ code: 'return 8;' }, { signal: controller.signal }), { name: 'AbortError' });
+  assert.equal(calls.length, 1);
 });
 
 test('TUI glue, WASM, adapters and CSS deploy as one versioned bundle', async () => {

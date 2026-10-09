@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 import { checkHome } from './tui-home-checks.mjs';
+import { checkCodeMode } from './tui-codemode-checks.mjs';
 const root = await mkdtemp(join(tmpdir(), 'geothite-curl-smoke-'));
 const base = process.env.GEOTHITE_DOWNLOAD_URL ?? 'https://geothite.ryanculligan.com';
 const shell = process.env.GEOTHITE_TEST_INTEL === '1' ? ['arch', '-x86_64', 'sh'] : ['sh'];
@@ -152,9 +153,13 @@ try {
         if (x === 3 && y === 3) break;
         await call('press', { button: x > 3 ? 'left' : x < 3 ? 'right' : y > 3 ? 'up' : 'down' });
       }
+      const catalog = await call('search');
+      assert.deepEqual(catalog.tools.map(tool => tool.name), ['observe','press','move','save']);
+      await checkCodeMode(code => call('execute', { code }), () => call('observe'));
+      await call('execute', { code: 'await tools.save(); return null;' });
       await checkHome(() => call('observe'), button => call('press', { button }));
       assert.equal(stderr, '');
-      console.log('Actual curl reinstall preserved the save; installed MCP resumed, moved, opened Start and passed Mom/repeat-dialogue/doormat regressions.');
+      console.log('Actual curl reinstall preserved the save; installed MCP/code mode discovery, loops, errors, save, movement, Start and Mom/repeat-dialogue/doormat regressions passed.');
     } finally { mcp.stdin.end(); mcp.kill('SIGTERM'); }
   }
   if (process.env.GEOTHITE_KEEP_INSTALL === '1') console.log(`Verified install retained at ${root}/installed`);

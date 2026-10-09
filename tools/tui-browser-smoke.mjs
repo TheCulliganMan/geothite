@@ -7,6 +7,7 @@ import { chromium, webkit } from 'playwright';
 import { checkMenus } from './tui-menu-checks.mjs';
 import { checkVisibleInkMotion } from './tui-motion-checks.mjs';
 import { checkHome } from './tui-home-checks.mjs';
+import { checkCodeMode, checkCodeBattle } from './tui-codemode-checks.mjs';
 
 const root = resolve(process.env.TUI_TEST_ROOT ?? 'target/tui-web');
 const pack = resolve(process.env.TUI_TEST_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
@@ -34,7 +35,7 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(url);
-  await page.waitForFunction(async () => (await document.modelContext?.getTools())?.filter(tool => tool.name.startsWith('geothite_tui_')).length === 4);
+  await page.waitForFunction(async () => (await document.modelContext?.getTools())?.filter(tool => tool.name.startsWith('geothite_tui_')).length === 6);
   await page.waitForFunction(() => !document.getElementById('screen').hidden, { timeout: 120000 });
   assert(await page.evaluate(() => performance.getEntriesByType('resource').some(entry => /ascii-mount-[a-f0-9]+\.js/.test(entry.name))), 'Use the pinned ascii.rest painter, not a decorative placeholder');
   assert(await page.evaluate(() => {
@@ -88,6 +89,34 @@ try {
   await page.waitForTimeout(100);
   const observe = () => page.evaluate(() => window.geothiteTui.observe());
   const press = button => page.evaluate(button => window.geothiteTui.press(button), button);
+  const execute = code => page.evaluate(async code => {
+    const tool = (await document.modelContext.getTools()).find(t => t.name === 'geothite_tui_execute');
+    const result = await document.modelContext.executeTool(tool, { code });
+    if (result?.isError) throw new Error(JSON.stringify(result));
+    // Chrome currently returns a JSON string; accept a structured implementation too.
+    return typeof result === 'string' ? JSON.parse(result) : result;
+  }, code);
+  await page.evaluate(async () => {
+    const tools = await document.modelContext.getTools();
+    const search = tools.find(t => t.name === 'geothite_tui_search');
+    const result = await document.modelContext.executeTool(search, { query: 'press' });
+    if (!JSON.stringify(result).includes('press')) throw new Error('Code-mode discovery failed');
+  });
+  await checkCodeMode(execute, observe);
+  await execute("await tools.press({button:'start'}); return (await tools.observe()).menu.map(line=>line.text);");
+  assert((await observe()).menu.some(line => line.text.includes('PACK')), 'Real WebMCP code mode drives the existing session');
+  await execute("await codemode.press({button:'b'}); return typeof window;");
+  // Exceptions are tool errors, not page errors, and cannot hide earlier inputs.
+  await page.evaluate(async () => {
+    try { window.geothiteTui.execute("await tools.press({button:'start'}); throw new Error('partial');"); throw new Error('Expected failure'); }
+    catch (error) { if (!String(error).includes('partial')) throw error; }
+    if (!document.getElementById('screen').textContent.includes('PACK')) throw new Error('Failed code left canvas/semantic state stale');
+    window.geothiteTui.execute("await tools.press({button:'b'}); return null;");
+    for (const code of ['while(true){}', 'await new Promise(()=>{});']) {
+      try { window.geothiteTui.execute(code); throw new Error('Expected bounded-code failure'); }
+      catch (error) { if (String(error).includes('Expected bounded')) throw error; }
+    }
+  });
   let snapshot = await observe();
   assert.match(snapshot.status_line, /PlayersHouse2F.*\(3, 3\)/);
   await page.keyboard.press('ArrowRight');
@@ -123,8 +152,8 @@ try {
     // lowercase a must confirm every dialogue-only page thereafter.
     if (button === 'a') await page.keyboard.press((await observe()).status_line.startsWith('Overworld') ? 'z' : 'a');
     else await page.evaluate(async button => {
-      const tool = (await document.modelContext.getTools()).find(t => t.name === 'geothite_tui_press');
-      await document.modelContext.executeTool(tool, { button });
+      const tool = (await document.modelContext.getTools()).find(t => t.name === 'geothite_tui_execute');
+      await document.modelContext.executeTool(tool, { code: `return await tools.press({button:${JSON.stringify(button)}});` });
     }, button);
   });
   await move('down', 2); await move('left', 2); await move('down', 4);
@@ -173,6 +202,21 @@ try {
   await press('start');
   assert((await observe()).menu.some(line => line.text.includes('SAVE')));
   await press('b');
+  // Separate starter-level fixture: whole battle and recovery in ONE real
+  // WebMCP execute call. The original DOM keyboard battle checks remain below.
+  if (process.env.TUI_TEST_LOWLEVEL_FIXTURE) {
+    const low = await readFile(resolve(process.env.TUI_TEST_LOWLEVEL_FIXTURE));
+    await page.evaluate(base64 => {
+      const key = Object.keys(localStorage).find(key => key.startsWith('crystal.save.v1.') && key.endsWith('-tui-local.crystalsave'));
+      localStorage.setItem(key, base64);
+    }, low.toString('base64'));
+    await page.reload();
+    await page.waitForFunction(() => !document.getElementById('screen').hidden, { timeout: 120000 });
+    for (let i = 0; i < 256 && !(await observe()).status_line.includes('Battle'); i++) await press(Math.floor(i / 2) % 2 ? 'right' : 'left');
+    await checkCodeBattle(execute);
+    await page.evaluate(() => window.geothiteTui.execute('await tools.save(); return null;'));
+    console.log('Chrome real WebMCP code mode: discovery, bounded errors, multi-turn battle/rewards, movement, Start and save passed.');
+  }
   if (process.env.TUI_TEST_LOWLEVEL_FIXTURE) {
     const low = await readFile(resolve(process.env.TUI_TEST_LOWLEVEL_FIXTURE));
     await page.evaluate(base64 => {
@@ -191,6 +235,8 @@ try {
       await page.keyboard.press('a');
       const after = await observe();
       if (!replayChecked && await page.locator('#screen').getAttribute('data-animation') === 'true') {
+        await page.evaluate(() => window.geothiteTui.execute('return (await tools.observe()).status_line;'));
+        assert.equal(await page.locator('#screen').getAttribute('data-animation'), 'true', 'Read-only code mode must not cancel a cosmetic battle replay');
         const frames = new Set();
         for (let frame = 0; frame < 90; frame++) {
           frames.add(await page.locator('#screen').innerHTML());

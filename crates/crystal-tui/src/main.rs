@@ -194,7 +194,7 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
                 &mut renderer,
                 &mut active_cursor,
                 request.pointer("/params/name").and_then(Value::as_str),
-                request.pointer("/params/arguments").unwrap_or(&Value::Null),
+                request.pointer("/params/arguments").unwrap_or(&json!({})),
                 save_path.as_ref(),
             ) {
                 Ok(result) => json!({ "jsonrpc": "2.0", "id": id, "result": result }),
@@ -227,6 +227,16 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
 
 fn mcp_tools() -> Value {
     json!([
+        {
+            "name": "search",
+            "description": "Discover code-mode visible tool schemas (observe, press, move, save). Optional query is a case-insensitive substring. Existing direct tools remain available.",
+            "inputSchema": {"type":"object","properties":{"query":{"type":"string","maxLength":512}},"additionalProperties":false}
+        },
+        {
+            "name": "execute",
+            "description": "Run a JavaScript async function BODY using await tools.observe(), tools.press({button}), tools.move({direction,steps}), tools.save(). Alias: codemode. Return JSON to filter observations. Uses the current visible game session, not engine internals. Await every call sequentially. Max 16KiB source, 128 calls and 250000 VM instructions. Fresh Rust JS context; no filesystem, network or process APIs. For trusted agent code, not a hostile-code sandbox. Errors do not undo earlier inputs; configured native autosaves are preserved.",
+            "inputSchema": {"type":"object","properties":{"code":{"type":"string","maxLength":16384}},"required":["code"],"additionalProperties":false}
+        },
         {
             "name": "observe",
             "description": "Verbose text snapshot of the current game screen, dialogue, menus, and visible surroundings.",
@@ -329,6 +339,46 @@ fn call_mcp_tool(
     save_path: Option<&PathBuf>,
 ) -> Result<Value> {
     match name.context("MCP tools/call is missing params.name")? {
+        "search" => {
+            let object = arguments
+                .as_object()
+                .context("search arguments must be an object")?;
+            anyhow::ensure!(
+                object.keys().all(|k| k == "query"),
+                "Unexpected search argument"
+            );
+            let query = arguments
+                .get("query")
+                .map(|v| v.as_str().context("query must be a string"))
+                .transpose()?
+                .unwrap_or("");
+            anyhow::ensure!(query.len() <= 512, "query exceeds 512 bytes");
+            Ok(mcp_json_result(geothite::code_mode_catalog(query)))
+        }
+        "execute" => {
+            let object = arguments
+                .as_object()
+                .context("execute arguments must be an object")?;
+            anyhow::ensure!(
+                object.keys().all(|k| k == "code"),
+                "Unexpected execute argument"
+            );
+            let code = arguments["code"].as_str().context("execute requires code")?;
+            let result = geothite::execute_code(code, |name, args| {
+                let result = geothite::call_code_mode_tool(game, renderer, name, args, |game| {
+                    game.save(
+                        save_path.context("save requires a session configured with --save")?,
+                    )?;
+                    Ok(())
+                });
+                // Inputs already applied must persist even when a later operation fails.
+                if matches!(name, "press" | "move") {
+                    save_after_mcp_action(game, save_path)?;
+                }
+                result
+            })?;
+            Ok(mcp_json_result(result))
+        }
         "observe" => {
             let source = game.presentation_snapshot()?;
             let snapshot = renderer.render(&source);
@@ -1105,6 +1155,8 @@ mod tests {
         assert_eq!(
             names,
             [
+                "search",
+                "execute",
                 "observe",
                 "status",
                 "move",
