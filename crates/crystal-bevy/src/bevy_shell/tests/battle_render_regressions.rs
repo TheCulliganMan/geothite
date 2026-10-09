@@ -578,8 +578,93 @@ fn battle_dialogue_uses_player_input_drains_once_and_returns_menu_control() {
 }
 
 #[test]
+fn renderer_neutral_controller_moves_after_wild_battle_exit() {
+    check_renderer_neutral_wild_battle_exit(50, false);
+    check_renderer_neutral_wild_battle_exit(5, false);
+    check_renderer_neutral_wild_battle_exit(50, true);
+}
+
+#[test]
+fn text_controller_completes_long_invisible_battle_animations_without_idle_frames() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.battle_messages = ["Enemy fainted!".to_string()].into();
+    shell.visible_move_animations.push_front(VisibleMoveAnimation {
+        trigger_message: "Enemy fainted!".into(), move_id: "FAINT_MON".into(), animation_label: "".into(),
+        player_move: false, started: true, waiting_for_hp: false, frame: 0, total_frames: 10_000,
+        sound_events: vec![], next_sound_event: 0, cry_events: vec![], next_cry_event: 0,
+        object_events: vec![], bg_events: vec![], actor_species_override: None, actor_shiny_override: None,
+    });
+    settle_visible_shell_until_input(&mut shell).unwrap();
+    assert!(!visible_battle_animation_owns_frame(&shell));
+    assert!(shell.visible_move_animations.is_empty());
+    assert_eq!(shell.battle_messages.front().map(String::as_str), Some("Enemy fainted!"));
+    assert!(visible_battle_message_is_complete(&shell, "Enemy fainted!"));
+    assert!(shell.battle_fainted_hud[1], "normal animation completion must update the HUD");
+}
+
+fn check_renderer_neutral_wild_battle_exit(level: u8, run: bool) {
+    let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let assets = AssetRoot::new(repo);
+    let runtime = workspace_desktop_runtime(&assets);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell = initialize_bevy_runtime_shell(
+        assets, runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier, map_name: "Route29".into(), tile_x: 46, tile_y: 12,
+        }, BevyShellConfig::default(),
+    ).unwrap();
+    shell.shell.add_party_pokemon("TOTODILE", level, None, None, "EXIT_TEST", 1,
+        Dv::from_non_hp(10, 10, 10, 10)).unwrap();
+    settle_visible_shell_until_input(&mut shell).unwrap();
+    let mut controller = VisibleShellController { shell };
+    for step in 0..256 {
+        controller.press(if (step / 2) % 2 == 0 { GameButton::Right } else { GameButton::Left }).unwrap();
+        if controller.snapshot().unwrap().battle.is_some() { break; }
+    }
+    assert!(controller.snapshot().unwrap().battle.is_some(), "no grass encounter: tile={:?} frame={:?} status={:?} error={:?}", controller.snapshot().unwrap().overworld.tile, controller.shell.shell.last_frame(), controller.shell.last_action_status, controller.shell.last_error);
+    if run {
+        for _ in 0..32 {
+            if controller.snapshot().unwrap().ui.menu.is_some() { break; }
+            controller.press(GameButton::A).unwrap();
+        }
+        controller.press(GameButton::Right).unwrap();
+        controller.press(GameButton::Down).unwrap();
+        let menu = controller.snapshot().unwrap().ui.menu.unwrap();
+        assert!(menu.layout.vertical_menus[0].options.iter().any(|entry| entry == ">RUN"));
+    }
+    for _ in 0..256 {
+        let snapshot = controller.snapshot().unwrap();
+        if snapshot.battle.is_none() && !retained_text_surface_owns_gameplay_input(&controller.shell) {
+            break;
+        }
+        controller.press(GameButton::A).unwrap();
+    }
+    let before = controller.snapshot().unwrap();
+    assert!(before.battle.is_none(), "battle never ended");
+    assert!(!retained_text_surface_owns_gameplay_input(&controller.shell),
+        "invisible battle surface still owns input: messages={:?} exp={:?} stats={:?}",
+        controller.shell.battle_messages, controller.shell.battle_exp_tween, controller.shell.battle_level_stats);
+    controller.press(GameButton::Up).unwrap();
+    controller.press(GameButton::Up).unwrap();
+    let after = controller.snapshot().unwrap();
+    assert_ne!(before.overworld.tile, after.overworld.tile, "battle exit did not release movement");
+    controller.press(GameButton::Start).unwrap();
+    assert!(controller.snapshot().unwrap().ui.menu.is_some(), "Start remains blocked after battle");
+}
+
+#[test]
 fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
-    let mut runtime_shell = route36_battle_shell_for_render_regression();
+    let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
+    // The level-10 render fixture can be knocked out by level-20 Sudowoodo
+    // before executing its selected move. This input regression needs a
+    // surviving attacker so PP mutation is guaranteed for every RNG roll.
+    let attacker = runtime_shell.runtime.data().create_pokemon(
+        "CYNDAQUIL", 30, Dv::from_non_hp(10, 10, 10, 10),
+    ).unwrap();
+    runtime_shell.shell.session_mut().state_mut().storage.party.pokemon[0] = Some(attacker);
+    runtime_shell.shell.session_mut().state_mut().sync_party_from_storage();
+    runtime_shell.shell.start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12).unwrap();
+    prepare_visible_battle_entry(&mut runtime_shell).unwrap();
     runtime_shell.visible_battle_transition = None;
     runtime_shell.visible_battle_sliding_intro = None;
     runtime_shell.visible_send_out_animation = None;
@@ -593,6 +678,7 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
     let mut controller = VisibleShellController {
         shell: runtime_shell,
     };
+    controller.set_battle_replay_enabled(true);
 
     let initial = controller.snapshot().expect("initial battle snapshot");
     assert!(matches!(
@@ -632,6 +718,23 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
         .press(GameButton::A)
         .expect("execute selected move");
     let after_turn = controller.snapshot().expect("resolved turn snapshot");
+    let mut replay_count = 0;
+    let mut replay_has_motion = false;
+    let mut check_replays = |replays: Vec<VisibleBattleReplay>| {
+        for replay in replays {
+            replay_count += 1;
+            assert!(!replay.frames.is_empty() && replay.frames.len() <= 80);
+            // Production command boundaries (e.g. status effects) also have
+            // authored timelines. They need not each move a portrait/object.
+            assert!(replay.animation_label.starts_with("BattleAnim_")
+                || replay.animation_label.starts_with("BattleCommand_"),
+                "unexpected authored timeline: {}", replay.animation_label);
+            replay_has_motion |= replay.frames.iter().any(|frame|
+                !frame.pieces.is_empty() || frame.player_offset != [0; 2]
+                    || frame.enemy_offset != [0; 2]);
+        }
+    };
+    check_replays(controller.take_battle_replays());
     let pp_after = after_turn
         .battle
         .as_ref()
@@ -659,30 +762,60 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
         "battle dialogue must be fully revealed at the input boundary"
     );
 
-    // A decisive turn may end this deliberately small fixture battle. PP and
-    // dialogue above still prove that the selected move executed through the
-    // authoritative battle engine rather than merely changing a TUI cursor.
-    if after_turn.battle.is_none() {
-        return;
-    }
-
+    // Even a decisive turn retains narration and authored animation after the
+    // core battle ends. Acknowledge it before inspecting presentation output.
     for _ in 0..64 {
         let snapshot = controller
             .snapshot()
             .expect("battle acknowledgement snapshot");
-        if snapshot.ui.menu.as_ref().is_some_and(|menu| {
+        if (snapshot.battle.is_none() && snapshot.ui.text.is_none())
+            || snapshot.ui.menu.as_ref().is_some_and(|menu| {
             menu.layout.vertical_menus[0]
                 .options
                 .iter()
                 .any(|entry| entry == ">FIGHT")
         }) {
+            drop(check_replays);
+            assert!(replay_count > 0 && replay_has_motion, "a real move must retain authored visual motion");
             return;
         }
         controller
             .press(GameButton::A)
             .expect("advance battle dialogue");
+        let checksum = controller.snapshot().unwrap().state_checksum;
+        check_replays(controller.take_battle_replays());
+        assert_eq!(controller.snapshot().unwrap().state_checksum, checksum, "taking visual frames cannot advance gameplay");
     }
     panic!("battle dialogue did not return control to the command menu");
+}
+
+#[test]
+fn text_controller_battle_pack_heals_through_authoritative_turn() {
+    let mut shell = route36_overworld_shell_for_battle_render_regression();
+    let mut pokemon = shell.runtime.data().create_pokemon(
+        "CYNDAQUIL", 30, Dv::from_non_hp(10, 10, 10, 10)).unwrap();
+    pokemon.hp = 1;
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0] = Some(pokemon);
+    shell.shell.session_mut().state_mut().sync_party_from_storage();
+    shell.shell.add_bag_item("MAX_POTION", 1).unwrap();
+    shell.shell.start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12).unwrap();
+    prepare_visible_battle_entry(&mut shell).unwrap();
+    let mut controller = VisibleShellController { shell };
+    settle_visible_shell_until_input(&mut controller.shell).unwrap();
+    for _ in 0..20 {
+        if controller.shell.battle_messages.is_empty() { break; }
+        controller.press(GameButton::A).unwrap();
+    }
+    controller.press(GameButton::Down).unwrap();
+    controller.press(GameButton::A).unwrap();
+    assert!(controller.shell.bag_cursor.is_some());
+    controller.press(GameButton::A).unwrap(); // item action menu
+    controller.press(GameButton::A).unwrap(); // USE / party target
+    assert_eq!(controller.shell.battle_pack_target_mode, Some(BattlePackTargetMode::PartyPokemon));
+    controller.press(GameButton::A).unwrap(); // execute engine item turn
+    assert_eq!(controller.shell.shell.session().state().bag.items.get("MAX_POTION"), None);
+    assert!(controller.snapshot().unwrap().party.slots[0].pokemon.hp > 1);
+    assert!(!controller.shell.battle_messages.is_empty(), "authoritative item turn retains its narration");
 }
 
 #[test]

@@ -5608,6 +5608,17 @@ fn restore_visible_loaded_runtime_state(
     runtime_shell: &mut BevyRuntimeShell,
     reason: &str,
 ) -> Result<()> {
+    // The bedroom callback's decoration effect is already saved in map block
+    // overrides. Its visual-command fence is not a player menu and has no
+    // controller cursor to restore. A retained fence otherwise loads as an
+    // invisible Menu and rejects every overworld input indefinitely.
+    let memory = &runtime_shell.shell.session().state().script_runtime;
+    if memory.active_menu.as_deref() == Some("ToggleMaptileDecorations")
+        && !memory.window_open
+        && !memory.text_window_open
+    {
+        runtime_shell.shell.close_active_menu()?;
+    }
     reset_visible_navigation_state(runtime_shell);
     runtime_shell.visible_player_sprite_y_offset = 0;
     reset_visible_deterministic_session_history(runtime_shell)?;

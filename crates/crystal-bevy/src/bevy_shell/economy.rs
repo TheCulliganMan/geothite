@@ -1322,7 +1322,8 @@ fn item_targets_party_move_fields(
 }
 
 fn item_targets_party_pokemon_fields(item: &crate::RuntimeItemCatalogSnapshot) -> bool {
-    item.revive_hp_percent.is_some()
+    item.party_hp_restore
+        || item.revive_hp_percent.is_some()
         || !item.status_heals.is_empty()
         || item.confusion_heal == Some(true)
         || (item.pp_restore_scope.as_deref() == Some("ALL") && item.pp_restore_points.is_some())

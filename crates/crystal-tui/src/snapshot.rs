@@ -61,6 +61,18 @@ pub struct ViewportSize {
     pub height: u16,
 }
 
+impl TextSnapshot {
+    /// WASD's A confirms while dialogue/battle owns input, not a left turn.
+    /// Menus alone miss encounter text and turn narration.
+    pub fn confirmation_input_owned(&self) -> bool {
+        !self.menu.is_empty()
+            || !self.prompt.is_empty()
+            || !self.dialogue.is_empty()
+            || self.status_line.contains("Battle")
+            || self.status_line.starts_with("Text")
+    }
+}
+
 impl Default for ViewportSize {
     fn default() -> Self {
         Self {
@@ -96,6 +108,14 @@ impl RuntimeTextRenderer {
 
     pub fn menu_index(&self) -> usize {
         self.menu_index
+    }
+
+    /// Resize only the visible tile window; never change authoritative state.
+    pub fn set_viewport(&mut self, viewport: ViewportSize) {
+        self.viewport = ViewportSize {
+            width: viewport.width.clamp(1, 21),
+            height: viewport.height.clamp(1, 15),
+        };
     }
     pub fn yes_no_index(&self) -> usize {
         self.yes_no_index
@@ -261,7 +281,7 @@ fn background_event_token(script: &str) -> char {
     }
 }
 
-fn event_runtime_tile(x: u16, y: u16) -> Option<TilePosition> {
+pub(crate) fn event_runtime_tile(x: u16, y: u16) -> Option<TilePosition> {
     raw_event_tile_to_runtime_tile_checked(x, y)
 }
 
@@ -274,7 +294,7 @@ fn player_token(facing: Direction) -> &'static str {
     }
 }
 
-fn terrain_glyph(
+pub(crate) fn terrain_glyph(
     source: &RuntimeShellSnapshot,
     map: &RuntimeMapCatalogSnapshot,
     tile: TilePosition,
@@ -300,7 +320,7 @@ fn terrain_glyph(
         .iter()
         .find(|tileset| tileset.tileset_id == map.attributes.tileset_name)
     else {
-        return ('.', LineKind::Normal);
+        return ('?', LineKind::Danger);
     };
     let key = format!("{block:02x}");
     let Some(token) = tileset
@@ -308,32 +328,40 @@ fn terrain_glyph(
         .get(&key)
         .and_then(|entries| entries.get(quadrant))
     else {
-        return ('.', LineKind::Normal);
+        return ('?', LineKind::Danger);
     };
     classify_collision_token(token)
 }
 
 fn classify_collision_token(token: &str) -> (char, LineKind) {
-    let upper = token.to_ascii_uppercase();
-    if upper.contains("WATER") || upper.contains("WHIRLPOOL") || upper.contains("BUOY") {
-        ('≈', LineKind::Water)
-    } else if upper.contains("GRASS") {
-        ('\"', LineKind::Grass)
-    } else if upper.contains("WARP")
-        || upper.contains("DOOR")
-        || upper.contains("STAIR")
-        || upper.contains("LADDER")
-        || upper.contains("CAVE")
-    {
-        ('D', LineKind::Hint)
-    } else if upper.contains("WALL")
-        || upper.contains("COUNTER")
-        || upper.contains("BOOKSHELF")
-        || upper.contains("SHELF")
-        || upper.contains("WINDOW")
-        || upper == "COLL_07"
-    {
+    use crystal_core::world::collision::{
+        Terrain, describe_collision, is_grass_encounter_permission, is_warp_permission,
+    };
+    let token = token.strip_prefix("COLL_").unwrap_or(token);
+    let Ok(permission) = crystal_assets::resolve_collision_token(token) else {
+        return ('?', LineKind::Danger); // Unknown terrain must never pretend to be floor.
+    };
+    match permission {
+        0xa0 => return ('→', LineKind::Hint),
+        0xa1 => return ('←', LineKind::Hint),
+        0xa2 => return ('↑', LineKind::Hint),
+        0xa3 => return ('↓', LineKind::Hint),
+        0xa4 => return ('↘', LineKind::Hint),
+        0xa5 => return ('↙', LineKind::Hint),
+        0xa6 => return ('↗', LineKind::Hint),
+        0xa7 => return ('↖', LineKind::Hint),
+        0xb0..=0xbf | 0xc0..=0xcf => return ('║', LineKind::Hint),
+        0x12 | 0x15 | 0x1a | 0x1d => return ('T', LineKind::Hint),
+        _ => {}
+    }
+    if describe_collision(permission).terrain == Terrain::Wall {
         ('#', LineKind::Normal)
+    } else if is_warp_permission(permission) {
+        ('D', LineKind::Hint)
+    } else if describe_collision(permission).terrain == Terrain::Water {
+        ('≈', LineKind::Water)
+    } else if is_grass_encounter_permission(permission) {
+        ('\"', LineKind::Grass)
     } else {
         ('.', LineKind::Normal)
     }
@@ -729,7 +757,7 @@ fn hint_lines(
         &["Z/J/Space advance", "X/K/B skip/back"]
     } else {
         &[
-            "Arrows/WASD/HKL move",
+            "Arrows/WASD/HKL move · F5 save · ? help",
             "Z/J/Space A",
             "X/K/B back",
             "Enter Start · Tab Select",
@@ -820,6 +848,28 @@ mod tests {
         );
         assert_eq!(classify_collision_token("WALL"), ('#', LineKind::Normal));
         assert_eq!(classify_collision_token("DOOR"), ('D', LineKind::Hint));
+        assert_eq!(classify_collision_token("HOP_DOWN"), ('↓', LineKind::Hint));
+        assert_eq!(classify_collision_token("a5"), ('↙', LineKind::Hint));
+        for token in ["07", "0f", "27", "62", "ff", "COLL_07"] {
+            assert_eq!(
+                classify_collision_token(token).0,
+                '#',
+                "hidden wall {token}"
+            );
+        }
+        for token in ["CUT_TREE", "HEADBUTT_TREE_1D", "12"] {
+            assert_eq!(
+                classify_collision_token(token).0,
+                'T',
+                "hidden tree {token}"
+            );
+        }
+        assert_eq!(classify_collision_token("RIGHT_WALL").0, '║');
+        assert_eq!(classify_collision_token("CURRENT_UP").0, '≈');
+        assert_eq!(
+            classify_collision_token("unsupported"),
+            ('?', LineKind::Danger)
+        );
     }
 
     #[test]

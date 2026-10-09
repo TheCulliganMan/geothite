@@ -1,3 +1,8 @@
+FROM node:24-bookworm-slim AS ascii
+WORKDIR /ascii
+COPY tools/tui-ascii/package.json tools/tui-ascii/package-lock.json ./
+RUN npm ci --ignore-scripts --no-audit --no-fund
+
 FROM rust:1.94-bookworm AS build
 WORKDIR /source
 
@@ -23,7 +28,8 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     && cargo build --locked --profile web-release --package crystal-audio --lib \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
-    && mkdir -p /out/web/flygon \
+    && cargo build --locked --profile web-release --package geothite --lib --target wasm32-unknown-unknown \
+    && mkdir -p /out/web/flygon /out/web/tui \
     && cp target/release/crystal-web-server /out/crystal-web-server \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
         target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
@@ -31,16 +37,22 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
         target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web/flygon \
         target/wasm32-unknown-unknown/web-release/crystal_flygon.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web/tui \
+        target/wasm32-unknown-unknown/web-release/geothite.wasm \
     && gzip -9 -k /out/web/crystal-audio_bg.wasm \
     && gzip -9 -k /out/web/crystal-bevy_bg.wasm
 
 # Page, audio, and pack updates do not invalidate the Rust compilation layer.
 COPY web-client /source/web-client
 COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
+COPY tools/version-tui-bundle.sh /source/version-tui-bundle.sh
+COPY --from=ascii /ascii/node_modules/ascii.rest/dist/mount.js /out/web/tui/ascii-mount.js
+COPY --from=ascii /ascii/node_modules/ascii.rest/LICENSE /out/web/tui/ASCII-LICENSE.txt
 # Supply this ignored file locally; see docs/game-content.md.
 COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 COPY modpacks/flygon /source/flygon-config
 RUN cp /source/web-client/asset-progress.js /source/web-client/loading-progress.css /out/web/ \
+    && cp /source/web-client/install.sh /out/web/install.sh \
     && cp /source/web-client/save-management.js /source/web-client/save-management.css /out/web/ \
     && cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
     && cp /source/web-client/player-customization.js /source/web-client/player-customization.css /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
@@ -50,6 +62,8 @@ RUN cp /source/web-client/asset-progress.js /source/web-client/loading-progress.
     && cp /source/flygon-config/ATTRIBUTION.md /out/web/FLYGON-ATTRIBUTION.md \
     && cp /source/flygon-config/README.md /out/web/FLYGON.md \
     && printf '{"local_clock":false,"live_view":false}\n' > /out/web/flygon-dev.json \
+    && cp /source/web-client/tui/* /out/web/tui/ \
+    && sh /source/version-tui-bundle.sh /out/web/tui \
     && sh /source/version-browser-bundle.sh /out/web
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS runtime

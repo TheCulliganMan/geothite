@@ -1998,6 +1998,7 @@ pub struct RuntimeItemCatalogSnapshot {
     pub vitamin_max_stat_exp: Option<u16>,
     pub rare_candy_level_gain: Option<u8>,
     pub party_special_effect: bool,
+    pub party_hp_restore: bool,
     pub battle_stat_boost_stat: Option<String>,
     pub battle_stat_boost_stages: Option<u8>,
     pub battle_escape_mode: Option<String>,
@@ -12385,6 +12386,8 @@ impl RuntimeItemCatalogSnapshot {
             vitamin_max_stat_exp: item.vitamin_max_stat_exp,
             rare_candy_level_gain: item.rare_candy_level_gain,
             party_special_effect: party_special_item_effect_plan(item, evolutions).is_some(),
+            party_hp_restore: crystal_core::systems::battle_items::active_battle_item_effect_plan(item)
+                .is_some_and(|plan| matches!(plan.behavior_id.as_str(), "RESTORE_HP" | "FULL_RESTORE")),
             battle_stat_boost_stat: item.battle_stat_boost_stat.clone(),
             battle_stat_boost_stages: item.battle_stat_boost_stages,
             battle_escape_mode: item.battle_escape_mode.clone(),

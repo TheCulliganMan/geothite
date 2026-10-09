@@ -2589,7 +2589,8 @@ fn validate_manifest_item_references(item: &Item, move_ids: &BTreeSet<String>) -
     Ok(())
 }
 
-fn resolve_collision_token(token: &str) -> Result<u8> {
+/// Resolve the exact pack token used by authoritative movement collision.
+pub fn resolve_collision_token(token: &str) -> Result<u8> {
     if token.is_empty() || token.trim() != token {
         anyhow::bail!("collision token '{token}' must be exact and non-empty");
     }

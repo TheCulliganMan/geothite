@@ -1,12 +1,15 @@
 [package]
 name = "geothite"
 version = "0.1.0"
-description = "Renderer-neutral text snapshots and a native terminal frontend for Geothite"
+description = "Shared native and browser WASM terminal frontend for Geothite"
 publish = false
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 anyhow.workspace = true
@@ -14,7 +17,21 @@ crystal-assets = { path = "../crystal-assets" }
 crystal-bevy = { path = "../crystal-bevy" }
 crystal-core = { path = "../crystal-core" }
 crystal-runtime = { path = "../crystal-runtime" }
-crossterm = "0.29"
-ratatui = { version = "0.30", default-features = false, features = ["crossterm"] }
+ratatui = { version = "0.30", default-features = false }
 serde.workspace = true
 serde_json.workspace = true
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+base64 = "0.22"
+# Use the portable tty poller: macOS kqueue rejects a terminal reopened after
+# curl's piped stdin, even though isatty and rendering both succeed.
+crossterm = { version = "0.29", features = ["use-dev-tty"] }
+ratatui = { version = "0.30", default-features = false, features = ["crossterm"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = ["Window", "Storage"] }
+
+[dev-dependencies]
+crystal-runtime = { path = "../crystal-runtime", features = ["test-fixtures"] }

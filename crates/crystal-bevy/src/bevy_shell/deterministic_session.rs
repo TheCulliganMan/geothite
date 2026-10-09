@@ -1186,96 +1186,8 @@ fn apply_keyboard_input(
         return;
     }
     for _ in 0..elapsed_input_ticks {
-        let mut exp_segment_finished = false;
-        let mut exp_animation_finished = false;
-        let mut exp_pixels_changed = false;
-        if let Some(tween) = runtime_shell.battle_exp_tween.as_mut()
-            && tween.started
-        {
-            if tween.frames_until_step > 0 {
-                tween.frames_until_step -= 1;
-            } else if tween.pixels < tween.target_pixels {
-                tween.pixels += 1;
-                tween.steps_in_segment += 1;
-                tween.frames_until_step = if tween.steps_in_segment <= 2 {
-                    2
-                } else if tween.steps_in_segment <= 4 {
-                    1
-                } else {
-                    0
-                };
-                exp_pixels_changed = true;
-                if tween.pixels == tween.target_pixels {
-                    exp_segment_finished = !tween.remaining_targets.is_empty();
-                    exp_animation_finished = tween.remaining_targets.is_empty();
-                    if exp_segment_finished {
-                        tween.level = tween.level.saturating_add(1).min(100);
-                    }
-                    tween.started = false;
-                }
-            } else {
-                exp_segment_finished = !tween.remaining_targets.is_empty();
-                exp_animation_finished = tween.remaining_targets.is_empty();
-                if exp_segment_finished {
-                    tween.level = tween.level.saturating_add(1).min(100);
-                }
-                tween.started = false;
-            }
-        }
-        if exp_pixels_changed {
-            mark_runtime_snapshot_dirty(&mut runtime_shell);
-        }
-        if exp_segment_finished {
-            if let Err(error) =
-                queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_HIT_END_OF_EXP_BAR")
-            {
-                record_visible_runtime_error(&mut runtime_shell, &error);
-            }
-            if runtime_shell
-                .battle_fanfare_messages
-                .front()
-                .is_some_and(|fanfare| runtime_shell.battle_messages.front() == Some(fanfare))
-            {
-                runtime_shell.battle_fanfare_messages.pop_front();
-                if let Err(error) =
-                    queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_DEX_FANFARE_50_79")
-                {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                }
-            }
-        }
-        if exp_animation_finished {
-            runtime_shell.battle_exp_tween = runtime_shell.pending_battle_exp_tweens.pop_front();
-            if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
-                && stats.triggered
-            {
-                stats.active = true;
-                // This activation occurs before the per-frame countdown below.
-                stats.frames_before_input = 31;
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
-            }
-            if let Err(error) = finish_visible_empty_battle_reward_presentation(&mut runtime_shell)
-            {
-                record_visible_runtime_error(&mut runtime_shell, &error);
-            }
-            if runtime_shell
-                .battle_fanfare_messages
-                .front()
-                .is_some_and(|fanfare| runtime_shell.battle_messages.front() == Some(fanfare))
-            {
-                runtime_shell.battle_fanfare_messages.pop_front();
-                if let Err(error) =
-                    queue_visible_shell_sound_effect(&mut runtime_shell, "SFX_DEX_FANFARE_50_79")
-                {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                }
-            }
-        }
-        if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
-            && stats.active
-            && stats.frames_before_input > 0
-        {
-            stats.frames_before_input -= 1;
+        if let Err(error) = advance_visible_battle_reward_frame(&mut runtime_shell) {
+            record_visible_runtime_error(&mut runtime_shell, &error);
         }
     }
     if runtime_shell.visible_catch_tutorial.is_some() {
@@ -2915,6 +2827,59 @@ fn advance_visible_trainer_sight_cutscene(runtime_shell: &mut BevyRuntimeShell) 
     runtime_shell.object_walk_frame_ticks = WALK_FRAME_HOLD_TICKS.saturating_mul(2);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
+}
+
+/// Text clients have no animation surface or VBlank loop. Finish visual timing
+/// through the normal completion handlers, without dropping narration, scenes,
+/// HP/PP/EXP mutations, capture results, or acknowledgement boundaries.
+fn fast_forward_text_client_battle_visuals(shell: &mut BevyRuntimeShell) {
+    if shell.text_battle_replays.is_some()
+        && let Some(animation) = shell.visible_move_animations.front().filter(|a| a.started && a.frame == 0).cloned()
+    {
+        // Rendering failures must never become gameplay failures. Use precisely
+        // the same command timeline, object VM, OAM and pack graphics as Bevy.
+        if let Ok(snapshot) = shell.shell.presentation_snapshot()
+            && let Ok(replay) = render_text_battle_replay(&shell.asset_root, &snapshot, animation)
+            && let Some(replays) = shell.text_battle_replays.as_mut()
+            && replays.len() < 4
+        { replays.push(replay); }
+    }
+    let changed = visible_battle_animation_owns_frame(shell)
+        || shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active)
+        || shell.battle_exp_tween.as_ref().is_some_and(|tween| tween.started)
+        || shell.battle_level_stats.front().is_some_and(|stats| stats.active && stats.frames_before_input > 0);
+    if let Some(animation) = shell.visible_move_animations.front_mut()
+        && animation.started {
+        animation.frame = animation.total_frames.saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_capture_animation.as_mut()
+        && animation.started {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_send_out_animation.as_mut() {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_trainer_exit_animation.as_mut() {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    // Frontpic scripts only choose sprite frames; there is no text equivalent.
+    shell.visible_frontpic_animation = None;
+    if let Some((_, frame)) = shell.battle_trainer_result.as_mut() { *frame = u8::MAX; }
+    if let Some(tween) = shell.battle_hp_tween.as_mut() {
+        tween.player_hp = tween.player_target_hp;
+        tween.player_pixels = tween.player_target_pixels;
+        tween.enemy_pixels = tween.enemy_target_pixels;
+        tween.player_frames_until_step = 0;
+        tween.enemy_frames_until_step = 0;
+    }
+    if let Some(tween) = shell.battle_exp_tween.as_mut() && tween.started {
+        tween.pixels = tween.target_pixels;
+        tween.frames_until_step = 0;
+    }
+    if let Some(stats) = shell.battle_level_stats.front_mut() && stats.active {
+        stats.frames_before_input = 0;
+    }
+    if changed { mark_runtime_presentation_dirty(shell); }
 }
 
 fn visible_battle_animation_owns_frame(runtime_shell: &BevyRuntimeShell) -> bool {
@@ -5219,6 +5184,72 @@ fn close_visible_noninteractive_runtime_surfaces_until_idle(
     )
 }
 
+/// One autonomous reward frame, shared by the graphical and direct hosts.
+/// Return true while an animation or the stat-window input delay consumes it.
+fn advance_visible_battle_reward_frame(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
+    let mut segment_finished = false;
+    let mut animation_finished = false;
+    let mut consumed = false;
+    if let Some(tween) = runtime_shell.battle_exp_tween.as_mut()
+        && tween.started
+    {
+        consumed = true;
+        if tween.frames_until_step > 0 {
+            tween.frames_until_step -= 1;
+        } else {
+            if tween.pixels < tween.target_pixels {
+                tween.pixels += 1;
+                tween.steps_in_segment += 1;
+                tween.frames_until_step = if tween.steps_in_segment <= 2 {
+                    2
+                } else if tween.steps_in_segment <= 4 {
+                    1
+                } else {
+                    0
+                };
+            }
+            if tween.pixels == tween.target_pixels {
+                segment_finished = !tween.remaining_targets.is_empty();
+                animation_finished = !segment_finished;
+                if segment_finished {
+                    tween.level = tween.level.saturating_add(1).min(100);
+                }
+                tween.started = false;
+            }
+        }
+        mark_runtime_snapshot_dirty(runtime_shell);
+    }
+    if segment_finished {
+        queue_visible_shell_sound_effect(runtime_shell, "SFX_HIT_END_OF_EXP_BAR")?;
+    }
+    if animation_finished {
+        runtime_shell.battle_exp_tween = runtime_shell.pending_battle_exp_tweens.pop_front();
+        if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
+            && stats.triggered
+        {
+            stats.active = true;
+            stats.frames_before_input = 31;
+            mark_runtime_snapshot_dirty(runtime_shell);
+        }
+        finish_visible_empty_battle_reward_presentation(runtime_shell)?;
+    }
+    if (segment_finished || animation_finished)
+        && runtime_shell.battle_fanfare_messages.front()
+            .is_some_and(|fanfare| runtime_shell.battle_messages.front() == Some(fanfare))
+    {
+        runtime_shell.battle_fanfare_messages.pop_front();
+        queue_visible_shell_sound_effect(runtime_shell, "SFX_DEX_FANFARE_50_79")?;
+    }
+    if let Some(stats) = runtime_shell.battle_level_stats.front_mut()
+        && stats.active
+        && stats.frames_before_input > 0
+    {
+        stats.frames_before_input -= 1;
+        consumed = true;
+    }
+    Ok(consumed)
+}
+
 fn finish_visible_empty_battle_reward_presentation(
     runtime_shell: &mut BevyRuntimeShell,
 ) -> Result<bool> {
@@ -6193,6 +6224,16 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     // ComeHomeForDSTText had not printed yet.
     let snapshot = runtime_shell.shell.snapshot()?;
     let presentation_snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if runtime_shell.visible_wait_sfx_boundary
+        && presentation_snapshot.ui.text_window_open
+        && visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation_snapshot)
+        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation_snapshot)
+        && advance_visible_completed_field_text_page(runtime_shell, &presentation_snapshot)?
+    {
+        // A is the paragraph acknowledgement; the autonomous audio poll
+        // must neither swallow this button nor acknowledge it for us.
+        return Ok(());
+    }
     if advance_visible_wait_sfx_boundary(runtime_shell, &presentation_snapshot, true)? {
         return Ok(());
     }
@@ -7521,6 +7562,14 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     // As with A, B must not resolve a prompt using a stale rendered text body.
     let snapshot = runtime_shell.shell.snapshot()?;
     let presentation_snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if runtime_shell.visible_wait_sfx_boundary
+        && presentation_snapshot.ui.text_window_open
+        && visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation_snapshot)
+        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation_snapshot)
+        && advance_visible_completed_field_text_page(runtime_shell, &presentation_snapshot)?
+    {
+        return Ok(());
+    }
     if advance_visible_wait_sfx_boundary(runtime_shell, &presentation_snapshot, true)? {
         return Ok(());
     }

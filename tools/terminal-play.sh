@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+script=$0
+while [ -L "$script" ]; do
+  link=$(readlink "$script")
+  case "$link" in /*) script=$link ;; *) script=$(dirname "$script")/$link ;; esac
+done
+release_dir=$(CDPATH= cd -- "$(dirname "$script")" && pwd)
+home_dir=$(CDPATH= cd -- "$release_dir/../.." && pwd)
+pack_hash=$(cat "$release_dir/pack-id")
+pack="$home_dir/packs/$pack_hash/game.crystalpack"
+save="$home_dir/saves/$pack_hash.crystalsave"
+command=play
+case ${1:-} in play|mcp|dump) command=$1; shift ;; esac
+if [ -f "$save" ]; then
+  exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" --load "$save" "$@"
+fi
+exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" "$@"

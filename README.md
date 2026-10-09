@@ -4,6 +4,19 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+## Play in a terminal
+
+```sh
+curl -fsSL https://geothite.ryanculligan.com/install.sh | sh
+```
+
+Downloads a prebuilt client and launches immediately—no Rust or sudo. Supports
+Apple Silicon/Intel macOS and x86-64 Linux (glibc 2.34+; Windows via WSL).
+Arrows/WASD move, A/Z/Space confirm, Enter opens Start, and F5 saves.
+Launch again with `~/.local/share/geothite/bin/geothite`; add `mcp` to drive the
+same game through stdio MCP. See [terminal instructions](docs/tui.md) for saves,
+installation options, and native release publishing.
+
 ## Features
 
 - Classic 2D presentation with a switchable 2.5D overworld view.

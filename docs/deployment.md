@@ -39,6 +39,12 @@ content changes, not edited by hand.
 
 ## Configuration
 
+The image also serves the Rust/WASM text client at `/tui` and `/tui/`, using
+the same hosted game pack. See [Text UI](tui.md) for build, controls, isolated
+browser saves, WebMCP and real-game browser verification. Keep the entire
+content-addressed TUI bundle together when deploying; do not mix its glue and
+WASM from different builds.
+
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `CRYSTAL_AUTH_SECRET` | Required | Stable signing secret, at least 32 bytes. |

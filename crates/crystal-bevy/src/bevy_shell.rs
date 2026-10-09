@@ -484,6 +484,28 @@ pub struct VisibleShellController {
     shell: BevyRuntimeShell,
 }
 
+/// Bounded, read-only replay of the production animation renderer. These are
+/// presentation pixels/poses, never pending game work or an input fence.
+#[derive(Debug, Clone, Default)]
+pub struct VisibleBattleReplayFrame {
+    pub player_offset: [i16; 2],
+    pub enemy_offset: [i16; 2],
+    pub pieces: Vec<VisibleBattleReplayPiece>,
+}
+#[derive(Debug, Clone)]
+pub struct VisibleBattleReplayPiece {
+    pub x: i16,
+    pub y: i16,
+    pub width: u16,
+    pub height: u16,
+    pub rgba: Vec<u8>,
+}
+#[derive(Debug, Clone)]
+pub struct VisibleBattleReplay {
+    pub animation_label: String,
+    pub frames: Vec<VisibleBattleReplayFrame>,
+}
+
 impl VisibleShellController {
     /// Start a complete new game, using the same controller as the graphical
     /// frontend. The terminal currently supplies its trainer name up front;
@@ -549,7 +571,23 @@ impl VisibleShellController {
             text.asm_text = Some(page.clone());
             text.body = None;
         }
-        if let Some(message) = self.shell.battle_messages.front() {
+        if let Some(stats) = self.shell.battle_level_stats.front().filter(|stats| stats.active) {
+            snapshot.ui.menu = None;
+            snapshot.ui.text = Some(RuntimeTextSnapshot {
+                label: "visible-shell:battle-level-stats".into(),
+                source: RuntimeTextSource::AsmText,
+                asm_text: Some(format!(
+                    "ATTACK {}\nDEFENSE {}\nSPCL.ATK {}\nSPCL.DEF {}\nSPEED {}",
+                    stats.attack, stats.defense, stats.special_attack, stats.special_defense, stats.speed,
+                )),
+                body: None,
+                queued_text_events: 0,
+            });
+            snapshot.ui.text_window_open = true;
+            if snapshot.battle.is_none() {
+                snapshot.phase = RuntimeShellPhase::Text;
+            }
+        } else if let Some(message) = self.shell.battle_messages.front() {
             // Battle dialogue is owned by the visible controller rather than
             // RuntimeGameShell's script text surface. Project the currently
             // revealed page so renderer-neutral clients see the same textbox
@@ -564,6 +602,9 @@ impl VisibleShellController {
                 queued_text_events: self.shell.battle_messages.len().saturating_sub(1),
             });
             snapshot.ui.text_window_open = true;
+            if snapshot.battle.is_none() {
+                snapshot.phase = RuntimeShellPhase::Text;
+            }
         }
         if snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open {
             // Runtime text records are retained as execution history after
@@ -646,9 +687,18 @@ impl VisibleShellController {
     }
 
     pub fn press(&mut self, button: GameButton) -> Result<()> {
+        // Input interrupts any unconsumed cosmetic replay. It never waits on it.
+        if let Some(replays) = self.shell.text_battle_replays.as_mut() { replays.clear(); }
         let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &[button])?;
         self.complete_overworld_outcome(outcome)?;
         settle_visible_shell_until_input(&mut self.shell)
+    }
+
+    pub fn take_battle_replays(&mut self) -> Vec<VisibleBattleReplay> {
+        self.shell.text_battle_replays.as_mut().map(std::mem::take).unwrap_or_default()
+    }
+    pub fn set_battle_replay_enabled(&mut self, enabled: bool) {
+        self.shell.text_battle_replays = enabled.then(Vec::new);
     }
 
     pub fn wait_frames(&mut self, frames: usize) -> Result<()> {
@@ -1083,6 +1133,7 @@ struct BevyRuntimeShell {
     visible_catch_tutorial: Option<VisibleCatchTutorial>,
     visible_capture_animation: Option<VisibleCaptureAnimation>,
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
+    text_battle_replays: Option<Vec<VisibleBattleReplay>>,
     battle_fainted_hud: [bool; 2],
     battle_retained_text: Vec<String>,
     visible_send_out_animation: Option<VisibleSendOutAnimation>,
@@ -6991,9 +7042,11 @@ fn settle_visible_shell_controller(
     auto_input: bool,
 ) -> Result<()> {
     const MAX_IDLE_SETTLE_STEPS: usize = 1024;
+    let mut radio_call_completed = false;
     for _ in 0..MAX_IDLE_SETTLE_STEPS {
         runtime_shell.pokegear_exit_input_blocked = false;
         if !auto_input {
+            fast_forward_text_client_battle_visuals(runtime_shell);
             // This renderer-neutral controller has no audio device. Preserve
             // music selection and the audit log, but complete transient SFX
             // so authored WaitSFX fences cannot deadlock terminal gameplay.
@@ -7003,9 +7056,55 @@ fn settle_visible_shell_controller(
             runtime_shell.transient_audio_playing = false;
             if runtime_shell.visible_wait_sfx_boundary {
                 let presentation = runtime_shell.shell.presentation_snapshot()?;
+                // Audio completion does not run the printer. Reveal its
+                // current page before polling the fence, and never consume
+                // a paragraph/CONT acknowledgement on the player's behalf.
+                if visible_field_dialog_pages(&presentation, runtime_shell).is_some() {
+                    if !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation) {
+                        tick_visible_field_text_reveal(runtime_shell, false)?;
+                        continue;
+                    }
+                    if !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation) {
+                        return Ok(());
+                    }
+                }
                 if advance_visible_wait_sfx_boundary(runtime_shell, &presentation, false)? {
                     continue;
                 }
+            }
+            // These source presentation clocks normally run in Bevy Update.
+            // A terminal/BrowserTui has no Update or sound device; finish only
+            // their automatic holds, leaving prompts and call text for A/B.
+            if advance_visible_incoming_phone_sequence(runtime_shell, 1)?
+                || advance_visible_pokegear_phone_call(runtime_shell, 1)?
+            {
+                continue;
+            }
+            if pokedex_input_delay_active(runtime_shell) {
+                advance_visible_pokedex_search(runtime_shell, 1);
+                continue;
+            }
+            if runtime_shell.pokegear_map_radio_delay.is_some_and(|frames| frames != 0) {
+                advance_visible_map_radio_delay(runtime_shell, 1);
+                continue;
+            }
+            if !radio_call_completed && runtime_shell.pokegear_menu_open
+                && runtime_shell.pokegear_page == PokegearPage::Radio
+                && runtime_shell.pokegear_radio_broadcast.is_some()
+            {
+                // Complete one real program/print call per input, not the
+                // endlessly repeating radio show. Never invent a JS timer.
+                advance_visible_radio_broadcast(runtime_shell, 1, false)?;
+                radio_call_completed = !runtime_shell.pokegear_radio_broadcast.as_ref()
+                    .is_some_and(|broadcast| broadcast.playback.call_suspended());
+                if radio_call_completed {
+                    runtime_shell.pokegear_radio_input_blocked = false;
+                }
+                continue;
+            }
+            if runtime_shell.pc_item_move_sequence.is_some() {
+                advance_visible_pc_item_move_sequence(runtime_shell)?;
+                continue;
             }
         }
         if runtime_shell.pokegear_exit.is_some() {
@@ -7104,8 +7203,21 @@ fn settle_visible_shell_controller(
             advance_visible_battle_transition(runtime_shell);
             continue;
         }
+        if !runtime_shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active)
+            && let Some(animation) = runtime_shell.visible_move_animations.front_mut()
+            && (animation.waiting_for_hp
+                || (animation.move_id == "FAINT_MON" && !animation.started
+                    && runtime_shell.battle_messages.front() == Some(&animation.trigger_message)))
+        {
+            animation.waiting_for_hp = false;
+            animation.started = true;
+            mark_runtime_presentation_dirty(runtime_shell);
+        }
         if visible_battle_animation_owns_frame(runtime_shell) {
             advance_visible_battle_animation_frame(runtime_shell)?;
+            continue;
+        }
+        if advance_visible_battle_reward_frame(runtime_shell)? {
             continue;
         }
         if runtime_shell
@@ -7233,14 +7345,24 @@ fn settle_visible_shell_controller(
         // An active battle is a player-owned boundary. Smoke settling may
         // present the script up to StartBattle, but must not resume the
         // retained post-battle cursor until a battle result is supplied.
-        if snapshot.battle.is_some() {
-            if let Some(message) = runtime_shell.battle_messages.front().cloned()
-                && !visible_battle_message_is_complete(runtime_shell, &message)
-            {
+        // Core can finish the battle before its final narration and rewards
+        // finish. Those retained surfaces still own joypad input, including
+        // after the core snapshot already says Overworld.
+        if let Some(message) = runtime_shell.battle_messages.front().cloned() {
+            if !visible_battle_message_is_complete(runtime_shell, &message) {
                 advance_visible_battle_text_reveal(runtime_shell, &snapshot, false);
                 mark_runtime_presentation_dirty(runtime_shell);
                 continue;
             }
+            return Ok(());
+        }
+        if runtime_shell.battle_level_stats.front().is_some_and(|stats| stats.active) {
+            return Ok(());
+        }
+        if finish_visible_empty_battle_reward_presentation(runtime_shell)? {
+            continue;
+        }
+        if snapshot.battle.is_some() {
             sync_visible_battle_action_cursor(runtime_shell);
             return Ok(());
         }
@@ -7844,6 +7966,7 @@ fn initialize_bevy_runtime_shell(
         visible_catch_tutorial: None,
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
+        text_battle_replays: None,
         battle_fainted_hud: [false; 2],
         battle_retained_text: Vec::new(),
         visible_send_out_animation: None,
@@ -8086,6 +8209,7 @@ include!("bevy_shell/stats_screen.rs");
 include!("bevy_shell/render_mod.rs");
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
+include!("bevy_shell/text_battle_replay.rs");
 include!("bevy_shell/bitmap_font.rs");
 include!("bevy_shell/graphics_assets.rs");
 include!("bevy_shell/field_pack.rs");

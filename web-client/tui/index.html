@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#030312">
+  <title>Geothite — Text UI</title>
+  <link rel="stylesheet" href="/tui/browser.css">
+</head>
+<body>
+  <p id="status" role="status" aria-live="polite">Loading Geothite…</p>
+  <pre id="screen" tabindex="0" aria-label="Geothite game terminal" hidden></pre>
+  <canvas id="ascii" aria-hidden="true" hidden></canvas>
+  <button id="view-toggle" aria-label="Switch to text view" aria-pressed="false" hidden>TEXT · V</button>
+  <div id="touch-controls" role="group" aria-label="Game Boy controls" hidden>
+    <div class="dpad">
+      <button data-button="up" aria-label="Move up">↑</button>
+      <button data-button="left" aria-label="Move left">←</button>
+      <button data-button="down" aria-label="Move down">↓</button>
+      <button data-button="right" aria-label="Move right">→</button>
+    </div>
+    <div class="action-buttons">
+      <button data-button="b" aria-label="B — cancel">B</button>
+      <button data-button="a" aria-label="A — confirm">A</button>
+      <button data-button="select">SELECT</button>
+      <button data-button="start">START</button>
+    </div>
+  </div>
+  <script type="module" src="/tui/browser.js"></script>
+</body>
+</html>

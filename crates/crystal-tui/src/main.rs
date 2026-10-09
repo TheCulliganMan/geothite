@@ -9,7 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    RuntimeTextRenderer, TerminalAction, TerminalUi, TuiTheme, map_key_event, render_snapshot_text,
+    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalUi, TuiTheme, TerminalCanvas, map_key_event,
+    render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -17,7 +18,7 @@ use std::{
     env,
     io::{self, BufRead, BufReader, IsTerminal, Stdout, Write},
     path::PathBuf,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 #[derive(Debug)]
@@ -26,7 +27,7 @@ struct Options {
     pack: PathBuf,
     load: Option<PathBuf>,
     save: Option<PathBuf>,
-    theme: PathBuf,
+    theme: Option<PathBuf>,
     compact: bool,
     player_name: String,
 }
@@ -47,6 +48,11 @@ fn main() -> Result<()> {
     let asset_root = AssetRoot::new(pack.parent().context("content pack path has no parent")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack)
         .with_context(|| format!("load game content pack {}", pack.display()))?;
+    let painter = if options.command == Command::Play {
+        PaintedRenderer::from_pack_assets(loaded.pack().runtime_files())
+    } else {
+        PaintedRenderer::default()
+    };
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
     let mut game = match &options.load {
         Some(load) => {
@@ -60,7 +66,10 @@ fn main() -> Result<()> {
         )?,
     };
     game.set_runtime_journal_enabled(false);
-    let theme = TuiTheme::from_path(&options.theme)?;
+    let theme = match &options.theme {
+        Some(path) => TuiTheme::from_path(path)?,
+        None => TuiTheme::default(),
+    };
     if options.command == Command::Dump {
         let mut renderer = RuntimeTextRenderer::default();
         let mut active_cursor = None;
@@ -77,7 +86,7 @@ fn main() -> Result<()> {
         io::stdin().is_terminal() && io::stdout().is_terminal(),
         "geothite play requires an interactive terminal; use `geothite dump PACK` for plain text"
     );
-    run_tui(game, theme, options.save)
+    run_tui(game, theme, options.save, painter)
 }
 
 fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options> {
@@ -87,8 +96,7 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
     let mut save = None;
     let mut compact = false;
     let mut player_name = "CHRIS".to_string();
-    let mut theme =
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../modpacks/text-tui/theme.json");
+    let mut theme = None;
     let mut arguments = arguments.into_iter();
     let command = match arguments.next().as_deref() {
         Some("play") => Command::Play,
@@ -123,7 +131,9 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
                 );
             }
             "--theme" => {
-                theme = PathBuf::from(arguments.next().context("--theme requires a path")?)
+                theme = Some(PathBuf::from(
+                    arguments.next().context("--theme requires a path")?,
+                ))
             }
             "--compact" => compact = true,
             "-h" | "--help" => {
@@ -532,7 +542,7 @@ fn mcp_status_payload(source: &crystal_runtime::RuntimeShellSnapshot) -> Value {
         "badges": badges,
         "pokedex": { "seen": source.progression.pokedex_seen, "owned": source.progression.pokedex_owned },
         "menu": source.ui.menu.as_ref().map(|menu| menu.menu_id.as_str()),
-        "dialogue": source.ui.pending_text_wait.is_some(),
+        "dialogue": source.ui.text_window_open || source.ui.pending_text_wait.is_some(),
     })
 }
 
@@ -611,6 +621,36 @@ fn save_after_mcp_action(game: &mut RuntimeGameShell, save_path: Option<&PathBuf
 
 struct TerminalGuard {
     terminal: Terminal<CrosstermBackend<Stdout>>,
+    canvas: TerminalCanvas,
+}
+
+/// Cosmetic deadlines are independent of input arrival. Never tick the game
+/// here, and never catch up a paused view with a burst of invisible frames.
+struct VisualClock {
+    next: Instant,
+    period: Duration,
+}
+
+impl VisualClock {
+    fn new(now: Instant, period: Duration) -> Self {
+        Self { next: now + period, period }
+    }
+
+    fn tick(&mut self, now: Instant, enabled: bool) -> bool {
+        if !enabled {
+            self.next = now + self.period;
+            return false;
+        }
+        if now < self.next {
+            return false;
+        }
+        self.next = now + self.period;
+        true
+    }
+
+    fn wait(&self, now: Instant) -> Duration {
+        self.next.saturating_duration_since(now)
+    }
 }
 
 impl TerminalGuard {
@@ -622,7 +662,10 @@ impl TerminalGuard {
             return Err(error).context("enter alternate terminal screen");
         }
         match Terminal::new(CrosstermBackend::new(stdout)) {
-            Ok(terminal) => Ok(Self { terminal }),
+            Ok(terminal) => Ok(Self {
+                terminal,
+                canvas: TerminalCanvas::detect(),
+            }),
             Err(error) => {
                 let mut stdout = io::stdout();
                 let _ = execute!(stdout, LeaveAlternateScreen);
@@ -635,27 +678,103 @@ impl TerminalGuard {
 
 impl Drop for TerminalGuard {
     fn drop(&mut self) {
+        let _ = self.canvas.clear(self.terminal.backend_mut());
         let _ = disable_raw_mode();
         let _ = execute!(self.terminal.backend_mut(), LeaveAlternateScreen);
         let _ = self.terminal.show_cursor();
     }
 }
 
-fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBuf>) -> Result<()> {
+fn run_tui(
+    mut game: RuntimeGameShell,
+    theme: TuiTheme,
+    save_path: Option<PathBuf>,
+    mut painter: PaintedRenderer,
+) -> Result<()> {
     let mut terminal = TerminalGuard::enter()?;
     let mut renderer = RuntimeTextRenderer::default();
     let mut ui = TerminalUi::new(theme);
     let mut active_cursor = None;
     let mut command_buffer: Option<String> = None;
+    let mut painted = true;
+    let reduced_motion = std::env::var("GEOTHITE_REDUCED_MOTION").as_deref() == Ok("1");
+    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_millis(100));
+    let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
+    game.set_battle_replay_enabled(!reduced_motion);
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
     'tui: loop {
+        let now = Instant::now();
+        if ink_clock.tick(now, painted && !reduced_motion) {
+            painter.advance_ink();
+        }
+        if replay_clock.tick(now, painted && !reduced_motion && painter.replay_active()) {
+            painter.advance_replay();
+        }
         let runtime_snapshot = game.presentation_snapshot()?;
         let snapshot = renderer.render(&runtime_snapshot);
+        let mut painted_this_frame = false;
         terminal
             .terminal
-            .draw(|frame| ui.draw(frame, &snapshot))
+            .draw(|frame| {
+                if painted && frame.area().width >= 40 && frame.area().height >= 24 {
+                    painted_this_frame = true;
+                    let area = frame.area();
+                    let buffer = painter.draw_native(
+                        &runtime_snapshot,
+                        &snapshot,
+                        area.width,
+                        area.height,
+                        ui.notice.as_deref(),
+                        ui.show_help,
+                    );
+                    frame.buffer_mut().merge(&buffer);
+                } else {
+                    ui.draw(frame, &snapshot);
+                }
+            })
             .context("draw terminal UI")?;
-        if !event::poll(Duration::from_millis(100)).context("poll terminal input")? {
+        if painted_this_frame && terminal.canvas.enabled() {
+            let bounds = painter.scene_bounds();
+            if let [x, y, width, height] = bounds.as_slice() {
+                let size = crossterm::terminal::window_size().ok();
+                let cw = size.as_ref()
+                    .filter(|s| s.width >= s.columns && s.columns != 0)
+                    .map_or(12, |s| u32::from(s.width) / u32::from(s.columns));
+                let ch = size.as_ref()
+                    .filter(|s| s.height >= s.rows && s.rows != 0)
+                    .map_or(24, |s| u32::from(s.height) / u32::from(s.rows));
+                let (pixels_w, pixels_h) = geothite::terminal_canvas_size(
+                    u32::from(*width) * cw, u32::from(*height) * ch,
+                );
+                if let Some(image) = painter.circle_image(pixels_w, pixels_h) {
+                    terminal.canvas.paint(
+                        terminal.terminal.backend_mut(),
+                        ratatui::layout::Rect::new(*x, *y, *width, *height),
+                        &image,
+                    ).context("paint terminal dot canvas")?;
+                } else {
+                    terminal.canvas.clear(terminal.terminal.backend_mut())?;
+                }
+            } else {
+                terminal.canvas.clear(terminal.terminal.backend_mut())?;
+            }
+        } else {
+            terminal.canvas.clear(terminal.terminal.backend_mut())?;
+        }
+        if painted {
+            if let Some(viewport) = painter.viewport {
+                renderer.set_viewport(viewport);
+            }
+        } else {
+            renderer.set_viewport(geothite::ViewportSize::default());
+        }
+        let now = Instant::now();
+        let timeout = if painter.replay_active() {
+            ink_clock.wait(now).min(replay_clock.wait(now))
+        } else {
+            ink_clock.wait(now)
+        };
+        if !event::poll(timeout).context("poll terminal input")? {
             continue;
         }
         let Event::Key(key) = event::read().context("read terminal input")? else {
@@ -664,6 +783,7 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
         if !matches!(key.kind, KeyEventKind::Press | KeyEventKind::Repeat) {
             continue;
         }
+        painter.cancel_replay();
         if let Some(buffer) = command_buffer.as_mut() {
             match key.code {
                 KeyCode::Esc => {
@@ -703,7 +823,11 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
             }
             continue;
         }
-        let modal_selection = !snapshot.menu.is_empty() || !snapshot.prompt.is_empty();
+        if matches!(key.code, KeyCode::Char('v' | 'V')) {
+            painted = !painted;
+            continue;
+        }
+        let modal_selection = snapshot.confirmation_input_owned();
         match map_key_event(key, modal_selection) {
             TerminalAction::Quit => break,
             TerminalAction::BeginCommand => {
@@ -743,6 +867,8 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
             }
             TerminalAction::None => {}
         }
+        let replays = game.take_battle_replays();
+        if painted && !reduced_motion { painter.replay(replays); }
     }
     Ok(())
 }
@@ -786,6 +912,84 @@ mod tests {
     use super::*;
 
     #[test]
+    fn cosmetic_deadlines_survive_continuous_input() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_millis(100));
+        let mut frames = 0;
+        // Input every 10ms: the old poll-timeout branch never animated here.
+        for millis in (10..=1000).step_by(10) {
+            frames += usize::from(clock.tick(start + Duration::from_millis(millis), true));
+        }
+        assert_eq!(frames, 10);
+        assert_eq!(clock.wait(start + Duration::from_millis(1050)), Duration::from_millis(50));
+    }
+
+    #[test]
+    fn paused_cosmetic_clocks_do_not_replay_hidden_frames() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_millis(100));
+        assert!(!clock.tick(start + Duration::from_secs(10), false));
+        assert!(!clock.tick(start + Duration::from_millis(10050), true));
+        assert!(clock.tick(start + Duration::from_millis(10100), true));
+        assert!(clock.tick(start + Duration::from_secs(30), true));
+        assert!(!clock.tick(start + Duration::from_secs(30), true));
+    }
+
+    #[test]
+    fn default_theme_needs_no_build_checkout() {
+        let options = parse_options(["play".into(), "game.crystalpack".into()]).unwrap();
+        assert!(options.theme.is_none());
+        let custom = parse_options([
+            "play".into(),
+            "game.crystalpack".into(),
+            "--theme".into(),
+            "custom.json".into(),
+        ])
+        .unwrap();
+        assert_eq!(custom.theme, Some(PathBuf::from("custom.json")));
+    }
+
+    #[test]
+    fn installed_save_resumes_real_movement() {
+        let pack = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/realtime-clock.browser.crystalpack")
+            .canonicalize()
+            .unwrap();
+        let assets = AssetRoot::new(pack.parent().unwrap());
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(
+            &assets,
+            read_loaded_verified_compiled_game_pack(&pack).unwrap(),
+        )
+        .unwrap();
+        let path = std::env::temp_dir().join(format!(
+            "geothite-install-resume-{}.crystalsave",
+            std::process::id()
+        ));
+        let mut game = RuntimeGameShell::new_game(
+            assets.clone(),
+            runtime.clone(),
+            "CHRIS",
+            Some(path.clone()),
+        )
+        .unwrap();
+        game.press(GameButton::Start).unwrap();
+        game.press(GameButton::B).unwrap();
+        game.save(&path).unwrap();
+        let mut resumed =
+            RuntimeGameShell::load_save(assets, runtime, path.clone(), Some(path.clone())).unwrap();
+        let before = resumed.snapshot().unwrap();
+        resumed.press(GameButton::Right).unwrap();
+        resumed.press(GameButton::Right).unwrap();
+        let after = resumed.snapshot().unwrap();
+        std::fs::remove_file(path).unwrap();
+        assert_ne!(
+            before.overworld.tile, after.overworld.tile,
+            "resume must move: {:?}",
+            after.phase
+        );
+    }
+
+    #[test]
     fn mcp_exposes_the_play_surface_under_the_geothite_server() {
         let tools = mcp_tools();
         let names = tools
@@ -810,6 +1014,117 @@ mod tests {
             ]
         );
         assert_eq!(env!("CARGO_PKG_NAME"), "geothite");
+    }
+
+    #[test]
+    fn mcp_battle_exit_restores_movement_and_start_menu() {
+        let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap();
+        let pack = repo.join("content-packs/text-tui.crystalpack");
+        let assets = AssetRoot::new(pack.parent().unwrap());
+        let loaded = read_loaded_verified_compiled_game_pack(&pack).expect("external TUI pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded).unwrap();
+        let spawn = runtime.title_new_game_spawn_identifier().unwrap();
+        let mut fixture = crystal_runtime::RuntimeGameShell::new_game_at_runtime_tile(
+            assets.clone(),
+            runtime.clone(),
+            spawn,
+            "Route29",
+            46,
+            12,
+        )
+        .unwrap();
+        fixture
+            .add_party_pokemon(
+                "TOTODILE",
+                50,
+                None,
+                None,
+                "MCP_EXIT",
+                1,
+                crystal_core::models::pokemon::Dv::from_non_hp(10, 10, 10, 10),
+            )
+            .unwrap();
+        let save = env::temp_dir().join(format!(
+            "geothite-mcp-battle-exit-{}.crystalsave",
+            std::process::id()
+        ));
+        fixture.save(&save).unwrap();
+        let loaded = RuntimeGameShell::load_save(assets, runtime, save.clone(), None);
+        std::fs::remove_file(&save).unwrap();
+        let mut game = loaded.unwrap();
+        let mut renderer = RuntimeTextRenderer::default();
+        let mut cursor = None;
+        for step in 0..256 {
+            call_mcp_tool(&mut game, &mut renderer, &mut cursor, Some("move"),
+                &json!({"direction": if (step / 2) % 2 == 0 { "right" } else { "left" }, "steps": 1}), None).unwrap();
+            if game.snapshot().unwrap().battle.is_some() {
+                break;
+            }
+        }
+        assert!(
+            game.snapshot().unwrap().battle.is_some(),
+            "MCP did not enter a grass encounter"
+        );
+        for _ in 0..256 {
+            call_mcp_tool(
+                &mut game,
+                &mut renderer,
+                &mut cursor,
+                Some("press"),
+                &json!({"button": "a"}),
+                None,
+            )
+            .unwrap();
+        }
+        let before = game.snapshot().unwrap();
+        assert!(before.battle.is_none(), "MCP battle did not finish");
+        call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("move"),
+            &json!({"direction": "up", "steps": 2}),
+            None,
+        )
+        .unwrap();
+        let after = game.snapshot().unwrap();
+        assert_ne!(
+            before.overworld.tile, after.overworld.tile,
+            "MCP movement is blocked after battle"
+        );
+        call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("press"),
+            &json!({"button": "start"}),
+            None,
+        )
+        .unwrap();
+        let observed = call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("observe"),
+            &json!({"detail": "compact"}),
+            None,
+        )
+        .unwrap();
+        assert!(
+            observed["structuredContent"]["menu"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|line| {
+                    line["text"]
+                        .as_str()
+                        .is_some_and(|text| text.contains("SAVE"))
+                }),
+            "MCP Start menu is blocked after battle: {observed}"
+        );
     }
 
     #[test]

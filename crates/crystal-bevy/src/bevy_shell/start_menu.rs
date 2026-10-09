@@ -636,6 +636,12 @@ fn visible_pokedex_detail_entries(
     if caught {
         entries.extend(wrap_scene_dialog_line(page, SCENE_DIALOG_TEXT_CHARS));
     }
+    if !runtime_shell.pokedex_scripted_entry {
+        entries.extend(["PAGE", "AREA", "CRY", "PRINT"].into_iter().enumerate()
+            .map(|(index, label)| format!("{}{label}",
+                if index == runtime_shell.pokedex_controls.entry_action { ">" } else { " " })));
+        entries.push("Left/Right action".into());
+    }
     Ok(entries)
 }
 
@@ -690,27 +696,42 @@ fn visible_pokegear_menu_entries(
         };
         let meridiem = if hour_24 < 12 { "AM" } else { "PM" };
         return Ok(vec![
+            "POKEGEAR CLOCK".to_string(),
             day.to_string(),
             format!("{hour_12:>2}:{:02} {meridiem}", time.registers.minutes),
+            "Right: next card".to_string(),
+            "B: close".to_string(),
         ]);
     }
     if runtime_shell.pokegear_page == PokegearPage::Radio {
-        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else { return Ok(Vec::new()); };
+        let frequency = visible_pokegear_radio_frequency(runtime_shell.pokegear_radio_tuning_knob);
+        let Some(station) = runtime_shell.pokegear_radio_station.as_deref() else {
+            return Ok(vec![format!("RADIO {frequency:.2}"), "No signal".into(),
+                "Up/Down: tune".into(), "Left: previous card".into(), "B: close".into()]);
+        };
         let broadcast = runtime_shell.pokegear_radio_broadcast.as_ref().context("radio station has no live broadcast")?;
         let heading = if let Some(rows) = &broadcast.host.name_tiles {
             visible_radio_tile_row(&rows[1])?.trim().to_string()
         } else {
             visible_radio_station_name(station, snapshot.progression.active_engine_flags.contains("ENGINE_ROCKETS_IN_RADIO_TOWER"))?.to_string()
         };
-        let mut entries = vec![format!("RADIO  {heading}")];
+        let mut entries = vec![format!("RADIO {frequency:.2}"), heading];
         entries.extend(visible_radio_observation_rows(runtime_shell)?);
+        entries.push("Up/Down: tune".into());
+        entries.push("Left: previous card".into());
         return Ok(entries);
     }
     if runtime_shell.pokegear_page == PokegearPage::Phone {
         return visible_pokegear_phone_entries(snapshot, runtime_shell);
     }
+    let region = visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?;
     visible_pokegear_landmark_indices(snapshot, runtime_shell.pokegear_standalone_map)?;
-    Ok(Vec::new())
+    let selected = snapshot.presentation.pokegear_landmarks.landmarks
+        .get(runtime_shell.pokegear_cursor).context("Pokégear map cursor is outside the catalog")?;
+    let player = visible_pokegear_player_landmark(snapshot)?;
+    Ok(vec![format!("POKEGEAR MAP {region}"), format!(">{}", selected.name),
+        format!("You: {}", player.name), "Up/Down: location".into(),
+        "Left/Right: card".into(), "B: close".into()])
 }
 
 fn visible_pokegear_phone_slots(snapshot: &RuntimeShellSnapshot) -> Result<Vec<Option<&str>>> {
