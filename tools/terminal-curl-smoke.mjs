@@ -55,6 +55,17 @@ try {
   assert(/[\u2801-\u28ff]/u.test(output) && !output.includes('▀'), `Downloaded client must default to high-resolution dot illustration: ${output.slice(-1800)}`);
   const graphics = process.env.GEOTHITE_TUI_GRAPHICS === 'kitty';
   if (graphics) assert(rawOutput.includes('a=T,f=100,t=d,i='), 'The installed client paints the shared circle canvas too');
+  const artWrites = bytes => (bytes.match(graphics ? /a=T,f=100,t=d,i=/g : /[\u2801-\u28ff]/gu) ?? []).length;
+  let animationOffset = rawOutput.length;
+  for (let i = 0; i < 7; i++) await pause();
+  assert(artWrites(rawOutput.slice(animationOffset)) > 1, 'Actual downloaded dither animates while idle');
+  const repeat = setInterval(() => child.stdin.write('p'), 15);
+  try {
+    for (let i = 0; i < 4; i++) await pause(); // Exclude the trailing idle redraw.
+    animationOffset = rawOutput.length;
+    for (let i = 0; i < 8; i++) await pause();
+    assert(artWrites(rawOutput.slice(animationOffset)) > 1, 'Actual downloaded animation survives continuous unmapped input');
+  } finally { clearInterval(repeat); }
   let offset = output.length;
   let rawOffset = rawOutput.length;
   await key('v');
