@@ -686,6 +686,26 @@ impl VisibleShellController {
         self.shell.shell.save(path)
     }
 
+    /// SRAM saves do not serialize frontend cursors or an unfinished authored
+    /// scene. Automatic reconnect checkpoints must therefore be taken only at
+    /// an input-ready overworld boundary, never halfway through Mom or rewards.
+    /// Explicit production SAVE remains unchanged.
+    pub fn autosave(&mut self, path: impl AsRef<Path>) -> Result<bool> {
+        let snapshot = self.snapshot()?;
+        if snapshot.phase != RuntimeShellPhase::Overworld
+            || snapshot.battle.is_some()
+            || snapshot.ui.menu.is_some()
+            || snapshot.ui.text_window_open
+            || snapshot.ui.pending_text_wait.is_some()
+            || snapshot.ui.pending_yes_no.is_some()
+            || self.has_pending_script_work()
+        {
+            return Ok(false);
+        }
+        self.save(path)?;
+        Ok(true)
+    }
+
     pub fn press(&mut self, button: GameButton) -> Result<()> {
         // Input interrupts any unconsumed cosmetic replay. It never waits on it.
         if let Some(replays) = self.shell.text_battle_replays.as_mut() { replays.clear(); }

@@ -372,6 +372,26 @@
 
 ### Non-negotiable TUI/MCP architecture
 
+- Reusable TUI sessions are local to the browser profile or terminal save path,
+  not cloud accounts or remotely hosted MCP games. Never claim a named URL is a
+  secret/share token or resumes cross-device. Browser `?session=NAME` uses a
+  separate slot, preserving the old default path; validate names in JS and Rust.
+  Hold a Web Lock before load/start for the entire page lifetime, and reacquire
+  by reload after BFCache. Native clients hold an OS file lock before loading a
+  configured save; release on disconnect/crash. Resume primary OR backup, never
+  silently overwrite a recovery-only slot with a new game.
+  Use `VisibleShellController::autosave` only at non-modal input-ready overworld
+  boundaries: unfinished Mom/battle/reward state is not a safe SRAM checkpoint.
+  Auto-checkpoint applied Game Boy inputs (including code-mode partial errors),
+  not observations, cosmetic animation or view toggles. Compact binary saves
+  plus one recovery generation remain the sharing format; skip byte-identical
+  primary/backup writes but repair missing/corrupted backups. Never put packs,
+  rendered assets, logs or agent code-mode programs in saves. Run the real 20-client browser and
+  native regressions `tools/tui-session-smoke.mjs` and
+  `tools/tui-native-session-smoke.mjs`, requiring reconnect position AND usable
+  Start/input, duplicate-writer rejection, bounded size and no observation writes.
+  Include `session.js` in the content-addressed browser bundle hash/copy.
+
 - Native MCP `search`/`execute`, browser WebMCP `geothite_tui_search`/
   `geothite_tui_execute`, and `window.geothiteTui.execute(code)` use the same
   pinned Rust Boa code-mode interpreter in `crystal-tui/src/codemode.rs`.

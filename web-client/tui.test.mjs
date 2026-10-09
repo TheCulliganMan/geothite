@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { keyButton, modalInput, tuiTools, registerTuiTools } from './tui/bridge.js';
+import { tuiSession, acquireTuiSession } from './tui/session.js';
 import { mkdtemp, readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -93,7 +94,7 @@ test('TUI glue, WASM, adapters and CSS deploy as one versioned bundle', async ()
     await writeFile(join(dir, 'geothite.js'), "new URL('geothite_bg.wasm', import.meta.url)");
     await writeFile(join(dir, 'geothite_bg.wasm'), 'test WASM bytes');
     await writeFile(join(dir, 'ascii-mount.js'), 'test pinned ASCII painter');
-    for (const name of ['index.html', 'browser.js', 'bridge.js', 'browser.css', 'ascii-frame.js']) {
+    for (const name of ['index.html', 'browser.js', 'bridge.js', 'session.js', 'browser.css', 'ascii-frame.js']) {
       await writeFile(join(dir, name), await readFile(resolve('web-client/tui', name)));
     }
     execFileSync('sh', [resolve('tools/version-tui-bundle.sh'), dir]);
@@ -107,10 +108,35 @@ test('TUI glue, WASM, adapters and CSS deploy as one versioned bundle', async ()
     const browser = await readFile(join(dir, `browser-${hash}.js`), 'utf8');
     assert(browser.includes(`./${glue}`));
     assert(browser.includes(`./bridge-${hash}.js`));
+    assert(browser.includes(`./session-${hash}.js`));
     assert(browser.includes(`./ascii-frame-${hash}.js`));
     assert((await readFile(join(dir, `ascii-frame-${hash}.js`), 'utf8')).includes(`./ascii-mount-${hash}.js`));
     assert((await readFile(join(dir, glue), 'utf8')).includes(`geothite-${hash}.wasm`));
     assert(files.includes(`geothite-${hash}.wasm.gz`));
     assert(!files.includes('geothite.js') && !files.includes('geothite_bg.wasm'));
   } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('named sessions retain the old default and reject path/URL injection', () => {
+  assert.equal(tuiSession('https://game.test/tui').slot, '');
+  assert.equal(tuiSession('https://game.test/tui?session=chris-20').slot, 'chris-20');
+  for (const id of ['../someone', 'a/b', 'a.b', 'a'.repeat(65), '🎮']) {
+    assert.throws(() => tuiSession(`https://game.test/tui?session=${encodeURIComponent(id)}`));
+  }
+});
+
+test('one writer per browser session, independent slots, release then reconnect', async () => {
+  const held = new Set();
+  const locks = { async request(name, _, run) {
+    if (held.has(name)) return run(null);
+    held.add(name);
+    try { return await run({ name }); } finally { held.delete(name); }
+  } };
+  const release = await acquireTuiSession(locks, 'chris');
+  await assert.rejects(acquireTuiSession(locks, 'chris'), /another tab/);
+  const releaseOther = await acquireTuiSession(locks, 'silver');
+  release(); await new Promise(resolve => setImmediate(resolve));
+  const reconnect = await acquireTuiSession(locks, 'chris');
+  reconnect(); releaseOther();
+  await assert.rejects(acquireTuiSession(undefined, ''), /HTTPS/);
 });

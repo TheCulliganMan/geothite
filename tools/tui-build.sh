@@ -10,7 +10,7 @@ cp tools/tui-ascii/node_modules/ascii.rest/dist/mount.js "$TUI_WEB_ROOT/tui/asci
 cp tools/tui-ascii/node_modules/ascii.rest/LICENSE "$TUI_WEB_ROOT/tui/ASCII-LICENSE.txt"
 cargo build --locked -p geothite --lib --target wasm32-unknown-unknown --profile web-release
 wasm-bindgen target/wasm32-unknown-unknown/web-release/geothite.wasm --target web --no-typescript --out-dir "$TUI_WEB_ROOT/tui"
-cp web-client/tui/index.html web-client/tui/browser.js web-client/tui/bridge.js web-client/tui/browser.css web-client/tui/ascii-frame.js "$TUI_WEB_ROOT/tui/"
+cp web-client/tui/index.html web-client/tui/browser.js web-client/tui/bridge.js web-client/tui/session.js web-client/tui/browser.css web-client/tui/ascii-frame.js "$TUI_WEB_ROOT/tui/"
 sh tools/version-tui-bundle.sh "$TUI_WEB_ROOT/tui"
 TUI_LOCAL_PACK="${TUI_LOCAL_PACK:-content-packs/realtime-clock.browser.crystalpack}"
 if test -s "$TUI_LOCAL_PACK"; then

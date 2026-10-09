@@ -6,6 +6,14 @@ use ratatui::{
 };
 use std::fmt::Write;
 
+fn session_save_path(modpack: &str, session: &str) -> Result<std::path::PathBuf, &'static str> {
+    if session.len() > 64 || !session.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'-' || c == b'_') {
+        return Err("Session must contain at most 64 ASCII letters, digits, hyphens or underscores");
+    }
+    let suffix = if session.is_empty() { "local".to_owned() } else { format!("session-{session}") };
+    Ok(format!("saves/{modpack}-tui-{suffix}.crystalsave").into())
+}
+
 fn css_color(color: Color) -> String {
     match color {
         Color::Rgb(r, g, b) => format!("#{r:02x}{g:02x}{b:02x}"),
@@ -87,21 +95,29 @@ mod wasm {
         /// Open the identity-matched browser save, or start CHRIS immediately.
         #[wasm_bindgen(js_name = open)]
         pub fn open(pack: &[u8]) -> Result<BrowserTui, JsValue> {
+            Self::open_session(pack, "")
+        }
+
+        /// Named slots are browser-local, not public bearer credentials. Keep
+        /// the empty/default slot exactly where existing players saved it.
+        pub fn open_session(pack: &[u8], session: &str) -> Result<BrowserTui, JsValue> {
             let loaded =
                 load_verified_compiled_game_pack_bytes("browser-tui.crystalpack", pack.to_vec())
                     .map_err(js_error)?;
             let root = AssetRoot::new(".");
             let runtime =
                 CrystalRuntime::from_loaded_compiled_pack(&root, loaded).map_err(js_error)?;
-            let path = format!("saves/{}-tui-local.crystalsave", runtime.modpack().id());
+            let path = super::session_save_path(runtime.modpack().id(), session).map_err(js_error)?;
             let storage = web_sys::window()
                 .ok_or_else(|| js_error("No browser window"))?
                 .local_storage()?
                 .ok_or_else(|| js_error("Browser save storage unavailable"))?;
             let resume = storage
-                .get_item(&format!("crystal.save.v1.{path}"))?
-                .is_some();
-            Self::new(pack, "CHRIS", resume)
+                .get_item(&format!("crystal.save.v1.{}", path.display()))?
+                .is_some() || storage.get_item(&format!("crystal.save.v1.{}.bak", path.display()))?.is_some();
+            let mut tui = Self::from_runtime(root, runtime, path, "CHRIS", resume)?;
+            tui.checkpoint()?;
+            Ok(tui)
         }
         #[wasm_bindgen(constructor)]
         pub fn new(pack: &[u8], name: &str, resume: bool) -> Result<BrowserTui, JsValue> {
@@ -111,10 +127,19 @@ mod wasm {
             let root = AssetRoot::new(".");
             let runtime =
                 CrystalRuntime::from_loaded_compiled_pack(&root, loaded).map_err(js_error)?;
-            let save_path = PathBuf::from(format!(
-                "saves/{}-tui-local.crystalsave",
-                runtime.modpack().id()
-            ));
+            let save_path = super::session_save_path(runtime.modpack().id(), "").map_err(js_error)?;
+            Self::from_runtime(root, runtime, save_path, name, resume)
+        }
+
+        pub fn checkpoint(&mut self) -> Result<bool, JsValue> {
+            self.game.autosave(&self.save_path).map_err(js_error)
+        }
+
+        pub fn session_path(&self) -> String { self.save_path.display().to_string() }
+    }
+
+    impl BrowserTui {
+        fn from_runtime(root: AssetRoot, runtime: CrystalRuntime, save_path: PathBuf, name: &str, resume: bool) -> Result<Self, JsValue> {
             if name.trim().is_empty() || name.chars().count() > 7 {
                 return Err(js_error("Trainer name must contain 1–7 characters"));
             }
@@ -139,6 +164,10 @@ mod wasm {
                 painted: crate::painted::PaintedRenderer::default(),
             })
         }
+    }
+
+    #[wasm_bindgen]
+    impl BrowserTui {
 
         /// Game Boy inputs, suitable for both humans and browser agents.
         pub fn press(&mut self, button: &str) -> Result<(), JsValue> {
@@ -174,6 +203,7 @@ mod wasm {
             self.painted.replay(self.game.take_battle_replays());
             self.ui.notice = None;
             self.renderer.record_action(format!("input: {button:?}"));
+            self.checkpoint()?;
             Ok(())
         }
 
@@ -206,6 +236,9 @@ mod wasm {
                     self.painted.cancel_replay();
                     self.painted.replay(self.game.take_battle_replays());
                     self.ui.notice = None;
+                    // Persist even when an earlier tap applied before a tool
+                    // error. Never save an unfinished battle/script boundary.
+                    self.game.autosave(&self.save_path)?;
                 }
                 result
             });
@@ -311,7 +344,9 @@ mod wasm {
         pub fn wait(&mut self, frames: u16) -> Result<(), JsValue> {
             self.game
                 .wait_frames(usize::from(frames.min(600)))
-                .map_err(js_error)
+                .map_err(js_error)?;
+            self.checkpoint()?;
+            Ok(())
         }
     }
 }
@@ -323,6 +358,14 @@ pub use wasm::BrowserTui;
 mod tests {
     use super::*;
     use ratatui::layout::Rect;
+    #[test]
+    fn session_slots_are_isolated_and_keep_legacy_default() {
+        assert_eq!(session_save_path("core", "").unwrap().to_string_lossy(), "saves/core-tui-local.crystalsave");
+        assert_ne!(session_save_path("core", "alice").unwrap(), session_save_path("core", "bob").unwrap());
+        for id in ["../alice", "a/b", "a.b", "🎮", &"a".repeat(65)] {
+            assert!(session_save_path("core", id).is_err());
+        }
+    }
     #[test]
     fn html_escapes_game_text_and_preserves_cell_colors() {
         let mut buffer = Buffer::empty(Rect::new(0, 0, 4, 1));

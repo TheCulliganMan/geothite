@@ -586,6 +586,16 @@ fn write_save_game(path: impl AsRef<Path>, save: &SaveGame) -> Result<(), SaveEr
     validate_save_path(path)?;
     save.validate()?;
     let bytes = encode_save_game_bytes(save)?;
+    // Idle reconnect checks and repeated explicit saves must not rewrite an
+    // identical generation. Compare both copies: a missing/damaged recovery
+    // artifact still needs repair. Keep the on-disk format/share API unchanged.
+    #[cfg(target_arch = "wasm32")]
+    let unchanged = [path.to_path_buf(), save_backup_path(path)]
+        .iter().all(|artifact| read_browser_save_bytes(artifact).ok().as_deref() == Some(bytes.as_slice()));
+    #[cfg(not(target_arch = "wasm32"))]
+    let unchanged = [path.to_path_buf(), save_backup_path(path)]
+        .iter().all(|artifact| std::fs::read(artifact).ok().as_deref() == Some(bytes.as_slice()));
+    if unchanged { return Ok(()); }
     #[cfg(target_arch = "wasm32")]
     {
         // Keep the recovery generation current before replacing the primary.
@@ -1980,6 +1990,26 @@ mod tests {
 
         let _ = std::fs::remove_file(&path);
         let _ = std::fs::remove_file(&backup);
+    }
+
+    #[test]
+    fn identical_save_does_not_rewrite_but_repairs_its_backup() {
+        let path = temp_save_path("deduplicated.crystalsave");
+        let backup = save_backup_path(&path);
+        let modpack = SaveModpackIdentity::new("core-modular", "1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd").unwrap();
+        let save = test_save(GameState::default(), modpack);
+        write_save_game(&path, &save).unwrap();
+        let primary_time = std::fs::metadata(&path).unwrap().modified().unwrap();
+        let backup_time = std::fs::metadata(&backup).unwrap().modified().unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(20));
+        write_save_game(&path, &save).unwrap();
+        assert_eq!(std::fs::metadata(&path).unwrap().modified().unwrap(), primary_time);
+        assert_eq!(std::fs::metadata(&backup).unwrap().modified().unwrap(), backup_time);
+        std::fs::write(&backup, b"damaged").unwrap();
+        write_save_game(&path, &save).unwrap();
+        assert_eq!(std::fs::read(&backup).unwrap(), std::fs::read(&path).unwrap());
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_file(&backup).unwrap();
     }
 
     #[test]

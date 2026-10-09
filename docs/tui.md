@@ -25,7 +25,8 @@ Download time depends on your connection; content is approximately 26 MB.
 Play again with `~/.local/share/geothite/bin/geothite` (or
 `$XDG_DATA_HOME/geothite/bin/geothite` if set). Add `mcp` for the stdio MCP server.
 Arrows/WASD move, A/Z/Space confirm, X/B cancel, Enter opens Start, F5 saves,
-and Ctrl-C quits. Save before quitting; subsequent launches resume it.
+and Ctrl-C quits. Completed overworld inputs checkpoint automatically;
+subsequent launches resume them. F5/Start SAVE remain available.
 Reinstalling keeps saves. Saves for different pack checksums are kept separately.
 Use `curl -fsSL https://geothite.ryanculligan.com/install.sh | sh -s -- --no-play`
 to install without launching. `GEOTHITE_HOME` selects an absolute install path.
@@ -65,9 +66,61 @@ Use arrows/WASD/HKL, Z/J/Space for A, X/K/B/Escape for B, Enter for Start,
 and Tab for Select. Throughout battles, dialogue and menus, A also confirms;
 it remains WASD-left in the overworld. Touch provides the same
 inputs through gestures on the terminal: swipe to move, tap A, hold Start,
-two fingers B. Press `?` for controls. F5 or the Start menu writes a browser-local save;
-save before closing the tab. These saves are separate from the graphical game.
+two fingers B. Press `?` for controls. Completed overworld inputs automatically
+write a browser-local checkpoint; F5/Start SAVE still work. Closing during a
+battle or dialogue resumes the last completed overworld checkpoint, not a
+partially executed scene. These saves are separate from the graphical game.
 This is the text gameplay client, not the graphical client's multiplayer/audio UI.
+
+### Reusable sessions and concurrent players
+
+The same URL supports independent players: each browser owns its Rust WASM
+controller and compact binary save, not a shared server-side game. Saves remain
+in that browser profile; clearing site data/private browsing loses them. They
+are **not cloud saves**, and a session URL alone cannot restore on another device
+or expose a remote HTTP MCP endpoint. WebMCP/code mode attaches to that open
+browser's current game; native MCP is stdio.
+
+Use `/tui/?session=alice` and `/tui/?session=bob` for separate, reusable slots
+even in the same browser. Names allow up to 64 ASCII letters, digits, `-` and
+`_`. The plain `/tui/` URL keeps the existing default save without migration.
+`window.geothiteTui.session()` reports the active local slot. A Web Lock prevents
+two tabs from writing the same slot; closing its owner releases it. Different
+session names can play concurrently. A name is not a password or share token.
+
+Installed terminal clients similarly support `geothite play --session alice`
+and `geothite mcp --session alice`. MCP reconnects to the same session via the
+same name. In a checkout use `./target/release/geothite mcp content-packs/text-tui.crystalpack --save saves/alice.crystalsave`;
+an existing configured save resumes automatically. An OS-held file lock rejects
+a second writer and releases even after abrupt process termination. Saves are
+isolated by pack identity; the install/reinstall never removes them.
+
+Automatic saves use `VisibleShellController::autosave`: only input-ready,
+non-modal overworld boundaries are resumable checkpoints. Unfinished battle
+narration, rewards and authored scripts cannot overwrite that checkpoint.
+Completed battles and scene outcomes are checkpointed once control returns.
+Idle illustration frames, observations and view toggles never autosave. The
+unchanged binary save format remains compact (the regression fixtures are
+about 15 KB), with one current-generation recovery copy. Identical bytes skip
+both writes, while damaged/missing backups still get repaired. Packs, art,
+logs and code-mode programs are never embedded in saves.
+
+Verify actual concurrency and restart/resume, not just a save-file existence:
+
+```sh
+sh tools/tui-build.sh
+node tools/tui-session-smoke.mjs
+cargo build --release --locked -p geothite --bin geothite
+node tools/tui-native-session-smoke.mjs
+```
+
+The browser regression keeps 20 named WASM sessions alive at one origin, drives
+real registered WebMCP/code-mode tools, rejects duplicate writers, restarts the
+browser process and requires every session's position plus a working Start
+menu. Native verification kills 20 real MCP clients abruptly, reconnects without
+`--load` and requires saved position/menu ownership. Both bound save sizes and
+assert observations never write. Browser test profiles/saves stay ignored under
+`target` and are removed by the test.
 
 Browser agents can use the live `window.geothiteTui` bridge:
 

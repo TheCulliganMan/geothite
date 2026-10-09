@@ -50,6 +50,18 @@ test('verified install, launcher args, reinstall preservation and corrupt downlo
     assert.equal(await readFile(save, 'utf8'), 'USER SAVE');
     assert(!requests.some(url => url.endsWith('.crystalpack')), 'Reinstall should reuse verified pack');
     result = await run(executable, ['dump'], env); assert.match(result.output, /argument=--load/);
+    result = await run(executable, ['mcp', '--session', 'alice', '--name', 'CHRIS'], env);
+    assert.equal(result.code, 0, result.output);
+    assert.match(result.output, /-session-alice\.crystalsave/);
+    assert(!result.output.includes('argument=--session'), 'Launcher selects a real save path, not a second dispatcher');
+    const named = join(env.GEOTHITE_HOME, 'saves', `${sha(pack)}-session-alice.crystalsave`);
+    await writeFile(`${named}.bak`, 'RECOVERY SAVE');
+    result = await run(executable, ['mcp', '--session', 'alice'], env);
+    assert.match(result.output, /argument=--load/, 'Recovery-only slot must resume too');
+    assert.equal(await readFile(save, 'utf8'), 'USER SAVE');
+    for (const name of ['../alice', 'alice/bob', 'a'.repeat(65)]) {
+      result = await run(executable, ['mcp', '--session', name], env); assert.notEqual(result.code, 0);
+    }
     corruptBinary = true;
     result = await install(); assert.notEqual(result.code, 0); assert.match(result.output, /Executable checksum mismatch/);
     assert.equal(await readFile(save, 'utf8'), 'USER SAVE');

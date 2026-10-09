@@ -41,6 +41,11 @@ enum Command {
 
 fn main() -> Result<()> {
     let options = parse_options(env::args().skip(1))?;
+    // Hold ownership before loading, not just during individual writes. Two
+    // MCP/terminal clients must never play divergent copies of the same slot.
+    let _save_lock = if options.command != Command::Dump {
+        options.save.as_deref().map(lock_save_slot).transpose()?
+    } else { None };
     let pack = options
         .pack
         .canonicalize()
@@ -54,7 +59,8 @@ fn main() -> Result<()> {
         PaintedRenderer::default()
     };
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
-    let mut game = match &options.load {
+    let resume = options.load.as_ref().or_else(|| options.save.as_ref().filter(|path| path.is_file() || crystal_core::save::save_backup_path(path).is_file()));
+    let mut game = match resume {
         Some(load) => {
             RuntimeGameShell::load_save(asset_root, runtime, load.clone(), options.save.clone())?
         }
@@ -160,6 +166,7 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
     let mut renderer = RuntimeTextRenderer::default();
     let mut active_cursor = None;
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+    save_after_mcp_action(&mut game, save_path.as_ref())?;
     let stdin = io::stdin();
     let mut stdout = io::stdout().lock();
     for line in BufReader::new(stdin.lock()).lines() {
@@ -664,9 +671,20 @@ fn move_exact_tiles(
 
 fn save_after_mcp_action(game: &mut RuntimeGameShell, save_path: Option<&PathBuf>) -> Result<()> {
     if let Some(path) = save_path {
-        game.save(path)?;
+        game.autosave(path)?;
     }
     Ok(())
+}
+
+fn lock_save_slot(path: &std::path::Path) -> Result<std::fs::File> {
+    let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(std::path::Path::new("."));
+    std::fs::create_dir_all(parent)?;
+    let name = path.file_name().context("Save path needs a filename")?;
+    let canonical = parent.canonicalize()?.join(name);
+    let lock_path = PathBuf::from(format!("{}.lock", canonical.display()));
+    let file = std::fs::OpenOptions::new().create(true).truncate(false).read(true).write(true).open(lock_path)?;
+    file.try_lock().context("This save session is already open. Disconnect its other terminal/MCP client before resuming it.")?;
+    Ok(file)
 }
 
 struct TerminalGuard {
@@ -773,6 +791,7 @@ fn run_tui(
     let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
     game.set_battle_replay_enabled(!reduced_motion);
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+    save_after_mcp_action(&mut game, save_path.as_ref())?;
     let mut runtime_snapshot = game.presentation_snapshot()?;
     let mut snapshot = renderer.render(&runtime_snapshot);
     let mut state_dirty = false;
@@ -948,7 +967,10 @@ fn run_tui(
             state_dirty = true;
         }
         match action {
-            TerminalAction::Quit => break,
+            TerminalAction::Quit => {
+                save_after_mcp_action(&mut game, save_path.as_ref())?;
+                break;
+            },
             TerminalAction::BeginCommand => {
                 command_buffer = Some(String::new());
                 ui.notice = Some("COMMAND> :".to_string());
@@ -985,6 +1007,9 @@ fn run_tui(
                 finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
             }
             TerminalAction::None => {}
+        }
+        if matches!(action, TerminalAction::GameButton(_) | TerminalAction::MoveSelection(_) | TerminalAction::Wait) {
+            save_after_mcp_action(&mut game, save_path.as_ref())?;
         }
         let replays = game.take_battle_replays();
         if painted && !reduced_motion {
@@ -1031,6 +1056,19 @@ fn apply_button(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn save_slot_lock_rejects_second_writer_and_releases_on_disconnect() {
+        let path = std::env::temp_dir().join(format!("geothite-writer-lock-{}.crystalsave", std::process::id()));
+        let owner = lock_save_slot(&path).unwrap();
+        assert!(lock_save_slot(&path).is_err());
+        let other = path.with_file_name(format!("geothite-other-lock-{}.crystalsave", std::process::id()));
+        let independent = lock_save_slot(&other).unwrap();
+        drop(owner);
+        let resumed = lock_save_slot(&path).unwrap();
+        drop(resumed); drop(independent);
+        for slot in [path, other] { std::fs::remove_file(format!("{}.lock", slot.display())).unwrap(); }
+    }
 
     #[test]
     fn one_second_idle_refresh_does_not_wait_for_keys_to_stop() {
@@ -1126,7 +1164,11 @@ mod tests {
             Some(path.clone()),
         )
         .unwrap();
+        assert!(game.autosave(&path).unwrap(), "New game has a resumable checkpoint");
+        let checkpoint = std::fs::read(&path).unwrap();
         game.press(GameButton::Start).unwrap();
+        assert!(!game.autosave(&path).unwrap(), "Production menu cursors are not an autosave boundary");
+        assert_eq!(std::fs::read(&path).unwrap(), checkpoint);
         game.press(GameButton::B).unwrap();
         game.save(&path).unwrap();
         let mut resumed =
@@ -1135,7 +1177,8 @@ mod tests {
         resumed.press(GameButton::Right).unwrap();
         resumed.press(GameButton::Right).unwrap();
         let after = resumed.snapshot().unwrap();
-        std::fs::remove_file(path).unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_file(crystal_core::save::save_backup_path(&path)).unwrap();
         assert_ne!(
             before.overworld.tile, after.overworld.tile,
             "resume must move: {:?}",

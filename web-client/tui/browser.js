@@ -1,6 +1,7 @@
 import init, { BrowserTui } from './geothite.js';
 import { keyButton, modalInput, registerTuiTools } from './bridge.js';
 import { paintTerminal } from './ascii-frame.js';
+import { tuiSession, acquireTuiSession } from './session.js';
 
 const screen = document.getElementById('screen');
 const status = document.getElementById('status');
@@ -11,6 +12,7 @@ let painted = true;
 try { painted = localStorage.getItem('geothite.tui.view') !== 'text'; } catch {}
 let stopPainting;
 let game, observation, registration;
+let session, releaseSession;
 let phoneLayout;
 let visualTimer;
 let inkTimer;
@@ -115,11 +117,12 @@ viewToggle.addEventListener('click', () => { if (game) { try { toggleView(); } c
 function press(button) {
   if (!game) throw new Error('Game is still loading.');
   stopVisual();
-  game.press(button);
-  if (!painted || reducedMotion.matches) game.cancel_visual();
-  status.hidden = true;
-  draw();
-  replayVisual();
+  try { game.press(button); status.hidden = true; }
+  finally {
+    // A storage failure must be reported without hiding an applied game input.
+    if (!painted || reducedMotion.matches) game.cancel_visual();
+    draw(); replayVisual();
+  }
   return observation;
 }
 
@@ -128,6 +131,7 @@ const ready = new Promise((resolve, reject) => { resolveReady = resolve; rejectR
 ready.catch(() => {});
 window.geothiteTui = Object.freeze({
   ready,
+  session() { if (!game) throw new Error('Game is still loading.'); return { ...session, savePath: game.session_path() }; },
   observe() { if (!game) throw new Error('Game is still loading.'); return JSON.parse(game.observe()); },
   press,
   search(query = '') { if (!game) throw new Error('Game is still loading.'); return JSON.parse(game.search(query)); },
@@ -145,8 +149,19 @@ window.geothiteTui = Object.freeze({
 });
 // Register before downloading assets. Executions await this same live session.
 registerTuiTools(document, window.geothiteTui).then(value => { registration = value; }).catch(report);
-window.addEventListener('pagehide', () => { stopInk();stopVisual(); registration?.dispose(); stopPainting?.(); }, { once: true });
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopInk();else if(game)animateInk();});
+window.addEventListener('pagehide', () => {
+  // Every settled input has already checkpointed synchronously in Rust. Do
+  // not rewrite on teardown: an imported/replaced slot must survive reload.
+  stopInk();stopVisual(); registration?.dispose(); stopPainting?.(); releaseSession?.();
+}, { once: true });
+// A BFCache-restored page has relinquished its writer lock/tools. Reload to
+// reacquire ownership and read the newest durable checkpoint before any input.
+window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden) {
+    stopInk();
+  } else if(game)animateInk();
+});
 
 window.addEventListener('keydown', event => {
   if (event.target.closest?.('#touch-controls, #view-toggle')) return;
@@ -193,9 +208,11 @@ window.addEventListener('resize', () => { if (game) { try { draw(); } catch (err
 window.visualViewport?.addEventListener('resize', () => { if (game && phoneLayout) { try { draw(); } catch (error) { report(error); } } });
 
 try {
+  session = tuiSession(location.href);
+  releaseSession = await acquireTuiSession(navigator.locks, session.slot);
   const [, response] = await Promise.all([init(), fetch('/realtime-clock.browser.crystalpack')]);
   if (!response.ok) throw new Error(`Game pack download failed (${response.status})`);
-  game = BrowserTui.open(new Uint8Array(await response.arrayBuffer()));
+  game = BrowserTui.open_session(new Uint8Array(await response.arrayBuffer()), session.slot);
   screen.hidden = false; canvas.hidden = false; status.hidden = true;
   draw(); screen.focus(); resolveReady();
-} catch (error) { rejectReady(error); report(error); }
+} catch (error) { releaseSession?.(); rejectReady(error); report(error); }
