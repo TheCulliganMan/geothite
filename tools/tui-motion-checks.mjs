@@ -13,7 +13,7 @@ export async function checkVisibleInkMotion(page, captureOutput=true) {
     if(!canvas) throw new Error('Missing real Rust dot layer');
     const ctx=canvas.getContext('2d');
     const first=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-    await new Promise(resolve=>setTimeout(resolve,1000));
+    await new Promise(resolve=>setTimeout(resolve,2000));
     // Draws replace the offscreen canvas. Never sample a detached old painter.
     const current=[...document.querySelectorAll('canvas')].find(c=>c.id!=='ascii');
     if(!current||current.width!==canvas.width||current.height!==canvas.height) throw new Error('Scene resized during motion measurement');
@@ -30,7 +30,7 @@ export async function checkVisibleInkMotion(page, captureOutput=true) {
   const measuring=measure();
   // R redraws presentation only. Faster redraws must not postpone the deadline.
   const start=performance.now();
-  while(performance.now()-start<1050) {
+  while(performance.now()-start<2050) {
     await page.keyboard.press('r');
     await page.waitForTimeout(15);
   }

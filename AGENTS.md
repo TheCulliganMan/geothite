@@ -192,10 +192,15 @@
   and rescheduling on every input/resize freezes ambient ink during play. Both
   frontends pass elapsed seconds into the shared radius field, with bounded
   resume deltas. `tools/tui-motion-checks.mjs` measures actual dot-layer pixel
-  changes over one second, both idle and during repeated R redraws, and requires
+  changes over two seconds, both idle and during repeated R redraws, and requires
   unchanged authoritative observations. Sample the current offscreen canvas,
   not a detached canvas replaced by draw/preference changes. Reduced motion
   must remain still. Hash inequality alone accepted motion too subtle to see.
+  Keep ambient motion gentle: the shared Rust field uses an approximately
+  eight-second primary breath and half the earlier radius swing. Regression
+  tests bound both radius range and per-update jumps; do not speed it back up
+  merely to meet a short observation window. Preserve the current softened
+  source colors and keep gameplay clocks independent of this cosmetic field.
   V selects text/paint. Keep the map flat and north-up. The experimental 2.5D
   offset/compression pass and its P toggle were rejected and removed: do not
   bring back a diamond rotation or fake depth offsets without a new user request

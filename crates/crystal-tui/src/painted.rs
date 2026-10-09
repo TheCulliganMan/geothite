@@ -154,7 +154,7 @@ impl PaintedRenderer {
     /// Bound discontinuities after hidden tabs, suspension or slow transports.
     pub fn advance_ink_by(&mut self, seconds: f64) {
         if seconds.is_finite() && seconds > 0. {
-            self.ink_phase = (self.ink_phase + seconds.min(0.25) * 1.6)
+            self.ink_phase = (self.ink_phase + seconds.min(0.25) * 0.8)
                 % (std::f64::consts::TAU * 100.);
         }
     }
@@ -173,12 +173,13 @@ impl PaintedRenderer {
                     + (i % usize::from(self.dot_width)) as f64 / f64::from(scene.cw * 2);
                 let y = f64::from(scene.top)
                     + (i / usize::from(self.dot_width)) as f64 / f64::from(scene.ch * 4);
-                // Broad travelling breaths, visible at normal viewing size.
+                // Slow travelling breaths: roughly eight seconds per cycle,
+                // with half the original radius swing, not a pulsing fade-out.
                 // A downward-biased range gives large dots room to move rather
                 // than pinning their whole animation against the 250 cap.
-                let wave = 0.84
-                    + 0.28 * (x * 0.43 + y * 0.31 + self.ink_phase).sin()
-                    + 0.12 * (x * 0.21 - y * 0.37 - self.ink_phase * 0.71).sin();
+                let wave = 0.92
+                    + 0.14 * (x * 0.43 + y * 0.31 + self.ink_phase).sin()
+                    + 0.06 * (x * 0.21 - y * 0.37 - self.ink_phase * 0.71).sin();
                 (f64::from(*size) * wave).clamp(0., 250.) as u8
             })
             .collect()
@@ -1302,11 +1303,39 @@ mod tests {
         for _ in 0..8 { terminal.advance_ink_by(0.1); }
         for _ in 0..5 { browser.advance_ink_by(0.16); }
         assert!((terminal.ink_phase - browser.ink_phase).abs() < 1e-10);
+        assert!((terminal.ink_phase - 0.64).abs() < 1e-10, "Keep the slower eight-second breath");
         let phase = terminal.ink_phase;
         for seconds in [f64::NAN, f64::INFINITY, -1., 0.] { terminal.advance_ink_by(seconds); }
         assert_eq!(terminal.ink_phase, phase);
         terminal.advance_ink_by(1000.);
-        assert!((terminal.ink_phase - phase - 0.4).abs() < 1e-10, "No resume catch-up burst");
+        assert!((terminal.ink_phase - phase - 0.2).abs() < 1e-10, "No resume catch-up burst");
+    }
+    #[test]
+    fn ambient_ink_is_gentle_but_not_static() {
+        let mut painter = PaintedRenderer::default();
+        painter.scene = Some(SceneGeometry {
+            area: Rect::new(0, 0, 1, 1), left: 0, top: 0,
+            nx: 1, ny: 1, cw: 1, ch: 1,
+        });
+        painter.dot_width = 2;
+        painter.dot_height = 2;
+        painter.dot_sizes = vec![0, 50, 125, 250];
+        let first = painter.animated_dot_sizes();
+        let mut previous = first.clone();
+        let mut changed = false;
+        for _ in 0..80 {
+            painter.advance_ink();
+            let next = painter.animated_dot_sizes();
+            assert_eq!(next[0], 0, "Empty paper never flickers into ink");
+            for ((base, now), last) in painter.dot_sizes.iter().zip(&next).zip(&previous) {
+                assert!(f64::from(*now) >= f64::from(*base) * 0.72 - 1.);
+                assert!(f64::from(*now) <= f64::from(*base) * 1.12);
+                assert!(now.abs_diff(*last) <= 5, "No aggressive radius jump per 100ms");
+            }
+            changed |= next[3].abs_diff(first[3]) >= 25;
+            previous = next;
+        }
+        assert!(changed, "A slow full breath must remain visible");
     }
     #[test]
     fn palettes_and_square_sampling_keep_real_colors() {
@@ -1431,14 +1460,14 @@ mod tests {
             );
             painter.detailed_world(&source).unwrap();
             let sizes = painter.animated_dot_sizes();
-            for _ in 0..10 {
+            for _ in 0..20 {
                 painter.advance_ink();
             }
             let after = painter.animated_dot_sizes();
             let visible_changes = sizes.iter().zip(&after)
                 .filter(|(a, b)| **a > 0 && a.abs_diff(**b) >= 24).count();
             assert!(visible_changes > sizes.len() / 10,
-                "One second must visibly change dot diameters, not just frame hashes");
+                "Two seconds of gentle motion must change dot diameters, not just frame hashes");
         }
         for (cols, rows) in [(80, 24), (93, 34), (128, 43)] {
             let buffer = painter.draw(&source, &text, cols, rows, None, false, false);
@@ -1447,7 +1476,7 @@ mod tests {
             let terminal = painter.draw_native(&source, &text, cols, rows, None, false);
             let phase = painter.ink_phase;
             let image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
-            for _ in 0..10 { painter.advance_ink(); }
+            for _ in 0..20 { painter.advance_ink(); }
             let animated = painter.circle_image(image.width(), image.height()).unwrap();
             let pixel_change = image.pixels().zip(animated.pixels()).map(|(a,b)|
                 (0..3).map(|c| a[c].abs_diff(b[c])).max().unwrap() as f64
