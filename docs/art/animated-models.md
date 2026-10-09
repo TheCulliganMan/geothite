@@ -378,3 +378,10 @@ the remaining static Pokémon still require their own art and animation work.
 and a 16-joint anatomical skin, with a folded notched crown, curled collar and
 planted quadruped motion. Its canonical GLB replaces the former static JSON;
 this is a separate species pass after Chikorita.
+
+## Meganium increment
+
+[Meganium](meganium-papercraft.md) has a distinct mature long-neck sculpture,
+a six-petal flower, paired curved antennae and a fitted opening jaw. Its
+23-joint skin preserves planted feet while the petals and antennae follow
+body motion. One canonical GLB replaces its previous static JSON.

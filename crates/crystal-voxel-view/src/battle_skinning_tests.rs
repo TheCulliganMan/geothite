@@ -226,6 +226,11 @@ fn bayleef_instances_activate_generic_gpu_skinning_at_pack_size() {
     assert_species_gpu_at_pack_size("BAYLEEF", Species::Bayleef, 16, 1.1938);
 }
 
+#[test]
+fn meganium_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("MEGANIUM", Species::Meganium, 23, 1.8034);
+}
+
 fn assert_species_gpu_at_pack_size(
     species_name: &'static str, species: Species, joint_count: usize, size_m: f32,
 ) {

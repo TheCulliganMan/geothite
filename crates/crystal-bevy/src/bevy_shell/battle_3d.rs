@@ -942,8 +942,8 @@ fn prepare_immersive_battle_preview(
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
         starter.is_none()
-            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "BAYLEEF" | "CYNDAQUIL" | "TOTODILE"))),
-        "starter-family rig preview requires enemy Gust and CHIKORITA, BAYLEEF, CYNDAQUIL or TOTODILE"
+            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "BAYLEEF" | "MEGANIUM" | "CYNDAQUIL" | "TOTODILE"))),
+        "starter-family rig preview requires enemy Gust and CHIKORITA, BAYLEEF, MEGANIUM, CYNDAQUIL or TOTODILE"
     );
     anyhow::ensure!(
         [
@@ -998,10 +998,11 @@ fn prepare_immersive_battle_preview(
     };
     if enemy_gust {
         // Grass typing lets Vance's unchanged trainer AI prefer Gust. The
-        // level-25 lead is slower than his Pidgeotto and survives this first
-        // noncritical hit; it keeps its complete natural learnset and legal PP.
+        // ordinary level-25 leads are slower than his Pidgeotto. Meganium
+        // uses its minimum natural evolution level, 32, and acts first.
+        let evolved_grass = starter == Some("MEGANIUM");
         shell.shell.add_party_pokemon(
-            starter.unwrap_or("CHIKORITA"),
+            if evolved_grass { "BAYLEEF" } else { starter.unwrap_or("CHIKORITA") },
             25,
             None,
             None,
@@ -1009,6 +1010,27 @@ fn prepare_immersive_battle_preview(
             trainer.player_id,
             Dv::from_non_hp(9, 9, 9, 9),
         )?;
+        if evolved_grass {
+            // A legal retained learnset represents declining Body Slam at 31
+            // before evolving at 32. Copy the source-created moves and their
+            // PP, just as the older Cyndaquil showcase retains earlier moves.
+            // This seeds only the disposable fixture, never a gameplay rule.
+            let retained_moves = {
+                let state = shell.shell.session_mut().state_mut();
+                let moves = state.storage.party.pokemon[0]
+                    .take().context("preview Bayleef")?.moves;
+                state.sync_party_from_storage();
+                moves
+            };
+            shell.shell.add_party_pokemon(
+                "MEGANIUM", 32, None, None, &trainer.player_name,
+                trainer.player_id, Dv::from_non_hp(9, 9, 9, 9),
+            )?;
+            let state = shell.shell.session_mut().state_mut();
+            state.storage.party.pokemon[0].as_mut()
+                .context("preview evolved Meganium")?.moves = retained_moves;
+            state.sync_party_from_storage();
+        }
     } else if pidgeotto {
         shell.shell.add_party_pokemon(
             "PIDGEOTTO",
@@ -1167,7 +1189,7 @@ fn prepare_immersive_battle_preview(
                 // both critical thresholds, passes Razor Leaf's real accuracy
                 // check, and rotates to 244 for accepted damage variation.
                 // Only the explicit Razor Leaf rig showcases use this input.
-                let sub = if matches!(starter, Some("CHIKORITA" | "BAYLEEF")) { 233 } else { 253 };
+                let sub = if matches!(starter, Some("CHIKORITA" | "BAYLEEF" | "MEGANIUM")) { 233 } else { 253 };
                 let session = controller.shell.shell.session_mut();
                 session.state_mut().random_state =
                     crystal_core::random::CrystalRandomState { add: 0, sub };

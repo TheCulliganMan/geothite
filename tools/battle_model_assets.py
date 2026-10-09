@@ -1,13 +1,14 @@
 """Resolve canonical battle models without retaining parallel geometry copies."""
 from pathlib import Path
 
+from meganium_glb import read_meganium
 from bayleef_glb import read_bayleef
 from gengar_glb import read_gengar
 from model_asset_storage import read_model_json
 from pidgeotto_glb import read_pidgeotto
 from spearow_glb import read_spearow
 
-GLB_READERS = {'bayleef.glb': read_bayleef, 'pidgeotto.glb': read_pidgeotto, 'gengar.glb': read_gengar, 'spearow.glb': read_spearow}
+GLB_READERS = {'meganium.glb': read_meganium, 'bayleef.glb': read_bayleef, 'pidgeotto.glb': read_pidgeotto, 'gengar.glb': read_gengar, 'spearow.glb': read_spearow}
 
 
 def species_paths(directory):

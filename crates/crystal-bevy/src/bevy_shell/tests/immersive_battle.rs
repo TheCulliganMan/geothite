@@ -1827,6 +1827,7 @@ fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
     for (species, move_name) in [
         ("CHIKORITA", "RAZOR_LEAF"),
         ("BAYLEEF", "RAZOR_LEAF"),
+        ("MEGANIUM", "RAZOR_LEAF"),
         ("CYNDAQUIL", "EMBER"),
         ("TOTODILE", "WATER_GUN"),
     ] {
@@ -1835,7 +1836,7 @@ fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
         assert!(controller.shell.quick_save_path.is_none());
         let expected_random = crystal_core::random::CrystalRandomState {
             add: 0,
-            sub: if matches!(species, "CHIKORITA" | "BAYLEEF") { 233 } else { 253 },
+            sub: if matches!(species, "CHIKORITA" | "BAYLEEF" | "MEGANIUM") { 233 } else { 253 },
         };
         assert_eq!(controller.shell.shell.session().state().random_state, expected_random);
         // Normal preview arming must preserve the bounded real DIV stimulus.
@@ -1845,10 +1846,10 @@ fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
         let battle_before = before.battle.as_ref().unwrap();
         let player = &before.party.slots[0].pokemon;
         assert_eq!(player.species.id, species);
-        assert_eq!(player.level, 25);
+        assert_eq!(player.level, if species == "MEGANIUM" { 32 } else { 25 });
         assert_eq!(battle_before.enemy_pokemon.species.id, "PIDGEOTTO");
         let slot = battle_before.player_moves.iter().position(|m| m.name == move_name)
-            .expect("the starter must naturally know its selected move");
+            .expect("the starter family must legally know its selected move");
         let pp = battle_before.player_moves[slot].current_pp;
         controller.press(GameButton::A).unwrap();
         for _ in 0..slot { controller.press(GameButton::Down).unwrap(); }
@@ -1864,8 +1865,9 @@ fn immersive_starter_rig_previews_use_legal_attacks_and_real_damage_cues() {
         assert!(battle_after.enemy_pokemon.hp < battle_before.enemy_pokemon.hp);
         assert_eq!(battle_after.player_turns_taken, battle_before.player_turns_taken + 1);
         assert_eq!(battle_after.enemy_turns_taken, battle_before.enemy_turns_taken + 1);
-        assert_eq!(controller.shell.visible_move_animations.front().unwrap().move_id, "GUST");
-        assert!(!controller.shell.visible_move_animations.front().unwrap().player_move);
+        let first = controller.shell.visible_move_animations.front().unwrap();
+        assert_eq!(first.move_id, if species == "MEGANIUM" { "RAZOR_LEAF" } else { "GUST" });
+        assert_eq!(first.player_move, species == "MEGANIUM");
         assert!(controller.shell.visible_move_animations.iter()
             .any(|animation| animation.move_id == move_name && animation.player_move));
     }

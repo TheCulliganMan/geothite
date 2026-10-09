@@ -1636,6 +1636,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ if 'meganium' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from meganium_glb import export_meganium
+  if (OUT/'meganium.mesh.json').exists():raise ValueError('remove the reviewed obsolete Meganium JSON before exporting its canonical GLB')
+  (OUT/'meganium.glb').write_bytes(export_meganium())
+  names.remove('meganium')
+  print('meganium: canonical mature paper sculpture and three anatomical clips',flush=True)
  if 'bayleef' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from bayleef_glb import export_bayleef
