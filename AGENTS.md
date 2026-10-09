@@ -172,6 +172,14 @@
   dot breathing. Test both PNG canvas and portable Braille updates under
   continuous input and reduced motion. Rebuilding/reinstalling does not update
   a running executable; save and restart that session to pick up a new build.
+  When a user reports a static window after an update, check the running
+  process's launch time against the build before claiming the fix is visible.
+  Never close their session or assume it can save: a local `play` invocation
+  without `--save` has no configured save destination. Test a new client in a
+  separate terminal instead. `TUI_CAPTURE_ANIMATION=1` on the canvas smoke
+  records its actual emitted PNG sequence and timing under the ignored art
+  output directory for visual review; changed hashes alone do not establish
+  perceptible motion or that a GUI terminal displays those frames.
   `node tools/tui-terminal-animation-smoke.mjs` checks actual Braille writes
   while idle and under repeated unmapped keys; cursor-only traffic is not
   animation. Discard the trailing idle redraw before measuring busy input so

@@ -9,6 +9,9 @@ const binary=resolve(process.env.TUI_NATIVE_BIN ?? 'target/release/geothite');
 const pack=resolve(process.env.TUI_NATIVE_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
 const fixture=resolve(process.env.TUI_NATIVE_FIXTURE ?? 'target/tui-smoke/lowlevel.crystalsave');
 const output=resolve(process.env.TUI_TERMINAL_ART_ROOT ?? 'target/tui-terminal-art');
+// Optional visual review of the exact PNGs emitted by the executable, not
+// just distinct hashes. This is a transport capture, not a Ghostty screenshot.
+const captureAnimation=process.env.TUI_CAPTURE_ANIMATION==='1';
 await mkdir(output,{recursive:true});
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 async function check(reduced) {
@@ -55,7 +58,7 @@ finally:
           const png=Buffer.from(encoded,'base64');assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
           const width=png.readUInt32BE(16),height=png.readUInt32BE(20);
           assert(width>100&&height>40&&width<=2048&&height<=2048);
-          frames.push({png,fields:current,hash:createHash('sha256').update(png).digest('hex')});
+          frames.push({png,fields:current,time:performance.now(),hash:createHash('sha256').update(png).digest('hex')});
         }
       }
     }
@@ -69,7 +72,15 @@ finally:
     assert(raw.startsWith('\x1b[?1049h'),'No logs before fullscreen');
     assert(visible().includes('Route29'));
     await writeFile(resolve(output,reduced?'pty-canvas-reduced.png':'pty-canvas.png'),frames[0].png);
-    await pause(700);
+    await pause(captureAnimation&&!reduced?4000:700);
+    if(captureAnimation&&!reduced) {
+      const directory=resolve(output,'animation');
+      await mkdir(directory,{recursive:true});
+      for(const [index,frame] of frames.entries()) {
+        await writeFile(resolve(directory,`${String(index).padStart(4,'0')}.png`),frame.png);
+      }
+      await writeFile(resolve(directory,'timing.json'),JSON.stringify(frames.map((f,index)=>({index,ms:f.time-frames[0].time,hash:f.hash})),null,2));
+    }
     if(reduced) assert.equal(frames.length,1,'Reduced-motion sends one unchanged frame, not an animation');
     else assert(new Set(frames.map(f=>f.hash)).size>1,'The actual console circle sizes animate');
     const inputFrames=frames.length;
