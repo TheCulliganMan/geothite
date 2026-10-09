@@ -47,7 +47,10 @@ const pause = () => new Promise(resolve => setTimeout(resolve, 100));
 const started = Date.now();
 async function key(value) { child.stdin.write(value); await pause(); }
 try {
-  for (let i = 0; i < 1200 && !output.includes('PlayersHouse2F'); i++) await pause();
+  for (let i = 0; i < 1200 && !output.includes('PlayersHouse2F'); i++) {
+    if (child.exitCode !== null) break;
+    await pause();
+  }
   assert(output.includes('PlayersHouse2F'), `Curl did not launch the actual game: ${errors}\n${output.slice(-1600)}`);
   assert(rawOutput.startsWith('\x1b[?1049h'), 'Curl opens directly into the game: no installer logs before the alternate screen');
   const seconds = ((Date.now() - started) / 1000).toFixed(1);
