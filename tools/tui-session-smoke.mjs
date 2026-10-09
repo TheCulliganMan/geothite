@@ -25,6 +25,12 @@ const base = process.env.TUI_TEST_URL ?? `http://127.0.0.1:${server.address().po
 const options = { channel: 'chrome', headless: true, viewport: { width: 640, height: 480 }, reducedMotion: 'reduce', args: ['--enable-blink-features=WebMCP', '--enable-features=WebMCP'] };
 let context;
 const errors = [];
+async function closeContext() {
+  let timer;
+  await Promise.race([context?.close(), new Promise(done => { timer = setTimeout(done, 5000); })]);
+  clearTimeout(timer);
+  assert(!context?.browser()?.isConnected(), 'Browser must disconnect before profile reuse/cleanup');
+}
 async function open(id) {
   const page = await context.newPage();
   page.on('pageerror', e => errors.push(e.message));
@@ -86,7 +92,7 @@ try {
   await pages[0].evaluate(path => localStorage.removeItem(`crystal.save.v1.${path}`), slots[19]);
   console.log('Isolation and writer rejection passed; restarting the browser.');
   // Close the complete browser process, not just reload an in-memory game.
-  await context.close(); context = await chromium.launchPersistentContext(profile, options);
+  await closeContext(); context = await chromium.launchPersistentContext(profile, options);
   console.log('Browser process restarted; reconnecting all 20 slots.');
   const resumed = [];
   for (let i = 0; i < 20; i += 4) resumed.push(...await Promise.all(Array.from({ length: 4 }, (_, j) => open(`player-${i + j}`))));
@@ -114,10 +120,7 @@ try {
 } finally {
   // Bound the persistent-context shutdown acknowledgement, but never remove
   // a connected profile. Some Chrome runs disconnect before resolving close.
-  let timer;
-  await Promise.race([context?.close(), new Promise(done => { timer = setTimeout(done, 5000); })]);
-  clearTimeout(timer);
+  await closeContext();
   server.closeAllConnections(); await new Promise(done => server.close(done));
-  assert(!context?.browser()?.isConnected(), 'Browser must disconnect before profile cleanup');
   await rm(profile, { recursive: true, force: true });
 }
