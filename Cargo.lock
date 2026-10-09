@@ -2520,6 +2520,7 @@ dependencies = [
  "crystal-core",
  "crystal-runtime",
  "image",
+ "libc",
  "ratatui",
  "serde",
  "serde_json",

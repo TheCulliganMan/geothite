@@ -9,8 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalUi, TuiTheme, TerminalCanvas, map_key_event,
-    render_snapshot_text,
+    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi, TuiTheme,
+    map_key_event, render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -633,7 +633,10 @@ struct VisualClock {
 
 impl VisualClock {
     fn new(now: Instant, period: Duration) -> Self {
-        Self { next: now + period, period }
+        Self {
+            next: now + period,
+            period,
+        }
     }
 
     fn tick(&mut self, now: Instant, enabled: bool) -> bool {
@@ -710,9 +713,16 @@ fn run_tui(
     let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
     game.set_battle_replay_enabled(!reduced_motion);
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+    let mut runtime_snapshot = game.presentation_snapshot()?;
+    let mut snapshot = renderer.render(&runtime_snapshot);
+    let mut state_dirty = false;
+    let mut surface_dirty = true;
+    let mut surface = None;
+    let mut painted_this_frame = false;
     'tui: loop {
         let now = Instant::now();
-        if ink_clock.tick(now, painted && !reduced_motion) {
+        let ink_changed = ink_clock.tick(now, painted && !reduced_motion);
+        if ink_changed {
             painter.advance_ink_by(now.duration_since(last_ink).as_secs_f64());
             last_ink = now;
         } else if !painted || reduced_motion {
@@ -720,58 +730,83 @@ fn run_tui(
         }
         if replay_clock.tick(now, painted && !reduced_motion && painter.replay_active()) {
             painter.advance_replay();
+            surface_dirty = true;
         }
-        let runtime_snapshot = game.presentation_snapshot()?;
-        let snapshot = renderer.render(&runtime_snapshot);
-        let mut painted_this_frame = false;
-        terminal
-            .terminal
-            .draw(|frame| {
-                if painted && frame.area().width >= 40 && frame.area().height >= 24 {
-                    painted_this_frame = true;
-                    let area = frame.area();
-                    let buffer = painter.draw_native(
-                        &runtime_snapshot,
-                        &snapshot,
-                        area.width,
-                        area.height,
-                        ui.notice.as_deref(),
-                        ui.show_help,
-                    );
-                    frame.buffer_mut().merge(&buffer);
-                } else {
-                    ui.draw(frame, &snapshot);
-                }
-            })
-            .context("draw terminal UI")?;
-        if painted_this_frame && terminal.canvas.enabled() {
+        if state_dirty {
+            runtime_snapshot = game.presentation_snapshot()?;
+            snapshot = renderer.render(&runtime_snapshot);
+            state_dirty = false;
+            surface_dirty = true;
+        }
+        let redraw =
+            surface_dirty || (ink_changed && painted_this_frame && !terminal.canvas.enabled());
+        if redraw {
+            terminal
+                .terminal
+                .draw(|frame| {
+                    if painted && frame.area().width >= 40 && frame.area().height >= 24 {
+                        painted_this_frame = true;
+                        let area = frame.area();
+                        if surface_dirty
+                            || surface
+                                .as_ref()
+                                .is_none_or(|b: &ratatui::buffer::Buffer| b.area != area)
+                        {
+                            surface = Some(painter.draw_native_surface(
+                                &runtime_snapshot,
+                                &snapshot,
+                                area.width,
+                                area.height,
+                                ui.notice.as_deref(),
+                                ui.show_help,
+                                terminal.canvas.enabled(),
+                            ));
+                        } else if let Some(buffer) = surface.as_mut() {
+                            painter.refresh_native_dots(buffer);
+                        }
+                        frame
+                            .buffer_mut()
+                            .merge(surface.as_ref().expect("painted surface"));
+                    } else {
+                        painted_this_frame = false;
+                        ui.draw(frame, &snapshot);
+                    }
+                })
+                .context("draw terminal UI")?;
+        }
+        if painted_this_frame && terminal.canvas.enabled() && (surface_dirty || ink_changed) {
             let bounds = painter.scene_bounds();
             if let [x, y, width, height] = bounds.as_slice() {
                 let size = crossterm::terminal::window_size().ok();
-                let cw = size.as_ref()
+                let cw = size
+                    .as_ref()
                     .filter(|s| s.width >= s.columns && s.columns != 0)
                     .map_or(12, |s| u32::from(s.width) / u32::from(s.columns));
-                let ch = size.as_ref()
+                let ch = size
+                    .as_ref()
                     .filter(|s| s.height >= s.rows && s.rows != 0)
                     .map_or(24, |s| u32::from(s.height) / u32::from(s.rows));
-                let (pixels_w, pixels_h) = geothite::terminal_canvas_size(
-                    u32::from(*width) * cw, u32::from(*height) * ch,
-                );
+                let (pixels_w, pixels_h) =
+                    geothite::terminal_canvas_size(u32::from(*width) * cw, u32::from(*height) * ch);
                 if let Some(image) = painter.circle_image(pixels_w, pixels_h) {
-                    terminal.canvas.paint(
-                        terminal.terminal.backend_mut(),
-                        ratatui::layout::Rect::new(*x, *y, *width, *height),
-                        &image,
-                    ).context("paint terminal dot canvas")?;
+                    terminal
+                        .canvas
+                        .paint(
+                            terminal.terminal.backend_mut(),
+                            ratatui::layout::Rect::new(*x, *y, *width, *height),
+                            &image,
+                        )
+                        .context("paint terminal dot canvas")?;
                 } else {
                     terminal.canvas.clear(terminal.terminal.backend_mut())?;
                 }
             } else {
                 terminal.canvas.clear(terminal.terminal.backend_mut())?;
             }
-        } else {
+        } else if !painted_this_frame {
             terminal.canvas.clear(terminal.terminal.backend_mut())?;
         }
+        surface_dirty = false;
         if painted {
             if let Some(viewport) = painter.viewport {
                 renderer.set_viewport(viewport);
@@ -788,14 +823,22 @@ fn run_tui(
         if !event::poll(terminal_poll_timeout(timeout)).context("poll terminal input")? {
             continue;
         }
-        let Event::Key(key) = event::read().context("read terminal input")? else {
+        let input = event::read().context("read terminal input")?;
+        if matches!(input, Event::Resize(..)) {
+            surface_dirty = true;
+        }
+        let Event::Key(key) = input else {
             continue;
         };
         if !matches!(key.kind, KeyEventKind::Press | KeyEventKind::Repeat) {
             continue;
         }
+        if painter.replay_active() {
+            surface_dirty = true;
+        }
         painter.cancel_replay();
         if let Some(buffer) = command_buffer.as_mut() {
+            surface_dirty = true;
             match key.code {
                 KeyCode::Esc => {
                     command_buffer = None;
@@ -836,10 +879,15 @@ fn run_tui(
         }
         if matches!(key.code, KeyCode::Char('v' | 'V')) {
             painted = !painted;
+            surface_dirty = true;
             continue;
         }
         let modal_selection = snapshot.confirmation_input_owned();
-        match map_key_event(key, modal_selection) {
+        let action = map_key_event(key, modal_selection);
+        if !matches!(action, TerminalAction::None) {
+            state_dirty = true;
+        }
+        match action {
             TerminalAction::Quit => break,
             TerminalAction::BeginCommand => {
                 command_buffer = Some(String::new());
@@ -879,7 +927,9 @@ fn run_tui(
             TerminalAction::None => {}
         }
         let replays = game.take_battle_replays();
-        if painted && !reduced_motion { painter.replay(replays); }
+        if painted && !reduced_motion {
+            painter.replay(replays);
+        }
     }
     Ok(())
 }
@@ -927,9 +977,15 @@ mod tests {
         let start = Instant::now();
         let clock = VisualClock::new(start, Duration::from_secs_f64(1. / 30.));
         let expired = clock.wait(start + Duration::from_millis(80));
-        assert!(expired.is_zero(), "A large frame missed its visual deadline");
+        assert!(
+            expired.is_zero(),
+            "A large frame missed its visual deadline"
+        );
         assert_eq!(terminal_poll_timeout(expired), Duration::from_millis(1));
-        assert_eq!(terminal_poll_timeout(Duration::from_millis(20)), Duration::from_millis(20));
+        assert_eq!(
+            terminal_poll_timeout(Duration::from_millis(20)),
+            Duration::from_millis(20)
+        );
     }
 
     #[test]
@@ -942,7 +998,10 @@ mod tests {
             frames += usize::from(clock.tick(start + Duration::from_millis(millis), true));
         }
         assert_eq!(frames, 10);
-        assert_eq!(clock.wait(start + Duration::from_millis(1050)), Duration::from_millis(50));
+        assert_eq!(
+            clock.wait(start + Duration::from_millis(1050)),
+            Duration::from_millis(50)
+        );
     }
 
     #[test]
@@ -1099,11 +1158,25 @@ mod tests {
             // Choose a displayed attack through the real menu instead of
             // spending 256 A presses on SCREECH instead of attacking.
             let attack = view.menu.iter().position(|line| {
-                line.text.contains("PP") && ["SLASH", "WATER GUN", "HYDRO PUMP", "RAGE", "BITE", "SCRATCH"]
-                    .iter().any(|name| line.text.contains(name))
+                line.text.contains("PP")
+                    && [
+                        "SLASH",
+                        "WATER GUN",
+                        "HYDRO PUMP",
+                        "RAGE",
+                        "BITE",
+                        "SCRATCH",
+                    ]
+                    .iter()
+                    .any(|name| line.text.contains(name))
             });
-            let selected = view.menu.iter().position(|line| line.kind == geothite::LineKind::Selected).unwrap_or(0);
-            let button = attack.filter(|index| *index != selected)
+            let selected = view
+                .menu
+                .iter()
+                .position(|line| line.kind == geothite::LineKind::Selected)
+                .unwrap_or(0);
+            let button = attack
+                .filter(|index| *index != selected)
                 .map_or("a", |index| if index > selected { "down" } else { "up" });
             call_mcp_tool(
                 &mut game,
@@ -1116,8 +1189,14 @@ mod tests {
             .unwrap();
         }
         let before = game.snapshot().unwrap();
-        assert!(before.battle.is_none(), "MCP battle did not finish: {}",
-            render_snapshot_text(&renderer.render(&game.presentation_snapshot().unwrap()), false));
+        assert!(
+            before.battle.is_none(),
+            "MCP battle did not finish: {}",
+            render_snapshot_text(
+                &renderer.render(&game.presentation_snapshot().unwrap()),
+                false
+            )
+        );
         call_mcp_tool(
             &mut game,
             &mut renderer,

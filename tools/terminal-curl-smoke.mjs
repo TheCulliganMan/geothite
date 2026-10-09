@@ -55,8 +55,8 @@ try {
   assert(rawOutput.startsWith('\x1b[?1049h'), 'Curl opens directly into the game: no installer logs before the alternate screen');
   const seconds = ((Date.now() - started) / 1000).toFixed(1);
   await pause(); await pause();
-  assert(/[\u2801-\u28ff]/u.test(output) && !output.includes('▀'), `Downloaded client must default to high-resolution dot illustration: ${output.slice(-1800)}`);
   const graphics = process.env.GEOTHITE_TUI_GRAPHICS === 'kitty';
+  if (!graphics) assert(/[\u2801-\u28ff]/u.test(output) && !output.includes('▀'), `Downloaded portable client must default to high-resolution dot illustration: ${output.slice(-1800)}`);
   if (graphics) assert(rawOutput.includes('a=T,f=100,t=d,i='), 'The installed client paints the shared circle canvas too');
   const artWrites = bytes => (bytes.match(graphics ? /a=T,f=100,t=d,i=/g : /[\u2801-\u28ff]/gu) ?? []).length;
   let animationOffset = rawOutput.length;
@@ -78,8 +78,8 @@ try {
   offset = output.length;
   rawOffset = rawOutput.length;
   await key('v');
-  for (let i = 0; i < 30 && !/[\u2801-\u28ff]/u.test(output.slice(offset)); i++) await pause();
-  assert(/[\u2801-\u28ff]/u.test(output.slice(offset)), 'V switches back to painted art without restarting the game');
+  for (let i = 0; i < 30 && !artWrites(rawOutput.slice(rawOffset)); i++) await pause();
+  assert(artWrites(rawOutput.slice(rawOffset)), 'V switches back to painted art without restarting the game');
   if (graphics) assert(rawOutput.slice(rawOffset).includes('a=T,f=100,t=d,i='), 'Installed V restores the shared canvas');
   await key('\r');
   for (let i = 0; i < 20 && !output.includes('SAVE'); i++) await pause();

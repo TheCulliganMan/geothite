@@ -155,7 +155,7 @@
   Native terminals dither the same pack pixels at their available resolution.
   The native renderer consumes the SAME fine dot field and Rust-produced radii
   as the browser, not a second tile renderer. Ghostty/Kitty paint those circles
-  through a Rust PNG graphics transport; other terminals pack the fine samples
+  through a Rust graphics transport (local shared RGB or direct PNG); other terminals pack the fine samples
   into 2×4 Unicode Braille cells. Keep menu/caption cells uncompressed and the
   observed camera bounds identical. `GEOTHITE_TUI_GRAPHICS=off` selects the
   portable adapter; `kitty` explicitly enables the graphics protocol. Auto
@@ -209,6 +209,24 @@
   Native input polling must use at least 1ms even after a visual deadline
   overrun: Crossterm's use-dev-tty source skips reads with a zero timeout.
   Large/slow PNG frames otherwise animate while all keys appear ignored.
+  Local Ghostty/Kitty use two private POSIX shared-memory RGB slots (`t=s`)
+  instead of encoding and flooding the PTY with a PNG every cosmetic frame.
+  Never overwrite an unread slot: discard stale cosmetic work under consumer
+  backpressure, keep input polling, and clean only owned objects on exit.
+  SSH/unknown clients retain quiet, compressed, chunked direct PNG transfer;
+  `GEOTHITE_TUI_TRANSPORT=direct` explicitly selects it. If a local terminal
+  never consumes shared memory, fall back to direct transfer. Shared memory
+  must be sized and mmap'ed (read/write on shm descriptors fails on macOS).
+  Cache the authoritative snapshot and fine pack scene until inputs/layout/
+  replay change. Cosmetic frames update only the cached radii. Do not repaint
+  hidden Braille under a graphics image or redraw on every unmapped key.
+  Run `GEOTHITE_TUI_TRANSPORT=shared TUI_PERF_ASSERT=1 node
+  tools/tui-terminal-performance-smoke.mjs` at the large-window test size,
+  plus canvas smoke with BOTH shared and direct transports. Require continuous
+  motion, zero hidden Braille traffic and responsive actual Start inputs;
+  frame hashes alone missed a 42ms/frame encoder and 12 MB/s PTY bottleneck.
+  The test-only `tui_shared_memory_consumer.py` reads/unlinks actual RGB slots
+  like a protocol receiver; it is not a game renderer or Ghostty GUI proof.
   The real PTY smoke must resize then open Start and complete a battle; read
   its reconstructed character screen (`tui-pty-screen.mjs`), not concatenated
   Ratatui diffs or base64 graphics as if they were semantic text.

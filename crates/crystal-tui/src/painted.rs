@@ -118,22 +118,44 @@ impl PaintedRenderer {
         notice: Option<&str>,
         help: bool,
     ) -> Buffer {
+        self.draw_native_surface(s, t, cols, rows, notice, help, false)
+    }
+    /// The graphics adapter must not animate invisible Braille underneath its
+    /// image. Build the same fine scene once per state/layout change instead.
+    pub fn draw_native_surface(
+        &mut self,
+        s: &RuntimeShellSnapshot,
+        t: &TextSnapshot,
+        cols: u16,
+        rows: u16,
+        notice: Option<&str>,
+        help: bool,
+        graphics: bool,
+    ) -> Buffer {
         let mut buffer = self.draw(s, t, cols, rows, notice, help, false);
         self.native_detail = None;
-        let scene = self.scene;
         if let Some(fine) = self.detailed_world(s) {
-            let scene = scene.expect("fine scene geometry");
-            crate::ink::pack_terminal_dots(
-                &mut buffer,
-                scene.area,
-                &fine,
-                &self.animated_dot_sizes(),
-                scene.left,
-                scene.top,
-            );
             self.native_detail = Some(fine);
+            if graphics {
+                let area = self.scene.expect("fine scene geometry").area;
+                for y in area.y..area.bottom() {
+                    for x in area.x..area.right() {
+                        buffer[(x,y)].set_char(' ').set_fg(INK).set_bg(PAPER);
+                    }
+                }
+            } else {
+                self.refresh_native_dots(&mut buffer);
+            }
         }
         buffer
+    }
+    /// Cosmetic updates use cached pack samples, never another snapshot, tile
+    /// composition, controller call or menu redraw.
+    pub fn refresh_native_dots(&self, buffer: &mut Buffer) {
+        if let (Some(scene), Some(fine)) = (self.scene, self.native_detail.as_ref()) {
+            crate::ink::pack_terminal_dots(buffer, scene.area, fine,
+                &self.animated_dot_sizes(), scene.left, scene.top);
+        }
     }
     /// Exact circle sizes/colors from the shared detailed dot field. Native
     /// terminal graphics is only another output transport, not another scene.
@@ -1497,6 +1519,23 @@ mod tests {
             let viewport = painter.viewport;
             let area = painter.scene.unwrap().area;
             let terminal = painter.draw_native(&source, &text, cols, rows, None, false);
+            let portable_image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
+            let graphics = painter.draw_native_surface(&source, &text, cols, rows, None, false, true);
+            assert_eq!(painter.circle_image(portable_image.width(), portable_image.height()).unwrap(), portable_image,
+                "Graphics and portable clients share the exact cached pack dot field");
+            assert!((area.y..area.bottom()).all(|y| (area.x..area.right()).all(|x| graphics[(x,y)].symbol() == " ")),
+                "No hidden Braille churn under the image");
+            for y in 0..rows { for x in 0..cols {
+                if !area.contains(ratatui::layout::Position::new(x,y)) {
+                    assert_eq!(graphics[(x,y)], terminal[(x,y)], "Live captions and menus remain intact");
+                }
+            }}
+            let cached = painter.native_detail.as_ref().unwrap().clone();
+            let cached_phase = painter.ink_phase;
+            painter.advance_ink_by(1./30.);
+            assert_eq!(painter.native_detail.as_ref().unwrap(), &cached,
+                "Cosmetic frames do not rebuild source tiles or actors");
+            painter.ink_phase = cached_phase;
             let phase = painter.ink_phase;
             let image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
             for _ in 0..20 { painter.advance_ink(); }
