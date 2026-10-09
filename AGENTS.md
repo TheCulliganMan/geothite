@@ -271,6 +271,10 @@
   NOT gate new desktop art on unchanged desktop pixels. Use actual
   WASM and an external fixture, assert its Route29 position and battle menu;
   a screenshot named "battle" is not proof it actually contains a battle.
+  Level-50 fixtures can lead with SCREECH: select a displayed damaging move
+  through normal cursor inputs rather than blindly confirming A until the
+  test exhausts its step bound. Keep starter-level DOM lowercase-A regressions
+  unchanged and still require real faint/EXP text, movement and Start afterward.
   Wild encounters can differ with host-divider input; compare desktop hashes
   only when the visible battle state is identical. Review art separately from
   mechanical green metrics. Comparison output stays ignored under `target`.

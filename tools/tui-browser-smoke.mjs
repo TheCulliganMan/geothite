@@ -12,6 +12,13 @@ import { checkCodeMode, checkCodeBattle } from './tui-codemode-checks.mjs';
 const root = resolve(process.env.TUI_TEST_ROOT ?? 'target/tui-web');
 const pack = resolve(process.env.TUI_TEST_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
 const output = resolve('target/tui-smoke');
+// The level-50 fixture can lead with SCREECH. Choose an actual displayed
+// damaging move via normal cursor input; endless A is not a victory test.
+function battleButton(view) {
+  const attack = view.menu.findIndex(line => /PP/.test(line.text) && /SLASH|HYDRO PUMP|WATER GUN|RAGE|BITE|SCRATCH|TACKLE|EMBER/.test(line.text));
+  const selected = Math.max(0, view.menu.findIndex(line => line.kind === 'selected'));
+  return attack >= 0 && attack !== selected ? attack > selected ? 'down' : 'up' : 'a';
+}
 await mkdir(output, { recursive: true });
 const server = createServer(async (req, res) => {
   try {
@@ -191,12 +198,12 @@ try {
     sawMoves ||= view.menu.some(line => /PP|SCRATCH|BITE|WATER GUN|RAGE/i.test(line.text));
     sawResult ||= view.dialogue.some(line => /fainted|EXP|experience/i.test(line.text));
     if (!view.status_line.includes('Battle') && !view.status_line.startsWith('Text')) break;
-    const after = await press('a');
+    const after = await press(battleButton(view));
     const state = value => JSON.stringify([value.status_line, value.menu, value.dialogue, value.viewport]);
     repeated = state(view) === state(after) ? repeated + 1 : 0;
     assert(repeated <= 1, 'Battle is waiting for invisible animation/idle frames');
   }
-  assert(sawFight && sawMoves && sawResult, `Missing battle presentation: ${JSON.stringify({ sawFight, sawMoves, sawResult })}`);
+  assert(sawFight && sawMoves && sawResult, `Missing battle presentation: ${JSON.stringify({ sawFight, sawMoves, sawResult, last: await observe() })}`);
   assert.match((await observe()).status_line, /Overworld/);
   await move('up', 2);
   await press('start');
@@ -356,7 +363,7 @@ try {
       fight ||= view.menu.some(line=>line.text.includes('FIGHT'));
       moves ||= view.menu.some(line=>/PP|SCRATCH|BITE|WATER GUN|RAGE/i.test(line.text));
       if(view.menu.length) battleMenus.push(view.menu.map(line=>line.text));
-      await tap('a');
+      await tap(battleButton(view));
     }
     assert(fight && moves, `Mobile production battle/move menus: ${JSON.stringify({fight,moves,battleMenus})}`);
     assert((await mobileObserve()).status_line.startsWith('Overworld'));
