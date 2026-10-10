@@ -1388,15 +1388,12 @@ def kangaskhan(n):
 @register('ABRA ALAKAZAM',1.12)
 def sculpted_fox_psychics(n):
  raise RuntimeError('Abra and Alakazam use their dedicated sculpture recipe before Blender batching')
-@register('KADABRA DROWZEE HYPNO',1.12)
-def psychic_humanoids(n):
- if n=='KADABRA':sculpt_kadabra();return
- final=n=='HYPNO';sph('Psychic torso',(0,0,.42),(.24,.19,.29),'yellow');sph('Brown waist',(0,0,.25),(.24,.18,.15),'brown');sph('Psychic head',(0,-.035,.80),(.23,.19,.20),'yellow');feet('yellow',.19,s=(.13,.19,.075));arms('yellow',.51,.24)
- tube('Tapir nose',[(0,-.17,.80),(0,-.27,.74),(0,-.29,.60)],[.073,.061,.04],'yellow');eyes(.88,-.202,.13,.030)
- for side in (-1,1):sph('Round tapir ear',(side*.17,0,.96),(.08,.06,.09),'yellow')
- if final:
-  for i in range(8):a=i*math.tau/8;leaf('White neck ruff',(0,-.01,.62),(.28*math.cos(a),.18*math.sin(a),.55),.09,'white')
-  tube('Pendulum chain',[(.36,-.12,.44),(.39,-.14,.24),(.41,-.14,.13)],.006,'silver');ring('Hypnotic pendulum',(.41,-.14,.10),.053,.009,'silver')
+@register('DROWZEE HYPNO',1.12)
+def sculpted_tapirs(n):
+ raise RuntimeError('Drowzee and Hypno use their dedicated sculpture recipe before Blender batching')
+@register('KADABRA',1.12)
+def sculpted_kadabra(n):
+ sculpt_kadabra()
 @register('TYROGUE HITMONLEE HITMONCHAN HITMONTOP',1.18)
 def martial_artists(n):
  lee=n=='HITMONLEE';chan=n=='HITMONCHAN';top=n=='HITMONTOP';baby=n=='TYROGUE';c='lilac' if baby else 'tan';sph('Athletic torso',(0,0,.62 if lee else .48),(.23,.17,.28),c);feet(c,.18,s=(.10,.17,.065))
@@ -1623,6 +1620,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('drowzee','hypno'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from tapir_sculpt import sculpture as tapir_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(tapir_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': distinct tapir anatomy and fitted faces',flush=True)
  for species in ('abra','alakazam'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))

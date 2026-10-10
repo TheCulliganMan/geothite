@@ -216,3 +216,41 @@ checks pass, all 571 static JSON documents validate and all 957 voxel tests
 pass, with three existing ignored checks. The scope of these checks remains
 static asset integrity. Native/browser GPU, physical-size battle cameras and
 species articulation remain open, including Kadabra's final motion review.
+
+## Drowzee and Hypno reconstruction
+
+The previous pair shared sphere heads, thin trunks and a brown waist. Hypno's
+rounded ears and brown body were incorrect. Drowzee now has a broad joined
+belly/neck/head and brown lower anatomy. Its yellow/brown boundary is a wavy,
+welded material seam with identical normals on both sides; it is not a second
+belly volume. Rounded inset ears, fitted half-lidded eyes, a short curved nose,
+shaped hands and small yellow toes distinguish the young tapir. Hypno has a
+narrow entirely yellow body, pointed inset ears, a tapered longer nose, bent
+arms with raised hands and broad feet. A closed serrated ivory annulus provides
+its ruff, with an actual neck opening. The thin cord starts inside the raised
+hand and ends at an open metal pendulum ring.
+
+Official identity references:
+[Drowzee](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/096.png),
+[Hypno](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/097.png).
+Reference downloads were removed after review and are not shipped.
+`tools/tapir_sculpt.py` replaces both legacy geometry builders; the existing
+JSON files remain their only canonical geometry. Original source height stays
+1.12 units. Drowzee has 33 material/anatomy parts and 5,504 triangles; Hypno has
+38 parts and 6,832 triangles.
+
+```sh
+python3 tools/tapir_sculpt.py
+python3 tools/test_tapir_sculpt.py
+```
+
+Five checks verify stored closed connected anatomy (joining the two Drowzee
+material regions for its body topology), triangle/normal agreement, exact
+recipe reproduction, dimensions/grounding, specific anatomy, the continuous
+wavy seam, the ruff neck hole and a cord anchored inside the actual palm. The
+first cord anchor was slightly outside the hand and was corrected. Front,
+three-quarter and rear neutral model renders are reviewed. All ten rebuilt
+species pass the scoped validator (48,952 triangles, 33,668 vertices), all 22
+sculpture checks pass and all 957 voxel tests pass, with three existing ignored
+checks. Native/browser GPU, normal-size battle review and species articulation
+remain open; these checks do not sign off the whole catalog.
