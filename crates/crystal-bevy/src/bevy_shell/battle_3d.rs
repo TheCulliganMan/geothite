@@ -942,8 +942,8 @@ fn prepare_immersive_battle_preview(
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
         starter.is_none()
-            || (enemy_gust && matches!(starter, Some("CHIKORITA" | "BAYLEEF" | "MEGANIUM" | "CYNDAQUIL" | "TOTODILE"))),
-        "starter-family rig preview requires enemy Gust and CHIKORITA, BAYLEEF, MEGANIUM, CYNDAQUIL or TOTODILE"
+            || (enemy_gust && starter.is_some_and(crystal_voxel_view::has_authored_battle_species)),
+        "species model preview requires the enemy Gust fixture and an authored battle model"
     );
     anyhow::ensure!(
         [
@@ -997,7 +997,7 @@ fn prepare_immersive_battle_preview(
         None
     };
     if enemy_gust {
-        // Grass typing lets Vance's unchanged trainer AI prefer Gust. The
+        // The original grass showcases let Vance's unchanged AI prefer Gust. The
         // ordinary level-25 leads are slower than his Pidgeotto. Meganium
         // uses its minimum natural evolution level, 32, and acts first.
         let evolved_grass = starter == Some("MEGANIUM");

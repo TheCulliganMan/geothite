@@ -62,6 +62,7 @@ fn main() -> Result<()> {
             "--pidgeotto" => pidgeotto = true,
             "--enemy-gust" => enemy_gust = true,
             "--starter" => {
+                anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
                 let name = args
                     .next()
                     .context("--starter chikorita|bayleef|meganium|cyndaquil|totodile")?
@@ -70,6 +71,14 @@ fn main() -> Result<()> {
                     matches!(name.as_str(), "CHIKORITA" | "BAYLEEF" | "MEGANIUM" | "CYNDAQUIL" | "TOTODILE"),
                     "--starter expects chikorita, bayleef, meganium, cyndaquil or totodile"
                 );
+                starter = Some(name);
+            }
+            "--species" => {
+                let name = args.next().context("--species authored Pokémon name")?
+                    .to_ascii_uppercase();
+                anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
+                anyhow::ensure!(crystal_voxel_view::has_authored_battle_species(&name),
+                    "--species requires an authored battle model");
                 starter = Some(name);
             }
             "--poke-ball-failure" => poke_ball_failure = true,
@@ -120,7 +129,7 @@ fn main() -> Result<()> {
     );
     anyhow::ensure!(
         starter.is_none() || enemy_gust,
-        "--starter requires --enemy-gust"
+        "--starter/--species requires --enemy-gust"
     );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]

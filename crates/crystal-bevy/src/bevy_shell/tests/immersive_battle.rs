@@ -2048,3 +2048,28 @@ fn immersive_battle_enemy_gust_preview_uses_trainer_ai_pp_and_enemy_source() {
 include!("capture_fixture.rs");
 
 include!("immersive_capture_bridge.rs");
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn immersive_model_previews_use_pack_species_and_read_only_real_battle() {
+    for species in ["AMPHAROS", "MACHOP", "MACHOKE", "MACHAMP", "PSYDUCK",
+        "GOLDUCK", "ABRA", "ALAKAZAM", "DROWZEE", "HYPNO"] {
+        let mut controller = immersive_battle_starter_preview_controller(
+            false, false, false, false, false, true, false, Some(species));
+        assert!(controller.shell.quick_save_path.is_none());
+        let before = controller.snapshot().unwrap();
+        assert_eq!(before.party.slots.len(), 2);
+        assert_eq!(before.party.slots[1].pokemon.species.id, "TOTODILE");
+        assert_eq!(before.party.slots[1].pokemon.level, 35);
+        let pokemon = &before.party.slots[0].pokemon;
+        assert_eq!(pokemon.species.id, species);
+        assert_eq!(pokemon.level, 25);
+        assert!(!pokemon.moves.is_empty());
+        assert!(pokemon.moves.iter().all(|m| m.current_pp > 0));
+        let battle = before.battle.as_ref().expect("actual trainer battle");
+        assert_eq!(battle.active_player_party_index, Some(0));
+        assert_eq!(battle.enemy_pokemon.species.id, "PIDGEOTTO");
+        assert!(controller.shell.battle_action_cursor.is_some());
+        assert!(controller.shell.battle_messages.is_empty());
+    }
+}

@@ -254,3 +254,48 @@ species pass the scoped validator (48,952 triangles, 33,668 vertices), all 22
 sculpture checks pass and all 957 voxel tests pass, with three existing ignored
 checks. Native/browser GPU, normal-size battle review and species articulation
 remain open; these checks do not sign off the whole catalog.
+
+## Production native camera checkpoint
+
+`immersive_battle_3d` now accepts `--species NAME` alongside `--enemy-gust`.
+It validates the name against authored model coverage, then seeds the existing
+fresh, disposable trainer-battle fixture with the pack-created level-25
+Pokémon and its natural moves. It retains the existing backup Totodile and
+trainer, normal controller entry/commands and bounded DIV stimuli. The older
+`--starter` options and their Meganium evolution fixture remain available.
+The fixture requires no save destination; neither normal play nor loaded saves
+use it. It does not force a battle move or replace the trainer's AI.
+
+```sh
+cargo build --locked -p crystal-bevy --features location-tester \
+  --example immersive_battle_3d
+./target/debug/examples/immersive_battle_3d \
+  content-packs/core-modular.browser.crystalpack --enemy-gust \
+  --species MACHAMP --size 640x480 \
+  --screenshot target/model-polish/native-battle/machamp-640.png
+```
+
+The ten reconstructed species were captured and visually inspected through
+Bevy's real battle renderer with the existing external browser core pack.
+Native adapter logs identify Apple M5 integrated GPU / Metal (explicitly
+selected for nine captures). The tenth, Ampharos, used the same native renderer
+without an explicit backend log. Requested 1024×768 windows produced 2048×1536
+Retina readbacks. Captures show actual species names, HP, production command
+menus and modeled opponents. This establishes native idle model integration,
+source scale and lighting at that camera; it does not establish attack motion,
+browser integration, every menu state or catalog-wide performance.
+
+Additional Psyduck and Machamp captures use requested 640×480 windows
+(1280×960 Retina readbacks). Psyduck is readable, but Machamp's crest overlaps
+the HP backing. This exposes a renderer gap: the camera fits fixed normalized
+HUD margins while glyph-sized production panels occupy a larger screen
+fraction in small windows. **Open next fix:** fit the shared camera to actual
+UI exclusion bounds, preserve both participants' physical scales, verify tall
+and small models at desktop/mobile sizes, and review the new GPU output.
+These captures must not be presented as final camera sign-off.
+
+The new external-pack regression exercises all ten species, checks the real
+lead and backup party, levels, moves with positive PP, active Pidgeotto trainer
+battle, command readiness and absent save destination. It passes. The original
+five-starter real attack/damage-cue regression also passes. Generated PNGs and logs remain
+ignored under `target/model-polish`.

@@ -405,7 +405,8 @@ pub struct BevyShellConfig {
     /// Fresh Route44 fixture: Vance's legal Pidgeotto uses enemy-side Gust.
     #[cfg(feature = "location-tester")]
     pub render_test_enemy_gust: bool,
-    /// Optional legal starter in the disposable Vance rig-motion preview.
+    /// Optional authored species in the disposable Vance model preview.
+    /// Uses real level-25 learnsets; the existing Meganium showcase retains level-32 moves.
     #[cfg(feature = "location-tester")]
     pub render_test_battle_starter: Option<String>,
     /// One deterministic ordinary failed throw in the fresh Route36 preview.
