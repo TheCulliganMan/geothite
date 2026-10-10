@@ -225,7 +225,7 @@ pub(super) const KINDS: [CharacterKind; 75] = [
 
 /// Canonical host-published sprite family identifiers. Different source families
 /// retain different costumes, hair, props and silhouettes even when roles match.
-pub(super) const SOURCE_KINDS: [(&str, CharacterKind); 74] = [
+pub(crate) const SOURCE_KINDS: [(&str, CharacterKind); 74] = [
     ("beauty", CharacterKind::Beauty),
     ("biker", CharacterKind::Biker),
     ("bill", CharacterKind::Bill),

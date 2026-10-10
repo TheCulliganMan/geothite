@@ -1,6 +1,7 @@
 //! GPU resources and instances for the external people reader.
 use crate::{new_bark_actors::ModeledActor, open_people::PersonRig, VOXEL_RENDER_LAYER};
 use bevy::{
+    pbr::NotShadowReceiver,
     prelude::*,
     render::{
         mesh::{
@@ -23,8 +24,25 @@ pub(crate) struct Gpu {
     material: Handle<StandardMaterial>,
     remote: Handle<StandardMaterial>,
     binds: Handle<SkinnedMeshInverseBindposes>,
-    head: Option<(Handle<Mesh>, Handle<StandardMaterial>)>,
-    costume: Option<(Handle<Mesh>, Handle<StandardMaterial>)>,
+    head: Option<AccessoryGpu>,
+    costume: Option<AccessoryGpu>,
+}
+struct AccessoryGpu {
+    mesh: Handle<Mesh>,
+    material: Handle<StandardMaterial>,
+    remote: Handle<StandardMaterial>,
+}
+fn accessory_gpu(mesh: crate::mesh::SurfaceMeshData, meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<StandardMaterial>) -> AccessoryGpu {
+    let material = StandardMaterial {
+        perceptual_roughness: 0.96, reflectance: 0.12, cull_mode: None, ..default()
+    };
+    let ghost = StandardMaterial {
+        base_color: Color::srgba(0.48, 0.88, 1.0, 0.62),
+        alpha_mode: AlphaMode::Blend, ..material.clone()
+    };
+    AccessoryGpu { mesh: meshes.add(mesh.into_mesh()),
+        material: materials.add(material), remote: materials.add(ghost) }
 }
 pub(crate) struct Person {
     pub rig: Arc<PersonRig>,
@@ -88,14 +106,10 @@ impl PeopleGpu {
                 material: materials.add(material),
                 remote: materials.add(ghost),
                 binds: binds.add(SkinnedMeshInverseBindposes::from(rig.inverse_binds.clone())),
-                head: crate::npc_appearance::head_mesh(&rig, look).map(|mesh| (
-                    meshes.add(mesh.into_mesh()), materials.add(StandardMaterial {
-                        perceptual_roughness: 0.96, reflectance: 0.12, cull_mode: None, ..default()
-                    }))),
-                costume: crate::npc_appearance::costume_mesh(&rig, look).map(|mesh| (
-                    meshes.add(mesh.into_mesh()), materials.add(StandardMaterial {
-                        perceptual_roughness: 0.96, reflectance: 0.12, cull_mode: None, ..default()
-                    }))),
+                head: crate::npc_appearance::head_mesh(&rig, look)
+                    .map(|mesh| accessory_gpu(mesh, meshes, materials)),
+                costume: crate::npc_appearance::costume_mesh(&rig, look)
+                    .map(|mesh| accessory_gpu(mesh, meshes, materials)),
             }
         });
         let mut idle = rig.nodes.clone();
@@ -140,6 +154,10 @@ impl PeopleGpu {
                 transform: idle[rig.mesh_node],
                 ..default()
             },
+            // Keep painted faces readable under roofs and hats. Actors still
+            // cast shadows onto the unchanged world, and retain directional
+            // shading across their own paper contours.
+            NotShadowReceiver,
             SkinnedMesh {
                 inverse_bindposes: gpu.binds.clone(),
                 joints: rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
@@ -150,16 +168,16 @@ impl PeopleGpu {
             ),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
         ));
-        if let Some((mesh, material)) = &gpu.head {
+        if let Some(gpu) = &gpu.head {
             let accessory = commands.spawn((PbrBundle {
-                mesh: mesh.clone(), material: material.clone(), ..default()
-            }, ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+                mesh: gpu.mesh.clone(), material: if remote { gpu.remote.clone() } else { gpu.material.clone() }, ..default()
+            }, ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
             commands.entity(nodes[rig.skin_nodes[rig.head_joint]]).add_child(accessory);
         }
-        if let Some((mesh, material)) = &gpu.costume {
+        if let Some(gpu) = &gpu.costume {
             let accessory = commands.spawn((PbrBundle {
-                mesh: mesh.clone(), material: material.clone(), ..default()
-            }, ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+                mesh: gpu.mesh.clone(), material: if remote { gpu.remote.clone() } else { gpu.material.clone() }, ..default()
+            }, ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
             commands.entity(nodes[rig.skin_nodes[rig.hips_joint]]).add_child(accessory);
         }
         Person {

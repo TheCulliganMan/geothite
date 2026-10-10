@@ -253,10 +253,33 @@ fn import(
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    if args.len() != 2 && !(args.len() == 4 && args[2] == "--cutout-color") {
-        return Err(
-            "usage: import_open_model SOURCE.glb|SOURCE.gltf|ARRANGEMENT.json EXTERNAL_OUTPUT.mesh.json [--cutout-color RRGGBB]".into(),
-        );
+    if args.len() < 2 {
+        return Err("usage: import_open_model SOURCE OUTPUT [--align-footprint] [--fit-footprint] [--cutout-color RRGGBB]".into());
+    }
+    let mut align_footprint = false;
+    let mut fit_footprint = false;
+    let mut cutout_color = None;
+    let mut cursor = 2;
+    while cursor < args.len() {
+        match args[cursor].to_str() {
+            Some("--align-footprint") if !align_footprint => {
+                align_footprint = true;
+                cursor += 1;
+            }
+            Some("--fit-footprint") if !fit_footprint => {
+                fit_footprint = true;
+                cursor += 1;
+            }
+            Some("--cutout-color") if cutout_color.is_none() && cursor + 1 < args.len() => {
+                cutout_color = Some(
+                    args[cursor + 1]
+                        .to_str()
+                        .ok_or("cutout color must be UTF-8")?,
+                );
+                cursor += 2;
+            }
+            _ => return Err("unknown, duplicate or incomplete import option".into()),
+        }
     }
     let source = Path::new(&args[0]);
     let mut parts = Vec::new();
@@ -286,11 +309,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         import(source, Mat4::IDENTITY, &mut parts)?;
     }
-    if args.len() == 4 {
-        let hex = args[3]
-            .to_str()
-            .ok_or("cutout color must be UTF-8")?
-            .trim_start_matches('#');
+    if let Some(color) = cutout_color {
+        let hex = color.trim_start_matches('#');
         if hex.len() != 6 {
             return Err("cutout color needs six hexadecimal digits".into());
         }
@@ -339,7 +359,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let output = serde_json::json!({
         "name": source.file_stem().ok_or("source has no filename")?.to_string_lossy(),
         "coordinate_system": "+Y up, +Z front", "origin": [0,0,0],
-        "preserve_aspect": true,
+        "preserve_aspect": true, "align_footprint": align_footprint, "fit_footprint":fit_footprint,
         "bounds": {"min":lo.to_array(), "max":hi.to_array()},
         "dimensions": (hi-lo).to_array(), "primitive_count":parts.len(),
         "triangle_count":parts.iter().map(|p|p.indices.len()/3).sum::<usize>(),

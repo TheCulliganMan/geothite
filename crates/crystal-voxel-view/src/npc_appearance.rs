@@ -69,7 +69,7 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         OldLinkReceptionist => Look { base: "human-female", texture_key: "old_link_receptionist", shirt: [209, 56, 59], lower: [145, 31, 46], hair: [48, 33, 28], hairstyle: "highpony", hat: "none", costume: "dress", accessories: "namebadge,headset", width: 0.94, height: 1.38 },
         Pharmacist => Look { base: "human-male", texture_key: "pharmacist", shirt: [247, 247, 227], lower: [247, 247, 227], hair: [173, 184, 181], hairstyle: "bald", hat: "none", costume: "robe", accessories: "glasses,moustache,medicinebag", width: 1.02, height: 1.38 },
         PokefanF => Look { base: "human-female", texture_key: "pokefan_f", shirt: [33, 46, 64], lower: [33, 46, 64], hair: [76, 43, 31], hairstyle: "bun", hat: "none", costume: "dress", accessories: "apronfront,heartbadge", width: 1.31, height: 1.38 },
-        PokefanM => Look { base: "human-male", texture_key: "pokefan_m", shirt: [76, 43, 31], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "short", hat: "none", costume: "polo", accessories: "moustache,roundglasses,ballbadge", width: 1.36, height: 1.38 },
+        PokefanM => Look { base: "human-male", texture_key: "pokefan_m", shirt: [76, 43, 31], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "bald", hat: "none", costume: "polo", accessories: "moustache,roundglasses,ballbadge", width: 1.36, height: 1.38 },
         Pryce => Look { base: "human-male", texture_key: "pryce", shirt: [82, 176, 214], lower: [99, 64, 125], hair: [173, 184, 181], hairstyle: "sparse", hat: "none", costume: "cardigan", accessories: "cane,scarf", width: 0.98, height: 1.23 },
         Receptionist => Look { base: "human-female", texture_key: "receptionist", shirt: [43, 71, 107], lower: [43, 71, 107], hair: [76, 43, 31], hairstyle: "bob", hat: "none", costume: "suit", accessories: "skirt,namebadge,tie", width: 0.94, height: 1.38 },
         Red => Look { base: "human-male", texture_key: "red", shirt: [209, 56, 59], lower: [71, 110, 138], hair: [48, 33, 28], hairstyle: "short", hat: "redcap", costume: "vest", accessories: "backpack,whiteshirt", width: 1.00, height: 1.20 },
@@ -92,7 +92,7 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         UnusedGuy => Look { base: "human-male", texture_key: "unused_guy", shirt: [201, 156, 89], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "sidepart", hat: "none", costume: "suit", accessories: "tealtie", width: 1.04, height: 1.38 },
         Whitney => Look { base: "human-female", texture_key: "whitney", shirt: [209, 56, 59], lower: [145, 31, 46], hair: [230, 107, 145], hairstyle: "pigtails", hat: "none", costume: "tee", accessories: "shorts,redstripe", width: 0.92, height: 1.38 },
         Will => Look { base: "human-male", texture_key: "will", shirt: [209, 56, 59], lower: [145, 31, 46], hair: [99, 64, 125], hairstyle: "sidepart", hat: "none", costume: "suit", accessories: "mask,whitegloves", width: 1.00, height: 1.38 },
-        Youngster => Look { base: "human-male", texture_key: "youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "redcap", costume: "tee", accessories: "shorts", width: 0.88, height: 1.05 },
+        Youngster => Look { base: "human-male", texture_key: "youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts", width: 0.88, height: 1.05 },
         Outdoorsman => Look { base: "human-male", texture_key: "outdoorsman", shirt: [89, 122, 76], lower: [166, 166, 102], hair: [76, 43, 31], hairstyle: "short", hat: "hiking", costume: "vest", accessories: "backpack,beard", width: 1.18, height: 1.38 },
     }
 }
@@ -159,7 +159,7 @@ pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Opti
         }
         "bald" | "sparse" => for side in [-1.0, 1.0] {
             orb(Vec3::new(center.x + width * side * 0.94, center.y, center.z - 0.13),
-                Vec3::new(width * 0.12, half.y * 0.35, half.z * 0.5), [175, 181, 175]);
+                Vec3::new(width * 0.12, half.y * 0.35, half.z * 0.5), hair);
         },
         "mohawk" => orb(Vec3::new(center.x, top, center.z), Vec3::new(width * 0.2, width * 0.5, half.z * 0.8), hair),
         _ => {}
@@ -170,16 +170,31 @@ pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Opti
             "nurse" | "sailor" | "captain" | "reception" => [235, 234, 216],
             "straw" | "hiking" => [164, 133, 69], _ => [29, 31, 37],
         };
-        let rise = if look.hat == "top" { 0.40 } else { 0.20 };
-        orb(Vec3::new(center.x, top - 0.02, center.z), Vec3::new(width * 1.03, rise, half.z * 0.88), color);
-        if !matches!(look.hat, "nurse" | "kris" | "reception") {
-            let wide = matches!(look.hat, "straw" | "hiking" | "top");
-            orb(Vec3::new(center.x, top - 0.14, center.z + if wide { 0.0 } else { half.z * 0.75 }),
-                Vec3::new(width * if wide { 1.50 } else { 1.04 }, 0.04, half.z * if wide { 1.30 } else { 0.65 }), color);
+        let baseball = matches!(look.hat, "trainer" | "redcap" | "bluecap");
+        if baseball {
+            // Fit a shallow crown to the actual head instead of stacking a
+            // fixed-height ball and a wide disk above the face. The bill
+            // joins the crown at forehead height and leaves the eyes visible.
+            orb(Vec3::new(center.x, top - half.y * 0.28, center.z - half.z * 0.04),
+                Vec3::new(width * 1.01, half.y * 0.48, half.z * 0.98), color);
+            orb(Vec3::new(center.x, top - half.y * 0.36, max.z - half.z * 0.12),
+                Vec3::new(width * 0.78, half.y * 0.035, half.z * 0.30), color);
+        } else {
+            let rise = if look.hat == "top" { 0.40 } else { 0.20 };
+            orb(Vec3::new(center.x, top - 0.02, center.z), Vec3::new(width * 1.03, rise, half.z * 0.88), color);
+            if !matches!(look.hat, "nurse" | "kris" | "reception") {
+                let wide = matches!(look.hat, "straw" | "hiking" | "top");
+                orb(Vec3::new(center.x, top - 0.14, center.z + if wide { 0.0 } else { half.z * 0.75 }),
+                    Vec3::new(width * if wide { 1.50 } else { 1.04 }, 0.04, half.z * if wide { 1.30 } else { 0.65 }), color);
+            }
         }
-        if matches!(look.hat, "police" | "captain" | "nurse") {
+        if look.hat == "nurse" {
+            let badge = Vec3::new(center.x, top - 0.02, max.z - 0.03);
+            orb(badge, Vec3::new(0.025, 0.075, 0.03), [183, 36, 48]);
+            orb(badge, Vec3::new(0.075, 0.025, 0.03), [183, 36, 48]);
+        } else if matches!(look.hat, "police" | "captain") {
             orb(Vec3::new(center.x, top - 0.02, max.z - 0.03), Vec3::new(0.075, 0.075, 0.03),
-                if look.hat == "nurse" { [183, 36, 48] } else { [223, 180, 73] });
+                [223, 180, 73]);
         }
     }
     if look.accessories.contains("glasses") {

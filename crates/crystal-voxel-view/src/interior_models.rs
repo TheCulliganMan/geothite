@@ -236,12 +236,18 @@ struct Export {
     primitives: Vec<Primitive>,
     #[serde(default)]
     preserve_aspect: bool,
+    #[serde(default)]
+    align_footprint: bool,
+    #[serde(default)]
+    fit_footprint: bool,
 }
 pub(crate) struct Model {
     surface: SurfaceMeshData,
     min: [f32; 3],
     max: [f32; 3],
     preserve_aspect: bool,
+    align_footprint: bool,
+    fit_footprint: bool,
 }
 impl Model {
     pub(crate) fn parse<'a>(
@@ -296,6 +302,8 @@ impl Model {
             min,
             max,
             preserve_aspect: export.preserve_aspect,
+            align_footprint: export.align_footprint,
+            fit_footprint: export.fit_footprint,
         })
     }
     /// Fit the true 3D asset inside a source-verified physical footprint.
@@ -309,15 +317,26 @@ impl Model {
         height: f32,
     ) {
         let [west, east, north, south] = bounds;
+        let original = Vec3::from_array(self.max) - Vec3::from_array(self.min);
+        // Explicitly opted-in tables may turn to fit a long source drawing.
+        // Front-facing fixtures retain their authored orientation by default.
+        let direct = ((east - west) / original.x).min((south - north) / original.z);
+        let turned = ((east - west) / original.z).min((south - north) / original.x);
+        let turn = self.preserve_aspect && self.align_footprint && turned > direct + 0.00001;
+        let extent = if turn {
+            Vec3::new(original.z, original.y, original.x)
+        } else {
+            original
+        };
         let mut scale = Vec3::new(
-            (east - west) / (self.max[0] - self.min[0]),
-            height / (self.max[1] - self.min[1]),
-            (south - north) / (self.max[2] - self.min[2]),
+            (east - west) / extent.x,
+            height / extent.y,
+            (south - north) / extent.z,
         );
         let mut origin = Vec3::new(west, base_y, north);
-        if self.preserve_aspect {
+        if self.preserve_aspect && !self.fit_footprint {
             scale = Vec3::splat(scale.min_element());
-            let size = (Vec3::from_array(self.max) - Vec3::from_array(self.min)) * scale;
+            let size = extent * scale;
             origin.x += (east - west - size.x) * 0.5;
             origin.z += (south - north - size.z) * 0.5;
         }
@@ -329,8 +348,14 @@ impl Model {
             .zip(&self.surface.normals)
             .zip(&self.surface.colors)
         {
-            let p = (Vec3::from_array(*p) - Vec3::from_array(self.min)) * scale + origin;
-            let normal = (Vec3::from_array(*n) / scale).normalize();
+            let mut p = Vec3::from_array(*p) - Vec3::from_array(self.min);
+            let mut n = Vec3::from_array(*n);
+            if turn {
+                p = Vec3::new(p.z, p.y, original.x - p.x);
+                n = Vec3::new(n.z, n.y, -n.x);
+            }
+            let p = p * scale + origin;
+            let normal = (n / scale).normalize();
             target.positions.push(p.to_array());
             target.normals.push(normal.to_array());
             target.uvs.push([0.0, 0.0]);
@@ -404,10 +429,9 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
         }};
     }
     match kind {
-        ModelKind::BroadcastRack => load!(
-            BROADCAST_RACK,
-            "models/interiors/broadcast_rack.mesh.json"
-        ),
+        ModelKind::BroadcastRack => {
+            load!(BROADCAST_RACK, "models/interiors/broadcast_rack.mesh.json")
+        }
         ModelKind::TowerReception => load!(
             TOWER_RECEPTION,
             "models/interiors/tower_reception.mesh.json"
@@ -430,14 +454,12 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
         ModelKind::Bookcase => load!(BOOKCASE, "models/interiors/bookcase.mesh.json"),
         ModelKind::LabBookcase => load!(LAB_BOOKCASE, "models/interiors/lab_bookcase.mesh.json"),
         ModelKind::Cabinet => load!(CABINET, "models/interiors/cabinet.mesh.json"),
-        ModelKind::DrawerCabinet => load!(
-            DRAWER_CABINET,
-            "models/interiors/drawer_cabinet.mesh.json"
-        ),
-        ModelKind::PendulumClock => load!(
-            PENDULUM_CLOCK,
-            "models/interiors/pendulum_clock.mesh.json"
-        ),
+        ModelKind::DrawerCabinet => {
+            load!(DRAWER_CABINET, "models/interiors/drawer_cabinet.mesh.json")
+        }
+        ModelKind::PendulumClock => {
+            load!(PENDULUM_CLOCK, "models/interiors/pendulum_clock.mesh.json")
+        }
         ModelKind::Computer => load!(COMPUTER, "models/interiors/computer.mesh.json"),
         ModelKind::LabWorkstation => load!(
             LAB_WORKSTATION,
@@ -489,10 +511,9 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
             LAB_DISPLAY_TABLE,
             "models/interiors/lab_display_table.mesh.json"
         ),
-        ModelKind::ArcadeMachine => load!(
-            ARCADE_MACHINE,
-            "models/interiors/arcade_machine.mesh.json"
-        ),
+        ModelKind::ArcadeMachine => {
+            load!(ARCADE_MACHINE, "models/interiors/arcade_machine.mesh.json")
+        }
         ModelKind::ArcadePair => load!(ARCADE_PAIR, "models/interiors/arcade_pair.mesh.json"),
         ModelKind::StationBench => {
             load!(STATION_BENCH, "models/interiors/station_bench.mesh.json")
@@ -578,10 +599,12 @@ mod tests {
                 && p[1] <= 2.901
                 && p[2] >= -1.001
                 && p[2] <= 4.001));
-            assert!(fitted
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001));
+            assert!(
+                fitted
+                    .normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001)
+            );
         }
     }
     #[test]
@@ -589,6 +612,46 @@ mod tests {
         assert!(Model::parse(r#"{"primitives":[]}"#).is_err());
         assert!(Model::parse(r#"{"primitives":[{"positions":[0,0,0],"normals":[0,0,0],"indices":[0,0,0],"base_color":[1,1,1,1]}]}"#).is_err());
     }
+    #[test]
+    fn opted_in_long_tables_turn_without_stretching_or_changing_grounding() {
+        let make = |align| {
+            Model::parse(
+                &serde_json::json!({
+                    "preserve_aspect":true, "align_footprint":align,
+                    "primitives":[{"positions":[0.,0.,0.,4.,0.,0.,4.,2.,1.,0.,2.,1.],
+                        "normals":[0.,0.,1.,0.,0.,1.,0.,0.,1.,0.,0.,1.],
+                        "indices":[0,1,2,0,2,3],"base_color":[1.,1.,1.,1.]}]
+                })
+                .to_string(),
+            )
+            .unwrap()
+        };
+        let mut direct = SurfaceMeshData::default();
+        make(false).append_fitted(&mut direct, [0., 4., 0., 16.], 0.5, 8.);
+        let mut fitted = SurfaceMeshData::default();
+        make(true).append_fitted(&mut fitted, [0., 4., 0., 16.], 0.5, 8.);
+        let size = |m: &SurfaceMeshData| {
+            let min = m
+                .positions
+                .iter()
+                .map(|p| Vec3::from_array(*p))
+                .fold(Vec3::splat(f32::INFINITY), Vec3::min);
+            let max = m
+                .positions
+                .iter()
+                .map(|p| Vec3::from_array(*p))
+                .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+            (min, max - min)
+        };
+        assert_eq!(
+            size(&fitted),
+            (Vec3::new(0., 0.5, 0.), Vec3::new(4., 8., 16.))
+        );
+        assert_eq!(size(&direct).1, Vec3::new(4., 2., 1.));
+        assert_eq!(fitted.indices, direct.indices);
+        assert!(fitted.normals.iter().all(|n| *n == [1., 0., 0.]));
+    }
+
     #[test]
     fn contained_import_retains_proportions_grounding_and_source_footprint() {
         let mut json: serde_json::Value = crate::model_storage::parse(

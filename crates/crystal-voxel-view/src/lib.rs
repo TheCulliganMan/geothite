@@ -19,6 +19,10 @@ mod model_storage;
 mod open_models;
 mod open_people;
 mod open_people_skin;
+#[cfg(feature = "people-review")]
+mod people_review;
+#[cfg(feature = "people-review")]
+pub use people_review::run as run_people_review;
 mod npc_appearance;
 mod npc_textures;
 pub use npc_textures::normalize_npc_texture;

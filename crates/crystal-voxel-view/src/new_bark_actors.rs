@@ -1042,6 +1042,33 @@ mod tests {
             .collect();
         assert_eq!(handles.len(), 2);
         assert_ne!(handles[0], handles[1]);
+        let root = app.world().resource::<ModeledActors>().instances[&VisualActorId::RemotePlayer(23)].entity;
+        let mut descendants = vec![root];
+        let mut remote_materials = Vec::new();
+        while let Some(entity) = descendants.pop() {
+            if let Some(children) = app.world().get::<Children>(entity) {
+                descendants.extend(children.iter().copied());
+            }
+            if let Some(handle) = app.world().get::<Handle<StandardMaterial>>(entity) {
+                let material = app.world().resource::<Assets<StandardMaterial>>().get(handle).unwrap();
+                if !material.unlit {
+                    assert!(app.world().get::<NotShadowReceiver>(entity).is_some(),
+                        "painted bodies and attached costumes retain readable shadow contrast");
+                    assert!(app.world().get::<NotShadowCaster>(entity).is_none(),
+                        "people still cast grounding shadows on the world");
+                }
+                remote_materials.push(handle.clone());
+            }
+        }
+        // The player's cap/hair must share the ghost treatment with the body.
+        assert!(remote_materials.len() > 1);
+        for handle in remote_materials {
+            let material = app.world().resource::<Assets<StandardMaterial>>().get(&handle).unwrap();
+            // The unlit contact shadow carries its opacity in vertex colors.
+            if material.unlit { continue; }
+            assert_eq!(material.alpha_mode, AlphaMode::Blend);
+            assert!((material.base_color.alpha() - 0.62).abs() < 0.001);
+        }
         app.world_mut()
             .resource_mut::<VisualWorldFrame>()
             .actors

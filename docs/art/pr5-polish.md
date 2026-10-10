@@ -953,3 +953,67 @@ Validation: 993 renderer tests pass, with six optional external checks excluded
 from the embedded-catalog run. The two supplied-rig ECS tests pass separately.
 Actual Chrome/WASM input checks open Goldenrod Underground, move CHRIS from
 (3,18) south, open production Start and close it without errors.
+
+## Further NPC costume review
+
+The additional external UV paintings cover Goldenrod's Youngster, Lass and
+female Cooltrainer, plus the shared nurse. Male Pokéfan and Rocket paintings
+remain open. Uniform/dress
+paintings fill the Kenney female template's exposed midriff patch with fabric;
+Granny's shawl/dress painting is corrected the same way. The nurse's cap carries
+a modeled cross. Youngster's extra red cap is removed to match the supplied
+sprite reference, and Pokéfan's sparse hair uses his own hair color.
+
+Remote players now use the existing cyan/translucent treatment on attached hair,
+hats and costume hems as well as the skinned body. The supplied-rig ECS check
+walks the remote hierarchy and verifies its lit materials, excluding the unlit
+contact shadow whose opacity comes from vertex colors.
+
+GoldenrodPokecenter1F could not be used for native review with the current
+external pack: its retained PCC receptionist callback references (16,8), outside
+that exported map's 10×8 bounds. Nurse review uses the real VioletPokecenter1F
+instead. This pack/content issue remains open; no callback or game content was
+cleared or changed to make the visual check pass.
+
+
+## Character shadow readability
+
+The human skin meshes and their attached hair, hats and costume hems no longer
+receive cast shadows. They retain directional material shading and still cast
+shadows onto the scene. This keeps the painted faces and clothing readable
+under roofs and cap brims without changing the ground, building lighting,
+light strength or authored material colors.
+
+The actual Metal renderer was compared at Goldenrod City (20,18), with identical
+camera and time settings: Chris's red cap and clothing and the Youngster's blue
+shirt remain readable in the building shadow. Goldenrod Underground (3,24) was
+also reviewed with the corrected Granny painting and existing chair/ball fixes.
+Verification screenshots stay in ignored `target/model-polish/underground-review`.
+
+
+## Complete human angle review
+
+The optional `people-review` feature adds `render_people_review`, an offline
+GPU capture utility using `PeopleGpu::spawn`: the production skinned meshes,
+UV paintings, head/costume attachments and idle pose. It writes one 3200×1200
+sheet per appearance with front, three-quarter, side and back views. A capture
+advances only after actual screenshot readback and successful PNG save. A
+comma-separated second argument selects an optional subset for iterative review.
+
+```sh
+cargo build --locked -p crystal-voxel-view --features people-review --bin render_people_review
+CRYSTAL_OPEN_MODEL_ROOT=content-packs/open-models/converted target/debug/render_people_review target/people-review
+```
+
+The actual Metal batch produced all 75 appearances (300 views). All PNGs were
+decoded and dimension-checked; the ignored searchable HTML gallery was tested
+in Chrome with all 75 previews decoded, filtering and zero page errors. The
+baseball cap is now fitted to head dimensions with a shallow crown and short
+bill rather than a fixed-height ellipsoid and broad disk.
+
+This batch is evidence of the current state, not approval of the whole cast.
+It exposed front shirt details repeating on backs, incomplete costume coverage,
+and excessive reuse of the same body/face silhouette among color adaptations.
+Eight UV paintings are loaded; the remaining 67 appearances still need their
+individual costume/face pass. Back UV layout and costume silhouettes remain
+open even on painted appearances. Review images and gallery stay ignored.
