@@ -850,3 +850,45 @@ ignored `target/model-polish/goldenrod-review/rail-center.png`. The voxel librar
 passes 983 tests (3 ignored, including the separate pending furniture test in
 this worktree); the WASM compile check passes. This is local native art evidence,
 not public deployment, browser performance, or complete catalog polish.
+
+## External pre-rigged people candidates
+
+The user rejected the authored people and requested pre-rigged open-access
+replacements. Stop refining that kit as the replacement strategy. Downloaded
+Kenney Animated Characters Protagonists and Retro from the official free links:
+
+- https://kenney.nl/assets/animated-characters-protagonists
+- https://kenney.nl/assets/animated-characters-retro
+
+Both local archives identify version 1.1 and CC0 1.0 in `License.txt`. Original
+archives, models, skins, and licenses remain ignored under the main checkout's
+`content-packs/open-models/source/people/kenney-protagonists` and `kenney-retro`.
+Protagonists has four skins (two skaters, criminal, cyborg); Retro has two human
+and two zombie skins. Their supplied previews were inspected; the Protagonists
+style is the preferred first candidate for the papercraft world. These are
+publisher previews, not in-game replacements or proof of runtime animation.
+
+Binary FBX inspection verifies that each pack's `Model/characterMedium.fbx`
+contains a 58-node limb skeleton, one skin deformer and 45 weighted clusters.
+Separate idle/run/jump FBXs have the corresponding same-size skeleton and
+named animation stacks. They are real pre-rigged assets, not static meshes.
+
+Quaternius Ultimate Modular Men/Women are additional CC0 candidates with
+11/10 outfits, swappable body parts and 24 animations:
+https://quaternius.com/packs/ultimatemodularcharacters.html and
+https://quaternius.com/packs/ultimatemodularwomen.html . The Men pack's official
+license was downloaded, but Casual 2, Casual Hoodie and Suit glTF downloads
+returned the publisher's Google Drive quota error. Invalid HTML responses were
+removed; no model from that pack is imported. Universal Base Characters is a
+newer CC0 humanoid option, with a free Standard edition on the author's itch.io:
+https://quaternius.itch.io/universal-base-characters .
+
+Integration is still required. The existing human reader accepts only the
+specific 16-joint rigid-node catalog and explicitly rejects skinning/textures.
+Preserve the imported weights, materials, skeleton and authored clips in a new
+external character path; do not flatten the downloaded people into static props
+or rigidly partition their vertices. Actual game positions/facing/footing and
+controller-owned inputs must remain authoritative. Review idle and locomotion,
+foot contact, actor identity/variety, camera scale, native and browser rendering
+before replacing the catalog. Commit integration code only, never downloads,
+converted people, textures or regenerated packs.
