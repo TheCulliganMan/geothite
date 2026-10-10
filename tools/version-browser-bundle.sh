@@ -58,3 +58,10 @@ if test -s flygon/crystal_flygon_bg.wasm; then
     mv flygon.next.html flygon.html
     rm flygon/crystal_flygon.js
 fi
+
+# Additive images can retain older precompressed sidecars. Refresh every page
+# and browser asset written by this build so gzip requests get the same release.
+for asset in ./*.html ./*.js ./*.css; do
+    test -f "$asset" || continue
+    gzip -9 -c "$asset" > "$asset.gz"
+done
