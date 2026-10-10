@@ -503,21 +503,18 @@ def bats(n):
   for z in ([.73,.42] if n=='GOLBAT' else [.64]):rod('White fang',(s*.072,-.19,z),(s*.065,-.198,z-.065),.023,'white',.001)
   if purple:fin('Second wing pair',[(s*.11,.035,.43),(s*.48,.035,.27),(s*.56,.025,.09),(s*.27,.03,.19)],c,.03)
   else:rod('Tiny foot',(s*.07,0,.25),(s*.09,-.05,.11),.021,c,.010)
-@register('MAREEP FLAAFFY AMPHAROS',1.15)
+@register('MAREEP FLAAFFY',1.15)
 def sheep(n):
- final=n=='AMPHAROS';mid=n=='FLAAFFY';c='yellow' if final else ('pink' if mid else 'navy')
- if final:
-  sph('Tall beacon body',(0,0,.44),(.23,.19,.35),c);sph('Cream belly',(0,-.169,.4),(.14,.035,.22),'cream');rod('Long neck',(0,0,.65),(0,-.02,.97),.115,c);sph('Head',(0,-.03,1.03),(.16,.16,.16),c);feet(c);arms(c,.61,.20);eyes(1.05,-.172,.075,.032);sph('Forehead red beacon',(0,-.166,1.15),(.036,.018,.044),'red')
- else:
-  if mid:
-   sph('Upright pink sheep body',(0,0,.35),(.23,.18,.28),c);sph('Pink sheep head',(0,-.13,.80),(.17,.16,.17),c);feet(c,.16);arms(c,.43,.22);eyes(.84,-.278,.085,.028)
-  else:quad(c,(.26,.29,.25),(.16,-.29,.62),False);eyes(.65,-.428,.085,.028)
-  for i in range(12):a=i*math.tau/12;sph('Soft fleece curl',(.23*math.cos(a),.07+.23*math.sin(a),.48 if not mid else .55),(.105,.10,.13),'white' if mid else 'cream')
-  for x,y in [(-.12,-.08),(0,.10),(.12,-.08)]:sph('Crown wool',(x,y,.97 if mid else .66),(.12,.12,.12),'white' if mid else 'cream')
+ mid=n=='FLAAFFY';c='pink' if mid else 'navy'
+ if mid:
+  sph('Upright pink sheep body',(0,0,.35),(.23,.18,.28),c);sph('Pink sheep head',(0,-.13,.80),(.17,.16,.17),c);feet(c,.16);arms(c,.43,.22);eyes(.84,-.278,.085,.028)
+ else:quad(c,(.26,.29,.25),(.16,-.29,.62),False);eyes(.65,-.428,.085,.028)
+ for i in range(12):a=i*math.tau/12;sph('Soft fleece curl',(.23*math.cos(a),.07+.23*math.sin(a),.48 if not mid else .55),(.105,.10,.13),'white' if mid else 'cream')
+ for x,y in [(-.12,-.08),(0,.10),(.12,-.08)]:sph('Crown wool',(x,y,.97 if mid else .66),(.12,.12,.12),'white' if mid else 'cream')
  for s in (-1,1):
-  z=1.10 if final else (.89 if mid else .69);rod('Long black ear',(s*.13,-.01 if final else -.22,z),(s*.28,.02 if final else -.21,z+.07),.045,'ink',.025)
-  rod('Yellow ear band',(s*.20,.005 if final else -.215,z+.033),(s*.24,.015 if final else -.212,z+.053),.047,'yellow')
- tube('Segmented tail',[(0,.18,.25),(0,.41,.25),(.08,.57,.43)],[.052,.045,.03],c);sph('Tail beacon',(.08,.57,.43),(.09,.08,.09),'red' if final else ('blue' if mid else 'orange'))
+  z=.89 if mid else .69;rod('Long black ear',(s*.13,-.22,z),(s*.28,-.21,z+.07),.045,'ink',.025)
+  rod('Yellow ear band',(s*.20,-.215,z+.033),(s*.24,-.212,z+.053),.047,'yellow')
+ tube('Segmented tail',[(0,.18,.25),(0,.41,.25),(.08,.57,.43)],[.052,.045,.03],c);sph('Tail beacon',(.08,.57,.43),(.09,.08,.09),'blue' if mid else 'orange')
  for y in (.31,.42):rod('Black tail band',(0,y,.26),(0,y+.05,.26),.053,'ink')
 @register('WOOPER QUAGSIRE',.98)
 def axolotls(n):
@@ -1565,6 +1562,10 @@ def psychic_cats(n):
  tube('Long curved psychic tail',[(0,.14,.28),(0,.40,.29),(.24,.63,.52),(.43,.48,.89),(.39,.27,1.14)],[.115 if large else .04,.10 if large else .035,.065 if large else .025,.05 if large else .018,.03 if large else .014],'purple' if large else 'pink')
  if large:tube('Back neck tube',[(0,.11,.73),(0,.24,.85),(0,.13,1.03)],.036,'lilac')
 
+@register('AMPHAROS', 1.35)
+def sculpted_ampharos(n):
+ raise RuntimeError('Ampharos is exported by its connected sculpture recipe before Blender batching')
+
 # Spearow has its own compact canonical GLB recipe. It is emitted before
 # Blender batching and never recreated as a generic bird or duplicate .blend.
 @register('SPEAROW', .75)
@@ -1636,6 +1637,12 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ if 'ampharos' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from ampharos_sculpt import sculpture
+  (OUT/'ampharos.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+  names.remove('ampharos')
+  print('ampharos: connected beacon sculpture with fitted facial and body markings',flush=True)
  if 'meganium' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from meganium_glb import export_meganium
