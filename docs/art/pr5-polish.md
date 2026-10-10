@@ -782,3 +782,26 @@ as `facades-south-final.png`, `facades-center-final.png`, and
 `facades-north-final.png`. These verify local native appearance only. Broad
 street surfaces, landmark construction, and other cities remain unfinished;
 this increment does not establish complete city or full-catalog polish.
+
+## Goldenrod street materials
+
+Goldenrod's recognized brick-road cells now use smaller staggered paper brick
+courses with restrained color variation, mortar, and edge shading. Recognized
+path cells use larger pale limestone flags. A narrow flat curb course separates
+actual path/brick neighbors. Material identities and the original acreage stay
+authoritative; this finish does not replace unknown artwork or add navigation.
+
+Courses and individual stone colors are anchored in map coordinates. Clipping
+a partial stone at a source-cell boundary creates no extra joint. All surface
+pieces partition the original flat plane at its original height, with upward
+normals. Regression checks cover total area, interior overlap/hole probes,
+plot bounds, camera translation, and source-material requirements for curbs.
+
+Production native Metal captures at the same south, center, and north Goldenrod
+positions were reviewed under ignored `target/model-polish/goldenrod-review/`
+as `paving-south.png`, `paving-center.png`, and `paving-north.png`. Building
+fade, the garden beds, and the original railway crossing remain visible in
+those scenes. Library tests and the WASM compile check pass. These captures
+prove local native appearance, not public deployment or browser performance.
+Full model/catalog polish, other cities, and broader street composition remain
+open.

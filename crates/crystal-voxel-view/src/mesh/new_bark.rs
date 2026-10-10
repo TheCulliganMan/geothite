@@ -1705,8 +1705,11 @@ impl GroundShadow {
 mod ground_blend;
 #[path = "forest_floor.rs"]
 mod forest_floor;
+#[path = "city_paving.rs"]
+mod city_paving;
 
 struct GroundFinish<'a> {
+    city_paving: Option<Vec<u8>>,
     forest: bool,
     blend: ground_blend::GroundBlend,
     geometry: &'a GridGeometry,
@@ -1803,8 +1806,10 @@ impl<'a> GroundFinish<'a> {
                 }
             } }
         }
+        let city_paving = (map == "GoldenrodCity").then(|| city_paving::borders(&materials, geometry));
         let blend = ground_blend::GroundBlend::new(&materials, geometry);
         Self {
+            city_paving,
             forest: cells.iter().any(|t| t.source.tileset_id.as_ref() == "forest"),
             blend,
             geometry,
@@ -1868,6 +1873,13 @@ impl<'a> GroundFinish<'a> {
         let [w, e, n, s] = face_bounds(&positions);
         let full_cell = (e - w - self.geometry.tile_width).abs() < 0.001
             && (s - n - self.geometry.tile_height).abs() < 0.001;
+        if full_cell && matches!(material, GroundMaterial::Path | GroundMaterial::Pavers)
+            && let Some(borders) = &self.city_paving {
+            let flags = cell_at(self.geometry,(w+e)*0.5,(n+s)*0.5)
+                .and_then(|i| borders.get(i)).copied().unwrap_or(0);
+            city_paving::append(mesh, positions, self.geometry, self.map_origin, material, flags);
+            return;
+        }
         if full_cell && material == GroundMaterial::Pavers {
             let column = ((w - self.geometry.origin_x) / self.geometry.tile_width).round() as i32
                 + self.map_origin[0];
@@ -2961,6 +2973,7 @@ mod tests {
         let cells: Vec<_> = f.tiles.iter().collect();
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: fast.blend.clone(),
             geometry: &g,
@@ -3087,6 +3100,7 @@ mod tests {
         let cells: Vec<_> = f.tiles.iter().collect();
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: fast.blend.clone(),
             geometry: &g,
@@ -3142,6 +3156,7 @@ mod tests {
                 < shadow.darkness([-28.0, 0.0, -32.0], &geometry)
         );
         let finish = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: Default::default(),
             geometry: &geometry,
@@ -3150,6 +3165,7 @@ mod tests {
             shadow_cells: None,
         };
         let unshaded = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: Default::default(),
             geometry: &geometry,
@@ -3186,6 +3202,7 @@ mod tests {
         let frame = frame(1, 1, vec![source_with_tile(0x01, 0, 0, 0x06)]);
         let geometry = geometry(&frame);
         let finish = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: Default::default(),
             geometry: &geometry,
@@ -3194,6 +3211,7 @@ mod tests {
             shadow_cells: None,
         };
         let shifted = GroundFinish {
+            city_paving: None,
             forest: false,
             blend: Default::default(),
             geometry: &geometry,
