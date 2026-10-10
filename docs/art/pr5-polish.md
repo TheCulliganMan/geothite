@@ -30,11 +30,11 @@ authored scripts and attack effects remain authoritative.
 
 ## Current assessment
 
-The complementary-species sheets have been visually inspected. Many families
+The baseline complementary-species sheets have been visually inspected. Many families
 still need reconstruction, rather than a material adjustment: detached ball
 heads and bellies, cylindrical limbs, protruding eyeballs and repeated family
-silhouettes dominate the existing first pass. Clear examples include the
-Machop family, Abra/Alakazam, Drowzee/Hypno, evolution pairs such as
+silhouettes dominate the existing first pass. Clear baseline examples include the
+Machop family (now reconstructed below), Abra/Alakazam, Drowzee/Hypno, evolution pairs such as
 Croconaw/Feraligatr, and the generic quadrupeds. The more recently sculpted
 starters, Gengar and birds also require final camera and motion review.
 
@@ -82,3 +82,53 @@ outward chest faces, paired anatomy and grounded height. Model inspection found
 and corrected an inverted belly-panel edge closure before publication. Neutral
 before/after views are reviewed. Final in-game battle review and articulation
 remain open; this increment does not finish Ampharos or the broader catalog.
+
+## Machop-family reconstruction
+
+The three previous models shared a sphere head, cylindrical limbs and nearly
+the same torso. Their replacements have distinct anatomical profiles:
+
+- Machop has a larger head relative to its narrower young body, a curved tail,
+  lower arms, broad palms and planted three-toed feet.
+- Machoke has a long-legged, angular wrestler silhouette, shaped deltoids,
+  narrower elbows, fitted red arm markings and a waist-following belt/trunks.
+- Machamp has a broader chest and shoulders, separate upper and lower arm
+  attachments, four independent squared hands, thick thighs and broad lips.
+
+Each torso joins pelvis, waist, chest, neck, jaw and cranium into one closed
+surface. Pectoral relief is part of that surface; the initial detached chest
+volumes were rejected during inspection. All faces have fitted almond eyes
+and shallow pupils, with three swept cranial plates rather than pointed
+ornaments. The static source heights stay 0.85/1.15/1.45 units, retaining the
+existing pack-derived physical scale. No animation or attack event is added.
+
+`tools/machop_sculpt.py` authors all three canonical JSON models. The batch
+builder delegates to it and no longer contains the old Machop-family geometry.
+`tools/sculpt_geometry.py` shares closed surface construction with Ampharos;
+the refactor reproduces Ampharos's canonical JSON exactly. Species anatomy
+and palettes remain in their own recipes.
+
+| Species | Closed parts | Triangles |
+| --- | ---: | ---: |
+| Machop | 32 | 3,628 |
+| Machoke | 41 | 4,144 |
+| Machamp | 51 | 5,216 |
+
+The four new family checks verify actual stored topology, oriented closure,
+finite unit normals agreeing with triangles, source reproduction, scale,
+planted toes, fitted eyes, two/four arm anatomy and distinct proportional
+widths. They caught inward-facing smooth normals at two early elbow shapes;
+the elbow geometry was revised before acceptance. Front, three-quarter and
+rear model renders have been reviewed. The existing species validator passes
+on the four remodeled species as an explicitly scoped subset. All 957 voxel
+tests pass with three existing ignored checks. The four Ampharos checks also
+continue to pass.
+
+```sh
+python3 tools/machop_sculpt.py
+python3 tools/test_machop_sculpt.py
+```
+
+This is a static anatomy increment. In-game camera/readability, animated
+clearance and species articulation remain open for all three models, alongside
+the full catalog's remaining workstreams.

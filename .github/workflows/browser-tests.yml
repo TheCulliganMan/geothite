@@ -49,6 +49,7 @@ jobs:
       - run: python3 tools/test_gengar_glb.py
       - run: python3 tools/test_spearow_glb.py
       - run: python3 tools/test_ampharos_sculpt.py
+      - run: python3 tools/test_machop_sculpt.py
       - run: python3 tools/human_locomotion.py
       - run: python3 tools/test_model_asset_storage.py
       - run: python3 tools/test_johto_art_sources.py

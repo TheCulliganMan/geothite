@@ -1411,12 +1411,12 @@ def psychic_humanoids(n):
    for s in ((-1,1) if final else (1,)):
     rod('Held spoon stem',(s*.37,-.13,.32),(s*.39,-.14,.60),.012,'silver');sph('Spoon bowl',(s*.40,-.14,.65),(.055,.021,.077),'silver')
    fin('Forehead red star',[(0,-.207,1.0),(-.025,-.213,.94),(-.07,-.202,.94),(-.033,-.215,.90),(-.05,-.21,.85),(0,-.223,.885),(.05,-.21,.85),(.033,-.215,.90),(.07,-.202,.94),(.025,-.213,.94)],'red',.006)
-@register('MACHOP MACHOKE MACHAMP TYROGUE HITMONLEE HITMONCHAN HITMONTOP',1.18)
+@register('TYROGUE HITMONLEE HITMONCHAN HITMONTOP',1.18)
 def martial_artists(n):
- gray=n.startswith('MACH');lee=n=='HITMONLEE';chan=n=='HITMONCHAN';top=n=='HITMONTOP';baby=n=='TYROGUE';c='stone' if gray else ('lilac' if baby else 'tan');sph('Athletic torso',(0,0,.62 if lee else .48),(.23,.17,.28),c);feet(c,.18,s=(.10,.17,.065))
+ lee=n=='HITMONLEE';chan=n=='HITMONCHAN';top=n=='HITMONTOP';baby=n=='TYROGUE';c='lilac' if baby else 'tan';sph('Athletic torso',(0,0,.62 if lee else .48),(.23,.17,.28),c);feet(c,.18,s=(.10,.17,.065))
  for s in (-1,1):
   tube('Powerful leg',[(s*.12,0,.47 if lee else .27),(s*.17,-.02,.27 if lee else .16),(s*.18,-.035,.08)],[.06,.055,.05] if lee else [.08,.072,.064],c)
-  for z in ([.67,.43] if n=='MACHAMP' else [.60]):
+  for z in [.60]:
    tube('Bent muscular arm',[(s*.20,0,z),(s*.34,-.035,z-.09),(s*.38,-.16,z+.05)],[.08,.085,.065],c);sph('Boxing glove' if chan else 'Clenched fist',(s*.39,-.18,z+.09),(.10,.085,.10),'red' if chan else c)
  if lee:
   sph('Oval headless upper body',(0,-.02,.73),(.24,.18,.22),'tan');eyes(.78,-.191,.12,.035)
@@ -1424,15 +1424,11 @@ def martial_artists(n):
    for z in (.12,.20,.28,.36,.43):ring('Spring leg band',(s*.17,-.01,z),.068,.010,'brown',(0,0,0))
  else:
   sph('Fighter head',(0,-.02,.86),(.20,.17,.19),c);eyes(.91,-.179,.11,.028);mouth(-.196,.79,.09)
-  if gray:
-   for i in (-1,0,1):leaf('Three cranial ridges',(i*.075,0,1.00),(i*.09,.065,1.22-.04*abs(i)),.035,'brown')
-  elif top:ico('Conical spinning head cap',(0,.015,1.04),(.24,.19,.18),'brown',1);rod('Head spin point',(0,.015,1.16),(0,.015,1.35),.07,'brown',.001)
+  if top:ico('Conical spinning head cap',(0,.015,1.04),(.24,.19,.18),'brown',1);rod('Head spin point',(0,.015,1.16),(0,.015,1.35),.07,'brown',.001)
   elif baby:
    for i in (-1,0,1):leaf('Three scalp spikes',(i*.06,0,1.0),(i*.085,0,1.18),.04,'lilac')
   else:
    for i in range(5):leaf('Crownlike hair',(i*.05-.10,0,1.0),(i*.075-.15,.035,1.17),.038,'tan')
- if n in ('MACHOKE','MACHAMP'):
-  sph('Black briefs',(0,0,.26),(.235,.18,.12),'ink');ring('Championship belt',(0,0,.35),.207,.029,'gold',(0,0,0));sph('Gold buckle',(0,-.193,.35),(.065,.026,.057),'gold')
  if chan:
   for i in range(8):a=i*math.tau/8;leaf('Purple tunic hem',(0,0,.35),(.28*math.cos(a),.20*math.sin(a),.21),.075,'purple')
  if baby:sph('Brown shorts',(0,0,.25),(.22,.16,.12),'brown')
@@ -1562,6 +1558,10 @@ def psychic_cats(n):
  tube('Long curved psychic tail',[(0,.14,.28),(0,.40,.29),(.24,.63,.52),(.43,.48,.89),(.39,.27,1.14)],[.115 if large else .04,.10 if large else .035,.065 if large else .025,.05 if large else .018,.03 if large else .014],'purple' if large else 'pink')
  if large:tube('Back neck tube',[(0,.11,.73),(0,.24,.85),(0,.13,1.03)],.036,'lilac')
 
+@register('MACHOP MACHOKE MACHAMP', 1.18)
+def sculpted_fighting_family(n):
+ raise RuntimeError('The fighting family is exported by its dedicated sculpture recipe before Blender batching')
+
 @register('AMPHAROS', 1.35)
 def sculpted_ampharos(n):
  raise RuntimeError('Ampharos is exported by its connected sculpture recipe before Blender batching')
@@ -1637,6 +1637,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('machop','machoke','machamp'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from machop_sculpt import sculpture as fighting_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(fighting_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': distinct fighting anatomy with grounded toes and fitted faces',flush=True)
  if 'ampharos' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from ampharos_sculpt import sculpture
