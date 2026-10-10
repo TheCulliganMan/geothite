@@ -12,7 +12,7 @@ fn variant(at: [i32; 2]) -> usize {
 }
 
 // Six closed faces, with key/fill shading matching the fitted building kit.
-fn block(mesh: &mut SurfaceMeshData, b: [f32; 6], color: [f32; 3]) {
+pub(super) fn block(mesh: &mut SurfaceMeshData, b: [f32; 6], color: [f32; 3]) {
     let [w, e, y, h, n, s] = b;
     let light = Vec3::new(-0.35, 0.85, 0.4).normalize();
     for (p, normal) in [

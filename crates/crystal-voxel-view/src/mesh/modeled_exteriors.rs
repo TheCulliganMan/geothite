@@ -9,6 +9,8 @@ mod kanto_capped_posts;
 mod structure_extensions;
 #[path = "city_facades.rs"]
 mod city_facades;
+#[path = "folded_roofs.rs"]
+pub(super) mod folded_roofs;
 use crate::exterior_models::{Kind, model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -473,6 +475,12 @@ pub(super) fn append_building(
     }
     if map == "GoldenrodCity" && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset {
         city_facades::finish(&mut mesh.solid, cutaway_start, model(kind), b, g.tile_height * 2.0, door,
+            [p.column as i32 + map_origin[0], p.row as i32 + map_origin[1]]);
+    }
+    if let Asset::World(kind @ (Kind::ModernHouse | Kind::ModernBlank | Kind::ModernShop
+        | Kind::ModernMart | Kind::ModernGym | Kind::ModernStation
+        | Kind::ModernDepartment | Kind::ModernArcade)) = d.asset {
+        folded_roofs::append(&mut mesh.solid, cutaway_start, model(kind), g.tile_height * 2.0,
             [p.column as i32 + map_origin[0], p.row as i32 + map_origin[1]]);
     }
     // Eligibility belongs only to this successful authored building append.

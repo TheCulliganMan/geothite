@@ -808,3 +808,26 @@ those scenes. Library tests and the WASM compile check pass. These captures
 prove local native appearance, not public deployment or browser performance.
 Full model/catalog polish, other cities, and broader street composition remain
 open.
+
+## Folded modern roof decks
+
+The modern exterior kit's named blue weathering deck now receives narrow raised
+paper folds, shallow cross-course joins, and optional low pitched skylights.
+Map-coordinate selection varies seam spacing, skylight size/position, and leaves
+some roofs without skylights. This applies to recognized complete blue-deck
+modern residential and civic shells; red/teal roofs and other kits retain their
+existing construction. The original shell vertices/colors, hatch, doors, and
+footprint remain intact. All added geometry joins the building's fade range.
+
+Regression checks preserve the shell, bound the additions inside the footprint,
+require finite geometry, unit normals, nondegenerate outward-facing triangles,
+and deterministic construction with distinct coordinate variants. The existing
+cutaway integration regression includes the roof finish. The current worktree's
+voxel library suite passes (982 tests, 3 ignored; includes the separate pending
+furniture alignment test), and the WASM compile check passes.
+
+Actual native Metal captures at Goldenrod `(26, 8)` and `(20, 18)` were reviewed
+as ignored `target/model-polish/goldenrod-review/roofs-north.png` and
+`roofs-center.png`. This is local appearance evidence, not public deployment or
+browser performance verification. The railway, broader landmark silhouettes,
+connected-city continuity, and full character/world catalog remain open.

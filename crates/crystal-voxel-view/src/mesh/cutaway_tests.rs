@@ -174,6 +174,12 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
                 door_x,
             );
         }
+        if tileset == "johto_modern" {
+            modeled_exteriors::folded_roofs::append(
+                &mut expected, 3, exterior_models::model(exterior_models::Kind::ModernGym),
+                g.tile_height * 2.0, [p.column as i32, p.row as i32],
+            );
+        }
         let refs: Vec<_> = cells.iter().collect();
         let appended = if connected {
             new_bark::append_building(&mut terrain, &refs, &shapes, &g, map, p, &mut claimed)
@@ -192,7 +198,7 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
         assert!(appended, "{map}");
         let building_end = terrain.solid.positions.len();
         expected.cutaway_ranges.push(3..building_end);
-        // Geometry, indices, UV0 and baked colors are identical to the original fit.
+        // Geometry, indices, UV0 and baked colors match the fitted shell and roof finish.
         assert_eq!(terrain.solid, expected, "{map}");
         assert!(terrain.textured.cutaway_ranges.is_empty(), "backing: {map}");
         assert_eq!(terrain.footing_heights, vec![7.0; cells.len()]);
