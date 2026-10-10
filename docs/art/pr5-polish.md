@@ -736,3 +736,26 @@ crown reveal. The current optimized WASM build also compiles successfully;
 this floor refinement has native scene evidence, while the earlier browser
 movement/Start review remains separate evidence. Review captures stay ignored
 under `target/model-polish/forest-litter-final/`.
+
+## Goldenrod ornamental gardens
+
+A native Metal review of Goldenrod at `(26, 8)` exposed the flat ornamental
+patch beside the northern landmark. This is the complete Johto Modern `$66`
+drawing, distinct from ordinary animated flower tiles. The new map-scoped
+mesher requires all sixteen original source cells and honors existing object
+ownership. Partial or edited drawings retain their source art.
+
+The drawing now has two shallow paper-edged beds with green soil, raised coral
+and pale flowers, and warm ornamental paving. Flower height and orientation
+are seeded in map coordinates. Geometry stays inside the original plot;
+collision, actors, scripts, saves, and gameplay state are unaffected. The
+existing flower model is reused; no downloaded assets are added.
+
+Verification uses the actual pack and production Bevy renderer on Apple M5
+Metal. Matching before/after captures remain ignored under
+`target/model-polish/goldenrod-review/GoldenrodCity-north-2.5d.png` and
+`target/model-polish/goldenrod-review/gardens-final.png`. The source-identity
+regression rejects incomplete drawings, ownership conflicts, and other maps,
+and bounds geometry to the source plot. This is local native visual evidence;
+public deployment and browser performance are unverified. Building repetition
+and broad city paving remain unfinished.

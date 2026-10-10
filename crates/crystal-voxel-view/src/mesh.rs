@@ -41,6 +41,8 @@ mod gym_scenery;
 mod violet_gym_pits;
 #[path = "mesh/train_station_scenery.rs"]
 mod train_station_scenery;
+#[path = "mesh/city_gardens.rs"]
+mod city_gardens;
 #[path = "mesh/modeled_exteriors.rs"]
 mod modeled_exteriors;
 #[path = "mesh/modeled_interiors.rs"]

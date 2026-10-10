@@ -405,6 +405,10 @@ fn build_terrain_mesh_internal(
         .collect();
     let mut claimed_by_building = vec![false; cell_count];
     let mut claimed_by_tree = live_claimed;
+    if authored_enabled && images.is_some() {
+        city_gardens::append(&mut mesh, &frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), &mut claimed_by_tree);
+    }
     for placement in &facility_radio_placements {
         let appended = facility_radio::append(
             &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
