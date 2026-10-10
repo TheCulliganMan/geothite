@@ -184,6 +184,7 @@ struct FrozenLeaf {
     object: Option<Entity>,
 }
 struct FrozenMaterial {
+    alpha_cutoff: Option<f32>,
     handle: Handle<VoxelMaterial>,
     object: Option<Entity>,
 }
@@ -200,6 +201,13 @@ fn advance_opacity(opacity: f32, faded: bool, seconds: f32) -> f32 {
         target
     } else {
         next
+    }
+}
+
+fn retained_alpha_mode(opacity: f32, cutoff: Option<f32>) -> AlphaMode {
+    match opacity_mode(opacity) {
+        AlphaMode::Opaque => cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask),
+        mode => mode,
     }
 }
 
@@ -947,10 +955,20 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
                 );
             }
         }
+        let cutoff = match material.base.alpha_mode {
+            AlphaMode::Mask(v) => Some(v),
+            AlphaMode::Blend if material.extension.cutaway.fade.w > 0.0 => Some(material.extension.cutaway.fade.w),
+            _ => None,
+        };
         material.extension.cutaway = default();
+        material.base.alpha_mode = cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask);
         // Any transparency inherited from world reveal is reset. Whole-object
         // battle reveal is computed from this encounter camera independently.
-        material.base.alpha_mode = AlphaMode::Opaque;
+        // A wall's temporary reveal must reset, but a leaf's authored cutout
+        // is part of its geometry and must survive the frozen encounter.
+        if !matches!(material.base.alpha_mode, AlphaMode::Mask(_)) {
+            material.base.alpha_mode = AlphaMode::Opaque;
+        }
         material_copies.insert(key, material);
     }
     // The encounter owns this atlas copy. A narrowly proven floor grade makes
@@ -980,8 +998,10 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
                     *texture = handle.clone();
                 }
             }
+            let alpha_cutoff = match material.base.alpha_mode { AlphaMode::Mask(v) => Some(v), _ => None };
             let handle = world.resource_mut::<Assets<VoxelMaterial>>().add(material);
             frozen_materials.push(FrozenMaterial {
+                alpha_cutoff,
                 handle: handle.clone(),
                 object: key.1,
             });
@@ -1076,8 +1096,8 @@ pub(super) fn sync(
             .object
             .and_then(|id| scene.objects.get(&id))
             .map_or(1.0, |object| object.opacity);
-        let value = Vec4::new(1.0 - opacity, dark, white, 0.0);
-        let alpha_mode = opacity_mode(opacity);
+        let value = Vec4::new(1.0 - opacity, dark, white, retained.alpha_cutoff.unwrap_or(0.0));
+        let alpha_mode = retained_alpha_mode(opacity, retained.alpha_cutoff);
         if materials
             .get(&retained.handle)
             .is_some_and(|m| m.extension.cutaway.fade != value || m.base.alpha_mode != alpha_mode)
@@ -1795,6 +1815,39 @@ mod tests {
             });
         (app, leaf, mesh, material, image)
     }
+    #[test]
+    fn retained_faded_world_crown_recovers_mask_and_keeps_it_through_opacity_updates() {
+        let (mut app, _, _, material, _) = app_fixture();
+        let mut materials = app.world_mut().resource_mut::<Assets<VoxelMaterial>>();
+        let source = materials.get_mut(&material).unwrap();
+        source.base.alpha_mode = AlphaMode::Blend;
+        source.extension.cutaway.fade = Vec4::new(0.8, 0.0, 0.0, 0.63);
+        drop(materials);
+        prepare(app.world_mut());
+        let frozen = app.world().resource::<EncounterTerrain>().frozen.as_ref().unwrap();
+        assert_eq!(frozen.materials[0].alpha_cutoff, Some(0.63));
+        let copy = app.world().resource::<Assets<VoxelMaterial>>().get(&frozen.materials[0].handle).unwrap();
+        assert_eq!(copy.base.alpha_mode, AlphaMode::Mask(0.63));
+        assert_eq!(retained_alpha_mode(1.0, Some(0.63)), AlphaMode::Mask(0.63));
+        assert_eq!(retained_alpha_mode(0.2, Some(0.63)), AlphaMode::Blend);
+    }
+
+    #[test]
+    fn retained_encounter_preserves_cutout_material_and_alpha_pixels() {
+        let (mut app, _, _, material, image)=app_fixture();
+        app.world_mut().resource_mut::<Assets<VoxelMaterial>>().get_mut(&material).unwrap().base.alpha_mode=AlphaMode::Mask(0.5);
+        app.world_mut().resource_mut::<Assets<Image>>().get_mut(&image).unwrap().data[3]=0;
+        prepare(app.world_mut());
+        let root=app.world().resource::<EncounterTerrain>().frozen.as_ref().unwrap().root;
+        let child=app.world().get::<Children>(root).unwrap()[0];
+        let copied=app.world().get::<Handle<VoxelMaterial>>(child).unwrap();
+        let material=app.world().resource::<Assets<VoxelMaterial>>().get(copied).unwrap();
+        assert_eq!(material.base.alpha_mode,AlphaMode::Mask(0.5));
+        let copied_image=material.base.base_color_texture.as_ref().unwrap();
+        assert_ne!(copied_image,&image);
+        assert_eq!(app.world().resource::<Assets<Image>>().get(copied_image).unwrap().data[3],0);
+    }
+
     #[test]
     fn handles_are_reused_assets_are_frozen_once_and_retirement_cleans_only_the_instances() {
         let (mut app, original, mesh, material, image) = app_fixture();

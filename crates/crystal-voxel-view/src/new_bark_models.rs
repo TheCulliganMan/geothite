@@ -68,6 +68,9 @@ struct Primitive {
     normals: Vec<f32>,
     indices: Vec<u32>,
     base_color: [f32; 4],
+    #[serde(default)]
+    uvs: Vec<f32>,
+    texture: Option<crate::scenery_surfaces::EncodedTexture>,
 }
 
 #[derive(Deserialize)]
@@ -77,6 +80,7 @@ struct Export {
 }
 
 pub(crate) struct Model {
+    textured: Vec<crate::scenery_surfaces::ScenerySurface>,
     surface: SurfaceMeshData,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
@@ -84,9 +88,12 @@ pub(crate) struct Model {
 }
 
 impl Model {
-    fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
+    pub(crate) fn parse<'a>(
+        json: impl Into<crate::model_storage::Source<'a>>,
+    ) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
+        let mut textured = Vec::new();
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for primitive in export.primitives {
@@ -112,27 +119,54 @@ impl Model {
             {
                 return Err("invalid authored mesh primitive".into());
             }
-            let base = surface.positions.len() as u32;
+            let texture = primitive
+                .texture
+                .map(crate::scenery_surfaces::SceneryTexture::decode)
+                .transpose()?;
+            if texture.is_some()
+                && (primitive.uvs.len() != vertex_count * 2
+                    || primitive.uvs.iter().any(|v| !v.is_finite()))
+            {
+                return Err("invalid external scenery UVs".into());
+            }
+            let mut part = SurfaceMeshData::default();
+            let target = if texture.is_some() {
+                &mut part
+            } else {
+                &mut surface
+            };
+            let base = target.positions.len() as u32;
             for position in primitive.positions.chunks_exact(3) {
                 let position = [position[0], position[1], position[2]];
                 for axis in 0..3 {
                     min[axis] = min[axis].min(position[axis]);
                     max[axis] = max[axis].max(position[axis]);
                 }
-                surface.positions.push(position);
-                surface.uvs.push([0.0, 0.0]);
-                surface.colors.push(primitive.base_color);
+                target.positions.push(position);
+                target.uvs.push(if texture.is_some() {
+                    let index = target.uvs.len() * 2;
+                    [primitive.uvs[index], primitive.uvs[index + 1]]
+                } else {
+                    [0.0, 0.0]
+                });
+                target.colors.push(primitive.base_color);
             }
             for normal in primitive.normals.chunks_exact(3) {
                 let normal = Vec3::new(normal[0], normal[1], normal[2]);
                 if normal.length_squared() < 0.000_001 {
                     return Err("zero normal in authored mesh".into());
                 }
-                surface.normals.push(normal.normalize().to_array());
+                target.normals.push(normal.normalize().to_array());
             }
-            surface
+            target
                 .indices
                 .extend(primitive.indices.into_iter().map(|i| base + i));
+            if let Some(texture) = texture {
+                textured.push(crate::scenery_surfaces::ScenerySurface {
+                    mesh: part,
+                    texture,
+                });
+            }
         }
         if (0..3).any(|axis| !min[axis].is_finite() || max[axis] <= min[axis]) {
             return Err("empty or flat authored model".into());
@@ -143,11 +177,41 @@ impl Model {
             return Err("invalid authored doorway anchor".into());
         }
         Ok(Self {
+            textured,
             surface,
             min,
             max,
             door_anchor: export.door_anchor,
         })
+    }
+
+    pub(crate) fn has_cutout_foliage(&self) -> bool { !self.textured.is_empty() }
+
+    pub(crate) fn append_textured_fitted(
+        &self,
+        groups: &mut Vec<crate::scenery_surfaces::ScenerySurface>,
+        bounds: [f32; 4],
+        base: f32,
+        height: f32,
+    ) {
+        for part in &self.textured {
+            let adapter = Self {
+                surface: part.mesh.clone(),
+                textured: Vec::new(),
+                min: self.min,
+                max: self.max,
+                door_anchor: self.door_anchor,
+            };
+            let mut mesh = SurfaceMeshData::default();
+            adapter.append_fitted(&mut mesh, bounds, base, height, None);
+            crate::scenery_surfaces::append_group(
+                groups,
+                crate::scenery_surfaces::ScenerySurface {
+                    mesh,
+                    texture: part.texture.clone(),
+                },
+            );
+        }
     }
 
     pub(crate) fn surface_mesh(&self) -> SurfaceMeshData {
@@ -333,12 +397,59 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
             crate::model_storage::include_model!("models/new_bark/flowers.mesh.json"),
         ),
     };
-    cache.get_or_init(|| Model::parse(json).expect("checked-in authored mesh must be valid"))
+    cache.get_or_init(|| match kind {
+        ModelKind::Tree => {
+            crate::open_models::load("models/new_bark/tree.mesh.json", json, |s| Model::parse(s))
+        }
+        ModelKind::TreeLod => {
+            crate::open_models::load("models/johto/tree_lod.mesh.json", json, |s| Model::parse(s))
+        }
+        _ => Model::parse(json).expect("checked-in authored mesh must be valid"),
+    })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn textured_trees_preserve_uvs_fit_source_bounds_and_share_material_groups() {
+        use base64::Engine as _;
+        let fixture = serde_json::json!({"primitives":[{
+            "positions":[0,0,0, 2,0,0, 0,3,0, 0,0,4],
+            "normals":[0,1,0, 0,1,0, 0,1,0, 0,1,0],
+            "indices":[0,2,1, 0,1,3, 0,3,2, 1,2,3],
+            "base_color":[1,1,1,1], "uvs":[0,0, 1,0, 0,1, 1,1],
+            "texture":{"width":1,"height":1,"rgba_base64":base64::engine::general_purpose::STANDARD.encode([255,255,255,128]),"alpha_cutoff":0.5,"double_sided":true}
+        }]});
+        let model = Model::parse(fixture.to_string().as_str()).unwrap();
+        assert!(model.surface_mesh().positions.is_empty());
+        let mut groups = Vec::new();
+        model.append_textured_fitted(&mut groups, [10., 14., 20., 28.], 5., 2.);
+        model.append_textured_fitted(&mut groups, [30., 34., 40., 48.], 6., 2.);
+        assert_eq!(groups.len(), 1);
+        assert_eq!(
+            groups[0].mesh.positions[..4],
+            [
+                [10., 5., 20.],
+                [14., 5., 20.],
+                [10., 11., 20.],
+                [10., 5., 28.]
+            ]
+        );
+        assert_eq!(
+            groups[0].mesh.uvs[..4],
+            [[0., 0.], [1., 0.], [0., 1.], [1., 1.]]
+        );
+        assert_eq!(
+            groups[0].mesh.indices[12..],
+            [4, 6, 5, 4, 5, 7, 4, 7, 6, 5, 6, 7]
+        );
+        assert!(groups[0].mesh.normals.iter().all(|n| *n == [0., 1., 0.]));
+        let mut invalid = fixture;
+        invalid["primitives"][0]["uvs"] = serde_json::json!([0, 0]);
+        assert!(Model::parse(invalid.to_string().as_str()).is_err());
+    }
 
     #[test]
     fn embedded_models_have_complete_valid_triangles() {
@@ -363,16 +474,20 @@ mod tests {
             assert_eq!(model.surface.positions.len(), model.surface.normals.len());
             assert_eq!(model.surface.positions.len(), model.surface.colors.len());
             assert_eq!(model.surface.positions.len(), model.surface.uvs.len());
-            assert!(model
-                .surface
-                .indices
-                .iter()
-                .all(|&i| (i as usize) < model.surface.positions.len()));
-            assert!(model
-                .surface
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001));
+            assert!(
+                model
+                    .surface
+                    .indices
+                    .iter()
+                    .all(|&i| (i as usize) < model.surface.positions.len())
+            );
+            assert!(
+                model
+                    .surface
+                    .normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001)
+            );
         }
     }
 

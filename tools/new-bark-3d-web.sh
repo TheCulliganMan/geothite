@@ -27,6 +27,6 @@ if [ -n "${CRYSTAL_OPEN_MODEL_ROOT:-}" ]; then
         "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"
 else
     # Do not accidentally reuse a previous preview's optional scenery bundle.
-    rm -f "$OUT/open-models.json"
+    rm -f "$OUT/open-models.json" "$OUT/open-models.json.gz"
 fi
 printf '\nBuilt %s. Run:\nCRYSTAL_DATA_DIR=target/new-bark-3d-data target/debug/crystal-web-server --dir %s --port 3003\nOpen http://localhost:3003/?multiplayer=off&preview=new-bark\n' "$OUT" "$OUT"

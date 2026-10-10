@@ -14,6 +14,7 @@ fn main() -> Result<()> {
         .unwrap_or_else(|| PathBuf::from("content-packs/core-modular.browser.crystalpack"));
     let mut screenshot = None;
     let mut second = None;
+    let mut walk = None;
     let mut record = None;
     let mut measure = None;
     let mut record_on_move = false;
@@ -93,6 +94,7 @@ fn main() -> Result<()> {
             "--screenshot" => {
                 screenshot = Some(PathBuf::from(args.next().context("--screenshot path")?))
             }
+            "--walk" => walk = Some(args.next().context("--walk R,L,U,D route")?),
             "--second" => second = Some(PathBuf::from(args.next().context("--second path")?)),
             "--record" => record = Some(PathBuf::from(args.next().context("--record directory")?)),
             "--measure" => {
@@ -256,6 +258,7 @@ fn main() -> Result<()> {
             render_test_screenshot: screenshot,
             render_test_second_screenshot: second,
             render_test_live: live,
+            render_test_walk: walk,
             #[cfg(not(target_arch = "wasm32"))]
             render_test_record: record.map(|path| (path, seconds)),
             #[cfg(not(target_arch = "wasm32"))]

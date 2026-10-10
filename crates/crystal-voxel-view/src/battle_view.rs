@@ -61,6 +61,7 @@ mod skinning;
 pub struct BattleViewPlugin;
 impl Plugin for BattleViewPlugin {
     fn build(&self, app: &mut App) {
+        crate::scenery_surfaces::register_cue_material(app);
         if app.world().contains_resource::<AssetServer>() {
             app.add_plugins(Material2dPlugin::<BattleCompositeMaterial>::default());
             if let Some(render_app) = app.get_sub_app_mut(bevy::render::RenderApp) {
@@ -521,6 +522,7 @@ struct BattleScene {
     arena: Option<Entity>,
     arena_key: Option<VisualBattleEnvironment>,
     arena_mesh: Option<Handle<Mesh>>,
+    arena_scenery: Vec<(Handle<Mesh>, Handle<crate::scenery_surfaces::BattleSceneryMaterial>, Handle<Image>)>,
     arena_neutral_colors: Vec<[f32; 4]>,
     surface_white_strength: Option<f32>,
     actors: [Option<ActorInstance>; 2],
@@ -1272,6 +1274,8 @@ fn sync_battle_scene(
         Res<capture_bridge::BattleCaptureBridge>,
         ResMut<Assets<SkinnedMeshInverseBindposes>>,
         Res<EncounterTerrain>,
+        ResMut<Assets<Image>>,
+        ResMut<Assets<crate::scenery_surfaces::BattleSceneryMaterial>>,
     ),
     flash_mode: Res<BattleFlashMode>,
     time: Res<Time>,
@@ -1363,7 +1367,7 @@ fn sync_battle_scene(
         ),
     >,
 ) {
-    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery) = presentation;
+    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery, mut scenery_images, mut scenery_materials) = presentation;
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
@@ -1474,12 +1478,21 @@ fn sync_battle_scene(
         material.base_color = base_color;
         material.emissive = emissive;
     }
+    let scenery_cue = Vec4::new(dark, light, 0., 0.);
+    for (_, handle, _) in &scene.arena_scenery {
+        if scenery_materials.get(handle).is_some_and(|m| m.extension.cue != scenery_cue) {
+            scenery_materials.get_mut(handle).unwrap().extension.cue = scenery_cue;
+        }
+    }
     if scene.arena_key != Some(frame.environment) {
         if let Some(entity) = scene.arena.take() {
             commands.entity(entity).despawn_recursive();
         }
         if let Some(mesh) = scene.arena_mesh.take() {
             meshes.remove(mesh.id());
+        }
+        for (mesh, material, image) in scene.arena_scenery.drain(..) {
+            meshes.remove(mesh.id()); scenery_materials.remove(material.id()); scenery_images.remove(image.id());
         }
         let mut data = arena_mesh(frame.environment);
         if scene.vertex_lighting {
@@ -1514,6 +1527,31 @@ fn sync_battle_scene(
                 ))
                 .id(),
         );
+        for mut part in arena_scenery(frame.environment) {
+            let image = scenery_images.add(part.texture.image());
+            let mut material = materials.get(&scene.surface_material).unwrap().clone();
+            material.base_color_texture = Some(image.clone());
+            // Thin paper leaves keep the overworld finish rather than
+            // becoming black from self-shadowing on their reverse faces.
+            material.unlit = true;
+            material.alpha_mode = part.texture.alpha_mode();
+            material.double_sided = part.texture.double_sided;
+            if part.texture.double_sided { material.cull_mode = None; }
+            material.base_color = Color::WHITE;
+            material.emissive = LinearRgba::BLACK;
+            let material = scenery_materials.add(crate::scenery_surfaces::BattleSceneryMaterial {
+                base:material, extension:crate::scenery_surfaces::SceneryCue { cue:scenery_cue }
+            });
+            if scene.vertex_lighting {
+                part.mesh.colors = vertex_lit_colors(&part.mesh, Quat::IDENTITY);
+            }
+            let mut data = part.mesh.into_mesh();
+            if scene.vertex_lighting { data.asset_usage = RenderAssetUsages::all(); }
+            let handle = meshes.add(data);
+            let child = commands.spawn((MaterialMeshBundle::<crate::scenery_surfaces::BattleSceneryMaterial> { mesh:handle.clone(), material:material.clone(), ..default() }, RenderLayers::layer(BATTLE_LAYER))).id();
+            commands.entity(scene.arena.unwrap()).add_child(child);
+            scene.arena_scenery.push((handle, material, image));
+        }
         scene.arena_mesh = Some(mesh);
         scene.arena_key = Some(frame.environment);
         scene.surface_white_strength = None;
@@ -2557,6 +2595,24 @@ fn particle_pose(cues: &[VisualBattleCue], i: usize, elapsed: f32) -> Option<(Ve
         }
         _ => None,
     }
+}
+
+fn arena_scenery(environment: VisualBattleEnvironment) -> Vec<crate::scenery_surfaces::ScenerySurface> {
+    let mut terrain = crate::mesh::TerrainMeshData::default();
+    if !matches!(environment, VisualBattleEnvironment::Meadow | VisualBattleEnvironment::Forest) {
+        return terrain.scenery;
+    }
+    for i in 0..28 {
+        let angle = i as f32 / 28.0 * TAU;
+        let radius = 9.5 + (i % 3) as f32 * 1.9;
+        let center = Vec3::new(angle.cos() * radius, 0., angle.sin() * radius);
+        if center.z < 2.0 || center.x.abs() > 11.0 {
+            crate::foliage::append_tree(&mut terrain, crate::new_bark_models::ModelKind::TreeLod,
+                [center.x - 1.4, center.x + 1.4, center.z - 1.4, center.z + 1.4],
+                0., 3.5 + (i % 4) as f32 * 0.38, [i, 500]);
+        }
+    }
+    terrain.scenery
 }
 
 fn arena_mesh(environment: VisualBattleEnvironment) -> SurfaceMeshData {

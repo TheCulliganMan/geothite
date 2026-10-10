@@ -8,8 +8,11 @@ const MAX_BUNDLE_BYTES: usize = 64 * 1024 * 1024;
 static BUNDLE: std::sync::OnceLock<std::collections::BTreeMap<String, String>> =
     std::sync::OnceLock::new();
 
-/// Install optional external interior geometry before the first scenery lookup.
+/// Install optional external furniture and foliage before the first scenery lookup.
 /// The versioned JSON bundle is `{ "version": 1, "models": { "models/interiors/…": mesh } }`.
+/// Foliage also accepts `models/new_bark/tree.mesh.json` and
+/// `models/johto/tree_lod.mesh.json` and four whitelisted tree variant paths;
+/// other scenery paths are unsupported.
 /// Downloads and converted geometry belong in ignored external content, never
 /// in the source catalog. A malformed bundle is rejected atomically; already
 /// cached model choices cannot be changed without restarting the client.
@@ -36,15 +39,19 @@ fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>
     }
     let mut models = std::collections::BTreeMap::new();
     for (path, value) in bundle.models {
-        if !path.starts_with("models/interiors/") || !supported_path(&path) {
+        if !supported_path(&path) {
             return Err(format!("unsupported bundled scenery path: {path}"));
         }
         let json = serde_json::to_string(&value).map_err(|e| e.to_string())?;
         if json.len() as u64 > MAX_BYTES {
             return Err(format!("open model exceeds 16 MiB: {path}"));
         }
-        crate::interior_models::Model::parse(json.as_str())
-            .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
+        if path.starts_with("models/interiors/") {
+            crate::interior_models::Model::parse(json.as_str()).map(|_| ())
+        } else {
+            crate::new_bark_models::Model::parse(json.as_str()).map(|_| ())
+        }
+        .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
         models.insert(path, json);
     }
     Ok(models)
@@ -55,7 +62,7 @@ fn supported_path(path: &str) -> bool {
         || matches!(
             path,
             "models/new_bark/tree.mesh.json" | "models/johto/tree_lod.mesh.json"
-        ))
+        ) || crate::foliage::VARIANT_PATHS.contains(&path))
         && !path
             .split('/')
             .any(|p| matches!(p, ".." | ".") || p.is_empty())
@@ -167,7 +174,6 @@ mod tests {
         for path in [
             "models/interiors/../television.mesh.json",
             "models/battle_species/pidgeotto.mesh.json",
-            "models/new_bark/tree.mesh.json",
         ] {
             let mut invalid = valid.clone();
             invalid["models"][path] = model.clone();

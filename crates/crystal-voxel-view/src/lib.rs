@@ -17,6 +17,8 @@ mod battle_tower;
 mod battle_view;
 mod model_storage;
 mod open_models;
+mod scenery_surfaces;
+mod foliage;
 pub use open_models::install_open_model_bundle;
 pub use battle_layout::{BattleSceneLayout, BattleUiBounds};
 pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
@@ -417,6 +419,8 @@ struct TerrainBuildResult {
 }
 
 struct BuiltTerrain {
+    scenery_fades: Vec<(Vec<occluder_fade::PreparedGroup>, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>, terrain_batches::AuthenticDomain)>,
+    scenery: Vec<(terrain_batches::PreparedBatch, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>)>,
     background: Option<(Mesh, Handle<Image>)>,
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
     reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
@@ -1058,6 +1062,18 @@ fn sync_terrain(
                 let (textured, solid, fade_textured_groups, fade_solid_groups) =
                     occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
                 let source_bounds = authentic_mesh_bounds(&build_frame);
+                let mut scenery = Vec::new();
+                let mut scenery_fades = Vec::new();
+                for part in std::mem::take(&mut terrain.scenery) {
+                    for (domain, data) in terrain_batches::separate_authentic_domains(part.mesh, source_bounds) {
+                        let (opaque, groups) = occluder_fade::prepare(data);
+                        if !groups.is_empty() { scenery_fades.push((groups, part.texture.clone(), domain)); }
+                        if !opaque.indices.is_empty() {
+                            scenery.extend(terrain_batches::prepare_with_authentic_bounds(opaque, build_frame.tile_size, source_bounds)
+                                .into_iter().map(|batch| (batch, part.texture.clone())));
+                        }
+                    }
+                }
                 let textured_meshes = terrain_batches::prepare_with_authentic_bounds(
                     textured,
                     build_frame.tile_size,
@@ -1069,6 +1085,8 @@ fn sync_terrain(
                     source_bounds,
                 );
                 BuiltTerrain {
+                    scenery,
+                    scenery_fades,
                     background,
                     instances,
                     reveal_join_batches,
@@ -1304,6 +1322,35 @@ fn apply_built_terrain(
             batch,
         )).id();
         commands.entity(root).add_child(child);
+    }
+    let mut scenery_materials = HashMap::new();
+    for (batch, texture) in terrain.scenery {
+        let key = std::sync::Arc::as_ptr(&texture) as usize;
+        let handle = scenery_materials.entry(key).or_insert_with(|| {
+            let mut material = textured_terrain_material(images.add(texture.image()));
+            material.base.alpha_mode = texture.alpha_mode();
+            material.base.double_sided = texture.double_sided;
+            if texture.double_sided { material.base.cull_mode = None; }
+            materials.add(material)
+        }).clone();
+        let mut child = commands.spawn((MaterialMeshBundle::<VoxelMaterial> {
+            mesh: meshes.add(batch.mesh), material:handle, ..default()
+        }, RenderLayers::layer(VOXEL_RENDER_LAYER), batch.authentic_domain));
+        if let Some(bounds) = batch.bounds { child.insert(bounds); }
+        let child=child.id();
+        commands.entity(root).add_child(child);
+    }
+    for (groups, texture, domain) in terrain.scenery_fades {
+        let key = std::sync::Arc::as_ptr(&texture) as usize;
+        let handle = scenery_materials.entry(key).or_insert_with(|| {
+            let mut material = textured_terrain_material(images.add(texture.image()));
+            material.base.alpha_mode = texture.alpha_mode();
+            material.base.double_sided = texture.double_sided;
+            if texture.double_sided { material.base.cull_mode = None; }
+            materials.add(material)
+        }).clone();
+        let leaves = occluder_fade::spawn_groups(commands, meshes, materials, root, groups, handle, None);
+        for leaf in leaves { commands.entity(leaf).insert(domain); }
     }
     for (mesh, origins) in terrain.instances {
         let mesh = meshes.add(mesh);
@@ -2043,6 +2090,8 @@ mod renderer_tests {
             let mut queue = bevy::ecs::world::CommandQueue::default();
             let mut commands = Commands::new(&mut queue, &world);
             let terrain = BuiltTerrain {
+                scenery: Vec::new(),
+                scenery_fades: Vec::new(),
                 background: None,
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
                 reveal_join_batches: Vec::new(),

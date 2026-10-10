@@ -840,6 +840,16 @@ fn foliage_lod(g: &GridGeometry, x: f32, z: f32, radius_cells: f32) -> bool {
         && ((x / g.tile_width).powi(2) + (z / g.tile_height).powi(2)) > radius_cells.powi(2)
 }
 
+/// Adjacent recognized tree plots allow overlapping crowns inside continuous groves.
+pub(super) fn grove_neighbors(cells: &[&VisualTile], g: &GridGeometry, map: &str, p: TreePlacement) -> [bool; 4] {
+    let plots = tree_placements(map, cells, g);
+    let contains = |x: i32, y: i32| plots.iter().any(|q| x >= q.column as i32 && x < (q.column+q.width) as i32
+        && y >= q.row as i32 && y < (q.row+q.height) as i32);
+    let x=p.column as i32; let y=p.row as i32;
+    [contains(x-1,y+p.height as i32/2),contains(x+p.width as i32,y+p.height as i32/2),
+        contains(x+p.width as i32/2,y-1),contains(x+p.width as i32/2,y+p.height as i32)]
+}
+
 pub(super) fn append_tree(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
@@ -875,32 +885,13 @@ pub(super) fn append_tree(
     let width = placement.width as f32 * geometry.tile_width;
     let south = north + placement.height as f32 * geometry.tile_height;
     let depth = width.min(placement.height as f32 * geometry.tile_height);
-    let tree = model(
-        if foliage_lod(geometry, west + width * 0.5, south - depth * 0.5, 14.0) {
-            ModelKind::TreeLod
-        } else {
-            ModelKind::Tree
-        },
-    );
-    let seed = lattice(
-        map_origin[0] + placement.column as i32,
-        map_origin[1] + placement.row as i32,
-    );
-    let first = mesh.solid.positions.len();
-    tree.append_fitted(
-        &mut mesh.solid,
-        [west, west + width, south - depth, south],
-        placement.base_height,
-        placement.height as f32 * geometry.tile_height / (tree.max[1] - tree.min[1])
-            * (0.92 + seed * 0.16),
-        None,
-    );
-    for color in &mut mesh.solid.colors[first..] {
-        let brightness = 0.93 + seed * 0.12;
-        color[0] *= brightness * (0.98 + seed * 0.04);
-        color[1] *= brightness;
-        color[2] *= brightness * (1.03 - seed * 0.05);
-    }
+    let kind = if foliage_lod(geometry, west + width * 0.5, south - depth * 0.5, 14.0) {
+        ModelKind::TreeLod
+    } else { ModelKind::Tree };
+    crate::foliage::append_world_tree(mesh, kind, [west, west + width, south - depth, south],
+        placement.base_height, geometry.tile_height,
+        [map_origin[0] + placement.column as i32, map_origin[1] + placement.row as i32],
+        grove_neighbors(cells, geometry, map, placement));
     mark_authored_rect(
         mesh,
         geometry,
@@ -1710,7 +1701,12 @@ impl GroundShadow {
     }
 }
 
+#[path = "ground_blend.rs"]
+mod ground_blend;
+
 struct GroundFinish<'a> {
+    forest: bool,
+    blend: ground_blend::GroundBlend,
     geometry: &'a GridGeometry,
     map_origin: [i32; 2],
     shadows: Vec<GroundShadow>,
@@ -1793,7 +1789,22 @@ impl<'a> GroundFinish<'a> {
                 }
             }
         }
+        let mut materials: Vec<_> = cells.iter().map(|t| ground_material(&t.source)).collect();
+        // Modeled trees retain their verified lawn underlay. This also blends
+        // the rectangular source plot into a neighboring path.
+        for shadow in shadows.iter().filter(|s| s.tree) {
+            let [w,e,n,s] = shadow.bounds;
+            for row in 0..geometry.height { for col in 0..geometry.width {
+                let (x0,x1,z0,z1) = geometry.bounds(col,row);
+                if x0>=w && x1<=e && z0>=n && z1<=s {
+                    materials[row*geometry.width+col] = Some(GroundMaterial::Lawn);
+                }
+            } }
+        }
+        let blend = ground_blend::GroundBlend::new(&materials, geometry);
         Self {
+            forest: cells.iter().any(|t| t.source.tileset_id.as_ref() == "forest"),
+            blend,
             geometry,
             map_origin,
             shadows,
@@ -1825,7 +1836,18 @@ impl<'a> GroundFinish<'a> {
             p[2] - self.geometry.origin_z + self.map_origin[1] as f32 * self.geometry.tile_height,
         ];
         let mut color = ground_color(material, map_p, self.geometry);
+        if self.forest && material == GroundMaterial::Lawn {
+            let x = map_p[0] / self.geometry.tile_width;
+            let z = map_p[2] / self.geometry.tile_height;
+            let moss = meadow_noise(x * 0.29, z * 0.29);
+            let litter = meadow_noise(x * 1.7 + 19.0, z * 1.7 - 7.0);
+            let t = ((moss - 0.35) * 2.2).clamp(0.0, 1.0);
+            let soil = [0.25, 0.18, 0.105];
+            let green = [0.25, 0.32, 0.16];
+            for c in 0..3 { color[c] = (soil[c]*(1.0-t)+green[c]*t) * (0.90+litter*0.18); }
+        }
         if matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
+            if let Some(mixed) = self.blend.color(p, self.geometry, self.map_origin) { color = mixed; }
             let darkness = self.darkness(p);
             for c in &mut color[..3] {
                 *c *= 1.0 - darkness;
@@ -1891,12 +1913,14 @@ impl<'a> GroundFinish<'a> {
         }
         // Two subdivisions capture a soft contact shadow around a trunk
         // without decals, alpha blending, lifted floors or driver shadows.
-        for row in 0..2 {
-            for column in 0..2 {
-                let x0 = w + (e - w) * column as f32 * 0.5;
-                let x1 = x0 + (e - w) * 0.5;
-                let z0 = n + (s - n) * row as f32 * 0.5;
-                let z1 = z0 + (s - n) * 0.5;
+        let subdivisions = if self.forest || self.blend.near([(w+e)*0.5,positions[0][1],(n+s)*0.5], self.geometry) { 6 } else { 2 };
+        for row in 0..subdivisions {
+            for column in 0..subdivisions {
+                let fraction = 1.0 / subdivisions as f32;
+                let x0 = if column == 0 { w } else { w + (e-w)*column as f32*fraction };
+                let x1 = if column+1 == subdivisions { e } else { w + (e-w)*(column+1) as f32*fraction };
+                let z0 = if row == 0 { n } else { n + (s-n)*row as f32*fraction };
+                let z1 = if row+1 == subdivisions { s } else { n + (s-n)*(row+1) as f32*fraction };
                 let y = positions[0][1];
                 let p = [[x0, y, z0], [x0, y, z1], [x1, y, z1], [x1, y, z0]];
                 append_quad_colors(
@@ -1924,9 +1948,9 @@ impl<'a> GroundFinish<'a> {
             + self.map_origin[1];
         // Irregular, low-contrast gravel flecks. Lawn gets rarer longer tiny
         // leaves. Uneven position, count, shape and orientation avoid a grid.
-        for sample in 0..3 {
+        for sample in 0..(if self.forest && material == GroundMaterial::Lawn { 9 } else { 3 }) {
             let seed = lattice(column.wrapping_mul(7) + sample, row.wrapping_mul(13) + 83);
-            let threshold = if material == GroundMaterial::Path {
+            let threshold = if self.forest && material == GroundMaterial::Lawn { 0.22 } else if material == GroundMaterial::Path {
                 0.46
             } else {
                 0.90
@@ -1937,9 +1961,9 @@ impl<'a> GroundFinish<'a> {
             let cx = w + (e - w) * (0.16 + lattice(column + sample * 19, row + 109) * 0.68);
             let cz = n + (s - n) * (0.16 + lattice(column + 211, row + sample * 23) * 0.68);
             let angle = lattice(column + 41, row + sample * 31) * std::f32::consts::TAU;
-            let rx = (e - w) * (0.018 + seed * 0.036);
+            let rx = (e - w) * (if self.forest && sample % 5 == 0 { 0.12 } else if self.forest { 0.035 + seed * 0.07 } else { 0.018 + seed * 0.036 });
             let rz = (s - n)
-                * (if material == GroundMaterial::Path {
+                * (if self.forest && sample % 5 == 0 { 0.007 } else if material == GroundMaterial::Path {
                     0.014 + seed * 0.018
                 } else {
                     0.012
@@ -1959,6 +1983,10 @@ impl<'a> GroundFinish<'a> {
                 point(rx * 0.65, -rz),
             ];
             let mut color = self.color(material, [cx, positions[0][1], cz]);
+            if self.forest && material == GroundMaterial::Lawn {
+                let leaf = if sample % 5 == 0 { [0.20,0.135,0.075] } else if seed > 0.70 { [0.39,0.29,0.14] } else { [0.29,0.205,0.12] };
+                color[..3].copy_from_slice(&leaf);
+            }
             let contrast = if seed > 0.76 { 1.07 } else { 0.87 };
             for c in &mut color[..3] {
                 *c *= contrast;
@@ -2930,6 +2958,8 @@ mod tests {
         let cells: Vec<_> = f.tiles.iter().collect();
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
+            forest: false,
+            blend: fast.blend.clone(),
             geometry: &g,
             map_origin: [0, 0],
             shadows: fast.shadows.clone(),
@@ -3054,6 +3084,8 @@ mod tests {
         let cells: Vec<_> = f.tiles.iter().collect();
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
+            forest: false,
+            blend: fast.blend.clone(),
             geometry: &g,
             map_origin: [0, 0],
             shadows: fast.shadows.clone(),
@@ -3107,12 +3139,16 @@ mod tests {
                 < shadow.darkness([-28.0, 0.0, -32.0], &geometry)
         );
         let finish = GroundFinish {
+            forest: false,
+            blend: Default::default(),
             geometry: &geometry,
             map_origin: [0, 0],
             shadows: vec![shadow],
             shadow_cells: None,
         };
         let unshaded = GroundFinish {
+            forest: false,
+            blend: Default::default(),
             geometry: &geometry,
             map_origin: [0, 0],
             shadows: vec![],
@@ -3147,12 +3183,16 @@ mod tests {
         let frame = frame(1, 1, vec![source_with_tile(0x01, 0, 0, 0x06)]);
         let geometry = geometry(&frame);
         let finish = GroundFinish {
+            forest: false,
+            blend: Default::default(),
             geometry: &geometry,
             map_origin: [10, 9],
             shadows: vec![],
             shadow_cells: None,
         };
         let shifted = GroundFinish {
+            forest: false,
+            blend: Default::default(),
             geometry: &geometry,
             map_origin: [11, 9],
             shadows: vec![],
@@ -3188,6 +3228,24 @@ mod tests {
     }
 
     #[test]
+    fn forest_floor_is_continuous_world_anchored_and_leaves_walk_datum_intact() {
+        let f = frame(2, 2, vec![source_with_tile(0x01,0,0,0x05); 4]);
+        let g = geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let mut floor = GroundFinish::new("IlexForest", &cells, &g, [0,0]);
+        floor.forest = true;
+        let soil = floor.color(GroundMaterial::Lawn, [-28.0,0.0,-36.0]);
+        assert_ne!(soil, ground_color(GroundMaterial::Lawn, [4.0,0.0,4.0], &g));
+        let near = floor.color(GroundMaterial::Lawn, [-28.0001,0.0,-36.0]);
+        assert!(soil.iter().zip(near).all(|(a,b)| (a-b).abs() < 0.001));
+        let mut mesh = SurfaceMeshData::default();
+        floor.append_surface(&mut mesh, GroundMaterial::Lawn,
+            [[-32.0,0.0,-40.0],[-32.0,0.0,-32.0],[-24.0,0.0,-32.0],[-24.0,0.0,-40.0]]);
+        assert!(mesh.positions.iter().all(|p| p[1]>=0.0 && p[1]<0.02));
+        assert!(mesh.positions.iter().any(|p| p[1]>0.0), "forest must include leaf litter");
+    }
+
+    #[test]
     fn tree_variants_preserve_horizontal_plot_and_ground_anchor() {
         let sources = (0..4)
             .flat_map(|row| {
@@ -3216,19 +3274,15 @@ mod tests {
         let a = build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap();
         frame.grid_origin.x += 1;
         let b = build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap();
-        let count = model(ModelKind::Tree).surface_mesh().positions.len();
-        assert!(
-            a.solid.positions[..count]
-                .iter()
-                .zip(&b.solid.positions[..count])
-                .all(|(a, b)| a[0] == b[0] && a[2] == b[2])
-        );
-        assert!(
-            a.solid.positions[..count]
-                .iter()
-                .chain(&b.solid.positions[..count])
-                .all(|p| p[1] >= 0.0 && p[1] <= 32.0 * 1.081)
-        );
+        assert_ne!(a.solid.positions, b.solid.positions);
+        assert_eq!(b, build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap());
+        // Different world placements may change the contour, while every
+        // elevated tree vertex stays grounded inside the same occupied plot.
+        assert!(a.solid.positions.iter().chain(&b.solid.positions)
+            .filter(|p| p[1] > 0.02)
+            .all(|p| p[0] >= -12.001 && p[0] <= 4.001
+                && p[2] >= -0.001 && p[2] <= 16.001
+                && p[1] <= 80.0 * 1.601));
         assert_eq!(a.footing_heights, b.footing_heights);
     }
 

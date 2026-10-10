@@ -1,5 +1,6 @@
-//! Convert externally supplied static, solid-material GLBs to renderer JSON.
+//! Convert external static GLB/glTF scenery, preserving UVs and leaf cutouts.
 //! Outputs are external content-pack inputs, never files to commit.
+use base64::Engine as _;
 use bevy::math::{Mat4, Vec3};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -26,6 +27,17 @@ fn unit_scale() -> [f32; 3] {
 }
 
 #[derive(Serialize)]
+struct Texture {
+    width: u32,
+    height: u32,
+    rgba_base64: String,
+    alpha_cutoff: Option<f32>,
+    double_sided: bool,
+    wrap_u: &'static str,
+    wrap_v: &'static str,
+}
+
+#[derive(Serialize)]
 struct Primitive {
     name: String,
     material: String,
@@ -33,12 +45,25 @@ struct Primitive {
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    uvs: Vec<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    texture: Option<Texture>,
+}
+
+fn wrap(mode: gltf::texture::WrappingMode) -> &'static str {
+    match mode {
+        gltf::texture::WrappingMode::ClampToEdge => "clamp",
+        gltf::texture::WrappingMode::MirroredRepeat => "mirror",
+        gltf::texture::WrappingMode::Repeat => "repeat",
+    }
 }
 
 fn visit(
     node: gltf::Node<'_>,
     parent: Mat4,
-    blob: &[u8],
+    buffers: &[Vec<u8>],
+    folder: &Path,
     parts: &mut Vec<Primitive>,
 ) -> Result<(), Box<dyn Error>> {
     let matrix = parent * Mat4::from_cols_array_2d(&node.transform().matrix());
@@ -59,15 +84,65 @@ fn visit(
                 return Err("expected triangle primitive".into());
             }
             let pbr = primitive.material().pbr_metallic_roughness();
-            if pbr.base_color_texture().is_some()
-                || primitive.material().alpha_mode() != gltf::material::AlphaMode::Opaque
+            let material = primitive.material();
+            if material.alpha_mode() != gltf::material::AlphaMode::Opaque
+                && pbr.base_color_texture().is_none()
             {
-                return Err("textured/translucent assets need the textured scenery path".into());
+                return Err("untextured translucent scenery is unsupported".into());
             }
-            let reader = primitive.reader(|buffer| match buffer.source() {
-                gltf::buffer::Source::Bin => Some(blob),
-                _ => None,
-            });
+            let reader = primitive.reader(|buffer| buffers.get(buffer.index()).map(Vec::as_slice));
+            let texture = if let Some(info) = pbr.base_color_texture() {
+                if info.tex_coord() != 0 {
+                    return Err("only TEXCOORD_0 scenery is supported".into());
+                }
+                let image = info.texture().source();
+                let bytes = match image.source() {
+                    gltf::image::Source::Uri { uri, .. } => read_local(folder, uri)?,
+                    gltf::image::Source::View { view, .. } => buffers
+                        .get(view.buffer().index())
+                        .and_then(|b| b.get(view.offset()..view.offset() + view.length()))
+                        .ok_or("invalid image buffer view")?
+                        .to_vec(),
+                };
+                let mut decoder =
+                    image::ImageReader::new(std::io::Cursor::new(bytes)).with_guessed_format()?;
+                let mut limits = image::Limits::default();
+                limits.max_image_width = Some(4096);
+                limits.max_image_height = Some(4096);
+                decoder.limits(limits);
+                let decoded = decoder.decode()?;
+                let rgba = if decoded.width() > 512 || decoded.height() > 512 {
+                    decoded.resize(512, 512, image::imageops::FilterType::Triangle)
+                } else {
+                    decoded
+                }
+                .into_rgba8();
+                Some(Texture {
+                    width: rgba.width(),
+                    height: rgba.height(),
+                    rgba_base64: base64::engine::general_purpose::STANDARD.encode(rgba.as_raw()),
+                    // Leaf-card BLEND becomes a crisp, depth-writing paper cutout.
+                    alpha_cutoff: match material.alpha_mode() {
+                        gltf::material::AlphaMode::Opaque => None,
+                        _ => Some(material.alpha_cutoff().unwrap_or(0.5)),
+                    },
+                    double_sided: material.double_sided(),
+                    wrap_u: wrap(info.texture().sampler().wrap_s()),
+                    wrap_v: wrap(info.texture().sampler().wrap_t()),
+                })
+            } else {
+                None
+            };
+            let uvs: Vec<f32> = if texture.is_some() {
+                reader
+                    .read_tex_coords(0)
+                    .ok_or("textured scenery is missing UVs")?
+                    .into_f32()
+                    .flatten()
+                    .collect()
+            } else {
+                Vec::new()
+            };
             let positions: Vec<Vec3> = reader
                 .read_positions()
                 .ok_or("missing positions or unsupported compression")?
@@ -91,6 +166,8 @@ fn visit(
             if positions.is_empty()
                 || normals.len() != positions.len()
                 || indices.is_empty()
+                || (texture.is_some()
+                    && (uvs.len() != positions.len() * 2 || uvs.iter().any(|v| !v.is_finite())))
                 || indices.len() % 3 != 0
                 || indices.iter().any(|&i| i as usize >= positions.len())
                 || positions.iter().chain(&normals).any(|v| !v.is_finite())
@@ -103,6 +180,8 @@ fn visit(
                 }
             }
             parts.push(Primitive {
+                uvs,
+                texture,
                 name: node.name().unwrap_or("scenery").into(),
                 material: primitive.material().name().unwrap_or("paper").into(),
                 base_color: pbr.base_color_factor(),
@@ -113,9 +192,29 @@ fn visit(
         }
     }
     for child in node.children() {
-        visit(child, matrix, blob, parts)?;
+        visit(child, matrix, buffers, folder, parts)?;
     }
     Ok(())
+}
+
+fn read_local(folder: &Path, uri: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    let relative = Path::new(uri);
+    if uri.contains(':')
+        || relative
+            .components()
+            .any(|c| !matches!(c, std::path::Component::Normal(_)))
+    {
+        return Err("expected relative local scenery buffer/image path".into());
+    }
+    let path = folder.join(relative);
+    if std::fs::metadata(&path)?.len() > 16 * 1024 * 1024 {
+        return Err("scenery buffer/image exceeds 16 MiB".into());
+    }
+    let bytes = std::fs::read(path)?;
+    if bytes.len() > 16 * 1024 * 1024 {
+        return Err("scenery buffer/image exceeds 16 MiB".into());
+    }
+    Ok(bytes)
 }
 
 fn import(
@@ -134,22 +233,29 @@ fn import(
     if gltf.animations().next().is_some() {
         return Err("static scenery import does not retain animation".into());
     }
-    let blob = gltf.blob.as_deref().ok_or("expected self-contained GLB")?;
+    let folder = source.parent().unwrap_or(Path::new("."));
+    let mut buffers = Vec::new();
+    for buffer in gltf.buffers() {
+        buffers.push(match buffer.source() {
+            gltf::buffer::Source::Bin => gltf.blob.clone().ok_or("missing GLB buffer")?,
+            gltf::buffer::Source::Uri(uri) => read_local(folder, uri)?,
+        });
+    }
     let scene = gltf
         .default_scene()
         .or_else(|| gltf.scenes().next())
         .ok_or("no scene")?;
     for node in scene.nodes() {
-        visit(node, transform, blob, parts)?;
+        visit(node, transform, &buffers, folder, parts)?;
     }
     Ok(())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    if args.len() != 2 {
+    if args.len() != 2 && !(args.len() == 4 && args[2] == "--cutout-color") {
         return Err(
-            "usage: import_open_model SOURCE.glb|ARRANGEMENT.json EXTERNAL_OUTPUT.mesh.json".into(),
+            "usage: import_open_model SOURCE.glb|SOURCE.gltf|ARRANGEMENT.json EXTERNAL_OUTPUT.mesh.json [--cutout-color RRGGBB]".into(),
         );
     }
     let source = Path::new(&args[0]);
@@ -179,6 +285,36 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     } else {
         import(source, Mat4::IDENTITY, &mut parts)?;
+    }
+    if args.len() == 4 {
+        let hex = args[3]
+            .to_str()
+            .ok_or("cutout color must be UTF-8")?
+            .trim_start_matches('#');
+        if hex.len() != 6 {
+            return Err("cutout color needs six hexadecimal digits".into());
+        }
+        let rgb = u32::from_str_radix(hex, 16)?;
+        for part in &mut parts {
+            if let Some(texture) = part.texture.as_mut().filter(|t| t.alpha_cutoff.is_some()) {
+                let mut pixels =
+                    base64::engine::general_purpose::STANDARD.decode(&texture.rgba_base64)?;
+                // Matte colored paper: preserve every alpha/UV contour while
+                // replacing the flat leaf albedo with an explicit art palette.
+                for pixel in pixels.chunks_exact_mut(4) {
+                    pixel[..3].fill(255);
+                }
+                texture.rgba_base64 = base64::engine::general_purpose::STANDARD.encode(pixels);
+                for channel in 0..3 {
+                    let value = ((rgb >> (16 - channel * 8)) & 255) as f32 / 255.;
+                    part.base_color[channel] = if value <= 0.04045 {
+                        value / 12.92
+                    } else {
+                        ((value + 0.055) / 1.055).powf(2.4)
+                    };
+                }
+            }
+        }
     }
     let mut lo = Vec3::splat(f32::INFINITY);
     let mut hi = Vec3::splat(f32::NEG_INFINITY);
@@ -271,7 +407,8 @@ mod tests {
         visit(
             model.nodes().next().unwrap(),
             Mat4::IDENTITY,
-            model.blob.as_deref().unwrap(),
+            &[model.blob.clone().unwrap()],
+            Path::new("."),
             &mut parts,
         )
         .unwrap();

@@ -470,7 +470,7 @@ pub(super) fn spawn_groups(
     groups: Vec<PreparedGroup>,
     opaque: Handle<VoxelMaterial>,
     linked_opaque: Option<Handle<VoxelMaterial>>,
-) {
+) -> Vec<Entity> {
     fn blended(
         materials: &mut Assets<VoxelMaterial>,
         opaque: &Handle<VoxelMaterial>,
@@ -480,10 +480,13 @@ pub(super) fn spawn_groups(
             .expect("terrain material validated before group upload")
             .clone();
         // The stock shadow shader retains the original base alpha and geometry.
+        let cutoff = match material.base.alpha_mode { AlphaMode::Mask(v) => v, _ => 0.0 };
         material.base.alpha_mode = AlphaMode::Blend;
         material.extension.cutaway = CutawayUniform::default();
+        material.extension.cutaway.fade.w = cutoff;
         materials.add(material)
     }
+    let mut spawned_leaves = Vec::new();
     for PreparedGroup {
         source_range: _,
         surface,
@@ -547,11 +550,13 @@ pub(super) fn spawn_groups(
                     leaf.insert(OverlayLeaf);
                 }
                 let leaf = leaf.id();
+                spawned_leaves.push(leaf);
                 commands.entity(group).add_child(leaf);
             }
         }
         commands.entity(root).add_child(group);
     }
+    spawned_leaves
 }
 fn target_rays(uniform: CutawayUniform, camera: Mat4) -> Option<(Vec3, [Vec3; 9])> {
     if uniform.bottom_radius.w <= 0.0 || !camera.is_finite() {
@@ -677,6 +682,29 @@ mod tests {
             data.cutaway_ranges.push(base..base + 4);
         }
     }
+    #[test]
+    fn fading_cutout_crowns_retain_the_source_alpha_cutoff() {
+        let mut world = World::new();
+        let root = world.spawn(SpatialBundle::default()).id();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let mut material = crate::solid_terrain_material();
+        material.base.alpha_mode = AlphaMode::Mask(0.63);
+        let handle = materials.add(material);
+        let mut data = SurfaceMeshData::default();
+        quad(&mut data, [[0.,0.,0.],[0.,1.,0.],[1.,1.,0.],[1.,0.,0.]], true);
+        let (_, groups) = prepare(data);
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        { let mut commands = Commands::new(&mut queue, &world);
+          spawn_groups(&mut commands, &mut meshes, &mut materials, root, groups, handle, None); }
+        queue.apply(&mut world);
+        let mut query = world.query::<&OccluderGroup>();
+        let group = query.single(&world);
+        let faded = materials.get(&group.transparent).unwrap();
+        assert_eq!(faded.base.alpha_mode, AlphaMode::Blend);
+        assert_eq!(faded.extension.cutaway.fade.w, 0.63);
+    }
+
     fn wall(z: f32) -> SurfaceMeshData {
         let mut data = SurfaceMeshData::default();
         quad(

@@ -567,7 +567,7 @@ approved in a matching room. No imported mesh or arrangement is committed.
 The optional browser path now fetches `open-models.json` from the same origin
 before starting the production shell. A 404 uses the authored catalog silently;
 invalid bundles and downloads that exceed ten seconds retain that fallback.
-The Rust parser accepts version 1 interior bundles only, validates every mesh
+The Rust parser accepts version 1 furniture and whitelisted tree bundles, validates every mesh
 before installing any, caps the whole input at 64 MiB / 128 entries and each
 mesh at 16 MiB, and freezes source choices at the first model lookup. No game
 pack data, collision, controller state, or save content is replaced.
@@ -601,10 +601,8 @@ book groups are visible, and the authored furniture is retained on fallback.
 This is actual WASM rendering under SwiftShader, not hardware GPU performance
 proof or a complete gameplay regression. Review artifacts are under
 `target/model-polish/open-bundle-bedroom-{kenney,missing,malformed}.png` and
-`open-bundle-browser-review.json`. Quaternius
-textured foliage remains unintegrated: the selected birch has bark textures
-and transparent individual leaf cards. The older solid crown is still visibly
-angular, so it is not accepted as a polished replacement.
+`open-bundle-browser-review.json`. At that checkpoint Quaternius textured foliage was still unintegrated. The
+older solid crown was visibly angular and was rejected as a replacement.
 
 
 The 94 browser JavaScript regressions also pass after installing the worktree's
@@ -613,3 +611,109 @@ pinned dev dependencies with scripts disabled. The initial JS run lacked
 The disposable review server and headless browser were stopped afterward.
 The actual selected furniture bundle was 416,428 bytes; sources, converted
 meshes, this bundle, review images and compiled binaries are all ignored.
+
+
+### Quaternius cutout foliage
+
+The external importer now accepts local static glTF as well as GLB, retaining
+UVs, source wrap modes, double-sided leaves and PNG/JPEG albedo. Textures are
+bounded and reduced to at most 512 pixels per edge for these scenery imports.
+Leaf transparency becomes a crisp depth-writing cutout. An explicit
+`--cutout-color 749b79` palette option keeps the alpha silhouettes while using a
+muted paper green; bark keeps its source albedo. No microrelief normal map is
+imported. The selected source is the CC0 birch from
+[Quaternius Ultimate Stylized Nature](https://quaternius.com/packs/ultimatestylizednature.html).
+Source downloads, converted meshes, textures and review output remain ignored.
+
+Optional `new_bark/tree.mesh.json` and `johto/tree_lod.mesh.json` override the
+Johto trees and the fallback meadow/forest battle trees. Forest conifer plots can use the same external mixed grove; without external
+foliage they retain their authored models. Kanto tree catalogs remain unchanged. The current external LOD path uses the same 4,596
+triangle tree: this is not a reduced-detail LOD or a completed performance pass.
+Geometry uses the existing plots and collision; terrain batches retain their
+authentic map ownership. Texture/material reuse precedes spatial batching.
+Encounter retention keeps alpha masks and actual image bytes. Fallback battle
+foliage uses the authoritative dark/white palette cues after texture sampling,
+so a colored albedo cannot defeat a white flash.
+
+`bundle_open_models` now includes the two supported foliage paths, accepts a
+root containing only foliage and generates a gzip sidecar. The preview build
+removes both stale optional files when no external root is supplied. No open
+asset enters the checked-in catalog or the game pack.
+
+All 974 model-library checks pass, with three pre-existing ignored checks,
+plus the importer transform/reflection regression. New checks cover texture
+alpha/samplers/limits, fitted UV geometry and retained encounter cutout images.
+This remains an incremental scenery improvement; the full Pokémon, human,
+world-prop and animation polish scope is open.
+
+
+### Scale and repetition
+
+The selected external grove now has five distinct Quaternius birch geometries,
+including narrower, fuller and split-crown shapes. Four optional files under
+`johto/tree_variants/tree_{2,3,4,5}.mesh.json` join the main tree in the bundle.
+World-coordinate hashes choose the shape, quarter-turn orientation, canopy
+width, height, trunk offsets and restrained tint. World trees now stand 9–16
+source cells tall, independently of the two-cell source drawing; a regression
+checks that mature crowns clear the canonical player-house roof. Recognized
+neighboring tree plots authorize overlapping crowns. Interior trunk offsets
+reach 30% of plot spacing; isolated trees retain their horizontal footprint.
+These choices stay fixed when the camera moves. Grounding, plot ownership and
+collision remain unchanged; the key/fill bake rotates with the normals.
+Fallback battle groves retain their separate metre scale. Missing optional
+variants retain the main tree.
+
+The previous tree test required identical horizontal vertices for different
+world coordinates. It now requires changed silhouettes, deterministic rebuilds,
+unchanged footing and isolated-tree vertices inside the source plot. A separate
+400-placement check requires all five variants and all four orientations while
+bounding height and canopy width. This work concerns repeated Johto foliage;
+scale and repetition across the remaining props and creatures are still open.
+
+Forest-tileset lawn receives a continuous world-anchored soil/moss field,
+scattered paper leaves and thin fallen twigs, rather than the town lawn finish.
+The additional faces sit just above the original walking plane. Continuity and
+floor-height checks cover the finish. Mixed variants anchor their actual low
+trunk geometry in continuous groves rather than using asymmetric crown centres.
+Individual textured crowns and solid trunks participate
+in the existing whole-object player reveal; fade copies retain the source alpha
+cutoff and authentic source-map domain, without inventing another controller.
+Frozen encounter materials recover the source mask even when captured mid-fade
+and retain it through subsequent opacity/cue updates.
+
+
+Verified flat lawn/path boundaries now blend through a narrow, world-anchored
+irregular band. Only neighboring known lawn/path materials authorize a blend;
+water and unknown cells do not. Boundary faces get six subdivisions for smooth
+color transitions while all original outer corners, heights, normals and
+footing remain exact. Modeled tree lawn underlays participate in these borders.
+Continuity, scroll stability and exclusion checks cover the blend; the existing
+ground-geometry regression caught float rounding at a source corner, now fixed
+by retaining exact outer endpoints.
+
+
+Fresh current-code Metal captures were reviewed for New Bark, Ilex Forest
+(at the verified gate location and a centrally selected walkable tile) and the
+fallback battle arena. Individual cutout leaves, split/full crowns, taller
+trunks and differing orientations are visible. The central Ilex capture still
+now shows mature overlapping crowns, readable player reveal and forest litter.
+Earlier, shorter-tree captures exposed unrelated source-art fallback patches at
+the distant edge; those source families still need review. The initial attempted Ilex (20,20) was
+unwalkable and produced no render. The walking-encounter recording never
+entered battle, so it is not retained-battle GPU proof; retained cutout behavior
+is covered by the real material/image regression. Browser battle GPU review
+and full LOD/performance work remain open.
+
+A fresh optimized WASM build loads the complete optional bundle once as gzip
+(23,172,380 JSON bytes / 5,277,475 transferred bytes) in headless Chrome with
+SwiftShader. The reviewed 3D New Bark capture shows the mixed tall grove and
+softened lawn/path edges. Real bridge input moves CHRIS from (13,6) to (13,7)
+and opens the visible production Start menu after movement settles. There are
+no page errors. This is rendering/input evidence, not hardware GPU performance
+proof. Gzip decompression matches the exact bundle bytes. The prior valid,
+missing and malformed furniture-bundle browser checks remain separate evidence.
+Review files are ignored under `target/model-polish/`: `rooted-grove/NewBarkTown-2.5d.png`,
+`rooted-grove/IlexForest-2.5d.png`, `paper-grove-battle.png`,
+`natural-grove-browser.png`, `natural-grove-browser-start.png` and
+`natural-grove-browser.json`. No external meshes, textures, sources or build
+artifacts are committed.

@@ -21,6 +21,7 @@ struct CutawayUniform {
 @fragment
 fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> FragmentOutput {
     var surface = pbr_input_from_standard_material(in, is_front);
+    if cutaway.fade.w > 0.0 && surface.material.base_color.a < cutaway.fade.w { discard; }
     surface.material.base_color = alpha_discard(surface.material, surface.material.base_color);
     let view_position = mesh_view_bindings::view.view_from_world * surface.world_position;
     var visibility = 1.0;

@@ -23,6 +23,9 @@ flate2 = "1.1"
 gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "extras"] }
 sha2.workspace = true
 
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+image = { version = "0.25.10", default-features = false, features = ["png", "jpeg"] }
+
 [features]
 operation-trace = []
 

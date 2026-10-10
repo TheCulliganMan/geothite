@@ -247,7 +247,7 @@ fn append_polygon(data: &mut SurfaceMeshData, polygon: &[ClipCorner], marked: bo
     }
 }
 
-fn separate_authentic_domains(
+pub(super) fn separate_authentic_domains(
     source: SurfaceMeshData,
     bounds: Option<AuthenticBounds>,
 ) -> Vec<(AuthenticDomain, SurfaceMeshData)> {

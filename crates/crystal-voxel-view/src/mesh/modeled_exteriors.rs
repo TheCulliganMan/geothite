@@ -530,7 +530,7 @@ pub(super) fn append_tree(
     map: &str,
     p: TreePlacement,
     claimed: &mut [bool],
-    _map_origin: [i32; 2],
+    map_origin: [i32; 2],
 ) -> bool {
     let Some(kind) = tree_kind(cells, g, p) else {
         return false;
@@ -547,6 +547,15 @@ pub(super) fn append_tree(
     let depth = (b[1] - b[0]).min(b[3] - b[2]);
     b[2] = b[3] - depth;
     let h = p.height as f32 * g.tile_height;
+    if matches!(kind, Asset::World(Kind::ForestConifer))
+        && johto_model(Johto::Tree).has_cutout_foliage()
+    {
+        crate::foliage::append_world_tree(mesh, Johto::Tree, b, p.base_height, g.tile_height,
+            [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
+                super::new_bark::grove_neighbors(cells, g, map, p));
+        mark_authored_rect(mesh, g, rect, kind.label());
+        return true;
+    }
     match kind {
         Asset::World(k) => {
             let m = model(k);
@@ -559,14 +568,9 @@ pub(super) fn append_tree(
             )
         }
         Asset::Johto(k) => {
-            let m = johto_model(k);
-            m.append_fitted(
-                &mut mesh.solid,
-                b,
-                p.base_height,
-                h / (m.max[1] - m.min[1]),
-                None,
-            )
+            crate::foliage::append_world_tree(mesh, k, b, p.base_height, g.tile_height,
+                [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
+                super::new_bark::grove_neighbors(cells, g, map, p));
         }
     }
     mark_authored_rect(mesh, g, rect, kind.label());

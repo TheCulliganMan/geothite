@@ -213,6 +213,7 @@ impl SurfaceMeshData {
 /// generated thickness, so source artwork can never be stretched down a wall.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TerrainMeshData {
+    pub(crate) scenery: Vec<crate::scenery_surfaces::ScenerySurface>,
     pub(crate) background: Option<RepeatingBackground>,
     pub(crate) tree_instances: Vec<TreeMeshInstance>,
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
