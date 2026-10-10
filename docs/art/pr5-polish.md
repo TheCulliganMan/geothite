@@ -499,3 +499,64 @@ battle, with no user save destination.
 All 959 voxel tests pass with three existing ignored checks after updating the
 reviewed Pidgeotto neutral-surface count and digest. The rig's motion, topology,
 part grouping and hinge checks remain intact. All 571 static JSON files validate.
+
+## External open furniture integration
+
+The user selected Quaternius and Kenney CC0 assets for scenery and interiors.
+Downloaded sources, licenses, arrangement files and converted meshes stay in
+the ignored local `content-packs/open-models/` directory. None is staged or
+embedded in the checked-in catalog. The Rust `import_open_model` tool converts
+static opaque GLBs, applying the complete node hierarchy and inverse-transpose
+normals. Reflections reverse triangle winding. It rejects skins, animations,
+morphs, vertex-painted models and textured/translucent materials rather than
+silently dropping those features. A JSON arrangement can compose up to 64
+source GLBs with explicit translation/scale before grounding the complete
+fixture. Quaternius leaf cutouts still need a textured scenery path.
+
+Native interior model caches optionally read the matching JSON filenames below
+`CRYSTAL_OPEN_MODEL_ROOT`. This changes art only; existing source drawing
+identity, bounds, collision, actor positions and controller behavior remain in
+the production placement/controller paths. Imported fixtures use uniform scaling
+and center inside the existing footprint, preserving their proportions. Authored
+assets retain their existing fitting behavior. The root is fixed on first load;
+restart to change it. Missing/invalid/oversized files retain the checked-in art.
+Diagnostics require `CRYSTAL_OPEN_MODEL_TRACE=1`; ordinary fullscreen clients
+receive no loader stdout/stderr traffic. Browser loading remains open.
+
+The initial native bedroom inspection exposed an elongated imported TV caused
+by full-bound nonuniform fitting. Contained fitting fixes its proportions. The
+generic decorated-bed override was removed pending preservation of its pattern.
+A source-faithful 2D/3D pair was captured from the same external pack on Apple
+M5/Metal. These are map-render fixture images, not proof of gameplay completion.
+All 962 model library tests pass, plus the importer hierarchy/reflection test.
+Native model tests are now included in CI without downloading external assets.
+
+A concurrent checkout build overwrote the shared unversioned preview executable
+and produced a blank first capture. That output was rejected. Subsequent checks
+use this branch's rebuilt executable copied immediately into its own ignored
+preview directory. Keep this isolation when using the shared Cargo cache.
+
+Local reproduction for the downloaded Kenney chair:
+
+```sh
+cargo run --locked -p crystal-voxel-view --bin import_open_model -- \
+  "/Users/ryanculligan/GitHub/geothite/content-packs/open-models/kenney-furniture-kit/Models/GLTF format/chairRounded.glb" \
+  /Users/ryanculligan/GitHub/geothite/content-packs/open-models/converted/interiors/chair.mesh.json
+CRYSTAL_OPEN_MODEL_ROOT=/Users/ryanculligan/GitHub/geothite/content-packs/open-models/converted \
+  cargo run --locked -p crystal-bevy --features location-tester --example render_at_location -- \
+  --pack /Users/ryanculligan/GitHub/geothite/content-packs/core-modular.browser.crystalpack \
+  --map PlayersHouse2F --view both --x 3 --y 4 \
+  --screenshot target/model-polish/open-bedroom.png
+```
+
+This is an initial native integration increment, not final approval of the
+furniture catalog. Shelf contents, fixture composition, specialized appearances,
+all affected rooms, browser loading and Quaternius foliage remain open.
+
+The current local bookcase uses Kenney's taller closed case with three groups of
+books fitted on its measured shelf tops. The TV combines the vintage display
+and a media cabinet. Fresh paired native bedroom/home captures were inspected;
+TV proportions and grounding are corrected and the shelf contents stay inside
+the case. The first-floor shot predates the last CRT/stand proportion adjustment.
+The rounded chair and red bed are converted candidates but have not been
+approved in a matching room. No imported mesh or arrangement is committed.

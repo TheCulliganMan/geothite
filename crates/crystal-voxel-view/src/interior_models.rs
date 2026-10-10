@@ -234,11 +234,14 @@ struct Primitive {
 #[derive(Deserialize)]
 struct Export {
     primitives: Vec<Primitive>,
+    #[serde(default)]
+    preserve_aspect: bool,
 }
 pub(crate) struct Model {
     surface: SurfaceMeshData,
     min: [f32; 3],
     max: [f32; 3],
+    preserve_aspect: bool,
 }
 impl Model {
     pub(crate) fn parse<'a>(
@@ -288,10 +291,16 @@ impl Model {
         if (0..3).any(|axis| !min[axis].is_finite() || max[axis] <= min[axis]) {
             return Err("empty or flat interior model".into());
         }
-        Ok(Self { surface, min, max })
+        Ok(Self {
+            surface,
+            min,
+            max,
+            preserve_aspect: export.preserve_aspect,
+        })
     }
     /// Fit the true 3D asset inside a source-verified physical footprint.
-    /// Nonuniform fitting correctly inverse-transforms the normals.
+    /// Authored assets fit the complete bounds with inverse-transformed normals.
+    /// Imported assets may retain their proportions centered inside those bounds.
     pub(crate) fn append_fitted(
         &self,
         target: &mut SurfaceMeshData,
@@ -300,11 +309,18 @@ impl Model {
         height: f32,
     ) {
         let [west, east, north, south] = bounds;
-        let scale = Vec3::new(
+        let mut scale = Vec3::new(
             (east - west) / (self.max[0] - self.min[0]),
             height / (self.max[1] - self.min[1]),
             (south - north) / (self.max[2] - self.min[2]),
         );
+        let mut origin = Vec3::new(west, base_y, north);
+        if self.preserve_aspect {
+            scale = Vec3::splat(scale.min_element());
+            let size = (Vec3::from_array(self.max) - Vec3::from_array(self.min)) * scale;
+            origin.x += (east - west - size.x) * 0.5;
+            origin.z += (south - north - size.z) * 0.5;
+        }
         let base = target.positions.len() as u32;
         for ((p, n), c) in self
             .surface
@@ -313,8 +329,7 @@ impl Model {
             .zip(&self.surface.normals)
             .zip(&self.surface.colors)
         {
-            let p = (Vec3::from_array(*p) - Vec3::from_array(self.min)) * scale
-                + Vec3::new(west, base_y, north);
+            let p = (Vec3::from_array(*p) - Vec3::from_array(self.min)) * scale + origin;
             let normal = (Vec3::from_array(*n) / scale).normalize();
             target.positions.push(p.to_array());
             target.normals.push(normal.to_array());
@@ -380,8 +395,11 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
         ($slot:ident, $path:literal) => {{
             static $slot: OnceLock<Model> = OnceLock::new();
             $slot.get_or_init(|| {
-                Model::parse(crate::model_storage::include_model!($path))
-                    .expect("validated authored interior asset")
+                crate::open_models::load(
+                    $path,
+                    crate::model_storage::include_model!($path),
+                    |source| Model::parse(source),
+                )
             })
         }};
     }
@@ -570,5 +588,47 @@ mod tests {
     fn invalid_or_flat_interior_models_are_rejected() {
         assert!(Model::parse(r#"{"primitives":[]}"#).is_err());
         assert!(Model::parse(r#"{"primitives":[{"positions":[0,0,0],"normals":[0,0,0],"indices":[0,0,0],"base_color":[1,1,1,1]}]}"#).is_err());
+    }
+    #[test]
+    fn contained_import_retains_proportions_grounding_and_source_footprint() {
+        let mut json: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/interiors/television.mesh.json"),
+        )
+        .unwrap();
+        json["preserve_aspect"] = true.into();
+        let model = Model::parse(&json.to_string()).unwrap();
+        let mut mesh = SurfaceMeshData::default();
+        model.append_fitted(&mut mesh, [-3., 3., -0.7, 0.7], 0.4, 4.);
+        let lo = mesh
+            .positions
+            .iter()
+            .copied()
+            .map(Vec3::from_array)
+            .fold(Vec3::splat(f32::INFINITY), Vec3::min);
+        let hi = mesh
+            .positions
+            .iter()
+            .copied()
+            .map(Vec3::from_array)
+            .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+        let source_size = Vec3::from_array(model.max) - Vec3::from_array(model.min);
+        let size = hi - lo;
+        assert!((size.x / size.y - source_size.x / source_size.y).abs() < 1e-5);
+        assert!((size.z / size.y - source_size.z / source_size.y).abs() < 1e-5);
+        assert!((lo.y - 0.4).abs() < 1e-5);
+        assert!((lo.x + hi.x).abs() < 1e-5 && (lo.z + hi.z).abs() < 1e-5);
+        assert!(
+            lo.x >= -3.0001
+                && hi.x <= 3.0001
+                && lo.z >= -0.7001
+                && hi.z <= 0.7001
+                && hi.y <= 4.4001
+        );
+        assert_eq!(mesh.indices, model.surface.indices);
+        assert!(
+            mesh.normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 1e-5)
+        );
     }
 }
