@@ -69,3 +69,36 @@ def fitted_patch(name,color,outline,surface,thickness=.008):
     last=1+2*n
     faces += [(last+(i+1)%n,last+i,last+i+count,last+(i+1)%n+count) for i in range(n)]
     return part(name,color,front+back,faces)
+
+
+def subdivided_part(name,color,vertices,faces,steps=1,smooth=False):
+    """Chamfer a closed cage with bounded Catmull-Clark subdivision.
+
+    Operates on authored polygon faces before triangulation. This changes the
+    actual silhouette, rather than just hiding facets with lighting normals.
+    """
+    vertices=[tuple(v) for v in vertices];faces=[tuple(f) for f in faces]
+    def mean(points):return tuple(sum(p[k] for p in points)/len(points) for k in range(3))
+    for _ in range(steps):
+        face_points=[mean([vertices[i] for i in f]) for f in faces]
+        edges={};touch=[[] for v in vertices]
+        for index,f in enumerate(faces):
+            for a in f:touch[a].append(index)
+            for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append(index)
+        if any(len(fs)!=2 for fs in edges.values()):raise ValueError('subdivision requires a closed cage')
+        neighbors=[[] for v in vertices]
+        for (a,b),fs in edges.items():
+            middle=mean([vertices[a],vertices[b]]);neighbors[a].append(middle);neighbors[b].append(middle)
+        new=[]
+        for i,v in enumerate(vertices):
+            n=len(touch[i]);f=mean([face_points[j] for j in touch[i]]);r=mean(neighbors[i])
+            new.append(tuple((f[k]+2*r[k]+(n-3)*v[k])/n for k in range(3)))
+        edge_ids={}
+        for edge,fs in edges.items():edge_ids[edge]=len(new);new.append(mean([vertices[i] for i in edge]+[face_points[j] for j in fs]))
+        face_start=len(new);new.extend(face_points);next_faces=[]
+        for j,f in enumerate(faces):
+            for i,a in enumerate(f):
+                b=f[(i+1)%len(f)];c=f[i-1]
+                next_faces.append((a,edge_ids[tuple(sorted((a,b)))],face_start+j,edge_ids[tuple(sorted((a,c)))]))
+        vertices,faces=new,next_faces
+    return part(name,color,vertices,faces,smooth)

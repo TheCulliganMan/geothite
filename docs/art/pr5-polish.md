@@ -6,6 +6,20 @@ contains 571 static JSON models, eight individual animated GLBs and 75 human
 scenes in the shared catalog: 654 neutral review entries. This includes
 scenery variants and non-Pokémon props, not 654 distinct Pokémon.
 
+## Papercraft direction
+
+The requested finish is papercraft. Silhouettes should flow through shaped,
+chamfered contours, while deliberate planar faces and sharp folds retain the
+paper construction. Avoid cubic jaws, disconnected primitive anatomy, dense
+incidental triangulation and inflated, uniformly smooth plastic surfaces.
+Proportions, connected forms and fitted details matter before shading.
+
+Pokémon XD may supply proportion and pose references through an external local
+export. The TeamOrre decompilation contains code, not the game models. Do not
+commit imported meshes, textures, disc images or converted copies. References
+stay outside Git; reference availability does not mark an authored model as
+polished. No XD assets have been downloaded or integrated yet.
+
 ## Review method
 
 `tools/render-model-review.py` renders actual canonical geometry, node
@@ -340,3 +354,32 @@ and these existing discrepancies remain open; no audio programs, PCM, attack
 source or authored timings were changed to hide them. The subset is not
 reported as passing. Its ten-species preview and five-starter real attack
 checks continue to pass within those 43 checks.
+
+## Crocodile family and papercraft finish
+
+Croconaw and Feraligatr replace the shared sphere/rod water-starter recipe with
+joined body/head profiles, broad shaped jaws, fitted eyes and nostrils, bent
+limbs, splayed toes and tapered tails. Croconaw has a round pale belly with blue
+islands and a three-point sail; Feraligatr has a wider chest, narrower waist,
+open mouth, upper/lower teeth, pale claws, V belly and fitted chamfered armor.
+Source heights remain 1.30 units with planted feet and pack-derived runtime size.
+
+The papercraft pass uses one bounded polygon subdivision on the jaw cages to
+soften their boxy contours. Sharp crests and fitted armor retain their authored
+folds. Face normals across every panel preserve the paper finish, including the
+body and limbs; the initial uniformly smooth torso was rejected during native
+review. No downloaded model or texture has been integrated.
+
+`tools/crocodile_sculpt.py` is the reproducible authoring recipe; the generic
+water-evolution recipe is removed and the batch builder delegates here. There
+are 49/80 closed parts and 6,500/7,004 triangles respectively. Six stored-model
+checks cover reproduction, oriented connected closure, triangle-consistent
+normals, flat paper panels, anatomy/proportions, height/ground and independent
+triangle intersections for fitted face/armor details. All 28 sculpt checks pass.
+
+The rebuilt native Metal battle preview is reviewed for both species. The
+12-species production controller preview test passes against the external pack;
+all 959 voxel tests pass (three existing ignored), and 571 canonical JSON files
+validate. Screenshots and logs stay under ignored target/model-polish. This is a
+first family pass toward papercraft; full catalog restyling, browser review and
+articulation remain open. XD references await an external local export.

@@ -402,19 +402,8 @@ def fire_starter(n):
  else:
   quad('cream',(.18,.32,.23),(.16,-.30,.66),False);sph('Long blue dorsal mantle',(0,.09,.47),(.18,.31,.16),'navy');sph('Narrow blue head',(0,-.30,.69),(.16,.16,.13),'navy');sph('Pointed cream snout',(0,-.43,.62),(.12,.14,.065),'cream');eyes(.72,-.441,.086,.027);sph('Dark nose',(0,-.562,.63),(.030,.02,.02),'ink');flame('Neck eruption',(0,-.03,.62),.26);flame('Rump eruption',(0,.31,.43),.36)
 @register('CROCONAW FERALIGATR',1.30)
-def water_starter(n):
- big=n=='FERALIGATR';sph('Heavy crocodile torso',(0,.03,.46),(.31,.24,.36),'blue');sph('Broad jaw head',(0,-.08,.87),(.29,.23,.22),'blue');sph('Squared snout',(0,-.26,.84),(.28,.19,.12),'blue');sph('Lower jaw',(0,-.25,.74),(.26,.18,.055),'cream');feet('blue',.22,s=(.145,.20,.09));arms('blue',.60,.30);eyes(.94,-.263,.17,.043)
- for s in (-1,1):
-  for dx in (0,.07):rod('Visible tooth',(s*(.13+dx),-.39,.775),(s*(.13+dx),-.39,.83),.022,'white',.001)
-  sph('Nostril',(s*.09,-.43,.88),(.023,.012,.016),'navy')
- tube('Powerful tail',[(0,.20,.30),(0,.47,.26),(0,.66,.37)], [.18,.13,.03],'blue')
- for y,z in [(.05,1.04),(.23,.78),(.31,.53),(.49,.36)]:fin('Red dorsal spike',[(-.07,y,z),(.0,y+.12,z+.23),(.07,y+.14,z-.03)],'red',.06)
- if big:
-  sph('Cream belly plate',(0,-.206,.41),(.20,.055,.21),'cream')
-  for s in (-1,1):sph('Muscular crocodile shoulder',(s*.29,0,.65),(.14,.13,.17),'blue');leaf('Jaw side crest',(s*.20,-.06,.97),(s*.34,.03,1.18),.06,'blue')
- else:
-  sph('Primitive yellow belly',(0,-.211,.39),(.255,.050,.25),'cream')
-  for x,z in [(-.11,.44),(.10,.29),(.14,.52)]:fin('Jagged belly marking',[(x-.05,-.264,z),(x+.04,-.264,z+.04),(x+.06,-.264,z-.08)],'blue',.008)
+def sculpted_water_evolutions(n):
+ raise RuntimeError('The water evolutions use their dedicated sculpture recipe before Blender batching')
 @register('FURRET',1.15)
 def furret(n):
  tube('Long curved torso',[(0,.29,.17),(0,.18,.35),(0,0,.55),(0,-.03,.80)],[.17,.19,.17,.145],'cream');sph('Ferret head',(0,-.04,.87),(.19,.16,.17),'cream');eyes(.91,-.186,.10,.03);sph('Nose',(0,-.20,.85),(.028,.020,.02),'rose')
@@ -1620,6 +1609,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('croconaw','feraligatr'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from crocodile_sculpt import sculpture as crocodile_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(crocodile_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': distinct crocodile anatomy and fitted jaw details',flush=True)
  for species in ('drowzee','hypno'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))

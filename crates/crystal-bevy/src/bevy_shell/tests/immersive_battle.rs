@@ -2053,7 +2053,7 @@ include!("immersive_capture_bridge.rs");
 #[test]
 fn immersive_model_previews_use_pack_species_and_read_only_real_battle() {
     for species in ["AMPHAROS", "MACHOP", "MACHOKE", "MACHAMP", "PSYDUCK",
-        "GOLDUCK", "ABRA", "ALAKAZAM", "DROWZEE", "HYPNO"] {
+        "GOLDUCK", "ABRA", "ALAKAZAM", "DROWZEE", "HYPNO", "CROCONAW", "FERALIGATR"] {
         let mut controller = immersive_battle_starter_preview_controller(
             false, false, false, false, false, true, false, Some(species));
         assert!(controller.shell.quick_save_path.is_none());
