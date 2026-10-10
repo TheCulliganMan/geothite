@@ -1779,6 +1779,7 @@ struct ImmersiveBattleHudBacking {
 fn sync_immersive_battle_ui_layout(
     mut commands: Commands,
     status: Res<crystal_voxel_view::BattleViewStatus>,
+    mut ui_bounds: ResMut<crystal_voxel_view::BattleUiBounds>,
     shell: Res<BevyRuntimeShell>,
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     mut ui: Query<
@@ -1899,6 +1900,14 @@ fn sync_immersive_battle_ui_layout(
         bounds[side] = Some(bounds[side].map_or(rect, |previous| {
             Rect::from_corners(previous.min.min(rect.min), previous.max.max(rect.max))
         }));
+    }
+    // Reserve the measured HUD backing plus a small visible gap. Keep the
+    // full command/narration window's height, so input and cosmetic erasure
+    // cannot reframe the battle halfway through a turn.
+    if let Some(height) = bounds.iter().flatten().map(|rect| rect.height()).reduce(f32::max) {
+        let top = (32.0 + height * scale + 14.0 + 8.0) * pixels_per_unit / physical.y;
+        let bottom = 1.0 - (24.0 + 192.0 * scale + 8.0) * pixels_per_unit / physical.y;
+        ui_bounds.reserve(physical, top, bottom);
     }
     let panel_center = |side: usize, rect: Rect| {
         let size = rect.size() * scale;

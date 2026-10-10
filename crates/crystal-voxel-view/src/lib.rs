@@ -16,7 +16,7 @@ mod species_rig;
 mod battle_tower;
 mod battle_view;
 mod model_storage;
-pub use battle_layout::BattleSceneLayout;
+pub use battle_layout::{BattleSceneLayout, BattleUiBounds};
 pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;
 mod building_style;

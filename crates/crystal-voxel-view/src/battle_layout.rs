@@ -155,6 +155,40 @@ impl BattleBody {
     }
 }
 
+/// Screen-space exclusion published by the production HUD after measuring its
+/// real sprites. Cosmetic visibility does not shrink these stable reservations.
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+pub struct BattleUiBounds {
+    viewport: Vec2,
+    safe_y: Vec2,
+}
+impl Default for BattleUiBounds {
+    fn default() -> Self {
+        Self { viewport: Vec2::ZERO, safe_y: Vec2::new(0.23, 0.75) }
+    }
+}
+impl BattleUiBounds {
+    pub fn reserve(&mut self, viewport: Vec2, top: f32, bottom: f32) {
+        if !viewport.is_finite() || viewport.min_element() <= 0.0
+            || !top.is_finite() || !bottom.is_finite()
+            || top < 0.0 || bottom > 1.0 || bottom - top < 0.04 {
+            return;
+        }
+        let baseline = Vec2::new(top.max(0.23), bottom.min(0.75));
+        let next = if baseline.y - baseline.x >= 0.04 { baseline } else { Vec2::new(top, bottom) };
+        if self.viewport == viewport {
+            let stable = Vec2::new(self.safe_y.x.max(next.x), self.safe_y.y.min(next.y));
+            self.safe_y = if stable.y - stable.x >= 0.04 { stable } else { next };
+        } else {
+            self.viewport = viewport;
+            self.safe_y = next;
+        }
+    }
+    pub(crate) fn for_viewport(&self, viewport: Vec2) -> Vec2 {
+        if self.viewport == viewport { self.safe_y } else { Self::default().safe_y }
+    }
+}
+
 /// Shared render-only projection for actors, source OAM, rows and hit anchors.
 /// Created once from both neutral bodies; transient visibility and source
 /// offsets do not reframe a held attack or resize an individual Pokémon.
@@ -168,6 +202,7 @@ pub struct BattleSceneLayout {
     pub(crate) hit_anchors: [Vec3; 2],
     pub(crate) arena_scale: f32,
     viewport: Vec2,
+    safe_y: Vec2,
 }
 impl Default for BattleSceneLayout {
     fn default() -> Self {
@@ -183,6 +218,7 @@ impl Default for BattleSceneLayout {
             hit_anchors: origins.map(|p| p + Vec3::Y),
             arena_scale: 1.0,
             viewport: Vec2::new(16.0, 9.0),
+            safe_y: Vec2::new(0.23, 0.75),
         }
     }
 }
@@ -249,6 +285,15 @@ impl BattleSceneLayout {
         }
         layout.fit_camera(&points);
         layout
+    }
+
+    pub(crate) fn reserve_ui(mut self, bodies: [Option<BattleBody>; 2], safe_y: Vec2) -> Self {
+        self.safe_y = safe_y;
+        let points: Vec<_> = bodies.into_iter().zip(self.body_poses)
+            .filter_map(|(body, pose)| Some(body?.corners(pose?)))
+            .flatten().collect();
+        if !points.is_empty() { self.fit_camera(&points); }
+        self
     }
 
     /// Fit a modeled pair to exact map support points. Geometry that cannot
@@ -436,7 +481,7 @@ impl BattleSceneLayout {
             || self.hit_anchors.iter().any(|point| !point.is_finite())
             || points.iter().any(|point| {
                 let uv = self.project_point(*point, self.viewport);
-                !uv.is_finite() || uv.x < 0.0899 || uv.x > 0.9101 || uv.y < 0.2299 || uv.y > 0.7501
+                !uv.is_finite() || uv.x < 0.0899 || uv.x > 0.9101 || uv.y < self.safe_y.x - 0.0001 || uv.y > self.safe_y.y + 0.0001
             })
         {
             return false;
@@ -463,22 +508,22 @@ impl BattleSceneLayout {
         let target = rotation * target_view;
         let tangent = (CAMERA_FOV * 0.5).tan();
         let horizontal = tangent * (self.viewport.x / self.viewport.y) * 0.82;
-        // Reserve the HP panels above and command window below. The slightly
-        // asymmetric half-planes put every neutral corner in y=.23..75.
-        let vertical_up = tangent * 0.54;
-        let vertical_down = tangent * 0.50;
+        // Fit the actual HUD-free strip, including off-center strips on small
+        // windows. This moves one camera, never scales either participant.
+        let up = tangent * (1.0 - 2.0 * self.safe_y.x);
+        let down = tangent * (2.0 * self.safe_y.y - 1.0);
+        let vertical = tangent * (self.safe_y.y - self.safe_y.x);
+        let shift = tangent * (self.safe_y.x + self.safe_y.y - 1.0);
         let distance = points.iter().fold(self.distance, |distance, point| {
             let p = camera_from_world * (*point - target);
             distance.max(
-                p.z + (p.x.abs() / horizontal).max(if p.y >= 0.0 {
-                    p.y / vertical_up
-                } else {
-                    -p.y / vertical_down
-                }) + 0.15,
+                (p.z + p.x.abs() / horizontal)
+                    .max((p.y + up * p.z) / vertical)
+                    .max((-p.y + down * p.z) / vertical) + 0.15,
             )
         });
         self.camera = Transform {
-            translation: target + rotation * Vec3::Z * distance,
+            translation: target + rotation * Vec3::new(0.0, shift * distance, distance),
             rotation,
             ..default()
         };
@@ -598,6 +643,45 @@ mod framing_tests {
             }
         }
     }
+    #[test]
+    fn actual_hud_strips_fit_whole_bodies_without_changing_scale_or_feet() {
+        for viewport in [Vec2::new(1280.0, 960.0), Vec2::new(640.0, 1136.0), Vec2::new(1136.0, 640.0)] {
+            let bodies = pair();
+            let original = BattleSceneLayout::for_bodies(bodies, viewport);
+            for safe in [Vec2::new(0.36, 0.64), Vec2::new(0.55, 0.88), Vec2::new(0.12, 0.43)] {
+                let fitted = original.clone().reserve_ui(bodies, safe);
+                assert_eq!(fitted.body_poses, original.body_poses);
+                assert_eq!(fitted.origins, original.origins);
+                assert_eq!(fitted.hit_anchors, original.hit_anchors);
+                for i in 0..2 {
+                    for point in bodies[i].unwrap().corners(fitted.body_poses[i].unwrap()) {
+                        let uv = fitted.project_point(point, viewport);
+                        assert!(uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= safe.x - 0.0001 && uv.y <= safe.y + 0.0001,
+                            "{viewport:?} {safe:?} {uv:?}");
+                    }
+                }
+                // Resolved alternate terrain cameras must retain the same strip.
+                if let Some(alternative) = fitted.side_camera(bodies, true) {
+                    assert_eq!(alternative.safe_y, safe);
+                }
+            }
+        }
+    }
+    #[test]
+    fn hud_reservations_do_not_shrink_on_cosmetic_erasure_and_reset_on_resize() {
+        let mut bounds = BattleUiBounds::default();
+        let view = Vec2::new(1280.0, 960.0);
+        bounds.reserve(view, 0.36, 0.64);
+        bounds.reserve(view, 0.25, 0.72);
+        assert_eq!(bounds.for_viewport(view), Vec2::new(0.36, 0.64));
+        bounds.reserve(view, f32::NAN, 0.72);
+        assert_eq!(bounds.for_viewport(view), Vec2::new(0.36, 0.64));
+        let resized = Vec2::new(2048.0, 1536.0);
+        assert_eq!(bounds.for_viewport(resized), Vec2::new(0.23, 0.75));
+        bounds.reserve(resized, 0.25, 0.72);
+        assert_eq!(bounds.for_viewport(resized), Vec2::new(0.25, 0.72));
+    }
+
     #[test]
     fn source_endpoints_and_midpoints_follow_real_body_anchors() {
         let layout = BattleSceneLayout::for_bodies(pair(), Vec2::new(1200.0, 900.0));

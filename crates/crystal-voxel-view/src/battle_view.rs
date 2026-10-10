@@ -1,6 +1,6 @@
 //! A render-only arena. Presentation cues come from the production shell's
 //! retained visible scene; this module has no runtime or battle-engine imports.
-use crate::battle_layout::{BattleBody, BattleSceneLayout};
+use crate::battle_layout::{BattleBody, BattleSceneLayout, BattleUiBounds};
 use crate::{BattleSourceBodyRegistration, BattleSourceBodyRegistrations};
 use crate::encounter_terrain::{self, EncounterTerrain};
 use crate::{VoxelViewSettings, mesh::SurfaceMeshData};
@@ -102,6 +102,7 @@ impl Plugin for BattleViewPlugin {
             .init_resource::<BattleViewStatus>()
             .init_resource::<BattleScene>()
             .init_resource::<BattleSceneLayout>()
+            .init_resource::<BattleUiBounds>()
             .init_resource::<BattleSourceBodyRegistrations>()
             .init_resource::<capture_bridge::BattleCaptureBridge>()
             .add_systems(Startup, setup_battle_scene)
@@ -586,11 +587,12 @@ fn camera_pose() -> Transform {
 fn sync_battle_layout(
     frame: Res<VisualBattleFrame>,
     canvas: Res<VisualBattleCanvas>,
+    ui_bounds: Res<BattleUiBounds>,
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     mut scene: ResMut<BattleScene>,
     mut layout: ResMut<BattleSceneLayout>,
     mut scenery: ResMut<EncounterTerrain>,
-    mut previous: Local<Option<([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, (Option<u64>, bool))>>,
+    mut previous: Local<Option<([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, Vec2, (Option<u64>, bool))>>,
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
         return;
@@ -655,7 +657,8 @@ fn sync_battle_layout(
     });
     let supported = scenery.supported_bodies(bodies,
         std::array::from_fn(|index| frame.battlers[index].as_ref().map(|b| b.species_id.as_ref())));
-    let key = (bodies, supported, viewport, scenery.layout_key());
+    let safe_y = ui_bounds.for_viewport(viewport);
+    let key = (bodies, supported, viewport, safe_y, scenery.layout_key());
     if previous.as_ref() != Some(&key) {
         let anchored = scenery.anchors().and_then(|anchors| {
             let Some(supported) = supported else {
@@ -664,16 +667,16 @@ fn sync_battle_layout(
             };
             scenery.reject_layout("battlers do not fit the checked encounter anchors");
             BattleSceneLayout::for_anchored_bodies(supported, anchors, viewport)
-                .map(|layout| (layout, supported))
+                .map(|layout| (layout.reserve_ui(supported, safe_y), supported))
         });
         let next = if let Some((mut anchored, supported)) = anchored {
             if scenery.constrain_layout(&mut anchored, supported, viewport) {
                 anchored
             } else {
-                BattleSceneLayout::for_bodies(bodies, viewport)
+                BattleSceneLayout::for_bodies(bodies, viewport).reserve_ui(bodies, safe_y)
             }
         } else {
-            BattleSceneLayout::for_bodies(bodies, viewport)
+            BattleSceneLayout::for_bodies(bodies, viewport).reserve_ui(bodies, safe_y)
         };
         #[cfg(not(target_arch = "wasm32"))]
         if std::env::var_os("CRYSTAL_ENCOUNTER_TRACE").is_some() {

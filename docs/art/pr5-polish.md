@@ -289,7 +289,7 @@ Additional Psyduck and Machamp captures use requested 640×480 windows
 (1280×960 Retina readbacks). Psyduck is readable, but Machamp's crest overlaps
 the HP backing. This exposes a renderer gap: the camera fits fixed normalized
 HUD margins while glyph-sized production panels occupy a larger screen
-fraction in small windows. **Open next fix:** fit the shared camera to actual
+fraction in small windows. **Issue identified at this checkpoint (addressed below):** fit the shared camera to actual
 UI exclusion bounds, preserve both participants' physical scales, verify tall
 and small models at desktop/mobile sizes, and review the new GPU output.
 These captures must not be presented as final camera sign-off.
@@ -299,3 +299,44 @@ lead and backup party, levels, moves with positive PP, active Pidgeotto trainer
 battle, command readiness and absent save destination. It passes. The original
 five-starter real attack/damage-cue regression also passes. Generated PNGs and logs remain
 ignored under `target/model-polish`.
+
+## Camera fit to measured production HUD
+
+The production shell now publishes `BattleUiBounds` from the actual HP sprite
+bounds and backing dimensions, plus the full command/narration window height
+and an 8-unit gap. The renderer includes those normalized reservations in its
+layout cache key. The shared perspective fit handles off-center vertical
+strips analytically; it changes one camera while retaining both actors' scales,
+feet, facing, origins and hit anchors. Encounter-terrain cameras retain the
+same strip and still undergo their existing support/frustum acceptance.
+
+Reservations do not shrink when HP panels are temporarily erased or a smaller
+menu appears. Window resize resets the reservation. This keeps cosmetic
+visibility and input from reframing a held attack; original animation-envelope
+bounds continue to determine the complete fitted geometry.
+
+All 959 voxel tests pass, with three existing ignored checks. Two new tests
+cover whole-body corners inside asymmetric HUD-free strips at three aspect
+ratios, unchanged geometry/anchors, alternate camera reservations, cosmetic
+erasure stability, invalid bounds and resize. The native client builds.
+
+Five real Metal captures were reviewed using the external core browser pack:
+Machamp at requested 640×480, 1024×768, 320×568 and 568×320 window sizes, plus
+Psyduck at 640×480. Every adapter log identifies Apple M5 / Metal. The small
+Machamp crest now clears the HP backing, its feet clear the command window,
+and portrait/landscape retain complete bodies. The small Psyduck retains its
+physical size relative to Pidgeotto. Generated PNGs/logs remain ignored under
+`target/model-polish/ui-fit-native`. These are native GPU readbacks; they do
+not prove browser rendering, touch input or every animated/menu state. Those
+remain open alongside full-catalog model polish.
+
+The wider 50-test `immersive_` controller/source subset passes 43 and fails
+seven source animation/audio timing assertions against this external pack.
+The identical subset was rerun with every source file restored to previous
+PR head `68c0a42`: it reproduces the same seven failures and exact left/right
+values (43 pass, 7 fail). Examples include Psychic 176 versus 165 frames,
+Shadow Ball 60 versus 57 and Surf 191 versus 185. The camera change is restored
+and these existing discrepancies remain open; no audio programs, PCM, attack
+source or authored timings were changed to hide them. The subset is not
+reported as passing. Its ten-species preview and five-starter real attack
+checks continue to pass within those 43 checks.
