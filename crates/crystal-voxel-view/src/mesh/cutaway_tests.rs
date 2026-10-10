@@ -186,6 +186,7 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
                 map,
                 p,
                 &mut claimed,
+                [0, 0],
             )
         };
         assert!(appended, "{map}");
@@ -215,6 +216,7 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
                 map,
                 p,
                 &mut claimed,
+                [0, 0],
             )
         };
         assert!(!appended, "{map}");

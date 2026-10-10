@@ -596,6 +596,7 @@ fn build_terrain_mesh_internal(
                     &frame.map_id,
                     *placement,
                     &mut claimed_by_building,
+                    frame.grid_origin.to_array(),
                 )
             {
                 continue;

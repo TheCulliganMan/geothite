@@ -7,6 +7,8 @@ mod kanto_boundary_rocks;
 mod kanto_capped_posts;
 #[path = "structure_extensions.rs"]
 mod structure_extensions;
+#[path = "city_facades.rs"]
+mod city_facades;
 use crate::exterior_models::{Kind, model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -432,6 +434,7 @@ pub(super) fn append_building(
     map: &str,
     p: BuildingPlacement,
     claimed: &mut [bool],
+    map_origin: [i32; 2],
 ) -> bool {
     if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed) {
         return true;
@@ -467,6 +470,10 @@ pub(super) fn append_building(
         Asset::Johto(kind) => {
             johto_model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
         }
+    }
+    if map == "GoldenrodCity" && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset {
+        city_facades::finish(&mut mesh.solid, cutaway_start, model(kind), b, g.tile_height * 2.0, door,
+            [p.column as i32 + map_origin[0], p.row as i32 + map_origin[1]]);
     }
     // Eligibility belongs only to this successful authored building append.
     // Ground backing and the earlier cave/mesa/forecourt/ice branch stay opaque.

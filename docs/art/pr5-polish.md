@@ -759,3 +759,26 @@ regression rejects incomplete drawings, ownership conflicts, and other maps,
 and bounds geometry to the source plot. This is local native visual evidence;
 public deployment and browser performance are unverified. Building repetition
 and broad city paving remain unfinished.
+
+## Goldenrod residential variety
+
+Complete Goldenrod residential shells now receive four coordinated treatments:
+ivory, sage, dusty rose, or blue-gray walls with matching trim and muted roofs.
+The treatments add slatted paper shutters or flower boxes to the original
+outer window bays, vary the upper cornice height, and reposition the roof
+service hatch. Civic landmarks retain their authored kit. Existing source
+recognition still selects the complete building before this finish applies.
+
+Selection uses the original map coordinate, including the built grid origin.
+Door fitting is shared with the shell so decorations follow off-center
+entrances. Door/window courses, footprint edges, source ownership, and gameplay
+remain unchanged. New details join the building's existing fade range.
+
+The regression checks all four treatments, repeated construction, original
+lower-course positions and index order, bounded X/Z geometry, and normalized
+normals. Actual production Metal captures at `(12, 26)`, `(20, 18)`, and
+`(26, 8)` were reviewed under ignored `target/model-polish/goldenrod-review/`
+as `facades-south-final.png`, `facades-center-final.png`, and
+`facades-north-final.png`. These verify local native appearance only. Broad
+street surfaces, landmark construction, and other cities remain unfinished;
+this increment does not establish complete city or full-catalog polish.

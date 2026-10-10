@@ -303,7 +303,7 @@ pub(crate) struct Model {
     pub(crate) surface: SurfaceMeshData,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
-    anchor: Option<[f32; 3]>,
+    pub(crate) anchor: Option<[f32; 3]>,
     east: bool,
 }
 impl Model {
@@ -430,7 +430,7 @@ impl Model {
             .extend(self.surface.indices.iter().map(|&i| i + vertex_base));
     }
 }
-fn fit_door_axis(x: f32, source: [f32; 2], target: [f32; 2], anchor: f32, door: f32) -> (f32, f32) {
+pub(crate) fn fit_door_axis(x: f32, source: [f32; 2], target: [f32; 2], anchor: f32, door: f32) -> (f32, f32) {
     let [a, b] = source;
     let [c, d] = target;
     let scale = (d - c) / (b - a);
