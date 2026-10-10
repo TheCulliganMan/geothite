@@ -17,6 +17,7 @@ mod battle_tower;
 mod battle_view;
 mod model_storage;
 mod open_models;
+pub use open_models::install_open_model_bundle;
 pub use battle_layout::{BattleSceneLayout, BattleUiBounds};
 pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;

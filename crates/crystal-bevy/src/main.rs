@@ -94,6 +94,8 @@ fn main() {
 async fn run_browser() -> Result<()> {
     wait_for_browser_meshtastic().await?;
     let pack_bytes = fetch_browser_pack().await?;
+    #[cfg(feature = "voxel-view")]
+    fetch_browser_open_models().await;
     let loaded = crystal_assets::load_verified_compiled_game_pack_bytes(
         DEFAULT_BROWSER_PACK_FILENAME,
         pack_bytes,
@@ -109,17 +111,22 @@ async fn run_browser() -> Result<()> {
             &web_sys::window().context("browser window is unavailable")?
                 .location().search().unwrap_or_default(),
         ).map_err(|error| anyhow::anyhow!("read preview parameters: {error:?}"))?;
-        if params.get("preview").as_deref() == Some("new-bark") {
+        let preview = match params.get("preview").as_deref() {
+            Some("new-bark") => Some(("NewBarkTown", 13, 6)),
+            Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
+            _ => None,
+        };
+        if let Some((map_name, tile_x, tile_y)) = preview {
             anyhow::ensure!(params.get("multiplayer").as_deref() == Some("off"),
-                "New Bark location preview requires multiplayer=off");
+                "Location preview requires multiplayer=off");
             return crystal_bevy::run_bevy_shell(
                 asset_root,
                 runtime,
                 BevyShellStart::NewGameAtRuntimeTile {
                     spawn_identifier,
-                    map_name: "NewBarkTown".to_string(),
-                    tile_x: 13,
-                    tile_y: 6,
+                    map_name: map_name.to_string(),
+                    tile_x,
+                    tile_y,
                 },
                 BevyShellConfig {
                     smoke_player_name: Some("CHRIS".to_string()),
@@ -265,6 +272,74 @@ async fn wait_for_browser_meshtastic() -> Result<()> {
         .await
         .map_err(|error| anyhow::anyhow!("connect browser Meshtastic radio: {error:?}"))?;
     Ok(())
+}
+
+/// Optional same-origin scenery is external to the game pack and source bundle.
+/// Missing scenery keeps the authored catalog; it never prevents normal play.
+#[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
+async fn fetch_browser_open_models() {
+    use wasm_bindgen::JsCast as _;
+    use wasm_bindgen_futures::JsFuture;
+    let Some(window) = web_sys::window() else {
+        return;
+    };
+    let mut callback = None;
+    let mut timer = None;
+    let timeout = js_sys::Promise::new(&mut |resolve, _| {
+        let done = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(move || {
+            let _ = resolve.call0(&wasm_bindgen::JsValue::NULL);
+        });
+        timer = window
+            .set_timeout_with_callback_and_timeout_and_arguments_0(
+                done.as_ref().unchecked_ref(),
+                10_000,
+            )
+            .ok();
+        callback = Some(done);
+    });
+    let download = async {
+        let window = web_sys::window().context("browser window is unavailable")?;
+        let response = JsFuture::from(window.fetch_with_str("open-models.json"))
+            .await
+            .map_err(|e| anyhow::anyhow!("fetch optional scenery: {e:?}"))?
+            .dyn_into::<web_sys::Response>()
+            .map_err(|e| anyhow::anyhow!("decode optional scenery response: {e:?}"))?;
+        if response.status() == 404 {
+            return Ok(());
+        }
+        anyhow::ensure!(
+            response.ok(),
+            "optional scenery: HTTP {}",
+            response.status()
+        );
+        let text = JsFuture::from(
+            response
+                .text()
+                .map_err(|e| anyhow::anyhow!("read optional scenery: {e:?}"))?,
+        )
+        .await
+        .map_err(|e| anyhow::anyhow!("read optional scenery: {e:?}"))?
+        .as_string()
+        .context("optional scenery response is not text")?;
+        crystal_voxel_view::install_open_model_bundle(&text).map_err(anyhow::Error::msg)?;
+        Ok(())
+    };
+    let result: Result<()> = if timer.is_some() {
+        bevy::tasks::futures_lite::future::or(download, async {
+            let _ = JsFuture::from(timeout).await;
+            anyhow::bail!("optional scenery download timed out");
+        })
+        .await
+    } else {
+        Ok(())
+    };
+    if let Some(timer) = timer {
+        window.clear_timeout_with_handle(timer);
+    }
+    drop(callback);
+    if let Err(error) = result {
+        bevy::log::warn!("{error:#}; using authored scenery");
+    }
 }
 
 #[cfg(target_arch = "wasm32")]

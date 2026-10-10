@@ -21,4 +21,12 @@ wasm-bindgen --target web --no-typescript --out-dir "$OUT" --out-name crystal-au
     target/wasm32-unknown-unknown/wasm-dev/crystal_audio.wasm
 cp web-client/*.js web-client/*.css web-client/index.html "$OUT/"
 cp "$PACK" "$OUT/core-modular.browser.crystalpack"
+# Optional converted CC0 scenery stays external and ignored, just like the pack.
+if [ -n "${CRYSTAL_OPEN_MODEL_ROOT:-}" ]; then
+    cargo run --locked -p crystal-voxel-view --bin bundle_open_models -- \
+        "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"
+else
+    # Do not accidentally reuse a previous preview's optional scenery bundle.
+    rm -f "$OUT/open-models.json"
+fi
 printf '\nBuilt %s. Run:\nCRYSTAL_DATA_DIR=target/new-bark-3d-data target/debug/crystal-web-server --dir %s --port 3003\nOpen http://localhost:3003/?multiplayer=off&preview=new-bark\n' "$OUT" "$OUT"

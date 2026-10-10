@@ -560,3 +560,56 @@ TV proportions and grounding are corrected and the shelf contents stay inside
 the case. The first-floor shot predates the last CRT/stand proportion adjustment.
 The rounded chair and red bed are converted candidates but have not been
 approved in a matching room. No imported mesh or arrangement is committed.
+
+
+### External browser scenery bundle
+
+The optional browser path now fetches `open-models.json` from the same origin
+before starting the production shell. A 404 uses the authored catalog silently;
+invalid bundles and downloads that exceed ten seconds retain that fallback.
+The Rust parser accepts version 1 interior bundles only, validates every mesh
+before installing any, caps the whole input at 64 MiB / 128 entries and each
+mesh at 16 MiB, and freezes source choices at the first model lookup. No game
+pack data, collision, controller state, or save content is replaced.
+
+`bundle_open_models` assembles converted external `interiors/*.mesh.json`
+into this bundle. `tools/new-bark-3d-web.sh` includes it only when
+`CRYSTAL_OPEN_MODEL_ROOT` is explicitly supplied, and removes a stale optional
+bundle when building a preview without that root. The generated bundle remains
+ignored build output. The feature-gated `preview=bedroom&multiplayer=off` entry
+starts at PlayersHouse2F (3,4), uses the production renderer/controller and has
+no save destination. It is for verification, not a production spawn change.
+
+All 964 model-library checks pass (three existing ignored checks), plus the
+importer's nested-transform/reflection test. The registry regression uses a
+fresh filtered test process to prove that a distinctive bundled tetrahedron
+reaches the actual cached furniture renderer while an unbundled stool retains
+the authored fallback. An initial assertion incorrectly expected raw material
+colors after the existing face-light bake; the corrected check retains exact
+geometry/index verification and expects the established lighting response.
+The actual WASM target compiles successfully. CI now checks this WASM feature
+combination too, without downloading assets. Fresh optimized WASM and the matching Rust server were built and copied into
+an isolated ignored preview directory. Headless Chrome / SwiftShader checks
+pass for valid Kenney scenery, a missing (404) bundle and malformed JSON. All
+three open the real PlayersHouse2F preview at (3,4); the imported case also
+moves upward and opens the production Start menu through the normal bridge.
+Screenshots explicitly show 3D (the initial 2D review attempt was rejected).
+The page now recognizes both bedroom and New Bark art previews when choosing
+its initial 3D presentation. Normal view preferences are unchanged. Imported
+and missing-bundle captures were visually reviewed: the TV/cabinet and three
+book groups are visible, and the authored furniture is retained on fallback.
+This is actual WASM rendering under SwiftShader, not hardware GPU performance
+proof or a complete gameplay regression. Review artifacts are under
+`target/model-polish/open-bundle-bedroom-{kenney,missing,malformed}.png` and
+`open-bundle-browser-review.json`. Quaternius
+textured foliage remains unintegrated: the selected birch has bark textures
+and transparent individual leaf cards. The older solid crown is still visibly
+angular, so it is not accepted as a polished replacement.
+
+
+The 94 browser JavaScript regressions also pass after installing the worktree's
+pinned dev dependencies with scripts disabled. The initial JS run lacked
+`jsdom`; no application assertions failed once dependencies were present.
+The disposable review server and headless browser were stopped afterward.
+The actual selected furniture bundle was 416,428 bytes; sources, converted
+meshes, this bundle, review images and compiled binaries are all ignored.
