@@ -2,7 +2,7 @@
 
 A local Rust/WASM connectome controller and interactive 3D anatomy viewer for
 Geothite's Pokémon Crystal browser game. This is an experimental preview, version
-0.2.0. Story control uses a connected sensory/descending circuit with an online
+0.3.0. Story control uses a connected sensory/descending circuit with an online
 policy adapter. This architecture starts untrained; previous
 [measured results](../../docs/FLYGON_RESULTS.md) describe the retired MBON controller.
 The [MaleCNS follow-up](../../docs/FLYGON_MALECNS_FOLLOWUP.md) documents the expanded
@@ -139,10 +139,10 @@ identity. Attribution is in [ATTRIBUTION.md](ATTRIBUTION.md) and in the public U
 # Uses existing game and neural bundles; no builds, downloads or deployment:
 target/web-release/flygon-package \
   --workspace . --game target/3d-web \
-  --data /tmp/flygon-data/prepared --out target/flygon-release-0.2.0
+  --data /tmp/flygon-data/prepared --out target/flygon-release-0.3.0
 
-target/web-release/flygon-package --verify target/flygon-release-0.2.0
-target/web-release/flygon-package --preview target/flygon-release-0.2.0 33008
+target/web-release/flygon-package --verify target/flygon-release-0.3.0
+target/web-release/flygon-package --preview target/flygon-release-0.3.0 33008
 ```
 
 Assembly validates runtime identities and profiles, verifies the pinned graph,
@@ -174,7 +174,8 @@ quest key items, TM/HM acquisition, field moves learned and successfully used,
 Pokédex additions, level high-water marks, all 16 badges and Hall of Fame.
 Elm/Mr. Pokémon dialogue and quest handoffs use the same actual script observation
 as later Johto, Kanto and Red events. New pages require a real talked-to object.
-There is no map ranking, coordinate target, distance reward or Route 30 stop.
+The story ledger itself supplies no coordinate targets or distance rewards;
+the separate breadcrumb curriculum below supplies those task aids.
 First visits to a town, route or interior earn a small policy-training outcome.
 Visited places persist in the brain ledger; revisits, door loops and loading a
 save do not pay.
@@ -192,9 +193,11 @@ battle text and party condition. A signed, density-normalized feature projection
 drives up to 192 annotated visual-projection/central sensory neurons plus 64
 Kenyon cells drawn from actual plastic synapses. Inputs are
 chosen across annotated types and hemispheres using conducting connectivity.
-Separate spatial quadrants, objects, dialogue/menu, party/battle and scene channels
-reduce interference between observations. Up to 256 reachable
-descending neurons form a separate readout population. Forward and reverse
+Sixteen separate channels cover spatial quadrants, objects, dialogue/menu,
+party/battle, scene information, story direction and exploration direction.
+Opposed neuron pairs retain both signs of each feature projection. Detailed
+visible menu rows and the enemy HP display distinguish battle decisions. All 1,314 reachable descending neurons form a separate readout population,
+pooled into 256 normalized policy features. Forward and reverse
 reachability restrict the interface to measured pre-to-post paths of at most
 12 hops; all neurons and edges remain in the simulator. No direct current is
 injected into the output neurons, and no button cue is fed into the sensory path.
@@ -211,6 +214,10 @@ actor-critic update trains this engineered readout. A learned value baseline,
 discounted returns, normalized bounded updates, 3% exploration and a small
 entropy bonus reduce noisy credit and premature action lock-in. Nonzero outcomes
 update the policy immediately; neutral sequences still train in eight-step batches.
+Explicit negative outcomes train their causal action separately from preceding
+neutral inputs. A pessimistic critic cannot turn punishment into a positive actor
+update; the critic still corrects its own value estimate. Confirmation-only
+dialogue excludes directional buttons from both policy and exploration.
 Game rewards pair the active sensory trace with PAM01 stimulation; aversive outcomes
 pair it with PPL101 stimulation. The existing dopamine-gated KC eligibility rule
 can change actual KC-to-MBON synapses during this feedback window. Inference keeps
@@ -218,8 +225,8 @@ plasticity off. The engineered policy adapter remains separate from those synaps
 The sensory prosthesis reserves 64 inputs in the actual plastic KC-to-MBON pool,
 alongside visual/sensory neurons. These cells encode observations, never candidate
 buttons. This supplies active eligibility traces instead of delivering dopamine
-to an inactive memory circuit. Story-direction channels receive stronger input
-current while ordinary spatial input is attenuated, so the breadcrumb is salient.
+to an inactive memory circuit. Task cues have their own sensory channels and
+never attenuate terrain or other observations.
 
 Opening-story breadcrumbs lead downstairs, to Mom, Elm, a starter, the town exit,
 Cherrygrove, Mr. Pokemon, and the return to Elm. Their directional scent enters the
@@ -228,16 +235,22 @@ terrain and failed movement edges, excluding unknown cells entirely. When no
 connected route is known, frontier exploration takes over. These are
 approximate routes: directional collision rules and changing NPCs can invalidate a
 predicted step. New best progress pays once per target, preventing back-and-forth
-reward farming. Milestone and battle rewards continue beyond this opening curriculum.
+reward farming. Remembered failed edges expire after 64 outcomes; observed NPC
+positions block routes, and adjacent interactions include facing cues. The
+connected curriculum includes later Johto objectives through Jasmine,
+using authored exits and event coordinates from the loaded pack.
 Alongside the story scent, an exploration scent points toward reachable remembered
 land bordering unseen terrain. Revealing at least three new terrain cells from a
 new player tile pays a small 0.05 curiosity reward; revisits do not pay. This works
 on every map and gives a fallback when the story route is unknown or obstructed.
-First best story approach (2.0), recovery toward a known route (0.3), and new places
-(2.5) outweigh curiosity (0.05). Visiting new ground can pay curiosity even in a
-small room whose whole layout was already visible. Short-loop penalties prevent
-repeated recovery rewards from becoming a profitable oscillation. Necessary backtracking
-is neutral unless it becomes a repeated short loop; failed moves update the route.
+First best story approach (2.0) and new places (2.5) outweigh curiosity (0.05).
+Repeated recovery does not earn another best-distance bonus. Signed route potential
+adds 0.15 per step toward the same known goal and subtracts it on retreat, so a
+round trip cancels rather than farming recovery rewards. Visiting new ground can pay curiosity even in a
+small room whose whole layout was already visible. A 64-observation history recognizes unchanged states and short cycles, raising
+exploration toward 35% while a loop persists. Necessary backtracking
+has no story penalty unless it becomes a repeated short loop; route potential
+still reflects movement relative to the current goal. Failed moves update the route.
 Every Select outcome, refusals, blocked movement and repeated short loops receive
 aversive feedback. Empty-floor A/B presses and unnecessary menu opening before a
 starter also cost. Staying in those menus costs 0.25 per action; closing them pays
@@ -259,10 +272,23 @@ motivate compartment-specific stimulation paired with active sensory traces, not
 a claim that every PAM/PPL cell has one universal valence or that this game
 controller reproduces biological learning in full.
 
-For a neural/UI-only release, build only `crystal-flygon`, generate its wasm-bindgen
-bundle, and run `tools/version-browser-bundle.sh WEB_DIRECTORY --flygon-only`.
-The resulting Flygon assets can overlay the existing production image; the game
-WASM, server binary, external content and persistent data need no rebuild.
+Capture, critical healing, trainer battle menus, mandatory replacements, HM
+teaching, PC recovery, ball purchases and specific story choices now feed the
+compiled controller. Their signed menu potentials cancel on cursor round trips;
+verified captures, healing and purchases supply completion feedback. Separate
+foreground menu heads prevent learned move selection from leaking into Pack or
+YES/NO decisions. These remain engineered task aids, processed through measured
+neural activity; they are not proof of biological cognition or campaign mastery.
+
+Build the neural bundle with `sh tools/flygon-build.sh`. This revision also extends
+the game observation bridge, so its game WASM must be rebuilt alongside the brain
+for the new inventory, battle, menu and curriculum fields to be available. Do not
+publish a neural-only overlay expecting an older game bridge to provide them.
+
+Run `tools/flygon-policy-eval.mjs` on an isolated homelab origin for fresh-session,
+decision-budgeted gameplay evidence. It records the actual neural actions,
+outcomes, observations and a screenshot, and supplies no Game Boy inputs. Use
+`FLYGON_EVAL_DECISIONS`, `FLYGON_URL` and `FLYGON_EVIDENCE_DIR` to configure a run.
 
 The interface identity changed. Older controller checkpoints are rejected rather
 than silently reinterpreted. New checkpoints retain the policy, critic, pending rollout,
@@ -288,8 +314,9 @@ results are from legacy reversed connectivity and are not evidence for Flygon.
 Battle feedback uses actual enemy HP minima, defeated opponent indices and the
 engine's terminal result (win, capture, loss or escape). Healing an opponent and
 repeating the same damage does not pay again. Leaving a battle alone is not a win.
-Menus and backtracking are neutral, so using the party menu for HMs or returning to
-Elm is not punished. Reward histories persist in brain checkpoints. Scenario
+Necessary menus do not receive story penalties; menu objectives and route potential
+still supply signed feedback. Returning to Elm uses the current curriculum goal.
+Reward histories persist in brain checkpoints. Scenario
 checks cover story transitions, seven machines, 16 badges, terminal battles,
 deduplication and save baselines; they are not evidence of a full story playthrough.
 
@@ -350,7 +377,9 @@ activity incur a mild negative outcome. New exploration tiles reset the inactivi
 budget; first visits can also receive the small curiosity reward described above. Known routes allow 255 decisions without
 an achievement before a mild ongoing cost begins. After that, travel covering at
 least 16 distinct tiles in the last 64 moves stays neutral, protecting long return
-trips while charging small repeated loops. Distance from a target is never penalized. Actual story, dialogue or battle
+trips while charging small repeated loops. The inactivity teacher does not charge
+for absolute distance; signed route potential separately charges retreat from a
+known goal. Actual story, dialogue or battle
 progress resets the budget. Animation observations do not advance inactivity clocks.
 Non-damaging battle turns reduce the inactivity clock without earning rewards.
 Stale warning status cannot penalize dismissal or unrelated dialogue. Counters,

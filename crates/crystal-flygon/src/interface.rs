@@ -374,3 +374,58 @@ pub(crate) fn sensory_features(v: &serde_json::Value) -> Vec<String> {
     features.dedup();
     features
 }
+
+/// Visible menu rows and battle HUD, kept separate from privileged curriculum.
+pub(crate) fn sensory_features_with_menus(v: &serde_json::Value, detailed: bool) -> Vec<String> {
+    let mut features = sensory_features(v);
+    if !detailed {
+        return features;
+    }
+    if let Some(menus) = v
+        .pointer("/observe/menus")
+        .and_then(serde_json::Value::as_array)
+    {
+        for (i, menu) in menus.iter().take(8).enumerate() {
+            if let Some(surface) = menu.get("surface") {
+                features.push(format!("menu:surface:{surface}"));
+            }
+            if let Some(rows) = menu.get("entries").and_then(serde_json::Value::as_array) {
+                for (row, value) in rows.iter().take(64).enumerate() {
+                    let label = value.as_str().unwrap_or("");
+                    features.push(format!(
+                        "menu:{i}:row:{row}:{}",
+                        label.chars().take(160).collect::<String>()
+                    ));
+                }
+            }
+        }
+    }
+    if let Some(battle) = v
+        .pointer("/observe/battle")
+        .and_then(serde_json::Value::as_str)
+    {
+        if let Some(kind) = battle.split_whitespace().next() {
+            features.push(format!("battle:kind:{kind}"));
+        }
+        // Parse the enemy's visible HP display rather than the reward ledger.
+        for line in battle.lines().filter(|line| line.starts_with("Enemy ")) {
+            if let Some(hp) = line
+                .split(" HP ")
+                .nth(1)
+                .and_then(|s| s.split_whitespace().next())
+            {
+                if let Some((a, b)) = hp.split_once('/') {
+                    if let (Ok(hp), Ok(max)) = (a.parse::<u64>(), b.parse::<u64>()) {
+                        features.push(format!(
+                            "battle:enemy_health:{}",
+                            hp.saturating_mul(4) / max.max(1)
+                        ));
+                    }
+                }
+            }
+        }
+    }
+    features.sort_unstable();
+    features.dedup();
+    features
+}

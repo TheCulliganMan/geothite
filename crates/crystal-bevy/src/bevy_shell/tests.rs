@@ -18,6 +18,72 @@ include!("tests/heal_machine_rendering.rs");
 include!("tests/town_map_rendering.rs");
 
 #[test]
+fn flygon_observation_reports_pack_exits_and_inventory_without_mutating_game() {
+    let shell = core_modular_title_shell_for_test();
+    let before = shell.shell.session().state().clone();
+    let observed = super::webmcp_observation(&shell, None).unwrap();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let module = shell.runtime.data().map_module(&snapshot.overworld.map_name).unwrap();
+    assert_eq!(observed["map_info"]["curriculum_exits"].as_array().unwrap().len(),
+        module.events.warps.len() + module.attributes.connections.len());
+    for warp in &module.events.warps {
+        assert!(observed["map_info"]["curriculum_exits"].as_array().unwrap().iter().any(|e|
+            e["target"] == warp.target_map && e["x"] == warp.x && e["y"] == warp.y));
+    }
+    assert_eq!(observed["reward_state"]["items"].as_array().unwrap().len(),
+        snapshot.bag.items.len() + snapshot.bag.balls.len());
+    assert_eq!(shell.shell.session().state(), &before);
+}
+
+#[test]
+fn flygon_observation_reports_real_battle_health_and_foreground_menu() {
+    let mut controller = VisibleShellController {
+        shell: route36_battle_shell_for_render_regression(),
+    };
+    for _ in 0..64 {
+        let v = super::webmcp_observation(&controller.shell, None).unwrap();
+        if v["observe"]["menus"].as_array().unwrap().iter().any(|m|m["surface"]=="commands") {
+            let snapshot = controller.snapshot().unwrap();
+            let battle = snapshot.battle.as_ref().unwrap();
+            assert_eq!(v["reward_state"]["battle"]["enemy_max_hp"], battle.enemy_pokemon.max_hp);
+            assert_eq!(v["reward_state"]["battle"]["active_player"], serde_json::json!(battle.active_player_party_index));
+            assert!(v["observe"]["battle"].as_str().unwrap().contains("Wild"));
+            return;
+        }
+        controller.press(GameButton::A).unwrap();
+    }
+    panic!("real battle did not expose its command menu");
+}
+
+#[test]
+fn flygon_observation_exposes_moms_authored_weekday_choice() {
+    let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let assets = AssetRoot::new(repo);
+    let runtime = workspace_desktop_runtime(&assets);
+    let mut controller = VisibleShellController::new_game(assets, runtime, "CHRIS", None).unwrap();
+    for (button,count) in [(GameButton::Right,4),(GameButton::Up,3),(GameButton::Down,4)] {
+        for _ in 0..count {
+            let before=controller.snapshot().unwrap().overworld;
+            for _ in 0..4 {
+                controller.press(button).unwrap();
+                let after=controller.snapshot().unwrap().overworld;
+                if before.map_name!=after.map_name || before.tile!=after.tile {break;}
+            }
+        }
+    }
+    for _ in 0..96 {
+        if controller.shell.pending_day_of_week.is_some() {
+            let v = super::webmcp_observation(&controller.shell,None).unwrap();
+            assert!(v["observe"]["menus"].as_array().unwrap().iter().any(|m|m["kind"]=="weekday"),
+                "a real weekday choice must not be encoded as confirmation-only dialogue");
+            return;
+        }
+        controller.press(GameButton::A).unwrap();
+    }
+    panic!("Mom's weekday choice was not reached");
+}
+
+#[test]
 fn script_earthquake_shakes_then_sleeps_for_both_low_six_bit_counters() {
     let mut earthquake = super::VisibleEarthquake::from_script(84, 20, 20);
     assert_eq!(earthquake.intensity, 2);

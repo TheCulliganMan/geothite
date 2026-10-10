@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "flygon",
   "name": "Flygon",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "status": "experimental-preview",
   "entrypoint": "/flygon",
   "kind": "local-neural-controller",
@@ -10,7 +10,7 @@
   "default_profile": "operant",
   "dataset_manifest": "dataset.json",
   "model_id": "flygon-lif-kc-dan-ltd-v2",
-  "interface_id": "flygon-connected-sensory-descending-actor-critic-v4-pooled",
+  "interface_id": "flygon-connected-sensory-descending-actor-critic-v5-signed",
   "runtime": {
     "simulation": "Rust / WebAssembly worker",
     "viewer": "independent Rust / WebAssembly worker",

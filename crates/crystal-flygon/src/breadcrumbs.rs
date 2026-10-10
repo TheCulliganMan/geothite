@@ -9,7 +9,8 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap};
 #[serde(default)]
 pub(crate) struct Breadcrumbs {
     terrain: BTreeMap<String, BTreeMap<String, bool>>,
-    blocked: BTreeSet<String>,
+    blocked: BTreeMap<String, u64>,
+    movement_tick: u64,
     best: BTreeMap<String, usize>,
     explored: BTreeSet<String>,
     pub current: Value,
@@ -60,6 +61,9 @@ impl Breadcrumbs {
         }
     }
     fn target(v: &Value) -> Option<(String, Vec<(i64, i64)>)> {
+        if let Some(target) = crate::curriculum::target(v) {
+            return Some(target);
+        }
         let party = v
             .pointer("/status/party")
             .and_then(Value::as_array)
@@ -146,6 +150,9 @@ impl Breadcrumbs {
             .flatten()
             .filter_map(|o| Some((o["x"].as_i64()?, o["y"].as_i64()?)))
             .collect();
+        if occupied.contains(&start) {
+            return None;
+        }
         let mut queue = BinaryHeap::from([Reverse((0usize, start))]);
         let mut costs = BTreeMap::from([(start, 0usize)]);
         while let Some(Reverse((cost, (x, y)))) = queue.pop() {
@@ -162,7 +169,7 @@ impl Breadcrumbs {
                 }
                 if self
                     .blocked
-                    .contains(&format!("{}:{x},{y}:{nx},{ny}", map(v)))
+                    .contains_key(&format!("{}:{x},{y}:{nx},{ny}", map(v)))
                 {
                     continue;
                 }
@@ -232,6 +239,70 @@ impl Breadcrumbs {
         {
             return cues;
         }
+        if distance == Some(0) {
+            if let Some((x, y)) = pos(v) {
+                let direction = |dx: i64, dy: i64| {
+                    if dx > 0 {
+                        "east"
+                    } else if dx < 0 {
+                        "west"
+                    } else if dy > 0 {
+                        "south"
+                    } else {
+                        "north"
+                    }
+                };
+                if let Some(objects) = v.pointer("/map_info/objects").and_then(Value::as_array) {
+                    for o in objects {
+                        let (Some(ox), Some(oy)) = (o["x"].as_i64(), o["y"].as_i64()) else {
+                            continue;
+                        };
+                        let (dx, dy) = (ox - x, oy - y);
+                        let relevant = match crate::curriculum::goal(v) {
+                            Some(crate::curriculum::Goal::Talk(role, _)) => {
+                                crate::curriculum::matches_object(o, role)
+                            }
+                            _ => label.starts_with("Speak") || label.starts_with("Choose"),
+                        };
+                        if relevant
+                            && ((dx.abs() + dy.abs() == 1)
+                                || (dx.abs() + dy.abs() == 2
+                                    && (dx == 0 || dy == 0)
+                                    && crate::curriculum::counter_at(
+                                        v,
+                                        x + dx.signum(),
+                                        y + dy.signum(),
+                                    )))
+                        {
+                            let d = direction(dx, dy);
+                            let facing = v
+                                .pointer("/map_info/player/facing")
+                                .and_then(Value::as_str)
+                                .unwrap_or("")
+                                .to_lowercase();
+                            let aligned = matches!(
+                                (d, facing.as_str()),
+                                ("east", "right" | "east")
+                                    | ("west", "left" | "west")
+                                    | ("north", "up" | "north")
+                                    | ("south", "down" | "south")
+                            );
+                            cues.push(format!(
+                                "objective:interaction:{}",
+                                if aligned { "aligned" } else { "turn" }
+                            ));
+                            if !aligned {
+                                cues.push(format!("story-scent:{d}"));
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if let Some(outward) = crate::curriculum::outward(v) {
+            cues.push(format!("story-scent:{outward}"));
+        }
         if let Some((x, y)) = pos(v) {
             // A directional scent is an explicit task aid, still processed by
             // the sensory circuit; it never overrides the sampled button.
@@ -243,7 +314,7 @@ impl Breadcrumbs {
             ] {
                 if self
                     .blocked
-                    .contains(&format!("{}:{x},{y}:{},{}", map(v), x + dx, y + dy))
+                    .contains_key(&format!("{}:{x},{y}:{},{}", map(v), x + dx, y + dy))
                 {
                     continue;
                 }
@@ -266,7 +337,41 @@ impl Breadcrumbs {
         }
         cues
     }
+    /// Signed potential over the same observed route graph. Recovery pays only
+    /// what retreat costs; unchanged inputs and cursor/scene changes cannot pay.
+    pub(crate) fn route_progress(&self, before: &Value, after: &Value, button: &str) -> f32 {
+        if !["up", "down", "left", "right"].contains(&button)
+            || map(before) != map(after)
+            || pos(before) == pos(after)
+        {
+            return 0.0;
+        }
+        if [before, after].iter().any(|v| {
+            v.pointer("/status/screen").and_then(Value::as_str) != Some("overworld")
+                || v.pointer("/observe/visible_dialogue")
+                    .and_then(Value::as_str)
+                    .is_some_and(|s| !s.is_empty())
+                || v.pointer("/observe/menus")
+                    .and_then(Value::as_array)
+                    .is_some_and(|m| !m.is_empty())
+        }) {
+            return 0.0;
+        }
+        let Some((label, goals)) = Self::target(before) else {
+            return 0.0;
+        };
+        if Self::target(after).map(|t| t.0) != Some(label) {
+            return 0.0;
+        }
+        match (self.distance(before, &goals), self.distance(after, &goals)) {
+            (Some(a), Some(b)) => (0.15 * (a as f32 - b as f32)).clamp(-2.0, 2.0),
+            _ => 0.0,
+        }
+    }
     pub fn feedback(&mut self, before: &Value, after: &Value, button: &str) -> Option<String> {
+        self.movement_tick = self.movement_tick.saturating_add(1);
+        self.blocked
+            .retain(|_, expiry| *expiry > self.movement_tick);
         self.observe(before);
         let known_before = self.terrain.get(map(after)).map_or(0, BTreeMap::len);
         self.observe(after);
@@ -298,9 +403,13 @@ impl Breadcrumbs {
             .get(map(after))
             .map_or(0, BTreeMap::len)
             .saturating_sub(known_before);
-        let exploration = (b != a && novel).then(|| if revealed >= 3 {
-            format!("exploration:revealed_{revealed}_tiles")
-        } else { "exploration:new_ground".into() });
+        let exploration = (b != a && novel).then(|| {
+            if revealed >= 3 {
+                format!("exploration:revealed_{revealed}_tiles")
+            } else {
+                "exploration:new_ground".into()
+            }
+        });
         if b != a {
             self.blocked
                 .remove(&format!("{}:{},{}:{},{}", map(before), b.0, b.1, a.0, a.1));
@@ -333,14 +442,17 @@ impl Breadcrumbs {
                     })
                 });
             if delta != (0, 0) && !occupied {
-                self.blocked.insert(format!(
-                    "{}:{},{}:{},{}",
-                    map(before),
-                    b.0,
-                    b.1,
-                    b.0 + delta.0,
-                    b.1 + delta.1
-                ));
+                self.blocked.insert(
+                    format!(
+                        "{}:{},{}:{},{}",
+                        map(before),
+                        b.0,
+                        b.1,
+                        b.0 + delta.0,
+                        b.1 + delta.1
+                    ),
+                    self.movement_tick.saturating_add(64),
+                );
             }
         }
         let Some((label, goals)) = Self::target(before) else {
@@ -360,10 +472,50 @@ impl Breadcrumbs {
         if b != a && new < old && new < *best {
             *best = new;
             Some(format!("breadcrumb:{label}"))
-        } else if b != a && new < old {
-            Some(format!("breadcrumb:recover:{label}"))
         } else {
             exploration
         }
+    }
+}
+
+#[cfg(test)]
+mod regression_tests {
+    use super::*;
+    fn scene(x: i64) -> Value {
+        json!({"status":{"screen":"overworld"},"observe":{"menus":[]},
+            "map_info":{"name":"Test","dimensions":[3,1],"player":{"x":x,"y":0,"facing":"Right"},
+                "terrain":{"origin_x":0,"origin_y":0,"rows":[[{"terrain":"Land"},{"terrain":"Land"},{"terrain":"Land"}]]},"objects":[]}})
+    }
+    #[test]
+    fn route_recovery_is_signed_and_round_trips_cancel() {
+        let mut a = scene(0);
+        a["map_info"]["name"] = json!("PlayersHouse2F");
+        a["map_info"]["dimensions"] = json!([8, 1]);
+        a["map_info"]["terrain"]["rows"] = json!([vec![json!({"terrain":"Land"}); 8]]);
+        let mut b = a.clone();
+        b["map_info"]["player"]["x"] = json!(1);
+        let mut crumbs = Breadcrumbs::default();
+        crumbs.observe(&a);
+        crumbs.observe(&b);
+        let forward = crumbs.route_progress(&a, &b, "right");
+        assert!(forward > 0.0);
+        assert_eq!(forward + crumbs.route_progress(&b, &a, "left"), 0.0);
+        assert_eq!(crumbs.route_progress(&a, &a, "right"), 0.0);
+        b["observe"]["menus"] = json!([{"kind":"start"}]);
+        assert_eq!(crumbs.route_progress(&a, &b, "right"), 0.0);
+    }
+    #[test]
+    fn failed_edges_expire_and_occupied_cells_are_not_routes() {
+        let mut crumbs = Breadcrumbs::default();
+        let v = scene(0);
+        crumbs.feedback(&v, &v, "right");
+        assert!(crumbs.distance(&v, &[(2, 0)]).is_none());
+        for _ in 0..64 {
+            crumbs.feedback(&v, &v, "a");
+        }
+        assert_eq!(crumbs.distance(&v, &[(2, 0)]), Some(2));
+        let mut occupied = scene(1);
+        occupied["map_info"]["objects"] = json!([{"x":1,"y":0}]);
+        assert!(crumbs.distance(&occupied, &[(2, 0)]).is_none());
     }
 }

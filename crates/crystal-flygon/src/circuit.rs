@@ -20,7 +20,7 @@ pub(crate) struct CircuitState {
     weights: Vec<f32>,
     value_weights: Vec<f32>,
     context: String,
-    heads: BTreeMap<String,(Vec<f32>,Vec<f32>)>,
+    heads: BTreeMap<String, (Vec<f32>, Vec<f32>)>,
     rollout: Vec<Transition>,
     last_value: f32,
     last_advantage: f32,
@@ -31,6 +31,7 @@ pub(crate) struct CircuitState {
     story: crate::story::StoryLedger,
     recent: Vec<Value>,
     breadcrumbs: crate::breadcrumbs::Breadcrumbs,
+    history: crate::sensory::History,
 }
 #[derive(Clone, Serialize, Deserialize)]
 struct Decision {
@@ -109,50 +110,25 @@ fn pool_readout(signals: impl Iterator<Item = f32>) -> Vec<f32> {
     pooled
 }
 
-fn sensory_channel(feature: &str) -> usize {
-    if feature.starts_with("story-scent:") || feature.starts_with("exploration-scent:") {
-        return match feature.rsplit(':').next() {
-            Some("north") => 0,
-            Some("east") => 1,
-            Some("south") => 2,
-            _ => 3,
-        };
+fn masked_policy(logits: &[f32], allowed: &[bool]) -> Vec<f32> {
+    let max = logits
+        .iter()
+        .zip(allowed)
+        .filter(|(_, a)| **a)
+        .map(|(&x, _)| x)
+        .fold(f32::NEG_INFINITY, f32::max);
+    let mut policy: Vec<f32> = logits
+        .iter()
+        .zip(allowed)
+        .map(|(&x, &a)| if a { (x - max).exp() } else { 0.0 })
+        .collect();
+    let total: f32 = policy.iter().sum();
+    for p in &mut policy {
+        *p /= total;
     }
-    if feature.starts_with("party:") || feature.starts_with("battle:") {
-        return 6;
-    }
-    if feature.starts_with("menu:")
-        || feature.starts_with("text:")
-        || feature.starts_with("dialogue:")
-    {
-        return 5;
-    }
-    if feature.starts_with("object:") {
-        return 4;
-    }
-    if feature.starts_with("terrain:")
-        || feature.starts_with("permission:")
-        || feature.starts_with("boundary:")
-    {
-        let mut fields = feature.split(':').skip(1);
-        let x = fields
-            .next()
-            .and_then(|v| v.parse::<i64>().ok())
-            .unwrap_or(0);
-        let y = fields
-            .next()
-            .and_then(|v| v.parse::<i64>().ok())
-            .unwrap_or(0);
-        return if y.abs() >= x.abs() {
-            if y < 0 { 0 } else { 2 }
-        } else if x > 0 {
-            1
-        } else {
-            3
-        };
-    }
-    7
+    policy
 }
+
 impl CircuitState {
     fn activate_context(
         &mut self,
@@ -182,14 +158,18 @@ impl CircuitState {
                 ),
             );
         }
-        let (actor,critic)=self.heads.remove(&context).unwrap_or_default();
-        self.weights=actor;self.value_weights=critic;self.context=context;self.last_value=0.0;
+        let (actor, critic) = self.heads.remove(&context).unwrap_or_default();
+        self.weights = actor;
+        self.value_weights = critic;
+        self.context = context;
+        self.last_value = 0.0;
     }
     pub(crate) fn updates(&self) -> u64 {
         self.updates
     }
     pub(crate) fn valid(&self) -> bool {
-        self.heads.len() <= 4096
+        self.history.valid()
+            && self.heads.len() <= 4096
             && self.heads.iter().all(|(key, (actor, critic))| {
                 key.len() <= 512
                     && actor.len() == WIDTH * 8
@@ -256,7 +236,7 @@ impl CircuitState {
         self.interrupt();
     }
     pub(crate) fn report(&self) -> Value {
-        json!({"interface":"sensory-descending-actor-critic-v4-pooled", "decisions":self.decisions,
+        json!({"interface":INTERFACE_ID, "decisions":self.decisions,
             "updates":self.updates,"neural_trial_ms":self.decisions * WINDOW_MS as u64,
             "story":self.story.report(),"recent":self.recent,
             "value":self.last_value,"advantage":self.last_advantage,"entropy":self.last_entropy,
@@ -289,10 +269,13 @@ impl CircuitState {
         for transition in self.rollout.iter().rev() {
             returns = transition.reward + config.discount * returns;
             let d = &transition.decision;
-            let mut advantage = (returns - self.value(&d.features)).clamp(-5.0, 5.0);
-            // Select is always an unwanted action in this game interface.
-            // A pessimistic critic must not reinterpret its penalty as success.
-            if d.action == 7 && transition.reward < 0.0 { advantage = advantage.min(transition.reward); }
+            let value_error = (returns - self.value(&d.features)).clamp(-5.0, 5.0);
+            let mut advantage = value_error;
+            // A pessimistic critic must not reinterpret an explicitly
+            // punished action as success. This applies to every button.
+            if transition.reward < 0.0 {
+                advantage = advantage.min(transition.reward);
+            }
             self.last_advantage = advantage;
             let norm = d.features.iter().map(|x| x * x).sum::<f32>().max(1.0);
             let entropy = -d
@@ -301,7 +284,7 @@ impl CircuitState {
                 .map(|p| p * p.max(1e-8).ln())
                 .sum::<f32>();
             for (j, &x) in d.features.iter().enumerate() {
-                critic[j] += advantage * x / norm;
+                critic[j] += value_error * x / norm;
                 for a in 0..8 {
                     let entropy_gradient =
                         -d.probabilities[a] * (d.probabilities[a].max(1e-8).ln() + entropy);
@@ -454,43 +437,21 @@ impl Brain {
             .clone()
             .ok_or("Controller is not configured")?;
         self.ensure_wiring()?;
-        let mut features = crate::interface::sensory_features(&observation);
+        let mut features = crate::interface::sensory_features_with_menus(&observation, true);
+        let (history, pressure) = self.circuit.history.cues(&observation);
+        features.extend(history);
+        features.extend(crate::objectives::cues(&observation));
+        features.extend(crate::field_objectives::cues(&observation));
+        features.extend(crate::choice_objectives::cues(&observation));
+        features.extend(crate::shop_objectives::cues(&observation));
         features.extend(self.circuit.breadcrumbs.cues(&observation));
         let wiring = self.wiring.as_ref().unwrap();
-        let story_channels: Vec<usize> = features.iter().filter(|f|f.starts_with("story-scent:")).map(|f|sensory_channel(f)).collect();
-        // Signed feature projection preserves information when many features
-        // address the same sensory population. A binary union would eventually
-        // light every input identically and erase distinctions between scenes.
-        let mut projection = vec![0.0f32; wiring.inputs.len()];
-        let mut density = vec![0.0f32; wiring.inputs.len()];
-        for feature in &features {
-            let mut hash = 0xcbf29ce484222325u64;
-            for byte in feature.bytes() {
-                hash = (hash ^ byte as u64).wrapping_mul(0x100000001b3);
-            }
-            for k in 0..4u64 {
-                let mut mixed = hash.wrapping_add(k.wrapping_mul(0x9e3779b97f4a7c15));
-                mixed = (mixed ^ (mixed >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
-                mixed ^= mixed >> 27;
-                let channels = wiring.inputs.len().min(8);
-                let channel = sensory_channel(feature) % channels;
-                let slots = (wiring.inputs.len() - 1 - channel) / channels + 1;
-                let slot = channel + (mixed as usize % slots) * channels;
-                projection[slot] += if mixed & (1 << 63) == 0 { 1.0 } else { -1.0 };
-                density[slot] += 1.0;
-            }
-        }
+        let drive = crate::sensory::encode(&features, wiring.inputs.len());
         let currents: Vec<(u32, f32)> = wiring
             .inputs
             .iter()
-            .enumerate()
-            .map(|(slot, &i)| {
-                let signal = (projection[slot] / density[slot].max(1.0).sqrt()).tanh();
-                let drive = if story_channels.is_empty() { signal.max(0.0) } else {
-                    0.25 * signal.max(0.0) + if story_channels.contains(&(slot % 8)) {1.5} else {0.0}
-                };
-                (i as u32, self.config.stimulus_mv * drive)
-            })
+            .zip(drive)
+            .map(|(&i, drive)| (i as u32, self.config.stimulus_mv * drive))
             .collect();
         let indices: Vec<u32> = currents
             .iter()
@@ -533,12 +494,40 @@ impl Brain {
         // Context is an explicit engineered adapter input. Each head still
         // learns all button scores exclusively from measured neural activity.
         // Menu/intro rewards must not train walking into an A-spamming habit.
-        let screen=observation.pointer("/status/screen").and_then(Value::as_str).unwrap_or("unknown");
-        let context=if screen!="overworld" {screen.to_owned()}
-            else if let Some(kind)=observation.pointer("/observe/menus/0/kind").and_then(Value::as_str) {format!("menu:{kind}")}
-            else if observation.pointer("/observe/visible_dialogue").and_then(Value::as_str).is_some_and(|s|!s.is_empty()) {"dialogue".into()}
-            else {format!("walk:{}",observation.pointer("/map_info/name").and_then(Value::as_str).unwrap_or("unknown"))};
-        self.circuit.activate_context(context,&config,learning_enabled);
+        let screen = observation
+            .pointer("/status/screen")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown");
+        let context = if let Some(context) = crate::choice_objectives::context(&observation)
+            .or_else(|| crate::shop_objectives::context(&observation))
+            .or_else(|| crate::field_objectives::context(&observation))
+            .or_else(|| crate::objectives::menu_context(&observation))
+        {
+            context
+        } else if screen != "overworld" {
+            screen.to_owned()
+        } else if let Some(kind) = observation
+            .pointer("/observe/menus/0/kind")
+            .and_then(Value::as_str)
+        {
+            format!("menu:{kind}")
+        } else if observation
+            .pointer("/observe/visible_dialogue")
+            .and_then(Value::as_str)
+            .is_some_and(|s| !s.is_empty())
+        {
+            "dialogue".into()
+        } else {
+            format!(
+                "walk:{}",
+                observation
+                    .pointer("/map_info/name")
+                    .and_then(Value::as_str)
+                    .unwrap_or("unknown")
+            )
+        };
+        self.circuit
+            .activate_context(context, &config, learning_enabled);
         if self.circuit.weights.is_empty() {
             self.circuit.weights = vec![0.0; WIDTH * 8];
         }
@@ -555,31 +544,32 @@ impl Brain {
             .chunks_exact(WIDTH)
             .map(|row| row.iter().zip(&readout).map(|(w, x)| w * x).sum::<f32>())
             .collect();
-        let max = logits.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-        let mut policy: Vec<f32> = logits
-            .iter()
-            .enumerate()
-            .map(|(i, x)| {
-                if i == 7 && !config.allow_select {
-                    0.0
-                } else {
-                    (x - max).exp()
-                }
-            })
+        // UI affordance only: dialogue owns confirmation; directional buttons
+        // cannot navigate a closed choice menu. No desired action is supplied.
+        let dialogue = matches!(screen, "intro" | "introduction" | "credits")
+            || screen == "overworld"
+                && observation
+                    .pointer("/observe/visible_dialogue")
+                    .and_then(Value::as_str)
+                    .is_some_and(|s| !s.trim().is_empty())
+                && !observation
+                    .pointer("/observe/menus")
+                    .and_then(Value::as_array)
+                    .is_some_and(|m| !m.is_empty());
+        let allowed: Vec<bool> = (0..8)
+            .map(|i| (!dialogue || matches!(i, 4 | 5)) && (i != 7 || config.allow_select))
             .collect();
-        let total: f32 = policy.iter().sum();
-        for p in &mut policy {
-            *p /= total;
-        }
+        let allowed_count = allowed.iter().filter(|&&a| a).count() as f32;
+        let exploration = (config.exploration as f32).max(0.35 * pressure);
+        let mut policy = masked_policy(&logits, &allowed);
         let probabilities: Vec<f32> = policy
             .iter()
             .enumerate()
             .map(|(i, p)| {
-                if i == 7 && !config.allow_select {
+                if !allowed[i] {
                     0.0
                 } else {
-                    (1.0 - config.exploration as f32) * p
-                        + config.exploration as f32 / if config.allow_select { 8.0 } else { 7.0 }
+                    (1.0 - exploration) * p + exploration / allowed_count
                 }
             })
             .collect();
@@ -590,7 +580,7 @@ impl Brain {
         seed = (seed ^ (seed >> 27)).wrapping_mul(0x94d049bb133111eb);
         seed ^= seed >> 31;
         let mut sample = (seed >> 11) as f64 / 9007199254740992.0;
-        let mut selected = if config.allow_select {7} else {6};
+        let mut selected = allowed.iter().rposition(|&a| a).unwrap();
         for (i, &p) in probabilities.iter().enumerate() {
             sample -= p as f64;
             if sample < 0.0 {
@@ -599,8 +589,7 @@ impl Brain {
             }
         }
         // Correct the score gradient for the explicit exploration mixture.
-        let correction = (1.0 - config.exploration as f32) * policy[selected]
-            / probabilities[selected].max(1e-8);
+        let correction = (1.0 - exploration) * policy[selected] / probabilities[selected].max(1e-8);
         for p in &mut policy {
             *p *= correction;
         }
@@ -618,7 +607,7 @@ impl Brain {
         Ok(json!({"action":{"button":BUTTONS[selected],"frames":config.frames,"readouts":readouts,
                 "mapping":"measured sensory-to-descending activity; learned linear policy adapter"},
             "value":self.circuit.last_value,"entropy":self.circuit.last_entropy,
-            "sensory":{"encoding":"partitioned-connected-sensory-v2","features":features,"indices":indices,
+            "sensory":{"encoding":"signed-separated-sensory-v3","features":features,"indices":indices,
                 "currents":currents,"wiring":wiring_report,"readout_activity":activity,"probe_learning":false},
             "telemetry":serde_json::from_str::<Value>(&self.summary()?).map_err(|e|e.to_string())?,
             "neural_trial_ms":self.circuit.decisions * WINDOW_MS as u64}).to_string())
@@ -631,10 +620,30 @@ impl Brain {
             .pending
             .take()
             .ok_or("No neural action awaiting outcome")?;
-        let (mut rewards, aversions) =
+        let (mut rewards, mut aversions) =
             self.circuit
                 .story
                 .action_feedback(&pending.before, &after, BUTTONS[pending.action]);
+        self.circuit
+            .history
+            .feedback(&pending.before, &after, BUTTONS[pending.action]);
+        let mut objective_progress =
+            crate::objectives::feedback(&pending.before, &after, &mut rewards, &mut aversions)
+                + crate::field_objectives::feedback(&pending.before, &after)
+                + crate::choice_objectives::feedback(
+                    &pending.before,
+                    &after,
+                    BUTTONS[pending.action],
+                )
+                + crate::shop_objectives::feedback(
+                    &pending.before,
+                    &after,
+                    BUTTONS[pending.action],
+                )
+                + crate::curriculum::chase_progress(&pending.before, &after);
+        if crate::objectives::abandoned_capture(&pending.before, &after, BUTTONS[pending.action]) {
+            aversions.push("action:abandoned_viable_capture".into());
+        }
         if let Some(crumb) =
             self.circuit
                 .breadcrumbs
@@ -644,16 +653,21 @@ impl Brain {
                 rewards.push(crumb);
             }
         }
+        objective_progress += self.circuit.breadcrumbs.route_progress(
+            &pending.before,
+            &after,
+            BUTTONS[pending.action],
+        );
         let feedback_config = self
             .config
             .operant
             .clone()
             .ok_or("Controller is not configured")?;
-        let outcome: f32 = if aversions.iter().any(|e| e.starts_with("battle:")) {
+        let base_outcome: f32 = if aversions.iter().any(|e| e.starts_with("battle:")) {
             -2.0
         } else if aversions.iter().any(|e| e.starts_with("action:")) {
             -feedback_config.bad_action_penalty
-        } else if aversions.iter().any(|e|e=="inaction:unneeded_menu") {
+        } else if aversions.iter().any(|e| e == "inaction:unneeded_menu") {
             -0.25
         } else if !aversions.is_empty() {
             -0.05
@@ -664,7 +678,7 @@ impl Brain {
             2.0
         } else if rewards.iter().any(|e| e.starts_with("place:")) {
             2.5
-        } else if rewards.iter().any(|e|e.starts_with("breadcrumb:recover:")) {
+        } else if rewards.iter().any(|e| e.starts_with("breadcrumb:recover:")) {
             0.3
         } else if rewards.iter().any(|e| e.starts_with("breadcrumb:")) {
             feedback_config.breadcrumb_reward
@@ -674,6 +688,11 @@ impl Brain {
             0.5
         } else {
             0.0
+        };
+        let outcome = if aversions.is_empty() {
+            (base_outcome + objective_progress).clamp(-5.0, 5.0)
+        } else {
+            base_outcome
         };
         let enabled = self.config.learning
             && self.config.rewards.enabled
@@ -712,6 +731,11 @@ impl Brain {
         }
         if enabled {
             let config = self.config.operant.as_ref().unwrap();
+            if outcome < 0.0 {
+                // Penalize the action that caused the mistake, not the neutral
+                // navigation steps that happened to precede it.
+                self.circuit.train_rollout(0.0, config);
+            }
             self.circuit.rollout.push(Transition {
                 decision: pending,
                 reward: outcome,
@@ -730,7 +754,7 @@ impl Brain {
         let event = json!({"decision":self.circuit.decisions,"button":BUTTONS[action],
             "reward":if rewards.is_empty(){Value::Null}else{json!(rewards.join("; "))},
             "aversion":if aversions.is_empty(){Value::Null}else{json!(aversions.join("; "))},
-            "outcome":outcome,"enabled":enabled,"teacher_id":"story-events-v1",
+            "outcome":outcome,"objective_progress":objective_progress,"enabled":enabled,"teacher_id":"story-events-v1",
             "conditioning_pairings":if enabled && outcome != 0.0 {1} else {0},"learning":"actor-critic + paired DAN stimulation","terminal":terminal,
             "value":self.circuit.last_value,"advantage":self.circuit.last_advantage,"goal_reached":false});
         if self.circuit.recent.len() >= 64 {
@@ -855,6 +879,43 @@ mod tests {
             "sensory channels must not collapse: {max_similarity}"
         );
         brain.reset_dynamics();
+        let scene = json!({"status":{"screen":"overworld"},"observe":{"visible_dialogue":"Hello, welcome!","menus":[]},"map_info":{"name":"PlayersHouse1F","player":{"x":5,"y":4}}});
+        let decision: Value =
+            serde_json::from_str(&brain.circuit_decide(&scene.to_string()).unwrap()).unwrap();
+        assert!(matches!(
+            decision["action"]["button"].as_str(),
+            Some("a" | "b")
+        ));
+        assert!(
+            decision["action"]["readouts"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|r| r["probability"].as_f64().is_some_and(|p| p.is_finite()))
+        );
+        assert!(
+            decision["sensory"]["currents"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|r| r[1].as_f64().unwrap() > 0.0)
+        );
+        assert!(
+            brain
+                .circuit
+                .pending
+                .as_ref()
+                .unwrap()
+                .features
+                .iter()
+                .map(|x| x * x)
+                .sum::<f32>()
+                > 0.9,
+            "the actual signed sensory encoder must reach the measured readout"
+        );
+        brain.circuit_feedback(&scene.to_string()).unwrap();
+        assert!(brain.circuit.valid());
+        brain.reset_dynamics();
         brain.weights.fill(0.0); // test-only lesion; external graph is never written
         brain.stimulate(&inputs, 30.0).unwrap();
         brain.advance(150.0).unwrap();
@@ -924,6 +985,30 @@ mod tests {
             );
             assert!(state.rollout.is_empty() && state.valid());
         }
+    }
+    #[test]
+    fn masking_is_normalized_even_when_invalid_buttons_have_huge_scores() {
+        let p = masked_policy(
+            &[200.0, 200.0, 200.0, 200.0, -200.0, -200.0, 200.0, 200.0],
+            &[false, false, false, false, true, true, false, false],
+        );
+        assert_eq!(p, vec![0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0]);
+    }
+    #[test]
+    fn pessimistic_critic_cannot_reward_a_punished_movement() {
+        let mut state = CircuitState {
+            weights: vec![0.0; WIDTH * 8],
+            value_weights: vec![-1.0; WIDTH],
+            rollout: vec![transition(0, -2.0)],
+            ..Default::default()
+        };
+        state.train_rollout(0.0, &crate::operant::OperantConfig::default());
+        assert!(state.last_advantage < 0.0);
+        assert!(
+            state.value(&vec![0.5; WIDTH]) > -128.0,
+            "critic still corrects its pessimistic estimate"
+        );
+        assert!(state.weights[..WIDTH].iter().all(|&w| w < 0.0));
     }
     #[test]
     fn interruption_discards_pending_credit_without_erasing_learning() {

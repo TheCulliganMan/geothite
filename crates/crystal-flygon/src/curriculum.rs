@@ -46,6 +46,7 @@ pub(crate) fn goal(v:&Value)->Option<Goal> {
     }
     let return_for_bottle = has(v,"EVENT_MET_FLORIA") && !has(v,"EVENT_GOT_SQUIRTBOTTLE") && !has(v,"EVENT_FOUGHT_SUDOWOODO");
     Some(match map {
+        "Route30" => Exit("Route31"),
         "DarkCaveVioletEntrance"=>Exit("Route31"),
         "Route31"=>Exit("Route31VioletGate"),
         "Route31VioletGate"=>Exit("VioletCity"),
