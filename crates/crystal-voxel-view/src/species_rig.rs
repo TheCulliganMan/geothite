@@ -724,12 +724,12 @@ impl SpeciesRig {
                 }
                 maximum_speed = maximum_speed.max(speed);
             }
-            // Long articulated leaves and antennae need a finer cached envelope to
-            // keep the same conservative speed bound from enlarging the
+            // Long appendages and Spearow's early wing spread need a finer cached
+            // envelope to keep the conservative speed bound from enlarging the
             // whole camera box. This runs once when the GLB is loaded; frame
             // playback still uses the authored keys and original cue clock.
             let envelope_hz = match self.species {
-                Species::Chikorita | Species::Bayleef | Species::Meganium => 90.0,
+                Species::Chikorita | Species::Bayleef | Species::Meganium | Species::Spearow => 90.0,
                 _ => ENVELOPE_HZ,
             };
             let steps = (clip.duration * envelope_hz).ceil() as usize;

@@ -141,5 +141,22 @@ class SpearowTests(unittest.TestCase):
                 for v,p in zip(m.vertices[i],m.posed(i,m.matrices('attack',.39))))
             self.assertGreater(distance,minimum)
 
+    def test_attack_pecks_on_cue_with_early_wing_balance(self):
+        m=self.m
+        for step in range(1,26):
+            q=m.rotations('attack',step/100)
+            self.assertGreater(q[1][0],0.,step)
+            self.assertGreater(q[2][0],0.,step)
+        peak=max(m.rotations('attack',i/100)[2][0] for i in range(101))
+        self.assertGreater(m.rotations('attack',.10)[2][0],peak*.45)
+        self.assertGreater(m.rotations('attack',.20)[2][0],peak*.90)
+        # Wing balance and beak opening precede the forward peck peak.
+        early=m.rotations('attack',.10)
+        for joint in (4,6):
+            wing_peak=max(abs(m.rotations('attack',i/100)[joint][2]) for i in range(101))
+            self.assertGreater(abs(early[joint][2]),wing_peak*.70)
+        beak_peak=max(m.rotations('attack',i/100)[3][0] for i in range(101))
+        self.assertGreater(early[3][0],beak_peak*.70)
+
 
 if __name__=='__main__': unittest.main()

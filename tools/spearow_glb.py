@@ -307,9 +307,12 @@ def pose_angles(clip,t):
                 (-.028*pulse,.015*a,.037*pulse),(-.018*b,0,.023*pulse),
                 (.025*a,.040*b,0),(.022*b,0,-.016*a)]
     if clip=='attack':
-        peck=envelope(t,((0.,0.),(.19,-.40),(.39,1.),(.55,.52),(.77,.07),(1.,0.)))
-        spread=envelope(t,((0.,0.),(.17,.18),(.34,1.),(.58,.74),(.84,.10),(1.,0.)))
-        snap=envelope(t,((0.,0.),(.23,.75),(.40,1.),(.52,.10),(.74,0.),(1.,0.)))
+        # Source attack progress already owns the move's onset. Open the beak
+        # and balance with the wings as the peck starts, without a reverse
+        # anticipation that competes with the source's actual displacement.
+        peck=envelope(t,((0.,0.),(.18,1.),(.39,.78),(.55,.38),(.77,.04),(1.,0.)))
+        spread=envelope(t,((0.,0.),(.12,1.),(.34,.88),(.58,.54),(.84,.06),(1.,0.)))
+        snap=envelope(t,((0.,0.),(.12,1.),(.30,.65),(.52,.10),(.74,0.),(1.,0.)))
         return [(0,0,0),(.115*peck,0,0),(.230*peck,.021*peck,0),(.11*snap,0,0),
                 (-.13*spread,-.13*spread,-.30*spread),(.08*spread,-.035*spread,-.10*spread),
                 (-.11*spread,.13*spread,.28*spread),(.065*spread,.035*spread,.09*spread),

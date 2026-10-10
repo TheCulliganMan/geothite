@@ -93,6 +93,38 @@ fn body_pose_uses_elapsed_idle_time_and_exact_current_attack_progress() {
 }
 
 #[test]
+fn crocodile_and_small_bird_brace_early_on_the_actual_move_cue() {
+    for species in [Species::Totodile, Species::Spearow] {
+        let rig = species_rig::rig(species);
+        for hz in [9, 30, 60] {
+            let mut state = BodyPose::new(rig);
+            let mut frame = VisualBattleFrame {
+                active: true,
+                cues: vec![cue(VisualBattleCueKind::Move, 0.0)],
+                ..default()
+            };
+            for step in 0..=hz / 4 {
+                frame.cues[0].progress = step as f32 / hz as f32;
+                let original = frame.clone();
+                state.advance(rig, &frame, VisualBattleSide::Player, true, 1.0 / hz as f32);
+                assert_eq!(frame, original);
+                if step > 0 {
+                    assert!(
+                        state.current[1].rotation.x > 0.0,
+                        "{species:?} torso at {hz} Hz"
+                    );
+                    assert!(
+                        state.current[2].rotation.x > 0.0,
+                        "{species:?} head at {hz} Hz"
+                    );
+                }
+                assert_eq!(state.current[0], Transform::IDENTITY);
+            }
+        }
+    }
+}
+
+#[test]
 fn one_hp_impact_gets_a_complete_local_recoil_without_replaying_after_classic_view() {
     let rig = species_rig::rig(Species::Totodile);
     let mut state = BodyPose::new(rig);

@@ -174,8 +174,11 @@ def pose_angles(clip, t):
             (.021*breathe, .008*b, .010*a),
             (0., -.026*a, 0.), (0., -.034*a+.008*b, 0.)]
     if clip == 'attack':
-        brace = envelope(t, ((0., 0.), (.18, -.14), (.43, 1.), (.66, .55), (1., 0.)))
-        jaw = envelope(t, ((0., 0.), (.24, .2), (.43, 1.), (.64, .38), (1., 0.)))
+        # The runtime samples this clip from source move progress, after the
+        # move has begun. Brace with the emission rather than adding windup.
+        # Keep the original peak amplitude and a longer settling tail.
+        brace = envelope(t, ((0., 0.), (.18, 1.), (.43, .78), (.66, .35), (1., 0.)))
+        jaw = envelope(t, ((0., 0.), (.12, 1.), (.30, .72), (.56, .22), (1., 0.)))
         return [(0., 0., 0.), (.033*brace, 0., 0.),
             (.036*brace, .010*brace, 0.), (.052*jaw, 0., 0.),
             (.087*brace, -.018*brace, -.033*brace),

@@ -252,6 +252,22 @@ class TotodileTests(unittest.TestCase):
             last = [(b-a)/(times[-1]-times[-2]) for a, b in zip(keys[-2], keys[-1])]
             self.assertLess(max(abs(a-b) for a, b in zip(first, last)), .0031)
 
+    def test_attack_braces_forward_at_source_cue_without_reverse_windup(self):
+        # Decode stored keys: the move cue starts at source animation frame
+        # zero, so its first quarter must already show the crocodile's brace.
+        m = self.model
+        for step in range(1, 26):
+            q = m.rotations('attack', step / 100)
+            self.assertGreater(q[1][0], 0., step)
+            self.assertGreater(q[2][0], 0., step)
+        peak = max(m.rotations('attack', t / 100)[1][0] for t in range(101))
+        self.assertGreater(m.rotations('attack', .10)[1][0], peak * .45)
+        self.assertGreater(m.rotations('attack', .20)[1][0], peak * .90)
+        # The jaw opens before the brace peaks; it is not a delayed second
+        # action after the authored source emission.
+        jaw_peak = max(m.rotations('attack', t / 100)[3][0] for t in range(101))
+        self.assertGreater(m.rotations('attack', .10)[3][0], jaw_peak * .70)
+
     def test_arbitrary_crossfades_preserve_contacts_and_rigid_details(self):
         pairs = [('idle', .25, 'attack', .43), ('attack', .43, 'hit', .19),
                  ('hit', .19, 'idle', .75), ('attack', .66, 'attack', .18)]

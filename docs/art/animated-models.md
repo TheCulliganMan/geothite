@@ -385,3 +385,35 @@ this is a separate species pass after Chikorita.
 a six-petal flower, paired curved antennae and a fitted opening jaw. Its
 23-joint skin preserves planted feet while the petals and antennae follow
 body motion. One canonical GLB replaces its previous static JSON.
+
+## Totodile and Spearow attack response
+
+Both attack clips now brace forward early in the existing source move cue.
+Totodile's former reverse windup and 43%-progress peak become an 18%-progress
+brace, with the jaw opening first at 12%. Spearow likewise pecks at 18%, with
+beak opening and balancing wing spread at 12%. The longer recovery returns
+both rigs to neutral; source programs still own displacement, effects, sound,
+HP and timing. These are body response improvements, not move-specific attack
+reconstructions.
+
+Binary accessor comparison verifies that only the two GLBs' attack rotation
+keys changed. Geometry, materials, weights, binds, idle/hit clips, neutral
+dimensions and file sizes remain byte-identical. No secondary mesh is added.
+Spearow's faster wing response uses 90 Hz one-time envelope sampling so its
+conservative visibility padding stays within the existing 10% budget. Runtime
+playback continues to follow the original source cue progress.
+
+The 19 model-level Python checks pass. New stored-key regressions fail on the
+previous clips and verify early forward motion, mouth opening and wing balance.
+All 957 voxel tests pass, with three existing ignored checks. This includes
+actual BodyPose move-cue sampling at 9/30/60 Hz, planted feet, dense off-grid
+bounds, blends, physical scale and resource sharing. Before/after software
+raster views inspect the decoded GLBs at 0%, 10%, 20% and 40% progress; they
+are model inspection, not an in-game GPU capture. Native/browser GPU review
+of this increment remains unverified.
+
+On macOS, the broader actor/species/Johto source validators still stop on
+unchanged Chikorita or Bayleef canonical regeneration. Chikorita's differences
+include normal components near 1e-17 and 1e-15, while these validators require
+byte-exact regeneration. Those assets and their recipes are unchanged by this
+increment; the two changed species regenerate exactly and pass their checks.
