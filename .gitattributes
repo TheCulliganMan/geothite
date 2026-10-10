@@ -2,3 +2,8 @@
 *.blend binary
 *.png binary
 *.glb binary
+
+# Shared optional runtime artwork. Content packs and build output remain ignored.
+/assets/open-models/**/*.glb filter=lfs diff=lfs merge=lfs -text
+/assets/open-models/**/*.png filter=lfs diff=lfs merge=lfs -text
+/assets/open-models/**/*.mesh.json filter=lfs diff=lfs merge=lfs -text

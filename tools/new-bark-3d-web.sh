@@ -21,7 +21,10 @@ wasm-bindgen --target web --no-typescript --out-dir "$OUT" --out-name crystal-au
     target/wasm32-unknown-unknown/wasm-dev/crystal_audio.wasm
 cp web-client/*.js web-client/*.css web-client/index.html "$OUT/"
 cp "$PACK" "$OUT/core-modular.browser.crystalpack"
-# Optional converted CC0 scenery stays external and ignored, just like the pack.
+# Use the shared LFS artwork by default; an explicit external root takes precedence.
+if [ -z "${CRYSTAL_OPEN_MODEL_ROOT:-}" ] && [ -d assets/open-models ]; then
+    CRYSTAL_OPEN_MODEL_ROOT=assets/open-models
+fi
 if [ -n "${CRYSTAL_OPEN_MODEL_ROOT:-}" ]; then
     cargo run --locked -p crystal-voxel-view --bin bundle_open_models -- \
         "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"

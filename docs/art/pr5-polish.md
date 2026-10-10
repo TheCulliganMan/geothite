@@ -1017,3 +1017,13 @@ and excessive reuse of the same body/face silhouette among color adaptations.
 Eight UV paintings are loaded; the remaining 67 appearances still need their
 individual costume/face pass. Back UV layout and costume silhouettes remain
 open even on painted appearances. Review images and gallery stay ignored.
+
+## Git LFS handoff
+
+The user's later LFS instruction supersedes the earlier exclusion for the current
+optional runtime artwork: `assets/open-models` now supplies the scenery, existing
+Kenney rigs and eight painted NPC textures through Git LFS. See its README for
+checkout and native/browser use. Content packs and verification output remain
+ignored. Rejected realistic Quaternius people and rounded-rig experiments are
+excluded. Earlier references to locally ignored model files describe the prior
+workflow; the shared directory is now the reproducible runtime handoff.
