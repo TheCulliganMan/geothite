@@ -1,6 +1,12 @@
 //! World-anchored paper brick streets, limestone flags and flat curb courses.
 use super::*;
 
+// Canonical Goldenrod is 40×36 gameplay cells, or 80×72 source cells.
+// Connected Route 34/35 acreage in the halo must retain its own ground finish.
+pub(super) fn city_cell(tileset: &str, at: [i32; 2]) -> bool {
+    tileset == "johto_modern" && (0..80).contains(&at[0]) && (0..72).contains(&at[1])
+}
+
 pub(super) fn borders(materials: &[Option<GroundMaterial>], g: &GridGeometry) -> Vec<u8> {
     (0..materials.len())
         .map(|i| {
@@ -194,6 +200,15 @@ mod tests {
                 );
             }
         }
+    }
+    #[test]
+    fn connected_route_halo_retains_its_own_surface() {
+        assert!(city_cell("johto_modern", [0, 0]));
+        assert!(city_cell("johto_modern", [79, 71]));
+        for at in [[-1, 0], [0, -1], [80, 0], [0, 72]] {
+            assert!(!city_cell("johto_modern", at));
+        }
+        assert!(!city_cell("johto", [40, 0]));
     }
     #[test]
     fn curb_bands_require_the_real_path_brick_boundary() {

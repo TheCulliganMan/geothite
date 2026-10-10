@@ -1806,7 +1806,19 @@ impl<'a> GroundFinish<'a> {
                 }
             } }
         }
-        let city_paving = (map == "GoldenrodCity").then(|| city_paving::borders(&materials, geometry));
+        let city_paving = (map == "GoldenrodCity").then(|| {
+            let eligible: Vec<_> = cells.iter().enumerate().map(|(i,t)|
+                city_paving::city_cell(t.source.tileset_id.as_ref(),
+                    [i as i32 % geometry.width as i32 + map_origin[0],
+                     i as i32 / geometry.width as i32 + map_origin[1]])).collect();
+            let local: Vec<_> = materials.iter().enumerate().map(|(i,m)|
+                if eligible[i] { *m } else { None }).collect();
+            let mut flags = city_paving::borders(&local,geometry);
+            for (i,flag) in flags.iter_mut().enumerate() {
+                if eligible[i] { *flag |= 0x80; }
+            }
+            flags
+        });
         let blend = ground_blend::GroundBlend::new(&materials, geometry);
         Self {
             city_paving,
@@ -1877,8 +1889,10 @@ impl<'a> GroundFinish<'a> {
             && let Some(borders) = &self.city_paving {
             let flags = cell_at(self.geometry,(w+e)*0.5,(n+s)*0.5)
                 .and_then(|i| borders.get(i)).copied().unwrap_or(0);
-            city_paving::append(mesh, positions, self.geometry, self.map_origin, material, flags);
-            return;
+            if flags & 0x80 != 0 {
+                city_paving::append(mesh, positions, self.geometry, self.map_origin, material, flags & 15);
+                return;
+            }
         }
         if full_cell && material == GroundMaterial::Pavers {
             let column = ((w - self.geometry.origin_x) / self.geometry.tile_width).round() as i32

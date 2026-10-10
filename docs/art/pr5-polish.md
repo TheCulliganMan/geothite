@@ -790,6 +790,9 @@ courses with restrained color variation, mortar, and edge shading. Recognized
 path cells use larger pale limestone flags. A narrow flat curb course separates
 actual path/brick neighbors. Material identities and the original acreage stay
 authoritative; this finish does not replace unknown artwork or add navigation.
+Eligibility requires Johto Modern source cells inside Goldenrod's canonical
+80×72 source-cell bounds. Connected Route 34/35 halo cells retain their existing
+ground finish; the boundary regression checks all four edges and other atlases.
 
 Courses and individual stone colors are anchored in map coordinates. Clipping
 a partial stone at a source-cell boundary creates no extra joint. All surface
