@@ -132,3 +132,46 @@ python3 tools/test_machop_sculpt.py
 This is a static anatomy increment. In-game camera/readability, animated
 clearance and species articulation remain open for all three models, alongside
 the full catalog's remaining workstreams.
+
+## Psyduck and Golduck reconstruction
+
+The old pair reused a sphere head, sphere body and rod limbs. Psyduck now has
+one continuous egg body and broad head, a flattened two-shell bill, small
+pupils in rounded fitted eyes, hands reaching its temples, three bent hairs
+and single three-lobed web surfaces under its short ankles. Golduck has a
+narrow swimmer waist, shaped arms and legs, splayed webbed hands with claws,
+a long tapered tail, sharp fitted eyes, a ruby and four swept pointed fins.
+Its pale bill and web membranes follow the official species artwork:
+[Psyduck](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/054.png)
+and [Golduck](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/055.png).
+No reference images are stored or shipped.
+
+`tools/duck_sculpt.py` authors the existing canonical JSON files; the legacy
+Blender duck geometry has been removed and the batch builder delegates to the
+recipe. Source height remains 1.03 units for both, preserving runtime physical
+scaling. Psyduck has 28 closed parts and 3,828 triangles; Golduck has 45 closed
+parts and 4,460 triangles. Shared shallow patches follow the authored head
+surface instead of placing detached eye spheres in front of it.
+
+```sh
+python3 tools/duck_sculpt.py
+python3 tools/test_duck_sculpt.py
+```
+
+Five tests verify stored-model connected oriented closure, shading/winding,
+exact source reproduction, ground and height, distinct proportions, true web
+surfaces and species anatomy. Eye and ruby fitting is checked against the
+actual stored head triangles, independently of the recipe's surface function.
+The checks caught inverted patch edges and inward normals on thin foot
+membranes; both were corrected before publication. The Machop topology/shading
+checks now share their independent geometry assertions with this family.
+
+Front, three-quarter and rear neutral renders have been reviewed. All six
+reconstructed species pass the scoped species validator (25,976 triangles,
+18,626 vertices). Ampharos's four tests, the Machop family's four tests and all
+957 voxel tests pass, with three existing ignored voxel checks. The whole-source
+GLB regeneration check still has the previously observed unchanged
+Chikorita/Bayleef near-zero floating-point differences on macOS; it is not
+reported as passing. Static inspection does not establish in-game camera,
+animation clearance or GPU verification. Those remain open for both ducks and
+the catalog.

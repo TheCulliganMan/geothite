@@ -1173,13 +1173,8 @@ def cats(n):
  if quadcat:sph('Forehead ruby',(0,-.427,.80),(.036,.018,.041),'red')
  else:sph('Gold forehead coin',(0,-.178,.82),(.064,.019,.11),'gold');tube('Coin engraved line',[(0,-.20,.74),(0,-.201,.90)],.009,'brown')
 @register('PSYDUCK GOLDUCK',1.03)
-def ducks(n):
- blue=n=='GOLDUCK';c='blue' if blue else 'yellow';sph('Duck torso',(0,0,.34),(.25,.20,.29),c);sph('Duck head',(0,-.02,.71),(.25,.21,.23),c);sph('Flat duck bill',(0,-.26,.63),(.19,.16,.060),'cream' if not blue else 'blue');eyes(.77,-.207,.13,.040);feet('cream',.17,s=(.14,.19,.045));arms(c,.42,.24)
- if blue:
-  for i in (-1,0,1):rod('Pointed head crest',(i*.09,0,.88),(i*.16,.04,1.17-.07*abs(i)),.065,'blue',.002)
-  sph('Forehead ruby',(0,-.194,.90),(.035,.020,.046),'red');tube('Swimmer tail',[(0,.15,.20),(0,.44,.20),(0,.57,.34)],[.11,.07,.01],'blue')
- else:
-  for i in (-1,0,1):tube('Three black head hairs',[(i*.04,.01,.90),(i*.075,.055,1.03)],.009,'ink')
+def sculpted_ducks(n):
+ raise RuntimeError('The duck family is exported by its dedicated sculpture recipe before Blender batching')
 @register('MANKEY PRIMEAPE',1.02)
 def pig_monkeys(n):
  angry=n=='PRIMEAPE';sph('Round furry body',(0,0,.43),(.29,.22,.30),'cream');sph('Pig snout',(0,-.225,.40),(.105,.045,.075),'pink');eyes(.54,-.207,.13,.027);feet('brown',.22,s=(.10,.15,.065))
@@ -1637,6 +1632,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('psyduck','golduck'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from duck_sculpt import sculpture as duck_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(duck_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': fitted duck anatomy with real web surfaces',flush=True)
  for species in ('machop','machoke','machamp'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))

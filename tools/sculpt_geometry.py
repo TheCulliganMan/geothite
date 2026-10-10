@@ -46,3 +46,26 @@ def tube(name,color,points,radii,segments=12):
     return part(name,color,v,f,True)
 
 
+def fitted_patch(name,color,outline,surface,thickness=.008):
+    """Closed shallow marking follows a real surface instead of floating on it.
+
+    The XY outline must be convex. Three concentric front/back rings preserve
+    the underlying curvature, and shared edges give a closed oriented solid.
+    """
+    outline=list(outline)
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:
+        outline.reverse()
+    cx=sum(x for x,y in outline)/len(outline);cy=sum(y for x,y in outline)/len(outline)
+    xy=[(cx,cy)]
+    for radius in (.33,.67,1.):xy.extend((cx+(x-cx)*radius,cy+(y-cy)*radius) for x,y in outline)
+    front=[(x,y,surface(y,x)+thickness) for x,y in xy]
+    back=[(x,y,surface(y,x)-thickness*.35) for x,y in xy]
+    n=len(outline);count=len(front);faces=[]
+    for i in range(n):faces.append((0,1+i,1+(i+1)%n))
+    for ring in range(2):
+        for i in range(n):
+            a=1+ring*n+i;b=1+ring*n+(i+1)%n;faces.append((a,a+n,b+n,b))
+    faces += [tuple(i+count for i in reversed(f)) for f in list(faces)]
+    last=1+2*n
+    faces += [(last+(i+1)%n,last+i,last+i+count,last+(i+1)%n+count) for i in range(n)]
+    return part(name,color,front+back,faces)
