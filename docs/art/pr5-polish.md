@@ -640,7 +640,7 @@ root containing only foliage and generates a gzip sidecar. The preview build
 removes both stale optional files when no external root is supplied. No open
 asset enters the checked-in catalog or the game pack.
 
-All 974 model-library checks pass, with three pre-existing ignored checks,
+All 975 model-library checks pass, with three pre-existing ignored checks,
 plus the importer transform/reflection regression. New checks cover texture
 alpha/samplers/limits, fitted UV geometry and retained encounter cutout images.
 This remains an incremental scenery improvement; the full Pokémon, human,
@@ -717,3 +717,22 @@ Review files are ignored under `target/model-polish/`: `rooted-grove/NewBarkTown
 `natural-grove-browser.png`, `natural-grove-browser-start.png` and
 `natural-grove-browser.json`. No external meshes, textures, sources or build
 artifacts are committed.
+
+
+### Forest floor detail refinement
+
+Forest litter now uses six-sided folded leaves with baked facet normals,
+forked fallen sticks and sparse fern fronds with connected stems. Broad
+world-coordinate patches control litter density; fern count and orientation
+vary per placement. Moss has a stronger olive/soil contrast with smooth field
+edges. Every detail stays inside its verified floor cell and below one quarter
+of a source-cell height; navigation and authored walking planes remain intact.
+The geometry bakes near a local origin before translation, avoiding a subtle
+camera-dependent change in fold shading caused by subtracting larger floats.
+A 256-cell regression checks containment, height and scroll stability.
+Native Metal review of the centrally selected walkable Ilex Forest scene shows
+broader leaf silhouettes and keeps the player visible through the existing
+crown reveal. The current optimized WASM build also compiles successfully;
+this floor refinement has native scene evidence, while the earlier browser
+movement/Start review remains separate evidence. Review captures stay ignored
+under `target/model-polish/forest-litter-final/`.

@@ -1703,6 +1703,8 @@ impl GroundShadow {
 
 #[path = "ground_blend.rs"]
 mod ground_blend;
+#[path = "forest_floor.rs"]
+mod forest_floor;
 
 struct GroundFinish<'a> {
     forest: bool,
@@ -1841,9 +1843,10 @@ impl<'a> GroundFinish<'a> {
             let z = map_p[2] / self.geometry.tile_height;
             let moss = meadow_noise(x * 0.29, z * 0.29);
             let litter = meadow_noise(x * 1.7 + 19.0, z * 1.7 - 7.0);
-            let t = ((moss - 0.35) * 2.2).clamp(0.0, 1.0);
+            let t = ((moss - 0.40) * 5.0).clamp(0.0, 1.0);
+            let t = t*t*(3.0-2.0*t);
             let soil = [0.25, 0.18, 0.105];
-            let green = [0.25, 0.32, 0.16];
+            let green = [0.16, 0.29, 0.10];
             for c in 0..3 { color[c] = (soil[c]*(1.0-t)+green[c]*t) * (0.90+litter*0.18); }
         }
         if matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
@@ -1946,11 +1949,15 @@ impl<'a> GroundFinish<'a> {
             + self.map_origin[0];
         let row = ((n - self.geometry.origin_z) / self.geometry.tile_height).round() as i32
             + self.map_origin[1];
+        if self.forest && material == GroundMaterial::Lawn {
+            forest_floor::append(mesh, positions, self.geometry, [column,row]);
+            return;
+        }
         // Irregular, low-contrast gravel flecks. Lawn gets rarer longer tiny
         // leaves. Uneven position, count, shape and orientation avoid a grid.
-        for sample in 0..(if self.forest && material == GroundMaterial::Lawn { 9 } else { 3 }) {
+        for sample in 0..3 {
             let seed = lattice(column.wrapping_mul(7) + sample, row.wrapping_mul(13) + 83);
-            let threshold = if self.forest && material == GroundMaterial::Lawn { 0.22 } else if material == GroundMaterial::Path {
+            let threshold = if material == GroundMaterial::Path {
                 0.46
             } else {
                 0.90
@@ -1961,9 +1968,9 @@ impl<'a> GroundFinish<'a> {
             let cx = w + (e - w) * (0.16 + lattice(column + sample * 19, row + 109) * 0.68);
             let cz = n + (s - n) * (0.16 + lattice(column + 211, row + sample * 23) * 0.68);
             let angle = lattice(column + 41, row + sample * 31) * std::f32::consts::TAU;
-            let rx = (e - w) * (if self.forest && sample % 5 == 0 { 0.12 } else if self.forest { 0.035 + seed * 0.07 } else { 0.018 + seed * 0.036 });
+            let rx = (e - w) * (0.018 + seed * 0.036);
             let rz = (s - n)
-                * (if self.forest && sample % 5 == 0 { 0.007 } else if material == GroundMaterial::Path {
+                * (if material == GroundMaterial::Path {
                     0.014 + seed * 0.018
                 } else {
                     0.012
@@ -1983,10 +1990,6 @@ impl<'a> GroundFinish<'a> {
                 point(rx * 0.65, -rz),
             ];
             let mut color = self.color(material, [cx, positions[0][1], cz]);
-            if self.forest && material == GroundMaterial::Lawn {
-                let leaf = if sample % 5 == 0 { [0.20,0.135,0.075] } else if seed > 0.70 { [0.39,0.29,0.14] } else { [0.29,0.205,0.12] };
-                color[..3].copy_from_slice(&leaf);
-            }
             let contrast = if seed > 0.76 { 1.07 } else { 0.87 };
             for c in &mut color[..3] {
                 *c *= contrast;
@@ -3241,7 +3244,7 @@ mod tests {
         let mut mesh = SurfaceMeshData::default();
         floor.append_surface(&mut mesh, GroundMaterial::Lawn,
             [[-32.0,0.0,-40.0],[-32.0,0.0,-32.0],[-24.0,0.0,-32.0],[-24.0,0.0,-40.0]]);
-        assert!(mesh.positions.iter().all(|p| p[1]>=0.0 && p[1]<0.02));
+        assert!(mesh.positions.iter().all(|p| p[1]>=0.0 && p[1]<2.0));
         assert!(mesh.positions.iter().any(|p| p[1]>0.0), "forest must include leaf litter");
     }
 
