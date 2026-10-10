@@ -831,3 +831,22 @@ as ignored `target/model-polish/goldenrod-review/roofs-north.png` and
 `roofs-center.png`. This is local appearance evidence, not public deployment or
 browser performance verification. The railway, broader landmark silhouettes,
 connected-city continuity, and full character/world catalog remain open.
+
+## Goldenrod railway and crossing
+
+The exact Johto Modern `0x7e` track and `0x7f` crossing drawings now select
+three-cell-deep rail bands column by column: source rows `0x36 / 0x46 / 0x36`
+for track and `0x36 / 0x06 / 0x36` for the pedestrian crossing. Matching atlas,
+metatile, column phase, row phase, tile IDs, and available ownership are all
+required. The fourth sidewalk row stays live. Unknown or cropped columns retain
+the original source art.
+
+Low rail webs/heads, timber sleepers with small grain variations, sparse buff
+ballast chips, and flush cream crossing panels replace the flat yellow pixel
+strip. Map-coordinate seeds keep the chips and timber stable as the camera
+moves. Existing collision and footing are unchanged; there is no new navigation
+or actor dispatcher. Native Metal crossing capture `(20, 18)` was reviewed as
+ignored `target/model-polish/goldenrod-review/rail-center.png`. The voxel library
+passes 983 tests (3 ignored, including the separate pending furniture test in
+this worktree); the WASM compile check passes. This is local native art evidence,
+not public deployment, browser performance, or complete catalog polish.
