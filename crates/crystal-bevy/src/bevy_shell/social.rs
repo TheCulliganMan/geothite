@@ -102,8 +102,7 @@ impl MultiplayerRuntime {
         match message {
             ClientMessage::InteractionRequest { target_user_id, kind } => {
                 anyhow::ensure!(self.connection.is_some() && self.session.is_none() && self.queued_mode.is_none() && self.direct_mode.is_none() && self.pending_interaction.is_none(), "Finish or cancel your current invitation or link session first.");
-                if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) { anyhow::bail!(reason); }
-                anyhow::ensure!(!has_visible_shell_a_action(runtime_shell)?, "Close the current dialogue or menu first.");
+                if let Some(reason) = direct_interaction_mode_unavailable(runtime_shell, *kind)? { anyhow::bail!(reason); }
                 let map = runtime_shell.shell.session().snapshot().map_name;
                 anyhow::ensure!(self.remote_presences.get(target_user_id).is_some_and(|player| player.map == map), "That trainer is no longer nearby.");
                 self.direct_mode = Some(*kind);
@@ -113,8 +112,7 @@ impl MultiplayerRuntime {
                 anyhow::ensure!(request.request_id == *request_id && request.from_user_id == *target_user_id, "That invitation has expired.");
                 let kind = request.kind;
                 if *accepted {
-                    if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) { anyhow::bail!(reason); }
-                    anyhow::ensure!(!has_visible_shell_a_action(runtime_shell)?, "Close the current dialogue or menu first.");
+                    if let Some(reason) = direct_interaction_mode_unavailable(runtime_shell, kind)? { anyhow::bail!(reason); }
                 }
                 self.direct_mode = accepted.then_some(kind);
                 self.pending_interaction = None;

@@ -20,6 +20,7 @@ export function playerVisibleObservation(observation) {
     if (!player || !Number.isFinite(entity?.x) || !Number.isFinite(entity?.y)) return null;
     return {
       ...(includeName && typeof entity.name === 'string' ? { name: entity.name } : {}),
+      ...(includeName && typeof entity.user_id === 'string' ? { user_id: entity.user_id } : {}),
       offset_x: entity.x - player.x,
       offset_y: entity.y - player.y,
       ...(typeof entity.facing === 'string' ? { facing: entity.facing } : {}),

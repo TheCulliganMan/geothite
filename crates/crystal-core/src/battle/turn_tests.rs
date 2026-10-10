@@ -31432,3 +31432,32 @@ fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_fa
         }
     }
 }
+
+#[test]
+fn equal_speed_link_peers_choose_the_same_trainer_first() {
+    let mon = pokemon("RATTATA", 20, pokemon_type("NORMAL"), "TACKLE");
+    let moves = BTreeMap::from([(
+        "TACKLE".to_string(),
+        move_data("TACKLE", pokemon_type("NORMAL"), 35, 100),
+    )]);
+    let input = BattleTurnInput {
+        player: BattleAction::Move { slot: 0 },
+        enemy: BattleAction::Move { slot: 0 },
+    };
+    for roll in [0, 127, 128, 255] {
+        let mut host = battle_state(mon.clone(), mon.clone(), 1);
+        host.link_battle = true;
+        host.serial_connection_status = LinkSerialConnectionStatus::UsingInternalClock;
+        let mut peer = host.clone();
+        peer.serial_connection_status = LinkSerialConnectionStatus::UsingExternalClock;
+        let host_order = determine_turn_order(
+            &host, &input, &moves, &BTreeMap::new(), &move_priorities(),
+            &stat_multipliers(), &mut ScriptedBattleRandom::new(vec![roll]),
+        ).unwrap();
+        let peer_order = determine_turn_order(
+            &peer, &input, &moves, &BTreeMap::new(), &move_priorities(),
+            &stat_multipliers(), &mut ScriptedBattleRandom::new(vec![roll]),
+        ).unwrap();
+        assert_eq!(host_order, peer_order.into_iter().map(BattleSide::other).collect::<Vec<_>>());
+    }
+}

@@ -17549,6 +17549,26 @@ impl GameDataSet {
         S::Error: std::fmt::Display,
     {
         let mut staged_state = state.clone();
+        if active_battle_type(&staged_state) == Some("BATTLETYPE_LINK") {
+            // Both peers use the negotiated cartridge stream. Their independent
+            // host DIV clocks must never choose link accuracy, damage or effects.
+            let seeds = staged_state
+                .link_session
+                .battle_random
+                .as_ref()
+                .context("link battle has no negotiated random stream")?;
+            let mut rng = crystal_core::random::LinkBattleRandom::from_state(seeds)?;
+            let outcome = self.resolve_active_battle_turn_with_rng(
+                &mut staged_state,
+                player_action,
+                enemy_action,
+                &mut rng,
+                None,
+            )?;
+            staged_state.link_session.battle_random = Some(rng.state());
+            *state = staged_state;
+            return Ok(outcome);
+        }
         let battle_end = self.active_battle_end_context(&staged_state)?;
         let mut rng = ExactBattleRandom::new(staged_state.random_state, divider);
         let outcome = self.resolve_active_battle_turn_with_rng(

@@ -95,3 +95,9 @@
   #social-chat .directory-list, #social-chat .leaderboard-list { height: 100px; }
   #social-chat .leaderboard-note { display: none; }
 }
+
+/* Chat and invitation controls remain usable while exploring on touch devices. */
+#social-chat .chat-actions button, #social-chat .chat-players button,
+#social-chat .chat-requests button { min-width: 44px; min-height: 44px; }
+#social-chat form button, #social-chat form input, #social-chat form select { min-height: 44px; }
+@media (prefers-reduced-motion: reduce) { .speech-bubble { transition: none; } }

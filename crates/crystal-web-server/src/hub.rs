@@ -30,10 +30,9 @@ struct ClientRecord {
     identity: ClientIdentity,
     presence: Option<PresenceRecord>,
     chat_channels: HashSet<String>,
-    chat_sent: VecDeque<std::time::Instant>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct PresenceRecord {
     map: String,
     tile_x: i32,
@@ -95,10 +94,14 @@ impl Hub {
         identity: ClientIdentity,
     ) -> Result<Vec<Delivery>, String> {
         validate_identity(&identity)?;
+        if self.clients.contains_key(&connection_id) {
+            return Err("connection is already registered".into());
+        }
         if self.users.contains_key(&identity.user_id) {
             return Err("user already has an active connection".into());
         }
-        self.directory.insert(identity.user_id.clone(), identity.display_name.clone());
+        self.directory
+            .insert(identity.user_id.clone(), identity.display_name.clone());
         self.users.insert(identity.user_id.clone(), connection_id);
         self.clients.insert(
             connection_id,
@@ -107,7 +110,6 @@ impl Hub {
                 identity,
                 presence: None,
                 chat_channels: ["general", "trade", "lfg"].map(str::to_owned).into(),
-                chat_sent: VecDeque::new(),
             },
         );
         Ok(vec![deliver(
@@ -216,30 +218,74 @@ impl Hub {
             return Err("connection is not registered".into());
         }
         match message {
-            ClientMessage::SocialList { query, offset } => self.social_list(connection_id, query, offset),
-            ClientMessage::Leaderboard { metric, offset } => self.leaderboard(connection_id, metric, offset),
-            ClientMessage::GameStats { pve_battles, pve_wins, party_level } => self.update_game_stats(connection_id, pve_battles, pve_wins, party_level),
-            ClientMessage::TradeCompleted { trade_id } => self.confirm_trade(connection_id, trade_id),
-            ClientMessage::SetProfile { display_name, player_gender } => {
-                if display_name.is_empty() || display_name.len() > 24
-                    || !display_name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
-                    || player_gender > 1 {
-                    return Err("Use a handle of 1–24 letters, numbers or underscores and a valid sprite.".into());
+            ClientMessage::SocialList { query, offset } => {
+                self.social_list(connection_id, query, offset)
+            }
+            ClientMessage::Leaderboard { metric, offset } => {
+                self.leaderboard(connection_id, metric, offset)
+            }
+            ClientMessage::GameStats {
+                pve_battles,
+                pve_wins,
+                party_level,
+            } => self.update_game_stats(connection_id, pve_battles, pve_wins, party_level),
+            ClientMessage::TradeCompleted { trade_id } => {
+                self.confirm_trade(connection_id, trade_id)
+            }
+            ClientMessage::SetProfile {
+                display_name,
+                player_gender,
+            } => {
+                if display_name.is_empty()
+                    || display_name.len() > 24
+                    || !display_name
+                        .bytes()
+                        .all(|c| c.is_ascii_alphanumeric() || c == b'_')
+                    || player_gender > 1
+                {
+                    return Err(
+                        "Use a handle of 1–24 letters, numbers or underscores and a valid sprite."
+                            .into(),
+                    );
                 }
-                if self.sessions.values().any(|session| session.players.contains(&connection_id) && !session.settled)
-                    || self.interactions.values().any(|request| request.from == connection_id || request.target == connection_id)
-                    || self.queues.values().any(|queue| queue.iter().any(|entry| entry.connection_id == connection_id)) {
-                    return Err("Finish your invitation or link session before editing your profile.".into());
+                if self
+                    .sessions
+                    .values()
+                    .any(|session| session.players.contains(&connection_id) && !session.settled)
+                    || self.interactions.values().any(|request| {
+                        request.from == connection_id || request.target == connection_id
+                    })
+                    || self.queues.values().any(|queue| {
+                        queue
+                            .iter()
+                            .any(|entry| entry.connection_id == connection_id)
+                    })
+                {
+                    return Err(
+                        "Finish your invitation or link session before editing your profile."
+                            .into(),
+                    );
                 }
                 let client = self.clients.get_mut(&connection_id).expect("checked");
                 client.identity.display_name = display_name;
                 client.player_gender = player_gender;
-                self.directory.insert(client.identity.user_id.clone(), client.identity.display_name.clone());
-                let Some(presence) = client.presence.clone() else { return Ok(Vec::new()) };
+                self.directory.insert(
+                    client.identity.user_id.clone(),
+                    client.identity.display_name.clone(),
+                );
+                let Some(presence) = client.presence.clone() else {
+                    return Ok(Vec::new());
+                };
                 let identity = client.identity.clone();
-                let output = self.presence_candidates(&identity.world, Some(&presence), &presence, connection_id)
-                    .into_iter().filter(|id| self.clients.get(id).and_then(|peer| peer.presence.as_ref())
-                        .is_some_and(|peer| presences_are_visible(&presence, peer)))
+                let output = self
+                    .presence_candidates(&identity.world, Some(&presence), &presence, connection_id)
+                    .into_iter()
+                    .filter(|id| {
+                        self.clients
+                            .get(id)
+                            .and_then(|peer| peer.presence.as_ref())
+                            .is_some_and(|peer| presences_are_visible(&presence, peer))
+                    })
                     .map(|id| deliver(id, presence_message(&identity, &presence, player_gender)))
                     .collect();
                 Ok(output)
@@ -264,6 +310,9 @@ impl Hub {
                     tile_y,
                     direction: direction.clone(),
                 };
+                if self.clients[&connection_id].presence.as_ref() == Some(&next_presence) {
+                    return Ok(self.expire_interactions());
+                }
                 let (identity, old_presence) = {
                     let client = self.clients.get_mut(&connection_id).expect("checked");
                     let old_presence = client.presence.replace(next_presence.clone());
@@ -297,11 +346,23 @@ impl Hub {
                                 connection_id,
                                 presence_message(&peer.identity, peer_presence, peer.player_gender),
                             ));
-                            output.push(deliver(id, presence_message(&identity, &next_presence, self.clients[&connection_id].player_gender)));
+                            output.push(deliver(
+                                id,
+                                presence_message(
+                                    &identity,
+                                    &next_presence,
+                                    self.clients[&connection_id].player_gender,
+                                ),
+                            ));
                         }
-                        (true, true) => {
-                            output.push(deliver(id, presence_message(&identity, &next_presence, self.clients[&connection_id].player_gender)))
-                        }
+                        (true, true) => output.push(deliver(
+                            id,
+                            presence_message(
+                                &identity,
+                                &next_presence,
+                                self.clients[&connection_id].player_gender,
+                            ),
+                        )),
                         (true, false) => {
                             output.push(deliver(
                                 connection_id,
@@ -383,8 +444,20 @@ impl Hub {
         {
             return Err("respond to or finish the pending invitation before queuing".into());
         }
-        self.remove_from_queues(connection_id);
         let rating_range = rating_range.min(MAX_RATING_RANGE);
+        if self.queues.values().any(|queue| {
+            queue.iter().any(|entry| {
+                entry.connection_id == connection_id
+                    && entry.mode == mode
+                    && entry.rating_range == rating_range
+            })
+        }) {
+            return Ok(vec![deliver(
+                connection_id,
+                ServerMessage::QueueJoined { mode },
+            )]);
+        }
+        self.remove_from_queues(connection_id);
         let client = self.clients.get(&connection_id).expect("checked");
         let rating = *self.ratings.get(&client.identity.user_id).unwrap_or(&1000);
         let world = client.identity.world.clone();
@@ -728,6 +801,17 @@ impl Hub {
             if session.settled {
                 return Err("session is already settled".into());
             }
+            // A pending or disputed report must still be cancellable. Other reports
+            // are immutable so retries cannot rewrite a previously declared winner.
+            if outcome == MatchOutcome::Cancelled {
+                session.reports.insert(connection_id, outcome);
+            } else if session
+                .reports
+                .get(&connection_id)
+                .is_some_and(|old| *old != outcome)
+            {
+                return Err("participant cannot change a result report".into());
+            }
             let recorded_outcome = *session.reports.entry(connection_id).or_insert(outcome);
             let peer = peer_for(session, connection_id)?;
             if recorded_outcome == MatchOutcome::Cancelled {
@@ -790,20 +874,27 @@ impl Hub {
             let expected = 1.0 / (1.0 + 10_f64.powf((second_rating - first_rating) as f64 / 400.0));
             let next_first = (first_rating as f64 + 32.0 * (first_score - expected))
                 .round()
-                .max(100.0) as i32;
+                .clamp(100.0, 5000.0) as i32;
             let next_second = (second_rating as f64
                 + 32.0 * ((1.0 - first_score) - (1.0 - expected)))
                 .round()
-                .max(100.0) as i32;
+                .clamp(100.0, 5000.0) as i32;
             self.ratings.insert(first, next_first);
             self.ratings.insert(second, next_second);
         }
-        if session.mode == MatchMode::Battle && !session.reports.values().any(|result| *result == MatchOutcome::Cancelled) {
+        if session.mode == MatchMode::Battle
+            && !session
+                .reports
+                .values()
+                .any(|result| *result == MatchOutcome::Cancelled)
+        {
             for id in session.players {
                 let user = &self.clients[&id].identity.user_id;
                 let stats = self.standings.entry(user.clone()).or_default();
                 stats.pvp_battles = stats.pvp_battles.saturating_add(1);
-                if Some(id) == winner { stats.pvp_wins = stats.pvp_wins.saturating_add(1); }
+                if Some(id) == winner {
+                    stats.pvp_wins = stats.pvp_wins.saturating_add(1);
+                }
             }
         }
         self.sessions.remove(&session_id);
@@ -845,7 +936,10 @@ impl Hub {
     pub fn replace_directory(&mut self, directory: HashMap<String, String>) -> Result<(), String> {
         for (user_id, name) in &directory {
             validate_token("directory user id", user_id)?;
-            if name.is_empty() || name.len() > MAX_NAME_BYTES {
+            if name.trim().is_empty()
+                || name.len() > MAX_NAME_BYTES
+                || name.chars().any(char::is_control)
+            {
                 return Err("invalid directory display name".into());
             }
         }
@@ -853,21 +947,50 @@ impl Hub {
         Ok(())
     }
 
-    fn social_list(&self, connection_id: Uuid, query: String, offset: usize) -> Result<Vec<Delivery>, String> {
-        if query.len() > 128 { return Err("Search is too long".into()); }
+    fn social_list(
+        &self,
+        connection_id: Uuid,
+        query: String,
+        offset: usize,
+    ) -> Result<Vec<Delivery>, String> {
+        if query.len() > 128 {
+            return Err("Search is too long".into());
+        }
         let search = query.to_lowercase();
-        let mut users = self.directory.iter()
-            .filter(|(id, name)| name.to_lowercase().contains(&search) || id.to_lowercase().contains(&search))
+        let mut users = self
+            .directory
+            .iter()
+            .filter(|(id, name)| {
+                name.to_lowercase().contains(&search) || id.to_lowercase().contains(&search)
+            })
             .map(|(id, name)| crystal_net::hosted::SocialUser {
-                user_id: id.clone(), display_name: name.clone(), online: self.users.contains_key(id),
-            }).collect::<Vec<_>>();
-        users.sort_by(|a, b| b.online.cmp(&a.online)
-            .then_with(|| a.display_name.to_lowercase().cmp(&b.display_name.to_lowercase()))
-            .then_with(|| a.user_id.cmp(&b.user_id)));
+                user_id: id.clone(),
+                display_name: name.clone(),
+                online: self.users.contains_key(id),
+            })
+            .collect::<Vec<_>>();
+        users.sort_by(|a, b| {
+            b.online
+                .cmp(&a.online)
+                .then_with(|| {
+                    a.display_name
+                        .to_lowercase()
+                        .cmp(&b.display_name.to_lowercase())
+                })
+                .then_with(|| a.user_id.cmp(&b.user_id))
+        });
         let total = users.len();
         let offset = offset.min(total.saturating_sub(1) / 100 * 100);
         let users = users.into_iter().skip(offset).take(100).collect();
-        Ok(vec![deliver(connection_id, ServerMessage::SocialUsers { query, offset, total, users })])
+        Ok(vec![deliver(
+            connection_id,
+            ServerMessage::SocialUsers {
+                query,
+                offset,
+                total,
+                users,
+            },
+        )])
     }
 
     pub fn ratings_snapshot(&self) -> HashMap<String, i32> {
@@ -979,7 +1102,11 @@ fn presences_are_visible(left: &PresenceRecord, right: &PresenceRecord) -> bool 
         && left.tile_y.abs_diff(right.tile_y) <= PRESENCE_RADIUS_Y
 }
 
-fn presence_message(identity: &ClientIdentity, presence: &PresenceRecord, player_gender: u8) -> ServerMessage {
+fn presence_message(
+    identity: &ClientIdentity,
+    presence: &PresenceRecord,
+    player_gender: u8,
+) -> ServerMessage {
     ServerMessage::Presence {
         user_id: identity.user_id.clone(),
         display_name: identity.display_name.clone(),
@@ -1019,7 +1146,10 @@ fn deliver(connection_id: Uuid, message: ServerMessage) -> Delivery {
 
 fn validate_identity(identity: &ClientIdentity) -> Result<(), String> {
     validate_token("user id", &identity.user_id)?;
-    if identity.display_name.is_empty() || identity.display_name.len() > MAX_NAME_BYTES {
+    if identity.display_name.trim().is_empty()
+        || identity.display_name.len() > MAX_NAME_BYTES
+        || identity.display_name.chars().any(char::is_control)
+    {
         return Err("invalid display name".into());
     }
     validate_token("world id", &identity.world.world_id)?;
@@ -1594,38 +1724,82 @@ mod tests {
 mod player_customization_tests {
     use super::*;
     fn identity(id: &str) -> ClientIdentity {
-        ClientIdentity { user_id: id.into(), display_name: id.into(), world: WorldIdentity {
-            world_id: "main".into(), modpack: ModpackIdentity { id: "core+player-customization".into(), content_hash: "a".repeat(64) },
-        } }
+        ClientIdentity {
+            user_id: id.into(),
+            display_name: id.into(),
+            world: WorldIdentity {
+                world_id: "main".into(),
+                modpack: ModpackIdentity {
+                    id: "core+player-customization".into(),
+                    content_hash: "a".repeat(64),
+                },
+            },
+        }
     }
     #[test]
     fn customization_updates_nearby_sprite_handle_and_retains_authenticated_identity() {
         let mut hub = Hub::default();
-        let a = Uuid::new_v4(); let b = Uuid::new_v4();
-        hub.connect(a, identity("player-1")).unwrap(); hub.connect(b, identity("player-2")).unwrap();
-        let presence = || ClientMessage::Presence { map: "NewBarkTown".into(), tile_x: 1, tile_y: 1, direction: "down".into() };
-        hub.handle(a, presence()); hub.handle(b, presence());
-        let updates = hub.handle(a, ClientMessage::SetProfile { display_name: "Kris_22".into(), player_gender: 1 });
+        let a = Uuid::new_v4();
+        let b = Uuid::new_v4();
+        hub.connect(a, identity("player-1")).unwrap();
+        hub.connect(b, identity("player-2")).unwrap();
+        let presence = || ClientMessage::Presence {
+            map: "NewBarkTown".into(),
+            tile_x: 1,
+            tile_y: 1,
+            direction: "down".into(),
+        };
+        hub.handle(a, presence());
+        hub.handle(b, presence());
+        let updates = hub.handle(
+            a,
+            ClientMessage::SetProfile {
+                display_name: "Kris_22".into(),
+                player_gender: 1,
+            },
+        );
         assert!(updates.iter().any(|update| update.connection_id == b && matches!(&update.message,
             ServerMessage::Presence { user_id, display_name, player_gender: 1, .. } if user_id == "player-1" && display_name == "Kris_22")));
         assert_eq!(hub.clients[&a].identity.user_id, "player-1");
         assert_eq!(hub.users["player-1"], a);
         let updates = hub.handle(b, presence());
         // Subsequent movement keeps the updated identity in the server record.
-        assert!(!updates.iter().any(|update| matches!(&update.message, ServerMessage::Error { .. })));
+        assert!(
+            !updates
+                .iter()
+                .any(|update| matches!(&update.message, ServerMessage::Error { .. }))
+        );
         assert_eq!(hub.clients[&a].player_gender, 1);
-        let chat = hub.handle(a, ClientMessage::Chat { channel: "say".into(), target_user_id: None, text: "Hello".into() });
+        let chat = hub.handle(
+            a,
+            ClientMessage::Chat {
+                channel: "say".into(),
+                target_user_id: None,
+                text: "Hello".into(),
+            },
+        );
         assert!(chat.iter().any(|update| matches!(&update.message, ServerMessage::Chat { from_display_name, .. } if from_display_name == "Kris_22")));
     }
     #[test]
     fn invalid_customization_is_atomic() {
-        let mut hub = Hub::default(); let a = Uuid::new_v4();
+        let mut hub = Hub::default();
+        let a = Uuid::new_v4();
         hub.connect(a, identity("player-1")).unwrap();
         for (name, sprite) in [("bad handle", 0), ("ok", 2), ("", 0)] {
-            let result = hub.handle(a, ClientMessage::SetProfile { display_name: name.into(), player_gender: sprite });
+            let result = hub.handle(
+                a,
+                ClientMessage::SetProfile {
+                    display_name: name.into(),
+                    player_gender: sprite,
+                },
+            );
             assert!(matches!(&result[0].message, ServerMessage::Error { .. }));
             assert_eq!(hub.clients[&a].identity.display_name, "player-1");
             assert_eq!(hub.clients[&a].player_gender, 0);
         }
     }
 }
+
+#[cfg(test)]
+#[path = "multiplayer_regressions.rs"]
+mod multiplayer_regressions;

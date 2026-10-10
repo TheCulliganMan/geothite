@@ -192,9 +192,10 @@ impl MultiplayerRuntime {
                 config.display_name = profile.handle;
             }
         }
-        let connection = Self::connect(runtime_shell, &config)?;
+        // Renderer startup can exceed the server's Hello deadline on a phone.
+        // Open the socket only once the production update loop can service it.
         Ok(Self {
-            connection: Some(connection),
+            connection: None,
             session: None,
             config: config.clone(),
             #[cfg(feature = "meshtastic")]
@@ -548,6 +549,9 @@ impl MultiplayerRuntime {
         if self.failed {
             return self.poll_reconnect(runtime_shell);
         }
+        if self.connection.is_none() && self.session.is_none() {
+            self.connection = Some(Self::connect(runtime_shell, &self.config)?);
+        }
         self.publish_presence(runtime_shell)?;
         let map = runtime_shell.shell.session().snapshot().map_name;
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
@@ -609,8 +613,7 @@ impl MultiplayerRuntime {
                         anyhow::bail!("hosted server returned a different match mode");
                     }
                     if self.direct_mode == Some(mode)
-                        && direct_interaction_block_reason(runtime_shell.shell.session().state())
-                            .is_some()
+                        && direct_interaction_mode_unavailable(runtime_shell, mode)?.is_some()
                     {
                         self.connection
                             .as_mut()
@@ -667,12 +670,18 @@ impl MultiplayerRuntime {
                 .context("start hosted deterministic link session")?,
             ));
             self.trade_id_prefix = session_id.to_string();
+            self.trade_sequence = 1;
             self.match_mode = Some(mode);
             self.result_reported = false;
             self.session_settled = false;
             self.direct_session = direct_session;
             self.direct_mode = None;
             self.pending_interaction = None;
+            // The negotiated checkpoint already represents earlier local play.
+            // Only stream inputs and choices made for this newly matched peer;
+            // replaying the complete overworld history floods the socket and
+            // can also send a previous opponent's battle actions into this room.
+            self.begin_matched_input_stream(runtime_shell);
             self.owns_internal_clock = is_host;
             runtime_shell.last_action_status =
                 Some(format!("Matched with {opponent_display_name}"));
@@ -881,8 +890,12 @@ impl MultiplayerRuntime {
         keys: &mut ButtonInput<KeyCode>,
     ) -> Result<()> {
         if let Some(request) = self.pending_interaction.clone() {
-            let unavailable =
-                direct_interaction_block_reason(runtime_shell.shell.session().state());
+            // Finish an in-flight step without consuming its keys or declining
+            // a valid invitation just because it arrived during walking.
+            if runtime_shell.player_walk_frame_ticks > 0 {
+                return Ok(());
+            }
+            let unavailable = direct_interaction_mode_unavailable(runtime_shell, request.kind)?;
             let accepted = if unavailable.is_some() {
                 Some(false)
             } else if keys.just_pressed(KeyCode::KeyZ) {
@@ -967,8 +980,7 @@ impl MultiplayerRuntime {
         let Some(mode) = mode else {
             return Ok(());
         };
-        if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state())
-        {
+        if let Some(reason) = direct_interaction_mode_unavailable(runtime_shell, mode)? {
             runtime_shell.last_action_status = Some(reason.into());
             return Ok(());
         }
@@ -1013,6 +1025,9 @@ impl MultiplayerRuntime {
     }
 
     fn return_to_lobby(&mut self, runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+        if self.direct_session {
+            close_direct_link_presentation(runtime_shell);
+        }
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| bridge.connected = false);
         #[cfg(feature = "meshtastic")]
         let meshtastic_io = if self.meshtastic_config.is_some() {
@@ -1234,6 +1249,9 @@ impl MultiplayerRuntime {
                 .context("close interrupted link battle")?;
             reset_visible_battle_exit_state(runtime_shell);
         }
+        if self.direct_session {
+            close_direct_link_presentation(runtime_shell);
+        }
         mark_link_disconnected(runtime_shell.shell.session_mut().state_mut());
         cancel_visible_online_link_flow(runtime_shell)
     }
@@ -1250,6 +1268,7 @@ impl MultiplayerRuntime {
         if let Some(session) = self.session.as_mut() {
             session.disconnect();
         }
+        let cleanup_result = self.cancel_interrupted_gameplay(runtime_shell);
         self.connection = None;
         self.session = None;
         self.queued_mode = None;
@@ -1284,7 +1303,6 @@ impl MultiplayerRuntime {
         self.sent_input_count = 0;
         self.sent_battle_action_count = 0;
         self.sent_menu_result_count = 0;
-        let cleanup_result = self.cancel_interrupted_gameplay(runtime_shell);
         self.game_link_ready = false;
         self.failed = true;
         self.reconnect_frames = 60;
@@ -1873,6 +1891,13 @@ impl MultiplayerRuntime {
         if local_usable && remote_usable {
             return Ok(());
         }
+        // Finish the final attack/faint pages before releasing the battle.
+        // Otherwise the overworld retains an input-owning battle presentation.
+        if !runtime_shell.battle_messages.is_empty()
+            || visible_battle_command_animation_active(runtime_shell)
+        {
+            return Ok(());
+        }
         let Some((game_result, hosted_result)) = terminal_link_results(local_usable, remote_usable)
         else {
             return Ok(());
@@ -1973,6 +1998,12 @@ impl MultiplayerRuntime {
         set_shell_action_status(runtime_shell, "LINK OPPONENT SENT A POKEMON");
         mark_runtime_snapshot_dirty(runtime_shell);
         Ok(())
+    }
+
+    fn begin_matched_input_stream(&mut self, runtime_shell: &BevyRuntimeShell) {
+        self.sent_input_count = runtime_shell.deterministic_input_frames.len();
+        self.sent_battle_action_count = runtime_shell.deterministic_battle_actions.len();
+        self.sent_menu_result_count = runtime_shell.deterministic_menu_results.len();
     }
 
     fn send_pending_inputs(&mut self, runtime_shell: &BevyRuntimeShell) -> Result<()> {
@@ -2080,6 +2111,46 @@ fn select_facing_player(
     // the remote trainer during this frame.
     keys.reset(KeyCode::KeyZ);
     Some(id)
+}
+
+fn direct_interaction_unavailable(runtime_shell: &mut BevyRuntimeShell) -> Result<Option<&'static str>> {
+    if let Some(reason) = direct_interaction_block_reason(runtime_shell.shell.session().state()) {
+        return Ok(Some(reason));
+    }
+    if has_visible_shell_a_action(runtime_shell)? {
+        return Ok(Some("close the current dialogue or menu first"));
+    }
+    Ok(None)
+}
+
+fn direct_interaction_mode_unavailable(
+    runtime_shell: &mut BevyRuntimeShell,
+    mode: crystal_net::hosted::MatchMode,
+) -> Result<Option<&'static str>> {
+    if let Some(reason) = direct_interaction_unavailable(runtime_shell)? {
+        return Ok(Some(reason));
+    }
+    if mode == crystal_net::hosted::MatchMode::TimeCapsule {
+        // Run the production cartridge compatibility check on a copy. A
+        // readiness probe must not overwrite an authored script's buffers.
+        let mut state = runtime_shell.shell.session().state().clone();
+        let outcome = runtime_shell.runtime.data().apply_special_routine(
+            &mut state,
+            "CheckTimeCapsuleCompatibility",
+            &Default::default(),
+        )?;
+        if let crate::core::systems::special_routines::SpecialRoutineEffect::TimeCapsuleCompatibility { result_code, .. } = outcome.effect {
+            return Ok(match result_code {
+                0 => None,
+                1 => Some("Time Capsule requires a party containing only Gen I Pokemon"),
+                2 => Some("Time Capsule cannot transfer Gen II moves"),
+                3 => Some("remove held Mail before using Time Capsule"),
+                _ => Some("your party is not Time Capsule compatible"),
+            });
+        }
+        anyhow::bail!("Time Capsule compatibility check returned the wrong outcome");
+    }
+    Ok(None)
 }
 
 fn direct_interaction_block_reason(state: &crate::core::state::GameState) -> Option<&'static str> {
@@ -2321,6 +2392,26 @@ fn apply_connected_link_state(
 fn mark_link_disconnected(state: &mut crate::core::state::GameState) {
     state.link_session.serial_connection_status =
         crate::core::state::LinkSerialConnectionStatus::NotEstablished;
+}
+
+fn close_direct_link_presentation(runtime_shell: &mut BevyRuntimeShell) {
+    // Direct overworld sessions have no Cable Club script to close their UI.
+    // Close only surfaces still owned by the exchange, retaining other menus.
+    if runtime_shell.pending_script_party_selection == Some(PendingScriptPartySelection::LinkTrade) {
+        runtime_shell.pending_script_party_selection = None;
+        close_visible_party_menu(runtime_shell);
+    }
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::LinkTrade)) {
+        runtime_shell.pc_confirmation = None;
+        runtime_shell.pc_notice = None;
+        runtime_shell.yes_no_cursor = None;
+    }
+    runtime_shell.pending_link_trade_party_slot = None;
+    runtime_shell.pending_link_trade_confirmation = None;
+    let state = runtime_shell.shell.session_mut().state_mut();
+    state.link_session.link_mode = 0;
+    state.link_session.battle_random = None;
+    mark_runtime_snapshot_dirty(runtime_shell);
 }
 
 fn sync_multiplayer_ghosts(
@@ -2566,8 +2657,16 @@ fn poll_multiplayer(
     };
     if SOCIAL_BRIDGE.with_borrow(|bridge| bridge.focused) {
         keys.reset_all();
+        // Drop edges queued before focus changed as well as currently held keys.
+        // The current authored step still finishes through the production clock.
+        runtime_shell.pending_ui_button_presses.clear();
+        runtime_shell.pending_overworld_direction_press = None;
     }
     if let Err(error) = multiplayer.poll(&mut runtime_shell, &mut keys) {
+        social_event(&crystal_net::hosted::ServerMessage::Error {
+            code: "multiplayer_error".into(),
+            message: format!("Multiplayer disconnected: {error:#}"),
+        });
         SOCIAL_BRIDGE.with_borrow_mut(|bridge| {
             bridge.connected = false;
             bridge.pending.clear();

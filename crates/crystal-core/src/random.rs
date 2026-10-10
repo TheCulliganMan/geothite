@@ -14,8 +14,9 @@ pub trait DividerSource {
 }
 
 /// Random operations used by the battle engine. Production battle execution
-/// supplies [`ExactBattleRandom`]; fixture implementations may supply a
-/// deterministic byte stream without becoming part of cartridge state.
+/// supplies [`ExactBattleRandom`] or the negotiated [`LinkBattleRandom`];
+/// fixture implementations may supply a deterministic byte stream without
+/// becoming part of cartridge state.
 pub trait BattleRandomSource {
     fn battle_random_byte(&mut self) -> u8;
     fn crystal_random_byte(&mut self, carry_in: bool) -> u8 {
@@ -499,6 +500,12 @@ impl LinkBattleRandom {
             *seed = seed.wrapping_mul(5).wrapping_add(1);
         }
         value
+    }
+}
+
+impl BattleRandomSource for LinkBattleRandom {
+    fn battle_random_byte(&mut self) -> u8 {
+        self.battle_random()
     }
 }
 

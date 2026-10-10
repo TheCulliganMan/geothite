@@ -198,7 +198,7 @@ fn webmcp_observation(
             serde_json::json!({"name": name, "x": tile.x, "y": tile.y, "curriculum_role": role})
         })
         .collect();
-    let players: Vec<_> = multiplayer.map(|multiplayer| multiplayer.remote_presences.values().filter(|presence| presence.map == snapshot.overworld.map_name).map(|presence| serde_json::json!({"name": presence.display_name, "x": presence.tile_x, "y": presence.tile_y, "facing": presence.direction})).collect()).unwrap_or_default();
+    let players: Vec<_> = multiplayer.map(|multiplayer| multiplayer.remote_presences.iter().filter(|(_, presence)| presence.map == snapshot.overworld.map_name).map(|(user_id, presence)| serde_json::json!({"user_id": user_id, "name": presence.display_name, "x": presence.tile_x, "y": presence.tile_y, "facing": presence.direction})).collect()).unwrap_or_default();
     let mut menus = Vec::new();
     if let Some(choice) = &runtime.pending_name_choice {
         menus.push(serde_json::json!({"kind": "name_choices", "options": choice.options, "selected": choice.selected}));
@@ -333,6 +333,11 @@ fn webmcp_observation(
             "commands"
         };
         menu["surface"] = serde_json::json!(surface);
+    }
+    if runtime.pc_confirmation.is_some() {
+        let selected = strict_readonly_cursor_index(&runtime.yes_no_cursor, "pc:confirmation", 2)
+            .context("visible PC/trade confirmation cursor missing")?;
+        menus.push(serde_json::json!({"kind":"yes_no","selected":selected,"entries":if selected==0 {vec![">YES","NO"]}else{vec!["YES",">NO"]}}));
     }
     if snapshot.ui.pending_yes_no.is_some()
         && visible_field_dialogue_is_entirely_consumed(runtime, &snapshot)
@@ -474,7 +479,7 @@ fn webmcp_observation(
         "observe": {"text": text, "visible_dialogue": visible_field_dialog_text(&snapshot, runtime), "menus": menus, "pokemon_switch_open": runtime.party_switch_cursor.is_some() || runtime.battle_switch_cursor.is_some(), "battle_message": runtime.battle_messages.front(), "battle": format_battle_overlay(&snapshot, runtime)},
         "map_info": {"name": snapshot.overworld.map_name, "player": {"x": snapshot.overworld.tile.x, "y": snapshot.overworld.tile.y, "facing": format!("{:?}", snapshot.overworld.facing)}, "dimensions": runtime.runtime.data().saved_map_tile_bounds(&snapshot.overworld.map_name), "objects": objects, "players": players, "curriculum_exits":exits, "curriculum_events":events, "hm_compatibility":hm_compatibility, "terrain": {"origin_x": snapshot.overworld.tile.x.saturating_sub(6), "origin_y": snapshot.overworld.tile.y.saturating_sub(6), "rows": terrain, "note": "Terrain classes describe the current map. Directional permissions, objects, movement mode and game rules still decide whether a move succeeds."}},
         "flow_state": {"animating": visible_noninteractive_field_animation_owns_input(runtime) || visible_battle_command_animation_active(runtime) || runtime.player_walk_frame_ticks > 0, "buttons": ["up", "down", "left", "right", "a", "b", "start", "select"]},
-        "multiplayer": multiplayer.map(|m| serde_json::json!({"connected": m.connection.is_some() && !m.failed, "session_active": m.session.is_some(), "pending_request": m.pending_interaction.as_ref().map(|request| serde_json::json!({"player": request.from_display_name, "kind": format!("{:?}", request.kind), "accept": "a", "decline": "b"}))})),
+        "multiplayer": multiplayer.map(|m| serde_json::json!({"connected": (m.connection.is_some() || m.session.is_some()) && !m.failed, "session_active": m.session.is_some(), "pending_request": m.pending_interaction.as_ref().map(|request| serde_json::json!({"player": request.from_display_name, "kind": format!("{:?}", request.kind), "accept": "a", "decline": "b"}))})),
         "recent_events": {"last_action": runtime.last_action_status, "error": runtime.last_error}
     }))
 }

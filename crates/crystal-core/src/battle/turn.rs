@@ -3712,7 +3712,14 @@ pub fn determine_turn_order(
         });
     }
 
-    Ok(if rng.battle_random_byte() < 128 {
+    let mut player_first = rng.battle_random_byte() < 128;
+    if state.link_battle && matches!(
+        state.serial_connection_status,
+        LinkSerialConnectionStatus::UsingExternalClock
+    ) {
+        player_first = !player_first;
+    }
+    Ok(if player_first {
         vec![BattleSide::Player, BattleSide::Enemy]
     } else {
         vec![BattleSide::Enemy, BattleSide::Player]

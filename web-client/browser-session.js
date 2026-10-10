@@ -17,10 +17,21 @@ export function prepareSession({ url, localStorage, sessionStorage, crypto, now 
   }
   const server = new URL(url.searchParams.get('multiplayer_server')
     ?? `${url.protocol === 'https:' ? 'wss:' : 'ws:'}//${url.host}/v1/ws`);
-  if (!['ws:', 'wss:'].includes(server.protocol) || server.username || server.password) {
-    throw new Error('The multiplayer server must be a WebSocket URL without embedded credentials.');
+  if (!['ws:', 'wss:'].includes(server.protocol) || server.username || server.password || server.hash) {
+    throw new Error('The multiplayer server must be a WebSocket URL without embedded credentials or a fragment.');
   }
-  const saved = JSON.parse(sessionStorage.getItem(CREDENTIAL_KEY) ?? localStorage.getItem(CREDENTIAL_KEY) ?? 'null');
+  let saved = null;
+  // A damaged tab cache must not hide a valid persistent credential or prevent
+  // online startup. Explicit invites still go through full validation below.
+  for (const storage of [sessionStorage, localStorage]) {
+    try {
+      const candidate = JSON.parse(storage.getItem(CREDENTIAL_KEY) ?? 'null');
+      if (candidate?.server === server.href && typeof candidate.token === 'string' && candidate.token) {
+        saved = candidate;
+        break;
+      }
+    } catch { /* Try the next credential store. */ }
+  }
   const token = url.searchParams.get('token')
     ?? (saved?.server === server.href ? saved.token : null);
   const explicitId = url.searchParams.get('player_id');

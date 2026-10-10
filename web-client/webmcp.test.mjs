@@ -59,7 +59,7 @@ test('WebMCP exposes player-visible context without guide or engine state', () =
       name: 'NewBarkTown', dimensions: [20, 18],
       player: { x: 10, y: 7, facing: 'Down' },
       objects: [{ name: 'HIDDEN_SCRIPT_ID', x: 12, y: 6 }],
-      players: [{ name: 'KRIS', x: 9, y: 8, facing: 'Left' }],
+      players: [{ name: 'KRIS', user_id: 'player-17', x: 9, y: 8, facing: 'Left' }],
       terrain: { rows: [[{ permission: 119, terrain: 'Water' }]] },
     },
     flow_state: { animating: false, buttons: ['a'] },
@@ -67,7 +67,7 @@ test('WebMCP exposes player-visible context without guide or engine state', () =
   });
   assert.equal(visible.observe.visible_dialogue, 'Hello there!');
   assert.deepEqual(visible.map_info.visible_objects, [{ offset_x: 2, offset_y: -1 }]);
-  assert.deepEqual(visible.map_info.visible_players, [{ name: 'KRIS', offset_x: -1, offset_y: 1, facing: 'Left' }]);
+  assert.deepEqual(visible.map_info.visible_players, [{ name: 'KRIS', user_id: 'player-17', offset_x: -1, offset_y: 1, facing: 'Left' }]);
   const serialized = JSON.stringify(visible);
   for (const hidden of ['reward_state', 'event_flags', 'engine_flags', 'SECRET_GOAL', 'terrain', 'permission', 'dimensions', 'HIDDEN_SCRIPT_ID', 'internal script', 'recent_events']) {
     assert.equal(serialized.includes(hidden), false, `leaked ${hidden}`);

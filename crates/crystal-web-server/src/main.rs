@@ -32,8 +32,9 @@ use uuid::Uuid;
 
 const DEFAULT_PORT: u16 = 8080;
 const OUTBOUND_CAPACITY: usize = 256;
-const MAX_MESSAGES_PER_SECOND: u32 = 120;
 const WRITE_TIMEOUT: Duration = Duration::from_secs(2);
+// Slow first-frame shader compilation must not evict an authenticated phone.
+const HELLO_TIMEOUT: Duration = Duration::from_secs(60);
 #[cfg(not(test))]
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(15);
 #[cfg(test)]
@@ -217,8 +218,13 @@ async fn main() -> Result<()> {
     let data_dir = config.data_dir.clone();
     let (catchable_path, identity) = tokio::task::spawn_blocking(move || {
         crystal_web_server::catchable::prepare(&web_root, &data_dir)
-    }).await.context("catchable pack builder panicked")??;
-    config.allowed_modpacks.insert(identity.runtime_modpack_id.clone(), identity.content_hash.clone());
+    })
+    .await
+    .context("catchable pack builder panicked")??;
+    config.allowed_modpacks.insert(
+        identity.runtime_modpack_id.clone(),
+        identity.content_hash.clone(),
+    );
     info!(modpack=%identity.runtime_modpack_id, hash=%identity.content_hash, "All 251 catchable multiplayer pack with server clock ready");
     let config = Arc::new(config);
     let mut hub = Hub::default();
@@ -263,7 +269,10 @@ async fn main() -> Result<()> {
         .nest_service("/packs", ServeDir::new(&config.pack_dir))
         .fallback_service(static_files)
         .layer(TraceLayer::new_for_http())
-        .layer(middleware::from_fn_with_state(Arc::clone(&config), cache_policy_headers))
+        .layer(middleware::from_fn_with_state(
+            Arc::clone(&config),
+            cache_policy_headers,
+        ))
         .with_state(state.clone());
     let address = SocketAddr::new(config.host, config.port);
     let listener = tokio::net::TcpListener::bind(address)
@@ -322,7 +331,11 @@ async fn health() -> &'static str {
     "ok\n"
 }
 
-async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Request, next: Next) -> Response {
+async fn cache_policy_headers(
+    State(config): State<Arc<Config>>,
+    request: Request,
+    next: Next,
+) -> Response {
     let asset_path = request.uri().path().trim_start_matches('/').to_owned();
     let policy = cache_policy(request.uri().path());
     let page_request = !request.uri().path().starts_with("/v1/");
@@ -333,15 +346,30 @@ async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Reques
     }
     if response.status() == StatusCode::OK && page_request {
         let decoded_size = if response.headers().contains_key("content-encoding") {
-            if asset_path.split('/').all(|part| !matches!(part, "." | "..")) {
-                tokio::fs::metadata(config.root.join(&asset_path)).await.ok()
-                    .filter(|meta| meta.is_file()).map(|meta| meta.len())
-            } else { None }
+            if asset_path
+                .split('/')
+                .all(|part| !matches!(part, "." | ".."))
+            {
+                tokio::fs::metadata(config.root.join(&asset_path))
+                    .await
+                    .ok()
+                    .filter(|meta| meta.is_file())
+                    .map(|meta| meta.len())
+            } else {
+                None
+            }
         } else {
-            response.headers().get("content-length").and_then(|v| v.to_str().ok()).and_then(|v| v.parse::<u64>().ok())
+            response
+                .headers()
+                .get("content-length")
+                .and_then(|v| v.to_str().ok())
+                .and_then(|v| v.parse::<u64>().ok())
         };
         if let Some(size) = decoded_size {
-            response.headers_mut().insert("x-asset-bytes", HeaderValue::from_str(&size.to_string()).unwrap());
+            response.headers_mut().insert(
+                "x-asset-bytes",
+                HeaderValue::from_str(&size.to_string()).unwrap(),
+            );
         }
     }
     if response.status().is_success() {
@@ -354,15 +382,22 @@ async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Reques
         .insert("origin-agent-cluster", HeaderValue::from_static("?1"));
     response.headers_mut().insert(
         "permissions-policy",
-        HeaderValue::from_static("tools=(self), camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
+        HeaderValue::from_static(
+            "tools=(self), camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+        ),
     );
     for (name, value) in [
         ("x-content-type-options", "nosniff"),
         ("x-frame-options", "SAMEORIGIN"),
         ("referrer-policy", "no-referrer"),
-        ("content-security-policy", "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"),
+        (
+            "content-security-policy",
+            "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'",
+        ),
     ] {
-        response.headers_mut().insert(name, HeaderValue::from_static(value));
+        response
+            .headers_mut()
+            .insert(name, HeaderValue::from_static(value));
     }
     response
 }
@@ -390,10 +425,18 @@ fn cache_policy(path: &str) -> &'static str {
 }
 
 fn is_content_addressed_asset(path: &str) -> bool {
-    let Some(name) = path.rsplit('/').next() else { return false };
-    let Some((stem, extension)) = name.rsplit_once('.') else { return false };
-    if !matches!(extension, "js" | "wasm") { return false; }
-    let Some(hash) = stem.rsplit('-').next() else { return false };
+    let Some(name) = path.rsplit('/').next() else {
+        return false;
+    };
+    let Some((stem, extension)) = name.rsplit_once('.') else {
+        return false;
+    };
+    if !matches!(extension, "js" | "wasm") {
+        return false;
+    }
+    let Some(hash) = stem.rsplit('-').next() else {
+        return false;
+    };
     hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
 
@@ -402,16 +445,24 @@ struct BrowserSession {
     token: String,
 }
 
-async fn create_session(
-    State(state): State<AppState>,
-) -> Result<impl IntoResponse, StatusCode> {
-    let secret = state.config.auth_secret.as_deref()
+async fn create_session(State(state): State<AppState>) -> Result<impl IntoResponse, StatusCode> {
+    let secret = state
+        .config
+        .auth_secret
+        .as_deref()
         .ok_or(StatusCode::SERVICE_UNAVAILABLE)?;
     // The server chooses the identity; callers cannot claim another player's save.
     let player_id = (Uuid::new_v4().as_u128() as u64) | 1;
-    let token = issue_user_token(secret, &format!("player-{player_id}"), 10 * 365 * 24 * 60 * 60)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    Ok(([(CACHE_CONTROL, "no-store")], Json(BrowserSession { token })))
+    let token = issue_user_token(
+        secret,
+        &format!("player-{player_id}"),
+        10 * 365 * 24 * 60 * 60,
+    )
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    Ok((
+        [(CACHE_CONTROL, "no-store")],
+        Json(BrowserSession { token }),
+    ))
 }
 
 async fn server_clock() -> Response {
@@ -419,7 +470,8 @@ async fn server_clock() -> Response {
         Ok(now) => (
             [(CACHE_CONTROL, "no-store")],
             Json(serde_json::json!({ "unixMillis": now.as_millis() as u64, "timeZone": "UTC" })),
-        ).into_response(),
+        )
+            .into_response(),
         Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
     }
 }
@@ -495,7 +547,7 @@ async fn handle_socket(
     let (tx, mut rx) = mpsc::channel(OUTBOUND_CAPACITY);
     let first_result = tokio::select! {
         _ = shutdown.changed() => return,
-        first = timeout(Duration::from_secs(10), reader.next()) => first,
+        first = timeout(HELLO_TIMEOUT, reader.next()) => first,
     };
     let first = match first_result {
         Ok(Some(Ok(Message::Text(text)))) => text,
@@ -574,8 +626,6 @@ async fn handle_socket(
     let mut heartbeat = tokio::time::interval(HEARTBEAT_INTERVAL);
     heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
     let mut last_received = Instant::now();
-    let mut window = Instant::now();
-    let mut message_count = 0_u32;
     loop {
         let result = tokio::select! {
             _ = shutdown.changed() => break,
@@ -609,19 +659,15 @@ async fn handle_socket(
                 break;
             }
         };
-        if window.elapsed() >= Duration::from_secs(1) {
-            window = Instant::now();
-            message_count = 0;
-        }
-        message_count += 1;
-        if message_count > MAX_MESSAGES_PER_SECOND {
-            warn!(%connection_id, "rate limit exceeded");
-            break;
-        }
         match message {
             Message::Text(text) => match serde_json::from_str::<ClientMessage>(&text) {
                 Ok(message) => {
-                    let profile_changed = matches!(&message, ClientMessage::SetProfile { .. } | ClientMessage::GameStats { .. } | ClientMessage::TradeCompleted { .. });
+                    let profile_changed = matches!(
+                        &message,
+                        ClientMessage::SetProfile { .. }
+                            | ClientMessage::GameStats { .. }
+                            | ClientMessage::TradeCompleted { .. }
+                    );
                     let may_change_ratings = matches!(&message, ClientMessage::Result { .. });
                     let deliveries = state.hub.lock().await.handle(connection_id, message);
                     let settled = deliveries.iter().any(|delivery| {
@@ -668,7 +714,9 @@ async fn handle_socket(
     let _ = timeout(WRITE_TIMEOUT, writer.send(Message::Close(None))).await;
 }
 
-async fn load_standings(data_dir: &PathBuf) -> Result<HashMap<String, crystal_net::hosted::LeaderboardStats>> {
+async fn load_standings(
+    data_dir: &PathBuf,
+) -> Result<HashMap<String, crystal_net::hosted::LeaderboardStats>> {
     match tokio::fs::read(data_dir.join("leaderboards.json")).await {
         Ok(bytes) => serde_json::from_slice(&bytes).context("decode leaderboard totals"),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(HashMap::new()),
@@ -995,16 +1043,33 @@ mod tests {
         let data_dir = std::env::temp_dir().join(format!("geothite-community-{}", Uuid::new_v4()));
         let hub = Arc::new(Mutex::new(Hub::default()));
         let mut standings = HashMap::new();
-        standings.insert("gold".into(), crystal_net::hosted::LeaderboardStats {
-            pvp_battles: 4, pvp_wins: 3, pve_battles: 12, pve_wins: 10,
-            trades: 2, party_level: 123,
-        });
-        hub.lock().await.replace_directory(HashMap::from([("gold".into(), "Gold".into())])).unwrap();
-        hub.lock().await.replace_standings(standings.clone()).unwrap();
+        standings.insert(
+            "gold".into(),
+            crystal_net::hosted::LeaderboardStats {
+                pvp_battles: 4,
+                pvp_wins: 3,
+                pve_battles: 12,
+                pve_wins: 10,
+                trades: 2,
+                party_level: 123,
+            },
+        );
+        hub.lock()
+            .await
+            .replace_directory(HashMap::from([("gold".into(), "Gold".into())]))
+            .unwrap();
+        hub.lock()
+            .await
+            .replace_standings(standings.clone())
+            .unwrap();
         persist_ratings(&hub, &data_dir).await.unwrap();
         let mut restarted = Hub::default();
-        restarted.replace_directory(load_directory(&data_dir).await.unwrap()).unwrap();
-        restarted.replace_standings(load_standings(&data_dir).await.unwrap()).unwrap();
+        restarted
+            .replace_directory(load_directory(&data_dir).await.unwrap())
+            .unwrap();
+        restarted
+            .replace_standings(load_standings(&data_dir).await.unwrap())
+            .unwrap();
         assert_eq!(restarted.directory_snapshot()["gold"], "Gold");
         assert_eq!(restarted.standings_snapshot(), standings);
         assert!(load_ratings(&data_dir).await.unwrap().is_empty());
@@ -1022,13 +1087,17 @@ mod tests {
             let response = if request[..length].starts_with(b"GET /healthz ") {
                 b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".as_slice()
             } else {
-                b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".as_slice()
+                b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+                    .as_slice()
             };
             stream.write_all(response).await.unwrap();
         });
         let result = run_healthcheck(&address.to_string()).await;
         server.await.unwrap();
-        assert!(result.is_err(), "a server without the clock cannot start the browser game");
+        assert!(
+            result.is_err(),
+            "a server without the clock cannot start the browser game"
+        );
     }
 
     #[tokio::test]
@@ -1036,8 +1105,12 @@ mod tests {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let address = listener.local_addr().unwrap();
         let server = tokio::spawn(async move {
-            axum::serve(listener, Router::new().route("/v1/clock", get(server_clock)))
-                .await.unwrap();
+            axum::serve(
+                listener,
+                Router::new().route("/v1/clock", get(server_clock)),
+            )
+            .await
+            .unwrap();
         });
         let result = run_healthcheck(&address.to_string()).await;
         server.abort();
@@ -1046,13 +1119,21 @@ mod tests {
 
     #[tokio::test]
     async fn clock_endpoint_reports_uncached_server_utc_time() {
-        let before = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis() as u64;
+        let before = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
         let response = server_clock().await;
         assert_eq!(response.status(), StatusCode::OK);
         assert_eq!(response.headers()[CACHE_CONTROL], "no-store");
-        let bytes = axum::body::to_bytes(response.into_body(), 1024).await.unwrap();
+        let bytes = axum::body::to_bytes(response.into_body(), 1024)
+            .await
+            .unwrap();
         let sample: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
-        let after = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis() as u64;
+        let after = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
         assert_eq!(sample["timeZone"], "UTC");
         assert!((before..=after).contains(&sample["unixMillis"].as_u64().unwrap()));
     }
@@ -1083,17 +1164,36 @@ mod tests {
     async fn security_headers_cover_success_and_missing_routes() {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let address = listener.local_addr().unwrap();
-        let app = Router::new().route("/v1/clock", get(server_clock))
-            .layer(middleware::from_fn_with_state(test_state().config, cache_policy_headers));
-        let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap(); });
+        let app = Router::new().route("/v1/clock", get(server_clock)).layer(
+            middleware::from_fn_with_state(test_state().config, cache_policy_headers),
+        );
+        let server = tokio::spawn(async move {
+            axum::serve(listener, app).await.unwrap();
+        });
         for path in ["/v1/clock", "/missing"] {
             let mut stream = tokio::net::TcpStream::connect(address).await.unwrap();
-            stream.write_all(format!("GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").as_bytes()).await.unwrap();
+            stream
+                .write_all(
+                    format!("GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n")
+                        .as_bytes(),
+                )
+                .await
+                .unwrap();
             let mut response = String::new();
             stream.read_to_string(&mut response).await.unwrap();
-            let headers = response.split("\r\n\r\n").next().unwrap().to_ascii_lowercase();
-            for expected in ["x-content-type-options: nosniff", "x-frame-options: sameorigin",
-                "referrer-policy: no-referrer", "frame-ancestors 'self'", "camera=()", "microphone=()"] {
+            let headers = response
+                .split("\r\n\r\n")
+                .next()
+                .unwrap()
+                .to_ascii_lowercase();
+            for expected in [
+                "x-content-type-options: nosniff",
+                "x-frame-options: sameorigin",
+                "referrer-policy: no-referrer",
+                "frame-ancestors 'self'",
+                "camera=()",
+                "microphone=()",
+            ] {
                 assert!(headers.contains(expected), "Missing {expected} on {path}");
             }
         }
@@ -1107,12 +1207,24 @@ mod tests {
         Arc::make_mut(&mut state.config).auth_secret = Some(secret.into());
         let mut identities = Vec::new();
         for _ in 0..2 {
-            let response = create_session(State(state.clone())).await.unwrap().into_response();
+            let response = create_session(State(state.clone()))
+                .await
+                .unwrap()
+                .into_response();
             assert_eq!(response.headers()[CACHE_CONTROL], "no-store");
-            let body = axum::body::to_bytes(response.into_body(), 4096).await.unwrap();
+            let body = axum::body::to_bytes(response.into_body(), 4096)
+                .await
+                .unwrap();
             let body: serde_json::Value = serde_json::from_slice(&body).unwrap();
             let identity = verify_user_token(secret, body["token"].as_str().unwrap()).unwrap();
-            assert!(identity.strip_prefix("player-").unwrap().parse::<u64>().unwrap() > 0);
+            assert!(
+                identity
+                    .strip_prefix("player-")
+                    .unwrap()
+                    .parse::<u64>()
+                    .unwrap()
+                    > 0
+            );
             identities.push(identity);
         }
         assert_ne!(identities[0], identities[1]);
@@ -1163,18 +1275,192 @@ mod tests {
                 let frame = socket.next().await.expect("socket stays open").unwrap();
                 if let tokio_tungstenite::tungstenite::Message::Text(text) = frame {
                     let value: serde_json::Value = serde_json::from_str(&text).unwrap();
+                    if value["type"] == kind {
+                        return serde_json::from_str(&text).unwrap();
+                    }
                     assert_ne!(
                         value["type"], "error",
                         "unexpected server rejection: {text}"
                     );
-                    if value["type"] == kind {
-                        return serde_json::from_str(&text).unwrap();
-                    }
                 }
             }
         })
         .await
         .expect("server responds promptly")
+    }
+
+    #[tokio::test]
+    async fn hosted_lobby_hands_off_a_match_before_an_already_queued_binary_hello() {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let (hello_tx, mut hello_rx) = tokio::sync::oneshot::channel();
+        let (release_tx, release_rx) = tokio::sync::oneshot::channel();
+        let (sent_tx, sent_rx) = tokio::sync::oneshot::channel();
+        let session_id = Uuid::new_v4();
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let mut socket = tokio_tungstenite::accept_async(stream).await.unwrap();
+            assert!(socket.next().await.unwrap().unwrap().is_text());
+            hello_tx.send(()).unwrap();
+            release_rx.await.unwrap();
+            let matched = ServerMessage::MatchFound {
+                session_id,
+                mode: MatchMode::Trade,
+                opponent_display_name: "PEER".into(),
+                opponent_user_id: "player-2".into(),
+                is_host: false,
+            };
+            socket
+                .feed(tokio_tungstenite::tungstenite::Message::Text(
+                    serde_json::to_string(&matched).unwrap().into(),
+                ))
+                .await
+                .unwrap();
+            socket
+                .feed(tokio_tungstenite::tungstenite::Message::Binary(
+                    vec![1, 2, 3].into(),
+                ))
+                .await
+                .unwrap();
+            socket.flush().await.unwrap();
+            sent_tx.send(()).unwrap();
+            std::future::pending::<()>().await;
+        });
+        let mut connection = crystal_net::hosted::HostedConnection::connect(
+            format!("ws://{address}"),
+            None,
+            crystal_net::hosted::ClientIdentity {
+                user_id: "player-1".into(),
+                display_name: "LOCAL".into(),
+                world: crystal_net::hosted::WorldIdentity {
+                    world_id: "test".into(),
+                    modpack: ModpackIdentity {
+                        id: "core".into(),
+                        content_hash: "hash".into(),
+                    },
+                },
+            },
+        )
+        .unwrap();
+        timeout(Duration::from_secs(2), async {
+            while hello_rx.try_recv().is_err() {
+                assert!(connection.poll().unwrap().is_empty());
+                tokio::time::sleep(Duration::from_millis(5)).await;
+            }
+        })
+        .await
+        .unwrap();
+        release_tx.send(()).unwrap();
+        sent_rx.await.unwrap();
+        // Both frames must be queued before the lobby consumes either of them.
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        assert!(matches!(
+            connection.poll().unwrap().as_slice(),
+            [ServerMessage::MatchFound { .. }]
+        ));
+        // Calling the lobby again is deliberately wrong: this proves the binary
+        // event remains unread for HostedLinkTransport, rather than being lost.
+        assert!(matches!(
+            connection.poll(),
+            Err(crystal_net::hosted::HostedConnectionError::Decode(_))
+        ));
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn real_socket_accepts_hello_after_slow_renderer_startup() {
+        let state = test_state();
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let app = Router::new()
+            .route("/v1/ws", get(websocket))
+            .with_state(state);
+        let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap() });
+        let (mut socket, _) = tokio_tungstenite::connect_async(format!("ws://{address}/v1/ws"))
+            .await
+            .unwrap();
+        // Real elapsed time exceeds the old ten-second Hello deadline.
+        tokio::time::sleep(Duration::from_secs(11)).await;
+        send_test_message(
+            &mut socket,
+            ClientMessage::Hello {
+                protocol_version: PROTOCOL_VERSION,
+                identity: crystal_net::hosted::ClientIdentity {
+                    user_id: "slow-player".into(),
+                    display_name: "Slow Trainer".into(),
+                    world: crystal_net::hosted::WorldIdentity {
+                        world_id: "world".into(),
+                        modpack: ModpackIdentity {
+                            id: "core".into(),
+                            content_hash: "hash".into(),
+                        },
+                    },
+                },
+            },
+        )
+        .await;
+        receive_test_message(&mut socket, "welcome").await;
+        socket.close(None).await.unwrap();
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn real_socket_delivers_bursts_without_rate_limits() {
+        let state = test_state();
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let app = Router::new()
+            .route("/v1/ws", get(websocket))
+            .with_state(state);
+        let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap() });
+        let (mut socket, _) = tokio_tungstenite::connect_async(format!("ws://{address}/v1/ws"))
+            .await
+            .unwrap();
+        send_test_message(
+            &mut socket,
+            ClientMessage::Hello {
+                protocol_version: PROTOCOL_VERSION,
+                identity: crystal_net::hosted::ClientIdentity {
+                    user_id: "burst-player".into(),
+                    display_name: "Burst Trainer".into(),
+                    world: crystal_net::hosted::WorldIdentity {
+                        world_id: "world".into(),
+                        modpack: ModpackIdentity {
+                            id: "core".into(),
+                            content_hash: "hash".into(),
+                        },
+                    },
+                },
+            },
+        )
+        .await;
+        receive_test_message(&mut socket, "welcome").await;
+        let started = Instant::now();
+        for batch in 0..10 {
+            for offset in 0..32 {
+                socket
+                    .feed(tokio_tungstenite::tungstenite::Message::Text(
+                        serde_json::to_string(&ClientMessage::Ping {
+                            nonce: batch * 32 + offset,
+                        })
+                        .unwrap()
+                        .into(),
+                    ))
+                    .await
+                    .unwrap();
+            }
+            socket.flush().await.unwrap();
+            for offset in 0..32 {
+                assert!(matches!(receive_test_message(&mut socket, "pong").await,
+                    ServerMessage::Pong { nonce } if nonce == batch * 32 + offset));
+            }
+        }
+        assert!(
+            started.elapsed() < Duration::from_secs(1),
+            "burst must exceed the former per-second cap"
+        );
+        socket.close(None).await.unwrap();
+        server.abort();
     }
 
     #[tokio::test]
@@ -1277,6 +1563,27 @@ mod tests {
                     matches!(receive_test_message(socket, "chat").await, ServerMessage::Chat { text, .. } if text == "Ready!")
                 );
             }
+            // A disputed result used to make cancellation ineffective and keep
+            // both players locked in the session. Exercise the real wire path.
+            send_test_message(
+                &mut a,
+                ClientMessage::Result {
+                    session_id,
+                    outcome: MatchOutcome::Local,
+                },
+            )
+            .await;
+            receive_test_message(&mut a, "result_pending").await;
+            send_test_message(
+                &mut b,
+                ClientMessage::Result {
+                    session_id,
+                    outcome: MatchOutcome::Local,
+                },
+            )
+            .await;
+            assert!(matches!(receive_test_message(&mut b, "error").await,
+                ServerMessage::Error { code, .. } if code == "invalid_request"));
             send_test_message(
                 &mut a,
                 ClientMessage::Result {
@@ -1465,11 +1772,15 @@ mod tests {
             "public, max-age=0, must-revalidate"
         );
         assert_eq!(
-            cache_policy("/crystal-bevy-de79d5db09f589e190e6ac88048be8324c7c79c3b25851b735c02e9e4dc23409.wasm"),
+            cache_policy(
+                "/crystal-bevy-de79d5db09f589e190e6ac88048be8324c7c79c3b25851b735c02e9e4dc23409.wasm"
+            ),
             "public, max-age=31536000, immutable"
         );
         assert_eq!(
-            cache_policy("/flygon/crystal_flygon-de79d5db09f589e190e6ac88048be8324c7c79c3b25851b735c02e9e4dc23409.js"),
+            cache_policy(
+                "/flygon/crystal_flygon-de79d5db09f589e190e6ac88048be8324c7c79c3b25851b735c02e9e4dc23409.js"
+            ),
             "public, max-age=31536000, immutable"
         );
     }
