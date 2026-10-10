@@ -367,7 +367,7 @@
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             startIn2D: document.documentElement.classList.contains("flygon-embedded"),
-            startIn3D: ["new-bark", "bedroom"].includes(new URLSearchParams(location.search).get("preview")),
+            startIn3D: ["new-bark", "bedroom", "goldenrod"].includes(new URLSearchParams(location.search).get("preview")),
             cameraControls: {
               group: document.querySelector('#camera-controls'),
               zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),

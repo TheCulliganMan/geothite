@@ -25,8 +25,10 @@ cp "$PACK" "$OUT/core-modular.browser.crystalpack"
 if [ -n "${CRYSTAL_OPEN_MODEL_ROOT:-}" ]; then
     cargo run --locked -p crystal-voxel-view --bin bundle_open_models -- \
         "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"
+    cargo run --locked -p crystal-voxel-view --bin bundle_open_people -- \
+        "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-people.json"
 else
     # Do not accidentally reuse a previous preview's optional scenery bundle.
-    rm -f "$OUT/open-models.json" "$OUT/open-models.json.gz"
+    rm -f "$OUT/open-models.json" "$OUT/open-models.json.gz" "$OUT/open-people.json" "$OUT/open-people.json.gz"
 fi
 printf '\nBuilt %s. Run:\nCRYSTAL_DATA_DIR=target/new-bark-3d-data target/debug/crystal-web-server --dir %s --port 3003\nOpen http://localhost:3003/?multiplayer=off&preview=new-bark\n' "$OUT" "$OUT"

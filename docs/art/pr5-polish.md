@@ -883,12 +883,40 @@ removed; no model from that pack is imported. Universal Base Characters is a
 newer CC0 humanoid option, with a free Standard edition on the author's itch.io:
 https://quaternius.itch.io/universal-base-characters .
 
-Integration is still required. The existing human reader accepts only the
-specific 16-joint rigid-node catalog and explicitly rejects skinning/textures.
-Preserve the imported weights, materials, skeleton and authored clips in a new
-external character path; do not flatten the downloaded people into static props
-or rigidly partition their vertices. Actual game positions/facing/footing and
-controller-owned inputs must remain authoritative. Review idle and locomotion,
-foot contact, actor identity/variety, camera scale, native and browser rendering
-before replacing the catalog. Commit integration code only, never downloads,
-converted people, textures or regenerated packs.
+The external people path now preserves the real skinning, UVs, embedded skin
+textures and authored Idle/Run/Jump clips. Four ignored exports are integrated:
+skater male/female and human male/female. Each has 58 skin joints, 1,029 weighted
+vertices and 1,604 triangles. The converter corrects the supplied animation FBX
+rest pose through its Targeting Pose and Blender action slots; it does not
+invent locomotion or partition the mesh into rigid limbs.
+
+`tools/prepare-open-person.py` performs offline Blender conversion, and
+`tools/check-open-person.py` independently checks geometry, weights, bind data,
+textures and moving clips. `bundle_open_people` validates the same bounded Rust
+reader before creating an ignored browser bundle. Native clients load these
+models from `CRYSTAL_OPEN_MODEL_ROOT/people/kenney`; missing assets retain the
+authored fallback. Downloads, exported GLBs, textures and bundles stay external
+and ignored.
+
+The renderer uses Bevy GPU skinning and cached mesh/material/image resources.
+Production actor positions, facing and footing remain authoritative; existing
+actor motion selects and blends Idle/Run. Jump is retained and validated but has
+no gameplay cue yet. Twelve character types use the four source outfits with
+child/adult height variation. Specialist costumes still use the original rigs;
+this does not complete the 75-person catalog goal.
+
+Validation: 984 renderer library tests passed (five ignored, including pending
+furniture verification in this worktree), native and WASM compilation passed,
+and separate actual-asset reader/ECS tests passed. Those tests check bind-pose
+preservation, animation, resource reuse and cleanup. Goldenrod native movement
+and actual browser 3D captures were reviewed. The browser smoke loads the real
+bundle, moves through DOM keyboard input, opens production Start and closes it,
+with no people fallback warnings or JavaScript errors. Chrome used SwiftShader;
+this is browser correctness evidence, not hardware performance evidence.
+
+Goldenrod Underground is now a separate native art review with the new player.
+The entrance still exposes flat stair/decor tiles and sparse walls. The main
+corridor at (3, 18) shows imported player/NPC rigs, but flat chairs and repeated
+planter details still need an environment pass. Captures remain ignored under `target/model-polish` and do
+not establish complete tunnel or catalog polish. The full PR polish goal stays
+open.

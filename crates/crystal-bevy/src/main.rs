@@ -95,7 +95,10 @@ async fn run_browser() -> Result<()> {
     wait_for_browser_meshtastic().await?;
     let pack_bytes = fetch_browser_pack().await?;
     #[cfg(feature = "voxel-view")]
-    fetch_browser_open_models().await;
+    {
+        fetch_browser_open_models("open-models.json", false).await;
+        fetch_browser_open_models("open-people.json", true).await;
+    }
     let loaded = crystal_assets::load_verified_compiled_game_pack_bytes(
         DEFAULT_BROWSER_PACK_FILENAME,
         pack_bytes,
@@ -114,6 +117,7 @@ async fn run_browser() -> Result<()> {
         let preview = match params.get("preview").as_deref() {
             Some("new-bark") => Some(("NewBarkTown", 13, 6)),
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
+            Some("goldenrod") => Some(("GoldenrodCity", 20, 18)),
             _ => None,
         };
         if let Some((map_name, tile_x, tile_y)) = preview {
@@ -277,7 +281,7 @@ async fn wait_for_browser_meshtastic() -> Result<()> {
 /// Optional same-origin scenery is external to the game pack and source bundle.
 /// Missing scenery keeps the authored catalog; it never prevents normal play.
 #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
-async fn fetch_browser_open_models() {
+async fn fetch_browser_open_models(url: &str, people: bool) {
     use wasm_bindgen::JsCast as _;
     use wasm_bindgen_futures::JsFuture;
     let Some(window) = web_sys::window() else {
@@ -299,7 +303,7 @@ async fn fetch_browser_open_models() {
     });
     let download = async {
         let window = web_sys::window().context("browser window is unavailable")?;
-        let response = JsFuture::from(window.fetch_with_str("open-models.json"))
+        let response = JsFuture::from(window.fetch_with_str(url))
             .await
             .map_err(|e| anyhow::anyhow!("fetch optional scenery: {e:?}"))?
             .dyn_into::<web_sys::Response>()
@@ -321,7 +325,12 @@ async fn fetch_browser_open_models() {
         .map_err(|e| anyhow::anyhow!("read optional scenery: {e:?}"))?
         .as_string()
         .context("optional scenery response is not text")?;
-        crystal_voxel_view::install_open_model_bundle(&text).map_err(anyhow::Error::msg)?;
+        if people {
+            crystal_voxel_view::install_open_people_bundle(&text)
+        } else {
+            crystal_voxel_view::install_open_model_bundle(&text)
+        }
+        .map_err(anyhow::Error::msg)?;
         Ok(())
     };
     let result: Result<()> = if timer.is_some() {
@@ -338,7 +347,10 @@ async fn fetch_browser_open_models() {
     }
     drop(callback);
     if let Err(error) = result {
-        bevy::log::warn!("{error:#}; using authored scenery");
+        bevy::log::warn!(
+            "{error:#}; using authored {}",
+            if people { "people" } else { "scenery" }
+        );
     }
 }
 

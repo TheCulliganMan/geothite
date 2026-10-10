@@ -156,6 +156,7 @@ struct Instance {
     kind: CharacterKind,
     motion: Motion,
     idle_offset: f32,
+    person: Option<crate::open_people_skin::Person>,
 }
 
 struct PropInstance {
@@ -165,6 +166,7 @@ struct PropInstance {
 
 #[derive(Resource, Default)]
 pub(crate) struct ModeledActors {
+    people_gpu: crate::open_people_skin::PeopleGpu,
     meshes: HashMap<CharacterKind, [Handle<Mesh>; JOINT_COUNT]>,
     material: Option<Handle<StandardMaterial>>,
     remote_material: Option<Handle<StandardMaterial>>,
@@ -190,6 +192,30 @@ pub(crate) fn has_modeled_player(frame: &VisualWorldFrame) -> bool {
             actor.id == VisualActorId::Player
                 && (character_kind(actor).is_some() || prop_kind(actor).is_some())
         })
+}
+
+// Explicit identities retain staff/specialist costumes until matching external
+// clothes exist. A missing optional rig keeps its original authored model.
+fn person_name(kind: CharacterKind) -> Option<&'static str> {
+    match kind {
+        CharacterKind::Trainer | CharacterKind::StandingYoungster => Some("skater-male"),
+        CharacterKind::Youngster => Some("human-male"),
+        CharacterKind::TrainerFemale | CharacterKind::Lass => Some("skater-female"),
+        CharacterKind::Teacher
+        | CharacterKind::Beauty
+        | CharacterKind::CooltrainerF
+        | CharacterKind::Mom
+        | CharacterKind::PokefanF => Some("human-female"),
+        CharacterKind::CooltrainerM | CharacterKind::PokefanM => Some("human-male"),
+        _ => None,
+    }
+}
+fn person_height(kind: CharacterKind) -> f32 {
+    match kind {
+        CharacterKind::Youngster | CharacterKind::StandingYoungster | CharacterKind::Lass => 1.05,
+        CharacterKind::Trainer | CharacterKind::TrainerFemale => 1.20,
+        _ => 1.38,
+    }
 }
 
 fn character_kind(actor: &VisualActor) -> Option<CharacterKind> {
@@ -490,6 +516,8 @@ pub(crate) fn sync(
     mut state: ResMut<ModeledActors>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut images: ResMut<Assets<Image>>,
+    mut binds: ResMut<Assets<bevy::render::mesh::skinning::SkinnedMeshInverseBindposes>>,
     mut card_visibility: Query<&mut Visibility, (With<VoxelActorCard>, Without<ModeledActor>)>,
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
 ) {
@@ -670,6 +698,28 @@ pub(crate) fn sync(
             if let Ok(mut transform) = transforms.get_mut(instance.entity) {
                 *transform = model_transform(actor, height, instance.motion.yaw, scale);
             }
+            if let Some(person) = &mut instance.person {
+                if let Ok(mut transform) = transforms.get_mut(instance.entity) {
+                    *transform = model_transform(
+                        actor,
+                        height,
+                        instance.motion.yaw,
+                        scale * person_height(kind) / person.rig.height,
+                    );
+                }
+                person.update(
+                    instance.motion.phase,
+                    instance.motion.walk_weight,
+                    time.elapsed_seconds() + instance.idle_offset,
+                    &mut transforms,
+                );
+                if let Some(entity) = cards.entities.get(&actor.id)
+                    && let Ok(mut visibility) = card_visibility.get_mut(*entity)
+                {
+                    *visibility = Visibility::Hidden;
+                }
+                continue;
+            }
             let joints = pose(
                 kind,
                 &instance.motion,
@@ -681,6 +731,72 @@ pub(crate) fn sync(
                 }
             }
         } else {
+            if let Some((name, imported)) = person_name(kind)
+                .and_then(|name| crate::open_people::get(name).map(|rig| (name, rig.clone())))
+            {
+                let facing = actor
+                    .facing
+                    .filter(|f| f.is_finite() && f.length_squared() > 0.5)
+                    .unwrap_or(Vec2::NEG_Y);
+                let motion = Motion::new(world_foot, facing);
+                let entity = commands
+                    .spawn((
+                        SpatialBundle {
+                            transform: model_transform(
+                                actor,
+                                height,
+                                motion.yaw,
+                                scale * person_height(kind) / imported.height,
+                            ),
+                            ..default()
+                        },
+                        ModeledActor,
+                    ))
+                    .id();
+                let person = state.people_gpu.spawn(
+                    name,
+                    imported,
+                    entity,
+                    matches!(actor.id, VisualActorId::RemotePlayer(_)),
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                    &mut images,
+                    &mut binds,
+                );
+                let shadow = commands
+                    .spawn((
+                        PbrBundle {
+                            mesh: state.shadow_mesh.as_ref().unwrap().clone(),
+                            material: state.shadow_material.as_ref().unwrap().clone(),
+                            transform: Transform::from_xyz(0.0, -0.001, 0.0)
+                                .with_scale(Vec3::splat(person.rig.height / person_height(kind))),
+                            ..default()
+                        },
+                        NotShadowCaster,
+                        NotShadowReceiver,
+                        RenderLayers::layer(VOXEL_RENDER_LAYER),
+                    ))
+                    .id();
+                commands.entity(entity).add_child(shadow);
+                state.instances.insert(
+                    actor.id,
+                    Instance {
+                        entity,
+                        joints: [Entity::PLACEHOLDER; JOINT_COUNT],
+                        kind,
+                        motion,
+                        idle_offset: (world_foot.x * 0.137 + world_foot.y * 0.241).rem_euclid(4.8),
+                        person: Some(person),
+                    },
+                );
+                if let Some(entity) = cards.entities.get(&actor.id)
+                    && let Ok(mut visibility) = card_visibility.get_mut(*entity)
+                {
+                    *visibility = Visibility::Hidden;
+                }
+                continue;
+            }
             let model = rig(kind);
             let mesh_handles = state
                 .meshes
@@ -755,6 +871,7 @@ pub(crate) fn sync(
                     kind,
                     motion,
                     idle_offset,
+                    person: None,
                 },
             );
         }
@@ -801,8 +918,112 @@ mod tests {
             .init_resource::<ModeledActors>()
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<StandardMaterial>>()
+            .init_resource::<Assets<Image>>()
+            .init_resource::<Assets<bevy::render::mesh::skinning::SkinnedMeshInverseBindposes>>()
             .add_systems(Update, sync);
         app
+    }
+    #[test]
+    #[ignore = "run separately with the locally supplied converted Kenney rigs"]
+    fn external_people_reuse_gpu_skins_and_follow_only_the_production_actor() {
+        use bevy::render::mesh::skinning::SkinnedMesh;
+        assert!(
+            crate::open_people::get("skater-male").is_some(),
+            "supply CRYSTAL_OPEN_MODEL_ROOT"
+        );
+        let mut app = actor_test_app();
+        app.update();
+        let instance = &app.world().resource::<ModeledActors>().instances[&VisualActorId::Player];
+        assert!(instance.person.is_some());
+        let root = instance.entity;
+        let meshes = app.world().resource::<Assets<Mesh>>().len();
+        let images = app.world().resource::<Assets<Image>>().len();
+        let entities = app
+            .world_mut()
+            .query_filtered::<Entity, With<ModeledActor>>()
+            .iter(app.world())
+            .count();
+        assert!(entities > 58);
+        assert_eq!(
+            app.world_mut()
+                .query::<&SkinnedMesh>()
+                .iter(app.world())
+                .count(),
+            1
+        );
+        for i in 0..30 {
+            app.world_mut()
+                .resource_mut::<Time>()
+                .advance_by(std::time::Duration::from_secs_f32(1.0 / 60.0));
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0]
+                .center
+                .x += 0.2;
+            let frame = app.world().resource::<VisualWorldFrame>().clone();
+            app.update();
+            assert_eq!(
+                app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].entity,
+                root
+            );
+            let actor = &frame.actors[0];
+            let expected = model_transform(
+                actor,
+                0.0,
+                app.world().resource::<ModeledActors>().instances[&VisualActorId::Player]
+                    .motion
+                    .yaw,
+                16.0 * 1.20 / crate::open_people::get("skater-male").unwrap().height,
+            );
+            assert!(
+                app.world()
+                    .get::<Transform>(root)
+                    .unwrap()
+                    .translation
+                    .distance(expected.translation)
+                    < 0.001
+            );
+            assert_eq!(
+                app.world().resource::<VisualWorldFrame>().actors[0].center,
+                actor.center
+            );
+            assert_eq!(app.world().resource::<Assets<Mesh>>().len(), meshes);
+            assert_eq!(app.world().resource::<Assets<Image>>().len(), images);
+        }
+        let mut remote = actor();
+        remote.id = VisualActorId::RemotePlayer(23);
+        app.world_mut()
+            .resource_mut::<VisualWorldFrame>()
+            .actors
+            .push(remote);
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), meshes);
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), images);
+        let handles: Vec<_> = app
+            .world_mut()
+            .query_filtered::<&Handle<StandardMaterial>, With<SkinnedMesh>>()
+            .iter(app.world())
+            .cloned()
+            .collect();
+        assert_eq!(handles.len(), 2);
+        assert_ne!(handles[0], handles[1]);
+        app.world_mut()
+            .resource_mut::<VisualWorldFrame>()
+            .actors
+            .clear();
+        app.update();
+        assert_eq!(
+            app.world_mut()
+                .query::<&SkinnedMesh>()
+                .iter(app.world())
+                .count(),
+            0
+        );
+        assert_eq!(
+            app.world_mut()
+                .query_filtered::<Entity, With<ModeledActor>>()
+                .iter(app.world())
+                .count(),
+            0
+        );
     }
     #[test]
     fn actor_lifecycle_replaces_rigs_across_maps_appearances_and_toggles() {
