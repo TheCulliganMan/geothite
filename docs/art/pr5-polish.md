@@ -175,3 +175,44 @@ Chikorita/Bayleef near-zero floating-point differences on macOS; it is not
 reported as passing. Static inspection does not establish in-game camera,
 animation clearance or GPU verification. Those remain open for both ducks and
 the catalog.
+
+## Abra and Alakazam reconstruction
+
+Family inspection found that the previous Alakazam reused Abra-like spherical
+proportions and incorrectly carried a tail and Kadabra's forehead star. Abra
+and Alakazam now have transverse fox skull sections with long tapered muzzles,
+pointed closed ears with inset planes, fitted eyes and narrow necks. Abra has
+closed meditation creases, a crouched young body, resting hands, rounded
+shoulder shells and a substantial upward tail with a dark saddle band.
+Alakazam has focused eyes, broad sweeping serrated moustache blades, a narrow
+waist, elongated forearms, fitted knee armor and two spoons held through its
+curled hands. Alakazam has neither a tail nor a star. Official artwork used for
+identity checks:
+[Abra](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/063.png),
+[Kadabra](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/064.png),
+[Alakazam](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/065.png).
+Reference image downloads were removed after inspection; none are shipped.
+
+`tools/abra_sculpt.py` replaces the legacy Abra/Alakazam builder, with each
+existing JSON file remaining the sole canonical geometry. The newer Kadabra
+sculpt was reviewed alongside both and preserved. Source heights remain 1.12
+units. Abra has 43 parts and 4,248 triangles; Alakazam has 53 parts and 6,392
+triangles. Concave moustache blades use ear-clipped caps instead of overlapping
+triangle fans. Their head details fit the actual stored triangle surfaces.
+
+```sh
+python3 tools/abra_sculpt.py
+python3 tools/test_abra_sculpt.py
+```
+
+Four checks pass for stored connected oriented solids, triangle/shading
+agreement, exact recipe reproduction, source height and paired ground
+contacts, species-specific anatomy and spoons starting inside their actual
+palms. An over-bent haunch produced inward shading in the initial shape; its
+profile was corrected rather than relaxing the check. Front, three-quarter
+and rear neutral views have been reviewed. All eight rebuilt species pass the
+scoped validator (36,616 triangles and 25,020 vertices), all 17 sculpture
+checks pass, all 571 static JSON documents validate and all 957 voxel tests
+pass, with three existing ignored checks. The scope of these checks remains
+static asset integrity. Native/browser GPU, physical-size battle cameras and
+species articulation remain open, including Kadabra's final motion review.

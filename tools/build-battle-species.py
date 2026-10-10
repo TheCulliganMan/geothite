@@ -1385,27 +1385,18 @@ def kangaskhan(n):
  tube('Balancing tail',[(0,.18,.28),(0,.47,.24),(0,.72,.34)],[.17,.11,.015],'brown');sph('Baby body',(0,-.246,.36),(.10,.055,.11),'purple');sph('Baby head',(0,-.26,.50),(.12,.08,.11),'purple')
  for s in (-1,1):sph('Baby ear',(s*.09,-.23,.58),(.046,.028,.055),'purple');sph('Baby eye',(s*.04,-.335,.52),(.012,.007,.019),'ink');sph('Baby hand',(s*.11,-.28,.38),(.035,.025,.043),'purple')
 
-@register('ABRA KADABRA ALAKAZAM DROWZEE HYPNO',1.12)
+@register('ABRA ALAKAZAM',1.12)
+def sculpted_fox_psychics(n):
+ raise RuntimeError('Abra and Alakazam use their dedicated sculpture recipe before Blender batching')
+@register('KADABRA DROWZEE HYPNO',1.12)
 def psychic_humanoids(n):
  if n=='KADABRA':sculpt_kadabra();return
- tapir=n in ('DROWZEE','HYPNO');abra=n=='ABRA';final=n in ('ALAKAZAM','HYPNO');sph('Psychic torso',(0,0,.42),(.24,.19,.29),'yellow');sph('Brown waist',(0,0,.25),(.24,.18,.15),'brown');sph('Psychic head',(0,-.035,.80),(.23,.19,.20),'yellow');feet('yellow',.19,s=(.13,.19,.075));arms('yellow',.51,.24)
- if tapir:
-  tube('Tapir nose',[(0,-.17,.80),(0,-.27,.74),(0,-.29,.60)],[.073,.061,.04],'yellow');eyes(.88,-.202,.13,.030)
-  for s in (-1,1):sph('Round tapir ear',(s*.17,0,.96),(.08,.06,.09),'yellow')
-  if final:
-   for i in range(8):a=i*math.tau/8;leaf('White neck ruff',(0,-.01,.62),(.28*math.cos(a),.18*math.sin(a),.55),.09,'white')
-   tube('Pendulum chain',[(.36,-.12,.44),(.39,-.14,.24),(.41,-.14,.13)],.006,'silver');ring('Hypnotic pendulum',(.41,-.14,.10),.053,.009,'silver')
- else:
-  sph('Foxlike snout',(0,-.20,.72),(.14,.10,.075),'yellow')
-  for s in (-1,1):
-   leaf('Long angular ear',(s*.13,0,.92),(s*.29,.05,1.21),.11,'yellow');sph('Brown shoulder armor',(s*.22,.01,.57),(.11,.10,.08),'brown')
-   if abra:tube('Closed meditation eye',[(s*.06,-.206,.84),(s*.16,-.175,.86)],.010,'brown')
-   else:sph('White eye',(s*.12,-.206,.86),(.047,.018,.027),'white');sph('Eye pupil',(s*.12,-.224,.86),(.012,.006,.023),'ink');tube('Long curled moustache',[(s*.07,-.26,.72),(s*.25,-.29,.73),(s*.36,-.28,.64)],[.022,.021,.003],'cream')
-  tube('Long psychic tail',[(0,.15,.25),(0,.40,.27),(.12,.55,.44),(.18,.56,.65)],[.10,.085,.063,.012],'yellow')
-  if not abra:
-   for s in ((-1,1) if final else (1,)):
-    rod('Held spoon stem',(s*.37,-.13,.32),(s*.39,-.14,.60),.012,'silver');sph('Spoon bowl',(s*.40,-.14,.65),(.055,.021,.077),'silver')
-   fin('Forehead red star',[(0,-.207,1.0),(-.025,-.213,.94),(-.07,-.202,.94),(-.033,-.215,.90),(-.05,-.21,.85),(0,-.223,.885),(.05,-.21,.85),(.033,-.215,.90),(.07,-.202,.94),(.025,-.213,.94)],'red',.006)
+ final=n=='HYPNO';sph('Psychic torso',(0,0,.42),(.24,.19,.29),'yellow');sph('Brown waist',(0,0,.25),(.24,.18,.15),'brown');sph('Psychic head',(0,-.035,.80),(.23,.19,.20),'yellow');feet('yellow',.19,s=(.13,.19,.075));arms('yellow',.51,.24)
+ tube('Tapir nose',[(0,-.17,.80),(0,-.27,.74),(0,-.29,.60)],[.073,.061,.04],'yellow');eyes(.88,-.202,.13,.030)
+ for side in (-1,1):sph('Round tapir ear',(side*.17,0,.96),(.08,.06,.09),'yellow')
+ if final:
+  for i in range(8):a=i*math.tau/8;leaf('White neck ruff',(0,-.01,.62),(.28*math.cos(a),.18*math.sin(a),.55),.09,'white')
+  tube('Pendulum chain',[(.36,-.12,.44),(.39,-.14,.24),(.41,-.14,.13)],.006,'silver');ring('Hypnotic pendulum',(.41,-.14,.10),.053,.009,'silver')
 @register('TYROGUE HITMONLEE HITMONCHAN HITMONTOP',1.18)
 def martial_artists(n):
  lee=n=='HITMONLEE';chan=n=='HITMONCHAN';top=n=='HITMONTOP';baby=n=='TYROGUE';c='lilac' if baby else 'tan';sph('Athletic torso',(0,0,.62 if lee else .48),(.23,.17,.28),c);feet(c,.18,s=(.10,.17,.065))
@@ -1632,6 +1623,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('abra','alakazam'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from abra_sculpt import sculpture as abra_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(abra_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': distinct fox anatomy and fitted faces',flush=True)
  for species in ('psyduck','golduck'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
