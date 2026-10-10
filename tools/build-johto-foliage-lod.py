@@ -209,6 +209,9 @@ def export_asset(name, col):
             'origin':'floor-center','bounds':{'min':lo,'max':hi},
             'dimensions':reference['dimensions'],'triangle_count':triangles,
             'primitive_count':len(primitives),'primitives':primitives}
+    if name in ('tree','tree_lod'):
+        from foliage_contours import prepare as prepare_foliage_contours
+        data=prepare_foliage_contours(data)
     (P / f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
     bpy.ops.object.select_all(action='DESELECT')
     for obj in objects:

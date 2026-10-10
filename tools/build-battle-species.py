@@ -1584,8 +1584,9 @@ def export(name,objects):
   # Keep the production rigid hierarchy and idle clip as the one runtime asset.
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from pidgeotto_glb import export_pidgeotto
+  from pidgeotto_contours import prepare as prepare_pidgeotto_contours
   if (OUT/'pidgeotto.mesh.json').exists():raise ValueError('remove the reviewed obsolete Pidgeotto JSON before exporting its canonical GLB')
-  (OUT/'pidgeotto.glb').write_bytes(export_pidgeotto(data))
+  (OUT/'pidgeotto.glb').write_bytes(export_pidgeotto(prepare_pidgeotto_contours(data)))
  elif name=='gengar':
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from gengar_glb import export_gengar

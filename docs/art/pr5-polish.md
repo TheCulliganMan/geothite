@@ -454,3 +454,48 @@ python3 tools/test_crocodile_sculpt.py
 # With the review-only NumPy and Pillow dependencies:
 python3 tools/test_render_model_review.py
 ```
+
+## Pidgeotto contours and tree lighting
+
+Pidgeotto retains its 34-part rig, wing hinges, ten animated feather parts and
+closed production idle curve. The rounded body, head and breast now use cubic
+contour profiles and finer outlines with smooth corner normals. The other 31
+anatomy parts retain their exact geometry, normals and colors. Its canonical
+GLB contains 5,208 triangles; the original batch authoring source calls the same
+refinement helper before export. Canonical regeneration and wing-motion checks
+pass, including a fingerprint of the untouched parts.
+
+Both the full tree and the battle's tree LOD blend crown lighting across leaf
+material boundaries. Their triangle positions, colors, bounds and wood parts
+remain exact; counts remain 724 and 248 triangles. This softens lighting only:
+the coarse LOD outline and polygonal color patches still need art review.
+Three stored-asset checks cover exact preservation, cross-material normals,
+idempotence and the LOD budget. CI runs these checks.
+
+The focused Pidgeotto suite passes nine checks with one existing migration
+skip. Its separate whole-catalog check still fails on the unchanged Bayleef
+canonical-export discrepancy on this macOS host. The broad check remains in CI;
+no unrelated model was regenerated to hide this failure.
+
+Free external options checked include Quaternius's CC0 Ultimate Stylized Nature
+pack, Kenney's CC0 Furniture Kit, and downloadable Pokémon XD assets listed by
+The Models Resource. The latter site returns HTTP 403 here, so no XD model
+has been downloaded. An accessible Pokémon-3D-api catalog contains files for
+all 251 required species; Pidgeotto and Azumarill were downloaded into ignored
+storage and inspected with their textures. Both have skeletons but no animation
+clips, and Draco/WebP compression requires conversion or new loader support.
+No external asset has been integrated or committed. These are candidates, not
+evidence that the catalog is polished. The user selected Quaternius and Kenney
+CC0 assets for scenery/interiors; their source downloads remain external and
+ignored. Pokémon replacement integration remains unselected.
+
+A fresh 1024×768 native battle capture on Apple M5 / Metal was inspected through
+the rebuilt production example. The bird's rounded breast/head are smoother,
+while its authored feather folds remain visible. The trees' triangular color
+patches and angular silhouette remain conspicuous: this lighting increment does
+not sign them off. The scene uses the external pack and a disposable read-only
+battle, with no user save destination.
+
+All 959 voxel tests pass with three existing ignored checks after updating the
+reviewed Pidgeotto neutral-surface count and digest. The rig's motion, topology,
+part grouping and hinge checks remain intact. All 571 static JSON files validate.

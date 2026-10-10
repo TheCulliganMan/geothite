@@ -56,6 +56,7 @@ jobs:
       - run: python3 tools/test_crocodile_sculpt.py
       - run: python3 tools/test_aqua_rabbit_sculpt.py
       - run: python3 tools/test_contour_sculpt.py
+      - run: python3 tools/test_foliage_contours.py
       - run: python3 tools/human_locomotion.py
       - run: python3 tools/test_model_asset_storage.py
       - run: python3 tools/test_johto_art_sources.py

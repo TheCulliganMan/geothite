@@ -797,13 +797,13 @@ mod tests {
     #[test]
     fn neutral_surface_matches_reviewed_papercraft_geometry_digest() {
         let rig = rig();
-        assert_eq!(rig.neutral.positions.len(), 4538);
-        assert_eq!(rig.neutral.indices.len(), 5256);
+        assert_eq!(rig.neutral.positions.len(), 5941);
+        assert_eq!(rig.neutral.indices.len(), 15624);
         // Reviewed papercraft refinement, including normalized runtime normals.
         // The original migration comparison remains in the preceding commit.
         assert_eq!(
             digest(&rig.neutral),
-            "8077eba2833d45fef100978a510a75aefed66bf64dea96f3c680a769445fc28b"
+            "90ae2c2ec48e61690c0dbc533d0b3055cd7703975611b73cc625b5980b5f7ef5"
         );
         assert_eq!(rig.anatomy.len(), PART_COUNT);
         assert_eq!(rig.anatomy[0].name, "Bird body");

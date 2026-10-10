@@ -360,6 +360,9 @@ def export_asset(name,col):
   tri_count+=len(indices)//3
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tri_count,'primitive_count':len(primitives),'primitives':primitives}
  if name in ['house','lab']:data['door_anchor']=[0,0,maxv[2]]
+ if name in ('tree','tree_lod'):
+     from foliage_contours import prepare as prepare_foliage_contours
+     data=prepare_foliage_contours(data)
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
  bpy.ops.object.select_all(action='DESELECT')
  for obj in objects:obj.select_set(True)

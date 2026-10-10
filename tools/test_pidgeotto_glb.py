@@ -21,7 +21,7 @@ REPO = Path(os.environ.get('GEOTHITE_REPO', Path(__file__).resolve().parents[1])
 MODELS = REPO / glb.MODEL_ROOT
 # Reviewed papercraft anatomy fingerprint, without a geometry sidecar.
 # The previous migration fingerprint remains in Git history.
-REVIEWED_ANATOMY_SHA256 = '77bd912933c950138a32804b7198c4a837f6b3d11c7632cf3961bf7f4886dbd8'
+REVIEWED_ANATOMY_SHA256 = '171a58c257ea427a62984594386d699d36afb82fe5b2e1377405b545526ad3cf'
 
 
 def encode(doc, binary):
@@ -63,6 +63,33 @@ class PidgeottoGlbTests(unittest.TestCase):
         neutral = world_points(self.doc, self.binary)
         for i, source in enumerate(self.source['primitives']):
             self.assertEqual([v for point in neutral[i + 5] for v in point], [glb.f32(v) for v in source['positions']])
+
+    def test_contour_revision_keeps_all_31_other_anatomy_parts_exact(self):
+        from pidgeotto_contours import TARGETS
+        fingerprint=hashlib.sha256()
+        for p in self.model['primitives']:
+            if p['part'] in TARGETS:continue
+            fingerprint.update(json.dumps(p,sort_keys=True,separators=(',',':')).encode())
+        self.assertEqual(fingerprint.hexdigest(),'cd1a16ae2b5ef9ac0c710689d9f9c39d52cfb93a95d1bc9809113280b4af7649')
+
+    def test_refined_contours_reproduce_and_have_smooth_closed_surfaces(self):
+        from pidgeotto_contours import prepare,components,TARGETS
+        from sculpt_test_support import assert_closed_models,assert_model_shading
+        from chikorita_sculpt import unit,cross,sub,dot
+        self.assertEqual(pidgeotto.export_pidgeotto(prepare(self.model)),self.blob)
+        for p in self.model['primitives']:
+            if p['part'] not in TARGETS:continue
+            pieces=components(p);models={str(i):{'primitives':[q]} for i,q in enumerate(pieces)}
+            assert_closed_models(self,models);assert_model_shading(self,models)
+            q=max(pieces,key=lambda q:len(q['indices']))
+            self.assertGreaterEqual(len(set(round(y,6) for y in q['positions'][1::3])),16)
+            pts=[q['positions'][i:i+3] for i in range(0,len(q['positions']),3)]
+            ns=[q['normals'][i:i+3] for i in range(0,len(q['normals']),3)]
+            blended=0
+            for i in range(0,len(q['indices']),3):
+                a,b,c=q['indices'][i:i+3];face=unit(cross(sub(pts[b],pts[a]),sub(pts[c],pts[a])))
+                if min(dot(face,ns[j]) for j in (a,b,c))<.999:blended+=1
+            self.assertGreater(blended,100,p['part'])
 
     def test_migration_original_json_matches_canonical(self):
         path = self.path.with_suffix('.mesh.json')
