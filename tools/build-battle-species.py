@@ -820,15 +820,8 @@ def mystic_birds(n):
    leaf('Long red head streamer',(s*.10,.08,1.05),(s*.12,.42,.72),.065,'red')
   else:leaf('Red crown feather',(0,.01,.63),(s*.08,.12,.78),.045,'red')
 @register('MARILL AZUMARILL',1.02)
-def water_rabbits(n):
- rabbit=n=='AZUMARILL';sph('Blue round body',(0,0,.37),(.30,.24,.33),'blue');sph('White belly',(0,-.213,.29),(.235,.05,.22),'white');eyes(.49,-.222,.13,.028,white=False);mouth(-.249,.39,.065);feet('blue',.20,s=(.11,.13,.07));arms('blue',.36,.29)
- for s in (-1,1):
-  if rabbit:
-   o=sph('Long rabbit ear',(s*.16,0,.86),(.075,.062,.25),'blue');o.rotation_euler[1]=s*.25;sph('Red ear inner',(s*.18,-.05,.89),(.039,.018,.17),'red')
-  else:sph('Round mouse ear',(s*.24,0,.67),(.12,.055,.12),'blue');sph('Red ear inner',(s*.24,-.05,.67),(.078,.015,.077),'red')
- tube('Zigzag black tail',[(.23,.12,.32),(.42,.18,.29),(.37,.23,.47),(.56,.25,.50)],.016,'ink');sph('Tail buoy',(.60,.25,.54),(.10,.10,.10),'blue')
- if rabbit:
-  for x,z,r in [(-.18,.38,.027),(-.07,.43,.035),(.09,.42,.029),(.21,.35,.02)]:sph('White belly spots',(x,-.224,z),(r,.011,r),'white')
+def sculpted_water_rabbits(n):
+ raise RuntimeError('The water rabbits use their dedicated papercraft recipe before Blender batching')
 @register('SUNKERN SUNFLORA BELLOSSOM',.95)
 def flowers(n):
  if n=='SUNKERN':
@@ -1609,6 +1602,13 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('marill','azumarill'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from aqua_rabbit_sculpt import sculpture as aqua_rabbit_sculpture
+   (OUT/(species+'.mesh.json')).write_text(json.dumps(aqua_rabbit_sculpture(species),separators=(',',':')))
+   names.remove(species)
+   print(species+': distinct papercraft silhouettes and welded belly',flush=True)
  for species in ('croconaw','feraligatr'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))

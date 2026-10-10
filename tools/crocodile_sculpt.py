@@ -2,7 +2,7 @@
 """Original Croconaw/Feraligatr anatomical recipes, canonical JSON only."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,tube,ellipsoid,translate,fitted_patch,subdivided_part
+from sculpt_geometry import part,loft,tube,ellipsoid,translate,fitted_patch,subdivided_part,crease_normals,curved_profiles
 from abra_sculpt import surface,polygon_caps
 from skin_glb import COORDINATES
 HEIGHT=1.30
@@ -69,7 +69,7 @@ def sculpture(species):
     adult=species=='feraligatr';p=[]
     profiles=([(.15,.115,.136,-.015),(.255,.233,.197,-.020),(.405,.264,.210,-.032),(.535,.221,.185,-.031),(.658,.274,.185,-.028),(.774,.323,.191,-.020),(.839,.244,.174,-.015),(.905,.137,.136,.002),(.973,.197,.158,.016),(1.053,.225,.173,.017),(1.117,.201,.149,.003),(1.139,.107,.099,-.010),(1.145,.016,.022,-.016)] if adult else
               [(.117,.11,.123,-.008),(.235,.266,.217,-.024),(.397,.305,.253,-.032),(.568,.278,.229,-.023),(.697,.220,.186,-.012),(.770,.155,.140,.017),(.840,.247,.188,.017),(.976,.253,.188,.012),(1.056,.206,.151,-.006),(1.087,.105,.095,-.009),(1.093,.020,.023,-.013)])
-    body=loft('Body / continuous crocodile pelvis belly chest neck and skull',BLUE,profiles,20);p.append(body);surf=surface(body)
+    body=loft('Body / continuous crocodile pelvis belly chest neck and skull',BLUE,curved_profiles(profiles),40);p.append(body);surf=surface(body)
     if adult:
         upper=[(-.02,.177,.901,1.077),(.126,.246,.889,1.054),(.283,.226,.895,1.006),(.425,.156,.903,.968),(.445,.104,.915,.948)]
         lower=[(.031,.12,.793,.839),(.185,.207,.758,.808),(.328,.187,.773,.822),(.431,.117,.805,.844),(.444,.066,.819,.840)]
@@ -142,15 +142,8 @@ def sculpture(species):
         p.append(fin('Crest / three-point cranial sail',[(1.060,.060),(1.161,.128),(1.102,.011),(1.375,-.038),(1.173,-.105),(1.301,-.190),(1.000,-.168)],.042))
         p.append(fin('Crest / dorsal sail',[(.650,-.164),(.844,-.248),(.704,-.332),(.481,-.239)],.039))
         p.append(fin('Crest / tail diamond',[(.303,-.547),(.449,-.578),(.471,-.632),(.382,-.676)],.028))
-    # Paper panels keep their face normals. Geometry supplies the soft contour;
-    # interpolating across every fold would make the same forms read as plastic.
-    panels=[]
-    for q in p:
-        points=[tuple(q['positions'][i:i+3]) for i in range(0,len(q['positions']),3)]
-        faces=[tuple(q['indices'][i:i+3]) for i in range(0,len(q['indices']),3)]
-        panel=part(q['part'],(1.,1.,1.),points,faces)
-        panel['base_color']=q['base_color'];panels.append(panel)
-    p=panels
+    # Broad organic surfaces blend their normals; authored crest folds stay crisp.
+    p=[q if q['part'].startswith('Crest /') else crease_normals(q) for q in p]
     floor=min(v for q in p for v in q['positions'][1::3]);height=max(v for q in p for v in q['positions'][1::3])-floor
     for q in p:
         q['positions']=[round((v-(floor if i%3==1 else 0.))*HEIGHT/height,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

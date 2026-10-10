@@ -66,9 +66,15 @@ def render(parts,size=240,yaw=.65,pitch=.12,fit=None):
             v=((c[1]-a[1])*(xx-c[0])+(a[0]-c[0])*(yy-c[1]))/den
             w=1-u-v;z=u*a[2]+v*b[2]+w*c[2];sl=np.s_[low[1]:high[1]+1,low[0]:high[0]+1]
             mask=(u>=0)&(v>=0)&(w>=0)&(z>depth[sl]);depth[sl][mask]=z[mask]
-            color=np.clip(base*(.38+.62*max(0,normal@light)),0,1)
+            # Interpolate the authored corner normals as the GPU does. A
+            # triangle-average light made smooth meshes look artificially flat.
+            corner_normals=norms[ids]
+            field=u[...,None]*corner_normals[0]+v[...,None]*corner_normals[1]+w[...,None]*corner_normals[2]
+            field/=np.maximum(np.linalg.norm(field,axis=2,keepdims=True),1e-12)
+            diffuse=np.maximum(0,field@light)
+            color=np.clip(base*(.38+.62*diffuse[...,None]),0,1)
             srgb=np.where(color<=.0031308,12.92*color,1.055*color**(1/2.4)-.055)
-            rgb[sl][mask]=(srgb*255).astype(np.uint8)
+            rgb[sl][mask]=(srgb[mask]*255).astype(np.uint8)
     return Image.fromarray(rgb)
 
 

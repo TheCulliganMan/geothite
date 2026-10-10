@@ -12,15 +12,21 @@ class CrocodileTests(unittest.TestCase):
     def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('croconaw','feraligatr')}
     def test_closed_connected_anatomy(self):assert_closed_models(self,self.models)
     def test_actual_stored_triangle_shading(self):assert_model_shading(self,self.models)
-    def test_paper_panels_keep_real_face_normals(self):
+    def test_curved_skin_blends_normals_but_crests_keep_their_folds(self):
         for n,m in self.models.items():
-            for p in m['primitives']:
+            body=next(p for p in m['primitives'] if p['part'].startswith('Body /'))
+            blended=0
+            for p in [body]+[q for q in m['primitives'] if q['part'].startswith('Crest /')]:
                 pts=[p['positions'][i:i+3] for i in range(0,len(p['positions']),3)]
-                norms=[p['normals'][i:i+3] for i in range(0,len(p['normals']),3)]
+                ns=[p['normals'][i:i+3] for i in range(0,len(p['normals']),3)]
                 for i in range(0,len(p['indices']),3):
                     a,b,c=p['indices'][i:i+3]
                     face=unit(cross(sub(pts[b],pts[a]),sub(pts[c],pts[a])))
-                    for j in (a,b,c):self.assertGreater(dot(face,norms[j]),.99999,(n,p['part'],i))
+                    if p is body:
+                        if min(dot(face,ns[j]) for j in (a,b,c))<.999:blended+=1
+                    else:
+                        for j in (a,b,c):self.assertGreater(dot(face,ns[j]),.99999,(n,p['part'],i))
+            self.assertGreater(blended,100,n)
     def test_recipe_height_and_ground(self):
         for n,m in self.models.items():
             self.assertEqual(m,sculpture(n));names=[p['part'] for p in m['primitives']]

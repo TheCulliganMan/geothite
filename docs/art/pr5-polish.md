@@ -8,10 +8,11 @@ scenery variants and non-Pokémon props, not 654 distinct Pokémon.
 
 ## Papercraft direction
 
-The requested finish is papercraft. Silhouettes should flow through shaped,
-chamfered contours, while deliberate planar faces and sharp folds retain the
-paper construction. Avoid cubic jaws, disconnected primitive anatomy, dense
-incidental triangulation and inflated, uniformly smooth plastic surfaces.
+The requested finish is papercraft with gentle, smooth contours. Blend lighting
+across rounded skin, limbs and facial surfaces; retain crisp normals only at
+intentional folds, crests, rims and seams. The previous all-flat panel treatment
+made incidental triangles too visible and was rejected. Shape the silhouette
+with curved contour profiles and finer outlines before smoothing the normals.
 Proportions, connected forms and fitted details matter before shading.
 
 Pokémon XD may supply proportion and pose references through an external local
@@ -364,17 +365,18 @@ islands and a three-point sail; Feraligatr has a wider chest, narrower waist,
 open mouth, upper/lower teeth, pale claws, V belly and fitted chamfered armor.
 Source heights remain 1.30 units with planted feet and pack-derived runtime size.
 
-The papercraft pass uses one bounded polygon subdivision on the jaw cages to
-soften their boxy contours. Sharp crests and fitted armor retain their authored
-folds. Face normals across every panel preserve the paper finish, including the
-body and limbs; the initial uniformly smooth torso was rejected during native
-review. No downloaded model or texture has been integrated.
+The papercraft pass uses bounded polygon subdivision on the jaw cages to
+soften their boxy contours. The initial all-flat panel treatment was rejected by
+the user. Body profiles now use monotone cubic contours and 40-point outlines;
+connected faces blend their area-weighted corner normals below a 40-degree
+crease angle. Sharp crests retain authored normals and armor keeps its fitted
+shape. No downloaded model or texture has been integrated.
 
 `tools/crocodile_sculpt.py` is the reproducible authoring recipe; the generic
 water-evolution recipe is removed and the batch builder delegates here. There
-are 49/80 closed parts and 6,500/7,004 triangles respectively. Six stored-model
+are 49/80 closed parts and 8,540/9,444 triangles respectively. Six stored-model
 checks cover reproduction, oriented connected closure, triangle-consistent
-normals, flat paper panels, anatomy/proportions, height/ground and independent
+normals, smooth skin with sharp crest folds, anatomy/proportions, height/ground and independent
 triangle intersections for fitted face/armor details. All 28 sculpt checks pass.
 
 The rebuilt native Metal battle preview is reviewed for both species. The
@@ -383,3 +385,72 @@ all 959 voxel tests pass (three existing ignored), and 571 canonical JSON files
 validate. Screenshots and logs stay under ignored target/model-polish. This is a
 first family pass toward papercraft; full catalog restyling, browser review and
 articulation remain open. XD references await an external local export.
+
+## Marill and Azumarill papercraft reconstruction
+
+The old pair shared one body, a projecting white belly, stick arms and nearly
+identical faces. Marill now has a compact round silhouette, rounded mouse ears,
+small curved paddles and a left-side buoy tail. Azumarill has a taller tapered
+body, broad paddle arms, one folded rabbit ear, a right-side zigzag buoy tail,
+six fitted white spots and a wavy pale belly boundary. Both have shallow fitted
+oval eyes, white glints, open smiles and pink tongues. The lower body is rounded
+through additional contour rings and meets the planted feet.
+
+The pale and blue body regions are one welded anatomical surface; there is no
+separate inflated belly. Ear linings follow actual stored skin triangles,
+including the bent tip. Their side faces were corrected after inspection found
+inverted lining surfaces. Rounded faces blend their corner normals while deliberate creases remain crisp.
+Monotone cubic body profiles and 40-point outlines smooth the actual silhouette
+as well as its lighting. Original 1.02-unit source heights and pack-derived physical scaling stay
+intact. The geometry is original, authored against the official
+[Marill reference](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/183.png)
+and [Azumarill reference](https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/184.png).
+Downloaded reference images were removed after review.
+
+`tools/aqua_rabbit_sculpt.py` reproduces both canonical meshes; the old generic
+water-rabbit recipe is removed and the batch builder delegates to it. Marill has
+19 parts and 5,648 triangles; Azumarill has 25 parts and 7,448 triangles. Six new
+checks verify oriented closed geometry across welded body material regions,
+actual smooth normals, reproduction/scale/grounding, distinct proportions,
+the shared belly seam and independent stored-triangle intersections for face,
+ear lining and foot attachments. They also check that the tail cord meets its
+buoy. All 34 family sculpt checks pass, plus three shared contour/crease checks and
+one review-rasterizer regression. The exact-species validator passes on the
+explicit four-species rounded subset: 31,080 triangles and 22,252 vertices. Its
+authoring queue count is a scoped-registry artifact, not evidence of missing
+production models.
+
+Neutral front, rear and three-quarter renders are reviewed. Fresh native Metal
+battle captures of all four rounded species are reviewed at 1024×768 using the
+rebuilt executable and the actual external pack. The expanded 14-species
+production controller preview test passes. All 959 voxel tests pass, with three
+existing ignored checks, and all 571 canonical JSON files validate. Capture/log
+output stays ignored under target/model-polish. The wider catalog,
+articulation, attack motion and browser GPU review remain open. The same native
+captures show coarse Pidgeotto body facets and tree canopies that still need
+work; the rounded four are not evidence that the whole scene is polished.
+
+## Smooth contour and review contracts
+
+`curved_profiles` in `tools/sculpt_geometry.py` keeps authored profile knots
+and bounds while adding monotone cubic contour samples. `crease_normals` changes
+only corner normals/index sharing, preserving the exact triangle positions. It
+smooths through connected edges below 40 degrees and keeps sharper edges split;
+material regions are split afterward to avoid artificial shading seams.
+Three checks verify curved profiles/bounds, exact triangle preservation, crisp
+cube edges and smooth tube sides with separate cap normals.
+
+The neutral review rasterizer now interpolates authored corner normals per
+pixel. Its former triangle-average lighting could show facets even on smooth
+source geometry. A raster check requires varying lighting within a triangle
+with differing corner normals and one constant shade on a genuinely flat face.
+This improves model inspection; it still does not establish native/browser GPU
+rendering or finished art quality for unreviewed assets.
+
+```sh
+python3 tools/test_contour_sculpt.py
+python3 tools/test_aqua_rabbit_sculpt.py
+python3 tools/test_crocodile_sculpt.py
+# With the review-only NumPy and Pillow dependencies:
+python3 tools/test_render_model_review.py
+```

@@ -102,3 +102,67 @@ def subdivided_part(name,color,vertices,faces,steps=1,smooth=False):
                 next_faces.append((a,edge_ids[tuple(sorted((a,b)))],face_start+j,edge_ids[tuple(sorted((a,c)))]))
         vertices,faces=new,next_faces
     return part(name,color,vertices,faces,smooth)
+
+
+def curved_profiles(profiles,steps=3):
+    """Monotone cubic contours retain authored knots and avoid radius overshoot."""
+    profiles=list(profiles);ys=[p[0] for p in profiles];columns=[]
+    for axis in range(1,4):
+        values=[p[axis] for p in profiles]
+        slopes=[(b-a)/(ys[i+1]-ys[i]) for i,(a,b) in enumerate(zip(values,values[1:]))]
+        tangents=[slopes[0]]
+        for i in range(1,len(values)-1):
+            a,b=slopes[i-1:i+1];h0=ys[i]-ys[i-1];h1=ys[i+1]-ys[i]
+            tangents.append(0. if a*b<=0 else (3*(h0+h1))/((2*h1+h0)/a+(h1+2*h0)/b))
+        tangents.append(slopes[-1]);columns.append((values,tangents))
+    out=[]
+    for i in range(len(profiles)-1):
+        h=ys[i+1]-ys[i]
+        for j in range(steps):
+            t=j/steps;row=[ys[i]+t*h]
+            for values,tangents in columns:
+                value=(2*t**3-3*t*t+1)*values[i]+(t**3-2*t*t+t)*h*tangents[i]+(-2*t**3+3*t*t)*values[i+1]+(t**3-t*t)*h*tangents[i+1]
+                row.append(max(min(values[i:i+2]),min(max(values[i:i+2]),value)))
+            out.append(tuple(row))
+    return out+[profiles[-1]]
+
+
+def crease_normals(p,degrees=40.):
+    """Smooth connected curved faces, preserving sharp folds and exact geometry.
+
+    Weld only for adjacency; output still splits corners across sharp edges.
+    Material regions should be split after this function to avoid shading seams.
+    """
+    from chikorita_sculpt import f32
+    ps=[tuple(p['positions'][i:i+3]) for i in range(0,len(p['positions']),3)]
+    ts=[tuple(p['indices'][i:i+3]) for i in range(0,len(p['indices']),3)]
+    areas=[cross(sub(ps[b],ps[a]),sub(ps[c],ps[a])) for a,b,c in ts];normals=[unit(n) for n in areas]
+    incident={};edges={}
+    for i,tri in enumerate(ts):
+        coords=[ps[j] for j in tri]
+        for v in coords:incident.setdefault(v,set()).add(i)
+        for a,b in zip(coords,coords[1:]+coords[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append(i)
+    links={v:{} for v in incident};threshold=math.cos(math.radians(degrees))
+    for (a,b),faces in edges.items():
+        if len(faces)!=2:continue
+        i,j=faces
+        if dot(normals[i],normals[j])<threshold:continue
+        for v in (a,b):
+            links[v].setdefault(i,set()).add(j);links[v].setdefault(j,set()).add(i)
+    out=dict(p);out['positions']=[];out['normals']=[];out['indices']=[];lookup={};cache={}
+    for i,tri in enumerate(ts):
+        for old in tri:
+            v=ps[old];key=(v,i)
+            if key not in cache:
+                seen=set();queue=[i]
+                while queue:
+                    j=queue.pop()
+                    if j in seen or dot(normals[i],normals[j])<threshold:continue
+                    seen.add(j);queue.extend(links[v].get(j,set())-seen)
+                n=unit(tuple(sum(areas[j][k] for j in sorted(seen)) for k in range(3)))
+                cache[key]=tuple(f32(c) for c in n)
+            n=cache[key];key=v+n
+            if key not in lookup:
+                lookup[key]=len(out['positions'])//3;out['positions'].extend(v);out['normals'].extend(n)
+            out['indices'].append(lookup[key])
+    return out
