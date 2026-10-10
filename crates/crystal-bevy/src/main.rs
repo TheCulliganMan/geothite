@@ -118,6 +118,7 @@ async fn run_browser() -> Result<()> {
             Some("new-bark") => Some(("NewBarkTown", 13, 6)),
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
             Some("goldenrod") => Some(("GoldenrodCity", 20, 18)),
+            Some("underground") => Some(("GoldenrodUnderground", 3, 18)),
             _ => None,
         };
         if let Some((map_name, tile_x, tile_y)) = preview {

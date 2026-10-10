@@ -23,18 +23,24 @@ static RIGS: OnceLock<BTreeMap<String, Arc<PersonRig>>> = OnceLock::new();
 /// Install before the first actor lookup. GLBs and textures remain external.
 /// JSON: {"version":1,"people":{"skater-male":"BASE64_GLB",…}}.
 /// Unsupported/malformed rigs reject the whole bundle before caches freeze.
+pub fn npc_texture_names() -> Vec<&'static str> { crate::new_bark_actors::npc_texture_names() }
 pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
     struct Bundle {
         version: u32,
         people: BTreeMap<String, String>,
+        #[serde(default)]
+        textures: BTreeMap<String, String>,
     }
-    if json.len() > 32 * 1024 * 1024 {
-        return Err("people bundle exceeds 32 MiB".into());
+    if RIGS.get().is_some() || crate::npc_textures::frozen() {
+        return Err("people sources frozen; restart to refresh".into());
+    }
+    if json.len() > 64 * 1024 * 1024 {
+        return Err("people bundle exceeds 64 MiB".into());
     }
     let b: Bundle = serde_json::from_str(json).map_err(|e| e.to_string())?;
-    if b.version != 1 || b.people.len() > PEOPLE.len() {
+    if b.version != 1 || b.people.len() > PEOPLE.len() || b.textures.len() > 75 {
         return Err("unsupported people bundle".into());
     }
     let mut rigs = BTreeMap::new();
@@ -47,8 +53,18 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
         rigs.insert(name, Arc::new(PersonRig::parse(&bytes)?));
     }
-    RIGS.set(rigs)
-        .map_err(|_| "people sources frozen; restart to refresh".into())
+    let names = npc_texture_names();
+    let mut textures = BTreeMap::new();
+    for (name, encoded) in b.textures {
+        if !names.contains(&name.as_str()) || encoded.len() > MAX_BYTES * 4 / 3 + 4 {
+            return Err("unsupported NPC texture name or size".into());
+        }
+        let bytes = base64::engine::general_purpose::STANDARD.decode(encoded).map_err(|e| e.to_string())?;
+        textures.insert(name, crate::npc_textures::decode(&bytes)?);
+    }
+    // Both payloads have been validated before either cache is published.
+    RIGS.set(rigs).map_err(|_| "people sources frozen; restart to refresh".to_string())?;
+    crate::npc_textures::install(textures)
 }
 
 pub(crate) fn get(name: &str) -> Option<&'static Arc<PersonRig>> {
@@ -90,6 +106,8 @@ pub(crate) struct PersonRig {
     pub nodes: Vec<Transform>,
     pub parents: Vec<Option<usize>>,
     pub skin_nodes: Vec<usize>,
+    pub head_joint: usize,
+    pub hips_joint: usize,
     pub inverse_binds: Vec<Mat4>,
     pub mesh_node: usize,
     pub mesh: SurfaceMeshData,
@@ -225,6 +243,14 @@ impl PersonRig {
         {
             return Err("invalid person skin joints".into());
         }
+        let head_node = g.nodes().find(|n| n.name() == Some("Head"))
+            .ok_or("missing named Head attachment joint")?.index();
+        let head_joint = skin_nodes.iter().position(|&i| i == head_node)
+            .ok_or("Head attachment is not in the skin")?;
+        let hips_node = g.nodes().find(|n| n.name() == Some("Hips"))
+            .ok_or("missing named Hips attachment joint")?.index();
+        let hips_joint = skin_nodes.iter().position(|&i| i == hips_node)
+            .ok_or("Hips attachment is not in the skin")?;
         let inverse_binds: Vec<_> = skin
             .reader(|_| Some(bin))
             .read_inverse_bind_matrices()
@@ -415,6 +441,8 @@ impl PersonRig {
             nodes,
             parents,
             skin_nodes,
+            head_joint,
+            hips_joint,
             inverse_binds,
             mesh_node,
             mesh,

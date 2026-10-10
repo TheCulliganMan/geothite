@@ -678,6 +678,7 @@ pub(super) fn append(
     geometry: &GridGeometry,
     p: &Placement,
     claimed: &mut [bool],
+    world_origin: [i32; 2],
 ) -> bool {
     if p.indices(geometry.width).any(|i| claimed[i]) {
         return false;
@@ -741,12 +742,25 @@ pub(super) fn append(
     for unit in 0..repeats {
         let left = west + (east - west) * unit as f32 / repeats as f32;
         let right = west + (east - west) * (unit + 1) as f32 / repeats as f32;
+        let first = mesh.solid.positions.len();
         model(p.kind).append_fitted(
             &mut mesh.solid,
             [left + inset, right - inset, north, south],
             p.base_pixels * geometry.tile_height / 8.0,
             p.height_pixels * geometry.tile_height / 8.0,
         );
+        if cells[p.row * geometry.width + p.column].source.tileset_id.as_ref() == "gate" {
+            if p.kind == ModelKind::Chair {
+                let block = cells[p.row * geometry.width + p.column].source.metatile_id;
+                let facing = match block { 0x32 => -1.0, 0x35 => 1.0, _ => 0.0 };
+                turn_counter_chair(&mut mesh.solid, first,
+                    [(left + right) * 0.5, (north + south) * 0.5],
+                    [(right - left) * 0.5 - inset, (south - north) * 0.5], facing);
+            }
+            vary_gate_furnishing(&mut mesh.solid, first, p.kind,
+                [world_origin[0] + p.column as i32, world_origin[1] + p.row as i32],
+                [(left + right) * 0.5, (north + south) * 0.5]);
+        }
     }
     if p.kind == ModelKind::CarpetCloth {
         append_live_carpet_art(mesh, geometry, p);
@@ -851,7 +865,7 @@ mod tests {
         let mut mesh = TerrainMeshData::default();
         mesh.authored_cells = vec![None; tiles.len()];
         mesh.footing_heights = vec![0.0; tiles.len()];
-        assert!(append(&mut mesh, &refs, &g, machine, &mut claimed));
+        assert!(append(&mut mesh, &refs, &g, machine, &mut claimed, [0, 0]));
         assert_eq!(claimed.iter().filter(|&&v| v).count(), 16);
         assert_eq!(
             mesh.authored_cells.iter().filter(|v| v.is_some()).count(),
@@ -860,7 +874,7 @@ mod tests {
         assert!(mesh.solid.positions.len() > 100);
         assert_eq!(mesh.textured.quad_count(), 16);
         let size = mesh.solid.positions.len();
-        assert!(!append(&mut mesh, &refs, &g, machine, &mut claimed));
+        assert!(!append(&mut mesh, &refs, &g, machine, &mut claimed, [0, 0]));
         assert_eq!(mesh.solid.positions.len(), size);
         assert!(mesh.footing_heights.iter().all(|&v| v == 0.0));
     }
@@ -964,3 +978,5 @@ include!("interior_surfaces.rs");
 include!("lighthouse_chamber_floor.rs");
 
 include!("bedroom_carpet.rs");
+
+include!("interior_variation.rs");

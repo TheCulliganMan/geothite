@@ -14,14 +14,17 @@ use bevy::{
     },
 };
 use std::{collections::HashMap, sync::Arc};
+use crate::new_bark_actors::character_meshes::CharacterKind;
 
 #[derive(Default)]
-pub(crate) struct PeopleGpu(pub HashMap<&'static str, Gpu>);
+pub(crate) struct PeopleGpu(pub HashMap<(&'static str, CharacterKind), Gpu>);
 pub(crate) struct Gpu {
     mesh: Handle<Mesh>,
     material: Handle<StandardMaterial>,
     remote: Handle<StandardMaterial>,
     binds: Handle<SkinnedMeshInverseBindposes>,
+    head: Option<(Handle<Mesh>, Handle<StandardMaterial>)>,
+    costume: Option<(Handle<Mesh>, Handle<StandardMaterial>)>,
 }
 pub(crate) struct Person {
     pub rig: Arc<PersonRig>,
@@ -34,6 +37,7 @@ impl PeopleGpu {
     pub fn spawn(
         &mut self,
         name: &'static str,
+        kind: CharacterKind,
         rig: Arc<PersonRig>,
         root: Entity,
         remote: bool,
@@ -43,21 +47,26 @@ impl PeopleGpu {
         images: &mut Assets<Image>,
         binds: &mut Assets<SkinnedMeshInverseBindposes>,
     ) -> Person {
-        let gpu = self.0.entry(name).or_insert_with(|| {
+        let gpu = self.0.entry((name, kind)).or_insert_with(|| {
+            let look = crate::npc_appearance::look(kind);
             let mut mesh = rig.mesh.clone().into_mesh();
             mesh.insert_attribute(
                 Mesh::ATTRIBUTE_JOINT_INDEX,
                 VertexAttributeValues::Uint16x4(rig.ids.clone()),
             );
             mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, rig.weights.clone());
+            let painting = crate::npc_textures::get(look.texture_key);
+            let size = painting.map(|p| p.size).unwrap_or(rig.texture_size);
+            let rgba = painting.map(|p| p.rgba.clone()).unwrap_or_else(||
+                crate::npc_appearance::texture(&rig.rgba, rig.texture_size, look));
             let texture = images.add(Image::new(
                 Extent3d {
-                    width: rig.texture_size.0,
-                    height: rig.texture_size.1,
+                    width: size.0,
+                    height: size.1,
                     depth_or_array_layers: 1,
                 },
                 TextureDimension::D2,
-                rig.rgba.clone(),
+                rgba,
                 TextureFormat::Rgba8UnormSrgb,
                 RenderAssetUsages::RENDER_WORLD,
             ));
@@ -79,6 +88,14 @@ impl PeopleGpu {
                 material: materials.add(material),
                 remote: materials.add(ghost),
                 binds: binds.add(SkinnedMeshInverseBindposes::from(rig.inverse_binds.clone())),
+                head: crate::npc_appearance::head_mesh(&rig, look).map(|mesh| (
+                    meshes.add(mesh.into_mesh()), materials.add(StandardMaterial {
+                        perceptual_roughness: 0.96, reflectance: 0.12, cull_mode: None, ..default()
+                    }))),
+                costume: crate::npc_appearance::costume_mesh(&rig, look).map(|mesh| (
+                    meshes.add(mesh.into_mesh()), materials.add(StandardMaterial {
+                        perceptual_roughness: 0.96, reflectance: 0.12, cull_mode: None, ..default()
+                    }))),
             }
         });
         let mut idle = rig.nodes.clone();
@@ -133,6 +150,18 @@ impl PeopleGpu {
             ),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
         ));
+        if let Some((mesh, material)) = &gpu.head {
+            let accessory = commands.spawn((PbrBundle {
+                mesh: mesh.clone(), material: material.clone(), ..default()
+            }, ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+            commands.entity(nodes[rig.skin_nodes[rig.head_joint]]).add_child(accessory);
+        }
+        if let Some((mesh, material)) = &gpu.costume {
+            let accessory = commands.spawn((PbrBundle {
+                mesh: mesh.clone(), material: material.clone(), ..default()
+            }, ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+            commands.entity(nodes[rig.skin_nodes[rig.hips_joint]]).add_child(accessory);
+        }
         Person {
             run: idle.clone(),
             idle,

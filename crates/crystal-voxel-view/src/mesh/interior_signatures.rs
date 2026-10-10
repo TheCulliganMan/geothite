@@ -1398,6 +1398,30 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x11,
         kind: ModelKind::WallClinical,
     },
+    // Source-complete underground chair, including its seat and back.
+    AuthoredInteriorDrawing {
+        tileset: "gate", block: 0x32, origin: [2, 2], size: [2, 2],
+        tiles: &[0x54, 0x55, 0x56, 0x57], ground: 0x01,
+        kind: ModelKind::Chair,
+    },
+    // Source-complete underground chair, including its seat and back.
+    AuthoredInteriorDrawing {
+        tileset: "gate", block: 0x35, origin: [2, 0], size: [2, 2],
+        tiles: &[0x54, 0x55, 0x56, 0x57], ground: 0x01,
+        kind: ModelKind::Chair,
+    },
+    // Source-complete underground chair, including its seat and back.
+    AuthoredInteriorDrawing {
+        tileset: "gate", block: 0x35, origin: [2, 2], size: [2, 2],
+        tiles: &[0x54, 0x55, 0x56, 0x57], ground: 0x01,
+        kind: ModelKind::Chair,
+    },
+    // Right-half counterpart of the existing long corridor planter.
+    AuthoredInteriorDrawing {
+        tileset: "gate", block: 0x3a, origin: [2, 0], size: [2, 4],
+        tiles: &[0x38, 0x39, 0x05, 0x06, 0x05, 0x06, 0x15, 0x16],
+        ground: 0x01, kind: ModelKind::LongPlanter,
+    },
     // gate 02 0,0 WallClinical
     AuthoredInteriorDrawing {
         tileset: "gate",
@@ -1608,12 +1632,35 @@ mod signature_tests {
     }
     #[test]
     fn selected_signatures_are_complete_bounded_drawings() {
-        assert_eq!(INTERIOR_DRAWINGS.len(), 140);
+        assert_eq!(INTERIOR_DRAWINGS.len(), 144);
         for d in INTERIOR_DRAWINGS {
             assert_eq!(d.tiles.len(), d.size[0] * d.size[1]);
             assert!(d.origin[0] as usize + d.size[0] <= 4);
             assert!(d.origin[1] as usize + d.size[1] <= 4);
             assert!(d.size.iter().all(|&v| v > 0));
+        }
+    }
+    #[test]
+    fn underground_chairs_and_mirrored_planters_require_complete_unclaimed_art() {
+        for drawing in INTERIOR_DRAWINGS.iter().filter(|d| d.tileset == "gate"
+            && matches!(d.block, 0x32 | 0x35 | 0x3a)) {
+            let (mut tiles, geometry) = source_fixture(drawing);
+            let resolve_signature = |tiles: &[VisualTile], occupied: bool| {
+                let cells = tiles.iter().collect::<Vec<_>>();
+                let mut claimed = vec![false; cells.len()];
+                claimed[0] = occupied;
+                let mut out = Vec::new();
+                append_signature_candidates("GoldenrodUnderground", &cells, &geometry,
+                    &mut claimed, &mut out);
+                out
+            };
+            let out = resolve_signature(&tiles, false);
+            assert_eq!(out.len(), 1);
+            assert_eq!(out[0].kind, drawing.kind);
+            assert_eq!(out[0].indices(geometry.width).count(), drawing.tiles.len());
+            assert!(resolve_signature(&tiles, true).is_empty());
+            tiles[0].source.tile_index ^= 1;
+            assert!(resolve_signature(&tiles, false).is_empty());
         }
     }
     #[test]
@@ -1659,7 +1706,7 @@ mod signature_tests {
             let p = resolve("PlayersHouse2F", &refs, &g, None).into_iter()
                 .find(|p| p.kind == ModelKind::PictureFrame).unwrap();
             let mut mesh = TerrainMeshData::default();
-            assert!(append(&mut mesh, &refs, &g, &p, &mut vec![false; cells.len()]));
+            assert!(append(&mut mesh, &refs, &g, &p, &mut vec![false; cells.len()], [0, 0]));
             assert_eq!(mesh.textured.quad_count(), 8);
             cells[0].source.tile_index = 0xff;
             let refs: Vec<_> = cells.iter().collect();
@@ -1704,7 +1751,7 @@ mod signature_tests {
             .unwrap();
         let mut mesh = TerrainMeshData::default();
         let mut claims = vec![false; tiles.len()];
-        assert!(append(&mut mesh, &refs, &g, &p, &mut claims));
+        assert!(append(&mut mesh, &refs, &g, &p, &mut claims, [0, 0]));
         // Four original-floor quads plus four unaltered live picture quads.
         assert_eq!(mesh.textured.quad_count(), 8);
         assert!(

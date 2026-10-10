@@ -920,3 +920,36 @@ corridor at (3, 18) shows imported player/NPC rigs, but flat chairs and repeated
 planter details still need an environment pass. Captures remain ignored under `target/model-polish` and do
 not establish complete tunnel or catalog polish. The full PR polish goal stays
 open.
+
+## Complete external human routing and painted UVs
+
+All 75 human kinds now select the supplied weighted Kenney rigs, with an
+explicit source identity for proportions, hair, headwear and clothing colors.
+Head accessories follow the actual Head joint, and garment hems follow Hips.
+The original source UVs, weights and authored locomotion clips remain intact.
+This removes the previous 12-kind limit; appearance polish across the entire
+cast remains open. Missing external rigs retain the existing fallback.
+
+Generated papercraft UV paintings are external and ignored. The first installed
+paintings cover Goldenrod Underground's Super Nerd vendors and Granny, plus
+Chris and the elderly Gramps merchant. Rust validates square PNGs, bounds decoding and normalizes upload sizes;
+the optional browser people bundle carries the same textures without embedding
+a second tracked catalog. Four appearance/texture tests pass. Native Metal
+review checks the real tunnel and UV wrapping; remaining cast paintings and
+full costume fitting still need individual review.
+
+Goldenrod Underground also resolves its exact chair and long-planter source
+signatures. World-coordinate furnishing variation changes planter orientation
+and subtle leaf/wood finishes deterministically while retaining source bounds.
+
+The underground chairs use opposed quarter-turns: west-side visitor seats face
+east toward the counter; east-side merchant seats face west. The fit remains
+inside each source footprint. Item balls use their artwork's lower edge instead
+of a human sprite's full-height foot anchor and half the former display scale,
+so edge-of-corridor pickups sit on their authored floor tile. Gameplay positions
+and item pickup scripts remain unchanged.
+
+Validation: 993 renderer tests pass, with six optional external checks excluded
+from the embedded-catalog run. The two supplied-rig ECS tests pass separately.
+Actual Chrome/WASM input checks open Goldenrod Underground, move CHRIS from
+(3,18) south, open production Start and close it without errors.

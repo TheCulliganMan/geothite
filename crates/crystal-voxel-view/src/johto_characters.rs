@@ -66,7 +66,7 @@ const PARENTS: [Option<usize>; JOINT_COUNT] = [
 /// One authored look per resolved human source. Never use object script names,
 /// guessed species, or palette similarity to choose a character.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub(super) enum CharacterKind {
+pub(crate) enum CharacterKind {
     Trainer,
     TrainerFemale,
     Rival,

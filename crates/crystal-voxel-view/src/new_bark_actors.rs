@@ -3,7 +3,7 @@
 #[path = "johto_actor_props.rs"]
 pub(crate) mod actor_props;
 #[path = "johto_characters.rs"]
-mod character_meshes;
+pub(crate) mod character_meshes;
 
 use crate::{
     ActorIdCache, TerrainRevisionCache, VOXEL_RENDER_LAYER, VoxelActorCard, VoxelViewStatus,
@@ -194,28 +194,17 @@ pub(crate) fn has_modeled_player(frame: &VisualWorldFrame) -> bool {
         })
 }
 
-// Explicit identities retain staff/specialist costumes until matching external
-// clothes exist. A missing optional rig keeps its original authored model.
+// Every human source receives an explicit adaptation of the external rig.
+// Missing optional assets still retain the safe authored fallback.
 fn person_name(kind: CharacterKind) -> Option<&'static str> {
-    match kind {
-        CharacterKind::Trainer | CharacterKind::StandingYoungster => Some("skater-male"),
-        CharacterKind::Youngster => Some("human-male"),
-        CharacterKind::TrainerFemale | CharacterKind::Lass => Some("skater-female"),
-        CharacterKind::Teacher
-        | CharacterKind::Beauty
-        | CharacterKind::CooltrainerF
-        | CharacterKind::Mom
-        | CharacterKind::PokefanF => Some("human-female"),
-        CharacterKind::CooltrainerM | CharacterKind::PokefanM => Some("human-male"),
-        _ => None,
-    }
+    Some(crate::npc_appearance::look(kind).base)
 }
 fn person_height(kind: CharacterKind) -> f32 {
-    match kind {
-        CharacterKind::Youngster | CharacterKind::StandingYoungster | CharacterKind::Lass => 1.05,
-        CharacterKind::Trainer | CharacterKind::TrainerFemale => 1.20,
-        _ => 1.38,
-    }
+    crate::npc_appearance::look(kind).height
+}
+
+pub(crate) fn npc_texture_names() -> Vec<&'static str> {
+    SOURCE_KINDS.iter().map(|&(name, _)| name).chain(std::iter::once("outdoorsman")).collect()
 }
 
 fn character_kind(actor: &VisualActor) -> Option<CharacterKind> {
@@ -254,6 +243,16 @@ fn model_transform(actor: &VisualActor, height: f32, yaw: f32, scale: f32) -> Tr
     Transform::from_translation(visual_point_to_voxel(actor_foot(actor), height + 0.04))
         .with_rotation(Quat::from_rotation_y(yaw))
         .with_scale(Vec3::splat(scale))
+}
+
+fn prop_foot(actor: &VisualActor, kind: actor_props::PropKind) -> Vec2 {
+    // The ball occupies the middle eight pixels of its sixteen-pixel sprite.
+    // Its lower edge sits inside the gameplay tile, unlike a person's feet.
+    if kind == actor_props::PropKind::PokeBall {
+        actor.center - Vec2::new(0.0, actor.size.y * 0.25)
+    } else {
+        actor_foot(actor)
+    }
 }
 
 fn world_foot(frame: &VisualWorldFrame, actor: &VisualActor) -> Vec2 {
@@ -604,7 +603,7 @@ pub(crate) fn sync(
         };
         let kind = prop_kind(actor).expect("filtered resolved prop");
         let Some(height) =
-            resolved_footing_height(&frame, actor_foot(actor), &footing.footing_heights)
+            resolved_footing_height(&frame, prop_foot(actor, kind), &footing.footing_heights)
         else {
             if let Some(instance) = state.props.remove(&actor.id) {
                 commands.entity(instance.entity).despawn_recursive();
@@ -619,7 +618,10 @@ pub(crate) fn sync(
             .facing
             .filter(|f| f.is_finite() && f.length_squared() > 0.5)
             .unwrap_or(Vec2::NEG_Y);
-        let transform = model_transform(actor, height, facing_yaw(facing), scale);
+        let prop_scale = if kind == actor_props::PropKind::PokeBall { scale * 0.5 } else { scale };
+        let transform = Transform::from_translation(visual_point_to_voxel(prop_foot(actor, kind), height + 0.04))
+            .with_rotation(Quat::from_rotation_y(facing_yaw(facing)))
+            .with_scale(Vec3::splat(prop_scale));
         // A variable sprite/decor/species can change without a new object ID.
         // Replace its cached instance rather than leaving yesterday's mesh.
         if state
@@ -706,6 +708,7 @@ pub(crate) fn sync(
                         instance.motion.yaw,
                         scale * person_height(kind) / person.rig.height,
                     );
+                    transform.scale.x *= crate::npc_appearance::look(kind).width;
                 }
                 person.update(
                     instance.motion.phase,
@@ -753,8 +756,14 @@ pub(crate) fn sync(
                         ModeledActor,
                     ))
                     .id();
+                commands.entity(entity).insert(model_transform(actor, height, motion.yaw,
+                    scale * person_height(kind) / imported.height).with_scale(Vec3::new(
+                        scale * person_height(kind) / imported.height * crate::npc_appearance::look(kind).width,
+                        scale * person_height(kind) / imported.height,
+                        scale * person_height(kind) / imported.height)));
                 let person = state.people_gpu.spawn(
                     name,
+                    kind,
                     imported,
                     entity,
                     matches!(actor.id, VisualActorId::RemotePlayer(_)),
@@ -922,6 +931,34 @@ mod tests {
             .init_resource::<Assets<bevy::render::mesh::skinning::SkinnedMeshInverseBindposes>>()
             .add_systems(Update, sync);
         app
+    }
+    #[test]
+    fn every_human_kind_has_an_explicit_external_appearance() {
+        assert_eq!(KINDS.len(), 75);
+        for kind in KINDS {
+            assert!(matches!(person_name(kind), Some("human-male" | "human-female")));
+            assert!(person_height(kind) > 0.8 && person_height(kind) < 1.6);
+        }
+    }
+    #[test]
+    #[ignore = "run separately with the locally supplied converted Kenney rigs"]
+    fn external_people_cover_every_resolved_human_source_without_old_rigs() {
+        use bevy::render::mesh::skinning::SkinnedMesh;
+        let mut app = actor_test_app();
+        for &(source, expected_kind) in SOURCE_KINDS.iter() {
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = source.into();
+            let frame = app.world().resource::<VisualWorldFrame>().clone();
+            app.update();
+            let instance = &app.world().resource::<ModeledActors>().instances[&VisualActorId::Player];
+            assert_eq!(instance.kind, expected_kind);
+            assert!(instance.person.is_some(), "old rig survived for {source}");
+            assert_eq!(app.world().resource::<VisualWorldFrame>().actors[0].center, frame.actors[0].center);
+            assert_eq!(app.world_mut().query::<&SkinnedMesh>().iter(app.world()).count(), 1);
+        }
+        assert_eq!(app.world().resource::<ModeledActors>().people_gpu.0.len(), SOURCE_KINDS.len());
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.clear();
+        app.update();
+        assert_eq!(app.world_mut().query_filtered::<Entity, With<ModeledActor>>().iter(app.world()).count(), 0);
     }
     #[test]
     #[ignore = "run separately with the locally supplied converted Kenney rigs"]
@@ -1145,6 +1182,23 @@ mod tests {
         let transform = model_transform(&actor, 2.0, facing_yaw(Vec2::X), 16.0);
         assert_eq!(transform.translation, Vec3::new(20.0, 2.04, -22.0));
         assert!((transform.rotation * Vec3::Z - Vec3::X).length() < 0.0001);
+    }
+    #[test]
+    fn item_ball_uses_its_art_bottom_and_smaller_grounded_scale() {
+        let mut app = actor_test_app();
+        let mut ball = actor();
+        ball.id = VisualActorId::Object(19);
+        ball.source_id = "poke_ball".into();
+        let expected_foot = ball.center - Vec2::Y * ball.size.y * 0.25;
+        let frame = app.world().resource::<VisualWorldFrame>().clone();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.push(ball.clone());
+        app.update();
+        let entity = app.world().resource::<ModeledActors>().props[&ball.id].entity;
+        let transform = app.world().get::<Transform>(entity).unwrap();
+        assert_eq!(transform.translation.x, expected_foot.x);
+        assert_eq!(transform.translation.z, -expected_foot.y);
+        assert_eq!(transform.scale, Vec3::splat(frame.tile_size.y));
+        assert_eq!(app.world().resource::<VisualWorldFrame>().actors[1].center, ball.center);
     }
     #[test]
     fn variable_prop_source_replaces_same_id_and_reuses_per_kind_mesh() {

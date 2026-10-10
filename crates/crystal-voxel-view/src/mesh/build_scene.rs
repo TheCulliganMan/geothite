@@ -432,6 +432,7 @@ fn build_terrain_mesh_internal(
             &geometry,
             placement,
             &mut claimed_by_tree,
+            frame.grid_origin.to_array(),
         );
         debug_assert!(appended, "validated interior reservation must append");
     }

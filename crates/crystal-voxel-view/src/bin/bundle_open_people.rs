@@ -32,7 +32,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             base64::engine::general_purpose::STANDARD.encode(bytes),
         );
     }
-    let json = serde_json::to_string(&serde_json::json!({"version":1,"people":people}))?;
+    let mut textures = BTreeMap::new();
+    for name in crystal_voxel_view::npc_texture_names() {
+        let path = root.join(format!("people/npc-textures/{name}.png"));
+        let file = match std::fs::File::open(path) {
+            Ok(f) => f,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
+            Err(e) => return Err(e.into()),
+        };
+        let mut bytes = Vec::new();
+        file.take(4 * 1024 * 1024 + 1).read_to_end(&mut bytes)?;
+        let png = crystal_voxel_view::normalize_npc_texture(&bytes)?;
+        textures.insert(name, base64::engine::general_purpose::STANDARD.encode(png));
+    }
+    let json = serde_json::to_string(&serde_json::json!({"version":1,"people":people,"textures":textures}))?;
     crystal_voxel_view::install_open_people_bundle(&json)?;
     if let Some(parent) = output.parent() {
         std::fs::create_dir_all(parent)?;
