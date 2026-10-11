@@ -14,12 +14,8 @@ for glb in sorted(root.rglob("*.glb")):
     for suffix in (".mesh.json", ".rig.json"):
         if glb.with_suffix(suffix).exists():
             invalid.append(f"{glb.relative_to(root)} duplicates {glb.with_suffix(suffix).name}")
-catalog = root / "johto_characters/catalog.glb"
-if catalog.exists():
-    old_rigs = sorted(catalog.parent.glob("*.rig.json"))
-    library = catalog.parent / "shared.geometry.json"
-    if old_rigs or library.exists():
-        invalid.append("johto_characters/catalog.glb duplicates the old human JSON family")
+retired = root / "johto_characters"
+invalid.extend(p.relative_to(root).as_posix() for p in retired.rglob("*") if p.is_file() and p.suffix in {".glb", ".json"})
 if invalid:
     raise SystemExit("Derived/duplicate canonical asset files: " + ", ".join(invalid))
 print("Verified canonical model layout: no STL, transport wrappers, or same-asset GLB/JSON copies")

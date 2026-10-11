@@ -15,7 +15,7 @@ fn save_browser_checkpoint(runtime: &mut BevyRuntimeShell) -> Result<bool> {
 
 #[cfg(target_arch = "wasm32")]
 fn autosave_browser_progress(mut runtime: ResMut<BevyRuntimeShell>, time: Res<Time>, mut elapsed: Local<f32>) {
-    *elapsed += time.delta_seconds();
+    *elapsed += time.delta_secs();
     if *elapsed < 1.0 { return; }
     *elapsed = 0.0;
     if let Err(error) = save_browser_checkpoint(&mut runtime) {

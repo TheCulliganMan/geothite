@@ -10,22 +10,23 @@ use crate::profile::{CellShape, SolidKind};
 
 pub(crate) const TOWER_FLOOR_TILE: u16 = 0x02;
 
-/// Block `$26` contains two independent 16x16 statues in its lower half.
-/// Return coordinates local to each two-by-two drawing so the mesher does not
-/// fuse the pair into one four-tile-wide facade.
-pub(crate) fn statue_local(source: &VisualTileSource) -> Option<(u8, u8)> {
-    if source.tileset_id.as_ref() != "tower" || source.metatile_id != 0x26 || source.subtile_row < 2
-    {
-        return None;
-    }
-    let local_column = source.subtile_column % 2;
-    let local_row = source.subtile_row - 2;
-    let expected = if source.subtile_column < 2 {
-        [[0x07, 0x08], [0x17, 0x18]]
-    } else {
-        [[0x08, 0x09], [0x18, 0x19]]
-    }[usize::from(local_row)][usize::from(local_column)];
-    (source.tile_index == expected).then_some((local_column, local_row))
+/// Block 26's lower half is the entrance carpet, including both warp cells.
+pub(crate) fn entrance_carpet_source(s:&VisualTileSource)->bool {
+    if s.tileset_id.as_ref()!="tower" || s.metatile_id!=0x26 || s.subtile_column>=4 || !(2..4).contains(&s.subtile_row) {return false;}
+    s.tile_index==[[0x07,0x08,0x08,0x09],[0x17,0x18,0x18,0x19]]
+        [(s.subtile_row-2)as usize][s.subtile_column as usize]
+}
+
+pub(crate) fn sprout_statue_local(s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if s.tileset_id.as_ref()!="tower" || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    let (offset,head)=match s.metatile_id {
+        0x30=>(0,[0x4a,0x4b]),0x31=>(2,[0x4a,0x4b]),
+        0x2e=>(0,[0x42,0x43]),0x2f=>(2,[0x42,0x43]),_=>return None,
+    };
+    if s.subtile_column<offset || s.subtile_column>=offset+2 {return None;}
+    let x=s.subtile_column-offset;let y=s.subtile_row;
+    (s.tile_index==[head,[0x5a,0x5b],[0x4c,0x5c],[0x36,0x37]][y as usize][x as usize])
+        .then_some((x,y,2,4))
 }
 
 pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
@@ -172,19 +173,17 @@ mod tests {
     }
 
     #[test]
-    fn entrance_statues_are_two_independent_two_by_two_cards() {
-        for (column, tile, local) in [
-            (0, 0x07, (0, 0)),
-            (1, 0x08, (1, 0)),
-            (2, 0x08, (0, 0)),
-            (3, 0x09, (1, 0)),
+    fn entrance_carpet_remains_source_art_and_is_never_a_statue() {
+        for (column, tile) in [
+            (0, 0x07), (1, 0x08), (2, 0x08), (3, 0x09),
         ] {
             let cell = source(0x26, column, 2, tile);
-            assert_eq!(statue_local(&cell), Some(local));
+            assert!(entrance_carpet_source(&cell));
+            assert_eq!(sprout_statue_local(&cell),None);
             assert_eq!(tower_shape(&cell), None);
         }
-        assert_eq!(statue_local(&source(0x26, 0, 3, 0x17)), Some((0, 1)));
-        assert_eq!(statue_local(&source(0x26, 3, 3, 0x19)), Some((1, 1)));
+        assert!(entrance_carpet_source(&source(0x26, 0, 3, 0x17)));
+        assert!(entrance_carpet_source(&source(0x26, 3, 3, 0x19)));
     }
 
     #[test]

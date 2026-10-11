@@ -60,7 +60,7 @@ mod raster_tests {
                 expected[(y * 8 + x) * 4..(y * 8 + x) * 4 + 4]
                     .copy_from_slice(&[shade, shade, shade, 255]);
             }
-            assert_eq!(image.data, expected);
+            assert_eq!(image.data.as_deref().expect("CPU image pixels"), expected.as_slice());
         }
     }
 }

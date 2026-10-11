@@ -488,7 +488,7 @@ fn battle_hp_corner_is_black_in_every_hp_palette() {
         .expect("battle HP graphics");
     for zone in 0..=2 {
         let image = images.get(&tiles[&(0x6c, zone)].handle).unwrap();
-        let opaque: Vec<_> = image.data.chunks_exact(4).filter(|pixel| pixel[3] != 0).collect();
+        let opaque: Vec<_> = image.data.as_ref().expect("CPU image pixels").chunks_exact(4).filter(|pixel| pixel[3] != 0).collect();
         assert!(!opaque.is_empty(), "corner must be visible");
         assert!(opaque.iter().all(|pixel| *pixel == [0, 0, 0, 255]),
             "player HP corner must use black in palette {zone}");
@@ -1684,14 +1684,14 @@ fn beta_send_out_mon1_bgp_keeps_mapped_shade_zero_opaque() {
     let white = battle_battler_bgp_frame(&mut rendered_art, &mut images, &source, 0x00)
         .expect("all-white BGP frame");
     assert_eq!(
-        images.get(&white.handle).unwrap().data,
+        images.get(&white.handle).unwrap().data.as_ref().expect("CPU image pixels").as_slice(),
         [255, 255, 255, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]
     );
 
     let stepped = battle_battler_bgp_frame(&mut rendered_art, &mut images, &source, 0x90)
         .expect("stepped BGP frame");
     assert_eq!(
-        images.get(&stepped.handle).unwrap().data,
+        images.get(&stepped.handle).unwrap().data.as_ref().expect("CPU image pixels").as_slice(),
         [255, 255, 255, 0, 255, 255, 255, 255, 200, 200, 200, 255, 100, 100, 100, 255]
     );
 }
@@ -4153,7 +4153,7 @@ fn battle_trainer_preserves_authored_palette_colors() {
         crate::open_runtime_image(&assets.runtime_assets().join("gfx/trainers/bug_catcher.png"))
             .unwrap()
             .to_rgba8();
-    let rendered = &images.get(&frame.handle).unwrap().data;
+    let rendered = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     for (pixel, actual) in source.pixels().zip(rendered.chunks_exact(4)) {
         if pixel.0[0..3] != [255, 255, 255] {
             assert_eq!(
@@ -4520,7 +4520,7 @@ fn battle_anim_string_yflip_is_only_applied_on_the_enemy_side() {
         .unwrap();
         (
             rendered.offset_y,
-            images.get(&rendered.sprite.handle).unwrap().data.clone(),
+            images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels").clone(),
         )
     };
     assert_eq!(render(false, false), render(false, true));
@@ -4564,7 +4564,7 @@ fn battle_anim_overlapping_oam_entries_keep_the_first_opaque_pixel() {
             &mut images,
         )
         .unwrap();
-        images.get(&result.sprite.handle).unwrap().data.clone()
+        images.get(&result.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels").clone()
     };
     bundle["oam_sets"][&oam]["entries"] = serde_json::json!([first]);
     let expected = render(&bundle);
@@ -5254,7 +5254,7 @@ fn battle_anim_cgb_oam_palette_bits_override_object_definition_and_dmg_selector(
             &mut images,
         )
         .unwrap();
-        images.get(&result.sprite.handle).unwrap().data.clone()
+        images.get(&result.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels").clone()
     };
     // Cartridge palette4 is red; palette2 is gray. Keep raw OAM indices
     // original, and verify only gray obeys BattleAnim_SetOBPals remapping.
@@ -5316,7 +5316,7 @@ fn battle_frontpic_padding_matches_asm_for_every_picture_size() {
         };
         let padded = battle_padded_frontpic(&mut art, &mut images, &frame).unwrap();
         assert_eq!(padded.size, Vec2::splat(56.0));
-        let pixels = &images.get(&padded.handle).unwrap().data;
+        let pixels = &images.get(&padded.handle).unwrap().data.as_ref().expect("CPU image pixels");
         let left = if width == 56 { 0 } else { 8 };
         for y in 0..56 {
             for x in 0..56 {
@@ -5551,9 +5551,9 @@ fn save_live_battle_canvas_for_test(world: &mut World, name: &str) {
 }
 
 fn render_live_battle_canvas_for_test(world: &mut World, name: &str) -> image::RgbaImage {
-    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>),
+    let sprites = world.query_filtered::<(&Sprite, &Transform),
         Or<(With<BattleBattlerMarker>, With<BattleHudMarker>, With<BattleCommandMarker>)>>()
-        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+        .iter(world).map(|(sprite, transform)| (sprite.clone(), *transform))
         .collect::<Vec<_>>();
     let mut lcd = World::new();
     for sprite in sprites { lcd.spawn(sprite); }
@@ -5646,7 +5646,7 @@ fn battle_transition_uses_textured_fe_tiles_and_native_colour_registers() {
     )
     .unwrap();
     let pixel = |images: &Assets<Image>, x: usize, y: usize| -> [u8; 4] {
-        images.get(&handle).unwrap().data[(y * 160 + x) * 4..(y * 160 + x + 1) * 4]
+        images.get(&handle).unwrap().data.as_ref().expect("CPU image pixels")[(y * 160 + x) * 4..(y * 160 + x + 1) * 4]
             .try_into()
             .unwrap()
     };
@@ -5729,7 +5729,7 @@ fn battle_transition_uses_textured_fe_tiles_and_native_colour_registers() {
         &mut images,
     )
     .unwrap();
-    let pixels = &images.get(&priority).unwrap().data;
+    let pixels = &images.get(&priority).unwrap().data.as_ref().expect("CPU image pixels");
     assert_eq!(
         pixels[(1 * 160 + 1) * 4 + 3],
         0,
@@ -5783,7 +5783,7 @@ fn battle_transition_trainer_and_wild_colour_surfaces_render_before_intro() {
         assert_eq!(image.height(), 144);
         assert!(
             image
-                .data
+                .data.as_ref().expect("CPU image pixels")
                 .chunks_exact(4)
                 .any(|p| p[0] != p[1] || p[1] != p[2]),
             "{name} must retain chromatic pixels"
@@ -5886,9 +5886,9 @@ fn catch_tutorial_runs_without_buttons_and_preserves_player_state() {
             let world = app.world_mut();
             assert!(
                 world
-                    .query_filtered::<&Handle<Image>, With<BattleBattlerMarker>>()
+                    .query_filtered::<&Sprite, With<BattleBattlerMarker>>()
                     .iter(world)
-                    .any(|image| image == &dude),
+                    .any(|image| image.image == dude),
                 "keep DUDE visible while throwing"
             );
             save_live_battle_canvas_for_test(app.world_mut(), "tutorial-ball-throw.png");
@@ -6215,7 +6215,7 @@ fn transform_keeps_target_shiny_palette_and_unown_form_after_animation() {
                 if frame.is_none() && target_shiny {
                     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
                         let sprite = images.get(&art.pokemon_cache[&expected].handle).unwrap();
-                        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.clone()).unwrap()
+                        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.as_ref().expect("CPU image pixels").clone()).unwrap()
                             .save(PathBuf::from(directory).join(format!("shiny-transform-{}.png", if player_move { "player" } else { "enemy" }))).unwrap();
                     }
                 }
@@ -6305,7 +6305,7 @@ fn battle_redraws_remove_retired_sprites_from_fullscreen_parents() {
         for (parent, children) in parents.iter(world) {
             child_count += children.len();
             for child in children.iter() {
-                assert_eq!(world.get::<Parent>(*child).map(Parent::get), Some(parent),
+                assert_eq!(world.get::<ChildOf>(child).map(ChildOf::parent), Some(parent),
                     "frame {frame}: parent retained retired battle sprite {child:?}");
             }
         }
@@ -6468,7 +6468,7 @@ fn ball_pack_label_expands_pokemon_token_instead_of_drawing_pack_art() {
     )
     .unwrap();
     assert!(
-        images.get(&original.handle).unwrap().data == images.get(&expected.handle).unwrap().data,
+        images.get(&original.handle).unwrap().data.as_ref().expect("CPU image pixels") == images.get(&expected.handle).unwrap().data.as_ref().expect("CPU image pixels"),
         "the packed # BALL name must render as text, never as a bag icon tile"
     );
 }
@@ -6535,7 +6535,7 @@ fn pokedex_entry_uses_white_space_and_black_font_ink() {
     let shell = route36_battle_shell_for_render_regression();
     let mut images = Assets::<Image>::default();
     let background = load_pokedex_background(&shell.asset_root, 1, &mut images).unwrap();
-    let data = &images.get(&background.handle).unwrap().data;
+    let data = &images.get(&background.handle).unwrap().data.as_ref().expect("CPU image pixels");
     assert_eq!(
         &data[(100 * 160 + 80) * 4..(100 * 160 + 80) * 4 + 4],
         &[255, 255, 255, 255],
@@ -6546,7 +6546,7 @@ fn pokedex_entry_uses_white_space_and_black_font_ink() {
     let ink_pixels = images
         .get(&source.handle)
         .unwrap()
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] == 255)
         .count();
@@ -6563,8 +6563,9 @@ fn pokedex_entry_uses_white_space_and_black_font_ink() {
         3.8,
     );
     queue.apply(&mut world);
-    let handle = world.query::<&Handle<Image>>().single(&world);
-    let pixels = &images.get(handle).unwrap().data;
+    let sprite = world.query::<&Sprite>().single(&world).unwrap();
+    let handle = &sprite.image;
+    let pixels = &images.get(handle).unwrap().data.as_ref().expect("CPU image pixels");
     assert!(ink_pixels > 0);
     assert_eq!(
         pixels
@@ -6950,7 +6951,7 @@ fn battle_anim_substitute_wrappers_preserve_source_art_fallback() {
                     (
                         (rendered.offset_x, rendered.offset_y),
                         rendered.sprite.size,
-                        images.get(&rendered.sprite.handle).unwrap().data.clone(),
+                        images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels").clone(),
                     )
                 };
                 let expected = render(&bare_live);

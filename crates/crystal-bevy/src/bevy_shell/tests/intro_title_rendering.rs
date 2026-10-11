@@ -51,7 +51,7 @@ fn intro_cleanup_waits_on_the_source_white_lcd_surface() {
         &mut images,
     )
     .expect("render CrystalIntro cleanup wait");
-    let data = &images.get(&frame.handle).expect("cleanup image").data;
+    let data = &images.get(&frame.handle).expect("cleanup image").data.as_ref().expect("CPU image pixels");
 
     assert!(
         data.chunks_exact(4).all(|pixel| pixel == [u8::MAX; 4]),
@@ -90,7 +90,7 @@ fn intro_grass_vram_request_changes_tiles_from_exported_resource_table() {
     let first_data = images
         .get(&first.handle)
         .expect("first grass image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
 
     intro.tile_override = visible_intro_indexed_tile_override(&intro, program, 8)
@@ -102,8 +102,8 @@ fn intro_grass_vram_request_changes_tiles_from_exported_resource_table() {
         &mut images,
     )
     .expect("render third grass frame");
-    let third_data = &images.get(&third.handle).expect("third grass image").data;
-    assert_ne!(first_data, *third_data);
+    let third_data = &images.get(&third.handle).expect("third grass image").data.as_ref().expect("CPU image pixels");
+    assert_ne!(&first_data, *third_data);
 }
 
 #[test]
@@ -132,7 +132,7 @@ fn intro_scene16_tilemap_xor_changes_only_the_exported_tile_domain() {
     let first_data = images
         .get(&first.handle)
         .expect("first colored Suicune image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
 
     intro.tilemap_xor_mask = 8;
@@ -146,8 +146,8 @@ fn intro_scene16_tilemap_xor_changes_only_the_exported_tile_domain() {
     let second_data = &images
         .get(&second.handle)
         .expect("second colored Suicune image")
-        .data;
-    assert_ne!(first_data, *second_data);
+        .data.as_ref().expect("CPU image pixels");
+    assert_ne!(&first_data, *second_data);
 }
 
 #[test]
@@ -780,7 +780,7 @@ fn native_title_screen_frame_uses_title_palettes_and_window_layer() {
     let entrance_data = images
         .get(&entrance_frame.handle)
         .expect("title entrance image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     assert_eq!(entrance_frame.size, Vec2::new(160.0, 144.0));
     assert_opaque_nonblack_lcd_pixels(&entrance_data, "title entrance");
@@ -809,7 +809,7 @@ fn native_title_screen_frame_uses_title_palettes_and_window_layer() {
     let main_data = images
         .get(&main_frame.handle)
         .expect("title main image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     assert_ne!(
         entrance_data, main_data,
@@ -834,7 +834,7 @@ fn title_teardown_renders_the_source_cleared_palette_surface() {
     let image = images.get(&frame.handle).expect("teardown image");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .all(|pixel| pixel == [255, 255, 255, 255]),
         "ClearPalettes must expose a fully white LCD surface throughout the timed title teardown"
@@ -970,7 +970,7 @@ fn native_title_preserves_every_suicune_pixel_including_the_head() {
             .insert("hSCX".to_string(), scx);
         let frame = load_title_screen_frame(&runtime_shell.asset_root, &title, &mut images)
             .expect("render title frame");
-        let actual = &images.get(&frame.handle).expect("title image").data;
+        let actual = &images.get(&frame.handle).expect("title image").data.as_ref().expect("CPU image pixels");
         for y in 0..6 * SOURCE_TILE_SIZE {
             for x in 0..8 * SOURCE_TILE_SIZE {
                 let source_pixel = source.get_pixel(x as u32, y as u32);
@@ -1130,13 +1130,13 @@ fn title_main_menu_frame_uses_source_window_layout_without_title_overlay() {
         (18 * SOURCE_TILE_SIZE) as u32
     );
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &[255, 255, 255, 255],
         "MainMenu draws over a white background, not the animated title art"
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| { pixel[3] == 255 && (pixel[0] < 64 || pixel[1] < 64 || pixel[2] < 64) }),
         "main menu frame should include window borders and bitmap glyph pixels"
@@ -1144,7 +1144,7 @@ fn title_main_menu_frame_uses_source_window_layout_without_title_overlay() {
     let time_box_sample =
         ((TITLE_MAIN_MENU_TIME_BOX_Y * SOURCE_TILE_SIZE + 1) * TITLE_SCREEN_WIDTH + 1) * 4;
     assert_eq!(
-        &image.data[time_box_sample..time_box_sample + 4],
+        &image.data.as_ref().expect("CPU image pixels")[time_box_sample..time_box_sample + 4],
         &[255, 255, 255, 255],
         "without a continue save, the TypeScript main menu does not draw the time box"
     );
@@ -1167,7 +1167,7 @@ fn title_main_menu_static_cursor_does_not_move_between_redraws() {
     let still_data = images
         .get(&still.handle)
         .expect("unbobbed image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     title
         .presentation_machine
@@ -1179,7 +1179,7 @@ fn title_main_menu_static_cursor_does_not_move_between_redraws() {
     let redrawn_data = images
         .get(&redrawn.handle)
         .expect("redrawn image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
 
     assert_eq!(
@@ -1204,7 +1204,7 @@ fn title_main_menu_draws_immediately_without_a_host_fade() {
             .expect("render source main menu frame");
     let image = images.get(&frame.handle).expect("main menu image");
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &[255, 255, 255, 255],
         "ASM MainMenu draws its white cleared tilemap immediately"
     );
@@ -1324,7 +1324,7 @@ fn intro_scene_renderer_uses_real_asm_tilemap_art_not_debug_text() {
         18 * SOURCE_TILE_SIZE as u32
     );
     assert!(
-        image.data.chunks_exact(4).any(|pixel| pixel[3] != 0),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|pixel| pixel[3] != 0),
         "intro renderer should produce visible tile pixels"
     );
     assert!(
@@ -1352,7 +1352,7 @@ fn intro_scene_renderer_uses_real_asm_tilemap_art_not_debug_text() {
         .expect("settled intro image asset");
     assert!(
         settled_image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] > 12 || pixel[1] > 12 || pixel[2] > 12),
         "a settled intro scene must contain lit Game Boy pixels"
@@ -1376,7 +1376,7 @@ fn intro_suicune_close_head_uses_its_asm_palette_banks() {
         .expect("render Suicune close-up head frame");
     let image = images.get(&frame.handle).expect("Suicune close-up image");
     let colors = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] != 0)
         .map(|pixel| [pixel[0], pixel[1], pixel[2]])
@@ -1500,7 +1500,7 @@ fn representative_intro_latched_scene_boundaries_match_the_asm_rom_oracle() {
         let frame = frame.expect("checked intro checkpoint frame");
         let image = images.get(&frame.handle).expect("intro checkpoint image");
         let rgb5 = image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .flat_map(|pixel| [pixel[0] >> 3, pixel[1] >> 3, pixel[2] >> 3])
             .collect::<Vec<_>>();
@@ -1549,7 +1549,7 @@ fn intro_scene_renderer_composites_real_oam_sprites_from_bundle() {
     let background_data = images
         .get(&background_frame.handle)
         .expect("background intro image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
 
     let mut with_sprite = background_only.clone();
@@ -1565,7 +1565,7 @@ fn intro_scene_renderer_composites_real_oam_sprites_from_bundle() {
     let sprite_data = &images
         .get(&sprite_frame.handle)
         .expect("sprite intro image")
-        .data;
+        .data.as_ref().expect("CPU image pixels");
 
     assert_eq!(
         background_frame.handle, sprite_frame.handle,
@@ -1670,7 +1670,7 @@ fn intro_scene_renderer_applies_asm_palette_effects() {
     let base_data = images
         .get(&base_frame.handle)
         .expect("base intro image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     assert_eq!(base_data.len(), 160 * 144 * 4);
     assert!(
@@ -1692,7 +1692,7 @@ fn intro_scene_renderer_applies_asm_palette_effects() {
     let faded_data = images
         .get(&faded_frame.handle)
         .expect("faded intro image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     assert!(
         base_data
@@ -1746,7 +1746,7 @@ fn intro_scene_renderer_applies_asm_palette_effects() {
     let cleared_data = &images
         .get(&cleared_frame.handle)
         .expect("cleared intro image")
-        .data;
+        .data.as_ref().expect("CPU image pixels");
     assert!(
         cleared_data
             .chunks_exact(4)
@@ -2070,7 +2070,7 @@ fn credits_first_top_third_lcd_matches_the_asm_rom_oracle() {
         .expect("render first Credits top-third transfer");
     let image = images.get(&frame.handle).expect("Credits image");
     let rgb5 = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .flat_map(|pixel| [pixel[0] >> 3, pixel[1] >> 3, pixel[2] >> 3])
         .collect::<Vec<_>>();
@@ -2095,7 +2095,7 @@ fn credits_first_top_third_lcd_matches_the_asm_rom_oracle() {
         .expect("render first Credits middle-third transfer");
     let image = images.get(&frame.handle).expect("Credits image");
     let rgb5 = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .flat_map(|pixel| [pixel[0] >> 3, pixel[1] >> 3, pixel[2] >> 3])
         .collect::<Vec<_>>();
@@ -2120,7 +2120,7 @@ fn credits_first_top_third_lcd_matches_the_asm_rom_oracle() {
         .expect("render completed first Credits transfer");
     let image = images.get(&frame.handle).expect("Credits image");
     let rgb5 = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .flat_map(|pixel| [pixel[0] >> 3, pixel[1] >> 3, pixel[2] >> 3])
         .collect::<Vec<_>>();
@@ -2164,7 +2164,7 @@ fn credits_accelerated_exit_lcd_matches_the_asm_rom_oracle() {
         .expect("render accelerated Credits exit");
     let image = images.get(&frame.handle).expect("Credits image");
     let rgb5 = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .flat_map(|pixel| [pixel[0] >> 3, pixel[1] >> 3, pixel[2] >> 3])
         .collect::<Vec<_>>();
@@ -2234,7 +2234,7 @@ fn credits_end_starts_source_post_credits_fade_and_return_does_not_stop_it() {
         .expect("Credits ClearBGPalettes image");
     assert!(
         clear_image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .all(|pixel| pixel == [255, 255, 255, 255]),
         "ClearBGPalettes must make every Credits pixel white while its four-frame wait runs"
@@ -2329,7 +2329,7 @@ fn credits_end_clears_wram_but_retains_the_end_pixels_until_exit() {
     for y in 9 * SOURCE_TILE_SIZE..11 * SOURCE_TILE_SIZE {
         for x in 6 * SOURCE_TILE_SIZE..14 * SOURCE_TILE_SIZE {
             let offset = (y * CREDITS_SCREEN_WIDTH + x) * 4;
-            colors.insert(image.data[offset..offset + 4].to_vec());
+            colors.insert(image.data.as_ref().expect("CPU image pixels")[offset..offset + 4].to_vec());
         }
     }
     assert!(
@@ -2419,7 +2419,7 @@ fn credits_frame_renders_real_assets_and_special_font_tiles() {
         CREDITS_SCREEN_HEIGHT as u32
     );
     let unique_colors = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|rgba| rgba[3] != 0)
         .map(|rgba| [rgba[0], rgba[1], rgba[2]])
@@ -2445,7 +2445,7 @@ fn credits_frame_renders_real_assets_and_special_font_tiles() {
         .get(&staged_frame.handle)
         .expect("staged credits image handle");
     let staged_unique_colors = staged_image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|rgba| rgba[3] != 0)
         .map(|rgba| [rgba[0], rgba[1], rgba[2]])

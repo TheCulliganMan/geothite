@@ -1,4 +1,4 @@
-//! Source-complete park fixtures; spray and water remain live atlas surfaces.
+//! Source-complete park fixtures; ordinary pool water remains live.
 use super::*;
 #[path = "park_scenery_source.rs"]
 mod source;
@@ -28,7 +28,7 @@ fn applies(map: &str, object: &Object) -> bool {
             .as_ref()
             .is_none_or(|maps| maps.iter().any(|m| m == map))
 }
-fn profile_owns_source(map: &str, s: &VisualTileSource, document: Option<&Document>) -> bool {
+pub(super) fn profile_owns_source(map: &str, s: &VisualTileSource, document: Option<&Document>) -> bool {
     document.is_some_and(|d| {
         d.objects.iter().any(|o| {
             applies(map, o)
@@ -147,33 +147,24 @@ pub(super) fn append(
             )
         }
     };
-    crate::park_scenery_models::model(p.kind.asset_index()).append_fitted(
-        &mut mesh.solid,
-        bounds,
-        base,
-        rise * scale,
-    );
     if pond {
-        // Preserve the existing grouped cap's exact footprint, atlas coordinates
-        // and top datum. The source image is refreshed by the real runtime;
-        // no animation cadence, source handles or baked pixels enter the kit.
-        let cx = w + 4.0 * g.tile_width;
-        let cz = n + 2.15 * g.tile_height;
-        let uv = |x: f32, z: f32| {
-            [
-                (x - g.origin_x) / (g.width as f32 * g.tile_width),
-                (z - g.origin_z) / (g.height as f32 * g.tile_height),
-            ]
-        };
-        let top = base + 5.0 * scale;
-        let mut fan = vec![([cx, top, cz], uv(cx, cz))];
-        for segment in 0..=24 {
-            let a = -(segment as f32 / 24.0 * std::f32::consts::TAU);
-            let x = cx + a.cos() * 0.74 * g.tile_width;
-            let z = cz + a.sin() * 0.50 * g.tile_height;
-            fan.push(([x, top, z], uv(x, z)));
-        }
-        append_polygon(&mut mesh.textured, &fan, [0., 1., 0.], TEXTURED_SHADE);
+        park_fountain_basin::append(
+            &mut mesh.solid,
+            [(bounds[0] + bounds[1]) * 0.5, (bounds[2] + bounds[3]) * 0.5],
+            [(bounds[1] - bounds[0]) * 0.5, (bounds[3] - bounds[2]) * 0.5],
+            base, base + rise * scale, g.tile_height,
+        );
+        park_fountain_basin::append_spray(
+            &mut mesh.solid,
+            [(bounds[0] + bounds[1]) * 0.5, (bounds[2] + bounds[3]) * 0.5],
+            [(bounds[1] - bounds[0]) * 0.5, (bounds[3] - bounds[2]) * 0.5],
+            base + rise * scale - g.tile_height * 0.125,
+            g.tile_height,
+        );
+    } else {
+        crate::park_scenery_models::model(p.kind.asset_index()).append_fitted(
+            &mut mesh.solid, bounds, base, rise * scale,
+        );
     }
     for i in p.indices(g.width) {
         claimed[i] = true;
@@ -244,7 +235,7 @@ mod tests {
         )
     }
     #[test]
-    fn park_bins_and_complete_live_basins_own_only_the_solid_drawing() {
+    fn park_bins_and_complete_basins_replace_spray_without_claiming_pool_water() {
         for pond in [false, true] {
             let (tiles, g) = fixture(pond);
             let cells: Vec<_> = tiles.iter().collect();
@@ -254,7 +245,7 @@ mod tests {
             let mut mesh = TerrainMeshData::default();
             mesh.authored_cells = vec![None; tiles.len()];
             assert!(append(&mut mesh, &cells, &g, &placements[0], &mut claimed));
-            assert_eq!(claimed.iter().filter(|&&v| v).count(), 4);
+            assert_eq!(claimed.iter().filter(|&&v| v).count(), if pond { 12 } else { 4 });
             assert!(mesh.solid.positions.len() > 100);
             assert!(
                 mesh.solid
@@ -263,11 +254,14 @@ mod tests {
                     .all(|p| p.iter().all(|v| v.is_finite()))
             );
             if pond {
-                // Spray identities remain outside ownership. Water backing is
-                // still -2; the live grouped cap is still -2+5=3 source pixels.
+                // Only the exact complete spray cross gains ownership. Water backing is
+                // still -2; water stays at -2+5=3, beneath the existing
+                // kit's -2+6=4 coping datum.
                 for (i, c) in cells.iter().enumerate() {
-                    if matches!(c.source.tile_index, 0x14 | 0x5f) {
+                    if c.source.tile_index == 0x14 {
                         assert!(!claimed[i]);
+                    } else if c.source.tile_index == 0x5f {
+                        assert!(claimed[i]);
                     }
                 }
                 let ys: std::collections::BTreeSet<_> = mesh
@@ -278,10 +272,12 @@ mod tests {
                     .collect();
                 assert_eq!(
                     ys,
-                    [(-2.0f32).to_bits(), 3.0f32.to_bits()]
+                    [(-2.0f32).to_bits()]
                         .into_iter()
                         .collect()
                 );
+                assert!(mesh.solid.positions.iter().any(|p| p[1] == 4.));
+                assert!(mesh.solid.positions.iter().any(|p| p[1] == 3.));
                 assert!(
                     resolve(
                         "SafariZoneBeta",

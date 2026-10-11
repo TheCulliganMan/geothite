@@ -7,11 +7,11 @@ pub(crate) mod character_meshes;
 
 use crate::{
     ActorIdCache, TerrainRevisionCache, VOXEL_RENDER_LAYER, VoxelActorCard, VoxelViewStatus,
-    actor_foot, resolved_footing_height, visual_point_to_voxel,
+    actor_foot, resolved_footing_height, visual_point_to_voxel, VoxelMaterial,
 };
-use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
+use bevy::light::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
-use bevy::render::view::RenderLayers;
+use bevy::camera::visibility::RenderLayers;
 use character_meshes::*;
 use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame};
 use std::collections::{HashMap, HashSet};
@@ -23,20 +23,11 @@ pub(crate) struct ModeledActor;
 /// One ordinary walking cycle travels this many gameplay tiles. The stance foot
 /// moves backward at exactly the root's speed; there is no timer-driven skating.
 const CYCLE_DISTANCE: f32 = 1.12;
-const STRIDE_REACH: f32 = CYCLE_DISTANCE * 0.25;
 const RUN_CYCLE_DISTANCE: f32 = 2.80;
-const RUN_STRIDE_REACH: f32 = 0.20;
 
 fn cycle_distance(run: f32) -> f32 {
     CYCLE_DISTANCE + (RUN_CYCLE_DISTANCE - CYCLE_DISTANCE) * run
 }
-fn stance_fraction(run: f32) -> f32 {
-    let reach = STRIDE_REACH + (RUN_STRIDE_REACH - STRIDE_REACH) * run;
-    2.0 * reach / cycle_distance(run)
-}
-const LEG_LENGTH: f32 = 0.27;
-const ANKLE_HEIGHT: f32 = 0.12;
-
 #[derive(Clone, Copy, Debug)]
 struct Motion {
     last_world_foot: Vec2,
@@ -152,29 +143,41 @@ impl Motion {
 
 struct Instance {
     entity: Entity,
-    joints: [Entity; JOINT_COUNT],
     kind: CharacterKind,
     motion: Motion,
     idle_offset: f32,
-    person: Option<crate::open_people_skin::Person>,
+    person: crate::open_people_skin::Person,
 }
 
 struct PropInstance {
     entity: Entity,
     kind: actor_props::PropKind,
+    stone: Option<(CaveStoneFinish, u8)>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+enum CaveStoneFinish { Rock, Dark, Frozen }
+
+fn cave_stone_finish(frame: &VisualWorldFrame) -> Option<CaveStoneFinish> {
+    frame.tiles.iter().find_map(|tile| match tile.source.tileset_id.as_ref() {
+        "ice_path" => Some(CaveStoneFinish::Frozen),
+        "dark_cave" => Some(CaveStoneFinish::Dark),
+        "cave" => Some(CaveStoneFinish::Rock),
+        _ => None,
+    })
 }
 
 #[derive(Resource, Default)]
 pub(crate) struct ModeledActors {
     people_gpu: crate::open_people_skin::PeopleGpu,
-    meshes: HashMap<CharacterKind, [Handle<Mesh>; JOINT_COUNT]>,
     material: Option<Handle<StandardMaterial>>,
     remote_material: Option<Handle<StandardMaterial>>,
     shadow_mesh: Option<Handle<Mesh>>,
     shadow_material: Option<Handle<StandardMaterial>>,
     instances: HashMap<VisualActorId, Instance>,
     map_id: String,
-    prop_meshes: HashMap<actor_props::PropKind, Handle<Mesh>>,
+    prop_meshes: HashMap<(actor_props::PropKind, Option<(CaveStoneFinish, u8)>), Handle<Mesh>>,
+    stone_materials: HashMap<CaveStoneFinish, Handle<VoxelMaterial>>,
     props: HashMap<VisualActorId, PropInstance>,
 }
 
@@ -195,9 +198,9 @@ pub(crate) fn has_modeled_player(frame: &VisualWorldFrame) -> bool {
 }
 
 // Every human source receives an explicit adaptation of the external rig.
-// Missing optional assets still retain the safe authored fallback.
-fn person_name(kind: CharacterKind) -> Option<&'static str> {
-    Some(crate::npc_appearance::look(kind).base)
+// Character assets are required; there is no legacy model renderer.
+fn person_name(kind: CharacterKind) -> &'static str {
+    crate::npc_appearance::look(kind).base
 }
 fn person_height(kind: CharacterKind) -> f32 {
     crate::npc_appearance::look(kind).height
@@ -263,228 +266,6 @@ fn world_foot(frame: &VisualWorldFrame, actor: &VisualActor) -> Vec2 {
         )
 }
 
-/// Sagittal ankle target: a linear planted half-cycle, then a smooth lifted
-/// return. Endpoints are continuous, the grounded half has zero vertical motion.
-fn foot_target(phase: f32, weight: f32, run: f32) -> (f32, f32) {
-    let t = phase.rem_euclid(TAU) / TAU;
-    let stance = stance_fraction(run);
-    let reach = STRIDE_REACH + (RUN_STRIDE_REACH - STRIDE_REACH) * run;
-    if t < stance {
-        // 2*reach == cycle_distance*stance: planted foot speed exactly
-        // cancels root translation for walking and the shorter running stance.
-        (reach * (1.0 - 2.0 * t / stance) * weight, ANKLE_HEIGHT)
-    } else {
-        let swing = (t - stance) / (1.0 - stance);
-        let tangent = -2.0 * (1.0 - stance) / stance;
-        let return_z = -1.0
-            + tangent * swing
-            + (6.0 - 3.0 * tangent) * swing * swing
-            + (2.0 * tangent - 4.0) * swing.powi(3);
-        let lift = (PI * swing).sin().powi(2);
-        // Fast heel recovery is still C1 continuous at contact. It keeps the
-        // shorter sprint stance within anatomical reach without scaling legs.
-        let walk_lift = 0.060 * lift;
-        let run_lift = 0.170 * 1.04 * lift / (0.04 + lift);
-        (
-            reach * return_z * weight,
-            ANKLE_HEIGHT + (walk_lift + (run_lift - walk_lift) * run) * weight,
-        )
-    }
-}
-
-/// Two real rotational joints solve each ankle. The shoe counter-rotates so
-/// soles stay level during stance; knees bend forward rather than backwards.
-fn leg_angles(hip_height: f32, ankle_z: f32, ankle_y: f32) -> (f32, f32) {
-    let down = hip_height - ankle_y;
-    let distance = down.hypot(ankle_z).clamp(0.001, LEG_LENGTH * 2.0 - 0.0001);
-    let knee = PI
-        - ((2.0 * LEG_LENGTH * LEG_LENGTH - distance * distance) / (2.0 * LEG_LENGTH * LEG_LENGTH))
-            .clamp(-1.0, 1.0)
-            .acos();
-    let hip = (-ankle_z).atan2(down) - (distance / (2.0 * LEG_LENGTH)).clamp(-1.0, 1.0).acos();
-    (hip, knee)
-}
-
-/// Blend absolute local glTF transforms without touching root placement or meshes.
-fn blend_transform(from: Transform, to: Transform, weight: f32) -> Transform {
-    let weight = weight.clamp(0.0, 1.0);
-    Transform {
-        translation: from.translation.lerp(to.translation, weight),
-        rotation: from.rotation.slerp(to.rotation, weight).normalize(),
-        scale: from.scale.lerp(to.scale, weight),
-    }
-}
-
-fn pose(kind: CharacterKind, motion: &Motion, elapsed: f32) -> [Transform; JOINT_COUNT] {
-    if matches!(kind, CharacterKind::SwimmerGirl | CharacterKind::SwimmerGuy) {
-        return swimming_pose(kind, motion, elapsed);
-    }
-    let model = rig(kind);
-    let bind = model.joints.each_ref().map(|joint| joint.bind);
-    let mut result = bind;
-    let weight = motion.walk_weight.clamp(0.0, 1.0);
-    let run = motion.run_weight.clamp(0.0, 1.0);
-    // This relaxed idle is live, so a stopped source can still breathe/blink.
-    // Locomotion phase never comes from elapsed/render time.
-    result[PELVIS].translation.y -= 0.012;
-    for (side, upper, forearm, hand) in [
-        (-1.0, UPPER_ARM_L, FOREARM_L, HAND_L),
-        (1.0, UPPER_ARM_R, FOREARM_R, HAND_R),
-    ] {
-        result[upper].rotation = Quat::from_euler(EulerRot::XYZ, -0.055, 0.0, side * 0.035);
-        result[forearm].rotation = Quat::from_rotation_x(-0.13);
-        result[hand].rotation = Quat::from_rotation_x(0.045);
-    }
-    if weight > 0.0 {
-        // Both clips share one normalized source-distance phase. Imported TRS
-        // channels are sampled directly into fixed stack arrays; the immutable
-        // rig, channel keys, meshes, and entities are reused for every frame.
-        let phase = motion.phase.rem_euclid(TAU) / TAU;
-        let walk_clip = model.locomotion_clip(false);
-        let run_clip = model.locomotion_clip(true);
-        let walk_pose = walk_clip
-            .sample(&bind, walk_clip.start + phase * walk_clip.duration)
-            .expect("validated walk clip must sample");
-        let run_pose = run_clip
-            .sample(&bind, run_clip.start + phase * run_clip.duration)
-            .expect("validated run clip must sample");
-        for joint in 0..JOINT_COUNT {
-            let moving = blend_transform(walk_pose[joint], run_pose[joint], run);
-            // Ease the crouch more gently than the limb blend on the first
-            // source sample, exactly as the planted-foot gait requires.
-            let blend = if joint == PELVIS {
-                weight * weight
-            } else {
-                weight
-            };
-            result[joint] = blend_transform(result[joint], moving, blend);
-        }
-    }
-    let breath = (elapsed * 2.1).sin() * 0.0025 * (1.0 - weight * 0.65);
-    result[TORSO].translation.y += breath;
-    result[HEAD].rotation = Quat::from_rotation_x((elapsed * 1.4).sin() * 0.008 * (1.0 - weight))
-        * result[HEAD].rotation;
-    for upper in [UPPER_ARM_L, UPPER_ARM_R] {
-        result[upper].rotation = Quat::from_rotation_x(breath * 2.0) * result[upper].rotation;
-    }
-    let blink_t = elapsed.rem_euclid(4.8);
-    result[EYES].scale.y *= if blink_t < 0.145 {
-        1.0 - (blink_t / 0.145 * PI).sin().powi(2) * 0.94
-    } else {
-        1.0
-    };
-    // Authored clips include complete leg rotations for standalone playback.
-    // Final two-bone contact correction makes the blended gait exact even
-    // between keys, during a speed blend, and while easing back to idle.
-    for (offset, thigh, shin, shoe) in [
-        (0.0, THIGH_L, SHIN_L, SHOE_L),
-        (PI, THIGH_R, SHIN_R, SHOE_R),
-    ] {
-        let (z, y) = foot_target(motion.phase + offset, weight, run);
-        let hip_height = result[PELVIS].translation.y + bind[thigh].translation.y;
-        let (hip, knee) = leg_angles(hip_height, z, y);
-        result[thigh].rotation = Quat::from_rotation_x(hip);
-        result[shin].rotation = Quat::from_rotation_x(knee);
-        result[shoe].rotation = Quat::from_rotation_x(-hip - knee);
-    }
-    result
-}
-
-// Water strokes keep their existing live presentation; walking clips must not
-// turn a source swimmer into a person standing on the water surface.
-fn swimming_pose(kind: CharacterKind, motion: &Motion, elapsed: f32) -> [Transform; JOINT_COUNT] {
-    let mut result = rig(kind).joints.each_ref().map(|joint| joint.bind);
-    let w = motion.walk_weight;
-    let phase = motion.phase;
-    let run = motion.run_weight;
-    // Lowering by only a few centimeters gives the planted legs adequate reach.
-    // This moves the hips and upper body, never the floor anchor or planted shoe.
-    // Squared cosine removes the acceleration cusp from abs(cos),
-    // while the extra reach allows a less frantic 1.12-tile cycle.
-    let walk_drop = 0.065 + phase.cos().powi(2) * 0.030;
-    let run_drop = 0.068 + phase.cos().powi(2) * 0.025;
-    let walking_drop = walk_drop + (run_drop - walk_drop) * run;
-    // Ease the crouch into motion quadratically; a linear weight made
-    // the whole body drop abruptly on the first walking sample.
-    let hip_offset = -0.012 - (walking_drop - 0.012) * w * w;
-    result[PELVIS].translation.y += hip_offset;
-    let breath = (elapsed * 2.1).sin() * 0.0025 * (1.0 - w * 0.65);
-    result[TORSO].translation.y += breath;
-    result[TORSO].rotation = Quat::from_euler(
-        EulerRot::XYZ,
-        (0.065 + 0.12 * run) * w,
-        phase.cos() * 0.045 * w,
-        phase.sin() * 0.025 * w,
-    );
-    result[HEAD].rotation = Quat::from_euler(
-        EulerRot::XYZ,
-        -(0.038 + 0.07 * run) * w + (elapsed * 1.4).sin() * 0.008 * (1.0 - w),
-        -phase.cos() * 0.030 * w,
-        -phase.sin() * 0.018 * w,
-    );
-    let blink_t = elapsed.rem_euclid(4.8);
-    let blink = if blink_t < 0.145 {
-        1.0 - (blink_t / 0.145 * PI).sin().powi(2) * 0.94
-    } else {
-        1.0
-    };
-    result[EYES].scale.y = blink;
-    for (side, upper, forearm, hand, thigh, shin, shoe) in [
-        (
-            -1.0,
-            UPPER_ARM_L,
-            FOREARM_L,
-            HAND_L,
-            THIGH_L,
-            SHIN_L,
-            SHOE_L,
-        ),
-        (1.0, UPPER_ARM_R, FOREARM_R, HAND_R, THIGH_R, SHIN_R, SHOE_R),
-    ] {
-        let leg_phase = phase + if side < 0.0 { 0.0 } else { PI };
-        let (z, y) = foot_target(leg_phase, w, run);
-        let (hip, knee) = leg_angles(0.66 + hip_offset, z, y);
-        result[thigh].rotation = Quat::from_rotation_x(hip);
-        result[shin].rotation = Quat::from_rotation_x(knee);
-        result[shoe].rotation = Quat::from_rotation_x(-hip - knee);
-        // Opposing shoulders and elbows give a readable natural walk, including
-        // independent mitten hands. All pivots are real hierarchy transforms.
-        let swing = leg_phase.cos() * (0.48 + 0.12 * run) * w;
-        result[upper].rotation = Quat::from_euler(
-            EulerRot::XYZ,
-            swing - 0.055 + breath * 2.0,
-            0.0,
-            side * 0.035,
-        );
-        result[forearm].rotation =
-            Quat::from_rotation_x(-0.13 - 0.65 * run * w - swing.min(0.0).abs() * 0.28);
-        result[hand].rotation = Quat::from_rotation_x(0.045 + swing * 0.08);
-    }
-    if matches!(kind, CharacterKind::SwimmerGirl | CharacterKind::SwimmerGuy) {
-        // The source is a swimmer in the water, not a walking person balanced
-        // on its surface. Lower only the visual body; the production foot/root
-        // remains fixed and no physics or movement mode is inferred here.
-        result[PELVIS].translation.y -= 0.48;
-        result[TORSO].rotation = Quat::from_rotation_x(0.24);
-        for (side, upper, forearm, thigh, shin) in [
-            (-1.0, UPPER_ARM_L, FOREARM_L, THIGH_L, SHIN_L),
-            (1.0, UPPER_ARM_R, FOREARM_R, THIGH_R, SHIN_R),
-        ] {
-            let stroke = elapsed * 1.7 + side * PI * 0.5;
-            result[upper].rotation = Quat::from_euler(
-                EulerRot::XYZ,
-                -0.64 + stroke.sin() * (0.12 + w * 0.16),
-                0.0,
-                side * 0.48,
-            );
-            result[forearm].rotation = Quat::from_rotation_x(-0.42);
-            result[thigh].rotation = Quat::from_rotation_x(0.24 + stroke.sin() * 0.10);
-            result[shin].rotation = Quat::from_rotation_x(0.25);
-        }
-    }
-    result
-}
-
 fn contact_shadow() -> Mesh {
     let mut data = crate::mesh::SurfaceMeshData::default();
     // Soft opacity falloff is vertex-color geometry, independent of unsupported
@@ -515,18 +296,19 @@ pub(crate) fn sync(
     mut state: ResMut<ModeledActors>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut stone_materials: ResMut<Assets<VoxelMaterial>>,
     mut images: ResMut<Assets<Image>>,
-    mut binds: ResMut<Assets<bevy::render::mesh::skinning::SkinnedMeshInverseBindposes>>,
+    mut binds: ResMut<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>,
     mut card_visibility: Query<&mut Visibility, (With<VoxelActorCard>, Without<ModeledActor>)>,
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
 ) {
     let enabled = frame.active && status.active && enabled_map(&frame.map_id);
     if !enabled || state.map_id != frame.map_id.as_ref() {
         for (_, instance) in state.instances.drain() {
-            commands.entity(instance.entity).despawn_recursive();
+            commands.entity(instance.entity).despawn();
         }
         for (_, instance) in state.props.drain() {
-            commands.entity(instance.entity).despawn_recursive();
+            commands.entity(instance.entity).despawn();
         }
         state.map_id = frame.map_id.to_string();
         if !enabled {
@@ -571,7 +353,7 @@ pub(crate) fn sync(
         .collect();
     for id in stale {
         if let Some(instance) = state.instances.remove(&id) {
-            commands.entity(instance.entity).despawn_recursive();
+            commands.entity(instance.entity).despawn();
         }
     }
     let visible_props: HashSet<_> = frame
@@ -588,7 +370,7 @@ pub(crate) fn sync(
         .collect();
     for id in stale_props {
         if let Some(instance) = state.props.remove(&id) {
-            commands.entity(instance.entity).despawn_recursive();
+            commands.entity(instance.entity).despawn();
         }
     }
     for actor in frame
@@ -602,11 +384,28 @@ pub(crate) fn sync(
             material.clone()
         };
         let kind = prop_kind(actor).expect("filtered resolved prop");
+        let stone = if matches!(actor.id, VisualActorId::Object(_))
+            && matches!(kind, actor_props::PropKind::Boulder | actor_props::PropKind::Rock) {
+            cave_stone_finish(&frame).map(|finish| {
+                let variant = match actor.id { VisualActorId::Object(id) => (id%4) as u8, _=>0 };
+                (finish, variant)
+            })
+        } else { None };
+        let cave_material = stone.map(|(finish,_)| {
+            state.stone_materials.entry(finish).or_insert_with(|| {
+                let texture = images.add(crate::painted_stone::movable_bedrock_image(finish==CaveStoneFinish::Frozen));
+                // The rock mesh already contains authored face shading. Use
+                // the same real-light energy response as the cave terrain,
+                // rather than adding a second PBR shade that blacks out faces.
+                stone_materials.add(crate::voxel_material(StandardMaterial { base_color: Color::WHITE, base_color_texture: Some(texture),
+                    perceptual_roughness: 0.94, reflectance: 0.10, ..default() }))
+            }).clone()
+        });
         let Some(height) =
             resolved_footing_height(&frame, prop_foot(actor, kind), &footing.footing_heights)
         else {
             if let Some(instance) = state.props.remove(&actor.id) {
-                commands.entity(instance.entity).despawn_recursive();
+                commands.entity(instance.entity).despawn();
             }
             continue;
         };
@@ -627,10 +426,10 @@ pub(crate) fn sync(
         if state
             .props
             .get(&actor.id)
-            .is_some_and(|instance| instance.kind != kind)
+            .is_some_and(|instance| instance.kind != kind || instance.stone != stone)
         {
             let old = state.props.remove(&actor.id).unwrap();
-            commands.entity(old.entity).despawn_recursive();
+            commands.entity(old.entity).despawn();
         }
         if let Some(instance) = state.props.get(&actor.id) {
             if let Ok(mut current) = transforms.get_mut(instance.entity) {
@@ -639,22 +438,33 @@ pub(crate) fn sync(
         } else {
             let mesh = state
                 .prop_meshes
-                .entry(kind)
-                .or_insert_with(|| meshes.add(actor_props::mesh(kind).into_mesh()))
+                .entry((kind,stone))
+                .or_insert_with(|| meshes.add(if let Some((finish,variant))=stone {
+                    let mut data=crate::mesh::movable_cave_stone(finish==CaveStoneFinish::Frozen,
+                        finish==CaveStoneFinish::Dark, variant);
+                    // Smashable rocks retain their smaller authored extent.
+                    if kind==actor_props::PropKind::Rock {
+                        for p in &mut data.positions {
+                            *p=(Vec3::from_array(*p)*(0.43/0.64)).to_array();
+                        }
+                    }
+                    data.into_mesh()
+                } else { actor_props::mesh(kind).into_mesh() }))
                 .clone();
-            let entity = commands
+            let entity = if let Some(material) = cave_material {
+                commands.spawn(((Mesh3d(mesh),
+MeshMaterial3d(material),
+transform,), ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id()
+            } else { commands
                 .spawn((
-                    PbrBundle {
-                        mesh,
-                        material: material.clone(),
-                        transform,
-                        ..default()
-                    },
+                    (Mesh3d(mesh),
+MeshMaterial3d(material.clone()),
+transform,),
                     ModeledActor,
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ))
-                .id();
-            state.props.insert(actor.id, PropInstance { entity, kind });
+                .id() };
+            state.props.insert(actor.id, PropInstance { entity, kind, stone });
         }
         if let Some(entity) = cards.entities.get(&actor.id)
             && let Ok(mut visibility) = card_visibility.get_mut(*entity)
@@ -663,20 +473,22 @@ pub(crate) fn sync(
         }
     }
     for actor in &frame.actors {
-        let material = if matches!(actor.id, VisualActorId::RemotePlayer(_)) {
-            remote_material.clone()
-        } else {
-            material.clone()
-        };
         let Some(kind) = character_kind(actor) else {
             continue;
         };
+        // Human sprites never substitute for the required 3D character,
+        // including a frame waiting for valid ground support.
+        if let Some(entity) = cards.entities.get(&actor.id)
+            && let Ok(mut visibility) = card_visibility.get_mut(*entity)
+        {
+            *visibility = Visibility::Hidden;
+        }
         let Some(height) =
             resolved_footing_height(&frame, actor_foot(actor), &footing.footing_heights)
         else {
-            // No sampled support: keep the normal card rather than a stale rig.
+            // Wait for valid support; neither a stale rig nor an old sprite substitutes.
             if let Some(instance) = state.instances.remove(&actor.id) {
-                commands.entity(instance.entity).despawn_recursive();
+                commands.entity(instance.entity).despawn();
             }
             continue;
         };
@@ -691,16 +503,18 @@ pub(crate) fn sync(
             .is_some_and(|instance| instance.kind != kind)
         {
             let old = state.instances.remove(&actor.id).unwrap();
-            commands.entity(old.entity).despawn_recursive();
+            commands.entity(old.entity).despawn();
         }
         if let Some(instance) = state.instances.get_mut(&actor.id) {
             instance
                 .motion
-                .advance(world_foot, actor.facing, scale, time.delta_seconds());
+                .advance(world_foot, actor.facing, scale, time.delta_secs());
             if let Ok(mut transform) = transforms.get_mut(instance.entity) {
                 *transform = model_transform(actor, height, instance.motion.yaw, scale);
             }
-            if let Some(person) = &mut instance.person {
+            {
+                let person = &mut instance.person;
+                person.bicycle = actor.source_id.ends_with("_bike");
                 if let Ok(mut transform) = transforms.get_mut(instance.entity) {
                     *transform = model_transform(
                         actor,
@@ -713,7 +527,7 @@ pub(crate) fn sync(
                 person.update(
                     instance.motion.phase,
                     instance.motion.walk_weight,
-                    time.elapsed_seconds() + instance.idle_offset,
+                    time.elapsed_secs() + instance.idle_offset,
                     &mut transforms,
                 );
                 if let Some(entity) = cards.entities.get(&actor.id)
@@ -723,19 +537,11 @@ pub(crate) fn sync(
                 }
                 continue;
             }
-            let joints = pose(
-                kind,
-                &instance.motion,
-                time.elapsed_seconds() + instance.idle_offset,
-            );
-            for (&entity, value) in instance.joints.iter().zip(joints) {
-                if let Ok(mut transform) = transforms.get_mut(entity) {
-                    *transform = value;
-                }
-            }
         } else {
-            if let Some((name, imported)) = person_name(kind)
-                .and_then(|name| crate::open_people::get(name).map(|rig| (name, rig.clone())))
+            let name = person_name(kind);
+            let imported = crate::open_people::get(name)
+                .unwrap_or_else(|| panic!("required character rig {name} is unavailable; supply assets/open-models or CRYSTAL_OPEN_MODEL_ROOT"))
+                .clone();
             {
                 let facing = actor
                     .facing
@@ -744,15 +550,13 @@ pub(crate) fn sync(
                 let motion = Motion::new(world_foot, facing);
                 let entity = commands
                     .spawn((
-                        SpatialBundle {
-                            transform: model_transform(
+                        (Visibility::default(),
+model_transform(
                                 actor,
                                 height,
                                 motion.yaw,
                                 scale * person_height(kind) / imported.height,
-                            ),
-                            ..default()
-                        },
+                            ),),
                         ModeledActor,
                     ))
                     .id();
@@ -761,7 +565,7 @@ pub(crate) fn sync(
                         scale * person_height(kind) / imported.height * crate::npc_appearance::look(kind).width,
                         scale * person_height(kind) / imported.height,
                         scale * person_height(kind) / imported.height)));
-                let person = state.people_gpu.spawn(
+                let mut person = state.people_gpu.spawn(
                     name,
                     kind,
                     imported,
@@ -773,15 +577,13 @@ pub(crate) fn sync(
                     &mut images,
                     &mut binds,
                 );
+                person.bicycle = actor.source_id.ends_with("_bike");
                 let shadow = commands
                     .spawn((
-                        PbrBundle {
-                            mesh: state.shadow_mesh.as_ref().unwrap().clone(),
-                            material: state.shadow_material.as_ref().unwrap().clone(),
-                            transform: Transform::from_xyz(0.0, -0.001, 0.0)
-                                .with_scale(Vec3::splat(person.rig.height / person_height(kind))),
-                            ..default()
-                        },
+                        (Mesh3d(state.shadow_mesh.as_ref().unwrap().clone()),
+MeshMaterial3d(state.shadow_material.as_ref().unwrap().clone()),
+Transform::from_xyz(0.0, -0.001, 0.0)
+                                .with_scale(Vec3::splat(person.rig.height / person_height(kind))),),
                         NotShadowCaster,
                         NotShadowReceiver,
                         RenderLayers::layer(VOXEL_RENDER_LAYER),
@@ -792,11 +594,10 @@ pub(crate) fn sync(
                     actor.id,
                     Instance {
                         entity,
-                        joints: [Entity::PLACEHOLDER; JOINT_COUNT],
                         kind,
                         motion,
                         idle_offset: (world_foot.x * 0.137 + world_foot.y * 0.241).rem_euclid(4.8),
-                        person: Some(person),
+                        person,
                     },
                 );
                 if let Some(entity) = cards.entities.get(&actor.id)
@@ -806,89 +607,8 @@ pub(crate) fn sync(
                 }
                 continue;
             }
-            let model = rig(kind);
-            let mesh_handles = state
-                .meshes
-                .entry(kind)
-                .or_insert_with(|| {
-                    model
-                        .joints
-                        .each_ref()
-                        .map(|joint| meshes.add(joint.mesh.clone().into_mesh()))
-                })
-                .clone();
-            let facing = actor
-                .facing
-                .filter(|f| f.is_finite() && f.length_squared() > 0.5)
-                .unwrap_or(Vec2::NEG_Y);
-            let motion = Motion::new(world_foot, facing);
-            let idle_offset = (world_foot.x * 0.137 + world_foot.y * 0.241).rem_euclid(4.8);
-            let entity = commands
-                .spawn((
-                    SpatialBundle {
-                        transform: model_transform(actor, height, motion.yaw, scale),
-                        ..default()
-                    },
-                    ModeledActor,
-                    RenderLayers::layer(VOXEL_RENDER_LAYER),
-                ))
-                .id();
-            let joint_transforms = pose(kind, &motion, time.elapsed_seconds() + idle_offset);
-            let mut joints = [Entity::PLACEHOLDER; JOINT_COUNT];
-            for index in 0..JOINT_COUNT {
-                let joint = commands
-                    .spawn((
-                        PbrBundle {
-                            mesh: mesh_handles[index].clone(),
-                            material: material.clone(),
-                            transform: joint_transforms[index],
-                            ..default()
-                        },
-                        ModeledActor,
-                        RenderLayers::layer(VOXEL_RENDER_LAYER),
-                    ))
-                    .id();
-                commands
-                    .entity(
-                        model.joints[index]
-                            .parent
-                            .map(|i| joints[i])
-                            .unwrap_or(entity),
-                    )
-                    .add_child(joint);
-                joints[index] = joint;
-            }
-            let shadow = commands
-                .spawn((
-                    PbrBundle {
-                        mesh: state.shadow_mesh.as_ref().unwrap().clone(),
-                        material: state.shadow_material.as_ref().unwrap().clone(),
-                        transform: Transform::from_xyz(0.0, -0.001, 0.0),
-                        ..default()
-                    },
-                    NotShadowCaster,
-                    NotShadowReceiver,
-                    RenderLayers::layer(VOXEL_RENDER_LAYER),
-                ))
-                .id();
-            commands.entity(entity).add_child(shadow);
-            state.instances.insert(
-                actor.id,
-                Instance {
-                    entity,
-                    joints,
-                    kind,
-                    motion,
-                    idle_offset,
-                    person: None,
-                },
-            );
         }
-        if let Some(entity) = cards.entities.get(&actor.id)
-            && let Ok(mut visibility) = card_visibility.get_mut(*entity)
-        {
-            *visibility = Visibility::Hidden;
-        }
+
     }
 }
 
@@ -927,8 +647,9 @@ mod tests {
             .init_resource::<ModeledActors>()
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<StandardMaterial>>()
+            .init_resource::<Assets<VoxelMaterial>>()
             .init_resource::<Assets<Image>>()
-            .init_resource::<Assets<bevy::render::mesh::skinning::SkinnedMeshInverseBindposes>>()
+            .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>()
             .add_systems(Update, sync);
         app
     }
@@ -936,26 +657,43 @@ mod tests {
     fn every_human_kind_has_an_explicit_external_appearance() {
         assert_eq!(KINDS.len(), 75);
         for kind in KINDS {
-            assert!(matches!(person_name(kind), Some("human-male" | "human-female")));
+            assert!(matches!(person_name(kind), "human-male" | "human-female"));
             assert!(person_height(kind) > 0.8 && person_height(kind) < 1.6);
         }
     }
     #[test]
     #[ignore = "run separately with the locally supplied converted Kenney rigs"]
     fn external_people_cover_every_resolved_human_source_without_old_rigs() {
-        use bevy::render::mesh::skinning::SkinnedMesh;
+        use bevy::mesh::skinning::SkinnedMesh;
         let mut app = actor_test_app();
-        for &(source, expected_kind) in SOURCE_KINDS.iter() {
+        for (index, &(source, expected_kind)) in SOURCE_KINDS.iter().chain([
+            ("outdoorsman", CharacterKind::Outdoorsman),
+            ("chris_bike", CharacterKind::Trainer),
+            ("kris_bike", CharacterKind::TrainerFemale),
+        ].iter()).enumerate() {
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id =
+                ["NewBarkTown", "TinTower5F", "PlayersHouse1F"][index % 3].into();
             app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = source.into();
             let frame = app.world().resource::<VisualWorldFrame>().clone();
             app.update();
+            app.update(); // Exercise the live weighted pose, including mounted riders.
             let instance = &app.world().resource::<ModeledActors>().instances[&VisualActorId::Player];
             assert_eq!(instance.kind, expected_kind);
-            assert!(instance.person.is_some(), "old rig survived for {source}");
+            assert!(!instance.person.rig.nodes.is_empty(), "missing weighted rig for {source}");
             assert_eq!(app.world().resource::<VisualWorldFrame>().actors[0].center, frame.actors[0].center);
-            assert_eq!(app.world_mut().query::<&SkinnedMesh>().iter(app.world()).count(), 1);
+            let joint_count = instance.person.rig.skin_nodes.len();
+            let skins: Vec<_> = app.world_mut().query::<&SkinnedMesh>().iter(app.world())
+                .map(|skin| skin.joints.clone()).collect();
+            assert!(!skins.is_empty(), "no weighted body for {source}");
+            // Costume overlays are also weighted; they must use exactly the
+            // current actor skeleton rather than a second/stale human rig.
+            for joints in &skins {
+                assert_eq!(joints.len(), joint_count, "wrong skin for {source}");
+                assert_eq!(joints, &skins[0], "stale costume skeleton for {source}");
+                assert!(joints.iter().all(|&entity| app.world().get::<Transform>(entity).is_some()));
+            }
         }
-        assert_eq!(app.world().resource::<ModeledActors>().people_gpu.0.len(), SOURCE_KINDS.len());
+        assert_eq!(app.world().resource::<ModeledActors>().people_gpu.0.len(), SOURCE_KINDS.len()+1);
         app.world_mut().resource_mut::<VisualWorldFrame>().actors.clear();
         app.update();
         assert_eq!(app.world_mut().query_filtered::<Entity, With<ModeledActor>>().iter(app.world()).count(), 0);
@@ -963,7 +701,7 @@ mod tests {
     #[test]
     #[ignore = "run separately with the locally supplied converted Kenney rigs"]
     fn external_people_reuse_gpu_skins_and_follow_only_the_production_actor() {
-        use bevy::render::mesh::skinning::SkinnedMesh;
+        use bevy::mesh::skinning::SkinnedMesh;
         assert!(
             crate::open_people::get("skater-male").is_some(),
             "supply CRYSTAL_OPEN_MODEL_ROOT"
@@ -971,7 +709,7 @@ mod tests {
         let mut app = actor_test_app();
         app.update();
         let instance = &app.world().resource::<ModeledActors>().instances[&VisualActorId::Player];
-        assert!(instance.person.is_some());
+        assert!(!instance.person.rig.nodes.is_empty());
         let root = instance.entity;
         let meshes = app.world().resource::<Assets<Mesh>>().len();
         let images = app.world().resource::<Assets<Image>>().len();
@@ -1036,9 +774,9 @@ mod tests {
         assert_eq!(app.world().resource::<Assets<Image>>().len(), images);
         let handles: Vec<_> = app
             .world_mut()
-            .query_filtered::<&Handle<StandardMaterial>, With<SkinnedMesh>>()
+            .query_filtered::<&MeshMaterial3d<StandardMaterial>, With<SkinnedMesh>>()
             .iter(app.world())
-            .cloned()
+            .map(|material| material.0.clone())
             .collect();
         assert_eq!(handles.len(), 2);
         assert_ne!(handles[0], handles[1]);
@@ -1047,9 +785,13 @@ mod tests {
         let mut remote_materials = Vec::new();
         while let Some(entity) = descendants.pop() {
             if let Some(children) = app.world().get::<Children>(entity) {
-                descendants.extend(children.iter().copied());
+                descendants.extend(children.to_vec());
             }
-            if let Some(handle) = app.world().get::<Handle<StandardMaterial>>(entity) {
+            if let Some(handle) = app
+                .world()
+                .get::<MeshMaterial3d<StandardMaterial>>(entity)
+                .map(|material| &material.0)
+            {
                 let material = app.world().resource::<Assets<StandardMaterial>>().get(handle).unwrap();
                 if !material.unlit {
                     assert!(app.world().get::<NotShadowReceiver>(entity).is_some(),
@@ -1095,16 +837,22 @@ mod tests {
         app.update();
         let root = app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].entity;
         assert_eq!(app.world().resource::<ModeledActors>().instances.len(), 1);
-        assert_eq!(
-            app.world_mut()
-                .query_filtered::<Entity, With<ModeledActor>>()
-                .iter(app.world())
-                .count(),
-            JOINT_COUNT + 1
-        );
+        let mut descendants = vec![root];
+        let mut owned = std::collections::HashSet::new();
+        while let Some(entity) = descendants.pop() {
+            if let Some(children) = app.world().get::<Children>(entity) {
+                descendants.extend(children.to_vec());
+            }
+            if app.world().get::<ModeledActor>(entity).is_some() { owned.insert(entity); }
+        }
+        let modeled: std::collections::HashSet<_> = app.world_mut()
+            .query_filtered::<Entity, With<ModeledActor>>().iter(app.world()).collect();
+        assert_eq!(modeled, owned, "every modeled node belongs to the current actor");
+        let instance = &app.world().resource::<ModeledActors>().instances[&VisualActorId::Player];
+        assert!(modeled.len() >= instance.person.rig.nodes.len() + 2);
         app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "VioletCity".into();
         app.update();
-        assert!(app.world().get_entity(root).is_none());
+        assert!(app.world().get_entity(root).is_err());
         assert_eq!(app.world().resource::<ModeledActors>().instances.len(), 1);
         app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = "kris".into();
         app.update();
@@ -1114,7 +862,7 @@ mod tests {
         );
         app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = "kris_bike".into();
         app.update();
-        assert!(app.world().resource::<ModeledActors>().instances.is_empty());
+        assert_eq!(app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].kind, CharacterKind::TrainerFemale);
         app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = "chris".into();
         app.update();
         app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
@@ -1151,13 +899,34 @@ mod tests {
         assert_eq!(app.world().resource::<Assets<Mesh>>().len(), mesh_count);
         assert_eq!(app.world().resource::<ModeledActors>().instances.len(), 2);
         let state = app.world().resource::<ModeledActors>();
-        let local_head = state.instances[&VisualActorId::Player].joints[HEAD];
-        let remote_head = state.instances[&VisualActorId::RemotePlayer(23)].joints[HEAD];
-        assert_ne!(
-            app.world().get::<Handle<StandardMaterial>>(local_head),
-            app.world().get::<Handle<StandardMaterial>>(remote_head),
-            "modeled remote players retain the existing distinct ghost material"
-        );
+        let materials = |root: Entity| {
+            let mut pending = vec![root];
+            let mut handles = std::collections::HashSet::new();
+            while let Some(entity) = pending.pop() {
+                if let Some(children) = app.world().get::<Children>(entity) {
+                    pending.extend(children.to_vec());
+                }
+            if let Some(handle) = app
+                .world()
+                .get::<MeshMaterial3d<StandardMaterial>>(entity)
+                .map(|material| &material.0)
+            {
+                    if !app.world().resource::<Assets<StandardMaterial>>().get(handle).unwrap().unlit {
+                        handles.insert(handle.clone());
+                    }
+                }
+            }
+            handles
+        };
+        let local = materials(state.instances[&VisualActorId::Player].entity);
+        let remote = materials(state.instances[&VisualActorId::RemotePlayer(23)].entity);
+        assert!(!local.is_empty() && !remote.is_empty());
+        assert!(local.is_disjoint(&remote), "remote bodies and accessories use distinct ghost materials");
+        for handle in remote {
+            let material = app.world().resource::<Assets<StandardMaterial>>().get(&handle).unwrap();
+            assert_eq!(material.alpha_mode, AlphaMode::Blend);
+            assert!((material.base_color.alpha() - 0.62).abs() < 0.001);
+        }
         let frame = app.world().resource::<VisualWorldFrame>();
         assert_eq!(frame.actors[0].center, actor().center);
         assert_eq!(frame.actors[0].facing, actor().facing);
@@ -1189,7 +958,7 @@ mod tests {
         app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id =
             "fruit_tree_picked".into();
         app.update();
-        assert!(app.world().get_entity(root).is_none());
+        assert!(app.world().get_entity(root).is_err());
         assert!(
             !app.world()
                 .resource::<ModeledActors>()
@@ -1247,7 +1016,7 @@ mod tests {
             state.props[&VisualActorId::Object(19)].kind,
             actor_props::PropKind::Boulder
         );
-        assert!(app.world().get_entity(old).is_none());
+        assert!(app.world().get_entity(old).is_err());
         let count = app.world().resource::<Assets<Mesh>>().len();
         app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id = "poke_ball".into();
         app.update();
@@ -1256,6 +1025,58 @@ mod tests {
             "unknown_decoration".into();
         app.update();
         assert!(app.world().resource::<ModeledActors>().props.is_empty());
+    }
+    #[test]
+    fn cave_boulder_material_and_mesh_follow_environment_while_movement_reuses_the_object() {
+        use crystal_render_api::{VisualTile, VisualTileSource};
+        let mut app=actor_test_app();
+        let mut boulder=actor();
+        boulder.id=VisualActorId::Object(19);
+        boulder.source_id="boulder".into();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.push(boulder);
+        app.world_mut().resource_mut::<VisualWorldFrame>().tiles.push(VisualTile {
+            column:0,row:0,source:VisualTileSource {tileset_id:"ice_path".into(),
+                metatile_id:0,subtile_column:0,subtile_row:0,tile_index:0x19},
+            texture:Handle::default(),animation_frames:None,priority:false,
+        });
+        app.update();
+        let first=app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].kind,actor_props::PropKind::Boulder);
+        assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].stone,Some((CaveStoneFinish::Frozen,3)));
+        let first_position=app.world().get::<Transform>(first).unwrap().translation;
+        let count=app.world().resource::<Assets<Mesh>>().len();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].center.x+=8.;
+        app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity,first);
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(),count);
+        let second_position=app.world().get::<Transform>(first).unwrap().translation;
+        assert_eq!(second_position.x-first_position.x,8.);
+        assert_eq!(second_position.y,first_position.y);
+        let handle=&app.world().get::<MeshMaterial3d<VoxelMaterial>>(first).unwrap().0;
+        assert!(app.world().resource::<Assets<VoxelMaterial>>().get(handle).unwrap().base.base_color_texture.is_some());
+        app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0].source.tileset_id="cave".into();
+        app.update();
+        let state=app.world().resource::<ModeledActors>();
+        let next=&state.props[&VisualActorId::Object(19)];
+        assert_eq!(next.stone,Some((CaveStoneFinish::Rock,3)));
+        assert_ne!(next.entity,first);
+        assert_eq!(app.world().get::<Transform>(next.entity).unwrap().translation,second_position);
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].source_id="rock".into();
+        app.update();
+        let rock=app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        let handle=&app.world().get::<Mesh3d>(rock).unwrap().0;
+        let mesh=app.world().resource::<Assets<Mesh>>().get(handle).unwrap();
+        let Some(bevy::mesh::VertexAttributeValues::Float32x3(positions))=mesh.attribute(Mesh::ATTRIBUTE_POSITION)
+            else { panic!("rock positions"); };
+        assert!((positions.iter().map(|p|p[1]).fold(0.,f32::max)-0.43).abs()<0.00001);
+        // Leaving the cave restores the ordinary prop material and retains
+        // its authoritative position, rather than leaking cave paint outdoors.
+        app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0].source.tileset_id="johto".into();
+        app.update();
+        let outside=app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        assert!(app.world().get::<MeshMaterial3d<StandardMaterial>>(outside).is_some());
+        assert!(app.world().get::<MeshMaterial3d<VoxelMaterial>>(outside).is_none());
+        assert_eq!(app.world().get::<Transform>(outside).unwrap().translation,second_position);
     }
     #[test]
     fn dynamic_species_decorations_replace_reuse_and_disappear_without_stale_entities() {
@@ -1284,7 +1105,7 @@ mod tests {
             let root =
                 app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
             assert_ne!(root, previous);
-            assert!(app.world().get_entity(previous).is_none());
+            assert!(app.world().get_entity(previous).is_err());
             assert_eq!(*app.world().get::<Transform>(root).unwrap(), transform);
             assert_eq!(
                 actor_foot(&app.world().resource::<VisualWorldFrame>().actors[1]),
@@ -1310,22 +1131,7 @@ mod tests {
             .truncate(1);
         app.update();
         assert!(app.world().resource::<ModeledActors>().props.is_empty());
-        assert!(app.world().get_entity(root).is_none());
-    }
-    #[test]
-    fn swimming_look_has_a_waterline_pose_without_moving_the_world_root() {
-        let motion = Motion::new(Vec2::ZERO, Vec2::NEG_Y);
-        let standing = pose(CharacterKind::Trainer, &motion, 1.0);
-        let swimming = pose(CharacterKind::SwimmerGuy, &motion, 1.0);
-        assert!(
-            (standing[PELVIS].translation.y - swimming[PELVIS].translation.y - 0.48).abs() < 0.0001
-        );
-        assert!(
-            swimming
-                .iter()
-                .all(|joint| joint.translation.is_finite() && joint.rotation.is_finite())
-        );
-        assert_eq!(motion.last_world_foot, Vec2::ZERO);
+        assert!(app.world().get_entity(root).is_err());
     }
     #[test]
     fn character_appearance_is_source_exact_across_indoor_and_outdoor_maps() {
@@ -1344,7 +1150,7 @@ mod tests {
         let mut actor = actor();
         actor.source_id = "kris".into();
         assert_eq!(character_kind(&actor), Some(CharacterKind::TrainerFemale));
-        for source in ["chris_bike", "kris_bike", "surf", "surf_pikachu"] {
+        for source in ["surf", "surf_pikachu"] {
             actor.source_id = source.into();
             assert_eq!(character_kind(&actor), None);
         }
@@ -1423,23 +1229,6 @@ mod tests {
         }
     }
     #[test]
-    fn foot_return_matches_stance_velocity_at_both_contact_boundaries() {
-        let epsilon = 0.0001;
-        for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
-            for phase in [0.0, TAU * stance_fraction(run)] {
-                let center = foot_target(phase, 1.0, run).0;
-                let before = foot_target(phase - epsilon, 1.0, run).0;
-                let after = foot_target(phase + epsilon, 1.0, run).0;
-                let left = (center - before) / epsilon;
-                let right = (after - center) / epsilon;
-                assert!(
-                    (left - right).abs() < 0.03,
-                    "contact velocity discontinuity run={run}: {left} -> {right}"
-                );
-            }
-        }
-    }
-    #[test]
     fn turning_is_rate_bounded_at_normal_and_slow_host_cadences() {
         for hz in [9, 30, 60] {
             let dt = 1.0 / hz as f32;
@@ -1453,96 +1242,6 @@ mod tests {
         }
     }
     #[test]
-    fn sampled_walk_trajectories_remain_continuous_at_30_and_60_hz() {
-        let mut finals = Vec::new();
-        for hz in [9, 30, 60] {
-            let dt = 1.0 / hz as f32;
-            let mut motion = Motion::new(Vec2::ZERO, Vec2::X);
-            let mut previous = pose(CharacterKind::Trainer, &motion, 1.0);
-            let mut maximum_limb_step = 0.0_f32;
-            let mut maximum_hip_step = 0.0_f32;
-            for frame in 1..=hz * 4 {
-                motion.advance(
-                    Vec2::new(frame as f32 * dt * 24.0, 0.0),
-                    Some(Vec2::X),
-                    16.0,
-                    dt,
-                );
-                let current = pose(CharacterKind::Trainer, &motion, 1.0 + frame as f32 * dt);
-                for joint in [THIGH_L, THIGH_R, SHIN_L, SHIN_R, UPPER_ARM_L, UPPER_ARM_R] {
-                    maximum_limb_step = maximum_limb_step.max(
-                        previous[joint]
-                            .rotation
-                            .angle_between(current[joint].rotation)
-                            .abs(),
-                    );
-                }
-                maximum_hip_step = maximum_hip_step
-                    .max((previous[PELVIS].translation.y - current[PELVIS].translation.y).abs());
-                previous = current;
-            }
-            println!(
-                "gait {hz}Hz at 1.5tiles/s: maximum limb step={:.2}deg hip step={:.4}tiles",
-                maximum_limb_step.to_degrees(),
-                maximum_hip_step
-            );
-            if hz >= 30 {
-                assert!(maximum_limb_step < 0.60);
-                assert!(maximum_hip_step < 0.018);
-            }
-            finals.push(motion.phase);
-        }
-        for phase in finals {
-            assert!((phase - (6.0 / CYCLE_DISTANCE * TAU).rem_euclid(TAU)).abs() < 0.0001);
-        }
-    }
-    #[test]
-    fn production_speed_pose_sampling_audit() {
-        // Authoritative Crystal step: eight 70224-cycle Game Boy VBlanks.
-        for (hz, speed) in [(30, 3.716_f32), (60, 4_194_304.0_f32 / (8.0 * 70_224.0))] {
-            let dt = 1.0 / hz as f32;
-            let mut motion = Motion::new(Vec2::ZERO, Vec2::X);
-            let mut previous = pose(CharacterKind::Trainer, &motion, 0.0);
-            let mut max_angle = 0.0_f32;
-            let mut max_foot_step = 0.0_f32;
-            let mut previous_foot = Vec2::ZERO;
-            for frame in 1..=hz * 4 {
-                let root_x = frame as f32 * dt * speed;
-                motion.advance(Vec2::new(root_x * 16.0, 0.0), Some(Vec2::X), 16.0, dt);
-                let current = pose(CharacterKind::Trainer, &motion, frame as f32 * dt);
-                let target = foot_target(motion.phase, motion.walk_weight, motion.run_weight);
-                let foot = Vec2::new(root_x + target.0, target.1);
-                if frame > hz {
-                    for joint in [THIGH_L, THIGH_R, SHIN_L, SHIN_R, UPPER_ARM_L, UPPER_ARM_R] {
-                        max_angle = max_angle.max(
-                            previous[joint]
-                                .rotation
-                                .angle_between(current[joint].rotation)
-                                .abs(),
-                        );
-                    }
-                    max_foot_step = max_foot_step.max((foot - previous_foot).length());
-                }
-                previous = current;
-                previous_foot = foot;
-            }
-            println!(
-                "production gait {hz}Hz: speed={speed:.4}tiles/s cycles={:.3}/s contacts={:.3}/s max_joint_step={:.2}deg max_foot_step={max_foot_step:.4}tiles",
-                speed / cycle_distance(motion.run_weight),
-                speed / cycle_distance(motion.run_weight) * 2.0,
-                max_angle.to_degrees()
-            );
-            assert!(motion.run_weight > 0.999);
-            assert!(
-                max_angle < 0.49,
-                "production running limb delta: {} degrees",
-                max_angle.to_degrees()
-            );
-            assert!(max_foot_step < 0.24);
-            assert!(2.0 * speed / cycle_distance(motion.run_weight) < 5.4);
-        }
-    }
-    #[test]
     fn teleports_reset_gait_without_inventing_motion() {
         let mut motion = Motion::new(Vec2::ZERO, Vec2::NEG_Y);
         motion.advance(Vec2::X, Some(Vec2::X), 16.0, 0.02);
@@ -1550,80 +1249,6 @@ mod tests {
         assert_eq!(motion.phase, 0.0);
         assert_eq!(motion.walk_weight, 0.0);
         assert!((Quat::from_rotation_y(motion.yaw) * Vec3::Z - Vec3::NEG_Z).length() < 0.0001);
-    }
-    #[test]
-    fn articulated_gait_keeps_stance_shoes_planted_through_entire_cycle() {
-        for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
-            for i in 0..256 {
-                let phase = i as f32 / 256.0 * TAU;
-                for weight in [0.0, 0.25, 0.5, 0.75, 1.0] {
-                    let motion = Motion {
-                        phase,
-                        walk_weight: weight,
-                        run_weight: run,
-                        ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-                    };
-                    let transforms = pose(CharacterKind::Trainer, &motion, 1.0);
-                    let rig = rig(CharacterKind::Trainer);
-                    let mut world = [Mat4::IDENTITY; JOINT_COUNT];
-                    for j in 0..JOINT_COUNT {
-                        world[j] = rig.joints[j]
-                            .parent
-                            .map(|p| world[p])
-                            .unwrap_or(Mat4::IDENTITY)
-                            * transforms[j].compute_matrix();
-                    }
-                    for (shoe, offset) in [(SHOE_L, 0.0), (SHOE_R, PI)] {
-                        let (z, y) = foot_target(phase + offset, weight, run);
-                        let ankle = world[shoe].transform_point3(Vec3::ZERO);
-                        assert!(
-                            (ankle.y - y).abs() < 0.0001,
-                            "foot y phase={phase} weight={weight} run={run}: {ankle:?}, target={y}"
-                        );
-                        assert!(
-                            (ankle.z - z).abs() < 0.0001,
-                            "foot z phase={phase} weight={weight} run={run}: {ankle:?}, target={z}"
-                        );
-                        assert!(
-                            (world[shoe].transform_vector3(Vec3::Y) - Vec3::Y).length() < 0.0001
-                        );
-                        assert!(ankle.y >= ANKLE_HEIGHT - 0.0001);
-                    }
-                }
-            }
-        }
-    }
-    #[test]
-    fn running_has_an_aerial_phase_without_stance_sliding_or_leg_scaling() {
-        for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
-            let stance = stance_fraction(run);
-            let a = foot_target(stance * 0.25 * TAU, 1.0, run);
-            let b = foot_target(stance * 0.75 * TAU, 1.0, run);
-            let root_travel = cycle_distance(run) * stance * 0.5;
-            assert!((root_travel + b.0 - a.0).abs() < 0.00001);
-            assert_eq!(a.1, ANKLE_HEIGHT);
-            assert_eq!(b.1, ANKLE_HEIGHT);
-            let air_samples = (0..128)
-                .filter(|&i| {
-                    let p = i as f32 / 128.0 * TAU;
-                    foot_target(p, 1.0, run).1 > ANKLE_HEIGHT + 0.001
-                        && foot_target(p + PI, 1.0, run).1 > ANKLE_HEIGHT + 0.001
-                })
-                .count();
-            if run == 0.0 {
-                assert_eq!(air_samples, 0);
-            } else {
-                assert!(air_samples > 0);
-            }
-            let state = Motion {
-                run_weight: run,
-                walk_weight: 1.0,
-                ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-            };
-            for transform in pose(CharacterKind::Trainer, &state, 1.0) {
-                assert_eq!(transform.scale, Vec3::ONE);
-            }
-        }
     }
     #[test]
     fn speed_changes_blend_gait_without_resetting_phase_or_root_anchor() {
@@ -1652,187 +1277,5 @@ mod tests {
         }
         assert!(state.run_weight < 0.01);
     }
-    #[test]
-    fn opposite_limbs_really_articulate_and_blinks_preserve_the_head() {
-        let motion = Motion {
-            phase: 0.3,
-            walk_weight: 1.0,
-            ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-        };
-        let a = pose(CharacterKind::Trainer, &motion, 1.0);
-        assert_ne!(a[THIGH_L].rotation, a[THIGH_R].rotation);
-        assert_ne!(a[UPPER_ARM_L].rotation, a[UPPER_ARM_R].rotation);
-        assert_ne!(a[SHIN_L].rotation, Quat::IDENTITY);
-        let blink = pose(CharacterKind::Trainer, &motion, 0.0725);
-        assert!(blink[EYES].scale.y < 0.1);
-        assert_eq!(blink[HEAD].scale, Vec3::ONE);
-    }
-    #[test]
-    fn production_pose_uses_the_authored_walk_and_run_channels() {
-        let model = rig(CharacterKind::Trainer);
-        let bind = model.joints.each_ref().map(|joint| joint.bind);
-        for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
-            for phase in [0.0, 0.13, 0.75, 2.3, 5.91] {
-                let state = Motion {
-                    phase,
-                    walk_weight: 1.0,
-                    run_weight: run,
-                    ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-                };
-                let walk = model.locomotion_clip(false);
-                let sprint = model.locomotion_clip(true);
-                let walk_pose = walk
-                    .sample(&bind, walk.start + phase / TAU * walk.duration)
-                    .unwrap();
-                let run_pose = sprint
-                    .sample(&bind, sprint.start + phase / TAU * sprint.duration)
-                    .unwrap();
-                // At elapsed zero there is no additive breathing/head motion.
-                let actual = pose(CharacterKind::Trainer, &state, 0.0);
-                for joint in [
-                    PELVIS,
-                    TORSO,
-                    HEAD,
-                    UPPER_ARM_L,
-                    UPPER_ARM_R,
-                    FOREARM_L,
-                    FOREARM_R,
-                    HAND_L,
-                    HAND_R,
-                ] {
-                    let expected = blend_transform(walk_pose[joint], run_pose[joint], run);
-                    assert!(actual[joint].translation.distance(expected.translation) < 0.000001);
-                    assert!(actual[joint].rotation.dot(expected.rotation).abs() > 0.999999);
-                    assert_eq!(actual[joint].scale, expected.scale);
-                }
-            }
-        }
-    }
-    #[test]
-    fn transform_blends_are_bounded_and_preserve_unit_rotations() {
-        let a = Transform::from_xyz(-1.0, 2.0, -3.0).with_rotation(Quat::from_rotation_y(-0.8));
-        let b = Transform::from_xyz(3.0, -2.0, 1.0)
-            .with_rotation(Quat::from_rotation_y(0.7))
-            .with_scale(Vec3::splat(1.2));
-        for weight in [-10.0, 0.0, 0.25, 0.5, 0.75, 1.0, 10.0] {
-            let value = blend_transform(a, b, weight);
-            let bounded = weight.clamp(0.0, 1.0);
-            assert_eq!(
-                value.translation,
-                a.translation.lerp(b.translation, bounded)
-            );
-            assert_eq!(value.scale, a.scale.lerp(b.scale, bounded));
-            assert!((value.rotation.length_squared() - 1.0).abs() < 0.000001);
-            assert!(
-                value
-                    .rotation
-                    .dot(a.rotation.slerp(b.rotation, bounded))
-                    .abs()
-                    > 0.999999
-            );
-        }
-    }
-    #[test]
-    fn clip_loop_seams_and_source_phase_are_independent_of_render_time() {
-        for weight in [0.0, 0.25, 0.5, 0.75, 1.0] {
-            for run in [0.0, 0.5, 1.0] {
-                let mut state = Motion {
-                    walk_weight: weight,
-                    run_weight: run,
-                    ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-                };
-                let first = pose(CharacterKind::Trainer, &state, 1.0);
-                state.phase = TAU;
-                let looped = pose(CharacterKind::Trainer, &state, 1.0);
-                for joint in 0..JOINT_COUNT {
-                    assert!(
-                        first[joint].translation.distance(looped[joint].translation) < 0.000001
-                    );
-                    assert!(first[joint].rotation.dot(looped[joint].rotation).abs() > 0.999999);
-                }
-            }
-        }
-        let state = Motion {
-            phase: 0.71,
-            walk_weight: 1.0,
-            run_weight: 0.62,
-            ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-        };
-        let first = pose(CharacterKind::Trainer, &state, 0.0);
-        for elapsed in [1.0 / 60.0, 1.0 / 30.0, 1.0 / 9.0, 172.0] {
-            let later = pose(CharacterKind::Trainer, &state, elapsed);
-            for joint in [PELVIS, THIGH_L, THIGH_R, SHIN_L, SHIN_R, SHOE_L, SHOE_R] {
-                assert_eq!(first[joint], later[joint]);
-            }
-            assert_eq!(first[TORSO].rotation, later[TORSO].rotation);
-            assert_eq!(first[HEAD].rotation, later[HEAD].rotation);
-        }
-    }
-    #[test]
-    fn clip_playback_preserves_planted_shoes_at_60_30_and_9_hz() {
-        let model = rig(CharacterKind::Trainer);
-        for hz in [60, 30, 9] {
-            for run in [0.0, 0.25, 0.5, 0.75, 1.0] {
-                let stance = stance_fraction(run);
-                let mut previous = None;
-                for frame in 0..=hz {
-                    let phase = stance * TAU * frame as f32 / hz as f32;
-                    let state = Motion {
-                        phase,
-                        walk_weight: 1.0,
-                        run_weight: run,
-                        ..Motion::new(Vec2::ZERO, Vec2::NEG_Y)
-                    };
-                    let local = pose(CharacterKind::Trainer, &state, frame as f32 / hz as f32);
-                    let root_travel = phase / TAU * cycle_distance(run);
-                    let mut world = [Mat4::IDENTITY; JOINT_COUNT];
-                    for joint in 0..JOINT_COUNT {
-                        world[joint] = model.joints[joint]
-                            .parent
-                            .map(|parent| world[parent])
-                            .unwrap_or(Mat4::from_translation(Vec3::Z * root_travel))
-                            * local[joint].compute_matrix();
-                    }
-                    let ankle = world[SHOE_L].transform_point3(Vec3::ZERO);
-                    assert!((ankle.y - ANKLE_HEIGHT).abs() < 0.000001);
-                    if let Some(previous) = previous {
-                        assert!(
-                            ankle.distance(previous) < 0.000001,
-                            "{hz}Hz run={run}: foot slid"
-                        );
-                    }
-                    previous = Some(ankle);
-                }
-            }
-        }
-    }
-    #[test]
-    fn clip_playback_reuses_actor_entities_and_meshes_across_many_frames() {
-        use std::time::Duration;
 
-        let mut app = actor_test_app();
-        app.update();
-        let original =
-            app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].joints;
-        let mesh_count = app.world().resource::<Assets<Mesh>>().len();
-        for _ in 0..180 {
-            app.world_mut()
-                .resource_mut::<Time>()
-                .advance_by(Duration::from_secs_f32(1.0 / 60.0));
-            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0]
-                .center
-                .x += 0.4;
-            let source = app.world().resource::<VisualWorldFrame>().actors[0].center;
-            app.update();
-            assert_eq!(app.world().resource::<Assets<Mesh>>().len(), mesh_count);
-            assert_eq!(
-                app.world().resource::<ModeledActors>().instances[&VisualActorId::Player].joints,
-                original
-            );
-            assert_eq!(
-                app.world().resource::<VisualWorldFrame>().actors[0].center,
-                source
-            );
-        }
-    }
 }

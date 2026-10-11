@@ -3,42 +3,38 @@
 //! published only after that actor draw succeeds and the frame is submitted.
 use super::*;
 use bevy::{
-    asset::{AssetEvents, AssetId},
+    asset::{AssetEventSystems, AssetId},
     core_pipeline::{
+        Core3d,
         blit::{BlitPipeline, BlitPipelineKey},
-        core_3d::{
-            Opaque3d,
-            graph::{Core3d, Node3d},
-        },
-        tonemapping::DebandDither,
-        upscaling::ViewUpscalingPipeline,
+        core_3d::Opaque3d,
+        upscaling::{ViewUpscalingPipeline, upscaling},
     },
     ecs::{
-        query::{QueryItem, ROQueryItem},
+        query::ROQueryItem,
+        schedule::ScheduleLabel,
         system::{SystemParam, SystemParamItem},
     },
     pbr::{
         DrawMesh, PreparedMaterial, RenderMaterialInstances, SetMaterialBindGroup,
-        SetMeshBindGroup, SetMeshViewBindGroup, queue_material_meshes,
+        SetMeshBindGroup, SetMeshViewBindGroup, SetMeshViewBindingArrayBindGroup,
+        queue_material_meshes,
     },
     render::{
-        Render, RenderApp, RenderSet,
+        Render, RenderApp, RenderSystems,
         camera::ExtractedCamera,
+        erased_render_asset::ErasedRenderAssets,
         extract_component::{ExtractComponent, ExtractComponentPlugin},
-        mesh::{GpuBufferInfo, GpuMesh},
-        render_asset::{RenderAssets, prepare_assets},
-        render_graph::{
-            NodeRunError, RenderGraphApp, RenderGraphContext, RenderLabel, RenderSubGraph,
-            ViewNode, ViewNodeRunner,
-        },
+        mesh::{RenderMesh, RenderMeshBufferInfo},
+        render_asset::RenderAssets,
         render_phase::{
             AddRenderCommand, BinnedRenderPhaseType, DrawFunctions, PhaseItem, RenderCommand,
             RenderCommandResult, SetItemPipeline, TrackedRenderPass, ViewBinnedRenderPhases,
         },
         render_resource::{CachedRenderPipelineId, PipelineCache, SpecializedRenderPipelines},
-        renderer::{RenderContext, render_system},
+        renderer::{ViewQuery, render_system},
         texture::GpuImage,
-        view::{ColorGrading, ViewTarget, VisibleEntities, WithMesh},
+        view::{ColorGrading, DebandDither, ExtractedView, RenderVisibleEntities, ViewTarget},
     },
 };
 
@@ -50,39 +46,33 @@ pub(super) struct BattleRowCapturePlugin;
 impl Plugin for BattleRowCapturePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ActorCaptures>()
-            .add_event::<AssetEvent<Mesh>>()
-            .add_event::<AssetEvent<StandardMaterial>>()
-            .add_event::<AssetEvent<Image>>()
-            .add_event::<AssetEvent<Shader>>()
+            .add_message::<AssetEvent<Mesh>>()
+            .add_message::<AssetEvent<StandardMaterial>>()
+            .add_message::<AssetEvent<Image>>()
+            .add_message::<AssetEvent<Shader>>()
             // Visibility and camera projection update normally in PostUpdate.
             // Last sees the finished transforms AND same-frame asset events,
             // then disables only captures whose submitted image is reusable.
-            .add_systems(Last, sync_actor_captures.after(AssetEvents))
+            .add_systems(Last, sync_actor_captures.after(AssetEventSystems))
             .add_plugins(ExtractComponentPlugin::<ActorCaptureRequest>::default());
         if let Some(render_app) = app.get_sub_app_mut(RenderApp) {
             render_app
                 .add_render_command::<Opaque3d, CaptureActorDraw>()
-                .add_render_graph_node::<ViewNodeRunner<CaptureOutputNode>>(
-                    Core3d,
-                    CaptureOutputLabel,
-                )
-                .add_render_graph_edges(Core3d, (Node3d::Upscaling, CaptureOutputLabel))
+                .add_systems(Core3d, certify_capture_output.after(upscaling))
                 .add_systems(
                     Render,
-                    prepare_capture_output_guard.in_set(RenderSet::PrepareBindGroups),
+                    prepare_capture_output_guard.in_set(RenderSystems::PrepareBindGroups),
                 )
                 .add_systems(
                     Render,
                     observe_actor_draws
-                        .in_set(RenderSet::QueueMeshes)
-                        .after(queue_material_meshes::<StandardMaterial>)
-                        .after(prepare_assets::<PreparedMaterial<StandardMaterial>>)
-                        .after(prepare_assets::<GpuImage>),
+                        .in_set(RenderSystems::QueueMeshes)
+                        .after(queue_material_meshes),
                 )
                 .add_systems(
                     Render,
                     finish_actor_captures
-                        .in_set(RenderSet::Render)
+                        .in_set(RenderSystems::Render)
                         .after(render_system),
                 );
         }
@@ -154,12 +144,19 @@ impl ActorCaptures {
     pub(super) fn settled_image(&self, index: usize) -> Option<SettledActorImage> {
         let key = self.actors[index].settled_key()?;
         (self.enabled && key.palette.0 == 0xe4).then_some(SettledActorImage {
-            actor: key.actor, mesh: key.mesh, material: key.material,
-            pose: key.actor_pose, camera: key.camera_pose, target: key.target,
-            render_size: key.render_size, output_size: key.output_size,
+            actor: key.actor,
+            mesh: key.mesh,
+            material: key.material,
+            pose: key.actor_pose,
+            camera: key.camera_pose,
+            target: key.target,
+            render_size: key.render_size,
+            output_size: key.output_size,
             msaa_samples: key.msaa_samples,
-            projection: key.projection, camera_changes: key.camera_changes,
-            light: key.light, ambient: key.ambient,
+            projection: key.projection,
+            camera_changes: key.camera_changes,
+            light: key.light,
+            ambient: key.ambient,
         })
     }
 
@@ -175,6 +172,7 @@ impl ActorCaptures {
 }
 
 #[derive(Component, Clone, ExtractComponent)]
+#[extract_app(RenderApp)]
 struct ActorCaptureRequest {
     actor: Entity,
     mesh: AssetId<Mesh>,
@@ -196,11 +194,11 @@ pub(super) fn changed_asset<A: Asset>(event: &AssetEvent<A>) -> AssetId<A> {
 
 #[allow(clippy::too_many_arguments)]
 #[derive(SystemParam)]
-pub(super) struct CaptureAssetEvents<'w, 's> {
-    pub(super) meshes: EventReader<'w, 's, AssetEvent<Mesh>>,
-    pub(super) materials: EventReader<'w, 's, AssetEvent<StandardMaterial>>,
-    pub(super) images: EventReader<'w, 's, AssetEvent<Image>>,
-    pub(super) shaders: EventReader<'w, 's, AssetEvent<Shader>>,
+pub(super) struct CaptureAssetEventSystems<'w, 's> {
+    pub(super) meshes: MessageReader<'w, 's, AssetEvent<Mesh>>,
+    pub(super) materials: MessageReader<'w, 's, AssetEvent<StandardMaterial>>,
+    pub(super) images: MessageReader<'w, 's, AssetEvent<Image>>,
+    pub(super) shaders: MessageReader<'w, 's, AssetEvent<Shader>>,
 }
 
 fn sync_actor_captures(
@@ -210,9 +208,8 @@ fn sync_actor_captures(
     frame: Res<VisualBattleFrame>,
     mut captures: ResMut<ActorCaptures>,
     materials: Res<Assets<StandardMaterial>>,
-    ambient: Option<Res<AmbientLight>>,
-    msaa: Option<Res<Msaa>>,
-    mut events: CaptureAssetEvents,
+    ambient: Option<Res<GlobalAmbientLight>>,
+    mut events: CaptureAssetEventSystems,
     actors: Query<(&GlobalTransform, &Visibility, &RenderLayers), With<BattleActor>>,
     lights: Query<(
         Entity,
@@ -222,27 +219,27 @@ fn sync_actor_captures(
         Option<&RenderLayers>,
     )>,
     other_lights: Query<
-        (Option<&RenderLayers>, Has<bevy::pbr::LightProbe>),
+        (Option<&RenderLayers>, Has<bevy::light::LightProbe>),
         Or<(
             With<PointLight>,
             With<SpotLight>,
-            With<bevy::pbr::LightProbe>,
+            With<bevy::light::LightProbe>,
         )>,
     >,
     unsupported_cameras: Query<
         (),
         Or<(
-            With<bevy::render::view::GpuCulling>,
-            With<bevy::core_pipeline::Skybox>,
+            With<bevy::render::occlusion_culling::OcclusionCulling>,
+            With<bevy::light::Skybox>,
             With<bevy::render::camera::TemporalJitter>,
-            With<bevy::core_pipeline::experimental::taa::TemporalAntiAliasSettings>,
-            With<bevy::core_pipeline::dof::DepthOfFieldSettings>,
-            With<bevy::pbr::ScreenSpaceAmbientOcclusionSettings>,
-            With<bevy::pbr::ScreenSpaceReflectionsSettings>,
-            With<bevy::pbr::environment_map::EnvironmentMapLight>,
+            With<bevy::anti_alias::taa::TemporalAntiAliasing>,
+            With<bevy::pbr::ScreenSpaceAmbientOcclusion>,
+            With<bevy::pbr::ScreenSpaceReflections>,
+            With<bevy::light::EnvironmentMapLight>,
+            With<AmbientLight>,
         )>,
     >,
-    other_cameras: Query<&Camera, Without<BattleRowCamera>>,
+    other_cameras: Query<(&Camera, &RenderTarget), Without<BattleRowCamera>>,
     mut cameras: Query<
         (
             Entity,
@@ -252,13 +249,14 @@ fn sync_actor_captures(
             &Projection,
             &bevy::render::camera::CameraRenderGraph,
             Ref<Camera3d>,
-            Ref<bevy::render::camera::Exposure>,
+            Ref<bevy::camera::Exposure>,
             Ref<Tonemapping>,
             Ref<ColorGrading>,
             Ref<DebandDither>,
             &RenderLayers,
             Option<&Fxaa>,
-            Option<&FogSettings>,
+            Option<&DistanceFog>,
+            (&RenderTarget, &Msaa, Has<bevy::camera::Hdr>),
         ),
         With<BattleRowCamera>,
     >,
@@ -305,6 +303,7 @@ fn sync_actor_captures(
         layers,
         fxaa,
         fog,
+        (target, msaa, hdr),
     ) in &mut cameras
     {
         let index = row.0;
@@ -314,7 +313,9 @@ fn sync_actor_captures(
         // exact capture; F3, zero-size, fallback and retirement invalidate it.
         if !cache_enabled || !camera.is_active {
             cache.invalidate();
-            commands.entity(entity).remove::<ActorCaptureRequest>();
+            commands
+                .entity(entity)
+                .remove::<(ActorCaptureRequest, bevy::render::view::NoIndirectDrawing)>();
             continue;
         }
         if dirty[index] {
@@ -342,18 +343,18 @@ fn sync_actor_captures(
                 || **graph != Core3d.intern()
                 || unsupported_cameras.contains(entity)
                 || scene.row_targets[0].id() == scene.row_targets[1].id()
-                || other_cameras.iter().any(|other| {
+                || other_cameras.iter().any(|(other, other_target)| {
                     other.is_active
-                        && matches!(&other.target, RenderTarget::Image(image)
-                        if image.id() == scene.row_targets[index].id())
+                        && matches!(other_target, RenderTarget::Image(image)
+                        if image.handle.id() == scene.row_targets[index].id())
                 })
-                || camera.hdr
+                || hdr
                 || camera.viewport.is_some()
                 || fxaa.is_some()
                 || fog.is_some()
-                || !matches!(camera.target, RenderTarget::Image(ref image) if image.id() == scene.row_targets[index].id())
+                || !matches!(target, RenderTarget::Image(image) if image.handle.id() == scene.row_targets[index].id())
                 || !matches!(camera.clear_color, ClearColorConfig::Custom(color) if color == Color::NONE)
-                || !matches!(camera.output_mode, bevy::render::camera::CameraOutputMode::Write {
+                || !matches!(camera.output_mode, bevy::camera::CameraOutputMode::Write {
                     blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
                     clear_color: ClearColorConfig::Custom(color),
                 } if color == Color::NONE)
@@ -379,7 +380,7 @@ fn sync_actor_captures(
                 visibility.get() && layers.cloned().unwrap_or_default().intersects(&row_layers)
             });
             let (light_entity, light, light_pose, _, _) = relevant_lights.next()?;
-            if relevant_lights.next().is_some() || light.shadows_enabled {
+            if relevant_lights.next().is_some() || light.shadow_maps_enabled {
                 return None;
             }
             let Projection::Perspective(projection) = projection else {
@@ -389,8 +390,8 @@ fn sync_actor_captures(
                 actor: actor.entity,
                 mesh: mesh.id(),
                 material: actor.material.id(),
-                actor_pose: pose.compute_matrix(),
-                camera_pose: camera_pose.compute_matrix(),
+                actor_pose: pose.to_matrix(),
+                camera_pose: camera_pose.to_matrix(),
                 target: scene.row_targets[index].id(),
                 projection: [
                     projection.fov,
@@ -408,7 +409,7 @@ fn sync_actor_captures(
                 light: (
                     light_entity,
                     light.last_changed().get(),
-                    light_pose.compute_matrix(),
+                    light_pose.to_matrix(),
                 ),
                 ambient: ambient
                     .as_ref()
@@ -417,7 +418,7 @@ fn sync_actor_captures(
                 unlit: material.unlit,
                 render_size: scene.row_sizes[index],
                 output_size: status.output_size,
-                msaa_samples: msaa.as_ref().map_or(1, |msaa| msaa.samples()),
+                msaa_samples: msaa.samples(),
             })
         })();
         let Some(key) = key else {
@@ -427,38 +428,46 @@ fn sync_actor_captures(
                 camera.is_active = false;
             }
             cache.invalidate();
-            commands.entity(entity).remove::<ActorCaptureRequest>();
+            commands
+                .entity(entity)
+                .remove::<(ActorCaptureRequest, bevy::render::view::NoIndirectDrawing)>();
             continue;
         };
         let (actor, mesh, material) = (key.actor, key.mesh, key.material);
         if let Some(ticket) = cache.request(key) {
             status.row_capture_pending[index] = true;
-            commands.entity(entity).insert(ActorCaptureRequest {
-                actor,
-                mesh,
-                material,
-                target: scene.row_targets[index].id(),
-                size: scene.row_sizes[index],
-                ticket,
-            });
+            commands.entity(entity).insert((
+                bevy::render::view::NoIndirectDrawing,
+                ActorCaptureRequest {
+                    actor,
+                    mesh,
+                    material,
+                    target: scene.row_targets[index].id(),
+                    size: scene.row_sizes[index],
+                    ticket,
+                },
+            ));
         } else {
             let ready = cache.settled();
             status.row_capture_ready[index] = ready;
             status.row_capture_pending[index] = !ready;
             camera.is_active = false;
-            commands.entity(entity).remove::<ActorCaptureRequest>();
+            commands
+                .entity(entity)
+                .remove::<(ActorCaptureRequest, bevy::render::view::NoIndirectDrawing)>();
         }
     }
 }
 
-// Identical to Bevy 0.14 DrawMaterial<StandardMaterial>, followed by a receipt.
+// The current Bevy DrawMaterial sequence, followed by a real draw receipt.
 // The tuple stops on Failure, including asynchronous pipeline compilation,
 // missing bindings/assets and not-yet-ready GPU mesh preprocessing.
 type CaptureActorDraw = (
     SetItemPipeline,
     SetMeshViewBindGroup<0>,
-    SetMeshBindGroup<1>,
-    SetMaterialBindGroup<StandardMaterial, 2>,
+    SetMeshViewBindingArrayBindGroup<1>,
+    SetMeshBindGroup<2>,
+    SetMaterialBindGroup<3>,
     DrawMesh,
     RecordActorDraw,
 );
@@ -469,12 +478,12 @@ impl RenderCommand<Opaque3d> for RecordActorDraw {
     type ItemQuery = ();
     fn render<'w>(
         item: &Opaque3d,
-        request: ROQueryItem<'w, Self::ViewQuery>,
+        request: ROQueryItem<'w, '_, Self::ViewQuery>,
         _: Option<()>,
         _: SystemParamItem<'w, '_, Self::Param>,
         _: &mut TrackedRenderPass<'w>,
     ) -> RenderCommandResult {
-        if item.entity() == request.actor && !item.batch_range().is_empty() {
+        if item.main_entity() == request.actor.into() && !item.batch_range().is_empty() {
             request.ticket.mark_drawn();
         }
         RenderCommandResult::Success
@@ -482,63 +491,95 @@ impl RenderCommand<Opaque3d> for RecordActorDraw {
 }
 
 fn observe_actor_draws(
-    views: Query<(Entity, &ActorCaptureRequest, &VisibleEntities), With<ExtractedCamera>>,
+    views: Query<
+        (&ActorCaptureRequest, &RenderVisibleEntities, &ExtractedView),
+        With<ExtractedCamera>,
+    >,
     mut phases: ResMut<ViewBinnedRenderPhases<Opaque3d>>,
     draws: Res<DrawFunctions<Opaque3d>>,
-    meshes: Res<RenderAssets<GpuMesh>>,
-    materials: Res<RenderAssets<PreparedMaterial<StandardMaterial>>>,
-    material_instances: Res<RenderMaterialInstances<StandardMaterial>>,
+    meshes: Res<RenderAssets<RenderMesh>>,
+    materials: Res<ErasedRenderAssets<PreparedMaterial>>,
+    material_instances: Res<RenderMaterialInstances>,
     images: Res<RenderAssets<GpuImage>>,
 ) {
-    for (view, request, visible) in &views {
+    for (request, visible, view) in &views {
         let (Some(phase), Some(mesh), Some(material), Some(image)) = (
-            phases.get_mut(&view),
+            phases.get_mut(&view.retained_view_entity),
             meshes.get(request.mesh),
             materials.get(request.material),
             images.get(request.target),
         ) else {
             continue;
         };
-        if visible.get::<WithMesh>() != [request.actor]
-            || image.size != request.size
+        let actor = request.actor.into();
+        // Capture requests use direct drawing, leaving Bevy's ordinary material
+        // queue and geometry intact while exposing its exact single actor bin.
+        if visible.get::<Mesh3d>().is_none_or(|entities| {
+            entities.entities_cpu_culling.len() != 1
+                || entities.entities_cpu_culling[0].1 != actor
+                || !entities.entities_gpu_culling.is_empty()
+        }) || image.size_2d() != request.size
             || mesh.vertex_count == 0
-            || matches!(mesh.buffer_info, GpuBufferInfo::Indexed { count: 0, .. })
-            || material_instances.get(&request.actor) != Some(&request.material)
-            || phase.batchable_mesh_keys.len() != 1
-            || !phase.unbatchable_mesh_keys.is_empty()
+            || matches!(
+                mesh.buffer_info,
+                RenderMeshBufferInfo::Indexed { count: 0, .. }
+            )
+            || material_instances
+                .instances
+                .get(&actor)
+                .is_none_or(|instance| instance.asset_id != request.material.untyped())
+            || phase.batchable_meshes.len() != 1
+            || !phase.multidrawable_meshes.is_empty()
+            || !phase.unbatchable_meshes.is_empty()
             || !phase.non_mesh_items.is_empty()
         {
             continue;
         }
-        let mut key = phase.batchable_mesh_keys[0].clone();
-        if key.asset_id != request.mesh.untyped()
-            || key.material_bind_group_id != Some(material.bind_group.id())
+        let Some(((batch, bin), entities)) = phase.batchable_meshes.first() else {
+            continue;
+        };
+        if bin.asset_id != request.mesh.untyped()
+            || batch.material_bind_group_index != Some(material.binding.group.0)
+            || entities.entities().len() != 1
         {
             continue;
         }
-        // This isolated view contains exactly its one modeled actor. Requeue
-        // that same bin with the same geometry/material/pipeline, replacing
-        // only the draw function. The arena and other views are untouched.
-        key.draw_function = draws.read().id::<CaptureActorDraw>();
-        phase.clear();
-        phase.add(key, request.actor, BinnedRenderPhaseType::BatchableMesh);
+        let Some(uniform) = entities.entities().get(&actor).copied() else {
+            continue;
+        };
+        let (mut batch, bin) = (batch.clone(), bin.clone());
+        batch.draw_function = draws.read().id::<CaptureActorDraw>();
+        // Update the retained cache through its public API; editing bin keys
+        // directly would leave stale entities in later render frames.
+        phase.remove(actor);
+        phase.add(
+            batch,
+            bin,
+            (Entity::PLACEHOLDER, actor),
+            uniform,
+            BinnedRenderPhaseType::BatchableMesh,
+        );
     }
 }
-
-#[derive(Debug, Hash, PartialEq, Eq, Clone, RenderLabel)]
-struct CaptureOutputLabel;
 
 #[derive(Component)]
 struct CaptureOutputGuard(CachedRenderPipelineId);
 
 fn prepare_capture_output_guard(
     mut commands: Commands,
-    views: Query<(Entity, &ViewTarget), With<ActorCaptureRequest>>,
+    views: Query<
+        (
+            Entity,
+            &ViewTarget,
+            Option<&bevy::render::view::ResolvedCompositingSpace>,
+        ),
+        With<ActorCaptureRequest>,
+    >,
     pipeline_cache: Res<PipelineCache>,
     mut pipelines: ResMut<SpecializedRenderPipelines<BlitPipeline>>,
     blit: Res<BlitPipeline>,
 ) {
-    for (entity, target) in &views {
+    for (entity, target, space) in &views {
         // Exactly the fixed row-camera key used by Bevy's UpscalingPlugin.
         // ViewUpscalingPipeline's presence alone does not prove compilation:
         // Bevy inserts it even when block_on_render_pipeline returns an error.
@@ -546,57 +587,50 @@ fn prepare_capture_output_guard(
             &pipeline_cache,
             &blit,
             BlitPipelineKey {
-                texture_format: target.out_texture_format(),
+                target_format: match target.out_texture_view_format() {
+                    Some(format) => format,
+                    None => continue,
+                },
                 blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
                 samples: 1,
+                source_space: bevy::render::view::ResolvedCompositingSpace::space(space),
             },
         );
         commands.entity(entity).insert(CaptureOutputGuard(id));
     }
 }
 
-#[derive(Default)]
-struct CaptureOutputNode;
-impl ViewNode for CaptureOutputNode {
-    type ViewQuery = (
-        &'static ActorCaptureRequest,
-        &'static CaptureOutputGuard,
-        &'static ViewUpscalingPipeline,
-        &'static ViewTarget,
-        &'static ExtractedCamera,
-    );
-
-    fn run(
-        &self,
-        _: &mut RenderGraphContext,
-        _: &mut RenderContext,
-        (request, guard, _, target, camera): QueryItem<Self::ViewQuery>,
-        world: &World,
-    ) -> Result<(), NodeRunError> {
-        // This node runs after this view's output blit, never after an assumed
-        // number of display frames. The fixed key must have been loaded and
-        // the actual output view must be the current requested target.
-        let pipeline = world.resource::<PipelineCache>();
-        let images = world.resource::<RenderAssets<GpuImage>>();
-        if camera.render_graph == Core3d.intern()
-            && camera.viewport.is_none()
-            && matches!(&camera.target,
-                Some(bevy::render::camera::NormalizedRenderTarget::Image(image))
-                    if image.id() == request.target)
-            && camera.physical_target_size == Some(request.size)
-            && matches!(camera.output_mode,
-                bevy::render::camera::CameraOutputMode::Write {
-                    blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
-                    clear_color: ClearColorConfig::Custom(color),
-                } if color == Color::NONE)
-            && pipeline.get_render_pipeline(guard.0).is_some()
-            && images.get(request.target).is_some_and(|image| {
-                image.size == request.size && image.texture_view.id() == target.out_texture().id()
-            })
-        {
-            request.ticket.mark_output();
-        }
-        Ok(())
+fn certify_capture_output(
+    view: ViewQuery<(
+        &ActorCaptureRequest,
+        &CaptureOutputGuard,
+        &ViewUpscalingPipeline,
+        &ViewTarget,
+        &ExtractedCamera,
+    )>,
+    pipelines: Res<PipelineCache>,
+    images: Res<RenderAssets<GpuImage>>,
+) {
+    let (request, guard, _, target, camera) = view.into_inner();
+    // This per-view system runs after the actual output blit. A queued pipeline
+    // or elapsed frame count alone never certifies the cached image.
+    if camera.viewport.is_none()
+        && matches!(&camera.target, Some(bevy::camera::NormalizedRenderTarget::Image(image))
+            if image.handle.id() == request.target)
+        && camera.physical_target_size == Some(request.size)
+        && matches!(camera.output_mode, bevy::camera::CameraOutputMode::Write {
+            blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
+            clear_color: ClearColorConfig::Custom(color),
+        } if color == Color::NONE)
+        && pipelines.get_render_pipeline(guard.0).is_some()
+        && images.get(request.target).is_some_and(|image| {
+            image.size_2d() == request.size
+                && target
+                    .out_texture()
+                    .is_some_and(|out| image.texture_view.id() == out.id())
+        })
+    {
+        request.ticket.mark_output();
     }
 }
 
@@ -613,27 +647,18 @@ mod tests {
     use super::*;
 
     fn capture_app() -> App {
-        let mut app = super::super::tests::headless_battle_app();
+        let mut app = super::super::tests::headless_battle_app_with_asset_plugin();
         app.add_plugins((
             bevy::transform::TransformPlugin,
-            bevy::render::view::VisibilityPlugin,
+            bevy::camera::visibility::VisibilityPlugin,
         ));
-        // MinimalPlugins has no AssetPlugin; publish exactly as AssetPlugin
-        // does in production, before the cache's Last-stage decision.
-        app.add_systems(
-            Last,
-            (
-                Assets::<Mesh>::asset_events,
-                Assets::<StandardMaterial>::asset_events,
-                Assets::<Image>::asset_events,
-                Assets::<Shader>::asset_events,
-            )
-                .in_set(AssetEvents),
-        );
         app.world_mut().resource_mut::<ActorCaptures>().enabled = true;
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         let mut source = super::super::tests::source_test_frame(0xe4);
         source.battler_offsets = [Vec2::ZERO; 2];
         source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
@@ -647,6 +672,10 @@ mod tests {
         // have live joints and must never be frozen by this cache.
         frame.battlers[0].as_mut().unwrap().species_id = Arc::from("SUDOWOODO");
         frame.battlers[1].as_mut().unwrap().species_id = Arc::from("RATICATE");
+        app.update();
+        // AssetPlugin can publish initial internal shader events after the
+        // first update. Drain those before tests simulate a settled receipt,
+        // so later invalidation assertions isolate the input they change.
         app.update();
         app
     }
@@ -680,6 +709,16 @@ mod tests {
         }
     }
 
+    fn mark_mesh_modified(app: &mut App, mesh: &Handle<Mesh>) {
+        let mut assets = app.world_mut().resource_mut::<Assets<Mesh>>();
+        let mut asset = assets.get_mut(mesh).unwrap();
+        let colors = asset.attribute(Mesh::ATTRIBUTE_COLOR).unwrap().clone();
+        // AssetMut emits Modified only after mutable access. Replacing the
+        // color attribute with its existing data exercises that public event
+        // path without changing the rendered geometry or appearance.
+        asset.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors);
+    }
+
     #[test]
     fn pidgeotto_rows_remain_live_and_wing_motion_never_modifies_mesh_assets() {
         let mut app = capture_app();
@@ -705,8 +744,8 @@ mod tests {
                 ],
             )
         };
-        let mut reader = bevy::ecs::event::ManualEventReader::<AssetEvent<Mesh>>::default();
-        reader.clear(app.world().resource::<Events<AssetEvent<Mesh>>>());
+        let mut reader = bevy::ecs::message::MessageCursor::<AssetEvent<Mesh>>::default();
+        reader.clear(app.world().resource::<Messages<AssetEvent<Mesh>>>());
         for _ in 0..12 {
             app.update();
             let world = app.world_mut();
@@ -724,7 +763,7 @@ mod tests {
             }
             assert!(
                 reader
-                    .read(world.resource::<Events<AssetEvent<Mesh>>>())
+                    .read(world.resource::<Messages<AssetEvent<Mesh>>>())
                     .all(|event| !meshes.contains(&changed_asset(event)))
             );
             assert!(active(&mut app)[0]);
@@ -736,16 +775,27 @@ mod tests {
         for species in ["CYNDAQUIL", "TOTODILE", "GENGAR"] {
             let mut app = capture_app();
             app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
-                .as_mut().unwrap().species_id = Arc::from(species);
+                .as_mut()
+                .unwrap()
+                .species_id = Arc::from(species);
             app.update();
-            let entity = app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().entity;
+            let entity = app.world().resource::<BattleScene>().actors[0]
+                .as_ref()
+                .unwrap()
+                .entity;
             for _ in 0..12 {
                 app.update();
                 let world = app.world_mut();
-                assert!(world.query::<&ActorCaptureRequest>().iter(world)
-                    .all(|request| request.actor != entity));
-                assert_eq!(*world.get::<RenderLayers>(entity).unwrap(),
-                    RenderLayers::layer(BATTLE_ROW_LAYERS[0]));
+                assert!(
+                    world
+                        .query::<&ActorCaptureRequest>()
+                        .iter(world)
+                        .all(|request| request.actor != entity)
+                );
+                assert_eq!(
+                    *world.get::<RenderLayers>(entity).unwrap(),
+                    RenderLayers::layer(BATTLE_ROW_LAYERS[0])
+                );
                 assert!(active(&mut app)[0]);
             }
         }
@@ -833,10 +883,7 @@ mod tests {
             .mesh
             .clone()
             .unwrap();
-        app.world_mut()
-            .resource_mut::<Assets<Mesh>>()
-            .get_mut(&mesh)
-            .unwrap();
+        mark_mesh_modified(&mut app, &mesh);
         app.update();
         assert_eq!(
             active(&mut app),
@@ -930,8 +977,7 @@ mod tests {
         app.update();
         {
             let world = app.world_mut();
-            let mut cameras =
-                world.query::<(&BattleRowCamera, &mut bevy::render::camera::Exposure)>();
+            let mut cameras = world.query::<(&BattleRowCamera, &mut bevy::camera::Exposure)>();
             for (row, mut exposure) in cameras.iter_mut(world) {
                 if row.0 == 0 {
                     exposure.ev100 += 1.0;
@@ -942,9 +988,10 @@ mod tests {
         assert_eq!(active(&mut app), [true, false]);
         submit(&mut app);
         app.update();
-        app.world_mut().insert_resource(AmbientLight {
+        app.world_mut().insert_resource(GlobalAmbientLight {
             color: Color::WHITE,
             brightness: 70.0,
+            ..default()
         });
         app.update();
         assert_eq!(active(&mut app), [true; 2]);
@@ -953,7 +1000,7 @@ mod tests {
         {
             let world = app.world_mut();
             for mut light in world.query::<&mut DirectionalLight>().iter_mut(world) {
-                light.shadows_enabled = true;
+                light.shadow_maps_enabled = true;
             }
         }
         for _ in 0..4 {
@@ -986,7 +1033,8 @@ mod tests {
             assert_eq!(
                 world
                     .query_filtered::<&Visibility, With<BattleRowCompositeSprite>>()
-                    .single(world),
+                    .single(world)
+                    .unwrap(),
                 &Visibility::Hidden
             );
         }
@@ -1101,11 +1149,11 @@ mod tests {
         {
             let world = app.world_mut();
             for (row, mut camera) in world
-                .query::<(&BattleRowCamera, &mut Camera)>()
+                .query::<(&BattleRowCamera, &mut RenderTarget)>()
                 .iter_mut(world)
             {
                 if row.0 == 0 {
-                    camera.target = RenderTarget::Image(replacement.clone());
+                    *camera = RenderTarget::Image(replacement.clone().into());
                 }
             }
         }
@@ -1181,23 +1229,33 @@ mod tests {
     fn capture_bridge_app() -> App {
         let mut app = capture_app();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
-        app.world_mut().resource_mut::<capture_bridge::BattleCaptureBridge>().enabled = true;
+        app.world_mut()
+            .resource_mut::<capture_bridge::BattleCaptureBridge>()
+            .enabled = true;
         app.update();
         submit(&mut app);
         app.update();
         app.update();
-        assert!(app.world().resource::<ActorCaptures>().settled_image(1).is_some(),
-            "fixture must have a settled final-writer receipt before admission");
+        assert!(
+            app.world()
+                .resource::<ActorCaptures>()
+                .settled_image(1)
+                .is_some(),
+            "fixture must have a settled final-writer receipt before admission"
+        );
         app
     }
 
     fn show_capture(app: &mut App, tick: u16, picture: crystal_render_api::VisualCapturePicture) {
         let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
         frame.capture = Some(crystal_render_api::VisualBattleCapture {
-            frame: tick, ball_id: Arc::from("POKE_BALL"), presented: true,
+            frame: tick,
+            ball_id: Arc::from("POKE_BALL"),
+            presented: true,
             enemy_picture: picture,
         });
-        frame.battlers[1].as_mut().unwrap().visible = picture != crystal_render_api::VisualCapturePicture::Hidden;
+        frame.battlers[1].as_mut().unwrap().visible =
+            picture != crystal_render_api::VisualCapturePicture::Hidden;
     }
 
     #[test]
@@ -1210,33 +1268,83 @@ mod tests {
             let actor = scene.actors[1].as_ref().unwrap();
             (scene.row_targets[1].clone(), actor.entity, actor.base_pose)
         };
-        let counts = (app.world().resource::<Assets<Mesh>>().len(),
+        let counts = (
+            app.world().resource::<Assets<Mesh>>().len(),
             app.world().resource::<Assets<Image>>().len(),
-            app.world().resource::<Assets<StandardMaterial>>().len(), app.world().entities().len());
-        for (tick, picture) in [(0, Full), (71, Tiles(7)), (75, Tiles(5)), (79, Tiles(3)),
-            (83, Hidden), (434, Hidden), (437, Tiles(3)), (441, Tiles(5)), (445, Tiles(7)), (449, Full)] {
+            app.world().resource::<Assets<StandardMaterial>>().len(),
+            app.world().entities().len(),
+        );
+        for (tick, picture) in [
+            (0, Full),
+            (71, Tiles(7)),
+            (75, Tiles(5)),
+            (79, Tiles(3)),
+            (83, Hidden),
+            (434, Hidden),
+            (437, Tiles(3)),
+            (441, Tiles(5)),
+            (445, Tiles(7)),
+            (449, Full),
+        ] {
             show_capture(&mut app, tick, picture);
             for _ in 0..4 {
                 app.update();
                 let world = app.world_mut();
-                assert!(world.resource::<BattleViewStatus>().capture_image_active,
-                    "admitted capture lost its lease at {tick}: {:?}", world.resource::<BattleViewStatus>().capture_fallback_reason);
+                assert!(
+                    world.resource::<BattleViewStatus>().capture_image_active,
+                    "admitted capture lost its lease at {tick}: {:?}",
+                    world.resource::<BattleViewStatus>().capture_fallback_reason
+                );
                 assert!(world.resource::<BattleViewStatus>().active);
                 assert_eq!(*world.resource::<BattleSceneLayout>(), layout);
                 assert_eq!(world.resource::<BattleScene>().row_targets[1], target);
                 assert_eq!(*world.get::<Transform>(actor).unwrap(), pose);
-                assert_eq!(*world.get::<RenderLayers>(actor).unwrap(), RenderLayers::layer(BATTLE_ROW_LAYERS[1]));
-                assert_eq!(*world.get::<Visibility>(actor).unwrap(), if picture == Hidden { Visibility::Hidden } else { Visibility::Visible });
-                assert!(world.query::<(&BattleRowCamera, &Camera)>().iter(world).all(|(row, camera)| row.0 != 1 || !camera.is_active));
-                assert_eq!((world.resource::<Assets<Mesh>>().len(), world.resource::<Assets<Image>>().len(),
-                    world.resource::<Assets<StandardMaterial>>().len(), world.entities().len()), counts);
+                assert_eq!(
+                    *world.get::<RenderLayers>(actor).unwrap(),
+                    RenderLayers::layer(BATTLE_ROW_LAYERS[1])
+                );
+                assert_eq!(
+                    *world.get::<Visibility>(actor).unwrap(),
+                    if picture == Hidden {
+                        Visibility::Hidden
+                    } else {
+                        Visibility::Visible
+                    }
+                );
+                assert!(
+                    world
+                        .query::<(&BattleRowCamera, &Camera)>()
+                        .iter(world)
+                        .all(|(row, camera)| row.0 != 1 || !camera.is_active)
+                );
+                assert_eq!(
+                    (
+                        world.resource::<Assets<Mesh>>().len(),
+                        world.resource::<Assets<Image>>().len(),
+                        world.resource::<Assets<StandardMaterial>>().len(),
+                        world.entities().len()
+                    ),
+                    counts
+                );
             }
         }
         app.world_mut().resource_mut::<VisualBattleFrame>().capture = None;
         app.update();
-        assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
-        assert!(app.world().get::<RenderLayers>(actor).unwrap().intersects(&RenderLayers::layer(BATTLE_LAYER)));
-        assert!(active(&mut app)[1], "retired image can prewarm for the next capture");
+        assert!(
+            !app.world()
+                .resource::<BattleViewStatus>()
+                .capture_image_active
+        );
+        assert!(
+            app.world()
+                .get::<RenderLayers>(actor)
+                .unwrap()
+                .intersects(&RenderLayers::layer(BATTLE_LAYER))
+        );
+        assert!(
+            active(&mut app)[1],
+            "retired image can prewarm for the next capture"
+        );
     }
 
     #[test]
@@ -1246,36 +1354,78 @@ mod tests {
             let mut app = capture_bridge_app();
             show_capture(&mut app, 0, Full);
             app.update();
-            assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active
+            );
             show_capture(&mut app, 83, Hidden);
             match interruption {
                 0 => app.world_mut().resource_mut::<VoxelViewSettings>().enabled = false,
                 1 => {
                     let world = app.world_mut();
-                    world.query::<&mut Window>().single_mut(world).resolution.set(900.0, 600.0);
+                    world
+                        .query::<&mut Window>()
+                        .single_mut(world)
+                        .unwrap()
+                        .resolution
+                        .set(900.0, 600.0);
                 }
-                2 => app.world_mut().resource_mut::<VisualBattleCanvas>().physical_size = UVec2::new(400, 300),
+                2 => {
+                    app.world_mut()
+                        .resource_mut::<VisualBattleCanvas>()
+                        .physical_size = UVec2::new(400, 300)
+                }
                 _ => {
-                    let mesh = app.world().resource::<BattleScene>().actors[1].as_ref().unwrap().mesh.clone().unwrap();
-                    app.world_mut().resource_mut::<Assets<Mesh>>().get_mut(&mesh).unwrap();
+                    let mesh = app.world().resource::<BattleScene>().actors[1]
+                        .as_ref()
+                        .unwrap()
+                        .mesh
+                        .clone()
+                        .unwrap();
+                    mark_mesh_modified(&mut app, &mesh);
                 }
             }
             app.update();
-            if interruption == 3 { app.update(); } // AssetEvents flush in Last.
-            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+            if interruption == 3 {
+                app.update();
+            } // AssetPlugin flushes asset messages before Last.
+            assert!(
+                !app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active
+            );
             assert!(!app.world().resource::<BattleViewStatus>().active);
             app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
             for tick in [84, 437, 449, 470] {
                 show_capture(&mut app, tick, Full);
                 app.update();
                 assert!(!app.world().resource::<BattleViewStatus>().active);
-                assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_some());
-                assert_eq!(app.world().resource::<VisualBattleFrame>().capture.as_ref().unwrap().frame, tick);
+                assert!(
+                    app.world()
+                        .resource::<BattleViewStatus>()
+                        .capture_fallback_reason
+                        .is_some()
+                );
+                assert_eq!(
+                    app.world()
+                        .resource::<VisualBattleFrame>()
+                        .capture
+                        .as_ref()
+                        .unwrap()
+                        .frame,
+                    tick
+                );
             }
             app.world_mut().resource_mut::<VisualBattleFrame>().capture = None;
             app.update();
             assert!(app.world().resource::<BattleViewStatus>().active);
-            assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_none());
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_fallback_reason
+                    .is_none()
+            );
         }
     }
 
@@ -1284,21 +1434,34 @@ mod tests {
         use crystal_render_api::VisualCapturePicture::Full;
         let mut app = capture_app();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
-        app.world_mut().resource_mut::<capture_bridge::BattleCaptureBridge>().enabled = true;
+        app.world_mut()
+            .resource_mut::<capture_bridge::BattleCaptureBridge>()
+            .enabled = true;
         let late: Vec<_> = {
             let world = app.world_mut();
-            world.query::<&ActorCaptureRequest>().iter(world).cloned().collect()
+            world
+                .query::<&ActorCaptureRequest>()
+                .iter(world)
+                .cloned()
+                .collect()
         };
         show_capture(&mut app, 0, Full);
         app.update();
         assert!(!app.world().resource::<BattleViewStatus>().active);
         for request in late {
-            request.ticket.mark_drawn(); request.ticket.mark_output(); request.ticket.mark_submitted();
+            request.ticket.mark_drawn();
+            request.ticket.mark_output();
+            request.ticket.mark_submitted();
         }
         for tick in [1, 71, 83, 437] {
-            show_capture(&mut app, tick, Full); app.update();
+            show_capture(&mut app, tick, Full);
+            app.update();
             assert!(!app.world().resource::<BattleViewStatus>().active);
-            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
+            assert!(
+                !app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active
+            );
         }
     }
 
@@ -1306,26 +1469,52 @@ mod tests {
     fn capture_bridge_ignores_unrelated_oam_materials_and_neutral_flash_mode_changes() {
         use crystal_render_api::VisualCapturePicture::Full;
         let mut app = capture_bridge_app();
-        let unrelated = app.world_mut().resource_mut::<Assets<StandardMaterial>>()
+        let unrelated = app
+            .world_mut()
+            .resource_mut::<Assets<StandardMaterial>>()
             .add(StandardMaterial::default());
-        app.update(); app.update();
-        show_capture(&mut app, 0, Full); app.update();
-        assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
-        for (index, mode) in [BattleFlashMode::Reduced, BattleFlashMode::Full,
-            BattleFlashMode::Reduced, BattleFlashMode::Full].into_iter().enumerate() {
+        app.update();
+        app.update();
+        show_capture(&mut app, 0, Full);
+        app.update();
+        assert!(
+            app.world()
+                .resource::<BattleViewStatus>()
+                .capture_image_active
+        );
+        for (index, mode) in [
+            BattleFlashMode::Reduced,
+            BattleFlashMode::Full,
+            BattleFlashMode::Reduced,
+            BattleFlashMode::Full,
+        ]
+        .into_iter()
+        .enumerate()
+        {
             app.world_mut().insert_resource(mode);
-            app.world_mut().resource_mut::<Assets<StandardMaterial>>()
-                .get_mut(&unrelated).unwrap().base_color = Color::srgb(index as f32 / 4.0, 0.2, 0.3);
+            app.world_mut()
+                .resource_mut::<Assets<StandardMaterial>>()
+                .get_mut(&unrelated)
+                .unwrap()
+                .base_color = Color::srgb(index as f32 / 4.0, 0.2, 0.3);
             show_capture(&mut app, index as u16 + 1, Full);
-            app.update(); app.update();
-            assert!(app.world().resource::<BattleViewStatus>().capture_image_active,
-                "unrelated OAM material or neutral intensity change cannot revoke enemy image");
+            app.update();
+            app.update();
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active,
+                "unrelated OAM material or neutral intensity change cannot revoke enemy image"
+            );
         }
     }
 
     fn capture_bridge_battle_light(app: &mut App) -> Entity {
         let world = app.world_mut();
-        world.query_filtered::<Entity, With<BattleLight>>().single(world)
+        world
+            .query_filtered::<Entity, With<BattleLight>>()
+            .single(world)
+            .unwrap()
     }
 
     fn assert_capture_bridge_classic(app: &App) {
@@ -1349,21 +1538,30 @@ mod tests {
                 if held {
                     show_capture(&mut app, 0, Full);
                     app.update();
-                    assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+                    assert!(
+                        app.world()
+                            .resource::<BattleViewStatus>()
+                            .capture_image_active
+                    );
                 }
 
                 if remove_light {
                     app.world_mut().entity_mut(sun).remove::<DirectionalLight>();
                 } else {
                     // Only Transform changes: DirectionalLight's change tick stays intact.
-                    app.world_mut().get_mut::<Transform>(sun).unwrap().rotate_y(0.3);
+                    app.world_mut()
+                        .get_mut::<Transform>(sun)
+                        .unwrap()
+                        .rotate_y(0.3);
                 }
                 show_capture(&mut app, if held { 1 } else { 0 }, Full);
                 app.update();
                 assert_capture_bridge_classic(&app);
 
                 // Restoring compatible inputs cannot reverse the per-capture decision.
-                app.world_mut().entity_mut(sun).insert((original_pose, original_light));
+                app.world_mut()
+                    .entity_mut(sun)
+                    .insert((original_pose, original_light));
                 for tick in [2, 71, 83, 437, 449] {
                     show_capture(&mut app, tick, Full);
                     app.update();
@@ -1378,28 +1576,38 @@ mod tests {
         use crystal_render_api::VisualCapturePicture::{Full, Hidden, Tiles};
 
         let mut app = capture_bridge_app();
-        let unrelated = app.world_mut().spawn((
-            DirectionalLightBundle {
-                transform: Transform::from_xyz(180.0, 320.0, 220.0)
-                    .looking_at(Vec3::ZERO, Vec3::Y),
-                ..default()
-            },
-            RenderLayers::layer(31),
-        )).id();
+        let unrelated = app
+            .world_mut()
+            .spawn((
+                DirectionalLight::default(),
+                (Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
+                RenderLayers::layer(31),
+            ))
+            .id();
 
         // Matches the production overworld atmosphere's mutable light assignment.
         // Admission itself, not merely an existing held lease, must ignore it.
         for (tick, picture) in [
-            (0, Full), (71, Tiles(7)), (75, Tiles(5)), (79, Tiles(3)),
-            (83, Hidden), (437, Tiles(3)), (449, Full),
+            (0, Full),
+            (71, Tiles(7)),
+            (75, Tiles(5)),
+            (79, Tiles(3)),
+            (83, Hidden),
+            (437, Tiles(3)),
+            (449, Full),
         ] {
             for _ in 0..3 {
-                app.world_mut().get_mut::<DirectionalLight>(unrelated).unwrap()
-                    .shadows_enabled = true;
+                app.world_mut()
+                    .get_mut::<DirectionalLight>(unrelated)
+                    .unwrap()
+                    .shadow_maps_enabled = true;
                 show_capture(&mut app, tick, picture);
                 app.update();
                 let status = app.world().resource::<BattleViewStatus>();
-                assert!(status.active, "unrelated sun rejected capture at tick {tick}");
+                assert!(
+                    status.active,
+                    "unrelated sun rejected capture at tick {tick}"
+                );
                 assert!(status.capture_image_active);
                 assert!(status.capture_fallback_reason.is_none());
             }
@@ -1412,7 +1620,9 @@ mod tests {
 
         let mut app = capture_bridge_app();
         let original_actor = app.world().resource::<BattleScene>().actors[1]
-            .as_ref().unwrap().entity;
+            .as_ref()
+            .unwrap()
+            .entity;
         {
             let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
             let enemy = frame.battlers[1].as_mut().unwrap();
@@ -1423,8 +1633,13 @@ mod tests {
         assert_capture_bridge_classic(&app);
         // Selection precedes actor synchronization, so rejection must happen before
         // replacing the cached actor or compositing one frame of its former image.
-        assert_eq!(app.world().resource::<BattleScene>().actors[1]
-            .as_ref().unwrap().entity, original_actor);
+        assert_eq!(
+            app.world().resource::<BattleScene>().actors[1]
+                .as_ref()
+                .unwrap()
+                .entity,
+            original_actor
+        );
         for tick in [1, 71, 83, 437, 449] {
             show_capture(&mut app, tick, Full);
             app.update();
@@ -1442,18 +1657,24 @@ mod tests {
                 if held {
                     show_capture(&mut app, 0, Full);
                     app.update();
-                    assert!(app.world().resource::<BattleViewStatus>().capture_image_active);
+                    assert!(
+                        app.world()
+                            .resource::<BattleViewStatus>()
+                            .capture_image_active
+                    );
                 }
                 if shared_handle {
-                    app.world_mut().resource_mut::<BattleScene>().row_targets[0] = targets[1].clone();
+                    app.world_mut().resource_mut::<BattleScene>().row_targets[0] =
+                        targets[1].clone();
                 } else {
                     // Handles in BattleScene remain distinct. The other camera
                     // alone is redirected, so checking the handles cannot catch it.
                     let world = app.world_mut();
-                    let mut cameras = world.query::<(&BattleRowCamera, &mut Camera)>();
-                    for (row, mut camera) in cameras.iter_mut(world) {
+                    let mut cameras =
+                        world.query::<(&BattleRowCamera, &mut Camera, &mut RenderTarget)>();
+                    for (row, mut camera, mut target) in cameras.iter_mut(world) {
                         if row.0 == 0 {
-                            camera.target = RenderTarget::Image(targets[1].clone());
+                            *target = RenderTarget::Image(targets[1].clone().into());
                             camera.is_active = true;
                         }
                     }
@@ -1465,10 +1686,11 @@ mod tests {
                 app.world_mut().resource_mut::<BattleScene>().row_targets[0] = targets[0].clone();
                 {
                     let world = app.world_mut();
-                    let mut cameras = world.query::<(&BattleRowCamera, &mut Camera)>();
-                    for (row, mut camera) in cameras.iter_mut(world) {
+                    let mut cameras =
+                        world.query::<(&BattleRowCamera, &mut Camera, &mut RenderTarget)>();
+                    for (row, mut camera, mut target) in cameras.iter_mut(world) {
                         if row.0 == 0 {
-                            camera.target = RenderTarget::Image(targets[0].clone());
+                            *target = RenderTarget::Image(targets[0].clone().into());
                             camera.is_active = false;
                         }
                     }
@@ -1488,49 +1710,87 @@ mod tests {
         use crystal_render_api::VisualCapturePicture::Full;
         for pending in [false, true] {
             let mut app = capture_bridge_app();
-            let stamp = app.world().resource::<ActorCaptures>().settled_image(1).unwrap();
+            let stamp = app
+                .world()
+                .resource::<ActorCaptures>()
+                .settled_image(1)
+                .unwrap();
             if pending {
                 show_capture(&mut app, 0, Full);
-                app.world_mut().resource_mut::<VisualBattleFrame>().capture.as_mut().unwrap()
+                app.world_mut()
+                    .resource_mut::<VisualBattleFrame>()
+                    .capture
+                    .as_mut()
+                    .unwrap()
                     .presented = false;
             }
-            // A persistent selector and a retained Events buffer avoid relying
+            // A persistent selector and a retained Messages buffer avoid relying
             // on wall-clock event expiry or extra app warmup frames. These are
             // initialization notifications for the image already certified by
             // the fixture's final draw/output/submission receipt.
             let mut selector = IntoSystem::into_system(capture_bridge::select_capture_bridge);
             selector.initialize(app.world_mut());
             for _ in 0..2 {
-                app.world_mut().resource_mut::<Events<AssetEvent<Mesh>>>()
-                    .send(AssetEvent::Added { id: stamp.mesh });
-                app.world_mut().resource_mut::<Events<AssetEvent<StandardMaterial>>>()
-                    .send(AssetEvent::Added { id: stamp.material });
-                app.world_mut().resource_mut::<Events<AssetEvent<Image>>>()
-                    .send(AssetEvent::Added { id: stamp.target });
-                app.world_mut().resource_mut::<Events<AssetEvent<Shader>>>()
-                    .send(AssetEvent::Added { id: BATTLE_COMPOSITE_SHADER.id() });
+                app.world_mut()
+                    .resource_mut::<Messages<AssetEvent<Mesh>>>()
+                    .write(AssetEvent::Added { id: stamp.mesh });
+                app.world_mut()
+                    .resource_mut::<Messages<AssetEvent<StandardMaterial>>>()
+                    .write(AssetEvent::Added { id: stamp.material });
+                app.world_mut()
+                    .resource_mut::<Messages<AssetEvent<Image>>>()
+                    .write(AssetEvent::Added { id: stamp.target });
+                app.world_mut()
+                    .resource_mut::<Messages<AssetEvent<Shader>>>()
+                    .write(AssetEvent::Added {
+                        id: BATTLE_COMPOSITE_SHADER.id(),
+                    });
             }
             selector.run((), app.world_mut());
-            assert!(app.world().resource::<ActorCaptures>().settled_image(1).is_some());
+            assert!(
+                app.world()
+                    .resource::<ActorCaptures>()
+                    .settled_image(1)
+                    .is_some()
+            );
             show_capture(&mut app, 0, Full);
             selector.run((), app.world_mut());
-            assert!(app.world().resource::<BattleViewStatus>().capture_image_active,
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active,
                 "idle/pending initialization events cannot reject a certified current image: {:?}",
-                app.world().resource::<BattleViewStatus>().capture_fallback_reason);
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_fallback_reason
+            );
 
             // A genuinely new relevant event is still a revocation, even while
             // the previous receipt remains available until Last processes it.
-            app.world_mut().resource_mut::<Events<AssetEvent<Mesh>>>()
-                .send(AssetEvent::Modified { id: stamp.mesh });
+            app.world_mut()
+                .resource_mut::<Messages<AssetEvent<Mesh>>>()
+                .write(AssetEvent::Modified { id: stamp.mesh });
             show_capture(&mut app, 1, Full);
             selector.run((), app.world_mut());
-            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active);
-            assert!(app.world().resource::<BattleViewStatus>().capture_fallback_reason.is_some());
+            assert!(
+                !app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active
+            );
+            assert!(
+                app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_fallback_reason
+                    .is_some()
+            );
             show_capture(&mut app, 2, Full);
             selector.run((), app.world_mut());
-            assert!(!app.world().resource::<BattleViewStatus>().capture_image_active,
-                "draining an event does not reverse a capture-wide fallback decision");
+            assert!(
+                !app.world()
+                    .resource::<BattleViewStatus>()
+                    .capture_image_active,
+                "draining an event does not reverse a capture-wide fallback decision"
+            );
         }
     }
-
 }

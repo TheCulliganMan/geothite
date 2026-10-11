@@ -2,6 +2,36 @@
 // No game pixels, source map layouts, scripts, or collision data are embedded.
 const OBJECTS: &[Object] = &[
     Object {
+        map: "GoldenrodGameCorner",
+        tileset: "game_corner",
+        width: 4,
+        height: 2,
+        fingerprint: 0x5ff63366c65ce6f9,
+        detail: Detail::ArcadeEntryMat,
+        rise: 0.,
+        depth: 16.,
+    },
+    Object {
+        map: "CeladonGameCorner",
+        tileset: "game_corner",
+        width: 4,
+        height: 2,
+        fingerprint: 0x5ff63366c65ce6f9,
+        detail: Detail::ArcadeEntryMat,
+        rise: 0.,
+        depth: 16.,
+    },
+    Object {
+        map: "CeladonGameCornerPrizeRoom",
+        tileset: "game_corner",
+        width: 4,
+        height: 2,
+        fingerprint: 0x5ff63366c65ce6f9,
+        detail: Detail::ArcadeEntryMat,
+        rise: 0.,
+        depth: 16.,
+    },
+    Object {
         map: "BattleTowerBattleRoom",
         tileset: "battle_tower_inside",
         width: 2,
@@ -1002,7 +1032,7 @@ const CELLS: &[CellRule] = &[
     CellRule {
         map: "BlackthornGym2F",
         tileset: "elite_four_room",
-        detail: Detail::Surface(Surface::Stone),
+        detail: Detail::Surface(Surface::BlueBrick),
         fingerprints: &[
             0x09816b45d7d85bbd,
             0x0ea7826f4dd83bc1,
@@ -1441,7 +1471,7 @@ const CELLS: &[CellRule] = &[
     CellRule {
         map: "CeladonGameCornerPrizeRoom",
         tileset: "game_corner",
-        detail: Detail::Surface(Surface::Ceramic),
+        detail: Detail::Surface(Surface::ArcadeCeramic),
         fingerprints: &[
             0x03be4dc7406293f6,
             0x0ca4f4c7457e8b83,
@@ -1467,21 +1497,6 @@ const CELLS: &[CellRule] = &[
             0xecc7f2e0484b109d,
             0xf2b320ce3c59d91f,
             0xfb51fec73bae8e2d,
-        ],
-    },
-    CellRule {
-        map: "CeladonGameCornerPrizeRoom",
-        tileset: "game_corner",
-        detail: Detail::Threshold,
-        fingerprints: &[
-            0x3082aec5d2e36a2b,
-            0x38e165c5d78be350,
-            0x92a39ad69286ec35,
-            0x9b8a41d697a2e3c2,
-            0xbb9371bd94fbe7bd,
-            0xc47a18bd9a17df4a,
-            0xd8f075ce2dd2f2d7,
-            0xe1bbecce32d7d11c,
         ],
     },
     CellRule {

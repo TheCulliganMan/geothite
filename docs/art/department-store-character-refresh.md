@@ -1,0 +1,13 @@
+# Department store character refresh — 2026-10-11
+
+The user's screenshot is GoldenrodDeptStore1F. Counter, elevator, pink stools, player and Receptionist/Pokefan F/Bug Catcher/Officer placements match the production room capture. An initial station identification attempt was incorrect; its native image is a different room and is not evidence for this screenshot.
+
+The running local static preview is Python PID 33410 on port 3013, rooted at ignored `target/outdoor-browser-review/`. Its initial `open-people.json` contained only 44 paintings. Exact normalized PNG byte comparisons against a newly Rust-generated canonical bundle showed Beauty and Mom differed, Bug Catcher was missing, while Chris, Receptionist and Officer already matched. An initial PIL interpolation comparison falsely suggested all sampled textures differed; the encoded-byte comparison supersedes it. Therefore stale deployment is one issue, and current character art still needs substantial improvement.
+
+The existing strict Rust bundler regenerated four rigs and all 75 paintings from `assets/open-models`. JSON/gzip were atomically copied into the ignored preview root. A fresh HTTP GET of port 3013 matched the written JSON exactly and contained all required entries, SHA-256 `cc96514a2ca90f98148347ae640274e6ff78433060b95d85c0f0b39f6f8704fe`. Temporary verification bundles were removed. The fresh native `incomplete_roster_cannot_install_and_full_roster_is_required_by_identity` regression passed. This proves served asset completeness, not final character quality.
+
+Added `preview=department-store` to the Rust browser preview selection, using the already rendered walkable room tile `(8,4)` and the existing nonpersistent preview path. No game controller or save behavior was changed. A wasm renderer rebuild is in progress in `browser-character-refresh-build.log`; no browser renderer deployment or live room validation is yet claimed.
+
+The actual native image-target room capture was individually inspected at `/Users/ryanculligan/.codex/artifacts/anime-character-review/pending-model-review/captures/department-store-current.png`. It uses canonical paintings and the production location renderer, with the existing compiled executable. It confirms the room/roles and exposes continuing weak character silhouettes. Room furniture/floor edits belong to concurrent work and are not claimed here. This capture does not prove gameplay, current geometry compilation or native window output.
+
+Beauty's separate texture correction is documented in `beauty-anime-review.md`. Pokefan F's texture and all remaining player/NPC anatomy, clothing, animation, bike and context work remain in scope. No full character is approved.

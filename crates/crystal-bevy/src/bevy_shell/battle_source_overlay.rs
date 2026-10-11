@@ -4,13 +4,15 @@ use super::*;
 use bevy::{
     asset::load_internal_asset,
     reflect::TypePath,
-    render::{render_resource::{AsBindGroup, ShaderRef, ShaderType}, view::RenderLayers},
-    sprite::{Material2d, Material2dPlugin, MaterialMesh2dBundle},
+    render::render_resource::{AsBindGroup, ShaderType},
+    shader::ShaderRef,
+    camera::visibility::RenderLayers,
+    sprite_render::{Material2d, Material2dPlugin},
 };
 use crystal_voxel_view::{BattleSourceBodyRegistrations, BattleSourceProjection};
 
 const SOURCE_SLOTS: usize = 10;
-const SOURCE_SHADER: Handle<Shader> = Handle::weak_from_u128(0x94aa7509_6eae_448a_a8a5_72ee8f7f3c29);
+const SOURCE_SHADER: Handle<Shader> = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x94aa7509_6eae_448a_a8a5_72ee8f7f3c29), std::marker::PhantomData);
 
 #[derive(Resource, Default)]
 pub(super) struct ImmersiveBattleSourceOverlayEnabled {
@@ -54,9 +56,9 @@ pub(super) fn install(app: &mut App) {
         app.add_plugins(Material2dPlugin::<SourceMaterial>::default());
         if let Some(render_app) = app.get_sub_app_mut(bevy::render::RenderApp) {
             render_app.add_systems(bevy::render::Render,
-                source_images_ready.in_set(bevy::render::RenderSet::PrepareAssets)
+                source_images_ready.in_set(bevy::render::RenderSystems::PrepareAssets)
                     .after(bevy::render::render_asset::prepare_assets::<bevy::render::texture::GpuImage>)
-                    .before(bevy::render::render_asset::prepare_assets::<bevy::sprite::PreparedMaterial2d<SourceMaterial>>));
+                    .before(bevy::render::erased_render_asset::prepare_erased_assets::<MeshMaterial2d<SourceMaterial>>));
         }
     } else {
         app.init_resource::<Assets<SourceMaterial>>();
@@ -64,7 +66,7 @@ pub(super) fn install(app: &mut App) {
     app.init_resource::<Assets<Shader>>()
         .init_resource::<ImmersiveBattleSourceOverlayEnabled>()
         .add_systems(Startup, setup);
-    load_internal_asset!(app, SOURCE_SHADER, "battle_source_overlay.wgsl", Shader::from_wgsl);
+    load_internal_asset!(app, SOURCE_SHADER, "battle_source_overlay.wesl", Shader::from_wesl);
 }
 
 fn source_images_ready() {}
@@ -73,12 +75,9 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<SourceMaterial>>) {
     let quad = meshes.add(Rectangle::new(1.0, 1.0));
     for slot in 0..SOURCE_SLOTS {
-        commands.spawn((MaterialMesh2dBundle {
-            mesh: quad.clone().into(),
-            material: materials.add(SourceMaterial { source: SourceUniform::default(), texture: Handle::default() }),
-            visibility: Visibility::Hidden,
-            ..default()
-        }, SourceOverlaySlot(slot), RenderLayers::layer(0)));
+        commands.spawn(((Mesh2d(quad.clone().into()),
+MeshMaterial2d(materials.add(SourceMaterial { source: SourceUniform::default(), texture: Handle::default() })),
+Visibility::Hidden,), SourceOverlaySlot(slot), RenderLayers::layer(0)));
     }
 }
 
@@ -175,7 +174,7 @@ pub(super) fn sync_immersive_battle_source_object_layout(
     cameras: Query<&Transform, (With<MainCameraMarker>, Without<SourceOverlaySlot>)>,
     objects: Query<(Entity, &ImmersiveBattleSourceObject, &Transform,
         Option<&RenderLayers>, Option<&ImmersiveBattleSourceObjectLayout>), Without<SourceOverlaySlot>>,
-    mut overlays: Query<(&SourceOverlaySlot, &Handle<SourceMaterial>, &mut Transform, &mut Visibility), Without<ImmersiveBattleSourceObject>>,
+    mut overlays: Query<(&SourceOverlaySlot, &MeshMaterial2d<SourceMaterial>, &mut Transform, &mut Visibility), Without<ImmersiveBattleSourceObject>>,
 ) {
     let projection = (enabled.enabled && status.active)
         .then(|| BattleSourceProjection::new(&layout, canvas.size)).flatten();
@@ -188,7 +187,7 @@ pub(super) fn sync_immersive_battle_source_object_layout(
     let mut slots: [Option<SlotFrame>; SOURCE_SLOTS] = std::array::from_fn(|_| None);
     // WOBBLE_SCREEN can move the native camera. Follow it for coverage only;
     // the common screen-space inverse projection never receives BG shake.
-    let camera_offset = cameras.get_single().map_or(Vec2::ZERO, |camera| camera.translation.truncate());
+    let camera_offset = cameras.single().map_or(Vec2::ZERO, |camera| camera.translation.truncate());
     let available: [bool; SOURCE_SLOTS] = std::array::from_fn(|slot| overlays.iter()
         .any(|(candidate, material, _, _)| candidate.0 == slot && materials.contains(material.id())));
     for (entity, slot, transform, layers, stored) in &objects {
@@ -219,9 +218,9 @@ pub(super) fn sync_immersive_battle_source_object_layout(
             visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
-        if materials.get(handle).is_some_and(|material|
+        if materials.get(&handle.0).is_some_and(|material|
             material.source != current.material.source || material.texture != current.material.texture) {
-            *materials.get_mut(handle).unwrap() = current.material.clone();
+            *materials.get_mut(&handle.0).unwrap() = current.material.clone();
         }
         let mut pose = current.transform;
         pose.translation += camera_offset.extend(0.0);
@@ -258,7 +257,7 @@ mod tests {
         let target = VisualBattleSourcePlacement::BattlerLocal { side: crystal_render_api::VisualBattleSide::Enemy };
         let object = |slot, center, placement| VisualBattleSourceObject {
             slot, object_id: Arc::from("VERIFIED_ASSEMBLY"),
-            texture: Handle::weak_from_u128(100), neutral_texture: Handle::weak_from_u128(101),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100), std::marker::PhantomData), neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(101), std::marker::PhantomData),
             center, size: Vec2::splat(8.0),
             uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE), placement: Some(placement),
         };
@@ -319,7 +318,7 @@ mod tests {
         let mesh_count = app.world().resource::<Assets<Mesh>>().len();
         let object = VisualBattleSourceObject {
             slot: 2, object_id: Arc::from("TEST"),
-            texture: Handle::weak_from_u128(100), neutral_texture: Handle::weak_from_u128(101),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100), std::marker::PhantomData), neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(101), std::marker::PhantomData),
             center: Vec2::new(124.0, 32.0), size: Vec2::splat(8.0),
             uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
             placement: None,
@@ -345,15 +344,12 @@ mod tests {
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source.clone());
         app.world_mut().resource_mut::<ImmersiveBattleSourceOverlayEnabled>().enabled = true;
         let camera = app.world_mut().spawn((Transform::default(), MainCameraMarker)).id();
-        let parent = app.world_mut().spawn(SpatialBundle::default()).id();
+        let parent = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         let original = Transform::from_xyz(17.0, 23.0, 3.898);
-        let original_texture = Handle::<Image>::weak_from_u128(102);
-        let sprite = app.world_mut().spawn((SpriteBundle {
-            transform: original, texture: original_texture.clone(),
-            sprite: Sprite { rect: Some(Rect::new(1.0, 2.0, 7.0, 8.0)), custom_size: Some(Vec2::splat(32.0)), ..default() },
-            ..default()
-        }, ImmersiveBattleSourceObject(2))).id();
-        app.world_mut().entity_mut(sprite).set_parent(parent);
+        let original_texture = Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(102), std::marker::PhantomData);
+        let sprite = app.world_mut().spawn(((Sprite { image: original_texture.clone(), rect: Some(Rect::new(1.0, 2.0, 7.0, 8.0)), custom_size: Some(Vec2::splat(32.0)), ..default() },
+original,), ImmersiveBattleSourceObject(2))).id();
+        app.world_mut().entity_mut(sprite).insert(ChildOf(parent));
         for iteration in 0..64 {
             let active = iteration % 4 != 0;
             let mode = if iteration % 2 == 0 { crystal_render_api::BattleFlashMode::Full }
@@ -373,17 +369,17 @@ mod tests {
                 else { panic!("interior source object must remain visible") };
             expected.transform.translation += camera_offset.extend(0.0);
             assert_eq!(app.world().get::<Transform>(sprite), Some(&original));
-            assert_eq!(app.world().get::<Handle<Image>>(sprite), Some(&original_texture));
-            assert_eq!(app.world().get::<Parent>(sprite).unwrap().get(), parent);
+            assert_eq!(app.world().get::<Sprite>(sprite).map(|sprite| &sprite.image), Some(&original_texture));
+            assert_eq!(app.world().get::<ChildOf>(sprite).unwrap().parent(), parent);
             assert_eq!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some(), active);
             let world = app.world_mut();
             let mut visible = 0;
-            for (slot, handle, pose, visibility) in world.query::<(&SourceOverlaySlot, &Handle<SourceMaterial>, &Transform, &Visibility)>().iter(world) {
+            for (slot, handle, pose, visibility) in world.query::<(&SourceOverlaySlot, &MeshMaterial2d<SourceMaterial>, &Transform, &Visibility)>().iter(world) {
                 if *visibility == Visibility::Visible {
                     visible += 1;
                     assert_eq!(slot.0, 2);
                     assert_eq!(*pose, expected.transform, "camera movement must not become another source offset");
-                    let material = world.resource::<Assets<SourceMaterial>>().get(handle).unwrap();
+                    let material = world.resource::<Assets<SourceMaterial>>().get(&handle.0).unwrap();
                     assert_eq!(material.texture, if mode == crystal_render_api::BattleFlashMode::Full {
                         object.texture.clone()
                     } else { object.neutral_texture.clone() });

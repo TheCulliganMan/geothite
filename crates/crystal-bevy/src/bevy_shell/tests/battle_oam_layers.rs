@@ -213,12 +213,12 @@ fn battle_anim_foreground_oam_covers_retained_bottom_text_without_a_y_cutoff() {
     }
     queue.apply(&mut world);
     let mut text_world = World::new();
-    for (sprite, transform, handle) in world
-        .query_filtered::<(&Sprite, &Transform, &Handle<Image>), Without<BattleSourceObjectMarker>>(
+    for (sprite, transform) in world
+        .query_filtered::<(&Sprite, &Transform), Without<BattleSourceObjectMarker>>(
         )
         .iter(&world)
     {
-        text_world.spawn((sprite.clone(), *transform, handle.clone()));
+        text_world.spawn((sprite.clone(), *transform));
     }
     let text = render_pc_audit_canvas(&mut text_world, &images, "retained bottom text alone");
     world.insert_resource(images);

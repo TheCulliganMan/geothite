@@ -939,7 +939,7 @@ fn every_species_has_loadable_normal_and_shiny_front_and_back_art() {
                     &shell.asset_root, id, side, shiny, 0, &mut images,
                 ).unwrap_or_else(|error| panic!("{id} {side:?} shiny={shiny} art: {error}"));
                 assert!(frame.size.x > 0.0 && frame.size.y > 0.0);
-                assert!(images.get(&frame.handle).unwrap().data
+                assert!(images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels")
                     .chunks_exact(4).any(|pixel| pixel[3] != 0));
             }
         }
@@ -977,7 +977,7 @@ fn shiny_unown_forms_and_hatch_art_use_the_shipped_palettes() {
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
         let frame = &art.pokemon_cache[&key];
         let sprite = images.get(&frame.handle).unwrap();
-        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.clone()).unwrap()
+        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.as_ref().expect("CPU image pixels").clone()).unwrap()
             .save(PathBuf::from(directory).join("shiny-hatch-sprite.png")).unwrap();
     }
     quest_assert_save_round_trip(&mut shell, "shiny");
@@ -2038,7 +2038,7 @@ fn shiny_hatch_nickname_prompt_retains_the_front_sprite() {
     let key = PokemonArtKey { species_id: "togepi".into(), side: PokemonSpriteSide::Front,
         shiny: true, frame: 0 };
     let frame = art.pokemon_cache.get(&key).expect("nickname prompt retains shiny hatch art");
-    assert!(world.query::<&Handle<Image>>().iter(&world).any(|image| image == &frame.handle),
+    assert!(world.query::<&Sprite>().iter(&world).any(|image| image.image == frame.handle),
         "the retained frontpic must be drawn, not merely cached");
     let canvas = render_pc_audit_canvas(&mut world, &images, "shiny-hatch-nickname");
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
@@ -2188,7 +2188,7 @@ fn oak_assessment_prints_complete_pages_over_the_lab() {
         let expected_glyphs = normalize_bitmap_font_text(&boundary.details[0])
             .chars().filter(|ch| *ch != '\n').count();
         observed.extend(boundary.details.clone());
-        assert!(app.world_mut().query_filtered::<&Handle<Image>, With<DialogGlyphMarker>>()
+        assert!(app.world_mut().query_filtered::<&Sprite, With<DialogGlyphMarker>>()
             .iter(app.world()).count() >= expected_glyphs,
             "assessment page {index} glyphs must reach the renderer");
         save_live_pc_dialog_for_test(app.world_mut(), &format!("oak-assessment-{index}.png"));

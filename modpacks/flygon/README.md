@@ -93,7 +93,7 @@ silently substitute a smaller neural graph.
 ## Tight source loop
 
 Prerequisites: the repository Rust toolchain, `wasm32-unknown-unknown`, and
-`wasm-bindgen-cli` **0.2.128**, matching Cargo.lock. An existing game bundle is
+`wasm-bindgen-cli` **0.2.129**, matching Cargo.lock. An existing game bundle is
 required; this workflow does not compile Pokémon.
 
 ```sh

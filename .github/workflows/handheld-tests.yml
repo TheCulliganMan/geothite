@@ -1,0 +1,27 @@
+name: Native handheld regression checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  linux-controllers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CARGO_BUILD_JOBS: '2'
+      RUST_MIN_STACK: '67108864'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.99.0'
+      - run: sudo apt-get update && sudo apt-get install -y pkg-config libudev-dev libasound2-dev libx11-dev libxi-dev libxrandr-dev
+      - uses: Swatinem/rust-cache@v2
+      # These use synthetic device input and need neither a display nor a game pack.
+      - run: cargo test --locked -p crystal-bevy --features voxel-view,dev-tools --lib handheld_input::tests
+      - run: cargo test --locked -p crystal-bevy --features voxel-view,dev-tools --lib native_navigation::tests
+      - run: cargo test --locked -p crystal-bevy --features voxel-view,dev-tools --lib fullscreen_scaling_tests
+      - run: cargo test --locked -p crystal-bevy --features voxel-view,dev-tools --lib responsive_world_tests::fullscreen_
+      - run: cargo test --locked -p crystal-bevy --features voxel-view,dev-tools --lib dev_tools::

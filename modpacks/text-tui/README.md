@@ -42,7 +42,7 @@ Run the local runtime as a stdio MCP server:
 
 Controls match the established TypeScript CLI: arrows, WASD, or HKL move;
 `Z`/`J`/Space is A; `X`/`K`/`B`/Escape is B; Enter is Start; Tab is Select;
-`.` waits eight frames; `R` refreshes; `?` opens help; F5 saves; and `:q!`
+`Shift` + arrows sends B + direction to run; `.` waits eight frames; `R` refreshes; `?` opens help; F5 saves; and `:q!`
 then Enter quits without saving.
 
 ## Renderer features

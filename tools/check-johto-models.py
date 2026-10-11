@@ -2,7 +2,6 @@
 """Verify repository-complete editable sources and embedded runtime model inputs."""
 from pathlib import Path
 from model_asset_storage import read_model_json, validate_storage
-from animated_glb import load_catalog
 from pidgeotto_glb import read_pidgeotto
 from battle_model_assets import species_paths
 from meganium_glb import read_meganium
@@ -45,12 +44,7 @@ for path in model_files:
             assert len(read_pidgeotto(path)['primitives']) == 34
             model_counts[path] = 1
             continue
-        assert path == models / 'johto_characters/catalog.glb', path
-        catalog = load_catalog(path.parent)
-        assert len(catalog) == 75
-        assert all(len(rig['joints']) == 16 for rig in catalog.values())
-        model_counts[path] = len(catalog)
-        continue
+        raise AssertionError(f'unregistered GLB: {path}')
     model_counts[path] = 1
     model = read_model_json(path)
     assert 'primitives' in model or 'joints' in model, path
@@ -73,7 +67,7 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
         path = (base / relative.removesuffix('.include.rs')).resolve()
         assert path.is_file(), (source, relative)
         if path not in model_files:
-            assert path in (models / 'battle/arenas.json', models / 'johto_characters/shared.geometry.json'), path
+            assert path in (models / 'battle/arenas.json',), path
             read_model_json(path)
             continue
         if not (source.name == 'johto_actor_props.rs' and relative.endswith('.include.rs')):
@@ -84,6 +78,9 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
         declaration = re.search(r'authored_props!\s*\{(.*?)\n\}', source.read_text(), re.S)
         assert declaration, 'missing source-scoped actor model catalog'
         for label in re.findall(r'=>\s*"([^"\n]+)"', declaration.group(1)):
+            if label in ('chris_bike','kris_bike'):
+                assert not (models / 'actor_props' / (label + '.mesh.json')).exists()
+                continue  # Native bicycle geometry, with the shared weighted rider.
             path = models / 'actor_props' / (label + '.mesh.json')
             skin = path.with_name(label + '.glb')
             if skin in weighted_skins:
@@ -101,6 +98,6 @@ for source in (ROOT / 'crates/crystal-voxel-view/src').rglob('*.rs'):
             assert path in model_files, path
             references += 1
 model_count = sum(model_counts.values())
-assert references >= model_count - 3  # retained original character meshes are superseded by rigs
+assert references >= model_count - 3  # remaining authored props may use dedicated weighted species skins
 print(f'Validated {len(editable)} complete editable Blender sources, '
       f'{model_count} runtime models in {len(model_files)} files and {references} embedded references')

@@ -10,10 +10,10 @@ rust-version.workspace = true
 
 [dependencies]
 anyhow.workspace = true
-crystal-assets = { path = "../crystal-assets" }
-crystal-bevy = { path = "../crystal-bevy" }
-crystal-core = { path = "../crystal-core" }
-crystal-runtime = { path = "../crystal-runtime" }
+crystal-assets.workspace = true
+crystal-bevy.workspace = true
+crystal-core.workspace = true
+crystal-runtime.workspace = true
 crossterm = "0.29"
 ratatui = { version = "0.30", default-features = false, features = ["crossterm"] }
 serde.workspace = true

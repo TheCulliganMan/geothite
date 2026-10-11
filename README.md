@@ -131,7 +131,29 @@ cargo run -p crystal-bevy -- \
 Add `--load-save /path/to/player.crystalsave` to load an existing save.
 Enable the optional renderer with `--features voxel-view` before `--`.
 Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
-and Right Shift.
+and Right Shift. Hold B (`X`) with a direction to run at twice walking speed;
+[running shoes](modpacks/running-shoes/README.md) are enabled by default.
+
+Native Bevy enables gamepads and responsive window sizing by default, starting
+with an initial window up to 1280×800, fitted to the display’s DPI and size. Steam Deck and other handhelds can use their standard gamepad or
+Steam Input's gamepad output; keyboard mappings remain available alongside it.
+
+| Native controller action | Standard / Xbox button |
+| --- | --- |
+| Move | D-pad or left stick |
+| Confirm / interact | A (south) |
+| Cancel / run while moving | B (east) |
+| Game menu / Select | Start / Back |
+| Toggle borderless fullscreen | X (west), or keyboard `F11` |
+| Toggle optional 2.5D view | Y (north) |
+| Rotate optional 2.5D camera | LB / RB |
+| Zoom optional 2.5D camera out / in | LT / RT |
+
+Sticks use a deadzone and stable cardinal directions. Disconnecting a controller
+releases its inputs; a docked controller can take over from an idle built-in pad.
+After focus loss or a native overlay, release the controls before resuming.
+Linux source builds also need the development package for `libudev` (for example,
+`libudev-dev` on Debian/Ubuntu), used by the native gamepad backend.
 
 Wide screens dock field dialogue and panels in a right-hand column. Portrait
 screens place dialogue at the bottom center. Both 2D and 2.5D views use this
@@ -153,6 +175,56 @@ map dimensions, collision data, or pathfinding. Every game action still goes
 through the normal input system, and a human keypress cancels agent input.
 
 ## Development
+
+The game uses Bevy 0.20 and Rust 1.99.0, pinned in `rust-toolchain.toml`.
+Shared dependency versions and local crate paths live in the workspace
+`Cargo.toml`; each renderer selects its own Bevy features.
+
+Run the graphical client with the optional Bevy development tools and a local pack:
+
+```sh
+cargo bevy-dev -- \
+  --pack content-packs/realtime-clock.browser.crystalpack
+```
+
+`F8` shows or hides FPS diagnostics, `F9` toggles the frame-time graph within
+that overlay on native builds, and `F10` toggles UI layout outlines.
+The browser supports the FPS counter; its WebGL2 renderer cannot display the graph.
+Bevy's 3D render-buffer overlay
+uses `F1` to cycle modes and `F2` to cycle opacity. Overlays start hidden.
+The feature also enables Bevy's development assertions. Compiled game packs
+require a restart after rebuilding. These tools are
+opt-in for the graphical client and work with both renderer modes. Normal
+desktop, browser, and terminal builds do not enable them. Use `cargo bevy-check`
+to check the graphical client and examples, or `cargo bevy-test` to run its tests.
+Existing `F3` view,
+`F6` capture, and `F11` fullscreen controls remain available.
+
+Native state and schedule diagrams are included in `dev-tools`. Enable file
+export explicitly when launching the actual graphical client:
+
+```sh
+CRYSTAL_BEVY_DIAGRAMS=target/bevy-diagrams cargo bevy-dev -- \
+  --pack content-packs/realtime-clock.browser.crystalpack
+```
+
+Open `target/bevy-diagrams/main-index.md` or `render-index.md` for schedule
+diagrams with Mermaid previews. Each schedule also has Graphviz ordering and
+component/resource-access DOT files; the JSON contains query filters,
+set run conditions, conflicts, and dependencies inserted by schedule build
+passes. Solid arrows represent
+ordering, dashed arrows represent set membership; access graphs label reads,
+writes, and conflicts. The currently executing collector schedules (`Main`
+and `ExtractSchedule`) are excluded. Render diagrams refresh as Bevy builds
+additional schedules, including per-view schedules; `F7` refreshes the main
+schedule export. No Graphviz installation is required for Mermaid previews.
+
+`observed-state-flow.md` and `.mmd` record the controller's visible phases and
+menus as you play. They show only transitions observed during that session,
+not every possible game transition. The controller remains authoritative;
+these tools read its presentation cache and never dispatch input. File export
+is native-only and disabled unless `CRYSTAL_BEVY_DIAGRAMS` is set. All output
+under `target/` is ignored and should be removed after use.
 
 The workspace is organized around focused Rust crates:
 

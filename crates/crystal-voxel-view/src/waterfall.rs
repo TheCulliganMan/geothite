@@ -100,7 +100,7 @@ mod tests {
                         subtile_row: (row % 4) as u8,
                         tile_index: WATERFALL_TILE,
                     },
-                    texture: Handle::<Image>::weak_from_u128(1),
+                    texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
                     priority: false,
                 });
             }

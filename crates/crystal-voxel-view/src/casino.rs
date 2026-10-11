@@ -12,6 +12,30 @@ use crate::profile::{CellShape, GROUND_HEIGHT, LedgeFace, SolidKind};
 // ground makes the safety resolver correctly reject every wall facade.
 const FLOOR_TILE: u16 = 0x01;
 
+/// Verified checker-floor phases, including the service-side floor beneath
+/// mixed wall drawings. Object glyphs and the entrance carpet stay excluded.
+pub(crate) fn is_floor_cell(s: &VisualTileSource) -> bool {
+    if s.tileset_id.as_ref() != "game_corner" || s.subtile_column >= 4 || s.subtile_row >= 4 { return false; }
+    let phase = s.subtile_row * 4 + s.subtile_column;
+    let mask: u16 = match s.metatile_id {
+        0x01 => 0xffff,
+        0x02 | 0x0d | 0x28 => 0xff00,
+        0x04 => 0xf000,
+        0x05 => 0x3333,
+        0x06 => 0xcccc,
+        0x08 | 0x09 | 0x0c => 0x00ff,
+        0x13 => 0xcc00,
+        0x14 => 0x00cc,
+        0x1b => 0x0033,
+        0x1c | 0x2b => 0x3300,
+        0x27 => 0x00cf,
+        0x2a => 0xcccc,
+        _ => return false,
+    };
+    let expected = [0x01,0x10,0x01,0x10,0x11,0x12,0x11,0x12][usize::from(phase % 8)];
+    mask & (1 << phase) != 0 && s.tile_index == expected
+}
+
 pub(crate) fn is_game_corner_map(map_id: &str) -> bool {
     matches!(
         map_id,
@@ -89,6 +113,8 @@ pub(crate) fn casino_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tileset_id.as_ref() != "game_corner" {
         return None;
     }
+
+    if is_floor_cell(source) { return Some(CellShape::Flat); }
 
     // Goldenrod's north course is a single four-row wall drawing with the
     // payout machine, display, pillars and doors painted into it. Keeping it
@@ -231,7 +257,7 @@ mod tests {
                 Some(CellShape::Flat)
             );
         }
-        assert_eq!(casino_shape(&source(0x05, 0, 0, 0x01)), None);
+        assert_eq!(casino_shape(&source(0x05, 0, 0, 0x01)), Some(CellShape::Flat));
     }
 
     #[test]
@@ -254,7 +280,7 @@ mod tests {
                 height: 8.0,
             })
         );
-        assert_eq!(casino_shape(&source(0x09, 1, 1, 0x12)), None);
+        assert_eq!(casino_shape(&source(0x09, 1, 1, 0x12)), Some(CellShape::Flat));
     }
 
     #[test]
@@ -282,7 +308,7 @@ mod tests {
                 Some(CellShape::Flat)
             );
         }
-        assert_eq!(casino_shape(&source(0x2a, 2, 0, 0x01)), None);
+        assert_eq!(casino_shape(&source(0x2a, 2, 0, 0x01)), Some(CellShape::Flat));
     }
 
     #[test]
@@ -329,7 +355,7 @@ mod tests {
             }
         }
         assert_eq!(plant_local(&source(0x2a, 2, 0, 0x01)), None);
-        assert_eq!(casino_shape(&source(0x2a, 2, 0, 0x01)), None);
+        assert_eq!(casino_shape(&source(0x2a, 2, 0, 0x01)), Some(CellShape::Flat));
     }
 
     #[test]

@@ -1,0 +1,314 @@
+//! Shared, model-local craft detail for authored scenery. Source pixels,
+//! textured foliage, actor skins, placement and support remain authoritative.
+use crate::mesh::SurfaceMeshData;
+use bevy::prelude::Vec3;
+
+#[derive(Clone, Copy)]
+enum Material {
+    Ceramic,
+    Timber,
+    Plaster,
+    Stone,
+    Foliage,
+}
+fn material(name: &str) -> Option<Material> {
+    if name.starts_with("roof_") && !name.ends_with("_dark") {
+        Some(Material::Ceramic)
+    } else if name.contains("timber") || name.contains("wood") || name.contains("oak") {
+        Some(Material::Timber)
+    } else if name.starts_with("plaster") {
+        Some(Material::Plaster)
+    } else if name.starts_with("leaf") {
+        Some(Material::Foliage)
+    } else if name.starts_with("stone") {
+        Some(Material::Stone)
+    } else {
+        None
+    }
+}
+fn noise(p: Vec3) -> f32 {
+    // Smooth, bounded variation in authored model coordinates. Scrolling,
+    // camera orbit and repeated placements cannot move the painted grain.
+    (p.x * 11.7 + (p.z * 7.3).sin()).sin() * (p.y * 8.9 + (p.x * 3.1).cos()).cos()
+}
+fn paint(base: [f32; 4], p: Vec3, role: Material) -> [f32; 4] {
+    let grain = match role {
+        Material::Ceramic => noise(p * 0.8) * 0.024,
+        Material::Timber => noise(Vec3::new(p.x * 2.8, p.y * 0.10, p.z * 2.8)) * 0.038,
+        Material::Plaster => noise(p * 0.55) * 0.017,
+        Material::Stone => noise(p * 1.5) * 0.025,
+        Material::Foliage => noise(p * 1.7) * 0.045,
+    };
+    [
+        (base[0] + grain).clamp(0., 1.),
+        (base[1] + grain * 0.86).clamp(0., 1.),
+        (base[2] + grain * 0.65).clamp(0., 1.),
+        base[3],
+    ]
+}
+fn triangle(
+    out: &mut SurfaceMeshData,
+    p: [Vec3; 3],
+    n: [Vec3; 3],
+    uv: [[f32; 2]; 3],
+    base: [f32; 4],
+    role: Material,
+) {
+    let start = out.positions.len() as u32;
+    out.positions.extend(p.map(|v| v.to_array()));
+    out.normals.extend(n.map(|v| v.normalize().to_array()));
+    out.uvs.extend(uv);
+    out.colors.extend(p.map(|v| paint(base, v, role)));
+    out.indices.extend([start, start + 1, start + 2]);
+}
+pub(crate) fn contain(mesh: &mut SurfaceMeshData, min: [f32; 3], max: [f32; 3]) {
+    for p in &mut mesh.positions {
+        for axis in 0..3 {
+            p[axis] = p[axis].clamp(min[axis], max[axis]);
+        }
+    }
+}
+#[cfg(test)]
+fn face(out: &mut SurfaceMeshData, p: [Vec3; 3], base: [f32; 4], role: Material) {
+    let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+    triangle(out, p, [normal; 3], [[0.; 2]; 3], base, role);
+}
+fn roof_quad(old: &SurfaceMeshData, ids: &[u32]) -> Option<[Vec3; 4]> {
+    if ids.len() != 6 {
+        return None;
+    }
+    let normal = Vec3::from_array(old.normals[ids[0] as usize]);
+    if normal.y < 0.35 || normal.y > 0.98 {
+        return None;
+    }
+    if ids
+        .iter()
+        .any(|i| Vec3::from_array(old.normals[*i as usize]).dot(normal) < 0.9999)
+    {
+        return None;
+    }
+    let mut boundary = Vec::new();
+    for tri in ids.chunks_exact(3) {
+        for (a, b) in [(tri[0], tri[1]), (tri[1], tri[2]), (tri[2], tri[0])] {
+            let a = Vec3::from_array(old.positions[a as usize]);
+            let b = Vec3::from_array(old.positions[b as usize]);
+            if let Some(i) = boundary.iter().position(|&(x, y)| x == b && y == a) {
+                boundary.remove(i);
+            } else {
+                boundary.push((a, b));
+            }
+        }
+    }
+    if boundary.len() != 4 {
+        return None;
+    }
+    let mut cursor = boundary[0].0;
+    let mut points = Vec::new();
+    for _ in 0..4 {
+        points.push(cursor);
+        cursor = boundary.iter().find(|(a, _)| *a == cursor)?.1;
+    }
+    let p: [Vec3; 4] = points.try_into().ok()?;
+    let area = (p[1] - p[0]).cross(p[3] - p[0]).length();
+    // Small trim and broad structural roof decking retain their geometry.
+    if !(0.025..0.8).contains(&area) || p.iter().any(|v| (*v - p[0]).dot(normal).abs() > 0.0001) {
+        return None;
+    }
+    Some(p)
+}
+fn leaves(out: &mut SurfaceMeshData, p: [Vec3; 3], base: [f32; 4]) {
+    let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+    let center = (p[0] + p[1] + p[2]) / 3.;
+    // Three-leaf sprays follow the real canopy surface. No spheres,
+    // source occupancy expansion or camera-facing billboard is substituted.
+    let seed = (center.dot(Vec3::new(13.31, 7.79, 17.17)).sin() * 437.37)
+        .fract()
+        .abs();
+    if normal.y < -0.35 || seed < 0.35 {
+        return;
+    }
+    let radius = (p[1] - p[0])
+        .length()
+        .min((p[2] - p[1]).length())
+        .min((p[0] - p[2]).length());
+    let length = (radius * 0.52).clamp(0.045, 0.22);
+    let root = center + normal * 0.009;
+    let tangent = normal
+        .cross(if normal.y.abs() > 0.95 {
+            Vec3::X
+        } else {
+            Vec3::Y
+        })
+        .normalize();
+    let bitangent = normal.cross(tangent);
+    for leaf in 0..3 {
+        let angle = seed * 6.283185 + leaf as f32 * 2.094395;
+        let forward = tangent * angle.cos() + bitangent * angle.sin();
+        let side = normal.cross(forward) * length * 0.28;
+        let mid = root + forward * length * 0.54;
+        let ridge = mid + normal * length * 0.24;
+        let color = [
+            (base[0] + 0.045 + seed * 0.055).min(1.),
+            (base[1] + 0.065 + seed * 0.045).min(1.),
+            (base[2] + seed * 0.009).min(1.),
+            base[3],
+        ];
+        // Rounded leaf margins and a raised central vein give the canopy
+        // individual leaf silhouettes instead of diamond-shaped studs.
+        let outline: [Vec3; 8] = std::array::from_fn(|i| {
+            let a = i as f32 * std::f32::consts::TAU / 8.;
+            mid + forward * (a.cos() * length * 0.50) + side * a.sin() + normal * length * 0.06
+        });
+        for i in 0..8 {
+            let mut points = [ridge, outline[i], outline[(i + 1) % 8]];
+            if (points[1] - points[0])
+                .cross(points[2] - points[0])
+                .dot(normal)
+                < 0.
+            {
+                points.swap(1, 2);
+            }
+            let normals =
+                points.map(|p| (normal + (p - mid).normalize_or_zero() * 0.30).normalize());
+            triangle(out, points, normals, [[0.; 2]; 3], color, Material::Foliage);
+        }
+    }
+}
+/// Refine only the just-imported primitive; unknown or textured materials are
+/// never inferred from color. The rest of the model stays byte-for-byte intact.
+pub(crate) fn refine(
+    mesh: &mut SurfaceMeshData,
+    vertex_start: usize,
+    index_start: usize,
+    name: &str,
+    object: &str,
+) {
+    if !mesh.cutaway_ranges.is_empty() {
+        return;
+    }
+    let Some(role) = material(name) else {
+        return;
+    };
+    let old = SurfaceMeshData {
+        positions: mesh.positions.split_off(vertex_start),
+        normals: mesh.normals.split_off(vertex_start),
+        uvs: mesh.uvs.split_off(vertex_start),
+        colors: mesh.colors.split_off(vertex_start),
+        indices: mesh
+            .indices
+            .split_off(index_start)
+            .into_iter()
+            .map(|i| i - vertex_start as u32)
+            .collect(),
+        ..Default::default()
+    };
+    let mut old = old;
+    if matches!(role, Material::Ceramic) {
+        let mut moves = std::collections::HashMap::<[u32; 3], Vec3>::new();
+        for ids in old.indices.chunks_exact(6) {
+            let Some(p) = roof_quad(&old, ids) else {
+                continue;
+            };
+            // Only closed thin panels have corresponding lower corners.
+            // Open paint cards and the structural deck retain their plane.
+            if !p.iter().all(|top| {
+                old.positions.iter().any(|bottom| {
+                    (bottom[0] - top.x).abs() < 0.00001
+                        && (bottom[2] - top.z).abs() < 0.00001
+                        && (0.01..0.08).contains(&(top.y - bottom[1]))
+                })
+            }) {
+                continue;
+            }
+            let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+            let center = p.iter().copied().sum::<Vec3>() * 0.25;
+            for top in p {
+                moves.insert(
+                    top.to_array().map(f32::to_bits),
+                    center + (top - center) * 0.94 + normal * 0.009,
+                );
+            }
+        }
+        for p in &mut old.positions {
+            if let Some(new) = moves.get(&p.map(f32::to_bits)) {
+                *p = new.to_array();
+            }
+        }
+    }
+    if matches!(role, Material::Ceramic) {
+        for ids in old.indices.chunks_exact(3) {
+            let ids = [ids[0] as usize, ids[1] as usize, ids[2] as usize];
+            let p = ids.map(|j| Vec3::from_array(old.positions[j]));
+            let cross = (p[1] - p[0]).cross(p[2] - p[0]);
+            if cross.length_squared() > 0.00000001 {
+                for j in ids {
+                    old.normals[j] = cross.normalize().to_array();
+                }
+            }
+        }
+    }
+    for (i, p) in old.positions.iter().enumerate() {
+        old.colors[i] = paint(old.colors[i], Vec3::from_array(*p), role);
+    }
+    let base = mesh.positions.len() as u32;
+    mesh.positions.extend_from_slice(&old.positions);
+    mesh.normals.extend_from_slice(&old.normals);
+    mesh.uvs.extend_from_slice(&old.uvs);
+    mesh.colors.extend_from_slice(&old.colors);
+    mesh.indices.extend(old.indices.iter().map(|i| base + i));
+    let canopy = !object.contains("lod")
+        && (object.contains("tree") || object.contains("canopy") || object.contains("conifer"));
+    if canopy && matches!(role, Material::Foliage) {
+        for ids in old.indices.chunks_exact(3) {
+            let ids = [ids[0] as usize, ids[1] as usize, ids[2] as usize];
+            leaves(
+                mesh,
+                ids.map(|j| Vec3::from_array(old.positions[j])),
+                old.colors[ids[0]],
+            );
+        }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn closed_ceramic_panel_gains_a_crown_without_more_triangles() {
+        let top = [
+            Vec3::new(0., 1., 0.),
+            Vec3::new(0., 1.25, 0.5),
+            Vec3::new(0.5, 1.25, 0.5),
+            Vec3::new(0.5, 1., 0.),
+        ];
+        let bottom = top.map(|v| v - Vec3::Y * 0.04);
+        let mut m = SurfaceMeshData::default();
+        for q in [
+            top,
+            [bottom[3], bottom[2], bottom[1], bottom[0]],
+            [bottom[0], bottom[1], top[1], top[0]],
+            [bottom[1], bottom[2], top[2], top[1]],
+            [bottom[2], bottom[3], top[3], top[2]],
+            [bottom[3], bottom[0], top[0], top[3]],
+        ] {
+            for ids in [[0, 1, 2], [0, 2, 3]] {
+                face(
+                    &mut m,
+                    ids.map(|i| q[i]),
+                    [0.6, 0.3, 0.2, 1.],
+                    Material::Ceramic,
+                );
+            }
+        }
+        let budget = m.indices.len();
+        refine(&mut m, 0, 0, "roof_red", "test_roof");
+        assert_eq!(m.indices.len(), budget);
+        for v in bottom {
+            assert!(m.positions.contains(&v.to_array()));
+        }
+        assert!(!m.positions.contains(&top[0].to_array()));
+        for n in &m.normals {
+            assert!((Vec3::from_array(*n).length() - 1.).abs() < 0.001);
+        }
+        assert!(m.colors.iter().all(|c| c[3] == 1.));
+    }
+}

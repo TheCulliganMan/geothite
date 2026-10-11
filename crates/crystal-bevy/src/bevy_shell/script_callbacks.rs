@@ -77,7 +77,7 @@ fn tick_visible_screen_fade(time: Res<Time>, mut runtime_shell: ResMut<BevyRunti
     {
         if frames_remaining > 0 {
             let elapsed_frames = if let Some(fade) = runtime_shell.screen_fade.as_mut() {
-                take_visible_sequence_frames(&mut fade.accumulated_seconds, time.delta_seconds())
+                take_visible_sequence_frames(&mut fade.accumulated_seconds, time.delta_secs())
             } else {
                 1
             };
@@ -107,7 +107,7 @@ fn tick_visible_screen_fade(time: Res<Time>, mut runtime_shell: ResMut<BevyRunti
         // other retained animation. This preserves their wall-clock duration
         // at 20-30 Hz without allowing a long stall to skip the whole scene.
         fade.advance(
-            time.delta_seconds()
+            time.delta_secs()
                 .min(GAME_TICK_SECONDS * MAX_VISIBLE_SEQUENCE_CATCH_UP_FRAMES as f32),
         );
         if fade.elapsed_frames >= fade.total_frames {
@@ -229,7 +229,7 @@ fn completed_screen_fade_should_clear(fade: &VisibleScreenFade) -> bool {
 fn sync_visible_player_sprite(
     runtime_shell: Res<BevyRuntimeShell>,
     mut rendered: ResMut<RenderedViewport>,
-    mut players: Query<(&mut Handle<Image>, &mut Sprite, &PlayerSpriteFrames), With<PlayerMarker>>,
+    mut players: Query<(&mut Sprite, &PlayerSpriteFrames), With<PlayerMarker>>,
 ) {
     let scripted_standing =
         runtime_shell
@@ -286,7 +286,7 @@ fn sync_visible_player_sprite(
             && (runtime_shell.visible_ledge_jump.is_some()
                 || runtime_shell.player_walk_frame_ticks > 0));
     rendered.player_sprite_walking = Some(walking);
-    for (mut texture, mut sprite, frames) in &mut players {
+    for (mut sprite, frames) in &mut players {
         let action_frame = scripted_skyfall_action_phase.map_or_else(
             || walking && player_walk_uses_action_frame(runtime_shell.player_walk_stride),
             |phase| phase & 1 == 1,
@@ -300,8 +300,8 @@ fn sync_visible_player_sprite(
             && frames.mirror_walking
             && scripted_skyfall_action_phase
                 .map_or(runtime_shell.player_walk_mirror_stride, |phase| phase == 3);
-        if texture.id() != next.id() {
-            *texture = next.clone();
+        if sprite.image.id() != next.id() {
+            sprite.image = next.clone();
         }
     }
 }
@@ -324,7 +324,7 @@ fn sync_visible_ledge_jump(
     let Some((start_x, start_y)) = rendered.viewport_origin else {
         return;
     };
-    let Ok((mut transform, sprite)) = players.get_single_mut() else {
+    let Ok((mut transform, sprite)) = players.single_mut() else {
         return;
     };
     let Some(size) = sprite.custom_size else {
@@ -348,7 +348,7 @@ fn sync_visible_ledge_jump(
     transform.translation.x = sprite_x + camera_offset.x;
     transform.translation.y =
         sprite_y + camera_offset.y - f32::from(OFFSETS[usize::from(jump.frame)]) * BATTLE_HUD_SCALE;
-    if let Ok((mut shadow, shadow_sprite, mut shadow_visibility)) = shadows.get_single_mut()
+    if let Ok((mut shadow, shadow_sprite, mut shadow_visibility)) = shadows.single_mut()
         && let Some(shadow_size) = shadow_sprite.custom_size
         && let Some(direction) = visible_jump_direction(jump.from, jump.to)
     {
@@ -420,7 +420,7 @@ fn sync_visible_script_jump(
         };
         let y_offset = jump_offset(total, remaining);
         if movement.object_id == "PLAYER" {
-            if let Ok(mut transform) = players.get_single_mut() {
+            if let Ok(mut transform) = players.single_mut() {
                 transform.translation.y += y_offset;
             }
         } else if let Some((_, mut transform)) = objects.iter_mut().find(|(object, _)| {
@@ -444,7 +444,7 @@ fn sync_visible_script_jump(
         };
         let y_offset = jump_offset(total, remaining);
         if follower_id == "PLAYER" {
-            if let Ok(mut transform) = players.get_single_mut() {
+            if let Ok(mut transform) = players.single_mut() {
                 transform.translation.y += y_offset;
             }
         } else if let Some((_, mut transform)) = objects
@@ -480,7 +480,7 @@ fn sync_visible_script_tree_shake(
     let frame = elapsed.saturating_sub(1);
     let x_offset = f32::from(OFFSETS[usize::from(frame % OFFSETS.len() as u16)]) * BATTLE_HUD_SCALE;
     if movement.object_id == "PLAYER" {
-        if let Ok(mut transform) = players.get_single_mut() {
+        if let Ok(mut transform) = players.single_mut() {
             transform.translation.x += x_offset;
         }
         return;
@@ -503,7 +503,7 @@ fn sync_visible_stationary_movement_effect(
         .map_or(runtime_shell.visible_player_sprite_y_offset, |movement| {
             movement.stationary_y_offset
         });
-    if let Ok(mut transform) = players.get_single_mut() {
+    if let Ok(mut transform) = players.single_mut() {
         transform.translation.y += -f32::from(player_offset) * BATTLE_HUD_SCALE;
     }
     let Some(movement) = movement.filter(|movement| movement.object_id != "PLAYER") else {
@@ -519,7 +519,7 @@ fn sync_visible_stationary_movement_effect(
 fn sync_visible_object_sprites(
     runtime_shell: Res<BevyRuntimeShell>,
     mut rendered: ResMut<RenderedViewport>,
-    mut objects: Query<(&VisibleObjectSprite, &mut Handle<Image>, &mut Sprite)>,
+    mut objects: Query<(&VisibleObjectSprite, &mut Sprite)>,
 ) {
     let walking_phase = (runtime_shell.object_walk_frame_ticks > 0
         && runtime_shell.object_walk_stride)
@@ -542,7 +542,7 @@ fn sync_visible_object_sprites(
                         && movement.hold_frames_remaining % 2 == 0)
             });
     rendered.object_sprite_walking = Some(walking_phase);
-    for (frames, mut texture, mut sprite) in &mut objects {
+    for (frames, mut sprite) in &mut objects {
         if !frames.animated {
             continue;
         }
@@ -603,8 +603,8 @@ fn sync_visible_object_sprites(
                 !runtime_shell.object_walk_stride,
                 object_walk_uses_mirrored_action_frame,
             );
-        if texture.id() != next.id() {
-            *texture = next.clone();
+        if sprite.image.id() != next.id() {
+            sprite.image = next.clone();
         }
     }
 }
@@ -613,7 +613,7 @@ fn render_screen_fade_overlay(
     runtime_shell: Res<BevyRuntimeShell>,
     mut overlays: Query<&mut Sprite, With<ScreenFadeOverlay>>,
 ) {
-    let Ok(mut sprite) = overlays.get_single_mut() else {
+    let Ok(mut sprite) = overlays.single_mut() else {
         return;
     };
     let Some(fade) = runtime_shell.screen_fade else {
@@ -648,7 +648,7 @@ fn render_poison_flash_overlay(
         )>,
     >,
 ) {
-    let Ok(mut sprite) = overlays.get_single_mut() else {
+    let Ok(mut sprite) = overlays.single_mut() else {
         return;
     };
     let [r, g, b, a] = visible_poison_bg_palette_rgba(runtime_shell.poison_flash_frames_remaining)

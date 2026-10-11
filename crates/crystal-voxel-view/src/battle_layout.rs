@@ -578,7 +578,7 @@ impl BattleSceneLayout {
     pub(crate) fn project_point(&self, point: Vec3, viewport: Vec2) -> Vec2 {
         let p = self
             .camera
-            .compute_matrix()
+            .to_matrix()
             .inverse()
             .transform_point3(point);
         let tangent = (CAMERA_FOV * 0.5).tan();
@@ -798,7 +798,7 @@ mod source_registration_tests {
         );
         let pose = layout.body_poses[0].unwrap();
         let local = pose
-            .compute_matrix()
+            .to_matrix()
             .inverse()
             .transform_point3(layout.hit_anchors[0]);
         assert!((local.y - 0.716729 * 0.5).abs() < 1e-5);

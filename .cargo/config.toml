@@ -1,2 +1,8 @@
 [target.wasm32-unknown-unknown]
 rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
+
+# Opt-in graphical development tools; supply game arguments after `--`.
+[alias]
+bevy-dev = "run --locked -p crystal-bevy --features dev-tools,voxel-view"
+bevy-check = "check --locked -p crystal-bevy --all-targets --features dev-tools,location-tester"
+bevy-test = "test --locked -p crystal-bevy --features dev-tools,voxel-view"

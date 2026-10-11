@@ -418,7 +418,7 @@ fn walking_anchor_rejects_invalid_pre_step_witnesses_without_late_repair() {
                 .retain(|actor| actor.id != crystal_render_api::VisualActorId::Player),
             1 => frame.terrain_revision += 1,
             2 => frame.grid_origin.x += 1,
-            3 => frame.map_texture = Handle::<Image>::weak_from_u128(u128::MAX),
+            3 => frame.map_texture = Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(u128::MAX), std::marker::PhantomData),
             4 => {
                 frame
                     .actors
@@ -838,7 +838,7 @@ fn walking_anchor_real_keyboard_encounter_retains_landing_and_replays_journal(ma
         .retained_runtime_commands()
         .len();
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     assert_eq!(
         app.world().resource::<BevyRuntimeShell>().shell.session(),
         &before

@@ -43,22 +43,6 @@ class ExportTests(unittest.TestCase):
         primitive = geometry() | {"base_color": [0.5, 0.3, 0.8, 1]}
         return {"primitives": [primitive]}
 
-    def rig(self, version=2):
-        identity = "a" * 64
-        self.write("johto_characters/shared.geometry.json", {
-            "version": 1, "id": identity, "geometries": [geometry()]
-        })
-        joints = []
-        for name, parent in zip(stl.JOINT_NAMES, stl.JOINT_PARENTS):
-            primitive = {"geometry": 0} if version == 2 else geometry()
-            primitive["base_color"] = [0.2, 0.4, 0.6, 1]
-            joints.append({"name": name, "parent": parent,
-                           "translation": [0.25, 0.5, 0.125], "primitives": [primitive]})
-        result = {"version": version, "joints": joints}
-        if version == 2:
-            result["geometry_library"] = identity
-        return result
-
     def test_proper_axis_rotation_preserves_triangle_order_and_winding(self):
         source = self.write("triangle.mesh.json", self.static())
         primitives = stl.ModelReader(self.root).read(source)
@@ -70,56 +54,6 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(record[3:12], (0, 0, 0, 1, 0, 0, 0, 0, 1))
         self.assertEqual(record[12], 0)
         stl.validate_stl(data, primitives)
-
-    def test_shared_rig_resolves_every_ancestor_in_bind_pose(self):
-        source = self.write("johto_characters/sample.rig.json", self.rig())
-        primitives = stl.ModelReader(self.root).read(source)
-        self.assertEqual(len(primitives), 16)
-        # Eyes are three descendants below pelvis, so four translations apply.
-        self.assertEqual(primitives[3].translation, (1, 2, 0.5))
-        self.assertEqual(next(primitives[3].triangles())[0], (1, -0.5, 2))
-        data = stl.encode_stl(primitives)
-        self.assertEqual(struct.unpack_from("<I", data, 80)[0], 16)
-        stl.validate_stl(data, primitives)
-
-    def test_shared_and_expanded_inline_rigs_are_identical(self):
-        reader = stl.ModelReader(self.root)
-        shared = reader.read(self.write("shared.rig.json", self.rig(2)))
-        inline = reader.read(self.write("inline.rig.json", self.rig(1)))
-        self.assertEqual(stl.encode_stl(shared), stl.encode_stl(inline))
-
-    def test_translation_is_rounded_after_each_runtime_f32_operation(self):
-        rig = self.rig()
-        rig["joints"][0]["translation"][0] = 16_777_216
-        rig["joints"][1]["translation"][0] = 1
-        rig["joints"][2]["translation"][0] = -16_777_216
-        primitives = stl.ModelReader(self.root).read(self.write("rounded.rig.json", rig))
-        self.assertEqual(primitives[2].translation[0], 0)
-
-    def test_bad_library_identity_and_reference_are_rejected(self):
-        for field, value, expected in (
-            ("identity", "b" * 64, "identity mismatch"),
-            ("reference", 1, "invalid character geometry reference"),
-            ("reference", -1, "invalid character geometry reference"),
-        ):
-            with self.subTest(field=field, value=value):
-                rig = self.rig()
-                if field == "identity":
-                    rig["geometry_library"] = value
-                else:
-                    rig["joints"][0]["primitives"][0]["geometry"] = value
-                with self.assertRaisesRegex(ValueError, expected):
-                    stl.ModelReader(self.root).read(self.write("bad.rig.json", rig))
-
-    def test_invalid_parent_and_unsupported_transforms_are_rejected(self):
-        rig = self.rig()
-        rig["joints"][1]["parent"] = 1
-        with self.assertRaisesRegex(ValueError, "invalid character joint or parent"):
-            stl.ModelReader(self.root).read(self.write("cycle.rig.json", rig))
-        rig = self.rig()
-        rig["joints"][0]["rotation"] = [0, 0, 0, 1]
-        with self.assertRaisesRegex(ValueError, "unsupported character joint transform"):
-            stl.ModelReader(self.root).read(self.write("transform.rig.json", rig))
 
     def test_invalid_geometry_is_rejected(self):
         for field, value in (("positions", "base64"), ("indices", [0, 1, 3]),

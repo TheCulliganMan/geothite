@@ -111,7 +111,7 @@ mod tests {
             source_map_size_core_tiles: None,
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
-            map_texture: Handle::<Image>::weak_from_u128(1),
+            map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::new(-16.0, 16.0),
             viewport_size: Vec2::new(16.0, 8.0),
             tile_size: Vec2::splat(8.0),
@@ -122,7 +122,7 @@ mod tests {
                     column: 1,
                     row: 0,
                     source: source(0x54, 0),
-                    texture: Handle::<Image>::weak_from_u128(2),
+                    texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
                     priority: true,
                 },
                 VisualTile {
@@ -130,7 +130,7 @@ mod tests {
                     column: 0,
                     row: 0,
                     source: source(0x01, 0),
-                    texture: Handle::<Image>::weak_from_u128(3),
+                    texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
                     priority: false,
                 },
             ],
@@ -143,7 +143,7 @@ mod tests {
         let actor = VisualActor {
             id: VisualActorId::Player,
             source_id: Arc::from("player"),
-            texture: Handle::weak_from_u128(2),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
             center: Vec2::new(10.0, 20.0),
             size: Vec2::new(8.0, 16.0),
             flip_x: false,
@@ -191,7 +191,7 @@ mod tests {
                 column: 0,
                 row: 0,
                 source: source(0x16, 3),
-                texture: Handle::<Image>::weak_from_u128(2),
+                texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
                 priority: true,
             },
             VisualTile {
@@ -199,7 +199,7 @@ mod tests {
                 column: 0,
                 row: 1,
                 source: source(0x01, 0),
-                texture: Handle::<Image>::weak_from_u128(3),
+                texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
                 priority: false,
             },
         ];

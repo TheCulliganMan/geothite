@@ -18,7 +18,7 @@ pub use streamed_images::stream_composed_image;
 use std::{collections::HashSet, sync::Arc};
 
 use bevy::prelude::{
-    App, Handle, Image, IntoSystemSetConfigs, Plugin, Resource, SystemSet, UVec2, Update, Vec2,
+    App, Handle, Image, IntoScheduleConfigs, Plugin, Resource, SystemSet, UVec2, Update, Vec2,
 };
 
 /// Ordered phases for publishing and consuming one visual world frame.
@@ -53,7 +53,8 @@ pub struct VisualWorldRenderPlugin;
 
 impl Plugin for VisualWorldRenderPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<VisualWorldFrame>();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<VisualTileAnimationFrame>();
         configure_world_render_sets(app);
         streamed_images::install(app);
     }
@@ -98,6 +99,16 @@ pub struct VisualTile {
     /// Whether the tile belongs to the classic map foreground-priority layer.
     /// This is compositing metadata, not a height or shape signal.
     pub priority: bool,
+}
+
+/// Current authenticated phases of animated cells, independent of geometry.
+/// Consumers must match map, source identity and immutable phase family before
+/// updating a retained atlas. No simulation clock is exposed or advanced.
+#[derive(Resource, Clone, Debug, Default, PartialEq)]
+pub struct VisualTileAnimationFrame {
+    pub map_id: Arc<str>,
+    pub grid_origin: bevy::prelude::IVec2,
+    pub tiles: Vec<VisualTile>,
 }
 
 /// Stable identity for an actor across visual frame publications.
@@ -331,7 +342,7 @@ pub enum VisualWorldFrameError {
 
 #[cfg(test)]
 mod tests {
-    use bevy::prelude::{App, IntoSystemConfigs, ResMut, Resource, Update};
+    use bevy::prelude::{App, IntoScheduleConfigs, ResMut, Resource, Update};
 
     use super::*;
 
@@ -346,7 +357,7 @@ mod tests {
                 subtile_row: u8::try_from(row).expect("test row fits u8"),
                 tile_index,
             },
-            texture: Handle::weak_from_u128(100 + u128::from(tile_index)),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100 + u128::from(tile_index)), std::marker::PhantomData),
             animation_frames: None,
             priority: false,
         }
@@ -359,7 +370,7 @@ mod tests {
             source_map_size_core_tiles: None,
             terrain_revision: 7,
             grid_origin: bevy::prelude::IVec2::ZERO,
-            map_texture: Handle::weak_from_u128(1),
+            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::new(8.0, 4.0),
             viewport_size: Vec2::new(16.0, 8.0),
             tile_size: Vec2::splat(8.0),
@@ -374,7 +385,7 @@ mod tests {
             actors: vec![VisualActor {
                 id: VisualActorId::Player,
                 source_id: Arc::from("player"),
-                texture: Handle::weak_from_u128(2),
+                texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
                 center: Vec2::new(8.0, 4.0),
                 size: Vec2::splat(16.0),
                 flip_x: false,
@@ -517,7 +528,7 @@ mod tests {
         frame.actors.push(VisualActor {
             id: VisualActorId::Player,
             source_id: Arc::from("player"),
-            texture: Handle::weak_from_u128(3),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
             center: Vec2::new(96.0, 72.0),
             size: Vec2::splat(16.0),
             flip_x: true,
@@ -566,7 +577,7 @@ mod tests {
         let grass_rustle = VisualActor {
             id: VisualActorId::Effect(VisualEffectId::GrassRustle),
             source_id: Arc::from("effect_grass_rustle"),
-            texture: Handle::weak_from_u128(3),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
             center: Vec2::new(8.0, 4.0),
             size: Vec2::splat(16.0),
             flip_x: false,

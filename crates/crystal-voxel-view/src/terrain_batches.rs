@@ -1,7 +1,8 @@
 //! Exact static geometry in bounded spatial draws. Bevy culls each draw against
 //! each camera and shadow frustum; no camera/player-dependent geometry is built.
+use bevy::camera::primitives::MeshAabb;
 use crate::mesh::SurfaceMeshData;
-use bevy::{prelude::*, render::primitives::Aabb};
+use bevy::{prelude::*, camera::primitives::Aabb};
 
 /// Authoritative source-map rectangle in the mesh's local X/Z coordinates.
 /// This is independent of the generated terrain's (possibly padded) extent.
@@ -36,7 +37,7 @@ impl From<Mesh> for PreparedBatch {
     fn from(mesh: Mesh) -> Self {
         // Compute on the terrain worker, before render extraction moves the
         // CPU buffers. Never scan full vertex buffers when applying a build.
-        let bounds = mesh.compute_aabb();
+        let bounds = mesh.get_aabb();
         Self {
             mesh,
             bounds,
@@ -472,7 +473,7 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bevy::render::{camera::CameraProjection, primitives::Sphere};
+    use bevy::camera::{CameraProjection, primitives::Sphere};
     use std::collections::BTreeMap;
 
     // Deliberately indexed, asymmetric and non-flat, with overlapping cutaway
@@ -811,7 +812,7 @@ mod tests {
             "two huge triangles need only two domain draws"
         );
         for (domain, data) in batches {
-            let aabb = data.into_mesh().compute_aabb().unwrap();
+            let aabb = data.into_mesh().get_aabb().unwrap();
             if domain == AuthenticDomain::Inside {
                 assert_eq!(aabb.min().x, 0.0);
                 assert_eq!(aabb.max().x, 4.0);
@@ -924,7 +925,7 @@ mod tests {
         .flat_map(|bounds| separate_authentic_domains(source.clone(), bounds))
         .flat_map(|(_, data)| partition(data, Vec2::splat(8.0)))
         .map(|batch| {
-            let bounds = batch.clone().into_mesh().compute_aabb().unwrap();
+            let bounds = batch.clone().into_mesh().get_aabb().unwrap();
             (batch, bounds)
         })
         .collect::<Vec<_>>();
@@ -940,13 +941,14 @@ mod tests {
                         near: pose.near,
                         far: pose.far,
                         aspect_ratio: viewport.x / viewport.y,
+                        ..default()
                     };
                     let frustum = projection.compute_frustum(&camera);
                     let clip_from_world =
-                        projection.get_clip_from_view() * camera.compute_matrix().inverse();
+                        projection.get_clip_from_view() * camera.to_matrix().inverse();
                     for offset in [Vec3::ZERO, Vec3::new(-73.5, 0.0, 97.25)] {
                         let world_from_local = GlobalTransform::from_translation(offset);
-                        let clip_from_local = clip_from_world * world_from_local.compute_matrix();
+                        let clip_from_local = clip_from_world * world_from_local.to_matrix();
                         for (batch, bounds) in &batches {
                             let sphere = Sphere {
                                 center: world_from_local.affine().transform_point3a(bounds.center),

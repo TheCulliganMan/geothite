@@ -7,7 +7,9 @@ use crate::interior_models::{ModelKind as Interior, model as interior_model};
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Surface {
     Stone,
+    BlueBrick,
     Ceramic,
+    ArcadeCeramic,
     Timber,
     Tatami,
     Facility,
@@ -27,6 +29,7 @@ pub(super) enum Detail {
     RoofRail,
     LivePlaque,
     Threshold,
+    ArcadeEntryMat,
     FloorBand,
     ShutterTrack,
     Pit,
@@ -42,6 +45,7 @@ pub(super) enum Detail {
     Arena,
     LinkPlatform { trade: bool },
     BikeBoundary,
+    TowerLadder { down: bool },
 }
 impl Detail {
     pub(super) fn label(self) -> &'static str {
@@ -53,7 +57,9 @@ impl Detail {
             Self::Interior(Interior::LabWorkstation) => "special-room:facility-workstation",
             Self::Interior(_) => "special-room:verified-furniture",
             Self::Surface(Surface::Stone) => "special-room:surface-stone",
+            Self::Surface(Surface::BlueBrick) => "special-room:surface-blue-brick",
             Self::Surface(Surface::Ceramic) => "special-room:surface-ceramic",
+            Self::Surface(Surface::ArcadeCeramic) => "special-room:arcade-ceramic",
             Self::Surface(Surface::Timber) => "special-room:surface-timber",
             Self::Surface(Surface::Tatami) => "special-room:surface-dojo-mat",
             Self::Surface(Surface::Facility) => "special-room:surface-facility",
@@ -61,6 +67,7 @@ impl Detail {
             Self::RoofRail => "special-room:terrace-parapet",
             Self::LivePlaque => "special-room:live-sign-in-frame",
             Self::Threshold => "special-room:surface-threshold",
+            Self::ArcadeEntryMat => "special-room:arcade-entry-mat",
             Self::FloorBand => "special-room:surface-corridor-band",
             Self::ShutterTrack => "special-room:facility-shutter-track",
             Self::Pit => "special-room:open-puzzle-shaft",
@@ -77,6 +84,8 @@ impl Detail {
             Self::LinkPlatform { trade: false } => "special-room:colosseum-platform-apparatus",
             Self::LinkPlatform { trade: true } => "special-room:trade-platform-apparatus",
             Self::BikeBoundary => "special-room:source-clipped-bicycle-wheels",
+            Self::TowerLadder { down: false } => "tower:timber-ladder-up",
+            Self::TowerLadder { down: true } => "tower:timber-ladder-down",
         }
     }
 }
@@ -177,7 +186,11 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
     let (map, cells, g) = (r.map, r.cells, r.g);
     let Some(ground) = cells
         .iter()
-        .position(|c| matches!(cell_detail(map, &c.source), Some(Detail::Surface(_))))
+        .position(|c| {
+            matches!(cell_detail(map, &c.source), Some(Detail::Surface(_)))
+                || (crate::casino::is_game_corner_map(map)
+                    && crate::casino::is_floor_cell(&c.source))
+        })
     else {
         return;
     };
@@ -254,7 +267,34 @@ fn slab(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, c: [f32; 4]
 }
 fn surface(out: &mut SurfaceMeshData, b: [f32; 4], kind: Surface, x: usize, y: usize, k: f32) {
     let [w, e, n, s] = b;
+    if matches!(kind,Surface::BlueBrick) {
+        // The fingerprinted Blackthorn floor keeps its blue brick pigment.
+        // Mortar and brick faces partition the top at zero; the substrate
+        // stays below the unchanged actor datum.
+        let paint=|out:&mut SurfaceMeshData,b:[f32;4],color:[f32;3]| {
+            let [w,e,n,s]=b;
+            if e<=w || s<=n {return;}
+            append_solid_quad(out,[[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]],[0.,1.,0.],[color[0],color[1],color[2],1.]);
+        };
+        slab(out,b,-1.5*k,-0.20*k,[0.16,0.20,0.30,1.]);
+        for course in 0..2 {
+            let top=n+(s-n)*course as f32/2.;
+            let bottom=n+(s-n)*(course+1) as f32/2.;
+            let joint=if (y*2+course)%2==0 {w} else {(w+e)*0.5};
+            let seam=0.22*k;
+            let mortar=[0.64,0.73,0.88];
+            paint(out,[w,e,top,top+seam],mortar);
+            paint(out,[w,e,bottom-seam,bottom],mortar);
+            let pigment=((x*3+y*5+course)%5) as f32*0.006;
+            let brick=[0.17+pigment,0.28+pigment,0.66+pigment];
+            paint(out,[w,joint,top+seam,bottom-seam],brick);
+            paint(out,[joint+seam,e,top+seam,bottom-seam],brick);
+            paint(out,[joint,joint+seam,top+seam,bottom-seam],mortar);
+        }
+        return;
+    }
     let c = match kind {
+        Surface::BlueBrick | Surface::ArcadeCeramic => unreachable!("handled before generic paving"),
         Surface::Stone => [0.55, 0.57, 0.50, 1.],
         Surface::Ceramic => {
             if (x + y) % 2 == 0 {
@@ -373,8 +413,21 @@ fn octagon(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [
         );
     }
 }
-fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: Surface) {
+fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: Surface, cells: &[&VisualTile]) {
     for i in p.indices(g.width) {
+        if matches!(kind, Surface::ArcadeCeramic) {
+            let bounds = g.bounds(i % g.width, i / g.width);
+            let first = mesh.solid.indices.len();
+            slab(&mut mesh.solid, bounds.into(), -1.5 * g.tile_height / SOURCE_TILE_HEIGHT, 0., [0.28,0.29,0.27,1.]);
+            // Replace the body's faceted lid with one coplanar partition of
+            // native tile paint. Keep every side and the sealed underside.
+            let rest = mesh.solid.indices.split_off(first);
+            mesh.solid.indices.extend(rest.chunks_exact(3).filter(|tri| mesh.solid.normals[tri[0] as usize][1] < 0.5).flatten().copied());
+            let source = &cells[i].source;
+            super::modeled_interiors::arcade_floor_cell(&mut mesh.solid, bounds.into(),
+                [i32::from(source.subtile_column),i32::from(source.subtile_row)]);
+            continue;
+        }
         surface(
             &mut mesh.solid,
             g.bounds(i % g.width, i / g.width).into(),
@@ -490,6 +543,7 @@ pub(super) fn append(
     let b = [w, e, n, s];
     let room_floor = match cells[p.ground].source.tileset_id.as_ref() {
         "lab" => Surface::Timber,
+        "tower" => Surface::Timber,
         "train_station" => Surface::Tatami,
         "facility" => Surface::Facility,
         "elite_four_room" => Surface::Stone,
@@ -504,12 +558,61 @@ pub(super) fn append(
             | Detail::FacilitySourceBarrier
             | Detail::Surface(_)
             | Detail::Threshold
+            | Detail::ArcadeEntryMat
             | Detail::FloorBand
             | Detail::ShutterTrack
+            | Detail::TowerLadder { .. }
     ) {
-        underlay(mesh, g, p, room_floor);
+        underlay(mesh, g, p, room_floor, cells);
     }
     match detail {
+        Detail::TowerLadder { down } => {
+            let base = if down { -16. * k } else { 0. };
+            let top = if down { 0. } else { 24. * k };
+            let timber = [0.43, 0.29, 0.16, 1.];
+            let edge = [0.30, 0.19, 0.10, 1.];
+            if down {
+                // Open well: no room-height backing can conceal the rungs.
+                slab(&mut mesh.solid, b, base - k, base, [0.13, 0.10, 0.07, 1.]);
+                for frame in [
+                    [w, w + k, n, s],
+                    [e - k, e, n, s],
+                    [w + k, e - k, n, n + k],
+                    [w + k, e - k, s - k, s],
+                ] {
+                    slab(&mut mesh.solid, frame, base, 0., edge);
+                }
+            } else {
+                // Reuse the same native backing sample as the room. The late
+                // floor pass gives it the continuous map-space plank finish.
+                let uv = g.uv(
+                    cells[p.ground].column as usize,
+                    cells[p.ground].row as usize,
+                );
+                for i in p.indices(g.width) {
+                    append_top(
+                        &mut mesh.textured,
+                        g.bounds(i % g.width, i / g.width).into(),
+                        0.,
+                        uv,
+                    );
+                }
+            }
+            let z = n + 3. * k;
+            for x in [w + 2. * k, e - 3. * k] {
+                slab(&mut mesh.solid, [x, x + k, z, z + k], base, top + k, edge);
+            }
+            for i in 0..=6 {
+                let y = base + (top - base) * i as f32 / 6.;
+                slab(
+                    &mut mesh.solid,
+                    [w + 2. * k, e - 2. * k, z - 0.35 * k, z + 1.35 * k],
+                    y,
+                    y + 0.75 * k,
+                    timber,
+                );
+            }
+        }
         Detail::Asset(Asset::RoofBinoculars) => {
             // The complete 2x2 source drawing also owns the east parapet strip.
             // Preserve it and fit the west-facing viewer in its observed span.
@@ -544,7 +647,7 @@ pub(super) fn append(
         Detail::Guardian => {
             model(Kind::TowerGuardian).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise)
         }
-        Detail::Surface(kind) => underlay(mesh, g, p, kind),
+        Detail::Surface(kind) => underlay(mesh, g, p, kind, cells),
         Detail::Wall(material) | Detail::WallSegment { material, .. } => {
             let open = if let Detail::WallSegment { open, .. } = detail {
                 open
@@ -605,6 +708,26 @@ pub(super) fn append(
                 4. * k,
                 rise - 5. * k,
             );
+        }
+        Detail::ArcadeEntryMat => {
+            // Complete 32x16 native cloth drawing, with its pink selvedge at
+            // both ends. Each closed strip owns one partition of the floor;
+            // the mat stays at the original actor/warp datum.
+            let red = [0.90, 0.06, 0.02, 1.];
+            let pink = [0.95, 0.20, 0.16, 1.];
+            let light = [0.98, 0.36, 0.34, 1.];
+            for row in 0..16 {
+                let color = match row { 0 | 15 => light, 2 | 13 => pink, _ => red };
+                let za = n + (s-n) * row as f32 / 16.;
+                let zb = n + (s-n) * (row+1) as f32 / 16.;
+                let first = mesh.solid.positions.len();
+                slab(&mut mesh.solid, [w,e,za,zb], -0.4*k, 0., color);
+                for i in first..mesh.solid.positions.len() {
+                    let point = mesh.solid.positions[i];
+                    mesh.solid.uvs[i] = [82000. + (point[0]-w)/(e-w)*16.,
+                        2500. + (point[2]-n)/(s-n)*16.];
+                }
+            }
         }
         Detail::Threshold | Detail::FloorBand => {
             // This full-plot slab owns the floor; a ceramic underlay would
@@ -1143,7 +1266,7 @@ mod tests {
             .iter()
             .map(|o| o.map)
             .collect::<std::collections::BTreeSet<_>>();
-        assert_eq!(maps.len(), 17);
+        assert_eq!(maps.len(), 19);
         for o in OBJECTS {
             assert!(o.width * o.height > 1);
             assert!(o.depth > 0.);
@@ -1182,6 +1305,75 @@ mod tests {
         m
     }
     #[test]
+    fn arcade_entry_mat_resolves_in_all_three_maps_without_partial_claims() {
+        let mut tiles=cells(4,3);
+        for (i,tile) in tiles.iter_mut().enumerate() {
+            tile.source=if i<4 {
+                VisualTileSource { tileset_id: Arc::from("game_corner"), metatile_id:1,
+                    subtile_column:i as u8, subtile_row:0, tile_index:if i%2==0 {1} else {0x10} }
+            } else {
+                VisualTileSource { tileset_id: Arc::from("game_corner"), metatile_id:0x0c,
+                    subtile_column:(i%4) as u8, subtile_row:(1+i/4) as u8,
+                    tile_index:if i<8 {0x03} else {0x13} }
+            };
+        }
+        for map in ["GoldenrodGameCorner","CeladonGameCorner","CeladonGameCornerPrizeRoom"] {
+            let refs=tiles.iter().collect::<Vec<_>>(); let g=grid(4,3);
+            let mut resolver=Resolver { map,cells:&refs,g:&g,claimed:vec![false;12],out:vec![] };
+            resolve_into(&mut resolver);
+            assert_eq!(resolver.out.iter().filter(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat))).count(),1);
+            assert!(resolver.claimed[4..].iter().all(|c| *c));
+            let mut resolver=Resolver { map,cells:&refs,g:&g,claimed:vec![false;12],out:vec![] };
+            resolver.claimed[10]=true;
+            resolve_into(&mut resolver);
+            assert!(!resolver.out.iter().any(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat))));
+            for i in 4..12 { assert_eq!(resolver.claimed[i],i==10); }
+            let mut changed=tiles.clone();changed[6].source.tile_index^=1;
+            let refs=changed.iter().collect::<Vec<_>>();
+            let mut resolver=Resolver { map,cells:&refs,g:&g,claimed:vec![false;12],out:vec![] };
+            resolve_into(&mut resolver);
+            assert!(resolver.claimed[4..].iter().all(|c| !*c));
+        }
+    }
+    #[test]
+    fn arcade_entry_mat_requires_the_whole_drawing_and_keeps_warp_footing() {
+        let object = OBJECTS.iter().find(|o| o.map == "CeladonGameCornerPrizeRoom" && matches!(o.detail, Detail::ArcadeEntryMat)).unwrap();
+        let mut tiles = cells(4,2);
+        for (i,tile) in tiles.iter_mut().enumerate() {
+            tile.source = VisualTileSource { tileset_id: Arc::from("game_corner"),
+                metatile_id: 0x0c, subtile_column: (i%4) as u8,
+                subtile_row: (2+i/4) as u8, tile_index: if i<4 {0x03} else {0x13} };
+        }
+        for binding in OBJECTS.iter().filter(|o| matches!(o.detail, Detail::ArcadeEntryMat)) {
+            assert!(matches_object(binding.map, &tiles.iter().collect::<Vec<_>>(), &grid(4,2),0,0,binding));
+        }
+        assert!(matches_object("CeladonGameCornerPrizeRoom", &tiles.iter().collect::<Vec<_>>(), &grid(4,2),0,0,object));
+        assert!(!matches_object("GoldenrodGameCorner", &tiles.iter().collect::<Vec<_>>(), &grid(4,2),0,0,object));
+        for i in 0..8 { for mutation in 0..5 {
+            let mut changed=tiles.clone(); let source=&mut changed[i].source;
+            match mutation {
+                0 => source.tile_index ^=1,
+                1 => source.metatile_id ^=1,
+                2 => source.subtile_column ^=1,
+                3 => source.subtile_row ^=1,
+                _ => source.tileset_id=Arc::from("other"),
+            }
+            assert!(!matches_object("CeladonGameCornerPrizeRoom", &changed.iter().collect::<Vec<_>>(), &grid(4,2),0,0,object));
+        }}
+        assert!(!matches_object("CeladonGameCornerPrizeRoom", &tiles.iter().collect::<Vec<_>>(), &grid(3,2),0,0,object));
+        let mesh=rendered(Detail::ArcadeEntryMat,4,2);
+        assert!(mesh.solid.positions.iter().all(|p| p[1]<=0. && p[1]>=-0.401));
+        let mut floor_area=0.;
+        for triangle in mesh.solid.indices.chunks_exact(3) {
+            let [a,b,c]=[triangle[0],triangle[1],triangle[2]].map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
+            let cross=(b-a).cross(c-a);
+            if [a,b,c].iter().all(|p| p.y==0.) && cross.y>0. { floor_area+=cross.y*0.5; }
+        }
+        assert!((floor_area-32.*16.).abs()<0.001);
+        assert!(mesh.solid.colors.iter().any(|c| c[0]>c[1]*3.));
+        assert!(mesh.textured.positions.is_empty());
+    }
+    #[test]
     fn special_room_holes_stay_open_stairs_descend_and_surfaces_keep_actor_datum() {
         let hole = rendered(Detail::Pit, 2, 2);
         assert!(hole.solid.positions.iter().all(|p| p[1] <= 0.));
@@ -1200,8 +1392,10 @@ mod tests {
         assert!(stairs.solid.positions.iter().any(|p| p[1] < -4.));
         assert!(stairs.solid.positions.iter().all(|p| p[1] <= 0.));
         for s in [
+            Surface::BlueBrick,
             Surface::Stone,
             Surface::Ceramic,
+            Surface::ArcadeCeramic,
             Surface::Timber,
             Surface::Tatami,
             Surface::Facility,
@@ -1211,8 +1405,34 @@ mod tests {
         }
     }
     #[test]
+    fn arcade_ceramic_keeps_framed_paint_and_glaze_without_triangle_facets() {
+        let m = rendered(Detail::Surface(Surface::ArcadeCeramic), 2, 2);
+        let expected = [[0.94f32,0.84,0.73], [0.45,0.47,0.45], [0.57,0.59,0.56], [0.86,0.86,0.82]];
+        let mut seen = std::collections::BTreeSet::new();
+        for tri in m.solid.indices.chunks_exact(3) {
+            if tri.iter().all(|&i| m.solid.positions[i as usize][1].abs()<0.0001) {
+                for &i in tri {
+                    let i=i as usize;
+                    let c=m.solid.colors[i];
+                    assert!(expected.iter().any(|p| c[..3]==p[..]));
+                    seen.insert([c[0].to_bits(),c[1].to_bits(),c[2].to_bits()]);
+                    assert_eq!(m.solid.normals[i],[0.,1.,0.]);
+                    assert!((80000.0..81000.0).contains(&m.solid.uvs[i][0]));
+                    assert!((1000.0..2000.0).contains(&m.solid.uvs[i][1]));
+                }
+            }
+        }
+        assert_eq!(seen.len(),4);
+        let s=VisualTileSource {tileset_id:Arc::from("game_corner"),metatile_id:1,
+            subtile_column:0,subtile_row:0,tile_index:1};
+        assert!(matches!(cell_detail("CeladonGameCornerPrizeRoom",&s),Some(Detail::Surface(Surface::ArcadeCeramic))));
+        let mut changed=s.clone();changed.tile_index^=1;
+        assert!(!matches!(cell_detail("CeladonGameCornerPrizeRoom",&changed),Some(Detail::Surface(Surface::ArcadeCeramic))));
+        assert!(!matches!(cell_detail("UnknownGameCorner",&s),Some(Detail::Surface(Surface::ArcadeCeramic))));
+    }
+    #[test]
     fn special_room_thresholds_and_tracks_have_one_complete_floor_surface() {
-        for detail in [Detail::Threshold, Detail::FloorBand, Detail::ShutterTrack] {
+        for detail in [Detail::Threshold, Detail::FloorBand, Detail::ShutterTrack, Detail::Surface(Surface::BlueBrick), Detail::Surface(Surface::ArcadeCeramic)] {
             let mesh = rendered(detail, 2, 2);
             let mut floor_area = 0.;
             for tri in mesh.solid.indices.chunks_exact(3) {
@@ -1230,7 +1450,12 @@ mod tests {
                 (floor_area - 16. * 16.).abs() < 0.001,
                 "{detail:?}: {floor_area}"
             );
-            assert!(mesh.solid.positions.iter().any(|p| p[1] > 0.));
+            if matches!(detail, Detail::Surface(Surface::BlueBrick | Surface::ArcadeCeramic)) {
+                assert!(mesh.solid.positions.iter().all(|p| p[1] <= 0.));
+                assert!(mesh.solid.positions.iter().any(|p| p[1] < 0.));
+            } else {
+                assert!(mesh.solid.positions.iter().any(|p| p[1] > 0.));
+            }
         }
     }
     #[test]

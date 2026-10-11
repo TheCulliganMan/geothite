@@ -1,3 +1,5 @@
+#[cfg(feature = "dev-tools")]
+mod dev_tools;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_record;
 #[cfg(feature = "location-tester")]
@@ -15,17 +17,18 @@ use std::time::Duration;
 #[cfg(not(target_arch = "wasm32"))]
 use std::time::Instant;
 
-use anyhow::{Context, Result};
+// Shadow Bevy's ContextExt with anyhow's error context for runtime loading.
+use anyhow::{Context as ContextExt, Result};
 use bevy::ecs::query::QueryFilter;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
-use bevy::render::render_asset::RenderAssetUsages;
+use bevy::asset::RenderAssetUsages;
 use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
-use bevy::render::texture::ImageSampler;
+use bevy::image::ImageSampler;
 #[cfg(feature = "location-tester")]
-use bevy::render::view::screenshot::ScreenshotManager;
+use bevy::render::view::screenshot::{Screenshot, ScreenshotCaptured};
 #[cfg(all(not(target_arch = "wasm32"), feature = "voxel-view"))]
-use bevy::render::{Render, RenderApp, RenderSet};
+use bevy::render::{Render, RenderApp, RenderSystems};
 #[cfg(feature = "location-tester")]
 use bevy::window::PrimaryWindow;
 use bevy::window::{PresentMode, WindowFocused, WindowResolution};
@@ -731,7 +734,18 @@ impl VisibleShellController {
     }
 
     pub fn press(&mut self, button: GameButton) -> Result<()> {
-        let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &[button])?;
+        self.press_buttons([button])
+    }
+
+    /// Apply a simultaneous joypad chord through the production input owner.
+    pub fn press_buttons(&mut self, buttons: impl IntoIterator<Item = GameButton>) -> Result<()> {
+        let mut buttons: Vec<_> = buttons.into_iter().collect();
+        // A modal B dismissal owns the chord; do not move after closing it.
+        if buttons.contains(&GameButton::B) && has_visible_shell_b_action(&mut self.shell) {
+            buttons.retain(|button| *button == GameButton::B);
+            buttons.truncate(1);
+        }
+        let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &buttons)?;
         self.complete_overworld_outcome(outcome)?;
         settle_visible_shell_until_input(&mut self.shell)
     }
@@ -2015,9 +2029,9 @@ fn low_latency_game_window(title: String) -> Window {
     Window {
         title,
         resolution: if cfg!(feature = "fullscreen-scaling") {
-            WindowResolution::new(1280.0, 720.0)
+            WindowResolution::new(1280, 800)
         } else {
-            WindowResolution::new(640.0, 576.0)
+            WindowResolution::new(640, 576)
         },
         // Keep presentation synchronized while permitting CPU/GPU overlap.
         // wgpu documents that a one-frame limit can serialize both processors
@@ -4547,11 +4561,9 @@ struct RenderedViewport {
     visual_tiles: Vec<crystal_render_api::VisualTile>,
     /// Validated terrain identity, rebuilt with the tile grid rather than
     /// rehashing every source tile during camera/actor interpolation.
-    #[cfg(any(test, feature = "voxel-view"))]
     visual_tiles_revision: Option<u64>,
     /// Actual map extent recorded alongside the successfully built visual grid.
     /// This follows the rendered scene even while the live session transitions.
-    #[cfg(any(test, feature = "voxel-view"))]
     source_map_size_core_tiles: Option<UVec2>,
     /// Feature-gated terrain surface extending beyond the Game Boy viewport.
     /// It is consumed only by the optional voxel renderer and never displayed
@@ -5147,7 +5159,7 @@ fn present_fullscreen_frame(
         || size.depth_or_array_layers != 1
         || next_image.texture_descriptor.dimension != TextureDimension::D2
         || next_image.texture_descriptor.format != TextureFormat::Rgba8UnormSrgb
-        || next_image.data.len() != expected_width as usize * expected_height as usize * 4
+        || next_image.data.as_ref().expect("CPU image pixels").len() != expected_width as usize * expected_height as usize * 4
     {
         anyhow::bail!(
             "full-screen LCD frame must be {}x{} RGBA8, got {}x{} {:?} with {} bytes",
@@ -5156,19 +5168,19 @@ fn present_fullscreen_frame(
             size.width,
             size.height,
             next_image.texture_descriptor.format,
-            next_image.data.len(),
+            next_image.data.as_ref().expect("CPU image pixels").len(),
         );
     }
     next_image.sampler = ImageSampler::nearest();
 
     if let Some(surface) = rendered_art.intro_presented_surface.as_ref() {
-        if let Some(image) = images.get_mut(&surface.handle) {
+        if let Some(mut image) = images.get_mut(&surface.handle) {
             *image = next_image;
         } else {
             // A retained strong handle should keep this asset alive. Reinsert
             // defensively under the same id so the visible sprite never has to
             // swap handles if an external asset operation removed it.
-            images.insert(surface.handle.id(), next_image);
+            images.insert(surface.handle.id(), next_image).context("restore retained fullscreen image")?;
         }
         return Ok(surface.clone());
     }
@@ -5194,8 +5206,8 @@ fn ensure_presented_fullscreen_entity(
         // layer. Updating only the transform leaves furniture Town Map and
         // other later full-screen surfaces showing the preceding screen.
         commands.entity(entity).insert((
-            frame.handle.clone(),
             Sprite {
+                image: frame.handle.clone(),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
@@ -5205,15 +5217,11 @@ fn ensure_presented_fullscreen_entity(
     }
     let entity = commands
         .spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, z),
-                ..default()
-            },
+Transform::from_xyz(0.0, 0.0, z),),
             TitleScreenMarker,
             VisibleIntroSurface,
         ))
@@ -5311,7 +5319,7 @@ fn remove_presented_fullscreen_entity(
     rendered_art: &mut RenderedTilesetArt,
 ) {
     if let Some(entity) = rendered_art.presented_fullscreen_entity.take() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
     rendered_art.presented_fullscreen_release_pending = false;
 }
@@ -5790,16 +5798,18 @@ pub fn run_bevy_shell(
     let mut app = App::new();
     #[cfg(not(target_arch = "wasm32"))]
     native_navigation::install(&mut app);
+    #[cfg(not(target_arch = "wasm32"))]
+    handheld_input::install(&mut app);
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_audio_device_open").entered();
-        app.insert_non_send_resource(NativeAudioBackend::new()?);
+        app.insert_non_send(NativeAudioBackend::new()?);
     }
     #[cfg(all(not(test), target_arch = "wasm32"))]
-    app.insert_non_send_resource(BrowserAudioBackend::new());
+    app.insert_non_send(BrowserAudioBackend::new());
     if let Some(multiplayer_runtime) = multiplayer_runtime {
-        app.insert_non_send_resource(multiplayer_runtime);
+        app.insert_non_send(multiplayer_runtime);
     }
     let primary_window = low_latency_game_window(window_title);
     #[cfg(feature = "location-tester")]
@@ -5810,7 +5820,7 @@ pub fn run_bevy_shell(
                 (320..=3840).contains(&width) && (288..=2160).contains(&height),
                 "capture viewport must be 320..3840 by 288..2160 pixels"
             );
-            window.resolution = WindowResolution::new(width as f32, height as f32);
+            window.resolution = WindowResolution::new(width, height);
             window.resizable = false;
             window.resize_constraints = bevy::window::WindowResizeConstraints {
                 min_width: width as f32,
@@ -5844,10 +5854,19 @@ pub fn run_bevy_shell(
     } else {
         plugins
     };
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let plugins = if render_test_screenshot.is_some() {
+        // Automated screenshots must include fully compiled shader pipelines.
+        plugins.set(bevy::render::RenderPlugin {
+            synchronous_pipeline_compilation: true,
+            ..default()
+        })
+    } else {
+        plugins
+    };
     #[cfg(feature = "operation-trace")]
     let plugins = plugins.disable::<bevy::log::LogPlugin>();
     app.insert_resource(ClearColor(Color::srgb(0.05, 0.07, 0.06)))
-        .insert_resource(classic_pixel_art_msaa())
         .insert_resource(runtime_shell)
         // Oak fades, script emotes, and WaitSFX are Game Boy frame loops.
         // Keep driving them while the host window is unfocused; reactive
@@ -5979,6 +5998,8 @@ pub fn run_bevy_shell(
         .add_systems(Update, refresh_dialog_text.after(refresh_status_text))
         .add_systems(Update, refresh_battle_text.after(refresh_dialog_text))
         .add_systems(Update, refresh_shell_panels.after(refresh_battle_text));
+    #[cfg(feature = "dev-tools")]
+    dev_tools::install(&mut app);
     #[cfg(feature = "voxel-view")]
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
         .add_systems(
@@ -6008,7 +6029,7 @@ pub fn run_bevy_shell(
     app.add_systems(
         PostUpdate,
         publish_social_heads
-            .after(bevy::transform::TransformSystem::TransformPropagate)
+            .after(bevy::transform::TransformSystems::Propagate)
             .after(crystal_voxel_view::ActorHeadProjection),
     );
     #[cfg(feature = "voxel-view")]
@@ -6021,8 +6042,8 @@ pub fn run_bevy_shell(
         )
             .chain()
             .in_set(crystal_render_api::BattleCanvasExtract)
-            .before(bevy::render::camera::CameraUpdateSystem)
-            .before(bevy::transform::TransformSystem::TransformPropagate);
+            .before(bevy::camera::CameraUpdateSystems)
+            .before(bevy::transform::TransformSystems::Propagate);
         #[cfg(feature = "fullscreen-scaling")]
         let battle_ui_layout = battle_ui_layout.after(sync_fullscreen_world_layout);
         app.add_systems(PostUpdate, battle_ui_layout);
@@ -6030,7 +6051,7 @@ pub fn run_bevy_shell(
     #[cfg(not(feature = "voxel-view"))]
     app.add_systems(
         PostUpdate,
-        publish_social_heads.after(bevy::transform::TransformSystem::TransformPropagate),
+        publish_social_heads.after(bevy::transform::TransformSystems::Propagate),
     );
     #[cfg(target_arch = "wasm32")]
     app.add_systems(
@@ -6056,8 +6077,8 @@ pub fn run_bevy_shell(
                 sync_fullscreen_world_layout,
             )
                 .chain()
-                .before(bevy::render::camera::CameraUpdateSystem)
-                .before(bevy::transform::TransformSystem::TransformPropagate),
+                .before(bevy::camera::CameraUpdateSystems)
+                .before(bevy::transform::TransformSystems::Propagate),
         );
     #[cfg(feature = "voxel-view")]
     app.insert_resource(crystal_voxel_view::VoxelViewSettings {
@@ -6101,31 +6122,31 @@ pub fn run_bevy_shell(
             .init_resource::<NativeRenderTraceState>()
             .add_systems(
                 Render,
-                trace_native_render_start.before(RenderSet::ManageViews),
+                trace_native_render_start.before(RenderSystems::CreateViews),
             )
             .add_systems(
                 Render,
                 trace_native_render_managed
-                    .after(RenderSet::ManageViews)
-                    .before(RenderSet::Queue),
+                    .after(RenderSystems::CreateViews)
+                    .before(RenderSystems::Queue),
             )
             .add_systems(
                 Render,
                 trace_native_render_queued
-                    .after(RenderSet::PhaseSort)
-                    .before(RenderSet::Prepare),
+                    .after(RenderSystems::PhaseSort)
+                    .before(RenderSystems::Prepare),
             )
             .add_systems(
                 Render,
                 trace_native_render_prepared
-                    .after(RenderSet::Prepare)
-                    .before(RenderSet::Render),
+                    .after(RenderSystems::Prepare)
+                    .before(RenderSystems::Render),
             )
             .add_systems(
                 Render,
                 trace_native_render_presented
-                    .after(RenderSet::Render)
-                    .before(RenderSet::Cleanup),
+                    .after(RenderSystems::Render)
+                    .before(RenderSystems::Cleanup),
             );
     }
     #[cfg(feature = "location-tester")]
@@ -6278,7 +6299,7 @@ fn trace_native_overworld_movement(
     trace.frame = trace.frame.saturating_add(1);
 
     let player_position = players
-        .get_single()
+        .single()
         .ok()
         .map(|transform| transform.translation);
     let delta = player_position
@@ -6319,10 +6340,10 @@ fn configure_voxel_composite_camera(
 ) {
     for (entity, mut camera) in &mut cameras {
         camera.order = 1;
-        camera.clear_color = bevy::render::camera::ClearColorConfig::None;
+        camera.clear_color = bevy::camera::ClearColorConfig::None;
         commands
             .entity(entity)
-            .insert(bevy::render::view::RenderLayers::layer(0));
+            .insert(bevy::camera::visibility::RenderLayers::layer(0));
     }
 }
 
@@ -6368,13 +6389,13 @@ fn sync_manual_world_view_layers(
             // main layer. UI, dialogue, battle, and fades remain on layer 0.
             commands
                 .entity(entity)
-                .insert(bevy::render::view::RenderLayers::layer(
+                .insert(bevy::camera::visibility::RenderLayers::layer(
                     crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
                 ));
         } else {
             commands
                 .entity(entity)
-                .remove::<bevy::render::view::RenderLayers>();
+                .remove::<bevy::camera::visibility::RenderLayers>();
         }
     }
 }
@@ -8561,3 +8582,7 @@ include!("bevy_shell/catch_tutorial.rs");
 
 #[cfg(not(target_arch = "wasm32"))]
 mod native_navigation;
+
+#[cfg(not(target_arch = "wasm32"))]
+#[path = "bevy_shell/handheld_input.rs"]
+mod handheld_input;

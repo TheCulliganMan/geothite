@@ -9,6 +9,10 @@ mod live;
 
 #[path = "mesh/background.rs"]
 mod background;
+#[path = "mesh/cave_enclosure.rs"]
+mod cave_enclosure;
+mod dragons_den;
+mod den_water_boundary;
 #[path = "mesh/gate_counters.rs"]
 mod gate_counters;
 #[path = "mesh/cable_club.rs"]
@@ -31,10 +35,30 @@ mod ship_fronts;
 mod traditional_room;
 #[path = "mesh/park_scenery.rs"]
 mod park_scenery;
+#[path = "mesh/park_side_fence.rs"]
+mod park_side_fence;
+#[path = "mesh/park_flowerbed.rs"]
+mod park_flowerbed;
+#[path = "mesh/park_fountain_basin.rs"]
+mod park_fountain_basin;
 #[path = "mesh/rocket_plants.rs"]
 mod rocket_plants;
 #[path = "mesh/modeled_dungeons.rs"]
 mod modeled_dungeons;
+#[path = "mesh/sprout_pillar.rs"]
+mod sprout_pillar;
+
+pub(crate) fn movable_cave_stone(frozen: bool, dark: bool, variant: u8) -> SurfaceMeshData {
+    modeled_dungeons::movable_stone(frozen, dark, variant)
+}
+#[path = "mesh/cave_cliff.rs"]
+mod cave_cliff;
+#[path = "mesh/cave_shore.rs"]
+mod cave_shore;
+#[path = "mesh/ice_ground.rs"]
+mod ice_ground;
+#[path = "mesh/ice_shelf.rs"]
+mod ice_shelf;
 #[path = "mesh/gym_scenery.rs"]
 mod gym_scenery;
 #[path = "mesh/violet_gym_pits.rs"]
@@ -51,6 +75,12 @@ mod modeled_exteriors;
 mod modeled_interiors;
 #[path = "mesh/new_bark.rs"]
 mod new_bark;
+#[path = "mesh/ledge_approach.rs"]
+mod ledge_approach;
+#[path = "mesh/outdoor_stone.rs"]
+mod outdoor_stone;
+#[path = "mesh/rock_bases.rs"]
+mod rock_bases;
 #[path = "mesh/ordinary_house.rs"]
 mod ordinary_house;
 #[path = "mesh/players_house.rs"]
@@ -63,7 +93,7 @@ use std::collections::{HashMap, VecDeque};
 use bevy::{
     asset::AssetId,
     prelude::{Assets, Handle, Image, Mesh, Vec3},
-    render::{mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology},
+    mesh::Indices, asset::RenderAssetUsages, render::render_resource::PrimitiveTopology,
 };
 use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
 
@@ -154,11 +184,11 @@ impl TerrainImageSamples {
                 if size.width as usize != SOURCE_TILE_PIXELS
                     || size.height as usize != SOURCE_TILE_PIXELS
                     || size.depth_or_array_layers != 1
-                    || image.data.len() != expected_len
+                    || image.data.as_ref().expect("CPU image pixels").len() != expected_len
                 {
                     TileImageSample::Invalid
                 } else {
-                    TileImageSample::Rgba(image.data.clone())
+                    TileImageSample::Rgba(image.data.as_ref().expect("CPU image pixels").clone())
                 }
             });
         }
@@ -223,6 +253,8 @@ pub struct TerrainMeshData {
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
+    /// Rock beyond authenticated cave map bounds; separate reveal policy.
+    pub(crate) cave_enclosure: SurfaceMeshData,
     /// Authored ownership links between solid and textured fade ranges. Each
     /// pair stores a vertex anchor inside the owning range of those domains.
     /// A caption and its housing must share one camera-visibility state.
@@ -233,6 +265,8 @@ pub struct TerrainMeshData {
     pub(crate) reveal_join_batches: Vec<Vec<usize>>,
     pub animated_textured: SurfaceMeshData,
     pub animated_solid: SurfaceMeshData,
+    /// Only pillars actually selected by the completed build may animate.
+    pub(crate) animated_pillars: Vec<[usize; 2]>,
     pub footing_heights: Vec<f32>,
     /// Actual source cells consumed by successful original-model appends.
     /// This deliberately excludes old relief, cards and recolored ground.
@@ -244,6 +278,8 @@ pub struct TerrainMeshData {
 pub(crate) struct RepeatingBackground {
     pub mesh: SurfaceMeshData,
     pub texture: Handle<Image>,
+    /// Preserve the selected ground identity even when several sources share art.
+    pub source: VisualTileSource,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -417,11 +453,12 @@ pub(crate) fn build_instanced_terrain_mesh_with_profiles(
     build_terrain_mesh_internal(frame, Some(samples), true, Some(profiles))
 }
 
-/// Rebuild only the animated flower hulls, using the retained mesh's atlas slots.
+/// Rebuild animated flowers and selected pillars in the retained mesh's atlas slots.
 /// Buildings, terrain and trees are neither traversed by their meshers nor uploaded.
 pub(crate) fn build_animated_flowers(
     frame: &VisualWorldFrame,
     images: &Assets<Image>,
+    pillars: &[[usize; 2]],
 ) -> Result<(Mesh, Mesh), TerrainMeshError> {
     let samples = TerrainImageSamples::capture(frame, images);
     let geometry = GridGeometry {
@@ -466,6 +503,7 @@ pub(crate) fn build_animated_flowers(
             tile,
             &geometry,
             base_height,
+            frame.grid_origin.to_array(),
         ) {
             continue;
         }
@@ -490,7 +528,17 @@ pub(crate) fn build_animated_flowers(
             SolidKind::Flower,
         )?;
     }
+    let cells: Vec<_> = frame.tiles.iter().collect();
+    if matches!(frame.map_id.as_ref(), "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+        for &anchor in pillars {
+            sprout_pillar::append(&mut solid_mesh, &geometry, &cells, anchor);
+        }
+    }
     Ok((textured.into_mesh(), solid_mesh.into_mesh()))
+}
+
+pub(crate) fn animated_pillar_source(map: &str, source: &VisualTileSource) -> bool {
+    sprout_pillar::animated_source(map, source)
 }
 
 include!("mesh/build_scene.rs");
@@ -871,16 +919,6 @@ fn tower_boulder_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> V
     ))
 }
 
-fn tower_statue_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> Vec<TreePlacement> {
-    grouped_flat_card_placements(
-        cells,
-        geometry,
-        crate::tower::TOWER_FLOOR_TILE,
-        true,
-        |source| crate::tower::statue_local(source).map(|(column, row)| (column, row, 2, 2)),
-    )
-}
-
 fn saffron_gym_planter_placements(
     cells: &[&VisualTile],
     geometry: &GridGeometry,
@@ -1113,7 +1151,8 @@ fn append_diagonal_cave_corner(
 
     let (x0, _, z0, _) = geometry.bounds(placement.column, placement.row);
     let (_, x1, _, z1) = geometry.bounds(placement.column + 1, placement.row + 1);
-    let height = crate::cave::CAVE_ROCK_HEIGHT * geometry.tile_height / SOURCE_TILE_HEIGHT;
+    let height = crate::cave::rock_height(&cells[placement.row * geometry.width + placement.column].source)
+        * geometry.tile_height / SOURCE_TILE_HEIGHT;
     let (u0, _, v0, _) = geometry.uv(placement.column, placement.row);
     let (_, u1, _, v1) = geometry.uv(placement.column + 1, placement.row + 1);
 
@@ -1741,7 +1780,7 @@ fn park_bench_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> Vec<
         geometry,
         crate::park::PARK_PLAZA_GROUND_TILE,
         false,
-        |source| crate::park::bench_local(source).map(|(column, row)| (column, row, 4, 2)),
+        |source| crate::park::bench_local(source).map(|(column, row)| (column, row, 4, 3)),
     )
 }
 
@@ -3424,7 +3463,6 @@ pub fn audit_cell_coverage_on_map(
     prop_cards.extend(ice_path_boulder_placements(&cells, &geometry));
     prop_cards.extend(ice_path_edge_rock_placements(&cells, &geometry));
     prop_cards.extend(ruins_statue_placements(&cells, &geometry));
-    prop_cards.extend(tower_statue_placements(&cells, &geometry));
     prop_cards.extend(power_plant_plant_placements(map_id, &cells, &geometry));
     prop_cards.extend(rocket_base_plant_placements(map_id, &cells, &geometry));
     prop_cards.extend(mart_display_rack_placements(map_id, &cells, &geometry));
@@ -3751,7 +3789,7 @@ fn complete_tree_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> V
                             true,
                         )
                     } else if let Some((_, local_column, local_row)) =
-                        crate::park::hedge_local(&tile.source)
+                        crate::park::hoop_fence_local(&tile.source)
                     {
                         (
                             local_column,
@@ -3788,20 +3826,6 @@ fn complete_tree_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> V
                         true,
                     )
                 }
-                ("tower", 0x26)
-                    if tile.source.subtile_row >= 2
-                        && matches!(tile.source.tile_index, 0x07..=0x09 | 0x17..=0x19) =>
-                {
-                    (
-                        tile.source.subtile_column % 2,
-                        tile.source.subtile_row - 2,
-                        2,
-                        2,
-                        crate::tower::TOWER_FLOOR_TILE,
-                        0.0,
-                        true,
-                    )
-                }
                 _ => continue,
             };
         let origin_column = tile.column as isize - local_column as isize;
@@ -3819,15 +3843,22 @@ fn complete_tree_placements(cells: &[&VisualTile], geometry: &GridGeometry) -> V
                 let cell = cells[(origin_row as usize + row) * geometry.width
                     + origin_column as usize
                     + column];
+                if let Some((expected_kind, leading_column, leading_row)) =
+                    crate::park::hoop_fence_local(&tile.source)
+                {
+                    return crate::park::hoop_fence_local(&cell.source)
+                        .is_some_and(|(kind, x, y)| {
+                            kind == expected_kind && x as usize == column && y as usize == row
+                                && cell.source.metatile_id == tile.source.metatile_id
+                                && cell.source.subtile_column as isize - x as isize
+                                    == tile.source.subtile_column as isize - leading_column as isize
+                                && cell.source.subtile_row as isize - y as isize
+                                    == tile.source.subtile_row as isize - leading_row as isize
+                        });
+                }
                 cell.source.tileset_id == tile.source.tileset_id
                     && (shape_for_source(&cell.source).solid_kind() == SolidKind::Tree
                         || crate::park::large_tree_local(&cell.source).is_some()
-                        || crate::park::hedge_local(&tile.source).is_some_and(
-                            |(expected_kind, _, _)| {
-                                crate::park::hedge_local(&cell.source)
-                                    .is_some_and(|(kind, _, _)| kind == expected_kind)
-                            },
-                        )
                         || (cell.source.tileset_id.as_ref() == "johto"
                             && cell.source.metatile_id == 0x6a
                             && cell.source.subtile_column < 2)
@@ -5073,7 +5104,7 @@ fn is_complete_rock_formation(
         && placement.roof_rows == 6
         && source.tileset_id.as_ref() == "johto"
         && source.metatile_id == 0x6a;
-    let ice_path = placement.width >= 12
+    let ice_path = placement.width >= 8
         && placement.width % 4 == 0
         && placement.height == 8
         && placement.roof_rows == 6
@@ -5277,6 +5308,7 @@ fn append_pixel_building(
         roof_pixels
     };
     let roof_back_z = facade_z - roof_depth_pixels as f32 * pixel_z_size;
+
 
     // The drawing's outer silhouette is the roof shape. This is the key
     // distinction between a voxelized building and a rectangular box wearing
@@ -6520,7 +6552,11 @@ fn append_textured_cell(
             let scale = geometry.tile_height / SOURCE_TILE_HEIGHT;
             let west_height = west_height * scale;
             let east_height = east_height * scale;
-            let (u0, u1, v0, v1) = geometry.uv(column, row);
+            let top_source = if cells[index].source.tileset_id.as_ref() == "johto"
+                && cells[index].source.metatile_id == 0x57 {
+                authored_metatile_cell(cells,index,0x05).unwrap_or(index)
+            } else {index};
+            let (u0, u1, v0, v1) = geometry.uv(top_source % geometry.width, top_source / geometry.width);
             let normal = Vec3::new(west_height - east_height, geometry.tile_width, 0.0)
                 .normalize()
                 .to_array();
@@ -7786,39 +7822,57 @@ fn append_waterfall(
     geometry: &GridGeometry,
     cells: &[&VisualTile],
     placement: WaterfallPlacement,
+    map_origin: [i32; 2],
 ) {
     let base = crate::profile::GROUND_HEIGHT * geometry.tile_height / SOURCE_TILE_HEIGHT;
     let drop = crate::cave::CAVE_ROCK_HEIGHT * geometry.tile_height / SOURCE_TILE_HEIGHT;
+    // One continuous sheet, sampled on shared quarter-cell knots. The real
+    // head and landing remain exact, while the body pinches inward unevenly
+    // and carries shallow relief rather than reading as one flat rectangle.
+    let at = |column: f32, row: f32| {
+        let across = column - placement.column as f32;
+        let along = (row - placement.row as f32) / placement.height as f32;
+        let envelope = (along * std::f32::consts::PI).sin().max(0.);
+        let x = column + map_origin[0] as f32;
+        let z = row + map_origin[1] as f32;
+        let noise = new_bark::meadow_noise(x * 0.61 + 43., z * 1.35 - 17.);
+        let left = (1. - across / 0.5).clamp(0., 1.);
+        let right = (1. - (placement.width as f32 - across) / 0.5).clamp(0., 1.);
+        let inset = geometry.tile_width * (0.09 + noise * 0.045) * envelope;
+        let relief = geometry.tile_height * 0.045 * envelope
+            * (1. - left.max(right)) * (x * 2.6 + z * 0.9 + noise * 2.).sin();
+        Vec3::new(
+            geometry.origin_x + column * geometry.tile_width + inset * (left - right),
+            base + drop * (1. - along) + relief,
+            geometry.origin_z + row * geometry.tile_height,
+        )
+    };
     for source_row in 0..placement.height {
-        // The source rows describe the cascade's north-to-south footprint,
-        // not independent eight-pixel elevation courses. Preserve each live
-        // animated row once on one bounded slope spanning exactly one cave
-        // level; folding an N-row waterfall upright made its height N*8.
-        let north_fraction = 1.0 - source_row as f32 / placement.height as f32;
-        let south_fraction = 1.0 - (source_row + 1) as f32 / placement.height as f32;
-        let north_height = base + drop * north_fraction;
-        let south_height = base + drop * south_fraction;
+        // Source rows retain their original UV area once on a bounded slope,
+        // rather than becoming independent eight-pixel elevation courses.
         for offset_column in 0..placement.width {
             let column = placement.column + offset_column;
             let row = placement.row + source_row;
             let index = row * geometry.width + column;
-            let (x0, x1, z0, z1) = geometry.bounds(column, row);
             let (u0, u1, v0, v1) = geometry.uv(column, row);
-            let normal = Vec3::new(0.0, z1 - z0, north_height - south_height)
-                .normalize()
-                .to_array();
-            append_quad(
-                mesh,
-                [
-                    [x0, north_height, z0],
-                    [x0, south_height, z1],
-                    [x1, south_height, z1],
-                    [x1, north_height, z0],
-                ],
-                normal,
-                [[u0, v0], [u0, v1], [u1, v1], [u1, v0]],
-                TEXTURED_SHADE,
-            );
+            for v in 0..4 {
+                for u in 0..4 {
+                    let a = u as f32 / 4.;
+                    let b = (u + 1) as f32 / 4.;
+                    let c = v as f32 / 4.;
+                    let d = (v + 1) as f32 / 4.;
+                    let points = [at(column as f32 + a, row as f32 + c),
+                        at(column as f32 + a, row as f32 + d),
+                        at(column as f32 + b, row as f32 + d),
+                        at(column as f32 + b, row as f32 + c)];
+                    let normal = (points[1] - points[0]).cross(points[3] - points[0]).normalize();
+                    append_quad(mesh, points.map(|p| p.to_array()), normal.to_array(),
+                        [[u0 + (u1-u0)*a, v0 + (v1-v0)*c],
+                         [u0 + (u1-u0)*a, v0 + (v1-v0)*d],
+                         [u0 + (u1-u0)*b, v0 + (v1-v0)*d],
+                         [u0 + (u1-u0)*b, v0 + (v1-v0)*c]], TEXTURED_SHADE);
+                }
+            }
             debug_assert_eq!(cells[index].source.tile_index, 0x40);
         }
     }
@@ -8500,23 +8554,21 @@ fn append_ramp_sidewalls(
 }
 
 /// Ease the grassy end of a south-facing ledge into adjacent flat ground.
-/// Only the terminal source column changes; neighboring ledge blocks and the
-/// authored south lip retain their complete height and source drawing.
+/// The terminal cap and its front lip share one slope; tapering only the cap
+/// leaves a raised wedge at the corner. Neighboring columns retain their tier.
 fn taper_johto_ledge_ends(cells: &[&VisualTile], shapes: &mut [CellShape], width: usize) {
     for index in 0..shapes.len() {
         let source = &cells[index].source;
         if source.tileset_id.as_ref() != "johto"
             || source.metatile_id != 0x57
-            || source.subtile_row >= 3
+            || source.subtile_row >= 4
         {
             continue;
         }
-        let CellShape::RaisedTop {
-            height,
-            solid: SolidKind::Bank,
-        } = shapes[index]
-        else {
-            continue;
+        let height = match shapes[index] {
+            CellShape::RaisedTop { height, solid: SolidKind::Bank }
+            | CellShape::LedgeBand { height, face: LedgeFace::South, .. } => height,
+            _ => continue,
         };
         let column = index % width;
         if source.subtile_column == 3

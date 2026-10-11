@@ -50,6 +50,8 @@ pub(crate) enum ModelKind {
     LabDisplayTable,
     ArcadeMachine,
     ArcadePair,
+    PrizeBooth,
+    ArcadeWall,
     StationBench,
     StationTurnstile,
     GateTerminal,
@@ -122,6 +124,8 @@ impl ModelKind {
         Self::LabDisplayTable,
         Self::ArcadeMachine,
         Self::ArcadePair,
+        Self::PrizeBooth,
+        Self::ArcadeWall,
         Self::StationBench,
         Self::StationTurnstile,
         Self::GateTerminal,
@@ -193,6 +197,8 @@ impl ModelKind {
             Self::LabRestorationMachine => "interior/lab_restoration_machine",
             Self::LabDisplayTable => "interior/lab_display_table",
             Self::ArcadeMachine => "interior/arcade_machine",
+            Self::PrizeBooth => "interior/prize_booth",
+            Self::ArcadeWall => "interior/arcade_wall",
             Self::ArcadePair => "interior/arcade_pair",
             Self::StationBench => "interior/station_bench",
             Self::StationTurnstile => "interior/station_turnstile",
@@ -226,6 +232,8 @@ impl ModelKind {
 }
 #[derive(Deserialize)]
 struct Primitive {
+    #[serde(default)]
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -233,6 +241,8 @@ struct Primitive {
 }
 #[derive(Deserialize)]
 struct Export {
+    #[serde(default)]
+    name: String,
     primitives: Vec<Primitive>,
     #[serde(default)]
     preserve_aspect: bool,
@@ -241,8 +251,16 @@ struct Export {
     #[serde(default)]
     fit_footprint: bool,
 }
+struct PaletteRange {
+    vertices: std::ops::Range<usize>,
+    source: [f32; 3],
+    paint: [f32; 3],
+}
 pub(crate) struct Model {
     surface: SurfaceMeshData,
+    room_finishes: Vec<(std::ops::Range<usize>, u8)>,
+    room_palette: Vec<PaletteRange>,
+    arcade_palette: Vec<PaletteRange>,
     min: [f32; 3],
     max: [f32; 3],
     preserve_aspect: bool,
@@ -255,6 +273,9 @@ impl Model {
     ) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
+        let mut room_finishes = Vec::new();
+        let mut room_palette = Vec::new();
+        let mut arcade_palette = Vec::new();
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -273,6 +294,7 @@ impl Model {
                 return Err("invalid interior mesh primitive".into());
             }
             let base = surface.positions.len() as u32;
+            let index_start = surface.indices.len();
             for v in p.positions.chunks_exact(3) {
                 let v = [v[0], v[1], v[2]];
                 for axis in 0..3 {
@@ -293,18 +315,169 @@ impl Model {
             surface
                 .indices
                 .extend(p.indices.into_iter().map(|i| base + i));
+            if !crate::roof_tiles::refine(&mut surface, base as usize, index_start, &p.material) {
+                crate::scenery_finish::refine(
+                    &mut surface,
+                    base as usize,
+                    index_start,
+                    &p.material,
+                    &export.name,
+                );
+            }
+            // Retain named primitive ownership for an explicitly requested store
+            // palette. Ordinary house/gate plant placement keeps its authored paint.
+            if export.name == "potted_plant" {
+                let paint: Option<[f32; 3]> = match p.material.as_str() {
+                    "leaf_dark" => Some([0.025, 0.13, 0.015]),
+                    "leaf" => Some([0.065, 0.32, 0.02]),
+                    "leaf_light" => Some([0.18, 0.48, 0.045]),
+                    "leaf_gold" => Some([0.34, 0.60, 0.07]),
+                    "roof_red" => Some([0.72, 0.22, 0.08]),
+                    "roof_red_light" => Some([0.88, 0.34, 0.12]),
+                    _ => None,
+                };
+                if let Some(paint) = paint {
+                    room_palette.push(PaletteRange { vertices: base as usize..surface.positions.len(),
+                        source: [p.base_color[0],p.base_color[1],p.base_color[2]], paint });
+                }
+            }
+            if export.name == "cushion" {
+                let paint: Option<[f32; 3]> = match p.material.as_str() {
+                    "purple" => Some([0.78, 0.19, 0.42]),
+                    "linen_shadow" => Some([0.74, 0.27, 0.21]),
+                    _ => None,
+                };
+                if let Some(paint) = paint {
+                    room_palette.push(PaletteRange { vertices: base as usize..surface.positions.len(),
+                        source: [p.base_color[0],p.base_color[1],p.base_color[2]], paint });
+                    room_finishes.push((base as usize..surface.positions.len(), 3));
+                }
+            }
+            if matches!(export.name.as_str(), "arcade_machine" | "arcade_pair") {
+                if p.material == "purple" {
+                    let paint = [0.89, 0.36, 0.52];
+                    arcade_palette.push(PaletteRange { vertices: base as usize..surface.positions.len(),
+                        source: [p.base_color[0],p.base_color[1],p.base_color[2]], paint });
+                }
+                if matches!(p.material.as_str(), "purple" | "red" | "linen" | "yellow") {
+                    room_finishes.push((base as usize..surface.positions.len(), 2));
+                }
+            }
+            if export.name == "prize_booth" {
+                let kind = match p.material.as_str() {
+                    "timber" => Some(1),
+                    "blue_enamel" | "green_enamel" | "gold_enamel" => Some(2),
+                    _ => None,
+                };
+                if let Some(kind) = kind { room_finishes.push((base as usize..surface.positions.len(),kind)); }
+            }
+            if export.name == "arcade_wall" {
+                let kind = match p.material.as_str() {
+                    "timber" => Some(1),
+                    "ochre" | "gold" => Some(2),
+                    _ => None,
+                };
+                if let Some(kind) = kind { room_finishes.push((base as usize..surface.positions.len(),kind)); }
+            }
+            if export.name == "reception_counter" {
+                // Casino service furniture shares geometry with stores, but
+                // its opt-in paint follows the source green-and-gold counter.
+                let paint: Option<[f32;3]> = match p.material.as_str() {
+                    "roof_red" => Some([0.12,0.32,0.012]),
+                    "enamel_light" => Some([0.76,0.50,0.14]),
+                    _ => None,
+                };
+                if let Some(paint) = paint {
+                    arcade_palette.push(PaletteRange { vertices: base as usize..surface.positions.len(),
+                        source: [p.base_color[0],p.base_color[1],p.base_color[2]], paint });
+                }
+            }
+            if export.name == "reception_counter" {
+                let kind = match p.material.as_str() {
+                    "timber" | "timber_light" => Some(1),
+                    "enamel_light" | "roof_red" => Some(2),
+                    _ => None,
+                };
+                if let Some(kind) = kind {
+                    room_finishes.push((base as usize..surface.positions.len(),kind));
+                }
+            }
         }
+        crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|axis| !min[axis].is_finite() || max[axis] <= min[axis]) {
             return Err("empty or flat interior model".into());
         }
         Ok(Self {
             surface,
+            room_finishes,
+            room_palette,
+            arcade_palette,
             min,
             max,
             preserve_aspect: export.preserve_aspect,
             align_footprint: export.align_footprint,
             fit_footprint: export.fit_footprint,
         })
+    }
+    /// Opt-in only after this exact model has been appended. Coordinates are
+    /// registered to the authored object, so moving the viewport cannot slide
+    /// its finish. Unnamed/unknown materials and preceding geometry stay intact.
+    pub(crate) fn apply_room_finish(&self, target: &mut SurfaceMeshData, first: usize) {
+        assert_eq!(target.positions.len()-first,self.surface.positions.len());
+        for (range,kind) in &self.room_finishes {
+            for i in range.clone() {
+                let p=self.surface.positions[i];
+                target.uvs[first+i]=[
+                    82000.0+(p[0]-self.min[0])/(self.max[0]-self.min[0])*16.0,
+                    (if *kind == 3 { 2500.0 } else { *kind as f32 * 1000.0 })
+                        +(p[2]-self.min[2])/(self.max[2]-self.min[2])*16.0,
+                ];
+            }
+        }
+    }
+    pub(crate) fn apply_arcade_wall_finish(&self, target: &mut SurfaceMeshData, first: usize) {
+        self.apply_room_finish(target,first);
+        for (range,kind) in &self.room_finishes {
+            for i in range.clone() {
+                let p=self.surface.positions[i];let n=self.surface.normals[i];
+                if n[1].abs()<0.5 {
+                    let horizontal=if n[2].abs()>n[0].abs() {
+                        (p[0]-self.min[0])/(self.max[0]-self.min[0])*16.
+                    } else {
+                        (p[2]-self.min[2])/(self.max[2]-self.min[2])*3.
+                    };
+                    target.uvs[first+i]=[82000.+horizontal,*kind as f32*1000.
+                        +(p[1]-self.min[1])/(self.max[1]-self.min[1])*28.];
+                }
+            }
+        }
+    }
+    /// Explicit store palettes preserve authored grain and fitted face shading.
+    /// Unknown materials and all geometry remain unchanged.
+    fn apply_palette_ranges(&self, target: &mut SurfaceMeshData, first: usize, ranges: &[PaletteRange]) {
+        assert_eq!(target.positions.len() - first, self.surface.positions.len());
+        for paint in ranges {
+            for i in paint.vertices.clone() {
+                let mut color = self.surface.colors[i];
+                for axis in 0..3 {
+                    // Black is valid authored pigment. An explicitly named
+                    // paint retains craft variation even when a channel is zero.
+                    color[axis] = if paint.source[axis] > 0.0 {
+                        color[axis] * (paint.paint[axis] / paint.source[axis])
+                    } else { paint.paint[axis] + color[axis] };
+                    color[axis] = color[axis].clamp(0.0,1.0);
+                }
+                color[3] = target.colors[first+i][3];
+                target.colors[first+i] = authored_face_color(color, Vec3::from_array(target.normals[first+i]));
+            }
+        }
+    }
+    pub(crate) fn apply_room_palette(&self, target: &mut SurfaceMeshData, first: usize) {
+        self.apply_palette_ranges(target, first, &self.room_palette);
+    }
+    pub(crate) fn apply_arcade_finish(&self, target: &mut SurfaceMeshData, first: usize) {
+        self.apply_palette_ranges(target, first, &self.arcade_palette);
+        self.apply_room_finish(target, first);
     }
     /// Fit the true 3D asset inside a source-verified physical footprint.
     /// Authored assets fit the complete bounds with inverse-transformed normals.
@@ -429,6 +602,8 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
         }};
     }
     match kind {
+        ModelKind::PrizeBooth => load!(PRIZE_BOOTH, "models/interiors/prize_booth.mesh.json"),
+        ModelKind::ArcadeWall => load!(ARCADE_WALL, "models/interiors/arcade_wall.mesh.json"),
         ModelKind::BroadcastRack => {
             load!(BROADCAST_RACK, "models/interiors/broadcast_rack.mesh.json")
         }
@@ -572,6 +747,189 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn arcade_wall_vertical_finish_preserves_geometry_and_shadow_material() {
+        let wall=model(ModelKind::ArcadeWall);
+        let mut mesh=SurfaceMeshData::default();
+        wall.append_fitted(&mut mesh,[0.,16.,0.,3.],0.,28.);
+        let before=mesh.clone();wall.apply_arcade_wall_finish(&mut mesh,0);
+        assert_eq!(mesh.positions,before.positions);
+        assert_eq!(mesh.normals,before.normals);
+        assert_eq!(mesh.indices,before.indices);
+        assert_eq!(mesh.colors,before.colors);
+        let mut front_vertical_range=false;
+        for (range,kind) in &wall.room_finishes {
+            let values=range.clone().filter(|&i|wall.surface.normals[i][2]>0.5)
+                .map(|i|mesh.uvs[i][1]-*kind as f32*1000.).collect::<Vec<_>>();
+            if !values.is_empty() && values.iter().copied().fold(f32::NEG_INFINITY,f32::max)
+                -values.iter().copied().fold(f32::INFINITY,f32::min)>10. {front_vertical_range=true;}
+        }
+        assert!(front_vertical_range);
+        for i in 0..mesh.positions.len() {
+            if !wall.room_finishes.iter().any(|(range,_)|range.contains(&i)) {
+                assert_eq!(mesh.uvs[i],before.uvs[i]);
+            }
+        }
+    }
+    #[test]
+    fn arcade_named_black_pigment_is_valid_and_black_screens_keep_their_paint() {
+        let mut export: serde_json::Value=serde_json::from_str(
+            include_str!("../models/interiors/arcade_machine.mesh.json")).unwrap();
+        for primitive in export["primitives"].as_array_mut().unwrap() {
+            if matches!(primitive["material"].as_str(),Some("purple" | "screen")) {
+                primitive["base_color"]=serde_json::json!([0.,0.,0.,1.]);
+            }
+        }
+        let json=serde_json::to_string(&export).unwrap();
+        let arcade=Model::parse(json.as_str()).unwrap();
+        let mut mesh=SurfaceMeshData::default();
+        arcade.append_fitted(&mut mesh,[0.,16.,0.,12.],0.,21.);
+        let before=mesh.clone();arcade.apply_arcade_finish(&mut mesh,0);
+        assert_eq!(mesh.positions,before.positions);
+        assert_eq!(mesh.normals,before.normals);
+        assert_eq!(mesh.indices,before.indices);
+        let mut screen=0;
+        for i in 0..mesh.colors.len() {
+            assert!(mesh.colors[i].iter().all(|c| c.is_finite() && (0.0..=1.0).contains(c)));
+            if arcade.arcade_palette.iter().any(|paint| paint.vertices.contains(&i)) {
+                assert!(mesh.colors[i][0]>0.5);
+            } else {
+                assert_eq!(mesh.colors[i],before.colors[i]);
+                if before.colors[i][..3]==[0.,0.,0.] {
+                    screen+=1;assert_eq!(mesh.uvs[i],[0.,0.]);
+                }
+            }
+        }
+        assert!(screen>0);
+    }
+    #[test]
+    fn arcade_counter_palette_is_opt_in_and_leaves_store_counter_paint_intact() {
+        let counter=model(ModelKind::ReceptionCounter);
+        let mut mesh=SurfaceMeshData::default();
+        counter.append_fitted(&mut mesh,[0.,32.,0.,8.],0.,10.);
+        let store=mesh.clone();
+        counter.apply_room_finish(&mut mesh,0);
+        assert_eq!(mesh.colors,store.colors);
+        counter.apply_arcade_finish(&mut mesh,0);
+        assert_eq!(mesh.positions,store.positions);
+        assert_eq!(mesh.normals,store.normals);
+        assert_eq!(mesh.indices,store.indices);
+        assert!(mesh.colors.iter().zip(&store.colors).any(|(a,b)| a!=b));
+        for i in 0..mesh.colors.len() {
+            if !counter.arcade_palette.iter().any(|paint| paint.vertices.contains(&i)) {
+                assert_eq!(mesh.colors[i],store.colors[i]);
+            }
+            assert_eq!(mesh.colors[i][3],store.colors[i][3]);
+        }
+    }
+    #[test]
+    fn arcade_finish_preserves_geometry_and_never_guesses_unknown_paint() {
+        let arcade = model(ModelKind::ArcadeMachine);
+        let mut mesh = SurfaceMeshData::default();
+        arcade.append_fitted(&mut mesh, [0.,16.,0.,12.], 0.,21.);
+        let before = mesh.clone();
+        arcade.apply_arcade_finish(&mut mesh, 0);
+        assert_eq!(mesh.positions, before.positions);
+        assert_eq!(mesh.normals, before.normals);
+        assert_eq!(mesh.indices, before.indices);
+        assert!(mesh.colors.iter().zip(&before.colors).any(|(a,b)| a != b));
+        for i in 0..mesh.colors.len() {
+            assert_eq!(mesh.colors[i][3], before.colors[i][3]);
+            if !arcade.arcade_palette.iter().any(|paint| paint.vertices.contains(&i)) {
+                assert_eq!(mesh.colors[i], before.colors[i]);
+            }
+        }
+        let mut export: serde_json::Value = serde_json::from_str(
+            include_str!("../models/interiors/arcade_machine.mesh.json")).unwrap();
+        for primitive in export["primitives"].as_array_mut().unwrap() {
+            primitive["material"] = serde_json::Value::String("unknown_arcade_paint".into());
+        }
+        let json = serde_json::to_string(&export).unwrap();
+        let unknown = Model::parse(json.as_str()).unwrap();
+        let mut unrecognized = SurfaceMeshData::default();
+        unknown.append_fitted(&mut unrecognized, [0.,16.,0.,12.], 0.,21.);
+        let plain = unrecognized.clone();
+        unknown.apply_arcade_finish(&mut unrecognized, 0);
+        assert_eq!(unrecognized, plain);
+    }
+    #[test]
+    fn store_seat_finish_uses_named_materials_and_preserves_dimensions() {
+        let seat = model(ModelKind::Cushion);
+        let mut mesh = SurfaceMeshData::default();
+        seat.append_fitted(&mut mesh, [0.,16.,0.,12.], 6.,6.);
+        let before = mesh.clone();
+        seat.apply_room_palette(&mut mesh, 0);
+        seat.apply_room_finish(&mut mesh, 0);
+        assert_eq!(mesh.positions, before.positions);
+        assert_eq!(mesh.normals, before.normals);
+        assert_eq!(mesh.indices, before.indices);
+        assert!(mesh.uvs.iter().all(|uv| (82000.0..82100.0).contains(&uv[0]) && (2500.0..2517.0).contains(&uv[1])));
+        let mut export: serde_json::Value = serde_json::from_str(
+            include_str!("../models/interiors/cushion.mesh.json")).unwrap();
+        for primitive in export["primitives"].as_array_mut().unwrap() {
+            primitive["material"] = serde_json::Value::String("unknown_upholstery".into());
+        }
+        let json = serde_json::to_string(&export).unwrap();
+        let unknown = Model::parse(json.as_str()).unwrap();
+        let mut unrecognized = SurfaceMeshData::default();
+        unknown.append_fitted(&mut unrecognized, [0.,16.,0.,12.], 6.,6.);
+        let plain = unrecognized.clone();
+        unknown.apply_room_palette(&mut unrecognized, 0);
+        unknown.apply_room_finish(&mut unrecognized, 0);
+        assert_eq!(unrecognized, plain);
+    }
+    #[test]
+    fn store_plant_palette_preserves_support_and_unknown_materials() {
+        let plant = model(ModelKind::PottedPlant);
+        let mut mesh = SurfaceMeshData::default();
+        model(ModelKind::Stool).append_fitted(&mut mesh, [0.,8.,0.,8.], 0.,7.);
+        let first = mesh.positions.len();
+        plant.append_fitted(&mut mesh, [8.,24.,0.,16.], 0.,23.);
+        let before = mesh.clone();
+        plant.apply_room_palette(&mut mesh, first);
+        assert_eq!(mesh.positions, before.positions);
+        assert_eq!(mesh.normals, before.normals);
+        assert_eq!(mesh.indices, before.indices);
+        assert_eq!(mesh.uvs, before.uvs);
+        assert_eq!(&mesh.colors[..first], &before.colors[..first]);
+        assert!(mesh.colors[first..].iter().zip(&before.colors[first..]).any(|(a,b)| a != b));
+        for i in first..mesh.colors.len() {
+            assert_eq!(mesh.colors[i][3], before.colors[i][3]);
+            if !plant.room_palette.iter().any(|paint| paint.vertices.contains(&(i-first))) {
+                assert_eq!(mesh.colors[i], before.colors[i]);
+            }
+        }
+        let chair = model(ModelKind::Chair);
+        let mut unrelated = SurfaceMeshData::default();
+        chair.append_fitted(&mut unrelated, [0.,8.,0.,8.], 0.,14.);
+        let plain = unrelated.clone();
+        chair.apply_room_palette(&mut unrelated, 0);
+        assert_eq!(unrelated, plain);
+    }
+    #[test]
+    fn scoped_counter_finish_preserves_geometry_and_untagged_materials() {
+        let counter=model(ModelKind::ReceptionCounter);
+        let mut mesh=SurfaceMeshData::default();
+        model(ModelKind::Stool).append_fitted(&mut mesh,[0.,8.,0.,8.],0.,7.);
+        let first=mesh.positions.len();
+        counter.append_fitted(&mut mesh,[8.,40.,0.,8.],0.,10.);
+        let before=mesh.clone();
+        counter.apply_room_finish(&mut mesh,first);
+        assert_eq!(mesh.positions,before.positions);
+        assert_eq!(mesh.normals,before.normals);
+        assert_eq!(mesh.colors,before.colors);
+        assert_eq!(mesh.indices,before.indices);
+        assert_eq!(&mesh.uvs[..first],&before.uvs[..first]);
+        assert!(mesh.uvs[first..].iter().any(|uv| (82000.0..82100.0).contains(&uv[0]) && uv[1]<2000.));
+        assert!(mesh.uvs[first..].iter().any(|uv| (82000.0..82100.0).contains(&uv[0]) && uv[1]>=2000.));
+        assert!(mesh.uvs[first..].iter().any(|uv| *uv==[0.,0.]));
+        let unknown=Model::parse(crate::model_storage::include_model!("models/interiors/chair.mesh.json")).unwrap();
+        let mut chair=SurfaceMeshData::default();
+        unknown.append_fitted(&mut chair,[0.,8.,0.,8.],0.,14.);
+        let plain=chair.clone();
+        unknown.apply_room_finish(&mut chair,0);
+        assert_eq!(chair,plain);
+    }
     #[test]
     fn interior_models_are_finite_materialed_full_volume_meshes() {
         for kind in ModelKind::ALL {

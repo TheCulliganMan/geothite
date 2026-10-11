@@ -15,7 +15,7 @@
 //! Probe PNGs and timestamps are evidence, not a continuous video, so the probe
 //! deliberately emits no ffconcat manifest across its nonrecorded windows.
 use super::*;
-use bevy::utils::Instant as CaptureInstant;
+use bevy::platform::time::Instant as CaptureInstant;
 use image::ImageEncoder;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -109,7 +109,7 @@ impl ProbeClock {
         let span = after.duration_since(before).as_secs_f64();
         Self {
             origin,
-            bevy_real_start: time.elapsed_seconds_f64(),
+            bevy_real_start: time.elapsed_secs_f64(),
             utc_unix_start: utc - before.duration_since(origin).as_secs_f64() - span / 2.0,
             pairing_span_us: span * 1_000_000.0,
         }
@@ -484,19 +484,19 @@ fn record(
     runtime: Res<BevyRuntimeShell>,
     walk: Option<Res<super::render_walk::RenderWalk>>,
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
-    mut screenshots: ResMut<ScreenshotManager>,
+    mut commands: Commands,
     images: Res<Assets<Image>>,
     meshes: Res<Assets<Mesh>>,
     materials: Res<Assets<StandardMaterial>>,
-    mut exit: EventWriter<AppExit>,
+    mut exit: MessageWriter<AppExit>,
 ) {
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
-        exit.send(AppExit::error());
+        exit.write(AppExit::error());
         return;
     }
     let outstanding_before_poll = recording.outstanding;
-    let focused = windows.get_single().ok().map(|(_, window)| window.focused);
+    let focused = windows.single().ok().map(|(_, window)| window.focused);
     let completed = std::mem::take(&mut *recording.completions.lock().unwrap());
     let mut capture_error = None;
     for completion in completed {
@@ -514,10 +514,10 @@ fn record(
     if let Some(error) = capture_error {
         if recording.probe.is_some() {
             if let Some(start) = recording.start {
-                let elapsed = time.elapsed_seconds_f64() - start;
+                let elapsed = time.elapsed_secs_f64() - start;
                 recording.observe_probe_update(
                     elapsed,
-                    time.delta_seconds_f64() * 1000.0,
+                    time.delta_secs_f64() * 1000.0,
                     outstanding_before_poll,
                     focused,
                 );
@@ -527,7 +527,7 @@ fn record(
             }
         }
         eprintln!("capture failed: {error}");
-        exit.send(AppExit::error());
+        exit.write(AppExit::error());
         return;
     }
     recording.presented_battle_frames = if battle_frame.active {
@@ -536,7 +536,7 @@ fn record(
         0
     };
     if recording.start.is_none() {
-        let now = time.elapsed_seconds_f64();
+        let now = time.elapsed_secs_f64();
         let armed_at = *recording.armed_at.get_or_insert(now);
         // A short world-walk clip should begin with its first ordinary input,
         // after the walk helper's shader/profile warmup. Timing-only runs keep
@@ -565,7 +565,7 @@ fn record(
                     "capture cancelled: no requested presented battle cue observed within {}s",
                     recording.arm_timeout_seconds
                 );
-                exit.send(AppExit::error());
+                exit.write(AppExit::error());
             }
             return;
         }
@@ -613,11 +613,11 @@ fn record(
             recording.directory.display()
         );
     }
-    let elapsed = time.elapsed_seconds_f64() - recording.start.unwrap();
+    let elapsed = time.elapsed_secs_f64() - recording.start.unwrap();
     if elapsed >= recording.seconds {
         recording.observe_probe_update(
             elapsed,
-            time.delta_seconds_f64() * 1000.0,
+            time.delta_secs_f64() * 1000.0,
             outstanding_before_poll,
             focused,
         );
@@ -630,7 +630,7 @@ fn record(
                     }
                 }
                 eprintln!("capture timed out waiting for GPU readback");
-                exit.send(AppExit::error());
+                exit.write(AppExit::error());
                 return;
             }
             ReadbackDrain::Complete => {}
@@ -638,16 +638,16 @@ fn record(
         let result = finish(&recording, elapsed, "complete");
         if let Err(error) = result {
             eprintln!("capture manifest failed: {error}");
-            exit.send(AppExit::error());
+            exit.write(AppExit::error());
         } else {
-            exit.send(AppExit::Success);
+            exit.write(AppExit::Success);
         }
         return;
     }
     let index = recording.update_times.len();
     recording
         .update_times
-        .push(time.delta_seconds_f64() * 1000.0);
+        .push(time.delta_secs_f64() * 1000.0);
     recording.update_trace.push_str(&row(
         index,
         elapsed,
@@ -717,7 +717,7 @@ fn record(
         let source_line_x = source_line_offsets(false);
         let source_line_y = source_line_offsets(true);
         let capture_hz = recording.cadence.requested_hz;
-        let output_size = windows.get_single().map_or(UVec2::ZERO, |(_, window)| {
+        let output_size = windows.single().map_or(UVec2::ZERO, |(_, window)| {
             UVec2::new(window.physical_width(), window.physical_height())
         });
         let (view_mode, lighting, quality, scene_size) = if battle_status.active {
@@ -780,16 +780,16 @@ fn record(
     {
         recording.observe_probe_update(
             elapsed,
-            time.delta_seconds_f64() * 1000.0,
+            time.delta_secs_f64() * 1000.0,
             outstanding_before_poll,
             focused,
         );
         return;
     }
-    let Ok((window, _)) = windows.get_single() else {
+    let Ok((window, _)) = windows.single() else {
         recording.observe_probe_update(
             elapsed,
-            time.delta_seconds_f64() * 1000.0,
+            time.delta_secs_f64() * 1000.0,
             outstanding_before_poll,
             focused,
         );
@@ -810,13 +810,10 @@ fn record(
         });
     // Screenshot callbacks already run on Bevy's async compute pool. Allow a
     // bounded pipeline rather than waiting 2–3 render frames after each one.
-    if screenshots
-        .take_screenshot(window, move |image| {
-            let completion = save_capture(image, path, ticket);
+    commands.spawn(Screenshot::window(window)).observe(move |event: On<ScreenshotCaptured>| {
+            let completion = save_capture(event.image.clone(), path.clone(), ticket);
             completions.lock().unwrap().push(completion);
-        })
-        .is_ok()
-    {
+        });
         recording.frames.push(elapsed);
         recording.trace.push_str(&row(
             index,
@@ -826,10 +823,10 @@ fn record(
         ));
         recording.cadence.admitted(elapsed);
         recording.outstanding += 1;
-    }
+
     recording.observe_probe_update(
         elapsed,
-        time.delta_seconds_f64() * 1000.0,
+        time.delta_secs_f64() * 1000.0,
         outstanding_before_poll,
         focused,
     );

@@ -10,7 +10,7 @@ pub(crate) const WALL_HEIGHT: f32 = 16.0;
 pub(crate) fn supports_boulder_map(map_id: &str) -> bool {
     matches!(
         map_id,
-        "BlackthornGym1F" | "GoldenrodUndergroundSwitchRoomEntrances"
+        "GoldenrodUndergroundSwitchRoomEntrances"
     )
 }
 
@@ -51,11 +51,9 @@ pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape
             solid: SolidKind::FlatCard,
         });
     }
-    // `$2b/$2c` are the invisible-maze fields shared by Bruno's room and
-    // Blackthorn Gym. Their sparse marks are drawn in the surrounding
-    // floor/carpet vocabulary; WALL permission supplies gameplay topology,
-    // not visible masonry. The actual rock piles are separate grouped
-    // drawings, so keep every exact source cell on the presentation plane.
+    // These fields stay horizontal in the baseline. Blackthorn's red lava
+    // channel is converted separately, including its native animation tiles;
+    // WALL permission must not promote liquid into a masonry obstacle.
     if matches!(map_id, "BrunosRoom" | "BlackthornGym1F")
         && matches!(source.metatile_id, 0x2b | 0x2c)
     {
@@ -133,8 +131,9 @@ pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape
     }
 }
 
-/// Block $29 contains one complete 16x16 round boulder in its southeast
-/// quadrant. The other twelve source cells are floor and must not be claimed.
+/// Legacy grouped presentation of block $29's southeast drawing. Blackthorn
+/// excludes this path: those tiles depict a stair flight, selected separately
+/// by its exact native phase. Keep this legacy matcher scoped to its old room.
 pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if source.tileset_id.as_ref() != "elite_four_room" || source.metatile_id != 0x29 {
         return None;
@@ -146,6 +145,62 @@ pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
         0x3d => Some((1, 1)),
         _ => None,
     }
+}
+
+/// Mahogany's full wall module: angled cap, apron, two square panel rows.
+/// Require each native subtile, not WALL permission or a tile number alone.
+pub(crate) fn mahogany_wall_local(source: &VisualTileSource) -> Option<(u8, u8, usize, usize)> {
+    if source.tileset_id.as_ref() != "elite_four_room" || source.metatile_id != 0x27
+        || source.subtile_column >= 4 || source.subtile_row >= 4 {
+        return None;
+    }
+    let tile = [0x50, 0x24, 0x34, 0x34][source.subtile_row as usize];
+    (source.tile_index == tile).then_some((source.subtile_column, source.subtile_row, 4, 4))
+}
+
+pub(crate) fn mahogany_partition_local(s: &VisualTileSource) -> Option<(u8, u8, usize, usize)> {
+    if s.tileset_id.as_ref() != "elite_four_room" || s.subtile_column >= 4 || s.subtile_row >= 4 {
+        return None;
+    }
+    let x = match (s.metatile_id, s.subtile_column) {
+        (0x35, 2..=3) => s.subtile_column - 2,
+        (0x36, 0..=1) => s.subtile_column,
+        _ => return None,
+    };
+    let y = s.subtile_row % 2;
+    let tile = [[0x2a,0x2b],[0x3a,0x3b]][y as usize][x as usize];
+    (s.tile_index == tile).then_some((x,y,2,2))
+}
+
+/// Distinct Blackthorn fixtures, including callback replacement blocks. The
+/// filled crossing's FLOOR permission must not turn it into a standing boulder.
+pub(crate) fn blackthorn_fixture_local(s: &VisualTileSource, kind: u8) -> Option<(u8,u8,usize,usize)> {
+    if s.tileset_id.as_ref() != "elite_four_room" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
+    let (x,y,art) = match (kind,s.metatile_id,s.subtile_column,s.subtile_row) {
+        (0,0x29,2..=3,2..=3) => (s.subtile_column-2,s.subtile_row-2,[[0x2c,0x2d],[0x3c,0x3d]]),
+        (1,0x30,0..=1,0..=1) => (s.subtile_column,s.subtile_row,[[0x4e,0x4f],[0x5e,0x5f]]),
+        (2,0x3a|0x3b,0..=1,2..=3) => (s.subtile_column,s.subtile_row-2,[[0x44,0x45],[0x46,0x47]]),
+        _ => return None,
+    };
+    (s.tile_index==art[y as usize][x as usize]).then_some((x,y,2,2))
+}
+
+/// Exact channel identities, including the live callback replacements. True
+/// denotes lava; false denotes the blue platform lip beside the channel.
+pub(crate) fn blackthorn_channel_source(s: &VisualTileSource) -> Option<bool> {
+    if s.tileset_id.as_ref() != "elite_four_room" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
+    let art = match s.metatile_id {
+        0x18 => [1,1,1,1,1,1,1,1,0x39,0x39,0x39,0x39,2,0x5b,2,2],
+        0x1b => [2,2,1,1,2,0x38,1,1,2,2,0x39,0x39,0x5b,2,2,0x5b],
+        0x20 => [0x5b,2,1,1,2,2,1,1,2,2,1,1,0x38,2,1,1],
+        0x2b => [2,2,0x38,2,0x38,2,0x5b,2,2,2,2,2,2,0x5b,2,2],
+        0x2c => [0x39,0x39,0x39,0x39,0x39,0x39,0x39,0x39,2,2,2,0x5b,2,0x38,2,2],
+        0x3a => [2,2,1,1,2,0x38,1,1,0x44,0x45,0x39,0x39,0x46,0x47,2,2],
+        0x3b => [2,0x5b,1,1,2,2,1,1,0x44,0x45,1,1,0x46,0x47,1,1],
+        _ => return None,
+    };
+    if s.tile_index != art[(s.subtile_row*4+s.subtile_column)as usize] { return None; }
+    match s.tile_index { 2|0x38|0x5b => Some(true), 0x39 => Some(false), _ => None }
 }
 
 #[cfg(test)]
@@ -178,8 +233,8 @@ mod tests {
     }
 
     #[test]
-    fn boulder_scope_matches_only_the_two_maps_that_place_it() {
-        assert!(supports_boulder_map("BlackthornGym1F"));
+    fn legacy_boulder_scope_excludes_blackthorn_stair_drawings() {
+        assert!(!supports_boulder_map("BlackthornGym1F"));
         assert!(supports_boulder_map(
             "GoldenrodUndergroundSwitchRoomEntrances"
         ));

@@ -107,7 +107,7 @@ fn battle_sliding_intro_art(
         .get(&source.handle)
         .context("battle sliding intro source image is unavailable")?
         .clone();
-    for pixel in image.data.chunks_exact_mut(4) {
+    for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
         if pixel[3] == 0 {
             continue;
         }
@@ -135,20 +135,16 @@ fn spawn_battle_sliding_intro_pic(commands: &mut Commands, frame: &SpriteFrame, 
         return;
     }
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 rect: Some(Rect::new(left - x, 0.0, right - x, frame.size.y)),
                 custom_size: Some(Vec2::new((right - left) * scale, frame.size.y * scale)),
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + (left + right) * 0.5 * scale,
                 PLAYFIELD_TOP - (y + frame.size.y * 0.5) * scale,
                 3.0,
-            ),
-            ..default()
-        },
+            ),),
         BattleBattlerMarker,
     ));
 }

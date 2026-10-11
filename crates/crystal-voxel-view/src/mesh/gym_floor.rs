@@ -152,11 +152,11 @@ fn gym_floor_cell(
             // alternation, narrow joints, and no overlapping raised overlays.
             let parity = (column.div_euclid(4) + row.div_euclid(4)).rem_euclid(2);
             let face = if parity == 0 {
-                [0.70, 0.61, 0.57]
+                [0.80, 0.40, 0.50]
             } else {
-                [0.67, 0.57, 0.54]
+                [0.74, 0.30, 0.41]
             };
-            let joint = [0.62, 0.54, 0.51];
+            let joint = [0.58, 0.22, 0.29];
             let west = if column.rem_euclid(4) == 0 {
                 w * 0.018
             } else {

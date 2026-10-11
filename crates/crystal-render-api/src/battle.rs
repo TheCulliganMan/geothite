@@ -371,7 +371,7 @@ mod tests {
                     species_id: Arc::from("CYNDAQUIL"),
                     pokedex_size_m: Some(0.508),
                     party_index: Some(2),
-                    texture: Handle::weak_from_u128(4),
+                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(4), std::marker::PhantomData),
                     texture_size: Vec2::splat(56.0),
                     source_rect: Rect::new(16.0, 48.0, 72.0, 104.0),
                     source_opaque_rect: Rect::new(16.0, 48.0, 72.0, 104.0),

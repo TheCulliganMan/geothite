@@ -26,6 +26,14 @@ impl CutawayUniform {
     }
 }
 
+/// The ice atlas is also used by an unrelated ceremonial room.
+pub(super) fn is_cave(frame: &crystal_render_api::VisualWorldFrame) -> bool {
+    frame.map_id.as_ref() != "HallOfFame" && frame.tiles.first().is_some_and(|tile| {
+        matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave" | "ice_path")
+            || frame.map_id.as_ref() == "DragonsDenB1F" && tile.source.tileset_id.as_ref() == "johto"
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

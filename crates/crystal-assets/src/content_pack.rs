@@ -1038,6 +1038,8 @@ pub struct DecorationCatalog {
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModpackPayload {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub running_shoes: Option<bool>,
     pub pokemon: BTreeMap<String, PokemonSpecies>,
     pub maps: BTreeMap<String, MapModule>,
     pub items: BTreeMap<String, Item>,

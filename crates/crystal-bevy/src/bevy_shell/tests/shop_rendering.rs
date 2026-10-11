@@ -268,14 +268,15 @@ fn mart_frames_and_glyphs_share_the_fullscreen_dialog_layer() {
     )
     .expect("render mart");
     queue.apply(&mut world);
-    let mut query = world.query::<(Entity, Option<&SceneDialogMarker>)>();
+    // Bevy 0.20 stores resources as entities; only rendered sprites belong to the mart.
+    let mut query = world.query_filtered::<(Entity, Option<&SceneDialogMarker>), With<Sprite>>();
     for (entity, marker) in query.iter(&world) {
         assert!(
             marker.is_some(),
             "mart entity {entity:?} would detach from its text in fullscreen"
         );
     }
-    assert!(world.entities().len() > 50, "frames and text were spawned");
+    assert!(query.iter(&world).count() > 50, "frames and text were spawned");
 }
 
 #[test]
@@ -451,9 +452,9 @@ fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
 fn rendered_mart_text_for_test(app: &mut App) -> String {
     let glyphs = app.world().resource::<RenderedTilesetArt>().font_cache.as_ref().unwrap()
         .glyphs.iter().map(|(character, frame)| (*character, frame.handle.clone())).collect::<Vec<_>>();
-    let mut letters = app.world_mut().query::<(&Handle<Image>, &Transform, &Visibility)>()
+    let mut letters = app.world_mut().query::<(&Sprite, &Transform, &Visibility)>()
         .iter(app.world()).filter(|(_, _, visibility)| **visibility != Visibility::Hidden)
-        .filter_map(|(image, transform, _)| glyphs.iter().find(|(_, handle)| handle == image)
+        .filter_map(|(image, transform, _)| glyphs.iter().find(|(_, handle)| handle == &image.image)
             .map(|(character, _)| (transform.translation.y, transform.translation.x, *character)))
         .collect::<Vec<_>>();
     letters.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.total_cmp(&b.1)));

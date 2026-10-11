@@ -118,7 +118,7 @@ impl BattleSourceBodyRegistrations {
         {
             return None;
         }
-        let camera = self.camera.compute_matrix();
+        let camera = self.camera.to_matrix();
         let determinant = camera.determinant();
         if !camera.is_finite() || !determinant.is_finite() || determinant == 0.0 {
             return None;

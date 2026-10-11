@@ -117,6 +117,7 @@ def leaf(name,p,tip,width,color='leaf'):
  me.from_pydata(verts,[],[tuple(reversed(f)) for f in faces]);me.update();o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color));return o
 
 def ball(voltorb=False):
+ if voltorb:return # shared Voltorb uses the original pure orb recipe
  # Hemisphere material separation is a genuine equatorial seam.
  for upper,col in ((True,'red'),(False,'white')):
   seg=24;nr=7;vs=[]
@@ -133,14 +134,9 @@ def ball(voltorb=False):
     else:fs.append((a,b,c,d))
   me=bpy.data.meshes.new('Molded hemisphere');me.from_pydata(vs,[],[tuple(reversed(f)) for f in fs]);me.update();o=bpy.data.objects.new('Upper shell' if upper else 'Lower shell',me);COL.objects.link(o);me.materials.append(material(col))
   for f in me.polygons:f.use_smooth=True
- if voltorb:
-  for s in (-1,1):
-   prism('Angry eye',[(s*.05,.44),(s*.23,.48),(s*.19,.35),(s*.08,.36)],-.283,.018,'white')
-   sphere('Angry pupil',(s*.125,-.30,.397),(.016,.012,.044),'ink')
- else:
-  torus('Dark joining seam',(0,0,.32),.322,.022,'ink')
-  rod('Button surround',(0,-.32,.32),(0,-.37,.32),.082,.082,'ink',20)
-  rod('White release button',(0,-.373,.32),(0,-.39,.32),.052,.052,'white',20)
+ torus('Dark joining seam',(0,0,.32),.322,.022,'ink')
+ rod('Button surround',(0,-.32,.32),(0,-.37,.32),.082,.082,'ink',20)
+ rod('White release button',(0,-.373,.32),(0,-.39,.32),.052,.052,'white',20)
 
 def stone(boulder=False):
  if boulder:
@@ -982,32 +978,7 @@ def hoothoot():
  rod('Single standing leg',(0,0,.14),(0,-.025,.042),.035,.025,'rose')
  for s in (-1,0,1):rod('Owl spreading toe',(0,-.025,.04),(s*.08,-.15,.025),.018,.011,'rose')
 
-def bicycle_rider(female=False):
- # Import only this repository's original editable character geometry. Runtime
- # skeleton pivots are posed hierarchically before conversion into Blender.
- directory=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/johto_characters'
- sys.path.insert(0,str(Path(__file__).resolve().parent))
- from animated_glb import load_rig
- rig=load_rig(directory,'trainer_female' if female else 'trainer');transforms=[]
- rotations={'torso':.17,'upper_arm_l':-1.02,'upper_arm_r':-1.02,'forearm_l':-.22,'forearm_r':-.22,'thigh_l':-1.09,'shin_l':1.92,'thigh_r':-1.30,'shin_r':1.70}
- for joint in rig['joints']:
-  local=Matrix.Translation(Vector(joint['translation']))@Matrix.Rotation(rotations.get(joint['name'],0),4,'X')
-  parent=joint['parent'];world=(transforms[parent]@local) if parent is not None else Matrix.Translation((0,0,-.12))@local;transforms.append(world)
-  for index,prim in enumerate(joint['primitives']):
-   coords=[]
-   for i in range(0,len(prim['positions']),3):
-    p=world@Vector(prim['positions'][i:i+3]);coords.append((p.x,-p.z,p.y))
-   me=bpy.data.meshes.new('Posed rider '+joint['name']);me.from_pydata(coords,[],[prim['indices'][i:i+3] for i in range(0,len(prim['indices']),3)]);me.update()
-   o=bpy.data.objects.new('Rider / '+joint['name']+' / '+str(index),me);COL.objects.link(o)
-   key=('rider',tuple(prim['base_color']))
-   if key not in MATERIALS:
-    m=bpy.data.materials.new('Original rider material');m.diffuse_color=prim['base_color'];m.use_nodes=True;m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=m.diffuse_color;m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.83;MATERIALS[key]=m
-   me.materials.append(MATERIALS[key])
-   for f in me.polygons:f.use_smooth=True
-   custom=[]
-   for i in range(0,len(prim['normals']),3):
-    n=(world.to_3x3()@Vector(prim['normals'][i:i+3])).normalized();custom.append((n.x,-n.z,n.y))
-   me.normals_split_custom_set_from_vertices(custom)
+def bicycle_frame(female=False):
  # Bicycle lies in forward -Y; axle runs X. The fixed source pose has shoes on
  # pedals and hands at the handlebar grips; root translation remains authoritative.
  frame='teal' if female else 'red'
@@ -1037,13 +1008,13 @@ BUILDERS={
  'icon_ho_oh':legendary_bird, 'icon_humanshape':lambda:fighter(True), 'icon_jellyfish':jellyfish, 'icon_jigglypuff':lambda:fairy(True),
  'icon_lapras':lapras, 'icon_lugia':lambda:legendary_bird(True), 'icon_monster':monster, 'icon_moth':moth, 'icon_oddish':oddish,
  'icon_pikachu':pikachu, 'icon_poliwag':poliwag, 'icon_serpent':serpent, 'icon_shell':shell, 'icon_slowpoke':slowpoke, 'icon_snorlax':snorlax,
- 'chris_bike':lambda:bicycle_rider(), 'kris_bike':lambda:bicycle_rider(True),
+ 'chris_bike':lambda:bicycle_frame(), 'kris_bike':lambda:bicycle_frame(True),
  'battle_chikorita':chikorita, 'battle_cyndaquil':cyndaquil, 'battle_totodile':totodile, 'battle_pidgey':pidgey, 'battle_rattata':rattata, 'battle_sentret':sentret, 'battle_hoothoot':hoothoot,
  'icon_squirtle':squirtle, 'icon_staryu':staryu, 'icon_sudowoodo':sudowoodo, 'icon_unown':unown, 'icon_voltorb':lambda:ball(True),
 }
 # These source families intentionally share a recognizable subject but differ in
 # presentation scale. Source identity is never collapsed in the Rust registry.
-HEIGHTS={'chris_bike':1.48,'kris_bike':1.48,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'battle_pidgey':.84,'battle_rattata':.75,'battle_sentret':1.07,'battle_hoothoot':.93,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':1.08,'poke_ball':.46,'boulder':.68,'rock':.43,
+HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'battle_pidgey':.84,'battle_rattata':.75,'battle_sentret':1.07,'battle_hoothoot':.93,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':1.08,'poke_ball':.46,'boulder':.68,'rock':.43,
  'paper':.13,'pokedex':.16,'famicom':.40,'snes':.30,'n64':.43,'virtual_boy':.59,'gold_trophy':.63,'silver_trophy':.56,
  'surf':.98,'surfing_pikachu':1.00,'bird':.72,'fairy':.78,'monster':1.00,'dragon':1.12,'slowpoke':.70,'sudowoodo':.96,'entei':1.12,'raikou':1.14,'suicune':1.25}
 
@@ -1169,7 +1140,22 @@ def sudowoodo_runtime_lod(name,objects):
 BATCH_SIZE=12
 ONLY=next((set(a.split('=',1)[1].split(',')) for a in ARGS if a.startswith('--only=')),None)
 if ONLY and not ONLY.issubset(BUILDERS):raise ValueError('Unknown --only asset identity')
-MODELS=[(name,builder) for name,builder in BUILDERS.items() if ONLY is None or name in ONLY]
+if ONLY is None or 'icon_clefairy' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from clefairy_sculpt import sculpture as clefairy_sculpture
+ (OUT/'icon_clefairy.mesh.json').write_text(json.dumps(clefairy_sculpture(),separators=(',',':')))
+ print('icon_clefairy: original shared fairy sculpture with fitted face and curled tail',flush=True)
+if ONLY is None or 'icon_jigglypuff' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from jigglypuff_sculpt import sculpture as jigglypuff_sculpture
+ (OUT/'icon_jigglypuff.mesh.json').write_text(json.dumps(jigglypuff_sculpture(),separators=(',',':')))
+ print('icon_jigglypuff: original shared balloon sculpture with rounded ears and blue eyes',flush=True)
+if ONLY is None or 'icon_voltorb' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from orb_sculpt import sculpture as orb_sculpture
+ (OUT/'icon_voltorb.mesh.json').write_text(json.dumps(orb_sculpture('voltorb'),separators=(',',':')))
+ print('icon_voltorb: original smooth shared orb with fitted angular eyes',flush=True)
+MODELS=[(name,builder) for name,builder in BUILDERS.items() if name not in ('icon_clefairy','icon_jigglypuff','icon_voltorb') and (ONLY is None or name in ONLY)]
 for batch_start in range(0,len(MODELS),BATCH_SIZE):
  selected=next((int(a.split('=',1)[1]) for a in ARGS if a.startswith('--batch=')),None)
  if selected is not None and selected != batch_start//BATCH_SIZE+1:continue

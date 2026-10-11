@@ -14,8 +14,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
-wasm-bindgen = "0.2"
-sha2 = "0.10"
+wasm-bindgen.workspace = true
+sha2.workspace = true
 
 [features]
 import = ["dep:arrow-array", "dep:arrow-ipc"]

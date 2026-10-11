@@ -1,6 +1,6 @@
 # Crystal Bevy operation profiling
 
-Run from `rust/`. The opt-in `operation-trace` feature enables Bevy 0.14's
+Run from `rust/`. The opt-in `operation-trace` feature enables Bevy 0.20's
 system, command, schedule, asset, and render tracing, including detailed engine
 spans. Native entry points start capture before reading the pack, with named
 spans for pack verification, runtime loading, shell initialization, audio device

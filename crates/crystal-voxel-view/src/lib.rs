@@ -2,7 +2,10 @@
 
 //! Optional, presentation-only voxel view for Crystal's Bevy shell.
 
+use bevy::camera::primitives::MeshAabb;
+
 mod azalea_gym;
+mod painted_stone;
 mod battle_layout;
 mod encounter_terrain;
 mod battle_source_projection;
@@ -19,26 +22,56 @@ mod model_storage;
 mod open_models;
 mod open_people;
 mod open_people_skin;
+mod bicycle;
 #[cfg(feature = "people-review")]
 mod people_review;
 #[cfg(feature = "people-review")]
 pub use people_review::run as run_people_review;
 mod npc_appearance;
+mod hair_shapes;
 mod npc_textures;
+mod painted_torso;
+mod bare_body;
 pub use npc_textures::normalize_npc_texture;
 pub use open_people::npc_texture_names;
 pub use open_people::{install_open_people_bundle, PEOPLE as OPEN_PEOPLE};
 mod scenery_surfaces;
+mod scenery_finish;
+mod grass_blades;
+mod garment_fit;
+mod garment_body;
+mod hand_surface;
+mod hand_digits;
+mod hand_pose;
+mod head_surface;
+#[cfg(test)]
+mod bald_scalp;
+mod footwear;
+mod uniform_caps;
+mod uniform_details;
+mod kimono_obi;
+mod hair_flower;
+mod headband;
+mod cape;
+mod kimono_sleeves;
+mod moustache;
+mod beads;
+mod apricorn_basket;
+mod apron;
+mod robe_drape;
+mod roof_tiles;
 mod foliage;
+mod understory;
 pub use open_models::install_open_model_bundle;
 pub use battle_layout::{BattleSceneLayout, BattleUiBounds};
-pub use battle_view::{BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
+pub use battle_view::{BattleCompositeImageCamera, BattleViewPlugin, BattleViewStatus, battle_source_overlay_rect};
 mod building_catalog;
 mod building_style;
 mod cafe;
 mod camera;
 mod casino;
 mod cave;
+mod cave_water;
 mod celadon_gym;
 mod cerulean_gym;
 mod cut_tree;
@@ -115,24 +148,26 @@ use bevy::tasks::AsyncComputeTaskPool;
 #[cfg(not(target_arch = "wasm32"))]
 use bevy::tasks::Task;
 use bevy::{
-    asset::{AssetId, load_internal_asset},
-    core_pipeline::fxaa::Fxaa,
-    core_pipeline::tonemapping::{DebandDither, Tonemapping},
+    asset::{AssetId, load_internal_asset, RenderAssetUsages},
+    camera::{ClearColorConfig, OrthographicProjection, Projection, ScalingMode, visibility::RenderLayers},
+    light::{CascadeShadowConfigBuilder, DirectionalLightShadowMap},
+    mesh::MeshVertexBufferLayoutRef,
+    shader::ShaderRef,
+    anti_alias::fxaa::Fxaa,
+
     pbr::{
-        CascadeShadowConfigBuilder, DirectionalLightShadowMap, ExtendedMaterial, FogFalloff,
-        FogSettings, Material, MaterialExtension, MaterialPipeline, MaterialPipelineKey,
+        ExtendedMaterial, FogFalloff,
+        DistanceFog, Material, MaterialExtension, MaterialPipeline, MaterialPipelineKey,
         MaterialPlugin,
     },
     prelude::*,
     render::{
-        camera::{ClearColorConfig, OrthographicProjection, Projection, RenderTarget, ScalingMode},
-        mesh::MeshVertexBufferLayoutRef,
         render_resource::{
             AsBindGroup, CompareFunction, DepthStencilState, Face, RenderPipelineDescriptor,
-            ShaderRef, SpecializedMeshPipelineError,
+            SpecializedMeshPipelineError,
         },
         renderer::RenderAdapterInfo,
-        view::RenderLayers,
+        view::{DebandDither, Tonemapping},
     },
     tasks::futures_lite::future,
 };
@@ -180,7 +215,7 @@ const ACTOR_FOOT_ANCHOR: f32 = 8.0;
 const MIN_PULL_SINE: f32 = 0.2;
 const ABOVE_PRIORITY_EXTRA_PULL: f32 = 0.70;
 const SILHOUETTE_SHADER_HANDLE: Handle<Shader> =
-    Handle::weak_from_u128(0x7a88_22d4_d773_4874_94d3_c20a_0dcc_f21a);
+    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x7a88_22d4_d773_4874_94d3_c20a_0dcc_f21a), std::marker::PhantomData);
 #[derive(Clone, Copy, Debug, Default)]
 pub struct VoxelViewPlugin;
 
@@ -190,8 +225,8 @@ impl Plugin for VoxelViewPlugin {
         load_internal_asset!(
             app,
             VOXEL_SURFACE_SHADER_HANDLE,
-            "voxel_surface.wgsl",
-            Shader::from_wgsl
+            "voxel_surface.wesl",
+            Shader::from_wesl
         );
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
         #[cfg(not(target_arch = "wasm32"))]
@@ -199,8 +234,8 @@ impl Plugin for VoxelViewPlugin {
         load_internal_asset!(
             app,
             SILHOUETTE_SHADER_HANDLE,
-            "occlusion_silhouette.wgsl",
-            Shader::from_wgsl
+            "occlusion_silhouette.wesl",
+            Shader::from_wesl
         );
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
         app.init_resource::<new_bark_actors::ModeledActors>()
@@ -223,13 +258,14 @@ impl Plugin for VoxelViewPlugin {
             .add_systems(
                 PostUpdate,
                 project_actor_heads
-                    .after(bevy::transform::TransformSystem::TransformPropagate)
+                    .after(bevy::transform::TransformSystems::Propagate)
                     .in_set(ActorHeadProjection),
             )
             .add_systems(Startup, setup_voxel_view)
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
+            .add_systems(Update, sync_cave_water_phases.after(sync_voxel_view).in_set(WorldRenderSet::RenderSync))
             .add_systems(
                 Update,
                 sync_interior_cutaway
@@ -272,7 +308,7 @@ fn project_actor_heads(
     if !status.active {
         return;
     }
-    let Ok((camera, camera_transform)) = cameras.get_single() else {
+    let Ok((camera, camera_transform)) = cameras.single() else {
         return;
     };
     let (Some(size), Some(rect)) = (camera.logical_target_size(), camera.logical_viewport_rect())
@@ -286,7 +322,7 @@ fn project_actor_heads(
         let Ok(transform) = cards.get(*entity) else {
             continue;
         };
-        if let Some(point) =
+        if let Ok(point) =
             camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y))
         {
             let normalized = (point + rect.min) / size;
@@ -389,14 +425,17 @@ impl TerrainCacheKey {
 
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
+    painted_stone: Option<Handle<Image>>,
+    painted_bedrock: Option<Handle<Image>>,
     built_frame: Option<VisualWorldFrame>,
     // Exact profile document consumed by the completed build, never a desired revision.
     built_profiles: Option<std::sync::Arc<live_profiles::Document>>,
     // Original compositor handle at build submission; built_frame owns its atlas copy.
     built_source_texture: Option<Handle<Image>>,
-    // Exact current bounds for the two mutable flower domains.
-    built_animated_bounds: [Option<bevy::render::primitives::Aabb>; 2],
+    // Exact current bounds for the two mutable animated material domains.
+    built_animated_bounds: [Option<bevy::camera::primitives::Aabb>; 2],
     built_footing_heights: Vec<f32>,
+    built_animated_pillars: Vec<[usize; 2]>,
     footing_origin: Option<IVec2>,
     key: Option<TerrainCacheKey>,
     instances_root: Option<Entity>,
@@ -433,6 +472,7 @@ struct BuiltTerrain {
     scenery_fades: Vec<(Vec<occluder_fade::PreparedGroup>, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>, terrain_batches::AuthenticDomain)>,
     scenery: Vec<(terrain_batches::PreparedBatch, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>)>,
     background: Option<(Mesh, Handle<Image>)>,
+    cave_enclosure: Option<Mesh>,
     instances: Vec<(Mesh, Vec<[f32; 3]>)>,
     reveal_join_batches: Vec<(Mesh, maze_reveal_batches::MazeRevealBatch)>,
     fade_textured_groups: Vec<occluder_fade::PreparedGroup>,
@@ -442,6 +482,7 @@ struct BuiltTerrain {
     solid_meshes: Vec<terrain_batches::PreparedBatch>,
     animated_textured_mesh: Mesh,
     animated_solid_mesh: Mesh,
+    animated_pillars: Vec<[usize; 2]>,
 }
 
 fn should_start_terrain_build(
@@ -511,7 +552,7 @@ impl Material for OcclusionSilhouetteMaterial {
     }
 
     fn specialize(
-        _pipeline: &MaterialPipeline<Self>,
+        _pipeline: &MaterialPipeline,
         descriptor: &mut RenderPipelineDescriptor,
         _layout: &MeshVertexBufferLayoutRef,
         _key: MaterialPipelineKey<Self>,
@@ -527,8 +568,8 @@ impl Material for OcclusionSilhouetteMaterial {
 }
 
 fn configure_silhouette_depth(depth_stencil: &mut DepthStencilState) {
-    depth_stencil.depth_compare = CompareFunction::Less;
-    depth_stencil.depth_write_enabled = false;
+    depth_stencil.depth_compare = Some(CompareFunction::Less);
+    depth_stencil.depth_write_enabled = Some(false);
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -562,33 +603,35 @@ fn setup_voxel_view(
     let pose = camera_pose(initial_viewport);
     let camera = commands
         .spawn((
-            Camera3dBundle {
-                camera: Camera {
+
+// Full-map terrain extends beyond the LCD crop. Clear the
+// finite horizon to sky so the faithful 2D viewport can
+// never leak through as a vertical backdrop behind it.
+(Camera3d::default(), Msaa::Off,
+Camera {
                     order: 0,
                     is_active: false,
-                    target: RenderTarget::Window(bevy::window::WindowRef::Primary),
-                    // Full-map terrain extends beyond the LCD crop. Clear the
-                    // finite horizon to sky so the faithful 2D viewport can
-                    // never leak through as a vertical backdrop behind it.
+
+
+
+
                     clear_color: ClearColorConfig::Custom(Color::srgb(0.72, 0.83, 0.78)),
                     ..default()
                 },
-                projection: Projection::Orthographic(OrthographicProjection {
+Projection::Orthographic(OrthographicProjection {
                     near: 0.1,
                     far: 4096.0,
                     scaling_mode: ScalingMode::Fixed {
                         width: initial_viewport.x,
                         height: initial_viewport.y,
                     },
-                    ..default()
+                    ..OrthographicProjection::default_3d()
                 }),
-                transform: pose.transform(),
-                tonemapping: Tonemapping::None,
-                deband_dither: DebandDither::Disabled,
-                ..default()
-            },
+pose.transform(),
+Tonemapping::None,
+DebandDither::Disabled,),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
-            FogSettings {
+            DistanceFog {
                 color: Color::NONE,
                 directional_light_color: Color::NONE,
                 ..default()
@@ -603,32 +646,31 @@ fn setup_voxel_view(
         ))
         .id();
     commands.spawn((
-        DirectionalLightBundle {
-            directional_light: DirectionalLight {
+
+// A southeast light gives the small world readable northwest cast
+// shadows while keeping the source sprites' front faces bright.
+// Voxel world coordinates are +X east and +Z south. Put the sun
+// in that actual quadrant so the camera-facing facade receives
+// direct light, matching the reference renderer's south/east
+// face model. The previous negative X/Z position lit every
+// house from behind and made its mapped windows and door nearly
+// black even though their source pixels were correct.
+(DirectionalLight {
                 color: Color::WHITE,
                 illuminance: 3_000.0,
-                shadows_enabled: true,
+                shadow_maps_enabled: true,
                 shadow_depth_bias: 0.1,
                 shadow_normal_bias: 2.5,
+                ..default()
             },
-            cascade_shadow_config: CascadeShadowConfigBuilder {
+CascadeShadowConfigBuilder {
                 num_cascades: 1,
                 maximum_distance: 4096.0,
                 first_cascade_far_bound: 4096.0,
                 ..default()
             }
             .build(),
-            // A southeast light gives the small world readable northwest cast
-            // shadows while keeping the source sprites' front faces bright.
-            // Voxel world coordinates are +X east and +Z south. Put the sun
-            // in that actual quadrant so the camera-facing facade receives
-            // direct light, matching the reference renderer's south/east
-            // face model. The previous negative X/Z position lit every
-            // house from behind and made its mapped windows and door nearly
-            // black even though their source pixels were correct.
-            transform: Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        },
+Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
         RenderLayers::layer(VOXEL_RENDER_LAYER),
         VoxelSun,
     ));
@@ -658,8 +700,8 @@ fn sync_voxel_view(
         (
             &mut Transform,
             &mut Visibility,
-            &mut Handle<Mesh>,
-            &mut Handle<VoxelMaterial>,
+            &mut Mesh3d,
+            &mut MeshMaterial3d<VoxelMaterial>,
         ),
         (
             With<VoxelActorCard>,
@@ -861,7 +903,51 @@ fn voxel_projection_needs_update(projection: &Projection, pose: VoxelCameraPose)
                 || current.near != pose.near
                 || current.far != pose.far
         }
-        Projection::Orthographic(_) => true,
+        Projection::Orthographic(_) | Projection::Custom(_) => true,
+    }
+}
+
+// Phase changes update the retained atlas without invalidating async geometry.
+fn sync_cave_water_phases(
+    frame: Res<VisualWorldFrame>,
+    phases: Option<Res<crystal_render_api::VisualTileAnimationFrame>>,
+    status: Res<VoxelViewStatus>,
+    mut cache: ResMut<TerrainRevisionCache>,
+    mut images: ResMut<Assets<Image>>,
+    mut materials: ResMut<Assets<VoxelMaterial>>,
+) {
+    if !status.active || !frame.active {
+        return;
+    }
+    let Some(phases) = phases else { return; };
+    let material_handle = cache.textured_material.clone();
+    let mask = material_handle.as_ref()
+        .and_then(|handle| materials.get(handle))
+        .and_then(|material| material.extension.water_mask.clone());
+    let Some(built) = cache.built_frame.as_mut() else { return; };
+    if phases.map_id != frame.map_id {
+        return;
+    }
+    cave_water::refresh_phases(built, &phases, &mut images);
+    if let Some(mask) = mask {
+        if cave_water::refresh_mask_phases(built, &mask, &mut images) {
+            // Re-uploading an Image replaces its GPU texture. Refresh every
+            // material that binds it, including cloned cave occluder groups.
+            let users: Vec<_> = materials.iter().filter_map(|(id, material)| {
+                (material.extension.water_mask.as_ref() == Some(&mask)).then_some(id)
+            }).collect();
+            for id in users {
+                let _ = materials.get_mut(id);
+            }
+        }
+    }
+    let registration = cave_water::retained_registration(built, &frame);
+    if let Some(handle) = material_handle {
+        if materials.get(&handle).is_some_and(|material|
+            material.extension.water_enabled.x > 0.5 && material.extension.water_enabled != registration)
+        {
+            materials.get_mut(&handle).unwrap().extension.water_enabled = registration;
+        }
     }
 }
 
@@ -870,8 +956,9 @@ fn sync_voxel_atmosphere(
     profiles: Res<live_profiles::LiveProfiles>,
     settings: Res<VoxelViewSettings>,
     adapter: Option<Res<RenderAdapterInfo>>,
-    mut lights: Query<&mut DirectionalLight, With<VoxelSun>>,
-    mut cameras: Query<(&mut FogSettings, &mut Fxaa), With<VoxelWorldCamera>>,
+    mut lights: Query<(&mut DirectionalLight, &mut bevy::light::CascadeShadowConfig), With<VoxelSun>>,
+    mut cameras: Query<(&mut DistanceFog, &mut Fxaa), With<VoxelWorldCamera>>,
+    mut ambient: Option<ResMut<GlobalAmbientLight>>,
 ) {
     if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed() {
         return;
@@ -884,6 +971,17 @@ fn sync_voxel_atmosphere(
                 .iter()
                 .any(|map| map == frame.map_id.as_ref())
     });
+    let cave = interior_cutaway::is_cave(&frame);
+    // Caverns reduce actual light energy uniformly. Darkness is not a fog
+    // overlay or a player-centered mask; explicit authored fog still applies.
+    let atmosphere = atmosphere.map(|a| (a.start_tiles, a.end_tiles, a.opacity));
+    let cavern_lit = cave && frame.active && settings.enabled;
+    let dark = cavern_lit && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave");
+    let (ambient_gain, sun_gain) = if dark { (0.36, 0.28) }
+        else if cavern_lit { (0.60, 0.48) } else { (1.0, 1.0) };
+    if let Some(ambient) = ambient.as_mut() {
+        ambient.brightness = GlobalAmbientLight::default().brightness * ambient_gain;
+    }
     // CPU rasterizers pay for the entire broad terrain halo again in the
     // shadow pass. Authored contact shading already grounds these scenes;
     // retain dynamic shadows on hardware and use that baked support on known
@@ -900,19 +998,42 @@ fn sync_voxel_atmosphere(
             _ => {}
         }
     }
-    for mut light in &mut lights {
-        light.shadows_enabled = shadows;
+    for (mut light, mut cascade) in &mut lights {
+        light.illuminance = 3_000.0 * sun_gain;
+        light.shadow_maps_enabled = shadows;
+        if matches!(frame.map_id.as_ref(), "Route29" | "Route26" | "NewBarkTown") {
+            // Resolve leaves near the player rather than spending a single
+            // shadow map on the camera's entire distant terrain halo.
+            *cascade = CascadeShadowConfigBuilder {
+                // WebGL supports one cascade; tighten that one around the
+                // visible scene instead of requesting unsupported cascades.
+                num_cascades: if cfg!(target_arch = "wasm32") { 1 } else { 3 },
+                maximum_distance: if cfg!(target_arch = "wasm32") { 1024.0 } else { 2048.0 },
+                first_cascade_far_bound: 256.0,
+                ..default()
+            }.build();
+            light.shadow_normal_bias = 2.5;
+        } else {
+            *cascade = CascadeShadowConfigBuilder {
+                num_cascades: 1,
+                maximum_distance: 4096.0,
+                first_cascade_far_bound: 4096.0,
+                ..default()
+            }.build();
+            light.shadow_normal_bias = 2.5;
+        }
     }
     for (mut fog, mut fxaa) in &mut cameras {
-        fxaa.enabled =
-            frame.active && settings.enabled && new_bark_models::supports_map(&frame.map_id);
-        if let Some(atmosphere) = atmosphere {
+        fxaa.enabled = frame.active
+            && settings.enabled
+            && (cave || new_bark_models::supports_map(&frame.map_id));
+        if let Some((start_tiles, end_tiles, opacity)) = atmosphere {
             let pose = settings.camera.pose(frame.viewport_size);
             let target_distance = pose.eye.distance(pose.target);
-            fog.color = voxel_clear_color(&frame).with_alpha(atmosphere.opacity);
+            fog.color = voxel_clear_color(&frame).with_alpha(opacity);
             fog.falloff = FogFalloff::Linear {
-                start: target_distance + atmosphere.start_tiles * frame.tile_size.y,
-                end: target_distance + atmosphere.end_tiles * frame.tile_size.y,
+                start: target_distance + start_tiles * frame.tile_size.y,
+                end: target_distance + end_tiles * frame.tile_size.y,
             };
         } else {
             fog.color = Color::NONE;
@@ -946,7 +1067,9 @@ fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
         // The casino wall backs onto unlit interior void, not an outdoor
         // horizon. This also matches the black source course above the wall.
         Color::srgb(0.10, 0.09, 0.08)
-    } else if matches!(tileset, Some("cave" | "dark_cave")) {
+    } else if tileset == Some("ice_path") && frame.map_id.as_ref() != "HallOfFame" {
+        Color::srgb(0.025, 0.045, 0.075)
+    } else if interior_cutaway::is_cave(frame) {
         // A cave is an enclosed room. Exposed space beyond its authored rock
         // boundary is unlit void, never the outdoor horizon color.
         Color::srgb(0.035, 0.025, 0.065)
@@ -1061,6 +1184,9 @@ fn sync_terrain(
                 let animated_textured_mesh =
                     std::mem::take(&mut terrain.animated_textured).into_mesh();
                 let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
+                let animated_pillars = std::mem::take(&mut terrain.animated_pillars);
+                let enclosure = std::mem::take(&mut terrain.cave_enclosure);
+                let cave_enclosure = (!enclosure.indices.is_empty()).then(|| enclosure.into_mesh());
                 let background = terrain
                     .background
                     .take()
@@ -1099,6 +1225,7 @@ fn sync_terrain(
                     scenery,
                     scenery_fades,
                     background,
+                    cave_enclosure,
                     instances,
                     reveal_join_batches,
                     fade_textured_groups,
@@ -1108,6 +1235,7 @@ fn sync_terrain(
                     solid_meshes,
                     animated_textured_mesh,
                     animated_solid_mesh,
+                    animated_pillars,
                 }
             });
             TerrainBuildResult {
@@ -1175,12 +1303,12 @@ fn sync_terrain(
     if ready {
         if let Some(built) = &mut cache.built_frame {
             if built.terrain_revision != frame.terrain_revision {
-                let flowers_changed = terrain_tracking::refresh_animation(built, frame, images)
+                let geometry_changed = terrain_tracking::refresh_animation(built, frame, images)
                     .map_err(|()| TerrainSyncError::SourceTextureUnavailable)?;
-                if flowers_changed {
-                    let (textured, solid) = mesh::build_animated_flowers(built, images)
+                if geometry_changed {
+                    let (textured, solid) = mesh::build_animated_flowers(built, images, &cache.built_animated_pillars)
                         .map_err(TerrainSyncError::Mesh)?;
-                    cache.built_animated_bounds = [textured.compute_aabb(), solid.compute_aabb()];
+                    cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
                     update_mesh_asset(meshes, &mut cache.animated_textured_mesh, retain_animated_mesh_cpu(textured));
                     update_mesh_asset(meshes, &mut cache.animated_solid_mesh, retain_animated_mesh_cpu(solid));
                 }
@@ -1248,9 +1376,10 @@ fn apply_built_terrain(
     cache.built_frame = Some(frame.clone());
     cache.built_profiles = None;
     cache.built_source_texture = Some(frame.map_texture.clone());
-    cache.built_animated_bounds = [terrain.animated_textured_mesh.compute_aabb(),
-        terrain.animated_solid_mesh.compute_aabb()];
+    cache.built_animated_bounds = [terrain.animated_textured_mesh.get_aabb(),
+        terrain.animated_solid_mesh.get_aabb()];
     cache.built_footing_heights = terrain.footing_heights;
+    cache.built_animated_pillars = terrain.animated_pillars;
 
     let animated_textured = update_mesh_asset(
         meshes,
@@ -1270,6 +1399,15 @@ fn apply_built_terrain(
         cache.textured_material = Some(handle.clone());
         handle
     };
+    let water_mask = cave_water::mask(frame).map(|mask| images.add(mask));
+    if let Some(mut material) = materials.get_mut(&textured_material_handle) {
+        material.extension.water_enabled = if water_mask.is_some() {
+            cave_water::registration(frame)
+        } else {
+            Vec4::ZERO
+        };
+        material.extension.water_mask = water_mask;
+    }
     let solid_material_handle = if let Some(handle) = cache.solid_material.as_ref() {
         if materials.get(handle).is_none() {
             return Err(TerrainSyncError::CachedSolidMaterialUnavailable);
@@ -1281,20 +1419,49 @@ fn apply_built_terrain(
         handle
     };
 
+    let painted_stone = cache.painted_stone.get_or_insert_with(|| images.add(painted_stone::image())).clone();
+    let painted_bedrock = cache.painted_bedrock.get_or_insert_with(|| images.add(painted_stone::bedrock_image())).clone();
+    if let Some(mut material) = materials.get_mut(&solid_material_handle) {
+        material.extension.painted_stone = Some(painted_stone);
+        material.extension.painted_bedrock = Some(painted_bedrock);
+    }
+    let cave_reveal = if interior_cutaway::is_cave(frame) {
+        let dark = frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave")
+            && std::env::var_os("CRYSTAL_CAVE_GEOMETRY_REVIEW").is_none();
+        Vec4::new(1.0, if dark { 1.0 } else { 0.0 }, 0.0, 0.0)
+    } else if matches!(frame.map_id.as_ref(), "NewBarkTown" | "Route29" | "Route26") {
+        // The existing environment vector's Z channel selects exterior
+        // daylight; X/Y retain cave reveal and darkness ownership.
+        Vec4::Z
+    } else { Vec4::ZERO };
+    for handle in [&textured_material_handle, &solid_material_handle] {
+        if let Some(mut material) = materials.get_mut(handle) {
+            material.extension.cave_reveal = cave_reveal;
+        }
+    }
+
     if let Some(root) = cache.instances_root.take() {
-        commands.entity(root).despawn_recursive();
+        commands.entity(root).despawn();
     }
     let root = commands
         .spawn((
-            SpatialBundle {
-                transform: terrain_transform(frame),
-                ..default()
-            },
+            (Visibility::default(),
+terrain_transform(frame),),
             VoxelTerrain,
         ))
         .id();
+    if let Some(mesh) = terrain.cave_enclosure {
+        let mut material = solid_terrain_material();
+        // Outer rock keeps its mass. Only the broad player aperture reveals
+        // the room through it; whole-front-wall fading belongs to inner walls.
+        material.extension.cave_reveal = Vec4::new(1., cave_reveal.y, 0., 1.);
+        material.extension.painted_bedrock = cache.painted_bedrock.clone();
+        let child = commands.spawn(((Mesh3d(meshes.add(mesh)),
+MeshMaterial3d(materials.add(material)),), RenderLayers::layer(VOXEL_RENDER_LAYER), encounter_terrain::SyntheticTerrainApron)).id();
+        commands.entity(root).add_child(child);
+    }
     if let Some((mesh, source)) = terrain.background {
-        use bevy::render::texture::{ImageAddressMode, ImageSampler, ImageSamplerDescriptor};
+        use bevy::image::{ImageAddressMode, ImageSampler, ImageSamplerDescriptor};
         let mut image = images
             .get(&source)
             .ok_or(TerrainSyncError::SourceTextureUnavailable)?
@@ -1304,15 +1471,14 @@ fn apply_built_terrain(
             address_mode_v: ImageAddressMode::Repeat,
             ..ImageSamplerDescriptor::nearest()
         });
-        image.asset_usage = bevy::render::render_asset::RenderAssetUsages::RENDER_WORLD;
-        let material = materials.add(textured_terrain_material(images.add(image)));
+        image.asset_usage = bevy::asset::RenderAssetUsages::RENDER_WORLD;
+        let mut material = textured_terrain_material(images.add(image));
+        material.extension.cave_reveal = cave_reveal;
+        let material = materials.add(material);
         let child = commands
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh: meshes.add(mesh),
-                    material,
-                    ..default()
-                },
+                (Mesh3d(meshes.add(mesh)),
+MeshMaterial3d(material),),
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
                 encounter_terrain::SyntheticTerrainApron,
             ))
@@ -1321,14 +1487,12 @@ fn apply_built_terrain(
     }
     for (mesh, batch) in terrain.reveal_join_batches {
         let child = commands.spawn((
-            MaterialMeshBundle::<VoxelMaterial> {
-                mesh: meshes.add(mesh),
-                material: solid_material_handle.clone(),
-                // Absolute built-grid coordinates are unchanged. Identity
-                // local transform inherits the same retained scrolling root.
-                visibility: Visibility::Inherited,
-                ..default()
-            },
+
+// Absolute built-grid coordinates are unchanged. Identity
+// local transform inherits the same retained scrolling root.
+(Mesh3d(meshes.add(mesh)),
+MeshMaterial3d(solid_material_handle.clone()),
+Visibility::Inherited,),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
             batch,
         )).id();
@@ -1339,14 +1503,14 @@ fn apply_built_terrain(
         let key = std::sync::Arc::as_ptr(&texture) as usize;
         let handle = scenery_materials.entry(key).or_insert_with(|| {
             let mut material = textured_terrain_material(images.add(texture.image()));
+            material.extension.cave_reveal = cave_reveal;
             material.base.alpha_mode = texture.alpha_mode();
             material.base.double_sided = texture.double_sided;
             if texture.double_sided { material.base.cull_mode = None; }
             materials.add(material)
         }).clone();
-        let mut child = commands.spawn((MaterialMeshBundle::<VoxelMaterial> {
-            mesh: meshes.add(batch.mesh), material:handle, ..default()
-        }, RenderLayers::layer(VOXEL_RENDER_LAYER), batch.authentic_domain));
+        let mut child = commands.spawn(((Mesh3d(meshes.add(batch.mesh)),
+MeshMaterial3d(handle),), RenderLayers::layer(VOXEL_RENDER_LAYER), batch.authentic_domain));
         if let Some(bounds) = batch.bounds { child.insert(bounds); }
         let child=child.id();
         commands.entity(root).add_child(child);
@@ -1355,6 +1519,7 @@ fn apply_built_terrain(
         let key = std::sync::Arc::as_ptr(&texture) as usize;
         let handle = scenery_materials.entry(key).or_insert_with(|| {
             let mut material = textured_terrain_material(images.add(texture.image()));
+            material.extension.cave_reveal = cave_reveal;
             material.base.alpha_mode = texture.alpha_mode();
             material.base.double_sided = texture.double_sided;
             if texture.double_sided { material.base.cull_mode = None; }
@@ -1368,12 +1533,9 @@ fn apply_built_terrain(
         for origin in origins {
             let child = commands
                 .spawn((
-                    MaterialMeshBundle::<VoxelMaterial> {
-                        mesh: mesh.clone(),
-                        material: textured_material_handle.clone(),
-                        transform: Transform::from_translation(Vec3::from_array(origin)),
-                        ..default()
-                    },
+                    (Mesh3d(mesh.clone()),
+MeshMaterial3d(textured_material_handle.clone()),
+Transform::from_translation(Vec3::from_array(origin)),),
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ))
                 .id();
@@ -1435,14 +1597,12 @@ fn replace_static_terrain_batches(
     frame: &VisualWorldFrame,
 ) {
     if let Some(root) = cached_root.take() {
-        commands.entity(root).despawn_recursive();
+        commands.entity(root).despawn();
     }
     let root = commands
         .spawn((
-            SpatialBundle {
-                transform: terrain_transform(frame),
-                ..default()
-            },
+            (Visibility::default(),
+terrain_transform(frame),),
             VoxelTerrain,
         ))
         .id();
@@ -1452,12 +1612,9 @@ fn replace_static_terrain_batches(
         authentic_domain,
     } in batches {
         let mut child = commands.spawn((
-            MaterialMeshBundle::<VoxelMaterial> {
-                mesh: meshes.add(mesh),
-                material: material.clone(),
-                visibility: Visibility::Inherited,
-                ..default()
-            },
+            (Mesh3d(meshes.add(mesh)),
+MeshMaterial3d(material.clone()),
+Visibility::Inherited,),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
             authentic_domain,
         ));
@@ -1493,7 +1650,7 @@ fn sync_terrain_texture(
 // Only the two mutable flower domains retain CPU data. A checked encounter
 // takes one exact private copy; all ordinary static terrain stays render-only.
 fn retain_animated_mesh_cpu(mut mesh: Mesh) -> Mesh {
-    mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::default();
+    mesh.asset_usage = bevy::asset::RenderAssetUsages::default();
     mesh
 }
 
@@ -1505,7 +1662,7 @@ fn update_mesh_asset(
     if let Some(handle) = cache.as_ref() {
         // Render-world-only extraction takes the CPU asset. Keep the strong
         // handle stable and insert the next complete revision under its ID.
-        meshes.insert(handle.id(), mesh);
+        meshes.insert(handle.id(), mesh).expect("retained mesh handle remains live");
         handle.clone()
     } else {
         let handle = meshes.add(mesh);
@@ -1522,12 +1679,9 @@ fn spawn_terrain_entity(
 ) -> Entity {
     commands
         .spawn((
-            MaterialMeshBundle::<VoxelMaterial> {
-                mesh,
-                material,
-                transform: terrain_transform(frame),
-                ..default()
-            },
+            (Mesh3d(mesh),
+MeshMaterial3d(material),
+terrain_transform(frame),),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
             VoxelTerrain,
         ))
@@ -1563,12 +1717,25 @@ fn solid_terrain_material() -> VoxelMaterial {
 // All targets use the same palette-preserving surface and real shadow pass.
 type VoxelMaterial = ExtendedMaterial<StandardMaterial, VoxelSurface>;
 const VOXEL_SURFACE_SHADER_HANDLE: Handle<Shader> =
-    Handle::weak_from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542);
+    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542), std::marker::PhantomData);
 
 #[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default)]
 struct VoxelSurface {
     #[uniform(100)]
     cutaway: interior_cutaway::CutawayUniform,
+    #[texture(101)]
+    #[sampler(102)]
+    water_mask: Option<Handle<Image>>,
+    #[uniform(103)]
+    water_enabled: Vec4,
+    #[uniform(104)]
+    cave_reveal: Vec4,
+    #[texture(105)]
+    #[sampler(106)]
+    painted_stone: Option<Handle<Image>>,
+    #[texture(107)]
+    #[sampler(108)]
+    painted_bedrock: Option<Handle<Image>>,
 }
 impl MaterialExtension for VoxelSurface {
     fn fragment_shader() -> ShaderRef {
@@ -1613,12 +1780,25 @@ fn sync_interior_cutaway(
     } else {
         interior_cutaway::CutawayUniform::default()
     };
+    // Terrain groups clone the base material. Only cave terrain clones whose
+    // capsule moved need an update; actor materials keep reveal disabled.
+    let changed: Vec<_> = materials.iter().filter_map(|(id, material)| {
+        (material.extension.cave_reveal.x > 0.5
+            && (material.extension.cutaway.bottom_radius != next.bottom_radius
+                || material.extension.cutaway.top_feather != next.top_feather)).then_some(id)
+    }).collect();
+    for id in changed {
+        if let Some(mut material) = materials.get_mut(id) {
+            material.extension.cutaway.bottom_radius = next.bottom_radius;
+            material.extension.cutaway.top_feather = next.top_feather;
+        }
+    }
     // Avoid marking a material changed while the published player is idle.
     if materials
         .get(handle)
         .is_some_and(|material| material.extension.cutaway != next)
     {
-        if let Some(material) = materials.get_mut(handle) {
+        if let Some(mut material) = materials.get_mut(handle) {
             material.extension.cutaway = next;
         }
     }
@@ -1638,8 +1818,8 @@ fn sync_actor_cards(
         (
             &mut Transform,
             &mut Visibility,
-            &mut Handle<Mesh>,
-            &mut Handle<VoxelMaterial>,
+            &mut Mesh3d,
+            &mut MeshMaterial3d<VoxelMaterial>,
         ),
         (
             With<VoxelActorCard>,
@@ -1700,23 +1880,20 @@ fn sync_actor_cards(
             if *visibility != Visibility::Visible {
                 *visibility = Visibility::Visible;
             }
-            if *current_mesh != mesh {
-                *current_mesh = mesh;
+            if current_mesh.0 != mesh {
+                current_mesh.0 = mesh;
             }
-            if *current_material != material {
-                *current_material = material;
+            if current_material.0 != material {
+                current_material.0 = material;
             }
             continue;
         }
 
         let entity = commands
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh,
-                    material,
-                    transform,
-                    ..default()
-                },
+                (Mesh3d(mesh),
+MeshMaterial3d(material),
+transform,),
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
                 VoxelActorCard,
             ))
@@ -1752,7 +1929,7 @@ fn sync_player_silhouette_system(
         (
             &mut Transform,
             &mut Visibility,
-            &mut Handle<OcclusionSilhouetteMaterial>,
+            &mut MeshMaterial3d<OcclusionSilhouetteMaterial>,
         ),
         (
             With<VoxelActorSilhouette>,
@@ -1799,7 +1976,7 @@ fn sync_player_silhouette(
         (
             &mut Transform,
             &mut Visibility,
-            &mut Handle<OcclusionSilhouetteMaterial>,
+            &mut MeshMaterial3d<OcclusionSilhouetteMaterial>,
         ),
         (
             With<VoxelActorSilhouette>,
@@ -1855,20 +2032,17 @@ fn sync_player_silhouette(
         if *visibility != Visibility::Visible {
             *visibility = Visibility::Visible;
         }
-        if *current_material != material {
-            *current_material = material;
+        if current_material.0 != material {
+            current_material.0 = material;
         }
         return;
     }
     cache.entity = Some(
         commands
             .spawn((
-                MaterialMeshBundle {
-                    mesh: actor_quad.clone(),
-                    material,
-                    transform,
-                    ..default()
-                },
+                (Mesh3d(actor_quad.clone()),
+MeshMaterial3d(material),
+transform,),
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
                 VoxelActorSilhouette,
             ))
@@ -2017,7 +2191,7 @@ fn retained_terrain_transform(
 
 fn actor_quad_mesh() -> Mesh {
     use bevy::render::{
-        mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology,
+        mesh::Indices, render_resource::PrimitiveTopology,
     };
 
     let mut mesh = Mesh::new(
@@ -2063,6 +2237,63 @@ mod renderer_tests {
     use super::*;
 
     #[test]
+    fn cavern_lights_dim_real_energy_and_restore_when_leaving() {
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>()
+            .init_resource::<GlobalAmbientLight>()
+            .add_systems(Update, sync_voxel_atmosphere);
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        let sun = app.world_mut().spawn((DirectionalLight::default(),
+            bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
+        for (map, tileset, ambient, direct) in [
+            ("UnionCave1F", "cave", 48.0, 1440.0),
+            ("IcePath1F", "ice_path", 48.0, 1440.0),
+            ("DragonsDenB1F", "johto", 48.0, 1440.0),
+            ("DarkCaveVioletEntrance", "dark_cave", 28.8, 840.0),
+            ("Route29", "johto", 80.0, 3000.0),
+        ] {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.active = true;
+            frame.map_id = map.into();
+            frame.tiles = vec![crystal_render_api::VisualTile { column: 0, row: 0, priority: false,
+                animation_frames: None, texture: Default::default(),
+                source: crystal_render_api::VisualTileSource { tileset_id: tileset.into(), metatile_id: 0x02,
+                    tile_index: 0x16, subtile_column: 0, subtile_row: 0 } }];
+            drop(frame);
+            app.update();
+            assert!((app.world().resource::<GlobalAmbientLight>().brightness - ambient).abs() < 0.001);
+            assert!((app.world().get::<DirectionalLight>(sun).unwrap().illuminance - direct).abs() < 0.001);
+        }
+    }
+
+    #[test]
+    fn grove_shadow_detail_resets_when_leaving_the_daylight_maps() {
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>()
+            .add_systems(Update, sync_voxel_atmosphere);
+        let sun = app.world_mut().spawn((DirectionalLight::default(),
+            bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
+        for map in ["Route29", "Route26", "NewBarkTown", "GoldenrodCity", "UnionCave1F", "Route29"] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id = map.into();
+            app.update();
+            let world = app.world();
+            let cascade = world.get::<bevy::light::CascadeShadowConfig>(sun).unwrap();
+            let light = world.get::<DirectionalLight>(sun).unwrap();
+            let grove = matches!(map, "Route29" | "Route26" | "NewBarkTown");
+            assert_eq!(cascade.bounds.len(), if grove && !cfg!(target_arch = "wasm32") {3} else {1});
+            let far = if grove {
+                if cfg!(target_arch = "wasm32") {1024.} else {2048.}
+            } else {4096.};
+            assert!((*cascade.bounds.last().unwrap() - far).abs() < 0.001);
+            assert_eq!(light.shadow_normal_bias, 2.5);
+        }
+    }
+
+    #[test]
     fn authentic_source_bounds_use_core_tiles_and_ignore_camera_center() {
         let mut frame = VisualWorldFrame {
             source_map_size_core_tiles: Some(UVec2::new(4, 3)),
@@ -2095,15 +2326,30 @@ mod renderer_tests {
         let mut meshes = Assets::<Mesh>::default();
         let mut materials = Assets::<VoxelMaterial>::default();
         let mut cache = TerrainRevisionCache::default();
-        let frame = VisualWorldFrame::default();
+        let actor_material = materials.add(solid_terrain_material());
         let mut previous = Vec::new();
-        for _ in 0..3 {
+        for (map, tileset, reveal) in [("DarkCaveVioletEntrance", "dark_cave", true),
+            ("UnionCave1F", "cave", true),
+            ("IcePath1F", "ice_path", true), ("HallOfFame", "ice_path", false),
+            ("NewBarkTown", "johto", false), ("Route29", "johto", false), ("Route26", "johto", false),
+            ("GoldenrodCity", "johto", false)] {
+            let frame = VisualWorldFrame {
+                map_id: map.into(),
+                tiles: vec![crystal_render_api::VisualTile {
+                    column: 0, row: 0, texture: Handle::default(), animation_frames: None,
+                    priority: false, source: crystal_render_api::VisualTileSource {
+                        tileset_id: tileset.into(), metatile_id: 0,
+                        subtile_column: 0, subtile_row: 0, tile_index: 0,
+                    },
+                }], ..default()
+            };
             let mut queue = bevy::ecs::world::CommandQueue::default();
             let mut commands = Commands::new(&mut queue, &world);
             let terrain = BuiltTerrain {
                 scenery: Vec::new(),
                 scenery_fades: Vec::new(),
                 background: None,
+                cave_enclosure: None,
                 instances: vec![(actor_quad_mesh(), vec![[0.0, 0.0, 0.0], [32.0, 4.0, 16.0]])],
                 reveal_join_batches: Vec::new(),
                 fade_textured_groups: Vec::new(),
@@ -2113,6 +2359,7 @@ mod renderer_tests {
                 solid_meshes: vec![actor_quad_mesh().into()],
                 animated_textured_mesh: actor_quad_mesh(),
                 animated_solid_mesh: actor_quad_mesh(),
+                animated_pillars: Vec::new(),
             };
             apply_built_terrain(
                 &frame,
@@ -2125,37 +2372,48 @@ mod renderer_tests {
                 &mut images,
             )
             .unwrap();
+            for handle in [cache.textured_material.as_ref().unwrap(), cache.solid_material.as_ref().unwrap()] {
+                let environment = materials.get(handle).unwrap().extension.cave_reveal;
+                assert_eq!(environment.x > 0.5, reveal);
+                assert_eq!(environment.y > 0.5, tileset == "dark_cave");
+                assert_eq!(environment.z > 0.5, matches!(map, "NewBarkTown" | "Route29" | "Route26"));
+            }
+            assert_eq!(materials.get(&actor_material).unwrap().extension.cave_reveal, Vec4::ZERO);
             queue.apply(&mut world);
             for old in previous.drain(..) {
-                assert!(world.get_entity(old).is_none());
+                assert!(world.get_entity(old).is_err());
             }
             let root = cache.instances_root.unwrap();
             let children = world.get::<Children>(root).unwrap();
             assert_eq!(children.len(), 2);
             assert_eq!(
-                world.get::<Handle<Mesh>>(children[0]),
-                world.get::<Handle<Mesh>>(children[1])
+                world.get::<Mesh3d>(children[0]),
+                world.get::<Mesh3d>(children[1])
             );
             assert_eq!(
                 world.get::<Transform>(children[1]).unwrap().translation,
                 Vec3::new(32.0, 4.0, 16.0)
             );
-            previous.extend(children.iter().copied());
+            previous.extend(children.iter());
             previous.push(root);
         }
     }
 
     #[test]
     fn static_batches_replace_bounds_and_inherit_scroll_and_transition_visibility() {
-        use bevy::render::primitives::Aabb;
+        use bevy::camera::primitives::Aabb;
         let mut app = App::new();
         app.add_plugins((
             MinimalPlugins,
             bevy::transform::TransformPlugin,
-            bevy::render::view::VisibilityPlugin,
+            bevy::camera::visibility::VisibilityPlugin,
         ))
-        .init_resource::<Assets<Mesh>>();
-        let material = Handle::<VoxelMaterial>::weak_from_u128(314159);
+        .init_resource::<Assets<Mesh>>()
+        .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>();
+        let material = Handle::<VoxelMaterial>::Uuid(
+            bevy::asset::uuid::Uuid::from_u128(314159),
+            std::marker::PhantomData,
+        );
         let mut root = None;
         let mut old_entities = Vec::new();
         for revision in 0..3 {
@@ -2174,7 +2432,7 @@ mod renderer_tests {
                     [shift - 0.5, 1.0, 0.0],
                 ],
             );
-            let expected_bounds = first.compute_aabb().unwrap();
+            let expected_bounds = first.get_aabb().unwrap();
             app.world_mut()
                 .resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
                     let mut queue = bevy::ecs::world::CommandQueue::default();
@@ -2191,10 +2449,10 @@ mod renderer_tests {
                 });
             app.update();
             for old in old_entities.drain(..) {
-                assert!(app.world().get_entity(old).is_none());
+                assert!(app.world().get_entity(old).is_err());
             }
             let root = root.unwrap();
-            assert!(app.world().get::<Handle<Mesh>>(root).is_none());
+            assert!(app.world().get::<Mesh3d>(root).is_none());
             assert_eq!(
                 *app.world().get::<Transform>(root).unwrap(),
                 terrain_transform(&frame)
@@ -2207,7 +2465,9 @@ mod renderer_tests {
             );
             for &child in &children {
                 assert_eq!(
-                    app.world().get::<Handle<VoxelMaterial>>(child),
+                    app.world()
+                        .get::<MeshMaterial3d<VoxelMaterial>>(child)
+                        .map(|material| &material.0),
                     Some(&material)
                 );
                 assert_eq!(
@@ -2226,7 +2486,7 @@ mod renderer_tests {
             }
             let handles = children
                 .iter()
-                .map(|&child| app.world().get::<Handle<Mesh>>(child).unwrap().clone())
+                .map(|&child| app.world().get::<Mesh3d>(child).unwrap().clone())
                 .collect::<Vec<_>>();
             let count = app.world().resource::<Assets<Mesh>>().len();
             app.world_mut()
@@ -2250,11 +2510,11 @@ mod renderer_tests {
             assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
             for (&child, handle) in children.iter().zip(handles) {
                 assert!(app.world().get::<InheritedVisibility>(child).unwrap().get());
-                assert_eq!(app.world().get::<Handle<Mesh>>(child), Some(&handle));
+                assert_eq!(app.world().get::<Mesh3d>(child), Some(&handle));
                 assert!(
                     !app.world()
                         .entity(child)
-                        .get_ref::<Handle<Mesh>>()
+                        .get_ref::<Mesh3d>()
                         .unwrap()
                         .is_changed()
                 );
@@ -2268,7 +2528,7 @@ mod renderer_tests {
             );
             assert_eq!(
                 app.world_mut()
-                    .query::<&Handle<Mesh>>()
+                    .query::<&Mesh3d>()
                     .iter(app.world())
                     .count(),
                 2
@@ -2283,7 +2543,7 @@ mod renderer_tests {
         let mesh = mesh::SurfaceMeshData::default().into_mesh();
         assert_eq!(
             mesh.asset_usage,
-            bevy::render::render_asset::RenderAssetUsages::RENDER_WORLD
+            bevy::asset::RenderAssetUsages::RENDER_WORLD
         );
     }
 
@@ -2294,12 +2554,12 @@ mod renderer_tests {
         let mut cached = Some(original.clone());
         meshes.remove(original.id()); // Bevy's RENDER_WORLD extraction moves it out.
         let replacement = actor_quad_mesh();
-        let vertices = replacement.get_vertex_buffer_data();
+        let vertices = replacement.create_packed_vertex_buffer_data();
         let indices = replacement.indices().unwrap().iter().collect::<Vec<_>>();
         let handle = update_mesh_asset(&mut meshes, &mut cached, replacement);
         assert_eq!(handle.id(), original.id());
         let actual = meshes.get(&handle).unwrap();
-        assert_eq!(actual.get_vertex_buffer_data(), vertices);
+        assert_eq!(actual.create_packed_vertex_buffer_data(), vertices);
         assert_eq!(
             actual.indices().unwrap().iter().collect::<Vec<_>>(),
             indices
@@ -2364,11 +2624,8 @@ mod renderer_tests {
                 mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
                 mut materials: ResMut<Assets<VoxelMaterial>>,
                 mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>| {
-                let root = commands.spawn((VoxelTerrain, SpatialBundle {
-                    transform: terrain_transform(cache.built_frame.as_ref().unwrap()),
-                    visibility: Visibility::Hidden,
-                    ..default()
-                })).id();
+                let root = commands.spawn((VoxelTerrain, (terrain_transform(cache.built_frame.as_ref().unwrap()),
+Visibility::Hidden,))).id();
                 cache.solid_entity = Some(root);
                 assert_eq!(sync_terrain(&frame, &live_profiles::LiveProfiles::default(),
                     &mut commands, &mut cache, &mut builds, &mut images, &mut meshes,
@@ -2390,6 +2647,7 @@ mod renderer_tests {
     #[test]
     fn retained_terrain_never_rebinds_to_the_mutable_live_atlas() {
         let mut app = App::new();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<VoxelMaterial>();
         let frame = VisualWorldFrame::default();
         let mut materials = Assets::<VoxelMaterial>::default();
         let material = materials.add(textured_terrain_material(frame.map_texture.clone()));
@@ -2408,18 +2666,10 @@ mod renderer_tests {
         .init_resource::<TerrainBuildQueue>()
         .init_resource::<Assets<Image>>()
         .init_resource::<Assets<Mesh>>()
-        .add_event::<AssetEvent<VoxelMaterial>>()
-        .add_systems(
-            Update,
-            (
-                sync_cached_terrain_for_test,
-                Assets::<VoxelMaterial>::asset_events,
-            )
-                .chain(),
-        );
+        .add_systems(Update, sync_cached_terrain_for_test);
         app.update();
         app.world_mut()
-            .resource_mut::<Events<AssetEvent<VoxelMaterial>>>()
+            .resource_mut::<Messages<AssetEvent<VoxelMaterial>>>()
             .clear();
         app.world_mut().clear_trackers();
 
@@ -2429,7 +2679,7 @@ mod renderer_tests {
         app.update();
         assert_eq!(
             app.world()
-                .resource::<Events<AssetEvent<VoxelMaterial>>>()
+                .resource::<Messages<AssetEvent<VoxelMaterial>>>()
                 .len(),
             0
         );
@@ -2450,7 +2700,7 @@ mod renderer_tests {
                 .is_changed()
         );
 
-        let replacement = Handle::weak_from_u128(999);
+        let replacement = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(999), std::marker::PhantomData);
         app.world_mut()
             .resource_mut::<VisualWorldFrame>()
             .map_texture = replacement.clone();
@@ -2466,7 +2716,7 @@ mod renderer_tests {
         );
         assert_eq!(
             app.world()
-                .resource::<Events<AssetEvent<VoxelMaterial>>>()
+                .resource::<Messages<AssetEvent<VoxelMaterial>>>()
                 .len(),
             0
         );
@@ -2532,16 +2782,16 @@ mod renderer_tests {
     fn silhouette_pass_reads_only_strictly_closer_reverse_depth() {
         let mut depth = DepthStencilState {
             format: TextureFormat::Depth32Float,
-            depth_write_enabled: true,
-            depth_compare: CompareFunction::GreaterEqual,
+            depth_write_enabled: Some(true),
+            depth_compare: Some(CompareFunction::GreaterEqual),
             stencil: StencilState::default(),
             bias: DepthBiasState::default(),
         };
 
         configure_silhouette_depth(&mut depth);
 
-        assert_eq!(depth.depth_compare, CompareFunction::Less);
-        assert!(!depth.depth_write_enabled);
+        assert_eq!(depth.depth_compare, Some(CompareFunction::Less));
+        assert_eq!(depth.depth_write_enabled, Some(false));
     }
 
     #[test]
@@ -2568,6 +2818,18 @@ mod renderer_tests {
         });
 
         assert_eq!(voxel_clear_color(&frame), Color::srgb(0.035, 0.025, 0.065));
+        frame.tiles[0].source.tileset_id = "johto".into();
+        frame.map_id = "DragonsDenB1F".into();
+        assert_eq!(voxel_clear_color(&frame), Color::srgb(0.035, 0.025, 0.065));
+        frame.map_id = "Route45".into();
+        assert_eq!(voxel_clear_color(&frame), Color::srgb(0.72, 0.83, 0.78));
+        frame.map_id = "".into();
+
+        frame.tiles[0].source.tileset_id = "ice_path".into();
+        assert_eq!(voxel_clear_color(&frame), Color::srgb(0.025, 0.045, 0.075));
+        frame.map_id = "HallOfFame".into();
+        assert_ne!(voxel_clear_color(&frame), Color::srgb(0.025, 0.045, 0.075));
+        frame.map_id = "".into();
 
         frame.tiles[0].source.tileset_id = "house".into();
         assert_eq!(
@@ -2697,9 +2959,54 @@ mod renderer_tests {
             // The window system owns this runtime-computed field. Movement
             // must not replace it with PerspectiveProjection::default().
             aspect_ratio: 640.0 / 576.0,
+            ..default()
         });
 
         assert!(!voxel_projection_needs_update(&projection, pose));
+    }
+
+    #[test]
+    fn cave_reveal_tracks_supported_player_and_preserves_actor_and_fade_materials() {
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let mut terrain = solid_terrain_material();
+        terrain.extension.cave_reveal = Vec4::X;
+        let solid = materials.add(terrain.clone());
+        terrain.extension.cutaway.fade = Vec4::new(0.7, 0.2, 0.3, 0.4);
+        let fade = materials.add(terrain);
+        let actor = materials.add(solid_terrain_material());
+        let actor_original = materials.get(&actor).unwrap().extension.cutaway;
+        let frame = VisualWorldFrame {
+            active: true, grid_size: UVec2::splat(4), tile_size: Vec2::splat(8.0),
+            viewport_size: Vec2::splat(32.0),
+            actors: vec![VisualActor { id: VisualActorId::Player, source_id: "player".into(),
+                texture: Handle::default(), center: Vec2::new(0.0, 8.0),
+                size: Vec2::splat(16.0), flip_x: false, above_priority: false, facing: None }],
+            ..default()
+        };
+        let mut app = App::new();
+        app.insert_resource(frame).insert_resource(materials)
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(TerrainRevisionCache { solid_material: Some(solid.clone()),
+                footing_heights: vec![6.0; 16], ..default() })
+            .add_systems(Update, sync_interior_cutaway);
+        for (x, height) in [(0.0, 6.0), (8.0, 12.0)] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].center.x = x;
+            app.world_mut().resource_mut::<TerrainRevisionCache>().footing_heights.fill(height);
+            app.update();
+            let assets = app.world().resource::<Assets<VoxelMaterial>>();
+            for handle in [&solid, &fade] {
+                let capsule = assets.get(handle).unwrap().extension.cutaway;
+                assert_eq!(capsule.bottom_radius.truncate(), Vec3::new(x, height + 0.04, 0.0));
+                assert_eq!(capsule.top_feather.y, height + 0.04 + 21.6);
+            }
+            assert_eq!(assets.get(&fade).unwrap().extension.cutaway.fade, Vec4::new(0.7,0.2,0.3,0.4));
+            assert_eq!(assets.get(&actor).unwrap().extension.cutaway, actor_original);
+            assert_eq!(app.world().resource::<TerrainRevisionCache>().footing_heights, vec![height; 16]);
+        }
+        app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
+        app.update();
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&fade).unwrap()
+            .extension.cutaway.bottom_radius.w, 0.0);
     }
 
     #[test]
@@ -2707,7 +3014,7 @@ mod renderer_tests {
         let player = VisualActor {
             id: VisualActorId::Player,
             source_id: "player".into(),
-            texture: Handle::weak_from_u128(1),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::ZERO,
             size: Vec2::splat(16.0),
             flip_x: false,
@@ -2724,7 +3031,7 @@ mod renderer_tests {
 
     #[test]
     fn remote_player_uses_a_distinct_material_without_changing_its_footing() {
-        let texture = Handle::weak_from_u128(1);
+        let texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData);
         let player = VisualActor {
             id: VisualActorId::Player,
             source_id: "player".into(),
@@ -2769,7 +3076,7 @@ mod renderer_tests {
         let mut player = VisualActor {
             id: VisualActorId::Player,
             source_id: "player".into(),
-            texture: Handle::weak_from_u128(1),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::ZERO,
             size: Vec2::splat(16.0),
             flip_x: false,
@@ -2802,14 +3109,14 @@ mod renderer_tests {
         let mut first = VisualWorldFrame {
             terrain_revision: 42,
             grid_origin: bevy::prelude::IVec2::ZERO,
-            map_texture: Handle::weak_from_u128(1),
+            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             viewport_size: Vec2::new(160.0, 144.0),
             tile_size: Vec2::splat(8.0),
             grid_size: UVec2::new(20, 18),
             ..default()
         };
         let first_key = TerrainCacheKey::from_frame(&first);
-        first.map_texture = Handle::weak_from_u128(2);
+        first.map_texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData);
         assert_eq!(first_key, TerrainCacheKey::from_frame(&first));
     }
 

@@ -6,6 +6,8 @@
 //! source cells. Exact overlapping source/priority and proven art correspondence,
 //! not revision equality, are required. Different authored phases are equivalent
 //! only with an exact shared family and verified geometry-invariant built profiles.
+#[cfg(test)]
+use bevy::asset::RenderAssetUsages;
 use bevy::prelude::{Handle, IVec2, Image, UVec2, Vec2};
 use crystal_render_api::{VisualBattleTerrainEvidence, VisualTile, VisualWorldFrame};
 use std::{collections::HashSet, sync::Arc};
@@ -359,7 +361,7 @@ mod tests {
             tile_size: Vec2::splat(32.0),
             viewport_size: Vec2::splat(128.0),
             center: Vec2::new(123.0, -87.0),
-            map_texture: Handle::weak_from_u128(1),
+            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             ..Default::default()
         };
         for row in 0..12 {
@@ -377,7 +379,7 @@ mod tests {
                         subtile_row: point.y.rem_euclid(4) as u8,
                         tile_index: identity as u16,
                     },
-                    texture: Handle::weak_from_u128(u128::from(identity) + 100),
+                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(u128::from(identity) + 100), std::marker::PhantomData),
                     priority: point.x.rem_euclid(3) == 0,
                 });
             }
@@ -410,7 +412,7 @@ mod tests {
         built.map_id = "UnionCave1F".into();
         witness.map_id = built.map_id.clone();
         let family: Arc<[Handle<Image>]> = (0..32)
-            .map(|i| Handle::weak_from_u128(700_000 + i))
+            .map(|i| Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(700_000 + i), std::marker::PhantomData))
             .collect::<Vec<_>>()
             .into();
         let source = VisualTileSource {
@@ -489,7 +491,7 @@ mod tests {
                     tile.animation_frames = Some(family.into());
                 }
                 3 => {
-                    family.push(Handle::weak_from_u128(900_000));
+                    family.push(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_000), std::marker::PhantomData));
                     tile.animation_frames = Some(family.into());
                 }
                 4 => {
@@ -501,13 +503,13 @@ mod tests {
                     family.reverse();
                     tile.animation_frames = Some(family.into());
                 }
-                6 => tile.texture = Handle::weak_from_u128(900_001),
+                6 => tile.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_001), std::marker::PhantomData),
                 7 => {
-                    family[31] = Handle::weak_from_u128(900_002);
+                    family[31] = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_002), std::marker::PhantomData);
                     tile.animation_frames = Some(family.into());
                 }
                 _ => {
-                    tile.texture = Handle::weak_from_u128(900_003);
+                    tile.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_003), std::marker::PhantomData);
                     tile.animation_frames =
                         Some(vec![built.tiles[2].texture.clone(), tile.texture.clone()].into());
                 }
@@ -542,7 +544,7 @@ mod tests {
                 1 => tile.priority ^= true,
                 _ => {
                     let other: Arc<[Handle<Image>]> = (0..32)
-                        .map(|i| Handle::weak_from_u128(800_000 + i))
+                        .map(|i| Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(800_000 + i), std::marker::PhantomData))
                         .collect::<Vec<_>>()
                         .into();
                     tile.texture = other[17].clone();
@@ -583,7 +585,7 @@ mod tests {
     #[test]
     fn retained_correspondence_old_witness_survives_actual_shifted_phase_refresh() {
         use bevy::render::{
-            render_asset::RenderAssetUsages,
+
             render_resource::{Extent3d, TextureDimension, TextureFormat},
         };
         let (mut built, witness) = phase_pair("cave", 0x3e, 0x14);
@@ -646,7 +648,7 @@ mod tests {
         ] {
             let mut live = frame(built.grid_origin + delta * 2);
             live.center = Vec2::new(137.5, -42.25);
-            live.map_texture = Handle::weak_from_u128(2);
+            live.map_texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData);
             let result = resolve(&evidence(&live), &built).unwrap();
             let offset = crate::terrain_tracking::offset(&built, &live);
             assert_eq!(result.center, live.center + Vec2::new(offset.x, -offset.y));
@@ -696,7 +698,7 @@ mod tests {
                     0 => Arc::make_mut(&mut changed.tiles)[0].source.tile_index += 1,
                     1 => {
                         Arc::make_mut(&mut changed.tiles)[0].texture =
-                            Handle::weak_from_u128(999999)
+                            Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData)
                     }
                     _ => Arc::make_mut(&mut changed.tiles)[0].priority ^= true,
                 }

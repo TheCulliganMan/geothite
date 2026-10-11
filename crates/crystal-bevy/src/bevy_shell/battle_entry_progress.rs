@@ -4259,7 +4259,6 @@ fn update_overworld_sprite_positions(
     start_y: i16,
     player_sprites: &mut Query<
         (
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
             &mut PlayerSpriteFrames,
@@ -4284,14 +4283,13 @@ fn update_overworld_sprite_positions(
         (
             Entity,
             &mut VisibleObjectSprite,
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
         ),
         (Without<PlayerMarker>, Without<VisibleIntroSurface>),
     >,
 ) -> bool {
-    let Ok((_, mut player_transform, player_sprite, _)) = player_sprites.get_single_mut() else {
+    let Ok((mut player_transform, player_sprite, _)) = player_sprites.single_mut() else {
         return false;
     };
     let (movement_from, movement_remaining, movement_total) = visible_ledge_jump
@@ -4346,7 +4344,7 @@ fn update_overworld_sprite_positions(
     player_transform.translation.z =
         overworld_entity_depth(player_depth_tile, None, (start_x, start_y));
     if ledge_jump_has_active_shadow(visible_ledge_jump)
-        && let Ok((mut shadow_transform, shadow_sprite)) = ledge_shadows.get_single_mut()
+        && let Ok((mut shadow_transform, shadow_sprite)) = ledge_shadows.single_mut()
     {
         let Some(shadow_size) = shadow_sprite.custom_size else {
             return false;
@@ -4434,9 +4432,9 @@ fn update_overworld_sprite_positions(
         if !destination_visible && !origin_visible {
             continue;
         }
-        let Some((_, rendered_object, _, mut transform, sprite)) = object_sprites
+        let Some((_, rendered_object, mut transform, sprite)) = object_sprites
             .iter_mut()
-            .find(|(_, rendered, _, _, _)| rendered.object_index == object_index)
+            .find(|(_, rendered, _, _)| rendered.object_index == object_index)
         else {
             return false;
         };
@@ -5033,21 +5031,14 @@ fn spawn_title_screen(
     if runtime_debug_overlays_enabled() {
         let boot = runtime_shell.runtime.boot_summary();
         commands.spawn((
-            Text2dBundle {
-                text: Text::from_section(
+            (Text2d::new(
                     format!(
                         "Rust pack={} hash={}",
                         boot.modpack_id, boot.pack_content_hash
-                    ),
-                    TextStyle {
-                        font_size: 16.0,
-                        color: Color::srgb(0.92, 0.92, 0.82),
-                        ..default()
-                    },
-                ),
-                transform: Transform::from_xyz(-190.0, 82.0, 1.0),
-                ..default()
-            },
+                    )),
+TextFont::from_font_size(16.0),
+TextColor(Color::srgb(0.92, 0.92, 0.82)),
+Transform::from_xyz(-190.0, 82.0, 1.0),),
             TitleScreenMarker,
         ));
     }

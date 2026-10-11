@@ -1,16 +1,18 @@
 //! Retain GPU storage for composed RGBA surfaces and upload their changed region.
 use bevy::{
-    asset::{AssetEvent, AssetId, Assets},
+    asset::{AssetEvent, AssetId, Assets, RenderAssetUsages},
+    extract::{Extract, ExtractSchedule},
+    image::ImageSampler,
     prelude::*,
     render::{
-        Extract, ExtractSchedule, Render, RenderApp, RenderSet,
-        render_asset::{RenderAssetUsages, RenderAssets, prepare_assets},
+        Render, RenderApp, RenderSystems,
+        render_asset::{RenderAssets, prepare_assets},
         render_resource::{
-            Extent3d, ImageCopyTexture, ImageDataLayout, Origin3d, TextureAspect, TextureDimension,
-            TextureFormat, TextureViewDescriptor,
+            Extent3d, Origin3d, TexelCopyBufferLayout, TexelCopyTextureInfo, TextureAspect,
+            TextureDimension, TextureFormat, TextureViewDescriptor,
         },
         renderer::{RenderDevice, RenderQueue},
-        texture::{GpuImage, ImageSampler},
+        texture::GpuImage,
     },
 };
 use std::collections::{HashMap, HashSet};
@@ -46,7 +48,7 @@ pub(super) fn install(app: &mut App) {
         .add_systems(
             Render,
             upload_images
-                .in_set(RenderSet::PrepareAssets)
+                .in_set(RenderSystems::PrepareAssets)
                 .before(prepare_assets::<GpuImage>),
         );
 }
@@ -60,7 +62,7 @@ struct PendingImages {
 struct ResidentImages(HashMap<AssetId<Image>, (UVec2, Vec<u8>)>);
 
 fn extract_images(
-    mut events: Extract<EventReader<AssetEvent<Image>>>,
+    mut events: Extract<MessageReader<AssetEvent<Image>>>,
     images: Extract<Res<Assets<Image>>>,
     mut pending: ResMut<PendingImages>,
 ) {
@@ -99,17 +101,19 @@ fn upload_images(
     }
     for (id, image) in pending.changed.drain(..) {
         let size = image.size();
-        assert_eq!(image.data.len(), size.x as usize * size.y as usize * 4);
+        let data = image
+            .data
+            .as_ref()
+            .expect("streamed images retain CPU pixels");
+        assert_eq!(data.len(), size.x as usize * size.y as usize * 4);
         if let Some((old_size, old_data)) = resident.0.get(&id)
             && *old_size == size
             && let Some(gpu) = gpu_images.get(id)
         {
-            if let Some([x, y, width, height]) =
-                changed_rect(old_data, &image.data, size.x as usize)
-            {
+            if let Some([x, y, width, height]) = changed_rect(old_data, data, size.x as usize) {
                 let offset = (y * size.x as usize + x) * 4;
                 queue.write_texture(
-                    ImageCopyTexture {
+                    TexelCopyTextureInfo {
                         texture: &gpu.texture,
                         mip_level: 0,
                         origin: Origin3d {
@@ -119,8 +123,8 @@ fn upload_images(
                         },
                         aspect: TextureAspect::All,
                     },
-                    &image.data[offset..],
-                    ImageDataLayout {
+                    &data[offset..],
+                    TexelCopyBufferLayout {
                         offset: 0,
                         bytes_per_row: Some(size.x * 4),
                         rows_per_image: None,
@@ -137,7 +141,7 @@ fn upload_images(
                 &queue,
                 &image.texture_descriptor,
                 bevy::render::render_resource::TextureDataOrder::default(),
-                &image.data,
+                data,
             );
             let texture_view = texture.create_view(&TextureViewDescriptor::default());
             let ImageSampler::Descriptor(sampler) = &image.sampler else {
@@ -148,14 +152,17 @@ fn upload_images(
                 GpuImage {
                     texture,
                     texture_view,
-                    texture_format: image.texture_descriptor.format,
+                    texture_descriptor: image.texture_descriptor,
+                    texture_view_descriptor: image.texture_view_descriptor,
+                    had_data: true,
                     sampler: device.create_sampler(&sampler.as_wgpu()),
-                    size,
-                    mip_level_count: 1,
                 },
             );
         }
-        resident.0.insert(id, (size, image.data));
+        resident.0.insert(
+            id,
+            (size, image.data.expect("streamed images retain CPU pixels")),
+        );
     }
 }
 

@@ -16,9 +16,35 @@ enum Asset {
     LiftSide,
     Directory,
     ClosedU,
+    StairUp,
+    StairDown,
+    LiftPortal,
+    LiftThreshold,
+    CounterPlain,
+    CounterRegister,
+    CounterNorth,
+    CounterWest,
 }
 impl Asset {
     fn model(self) -> &'static Model {
+        if matches!(
+            self,
+            Self::CounterPlain | Self::CounterRegister | Self::CounterNorth | Self::CounterWest
+        ) {
+            return crate::interior_models::model(
+                crate::interior_models::ModelKind::ReceptionCounter,
+            );
+        }
+        if self == Self::LiftPortal {
+            return crate::interior_models::model(crate::interior_models::ModelKind::GateDoorFrame);
+        }
+        assert!(
+            self != Self::LiftThreshold,
+            "threshold uses original Rust geometry"
+        );
+        if matches!(self, Self::StairUp | Self::StairDown) {
+            return crate::interior_models::model(crate::interior_models::ModelKind::StairFlight);
+        }
         static MODELS: OnceLock<[Model; 8]> = OnceLock::new();
         &MODELS.get_or_init(|| {
             [
@@ -37,12 +63,8 @@ impl Asset {
                 crate::model_storage::include_model!(
                     "models/department_store/window_course_10.mesh.json"
                 ),
-                crate::model_storage::include_model!(
-                    "models/department_store/lift_side.mesh.json"
-                ),
-                crate::model_storage::include_model!(
-                    "models/department_store/directory.mesh.json"
-                ),
+                crate::model_storage::include_model!("models/department_store/lift_side.mesh.json"),
+                crate::model_storage::include_model!("models/department_store/directory.mesh.json"),
                 crate::model_storage::include_model!(
                     "models/department_store/closed_u_display.mesh.json"
                 ),
@@ -59,6 +81,7 @@ struct Part {
     asset: Asset,
 }
 struct Network {
+    map: Option<&'static str>,
     floor: u8,
     anchor: [i32; 2],
     width: usize,
@@ -188,7 +211,7 @@ fn resolve_networks(
         }
     }
     let mut out = Vec::new();
-    for n in networks.iter().filter(|n| n.floor == floor) {
+    for n in networks.iter().filter(|n| n.floor == floor && n.map.is_none_or(|name|name == map)) {
         let x = i64::from(n.anchor[0]) - i64::from(origin[0]);
         let y = i64::from(n.anchor[1]) - i64::from(origin[1]);
         if x < 0 || y < 0 {
@@ -268,7 +291,19 @@ pub(super) fn append(
     );
     for i in p.indices(g.width) {
         let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
-        append_top(&mut mesh.textured, [w, e, n, s], 0., uv);
+        // Descending flights need a well below the room datum. A room-height
+        // backing quad would hide all eight treads.
+        let down = p
+            .network
+            .parts
+            .iter()
+            .any(|part| part.asset == Asset::StairDown);
+        append_top(
+            &mut mesh.textured,
+            [w, e, n, s],
+            if down { -16. * g.tile_height / 8. } else { 0. },
+            uv,
+        );
     }
     let cutaway_start = mesh.solid.positions.len();
     let textured_start = mesh.textured.positions.len();
@@ -279,13 +314,77 @@ pub(super) fn append(
         let e = w + part.width as f32 * g.tile_width;
         let s = n + part.depth as f32 * g.tile_height;
         let is_display = part.asset == Asset::ClosedU;
+        if matches!(
+            part.asset,
+            Asset::CounterPlain | Asset::CounterRegister | Asset::CounterNorth | Asset::CounterWest
+        ) {
+            append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);
+            if part.asset == Asset::CounterRegister {
+                append_cash_register(&mut mesh.solid, [w, e, n, s], sy);
+            }
+            continue;
+        }
+        if part.asset == Asset::LiftThreshold {
+            append_lift_threshold(&mut mesh.solid, [w, e, n, s], sx, sy);
+            continue;
+        }
+        if matches!(part.asset, Asset::StairUp | Asset::StairDown) {
+            let down = part.asset == Asset::StairDown;
+            // The shared editable flight ascends along X. Fit in its rotated
+            // coordinate system so unequal native tile axes keep valid normals.
+            let bounds = if down { [n, s, -e, -w] } else { [-s, -n, w, e] };
+            let mut stairs = SurfaceMeshData::default();
+            part.asset.model().append_fitted(
+                &mut stairs,
+                bounds,
+                if down { -16. * sy } else { 0. },
+                22.4 * sy,
+            );
+            for point in &mut stairs.positions {
+                *point = if down {
+                    [-point[2], point[1], point[0]]
+                } else {
+                    [point[2], point[1], -point[0]]
+                };
+            }
+            for normal in &mut stairs.normals {
+                *normal = if down {
+                    [-normal[2], normal[1], normal[0]]
+                } else {
+                    [normal[2], normal[1], -normal[0]]
+                };
+            }
+            let offset = mesh.solid.positions.len() as u32;
+            mesh.solid
+                .indices
+                .extend(stairs.indices.into_iter().map(|i| i + offset));
+            mesh.solid.positions.extend(stairs.positions);
+            mesh.solid.normals.extend(stairs.normals);
+            mesh.solid.uvs.extend(stairs.uvs);
+            mesh.solid.colors.extend(stairs.colors);
+            continue;
+        }
         let north = if is_display { n } else { s - 3. * sy };
+        let first = mesh.solid.colors.len();
         part.asset.model().append_fitted(
             &mut mesh.solid,
             [w, e, north, s],
             0.,
             if is_display { 8. * sy } else { 16. * sy },
         );
+        if matches!(
+            part.asset,
+            Asset::Window1 | Asset::Window2 | Asset::Window4 | Asset::Window8 | Asset::Window10
+        ) {
+            // The store's native windows are blue; retain cream frames and gold trim.
+            for color in &mut mesh.solid.colors[first..] {
+                if color[1] > color[0] && color[2] > color[0] {
+                    for (channel, factor) in color[..3].iter_mut().zip([1.3, 0.95, 1.8]) {
+                        *channel *= factor;
+                    }
+                }
+            }
+        }
         if part.asset == Asset::Directory {
             inscription(
                 mesh,
@@ -306,15 +405,22 @@ pub(super) fn append(
             );
         }
     }
-    // Reveal is presentation-only and leaves source support/collision untouched.
-    mesh.solid
-        .cutaway_ranges
-        .push(cutaway_start..mesh.solid.positions.len());
-    if mesh.textured.positions.len() > textured_start {
-        mesh.textured
+    // Waist-high service furniture stays opaque. Wall reveal would otherwise
+    // fade a complete U merely because the player stands in its staff bay.
+    let reveal = !matches!(
+        p.network.label,
+        "mart/department_store_counter_end" | "mart/department_store_service_loop"
+    );
+    if reveal {
+        mesh.solid
             .cutaway_ranges
-            .push(textured_start..mesh.textured.positions.len());
-        mesh.cutaway_links.push((cutaway_start, textured_start));
+            .push(cutaway_start..mesh.solid.positions.len());
+        if mesh.textured.positions.len() > textured_start {
+            mesh.textured
+                .cutaway_ranges
+                .push(textured_start..mesh.textured.positions.len());
+            mesh.cutaway_links.push((cutaway_start, textured_start));
+        }
     }
     for i in p.indices(g.width) {
         claimed[i] = true;
@@ -323,6 +429,182 @@ pub(super) fn append(
         }
     }
     true
+}
+fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], sy: f32) {
+    let [w, e, n, s] = b;
+    // Fit in the rotated axes first: long return runs must keep the same
+    // countertop depth and panel orientation as the shorter store counters.
+    let bounds = match asset {
+        Asset::CounterNorth => [-e, -w, -s, -n],
+        Asset::CounterWest => [n, s, -e, -w],
+        _ => b,
+    };
+    let first = out.positions.len();
+    asset.model().append_fitted(out, bounds, 0., 10. * sy);
+    asset.model().apply_room_finish(out,first);
+    let rotate = |[x, y, z]: [f32; 3]| match asset {
+        Asset::CounterNorth => [-x, y, -z],
+        Asset::CounterWest => [-z, y, x],
+        _ => [x, y, z],
+    };
+    for point in &mut out.positions[first..] {
+        *point = rotate(*point);
+    }
+    for (normal, color) in out.normals[first..]
+        .iter_mut()
+        .zip(&mut out.colors[first..])
+    {
+        let old =
+            crate::interior_models::authored_face_color([1.; 4], Vec3::from_array(*normal))[0];
+        *normal = rotate(*normal);
+        let new =
+            crate::interior_models::authored_face_color([1.; 4], Vec3::from_array(*normal))[0];
+        for channel in &mut color[..3] {
+            *channel *= new / old;
+        }
+    }
+}
+fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f32) {
+    let [w, e, n, s] = b;
+    let top = 0.14 * sy;
+    let metal = [0.48, 0.55, 0.56, 1.0];
+    for (points, normal) in [
+        (
+            [[w, top, n], [w, top, s], [e, top, s], [e, top, n]],
+            [0., 1., 0.],
+        ),
+        (
+            [[w, 0., n], [e, 0., n], [e, 0., s], [w, 0., s]],
+            [0., -1., 0.],
+        ),
+        (
+            [[e, 0., n], [w, 0., n], [w, top, n], [e, top, n]],
+            [0., 0., -1.],
+        ),
+        (
+            [[w, 0., s], [e, 0., s], [e, top, s], [w, top, s]],
+            [0., 0., 1.],
+        ),
+        (
+            [[w, 0., n], [w, 0., s], [w, top, s], [w, top, n]],
+            [-1., 0., 0.],
+        ),
+        (
+            [[e, 0., s], [e, 0., n], [e, top, n], [e, top, s]],
+            [1., 0., 0.],
+        ),
+    ] {
+        let color = crate::interior_models::authored_face_color(metal, Vec3::from_array(normal));
+        append_solid_quad(out, points, normal, color);
+    }
+    // Recessed rail marks are paint on the thin tread, never raised obstacles.
+    for row in 1..4 {
+        let z = n + (s - n) * row as f32 / 4.;
+        append_solid_quad(
+            out,
+            [
+                [w + 0.7 * sx, top + 0.002 * sy, z],
+                [w + 0.7 * sx, top + 0.002 * sy, z + 0.2 * sy],
+                [e - 0.7 * sx, top + 0.002 * sy, z + 0.2 * sy],
+                [e - 0.7 * sx, top + 0.002 * sy, z],
+            ],
+            [0., 1., 0.],
+            crate::interior_models::authored_face_color([0.25, 0.31, 0.32, 1.], Vec3::Y),
+        );
+    }
+}
+
+// A mechanical register, with a cash drawer, sloping keypad and receipt hood.
+// The west-facing controls face the clerk inside the U-shaped service counter.
+fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f32) {
+    let [w, e, n, s] = b;
+    let point = |x: f32, y: f32, z: f32| [w + (e - w) * x / 16., y * sy, n + (s - n) * z / 16.];
+    let mut prism =
+        |x0: f32, x1: f32, z0: f32, z1: f32, base: f32, lo: f32, hi: f32, color: [f32; 4]| {
+            let v = [
+                point(x0, base, z0),
+                point(x1, base, z0),
+                point(x1, base, z1),
+                point(x0, base, z1),
+                point(x0, lo, z0),
+                point(x1, hi, z0),
+                point(x1, hi, z1),
+                point(x0, lo, z1),
+            ];
+            for ids in [
+                [4, 7, 6, 5],
+                [0, 1, 2, 3],
+                [1, 0, 4, 5],
+                [3, 2, 6, 7],
+                [0, 3, 7, 4],
+                [2, 1, 5, 6],
+            ] {
+                let q = ids.map(|i| v[i]);
+                let normal = (Vec3::from_array(q[1]) - Vec3::from_array(q[0]))
+                    .cross(Vec3::from_array(q[2]) - Vec3::from_array(q[0]))
+                    .normalize();
+                append_solid_quad(
+                    out,
+                    q,
+                    normal.to_array(),
+                    crate::interior_models::authored_face_color(color, normal),
+                );
+            }
+        };
+    prism(2., 14., 2., 14., 10., 10.9, 10.9, [0.25, 0.28, 0.29, 1.]);
+    prism(
+        2.6,
+        13.4,
+        2.6,
+        13.4,
+        10.9,
+        11.25,
+        13.3,
+        [0.56, 0.60, 0.61, 1.],
+    );
+    // Actual raised keys sit on the slope; the drawer handle faces the clerk.
+    for x in 0..3 {
+        for z in 0..4 {
+            let a = 4. + x as f32 * 1.9;
+            let c = 3.4 + z as f32 * 2.25;
+            let height = 11.25 + (a - 2.6) * 2.05 / 10.8;
+            prism(
+                a,
+                a + 1.25,
+                c,
+                c + 1.5,
+                height,
+                height + 0.30,
+                height + 0.30 + 1.25 * 2.05 / 10.8,
+                if z == 3 {
+                    [0.72, 0.27, 0.21, 1.]
+                } else {
+                    [0.16, 0.20, 0.22, 1.]
+                },
+            );
+        }
+    }
+    prism(1.8, 2.3, 6., 10., 10.3, 10.6, 10.6, [0.77, 0.69, 0.44, 1.]);
+    prism(
+        10.5,
+        13.2,
+        4.,
+        11.5,
+        12.7,
+        14.1,
+        14.1,
+        [0.28, 0.32, 0.33, 1.],
+    );
+    prism(
+        10.15,
+        10.6,
+        4.8,
+        10.7,
+        13.9,
+        14.45,
+        14.45,
+        [0.96, 0.87, 0.66, 1.],
+    );
 }
 #[cfg(test)]
 mod tests {

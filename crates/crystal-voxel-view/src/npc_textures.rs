@@ -22,7 +22,15 @@ pub(crate) fn decode(bytes: &[u8]) -> Result<Texture, String> {
 }
 
 pub(crate) fn install(textures: BTreeMap<String, Texture>) -> Result<(), String> {
+    require_complete(&textures)?;
     TEXTURES.set(textures).map_err(|_| "NPC textures frozen; restart to refresh".into())
+}
+pub(crate) fn require_complete(textures: &BTreeMap<String, Texture>) -> Result<(), String> {
+    let missing: Vec<_> = crate::open_people::npc_texture_names().into_iter()
+        .filter(|name| !textures.contains_key(*name)).collect();
+    if missing.is_empty() { Ok(()) } else {
+        Err(format!("required character paintings missing: {}", missing.join(", ")))
+    }
 }
 pub(crate) fn frozen() -> bool { TEXTURES.get().is_some() }
 pub(crate) fn get(name: &str) -> Option<&'static Texture> {
@@ -30,15 +38,23 @@ pub(crate) fn get(name: &str) -> Option<&'static Texture> {
         #[allow(unused_mut)]
         let mut out = BTreeMap::new();
         #[cfg(not(target_arch = "wasm32"))]
-        if let Some(root) = std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT") {
+        {
+            let root = crate::open_people::model_root();
             use std::io::Read;
             for name in crate::open_people::npc_texture_names() {
                 let path = std::path::PathBuf::from(&root).join(format!("people/npc-textures/{name}.png"));
-                let Ok(file) = std::fs::File::open(path) else { continue; };
+                let file = match std::fs::File::open(&path) {
+                    Ok(file) => file,
+                    Err(error) => panic!("read character painting {}: {error}", path.display()),
+                };
                 let mut bytes = Vec::new();
-                if file.take(4 * 1024 * 1024 + 1).read_to_end(&mut bytes).is_ok() {
-                    if let Ok(texture) = decode(&bytes) { out.insert(name.into(), texture); }
-                }
+                file.take(4 * 1024 * 1024 + 1).read_to_end(&mut bytes)
+                    .unwrap_or_else(|error| panic!("read character painting {}: {error}", path.display()));
+                // A supplied painting must never silently revert to the old
+                // source face when the file is corrupt or incompatible.
+                let texture = decode(&bytes)
+                    .unwrap_or_else(|error| panic!("invalid character painting {}: {error}", path.display()));
+                out.insert(name.into(), texture);
             }
         }
         out
@@ -60,6 +76,17 @@ pub fn normalize_npc_texture(bytes: &[u8]) -> Result<Vec<u8>, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn incomplete_roster_cannot_install_and_full_roster_is_required_by_identity() {
+        let mut textures: BTreeMap<_, _> = crate::open_people::npc_texture_names().into_iter()
+            .map(|name| (name.to_owned(), Texture { size: (1,1), rgba: vec![0,0,0,255] })).collect();
+        assert!(require_complete(&textures).is_ok());
+        let missing = textures.remove("will").unwrap();
+        textures.insert("unrecognized_role".into(), missing);
+        assert_eq!(require_complete(&textures).unwrap_err(), "required character paintings missing: will");
+        // Invalid input must fail before publishing the one-time cache.
+        assert!(install(textures).unwrap_err().contains("will"));
+    }
     fn png(width: u32, height: u32) -> Vec<u8> {
         use image::ImageEncoder;
         let pixels = [42, 91, 173, 255].repeat((width * height) as usize);

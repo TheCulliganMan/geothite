@@ -77,10 +77,14 @@ impl Kind {
 }
 #[derive(Deserialize)]
 struct Export {
+    #[serde(default)]
+    name: String,
     primitives: Vec<Primitive>,
 }
 #[derive(Deserialize)]
 struct Primitive {
+    #[serde(default)]
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -117,6 +121,7 @@ impl Model {
                 return Err("invalid dungeon primitive".into());
             }
             let base = surface.positions.len() as u32;
+            let index_start = surface.indices.len();
             for v in p.positions.chunks_exact(3) {
                 let v = [v[0], v[1], v[2]];
                 for a in 0..3 {
@@ -140,7 +145,17 @@ impl Model {
             surface
                 .indices
                 .extend(p.indices.into_iter().map(|i| i + base));
+            if !crate::roof_tiles::refine(&mut surface, base as usize, index_start, &p.material) {
+                crate::scenery_finish::refine(
+                    &mut surface,
+                    base as usize,
+                    index_start,
+                    &p.material,
+                    &export.name,
+                );
+            }
         }
+        crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|a| !min[a].is_finite() || !max[a].is_finite() || max[a] - min[a] <= 1e-6) {
             return Err("dungeon model must have volume".into());
         }
@@ -322,11 +337,12 @@ mod tests {
             let m = model(kind);
             assert!(m.surface.indices.len() / 3 >= 24, "{kind:?}");
             assert!(m.surface.indices.len() / 3 < 8000, "{kind:?}");
-            assert!(m
-                .surface
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4));
+            assert!(
+                m.surface
+                    .normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
+            );
             assert_eq!(m.surface.positions.len(), m.surface.colors.len());
             assert_eq!(m.surface.positions.len(), m.surface.uvs.len());
         }
@@ -341,10 +357,11 @@ mod tests {
                 assert!(p[1] >= 2.999 && p[1] <= 22.001);
                 assert!(p[2] >= -5.001 && p[2] <= 2.001);
             }
-            assert!(mesh
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4));
+            assert!(
+                mesh.normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
+            );
         }
     }
     #[test]
@@ -356,11 +373,11 @@ mod tests {
 
 #[path = "dungeon_extension_models.rs"]
 mod extension;
-pub(crate) use extension::{extension_model, ExtensionKind};
+pub(crate) use extension::{ExtensionKind, extension_model};
 
 #[path = "special_room_models.rs"]
 mod special_rooms;
-pub(crate) use special_rooms::{room_model, RoomAsset};
+pub(crate) use special_rooms::{RoomAsset, room_model};
 
 #[path = "gym_scenery_models.rs"]
 mod gym_scenery;
@@ -410,14 +427,16 @@ mod ship_wall_height_tests {
                     .abs()
                     < 0.0001
             );
-            assert!(tall
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.0001));
-            assert!(tall
-                .colors
-                .iter()
-                .all(|c| c[3] == 1. && c.iter().all(|v| v.is_finite())));
+            assert!(
+                tall.normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.0001)
+            );
+            assert!(
+                tall.colors
+                    .iter()
+                    .all(|c| c[3] == 1. && c.iter().all(|v| v.is_finite()))
+            );
         }
     }
 }

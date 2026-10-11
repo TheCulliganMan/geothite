@@ -9,6 +9,15 @@ exec(compile(source.split('\nbuilders=')[0], 'exterior_modeling_vocabulary', 'ex
 # operators across thousands of independently editable architectural parts.
 import bmesh
 from mathutils import Matrix
+for n,c in {
+ 'park_frame':(.065,.075,.085),
+ 'park_slats_light':(.61,.64,.63),
+ 'park_slats':(.48,.52,.53),
+}.items():
+ m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
+ m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1)
+ m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.82
+ MATS[n]=m
 def cube(n,loc,dim,mat,bevel=0):
  bm=bmesh.new();bmesh.ops.create_cube(bm,size=1)
  bmesh.ops.scale(bm,vec=Vector(dim),verts=list(bm.verts))
@@ -333,11 +342,11 @@ def nature(name,kind):
   for x in [-.61,.61]:ico('Sign brass fixing',(x,-.147,1.20),(.033,.024,.033),'yellow',1)
  elif kind=='bench':
   for x in [-.70,.70]:
-   for y in [-.38,.36]:cube('Bench cast leg',(x,y,.37),(.12,.13,.73),'stone_dark',.015)
-   rod('Bench back support',(x,.35,.4),(x,.47,1.37),.052,'stone_dark',6)
-  for y in [-.36,-.12,.12,.36]:cube('Bench seat plank',(0,y,.74),(1.88,.17,.11),'timber_gold',.017)
-  for z in [1.00,1.22,1.44]:cube('Bench back plank',(0,.44,z),(1.92,.10,.15),'timber_light',.019)
-  for x in [-.82,.82]:cube('Bench armrest',(x,-.02,1.03),(.11,.84,.09),'stone_dark',.02)
+   for y in [-.38,.36]:cube('Bench cast leg',(x,y,.37),(.12,.13,.73),'park_frame',.015)
+   rod('Bench back support',(x,.35,.4),(x,.47,1.37),.052,'park_frame',6)
+  for y in [-.36,-.12,.12,.36]:cube('Bench seat plank',(0,y,.74),(1.88,.17,.11),'park_slats_light',.017)
+  for z in [1.00,1.22,1.44]:cube('Bench back plank',(0,.44,z),(1.92,.10,.15),'park_slats',.019)
+  for x in [-.82,.82]:cube('Bench armrest',(x,-.02,1.03),(.11,.84,.09),'park_frame',.02)
  elif kind=='fence':
   for x in [-.85,.85]:
    cube('Fence squared post',(x,0,.60),(.20,.22,1.2),'timber_light',.025)

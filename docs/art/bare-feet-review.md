@@ -1,0 +1,9 @@
+# Swimmer foot shape review — 2026-10-11
+
+Both swimmer production models now use reshaped, skin-mapped connected feet instead of the painted sneaker island and shoe palette. The surface retains its ankle ring and floor-contact heights, narrows the heel, lowers the forefoot, and adds five shallow toe contours. Rounding keeps the foot connected to the original weighted ankle surface. Normals are recalculated across coincident UV seams after the shape change.
+
+The fresh production reviewer build passed. The supplied-rig/painting foot regression passed for both swimmers: skin pixels on referenced foot surfaces, real position changes, finite normalized normals and weights, preserved original influences, pinned ankle positions, and unchanged floor-contact heights. The existing four-rig shoe/sole/ankle regression also passed. Verification logs are external under `/Users/ryanculligan/.codex/artifacts/anime-character-review/pending-model-review/`.
+
+Four-angle Idle, Run 0.125, and Run 0.625 captures for both swimmers were each individually inspected: six images, twenty-four views. Captures are in `captures/bare-feet-idle/`, `captures/bare-feet-run125/`, and `captures/bare-feet-run625/`. White sneaker artwork is absent and both feet stay attached in those sampled poses. The images use the production mesh through the reviewer's image target, not an in-game window.
+
+The feet are not approved as final anatomy. Idle still reveals a shelf-like heel/sole silhouette inherited from the source volume; the arch and toe separation need clearer shaping. Small dark heel patches and angular ankle transitions remain. Running reads more clearly as bare feet, but those remaining defects prevent final approval. The swimsuit lip, hands, armpits, torso anatomy, goggles, face/nape surfaces, and in-game context review are also still open. The complete player/NPC roster goal remains unchanged.

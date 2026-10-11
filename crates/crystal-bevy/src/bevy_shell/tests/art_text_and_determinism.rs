@@ -46,12 +46,12 @@ fn wooper_frontpic_retains_black_outline_like_typescript_renderer() {
     .expect("load Wooper front art");
     let image = images.get(&frame.handle).expect("Wooper image");
     let black_outline_pixels = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] == 255 && pixel[0] < 24 && pixel[1] < 24 && pixel[2] < 24)
         .count();
     let transparent_background_pixels = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] == 0)
         .count();
@@ -78,12 +78,12 @@ fn emote_art_keys_its_corner_color_transparent_like_typescript_renderer() {
         .expect("load shock emote art");
     let image = images.get(&frame.handle).expect("shock emote image");
     let transparent_pixels = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] == 0)
         .count();
     let visible_pixels = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] != 0)
         .count();
@@ -176,11 +176,11 @@ fn battle_player_backpic_keys_palette_zero_transparent() {
     let image = images.get(&frame.handle).expect("Chris battle backpic image");
 
     assert!(
-        image.data.chunks_exact(4).any(|pixel| pixel[3] == 0),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|pixel| pixel[3] == 0),
         "battle backpic background must reveal the battle canvas"
     );
     assert!(
-        image.data.chunks_exact(4).any(|pixel| pixel[3] == 255),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|pixel| pixel[3] == 255),
         "battle backpic artwork must remain visible"
     );
 }
@@ -897,7 +897,7 @@ fn source_font_ink_is_black_in_both_png_and_2bpp_paths() {
     let png = bitmap_font_tile_handle(&source, 0, 1, &mut images).unwrap();
     let planar = bitmap_font_2bpp_tile_handle(&[255; 16], 0, &mut images).unwrap();
     for handle in [png, planar] {
-        assert!(images.get(&handle).unwrap().data.chunks_exact(4)
+        assert!(images.get(&handle).unwrap().data.as_ref().expect("CPU image pixels").chunks_exact(4)
             .all(|pixel| pixel == [0, 0, 0, 255]));
     }
 }
@@ -976,15 +976,10 @@ fn assert_fullscreen_nickname_dialogue_layout(mut world: World) {
     runtime.title_menu = None;
     runtime.intro_screen = None;
     let mut app = App::new();
-    let mut surfaces = world.query::<(&Sprite, &Transform, &Handle<Image>,
+    let mut surfaces = world.query::<(&Sprite, &Transform,
         Option<&SceneDialogMarker>, Option<&BattleCommandMarker>)>();
-    for (sprite, transform, texture, dialogue, battle) in surfaces.iter(&world) {
-        let mut entity = app.world_mut().spawn(SpriteBundle {
-            sprite: sprite.clone(),
-            transform: *transform,
-            texture: texture.clone(),
-            ..default()
-        });
+    for (sprite, transform, dialogue, battle) in surfaces.iter(&world) {
+        let mut entity = app.world_mut().spawn((sprite.clone(), *transform));
         if dialogue.is_some() { entity.insert(SceneDialogMarker); }
         if battle.is_some() { entity.insert(BattleCommandMarker); }
     }
@@ -997,23 +992,23 @@ fn assert_fullscreen_nickname_dialogue_layout(mut world: World) {
         })
         .add_systems(Startup, setup_fullscreen_scene)
         .add_systems(PostUpdate, sync_fullscreen_world_layout
-            .before(bevy::transform::TransformSystem::TransformPropagate));
+            .before(bevy::transform::TransformSystems::Propagate));
     app.world_mut().spawn((Window {
-        resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+        resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
         ..default()
     }, bevy::window::PrimaryWindow));
     for (width, height) in [(1920.0, 1080.0), (390.0, 430.0), (640.0, 576.0)] {
         let world = app.world_mut();
-        world.query::<&mut Window>().single_mut(world).resolution.set(width, height);
+        world.query::<&mut Window>().single_mut(world).unwrap().resolution.set(width, height);
         app.update();
         let world = app.world_mut();
         let (root, offset) = world.query_filtered::<(Entity, &Transform), With<FullscreenDialogRoot>>()
-            .single(world);
+            .single(world).unwrap();
         let offset = offset.translation;
-        let mut surfaces = world.query_filtered::<(&Transform, &GlobalTransform, Option<&Parent>),
+        let mut surfaces = world.query_filtered::<(&Transform, &GlobalTransform, Option<&ChildOf>),
             Or<(With<SceneDialogMarker>, With<BattleCommandMarker>)>>();
         for (local, global, parent) in surfaces.iter(world) {
-            assert_eq!(parent.map(Parent::get), Some(root), "every nickname surface must follow the dialogue root");
+            assert_eq!(parent.map(ChildOf::parent), Some(root), "every nickname surface must follow the dialogue root");
             assert!((global.translation() - local.translation - offset).length() < 0.001,
                 "frame and glyphs must receive exactly the same viewport translation");
         }

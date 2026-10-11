@@ -326,7 +326,7 @@ fn mesh_clearance(runtime: &CrystalRuntime, map: &str) -> Result<Value> {
     use bevy::{
         prelude::{Assets, Handle, Image, UVec2, Vec2},
         render::{
-            render_asset::RenderAssetUsages,
+            asset::RenderAssetUsages,
             render_resource::{Extent3d, TextureDimension, TextureFormat},
         },
     };

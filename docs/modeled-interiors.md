@@ -111,6 +111,50 @@ was rendered and visually inspected after all 66 assets were exported.
 
 ## Source-proven surface finish and room backing
 
+The enhanced room-floor pass also finishes the complete four-tile arcade
+checker pattern, Sprout Tower's three floors, and the verified timber/stone
+floor strips in Cianwood, Ecruteak, Pewter and Violet Gyms. Sparse source phase
+masks leave invisible paths, pits, warp carpets and animated pillar artwork
+intact. The verified tower depth fields receive dark timber while remaining
+horizontal at their existing datum. Custom floor profiles retain ownership. These finishes
+preserve every support height and earn no modeled-object claims. Run
+`python3 tools/check-enhanced-room-floor.py --pack content-packs/core-modular.browser.crystalpack`
+to check native floor identities against the external pack's FLOOR quadrants
+and separately verify the intentional blocked depth fields.
+
+All eight Sprout Tower 2×2 ladder drawings, including the two northeast corner
+variants, now have original timber rails and
+seven rungs. Upward ladders stand at the north of their plot; downward ladders
+sit in an open recessed well. Source identity, complete drawing, ground and
+map scope are checked before reserving four cells. This geometry preserves
+support and uses the existing warp/controller path. The production audit adds
+exactly 32 ladder cells. A native 1F-to-2F ladder transition passes; further
+routes remain to be checked. The swaying central pillar still requires an
+animation-aware model.
+
+Game Corner row banks fit two individual arcade cabinets back to back, with
+screens and controls facing the west and east stools. The quarter-turns fit
+before rotation and rotate normals too; source claims and ground stay intact.
+Cianwood Gym's static tower-atlas boulders now share Pewter's complete 2×2 rock
+replacement. Movable Strength boulders retain the existing actor renderer and
+gameplay state; altered or partial static drawings retain the native fallback.
+Casino stools now fit a 10px seat diameter inside each 16px source plot.
+The north service areas use complete-source shelves, payout workstations,
+connected counter pieces and wall panels, including the Celadon Prize Room.
+Cianwood and Ecruteak perimeter strips use standing timber walls, matching their
+partition kit; both rear guardian statues and their adjacent wall halves are
+modeled in each Gym. Ecruteak’s rear corner strips retain the invisible-path
+puzzle’s exact floor drawings and support. Reserved source cells, partial
+strips and altered source artwork fall back without a partial replacement.
+The four targeted Gym regressions and packed room-floor checks pass; native
+views verify both timber Gym layouts. Ecruteak’s audit records 96 perimeter
+cells and only floor/dark-puzzle identities left native.
+All replacements leave support and custom profile ownership intact.
+The targeted production audit leaves only floor/entry-carpet identities in
+Goldenrod Game Corner, Celadon Game Corner and its Prize Room, and Cianwood
+Gym. Native views verify these base layouts; this is not a dynamic-state or
+whole-game gameplay certification. The remaining Gym and tower queue stays open.
+
 Call `modeled_interiors::finish_surfaces(mesh, map, original_cells, geometry,
 world_grid_origin)` at the end of terrain assembly. It returns the number of
 finished native-floor quads. It intentionally leaves `authored_cells` untouched:
@@ -140,3 +184,15 @@ Two source-reviewed civic refinements complete the 68-asset checkpoint: a radio
 equipment rack with tape reels, scope display and controls; and a Battle Tower
 reception counter with a workstation and visitor writing pad. Center wall
 displays preserve their actual contents in separately modeled frames.
+
+The requested palette pass retains native room charm: department-store floors
+use a continuous warm ceramic grid, windows are blue, and seating is raised pink
+upholstery on a frame. Arcade checker
+floors keep their cream outlines, dark border and grey inset at the original
+16px phase; slot cabinet enamel is pink with gold trim. These are scoped room
+finishes, preserve support and source claims, and avoid changing unrelated
+rooms that share the same models. Native arcade views verify the pink/gold checker-room palette. The revised Goldenrod 1F native view confirms even ceramic spacing and
+raised seats with visible frames/legs. Creative liberties are acceptable; room
+quality, proportions and a coherent finished scene remain required.
+Four enhanced floor and slot orientation/seat regressions pass. Full room
+completion still requires the remaining architecture and interaction review.

@@ -274,7 +274,7 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         let mut tiles =
             world.query_filtered::<Entity, (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>();
         tiles
-            .get_single(world)
+            .single(world)
             .expect("overworld should have one retained playfield entity before movement")
     };
 
@@ -321,7 +321,7 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         world.query_filtered::<Entity, (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>();
     assert_eq!(
         tiles
-            .get_single(world)
+            .single(world)
             .expect("overworld should retain one playfield entity after movement"),
         initial_playfield_entity,
         "walking must update the active LCD texture in place instead of exposing a blank frame between despawn and respawn"
@@ -456,9 +456,9 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
             "TypeScript/ASM Player PC action window must be 16x13 tiles"
         );
         let mut glyphs = world
-            .query::<(&DialogGlyphMarker, &Handle<Image>)>()
+            .query::<(&DialogGlyphMarker, &Sprite)>()
             .iter(world)
-            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.id())))
+            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.image.id())))
             .collect::<Vec<_>>();
         glyphs.sort();
         glyphs
@@ -478,9 +478,9 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
     let rendered_after = {
         let world = app.world_mut();
         let mut glyphs = world
-            .query::<(&DialogGlyphMarker, &Handle<Image>)>()
+            .query::<(&DialogGlyphMarker, &Sprite)>()
             .iter(world)
-            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.id())))
+            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.image.id())))
             .collect::<Vec<_>>();
         glyphs.sort();
         glyphs
@@ -1428,7 +1428,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                     let has_map_surface = {
                         let world = app.world_mut();
                         world
-                            .query::<(&Handle<Image>, &Transform)>()
+                            .query::<(&Sprite, &Transform)>()
                             .iter(world)
                             .any(|(_, transform)| {
                                 (transform.translation.z - 3.4).abs() < f32::EPSILON
@@ -1442,12 +1442,12 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                 let presented_handle = {
                     let world = app.world_mut();
                     let handles = world
-                        .query::<(&Handle<Image>, &Transform)>()
+                        .query::<(&Sprite, &Transform)>()
                         .iter(world)
                         .filter(|(_, transform)| {
                             (transform.translation.z - 3.4).abs() < f32::EPSILON
                         })
-                        .map(|(handle, _)| handle.clone())
+                        .map(|(sprite, _)| sprite.image.clone())
                         .collect::<Vec<_>>();
                     let images = world.resource::<Assets<Image>>();
                     handles
@@ -1456,7 +1456,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                         .max_by_key(|handle| {
                             images
                                 .get(handle)
-                                .map(|image| image.data.len())
+                                .map(|image| image.data.as_ref().expect("CPU image pixels").len())
                                 .unwrap_or_default()
                         })
                         .expect("TownMapScript must render a Town Map field surface")
@@ -1467,7 +1467,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                     .get(&presented_handle)
                     .expect("live town-map presenter image");
                 let distinct_colors = image
-                    .data
+                    .data.as_ref().expect("CPU image pixels")
                     .chunks_exact(4)
                     .map(|pixel| [pixel[0], pixel[1], pixel[2], pixel[3]])
                     .collect::<std::collections::HashSet<_>>();
@@ -1707,7 +1707,7 @@ fn trainer_card_border_uses_the_asm_opposite_gender_palette() {
         .expect("render trainer card");
         let image = images.get(&frame.handle).expect("trainer-card image");
 
-        assert_eq!(&image.data[0..4], &expected, "gender {gender}");
+        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[0..4], &expected, "gender {gender}");
     }
 }
 
@@ -3055,8 +3055,8 @@ fn integrated_title_mystery_gift_entry_requires_unlocked_save() {
 
 fn save_live_pc_dialog_for_test(world: &mut World, name: &str) {
     let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else { return; };
-    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>), With<SceneDialogMarker>>()
-        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+    let sprites = world.query_filtered::<(&Sprite, &Transform), With<SceneDialogMarker>>()
+        .iter(world).map(|(sprite, transform)| (sprite.clone(), *transform))
         .collect::<Vec<_>>();
     let mut dialog = World::new();
     for sprite in sprites { dialog.spawn(sprite); }

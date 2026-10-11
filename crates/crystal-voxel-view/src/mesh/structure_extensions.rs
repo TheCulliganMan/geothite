@@ -141,6 +141,7 @@ pub(super) fn append_building(
     g: &GridGeometry,
     p: BuildingPlacement,
     claimed: &mut [bool],
+    map_origin: [i32; 2],
 ) -> bool {
     let Some(kind) = identify(cells, g, p) else {
         return false;
@@ -209,30 +210,23 @@ pub(super) fn append_building(
             Kind::TowerForecourt.label()
         }
         Structure::Ice => {
-            // Preserve legacy support exactly, including its narrow-island
-            // zero datum. We intentionally do not amend collision or support.
-            let base = if is_complete_rock_formation(cells, g, p) {
-                0.
-            } else {
-                -2. * u
-            };
+            // Every validated shelf shares one raised datum. Width must not
+            // lower a narrow formation while its wider neighbor stays raised.
+            let base = 0.;
+            let mut blocks = Vec::new();
             for by in 0..2 {
                 for bx in 0..p.width / 4 {
                     let id = cells[(p.row + by * 4) * g.width + p.column + bx * 4]
-                        .source
-                        .metatile_id;
-                    let model_kind = ice_kind(id).expect("validated shelf art");
-                    append_grid_model(
-                        &mut mesh.solid,
-                        model_kind,
-                        [
-                            b[0] + (bx * 4 + 2) as f32 * g.tile_width,
-                            b[2] + (by * 4 + 2) as f32 * u,
-                        ],
-                        base,
-                        [g.tile_width, u],
-                    );
+                        .source.metatile_id;
+                    blocks.push((id, [b[0] + (bx * 4 + 2) as f32 * g.tile_width,
+                        b[2] + (by * 4 + 2) as f32 * u]));
                 }
+            }
+            let contour = ice_shelf::contour(&blocks, g);
+            for (id, center) in blocks {
+                let model_kind = ice_kind(id).expect("validated shelf art");
+                ice_shelf::append(&mut mesh.solid, model_kind, id, center, base, g,
+                    map_origin, &contour);
             }
             "world-exterior/connected_ice_shelf"
         }
@@ -472,7 +466,7 @@ mod tests {
         assert_eq!(ice_kind(0x13), None);
     }
     #[test]
-    fn authored_structure_keeps_exact_legacy_footing_and_has_no_partial_claims() {
+    fn complete_ice_shelves_share_one_footing_datum_and_have_no_partial_claims() {
         for rows in [
             &[&[0x04, 0x06][..], &[0x10, 0x3a][..]][..],
             &[&[0x04, 0x05, 0x06][..], &[0x0c, 0x12, 0x0e][..]][..],
@@ -484,10 +478,10 @@ mod tests {
             m.authored_cells = vec![None; tiles.len()];
             let mut claimed = vec![false; tiles.len()];
             let shapes = vec![CellShape::Flat; tiles.len()];
-            assert!(append_building(&mut m, &refs, &shapes, &g, p, &mut claimed));
+            assert!(append_building(&mut m, &refs, &shapes, &g, p, &mut claimed, [0, 0]));
             for y in 0..g.height {
                 for x in 0..g.width {
-                    let expected = if p.width >= 12 && y < p.roof_rows {
+                    let expected = if y < p.roof_rows {
                         16.
                     } else {
                         0.
@@ -504,7 +498,8 @@ mod tests {
                 &shapes,
                 &g,
                 p,
-                &mut claimed
+                &mut claimed,
+                [0, 0]
             ));
             assert_eq!(m.solid.indices.len(), count);
         }

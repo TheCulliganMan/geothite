@@ -5,7 +5,8 @@ use crystal_render_api::VisualTileSource;
 pub(crate) const GROUND_TILE: u16 = 0x53;
 
 pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {
-    if map_id != "OlivineGym" || source.tileset_id.as_ref() != "champions_room" {
+    if map_id != "OlivineGym" || source.tileset_id.as_ref() != "champions_room"
+        || source.subtile_column >= 4 || source.subtile_row >= 4 {
         return None;
     }
     let local_column = match source.metatile_id {
@@ -20,13 +21,16 @@ pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u
 
 pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if source.tileset_id.as_ref() != "champions_room"
-        || !matches!(
-            source.metatile_id,
-            0x11 | 0x13 | 0x16 | 0x18 | 0x19 | 0x25 | 0x26 | 0x2a
-        )
+        || source.subtile_column >= 4 || source.subtile_row >= 4
     {
         return None;
     }
+    let mask:u16=match source.metatile_id {
+        0x11=>0x33ff,0x13=>0xccff,0x16=>0xff00,
+        0x18|0x26=>0x3333,0x19|0x25=>0xcccc,0x2a=>0xffff,
+        _=>return None,
+    };
+    if mask & (1<<(source.subtile_row*4+source.subtile_column))==0 { return None; }
     let local_column = source.subtile_column % 2;
     let local_row = source.subtile_row % 2;
     let expected = match (local_column, local_row) {
@@ -53,6 +57,16 @@ mod tests {
             subtile_row: row,
             tile_index: tile,
         }
+    }
+
+    #[test]
+    fn source_phase_rejects_rocks_in_native_floor_and_invalid_statue_rows() {
+        for (x,y,tile) in [(2,2,0x46),(3,2,0x47),(2,3,0x56),(3,3,0x57)] {
+            assert_eq!(boulder_local(&source(0x11,x,y,tile)),None);
+        }
+        assert_eq!(boulder_local(&source(0x25,0,0,0x46)),None,"pillar half is not a rock plot");
+        assert_eq!(boulder_local(&source(0x11,4,0,0x46)),None);
+        assert_eq!(statue_local("OlivineGym",&source(0x1a,0,4,0x2e)),None);
     }
 
     #[test]

@@ -60,7 +60,7 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         player_moved: false,
         capture_steps,
     })
-    .add_systems(PreUpdate, drive.after(bevy::input::InputSystem));
+    .add_systems(PreUpdate, drive.after(bevy::input::InputSystems));
     Ok(())
 }
 
@@ -71,7 +71,7 @@ fn drive(
     frame: Res<crystal_render_api::VisualWorldFrame>,
     time: Res<Time<Real>>,
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
-    mut screenshots: ResMut<ScreenshotManager>,
+    mut commands: Commands,
 ) {
     if walk.finished {
         walk.settle += 1;
@@ -129,7 +129,7 @@ fn drive(
         walk.player_bounds = Some((low, high));
     }
     keyboard.press(walk.route[segment]);
-    let dt = time.delta_seconds_f64() * 1000.0;
+    let dt = time.delta_secs_f64() * 1000.0;
     walk.times.push(dt);
     walk.maps.insert(frame.map_id.to_string());
     walk.origins
@@ -144,18 +144,16 @@ fn drive(
         frame.center.y,
         status.terrain_builds,
         dt,
-        windows.get_single().is_ok_and(|(_, window)| window.focused)
+        windows.single().is_ok_and(|(_, window)| window.focused)
     );
     walk.trace.push_str(&line);
     if walk.capture_steps && walk.tick % 32 == 12 {
-        if let Ok((window, _)) = windows.get_single() {
+        if let Ok((window, _)) = windows.single() {
             let stem = walk.path.file_stem().unwrap().to_string_lossy();
             let path = walk
                 .path
                 .with_file_name(format!("{stem}-moving-{segment:02}.png"));
-            screenshots
-                .save_screenshot_to_disk(window, path)
-                .expect("capture moving frame");
+            commands.spawn(Screenshot::window(window)).observe(bevy::render::view::screenshot::save_to_disk(path));
         }
     }
     walk.tick += 1;

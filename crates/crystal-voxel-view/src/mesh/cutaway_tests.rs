@@ -1,5 +1,5 @@
 use super::*;
-use bevy::render::mesh::VertexAttributeValues;
+use bevy::mesh::VertexAttributeValues;
 
 fn triangle(offset: f32) -> SurfaceMeshData {
     SurfaceMeshData {

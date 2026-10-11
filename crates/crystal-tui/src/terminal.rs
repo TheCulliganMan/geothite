@@ -12,6 +12,7 @@ use ratatui::{
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TerminalAction {
     GameButton(GameButton),
+    RunDirection(GameButton),
     MoveSelection(isize),
     Wait,
     Refresh,
@@ -25,6 +26,18 @@ pub enum TerminalAction {
 pub fn map_key_event(event: KeyEvent, modal_selection: bool) -> TerminalAction {
     if event.modifiers.contains(KeyModifiers::CONTROL) && matches!(event.code, KeyCode::Char('c')) {
         return TerminalAction::Quit;
+    }
+    if !modal_selection && event.modifiers == KeyModifiers::SHIFT {
+        let direction = match event.code {
+            KeyCode::Up => Some(GameButton::Up),
+            KeyCode::Down => Some(GameButton::Down),
+            KeyCode::Left => Some(GameButton::Left),
+            KeyCode::Right => Some(GameButton::Right),
+            _ => None,
+        };
+        if let Some(direction) = direction {
+            return TerminalAction::RunDirection(direction);
+        }
     }
     match event.code {
         KeyCode::Char(':') => TerminalAction::BeginCommand,
@@ -253,6 +266,7 @@ impl TerminalUi {
         frame.render_widget(Clear, area);
         let text = [
             "ARROWS/WASD/HKL Move or choose",
+            "SHIFT + ARROWS  Run (B + direction)",
             "Z/J/SPACE       A · confirm · interact",
             "X/K/B/ESC       B · cancel",
             "ENTER           START",
@@ -328,6 +342,19 @@ mod tests {
     use super::*;
     use crossterm::event::KeyEventKind;
     use ratatui::{Terminal, backend::TestBackend};
+
+    #[test]
+    fn running_shoes_shift_arrows_send_a_chord_only_outside_menus() {
+        let event = KeyEvent::new(KeyCode::Right, KeyModifiers::SHIFT);
+        assert_eq!(
+            map_key_event(event, false),
+            TerminalAction::RunDirection(GameButton::Right)
+        );
+        assert_eq!(
+            map_key_event(event, true),
+            TerminalAction::GameButton(GameButton::Right)
+        );
+    }
 
     fn key(code: KeyCode) -> KeyEvent {
         KeyEvent::new_with_kind(code, KeyModifiers::NONE, KeyEventKind::Press)

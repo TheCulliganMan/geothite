@@ -2336,7 +2336,6 @@ fn sync_multiplayer_ghosts(
         (
             Entity,
             &mut MultiplayerGhost,
-            &mut Handle<Image>,
             &mut Sprite,
             &mut Transform,
         ),
@@ -2345,11 +2344,11 @@ fn sync_multiplayer_ghosts(
 ) {
     let Some(multiplayer) = multiplayer else {
         for (entity, ..) in &mut ghosts {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
         }
         return;
     };
-    let Ok(player_sprite) = player.get_single() else {
+    let Ok(player_sprite) = player.single() else {
         return;
     };
     let Some((start_x, start_y)) = rendered.viewport_origin else {
@@ -2364,9 +2363,9 @@ fn sync_multiplayer_ghosts(
     let camera_offset = visible_overworld_camera_offset(&rendered, &runtime_shell, 1.0);
     let mut retained = HashSet::new();
 
-    for (entity, mut ghost, mut texture, mut sprite, mut transform) in &mut ghosts {
+    for (entity, mut ghost, mut sprite, mut transform) in &mut ghosts {
         let Some(presence) = multiplayer.remote_presences.get(&ghost.user_id) else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
         let target_tile = TilePosition::new(presence.tile_x, presence.tile_y);
@@ -2374,7 +2373,7 @@ fn sync_multiplayer_ghosts(
             .then(|| runtime_tile_playfield_position(target_tile, start_x, start_y))
             .flatten()
         else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
         let target = Vec2::new(f32::from(presence.tile_x), f32::from(presence.tile_y));
@@ -2385,11 +2384,11 @@ fn sync_multiplayer_ghosts(
             ghost.display_tile = move_toward(
                 ghost.display_tile,
                 target,
-                3.75 * time.delta_seconds().min(0.1),
+                3.75 * time.delta_secs().min(0.1),
             );
         }
         let walking = ghost.display_tile.distance_squared(target) > 0.0001
-            && (time.elapsed_seconds() * 8.0) as u64 & 1 == 1;
+            && (time.elapsed_secs() * 8.0) as u64 & 1 == 1;
         let Some((frame, source_id, facing)) = multiplayer_ghost_frame(
             &snapshot,
             &runtime_shell,
@@ -2398,7 +2397,7 @@ fn sync_multiplayer_ghosts(
             &mut tileset_art,
             &mut images,
         ) else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
         let size = frame.size;
@@ -2406,11 +2405,11 @@ fn sync_multiplayer_ghosts(
         ghost.facing = facing;
         let (base_x, base_y) = remote_tile_playfield_position(ghost.display_tile, start_x, start_y);
         let Some(_) = player_sprite.custom_size else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
         let (x, y) = overworld_sprite_position_from_base(base_x, base_y, size);
-        *texture = frame.handle;
+        sprite.image = frame.handle;
         sprite.custom_size = Some(size);
         sprite.color = multiplayer_ghost_color();
         sprite.flip_x = false;
@@ -2445,21 +2444,17 @@ fn sync_multiplayer_ghosts(
         };
         let (x, y) = overworld_sprite_position_from_base(base_x, base_y, frame.size);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     color: multiplayer_ghost_color(),
                     flip_x: false,
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     x + camera_offset.x,
                     y + camera_offset.y,
                     overworld_entity_depth(tile, None, (start_x, start_y)) + 0.000_000_1,
-                ),
-                ..default()
-            },
+                ),),
             MultiplayerGhost {
                 user_id: user_id.clone(),
                 display_tile: Vec2::new(f32::from(presence.tile_x), f32::from(presence.tile_y)),

@@ -219,7 +219,7 @@ fn apply_player_customization(
     time: Res<Time>,
     mut elapsed: Local<f32>,
 ) {
-    *elapsed += time.delta_seconds();
+    *elapsed += time.delta_secs();
     let urgent =
         CUSTOMIZATION.with_borrow(|bridge| bridge.request_open || bridge.pending.is_some());
     if !urgent && *elapsed < 0.1 {

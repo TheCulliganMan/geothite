@@ -33,81 +33,62 @@ fn required_visible_deterministic_session_checkpoint(
 }
 
 fn setup_shell_view(mut commands: Commands) {
-    // Begin with Camera2dBundle's specialized projection. Constructing an
-    // OrthographicProjection from its generic Default loses Bevy's 2D depth
+    // Begin with Camera2d's specialized projection. Constructing an
+    // OrthographicProjection with 3D defaults loses Bevy's 2D depth
     // range and culls every positive-z LCD sprite.
-    let mut camera = Camera2dBundle::default();
+    let mut projection = OrthographicProjection::default_2d();
     // Keep one complete 640x576 logical LCD visible at every host aspect and
     // scale its tiles/text with the browser viewport. Landscape windows gain
     // real horizontal world space for the optional 2.5D renderer, while
     // portrait windows gain vertical space instead of cropping the LCD.
-    camera.projection.scaling_mode = bevy::render::camera::ScalingMode::AutoMin {
+    projection.scaling_mode = bevy::camera::ScalingMode::AutoMin {
         min_width: 640.0,
         min_height: 576.0,
     };
-    commands.spawn((camera, MainCameraMarker));
+    commands.spawn((Camera2d, classic_pixel_art_msaa(), Projection::Orthographic(projection), MainCameraMarker));
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(0.0, 0.0, 0.0, 0.0),
                 custom_size: Some(Vec2::new(640.0, 576.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 100.0),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 100.0),),
         ScreenFadeOverlay,
     ));
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+
+// LoadPoisonBGPals replaces every CGB background color while
+// leaving OBJ palettes untouched. Keep this plane above the map
+// base but below every sorted overworld object; the priority BG
+// surface is hidden separately while the poison palette is live.
+(Sprite {
                 color: Color::srgba(230.0 / 255.0, 173.0 / 255.0, 1.0, 0.0),
                 custom_size: Some(Vec2::new(640.0, 576.0)),
                 ..default()
             },
-            // LoadPoisonBGPals replaces every CGB background color while
-            // leaving OBJ palettes untouched. Keep this plane above the map
-            // base but below every sorted overworld object; the priority BG
-            // surface is hidden separately while the poison palette is live.
-            transform: Transform::from_xyz(0.0, 0.0, 0.9),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 0.9),),
         PoisonFlashOverlay,
     ));
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(0.06, 0.08, 0.10, 0.0),
                 custom_size: Some(Vec2::new(612.0, 116.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, -222.0, 5.0),
-            ..default()
-        },
+Transform::from_xyz(0.0, -222.0, 5.0),),
         DialogPanel,
     ));
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(0.07, 0.09, 0.12, 0.0),
                 custom_size: Some(Vec2::new(302.0, 128.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(165.0, 216.0, 4.0),
-            ..default()
-        },
+Transform::from_xyz(165.0, 216.0, 4.0),),
         BattlePanel,
     ));
     commands.spawn((
-        TextBundle::from_section(
-            "Loading runtime...",
-            TextStyle {
-                font_size: 18.0,
-                color: Color::srgb(0.88, 0.94, 0.86),
-                ..default()
-            },
-        )
-        .with_style(Style {
+        (Text::new("Loading runtime..."), TextFont::from_font_size(18.0), TextColor(Color::srgb(0.88, 0.94, 0.86)), Node {
             position_type: PositionType::Absolute,
             left: Val::Px(18.0),
             top: Val::Px(18.0),
@@ -117,15 +98,7 @@ fn setup_shell_view(mut commands: Commands) {
         StatusText,
     ));
     commands.spawn((
-        TextBundle::from_section(
-            "",
-            TextStyle {
-                font_size: 20.0,
-                color: Color::srgb(0.97, 0.97, 0.90),
-                ..default()
-            },
-        )
-        .with_style(Style {
+        (Text::new(""), TextFont::from_font_size(20.0), TextColor(Color::srgb(0.97, 0.97, 0.90)), Node {
             position_type: PositionType::Absolute,
             left: Val::Px(22.0),
             bottom: Val::Px(20.0),
@@ -135,15 +108,7 @@ fn setup_shell_view(mut commands: Commands) {
         DialogText,
     ));
     commands.spawn((
-        TextBundle::from_section(
-            "",
-            TextStyle {
-                font_size: 18.0,
-                color: Color::srgb(0.94, 0.97, 0.99),
-                ..default()
-            },
-        )
-        .with_style(Style {
+        (Text::new(""), TextFont::from_font_size(18.0), TextColor(Color::srgb(0.94, 0.97, 0.99)), Node {
             position_type: PositionType::Absolute,
             right: Val::Px(20.0),
             top: Val::Px(18.0),
@@ -159,10 +124,13 @@ const SERVER_CLOCK_UNAVAILABLE: &str = "Server clock unavailable. Restore the co
 fn apply_keyboard_input(
     time: Res<Time>,
     keys: Res<ButtonInput<KeyCode>>,
+    #[cfg(not(target_arch = "wasm32"))] handheld: Option<Res<handheld_input::HandheldInput>>,
     rtc_source: Res<NativeRtcSource>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     mut timer: ResMut<RuntimeTickTimer>,
 ) {
+    #[cfg(not(target_arch = "wasm32"))]
+    let keys = handheld.as_ref().map(|input| &input.keys).unwrap_or(&keys);
     let Some(rtc_sample) = (*rtc_source).try_sample() else {
         if runtime_shell.last_error.as_deref() != Some(SERVER_CLOCK_UNAVAILABLE) {
             runtime_shell.last_error = Some(SERVER_CLOCK_UNAVAILABLE.to_string());
@@ -239,7 +207,7 @@ fn apply_keyboard_input(
             runtime_shell.pending_ui_button_presses.push_back(key);
         }
     }
-    timer.tick(time.delta_seconds_f64());
+    timer.tick(time.delta_secs_f64());
     let elapsed_vblanks = timer.take_vblanks();
     let elapsed_input_ticks = timer.take_ticks();
     timer.stage_presentation_ticks(elapsed_input_ticks);
@@ -2778,7 +2746,7 @@ fn advance_visible_music_fade(
 }
 
 fn release_input_on_focus_loss(
-    mut focus_events: EventReader<WindowFocused>,
+    mut focus_events: MessageReader<WindowFocused>,
     mut keys: ResMut<ButtonInput<KeyCode>>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
 ) {
@@ -3976,9 +3944,12 @@ fn throttle_held_overworld_direction(
 
 fn apply_runtime_hotkeys(
     keys: Res<ButtonInput<KeyCode>>,
+    #[cfg(not(target_arch = "wasm32"))] handheld: Option<Res<handheld_input::HandheldInput>>,
     mut timer: ResMut<RuntimeTickTimer>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
 ) {
+    #[cfg(not(target_arch = "wasm32"))]
+    let keys = handheld.as_ref().map(|input| &input.keys).unwrap_or(&keys);
     if runtime_shell.last_error.as_deref() == Some(SERVER_CLOCK_UNAVAILABLE) {
         return;
     }
@@ -4366,7 +4337,7 @@ fn sync_visible_earthquake_camera(
     runtime_shell: Res<BevyRuntimeShell>,
     mut cameras: Query<&mut Transform, With<MainCameraMarker>>,
 ) {
-    let Ok(mut transform) = cameras.get_single_mut() else {
+    let Ok(mut transform) = cameras.single_mut() else {
         return;
     };
     let earthquake_offset = visible_earthquake_camera_offset(runtime_shell.visible_earthquake);

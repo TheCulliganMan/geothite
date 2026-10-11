@@ -442,9 +442,9 @@ fn surf_anchor_real_keyboard_mount_and_encounter_preserve_contact_journal_and_li
         )
     };
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     let shell = app.world().resource::<BevyRuntimeShell>();
     assert_eq!(shell.shell.session(), &session);
     assert_eq!(shell.shell.retained_runtime_commands(), commands);
@@ -484,7 +484,7 @@ fn surf_anchor_real_keyboard_mount_and_encounter_preserve_contact_journal_and_li
     assert!(controller.shell.battle_origin.bound_surf.is_none());
     app.insert_resource(controller.shell);
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     assert!(
         app.world()
             .resource::<crystal_render_api::BattleLocationFrame>()
@@ -1370,7 +1370,7 @@ fn surf_anchor_assert_live_player_art(
     let (entity, source_id, standing, walking) = {
         let world = app.world_mut();
         let mut query = world.query_filtered::<(Entity, &PlayerSpriteFrames), With<PlayerMarker>>();
-        let (entity, frames) = query.get_single(world).unwrap();
+        let (entity, frames) = query.single(world).unwrap();
         (
             entity,
             frames.source_id.clone(),

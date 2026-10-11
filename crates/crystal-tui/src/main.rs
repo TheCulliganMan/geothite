@@ -234,7 +234,8 @@ fn mcp_tools() -> Value {
                 "type": "object",
                 "properties": {
                     "direction": { "enum": ["up", "down", "left", "right"] },
-                    "steps": { "type": "integer", "minimum": 1, "maximum": 25 }
+                    "steps": { "type": "integer", "minimum": 1, "maximum": 25 },
+                    "run": { "type": "boolean", "default": false }
                 },
                 "required": ["direction"]
             }
@@ -338,7 +339,12 @@ fn call_mcp_tool(
                 .context("move requires direction")?;
             let button = parse_game_button(direction)?;
             let steps = bounded_argument(arguments, "steps", 1, 25, 1)?;
-            move_exact_tiles(game, renderer, active_cursor, button, steps)?;
+            let running = arguments
+                .get("run")
+                .map(|value| value.as_bool().context("run must be a boolean"))
+                .transpose()?
+                .unwrap_or(false);
+            move_exact_tiles(game, renderer, active_cursor, button, steps, running)?;
             save_after_mcp_action(game, save_path)?;
             mcp_status_result(game, renderer)
         }
@@ -390,7 +396,7 @@ fn call_mcp_tool(
                     let times = bounded_argument(action, "times", 1, 120, 1)?;
                     let button = parse_game_button(value)?;
                     if kind == "move" {
-                        move_exact_tiles(game, renderer, active_cursor, button, times)?;
+                        move_exact_tiles(game, renderer, active_cursor, button, times, false)?;
                     } else if kind == "button" {
                         for _ in 0..times {
                             apply_button(game, renderer, active_cursor, button)?;
@@ -582,12 +588,18 @@ fn move_exact_tiles(
     active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
     button: GameButton,
     steps: usize,
+    running: bool,
 ) -> Result<()> {
     for _ in 0..steps {
         let start = game.presentation_snapshot()?.overworld.tile;
         let mut moved = false;
         for _ in 0..4 {
-            apply_button(game, renderer, active_cursor, button)?;
+            if running {
+                game.press_buttons([GameButton::B, button])?;
+                renderer.record_action(format!("run: {:?}", button));
+            } else {
+                apply_button(game, renderer, active_cursor, button)?;
+            }
             finish_noninteractive_work(game, active_cursor, renderer)?;
             if game.presentation_snapshot()?.overworld.tile != start {
                 moved = true;
@@ -736,6 +748,12 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
                     GameButton::Down
                 })?;
             }
+            TerminalAction::RunDirection(button) => {
+                ui.notice = None;
+                game.press_buttons([GameButton::B, button])?;
+                renderer.record_action(format!("run: {:?}", button));
+                finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+            }
             TerminalAction::GameButton(button) => {
                 ui.notice = None;
                 apply_button(&mut game, &mut renderer, &mut active_cursor, button)?;
@@ -841,7 +859,7 @@ mod tests {
             &mut renderer,
             &mut cursor,
             Some("move"),
-            &json!({ "direction": "right", "steps": 1 }),
+            &json!({ "direction": "right", "steps": 1, "run": true }),
             None,
         )
         .expect("MCP movement");

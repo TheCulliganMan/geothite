@@ -2,8 +2,19 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum InteriorFloor {
     Oak,
+    AmberTimber,
+    TowerDepth,
     Tatami,
     Ceramic,
+    StoreCeramic,
+    PoolCeramic,
+    VioletBrick,
+    MahoganyIce,
+    MahoganyGrip,
+    BlackthornTile,
+    OlivineTile,
+    OlivineRunner,
+    ArcadeChecker,
     Stone,
     Marble,
     LighthouseSlate,
@@ -17,18 +28,33 @@ impl InteriorFloor {
     fn palette(self) -> [f32; 3] {
         match self {
             Self::Oak => [0.52, 0.40, 0.27],
+            Self::AmberTimber => [0.58, 0.34, 0.10],
+            Self::TowerDepth => [0.20, 0.14, 0.09],
             Self::Tatami => [0.60, 0.59, 0.37],
+            Self::ArcadeChecker => [0.86, 0.86, 0.82],
+            Self::StoreCeramic => [0.95, 0.62, 0.12],
+            Self::PoolCeramic => [0.60, 0.60, 0.61],
+            Self::VioletBrick => [0.25, 0.35, 0.64],
+            Self::MahoganyIce => [0.48, 0.76, 0.83],
+            Self::MahoganyGrip => [0.38, 0.46, 0.49],
+            Self::BlackthornTile => [0.57, 0.74, 0.80],
+            Self::OlivineTile => [0.70, 0.58, 0.34],
+            Self::OlivineRunner => [0.78, 0.48, 0.16],
             Self::Ceramic => [0.66, 0.72, 0.69],
             Self::Stone => [0.58, 0.60, 0.57],
             Self::Marble => [0.72, 0.69, 0.61],
             Self::LighthouseSlate => [0.38, 0.43, 0.44],
             Self::LighthouseChecker => [0.54, 0.56, 0.51],
             Self::GymRose => [0.69, 0.60, 0.56],
-            Self::GymGreen => [0.42, 0.50, 0.34],
+            Self::GymGreen => [0.18, 0.42, 0.07],
             Self::GymTimber => [0.59, 0.48, 0.31],
             Self::Ship(style) => style.palette(),
         }
     }
+}
+fn store_floor_map(map:&str)->bool {
+    map.strip_prefix("GoldenrodDeptStore").or_else(||map.strip_prefix("CeladonDeptStore"))
+        .is_some_and(|floor|matches!(floor,"1F"|"2F"|"3F"|"4F"|"5F"|"6F"|"Elevator"))
 }
 fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor> {
     use InteriorFloor::*;
@@ -36,10 +62,12 @@ fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor>
         _ if traditional_room::tatami_source(map, source) => Tatami,
         _ if gym_floor_source(map, source).is_some() => gym_floor_source(map, source)?,
         _ if ship_floor_source(map, source).is_some() => Ship(ship_floor_source(map, source)?),
+        _ if enhanced_room_floor_source(map, source).is_some() => enhanced_room_floor_source(map, source)?,
         ("players_room" | "players_house" | "house", 0x01) => Oak,
         ("traditional_house", 0x50 | 0x44 | 0x45 | 0x54 | 0x55) => Tatami,
         ("traditional_house", 0x01) => Oak,
         ("lab", 0x10 | 0x24) => Oak,
+        ("mart", 0x01) if store_floor_map(map) => StoreCeramic,
         ("mart", 0x01 | 0x48) | ("pokecenter", 0x11) => Ceramic,
         ("mansion", 0x01 | 0x11) => Marble,
         ("gate", 0x01)
@@ -86,6 +114,25 @@ fn material_quad(mesh: &mut SurfaceMeshData, bounds: [f32; 4], height: f32, colo
 fn tint(color: [f32; 3], amount: f32) -> [f32; 3] {
     color.map(|v| (v + amount).clamp(0.0, 1.0))
 }
+// Explicit indoor paint coordinates. Only verified store/arcade tile and tower wood
+// emit this reserved range; atlas art and other scenery keep their own UVs.
+fn room_material_quad(
+    mesh: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
+    color: [f32; 3], cell: [f32; 4], world: [i32; 2], timber: bool,
+) {
+    let start = mesh.positions.len();
+    material_quad(mesh, bounds, height, color);
+    let width = cell[1] - cell[0];
+    let depth = cell[3] - cell[2];
+    for i in start..mesh.positions.len() {
+        let p = mesh.positions[i];
+        mesh.uvs[i] = [
+            80000.0 + world[0] as f32 * 8.0 + (p[0] - cell[0]) / width * 8.0,
+            if timber { 2000.0 } else { 1000.0 }
+                + world[1] as f32 * 8.0 + (p[2] - cell[2]) / depth * 8.0,
+        ];
+    }
+}
 fn floor_cell(
     mesh: &mut SurfaceMeshData,
     b: [f32; 4],
@@ -100,13 +147,105 @@ fn floor_cell(
     let palette = style.palette();
     if let InteriorFloor::Ship(style) = style {
         ship_floor_cell(mesh, b, height, style, world);
+    } else if style == InteriorFloor::VioletBrick {
+        // Blue brick belongs to Violet's exact floor drawing. Two staggered
+        // courses retain its pale mortar while remaining at the native datum.
+        let seam = w.min(d) * 0.035;
+        for course in 0..2 {
+            let north = z0 + d * course as f32 * 0.5;
+            let south = north + d * 0.5;
+            material_quad(mesh, [x0,x1,north,south], height, [0.75,0.78,0.84]);
+            let joint = if (row * 2 + course) % 2 == 0 {x0} else {x0 + w * 0.5};
+            material_quad(mesh,[x0,x1,north+seam,south-seam],height,palette);
+            material_quad(mesh,[joint,joint+seam,north+seam,south-seam],height,[0.75,0.78,0.84]);
+        }
+    } else if style == InteriorFloor::MahoganyIce {
+        // Continuous broad cloud bands follow world coordinates across tile
+        // boundaries. All vertices stay at the original sliding datum.
+        for v in 0..6 { for u in 0..6 {
+            let point = |u: usize, v: usize| [x0 + w * u as f32 / 6., height, z0 + d * v as f32 / 6.];
+            let color = |u: usize, v: usize| {
+                let x = column as f32 + u as f32 / 6.;
+                let z = row as f32 + v as f32 / 6.;
+                let cloud = new_bark::meadow_noise(x * 0.32 + 11., z * 0.32 - 7.);
+                let band = (x * 0.72 - z * 0.56 + cloud * 2.).sin();
+                let tint = (0.52 + band * 0.17 + cloud * 0.40).clamp(0., 1.);
+                Vec3::new(0.36, 0.65, 0.77).lerp(Vec3::new(0.74, 0.88, 0.89), tint).extend(1.).to_array()
+            };
+            let coords = [(u,v), (u,v+1), (u+1,v+1), (u+1,v)];
+            append_quad_colors(mesh, coords.map(|(u,v)|point(u,v)), [0.,1.,0.],
+                [[0.;2];4], coords.map(|(u,v)|color(u,v)));
+        }}
+    } else if style == InteriorFloor::MahoganyGrip {
+        // Source stop squares remain conspicuous matte pads, distinct from the
+        // blue ice. Coplanar partitions cannot interfere with puzzle input.
+        let seam = w.min(d) * 0.07;
+        let rim = [0.67, 0.73, 0.72];
+        material_quad(mesh, [x0,x1,z0,z0+seam], height, rim);
+        material_quad(mesh, [x0,x1,z1-seam,z1], height, rim);
+        material_quad(mesh, [x0,x0+seam,z0+seam,z1-seam], height, rim);
+        material_quad(mesh, [x1-seam,x1,z0+seam,z1-seam], height, rim);
+        let mut north = z0 + seam;
+        for i in 1..4 {
+            let line = z0 + d * i as f32 / 4.;
+            material_quad(mesh, [x0+seam,x1-seam,north,line], height, palette);
+            north = line + d * 0.035;
+            material_quad(mesh, [x0+seam,x1-seam,line,north], height, [0.45,0.53,0.55]);
+        }
+        material_quad(mesh, [x0+seam,x1-seam,north,z1-seam], height, palette);
+    } else if style==InteriorFloor::OlivineRunner {
+        // Preserve the warm checker strip. Partition small ceramic squares
+        // rather than placing bright floating marks on a single-colored floor.
+        for row in 0..2 {for column in 0..2 {
+            let west=x0+w*column as f32/2.;let east=west+w/2.;
+            let north=z0+d*row as f32/2.;let south=north+d/2.;
+            let grout=w.min(d)*0.03;
+            let shade=if (column+row)%2==0 {palette}else{[0.83,0.85,0.65]};
+            material_quad(mesh,[west,east,north,north+grout],height,[0.48,0.42,0.27]);
+            material_quad(mesh,[west,west+grout,north+grout,south],height,[0.48,0.42,0.27]);
+            material_quad(mesh,[west+grout,east,north+grout,south],height,shade);
+        }}
+    } else if matches!(style, InteriorFloor::PoolCeramic|InteriorFloor::BlackthornTile|InteriorFloor::OlivineTile) {
+        // Keep the small gray squares and warm grout of the pool-side source.
+        let seam = w.min(d) * 0.06;
+        material_quad(mesh, [x0, x1, z0, z0 + seam], height, [0.91, 0.87, 0.79]);
+        material_quad(mesh, [x0, x0 + seam, z0 + seam, z1], height, [0.91, 0.87, 0.79]);
+        material_quad(mesh, [x1 - seam, x1, z0 + seam, z1], height, [0.36, 0.37, 0.38]);
+        material_quad(mesh, [x0 + seam, x1 - seam, z1 - seam, z1], height, [0.36, 0.37, 0.38]);
+        material_quad(mesh, [x0 + seam, x1 - seam, z0 + seam, z1 - seam], height, palette);
+    } else if style == InteriorFloor::ArcadeChecker {
+        let first = mesh.positions.len();
+        let west=if column.rem_euclid(2)==0 {w*0.06} else {0.};
+        let east=if column.rem_euclid(2)==1 {w*0.06} else {0.};
+        let north=if row.rem_euclid(2)==0 {d*0.06} else {0.};
+        let south=if row.rem_euclid(2)==1 {d*0.06} else {0.};
+        let ring=|mesh:&mut SurfaceMeshData,b:[f32;4],m:[f32;4],color:[f32;3]| {
+            let [a,e,n,s]=b;let [l,r,t,u]=m;
+            material_quad(mesh,[a,e,n,n+t],height,color);
+            material_quad(mesh,[a,e,s-u,s],height,color);
+            material_quad(mesh,[a,a+l,n+t,s-u],height,color);
+            material_quad(mesh,[e-r,e,n+t,s-u],height,color);
+        };
+        ring(mesh,b,[west,east,north,south],[0.94,0.84,0.73]);
+        let inner=[x0+west,x1-east,z0+north,z1-south];
+        let border=[west*0.5,east*0.5,north*0.5,south*0.5];
+        ring(mesh,inner,border,[0.45,0.47,0.45]);
+        // Native boxed tiles alternate pale and gray diagonal quadrants.
+        // Preserve that motif instead of filling every inset gray.
+        let inset_color=if column.rem_euclid(2)!=row.rem_euclid(2) {[0.57,0.59,0.56]} else {palette};
+        material_quad(mesh,[inner[0]+border[0],inner[1]-border[1],inner[2]+border[2],inner[3]-border[3]],height,inset_color);
+        for i in first..mesh.positions.len() {
+            let p = mesh.positions[i];
+            mesh.uvs[i] = [80000. + column as f32 * 8. + (p[0]-x0)/w*8.,
+                1000. + row as f32 * 8. + (p[2]-z0)/d*8.];
+        }
     } else if gym_floor_style(style) {
         gym_floor_cell(mesh, b, height, style, world);
     } else if style == InteriorFloor::LighthouseChecker {
         lighthouse_chamber_floor_cell(mesh, b, height, world, [false; 4]);
     } else if style == InteriorFloor::LighthouseSlate {
         lighthouse_floor_cell(mesh, b, height, world);
-    } else if style == InteriorFloor::Oak {
+    } else if matches!(style, InteriorFloor::Oak | InteriorFloor::AmberTimber | InteriorFloor::TowerDepth) {
         // Wide boards with staggered end joints. The low-contrast palette and
         // sparse joints avoid the old high-frequency striped source texture.
         for half in 0..2 {
@@ -128,7 +267,11 @@ fn floor_cell(
             if joint > 0.0 {
                 material_quad(mesh, [x0, x0 + joint, za + seam, zb], height, dark);
             }
+            if style==InteriorFloor::AmberTimber {
+                room_material_quad(mesh,[x0+joint,x1,za+seam,zb],height,color,b,world,true);
+            } else {
             material_quad(mesh, [x0 + joint, x1, za + seam, zb], height, color);
+            }
         }
     } else if style == InteriorFloor::Tatami {
         let mat_x = column.div_euclid(2);
@@ -166,7 +309,9 @@ fn floor_cell(
         let variation =
             ((column.div_euclid(2) * 3 + row.div_euclid(2) * 5).rem_euclid(5) as f32 - 2.0) * 0.008;
         let color = tint(palette, variation);
-        let grout = tint(palette, -0.085);
+        let grout = if style == InteriorFloor::StoreCeramic {
+            [0.66, 0.30, 0.07]
+        } else { tint(palette, -0.085) };
         let west = if column.rem_euclid(2) == 0 {
             w * 0.025
         } else {
@@ -183,12 +328,19 @@ fn floor_cell(
         if west > 0.0 {
             material_quad(mesh, [x0, x0 + west, z0 + north, z1], height, grout);
         }
+        if style==InteriorFloor::StoreCeramic {
+            room_material_quad(mesh,[x0+west,x1,z0+north,z1],height,color,b,world,false);
+        } else {
         material_quad(mesh, [x0 + west, x1, z0 + north, z1], height, color);
+        }
     }
 }
 // Uses precisely the same grid phase and palette as the established room floor.
 pub(super) fn cable_club_floor_cell(mesh: &mut SurfaceMeshData, bounds: [f32; 4], world: [i32; 2]) {
     floor_cell(mesh, bounds, 0.0, InteriorFloor::Ceramic, world);
+}
+pub(super) fn arcade_floor_cell(mesh: &mut SurfaceMeshData, bounds: [f32; 4], phase: [i32; 2]) {
+    floor_cell(mesh, bounds, 0., InteriorFloor::ArcadeChecker, phase);
 }
 fn near(a: f32, b: f32) -> bool {
     (a - b).abs() < 0.0001
@@ -217,13 +369,24 @@ pub(super) fn finish_surfaces_with_profiles(
     world_origin: [i32; 2],
     profiles: Option<&Document>,
 ) -> usize {
-    if (!gym_floor_map(map) && !traditional_room::floor_map(map) && !ship_floor_map(map))
+    if (!gym_floor_map(map) && !traditional_room::floor_map(map) && !ship_floor_map(map)
+        && !enhanced_room_floor_map(map) && !store_floor_map(map))
         || g.width.checked_mul(g.height) != Some(cells.len())
     {
         return finish_surfaces(mesh, map, cells, g, world_origin);
     }
     let mut excluded = vec![false; cells.len()];
-    for placement in live::resolve(cells, g.width, g.height, map, profiles) {
+    // Canonical fixtures have already been replaced by the authored models;
+    // their verified native backing should receive the room finish too.
+    // Only user-owned overrides exclude backing in the enhanced rooms.
+    let custom = (enhanced_room_floor_map(map) || store_floor_map(map)).then(|| Document {
+        objects: profiles.map_or_else(Vec::new, |d| d.objects.iter()
+            .filter(|o| !built_in_profiles().objects.iter().any(|canonical| canonical == *o))
+            .cloned().collect()),
+        atmosphere: None,
+    });
+    let selected = custom.as_ref().or(profiles);
+    for placement in live::resolve(cells, g.width, g.height, map, selected) {
         for index in placement.indices(g.width) {
             excluded[index] = true;
         }
@@ -301,6 +464,15 @@ fn finish_surfaces_excluding(
             {
                 return None;
             }
+            // Store floor samples can be redirected by backing/merged fixtures.
+            // Resolve the actual destination floor first so the ceramic grid
+            // covers every eligible native floor cell with one world phase.
+            let dest=row as usize*g.width+column as usize;
+            if store_floor_map(map) && near(height,0.0) && excluded.get(dest)!=Some(&true)
+                && interior_floor(map,&cells[dest].source)==Some(InteriorFloor::StoreCeramic) {
+                return Some((dest,[x0,x1,z0,z1],height,InteriorFloor::StoreCeramic,
+                    [column+world_origin[0],row+world_origin[1]]));
+            }
             let min_u = uvs.iter().map(|uv| uv[0]).fold(f32::INFINITY, f32::min);
             let max_u = uvs.iter().map(|uv| uv[0]).fold(f32::NEG_INFINITY, f32::max);
             let min_v = uvs.iter().map(|uv| uv[1]).fold(f32::INFINITY, f32::min);
@@ -328,6 +500,12 @@ fn finish_surfaces_excluding(
             }
             let destination = row as usize * g.width + column as usize;
             let source_index = sr * g.width + sc;
+            if (enhanced_room_floor_map(map) || store_floor_map(map))
+                && (excluded.get(destination) == Some(&true)
+                    || excluded.get(source_index) == Some(&true))
+            {
+                return None;
+            }
             if traditional_room::floor_map(map)
                 && (cells[destination].source.metatile_id == 0x04
                     || cells[source_index].source.metatile_id == 0x04)
@@ -656,6 +834,27 @@ mod surface_finish_tests {
         )
     }
     #[test]
+    fn department_store_floor_finishes_every_source_cell_and_respects_reservations() {
+        let (tile,mut g)=floor();g.width=2;g.height=2;
+        let tiles=(0..4).map(|i| {
+            let mut t=tile[0].clone();t.column=(i%2) as u32;t.row=(i/2) as u32;
+            t.source.tileset_id=Arc::from("mart");t.source.metatile_id=4;
+            t.source.subtile_column=(i%2) as u8;t.source.subtile_row=(i/2) as u8;t
+        }).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.0;4],authored_cells:vec![None;4],..Default::default()};
+        for i in 0..4 {
+            // Fixture backing may address another atlas cell; the destination
+            // floor still has to finish in the same tile phase without gaps.
+            append_top(&mut mesh.textured,g.bounds(i%2,i/2).into(),0.0,g.uv(0,0));
+        }
+        assert_eq!(finish_surfaces_excluding(&mut mesh,"GoldenrodDeptStore1F",&refs,&g,[0,0],&[true,false,false,false]),3);
+        assert_eq!(mesh.footing_heights,vec![0.0;4]);
+        assert_eq!(mesh.authored_cells,vec![None;4]);
+        assert_eq!(mesh.textured.indices.len(),6);
+        assert!(mesh.solid.positions.iter().all(|p|p[1]==0.0));
+    }
+    #[test]
     fn authored_floor_keeps_height_footing_and_object_evidence_separate() {
         let (tiles, g) = floor();
         let refs: Vec<_> = tiles.iter().collect();
@@ -685,6 +884,27 @@ mod surface_finish_tests {
             0
         );
         assert_eq!(mesh.textured, before);
+    }
+    #[test]
+    fn indoor_material_coordinates_keep_world_phase_and_floor_area() {
+        for style in [InteriorFloor::StoreCeramic, InteriorFloor::AmberTimber] {
+            let mut a = SurfaceMeshData::default();
+            let mut b = SurfaceMeshData::default();
+            floor_cell(&mut a,[0.,8.,0.,8.],0.,style,[7,9]);
+            floor_cell(&mut b,[32.,40.,48.,56.],0.,style,[7,9]);
+            assert_eq!(a.uvs,b.uvs);
+            assert_eq!(a.colors,b.colors);
+            assert!(a.uvs.iter().any(|uv| (80000.0..81000.0).contains(&uv[0])));
+            assert!(a.positions.iter().all(|p| p[1] == 0.));
+            let area: f32 = a.indices.chunks_exact(3).map(|ids| {
+                let p = ids.iter().map(|i| Vec3::from_array(a.positions[*i as usize])).collect::<Vec<_>>();
+                (p[1]-p[0]).cross(p[2]-p[0]).length()*0.5
+            }).sum();
+            assert!((area-64.).abs()<0.001);
+        }
+        let mut ordinary = SurfaceMeshData::default();
+        floor_cell(&mut ordinary,[0.,8.,0.,8.],0.,InteriorFloor::Oak,[7,9]);
+        assert!(ordinary.uvs.iter().all(|uv| *uv == [0.,0.]));
     }
     #[test]
     fn plank_material_world_phase_is_stable_across_viewport_origins() {

@@ -54,7 +54,7 @@ pub(crate) fn boulder_local(source: &VisualTileSource, base: BoulderBase) -> Opt
     let valid_block = match base {
         BoulderBase::CaveGround => matches!(source.metatile_id, 0x1a | 0x21),
         BoulderBase::SmoothIce => matches!(source.metatile_id, 0x2c..=0x2f),
-        BoulderBase::UpperRight => source.metatile_id == 0x22,
+        BoulderBase::UpperRight => matches!(source.metatile_id, 0x1e | 0x22),
     };
     if !valid_block {
         return None;
@@ -100,6 +100,38 @@ pub(crate) fn edge_rock_local(source: &VisualTileSource) -> Option<(EdgeRockKind
         0xd5 => Some((EdgeRockKind::Single, 1, 1)),
         _ => None,
     }
+}
+
+/// Paired south-exit motif in the top-left quadrant of block $2a.
+pub(crate) fn exit_sill_local(s: &VisualTileSource) -> Option<(u8, u8)> {
+    (s.tileset_id.as_ref() == "ice_path" && s.metatile_id == 0x2a
+        && s.subtile_row == 0 && s.subtile_column < 2
+        && s.tile_index == [0x42, 0x43][s.subtile_column as usize])
+        .then_some((s.subtile_column, 0))
+}
+
+/// Complete floor-parallel ladder drawings, repeated on stone and smooth ice.
+/// Their native picture is a hatch viewed from above, not a rising flight.
+pub(crate) fn flat_ladder_local(s: &VisualTileSource) -> Option<(u8, u8)> {
+    if s.tileset_id.as_ref() != "ice_path" || !(2..4).contains(&s.subtile_column)
+        || !(2..4).contains(&s.subtile_row) { return None; }
+    let art = match s.metatile_id {
+        0x03 | 0x37 => [[0x0a,0x0b],[0x1a,0x1b]],
+        0x07 | 0x38 => [[0x2a,0x2b],[0x3a,0x3b]],
+        _ => return None,
+    };
+    let (x,y) = (s.subtile_column - 2, s.subtile_row - 2);
+    (s.tile_index == art[usize::from(y)][usize::from(x)]).then_some((x,y))
+}
+
+/// Two complete floor holes drawn in opposite metatile quadrants.
+pub(crate) fn pit_local(s: &VisualTileSource) -> Option<(u8,u8)> {
+    if s.tileset_id.as_ref() != "ice_path" || s.subtile_column>=4 || s.subtile_row>=4 { return None; }
+    let (ox,oy)=match s.metatile_id {0x17=>(0,2),0x1b=>(2,0),_=>return None};
+    let x=s.subtile_column.checked_sub(ox)?;
+    let y=s.subtile_row.checked_sub(oy)?;
+    (x<2 && y<2 && s.tile_index==[[0x8e,0x8f],[0x9e,0x9f]][usize::from(y)][usize::from(x)])
+        .then_some((x,y))
 }
 
 #[cfg(test)]
@@ -151,6 +183,10 @@ mod tests {
         ] {
             assert_eq!(
                 boulder_local(&source(0x22, tile), BoulderBase::UpperRight),
+                Some(local)
+            );
+            assert_eq!(
+                boulder_local(&source(0x1e, tile), BoulderBase::UpperRight),
                 Some(local)
             );
         }

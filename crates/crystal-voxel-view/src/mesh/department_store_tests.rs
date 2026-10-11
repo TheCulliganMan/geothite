@@ -19,6 +19,7 @@ fn fixture(
         }
     }
     let nn = Network {
+        map: n.map,
         floor: n.floor,
         anchor: n.anchor,
         width: n.width,
@@ -68,6 +69,22 @@ fn fixture(
         Box::leak(vec![nn].into_boxed_slice()),
     )
 }
+#[test]
+fn celadon_sixth_floor_callback_wall_is_exact_and_map_scoped() {
+    let (mut tiles,g,networks)=fixture(30,[0,0],[34,6]);
+    let refs=tiles.iter().collect::<Vec<_>>();
+    let wall=resolve_networks(networks,6,"CeladonDeptStore6F",&refs,&g,[0,0],None,&vec![false;tiles.len()]);
+    assert_eq!(wall.len(),1);
+    assert_eq!(wall[0].indices(g.width).count(),40);
+    assert!(resolve_networks(networks,6,"GoldenrodDeptStore6F",&refs,&g,[0,0],None,&vec![false;tiles.len()]).is_empty());
+    for y in 0..4 {for x in 0..32 {
+        let i=y*g.width+x;
+        let old=tiles[i].source.tile_index;
+        tiles[i].source.tile_index=0xffff;
+        assert!(resolve_networks(networks,6,"CeladonDeptStore6F",&tiles.iter().collect::<Vec<_>>(),&g,[0,0],None,&vec![false;tiles.len()]).is_empty());
+        tiles[i].source.tile_index=old;
+    }}
+}
 fn resolve_fixture(
     n: &'static [Network],
     cells: &[VisualTile],
@@ -79,7 +96,7 @@ fn resolve_fixture(
     resolve_networks(
         n,
         n[0].floor,
-        "GoldenrodDeptStore5F",
+        n[0].map.unwrap_or("GoldenrodDeptStore5F"),
         &cells.iter().collect::<Vec<_>>(),
         g,
         origin,
@@ -88,7 +105,7 @@ fn resolve_fixture(
     )
 }
 #[test]
-fn all_seven_exact_drawings_reject_every_changed_source_and_missing_guard() {
+fn all_exact_drawings_reject_every_changed_source_and_missing_guard() {
     for which in 0..NETWORKS.len() {
         let (cells, g, n) = fixture(which, [0, 0], [33, 17]);
         let x = n[0].anchor[0] as usize;
@@ -146,6 +163,115 @@ fn all_seven_exact_drawings_reject_every_changed_source_and_missing_guard() {
         "Route1",
     ] {
         assert_eq!(floor(invalid), None);
+    }
+}
+
+#[test]
+fn store_flights_recess_downstairs_and_keep_rotated_bounds_normals_and_support() {
+    for which in 7..NETWORKS.len() {
+        if NETWORKS[which].label != "mart/department_store_stairs" {
+            continue;
+        }
+        let (cells, mut g, networks) = fixture(which, [0, 0], [33, 17]);
+        // Deliberately unequal axes detect fitting after rotation mistakes.
+        g.tile_width = 10.;
+        g.tile_height = 6.;
+        let p = resolve_fixture(
+            networks,
+            &cells,
+            &g,
+            [0, 0],
+            None,
+            &vec![false; cells.len()],
+        );
+        assert_eq!(p.len(), 1);
+        let mut mesh = TerrainMeshData::default();
+        mesh.authored_cells = vec![None; cells.len()];
+        mesh.footing_heights = vec![0.; cells.len()];
+        let mut claimed = vec![false; cells.len()];
+        assert!(append(
+            &mut mesh,
+            &cells.iter().collect::<Vec<_>>(),
+            &g,
+            &p[0],
+            &mut claimed
+        ));
+        let down = networks[0].parts[0].asset == Asset::StairDown;
+        let base = if down { -12. } else { 0. };
+        assert!(mesh.textured.positions.iter().all(|p| p[1] == base));
+        assert!(mesh
+            .solid
+            .positions
+            .iter()
+            .all(|v| v[0] >= p[0].column as f32 * 10. - 0.001
+                && v[0] <= (p[0].column + 2) as f32 * 10. + 0.001
+                && v[2] >= -0.001
+                && v[2] <= 12.001));
+        assert!(mesh
+            .solid
+            .normals
+            .iter()
+            .all(|n| (n.iter().map(|v| v * v).sum::<f32>() - 1.).abs() < 0.001));
+        assert_eq!(mesh.footing_heights, vec![0.; cells.len()]);
+        assert_eq!(claimed.iter().filter(|&&v| v).count(), 4);
+        assert_eq!(
+            mesh.authored_cells
+                .iter()
+                .filter(|v| **v == Some("mart/department_store_stairs"))
+                .count(),
+            4
+        );
+    }
+}
+#[test]
+fn lift_fronts_keep_a_clear_aperture_and_original_support() {
+    for which in 18..NETWORKS.len() {
+        if NETWORKS[which].label != "mart/department_store_lift_front" {
+            continue;
+        }
+        let (cells, mut g, n) = fixture(which, [0, 0], [33, 17]);
+        g.tile_width = 10.;
+        g.tile_height = 6.;
+        let p = resolve_fixture(n, &cells, &g, [0, 0], None, &vec![false; cells.len()]);
+        assert_eq!(p.len(), 1);
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.; cells.len()],
+            authored_cells: vec![None; cells.len()],
+            ..Default::default()
+        };
+        let mut claimed = vec![false; cells.len()];
+        assert!(append(
+            &mut mesh,
+            &cells.iter().collect::<Vec<_>>(),
+            &g,
+            &p[0],
+            &mut claimed
+        ));
+        assert_eq!(claimed.iter().filter(|&&v| v).count(), 8);
+        assert_eq!(mesh.footing_heights, vec![0.; cells.len()]);
+        let center = (p[0].column + 1) as f32 * g.tile_width;
+        let height = 7.5;
+        for triangle in mesh.solid.indices.chunks_exact(3) {
+            let points = triangle
+                .iter()
+                .map(|&i| mesh.solid.positions[i as usize])
+                .collect::<Vec<_>>();
+            let lo = |axis| points.iter().map(|p| p[axis]).fold(f32::INFINITY, f32::min);
+            let hi = |axis| {
+                points
+                    .iter()
+                    .map(|p| p[axis])
+                    .fold(f32::NEG_INFINITY, f32::max)
+            };
+            assert!(
+                !(lo(0) < center + 1. && hi(0) > center - 1. && lo(1) < height && hi(1) > height),
+                "lift frame crosses the entrance aperture"
+            );
+        }
+        // The adjacent call-panel housing and final floor row have other owners.
+        assert!(!claimed[p[0].row * g.width + p[0].column + 2]);
+        assert!(!claimed[(p[0].row + 3) * g.width + p[0].column]);
+        assert!(mesh.solid.positions.iter().any(|p| p[1] > 10.));
     }
 }
 #[test]
@@ -264,23 +390,38 @@ fn append_is_atomic_preserves_footing_and_keeps_all_geometry_inside_owned_cells(
         claims[first] = false;
         assert!(append(&mut mesh, &refs, &g, &p[0], &mut claims));
         assert!(mesh.footing_heights.iter().all(|&h| h == 2.75));
-        assert_eq!(
-            mesh.solid.cutaway_ranges,
-            vec![0..mesh.solid.positions.len()]
-        );
+        if (24..30).contains(&which) {
+            assert!(
+                mesh.solid.cutaway_ranges.is_empty(),
+                "waist-high counters must stay opaque"
+            );
+            assert!(mesh.textured.cutaway_ranges.is_empty());
+            assert!(mesh.cutaway_links.is_empty());
+        } else {
+            assert_eq!(
+                mesh.solid.cutaway_ranges,
+                vec![0..mesh.solid.positions.len()]
+            );
+        }
         let (w, _, north, _) = g.bounds(p[0].column, p[0].row);
+        let stair = matches!(n[0].parts[0].asset, Asset::StairUp | Asset::StairDown);
+        let base = if n[0].parts[0].asset == Asset::StairDown {
+            -16.
+        } else {
+            0.
+        };
+        let top = base + if stair { 22.4 } else { 16. };
         assert!(mesh.solid.positions.iter().all(|&[x, y, z]| x >= w
             && x <= w + n[0].width as f32 * g.tile_width
             && z >= north
             && z <= north + n[0].height as f32 * g.tile_height
-            && y >= 0.
-            && y <= 16. * g.tile_height / 8.));
-        assert!(
-            mesh.solid
-                .normals
-                .iter()
-                .all(|n| (Vec3::from_array(*n).length_squared() - 1.).abs() < 0.0001)
-        );
+            && y >= base * g.tile_height / 8. - 0.001
+            && y <= top * g.tile_height / 8. + 0.001));
+        assert!(mesh
+            .solid
+            .normals
+            .iter()
+            .all(|n| (Vec3::from_array(*n).length_squared() - 1.).abs() < 0.0001));
         assert_eq!(
             claims.iter().filter(|&&v| v).count(),
             n[0].rows
@@ -288,6 +429,16 @@ fn append_is_atomic_preserves_footing_and_keeps_all_geometry_inside_owned_cells(
                 .map(|r| r.count_ones() as usize)
                 .sum::<usize>()
         );
+        if which == 28 || which == 29 {
+            for &[x, _, z] in &mesh.solid.positions {
+                let x = (x - w) / g.tile_width;
+                let z = (z - north) / g.tile_height;
+                assert!(
+                    !(x > 2.0001 && z > 2.0001 && z < if which == 28 { 5.9999 } else { 3.9999 }),
+                    "service counter must preserve the clerk floor and right shelves"
+                );
+            }
+        }
         if which == 6 {
             for &[x, _, z] in &mesh.solid.positions {
                 let x = (x - w) / g.tile_width;

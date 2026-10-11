@@ -41,7 +41,6 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 | [bedroom-cloth.blend](source/bedroom-cloth.blend) | 104,647 | Not rendered |
 | [cable-backwalls.blend](source/cable-backwalls.blend) | 110,034 | Not rendered |
 | [cable-club.blend](source/cable-club.blend) | 143,524 | Not rendered |
-| [characters.blend](source/characters.blend) | 1,294,528 | Not rendered |
 | [connected-johto.blend](source/connected-johto.blend) | 516,695 | Not rendered |
 | [department-store.blend](source/department-store.blend) | 154,445 | Not rendered |
 | [dungeons.blend](source/dungeons.blend) | 212,935 | Not rendered |
@@ -69,16 +68,16 @@ Only PNG files that exist are displayed below. A missing preview does not imply 
 | [train-station.blend](source/train-station.blend) | 128,253 | Not rendered |
 | [world-exteriors.blend](source/world-exteriors.blend) | 2,899,107 | Not rendered |
 
-60 editable scenes; 1 rendered PNG previews.
+59 editable scenes; 1 rendered PNG previews.
 
 ## Runtime models
 
-Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
+Human characters use the required weighted rigs and UV paintings in `assets/open-models/people`; the legacy human catalog has been removed. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).
 
 | Catalog | Files | Stored bytes | Decoded JSON bytes |
 | --- | ---: | ---: | ---: |
-| [actor_props](../../crates/crystal-voxel-view/models/actor_props) | 73 | 10,070,221 | 10,070,221 |
-| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 24,764,295 | 24,604,891 |
+| [actor_props](../../crates/crystal-voxel-view/models/actor_props) | 71 | 12,168,888 | 11,352,596 |
+| [battle_species](../../crates/crystal-voxel-view/models/battle_species) | 220 | 85,576,758 | 83,908,442 |
 | [cable_club](../../crates/crystal-voxel-view/models/cable_club) | 4 | 456,230 | 456,230 |
 | [department_store](../../crates/crystal-voxel-view/models/department_store) | 8 | 535,550 | 535,550 |
 | [dungeon_extensions](../../crates/crystal-voxel-view/models/dungeon_extensions) | 11 | 718,847 | 718,847 |
@@ -88,11 +87,10 @@ Human characters share one standard `catalog.glb` with named scenes, articulated
 | [gate_counters](../../crates/crystal-voxel-view/models/gate_counters) | 17 | 435,862 | 435,862 |
 | [gym_scenery](../../crates/crystal-voxel-view/models/gym_scenery) | 20 | 720,071 | 720,071 |
 | [interiors](../../crates/crystal-voxel-view/models/interiors) | 69 | 8,795,890 | 8,795,890 |
-| [johto](../../crates/crystal-voxel-view/models/johto) | 9 | 2,104,093 | 2,104,093 |
-| [johto_characters](../../crates/crystal-voxel-view/models/johto_characters) | 1 | 5,704,552 | 0 |
+| [johto](../../crates/crystal-voxel-view/models/johto) | 9 | 2,083,971 | 2,083,971 |
 | [lighthouse_chamber](../../crates/crystal-voxel-view/models/lighthouse_chamber) | 3 | 647,809 | 647,809 |
 | [lighthouse_masonry](../../crates/crystal-voxel-view/models/lighthouse_masonry) | 3 | 323,861 | 323,861 |
-| [new_bark](../../crates/crystal-voxel-view/models/new_bark) | 8 | 1,779,179 | 1,779,179 |
+| [new_bark](../../crates/crystal-voxel-view/models/new_bark) | 8 | 1,732,257 | 1,732,257 |
 | [outdoor_signs](../../crates/crystal-voxel-view/models/outdoor_signs) | 4 | 764,824 | 764,824 |
 | [park_scenery](../../crates/crystal-voxel-view/models/park_scenery) | 3 | 215,457 | 215,457 |
 | [ship_fronts](../../crates/crystal-voxel-view/models/ship_fronts) | 2 | 618,363 | 618,363 |
@@ -101,7 +99,5 @@ Human characters share one standard `catalog.glb` with named scenes, articulated
 | [traditional_room](../../crates/crystal-voxel-view/models/traditional_room) | 3 | 1,072,487 | 1,072,487 |
 | [train_station](../../crates/crystal-voxel-view/models/train_station) | 1 | 298,502 | 298,502 |
 | [world_exteriors](../../crates/crystal-voxel-view/models/world_exteriors) | 63 | 13,984,240 | 13,984,240 |
-
-The human GLB contains 75 distinct character scenes; geometry accessors are shared across scenes. GLB bytes are native binary data, so they are not counted as decoded JSON.
 
 Storage identity and validation details: [model storage](../../docs/art/model-storage.md).

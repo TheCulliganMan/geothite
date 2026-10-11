@@ -204,7 +204,7 @@ fn visible_pack_menu_renders_and_confirms_cancel_row_from_normal_inputs() {
         assert_eq!(image.texture_descriptor.size.width, 160);
         assert_eq!(image.texture_descriptor.size.height, 144);
         let colors = image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .map(|pixel| [pixel[0], pixel[1], pixel[2]])
             .collect::<std::collections::BTreeSet<_>>();
@@ -468,7 +468,7 @@ fn party_mail_read_opens_item_specific_full_lcd_until_game_boy_dismissal() {
     let image = images.get(&frame.handle).expect("Mail reader image");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[..3] != [255, 255, 255]),
         "Mail stationery must contain source border/art pixels"
@@ -534,16 +534,16 @@ fn card_flip_lcd_composes_source_cards_instead_of_text_placeholders() {
     let reveal =
         render_visible_card_flip_frame(&sources, &game, &mut images).expect("render revealed card");
 
-    let ask_pixels = images.get(&ask.handle).expect("initial image").data.clone();
+    let ask_pixels = images.get(&ask.handle).expect("initial image").data.as_ref().expect("CPU image pixels").clone();
     let choose_pixels = images
         .get(&choose.handle)
         .expect("choose image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     let reveal_pixels = images
         .get(&reveal.handle)
         .expect("reveal image")
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     assert_ne!(
         ask_pixels, choose_pixels,
@@ -1356,7 +1356,7 @@ fn slot_machine_renderer_composites_source_oam_actors_and_scy_shake() {
     let mut images = Assets::<Image>::default();
     let plain = render_visible_slot_machine_frame(&sources, &machine, &mut images)
         .expect("render plain slots");
-    let plain = images.get(&plain.handle).unwrap().data.clone();
+    let plain = images.get(&plain.handle).unwrap().data.as_ref().expect("CPU image pixels").clone();
 
     machine.actor = Some(VisibleSlotActor::Golem {
         x: 96,
@@ -1368,7 +1368,7 @@ fn slot_machine_renderer_composites_source_oam_actors_and_scy_shake() {
     });
     let golem = render_visible_slot_machine_frame(&sources, &machine, &mut images)
         .expect("render Golem OAM");
-    let golem = images.get(&golem.handle).unwrap().data.clone();
+    let golem = images.get(&golem.handle).unwrap().data.as_ref().expect("CPU image pixels").clone();
     assert_ne!(plain, golem, "slots_3 Golem pixels must be composited");
 
     machine.actor = Some(VisibleSlotActor::Chansey {
@@ -1379,7 +1379,7 @@ fn slot_machine_renderer_composites_source_oam_actors_and_scy_shake() {
     });
     let chansey = render_visible_slot_machine_frame(&sources, &machine, &mut images)
         .expect("render Chansey OAM");
-    let chansey = images.get(&chansey.handle).unwrap().data.clone();
+    let chansey = images.get(&chansey.handle).unwrap().data.as_ref().expect("CPU image pixels").clone();
     assert_ne!(plain, chansey, "slots_3 Chansey pixels must be composited");
     assert_ne!(golem, chansey);
 
@@ -1390,14 +1390,14 @@ fn slot_machine_renderer_composites_source_oam_actors_and_scy_shake() {
     });
     let egg =
         render_visible_slot_machine_frame(&sources, &machine, &mut images).expect("render Egg OAM");
-    let egg = images.get(&egg.handle).unwrap().data.clone();
+    let egg = images.get(&egg.handle).unwrap().data.as_ref().expect("CPU image pixels").clone();
     assert_ne!(plain, egg, "slots_3 Egg pixels must be composited");
 
     machine.secondary_actor = None;
     machine.background_y_offset = -2;
     let shaken = render_visible_slot_machine_frame(&sources, &machine, &mut images)
         .expect("render Golem SCY shake");
-    let shaken = images.get(&shaken.handle).unwrap().data.clone();
+    let shaken = images.get(&shaken.handle).unwrap().data.as_ref().expect("CPU image pixels").clone();
     assert_ne!(
         plain, shaken,
         "Golem roll must move the BG plane through hSCY"
@@ -2114,11 +2114,12 @@ fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
         .expect("render Pokédex");
         queue.apply(&mut world);
         assert_eq!(art.font_error, None);
-        let mut query = world.query::<(&Sprite, &Transform, &Handle<Image>)>();
+        let mut query = world.query::<(&Sprite, &Transform)>();
         let mut sprites = query.iter(&world).collect::<Vec<_>>();
         sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
         let mut canvas = image::RgbaImage::new(PLAYFIELD_WIDTH as u32, PLAYFIELD_HEIGHT as u32);
-        for (sprite, transform, handle) in sprites {
+        for (sprite, transform) in sprites {
+            let handle = &sprite.image;
             let source = images.get(handle).expect("sprite image");
             let size = sprite.custom_size.expect("explicit sprite size");
             if source.texture_descriptor.size.width == 56 {
@@ -2143,7 +2144,7 @@ fn pokedex_visible_data_respects_ownership_and_formats_dimensions() {
             let raster = image::RgbaImage::from_raw(
                 source.texture_descriptor.size.width,
                 source.texture_descriptor.size.height,
-                source.data.clone(),
+                source.data.as_ref().expect("CPU image pixels").clone(),
             )
             .expect("RGBA sprite");
             let scaled = image::imageops::resize(

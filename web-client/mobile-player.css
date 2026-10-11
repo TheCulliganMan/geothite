@@ -4,7 +4,8 @@
   --muted: #888;
   --accent: #bbb;
 }
-html, body { overscroll-behavior: none; background: var(--shell); color: var(--ink); font-family: system-ui, sans-serif; }
+/* Allow menu scrolling while preventing pinch and double-tap page zoom. */
+html, body { touch-action: pan-x pan-y; overscroll-behavior: none; background: var(--shell); color: var(--ink); font-family: system-ui, sans-serif; }
 #game-stage { position: fixed; inset: 0; overflow: hidden; background: #000; }
 #game-stage canvas { display: block; width: 100% !important; height: 100% !important; outline: none; image-rendering: pixelated; touch-action: none; }
 #loading { position: absolute; inset: 0; display: grid; place-content: center; color: #8f8a9a; font-size: 13px; background: #09090d; }

@@ -429,8 +429,8 @@ mod source_placement_tests {
                     )
                     .unwrap();
                     assert_eq!(
-                        images.get(&object.texture).unwrap().data,
-                        images.get(&rendered.sprite.handle).unwrap().data,
+                        images.get(&object.texture).unwrap().data.as_ref().expect("CPU image pixels"),
+                        images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels"),
                         "pixels at tick {tick}"
                     );
                     let size = rendered.sprite.size / (TILE_SIZE / SOURCE_TILE_SIZE as f32);

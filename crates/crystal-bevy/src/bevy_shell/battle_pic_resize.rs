@@ -67,8 +67,9 @@ fn battle_pic_resize_frame(
             TextureFormat::Rgba8UnormSrgb | TextureFormat::Rgba8Unorm),
         "battle pic resize requires decoded RGBA pixels"
     );
-    image.data = visible_battle_pic_resize_rgba(&image.data, source_tiles, shown_tiles)
-        .context("unsupported battle pic resize grid or pixel length")?;
+    let pixels = image.data.as_deref().context("battle pic resize requires CPU image pixels")?;
+    image.data = Some(visible_battle_pic_resize_rgba(pixels, source_tiles, shown_tiles)
+        .context("unsupported battle pic resize grid or pixel length")?);
     image.sampler = ImageSampler::nearest();
     let frame = SpriteFrame {
         handle: images.add(image),
@@ -148,7 +149,7 @@ mod battle_pic_resize_tests {
         assert_eq!(identity.handle, source.handle);
         // Destination slot (24,32) is source (24,24), not central-crop (24,32).
         let offset = (32 * 56 + 24) * 4;
-        assert_eq!(&images.get(&remapped.handle).unwrap().data[offset..offset + 2], [24,24]);
+        assert_eq!(&images.get(&remapped.handle).unwrap().data.as_ref().expect("CPU image pixels")[offset..offset + 2], [24,24]);
 
         let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
         let center = Vec3::new(PLAYFIELD_LEFT + 124.0 * scale,
@@ -161,16 +162,16 @@ mod battle_pic_resize_tests {
                 &remapped, remapped.size * scale, center, Color::WHITE,
                 None, None, None, scanlines.then_some(&offsets), None);
             queue.apply(&mut world);
-            let mut query = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>), With<BattleBattlerMarker>>();
+            let mut query = world.query_filtered::<(&Sprite, &Transform), With<BattleBattlerMarker>>();
             if scanlines {
-                let (sprite, pose, texture) = query.iter(&world).find(|(_, pose, _)|
+                let (sprite, pose) = query.iter(&world).find(|(_, pose)|
                     (pose.translation.y - (PLAYFIELD_TOP - 30.5 * scale)).abs() < 0.001).unwrap();
-                assert_eq!(texture, &remapped.handle);
+                assert_eq!(&sprite.image, &remapped.handle);
                 assert_eq!(sprite.rect, Some(Rect::new(0.0, 32.0, 56.0, 33.0)));
                 assert_eq!(pose.translation.x, center.x - 3.0 * scale);
             } else {
-                let (sprite, pose, texture) = query.single(&world);
-                assert_eq!(texture, &remapped.handle);
+                let (sprite, pose) = query.single(&world).unwrap();
+                assert_eq!(&sprite.image, &remapped.handle);
                 assert_eq!(sprite.rect, None);
                 assert_eq!(sprite.custom_size, Some(Vec2::splat(56.0 * scale)));
                 assert_eq!(pose.translation, center);

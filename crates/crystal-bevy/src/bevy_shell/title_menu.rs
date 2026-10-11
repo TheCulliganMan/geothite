@@ -4428,7 +4428,7 @@ fn tick_visible_title_screen(
     mut clock: ResMut<VisibleSequenceTickClock>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
 ) {
-    let frames = clock.consume_frames(time.delta_seconds());
+    let frames = clock.consume_frames(time.delta_secs());
     for _ in 0..frames {
         if runtime_shell.intro_screen.is_some() {
             if let Err(error) = tick_visible_intro_screen(&mut runtime_shell) {

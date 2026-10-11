@@ -2,13 +2,13 @@
 //!
 //! The host publishes actual neighboring map data around the viewport. A
 //! pitched camera can still see beyond that finite grid, however. This apron
-//! repeats only the outermost authored metatile course underneath the real
+//! repeats the dominant level-ground source underneath the real
 //! mesh. It is presentation-only: it creates no walls, footing, collision, or
 //! inferred topology.
 
 use super::*;
 
-// The real host halo already contributes twelve tiles on every side. Keep a
+// The real host halo already contributes neighboring source tiles. Keep a
 // much larger presentation-only apron beyond it so perspective views and
 // future camera yaw cannot reach the clear color in any direction.
 const BACKGROUND_APRON_TILES: isize = 96;
@@ -61,6 +61,9 @@ pub(super) fn append_repeating_background_apron(
         }
         mesh.background = Some(RepeatingBackground {
             mesh: surface,
+            source: cells[background_row * geometry.width + background_column]
+                .source
+                .clone(),
             texture: cells[background_row * geometry.width + background_column]
                 .texture
                 .clone(),
@@ -117,7 +120,8 @@ fn dominant_flat_source(
     }
     counts
         .into_values()
-        .max_by_key(|(count, _, _)| *count)
+        // Prefer the earliest source on ties, independently of HashMap order.
+        .max_by_key(|(count, column, row)| (*count, std::cmp::Reverse(row * width + column)))
         .map(|(_, column, row)| (column, row))
 }
 
@@ -184,6 +188,33 @@ fn repeated_edge_coordinate(coordinate: isize, length: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn dominant_source_ties_are_stable_and_retain_ground_identity() {
+        let mut frame = test_frame_with_grid(40, 40);
+        for (i, tile) in frame.tiles.iter_mut().enumerate() {
+            tile.source =
+                super::super::tests::source_with_tile(0, 0, 0, if i % 2 == 0 { 5 } else { 6 });
+        }
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let shapes = vec![CellShape::Flat; cells.len()];
+        let g = GridGeometry {
+            width: 40,
+            height: 40,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        for _ in 0..16 {
+            let mut mesh = TerrainMeshData {
+                tree_cache: Some(HashMap::new()),
+                ..Default::default()
+            };
+            append_repeating_background_apron(&mut mesh, &g, &cells, &shapes);
+            assert_eq!(mesh.background.unwrap().source, cells[0].source);
+        }
+    }
 
     #[test]
     fn repeats_the_nearest_outer_metatile_course() {

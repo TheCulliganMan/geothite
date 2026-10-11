@@ -129,13 +129,13 @@ fn capture_palette_boundary_preserves_exact_gust_gray_pixels_and_obp_remap() {
         let rendered = battle_anim_rendered_frame(&mut art, &bundle, &assets,
             "BATTLE_ANIM_OBJ_GUST", &object, "TEST", 0, &frame,
             false, false, false, None, obp, 0xe4, Some(&oam), &mut images).unwrap();
-        let data = &images.get(&rendered.sprite.handle).unwrap().data;
+        let data = &images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels");
         let colors = [[255,255,255,255], [206,206,206,255], [107,107,107,255], [0,0,0,255]];
         let expected = (0..64).flat_map(|pixel| {
             let source = pixel % 4;
             if source == 0 { [0,0,0,0] } else { colors[usize::from((obp >> (source * 2)) & 3)] }
         }).collect::<Vec<_>>();
-        assert_eq!(*data, expected);
+        assert_eq!(data.as_slice(), expected.as_slice());
     }
     let real_bundle = battle_anim_regression_bundle();
     let shell = route36_battle_shell_for_render_regression();
@@ -165,7 +165,7 @@ fn capture_palette_cache_uses_resolved_enemy_colors_and_keeps_transparency() {
         let rendered = battle_anim_rendered_frame_with_battler_palettes(&mut art, &bundle, &assets,
             "BATTLE_ANIM_OBJ_POKE_BALL", &object, "TEST", 0, &frame,
             false, false, false, None, 0xe4, 0xe4, Some(&oam), &[Some(palette), None], &mut images).unwrap();
-        let data = &images.get(&rendered.sprite.handle).unwrap().data;
+        let data = &images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels");
         for (index, pixel) in data.chunks_exact(4).enumerate() {
             let color = index % 4;
             if color == 0 { assert_eq!(pixel, [0,0,0,0]); }
@@ -176,6 +176,7 @@ fn capture_palette_cache_uses_resolved_enemy_colors_and_keeps_transparency() {
     }
 }
 
+#[cfg(feature = "voxel-view")]
 #[test]
 fn capture_palette_restores_enemy_normal_and_shiny_colors_in_both_consumers() {
     let shell = route36_battle_shell_for_render_regression();
@@ -206,7 +207,7 @@ fn capture_palette_restores_enemy_normal_and_shiny_colors_in_both_consumers() {
         let source = capture_immersive_source_frame_with_capture(&snapshot, &animation,
             &[None, None], &mut art, &shell.asset_root, &mut images, Some(&capture)).unwrap();
         let source_ball = source.objects.iter().find(|object| object.object_id.as_ref() == object_id.as_str()).unwrap();
-        assert_eq!(images.get(&source_ball.texture).unwrap().data, images.get(&rendered.sprite.handle).unwrap().data);
+        assert_eq!(images.get(&source_ball.texture).unwrap().data.as_ref().expect("CPU image pixels"), images.get(&rendered.sprite.handle).unwrap().data.as_ref().expect("CPU image pixels"));
         if let Some(previous) = previous { assert_ne!(rendered.sprite.handle.id(), previous); }
         previous = Some(rendered.sprite.handle.id());
     }

@@ -29,6 +29,7 @@ fn tile_animation_provenance_app(tile_index: u8) -> App {
     settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
     let mut app = battle_render_regression_app(shell);
     app.init_resource::<crystal_render_api::VisualWorldFrame>()
+        .init_resource::<crystal_render_api::VisualTileAnimationFrame>()
         .add_systems(Update, publish_visual_world_frame.after(render_playfield));
     app.update();
     assert_eq!(app.world().resource::<BevyRuntimeShell>().last_error, None);
@@ -228,6 +229,14 @@ fn visual_tile_animation_cave_composite_emits_complete_shared_family() {
         let published = app
             .world()
             .resource::<crystal_render_api::VisualWorldFrame>();
+        let phases = app.world().resource::<crystal_render_api::VisualTileAnimationFrame>();
+        assert_eq!(phases.map_id, published.map_id);
+        assert_eq!(phases.grid_origin, published.grid_origin);
+        let water = phases.tiles.iter().filter(|tile| tile.source.tile_index == 0x14)
+            .collect::<Vec<_>>();
+        assert_eq!(water.len(), animated_count);
+        assert!(water.iter().all(|tile| tile.texture == family[expected_phase]),
+            "live phases must reach optional renderers while geometry stays retained");
         assert_eq!(published.terrain_revision, revision);
         assert_eq!(
             published.tiles.as_ptr(),

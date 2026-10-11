@@ -79,18 +79,11 @@ fn spawn_object_label(
 ) {
     let label = compact_scene_label(&object_scene_label(object), 18);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 10.5,
-                    color: Color::srgb(0.98, 0.98, 0.86),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(x - TILE_SIZE * 0.62, y + TILE_SIZE * 0.78, 2.6),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(10.5),
+TextColor(Color::srgb(0.98, 0.98, 0.86)),
+Transform::from_xyz(x - TILE_SIZE * 0.62, y + TILE_SIZE * 0.78, 2.6),),
         ObjectMarker,
     ));
 }
@@ -153,22 +146,15 @@ fn spawn_bg_event_label(
     let label = compact_scene_label(&bg.script, 18);
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.92, 0.92, 0.78),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.92, 0.92, 0.78)),
+Transform::from_xyz(
                 tile_x - TILE_SIZE * 0.56,
                 tile_y + TILE_SIZE * 0.52,
                 2.4,
-            ),
-            ..default()
-        },
+            ),),
         EventMarker,
     ));
 }
@@ -194,22 +180,15 @@ fn spawn_warp_event_label(
     );
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.72, 0.84, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.72, 0.84, 1.0)),
+Transform::from_xyz(
                 tile_x - TILE_SIZE * 0.58,
                 tile_y - TILE_SIZE * 0.58,
                 2.4,
-            ),
-            ..default()
-        },
+            ),),
         EventMarker,
     ));
 }
@@ -232,18 +211,11 @@ fn spawn_coord_event_label(
     let label = compact_scene_label(&coord.script_name, 18);
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.90, 0.74, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(tile_x - TILE_SIZE * 0.58, tile_y, 2.4),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.90, 0.74, 1.0)),
+Transform::from_xyz(tile_x - TILE_SIZE * 0.58, tile_y, 2.4),),
         EventMarker,
     ));
 }
@@ -353,15 +325,12 @@ fn spawn_event_marker(
     };
 
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color,
                 custom_size: Some(Vec2::new(size, size)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         EventMarker,
     ));
 }
@@ -1130,7 +1099,7 @@ fn refresh_status_text(
     mut query: Query<&mut Text, With<StatusText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1143,36 +1112,36 @@ fn refresh_status_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
     if runtime_shell.intro_screen.is_some() {
-        text.sections[0].value = format_intro_status(&runtime_shell);
+        text.0 = format_intro_status(&runtime_shell);
         return;
     }
     if runtime_shell.credits_screen.is_some() {
-        text.sections[0].value = format_credits_status(&runtime_shell);
+        text.0 = format_credits_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_time_set.is_some() {
-        text.sections[0].value = format_time_set_status(&runtime_shell);
+        text.0 = format_time_set_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_oak_intro.is_some() {
-        text.sections[0].value = format_oak_intro_status(&runtime_shell);
+        text.0 = format_oak_intro_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_gender_selection.is_some() {
-        text.sections[0].value = format_gender_status(&runtime_shell);
+        text.0 = format_gender_status(&runtime_shell);
         return;
     }
     if runtime_shell.title_menu.is_some() {
-        text.sections[0].value = format_title_status(&runtime_shell);
+        text.0 = format_title_status(&runtime_shell);
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_snapshot(&snapshot, &runtime_shell, *mode),
         Err(error) => format!("snapshot error: {error}"),
     };
@@ -1183,7 +1152,7 @@ fn refresh_dialog_text(
     mut query: Query<&mut Text, With<DialogText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1196,36 +1165,36 @@ fn refresh_dialog_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
     if runtime_shell.intro_screen.is_some() {
-        text.sections[0].value = format_intro_dialog(&runtime_shell);
+        text.0 = format_intro_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.credits_screen.is_some() {
-        text.sections[0].value = format_credits_dialog(&runtime_shell);
+        text.0 = format_credits_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.pending_time_set.is_some() {
-        text.sections[0].value = format_time_set_dialog_overlay(&runtime_shell);
+        text.0 = format_time_set_dialog_overlay(&runtime_shell);
         return;
     }
     if runtime_shell.pending_oak_intro.is_some() {
-        text.sections[0].value = format_oak_intro_dialog_overlay(&runtime_shell);
+        text.0 = format_oak_intro_dialog_overlay(&runtime_shell);
         return;
     }
     if runtime_shell.pending_gender_selection.is_some() {
-        text.sections[0].value = format_gender_dialog(&runtime_shell);
+        text.0 = format_gender_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.title_menu.is_some() {
-        text.sections[0].value = format_title_dialog(&runtime_shell);
+        text.0 = format_title_dialog(&runtime_shell);
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_dialog_overlay(&snapshot, &runtime_shell),
         Err(_) => String::new(),
     };
@@ -1236,7 +1205,7 @@ fn refresh_battle_text(
     mut query: Query<&mut Text, With<BattleText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1249,8 +1218,8 @@ fn refresh_battle_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
@@ -1261,10 +1230,10 @@ fn refresh_battle_text(
         || runtime_shell.pending_oak_intro.is_some()
         || runtime_shell.pending_gender_selection.is_some()
     {
-        text.sections[0].value = String::new();
+        text.0 = String::new();
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_battle_overlay(&snapshot, &runtime_shell),
         Err(_) => String::new(),
     };

@@ -5,7 +5,6 @@ from pathlib import Path
 import json
 import struct
 from johto_art_sources import load_sources
-from animated_glb import load_catalog
 from model_asset_storage import read_model_bytes, stored_model_size
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -34,7 +33,7 @@ def build(root=ROOT):
         lines.append(f'| [{name}](source/{name}) | {len(payload):,} | {preview} |')
     lines += ['',f'{len(entries)} editable scenes; {previews} rendered PNG previews.','',
               '## Runtime models','',
-              'Human characters share one standard `catalog.glb` with named scenes, articulated joints, materials and animation clips. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
+              'Human characters use the required weighted rigs and UV paintings in `assets/open-models/people`; the legacy human catalog has been removed. Pidgeotto has its own articulated `pidgeotto.glb`; other models have directly readable `.json` geometry documents. Duplicate static STL previews are local, ignored output. Compression only exists in ignored Cargo build output. The generator scripts remain in [`tools/`](../../tools/).','',
               '| Catalog | Files | Stored bytes | Decoded JSON bytes |','| --- | ---: | ---: | ---: |']
     catalogs=defaultdict(lambda:[0,0,0])
     modelroot=root/'crates/crystal-voxel-view/models'
@@ -46,9 +45,6 @@ def build(root=ROOT):
         stats[0]+=1;stats[1]+=p.stat().st_size
     for name,(count,stored,decoded) in sorted(catalogs.items()):
         lines.append(f'| [{name}](../../crates/crystal-voxel-view/models/{name}) | {count} | {stored:,} | {decoded:,} |')
-    catalog=modelroot/'johto_characters/catalog.glb'
-    if catalog.exists():
-        lines += ['', f'The human GLB contains {len(load_catalog(catalog.parent))} distinct character scenes; geometry accessors are shared across scenes. GLB bytes are native binary data, so they are not counted as decoded JSON.']
     lines += ['', 'Storage identity and validation details: [model storage](../../docs/art/model-storage.md).','']
     (art/'ASSETS.md').write_text('\n'.join(lines))
     return len(entries),previews

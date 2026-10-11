@@ -17,6 +17,7 @@ pub const PEOPLE: [&str; 6] = [
     "human-male",
     "human-female",
 ];
+const REQUIRED_PEOPLE: [&str; 2] = ["human-male", "human-female"];
 const MAX_BYTES: usize = 4 * 1024 * 1024;
 static RIGS: OnceLock<BTreeMap<String, Arc<PersonRig>>> = OnceLock::new();
 
@@ -53,6 +54,9 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
         rigs.insert(name, Arc::new(PersonRig::parse(&bytes)?));
     }
+    if REQUIRED_PEOPLE.iter().any(|name| !rigs.contains_key(*name)) {
+        return Err("required character rigs are missing from people bundle".into());
+    }
     let names = npc_texture_names();
     let mut textures = BTreeMap::new();
     for (name, encoded) in b.textures {
@@ -62,39 +66,40 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
         let bytes = base64::engine::general_purpose::STANDARD.decode(encoded).map_err(|e| e.to_string())?;
         textures.insert(name, crate::npc_textures::decode(&bytes)?);
     }
+    crate::npc_textures::require_complete(&textures)?;
     // Both payloads have been validated before either cache is published.
     RIGS.set(rigs).map_err(|_| "people sources frozen; restart to refresh".to_string())?;
     crate::npc_textures::install(textures)
+}
+
+/// Native applications and review tools share the same default artwork root.
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) fn model_root() -> std::path::PathBuf {
+    std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").map(std::path::PathBuf::from)
+        .unwrap_or_else(|| std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../assets/open-models"))
 }
 
 pub(crate) fn get(name: &str) -> Option<&'static Arc<PersonRig>> {
     RIGS.get_or_init(|| {
         let mut rigs = BTreeMap::new();
         #[cfg(not(target_arch = "wasm32"))]
-        if let Some(root) = std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT") {
+        {
             use std::io::Read;
+            let root = model_root();
             for name in PEOPLE {
-                let path =
-                    std::path::PathBuf::from(&root).join(format!("people/kenney/{name}.glb"));
-                let Ok(file) = std::fs::File::open(path) else {
-                    continue;
+                let path = root.join(format!("people/kenney/{name}.glb"));
+                let file = match std::fs::File::open(&path) {
+                    Ok(file) => file,
+                    Err(e) if !REQUIRED_PEOPLE.contains(&name) && e.kind() == std::io::ErrorKind::NotFound => continue,
+                    Err(e) => panic!("required character asset {}: {e}; set CRYSTAL_OPEN_MODEL_ROOT to a complete artwork directory", path.display()),
                 };
                 let mut bytes = Vec::new();
-                if file
-                    .take(MAX_BYTES as u64 + 1)
-                    .read_to_end(&mut bytes)
-                    .is_ok()
-                {
-                    match PersonRig::parse(&bytes) {
-                        Ok(rig) => {
-                            rigs.insert(name.to_owned(), Arc::new(rig));
-                        }
-                        Err(e) if std::env::var_os("CRYSTAL_OPEN_MODEL_TRACE").is_some() => {
-                            eprintln!("open person {name}: {e}")
-                        }
-                        Err(_) => {}
-                    }
-                }
+                file.take(MAX_BYTES as u64 + 1).read_to_end(&mut bytes)
+                    .unwrap_or_else(|e| panic!("read required character asset {}: {e}", path.display()));
+                let rig = PersonRig::parse(&bytes)
+                    .unwrap_or_else(|e| panic!("invalid required character asset {}: {e}", path.display()));
+                rigs.insert(name.to_owned(), Arc::new(rig));
             }
         }
         rigs
@@ -108,6 +113,13 @@ pub(crate) struct PersonRig {
     pub skin_nodes: Vec<usize>,
     pub head_joint: usize,
     pub hips_joint: usize,
+    pub chest_joint: usize,
+    /// Optional hand subtrees in the source skin palette, including fingers.
+    pub hand_joints: [Vec<usize>; 2],
+    /// Optional articulated finger nodes; excludes wrist and end markers.
+    pub finger_nodes: Vec<usize>,
+    /// Left/right thigh and shin indices in the same skin palette as the body.
+    pub leg_joints: [[usize; 2]; 2],
     pub inverse_binds: Vec<Mat4>,
     pub mesh_node: usize,
     pub mesh: SurfaceMeshData,
@@ -251,6 +263,32 @@ impl PersonRig {
             .ok_or("missing named Hips attachment joint")?.index();
         let hips_joint = skin_nodes.iter().position(|&i| i == hips_node)
             .ok_or("Hips attachment is not in the skin")?;
+        let skin_joint = |name| {
+            let node = g.nodes().find(|n| n.name() == Some(name))
+                .ok_or_else(|| format!("missing named {name} garment joint"))?.index();
+            skin_nodes.iter().position(|&i| i == node)
+                .ok_or_else(|| format!("{name} garment joint is not in the skin"))
+        };
+        let leg_joints = [
+            [skin_joint("LeftUpLeg")?, skin_joint("LeftLeg")?],
+            [skin_joint("RightUpLeg")?, skin_joint("RightLeg")?],
+        ];
+        let chest_joint = skin_joint("Chest")?;
+        let hand_joints = ["LeftHand", "RightHand"].map(|name| {
+            let Some(root) = g.nodes().find(|n|n.name()==Some(name)).map(|n|n.index()) else {return Vec::new();};
+            skin_nodes.iter().enumerate().filter_map(|(joint,&node)| {
+                let mut current=Some(node);
+                while let Some(i)=current {
+                    if i==root {return Some(joint);}
+                    current=parents[i];
+                }
+                None
+            }).collect()
+        });
+        let finger_nodes = g.nodes().filter(|n| {
+            let name = n.name().unwrap_or("");
+            (name.contains("HandIndex") || name.contains("HandThumb")) && !name.ends_with("_end")
+        }).map(|n| n.index()).collect();
         let inverse_binds: Vec<_> = skin
             .reader(|_| Some(bin))
             .read_inverse_bind_matrices()
@@ -443,6 +481,10 @@ impl PersonRig {
             skin_nodes,
             head_joint,
             hips_joint,
+            chest_joint,
+            hand_joints,
+            finger_nodes,
+            leg_joints,
             inverse_binds,
             mesh_node,
             mesh,
@@ -456,16 +498,18 @@ impl PersonRig {
             clips,
             order,
         };
-        // Full source clip envelope prevents arms/legs disappearing at camera edges.
+        // Preserve the source envelope and include the visible relaxed fingers
+        // so the longer reach cannot be culled at camera edges.
         let mut pose = rig.nodes.clone();
         let mut world = vec![Mat4::IDENTITY; pose.len()];
-        for clip in ["Idle", "Run", "Jump"] {
+        for (clip, relaxed) in [("Idle",false),("Run",false),("Jump",false),("Idle",true),("Run",true)] {
             let duration = rig.duration(clip);
             for i in 0..=60 {
                 rig.sample(clip, duration * i as f32 / 60.0, &mut pose);
+                if relaxed {crate::hand_pose::relax(&rig, &mut pose);}
                 for &n in &rig.order {
                     world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY)
-                        * pose[n].compute_matrix();
+                        * pose[n].to_matrix();
                 }
                 let mesh_inv = world[rig.mesh_node].inverse();
                 for ((p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights)
@@ -525,6 +569,30 @@ impl PersonRig {
 mod tests {
     use super::*;
     #[test]
+    fn missing_production_rigs_reject_bundle_before_freezing_sources() {
+        let frozen = crate::npc_textures::frozen();
+        assert!(install_open_people_bundle(r#"{"version":1,"people":{}}"#).is_err());
+        assert_eq!(crate::npc_textures::frozen(), frozen);
+    }
+
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn missing_native_rigs_stop_rendering_instead_of_substituting_models() {
+        const CHILD: &str = "CRYSTAL_TEST_MISSING_PEOPLE_CHILD";
+        if std::env::var_os(CHILD).is_some() {
+            let _ = get("human-male");
+            panic!("missing character rig was accepted");
+        }
+        let output = std::process::Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "open_people::tests::missing_native_rigs_stop_rendering_instead_of_substituting_models", "--nocapture"])
+            .env(CHILD, "1")
+            .env("CRYSTAL_OPEN_MODEL_ROOT", std::env::temp_dir().join("geothite-required-people-missing"))
+            .output().unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("required character asset"));
+    }
+
+    #[test]
     fn malformed_optional_people_do_not_install_or_escape_the_catalog() {
         assert!(PersonRig::parse(b"not a GLB").is_err());
         assert!(PersonRig::parse(&vec![0; MAX_BYTES + 1]).is_err());
@@ -550,7 +618,7 @@ mod tests {
             let mut world = vec![Mat4::IDENTITY; rig.nodes.len()];
             for &n in &rig.order {
                 world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY)
-                    * rig.nodes[n].compute_matrix();
+                    * rig.nodes[n].to_matrix();
             }
             let mesh_inv = world[rig.mesh_node].inverse();
             for (&node, inv) in rig.skin_nodes.iter().zip(&rig.inverse_binds) {

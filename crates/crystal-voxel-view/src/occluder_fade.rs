@@ -8,7 +8,7 @@ use crate::{
 };
 use bevy::{
     prelude::*,
-    render::{primitives::Aabb, view::RenderLayers},
+    camera::{primitives::Aabb, visibility::RenderLayers},
 };
 use std::ops::Range;
 
@@ -23,9 +23,9 @@ const RENDER_LEAF_TRIANGLES: usize = 2048;
 pub(super) fn register(app: &mut App) {
     app.add_systems(
         PostUpdate,
-        sync.after(bevy::render::camera::CameraUpdateSystem)
-            .after(bevy::transform::TransformSystem::TransformPropagate)
-            .before(bevy::render::view::VisibilitySystems::VisibilityPropagate),
+        sync.after(bevy::camera::CameraUpdateSystems)
+            .after(bevy::transform::TransformSystems::Propagate)
+            .before(bevy::camera::visibility::VisibilitySystems::VisibilityPropagate),
     );
 }
 
@@ -250,9 +250,16 @@ pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<Prepared
         .into_iter()
         .map(|indices| select(&source, &owner, &mut remap, indices));
     let opaque = extracted.next().unwrap();
-    let groups = extracted
+    let selected: Vec<_> = extracted
         .zip(ranges)
         .filter(|(data, _)| !data.indices.is_empty())
+        .collect();
+    // Selection owns every referenced attribute now. Release the full source
+    // before BVHs and transparent draw leaves add their own geometry storage.
+    drop(source);
+    drop(owner);
+    drop(remap);
+    let groups = selected.into_iter()
         .map(|(data, source_range)| {
             let surface = TriangleTree::new(&data);
             let leaves = render_leaves(data);
@@ -304,31 +311,44 @@ fn select(
     source: &SurfaceMeshData,
     owner: &[Option<usize>],
     remap: &mut [u32],
-    indices: Vec<u32>,
+    mut indices: Vec<u32>,
 ) -> SurfaceMeshData {
-    let mut data = SurfaceMeshData::default();
     let mut touched = Vec::new();
-    for i in indices {
-        let old = i as usize;
+    for i in &mut indices {
+        let old = *i as usize;
         if remap[old] == u32::MAX {
-            let next = data.positions.len();
+            let next = touched.len();
             remap[old] = next as u32;
             touched.push(old);
-            data.positions.push(source.positions[old]);
-            data.normals.push(source.normals[old]);
-            data.uvs.push(source.uvs[old]);
-            data.colors.push(source.colors[old]);
-            if owner[old].is_some() {
-                if let Some(range) = data.cutaway_ranges.last_mut()
-                    && range.end == next
-                {
-                    range.end += 1;
-                } else {
-                    data.cutaway_ranges.push(next..next + 1);
-                }
+        }
+        *i = remap[old];
+    }
+    // Reuse the index bucket and size attribute arrays exactly. Incremental
+    // growth previously duplicated the bucket and doubled each attribute's
+    // allocation at its largest growth step, exhausting browser linear memory.
+    let mut data = SurfaceMeshData {
+        positions: Vec::with_capacity(touched.len()),
+        normals: Vec::with_capacity(touched.len()),
+        uvs: Vec::with_capacity(touched.len()),
+        colors: Vec::with_capacity(touched.len()),
+        indices,
+        ..Default::default()
+    };
+    for &old in &touched {
+        let next = data.positions.len();
+        data.positions.push(source.positions[old]);
+        data.normals.push(source.normals[old]);
+        data.uvs.push(source.uvs[old]);
+        data.colors.push(source.colors[old]);
+        if owner[old].is_some() {
+            if let Some(range) = data.cutaway_ranges.last_mut()
+                && range.end == next
+            {
+                range.end += 1;
+            } else {
+                data.cutaway_ranges.push(next..next + 1);
             }
         }
-        data.indices.push(remap[old]);
     }
     for old in touched {
         remap[old] = u32::MAX;
@@ -508,7 +528,7 @@ pub(super) fn spawn_groups(
         });
         let group = commands
             .spawn((
-                SpatialBundle::default(),
+                (Transform::default(), Visibility::default()),
                 OccluderGroup {
                     surface,
                     overlay_surface,
@@ -537,12 +557,9 @@ pub(super) fn spawn_groups(
             } in leaves
             {
                 let mut leaf = commands.spawn((
-                    MaterialMeshBundle::<VoxelMaterial> {
-                        mesh: meshes.add(mesh),
-                        material: material.clone(),
-                        transform: Transform::from_translation(center),
-                        ..default()
-                    },
+                    (Mesh3d(meshes.add(mesh)),
+MeshMaterial3d(material.clone()),
+Transform::from_translation(center),),
                     bounds,
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ));
@@ -586,12 +603,12 @@ fn sync(
     cameras: Query<(&Camera, &GlobalTransform), With<VoxelWorldCamera>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
     mut groups: Query<(&mut OccluderGroup, Ref<GlobalTransform>, &Children)>,
-    mut leaves: Query<(&mut Handle<VoxelMaterial>, Option<&OverlayLeaf>)>,
+    mut leaves: Query<(&mut MeshMaterial3d<VoxelMaterial>, Option<&OverlayLeaf>)>,
     mut previous: Local<Option<(Mat4, CutawayUniform, bool)>>,
 ) {
     let (camera, active) = cameras
-        .get_single()
-        .map(|(c, t)| (t.compute_matrix(), c.is_active))
+        .single()
+        .map(|(c, t)| (t.to_matrix(), c.is_active))
         .unwrap_or((Mat4::IDENTITY, false));
     let uniform = cache
         .solid_material
@@ -610,7 +627,7 @@ fn sync(
     for (mut group, transform, children) in &mut groups {
         if changed || transform.is_changed() || group.is_added() {
             group.blocked = rays.is_some_and(|(eye, targets)| {
-                let local = transform.compute_matrix().inverse();
+                let local = transform.to_matrix().inverse();
                 local.is_finite()
                     && targets.into_iter().any(|target| {
                         let start = local.transform_point3(eye);
@@ -625,7 +642,7 @@ fn sync(
         }
         let previous_alpha = group.fade.opacity;
         let blocked = group.blocked;
-        group.fade.advance(blocked, time.delta_seconds());
+        group.fade.advance(blocked, time.delta_secs());
         let blending = group.fade.opacity < 1.0;
         if blending != group.blending {
             let material = if blending {
@@ -633,9 +650,9 @@ fn sync(
             } else {
                 group.opaque.clone()
             };
-            for &child in children.iter() {
+            for child in children.iter() {
                 if let Ok((mut handle, overlay)) = leaves.get_mut(child) {
-                    *handle = if overlay.is_some() {
+                    handle.0 = if overlay.is_some() {
                         let (opaque, transparent) = group.overlay_materials.as_ref().unwrap();
                         if blending {
                             transparent.clone()
@@ -650,11 +667,11 @@ fn sync(
             group.blending = blending;
         }
         if group.fade.opacity != previous_alpha {
-            if let Some(material) = materials.get_mut(&group.transparent) {
+            if let Some(mut material) = materials.get_mut(&group.transparent) {
                 material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
             }
             if let Some((_, transparent)) = &group.overlay_materials {
-                if let Some(material) = materials.get_mut(transparent) {
+                if let Some(mut material) = materials.get_mut(transparent) {
                     material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
                 }
             }
@@ -665,7 +682,7 @@ fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bevy::render::mesh::{Indices, VertexAttributeValues};
+    use bevy::mesh::{Indices, VertexAttributeValues};
     use std::collections::BTreeMap;
     fn quad(data: &mut SurfaceMeshData, points: [[f32; 3]; 4], marked: bool) {
         let base = data.positions.len();
@@ -683,9 +700,32 @@ mod tests {
         }
     }
     #[test]
+    fn selecting_reuses_indices_and_sizes_exact_attributes_without_changing_ownership() {
+        let mut source = SurfaceMeshData::default();
+        quad(&mut source, [[0.,0.,0.],[1.,0.,0.],[1.,1.,0.],[0.,1.,0.]], false);
+        let indices = vec![3,0,1,3,1,2];
+        let allocation = indices.as_ptr();
+        let mut remap = vec![u32::MAX;4];
+        let selected = select(&source, &[None,Some(0),None,Some(0)], &mut remap, indices);
+        assert_eq!(selected.indices.as_ptr(), allocation, "selection must reuse its large index bucket");
+        assert_eq!(selected.indices, [0,1,2,0,2,3]);
+        for (new,old) in [3,0,1,2].into_iter().enumerate() {
+            assert_eq!(selected.positions[new],source.positions[old]);
+            assert_eq!(selected.normals[new],source.normals[old]);
+            assert_eq!(selected.uvs[new],source.uvs[old]);
+            assert_eq!(selected.colors[new],source.colors[old]);
+        }
+        assert_eq!(selected.cutaway_ranges,[0..1,2..3]);
+        assert_eq!(selected.positions.capacity(),4);
+        assert_eq!(selected.normals.capacity(),4);
+        assert_eq!(selected.uvs.capacity(),4);
+        assert_eq!(selected.colors.capacity(),4);
+        assert!(remap.iter().all(|&i|i==u32::MAX));
+    }
+    #[test]
     fn fading_cutout_crowns_retain_the_source_alpha_cutoff() {
         let mut world = World::new();
-        let root = world.spawn(SpatialBundle::default()).id();
+        let root = world.spawn((Transform::default(), Visibility::default())).id();
         let mut meshes = Assets::<Mesh>::default();
         let mut materials = Assets::<VoxelMaterial>::default();
         let mut material = crate::solid_terrain_material();
@@ -699,7 +739,7 @@ mod tests {
           spawn_groups(&mut commands, &mut meshes, &mut materials, root, groups, handle, None); }
         queue.apply(&mut world);
         let mut query = world.query::<&OccluderGroup>();
-        let group = query.single(&world);
+        let group = query.single(&world).unwrap();
         let faded = materials.get(&group.transparent).unwrap();
         assert_eq!(faded.base.alpha_mode, AlphaMode::Blend);
         assert_eq!(faded.extension.cutaway.fade.w, 0.63);
@@ -796,7 +836,7 @@ mod tests {
                     );
                     let camera = Transform::from_translation(eye)
                         .looking_at(Vec3::Y * 10.0, Vec3::Y)
-                        .compute_matrix();
+                        .to_matrix();
                     let uniform = CutawayUniform::for_player(Vec3::ZERO, 16.0).unwrap();
                     let (origin, targets) = target_rays(uniform, camera).unwrap();
                     for target in targets {
@@ -1020,19 +1060,17 @@ mod tests {
         let overlay_handle = app
             .world_mut()
             .resource_mut::<Assets<VoxelMaterial>>()
-            .add(crate::textured_terrain_material(Handle::weak_from_u128(42)));
+            .add(crate::textured_terrain_material(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(42), std::marker::PhantomData)));
         let camera = app
             .world_mut()
             .spawn((
-                Camera3dBundle {
-                    transform: Transform::from_xyz(0.0, 20.0, 80.0)
-                        .looking_at(Vec3::Y * 10.0, Vec3::Y),
-                    ..default()
-                },
+                (Camera3d::default(), Msaa::Off,
+Transform::from_xyz(0.0, 20.0, 80.0)
+                        .looking_at(Vec3::Y * 10.0, Vec3::Y),),
                 VoxelWorldCamera,
             ))
             .id();
-        let root = app.world_mut().spawn(SpatialBundle::default()).id();
+        let root = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         let opaque = handle.clone();
         let mut overlay = SurfaceMeshData::default();
         quad(
@@ -1050,7 +1088,7 @@ mod tests {
             app.world()
                 .get::<Transform>(camera)
                 .unwrap()
-                .compute_matrix(),
+                .to_matrix(),
         )
         .unwrap();
         let overlay_tree = TriangleTree::new(&overlay);
@@ -1140,14 +1178,14 @@ mod tests {
         let state = app.world().get::<OccluderGroup>(group).unwrap();
         assert_eq!(state.fade.opacity, 1.0);
         assert!(!state.blending);
-        for &leaf in app.world().get::<Children>(group).unwrap().iter() {
+        for leaf in app.world().get::<Children>(group).unwrap().iter() {
             let expected = if app.world().get::<OverlayLeaf>(leaf).is_some() {
                 &overlay_handle
             } else {
                 &handle
             };
             assert_eq!(
-                app.world().get::<Handle<VoxelMaterial>>(leaf).unwrap(),
+                &app.world().get::<MeshMaterial3d<VoxelMaterial>>(leaf).unwrap().0,
                 expected
             );
         }
@@ -1190,7 +1228,7 @@ mod tests {
             app.world().resource::<Assets<VoxelMaterial>>().len(),
             material_count
         );
-        app.world_mut().entity_mut(root).despawn_recursive();
+        app.world_mut().entity_mut(root).despawn();
         app.update();
         assert_eq!(
             app.world_mut()
@@ -1213,7 +1251,7 @@ mod tests {
             .resource_mut::<Assets<VoxelMaterial>>()
             .add(crate::solid_terrain_material());
         for _ in 0..16 {
-            let root = app.world_mut().spawn(SpatialBundle::default()).id();
+            let root = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
             let (_, groups) = prepare(u_wall());
             app.world_mut()
                 .resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
@@ -1244,7 +1282,7 @@ mod tests {
                 );
                 group.fade.opacity = RESIDUAL_OPACITY;
             }
-            app.world_mut().entity_mut(root).despawn_recursive();
+            app.world_mut().entity_mut(root).despawn();
             app.update();
             app.update();
             assert_eq!(

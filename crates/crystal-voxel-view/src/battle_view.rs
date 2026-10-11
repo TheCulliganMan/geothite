@@ -6,23 +6,25 @@ use crate::encounter_terrain::{self, EncounterTerrain};
 use crate::{VoxelViewSettings, mesh::SurfaceMeshData};
 use bevy::{
     asset::load_internal_asset,
-    core_pipeline::{fxaa::Fxaa, tonemapping::Tonemapping},
-    pbr::{CascadeShadowConfigBuilder, FogFalloff, FogSettings},
+    anti_alias::fxaa::Fxaa,
+    camera::{CameraUpdateSystems, ClearColorConfig, RenderTarget, visibility::RenderLayers},
+    light::CascadeShadowConfigBuilder,
+    asset::RenderAssetUsages,
+    mesh::skinning::SkinnedMeshInverseBindposes,
+    image::ImageSampler,
+    shader::ShaderRef,
+    pbr::{FogFalloff, DistanceFog},
     prelude::*,
     reflect::TypePath,
     render::{
-        camera::{CameraUpdateSystem, ClearColorConfig, RenderTarget},
-        mesh::skinning::SkinnedMeshInverseBindposes,
-        render_asset::RenderAssetUsages,
         render_resource::{
-            AsBindGroup, Extent3d, ShaderRef, ShaderType, TextureDimension, TextureFormat,
+            AsBindGroup, Extent3d, ShaderType, TextureDimension, TextureFormat,
             TextureUsages,
         },
         renderer::RenderAdapterInfo,
-        texture::ImageSampler,
-        view::RenderLayers,
+        view::Tonemapping,
     },
-    sprite::{Material2d, Material2dPlugin, MaterialMesh2dBundle, Mesh2dHandle},
+    sprite_render::{Material2d, Material2dPlugin},
 };
 use crystal_render_api::{
     BattleCanvasExtract, BattleFlashMode, VisualBattleBattler, VisualBattleCanvas, VisualBattleCue,
@@ -47,6 +49,11 @@ const SOURCE_PIXEL_WORLD: f32 = crate::battle_layout::SOURCE_PIXEL_WORLD;
 const BATTLE_CAMERA_FOV: f32 = crate::battle_layout::CAMERA_FOV;
 const PARTICLES: usize = 32;
 
+/// An image camera explicitly retaining ownership of the native HUD composite.
+/// Unrelated image cameras must not acquire the full battle scene.
+#[derive(Component)]
+pub struct BattleCompositeImageCamera;
+
 #[path = "battle_capture_bridge.rs"]
 mod capture_bridge;
 #[cfg(test)]
@@ -70,15 +77,15 @@ impl Plugin for BattleViewPlugin {
                 render_app.add_systems(
                     bevy::render::Render,
                     battle_composite_images_ready
-                        .in_set(bevy::render::RenderSet::PrepareAssets)
+                        .in_set(bevy::render::RenderSystems::PrepareAssets)
                         .after(
                             bevy::render::render_asset::prepare_assets::<
                                 bevy::render::texture::GpuImage,
                             >,
                         )
                         .before(
-                            bevy::render::render_asset::prepare_assets::<
-                                bevy::sprite::PreparedMaterial2d<BattleCompositeMaterial>,
+                            bevy::render::erased_render_asset::prepare_erased_assets::<
+                                MeshMaterial2d<BattleCompositeMaterial>,
                             >,
                         ),
                 );
@@ -92,8 +99,8 @@ impl Plugin for BattleViewPlugin {
         load_internal_asset!(
             app,
             BATTLE_COMPOSITE_SHADER,
-            "battle_composite.wgsl",
-            Shader::from_wgsl
+            "battle_composite.wesl",
+            Shader::from_wesl
         );
         app.init_resource::<VisualBattleFrame>()
             .init_resource::<crystal_render_api::BattleLocationFrame>()
@@ -110,23 +117,23 @@ impl Plugin for BattleViewPlugin {
             .add_systems(
                 PostUpdate,
                 trace_battle_visibility
-                    .after(bevy::render::view::VisibilitySystems::CheckVisibility),
+                    .after(bevy::camera::visibility::VisibilitySystems::CheckVisibility),
             )
             .add_systems(
                 PostUpdate,
                 sync_battle_target
                     .after(BattleCanvasExtract)
-                    .before(CameraUpdateSystem)
+                    .before(CameraUpdateSystems)
                     // These views start inactive. Activating after AddClusters
                     // leaves their first render without light uniforms and
                     // SetMeshViewBindGroup panics on the missing view query.
-                    .before(bevy::pbr::SimulationLightSystems::AddClusters),
+                    .before(bevy::light::SimulationLightSystems::AssignLightsToClusters),
             )
             .add_systems(
                 PostUpdate,
                 sync_battle_composite
-                    .after(CameraUpdateSystem)
-                    .before(bevy::transform::TransformSystem::TransformPropagate),
+                    .after(CameraUpdateSystems)
+                    .before(bevy::transform::TransformSystems::Propagate),
             )
             .add_systems(
                 Update,
@@ -182,7 +189,7 @@ struct BattleRowCompositeSprite;
 struct BattleRowCamera(usize);
 
 const BATTLE_COMPOSITE_SHADER: Handle<Shader> =
-    Handle::weak_from_u128(0x519a630f_8cf7_4303_bb48_30dbdbefb74d);
+    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x519a630f_8cf7_4303_bb48_30dbdbefb74d), std::marker::PhantomData);
 
 #[derive(Clone, Debug, PartialEq, ShaderType)]
 struct BattleCompositeUniform {
@@ -434,7 +441,7 @@ impl ActorInstance {
         meshes: &mut Assets<Mesh>,
         materials: &mut Assets<StandardMaterial>,
     ) {
-        commands.entity(self.entity).despawn_recursive();
+        commands.entity(self.entity).despawn();
         materials.remove(self.material.id());
         if let Some(mesh) = self.mesh {
             meshes.remove(mesh.id());
@@ -600,7 +607,7 @@ fn sync_battle_layout(
         return;
     }
     let viewport = windows
-        .get_single()
+        .single()
         .map_or(canvas.physical_size.as_vec2(), |window| {
             Vec2::new(
                 window.physical_width() as f32,
@@ -740,29 +747,27 @@ fn setup_battle_scene(
     scene.row_sizes = [UVec2::ONE; 2];
     for index in 0..2 {
         commands.spawn((
-            Camera3dBundle {
-                camera: Camera {
+            (Camera3d::default(), Msaa::Off,
+(Camera {
                     order: -2,
-                    target: RenderTarget::Image(scene.row_targets[index].clone()),
+
                     is_active: false,
                     clear_color: ClearColorConfig::Custom(Color::NONE),
-                    output_mode: bevy::render::camera::CameraOutputMode::Write {
+                    output_mode: bevy::camera::CameraOutputMode::Write {
                         blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
                         clear_color: ClearColorConfig::Custom(Color::NONE),
                     },
                     ..default()
-                },
-                exposure: bevy::render::camera::Exposure { ev100: 12.0 },
-                projection: Projection::Perspective(PerspectiveProjection {
+                }, RenderTarget::Image(scene.row_targets[index].clone().into())),
+bevy::camera::Exposure { ev100: 12.0 },
+Projection::Perspective(PerspectiveProjection {
                     fov: BATTLE_CAMERA_FOV,
                     near: 0.1,
                     far: 100.0,
                     ..default()
                 }),
-                transform: camera_pose(),
-                tonemapping: Tonemapping::AcesFitted,
-                ..default()
-            },
+camera_pose(),
+Tonemapping::AcesFitted,),
             RenderLayers::layer(BATTLE_ROW_LAYERS[index]),
             BattleRowCamera(index),
         ));
@@ -778,58 +783,50 @@ fn setup_battle_scene(
             enemy_rows: scene.row_targets[1].clone(),
         });
         commands.spawn((
-            MaterialMesh2dBundle {
-                mesh: meshes.add(battle_composite_mesh(false)).into(),
-                material: material.clone(),
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+            (Mesh2d(meshes.add(battle_composite_mesh(false)).into()),
+MeshMaterial2d(material.clone()),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
             BattleCompositeSprite,
         ));
         commands.spawn((
-            MaterialMesh2dBundle {
-                mesh: meshes.add(battle_composite_mesh(true)).into(),
-                material,
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+            (Mesh2d(meshes.add(battle_composite_mesh(true)).into()),
+MeshMaterial2d(material),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
             BattleRowCompositeSprite,
         ));
     }
 
     commands.spawn((
-        Camera3dBundle {
-            camera: Camera {
+        (Camera3d::default(), Msaa::Off,
+(Camera {
                 order: -1,
-                target: scene
-                    .render_target
-                    .as_ref()
-                    .map_or_else(RenderTarget::default, |image| {
-                        RenderTarget::Image(image.clone())
-                    }),
+
                 is_active: false,
                 clear_color: ClearColorConfig::Custom(rgb(palette(
                     VisualBattleEnvironment::Meadow,
                 )
                 .sky)),
                 ..default()
-            },
-            exposure: bevy::render::camera::Exposure { ev100: 12.0 },
-            projection: Projection::Perspective(PerspectiveProjection {
+            }, scene
+                    .render_target
+                    .as_ref()
+                    .map_or_else(RenderTarget::default, |image| {
+                        RenderTarget::Image(image.clone().into())
+                    })),
+bevy::camera::Exposure { ev100: 12.0 },
+Projection::Perspective(PerspectiveProjection {
                 fov: BATTLE_CAMERA_FOV,
                 near: 0.1,
                 far: 100.0,
                 ..default()
             }),
-            transform: camera_pose(),
-            tonemapping: Tonemapping::AcesFitted,
-            ..default()
-        },
+camera_pose(),
+Tonemapping::AcesFitted,),
         RenderLayers::layer(BATTLE_LAYER),
         BattleCamera,
-        FogSettings {
+        DistanceFog {
             color: rgb(palette(VisualBattleEnvironment::Meadow).sky),
             falloff: FogFalloff::Linear {
                 start: 19.0,
@@ -847,26 +844,23 @@ fn setup_battle_scene(
     #[cfg(target_arch = "wasm32")]
     let hardware_shadows = false;
     commands.spawn((
-        DirectionalLightBundle {
-            directional_light: DirectionalLight {
+        (DirectionalLight {
                 illuminance: 10_000.0,
-                shadows_enabled: hardware_shadows,
+                shadow_maps_enabled: hardware_shadows,
                 color: Color::srgb(1.0, 0.94, 0.82),
                 shadow_depth_bias: 0.015,
                 shadow_normal_bias: 0.6,
                 ..default()
             },
-            transform: Transform::from_xyz(6.0, 12.0, 8.0).looking_at(Vec3::ZERO, Vec3::Y),
-            cascade_shadow_config: CascadeShadowConfigBuilder {
+Transform::from_xyz(6.0, 12.0, 8.0).looking_at(Vec3::ZERO, Vec3::Y),
+CascadeShadowConfigBuilder {
                 num_cascades: 1,
                 maximum_distance: 40.0,
                 first_cascade_far_bound: 40.0,
                 ..default()
             }
             .build(),
-            visibility: Visibility::Hidden,
-            ..default()
-        },
+Visibility::Hidden,),
         RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_ROW_LAYERS[0], BATTLE_ROW_LAYERS[1]]),
         BattleLight,
     ));
@@ -897,12 +891,9 @@ fn setup_battle_scene(
     for _ in 0..PARTICLES {
         let entity = commands
             .spawn((
-                PbrBundle {
-                    mesh: scene.particle_mesh.clone(),
-                    material: scene.particle_materials[0].clone(),
-                    visibility: Visibility::Hidden,
-                    ..default()
-                },
+                (Mesh3d(scene.particle_mesh.clone()),
+MeshMaterial3d(scene.particle_materials[0].clone()),
+Visibility::Hidden,),
                 RenderLayers::layer(BATTLE_LAYER),
                 BattleParticle,
             ))
@@ -916,17 +907,14 @@ fn setup_battle_scene(
     }
     let mut ball_mesh = ball_mesh.into_mesh();
     if scene.vertex_lighting {
-        ball_mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::all();
+        ball_mesh.asset_usage = bevy::asset::RenderAssetUsages::all();
     }
     scene.ball_mesh = meshes.add(ball_mesh);
     let ball = commands
         .spawn((
-            PbrBundle {
-                mesh: scene.ball_mesh.clone(),
-                material: scene.surface_material.clone(),
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+            (Mesh3d(scene.ball_mesh.clone()),
+MeshMaterial3d(scene.surface_material.clone()),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_LAYER),
             BattleBall,
         ))
@@ -935,20 +923,17 @@ fn setup_battle_scene(
     let object_mesh = meshes.add(Rectangle::new(1.0, 1.0));
     for slot in 0..10 {
         commands.spawn((
-            PbrBundle {
-                mesh: object_mesh.clone(),
-                material: materials.add(StandardMaterial {
+            (Mesh3d(object_mesh.clone()),
+MeshMaterial3d(materials.add(StandardMaterial {
                     alpha_mode: AlphaMode::Mask(0.1),
                     unlit: true,
                     cull_mode: None,
                     ..default()
-                }),
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+                })),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_LAYER),
             BattleSourceObject(slot),
-            bevy::pbr::NotShadowCaster,
+            bevy::light::NotShadowCaster,
         ));
     }
     // A bounded companion pool adds depth to the currently visible source
@@ -962,21 +947,18 @@ fn setup_battle_scene(
     ];
     for slot in 0..10 {
         commands.spawn((
-            PbrBundle {
-                mesh: scene.source_effect_meshes[0].clone(),
-                material: materials.add(StandardMaterial {
+            (Mesh3d(scene.source_effect_meshes[0].clone()),
+MeshMaterial3d(materials.add(StandardMaterial {
                     alpha_mode: AlphaMode::Blend,
                     unlit: true,
                     cull_mode: None,
                     ..default()
-                }),
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+                })),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_LAYER),
             BattleModeledSourceEffect(slot),
-            bevy::pbr::NotShadowCaster,
-            bevy::pbr::NotShadowReceiver,
+            bevy::light::NotShadowCaster,
+            bevy::light::NotShadowReceiver,
         ));
     }
     let contact_mesh = meshes.add(contact_shadow_mesh().into_mesh());
@@ -988,16 +970,13 @@ fn setup_battle_scene(
     });
     for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
         commands.spawn((
-            PbrBundle {
-                mesh: contact_mesh.clone(),
-                material: contact_material.clone(),
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+            (Mesh3d(contact_mesh.clone()),
+MeshMaterial3d(contact_material.clone()),
+Visibility::Hidden,),
             RenderLayers::layer(BATTLE_LAYER),
             BattleContactShadow(side),
-            bevy::pbr::NotShadowCaster,
-            bevy::pbr::NotShadowReceiver,
+            bevy::light::NotShadowCaster,
+            bevy::light::NotShadowReceiver,
         ));
     }
 }
@@ -1033,7 +1012,7 @@ fn battle_composite_mesh(row_overlay: bool) -> Mesh {
 fn battle_row_target_image(size: UVec2) -> Image {
     let mut image = battle_target_image(size);
     image
-        .data
+        .data.as_mut().expect("CPU image pixels")
         .chunks_exact_mut(4)
         .for_each(|pixel| pixel[3] = 0);
     image
@@ -1050,7 +1029,7 @@ fn sync_battle_target(
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<BattleCompositeMaterial>>,
-    composites: Query<&Handle<BattleCompositeMaterial>, With<BattleCompositeSprite>>,
+    composites: Query<&MeshMaterial2d<BattleCompositeMaterial>, With<BattleCompositeSprite>>,
     mut battle_cameras: Query<
         (&mut Camera, &mut Projection),
         (With<BattleCamera>, Without<BattleRowCamera>),
@@ -1065,7 +1044,7 @@ fn sync_battle_target(
         Without<BattleCamera>,
     >,
 ) {
-    let output = windows.get_single().map_or(UVec2::ZERO, |window| {
+    let output = windows.single().map_or(UVec2::ZERO, |window| {
         UVec2::new(window.physical_width(), window.physical_height())
     });
     status.output_size = output;
@@ -1111,11 +1090,12 @@ fn sync_battle_target(
         camera.is_active = row_active;
         if row_active && scene.row_sizes[index] != status.render_size {
             let target = scene.row_targets[index].clone();
-            images.insert(target.id(), battle_row_target_image(status.render_size));
+            images.insert(target.id(), battle_row_target_image(status.render_size))
+                .expect("retained battle row target remains live");
             // Stable IDs get fresh GPU views. Invalidate the material binding,
             // even for a held frame or a zero-scroll first extraction tick.
             for handle in &composites {
-                if let Some(material) = materials.get_mut(handle) {
+                if let Some(mut material) = materials.get_mut(handle) {
                     if index == 0 {
                         material.player_rows = target.clone();
                     } else {
@@ -1138,17 +1118,18 @@ fn sync_battle_target(
     if active && scene.render_size != status.render_size {
         // Replace only this target's image contents; the stable handle keeps
         // the composite sprite bound across resize/fullscreen transitions.
-        images.insert(target.id(), battle_target_image(status.render_size));
+        images.insert(target.id(), battle_target_image(status.render_size))
+            .expect("retained battle target remains live");
         // Image replacement preserves its asset ID but creates a new GPU
         // texture view. Invalidate the composite bind group even when source
         // uniforms remain neutral; otherwise it samples the retired 1x1 sky.
         for handle in &composites {
-            if let Some(material) = materials.get_mut(handle) {
+            if let Some(mut material) = materials.get_mut(handle) {
                 material.texture = target.clone();
             }
         }
         // Image asset events are flushed in Last, after camera dimensions are
-        // updated. Marking Projection changed makes CameraUpdateSystem read
+        // updated. Marking Projection changed makes CameraUpdateSystems read
         // the new image extent this frame rather than rendering a stale size.
         for (_, mut projection) in &mut battle_cameras {
             projection.set_changed();
@@ -1185,20 +1166,22 @@ fn sync_battle_composite(
     cameras: Query<
         (
             &Camera,
-            &OrthographicProjection,
+            &Projection,
+            &RenderTarget,
             &Transform,
             Option<&RenderLayers>,
+            Has<BattleCompositeImageCamera>,
         ),
         (
-            With<bevy::core_pipeline::core_2d::Camera2d>,
+            With<bevy::camera::Camera2d>,
             Without<BattleCompositeSprite>,
             Without<BattleRowCompositeSprite>,
-            Without<Parent>,
+            Without<ChildOf>,
         ),
     >,
     mut sprites: Query<
         (
-            &Handle<BattleCompositeMaterial>,
+            &MeshMaterial2d<BattleCompositeMaterial>,
             &mut Transform,
             &mut Visibility,
             Option<&BattleRowCompositeSprite>,
@@ -1206,9 +1189,10 @@ fn sync_battle_composite(
         Or<(With<BattleCompositeSprite>, With<BattleRowCompositeSprite>)>,
     >,
 ) {
-    let camera = cameras.iter().find(|(camera, _, _, layers)| {
+    let camera = cameras.iter().find(|(camera, _, target, _, layers, image_composite)| {
         camera.is_active
-            && matches!(camera.target, RenderTarget::Window(_))
+            && (matches!(target, RenderTarget::Window(_))
+                || (*image_composite && matches!(target, RenderTarget::Image(_))))
             && layers.is_none_or(|layers| {
                 layers.intersects(&RenderLayers::layer(BATTLE_COMPOSITE_LAYER))
             })
@@ -1221,12 +1205,13 @@ fn sync_battle_composite(
         status.output_size.as_vec2(),
     );
     for (material, mut transform, mut visibility, row_overlay) in &mut sprites {
-        let Some((_, projection, camera, _)) =
+        let Some((_, projection, _, camera, _, _)) =
             camera.filter(|_| status.active && status.output_size.min_element() > 0)
         else {
             visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
+        let Projection::Orthographic(projection) = projection else { continue; };
         let (_, mut pose) = battle_composite_pose(projection, camera);
         if row_overlay.is_some() {
             if !frame
@@ -1253,10 +1238,10 @@ fn sync_battle_composite(
                 .oam_depth;
         }
         if materials
-            .get(material)
+            .get(&material.0)
             .is_some_and(|material| material.source != source)
         {
-            materials.get_mut(material).unwrap().source = source.clone();
+            materials.get_mut(&material.0).unwrap().source = source.clone();
         }
         transform.set_if_neq(pose);
         visibility.set_if_neq(Visibility::Visible);
@@ -1287,7 +1272,7 @@ fn sync_battle_scene(
         (
             &mut Camera,
             &mut Transform,
-            &mut FogSettings,
+            &mut DistanceFog,
             &mut Projection,
         ),
         (
@@ -1333,7 +1318,7 @@ fn sync_battle_scene(
         (
             &mut Transform,
             &mut Visibility,
-            &mut Handle<StandardMaterial>,
+            &mut MeshMaterial3d<StandardMaterial>,
         ),
         (
             With<BattleParticle>,
@@ -1464,7 +1449,7 @@ fn sync_battle_scene(
         scene.elapsed = 0.0;
     }
     scene.was_active = true;
-    scene.elapsed += time.delta_seconds().clamp(0.0, 0.1);
+    scene.elapsed += time.delta_secs().clamp(0.0, 0.1);
     let (dark, light) = source_environment_palette(frame.source.as_ref(), *flash_mode);
     let base_color = Color::srgb(1.0 - dark, 1.0 - dark, 1.0 - dark);
     let emissive = LinearRgba::new(light, light, light, 1.0);
@@ -1474,7 +1459,7 @@ fn sync_battle_scene(
         .get(&scene.surface_material)
         .is_some_and(|material| material.base_color != base_color || material.emissive != emissive)
     {
-        let material = materials.get_mut(&scene.surface_material).unwrap();
+        let mut material = materials.get_mut(&scene.surface_material).unwrap();
         material.base_color = base_color;
         material.emissive = emissive;
     }
@@ -1486,7 +1471,7 @@ fn sync_battle_scene(
     }
     if scene.arena_key != Some(frame.environment) {
         if let Some(entity) = scene.arena.take() {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
         }
         if let Some(mesh) = scene.arena_mesh.take() {
             meshes.remove(mesh.id());
@@ -1501,27 +1486,24 @@ fn sync_battle_scene(
         }
         let mut mesh = data.into_mesh();
         if scene.vertex_lighting {
-            mesh.asset_usage = bevy::render::render_asset::RenderAssetUsages::all();
+            mesh.asset_usage = bevy::asset::RenderAssetUsages::all();
         }
         let mesh = meshes.add(mesh);
         scene.arena = Some(
             commands
                 .spawn((
-                    PbrBundle {
-                        mesh: mesh.clone(),
-                        material: scene.surface_material.clone(),
-                        transform: Transform::from_scale(Vec3::new(
+                    (Mesh3d(mesh.clone()),
+MeshMaterial3d(scene.surface_material.clone()),
+Transform::from_scale(Vec3::new(
                             layout.arena_scale,
                             1.0,
                             layout.arena_scale,
                         )),
-                        visibility: if scenery.accepted() {
+if scenery.accepted() {
                             Visibility::Hidden
                         } else {
                             Visibility::Visible
-                        },
-                        ..default()
-                    },
+                        },),
                     RenderLayers::layer(BATTLE_LAYER),
                     BattleArena,
                 ))
@@ -1548,7 +1530,8 @@ fn sync_battle_scene(
             let mut data = part.mesh.into_mesh();
             if scene.vertex_lighting { data.asset_usage = RenderAssetUsages::all(); }
             let handle = meshes.add(data);
-            let child = commands.spawn((MaterialMeshBundle::<crate::scenery_surfaces::BattleSceneryMaterial> { mesh:handle.clone(), material:material.clone(), ..default() }, RenderLayers::layer(BATTLE_LAYER))).id();
+            let child = commands.spawn(((Mesh3d(handle.clone()),
+MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
             commands.entity(scene.arena.unwrap()).add_child(child);
             scene.arena_scenery.push((handle, material, image));
         }
@@ -1567,7 +1550,7 @@ fn sync_battle_scene(
             ),
             (&scene.ball_mesh, &scene.ball_neutral_colors),
         ] {
-            if let Some(mesh) = meshes.get_mut(handle) {
+            if let Some(mut mesh) = meshes.get_mut(handle) {
                 mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, surface_white_colors(neutral, light));
             }
         }
@@ -1682,17 +1665,14 @@ fn sync_battle_scene(
             });
             let entity = commands
                 .spawn((
-                    PbrBundle {
-                        mesh: mesh.clone().unwrap_or_else(|| scene.fallback_mesh.clone()),
-                        material: material.clone(),
-                        transform,
-                        visibility: if battler.visible {
+                    (Mesh3d(mesh.clone().unwrap_or_else(|| scene.fallback_mesh.clone())),
+MeshMaterial3d(material.clone()),
+transform,
+if battler.visible {
                             Visibility::Visible
                         } else {
                             Visibility::Hidden
-                        },
-                        ..default()
-                    },
+                        },),
                     battle_actor_layers(
                         &frame,
                         index,
@@ -1714,12 +1694,9 @@ fn sync_battle_scene(
                     );
                     let child = commands
                         .spawn((
-                            PbrBundle {
-                                mesh: mesh.clone(),
-                                material: material.clone(),
-                                visibility: Visibility::Inherited,
-                                ..default()
-                            },
+                            (Mesh3d(mesh.clone()),
+MeshMaterial3d(material.clone()),
+Visibility::Inherited,),
                             battle_actor_layers(&frame, index, false),
                             BattleActor,
                         ))
@@ -1741,7 +1718,7 @@ fn sync_battle_scene(
                 skinning::spawn(
                     &mut commands,
                     entity,
-                    meshes
+                    &mut meshes
                         .get_mut(mesh.as_ref().expect("modeled skin mesh"))
                         .expect("new skin mesh asset"),
                     &mut inverse_binds,
@@ -1799,9 +1776,9 @@ fn sync_battle_scene(
                 || instance.palette_colors != palette_colors
             {
                 if let (Some(data), Some(handle)) = (root_data, instance.mesh.as_ref()) {
-                    if let Some(mesh) = meshes.get_mut(handle) {
+                    if let Some(mut mesh) = meshes.get_mut(handle) {
                         apply_actor_palette(
-                            mesh,
+                            &mut mesh,
                             data,
                             instance.neutral_colors.as_deref(),
                             frame.source.as_ref(),
@@ -1813,9 +1790,9 @@ fn sync_battle_scene(
                 }
                 if let Some(animated) = &instance.animated {
                     for (wing, part) in animated.wings.iter().enumerate() {
-                        if let Some(mesh) = meshes.get_mut(&part.mesh) {
+                        if let Some(mut mesh) = meshes.get_mut(&part.mesh) {
                             apply_actor_palette(
-                                mesh,
+                                &mut mesh,
                                 &animated.rig.groups[wing + 1].mesh,
                                 part.neutral_colors.as_deref(),
                                 frame.source.as_ref(),
@@ -1870,7 +1847,7 @@ fn sync_battle_scene(
                     // Idle presentation owns its instance clock. It never
                     // reads/writes the authoritative move timeline or root.
                     if battler.visible {
-                        animated.elapsed = (animated.elapsed + time.delta_seconds())
+                        animated.elapsed = (animated.elapsed + time.delta_secs())
                             .rem_euclid(animated.rig.duration);
                     }
                     let poses = animated
@@ -1979,7 +1956,7 @@ fn sync_battle_source_registration(
         return;
     }
     let viewport = windows
-        .get_single()
+        .single()
         .map_or(canvas.physical_size.as_vec2(), |window| {
             Vec2::new(
                 window.physical_width() as f32,
@@ -2111,7 +2088,7 @@ fn projected_actor_footprint(
     pose: Transform,
     viewport: Vec2,
 ) -> Rect {
-    let view = layout.camera.compute_matrix().inverse();
+    let view = layout.camera.to_matrix().inverse();
     let tangent = (BATTLE_CAMERA_FOV * 0.5).tan();
     let aspect = viewport.max(Vec2::ONE).x / viewport.max(Vec2::ONE).y;
     let mut min = Vec2::splat(f32::INFINITY);
@@ -2338,7 +2315,7 @@ fn sync_source_objects(
         &BattleSourceObject,
         &mut Transform,
         &mut Visibility,
-        &Handle<StandardMaterial>,
+        &MeshMaterial3d<StandardMaterial>,
     )>,
 ) {
     for (slot, mut transform, mut visibility, material) in &mut objects {
@@ -2364,11 +2341,11 @@ fn sync_source_objects(
             0.0,
             object.uv_rect.min,
         );
-        if materials.get(material).is_some_and(|material| {
+        if materials.get(&material.0).is_some_and(|material| {
             material.base_color_texture.as_ref() != Some(texture)
                 || material.uv_transform != uv_transform
         }) {
-            let material = materials.get_mut(material).unwrap();
+            let mut material = materials.get_mut(&material.0).unwrap();
             material.base_color_texture = Some(texture.clone());
             material.uv_transform = uv_transform;
         }
@@ -2881,7 +2858,7 @@ fn capture_ball_mesh() -> SurfaceMeshData {
 }
 
 #[cfg(test)]
-mod tests {
+pub(super) mod tests {
     use super::*;
 
     fn pidgeotto_app(hz: u32) -> App {
@@ -3001,7 +2978,7 @@ mod tests {
             .party_index = Some(3);
         app.update();
         for (entity, handle) in old {
-            assert!(app.world().get_entity(entity).is_none());
+            assert!(app.world().get_entity(entity).is_err());
             assert!(!app.world().resource::<Assets<Mesh>>().contains(handle.id()));
         }
         assert!(
@@ -3055,7 +3032,7 @@ mod tests {
         app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0] = None;
         app.update();
         for (entity, handle) in parts {
-            assert!(app.world().get_entity(entity).is_none());
+            assert!(app.world().get_entity(entity).is_err());
             assert!(!app.world().resource::<Assets<Mesh>>().contains(handle.id()));
         }
     }
@@ -3230,8 +3207,47 @@ mod tests {
     }
 
     #[test]
+    fn battle_composite_image_camera_requires_explicit_hud_ownership() {
+        use bevy::camera::CameraProjection;
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<BattleScene>().quality = BattleRenderQuality::Balanced;
+        app.world_mut().spawn((Window::default(), bevy::window::PrimaryWindow));
+        let mut projection = OrthographicProjection::default_2d();
+        projection.update(640.0, 576.0);
+        let camera = app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(projection),
+            RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
+        )).id();
+        app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0));
+        let assert_composite = |app: &mut App, expected| {
+            let world = app.world_mut();
+            let visible: Vec<_> = world.query_filtered::<&Visibility, With<BattleCompositeSprite>>()
+                .iter(world).copied().collect();
+            assert_eq!(visible, vec![expected]);
+        };
+        app.update();
+        assert_composite(&mut app, Visibility::Visible);
+        let image = app.world_mut().resource_mut::<Assets<Image>>().add(Image::new_target_texture(
+            640, 576, TextureFormat::Rgba8UnormSrgb, None,
+        ));
+        app.world_mut().entity_mut(camera).insert(RenderTarget::Image(image.into()));
+        app.update();
+        assert_composite(&mut app, Visibility::Hidden);
+        app.world_mut().entity_mut(camera).insert(BattleCompositeImageCamera);
+        app.update();
+        assert_composite(&mut app, Visibility::Visible);
+        app.world_mut().entity_mut(camera).remove::<BattleCompositeImageCamera>();
+        app.update();
+        assert_composite(&mut app, Visibility::Hidden);
+        app.world_mut().entity_mut(camera).insert(RenderTarget::default());
+        app.update();
+        assert_composite(&mut app, Visibility::Visible);
+    }
+
+    #[test]
     fn battle_target_resize_and_f3_keep_native_hud_and_source_state() {
-        use bevy::render::camera::{CameraProjection, ScalingMode};
+        use bevy::camera::{CameraProjection, ScalingMode};
         let mut app = headless_battle_app();
         app.world_mut().resource_mut::<BattleScene>().quality = BattleRenderQuality::Balanced;
         app.world_mut()
@@ -3243,7 +3259,7 @@ mod tests {
             .world_mut()
             .spawn((
                 Window {
-                    resolution: bevy::window::WindowResolution::new(1180.0, 812.0),
+                    resolution: bevy::window::WindowResolution::new(1180, 812),
                     ..default()
                 },
                 bevy::window::PrimaryWindow,
@@ -3251,26 +3267,25 @@ mod tests {
             .id();
         // Match the production root HUD camera, including its specialized
         // 2D depth range, layer, minimum LCD extent and compositor order.
-        let mut hud_camera = Camera2dBundle::default();
-        hud_camera.camera.order = 1;
-        hud_camera.camera.clear_color = ClearColorConfig::None;
-        hud_camera.projection.scaling_mode = ScalingMode::AutoMin {
+        let mut hud_camera = Camera::default();
+        hud_camera.order = 1;
+        hud_camera.clear_color = ClearColorConfig::None;
+        let mut hud_projection = OrthographicProjection::default_2d();
+        hud_projection.scaling_mode = ScalingMode::AutoMin {
             min_width: 640.0,
             min_height: 576.0,
         };
-        hud_camera.projection.update(1180.0, 812.0);
+        hud_projection.update(1180.0, 812.0);
         let camera_id = app
             .world_mut()
-            .spawn((hud_camera, RenderLayers::layer(0)))
+            .spawn((Camera2d, hud_camera, Projection::Orthographic(hud_projection), RenderLayers::layer(0)))
             .id();
         let hud_transform = Transform::from_xyz(310.0, 210.0, 3.2);
         let hud = app
             .world_mut()
             .spawn((
-                SpriteBundle {
-                    transform: hud_transform,
-                    ..default()
-                },
+                (Sprite::default(),
+hud_transform,),
                 RenderLayers::layer(0),
             ))
             .id();
@@ -3286,7 +3301,7 @@ mod tests {
         let world = app.world_mut();
         assert_eq!(
             world
-                .query_filtered::<&Camera, With<bevy::core_pipeline::core_2d::Camera2d>>()
+                .query_filtered::<&Camera, With<bevy::camera::Camera2d>>()
                 .iter(world)
                 .count(),
             1,
@@ -3303,10 +3318,13 @@ mod tests {
                 .unwrap()
                 .resolution
                 .set(width as f32, height as f32);
-            app.world_mut()
-                .get_mut::<OrthographicProjection>(camera_id)
+            if let Projection::Orthographic(projection) = &mut *app
+                .world_mut()
+                .get_mut::<Projection>(camera_id)
                 .unwrap()
-                .update(width as f32, height as f32);
+            {
+                projection.update(width as f32, height as f32);
+            }
             app.world_mut()
                 .get_mut::<Transform>(camera_id)
                 .unwrap()
@@ -3337,21 +3355,21 @@ mod tests {
             );
             assert_eq!(app.world().get::<Transform>(hud), Some(&hud_transform));
             assert_eq!(*app.world().resource::<VisualBattleFrame>(), frame);
-            let projection = app
-                .world()
-                .get::<OrthographicProjection>(camera_id)
-                .unwrap()
-                .clone();
+            let projection = match app.world().get::<Projection>(camera_id).unwrap() {
+                Projection::Orthographic(projection) => projection.clone(),
+                _ => unreachable!("HUD camera must retain its orthographic projection"),
+            };
             let camera_transform = *app.world().get::<Transform>(camera_id).unwrap();
             let world = app.world_mut();
             let (composite, visibility) = world
                 .query_filtered::<(&Transform, &Visibility), With<BattleCompositeSprite>>()
-                .single(world);
+                .single(world)
+                .unwrap();
             assert_eq!(*visibility, Visibility::Visible);
             assert!(composite.translation.z < hud_transform.translation.z);
             let clip_from_sprite = projection.get_clip_from_view()
-                * camera_transform.compute_matrix().inverse()
-                * composite.compute_matrix();
+                * camera_transform.to_matrix().inverse()
+                * composite.to_matrix();
             for (x, y) in [(-1.0, -1.0), (1.0, -1.0), (-1.0, 1.0), (1.0, 1.0)] {
                 let half = Vec2::splat(0.5);
                 let clip = clip_from_sprite * Vec4::new(x * half.x, y * half.y, 0.0, 1.0);
@@ -3452,7 +3470,7 @@ mod tests {
             (actor.entity, actor.material.clone())
         };
         for image in 100..110 {
-            let texture = Handle::weak_from_u128(image);
+            let texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(image), std::marker::PhantomData);
             app.world_mut()
                 .resource_mut::<VisualBattleFrame>()
                 .source
@@ -3634,7 +3652,7 @@ mod tests {
             species_id: Arc::from("RATTATA"),
             pokedex_size_m: Some(1.0),
             party_index: Some(0),
-            texture: Handle::weak_from_u128(1),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -3698,7 +3716,7 @@ mod tests {
             species_id: Arc::from("CHIKORITA"),
             pokedex_size_m: Some(1.0),
             party_index: Some(3),
-            texture: Handle::weak_from_u128(1),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -3759,28 +3777,51 @@ mod tests {
     }
 
     pub(super) fn headless_battle_app() -> App {
+        headless_battle_app_with_asset_setup(false)
+    }
+
+    pub(super) fn headless_battle_app_with_asset_plugin() -> App {
+        headless_battle_app_with_asset_setup(true)
+    }
+
+    fn headless_battle_app_with_asset_setup(use_asset_plugin: bool) -> App {
         let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .init_resource::<Assets<Mesh>>()
-            .init_resource::<Assets<Image>>()
-            .init_resource::<Assets<StandardMaterial>>()
-            .insert_resource(VoxelViewSettings {
+        app.add_plugins(MinimalPlugins);
+        if use_asset_plugin {
+            use bevy::asset::{AssetApp, AssetPlugin};
+            app.add_plugins(AssetPlugin::default())
+                .init_asset::<Mesh>()
+                .init_asset::<Image>()
+                .init_asset::<StandardMaterial>()
+                .init_asset::<Shader>();
+        } else {
+            app.init_resource::<Assets<Mesh>>()
+                .init_resource::<Assets<Image>>()
+                .init_resource::<Assets<StandardMaterial>>();
+        }
+        app.insert_resource(VoxelViewSettings {
                 enabled: true,
                 ..Default::default()
             })
-            // Mirror PBR's camera initialization order in headless tests.
-            // Inactive actor cameras do not receive clusters at startup.
-            .add_systems(
-                PostUpdate,
-                bevy::pbr::add_clusters.in_set(bevy::pbr::SimulationLightSystems::AddClusters),
-            )
+            // Mirror the rendering plugins' camera requirements in this headless app.
+            .register_required_components::<Camera, bevy::render::view::Msaa>()
+            .register_required_components::<Camera3d, bevy::render::view::ColorGrading>()
+            .register_required_components::<Camera3d, bevy::camera::Exposure>()
+            .register_required_components_with::<Camera3d, bevy::core_pipeline::tonemapping::DebandDither>(|| {
+                bevy::core_pipeline::tonemapping::DebandDither::Enabled
+            })
+            .register_required_components_with::<Camera3d, bevy::render::camera::CameraRenderGraph>(|| {
+                bevy::render::camera::CameraRenderGraph::new(bevy::core_pipeline::schedule::Core3d)
+            })
+            .register_required_components::<Camera3d, bevy::core_pipeline::tonemapping::Tonemapping>()
+            .register_required_components::<Camera3d, bevy::light::cluster::Clusters>()
             .add_plugins(BattleViewPlugin);
         let battler = |side, species: &str| VisualBattleBattler {
             side,
             species_id: Arc::from(species),
             pokedex_size_m: Some(if species == "CYNDAQUIL" { 0.508 } else { 1.0 }),
             party_index: Some(side.index()),
-            texture: Handle::weak_from_u128(20 + side.index() as u128),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(20 + side.index() as u128), std::marker::PhantomData),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -3807,7 +3848,7 @@ mod tests {
             .world_mut()
             .spawn((
                 Window {
-                    resolution: (800.0, 600.0).into(),
+                    resolution: (800, 600).into(),
                     ..default()
                 },
                 bevy::window::PrimaryWindow,
@@ -3956,6 +3997,7 @@ mod tests {
                 !world
                     .query_filtered::<&Camera, With<BattleCamera>>()
                     .single(world)
+                    .unwrap()
                     .is_active
             );
             assert!(
@@ -3976,6 +4018,7 @@ mod tests {
             !world
                 .query_filtered::<&Camera, With<BattleCamera>>()
                 .single(world)
+                .unwrap()
                 .is_active
         );
     }
@@ -3991,7 +4034,7 @@ mod tests {
                 [0.3, 0.3, 0.3, 1.0],
                 [0.0, 0.0, 0.0, 1.0],
             ]; 2],
-            battler_textures: [Handle::weak_from_u128(50), Handle::weak_from_u128(51)],
+            battler_textures: [Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(50), std::marker::PhantomData), Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(51), std::marker::PhantomData)],
             battler_offsets: [Vec2::new(4.0, 0.0), Vec2::ZERO],
             screen_offset: Vec2::ZERO,
             line_x_offsets: None,
@@ -4000,8 +4043,8 @@ mod tests {
             objects: vec![crystal_render_api::VisualBattleSourceObject {
                 slot: 0,
                 object_id: Arc::from("PRESENTED_SOURCE_OBJECT"),
-                texture: Handle::weak_from_u128(60),
-                neutral_texture: Handle::weak_from_u128(61),
+                texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(60), std::marker::PhantomData),
+                neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(61), std::marker::PhantomData),
                 center: Vec2::new(92.0, 68.0),
                 size: Vec2::splat(16.0),
                 uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
@@ -4060,7 +4103,7 @@ mod tests {
         );
         let world = app.world_mut();
         let material = world
-            .query::<(&BattleSourceObject, &Handle<StandardMaterial>)>()
+            .query::<(&BattleSourceObject, &MeshMaterial3d<StandardMaterial>)>()
             .iter(world)
             .find(|(slot, _)| slot.0 == 0)
             .unwrap()
@@ -4072,7 +4115,7 @@ mod tests {
                 .get(&material)
                 .unwrap()
                 .base_color_texture,
-            Some(Handle::weak_from_u128(61)),
+            Some(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(61), std::marker::PhantomData)),
             "reduced mode retains OAM/frame but suppresses object palette cycling"
         );
     }
@@ -4355,7 +4398,7 @@ mod tests {
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
         app.world_mut()
             .resource_mut::<VisualBattleFrame>()
@@ -4485,7 +4528,7 @@ mod tests {
                     .all(|visibility| *visibility == Visibility::Hidden)
             );
             let material = world
-                .query::<(&BattleSourceObject, &Handle<StandardMaterial>)>()
+                .query::<(&BattleSourceObject, &MeshMaterial3d<StandardMaterial>)>()
                 .iter(world)
                 .find(|(slot, _)| slot.0 == 0)
                 .map(|(_, material)| material.clone())
@@ -4496,7 +4539,7 @@ mod tests {
                 .unwrap();
             assert_eq!(
                 material.base_color_texture,
-                Some(Handle::weak_from_u128(60))
+                Some(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(60), std::marker::PhantomData))
             );
             assert_eq!(material.uv_transform.transform_point2(Vec2::ZERO), crop.min);
             assert_eq!(material.uv_transform.transform_point2(Vec2::ONE), crop.max);
@@ -4739,7 +4782,7 @@ mod tests {
             );
             assert_eq!(
                 world
-                    .query_filtered::<&Mesh2dHandle, With<BattleCompositeSprite>>()
+                    .query_filtered::<&Mesh2d, With<BattleCompositeSprite>>()
                     .iter(world)
                     .count(),
                 1
@@ -4799,7 +4842,7 @@ mod tests {
             .world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow))
             .id();
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
         app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
         app.update();
         app.update();
@@ -4944,11 +4987,11 @@ mod tests {
         {
             let world = app.world_mut();
             let mut rows = world
-                .query_filtered::<(&Camera, Option<&bevy::pbr::Clusters>), With<BattleRowCamera>>();
+                .query_filtered::<(&Camera, Option<&bevy::light::cluster::Clusters>), With<BattleRowCamera>>();
             assert_eq!(rows.iter(world).count(), 2);
             assert!(
                 rows.iter(world)
-                    .all(|(camera, clusters)| !camera.is_active && clusters.is_none())
+                    .all(|(camera, clusters)| !camera.is_active && clusters.is_some())
             );
         }
         let mut source = source_test_frame(0xe4);
@@ -4962,7 +5005,7 @@ mod tests {
         let world = app.world_mut();
         assert!(
             world
-                .query_filtered::<(&Camera, Option<&bevy::pbr::Clusters>), With<BattleRowCamera>>()
+                .query_filtered::<(&Camera, Option<&bevy::light::cluster::Clusters>), With<BattleRowCamera>>()
                 .iter(world)
                 .all(|(camera, clusters)| camera.is_active && clusters.is_some()),
             "a first-use view must be eligible for light uniform preparation in the same frame"
@@ -4974,7 +5017,7 @@ mod tests {
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
         let mut source = source_test_frame(0xe4);
         source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
             source_y: Vec2::new(48.0, 64.0),
@@ -4995,21 +5038,22 @@ mod tests {
         );
         {
             let world = app.world_mut();
-            for (_, camera, fxaa, fog) in world
+            for (_, camera, hdr, fxaa, fog) in world
                 .query::<(
                     &BattleRowCamera,
                     &Camera,
+                    Option<&bevy::camera::Hdr>,
                     Option<&Fxaa>,
-                    Option<&FogSettings>,
+                    Option<&DistanceFog>,
                 )>()
                 .iter(world)
             {
-                assert!(!camera.hdr);
+                assert!(hdr.is_none());
                 assert!(
                     matches!(camera.clear_color, ClearColorConfig::Custom(color) if color == Color::NONE)
                 );
                 assert!(
-                    matches!(camera.output_mode, bevy::render::camera::CameraOutputMode::Write {
+                    matches!(camera.output_mode, bevy::camera::CameraOutputMode::Write {
                     blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
                     clear_color: ClearColorConfig::Custom(color),
                 } if color == Color::NONE)
@@ -5022,7 +5066,7 @@ mod tests {
             let image = battle_row_target_image(UVec2::new(8, 8));
             assert!(
                 image
-                    .data
+                    .data.as_ref().expect("CPU image pixels")
                     .chunks_exact(4)
                     .all(|pixel| pixel == [0, 0, 0, 0])
             );
@@ -5037,7 +5081,7 @@ mod tests {
         );
         {
             let world = app.world_mut();
-            let overlay = world.query_filtered::<(&Handle<BattleCompositeMaterial>, &Transform, &Visibility), With<BattleRowCompositeSprite>>().single(world);
+            let overlay = world.query_filtered::<(&MeshMaterial2d<BattleCompositeMaterial>, &Transform, &Visibility), With<BattleRowCompositeSprite>>().single(world).unwrap();
             assert_eq!(
                 overlay.1.translation.z, 3.9,
                 "row overlay must inherit the current source OAM depth"
@@ -5115,7 +5159,7 @@ mod tests {
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
         app.update();
         app.update();
         app.world_mut().resource_mut::<VisualBattleFrame>().battlers[1]
@@ -5218,7 +5262,7 @@ mod tests {
     fn fallback_card_keeps_native_size_and_projected_bottom_footing() {
         let app = headless_battle_app();
         let frame = app.world().resource::<VisualBattleFrame>();
-        let camera_from_world = camera_pose().compute_matrix().inverse();
+        let camera_from_world = camera_pose().to_matrix().inverse();
         let screen = |point: Vec3| {
             let view = camera_from_world.transform_point3(point);
             Vec2::new(view.x / -view.z, view.y / -view.z)
@@ -5248,7 +5292,7 @@ mod tests {
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn(Camera2dBundle::default());
+        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
         {
             let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
             let player = frame.battlers[0].as_mut().unwrap();
@@ -5342,7 +5386,7 @@ fn trace_battle_visibility(
             &Camera,
             &GlobalTransform,
             &Projection,
-            &bevy::render::view::VisibleEntities,
+            &bevy::camera::visibility::VisibleEntities,
         ),
         With<BattleCamera>,
     >,
@@ -5352,7 +5396,7 @@ fn trace_battle_visibility(
             &GlobalTransform,
             &Visibility,
             &ViewVisibility,
-            Option<&bevy::render::primitives::Aabb>,
+            Option<&bevy::camera::primitives::Aabb>,
         ),
         Or<(With<BattleActor>, With<BattleArena>)>,
     >,
@@ -5374,7 +5418,7 @@ fn trace_battle_visibility(
             camera.physical_viewport_size(),
             transform,
             projection,
-            visible.get::<With<Handle<Mesh>>>()
+            visible.get(std::any::TypeId::of::<Mesh3d>())
         );
     }
     for (entity, transform, visibility, view, bounds) in &objects {

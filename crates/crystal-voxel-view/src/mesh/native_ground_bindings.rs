@@ -308,13 +308,19 @@ pub(super) fn append(
         }
         Kind::Grass => {
             for i in p.indices(g.width) {
-                let appended = modeled_exteriors::append_grass(
+                let appended = modeled_exteriors::append_connected_grass(
                     &mut mesh.solid,
                     p.binding.map,
                     cells[i],
                     g,
                     0.0,
                     p.grid_origin,
+                    [(-1isize, 0isize), (1, 0), (0, -1), (0, 1)].map(|(dx, dz)| {
+                        let x = (i % g.width) as isize + dx;
+                        let z = (i / g.width) as isize + dz;
+                        x >= 0 && z >= 0 && x < g.width as isize && z < g.height as isize
+                            && crate::grass::grass_shape(&cells[z as usize * g.width + x as usize].source).is_some()
+                    }),
                 );
                 debug_assert!(appended, "verified Johto grass source must append");
             }

@@ -1530,17 +1530,17 @@ fn new_game_name_choice_uses_source_menu_over_player_portrait_lcd() {
     let image = images
         .get(&retained.texture)
         .expect("retained name-choice backdrop image");
-    assert!(image.data.chunks_exact(4).all(|pixel| pixel[3] == 255));
+    assert!(image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255));
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel != [255, 255, 255, 255]),
         "NamePlayer must retain the shifted player portrait and OakText6 behind its menu"
     );
     let top_right = (19 * SOURCE_TILE_SIZE) * 4;
     assert_eq!(
-        &image.data[top_right..top_right + 4],
+        &image.data.as_ref().expect("CPU image pixels")[top_right..top_right + 4],
         &[255, 255, 255, 255],
         "the untouched LCD background must remain source-white"
     );
@@ -1586,7 +1586,7 @@ fn custom_player_name_return_retains_naming_then_clears_and_redraws_portrait() {
         images
             .get(&blank_texture)
             .expect("cleared custom-name LCD")
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .all(|pixel| pixel == [255, 255, 255, 255]),
         "ClearTilemap and WaitBGMap must expose the source-white LCD beneath the white palette"
@@ -1604,14 +1604,14 @@ fn custom_player_name_return_retains_naming_then_clears_and_redraws_portrait() {
     let image = images.get(&portrait_texture).expect("redrawn player LCD");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel != [255, 255, 255, 255]),
         "DrawIntroPlayerPic must redraw the source player portrait before fade-in"
     );
     let textbox_start = OAK_INTRO_TEXTBOX_Y * SOURCE_TILE_SIZE * 160 * 4;
     assert!(
-        image.data[textbox_start..]
+        image.data.as_ref().expect("CPU image pixels")[textbox_start..]
             .chunks_exact(4)
             .all(|pixel| pixel == [255, 255, 255, 255]),
         "ClearTilemap means OakText6 must not be invented after custom naming"
@@ -1665,20 +1665,20 @@ fn fullscreen_name_choices_separate_portrait_text_and_controls() {
     for _ in 0..40 { tick_visible_player_name_choice(&mut shell).unwrap(); }
     mark_runtime_snapshot_dirty(&mut shell);
     let mut app = integrated_shell_test_app(shell);
-    app.world_mut().spawn((Window { resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0), ..default() }, bevy::window::PrimaryWindow));
+    app.world_mut().spawn((Window { resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0), ..default() }, bevy::window::PrimaryWindow));
     app.add_systems(Startup, setup_fullscreen_scene).add_systems(PostUpdate,
         (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
     app.update();
     let world = app.world_mut();
-    let (sprite, transform) = world.query_filtered::<(&Sprite, &Transform), With<VisibleIntroSurface>>().single(world);
+    let (sprite, transform) = world.query_filtered::<(&Sprite, &Transform), With<VisibleIntroSurface>>().single(world).unwrap();
     assert_eq!(sprite.rect.unwrap().size(), Vec2::splat(56.0));
     assert!(sprite.custom_size.unwrap().y > 800.0);
     assert!(transform.translation.x < 0.0);
-    let (sprite, transform, visibility) = world.query_filtered::<(&Sprite, &Transform, &Visibility), With<FullscreenBootDialogue>>().single(world);
+    let (sprite, transform, visibility) = world.query_filtered::<(&Sprite, &Transform, &Visibility), With<FullscreenBootDialogue>>().single(world).unwrap();
     assert_eq!(*visibility, Visibility::Inherited);
     assert_eq!(sprite.custom_size, Some(Vec2::new(640.0, 192.0)));
     assert!(transform.translation.y < -500.0);
-    let controls = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+    let controls = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world).unwrap();
     assert_eq!(controls.scale, Vec3::ONE);
     assert!(controls.translation.x > 500.0);
 }
@@ -2955,11 +2955,12 @@ fn stats_shiny_palette_loads_the_two_source_colors() {
 }
 
 fn render_pc_audit_canvas(world: &mut World, images: &Assets<Image>, label: &str) -> image::RgbaImage {
-        let mut query = world.query::<(&Sprite, &Transform, &Handle<Image>)>();
+        let mut query = world.query::<(&Sprite, &Transform)>();
         let mut sprites = query.iter(&world).collect::<Vec<_>>();
         sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
         let mut canvas = image::RgbaImage::new(PLAYFIELD_WIDTH as u32, PLAYFIELD_HEIGHT as u32);
-        for (sprite, transform, handle) in sprites {
+        for (sprite, transform) in sprites {
+            let handle = &sprite.image;
             let size = sprite.custom_size.expect("explicit sprite size");
             let left = transform.translation.x - size.x / 2.0 - PLAYFIELD_LEFT;
             let top = PLAYFIELD_TOP - transform.translation.y - size.y / 2.0;
@@ -2968,7 +2969,7 @@ fn render_pc_audit_canvas(world: &mut World, images: &Assets<Image>, label: &str
             assert!(top >= -0.01 && top + size.y <= PLAYFIELD_HEIGHT + 0.01,
                 "{label}: vertical clipping at {top} with height {}", size.y);
             let mut raster = if let Some(source) = images.get(handle) {
-                image::RgbaImage::from_raw(source.width(), source.height(), source.data.clone())
+                image::RgbaImage::from_raw(source.width(), source.height(), source.data.as_ref().expect("CPU image pixels").clone())
                     .expect("RGBA sprite")
             } else {
                 // Bevy's default image handle is its solid white sprite texture.
@@ -3094,7 +3095,7 @@ fn pc_unown_portraits_load_all_dv_selected_forms() {
         let mut images = Assets::<Image>::default();
         let picture = load_pc_pokemon_picture(&root, Some(&visible_pc_pokemon_info(&pokemon)),
             true, &mut images).expect("PC Stats must load the DV-selected Unown frontpic");
-        assert!(portraits.insert(images.get(&picture.handle).unwrap().data.clone()),
+        assert!(portraits.insert(images.get(&picture.handle).unwrap().data.as_ref().expect("CPU image pixels").clone()),
             "Unown form {} repeated another form", letter + 1);
     }
 }
@@ -3300,7 +3301,7 @@ fn unown_solved_cancel_box_uses_the_source_void_tile() {
     };
     let mut images = Assets::<Image>::default();
     let frame = render_visible_unown_puzzle_frame(&sources, &puzzle, false, &mut images).unwrap();
-    let pixels = &images.get(&frame.handle).unwrap().data;
+    let pixels = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     for y in 128..136 { for x in 40..120 {
         let offset = (y * 160 + x) * 4;
         assert_eq!(&pixels[offset..offset + 4], &[248, 248, 248, 255],
@@ -3328,9 +3329,9 @@ fn save_live_menu_lcd_for_test(world: &mut World, name: &str) {
     let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else {
         return;
     };
-    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>),
+    let sprites = world.query_filtered::<(&Sprite, &Transform),
         Or<(With<FieldCommandMarker>, With<SceneDialogMarker>, With<VisibleIntroSurface>)>>()
-        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+        .iter(world).map(|(sprite, transform)| (sprite.clone(), *transform))
         .collect::<Vec<_>>();
     let mut lcd = World::new();
     for sprite in sprites {
@@ -3372,7 +3373,7 @@ fn party_and_stats_retain_the_lcd_through_live_input_and_idle_frames() {
             .resource::<Assets<Image>>()
             .get(&frame.handle)
             .unwrap()
-            .data;
+            .data.as_ref().expect("CPU image pixels");
         assert!(
             pixels.chunks_exact(4).all(|pixel| pixel[3] == 255),
             "party background must be fully opaque"
@@ -3483,7 +3484,7 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
             let directory = PathBuf::from(directory);
             std::fs::create_dir_all(&directory).unwrap();
             let image = images.get(&frame.handle).unwrap();
-            image::RgbaImage::from_raw(image.width(), image.height(), image.data.clone())
+            image::RgbaImage::from_raw(image.width(), image.height(), image.data.as_ref().expect("CPU image pixels").clone())
                 .unwrap()
                 .save(directory.join(name))
                 .unwrap();
@@ -3492,7 +3493,7 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
     let mut images = Assets::<Image>::default();
     let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
     save_frame(&images, &frame, "party-egg.png");
-    let pixels = &images.get(&frame.handle).unwrap().data;
+    let pixels = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     for x in 3..6 {
         assert_eq!(
             tile(pixels, x, 1),
@@ -3509,7 +3510,7 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
     }
 
     let frame = load_visible_field_party_frame(&snapshot, &shell, 1, &mut images).unwrap();
-    let pixels = &images.get(&frame.handle).unwrap().data;
+    let pixels = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     expected.fill(255);
     draw_time_set_text(&font, "▶CANCEL", 0, 3 * 8, &mut expected).unwrap();
     for x in 0..7 {
@@ -3525,7 +3526,7 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
     snapshot.party.slots[0].pokemon.hp = snapshot.party.slots[0].pokemon.max_hp;
     let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
     save_frame(&images, &frame, "party-level100.png");
-    let pixels = &images.get(&frame.handle).unwrap().data;
+    let pixels = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     expected.fill(255);
     draw_time_set_text(&font, "100", 64, 16, &mut expected).unwrap();
     for x in 8..11 {
@@ -3568,7 +3569,7 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
     let top = 18 - 2 * (actions.len() + 1);
     let frame = load_visible_field_party_frame(&snapshot, &shell, 0, &mut images).unwrap();
     save_frame(&images, &frame, "party-actions.png");
-    let pixels = &images.get(&frame.handle).unwrap().data;
+    let pixels = &images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels");
     expected.fill(255);
     draw_time_set_text(&font, "STATS", 64, (top + 2) * 8, &mut expected).unwrap();
     for x in 8..13 {

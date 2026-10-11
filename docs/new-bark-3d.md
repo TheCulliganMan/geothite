@@ -44,7 +44,7 @@ Violet's Center/Gym doors stay at (31,25)/(18,17).
 
 ## Native local play
 
-Use Rust 1.94 and a compatible external content pack, as documented in
+Use Rust 1.99.0 and a compatible external content pack, as documented in
 `game-content.md`. Packs remain ignored and are not included in source bundles.
 
 ```sh

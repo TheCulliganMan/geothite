@@ -10,9 +10,9 @@ use bevy::prelude::*;
 pub(super) fn register(app: &mut App) {
     app.add_systems(
         PostUpdate,
-        sync.after(bevy::render::camera::CameraUpdateSystem)
-            .after(bevy::transform::TransformSystem::TransformPropagate)
-            .before(bevy::render::view::VisibilitySystems::VisibilityPropagate),
+        sync.after(bevy::camera::CameraUpdateSystems)
+            .after(bevy::transform::TransformSystems::Propagate)
+            .before(bevy::camera::visibility::VisibilitySystems::VisibilityPropagate),
     );
 }
 
@@ -151,7 +151,7 @@ pub(super) fn sync(
         .is_some_and(|visibility| *visibility != Visibility::Hidden);
     let selection = if !status.active || !terrain_visible {
         Selection::Hidden
-    } else if let Ok((camera, projection, transform)) = cameras.get_single() {
+    } else if let Ok((camera, projection, transform)) = cameras.single() {
         if !camera.is_active {
             Selection::Hidden
         } else if let Some(uniform) = cache
@@ -163,7 +163,7 @@ pub(super) fn sync(
             if uniform.bottom_radius.w <= 0.0 {
                 Selection::Hidden
             } else if let Some(padding) = pixel_padding(camera, projection) {
-                reveal_bounds(uniform, transform.compute_matrix(), padding)
+                reveal_bounds(uniform, transform.to_matrix(), padding)
             } else {
                 Selection::All
             }
@@ -179,7 +179,7 @@ pub(super) fn sync(
         if !changed && !transform.is_changed() && !visibility.is_added() {
             continue;
         }
-        let next = if may_expose(selection, batch, transform.compute_matrix()) {
+        let next = if may_expose(selection, batch, transform.to_matrix()) {
             Visibility::Inherited
         } else {
             Visibility::Hidden
@@ -227,7 +227,7 @@ mod tests {
                     let camera = crate::camera::VoxelCameraControls::new(zoom, orbit)
                         .pose(viewport)
                         .transform();
-                    let world_from_view = camera.compute_matrix();
+                    let world_from_view = camera.to_matrix();
                     let uniform = CutawayUniform::for_player(Vec3::ZERO, 16.0).unwrap();
                     let selection = reveal_bounds(uniform, world_from_view, Vec2::splat(0.002));
                     let Selection::Bounds {
@@ -283,9 +283,10 @@ mod tests {
         app.add_plugins((
             MinimalPlugins,
             bevy::transform::TransformPlugin,
-            bevy::render::view::VisibilityPlugin,
+            bevy::camera::visibility::VisibilityPlugin,
         ))
         .init_resource::<Assets<Mesh>>()
+        .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>()
         .init_resource::<Assets<VoxelMaterial>>()
         .init_resource::<TerrainRevisionCache>()
         .init_resource::<VoxelViewStatus>();
@@ -298,8 +299,8 @@ mod tests {
             .world_mut()
             .resource_mut::<Assets<VoxelMaterial>>()
             .add(material);
-        let root = app.world_mut().spawn(SpatialBundle::default()).id();
-        let main = app.world_mut().spawn(SpatialBundle::default()).id();
+        let root = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
+        let main = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         {
             let mut cache = app.world_mut().resource_mut::<TerrainRevisionCache>();
             cache.solid_entity = Some(main);
@@ -308,27 +309,25 @@ mod tests {
         let camera = app
             .world_mut()
             .spawn((
-                Camera3dBundle {
-                    camera: Camera {
-                        viewport: Some(bevy::render::camera::Viewport {
+                (Camera3d::default(), Msaa::Off,
+Camera {
+                        viewport: Some(bevy::camera::Viewport {
                             physical_size: UVec2::new(1180, 812),
                             ..default()
                         }),
                         ..default()
                     },
-                    projection: Projection::Perspective(PerspectiveProjection {
+Projection::Perspective(PerspectiveProjection {
                         aspect_ratio: 1180.0 / 812.0,
                         ..default()
-                    }),
-                    ..default()
-                },
+                    }),),
                 VoxelWorldCamera,
             ))
             .id();
         let batch = app
             .world_mut()
             .spawn((
-                SpatialBundle::default(),
+                (Transform::default(), Visibility::default()),
                 MazeRevealBatch {
                     min: Vec3::new(-2.0, 2.0, -70.0),
                     max: Vec3::new(2.0, 12.0, -65.0),
@@ -436,7 +435,7 @@ mod tests {
             .cutaway = CutawayUniform::for_player(Vec3::new(0.0, 0.0, -50.0), 16.0).unwrap();
         // An unsupported projection restores all faces rather than guessing.
         *app.world_mut().get_mut::<Projection>(camera).unwrap() =
-            Projection::Orthographic(default());
+            Projection::Orthographic(OrthographicProjection::default_3d());
         app.update();
         assert!(visible(&app));
         assert_eq!(

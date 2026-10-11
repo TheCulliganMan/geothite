@@ -1,11 +1,12 @@
 //! External static scenery keeps its UVs and cutout materials separate from
 //! the pack atlas and the opaque authored geometry.
+use bevy::asset::RenderAssetUsages;
 use crate::mesh::SurfaceMeshData;
 use base64::Engine as _;
 use bevy::{
     prelude::*,
     render::{
-        render_asset::RenderAssetUsages,
+
         render_resource::{Extent3d, TextureDimension, TextureFormat},
     },
 };
@@ -21,8 +22,8 @@ pub(crate) enum TextureWrap {
     Repeat,
 }
 impl TextureWrap {
-    fn address(self) -> bevy::render::texture::ImageAddressMode {
-        use bevy::render::texture::ImageAddressMode;
+    fn address(self) -> bevy::image::ImageAddressMode {
+        use bevy::image::ImageAddressMode;
         match self {
             Self::Clamp => ImageAddressMode::ClampToEdge,
             Self::Mirror => ImageAddressMode::MirrorRepeat,
@@ -100,11 +101,11 @@ impl SceneryTexture {
             TextureFormat::Rgba8UnormSrgb,
             RenderAssetUsages::all(),
         );
-        image.sampler = bevy::render::texture::ImageSampler::Descriptor(
-            bevy::render::texture::ImageSamplerDescriptor {
+        image.sampler = bevy::image::ImageSampler::Descriptor(
+            bevy::image::ImageSamplerDescriptor {
                 address_mode_u: self.wrap_u.address(),
                 address_mode_v: self.wrap_v.address(),
-                ..bevy::render::texture::ImageSamplerDescriptor::linear()
+                ..bevy::image::ImageSamplerDescriptor::linear()
             },
         );
         image
@@ -148,7 +149,8 @@ pub(crate) fn append_group(groups: &mut Vec<ScenerySurface>, part: ScenerySurfac
 use bevy::{
     pbr::{ExtendedMaterial, MaterialExtension},
     reflect::TypePath,
-    render::render_resource::{AsBindGroup, ShaderRef},
+    render::render_resource::AsBindGroup,
+    shader::ShaderRef,
 };
 pub(crate) type BattleSceneryMaterial = ExtendedMaterial<StandardMaterial, SceneryCue>;
 #[derive(Asset, AsBindGroup, TypePath, Clone, Default)]
@@ -157,7 +159,7 @@ pub(crate) struct SceneryCue {
     pub cue: Vec4,
 }
 const CUE_SHADER: Handle<Shader> =
-    Handle::weak_from_u128(0x7988_20fb_1192_42ab_81c5_c178_5343_8c02);
+    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x7988_20fb_1192_42ab_81c5_c178_5343_8c02), std::marker::PhantomData);
 impl MaterialExtension for SceneryCue {
     fn fragment_shader() -> ShaderRef {
         CUE_SHADER.into()
@@ -166,7 +168,7 @@ impl MaterialExtension for SceneryCue {
 pub(crate) fn register_cue_material(app: &mut App) {
     app.init_resource::<Assets<BattleSceneryMaterial>>();
     if app.world().contains_resource::<AssetServer>() {
-        bevy::asset::load_internal_asset!(app, CUE_SHADER, "scenery_cue.wgsl", Shader::from_wgsl);
+        bevy::asset::load_internal_asset!(app, CUE_SHADER, "scenery_cue.wesl", Shader::from_wesl);
         app.add_plugins(bevy::pbr::MaterialPlugin::<BattleSceneryMaterial>::default());
     }
 }
@@ -190,22 +192,22 @@ mod tests {
     fn cutouts_keep_alpha_srgb_and_the_source_wrap_mode() {
         let texture = SceneryTexture::decode(encoded()).unwrap();
         let image = texture.image();
-        assert_eq!(image.data, [80, 120, 70, 0, 80, 120, 70, 255]);
+        assert_eq!(image.data.as_ref().expect("CPU image pixels").as_slice(), [80, 120, 70, 0, 80, 120, 70, 255]);
         assert_eq!(
             image.texture_descriptor.format,
             TextureFormat::Rgba8UnormSrgb
         );
         assert_eq!(texture.alpha_mode(), AlphaMode::Mask(0.5));
-        let bevy::render::texture::ImageSampler::Descriptor(sampler) = image.sampler else {
+        let bevy::image::ImageSampler::Descriptor(sampler) = image.sampler else {
             panic!("explicit sampler required")
         };
         assert!(matches!(
             sampler.address_mode_u,
-            bevy::render::texture::ImageAddressMode::Repeat
+            bevy::image::ImageAddressMode::Repeat
         ));
         assert!(matches!(
             sampler.address_mode_v,
-            bevy::render::texture::ImageAddressMode::ClampToEdge
+            bevy::image::ImageAddressMode::ClampToEdge
         ));
         assert!(texture.double_sided);
     }

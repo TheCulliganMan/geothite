@@ -85,13 +85,35 @@ fn parse_model<'a>(
 }
 
 macro_rules! prop_mesh {
-    ("battle_chikorita") => { crate::species_rig::rig(crate::species_rig::Species::Chikorita).neutral.clone() };
-    ("battle_cyndaquil") => { crate::species_rig::rig(crate::species_rig::Species::Cyndaquil).neutral.clone() };
-    ("battle_totodile") => { crate::species_rig::rig(crate::species_rig::Species::Totodile).neutral.clone() };
+    ("chris_bike") => { crate::bicycle::mesh(false) };
+    ("kris_bike") => { crate::bicycle::mesh(true) };
+    ("battle_chikorita") => {
+        crate::species_rig::rig(crate::species_rig::Species::Chikorita)
+            .neutral
+            .clone()
+    };
+    ("battle_cyndaquil") => {
+        crate::species_rig::rig(crate::species_rig::Species::Cyndaquil)
+            .neutral
+            .clone()
+    };
+    ("battle_totodile") => {
+        crate::species_rig::rig(crate::species_rig::Species::Totodile)
+            .neutral
+            .clone()
+    };
     ($label:literal) => {{
         static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-        MODEL.get_or_init(|| parse_model(crate::model_storage::include_model!(concat!("models/actor_props/", $label, ".mesh.json")))
-            .expect(concat!("valid original actor asset: ", $label))).clone()
+        MODEL
+            .get_or_init(|| {
+                parse_model(crate::model_storage::include_model!(concat!(
+                    "models/actor_props/",
+                    $label,
+                    ".mesh.json"
+                )))
+                .expect(concat!("valid original actor asset: ", $label))
+            })
+            .clone()
     }};
 }
 
@@ -484,6 +506,42 @@ mod exact_visible_species_tests {
             assert_eq!(
                 prop_kind_for_source(&source),
                 Some(PropKind::ExactSpecies(name))
+            );
+            let model = mesh(PropKind::ExactSpecies(name));
+            assert_eq!(model.positions.len(), model.normals.len(), "{name}");
+            assert_eq!(model.positions.len(), model.colors.len(), "{name}");
+            assert!(model.indices.len() >= 60, "{name}");
+            assert!(
+                model
+                    .indices
+                    .iter()
+                    .all(|&i| (i as usize) < model.positions.len()),
+                "{name}"
+            );
+            assert!(
+                model.positions.iter().flatten().all(|v| v.is_finite()),
+                "{name}"
+            );
+            let lo = std::array::from_fn::<_, 3, _>(|axis| {
+                model
+                    .positions
+                    .iter()
+                    .map(|p| p[axis])
+                    .fold(f32::INFINITY, f32::min)
+            });
+            let hi = std::array::from_fn::<_, 3, _>(|axis| {
+                model
+                    .positions
+                    .iter()
+                    .map(|p| p[axis])
+                    .fold(f32::NEG_INFINITY, f32::max)
+            });
+            assert!(lo[1].abs() < 0.0001, "{name}");
+            assert!((0..3).all(|axis| hi[axis] - lo[axis] > 0.005), "{name}");
+            assert!(
+                model.normals.iter().all(|n| n.iter().all(|v| v.is_finite())
+                    && (n.iter().map(|v| v * v).sum::<f32>() - 1.0).abs() < 0.0001),
+                "{name}"
             );
         }
     }

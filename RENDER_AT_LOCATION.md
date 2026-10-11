@@ -4,10 +4,10 @@ The `crystal-bevy` location tester renders the faithful 2D compositor and the
 optional 2.5D mod at the same runtime map coordinate. It is a developer-only
 example; the default game build remains faithful 2D.
 
-Run commands from `rust/` and use an absolute pack path:
+Run commands from this repository's root with the ignored local content pack:
 
 ```sh
-PACK=/absolute/path/to/core-modular.crystalpack
+PACK="$PWD/content-packs/realtime-clock.browser.crystalpack"
 ```
 
 ## Discover maps
@@ -51,6 +51,45 @@ cargo run -q -p crystal-bevy \
 ```
 
 Unknown maps and out-of-bounds coordinates fail explicitly.
+
+For an explicit native one-shot capture into an image target, set
+`CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image` on the same command. For example:
+
+```sh
+CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image cargo run -q -p crystal-bevy \
+  --example render_at_location --features location-tester -- \
+  --pack "$PACK" --map GoldenrodGameCorner --view 2.5d \
+  --screenshot /tmp/goldenrod-game-corner.png
+```
+
+This uses the production cameras, render order, physical dimensions, viewport
+and scale factor. Other image targets retain their ownership. It is a
+deliberately selected verification mode, never a retry after a blank window
+capture; the ordinary window capture still fails if its frame is blank.
+Image-target capture supports one-shot runs, including paired views, and
+rejects `--live`. Unset the variable or select `window` to capture the actual
+window surface. A visible image-target capture verifies that GPU presentation,
+but does not verify the window surface itself.
+
+## Inspect outdoor art in the browser
+
+The production browser preview builder requires `wasm-bindgen-cli` 0.2.128,
+matching `Cargo.lock`. Set `WASM_BINDGEN` to that executable if a different
+version is installed globally. The Rust server needs the ignored core pack
+as its input; it derives the realtime-clock/customization pack itself.
+
+```sh
+CRYSTAL_PACK="$PWD/content-packs/core-modular.browser.crystalpack" \
+  tools/new-bark-3d-web.sh
+CRYSTAL_DATA_DIR=target/new-bark-3d-data \
+  target/debug/crystal-web-server --dir target/new-bark-3d-web --port 3003
+```
+
+Open `http://localhost:3003/?multiplayer=off&preview=route26` for the southern
+clearing, `preview=route26-canyon` for the canyon, or `preview=route29` for
+Route 29. These outdoor presets start at 45 degrees with save persistence
+disabled. The canyon location is an art inspection point, not a walking test.
+Generated bundles, server data and packs stay ignored.
 
 ## Render a map grid
 

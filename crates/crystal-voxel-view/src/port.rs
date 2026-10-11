@@ -6,6 +6,21 @@ use crate::profile::{CellShape, GROUND_HEIGHT, SolidKind};
 
 pub(crate) const SHIP_HEIGHT: f32 = 28.0;
 
+pub(crate) fn cerulean_floor_source(map: &str, source: &VisualTileSource) -> bool {
+    if map != "CeruleanGym" || source.tileset_id.as_ref() != "port"
+        || source.tile_index != 0x0a || source.subtile_column >= 4 || source.subtile_row >= 4 {
+        return false;
+    }
+    let mask: u16 = match source.metatile_id {
+        0x2b => 0xff00,
+        0x2e | 0x37 => 0x3333,
+        0x2f | 0x38 => 0xcccc,
+        0x31 => 0xffff,
+        _ => return false,
+    };
+    mask & (1 << (source.subtile_row * 4 + source.subtile_column)) != 0
+}
+
 pub(crate) fn port_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tileset_id.as_ref() != "port" {
         return None;
@@ -13,8 +28,8 @@ pub(crate) fn port_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tile_index == 0x14 {
         return Some(CellShape::Water);
     }
-    // Cerulean Gym's Kanto water room reuses compact floating barrel/pot
-    // drawings from this atlas. They are shallow props, never ship hulls.
+    // Cerulean Gym's pink brick bridges and wooden front courses reuse
+    // this atlas. Preserve their shallow baseline; they are not barrel props.
     if matches!(source.metatile_id, 0x2e..=0x31 | 0x36..=0x39)
         && matches!(source.tile_index, 0x0a | 0x0b | 0x22)
     {
@@ -108,7 +123,7 @@ mod tests {
     }
 
     #[test]
-    fn cerulean_water_room_barrels_are_small_relief_not_ship_geometry() {
+    fn cerulean_bridges_keep_a_shallow_baseline_below_ship_geometry() {
         assert!(matches!(
             port_shape(&source(0x30, 0x0a)),
             Some(CellShape::Relief {

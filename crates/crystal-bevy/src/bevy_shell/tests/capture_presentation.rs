@@ -11,9 +11,9 @@ fn capture_presentation_assert_drawn_text(shell: &BevyRuntimeShell, expected: &s
         scene.battle.as_ref().unwrap(), &mut art, &shell.asset_root, &mut images,
     ).unwrap();
     queue.apply(&mut world);
-    let actual = world.query::<(&Handle<Image>, &Transform)>().iter(&world)
+    let actual = world.query::<(&Sprite, &Transform)>().iter(&world)
         .filter(|(_, transform)| (transform.translation.z - 3.8).abs() < 0.001)
-        .map(|(image, transform)| (image.clone(), transform.translation.truncate()))
+        .map(|(image, transform)| (image.image.clone(), transform.translation.truncate()))
         .collect::<Vec<_>>();
     let mut expected_glyphs = Vec::new();
     for (row, line) in expected.split('\n').enumerate() {

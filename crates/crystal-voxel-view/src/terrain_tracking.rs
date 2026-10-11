@@ -1,4 +1,6 @@
 //! Keep one authored geometry/atlas pair anchored while the camera scrolls.
+#[cfg(test)]
+use bevy::asset::RenderAssetUsages;
 use bevy::prelude::*;
 use crystal_render_api::VisualWorldFrame;
 
@@ -76,15 +78,16 @@ pub(super) fn refresh_animation(
         let index = (old.y * width + old.x) as usize;
         if built.tiles[index].texture != tile.texture {
             let image = images.get(&tile.texture).ok_or(())?;
-            if image.width() != 8 || image.height() != 8 || image.data.len() != 256 {
+            if image.width() != 8 || image.height() != 8 || image.data.as_ref().expect("CPU image pixels").len() != 256 {
                 return Err(());
             }
-            flowers_changed |= crate::flower::flower_shape(&tile.source).is_some();
-            updates.push((index, tile.texture.clone(), image.data.clone()));
+            flowers_changed |= crate::flower::flower_shape(&tile.source).is_some()
+                || crate::mesh::animated_pillar_source(live.map_id.as_ref(), &tile.source);
+            updates.push((index, tile.texture.clone(), image.data.as_ref().expect("CPU image pixels").clone()));
         }
     }
     if !updates.is_empty() {
-        let atlas = images.get_mut(&built.map_texture).ok_or(())?;
+        let mut atlas = images.get_mut(&built.map_texture).ok_or(())?;
         if atlas.width() != width as u32 * 8 || atlas.height() != height as u32 * 8 {
             return Err(());
         }
@@ -93,7 +96,7 @@ pub(super) fn refresh_animation(
             let y = index / width as usize * 8;
             for row in 0..8 {
                 let start = ((y + row) * width as usize * 8 + x) * 4;
-                atlas.data[start..start + 32].copy_from_slice(&pixels[row * 32..row * 32 + 32]);
+                atlas.data.as_mut().expect("CPU image pixels")[start..start + 32].copy_from_slice(&pixels[row * 32..row * 32 + 32]);
             }
             built.tiles[index].texture = handle;
         }
@@ -156,7 +159,7 @@ mod tests {
                         subtile_row: 0,
                         tile_index: id,
                     },
-                    texture: Handle::weak_from_u128(id as u128 + 1),
+                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(id as u128 + 1), std::marker::PhantomData),
                     priority: false,
                 });
             }
@@ -188,15 +191,16 @@ mod tests {
         built.tiles[400].source.tileset_id = "johto".into();
         built.tiles[400].source.tile_index = 3;
         let mut live = built.clone();
-        live.tiles[400].texture = Handle::weak_from_u128(900000);
+        live.tiles[400].texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900000), std::marker::PhantomData);
         assert!(can_reuse(&built, &live));
     }
 
     #[test]
     fn animated_pixels_update_the_built_slot_after_viewport_shift() {
-        use bevy::render::{
-            render_asset::RenderAssetUsages,
-            render_resource::{Extent3d, TextureDimension, TextureFormat},
+        use bevy::{
+
+            render::render_resource::{
+            Extent3d, TextureDimension, TextureFormat},
         };
         let mut images = Assets::<Image>::default();
         let make = |size: u32, color: [u8; 4]| {
@@ -228,16 +232,16 @@ mod tests {
         }
         live.tiles[14 * 28 + 12].texture = animated;
         // Host scroll overwrites its own image while the old mesh is visible.
-        images.get_mut(&live_atlas).unwrap().data.fill(222);
-        assert_eq!(&images.get(&owned).unwrap().data[..4], &[10, 20, 30, 255]);
+        images.get_mut(&live_atlas).unwrap().data.as_mut().expect("CPU image pixels").fill(222);
+        assert_eq!(&images.get(&owned).unwrap().data.as_ref().expect("CPU image pixels")[..4], &[10, 20, 30, 255]);
         assert!(can_reuse(&built, &live));
         refresh_animation(&mut built, &live, &mut images).unwrap();
         let image = images.get(&owned).unwrap();
         let old_slot = ((14 * 8) * 224 + 14 * 8) * 4;
         let scrolling_slot = ((14 * 8) * 224 + 12 * 8) * 4;
-        assert_eq!(&image.data[old_slot..old_slot + 4], &[80, 90, 100, 255]);
+        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[old_slot..old_slot + 4], &[80, 90, 100, 255]);
         assert_eq!(
-            &image.data[scrolling_slot..scrolling_slot + 4],
+            &image.data.as_ref().expect("CPU image pixels")[scrolling_slot..scrolling_slot + 4],
             &[10, 20, 30, 255]
         );
     }

@@ -9,7 +9,8 @@ use crystal_render_api::VisualTileSource;
 pub(crate) const FLOOR_TILE: u16 = 0x10;
 
 pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {
-    if map_id != "FuchsiaGym" || source.tileset_id.as_ref() != "lab" {
+    if map_id != "FuchsiaGym" || source.tileset_id.as_ref() != "lab"
+        || source.subtile_column >= 4 || source.subtile_row >= 4 {
         return None;
     }
 
@@ -22,6 +23,11 @@ pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u
         [usize::from(source.subtile_row)][usize::from(local_column)];
 
     (source.tile_index == expected).then_some((local_column, source.subtile_row))
+}
+
+pub(crate) fn north_wall_local(s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if s.tileset_id.as_ref()!="lab" || s.metatile_id!=0x0d || s.subtile_column>=4 || s.subtile_row>=2 {return None;}
+    (s.tile_index==[0x01,0x11][s.subtile_row as usize]).then_some((s.subtile_column,s.subtile_row,4,2))
 }
 
 #[cfg(test)]

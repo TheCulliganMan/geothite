@@ -98,7 +98,7 @@ fn capture_fixture_present_real_throw(
                 }
             }
         }
-        result.saw_sprite |= world.query::<&Handle<Image>>().iter(&world).next().is_some();
+        result.saw_sprite |= world.query::<&Sprite>().iter(&world).next().is_some();
         advance_visible_capture_animation(&mut controller.shell).unwrap();
     }
     assert!(!controller.shell.visible_capture_animation.as_ref()

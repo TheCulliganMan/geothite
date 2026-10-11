@@ -649,7 +649,7 @@ impl SpeciesRig {
             return Err("species matrices need exact joint storage");
         }
         for (i, joint) in self.joints.iter().enumerate() {
-            let local = pose[i].compute_matrix();
+            let local = pose[i].to_matrix();
             matrices[i] = joint
                 .parent
                 .map_or(local, |parent| matrices[parent] * local);
@@ -1009,7 +1009,7 @@ fn read_joints(species: Species, gltf: &gltf::Gltf, binary: &[u8]) -> Result<Vec
         if i == 0 && bind != Transform::IDENTITY {
             return Err("species root must stay identity".into());
         }
-        let local = bind.compute_matrix();
+        let local = bind.to_matrix();
         globals[i] = parents[i].map_or(local, |p| globals[p] * local);
         if !inverse[i].is_finite()
             || (globals[i] * inverse[i])

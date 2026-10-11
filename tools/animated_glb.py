@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Deterministic stdlib-only animated GLB exporter for the human catalog.
+"""Shared GLB primitives and the authored Pidgeotto exporter.
 
-Rigid anatomy is animated with glTF node rotations. No pretend skin, baked
-root motion, vertex welding, decimation, normal repair or geometry recentering.
-The human catalog and production Pidgeotto wing rig are canonical. JSON rigs
-are transient authoring inputs; articulation demos remain optional exports.
+Legacy human catalogs and their exporter have been removed.
 """
 import argparse
 import hashlib
@@ -12,7 +9,6 @@ import json
 import math
 import struct
 from pathlib import Path
-from functools import lru_cache
 
 COORDINATES = '+Y up; front +Z; floor-centered root'
 MODEL_ROOT = Path('crates/crystal-voxel-view/models')
@@ -53,52 +49,6 @@ def validate_geometry(geometry):
         length = sum(v * v for v in normals[i:i + 3]) ** .5
         if abs(length - 1) > 1e-4:
             raise ValueError('source normal is not unit length')
-
-
-def validate_library(library):
-    if set(library) != {'version', 'id', 'geometries'} or library['version'] != 1:
-        raise ValueError('unsupported library')
-    if sha(canonical({'version': 1, 'geometries': library['geometries']})) != library['id']:
-        raise ValueError('library content identity mismatch')
-    for geometry in library['geometries']:
-        if set(geometry) != set(GEOMETRY_KEYS):
-            raise ValueError('unexpected library geometry field')
-        validate_geometry(geometry)
-
-
-def resolve_rig(rig, library):
-    if rig['coordinate_system'] != COORDINATES:
-        raise ValueError('unsupported coordinate system')
-    version = rig['version']
-    if version not in (1, 2):
-        raise ValueError('unsupported rig version')
-    if version == 2 and rig.get('geometry_library') != library['id']:
-        raise ValueError('rig/library identity mismatch')
-    names = set()
-    joints = []
-    for i, joint in enumerate(rig['joints']):
-        name, parent, translation = (joint[k] for k in ('name', 'parent', 'translation'))
-        if name in names or (parent is not None and (type(parent) is not int or not 0 <= parent < i)):
-            raise ValueError('duplicate joint or invalid parent order')
-        names.add(name)
-        if len(translation) != 3 or any(not math.isfinite(v) for v in translation):
-            raise ValueError('invalid bind translation')
-        primitives = []
-        for p in joint['primitives']:
-            if version == 2:
-                if set(p) != {'geometry', 'base_color'} or type(p['geometry']) is not int or not 0 <= p['geometry'] < len(library['geometries']):
-                    raise ValueError('invalid geometry reference')
-                geometry = library['geometries'][p['geometry']]
-            else:
-                if set(p) != {*GEOMETRY_KEYS, 'base_color'}:
-                    raise ValueError('invalid inline primitive')
-                geometry = {key: p[key] for key in GEOMETRY_KEYS}
-            validate_geometry(geometry)
-            primitives.append({**geometry, 'base_color': p['base_color']})
-        if not primitives:
-            raise ValueError('joint without geometry')
-        joints.append({**joint, 'primitives': primitives})
-    return {**rig, 'joints': joints}
 
 
 class Glb:
@@ -212,45 +162,6 @@ class Glb:
         return (struct.pack('<III', 0x46546C67, 2, 12 + 8 + len(js) + 8 + len(binary)) +
                 struct.pack('<II', len(js), 0x4E4F534A) + js +
                 struct.pack('<II', len(binary), 0x004E4942) + binary)
-
-
-def export_humans(rigs, library, animations='demo'):
-    """One scene per rig; one shared accessor set per geometry across all scenes."""
-    validate_library(library)
-    if animations not in ('demo', 'locomotion', 'none'):
-        raise ValueError('unknown human animation mode')
-    glb = Glb()
-    for rig in sorted(rigs, key=lambda r: r['name']):
-        expanded = resolve_rig(rig, library)
-        roots, node_ids = [], {}
-        for i, joint in enumerate(expanded['joints']):
-            original = rig['joints'][i]
-            parent = node_ids[original['parent']] if original['parent'] is not None else None
-            value = {'name': joint['name'], 'translation': joint['translation'],
-                'mesh': glb.mesh(f"{rig['name']}/{joint['name']}", joint['primitives']),
-                'extras': {'sourceJoint': i, 'sourceParent': joint['parent'],
-                           'sourceGeometry': [p.get('geometry') for p in original['primitives']]}}
-            node_ids[i] = glb.node(value, parent)
-            if parent is None:
-                roots.append(node_ids[i])
-        glb.doc['scenes'].append({'name': rig['name'], 'nodes': roots,
-            'extras': {'sourceSchemaVersion': rig['version'], 'geometryLibrary': rig.get('geometry_library'),
-                       'coordinateSystem': rig['coordinate_system'], 'sourceRigSha256': sha(canonical(rig))}})
-        by_name = {joint['name']: node_ids[i] for i, joint in enumerate(rig['joints'])}
-        required = ('upper_arm_r', 'forearm_r', 'hand_r')
-        if animations == 'locomotion':
-            from human_locomotion import locomotion_clips
-            binds = {joint['name']: joint['translation'] for joint in rig['joints']}
-            for clip in locomotion_clips(binds):
-                glb.sampled_clip(f"{rig['name']}.{clip['name']}", clip['times'],
-                                 [(by_name[t['joint']], t['path'], t['values']) for t in clip['tracks']],
-                                 clip['extras'])
-        if animations == 'demo' and all(name in by_name for name in required):
-            glb.clip(f"{rig['name']}.rig_wave_demo", [0, .4, .8, 1.2, 1.6], [
-                (by_name['upper_arm_r'], [0, 0, 1], [0, 1.05, 1.05, 1.05, 0]),
-                (by_name['forearm_r'], [0, 0, 1], [0, .45, .9, .45, 0]),
-                (by_name['hand_r'], [0, 1, 0], [0, -.35, .35, -.35, 0])])
-    return glb.bytes()
 
 
 def pidgeotto_groups(model):
@@ -380,193 +291,3 @@ def accessor_values(doc, binary, index):
         return values
     except (KeyError, IndexError, TypeError, struct.error) as error:
         raise ValueError('unsupported or malformed accessor') from error
-
-
-CATALOG_FILE = 'catalog.glb'
-
-
-def read_catalog(path):
-    """Read canonical GLB scenes as expanded rigs; geometry arrays stay shared.
-
-    Consumers must treat the returned data as read-only. No old JSON file or
-    Blender installation is needed. Only the exported rigid-joint subset is
-    accepted, so a future unsupported transform cannot silently alter checks.
-    """
-    doc, binary = parse_glb(Path(path).read_bytes())
-    if doc.get('asset', {}).get('version') != '2.0' or doc.get('skins') or doc.get('extensionsRequired'):
-        raise ValueError('unsupported character GLB schema')
-    buffers = doc.get('buffers', [])
-    if len(buffers) != 1 or 'uri' in buffers[0] or not 0 <= len(binary) - buffers[0]['byteLength'] <= 3:
-        raise ValueError('expected one complete embedded GLB buffer')
-    nodes = doc['nodes']
-    parents = {}
-    for parent, node in enumerate(nodes):
-        if any(k in node for k in ('matrix', 'rotation', 'scale', 'skin', 'weights')):
-            raise ValueError('unsupported bind transform or skin')
-        for child in node.get('children', []):
-            if type(child) is not int or not parent < child < len(nodes) or child in parents:
-                raise ValueError('invalid parent order or duplicate child')
-            parents[child] = parent
-    geometry_cache, materials = {}, doc['materials']
-    result, claimed = {}, set()
-    node_scene = {}
-    for scene in doc['scenes']:
-        name = scene['name']
-        if not isinstance(name, str) or not name or name in result:
-            raise ValueError('duplicate or missing scene name')
-        if scene.get('extras', {}).get('coordinateSystem') != COORDINATES:
-            raise ValueError('unsupported coordinate system')
-        roots = scene['nodes']
-        if not roots or any(type(i) is not int or not 0 <= i < len(nodes) or i in parents for i in roots):
-            raise ValueError('invalid scene roots')
-        pending, members = list(roots), set()
-        while pending:
-            index = pending.pop()
-            if index in members or index in claimed:
-                raise ValueError('node reused between scenes or roots')
-            members.add(index)
-            pending.extend(nodes[index].get('children', []))
-        claimed.update(members)
-        ordered = sorted(members)
-        local_ids = {index: local for local, index in enumerate(ordered)}
-        joints, joint_names = [], set()
-        for index in ordered:
-            node = nodes[index]
-            joint_name = node['name']
-            if joint_name in joint_names:
-                raise ValueError('duplicate joint name')
-            joint_names.add(joint_name)
-            translation = node.get('translation', [0, 0, 0])
-            if len(translation) != 3 or any(not math.isfinite(v) for v in translation):
-                raise ValueError('invalid bind translation')
-            mesh = doc['meshes'][node['mesh']]
-            if 'weights' in mesh or not mesh['primitives']:
-                raise ValueError('missing rigid geometry or morph weights')
-            primitives = []
-            for primitive in mesh['primitives']:
-                if primitive.get('mode', 4) != 4 or set(primitive['attributes']) != {'POSITION', 'NORMAL'} or 'targets' in primitive:
-                    raise ValueError('unsupported mesh primitive')
-                key = (primitive['attributes']['POSITION'], primitive['attributes']['NORMAL'], primitive['indices'])
-                if key not in geometry_cache:
-                    for ref, kind, component in zip(key, ('VEC3', 'VEC3', 'SCALAR'), (5126, 5126, 5125)):
-                        accessor = doc['accessors'][ref]
-                        if accessor['type'] != kind or accessor['componentType'] != component:
-                            raise ValueError('unsupported geometry accessor')
-                    geometry = dict(zip(GEOMETRY_KEYS, (accessor_values(doc, binary, ref) for ref in key)))
-                    validate_geometry(geometry)
-                    geometry_cache[key] = geometry
-                material = materials[primitive['material']]
-                color = material['pbrMetallicRoughness']['baseColorFactor']
-                if len(color) != 4 or any(not math.isfinite(v) or not 0 <= v <= 1 for v in color):
-                    raise ValueError('invalid RGBA')
-                primitives.append({**geometry_cache[key], 'base_color': color})
-            parent = parents.get(index)
-            joints.append({'name': joint_name, 'parent': local_ids[parent] if parent is not None else None,
-                           'translation': translation, 'primitives': primitives})
-            node_scene[index] = name
-        result[name] = {'version': 1, 'name': name, 'coordinate_system': COORDINATES, 'joints': joints}
-    if claimed != set(range(len(nodes))):
-        raise ValueError('unreferenced character nodes')
-    names = set()
-    for clip in doc.get('animations', []):
-        if clip['name'] in names:
-            raise ValueError('duplicate animation name')
-        names.add(clip['name'])
-        scene_names, targets = set(), set()
-        for channel in clip['channels']:
-            node = channel['target']['node']
-            path = channel['target']['path']
-            if node not in node_scene or path not in ('rotation', 'translation', 'scale') or (node, path) in targets:
-                raise ValueError('unsupported animation target')
-            targets.add((node, path))
-            scene_names.add(node_scene[node])
-            sampler = clip['samplers'][channel['sampler']]
-            if sampler.get('interpolation', 'LINEAR') != 'LINEAR':
-                raise ValueError('unsupported animation interpolation')
-            times = accessor_values(doc, binary, sampler['input'])
-            values = accessor_values(doc, binary, sampler['output'])
-            width = 4 if path == 'rotation' else 3
-            input_accessor, output_accessor = (doc['accessors'][sampler[key]] for key in ('input', 'output'))
-            if input_accessor['type'] != 'SCALAR' or output_accessor['type'] != ('VEC4' if width == 4 else 'VEC3'):
-                raise ValueError('invalid animation accessor type')
-            if input_accessor['componentType'] != 5126 or output_accessor['componentType'] != 5126:
-                raise ValueError('invalid animation component type')
-            if times != sorted(set(times)) or times[0] < 0 or len(values) != len(times) * width:
-                raise ValueError('invalid animation samples')
-            if path == 'rotation' and any(abs(sum(v*v for v in values[i:i+4]) - 1) > 1e-5 for i in range(0, len(values), 4)):
-                raise ValueError('invalid animation quaternion')
-        if len(scene_names) != 1:
-            raise ValueError('animation crosses scene boundary')
-    return result
-
-
-@lru_cache(maxsize=4)
-def _cached_catalog(path, modified, size):
-    return read_catalog(path)
-
-
-def load_catalog(directory):
-    path = (Path(directory) / CATALOG_FILE).resolve()
-    stat = path.stat()
-    return _cached_catalog(str(path), stat.st_mtime_ns, stat.st_size)
-
-
-def load_rig(directory, name):
-    return load_catalog(directory)[name]
-
-
-def export_directory(directory, output):
-    """Convert transient authored rigs; no JSON sidecars are retained."""
-    from johto_character_geometry import compact_models, read_models
-    expanded = read_models(Path(directory))
-    if not expanded:
-        raise ValueError('no authored human rigs found')
-    library, rigs = compact_models(expanded)
-    blob = export_humans(list(rigs.values()), library, animations='locomotion')
-    output = Path(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_bytes(blob)
-    return blob
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--rig-directory', type=Path, help='transient JSON authoring inputs')
-    parser.add_argument('--output', type=Path, help='canonical catalog.glb destination')
-    # Compatibility entry point for the optional native proof example.
-    parser.add_argument('--repo', type=Path)
-    parser.add_argument('--out', type=Path)
-    parser.add_argument('--human-catalog', action='store_true')
-    args = parser.parse_args()
-    if args.rig_directory is not None:
-        if args.output is None or args.repo is not None or args.out is not None:
-            parser.error('--rig-directory requires --output and cannot combine with --repo/--out')
-        output = {args.output: export_directory(args.rig_directory, args.output)}
-    elif args.repo is not None and args.out is not None and args.output is None:
-        models = args.repo / MODEL_ROOT
-        directory = models / 'johto_characters'
-        if (directory / CATALOG_FILE).exists():
-            from johto_character_geometry import compact_models
-            library, packed_rigs = compact_models({name + '.rig.json': rig for name, rig in load_catalog(directory).items()})
-            rigs = list(packed_rigs.values())
-        else:
-            library = read_json(directory / 'shared.geometry.json')
-            rigs = [read_json(p) for p in sorted(directory.glob('*.rig.json'))]
-        trainer = next(rig for rig in rigs if rig['name'] == 'trainer')
-        from pidgeotto_glb import load_pidgeotto
-        output = {args.out / 'trainer.glb': export_humans([trainer], library),
-                  args.out / 'pidgeotto.glb': export_pidgeotto(load_pidgeotto(models / 'battle_species'))}
-        if args.human_catalog:
-            output[args.out / 'johto_characters.glb'] = export_humans(rigs, library)
-    else:
-        parser.error('use --rig-directory/--output or --repo/--out')
-    for path, blob in output.items():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(blob)
-        doc, _ = parse_glb(blob)
-        print(json.dumps({'file': str(path), 'bytes': len(blob), 'sha256': sha(blob),
-                          'scenes': len(doc['scenes']), 'animations': len(doc['animations'])}))
-
-
-if __name__ == '__main__':
-    main()

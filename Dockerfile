@@ -1,4 +1,4 @@
-FROM rust:1.94-bookworm AS build
+FROM rust:1.99.0-bookworm AS build
 WORKDIR /source
 
 RUN rustup target add wasm32-unknown-unknown \
@@ -7,7 +7,6 @@ RUN rustup target add wasm32-unknown-unknown \
 WORKDIR /source/rust
 COPY Cargo.toml Cargo.lock ./
 COPY .cargo ./.cargo
-COPY vendor ./vendor
 COPY crates ./crates
 COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
 COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json

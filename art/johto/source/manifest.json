@@ -266,14 +266,6 @@
       "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4"
     },
     {
-      "file": "characters.blend",
-      "encoding": "gzip-blend",
-      "bytes": 1294528,
-      "sha256": "dde434c073e7cf293917d284f4cd0ee9d99efc7e9d1d38f069e0bffb805238ea",
-      "uncompressed_bytes": 11040728,
-      "uncompressed_sha256": "8ae53806628edb1c9e752aae609b9cfdc62d5e531be5a4e05ec1848ba31ab439"
-    },
-    {
       "file": "connected-johto.blend",
       "encoding": "gzip-blend",
       "bytes": 516695,

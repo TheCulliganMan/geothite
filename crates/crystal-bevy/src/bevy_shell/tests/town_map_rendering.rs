@@ -143,7 +143,7 @@ fn town_map_frame_reserves_the_two_row_landmark_label_panel() {
     let image = images.get(&frame.handle).expect("Town Map image");
     let pixel = |x: usize, y: usize| {
         let offset = (y * 160 + x) * 4;
-        &image.data[offset..offset + 4]
+        &image.data.as_ref().expect("CPU image pixels")[offset..offset + 4]
     };
     let panel = pixel(9 * 8, 8).to_vec();
 
@@ -224,7 +224,7 @@ fn pokegear_non_map_cards_render_their_distinct_authored_layouts() {
         assert_eq!((image.width(), image.height()), (160, 144));
         assert!(
             image
-                .data
+                .data.as_ref().expect("CPU image pixels")
                 .chunks_exact(4)
                 .collect::<std::collections::HashSet<_>>()
                 .len()
@@ -233,11 +233,11 @@ fn pokegear_non_map_cards_render_their_distinct_authored_layouts() {
         );
         if page == PokegearPage::Radio {
             let offset = (8 * 8 * 160 + 8) * 4;
-            let rgb5 = image.data[offset..offset + 3].iter().map(|value| value >> 3).collect::<Vec<_>>();
+            let rgb5 = image.data.as_ref().expect("CPU image pixels")[offset..offset + 3].iter().map(|value| value >> 3).collect::<Vec<_>>();
             assert_eq!(rgb5, [28, 31, 20],
                 "NoRadioName must clear the RLE station window to the textbox background");
         }
-        signatures.push(image.data.clone());
+        signatures.push(image.data.as_ref().expect("CPU image pixels").clone());
     }
 
     assert_ne!(signatures[0], signatures[1]);
@@ -274,7 +274,7 @@ fn fullscreen_town_map_owns_one_centered_layer_and_restores_world() {
     shell.pokegear_cursor = visible_pokegear_landmark_indices(&shell.shell.snapshot().unwrap(), true).unwrap()[0];
     let mut app = integrated_shell_test_app(shell);
     app.world_mut().spawn((Window {
-        resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+        resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
         ..default()
     }, bevy::window::PrimaryWindow));
     app.add_systems(Startup, setup_fullscreen_scene).add_systems(PostUpdate,
@@ -282,11 +282,11 @@ fn fullscreen_town_map_owns_one_centered_layer_and_restores_world() {
     app.update();
     app.update();
     let world = app.world_mut();
-    let world_visibility = world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world);
+    let world_visibility = world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world).unwrap();
     assert_eq!(*world_visibility, Visibility::Hidden, "the room must not surround the Town Map");
-    let presenter_parent = world.query_filtered::<&Parent, With<VisibleIntroSurface>>().single(world).get();
-    for parent in world.query_filtered::<&Parent, With<FieldCommandMarker>>().iter(world) {
-        assert_eq!(parent.get(), presenter_parent, "map, label and markers must share the screen transform");
+    let presenter_parent = world.query_filtered::<&ChildOf, With<VisibleIntroSurface>>().single(world).unwrap().parent();
+    for parent in world.query_filtered::<&ChildOf, With<FieldCommandMarker>>().iter(world) {
+        assert_eq!(parent.parent(), presenter_parent, "map, label and markers must share the screen transform");
     }
     let transform = world.get::<Transform>(presenter_parent).unwrap();
     assert_eq!(transform.translation, Vec3::ZERO);
@@ -294,5 +294,5 @@ fn fullscreen_town_map_owns_one_centered_layer_and_restores_world() {
     world.resource_mut::<BevyRuntimeShell>().pokegear_menu_open = false;
     app.update();
     let world = app.world_mut();
-    assert_eq!(*world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world), Visibility::Inherited);
+    assert_eq!(*world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>().single(world).unwrap(), Visibility::Inherited);
 }

@@ -64,6 +64,8 @@ pub(super) fn append(
     material: GroundMaterial,
     flags: u8,
 ) {
+    let painted_start = mesh.positions.len();
+    let park = flags & 0x40 != 0;
     let [w, e, n, s] = face_bounds(&p);
     let y = p[0][1];
     let cell_x = ((w - g.origin_x) / g.tile_width).round() as i32 + origin[0];
@@ -96,14 +98,19 @@ pub(super) fn append(
         for col in -1..columns {
             let xw = w + col as f32 * bw + offset;
             let xe = xw + bw;
-            let variation = (lattice(cell_x * columns + col, world_row) - 0.5) * 0.045;
-            let base = if road {
+            let variation = (lattice(cell_x * columns + col, world_row) - 0.5)
+                * if park { 0.075 } else { 0.045 };
+            let base = if park {
+                [0.64, 0.57, 0.43]
+            } else if road {
                 [0.57, 0.43, 0.35]
             } else {
                 [0.72, 0.69, 0.60]
             };
             let color = base.map(|c| c + variation);
-            let seam = if road {
+            let seam = if park {
+                [0.48, 0.43, 0.33]
+            } else if road {
                 [0.42, 0.38, 0.32]
             } else {
                 [0.56, 0.55, 0.48]
@@ -132,6 +139,19 @@ pub(super) fn append(
             }
         }
     }
+    if park {
+        for i in painted_start..mesh.positions.len() {
+            let p = mesh.positions[i];
+            // Quantized source coordinates retain identical paint when the
+            // same stone is rebuilt at a different viewport translation.
+            let x = (((p[0] - g.origin_x) / g.tile_width + origin[0] as f32) * 256.).round() / 256.;
+            let z = (((p[2] - g.origin_z) / g.tile_height + origin[1] as f32) * 256.).round() / 256.;
+            let broad = super::meadow_noise(x * 0.31 + 17., z * 0.31 - 29.);
+            let grain = super::meadow_noise(x * 4.1 - 7., z * 4.1 + 11.);
+            let tone = 1. + broad * 0.065 + grain * 0.018;
+            for channel in &mut mesh.colors[i][..3] { *channel *= tone; }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -149,7 +169,7 @@ mod tests {
         };
         let positions = [[0., 0., 0.], [0., 0., 8.], [8., 0., 8.], [8., 0., 0.]];
         for material in [GroundMaterial::Path, GroundMaterial::Pavers] {
-            for flags in [0, 1, 2, 4, 8, 15] {
+            for flags in [0, 1, 2, 4, 8, 15, 0x40] {
                 let mut m = SurfaceMeshData::default();
                 append(&mut m, positions, &g, [37, 29], material, flags);
                 let area: f32 = m

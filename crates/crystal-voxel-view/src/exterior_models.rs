@@ -252,9 +252,7 @@ const JSON: &[crate::model_storage::Source<'static>] = &[
     crate::model_storage::include_model!("models/world_exteriors/highland_mesa.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/diglett_cave.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/tower_forecourt.mesh.json"),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/lavender_radio_tower.mesh.json"
-    ),
+    crate::model_storage::include_model!("models/world_exteriors/lavender_radio_tower.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_route_gate.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/ice_shelf_northwest.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/ice_shelf_north.mesh.json"),
@@ -263,31 +261,21 @@ const JSON: &[crate::model_storage::Source<'static>] = &[
     crate::model_storage::include_model!("models/world_exteriors/ice_shelf_southwest.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/ice_shelf_south.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/ice_shelf_southeast.mesh.json"),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/ice_shelf_notch_east.mesh.json"
-    ),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/ice_shelf_notch_west.mesh.json"
-    ),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/ice_shelf_stair_right.mesh.json"
-    ),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/ice_shelf_stair_corner.mesh.json"
-    ),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/ice_shelf_stair_left.mesh.json"
-    ),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_notch_east.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_notch_west.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_stair_right.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_stair_corner.mesh.json"),
+    crate::model_storage::include_model!("models/world_exteriors/ice_shelf_stair_left.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_boundary_land.mesh.json"),
-    crate::model_storage::include_model!(
-        "models/world_exteriors/kanto_boundary_shore.mesh.json"
-    ),
+    crate::model_storage::include_model!("models/world_exteriors/kanto_boundary_shore.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_boundary_path.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_capped_post.mesh.json"),
 ];
 
 #[derive(Deserialize)]
 struct Primitive {
+    #[serde(default)]
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -295,11 +283,14 @@ struct Primitive {
 }
 #[derive(Deserialize)]
 struct Export {
+    #[serde(default)]
+    name: String,
     primitives: Vec<Primitive>,
     door_anchor: Option<[f32; 3]>,
     door_face: Option<String>,
 }
 pub(crate) struct Model {
+    materials: Vec<(std::ops::Range<usize>, String)>,
     pub(crate) surface: SurfaceMeshData,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
@@ -310,6 +301,7 @@ impl Model {
     fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
+        let mut materials = Vec::new();
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -328,6 +320,7 @@ impl Model {
                 return Err("invalid exterior primitive".into());
             }
             let base = surface.positions.len() as u32;
+            let index_start = surface.indices.len();
             for (v, n) in p.positions.chunks_exact(3).zip(p.normals.chunks_exact(3)) {
                 let pos = [v[0], v[1], v[2]];
                 let normal = Vec3::new(n[0], n[1], n[2]);
@@ -346,7 +339,18 @@ impl Model {
             surface
                 .indices
                 .extend(p.indices.into_iter().map(|i| i + base));
+            if !crate::roof_tiles::refine(&mut surface, base as usize, index_start, &p.material) {
+                crate::scenery_finish::refine(
+                    &mut surface,
+                    base as usize,
+                    index_start,
+                    &p.material,
+                    &export.name,
+                );
+            }
+            materials.push((base as usize..surface.positions.len(), p.material));
         }
+        crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|i| !min[i].is_finite() || max[i] <= min[i]) {
             return Err("empty exterior mesh".into());
         }
@@ -363,12 +367,19 @@ impl Model {
             }
         }
         Ok(Self {
+            materials,
             surface,
             min,
             max,
             anchor: export.door_anchor,
             east,
         })
+    }
+    pub(crate) fn vertex_material(&self, vertex: usize) -> &str {
+        self.materials
+            .iter()
+            .find(|(range, _)| range.contains(&vertex))
+            .map_or("", |(_, name)| name.as_str())
     }
     /// Fit only authored geometry. The native source plot edges and door seam
     /// stay exact. East entrances stretch along Z rather than inventing a south door.
@@ -430,7 +441,13 @@ impl Model {
             .extend(self.surface.indices.iter().map(|&i| i + vertex_base));
     }
 }
-pub(crate) fn fit_door_axis(x: f32, source: [f32; 2], target: [f32; 2], anchor: f32, door: f32) -> (f32, f32) {
+pub(crate) fn fit_door_axis(
+    x: f32,
+    source: [f32; 2],
+    target: [f32; 2],
+    anchor: f32,
+    door: f32,
+) -> (f32, f32) {
     let [a, b] = source;
     let [c, d] = target;
     let scale = (d - c) / (b - a);
@@ -488,14 +505,16 @@ mod tests {
         assert_eq!(m.anchor.unwrap()[0], m.max[0]);
         let mut out = SurfaceMeshData::default();
         m.append_fitted(&mut out, [0.0, 64.0, 0.0, 64.0], 0.0, 16.0, Some(48.0));
-        assert!(out
-            .positions
-            .iter()
-            .all(|v| v[0] >= -0.001 && v[0] <= 64.001 && v[2] >= -0.001 && v[2] <= 64.001));
-        assert!(out
-            .positions
-            .iter()
-            .any(|v| (v[0] - 64.0).abs() < 0.001 && v[1] < 4.0));
+        assert!(
+            out.positions
+                .iter()
+                .all(|v| v[0] >= -0.001 && v[0] <= 64.001 && v[2] >= -0.001 && v[2] <= 64.001)
+        );
+        assert!(
+            out.positions
+                .iter()
+                .any(|v| (v[0] - 64.0).abs() < 0.001 && v[1] < 4.0)
+        );
     }
     #[test]
     fn all_door_bands_preserve_center_without_reversing_side_wings() {

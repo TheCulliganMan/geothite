@@ -97,7 +97,7 @@ mod tests {
             source_map_size_core_tiles: None,
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
-            map_texture: Handle::<Image>::weak_from_u128(1),
+            map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::ZERO,
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),
             tile_size: Vec2::splat(8.0),
@@ -110,7 +110,7 @@ mod tests {
                     column: index as u32 % width,
                     row: index as u32 / width,
                     source,
-                    texture: Handle::<Image>::weak_from_u128(index as u128 + 10),
+                    texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(index as u128 + 10), std::marker::PhantomData),
                     priority: false,
                 })
                 .collect(),
@@ -302,7 +302,7 @@ mod tests {
     }
 
     #[test]
-    fn cave_keeps_a_continuous_faithful_floor_below_raised_geometry() {
+    fn cave_keeps_stone_foundation_below_the_live_authored_floor() {
         let mesh = build_terrain_mesh(&frame(
             1,
             1,
@@ -311,10 +311,13 @@ mod tests {
         .expect("cave floor should mesh");
         assert_eq!(
             mesh.textured.quad_count(),
-            2,
-            "one faithful cave underlay plus the visible authored cell"
+            1,
+            "the visible authored cell retains its texture"
         );
-        assert_eq!(mesh.solid.quad_count(), 0);
+        assert_eq!(mesh.solid.quad_count(), 1);
+        assert!(mesh.solid.positions.iter().all(|p|p[1]==-0.02));
+        assert!(mesh.solid.uvs.iter().all(|uv|*uv==[0.,0.]));
+        assert_eq!(mesh.footing_heights,vec![0.]);
     }
 
     #[test]
@@ -1572,8 +1575,7 @@ mod tests {
         let mesh = build_terrain_mesh(&frame(3, 2, sources))
             .expect("waterfall and its authored water replacement should mesh");
 
-        assert_eq!(mesh.textured.quad_count(), 11);
-        let waterfall_vertices = &mesh.textured.positions[7 * 4..11 * 4];
+        let waterfall_vertices = &mesh.textured.positions[6 * 4..];
         let min_y = waterfall_vertices
             .iter()
             .map(|position| position[1])
@@ -1592,6 +1594,18 @@ mod tests {
             .fold(f32::NEG_INFINITY, f32::max);
         assert!((max_y - min_y - crate::cave::CAVE_ROCK_HEIGHT).abs() < f32::EPSILON);
         assert!((max_z - min_z - 16.0).abs() < f32::EPSILON);
+        // Refining the sheet must retain the whole authored UV footprint once.
+        let area: f32 = mesh.textured.uvs[6 * 4..].chunks_exact(4).map(|q|
+            (q[3][0] - q[0][0]) * (q[1][1] - q[0][1])).sum();
+        assert!((area - 2. / 3.).abs() < 0.00001);
+        assert!(mesh.textured.normals[6 * 4..].iter().all(|n|
+            Vec3::from_array(*n).is_finite() && n[1] > 0.));
+        let west = waterfall_vertices.iter().map(|p|p[0]).fold(f32::INFINITY, f32::min);
+        let east = waterfall_vertices.iter().map(|p|p[0]).fold(f32::NEG_INFINITY, f32::max);
+        assert!(waterfall_vertices.iter().any(|p|p[2]>min_z && p[2]<max_z
+            && p[0]>west && p[0]<west+1.));
+        assert!(waterfall_vertices.iter().all(|p|p[0]>=west && p[0]<=east));
+        assert!(waterfall_vertices.iter().filter(|p|p[2]==max_z).all(|p|p[1]==min_y));
     }
 
     #[test]
@@ -2119,11 +2133,38 @@ mod tests {
             mesh.footing_heights[0], 0.0,
             "ordinary ground north of the exact ledge drawing must remain flat"
         );
-        assert_eq!(
-            mesh.footing_heights[1],
-            crate::profile::JUMP_LEDGE_HEIGHT,
-            "the authored ledge cap retains its single level"
-        );
+        for row in 0..4 {
+            assert_eq!(mesh.footing_heights[row + 1],
+                crate::profile::JUMP_LEDGE_HEIGHT * (row as f32 + 0.5) / 4.0,
+                "the bank rises continuously toward its south lip");
+        }
+    }
+
+    #[test]
+    fn grassy_ledge_terminal_cap_and_front_lip_share_the_same_slope() {
+        let mut sources=Vec::new();
+        for row in 0..4 {
+            sources.push(source_with_tile(0x57,3,row,if row==3 {0x4c} else {0x05}));
+            sources.push(flat_source());
+        }
+        let f=frame(2,4,sources);
+        let cells:Vec<_>=f.tiles.iter().collect();
+        let mut shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        taper_johto_ledge_ends(&cells,&mut shapes,2);
+        for row in 0..4 {
+            assert_eq!(shapes[row*2],CellShape::RampEast {west_height:crate::profile::JUMP_LEDGE_HEIGHT,east_height:0.});
+            assert_eq!(shapes[row*2+1],CellShape::Flat);
+        }
+        let m=build_terrain_mesh(&f).unwrap();
+        let caps:Vec<_>=m.textured.positions.chunks_exact(4)
+            .zip(m.textured.normals.chunks_exact(4))
+            .filter(|(_,n)| n[0][0]>0.001 && n[0][1]>0.1)
+            .map(|(p,_)|p).collect();
+        assert_eq!(caps.len(),4);
+        for pair in caps.windows(2) {
+            assert_eq!(pair[0][0],pair[1][3]);
+            assert_eq!(pair[0][1],pair[1][2]);
+        }
     }
 
     #[test]

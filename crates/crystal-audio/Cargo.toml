@@ -13,10 +13,10 @@ crate-type = ["rlib", "cdylib"]
 browser-synth = ["dep:wasm-bindgen", "dep:js-sys"]
 
 [dependencies]
-flate2 = "1.1"
+flate2.workspace = true
 anyhow.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-base64 = "0.22"
-wasm-bindgen = { version = "0.2", optional = true }
-js-sys = { version = "0.3", optional = true }
+base64.workspace = true
+wasm-bindgen = { workspace = true, optional = true }
+js-sys = { workspace = true, optional = true }

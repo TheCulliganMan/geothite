@@ -119,6 +119,9 @@ pub struct OccupiedTile {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct StepOptions {
+    /// Hold B to run on foot; never changes traversal mode or tile stride.
+    #[serde(default)]
+    pub running: bool,
     pub force_step_after_turn: bool,
     pub stride_tiles: i16,
 }
@@ -128,6 +131,7 @@ pub const DEFAULT_RUNTIME_TILE_STRIDE: i16 = 1;
 impl Default for StepOptions {
     fn default() -> Self {
         Self {
+            running: false,
             force_step_after_turn: false,
             stride_tiles: DEFAULT_RUNTIME_TILE_STRIDE,
         }
@@ -196,6 +200,7 @@ pub fn attempt_step_with_occupied_tiles(
         };
     }
 
+    let running_on_foot = options.running && state.mode == MovementMode::Normal;
     let from = state.tile;
     if matches!(state.mode, MovementMode::Surf | MovementMode::SurfPika)
         && sample_collision(map, tileset, target)
@@ -207,7 +212,11 @@ pub fn attempt_step_with_occupied_tiles(
     StepOutcome::Moved {
         from,
         to: target,
-        speed_multiplier: state.mode.speed_multiplier(),
+        speed_multiplier: if running_on_foot {
+            2
+        } else {
+            state.mode.speed_multiplier()
+        },
     }
 }
 
@@ -356,6 +365,61 @@ mod tests {
     use super::*;
     use crate::map::{MapAttributes, MapConnection};
     use crate::world::collision::{MetatileCollision, permissions};
+
+    #[test]
+    fn running_shoes_double_only_on_foot_steps_and_preserve_collision() {
+        let options = StepOptions {
+            running: true,
+            force_step_after_turn: true,
+            ..StepOptions::default()
+        };
+        for (mode, speed) in [
+            (MovementMode::Normal, 2),
+            (MovementMode::Bike, 2),
+            (MovementMode::Skate, 2),
+        ] {
+            let mut state = PlayerMovementState::new(TilePosition::new(0, 0)).with_mode(mode);
+            assert_eq!(
+                attempt_step(&mut state, Direction::Right, &map(), &tileset(), options),
+                StepOutcome::Moved {
+                    from: TilePosition::new(0, 0),
+                    to: TilePosition::new(1, 0),
+                    speed_multiplier: speed
+                }
+            );
+            assert_eq!(state.mode, mode);
+            let outcome = attempt_step_with_occupied_tiles(
+                &mut state,
+                Direction::Right,
+                &map(),
+                &tileset(),
+                options,
+                &[OccupiedTile {
+                    tile: TilePosition::new(2, 0),
+                    object_identifier: Some("NPC".into()),
+                }],
+            );
+            assert!(matches!(outcome, StepOutcome::BlockedByObject { .. }));
+            assert_eq!(state.tile, TilePosition::new(1, 0));
+        }
+        let water = OverworldMapData::from_attributes("water", &attributes(3, 2), vec![2; 6]);
+        for mode in [MovementMode::Surf, MovementMode::SurfPika] {
+            let mut state = PlayerMovementState::new(TilePosition::new(0, 0)).with_mode(mode);
+            assert!(matches!(
+                attempt_step(&mut state, Direction::Right, &water, &tileset(), options),
+                StepOutcome::Moved {
+                    speed_multiplier: 1,
+                    ..
+                }
+            ));
+        }
+        let mut state = PlayerMovementState::new(TilePosition::new(0, 0));
+        assert!(matches!(
+            attempt_step(&mut state, Direction::Right, &water, &tileset(), options),
+            StepOutcome::Blocked { .. }
+        ));
+        assert_eq!(state.tile, TilePosition::new(0, 0));
+    }
 
     fn attributes(width: u16, height: u16) -> MapAttributes {
         MapAttributes {
@@ -906,6 +970,15 @@ mod tests {
             }
         );
         assert_eq!(state.tile, TilePosition::new(0, 3));
+    }
+
+    #[test]
+    fn running_shoes_keep_fixed_ledge_speed() {
+        let mut state = PlayerMovementState::new(TilePosition::new(2, 2));
+        let outcome = attempt_ledge_jump(&mut state, Direction::Down, &ledge_map(),
+            &ledge_tileset(permissions::FLOOR), StepOptions { running: true, ..StepOptions::default() });
+        assert!(matches!(outcome, LedgeJumpOutcome::Jumped { speed_multiplier: 1, .. }));
+        assert_eq!(state.tile, TilePosition::new(2, 4));
     }
 
     #[test]

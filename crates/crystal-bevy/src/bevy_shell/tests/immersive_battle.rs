@@ -52,7 +52,7 @@ fn immersive_battle_fullscreen_backdrop_preserves_arena_and_classic_modals() {
         .spawn((Window::default(), bevy::window::PrimaryWindow));
     let backdrop = app
         .world_mut()
-        .spawn((SpriteBundle::default(), FullscreenSceneBackdrop))
+        .spawn((Sprite::default(), FullscreenSceneBackdrop))
         .id();
     // This is the actual fullscreen compositor, including its battle-modal
     // decision. F3 must hide the opaque LCD backing and restore it in classic.
@@ -268,7 +268,7 @@ fn immersive_source_animation(
 
 #[test]
 fn immersive_battle_native_oam_stays_unscrolled_through_zero_crossings_and_palette_modes() {
-    use bevy::render::view::RenderLayers;
+    use bevy::camera::visibility::RenderLayers;
     use crystal_render_api::BattleFlashMode;
 
     let mut shell = immersive_battle_fixture();
@@ -334,7 +334,7 @@ fn immersive_battle_native_oam_stays_unscrolled_through_zero_crossings_and_palet
     }
     let replaced_bg = app
         .world_mut()
-        .spawn((SpriteBundle::default(), FixedBattleCanvasMarker))
+        .spawn((Sprite::default(), FixedBattleCanvasMarker))
         .id();
     app.add_plugins(MinimalPlugins)
         .insert_resource(shell)
@@ -389,7 +389,7 @@ fn immersive_battle_native_oam_stays_unscrolled_through_zero_crossings_and_palet
                 let sprite = app.world().get::<Sprite>(*entity).unwrap();
                 assert_eq!((sprite.rect, sprite.custom_size), (*rect, *size));
                 assert_eq!(
-                    app.world().get::<Handle<Image>>(*entity),
+                    app.world().get::<Sprite>(*entity).map(|sprite| &sprite.image),
                     Some(&object.texture),
                     "projected overlays choose their own palette without mutating fallback Sprites"
                 );
@@ -523,11 +523,11 @@ fn immersive_battle_shadow_ball_preserves_actual_source_palette_and_object_frame
         }
         queue.apply(&mut world);
         let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-        let mut sprites = world.query::<(&Handle<Image>, &Transform)>();
+        let mut sprites = world.query::<(&Sprite, &Transform)>();
         for object in &source.objects {
             assert!(
                 sprites.iter(&world).any(|(image, pose)| {
-                    *image == object.texture
+                    image.image == object.texture
                         && (pose.translation.x - (PLAYFIELD_LEFT + object.center.x * scale)).abs()
                             < 0.001
                         && (pose.translation.y - (PLAYFIELD_TOP - object.center.y * scale)).abs()
@@ -695,12 +695,12 @@ fn immersive_battle_psychic_and_hyper_beam_use_actual_source_frames() {
             .unwrap();
             queue.apply(&mut world);
             let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
-            let mut sprites = world.query::<(&Handle<Image>, &Transform)>();
+            let mut sprites = world.query::<(&Sprite, &Transform)>();
             for object in &source.objects {
                 assert!(
                     sprites
                         .iter(&world)
-                        .any(|(image, pose)| *image == object.texture
+                        .any(|(image, pose)| image.image == object.texture
                             && (pose.translation.x - (PLAYFIELD_LEFT + object.center.x * scale))
                                 .abs()
                                 < 0.001
@@ -1114,11 +1114,11 @@ fn immersive_battle_surf_preserves_source_program_axis_and_object_lifetime() {
         queue.apply(&mut world);
         let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
         let mut sprites = world.query::<(
-            &Handle<Image>,
+            &Sprite,
             &Transform,
             Option<&BattleSourceObjectMarker>,
         )>();
-        let mut crops = world.query::<(&Handle<Image>, &Sprite, &Transform)>();
+        let mut crops = world.query::<(&Sprite, &Transform)>();
         for object in &source.objects {
             let image = images.get(&object.texture).unwrap();
             let image_size = Vec2::new(
@@ -1126,8 +1126,8 @@ fn immersive_battle_surf_preserves_source_program_axis_and_object_lifetime() {
                 image.texture_descriptor.size.height as f32,
             );
             assert!(
-                crops.iter(&world).any(|(texture, sprite, pose)| {
-                    *texture == object.texture
+                crops.iter(&world).any(|(sprite, pose)| {
+                    sprite.image == object.texture
                         && sprite.rect.is_some_and(|rect| {
                             rect.min / image_size == object.uv_rect.min
                                 && rect.max / image_size == object.uv_rect.max
@@ -1149,7 +1149,7 @@ fn immersive_battle_surf_preserves_source_program_axis_and_object_lifetime() {
             assert!(
                 sprites.iter(&world).any(|(image, pose, source_oam)| {
                     source_oam.is_some()
-                        && *image == object.texture
+                        && image.image == object.texture
                         && (pose.translation.x - (PLAYFIELD_LEFT + object.center.x * scale)).abs()
                             < 0.001
                         && (pose.translation.y - (PLAYFIELD_TOP - object.center.y * scale)).abs()
@@ -1207,15 +1207,12 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
         let entity = app
             .world_mut()
             .spawn((
-                SpriteBundle {
-                    transform,
-                    sprite: Sprite {
+                (Sprite {
                         custom_size: Some(size),
                         rect: crop,
                         ..default()
                     },
-                    ..default()
-                },
+transform,),
                 ImmersiveBattleSourceObject(object.slot),
                 ImmersiveBattleReplaced,
             ))
@@ -1240,8 +1237,8 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
                 assert_eq!(pose, original, "source Sprite transform must never be repurposed for 3D");
                 assert_eq!(sprite.custom_size, Some(*size));
                 assert_eq!(app.world().get::<ImmersiveBattleSourceObjectLayout>(*entity).is_some(), active);
-                assert_eq!(app.world().get::<bevy::render::view::RenderLayers>(*entity).cloned(),
-                    active.then(|| bevy::render::view::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
+                assert_eq!(app.world().get::<bevy::camera::visibility::RenderLayers>(*entity).cloned(),
+                    active.then(|| bevy::camera::visibility::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
             }
             assert_eq!(*app.world().resource::<VisualBattleFrame>(), frame);
         }
@@ -1255,13 +1252,13 @@ fn immersive_battle_projects_source_oam_and_restores_classic_through_resize_and_
     app.update();
     for (entity, ..) in &originals {
         assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(*entity).is_none());
-        assert_eq!(app.world().get::<bevy::render::view::RenderLayers>(*entity),
-            Some(&bevy::render::view::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
+        assert_eq!(app.world().get::<bevy::camera::visibility::RenderLayers>(*entity),
+            Some(&bevy::camera::visibility::RenderLayers::layer(crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
     }
     app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = false;
     app.update();
     for (entity, ..) in &originals {
-        assert!(app.world().get::<bevy::render::view::RenderLayers>(*entity).is_none());
+        assert!(app.world().get::<bevy::camera::visibility::RenderLayers>(*entity).is_none());
     }
     assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap(), snapshot);
 }
@@ -1753,7 +1750,7 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
             species_id: Arc::from("GENGAR"),
             pokedex_size_m: Some(1.4986),
             party_index: None,
-            texture: Handle::weak_from_u128(15),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(15), std::marker::PhantomData),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),

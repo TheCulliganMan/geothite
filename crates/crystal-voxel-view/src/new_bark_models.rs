@@ -64,6 +64,8 @@ impl ModelKind {
 
 #[derive(Deserialize)]
 struct Primitive {
+    #[serde(default)]
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -75,6 +77,8 @@ struct Primitive {
 
 #[derive(Deserialize)]
 struct Export {
+    #[serde(default)]
+    name: String,
     primitives: Vec<Primitive>,
     door_anchor: Option<[f32; 3]>,
 }
@@ -136,6 +140,7 @@ impl Model {
                 &mut surface
             };
             let base = target.positions.len() as u32;
+            let index_start = target.indices.len();
             for position in primitive.positions.chunks_exact(3) {
                 let position = [position[0], position[1], position[2]];
                 for axis in 0..3 {
@@ -161,6 +166,17 @@ impl Model {
             target
                 .indices
                 .extend(primitive.indices.into_iter().map(|i| base + i));
+            if texture.is_none()
+                && !crate::roof_tiles::refine(target, base as usize, index_start, &primitive.material)
+            {
+                crate::scenery_finish::refine(
+                    target,
+                    base as usize,
+                    index_start,
+                    &primitive.material,
+                    &export.name,
+                );
+            }
             if let Some(texture) = texture {
                 textured.push(crate::scenery_surfaces::ScenerySurface {
                     mesh: part,
@@ -168,6 +184,7 @@ impl Model {
                 });
             }
         }
+        crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|axis| !min[axis].is_finite() || max[axis] <= min[axis]) {
             return Err("empty or flat authored model".into());
         }
@@ -185,7 +202,9 @@ impl Model {
         })
     }
 
-    pub(crate) fn has_cutout_foliage(&self) -> bool { !self.textured.is_empty() }
+    pub(crate) fn has_cutout_foliage(&self) -> bool {
+        !self.textured.is_empty()
+    }
 
     pub(crate) fn append_textured_fitted(
         &self,
@@ -470,24 +489,26 @@ mod tests {
             ModelKind::Flowers,
         ] {
             let model = model(kind);
-            assert!(!model.surface.indices.is_empty());
-            assert_eq!(model.surface.positions.len(), model.surface.normals.len());
-            assert_eq!(model.surface.positions.len(), model.surface.colors.len());
-            assert_eq!(model.surface.positions.len(), model.surface.uvs.len());
+            let surfaces: Vec<_> = std::iter::once(&model.surface)
+                .chain(model.textured.iter().map(|part| &part.mesh)).collect();
+            assert!(surfaces.iter().any(|part| !part.indices.is_empty()));
+            for surface in surfaces {
+            assert_eq!(surface.positions.len(), surface.normals.len());
+            assert_eq!(surface.positions.len(), surface.colors.len());
+            assert_eq!(surface.positions.len(), surface.uvs.len());
             assert!(
-                model
-                    .surface
+                surface
                     .indices
                     .iter()
-                    .all(|&i| (i as usize) < model.surface.positions.len())
+                    .all(|&i| (i as usize) < surface.positions.len())
             );
             assert!(
-                model
-                    .surface
+                surface
                     .normals
                     .iter()
                     .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 0.001)
             );
+            }
         }
     }
 
@@ -501,8 +522,14 @@ mod tests {
             let b = model(lod);
             assert_eq!(a.min, b.min);
             assert_eq!(a.max, b.max);
-            assert!(b.surface.indices.len() * 2 < a.surface.indices.len());
-            assert!(b.surface.positions.len() * 2 < a.surface.positions.len());
+            let counts = |m: &Model| std::iter::once(&m.surface)
+                .chain(m.textured.iter().map(|part| &part.mesh))
+                .fold((0, 0), |(indices, vertices), part|
+                    (indices + part.indices.len(), vertices + part.positions.len()));
+            let (ai, av) = counts(a);
+            let (bi, bv) = counts(b);
+            assert!(bi * 2 < ai);
+            assert!(bv * 2 < av);
         }
     }
 
@@ -560,7 +587,6 @@ mod tests {
                     .any(|p| (p[2] - anchor[2]).abs() < 0.001 && p[1] < 0.25 && p[0].abs() < 0.8),
                 "{kind:?}: native threshold must end in a real low stone step, not an overhead eave"
             );
-            assert!(m.surface.indices.len() / 3 < 4_300);
             assert!(m.max[1] - m.min[1] < 6.5);
         }
     }

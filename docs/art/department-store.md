@@ -29,10 +29,26 @@ lift-side fluting/call-panel housings, live directory housings and complete
 counter/wall junctions. Resolving this kit before filtering old interior
 placements is essential to avoid duplicate windows or a reservation conflict.
 
-The earlier 704-cell wall family estimate also contains 184 cells deliberately
-left on their existing renderer: 96 elevator door/threshold cells and 88
-escalator/stair cells. Do not count those as newly converted wall geometry.
-Elevator cabins, the roof and B1F are outside this kit.
+The earlier 704-cell wall family estimate also contains 96 elevator
+door/threshold cells and 88 stair cells. The stair follow-up now models all 22
+complete flights across the two stores, using the existing editable interior
+stair asset. These are separate stair claims, not additional wall geometry.
+All twelve lift fronts now also claim their 96 door/threshold cells, using the
+existing open sliding-door frame and an original Rust metal tread. The full
+4×4 block guard preserves the adjacent call-panel housing and ordinary floor
+row. The modeled aperture remains clear; actor support and lift warps are unchanged.
+Native Goldenrod/Celadon 1F views verify the open fronts. A real northward
+step from Goldenrod 1F `(2, 1)` enters `GoldenrodDeptStoreElevator` through the
+production controller; lift-floor selection remains a separate route check.
+Elevator cabins and the roof have their existing special-room kit; B1F remains
+outside this architectural kit.
+
+Each flight binds a complete 2×2 drawing at its native source origin, with exact
+source identity and custom-profile rejection. The eight treads, stringers and
+handrails rotate north without changing actor support. Descending flights have
+their backing below the floor datum, leaving the treads exposed. Fitting before
+rotation preserves bounds and normals even with unequal tile axes. Celadon's
+6F shared roof-flight drawing has no roof warp; modeling it adds no connection.
 
 Each 5F assembly is one 8×8-source-cell object at source anchor `(12, 8)`.
 Its 56 owned cells comprise the entire closed lower 8×4 display (32 cells),
@@ -106,7 +122,123 @@ native client, and inspect the integrated geometry in its actual lighting:
   centre remains physically closed while the existing staff-floor inset stays
   clear. No new collision/footing behavior is implied by a visual capture
 
+The stair source checker reads all twelve maps directly from the ignored pack
+and verifies 88 STAIRCASE cells across 22 complete drawings. The production
+audit adds exactly 88 stair claims. Rust checks include atomic append, negative
+well depth, fitting, normals and unchanged support. A native 3F view confirms
+the upward flight and recessed down flight; a real Goldenrod 1F-to-2F stair
+transition passes. Further camera positions and routes remain to be checked.
+
 Integrated voxel tests and the all-map audit pass. Ten native views cover both
 stores on floors 1, 2, 4, 5 and 6; the ordinary 5F-to-4F stair route also passes.
 Shop/lift interactions and further camera/movement routes above remain separate
 checks.
+
+### Source palette and service returns
+
+The store floor uses a warm ceramic grid with visible grout and small tile
+variations at a consistent 16px world phase. Window glass is blue, seats have
+pink upholstery and raised frames, and cream counters have
+colored front panels. These map-scoped finishes preserve the original playful
+palette rather than applying a neutral material to every interior. Other Mart
+and Pokécenter floors and non-store cushions retain their own finishes.
+
+Eight complete 2×2 service-counter ends on both stores' 1F/3F replace their native
+raised artwork: four plain returns and four mechanical cash registers. The
+register has a cash drawer, sloped keys and receipt hood facing the clerk. Exact
+source hashes, reservation checks and full drawing bounds preserve the clerk's
+standing space, shop interactions, support, collision and adjacent wall courses.
+
+Native views inspect Goldenrod 1F, Celadon 3F and both Game Corners. Store
+seating now uses its source profile’s 12px top and 12px depth, with a supporting
+frame and legs. The revised Goldenrod 1F native view verifies continuous tile spacing and
+raised seating with visible supporting legs. All fifteen store regressions, four enhanced floor
+regressions and slot orientation/seat regressions pass at this checkpoint.
+The final third-floor plain-return binding adds eight cells across both stores;
+its packed source/collision check passes and the production audit records
+172 authored cells on both 3F layouts.
+
+The destination-floor regression verifies complete floor finishing despite
+redirected fixture samples, custom reservations, unchanged support and zero
+object-coverage credit. It passes alongside the fifteen store regressions.
+
+A final Celadon 3F native view also verifies its modeled left counter return
+and the continuous warm ceramic floor. The source audit finds all eight
+service ends across both stores’ 1F/3F, with no mesher errors.
+
+
+### Second- and fourth-floor service runs
+
+Both stores' 2F U-shaped service counters and 4F L-shaped returns use the same
+cream countertop and coral cabinet kit as the other store counters. Repeated
+2×2 sections preserve furniture proportions along each run; the customer
+panels face outward on the north, west and south edges. Exact whole-drawing
+source guards cover the full 8×8 or 8×4 layout, while sparse masks claim only
+COUNTER cells: 80 on 2F and 40 on 4F across both stores. Clerk floors and the
+2F right-side shelves remain outside the geometry. Reservation, cropped-view
+and support checks apply to each run atomically.
+
+Service counters remain opaque rather than joining the wall cutaway ranges.
+This prevents standing inside the 2F staff bay from fading the entire U-shaped
+fixture. The existing atomic append regression also checks this behavior.
+
+The final production audit consumes all 120 new service cells across the four
+2F/4F layouts: each 2F has 172 authored cells and each 4F has 200. Remaining
+native samples in these base layouts classify as flat, with no mesher errors.
+Native Goldenrod 2F and Celadon 4F views inspect joins, cabinet colors and staff
+clearance with the counters opaque. All sixteen store regressions pass,
+including the destination-floor test. This establishes static presentation and
+ownership; it does not certify opening shops or every dynamic room state.
+
+
+### Basement wall conversion — native verification pending
+
+The 5F audit's eight remaining relief samples per store are the genuine staff
+carpet inset, not omitted counter geometry; the native 5F comparison verifies
+that inset stays visible and walkable.
+
+Goldenrod's basement baseline consumes 144 crate cells and retains native wall
+courses. Its new wall selector reuses the connected passage masonry kit with
+modeled blue wainscot. Nineteen complete underground block fingerprints cover
+all 492 native wall-course cells, including six basement-specific block types
+missed by the initial passage vocabulary. The pack-side checker fails if any
+wall block is absent or altered, rather than counting fallback rendering as
+model consumption. Floors, crates and the lift drawing are excluded. The exact
+production matcher also passes a standalone Rust check for its native block,
+altered floor guard. The subsequent crop follow-up accepts all 1,900 native
+rectangular crops across the nineteen variants while rejecting altered visible
+drawings; valid crops no longer trigger native fallback.
+
+The full renderer regression and native build encountered shared migration
+compile failures: render API imports mismatched the resolved Bevy version and
+the old patched bevy_winit source was removed during the migration. The new basement geometry is not yet certified by native
+views or the production coverage audit. Require 492 consumed wall cells, inspect
+joins and blue trim, and review the lift separately when that build completes.
+
+
+### Basement lift and warehouse stair — native verification pending
+
+The basement lift opening is a separate complete 4×2 source drawing across
+underground blocks 25/26, with original lift warps at runtime tiles (9,4) and
+(10,4). It now uses the shared open door-frame model above its live pink
+threshold artwork. The gray 2×2 drawing on block 03 at source tile (34,4) is the
+warehouse stair, whose original warp at runtime tile (17,2) leads to the
+underground warehouse. It now uses a recessed descending stair flight with its
+backing at -16px, so a floor plane cannot hide the treads. Both fixtures retain
+unchanged support and original events. They add eight and four model cells,
+respectively; together with the walls and existing crates, require 648 consumed
+cells in the basement production audit. The pack checker verifies both source
+drawings against their separate warp destinations. Full Rust regressions,
+native geometry consumption and room presentation remain pending a fresh
+Bevy 0.20 build. No fallback result certifies these fixtures.
+
+The crop checker now lives in `tools/check-department-store.py`. It compiles the
+actual Rust matcher against native identities read from the ignored pack and
+removes its temporary fixtures afterward. Missing cells outside the viewport
+use the known quadrant identities only to reconstruct the full fingerprint;
+all visible cells contribute their actual identities. Geometry ownership stays
+limited to visible wall cells. This verifies source acceptance, not production
+mesh consumption. The renderer regressions currently still fail in migration
+APIs before these tests can run. The coordinated disk cleanup removed old build
+caches; verification now uses the shared `target-bevy20-verify` cache. Native
+verification remains pending that build.

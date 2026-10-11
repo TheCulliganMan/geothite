@@ -35,13 +35,12 @@ pub(crate) fn small_rock_local(source: &VisualTileSource) -> Option<(u8, u8)> {
 /// Crystal's four complete cave ladder/warp drawings. They are drawn from
 /// directly above and occupy the southeast collision quadrant of their
 /// metatile. Unlike the Gen 1 reference profile's staircase cells, these
-/// pictures do not provide an authored rise direction, so the optional view
-/// preserves them as explicit floor-parallel planes instead of inventing a
-/// staircase or leaving them in the unclassified queue.
-fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
+/// pictures do not provide a shelf transition. Their support stays on the
+/// authored floor datum; the optional view models upright rails above it.
+pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if !matches!(source.tileset_id.as_ref(), "cave" | "dark_cave")
-        || source.subtile_column < 2
-        || source.subtile_row < 2
+        || !(2..4).contains(&source.subtile_column)
+        || !(2..4).contains(&source.subtile_row)
     {
         return None;
     }
@@ -55,6 +54,33 @@ fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     let column = source.subtile_column - 2;
     let row = source.subtile_row - 2;
     (source.tile_index == expected[usize::from(row)][usize::from(column)]).then_some((column, row))
+}
+
+/// The complete ladder flight on an authored six-pixel shelf transition.
+pub(crate) fn shelf_ladder_local(s: &VisualTileSource) -> Option<(u8, u8)> {
+    if !matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
+        || !(2..4).contains(&s.subtile_column)
+        || !(2..4).contains(&s.subtile_row)
+    {
+        return None;
+    }
+    let art = match s.metatile_id {
+        0x14 => [[0x2a, 0x2b], [0x3a, 0x3b]],
+        0x15 => [[0x22, 0x23], [0x32, 0x33]],
+        _ => return None,
+    };
+    let (x, y) = (s.subtile_column - 2, s.subtile_row - 2);
+    (s.tile_index == art[y as usize][x as usize]).then_some((x, y))
+}
+
+/// The paired lower-row exit motif is a sill, not a complete ladder flight.
+pub(crate) fn exit_sill_local(s: &VisualTileSource) -> Option<(u8, u8)> {
+    (matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
+        && s.metatile_id == 0x23
+        && s.subtile_row == 0
+        && (2..4).contains(&s.subtile_column)
+        && s.tile_index == 0x1a + u16::from(s.subtile_column - 2))
+    .then_some((s.subtile_column.saturating_sub(2), 0))
 }
 
 /// Returns the local cell and orientation of Crystal's complete diagonal
@@ -117,7 +143,44 @@ fn barred_rock_shelf_band(source: &VisualTileSource) -> Option<CellShape> {
     })
 }
 
+/// Enclosing cave rock stands well above the trainer. The authored
+/// six-pixel walking shelves and ramps keep their original support datum.
+pub(crate) fn rock_height(source: &VisualTileSource) -> f32 {
+    if source.tileset_id.as_ref() == "dark_cave" {
+        48.0
+    } else {
+        40.0
+    }
+}
+
 pub(crate) fn cave_shape(source: &VisualTileSource) -> Option<CellShape> {
+    authored_cave_shape(source).map(|shape| match shape {
+        CellShape::RaisedTop { height, solid } if height == CAVE_ROCK_HEIGHT => {
+            CellShape::RaisedTop {
+                height: rock_height(source),
+                solid,
+            }
+        }
+        CellShape::LedgeBand {
+            face,
+            plane_subtile,
+            band_from_top,
+            band_count,
+            top_tile_index,
+            height,
+        } if height == CAVE_ROCK_HEIGHT => CellShape::LedgeBand {
+            face,
+            plane_subtile,
+            band_from_top,
+            band_count,
+            top_tile_index,
+            height: rock_height(source),
+        },
+        other => other,
+    })
+}
+
+fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
     if !matches!(source.tileset_id.as_ref(), "cave" | "dark_cave") {
         return None;
     }
@@ -128,9 +191,17 @@ pub(crate) fn cave_shape(source: &VisualTileSource) -> Option<CellShape> {
     {
         let west = source.metatile_id == 0x08;
         return Some(CellShape::LedgeBand {
-            face: if west { LedgeFace::West } else { LedgeFace::East },
+            face: if west {
+                LedgeFace::West
+            } else {
+                LedgeFace::East
+            },
             plane_subtile: if west { 0 } else { 4 },
-            band_from_top: if west { 1 - source.subtile_column } else { source.subtile_column - 2 },
+            band_from_top: if west {
+                1 - source.subtile_column
+            } else {
+                source.subtile_column - 2
+            },
             band_count: 2,
             top_tile_index: 0x16,
             height: CAVE_ROCK_HEIGHT,
@@ -142,7 +213,9 @@ pub(crate) fn cave_shape(source: &VisualTileSource) -> Option<CellShape> {
     }
 
     if flat_ladder_local(source).is_some() {
-        return Some(CellShape::PlaneAt { height: 0.0 });
+        // The light-floor hatch belongs to the same six-pixel shelf as its
+        // surrounding $01 cells; it is not a hole down to the lower datum.
+        return Some(CellShape::PlaneAt { height: if matches!(source.metatile_id, 0x1b | 0x1f) { CAVE_SHELF_HEIGHT } else { 0.0 } });
     }
 
     // `$23` mixes a real shallow south lip in its west half with only the
@@ -262,8 +335,8 @@ pub(crate) fn cave_shape(source: &VisualTileSource) -> Option<CellShape> {
         });
     }
 
-    // `$31` is one closed lit shelf. Rows 0..2 already resolve as its north
-    // cap, horizontal interior, and west/east edge courses. The final
+    // `$31` is a closed raised rock rim around a lower `$16` floor. Rows
+    // 0..2 resolve as its north cap, lower interior, and west/east courses. The final
     // `$25/$26/$27` row is the matching south lip; leaving it flat opens the
     // shelf at its foot and makes a blocked strip coplanar with the cave
     // floor. Fold that single authored row to the same 6px shelf datum.
@@ -424,6 +497,52 @@ mod tests {
 
     use super::*;
 
+    #[test]
+    fn dark_enclosure_is_tall_while_walkable_shelves_and_support_stay_authored() {
+        for metatile_id in 0..=0x3f {
+            for subtile_row in 0..4 {
+                for subtile_column in 0..4 {
+                    for tile_index in 0..=0x40 {
+                        let cell = VisualTileSource {
+                            tileset_id: "dark_cave".into(),
+                            metatile_id,
+                            subtile_row,
+                            subtile_column,
+                            tile_index,
+                        };
+                        let Some(authored) = authored_cave_shape(&cell) else {
+                            assert!(cave_shape(&cell).is_none());
+                            continue;
+                        };
+                        let rendered = cave_shape(&cell).unwrap();
+                        let original = authored.surface_height(8.0);
+                        let actual = rendered.surface_height(8.0);
+                        if original == CAVE_ROCK_HEIGHT {
+                            assert_eq!(actual, 48.0);
+                        } else {
+                            assert_eq!(actual, original);
+                        }
+                        let mut ordinary = cell.clone();
+                        ordinary.tileset_id = "cave".into();
+                        assert_eq!(
+                            crate::profile::support_height(&cell, 8.0),
+                            crate::profile::support_height(&ordinary, 8.0)
+                        );
+                        let ordinary_height = cave_shape(&ordinary).unwrap().surface_height(8.0);
+                        assert_eq!(
+                            ordinary_height,
+                            if original == CAVE_ROCK_HEIGHT {
+                                40.0
+                            } else {
+                                original
+                            }
+                        );
+                    }
+                }
+            }
+        }
+    }
+
     fn source(tileset: &str, tile_index: u16) -> VisualTileSource {
         VisualTileSource {
             tileset_id: Arc::from(tileset),
@@ -495,7 +614,10 @@ mod tests {
                         cell.subtile_column = column as u8 + 2;
                         cell.subtile_row = row as u8 + 2;
                         assert_eq!(flat_ladder_local(&cell), Some((column as u8, row as u8)));
-                        assert_eq!(cave_shape(&cell), Some(CellShape::PlaneAt { height: 0.0 }));
+                        assert_eq!(
+                            authored_cave_shape(&cell),
+                            Some(CellShape::PlaneAt { height: if matches!(metatile, 0x1b | 0x1f) { CAVE_SHELF_HEIGHT } else { 0.0 } })
+                        );
                     }
                 }
             }
@@ -517,11 +639,14 @@ mod tests {
             cell.subtile_row = 0;
             if column < 2 {
                 assert!(matches!(
-                    cave_shape(&cell),
+                    authored_cave_shape(&cell),
                     Some(CellShape::LedgeBand { .. })
                 ));
             } else {
-                assert_eq!(cave_shape(&cell), Some(CellShape::PlaneAt { height: 0.0 }));
+                assert_eq!(
+                    authored_cave_shape(&cell),
+                    Some(CellShape::PlaneAt { height: 0.0 })
+                );
             }
         }
     }
@@ -557,9 +682,12 @@ mod tests {
 
     #[test]
     fn cave_datum_shelf_and_rock_are_three_distinct_levels() {
-        assert_eq!(cave_shape(&source("cave", 0x16)), Some(CellShape::Flat));
         assert_eq!(
-            cave_shape(&source("cave", 0x01))
+            authored_cave_shape(&source("cave", 0x16)),
+            Some(CellShape::Flat)
+        );
+        assert_eq!(
+            authored_cave_shape(&source("cave", 0x01))
                 .unwrap()
                 .surface_height(8.0),
             CAVE_SHELF_HEIGHT
@@ -568,14 +696,19 @@ mod tests {
         transition.metatile_id = 0x0d;
         transition.subtile_row = 1;
         assert_eq!(
-            cave_shape(&transition).unwrap().surface_height(8.0),
+            authored_cave_shape(&transition)
+                .unwrap()
+                .surface_height(8.0),
             CAVE_ROCK_HEIGHT
         );
     }
 
     #[test]
     fn cave_water_is_level_with_lower_floor_not_an_outdoor_trough() {
-        assert_eq!(cave_shape(&source("cave", 0x14)), Some(CellShape::Flat));
+        assert_eq!(
+            authored_cave_shape(&source("cave", 0x14)),
+            Some(CellShape::Flat)
+        );
     }
 
     #[test]
@@ -606,14 +739,14 @@ mod tests {
                     cell.metatile_id = metatile;
                     cell.subtile_column = column as u8;
                     cell.subtile_row = row as u8;
-                    assert_eq!(cave_shape(&cell), Some(CellShape::Flat));
+                    assert_eq!(authored_cave_shape(&cell), Some(CellShape::Flat));
                 }
             }
         }
 
         let ordinary_shelf_edge = source("cave", 0x17);
         assert!(matches!(
-            cave_shape(&ordinary_shelf_edge),
+            authored_cave_shape(&ordinary_shelf_edge),
             Some(CellShape::LedgeBand {
                 face: LedgeFace::East,
                 ..
@@ -633,7 +766,7 @@ mod tests {
                 cell.subtile_column = column;
                 cell.subtile_row = row;
                 assert_eq!(
-                    cave_shape(&cell),
+                    authored_cave_shape(&cell),
                     Some(CellShape::LedgeBand {
                         face,
                         plane_subtile: plane,
@@ -651,7 +784,7 @@ mod tests {
         interior.subtile_column = 1;
         interior.subtile_row = 2;
         assert_eq!(
-            cave_shape(&interior),
+            authored_cave_shape(&interior),
             Some(CellShape::RaisedTop {
                 height: CAVE_SHELF_HEIGHT,
                 solid: SolidKind::Bank,
@@ -674,7 +807,7 @@ mod tests {
                     for row in 0..4 {
                         cell.subtile_row = row;
                         assert_eq!(
-                            cave_shape(&cell).unwrap().surface_height(8.0),
+                            authored_cave_shape(&cell).unwrap().surface_height(8.0),
                             CAVE_ROCK_HEIGHT,
                             "{tileset} ${metatile:02x} ({column}, {row})"
                         );
@@ -693,7 +826,7 @@ mod tests {
                 cell.subtile_column = column as u8;
                 cell.subtile_row = 3;
                 assert_eq!(
-                    cave_shape(&cell),
+                    authored_cave_shape(&cell),
                     Some(CellShape::LedgeBand {
                         face: LedgeFace::South,
                         plane_subtile: 4,
@@ -721,7 +854,7 @@ mod tests {
                     cell.subtile_column = column as u8;
                     cell.subtile_row = 3;
                     assert_eq!(
-                        cave_shape(&cell),
+                        authored_cave_shape(&cell),
                         Some(CellShape::LedgeBand {
                             face: LedgeFace::South,
                             plane_subtile: 4,
@@ -738,8 +871,8 @@ mod tests {
 
     #[test]
     fn unrelated_cave_art_and_other_tilesets_are_not_profiled() {
-        assert_eq!(cave_shape(&source("cave", 0x33)), None);
-        assert_eq!(cave_shape(&source("johto", 0x26)), None);
+        assert_eq!(authored_cave_shape(&source("cave", 0x33)), None);
+        assert_eq!(authored_cave_shape(&source("johto", 0x26)), None);
     }
 
     #[test]
@@ -788,7 +921,7 @@ mod tests {
             wall.subtile_column = column;
             wall.subtile_row = 0;
             assert_eq!(
-                cave_shape(&wall),
+                authored_cave_shape(&wall),
                 Some(CellShape::LedgeBand {
                     face,
                     plane_subtile: if face == LedgeFace::West { 0 } else { 4 },
@@ -805,14 +938,14 @@ mod tests {
         cap.subtile_column = 2;
         cap.subtile_row = 0;
         assert!(matches!(
-            cave_shape(&cap),
+            authored_cave_shape(&cap),
             Some(CellShape::RaisedTop { .. })
         ));
     }
 
     #[test]
     fn rock_face_tile_id_is_not_globally_promoted_to_a_box() {
-        assert_eq!(cave_shape(&source("cave", 0x26)), None);
+        assert_eq!(authored_cave_shape(&source("cave", 0x26)), None);
     }
 
     #[test]
@@ -832,14 +965,14 @@ mod tests {
                 block_34.subtile_row = row;
                 if row >= 2 {
                     assert_eq!(
-                        cave_shape(&block_34),
+                        authored_cave_shape(&block_34),
                         Some(CellShape::RaisedTop {
                             height: CAVE_ROCK_HEIGHT,
                             solid: SolidKind::Bank,
                         })
                     );
                 } else {
-                    assert_eq!(cave_shape(&block_34), None);
+                    assert_eq!(authored_cave_shape(&block_34), None);
                 }
 
                 let barred_shelf = row >= 2 && column >= 2;
@@ -855,7 +988,7 @@ mod tests {
                 block_37.subtile_column = column;
                 block_37.subtile_row = row;
                 assert!(matches!(
-                    cave_shape(&block_37),
+                    authored_cave_shape(&block_37),
                     Some(CellShape::RaisedTop { .. }) | Some(CellShape::LedgeBand { .. })
                 ));
             }
@@ -880,7 +1013,7 @@ mod tests {
                 cell.metatile_id = 0x13;
                 cell.subtile_column = column;
                 cell.subtile_row = row;
-                let shape = cave_shape(&cell);
+                let shape = authored_cave_shape(&cell);
                 if row < 2 {
                     assert_eq!(shape, Some(CellShape::Flat));
                 } else if column < 2 {
@@ -903,7 +1036,7 @@ mod tests {
                     cell.subtile_column = 2 + column as u8;
                     cell.subtile_row = 2 + row as u8;
                     assert_eq!(
-                        cave_shape(&cell),
+                        authored_cave_shape(&cell),
                         Some(CellShape::LedgeBand {
                             face: LedgeFace::South,
                             plane_subtile: 4,
@@ -921,7 +1054,7 @@ mod tests {
         lookalike.metatile_id = 0x32;
         lookalike.subtile_column = 2;
         lookalike.subtile_row = 2;
-        assert_eq!(cave_shape(&lookalike), None);
+        assert_eq!(authored_cave_shape(&lookalike), None);
     }
 
     #[test]
@@ -945,7 +1078,7 @@ mod tests {
                     cell.subtile_row = row;
                     if cap {
                         assert_eq!(
-                            cave_shape(&cell),
+                            authored_cave_shape(&cell),
                             Some(CellShape::RaisedTop {
                                 height: CAVE_ROCK_HEIGHT,
                                 solid: SolidKind::Bank,
@@ -958,7 +1091,7 @@ mod tests {
                             (LedgeFace::West, 1 - column)
                         };
                         assert_eq!(
-                            cave_shape(&cell),
+                            authored_cave_shape(&cell),
                             Some(CellShape::LedgeBand {
                                 face,
                                 plane_subtile: 2,
@@ -978,7 +1111,7 @@ mod tests {
         reused_strip.subtile_column = 0;
         reused_strip.subtile_row = 2;
         assert!(matches!(
-            cave_shape(&reused_strip),
+            authored_cave_shape(&reused_strip),
             Some(CellShape::LedgeBand {
                 face: LedgeFace::South,
                 ..
@@ -1008,11 +1141,11 @@ mod tests {
             ladder.metatile_id = 0x14;
             ladder.subtile_column = 2;
             ladder.subtile_row = row;
-            assert_eq!(cave_shape(&ladder), Some(expected));
+            assert_eq!(authored_cave_shape(&ladder), Some(expected));
         }
     }
 
     fn top_shape(source: &VisualTileSource) -> CellShape {
-        cave_shape(source).expect("profiled cave transition")
+        authored_cave_shape(source).expect("profiled cave transition")
     }
 }

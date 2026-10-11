@@ -6,7 +6,7 @@ import json
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE_DIR = ROOT / 'art/johto/source'
-REQUIRED_SOURCES = {'characters.blend', 'connected-johto.blend', 'foliage-lod.blend',
+REQUIRED_SOURCES = {'connected-johto.blend', 'foliage-lod.blend',
                     'new-bark-kit.blend', 'player-house.blend'}
 
 def read_source(source_dir, item):

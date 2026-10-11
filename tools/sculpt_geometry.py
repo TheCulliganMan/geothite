@@ -166,3 +166,32 @@ def crease_normals(p,degrees=40.):
                 lookup[key]=len(out['positions'])//3;out['positions'].extend(v);out['normals'].extend(n)
             out['indices'].append(lookup[key])
     return out
+
+
+def fitted_contour(name,color,outline,skin,thickness=.009,subdivisions=2):
+    """Closed concave XY patch, subdivided before fitting to stored skin."""
+    from abra_sculpt import polygon_caps
+    # Ear clipping preserves the concave smile and crown notch. Subdivide the
+    # cap before fitting: a radial fan can fold across a crescent's inner edge.
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:outline=list(reversed(outline))
+    xy=list(outline);caps=polygon_caps(outline)
+    for step in range(subdivisions):
+        mids={};refined=[]
+        def midpoint(a,b):
+            key=tuple(sorted((a,b)))
+            if key not in mids:
+                mids[key]=len(xy);xy.append(tuple((xy[a][j]+xy[b][j])/2 for j in range(2)))
+            return mids[key]
+        for a,b,c in caps:
+            ab,bc,ca=midpoint(a,b),midpoint(b,c),midpoint(c,a);refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
+        caps=refined
+    count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (thickness,-thickness*.35) for x,y in xy]
+    f=list(caps)+[tuple(i+count for i in reversed(face)) for face in caps]
+    edges={}
+    for face in caps:
+        for a,b in zip(face,face[1:]+face[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+    for uses in edges.values():
+        if len(uses)==1:
+            a,b=uses[0];f.append((b,a,a+count,b+count))
+    return part(name,color,v,f)
+

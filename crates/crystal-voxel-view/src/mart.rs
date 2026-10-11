@@ -174,6 +174,9 @@ pub(crate) fn display_rack_local(source: &VisualTileSource) -> Option<(u8, u8)> 
         return Some((source.subtile_column % 2, source.subtile_row));
     }
     if source.metatile_id == 0x0b {
+        // The west-side potted plant in department-store 1F/6F rooms.
+        // It shares this complete front-drawing matcher with merchandise,
+        // but its authored 3D role is a plant, not a display shelf.
         let expected = [[0x4a, 0x4b], [0x08, 0x09], [0x89, 0x8a], [0xa7, 0xa8]];
         if source.subtile_column >= 2
             || expected[usize::from(source.subtile_row)][usize::from(source.subtile_column)]

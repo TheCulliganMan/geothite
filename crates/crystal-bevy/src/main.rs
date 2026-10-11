@@ -96,8 +96,8 @@ async fn run_browser() -> Result<()> {
     let pack_bytes = fetch_browser_pack().await?;
     #[cfg(feature = "voxel-view")]
     {
-        fetch_browser_open_models("open-models.json", false).await;
-        fetch_browser_open_models("open-people.json", true).await;
+        let _ = fetch_browser_open_models("open-models.json", false).await;
+        fetch_browser_open_models("open-people.json", true).await?;
     }
     let loaded = crystal_assets::load_verified_compiled_game_pack_bytes(
         DEFAULT_BROWSER_PACK_FILENAME,
@@ -118,7 +118,31 @@ async fn run_browser() -> Result<()> {
             Some("new-bark") => Some(("NewBarkTown", 13, 6)),
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
             Some("goldenrod") => Some(("GoldenrodCity", 20, 18)),
+            Some("department-store") => Some(("GoldenrodDeptStore1F", 8, 4)),
             Some("underground") => Some(("GoldenrodUnderground", 3, 18)),
+            Some("route26") => Some(("Route26", 10, 54)),
+            Some("route26-canyon") => Some(("Route26", 10, 28)),
+            Some("route29") => Some(("Route29", 50, 9)),
+            Some("national-park") => Some(("NationalPark", 20, 40)),
+            Some("national-park-pool") => Some(("NationalPark", 20, 24)),
+            Some("union-cave") => Some(("UnionCave1F", 4, 17)),
+            Some("ice-path") => Some(("IcePath1F", 15, 19)),
+            Some(name @ ("whirl-islands" | "mount-silver")) => {
+                let map = if name == "whirl-islands" { "WhirlIslandB2F" } else { "SilverCaveRoom2" };
+                let (width, height) = runtime.data().saved_map_tile_bounds(map)
+                    .with_context(|| format!("missing preview map {map}"))?;
+                let center = (i32::from(width / 2), i32::from(height / 2));
+                let mut candidates: Vec<_> = (0..height)
+                    .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
+                    .collect();
+                candidates.sort_by_key(|&(x, y)|
+                    (i32::from(x) - center.0).pow(2) + (i32::from(y) - center.1).pow(2));
+                let (x, y) = candidates.into_iter().find(|&(x, y)|
+                    runtime.data().overworld_session(map,
+                        crystal_runtime::core::world::map::TilePosition::new(x, y), 0).is_ok())
+                    .with_context(|| format!("no walkable preview tile on {map}"))?;
+                Some((map, x, y))
+            }
             _ => None,
         };
         if let Some((map_name, tile_x, tile_y)) = preview {
@@ -136,7 +160,14 @@ async fn run_browser() -> Result<()> {
                 BevyShellConfig {
                     smoke_player_name: Some("CHRIS".to_string()),
                     voxel_view_enabled: Some(true),
-                    voxel_camera: Some((0, -1)),
+                    voxel_camera: Some(match params.get("preview").as_deref() {
+                        Some("union-cave") => (4, 0),
+                        Some("ice-path" | "mount-silver") => (1, 0),
+                        Some("whirl-islands") => (0, 0),
+                        Some("route26" | "route26-canyon" | "route29"
+                            | "national-park" | "national-park-pool") => (0, 1),
+                        _ => (0, -1),
+                    }),
                     render_test_hour: Some(16),
                     // No persistence: an art preview must not overwrite a save.
                     quick_save_path: None,
@@ -282,12 +313,10 @@ async fn wait_for_browser_meshtastic() -> Result<()> {
 /// Optional same-origin scenery is external to the game pack and source bundle.
 /// Missing scenery keeps the authored catalog; it never prevents normal play.
 #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
-async fn fetch_browser_open_models(url: &str, people: bool) {
+async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
     use wasm_bindgen::JsCast as _;
     use wasm_bindgen_futures::JsFuture;
-    let Some(window) = web_sys::window() else {
-        return;
-    };
+    let window = web_sys::window().context("browser window is unavailable")?;
     let mut callback = None;
     let mut timer = None;
     let timeout = js_sys::Promise::new(&mut |resolve, _| {
@@ -304,28 +333,32 @@ async fn fetch_browser_open_models(url: &str, people: bool) {
     });
     let download = async {
         let window = web_sys::window().context("browser window is unavailable")?;
-        let response = JsFuture::from(window.fetch_with_str(url))
+        // Artwork uses a fixed URL while its contents change. Revalidate it
+        // on startup so a browser cache cannot retain superseded characters.
+        let options = web_sys::RequestInit::new();
+        options.set_cache(web_sys::RequestCache::NoCache);
+        let response = JsFuture::from(window.fetch_with_str_and_init(url, &options))
             .await
-            .map_err(|e| anyhow::anyhow!("fetch optional scenery: {e:?}"))?
+            .map_err(|e| anyhow::anyhow!("fetch artwork: {e:?}"))?
             .dyn_into::<web_sys::Response>()
-            .map_err(|e| anyhow::anyhow!("decode optional scenery response: {e:?}"))?;
-        if response.status() == 404 {
+            .map_err(|e| anyhow::anyhow!("decode artwork response: {e:?}"))?;
+        if response.status() == 404 && !people {
             return Ok(());
         }
         anyhow::ensure!(
             response.ok(),
-            "optional scenery: HTTP {}",
+            "artwork: HTTP {}",
             response.status()
         );
         let text = JsFuture::from(
             response
                 .text()
-                .map_err(|e| anyhow::anyhow!("read optional scenery: {e:?}"))?,
+                .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?,
         )
         .await
-        .map_err(|e| anyhow::anyhow!("read optional scenery: {e:?}"))?
+        .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?
         .as_string()
-        .context("optional scenery response is not text")?;
+        .context("artwork response is not text")?;
         if people {
             crystal_voxel_view::install_open_people_bundle(&text)
         } else {
@@ -337,22 +370,17 @@ async fn fetch_browser_open_models(url: &str, people: bool) {
     let result: Result<()> = if timer.is_some() {
         bevy::tasks::futures_lite::future::or(download, async {
             let _ = JsFuture::from(timeout).await;
-            anyhow::bail!("optional scenery download timed out");
+            anyhow::bail!("artwork download timed out");
         })
         .await
     } else {
-        Ok(())
+        download.await
     };
     if let Some(timer) = timer {
         window.clear_timeout_with_handle(timer);
     }
     drop(callback);
-    if let Err(error) = result {
-        bevy::log::warn!(
-            "{error:#}; using authored {}",
-            if people { "people" } else { "scenery" }
-        );
-    }
+    result
 }
 
 #[cfg(target_arch = "wasm32")]

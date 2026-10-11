@@ -72,7 +72,7 @@ fn check(map:&str,cells:Vec<Identity<'static>>,w:usize,h:usize,expected:[usize;4
  for &(x,y)in protected {
   // Complete square-backed seat pictures share the actor's source quadrant. Their
   // mesh stays north of the native foot anchor, checked against real rigs by
-  // check-facility-table-rigs.py; source ownership does not add support.
+  // the production weighted-skin character review; source ownership does not add support.
   assert!(!owned[y*w+x] || out.iter().any(|p|p.kind()==Kind::Chair && p.indices(w).any(|i|i==y*w+x)),
    "standing actor space claimed by non-seat furniture in {map} at {x},{y}");
  }

@@ -54,7 +54,7 @@ use crystal_core::battle::turn::{
     resolve_wild_battle_turn_with_items as core_resolve_wild_battle_turn_with_items,
     select_wild_enemy_move_slot as core_select_wild_enemy_move_slot,
 };
-use crystal_core::input::{B_PAD_A, GameButton, JoypadState, direction_from_pad_mask};
+use crystal_core::input::{B_PAD_A, B_PAD_B, GameButton, JoypadState, direction_from_pad_mask};
 use crystal_core::map::{
     BackgroundEvent, CoordEvent, MapAttributes, MapConnection, MapEventSectionCommand,
     MapEventSectionCommandIssue, MapEvents, MapScene, MapSceneTable, MapScriptSectionCommand,

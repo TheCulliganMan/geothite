@@ -1,3 +1,109 @@
+/// Join only source-authored grass at the same rendered elevation.
+fn connected_grass_neighbors(
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    geometry: &GridGeometry,
+    column: usize,
+    row: usize,
+) -> [bool; 4] {
+    let index = row * geometry.width + column;
+    [(-1isize, 0isize), (1, 0), (0, -1), (0, 1)].map(|(dx, dz)| {
+        let x = column as isize + dx;
+        let z = row as isize + dz;
+        if x < 0 || z < 0 || x >= geometry.width as isize || z >= geometry.height as isize {
+            return false;
+        }
+        let neighbor = z as usize * geometry.width + x as usize;
+        crate::grass::grass_shape(&cells[neighbor].source).is_some()
+            && matches!(shapes[neighbor], CellShape::Cutout { solid: SolidKind::Grass, .. })
+            && shapes[neighbor].surface_height(geometry.tile_height)
+                == shapes[index].surface_height(geometry.tile_height)
+    })
+}
+
+fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: bool, holes: &[bool]) {
+    let w = g.origin_x;
+    let e = w + g.width as f32 * g.tile_width;
+    let n = g.origin_z;
+    let s = n + g.height as f32 * g.tile_height;
+    let color = if dark {
+        [0.295, 0.355, 0.38, 1.]
+    } else {
+        [0.43, 0.405, 0.32, 1.]
+    };
+    if holes.iter().any(|&hole| hole) {
+        for row in 0..g.height {
+            let mut column = 0;
+            while column < g.width {
+                if holes[row*g.width+column] { column += 1; continue; }
+                let start = column;
+                while column < g.width && !holes[row*g.width+column] { column += 1; }
+                let (w,_,n,s) = g.bounds(start,row);
+                let (_,e,_,_) = g.bounds(column-1,row);
+                append_solid_quad(out, [[w,-0.02,n],[w,-0.02,s],[e,-0.02,s],[e,-0.02,n]],
+                    [0.,1.,0.],color);
+            }
+        }
+        return;
+    }
+    append_solid_quad(
+        out,
+        [[w, -0.02, n], [w, -0.02, s], [e, -0.02, s], [e, -0.02, n]],
+        [0., 1., 0.],
+        color,
+    );
+}
+
+#[cfg(test)]
+mod cave_foundation_tests {
+    use super::*;
+    #[test]
+    fn foundation_aperture_removes_only_the_complete_hatch_footprint() {
+        let g = GridGeometry { width: 4, height: 4, tile_width: 8.,tile_height:8.,origin_x:0.,origin_z:0. };
+        let mut holes = vec![false;16];
+        for i in [5,6,9,10] { holes[i] = true; }
+        let mut mesh = SurfaceMeshData::default();
+        append_cave_foundation(&mut mesh,&g,false,&holes);
+        for (i,&hole) in holes.iter().enumerate() {
+            let x = (i%4) as f32*8.+4.;
+            let z = (i/4) as f32*8.+4.;
+            let coverage = mesh.positions.chunks_exact(4).filter(|q|
+                x>q[0][0] && x<q[2][0] && z>q[0][2] && z<q[2][2]).count();
+            assert_eq!(coverage,usize::from(!hole),"foundation cell {i}");
+        }
+        assert!(mesh.positions.iter().all(|p|p[1]==-0.02));
+        assert!(mesh.normals.iter().all(|n|*n==[0.,1.,0.]));
+    }
+    #[test]
+    fn foundation_closes_exact_grid_without_copying_face_art_or_raising_support() {
+        let g = GridGeometry {
+            width: 8,
+            height: 6,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -32.,
+            origin_z: -24.,
+        };
+        for dark in [false, true] {
+            let mut out = SurfaceMeshData::default();
+            append_cave_foundation(&mut out, &g, dark, &[]);
+            assert_eq!(
+                out.positions,
+                vec![
+                    [-32., -0.02, -24.],
+                    [-32., -0.02, 24.],
+                    [32., -0.02, 24.],
+                    [32., -0.02, -24.]
+                ]
+            );
+            assert!(out.uvs.iter().all(|uv| *uv == [0., 0.]));
+            assert!(out.normals.iter().all(|n| *n == [0., 1., 0.]));
+            assert_eq!(out.indices.len(), 6);
+            assert!(out.colors.iter().all(|c| c[3] == 1.));
+        }
+    }
+}
+
 fn build_terrain_mesh_internal(
     frame: &VisualWorldFrame,
     images: Option<&TerrainImageSamples>,
@@ -80,40 +186,78 @@ fn build_terrain_mesh_internal(
     // signature models; live custom profiles retain first refusal.
     let facility_radio_placements = if images.is_some() && authored_enabled {
         facility_radio::resolve(
-            &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
         )
-    } else { Vec::new() };
+    } else {
+        Vec::new()
+    };
     for placement in &facility_radio_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let facility_table_placements = if images.is_some() && authored_enabled {
         facility_tables::resolve(
-            &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
         )
-    } else { Vec::new() };
+    } else {
+        Vec::new()
+    };
     for placement in &facility_table_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     // Complete joined store courses supersede older individual window models.
     // Their resolver still gives all customized live objects first refusal.
     let department_store_placements = if images.is_some() && authored_enabled {
         department_store::resolve(
-            &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
         )
-    } else { Vec::new() };
+    } else {
+        Vec::new()
+    };
     for placement in &department_store_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     interior_placements.retain(|placement| {
-        if placement.indices(width).any(|index| authored_reserved[index]) { return false; }
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        if placement
+            .indices(width)
+            .any(|index| authored_reserved[index])
+        {
+            return false;
+        }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
         true
     });
     let gate_placements = if images.is_some() && authored_enabled {
-        gate_counters::resolve(&frame.map_id, &original_cells, &geometry, frame.grid_origin.to_array(), profiles, &authored_reserved)
+        gate_counters::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
     } else {
         Vec::new()
     };
@@ -123,70 +267,205 @@ fn build_terrain_mesh_internal(
         }
     }
     let cable_club_placements = if images.is_some() && authored_enabled {
-        cable_club::resolve(&frame.map_id, &original_cells, &geometry, frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        cable_club::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &cable_club_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let train_placements = if images.is_some() && authored_enabled {
-        train_station_scenery::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        train_station_scenery::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &train_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let outdoor_sign_placements = if images.is_some() && authored_enabled {
-        outdoor_signs::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
-    } else { Vec::new() };
+        outdoor_signs::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &outdoor_sign_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let gym_placements = if images.is_some() && authored_enabled {
-        gym_scenery::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        gym_scenery::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &gym_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let violet_pits = if images.is_some() && authored_enabled {
-        violet_gym_pits::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
-    } else { None };
+        violet_gym_pits::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        None
+    };
     if let Some(p) = &violet_pits {
-        for index in p.indices() { authored_reserved[index] = true; }
+        for index in p.indices() {
+            authored_reserved[index] = true;
+        }
     }
     let traditional_room_placements = if images.is_some() && authored_enabled {
-        traditional_room::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        traditional_room::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &traditional_room_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let ship_front_placements = if images.is_some() && authored_enabled {
-        ship_fronts::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        ship_fronts::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &ship_front_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let ship_room_placements = if images.is_some() && authored_enabled {
-        ship_rooms::resolve(&frame.map_id, &original_cells, &geometry, profiles, &authored_reserved)
-    } else { Vec::new() };
+        ship_rooms::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &ship_room_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let park_placements = if images.is_some() && authored_enabled {
-        park_scenery::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        park_scenery::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &park_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
+    }
+    let park_side_placements = if images.is_some() && authored_enabled {
+        park_side_fence::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
+    for p in &park_side_placements {
+        for i in p.indices(width) {
+            authored_reserved[i] = true;
+        }
+    }
+    let park_flowerbed_placements = if images.is_some() && authored_enabled {
+        park_flowerbed::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
+    for p in &park_flowerbed_placements {
+        for i in p.indices(width) {
+            authored_reserved[i] = true;
+        }
     }
     let rocket_plant_placements = if images.is_some() && authored_enabled {
-        rocket_plants::resolve(&frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved)
-    } else { Vec::new() };
+        rocket_plants::resolve(
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
+        )
+    } else {
+        Vec::new()
+    };
     for placement in &rocket_plant_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let mut dungeon_placements = if images.is_some() && authored_enabled {
         modeled_dungeons::resolve(&frame.map_id, &original_cells, &geometry, profiles)
@@ -209,12 +488,20 @@ fn build_terrain_mesh_internal(
     // source-complete objects with proven ground inside this map's bounds.
     let native_ground_placements = if images.is_some() && authored_enabled {
         native_ground_bindings::resolve(
-            &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), profiles, &authored_reserved,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            profiles,
+            &authored_reserved,
         )
-    } else { Vec::new() };
+    } else {
+        Vec::new()
+    };
     for placement in &native_ground_placements {
-        for index in placement.indices(width) { authored_reserved[index] = true; }
+        for index in placement.indices(width) {
+            authored_reserved[index] = true;
+        }
     }
     let mut live_placements = live::resolve(
         &cells,
@@ -355,29 +642,29 @@ fn build_terrain_mesh_internal(
         ..Default::default()
     };
     if let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
-        if !crate::interior::has_back_wall(tileset) {
+        if !crate::interior::has_back_wall(tileset)
+            && !crate::interior_cutaway::is_cave(frame) {
             background::append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes);
         }
     }
-    // Cave faces are folds cut from the same continuous map drawing. Keep a
-    // faithful copy of that drawing just below the modeled shelves so a fold,
-    // diagonal corner, or clipped neighbor can never punch the clear color
-    // through the cave floor. This is the connected-volume rule used by the
-    // rock/cliff mesher: authored face art changes elevation, not topology.
+    mesh.cave_enclosure = cave_enclosure::build(frame, &geometry);
+    // Close the foundation beneath folded cave volumes. Repeating the full
+    // source drawing here paints wall/ladder art onto the floor when a tall
+    // foreground wall is cut away. The authenticated cave profile supplies
+    // stone beneath those volumes; live authored surfaces remain above it.
     if cells
         .iter()
         .all(|tile| matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave"))
     {
-        append_top(
-            &mut mesh.textured,
-            [
-                geometry.origin_x,
-                geometry.origin_x + grid_width,
-                geometry.origin_z,
-                geometry.origin_z + grid_height,
-            ],
-            -0.02,
-            (0.0, 1.0, 0.0, 1.0),
+        let mut foundation_holes = vec![false; cell_count];
+        for hatch in dungeon_placements.iter().filter(|p| p.cuts_foundation()) {
+            for index in hatch.indices(width) { foundation_holes[index] = true; }
+        }
+        append_cave_foundation(
+            &mut mesh.solid,
+            &geometry,
+            cells[0].source.tileset_id.as_ref() == "dark_cave",
+            &foundation_holes,
         );
     }
     mesh.footing_heights = original_cells
@@ -406,22 +693,42 @@ fn build_terrain_mesh_internal(
     let mut claimed_by_building = vec![false; cell_count];
     let mut claimed_by_tree = live_claimed;
     if authored_enabled && images.is_some() {
-        city_gardens::append(&mut mesh, &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), &mut claimed_by_tree);
+        city_gardens::append(
+            &mut mesh,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            &mut claimed_by_tree,
+        );
     }
     if authored_enabled && images.is_some() {
-        city_railway::append(&mut mesh, &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), &mut claimed_by_tree);
+        city_railway::append(
+            &mut mesh,
+            &frame.map_id,
+            &original_cells,
+            &geometry,
+            frame.grid_origin.to_array(),
+            &mut claimed_by_tree,
+        );
     }
     for placement in &facility_radio_placements {
         let appended = facility_radio::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated facility/radio reservation must append");
     }
     for placement in &facility_table_placements {
         let appended = facility_tables::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated facility table reservation must append");
     }
@@ -438,67 +745,158 @@ fn build_terrain_mesh_internal(
     }
     for placement in &gate_placements {
         let appended = gate_counters::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated gate network reservation must append");
     }
     for placement in &cable_club_placements {
-        let appended = cable_club::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
+        let appended = cable_club::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated Cable Club reservation must append");
     }
     for placement in &train_placements {
         let appended = train_station_scenery::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated station train reservation must append");
     }
     for placement in &outdoor_sign_placements {
-        let appended = outdoor_signs::append(&mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree);
+        let appended = outdoor_signs::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated outdoor sign reservation must append");
     }
     for placement in &gym_placements {
-        let appended = gym_scenery::append(&mut mesh, &original_cells, &geometry,
-            placement, &mut claimed_by_tree);
+        let appended = gym_scenery::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated Gym reservation must append");
     }
     if let Some(p) = &violet_pits {
-        let appended = violet_gym_pits::append(&mut mesh, &original_cells, &geometry, p, &mut claimed_by_tree);
+        let appended = violet_gym_pits::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            p,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated Violet recess reservation must append");
     }
     for placement in &traditional_room_placements {
-        let appended = traditional_room::append(&mut mesh, &original_cells, &geometry,
-            placement, &mut claimed_by_tree);
-        debug_assert!(appended, "validated traditional-room reservation must append");
+        let appended = traditional_room::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
+        debug_assert!(
+            appended,
+            "validated traditional-room reservation must append"
+        );
     }
     for placement in &park_placements {
-        let appended = park_scenery::append(&mut mesh, &original_cells, &geometry,
-            placement, &mut claimed_by_tree);
+        let appended = park_scenery::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated park fixture reservation must append");
+    }
+    for p in &park_side_placements {
+        let appended = park_side_fence::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            p,
+            &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated park side fence must append");
+    }
+    for p in &park_flowerbed_placements {
+        let appended = park_flowerbed::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            p,
+            &mut claimed_by_tree,
+        );
+        debug_assert!(appended, "validated park flowerbed must append");
     }
     for placement in &department_store_placements {
         let appended = department_store::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
-        debug_assert!(appended, "validated department store reservation must append");
+        debug_assert!(
+            appended,
+            "validated department store reservation must append"
+        );
     }
     for placement in &ship_front_placements {
-        let appended = ship_fronts::append(&mut mesh, &original_cells, &geometry,
-            placement, &mut claimed_by_tree);
+        let appended = ship_fronts::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated room-front reservation must append");
     }
     for placement in &ship_room_placements {
         let appended = ship_rooms::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated ship room reservation must append");
     }
     for placement in &rocket_plant_placements {
-        let appended = rocket_plants::append(&mut mesh, &original_cells, &geometry,
-            placement, &mut claimed_by_tree);
+        let appended = rocket_plants::append(
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
+        );
         debug_assert!(appended, "validated Rocket plant reservation must append");
     }
     for placement in &dungeon_placements {
-        modeled_dungeons::append(&mut mesh, &geometry, placement, &original_cells);
+        modeled_dungeons::append(
+            &mut mesh,
+            &geometry,
+            placement,
+            &original_cells,
+            frame.grid_origin.to_array(),
+        );
         for index in placement.indices(width) {
             claimed_by_tree[index] = true;
             mesh.authored_cells[index] = Some(placement.kind_label());
@@ -506,7 +904,11 @@ fn build_terrain_mesh_internal(
     }
     for placement in &native_ground_placements {
         let appended = native_ground_bindings::append(
-            &mut mesh, &original_cells, &geometry, placement, &mut claimed_by_tree,
+            &mut mesh,
+            &original_cells,
+            &geometry,
+            placement,
+            &mut claimed_by_tree,
         );
         debug_assert!(appended, "validated native ground binding must append");
     }
@@ -525,7 +927,7 @@ fn build_terrain_mesh_internal(
     if let Some(images) = images {
         for placement in &live_placements {
             if !authored_enabled
-                || !modeled_exteriors::append_live(&mut mesh, &original_cells, &geometry, placement)
+                || !modeled_exteriors::append_live(&mut mesh, &original_cells, &geometry, placement, frame.grid_origin.to_array())
             {
                 live::append(&mut mesh, &geometry, placement, &cells, images)?;
             }
@@ -1235,17 +1637,6 @@ fn build_terrain_mesh_internal(
                 }
             }
         }
-        for placement in tower_statue_placements(&cells, &geometry) {
-            append_grouped_tree(
-                &mut mesh,
-                images,
-                &cells,
-                &shapes,
-                &geometry,
-                placement,
-                &mut claimed_by_tree,
-            )?;
-        }
         if frame.map_id.as_ref() == "PewterGym" {
             for placement in tower_boulder_placements(&cells, &geometry) {
                 if let Err(error) = append_grouped_tree(
@@ -1635,13 +2026,16 @@ fn build_terrain_mesh_internal(
                     || claimed_by_house_furniture[index]
             })
             .collect();
+        let joined_shapes = modeled_dungeons::joined_surface_shapes(
+            &dungeon_placements, &original_cells, &source_shapes, &geometry);
         modeled_dungeons::append_terrain(
             &mut mesh,
             &frame.map_id,
             &original_cells,
-            &source_shapes,
+            &joined_shapes,
             &geometry,
             &mut occupied,
+            frame.grid_origin.to_array(),
         );
         for (claimed, occupied) in claimed_by_tree.iter_mut().zip(occupied) {
             *claimed |= occupied;
@@ -1678,6 +2072,7 @@ fn build_terrain_mesh_internal(
                         cells[index],
                         &geometry,
                         shapes[ground].surface_height(geometry.tile_height),
+                        frame.grid_origin.to_array(),
                     )))
             {
                 let (west, east, north, south) = geometry.bounds(column, row);
@@ -1687,7 +2082,10 @@ fn build_terrain_mesh_internal(
                     shapes[ground].surface_height(geometry.tile_height),
                     geometry.uv(ground % width, ground / width),
                 );
-                mesh.authored_cells[index] = Some("johto/flowers");
+                mesh.authored_cells[index] = Some(if matches!(frame.map_id.as_ref(),
+                    "NationalPark" | "NationalParkBugContest")
+                    && cells[index].source.tileset_id.as_ref() == "park"
+                { "park/flowers" } else { "johto/flowers" });
                 continue;
             }
             if images.is_some()
@@ -1696,21 +2094,23 @@ fn build_terrain_mesh_internal(
                     solid: SolidKind::Grass,
                 } = shapes[index]
                 && let Some(ground) = authored_ground_cell(&cells, &shapes, ground_tile_index)
-                && (new_bark::append_grass(
+                && (new_bark::append_connected_grass(
                     &mut mesh.solid,
                     frame.map_id.as_ref(),
                     cells[index],
                     &geometry,
                     shapes[ground].surface_height(geometry.tile_height),
                     frame.grid_origin.to_array(),
+                    connected_grass_neighbors(&cells, &shapes, &geometry, column, row),
                 ) || (authored_enabled
-                    && modeled_exteriors::append_grass(
+                    && modeled_exteriors::append_connected_grass(
                         &mut mesh.solid,
                         frame.map_id.as_ref(),
                         cells[index],
                         &geometry,
                         shapes[ground].surface_height(geometry.tile_height),
                         frame.grid_origin.to_array(),
+                        connected_grass_neighbors(&cells, &shapes, &geometry, column, row),
                     )))
             {
                 let (west, east, north, south) = geometry.bounds(column, row);
@@ -1732,7 +2132,7 @@ fn build_terrain_mesh_internal(
     append_cafe_table_pedestals(&mut mesh.solid, &cells, &geometry, frame.map_id.as_ref());
 
     for placement in waterfall_placements(&cells, width, height) {
-        append_waterfall(&mut mesh.textured, &geometry, &cells, placement);
+        append_waterfall(&mut mesh.textured, &geometry, &cells, placement, frame.grid_origin.to_array());
     }
 
     // Production uses the source-complete 3f+33 park kit. Preserve the old
@@ -1759,7 +2159,10 @@ fn build_terrain_mesh_internal(
         }
     }
 
-    if authored_enabled {
+    if dragons_den::finish(&mut mesh, &frame.map_id, &original_cells, &geometry,
+        frame.grid_origin.to_array()) {
+        // Johto's source art belongs to this cavern, not the outdoor meadow.
+    } else if authored_enabled {
         new_bark::polish_world_surfaces(
             &mut mesh,
             &frame.map_id,
@@ -1786,6 +2189,9 @@ fn build_terrain_mesh_internal(
             profiles,
         );
     }
+    ledge_approach::shape_approaches(&mut mesh, &original_cells, &geometry, &source_shapes, frame.grid_origin.to_array());
+    outdoor_stone::soften_rock_rims(&mut mesh, &original_cells, &source_shapes, &geometry, frame.grid_origin.to_array());
+    rock_bases::round(&mut mesh, &frame.map_id, &original_cells, &source_shapes, &geometry, frame.grid_origin.to_array());
     if let Some(started) = scenery_metrics {
         let surfaces = [
             &mesh.textured,

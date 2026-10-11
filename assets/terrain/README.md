@@ -1,0 +1,12 @@
+# Original painted terrain materials
+
+Generated with the built-in imagegen tool on 2026-10-10. These are original rendering assets; they do not contain game-pack exports. Rust embeds them for native and browser parity. Sandstone supplies canyon wall strata; bedrock supplies fractured caps and stone walls, including Union Cave and the desaturated rock beneath Ice Path’s blue frost. Map-space projection is defined in `crates/crystal-voxel-view/src/voxel_surface.wgsl`.
+
+## Sandstone prompt
+
+Use case: stylized-concept. Create a production game material asset: one square seamless tileable hand-painted sandstone/earth cliff albedo texture, viewed straight on orthographically with no perspective. Rich ochre sandstone, warm tawny browns, muted golden stone highlights, cool brown crevices; restrained saturation. Broad irregular eroded sedimentary bands with angular chipped facets and occasional thin dark mineral fissures; painterly soft brushwork and crisp selectively painted edges like an illustrated lush Pokemon forest environment. Material must read as stone rather than cloudy noise, camouflage, bricks or wood. Continuous irregular horizontal strata, never a regular grid or repeating square blocks. Fill the entire image with the material. Flat diffuse ambient illumination, no directional lighting, no cast shadows, no ambient occlusion, no bevel around image, no objects, no ground, no vegetation, no text, no border. Seamless opposing edges for tiling. High-quality 1024x1024 albedo asset.
+
+## Bedrock prompt
+
+Use case: stylized-concept. Production game material: square seamless tileable hand-painted weathered bedrock ALBEDO texture. Flat orthographic view directly onto the surface, full bleed, opaque. Broad irregular interlocking angular stone plates and chipped edges, varied non-repeating polygon sizes, occasional thin branching charcoal cracks, small eroded chips. Warm muted grey-brown stone, subtle ochre mineral inclusions, soft dusty pale grey highlights and cool dark umber fissures. Painterly brushwork suited to a lush illustrated Pokemon forest game, rich readable medium-scale forms. No horizontal sedimentary stripes, no wood grain, no cloudy noise, no pebble mosaic, no regular grid, no bricks. Flat diffuse illumination without cast shadows, directional light, baked ambient occlusion, or bevel around image. No objects, plants, scenery, perspective, text or borders. Seamless opposing edges. 1024x1024.
+

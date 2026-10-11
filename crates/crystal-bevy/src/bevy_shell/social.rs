@@ -224,10 +224,10 @@ fn publish_social_heads(
                     else { crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(id)) };
                 return voxel_heads.as_ref()?.0.get(&visual_id).copied();
             }
-            let _ = voxel_active;
-            let (camera, camera_transform) = cameras.get_single().ok()?;
+            let _ = (voxel_active, id);
+            let (camera, camera_transform) = cameras.single().ok()?;
             let size = camera.logical_target_size()?;
-            let point = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y * sprite.custom_size?.y * 0.5))?;
+            let point = camera.world_to_viewport(camera_transform, transform.transform_point(Vec3::Y * sprite.custom_size?.y * 0.5)).ok()?;
             let normalized = (point + camera.logical_viewport_rect()?.min) / size;
             (normalized.is_finite() && normalized.cmpge(Vec2::ZERO).all() && normalized.cmple(Vec2::ONE).all()).then_some(normalized)
         };

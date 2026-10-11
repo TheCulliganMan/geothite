@@ -1,16 +1,20 @@
 //! Source-complete world exterior kits. Authoritative tiles, phases, native
 //! ground and door seams select art; collision and simulation are never read.
 use super::*;
-#[path = "kanto_boundary_rocks.rs"]
-mod kanto_boundary_rocks;
-#[path = "kanto_capped_posts.rs"]
-mod kanto_capped_posts;
-#[path = "structure_extensions.rs"]
-mod structure_extensions;
 #[path = "city_facades.rs"]
 mod city_facades;
 #[path = "folded_roofs.rs"]
 pub(super) mod folded_roofs;
+#[path = "kanto_boundary_rocks.rs"]
+mod kanto_boundary_rocks;
+#[path = "kanto_capped_posts.rs"]
+mod kanto_capped_posts;
+#[path = "park_hoop_fence.rs"]
+pub(super) mod park_hoop_fence;
+#[path = "structure_extensions.rs"]
+mod structure_extensions;
+#[path = "park_flowers.rs"]
+mod park_flowers;
 use crate::exterior_models::{Kind, model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -438,7 +442,7 @@ pub(super) fn append_building(
     claimed: &mut [bool],
     map_origin: [i32; 2],
 ) -> bool {
-    if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed) {
+    if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed, map_origin) {
         return true;
     }
     let Some(d) = descriptor(map, cells, g, p) else {
@@ -473,15 +477,43 @@ pub(super) fn append_building(
             johto_model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
         }
     }
-    if map == "GoldenrodCity" && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset {
-        city_facades::finish(&mut mesh.solid, cutaway_start, model(kind), b, g.tile_height * 2.0, door,
-            [p.column as i32 + map_origin[0], p.row as i32 + map_origin[1]]);
+    if map == "GoldenrodCity"
+        && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset
+    {
+        city_facades::finish(
+            &mut mesh.solid,
+            cutaway_start,
+            model(kind),
+            b,
+            g.tile_height * 2.0,
+            door,
+            [
+                p.column as i32 + map_origin[0],
+                p.row as i32 + map_origin[1],
+            ],
+        );
     }
-    if let Asset::World(kind @ (Kind::ModernHouse | Kind::ModernBlank | Kind::ModernShop
-        | Kind::ModernMart | Kind::ModernGym | Kind::ModernStation
-        | Kind::ModernDepartment | Kind::ModernArcade)) = d.asset {
-        folded_roofs::append(&mut mesh.solid, cutaway_start, model(kind), g.tile_height * 2.0,
-            [p.column as i32 + map_origin[0], p.row as i32 + map_origin[1]]);
+    if let Asset::World(
+        kind @ (Kind::ModernHouse
+        | Kind::ModernBlank
+        | Kind::ModernShop
+        | Kind::ModernMart
+        | Kind::ModernGym
+        | Kind::ModernStation
+        | Kind::ModernDepartment
+        | Kind::ModernArcade),
+    ) = d.asset
+    {
+        folded_roofs::append(
+            &mut mesh.solid,
+            cutaway_start,
+            model(kind),
+            g.tile_height * 2.0,
+            [
+                p.column as i32 + map_origin[0],
+                p.row as i32 + map_origin[1],
+            ],
+        );
     }
     // Eligibility belongs only to this successful authored building append.
     // Ground backing and the earlier cave/mesa/forecourt/ice branch stay opaque.
@@ -550,6 +582,29 @@ pub(super) fn append_tree(
     let Some(kind) = tree_kind(cells, g, p) else {
         return false;
     };
+    let park_tree = cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "park"
+        && p.width == 4;
+    if park_tree && (p.height != 4 || !(0..4).all(|y| (0..4).all(|x| {
+        crate::park::large_tree_local(&cells[(p.row + y) * g.width + p.column + x].source)
+            == Some((x as u8, y as u8))
+    }))) {
+        return false;
+    }
+    if kind == Asset::World(Kind::ParkHedge) {
+        let first = &cells[p.row * g.width + p.column].source;
+        let Some((fence, 0, 0)) = crate::park::hoop_fence_local(first) else {
+            return false;
+        };
+        if !(0..2).all(|y| (0..2).all(|x| {
+            let s = &cells[(p.row+y)*g.width+p.column+x].source;
+            crate::park::hoop_fence_local(s) == Some((fence,x as u8,y as u8))
+                && s.metatile_id == first.metatile_id
+                && usize::from(s.subtile_column) == usize::from(first.subtile_column)+x
+                && usize::from(s.subtile_row) == usize::from(first.subtile_row)+y
+        })) {
+            return false;
+        }
+    }
     let rect = [p.column, p.row, p.width, p.height];
     if !clear(claimed, g, rect) {
         return false;
@@ -558,6 +613,22 @@ pub(super) fn append_tree(
         return false;
     };
     floor(mesh, cells, shapes, g, rect, sample, claimed);
+    if park_tree {
+        crate::foliage::append_park_tree(mesh, bounds(g, rect), p.base_height, g.tile_height,
+            [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]);
+        mark_authored_rect(mesh, g, rect, "world-exterior/park_tree");
+        return true;
+    }
+    if kind == Asset::World(Kind::ParkHedge) {
+        // The historical kit key classified the native arches as foliage.
+        // Retain catalog compatibility while drawing the actual open fence.
+        let fence = crate::park::hoop_fence_local(
+            &cells[p.row * g.width + p.column].source,
+        ).expect("complete park fence drawing").0;
+        park_hoop_fence::append(&mut mesh.solid, bounds(g, rect), g.tile_height, fence);
+        mark_authored_rect(mesh, g, rect, "world-exterior/park_hoop_fence");
+        return true;
+    }
     let mut b = bounds(g, rect);
     let depth = (b[1] - b[0]).min(b[3] - b[2]);
     b[2] = b[3] - depth;
@@ -565,9 +636,18 @@ pub(super) fn append_tree(
     if matches!(kind, Asset::World(Kind::ForestConifer))
         && johto_model(Johto::Tree).has_cutout_foliage()
     {
-        crate::foliage::append_world_tree(mesh, Johto::Tree, b, p.base_height, g.tile_height,
-            [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
-                super::new_bark::grove_neighbors(cells, g, map, p));
+        crate::foliage::append_world_tree(
+            mesh,
+            Johto::Tree,
+            b,
+            p.base_height,
+            g.tile_height,
+            [
+                map_origin[0] + p.column as i32,
+                map_origin[1] + p.row as i32,
+            ],
+            super::new_bark::grove_neighbors(cells, g, map, p),
+        );
         mark_authored_rect(mesh, g, rect, kind.label());
         return true;
     }
@@ -583,9 +663,18 @@ pub(super) fn append_tree(
             )
         }
         Asset::Johto(k) => {
-            crate::foliage::append_world_tree(mesh, k, b, p.base_height, g.tile_height,
-                [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
-                super::new_bark::grove_neighbors(cells, g, map, p));
+            crate::foliage::append_world_tree(
+                mesh,
+                k,
+                b,
+                p.base_height,
+                g.tile_height,
+                [
+                    map_origin[0] + p.column as i32,
+                    map_origin[1] + p.row as i32,
+                ],
+                super::new_bark::grove_neighbors(cells, g, map, p),
+            );
         }
     }
     mark_authored_rect(mesh, g, rect, kind.label());
@@ -766,6 +855,11 @@ pub(super) fn append_props(
         };
         floor(mesh, cells, shapes, g, p.rect, sample, claimed);
         let mut b = bounds(g, p.rect);
+        if p.kind == Kind::ParkBench {
+            // The extra claimed row removes the original painted feet; it
+            // does not stretch or move the existing full-volume bench.
+            b[3] -= g.tile_height;
+        }
         if matches!(p.kind, Kind::TimberFence | Kind::RouteSign) {
             let center = b[3] - g.tile_height * 0.35;
             b[2] = center - g.tile_height * 0.12;
@@ -865,11 +959,16 @@ pub(super) fn append_live(
     cells: &[&VisualTile],
     g: &GridGeometry,
     p: &live::Placement<'_>,
+    map_origin: [i32; 2],
 ) -> bool {
     if !canonical_live(p.object) {
         return false;
     }
+    let small_tree = p.object.tileset == "johto"
+        && (p.object.name.starts_with("Route29 small tree ")
+            || p.object.name.starts_with("NewBarkTown small tree "));
     let kind = match (p.object.tileset.as_str(), p.object.name.as_str()) {
+        _ if small_tree => Kind::CutTree,
         ("johto", "Cherrygrove coastal boulder") => Kind::ShoreBoulder,
         ("kanto", name) if name.starts_with("Cinnabar shoreline rock ") => Kind::ShoreBoulder,
         ("kanto", name) if name.starts_with("CinnabarIsland sign ") => Kind::RouteSign,
@@ -892,8 +991,14 @@ pub(super) fn append_live(
             append_top(&mut mesh.textured, [a, b, c, d], 0.0, ground_uv);
         }
     }
-    let m = model(kind);
     let mut b = bounds(g, rect);
+    if small_tree {
+        crate::foliage::append_town_tree(mesh, b, 0.0, g.tile_height * 0.5,
+            [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32], [false; 4]);
+        mark_authored_rect(mesh, g, rect, "johto/small_tree");
+        return true;
+    }
+    let m = model(kind);
     if kind == Kind::RouteSign {
         let center = b[3] - g.tile_height * 0.35;
         b[2] = center - g.tile_height * 0.12;
@@ -921,25 +1026,42 @@ pub(super) fn append_grass(
     base_height: f32,
     _origin: [i32; 2],
 ) -> bool {
+    append_connected_grass(target, _map, tile, g, base_height, _origin, [false; 4])
+}
+
+pub(super) fn append_connected_grass(
+    target: &mut SurfaceMeshData,
+    _map: &str,
+    tile: &VisualTile,
+    g: &GridGeometry,
+    base_height: f32,
+    _origin: [i32; 2],
+    joined: [bool; 4],
+) -> bool {
     if !outdoor(tile.source.tileset_id.as_ref())
         || crate::grass::grass_shape(&tile.source).is_none()
     {
         return false;
     }
     let (w, e, n, s) = g.bounds(tile.column as usize, tile.row as usize);
-    let m = johto_model(Johto::GrassLod);
     let tall = tile.source.tileset_id.as_ref() == "park" && tile.source.metatile_id == 0x13;
-    m.append_fitted(
+    let park = tile.source.tileset_id.as_ref() == "park";
+    let kind = if park {
+        if tall { crate::grass_blades::PatchKind::ParkLong }
+        else { crate::grass_blades::PatchKind::ParkShort }
+    } else { crate::grass_blades::PatchKind::Meadow };
+    crate::grass_blades::append_styled_patch(
         target,
-        [
-            w + g.tile_width * 0.06,
-            e - g.tile_width * 0.06,
-            n + g.tile_height * 0.06,
-            s - g.tile_height * 0.06,
-        ],
+        [w, e, n, s],
         base_height,
-        g.tile_height * (if tall { 1.1 } else { 0.6 }) / (m.max[1] - m.min[1]),
-        None,
+        g.tile_height * if tall { 1.25 } else if park { 0.82 } else { 1.0 },
+        [
+            _origin[0] + tile.column as i32,
+            _origin[1] + tile.row as i32,
+        ],
+        ((w + e) * 0.5 / g.tile_width).hypot((n + s) * 0.5 / g.tile_height) < 10.0,
+        joined,
+        kind,
     );
     true
 }
@@ -949,6 +1071,7 @@ pub(super) fn append_flower(
     tile: &VisualTile,
     g: &GridGeometry,
     base_height: f32,
+    origin: [i32; 2],
 ) -> bool {
     if !outdoor(tile.source.tileset_id.as_ref())
         || crate::flower::flower_shape(&tile.source).is_none()
@@ -956,6 +1079,13 @@ pub(super) fn append_flower(
         return false;
     }
     let (w, e, n, s) = g.bounds(tile.column as usize, tile.row as usize);
+    if matches!(_map, "NationalPark" | "NationalParkBugContest")
+        && tile.source.tileset_id.as_ref() == "park"
+    {
+        park_flowers::append(target, [w, e, n, s], base_height,
+            [origin[0] + tile.column as i32, origin[1] + tile.row as i32]);
+        return true;
+    }
     let m = johto_model(Johto::Flowers);
     m.append_fitted(
         target,
@@ -975,6 +1105,135 @@ pub(super) fn append_flower(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn park_flower_cluster_requires_native_flower_and_keeps_contest_appearance() {
+        let mut source = super::super::tests::source_with_tile(0x3c, 1, 1, 3);
+        source.tileset_id = "park".into();
+        let frame = super::super::tests::frame(1, 1, vec![source]);
+        let g = GridGeometry { width: 1, height: 1, tile_width: 8., tile_height: 8.,
+            origin_x: 0., origin_z: 0. };
+        let mut ordinary = SurfaceMeshData::default();
+        let mut contest = SurfaceMeshData::default();
+        assert!(append_flower(&mut ordinary, "NationalPark", &frame.tiles[0], &g, -2., [20, 40]));
+        assert!(append_flower(&mut contest, "NationalParkBugContest", &frame.tiles[0], &g, -2., [20, 40]));
+        assert_eq!(ordinary, contest);
+        let mut lawn = frame.tiles[0].clone();
+        lawn.source.tile_index = 1;
+        let mut rejected = SurfaceMeshData::default();
+        assert!(!append_flower(&mut rejected, "NationalPark", &lawn, &g, -2., [20, 40]));
+        assert_eq!(rejected, SurfaceMeshData::default());
+    }
+
+    #[test]
+    fn park_outer_tree_uses_its_own_crown_only_for_a_complete_native_plot() {
+        let sources = (0..20).map(|i| {
+            let x = i % 5;
+            let y = i / 5;
+            let mut source = super::super::tests::source_with_tile(
+                if x < 4 { 6 } else { crate::park::PARK_TREE_GROUND_METATILE },
+                x.min(3) as u8, y as u8,
+                if x < 4 { (0x0c + x + y * 0x10) as u16 } else { 1 });
+            source.tileset_id = "park".into();
+            source
+        }).collect();
+        let frame = super::super::tests::frame(5, 4, sources);
+        let g = GridGeometry { width: 5, height: 4, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let placements = complete_tree_placements(&cells, &g);
+        assert_eq!(placements.len(), 1);
+        let shapes = vec![CellShape::Flat; 20];
+        let mut mesh = TerrainMeshData { footing_heights: vec![0.; 20], authored_cells: vec![None; 20], ..Default::default() };
+        let mut claimed = vec![false; 20];
+        assert!(append_tree(&mut mesh, &cells, &shapes, &g, "NationalPark", placements[0], &mut claimed, [0, 0]));
+        assert_eq!(mesh.authored_cells[0], Some("world-exterior/park_tree"));
+        assert_eq!(mesh.footing_heights, vec![0.; 20]);
+        assert_eq!(claimed.iter().filter(|&&v| v).count(), 16);
+        assert!((0..4).all(|y| !claimed[y * 5 + 4]));
+        for y in 0..4 { for x in 0..4 {
+            let mut changed = frame.tiles.clone();
+            changed[y * 5 + x].source.tile_index ^= 1;
+            let cells: Vec<_> = changed.iter().collect();
+            let mut refused = TerrainMeshData::default();
+            let mut claimed = vec![false; 20];
+            assert!(!append_tree(&mut refused, &cells, &shapes, &g, "NationalPark", placements[0], &mut claimed, [0, 0]));
+            assert!(refused.solid.positions.is_empty() && refused.textured.positions.is_empty());
+            assert!(claimed.iter().all(|&v| !v));
+        }}
+    }
+
+    #[test]
+    fn park_hoop_fences_replace_only_complete_native_drawings() {
+        for drawing in [[0x25,0x26,0x35,0x36], [0x23,0x24,0x33,0x34]] {
+            let sources=(0..6).map(|i| {
+                let x=i%3; let y=i/3;
+                let mut s=super::super::tests::source_with_tile(
+                    if x<2 {0x11} else {crate::park::PARK_TREE_GROUND_METATILE},
+                    x as u8,y as u8,if x<2 {drawing[y*2+x]} else {1});
+                s.tileset_id="park".into(); s
+            }).collect();
+            let frame=super::super::tests::frame(3,2,sources);
+            let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let cells:Vec<_>=frame.tiles.iter().collect();
+            let placements=complete_tree_placements(&cells,&g);
+            assert_eq!(placements.len(),1);
+            let shapes=vec![CellShape::Flat;6];
+            let mut mesh=TerrainMeshData {footing_heights:vec![0.;6],authored_cells:vec![None;6],..Default::default()};
+            let mut claimed=vec![false;6];
+            assert!(append_tree(&mut mesh,&cells,&shapes,&g,"NationalPark",placements[0],&mut claimed,[0,0]));
+            assert_eq!(claimed,[true,true,false,true,true,false]);
+            assert_eq!(mesh.textured.quad_count(),4);
+            assert_eq!(mesh.footing_heights,[0.;6]);
+            assert_eq!(mesh.authored_cells[0],Some("world-exterior/park_hoop_fence"));
+            assert!(!append_tree(&mut mesh,&cells,&shapes,&g,"NationalPark",placements[0],&mut claimed,[0,0]));
+            for index in [0,1,3,4] {
+                let mut changed=frame.tiles.clone();
+                // An otherwise valid tree quadrant cannot fill a fence hole.
+                changed[index].source.metatile_id=6;
+                changed[index].source.tile_index=0x0c + changed[index].source.subtile_column as u16
+                    + changed[index].source.subtile_row as u16 * 0x10;
+                assert!(complete_tree_placements(&changed.iter().collect::<Vec<_>>(),&g).is_empty());
+                let mut changed=frame.tiles.clone();
+                // A duplicate quadrant must not be accepted as a complete arch.
+                changed[index].source.tile_index=if index==0 {drawing[1]} else {drawing[0]};
+                assert!(complete_tree_placements(&changed.iter().collect::<Vec<_>>(),&g).is_empty());
+                let mut changed=frame.tiles.clone();
+                changed[index].source.subtile_column+=1;
+                assert!(complete_tree_placements(&changed.iter().collect::<Vec<_>>(),&g).is_empty());
+            }
+        }
+    }
+    #[test]
+    fn park_bench_replaces_all_three_source_rows_without_stretching_or_claiming_backing() {
+        let drawing=[7,8,9,10, 0x17,0x18,0x19,0x1a,
+            0x27,0x28,0x29,0x2a, 6,0,6,0];
+        let sources=drawing.into_iter().enumerate().map(|(i,tile)| {
+            let mut s=super::super::tests::source_with_tile(0x0e,(i%4) as u8,(i/4) as u8,tile);
+            s.tileset_id="park".into(); s
+        }).collect();
+        let frame=super::super::tests::frame(4,4,sources);
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],authored_cells:vec![None;16],..Default::default()};
+        let mut claimed=vec![false;16];
+        append_props(&mut mesh,&cells,&shapes,&g,&mut claimed);
+        assert_eq!(claimed,[vec![true;12],vec![false;4]].concat());
+        assert!(mesh.solid.positions.iter().all(|p| (0. ..=32.).contains(&p[0])
+            && (0. ..=16.).contains(&p[2])),"replacement coverage must not deepen the bench model");
+        assert_eq!(mesh.textured.quad_count(),12);
+        super::new_bark::polish_world_surfaces(&mut mesh,"NationalPark",&cells,&g,[0,0]);
+        assert!(mesh.textured.positions.is_empty(),"all claimed rows receive clean plaza backing");
+        assert_eq!(mesh.footing_heights,vec![0.;16]);
+        for index in 8..12 {
+            let mut changed=frame.tiles.clone();
+            changed[index].source.tile_index=0;
+            let cells:Vec<_>=changed.iter().collect();
+            let mut mesh=TerrainMeshData::default();
+            let mut claimed=vec![false;16];
+            append_props(&mut mesh,&cells,&shapes,&g,&mut claimed);
+            assert!(claimed.iter().all(|c| !c),"a changed feet row rejects the complete drawing");
+        }
+    }
     use std::sync::Arc;
     fn drawing_cells(
         tileset: &str,
@@ -1138,6 +1397,73 @@ mod tests {
             );
         }
     }
+    #[test]
+    fn verified_small_tree_profiles_use_leafy_geometry_and_preserve_custom_cards() {
+        let doc: crate::live_profiles::Document = serde_json::from_slice(include_bytes!(
+            "../../../../modpacks/voxel-view/profiles.json"
+        ))
+        .unwrap();
+        let flat = super::super::tests::source_with_tile(0x02, 0, 0, 5);
+        let mut sources = vec![flat; 9];
+        for (i, x, z, tile) in [
+            (0, 0, 0, 0x1e),
+            (1, 1, 0, 0x1f),
+            (3, 0, 1, 0x3e),
+            (4, 1, 1, 0x3f),
+        ] {
+            sources[i] = super::super::tests::source_with_tile(0x3c, x, z, tile);
+        }
+        let frame = super::super::tests::frame(3, 3, sources);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = GridGeometry {
+            width: 3,
+            height: 3,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let placements = live::resolve(&cells, 3, 3, "Route29", Some(&doc));
+        let p = placements
+            .iter()
+            .find(|p| p.object.name == "Route29 small tree 3c 0,0")
+            .unwrap();
+        let mut mesh = TerrainMeshData {
+            authored_cells: vec![None; 9],
+            footing_heights: vec![0.; 9],
+            ..Default::default()
+        };
+        assert!(append_live(&mut mesh, &cells, &g, p, [20, 30]));
+        assert!(mesh.textured.positions.iter().all(|p| p[1] == 0.));
+        assert!(mesh.solid.positions.iter().any(|p| p[1] > 12.));
+        assert_eq!(mesh.footing_heights, vec![0.; 9]);
+        for i in 0..9 {
+            assert_eq!(
+                mesh.authored_cells[i],
+                [0, 1, 3, 4].contains(&i).then_some("johto/small_tree")
+            );
+        }
+        let mut changed = p.object.clone();
+        changed.top_pixels += 1;
+        let custom = live::Placement {
+            object: &changed,
+            column: p.column,
+            row: p.row,
+            ground: p.ground,
+        };
+        let mut fallback = TerrainMeshData::default();
+        assert!(!append_live(&mut fallback, &cells, &g, &custom, [20, 30]));
+        assert!(fallback.solid.positions.is_empty());
+        let mut changed_cells = frame.tiles.clone();
+        changed_cells[4].source.tile_index = 5;
+        let changed_refs: Vec<_> = changed_cells.iter().collect();
+        assert!(
+            !live::resolve(&changed_refs, 3, 3, "Route29", Some(&doc))
+                .iter()
+                .any(|p| p.object.name == "Route29 small tree 3c 0,0")
+        );
+    }
+
     #[test]
     fn changing_a_named_live_profile_keeps_its_custom_renderer() {
         let doc: crate::live_profiles::Document = serde_json::from_slice(include_bytes!(

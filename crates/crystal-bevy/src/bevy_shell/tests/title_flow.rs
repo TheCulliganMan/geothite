@@ -2111,7 +2111,7 @@ fn delete_save_prompt_frame_uses_boot_window_and_default_no_cursor() {
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[3] != 0 && (pixel[0] > 0 || pixel[1] > 0 || pixel[2] > 0)),
         "delete-save prompt should render real window/text pixels over the black background"
@@ -2270,7 +2270,7 @@ fn clock_reset_prompt_frame_uses_boot_window_and_value_phases() {
         (18 * SOURCE_TILE_SIZE) as u32
     );
     assert_ne!(
-        confirm_image.data, day_image.data,
+        confirm_image.data.as_ref().expect("CPU image pixels"), day_image.data.as_ref().expect("CPU image pixels"),
         "clock reset value phases should render different prompt contents"
     );
 }
@@ -2530,7 +2530,7 @@ fn visible_intro_never_loses_its_lcd_surface_during_a_full_sequence() {
                 .get(&frame.handle)
                 .expect("composed intro frame must retain its image handle");
             saw_lit_lcd_pixel |= image
-                .data
+                .data.as_ref().expect("CPU image pixels")
                 .chunks_exact(4)
                 .any(|rgba| rgba[0] > 12 || rgba[1] > 12 || rgba[2] > 12);
             assert!(
@@ -2726,15 +2726,15 @@ struct RetainedFullscreenSurface {
 fn retained_fullscreen_surface(world: &mut World) -> RetainedFullscreenSurface {
     let (entity, texture, size, transform, visibility) = {
         let mut surfaces = world.query_filtered::<
-            (Entity, &Handle<Image>, &Sprite, &Transform, &Visibility),
+            (Entity, &Sprite, &Transform, &Visibility),
             With<VisibleIntroSurface>,
         >();
-        let (entity, texture, sprite, transform, visibility) = surfaces
-            .get_single(world)
+        let (entity, sprite, transform, visibility) = surfaces
+            .single(world)
             .expect("one retained full-screen LCD presenter");
         (
             entity,
-            texture.clone(),
+            sprite.image.clone(),
             sprite.custom_size,
             *transform,
             *visibility,
@@ -2785,12 +2785,12 @@ fn retained_fullscreen_surface(world: &mut World) -> RetainedFullscreenSurface {
     assert_eq!(descriptor.dimension, TextureDimension::D2);
     assert_eq!(descriptor.format, TextureFormat::Rgba8UnormSrgb);
     assert_eq!(
-        image.data.len(),
+        image.data.as_ref().expect("CPU image pixels").len(),
         TITLE_SCREEN_WIDTH * TITLE_SCREEN_HEIGHT * 4,
         "the live LCD texture must contain one RGBA texel per native pixel"
     );
     assert!(
-        image.data.chunks_exact(4).all(|pixel| pixel[3] == 255),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255),
         "a full-LCD owner must be opaque so the window clear color can never flash through"
     );
     RetainedFullscreenSurface { entity, texture }
@@ -2807,7 +2807,7 @@ fn assert_retained_fullscreen_surface_nonblack(
         .expect("retained full-screen LCD image");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] != 0 || pixel[1] != 0 || pixel[2] != 0),
         "the texture attached to the visible {screen} presenter must not be an all-black LCD"
@@ -2816,10 +2816,11 @@ fn assert_retained_fullscreen_surface_nonblack(
 
 fn assert_main_camera_presents_one_logical_lcd(world: &mut World) {
     let mut cameras = world
-        .query_filtered::<(&Camera, &OrthographicProjection, &Transform), With<MainCameraMarker>>();
+        .query_filtered::<(&Camera, &Projection, &Transform), With<MainCameraMarker>>();
     let (camera, projection, transform) = cameras
-        .get_single(world)
+        .single(world)
         .expect("one active 2D presentation camera");
+    let Projection::Orthographic(projection) = projection else { panic!("orthographic camera"); };
     assert!(camera.is_active, "the main LCD camera must be active");
     assert_eq!(
         camera.order, 0,
@@ -2833,7 +2834,7 @@ fn assert_main_camera_presents_one_logical_lcd(world: &mut World) {
     assert!(
         matches!(
             projection.scaling_mode,
-            bevy::render::camera::ScalingMode::AutoMin { min_width, min_height }
+            bevy::camera::ScalingMode::AutoMin { min_width, min_height }
                 if (min_width - 640.0).abs() < f32::EPSILON
                     && (min_height - 576.0).abs() < f32::EPSILON
         ),
@@ -2868,30 +2869,30 @@ fn assert_retained_fullscreen_surface(world: &mut World, expected: &RetainedFull
 fn retained_map_surface_pair(world: &mut World) -> RetainedMapSurfacePair {
     let (base_entity, base_texture, base_transform, base_size) = {
         let mut base = world.query_filtered::<
-                (Entity, &Handle<Image>, &Transform, &Sprite),
+                (Entity, &Transform, &Sprite),
                 (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
             >();
-        let (entity, texture, transform, sprite) = base
-            .get_single(world)
+        let (entity, transform, sprite) = base
+            .single(world)
             .expect("one retained base map surface");
         (
             entity,
-            texture.clone(),
+            sprite.image.clone(),
             transform.translation,
             sprite.custom_size,
         )
     };
     let (priority_entity, priority_texture, priority_transform, priority_size) = {
         let mut priority = world.query_filtered::<
-                (Entity, &Handle<Image>, &Transform, &Sprite),
+                (Entity, &Transform, &Sprite),
                 (With<PlayfieldTile>, With<PlayfieldPriorityTile>),
             >();
-        let (entity, texture, transform, sprite) = priority
-            .get_single(world)
+        let (entity, transform, sprite) = priority
+            .single(world)
             .expect("one retained priority map surface");
         (
             entity,
-            texture.clone(),
+            sprite.image.clone(),
             transform.translation,
             sprite.custom_size,
         )
@@ -2958,15 +2959,15 @@ fn retained_map_surface_pair(world: &mut World) -> RetainedMapSurfacePair {
 fn assert_opaque_base_surface_covers_camera(world: &mut World) {
     let candidates = {
         let mut bases = world.query_filtered::<
-                (&Handle<Image>, &Sprite, &Transform),
+                (&Sprite, &Transform),
                 (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
             >();
         bases
             .iter(world)
-            .filter_map(|(handle, sprite, transform)| {
+            .filter_map(|(sprite, transform)| {
                 sprite
                     .custom_size
-                    .map(|size| (handle.clone(), size, transform.translation.truncate()))
+                    .map(|size| (sprite.image.clone(), size, transform.translation.truncate()))
             })
             .collect::<Vec<_>>()
     };
@@ -2983,7 +2984,7 @@ fn assert_opaque_base_surface_covers_camera(world: &mut World) {
                 && center.y + size.y * 0.5 >= viewport_top
                 && images
                     .get(handle)
-                    .is_some_and(|image| image.data.chunks_exact(4).all(|pixel| pixel[3] == 255))
+                    .is_some_and(|image| image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255))
         }),
         "the live base surface must cover every camera pixel: {candidates:?}"
     );
@@ -3004,7 +3005,7 @@ fn assert_base_map_surface_is_fully_opaque(world: &World, surfaces: &RetainedMap
         "base map image must contain the LCD plus one runtime tile around every edge"
     );
     assert_eq!(
-        image.data.len(),
+        image.data.as_ref().expect("CPU image pixels").len(),
         CLASSIC_SCROLL_TILES_X as usize
             * CLASSIC_SCROLL_TILES_Y as usize
             * SOURCE_TILE_SIZE
@@ -3013,7 +3014,7 @@ fn assert_base_map_surface_is_fully_opaque(world: &World, surfaces: &RetainedMap
         "base map image must contain one RGBA texel for every native LCD pixel"
     );
     assert!(
-        image.data.chunks_exact(4).all(|pixel| pixel[3] == 255),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255),
         "dark border blocks must remain opaque map pixels, never exposed ClearColor"
     );
 }
@@ -3056,7 +3057,7 @@ fn integrated_shell_test_app(runtime_shell: BevyRuntimeShell) -> App {
         .insert_resource(RuntimeTickTimer::new(0.0))
         .insert_resource(VisibleSequenceTickClock::deterministic_test())
         .insert_resource(ButtonInput::<KeyCode>::default())
-        .add_event::<WindowFocused>()
+        .add_message::<WindowFocused>()
         .insert_resource(HeldArrowRightTestFrames(0))
         .init_resource::<Assets<Image>>()
         .insert_resource(RenderedViewport::default())
@@ -3130,7 +3131,7 @@ fn fullscreen_main_menu_is_a_panel_not_an_entire_lcd() {
     let mut app = integrated_shell_test_app(core_modular_title_shell_for_test());
     app.world_mut().spawn((
         Window {
-            resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+            resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
             ..default()
         },
         bevy::window::PrimaryWindow,
@@ -3139,26 +3140,26 @@ fn fullscreen_main_menu_is_a_panel_not_an_entire_lcd() {
         .add_systems(PostUpdate, (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
     open_title_main_menu_for_test(&mut app);
     let world = app.world_mut();
-    let sprite = world.query_filtered::<&Sprite, With<VisibleIntroSurface>>().single(world);
+    let sprite = world.query_filtered::<&Sprite, With<VisibleIntroSurface>>().single(world).unwrap();
     assert!(sprite.rect.is_some(), "the menu must exclude the unused white LCD canvas");
     assert!(sprite.custom_size.unwrap().y < PLAYFIELD_HEIGHT);
     let (art_entity, art, transform) = world
         .query_filtered::<(Entity, &Sprite, &Transform), With<FullscreenTitlePiece>>()
-        .single(world);
+        .single(world).unwrap();
     assert!(art.custom_size.unwrap().y > 1200.0, "artwork must use the viewport height");
     assert!(transform.translation.x < 0.0, "landscape artwork sits beside the controls");
-    let background = world.query_filtered::<&Sprite, With<FullscreenSceneBackdrop>>().single(world);
+    let background = world.query_filtered::<&Sprite, With<FullscreenSceneBackdrop>>().single(world).unwrap();
     assert_eq!(background.custom_size, Some(Vec2::new(2560.0, 1440.0)));
 
-    app.world_mut().query::<&mut Window>().single_mut(app.world_mut()).resolution.set(800.0, 1000.0);
+    app.world_mut().query::<&mut Window>().single_mut(app.world_mut()).unwrap().resolution.set(800.0, 1000.0);
     app.update();
     let world = app.world_mut();
     let (resized_entity, _, transform) = world
         .query_filtered::<(Entity, &Sprite, &Transform), With<FullscreenTitlePiece>>()
-        .single(world);
+        .single(world).unwrap();
     assert_eq!(art_entity, resized_entity, "resize must reuse the artwork entity");
     assert!(transform.translation.y > 0.0, "portrait artwork sits above the controls");
-    let (sprite, transform) = world.query_filtered::<(&Sprite, &Transform), With<VisibleIntroSurface>>().single(world);
+    let (sprite, transform) = world.query_filtered::<(&Sprite, &Transform), With<VisibleIntroSurface>>().single(world).unwrap();
     assert!(sprite.rect.is_some());
     assert!(transform.translation.y < 0.0);
 

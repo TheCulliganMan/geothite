@@ -1436,11 +1436,11 @@ fn oak_intro_prompt_arrow_dark_pixels(image: &Image) -> usize {
         })
         .filter(|(x, y)| {
             let offset = (y * width + x) * 4;
-            offset + 3 < image.data.len()
-                && image.data[offset] < 32
-                && image.data[offset + 1] < 32
-                && image.data[offset + 2] < 32
-                && image.data[offset + 3] == 255
+            offset + 3 < image.data.as_ref().expect("CPU image pixels").len()
+                && image.data.as_ref().expect("CPU image pixels")[offset] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 1] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 2] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 3] == 255
         })
         .count()
 }
@@ -2431,10 +2431,10 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     let hidden_layers = app
         .world()
         .entity(classic_world)
-        .get::<bevy::render::view::RenderLayers>()
+        .get::<bevy::camera::visibility::RenderLayers>()
         .expect("manual 2.5D selection must park the classic overworld");
     assert!(
-        hidden_layers.intersects(&bevy::render::view::RenderLayers::layer(
+        hidden_layers.intersects(&bevy::camera::visibility::RenderLayers::layer(
             crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
         ))
     );
@@ -2444,8 +2444,8 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         app.world()
             .entity(subsequently_spawned_world)
-            .get::<bevy::render::view::RenderLayers>()
-            .is_some_and(|layers| layers.intersects(&bevy::render::view::RenderLayers::layer(
+            .get::<bevy::camera::visibility::RenderLayers>()
+            .is_some_and(|layers| layers.intersects(&bevy::camera::visibility::RenderLayers::layer(
                 crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
             ))),
         "new classic-world entities must inherit the selected layer without rescanning every retained entity"
@@ -2456,7 +2456,7 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         !app.world()
             .entity(classic_world)
-            .get_ref::<bevy::render::view::RenderLayers>()
+            .get_ref::<bevy::camera::visibility::RenderLayers>()
             .expect("retained classic-world layer")
             .is_changed(),
         "an unchanged view selection must not rewrite every retained entity each frame"
@@ -2472,7 +2472,7 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         app.world()
             .entity(classic_world)
-            .get::<bevy::render::view::RenderLayers>()
+            .get::<bevy::camera::visibility::RenderLayers>()
             .is_none(),
         "manual 2D selection must restore the classic overworld to layer 0"
     );

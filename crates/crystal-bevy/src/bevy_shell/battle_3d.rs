@@ -197,7 +197,7 @@ fn capture_presented_battle(
                     .get(&source_frame.handle)
                     .context("source battler bounds image")?;
                 *entry.insert(immersive_source_opaque_bounds(
-                    &image.data,
+                    &image.data.as_ref().expect("CPU image pixels"),
                     source_frame.size,
                 ))
             }
@@ -540,7 +540,7 @@ fn capture_immersive_source_frame_with_capture(
                 let image = images
                     .get(&battler.texture)
                     .context("source battler palette image")?;
-                *entry.insert(immersive_source_palette(&image.data))
+                *entry.insert(immersive_source_palette(&image.data.as_ref().expect("CPU image pixels")))
             }
         };
         source.battler_palettes[index] = palette;
@@ -689,14 +689,14 @@ fn sync_immersive_battle_layers(
             Entity,
             &Transform,
             Option<&ImmersiveBattleUiSource>,
-            Option<&bevy::render::view::RenderLayers>,
+            Option<&bevy::camera::visibility::RenderLayers>,
         ),
         With<BattleHudMarker>,
     >,
     replaced: Query<
         (
             Entity,
-            Option<&bevy::render::view::RenderLayers>,
+            Option<&bevy::camera::visibility::RenderLayers>,
             Option<&ImmersiveBattleSourceObject>,
         ),
         Or<(
@@ -711,7 +711,7 @@ fn sync_immersive_battle_layers(
     // offscreen LCD quad, so clear its uncovered margins on every frame.
     let clear = immersive_composite_clear_color(world_status.active, status.active);
     for mut camera in &mut cameras {
-        use bevy::render::camera::ClearColorConfig::{Default, None};
+        use bevy::camera::ClearColorConfig::{Default, None};
         if !matches!(
             (clear, camera.clear_color),
             (Default, Default) | (None, None)
@@ -768,10 +768,10 @@ fn sync_immersive_battle_layers(
 fn set_immersive_hidden_layer(
     commands: &mut Commands,
     entity: Entity,
-    current: Option<&bevy::render::view::RenderLayers>,
+    current: Option<&bevy::camera::visibility::RenderLayers>,
     hidden: bool,
 ) {
-    let hidden_layer = bevy::render::view::RenderLayers::layer(
+    let hidden_layer = bevy::camera::visibility::RenderLayers::layer(
         crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
     );
     if hidden && current != Some(&hidden_layer) {
@@ -779,20 +779,20 @@ fn set_immersive_hidden_layer(
     } else if !hidden && current.is_some() {
         commands
             .entity(entity)
-            .remove::<bevy::render::view::RenderLayers>();
+            .remove::<bevy::camera::visibility::RenderLayers>();
     }
 }
 
 fn immersive_composite_clear_color(
     world_active: bool,
     _battle_active: bool,
-) -> bevy::render::camera::ClearColorConfig {
+) -> bevy::camera::ClearColorConfig {
     // Battles now composite an offscreen image inside the original LCD. Clear
     // its uncovered window margins; only the window-rendered world is loaded.
     if world_active {
-        bevy::render::camera::ClearColorConfig::None
+        bevy::camera::ClearColorConfig::None
     } else {
-        bevy::render::camera::ClearColorConfig::Default
+        bevy::camera::ClearColorConfig::Default
     }
 }
 
@@ -867,14 +867,14 @@ mod immersive_battle_bridge_tests {
     fn immersive_battle_compositor_preserves_active_modeled_overworld() {
         assert!(matches!(
             immersive_composite_clear_color(true, false),
-            bevy::render::camera::ClearColorConfig::None
+            bevy::camera::ClearColorConfig::None
         ));
     }
     #[test]
     fn immersive_battle_compositor_clears_margins_around_offscreen_battle() {
         assert!(matches!(
             immersive_composite_clear_color(false, true),
-            bevy::render::camera::ClearColorConfig::Default
+            bevy::camera::ClearColorConfig::Default
         ));
     }
     #[test]
@@ -891,7 +891,7 @@ mod immersive_battle_bridge_tests {
             assert_eq!(
                 matches!(
                     camera.clear_color,
-                    bevy::render::camera::ClearColorConfig::Default
+                    bevy::camera::ClearColorConfig::Default
                 ),
                 !world
             );
@@ -1623,7 +1623,7 @@ fn publish_immersive_battle_canvas(
     mut canvas: ResMut<crystal_render_api::VisualBattleCanvas>,
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
 ) {
-    let Ok(window) = windows.get_single() else {
+    let Ok(window) = windows.single() else {
         return;
     };
     let physical = Vec2::new(
@@ -1817,8 +1817,7 @@ fn sync_immersive_battle_ui_layout(
         for side in 0..2 {
             for border in [true, false] {
                 commands.spawn((
-                    SpriteBundle {
-                        sprite: Sprite {
+                    (Sprite {
                             color: if border {
                                 Color::srgb(0.11, 0.17, 0.18)
                             } else {
@@ -1826,9 +1825,7 @@ fn sync_immersive_battle_ui_layout(
                             },
                             ..default()
                         },
-                        visibility: Visibility::Hidden,
-                        ..default()
-                    },
+Visibility::Hidden,),
                     ImmersiveBattleHudBacking { side, border },
                 ));
             }
@@ -1854,7 +1851,7 @@ fn sync_immersive_battle_ui_layout(
                 commands
                     .entity(entity)
                     .remove::<ImmersiveBattleUiSource>()
-                    .remove::<bevy::render::view::RenderLayers>();
+                    .remove::<bevy::camera::visibility::RenderLayers>();
             }
         }
         for (_, _, _, mut visibility) in &mut panels {
@@ -1862,7 +1859,7 @@ fn sync_immersive_battle_ui_layout(
         }
         return;
     }
-    let Ok(window) = windows.get_single() else {
+    let Ok(window) = windows.single() else {
         return;
     };
     let physical = Vec2::new(
@@ -1945,7 +1942,7 @@ fn sync_immersive_battle_ui_layout(
                 .entity(entity)
                 .insert(ImmersiveBattleUiSource(base));
         }
-        commands.entity(entity).remove_parent();
+        commands.entity(entity).remove::<ChildOf>();
         *transform = base;
         if hud.is_some() {
             let side = usize::from(base.translation.y > PLAYFIELD_TOP - TILE_SIZE * 4.5);
@@ -1966,13 +1963,13 @@ fn sync_immersive_battle_ui_layout(
             if omit {
                 commands
                     .entity(entity)
-                    .insert(bevy::render::view::RenderLayers::layer(
+                    .insert(bevy::camera::visibility::RenderLayers::layer(
                         crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
                     ));
             } else {
                 commands
                     .entity(entity)
-                    .remove::<bevy::render::view::RenderLayers>();
+                    .remove::<bevy::camera::visibility::RenderLayers>();
             }
             let point = command_center + (base.translation.truncate() - command_anchor) * scale;
             transform.translation.x = point.x;

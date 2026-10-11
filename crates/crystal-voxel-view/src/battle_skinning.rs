@@ -1,13 +1,14 @@
 //! GPU skin instances and render-only body poses. Source effects and combat
 //! retain their own clocks; this module only samples authored joint channels.
 use super::*;
+use bevy::camera::primitives::Aabb;
 use crate::species_rig::{Clip, Playback, SpeciesRig};
 use bevy::render::{
     mesh::{
         skinning::{SkinnedMesh, SkinnedMeshInverseBindposes},
         VertexAttributeValues,
     },
-    primitives::Aabb,
+
 };
 
 const BLEND_SECONDS: f32 = 0.10;
@@ -188,10 +189,8 @@ pub(super) fn spawn(
     for joint in &rig.joints {
         let child = commands
             .spawn((
-                SpatialBundle {
-                    transform: joint.bind,
-                    ..default()
-                },
+                (Visibility::default(),
+joint.bind,),
                 BattleSkinJoint,
             ))
             .id();
@@ -241,7 +240,7 @@ pub(super) fn sync(
         // Observe semantic transitions even in classic view, so returning with
         // F3 cannot replay a stale hit. Idle time pauses while the body is hidden.
         skin.pose
-            .advance(skin.rig, &frame, side, shown, time.delta_seconds());
+            .advance(skin.rig, &frame, side, shown, time.delta_secs());
         if shown {
             for (&entity, pose) in skin.joints.iter().zip(&skin.pose.current) {
                 if let Ok(mut transform) = joints.get_mut(entity) {

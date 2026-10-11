@@ -8,12 +8,12 @@ fn publish_visual_world_frame(
     runtime_shell: Res<BevyRuntimeShell>,
     #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     map_sprites: Query<
-        (&Handle<Image>, &Transform),
+        (&Sprite, &Transform),
         (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
     >,
     players: Query<
         (
-            &Handle<Image>,
+
             &Sprite,
             &Transform,
             Option<&PlayerSpriteFrames>,
@@ -21,14 +21,14 @@ fn publish_visual_world_frame(
         With<PlayerMarker>,
     >,
     multiplayer_ghosts: Query<
-        (&MultiplayerGhost, &Handle<Image>, &Sprite, &Transform),
+        (&MultiplayerGhost,  &Sprite, &Transform),
         Without<PlayerMarker>,
     >,
     grass_rustles: Query<
-        (&Handle<Image>, &Sprite, &Transform),
+        ( &Sprite, &Transform),
         (With<GrassRustleMarker>, Without<PlayerMarker>),
     >,
-    objects: Query<(&VisibleObjectSprite, &Handle<Image>, &Sprite, &Transform), With<ObjectMarker>>,
+    objects: Query<(&VisibleObjectSprite,  &Sprite, &Transform), With<ObjectMarker>>,
     battle_entities: Query<
         (),
         Or<(
@@ -41,6 +41,7 @@ fn publish_visual_world_frame(
     >,
     fullscreen_entities: Query<(), Or<(With<TitleScreenMarker>, With<VisibleIntroSurface>)>>,
     mut published: ResMut<crystal_render_api::VisualWorldFrame>,
+    phases: Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
 ) {
     // A feature-enabled browser normally starts in classic 2D mode. Do not
     // enumerate, sort, and clone every visible actor for an optional renderer
@@ -122,7 +123,7 @@ fn publish_visual_world_frame(
     };
     let Some((_, map_transform)) = map_sprites
         .iter()
-        .find(|(texture, _)| texture.id() == map_texture.id())
+        .find(|(sprite, _)| sprite.image.id() == map_texture.id())
     else {
         clear_published_visual_world(&mut published);
         return;
@@ -153,7 +154,8 @@ fn publish_visual_world_frame(
             + grass_rustles.iter().count(),
     );
     let mut player_iter = players.iter();
-    if let Some((texture, sprite, transform, _frames)) = player_iter.next() {
+    if let Some((sprite, transform, _frames)) = player_iter.next() {
+        let texture = &sprite.image;
         // A second player sprite is an incomplete deferred scene transition,
         // not a valid immutable frame to hand to a renderer mod.
         if player_iter.next().is_some() {
@@ -211,7 +213,8 @@ fn publish_visual_world_frame(
 
     let mut visible_ghosts = multiplayer_ghosts.iter().collect::<Vec<_>>();
     visible_ghosts.sort_by(|left, right| left.0.user_id.cmp(&right.0.user_id));
-    for (ghost, texture, sprite, transform) in visible_ghosts {
+    for (ghost, sprite, transform) in visible_ghosts {
+        let texture = &sprite.image;
         let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(
                 &ghost.user_id,
@@ -235,7 +238,7 @@ fn publish_visual_world_frame(
     // stable ASM/object-slot order so renderer caches receive deterministic
     // input even when Bevy archetypes move.
     let mut visible_objects = objects.iter().collect::<Vec<_>>();
-    visible_objects.sort_by_key(|(object, _, _, _)| object.object_index);
+    visible_objects.sort_by_key(|(object, _, _)| object.object_index);
     if visible_objects
         .windows(2)
         .any(|pair| pair[0].0.object_index == pair[1].0.object_index)
@@ -243,7 +246,8 @@ fn publish_visual_world_frame(
         clear_published_visual_world(&mut published);
         return;
     }
-    for (object, texture, sprite, transform) in visible_objects {
+    for (object, sprite, transform) in visible_objects {
+        let texture = &sprite.image;
         let Ok(object_index) = u32::try_from(object.object_index) else {
             clear_published_visual_world(&mut published);
             return;
@@ -320,7 +324,8 @@ fn publish_visual_world_frame(
     }
 
     let mut rustle_iter = grass_rustles.iter();
-    if let Some((texture, sprite, transform)) = rustle_iter.next() {
+    if let Some((sprite, transform)) = rustle_iter.next() {
+        let texture = &sprite.image;
         if rustle_iter.next().is_some() {
             clear_published_visual_world(&mut published);
             return;
@@ -351,6 +356,25 @@ fn publish_visual_world_frame(
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
         && published.tile_size == Vec2::splat(TILE_SIZE)
         && published.grid_size == published_grid_size;
+    if let Some(mut phases) = phases {
+        let (x, y) = rendered.viewport_origin.expect("validated viewport origin");
+        let grid_origin = IVec2::new(i32::from(x), i32::from(y))
+            - (published_grid_size.as_ivec2()
+                - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2;
+        let animated = || rendered.visual_tiles.iter()
+            .filter(|tile| tile.animation_frames.is_some());
+        // Compare before allocating: an idle world retains both geometry and
+        // phase storage. Only live source-art changes publish sparse updates.
+        if phases.map_id.as_ref() != map_id || phases.grid_origin != grid_origin
+            || !phases.tiles.iter().eq(animated())
+        {
+            *phases = crystal_render_api::VisualTileAnimationFrame {
+                map_id: Arc::from(map_id),
+                grid_origin,
+                tiles: animated().cloned().collect(),
+            };
+        }
+    }
     if terrain_unchanged && published.center == center && published.actors == actors {
         // The optional renderer consumes change detection. Do not republish an
         // identical 6,888-tile frame on every host update: that cloned the
@@ -551,9 +575,7 @@ mod render_mod_tests {
                         tile_index: u16::try_from(row * VISUAL_WORLD_TILES_X as u32 + column)
                             .expect("test tile index fits u16"),
                     },
-                    texture: Handle::weak_from_u128(
-                        1 + u128::from(row * VISUAL_WORLD_TILES_X as u32 + column),
-                    ),
+                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1 + u128::from(row * VISUAL_WORLD_TILES_X as u32 + column)), std::marker::PhantomData),
                     animation_frames: None,
                     priority: false,
                 })
@@ -581,7 +603,7 @@ mod render_mod_tests {
         let actor = crystal_render_api::VisualActor {
             id: crystal_render_api::VisualActorId::Object(1),
             source_id: Arc::from("edge_npc"),
-            texture: Handle::weak_from_u128(7),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(7), std::marker::PhantomData),
             center: Vec2::new(half_grid_width + 17.0, 0.0),
             size: Vec2::splat(16.0),
             flip_x: false,
@@ -657,7 +679,7 @@ mod render_mod_tests {
         );
 
         let mut changed_texture = complete_visual_grid();
-        changed_texture[0].texture = Handle::weak_from_u128(10_000);
+        changed_texture[0].texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(10_000), std::marker::PhantomData);
         assert_eq!(
             baseline,
             visual_terrain_revision(7, (-4, 12), &changed_texture)

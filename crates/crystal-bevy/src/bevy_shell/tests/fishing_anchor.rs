@@ -256,9 +256,9 @@ fn fishing_anchor_pack_and_registered_inputs_freeze_checked_water_through_entry_
         let results = shell.shell.retained_runtime_results().to_vec();
         // Isolate publication from the normal frame tick to prove it is read-only.
         app.world_mut()
-            .run_system_once(publish_visible_battle_location);
+            .run_system_once(publish_visible_battle_location).unwrap();
         app.world_mut()
-            .run_system_once(publish_visible_battle_location);
+            .run_system_once(publish_visible_battle_location).unwrap();
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.shell.session(), &session);
         assert_eq!(shell.shell.retained_runtime_commands(), commands);
@@ -309,7 +309,7 @@ fn fishing_anchor_pack_and_registered_inputs_freeze_checked_water_through_entry_
         assert!(controller.shell.battle_origin.bound_fishing.is_none());
         app.insert_resource(controller.shell);
         app.world_mut()
-            .run_system_once(publish_visible_battle_location);
+            .run_system_once(publish_visible_battle_location).unwrap();
         assert!(
             app.world()
                 .resource::<crystal_render_api::BattleLocationFrame>()
@@ -360,7 +360,7 @@ fn fishing_anchor_no_bite_and_pack_cancel_never_publish_a_location() {
         assert!(controller.shell.visible_fishing_animation.is_none());
         app.insert_resource(controller.shell);
         app.world_mut()
-            .run_system_once(publish_visible_battle_location);
+            .run_system_once(publish_visible_battle_location).unwrap();
         assert!(
             app.world()
                 .resource::<crystal_render_api::BattleLocationFrame>()

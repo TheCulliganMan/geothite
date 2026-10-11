@@ -163,15 +163,11 @@ fn spawn_visible_map_name_sign(
             let frame = &frames[tile_index(row, col)];
             let (x, y) = battle_hud_tile_origin(col as f32, (14 + row) as f32);
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: frame.handle.clone(),
                         custom_size: Some(frame.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.2),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.2),),
                 MapNameSignMarker,
                 FieldCommandMarker,
             ));
@@ -182,15 +178,11 @@ fn spawn_visible_map_name_sign(
     for (index, frame) in glyphs.into_iter().enumerate() {
         let (x, y) = battle_hud_tile_origin(start_tile + index as f32, 16.0);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.3),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.3),),
             MapNameSignMarker,
             FieldCommandMarker,
         ));
@@ -292,30 +284,20 @@ fn spawn_field_prompt_marker(
         return;
     };
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(1.0, 0.92, 0.22, 0.62),
                 custom_size: Some(Vec2::new(TILE_SIZE * 0.88, TILE_SIZE * 0.88)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 2.7),
-            ..default()
-        },
+Transform::from_xyz(x, y, 2.7),),
         FieldPromptMarker,
     ));
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 13.0,
-                    color: Color::srgb(1.0, 0.98, 0.80),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(x, y + TILE_SIZE * 0.82, 2.9),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(13.0),
+TextColor(Color::srgb(1.0, 0.98, 0.80)),
+Transform::from_xyz(x, y + TILE_SIZE * 0.82, 2.9),),
         FieldPromptMarker,
     ));
 }
@@ -914,11 +896,10 @@ fn spawn_field_command_menu(
             images,
         ) {
             commands.spawn((
-                Text2dBundle {
-                    text: Text::from_section(error.to_string(), TextStyle::default()),
-                    transform: Transform::from_xyz(0.0, 0.0, 4.0),
-                    ..default()
-                },
+                (Text2d::new(error.to_string()),
+TextFont::from_font_size(20.0),
+TextColor(Color::WHITE),
+Transform::from_xyz(0.0, 0.0, 4.0),),
                 FieldCommandMarker,
             ));
         }
@@ -939,8 +920,7 @@ fn spawn_field_command_menu(
         window_height as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (window_width - 2) as f32,
@@ -948,9 +928,7 @@ fn spawn_field_command_menu(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -1022,15 +1000,12 @@ fn spawn_visible_buena_password_menu(
         .clamp(11, 20);
     let (center_x, center_y) = field_window_center(0.0, 0.0, width as f32, 8.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * (width - 2) as f32, TILE_SIZE * 6.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -1076,15 +1051,12 @@ fn spawn_visible_battle_tower_challenge_menu(
     .context("Battle Tower challenge menu has no valid cursor")?;
     let (center_x, center_y) = field_window_center(0.0, 0.0, 14.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 6.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -2416,15 +2388,11 @@ fn spawn_visible_unown_printer(
         ) {
             let (x, y) = battle_hud_tile_origin(4.0, 9.0);
             commands.spawn((
-                SpriteBundle {
-                    texture: frontpic.handle,
-                    sprite: Sprite {
+                (Sprite { image: frontpic.handle,
                         custom_size: Some(frontpic.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.7),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.7),),
                 FieldCommandMarker,
             ));
         }
@@ -2473,15 +2441,11 @@ fn spawn_unown_printer_button(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.7),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.7),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -2817,10 +2781,8 @@ fn spawn_visible_kurt_apricorn_menu(
     // ScrollingMenu_UpdateDisplay clears the complete list rectangle without
     // drawing a frame. Names and quantities occupy consecutive rows.
     let (x, y) = field_window_center(1.0, 1.0, 13.0, 10.0);
-    commands.spawn((SpriteBundle {
-        sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 13.0, TILE_SIZE * 10.0)), ..default() },
-        transform: Transform::from_xyz(x, y, 4.1), ..default()
-    }, FieldCommandMarker));
+    commands.spawn(((Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 13.0, TILE_SIZE * 10.0)), ..default() },
+Transform::from_xyz(x, y, 4.1),), FieldCommandMarker));
     let first = selected.saturating_sub(3).min(total.saturating_sub(4));
     for (row, index) in (first..total).take(4).enumerate() {
         let line = choices.get(index).map(|(item, _)| item_display_name(snapshot, item)).unwrap_or_else(|| "CANCEL".into());
@@ -2846,10 +2808,8 @@ fn spawn_visible_kurt_apricorn_menu(
     if let Some(quantity) = quantity {
         let (item, _) = choices.get(selected).context("Kurt quantity has no selected Apricorn")?;
         let (x, y) = field_window_center(6.0, 9.0, 14.0, 4.0);
-        commands.spawn((SpriteBundle {
-            sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 2.0)), ..default() },
-            transform: Transform::from_xyz(x, y, 4.5), ..default()
-        }, FieldCommandMarker));
+        commands.spawn(((Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 2.0)), ..default() },
+Transform::from_xyz(x, y, 4.5),), FieldCommandMarker));
         let frame = battle_window_frame_art(rendered_art, asset_root, images)
             .context("Kurt quantity window requires frame art")?;
         spawn_field_command_window_frame_tiles(commands, frame, 6.0, 9.0, 14, 4, 4.6);
@@ -3359,7 +3319,7 @@ fn spawn_field_pokedex_screen(
                 .get(&frame.handle)
                 .context("missing Pokédex preview image")?
                 .clone();
-            for pixel in image.data.chunks_exact_mut(4) {
+            for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
                 let level = if pixel[3] == 0 {
                     0
                 } else {
@@ -3374,15 +3334,11 @@ fn spawn_field_pokedex_screen(
             frame.handle = images.add(image);
             let (x, y) = battle_hud_tile_origin(3.375, 4.0);
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle,
-                    sprite: Sprite {
+                (Sprite { image: frame.handle,
                         custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.8),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.8),),
                 FieldCommandMarker,
             ));
         }
@@ -3756,15 +3712,11 @@ fn spawn_pokegear_card_objects(
         image.sampler = ImageSampler::nearest();
         let (x, y) = battle_hud_tile_origin(left as f32 / 8.0, top as f32 / 8.0);
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     }
@@ -4020,20 +3972,16 @@ fn spawn_town_map_markers(
         .with_context(|| format!("render Town Map player sprite {sprite_id}"))?
     };
     commands.spawn((
-        SpriteBundle {
-            texture: player_frame.handle,
-            sprite: Sprite {
+        (Sprite { image: player_frame.handle,
                 custom_size: Some(player_frame.size),
                 flip_x: pose == 3,
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + player_center.x * scale,
                 PLAYFIELD_TOP - player_center.y * scale,
                 3.65,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     for rect in town_map_marker_rects(player, cursor) {
@@ -4048,19 +3996,16 @@ fn spawn_town_map_markers(
             TownMapMarkerKind::Cursor => 3.64,
         };
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color,
                     custom_size: Some(rect.size * scale),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + rect.center.x * scale,
                     PLAYFIELD_TOP - rect.center.y * scale,
                     z,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
     }
@@ -4248,8 +4193,7 @@ fn spawn_field_fly_map_screen(
         let y = (landmark.y as f32 - 16.0).clamp(0.0, 143.0);
         let is_selected = selected == index;
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: if is_selected {
                         Color::srgb(0.95, 0.12, 0.12)
                     } else {
@@ -4258,9 +4202,7 @@ fn spawn_field_fly_map_screen(
                     custom_size: Some(Vec2::splat(if is_selected { 6.0 } else { 3.0 })),
                     ..default()
                 },
-                transform: Transform::from_xyz(PLAYFIELD_LEFT + x, PLAYFIELD_TOP - y, 3.7),
-                ..default()
-            },
+Transform::from_xyz(PLAYFIELD_LEFT + x, PLAYFIELD_TOP - y, 3.7),),
             FieldCommandMarker,
         ));
     }
@@ -4308,15 +4250,11 @@ fn spawn_field_pokedex_detail(
         let (x, y) = battle_hud_tile_origin(4.0, 4.0);
         let x = x - 5.0 * TILE_SIZE / 8.0;
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     }
@@ -4632,15 +4570,12 @@ fn spawn_visible_bug_contest_replacement(
     );
     let (center_x, center_y) = field_window_center(0.0, 0.0, 20.0, 18.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 20.0, TILE_SIZE * 18.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -4793,21 +4728,17 @@ fn spawn_visible_egg_hatch_tile(
 ) {
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     commands.spawn((
-        SpriteBundle {
-            texture: tile.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: tile.handle.clone(),
                 custom_size: Some(tile.size * source_scale),
                 flip_x,
                 flip_y,
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + (screen_x - 4.0) * source_scale,
                 PLAYFIELD_TOP - (screen_y - 12.0) * source_scale,
                 z,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
 }
@@ -4917,15 +4848,12 @@ fn spawn_field_move_reorder_screen(
         );
     }
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 3.4),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 3.4),),
         FieldCommandMarker,
     ));
     let (x, y) = battle_hud_tile_origin(1.0, 1.0);
@@ -5362,8 +5290,7 @@ fn spawn_start_menu_command_window_fill(
         height_tiles as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     width_tiles as f32 * TILE_SIZE,
@@ -5371,9 +5298,7 @@ fn spawn_start_menu_command_window_fill(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         FieldCommandMarker,
     ));
 }
@@ -5391,8 +5316,7 @@ fn spawn_bug_contest_start_menu_status(
     const HEIGHT: usize = 6;
     let (center_x, center_y) = field_window_center(LEFT, TOP, WIDTH as f32, HEIGHT as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     WIDTH as f32 * TILE_SIZE,
@@ -5400,9 +5324,7 @@ fn spawn_bug_contest_start_menu_status(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -5538,8 +5460,7 @@ fn spawn_options_menu_window_fill(commands: &mut Commands, z: f32) {
         OPTIONS_MENU_HEIGHT_TILES as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     OPTIONS_MENU_WIDTH_TILES as f32 * TILE_SIZE,
@@ -5547,9 +5468,7 @@ fn spawn_options_menu_window_fill(commands: &mut Commands, z: f32) {
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         FieldCommandMarker,
     ));
 }
@@ -6006,19 +5925,15 @@ fn spawn_visible_egg_hatch(
     .with_context(|| format!("egg hatch front sprite {species_id} is unavailable"))?;
     let (center_x, center_y) = battle_hud_tile_origin(10.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            texture: sprite.handle,
-            sprite: Sprite {
+        (Sprite { image: sprite.handle,
                 custom_size: Some(sprite.size * 4.0),
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 center_x + f32::from(x_offset) * TILE_SIZE / SOURCE_TILE_SIZE as f32,
                 center_y,
                 6.0,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     let tiles = visible_egg_hatch_tiles(rendered_art, asset_root, images)?;
@@ -6170,8 +6085,7 @@ fn spawn_visible_player_pc_action_screen(
     .context("Player PC action screen requires a valid cursor")?;
     let (center_x, center_y) = field_window_center(LEFT, TOP, WIDTH, HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (WIDTH - 2.0),
@@ -6179,9 +6093,7 @@ fn spawn_visible_player_pc_action_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -6301,8 +6213,7 @@ fn spawn_visible_decoration_screen(
     );
     let (center_x, center_y) = field_window_center(left, top, width, height);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width - 2.0),
@@ -6310,9 +6221,7 @@ fn spawn_visible_decoration_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -6506,8 +6415,7 @@ fn spawn_visible_unown_words(
     let height = 6.0;
     let (center_x, center_y) = field_window_center(left, top, width, height);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width - 2.0),
@@ -6515,9 +6423,7 @@ fn spawn_visible_unown_words(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.1),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.1),),
         FieldCommandMarker,
     ));
     if let Some(frame) = window_frame_art(rendered_art, asset_root, images, 2) {
@@ -6912,15 +6818,11 @@ fn spawn_visible_heal_machine(
                 (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
             );
             commands.spawn((
-                SpriteBundle {
-                    texture: lamps[palette_phase].handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: lamps[palette_phase].handle.clone(),
                         custom_size: Some(Vec2::splat(TILE_SIZE)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.8),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.8),),
                 FieldCommandMarker,
                 HealMachineWorldSprite,
             ));
@@ -6934,16 +6836,12 @@ fn spawn_visible_heal_machine(
             (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
         );
         commands.spawn((
-            SpriteBundle {
-                texture: frames[palette_phase].handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frames[palette_phase].handle.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     flip_x,
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
                 HealMachineWorldSprite,
         ));
@@ -7132,8 +7030,7 @@ fn spawn_visible_balance_window(
     let (center_x, center_y) =
         field_window_center(tile_x, tile_y, width_tiles as f32, height_tiles as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width_tiles.saturating_sub(2)) as f32,
@@ -7141,9 +7038,7 @@ fn spawn_visible_balance_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.6),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.6),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -7307,8 +7202,7 @@ fn spawn_mart_window(
     let (center_x, center_y) = battle_window_center(tile_x, tile_y, width_tiles, height_tiles);
     if width_tiles > 2.0 && height_tiles > 2.0 {
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(
                         TILE_SIZE * (width_tiles - 2.0),
@@ -7316,9 +7210,7 @@ fn spawn_mart_window(
                     )),
                     ..default()
                 },
-                transform: Transform::from_xyz(center_x, center_y, z),
-                ..default()
-            },
+Transform::from_xyz(center_x, center_y, z),),
             SceneDialogMarker,
         ));
     }
@@ -7896,12 +7788,8 @@ fn spawn_field_storage_screen(
             runtime_shell.bill_pc_pokemon_action_cursor.is_some() || runtime_shell.pending_pc_release.is_some()
                 || runtime_shell.bill_pc_move_source.is_some() || move_save.is_some(), images)?;
         let (x, y) = battle_hud_tile_origin(4.0, 7.0);
-        commands.spawn((SpriteBundle {
-            texture: picture.handle,
-            sprite: Sprite { custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)), ..default() },
-            transform: Transform::from_xyz(x, y, 4.2),
-            ..default()
-        }, FieldCommandMarker));
+        commands.spawn(((Sprite { image: picture.handle, custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)), ..default() },
+Transform::from_xyz(x, y, 4.2),), FieldCommandMarker));
         if let Some(pokemon) = info.as_ref() {
             if !pokemon.is_egg {
                 let level = visible_print_level_text(pokemon.level);
@@ -8067,15 +7955,11 @@ fn spawn_pc_extra_tile(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 4.2),
-            ..default()
-        },
+Transform::from_xyz(x, y, 4.2),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -8278,17 +8162,13 @@ fn spawn_bill_pc_cursor(
             (y as f32 - 16.0 + row as f32 * 16.0) / 8.0,
         );
         commands.spawn((
-            SpriteBundle {
-                texture: tiles[tile].clone(),
-                sprite: Sprite {
+            (Sprite { image: tiles[tile].clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     flip_x,
                     flip_y,
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 4.3),
-                ..default()
-            },
+Transform::from_xyz(x, y, 4.3),),
             FieldCommandMarker,
         ));
     }
@@ -8432,8 +8312,7 @@ fn spawn_pc_item_palette_window(
 ) {
     let (x, y) = battle_window_center(tile_x, tile_y, width as f32, height as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb_u8(background[0], background[1], background[2]),
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * width as f32,
@@ -8441,9 +8320,7 @@ fn spawn_pc_item_palette_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         BattleCommandMarker,
     ));
     spawn_battle_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
@@ -9064,8 +8941,7 @@ fn spawn_visible_day_of_week_selection(
     let (center_x, center_y) =
         field_window_center(DAY_BOX_LEFT, DAY_BOX_TOP, DAY_BOX_WIDTH, DAY_BOX_HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (DAY_BOX_WIDTH - 2.0),
@@ -9073,9 +8949,7 @@ fn spawn_visible_day_of_week_selection(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -9161,8 +9035,7 @@ fn spawn_visible_yes_no_prompt_box(
         FIELD_YES_NO_HEIGHT_TILES,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (FIELD_YES_NO_WIDTH_TILES - 2.0),
@@ -9170,9 +9043,7 @@ fn spawn_visible_yes_no_prompt_box(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.25),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.25),),
         SceneDialogMarker,
         YesNoPromptMarker,
     ));
@@ -9245,8 +9116,7 @@ fn spawn_scene_dialog_window(
     // The text plane must not depend on the frame image cache. Otherwise an
     // asset-cache miss exposes map pixels through a dialog for a frame.
     let background = commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width_tiles - 2.0),
@@ -9254,9 +9124,7 @@ fn spawn_scene_dialog_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, z),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, z),),
         SceneDialogMarker,
     )).id();
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -10454,8 +10322,7 @@ fn spawn_visible_name_choice_screen(
     let (center_x, center_y) =
         field_window_center(left_tile, top_tile, width_tiles as f32, height_tiles as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     width_tiles as f32 * TILE_SIZE,
@@ -10463,9 +10330,7 @@ fn spawn_visible_name_choice_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 5.9),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 5.9),),
         SceneDialogMarker,
     ));
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -10489,15 +10354,12 @@ fn spawn_visible_name_choice_screen(
         1.0,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(title_width * TILE_SIZE, TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(title_x, title_y, 6.05),
-            ..default()
-        },
+Transform::from_xyz(title_x, title_y, 6.05),),
         SceneDialogMarker,
     ));
     spawn_scene_dialog_bitmap_text(
@@ -10546,8 +10408,7 @@ fn spawn_player_name_custom_fade_overlay(commands: &mut Commands, alpha: f32) {
         NAME_ENTRY_SCREEN_TILE_HEIGHT as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(1.0, 1.0, 1.0, alpha.clamp(0.0, 1.0)),
                 custom_size: Some(Vec2::new(
                     NAME_ENTRY_SCREEN_TILE_WIDTH as f32 * TILE_SIZE,
@@ -10555,9 +10416,7 @@ fn spawn_player_name_custom_fade_overlay(commands: &mut Commands, alpha: f32) {
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 6.2),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 6.2),),
         SceneDialogMarker,
     ));
 }
@@ -10701,15 +10560,11 @@ fn spawn_scene_dialog_bitmap_text(
     {
         let key = dialog_glyph_key(x, y, index);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             SceneDialogMarker,
             DialogGlyphMarker { key },
         ));
@@ -10736,7 +10591,6 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         (
             Entity,
             &DialogGlyphMarker,
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
         ),
@@ -10826,28 +10680,24 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         .into_iter()
         .map(|entry| (entry.0, entry))
         .collect::<HashMap<_, _>>();
-    for (entity, marker, mut texture, mut transform, mut sprite) in glyphs.iter_mut() {
+    for (entity, marker, mut transform, mut sprite) in glyphs.iter_mut() {
         let Some((_, handle, size, next_transform)) = desired.remove(&marker.key) else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
-        if texture.id() != handle.id() {
-            *texture = handle;
+        if sprite.image.id() != handle.id() {
+            sprite.image = handle;
         }
         *transform = next_transform;
         sprite.custom_size = Some(size);
     }
     for (key, handle, size, transform) in desired.into_values() {
         commands.spawn((
-            SpriteBundle {
-                texture: handle,
-                sprite: Sprite {
+            (Sprite { image: handle,
                     custom_size: Some(size),
                     ..default()
                 },
-                transform,
-                ..default()
-            },
+transform,),
             SceneDialogMarker,
             DialogGlyphMarker { key },
         ));
@@ -11351,15 +11201,11 @@ fn spawn_field_command_bitmap_text(
         .enumerate()
     {
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             FieldCommandMarker,
         ));
     }
@@ -11380,15 +11226,11 @@ fn spawn_battle_command_bitmap_text(
         .enumerate()
     {
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             BattleCommandMarker,
         ));
     }
@@ -11466,15 +11308,12 @@ fn spawn_active_pokemon_picture(
     const HEIGHT: f32 = 10.0;
     let (window_x, window_y) = field_window_center(LEFT, TOP, WIDTH, HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 7.0, TILE_SIZE * 8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(window_x, window_y, 3.9),
-            ..default()
-        },
+Transform::from_xyz(window_x, window_y, 3.9),),
         PokemonPictureMarker,
     ));
     let window = battle_window_frame_art(rendered_art, asset_root, images)
@@ -11493,15 +11332,11 @@ fn spawn_active_pokemon_picture(
     let picture_x = PLAYFIELD_LEFT + (LEFT + 1.0 + 3.5) * TILE_SIZE;
     let picture_y = PLAYFIELD_TOP - (TOP + 1.0 + 3.5) * TILE_SIZE;
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle,
-            sprite: Sprite {
+        (Sprite { image: frame.handle,
                 custom_size: Some(frame.size * source_scale),
                 ..default()
             },
-            transform: Transform::from_xyz(picture_x, picture_y, 4.1),
-            ..default()
-        },
+Transform::from_xyz(picture_x, picture_y, 4.1),),
         PokemonPictureMarker,
     ));
     Ok(())
@@ -11519,15 +11354,11 @@ fn spawn_pokepic_window_frame_tiles(
     let mut spawn = |art: &SpriteFrame, x: f32, y: f32| {
         let (x, y) = battle_hud_tile_origin(x, y);
         commands.spawn((
-            SpriteBundle {
-                texture: art.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: art.handle.clone(),
                     custom_size: Some(art.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, z),
-                ..default()
-            },
+Transform::from_xyz(x, y, z),),
             PokemonPictureMarker,
         ));
     };
@@ -13055,30 +12886,20 @@ fn spawn_shell_banner(commands: &mut Commands, message: String, text_color: Colo
     let origin_x = PLAYFIELD_LEFT + TILE_SIZE * 0.75;
     let origin_y = PLAYFIELD_TOP + TILE_SIZE * 0.45;
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(0.03, 0.04, 0.05, 0.82),
                 custom_size: Some(Vec2::new(TILE_SIZE * 13.2, TILE_SIZE * 0.86)),
                 ..default()
             },
-            transform: Transform::from_xyz(origin_x + TILE_SIZE * 6.6, origin_y, 4.6),
-            ..default()
-        },
+Transform::from_xyz(origin_x + TILE_SIZE * 6.6, origin_y, 4.6),),
         SceneDialogMarker,
     ));
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                message,
-                TextStyle {
-                    font_size: 14.0,
-                    color: text_color,
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(origin_x + TILE_SIZE * 0.25, origin_y, 4.8),
-            ..default()
-        },
+        (Text2d::new(
+                message),
+TextFont::from_font_size(14.0),
+TextColor(text_color),
+Transform::from_xyz(origin_x + TILE_SIZE * 0.25, origin_y, 4.8),),
         SceneDialogMarker,
     ));
 }
@@ -13129,22 +12950,15 @@ fn spawn_audio_status_label(commands: &mut Commands, runtime_shell: &BevyRuntime
         return;
     };
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 12.0,
-                    color: Color::srgb(0.82, 0.94, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(12.0),
+TextColor(Color::srgb(0.82, 0.94, 1.0)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 10.2,
                 PLAYFIELD_TOP + TILE_SIZE * 0.92,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13161,22 +12975,15 @@ fn spawn_map_status_label(commands: &mut Commands, snapshot: &RuntimeShellSnapsh
         46,
     );
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 12.0,
-                    color: Color::srgb(0.92, 0.96, 0.86),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(12.0),
+TextColor(Color::srgb(0.92, 0.96, 0.86)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 0.1,
                 PLAYFIELD_TOP + TILE_SIZE * 0.92,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13195,22 +13002,15 @@ fn spawn_map_connection_labels(commands: &mut Commands, map: &crate::RuntimeMapC
         62,
     );
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 10.5,
-                    color: Color::srgb(0.78, 0.88, 0.96),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(10.5),
+TextColor(Color::srgb(0.78, 0.88, 0.96)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 0.1,
                 PLAYFIELD_TOP + TILE_SIZE * 0.46,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13661,11 +13461,8 @@ fn spawn_pokegear_phone_window(
         TextureDimension::D2, pixels, TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
     image.sampler = ImageSampler::nearest();
     let (left, top) = battle_window_center(x as f32, y as f32, width as f32, height as f32);
-    commands.spawn((SpriteBundle {
-        texture: images.add(image),
-        sprite: Sprite { custom_size: Some(Vec2::new(width as f32 * TILE_SIZE, height as f32 * TILE_SIZE)), ..default() },
-        transform: Transform::from_xyz(left, top, 4.0), ..default()
-    }, FieldCommandMarker));
+    commands.spawn(((Sprite { image: images.add(image), custom_size: Some(Vec2::new(width as f32 * TILE_SIZE, height as f32 * TILE_SIZE)), ..default() },
+Transform::from_xyz(left, top, 4.0),), FieldCommandMarker));
     Ok(())
 }
 
@@ -13680,11 +13477,9 @@ fn spawn_furniture_radio_textbox(
     // PlayRadio draws Textbox at (0,12), inner size 18x4. Preserve the map.
     rendered_art.selected_window_frame_id = textbox_frame_id(snapshot.trainer.options.frame);
     let (x, y) = field_window_center(0.0, 12.0, 20.0, 6.0);
-    commands.spawn((SpriteBundle {
-        sprite: Sprite { color: Color::WHITE,
+    commands.spawn(((Sprite { color: Color::WHITE,
             custom_size: Some(Vec2::new(20.0 * TILE_SIZE, 6.0 * TILE_SIZE)), ..default() },
-        transform: Transform::from_xyz(x, y, 3.3), ..default()
-    }, FieldCommandMarker));
+Transform::from_xyz(x, y, 3.3),), FieldCommandMarker));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
         .context("furniture radio requires source textbox frame")?;
     spawn_field_command_window_frame_tiles(commands, frame, 0.0, 12.0, 20, 6, 3.4);
@@ -13752,15 +13547,11 @@ fn spawn_pokedex_interface_tile(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(col, row);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -13841,19 +13632,15 @@ fn spawn_pokedex_nest_screen(
             .context("render Pokédex area player")?
         };
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + (player.x as f32 - 8.0) * TILE_SIZE / 8.0,
                     PLAYFIELD_TOP - (player.y as f32 - 16.0) * TILE_SIZE / 8.0,
                     3.8,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
         return Ok(());
@@ -13887,19 +13674,15 @@ fn spawn_pokedex_nest_screen(
     let handle = images.add(image);
     for landmark in nests {
         commands.spawn((
-            SpriteBundle {
-                texture: handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: handle.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + (landmark.x as f32 - 8.0) * TILE_SIZE / 8.0,
                     PLAYFIELD_TOP - (landmark.y as f32 - 16.0) * TILE_SIZE / 8.0,
                     3.8,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
     }
@@ -13986,15 +13769,11 @@ fn spawn_pokedex_unown_screen(
         image.sampler = ImageSampler::nearest();
         let (x, y) = battle_hud_tile_origin(f32::from(col), f32::from(row));
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     };
@@ -14034,15 +13813,11 @@ fn spawn_pokedex_unown_screen(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(9.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(width as f32 * TILE_SIZE / 8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14087,15 +13862,11 @@ fn spawn_pokedex_png(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(col, row);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::new(width as f32, height as f32) * TILE_SIZE / 8.0),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14119,21 +13890,17 @@ fn spawn_pokedex_text(
             art.font_error = Some("Pokédex glyph image is missing".to_string());
             return;
         };
-        for pixel in image.data.chunks_exact_mut(4) {
+        for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
             // Font alpha is ink coverage; the Dex uses black ink on white.
             let white = 255 - pixel[3];
             pixel.copy_from_slice(&[white, white, white, 255]);
         }
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             FieldCommandMarker,
         ));
     }
@@ -14216,19 +13983,15 @@ fn spawn_pokedex_list_cursor(
     );
     image.sampler = ImageSampler::nearest();
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + PLAYFIELD_WIDTH / 2.0,
                 PLAYFIELD_TOP - PLAYFIELD_HEIGHT / 2.0,
                 3.9,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14367,15 +14130,11 @@ fn spawn_pokedex_search_slowpoke(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(9.0, 10.0);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(3.0 * TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.9),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.9),),
         FieldCommandMarker,
     ));
     Ok(())

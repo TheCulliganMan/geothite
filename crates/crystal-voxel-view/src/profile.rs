@@ -783,6 +783,11 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
 /// interiors reuse an atlas for unrelated objects (notably Game Corners and
 /// Vermilion Gym), so tileset identity alone is not sufficient evidence.
 pub(crate) fn shape_for_source_on_map(map_id: &str, source: &VisualTileSource) -> CellShape {
+    if crate::port::cerulean_floor_source(map_id, source) {
+        // Gray pool-side paving is horizontal walking ground, not the
+        // atlas-wide shallow fixture relief. Both retain zero actor footing.
+        return CellShape::Flat;
+    }
     // Map-aware Center structures must win over the atlas-wide generic
     // interior relief rules. The same source tiles are walls, counters, and
     // grouped machines here, not anonymous low fixtures.
@@ -965,7 +970,7 @@ mod tests {
                 column: 0,
                 row: 0,
                 source: tile_source,
-                texture: Handle::<Image>::weak_from_u128(1),
+                texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
                 priority: false,
             }],
             ..Default::default()

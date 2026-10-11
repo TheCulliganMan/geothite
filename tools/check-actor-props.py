@@ -22,6 +22,10 @@ def verify(directory):
  assert set(authored)==set(registry), 'Generator and Rust registry differ'
  total_tri=0; total_vertices=0; digests=set(); biggest=(0,'')
  for name in registry:
+  if name in ('chris_bike','kris_bike'):
+   assert not (directory/(name+'.mesh.json')).exists(), 'retired baked rider returned'
+   assert (ROOT/'crates/crystal-voxel-view/src/bicycle.rs').is_file()
+   continue
   if name=='battle_chikorita':data=read_chikorita(directory/(name+'.glb'))
   elif name=='battle_cyndaquil':data=read_cyndaquil(directory/(name+'.glb'))
   elif name=='battle_totodile':data=read_totodile(directory/(name+'.glb'))
@@ -45,11 +49,7 @@ def verify(directory):
     average=[sum(ns[j][k] for j in ind[i:i+3]) for k in range(3)]
     assert sum(cross[k]*average[k] for k in range(3))>=-1e-7,(tag,'opposed normal and triangle')
     volume+=a[0]*(b[1]*c[2]-b[2]*c[1])+a[1]*(b[2]*c[0]-b[0]*c[2])+a[2]*(b[0]*c[1]-b[1]*c[0])
-   # All modeled surfaces have a positive enclosed volume, except the two
-   # open Pokeball hemispheres (with a legitimate cut plane), and original
-   # rider subparts whose exported materials partition a complete surface.
-   if name not in ('chris_bike','kris_bike'):
-    assert volume>=-1e-5,(tag,'inverted closed volume',volume)
+   assert volume>=-1e-5,(tag,'inverted closed volume',volume)
    triangles+=len(ind)//3;total_vertices+=len(pos)//3
   lo=[min(p[a] for p in points) for a in range(3)];hi=[max(p[a] for p in points) for a in range(3)]
   assert abs(lo[1])<.0001,(name,'not floor rooted',lo)
@@ -59,7 +59,7 @@ def verify(directory):
   total_tri+=triangles;biggest=max(biggest,(triangles,name))
  source_families=[n for n in registry if not n.startswith('battle_')]
  assert len(source_families)==66 and sum(n.startswith('icon_') for n in source_families)==38
- print(f'PASS: {len(registry)} original volumetric models; 66 source families (28 sprites, 38 icons), 7 dedicated battle species')
+ print(f'PASS: {len(registry)-2} authored volumetric models and 2 native bicycle frames; 66 source families (28 sprites, 38 icons), 7 dedicated battle species')
  print(f'PASS: {total_tri:,} triangles, {total_vertices:,} vertices; max {biggest[0]:,} triangles ({biggest[1]}); registry/export parity, finite attributes, winding/normals, ground anchors')
 
 if __name__=='__main__':

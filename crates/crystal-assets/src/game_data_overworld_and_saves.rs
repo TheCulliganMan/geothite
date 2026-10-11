@@ -1147,6 +1147,10 @@ impl GameDataSet {
                 });
             } else {
                 let options = StepOptions {
+                    running: self.running_shoes != Some(false)
+                        && movement_mode_before == MovementMode::Normal
+                        && input_mask & B_PAD_B != 0
+                        && forced_direction.is_none(),
                     // CheckTile-owned currents, walk tiles, doors and ice
                     // continue directly. Downhill instead enters through the
                     // joypad path and must preserve CheckTurning's four-frame

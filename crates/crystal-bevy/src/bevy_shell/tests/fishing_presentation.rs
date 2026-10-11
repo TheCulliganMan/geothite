@@ -119,7 +119,7 @@ fn assert_fishing_presentation_retains_the_field(pack: bool) {
                 .unwrap();
             let raster = world.resource::<Assets<Image>>().get(texture).unwrap();
             let colors: std::collections::HashSet<_> = raster
-                .data
+                .data.as_ref().expect("CPU image pixels")
                 .chunks_exact(4)
                 .filter(|pixel| pixel[3] > 0)
                 .map(|pixel| [pixel[0], pixel[1], pixel[2]])
@@ -154,8 +154,8 @@ fn assert_fishing_presentation_retains_the_field(pack: bool) {
         }
         assert!(frames < expected_frames);
         advance_visible_fishing_animation(&mut world.resource_mut::<BevyRuntimeShell>());
-        world.run_system_once(render_playfield);
-        world.run_system_once(publish_visual_world_frame);
+        world.run_system_once(render_playfield).unwrap();
+        world.run_system_once(publish_visual_world_frame).unwrap();
         frames += 1;
     }
     assert_eq!(
@@ -203,7 +203,7 @@ fn assert_fishing_presentation_retains_the_field(pack: bool) {
         &origin
     ));
     app.insert_resource(controller.shell);
-    app.world_mut().run_system_once(render_playfield);
+    app.world_mut().run_system_once(render_playfield).unwrap();
     assert!(
         app.world()
             .resource::<BevyRuntimeShell>()

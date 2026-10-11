@@ -633,7 +633,7 @@ fn visual_world_source_extent_belongs_to_the_built_scene_and_republishes_metadat
             shell.shell.retained_runtime_results().to_vec(),
         )
     };
-    app.world_mut().run_system_once(publish_visual_world_frame);
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
     let retained = app
         .world()
         .resource::<crystal_render_api::VisualWorldFrame>();
@@ -647,7 +647,7 @@ fn visual_world_source_extent_belongs_to_the_built_scene_and_republishes_metadat
     app.world_mut()
         .resource_mut::<RenderedViewport>()
         .source_map_size_core_tiles = None;
-    app.world_mut().run_system_once(publish_visual_world_frame);
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
     let unknown = app
         .world()
         .resource::<crystal_render_api::VisualWorldFrame>();
@@ -657,7 +657,7 @@ fn visual_world_source_extent_belongs_to_the_built_scene_and_republishes_metadat
     app.world_mut()
         .resource_mut::<RenderedViewport>()
         .source_map_size_core_tiles = Some(expected_size);
-    app.world_mut().run_system_once(publish_visual_world_frame);
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
     assert_eq!(
         app.world()
             .resource::<crystal_render_api::VisualWorldFrame>()
@@ -667,7 +667,7 @@ fn visual_world_source_extent_belongs_to_the_built_scene_and_republishes_metadat
     app.world_mut()
         .resource_mut::<RenderedViewport>()
         .source_map_size_core_tiles = Some(UVec2::ZERO);
-    app.world_mut().run_system_once(publish_visual_world_frame);
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
     assert!(
         !app.world()
             .resource::<crystal_render_api::VisualWorldFrame>()

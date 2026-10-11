@@ -5,7 +5,6 @@ External pack data is used only in temporary fixtures. No Cargo, Blender,
 GUI, new geometry, source catalog or gameplay changes are involved.
 """
 from pathlib import Path
-from animated_glb import load_rig
 from model_asset_storage import read_model_json as load
 import argparse, importlib.util, json, math, shutil, subprocess, tempfile
 ROOT = Path(__file__).resolve().parent.parent
@@ -38,31 +37,12 @@ def fit(model, target):
 
 def check_geometry(root):
     models = root/'crates/crystal-voxel-view/models'
-    checks = 0
-    for name, actors in [('interiors/arcade_stool',['super_nerd','gym_guide']),
-                         ('dungeons/ship_stool',['sailor','teacher','youngster','pokefan_m','bug_catcher'])]:
-        parts = fit(load(models/(name+'.mesh.json')), [2,14,0,12,7])
-        for actor in actors:
-            rig = load_rig(models/'johto_characters', actor)
-            translations, actor_parts = [], []
-            for joint in rig['joints']:
-                t = joint['translation']
-                if joint['parent'] is not None:
-                    t = [v+w for v,w in zip(t, translations[joint['parent']])]
-                translations.append(t)
-                for p in joint['primitives']:
-                    actor_parts.append((joint['name'],[tuple((a+b)*16 for a,b in zip(v,t)) for v in vertices(p)]))
-            for degree in range(0,360,5):
-                yaw = math.radians(degree)
-                for label, vv in actor_parts:
-                    bb = bounds([(8+x*math.cos(yaw)+z*math.sin(yaw), y+.04, 16-x*math.sin(yaw)+z*math.cos(yaw)) for x,y,z in vv])
-                    assert not any(intersects(bb,b) for _,b in parts), (actor,degree,label)
-                checks += 1
+    for name in ['interiors/arcade_stool','dungeons/ship_stool']:
+        fit(load(models/(name+'.mesh.json')), [2,14,0,12,7])
     bunk = load(models/'dungeons/ship_bunk.mesh.json')
     fit(bunk, [0,16,0,32,7])
     assert bunk['name'] == 'ship_bunk' and sum(len(p['indices']) for p in bunk['primitives']) > 300
-    print(f'PASS geometry: canonical round stools clear 7 actual rest rigs at 72 yaw samples each ({checks} poses); complete bunk fits 16x32x7 with finite transformed normals')
-    print('LIMIT: rest geometry and source-contained bounds are checked; idle/walk animation and camera readability require native review')
+    print('PASS furniture bounds and transformed normals; character clearance requires weighted-skin native review')
 
 BODY = r'''
 use source::{Asset,Identity};

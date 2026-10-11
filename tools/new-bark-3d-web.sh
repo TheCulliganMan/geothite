@@ -7,7 +7,12 @@ cd "$(dirname "$0")/.."
 PACK="${CRYSTAL_PACK:-content-packs/core-modular.browser.crystalpack}"
 OUT="${CRYSTAL_WEB_OUT:-target/new-bark-3d-web}"
 [ -f "$PACK" ] || { echo "Missing compatible content pack: $PACK" >&2; exit 1; }
-command -v wasm-bindgen >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-cli 0.2.128.' >&2; exit 1; }
+BINDGEN="${WASM_BINDGEN:-wasm-bindgen}"
+command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-cli 0.2.128.' >&2; exit 1; }
+[ "$("$BINDGEN" --version)" = 'wasm-bindgen 0.2.128' ] || {
+    echo 'This Cargo.lock requires wasm-bindgen-cli 0.2.128; set WASM_BINDGEN to its executable.' >&2
+    exit 1
+}
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
 cargo build --locked --profile wasm-dev -p crystal-bevy --bin crystal-bevy \
     --features fullscreen-scaling,voxel-view,location-tester --target wasm32-unknown-unknown
@@ -15,23 +20,19 @@ cargo build --locked --profile wasm-dev -p crystal-audio --lib \
     --features browser-synth --target wasm32-unknown-unknown
 cargo build --locked -p crystal-web-server --bin crystal-web-server
 mkdir -p "$OUT"
-wasm-bindgen --target web --no-typescript --out-dir "$OUT" --out-name crystal-bevy \
+"$BINDGEN" --target web --no-typescript --out-dir "$OUT" --out-name crystal-bevy \
     target/wasm32-unknown-unknown/wasm-dev/crystal-bevy.wasm
-wasm-bindgen --target web --no-typescript --out-dir "$OUT" --out-name crystal-audio \
+"$BINDGEN" --target web --no-typescript --out-dir "$OUT" --out-name crystal-audio \
     target/wasm32-unknown-unknown/wasm-dev/crystal_audio.wasm
 cp web-client/*.js web-client/*.css web-client/index.html "$OUT/"
+# The server derives its clock/customization pack from the core-named input;
+# the browser-named copy also makes a static disposable preview self-contained.
 cp "$PACK" "$OUT/core-modular.browser.crystalpack"
-# Use the shared LFS artwork by default; an explicit external root takes precedence.
-if [ -z "${CRYSTAL_OPEN_MODEL_ROOT:-}" ] && [ -d assets/open-models ]; then
-    CRYSTAL_OPEN_MODEL_ROOT=assets/open-models
-fi
-if [ -n "${CRYSTAL_OPEN_MODEL_ROOT:-}" ]; then
-    cargo run --locked -p crystal-voxel-view --bin bundle_open_models -- \
-        "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"
-    cargo run --locked -p crystal-voxel-view --bin bundle_open_people -- \
-        "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-people.json"
-else
-    # Do not accidentally reuse a previous preview's optional scenery bundle.
-    rm -f "$OUT/open-models.json" "$OUT/open-models.json.gz" "$OUT/open-people.json" "$OUT/open-people.json.gz"
-fi
+cp "$PACK" "$OUT/realtime-clock.browser.crystalpack"
+# Character artwork is required. Bundling rejects missing/invalid rigs.
+CRYSTAL_OPEN_MODEL_ROOT="${CRYSTAL_OPEN_MODEL_ROOT:-assets/open-models}"
+cargo run --locked -p crystal-voxel-view --bin bundle_open_models -- \
+    "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-models.json"
+cargo run --locked -p crystal-voxel-view --bin bundle_open_people -- \
+    "$CRYSTAL_OPEN_MODEL_ROOT" "$OUT/open-people.json"
 printf '\nBuilt %s. Run:\nCRYSTAL_DATA_DIR=target/new-bark-3d-data target/debug/crystal-web-server --dir %s --port 3003\nOpen http://localhost:3003/?multiplayer=off&preview=new-bark\n' "$OUT" "$OUT"

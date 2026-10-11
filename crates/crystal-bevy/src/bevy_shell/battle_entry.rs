@@ -285,7 +285,7 @@ fn prepare_battle_transition_texture(
     );
     image.sampler = ImageSampler::nearest();
     if let Some(handle) = existing {
-        if let Some(target) = images.get_mut(&handle) {
+        if let Some(mut target) = images.get_mut(&handle) {
             *target = image;
             return Ok(handle);
         }
@@ -327,15 +327,12 @@ fn spawn_visible_battle_transition(
         // explicit surface instead of retaining the final (sometimes partial)
         // outro geometry beneath the white battle canvas handoff.
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::BLACK,
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 2.76),
-                ..default()
-            },
+Transform::from_xyz(0.0, 0.0, 2.76),),
             BattleCommandMarker,
         ));
         return;
@@ -354,8 +351,10 @@ fn spawn_visible_battle_transition(
             let width_tiles = 2 + boxes * 2;
             let height_tiles = boxes * 2;
             commands.spawn((
-                SpriteBundle {
-                    sprite: Sprite {
+
+// Tile (0, 0) now begins at the LCD edge, so the growing
+// even-sized box is centered on the camera itself.
+(Sprite {
                         color: Color::BLACK,
                         custom_size: Some(Vec2::new(
                             width_tiles as f32 * TILE_SIZE,
@@ -363,11 +362,7 @@ fn spawn_visible_battle_transition(
                         )),
                         ..default()
                     },
-                    // Tile (0, 0) now begins at the LCD edge, so the growing
-                    // even-sized box is centered on the camera itself.
-                    transform: Transform::from_xyz(0.0, 0.0, 2.7),
-                    ..default()
-                },
+Transform::from_xyz(0.0, 0.0, 2.7),),
                 BattleCommandMarker,
             ));
         }
@@ -443,9 +438,7 @@ fn spawn_visible_battle_transition(
                     {
                         for x in std::iter::once(shift).chain(wrap_shift) {
                             commands.spawn((
-                                SpriteBundle {
-                                    texture: texture.clone(),
-                                    sprite: Sprite {
+                                (Sprite { image: texture.clone(),
                                         rect: Some(Rect::new(
                                             0.0,
                                             source_y as f32,
@@ -455,13 +448,11 @@ fn spawn_visible_battle_transition(
                                         custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, source_scale)),
                                         ..default()
                                     },
-                                    transform: Transform::from_xyz(
+Transform::from_xyz(
                                         x,
                                         PLAYFIELD_TOP - (source_y as f32 + 0.5) * source_scale,
                                         z,
-                                    ),
-                                    ..default()
-                                },
+                                    ),),
                                 BattleCommandMarker,
                             ));
                         }
@@ -475,15 +466,12 @@ fn spawn_visible_battle_transition(
 fn spawn_visible_battle_transition_black_tile(commands: &mut Commands, x: usize, y: usize) {
     let (tile_x, tile_y) = render_tile_playfield_position(x as i16, y as i16);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::BLACK,
                 custom_size: Some(Vec2::splat(TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(tile_x, tile_y, 2.7),
-            ..default()
-        },
+Transform::from_xyz(tile_x, tile_y, 2.7),),
         BattleCommandMarker,
     ));
 }
@@ -531,15 +519,12 @@ fn spawn_visible_battle_transition_wedge(commands: &mut Commands, wedge_index: u
             if (0..20).contains(&x) && (0..18).contains(&y) {
                 let (tile_x, tile_y) = render_tile_playfield_position(i16::from(x), i16::from(y));
                 commands.spawn((
-                    SpriteBundle {
-                        sprite: Sprite {
+                    (Sprite {
                             color: Color::BLACK,
                             custom_size: Some(Vec2::splat(TILE_SIZE)),
                             ..default()
                         },
-                        transform: Transform::from_xyz(tile_x, tile_y, 2.7),
-                        ..default()
-                    },
+Transform::from_xyz(tile_x, tile_y, 2.7),),
                     BattleCommandMarker,
                 ));
             }

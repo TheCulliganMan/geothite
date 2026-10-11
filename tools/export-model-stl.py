@@ -2,14 +2,12 @@
 """Export optional local static previews from canonical indexed model JSON and human GLB scenes.
 
 No dependencies. The input meshes are authoritative: preserve every indexed
-triangle, including degenerate triangles, in source order. Rig exports use their
-unanimated bind pose, matching johto_characters.rs. Output is ignored by Git and
+triangle, including degenerate triangles, in source order. Legacy rigid human exports are unsupported. Output is ignored by Git and
 is not used by the game. See docs/art/model-stl.md.
 """
 
 from __future__ import annotations
 
-from animated_glb import load_catalog, load_rig
 from battle_model_assets import read_species_model, species_paths, GLB_READERS
 
 import argparse
@@ -25,14 +23,6 @@ from typing import Iterator
 STL_HEADER = b"Geothite exact indexed mesh; bind pose; (x,y,z)->(x,-z,y); no color".ljust(80, b"\0")
 RECORD = struct.Struct("<12fH")
 GITHUB_LIMIT = 10_000_000
-JOINT_NAMES = (
-    "pelvis", "torso", "head", "eyes", "upper_arm_l", "forearm_l", "hand_l",
-    "upper_arm_r", "forearm_r", "hand_r", "thigh_l", "shin_l", "shoe_l",
-    "thigh_r", "shin_r", "shoe_r",
-)
-JOINT_PARENTS = (None, 0, 1, 2, 1, 4, 5, 1, 7, 8, 0, 10, 11, 0, 13, 14)
-
-
 def f32(value: float) -> float:
     """Match Rust's f32 mesh storage and each bind-translation addition."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
@@ -119,29 +109,13 @@ class ModelReader:
         self.root = root
         self.library = None
 
-    def geometry_library(self):
-        if self.library is None:
-            library = json.loads((self.root / "johto_characters/shared.geometry.json").read_text())
-            identity = library.get("id", "")
-            if library.get("version") != 1 or len(identity) != 64 or any(c not in "0123456789abcdef" for c in identity):
-                raise ValueError("unsupported character geometry library")
-            geometries = library.get("geometries", [])
-            if not geometries:
-                raise ValueError("empty character geometry library")
-            self.library = identity, tuple(validate_geometry(g) for g in geometries)
-        return self.library
-
     def read(self, path: Path) -> tuple[Primitive, ...]:
-        # Virtual per-scene selectors preserve familiar preview filenames; the
-        # geometry itself comes only from the canonical GLB catalog.
-        if path.parent == self.root / "johto_characters" and path.name.endswith(".rig.json") and (path.parent / "catalog.glb").exists():
-            return self.read_rig(load_rig(path.parent, path.name.removesuffix(".rig.json")))
         if path.parent == self.root / 'battle_species' and path.suffix == '.glb':
             source = read_species_model(path)
         else:
             source = json.loads(path.read_text())
         if "joints" in source:
-            return self.read_rig(source)
+            raise ValueError("legacy rigid human models are unsupported")
         if "primitives" not in source or not source["primitives"]:
             raise ValueError("expected a mesh with raw indexed primitives")
         dimensions = None
@@ -172,49 +146,6 @@ class ModelReader:
         if "triangle_count" in source and source["triangle_count"] != count:
             raise ValueError("authored triangle_count does not match indexed geometry")
         return tuple(output)
-
-    def read_rig(self, source: dict) -> tuple[Primitive, ...]:
-        version = source.get("version")
-        joints = source["joints"]
-        if version not in (1, 2) or len(joints) != len(JOINT_NAMES):
-            raise ValueError("unsupported articulated character schema")
-        library = None
-        if version == 2:
-            identity, library = self.geometry_library()
-            if source.get("geometry_library") != identity:
-                raise ValueError("character geometry library identity mismatch")
-        elif source.get("geometry_library") is not None:
-            raise ValueError("inline rig must not reference a geometry library")
-        worlds = []
-        output = []
-        for index, joint in enumerate(joints):
-            parent = joint.get("parent")
-            if joint.get("name") != JOINT_NAMES[index] or parent != JOINT_PARENTS[index]:
-                raise ValueError("invalid character joint or parent")
-            if any(k in joint for k in ("rotation", "scale", "matrix", "transform")):
-                raise ValueError("unsupported character joint transform")
-            translation = triple(joint["translation"])
-            parent_world = (0.0, 0.0, 0.0) if parent is None else worlds[parent]
-            world = tuple(f32(translation[i] + parent_world[i]) for i in range(3))
-            worlds.append(world)
-            if not joint["primitives"]:
-                raise ValueError("character joint must own real geometry")
-            for primitive in joint["primitives"]:
-                validate_color(primitive)
-                if version == 1:
-                    if primitive.get("geometry") is not None:
-                        raise ValueError("inline rig contains a shared reference")
-                    geometry = validate_geometry(primitive)
-                else:
-                    ref = primitive.get("geometry")
-                    if any(primitive.get(k) is not None for k in ("positions", "normals", "indices")):
-                        raise ValueError("shared rig contains inline geometry")
-                    if type(ref) is not int or ref < 0 or ref >= len(library):
-                        raise ValueError("invalid character geometry reference")
-                    geometry = library[ref]
-                output.append(Primitive(*geometry, translation=world))
-        return tuple(output)
-
 
 def encode_stl(primitives: tuple[Primitive, ...]) -> bytes:
     count = sum(len(p.indices) // 3 for p in primitives)
@@ -263,7 +194,7 @@ def main(argv=None):
     parser.add_argument("--models-root", type=Path, default=default_root)
     parser.add_argument("--output-root", type=Path, default=repository_root / "output/model-stl",
                         help="default: ignored output/model-stl directory")
-    parser.add_argument("--model", action="append", help="relative .mesh.json, supported battle species .glb, or johto_characters/<scene>.rig.json selector; repeatable")
+    parser.add_argument("--model", action="append", help="relative .mesh.json, supported battle species .glb,; repeatable")
     parser.add_argument("--check", action="store_true", help="verify existing files without changing them")
     parser.add_argument("--list-output-paths", action="store_true", help="after successful verification, print only verified paths relative to output-root on stdout")
     args = parser.parse_args(argv)
@@ -275,12 +206,6 @@ def main(argv=None):
     if not args.model:
         species = species_paths(root / 'battle_species')
         sources.extend(path for path in species.values() if path.suffix == '.glb')
-    if not args.model and (root / "johto_characters/catalog.glb").exists():
-        # A selector is not a second stored asset. It names one catalog scene.
-        sources = [p for p in sources if p.parent != root / "johto_characters" or not p.name.endswith(".rig.json")]
-        sources.extend(root / "johto_characters" / (name + ".rig.json")
-                       for name in load_catalog(root / "johto_characters"))
-        sources.sort()
     if not sources:
         parser.error("no canonical model documents found")
     # Full-tree runs have an exact one-to-one model/STL contract. Do not leave

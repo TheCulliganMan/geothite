@@ -2,9 +2,9 @@
 //! No disassembly or extracted game assets are required or written to disk.
 use anyhow::{Context, Result, ensure};
 use bevy::{
+    asset::RenderAssetUsages,
     prelude::{Assets, Handle, Image, UVec2, Vec2},
     render::{
-        render_asset::RenderAssetUsages,
         render_resource::{Extent3d, TextureDimension, TextureFormat},
     },
 };

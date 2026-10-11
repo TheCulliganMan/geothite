@@ -334,7 +334,7 @@ fn assert_pair_gpu(mut app: App) {
             let placement = world
                 .get::<GlobalTransform>(actor.entity)
                 .unwrap()
-                .compute_matrix();
+                .to_matrix();
             assert!(placement != Mat4::IDENTITY);
             let mut local = vec![Mat4::IDENTITY; skin.joints.len()];
             skin.rig
@@ -344,7 +344,7 @@ fn assert_pair_gpu(mut app: App) {
                 let gpu = world
                     .get::<GlobalTransform>(joint)
                     .unwrap()
-                    .compute_matrix()
+                    .to_matrix()
                     * skin.rig.joints[index].inverse_bind;
                 let expected = placement * local[index];
                 assert!(
@@ -425,7 +425,7 @@ fn switching_species_retires_joint_entities_and_keeps_inverse_bind_assets_bounde
         app.update();
         assert!(old
             .iter()
-            .all(|entity| app.world().get_entity(*entity).is_none()));
+            .all(|entity| app.world().get_entity(*entity).is_err()));
         app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
             .as_mut()
             .unwrap()

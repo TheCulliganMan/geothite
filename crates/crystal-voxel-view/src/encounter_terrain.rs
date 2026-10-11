@@ -1,14 +1,16 @@
 //! A frozen instance of the terrain that actually supported a checked encounter.
 //! No terrain reconstruction, source sprite copies, or borrowed world fade state.
+use bevy::camera::primitives::MeshAabb;
 use crate::{
     TerrainRevisionCache, VoxelMaterial,
     battle_layout::{BattleBody, BattleSceneLayout, CAMERA_FOV},
     battle_view::BattleViewStatus,
 };
 use bevy::{
+    asset::RenderAssetUsages,
     asset::AssetId,
     prelude::*,
-    render::{primitives::Aabb, view::RenderLayers},
+    camera::{primitives::Aabb, visibility::RenderLayers},
 };
 use crystal_render_api::{
     BattleFlashMode, BattleLocationFrame, VisualBattleFrame, VisualBattleLocation, VisualWorldFrame,
@@ -576,7 +578,7 @@ fn collect_leaves(
     object: Option<Entity>,
     out: &mut Vec<FrozenLeaf>,
 ) -> Result<(), &'static str> {
-    if world.get_entity(entity).is_none() {
+    if world.get_entity(entity).is_err() {
         return Err("actual terrain hierarchy is not ready");
     }
     if world.get::<SyntheticTerrainApron>(entity).is_some() {
@@ -590,23 +592,23 @@ fn collect_leaves(
     {
         return Ok(());
     }
-    if let Some(mesh) = world.get::<Handle<Mesh>>(entity) {
+    if let Some(mesh) = world.get::<Mesh3d>(entity) {
         let material = world
-            .get::<Handle<VoxelMaterial>>(entity)
+            .get::<MeshMaterial3d<VoxelMaterial>>(entity)
             .ok_or("terrain leaf has no voxel material")?;
         let aabb = world.get::<Aabb>(entity).copied().or_else(|| {
             world
                 .get_resource::<Assets<Mesh>>()?
-                .get(mesh)?
-                .compute_aabb()
+                .get(&mesh.0)?
+                .get_aabb()
         });
         let Some(aabb) = aabb else {
             return Err("terrain leaf bounds have not been published");
         };
         let bounds = Bounds::from_aabb(aabb, pose).ok_or("terrain leaf has nonfinite bounds")?;
         out.push(FrozenLeaf {
-            mesh: mesh.clone(),
-            material: material.clone(),
+            mesh: mesh.0.clone(),
+            material: material.0.clone(),
             transform: pose,
             aabb,
             bounds,
@@ -614,7 +616,7 @@ fn collect_leaves(
         });
     }
     if let Some(children) = world.get::<Children>(entity) {
-        for &child in children.iter() {
+        for child in children.iter() {
             let local = world
                 .get::<Transform>(child)
                 .copied()
@@ -645,8 +647,8 @@ pub(super) fn prepare(world: &mut World) {
         .unwrap_or_default();
     if state.generation != generation {
         if let Some(frozen) = state.frozen.take() {
-            if let Some(root) = world.get_entity_mut(frozen.root) {
-                root.despawn_recursive();
+            if let Ok(root) = world.get_entity_mut(frozen.root) {
+                root.despawn();
             }
             if let Some(mut assets) = world.get_resource_mut::<Assets<Mesh>>() {
                 for mesh in frozen.meshes {
@@ -721,7 +723,7 @@ fn select_authentic_animated(
 ) -> Result<(Option<(Mesh, Aabb, Bounds)>, Vec<Bounds>), &'static str> {
     use bevy::render::{
         mesh::{Indices, VertexAttributeValues},
-        render_asset::RenderAssetUsages,
+
         render_resource::PrimitiveTopology,
     };
     use std::collections::BTreeMap;
@@ -818,7 +820,7 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         .instances_root
         .ok_or("actual terrain instances are not ready")?;
     if let Some(children) = world.get::<Children>(instances) {
-        for &child in children.iter() {
+        for child in children.iter() {
             let local = world
                 .get::<Transform>(child)
                 .copied()
@@ -862,13 +864,13 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         Bounds::from_aabb(aabb, root_pose).ok_or("animated terrain bounds are invalid")?;
         let entity = entity.ok_or("actual animated terrain is not ready")?;
         let mesh = mesh.ok_or("actual animated mesh handle is missing")?;
-        if world.get::<Handle<Mesh>>(entity) != Some(mesh) {
+        if world.get::<Mesh3d>(entity).map(|handle| &handle.0) != Some(mesh) {
             return Err("actual animated terrain handle does not match its cache");
         }
         let material = world
-            .get::<Handle<VoxelMaterial>>(entity)
+            .get::<MeshMaterial3d<VoxelMaterial>>(entity)
             .ok_or("actual animated terrain material is missing")?
-            .clone();
+            .0.clone();
         let source = world
             .get_resource::<Assets<Mesh>>()
             .and_then(|assets| assets.get(mesh))
@@ -1016,25 +1018,20 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         .collect();
     let root = world
         .spawn((
-            SpatialBundle {
-                visibility: Visibility::Hidden,
-                ..default()
-            },
+            (Transform::default(),
+Visibility::Hidden,),
             EncounterTerrainRoot,
         ))
         .id();
     for leaf in kept {
         let child = world
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh: mutable_mesh_handles
+                (Mesh3d(mutable_mesh_handles
                         .get(&leaf.mesh.id())
                         .cloned()
-                        .unwrap_or(leaf.mesh),
-                    material: material_handles[&(leaf.material.id(), leaf.object)].clone(),
-                    transform: leaf.transform,
-                    ..default()
-                },
+                        .unwrap_or(leaf.mesh)),
+MeshMaterial3d(material_handles[&(leaf.material.id(), leaf.object)].clone()),
+leaf.transform,),
                 leaf.aabb,
                 RenderLayers::layer(BATTLE_LAYER),
             ))
@@ -1087,7 +1084,7 @@ pub(super) fn sync(
     };
     let (dark, white) =
         crate::battle_view::source_environment_palette(frame.source.as_ref(), *mode);
-    let seconds = time.as_ref().map_or(0.0, |time| time.delta_seconds());
+    let seconds = time.as_ref().map_or(0.0, |time| time.delta_secs());
     for object in scene.objects.values_mut() {
         object.opacity = advance_opacity(object.opacity, object.faded, seconds);
     }
@@ -1102,7 +1099,7 @@ pub(super) fn sync(
             .get(&retained.handle)
             .is_some_and(|m| m.extension.cutaway.fade != value || m.base.alpha_mode != alpha_mode)
         {
-            if let Some(material) = materials.get_mut(&retained.handle) {
+            if let Some(mut material) = materials.get_mut(&retained.handle) {
                 material.extension.cutaway.fade = value;
                 material.base.alpha_mode = alpha_mode;
             }
@@ -1113,6 +1110,7 @@ pub(super) fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+use bevy::camera::primitives::MeshAabb;
     use crystal_render_api::{
         VisualActorId, VisualBattleAnchorFrame, VisualBattleObjectTarget, VisualBattleTarget,
         VisualBattleSourceMovement, VisualBattleSourcePose, VisualBattleTerrainEvidence,
@@ -1146,7 +1144,7 @@ mod tests {
             tile_size: Vec2::splat(32.0),
             viewport_size: Vec2::new(640.0, 576.0),
             center: Vec2::new(100.0, -60.0),
-            map_texture: Handle::weak_from_u128(51),
+            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(51), std::marker::PhantomData),
             ..default()
         };
         let evidence = VisualBattleTerrainEvidence {
@@ -1225,7 +1223,7 @@ mod tests {
                     subtile_column: (column % 4) as u8, subtile_row: (row % 4) as u8,
                     tile_index: 0x14,
                 },
-                texture: Handle::weak_from_u128(71), animation_frames: None, priority: false,
+                texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(71), std::marker::PhantomData), animation_frames: None, priority: false,
             }
         })).collect();
         heights.fill(-8.0);
@@ -1545,7 +1543,7 @@ mod tests {
                             subtile_row: 0,
                             tile_index: id,
                         },
-                        texture: Handle::weak_from_u128(u128::from(id) + 1000),
+                        texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(u128::from(id) + 1000), std::marker::PhantomData),
                         priority: false,
                     }
                 })
@@ -1645,9 +1643,9 @@ mod tests {
         assert_eq!(authentic.min, Vec2::new(-50.0, -34.0));
         assert_eq!(authentic.max, Vec2::new(46.0, 30.0));
         // An atlas copy is legitimate only with its original submission handle.
-        retained.built_frame.as_mut().unwrap().map_texture = Handle::weak_from_u128(52);
+        retained.built_frame.as_mut().unwrap().map_texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(52), std::marker::PhantomData);
         assert!(resolve_context(&location, &retained).is_ok());
-        retained.built_source_texture = Some(Handle::weak_from_u128(53));
+        retained.built_source_texture = Some(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(53), std::marker::PhantomData));
         assert!(resolve_context(&location, &retained).is_err());
         retained.built_source_texture = Some(frame.map_texture.clone());
         retained.built_frame.as_mut().unwrap().grid_origin += IVec2::X;
@@ -1757,7 +1755,7 @@ mod tests {
                 bevy::render::render_resource::TextureDimension::D2,
                 &[10, 20, 30, 255],
                 bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb,
-                bevy::render::render_asset::RenderAssetUsages::default(),
+                bevy::asset::RenderAssetUsages::default(),
             ));
         frame.map_texture = image.clone();
         Arc::make_mut(location.anchors.as_mut().unwrap())
@@ -1775,36 +1773,30 @@ mod tests {
             Vec3::new(-256.0, -0.5, -256.0),
             Vec3::new(256.0, 0.5, 256.0),
         );
-        let root = app.world_mut().spawn(SpatialBundle::default()).id();
+        let root = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         let leaf = app
             .world_mut()
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh: mesh.clone(),
-                    material: material.clone(),
-                    ..default()
-                },
+                (Mesh3d(mesh.clone()),
+MeshMaterial3d(material.clone()),),
                 bounds,
                 RenderLayers::layer(crate::VOXEL_RENDER_LAYER),
             ))
             .id();
         app.world_mut().entity_mut(root).add_child(leaf);
-        let instances = app.world_mut().spawn(SpatialBundle::default()).id();
+        let instances = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         let apron = app
             .world_mut()
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh: mesh.clone(),
-                    material: material.clone(),
-                    ..default()
-                },
+                (Mesh3d(mesh.clone()),
+MeshMaterial3d(material.clone()),),
                 bounds,
                 SyntheticTerrainApron,
                 RenderLayers::layer(crate::VOXEL_RENDER_LAYER),
             ))
             .id();
         app.world_mut().entity_mut(instances).add_child(apron);
-        let empty = app.world_mut().spawn(SpatialBundle::default()).id();
+        let empty = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
         let mut retained = cache(&frame, heights);
         retained.instances_root = Some(instances);
         retained.textured_entity = Some(root);
@@ -1818,11 +1810,12 @@ mod tests {
     #[test]
     fn retained_faded_world_crown_recovers_mask_and_keeps_it_through_opacity_updates() {
         let (mut app, _, _, material, _) = app_fixture();
-        let mut materials = app.world_mut().resource_mut::<Assets<VoxelMaterial>>();
-        let source = materials.get_mut(&material).unwrap();
-        source.base.alpha_mode = AlphaMode::Blend;
-        source.extension.cutaway.fade = Vec4::new(0.8, 0.0, 0.0, 0.63);
-        drop(materials);
+        {
+            let mut materials = app.world_mut().resource_mut::<Assets<VoxelMaterial>>();
+            let mut source = materials.get_mut(&material).unwrap();
+            source.base.alpha_mode = AlphaMode::Blend;
+            source.extension.cutaway.fade = Vec4::new(0.8, 0.0, 0.0, 0.63);
+        }
         prepare(app.world_mut());
         let frozen = app.world().resource::<EncounterTerrain>().frozen.as_ref().unwrap();
         assert_eq!(frozen.materials[0].alpha_cutoff, Some(0.63));
@@ -1836,16 +1829,16 @@ mod tests {
     fn retained_encounter_preserves_cutout_material_and_alpha_pixels() {
         let (mut app, _, _, material, image)=app_fixture();
         app.world_mut().resource_mut::<Assets<VoxelMaterial>>().get_mut(&material).unwrap().base.alpha_mode=AlphaMode::Mask(0.5);
-        app.world_mut().resource_mut::<Assets<Image>>().get_mut(&image).unwrap().data[3]=0;
+        app.world_mut().resource_mut::<Assets<Image>>().get_mut(&image).unwrap().data.as_mut().expect("CPU image pixels")[3]=0;
         prepare(app.world_mut());
         let root=app.world().resource::<EncounterTerrain>().frozen.as_ref().unwrap().root;
         let child=app.world().get::<Children>(root).unwrap()[0];
-        let copied=app.world().get::<Handle<VoxelMaterial>>(child).unwrap();
+        let copied=&app.world().get::<MeshMaterial3d<VoxelMaterial>>(child).unwrap().0;
         let material=app.world().resource::<Assets<VoxelMaterial>>().get(copied).unwrap();
         assert_eq!(material.base.alpha_mode,AlphaMode::Mask(0.5));
         let copied_image=material.base.base_color_texture.as_ref().unwrap();
         assert_ne!(copied_image,&image);
-        assert_eq!(app.world().resource::<Assets<Image>>().get(copied_image).unwrap().data[3],0);
+        assert_eq!(app.world().resource::<Assets<Image>>().get(copied_image).unwrap().data.as_ref().expect("CPU image pixels")[3],0);
     }
 
     #[test]
@@ -1868,11 +1861,12 @@ mod tests {
         let instance = children[0];
         let frozen_material = app
             .world()
-            .get::<Handle<VoxelMaterial>>(instance)
+            .get::<MeshMaterial3d<VoxelMaterial>>(instance)
             .unwrap()
+            .0
             .clone();
         assert_ne!(frozen_material, material);
-        assert_eq!(app.world().get::<Handle<Mesh>>(instance), Some(&mesh));
+        assert_eq!(app.world().get::<Mesh3d>(instance).map(|mesh| &mesh.0), Some(&mesh));
         assert_eq!(
             *app.world().get::<RenderLayers>(instance).unwrap(),
             RenderLayers::layer(29)
@@ -1901,13 +1895,13 @@ mod tests {
             .resource::<Assets<Image>>()
             .get(&frozen_image)
             .unwrap()
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .clone();
         app.world_mut()
             .resource_mut::<Assets<Image>>()
             .get_mut(&image)
             .unwrap()
-            .data
+            .data.as_mut().expect("CPU image pixels")
             .fill(91);
         app.world_mut()
             .resource_mut::<Assets<VoxelMaterial>>()
@@ -1927,8 +1921,8 @@ mod tests {
                 .resource::<Assets<Image>>()
                 .get(&frozen_image)
                 .unwrap()
-                .data,
-            frozen_pixels
+                .data.as_ref().expect("CPU image pixels").as_slice(),
+            frozen_pixels.as_slice()
         );
         assert_eq!(
             app.world()
@@ -1964,9 +1958,9 @@ mod tests {
             .resource_mut::<BattleLocationFrame>()
             .location = None;
         prepare(app.world_mut());
-        assert!(app.world().get_entity(root).is_none());
-        assert!(app.world().get_entity(instance).is_none());
-        assert!(app.world().get_entity(original).is_some());
+        assert!(app.world().get_entity(root).is_err());
+        assert!(app.world().get_entity(instance).is_err());
+        assert!(app.world().get_entity(original).is_ok());
         assert_eq!(counts(&app), baseline);
         assert_eq!(
             *app.world().get::<RenderLayers>(original).unwrap(),
@@ -1996,7 +1990,7 @@ mod tests {
         let primary = BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport).unwrap();
         let mut state = EncounterTerrain {
             frozen: Some(FrozenScene {
-                root: Entity::from_raw(1), anchors,
+                root: Entity::from_raw_u32(1).unwrap(), anchors,
                 authentic: AuthenticBounds { min: Vec2::new(-18.0, -12.0), max: Vec2::new(22.0, 52.0) },
                 omitted: Vec::new(), objects: HashMap::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
@@ -2113,7 +2107,7 @@ mod tests {
     fn default_world_palette_is_identity_and_reduced_flash_uses_the_shared_source_rule() {
         let world_material = crate::solid_terrain_material();
         assert_eq!(world_material.extension.cutaway.fade, Vec4::ZERO);
-        let shader = include_str!("voxel_surface.wgsl");
+        let shader = include_str!("voxel_surface.wesl");
         assert!(shader.contains("mix(shaded, vec3<f32>(0.0), clamp(cutaway.fade.y, 0.0, 1.0))"));
         assert!(shader.contains("mix(darkened, vec3<f32>(1.0), clamp(cutaway.fade.z, 0.0, 1.0))"));
         let source = crystal_render_api::VisualBattleSourceFrame {
@@ -2142,7 +2136,7 @@ mod tests {
         let count = mesh.count_vertices();
         mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![[0.17, 0.29, 0.43, 1.0]; count]);
         mesh.insert_attribute(Mesh::ATTRIBUTE_UV_1, vec![[0.13, 0.91]; count]);
-        let bounds = mesh.compute_aabb().unwrap();
+        let bounds = mesh.get_aabb().unwrap();
         let mesh = app
             .world_mut()
             .resource_mut::<Assets<Mesh>>()
@@ -2150,11 +2144,8 @@ mod tests {
         let entity = app
             .world_mut()
             .spawn((
-                MaterialMeshBundle::<VoxelMaterial> {
-                    mesh: mesh.clone(),
-                    material,
-                    ..default()
-                },
+                (Mesh3d(mesh.clone()),
+MeshMaterial3d(material),),
                 bounds,
                 RenderLayers::layer(crate::VOXEL_RENDER_LAYER),
             ))
@@ -2167,7 +2158,7 @@ mod tests {
     }
 
     fn mesh_bytes(mesh: &Mesh) -> Vec<u8> {
-        use bevy::render::mesh::Indices;
+        use bevy::mesh::Indices;
         let mut bytes = Vec::new();
         for (id, values) in mesh.attributes() {
             bytes.extend(format!("{id:?}").as_bytes());
@@ -2193,7 +2184,7 @@ mod tests {
 
     #[test]
     fn mutable_flower_copy_is_byte_exact_and_survives_world_replacement_without_growth() {
-        use bevy::render::render_asset::RenderAssetUsages;
+        use bevy::asset::RenderAssetUsages;
         let (mut app, _, static_mesh, material, _) = app_fixture();
         let source = animated_fixture(&mut app, material, 20.0);
         let baseline = app.world().resource::<Assets<Mesh>>().len();
@@ -2226,7 +2217,7 @@ mod tests {
                 .get::<Children>(root)
                 .unwrap()
                 .iter()
-                .any(|&child| app.world().get::<Handle<Mesh>>(child) == Some(&static_mesh))
+                .any(|child| app.world().get::<Mesh3d>(child).map(|mesh| &mesh.0) == Some(&static_mesh))
         );
         app.world_mut().resource_mut::<Assets<Mesh>>().insert(
             source.id(),
@@ -2296,8 +2287,10 @@ mod tests {
 
     #[test]
     fn animated_partition_preserves_original_triangle_order_and_attribute_bytes() {
-        use bevy::render::{
-            mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology,
+        use bevy::{
+            asset::RenderAssetUsages,
+            mesh::Indices,
+            render::render_resource::PrimitiveTopology,
         };
         for short_indices in [false, true] {
             let mut source = Mesh::new(
@@ -2381,8 +2374,10 @@ mod tests {
 
     #[test]
     fn animated_partition_uses_real_transformed_coordinates_and_rejects_invalid_inputs() {
-        use bevy::render::{
-            mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology,
+        use bevy::{
+            asset::RenderAssetUsages,
+            mesh::Indices,
+            render::render_resource::PrimitiveTopology,
         };
         let source = Mesh::from(Cuboid::new(32.0, 16.0, 32.0));
         let pose = Transform::from_translation(Vec3::new(20.0, 3.0, -10.0))

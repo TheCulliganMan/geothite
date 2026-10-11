@@ -8,11 +8,11 @@ rust-version.workspace = true
 
 [dependencies]
 anyhow.workspace = true
-base64 = "0.22"
+base64.workspace = true
 ciborium.workspace = true
-crystal-core = { path = "../crystal-core" }
-crystal-audio = { path = "../crystal-audio" }
-flate2 = "1.1"
+crystal-core.workspace = true
+crystal-audio.workspace = true
+flate2.workspace = true
 serde.workspace = true
 serde_path_to_error = "0.1"
 serde_json.workspace = true
@@ -22,4 +22,4 @@ sha2.workspace = true
 test-fixtures = ["crystal-core/test-fixtures"]
 
 [dev-dependencies]
-crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
+crystal-core = { workspace = true, features = ["test-fixtures"] }

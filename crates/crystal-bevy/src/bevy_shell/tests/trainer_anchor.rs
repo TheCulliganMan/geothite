@@ -192,9 +192,9 @@ fn trainer_anchor_real_abe_sight_preserves_settled_contact_and_read_only_publica
     let commands = shell.shell.retained_runtime_commands().to_vec();
     let results = shell.shell.retained_runtime_results().to_vec();
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     let shell = app.world().resource::<BevyRuntimeShell>();
     assert_eq!(
         shell.shell.session(),
@@ -224,7 +224,7 @@ fn trainer_anchor_real_abe_sight_preserves_settled_contact_and_read_only_publica
     assert!(shell.battle_origin.trainer_candidate.is_none());
     drop(shell);
     app.world_mut()
-        .run_system_once(publish_visible_battle_location);
+        .run_system_once(publish_visible_battle_location).unwrap();
     assert!(
         app.world()
             .resource::<crystal_render_api::BattleLocationFrame>()

@@ -7,29 +7,34 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-bevy = { version = "0.14", default-features = false, features = [
+bevy = { workspace = true, features = [
     "bevy_asset",
     "bevy_core_pipeline",
     "bevy_pbr",
+    "bevy_light",
+    "bevy_log",
+    "bevy_shader",
+    "bevy_material",
+    "bevy_anti_alias",
     "bevy_render",
     "bevy_sprite",
     "multi_threaded",
 ] }
-crystal-render-api = { path = "../crystal-render-api" }
+crystal-render-api.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
-base64 = "0.22"
-flate2 = "1.1"
+base64.workspace = true
+flate2.workspace = true
 gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "extras"] }
 sha2.workspace = true
-image = { version = "0.25.10", default-features = false, features = ["png", "jpeg"] }
+image = { workspace = true, features = ["jpeg"] }
 
 [features]
-people-review = ["bevy/bevy_winit", "bevy/png"]
+people-review = ["bevy/bevy_winit", "bevy/x11", "bevy/png"]
 operation-trace = []
 
 [build-dependencies]
-flate2 = "1.1"
+flate2.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 

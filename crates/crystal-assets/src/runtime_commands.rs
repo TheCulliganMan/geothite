@@ -1082,6 +1082,9 @@ impl DecorationActionOutcome {
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct GameDataSet {
+    /// Default modpack enables running from the start; explicit false opts out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub running_shoes: Option<bool>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub server_clock: bool,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]

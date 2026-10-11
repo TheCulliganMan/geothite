@@ -345,7 +345,7 @@ fn compose_tile_grid(
     let mut data = existing
         .as_ref()
         .and_then(|handle| images.get_mut(handle))
-        .map(|image| std::mem::take(&mut image.data))
+        .map(|mut image| image.data.take().unwrap_or_default())
         .unwrap_or_default();
     data.resize(data_len, 0);
     data.fill(0);
@@ -358,18 +358,18 @@ fn compose_tile_grid(
         for source_y in 0..SOURCE_TILE_SIZE {
             let source_row_start = source_y * SOURCE_TILE_SIZE * 4;
             let source_row_end = source_row_start + SOURCE_TILE_SIZE * 4;
-            if source_row_end > tile.data.len() {
+            if source_row_end > tile.data.as_ref().expect("CPU image pixels").len() {
                 continue;
             }
 
             let destination_offset = ((tile_y + source_y) * width + tile_x) * 4;
             data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data[source_row_start..source_row_end]);
+                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end]);
         }
     }
     if let Some(handle) = existing {
-        if let Some(image) = images.get_mut(&handle) {
-            image.data = data;
+        if let Some(mut image) = images.get_mut(&handle) {
+            image.data = Some(data);
             image.sampler = ImageSampler::nearest();
             return handle;
         }
@@ -407,7 +407,7 @@ fn compose_visual_world_tiles(
             image.texture_descriptor.size.width == width as u32
                 && image.texture_descriptor.size.height == height as u32
         })
-        .map(|image| std::mem::take(&mut image.data))
+        .map(|mut image| image.data.take().unwrap_or_default())
         .unwrap_or_default();
     data.resize(data_len, 0);
     data.fill(0);
@@ -420,20 +420,20 @@ fn compose_visual_world_tiles(
         for source_y in 0..SOURCE_TILE_SIZE {
             let source_start = source_y * SOURCE_TILE_SIZE * 4;
             let source_end = source_start + SOURCE_TILE_SIZE * 4;
-            if source_end > tile.data.len() {
+            if source_end > tile.data.as_ref().expect("CPU image pixels").len() {
                 continue;
             }
             let destination = ((tile_y + source_y) * width + tile_x) * 4;
             data[destination..destination + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data[source_start..source_end]);
+                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_start..source_end]);
         }
     }
     if let Some(handle) = existing {
-        if let Some(image) = images.get_mut(&handle)
+        if let Some(mut image) = images.get_mut(&handle)
             && image.texture_descriptor.size.width == width as u32
             && image.texture_descriptor.size.height == height as u32
         {
-            image.data = data;
+            image.data = Some(data);
             image.sampler = ImageSampler::nearest();
             return handle;
         }
@@ -480,7 +480,7 @@ fn compose_priority_tile_grid(
     let mut data = existing
         .as_ref()
         .and_then(|handle| images.get_mut(handle))
-        .map(|image| std::mem::take(&mut image.data))
+        .map(|mut image| image.data.take().unwrap_or_default())
         .unwrap_or_default();
     data.resize(data_len, 0);
     data.fill(0);
@@ -496,17 +496,17 @@ fn compose_priority_tile_grid(
         for source_y in (*clip_top).min(SOURCE_TILE_SIZE)..SOURCE_TILE_SIZE {
             let source_row_start = source_y * SOURCE_TILE_SIZE * 4;
             let source_row_end = source_row_start + SOURCE_TILE_SIZE * 4;
-            if source_row_end > tile.data.len() {
+            if source_row_end > tile.data.as_ref().expect("CPU image pixels").len() {
                 continue;
             }
             let destination_offset = ((tile_y + source_y) * width + tile_x) * 4;
             data[destination_offset..destination_offset + SOURCE_TILE_SIZE * 4]
-                .copy_from_slice(&tile.data[source_row_start..source_row_end]);
+                .copy_from_slice(&tile.data.as_ref().expect("CPU image pixels")[source_row_start..source_row_end]);
         }
     }
     if let Some(handle) = existing {
-        if let Some(image) = images.get_mut(&handle) {
-            image.data = data;
+        if let Some(mut image) = images.get_mut(&handle) {
+            image.data = Some(data);
             image.sampler = ImageSampler::nearest();
             return handle;
         }
@@ -977,7 +977,7 @@ fn shifted_tileset_tile_handle(
     let source_data = images
         .get(source)
         .context("tileset scroll animation source image is unavailable")?
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .clone();
     if source_data.len() != SOURCE_TILE_SIZE * SOURCE_TILE_SIZE * 4 {
         anyhow::bail!(

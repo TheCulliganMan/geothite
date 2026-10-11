@@ -79,7 +79,7 @@ fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
             if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
                 std::fs::create_dir_all(&directory).unwrap();
                 let pixels = images.get(&frame.handle).unwrap();
-                let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+                let native = image::RgbaImage::from_raw(160, 144, pixels.data.as_ref().expect("CPU image pixels").clone()).unwrap();
                 image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
                     .save(PathBuf::from(directory).join(format!("hof-{}.png", phase.replace([' ', '{', '}', ':'], "")))).unwrap();
             }
@@ -2083,7 +2083,7 @@ fn assert_rendered_field_dialogue_page(world: &mut World, expected_page: &str) {
         })
         .collect::<Vec<_>>();
     let mut actual = world
-        .query::<(&DialogGlyphMarker, &Handle<Image>, &Transform)>()
+        .query::<(&DialogGlyphMarker, &Sprite, &Transform)>()
         .iter(world)
         .filter(|(_, _, transform)| {
             expected_y
@@ -2091,7 +2091,7 @@ fn assert_rendered_field_dialogue_page(world: &mut World, expected_page: &str) {
                 .any(|expected| (transform.translation.y - expected).abs() < f32::EPSILON)
         })
         .filter(|(marker, _, _)| marker.key != prompt_arrow_key)
-        .map(|(marker, texture, _)| (marker.key, format!("{:?}", texture.id())))
+        .map(|(marker, texture, _)| (marker.key, format!("{:?}", texture.image.id())))
         .collect::<Vec<_>>();
     actual.sort();
     expected.sort();
@@ -5204,7 +5204,7 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
             let before = controller.snapshot().expect("movement start snapshot");
             let mut moved = false;
             for _ in 0..4 {
-                controller.press(button).expect("directional input");
+                controller.press_buttons([GameButton::B, button]).expect("running directional input");
                 let after = controller.snapshot().expect("movement result snapshot");
                 if after.overworld.map_name != before.overworld.map_name
                     || after.overworld.tile != before.overworld.tile
@@ -6091,14 +6091,73 @@ fn hall_of_fame_member_panel_renders_shiny_identity_from_pack() {
         &shell.asset_root, &mut images).unwrap();
     let pixels = images.get(&frame.handle).unwrap();
     assert_eq!(frame.size, Vec2::new(160.0, 144.0));
-    assert!(pixels.data.chunks_exact(4).any(|pixel| pixel[0] != pixel[1]));
+    assert!(pixels.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|pixel| pixel[0] != pixel[1]));
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
         std::fs::create_dir_all(&directory).unwrap();
-        let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+        let native = image::RgbaImage::from_raw(160, 144, pixels.data.as_ref().expect("CPU image pixels").clone()).unwrap();
         image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
             .save(PathBuf::from(directory).join("hall-of-fame-shiny-member.png")).unwrap();
     }
     pokemon.is_egg = true;
     assert!(render_visible_hall_of_fame_member(&pokemon, 0, &mut art,
         &shell.asset_root, &mut images).is_err());
+}
+
+#[test]
+fn renderer_neutral_controller_running_shoes_with_b_and_menu_ownership() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let pack_path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("content-packs/text-tui.crystalpack"));
+    if !pack_path.exists() {
+        return;
+    }
+    let asset_root = AssetRoot::new(pack_path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+    let mut controller =
+        VisibleShellController::new_game(asset_root, runtime, "CHRIS", None).unwrap();
+    let start = controller.snapshot().unwrap().overworld.tile;
+    for _ in 0..2 {
+        controller
+            .press_buttons([GameButton::B, GameButton::Down])
+            .unwrap();
+        if matches!(
+            controller.shell.shell.last_frame().unwrap().movement,
+            Some(StepOutcome::Moved { .. })
+        ) {
+            break;
+        }
+    }
+    let frame = controller.shell.shell.last_frame().unwrap();
+    assert!(matches!(
+        frame.movement,
+        Some(StepOutcome::Moved {
+            speed_multiplier: 2,
+            ..
+        })
+    ));
+    assert_eq!(
+        controller.snapshot().unwrap().overworld.tile,
+        TilePosition::new(start.x, start.y + 1)
+    );
+    controller.press(GameButton::Down).unwrap();
+    assert!(matches!(
+        controller.shell.shell.last_frame().unwrap().movement,
+        Some(StepOutcome::Moved {
+            speed_multiplier: 1,
+            ..
+        })
+    ));
+    let before_menu = controller.snapshot().unwrap().overworld.tile;
+    controller.press(GameButton::Start).unwrap();
+    assert!(controller.snapshot().unwrap().ui.menu.is_some());
+    controller
+        .press_buttons([GameButton::B, GameButton::Right])
+        .unwrap();
+    assert_eq!(controller.snapshot().unwrap().overworld.tile, before_menu);
+    assert!(controller.snapshot().unwrap().ui.menu.is_none());
 }

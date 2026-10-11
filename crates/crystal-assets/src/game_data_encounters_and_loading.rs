@@ -2247,6 +2247,9 @@ impl GameDataSet {
     }
 
     pub(crate) fn apply_modpack(&mut self, manifest: &ModpackManifest) -> Result<()> {
+        if let Some(enabled) = manifest.payload.running_shoes {
+            self.running_shoes = Some(enabled);
+        }
         if manifest.payload.pokemon.is_empty() {
             self.pokemon.clear();
         } else {

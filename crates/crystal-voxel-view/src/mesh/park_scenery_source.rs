@@ -58,13 +58,16 @@ impl Match {
         })
     }
     pub(super) fn indices(self, width: usize) -> impl Iterator<Item = usize> {
-        let (x, y, w) = match self.kind {
-            Kind::LitterBin => (0, 0, 2),
-            Kind::PedestalFountain => (1, 0, 3),
-            Kind::PondBasin => (3, 1, 2),
-        };
-        (0..2).flat_map(move |dy| {
-            (0..w).map(move |dx| (self.row + y + dy) * width + self.column + x + dx)
+        (0..4).flat_map(move |y| {
+            (0..self.guard_width()).filter(move |&x| match self.kind {
+                Kind::LitterBin => y < 2 && x < 2,
+                Kind::PedestalFountain => y < 2 && (1..4).contains(&x),
+                // The complete source cross is basin plus spray, not ordinary
+                // pool water. Guard all 32 cells before replacing any of it.
+                Kind::PondBasin => if y == 0 || y == 3 {
+                    (3..5).contains(&x)
+                } else { (2..6).contains(&x) },
+            }).map(move |x| (self.row + y) * width + self.column + x)
         })
     }
     pub(super) fn ground(self, local: usize, width: usize) -> usize {

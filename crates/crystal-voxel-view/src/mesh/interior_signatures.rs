@@ -1444,6 +1444,11 @@ fn append_signature_candidates(
     out: &mut Vec<Placement>,
 ) {
     for drawing in INTERIOR_DRAWINGS {
+        // This blue service wall contains two vendor openings, not six house
+        // windows. Its complete map-scoped booth owns the course; altered or
+        // cropped courses retain live source artwork without this substitute.
+        if map == "CeladonGameCornerPrizeRoom" && drawing.tileset == "game_corner"
+            && matches!(drawing.block, 0x10 | 0x11) { continue; }
         let Some(ground) = ground_sample(cells, map, drawing.tileset, drawing.ground) else {
             continue;
         };

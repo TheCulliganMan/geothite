@@ -3235,13 +3235,13 @@ fn blit_sprite_frame_image(
                 continue;
             }
             let source_offset = (row * source_width + col) * 4;
-            if source_offset + 3 >= source.data.len() || source.data[source_offset + 3] == 0 {
+            if source_offset + 3 >= source.data.as_ref().expect("CPU image pixels").len() || source.data.as_ref().expect("CPU image pixels")[source_offset + 3] == 0 {
                 continue;
             }
             let target_offset = (dy * target_width + dx) * 4;
-            target[target_offset] = source.data[source_offset];
-            target[target_offset + 1] = source.data[source_offset + 1];
-            target[target_offset + 2] = source.data[source_offset + 2];
+            target[target_offset] = source.data.as_ref().expect("CPU image pixels")[source_offset];
+            target[target_offset + 1] = source.data.as_ref().expect("CPU image pixels")[source_offset + 1];
+            target[target_offset + 2] = source.data.as_ref().expect("CPU image pixels")[source_offset + 2];
             target[target_offset + 3] = 255;
         }
     }
@@ -3965,15 +3965,11 @@ fn spawn_overworld_jump_shadow(
         actor_direction,
     );
     commands.spawn((
-        SpriteBundle {
-            texture: shadow.handle,
-            sprite: Sprite {
+        (Sprite { image: shadow.handle,
                 custom_size: Some(shadow.size),
                 ..default()
             },
-            transform: Transform::from_xyz(shadow_x, shadow_y, actor_depth - 0.000_001),
-            ..default()
-        },
+Transform::from_xyz(shadow_x, shadow_y, actor_depth - 0.000_001),),
         PlayerFacingMarker,
         JumpShadowMarker {
             actor_id: actor_id.to_string(),
@@ -4120,7 +4116,6 @@ struct RenderEntityQueries<'w, 's> {
         'w,
         's,
         (
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
             &'static mut PlayerSpriteFrames,
@@ -4150,7 +4145,6 @@ struct RenderEntityQueries<'w, 's> {
         (
             Entity,
             &'static mut VisibleObjectSprite,
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
         ),
@@ -4166,7 +4160,6 @@ struct RenderEntityQueries<'w, 's> {
         (
             Entity,
             &'static DialogGlyphMarker,
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
         ),
@@ -4183,8 +4176,8 @@ struct RenderEntityQueries<'w, 's> {
     intro_surfaces: Query<
         'w,
         's,
-        (Entity, &'static mut Handle<Image>),
-        (With<VisibleIntroSurface>, Without<PlayerMarker>),
+        (Entity, &'static mut Sprite),
+        (With<VisibleIntroSurface>, Without<PlayerMarker>, Without<JumpShadowMarker>),
     >,
     pokemon_pictures: Query<'w, 's, Entity, With<PokemonPictureMarker>>,
     // Generic title cleanup must never remove the one retained LCD entity.
@@ -4232,7 +4225,6 @@ fn update_player_facing_art_in_place(
     images: &mut Assets<Image>,
     player_sprites: &mut Query<
         (
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
             &mut PlayerSpriteFrames,
@@ -4247,7 +4239,7 @@ fn update_player_facing_art_in_place(
     if snapshot.overworld_player_hidden {
         return Ok(false);
     }
-    let Ok((mut texture, _, mut sprite, mut retained_frames)) = player_sprites.get_single_mut()
+    let Ok((_, mut sprite, mut retained_frames)) = player_sprites.single_mut()
     else {
         return Ok(false);
     };
@@ -4303,7 +4295,7 @@ fn update_player_facing_art_in_place(
     let Some(walking) = walking else {
         anyhow::bail!("player overworld sprite {sprite_id} has no required action frame");
     };
-    *texture = standing.handle.clone();
+    sprite.image = standing.handle.clone();
     sprite.custom_size = Some(standing.size);
     sprite.flip_x = false;
     #[cfg(feature = "voxel-view")]
@@ -4381,7 +4373,7 @@ fn queue_existing_entity_despawn(
     // despawn leaves dead IDs in Children; each new glyph then scans a list
     // that grows for the whole battle. Remove the hierarchy link as well.
     if queued.insert(entity) {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }
 
@@ -4520,8 +4512,8 @@ fn render_playfield(
                 &mut images,
             ) {
                 Some(frame) => {
-                    if let Ok((_, mut texture)) = intro_surfaces.get_single_mut() {
-                        *texture = frame.handle;
+                    if let Ok((_, mut sprite)) = intro_surfaces.single_mut() {
+                        sprite.image = frame.handle;
                         // A title/options/debug overlay can still be present
                         // on the first retained title -> intro handoff. Clear
                         // every predecessor except the retained LCD entity;
@@ -5714,18 +5706,19 @@ fn render_playfield(
     }
     if battle_canvas_active && retained_fixed_battle_canvas.is_none() {
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    // Pokemon palette color zero expands to full white. Keep
-                    // the battle canvas identical so enclosed white sprite
-                    // details do not show as a mismatched rectangle/halo.
+
+// Pokemon palette color zero expands to full white. Keep
+// the battle canvas identical so enclosed white sprite
+// details do not show as a mismatched rectangle/halo.
+(Sprite {
+
+
+
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 2.7),
-                ..default()
-            },
+Transform::from_xyz(0.0, 0.0, 2.7),),
             BattleCommandMarker,
             FixedBattleCanvasMarker,
         ));
@@ -6331,7 +6324,7 @@ fn render_playfield(
                         && let Some(image) = images.get(&tile_handle)
                     {
                         for (index, pixel) in
-                            tile.indices.iter_mut().zip(image.data.chunks_exact(4))
+                            tile.indices.iter_mut().zip(image.data.as_ref().expect("CPU image pixels").chunks_exact(4))
                         {
                             if pixel[..3] != tile.palette[*index as usize] {
                                 if let Some(found) =
@@ -6688,31 +6681,24 @@ fn render_playfield(
     }
     if tiles.iter().next().is_none() {
         commands.spawn((
-            SpriteBundle {
-                texture: viewport_texture,
-                visibility: map_visibility,
-                sprite: Sprite {
+
+// Image pixel (0, 0) is already the playfield's top-left;
+// center the complete 640x576 composite on the camera.
+(Sprite { image: viewport_texture,
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
                 },
-                // Image pixel (0, 0) is already the playfield's top-left;
-                // center the complete 640x576 composite on the camera.
-                transform: Transform::from_xyz(0.0, 0.0, 0.0),
-                ..default()
-            },
+map_visibility,
+Transform::from_xyz(0.0, 0.0, 0.0),),
             PlayfieldTile,
         ));
         commands.spawn((
-            SpriteBundle {
-                texture: priority_viewport_texture,
-                visibility: map_visibility,
-                sprite: Sprite {
+            (Sprite { image: priority_viewport_texture,
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 2.4),
-                ..default()
-            },
+map_visibility,
+Transform::from_xyz(0.0, 0.0, 2.4),),
             PlayfieldTile,
             PlayfieldPriorityTile,
         ));
@@ -7120,25 +7106,20 @@ fn render_playfield(
                     .then(|| {
                         object_sprites
                             .iter_mut()
-                            .find(|(_, rendered, _, _, _)| rendered.object_index == index)
+                            .find(|(_, rendered, _, _)| rendered.object_index == index)
                     })
                     .flatten();
-                if let Some((entity, mut rendered, mut texture, mut transform, mut sprite)) =
+                if let Some((entity, mut rendered, mut transform, mut sprite)) =
                     retained
                 {
                     *rendered = next_visible;
-                    *texture = display_frame.handle.clone();
                     *transform = next_transform;
-                    *sprite = next_sprite;
+                    *sprite = Sprite { image: display_frame.handle.clone(), ..next_sprite };
                     reconciled_object_entities.insert(entity);
                 } else {
                     commands.spawn((
-                        SpriteBundle {
-                            texture: display_frame.handle.clone(),
-                            sprite: next_sprite,
-                            transform: next_transform,
-                            ..default()
-                        },
+                        (Sprite { image: display_frame.handle.clone(), ..next_sprite },
+next_transform,),
                         ObjectMarker,
                         next_visible,
                     ));
@@ -7172,7 +7153,7 @@ fn render_playfield(
             }
         }
         if retain_object_sprites {
-            for (entity, _, _, _, _) in object_sprites.iter_mut() {
+            for (entity, _, _, _) in object_sprites.iter_mut() {
                 if !reconciled_object_entities.contains(&entity) {
                     queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
                 }
@@ -7291,21 +7272,18 @@ fn render_playfield(
                     frame.size,
                 );
                 commands.spawn((
-                    SpriteBundle {
-                        texture: frame.handle.clone(),
-                        sprite: Sprite {
+
+// SPRITEMOVEDATA_BOULDERDUST carries LOW_PRIORITY, so
+// keep it immediately behind its tracked boulder.
+(Sprite { image: frame.handle.clone(),
                             custom_size: Some(frame.size),
                             ..default()
                         },
-                        // SPRITEMOVEDATA_BOULDERDUST carries LOW_PRIORITY, so
-                        // keep it immediately behind its tracked boulder.
-                        transform: Transform::from_xyz(
+Transform::from_xyz(
                             x,
                             y,
                             overworld_entity_depth(target, None, (start_x, start_y)) - 0.000_001,
-                        ),
-                        ..default()
-                    },
+                        ),),
                     ObjectMarker,
                     BoulderDustMarker,
                 ));
@@ -7370,15 +7348,11 @@ fn render_playfield(
                         let (emote_x, emote_y) =
                             overworld_emote_position_from_base(x, y, frame.size);
                         commands.spawn((
-                            SpriteBundle {
-                                texture: frame.handle,
-                                sprite: Sprite {
+                            (Sprite { image: frame.handle,
                                     custom_size: Some(frame.size),
                                     ..default()
                                 },
-                                transform: Transform::from_xyz(emote_x, emote_y, 3.2),
-                                ..default()
-                            },
+Transform::from_xyz(emote_x, emote_y, 3.2),),
                             ObjectMarker,
                         ));
                     }
@@ -7711,10 +7685,10 @@ fn render_playfield(
             && runtime_shell.player_walk_mirror_stride
             && matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
         if retain_player_sprite && runtime_shell.visible_fly_animation.is_none() {
-            if let Ok((mut texture, mut transform, mut sprite, mut frames)) =
-                player_sprites.get_single_mut()
+            if let Ok((mut transform, mut sprite, mut frames)) =
+                player_sprites.single_mut()
             {
-                *texture = frame.handle.clone();
+                sprite.image = frame.handle.clone();
                 *transform = Transform::from_xyz(
                     player_x,
                     player_y,
@@ -7738,20 +7712,16 @@ fn render_playfield(
             }
         } else if !retain_player_sprite && runtime_shell.visible_fly_animation.is_none() {
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: frame.handle.clone(),
                         custom_size: Some(frame.size),
                         flip_x: player_flip_x,
                         ..default()
                     },
-                    transform: Transform::from_xyz(
+Transform::from_xyz(
                         player_x,
                         player_y,
                         overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
-                    ),
-                    ..default()
-                },
+                    ),),
                 PlayerMarker,
                 PlayerSpriteFrames {
                     source_id: Arc::from(player_sprite_id),
@@ -7814,19 +7784,15 @@ fn render_playfield(
                 rustle_frame.size,
             );
             commands.spawn((
-                SpriteBundle {
-                    texture: rustle_frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: rustle_frame.handle.clone(),
                         custom_size: Some(rustle_frame.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(
+Transform::from_xyz(
                         rustle_x,
                         rustle_y,
                         2.5 + f32::from(rustle.tile.y) * 0.001,
-                    ),
-                    ..default()
-                },
+                    ),),
                 PlayerFacingMarker,
                 GrassRustleMarker,
             ));
@@ -7857,19 +7823,16 @@ fn render_playfield(
     if runtime_debug_overlays_enabled() {
         let (facing_dx, facing_dy) = snapshot.overworld.facing.delta();
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::srgb(1.0, 0.95, 0.32),
                     custom_size: Some(player_facing_marker_size(facing_dx, facing_dy)),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     player_x + facing_dx as f32 * TILE_SIZE * 0.28,
                     player_y_base - facing_dy as f32 * TILE_SIZE * 0.28,
                     2.2,
-                ),
-                ..default()
-            },
+                ),),
             PlayerFacingMarker,
         ));
     }
@@ -7921,15 +7884,11 @@ fn render_playfield(
                 if transition_replaces_map && !wave {
                     for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)] {
                         commands.spawn((
-                            SpriteBundle {
-                                texture,
-                                sprite: Sprite {
+                            (Sprite { image: texture,
                                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                                     ..default()
                                 },
-                                transform: Transform::from_xyz(0.0, 0.0, z),
-                                ..default()
-                            },
+Transform::from_xyz(0.0, 0.0, z),),
                             BattleCommandMarker,
                         ));
                     }
@@ -8463,16 +8422,12 @@ fn spawn_visible_fly_animation(
     let x = player_origin_x + (i32::from(player.x) + player.x_offset - 84) as f32 * scale;
     let y = player_origin_y - i32::from(player.y.wrapping_sub(origin_y) as i8) as f32 * scale;
     commands.spawn((
-        SpriteBundle {
-            texture: icon.handle,
-            sprite: Sprite {
+        (Sprite { image: icon.handle,
                 custom_size: Some(icon.size),
                 flip_x: icon_flip_x,
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.2),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.2),),
         ObjectMarker,
     ));
     Ok(())
@@ -8533,15 +8488,11 @@ fn spawn_visible_headbutt_animation(
         let x = source_origin_x + (spawn_x + piece_x + 4) as f32 * scale;
         let y = source_origin_y - (spawn_y + piece_y + 4) as f32 * scale;
         commands.spawn((
-            SpriteBundle {
-                texture: grass.clone(),
-                sprite: Sprite {
+            (Sprite { image: grass.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.05),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.05),),
             ObjectMarker,
         ));
     }
@@ -8752,15 +8703,11 @@ fn spawn_visible_field_move_oam(
         let x = source_origin_x + (object_x + piece_x + 4) as f32 * scale;
         let y = source_origin_y - (object_y + piece_y + 4) as f32 * scale;
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.1),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.1),),
             ObjectMarker,
         ));
     }

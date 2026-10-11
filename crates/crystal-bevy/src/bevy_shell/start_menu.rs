@@ -3499,17 +3499,13 @@ fn spawn_battle_trainer_marker_columns(
         top_left.z,
     );
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 color: Color::WHITE,
                 rect: columns.map(|_| Rect::from_corners(Vec2::ZERO, cropped_size)),
                 custom_size: Some(display_size),
                 ..default()
             },
-            transform: Transform::from_translation(position),
-            ..default()
-        },
+Transform::from_translation(position),),
         BattleBattlerMarker,
     ));
     Ok(())
@@ -3688,7 +3684,7 @@ fn battle_padded_frontpic(
     for row in 0..width {
         let target = ((row + 56 - width) * 56 + 8) * 4;
         data[target..target + width * 4]
-            .copy_from_slice(&source.data[row * width * 4..(row + 1) * width * 4]);
+            .copy_from_slice(&source.data.as_ref().expect("CPU image pixels")[row * width * 4..(row + 1) * width * 4]);
     }
     let mut padded = Image::new(
         Extent3d {
@@ -3795,17 +3791,13 @@ fn spawn_battle_battler_texture(
             return;
         }
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     color: colour,
                     rect,
                     custom_size: Some(visible_size),
                     ..default()
                 },
-                transform: Transform::from_translation(position),
-                ..default()
-            },
+Transform::from_translation(position),),
             BattleBattlerMarker,
         ));
         return;
@@ -3863,9 +3855,10 @@ fn spawn_battle_battler_texture(
             continue;
         }
         commands.spawn((
-            SpriteBundle {
-                texture: line_frame.handle.clone(),
-                sprite: Sprite {
+
+// SCX selects a source column to the right, so the
+// corresponding visible sprite row moves to the left.
+(Sprite { image: line_frame.handle.clone(),
                     color: colour,
                     rect: Some(Rect::new(
                         horizontal_rect.map_or(0.0, |rect| rect.min.x),
@@ -3879,9 +3872,9 @@ fn spawn_battle_battler_texture(
                     )),
                     ..default()
                 },
-                transform: Transform::from_xyz(
-                    // SCX selects a source column to the right, so the
-                    // corresponding visible sprite row moves to the left.
+Transform::from_xyz(
+
+
                     position.x
                         - f32::from(line_offsets.x[line as usize]) * scale
                         + remove_clip.map_or(0.0, |clip| {
@@ -3896,9 +3889,7 @@ fn spawn_battle_battler_texture(
                         }),
                     PLAYFIELD_TOP - (line as f32 + 0.5) * scale,
                     position.z,
-                ),
-                ..default()
-            },
+                ),),
             BattleBattlerMarker,
         ));
     }
@@ -3975,21 +3966,17 @@ fn spawn_visible_battler_extracted_rows(
         let size = Vec2::new(right - left, bottom - top) * scale;
         let center = Vec2::new((left + right) * 0.5, (top + bottom) * 0.5) * scale;
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     color: Color::WHITE,
                     rect: Some(Rect::new(left, top, right, bottom)),
                     custom_size: Some(size),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     position.x - display_size.x * 0.5 + center.x,
                     position.y + display_size.y * 0.5 - center.y,
                     visible_battler_extracted_row_depth(extraction, position.z),
-                ),
-                ..default()
-            },
+                ),),
             BattleCommandMarker,
             #[cfg(feature = "voxel-view")]
             ImmersiveBattleReplaced,
@@ -4060,7 +4047,7 @@ fn battle_battler_overlay_frame(
         .get(&source.handle)
         .with_context(|| "battle battler overlay source image is unavailable")?
         .clone();
-    for pixel in image.data.chunks_exact_mut(4) {
+    for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
         if pixel[3] == 0 {
             continue;
         }
@@ -4094,7 +4081,7 @@ fn battle_battler_bgp_frame(
         .context("battle battler BGP source image is unavailable")?
         .clone();
     let mut colours = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .filter(|pixel| pixel[3] != 0)
         .map(|pixel| [pixel[0], pixel[1], pixel[2]])
@@ -4113,13 +4100,13 @@ fn battle_battler_bgp_frame(
     });
     let transparent_shade_zero = colours.len() < 4;
     let shade_zero = image
-        .data
+        .data.as_ref().expect("CPU image pixels")
         .chunks_exact(4)
         .find(|pixel| pixel[3] == 0)
         .map(|pixel| [pixel[0], pixel[1], pixel[2]])
         .unwrap_or([255, 255, 255]);
     let source_colours = colours.clone();
-    for pixel in image.data.chunks_exact_mut(4) {
+    for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
         if pixel[3] == 0 {
             continue;
         }
@@ -4251,15 +4238,12 @@ fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeSh
         }
         let (x, y) = field_window_center(left, top, width, height);
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(width * TILE_SIZE, height * TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, BATTLE_HUD_CLEAR_Z),
-                ..default()
-            },
+Transform::from_xyz(x, y, BATTLE_HUD_CLEAR_Z),),
             BattleHudMarker,
             BattleCommandMarker,
             #[cfg(feature = "voxel-view")]
@@ -4456,15 +4440,11 @@ fn spawn_battle_party_balls(
         let frame = &frames[frame_index];
         let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, BATTLE_HUD_TOP_Z),
-                ..default()
-            },
+Transform::from_xyz(x, y, BATTLE_HUD_TOP_Z),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -4588,15 +4568,11 @@ fn spawn_battle_hud_borders(
             .with_context(|| format!("battle HUD border tile ${tile_id:02x} was not loaded"))?;
         let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.5),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.5),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -4782,15 +4758,11 @@ fn spawn_battle_exp_bar(
         let tile_x = 17.0 - index as f32;
         let (x, y) = battle_hud_tile_origin(tile_x, 11.0);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.62),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.62),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -5013,15 +4985,11 @@ fn spawn_battle_hud_bitmap_text(
         .enumerate()
     {
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -5054,15 +5022,11 @@ fn spawn_battle_hud_hp_bar(
             .with_context(|| format!("battle HP label tile ${tile_id:02x} was not loaded"))?;
         let (x, y) = battle_hud_tile_origin(tile_x + offset as f32, tile_y);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.7),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.7),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -5082,15 +5046,11 @@ fn spawn_battle_hud_hp_bar(
         })?;
         let (x, y) = battle_hud_tile_origin(tile_x + 2.0 + index as f32, tile_y);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.62),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.62),),
             BattleHudMarker,
             BattleCommandMarker,
         ));
@@ -5105,15 +5065,11 @@ fn spawn_battle_hud_hp_bar(
     })?;
     let (x, y) = battle_hud_tile_origin(tile_x + 2.0 + BATTLE_HUD_HP_BAR_LENGTH_TILES, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 custom_size: Some(frame.size),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.62),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.62),),
         BattleHudMarker,
         BattleCommandMarker,
     ));
@@ -5371,15 +5327,12 @@ fn spawn_visible_move_animation_overlay(commands: &mut Commands, runtime_shell: 
         let age = send_out.frame - VisibleSendOutAnimation::NORMAL_FRAMES;
         if age < 3 {
             commands.spawn((
-                SpriteBundle {
-                    sprite: Sprite {
+                (Sprite {
                         color: Color::srgba_u8(255, 255, 255, 96),
                         custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(0.0, 0.0, 3.48),
-                    ..default()
-                },
+Transform::from_xyz(0.0, 0.0, 3.48),),
                 BattleCommandMarker,
                 #[cfg(feature = "voxel-view")]
                 ImmersiveBattleReplaced,
@@ -5596,14 +5549,12 @@ fn spawn_visible_move_animation_objects(
             Vec2::new(destination_x as f32, destination_y as f32), size,
         ) else { continue; };
         commands.spawn((
-            SpriteBundle {
-                texture: rendered.sprite.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: rendered.sprite.handle.clone(),
                     rect: Some(clip.texture),
                     custom_size: Some(clip.screen.size() * scale),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + clip.screen.center().x * scale,
                     PLAYFIELD_TOP - clip.screen.center().y * scale,
                     if animation.animation_label == "BattleAnim_ThrowPokeBall"
@@ -5616,9 +5567,7 @@ fn spawn_visible_move_animation_objects(
                     } else {
                         oam_layer.depth(slot_index)
                     },
-                ),
-                ..default()
-            },
+                ),),
             BattleCommandMarker,
             BattleSourceObjectMarker,
             #[cfg(feature = "voxel-view")]
@@ -6546,15 +6495,12 @@ fn spawn_battle_pending_move_learn_screen(
         )
         .context("battle move-forget screen has no valid cursor")?;
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::srgb(1.0, 1.0, 1.0),
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 3.4),
-                ..default()
-            },
+Transform::from_xyz(0.0, 0.0, 3.4),),
             BattleCommandMarker,
         ));
         for (line_index, line) in ["Which move should", "be forgotten?"].iter().enumerate() {
@@ -6740,15 +6686,11 @@ fn spawn_visible_send_out_poof(
     let x = PLAYFIELD_LEFT + (screen_x - 8.0) * source_scale;
     let y = PLAYFIELD_TOP - (screen_y - 16.0) * source_scale;
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 custom_size: Some(frame.size * source_scale),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 4.15),
-            ..default()
-        },
+Transform::from_xyz(x, y, 4.15),),
         BattleCommandMarker,
         #[cfg(feature = "voxel-view")]
         ImmersiveBattleReplaced,
@@ -6778,30 +6720,22 @@ fn spawn_visible_fishing_animation(
         Direction::Right => (TILE_SIZE * 1.5, -TILE_SIZE * 0.125),
     };
     commands.spawn((
-        SpriteBundle {
-            texture: rod.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: rod.handle.clone(),
                 custom_size: Some(rod.size),
                 ..default()
             },
-            transform: Transform::from_xyz(player_x + dx, player_y + dy, 2.8),
-            ..default()
-        },
+Transform::from_xyz(player_x + dx, player_y + dy, 2.8),),
         PlayerFacingMarker,
     ));
     if animation.phase == VisibleFishingPhase::Pause {
         let shock = emote_frame_for_art(rendered_art, asset_root, "EMOTE_SHOCK", images)
             .context("required fishing bite emote could not be rendered")?;
         commands.spawn((
-            SpriteBundle {
-                texture: shock.handle,
-                sprite: Sprite {
+            (Sprite { image: shock.handle,
                     custom_size: Some(shock.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(player_x, player_y + TILE_SIZE * 1.35, 2.9),
-                ..default()
-            },
+Transform::from_xyz(player_x, player_y + TILE_SIZE * 1.35, 2.9),),
             PlayerFacingMarker,
         ));
     }
@@ -7189,15 +7123,11 @@ fn spawn_battle_pack_screen(
         images,
     )?;
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle,
-            sprite: Sprite {
+        (Sprite { image: frame.handle,
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 4.0),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 4.0),),
         BattleCommandMarker,
     ));
     Ok(())
@@ -7233,16 +7163,15 @@ fn spawn_battle_party_menu(
         .context("battle party menu requires a valid cursor")?
     };
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
-                // gfx/stats/party_menu_bg.pal color 0: RGB 31,31,31.
+
+// gfx/stats/party_menu_bg.pal color 0: RGB 31,31,31.
+(Sprite {
+
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 3.4),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 3.4),),
         BattleCommandMarker,
     ));
     for (row_index, slot) in snapshot.party.slots.iter().enumerate().take(6) {
@@ -7452,15 +7381,12 @@ fn spawn_battle_pack_move_target_screen(
         )
     })?;
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 3.4),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 3.4),),
         BattleCommandMarker,
     ));
     let (x, y) = battle_hud_tile_origin(1.0, 1.0);
@@ -7616,19 +7542,15 @@ fn spawn_battle_party_icon(
     // ASM OAM starts the first 16x16 icon at LCD pixel (8,4), then advances
     // exactly 16 pixels per party slot.
     let (x, y) = battle_hud_tile_origin(1.5, 1.0 + row_index as f32 * 2.0);
-    let mut icon = commands.spawn(SpriteBundle {
-        texture: frame.handle.clone(),
-        sprite: Sprite {
+    let mut icon = commands.spawn((Sprite { image: frame.handle.clone(),
             custom_size: Some(frame.size),
             ..default()
         },
-        transform: Transform::from_xyz(
+Transform::from_xyz(
             x,
             y + bob_pixels * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
             3.85,
-        ),
-        ..default()
-    });
+        ),));
     if field_surface {
         icon.insert(FieldCommandMarker);
     } else {
@@ -7695,19 +7617,15 @@ fn spawn_battle_party_icon_overlay(
                 .unwrap_or_else(|| format!("party icon overlay {overlay_id} is unavailable"))
         })?;
     let (x, y) = battle_hud_tile_origin(1.0, 1.5 + row_index as f32 * 2.0);
-    let mut overlay = commands.spawn(SpriteBundle {
-        texture: frame.handle.clone(),
-        sprite: Sprite {
+    let mut overlay = commands.spawn((Sprite { image: frame.handle.clone(),
             custom_size: Some(frame.size),
             ..default()
         },
-        transform: Transform::from_xyz(
+Transform::from_xyz(
             x,
             y + bob_pixels * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
             3.9,
-        ),
-        ..default()
-    });
+        ),));
     if field_surface {
         overlay.insert(FieldCommandMarker);
     } else {
@@ -8167,15 +8085,12 @@ fn spawn_battle_window(
     // Back the frame too so underlying HUD/menu tiles cannot show through.
     if width_tiles > 2.0 && height_tiles > 2.0 {
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(TILE_SIZE * width_tiles, TILE_SIZE * height_tiles)),
                     ..default()
                 },
-                transform: Transform::from_xyz(center_x, center_y, z),
-                ..default()
-            },
+Transform::from_xyz(center_x, center_y, z),),
             BattleCommandMarker,
         ));
     }
@@ -8397,15 +8312,11 @@ fn spawn_battle_window_frame_tile(
 ) {
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 custom_size: Some(frame.size),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         BattleCommandMarker,
         BattleWindowFrameMarker,
     ));
@@ -8450,15 +8361,11 @@ fn spawn_scene_dialog_window_frame_tile(
 ) {
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 custom_size: Some(frame.size),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         SceneDialogMarker,
         SceneDialogWindowFrameMarker,
     ));
@@ -8503,15 +8410,11 @@ fn spawn_field_command_window_frame_tile(
 ) {
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: frame.handle.clone(),
                 custom_size: Some(frame.size),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         FieldCommandMarker,
         FieldCommandWindowFrameMarker,
     ));

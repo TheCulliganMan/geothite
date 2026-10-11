@@ -275,7 +275,7 @@ fn finish_webmcp_request(
     runtime: Res<BevyRuntimeShell>,
     multiplayer: Option<NonSend<MultiplayerRuntime>>,
     art: Res<RenderedTilesetArt>,
-    glyphs: Query<(&Handle<Image>, &Transform, &Visibility)>,
+    glyphs: Query<(&Sprite, &Transform, &Visibility)>,
 ) {
     WEBMCP_BRIDGE.with_borrow_mut(|bridge| {
         let Some(pending) = bridge.pending.as_ref() else { return; };
@@ -290,7 +290,7 @@ fn finish_webmcp_request(
                     if let Some(font) = art.font_cache.as_ref() {
                         for (texture, transform, visibility) in &glyphs {
                             if *visibility == Visibility::Hidden { continue; }
-                            if let Some((character, _)) = font.glyphs.iter().find(|(_, frame)| frame.handle == *texture) {
+                            if let Some((character, _)) = font.glyphs.iter().find(|(_, frame)| frame.handle == texture.image) {
                                 letters.push((transform.translation.y, transform.translation.x, *character));
                             }
                         }

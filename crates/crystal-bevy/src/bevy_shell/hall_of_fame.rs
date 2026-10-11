@@ -275,9 +275,9 @@ fn render_visible_hall_of_fame_screen(
                 let dx = ((x + col) as u8).wrapping_sub(scroll_x) as usize;
                 let dy = ((y + row) as u8).wrapping_sub(scroll_y) as usize;
                 let offset = (row * width + col) * 4;
-                if dx < 160 && dy < 144 && source.data[offset + 3] != 0 {
+                if dx < 160 && dy < 144 && source.data.as_ref().expect("CPU image pixels")[offset + 3] != 0 {
                     data[(dy * 160 + dx) * 4..(dy * 160 + dx) * 4 + 4]
-                        .copy_from_slice(&source.data[offset..offset + 4]);
+                        .copy_from_slice(&source.data.as_ref().expect("CPU image pixels")[offset..offset + 4]);
                 }
             }
         }

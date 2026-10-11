@@ -3,12 +3,17 @@
 use super::*;
 use crate::exterior_models::Model;
 
-pub(in crate::mesh) fn append(mesh: &mut SurfaceMeshData, first: usize, source: &Model, scale: f32, at: [i32; 2]) {
-    let seed = (at[0] as u32).wrapping_mul(0x9e3779b9)
-        ^ (at[1] as u32).wrapping_mul(0x85ebca6b);
+pub(in crate::mesh) fn append(
+    mesh: &mut SurfaceMeshData,
+    first: usize,
+    source: &Model,
+    scale: f32,
+    at: [i32; 2],
+) {
+    let seed = (at[0] as u32).wrapping_mul(0x9e3779b9) ^ (at[1] as u32).wrapping_mul(0x85ebca6b);
     let style = ((seed ^ (seed >> 16)) % 4) as usize;
     let deck = |i: usize| {
-        source.surface.colors[i][..3] == [0.18, 0.34, 0.55]
+        source.vertex_material(i) == "roof_blue"
             && source.surface.normals[i][1] > 0.999
             && source.surface.positions[i][1] > 2.2
     };
@@ -49,7 +54,9 @@ pub(in crate::mesh) fn append(mesh: &mut SurfaceMeshData, first: usize, source: 
     let ink = [color[0] / shade, color[1] / shade, color[2] / shade];
     // Narrow closed folds run back to front; a shallow cross-course breaks up
     // the broad plane without painting a grid or replacing the existing slab.
-    let count = ((e - w) / (scale * [0.36,0.48,0.42,0.52][style])).round().clamp(4., 24.) as usize;
+    let count = ((e - w) / (scale * [0.36, 0.48, 0.42, 0.52][style]))
+        .round()
+        .clamp(4., 24.) as usize;
     for i in 1..count {
         let x = w + (e - w) * i as f32 / count as f32;
         city_facades::block(
@@ -65,7 +72,10 @@ pub(in crate::mesh) fn append(mesh: &mut SurfaceMeshData, first: usize, source: 
             ink.map(|v| v * 1.12),
         );
     }
-    for z in [n + (s - n) * [0.33,0.28,0.38,0.25][style], n + (s - n) * [0.66,0.61,0.71,0.64][style]] {
+    for z in [
+        n + (s - n) * [0.33, 0.28, 0.38, 0.25][style],
+        n + (s - n) * [0.66, 0.61, 0.71, 0.64][style],
+    ] {
         city_facades::block(
             mesh,
             [
@@ -79,13 +89,15 @@ pub(in crate::mesh) fn append(mesh: &mut SurfaceMeshData, first: usize, source: 
             ink.map(|v| v * 0.82),
         );
     }
-    if style == 1 { return; }
+    if style == 1 {
+        return;
+    }
     // A low clerestory sits opposite the kit's original service hatch. Its
     // triangular ends and two pitched panes read as folded card and glazing.
     let x0 = w + (e - w) * 0.16;
-    let x1 = w + (e - w) * [0.46,0.46,0.38,0.42][style];
-    let z0 = n + (s - n) * [0.22,0.22,0.40,0.55][style];
-    let z1 = n + (s - n) * [0.45,0.45,0.61,0.76][style];
+    let x1 = w + (e - w) * [0.46, 0.46, 0.38, 0.42][style];
+    let z0 = n + (s - n) * [0.22, 0.22, 0.40, 0.55][style];
+    let z1 = n + (s - n) * [0.45, 0.45, 0.61, 0.76][style];
     let cy = y + scale * 0.08;
     let peak = y + scale * 0.22;
     let cz = (z0 + z1) * 0.5;
@@ -185,7 +197,7 @@ mod tests {
                 let a = Vec3::from_array(mesh.positions[triangle[0] as usize]);
                 let b = Vec3::from_array(mesh.positions[triangle[1] as usize]);
                 let c = Vec3::from_array(mesh.positions[triangle[2] as usize]);
-                let cross = (b-a).cross(c-a);
+                let cross = (b - a).cross(c - a);
                 assert!(cross.length_squared() > 1e-10);
                 assert!(cross.dot(Vec3::from_array(mesh.normals[triangle[0] as usize])) > 0.);
             }

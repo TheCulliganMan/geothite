@@ -37,7 +37,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let path = root.join(format!("people/npc-textures/{name}.png"));
         let file = match std::fs::File::open(path) {
             Ok(f) => f,
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
             Err(e) => return Err(e.into()),
         };
         let mut bytes = Vec::new();

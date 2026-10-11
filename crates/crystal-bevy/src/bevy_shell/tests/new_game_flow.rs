@@ -516,7 +516,7 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
     assert_eq!(image.texture_descriptor.size.width, 160);
     assert_eq!(image.texture_descriptor.size.height, 144);
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &BOOT_UI_WHITE,
         "time-set field must use canonical boot UI white"
     );
@@ -524,20 +524,20 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
         + 18 * SOURCE_TILE_SIZE)
         * 4;
     assert_eq!(
-        &image.data[textbox_interior..textbox_interior + 4],
+        &image.data.as_ref().expect("CPU image pixels")[textbox_interior..textbox_interior + 4],
         &BOOT_UI_WHITE,
         "time-set field and textbox interior must be the exact same white"
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 16 && pixel[1] < 16 && pixel[2] < 16 && pixel[3] == 255),
         "time-set screen must contain black font/frame pixels from real assets"
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255),
         "time-set screen must contain boot window fill from the real textbox layout"
@@ -640,10 +640,10 @@ fn oak_intro_renders_real_oak_wooper_and_player_portraits() {
         let has_textbox_text = (OAK_INTRO_TEXTBOX_Y * SOURCE_TILE_SIZE..144).any(|y| {
             (0..160).any(|x| {
                 let offset = (y * 160 + x) * 4;
-                image.data[offset] < 24
-                    && image.data[offset + 1] < 24
-                    && image.data[offset + 2] < 24
-                    && image.data[offset + 3] == 255
+                image.data.as_ref().expect("CPU image pixels")[offset] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 1] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 2] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 3] == 255
             })
         });
         assert!(
@@ -1343,18 +1343,18 @@ fn player_name_entry_renders_real_naming_screen_assets() {
     assert_eq!(image.texture_descriptor.size.height, 144);
     assert_eq!(frame.size, Vec2::new(160.0, 144.0));
     assert_eq!(name_entry_screen_center(), Vec3::ZERO);
-    assert_eq!(&image.data[0..4], &[255, 255, 255, 255]);
-    assert_eq!(&image.data[(161 * 4)..(162 * 4)], &[132, 115, 156, 255]);
-    assert_opaque_nonblack_lcd_pixels(&image.data, "name entry");
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[0..4], &[255, 255, 255, 255]);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[(161 * 4)..(162 * 4)], &[132, 115, 156, 255]);
+    assert_opaque_nonblack_lcd_pixels(&image.data.as_ref().expect("CPU image pixels"), "name entry");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 248 || pixel[1] < 248 || pixel[2] < 248),
         "naming screen should contain real font, border, underline, and cursor pixels"
     );
     assert!(
-        image.data.chunks_exact(4).all(|pixel| pixel[3] == 255),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255),
         "naming screen must be fully opaque so the overworld cannot bleed through UI"
     );
 }
@@ -1479,7 +1479,7 @@ fn name_entry_replaces_the_visible_overworld_with_one_complete_lcd() {
         mark_runtime_snapshot_dirty(&mut shell);
     }
     app.update();
-    assert!(app.world().get_entity(presenter.entity).is_none(),
+    assert!(app.world().get_entity(presenter.entity).is_err(),
         "finished naming must release its retained keyboard when field dialogue resumes");
 
 }
@@ -1836,9 +1836,9 @@ fn gender_selection_renders_real_boot_window_palette_and_options() {
     let image = images.get(&frame.handle).expect("gender image");
     assert_eq!(image.texture_descriptor.size.width, 160);
     assert_eq!(image.texture_descriptor.size.height, 144);
-    assert_opaque_nonblack_lcd_pixels(&image.data, "gender selection");
+    assert_opaque_nonblack_lcd_pixels(&image.data.as_ref().expect("CPU image pixels"), "gender selection");
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &BOOT_UI_WHITE,
         "gender screen field must use the same white as its menu and textbox interiors"
     );
@@ -1848,14 +1848,14 @@ fn gender_selection_renders_real_boot_window_palette_and_options() {
     let textbox_interior = ((TIME_SET_TEXTBOX_Y + 1) * SOURCE_TILE_SIZE * 160
         + 2 * SOURCE_TILE_SIZE)
         * 4;
-    assert_eq!(&image.data[menu_interior..menu_interior + 4], &BOOT_UI_WHITE);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[menu_interior..menu_interior + 4], &BOOT_UI_WHITE);
     assert_eq!(
-        &image.data[textbox_interior..textbox_interior + 4],
+        &image.data.as_ref().expect("CPU image pixels")[textbox_interior..textbox_interior + 4],
         &BOOT_UI_WHITE
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 16 && pixel[1] < 16 && pixel[2] < 16 && pixel[3] == 255),
         "gender screen must contain black font/frame pixels from real assets"

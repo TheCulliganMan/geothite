@@ -431,7 +431,7 @@ fn magnet_train_frame_contains_the_source_gendered_player_sprite() {
             }
             let target_offset = (target_y * (20 * SOURCE_TILE_SIZE) + target_x) * 4;
             assert_eq!(
-                &image.data[target_offset..target_offset + 4],
+                &image.data.as_ref().expect("CPU image pixels")[target_offset..target_offset + 4],
                 &player[player_offset..player_offset + 4]
             );
             visible_player_pixel = true;
