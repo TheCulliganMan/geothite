@@ -19,6 +19,7 @@ mod species_rig;
 mod battle_tower;
 mod battle_view;
 mod model_storage;
+mod shared_model_geometry;
 mod open_models;
 mod open_people;
 mod open_people_skin;

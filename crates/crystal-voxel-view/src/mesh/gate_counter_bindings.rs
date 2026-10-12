@@ -1,6 +1,13 @@
 // Hand-inspected gate counter networks. No collision-based expansion.
 // Sparse masks own object art only; fingerprints guard the entire connected drawing.
 const NETWORKS: &[Network] = &[
+    // Café service opening and source wall/shelf halo authenticate the whole C.
+    Network {
+        maps: &["CeladonCafe"], map_size: [24,16], width:8,height:12,
+        fingerprint:0x2f8f438e4ea4ee3f,
+        rows:&[0,3,3,3,3,3,3,3,3,3,255,255],
+        phones:&[],boundary:[false,true,true,false],
+    },
     Network {
         maps: &["GoldenrodUnderground"],
         map_size: [60, 72],
