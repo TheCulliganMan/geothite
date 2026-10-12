@@ -454,6 +454,9 @@ struct TerrainRevisionCache {
 #[derive(Resource, Default)]
 struct TerrainBuildQueue {
     started: u64,
+    // Let asset removal/render extraction retire the previous map before a
+    // synchronous browser build allocates the replacement scene.
+    retirement_frames: u8,
     key: Option<TerrainCacheKey>,
     #[cfg(not(target_arch = "wasm32"))]
     task: Option<Task<TerrainBuildResult>>,
@@ -1117,23 +1120,26 @@ fn sync_terrain(
         .as_ref()
         .is_some_and(|built| built.map_id != frame.map_id)
     {
-        cache.key = None;
-        cache.built_frame = None;
-        cache.built_profiles = None;
+        let retired = std::mem::take(cache);
+        cache.painted_stone = retired.painted_stone;
+        cache.painted_bedrock = retired.painted_bedrock;
         for entity in [
-            cache.instances_root,
-            cache.textured_entity,
-            cache.solid_entity,
-            cache.animated_textured_entity,
-            cache.animated_solid_entity,
+            retired.instances_root,
+            retired.textured_entity,
+            retired.solid_entity,
+            retired.animated_textured_entity,
+            retired.animated_solid_entity,
         ]
         .into_iter()
         .flatten()
         {
-            if let Ok((mut visibility, _)) = terrain_entities.get_mut(entity) {
-                *visibility = Visibility::Hidden;
-            }
+            commands.entity(entity).despawn();
         }
+        builds.retirement_frames = 2;
+    }
+    if builds.retirement_frames > 0 {
+        builds.retirement_frames -= 1;
+        return Ok(TerrainSyncState::Pending);
     }
     if cache.key.as_ref() != Some(&next_key)
         && cache
@@ -2591,6 +2597,47 @@ mod renderer_tests {
             ),
             Ok(TerrainSyncState::Ready)
         );
+    }
+
+    #[test]
+    fn department_store_exit_retires_old_terrain_before_allocating_goldenrod() {
+        let old = VisualWorldFrame { map_id: "GoldenrodDeptStore1F".into(), ..default() };
+        let next = VisualWorldFrame { active: true, map_id: "GoldenrodCity".into(), ..default() };
+        let mut app = App::new();
+        let root = app.world_mut().spawn((VoxelTerrain, Visibility::Visible, Transform::IDENTITY)).id();
+        let child = app.world_mut().spawn((ChildOf(root), Visibility::Inherited, Transform::IDENTITY)).id();
+        app.insert_resource(TerrainRevisionCache {
+            key: Some(TerrainCacheKey::from_frame(&old)), built_frame: Some(old),
+            instances_root: Some(root), built_footing_heights: vec![1.; 64], footing_heights: vec![1.; 64],
+            animated_solid_mesh: Some(Handle::default()), solid_material: Some(Handle::default()),
+            ..default()
+        }).insert_resource(next).init_resource::<TerrainBuildQueue>()
+            .init_resource::<Assets<Image>>().init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>()
+            .add_systems(Update, |frame: Res<VisualWorldFrame>, mut commands: Commands,
+                mut cache: ResMut<TerrainRevisionCache>, mut builds: ResMut<TerrainBuildQueue>,
+                mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
+                mut materials: ResMut<Assets<VoxelMaterial>>,
+                mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>, mut calls: Local<u8>| {
+                let result = sync_terrain(&frame, &live_profiles::LiveProfiles::default(), &mut commands,
+                    &mut cache, &mut builds, &mut images, &mut meshes, &mut materials, &mut entities);
+                if *calls < 2 { assert_eq!(result, Ok(TerrainSyncState::Pending)); }
+                else { assert_eq!(result, Err(TerrainSyncError::SourceTextureUnavailable)); }
+                *calls += 1;
+            });
+        app.update();
+        assert!(app.world().get_entity(root).is_err());
+        assert!(app.world().get_entity(child).is_err());
+        let cache = app.world().resource::<TerrainRevisionCache>();
+        assert!(cache.built_frame.is_none() && cache.key.is_none() && cache.instances_root.is_none());
+        assert!(cache.animated_solid_mesh.is_none() && cache.solid_material.is_none());
+        assert!(cache.built_footing_heights.is_empty() && cache.footing_heights.is_empty());
+        assert_eq!(app.world().resource::<TerrainBuildQueue>().started, 0);
+        app.update();
+        assert_eq!(app.world().resource::<TerrainBuildQueue>().started, 0);
+        // Only the third update reaches the replacement atlas/build path.
+        app.update();
+        assert_eq!(app.world().resource::<TerrainBuildQueue>().started, 1);
     }
 
     #[test]

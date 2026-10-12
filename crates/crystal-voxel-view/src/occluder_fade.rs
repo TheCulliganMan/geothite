@@ -16,7 +16,12 @@ const RESIDUAL_OPACITY: f32 = 0.20;
 const EXIT_HOLD_SECONDS: f32 = 0.12;
 const FADE_RATE: f32 = 14.0;
 const RESTORE_RATE: f32 = 8.0;
-const BVH_LEAF_TRIANGLES: usize = 12;
+// A group ordinal can never reach usize::MAX in an allocated vertex table.
+// Avoid Option<usize>'s extra tag for every vertex in a large scene.
+const UNOWNED: usize = usize::MAX;
+// Larger leaves reduce build passes and node storage. Every leaf still tests
+// all its original triangles exactly; no collision or render detail is removed.
+const BVH_LEAF_TRIANGLES: usize = 64;
 const MAX_RENDER_LEAVES: usize = 16;
 const RENDER_LEAF_TRIANGLES: usize = 2048;
 
@@ -85,20 +90,24 @@ impl Bounds {
 struct Node {
     bounds: Bounds,
     triangles: Range<usize>,
-    children: Option<[usize; 2]>,
+    children: [usize; 2],
 }
 #[derive(Clone, Debug, Default)]
 struct TriangleTree {
-    triangles: Vec<[Vec3; 3]>,
+    // Keep indexed source positions rather than storing three copied positions
+    // for every triangle. This is exact collision geometry, not a proxy mesh.
+    positions: Vec<Vec3>,
+    triangles: Vec<[u32; 3]>,
     nodes: Vec<Node>,
 }
 impl TriangleTree {
     fn new(data: &SurfaceMeshData) -> Self {
         let mut tree = Self {
+            positions: data.positions.iter().copied().map(Vec3::from_array).collect(),
             triangles: data
                 .indices
                 .chunks_exact(3)
-                .map(|t| [t[0], t[1], t[2]].map(|i| Vec3::from_array(data.positions[i as usize])))
+                .map(|t| [t[0], t[1], t[2]])
                 .collect(),
             nodes: Vec::new(),
         };
@@ -110,15 +119,15 @@ impl TriangleTree {
     fn build(&mut self, range: Range<usize>) -> usize {
         let mut bounds = Bounds::empty();
         for triangle in &self.triangles[range.clone()] {
-            for &p in triangle {
-                bounds.include(p);
+            for &i in triangle {
+                bounds.include(self.positions[i as usize]);
             }
         }
         let node = self.nodes.len();
         self.nodes.push(Node {
             bounds,
             triangles: range.clone(),
-            children: None,
+            children: [UNOWNED; 2],
         });
         if range.len() > BVH_LEAF_TRIANGLES {
             let size = bounds.max - bounds.min;
@@ -129,16 +138,22 @@ impl TriangleTree {
             } else {
                 2
             };
-            self.triangles[range.clone()].sort_unstable_by(|a, b| {
-                let center = |t: &[Vec3; 3]| {
-                    f64::from(t[0][axis]) + f64::from(t[1][axis]) + f64::from(t[2][axis])
+            // Only the median partition is needed for the two child bounds.
+            // Sorting every descendant repeatedly adds work without improving
+            // exact triangle intersection tests or the rendered geometry.
+            let positions = &self.positions;
+            self.triangles[range.clone()].select_nth_unstable_by(range.len() / 2, |a, b| {
+                let center = |t: &[u32; 3]| {
+                    f64::from(positions[t[0] as usize][axis])
+                        + f64::from(positions[t[1] as usize][axis])
+                        + f64::from(positions[t[2] as usize][axis])
                 };
                 center(a).total_cmp(&center(b))
             });
             let mid = range.start + range.len() / 2;
             let left = self.build(range.start..mid);
             let right = self.build(mid..range.end);
-            self.nodes[node].children = Some([left, right]);
+            self.nodes[node].children = [left, right];
         }
         node
     }
@@ -150,12 +165,13 @@ impl TriangleTree {
         if !node.bounds.segment(start, delta) {
             return false;
         }
-        if let Some([a, b]) = node.children {
-            self.hit_node(a, start, delta) || self.hit_node(b, start, delta)
+        if node.children[0] != UNOWNED {
+            self.hit_node(node.children[0], start, delta)
+                || self.hit_node(node.children[1], start, delta)
         } else {
             self.triangles[node.triangles.clone()]
                 .iter()
-                .any(|&t| segment_triangle(start, delta, t))
+                .any(|&t| segment_triangle(start, delta, t.map(|i| self.positions[i as usize])))
         }
     }
 }
@@ -231,15 +247,15 @@ pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<Prepared
     if ranges.is_empty() {
         return (source, Vec::new());
     }
-    let mut owner = vec![None; n];
+    let mut owner = vec![UNOWNED; n];
     for (group, range) in ranges.iter().enumerate() {
-        owner[range.clone()].fill(Some(group));
+        owner[range.clone()].fill(group);
     }
     let mut buckets = vec![Vec::<u32>::new(); ranges.len() + 1];
     for triangle in source.indices.chunks_exact(3) {
         let group = owner[triangle[0] as usize];
-        let index = if group.is_some() && triangle.iter().all(|&i| owner[i as usize] == group) {
-            group.unwrap() + 1
+        let index = if group != UNOWNED && triangle.iter().all(|&i| owner[i as usize] == group) {
+            group + 1
         } else {
             0
         };
@@ -248,7 +264,7 @@ pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<Prepared
     let mut remap = vec![u32::MAX; n];
     let mut extracted = buckets
         .into_iter()
-        .map(|indices| select(&source, &owner, &mut remap, indices));
+        .map(|indices| select(&source, Some(&owner), &mut remap, indices));
     let opaque = extracted.next().unwrap();
     let selected: Vec<_> = extracted
         .zip(ranges)
@@ -309,7 +325,8 @@ pub(super) fn prepare_linked(
 
 fn select(
     source: &SurfaceMeshData,
-    owner: &[Option<usize>],
+    // None means every vertex belongs to this whole authored fade object.
+    owner: Option<&[usize]>,
     remap: &mut [u32],
     mut indices: Vec<u32>,
 ) -> SurfaceMeshData {
@@ -340,7 +357,7 @@ fn select(
         data.normals.push(source.normals[old]);
         data.uvs.push(source.uvs[old]);
         data.colors.push(source.colors[old]);
-        if owner[old].is_some() {
+        if owner.is_none_or(|owners| owners[old] != UNOWNED) {
             if let Some(range) = data.cutaway_ranges.last_mut()
                 && range.end == next
             {
@@ -403,12 +420,11 @@ fn render_leaves(data: SurfaceMeshData) -> Vec<PreparedLeaf> {
         chunks.push(triangles.into_iter().flatten().collect());
         chunks.push(right.into_iter().flatten().collect());
     }
-    let owner = vec![Some(0); data.positions.len()];
     let mut remap = vec![u32::MAX; data.positions.len()];
     chunks
         .into_iter()
         .map(|indices| {
-            let mut leaf = select(&data, &owner, &mut remap, indices);
+            let mut leaf = select(&data, None, &mut remap, indices);
             let mut bounds = Bounds::empty();
             for &p in &leaf.positions {
                 bounds.include(p.into());
@@ -421,7 +437,7 @@ fn render_leaves(data: SurfaceMeshData) -> Vec<PreparedLeaf> {
             }
             let local_bounds = Aabb::from_min_max(bounds.min - center, bounds.max - center);
             PreparedLeaf {
-                mesh: leaf.into_mesh(),
+                mesh: leaf.into_compact_mesh(),
                 center,
                 bounds: local_bounds,
             }
@@ -507,6 +523,11 @@ pub(super) fn spawn_groups(
         materials.add(material)
     }
     let mut spawned_leaves = Vec::new();
+    // Opt-in until the native comparison verifies identical surfaces. The
+    // solid palette shader does not consume constant zero UVs when neither a
+    // base/normal texture nor source water animation is present. Preserve all
+    // tagged finishes and every atlas-bearing material.
+    let compact_uvs = std::env::var("CRYSTAL_COMPACT_SOLID_UVS").as_deref() == Ok("on");
     for PreparedGroup {
         source_range: _,
         surface,
@@ -551,11 +572,18 @@ pub(super) fn spawn_groups(
                 &overlay_materials.as_ref().unwrap().0
             };
             for PreparedLeaf {
-                mesh,
+                mut mesh,
                 center,
                 bounds,
             } in leaves
             {
+                if compact_uvs && materials.get(material).is_some_and(|material| {
+                    crate::compact_vertices::solid_uv0_is_unused(
+                        &material.base, material.extension.water_enabled,
+                    )
+                }) {
+                    crate::compact_vertices::remove_unused_zero_uv0(&mut mesh);
+                }
                 let mut leaf = commands.spawn((
                     (Mesh3d(meshes.add(mesh)),
 MeshMaterial3d(material.clone()),
@@ -626,11 +654,11 @@ fn sync(
     };
     for (mut group, transform, children) in &mut groups {
         if changed || transform.is_changed() || group.is_added() {
-            group.blocked = rays.is_some_and(|(eye, targets)| {
+            let blocked = rays.is_some_and(|(eye, targets)| {
                 let local = transform.to_matrix().inverse();
+                let start = local.transform_point3(eye);
                 local.is_finite()
                     && targets.into_iter().any(|target| {
-                        let start = local.transform_point3(eye);
                         let end = local.transform_point3(target);
                         group.surface.blocks(start, end)
                             || group
@@ -639,6 +667,17 @@ fn sync(
                                 .is_some_and(|surface| surface.blocks(start, end))
                     })
             });
+            if blocked != group.blocked {
+                group.blocked = blocked;
+            }
+        }
+        // Settled opaque objects have no fade work. Keep their component
+        // unchanged too, rather than running two exponentials and marking a
+        // clear object modified on every host update. Ray decisions above
+        // still use the complete original surface whenever inputs change.
+        if !group.blocked && group.fade.opacity == 1.0 && group.fade.hold == 0.0
+            && !group.blending {
+            continue;
         }
         let previous_alpha = group.fade.opacity;
         let blocked = group.blocked;
@@ -682,7 +721,7 @@ fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bevy::mesh::{Indices, VertexAttributeValues};
+    use bevy::mesh::VertexAttributeValues;
     use std::collections::BTreeMap;
     fn quad(data: &mut SurfaceMeshData, points: [[f32; 3]; 4], marked: bool) {
         let base = data.positions.len();
@@ -706,7 +745,7 @@ mod tests {
         let indices = vec![3,0,1,3,1,2];
         let allocation = indices.as_ptr();
         let mut remap = vec![u32::MAX;4];
-        let selected = select(&source, &[None,Some(0),None,Some(0)], &mut remap, indices);
+        let selected = select(&source, Some(&[UNOWNED,0,UNOWNED,0]), &mut remap, indices);
         assert_eq!(selected.indices.as_ptr(), allocation, "selection must reuse its large index bucket");
         assert_eq!(selected.indices, [0,1,2,0,2,3]);
         for (new,old) in [3,0,1,2].into_iter().enumerate() {
@@ -808,10 +847,41 @@ mod tests {
         );
     }
     #[test]
+    fn bvh_keeps_source_corner_bits_and_sharing_instead_of_expanding_triangles() {
+        let mut source = SurfaceMeshData::default();
+        source.positions.push([0.0, 3.0, -0.0]);
+        for edge in 0..32 {
+            let angle = edge as f32 * std::f32::consts::TAU / 32.0;
+            source.positions.push([angle.cos() * 16.0, 3.0, angle.sin() * 16.0]);
+            source.indices.extend([0, 1 + edge, 1 + (edge + 1) % 32]);
+        }
+        source.indices.extend_from_within(0..3);
+        source.indices.extend([0, 0, 0]);
+        let tree = TriangleTree::new(&source);
+        let key = |t: [u32; 3]| {
+            t.into_iter().flat_map(|i| source.positions[i as usize].map(f32::to_bits))
+                .collect::<Vec<_>>()
+        };
+        let mut expected: Vec<_> = source.indices.chunks_exact(3)
+            .map(|t| key([t[0], t[1], t[2]])).collect();
+        let mut actual: Vec<_> = tree.triangles.iter().map(|&t| {
+            t.into_iter().flat_map(|i| tree.positions[i as usize].to_array().map(f32::to_bits))
+                .collect::<Vec<_>>()
+        }).collect();
+        expected.sort_unstable();
+        actual.sort_unstable();
+        assert_eq!(actual, expected);
+        assert_eq!(tree.positions.len(), source.positions.len());
+        let indexed_bytes = tree.positions.len() * std::mem::size_of::<Vec3>()
+            + tree.triangles.len() * std::mem::size_of::<[u32; 3]>();
+        assert!(indexed_bytes < tree.triangles.len() * std::mem::size_of::<[Vec3; 3]>());
+    }
+
+    #[test]
     fn bvh_matches_actual_triangles_across_orbit_zoom_and_translated_roots() {
         let mut data = u_wall();
         // More than one BVH leaf, with disjoint scenery and an empty interior.
-        for x in -8..=8 {
+        for x in -24..=24 {
             quad(
                 &mut data,
                 [
@@ -840,10 +910,11 @@ mod tests {
                     let uniform = CutawayUniform::for_player(Vec3::ZERO, 16.0).unwrap();
                     let (origin, targets) = target_rays(uniform, camera).unwrap();
                     for target in targets {
-                        let expected = tree
-                            .triangles
-                            .iter()
-                            .any(|&t| segment_triangle(origin, target - origin, t));
+                        let expected = data.indices.chunks_exact(3).any(|t| {
+                            let points = [t[0], t[1], t[2]]
+                                .map(|i| Vec3::from_array(data.positions[i as usize]));
+                            segment_triangle(origin, target - origin, points)
+                        });
                         assert_eq!(tree.blocks(origin, target), expected);
                         let shift = Vec3::new(219.0, 8.0, -397.0);
                         assert_eq!(
@@ -958,10 +1029,7 @@ mod tests {
             panic!()
         };
         data.colors = colors.clone();
-        let Indices::U32(indices) = leaf.mesh.indices().unwrap() else {
-            panic!()
-        };
-        data.indices = indices.clone();
+        data.indices = leaf.mesh.indices().unwrap().iter().map(|i| i as u32).collect();
         data.cutaway_ranges = vec![0..data.positions.len()];
         data
     }
@@ -1189,6 +1257,19 @@ Transform::from_xyz(0.0, 20.0, 80.0)
                 expected
             );
         }
+        #[derive(Resource, Default)]
+        struct GroupChanges(usize);
+        app.init_resource::<GroupChanges>().add_systems(
+            PostUpdate,
+            (|groups: Query<(), Changed<OccluderGroup>>, mut changes: ResMut<GroupChanges>| {
+                changes.0 = groups.iter().count();
+            }).after(sync),
+        );
+        // Warm the observer's own change tick, then prove a settled update
+        // does not mark the retained blocker or request new material work.
+        app.update();
+        app.update();
+        assert_eq!(app.world().resource::<GroupChanges>().0, 0);
         // Moving the retained terrain root moves its precise blocker surface too.
         app.world_mut()
             .get_mut::<Transform>(root)
@@ -1197,6 +1278,7 @@ Transform::from_xyz(0.0, 20.0, 80.0)
             .z = -40.0;
         app.update();
         assert!(app.world().get::<OccluderGroup>(group).unwrap().blocked);
+        assert_eq!(app.world().resource::<GroupChanges>().0, 1);
         for _ in 0..12 {
             app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
             for _ in 0..120 {

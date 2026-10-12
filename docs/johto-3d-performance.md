@@ -289,3 +289,208 @@ The recovered source replays the original authoring steps and again passes all
 builds, motion, timing and exact-checkout visual verification remain pending;
 the earlier raw traces are no longer available. Shipping shadow policy
 is unchanged.
+
+## Canonical-grove New Bark checkpoint, October 12
+
+Native GPU comparisons can render the production cameras into an image target
+with `CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`. This does not require an unlocked
+desktop. `CRYSTAL_MEASURE_3D_VALIDATION=on` verifies a nonblank GPU readback before
+measurement, drains thirty further frames, and performs no readbacks during the
+timed interval. The receipt records the selected target. Window-only captures
+that produced a black image were rejected and supply no performance evidence.
+
+New Bark, orbit 2, 640×480 logical size (1280×960 physical readback), retained
+26,592,578 vertices and 18,520,816 triangles in all three runs. These fifteen-second
+application-update timings used the same frozen executable. Concurrent compilation
+contaminated the measurements; they do not establish a speed improvement or a
+playability claim.
+
+These initial runs used the existing adaptive outer-halo grass setting. Canonical
+grove trees retained their complete geometry. A separate full-detail comparison
+must explicitly set `CRYSTAL_SCENERY_FULL_DETAIL=1`; the initial runs do not prove
+full grass detail.
+
+| Native GPU culling experiment | Median | p95 | Updates / elapsed |
+| --- | ---: | ---: | ---: |
+| Disabled | 53.28 ms | 197.91 ms | 199 / 15.11 s |
+| Shadow views only | 58.80 ms | 105.96 ms | 233 / 15.04 s |
+| Camera and shadow views | 63.04 ms | 176.34 ms | 189 / 15.03 s |
+
+GPU culling remains opt-in through `CRYSTAL_GPU_CULLING=camera|shadows|on` and is
+limited to New Bark and Route 29. Static roof, facade and grove comparison regions
+matched exactly in the corresponding captures; animated regions differed. This
+is evidence for those views, not a guarantee for every camera position.
+
+Idle customization polling now reuses the revision-tracked runtime snapshot;
+opening and saving retain fresh integrity validation. The external-pack regression
+checks cache reuse, action validation and invalidation after saving. Atmosphere
+synchronization also avoids writing unchanged light, cascade, ambient, fog and
+FXAA values when source animation updates the frame. A Bevy change-tracking
+regression verifies those components stay clean and that actual map lighting
+changes still propagate. These fixes preserve model geometry and rendering values;
+their combined native timing effect is not isolated by the current runs.
+
+An explicitly full-detail follow-up measured the newer build at 58.26 ms median /
+110.42 ms p95 (239 updates / 15.01 s), and the older build at 48.33 ms /
+89.58 ms (283 / 15.06 s). Both validated actual GPU image readbacks. However,
+the newer build contained 27,060,550 vertices / 18,688,198 triangles, while the
+older build contained 27,022,658 / 18,664,176. Geometry changed between those
+frozen builds and concurrent compiler load also changed. This is not an isolated
+comparison of the lighting-update fix and establishes no performance gain.
+
+The same newer executable also validated Route 29 at full detail: 27,993,114
+vertices / 18,270,074 triangles, 1280×960 GPU image readback. Its fifteen-second
+trace measured 62.90 ms median / 191.59 ms p95 (178 updates / 15.01 s) while
+compilers were active. Both reference scenes therefore remain performance work,
+not evidence that the application is fast enough for the requested effects.
+
+A diagnostic New Bark run with `CRYSTAL_MODELED_SHADOWS=off` used that exact newer
+executable and identical full-detail geometry counts. Its validated image-target
+trace measured 15.11 ms median / 44.28 ms p95 (760 updates / 15.01 s), compared
+with 58.26 / 110.42 ms for shadows enabled. Compiler contention continued in
+both runs. The large difference supports prioritizing shadow submission and
+rendering investigation; it does not precisely quantify GPU pass time. Shadows
+remain enabled in production. Removing shadows is not the proposed optimization.
+
+Additional haze is removed. Environmental particles remain unregistered while
+rendering performance is being improved. Compact solid UV removal, shadow fitting
+and GPU culling experiments remain disabled by default.
+
+The native `CRYSTAL_SHADOW_RECEIVERS=on` experiment keeps all authored cascade
+projections and meshes. After Bevy's light visibility pass, it rejects a caster
+only when conservative ray/plane intervals cannot reach the camera frustum within
+the complete scene's receiver-height slab. Unknown bounds retain the stock list.
+Receiver normal/depth bias and the fixed shadow-filter footprint inflate the
+proof bounds. The experiment is limited to New Bark and Route 29 and remains
+disabled pending broader camera/movement comparisons. Two full-crate regressions
+passed; all three current geometry-function tests, including rotated camera planes,
+also passed in a temporary harness compiled directly from the current function.
+The native build passed.
+
+The first same-executable New Bark pair retained 27,064,458 vertices / 18,690,094
+triangles in both runs and validated 1280×960 image readbacks. Baseline measured
+48.13 ms median / 76.94 ms p95 (291 updates / 15.00 s); receiver culling measured
+25.61 / 45.28 ms (560 / 15.01 s). The filter retained 4,700 of 14,267 cascade
+submissions. Selected north/east grove, roof and facade regions matched exactly.
+Animated actors and water differed between capture times. A second filtered run
+measured 25.51 / 41.34 ms (581 / 15.02 s); its reversed-order baseline measured
+35.79 / 49.00 ms (419 / 15.01 s). Outside four declared actor/water animation
+rectangles, 1,092,850 pixels in the first pair matched exactly. Concurrent
+compilers remain a timing limitation: the relative median improvement varied
+from approximately 29% to 47%. This is a promising measured
+candidate, not a claim that every camera or movement path has passed.
+
+Route 29's corresponding full-detail, same-executable pair retained 27,993,114
+vertices / 18,270,074 triangles. The first baseline measured 43.15 ms median /
+51.17 ms p95 (348 updates / 15.02 s), versus 44.61 / 80.83 ms filtered
+(313 / 15.06 s): this pair did not improve. In reverse order the filtered run
+measured 32.85 / 69.34 ms (393 / 15.02 s) and baseline 61.51 / 133.02 ms
+(217 / 15.01 s), with compilation active. The filter retained 4,656 of 13,185
+cascade submissions. Selected grove, grass, sign and ground regions matched
+exactly. Variable load prevents a firm Route 29 speed claim.
+
+Native movement QA can explicitly use `CRYSTAL_RENDER_TEST_WALK_INPUT=synthetic`
+with `--walk`. It injects the generated key snapshot after physical-input focus
+handling, before the existing production input-owner dispatcher. It does not
+change actual window focus, coordinates, game ownership or controller behavior.
+The default keyboard QA path still requires focus. CSV traces label the input
+source, retain the real focus value, and record authoritative tile coordinates;
+successful movement now requires those coordinates to change as well as visible
+presentation movement. The native build passed. Both full-detail GPU movement
+runs completed with `focused=false` and input explicitly labelled `synthetic`.
+New Bark's 64-frame down/up route observed authoritative tiles (13,6) through
+(13,10), five grid origins, and no additional terrain build; moving and final
+captures were retained. Its trace measured 32.33 ms median / 66.63 ms p95.
+Route 29's right/left route observed (50,9) through (54,9), five origins and no
+additional build, at 71.26 / 116.13 ms under compilation load. These prove the
+production input/presentation path works without desktop focus, not physical
+keyboard handling while unfocused or achievement of the requested speed.
+
+The next receiver-filter refinement restricts each cascade's candidate receivers
+to Bevy's actual depth selection interval, including the preceding overlap start.
+Bias/filter padding uses that cascade's texel size. Meshes, cascade matrices and
+resolution stay unchanged. Four current geometry-function regressions, including
+overlap and biased samples, passed; the native build passed. Broader camera
+comparisons of this refinement remain pending, and it stays opt-in.
+
+Its first New Bark pair retained 27,065,738 vertices / 18,690,734 triangles in
+both runs. Validated GPU image-target timings measured 60.34 ms median / 102.70 ms
+p95 baseline (236 updates / 15.01 s), and 32.87 / 63.68 ms filtered
+(445 / 15.03 s). Cascade submissions fell from 14,267 to 4,542. Outside the same
+actor/water animation rectangles, 1,092,850 pixels matched exactly. Compilation
+remained active. This supports the candidate but does not isolate its incremental
+gain over the earlier global receiver filter or prove the final speed target.
+
+These native image-target traces ran with the real window unfocused and the
+production low-power unfocused update policy. They are application-update timings,
+not focused-window FPS or direct GPU pass timings. The current WebAssembly
+`cargo check --locked --target wasm32-unknown-unknown -p crystal-bevy --features location-tester`
+passed after excluding the native synthetic-input hook from browser compilation.
+
+The refined filter's full-detail New Bark down/up GPU movement run passed: 64
+frames, five grid origins, authoritative tile changes, and no additional terrain
+build. Actual window focus remained false. Moving and final image readbacks
+rendered successfully. The movement trace measured 25.27 ms median / 58.19 ms p95;
+this remains an unfocused, contended application trace rather than a final
+focused-window performance certification.
+
+Route 29's refined-filter down/up GPU movement run also passed: 64 frames,
+authoritative tiles (50,7) through (50,11), five grid origins, and one initial
+terrain build with none added during movement. The trace retained actual
+`focused=false` and `input=synthetic`. The moving capture was visually inspected;
+the final image readback was validated. Median/p95 application-update times were
+35.38 / 73.71 ms under contention, with 13,121 cascade submissions reduced to
+4,326. This remains a movement and rendering check, not a firm speed result.
+
+The next CPU refinement caches a caster decision only while its exact world
+bounding-box corners and all receiver planes, sun direction, height limits and
+bias padding remain equal. Changes recompute the decision; unseen caster and
+cascade entries are removed. Five current function/cache regressions passed,
+including movement and receiver-input invalidation, and the voxel-view native
+check passed. The frozen native-v7 executable's alternate New Bark camera angle
+retained the same 27,065,738 vertices / 18,690,734 triangles in both runs.
+Baseline measured 50.80 ms median / 166.24 ms p95 (206 updates / 15.09 s);
+cached receiver filtering measured 26.30 / 125.67 ms (363 / 15.01 s).
+Submissions fell from 14,121 to 4,750. Sampled frames reused over 14,100
+decisions while recomputing 6–10 moving-caster decisions. Filter-system elapsed
+time ranged from 2.060 to 5.698 ms in those samples, including preemption.
+These results compare the complete cached filter with stock culling; they do
+not isolate the cache's incremental speed benefit. Roof, facade, north/east
+grove and ground regions matched exactly. After excluding explicit actor,
+actor-shadow and water-animation rectangles, 1,125,650 pixels matched exactly.
+The captures were visually inspected. Native unfocused policy and concurrent
+compilation still limit any claim about final playable frame rate.
+
+The same executable's alternate Route 29 angle retained 27,993,114 vertices /
+18,270,074 triangles in both runs. Filtered-first measured 49.99 ms median /
+85.67 ms p95 (289 updates / 15.11 s); the following baseline measured
+58.10 / 97.72 ms (235 / 15.04 s). Submissions fell from 13,119 to 4,753.
+Outside explicit actor and actor-shadow rectangles, 1,184,450 pixels matched
+exactly; the filtered capture was visually inspected. This pair shows a modest
+gain under contention, while earlier Route 29 measurements remained variable.
+
+Validated native timing now accepts opt-in
+`CRYSTAL_RENDER_TEST_UPDATE_POLICY=focused`, which copies the existing focused
+Winit update mode to its unfocused mode for the benchmark. Actual window focus,
+input ownership and the fixed game tick remain unchanged. The default is
+`production`, preserving the low-power unfocused policy. Results record the
+requested policy, fixed tick, actual focus and both actual update modes.
+The native check passed; its regression and runtime build are pending. These
+application-update measurements still require GPU completion evidence before
+they can establish GPU throughput, especially for an image target without
+window presentation pacing.
+
+Validated timing now observes native queue-completion callbacks after the render
+graph's submissions. It polls without waiting and records submitted/completed
+counts at both ends of the ready interval, outstanding work, poll errors and
+completion rate in `gpu-completions.txt`. This is completed-work throughput,
+not GPU timestamp duration or display-presented FPS. The actual callback and
+report functions compiled against the cached Bevy library; the receipt's ECS
+regression passed in an extracted harness, verifying that warmup counts are
+excluded and outstanding work is retained. The extracted update-policy test
+also passed. Full-crate checks and a GPU runtime observation remain pending.
+
+`cargo test --locked -p geothite` passed all thirteen tests, including authoritative
+MCP movement and the production Start menu, and the spawned stdio regression that
+enters Mom's dialogue with byte-for-byte empty stderr. This verifies those gameplay
+paths; it is not a claim of graphical movement performance.

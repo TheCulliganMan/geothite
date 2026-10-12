@@ -161,10 +161,17 @@ fn persist_customization(profile: &PlayerCustomization) -> Result<()> {
 }
 
 fn customization_can_edit(
-    runtime: &BevyRuntimeShell,
+    runtime: &mut BevyRuntimeShell,
     multiplayer: Option<&MultiplayerRuntime>,
+    validate_action: bool,
 ) -> Result<bool> {
-    let snapshot = runtime.shell.snapshot()?;
+    // Idle form polling shares the presentation's revision-tracked snapshot.
+    // Opening or saving still checks the current authoritative state in full.
+    let snapshot = if validate_action {
+        Arc::new(runtime.shell.snapshot()?)
+    } else {
+        cached_runtime_snapshot(runtime)?
+    };
     let safe = !snapshot.trainer.player_name.is_empty()
         && visible_quick_save_blockers(runtime, &snapshot, false, false, false)
             .iter()
@@ -230,8 +237,8 @@ fn apply_player_customization(
     }
     *elapsed = 0.0;
     let enabled = runtime.shell.runtime().data().player_customization;
-    let can_edit =
-        enabled && customization_can_edit(&runtime, multiplayer.as_deref()).unwrap_or(false);
+    let can_edit = enabled
+        && customization_can_edit(&mut runtime, multiplayer.as_deref(), urgent).unwrap_or(false);
     CUSTOMIZATION.with_borrow_mut(|bridge| {
         bridge.enabled = enabled;
         bridge.can_edit = can_edit;
@@ -349,7 +356,8 @@ mod customization_tests {
         let pack_path = directory.join("profile.crystalpack");
         pack.write_preserving_storage(&pack_path).unwrap();
         let asset_root = AssetRoot::new(&root);
-        let runtime = CrystalRuntime::load_from_compiled_pack(&asset_root, &pack_path).unwrap();
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path).unwrap();
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
         let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
         let save_path = directory.join("profile.crystalsave");
         let mut shell = initialize_bevy_runtime_shell(
@@ -368,6 +376,23 @@ mod customization_tests {
         )
         .unwrap();
         shell.shell.set_trainer_identity("CHRIS", 23456).unwrap();
+        mark_runtime_snapshot_dirty(&mut shell);
+        let idle_snapshot = cached_runtime_snapshot(&mut shell).unwrap();
+        let idle_can_edit = customization_can_edit(&mut shell, None, false).unwrap();
+        for _ in 0..10 {
+            assert_eq!(
+                customization_can_edit(&mut shell, None, false).unwrap(),
+                idle_can_edit
+            );
+            assert!(Arc::ptr_eq(
+                &idle_snapshot,
+                &cached_runtime_snapshot(&mut shell).unwrap()
+            ));
+        }
+        assert_eq!(
+            customization_can_edit(&mut shell, None, true).unwrap(),
+            idle_can_edit
+        );
         let prior = PlayerCustomization {
             name: "CHRIS".into(),
             handle: "Chris_22".into(),
@@ -379,6 +404,9 @@ mod customization_tests {
             sprite: 1,
         };
         save_player_customization(&mut shell, &next, Some(&prior)).unwrap();
+        let updated_snapshot = cached_runtime_snapshot(&mut shell).unwrap();
+        assert!(!Arc::ptr_eq(&idle_snapshot, &updated_snapshot));
+        assert_eq!(updated_snapshot.trainer.player_name, "KRIS");
         let loaded = shell.shell.runtime().load_save(&save_path).unwrap();
         assert_eq!(loaded.player_name, "KRIS");
         assert_eq!(loaded.player_gender, 1);

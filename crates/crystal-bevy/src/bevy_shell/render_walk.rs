@@ -16,6 +16,9 @@ pub(super) struct RenderWalk {
     player_bounds: Option<(Vec2, Vec2)>,
     player_moved: bool,
     capture_steps: bool,
+    synthetic_input: bool,
+    first_tile: Option<TilePosition>,
+    authoritative_moved: bool,
 }
 impl RenderWalk {
     pub(super) fn started(&self) -> bool {
@@ -28,6 +31,12 @@ impl RenderWalk {
 }
 
 pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bool) -> Result<()> {
+    let synthetic_input = match std::env::var("CRYSTAL_RENDER_TEST_WALK_INPUT") {
+        Err(std::env::VarError::NotPresent) => false,
+        Ok(value) if value == "keyboard" => false,
+        Ok(value) if value == "synthetic" => true,
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_WALK_INPUT must be keyboard or synthetic"),
+    };
     if let Some(parent) = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
@@ -51,7 +60,7 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         finished: false,
         settle: 0,
         path: path.to_owned(),
-        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused\n".into(),
+        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused,input,tile_x,tile_y\n".into(),
         times: Vec::new(),
         first_builds: None,
         origins: default(),
@@ -59,9 +68,39 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         player_bounds: None,
         player_moved: false,
         capture_steps,
+        synthetic_input,
+        first_tile: None,
+        authoritative_moved: false,
     })
     .add_systems(PreUpdate, drive.after(bevy::input::InputSystems));
+    #[cfg(target_arch = "wasm32")]
+    anyhow::ensure!(!synthetic_input, "synthetic walk input is native-only");
+    #[cfg(not(target_arch = "wasm32"))]
+    if synthetic_input {
+        app.add_systems(
+            Update,
+            inject_synthetic_keys
+                .after(handheld_input::gather_input)
+                .before(apply_keyboard_input),
+        );
+    }
     Ok(())
+}
+
+// Native QA changes only the accepted key snapshot. The production input-owner
+// dispatcher still owns movement, scripts, dialogue and menus. Real window focus
+// remains observable, and the default physical-input path is unchanged.
+#[cfg(not(target_arch = "wasm32"))]
+fn inject_synthetic_keys(
+    walk: Res<RenderWalk>,
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mut input: ResMut<handheld_input::HandheldInput>,
+) {
+    if walk.synthetic_input && walk.started() && !walk.finished {
+        input.keys = keyboard.clone();
+    } else if walk.synthetic_input && walk.finished {
+        input.keys.reset_all();
+    }
 }
 
 fn drive(
@@ -72,15 +111,33 @@ fn drive(
     time: Res<Time<Real>>,
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut commands: Commands,
+    capture: Option<Res<render_capture::Capture>>,
+    runtime: Res<BevyRuntimeShell>,
 ) {
     if walk.finished {
         walk.settle += 1;
+        return;
+    }
+    // Production keyboard handling requires real window focus. Pause the
+    // route while focus is elsewhere, instead of consuming an unplayed step.
+    if !walk.synthetic_input && !windows.single().is_ok_and(|(_, window)| window.focused) {
+        for key in [
+            KeyCode::ArrowRight,
+            KeyCode::ArrowLeft,
+            KeyCode::ArrowUp,
+            KeyCode::ArrowDown,
+        ] {
+            keyboard.release(key);
+        }
         return;
     }
     if walk.first_builds.is_none() && status.active_frames < 90 {
         return;
     }
     walk.first_builds.get_or_insert(status.terrain_builds);
+    let tile = runtime.shell.session().overworld().player.tile;
+    let first_tile = *walk.first_tile.get_or_insert(tile);
+    walk.authoritative_moved |= tile != first_tile;
     for key in [
         KeyCode::ArrowRight,
         KeyCode::ArrowLeft,
@@ -110,6 +167,10 @@ fn drive(
             walk.origins.len() > 1 || walk.maps.len() > 1 || walk.player_moved,
             "movement QA requires player translation, a tile-origin change, or a map boundary"
         );
+        assert!(
+            walk.authoritative_moved,
+            "movement QA requires authoritative production tile coordinates to change"
+        );
         return;
     }
     // Small rooms keep the grid fixed while the player walks across it.
@@ -135,7 +196,7 @@ fn drive(
     walk.origins
         .insert((frame.grid_origin.x, frame.grid_origin.y));
     let line = format!(
-        "{},{},{},{},{:.3},{:.3},{},{:.3},{}\n",
+        "{},{},{},{},{:.3},{:.3},{},{:.3},{},{},{},{}\n",
         walk.tick,
         frame.map_id,
         frame.grid_origin.x,
@@ -144,7 +205,14 @@ fn drive(
         frame.center.y,
         status.terrain_builds,
         dt,
-        windows.single().is_ok_and(|(_, window)| window.focused)
+        windows.single().is_ok_and(|(_, window)| window.focused),
+        if walk.synthetic_input {
+            "synthetic"
+        } else {
+            "keyboard"
+        },
+        tile.x,
+        tile.y
     );
     walk.trace.push_str(&line);
     if walk.capture_steps && walk.tick % 32 == 12 {
@@ -153,7 +221,12 @@ fn drive(
             let path = walk
                 .path
                 .with_file_name(format!("{stem}-moving-{segment:02}.png"));
-            commands.spawn(Screenshot::window(window)).observe(bevy::render::view::screenshot::save_to_disk(path));
+            if let Some(screenshot) = render_capture::moving_screenshot(capture.as_deref(), window)
+            {
+                commands
+                    .spawn(screenshot)
+                    .observe(bevy::render::view::screenshot::save_to_disk(path));
+            }
         }
     }
     walk.tick += 1;

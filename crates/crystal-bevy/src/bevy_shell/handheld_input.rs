@@ -251,7 +251,7 @@ impl HandheldInput {
     }
 }
 
-fn gather_input(
+pub(super) fn gather_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     pads: Query<(Entity, &Gamepad)>,
     mut focus: MessageReader<WindowFocused>,

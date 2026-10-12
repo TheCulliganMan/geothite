@@ -423,6 +423,9 @@ pub(super) fn install(
         Update,
         record.after(crystal_render_api::WorldRenderSet::RenderSync),
     );
+    if !capture_images && std::env::var("CRYSTAL_MEASURE_3D_VALIDATION").as_deref() == Ok("on") {
+        super::render_measure_validation::install(app, directory)?;
+    }
     Ok(())
 }
 
@@ -475,6 +478,7 @@ fn row(
 
 fn record(
     mut recording: ResMut<Recording>,
+    validation: Option<Res<super::render_measure_validation::TimingValidation>>,
     time: Res<Time<Real>>,
     status: Res<crystal_voxel_view::VoxelViewStatus>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
@@ -493,6 +497,9 @@ fn record(
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
+        return;
+    }
+    if validation.as_ref().is_some_and(|validation| !validation.ready()) {
         return;
     }
     let outstanding_before_poll = recording.outstanding;
@@ -577,8 +584,10 @@ fn record(
             {
                 recording.trigger = format!(
                     "first presented capture: {:?} {}; capture state {}; flashes {:?}; no synthetic pre-roll\n",
-                    cue.kind, cue.move_id,
-                    capture_csv_fields(runtime.visible_capture_animation.as_ref()), *flash_mode
+                    cue.kind,
+                    cue.move_id,
+                    capture_csv_fields(runtime.visible_capture_animation.as_ref()),
+                    *flash_mode
                 );
             }
         } else if recording.on_move {
@@ -645,9 +654,7 @@ fn record(
         return;
     }
     let index = recording.update_times.len();
-    recording
-        .update_times
-        .push(time.delta_secs_f64() * 1000.0);
+    recording.update_times.push(time.delta_secs_f64() * 1000.0);
     recording.update_trace.push_str(&row(
         index,
         elapsed,
@@ -810,19 +817,21 @@ fn record(
         });
     // Screenshot callbacks already run on Bevy's async compute pool. Allow a
     // bounded pipeline rather than waiting 2–3 render frames after each one.
-    commands.spawn(Screenshot::window(window)).observe(move |event: On<ScreenshotCaptured>| {
+    commands
+        .spawn(Screenshot::window(window))
+        .observe(move |event: On<ScreenshotCaptured>| {
             let completion = save_capture(event.image.clone(), path.clone(), ticket);
             completions.lock().unwrap().push(completion);
         });
-        recording.frames.push(elapsed);
-        recording.trace.push_str(&row(
-            index,
-            elapsed,
-            &frame,
-            runtime.visible_capture_animation.as_ref(),
-        ));
-        recording.cadence.admitted(elapsed);
-        recording.outstanding += 1;
+    recording.frames.push(elapsed);
+    recording.trace.push_str(&row(
+        index,
+        elapsed,
+        &frame,
+        runtime.visible_capture_animation.as_ref(),
+    ));
+    recording.cadence.admitted(elapsed);
+    recording.outstanding += 1;
 
     recording.observe_probe_update(
         elapsed,
@@ -910,15 +919,23 @@ fn finish(recording: &Recording, elapsed: f64, outcome: &str) -> std::io::Result
             recording.directory.join("capture-callbacks.csv"),
             &probe.callbacks,
         )?;
-        std::fs::write(recording.directory.join("capture-probe-result.txt"), format!(
-            "outcome={outcome}\nelapsed_seconds={elapsed:.6}\nsubmitted={}\ncompleted={}\noutstanding={}\n",
-            recording.frames.len(), probe.completed, recording.outstanding,
-        ))?;
+        std::fs::write(
+            recording.directory.join("capture-probe-result.txt"),
+            format!(
+                "outcome={outcome}\nelapsed_seconds={elapsed:.6}\nsubmitted={}\ncompleted={}\noutstanding={}\n",
+                recording.frames.len(),
+                probe.completed,
+                recording.outstanding,
+            ),
+        )?;
         if let Some(clock) = probe.clock.as_ref() {
-            std::fs::write(recording.directory.join("capture-clock.csv"), format!(
-                "bevy_real_start_seconds,utc_unix_start_seconds,pairing_span_us\n{:.9},{:.9},{:.3}\n",
-                clock.bevy_real_start, clock.utc_unix_start, clock.pairing_span_us,
-            ))?;
+            std::fs::write(
+                recording.directory.join("capture-clock.csv"),
+                format!(
+                    "bevy_real_start_seconds,utc_unix_start_seconds,pairing_span_us\n{:.9},{:.9},{:.3}\n",
+                    clock.bevy_real_start, clock.utc_unix_start, clock.pairing_span_us,
+                ),
+            )?;
         }
     }
     if recording.capture_images {
@@ -1021,9 +1038,11 @@ mod tests {
             assert_eq!(ordinary_samples, captures_at_rate(40, 40, cap));
             assert_eq!(probe_samples.len(), 8 * (cap as usize).min(40));
             assert_eq!(probe_samples.first(), Some(&14.0));
-            assert!(probe_samples
-                .iter()
-                .all(|sample| (14.0..22.0).contains(sample)));
+            assert!(
+                probe_samples
+                    .iter()
+                    .all(|sample| (14.0..22.0).contains(sample))
+            );
             assert!(!capture_phase_enabled(true, 300.0));
 
             let mut stalled = CaptureCadence::new(cap);
@@ -1129,8 +1148,11 @@ mod tests {
                 assert!(!recording.directory.join("frames.ffconcat").exists());
             } else {
                 assert!(!recording.directory.join("capture-pacing.csv").exists());
-                assert_eq!(std::fs::read_to_string(recording.directory.join("capture-settings.txt")).unwrap(),
-                    "capture_images=true\nrequested_capture_hz=30\nactual timestamps; missed deadlines are dropped\n");
+                assert_eq!(
+                    std::fs::read_to_string(recording.directory.join("capture-settings.txt"))
+                        .unwrap(),
+                    "capture_images=true\nrequested_capture_hz=30\nactual timestamps; missed deadlines are dropped\n"
+                );
             }
         }
         std::fs::remove_dir_all(root).unwrap();
@@ -1277,9 +1299,11 @@ mod tests {
         assert!(gaps.iter().any(|gap| (*gap - 0.025).abs() < 1.0e-8));
         assert!(gaps.iter().any(|gap| (*gap - 0.050).abs() < 1.0e-8));
         let captures = captures_at_rate(40, 1, 60);
-        assert!(captures
-            .windows(2)
-            .all(|times| (times[1] - times[0] - 0.025).abs() < 1.0e-8));
+        assert!(
+            captures
+                .windows(2)
+                .all(|times| (times[1] - times[0] - 0.025).abs() < 1.0e-8)
+        );
     }
 
     #[test]
