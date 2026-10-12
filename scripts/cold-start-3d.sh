@@ -47,7 +47,7 @@ if [ "$ACTION" = setup-web ]; then
     rustup target add wasm32-unknown-unknown
     VERSION=$(sed -n '/^name = "wasm-bindgen"$/ { n; s/^version = "\([^"]*\)"$/\1/p; }' Cargo.lock)
     [ -n "$VERSION" ] || { echo 'Cannot resolve wasm-bindgen version from Cargo.lock.' >&2; exit 1; }
-    cargo install --locked wasm-bindgen-cli --version "$VERSION"
+    cargo install --locked --root "$ROOT/target/cold-start-3d-tools" wasm-bindgen-cli --version "$VERSION"
     exit 0
 fi
 [ -f "$PACK" ] || {
@@ -101,6 +101,9 @@ case "$ACTION" in
     web)
         # The existing browser helper uses these fixed output locations.
         export CARGO_TARGET_DIR=$ROOT/target
+        if [ -z "${WASM_BINDGEN:-}" ] && [ -x "$ROOT/target/cold-start-3d-tools/bin/wasm-bindgen" ]; then
+            export WASM_BINDGEN=$ROOT/target/cold-start-3d-tools/bin/wasm-bindgen
+        fi
         CRYSTAL_PACK=$PACK CRYSTAL_WEB_OUT=target/new-bark-3d-web sh tools/new-bark-3d-web.sh
         export CRYSTAL_DATA_DIR=$ROOT/target/new-bark-3d-data
         echo "Open http://localhost:${CRYSTAL_WEB_PORT:-3003}/?multiplayer=off (normal game) or add &preview=new-bark."

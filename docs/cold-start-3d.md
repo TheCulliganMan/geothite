@@ -58,8 +58,8 @@ serve the browser build for a browser with WebGL2 support.
 ./scripts/cold-start-3d.sh play
 ```
 
-`build` validates the actual pack and artwork with Rust, then compiles the
-native client with `voxel-view`. `play` starts the normal production title and
+`build` compiles the native client and validation tools together with
+`voxel-view`, then validates the actual pack and artwork with Rust. `play` starts the normal production title and
 save flow; F3 toggles 3D. The separate `preview` command opens a fresh New Bark
 developer location preview in 3D, preserving story scripts and gates:
 
@@ -77,7 +77,9 @@ For a browser host:
 Open `http://localhost:3003/?multiplayer=off` for normal play or
 `http://localhost:3003/?multiplayer=off&preview=new-bark` for a developer preview.
 `setup-web` installs the Wasm target and the wasm-bindgen CLI version selected
-by Cargo.lock. `web` uses the existing Rust browser build pipeline, bundles
+by Cargo.lock under the ignored `target/cold-start-3d-tools/` directory,
+preserving any globally installed CLI version. `web` selects that local CLI,
+uses the existing Rust browser build pipeline, bundles
 validated artwork, and serves locally. Set `CRYSTAL_WEB_HOST=0.0.0.0` to listen
 on the host's network interfaces and `CRYSTAL_WEB_PORT` to change the port.
 Server state stays ignored under `target/new-bark-3d-data`; preserve that
@@ -93,3 +95,24 @@ The browser helper uses the repository's `target/` directory. `check` performs
 pack/art validation without opening a window. A successful check or build does
 not establish gameplay or rendering quality; run the controller and MCP
 regressions in AGENTS.md and inspect the 3D client on the destination GPU.
+
+## Transfer verification on 2026-10-12
+
+- The finalized script's `build` action passed with `CRYSTAL_BUILD_PROFILE=wasm-dev`
+  and `CARGO_TARGET_DIR=$PWD/target-bevy20-verify`, compiling the native 3D client
+  and validating the supplied realtime-clock pack and actual LFS artwork.
+- `play --help` passed when invoked from outside the checkout, verifying the
+  compiled client path and argument forwarding. This did not open a GPU window
+  or prove gameplay.
+- `cargo check --locked --target wasm32-unknown-unknown -p crystal-bevy --features location-tester`
+  passed against the final source. Browser packaging, GPU rendering and the
+  ChatGPT crash scenario were not rerun as part of this transfer check.
+- All 22 shell command blocks in the transfer/goal notes passed syntax checks;
+  all local handoff links resolve, and Git LFS integrity passed.
+- An offline clone from the bundle, local LFS-object restore, content-pack
+  restore and Rust pack-load smoke check passed in a fresh temporary checkout.
+  The restored checkout was clean, and its temporary files were removed.
+
+The six goal notes in [the handoff index](handoff/README.md) preserve unfinished
+visual work and failing/pending checks, including inverted outdoor rock-cap
+triangles, character defects and the unverified ChatGPT Goldenrod crash fix.
