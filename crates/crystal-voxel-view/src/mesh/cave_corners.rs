@@ -12,6 +12,8 @@ pub(in crate::mesh) struct RockCorners {
     width: usize,
     height: usize,
     signs: Vec<Option<RockCorner>>,
+    stair_openings: Vec<[f32;4]>,
+    walking_caps: Vec<Option<f32>>,
 }
 
 impl RockCorners {
@@ -20,6 +22,8 @@ impl RockCorners {
             width: g.width + 1,
             height: g.height + 1,
             signs: vec![None; (g.width + 1) * (g.height + 1)],
+            stair_openings: Vec::new(),
+            walking_caps: Vec::new(),
         };
         let sample = |x: i32, z: i32| {
             if x < 0 || z < 0 || x >= g.width as i32 || z >= g.height as i32 {
@@ -93,6 +97,68 @@ impl RockCorners {
         result
     }
 
+    /// Known walking crowns need an exact socket for their stone stairs.
+    /// Ease geological relief into that socket before triangulating walls;
+    /// trimming an already displaced wall leaves triangular shards outside it.
+    pub(in crate::mesh) fn new_on_map(map:&str,cells:&[&VisualTile],g:&GridGeometry) -> Self {
+        let mut result=Self::new(cells,g);
+        if !super::super::cave_crowns::enabled(map) {return result;}
+        for row in 0..g.height.saturating_sub(1) {
+            for column in 0..g.width.saturating_sub(1) {
+                let source=&cells[row*g.width+column].source;
+                if !matches!(source.tileset_id.as_ref(),"cave"|"dark_cave")
+                    || !matches!(source.metatile_id,0x12|0x30) || source.subtile_row!=2
+                    || source.subtile_column!=if source.metatile_id==0x12 {2} else {0}
+                    || source.tile_index!=0x36 {continue;}
+                if !(0..2).all(|dz|(0..2).all(|dx| {
+                    let s=&cells[(row+dz)*g.width+column+dx].source;
+                    s.tileset_id==source.tileset_id && s.metatile_id==source.metatile_id
+                        && s.subtile_row==2+dz as u8 && s.subtile_column==source.subtile_column+dx as u8
+                        && s.tile_index==0x36+dx as u16
+                })) {continue;}
+                let (w,e,n,s)=g.bounds(column,row);
+                result.stair_openings.push([w,e+g.tile_width,n,s+g.tile_height]);
+            }
+        }
+        result
+    }
+
+    pub(in crate::mesh) fn new_with_shapes(map:&str,cells:&[&VisualTile],
+        shapes:&[CellShape],g:&GridGeometry) -> Self {
+        let mut result=Self::new_on_map(map,cells,g);
+        result.walking_caps=cells.iter().zip(shapes).map(|(tile,shape)| {
+            (matches!(tile.source.tileset_id.as_ref(),"cave"|"dark_cave")
+                && tile.source.tile_index==0x16
+                && matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..}
+                    |CellShape::LedgeBand {..}))
+                .then(||shape.surface_height(g.tile_height))
+        }).collect();
+        result
+    }
+
+    fn walking_height(&self,p:Vec3,mut sculpted:Vec3,g:&GridGeometry) -> Vec3 {
+        if self.walking_caps.is_empty() {return sculpted;}
+        let x=(p.x-g.origin_x)/g.tile_width;let z=(p.z-g.origin_z)/g.tile_height;
+        let width=self.width-1;let height=self.height-1;
+        let mut offset=sculpted.y-p.y;
+        for dz in -1..=1 {for dx in -1..=1 {
+            let cx=x.floor() as isize+dx;let cz=z.floor() as isize+dz;
+            if cx<0 || cz<0 || cx>=width as isize || cz>=height as isize {continue;}
+            let Some(cap)=self.walking_caps[cz as usize*width+cx as usize] else {continue;};
+            let distance=Vec2::new((cx as f32-x).max(x-cx as f32-1.).max(0.),
+                (cz as f32-z).max(z-cz as f32-1.).max(0.)).length();
+            if distance>=1. {continue;}
+            let blend=1.-distance*distance*(3.-2.*distance);
+            // A walking cap is a support plane. Bound side relief by its
+            // distance below/above that plane, keeping the shared lip exact
+            // and easing smoothly back into geology outside the crown.
+            let limit=(p.y-cap).abs()*0.25;
+            offset+=(offset.clamp(-limit,limit)-offset)*blend;
+        }}
+        sculpted.y=p.y+offset;
+        sculpted
+    }
+
     pub(in crate::mesh) fn point(&self, p: Vec3, g: &GridGeometry, origin: [i32; 2]) -> Vec3 {
         let y = p.y / g.tile_height * SOURCE_TILE_HEIGHT;
         if y <= crate::cave::CAVE_SHELF_HEIGHT {
@@ -136,7 +202,22 @@ impl RockCorners {
                 }
             }
         }
-        rock_point(beveled, g, origin)
+        let displaced=rock_point(beveled,g,origin);
+        if self.stair_openings.is_empty() || y>=crate::cave::CAVE_ROCK_HEIGHT+4. {
+            return self.walking_height(p,displaced,g);
+        }
+        let distance=self.stair_openings.iter().filter_map(|&[w,e,n,s]| {
+            let dx=(w-p.x).max(p.x-e).max(0.)/g.tile_width;
+            let dz=(n-p.z).max(p.z-s).max(0.)/g.tile_height;
+            (dx<1.25 && dz<1.25).then(||Vec2::new(dx,dz).length())
+        }).fold(f32::INFINITY,f32::min);
+        if distance>=1.25 {return self.walking_height(p,displaced,g);}
+        let t=(distance/1.25).clamp(0.,1.);
+        let blend=t*t*(3.-2.*t);
+        // Only the walking crown and its side courses meet the socket.
+        // Taller enclosing rock retains its full height and silhouette.
+        let high=((y-crate::cave::CAVE_ROCK_HEIGHT)/4.).clamp(0.,1.);
+        self.walking_height(p,p.lerp(displaced,blend+(1.-blend)*high*high*(3.-2.*high)),g)
     }
 }
 
@@ -144,6 +225,87 @@ impl RockCorners {
 mod tests {
     use super::*;
     use std::sync::Arc;
+    #[test]
+    fn cave_stair_socket_joins_exact_edges_without_flattening_enclosing_rock() {
+        let source=super::super::super::tests::source_with_tile(0x05,0,0,0x16);
+        let mut frame=super::super::super::tests::frame(4,5,vec![source;20]);
+        for tile in &mut frame.tiles {tile.source.tileset_id="cave".into();}
+        for dz in 0..2 {for dx in 0..2 {
+            frame.tiles[(2+dz)*4+1+dx].source=VisualTileSource {
+                tileset_id:"cave".into(),metatile_id:0x12,
+                subtile_column:2+dx as u8,subtile_row:2+dz as u8,tile_index:0x36+dx as u16,
+            };
+        }}
+        let g=GridGeometry {width:4,height:5,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let plain=RockCorners::new(&cells,&g);
+        let joined=RockCorners::new_on_map("VictoryRoad",&cells,&g);
+        assert_eq!(joined.stair_openings.len(),1);
+        for x in [8.,16.,24.] {for z in [16.,24.,32.] {for y in [6.,12.,16.] {
+            let p=Vec3::new(x,y,z);assert_eq!(joined.point(p,&g,[11,17]),p);
+        }}}
+        let near=Vec3::new(7.999,16.,24.);
+        assert!((joined.point(near,&g,[11,17])-near).length()<0.0001);
+        for p in [Vec3::new(-16.,16.,24.),Vec3::new(8.,40.,24.)] {
+            assert_eq!(joined.point(p,&g,[11,17]),plain.point(p,&g,[11,17]));
+        }
+        let p=Vec3::new(8.,16.,24.);
+        assert_eq!(RockCorners::new_on_map("UnionCave1F",&cells,&g).point(p,&g,[11,17]),
+            plain.point(p,&g,[11,17]));
+        frame.tiles[3*4+2].source.tile_index=0x16;
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        assert!(RockCorners::new_on_map("VictoryRoad",&cells,&g).stair_openings.is_empty());
+    }
+    #[test]
+    fn cave_stair_socket_vertical_transition_has_no_folded_rock_faces() {
+        let mut frame=super::super::super::tests::frame(4,5,
+            vec![super::super::super::tests::source_with_tile(0x05,0,0,0x16);20]);
+        for tile in &mut frame.tiles {tile.source.tileset_id="cave".into();}
+        for dz in 0..2 {for dx in 0..2 {
+            frame.tiles[(2+dz)*4+1+dx].source=VisualTileSource {
+                tileset_id:"cave".into(),metatile_id:0x12,
+                subtile_column:2+dx as u8,subtile_row:2+dz as u8,tile_index:0x36+dx as u16,
+            };
+        }}
+        let g=GridGeometry {width:4,height:5,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let corners=RockCorners::new_on_map("VictoryRoad",&cells,&g);
+        for origin in [[0,0],[11,17],[-40,110],[200,-310],[63,81],[-93,-77]] {
+            let mut mesh=SurfaceMeshData::default();
+            quad_with_point(&mut mesh,[[8.,0.,16.],[8.,0.,32.],[8.,40.,32.],[8.,40.,16.]],
+                [0.34,0.345,0.31,1.],&g,origin,|p,g,o|corners.point(p,g,o),false);
+            for t in mesh.indices.chunks_exact(3) {
+                let [a,b,c]=[t[0],t[1],t[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+                assert!((b-a).cross(c-a).x<0.,"folded stair-adjoining rock face at {origin:?}: {a:?} {b:?} {c:?}");
+            }
+        }
+    }
+    #[test]
+    fn cave_walking_caps_match_actor_support_and_keep_the_enclosure_sculpted() {
+        let source=super::super::super::tests::source_with_tile(0x0d,0,0,0x16);
+        let mut frame=super::super::super::tests::frame(4,4,vec![source;16]);
+        for tile in &mut frame.tiles {tile.source.tileset_id="cave".into();}
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        for height in [16.,40.] {
+            let shapes=vec![CellShape::RaisedTop {height,solid:SolidKind::Bank};16];
+            let corners=RockCorners::new_with_shapes("SilverCaveRoom2",&cells,&shapes,&g);
+            for origin in [[0,0],[11,17],[-40,110],[200,-310]] {
+                for x in [0.,4.,8.,16.,24.,32.] {for z in [0.,4.,8.,16.,24.,32.] {
+                    let p=Vec3::new(x,height,z);
+                    assert_eq!(corners.point(p,&g,origin).y,height,"walking floor must agree with actor support");
+                    let lower=Vec3::new(x,height-1.,z);
+                    assert!(corners.point(lower,&g,origin).y<height);
+                }}
+            }
+        }
+        let ceilings=vec![CellShape::RaisedTop {height:40.,solid:SolidKind::Bank};16];
+        let mut roof=frame.clone();for tile in &mut roof.tiles {tile.source.tile_index=0x26;}
+        let cells=roof.tiles.iter().collect::<Vec<_>>();
+        let corners=RockCorners::new_with_shapes("UnionCave1F",&cells,&ceilings,&g);
+        let plain=RockCorners::new(&cells,&g);let p=Vec3::new(16.,40.,16.);
+        assert_eq!(corners.point(p,&g,[11,17]),plain.point(p,&g,[11,17]));
+    }
     #[test]
     fn cave_corner_breaks_join_caps_and_sides_without_moving_low_surfaces() {
         let g = GridGeometry {

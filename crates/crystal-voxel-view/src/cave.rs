@@ -32,7 +32,7 @@ pub(crate) fn small_rock_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     (source.tile_index == expected[usize::from(row)][usize::from(column)]).then_some((column, row))
 }
 
-/// Crystal's four complete cave ladder/warp drawings. They are drawn from
+/// Crystal's complete cave ladder/warp drawings. They are drawn from
 /// directly above and occupy the southeast collision quadrant of their
 /// metatile. Unlike the Gen 1 reference profile's staircase cells, these
 /// pictures do not provide a shelf transition. Their support stays on the
@@ -45,8 +45,11 @@ pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
         return None;
     }
     let expected = match source.metatile_id {
-        0x07 => [[0x2a, 0x2b], [0x3a, 0x3b]],
-        0x0b => [[0x22, 0x23], [0x32, 0x33]],
+        // $14/$15 add a north-facing wall in the metatile's first row.
+        // A plain lower-floor row separates it from these ladder drawings;
+        // they do not supply a raised landing for a six-pixel ramp.
+        0x07 | 0x14 => [[0x2a, 0x2b], [0x3a, 0x3b]],
+        0x0b | 0x15 => [[0x22, 0x23], [0x32, 0x33]],
         0x1b => [[0x28, 0x29], [0x38, 0x39]],
         0x1f => [[0x20, 0x21], [0x30, 0x31]],
         _ => return None,
@@ -54,23 +57,6 @@ pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     let column = source.subtile_column - 2;
     let row = source.subtile_row - 2;
     (source.tile_index == expected[usize::from(row)][usize::from(column)]).then_some((column, row))
-}
-
-/// The complete ladder flight on an authored six-pixel shelf transition.
-pub(crate) fn shelf_ladder_local(s: &VisualTileSource) -> Option<(u8, u8)> {
-    if !matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
-        || !(2..4).contains(&s.subtile_column)
-        || !(2..4).contains(&s.subtile_row)
-    {
-        return None;
-    }
-    let art = match s.metatile_id {
-        0x14 => [[0x2a, 0x2b], [0x3a, 0x3b]],
-        0x15 => [[0x22, 0x23], [0x32, 0x33]],
-        _ => return None,
-    };
-    let (x, y) = (s.subtile_column - 2, s.subtile_row - 2);
-    (s.tile_index == art[y as usize][x as usize]).then_some((x, y))
 }
 
 /// The paired lower-row exit motif is a sill, not a complete ladder flight.
@@ -424,27 +410,6 @@ fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
             }
         } else {
             CellShape::Flat
-        });
-    }
-
-    // $14/$15 carry Crystal's narrow ladder/stair drawings in their southeast
-    // quadrant. They connect the 6px lit shelf at the north end to the cave
-    // datum at the south end. Split that complete 16px flight across its two
-    // native rows; standing the drawing upright creates a detached panel.
-    if matches!(source.metatile_id, 0x14 | 0x15)
-        && source.subtile_column >= 2
-        && source.subtile_row >= 2
-    {
-        return Some(if source.subtile_row == 2 {
-            CellShape::RampNorth {
-                north_height: CAVE_SHELF_HEIGHT,
-                south_height: CAVE_SHELF_HEIGHT * 0.5,
-            }
-        } else {
-            CellShape::RampNorth {
-                north_height: CAVE_SHELF_HEIGHT * 0.5,
-                south_height: 0.0,
-            }
         });
     }
 
@@ -1120,28 +1085,21 @@ mod tests {
     }
 
     #[test]
-    fn cave_ladder_is_one_two_row_north_rising_flight() {
-        for (row, expected) in [
-            (
-                2,
-                CellShape::RampNorth {
-                    north_height: CAVE_SHELF_HEIGHT,
-                    south_height: CAVE_SHELF_HEIGHT * 0.5,
-                },
-            ),
-            (
-                3,
-                CellShape::RampNorth {
-                    north_height: CAVE_SHELF_HEIGHT * 0.5,
-                    south_height: 0.0,
-                },
-            ),
-        ] {
-            let mut ladder = source("cave", if row == 2 { 0x2a } else { 0x3a });
-            ladder.metatile_id = 0x14;
-            ladder.subtile_column = 2;
-            ladder.subtile_row = row;
-            assert_eq!(authored_cave_shape(&ladder), Some(expected));
+    fn cave_wall_backed_ladders_keep_the_surrounding_lower_floor() {
+        for tileset in ["cave", "dark_cave"] {
+            for (block, art) in [(0x14, [[0x2a,0x2b],[0x3a,0x3b]]),
+                                 (0x15, [[0x22,0x23],[0x32,0x33]])] {
+                for y in 0..2 { for x in 0..2 {
+                    let mut ladder=source(tileset,art[y][x]);
+                    ladder.metatile_id=block;
+                    ladder.subtile_column=x as u8+2;
+                    ladder.subtile_row=y as u8+2;
+                    assert_eq!(flat_ladder_local(&ladder),Some((x as u8,y as u8)));
+                    assert_eq!(authored_cave_shape(&ladder),Some(CellShape::PlaneAt {height:0.}));
+                    ladder.tile_index=0xff;
+                    assert_eq!(flat_ladder_local(&ladder),None);
+                }}
+            }
         }
     }
 

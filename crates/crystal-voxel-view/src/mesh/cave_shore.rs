@@ -96,7 +96,7 @@ pub(super) fn append(
         &mut mesh.textured,
         [w, e, n, s],
         0.,
-        g.uv(water % g.width, water / g.width),
+        cave_pool_uv(cells[water], g.uv(water % g.width, water / g.width)),
     );
     let u = g.tile_height / SOURCE_TILE_HEIGHT;
     let width = 1.4 * u;
@@ -161,6 +161,35 @@ pub(super) fn append(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn cave_pool_atlas_endpoints_stay_in_the_live_slot() {
+        let mut tile = VisualTile {
+            column: 12, row: 57, priority: false, texture: Handle::default(),
+            animation_frames: Some(vec![Handle::default(); 2].into()),
+            source: VisualTileSource {
+                tileset_id: "dark_cave".into(), metatile_id: 0x27,
+                subtile_column: 0, subtile_row: 1, tile_index: 0x14,
+            },
+        };
+        let g = GridGeometry {
+            width: 40, height: 72, tile_width: 8., tile_height: 8.,
+            origin_x: -160., origin_z: -288.,
+        };
+        let original = g.uv(12, 57);
+        let (u0, u1, v0, v1) = cave_pool_uv(&tile, original);
+        for u in [u0, u1] { for v in [v0, v1] {
+            assert_eq!((u * 40.).floor() as u32, 12);
+            assert_eq!((v * 72.).floor() as u32, 57);
+        }}
+        tile.animation_frames = None;
+        assert_eq!(cave_pool_uv(&tile, original), original);
+        tile.animation_frames = Some(vec![Handle::default(); 2].into());
+        tile.source.tile_index = 0x26;
+        assert_eq!(cave_pool_uv(&tile, original), original);
+        tile.source.tile_index = 0x14;
+        tile.source.tileset_id = "johto".into();
+        assert_eq!(cave_pool_uv(&tile, original), original);
+    }
     #[test]
     fn shoreline_facets_join_at_source_seams_and_keep_water_level() {
         let g = GridGeometry {
@@ -282,7 +311,8 @@ mod tests {
         assert_eq!(mesh.textured.positions, p);
         assert_eq!(
             mesh.textured.uvs,
-            [[0.5, 0.], [0.5, 1.], [1., 1.], [1., 0.]]
+            [[0.53125, 0.0625], [0.53125, 0.9375],
+                [0.96875, 0.9375], [0.96875, 0.0625]]
         );
         assert_eq!(mesh.footing_heights, vec![0.; 2]);
         assert!(mesh.solid.positions.iter().all(|p| p[1] <= 0.65));

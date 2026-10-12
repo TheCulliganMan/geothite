@@ -52,7 +52,7 @@ pub(in crate::mesh) fn enclosing_color(points: &[[f32;3];4], normal: [f32;3], so
         .then_some(if source.tileset_id.as_ref()=="dark_cave" {[0.31,0.37,0.39,1.]} else {[0.34,0.345,0.31,1.]})
 }
 
-fn color(
+pub(in crate::mesh) fn color(
     p: [f32; 3],
     normal: [f32; 3],
     dark: bool,
@@ -140,14 +140,17 @@ pub(in crate::mesh) fn append(
     let at = |u: usize, v: usize| {
         // Preserve exact outside edges. Every subdivision is on the original
         // plane, including its height; this finish cannot change footing.
-        let u = u as f32 / 3.0;
-        let v = v as f32 / 3.0;
+        // Match the curved scarp's horizontal knots. The weathering pass
+        // bends these shared edges, so different subdivisions leave slivers
+        // even when their original endpoints are identical.
+        let u = u as f32 / 4.0;
+        let v = v as f32 / 4.0;
         let a = Vec3::from_array(points[0]).lerp(Vec3::from_array(points[3]), u);
         let b = Vec3::from_array(points[1]).lerp(Vec3::from_array(points[2]), u);
         a.lerp(b, v).to_array()
     };
-    for v in 0..3 {
-        for u in 0..3 {
+    for v in 0..4 {
+        for u in 0..4 {
             let patch = [at(u, v), at(u, v + 1), at(u + 1, v + 1), at(u + 1, v)];
             append_quad_colors(
                 out,
@@ -172,7 +175,9 @@ pub(in crate::mesh) fn blend_wall_feet(
     if g.width == 0 || g.height == 0 { return; }
     for i in 0..out.positions.len() {
         if out.uvs[i][0] < 90000. || (out.uvs[i][1] / 100000.).round() != 4.
-            || out.normals[i][1] < 0.999 { continue; }
+            // Authenticated six-over-sixteen cave flights share the same dust
+            // transition as their lower landing. Keep vertical rock excluded.
+            || out.normals[i][1] < 0.93 { continue; }
         let p = Vec3::from_array(out.positions[i]);
         if p.y > crate::cave::CAVE_SHELF_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT + 0.001 { continue; }
         let x = (p.x - g.origin_x) / g.tile_width;
@@ -207,6 +212,70 @@ pub(in crate::mesh) fn blend_wall_feet(
     }
 }
 
+// Round only a proven convex shelf corner: one raised quadrant surrounded
+// by three known lower-floor quadrants. The source walking center stays
+// outside the radius, and the lower seam stays fixed on its original datum.
+fn rounded_shelf_corner(
+    p: Vec3, cells: &[&VisualTile], g: &GridGeometry,
+) -> (Vec3, f32) {
+    let height=crate::cave::CAVE_SHELF_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT;
+    if p.y<=0. || p.y>height+0.001 { return (Vec3::ZERO,1.); }
+    let x=(p.x-g.origin_x)/g.tile_width;
+    let z=(p.z-g.origin_z)/g.tile_height;
+    let cx=x.round() as i32;
+    let cz=z.round() as i32;
+    let radius=0.4;
+    if cx<=0 || cz<=0 || cx>=g.width as i32 || cz>=g.height as i32
+        || (x-cx as f32).abs()>radius || (z-cz as f32).abs()>radius {
+        return (Vec3::ZERO,1.);
+    }
+    let indices=[(cx-1,cz-1),(cx,cz-1),(cx-1,cz),(cx,cz)]
+        .map(|(x,z)|z as usize*g.width+x as usize);
+    let tileset=&cells[indices[0]].source.tileset_id;
+    let mut raised=[false;4];
+    for (quadrant,index) in indices.into_iter().enumerate() {
+        if &cells[index].source.tileset_id!=tileset {return (Vec3::ZERO,1.);}
+        match crate::cave::cave_shape(&cells[index].source) {
+            Some(shape) if shape.surface_height(SOURCE_TILE_HEIGHT)==crate::cave::CAVE_SHELF_HEIGHT => {
+                raised[quadrant]=true;
+            }
+            Some(CellShape::Flat) if cells[index].source.tile_index==0x16 => {},
+            _ => return (Vec3::ZERO,1.),
+        }
+    }
+    // Both ends of a bank need an arc. A solitary raised quadrant is a
+    // convex lip; a solitary lower quadrant is a recessed inside corner.
+    // Two raised quadrants form a straight seam or a diagonal contact and
+    // cannot authorize a corner fill.
+    let count=raised.into_iter().filter(|s|*s).count();
+    let quadrant=match count {
+        1 => raised.iter().position(|s|*s).unwrap(),
+        3 => raised.iter().position(|s|!*s).unwrap(),
+        _ => return (Vec3::ZERO,1.),
+    };
+    let sx=if quadrant%2==0 {-1.}else{1.};
+    let sz=if quadrant<2 {-1.}else{1.};
+    let u=(x-cx as f32)*sx;
+    let v=(z-cz as f32)*sz;
+    // Existing shoulder vertices can sit slightly outside the footprint.
+    // Applying the same arc to them keeps the cap and curved body connected.
+    // For a recessed corner, cap samples lie in the three rock quadrants.
+    // Project the adjacent boundary, then feather that displacement into the
+    // rock. Projecting the entire cap directly onto the floor-side circle
+    // would jump at the support boundary and could fold the plateau.
+    let sample=if count==3 {bevy::prelude::Vec2::new(u.max(0.),v.max(0.))}
+        else {bevy::prelude::Vec2::new(u,v)};
+    let offset=sample-bevy::prelude::Vec2::splat(radius);
+    let distance=offset.length();
+    if distance<=radius {return (Vec3::ZERO,1.);}
+    let rounded=bevy::prelude::Vec2::splat(radius)+offset*(radius/distance);
+    let t=(p.y/height).clamp(0.,1.);
+    let feather=|a:f32| {let w=(1.+a.min(0.)/radius).clamp(0.,1.);w*w*(3.-2.*w)};
+    let blend=t*t*(3.-2.*t)*if count==3 {feather(u)*feather(v)}else{1.};
+    (Vec3::new((rounded.x-sample.x)*sx*g.tile_width,0.,(rounded.y-sample.y)*sz*g.tile_height)*blend,
+        ((u.max(0.)+v.max(0.))/(2.*radius)).clamp(0.,1.))
+}
+
 /// Break the silhouette of exposed shelf lips without changing elevation.
 /// Shared cap/body vertices use one map-space displacement; walking centers
 /// and the lower floor are untouched. Only proven six-pixel shelf edges qualify.
@@ -223,8 +292,14 @@ pub(in crate::mesh) fn weather_shelf_lips(
     for i in 0..out.positions.len() {
         // Eligibility comes from the actual shelf boundary. Borrowed atlas
         // paint and mineral paint must move together at that shared join.
-        if (out.positions[i][1] - height).abs() > 0.001 { continue; }
         let p = Vec3::from_array(out.positions[i]);
+        if p.y <= 0. || p.y > height+0.001 { continue; }
+        let kind=(out.uvs[i][1]/100000.).round();
+        let (rounding, lip_weight)=if out.uvs[i][0]>90000. && matches!(kind,4. | 6. | 7.) {
+            rounded_shelf_corner(p,cells,g)
+        } else {(Vec3::ZERO,1.)};
+        let on_lip=(p.y-height).abs()<0.001;
+        if !on_lip && rounding==Vec3::ZERO {continue;}
         let x = (p.x - g.origin_x) / g.tile_width;
         let z = (p.z - g.origin_z) / g.tile_height;
         let mut direction = Vec3::ZERO;
@@ -245,7 +320,7 @@ pub(in crate::mesh) fn weather_shelf_lips(
                         (z - (row + i32::from(dz > 0)) as f32).abs() < 0.001
                             && x >= column as f32 - 0.001 && x <= column as f32 + 1.001
                     };
-                    if on_edge {
+                    if on_edge && on_lip {
                         if dx != 0 { direction.x = dx as f32; } else { direction.z = dz as f32; }
                     }
                 }
@@ -253,7 +328,7 @@ pub(in crate::mesh) fn weather_shelf_lips(
         }
         let relief = 0.10 + cave_cliff::slab((x + origin[0] as f32) * 0.74 + 19.,
             (z + origin[1] as f32) * 0.74 - 23.) * 0.08;
-        let delta = direction * Vec3::new(g.tile_width, 0., g.tile_height) * relief;
+        let delta = rounding + direction * Vec3::new(g.tile_width, 0., g.tile_height) * relief * lip_weight;
         out.positions[i] = (p + delta).to_array();
         moved[i] = delta != Vec3::ZERO;
         if out.uvs[i][0] > 90000. {
@@ -328,9 +403,9 @@ pub(in crate::mesh) fn floor_detail(
             out,
             [
                 (pair[0] - across).to_array(),
-                (pair[1] - across).to_array(),
-                (pair[1] + across).to_array(),
                 (pair[0] + across).to_array(),
+                (pair[1] + across).to_array(),
+                (pair[1] - across).to_array(),
             ],
             [0., 1., 0.],
             [0.20, 0.185, 0.155, 1.],
@@ -381,6 +456,33 @@ mod tests {
     }
 
     #[test]
+    fn cave_floor_fractures_and_chips_face_up_at_both_walking_datums() {
+        let g = geometry();
+        for height in [0., crate::cave::CAVE_SHELF_HEIGHT] {
+            let mut found = false;
+            for x in 0..32 {
+                let mut mesh = SurfaceMeshData::default();
+                floor_detail(&mut mesh,
+                    [[0.,height,0.], [0.,height,8.], [8.,height,8.], [8.,height,0.]],
+                    [0.,1.,0.], &source(0x16), &g, [x,0]);
+                if mesh.indices.is_empty() { continue; }
+                found = true;
+                for triangle in mesh.indices.chunks_exact(3) {
+                    let p: [Vec3;3] = std::array::from_fn(|i|
+                        Vec3::from_array(mesh.positions[triangle[i] as usize]));
+                    let winding = (p[1]-p[0]).cross(p[2]-p[0]);
+                    assert!(winding.y > 0., "floor detail must face the cave camera");
+                    for &index in triangle {
+                        assert!(winding.dot(Vec3::from_array(mesh.normals[index as usize])) > 0.);
+                    }
+                    assert!(p.iter().all(|p| p.y >= height));
+                }
+            }
+            assert!(found, "exercise a seeded floor fracture");
+        }
+    }
+
+    #[test]
     fn wall_foot_blending_preserves_support_and_is_stable_across_grid_scrolling() {
         for (tileset, wall_tile) in [("cave", 0x26), ("dark_cave", 0x26), ("cave", 0x01), ("dark_cave", 0x01)] {
             let g = GridGeometry { width: 5, height: 1, ..geometry() };
@@ -406,6 +508,14 @@ mod tests {
             assert_eq!(mesh.indices, original.indices);
             assert_eq!(mesh.uvs, original.uvs);
             assert_ne!(mesh.colors[0], original.colors[0]);
+            let mut ramp=original.clone();
+            let slope=Vec3::new(0.,16.,6.).normalize().to_array();
+            ramp.normals.fill(slope);
+            let ramp_positions=ramp.positions.clone();
+            blend_wall_feet(&mut ramp,&cells,&g,[0,0]);
+            assert_eq!(ramp.colors,mesh.colors,"ramp dust must close against the floor at its landing");
+            assert_eq!(ramp.positions,ramp_positions);
+            assert!(ramp.normals.iter().all(|n|*n==slope));
             assert_eq!(mesh.colors.last(), original.colors.last());
             assert!(mesh.colors.iter().all(|c| c[3] == 1.));
             let mut shifted = original.clone();
@@ -431,6 +541,144 @@ mod tests {
             let mut untouched = original.clone();
             blend_wall_feet(&mut untouched, &refs, &g, [0,0]);
             assert_eq!(untouched.colors, original.colors);
+        }
+    }
+
+    #[test]
+    fn cave_weathered_cap_and_scarp_share_every_lip_sample() {
+        let g = GridGeometry { height: 2, ..geometry() };
+        let tiles: Vec<_> = (0..2).map(|row| VisualTile {
+            column: 0, row, source: source(if row == 0 { 0x01 } else { 0x16 }),
+            texture: Default::default(), animation_frames: None, priority: false,
+        }).collect();
+        let cells: Vec<_> = tiles.iter().collect();
+        let shapes = [CellShape::RaisedTop { height: 6., solid: SolidKind::Bank }, CellShape::Flat];
+        let mut mesh = TerrainMeshData::default();
+        modeled_dungeons::append_terrain(&mut mesh, "SilverCaveRoom3", &cells,
+            &shapes, &g, &mut [false; 2], [0, 0]);
+        weather_shelf_lips(&mut mesh.solid, &cells, &g, [0, 0]);
+        let edge = |kind: f32| {
+            let mut points: Vec<_> = mesh.solid.positions.iter().zip(&mesh.solid.uvs)
+                .filter(|(p, uv)| p[1] == 6. && p[2] >= 8.
+                    && (uv[1] / 100000.).round() == kind)
+                .map(|(p, _)| *p).collect();
+            points.sort_by(|a,b| a[0].total_cmp(&b[0]));
+            points.dedup();
+            points
+        };
+        let cap = edge(4.);
+        let body = edge(6.);
+        assert_eq!(cap.len(), 5, "the cap must sample the curved side's complete lip");
+        assert_eq!(cap, body, "weathering must not open cap-to-body slivers");
+    }
+
+    #[test]
+    fn convex_shelf_corners_round_shared_caps_and_bodies_but_keep_support_and_unknown_edges() {
+        let g=GridGeometry {width:3,height:3,..geometry()};
+        for quadrant in 0..4 {
+            let raised=if quadrant<2 {quadrant}else{quadrant+1};
+            let mut tiles:Vec<_>=(0..9).map(|i|VisualTile {
+                column:(i%3)as u32,row:(i/3)as u32,
+                source:source(if i==raised {0x01}else{0x16}),
+                texture:Default::default(),animation_frames:None,priority:false,
+            }).collect();
+            let refs:Vec<_>=tiles.iter().collect();
+            let corner=Vec3::new(8.,6.,8.);
+            let (delta,weight)=rounded_shelf_corner(corner,&refs,&g);
+            assert!(delta.length()>1. && delta.length()<1.5);
+            assert_eq!(delta.y,0.);
+            assert_eq!(weight,0.);
+            assert_eq!(delta.x.signum(),if quadrant%2==0 {-1.}else{1.});
+            assert_eq!(delta.z.signum(),if quadrant<2 {-1.}else{1.});
+            let (middle,_)=rounded_shelf_corner(Vec3::new(8.,3.,8.),&refs,&g);
+            assert!((middle-delta*0.5).length()<0.00001);
+            assert_eq!(rounded_shelf_corner(Vec3::new(8.,0.,8.),&refs,&g).0,Vec3::ZERO);
+            let center=Vec3::new((raised%3)as f32*8.+4.,6.,(raised/3)as f32*8.+4.);
+            assert_eq!(rounded_shelf_corner(center,&refs,&g).0,Vec3::ZERO);
+            let mut mesh=SurfaceMeshData::default();
+            mesh.positions=vec![corner.to_array();2];
+            mesh.uvs=vec![cave_cliff::floor_uv(corner,&g,[0,0],false),
+                cave_cliff::stone_uv(corner,&g,[0,0],false)];
+            weather_shelf_lips(&mut mesh,&refs,&g,[0,0]);
+            assert_eq!(mesh.positions[0],mesh.positions[1]);
+            assert_eq!(mesh.positions[0],(corner+delta).to_array());
+            // A pool or missing source drawing cannot authorize cutting back
+            // a corner. This keeps shorelines and unpublished halo seams intact.
+            let other=if raised==0 {1}else{0};
+            for unknown in [0x14,0xff] {
+                tiles[other].source.tile_index=unknown;
+                assert_eq!(rounded_shelf_corner(corner,&tiles.iter().collect::<Vec<_>>(),&g).0,Vec3::ZERO);
+            }
+        }
+    }
+
+    #[test]
+    fn recessed_shelf_corners_blend_both_faces_without_raising_the_floor() {
+        for scale in [1.,2.] {
+            let g=GridGeometry {width:3,height:3,tile_width:8.*scale,tile_height:8.*scale,
+                origin_x:-17.,origin_z:29.};
+            for quadrant in 0..4 {
+                let lower=if quadrant<2 {quadrant}else{quadrant+1};
+                let mut tiles:Vec<_>=(0..9).map(|i|VisualTile {
+                    column:(i%3)as u32,row:(i/3)as u32,
+                    source:source(if i==lower {0x16}else{0x01}),
+                    texture:Default::default(),animation_frames:None,priority:false,
+                }).collect();
+                let refs:Vec<_>=tiles.iter().collect();
+                let corner=Vec3::new(g.origin_x+g.tile_width,6.*scale,g.origin_z+g.tile_height);
+                let (delta,weight)=rounded_shelf_corner(corner,&refs,&g);
+                assert!(delta.length()>scale && delta.length()<1.5*scale);
+                assert_eq!(delta.y,0.);
+                assert_eq!(weight,0.);
+                assert_eq!(delta.x.signum(),if quadrant%2==0 {-1.}else{1.});
+                assert_eq!(delta.z.signum(),if quadrant<2 {-1.}else{1.});
+                // Both walking datums and every tile center remain exact.
+                for (i,tile) in tiles.iter().enumerate() {
+                    let y=if i==lower {0.}else{6.*scale};
+                    let center=Vec3::new(g.origin_x+(tile.column as f32+0.5)*g.tile_width,
+                        y,g.origin_z+(tile.row as f32+0.5)*g.tile_height);
+                    assert_eq!(rounded_shelf_corner(center,&refs,&g).0,Vec3::ZERO);
+                }
+                assert_eq!(rounded_shelf_corner(Vec3::new(corner.x,0.,corner.z),&refs,&g).0,Vec3::ZERO);
+                let mut mesh=SurfaceMeshData::default();
+                mesh.positions=vec![corner.to_array();2];
+                mesh.uvs=vec![cave_cliff::floor_uv(corner,&g,[0,0],false),
+                    cave_cliff::stone_uv(corner,&g,[0,0],false)];
+                weather_shelf_lips(&mut mesh,&refs,&g,[0,0]);
+                assert_eq!(mesh.positions[0],mesh.positions[1]);
+                assert_eq!(mesh.positions[0],(corner+delta).to_array());
+                // The arc must meet its unchanged support continuously on
+                // the rock side, not snap at the edge of the rounding field.
+                let sx=delta.x.signum();
+                let sz=delta.z.signum();
+                for axis in [Vec3::X*sx,Vec3::Z*sz] {
+                    let edge=corner-axis*g.tile_width*0.4;
+                    assert!(rounded_shelf_corner(edge,&refs,&g).0.length()<0.00001);
+                    assert!(rounded_shelf_corner(edge+axis*g.tile_width*0.0001,&refs,&g).0.length()<0.00001);
+                }
+                // Exercise the real cap tessellation in all three rock
+                // quadrants; every triangle must stay upward and nonzero.
+                let mut cap=SurfaceMeshData::default();
+                for tile in tiles.iter().filter(|t|t.source.tile_index==0x01) {
+                    for v in 0..4 {for u in 0..4 {
+                        let at=|u:f32,v:f32| [g.origin_x+(tile.column as f32+u/4.)*g.tile_width,
+                            6.*scale,g.origin_z+(tile.row as f32+v/4.)*g.tile_height];
+                        let points=[at(u as f32,v as f32),at(u as f32,v as f32+1.),
+                            at(u as f32+1.,v as f32+1.),at(u as f32+1.,v as f32)];
+                        append_quad_colors(&mut cap,points,[0.,1.,0.],
+                            points.map(|p|cave_cliff::floor_uv(Vec3::from_array(p),&g,[0,0],false)),[[0.4;4];4]);
+                    }}
+                }
+                weather_shelf_lips(&mut cap,&refs,&g,[0,0]);
+                for tri in cap.indices.chunks_exact(3) {
+                    let p:[Vec3;3]=std::array::from_fn(|i|Vec3::from_array(cap.positions[tri[i] as usize]));
+                    assert!((p[1]-p[0]).cross(p[2]-p[0]).y>0.,"folded recessed shelf cap");
+                }
+                for unknown in [0x14,0xff] {
+                    tiles[lower].source.tile_index=unknown;
+                    assert_eq!(rounded_shelf_corner(corner,&tiles.iter().collect::<Vec<_>>(),&g).0,Vec3::ZERO);
+                }
+            }
         }
     }
 
@@ -501,7 +749,12 @@ mod tests {
             for corner in p {
                 assert!(out.positions.contains(&corner));
             }
-            assert_eq!(out.indices.len(), 54);
+            assert!(!out.indices.is_empty());
+            for triangle in out.indices.chunks_exact(3) {
+                let [a, b, c] = std::array::from_fn(|i|
+                    Vec3::from_array(out.positions[triangle[i] as usize]));
+                assert!((b-a).cross(c-a).y > 0., "floor triangles must remain nondegenerate and face up");
+            }
         }
     }
 

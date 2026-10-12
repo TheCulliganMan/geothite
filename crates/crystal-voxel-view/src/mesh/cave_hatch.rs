@@ -114,3 +114,25 @@ mod tests {
         }
     }
 }
+
+
+/// Native warp drawings are viewed from above, with no authored upright
+/// ladder flight. A closed shallow volume retains their actual four source
+/// tiles and floor footprint instead of obscuring the room with tall rails.
+pub(super) fn append_native_warp(out:&mut SurfaceMeshData,g:&GridGeometry,
+    p:&Placement,datum:f32) {
+    let (w,_,n,_)=g.bounds(p.column,p.row);
+    let e=w+2.*g.tile_width;let s=n+2.*g.tile_height;
+    let top=datum+1.25*g.tile_height/SOURCE_TILE_HEIGHT;
+    let first=out.positions.len();let indices=out.indices.len();
+    super::super::modeled_interiors::architecture_box(out,[w,e,datum,top,n,s],[1.;3]);
+    // Side faces use a texel of this opening's source edge. No brown/yellow
+    // wood material or foreign cave/floor palette is introduced.
+    let uv=g.uv(p.column,p.row);
+    out.uvs[first..].fill([(uv.0+uv.1)*0.5,uv.2+(uv.3-uv.2)*7.5/8.]);
+    out.indices.drain(indices..indices+6);
+    for y in 0..2 {for x in 0..2 {
+        append_top(out,g.bounds(p.column+x,p.row+y).into(),top,
+            g.uv(p.column+x,p.row+y));
+    }}
+}

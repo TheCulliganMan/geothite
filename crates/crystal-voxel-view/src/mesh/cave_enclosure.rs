@@ -204,6 +204,22 @@ fn point(p: Vec3, g: &GridGeometry, origin: [i32; 2], ice: bool, corners: &cave_
     }
 }
 
+pub(super) fn void_cells(frame:&VisualWorldFrame,g:&GridGeometry)->Vec<usize> {
+    let Some(size)=frame.source_map_size_core_tiles else{return Vec::new();};
+    let Some(cells)=ordered_tiles(frame,g) else{return Vec::new();};
+    let mut result=Vec::new();
+    for row in 0..g.height.saturating_sub(3) {for col in 0..g.width.saturating_sub(3) {
+        let sx=col as i32+frame.grid_origin.x;let sz=row as i32+frame.grid_origin.y;
+        if sx<0 || sz<0 || sx+4>size.x as i32*2 || sz+4>size.y as i32*2 {continue;}
+        if (0..16).all(|j| {
+            let s=&cells[(row+j/4)*g.width+col+j%4].source;
+            matches!(s.tileset_id.as_ref(),"cave"|"dark_cave") && s.metatile_id==0x01
+                && s.tile_index==0x10 && s.subtile_column as usize==j%4 && s.subtile_row as usize==j/4
+        }) {result.extend((0..16).map(|j|(row+j/4)*g.width+col+j%4));}
+    }}
+    result
+}
+
 pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshData {
     let mut out = SurfaceMeshData::default();
     let Some(size) = frame.source_map_size_core_tiles else {
@@ -247,6 +263,15 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
         [outer_w, w, n, s],
         [e, outer_e, n, s],
     ] {
+        // The cutaway can reveal the interior of this outer rock mass. Keep
+        // a mineral foundation under it instead of exposing the clear void.
+        // These rectangles lie strictly outside the authored map, so no
+        // playable floor, opening, water or actor datum changes.
+        let foundation = [Vec3::new(left,0.,top),Vec3::new(left,0.,bottom),
+            Vec3::new(right,0.,bottom),Vec3::new(right,0.,top)];
+        append_quad_colors(&mut out,foundation.map(|p|p.to_array()),[0.,1.,0.],
+            foundation.map(|p|cave_cliff::stone_uv(p,g,origin,ice)),
+            foundation.map(|p|cave_cliff::pigment(tint,p,g,origin,ice)));
         // Match the wall's quarter-tile knots along every map-facing edge.
         // Coarsen only beyond the joint so distant rock does not need the
         // full density of the playable enclosure.
@@ -280,7 +305,16 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
             }
         }
     }
-    let selected = outer_ground_cells(frame, g);
+    let voids=void_cells(frame,g);
+    for &i in &voids {
+        let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
+        let base=[Vec3::new(w,0.,n),Vec3::new(w,0.,s),Vec3::new(e,0.,s),Vec3::new(e,0.,n)];
+        append_quad_colors(&mut out,base.map(|p|p.to_array()),[0.,1.,0.],
+            base.map(|p|cave_cliff::stone_uv(p,g,origin,ice)),
+            base.map(|p|cave_cliff::pigment(tint,p,g,origin,ice)));
+    }
+    let mut selected = outer_ground_cells(frame, g);
+    selected.extend(voids);selected.sort_unstable();selected.dedup();
     let mut filled = vec![false; g.width * g.height];
     for &i in &selected {
         filled[i] = true;
@@ -438,7 +472,42 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bevy::prelude::{IVec2, UVec2};
+    use bevy::prelude::{IVec2, UVec2, Vec2};
+    #[test]
+    fn complete_authored_void_blocks_have_rock_and_an_opaque_base() {
+        let g=GridGeometry{width:6,height:6,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut frame=VisualWorldFrame{map_id:"SilverCaveRoom3".into(),
+            source_map_size_core_tiles:Some(UVec2::splat(3)),..Default::default()};
+        frame.tiles=(0..36).map(|i| {
+            let (x,z)=(i%6,i/6);let void=(1..5).contains(&x)&&(1..5).contains(&z);
+            VisualTile{column:x as u32,row:z as u32,texture:Default::default(),animation_frames:None,priority:false,
+                source:VisualTileSource{tileset_id:"cave".into(),metatile_id:if void {1}else{9},
+                    tile_index:if void {0x10}else{0x16},subtile_column:if void {(x-1) as u8}else{0},
+                    subtile_row:if void {(z-1) as u8}else{0}}}
+        }).collect();
+        let selected=void_cells(&frame,&g);assert_eq!(selected.len(),16);
+        frame.active=true;frame.tile_size=Vec2::splat(8.);
+        frame.grid_size=UVec2::splat(6);frame.viewport_size=Vec2::splat(48.);
+        let mut images=Assets::<Image>::default();frame.map_texture=images.add(Image::default());
+        for tile in &mut frame.tiles {tile.texture=frame.map_texture.clone();}
+        let scene=build_terrain_mesh(&frame).unwrap();
+        assert_eq!(scene.footing_heights,vec![0.;36],
+            "exterior rock is presentation geometry, never a new actor datum");
+        assert_eq!(scene.authored_cells.iter().filter(|&&cell|cell==Some("cave:exterior-rock")).count(),16);
+        for ids in scene.textured.indices.chunks_exact(3) {
+            let uv=ids.iter().fold(Vec2::ZERO,|sum,&i|sum+Vec2::from_array(scene.textured.uvs[i as usize]))/3.;
+            let sampled=(uv.y*6.).floor() as usize*6+(uv.x*6.).floor() as usize;
+            assert!(!selected.contains(&sampled),"the old black plane remains over the mineral base");
+        }
+        let out=build(&frame,&g);
+        assert!(out.positions.iter().zip(&out.uvs).filter(|(p,uv)|
+            p[0]>=8. && p[0]<=40. && p[2]>=8. && p[2]<=40. && (uv[1]/100000.).round()==6.)
+            .any(|(p,_)|p[1]==0.),"authored void must retain mineral rock below the cutaway");
+        assert!(out.positions.iter().any(|p|p[0]>8. && p[0]<40. && p[2]>8. && p[2]<40. && p[1]>24.));
+        frame.tiles[8].source.tile_index=0x16;assert!(void_cells(&frame,&g).is_empty());
+        frame.tiles[8].source.tile_index=0x10;frame.source_map_size_core_tiles=None;
+        assert!(void_cells(&frame,&g).is_empty());
+    }
     #[test]
     fn outer_cap_closes_to_boundary_floor_but_never_to_a_viewport_edge() {
         let g = GridGeometry {
@@ -486,14 +555,17 @@ mod tests {
             frame.source_map_size_core_tiles = Some(UVec2::splat(50));
             let interior = build(&frame, &g);
             assert!(
-                !interior.positions.iter().any(|p| p[1] == 0.),
+                !interior.positions.iter().zip(&interior.normals)
+                    .any(|(p,n)|p[1]==0. && n[1].abs()<0.99),
                 "viewport became a wall"
             );
             frame.grid_origin = IVec2::ZERO;
             frame.source_map_size_core_tiles = Some(UVec2::ONE);
             frame.tiles.pop();
+            let unknown=build(&frame,&g);
             assert!(
-                !build(&frame, &g).positions.iter().any(|p| p[1] == 0.),
+                !unknown.positions.iter().zip(&unknown.normals)
+                    .any(|(p,n)|p[1]==0. && n[1].abs()<0.99),
                 "unknown boundary inferred"
             );
         }
@@ -769,7 +841,11 @@ mod tests {
                 .iter()
                 .all(|p| p[0] <= w + 8. || p[0] >= e - 8. || p[2] <= n + 8. || p[2] >= s - 8.)
         );
-        assert!(out.positions.iter().all(|p| p[1] > 24.));
+        assert!(out.positions.iter().zip(&out.uvs).all(|(p,uv)|
+            if (uv[1]/100000.).round()==6. {p[1]==0. && (p[0]<=w || p[0]>=e || p[2]<=n || p[2]>=s)}
+            else {p[1]>24.}));
+        assert_eq!(out.uvs.iter().filter(|uv|(uv[1]/100000.).round()==6.).count(),16,
+            "all four exterior rock regions need an opaque foundation");
         assert!(out.normals.iter().all(|n| Vec3::from_array(*n).is_finite()));
         frame.tiles[0].source.tileset_id = "johto".into();
         assert!(build(&frame, &g).positions.is_empty());
@@ -778,6 +854,11 @@ mod tests {
         assert!(!den.indices.is_empty());
         assert!(den.positions.iter().all(|p| p[0] <= w + 8. || p[0] >= e - 8.
             || p[2] <= n + 8. || p[2] >= s - 8.));
-        assert!(den.positions.iter().all(|p|p[1] > 24.));
+        assert!(den.positions.iter().zip(&den.uvs).all(|(p,uv)|
+            if (uv[1]/100000.).round()==6. {p[1]==0.} else {p[1]>24.}));
+        frame.map_id="IcePath1F".into();frame.tiles[0].source.tileset_id="ice_path".into();
+        let ice=build(&frame,&g);
+        assert_eq!(ice.positions.iter().zip(&ice.uvs)
+            .filter(|(p,uv)|p[1]==0. && (uv[1]/100000.).round()==7.).count(),16);
     }
 }

@@ -34,7 +34,7 @@ fn triangle(
         stone_face(out, q, ice, dark, base, height, variation);
     }
 }
-fn stone_face(
+pub(super) fn stone_face(
     out: &mut SurfaceMeshData,
     p: [Vec3; 3],
     ice: bool,

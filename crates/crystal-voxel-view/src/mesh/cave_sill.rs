@@ -141,13 +141,12 @@ mod tests {
                 .iter()
                 .all(|p| (0. ..=1.5).contains(&p[1]))
         );
-        assert_eq!(mesh.solid.positions.len(), 20);
-        assert!(
-            mesh.solid
-                .uvs
-                .iter()
-                .all(|uv| (uv[1] / 100000.).round() == 6.)
-        );
+        let substrate=p[0].indices(g.width).count()*64;
+        assert_eq!(mesh.solid.positions.len(), substrate+20);
+        assert!(mesh.solid.positions[..substrate].iter().all(|p|p[1]==0.));
+        assert!(mesh.solid.uvs[..substrate].iter().all(|uv|(uv[1]/100000.).round()==4.));
+        assert!(mesh.solid.uvs[substrate..].iter()
+            .all(|uv| (uv[1] / 100000.).round() == 6.));
         t[3].source.tile_index = 0xff;
         assert!(resolve("DiglettsCave", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
     }
