@@ -48,6 +48,7 @@ struct Config {
     root: PathBuf,
     pack_dir: PathBuf,
     data_dir: PathBuf,
+    runtime_pack_path: Option<PathBuf>,
     host: IpAddr,
     port: u16,
     auth_token: Option<String>,
@@ -123,6 +124,7 @@ impl Config {
             root,
             pack_dir,
             data_dir,
+            runtime_pack_path: None,
             host,
             port,
             auth_token,
@@ -218,6 +220,7 @@ async fn main() -> Result<()> {
     let (catchable_path, identity) = tokio::task::spawn_blocking(move || {
         crystal_web_server::catchable::prepare(&web_root, &data_dir)
     }).await.context("catchable pack builder panicked")??;
+    config.runtime_pack_path = Some(catchable_path.clone());
     config.allowed_modpacks.insert(identity.runtime_modpack_id.clone(), identity.content_hash.clone());
     info!(modpack=%identity.runtime_modpack_id, hash=%identity.content_hash, "All 251 catchable multiplayer pack with server clock ready");
     let config = Arc::new(config);
@@ -332,7 +335,10 @@ async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Reques
     if response.status() == StatusCode::OK && page_request {
         let decoded_size = if response.headers().contains_key("content-encoding") {
             if asset_path.split('/').all(|part| !matches!(part, "." | "..")) {
-                tokio::fs::metadata(config.root.join(&asset_path)).await.ok()
+                let path = if asset_path == "realtime-clock.browser.crystalpack" {
+                    config.runtime_pack_path.clone().unwrap_or_else(|| config.root.join(&asset_path))
+                } else { config.root.join(&asset_path) };
+                tokio::fs::metadata(path).await.ok()
                     .filter(|meta| meta.is_file()).map(|meta| meta.len())
             } else { None }
         } else {
@@ -1064,6 +1070,7 @@ mod tests {
                 root: PathBuf::new(),
                 pack_dir: PathBuf::new(),
                 data_dir: PathBuf::new(),
+                runtime_pack_path: None,
                 host: IpAddr::V4(Ipv4Addr::LOCALHOST),
                 port: 0,
                 auth_token: None,
@@ -1075,6 +1082,31 @@ mod tests {
             connection_slots: Arc::new(Semaphore::new(2)),
             shutdown: watch::channel(false).0,
         }
+    }
+
+    #[tokio::test]
+    async fn compressed_runtime_pack_reports_served_pack_size() {
+        let root = std::env::temp_dir().join(format!("geothite-pack-header-{}", Uuid::new_v4()));
+        tokio::fs::create_dir_all(&root).await.unwrap();
+        tokio::fs::write(root.join("realtime-clock.browser.crystalpack"), b"base").await.unwrap();
+        let runtime_pack = root.join("runtime.crystalpack");
+        tokio::fs::write(&runtime_pack, b"expanded runtime pack").await.unwrap();
+        let mut config = (*test_state().config).clone();
+        config.root = root.clone();
+        config.runtime_pack_path = Some(runtime_pack);
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let app = Router::new().route("/realtime-clock.browser.crystalpack", get(|| async {
+            ([("content-encoding", "gzip")], "compressed")
+        })).layer(middleware::from_fn_with_state(Arc::new(config), cache_policy_headers));
+        let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap(); });
+        let mut stream = tokio::net::TcpStream::connect(address).await.unwrap();
+        stream.write_all(b"GET /realtime-clock.browser.crystalpack HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").await.unwrap();
+        let mut response = String::new();
+        stream.read_to_string(&mut response).await.unwrap();
+        assert!(response.to_ascii_lowercase().contains("x-asset-bytes: 21\r\n"), "{response}");
+        server.abort();
+        tokio::fs::remove_dir_all(root).await.unwrap();
     }
 
     #[tokio::test]
