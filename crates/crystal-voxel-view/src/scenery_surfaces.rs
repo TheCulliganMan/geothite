@@ -111,7 +111,11 @@ impl SceneryTexture {
         image
     }
     pub fn alpha_mode(&self) -> AlphaMode {
-        self.alpha_cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask)
+        let mode = self.alpha_cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask);
+        if std::env::var_os("CRYSTAL_VOXEL_PIPELINE_TRACE").is_some() {
+            eprintln!("scenery alpha: mode={mode:?} size={}x{}", self.width, self.height);
+        }
+        mode
     }
 }
 
