@@ -1,6 +1,6 @@
 # Kanto interiors: checkpoint and restart
 
-The active goal covers all 120 Kanto indoor, gate, and cave maps. It is not
+The goal is paused for transfer and covers all 120 Kanto indoor, gate, and cave maps. It is not
 complete. Authored-family counts and successful mesh audits do not establish
 visual completion.
 
@@ -79,7 +79,8 @@ Stop further visual edits for the requested host transfer.
 - An initial cap-height test failed because grain stood0.0004 above the cap.
   Corrected source rerun12815 passed. Do not describe the initial capture as proof
   of the final paint.
-- Final production build and native review are recorded below when terminal.
+- Final production build41346 passed in16m11s. The final native paint review
+  was not run before the requested stop and remains pending on the new host.
 - Previous whole-scope production audits covered all120 maps and16 declared script
   variants with zero mesher errors. They establish geometry integrity, not visual
   approval. Old-host ignored logs/captures are evidence, not new-host dependencies.
@@ -145,16 +146,59 @@ audit manifest as game content; it is only a transient verification artifact.
 
 ## Transfer checkpoint verification status
 
-The final native build was still live at checkpoint (old-host session41346),
-with output in `target/kanto-cafe-counter-cap-production-build.log`. No failure
-was observed, but success was not yet terminal. The corrected final native
-capture was not run. Resume with the portable build and capture commands above
-and inspect the image. Source material regressions passed; visual verification
-of the final paint remains pending.
+The final native build completed successfully after the initial checkpoint:
+old-host session41346,16m11s, receipt
+`target/kanto-cafe-counter-cap-production-build.log`. This was a locked,
+all-features `crystal-bevy` build of `render_at_location` and
+`audit_authored_assets` using profile `wasm-dev` and two build jobs. Warnings were
+reported; the command exited successfully. The corrected final native capture
+was not run. Resume with the portable build and capture commands above and
+inspect the image. Source material regressions passed; visual verification of
+the final paint remains pending.
 
-The checkpoint parent was `aea28005f0f014311642311e3150d18c11c244e9`. Find the checkpoint commit containing this
-note with `git log -1 --format=%H -- docs/handoff/kanto-interiors.md`. This
-checkpoint includes the shared-geometry module and its isolated lib registration,
+Source checkpoint commit: `0bde6a14ee8d506079cd08ec0bbb0b1816f6444c`.
+It contains exactly the shared-geometry module, its isolated lib registration,
+the two connected-counter files, and the initial handoff note. The handoff
+completion commit changes only this note. The cold-start script and transfer
+runbook were committed by the coordinating task in
+`aea28005f0f014311642311e3150d18c11c244e9`.
+
+At handoff completion, these shared integrations still had uncommitted changes:
+`interior_models.rs`, `dungeon_models.rs`, `lib.rs`,
+`mesh/modeled_interiors.rs`, `mesh/interior_surfaces.rs`, and
+`docs/3d-remaining-families.md`. The coordinating task must commit these and the
+remaining asset integration before calling the transfer consistent. Do not
+interpret the isolated source checkpoint as a standalone cold-start guarantee.
+
+All source probes and temporary verification executables from this task were
+removed. No further visual edits or capture processes were started after the
+requested stop. The goal remains paused and unfinished.
+
+The checkpoint parent was `aea28005f0f014311642311e3150d18c11c244e9`. The checkpoint above includes the shared-geometry module and its isolated lib registration,
 the owned connected-counter files, and this note. Remaining mixed-owner renderer
 integrations and review receipts are deliberately left for the coordinating
 commit. The isolated checkpoint alone is not a standalone cold-start guarantee.
+
+The successful fresh-source regression runner used these exact test filters
+against the compiled crystal-voxel-view test binary; its temporary binaries were
+removed after completion:
+
+```text
+mesh::gate_counters::tests
+kanto_native
+cave_water::tests
+floor_volume_stays_below_unchanged_actor_datum
+cavern_lights_dim_real_energy_and_restore_when_leaving
+waterfall_uses_each_source_row_once_on_one_bounded_cave_slope
+shared_assets
+missing_selected_interior
+open_models::tests
+interior_models::tests
+native_bookcase_tests
+mesh::modeled_interiors::tests
+```
+
+Each can be rerun with `cargo test --locked -p crystal-voxel-view FILTER`, with
+`CRYSTAL_RENDER_TEST_PACK` and `CRYSTAL_OPEN_MODEL_ROOT` set to the actual pack
+and selected-asset directory as described above. These checks do not replace
+native visual review across the entire120-map scope.
