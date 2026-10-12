@@ -22,6 +22,21 @@ pub(crate) fn refine(mesh: &mut SurfaceMeshData, first: usize, index: usize, nam
     } else {
         return false;
     };
+    refine_family(mesh, first, index, name, family)
+}
+
+/// Give the existing traditional-house panels the same closed course detail,
+/// retaining their named paint so each source placement can recolor it.
+pub(crate) fn refine_traditional(
+    mesh: &mut SurfaceMeshData, first: usize, index: usize, name: &str, color: [f32;4],
+) -> bool {
+    if !name.starts_with("violet") { return false; }
+    refine_family(mesh, first, index, name, [color[0],color[1],color[2]])
+}
+
+fn refine_family(
+    mesh: &mut SurfaceMeshData, first: usize, index: usize, name: &str, family: [f32;3],
+) -> bool {
     if name.ends_with("_dark") {
         return false;
     }
@@ -156,11 +171,13 @@ mod tests {
             include_str!("../models/new_bark/house.mesh.json"),
             include_str!("../models/new_bark/player_house.mesh.json"),
             include_str!("../models/new_bark/lab.mesh.json"),
+            include_str!("../models/johto/traditional_house.mesh.json"),
         ] {
             let export: Export = serde_json::from_str(json).unwrap();
             let mut curved = 0;
             for p in export.primitives {
-                if !p.material.starts_with("roof_") || p.material.ends_with("_dark") {
+                if !(p.material.starts_with("roof_") || p.material.starts_with("violet"))
+                    || p.material.ends_with("_dark") {
                     continue;
                 }
                 let positions: Vec<[f32; 3]> = p
@@ -181,7 +198,8 @@ mod tests {
                     uvs: vec![[0.; 2]; count],
                     ..Default::default()
                 };
-                assert!(refine(&mut mesh, 0, 0, &p.material));
+                assert!(refine(&mut mesh, 0, 0, &p.material)
+                    || refine_traditional(&mut mesh, 0, 0, &p.material, p.base_color));
                 if mesh.indices.len() <= p.indices.len() {
                     continue;
                 }

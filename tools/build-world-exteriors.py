@@ -336,10 +336,16 @@ def nature(name,kind):
   for x,y in [(-.55,-.48),(.56,.27),(.32,-.56)]:ico('Low boulder foot',(x,y,.22),(.32,.28,.24),'stone_dark',1)
  elif kind=='sign':
   for x in [-.47,.47]:cube('Sign post',(x,0,.73),(.14,.15,1.46),'timber_light',.02)
-  cube('Beveled signboard',(0,0,1.20),(1.56,.21,.72),'timber',.07)
-  cube('Recessed sign enamel',(0,-.118,1.20),(1.33,.03,.52),'cream',.035)
-  for z,w in [(1.34,.89),(1.19,1.02),(1.04,.68)]:cube('Raised sign text line',(-.04,-.142,z),(w,.017,.035),'timber_light')
-  for x in [-.61,.61]:ico('Sign brass fixing',(x,-.147,1.20),(.033,.024,.033),'yellow',1)
+  # A compact notice panel, matching the native square sign rather than a
+  # long bench-like backrest. Keep its existing posts, inset and lettering.
+  # Scale the authored panel, including its bevels, exactly as the runtime
+  # source mesh was resized. Regeneration must retain that edge treatment.
+  board=cube('Beveled signboard',(0,0,1.32),(1.56,.21,.72),'timber',.07);board.scale.z=5/3
+  enamel=cube('Recessed sign enamel',(0,-.118,1.32),(1.33,.03,.52),'cream',.035);enamel.scale.z=5/3
+  for z,w in [(1.5533333,.89),(1.3033333,1.02),(1.0533333,.68)]:
+   text=cube('Raised sign text line',(-.04,-.142,z),(w,.017,.035),'timber_light');text.scale.z=5/3
+  for x in [-.61,.61]:
+   fixing=ico('Sign brass fixing',(x,-.147,1.32),(.033,.024,.033),'yellow',1);fixing.scale.z=5/3
  elif kind=='bench':
   for x in [-.70,.70]:
    for y in [-.38,.36]:cube('Bench cast leg',(x,y,.37),(.12,.13,.73),'park_frame',.015)
@@ -366,7 +372,7 @@ for prefix in ['modern','kanto']:
  for style in ['center','mart','gym','station','department','arcade']:
   name=prefix+'_'+style;builders[name]=lambda n=name,s=style,p=prefix:civic(n,s,w=5.45 if p=='modern' else 5.9,d=3.3 if p=='modern' else 3.65)
 for name,style,w,d in [('kanto_museum','museum',7.3,3.8),('silph','silph',5.6,3.8),('kanto_mansion','mansion',5.3,3.8),('power_plant','power',7.6,4.3),('modern_daycare','house',4.4,3.6)]:builders[name]=lambda n=name,s=style,w=w,d=d:civic(n,s,w,d)
-for name,kind in [('forest_conifer','conifer'),('kanto_canopy','canopy'),('cut_tree','cut'),('park_hedge','hedge'),('shore_boulder','boulder'),('route_sign','sign'),('park_bench','bench'),('timber_fence','fence'),('stone_post','post')]:builders[name]=lambda n=name,k=kind:nature(n,k)
+for name,kind in [('kanto_canopy','canopy'),('cut_tree','cut'),('park_hedge','hedge'),('shore_boulder','boulder'),('route_sign','sign'),('park_bench','bench'),('timber_fence','fence'),('stone_post','post')]:builders[name]=lambda n=name,k=kind:nature(n,k)
 only=next((a.split('=',1)[1].split(',') for a in args if a.startswith('--only=')),None)
 for name,build in builders.items():
  if only is None or name in only:build()

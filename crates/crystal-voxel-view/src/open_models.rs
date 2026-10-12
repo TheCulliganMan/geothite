@@ -5,7 +5,7 @@ use crate::model_storage::Source;
 const MAX_BYTES: u64 = 16 * 1024 * 1024;
 
 const MAX_BUNDLE_BYTES: usize = 64 * 1024 * 1024;
-static BUNDLE: std::sync::OnceLock<std::collections::BTreeMap<String, String>> =
+static BUNDLE: std::sync::OnceLock<Option<std::collections::BTreeMap<String, String>>> =
     std::sync::OnceLock::new();
 
 /// Install optional external furniture and foliage before the first scenery lookup.
@@ -19,7 +19,7 @@ static BUNDLE: std::sync::OnceLock<std::collections::BTreeMap<String, String>> =
 pub fn install_open_model_bundle(json: &str) -> Result<(), String> {
     let models = parse_bundle(json)?;
     BUNDLE
-        .set(models)
+        .set(Some(models))
         .map_err(|_| "scenery sources are already frozen; restart to refresh".into())
 }
 
@@ -93,54 +93,38 @@ fn read(root: &std::path::Path, path: &str) -> Result<Option<String>, String> {
         .map_err(|e| e.to_string())
 }
 
-pub(crate) fn load<T>(
+/// Load the designated external asset. Missing or invalid content stays missing;
+/// callers retain its original 2D source instead of selecting another 3D model.
+pub(crate) fn load_required<T>(
     path: &str,
-    fallback: Source<'_>,
     parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>,
-) -> T {
-    if let Some(json) = BUNDLE.get_or_init(Default::default).get(path) {
-        // Bundles were validated before installation; retain the fallback if
-        // a future model parser changes its accepted schema.
-        if let Ok(model) = parse(Source::Plain(json)) {
-            return model;
-        }
+) -> Option<T> {
+    if let Some(bundle) = BUNDLE.get_or_init(|| None) {
+        return bundle.get(path).and_then(|json| parse(Source::Plain(json)).ok());
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
-        static ROOT: std::sync::OnceLock<Option<std::path::PathBuf>> = std::sync::OnceLock::new();
-        let root = ROOT.get_or_init(|| {
-            std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT")
-                .filter(|p| !p.is_empty())
-                .map(Into::into)
-        });
-        load_from_root(root.as_deref(), path, fallback, parse)
+        let root = std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../assets/open-models"));
+        return required_from_root(&root, path, parse);
     }
     #[cfg(target_arch = "wasm32")]
-    {
-        let _ = path;
-        parse(fallback).expect("validated authored model fallback")
-    }
+    None
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn load_from_root<T>(
-    root: Option<&std::path::Path>,
-    path: &str,
-    fallback: Source<'_>,
-    parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>,
-) -> T {
-    if let Some(root) = root {
-        let result = read(root, path);
-        match result {
-            Ok(Some(json)) => match parse(Source::Plain(&json)) {
-                Ok(model) => return model,
-                Err(error) => trace(path, &error),
-            },
-            Err(error) => trace(path, &error),
-            Ok(None) => {}
-        }
+fn required_from_root<T>(root: &std::path::Path, path: &str,
+    parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>) -> Option<T> {
+    match read(root, path) {
+        Ok(Some(json)) => match parse(Source::Plain(&json)) {
+            Ok(asset) => Some(asset),
+            Err(error) => { trace(path, &error); None }
+        },
+        Ok(None) => None,
+        Err(error) => { trace(path, &error); None }
     }
-    parse(fallback).expect("validated authored model fallback")
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -148,7 +132,7 @@ fn trace(path: &str, error: &str) {
     // A renderer may share a fullscreen terminal process. No unconditional
     // stdout/stderr output, including when an optional file is malformed.
     if std::env::var_os("CRYSTAL_OPEN_MODEL_TRACE").is_some() {
-        eprintln!("open model {path}: {error}; using authored fallback");
+        eprintln!("open model {path}: {error}; required 3D asset unavailable");
     }
 }
 
@@ -158,7 +142,7 @@ mod tests {
     #[test]
     fn bundles_validate_real_geometry_and_reject_partial_or_out_of_scope_installs() {
         let model: serde_json::Value = crate::model_storage::parse(
-            crate::model_storage::include_model!("models/interiors/television.mesh.json"),
+            Source::Plain(include_str!("../../../assets/open-models/interiors/television.mesh.json")),
         )
         .unwrap();
         let valid = serde_json::json!({"version":1,"models":{"models/interiors/television.mesh.json":model}});
@@ -205,7 +189,11 @@ mod tests {
         }], "preserve_aspect":true});
         let bundle = serde_json::json!({"version":1,"models":{"models/interiors/television.mesh.json":fixture}}).to_string();
         install_open_model_bundle(&bundle).unwrap();
-        let model = crate::interior_models::model(crate::interior_models::ModelKind::Television);
+        // An installed bundle is the selected source. Missing bundle entries
+        // cannot silently be filled from another local asset directory.
+        assert!(load_required("models/new_bark/tree.mesh.json",
+            |source| crate::new_bark_models::Model::parse(source)).is_none());
+        let model = crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap();
         let mut mesh = crate::mesh::SurfaceMeshData::default();
         model.append_fitted(&mut mesh, [0., 2., 0., 4.], 0., 3.);
         assert_eq!(mesh.positions.len(), 4);
@@ -242,7 +230,7 @@ mod tests {
     }
 
     #[test]
-    fn valid_external_data_is_used_and_bad_data_retains_the_authored_fallback() {
+    fn required_external_data_never_substitutes_missing_or_invalid_sources() {
         let root = std::env::temp_dir().join(format!(
             "geothite-open-model-test-{}-{}",
             std::process::id(),
@@ -261,24 +249,23 @@ mod tests {
         let _cleanup = Cleanup(root.clone());
         let file = root.join("interiors/chair.mesh.json");
         let load = || {
-            load_from_root(
-                Some(&root),
+            required_from_root(
+                &root,
                 "models/interiors/chair.mesh.json",
-                Source::Plain("[7]"),
                 |s| crate::model_storage::parse::<Vec<i32>>(s),
             )
         };
-        assert_eq!(load(), [7]);
+        assert_eq!(load(), None);
         std::fs::write(&file, "[11,12]").unwrap();
-        assert_eq!(load(), [11, 12]);
+        assert_eq!(load(), Some(vec![11, 12]));
         std::fs::write(&file, "{bad JSON}").unwrap();
-        assert_eq!(load(), [7]);
+        assert_eq!(load(), None);
         std::fs::write(&file, [255_u8]).unwrap();
-        assert_eq!(load(), [7]);
+        assert_eq!(load(), None);
         std::fs::File::create(&file)
             .unwrap()
             .set_len(MAX_BYTES + 1)
             .unwrap();
-        assert_eq!(load(), [7]);
+        assert_eq!(load(), None);
     }
 }

@@ -86,6 +86,7 @@ struct Export {
 pub(crate) struct Model {
     textured: Vec<crate::scenery_surfaces::ScenerySurface>,
     surface: SurfaceMeshData,
+    solid_materials: Vec<(String, std::ops::Range<usize>, [f32; 4])>,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
     door_anchor: Option<[f32; 3]>,
@@ -97,6 +98,7 @@ impl Model {
     ) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
+        let mut solid_materials = Vec::new();
         let mut textured = Vec::new();
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
@@ -168,6 +170,9 @@ impl Model {
                 .extend(primitive.indices.into_iter().map(|i| base + i));
             if texture.is_none()
                 && !crate::roof_tiles::refine(target, base as usize, index_start, &primitive.material)
+                && !(export.name == "traditional_house"
+                    && crate::roof_tiles::refine_traditional(target, base as usize, index_start,
+                        &primitive.material, primitive.base_color))
             {
                 crate::scenery_finish::refine(
                     target,
@@ -182,6 +187,8 @@ impl Model {
                     mesh: part,
                     texture,
                 });
+            } else {
+                solid_materials.push((primitive.material, base as usize..surface.positions.len(), primitive.base_color));
             }
         }
         crate::scenery_finish::contain(&mut surface, min, max);
@@ -196,14 +203,11 @@ impl Model {
         Ok(Self {
             textured,
             surface,
+            solid_materials,
             min,
             max,
             door_anchor: export.door_anchor,
         })
-    }
-
-    pub(crate) fn has_cutout_foliage(&self) -> bool {
-        !self.textured.is_empty()
     }
 
     pub(crate) fn append_textured_fitted(
@@ -217,6 +221,7 @@ impl Model {
             let adapter = Self {
                 surface: part.mesh.clone(),
                 textured: Vec::new(),
+                solid_materials: Vec::new(),
                 min: self.min,
                 max: self.max,
                 door_anchor: self.door_anchor,
@@ -235,6 +240,31 @@ impl Model {
 
     pub(crate) fn surface_mesh(&self) -> SurfaceMeshData {
         self.surface.clone()
+    }
+
+    /// Recolor the existing named roof materials from the source drawing.
+    /// Vertex ownership, fitted geometry and the existing facet/weather finish
+    /// remain shared with every placement of this same cabin model.
+    pub(crate) fn recolor_fitted_roof(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32; 4]; 3]) {
+        // The source's high-contrast stripes describe one roof field. Keep
+        // its hue while giving neighboring 3D courses quiet shade changes.
+        let field: [f32;4] = std::array::from_fn(|i| palette[1][i]*0.7+palette[2][i]*0.3);
+        let light: [f32;4] = std::array::from_fn(|i| field[i]*0.82+palette[2][i]*0.18);
+        for (material, range, original) in &self.solid_materials {
+            let color = match material.as_str() {
+                "violet_dark" | "roof_red_dark" => palette[0],
+                "violet" | "violet_warm" | "roof_red" | "roof_red_warm" => field,
+                "violet_light" | "roof_red_light" => light,
+                _ => continue,
+            };
+            for index in range.clone() {
+                for channel in 0..3 {
+                    target.colors[first+index][channel] = color[channel]
+                        * target.colors[first+index][channel] / original[channel].max(0.0001);
+                }
+            }
+        }
     }
 
     /// Keep the source plot's four edges fixed while aligning a recessed door
@@ -341,7 +371,21 @@ fn fit_horizontal(
     }
 }
 
+pub(crate) fn required_tree_model(kind: ModelKind) -> Option<&'static Model> {
+    static TREE: OnceLock<Option<Model>> = OnceLock::new();
+    static TREE_LOD: OnceLock<Option<Model>> = OnceLock::new();
+    let (cache, path) = match kind {
+        ModelKind::Tree => (&TREE, "models/new_bark/tree.mesh.json"),
+        ModelKind::TreeLod => (&TREE_LOD, "models/johto/tree_lod.mesh.json"),
+        _ => return None,
+    };
+    cache.get_or_init(|| crate::open_models::load_required(path, |source| Model::parse(source))).as_ref()
+}
+
 pub(crate) fn model(kind: ModelKind) -> &'static Model {
+    if matches!(kind, ModelKind::Tree | ModelKind::TreeLod) {
+        return required_tree_model(kind).expect("required tree asset; renderer must retain 2D when missing");
+    }
     static HOUSE: OnceLock<Model> = OnceLock::new();
     static PLAYER_HOUSE: OnceLock<Model> = OnceLock::new();
     static LAB: OnceLock<Model> = OnceLock::new();
@@ -353,9 +397,7 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
     static SPROUT_TOWER: OnceLock<Model> = OnceLock::new();
     static GRASS: OnceLock<Model> = OnceLock::new();
     static GRASS_LOD: OnceLock<Model> = OnceLock::new();
-    static TREE_LOD: OnceLock<Model> = OnceLock::new();
 
-    static TREE: OnceLock<Model> = OnceLock::new();
     static FLOWERS: OnceLock<Model> = OnceLock::new();
     let (cache, json) = match kind {
         ModelKind::House => (
@@ -399,37 +441,50 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
             crate::model_storage::include_model!("models/johto/grass.mesh.json"),
         ),
 
-        ModelKind::TreeLod => (
-            &TREE_LOD,
-            crate::model_storage::include_model!("models/johto/tree_lod.mesh.json"),
-        ),
         ModelKind::GrassLod => (
             &GRASS_LOD,
             crate::model_storage::include_model!("models/johto/grass_lod.mesh.json"),
         ),
-        ModelKind::Tree => (
-            &TREE,
-            crate::model_storage::include_model!("models/new_bark/tree.mesh.json"),
-        ),
+        ModelKind::Tree | ModelKind::TreeLod => unreachable!("handled required assets above"),
         ModelKind::Flowers => (
             &FLOWERS,
             crate::model_storage::include_model!("models/new_bark/flowers.mesh.json"),
         ),
     };
-    cache.get_or_init(|| match kind {
-        ModelKind::Tree => {
-            crate::open_models::load("models/new_bark/tree.mesh.json", json, |s| Model::parse(s))
-        }
-        ModelKind::TreeLod => {
-            crate::open_models::load("models/johto/tree_lod.mesh.json", json, |s| Model::parse(s))
-        }
-        _ => Model::parse(json).expect("checked-in authored mesh must be valid"),
-    })
+    cache.get_or_init(|| Model::parse(json).expect("checked-in designated authored mesh must be valid"))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cabin_source_roof_color_preserves_shared_geometry_and_other_materials() {
+        for source in [
+            crate::model_storage::include_model!("models/johto/traditional_house.mesh.json"),
+            crate::model_storage::include_model!("models/new_bark/house.mesh.json"),
+        ] {
+        let m=Model::parse(source).unwrap();
+        let mut mesh=SurfaceMeshData::default();
+        m.append_fitted(&mut mesh,[0.,32.,0.,24.],0.,16.,None);
+        let original=mesh.clone();
+        m.recolor_fitted_roof(&mut mesh,0,[[0.04,0.04,0.04,1.],[0.18,0.11,0.02,1.],[0.4,0.25,0.03,1.]]);
+        assert_eq!(mesh.positions,original.positions);
+        assert_eq!(mesh.normals,original.normals);
+        assert_eq!(mesh.indices,original.indices);
+        assert_eq!(mesh.uvs,original.uvs);
+        let mut changed=0;
+        for (material,range,_) in &m.solid_materials {
+            if material.starts_with("violet") || material.starts_with("roof_red") {
+                assert!(range.clone().any(|i|mesh.colors[i]!=original.colors[i]));
+                changed+=range.len();
+            } else {
+                assert_eq!(&mesh.colors[range.clone()],&original.colors[range.clone()],"{material} is not roof paint");
+            }
+        }
+        assert!(changed>0);
+        }
+    }
 
     #[test]
     fn textured_trees_preserve_uvs_fit_source_bounds_and_share_material_groups() {
@@ -513,9 +568,8 @@ mod tests {
     }
 
     #[test]
-    fn halo_foliage_lods_keep_exact_bounds_and_reduce_geometry_by_over_half() {
+    fn authored_grass_lod_keeps_exact_bounds_and_reduces_geometry_by_over_half() {
         for (full, lod) in [
-            (ModelKind::Tree, ModelKind::TreeLod),
             (ModelKind::Grass, ModelKind::GrassLod),
         ] {
             let a = model(full);

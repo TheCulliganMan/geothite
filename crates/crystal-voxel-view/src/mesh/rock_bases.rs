@@ -8,7 +8,7 @@ fn floor(cell: &VisualTile, shape: CellShape, g: &GridGeometry) -> bool {
         && shape.surface_height(g.tile_height).abs() < 0.001
 }
 
-pub(super) fn round(
+pub(super) fn round_geometry(
     mesh: &mut TerrainMeshData,
     map: &str,
     cells: &[&VisualTile],
@@ -136,6 +136,12 @@ pub(super) fn round(
         }
     }
     new_bark::append_rock_floor_patches(&mut mesh.solid, map, cells, g, origin, &patches);
+}
+
+#[cfg(test)]
+fn round(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile],
+    shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+    round_geometry(mesh, map, cells, shapes, g, origin);
     outdoor_stone::smooth_normals(&mut mesh.solid);
 }
 
@@ -194,6 +200,68 @@ mod tests {
         }
         (frame, g, mesh)
     }
+    #[test]
+    fn production_rock_finish_keeps_fractures_after_rounding_the_contact_base() {
+        let (frame, g, mut mesh) = fixture();
+        // The production renderer emits six subdivisions per source tile,
+        // rather than six across the whole four-tile diagnostic shelf.
+        let h = mesh.footing_heights[7];
+        mesh.solid.indices = mesh.solid.indices.chunks_exact(3)
+            .filter(|ids| {
+                let p = [ids[0], ids[1], ids[2]]
+                    .map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
+                (p[1] - p[0]).cross(p[2] - p[0]).y <= 0.
+            }).flatten().copied().collect();
+        for row in 1..5 { for column in 1..5 {
+            let (w, e, n, south) = g.bounds(column, row);
+            outdoor_stone::append(&mut mesh.solid,
+                [[w, h, n], [w, h, south], [e, h, south], [e, h, n]],
+                Vec3::Y.to_array(), &g, [0, 0]);
+        }}
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+        let corner = mesh.solid.positions.iter().position(|p| *p == [8., 0., 8.]).unwrap();
+        let angle = 50_f32.to_radians();
+        let center = Vec3::new(200., 48., 200.);
+        let side = Vec3::new(angle.cos(), angle.sin(), 0.) * 4.;
+        let first = mesh.solid.positions.len();
+        for points in [[center, center - Vec3::X * 4., center + Vec3::Z * 4.],
+            [center, center + Vec3::Z * 4., center + side]] {
+            let start = mesh.solid.positions.len() as u32;
+            mesh.solid.positions.extend(points.map(|p| p.to_array()));
+            mesh.solid.normals.extend([Vec3::Y.to_array(); 3]);
+            mesh.solid.colors.extend([[0.2, 0.2, 0.2, 1.]; 3]);
+            mesh.solid.uvs.extend(points.map(|p| [-10000. - p.x, -20000. - p.z]));
+            mesh.solid.indices.extend([start, start + 1, start + 2]);
+        }
+        let footing = mesh.footing_heights.clone();
+        outdoor_stone::finish_rock_geometry(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0]);
+        assert!(mesh.solid.positions[corner][0] > 9.5);
+        assert_eq!(mesh.footing_heights, footing);
+        for start in [first, first + 3] {
+            let p = [start, start + 1, start + 2]
+                .map(|i| Vec3::from_array(mesh.solid.positions[i]));
+            let face = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+            assert!(Vec3::from_array(mesh.solid.normals[start]).dot(face) > 0.99999,
+                "the production base pass must not erase the cap's fracture plane");
+        }
+        assert!(Vec3::from_array(mesh.solid.normals[first])
+            .dot(Vec3::from_array(mesh.solid.normals[first + 3])) < 0.8);
+        let mut caps = 0;
+        for ids in mesh.solid.indices.chunks_exact(3) {
+            let ids = [ids[0] as usize, ids[1] as usize, ids[2] as usize];
+            let uv = ids.map(|i| Vec2::from_array(mesh.solid.uvs[i]));
+            if uv[0].x >= -9000. || (uv[1] - uv[0]).perp_dot(uv[2] - uv[0]) >= -0.001 {
+                continue;
+            }
+            let p = ids.map(|i| Vec3::from_array(mesh.solid.positions[i]));
+            assert!((p[1] - p[0]).cross(p[2] - p[0]).y >= -0.0001,
+                "the combined sculpt/base pass must not invert native cap triangles: {p:?}");
+            caps += 1;
+        }
+        assert!(caps > 60);
+    }
+
     #[test]
     fn rounded_contacts_share_wall_vertices_and_expose_a_closed_floor() {
         let (frame, g, mut mesh) = fixture();

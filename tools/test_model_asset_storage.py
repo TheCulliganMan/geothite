@@ -51,7 +51,7 @@ class ModelAssetStorageTests(unittest.TestCase):
         scope={'read_model_json':read_model_json}
         exec(compile(ast.Module(body=[reader],type_ignores=[]),str(generator),'exec'),scope)
         expected={}
-        for name,directory in [('tree','new_bark'),('grass','johto')]:
+        for name,directory in [('grass','johto')]:
             path=self.root/f'crates/crystal-voxel-view/models/{directory}/{name}.mesh.json'
             path.parent.mkdir(parents=True,exist_ok=True)
             geometry={'name':name,'bounds':{'min':[0,0,0],'max':[1,2,3]},'primitives':[{'indices':[0,1,2]}]}

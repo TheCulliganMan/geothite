@@ -1,4 +1,508 @@
+## Final rock normal pipeline — 2026-10-12
+
+The actual production order explained the weak fracture-normal result: `rock_bases::round` recomputed smooth normals for every tagged rock after the cap sculptor had assigned fracture-aware normals. The final renderer therefore erased those cap distinctions whenever a native base corner qualified. Geometry stages now compose through `outdoor_stone::finish_rock_geometry`: sculpt mineral rims, round native base contacts, then calculate mineral normals once. Source cap/wall classification remains intact until that final calculation. The existing 25-degree crease rule is retained; the brief tighter-threshold experiment was superseded by this integration correction before visual acceptance.
+
+A new regression calls that same production finishing function with a native rounded base and two joined fractured cap planes. The original normal/contact version passed, along with 19 stone tests and six base-contact tests. The extended winding check FAILED, including its corrected per-source-tile topology rerun (`target/outdoor-final-rock-pipeline-native-topology-test.log`): the combined sculpt/base pass inverted a cap triangle at positions (9.220304,4,14.89865), (8.822326,5.3333335,13.378186), (8.905096,4,13.626882). The failing regression is retained as an explicit unresolved blocker; earlier passing tests do not establish the combined geometry is correct.
+
+The corrected native build completed in 12m16s. Its muted Route26 45-degree capture completed in 202.16s and was inspected (`target/outdoor-route26-final-rock-pipeline-45-muted.png`): fracture shading survives, but cliffs remain swollen and lumpy, and floor-Y seam coverage is incomplete. The muted Lake clearing capture at (23,30), orbit6/135 degrees completed in 228.83s and was inspected (`target/outdoor-lake-final-pipeline-clearing-135-muted.png`). The cyan roof has quieter curved courses and this angle leaves the clearing visible; the straight shore, rectangular water glints and repetitive crowns remain below the target. This angle does not resolve the intrusive canopy seen at 45 degrees. A prior Lake attempt terminated before producing an image and supplies no evidence.
+
+The user and coordinating agent requested a transfer checkpoint. No further improvement cycle follows this diagnostic. See `docs/handoff/outdoor-terrain.md` for ownership, restart commands and unresolved work. The whole outdoor goal remains incomplete.
+
+## Route26 fresh shape review — 2026-10-12
+
+The muted current native/source pair at Route26 (10,28), orbit2/45 degrees completed and was inspected (`target/outdoor-route26-current-shape-45-muted.png`, 1280x960, 83.08s). A second native side view at orbit4/90 degrees completed and was inspected (`target/outdoor-route26-current-shape-90-muted.png`). The bank caps visibly rise toward the drop in the side view, but the broad earth steps and rounded, lumpy mineral caps remain below the requested standard. Neither view establishes that every reported floor-Y seam is fixed.
+
+The stone normal pass previously averaged every adjacent mineral face at a shared position, rounding the lighting across actual fractured geometry. A new mineral-cap crease threshold retains distinct normals across cuts above 25 degrees and shares angle-weighted normals across shallow source seams. The first wider run caught unwanted sharp shading at cap/wall shoulders; those shared native shoulder junctions now retain the previous smooth average. Rock-base smoothing retains its existing behavior. Positions, indices, source ownership and floor datums are unchanged by this pass. The new regression passed both sides of this distinction and exact geometry preservation. All 19 corrected stone tests now pass, including cap/wall shoulder continuity, cap winding, raised-floor support, closed corners, tree seats and the new fracture-normal check (`target/outdoor-mineral-crease-stone-tests.log`). All seven current ledge-approach tests also pass (`target/outdoor-route26-current-bank-tests.log`), covering the closed sawtooth reset, floor/cliff joins and shared cap normals. These are structural checks, not verification of all visible floor seams. The native build completed in 9m42s. The muted 45-degree native capture completed in 31.22s and was inspected (`target/outdoor-route26-mineral-crease-45-muted.png`, 1280x960). Its appearance is almost unchanged; the normal correction alone does not resolve the lumpy caps. The frozen capture executable was removed. Visual acceptance remains pending.
+
+The next geometry pass removes the short-period secondary height ripple and enlarges the primary linear mineral bed field. Cap depth now samples the original shared source coordinate rather than a bevel-displaced coordinate, keeping the large bed planes from bending with the shoulder. The existing support bounds, closed corner fields and tree-seat fades remain in effect. All 19 stone tests pass with this geometry (`target/outdoor-broad-mineral-plane-tests.log`), including resolved clefts and closed/support-preserving cap/wall joins. The native build completed in 1m43s. The muted native 45-degree capture completed in 52.25s and was inspected (`target/outdoor-route26-broad-mineral-planes-45-muted.png`, 1280x960). Broad cap slopes and silhouette changed, but painted fine bumps still dominate the scene. The frozen capture executable was removed. This is not visual acceptance.
+
+Inspection of the shared bedrock asset and shader found outdoor caps sampling it at 40 world units while regular cave rock uses 144. The outdoor top projection now reuses that existing 144-unit scale; vertical wall sampling, asset identity and cave rendering remain unchanged. The native build completed in 2m08s (`target/outdoor-broad-cap-paint-native-build.log`). The muted 45-degree capture completed in 26.92s and was inspected (`target/outdoor-route26-broad-cap-paint-45-muted.png`, 1280x960). The larger cap slopes and less dense painted detail are visible, but the rock tops still read as rounded humps. This is a diagnostic checkpoint, not reference-level acceptance. The frozen capture executable was removed. Further work must address the remaining rounded cap form, ledge presentation and all-map floor-seam verification; the whole outdoor scope remains incomplete.
+
+## Damp grass-to-water blending — 2026-10-12
+
+The ordinary soil lip alone still leaves a straight, abrupt lawn/water transition. A new source-scoped shoreline color field blends a narrow irregular strip of actual Johto lawn toward the same existing soil pigment used by the bank face. It uses stable map coordinates, finite edge segments and cached local candidates. It creates no alternate asset, changes no source occupancy, and does not paint water interiors, unknown atlases, indoor routes, raised surfaces or raw tree drawings. Shared vertices exactly on a water-side grid boundary retain the land bank color, avoiding a green seam at the half-open cell boundary. Nearby lawn tessellation is refined only to resolve the color band; the native floor and its corners remain fixed.
+
+All three new regressions pass: bounded/continuous color with viewport translation and source-grid scrolling, rejection of unsupported contacts, and production finish preservation of native floor corners, footing heights and authored claims. The five existing path/lawn blending tests and both shared soil relief/perimeter/winding tests also pass. The native build completed in 4m26s. The muted paired LakeOfRage (23,30), orbit6/135-degree, zoom1 review completed and was inspected (`target/outdoor-lake-damp-shore-blend-135-muted.png`, 1280x960; 47.15s 3D write). A narrow softened brown transition is visible at the grass/water boundary, replacing the abrupt green edge; the geometric shore remains straight and rectangular water glints remain. This verifies a modest color-blending improvement, not whole-scene acceptance. The frozen capture executable was removed after completion. The previous soil-lip screenshot predates this color field.
+
+## Remaining outdoor acceptance — current scope
+
+The requested goal covers the whole outdoor presentation, not only the newest cabin or a passing terrain regression. Treat the supplied forest remake image and saved Park concept as visual targets. Current native evidence still contradicts completion.
+
+| Requirement | Evidence needed before acceptance | Current state |
+| --- | --- | --- |
+| Reference-level outdoor color, texture, detail and blending | Inspected native scenes compared with source 2D and reference art | Lake views still show intrusive translucent crowns and coarse repeated foliage; incomplete |
+| Route26 saw-blade ledges and consistent floor Y | Fresh 45/90-degree views plus exact source cap/contact checks | Fresh 45/90-degree views inspected; side caps rise, but shape quality and all-seam verification remain incomplete |
+| Stone, canyon and cliff shape/material quality | Source-scoped native route/city views and source comparisons | Color/foundation improvements exist; broad visual acceptance outstanding |
+| All New Bark-to-Cherrygrove outdoor areas | Current native reviews covering representative transitions and source layouts | Earlier scoped audits are not current whole-scene acceptance |
+| National Park modern remake | Saved reference retained; inspected source-faithful outer trees, benches, two grass types and centerpiece shape | Separate Park review outstanding |
+| Lake of Rage and cabins | Both cabins, source roof colors, clearings, banks, water and lake scene reviewed at useful angles | Roofs/corner bindings, soil lip and narrow damp-edge blend visually verified; shore shape, water glints, canopy and creature coverage incomplete |
+| Cherrygrove fake lake removal | Source override and current native/source view | Earlier scoped repair documented; confirm in current broad review |
+| Consistent shared outdoor assets across routes/cities | Required canonical dispatch and current area coverage/render evidence | Required-loader/ownership checks passed; full visual coverage not proven |
+| Preserve intended forest and distinct tree families | Current Ilex/source comparison and no unintended global substitution | Canonical root mismatch diagnosed; Ilex visual acceptance outstanding |
+| Modern water appearance | Continuous water field in inspected native scenes, retaining source footprint and gameplay | Earlier Lake field is improved; appearance and blending not accepted across all areas |
+| No silent alternate 3D asset | Required-loader and source-2D missing-coverage tests plus inspected scene | Scoped tests pass; Lake exposes missing creature coverage in permitted 2D |
+| Muted reviews and worker coordination preference | Preview mute configuration; no unsolicited worker update/reply requests | Current captures explicitly muted; workers told to stop messaging this thread |
+
+## Ordinary lawn shoreline soil — 2026-10-12
+
+The exposed vertical wall from ordinary Johto lawn to water previously retained a cropped green checker texture. The production outdoor finish now reuses the existing shallow-bank soil-and-sod relief for those exact contacts. This adds no separate asset or soil palette. Recognition requires a named outdoor map, a same-atlas actual lawn source, an unclaimed native land cell, an adjacent actual water cell, and a complete vertical face from the original water datum to floor zero. Model/tree foundations, unknown continuations, altered heights and unrelated art are excluded.
+
+The dedicated production regression passed for all four facing directions and eligible LakeOfRage/Route26/Route43/CherrygroveCity/NewBarkTown scopes. It proves unchanged exact perimeter corners, floor heights and authored claims, and rejection of route interiors, owned tree cells, shifted heights, unknown atlases and non-water neighbors. The bank remains closed at the existing datums. The dedicated native build completed in 3m37s. The muted paired bank review at LakeOfRage (23,30), orbit6/135 degrees, zoom1 completed and was inspected (`target/outdoor-lake-lawn-soil-bank-135-muted.png`, 1280x960; 111.98s 3D write). The ordinary lawn/water boundary now has a brown soil lip in place of the green vertical strip. The shore still reads as a straight cut and the water carries rectangular bright glints, so whole-scene shoreline blending is not accepted. The separate rock-ledged source corner remains its own drawing. The frozen bank capture executable was removed after completion. The earlier roof build began before this shoreline edit; its screenshots do not prove the new bank finish.
+
+## Lake cabins and corner crowns — 2026-10-12
+
+Muted paired source/native reviews found lavender panels on the northern Hidden Power cabin's charcoal/ochre roof, terracotta on the Magikarp cabin's cyan/blue roof, two flat source vegetation squares beside the northern approach, and intrusive translucent canopy overlap. Roof color is now sampled from the live source drawing and applied only to named solid roof-material vertices. Geometry, wall/timber colors, normals, UVs and source claims remain unchanged by recoloring. Traditional houses consume their individual source palette; the Lake Magikarp cottage binding is source scoped and does not recolor every cottage globally. Missing palette coverage retains exact 2D source drawing.
+
+The first north paired corrected capture, `target/outdoor-lake-north-cabin-source-roof-45-muted.png`, proves the brown/ochre mapping but still shows broad flat roof panels and the old clearing gaps. The first Magikarp correction, `target/outdoor-lake-magikarp-cabin-source-roof-45-muted.png`, instead exposed a palette coverage bug: it retained 2D because the source roof uses four entries. The extractor now accepts that complete native palette, treating its brightest border separately from its field. The fresh muted Magikarp pair completed and was inspected (`target/outdoor-lake-magikarp-cabin-four-palette-45-muted.png`), proving the cyan/blue 3D cottage returned. Its roof still has loud alternating shade panels and is not visually accepted. Recoloring now derives a common field from the source mid/light swatches and keeps only a small difference for lighter courses, preserving the source hue while reducing the checker pattern; all nine cabin tests pass again after that shade adjustment; its fresh capture remains pending.
+
+Source inspection of the supplied pack identified the clearing squares as complete Johto corner crowns in blocks $3c at (0,0) and $3e at (0,2). Both now use phase-aware 2x2 bindings to the unchanged shared grove generator and finished lawn underlay. The regression passes for LakeOfRage, Route43 and CherrygroveCity, proving one four-cell placement, flat footing, no retained sprite square after the production outdoor finish, and rejection of altered source phase. Source inspection helpers and their temporary output were removed.
+
+The traditional-house panels now reuse the existing closed roof-course refiner, retaining named source paint. The refiner adds bounded curvature inside each panel while retaining its perimeter and lower geometry. It does not reshape trees. All nine cabin regressions pass, including the four-color source fixture and both cabin model recoloring invariants. All three roof-course tests pass, now including the actual traditional-house model, fixed perimeters, normalized normals, bounded positions and finite colors. The latest native build completed in 3m22s; its captured revision must be distinguished from the subsequent roof-course edit. The north clearing pair completed and was inspected (`target/outdoor-lake-north-cabin-corner-fix-45-muted.png`, 1280x960). Both square sprite remnants are gone and their exact intended corner trees are present, with the surrounding source layout retained. The broad translucent canopy overlap remains conspicuous. Temporary frozen capture executables were removed after both pairs completed. The curved-course/quiet-field native build completed in 10m00s. The muted north pair was inspected (`target/outdoor-lake-north-cabin-quiet-courses-45-muted.png`, 1280x960): roof courses are visibly curved, broad checker contrast is reduced and the repaired corner trees remain present. The large translucent crown overlay still obscures the approach. The wider Magikarp pair completed and was inspected (`target/outdoor-lake-magikarp-cabin-quiet-courses-wide-45-muted.png`, 1280x960): cyan/blue roof colors now form a quieter common field with curved courses. The canopy overlap remains, and the lake also shows a permitted 2D marker for missing creature coverage. The frozen roof capture executable was removed after both pairs completed. These scoped improvements do not establish visual acceptance of the entire Lake scene. The canopy overlap is unresolved, and the outdoor goal is incomplete.
+
+At the user's request, all five other workers were instructed to stop sending updates, questions and coordination replies to this thread. Their independent authorized work continues; no further reply/status requests are issued here.
+
+## Required assets and visible missing coverage — 2026-10-12
+
+The user explicitly instructed deletion of fallback assets and permits original 2D to reveal missing coverage. All five active workers received that directive. `open_models::load_required` returns None for a missing or invalid selected asset, with no embedded alternate. Native required assets use an explicit root or the canonical checkout asset directory; browser required assets use the installed bundle. The old generic fallback loader is removed.
+
+Deleted the old embedded New Bark tree, Johto tree LOD and world forest-conifer JSONs and their runtime catalog entries. Forest trees use the exact required tree/variant; a missing variant emits exact flat source tiles and reserves those cells against legacy voxel extrusion, without an authored claim or changed support. Ordinary canonical procedural grove trees were not reshaped. The old New Bark tree prototype generator and tree-LOD generation were removed; the grass LOD authoring tool retains only its intended grass output.
+
+The interiors worker deleted five obsolete embedded alternatives and migrated their designated external families to the required loader. Missing interiors retain source art; the worker reports its scoped tests passed. The Pokemon worker removed battle-species substitutions with smaller overworld models and made arena trees optional exact-asset lookups. Other intended authored catalog assets remain their designated assets, not alternate substitutes.
+
+The final voxel source check passed after the shared migration and exclusive-bundle correction (1m54s). Python storage/authoring tests passed (5), and all edited authoring scripts parse. An earlier loader-test compile was deliberately canceled because it predated the final selected-source semantics; a fresh current forest regression build uses unoptimized renderer test code while retaining dependency optimization. The production test binary subsequently passed all four required-loader tests and the missing-forest regression; the new production forest regression verifies source UVs, no solid/scenery substitute and unchanged support/claims in a fresh process with an explicitly missing root. Post-deletion native/browser review is still required. The canonical Ilex image predates this deletion and remains visually unaccepted: pale crowded foliage and transparency/card artifacts need further work. This is not completion of the outdoor goal.
+
+## Shared asset coordination and Ilex rejection — 2026-10-12
+
+The user rejected the Ilex Forest appearance and requested coordination with all workers. Redo Outside messaged all five other active Geothite workers. Outdoor tree geometry and map dispatch belong to this pass; lighting/effects owns the continuation of shared outdoor water appearance. The Pokemon scenery worker handed over its outdoor water mask/palette additions and keeps its source-scoped forest ledge finish and shore ecology. The cave worker retains cave geometry/materials and supported crown cutaway guards. Shared files must be edited narrowly and existing producers reused.
+
+The user explicitly rejects preserving 2D water tiles as the 3D appearance. Source footprints, collision/events and animation identity remain input data; continuous water coloration, depth, highlights and movement must replace pixel atlas colors and rectangular glints. Earlier UV-preservation checks prove source integrity, not this visual standard.
+
+Inspected saved Ilex final/forest-fixed views both show the same repeated tiered conifers; their difference is ledge finishing. No worker has reported replacing Ilex tree geometry in that pass. A possible source mismatch requires verification: the browser build bundles assets/open-models by default, while native loading requires CRYSTAL_OPEN_MODEL_ROOT. Forest dispatch substitutes the detailed Johto cutout tree only when that external source loads; otherwise it uses ForestConifer. The scenery worker confirmed its Ilex captures omitted CRYSTAL_OPEN_MODEL_ROOT. A muted native capture at Ilex (15,27), 45 degrees, with assets/open-models explicitly selected completed successfully (25.70 s image write), and inspection shows tall branching textured trees instead of tiered cones. This verifies different asset selection; it does not prove the user's accepted prior appearance or a completed forest fix. The detailed trees are still too pale and crowded against the supplied reference. All five workers received the finding and the requirement to select the same asset root for comparable native/browser art previews. No global tree geometry was reverted.
+
+The compact shared sign native build finished successfully. Its muted paired Lake capture also completed (105.44 s for 3D), and inspection shows the taller, narrower panel; water-bank blending remains abrupt. The overall outdoor goal remains open.
+
 # Outdoor terrain review — 2026-10-10
+
+## Lake visual comparison and shared sign shape — 2026-10-12
+
+The muted timeout-verified shared executable completed the LakeOfRage
+south close-up and original 2D pair in 75.35 and 76.07 seconds. Both readbacks
+were inspected (960×720; 34,177 and 16 colors). The water now has continuous
+tonal variation and highlights, and sparse reeds soften parts of the edge.
+The lawn-to-bank transition still reads abruptly. Tree shapes were preserved.
+This is useful intermediate visual evidence, not acceptance of the complete
+outdoor standard or a final current-source audit. The temporary executable
+copy was removed after the capture completed.
+
+The original sign in the paired 2D view has a compact notice panel; its 3D
+replacement read like a bench backrest. The existing shared RouteSign model
+now has a taller panel and inset, with the original posts, lettering,
+materials and floor anchor retained. Its source geometry was resized with
+the normals corrected for the height change; all 252 nondegenerate triangles
+retain outward winding. The editable generator specifies the new proportions;
+Blender regeneration was not run in this environment.
+
+Verified Johto sign placements fit the panel inside the original two-by-two
+source plot at 1.65 tiles wide and two tiles high. The early-town renderer now
+uses this same existing model, removing its separate procedural sign drawing.
+Recognition, source ground, claimed cells, interactions and collision stay
+unchanged. The existing native-sign regression now passes in the integrated
+Cargo command: one passed, zero failed, 1,424 filtered out. The other selected
+client test binaries also compile successfully. The authoring script applies
+the same five-thirds vertical scale to the original panel/inset/lettering/
+fixing geometry, retaining the authored bevel treatment on regeneration;
+its Python syntax was checked without generating scratch assets. A fresh
+sign render is required before visual acceptance; its native build is running.
+
+## Authored grove shoreline foundations — 2026-10-12
+
+Preserve the existing tree shapes, size, foliage and source placement while
+repairing these contacts, as explicitly requested. This foundation restoration
+does not edit the foliage generator or tree assets. Both ordinary Johto tree
+adapters continue to call the same grove generator with their source bounds,
+height, coordinates and neighbor information; Park and conifer assets remain
+distinct. Do not reshape trees to fit Lake of Rage's shoreline or cabin gaps.
+The fresh production test binary also passes
+`tree_variants_preserve_horizontal_plot_and_ground_anchor`, covering the
+shared generator geometry and ground anchor across the expanded map scope.
+This does not replace visual comparison of the source layouts.
+
+The fresh full-map production audit completed on 65 named outdoor maps
+(all `RouteN`, `*City`, `*Town`, and LakeOfRage entries in the supplied pack),
+plus 39 route interior negative controls. All 265 eligible authored tree-water
+contacts have actual wall-triangle intersections at the halfway water datum:
+zero gaps. Nonzero cases include Cerulean 50, Fuchsia 3, LakeOfRage 19,
+NewBark 3, Route12 64, Route27 51, Route30 6, Route32 11, Route34 6,
+Route42 14, Route44 20 and Violet 18. The audit used full map bounds at native
+32-unit tile scale and the production mesh builder with actual pack textures,
+not fixture terrain. Interior controls had no eligible contacts. Temporary
+Rust source, executable, copied library and orchestration script were removed.
+The result proves this contact invariant, not complete outdoor visual quality.
+
+A full-map production mesh audit of Lake of Rage cast horizontal rays midway
+between the native lawn and water datums at every `johto/tree` claim bordering
+native same-atlas water. All 19 tested contacts were physically open. There
+were 3,340 candidate subfloor triangles in the mesh, so this was not a failure
+to inspect existing terrain. The cause is shared: modeled foliage supplies a
+new lawn plane, then claimed-tree cells skip ordinary exposed-side meshing.
+The supplied source layout and collisions are not the cause.
+
+The shared authored terrain path now appends the missing tree-ground water
+contacts. It uses existing canyon wall geometry/pigment with fixed perimeter
+vertices between zero and the native water datum. Recognition is limited to
+proven tree claims with zero footing, a known outdoor tileset, and adjacent
+same-atlas native water; unknown viewport continuation, custom claims and
+elevated floors are left alone. Johto, Kanto, conifer and Park tree producers
+share the restoration without duplicating their assets or palettes.
+
+The new regression casts rays through eight contacts around a two-by-two
+modeled grove in all four directions at 8- and 32-unit tile scales. It also
+requires unchanged footing/ownership and rejection of custom claims,
+elevated floors and foreign water sources. The focused regression passes with the production contact function, canyon
+wall builder, pigment, quad primitive and test body read directly from source
+in a temporary Rust harness. It checks actual 8- and 32-unit geometry; the
+fixture helper itself hardcodes 8-unit tiles, so this regression explicitly
+scales both geometry dimensions. Temporary source/executable were removed.
+The fresh full-map production audit now passes all 19 Lake of Rage contacts
+with zero gaps (3,796 candidate subfloor triangles). Cherrygrove also passes
+all 96 native rock-water rays at both sampled depths with zero gaps (31,488
+candidate triangles), verifying the signed-course fix through the actual
+pack renderer. Temporary audit source/executable were removed.
+
+The native client build finished successfully in four minutes after a
+configuration ownership fix: the location-test shiny flag is copied before
+its configuration moves into initialization, matching the other capture
+flags. A transient duplicate Vec2 import in another edited module had
+already been removed by the time the build was retried. Integrated grove
+regression now passes directly in the freshly compiled production renderer
+test binary: one test passed, zero failed, 1,406 filtered out. This verifies
+the actual module, beyond the earlier focused temporary harness. The full
+integrated Cargo command subsequently completed successfully, including the
+production renderer regression (one passed) and compilation of the selected
+Bevy, render API and text client test binaries. Fresh muted visual review
+remains pending.
+The subsequent independent static image-target capture also produced no
+usable image: it reached its 60-second deadline while still building authored
+terrain. The original movement capture was stopped after confirming it could
+not obtain sustained window focus; no failed output is accepted as visual
+evidence. A fresh native build subsequently finished in the shared
+`target-bevy20-verify` cache. However, its static Lake attempt again timed out
+at the old deadline during terrain construction: inspection of the executable
+found no `CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS` setting. That build began
+before the new capture module was edited, so completion time alone did not
+prove the newer setting was included. A fresh native build in the owned
+`target-outdoor-verify` cache is now running after the integrated test command
+finished. Its timeout-setting inclusion must be verified before the next
+static attempt. Both failed static captures remain excluded from visual proof.
+The initially queued native build was stopped while it was still waiting for
+the shared build lock, before compiling anything. Its replacement uses the
+same cache and feature union with a command-only package override,
+`profile.wasm-dev.package.crystal-bevy.opt-level=0`, to reduce preview-host
+compile time while retaining optimized terrain generation and dependencies.
+No Cargo manifest or tree/rendering source changes are involved. The native
+build cleared the shared lock and is compiling. A newer shared executable
+then became available in the same cache; its binary contains the explicit
+timeout-setting name that was absent from the failed build. A fixed temporary
+copy is running a muted, image-target LakeOfRage close-up at 45 degrees,
+zoom 2, with the bounded 300-second timeout and paired native 2D capture.
+The dedicated host build remains live. This intermediate shared executable
+must not stand in for a final current-source completion audit.
+The current worktree's separate shoreline-plant module also passes both
+production renderer unit tests: roots/vertices remain in the water cell,
+placement is deterministic in map coordinates, footing/ownership remain
+unchanged, and paths, interiors and claimed water reject accents. These tests
+do not establish that the plants look good; the capture above predates this
+module and cannot visually validate it.
+
+## Lake of Rage and consolidated outdoor grove coverage — 2026-10-12
+
+A Rust audit of the supplied pack found 301 complete 2×2 tree crowns inside
+Lake of Rage's mixed Johto blocks (`$5b`–`$67`). The detailed mixed-tree path
+was restricted to the original six-map slice; Route26 also bypassed mixed
+recognition despite having a dedicated tree adapter. This left the same
+source drawings on later routes and cities outside preferred mixed-tree
+ownership and contact shading; the generic renderer could still draw trees.
+
+Outdoor grove coverage now uses one route/city/town scope, with Lake of Rage
+and the two named outdoor areas included. Building coverage remains separate.
+Every mixed crown still requires its exact tile drawing, subtile phases,
+complete bounds and a real same-atlas ground donor. Complete groves reserve
+their native cells before live-profile masking and use the existing branching
+broadleaf asset. Park trees, Kanto foliage, conifers, incomplete/custom art,
+collision and source layouts retain their identities.
+
+Ground contact now consults the same generic tree-ground eligibility as the
+renderer and uses the shared trunk offset for Johto/Johto Modern crowns.
+Johto routes share the existing sunlit ground finish; this is not a new
+texture or tree catalog. Source audit also found previously omitted mixed
+crowns on Route27 (12), Route32 (34), Route35 (3), Route36 (83), Route37 (8),
+Route38 (24), Route39 (3), Route42 (39), Route43 (31), Route44 (21),
+EcruteakCity (12), and MahoganyTown (3).
+
+The three focused regressions pass in the newly compiled renderer test
+binary: mixed crown recognition/contact, exact shared tree geometry with
+unchanged footing, and signed bank-to-water foundations. A fresh full-map
+production mesh check passes ownership and zero native footing for all 301
+Lake crowns, 31 Route43 crowns, 39 Route42 crowns and 12 Ecruteak crowns.
+Temporary probe source/executable were removed. Integrated Cargo completion
+and fresh muted native renders remain pending. Two Lake captures reached the
+60-second limit while terrain was building, so they supply no visual approval.
+A muted production movement capture completed successfully in 248.85 seconds
+with paired 3D and native 2D images. It remains a baseline from the earlier
+binary, not approval of the consolidated changes. Inspection confirms that
+trees were present through the generic path; weak ground contact, right-angle
+shore seams and bare water-to-lawn edges still need work. The 32-frame move
+changed four grid origins without rebuilding terrain; no playability claim
+is inferred from this render check.
+The whole lake (including northern cabins/woods) and other cities still need
+visual review, not just source-signature coverage.
+
+## Native bank-to-water foundation gap — 2026-10-12
+
+The latest full-map Cherrygrove headless audit inspected the production mesh
+from the supplied local pack: all 120 source buoy cells have course claims,
+and no sub-floor vertical buoy atlas faces remain. The only retained low
+vertical atlas faces are 24 native path faces (block `$01`, tile `$06`).
+The temporary probe source/executable were removed.
+
+A second full-map probe cast 96 horizontal rays through native `$0a` rock
+contacts with adjacent `$14` water, sampling source-cell centers at heights
+-1.5 and -0.5 in native eight-pixel units. All 96 rays found gaps. Inspection
+of `append_bank_run_side` identified the cause: its first course was clamped
+to zero, skipping the wall between the native water datum (-2) and zero.
+This is an actual open foundation, not merely a bad shoreline pigment.
+
+The shared bank mesher now retains signed foundation courses. Above-ground
+course indices still use the original nonnegative offset, so the extension
+cannot reorder the authored wall art. The new regression checks four face
+directions at both eight-pixel and native 32-unit capture scales, requiring
+a complete foundation and identical upper positions, UVs and normals.
+The focused foundation regression passes in the newly compiled renderer
+test binary and the integrated Cargo run completed successfully. Fresh
+native build and all 96 full-map rays now pass; muted visual review remains
+pending. The pale waterline is not declared fixed until those pass.
+
+## Shared native buoy-course trial — 2026-10-12
+
+`buoy_course` now handles Johto/Johto Modern tile `$58` in native water blocks
+`$30`–`$39` through one producer. It replaces only complete unclaimed planes
+at the native water datum, with a same-atlas `$14` water donor. The float's
+placement/radius follow the largest connected foreground component in the
+existing tile. Detached wave marks are excluded. Both paint swatches sample
+that existing tile's palette, so no palette, texture or exported source is
+introduced. Missing art/water donors, unknown identities, cropped planes and
+reserved/custom objects retain the existing rendering path.
+
+The float is closed beneath the water and uses real planar quads compatible
+with the shared ground finisher. Ownership enables the existing water finish
+only below this exact source identity at its original datum; floor heights,
+source layout and collision remain unchanged. Temporary Rust tests compiled
+the actual silhouette/geometry routines and shared quad primitive: both
+silhouette isolation and closed/outward/non-degenerate mesh checks passed.
+The integrated course/water-finishing regression is pending.
+
+The fresh native build completed with exit 0 in 4m46s. The actual-45-degree
+muted Cherrygrove capture completed with exit 0 in 22.11s and was inspected:
+`target/outdoor-cherrygrove-shared-buoy-course-45-muted.png` (1280x960).
+The blue/white checkerboard course is gone and the original two-row course
+remains. The first floats are too bright and read as flat white marks, so this
+appearance is rejected. The follow-up confines the original white swatch to
+the small crown, uses the original middle swatch over the broad body, and
+reuses the existing native prop directional shading. `solid_color` retains
+its original factors through that shared helper; no new palette is added.
+All four integrated buoy regressions passed through Cargo and directly in the
+fresh renderer binary, including the shared-water finish and unchanged floor
+heights. The shaded native build is still running.
+The pale straight waterline remains an independent open issue.
+
+## Reuse native Cherrygrove stone — 2026-10-12
+
+Follow-up tracing found an additional map-name exception: the shared stone
+mesher selected canyon pigment for `$0a` on Route26 but regular stone elsewhere.
+The identical Johto/Johto Modern `$0a` drawing now selects the existing canyon
+finish in every town/route. No new palette or texture is introduced. The parity
+regression now compares actual stone vertices, colors and UVs across
+Cherrygrove, Route26 and Johto Modern, and first proves that its fixture matches
+the shipped coastal profile. The fresh direct renderer binary passed that
+strengthened regression and the custom-profile check. Its compiled diagnostics
+were also checked for all three new assertion messages, confirming this was
+the current fixture rather than the earlier weaker one. The integrated Cargo
+process is still running. This latest pigment change requires a fresh muted
+capture; the gray captures described below precede it.
+
+The integrated Cargo parity run subsequently completed with exit 0 (20m50s,
+including queued compilation). The first preview build hit a missing café
+helper during a concurrent interior edit. Reinspection confirmed that helper
+and its include were present; the retry completed with exit 0 in 4m28s.
+`target/outdoor-cherrygrove-shared-canyon-stone-45-muted.png` was captured
+muted at actual 45 degrees and inspected. The coastal `$0a` masses now share
+the warm ochre/canyon cap and side courses. The previous gray boulder asset
+and its plinth are absent. Pale straight waterline strips and the blue/white
+flat buoy course remain obvious. The rounded caps are still below the stated
+shape standard, so this color/asset consistency improvement does not close
+the outdoor goal.
+
+The buoy trace found no existing 3D buoy producer. Both Johto and Johto Modern
+classify tile `$58` in water blocks `$30`–`$39` as a plane at `WATER_HEIGHT`.
+A temporary Rust probe read the supplied pack and confirmed Johto's buoy
+sample resolves to bank 0, slot 88 of 192 source tiles. The float silhouette
+is distinct from the background and small wave marks. Future modeling should
+preserve the silhouette's placement/proportions and the existing course,
+reuse the common water finish, and use one shared source identity adapter.
+The temporary probe source/executable were removed; no pack or audio source
+was copied into tracked paths.
+
+The user identified duplicated treatment of blocks already rendered elsewhere.
+The shipped `Cherrygrove coastal boulder` live profile was claiming the exact
+Johto `$0a` block before the native bank mesher could handle it. Ordinary Johto
+and Johto Modern already render that block as a connected stone platform with
+the common outdoor mineral finish. Canonical copies of that profile now defer
+before reserving source cells, so Cherrygrove uses the same geometry, pigment,
+texture coordinates and floor support. User-edited profiles retain their
+explicit live renderer; Kanto's distinct shoreline identities are unaffected.
+
+The separate coastal sculpture, palette and water-bed exception from the
+unaccepted trial were removed. Its first captured image still showed the old
+sphere/plinth model and cannot verify the trial. The experimental buoy rewrite
+was also removed from this pass; native buoy artwork remains a separate open
+visual issue. A regression compares native and profile-enabled meshes,
+including colors, UVs and footing. The fresh native build completed with exit
+0 in 7m00s. Muted actual-45 and 90-degree captures were inspected:
+`target/outdoor-cherrygrove-shared-native-stone-45-muted.png` and
+`target/outdoor-cherrygrove-shared-native-stone-90-muted.png`. They confirm the
+sphere/plinth override is gone. The common stone still looks too grainy; the
+pale waterline and raw buoy strips remain visible. This is consistency work,
+not visual acceptance. Integrated parity and custom-profile checks are pending.
+
+## Shared ordinary tree assets — 2026-10-12
+
+Ordinary Johto town and route trees now call `append_grove_tree`, sharing
+branching trunks, forked limbs, asymmetric crowns, leaf materials and stable
+source-coordinate variation. The separate town crown recipe and its leaf
+branches were removed. New Bark, Route29, Cherrygrove, Route30, Route31,
+Violet and Route26 use the same mesh for matching source plots; the generic
+Johto exterior path uses that renderer too. Small ordinary trees use the same
+family at reduced scale. National Park's garden trees and separate conifer
+assets retain their distinct authored species.
+
+Trunk contact shadows now follow the shared offset in each supported town
+and route. New Bark's path uses a cooler gravel palette, carried through
+ground blending so the old tan edge does not reappear at grass transitions.
+Source ground ownership and walking support remain separate from crowns.
+
+The fresh muted Cherrygrove capture at actual 45 degrees was inspected:
+`target/outdoor-cherrygrove-unified-grove-muted.png` (1280x960).
+The previous tall pillar crowns are gone and the town shares the route's
+tree family. This is an asset consistency improvement, not acceptance of
+the reference's finish: crowns remain too rounded and uniformly lime-green;
+ground is sparse and water remains flat. Fresh tests and the New Bark/Route29
+visual comparison are pending at this checkpoint.
+
+The New Bark–Route29–Cherrygrove baseline review also found coastal rocks
+that read as gray balls on square pedestals, raw shoreline strips, repetitive
+forest rows, and a pixel facade at the Route29 gate. Central captures do not
+prove complete map coverage. These findings remain open until independently
+fixed and reviewed.
+
+Fresh direct renderer checks subsequently passed: 79 New Bark/exterior-ground
+checks (2 ignored), 7 ordinary foliage checks, 9 Park foliage checks, and
+36 modeled exterior checks. The cross-map test compares complete solid meshes
+and unchanged floor heights, not merely a tree count. The New Bark capture
+timed out and produced no image, so the cooler path palette has not yet had
+visual acceptance.
+
+The user explicitly requested a mod over the unintended lake behind the
+Cherrygrove Center. The wider camera exposes the original repeating sea border
+outside the map. The first native review showed the border filled, but its 2D
+comparison revealed additional water through the Route30 connection, hidden
+under the new 3D canopy. That first capture is not acceptance of the lake fix.
+`exterior_border_block` replaces that off-map border with complete Johto
+tree block 0x05 on the east side and north of the land-side region (source
+x >= 24). The western and southern sea retain the original water border.
+Connected-map selection precedes this fallback, preserving Route29/Route30.
+The same source block and art feed 2D and 3D. The border fallback does not
+change playable-map collision.
+
+The follow-up runtime mod replaces the original matched shoreline pairs at
+Cherrygrove block (17,0)/(18,0) and Route30 block (9,25)/(9,26) with tree block
+0x05. It runs after pack verification and before runtime map catalogs and
+sessions are constructed, so authoritative collision and both renderers agree.
+Only original Johto maps of the verified dimensions and exact shoreline pairs
+are changed; independently modified layouts are preserved. Original external
+pack bytes, audio, scripts, doorways and western ocean blocks remain unchanged.
+The actual source function passed its focused Rust regression, including
+unchanged non-lake blocks, repeat application and modified-pack guards.
+Fresh native rebuild and source-level/2D/3D visual checks remain pending.
+
+The first source-mod capture removed the connected Route30 water in 2D, but
+still showed city water at its right edge. Cherrygrove's tile callback invokes
+LoadBlockData, whose `overworld_map` reconstructed the original split payload
+and overwrote the modified module's blocks. `overworld_map` now uses an assembled
+runtime module when present, retaining split-payload assembly for build inputs
+without one. A regression compares a modified module against the original split
+payload and checks both paths. This reload fix still needs a fresh native review.
+
+The pack-backed source check consumed the verified external pack in memory,
+applied the actual mod function, and found exactly four changed blocks across
+all maps. All 16 changed collision quadrants resolve to tree block 0x05 and
+WALL; a western-sea sample retains WATER. Temporary probe source and executables
+were removed. The native western-coast capture was inspected:
+`target/outdoor-cherrygrove-coast-preserved-grove-muted.png` (1280x960).
+The sea and island remain. The spherical gray boulders, square bases and raw
+wave strips still fail the outdoor art target; the grove change does not fix them.
+
+The shared-tree Route29 middle view was also inspected:
+`target/outdoor-route29-unified-grove-middle-muted.png` (1280x960).
+Its tree family matches both towns. The gate remains a pixel-textured facade
+and the ground remains sparse; these are open visual findings.
+
+The final reload-fixed native build finished with exit 0. Both muted final
+captures were inspected at actual 45 degrees:
+`target/outdoor-cherrygrove-lake-removed-reviewed-muted.png` and
+`target/outdoor-cherrygrove-lake-removed-native-2d-reviewed-muted.png`.
+The remaining water behind/right of the Center is now replaced by trees in
+the 2D view as well as the 3D view; the prior first-pass captures are superseded.
+The pack-backed check against the fresh production asset library also confirmed
+that `overworld_map` retains both tree replacements in each of the two maps.
+The runtime mod's integrated Cargo regression passed (1 check), as did the
+integrated border regression (1 check). This verifies this lake correction,
+not the overall outdoor art target or gameplay completion.
+
+The full asset-test crate could not compile: six `include_str!/include_bytes!`
+references require missing unrelated radio oracle fixtures under
+`tools/asm-oracle/fixtures/`. No fixtures or exported source were added.
+Consequently the new asset reload regression has not run in that full crate.
+Attempts to compile an isolated test harness after switching dependency feature
+sets could not resolve the cached production asset crate, so they provide no
+additional passing result. The successful pack-backed reload check and the
+fresh native 2D/3D captures above remain the direct evidence for the fix.
+All owned preview/build/test processes for this checkpoint have exited.
+
+The fresh New Bark view was inspected at actual 45 degrees:
+`target/outdoor-new-bark-unified-grove-reviewed-muted.png` (1280x960).
+It shares the same broadleaf family with Cherrygrove, and the old tan plaza
+is now cooler gravel without an obvious tan blending strip. Ground detail is
+still sparse, and crown repetition remains below the forest reference.
+
+## Camera-angle correction — 2026-10-11
+
+`new_bark_3d --orbit N` initializes rotation_step=N×0.5, and the camera
+turns rotation_step×45°. CLI orbit 1 is therefore 22.5°, orbit 2 is 45°,
+orbit 3 is 67.5°, orbit 4 is 90°, and orbit 6 is 135°. Earlier entries
+in this review that call CLI orbit-1 captures 45° or orbit-3 captures 135°
+mislabel their angles; those angle claims are withdrawn. The same correction
+applies to park captures made with CLI orbit 1. Their actual image/geometry
+observations remain evidence only at the corrected angles. The half-step CLI
+initialization predates these captures (committed 2026-09-30).
+
+
+All subsequent trials, tests, previews and screenshot runs must be silent, per
+the user's 2026-10-11 instruction. Native preview commands must set
+`CRYSTAL_PREVIEW_MUTE=1` and use an executable rebuilt with the sink-level mute
+support in `bevy_shell.rs`; older executables do not honor this switch. Browser
+previews must use `crystal_set_muted(true)` before playback or mute their own tab.
+Never change system volume or another application's audio. No outdoor preview
+process remained running when checked after the request.
 
 The user's forest illustration remains the quality target. The user accepted
 the improved stone texture and requested better shapes and correction of visible
@@ -713,3 +1217,1099 @@ The reviewed Route26 walls remain too flat beneath detailed painted strata. Thei
 The 16:45:54 native renderer produced `target/outdoor-park-oval-leaves-reviewed.png` at the same promenade camera: 1920×1440, 52,884 colors, luminance range 253.3, 9.38 seconds. Reviewed the actual image: rounded leaf shoulders are visibly softer and more coherent than the old pointed chips, but the canopy masses and surrounding ground remain less nuanced than the saved concept. The 16:48:10 integrated renderer test executable passed all 32 park tests, including the new oval winding regression, and all 11 outdoor-stone tests. Its renderer compilation started after the mineral-course edit at 16:43:32; this is geometry regression evidence for the new course field, not GPU acceptance.
 
 The park-tree generator now adds six low basal rosettes beside the buttress roots, entirely within the authored tree plot. Leaves have real folded triangles and follow the source-stable tree phase. Their maximum height is below one quarter of a source tile, preserving readable walking space; gameplay collision/encounter state is untouched. They share the tree’s existing cutaway owner. An isolated Rust run of the actual current park-tree module and its parent helpers passed all five module regressions, including new planting bounds, triangle winding and unit normals. This root planting postdates the screenshot and needs a fresh native image. The owned native build and stone Cargo regression jobs subsequently completed successfully (both exit 0). The resulting native executable at 16:50:12 includes the mineral-course work and predates the root planting at 16:52:22.
+
+### Mineral-course capture performance follow-up
+
+The native Route26 mineral-course captures at 900×675 and then 720×540 both hit the fixed 60-second capture timeout (exit 1) without a validated image. Neither attempt is visual acceptance. Inspection found that the wall field evaluated mineral slabs for remote edges whose influence was exactly zero. The pass now skips zero edge/end weights and lazily shares its source-coordinate mineral fields between participating edges at one vertex. This preserves the intended coefficient/shape while avoiding unnecessary field evaluations. The optimization postdates the successful 11-test run; fresh regressions and an actual Route26 capture are required. The root-planting native build subsequently completed successfully (exit 0, 5m26s; executable at 16:59:47). It predates compilation of the newer wall-cache optimization, which still requires a fresh native build for Route26.
+
+The root-planting retry saved `target/outdoor-park-root-planting-reviewed.png`
+before termination (exit 143). The saved PNG was fully decoded and visually
+reviewed: 1800×1350, 51,023 colors, luminance range 253.3. Low rosettes are visible
+around the trunks, but the planting remains subtle and the broad lawn and crown
+masses still fall below the concept. The saved frame supports this visual
+assessment; the capture process did not complete normally.
+
+## Muted mineral-course review and planar mass follow-up
+
+The fresh integrated run passed all 11 outdoor-stone regressions after both
+wall and crest field caching; the same renderer executable passed all 33 park
+checks, including low root planting. A muted native Route26 capture at (10,28),
+45 degrees completed normally: `target/outdoor-route26-crest-cache-muted-reviewed.png`,
+1800×1350, 53,259 colors, luminance range 226.4, 54.57 seconds. The preceding
+muted attempt still timed out while building terrain. The successful frame was
+visually reviewed: course relief is subtle and broad cliff tops still read as
+smooth blocks, so this is evidence of remaining shape work rather than visual
+acceptance.
+
+The top-mass field now retains continuous linear mineral planes at two scales
+instead of saturating them through `tanh`. Deeper unequal beds should articulate
+the plateau without raising source caps. The existing shared wall/cap warp,
+support-relative erosion bound, floor datums and planted-tree seats remain in
+place. This edit postdates the successful capture; fresh geometry regressions
+and a muted native image are required before judging its result.
+
+Fresh renderer tests compiled after the first planar-field edit passed ten
+stone regressions but failed the cropped-interior variation requirement. That
+failure is retained as evidence that the initial field was too weak. The
+planar field now uses stronger unequal beds with positive bounded depth, so
+source caps are never raised. The original variation
+assertion remains unchanged. This revised field is awaiting fresh regressions
+and a muted GPU comparison.
+
+Cap restoration now short-circuits non-stone triangles and triangles outside
+the cap's height plane before loading all points and calculating centroids.
+The native cap selection predicate and resulting indices are unchanged; this
+avoids repeatedly doing geometric work on foliage/ground for each rock corner.
+It is included in the pending strengthened-field verification.
+
+A subsequent renderer test snapshot still failed cropped-interior variation:
+its shallow minimum-depth clamp had flattened the fixture's negative mineral
+patch. The current field removes that minimum clamp and uses a positive bias
+larger than the combined bounded noise amplitudes. Its depth stays positive
+while retaining linear planes throughout each mineral bed. The original
+support-relative safety bound remains. This latest field postdates the failed
+snapshot and still needs integrated tests and muted GPU review.
+
+The current field and cap-filter optimization passed the fresh integrated
+outdoor-stone run: all 11 regressions, including the original cropped-interior
+variation assertion (Cargo exit 0, renderer test executable at 19:48:56).
+A temporary headless probe called the public production authored terrain
+builder on a cropped Route26 source fixture: 1,296 stone vertices, heights
+12.681368 through 14.308224. This is full terrain-builder geometry evidence,
+not a GPU image or complete Route26 acceptance. The first probe used a default
+map texture handle and correctly failed frame validation; it was corrected to
+use nonempty fixture handles. Both probe scratch directories were removed.
+The native build and muted visual comparison remain pending.
+
+The native build completed successfully (exit 0, executable at 19:51:28).
+Muted Route26 (10,28), 45-degree GPU captures completed normally:
+`target/outdoor-route26-planar-mass-muted-reviewed.png`, 1800×1350, 53,529
+colors, luminance range 226.3, 40.78 seconds; its original 2D companion completed
+at 41.11 seconds with 13 colors. The real 3D frame was reviewed against the 2D
+layout: broader unequal top cuts are visible, but shoulders still look softly
+rolled and the stone remains below the target. The same fresh renderer test
+executable also passed all seven ledge-approach/contact regressions.
+
+The stone-rim projection now uses convex octagonal bevel planes instead of a
+circular fillet. It retains one shared radial deformation for cap and wall,
+the support/end guards and the original bounded footprint. This changes
+shoulder geometry and postdates the reviewed image. Cap-area, seam, floor and
+normal regressions plus a fresh muted image remain required before acceptance.
+
+An isolated Rust execution of the actual current outdoor-stone module passed
+all 11 existing regressions with octagonal bevels. It used the actual corner,
+quad, lattice and slab helpers, with fixture shapes forwarded from the
+production source-profile dispatcher. This proves the tested geometry
+invariants without claiming a complete native-client or visual result. Its
+temporary source/executable directory was removed; the integrated run remains
+live.
+
+## Deeper park crowns — 2026-10-11
+
+Comparison of the reviewed park frame with the saved concept showed compact
+high crowns over long bare stems. Park crowns now sit lower around the branch
+forks and have a deeper vertical spread. Roots, source tree plots, branches,
+palette, native grass types and cutaway ownership remain on their existing
+paths. An isolated execution of the actual park-tree module and its actual
+parent geometry helpers passed all five module regressions. Its scratch
+directory was removed. This crown change still requires integrated checks and
+a muted park GPU comparison before visual acceptance.
+
+The integrated bevel run completed successfully: all 11 stone regressions,
+Cargo exit 0. The fresh renderer executable at 20:07:56 also passed all 33 park
+checks. Native build completed successfully (executable at 20:05:33). Muted
+Route26 bevel captures were reviewed at 45 and 135 degrees:
+`target/outdoor-route26-mineral-bevel-muted-reviewed.png` (1800×1350, 53,461
+colors, luminance range 226.4, 24.15 seconds) and
+`target/outdoor-route26-mineral-bevel-135-muted-reviewed.png` (1800×1350,
+54,865 colors, luminance range 227.7, 36.38 seconds). Both processes exited 0.
+No obvious bank/cliff opening is visible in these views, but the broad stone
+masses and soft-looking shoulders remain below the reference standard; this
+does not establish every Route26 floor terminal.
+
+The muted deeper-crown park capture completed successfully:
+`target/outdoor-park-deeper-crowns-muted-reviewed.png`, 1800×1350, 49,126
+colors, luminance range 252.5, 7.37 seconds. Reviewed the real image against the
+saved concept: lower crowns connect better with the stems, but enlarged leaves
+still form bulky, uniform shells. Park leaf dimensions now follow horizontal
+canopy span rather than vertical depth, and individual leaves have modest,
+source-stable angle variation. Other crown styles retain their existing paths.
+An isolated execution of the actual current park module and parent helpers
+passed all five module regressions plus full fan winding/unit-normal checks on
+15,360 leaf triangles per canopy at three phases. Scratch output was removed.
+This leaf change postdates the image and requires a fresh muted GPU review.
+
+
+## Park bough silhouettes — 2026-10-11
+
+The leaf-angle native rebuild completed successfully (20:29:38 executable).
+Reviewed the fresh muted GPU frame
+`target/outdoor-park-leaf-angles-muted-reviewed.png`: 1800×1350, 49,756
+colors, luminance range 252.5, capture exit 0 in 7.79 seconds. Smaller leaves
+help the surface scale, but the crowns still read as rounded solid shells.
+The focused integrated leaf run passed all five park-tree module tests; it
+predates the next bough-shape edit.
+
+Park crowns now use a separate seven-bough radial field with a smaller inner
+body, unequal side and upper masses, and deeper saddles between branches.
+The field supplies its analytic tangent gradient to both crown and leaf
+normals. Town and woodland crown fields keep their existing paths. Source
+plots, trunks, roots, native grass types and cutaway ownership are unchanged.
+An isolated execution of the actual park-tree module and its parent geometry
+helpers passed all six tests, including a new finite-difference normal and
+closed-seam check over three phases. Temporary harness output was removed.
+A muted native rebuild is queued in
+`target/outdoor-park-cluster-muted-build.log`; a fresh GPU comparison and
+integrated checks of this seven-bough change are still required. This is not
+visual acceptance of the park or the full outdoors goal.
+
+The complete new crown was additionally checked at three phases: all core
+faces and all 15,360 leaf triangles per canopy remain nondegenerate and
+outward relative to their surface normals (seven isolated checks passed).
+The full crown face check is now retained in the park-tree module.
+
+
+## Canyon cap pigment — 2026-10-11
+
+Reviewed the previous real Route26 135° bevel frame against the original
+2D drawing. The cap pigment is too close to the sediment faces, making
+shoulders read as a single muddy mass. Canyon caps now use a lighter warm
+weathered bed color, blended into the existing face pigment by the actual
+surface normal; cap texture strength falls from 0.42 to 0.28. Wall texture
+strength remains 0.60 and non-canyon stone retains its existing pigment.
+This shader change still needs a fresh muted GPU comparison for both color
+and pipeline validation.
+
+The first bough native rebuild failed on a concurrent gym importer schema
+change (missing `gym_stone_pixels`). Other work supplied its metadata remap;
+a duplicate initializer was removed without changing that remap. The retry
+in `target/outdoor-park-cluster-muted-rebuild.log` is confirmed live. The old
+failed build is not evidence for either the new crown or cap pigment.
+
+
+## Park root planting blend — 2026-10-11
+
+The latest leaf-angle scene has nearly bare lawn below the tree canopy.
+Expanded the existing source-owned root planting from six to twelve low
+rosettes, staggered over three radii. Leaves are broader and longer, with a
+higher folded middle, to create a visible transition from buttress roots to
+lawn. All planting remains within the original 4×4 source tree plot; no
+promenade, encounter grass or placement data changed. Updated the deliberate
+planting height bound to below 0.40 tile (previously 0.25) while retaining the
+floor, plot, outward winding and unit-normal assertions.
+
+An isolated execution of the actual current park-tree module and actual
+parent functions passed all seven retained tests. Scratch output was removed.
+The muted native retry has progressed from its confirmed queue into compiling
+crystal-bevy after the foliage edits. The GPU result remains pending.
+
+
+The native retry completed successfully, executable 20:53:27, Cargo exit 0
+in 7m09s. Reviewed two fresh muted GPU captures, both process exit 0:
+`target/outdoor-park-bough-root-blend-muted-reviewed.png` (1800×1350,
+50,891 colors, luminance range 252.5, 8.04 seconds) and
+`target/outdoor-route26-weathered-cap-muted-reviewed.png` (1800×1350,
+57,736 colors, luminance range 225.4, 54.84 seconds).
+
+The park planting is now visible around roots. Seven boughs break the previous
+rounded shell, but upper lobes are too pointed in the real image. Broadened
+the lobes (field exponent 13 to 10), reduced their amplitude, and filled the
+inner body slightly. Park core sampling is now 18×36 instead of 12×24;
+town and woodland retain 12×24. All seven actual-module isolated tests pass
+for this softened revision, including full shell/leaf winding and numerical
+normal checks. Scratch output was removed. A new muted native build is live
+in `target/outdoor-park-soft-bough-muted-build.log`; the image above predates
+this softening. The integrated park test run in
+`target/outdoor-park-bough-root-muted-tests.log` is also confirmed live.
+
+The Route26 render validates the revised shader pipeline and visibly lighter
+cap beds. Broad cliff masses remain too uniform and the ledge silhouette does
+not yet prove the requested saw-blade profile or every floor terminal. Neither
+scene meets overall visual acceptance.
+
+
+## Fresh softened crowns and actual Route26 banks — 2026-10-11
+
+Softened-crown native build completed successfully, Cargo exit 0 in 8m49s,
+executable 21:05:04. Reviewed the actual muted GPU frame
+`target/outdoor-park-soft-bough-muted-reviewed.png`: 1800×1350, 48,903
+colors, luminance range 252.5, capture exit 0 in 9.31 seconds. The pointed
+upper lobes are reduced and root planting remains visible, but canopy bodies,
+bare lawn, pale paving and water still fall below the saved art reference.
+
+The integrated park run failed on an unrelated test initializer using an
+unimported `default()` in modeled_dungeons. Replaced it with
+`Default::default()` and started the focused retry in
+`target/outdoor-park-soft-bough-muted-tests.log`; its handle is confirmed live.
+No integrated pass is claimed for this revision yet.
+
+Executed a temporary Rust headless probe using the verified local pack,
+actual in-memory tileset pixels and the public production terrain builder for
+Route26 source columns 4..36 and rows 32..80. All 112 bank cells in this crop
+were central native $57 drawings. Their four source-row footing heights are
+exactly 0.75, 2.25, 3.75 and 5.25 world pixels, maximum expected-height error 0.
+This proves the crop's footing buffer follows the rise, not its visible cap
+triangle continuity or all terminal joins. A triangle-level surface check is
+still needed to distinguish cap defects from visual readability.
+
+Early probe compilations encountered concurrently replaced Cargo libraries;
+no geometry ran in those attempts. The successful probe used a temporary
+snapshot of the current production rlib for a consistent link. All temporary
+source, executable and snapshot files were removed automatically. No pack
+content was written out or added to source control.
+
+
+## Actual bank cap and floor-contact geometry — 2026-10-11
+
+The same real Route26 pack crop (source columns 4..36, rows 32..80) passed
+1,008 triangle ray samples across 112 central native bank cells: zero missing
+or incorrectly elevated caps, maximum expected-height error 0.0000009536743
+world pixels. Samples cover X fractions 0.15, 0.50, 0.85 and Z fractions
+0.10, 0.35, 0.50 in each source cell. The recessed lip region is deliberately
+outside this linear-rise assertion.
+
+A second production-builder check passed 252 rays through the south drop
+faces at X fractions 0.15, 0.50, 0.85 and heights 0.01, 3.0, 5.9 world pixels.
+Zero holes were found, including the near-floor samples. This covers the
+sampled central runs, not all terminal shapes or every route location.
+Temporary snapshot/executable directories were removed; the ignored probe
+source is retained only until the final related checks finish.
+
+Reviewed `target/outdoor-route26-bank-side-muted-reviewed.png`: CLI orbit 2,
+actual 45°, zoom 1, 1800×1350, 55,128 colors, luminance range 229.3,
+34.87 seconds, muted capture exit 0. Cliffs still read as overly uniform
+masses. A true side capture uses CLI orbit 4 (90°); that job is live.
+
+
+## Stone shoulder normal weighting — 2026-10-11
+
+Reviewed fresh muted captures at the corrected angles:
+`target/outdoor-route26-bank-90-muted-reviewed.png` (CLI orbit 4, actual 90°,
+zoom 1, 1800×1350, 54,040 colors, luminance range 230.2, 33.84 seconds,
+process exit 0) and `target/outdoor-park-actual45-muted-reviewed.png`
+(CLI orbit 2, actual 45°, zoom 0, 1800×1350, 47,686 colors, luminance range
+240.6, 9.58 seconds, process exit 0). Both scenes remain below the reference;
+the actual 90° rock view exposes particularly harsh shoulder lighting.
+
+The production builder's real Route26 crop contains 107,190 nondegenerate
+stone triangles. On 159 triangles, the geometric face normal points opposite
+the average of its assigned vertex normals (dot < -0.01). This is evidence of
+bad face/lighting agreement; it is not by itself proof of inverted geometry.
+A temporary angle-weighted normal candidate on that same completed mesh
+reduced this count to 82. The 1,008 cap-ray and 252 drop-ray bank checks still
+passed. Temporary executables and rlib snapshots were removed.
+
+Changed actual outdoor stone normal smoothing from face-area weights to
+corner-angle weights. Shared position ownership and geometry remain intact;
+large cap triangles no longer dominate finely sampled shoulder normals solely
+through their area. A new retained regression varies face size and fan split
+while requiring the same dihedral normal at duplicated shared corners. An
+isolated execution of the actual smoothing function and this actual test
+passed. The native build in `target/outdoor-stone-angle-normal-muted-build.log`
+and integrated stone run in `target/outdoor-stone-angle-normal-muted-tests.log`
+are live; a fresh GPU comparison and the remaining bad-face investigation are
+still required. The 82-face count describes the temporary candidate, not yet
+a rebuilt production result or visual acceptance.
+
+The focused integrated park retry subsequently completed successfully, Cargo
+exit 0. Its park-tree module checks passed; no full-gameplay or full outdoors
+visual acceptance is inferred from this result.
+
+
+## Residual cap folding investigation — 2026-10-11
+
+A freshly linked production-builder probe now observes the angle-weighted
+normal implementation: 82 of 107,190 nondegenerate stone faces have negative
+agreement with their average assigned normal. Reapplying the angle-weighted
+candidate gives the same count. This confirms the production geometry result,
+without yet claiming a new GPU result.
+
+Projection into the original source-coordinate UV plane identified 11
+final downward-facing triangles among 54,764 strong original cap-projection
+samples. Inspected examples have the native cap-grid UV determinant near
+-1.78 and upward average normals, with horizontal warped vertices overtaking
+one another. Thus part of the remaining defect concerns actual cap geometry,
+not only normal averaging. The 1,008 bank-cap rays and 252 drop-face rays
+still pass for the central Route26 crop.
+
+A temporary local rewind candidate made this worse: 269 shared points were
+adjusted and 19 projected cap triangles remained folded; bad normal agreement
+increased to 90 faces. Rejected it and removed it from the probe. It was never
+added to production source.
+
+Reduced the production secondary crest recession from 0.48 to 0.28 tile,
+after the existing bevel and convex-corner compression. Broad vertical erosion,
+mineral fields, support bounds and source footprints keep their existing paths.
+The intent is to prevent this additional inset from overtaking compressed cap
+samples. This requires the actual pack probe and fresh muted GPU review before
+claiming the fold issue is fixed. Both owned native/test jobs are confirmed
+live and still queued; the source edit precedes their compilation. The current
+probe source remains ignored for this pending verification only.
+
+
+The shared build cache was held by another live test for over twenty minutes.
+Created an ignored APFS clone at `target-outdoor-verify` for independent
+outdoor iteration. Confirmed and stopped only our queued build/test PIDs
+36515/36630 (both terminal exit 130); other work was not interrupted.
+The isolated native build completed successfully in 2m59s.
+
+Its real-pack probe disproved the shallower-crest hypothesis: 83 bad
+face/normal agreements and 12 downward cap-projection triangles, compared
+with 82 and 11 before. Central bank cap/drop rays still passed. Reverted the
+0.28 recession to 0.48. Added a temporary, opt-in
+`CRYSTAL_OUTDOOR_GEOMETRY_TRACE` for the specific affected source vertex;
+it is silent unless explicitly enabled. The trace rebuild is live in
+`target/outdoor-stone-warp-trace-muted-build.log`. This diagnostic must be
+removed after isolating the warp defect; no successful cap-fold fix is claimed.
+
+## Finite-edge bevel correction — 2026-10-11
+
+The opt-in geometry trace identified a genuine cap fold at Route26 source
+samples (190.66667,32,293.33334), (190.66667,32,294.6667), and
+(192,32,294.6667). Their bevel shifts were respectively 1.24948, zero, and
+2.01781 pixels. The third sample overtook its unchanged neighbor. Membership
+used distance to a finite edge segment, whereas deformation used distance to
+the extended wall plane; this introduced an abrupt deformation beyond an edge
+endpoint. `mineral_bevel` now uses finite-edge distance for the inward radial
+coordinate at clamped endpoints. Interior wall-plane projection is retained.
+The temporary stderr geometry trace has been removed.
+
+The regression `finite_rim_endpoint_preserves_route26_cap_triangle_winding`
+uses those actual source samples and the production noise/bevel functions.
+Isolated execution passes with the correction and fails with the old endpoint
+calculation, reproducing the traced vertex inversion. This is local evidence,
+not proof that every cap or ledge is aligned. The preceding integrated run
+passed all 12 earlier stone tests. The updated integrated run initially failed
+to compile because newly edited dungeon guardian dispatch referred to an
+unimported `Model`; those two references were qualified with their existing
+`crate::dungeon_models::Model` type. The updated 13-test run is live in
+`target/outdoor-stone-finite-endpoint-muted-retry.log`. A fresh actual-pack
+mesh probe and muted GPU frames remain required before visual acceptance.
+
+The rebuilt production library's actual-pack probe completed successfully:
+107,190 nondegenerate stone triangles, 54,764 strong original cap-projection
+samples, and two final downward-facing cap triangles (previously 11). Faces
+opposite their averaged assigned normals fell from 82 to 64. The 112 central
+bank cells still pass all 1,008 cap rays (maximum height error 9.536743e-7)
+and all 252 drop-face rays, including floor-level samples. These samples
+cover source columns 4..36 and rows 32..80, not the entire route or all
+terminals. Two remaining folds lie at source cap corners near (192,288)
+and (64,416); further corner work is required. Evidence:
+`target/outdoor-stone-finite-endpoint-pack-probe.log`. The build retry also
+needed an explicit existing `[usize;2]` UV closure argument type in the
+guardian dispatch; no dungeon behavior was changed.
+
+The updated integrated run completed with exit 0: all 13
+`mesh::outdoor_stone` tests pass, including the actual Route26 finite-endpoint
+regression. Log: `target/outdoor-stone-finite-endpoint-muted-checks.log`.
+This validates the checked geometry invariants; it does not close the two
+remaining actual-pack cap folds or establish the requested visual quality.
+The muted native build remains live in
+`target/outdoor-stone-finite-endpoint-muted-build.log`.
+
+The muted native build completed exit 0 in 5m55s. Reviewed the fresh actual
+45-degree GPU frame `target/outdoor-route26-finite-endpoint-45-muted-reviewed.png`:
+1800x1350, 55,132 colors, luma range 229.5, capture exit 0 in 39.11s.
+The endpoint correction reduces lower foreground rim pinching, but overall
+cliff masses remain too broad, uniformly ochre, and slab-like. Bare lawns
+and sparse grass continue to miss the painterly forest reference. This frame
+is not visually accepted as the target. An actual 90-degree muted capture
+is live for the side/corner comparison.
+
+Reviewed the matching actual 90-degree muted GPU frame
+`target/outdoor-route26-finite-endpoint-90-muted-reviewed.png`: 1800x1350,
+54,012 colors, luma range 235.0, capture exit 0 in 38.40s. Side view still
+shows dark protruding slivers at the lower foreground cap edge and a sharp
+inner shoulder pinch near the trainer. Those visible defects remain open,
+as do the two cap folds measured above and the overly uniform cliff masses.
+Both owned capture processes have exited normally. Removed the temporary
+probe runner; the ignored probe source remains for the unfinished corner
+investigation. No generated content-pack assets or build output were staged.
+
+## Reentrant shoulder contribution — 2026-10-11
+
+A temporary opt-in three-vertex trace showed that the remaining corner at
+source (192,288) folds during the first rim stage. Wall inset, corner shoulder
+cut, and crest inset are all zero at these samples. The two perpendicular
+bevels each contribute the same full offset: 1.3745648, 1.3331273, and
+2.189051 pixels at the three adjacent source vertices. Their combined
+diagonal gradient inverts the cap.
+
+`combined_rim_shift` now gives the overlapping contributions the strongest
+face's radial length, retaining direction and approaching the single-face
+field continuously. Single-face offsets remain the same. The new actual
+corner regression passes with this calculation and fails with independent
+full offsets; an additional assertion checks continuity as the second face
+vanishes. Temporary trace code was removed. Integrated 14-test validation and
+a fresh muted native build are live in
+`target/outdoor-stone-combined-rim-muted-tests.log` and
+`target/outdoor-stone-combined-rim-muted-build.log`. The actual-pack probe and
+GPU review remain pending; no visual acceptance is claimed.
+
+The fresh production-library actual-pack probe now finds zero inverted cap
+triangles among 54,764 strong original cap-projection samples in the same
+Route26 crop. All 1,008 bank-height rays and 252 drop-face rays still pass;
+maximum cap-ray height error is 9.536743e-7. Added an explicit zero-cap-fold
+assertion to the ignored probe and reran successfully (exit 0). Log:
+`target/outdoor-stone-combined-rim-pack-probe.log`. The normal comparison
+increases from 64 to 68 opposing wall faces among 107,190 nondegenerate
+stone triangles, so wall slivers/shading still need investigation. This
+proves removal of the detected cap inversions in this crop, not every
+terrain defect or achievement of the art target. Integrated tests and
+native capture review remain pending.
+
+Integrated validation completed exit 0: all 14 stone tests pass, including
+finite-endpoint and perpendicular-bevel winding regressions. Log:
+`target/outdoor-stone-combined-rim-muted-tests.log`. The native preview
+rebuild remains active; it recompiled shared renderer edits made while the
+test build was running, so the older executable is not used for acceptance.
+
+The fresh native rebuild completed exit 0 in 8m32s. Reviewed both muted
+GPU frames: actual 90 degrees
+`target/outdoor-route26-combined-rim-90-muted-reviewed.png` (1800x1350,
+54,025 colors, luma range 231.7, 36.29s) and actual 45 degrees
+`target/outdoor-route26-combined-rim-45-muted-reviewed.png` (1800x1350,
+55,089 colors, luma range 228.3, 35.86s). Both capture processes exited
+normally. The detected cap folds are removed in the measured crop, but
+dark protruding wall slivers remain at the lower foreground corner in the
+90-degree frame. The large ochre slab masses and bare lawns remain far
+from the reference. Neither frame establishes visual acceptance.
+Removed the temporary corner-probe runner; no opt-in trace code remains
+in outdoor_stone.rs. The ignored actual-pack probe source remains useful
+for the unfinished wall investigation; external content packs stay ignored.
+
+## Wall height join — 2026-10-11
+
+The detailed actual-pack probe records all 68 wall faces opposed to their
+averaged assigned normals. An opt-in trace at source (224,544) found that
+heights 12..16 receive an outward bevel from a shorter 16-unit rock; at
+height 16 the radial components are 2.4058654 each. Height 17.333334
+receives zero such bevel because it exceeds the shorter cap's height. The
+taller wall's corner compression then resumes at that sample, producing
+a large inward/outward kink. Support is zero throughout this particular
+vertical trace, ruling out a floor-support switch there. Logs:
+`target/outdoor-stone-wall-detail-pack-probe.log` and
+`target/outdoor-stone-wall-stage-pack-probe.log`.
+
+The mineral bevel now continues the shorter cap's deformation above its
+height, with a smooth fade to zero over one bevel radius. This preserves
+the lower-cap value and removes the hard cap-height cutoff at a shared
+taller wall. The focused actual-function regression passes in isolation
+and checks continuity at the old cutoff and termination of the influence.
+The temporary opt-in wall trace was removed. The updated integrated run
+is live in `target/outdoor-stone-height-join-muted-tests.log`; actual-pack
+checks and GPU review are still required. No visual acceptance is claimed.
+
+The height-join candidate's fresh actual-pack probe passes cap winding
+(zero folds among 54,764 samples), all 1,008 bank rays, and all 252
+drop-face rays. However, wall faces opposed to averaged normals increase
+from 68 to 81. This candidate alone is not accepted as the wall fix.
+The trace also showed the taller corner cut disappearing whenever the
+shorter bevel moves a shared original corner sample slightly outside
+its rounded corner planes.
+
+A follow-up now determines the corner's wall ownership from its original
+position, including the bounded native wall-relief skin, and clamps the
+rounded projection at the corner planes. This avoids dropping the full
+corner cut as the neighboring lower bevel moves the point across a plane.
+The updated integrated run is queued behind the still-live height-join
+run in `target/outdoor-stone-corner-ownership-muted-tests.log`. Actual-pack
+comparison and muted GPU review remain required; this is an unaccepted
+candidate, not a visual-quality claim.
+
+The height-only integrated run completed exit 0 with all 15 stone tests
+passing. The following original-corner-ownership candidate's fresh actual
+production-library probe also passes zero cap inversions, 1,008 cap rays
+and 252 drop-face rays. Opposing averaged-normal wall faces decrease from
+81 to 75, but remain above the earlier combined-rim version's 68. This
+metric does not prove the visible slivers are fixed; both new changes are
+candidates pending GPU comparison. Probe log:
+`target/outdoor-stone-corner-ownership-pack-probe.log`. The updated integrated
+run remains live in `target/outdoor-stone-corner-ownership-muted-tests.log`;
+a muted native rebuild is queued behind it in
+`target/outdoor-stone-height-corner-muted-build.log`. No temporary trace
+code remains. Removed the temporary wall-probe runner after the completed
+probe; the ignored probe source remains for ongoing terrain investigation.
+
+## Height/corner GPU comparison — 2026-10-11
+
+The original-corner-ownership integrated run completed exit 0 with all
+15 stone tests passing. The fresh muted native build completed exit 0
+in 5m21s. Reviewed actual 90 degrees
+`target/outdoor-route26-height-corner-90-muted-reviewed.png` (1800x1350,
+53,995 colors, luma range 241.4, capture exit 0 in 36.41s) and actual
+45 degrees `target/outdoor-route26-height-corner-45-muted-reviewed.png`
+(1800x1350, 55,068 colors, luma range 231.7, exit 0 in 33.44s).
+Compared with the prior combined-rim side frame, the kink beside the
+trainer is smoother and the two large foreground spikes are substantially
+reduced. A smaller triangular wall sliver remains near the lower foreground
+corner. Retain the new transitions as a visible improvement, not complete
+wall repair. The 75 opposing averaged-normal wall faces remain a diagnostic
+concern despite zero measured cap inversions and passing bank/drop rays.
+Both owned captures exited normally; no preview was left running.
+
+The current park frame was also re-reviewed: crowns still read as solid
+lettuce-like green bodies around long stems, and broad bare lawns/pale
+paving lack the reference's layered foliage and richer planted ground.
+These broader outdoor art requirements remain unfinished, as do cliff
+mass variation/color and the remaining wall sliver. No goal completion
+or overall visual acceptance is claimed.
+
+## Layered park canopy candidate — 2026-10-11
+
+Re-reviewed the saved park concept alongside the actual 45-degree park
+frame. The actual trees retain a solid lettuce-like crown around long
+stems; the concept/reference has overlapping branches, layered leaf
+clusters and heavier rooted trunks. The new park canopy replaces one
+radial crown with five lower overlapping boughs around the existing
+authored forks and an offset higher leader. Bough heights, spread and
+leaf tint vary from the same stable source phase. Trunk radius increases
+from 0.085 to 0.11 of tree spacing. Each smaller bough uses 960 leaves
+(previously one 1,920-leaf crown), with leaf size adjusted to the smaller
+bough span. Town and route canopies retain their existing leaf counts.
+This increases total park canopy density; performance requires native
+review. Source plots, collision and the single cutaway owner remain.
+
+Isolated execution of the actual park-tree/crown/branch functions with
+geometry buffers passes all seven existing park tests (normals/winding,
+roots, low planting, stable variation and cutaway ownership). Temporary
+harness files were removed automatically. Integrated checks and a muted
+native build are live in `target/outdoor-park-layered-bough-muted-tests.log`
+and `target/outdoor-park-layered-bough-muted-build.log`. A GPU frame is
+required before accepting the candidate's appearance. The concept's
+incorrect centerpiece/grass distribution remains non-authoritative.
+
+The integrated layered-canopy run completed exit 0 with all seven park
+tests passing. Log: `target/outdoor-park-layered-bough-muted-tests.log`.
+The same-angle muted native preview build is still active. This validates
+checked geometry only; the new silhouette and increased canopy density
+remain visually unaccepted until the fresh frame is reviewed.
+
+The first layered-canopy native build completed exit 0 in 8m50s. Reviewed
+the fresh muted actual 45-degree park frame
+`target/outdoor-park-layered-bough-45-muted-reviewed.png`: 1800x1350,
+49,276 colors, luma range 241.1, capture exit 0 in 20.92s. The capture
+time is higher than the prior single-crown frame (9.58s), consistent with
+the greater foliage density, though this is not a controlled FPS benchmark.
+The new canopy has better depth and a heavier trunk, but still reads as
+stacked broccoli; dark bough bodies contrast sharply with the leaf cards.
+This version is not accepted as the final art target.
+
+A follow-up lowers the leader from 0.78 to 0.71 of tree height, spreads
+lower boughs farther and broadens/deepens them into an umbrella silhouette.
+Park bough-body colors blend 35% toward their leaf color; park per-leaf
+brightness variation narrows from 0.80..1.12 to 0.88..1.08. Route/town
+color paths remain unchanged. Updated seven-test validation and a muted
+native build are live in `target/outdoor-park-spreading-bough-muted-tests.log`
+and `target/outdoor-park-spreading-bough-muted-build.log`. This follow-up
+requires fresh GPU review before appearance is accepted. Both earlier
+owned jobs and the first capture exited normally; no preview is running.
+
+The spreading-canopy integrated run completed exit 0: all seven park
+geometry tests pass. The native build remains active. Source inspection
+also found a ground-treatment gap: the dedicated park masonry append in
+`GroundFinish::append_surface` returns before applying `GroundFinish`'s
+canopy/trunk darkness, while the color shading pass only includes lawn
+and path materials. Park paving therefore bypasses that contact treatment.
+This is a source finding, not yet a rendered fix; verify its visual effect
+separately after accepting/revising the spreading canopy.
+
+## Spreading canopy review and paving shade candidate — 2026-10-11
+
+The spreading-canopy native rebuild completed exit 0 in 9m49s. Reviewed
+the fresh muted actual 45-degree frame
+`target/outdoor-park-spreading-bough-45-muted-reviewed.png`: 1800x1350,
+48,011 colors, luma range 240.8, capture exit 0 in 15.90s. The canopy
+now has a broader umbrella silhouette and softer leaf/body contrast.
+Retain this improvement over the first layered-bough version, but the
+clumps still look too solid and the trunks/planting/ground remain below
+the saved reference. This is not overall visual acceptance. The owned
+capture exited normally.
+
+Further source inspection showed that existing tree contact shade is
+bounded to its source lawn plot. Merely multiplying paving by that shade
+would not create the missing overhanging canopy treatment outside the
+plot. A separate park-only shade field now uses modeled-tree footprint
+centers, a daylight-direction offset, soft elliptical coverage, and stable
+map-space filtered-light noise. Small sign contacts are excluded. The
+maximum shade is restrained to 22%, with a slight cooler color response.
+The dedicated park masonry append applies it to newly appended colors;
+it does not remap lawn/paving cells, change the masonry partition, add
+geometry, or move any floor. This is a stylized presentation cue, not
+proof of improved real-time shadow rendering.
+
+The new regression checks that a modeled-tree canopy darkens eligible
+park masonry while positions, indices, normals, and the shade bound are
+preserved; distant paving receives zero influence. Integrated validation
+is live in `target/outdoor-park-masonry-shade-muted-tests.log`. A fresh
+muted GPU comparison is required before accepting this candidate.
+
+## Native park canopy registration correction — 2026-10-11
+
+The prior masonry shade regression passed and the muted native build completed
+successfully. Its fresh 45-degree capture,
+`target/outdoor-park-masonry-shade-45-muted-reviewed.png`, completed exit 0
+in 15.66s, but did not establish a visible shade improvement. Inspection found
+that GroundFinish accepted only the Johto modeled-tree ground path, so actual
+4×4 park trees never entered its shadow list. The previous regression manually
+inserted a shadow and therefore missed this production integration gap.
+
+Park canopy registration now shares the exterior renderer's complete native
+tree and ground-sample validation. Original source bounds remain unchanged;
+only the separate canopy color field extends onto adjacent paving. The revised
+regression constructs a complete native 4×4 tree beside pavement and checks
+automatic registration, masonry geometry preservation, restrained color
+darkening, and rejection after each of the 16 source cells is altered.
+Integrated verification is running in
+`target/outdoor-park-native-canopy-muted-tests.log`. A fresh muted rendered
+comparison remains necessary; neither the prior frame nor a unit test is
+visual acceptance.
+
+The corrected native preview build completed exit 0 in 4m24s. Reviewed
+`target/outdoor-park-native-canopy-45-muted-reviewed.png` (actual orbit 2,
+45 degrees, 1800×1350, 50,826 colors, luma range 240.6), capture exit 0
+in 27.03s. Source-plot lawn contact darkening now appears. However, three
+fixed image patches on the left tree-adjacent paving, the paving north
+of the right trees, and the open plaza had exactly unchanged RGB values
+against the previous frame. Other warm-pixel differences are confounded
+by moving NPCs and do not establish successful paving blending. Retain
+the registration correction, but the canopy projection still needs a
+better visual treatment. Trunk silhouettes, dense leaf clumps, sparse
+flower planting, and opaque pool water remain below the reference.
+
+The integrated retry completed exit 0 with the production canopy-registration
+regression passing. The freshly rebuilt renderer test binary also passed the
+complete-native-tree ownership regression and the original-floor park plaza
+partition regression. The initial combined test attempt failed on an unrelated
+array field access in a gym model test (`max.y`); that access was corrected to
+`max[1]` before retrying. These checks establish the guarded source connection
+and preserve floor geometry; the rendered paving limitation above remains.
+
+## Fuller, lower-forked park stems candidate — 2026-10-12
+
+The current 45-degree park frame still shows long tapered stems under dense
+canopy clumps. The saved concept instead has shorter, full stems with visible
+branching and a localized root flare. Park tree height now varies from 5.25
+to 5.6 tiles rather than 6.34 to 6.76; the stem retains 78% of its radius at its upper
+end, and the flare falls away near the roots instead of tapering the whole
+exposed trunk. Main forks start lower, follow the leaning stem center, and
+have fuller branch bases. Other tree families and map ownership are unchanged.
+
+All seven geometry tests passed in an isolated execution of the actual current
+foliage functions and park source module, using Bevy's real vector types and
+plain mesh buffers. Temporary harness files and executable were removed.
+Log: `target/outdoor-park-full-stem-source-tests.log`. The first integrated
+attempt failed on an unrelated missing helper in a dungeon test; that test was
+already corrected in the shared checkout before the retry. Integrated retry
+and native build are live in `target/outdoor-park-full-stem-muted-retry-tests.log`
+and `target/outdoor-park-full-stem-muted-build.log`. This remains an unaccepted
+visual candidate until a fresh muted capture is reviewed.
+
+The first stem rebuild completed exit 0 in 3m39s. Its muted actual 45-degree
+capture, `target/outdoor-park-full-stem-45-muted-reviewed.png`, completed exit 0
+in 20.70s (1800×1350, 50,672 colors, luma range 240.6). Trees have a shorter,
+broader proportion, but their forks remain largely hidden. Main limbs were
+still bowing upward into the canopy, so shortening the stem alone did not
+establish the reference's visible branching.
+
+The main park boughs now sweep outward through a quadratic curve before rising
+into their crowns. Their surface normals follow the curved, tapered geometry,
+their duplicated ring seams match exactly, and their bark palette matches the
+stem. All eight isolated actual-source geometry checks pass, including a new
+outward-winding and closed-seam regression for the spreading boughs. Temporary
+harness files were removed. Log:
+`target/outdoor-park-spreading-forks-source-tests.log`. This further shape edit
+postdates the first stem frame and awaits its own muted native comparison.
+
+The first stem integrated retry completed exit 0 with all seven park geometry
+tests passing. Further source inspection found NationalPark and its contest
+variant still using the distant one-cascade shadow profile, while Route26,
+Route29 and NewBark use tighter grove cascades. Both park variants now use the
+same near-foliage profile (three native cascades, first bound 256, far bound
+2048; one WebGL cascade with far bound 1024). The transition regression covers
+both parks and restoration of the distant profile outside those daylight maps.
+This lighting change and the spreading-bough geometry are queued together in
+`target/outdoor-park-spreading-forks-muted-build.log`, with updated geometry
+tests in `target/outdoor-park-spreading-forks-muted-tests.log`. Actual leaf
+shadow improvement remains unproven until the new frame is inspected.
+
+The spreading-bough/shadow native rebuild completed exit 0 in 6m53s. Reviewed
+`target/outdoor-park-spreading-forks-shadow-45-muted-reviewed.png` (actual 45°,
+1800×1350, 56,529 colors, luma range 240.6), capture exit 0 in 23.35s. Main
+forks now read beneath the crowns, and native cast shadows appear clearly
+across the lawn. Retain this shape and grounding improvement. The six opaque
+canopy bodies still cast large solid shadows; this is not the reference's
+filtered leaf light. Broad pale paving, sparse flower beds and flat pool water
+also remain below the concept. Integrated eight-test validation is still live.
+
+Further source inspection found that park terrain is excluded from the
+warm-exposure/cool-shadow daylight material selection at terrain publication
+(`cave_reveal.z`); only NewBarkTown, Route29 and Route26 receive that treatment.
+The new frame does not contain a fix for this separate color-selection gap.
+Secondary fork anchors also still follow a straight root-to-tip interpolation;
+they should follow the new main bough curve when that geometry is refined.
+
+The fresh integrated renderer test binary passed all eight park geometry tests
+and the grove shadow transition regression (one matched test, including both
+park variants and the first native cascade bound). Logs:
+`target/outdoor-park-spreading-forks-direct-tests.log` and
+`target/outdoor-park-shadow-transition-direct-tests.log`. An initial exact
+filter used the wrong module path and matched zero tests; it was corrected to
+`renderer_tests::grove_shadow_detail_resets_when_leaving_the_daylight_maps`
+before recording this pass. The combined Cargo parent is still compiling
+other packages with no matching geometry tests, so its eventual exit is not
+needed to broaden these focused results into an overall rendering claim.
+
+## Park daylight color and complete-bed planting candidate — 2026-10-12
+
+The previous spreading-bough combined test run completed exit 0. Park and
+contest terrain now receive the same warm-exposure/cool-cast-shadow material
+selection as the existing exterior groves, while cave reveal ownership remains
+unchanged. Secondary forks now attach to the actual curved main bough center,
+rather than a straight root-to-tip chord.
+
+Native flower heads remain on their existing source cells. Low overlapping
+leaf rosettes now fill the two interior rows of a source-complete native bed;
+unknown or altered bed drawings still refuse replacement. Planting is confined
+to each interior cell, skips an already claimed cell, adds no ground planes,
+and claims no additional floor or flower ownership. Leaf height stays below
+0.30 tile and phase uses absolute source coordinates retained by the placement.
+The existing complete-bed regression now requires this planting to be present
+inside the bed while preserving its 44 border claims and original footing.
+
+Ten isolated actual-source geometry checks passed (eight tree, two flower),
+including bounds, low height, normals and source-stable translation. Temporary
+harness files were removed. The initial integrated build and tests failed on
+the new helper's module visibility; the shared checkout added a wrapper before
+the retries. Current verification logs:
+`target/outdoor-park-daylight-planting-muted-retry-build.log` and
+`target/outdoor-park-daylight-planting-muted-retry-tests.log`. The isolated log
+is `target/outdoor-park-daylight-planting-source-tests.log`. Color and density
+still require fresh muted visual review; neither is accepted from these checks.
+
+The daylight/planting native retry completed exit 0 in 3m13s. Reviewed
+`target/outdoor-park-daylight-planting-45-muted-reviewed.png` (actual 45°,
+1800×1350, 68,874 colors, luma range 241.1), capture exit 0 in 24.09s. The
+bed now has visibly fuller low greenery between its original flower samples,
+and exposed terrain has a warmer daylight palette. Retain this improvement,
+but the low planting still reads as coarse rosettes rather than the concept's
+rich continuous garden. Canopy clumps and cast shadows remain too solid.
+The bright raster-like patch at the upper-left fringe also needs inspection.
+
+The fresh integrated renderer binary passed all 38 matching park regressions,
+including native bed ownership, added interior planting and unchanged footing
+(`target/outdoor-park-daylight-planting-direct-tests.log`). The combined Cargo
+parent completed exit 101 because its broad `park_` filter also selected an
+unrelated controller contest test that requires the absent external pack
+`/Users/ryanculligan/GitHub/apps/web/assets/data/content-packs/core-modular.crystalpack`.
+No pack was copied or restored to satisfy it. This does not contradict the
+38 renderer passes and does not establish gameplay verification.
+
+## Open park canopy candidate — 2026-10-12
+
+Park boughs now omit their closed inner bodies and retain the existing leaf
+geometry. Route and town crown bodies remain unchanged. Nine isolated
+actual-source geometry checks pass, including a new directional-ray check:
+each sampled bough retains substantial leaf coverage while permitting real
+light rays through gaps that a closed body would block. This proves individual
+bough permeability, not full-tree filtered shadows or visual acceptance.
+Temporary harness files were removed. Log:
+`target/outdoor-park-open-canopy-source-tests.log`. Native rebuild and integrated
+foliage checks are live in `target/outdoor-park-open-canopy-muted-build.log` and
+`target/outdoor-park-open-canopy-muted-tests.log`. The daylight/planting frame
+predates this canopy edit.
+
+The open-canopy native build completed exit 0 in 5m29s. Reviewed
+`target/outdoor-park-open-canopy-45-muted-reviewed.png` (actual 45°,
+1800×1350, 69,488 colors, luma range 240.6), capture exit 0 in 24.57s. Real
+gaps now separate the leaves and the lawn receives broken leaf shadows instead
+of only solid body shadows. Retain this improvement over the closed-core frame.
+The bough layout remains repetitive, planting remains coarse, paving blending
+and pool water remain unfinished, and the bright upper-left fringe persists.
+This is not overall park or outdoor visual acceptance.
+
+The ignored Route26 surface probe now distinguishes wall-plane winding from
+averaged vertex-normal disagreement, using original source X/Z and final Y
+to reconstruct the vertical reference plane. Its first launch failed before
+compilation because the current library was temporarily absent during the
+live integrated test rebuild; only older artifacts were present. Those older
+libraries were not used. No new wall-fold result exists yet.
+
+The fresh integrated renderer binary passes 16 foliage checks and 39 park
+checks, including open-bough ray permeability, native bed planting/ownership,
+source mutation refusal and preserved floor geometry. Direct logs:
+`target/outdoor-park-open-canopy-direct-tests.log` and
+`target/outdoor-park-open-canopy-ownership-direct-tests.log`. The combined
+foliage-filter Cargo run also completed exit 0.
+
+The corrected Route26 audit compiled against a snapshot of the fresh library
+and completed exit 0 using the verified external pack. In the same 32×48-cell
+crop it found 107,190 nondegenerate stone triangles, zero downward cap
+projections among 54,764 strong samples, zero mismatches on 1,008 bank-height
+rays (maximum error 9.536743e-7), and zero holes on 252 drop-face rays.
+The new wall metric found 80 reversed projections among 9,260 original
+wall-plane samples; 75 faces still oppose their averaged surface normals.
+This projection metric uses final Y to reconstruct a source-space plane and
+does not alone prove a 3D fold or self-intersection. Early examples involve
+source corners around (24,36) and (20,44), suitable for targeted wall review.
+Log: `target/outdoor-route26-wall-plane-muted-probe.log`. Temporary library
+snapshots and executables were removed. No current preview remains running.
+
+
+### Full Route 26 audit and terminal taper follow-up
+
+The smooth adjoining-floor support field passed all 16 outdoor-stone unit
+checks in the muted isolated build. Its actual 90-degree capture changed the
+right bank contact, while the foreground inside-corner sliver remained unchanged.
+The actual 45-degree frame also remains below the cliff shape/colour target.
+Captures: `target/outdoor-route26-support-field-90-muted-reviewed.png` and
+`target/outdoor-route26-support-field-45-muted-reviewed.png`.
+
+The probe was expanded from a 32x48-cell crop to the entire source map.
+The first full-map run found zero downward cap triangles among 218812 strong
+original cap projections. Its 36 bank-cap mismatches and four drop misses were
+at a terminal taper: that first probe incorrectly expected untapered heights.
+These numbers therefore do not establish four physical holes. The 129 reversed
+wall-plane projections likewise remain an indirect diagnostic, not proof of
+self-intersection.
+
+Inspection found that the composed east/west end taper and southward bank rise
+were represented by one large cap quad per cell. That interpolation makes a
+diagonal dip rather than the intended composed surface. The candidate now uses
+4x4 subdivisions for the Johto 0x57 end caps, preserving native UVs, footprint
+and other east/west ramps. The terminal regression checks the composed rise at
+all cap vertices. The probe now scales both cap expectations and front-face
+sample heights by the end taper. Verification of this candidate is pending;
+no visual acceptance is claimed.
+
+
+The fresh full-map probe completed successfully against the external browser
+pack: Route26 is 40x216 source cells. All 3024 cap rays across 336 bank cells
+(including the tapered end) passed, with maximum height error 0.02249714 world
+units. All 756 drop-face rays passed, including samples 0.01 units above the
+floor. This is geometric coverage evidence, not visual acceptance or proof that
+all wall surfaces are free of self-intersection. The fresh renderer unit binary
+also passed all 23 tests matching `ledge`, including the terminal-cap regression.
+Logs: `target/outdoor-route26-terminal-taper-muted-probe.log` and
+`target/outdoor-terminal-taper-direct-muted-tests.log`.
+
+The integrated Cargo terminal-cap run also completed with exit 0. The native
+example build remains in progress (owned session 30113); visual review of this
+end-cap candidate is still pending. The separate foreground inside-corner sliver
+is unresolved and the outdoor quality goal remains active.
+
+
+### Muted terminal-end visual review and corner localization
+
+The terminal-taper native build completed with exit 0 (4m56s). The muted Route26
+capture at runtime (15,70), orbit 2 (actual 45 degrees), zoom 0 completed with
+exit 0 in 40.11s. The 1800x1350 frame has 80539 colours and luma range 238.4:
+`target/outdoor-route26-terminal-taper-45-muted-reviewed.png`. It was inspected:
+the bank end meets lawn in this view, but its sharp footprint, coarse planting
+and repeated tree crowns still do not establish the requested visual quality.
+This view is separate from the unresolved foreground inside-corner sliver at
+the earlier (10,28) framing.
+
+A named opt-in capture diagnostic, `CRYSTAL_RENDER_TEST_TRACE_FRAME`, records
+only map/camera/grid metadata when a screenshot is requested. It remains silent
+without that environment variable and does not change authoritative gameplay.
+The purpose is to locate the visible corner in source coordinates before
+altering its shape. An ignored Rust ray probe uses the actual pack-derived
+terrain and original mineral UVs; no game content is exported or committed.
+
+
+The traced native build completed with exit 0. A muted actual-90-degree capture
+at (10,28), zoom 1 completed in 35.22s with exit 0:
+`target/outdoor-route26-corner-source-90-muted-reviewed.png` (1800x1350,
+54008 colours, luma range 236.5). It was inspected; the sliver remains.
+Capture metadata is authoritative: center (0,0), grid origin (-38,-1), grid
+116x114, tile size 32x32, viewport 640x576, rotation step 2. Earlier probes used
+8-unit tiles. The probe now supports the actual tile scale before normalizing
+its outputs for comparisons, retaining the native shape/relief sampling.
+
+At native 32-unit tile scale, the full 40x216-cell map still passes all 3024
+bank-cap rays (maximum normalized error 0.02249714) and all 756 drop-face rays.
+There are zero downward triangles among 218786 strong original cap projections.
+Log: `target/outdoor-route26-native-scale-corner-ray-muted-probe.log`.
+
+Camera-derived rays through the foreground sliver localize the join near source
+(28,56): the adjacent source drawings are 0x6a (west-facing band north of the
+join), 0x70 and 0x71 (bank caps south of it). At screenshot pixel (900,1220),
+the first two surface hits are near normalized height 27.84 and 27.79 at that
+corner. Pixel (880,1210) crosses an upper wall near height 27.64, then lower
+surfaces near 14.22 and 11.32; pixel (910,1220) hits the level floor. These rays
+identify the relevant geometry but do not, by themselves, prove self-
+intersection. Inspect the resolved tiers and shared corner warp at this join;
+do not treat a texture change or the earlier support-field check as a fix.
+Log: `target/outdoor-route26-native-corner-edge-rays-muted.log`.
+All owned previews and diagnostic runs completed; no preview is left running.
+
+
+### Shared inside-shelf corner constraint
+
+Resolved footing at the traced join is 32 normalized world units in all three
+shelf quadrants, with ordinary ground at (27,55). The raw source classifier's
+16-unit heights in the earlier ray-neighbor output were not resolved elevations;
+this is an inside corner of one shelf, not a lower cap meeting a taller cap.
+
+The sculptor now detects that same-height, three-quadrant topology. Both walls
+and the cap retain the common vertical corner edge, with one source-position
+smooth fade over two cells into the surrounding erosion. Different-height
+neighbors are excluded. This removes the endpoint roll created by applying
+perpendicular finite bevels through the shared inside corner. The regression
+checks both 8- and 32-unit tile scales, common cap/wall vertices, and retained
+weathering away from the join. The final integrated run passed all 17 stone
+checks with exit 0: `target/outdoor-inside-equal-shelf-muted-tests.log`.
+
+The final native build completed with exit 0 in 1m31s. Its fresh actual-scale
+full-map audit retained zero downward cap triangles (218786 strong projections),
+zero mismatches over 3024 bank-cap rays, and zero misses over 756 drop-face rays.
+Wall-plane projection reversals decreased from 129 to 23; this remains an
+indirect diagnostic, not a complete self-intersection proof. Log:
+`target/outdoor-inside-equal-shelf-native-scale-muted-probe.log`.
+
+Muted captures at (10,28), zoom 1 were inspected at actual 90 degrees (orbit 4,
+34.69s, 53581 colours, luma range 234.3) and actual 45 degrees (orbit 2,
+24.67s, 54258 colours, luma range 231.0):
+`target/outdoor-route26-inside-equal-shelf-90-muted-reviewed.png` and
+`target/outdoor-route26-inside-equal-shelf-45-muted-reviewed.png`.
+The identified folded strip is gone in the 90-degree frame; the 45-degree join
+also reads as a continuous shelf. The matching classic 2D capture was inspected:
+`target/outdoor-route26-inside-equal-shelf-2d-muted-reviewed.png` (13 colours).
+This validates that source comparison, not the overall visual standard. Broad
+uniform cliff slabs, cap shape, sparse grass, repeated tree crowns, and the
+remaining Park/reference gaps still require work. All owned runs are terminal
+and no preview remains open.
+
+
+### Rejected normal-crease candidate
+
+A trial split mineral normal averaging at steep face angles, then used
+connected face-direction groups to preserve gradual bevels. It changed no
+vertex positions or terrain support. Both versions violated the existing
+rounded cap/wall normal continuity regression. The first version also selected
+inconsistent per-patch smoothing cones. The connected version passed 17 of 18
+checks but still failed the rounded-shoulder join, so it was rejected rather
+than weakening that blending requirement.
+
+Its muted 45-degree native capture failed authoritatively at the 60-second
+startup limit (exit 1, `target/outdoor-route26-connected-mineral-creases-45-muted-reviewed.log`),
+leaving no verified image. The trial initially allocated local normal vectors
+for all scene vertices; a mineral-only allocation was tried, but this did not
+resolve the lighting regression. The timeout's exact cause was not isolated
+from concurrent compilation/load, and no frame-rate conclusion is drawn.
+
+The candidate and its new crease test have been removed. The angle-weighted
+smoothing and original angle/area regression are restored; the previously
+verified inside-corner constraint and terminal-taper fixes remain. A fresh
+muted regression/build is pending for the restored source. Do not launch the
+last candidate executable as a review result; use the rebuilt restored source.
+Broader shape improvements must come from the actual mineral planes while
+preserving the shared cap/wall lighting and floor-contact constraints.
+
+
+### Cap clefts between broader mineral planes
+
+The restored smoothing passed its fresh direct 17-check run with exit 0 and
+then the integrated Cargo run completed with exit 0. The normal-crease trial
+remains removed. Logs: `target/outdoor-restored-smoothing-direct-muted-tests.log`
+and `target/outdoor-restored-smoothing-muted-tests.log`.
+
+A geometric cap trial adds narrow linear clefts through the shared erosion
+field, with quieter small cap undulations around the existing broad mineral
+planes. It retains the common floor bounds, tree seats and inside-join fade.
+The new mesh regression samples actual cap vertices across four source phases:
+resolved valleys must exceed 0.08 tiles relative to both neighbours, and the
+cap triangles must retain upward winding. This is stronger than asserting a
+nonzero fissure function. The first version passed all 18 stone checks.
+
+The first version's muted actual-45-degree Route26 frame was inspected:
+`target/outdoor-route26-cap-clefts-45-muted-reviewed.png` (1800x1350, 54264
+colours, luma range 227.9, exit 0 in 51.45s). It shows shallow geometric lines
+across the cap, but the overall cliff masses remain too uniform. Its full-map
+native-scale probe retained zero downward cap triangles and all 3024 cap /
+756 drop-contact rays passed. Wall-plane projection reversals increased from
+23 to 38, with 87 triangles opposite averaged normals (previously 73).
+Log: `target/outdoor-cap-clefts-native-scale-muted-probe.log`.
+
+The revised candidate samples the cleft from authored coordinates before the
+bevel moves them, while broad crest erosion still uses the rounded coordinates.
+This keeps a fissure stationary through successive wall rings. It is pending
+fresh checks and native review; neither its geometric quality nor the overall
+outdoor goal is yet accepted. Build/test logs:
+`target/outdoor-source-anchored-cap-clefts-muted-build.log` and
+`target/outdoor-source-anchored-cap-clefts-muted-tests.log`.
+
+The source-anchored revision's fresh full-map probe completed with exit 0 at
+native tile size 32: 218786 cap-projection samples contained zero downward
+triangles, all 3024 bank-cap rays matched (maximum normalized error 0.02249714),
+and all 756 drop rays found contact. Wall-plane projection reversals decreased
+from the first cleft trial's 38 to 28, still above the pre-cleft baseline 23.
+Triangles opposite averaged vertex normals increased to 105 (first trial 87,
+baseline 73). These indirect diagnostics do not prove self-intersection, but
+the revision is not visually accepted from contact checks alone. Log:
+`target/outdoor-source-anchored-clefts-native-scale-muted-probe.log`.
+
+The revised actual-45-degree native capture exited 1 after the capture
+timeout and produced no image. No visual conclusion is drawn from that run:
+`target/outdoor-route26-source-anchored-clefts-45-muted-reviewed.log`.
+The integrated stone test process remains pending at this checkpoint.
+
+The integrated source-anchored cleft run subsequently finished with exit 0:
+all 18 outdoor-stone checks passed in the freshly linked renderer test binary
+`crystal_voxel_view-dc3731eb4a201fc3`, including resolved cap valleys, cap
+winding, shared inside-shelf edges, native-scale joins, and floor support.
+The smaller capture also exited 1 with no image. A third muted 45-degree
+capture was started only after this owned build finished; it is pending at
+this checkpoint (`target/outdoor-route26-source-anchored-clefts-45-muted-after-build.log`).
+
+The post-build muted 45-degree capture completed with exit 0 in 55.16s and
+was inspected: `target/outdoor-route26-source-anchored-clefts-45-muted-after-build.png`
+(1280x960, 43746 colours, luma range 226.3). The visible inside corner and
+bank joins are continuous. The clefts are too subtle to make the broad tops
+read as convincing fractured stone: the caps still look padded, uniform
+masses, especially the foreground plateau. This is not visual acceptance.
+A muted actual-90-degree capture is pending to examine the exposed wall joins.
+
+The muted actual-90-degree view completed with exit 0 in 56.29s and was
+inspected: `target/outdoor-route26-source-anchored-clefts-90-muted-reviewed.png`
+(1280x960, 43583 colours, luma range 233.1). The previously identified inside
+corner remains closed; the foreground face meets its floor. Both current
+views nevertheless show rounded, padded cliff crowns rather than distinct
+broken mineral beds. The next shape iteration should resolve clefts across
+several mesh samples, rather than increasing narrow undersampled pits; the
+upper silhouette needs broader angular breaks. Colour/material blending and
+the sparse grass floor remain separate unresolved visual requirements.
+All owned processes started or resumed in this checkpoint have finished.
+No overall outdoor acceptance or gameplay claim is made.
+
+The next cap trial widens the authored-coordinate linear cleft band from
+0.05 to 0.12 and increases its maximum depth from 0.65 to 0.9 tiles before
+the existing support bounds and erosion fade. It changes neither the source
+footprint nor mesh density. The regression now also compares actual interior
+vertices against the broad-bed-only surface, requiring adjacent samples to
+retain a resolved cleft rather than isolated depressions. Native build
+completed with exit 0 in 3m02s. Fresh tests, full-map contact verification and
+muted visual review are pending; this candidate is not accepted yet. Logs:
+`target/outdoor-broad-cap-clefts-muted-build.log` and
+`target/outdoor-broad-cap-clefts-muted-tests.log`.
+
+The wider-cleft muted actual-45-degree capture completed with exit 0 in
+52.99s and was inspected: `target/outdoor-route26-broad-cap-clefts-45-muted-reviewed.png`
+(1280x960, 43702 colours, luma range 228.9). Cut bands are broader, but
+the dominant upper masses still read as lumpy rounded plateaus. The visible
+inside-corner and bank contacts remain closed. This remains a partial shape
+trial, not visual acceptance of the cliffs or the outdoor goal.
+
+The wider-cleft native-scale full-map probe completed with exit 0:
+390246 stone triangles, 218786 cap-projection samples with zero downward
+triangles, 27 wall-plane projection reversals, and 102 triangles opposed to
+averaged vertex normals. All 3024 bank-cap rays matched (maximum normalized
+error 0.02249714); all 756 drop rays found contact. The fresh renderer binary
+`crystal_voxel_view-dc3731eb4a201fc3` passed all 18 stone checks directly,
+including the new adjacent-sample requirement. The integrated Cargo process
+remains pending. Logs: `target/outdoor-broad-cap-clefts-native-scale-muted-probe.log`
+and `target/outdoor-broad-cap-clefts-direct-muted-tests.log`.
+The wider-cleft 90-degree capture exited 1 at its timeout and produced no
+image; no side-view conclusion is drawn. User priority now expands the visual
+review to the complete New Bark–Route29–Cherrygrove outdoor stretch.

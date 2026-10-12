@@ -1,15 +1,8 @@
-"""Reduced original Johto foliage; no downloaded geometry, textures, or game art.
+"""Build the designated authored grass LOD only.
 
-Run from the repository root:
-    blender -b --python tools/build-johto-foliage-lod.py -- target/johto-foliage-lod
-Add --skip-preview to skip the inspection render. Generated JSON/GLB, editable
-Blender source, and comparison/stats are written only to that ignored directory.
-The runtime assets are the two JSON exports copied to models/johto by the author.
-
-The tree starts with the original six authored crown lobes. Exact unions remove
-interior overlap before collapse reduction; named trunk/root parts are rebuilt
-with only their readable silhouettes. Palette and full original bounds survive.
-Grass retains six solid folded blades with a closed triangular cross section.
+Tree prototypes have been removed. Required trees come from the canonical
+external tree catalog and are never regenerated as alternate placeholder meshes.
+Run blender -b --python tools/build-johto-foliage-lod.py -- target/johto-foliage-lod.
 """
 from pathlib import Path
 import json
@@ -24,19 +17,17 @@ from model_asset_storage import read_model_json
 def read_foliage_sources(root):
     """Read original geometry through the canonical storage-aware reader."""
     return {
-        'tree': read_model_json(root / 'crates/crystal-voxel-view/models/new_bark/tree.mesh.json'),
         'grass': read_model_json(root / 'crates/crystal-voxel-view/models/johto/grass.mesh.json'),
     }
 
 
-# Reuse the original modeling vocabulary and authored make_tree() definition,
+# Reuse the authored modeling vocabulary for the grass source,
 # stopping before the kit's generation/export/presentation side effects.
 source = (ROOT / 'tools/build-new-bark-models.py').read_text()
 exec(compile(source.split('\nmake_house();')[0], 'new_bark_modeling_vocabulary', 'exec'))
 import bmesh
 
 P = P.resolve()
-TREE_SOURCE = ROOT / 'crates/crystal-voxel-view/models/new_bark/tree.mesh.json'
 GRASS_SOURCE = ROOT / 'crates/crystal-voxel-view/models/johto/grass.mesh.json'
 references = read_foliage_sources(ROOT)
 
@@ -78,63 +69,6 @@ def normalize(objects, lower, upper):
                 v.co[k] = lower[k] + (v.co[k] - lo[k]) * (upper[k] - lower[k]) / (hi[k] - lo[k])
         obj.data.update()
         consistent_normals(obj)
-
-
-def make_tree_lod():
-    make_tree()
-    original = ASSETS.pop('tree')
-    original.name = 'Authored crown construction'
-    # Keep the procedural source lobes editable in the inspection blend, but
-    # hidden so that neither export nor comparison accidentally includes them.
-    original.hide_render = True
-    original.hide_viewport = True
-    begin('tree_lod')
-    lobes = []
-    for src in original.objects:
-        if src.name.startswith('Sculpted broadleaf crown'):
-            obj = src.copy()
-            obj.data = src.data.copy()
-            COL.objects.link(obj)
-            apply_transform(obj)
-            lobes.append(obj)
-    crown = lobes[0]
-    crown.name = 'Continuous six-lobe crown, hidden faces removed'
-    for other in lobes[1:]:
-        active(crown)
-        modifier = crown.modifiers.new('Remove overlapped lobe interior', 'BOOLEAN')
-        modifier.operation = 'UNION'
-        modifier.solver = 'EXACT'
-        modifier.object = other
-        bpy.ops.object.modifier_apply(modifier=modifier.name)
-        bpy.data.objects.remove(other, do_unlink=True)
-    crown.data.calc_loop_triangles()
-    before = len(crown.data.loop_triangles)
-    # 212 crown triangles leave room for a readable trunk and three broad roots.
-    active(crown)
-    modifier = crown.modifiers.new('Silhouette-preserving crown LOD', 'DECIMATE')
-    modifier.decimate_type = 'COLLAPSE'
-    modifier.ratio = 212 / before
-    modifier.use_collapse_triangulate = True
-    bpy.ops.object.modifier_apply(modifier=modifier.name)
-    consistent_normals(crown)
-    # Preserve the exact canopy envelope, independent of the trunk and roots.
-    lo, hi = source_bounds(references['tree'])
-    canopy_low = min((o.matrix_world @ v.co).z for o in original.objects
-                     if o.name.startswith('Sculpted broadleaf crown') for v in o.data.vertices)
-    normalize([crown], [lo[0], lo[1], canopy_low], hi)
-    cone('Seven-sided warm trunk', (0, 0, .78), .20, .145, 1.56, 'timber_light', 7)
-    for i in range(3):
-        angle = i * math.tau / 3 + .2
-        ca, sa = math.cos(angle), math.sin(angle)
-        def p(r, w, z):
-            return (ca*r-sa*w, sa*r+ca*w, z)
-        # A closed tetrahedral root: broad at the ground, tapered into the trunk.
-        mesh('Broad grounded root', [p(.04,-.095,0),p(.04,.095,0),p(.43,0,.025),p(.07,0,.25)],
-             [(0,2,1),(0,1,3),(1,2,3),(2,0,3)], 'timber')
-    # Each original extreme is matched again after adding the grounded detail.
-    objects = [o for o in COL.objects if o.type == 'MESH']
-    normalize(objects, lo, hi)
-    return COL
 
 
 def make_grass_lod():
@@ -199,8 +133,8 @@ def export_asset(name, col):
     assert {'min':lo,'max':hi} == reference['bounds'], (name,lo,hi,reference['bounds'])
     triangles = sum(len(g['indices']) // 3 for g in primitives)
     vertices = sum(len(g['positions']) // 3 for g in primitives)
-    assert triangles <= (300 if name == 'tree_lod' else 40)
-    assert vertices <= (900 if name == 'tree_lod' else 120)
+    assert triangles <= 40
+    assert vertices <= 120
     for group in primitives:
         assert all(math.isfinite(v) for v in group['positions'] + group['normals'])
         for i in range(0,len(group['normals']),3):
@@ -235,14 +169,11 @@ def import_reference(name, data):
     return COL
 
 
-tree_col = make_tree_lod()
 grass_col = make_grass_lod()
-stats = {name:export_asset(name,ASSETS[name]) for name in ['tree_lod','grass_lod']}
+stats = {name:export_asset(name,ASSETS[name]) for name in ['grass_lod']}
 (P/'asset-stats.json').write_text(json.dumps(stats,indent=2))
-original_tree = import_reference('Original tree reference', references['tree'])
 original_grass = import_reference('Original grass reference', references['grass'])
-for col, offset in [(original_tree,(-1.7,.4,0)),(tree_col,(1.7,.4,0)),
-                    (original_grass,(-1.7,-1.55,0)),(grass_col,(1.7,-1.55,0))]:
+for col, offset in [(original_grass,(-1.7,0,0)),(grass_col,(1.7,0,0))]:
     for obj in col.objects:
         obj.location += Vector(offset)
 begin('PRESENTATION only')
@@ -266,8 +197,8 @@ cam.rotation_euler = (Vector((0,-.1,1.5))-cam.location).to_track_quat('-Z','Y').
 cam.data.type = 'ORTHO'
 cam.data.ortho_scale = 8.4
 scene.camera = cam
-for x,title,detail in [(-1.7,'ORIGINAL','Tree 724 tris | Grass 88 tris'),
-                       (1.7,'FOLIAGE LOD',f'Tree {stats["tree_lod"]["triangles"]} tris | Grass {stats["grass_lod"]["triangles"]} tris')]:
+for x,title,detail in [(-1.7,'ORIGINAL','Authored grass'),
+                       (1.7,'FOLIAGE LOD',f'Grass {stats["grass_lod"]["triangles"]} tris')]:
     for text,z,size in [(title,3.95,.24),(detail,3.65,.13)]:
         curve = bpy.data.curves.new('Comparison label','FONT')
         curve.body = text

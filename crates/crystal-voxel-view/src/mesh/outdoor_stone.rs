@@ -5,14 +5,73 @@ use bevy::prelude::{Vec2, Vec3Swizzles};
 /// Outdoor rock erodes beneath its source cap. A bounded downward field
 /// preserves planar fractures even where the ice crown field is positive.
 fn crest_depth(x: f32, z: f32) -> f32 {
-    let fracture = super::cave_cliff::slab(x * 0.40, z * 0.40) * 4.40
-        + super::new_bark::meadow_noise(x * 0.30, z * 0.30) * 0.30;
-    0.55 + fracture.tanh() * 0.50
+    // Large mineral beds carry the silhouette. A second short-period height
+    // field turned every broad plane into small humps. Keep one linear field
+    // and let the separate cleft field cut the beds instead of swelling them.
+    1.20 + super::cave_cliff::slab(x * 0.16, z * 0.16) * 2.20
+}
+
+fn cap_cleft(x: f32, z: f32) -> f32 {
+    let fracture = super::cave_cliff::slab(
+        x * 0.32 + z * 0.08 + 29., z * 0.27 - x * 0.05 - 71.);
+    // Linear fissure walls cut through broad mineral beds. Sample authored
+    // coordinates: moving the fissure with each bevel ring bent the line
+    // through the wall and reversed extra wall-plane projections.
+    // The cap grid has six intervals per tile. A narrow notch could fall
+    // between its samples and read as isolated dimples; wider linear sides
+    // make each break span several samples without adding another grid.
+    (1. - fracture.abs() / 0.12).clamp(0., 1.) * 0.9
+}
+
+fn mineral_bevel(inward: f32, distance: f32, along: f32, depth: f32, width: f32) -> Vec2 {
+    if distance >= width || depth <= -width || depth >= width {
+        return Vec2::ZERO;
+    }
+    // A shorter rock can meet a taller wall. Continue its cap deformation
+    // into that wall and fade above the join; a hard cap-height cutoff tears
+    // the shared vertical samples apart immediately above the shorter rock.
+    let above = (-depth / width).max(0.);
+    let fade = 1. - above * above * (3. - 2. * above);
+    let depth = depth.max(0.);
+    // Beyond a finite edge endpoint, the wall-plane distance alone stays
+    // small even as the actual edge recedes. Using it after a radial cutoff
+    // switched the full bevel on abruptly and folded neighboring cap samples.
+    let inward = if along == 0. || along == 1. {
+        inward.max(distance)
+    } else { inward };
+    let radial = Vec2::new(inward - width, width - depth);
+    let length = radial.x.abs().max(radial.y.abs()).max(
+        (radial.x.abs() + radial.y.abs()) * std::f32::consts::FRAC_1_SQRT_2,
+    );
+    if length > width { radial * (width / length - 1.) * fade } else { Vec2::ZERO }
+}
+
+fn combined_rim_shift(rim: [f32; 4]) -> Vec2 {
+    let shift = Vec2::new(rim[0] - rim[1], rim[2] - rim[3]);
+    let length = shift.length();
+    if length == 0. { return shift; }
+    // Perpendicular bevels describe one shoulder. Adding both full radial
+    // offsets doubled its diagonal gradient and inverted reentrant caps.
+    // Preserve the strongest face's radius; approach the single-face field
+    // continuously as the other contribution vanishes.
+    shift * (shift.x.abs().max(shift.y.abs()) / length)
+}
+
+fn adjoining_support(distance: f32, reach: f32, floor: f32) -> f32 {
+    let remaining = (1. - (distance / reach).powi(2)).max(0.);
+    floor * remaining * remaining
 }
 
 /// Sculpt native outdoor rock masses with shared source-coordinate fields.
 /// Exposed rims erode; floor contacts and planted-tree seats stay anchored.
-pub(super) fn soften_rock_rims(
+pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+    sculpt_rock_rims(mesh, cells, shapes, g, origin);
+    super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
+    mineral_normals(&mut mesh.solid);
+}
+
+pub(super) fn sculpt_rock_rims(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
     shapes: &[CellShape],
@@ -64,16 +123,23 @@ pub(super) fn soften_rock_rims(
             .indices
             .chunks_exact(3)
             .filter(|tri| {
+                // Most scene triangles are foliage or ground. They cannot
+                // belong to this native rock cap; avoid loading their points
+                // and calculating a centroid for every restored corner.
+                if !(uvs[tri[0] as usize][0] < -9000.) {
+                    return true;
+                }
                 let q = [tri[0], tri[1], tri[2]].map(|i| positions[i as usize]);
+                if !q.iter().all(|p| (p[1] - h).abs() < 0.001) {
+                    return true;
+                }
                 let center = q.iter().fold([0.; 3], |mut a, p| {
                     for axis in 0..3 {
                         a[axis] += p[axis] / 3.;
                     }
                     a
                 });
-                !(uvs[tri[0] as usize][0] < -9000.
-                    && q.iter().all(|p| (p[1] - h).abs() < 0.001)
-                    && center[0] > w
+                !(center[0] > w
                     && center[0] < e
                     && center[2] > n
                     && center[2] < south)
@@ -177,6 +243,7 @@ pub(super) fn soften_rock_rims(
     let mut edges = Vec::new();
     let mut ledge_joints = Vec::new();
     let mut corners = Vec::new();
+    let mut inside_joins = Vec::new();
     for (i, cell) in cells.iter().enumerate() {
         let Some(height) = rock_height(i, cell) else {
             continue;
@@ -216,7 +283,8 @@ pub(super) fn soften_rock_rims(
                 continue;
             }
             let neighbor = shapes[nz as usize * g.width + nx as usize];
-            if neighbor.surface_height(g.tile_height) >= height - 0.01 {
+            neighbors[direction] = neighbor.surface_height(g.tile_height).max(0.0);
+            if neighbors[direction] >= height - 0.01 {
                 continue;
             }
             // A sawtooth reset beside this wall is a real presentation
@@ -257,24 +325,26 @@ pub(super) fn soften_rock_rims(
             (0, 3, Vec2::new(w, s), Vec2::new(1., -1.)),
             (1, 3, Vec2::new(e, s), Vec2::new(-1., -1.)),
         ] {
-            if !exposed[side_x] || !exposed[side_z] {
-                continue;
-            }
             let diagonal_x = x as isize - inward.x as isize;
             let diagonal_z = z as isize - inward.y as isize;
-            if diagonal_x < 0
-                || diagonal_z < 0
-                || diagonal_x >= g.width as isize
-                || diagonal_z >= g.height as isize
-            {
+            if diagonal_x < 0 || diagonal_z < 0
+                || diagonal_x >= g.width as isize || diagonal_z >= g.height as isize {
                 continue;
             }
-            if shapes[diagonal_z as usize * g.width + diagonal_x as usize]
-                .surface_height(g.tile_height)
-                >= height - 0.01
-            {
+            let diagonal_height = shapes[diagonal_z as usize * g.width + diagonal_x as usize]
+                .surface_height(g.tile_height);
+            if diagonal_height >= height - 0.01 { continue; }
+            if !exposed[side_x] && !exposed[side_z]
+                && (neighbors[side_x] - height).abs() < 0.01
+                && (neighbors[side_z] - height).abs() < 0.01 {
+                // Three joined shelf quadrants surround a lower fourth one.
+                // Both exposed walls end at this inside corner. Applying
+                // each finite bevel through that endpoint rolls the shared
+                // vertical edge into a narrow folded strip.
+                inside_joins.push((corner, height));
                 continue;
             }
+            if !exposed[side_x] || !exposed[side_z] { continue; }
             let run = |dx: isize, dz: isize| {
                 let mut count = 1;
                 for step in 1..6 {
@@ -351,9 +421,13 @@ pub(super) fn soften_rock_rims(
         // including a perpendicular rim reaching around a convex corner.
         let support = edges
             .iter()
-            .filter_map(|&(a, b, _, _, bottom, _)| {
+            .map(|&(a, b, _, _, bottom, _)| {
                 let along = ((p.xz() - a).dot(b - a) / (b - a).length_squared()).clamp(0., 1.);
-                (p.xz().distance(a.lerp(b, along)) <= g.tile_width * 0.14).then_some(bottom)
+                // The bevel reaches well beyond the thin wall relief skin.
+                // A hard skin-width support cutoff let adjacent samples of
+                // a shorter rock warp through its taller neighbor's seat.
+                adjoining_support(p.xz().distance(a.lerp(b, along)),
+                    g.tile_width.min(g.tile_height), bottom)
             })
             .fold(0.0_f32, f32::max);
         let mut rim_shift = [0.0_f32; 4];
@@ -377,20 +451,14 @@ pub(super) fn soften_rock_rims(
             } else {
                 3
             };
-            // Project the cap/wall corner onto one circular fillet. The old
-            // squared inward offset could reverse the order of cap vertices
-            // when the shoulder grew wider, producing a folded roof lip.
+            // Project the cap/wall corner onto one convex mineral bevel.
+            // Octagonal planes keep the shared radial ordering of the former
+            // circular fillet while breaking its soft, rolled-earth shoulder.
             let depth = height - p.y;
-            if distance < rim_width && depth >= -0.01 && depth < rim_width {
-                let inward = (p.xz() - a).dot(-normal);
-                let radial = Vec2::new(inward - rim_width, rim_width - depth);
-                let length = radial.length();
-                if length > rim_width {
-                    let delta = radial * (rim_width / length - 1.);
-                    rim_shift[direction] = rim_shift[direction].max(delta.x);
-                    rim_drop[direction] = rim_drop[direction].max(-delta.y);
-                }
-            }
+            let delta = mineral_bevel((p.xz() - a).dot(-normal), distance,
+                along, depth, rim_width);
+            rim_shift[direction] = rim_shift[direction].max(delta.x);
+            rim_drop[direction] = rim_drop[direction].max(-delta.y);
             // Native 0x0a rock edges carry the 0.95 rim scale. Above level
             // ground their lower faces can weather down to the actual floor;
             // a global jump-bank datum left a rigid box beneath every rock.
@@ -450,18 +518,25 @@ pub(super) fn soften_rock_rims(
         // Break exposed convex corners into mineral planes, using Ice Path's
         // diagonal compression. Keep positive cap area instead of collapsing
         // it onto the cut line, and share the warp with every wall vertex.
+        let rim = combined_rim_shift(rim_shift);
         let rounded = p + Vec3::new(
-            rim_shift[0] - rim_shift[1] + wall_inset[0] - wall_inset[1],
+            rim.x + wall_inset[0] - wall_inset[1],
             -rim_drop.into_iter().fold(0.0_f32, f32::max),
-            rim_shift[2] - rim_shift[3] + wall_inset[2] - wall_inset[3],
+            rim.y + wall_inset[2] - wall_inset[3],
         );
         let mut shoulder = Vec2::ZERO;
         for &(corner, inward, radius, datum, height) in &corners {
             let datum = datum.max(support);
-            let local = (rounded.xz() - corner) * inward;
+            // Decide ownership before other rims move this wall. A shorter
+            // adjoining rock can push the shared sample just outside the
+            // taller corner; dropping its entire corner cut there creates
+            // a sharp discontinuity. Include the native wall's relief skin,
+            // and clamp the rounded projection at the corner planes.
+            let original_local = (p.xz() - corner) * inward;
+            let local = ((rounded.xz() - corner) * inward).max(Vec2::ZERO);
             if height <= datum + 0.01
-                || local.x < -0.01
-                || local.y < -0.01
+                || original_local.x < -g.tile_width * 0.10
+                || original_local.y < -g.tile_height * 0.10
                 || local.x > radius
                 || local.y > radius
                 || p.y <= datum
@@ -499,6 +574,7 @@ pub(super) fn soften_rock_rims(
             );
         let mut crest_inset = [0.0_f32; 4];
         let mut crest_relief = 0.0_f32;
+        let mut crest_erosion = None;
         for &(a, b, normal, height, bottom, _) in &edges {
             let along = ((rounded.xz() - a).dot(b - a) / (b - a).length_squared()).clamp(0., 1.);
             let distance = rounded.xz().distance(a.lerp(b, along));
@@ -521,6 +597,7 @@ pub(super) fn soften_rock_rims(
                 let rise = ((rounded.y - datum) / (height - datum)).clamp(0., 1.);
                 let rise = rise * rise * (3. - 2. * rise);
                 let interior = (1. - distance / (g.tile_width * 1.2)).max(0.).powi(2);
+                if interior == 0. { continue; }
                 let terminal = |endpoint: Vec2, distance: f32| {
                     let free_corner = corners.iter().any(|&(corner, _, _, _, top)| {
                         corner.distance(endpoint) < 0.001 && (top - height).abs() < 0.001
@@ -534,11 +611,17 @@ pub(super) fn soften_rock_rims(
                 let join = terminal(a, along * a.distance(b))
                     .min(terminal(b, (1. - along) * a.distance(b)));
                 let join = join * join * (3. - 2. * join);
-                let fracture = super::cave_cliff::slab(
-                    crest_point.x / g.tile_width * 0.45,
-                    crest_point.z / g.tile_height * 0.45,
-                );
-                let erosion = 0.65 + fracture * 0.35;
+                if join == 0. { continue; }
+                // Every participating edge samples the same rounded source
+                // point. Remote edges contribute zero; compute the fracture
+                // field once instead of once for every wall in the scene.
+                let erosion = *crest_erosion.get_or_insert_with(|| {
+                    let fracture = super::cave_cliff::slab(
+                        crest_point.x / g.tile_width * 0.45,
+                        crest_point.z / g.tile_height * 0.45,
+                    );
+                    0.65 + fracture * 0.35
+                });
                 let recess = g.tile_width * 0.48 * interior * rise * join * erosion;
                 crest_inset[direction] = crest_inset[direction].max(recess);
                 crest_relief = crest_relief.max(interior * rise * join);
@@ -559,22 +642,35 @@ pub(super) fn soften_rock_rims(
         let mass_relief = rise * rise * (3. - 2. * rise) * tree_seat;
         let relief = (0.55 * mass_relief).max(0.75 * crest_relief * tree_seat);
         let crest_height = if relief > 0. {
-            let x = (rounded.x - g.origin_x) / g.tile_width + origin[0] as f32;
-            let z = (rounded.z - g.origin_z) / g.tile_height + origin[1] as f32;
-            let erosion = -crest_depth(x, z) * g.tile_height * relief;
+            let source_x = source_point.x / g.tile_width;
+            let source_z = source_point.z / g.tile_height;
+            let erosion = -(crest_depth(source_x, source_z) + cap_cleft(source_x, source_z))
+                * g.tile_height * relief;
             erosion.max(-(rounded.y - datum).max(0.) * 0.35)
         } else {
             0.
         };
-        s.positions[i] = (rounded
-            + Vec3::new(
-                crest_inset[0] - crest_inset[1],
-                crest_height,
-                crest_inset[2] - crest_inset[3],
-            ))
-        .to_array();
+        let sculpted = rounded + Vec3::new(
+            crest_inset[0] - crest_inset[1], crest_height,
+            crest_inset[2] - crest_inset[3]);
+        // Preserve the common vertical inside edge and its cap endpoint.
+        // Use source positions and one field for every participating face;
+        // wall and cap tessellation must not choose different constraints.
+        let join_weight = inside_joins.iter().filter(|(_, height)| p.y <= *height + 0.01)
+            .map(|(corner, _)| {
+                let t = (p.xz().distance(*corner) / (g.tile_width.min(g.tile_height) * 2.))
+                    .clamp(0., 1.);
+                t * t * (3. - 2. * t)
+            }).fold(1.0_f32, f32::min);
+        s.positions[i] = p.lerp(sculpted, join_weight).to_array();
     }
-    smooth_normals(s);
+}
+
+#[cfg(test)]
+fn soften_rock_rims(mesh: &mut TerrainMeshData, cells: &[&VisualTile],
+    shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+    sculpt_rock_rims(mesh, cells, shapes, g, origin);
+    mineral_normals(&mut mesh.solid);
 }
 
 type RockEdge = (Vec2, Vec2, Vec2, f32, f32, f32);
@@ -621,27 +717,47 @@ fn join_wall_edges(mut edges: Vec<RockEdge>, joints: &[Vec2]) -> Vec<RockEdge> {
 }
 
 pub(super) fn smooth_normals(s: &mut SurfaceMeshData) {
-    // Tessellated patches duplicate their border vertices. Average the
-    // sculpted face normals at those shared positions so the shoulder reads
-    // as continuous rock rather than a grid of separate beveled slabs.
+    joined_normals(s, -1.);
+}
+
+pub(super) fn mineral_normals(s: &mut SurfaceMeshData) {
+    if !s.uvs.iter().any(|uv| uv[0] < -9000.) { return; }
+    // Share lighting across coplanar source patches, but keep the normals on
+    // either side of a fractured bed. Unconditional averaging made the actual
+    // planar cuts read as swollen, rounded earth.
+    joined_normals(s, 25_f32.to_radians().cos());
+}
+
+fn joined_normals(s: &mut SurfaceMeshData, crease: f32) {
     let key = |p: [f32; 3]| p.map(|v| (v * 10000.).round() as i64);
-    let mut normals = std::collections::HashMap::<[i64; 3], Vec3>::new();
+    let mut faces = HashMap::<[i64; 3], Vec<(Vec3, f32, bool)>>::new();
+    let mut own = vec![Vec3::ZERO; s.positions.len()];
     for tri in s.indices.chunks_exact(3) {
         let ids = [tri[0] as usize, tri[1] as usize, tri[2] as usize];
-        if s.uvs[ids[0]][0] >= -9000. {
-            continue;
-        }
+        if s.uvs[ids[0]][0] >= -9000. { continue; }
         let p = ids.map(|i| Vec3::from_array(s.positions[i]));
-        let normal = (p[1] - p[0]).cross(p[2] - p[0]);
-        for i in ids {
-            *normals.entry(key(s.positions[i])).or_default() += normal;
+        let cross = (p[1] - p[0]).cross(p[2] - p[0]);
+        if cross.length_squared() < 1e-10 { continue; }
+        let normal = cross.normalize();
+        for corner in 0..3 {
+            let a = p[(corner + 1) % 3] - p[corner];
+            let b = p[(corner + 2) % 3] - p[corner];
+            let angle = a.cross(b).length().atan2(a.dot(b));
+            own[ids[corner]] += normal * angle;
+            faces.entry(key(s.positions[ids[corner]])).or_default()
+                .push((normal, angle, s.normals[ids[corner]][1] > 0.9));
         }
     }
     for i in 0..s.positions.len() {
-        if s.uvs[i][0] >= -9000. {
-            continue;
-        }
-        if let Some(normal) = normals.get(&key(s.positions[i])) {
+        if s.uvs[i][0] >= -9000. || own[i].length_squared() < 1e-10 { continue; }
+        let reference = own[i].normalize();
+        if let Some(adjacent) = faces.get(&key(s.positions[i])) {
+            // Native cap/wall shoulder seams describe one continuous bevel.
+            // Keep them smooth; the crease rule applies inside mineral caps.
+            let shoulder = adjacent.iter().any(|(_, _, cap)| !cap);
+            let normal = adjacent.iter()
+                .filter(|(normal, _, _)| shoulder || normal.dot(reference) >= crease)
+                .fold(Vec3::ZERO, |sum, (normal, angle, _)| sum + *normal * *angle);
             if normal.length_squared() > 0.0001 {
                 s.normals[i] = normal.normalize().to_array();
             }
@@ -836,6 +952,248 @@ fn append_with_pigment(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn cap_mineral_clefts_have_resolved_valleys_between_broad_planes() {
+        let tile = 8.;
+        let flat = super::super::tests::source_with_tile(0,0,0,5);
+        let mut sources = vec![flat;100];
+        for z in 1..9 { for x in 1..9 {
+            sources[z*10+x] = super::super::tests::source_with_tile(0x70,2,1,0x3c);
+        }}
+        let frame = super::super::tests::frame(10,10,sources);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let mut shapes: Vec<_> = cells.iter().map(|c|shape_for_source(&c.source)).collect();
+        for z in 1..9 {for x in 1..9 {
+            shapes[z*10+x] = CellShape::RaisedTop {height:32.,solid:SolidKind::Bank};
+        }}
+        let g = GridGeometry {width:10,height:10,tile_width:tile,tile_height:tile,
+            origin_x:0.,origin_z:0.};
+        let mut valleys = 0;
+        let mut resolved_cleft_pairs = 0;
+        for origin in [[0,0],[17,43],[-31,-7],[64,-32]] {
+            let mut mesh = TerrainMeshData::default();
+            for z in 1..9 {for x in 1..9 {
+                let (w,e,n,s)=g.bounds(x,z);
+                append_canyon(&mut mesh.solid,[[w,32.,n],[w,32.,s],[e,32.,s],[e,32.,n]],
+                    Vec3::Y.to_array(),&g,origin);
+            }}
+            let before=mesh.solid.positions.clone();
+            soften_rock_rims(&mut mesh,&cells,&shapes,&g,origin);
+            let samples: HashMap<_,_> = before.iter().zip(&mesh.solid.positions)
+                .filter(|(p,_)|p[0]>=tile*3. && p[0]<=tile*7.
+                    && p[2]>=tile*3. && p[2]<=tile*7.)
+                .map(|(p,q)| (((p[0]/tile*6.).round() as i32,
+                    (p[2]/tile*6.).round() as i32),q[1])).collect();
+            for (&(x,z),&center) in &samples {
+                // Compare actual interior vertices with the broad-bed-only
+                // surface. A cleft must survive on adjacent mesh samples,
+                // rather than becoming isolated pits after tessellation.
+                let broad_only = |x: i32, z: i32| {
+                    let depth = crest_depth(x as f32 / 6. + origin[0] as f32,
+                        z as f32 / 6. + origin[1] as f32) * tile * 0.55;
+                    32. - depth.min((32. - crate::profile::JUMP_LEDGE_HEIGHT) * 0.35)
+                };
+                if broad_only(x,z) - center > tile * 0.08 {
+                    for next in [(x+1,z),(x,z+1)] {
+                        if samples.get(&next).is_some_and(|&height|
+                            broad_only(next.0,next.1) - height > tile * 0.08) {
+                            resolved_cleft_pairs += 1;
+                        }
+                    }
+                }
+                for (a,b) in [((x-1,z),(x+1,z)),((x,z-1),(x,z+1))] {
+                    if let (Some(&a),Some(&b))=(samples.get(&a),samples.get(&b)) {
+                        if a.min(b)-center>tile*0.08 { valleys+=1; }
+                    }
+                }
+            }
+            for ids in mesh.solid.indices.chunks_exact(3) {
+                let p=ids.iter().map(|&i|Vec3::from_array(mesh.solid.positions[i as usize]))
+                    .collect::<Vec<_>>();
+                assert!((p[1]-p[0]).cross(p[2]-p[0]).y>=-0.0001,
+                    "mineral clefts must not fold the cap at source phase {origin:?}");
+            }
+        }
+        assert!(valleys>12,"cap beds need resolved geometric clefts, found {valleys}");
+        assert!(resolved_cleft_pairs>24,
+            "clefts must span neighboring cap samples, found {resolved_cleft_pairs} pairs");
+    }
+    #[test]
+    fn inside_shelf_join_retains_one_vertical_edge_for_both_walls_and_cap() {
+        for tile in [8., 32.] {
+            let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
+            let mut sources = vec![flat; 25];
+            for i in [7, 11, 12] {
+                sources[i] = super::super::tests::source_with_tile(0x70, 2, 1, 0x3c);
+            }
+            let f = super::super::tests::frame(5, 5, sources);
+            let cells: Vec<_> = f.tiles.iter().collect();
+            let mut shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+            for i in [7, 11, 12] { shapes[i] = CellShape::RaisedTop { height: 32., solid: SolidKind::Bank }; }
+            let g = GridGeometry { width: 5, height: 5, tile_width: tile,
+                tile_height: tile, origin_x: 0., origin_z: 0. };
+            let h = tile * 4.; let c = tile * 2.;
+            let mut mesh = TerrainMeshData::default();
+            append(&mut mesh.solid, [[c,0.,tile],[c,h,tile],[c,h,c],[c,0.,c]],
+                Vec3::NEG_X.to_array(), &g, [0,0]);
+            append(&mut mesh.solid, [[tile,0.,c],[tile,h,c],[c,h,c],[c,0.,c]],
+                Vec3::NEG_Z.to_array(), &g, [0,0]);
+            append(&mut mesh.solid, [[c,h,c],[c,h,c+tile],[c+tile,h,c+tile],[c+tile,h,c]],
+                Vec3::Y.to_array(), &g, [0,0]);
+            let original = mesh.solid.positions.clone();
+            soften_rock_rims(&mut mesh, &cells, &shapes, &g, [0,0]);
+            let mut shared = 0; let mut weathered = 0;
+            for (p,q) in original.iter().zip(&mesh.solid.positions) {
+                if p[0] == c && p[2] == c {
+                    assert_eq!(p,q,"the inside shelf edge must stay joined at either render scale");
+                    shared += 1;
+                } else if Vec3::from_array(*p).distance(Vec3::from_array(*q)) > tile * 0.01 {
+                    weathered += 1;
+                }
+            }
+            assert!(shared > 12); assert!(weathered > 12);
+        }
+    }
+    #[test]
+    fn lower_wall_stays_supported_beyond_the_thin_relief_skin_at_a_floor_join() {
+        let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
+        let mut sources = vec![flat; 16];
+        for (i, x, y) in [(5, 1, 1), (6, 2, 1), (9, 1, 2), (10, 2, 2)] {
+            sources[i] = super::super::tests::source_with_tile(0x0a, x, y, 0x3c);
+        }
+        let frame = super::super::tests::frame(4, 4, sources);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let g = GridGeometry { width: 4, height: 4, tile_width: 8., tile_height: 8.,
+            origin_x: 0., origin_z: 0. };
+        let mut shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+        shapes[4] = CellShape::RaisedTop { height: 10., solid: SolidKind::Bank };
+        let h = shapes[9].surface_height(8.);
+        let mut mesh = TerrainMeshData::default();
+        append(&mut mesh.solid,
+            [[8., 0., 24.], [8., h, 24.], [8., h, 16.], [8., 0., 16.]],
+            Vec3::NEG_X.to_array(), &g, [0, 0]);
+        let before = mesh.solid.positions.clone();
+        soften_rock_rims(&mut mesh, &cells, &shapes, &g, [0, 0]);
+        let mut checked = 0;
+        for (p, q) in before.iter().zip(&mesh.solid.positions) {
+            if (p[1] - 8.).abs() < 0.001 && p[2] > 17.2 && p[2] < 17.5 {
+                assert_eq!(p, q, "the adjoining seat must support the whole shared bevel region");
+                checked += 1;
+            }
+        }
+        assert!(checked > 0);
+    }
+    #[test]
+    fn shorter_rock_bevel_joins_a_taller_wall_without_a_height_cutoff() {
+        let below = mineral_bevel(0., 0., 0.5, -0.0099, 8.);
+        let above = mineral_bevel(0., 0., 0.5, -0.0101, 8.);
+        assert!(below.distance(above) < 0.001,
+            "the old shorter-cap cutoff must not separate adjacent wall samples");
+        assert!(above.length() > 2.);
+        assert!(mineral_bevel(0., 0., 0.5, -7.999, 8.).length() < 0.001);
+        assert_eq!(mineral_bevel(0., 0., 0.5, -8., 8.), Vec2::ZERO);
+        assert_eq!(mineral_bevel(0., 0., 0.5, -16., 8.), Vec2::ZERO);
+    }
+
+    #[test]
+    fn perpendicular_bevels_preserve_reentrant_route26_cap_winding() {
+        let points = [Vec3::new(190.66667, 32., 288.),
+            Vec3::new(192., 32., 289.33334), Vec3::new(192., 32., 288.)];
+        // Actual production contributions before erosion at this cap corner.
+        let shifts = [1.3745648, 1.3331273, 2.189051];
+        let sculpted = std::array::from_fn::<_, 3, _>(|i| {
+            let rim = combined_rim_shift([0., shifts[i], shifts[i], 0.]);
+            points[i] + Vec3::new(rim.x, -shifts[i], rim.y)
+        });
+        assert!((sculpted[1] - sculpted[0]).cross(sculpted[2] - sculpted[0]).y > 0.1,
+            "perpendicular bevels must preserve the cap's winding: {sculpted:?}");
+        assert_eq!(combined_rim_shift([0., 2., 0., 0.]), Vec2::new(-2., 0.));
+        assert!(combined_rim_shift([0., 2., 0.00001, 0.])
+            .distance(Vec2::new(-2., 0.)) < 0.00002);
+    }
+
+    #[test]
+    fn finite_rim_endpoint_preserves_route26_cap_triangle_winding() {
+        // These neighboring source samples folded in the Route26 pack:
+        // the outer sample received a full bevel while its neighbor missed
+        // the finite edge's radius and stayed fixed.
+        let a = Vec2::new(192., 280.);
+        let b = Vec2::new(192., 288.);
+        let normal = Vec2::X;
+        let points = [
+            Vec3::new(190.66667, 32., 293.33334),
+            Vec3::new(190.66667, 32., 294.6667),
+            Vec3::new(192., 32., 294.6667),
+        ];
+        let sculpted = points.map(|p| {
+            let along = ((p.xz() - a).dot(b - a) / (b - a).length_squared())
+                .clamp(0., 1.);
+            let distance = p.xz().distance(a.lerp(b, along));
+            let width = 8. * 0.90 * (0.80 + noise(p / (8. * 0.7)) * 0.40);
+            let delta = mineral_bevel((p.xz() - a).dot(-normal), distance,
+                along, 0., width);
+            p + Vec3::new(-delta.x, delta.y, 0.)
+        });
+        assert!((sculpted[1] - sculpted[0]).cross(sculpted[2] - sculpted[0]).y > 1.,
+            "a finite rim endpoint must keep adjacent cap samples in order: {sculpted:?}");
+    }
+
+    #[test]
+    fn shoulder_normals_follow_corner_angles_instead_of_triangle_area() {
+        for span in [2., 8., 24.] {
+            for split in [0.2, 0.5, 0.8] {
+                let mut mesh = SurfaceMeshData::default();
+                let edge = Vec3::Z * span;
+                let side = Vec3::X * span;
+                let middle = edge.lerp(side, split);
+                for points in [[Vec3::ZERO, edge, middle],
+                    [Vec3::ZERO, middle, side], [Vec3::ZERO, side, Vec3::Y * 2.]] {
+                    let first = mesh.positions.len() as u32;
+                    mesh.positions.extend(points.map(|p| p.to_array()));
+                    mesh.normals.extend([[0., 1., 0.]; 3]);
+                    mesh.uvs.extend([[-10000., -20000.]; 3]);
+                    mesh.indices.extend([first, first + 1, first + 2]);
+                }
+                smooth_normals(&mut mesh);
+                let expected = (Vec3::Y + Vec3::Z).normalize();
+                for i in [0, 3, 6] {
+                    assert!(Vec3::from_array(mesh.normals[i]).dot(expected) > 0.99999);
+                    assert_eq!(mesh.normals[i], mesh.normals[0]);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn mineral_fractures_keep_separate_normals_without_opening_source_seams() {
+        for degrees in [10_f32, 50.] {
+            let mut mesh = SurfaceMeshData::default();
+            let angle = degrees.to_radians();
+            let side = Vec3::new(angle.cos(), angle.sin(), 0.);
+            for points in [[Vec3::ZERO, Vec3::Z, Vec3::NEG_X],
+                [Vec3::ZERO, side, Vec3::Z]] {
+                let first = mesh.positions.len() as u32;
+                mesh.positions.extend(points.map(|p| p.to_array()));
+                mesh.normals.extend([[0., 1., 0.]; 3]);
+                mesh.uvs.extend([[-10000., -20000.]; 3]);
+                mesh.indices.extend([first, first + 1, first + 2]);
+            }
+            let positions = mesh.positions.clone();
+            let indices = mesh.indices.clone();
+            mineral_normals(&mut mesh);
+            assert_eq!(mesh.positions, positions);
+            assert_eq!(mesh.indices, indices);
+            let a = Vec3::from_array(mesh.normals[0]);
+            let b = Vec3::from_array(mesh.normals[3]);
+            if degrees < 25. {
+                assert!(a.dot(b) > 0.99999, "shallow source seams must share lighting");
+            } else {
+                assert!((a.dot(b) - angle.cos()).abs() < 0.00001,
+                    "fracture planes must retain their actual angle");
+            }
+            assert!(a.is_normalized() && b.is_normalized());
+        }
+    }
 
     #[test]
     fn native_free_rock_corners_break_the_box_toe_and_seal_both_walls() {

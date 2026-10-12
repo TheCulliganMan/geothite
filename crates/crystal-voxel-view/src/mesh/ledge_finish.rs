@@ -3,6 +3,12 @@
 use super::*;
 use bevy::prelude::Vec3;
 
+pub(in crate::mesh) fn soil_color(x: f32, z: f32, fraction: f32) -> [f32;3] {
+    let grain = meadow_noise(x * 4.1 + 7., z * 4.1 - 11.) * 0.065;
+    let strata = (fraction * 11.0 + meadow_noise(x * 1.9, z * 1.9) * 1.7).sin() * 0.018;
+    [0.29 + grain + strata, 0.19 + grain * 0.70 + strata, 0.080 + grain * 0.35]
+}
+
 pub(in crate::mesh) fn append(
     mesh: &mut SurfaceMeshData,
     p: [[f32; 3]; 4],
@@ -69,8 +75,6 @@ pub(in crate::mesh) fn append(
         }
     };
     let color = |m: Vec3, v: f32, face: Vec3| {
-        let grain = meadow_noise(m.x * 4.1 + 7., m.z * 4.1 - 11.) * 0.065;
-        let strata = (v * 11.0 + meadow_noise(m.x * 1.9, m.z * 1.9) * 1.7).sin() * 0.018;
         let light = Vec3::new(0.45, 0.80, 0.55).normalize();
         let shade = (0.62 + 0.38 * v.sqrt()) * (0.70 + 0.30 * face.dot(light).max(0.));
         // Sod hangs farther over moist pockets, exposing irregular soil
@@ -81,11 +85,7 @@ pub(in crate::mesh) fn append(
         let edge = 0.75 + sod * 0.22;
         let rim = ((v - edge) / 0.12).clamp(0., 1.);
         let rim = rim * rim * (3. - 2. * rim);
-        let soil = [
-            0.29 + grain + strata,
-            0.19 + grain * 0.70 + strata,
-            0.080 + grain * 0.35,
-        ];
+        let soil = soil_color(m.x,m.z,v);
         let grass = [0.26, 0.39, 0.085];
         std::array::from_fn(|c| {
             if c == 3 {
