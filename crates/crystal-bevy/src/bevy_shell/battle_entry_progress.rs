@@ -4605,6 +4605,29 @@ struct ResolvedRenderSource<'a> {
     height: i32,
 }
 
+/// Cherrygrove's original sea border repeats behind the Center when the
+/// camera exposes scenery beyond the map. Extend its land-side grove there.
+/// This only selects off-map scenery; connections and playable blocks retain
+/// their authored tiles and collision.
+fn exterior_border_block(
+    map: &str,
+    tileset: &str,
+    border: u8,
+    width: i32,
+    x: i32,
+    y: i32,
+) -> u16 {
+    if map == "CherrygroveCity"
+        && tileset == "johto"
+        && border == 0x35
+        && (x >= width || (y < 0 && x >= 24))
+    {
+        0x05
+    } else {
+        u16::from(border)
+    }
+}
+
 fn resolved_render_source_at<'a>(
     sources: &'a [ResolvedRenderSource<'a>],
     x: i32,

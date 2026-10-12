@@ -3,6 +3,7 @@
 import json, math
 from pathlib import Path
 from model_asset_storage import read_model_json
+from violet_plaque_palette import PALETTE as VIOLET_PLAQUE_PALETTE
 ROOT=Path(__file__).resolve().parents[1]
 EXPECTED={
  'cave_boulder','dark_boulder','ice_boulder','ice_mass','tower_guardian','alph_guardian',
@@ -11,6 +12,22 @@ EXPECTED={
 }
 def validate(path):
     data=read_model_json(path);assert data['name']==path.name.removesuffix('.mesh.json')
+    if data['name']=='gym_plaque':
+        assert {p['name'] for p in data['primitives']}==set(VIOLET_PLAQUE_PALETTE)
+        for p in data['primitives']:
+            assert p['material']==p['name']
+            assert p['base_color']==[*VIOLET_PLAQUE_PALETTE[p['name']],1.]
+    if data['name']=='league_podium':
+        allowed={('pedestal','stone'),('pedestal','stone_dark'),('pedestal','stone_light'),('orb','stone_dark'),('orb','stone_light')}
+        found=set()
+        for p in data['primitives']:
+            next_vertex=0
+            for start,end,region in p['palette_regions']:
+                assert start==next_vertex and start<end<=len(p['positions'])//3
+                assert (region,p['name']) in allowed
+                found.add((region,p['name']));next_vertex=end
+            assert next_vertex==len(p['positions'])//3
+        assert found==allowed
     triangles=0;positions=[];materials=set()
     for p in data['primitives']:
         assert len(p['positions'])%3==0 and len(p['positions'])==len(p['normals'])

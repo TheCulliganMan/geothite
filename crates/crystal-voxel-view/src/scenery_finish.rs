@@ -31,10 +31,14 @@ fn noise(p: Vec3) -> f32 {
     // camera orbit and repeated placements cannot move the painted grain.
     (p.x * 11.7 + (p.z * 7.3).sin()).sin() * (p.y * 8.9 + (p.x * 3.1).cos()).cos()
 }
+pub(crate) fn timber_grain(p: [f32; 3]) -> f32 {
+    let p = Vec3::from_array(p);
+    noise(Vec3::new(p.x * 2.8, p.y * 0.10, p.z * 2.8))
+}
 fn paint(base: [f32; 4], p: Vec3, role: Material) -> [f32; 4] {
     let grain = match role {
         Material::Ceramic => noise(p * 0.8) * 0.024,
-        Material::Timber => noise(Vec3::new(p.x * 2.8, p.y * 0.10, p.z * 2.8)) * 0.038,
+        Material::Timber => timber_grain(p.to_array()) * 0.038,
         Material::Plaster => noise(p * 0.55) * 0.017,
         Material::Stone => noise(p * 1.5) * 0.025,
         Material::Foliage => noise(p * 1.7) * 0.045,

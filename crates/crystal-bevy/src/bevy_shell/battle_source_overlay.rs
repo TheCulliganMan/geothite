@@ -3,16 +3,19 @@
 use super::*;
 use bevy::{
     asset::load_internal_asset,
+    camera::visibility::RenderLayers,
     reflect::TypePath,
     render::render_resource::{AsBindGroup, ShaderType},
     shader::ShaderRef,
-    camera::visibility::RenderLayers,
     sprite_render::{Material2d, Material2dPlugin},
 };
 use crystal_voxel_view::{BattleSourceBodyRegistrations, BattleSourceProjection};
 
 const SOURCE_SLOTS: usize = 10;
-const SOURCE_SHADER: Handle<Shader> = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x94aa7509_6eae_448a_a8a5_72ee8f7f3c29), std::marker::PhantomData);
+const SOURCE_SHADER: Handle<Shader> = Handle::Uuid(
+    bevy::asset::uuid::Uuid::from_u128(0x94aa7509_6eae_448a_a8a5_72ee8f7f3c29),
+    std::marker::PhantomData,
+);
 
 #[derive(Resource, Default)]
 pub(super) struct ImmersiveBattleSourceOverlayEnabled {
@@ -48,7 +51,9 @@ pub(super) struct SourceMaterial {
     texture: Handle<Image>,
 }
 impl Material2d for SourceMaterial {
-    fn fragment_shader() -> ShaderRef { SOURCE_SHADER.into() }
+    fn fragment_shader() -> ShaderRef {
+        SOURCE_SHADER.into()
+    }
 }
 
 pub(super) fn install(app: &mut App) {
@@ -66,18 +71,35 @@ pub(super) fn install(app: &mut App) {
     app.init_resource::<Assets<Shader>>()
         .init_resource::<ImmersiveBattleSourceOverlayEnabled>()
         .add_systems(Startup, setup);
-    load_internal_asset!(app, SOURCE_SHADER, "battle_source_overlay.wesl", Shader::from_wesl);
+    load_internal_asset!(
+        app,
+        SOURCE_SHADER,
+        "battle_source_overlay.wesl",
+        Shader::from_wesl
+    );
 }
 
 fn source_images_ready() {}
 
-fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<SourceMaterial>>) {
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<SourceMaterial>>,
+) {
     let quad = meshes.add(Rectangle::new(1.0, 1.0));
     for slot in 0..SOURCE_SLOTS {
-        commands.spawn(((Mesh2d(quad.clone().into()),
-MeshMaterial2d(materials.add(SourceMaterial { source: SourceUniform::default(), texture: Handle::default() })),
-Visibility::Hidden,), SourceOverlaySlot(slot), RenderLayers::layer(0)));
+        commands.spawn((
+            (
+                Mesh2d(quad.clone().into()),
+                MeshMaterial2d(materials.add(SourceMaterial {
+                    source: SourceUniform::default(),
+                    texture: Handle::default(),
+                })),
+                Visibility::Hidden,
+            ),
+            SourceOverlaySlot(slot),
+            RenderLayers::layer(0),
+        ));
     }
 }
 
@@ -91,16 +113,26 @@ enum SlotProjection {
     Visible(SlotFrame),
 }
 
-fn slot_frame(projection: BattleSourceProjection, object: &VisualBattleSourceObject,
-    canvas: &crystal_render_api::VisualBattleCanvas, mode: crystal_render_api::BattleFlashMode,
-    depth: f32) -> Option<SlotProjection> {
+fn slot_frame(
+    projection: BattleSourceProjection,
+    object: &VisualBattleSourceObject,
+    canvas: &crystal_render_api::VisualBattleCanvas,
+    mode: crystal_render_api::BattleFlashMode,
+    depth: f32,
+) -> Option<SlotProjection> {
     let source_rect = Rect::from_center_size(object.center, object.size);
     let crop = object.uv_rect;
-    if !crop.min.is_finite() || !crop.max.is_finite() || crop.size().min_element() <= 0.0
-        || crop.min.cmplt(Vec2::ZERO).any() || crop.max.cmpgt(Vec2::ONE).any() {
+    if !crop.min.is_finite()
+        || !crop.max.is_finite()
+        || crop.size().min_element() <= 0.0
+        || crop.min.cmplt(Vec2::ZERO).any()
+        || crop.max.cmpgt(Vec2::ONE).any()
+    {
         return None;
     }
-    if canvas.physical_size.min_element() == 0 { return None; }
+    if canvas.physical_size.min_element() == 0 {
+        return None;
+    }
     projection.coverage(source_rect)?;
     let Some(coverage) = projection.raster_coverage(source_rect, canvas.physical_size) else {
         // A valid projected object outside this viewport is invisible. Never
@@ -111,14 +143,24 @@ fn slot_frame(projection: BattleSourceProjection, object: &VisualBattleSourceObj
     Some(SlotProjection::Visible(SlotFrame {
         material: SourceMaterial {
             source: SourceUniform {
-                view_to_source: projection.view_to_source.to_cols_array_2d().map(|v| Vec3::from_array(v).extend(0.0)),
-                source_rect: Vec4::new(source_rect.min.x, source_rect.min.y, source_rect.max.x, source_rect.max.y),
+                view_to_source: projection
+                    .view_to_source
+                    .to_cols_array_2d()
+                    .map(|v| Vec3::from_array(v).extend(0.0)),
+                source_rect: Vec4::new(
+                    source_rect.min.x,
+                    source_rect.min.y,
+                    source_rect.max.x,
+                    source_rect.max.y,
+                ),
                 uv_rect: Vec4::new(crop.min.x, crop.min.y, crop.max.x, crop.max.y),
                 viewport: canvas.physical_size.as_vec2().extend(0.0).extend(0.0),
             },
             texture: if mode == crystal_render_api::BattleFlashMode::Reduced {
                 object.neutral_texture.clone()
-            } else { object.texture.clone() },
+            } else {
+                object.texture.clone()
+            },
         },
         transform: Transform::from_xyz(center.x, -center.y, depth)
             .with_scale((coverage.size() * canvas.size).extend(1.0)),
@@ -172,33 +214,74 @@ pub(super) fn sync_immersive_battle_source_object_layout(
     mode: Res<crystal_render_api::BattleFlashMode>,
     mut materials: ResMut<Assets<SourceMaterial>>,
     cameras: Query<&Transform, (With<MainCameraMarker>, Without<SourceOverlaySlot>)>,
-    objects: Query<(Entity, &ImmersiveBattleSourceObject, &Transform,
-        Option<&RenderLayers>, Option<&ImmersiveBattleSourceObjectLayout>), Without<SourceOverlaySlot>>,
-    mut overlays: Query<(&SourceOverlaySlot, &MeshMaterial2d<SourceMaterial>, &mut Transform, &mut Visibility), Without<ImmersiveBattleSourceObject>>,
+    objects: Query<
+        (
+            Entity,
+            &ImmersiveBattleSourceObject,
+            &Transform,
+            Option<&RenderLayers>,
+            Option<&ImmersiveBattleSourceObjectLayout>,
+        ),
+        Without<SourceOverlaySlot>,
+    >,
+    mut overlays: Query<
+        (
+            &SourceOverlaySlot,
+            &MeshMaterial2d<SourceMaterial>,
+            &mut Transform,
+            &mut Visibility,
+        ),
+        Without<ImmersiveBattleSourceObject>,
+    >,
 ) {
     let projection = (enabled.enabled && status.active)
-        .then(|| BattleSourceProjection::new(&layout, canvas.size)).flatten();
+        .then(|| BattleSourceProjection::new(&layout, canvas.size))
+        .flatten();
     let registered = projection.and_then(|_| {
         registered_frame_projections(
-            frame.source.as_ref()?, registrations.as_deref()?, &layout,
+            frame.source.as_ref()?,
+            registrations.as_deref()?,
+            &layout,
             canvas.physical_size.as_vec2(),
         )
     });
     let mut slots: [Option<SlotFrame>; SOURCE_SLOTS] = std::array::from_fn(|_| None);
     // WOBBLE_SCREEN can move the native camera. Follow it for coverage only;
     // the common screen-space inverse projection never receives BG shake.
-    let camera_offset = cameras.single().map_or(Vec2::ZERO, |camera| camera.translation.truncate());
-    let available: [bool; SOURCE_SLOTS] = std::array::from_fn(|slot| overlays.iter()
-        .any(|(candidate, material, _, _)| candidate.0 == slot && materials.contains(material.id())));
+    let camera_offset = cameras
+        .single()
+        .map_or(Vec2::ZERO, |camera| camera.translation.truncate());
+    let available: [bool; SOURCE_SLOTS] = std::array::from_fn(|slot| {
+        overlays.iter().any(|(candidate, material, _, _)| {
+            candidate.0 == slot && materials.contains(material.id())
+        })
+    });
     for (entity, slot, transform, layers, stored) in &objects {
-        let projected = projection.filter(|_| slot.0 < SOURCE_SLOTS && available[slot.0])
-            .and_then(|projection| frame.source.as_ref().and_then(|source| source.objects.iter()
-                .find(|object| object.slot == slot.0)).and_then(|object|
-                    slot_frame(registered.as_ref().and_then(|slots| slots[slot.0])
-                        .unwrap_or(projection), object, &canvas, *mode, transform.translation.z)));
+        let projected = projection
+            .filter(|_| slot.0 < SOURCE_SLOTS && available[slot.0])
+            .and_then(|projection| {
+                frame
+                    .source
+                    .as_ref()
+                    .and_then(|source| source.objects.iter().find(|object| object.slot == slot.0))
+                    .and_then(|object| {
+                        slot_frame(
+                            registered
+                                .as_ref()
+                                .and_then(|slots| slots[slot.0])
+                                .unwrap_or(projection),
+                            object,
+                            &canvas,
+                            *mode,
+                            transform.translation.z,
+                        )
+                    })
+            });
         if let Some(projected) = projected {
             if stored.is_none() {
-                commands.entity(entity).insert(ImmersiveBattleSourceObjectLayout(layers.cloned()));
+                commands
+                    .entity(entity)
+                    .insert(ImmersiveBattleSourceObjectLayout(layers.cloned()));
             }
             set_immersive_hidden_layer(&mut commands, entity, layers, true);
             slots[slot.0] = match projected {
@@ -208,9 +291,14 @@ pub(super) fn sync_immersive_battle_source_object_layout(
         } else if let Some(stored) = stored {
             if enabled.park_classic {
                 set_immersive_hidden_layer(&mut commands, entity, layers, true);
-            } else if let Some(original) = &stored.0 { commands.entity(entity).insert(original.clone()); }
-            else { commands.entity(entity).remove::<RenderLayers>(); }
-            commands.entity(entity).remove::<ImmersiveBattleSourceObjectLayout>();
+            } else if let Some(original) = &stored.0 {
+                commands.entity(entity).insert(original.clone());
+            } else {
+                commands.entity(entity).remove::<RenderLayers>();
+            }
+            commands
+                .entity(entity)
+                .remove::<ImmersiveBattleSourceObjectLayout>();
         }
     }
     for (slot, handle, mut transform, mut visibility) in &mut overlays {
@@ -218,8 +306,10 @@ pub(super) fn sync_immersive_battle_source_object_layout(
             visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
-        if materials.get(&handle.0).is_some_and(|material|
-            material.source != current.material.source || material.texture != current.material.texture) {
+        if materials.get(&handle.0).is_some_and(|material| {
+            material.source != current.material.source
+                || material.texture != current.material.texture
+        }) {
             *materials.get_mut(&handle.0).unwrap() = current.material.clone();
         }
         let mut pose = current.transform;
@@ -240,7 +330,8 @@ mod tests {
         let layout = crystal_voxel_view::BattleSceneLayout::default();
         let viewport = Vec2::new(800.0, 600.0);
         let bodies = BattleSourceBodyRegistrations {
-            viewport, camera: layout.camera,
+            viewport,
+            camera: layout.camera,
             bodies: [
                 Some(BattleSourceBodyRegistration {
                     source: Rect::new(18.0, 52.0, 64.0, 96.0),
@@ -254,24 +345,44 @@ mod tests {
                 }),
             ],
         };
-        let target = VisualBattleSourcePlacement::BattlerLocal { side: crystal_render_api::VisualBattleSide::Enemy };
+        let target = VisualBattleSourcePlacement::BattlerLocal {
+            side: crystal_render_api::VisualBattleSide::Enemy,
+        };
         let object = |slot, center, placement| VisualBattleSourceObject {
-            slot, object_id: Arc::from("VERIFIED_ASSEMBLY"),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100), std::marker::PhantomData), neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(101), std::marker::PhantomData),
-            center, size: Vec2::splat(8.0),
-            uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE), placement: Some(placement),
+            slot,
+            object_id: Arc::from("VERIFIED_ASSEMBLY"),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(100),
+                std::marker::PhantomData,
+            ),
+            neutral_texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(101),
+                std::marker::PhantomData,
+            ),
+            center,
+            size: Vec2::splat(8.0),
+            uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
+            placement: Some(placement),
         };
         let transit = VisualBattleSourcePlacement::IndependentTransport {
             from: crystal_render_api::VisualBattleSide::Player,
-            assembly: VisualBattleSourceAssembly { event_index: 4, spawn_frame: 11 },
+            assembly: VisualBattleSourceAssembly {
+                event_index: 4,
+                spawn_frame: 11,
+            },
             pivot: Vec2::new(80.0, 60.0),
         };
         let mut source = VisualBattleSourceFrame {
-            frame: 30, bgp: 0xe4, battler_bgps: [0xe4; 2],
+            frame: 30,
+            bgp: 0xe4,
+            battler_bgps: [0xe4; 2],
             battler_palettes: [[[1.0; 4]; 4]; 2],
             battler_textures: [Handle::default(), Handle::default()],
-            battler_offsets: [Vec2::ZERO; 2], screen_offset: Vec2::ZERO,
-            line_x_offsets: None, line_y_offsets: None, battler_rows: [None; 2],
+            battler_offsets: [Vec2::ZERO; 2],
+            screen_offset: Vec2::ZERO,
+            line_x_offsets: None,
+            line_y_offsets: None,
+            battler_rows: [None; 2],
             objects: vec![
                 object(0, Vec2::new(112.0, 52.0), target),
                 object(1, Vec2::new(124.0, 52.0), target),
@@ -280,10 +391,18 @@ mod tests {
             ],
         };
         let maps = registered_frame_projections(&source, &bodies, &layout, viewport).unwrap();
-        assert_eq!(maps[0], maps[1], "one target chart preserves burst adjacency");
-        assert_eq!(maps[2], maps[3], "partitioning one projectile must not change its map");
+        assert_eq!(
+            maps[0], maps[1],
+            "one target chart preserves burst adjacency"
+        );
+        assert_eq!(
+            maps[2], maps[3],
+            "partitioning one projectile must not change its map"
+        );
         let intact = source.clone();
-        if let Some(VisualBattleSourcePlacement::IndependentTransport { ref mut pivot, .. }) = source.objects[3].placement {
+        if let Some(VisualBattleSourcePlacement::IndependentTransport { ref mut pivot, .. }) =
+            source.objects[3].placement
+        {
             pivot.x += 1.0;
         }
         assert!(registered_frame_projections(&source, &bodies, &layout, viewport).is_none());
@@ -313,127 +432,322 @@ mod tests {
         app.update();
         let ids = {
             let world = app.world_mut();
-            world.query_filtered::<Entity, With<SourceOverlaySlot>>().iter(world).collect::<Vec<_>>()
+            world
+                .query_filtered::<Entity, With<SourceOverlaySlot>>()
+                .iter(world)
+                .collect::<Vec<_>>()
         };
         let mesh_count = app.world().resource::<Assets<Mesh>>().len();
         let object = VisualBattleSourceObject {
-            slot: 2, object_id: Arc::from("TEST"),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100), std::marker::PhantomData), neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(101), std::marker::PhantomData),
-            center: Vec2::new(124.0, 32.0), size: Vec2::splat(8.0),
+            slot: 2,
+            object_id: Arc::from("TEST"),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(100),
+                std::marker::PhantomData,
+            ),
+            neutral_texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(101),
+                std::marker::PhantomData,
+            ),
+            center: Vec2::new(124.0, 32.0),
+            size: Vec2::splat(8.0),
             uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
             placement: None,
         };
-        let canvas = crystal_render_api::VisualBattleCanvas { size: Vec2::new(800.0,600.0), physical_size: UVec2::new(1600,1200) };
-        let projection = BattleSourceProjection::new(&crystal_voxel_view::BattleSceneLayout::default(), canvas.size).unwrap();
-        let SlotProjection::Visible(full) = slot_frame(projection, &object, &canvas, crystal_render_api::BattleFlashMode::Full, 3.898).unwrap()
-            else { panic!("interior source object must project into the viewport") };
-        let SlotProjection::Visible(reduced) = slot_frame(projection, &object, &canvas, crystal_render_api::BattleFlashMode::Reduced, 3.898).unwrap()
-            else { panic!("interior source object must project into the viewport") };
+        let canvas = crystal_render_api::VisualBattleCanvas {
+            size: Vec2::new(800.0, 600.0),
+            physical_size: UVec2::new(1600, 1200),
+        };
+        let projection = BattleSourceProjection::new(
+            &crystal_voxel_view::BattleSceneLayout::default(),
+            canvas.size,
+        )
+        .unwrap();
+        let SlotProjection::Visible(full) = slot_frame(
+            projection,
+            &object,
+            &canvas,
+            crystal_render_api::BattleFlashMode::Full,
+            3.898,
+        )
+        .unwrap() else {
+            panic!("interior source object must project into the viewport")
+        };
+        let SlotProjection::Visible(reduced) = slot_frame(
+            projection,
+            &object,
+            &canvas,
+            crystal_render_api::BattleFlashMode::Reduced,
+            3.898,
+        )
+        .unwrap() else {
+            panic!("interior source object must project into the viewport")
+        };
         assert_eq!(full.transform, reduced.transform);
         assert_eq!(full.material.source, reduced.material.source);
         assert_eq!(full.material.texture, object.texture);
         assert_eq!(reduced.material.texture, object.neutral_texture);
         let source = VisualBattleSourceFrame {
-            frame: 58, bgp: 0xe4, battler_bgps: [0xe4; 2],
+            frame: 58,
+            bgp: 0xe4,
+            battler_bgps: [0xe4; 2],
             battler_palettes: [[[1.0; 4]; 4]; 2],
             battler_textures: [Handle::default(), Handle::default()],
-            battler_offsets: [Vec2::ZERO; 2], screen_offset: Vec2::new(4.0, -3.0),
-            line_x_offsets: Some([6; 95]), line_y_offsets: Some([-5; 95]),
-            objects: vec![object.clone()], battler_rows: [None; 2],
+            battler_offsets: [Vec2::ZERO; 2],
+            screen_offset: Vec2::new(4.0, -3.0),
+            line_x_offsets: Some([6; 95]),
+            line_y_offsets: Some([-5; 95]),
+            objects: vec![object.clone()],
+            battler_rows: [None; 2],
         };
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source.clone());
-        app.world_mut().resource_mut::<ImmersiveBattleSourceOverlayEnabled>().enabled = true;
-        let camera = app.world_mut().spawn((Transform::default(), MainCameraMarker)).id();
-        let parent = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
+        app.world_mut()
+            .resource_mut::<ImmersiveBattleSourceOverlayEnabled>()
+            .enabled = true;
+        let camera = app
+            .world_mut()
+            .spawn((Transform::default(), MainCameraMarker))
+            .id();
+        let parent = app
+            .world_mut()
+            .spawn((Transform::default(), Visibility::default()))
+            .id();
         let original = Transform::from_xyz(17.0, 23.0, 3.898);
-        let original_texture = Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(102), std::marker::PhantomData);
-        let sprite = app.world_mut().spawn(((Sprite { image: original_texture.clone(), rect: Some(Rect::new(1.0, 2.0, 7.0, 8.0)), custom_size: Some(Vec2::splat(32.0)), ..default() },
-original,), ImmersiveBattleSourceObject(2))).id();
+        let original_texture = Handle::<Image>::Uuid(
+            bevy::asset::uuid::Uuid::from_u128(102),
+            std::marker::PhantomData,
+        );
+        let sprite = app
+            .world_mut()
+            .spawn((
+                (
+                    Sprite {
+                        image: original_texture.clone(),
+                        rect: Some(Rect::new(1.0, 2.0, 7.0, 8.0)),
+                        custom_size: Some(Vec2::splat(32.0)),
+                        ..default()
+                    },
+                    original,
+                ),
+                ImmersiveBattleSourceObject(2),
+            ))
+            .id();
         app.world_mut().entity_mut(sprite).insert(ChildOf(parent));
         for iteration in 0..64 {
             let active = iteration % 4 != 0;
-            let mode = if iteration % 2 == 0 { crystal_render_api::BattleFlashMode::Full }
-                else { crystal_render_api::BattleFlashMode::Reduced };
-            app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = active;
-            *app.world_mut().resource_mut::<crystal_render_api::BattleFlashMode>() = mode;
-            *app.world_mut().resource_mut::<crystal_render_api::VisualBattleCanvas>() =
-                if iteration % 3 == 0 { canvas } else {
-                    crystal_render_api::VisualBattleCanvas { size: Vec2::new(600.0, 900.0), physical_size: UVec2::new(900, 1350) }
-                };
+            let mode = if iteration % 2 == 0 {
+                crystal_render_api::BattleFlashMode::Full
+            } else {
+                crystal_render_api::BattleFlashMode::Reduced
+            };
+            app.world_mut()
+                .resource_mut::<crystal_voxel_view::BattleViewStatus>()
+                .active = active;
+            *app.world_mut()
+                .resource_mut::<crystal_render_api::BattleFlashMode>() = mode;
+            *app.world_mut()
+                .resource_mut::<crystal_render_api::VisualBattleCanvas>() = if iteration % 3 == 0 {
+                canvas
+            } else {
+                crystal_render_api::VisualBattleCanvas {
+                    size: Vec2::new(600.0, 900.0),
+                    physical_size: UVec2::new(900, 1350),
+                }
+            };
             let camera_offset = Vec2::new(iteration as f32 - 32.0, 19.0 - iteration as f32);
-            app.world_mut().get_mut::<Transform>(camera).unwrap().translation = camera_offset.extend(0.0);
+            app.world_mut()
+                .get_mut::<Transform>(camera)
+                .unwrap()
+                .translation = camera_offset.extend(0.0);
             app.update();
-            let current_canvas = *app.world().resource::<crystal_render_api::VisualBattleCanvas>();
-            let current_projection = BattleSourceProjection::new(&crystal_voxel_view::BattleSceneLayout::default(), current_canvas.size).unwrap();
-            let SlotProjection::Visible(mut expected) = slot_frame(current_projection, &object, &current_canvas, mode, original.translation.z).unwrap()
-                else { panic!("interior source object must remain visible") };
+            let current_canvas = *app
+                .world()
+                .resource::<crystal_render_api::VisualBattleCanvas>();
+            let current_projection = BattleSourceProjection::new(
+                &crystal_voxel_view::BattleSceneLayout::default(),
+                current_canvas.size,
+            )
+            .unwrap();
+            let SlotProjection::Visible(mut expected) = slot_frame(
+                current_projection,
+                &object,
+                &current_canvas,
+                mode,
+                original.translation.z,
+            )
+            .unwrap() else {
+                panic!("interior source object must remain visible")
+            };
             expected.transform.translation += camera_offset.extend(0.0);
             assert_eq!(app.world().get::<Transform>(sprite), Some(&original));
-            assert_eq!(app.world().get::<Sprite>(sprite).map(|sprite| &sprite.image), Some(&original_texture));
+            assert_eq!(
+                app.world()
+                    .get::<Sprite>(sprite)
+                    .map(|sprite| &sprite.image),
+                Some(&original_texture)
+            );
             assert_eq!(app.world().get::<ChildOf>(sprite).unwrap().parent(), parent);
-            assert_eq!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some(), active);
+            assert_eq!(
+                app.world()
+                    .get::<ImmersiveBattleSourceObjectLayout>(sprite)
+                    .is_some(),
+                active
+            );
             let world = app.world_mut();
             let mut visible = 0;
-            for (slot, handle, pose, visibility) in world.query::<(&SourceOverlaySlot, &MeshMaterial2d<SourceMaterial>, &Transform, &Visibility)>().iter(world) {
+            for (slot, handle, pose, visibility) in world
+                .query::<(
+                    &SourceOverlaySlot,
+                    &MeshMaterial2d<SourceMaterial>,
+                    &Transform,
+                    &Visibility,
+                )>()
+                .iter(world)
+            {
                 if *visibility == Visibility::Visible {
                     visible += 1;
                     assert_eq!(slot.0, 2);
-                    assert_eq!(*pose, expected.transform, "camera movement must not become another source offset");
-                    let material = world.resource::<Assets<SourceMaterial>>().get(&handle.0).unwrap();
-                    assert_eq!(material.texture, if mode == crystal_render_api::BattleFlashMode::Full {
-                        object.texture.clone()
-                    } else { object.neutral_texture.clone() });
+                    assert_eq!(
+                        *pose, expected.transform,
+                        "camera movement must not become another source offset"
+                    );
+                    let material = world
+                        .resource::<Assets<SourceMaterial>>()
+                        .get(&handle.0)
+                        .unwrap();
+                    assert_eq!(
+                        material.texture,
+                        if mode == crystal_render_api::BattleFlashMode::Full {
+                            object.texture.clone()
+                        } else {
+                            object.neutral_texture.clone()
+                        }
+                    );
                 }
             }
             assert_eq!(visible, usize::from(active));
-            assert_eq!(world.resource::<Assets<SourceMaterial>>().len(), SOURCE_SLOTS);
+            assert_eq!(
+                world.resource::<Assets<SourceMaterial>>().len(),
+                SOURCE_SLOTS
+            );
             assert_eq!(world.resource::<Assets<Mesh>>().len(), mesh_count);
-            assert_eq!(world.resource::<VisualBattleFrame>().source.as_ref(), Some(&source));
+            assert_eq!(
+                world.resource::<VisualBattleFrame>().source.as_ref(),
+                Some(&source)
+            );
         }
         // The upper-left source tile partly crosses the viewport corner.
         // Partial raster coverage must remain visible, never be mistaken for
         // a wholly offscreen object merely because its center is outside.
-        *app.world_mut().resource_mut::<crystal_render_api::VisualBattleCanvas>() =
-            crystal_render_api::VisualBattleCanvas { size: Vec2::new(600.0, 900.0), physical_size: UVec2::new(600, 900) };
+        *app.world_mut()
+            .resource_mut::<crystal_render_api::VisualBattleCanvas>() =
+            crystal_render_api::VisualBattleCanvas {
+                size: Vec2::new(600.0, 900.0),
+                physical_size: UVec2::new(600, 900),
+            };
         let edge_projection = BattleSourceProjection::new(
-            &crystal_voxel_view::BattleSceneLayout::default(), Vec2::new(600.0, 900.0),
-        ).unwrap();
-        assert!(edge_projection.raster_coverage(
-            Rect::from_center_size(Vec2::new(4.0, 4.0), Vec2::splat(8.0)), UVec2::new(600, 900),
-        ).is_some());
-        app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().objects[0].center = Vec2::new(4.0, 4.0);
-        app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = true;
+            &crystal_voxel_view::BattleSceneLayout::default(),
+            Vec2::new(600.0, 900.0),
+        )
+        .unwrap();
+        assert!(
+            edge_projection
+                .raster_coverage(
+                    Rect::from_center_size(Vec2::new(4.0, 4.0), Vec2::splat(8.0)),
+                    UVec2::new(600, 900),
+                )
+                .is_some()
+        );
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .source
+            .as_mut()
+            .unwrap()
+            .objects[0]
+            .center = Vec2::new(4.0, 4.0);
+        app.world_mut()
+            .resource_mut::<crystal_voxel_view::BattleViewStatus>()
+            .active = true;
         app.update();
-        assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some());
+        assert!(
+            app.world()
+                .get::<ImmersiveBattleSourceObjectLayout>(sprite)
+                .is_some()
+        );
         {
             let world = app.world_mut();
-            assert_eq!(world.query_filtered::<&Visibility, With<SourceOverlaySlot>>().iter(world)
-                .filter(|v| **v == Visibility::Visible).count(), 1);
+            assert_eq!(
+                world
+                    .query_filtered::<&Visibility, With<SourceOverlaySlot>>()
+                    .iter(world)
+                    .filter(|v| **v == Visibility::Visible)
+                    .count(),
+                1
+            );
         }
         // A genuinely offscreen source tile still owns (and hides) its classic
         // Sprite. It must not pop back into the unprojected LCD layout.
-        assert!(edge_projection.raster_coverage(
-            Rect::from_center_size(Vec2::new(156.0, 4.0), Vec2::splat(8.0)), UVec2::new(600, 900),
-        ).is_none());
-        app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().objects[0].center = Vec2::new(156.0, 4.0);
+        assert!(
+            edge_projection
+                .raster_coverage(
+                    Rect::from_center_size(Vec2::new(156.0, 4.0), Vec2::splat(8.0)),
+                    UVec2::new(600, 900),
+                )
+                .is_none()
+        );
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .source
+            .as_mut()
+            .unwrap()
+            .objects[0]
+            .center = Vec2::new(156.0, 4.0);
         app.update();
-        assert!(app.world().get::<ImmersiveBattleSourceObjectLayout>(sprite).is_some());
+        assert!(
+            app.world()
+                .get::<ImmersiveBattleSourceObjectLayout>(sprite)
+                .is_some()
+        );
         {
             let world = app.world_mut();
-            assert!(world.query_filtered::<&Visibility, With<SourceOverlaySlot>>().iter(world).all(|v| *v == Visibility::Hidden));
+            assert!(
+                world
+                    .query_filtered::<&Visibility, With<SourceOverlaySlot>>()
+                    .iter(world)
+                    .all(|v| *v == Visibility::Hidden)
+            );
         }
         // Source retirement removes the native entity. No overlay may retain
         // its previous visibility, even while the arena remains active.
         app.world_mut().entity_mut(sprite).despawn();
-        app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().objects.clear();
-        app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = true;
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .source
+            .as_mut()
+            .unwrap()
+            .objects
+            .clear();
+        app.world_mut()
+            .resource_mut::<crystal_voxel_view::BattleViewStatus>()
+            .active = true;
         app.update();
         let world = app.world_mut();
-        let after = world.query_filtered::<Entity, With<SourceOverlaySlot>>().iter(world).collect::<Vec<_>>();
+        let after = world
+            .query_filtered::<Entity, With<SourceOverlaySlot>>()
+            .iter(world)
+            .collect::<Vec<_>>();
         assert_eq!(ids, after);
         assert_eq!(ids.len(), SOURCE_SLOTS);
-        assert!(world.query_filtered::<&Visibility, With<SourceOverlaySlot>>().iter(world).all(|v| *v == Visibility::Hidden));
-        assert_eq!(world.resource::<Assets<SourceMaterial>>().len(), SOURCE_SLOTS);
+        assert!(
+            world
+                .query_filtered::<&Visibility, With<SourceOverlaySlot>>()
+                .iter(world)
+                .all(|v| *v == Visibility::Hidden)
+        );
+        assert_eq!(
+            world.resource::<Assets<SourceMaterial>>().len(),
+            SOURCE_SLOTS
+        );
         assert_eq!(mesh_count, 1);
         assert_eq!(world.resource::<Assets<Mesh>>().len(), mesh_count);
     }

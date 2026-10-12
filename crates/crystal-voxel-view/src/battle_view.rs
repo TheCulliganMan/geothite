@@ -400,6 +400,7 @@ struct ActorKey {
     species: Arc<str>,
     party_index: Option<usize>,
     modeled: bool,
+    model_palette: Option<crystal_render_api::VisualPokemonModelPalette>,
 }
 struct ActorInstance {
     entity: Entity,
@@ -409,6 +410,7 @@ struct ActorInstance {
     palette_key: (u8, BattleFlashMode),
     palette_colors: Option<[[f32; 4]; 4]>,
     neutral_colors: Option<Vec<[f32; 4]>>,
+    appearance_data: Option<Arc<SurfaceMeshData>>,
     base_pose: Transform,
     source_rect: Rect,
     source_opaque_rect: Rect,
@@ -422,6 +424,7 @@ struct AnimatedPart {
     entity: Entity,
     mesh: Handle<Mesh>,
     neutral_colors: Option<Vec<[f32; 4]>>,
+    appearance_data: Option<SurfaceMeshData>,
 }
 
 struct AnimatedActor {
@@ -623,11 +626,6 @@ fn sync_battle_layout(
         {
             if !scene.species_meshes.contains_key(&battler.species_id) {
                 let mesh = crate::battle_species_models::mesh(&battler.species_id)
-                    .or_else(|| {
-                        crate::new_bark_actors::actor_props::battle_species_mesh(
-                            &battler.species_id,
-                        )
-                    })
                     .map(Arc::new);
                 if let Some(data) = &mesh {
                     scene.species_bounds.insert(
@@ -1568,9 +1566,6 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
         };
         if battler.allow_species_model && !scene.species_meshes.contains_key(&battler.species_id) {
             let mesh = crate::battle_species_models::mesh(&battler.species_id)
-                .or_else(|| {
-                    crate::new_bark_actors::actor_props::battle_species_mesh(&battler.species_id)
-                })
                 .map(Arc::new);
             if let Some(data) = &mesh {
                 scene.species_bounds.insert(
@@ -1583,6 +1578,7 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
                 .insert(battler.species_id.clone(), mesh);
         }
         let modeled_data = if battler.allow_species_model
+            && (!battler.shiny || battler.model_palette.is_some())
             && battler
                 .pokedex_size_m
                 .is_some_and(|v| v.is_finite() && v > 0.0)
@@ -1620,6 +1616,7 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
             species: battler.species_id.clone(),
             party_index: battler.party_index,
             modeled,
+            model_palette: battler.model_palette,
         };
         if modeled {
             status.modeled_species.push(battler.species_id.to_string());
@@ -1658,7 +1655,9 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
             if let Some(source) = &frame.source {
                 transform.translation += layout.source_displacement(source.battler_offsets[index]);
             }
-            let (mesh, neutral_colors) = root_data.map_or((None, None), |data| {
+            let appearance_data = root_data.and_then(|data| battler.model_palette
+                .map(|palette| Arc::new(crate::pokemon_appearance::mesh(data, palette))));
+            let (mesh, neutral_colors) = appearance_data.as_deref().or(root_data).map_or((None, None), |data| {
                 let (mesh, colors) =
                     actor_mesh(data, transform.rotation, scene.vertex_lighting, &mut meshes);
                 (Some(mesh), colors)
@@ -1686,8 +1685,10 @@ if battler.visible {
                 .id();
             let animated = rig.map(|rig| {
                 let wings = std::array::from_fn(|wing| {
+                    let appearance_data = battler.model_palette.map(|palette|
+                        crate::pokemon_appearance::mesh(&rig.groups[wing + 1].mesh, palette));
                     let (mesh, neutral_colors) = actor_mesh(
-                        &rig.groups[wing + 1].mesh,
+                        appearance_data.as_ref().unwrap_or(&rig.groups[wing + 1].mesh),
                         transform.rotation,
                         scene.vertex_lighting,
                         &mut meshes,
@@ -1706,6 +1707,7 @@ Visibility::Inherited,),
                         entity: child,
                         mesh,
                         neutral_colors,
+                        appearance_data,
                     }
                 });
                 AnimatedActor {
@@ -1734,6 +1736,7 @@ Visibility::Inherited,),
                 palette_key: (0xe4, *flash_mode),
                 palette_colors: None,
                 neutral_colors,
+                appearance_data,
                 base_pose,
                 source_rect: battler.source_rect,
                 source_opaque_rect: battler.source_opaque_rect,
@@ -1775,7 +1778,7 @@ Visibility::Inherited,),
                 || (bgp != 0xe4 && instance.palette_key.1 != *flash_mode)
                 || instance.palette_colors != palette_colors
             {
-                if let (Some(data), Some(handle)) = (root_data, instance.mesh.as_ref()) {
+                if let (Some(data), Some(handle)) = (instance.appearance_data.as_deref().or(root_data), instance.mesh.as_ref()) {
                     if let Some(mut mesh) = meshes.get_mut(handle) {
                         apply_actor_palette(
                             &mut mesh,
@@ -1793,7 +1796,7 @@ Visibility::Inherited,),
                         if let Some(mut mesh) = meshes.get_mut(&part.mesh) {
                             apply_actor_palette(
                                 &mut mesh,
-                                &animated.rig.groups[wing + 1].mesh,
+                                part.appearance_data.as_ref().unwrap_or(&animated.rig.groups[wing + 1].mesh),
                                 part.neutral_colors.as_deref(),
                                 frame.source.as_ref(),
                                 index,
@@ -2628,9 +2631,10 @@ fn arena_mesh(environment: VisualBattleEnvironment) -> SurfaceMeshData {
         ) {
             // Preserve the foreground sightline. Distant tree silhouettes give
             // the arena geographic depth without obscuring either battler.
-            if center.z < 2.0 || center.x.abs() > 11.0 {
-                let tree =
-                    crate::new_bark_models::model(crate::new_bark_models::ModelKind::TreeLod);
+            if (center.z < 2.0 || center.x.abs() > 11.0)
+                && let Some(tree) = crate::new_bark_models::required_tree_model(
+                    crate::new_bark_models::ModelKind::TreeLod)
+            {
                 let scale = (3.5 + (i % 4) as f32 * 0.38) / (tree.max[1] - tree.min[1]);
                 append_transformed(
                     &mut mesh,
@@ -2885,6 +2889,38 @@ pub(super) mod tests {
             (wings[0].entity, wings[0].mesh.clone()),
             (wings[1].entity, wings[1].mesh.clone()),
         ]
+    }
+
+    #[test]
+    fn shiny_palette_replaces_root_and_both_rigged_wings_and_restores_normal_colors() {
+        let mut app = pidgeotto_app(60);
+        app.update();
+        let colors = |app: &App| actor_parts(app, 0).map(|(_, mesh)|
+            app.world().resource::<Assets<Mesh>>().get(&mesh).unwrap()
+                .attribute(Mesh::ATTRIBUTE_COLOR).unwrap().clone());
+        let normal = colors(&app);
+        let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+        let battler = frame.battlers[0].as_mut().unwrap();
+        battler.shiny = true;
+        battler.model_palette = Some(crystal_render_api::VisualPokemonModelPalette {
+            normal: [[255;3], [240,190,120], [150,80,40], [0;3]],
+            appearance: [[255;3], [255,190,0], [60,150,60], [0;3]],
+        });
+        drop(frame);
+        app.update();
+        let shiny = colors(&app);
+        for part in 0..3 { assert_ne!(shiny[part], normal[part], "rig group {part} must use the shiny palette"); }
+        let scene = app.world().resource::<BattleScene>();
+        assert!(scene.actors[0].as_ref().unwrap().key.modeled);
+        assert!(scene.actors[0].as_ref().unwrap().animated.is_some());
+        let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+        let battler = frame.battlers[0].as_mut().unwrap();
+        battler.shiny = false;
+        battler.model_palette = None;
+        drop(frame);
+        app.update();
+        assert_eq!(colors(&app), normal);
+        assert_eq!(app.world().resource::<VisualBattleFrame>().battlers[0].as_ref().unwrap().species_id.as_ref(), "PIDGEOTTO");
     }
 
     #[test]
@@ -3659,6 +3695,7 @@ hud_transform,),
             visible: true,
             allow_species_model: true,
             shiny: false,
+            model_palette: None,
         };
         let cue = VisualBattleCue {
             kind: VisualBattleCueKind::Move,
@@ -3723,6 +3760,7 @@ hud_transform,),
             visible: true,
             allow_species_model: true,
             shiny: false,
+            model_palette: None,
         };
         for kind in [
             VisualBattleCueKind::Faint,
@@ -3828,6 +3866,7 @@ hud_transform,),
             visible: true,
             allow_species_model: true,
             shiny: false,
+            model_palette: None,
         };
         app.insert_resource(VisualBattleFrame {
             active: true,

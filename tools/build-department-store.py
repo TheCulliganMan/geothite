@@ -15,6 +15,9 @@ PALETTE={
  'smoked_glass':(.29,.48,.45,1),'glass_light':(.43,.60,.53,1),
  'walnut_plinth':(.26,.25,.20,1),'inset_shadow':(.10,.18,.18,1),
  'copper':(.60,.38,.22,1),'drawer_face':(.67,.68,.56,1),
+ 'blue_glass':(.20,.34,.76,1),'blue_reflection':(.62,.79,.97,1),
+ 'blue_glint':(.86,.93,1,1),'glazing_shadow':(.10,.14,.24,1),
+ 'countertop_enamel':(.89,.82,.63,1),
 }
 def sub(a,b):return tuple(x-y for x,y in zip(a,b))
 def cross(a,b):return(a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
@@ -29,18 +32,36 @@ class Asset:
   vs=[(x,y,z)for y in(y0,y1)for x,z in ring];faces=[tuple(range(8)),tuple(range(15,7,-1))]
   for i in range(8):j=(i+1)%8;faces.append((i,i+8,j+8,j))
   self.parts.append((label,mat,vs,faces))
+ def facet(self,label,polygon,z0,z1,mat):
+  """Closed reflection relief on the recessed glass, below the frame front."""
+  assert z0<z1 and len(polygon)>=3
+  n=len(polygon);vs=[(x,y,z)for z in(z0,z1)for x,y in polygon]
+  faces=[tuple(reversed(range(n))),tuple(range(n,2*n))]
+  for i in range(n):j=(i+1)%n;faces.append((i,j,j+n,i+n))
+  self.parts.append((label,mat,vs,faces))
+ def horizontal_facet(self,label,polygon,y0,y1,mat):
+  """Closed glazing relief on an opaque recessed horizontal display lid."""
+  assert y0<y1 and len(polygon)>=3
+  n=len(polygon);vs=[(x,y,z)for y in(y0,y1)for x,z in polygon]
+  faces=[tuple(range(n)),tuple(reversed(range(n,2*n)))]
+  for i in range(n):j=(i+1)%n;faces.append((i,i+n,j+n,j))
+  self.parts.append((label,mat,vs,faces))
 def wall(bays):
  a=Asset(f'window_course_{bays}');w=16*bays
- a.prism('Continuous closed rear cabinet',(.2,w-.2,.1,2.45),1.8,14.6,'deep_teal',.15)
+ a.prism('Continuous closed rear cabinet',(.2,w-.2,.1,2.45),1.8,14.6,'glazing_shadow',.15)
  a.prism('One joined toe course',(0,w,0,3),0,1.3,'walnut_plinth',.15)
  a.prism('One joined bottom bead',(0,w,0,3),1.3,2.1,'ochre_trim',.15)
  a.prism('One joined cornice',(0,w,0,3),14.5,16,'warm_ivory',.15)
  a.prism('Continuous folded cornice edge',(0,w,2.6,3),14.1,14.5,'paper_edge',.06)
  for i in range(bays):
   x=i*16
-  a.prism(f'Bay {i+1} recessed smoked glass',(x+1.1,x+14.9,2.4,2.62),2.4,14.1,'smoked_glass',.18)
-  # Offset narrow highlight reads as faceted glass, never a copied source tile.
-  a.prism(f'Bay {i+1} soft upper reflection',(x+1.4,x+6.8,2.63,2.67),8.1,13.7,'glass_light',.08)
+  a.prism(f'Bay {i+1} recessed blue glass',(x+1.1,x+14.9,2.4,2.62),2.4,14.1,'blue_glass',.18)
+  a.facet(f'Bay {i+1} diagonal blue reflection',
+          [(x+1.8,2.8),(x+3.8,2.8),(x+14.2,13.7),(x+12.2,13.7)],
+          2.63,2.67,'blue_reflection')
+  a.facet(f'Bay {i+1} narrow sky glint',
+          [(x+1.8,6.4),(x+2.6,6.4),(x+9.3,13.7),(x+8.5,13.7)],
+          2.68,2.70,'blue_glint')
   for px in ([x,x+15.15] if i==bays-1 else [x]):
    a.prism(f'Bay {i+1} upright frame {px:g}',(px,px+.85,0,3),2.1,14.1,'warm_ivory',.12)
  return a
@@ -65,16 +86,29 @@ def u_display():
   x0,x1,z0,z1=r
   body=(x0+.4 if x0==0 else x0,x1-.4 if x1==64 else x1,z0,z1-.5 if z1==64 else z1)
   a.prism(label+' sealed body',body,0,7.6,'warm_ivory',.08)
-  a.prism(label+' inset copper top',(x0+.3,x1-.3,z0+.3,z1-.3),7.55,7.8 if label=='Closed lower display' else 8,'paper_edge',.12)
- # A continuous low, closed island seals the apparent U centre at native 8px
- # height. Its rear half has a recessed opaque display lid, not a new passage.
- a.prism('Lower centre closed recessed presentation lid',(16.8,47.2,32.8,50.8),7.75,7.9,'deep_teal',.6)
- a.prism('Lower centre warm glass lid facet',(18.1,45.9,34.1,49.5),7.85,8,'smoked_glass',.45)
+  a.prism(label+' inset copper top',(x0+.3,x1-.3,z0+.3,z1-.3),7.55,7.8,'countertop_enamel',.12)
+  # Thin raised copper edging breaks up the broad cream furniture surface.
+  for edge in [(x0+.45,x1-.45,z0+.45,z0+.75),
+               (x0+.45,x1-.45,z1-.75,z1-.45)]:
+   a.prism(label+' copper countertop bead',edge,7.8,8,'ochre_trim',.04)
+ # Four recessed, closed glazing sections echo the four native blue fronts.
+ # They stay entirely over the lower supporting body, outside the clerk inset.
+ for i in range(4):
+  x=i*16
+  a.prism(f'Display {i+1} closed recessed presentation lid',(x+.9,x+15.1,34,59.3),7.75,7.9,'deep_teal',.3)
+  a.prism(f'Display {i+1} glass lid facet',(x+1.6,x+14.4,34.7,58.6),7.85,7.94,'blue_glass',.2)
+  a.horizontal_facet(f'Display {i+1} lid diagonal sky reflection',
+   [(x+2.2,35.3),(x+3.4,35.3),(x+13.8,58),(x+12.6,58)],7.95,7.98,'blue_reflection')
+  a.horizontal_facet(f'Display {i+1} lid narrow glazing glint',
+   [(x+5.2,35.3),(x+5.7,35.3),(x+13.8,53),(x+13.8,54)],7.985,8,'blue_glint')
  # Four crafted drawer and glazing fronts reflect the repeated source facade.
  for i in range(4):
   x=i*16
-  a.prism(f'Display {i+1} inset glass frontage',(x+1.1,x+14.9,63.5,63.8),1.5,5.5,'smoked_glass',.18)
-  a.prism(f'Display {i+1} reflected facet',(x+2,x+6.8,63.81,63.85),2,5.1,'glass_light',.1)
+  a.prism(f'Display {i+1} inset glass frontage',(x+1.1,x+14.9,63.5,63.8),1.5,5.5,'blue_glass',.18)
+  a.facet(f'Display {i+1} diagonal sky reflection',
+   [(x+1.8,1.9),(x+3.8,1.9),(x+14.2,5.1),(x+12.2,5.1)],63.81,63.85,'blue_reflection')
+  a.facet(f'Display {i+1} narrow glazing glint',
+   [(x+1.8,3.2),(x+2.6,3.2),(x+8.8,5.1),(x+8.0,5.1)],63.86,63.89,'blue_glint')
   a.prism(f'Display {i+1} shallow drawer face',(x+1.1,x+14.9,63.55,63.9),5.9,7.4,'drawer_face',.18)
   a.prism(f'Display {i+1} copper pull',(x+6,x+10,63.87,64),6.4,6.8,'copper',.04)
   a.prism(f'Display {i+1} folded front stile',(x+.3,x+.85,63.5,64),.8,7.8,'ochre_trim',.06)
@@ -87,7 +121,7 @@ def assets():return [wall(n)for n in[1,2,4,8,10]]+[lift_side(),directory(),u_dis
 def document(a):
  ps=[]
  for label,mat,vs,faces in a.parts:
-  p=dict(name=label,base_color=PALETTE[mat],positions=[],normals=[],indices=[])
+  p=dict(name=label,material=mat,base_color=PALETTE[mat],positions=[],normals=[],indices=[])
   for f in faces:
    for k in range(1,len(f)-1):
     points=[vs[f[0]],vs[f[k]],vs[f[k+1]]];n=normal(*points)

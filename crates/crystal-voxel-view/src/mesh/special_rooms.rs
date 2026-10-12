@@ -9,15 +9,25 @@ pub(super) enum Surface {
     Stone,
     BlueBrick,
     Ceramic,
+    RoofTile,
+    StoreTile,
     ArcadeCeramic,
     Timber,
     Tatami,
     Facility,
+    DojoNative,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Wall {
     Steel,
     Timber,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum FloorStyle {
+    Default,
+    Roof,
+    StoreLift,
+    Dojo,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Detail {
@@ -35,6 +45,9 @@ pub(super) enum Detail {
     Pit,
     Stairs,
     RoofInset,
+    RoofSeat,
+    RoofSaleBoxes { stacked: bool },
+    StoreLiftGlazing,
     FacilityInstrumentTrack,
     FacilitySourceBarrier,
     RoofExit,
@@ -53,16 +66,22 @@ impl Detail {
             Self::Asset(a) => a.label(),
             Self::Interior(Interior::VendingMachine) => "special-room:terrace-vending-machine",
             Self::Interior(Interior::StationBench) => "special-room:terrace-seat",
+            Self::RoofSeat => "special-room:terrace-seat",
+            Self::RoofSaleBoxes { .. } => "special-room:roof-sale-cartons",
+            Self::StoreLiftGlazing => "special-room:store-lift-glazing",
             Self::Interior(Interior::GiftShelf) => "special-room:prize-display",
             Self::Interior(Interior::LabWorkstation) => "special-room:facility-workstation",
             Self::Interior(_) => "special-room:verified-furniture",
             Self::Surface(Surface::Stone) => "special-room:surface-stone",
+            Self::Surface(Surface::RoofTile) => "special-room:roof-paving",
+            Self::Surface(Surface::StoreTile) => "special-room:store-lift-paving",
             Self::Surface(Surface::BlueBrick) => "special-room:surface-blue-brick",
             Self::Surface(Surface::Ceramic) => "special-room:surface-ceramic",
             Self::Surface(Surface::ArcadeCeramic) => "special-room:arcade-ceramic",
             Self::Surface(Surface::Timber) => "special-room:surface-timber",
             Self::Surface(Surface::Tatami) => "special-room:surface-dojo-mat",
             Self::Surface(Surface::Facility) => "special-room:surface-facility",
+            Self::Surface(Surface::DojoNative) => "special-room:surface-dojo-mat",
             Self::Wall(_) | Self::WallSegment { .. } => "special-room:connected-enclosure",
             Self::RoofRail => "special-room:terrace-parapet",
             Self::LivePlaque => "special-room:live-sign-in-frame",
@@ -176,7 +195,12 @@ fn add(
         width: w,
         height: h,
         ground,
-        form: Form::Room(detail),
+        form: Form::Room(detail, match r.map {
+            "GoldenrodDeptStoreRoof" => FloorStyle::Roof,
+            "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator" => FloorStyle::StoreLift,
+            "FightingDojo" => FloorStyle::Dojo,
+            _ => FloorStyle::Default,
+        }),
         rise_pixels: rise,
         depth_pixels: depth,
         front_rows: h as f32,
@@ -296,6 +320,7 @@ fn surface(out: &mut SurfaceMeshData, b: [f32; 4], kind: Surface, x: usize, y: u
     let c = match kind {
         Surface::BlueBrick | Surface::ArcadeCeramic => unreachable!("handled before generic paving"),
         Surface::Stone => [0.55, 0.57, 0.50, 1.],
+        Surface::RoofTile | Surface::StoreTile | Surface::DojoNative => unreachable!("owned paving uses its verified source atlas"),
         Surface::Ceramic => {
             if (x + y) % 2 == 0 {
                 [0.72, 0.74, 0.67, 1.]
@@ -415,6 +440,31 @@ fn octagon(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [
 }
 fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: Surface, cells: &[&VisualTile]) {
     for i in p.indices(g.width) {
+        if matches!(kind,Surface::DojoNative) {
+            let sample=if matches!(p.form,Form::Room(Detail::Surface(_),FloorStyle::Dojo)) {i} else {p.ground};
+            let source=&cells[sample].source;
+            assert!(source.tileset_id.as_ref()=="train_station" && source.tile_index==0x56,
+                "Dojo floor requires its authenticated timber drawing");
+            let bounds=g.bounds(i%g.width,i/g.width);
+            super::modeled_interiors::native_beveled_floor_cell(&mut mesh.textured,bounds.into(),0.,
+                [i32::from(cells[i].source.subtile_column),i32::from(cells[i].source.subtile_row)],
+                g.uv(sample%g.width,sample/g.width));
+            continue;
+        }
+        if matches!(kind, Surface::RoofTile | Surface::StoreTile) {
+            let bounds = g.bounds(i % g.width, i / g.width);
+            let first = mesh.solid.indices.len();
+            slab(&mut mesh.solid, bounds.into(), -1.5 * g.tile_height / SOURCE_TILE_HEIGHT,
+                0., [0.25, 0.25, 0.25, 1.]);
+            let rest = mesh.solid.indices.split_off(first);
+            mesh.solid.indices.extend(rest.chunks_exact(3)
+                .filter(|tri| mesh.solid.normals[tri[0] as usize][1] < 0.5)
+                .flatten().copied());
+            let sample = if matches!(p.form, Form::Room(Detail::Surface(_), FloorStyle::Roof | FloorStyle::StoreLift)) { i } else { p.ground };
+            append_top(&mut mesh.textured, bounds.into(), 0.,
+                g.uv(sample % g.width, sample / g.width));
+            continue;
+        }
         if matches!(kind, Surface::ArcadeCeramic) {
             let bounds = g.bounds(i % g.width, i / g.width);
             let first = mesh.solid.indices.len();
@@ -424,8 +474,9 @@ fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: S
             let rest = mesh.solid.indices.split_off(first);
             mesh.solid.indices.extend(rest.chunks_exact(3).filter(|tri| mesh.solid.normals[tri[0] as usize][1] < 0.5).flatten().copied());
             let source = &cells[i].source;
-            super::modeled_interiors::arcade_floor_cell(&mut mesh.solid, bounds.into(),
-                [i32::from(source.subtile_column),i32::from(source.subtile_row)]);
+            super::modeled_interiors::arcade_floor_cell(&mut mesh.textured, bounds.into(),
+                [i32::from(source.subtile_column),i32::from(source.subtile_row)],
+                g.uv(i%g.width,i/g.width));
             continue;
         }
         surface(
@@ -497,6 +548,39 @@ fn sampled_room_asset(
         )
     });
 }
+// Cartons are authored geometry, painted with texels from the complete sale
+// drawing. There is no generic crate material or unverified room fallback.
+fn roof_sale_carton(
+    mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement,
+    bounds: [f32; 4], base: f32, height: f32, stacked: bool,
+) {
+    let k = g.tile_height / SOURCE_TILE_HEIGHT;
+    let body = if stacked { [2, 10] } else { [2, 9] };
+    let lid = [1, 2];
+    let seam = [0, 0];
+    let label = [3, 2];
+    let mut paint = |b: [f32; 4], low: f32, high: f32, pixel| {
+        let mut part = SurfaceMeshData::default();
+        slab(&mut part, b, low, high, [1.; 4]);
+        let uv = source_texel_uv(g, p, pixel);
+        let start = mesh.textured.positions.len() as u32;
+        for (position, normal) in part.positions.into_iter().zip(part.normals) {
+            mesh.textured.positions.push(position);
+            mesh.textured.normals.push(normal);
+            mesh.textured.uvs.push(uv);
+            mesh.textured.colors.push(crate::interior_models::authored_face_color([1.;4], Vec3::from_array(normal)));
+        }
+        mesh.textured.indices.extend(part.indices.into_iter().map(|i| i + start));
+    };
+    let [w,e,n,s] = bounds;
+    paint(bounds, base, base + height, body);
+    // Raised folded lid and its center seam, plus a small front price label.
+    paint([w,e,n,s], base + height, base + height + 0.35*k, lid);
+    let mid = (w+e)*0.5;
+    paint([mid-0.18*k,mid+0.18*k,n,s], base+height+0.35*k,base+height+0.40*k,seam);
+    paint([w+1.8*k,e-1.8*k,s-0.15*k,s],base+height*0.55,base+height*0.82,label);
+    paint([w+3.2*k,e-3.2*k,s-0.10*k,s+0.02*k],base+height*0.65,base+height*0.70,seam);
+}
 fn live_source_slab(
     mesh: &mut TerrainMeshData,
     g: &GridGeometry,
@@ -527,6 +611,29 @@ fn live_source_slab(
         );
     }
 }
+
+fn dojo_source_wall(mesh: &mut TerrainMeshData,g: &GridGeometry,p: &Placement,b:[f32;4]) {
+    let [w,e,n,s]=b;let k=g.tile_height/SOURCE_TILE_HEIGHT;let height=16.*k;
+    let out=&mut mesh.textured;let first=out.positions.len();let index=out.indices.len();
+    slab(out,b,0.,height,TEXTURED_SHADE);
+    out.uvs[first..].fill(source_texel_uv(g,p,[0,0]));
+    // Keep the sealed cap/base; each vertical side carries two native brick
+    // courses, with no generic timber rails or coplanar painted faces.
+    let faces=out.indices.split_off(index);
+    out.indices.extend(faces.chunks_exact(3).filter(|tri|
+        out.normals[tri[0]as usize][1].abs()>0.5).flatten().copied());
+    let uv=g.uv(p.column,p.row);
+    for (a,b,normal) in [([w,s],[e,s],Vec3::Z),([e,n],[w,n],-Vec3::Z),
+        ([w,n],[w,s],-Vec3::X),([e,s],[e,n],Vec3::X)] {
+        for row in 0..2 {
+            let bottom=row as f32*8.*k;let top=bottom+8.*k;
+            append_quad(out,[[a[0],bottom,a[1]],[b[0],bottom,b[1]],
+                [b[0],top,b[1]],[a[0],top,a[1]]],normal.to_array(),
+                [[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2]],
+                crate::interior_models::authored_face_color([1.;4],normal));
+        }
+    }
+}
 pub(super) fn append(
     mesh: &mut TerrainMeshData,
     g: &GridGeometry,
@@ -534,6 +641,19 @@ pub(super) fn append(
     cells: &[&VisualTile],
     detail: Detail,
 ) {
+    append_with_floor(mesh, g, p, cells, detail, FloorStyle::Default);
+}
+pub(super) fn append_roof(
+    mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement,
+    cells: &[&VisualTile], detail: Detail,
+) {
+    append_with_floor(mesh, g, p, cells, detail, FloorStyle::Roof);
+}
+pub(super) fn append_with_floor(
+    mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement,
+    cells: &[&VisualTile], detail: Detail, floor_style: FloorStyle,
+) {
+    let roof_tiles = floor_style == FloorStyle::Roof;
     let (w, _, n, _) = g.bounds(p.column, p.row);
     let e = w + p.width as f32 * g.tile_width;
     let s = n + p.height as f32 * g.tile_height;
@@ -541,14 +661,17 @@ pub(super) fn append(
     let rise = p.rise_pixels * k;
     let depth = p.depth_pixels * k;
     let b = [w, e, n, s];
-    let room_floor = match cells[p.ground].source.tileset_id.as_ref() {
+    let room_floor = if floor_style==FloorStyle::Dojo {Surface::DojoNative}
+    else if roof_tiles { Surface::RoofTile } else if floor_style == FloorStyle::StoreLift {
+        Surface::StoreTile
+    } else { match cells[p.ground].source.tileset_id.as_ref() {
         "lab" => Surface::Timber,
         "tower" => Surface::Timber,
         "train_station" => Surface::Tatami,
         "facility" => Surface::Facility,
         "elite_four_room" => Surface::Stone,
         _ => Surface::Ceramic,
-    };
+    }};
     if !matches!(
         detail,
         Detail::Pit
@@ -566,6 +689,22 @@ pub(super) fn append(
         underlay(mesh, g, p, room_floor, cells);
     }
     match detail {
+        Detail::RoofSaleBoxes { stacked } => {
+            let cartons: &[[f32; 6]] = if stacked {
+                &[
+                    [1.,12.,1.,14.,0.,18.],
+                    [13.,23.,1.,14.,0.,26.],
+                    [1.,11.,15.,30.,0.,10.],
+                    [12.,23.,16.,31.,0.,9.],
+                    [2.,10.,16.,28.,10.4,8.],
+                ]
+            } else {
+                &[[1.,12.,1.,15.,0.,11.], [13.,23.,1.,15.,0.,15.]]
+            };
+            for &[x0,x1,z0,z1,y,h] in cartons {
+                roof_sale_carton(mesh,g,p,[w+x0*k,w+x1*k,n+z0*k,n+z1*k],y*k,h*k,stacked);
+            }
+        }
         Detail::TowerLadder { down } => {
             let base = if down { -16. * k } else { 0. };
             let top = if down { 0. } else { 24. * k };
@@ -613,6 +752,10 @@ pub(super) fn append(
                 );
             }
         }
+        Detail::Asset(Asset::RoofPlanter) => {
+            sampled_room_asset(mesh, g, p, Asset::RoofPlanter, [0, 0],
+                [w, e, s - depth, s], 0., rise);
+        }
         Detail::Asset(Asset::RoofBinoculars) => {
             // The complete 2x2 source drawing also owns the east parapet strip.
             // Preserve it and fit the west-facing viewer in its observed span.
@@ -640,15 +783,43 @@ pub(super) fn append(
                 rise,
             );
         }
+        Detail::Asset(Asset::GymStonePartition) => {
+            sampled_room_asset(mesh,g,p,Asset::GymStonePartition,[0,0],
+                [w,e,s-depth,s],0.,rise);
+        }
         Detail::Asset(a) => room_model(a).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise),
+        Detail::RoofSeat => {
+            let first = mesh.solid.positions.len();
+            let model = interior_model(Interior::StationBench);
+            model.append_fitted(&mut mesh.solid, [w, e, s - depth, s], 0., rise);
+            model.apply_roof_seat_palette(&mut mesh.solid, first);
+        }
+        Detail::StoreLiftGlazing => {
+            super::super::department_store::append_lift_cabin_glazing(&mut mesh.solid,
+                [w,e,s-3.*k,s], rise);
+        }
         Detail::Interior(a) => {
             interior_model(a).append_fitted(&mut mesh.solid, [w, e, s - depth, s], 0., rise)
         }
         Detail::Guardian => {
-            model(Kind::TowerGuardian).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise)
+            if floor_style==FloorStyle::Dojo {
+                model(Kind::TowerGuardian).append_pewter_guardian(&mut mesh.textured,
+                    [w,e,s-depth,s],rise,|pixel|source_texel_uv(g,p,pixel));
+            } else {
+                model(Kind::TowerGuardian).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise)
+            }
         }
-        Detail::Surface(kind) => underlay(mesh, g, p, kind, cells),
+        Detail::Surface(kind) => underlay(mesh, g, p,
+            if matches!(kind,Surface::Tatami) && floor_style==FloorStyle::Dojo {Surface::DojoNative}
+            else if matches!(kind, Surface::Ceramic) && roof_tiles { Surface::RoofTile }
+            else if matches!(kind, Surface::Ceramic) && floor_style == FloorStyle::StoreLift {
+                Surface::StoreTile
+            } else { kind }, cells),
         Detail::Wall(material) | Detail::WallSegment { material, .. } => {
+            if floor_style==FloorStyle::Dojo {
+                dojo_source_wall(mesh,g,p,b);
+                return;
+            }
             let open = if let Detail::WallSegment { open, .. } = detail {
                 open
             } else {
@@ -680,8 +851,16 @@ pub(super) fn append(
             }
         }
         Detail::RoofRail => {
-            slab(&mut mesh.solid, b, 0., 7. * k, [0.40, 0.48, 0.49, 1.]);
-            slab(&mut mesh.solid, b, 7. * k, 8. * k, [0.69, 0.73, 0.68, 1.]);
+            // Only the verified Goldenrod terrace owns the native gray metal.
+            let (body, cap, rib) = if roof_tiles {
+                ([0.147027,0.147027,0.147027,1.],
+                 [0.332452,0.332452,0.332452,1.],
+                 [0.040915,0.040915,0.040915,1.])
+            } else {
+                ([0.40,0.48,0.49,1.], [0.69,0.73,0.68,1.], [0.27,0.35,0.35,1.])
+            };
+            slab(&mut mesh.solid, b, 0., 7. * k, body);
+            slab(&mut mesh.solid, b, 7. * k, 8. * k, cap);
             for j in 0..3 {
                 let x = w + (e - w) * (j as f32 + 0.5) / 3.;
                 slab(
@@ -689,7 +868,7 @@ pub(super) fn append(
                     [x - 0.18 * k, x + 0.18 * k, s - 0.35 * k, s + 0.01 * k],
                     1. * k,
                     6.5 * k,
-                    [0.27, 0.35, 0.35, 1.],
+                    rib,
                 );
             }
         }
@@ -728,6 +907,14 @@ pub(super) fn append(
                         2500. + (point[2]-n)/(s-n)*16.];
                 }
             }
+        }
+        Detail::Threshold | Detail::FloorBand if floor_style==FloorStyle::Dojo => {
+            live_source_slab(mesh,g,p,b,-k,0.);
+        }
+        Detail::Threshold | Detail::FloorBand if floor_style == FloorStyle::StoreLift => {
+            let mut source_floor = p.clone();
+            source_floor.form = Form::Room(Detail::Surface(Surface::StoreTile), FloorStyle::StoreLift);
+            underlay(mesh, g, &source_floor, Surface::StoreTile, cells);
         }
         Detail::Threshold | Detail::FloorBand => {
             // This full-plot slab owns the floor; a ceramic underlay would
@@ -781,13 +968,19 @@ pub(super) fn append(
                 let z0 = n + (s - n) * j as f32 / 5.;
                 let z1 = n + (s - n) * (j + 1) as f32 / 5.;
                 let y = -(j as f32) * 1.4 * k;
-                slab(
-                    &mut mesh.solid,
-                    [w + 0.4 * k, e - 0.4 * k, z0, z1],
-                    -8. * k,
-                    y,
-                    [0.60, 0.63, 0.56, 1.],
-                );
+                if roof_tiles {
+                    // The two fingerprinted roof flights keep their gray/pale
+                    // native drawing across the complete closed step footprint.
+                    live_source_slab(mesh,g,p,[w,e,z0,z1],-8.*k,y);
+                } else {
+                    slab(
+                        &mut mesh.solid,
+                        [w + 0.4 * k, e - 0.4 * k, z0, z1],
+                        -8. * k,
+                        y,
+                        [0.60, 0.63, 0.56, 1.],
+                    );
+                }
             }
         }
         Detail::RoofInset => {
@@ -1161,6 +1354,53 @@ mod tests {
             .collect()
     }
     #[test]
+    fn kanto_native_dojo_floor_wall_and_guardian_keep_source_palette_and_support() {
+        let g=grid(4,4);let mut tiles=cells(4,4);
+        for tile in &mut tiles {tile.source.tileset_id="train_station".into();
+            tile.source.metatile_id=0x1c;tile.source.tile_index=0x56;}
+        let floor=Placement{column:0,row:0,width:4,height:4,ground:2,
+            form:Form::Room(Detail::Surface(Surface::Tatami),FloorStyle::Dojo),
+            rise_pixels:0.,depth_pixels:8.,front_rows:4.};
+        let mut mesh=TerrainMeshData{footing_heights:vec![5.;16],..Default::default()};
+        append_with_floor(&mut mesh,&g,&floor,&tiles.iter().collect::<Vec<_>>(),
+            Detail::Surface(Surface::Tatami),FloorStyle::Dojo);
+        assert!(mesh.solid.positions.is_empty());
+        assert_eq!(mesh.textured.indices.len(),16*48);
+        assert!(mesh.textured.positions.iter().all(|p|p[1]<=0. && p[1]>=-0.0481));
+        assert_eq!(mesh.footing_heights,vec![5.;16]);
+        for (position,uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
+            assert!((uv[0]-position[0]/32.).abs()<0.00001);
+            assert!((uv[1]-position[2]/32.).abs()<0.00001);
+        }
+        tiles[0].source.metatile_id=0x24;tiles[0].source.tile_index=0x30;
+        assert!(matches!(cell_detail("FightingDojo",&tiles[0].source),Some(Detail::Wall(_))));
+        let wall=Placement{width:1,height:1,form:Form::Room(Detail::Wall(Wall::Timber),FloorStyle::Dojo),
+            ..floor.clone()};
+        let mut mesh=TerrainMeshData{footing_heights:vec![5.;16],..Default::default()};
+        append_with_floor(&mut mesh,&g,&wall,&tiles.iter().collect::<Vec<_>>(),Detail::Wall(Wall::Timber),FloorStyle::Dojo);
+        assert!(mesh.solid.indices.is_empty());
+        assert_eq!(mesh.textured.indices.len(),48+2*12+8*6,
+            "beveled floor, two four-triangle caps and eight native side quads");
+        for tri in mesh.textured.indices[48..].chunks_exact(3) {
+            let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+            assert!((b-a).cross(c-a).dot(Vec3::from_array(mesh.textured.normals[tri[0]as usize]))>0.);
+        }
+        let drawing=[[0x48,0x49],[0x58,0x59],[0x10,0x01],[0x5a,0x5b]];
+        for y in 0..4 {for x in 0..2 {let s=&mut tiles[y*4+x].source;
+            s.metatile_id=0x26;s.tile_index=drawing[y][x];}}
+        let guardian=OBJECTS.iter().find(|o|matches!(o.detail,Detail::Guardian)
+            && matches_object("FightingDojo",&tiles.iter().collect::<Vec<_>>(),&g,0,0,o)).unwrap();
+        let p=Placement{width:2,height:4,form:Form::Room(Detail::Guardian,FloorStyle::Dojo),
+            rise_pixels:guardian.rise,depth_pixels:guardian.depth,..floor};
+        let mut mesh=TerrainMeshData{footing_heights:vec![5.;16],..Default::default()};
+        append_with_floor(&mut mesh,&g,&p,&tiles.iter().collect::<Vec<_>>(),Detail::Guardian,FloorStyle::Dojo);
+        assert!(mesh.solid.indices.is_empty());assert_eq!(mesh.footing_heights,vec![5.;16]);
+        assert!(mesh.textured.uvs.contains(&source_texel_uv(&g,&p,[2,2])));
+        assert!(mesh.textured.uvs.contains(&source_texel_uv(&g,&p,[8,24])));
+        tiles[0].source.tile_index^=1;
+        assert!(!matches_object("FightingDojo",&tiles.iter().collect::<Vec<_>>(),&g,0,0,guardian));
+    }
+    #[test]
     fn special_room_complete_objects_reject_every_identity_mutation_phase_crop_and_unknown_scope() {
         let t = cells(4, 4);
         let refs = t.iter().collect::<Vec<_>>();
@@ -1259,7 +1499,7 @@ mod tests {
             assert!(rule.fingerprints.windows(2).all(|w| w[0] < w[1]));
             assert!(!matches!(
                 rule.detail,
-                Detail::Asset(_) | Detail::Interior(_) | Detail::LinkPlatform { .. }
+                Detail::Asset(_) | Detail::Interior(_) | Detail::RoofSeat | Detail::StoreLiftGlazing | Detail::LinkPlatform { .. }
             ));
         }
         let maps = OBJECTS
@@ -1270,6 +1510,14 @@ mod tests {
         for o in OBJECTS {
             assert!(o.width * o.height > 1);
             assert!(o.depth > 0.);
+            if matches!(o.detail, Detail::RoofSeat) {
+                assert_eq!(o.map, "GoldenrodDeptStoreRoof");
+                assert_eq!((o.width, o.height, o.fingerprint), (2, 4, 0x8dc9d24b7ddbc743));
+            }
+            if matches!(o.detail, Detail::StoreLiftGlazing) {
+                assert!(matches!(o.map, "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator"));
+                assert_eq!((o.width,o.height,o.fingerprint), (6,2,0x904830824255ead1));
+            }
         }
         assert!(
             OBJECTS
@@ -1295,7 +1543,7 @@ mod tests {
             width: w,
             height: h,
             ground: 0,
-            form: Form::Room(detail),
+            form: Form::Room(detail, FloorStyle::Default),
             rise_pixels: 24.,
             depth_pixels: h as f32 * 8.,
             front_rows: h as f32,
@@ -1303,6 +1551,177 @@ mod tests {
         append(&mut m, &grid(w, h), &p, &refs, detail);
         assert_eq!(m.footing_heights, vec![0.; w * h]);
         m
+    }
+    #[test]
+    fn roof_sale_cartons_have_native_materials_closed_depth_and_unchanged_footing() {
+        for stacked in [false,true] { for scale in [0.5,1.,1.5] {
+            let height = if stacked {4} else {2};
+            let tiles=cells(3,height); let refs=tiles.iter().collect::<Vec<_>>();
+            let mut g=grid(3,height);g.tile_width*=scale;g.tile_height*=scale;
+            let detail=Detail::RoofSaleBoxes{stacked};
+            let p=Placement{column:0,row:0,width:3,height,ground:0,
+                form:Form::Room(detail,FloorStyle::Roof),rise_pixels:26.,
+                depth_pixels:height as f32*8.,front_rows:height as f32};
+            let mut mesh=TerrainMeshData{footing_heights:vec![7.;3*height],..Default::default()};
+            append_roof(&mut mesh,&g,&p,&refs,detail);
+            assert_eq!(mesh.footing_heights,vec![7.;3*height]);
+            let anchors=[if stacked {[2,10]} else {[2,9]},[1,2],[0,0],[3,2]];
+            let uv=anchors.map(|pixel|source_texel_uv(&g,&p,pixel));
+            let mut faces=[false;6];let mut role_seen=[false;4];
+            for ((position,normal),sample) in mesh.textured.positions.iter()
+                .zip(&mesh.textured.normals).zip(&mesh.textured.uvs) {
+                // Paving uses varying UVs; cartons use four verified texels.
+                if let Some(role)=uv.iter().position(|expected|expected==sample) {
+                    role_seen[role]=true;
+                    assert!(position[0]>=0. && position[0]<=24.*scale);
+                    assert!(position[2]>=0. && position[2]<=height as f32*8.*scale);
+                    assert!(position[1]>=0. && position[1]<=26.5*scale);
+                    for (face,(axis,sign)) in [(0,-1.),(0,1.),(1,-1.),(1,1.),(2,-1.),(2,1.)].into_iter().enumerate() {
+                        if normal[axis]==sign {faces[face]=true;}
+                    }
+                }
+            }
+            assert!(faces.into_iter().all(|seen|seen),"cartons require closed six-sided volumes");
+            assert!(role_seen.into_iter().all(|seen|seen),"native body, lid, seam and label must all be used");
+        }}
+    }
+    #[test]
+    fn roof_stairs_keep_complete_live_gray_drawing_without_painted_treads() {
+        for height in [2,4] {for scale in [0.5,1.,1.5] {
+            let tiles=cells(2,height);let refs=tiles.iter().collect::<Vec<_>>();
+            let mut g=grid(2,height);g.tile_width*=scale;g.tile_height*=scale;
+            let p=Placement {column:0,row:0,width:2,height,ground:0,
+                form:Form::Room(Detail::Stairs,FloorStyle::Roof),rise_pixels:8.,
+                depth_pixels:height as f32*8.,front_rows:height as f32};
+            let mut mesh=TerrainMeshData {footing_heights:vec![3.;2*height],..Default::default()};
+            append_roof(&mut mesh,&g,&p,&refs,Detail::Stairs);
+            assert!(mesh.solid.indices.is_empty(),"roof stairs must retain live source paint");
+            assert_eq!(mesh.footing_heights,vec![3.;2*height]);
+            let mut area=0.;let mut levels=std::collections::BTreeSet::new();
+            for tri in mesh.textured.indices.chunks_exact(3) {
+                let uv=[tri[0],tri[1],tri[2]].map(|i|mesh.textured.uvs[i as usize]);
+                if uv[0]==uv[1] && uv[1]==uv[2] {continue;}
+                let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+                area+=(points[1]-points[0]).cross(points[2]-points[0]).y*0.5;
+                levels.insert(points[0].y.to_bits());
+                for (point,uv) in points.iter().zip(uv) {
+                    assert!((uv[0]-point.x/(16.*scale)).abs()<0.0001);
+                    assert!((uv[1]-point.z/(height as f32*8.*scale)).abs()<0.0001);
+                }
+            }
+            assert!((area-(2*height*64) as f32*scale*scale).abs()<0.001);
+            assert_eq!(levels.len(),5);
+            assert!(mesh.textured.positions.iter().all(|p|p[1]<=0. && p[1]>=-8.*scale));
+        }}
+    }
+    #[test]
+    fn roof_paving_preserves_live_tile_uvs_and_uses_floor_donor_under_seats() {
+        let tiles = cells(2, 4);
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let g = grid(2, 4);
+        for detail in [Detail::Surface(Surface::Ceramic), Detail::RoofSeat] {
+            let p = Placement {
+                column: 0, row: 0, width: 2, height: 4, ground: 7,
+                form: Form::Room(detail, FloorStyle::Roof), rise_pixels: 8.,
+                depth_pixels: 22., front_rows: 4.,
+            };
+            let mut mesh = TerrainMeshData::default();
+            mesh.footing_heights = vec![0.; 8];
+            underlay(&mut mesh, &g, &p, Surface::RoofTile, &refs);
+            let mut expected = SurfaceMeshData::default();
+            for i in 0..8 {
+                let donor = if matches!(detail, Detail::Surface(_)) { i } else { 7 };
+                append_top(&mut expected, g.bounds(i % 2, i / 2).into(), 0.,
+                    g.uv(donor % 2, donor / 2));
+            }
+            assert_eq!(mesh.textured, expected);
+            assert_eq!(mesh.footing_heights, vec![0.; 8]);
+            assert!(mesh.solid.indices.chunks_exact(3)
+                .all(|tri| mesh.solid.normals[tri[0] as usize][1] < 0.5));
+            assert!(mesh.solid.normals.iter().any(|n| n[1] < -0.5));
+        }
+    }
+    #[test]
+    fn blackthorn_partition_live_gray_palette_keeps_authored_geometry_and_support() {
+        let mut tiles=cells(4,4);
+        for t in &mut tiles {let s=&mut t.source;s.tileset_id="elite_four_room".into();
+            s.metatile_id=0x10;s.tile_index=if s.subtile_column<2 {
+                [[0x2a,0x2b],[0x3a,0x3b]][s.subtile_row as usize%2][s.subtile_column as usize]
+            } else {1};}
+        let refs=tiles.iter().collect::<Vec<_>>();let g=grid(4,4);
+        let p=Placement {column:0,row:0,width:2,height:2,ground:2,
+            form:Form::Room(Detail::Asset(Asset::GymStonePartition),FloorStyle::Default),
+            rise_pixels:13.,depth_pixels:16.,front_rows:2.};
+        let mut original=SurfaceMeshData::default();
+        room_model(Asset::GymStonePartition).append(&mut original,[0.,16.,0.,16.],0.,13.);
+        let mut mesh=TerrainMeshData {footing_heights:vec![3.;16],..Default::default()};
+        let mut floor=TerrainMeshData::default();
+        underlay(&mut floor,&g,&p,Surface::Stone,&refs);
+        append(&mut mesh,&g,&p,&refs,Detail::Asset(Asset::GymStonePartition));
+        assert_eq!(mesh.solid,floor.solid,"only the existing floor remains solid-colored");
+        assert_eq!(mesh.textured.positions,original.positions);
+        assert_eq!(mesh.textured.normals,original.normals);
+        assert_eq!(mesh.footing_heights,vec![3.;16]);
+        for pixel in [[4,4],[3,3],[4,10]] {
+            assert!(mesh.textured.uvs.contains(&source_texel_uv(&g,&p,pixel)));
+        }
+        assert!(mesh.textured.colors.iter().all(|color|*color==[1.;4]));
+        assert_eq!(original.indices.len()/3,220);
+    }
+    #[test]
+    fn roof_planter_keeps_leaf_volume_live_source_palette_and_ground_support() {
+        let tiles = cells(4, 2);
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let g = grid(4, 2);
+        let p = Placement {
+            column: 0, row: 0, width: 4, height: 2, ground: 7,
+            form: Form::Room(Detail::Asset(Asset::RoofPlanter), FloorStyle::Roof),
+            rise_pixels: 13., depth_pixels: 12., front_rows: 2.,
+        };
+        let mut mesh = TerrainMeshData::default();
+        mesh.footing_heights = vec![0.; 8];
+        append_roof(&mut mesh, &g, &p, &refs, Detail::Asset(Asset::RoofPlanter));
+        for pixel in [[2,12],[2,9],[4,13],[0,0],[4,2],[2,1],[9,2]] {
+            assert!(mesh.textured.uvs.contains(&source_texel_uv(&g, &p, pixel)));
+        }
+        assert_eq!(mesh.footing_heights, vec![0.; 8]);
+        assert!(mesh.textured.positions.iter().any(|v| v[1] > 12.9));
+        assert!(mesh.textured.normals.iter().any(|n| n[1] < -0.5));
+        assert!(mesh.textured.positions.iter().all(|v| v.iter().all(|c| c.is_finite())));
+        assert!(mesh.textured.colors.iter().all(|c| *c == [1.;4]));
+    }
+    #[test]
+    fn store_lift_cabin_preserves_live_floor_carpet_and_three_closed_blue_windows() {
+        let tiles = cells(6,2);
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let g = grid(6,2);
+        for detail in [Detail::Surface(Surface::Ceramic), Detail::Threshold, Detail::StoreLiftGlazing] {
+            let p = Placement {
+                column:0,row:0,width:6,height:2,ground:11,
+                form:Form::Room(detail,FloorStyle::StoreLift),
+                rise_pixels:24.,depth_pixels:3.,front_rows:2.,
+            };
+            let mut mesh = TerrainMeshData { footing_heights:vec![0.;12], ..Default::default() };
+            append_with_floor(&mut mesh,&g,&p,&refs,detail,FloorStyle::StoreLift);
+            let mut expected = SurfaceMeshData::default();
+            for i in 0..12 {
+                let donor = if matches!(detail,Detail::StoreLiftGlazing) {11} else {i};
+                append_top(&mut expected,g.bounds(i%6,i/6).into(),0.,g.uv(donor%6,donor/6));
+            }
+            assert_eq!(mesh.textured,expected);
+            assert_eq!(mesh.footing_heights,vec![0.;12]);
+            if matches!(detail,Detail::StoreLiftGlazing) {
+                assert!(mesh.solid.positions.iter().any(|v|v[1]>23.9));
+                let mut three = SurfaceMeshData::default();
+                super::super::super::department_store::append_lift_cabin_glazing(
+                    &mut three,[0.,48.,13.,16.],24.);
+                assert!(three.colors.iter().any(|c|c[2]>c[0] && c[2]>c[1]));
+                assert!(three.normals.iter().any(|n|n[2] < -0.9));
+            }
+        }
+        assert!(!CELLS.iter().any(|r| matches!(r.map,
+            "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator")
+            && matches!(r.detail,Detail::Wall(_))));
     }
     #[test]
     fn arcade_entry_mat_resolves_in_all_three_maps_without_partial_claims() {
@@ -1321,12 +1740,12 @@ mod tests {
             let refs=tiles.iter().collect::<Vec<_>>(); let g=grid(4,3);
             let mut resolver=Resolver { map,cells:&refs,g:&g,claimed:vec![false;12],out:vec![] };
             resolve_into(&mut resolver);
-            assert_eq!(resolver.out.iter().filter(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat))).count(),1);
+            assert_eq!(resolver.out.iter().filter(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat, _))).count(),1);
             assert!(resolver.claimed[4..].iter().all(|c| *c));
             let mut resolver=Resolver { map,cells:&refs,g:&g,claimed:vec![false;12],out:vec![] };
             resolver.claimed[10]=true;
             resolve_into(&mut resolver);
-            assert!(!resolver.out.iter().any(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat))));
+            assert!(!resolver.out.iter().any(|p| matches!(p.form, Form::Room(Detail::ArcadeEntryMat, _))));
             for i in 4..12 { assert_eq!(resolver.claimed[i],i==10); }
             let mut changed=tiles.clone();changed[6].source.tile_index^=1;
             let refs=changed.iter().collect::<Vec<_>>();
@@ -1405,24 +1824,16 @@ mod tests {
         }
     }
     #[test]
-    fn arcade_ceramic_keeps_framed_paint_and_glaze_without_triangle_facets() {
+    fn arcade_ceramic_keeps_native_boxed_paint_on_beveled_floor() {
         let m = rendered(Detail::Surface(Surface::ArcadeCeramic), 2, 2);
-        let expected = [[0.94f32,0.84,0.73], [0.45,0.47,0.45], [0.57,0.59,0.56], [0.86,0.86,0.82]];
-        let mut seen = std::collections::BTreeSet::new();
-        for tri in m.solid.indices.chunks_exact(3) {
-            if tri.iter().all(|&i| m.solid.positions[i as usize][1].abs()<0.0001) {
-                for &i in tri {
-                    let i=i as usize;
-                    let c=m.solid.colors[i];
-                    assert!(expected.iter().any(|p| c[..3]==p[..]));
-                    seen.insert([c[0].to_bits(),c[1].to_bits(),c[2].to_bits()]);
-                    assert_eq!(m.solid.normals[i],[0.,1.,0.]);
-                    assert!((80000.0..81000.0).contains(&m.solid.uvs[i][0]));
-                    assert!((1000.0..2000.0).contains(&m.solid.uvs[i][1]));
-                }
-            }
+        assert_eq!(m.textured.indices.len(),4*48);
+        assert!(m.textured.positions.iter().any(|p|p[1]<0.));
+        for (point,uv) in m.textured.positions.iter().zip(&m.textured.uvs) {
+            assert!((uv[0]-point[0]/16.).abs()<0.0001);
+            assert!((uv[1]-point[2]/16.).abs()<0.0001);
+            assert!(point[1]<=0. && point[1]>=-0.0481);
         }
-        assert_eq!(seen.len(),4);
+        assert!(m.solid.indices.chunks_exact(3).all(|t|m.solid.normals[t[0]as usize][1]<0.5));
         let s=VisualTileSource {tileset_id:Arc::from("game_corner"),metatile_id:1,
             subtile_column:0,subtile_row:0,tile_index:1};
         assert!(matches!(cell_detail("CeladonGameCornerPrizeRoom",&s),Some(Detail::Surface(Surface::ArcadeCeramic))));
@@ -1435,14 +1846,17 @@ mod tests {
         for detail in [Detail::Threshold, Detail::FloorBand, Detail::ShutterTrack, Detail::Surface(Surface::BlueBrick), Detail::Surface(Surface::ArcadeCeramic)] {
             let mesh = rendered(detail, 2, 2);
             let mut floor_area = 0.;
-            for tri in mesh.solid.indices.chunks_exact(3) {
+            let native_arcade=matches!(detail,Detail::Surface(Surface::ArcadeCeramic));
+            let surfaces=[&mesh.solid,&mesh.textured];
+            for surface in surfaces.iter().take(if native_arcade {2} else {1}) {for tri in surface.indices.chunks_exact(3) {
                 let [a, b, c] = [tri[0], tri[1], tri[2]]
-                    .map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
+                    .map(|i| Vec3::from_array(surface.positions[i as usize]));
                 let cross = (b - a).cross(c - a);
-                if [a, b, c].iter().all(|p| p.y.abs() < 0.0001) && cross.y > 0. {
+                if [a, b, c].iter().all(|p|if native_arcade {p.y<=0.0001 && p.y>=-0.0481}
+                    else {p.y.abs()<0.0001}) && cross.y > 0. {
                     floor_area += cross.y * 0.5;
                 }
-            }
+            }}
             // An overlapping underlay adds almost another full plot of area;
             // missing floor geometry reduces it. Raised grip strips are above
             // this plane, and rendered() separately checks unchanged footing.
@@ -1546,7 +1960,7 @@ mod tests {
             width: 12,
             height: 10,
             ground: 0,
-            form: Form::Room(Detail::LinkPlatform { trade: false }),
+            form: Form::Room(Detail::LinkPlatform { trade: false }, FloorStyle::Default),
             rise_pixels: 0.,
             depth_pixels: 80.,
             front_rows: 10.,

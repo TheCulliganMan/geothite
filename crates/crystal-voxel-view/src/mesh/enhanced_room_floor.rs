@@ -15,6 +15,7 @@ fn enhanced_room_floor_map(map: &str) -> bool {
             | "BlackthornGym1F"
             | "BlackthornGym2F"
             | "OlivineGym"
+            | "FuchsiaGym"
             | "GoldenrodGameCorner"
             | "CeladonGameCorner"
             | "CeladonGameCornerPrizeRoom"
@@ -27,6 +28,8 @@ fn enhanced_room_floor_source(map: &str, s: &VisualTileSource) -> Option<Interio
     }
     let phase = s.subtile_row * 4 + s.subtile_column;
     match (map, s.tileset_id.as_ref()) {
+        ("FuchsiaGym","lab")=>crate::fuchsia_gym::floor_source(s)
+            .then_some(InteriorFloor::FuchsiaNative),
         ("OlivineGym","champions_room") => {
             if s.metatile_id==0x1f && s.tile_index==0x2d {return Some(InteriorFloor::OlivineRunner);}
             let mask:u16=match (s.tile_index,s.metatile_id) {
@@ -108,9 +111,9 @@ fn enhanced_room_floor_source(map: &str, s: &VisualTileSource) -> Option<Interio
             | "PewterGym",
             "tower",
         ) => {
-            // Verified horizontal depth fields stay horizontal at their exact
-            // datum. Dark timber replaces pixel stripes without erecting walls
-            // or treating blocked source quadrants as walkable room floor.
+            // Verified depth fields retain native gold grating at the exact
+            // top datum, with a dark opening below. They never become ordinary
+            // walkable room floor or an inferred wall.
             let depth_tile = match s.metatile_id {
                 0x0b => Some(if s.subtile_column == 0 { 0x1a } else { 0x1b }),
                 0x07 => Some(match (s.subtile_column, s.subtile_row) {
@@ -191,15 +194,55 @@ mod enhanced_room_floor_tests {
         }
         assert_eq!(enhanced_room_floor_source("LancesRoom",&source(set,0x10,0,0,0x53)),None);
         let mut runner=SurfaceMeshData::default();
-        floor_cell(&mut runner,[0.,8.,0.,8.],0.,InteriorFloor::OlivineRunner,[0,0]);
+        native_beveled_floor_cell(&mut runner,[0.,8.,0.,8.],0.,[0,0],(0.,1.,0.,1.));
         let area:f32=runner.indices.chunks_exact(3).map(|ids| {
             let p=[0,1,2].map(|i|Vec3::from_array(runner.positions[ids[i] as usize]));
-            (p[1]-p[0]).cross(p[2]-p[0]).length()*0.5
+            (p[1]-p[0]).cross(p[2]-p[0]).y*0.5
         }).sum();
         assert!((area-64.).abs()<0.001,"runner must cover its plot once");
-        assert!(runner.positions.iter().all(|p|p[1]==0.));
+        assert!(runner.positions.iter().all(|p|p[1]<=0. && p[1]>=-0.0481));
+        assert!(runner.positions.iter().any(|p|p[1]<0.));
+        for (p,uv) in runner.positions.iter().zip(&runner.uvs) {
+            assert!((uv[0]-p[0]/8.).abs()<0.0001);
+            assert!((uv[1]-p[2]/8.).abs()<0.0001);
+        }
     }
 
+    #[test]
+    fn olivine_native_floor_keeps_source_colors_and_rejects_redirected_or_raised_samples() {
+        let g=GridGeometry {width:4,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let tiles=[source("champions_room",0x10,0,0,0x53),
+            source("champions_room",0x1f,1,0,0x2d),
+            source("champions_room",0x1d,0,2,0x51),
+            source("champions_room",0x23,0,2,0x04)].into_iter().enumerate().map(|(i,source)|
+            VisualTile {column:i as u32,row:0,source,texture:Default::default(),
+                priority:false,animation_frames:None}).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let make=|height:f32,redirect:bool| {
+            let mut mesh=TerrainMeshData {footing_heights:vec![7.;4],..Default::default()};
+            for x in 0..4 {append_top(&mut mesh.textured,g.bounds(x,0).into(),height,
+                g.uv(if redirect && x==0 {1} else {x},0));}
+            mesh
+        };
+        let mut native=make(0.,false);
+        assert_eq!(finish_surfaces_excluding(&mut native,"OlivineGym",&refs,&g,[0,0],&[false;4]),3);
+        assert_eq!(native.textured.indices.len(),246);
+        assert!(native.solid.indices.is_empty());
+        assert_eq!(native.footing_heights,vec![7.;4]);
+        for tri in native.textured.indices.chunks_exact(3) {for &i in tri {
+            let p=native.textured.positions[i as usize];let uv=native.textured.uvs[i as usize];
+            assert!(p[1]<=0. && p[1]>=-0.0481);
+            assert!((uv[0]-p[0]/32.).abs()<0.0001);
+            assert!((uv[1]-p[2]/8.).abs()<0.0001);
+        }}
+        let mut custom=make(0.,false);
+        assert_eq!(finish_surfaces_excluding(&mut custom,"OlivineGym",&refs,&g,[0,0],&[true,false,false,false]),2);
+        let mut redirected=make(0.,true);
+        assert_eq!(finish_surfaces_excluding(&mut redirected,"OlivineGym",&refs,&g,[0,0],&[false;4]),2);
+        let mut raised=make(4.,false);
+        assert_eq!(finish_surfaces_excluding(&mut raised,"OlivineGym",&refs,&g,[0,0],&[false;4]),0);
+        assert_eq!(raised.textured.indices.len(),24);
+    }
     #[test]
     fn mahogany_finish_keeps_override_and_entry_carpet_and_actor_footing() {
         let g = GridGeometry { width:4, height:1, tile_width:8., tile_height:8., origin_x:0., origin_z:0. };
@@ -216,8 +259,8 @@ mod enhanced_room_floor_tests {
             append_top(&mut mesh.textured,g.bounds(x,0).into(),0.,g.uv(x,0));
         }
         assert_eq!(finish_surfaces_excluding(&mut mesh,"MahoganyGym",&refs,&g,[0,0],&[true,false,false,false]),2);
-        assert_eq!(mesh.textured.indices.len(),12,"custom ice and warp carpet keep source presentation");
-        assert!(!mesh.solid.indices.is_empty());
+        assert_eq!(mesh.textured.indices.len(),156,"custom ice, warp carpet, live ice and rough native stop patch remain textured");
+        assert!(mesh.solid.indices.is_empty());
         assert_eq!(mesh.footing_heights,vec![2.;4]);
         assert!(mesh.solid.positions.iter().all(|p|p[1]==0.));
     }
@@ -238,15 +281,47 @@ mod enhanced_room_floor_tests {
             source("custom",0x39,0,0,0x05)] {
             assert_eq!(enhanced_room_floor_source("MahoganyGym", &s), None);
         }
-        let mut left = SurfaceMeshData::default();
-        let mut right = SurfaceMeshData::default();
-        floor_cell(&mut left,[0.,8.,0.,8.],0.,InteriorFloor::MahoganyIce,[3,5]);
-        floor_cell(&mut right,[8.,16.,0.,8.],0.,InteriorFloor::MahoganyIce,[4,5]);
-        for (i,p) in left.positions.iter().enumerate().filter(|(_,p)|p[0]==8.) {
-            let j = right.positions.iter().position(|q|q==p).unwrap();
-            assert_eq!(left.colors[i],right.colors[j],"ice must not reveal tile seams");
+        for scale in [0.5,1.,1.5] {
+            let mut grip=SurfaceMeshData::default();
+            native_rough_floor_cell(&mut grip,[0.,8.*scale,0.,8.*scale],2.,(0.,1.,0.,1.));
+            assert_eq!(grip.indices.len(),96);
+            let mut area=0.;
+            for tri in grip.indices.chunks_exact(3) {
+                let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(grip.positions[i as usize]));
+                area+=(points[1]-points[0]).cross(points[2]-points[0]).y/2.;
+            }
+            assert!((area-64.*scale*scale).abs()<0.001);
+            assert!(grip.positions.iter().any(|p|p[1]<2.));
+            for (point,uv) in grip.positions.iter().zip(&grip.uvs) {
+                assert!(point[1]<=2. && point[1]>=2.-0.048*scale-0.0001);
+                assert!((uv[0]-point[0]/(8.*scale)).abs()<0.0001);
+                assert!((uv[1]-point[2]/(8.*scale)).abs()<0.0001);
+            }
+            let mut left = SurfaceMeshData::default();
+            let mut right = SurfaceMeshData::default();
+            native_beveled_floor_cell(&mut left,[0.,8.*scale,0.,8.*scale],2.,[0,0],(0.,0.5,0.,0.5));
+            native_beveled_floor_cell(&mut right,[8.*scale,16.*scale,0.,8.*scale],2.,[1,0],(0.5,1.,0.,0.5));
+            for (i,p) in left.positions.iter().enumerate().filter(|(_,p)|p[0]==8.*scale) {
+                let j = right.positions.iter().position(|q|q==p).unwrap();
+                assert_eq!(left.uvs[i],right.uvs[j],"source motif must meet across quadrants");
+            }
+            for mesh in [&left,&right] {
+                let area: f32 = mesh.indices.chunks_exact(3).map(|ids| {
+                    let p=[0,1,2].map(|i|mesh.positions[ids[i] as usize]);
+                    let a=Vec3::new(p[1][0]-p[0][0],0.,p[1][2]-p[0][2]);
+                    let b=Vec3::new(p[2][0]-p[0][0],0.,p[2][2]-p[0][2]);
+                    a.cross(b).length()*0.5
+                }).sum();
+                assert!((area-64.*scale*scale).abs()<0.001,"ice covers its plot once");
+                assert!(mesh.positions.iter().all(|p|p[1]<=2. && p[1]>=2.-0.048*scale-0.0001));
+                assert!(mesh.positions.iter().any(|p|p[1]==2.));
+                assert!(mesh.normals.iter().all(|n|n[1]>0. && (Vec3::from_array(*n).length()-1.).abs()<0.0001));
+                for (p,uv) in mesh.positions.iter().zip(&mesh.uvs) {
+                    assert!((uv[0]-p[0]/(16.*scale)).abs()<0.0001);
+                    assert!((uv[1]-p[2]/(16.*scale)).abs()<0.0001);
+                }
+            }
         }
-        assert!(left.positions.iter().chain(&right.positions).all(|p|p[1]==0.));
     }
 
     #[test]
@@ -392,6 +467,41 @@ mod enhanced_room_floor_tests {
                 enhanced_room_floor_source(map, &source("game_corner", 9, 0, 2, 1)),
                 None
             );
+        }
+    }
+    #[test]
+    fn arcade_native_floor_preserves_palette_uvs_custom_ownership_and_footing() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let tiles=(0..16).map(|i| {
+            let x=(i%4)as u8;let y=(i/4)as u8;
+            let tile=[1,0x10,1,0x10,0x11,0x12,0x11,0x12][(y%2*4+x)as usize];
+            VisualTile {column:x as u32,row:y as u32,source:source("game_corner",1,x,y,tile),
+                texture:Default::default(),priority:false,animation_frames:None}
+        }).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();
+        for map in ["GoldenrodGameCorner","CeladonGameCorner","CeladonGameCornerPrizeRoom"] {
+            let make=|height:f32,redirect:bool| {
+                let mut mesh=TerrainMeshData {footing_heights:vec![5.;16],authored_cells:vec![None;16],..Default::default()};
+                for i in 0..16 {append_top(&mut mesh.textured,g.bounds(i%4,i/4).into(),height,
+                    if redirect && i==0 {g.uv(3,3)} else {g.uv(i%4,i/4)});}
+                mesh
+            };
+            let mut native=make(0.,false);let mut custom=vec![false;16];custom[5]=true;
+            assert_eq!(finish_surfaces_excluding(&mut native,map,&refs,&g,[0,0],&custom),15);
+            assert_eq!(native.textured.indices.len(),15*48+6);
+            assert!(native.solid.indices.is_empty());
+            assert_eq!(native.footing_heights,vec![5.;16]);
+            assert_eq!(native.authored_cells,vec![None;16]);
+            for tri in native.textured.indices.chunks_exact(3) {for &i in tri {
+                let p=native.textured.positions[i as usize];let uv=native.textured.uvs[i as usize];
+                assert!((uv[0]-p[0]/32.).abs()<0.0001);
+                assert!((uv[1]-p[2]/32.).abs()<0.0001);
+                assert!(p[1]<=0. && p[1]>=-0.0481);
+            }}
+            let mut raised=make(3.,false);
+            assert_eq!(finish_surfaces_excluding(&mut raised,map,&refs,&g,[0,0],&[false;16]),0);
+            let mut redirected=make(0.,true);
+            assert_eq!(finish_surfaces_excluding(&mut redirected,map,&refs,&g,[0,0],&[false;16]),15);
         }
     }
     #[test]

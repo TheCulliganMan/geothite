@@ -268,10 +268,16 @@ fn capture_presented_battle(
             source_rect,
             source_opaque_rect,
             visible,
-            // Authored models currently use the normal palette. Keep actual
-            // shiny source art rather than claiming an incorrect shiny mesh.
-            allow_species_model: !substitute && !minimize && !shiny && pokedex_size_m.is_some(),
+            allow_species_model: !substitute && !minimize && pokedex_size_m.is_some(),
             shiny,
+            model_palette: if shiny && !substitute && !minimize {
+                let asset_id = pokemon_asset_id_for_dvs(species, dvs);
+                let side = if is_player { PokemonSpriteSide::Back } else { PokemonSpriteSide::Front };
+                Some(crystal_render_api::VisualPokemonModelPalette {
+                    normal: load_pokemon_palette(&shell.asset_root, &asset_id, side, false)?,
+                    appearance: load_pokemon_palette(&shell.asset_root, &asset_id, side, true)?,
+                })
+            } else { None },
         });
     }
     if let Some(capture) = shell.visible_capture_animation.as_ref() {
@@ -939,6 +945,7 @@ fn prepare_immersive_battle_preview(
     enemy_gust: bool,
     poke_ball_failure: bool,
     starter: Option<&str>,
+    shiny: bool,
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
         starter.is_none()
@@ -1008,7 +1015,7 @@ fn prepare_immersive_battle_preview(
             None,
             &trainer.player_name,
             trainer.player_id,
-            Dv::from_non_hp(9, 9, 9, 9),
+            if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) },
         )?;
         if evolved_grass {
             // A legal retained learnset represents declining Body Slam at 31
@@ -1024,7 +1031,7 @@ fn prepare_immersive_battle_preview(
             };
             shell.shell.add_party_pokemon(
                 "MEGANIUM", 32, None, None, &trainer.player_name,
-                trainer.player_id, Dv::from_non_hp(9, 9, 9, 9),
+                trainer.player_id, if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) },
             )?;
             let state = shell.shell.session_mut().state_mut();
             state.storage.party.pokemon[0].as_mut()
@@ -1737,7 +1744,7 @@ fn immersive_capture_source_supported(
         && shell.visible_move_audio_wait.is_none()
         && shell.visible_send_out_animation.is_none()
         && battlers[1].as_ref().is_some_and(|enemy| {
-            enemy.allow_species_model && !enemy.shiny
+            enemy.allow_species_model && (!enemy.shiny || enemy.model_palette.is_some())
                 && enemy.texture_size == Vec2::splat(56.0)
                 && enemy.source_rect == Rect::new(96.0, 0.0, 152.0, 56.0)
         })

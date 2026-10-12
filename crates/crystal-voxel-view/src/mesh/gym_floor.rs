@@ -1,5 +1,4 @@
-// Quiet native Gym materials. These are coplanar surface partitions, never
-// modeled objects, collision changes, raised turf, or new actor footing.
+// Exact native Gym finishes preserve source artwork and authoritative footing.
 fn gym_floor_map(map: &str) -> bool {
     matches!(map, "AzaleaGym" | "GoldenrodGym" | "CeladonGym")
 }
@@ -128,74 +127,49 @@ fn gym_floor_destination(
             .is_none_or(Option::is_none)
         && gym_floor_source(map, &cells[destination].source) == Some(style)
 }
-fn gym_floor_cell(
-    mesh: &mut SurfaceMeshData,
-    b: [f32; 4],
-    height: f32,
-    style: InteriorFloor,
-    world: [i32; 2],
+// Native rose ceramic and timber retain their source drawings on recessed
+// modules; green turf keeps its native texture at the original datum. No guessed palette or
+// borrowed source is introduced here: finish_surfaces already proves ownership.
+fn gym_native_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32;4], height: f32,
+    style: InteriorFloor, world: [i32;2], uv: (f32,f32,f32,f32),
 ) {
-    let [x0, x1, z0, z1] = b;
-    let [column, row] = world;
-    let w = x1 - x0;
-    let d = z1 - z0;
-    match style {
-        InteriorFloor::GymGreen => {
-            // Quiet garden ground; no per-pixel flecks or invented grass height.
-            // Broad tonal fields stay continuous when the viewport scrolls.
-            let variation =
-                ((column.div_euclid(8) + row.div_euclid(8)).rem_euclid(2) as f32 - 0.5) * 0.008;
-            material_quad(mesh, b, height, tint(style.palette(), variation));
-        }
-        InteriorFloor::GymRose => {
-            // Broad four-cell ceramic modules with a restrained blush/cream
-            // alternation, narrow joints, and no overlapping raised overlays.
-            let parity = (column.div_euclid(4) + row.div_euclid(4)).rem_euclid(2);
-            let face = if parity == 0 {
-                [0.80, 0.40, 0.50]
-            } else {
-                [0.74, 0.30, 0.41]
-            };
-            let joint = [0.58, 0.22, 0.29];
-            let west = if column.rem_euclid(4) == 0 {
-                w * 0.018
-            } else {
-                0.
-            };
-            let north = if row.rem_euclid(4) == 0 {
-                d * 0.018
-            } else {
-                0.
-            };
-            material_quad(mesh, [x0, x1, z0, z0 + north], height, joint);
-            material_quad(mesh, [x0, x0 + west, z0 + north, z1], height, joint);
-            material_quad(mesh, [x0 + west, x1, z0 + north, z1], height, face);
-        }
-        InteriorFloor::GymTimber => {
-            let course = row.div_euclid(2);
-            let phase = course.rem_euclid(2) * 4;
-            let board = (column - phase).div_euclid(8);
-            let face = tint(
-                style.palette(),
-                ((board * 3 + course * 5).rem_euclid(5) as f32 - 2.) * 0.005,
-            );
-            let joint = tint(style.palette(), -0.045);
-            let west = if (column - phase).rem_euclid(8) == 0 {
-                w * 0.018
-            } else {
-                0.
-            };
-            let north = if row.rem_euclid(2) == 0 {
-                d * 0.018
-            } else {
-                0.
-            };
-            material_quad(mesh, [x0, x1, z0, z0 + north], height, joint);
-            material_quad(mesh, [x0, x0 + west, z0 + north, z1], height, joint);
-            material_quad(mesh, [x0 + west, x1, z0 + north, z1], height, face);
-        }
-        _ => unreachable!("Gym material is selected by an exact source guard"),
+    assert!(gym_floor_style(style),
+        "native Gym motifs and timber require live source UVs");
+    if style == InteriorFloor::GymGreen {
+        append_top(mesh,b.into(),height,uv);
+        return;
     }
+    let [w,e,n,s]=b;let (u0,u1,v0,v1)=uv;
+    let timber=style==InteriorFloor::GymTimber;
+    let xlast=if timber {7} else {3};let zlast=if timber {1} else {3};
+    let course=world[1].div_euclid(2);
+    let stagger=if timber {course.rem_euclid(2)*4} else {0};
+    let xphase=(world[0]-stagger).rem_euclid(xlast+1);
+    let zphase=world[1].rem_euclid(zlast+1);
+    let xs=[0.,if xphase==0 {0.025} else {0.5},if xphase==xlast {0.975} else {0.75},1.];
+    let zs=[0.,if zphase==0 {0.025} else {0.5},if zphase==zlast {0.975} else {0.75},1.];
+    let point=|x:f32,z:f32| {
+        let edge=(xphase==0 && x==0.) || (xphase==xlast && x==1.)
+            || (zphase==0 && z==0.) || (zphase==zlast && z==1.);
+        [w+(e-w)*x,height-if edge {(e-w).min(s-n)*0.006} else {0.},n+(s-n)*z]
+    };
+    for z in 0..3 {for x in 0..3 {
+        let corners=[[xs[x],zs[z]],[xs[x],zs[z+1]],
+            [xs[x+1],zs[z+1]],[xs[x+1],zs[z]]];
+        let centre=[(xs[x]+xs[x+1])*0.5,(zs[z]+zs[z+1])*0.5];
+        for edge in 0..4 {
+            let coords=[corners[edge],corners[(edge+1)%4],centre];
+            let points=coords.map(|[x,z]|point(x,z));
+            let normal=(Vec3::from_array(points[1])-Vec3::from_array(points[0]))
+                .cross(Vec3::from_array(points[2])-Vec3::from_array(points[0])).normalize();
+            let first=mesh.positions.len() as u32;
+            mesh.positions.extend(points);mesh.normals.extend([normal.to_array();3]);
+            mesh.uvs.extend(coords.map(|[x,z]|[u0+(u1-u0)*x,v0+(v1-v0)*z]));
+            mesh.colors.extend([crate::interior_models::authored_face_color([1.;4],normal);3]);
+            mesh.indices.extend([first,first+1,first+2]);
+        }
+    }}
 }
 
 #[cfg(test)]
@@ -239,6 +213,66 @@ mod gym_floor_tests {
             2.5,
             g.uv(sample % g.width, sample / g.width),
         );
+    }
+    #[test]
+    fn gym_floor_live_motifs_cover_the_datum_and_join_across_crops() {
+        for scale in [0.5,1.,1.5] {
+            for style in [InteriorFloor::GymRose,InteriorFloor::GymGreen,InteriorFloor::GymTimber] {
+                for row in -4..4 {for column in -4..4 {
+                    let mut surface=SurfaceMeshData::default();
+                    gym_native_floor_cell(&mut surface,[0.,8.*scale,0.,8.*scale],3.25,
+                        style,[column,row],(0.2,0.3,0.4,0.5));
+                    let mut area=0.;
+                    for triangle in surface.indices.chunks_exact(3) {
+                        let p=[triangle[0],triangle[1],triangle[2]].map(|i|Vec3::from_array(surface.positions[i as usize]));
+                        area+=(p[1]-p[0]).cross(p[2]-p[0]).y*0.5;
+                    }
+                    assert!((area-64.*scale*scale).abs()<0.0001);
+                    for (p,uv) in surface.positions.iter().zip(&surface.uvs) {
+                        assert!(p[1]<=3.25 && p[1]>=3.25-0.048*scale);
+                        assert!(near(uv[0],0.2+0.1*p[0]/(8.*scale)));
+                        assert!(near(uv[1],0.4+0.1*p[2]/(8.*scale)));
+                    }
+                    assert!(surface.normals.iter().all(|n|n[1]>0. &&
+                        (Vec3::from_array(*n).length()-1.).abs()<0.0001));
+                    let mut next=SurfaceMeshData::default();
+                    gym_native_floor_cell(&mut next,[8.*scale,16.*scale,0.,8.*scale],3.25,
+                        style,[column+1,row],(0.3,0.4,0.4,0.5));
+                    // Shared corners have equal support/decorative depth even
+                    // across negative world phases and separate viewport crops.
+                    for z in [0.,8.*scale] {
+                        let left=surface.positions.iter().find(|p|p[0]==8.*scale && p[2]==z).unwrap();
+                        let right=next.positions.iter().find(|p|p[0]==8.*scale && p[2]==z).unwrap();
+                        assert_eq!(left,right);
+                    }
+                }}
+            }
+        }
+    }
+    #[test]
+    fn gym_floor_celadon_timber_retains_live_grain_and_custom_floor_ownership() {
+        let g=grid(4,4);let tiles=(0..16).map(|i|
+            tile(source("train_station",0x1c,(i%4)as u8,(i/4)as u8,0x56),i,4)).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {footing_heights:vec![3.25;16],..Default::default()};
+        for i in 0..16 {quad(&mut mesh,&g,i,i);}
+        let mut custom=mesh.clone();
+        assert_eq!(finish_surfaces(&mut mesh,"CeladonGym",&refs,&g,[-5,7]),16);
+        assert!(mesh.solid.indices.is_empty(),"Celadon timber must use its live grain");
+        assert_eq!(mesh.footing_heights,vec![3.25;16]);
+        assert!(mesh.textured.positions.iter().all(|p|p[1]<=2.5 && p[1]>=2.452));
+        for (p,uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
+            assert!(near(uv[0],p[0]/32.) && near(uv[1],p[2]/32.));
+        }
+        let profile=Document {objects:vec![crate::live_profiles::Object {
+            name:"Custom timber painting".into(),tileset:"train_station".into(),
+            map:Some("CeladonGym".into()),maps:None,metatile:0x1c,metatiles:None,
+            origin:[0,0],tiles:vec![vec![0x56]],ground:0x56,top_pixels:0,
+            depth_pixels:0.,footing_pixels:None,mask:Default::default(),parts:vec![],
+        }],atmosphere:None};
+        assert_eq!(finish_surfaces_with_profiles(&mut custom,"CeladonGym",&refs,&g,[-5,7],Some(&profile)),15);
+        assert_eq!(custom.footing_heights,vec![3.25;16]);
+        assert_eq!(custom.textured.indices.len(),6+15*108);
     }
     #[test]
     fn gym_floor_native_masks_reject_navigation_and_changed_phase() {
@@ -408,10 +442,10 @@ mod gym_floor_tests {
             finish_surfaces(&mut finished, "GoldenrodGym", &refs, &g, [0, 0]),
             16
         );
-        assert!(finished.textured.indices.is_empty());
+        assert_eq!(finished.textured.indices.len(),16*108);
         assert_eq!(finished.authored_cells, authored);
         assert_eq!(finished.footing_heights, footing);
-        assert!(finished.solid.positions.iter().all(|p| p[1] == 2.5));
+        assert!(finished.textured.positions.iter().all(|p|p[1]<=2.5 && p[1]>=2.452));
         for mode in 0..5 {
             let mut changed = tiles.clone();
             let mut rejected = m.clone();
@@ -434,7 +468,7 @@ mod gym_floor_tests {
             );
             assert_eq!(
                 rejected.textured.indices.len(),
-                24,
+                24+12*108,
                 "all four stale backing cells remain native"
             );
         }
@@ -456,7 +490,7 @@ mod gym_floor_tests {
             ),
             2
         );
-        assert_eq!(cm.textured.indices.len(), 12);
+        assert_eq!(cm.textured.indices.len(), 12+2*108);
     }
     #[test]
     fn gym_floor_neighbor_uv_and_custom_profile_cannot_borrow_material_permission() {
@@ -488,7 +522,7 @@ mod gym_floor_tests {
         );
         assert_eq!(
             m.textured.indices.len(),
-            6,
+            12,
             "custom-owned rose is unchanged; neighbor green finishes"
         );
         let custom = Document {
@@ -520,15 +554,16 @@ mod gym_floor_tests {
         assert_eq!(m, before);
     }
     #[test]
-    fn gym_floor_preserves_viridian_existing_stone_and_unknown_neighbors() {
+    fn gym_floor_preserves_viridian_live_blue_tiles_and_unknown_neighbors() {
         let g = grid(1, 1);
         let t = vec![tile(source("train_station", 0x03, 0, 0, 0x3d), 0, 1)];
         assert_eq!(
             interior_floor("ViridianGym", &t[0].source),
-            Some(InteriorFloor::Stone)
+            None
         );
         let mut m = TerrainMeshData::default();
         quad(&mut m, &g, 0, 0);
+        let native = m.clone();
         assert_eq!(
             finish_surfaces(
                 &mut m,
@@ -537,17 +572,11 @@ mod gym_floor_tests {
                 &g,
                 [-3, 5]
             ),
-            1
+            0
         );
-        let mut expected = SurfaceMeshData::default();
-        floor_cell(
-            &mut expected,
-            [0., 8., 0., 8.],
-            2.5,
-            InteriorFloor::Stone,
-            [-3, 5],
-        );
-        assert_eq!(m.solid, expected);
+        assert_eq!(m, native);
+        assert_eq!(interior_floor("GoldenrodMagnetTrainStation", &t[0].source),
+            Some(InteriorFloor::Stone));
         let g = grid(2, 1);
         let t = vec![
             tile(source("elite_four_room", 0x02, 0, 0, 0x03), 0, 2),
@@ -568,40 +597,11 @@ mod gym_floor_tests {
             ),
             1
         );
-        assert_eq!(m.textured.positions, neighbor_positions);
-        assert_eq!(m.textured.uvs, neighbor_uvs);
+        assert!(m.textured.positions.ends_with(&neighbor_positions));
+        assert!(m.textured.uvs.ends_with(&neighbor_uvs));
     }
     #[test]
-    fn gym_floor_coplanar_partition_preserves_crop_phase_and_adjacent_geometry() {
-        for style in [
-            InteriorFloor::GymRose,
-            InteriorFloor::GymGreen,
-            InteriorFloor::GymTimber,
-        ] {
-            for y in -9..9 {
-                for x in -9..9 {
-                    let mut a = SurfaceMeshData::default();
-                    let mut b = SurfaceMeshData::default();
-                    gym_floor_cell(&mut a, [-4., 4., 2., 10.], 3.75, style, [x, y]);
-                    gym_floor_cell(&mut b, [28., 36., -22., -14.], 3.75, style, [x, y]);
-                    assert_eq!(a.colors, b.colors);
-                    assert_eq!(a.indices, b.indices);
-                    assert_eq!(a.normals, b.normals);
-                    let mut area = 0.;
-                    for q in a.positions.chunks_exact(4) {
-                        assert!(q.iter().all(|p| p[1] == 3.75
-                            && (-4.0..=4.).contains(&p[0])
-                            && (2.0..=10.).contains(&p[2])));
-                        area += (q[3][0] - q[0][0]) * (q[1][2] - q[0][2]);
-                    }
-                    assert!((area - 64.).abs() < 0.0001);
-                    assert!(a.positions.len() <= 12);
-                    for (a, b) in a.positions.iter().zip(&b.positions) {
-                        assert!(near(a[0] + 32., b[0]) && near(a[2] - 24., b[2]) && a[1] == b[1]);
-                    }
-                }
-            }
-        }
+    fn gym_floor_finish_preserves_adjacent_geometry_and_support() {
         let (tiles, g, mut m) = fixture();
         material_quad(&mut m.solid, [-8., 0., 0., 8.], 12., [0.3; 3]);
         m.solid.cutaway_ranges.push(0..4);

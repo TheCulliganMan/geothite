@@ -10,6 +10,9 @@ pub(super) enum Floor {
     Wood,
     Ceramic,
     Carpet,
+    NativeStone,
+    NativeCarpet,
+    NativeCeramic,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Detail {
@@ -29,6 +32,10 @@ pub(super) enum Detail {
     SproutAltar,
     VioletWall,
     VermilionPanel,
+    SaffronWall,
+    SaffronFloor,
+    SaffronNetwork { open: [bool;4] },
+    OlivinePerimeter,
     MahoganyWall,
     MahoganyPartition,
     BlackthornStairs,
@@ -48,10 +55,10 @@ impl Detail {
             Self::FloorGlyph => "special:live-inscription-paving",
             Self::TeleportPad => "special:live-teleport-inlay",
             Self::LeagueBarrier => "special:league-balustrade",
-            Self::Floor(Floor::Stone) => "special:stone-paving",
+            Self::Floor(Floor::Stone | Floor::NativeStone) => "special:stone-paving",
             Self::Floor(Floor::Wood) => "special:timber-deck",
-            Self::Floor(Floor::Ceramic) => "special:ceramic-paving",
-            Self::Floor(Floor::Carpet) => "special:champion-carpet",
+            Self::Floor(Floor::Ceramic | Floor::NativeCeramic) => "special:ceramic-paving",
+            Self::Floor(Floor::Carpet | Floor::NativeCarpet) => "special:champion-carpet",
             Self::PassageNetwork { .. } => "special:connected-passage-walls",
             Self::CeruleanBridgeDeck => "special:cerulean-brick-bridge",
             Self::CeruleanBridgeFace => "special:cerulean-wood-bridge-face",
@@ -61,6 +68,10 @@ impl Detail {
             Self::SproutAltar => "special:sprout-framed-altar",
             Self::VioletWall => "special:violet-north-wall",
             Self::VermilionPanel => "special:vermilion-north-panel",
+            Self::SaffronWall => "special:saffron-blue-band-wall",
+            Self::SaffronFloor => "special:saffron-live-diamond-paving",
+            Self::SaffronNetwork { .. } => "special:saffron-dark-partitions",
+            Self::OlivinePerimeter => "special:olivine-coral-perimeter",
             Self::MahoganyWall => "special:mahogany-panel-wall",
             Self::MahoganyPartition => "special:mahogany-stone-partition",
             Self::BlackthornStairs => "special:blackthorn-stair-flight",
@@ -163,6 +174,32 @@ fn basement_wall_block(cells: &[&VisualTile], g: &GridGeometry, i: usize) -> boo
         }
     }}
     hash == expected
+}
+fn saffron_wall_block(cells:&[&VisualTile],g:&GridGeometry,i:usize,protected:&[bool])->bool {
+    if g.width.checked_mul(g.height)!=Some(cells.len()) || protected.len()!=cells.len()
+        || i>=cells.len() {return false;}
+    let s=&cells[i].source;
+    let expected=match s.metatile_id {
+        0x08=>0x6fa8327d13468ab2u64,0x09=>0x367ae28b0ad0a1dd,
+        0x0a=>0x0d029a27b84a3a92,0x0c=>0x833e398853a4267d,
+        0x0e=>0xf3a7824ec4e2284d,_=>return false,
+    };
+    if s.subtile_column>=4 || s.subtile_row>=4 {return false;}
+    let Some(x)=(i%g.width).checked_sub(s.subtile_column as usize) else{return false;};
+    let Some(y)=(i/g.width).checked_sub(s.subtile_row as usize) else{return false;};
+    if x+4>g.width || y+4>g.height {return false;}
+    let mut hash=0xcbf29ce484222325u64;
+    for dy in 0..4 {for dx in 0..4 {
+        let at=(y+dy)*g.width+x+dx;
+        if protected[at] {return false;}
+        let s=&cells[at].source;
+        if s.tileset_id.as_ref()!="underground" {return false;}
+        for byte in [s.metatile_id as u8,(s.metatile_id>>8) as u8,
+            s.subtile_column,s.subtile_row,s.tile_index as u8,(s.tile_index>>8) as u8] {
+            hash=(hash^u64::from(byte)).wrapping_mul(0x100000001b3);
+        }
+    }}
+    hash==expected
 }
 fn cerulean_bridge_detail(s: &VisualTileSource) -> Option<(Detail, u16)> {
     if s.tileset_id.as_ref() != "port" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
@@ -284,12 +321,28 @@ fn sprout_altar_local(s: &VisualTileSource) -> Option<(u8,u8,usize,usize)> {
         .then_some((x,s.subtile_row,4,2))
 }
 
-pub(super) fn resolve_into(r: &mut Resolver<'_>) {
+pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
     let (map, cells, g) = (r.map, r.cells, r.g);
     let Some(first) = cells.first() else {
         return;
     };
     let ts = first.source.tileset_id.as_ref();
+    // These new native families have no bundled live-profile substitution.
+    // Every resolving live override keeps authority over its complete plot.
+    let mut protected=vec![false;cells.len()];
+    if matches!(map,"OlivineGym"|"SaffronGym"|"UndergroundPath"|"LancesRoom") || league(map) {
+        for custom in live::resolve(cells,g.width,g.height,map,profiles) {
+            for i in custom.indices(g.width) {protected[i]=true;}
+        }
+    }
+    if map=="OlivineGym" {
+        let strips=grouped_flat_card_placements(cells,g,crate::olivine_gym::GROUND_TILE,false,
+            crate::olivine_gym::perimeter_local).into_iter().filter(|p| {
+                (0..p.height).all(|y|(0..p.width).all(|x|
+                    !protected[(p.row+y)*g.width+p.column+x]))
+            }).collect();
+        groups(r,strips,Detail::OlivinePerimeter,crate::olivine_gym::GROUND_TILE,13.,16.);
+    }
     if map=="VioletGym" {
         let walls=grouped_flat_card_placements(cells,g,0x01,false,violet_wall_local);
         groups(r,walls,Detail::VioletWall,0x01,16.,4.);
@@ -630,6 +683,12 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
         });
         groups(r, stair, Detail::StoreBasementStair, 0x10, 16., 16.);
     }
+    if map == "SaffronGym" && ts == "underground" {
+        let mut walls = grouped_flat_card_placements(cells,g,0x10,false,
+            crate::saffron_gym::north_wall_local);
+        walls.retain(|p|saffron_wall_block(cells,g,p.row*g.width+p.column,&protected));
+        groups(r,walls,Detail::SaffronWall,0x10,16.,8.);
+    }
     if (passage(map) || map == "GoldenrodDeptStoreB1F") && ts == "underground" {
         if let Some(floor) = ground(map, cells, ts, 0x10) {
             // Same exact source vocabulary as the established underground
@@ -643,6 +702,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
                         && (matches!(s.metatile_id,0x08..=0x0e|0x10..=0x14|0x25|0x26|0x2c|0x2d|0x2f)
                             || (map == "GoldenrodDeptStoreB1F" && matches!(s.metatile_id, 0x18..=0x1f)))
                         && (map != "GoldenrodDeptStoreB1F" || basement_wall_block(cells, g, i))
+                        && (map != "SaffronGym" || saffron_wall_block(cells,g,i,&protected))
                         && matches!(s.tile_index,0x03..=0x05|0x0c|0x0d|0x13..=0x15)
                 })
                 .collect();
@@ -664,7 +724,8 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
                     1,
                     1,
                     floor,
-                    Detail::PassageNetwork { open, basement: map == "GoldenrodDeptStoreB1F" },
+                    if map=="SaffronGym" {Detail::SaffronNetwork {open}}
+                    else {Detail::PassageNetwork { open, basement: map == "GoldenrodDeptStoreB1F" }},
                     16.,
                     8.,
                 );
@@ -672,7 +733,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
         }
         if map == "SaffronGym" {
             let statues = grouped_flat_card_placements(cells, g, 0x10, false, |s| {
-                if s.tileset_id.as_ref() != ts || s.metatile_id != 0x36 || s.subtile_column >= 2 {
+                if s.tileset_id.as_ref() != ts || s.metatile_id != 0x36 || s.subtile_column >= 2 || s.subtile_row >= 4 {
                     return None;
                 }
                 let art = [[0x07, 0x08], [0x17, 0x18], [0x09, 0x19], [0x30, 0x31]];
@@ -683,8 +744,8 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
             let pads = grouped_flat_card_placements(cells, g, 0x10, false, |s| {
                 if s.tileset_id.as_ref() != ts
                     || s.metatile_id != 0x0f
-                    || s.subtile_column < 2
-                    || s.subtile_row < 2
+                    || s.subtile_column < 2 || s.subtile_column >= 4
+                    || s.subtile_row < 2 || s.subtile_row >= 4
                 {
                     return None;
                 }
@@ -759,8 +820,23 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
         if s.tileset_id.as_ref() != ts {
             continue;
         }
+        if map=="SaffronGym" {
+            if !protected[i] && crate::saffron_gym::floor_source(s)
+                && shape_for_source_on_map(map,s).surface_height(g.tile_height).abs()<0.001 {
+                add_rect(r,i%g.width,i/g.width,1,1,i,Detail::SaffronFloor,1.,8.);
+            }
+            // Unverified tile10 phases keep their source presentation, rather
+            // than receiving the corridor's generic ceramic substitute.
+            continue;
+        }
+        if protected[i] && (map=="UndergroundPath" || league(map) || map=="LancesRoom") {
+            continue;
+        }
         let floor = if ruins(ts) && matches!(s.tile_index, 0x02 | 0x03) {
             Some(Floor::Stone)
+        } else if map=="UndergroundPath" {
+            (ts=="underground" && s.tile_index==0x10
+                && s.subtile_column<4 && s.subtile_row<4).then_some(Floor::NativeCeramic)
         } else if passage(map) && s.tile_index == 0x10 {
             Some(Floor::Ceramic)
         } else if harbor(map) && matches!(s.tile_index, 0x05 | 0x31) {
@@ -772,10 +848,13 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
             && matches!(s.metatile_id, 0x02 | 0x09 | 0x2d)
         {
             Some(Floor::Wood)
-        } else if league(map) && ts == "elite_four_room" && s.tile_index == 0x01 {
-            Some(Floor::Stone)
+        } else if league(map) && ts == "elite_four_room" && s.tile_index == 0x01
+            && s.subtile_column<4 && s.subtile_row<4 {
+            Some(Floor::NativeStone)
         } else if map == "LancesRoom" && ts == "champions_room" && s.metatile_id == 0x31 {
-            Some(Floor::Carpet)
+            (s.subtile_column<4 && s.subtile_row<4
+                && s.tile_index==[0x3b,0x3c,0x3c,0x3d][s.subtile_column as usize])
+                .then_some(Floor::NativeCarpet)
         } else {
             None
         };
@@ -948,6 +1027,7 @@ pub(super) fn append(
     if !matches!(
         detail,
         Detail::Floor(_)
+            | Detail::SaffronFloor
             | Detail::CeruleanBridgeDeck
             | Detail::CeruleanBridgeFace
             | Detail::BlackthornCrossing
@@ -1015,39 +1095,103 @@ pub(super) fn append(
         Detail::BlackthornCrossing => {
             // The callback fills the channel with rubble that can be crossed.
             // Keep every top at the original walking datum, with depth below it.
-            slab(&mut mesh.solid,[w,e,n,s],-6.*scale,-0.4*scale,[0.33,0.34,0.31,1.]);
+            let rubble = &mut mesh.textured;
+            let mut native_slab = |bounds, low, high, pixel: [usize; 2]| {
+                let first = rubble.positions.len();
+                slab(rubble, bounds, low, high, [1.; 4]);
+                let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                let sample = [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                    uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.];
+                rubble.uvs[first..].fill(sample);
+            };
+            // The 44 corner uses gray; the adjacent 45 tile owns gold rubble.
+            // Dark joints, medium stones and pale facets keep the same volume.
+            native_slab([w,e,n,s],-6.*scale,-0.4*scale,[8,0]);
             for row in 0..3 { for column in 0..3 {
                 let west = w+(e-w)*column as f32/3.;
                 let north = n+(s-n)*row as f32/3.;
-                slab(&mut mesh.solid,[west+0.15*scale,west+(e-w)/3.-0.15*scale,
+                native_slab([west+0.15*scale,west+(e-w)/3.-0.15*scale,
                     north+0.15*scale,north+(s-n)/3.-0.15*scale],-0.4*scale,0.,
-                    if (row+column)%2==0 {[0.58,0.59,0.54,1.]}else{[0.49,0.51,0.46,1.]});
+                    if (row+column)%2==0 {[9,2]}else{[10,6]});
             }}
+            drop(native_slab);
         }
         Detail::MahoganyPartition => {
             crate::dungeon_models::room_model(crate::dungeon_models::RoomAsset::GymStonePartition)
-                .append(&mut mesh.solid, [w,e,s-16.*scale,s], 0., rise);
+                .append_source_sampled(&mut mesh.textured, [w,e,s-16.*scale,s], 0., rise, |pixel| {
+                    let [x,y]=pixel.map(|v|v as usize);
+                    let uv=g.uv(p.column+x/8,p.row+y/8);
+                    [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+                     uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+                });
+        }
+        Detail::OlivinePerimeter => {
+            let (u0,_,v0,_)=g.uv(p.column,p.row);
+            let (_,u1,_,v1)=g.uv(p.column+p.width-1,p.row+p.height-1);
+            append_olivine_perimeter(&mut mesh.textured,[w,e,n,s],rise,(u0,u1,v0,v1));
+        }
+        Detail::SaffronWall => {
+            // Keep the complete native dark panel / pale line / blue band on
+            // the front of a closed volume, with a pale physical cornice.
+            let uv = g.uv(p.column,p.row);
+            let dark = [uv.0+(uv.1-uv.0)*0.5/8.,uv.2+(uv.3-uv.2)*0.5/8.];
+            let pale = [dark[0],uv.2+(uv.3-uv.2)*1.5/8.];
+            for (bounds,low,high,sample) in [
+                ([w,e,s-8.*scale,s-0.025*scale],0.,rise-0.25*scale,dark),
+                ([w,e,s-8.2*scale,s],rise-0.25*scale,rise,pale),
+            ] {
+                let first = mesh.textured.positions.len();
+                slab(&mut mesh.textured,bounds,low,high,[1.;4]);
+                for i in first..mesh.textured.positions.len() {
+                    mesh.textured.uvs[i] = sample;
+                    mesh.textured.colors[i] = crate::interior_models::authored_face_color(
+                        [1.;4],Vec3::from_array(mesh.textured.normals[i]));
+                }
+            }
+            let u0 = p.column as f32 / g.width as f32;
+            let u1 = (p.column+p.width) as f32 / g.width as f32;
+            let v0 = p.row as f32 / g.height as f32;
+            let v1 = (p.row+p.height) as f32 / g.height as f32;
+            append_quad_colors(&mut mesh.textured,
+                [[w,0.,s],[e,0.,s],[e,rise-0.25*scale,s],[w,rise-0.25*scale,s]],
+                [0.,0.,1.],[[u0,v1],[u1,v1],[u1,v0],[u0,v0]],
+                [crate::interior_models::authored_face_color([1.;4],Vec3::Z);4]);
         }
         Detail::MahoganyWall => {
-            // Pale square panels under a broad cold-gray cap. Repeated modules
-            // meet along the same front plane, with no per-tile vertical blocks.
+            // Preserve the source-blue recessed panels and pale highlights.
+            // Sample only the complete, validated Mahogany wall drawing;
+            // its atlas palette remains authoritative at every time of day.
+            let (u0, u1, v0, v1) = g.uv(p.column, p.row + 2);
+            let palette_uv = |x: usize, y: usize| [
+                u0 + (u1-u0) * (x as f32 + 0.5) / 8.,
+                v0 + (v1-v0) * (y as f32 + 0.5) / 8.,
+            ];
+            let mut colored_slab = |bounds, low, high, pixel: [usize;2]| {
+                let first = mesh.textured.positions.len();
+                slab(&mut mesh.textured, bounds, low, high, [1.;4]);
+                for i in first..mesh.textured.positions.len() {
+                    mesh.textured.uvs[i] = palette_uv(pixel[0],pixel[1]);
+                    mesh.textured.colors[i] = crate::interior_models::authored_face_color(
+                        [1.;4], Vec3::from_array(mesh.textured.normals[i]));
+                }
+            };
             let back = s - 8. * scale;
             let face = s - scale;
-            slab(&mut mesh.solid, [w, e, back, face], 0., rise, [0.56, 0.61, 0.62, 1.]);
-            slab(&mut mesh.solid, [w, e, back - scale, s], 22. * scale, rise,
-                [0.78, 0.82, 0.80, 1.]);
-            slab(&mut mesh.solid, [w, e, face, s], 17. * scale, 22. * scale,
-                [0.67, 0.73, 0.71, 1.]);
+            colored_slab( [w, e, back, face], 0., rise, [7,2]);
+            colored_slab( [w, e, back - scale, s], 22. * scale, rise,
+                [1,1]);
+            colored_slab( [w, e, face, s], 17. * scale, 22. * scale,
+                [1,2]);
             for row in 0..2 {
                 for column in 0..p.width {
                     let west = w + column as f32 * g.tile_width;
                     let bottom = (1. + row as f32 * 8.) * scale;
-                    slab(&mut mesh.solid,
+                    colored_slab(
                         [west + scale * 0.5, west + g.tile_width - scale * 0.5, face, s],
-                        bottom, bottom + 7. * scale, [0.77, 0.82, 0.81, 1.]);
-                    slab(&mut mesh.solid,
+                        bottom, bottom + 7. * scale, [1,1]);
+                    colored_slab(
                         [west + 1.4 * scale, west + g.tile_width - 1.4 * scale, s, s + 0.2 * scale],
-                        bottom + 0.9 * scale, bottom + 6.1 * scale, [0.59, 0.67, 0.67, 1.]);
+                        bottom + 0.9 * scale, bottom + 6.1 * scale, [0,0]);
                 }
             }
         }
@@ -1074,7 +1218,7 @@ pub(super) fn append(
         }
         Detail::SproutPillar => {
             let anchor = [p.column, p.row];
-            super::super::sprout_pillar::append(&mut mesh.animated_solid, g, cells, anchor);
+            super::super::sprout_pillar::append(&mut mesh.animated_textured, g, cells, anchor);
             mesh.animated_pillars.push(anchor);
         }
         Detail::Model(Asset::HarborFerry) => {
@@ -1206,42 +1350,71 @@ pub(super) fn append(
                 );
             }
         }
+        Detail::SaffronFloor => {
+            append_saffron_floor(&mut mesh.textured,[w,e,n,s],scale,g.uv(p.column,p.row));
+        }
         Detail::Floor(kind) => {
-            floor_tile(&mut mesh.solid, [w, e, n, s], kind, p.column, p.row, scale)
+            if matches!(kind,Floor::NativeStone|Floor::NativeCarpet|Floor::NativeCeramic) {
+                let source=&cells[p.row*g.width+p.column].source;
+                super::super::modeled_interiors::native_beveled_floor_cell(
+                    &mut mesh.textured,[w,e,n,s],0.,
+                    [i32::from(source.subtile_column),i32::from(source.subtile_row)],g.uv(p.column,p.row));
+            } else {
+                floor_tile(&mut mesh.solid, [w, e, n, s], kind, p.column, p.row, scale)
+            }
+        }
+        Detail::SaffronNetwork { open } => {
+            append_saffron_partition(&mut mesh.textured,[w,e,n,s],scale,
+                g.uv(p.column,p.row),cells[p.row*g.width+p.column].source.tile_index,open);
         }
         Detail::PassageNetwork { open, basement } => {
+            let mut native_wall = SurfaceMeshData::default();
+            let wall = if basement { &mut native_wall } else { &mut mesh.solid };
             if open[2] {
                 let mut rear_open = open;
                 rear_open[2] = false;
                 append_masonry(
-                    &mut mesh.solid,
+                    wall,
                     [w, e, n, s - 2. * scale],
                     16. * scale,
                     rear_open,
                 );
                 extension_model(Asset::PassageWall).append(
-                    &mut mesh.solid,
+                    wall,
                     [w, e, s - 2. * scale, s],
                     0.,
                     16. * scale,
                 );
             } else {
-                append_masonry(&mut mesh.solid, [w, e, n, s], 16. * scale, open);
+                append_masonry(wall, [w, e, n, s], 16. * scale, open);
             }
             if basement {
-                // Preserve the stockroom's blue wainscot as modeled trim.
-                let trim = 0.28 * scale;
-                let color = [0.18, 0.25, 0.72, 1.];
-                for (edge, visible) in open.into_iter().enumerate() {
-                    if !visible { continue; }
-                    let bounds = match edge {
-                        0 => [w, e, n, n + trim],
-                        1 => [e - trim, e, n + if open[0] { trim } else { 0. }, s - if open[2] { trim } else { 0. }],
-                        2 => [w, e, s - trim, s],
-                        _ => [w, w + trim, n + if open[0] { trim } else { 0. }, s - if open[2] { trim } else { 0. }],
+                // The complete source guard has authenticated this wall cell.
+                // Keep its dark cap and original blue/chrome panel artwork;
+                // no generic cream masonry or guessed blue trim is painted.
+                let uv = g.uv(p.column, p.row);
+                for (i, (&point, &normal)) in native_wall.positions.iter()
+                    .zip(&native_wall.normals).enumerate() {
+                    let local = if normal[1] > 0.9 {
+                        [0.5 / 8., 0.5 / 8.]
+                    } else {
+                        let horizontal = if normal[0].abs() > normal[2].abs() {
+                            (point[2] - n) / (s - n)
+                        } else { (point[0] - w) / (e - w) };
+                        [0.5/8. + horizontal.clamp(0.,1.)*7./8.,
+                         0.5/8. + (1.-point[1]/(16.*scale)).clamp(0.,1.)*7./8.]
                     };
-                    slab(&mut mesh.solid, bounds, 1. * scale, 6. * scale, color);
+                    native_wall.uvs[i] = [uv.0+(uv.1-uv.0)*local[0],uv.2+(uv.3-uv.2)*local[1]];
+                    native_wall.colors[i] = crate::interior_models::authored_face_color(
+                        [1.;4], Vec3::from_array(normal),
+                    );
                 }
+                let base = mesh.textured.positions.len() as u32;
+                mesh.textured.indices.extend(native_wall.indices.into_iter().map(|i|i+base));
+                mesh.textured.positions.extend(native_wall.positions);
+                mesh.textured.normals.extend(native_wall.normals);
+                mesh.textured.uvs.extend(native_wall.uvs);
+                mesh.textured.colors.extend(native_wall.colors);
             }
         }
         Detail::LeagueBarrier => {
@@ -1348,6 +1521,85 @@ pub(super) fn append(
         }
     }
 }
+// The native diamond drawing closes the physical lid; sides and underside
+// use an owned background texel. No generic ceramic lid can overlap it.
+fn append_saffron_partition(out:&mut SurfaceMeshData,b:[f32;4],k:f32,
+    uv:(f32,f32,f32,f32),tile:u16,open:[bool;4]) {
+    let [w,e,n,s]=b;let (u0,u1,v0,v1)=uv;
+    let sample=|x:f32,y:f32|[u0+(u1-u0)*(x+0.5)/8.,v0+(v1-v0)*(y+0.5)/8.];
+    let edge=match tile {0x0c if open[3]=>Some(([w,w+0.22*k,n,s],sample(1.,0.))),
+        0x0d if open[1]=>Some(([e-0.22*k,e,n,s],sample(6.,0.))),_=>None};
+    let body=match edge {
+        Some((_,_)) if tile==0x0c=>[w+0.22*k,e,n,s],
+        Some((_,_))=>[w,e-0.22*k,n,s],None=>b,
+    };
+    let first=out.positions.len();
+    slab(out,body,0.,16.*k,[1.;4]);
+    for i in first..out.positions.len() {
+        let p=out.positions[i];let normal=Vec3::from_array(out.normals[i]);
+        out.uvs[i]=if normal.y>0.5 {
+            [u0+(u1-u0)*(p[0]-w)/(e-w),v0+(v1-v0)*(p[2]-n)/(s-n)]
+        } else if normal.z>0.5 && open[2] {
+            [u0+(u1-u0)*(p[0]-w)/(e-w),v1-(v1-v0)*p[1]/(16.*k)]
+        } else {sample(0.,0.)};
+        out.colors[i]=crate::interior_models::authored_face_color([1.;4],normal);
+    }
+    // Native vertical pale outlines continue down the exposed outer edges.
+    // The west/east drawings use different live shades, preserved separately.
+    if let Some((bounds,color))=edge {
+        let first=out.positions.len();slab(out,bounds,0.,16.*k,[1.;4]);
+        for i in first..out.positions.len() {out.uvs[i]=color;
+            out.colors[i]=crate::interior_models::authored_face_color([1.;4],
+                Vec3::from_array(out.normals[i]));}
+    }
+}
+fn append_saffron_floor(out:&mut SurfaceMeshData,b:[f32;4],scale:f32,
+    uv:(f32,f32,f32,f32)) {
+    let first=out.positions.len();let indices=out.indices.len();
+    slab(out,b,-1.5*scale,0.,[1.;4]);
+    let rest=out.indices.split_off(indices);
+    out.indices.extend(rest.chunks_exact(3)
+        .filter(|tri|out.normals[tri[0] as usize][1]<0.5).flatten().copied());
+    let (u0,u1,v0,v1)=uv;
+    for i in first..out.positions.len() {
+        out.uvs[i]=[u0+(u1-u0)*0.5/8.,v0+(v1-v0)*0.5/8.];
+        out.colors[i]=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(out.normals[i]));
+    }
+    append_top(out,b,0.,uv);
+}
+
+// Closed rounded perimeter sections, entirely inside the owned strip plot.
+// Every face uses the strip's live atlas; no room-wide color substitute.
+fn append_olivine_perimeter(out: &mut SurfaceMeshData,b: [f32;4],rise: f32,
+    uv: (f32,f32,f32,f32)) {
+    let [w,e,n,s]=b;let (u0,u1,v0,v1)=uv;
+    let profile=[[0.2,0.],[0.8,0.],[0.8,0.65],[0.76,0.83],[0.65,0.96],
+        [0.5,1.],[0.35,0.96],[0.24,0.83],[0.2,0.65]];
+    let point=|[x,y]:[f32;2],z:f32|[w+(e-w)*x,rise*y,z];
+    let centre=[0.5,0.6];
+    let mut triangle=|points:[[f32;3];3]| {
+        let p=points.map(Vec3::from_array);
+        let normal=(p[1]-p[0]).cross(p[2]-p[0]).normalize();
+        let first=out.positions.len() as u32;
+        out.positions.extend(points);out.normals.extend([normal.to_array();3]);
+        out.uvs.extend(points.map(|[x,_,z]| {
+            // Half-source-pixel inset keeps border samples inside this exact
+            // 16x32 drawing, including the terminal cap's final row.
+            [u0+(u1-u0)*(0.5/16.+(x-w)/(e-w)*(15./16.)),
+             v0+(v1-v0)*(0.5/32.+(z-n)/(s-n)*(31./32.))]
+        }));
+        out.colors.extend([crate::interior_models::authored_face_color([1.;4],normal);3]);
+        out.indices.extend([first,first+1,first+2]);
+    };
+    for i in 0..profile.len() {
+        let a=profile[i];let b=profile[(i+1)%profile.len()];
+        let q=[point(a,n),point(b,n),point(b,s),point(a,s)];
+        triangle([q[0],q[1],q[2]]);triangle([q[0],q[2],q[3]]);
+        triangle([point(centre,n),point(b,n),point(a,n)]);
+        triangle([point(centre,s),point(a,s),point(b,s)]);
+    }
+}
+
 fn slab(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [f32; 4]) {
     let [w, e, n, s] = b;
     for (p, norm) in [
@@ -1398,6 +1650,7 @@ fn floor_tile(out: &mut SurfaceMeshData, b: [f32; 4], kind: Floor, x: usize, y: 
             }
         }
         Floor::Carpet => [0.35, 0.22, 0.33, 1.],
+        Floor::NativeStone | Floor::NativeCarpet | Floor::NativeCeramic => unreachable!("native floors require their source atlas"),
     };
     slab(
         out,
@@ -1674,6 +1927,219 @@ mod tests {
         assert_eq!(count(&t), 0);
     }
     #[test]
+    fn olivine_perimeter_is_closed_inside_its_plot_with_live_uvs() {
+        for scale in [0.5,1.,1.5] {
+            let mut surface=SurfaceMeshData::default();
+            append_olivine_perimeter(&mut surface,[-8.*scale,8.*scale,0.,32.*scale],
+                13.*scale,(0.2,0.3,0.4,0.5));
+            assert_eq!(surface.indices.len()/3,36);
+            let mut edges=std::collections::BTreeMap::new();let mut volume=0.;
+            for tri in surface.indices.chunks_exact(3) {
+                let p=[tri[0],tri[1],tri[2]].map(|i|surface.positions[i as usize]);
+                let v=p.map(Vec3::from_array);volume+=v[0].dot(v[1].cross(v[2]))/6.;
+                for i in 0..3 {
+                    let mut edge=[p[i].map(f32::to_bits),p[(i+1)%3].map(f32::to_bits)];
+                    edge.sort();*edges.entry(edge).or_insert(0usize)+=1;
+                }
+            }
+            assert!(volume>0.,"perimeter faces must point outward");
+            assert!(edges.values().all(|n|*n==2),"perimeter must have closed caps");
+            assert!(surface.positions.iter().all(|p|p[0]>=-4.801*scale && p[0]<=4.801*scale
+                && p[1]>=0. && p[1]<=13.*scale && p[2]>=0. && p[2]<=32.*scale));
+            assert!(surface.normals.iter().all(|n|(Vec3::from_array(*n).length()-1.).abs()<0.0001));
+            assert!(surface.uvs.iter().all(|uv|uv[0]>0.2 && uv[0]<0.3 && uv[1]>0.4 && uv[1]<0.5));
+        }
+    }
+    #[test]
+    fn olivine_perimeter_requires_complete_source_and_preserves_ground_support() {
+        let g=grid(4,4);let mut t=tiles(4,4,"champions_room",0x53);
+        for y in 0..4 {for x in 0..2 {
+            let s=&mut t[y*4+x].source;s.metatile_id=0x25;s.tile_index=0x0a+x as u16;
+        }}
+        let refs=t.iter().collect::<Vec<_>>();
+        let all=super::super::resolve("OlivineGym",&refs,&g,None);
+        let p=all.iter().find(|p|p.kind_label()=="special:olivine-coral-perimeter").unwrap();
+        assert_eq!(p.indices(4).count(),8);
+        let mut mesh=TerrainMeshData {footing_heights:vec![7.;16],..Default::default()};
+        super::super::append(&mut mesh,&g,p,&refs,[0,0]);
+        assert_eq!(mesh.footing_heights,vec![7.;16]);assert!(mesh.solid.positions.is_empty());
+        assert_eq!(mesh.textured.indices.len()/3,16+36);
+        assert!(mesh.textured.positions[..32].iter().all(|p|p[1]==0.));
+        assert!(mesh.textured.positions[32..].iter().all(|p|p[1]>=0. && p[1]<=13.));
+        for i in p.indices(4) {for field in 0..5 {
+            let mut altered=t.clone();let s=&mut altered[i].source;
+            match field {0=>s.metatile_id^=0x80,1=>s.tile_index^=0x80,
+                2=>s.subtile_column^=0x80,3=>s.subtile_row^=0x80,_=>s.tileset_id="other".into()}
+            assert!(super::super::resolve("OlivineGym",&altered.iter().collect::<Vec<_>>(),&g,None)
+                .iter().all(|p|p.kind_label()!="special:olivine-coral-perimeter"));
+        }}
+        assert!(super::super::resolve("LancesRoom",&refs,&g,None).iter()
+            .all(|p|p.kind_label()!="special:olivine-coral-perimeter"));
+        let cropped=grid(4,3);
+        assert!(super::super::resolve("OlivineGym",&refs[..12],&cropped,None).iter()
+            .all(|p|p.kind_label()!="special:olivine-coral-perimeter"));
+        for y in 0..4 {for x in 0..2 {
+            let custom=serde_json::from_value(serde_json::json!({"objects":[{
+                "name":"Owned pink strip","map":"OlivineGym","tileset":"champions_room",
+                "metatile":37,"origin":[x,y],"tiles":[[10+x]],"ground":83,
+                "top_pixels":8,"depth_pixels":8}]})).unwrap();
+            assert!(super::super::resolve("OlivineGym",&refs,&g,Some(&custom)).iter()
+                .all(|p|p.kind_label()!="special:olivine-coral-perimeter"),
+                "Olivine perimeter must yield to a complete live override");
+        }}
+    }
+    #[test]
+    fn saffron_partition_has_live_dark_top_and_separate_pale_edges_without_overlap() {
+        for k in [0.5,1.,2.] {for tile in [0x0c,0x0d,0x14] {
+            let mut out=SurfaceMeshData::default();
+            append_saffron_partition(&mut out,[-4.*k,4.*k,0.,8.*k],k,
+                (0.2,0.3,0.4,0.5),tile,[true;4]);
+            let mut volume=0.;let mut area=0.;
+            for t in out.indices.chunks_exact(3) {
+                let p=[0,1,2].map(|j|Vec3::from_array(out.positions[t[j] as usize]));
+                volume+=p[0].dot(p[1].cross(p[2]))/6.;
+                let cross=(p[1]-p[0]).cross(p[2]-p[0]);
+                if cross.y>0. {area+=cross.y*0.5;}
+            }
+            assert!((volume-1024.*k.powi(3)).abs()<0.002*k.powi(3));
+            assert!((area-64.*k*k).abs()<0.0001*k*k);
+            assert!(out.positions.iter().all(|p|p[0]>=-4.*k&&p[0]<=4.*k
+                &&p[2]>=0.&&p[2]<=8.*k&&p[1]>=0.&&p[1]<=16.*k));
+            assert!(out.uvs.iter().all(|p|p[0]>=0.2&&p[0]<=0.3&&p[1]>=0.4&&p[1]<=0.5));
+            assert!(out.uvs.contains(&[0.20625,0.40625]));
+            for (&n,&c) in out.normals.iter().zip(&out.colors) {
+                assert_eq!(c,crate::interior_models::authored_face_color([1.;4],Vec3::from_array(n)));
+            }
+        }}
+    }
+    #[test]
+    fn saffron_partition_block_requires_every_phase_and_custom_owner() {
+        let g=grid(4,4);let mut t=tiles(4,4,"underground",0x10);
+        for cell in &mut t {cell.source.metatile_id=0x0c;
+            cell.source.tile_index=match cell.source.subtile_column {0=>0x0c,1=>0x0d,_=>0x10};}
+        let refs=t.iter().collect::<Vec<_>>();let empty=vec![false;16];
+        assert!(saffron_wall_block(&refs,&g,0,&empty));
+        let all=super::super::resolve("SaffronGym",&refs,&g,None);
+        assert_eq!(all.iter().filter(|p|p.kind_label()=="special:saffron-dark-partitions").count(),8);
+        for i in 0..16 {for mode in 0..6 {
+            let mut bad=t.clone();let mut protected=empty.clone();
+            match mode {0=>bad[i].source.tile_index^=1,1=>bad[i].source.metatile_id^=1,
+                2=>bad[i].source.subtile_column^=1,3=>bad[i].source.subtile_row^=1,
+                4=>bad[i].source.tileset_id="custom".into(),_=>protected[i]=true}
+            assert!(!saffron_wall_block(&bad.iter().collect::<Vec<_>>(),&g,0,&protected));
+        }}
+        let profiles:Document=serde_json::from_str(r#"{"objects":[{"name":"Owned wall edge","map":"SaffronGym","tileset":"underground","metatile":12,"origin":[0,0],"tiles":[[12]],"ground":16,"top_pixels":8,"depth_pixels":8}]}"#).unwrap();
+        assert!(super::super::resolve("SaffronGym",&refs,&g,Some(&profiles))
+            .iter().all(|p|p.kind_label()!="special:saffron-dark-partitions"));
+        assert!(super::super::resolve("UndergroundPath",&refs,&g,None)
+            .iter().all(|p|p.kind_label()!="special:saffron-dark-partitions"));
+        let mut mesh=TerrainMeshData {footing_heights:vec![3.;16],..Default::default()};
+        for p in all.iter().filter(|p|p.kind_label()=="special:saffron-dark-partitions") {
+            super::super::append(&mut mesh,&g,p,&refs,[0,0]);
+        }
+        assert_eq!(mesh.footing_heights,vec![3.;16]);assert!(mesh.solid.positions.is_empty());
+    }
+    #[test]
+    fn saffron_floor_closed_volume_has_one_live_lid_at_the_support_datum() {
+        for scale in [0.5,1.,1.5] {
+            let mut surface=SurfaceMeshData::default();
+            append_saffron_floor(&mut surface,[-4.*scale,4.*scale,2.*scale,10.*scale],scale,(0.2,0.3,0.4,0.5));
+            let mut edges=std::collections::BTreeMap::new();let mut area=0.;let mut volume=0.;
+            for tri in surface.indices.chunks_exact(3) {
+                let p=[tri[0],tri[1],tri[2]].map(|i|surface.positions[i as usize]);
+                let v=p.map(Vec3::from_array);volume+=v[0].dot(v[1].cross(v[2]))/6.;
+                for i in 0..3 {
+                    let mut edge=[p[i].map(f32::to_bits),p[(i+1)%3].map(f32::to_bits)];
+                    edge.sort();*edges.entry(edge).or_insert(0usize)+=1;
+                }
+                if p.iter().all(|p|p[1]==0.) {
+                    area+=(v[1]-v[0]).cross(v[2]-v[0]).y*0.5;
+                    for &i in tri {
+                        let point=surface.positions[i as usize];let uv=surface.uvs[i as usize];
+                        assert!((uv[0]-(0.2+0.1*(point[0]+4.*scale)/(8.*scale))).abs()<0.0001);
+                        assert!((uv[1]-(0.4+0.1*(point[2]-2.*scale)/(8.*scale))).abs()<0.0001);
+                    }
+                }
+            }
+            assert!((area-64.*scale*scale).abs()<0.001,"Saffron paving must have one live lid");
+            assert!((volume-96.*scale*scale*scale).abs()<0.001);
+            assert!(edges.values().all(|n|*n==2));
+            assert!(surface.positions.iter().all(|p|p[1]<=0. && p[1]>=-1.5*scale));
+        }
+    }
+    #[test]
+    fn saffron_floor_scope_rejects_bad_phase_and_custom_owner_without_ceramic_substitute() {
+        let g=grid(4,4);let mut t=tiles(4,4,"underground",0x10);
+        for tile in &mut t {tile.source.metatile_id=0x0d;}
+        let refs=t.iter().collect::<Vec<_>>();let all=super::super::resolve("SaffronGym",&refs,&g,None);
+        let label="special:saffron-live-diamond-paving";
+        assert_eq!(all.iter().filter(|p|p.kind_label()==label).count(),16);
+        let p=all.iter().find(|p|p.kind_label()==label).unwrap();
+        let mut mesh=TerrainMeshData {footing_heights:vec![3.;16],..Default::default()};
+        super::super::append(&mut mesh,&g,p,&refs,[0,0]);
+        assert_eq!(mesh.footing_heights,vec![3.;16]);assert!(mesh.solid.indices.is_empty());
+        for field in 0..5 {
+            let mut altered=t.clone();let s=&mut altered[5].source;
+            match field {0=>s.metatile_id=0,1=>s.tile_index^=0x80,2=>s.subtile_column=255,
+                3=>s.subtile_row=255,_=>s.tileset_id="other".into()}
+            let changed=super::super::resolve("SaffronGym",&altered.iter().collect::<Vec<_>>(),&g,None);
+            assert_eq!(changed.iter().filter(|p|p.kind_label()==label).count(),15);
+            assert!(changed.iter().all(|p|p.kind_label()!="special:ceramic-paving"));
+        }
+        assert!(super::super::resolve("UndergroundPath",&refs,&g,None).iter()
+            .all(|p|p.kind_label()!=label));
+        let custom=serde_json::from_value(serde_json::json!({"objects":[{
+            "name":"Owned floor tile","map":"SaffronGym","tileset":"underground",
+            "metatile":13,"origin":[0,0],"tiles":[[16]],"ground":16,
+            "top_pixels":0,"depth_pixels":8}]})).unwrap();
+        let owned=super::super::resolve("SaffronGym",&refs,&g,Some(&custom));
+        assert_eq!(owned.iter().filter(|p|p.kind_label()==label).count(),15);
+    }
+    #[test]
+    fn saffron_blue_wall_requires_complete_drawing_and_retains_live_uvs_and_floor() {
+        let g = grid(4,4);
+        let mut t = tiles(4,4,"underground",0x10);
+        for y in 0..2 { for x in 0..4 {
+            t[y*4+x].source.metatile_id=0x09;
+            t[y*4+x].source.tile_index=[0x04,0x14][y];
+        }}
+        let refs=t.iter().collect::<Vec<_>>();
+        let all=super::super::resolve("SaffronGym",&refs,&g,None);
+        let p=all.iter().find(|p|p.kind_label()=="special:saffron-blue-band-wall").unwrap();
+        assert_eq!(p.indices(4).count(),8);
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],..Default::default()};
+        super::super::append(&mut mesh,&g,p,&refs,[0,0]);
+        assert_eq!(mesh.footing_heights,vec![0.;16]);
+        assert!(mesh.solid.positions.is_empty());
+        assert!(mesh.textured.positions.iter().all(|v|v[1]>=0. && v[1]<=16.));
+        assert!(mesh.textured.uvs.contains(&[0.,0.5]));
+        assert!(mesh.textured.uvs.contains(&[1.,0.]));
+        // Only the pale cornice owns the visible top. The dark body must not
+        // contribute a coplanar face that flickers through its light surface.
+        let mut top_area=0.;
+        for triangle in mesh.textured.indices.chunks_exact(3) {
+            let points=[triangle[0],triangle[1],triangle[2]]
+                .map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+            if points.iter().all(|p|(p.y-16.).abs()<0.0001) {
+                top_area+=(points[1]-points[0]).cross(points[2]-points[0]).y*0.5;
+                for &i in triangle {
+                    assert_eq!(mesh.textured.uvs[i as usize],[0.015625,0.046875]);
+                }
+            }
+        }
+        assert!((top_area-32.*8.2).abs()<0.001,
+            "Saffron cornice must have one visible top surface");
+        for i in p.indices(4) { for field in 0..5 {
+            let mut altered=t.clone();let s=&mut altered[i].source;
+            match field {0=>s.metatile_id^=0x80,1=>s.tile_index^=0x80,
+                2=>s.subtile_column^=0x80,3=>s.subtile_row^=0x80,_=>s.tileset_id="custom".into()}
+            assert!(super::super::resolve("SaffronGym",&altered.iter().collect::<Vec<_>>(),&g,None)
+                .iter().all(|p|p.kind_label()!="special:saffron-blue-band-wall"));
+        }}
+        assert!(super::super::resolve("UndergroundPath",&refs,&g,None).iter()
+            .all(|p|p.kind_label()!="special:saffron-blue-band-wall"));
+    }
+    #[test]
     fn passage_network_never_claims_a_teleport_pad_or_stair_drawing() {
         let mut t = tiles(4, 4, "underground", 0x10);
         for y in 0..2 {
@@ -1697,6 +2163,42 @@ mod tests {
             p.iter()
                 .all(|p| p.indices(4).all(|i| ![0, 1, 4, 5].contains(&i)))
         );
+    }
+    #[test]
+    fn store_basement_walls_keep_native_panels_caps_geometry_and_footing() {
+        let mut t = tiles(4,4,"underground",0x10);
+        for (i,tile) in t.iter_mut().enumerate() {
+            tile.source.metatile_id=0x09;
+            tile.source.tile_index=[0x04,0x14,0x10,0x10][i/4];
+        }
+        let g=grid(4,4);let refs=t.iter().collect::<Vec<_>>();
+        let walls=super::super::resolve("GoldenrodDeptStoreB1F",&refs,&g,None);
+        let mut count=0;
+        for p in &walls {
+            let Form::Special(Detail::PassageNetwork {open,basement:true})=p.form else {continue;};
+            count+=1;
+            let mut plain=TerrainMeshData::default();
+            append(&mut plain,&g,p,&refs,Detail::PassageNetwork {open,basement:false});
+            let mut native=TerrainMeshData {footing_heights:vec![7.;16],..Default::default()};
+            append(&mut native,&g,p,&refs,Detail::PassageNetwork {open,basement:true});
+            let first=plain.textured.positions.len();
+            assert_eq!(&native.textured.positions[first..],plain.solid.positions.as_slice());
+            assert_eq!(&native.textured.normals[first..],plain.solid.normals.as_slice());
+            let index_first=plain.textured.indices.len();
+            assert_eq!(native.textured.indices[index_first..].iter().map(|i|i-first as u32)
+                .collect::<Vec<_>>(),plain.solid.indices);
+            let uv=g.uv(p.column,p.row);
+            assert!(native.textured.uvs[first..].contains(&[
+                uv.0+(uv.1-uv.0)*0.5/8.,uv.2+(uv.3-uv.2)*0.5/8.]));
+            for (&sample,(&normal,&color)) in native.textured.uvs[first..].iter()
+                .zip(native.textured.normals[first..].iter().zip(&native.textured.colors[first..])) {
+                assert!(sample[0]>=uv.0 && sample[0]<=uv.1 && sample[1]>=uv.2 && sample[1]<=uv.3);
+                assert_eq!(color,crate::interior_models::authored_face_color([1.;4],Vec3::from_array(normal)));
+            }
+            assert!(native.solid.positions.is_empty());
+            assert_eq!(native.footing_heights,vec![7.;16]);
+        }
+        assert_eq!(count,8);
     }
     #[test]
     fn store_basement_passage_network_checks_visible_source_without_crop_fallback() {
@@ -1877,11 +2379,26 @@ mod tests {
             assert_eq!(p.indices(8).count(),4);
             let mut mesh=TerrainMeshData {footing_heights:vec![3.;64],..Default::default()};
             super::super::append(&mut mesh,&g,p,&refs,[0,0]);
-            assert!(!mesh.solid.indices.is_empty());
+            assert!(!mesh.solid.indices.is_empty() || !mesh.textured.indices.is_empty());
             assert_eq!(mesh.footing_heights,vec![3.;64]);
+            let sample = |pixel: [usize; 2]| {
+                let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+            };
             if label=="special:blackthorn-filled-rock-crossing" {
-                assert!(mesh.solid.positions.iter().all(|v|v[1]<=0.));
-                assert!(mesh.solid.positions.iter().any(|v|v[1] < -5.));
+                assert!(mesh.solid.indices.is_empty());
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=0.));
+                assert!(mesh.textured.positions.iter().any(|v|v[1] < -5.));
+                assert_eq!(mesh.textured.indices.len(), 720);
+                for pixel in [[8,0], [9,2], [10,6]] {
+                    assert!(mesh.textured.uvs.contains(&sample(pixel)));
+                }
+            } else if label=="dungeon:cave-boulder" {
+                assert!(mesh.solid.indices.is_empty());
+                for pixel in [[2,3], [2,2]] {
+                    assert!(mesh.textured.uvs.contains(&sample(pixel)));
+                }
             }
         }
         assert!(!selected.iter().any(|p|p.kind_label()=="dungeon:cave-boulder" && p.column==2 && p.row==2));
@@ -1920,18 +2437,37 @@ mod tests {
         assert!(!walls[0].indices(8).any(|i|i==4));
         let mut mesh = TerrainMeshData { footing_heights: vec![0.; 64], ..Default::default() };
         super::super::append(&mut mesh, &g, walls[0], &refs, [0,0]);
-        assert!(!mesh.solid.indices.is_empty());
-        assert!(mesh.solid.positions.iter().all(|v|v[1]>=0. && v[1]<=24.));
-        assert!(mesh.solid.positions.iter().any(|v|v[1]==24.));
+        assert!(!mesh.textured.indices.is_empty());
+        assert!(mesh.textured.positions.iter().all(|v|v[1]>=0. && v[1]<=24.));
+        assert!(mesh.textured.positions.iter().any(|v|v[1]==24.));
         assert!(mesh.footing_heights.iter().all(|h|*h==0.));
-        assert!(mesh.solid.normals.iter().all(|n|(Vec3::from_array(*n).length_squared()-1.).abs()<0.0001));
+        assert!(mesh.textured.normals.iter().all(|n|(Vec3::from_array(*n).length_squared()-1.).abs()<0.0001));
+        let (u0,u1,v0,v1) = g.uv(walls[0].column,walls[0].row+2);
+        for [x,y] in [[7,2],[1,1],[1,2],[0,0]] {
+            let uv = [u0+(u1-u0)*(x as f32+0.5)/8.,v0+(v1-v0)*(y as f32+0.5)/8.];
+            assert!(mesh.textured.uvs.contains(&uv), "missing source panel shade");
+        }
+        assert!(mesh.solid.positions.is_empty());
         let partitions: Vec<_> = placements.iter().filter(|p|p.kind_label()=="special:mahogany-stone-partition").collect();
         assert_eq!(partitions.len(),1);
         assert_eq!(partitions[0].indices(8).count(),4);
         let mut stone = TerrainMeshData { footing_heights: vec![0.;64], ..Default::default() };
         super::super::append(&mut stone,&g,partitions[0],&refs,[0,0]);
-        assert!(!stone.solid.indices.is_empty());
-        assert!(stone.solid.positions.iter().all(|v|v[1]>=0. && v[1]<=13.));
+        assert!(stone.solid.indices.is_empty());
+        assert!(stone.textured.positions.iter().all(|v|v[1]>=0. && v[1]<=13.));
+        let p=partitions[0];let (w,_,n,_)=g.bounds(p.column,p.row);
+        let e=w+p.width as f32*g.tile_width;let s=n+p.height as f32*g.tile_height;
+        let mut original=SurfaceMeshData::default();
+        crate::dungeon_models::room_model(crate::dungeon_models::RoomAsset::GymStonePartition)
+            .append(&mut original,[w,e,s-16.,s],0.,13.);
+        assert_eq!(&stone.textured.positions[16..],original.positions.as_slice());
+        assert_eq!(&stone.textured.normals[16..],original.normals.as_slice());
+        for [x,y] in [[4,4],[3,3],[4,10]] {
+            let uv=g.uv(p.column+x/8,p.row+y/8);
+            assert!(stone.textured.uvs[16..].contains(&[
+                uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+                uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]));
+        }
         assert!(stone.footing_heights.iter().all(|h|*h==0.));
         for map in ["VioletGym", "BlackthornGym1F"] {
             assert!(!super::super::resolve(map, &refs, &g, None).iter()
@@ -1992,6 +2528,76 @@ mod tests {
         gray[0].source.metatile_id = 0x31;
         assert!(cerulean_bridge_detail(&gray[0].source).is_none(), "gray perimeter must not become a pink walkway");
     }
+    #[test]
+    fn kanto_native_underground_floor_keeps_diamond_source_and_rejects_unknown_phases() {
+        let g=grid(4,1);let mut t=tiles(4,1,"underground",0x10);
+        let refs=t.iter().collect::<Vec<_>>();
+        let selected=super::super::resolve("UndergroundPath",&refs,&g,None);
+        let floors=selected.iter().filter(|p|matches!(p.form,Form::Special(Detail::Floor(Floor::NativeCeramic))))
+            .collect::<Vec<_>>();assert_eq!(floors.len(),4);
+        assert!(floors.iter().all(|p|p.kind_label()=="special:ceramic-paving"));
+        let mut mesh=TerrainMeshData{footing_heights:vec![0.;4],..Default::default()};
+        for p in floors {super::super::append(&mut mesh,&g,p,&refs,[0,0]);}
+        assert!(mesh.solid.indices.is_empty());
+        assert!(mesh.textured.positions.iter().all(|p|p[1]<=0.));
+        assert_eq!(mesh.footing_heights,vec![0.;4]);
+        for x in 0..4 {let uv=g.uv(x,0);
+            assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));
+            assert!(mesh.textured.uvs.contains(&[uv.1,uv.3]));
+        }
+        for other in ["SaffronGym","OlivinePortPassage","VermilionPortPassage","OtherRoom"] {
+            assert!(!super::super::resolve(other,&refs,&g,None).iter()
+                .any(|p|matches!(p.form,Form::Special(Detail::Floor(Floor::NativeCeramic)))));
+        }
+        let profiles:Document=serde_json::from_str(r#"{"objects":[{"name":"Owned corridor floor","map":"UndergroundPath","tileset":"underground","metatile":37,"origin":[0,0],"tiles":[[16]],"ground":16,"top_pixels":8,"depth_pixels":8}]}"#).unwrap();
+        assert!(!live::resolve(&refs,g.width,g.height,"UndergroundPath",Some(&profiles)).is_empty(),
+            "the custom source fixture must actually resolve before testing ownership");
+        assert!(!super::super::resolve("UndergroundPath",&refs,&g,Some(&profiles)).iter()
+            .any(|p|matches!(p.form,Form::Special(Detail::Floor(Floor::NativeCeramic))) && p.column==0));
+        drop(refs);
+        for (column,row,index,ts) in [(255,0,0x10,"underground"),(0,255,0x10,"underground"),
+            (0,0,0xffff,"underground"),(0,0,0x10,"house")] {
+            t[0].source.subtile_column=column;t[0].source.subtile_row=row;
+            t[0].source.tile_index=index;t[0].source.tileset_id=ts.into();
+            assert!(!super::super::resolve("UndergroundPath",&t.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|matches!(p.form,Form::Special(Detail::Floor(_))) && p.column==0),
+                "unverified art cannot fall through to generic ceramic");
+        }
+    }
+
+    #[test]
+    fn kanto_native_league_floors_keep_blue_stone_and_red_runner_source_art() {
+        for (map,ts,block,art,label) in [
+            ("KarensRoom","elite_four_room",0x25,[1;4],"special:stone-paving"),
+            ("LancesRoom","champions_room",0x31,[0x3b,0x3c,0x3c,0x3d],"special:champion-carpet")
+        ] {
+            let g=grid(4,1);let mut t=tiles(4,1,ts,art[0]);
+            for (i,tile) in t.iter_mut().enumerate() {
+                tile.source.metatile_id=block;tile.source.tile_index=art[i];
+            }
+            let refs=t.iter().collect::<Vec<_>>();
+            let selected=super::super::resolve(map,&refs,&g,None);
+            let floors=selected.iter().filter(|p|p.kind_label()==label).collect::<Vec<_>>();
+            assert_eq!(floors.len(),4);
+            let mut mesh=TerrainMeshData{footing_heights:vec![0.;4],..Default::default()};
+            for p in floors {super::super::append(&mut mesh,&g,p,&refs,[0,0]);}
+            assert!(mesh.solid.indices.is_empty(),"native floor cannot receive generic cream/purple paint");
+            assert!(mesh.textured.positions.iter().all(|p|p[1]<=0.));
+            assert_eq!(mesh.footing_heights,vec![0.;4]);
+            for x in 0..4 {let uv=g.uv(x,0);
+                assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));
+                assert!(mesh.textured.uvs.contains(&[uv.1,uv.3]));
+            }
+            assert!(!super::super::resolve("OtherRoom",&refs,&g,None).iter().any(|p|p.kind_label()==label));
+            drop(refs);t[0].source.tile_index=0xffff;
+            assert!(!super::super::resolve(map,&t.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|p.kind_label()==label && p.column==0));
+            t[0].source.tile_index=art[0];t[0].source.subtile_column=255;
+            assert!(!super::super::resolve(map,&t.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|p.kind_label()==label && p.column==0));
+        }
+    }
+
     #[test]
     fn floor_volume_stays_below_unchanged_actor_datum() {
         for kind in [Floor::Stone, Floor::Wood, Floor::Ceramic, Floor::Carpet] {

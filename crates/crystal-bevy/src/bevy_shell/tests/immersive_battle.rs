@@ -801,6 +801,7 @@ fn immersive_battle_starter_preview_controller(
         enemy_gust,
         poke_ball_failure,
         starter,
+        false,
     )
     .unwrap();
     VisibleShellController { shell }
@@ -1757,6 +1758,7 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
             visible: true,
             allow_species_model: true,
             shiny: false,
+            model_palette: None,
         })
     };
     let mut battlers = [
@@ -1778,6 +1780,12 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
     battlers[0].as_mut().unwrap().allow_species_model = true;
     battlers[0].as_mut().unwrap().shiny = true;
     assert!(!immersive_row_prototype_supported(&animation, &battlers));
+    battlers[0].as_mut().unwrap().model_palette = Some(crystal_render_api::VisualPokemonModelPalette {
+        normal: [[255;3], [100;3], [50;3], [0;3]],
+        appearance: [[255;3], [150;3], [80;3], [0;3]],
+    });
+    assert!(immersive_row_prototype_supported(&animation, &battlers));
+    battlers[0].as_mut().unwrap().model_palette = None;
     battlers[0].as_mut().unwrap().shiny = false;
     battlers[1].as_mut().unwrap().visible = false;
     assert!(!immersive_row_prototype_supported(&animation, &battlers));

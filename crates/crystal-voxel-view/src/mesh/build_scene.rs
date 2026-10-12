@@ -21,7 +21,7 @@ fn connected_grass_neighbors(
     })
 }
 
-fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: bool, holes: &[bool]) {
+fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: bool, holes: &[bool], origin: [i32; 2]) {
     let w = g.origin_x;
     let e = w + g.width as f32 * g.tile_width;
     let n = g.origin_z;
@@ -30,6 +30,13 @@ fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: boo
         [0.295, 0.355, 0.38, 1.]
     } else {
         [0.43, 0.405, 0.32, 1.]
+    };
+    // Match the visible floor's mineral domain even where a cutaway reveals
+    // this backing surface. Geometry stays below the authored walking datum.
+    let paint = |out: &mut SurfaceMeshData, positions: [[f32; 3]; 4]| {
+        let uvs = positions.map(|p| cave_cliff::floor_uv(Vec3::from_array(p), g, origin, false));
+        let colors = positions.map(|p| cave_cliff::pigment(color, Vec3::from_array(p), g, origin, false));
+        append_quad_colors(out, positions, [0., 1., 0.], uvs, colors);
     };
     if holes.iter().any(|&hole| hole) {
         for row in 0..g.height {
@@ -40,18 +47,12 @@ fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: boo
                 while column < g.width && !holes[row*g.width+column] { column += 1; }
                 let (w,_,n,s) = g.bounds(start,row);
                 let (_,e,_,_) = g.bounds(column-1,row);
-                append_solid_quad(out, [[w,-0.02,n],[w,-0.02,s],[e,-0.02,s],[e,-0.02,n]],
-                    [0.,1.,0.],color);
+                paint(out, [[w,-0.02,n],[w,-0.02,s],[e,-0.02,s],[e,-0.02,n]]);
             }
         }
         return;
     }
-    append_solid_quad(
-        out,
-        [[w, -0.02, n], [w, -0.02, s], [e, -0.02, s], [e, -0.02, n]],
-        [0., 1., 0.],
-        color,
-    );
+    paint(out, [[w, -0.02, n], [w, -0.02, s], [e, -0.02, s], [e, -0.02, n]]);
 }
 
 #[cfg(test)]
@@ -63,7 +64,7 @@ mod cave_foundation_tests {
         let mut holes = vec![false;16];
         for i in [5,6,9,10] { holes[i] = true; }
         let mut mesh = SurfaceMeshData::default();
-        append_cave_foundation(&mut mesh,&g,false,&holes);
+        append_cave_foundation(&mut mesh,&g,false,&holes, [0, 0]);
         for (i,&hole) in holes.iter().enumerate() {
             let x = (i%4) as f32*8.+4.;
             let z = (i/4) as f32*8.+4.;
@@ -86,7 +87,7 @@ mod cave_foundation_tests {
         };
         for dark in [false, true] {
             let mut out = SurfaceMeshData::default();
-            append_cave_foundation(&mut out, &g, dark, &[]);
+            append_cave_foundation(&mut out, &g, dark, &[], [-12, 7]);
             assert_eq!(
                 out.positions,
                 vec![
@@ -96,7 +97,19 @@ mod cave_foundation_tests {
                     [32., -0.02, -24.]
                 ]
             );
-            assert!(out.uvs.iter().all(|uv| *uv == [0., 0.]));
+            for (p, uv) in out.positions.iter().zip(&out.uvs) {
+                assert_eq!(*uv, cave_cliff::floor_uv(Vec3::from_array(*p), &g, [-12, 7], false));
+                assert!((400000. ..500000.).contains(&uv[1]));
+            }
+            // Sliding the renderer grid keeps a shared source point painted
+            // identically; the backing floor must not swim with the camera.
+            let shifted = GridGeometry { origin_x: g.origin_x + 8., ..g };
+            let point = Vec3::new(0., -0.02, 0.);
+            assert_eq!(cave_cliff::floor_uv(point, &g, [-12, 7], false),
+                cave_cliff::floor_uv(point, &shifted, [-11, 7], false));
+            let base = if dark { [0.295, 0.355, 0.38, 1.] } else { [0.43, 0.405, 0.32, 1.] };
+            assert_eq!(cave_cliff::pigment(base, point, &g, [-12, 7], false),
+                cave_cliff::pigment(base, point, &shifted, [-11, 7], false));
             assert!(out.normals.iter().all(|n| *n == [0., 1., 0.]));
             assert_eq!(out.indices.len(), 6);
             assert!(out.colors.iter().all(|c| c[3] == 1.));
@@ -173,6 +186,7 @@ fn build_terrain_mesh_internal(
         .iter()
         .map(|tile| shape_for_source_on_map(frame.map_id.as_ref(), &tile.source))
         .collect();
+    cave_crowns::resolve(frame, &original_cells, &mut source_shapes, &geometry);
     resolve_rock_platform_tiers(&original_cells, &mut source_shapes, width);
     resolve_authored_mountain_tiers(&mut source_shapes, width, height);
     taper_johto_ledge_ends(&original_cells, &mut source_shapes, width);
@@ -182,6 +196,13 @@ fn build_terrain_mesh_internal(
         Vec::new()
     };
     let mut authored_reserved = vec![false; cell_count];
+    let olivine_stage_placement = if images.is_some() && authored_enabled {
+        olivine_stage::resolve(&frame.map_id, &original_cells, &geometry,
+            frame.grid_origin.to_array(), profiles, &authored_reserved)
+    } else { None };
+    if let Some(stage) = &olivine_stage_placement {
+        for i in stage.indices(width) { authored_reserved[i] = true; }
+    }
     // Complete institutional apparatus supersedes only the exact old partial
     // signature models; live custom profiles retain first refusal.
     let facility_radio_placements = if images.is_some() && authored_enabled {
@@ -510,6 +531,9 @@ fn build_terrain_mesh_internal(
         frame.map_id.as_ref(),
         profiles.filter(|_| images.is_some()),
     );
+    if authored_enabled {
+        live_placements.retain(|placement| !modeled_exteriors::native_stone_profile(placement.object));
+    }
     live_placements.retain(|placement| {
         !placement
             .indices(width)
@@ -520,7 +544,7 @@ fn build_terrain_mesh_internal(
             modeled_exteriors::preferred_cells(&frame.map_id, &original_cells, &geometry);
         live_placements.retain(|placement| !placement.indices(width).all(|index| reserved[index]));
     }
-    if images.is_some() && new_bark::supports_map(frame.map_id.as_ref()) {
+    if images.is_some() && new_bark::supports_grove(frame.map_id.as_ref()) {
         let reserved = new_bark::preferred_scenery_cells(frame.map_id.as_ref(), &cells, &geometry);
         // Complete authored trees/signs supersede their old source-art cards.
         // Mixed props and incomplete groups retain the existing live-profile path.
@@ -567,6 +591,14 @@ fn build_terrain_mesh_internal(
         .iter()
         .map(|tile| shape_for_source_on_map(frame.map_id.as_ref(), &tile.source))
         .collect();
+    for (i, shape) in shapes.iter_mut().enumerate() {
+        if cells[i].source == original_cells[i].source
+            && (original_cells[i].source.tile_index == 0x16
+                || (cave_crowns::enabled(frame.map_id.as_ref()) && source_shapes[i]!=shape_for_source_on_map(frame.map_id.as_ref(), &original_cells[i].source)))
+            && matches!(original_cells[i].source.tileset_id.as_ref(), "cave" | "dark_cave") {
+            *shape = source_shapes[i];
+        }
+    }
     resolve_rock_platform_tiers(&cells, &mut shapes, width);
     // Blackthorn's closed `[6a 70 6b; 6c 72 6d]` drawing is a free-standing
     // mound, not part of the surrounding mountain datum graph. Claim the
@@ -665,6 +697,7 @@ fn build_terrain_mesh_internal(
             &geometry,
             cells[0].source.tileset_id.as_ref() == "dark_cave",
             &foundation_holes,
+            frame.grid_origin.to_array(),
         );
     }
     mesh.footing_heights = original_cells
@@ -692,6 +725,12 @@ fn build_terrain_mesh_internal(
         .collect();
     let mut claimed_by_building = vec![false; cell_count];
     let mut claimed_by_tree = live_claimed;
+    // Authenticated blank cave blocks belong to the surrounding rock mass.
+    // Suppress their old black atlas planes beneath the new mineral bases.
+    for i in cave_enclosure::void_cells(frame,&geometry) {
+        claimed_by_tree[i]=true;
+        mesh.authored_cells[i]=Some("cave:exterior-rock");
+    }
     if authored_enabled && images.is_some() {
         city_gardens::append(
             &mut mesh,
@@ -735,6 +774,7 @@ fn build_terrain_mesh_internal(
     for placement in &interior_placements {
         let appended = modeled_interiors::append(
             &mut mesh,
+            frame.map_id.as_ref(),
             &original_cells,
             &geometry,
             placement,
@@ -846,6 +886,10 @@ fn build_terrain_mesh_internal(
         );
         debug_assert!(appended, "validated park flowerbed must append");
     }
+    if let Some(stage) = &olivine_stage_placement {
+        let appended = olivine_stage::append(&mut mesh, &geometry, stage, &mut claimed_by_tree);
+        debug_assert!(appended, "validated Olivine terrace must append");
+    }
     for placement in &department_store_placements {
         let appended = department_store::append(
             &mut mesh,
@@ -889,14 +933,9 @@ fn build_terrain_mesh_internal(
         );
         debug_assert!(appended, "validated Rocket plant reservation must append");
     }
+    modeled_dungeons::append_all(&mut mesh, &geometry, &dungeon_placements,
+        &original_cells, frame.grid_origin.to_array());
     for placement in &dungeon_placements {
-        modeled_dungeons::append(
-            &mut mesh,
-            &geometry,
-            placement,
-            &original_cells,
-            frame.grid_origin.to_array(),
-        );
         for index in placement.indices(width) {
             claimed_by_tree[index] = true;
             mesh.authored_cells[index] = Some(placement.kind_label());
@@ -995,7 +1034,7 @@ fn build_terrain_mesh_internal(
                 continue;
             }
             if authored_enabled
-                && modeled_exteriors::append_building(
+                && modeled_exteriors::append_building_with_samples(
                     &mut mesh,
                     &cells,
                     &shapes,
@@ -1004,6 +1043,7 @@ fn build_terrain_mesh_internal(
                     *placement,
                     &mut claimed_by_building,
                     frame.grid_origin.to_array(),
+                    Some(images),
                 )
             {
                 continue;
@@ -1036,10 +1076,8 @@ fn build_terrain_mesh_internal(
             }
         }
 
-        // Verified originals take priority. A complete legacy tree still owns
-        // its closed source-derived hull if no authored model is available;
-        // discarding its back and depth here made fallback trees disappear
-        // from an orbiting camera and broke the instancing geometry contract.
+        // Missing 3D trees retain exact source tiles. Never substitute the
+        // legacy voxel hull for unavailable canonical tree assets.
         for placement in new_bark::tree_placements(frame.map_id.as_ref(), &cells, &geometry) {
             if new_bark::append_tree(
                 &mut mesh,
@@ -1067,15 +1105,8 @@ fn build_terrain_mesh_internal(
             {
                 continue;
             }
-            append_grouped_tree(
-                &mut mesh,
-                images,
-                &cells,
-                &shapes,
-                &geometry,
-                placement,
-                &mut claimed_by_tree,
-            )?;
+            modeled_exteriors::append_missing_tree_source(
+                &mut mesh, &geometry, placement, &mut claimed_by_tree);
         }
         for placement in park_bench_placements(&cells, &geometry) {
             append_grouped_tree(
@@ -2043,6 +2074,23 @@ fn build_terrain_mesh_internal(
     }
     let bank_runs = bank_column_runs(&shapes, &geometry);
 
+    let native_falls=waterfall_placements(&cells,width,height);
+    let native_upper_pool=crate::waterfall::tohjo_upstream_pool(frame.map_id.as_ref(),&cells,width,height,&native_falls);
+    let water_scale=geometry.tile_height/SOURCE_TILE_HEIGHT;
+    for (i,upper) in native_upper_pool.iter().enumerate() {
+        if *upper {mesh.footing_heights[i]=(crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)*water_scale;}
+    }
+    for fall in &native_falls {
+        if fall.row==0 || !(fall.column..fall.column+fall.width)
+            .all(|x|native_upper_pool[(fall.row-1)*width+x]) {continue;}
+        for row in fall.row..fall.row+fall.height {
+            let along=(row-fall.row) as f32+0.5;
+            let y=(crate::profile::WATER_HEIGHT+crate::cave::CAVE_SHELF_HEIGHT
+                *(1.-along/fall.height as f32))*water_scale;
+            for column in fall.column..fall.column+fall.width {mesh.footing_heights[row*width+column]=y;}
+        }
+    }
+
     for row in 0..height {
         for column in 0..width {
             let index = row * width + column;
@@ -2123,16 +2171,26 @@ fn build_terrain_mesh_internal(
                 mesh.authored_cells[index] = Some("johto/tall_grass");
                 continue;
             }
-            append_textured_cell(
-                &mut mesh, &geometry, &cells, &shapes, &bank_runs, column, row, index, images,
-            )?;
+            if native_upper_pool[index] {
+                append_top(&mut mesh.textured,geometry.bounds(column,row).into(),
+                    (crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)
+                        *geometry.tile_height/SOURCE_TILE_HEIGHT,
+                    cave_pool_uv(cells[index],geometry.uv(column,row)));
+            } else {
+                append_textured_cell(
+                    &mut mesh, &geometry, &cells, &shapes, &bank_runs, column, row, index, images,
+                )?;
+            }
         }
     }
 
     append_cafe_table_pedestals(&mut mesh.solid, &cells, &geometry, frame.map_id.as_ref());
 
-    for placement in waterfall_placements(&cells, width, height) {
-        append_waterfall(&mut mesh.textured, &geometry, &cells, placement, frame.grid_origin.to_array());
+    for placement in native_falls {
+        let levels=(placement.row>0 && (placement.column..placement.column+placement.width)
+            .all(|x|native_upper_pool[(placement.row-1)*width+x]))
+            .then_some([crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT,crate::profile::WATER_HEIGHT]);
+        append_waterfall(&mut mesh.textured, &geometry, &cells, placement, frame.grid_origin.to_array(),levels);
     }
 
     // Production uses the source-complete 3f+33 park kit. Preserve the old
@@ -2157,6 +2215,15 @@ fn build_terrain_mesh_internal(
                 &mut mesh, &geometry, &cells, &shapes, &bank_runs, column, row,
             );
         }
+    }
+
+    if authored_enabled {
+        new_bark::append_grove_water_contacts(&mut mesh, &original_cells, &geometry,
+            frame.grid_origin.to_array());
+    }
+
+    if authored_enabled && let Some(images) = images {
+        buoy_course::append(&mut mesh,&original_cells,&geometry,images,&claimed_by_tree);
     }
 
     if dragons_den::finish(&mut mesh, &frame.map_id, &original_cells, &geometry,
@@ -2189,9 +2256,23 @@ fn build_terrain_mesh_internal(
             profiles,
         );
     }
+    if authored_enabled && let Some(images) = images {
+        seafoam_palette::finish(&mut mesh,&frame.map_id,&original_cells,images);
+    }
     ledge_approach::shape_approaches(&mut mesh, &original_cells, &geometry, &source_shapes, frame.grid_origin.to_array());
-    outdoor_stone::soften_rock_rims(&mut mesh, &original_cells, &source_shapes, &geometry, frame.grid_origin.to_array());
-    rock_bases::round(&mut mesh, &frame.map_id, &original_cells, &source_shapes, &geometry, frame.grid_origin.to_array());
+    // Finish normals once, after every outdoor rock deformation. Base contact
+    // rounding must not erase the mineral cap fractures.
+    outdoor_stone::finish_rock_geometry(&mut mesh, &frame.map_id, &original_cells,
+        &source_shapes, &geometry, frame.grid_origin.to_array());
+    if cave_crowns::enabled(frame.map_id.as_ref()) {
+        cave_crowns::finish_stairs(&mut mesh,&original_cells,&source_shapes,&geometry);
+        cave_crowns::finish_sides(&mut mesh,&source_shapes,&geometry,frame.grid_origin.to_array());
+    }
+    if authored_enabled && let Some(images)=images {
+        kanto_cave_palette::finish(&mut mesh,&frame.map_id,&original_cells,images,&geometry);
+    }
+    shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
+        &shapes, &geometry, frame.grid_origin.to_array());
     if let Some(started) = scenery_metrics {
         let surfaces = [
             &mesh.textured,
@@ -2225,5 +2306,70 @@ fn build_terrain_mesh_internal(
         );
     }
 
+    #[cfg(not(target_arch="wasm32"))]
+    if std::env::var_os("CRYSTAL_CAVE_SURFACE_TRACE").is_some()
+        && crate::interior_cutaway::is_cave(frame) {
+        static REPORTED:std::sync::atomic::AtomicBool=std::sync::atomic::AtomicBool::new(false);
+        if !REPORTED.swap(true,std::sync::atomic::Ordering::Relaxed) {
+            eprintln!("cave_surface map={} grid={:?} textured_vertices={} solid_vertices={}",
+                frame.map_id,frame.grid_origin,mesh.textured.positions.len(),mesh.solid.positions.len());
+            if let Some(player) = frame.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player) {
+                let foot = crate::footing::actor_foot(player);
+                if let Some(cell) = crate::footing::tile_at_visual_point(frame, foot + bevy::math::Vec2::Y * 0.01) {
+                    let i = cell.y as usize*width+cell.x as usize;
+                    eprintln!("cave_surface player_cell={:?} source={:?} shape={:?} support={}",
+                        frame.grid_origin+cell.as_ivec2(),original_cells[i].source,source_shapes[i],mesh.footing_heights[i]);
+                }
+            }
+            let mut tilesets=std::collections::BTreeMap::new();
+            for tile in &cells { *tilesets.entry(tile.source.tileset_id.as_ref()).or_insert(0usize)+=1; }
+            let lower_base=mesh.solid.positions.iter().filter(|p|p[1]<0. && p[1]>-0.021).count();
+            let outer_base=mesh.cave_enclosure.positions.iter().zip(&mesh.cave_enclosure.uvs)
+                .filter(|(p,uv)|p[1]==0. && matches!((uv[1]/100000.).round(),6. | 7.)).count();
+            eprintln!("cave_surface source_size={:?} tilesets={tilesets:?} lower_base_vertices={lower_base} outer_base_vertices={outer_base}",
+                frame.source_map_size_core_tiles);
+            let mut plain=std::collections::BTreeSet::new();
+            for tri in mesh.solid.indices.chunks_exact(3) {
+                if !tri.iter().all(|&i|mesh.solid.uvs[i as usize][0]<90000.) {continue;}
+                let normal=Vec3::from_array(mesh.solid.normals[tri[0] as usize]);
+                // Rail and rung geometry also has untagged UVs. Inspect
+                // horizontal caps first so props cannot exhaust the bound.
+                if normal.y<0.999 {continue;}
+                let p:[Vec3;3]=std::array::from_fn(|i|Vec3::from_array(mesh.solid.positions[tri[i] as usize]));
+                let lo=p.iter().map(|p|p.y).fold(f32::INFINITY,f32::min);
+                let hi=p.iter().map(|p|p.y).fold(f32::NEG_INFINITY,f32::max);
+                if hi<=0. {continue;}
+                let center=(p[0]+p[1]+p[2])/3.-normal*geometry.tile_width*0.001;
+                let x=((center.x-geometry.origin_x)/geometry.tile_width).floor() as i32;
+                let z=((center.z-geometry.origin_z)/geometry.tile_height).floor() as i32;
+                if x<0 || z<0 || x>=width as i32 || z>=height as i32 {continue;}
+                let tile=original_cells[z as usize*width+x as usize];
+                if !plain.insert((x,z,lo.to_bits(),hi.to_bits(),normal.to_array().map(f32::to_bits))) {continue;}
+                if plain.len()>32 {break;}
+                eprintln!("cave_surface plain cell={},{} block={:02x} glyph={:02x} y={}..{} uv={:?} normal={:?} vertices={:?}",
+                    x+frame.grid_origin.x,z+frame.grid_origin.y,tile.source.metatile_id,tile.source.tile_index,
+                    lo,hi,mesh.solid.uvs[tri[0] as usize],normal,p);
+            }
+            let mut seen=std::collections::BTreeSet::new();
+            for q in (0..mesh.textured.positions.len()).step_by(4) {
+                if q+4>mesh.textured.positions.len() {break;}
+                if mesh.textured.normals[q][1]<0.999 {continue;}
+                let uv=&mesh.textured.uvs[q..q+4];
+                let u=uv.iter().map(|p|p[0]).sum::<f32>()/4.;
+                let v=uv.iter().map(|p|p[1]).sum::<f32>()/4.;
+                if !(0.0..1.0).contains(&u) || !(0.0..1.0).contains(&v) {continue;}
+                let index=(v*height as f32)as usize*width+(u*width as f32)as usize;
+                let tile=cells[index];
+                if !seen.insert((tile.source.metatile_id,tile.source.tile_index)) {continue;}
+                if seen.len()>32 {break;}
+                let point=mesh.textured.positions[q];
+                eprintln!("cave_surface atlas block={:02x} glyph={:02x} subtile={},{} y={} vertex={:?}",
+                    tile.source.metatile_id,tile.source.tile_index,tile.source.subtile_column,
+                    tile.source.subtile_row,point[1],point);
+            }
+        }
+    }
+
+    mesh.tree_neighborhood = None;
     Ok(mesh)
 }

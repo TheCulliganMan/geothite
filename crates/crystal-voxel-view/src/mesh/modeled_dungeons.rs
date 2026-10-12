@@ -4,8 +4,6 @@
 //! resolver sees immutable sources before live profiles mask them. Missing,
 //! clipped, recolored-with-new-identities and unsupported drawings fall back.
 use super::*;
-#[path = "cave_flight.rs"]
-mod cave_flight;
 #[path = "cave_hatch.rs"]
 mod cave_hatch;
 #[path = "cave_rim.rs"]
@@ -14,6 +12,9 @@ mod cave_rim;
 mod cave_sill;
 #[path = "cave_stones.rs"]
 mod cave_stones;
+#[path = "cave_boulder_fields.rs"]
+mod cave_boulder_fields;
+pub(super) use cave_boulder_fields::append_all;
 
 pub(super) fn movable_stone(frozen: bool, dark: bool, variant: u8) -> SurfaceMeshData {
     let mut mesh = SurfaceMeshData::default();
@@ -52,15 +53,22 @@ use crate::live_profiles::Document;
 
 #[derive(Clone, Copy, Debug)]
 enum Form {
-    Room(rooms::Detail),
+    // Retain roof floor ownership from the map-scoped resolver.
+    Room(rooms::Detail, rooms::FloorStyle),
     Special(extension::Detail),
     Model(Kind),
+    GymBoulder,
+    SeafoamBoulder,
+    PewterGuardian,
+    SproutGuardian,
+    TowerTimber,
+    GymOrb,
     RocketWall { open: [bool; 4] },
     Lighthouse(lighthouse::Detail),
     LighthouseChamber(lighthouse_chamber::Asset),
     CaveCorner(crate::cave::DiagonalCorner),
     CaveHatch,
-    CaveFlight,
+    NativeCaveWarp,
     CaveSill,
     CaveRim,
     IceHatch,
@@ -94,15 +102,18 @@ impl Placement {
     }
     pub(super) fn kind_label(&self) -> &'static str {
         match self.form {
-            Form::Room(detail) => detail.label(),
+            Form::Room(detail, _) => detail.label(),
             Form::Special(detail) => detail.label(),
             Form::Model(k) => k.label(),
+            Form::GymBoulder | Form::SeafoamBoulder => Kind::CaveBoulder.label(),
+            Form::PewterGuardian | Form::SproutGuardian => Kind::TowerGuardian.label(),
+            Form::TowerTimber => Kind::TimberWall.label(),
+            Form::GymOrb => Kind::LeaguePodium.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
             Form::Lighthouse(detail) => detail.label(),
             Form::LighthouseChamber(asset) => asset.label(),
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
-            Form::CaveHatch => "dungeon:cave-floor-hatch",
-            Form::CaveFlight => "dungeon:cave-shelf-ladder",
+            Form::CaveHatch | Form::NativeCaveWarp => "dungeon:cave-floor-hatch",
             Form::CaveSill => "dungeon:cave-exit-sill",
             Form::CaveRim => "dungeon:cave-rock-rim",
             Form::IceHatch => "dungeon:ice-floor-hatch",
@@ -137,6 +148,13 @@ fn phase_consistent(cells: &[&VisualTile], g: &GridGeometry, p: TreePlacement) -
                     || s.metatile_id == anchor.metatile_id)
         })
     })
+}
+fn live_gym_orb(map: &str, tileset: &str) -> bool {
+    match tileset {
+        "elite_four_room" => matches!(map, "VioletGym" | "BlackthornGym1F" | "MahoganyGym" | "AzaleaGym" | "GoldenrodGym"),
+        "tower" => matches!(map, "PewterGym" | "CianwoodGym" | "EcruteakGym"),
+        _ => false,
+    }
 }
 struct Resolver<'a> {
     map: &'a str,
@@ -180,9 +198,28 @@ impl Resolver<'_> {
                 width: p.width,
                 height: p.height,
                 ground,
-                form: Form::Model(kind),
-                rise_pixels: rise,
-                depth_pixels: depth,
+                form: if kind == Kind::CaveBoulder && self.map == "SeafoamGym"
+                    && tileset == "cave" && p.width == 2 && p.height == 2 {
+                    Form::SeafoamBoulder
+                } else if kind == Kind::CaveBoulder
+                    && matches!(self.map, "OlivineGym" | "PewterGym" | "CianwoodGym" | "BlackthornGym1F")
+                    && p.width == 2 && p.height == 2 {
+                    Form::GymBoulder
+                } else if kind == Kind::TowerGuardian && self.map == "PewterGym" {
+                    Form::PewterGuardian
+                } else if kind == Kind::TowerGuardian
+                    && matches!(self.map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+                    Form::SproutGuardian
+                } else if kind == Kind::LeaguePodium && live_gym_orb(self.map, tileset) {
+                    Form::GymOrb
+                } else if kind == Kind::TimberWall
+                    && matches!(self.map, "CianwoodGym" | "EcruteakGym" | "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+                    Form::TowerTimber
+                } else {
+                    Form::Model(kind)
+                },
+                rise_pixels: if kind == Kind::CaveBoulder && self.map == "SeafoamGym" {12.} else {rise},
+                depth_pixels: if kind == Kind::CaveBoulder && self.map == "SeafoamGym" {14.} else {depth},
                 front_rows: p.height as f32,
             });
         }
@@ -217,28 +254,6 @@ pub(super) fn resolve(
         r.groups(kind, 0x16, 8.0, 10.0, groups);
     }
     for p in grouped_flat_card_placements(cells, g, 0x16, false, |s| {
-        crate::cave::shelf_ladder_local(s).map(|(x, y)| (x, y, 2, 2))
-    }) {
-        if !phase_consistent(cells, g, p) {
-            continue;
-        }
-        let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
-        let Some(ground) = ground(map, cells, tileset, 0x16) else {
-            continue;
-        };
-        r.add(Placement {
-            column: p.column,
-            row: p.row,
-            width: 2,
-            height: 2,
-            ground,
-            form: Form::CaveFlight,
-            rise_pixels: crate::cave::CAVE_SHELF_HEIGHT,
-            depth_pixels: 16.0,
-            front_rows: 2.0,
-        });
-    }
-    for p in grouped_flat_card_placements(cells, g, 0x16, false, |s| {
         crate::cave::exit_sill_local(s).map(|(x, y)| (x, y, 2, 1))
     }) {
         if !phase_consistent(cells, g, p) {
@@ -260,8 +275,8 @@ pub(super) fn resolve(
             front_rows: 1.0,
         });
     }
-    // Replace complete ladder drawings with upright rails and rungs. Their
-    // authored floor elevation and warp footprint remain unchanged.
+    // Complete overhead warp drawings retain their floor footprint. Native
+    // Kanto rooms use shallow source relief; legacy rooms keep upright rails.
     for p in grouped_flat_card_placements(cells, g, 0x16, false, |s| {
         crate::cave::flat_ladder_local(s).map(|(x, y)| (x, y, 2, 2))
     }) {
@@ -278,7 +293,10 @@ pub(super) fn resolve(
             width: 2,
             height: 2,
             ground,
-            form: Form::CaveHatch,
+            form: if matches!(map, "DiglettsCave" | "MountMoon" | "RockTunnel1F"
+                | "RockTunnelB1F" | "TohjoFalls" | "VictoryRoad") {
+                Form::NativeCaveWarp
+            } else { Form::CaveHatch },
             rise_pixels: 0.0,
             depth_pixels: 16.0,
             front_rows: 2.0,
@@ -396,13 +414,19 @@ pub(super) fn resolve(
             tower_boulder_placements(cells, g),
         );
     }
-    if matches!(map, "CianwoodGym" | "EcruteakGym") {
+    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym") {
         let guardians = grouped_flat_card_placements(cells,g,crate::tower::TOWER_FLOOR_TILE,false,|s| {
             if s.tileset_id.as_ref()!="tower" || s.subtile_row>=4 { return None; }
-            let ox=match s.metatile_id {0x21=>0,0x22=>2,_=>return None};
+            let (ox, lower) = match (map, s.metatile_id) {
+                ("PewterGym", 0x19) => (0, [0x26, 0x27]),
+                ("PewterGym", 0x1a) => (2, [0x26, 0x27]),
+                ("CianwoodGym" | "EcruteakGym", 0x21) => (0, [0x12, 0x13]),
+                ("CianwoodGym" | "EcruteakGym", 0x22) => (2, [0x12, 0x13]),
+                _ => return None,
+            };
             if s.subtile_column<ox || s.subtile_column>=ox+2 {return None;}
             let x=s.subtile_column-ox; let y=s.subtile_row;
-            let expected=[[0x22,0x23],[0x32,0x33],[0x12,0x13],[0x36,0x37]][y as usize][x as usize];
+            let expected=[[0x22,0x23],[0x32,0x33],lower,[0x36,0x37]][y as usize][x as usize];
             (s.tile_index==expected).then_some((x,y,2,4))
         });
         r.groups(Kind::TowerGuardian,crate::tower::TOWER_FLOOR_TILE,24.0,10.0,guardians);
@@ -620,7 +644,9 @@ pub(super) fn resolve(
                 width: o.tiles[0].len(),
                 height: o.tiles.len(),
                 ground: live.ground,
-                form: Form::Model(kind),
+                form: if kind == Kind::LeaguePodium && live_gym_orb(map, o.tileset.as_str()) {
+                    Form::GymOrb
+                } else { Form::Model(kind) },
                 rise_pixels: rise,
                 depth_pixels: depth,
                 front_rows: o.tiles.len() as f32,
@@ -713,19 +739,19 @@ pub(super) fn resolve(
             });
             for p in ladders {
                 r.add(Placement { column:p.column,row:p.row,width:2,height:2,ground,
-                    form:Form::Room(rooms::Detail::TowerLadder { down: matches!(cells[p.row*g.width+p.column].source.metatile_id,0x02|0x1f) }),
+                    form:Form::Room(rooms::Detail::TowerLadder { down: matches!(cells[p.row*g.width+p.column].source.metatile_id,0x02|0x1f) }, rooms::FloorStyle::Default),
                     rise_pixels:24.,depth_pixels:16.,front_rows:2. });
             }
         }
     }
     cave_rim::resolve_into(&mut r);
     rooms::resolve_into(&mut r);
-    extension::resolve_into(&mut r);
+    extension::resolve_into(&mut r, profiles);
     r.out
 }
 
 fn boulder_datum(p: &Placement, cells: &[&VisualTile], g: &GridGeometry) -> f32 {
-    if !matches!(p.form, Form::Model(Kind::CaveBoulder | Kind::DarkBoulder)) {
+    if !matches!(p.form, Form::SeafoamBoulder | Form::Model(Kind::CaveBoulder | Kind::DarkBoulder)) {
         return 0.;
     }
     // Prefer floor paint from this exact metatile over a neighboring shelf.
@@ -776,7 +802,7 @@ pub(super) fn joined_surface_shapes(
 ) -> Vec<CellShape> {
     let mut joined = shapes.to_vec();
     for p in placements {
-        if matches!(p.form, Form::Model(Kind::CaveBoulder | Kind::DarkBoulder | Kind::IceBoulder))
+        if matches!(p.form, Form::SeafoamBoulder | Form::Model(Kind::CaveBoulder | Kind::DarkBoulder | Kind::IceBoulder))
             && matches!(cells[p.row*g.width+p.column].source.tileset_id.as_ref(), "cave"|"dark_cave"|"ice_path") {
             let height = boulder_datum(p, cells, g) * SOURCE_TILE_HEIGHT / g.tile_height;
             for i in p.indices(g.width) { joined[i] = CellShape::PlaneAt { height }; }
@@ -792,6 +818,17 @@ pub(super) fn append(
     cells: &[&VisualTile],
     origin: [i32; 2],
 ) {
+    append_internal(mesh, g, p, cells, origin, true);
+}
+
+fn append_internal(
+    mesh: &mut TerrainMeshData,
+    g: &GridGeometry,
+    p: &Placement,
+    cells: &[&VisualTile],
+    origin: [i32; 2],
+    separate_boulder: bool,
+) {
     if let Form::LighthouseChamber(asset) = p.form {
         lighthouse_chamber::append(mesh, g, p, asset);
         return;
@@ -800,8 +837,8 @@ pub(super) fn append(
         lighthouse::append(mesh, g, p, detail);
         return;
     }
-    if let Form::Room(detail) = p.form {
-        rooms::append(mesh, g, p, cells, detail);
+    if let Form::Room(detail, floor_style) = p.form {
+        rooms::append_with_floor(mesh, g, p, cells, detail, floor_style);
         return;
     }
     if let Form::Special(detail) = p.form {
@@ -816,7 +853,7 @@ pub(super) fn append(
         ice_pit::append(&mut mesh.solid, g, p);
         return;
     }
-    if matches!(p.form, Form::CaveHatch | Form::IceHatch) {
+    if matches!(p.form, Form::CaveHatch | Form::NativeCaveWarp | Form::IceHatch) {
         let datum = crate::cave::cave_shape(&cells[p.row*g.width+p.column].source)
             .map(|shape|shape.surface_height(g.tile_height)).unwrap_or(0.);
         for i in p.indices(g.width) {
@@ -827,6 +864,10 @@ pub(super) fn append(
             } else {
                 new_bark::cave_finish::append(&mut mesh.solid,floor,[0.,1.,0.],&cells[p.ground].source,g,origin);
             }
+        }
+        if matches!(p.form, Form::NativeCaveWarp) {
+            cave_hatch::append_native_warp(&mut mesh.textured,g,p,datum);
+            return;
         }
         let first=mesh.solid.positions.len();
         cave_hatch::append(mesh,g,p,
@@ -851,7 +892,7 @@ pub(super) fn append(
             }
             continue;
         }
-        if matches!(p.form, Form::Model(Kind::CaveBoulder | Kind::DarkBoulder | Kind::IceBoulder))
+        if matches!(p.form, Form::SeafoamBoulder | Form::Model(Kind::CaveBoulder | Kind::DarkBoulder | Kind::IceBoulder))
             && matches!(cells[p.row*g.width+p.column].source.tileset_id.as_ref(), "cave"|"dark_cave"|"ice_path") {
             let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
             let floor = [[w, base, n], [w, base, s], [e, base, s], [e, base, n]];
@@ -864,6 +905,14 @@ pub(super) fn append(
             }
             continue;
         }
+        if matches!(p.form, Form::CaveSill) {
+            let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
+            if new_bark::cave_finish::append(&mut mesh.solid,
+                [[w,base,n],[w,base,s],[e,base,s],[e,base,n]], [0.,1.,0.],
+                &cells[p.ground].source,g,origin) {
+                continue;
+            }
+        }
         append_top(
             &mut mesh.textured,
             g.bounds(i % g.width, i / g.width).into(),
@@ -871,13 +920,15 @@ pub(super) fn append(
             floor_uv,
         );
     }
+    if !separate_boulder {
+        // A connected field supplies the rock above these exact floor caps.
+        return;
+    }
     let (w, _, n, _) = g.bounds(p.column, p.row);
     let e = w + p.width as f32 * g.tile_width;
     let s = n + p.front_rows * g.tile_height;
     let rise = p.rise_pixels * g.tile_height / SOURCE_TILE_HEIGHT;
     match p.form {
-        Form::CaveFlight => cave_flight::append(&mut mesh.solid, g, p, origin,
-            cells[p.row*g.width+p.column].source.tileset_id.as_ref()=="dark_cave"),
         Form::CaveSill | Form::IceSill => cave_sill::append(
             &mut mesh.solid,
             g,
@@ -886,10 +937,10 @@ pub(super) fn append(
             matches!(p.form,Form::IceSill),
             origin,
         ),
-        Form::CaveHatch | Form::IceHatch | Form::IcePit => {
+        Form::CaveHatch | Form::NativeCaveWarp | Form::IceHatch | Form::IcePit => {
             unreachable!("floor recesses handled above")
         }
-        Form::Room(_) => unreachable!("room placements handled above"),
+        Form::Room(..) => unreachable!("room placements handled above"),
         Form::Special(_) => unreachable!("special placements handled above"),
         Form::FrozenWall => frozen_wall::append(&mut mesh.solid, cells, g, p, origin),
         Form::Model(kind @ (Kind::CaveBoulder | Kind::DarkBoulder | Kind::IceBoulder))
@@ -917,6 +968,74 @@ pub(super) fn append(
                 mesh.solid.uvs[i]=cave_cliff::stone_uv(Vec3::from_array(mesh.solid.positions[i]),g,origin,matches!(kind,Kind::IceBoulder));
             }
         }
+        Form::PewterGuardian | Form::SproutGuardian => {
+            let bounds = [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s];
+            let source_uv = |pixel: [usize; 2]| {
+                let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+            };
+            if matches!(p.form, Form::SproutGuardian) {
+                model(Kind::TowerGuardian).append_sprout_guardian(
+                    &mut mesh.textured, bounds, rise, source_uv);
+            } else {
+                model(Kind::TowerGuardian).append_pewter_guardian(
+                    &mut mesh.textured, bounds, rise, source_uv);
+            }
+        }
+        Form::GymOrb => model(Kind::LeaguePodium).append_gym_orb(
+            &mut mesh.textured,
+            [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s],
+            rise,
+            |pixel| {
+                let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+            },
+        ),
+        Form::TowerTimber => model(Kind::TimberWall).append_tower_timber(
+            &mut mesh.textured,
+            [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s],
+            rise,
+            |pixel| {
+                let pixel = match pixel {
+                    [0, 0] => [0, 0], [0, 2] => [1, 3],
+                    [0, 1] => [0, 1], [4, 0] => [2, 0],
+                    _ => unreachable!("validated timber materials"),
+                };
+                let uv = g.uv(p.column, p.row);
+                [uv.0 + (uv.1 - uv.0) * (pixel[0] as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * (pixel[1] as f32 + 0.5) / 8.]
+            },
+        ),
+        Form::GymBoulder | Form::SeafoamBoulder => {
+            let first=mesh.textured.positions.len();
+            let tower_stone = matches!(p.form, Form::GymBoulder)
+                && cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "tower";
+            model(Kind::CaveBoulder).append_gym_stone(
+            &mut mesh.textured,
+            [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s],
+            rise,
+            |pixel| {
+                // The tower drawing's pale cream is a small glint. Broad
+                // highlight facets use its lighter stone shade, matching the
+                // movable Cianwood boulders without repainting the atlas.
+                let blackthorn_stone = cells[p.row * g.width + p.column].source.tileset_id.as_ref()
+                    == "elite_four_room";
+                let pixel = if blackthorn_stone {
+                    // Exact 4e/4f/5e/5f drawing: native blue stone shades 2/1.
+                    match pixel { [8, 6] => [2, 3], [4, 4] => [2, 2],
+                        _ => unreachable!("named canonical gym stone") }
+                } else if tower_stone && pixel == [4, 4] { [8, 1] } else { pixel };
+                let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+            },
+        );
+            if matches!(p.form,Form::SeafoamBoulder) {
+                for point in &mut mesh.textured.positions[first..] {point[1]+=base;}
+            }
+        },
         Form::Model(kind) => model(kind).append(
             &mut mesh.solid,
             [
@@ -938,7 +1057,6 @@ pub(super) fn append(
             &mut mesh.solid,
             [w, e, n, s],
             rise,
-            g.tile_width * 0.5,
             corner,
             cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "dark_cave",
             g,
@@ -1114,7 +1232,6 @@ fn append_corner(
     out: &mut SurfaceMeshData,
     b: [f32; 4],
     h: f32,
-    bevel: f32,
     corner: crate::cave::DiagonalCorner,
     dark: bool,
     g: &GridGeometry,
@@ -1123,35 +1240,69 @@ fn append_corner(
 ) {
     let [w, e, n, s] = b;
     let corners = cells.map(|cells|cave_cliff::RockCorners::new(cells,g));
-    let point = |p: Vec3,g: &GridGeometry,o: [i32;2]| corners.as_ref().map_or_else(||cave_cliff::rock_point(p,g,o),|corners|corners.point(p,g,o));
+    let point = |p: Vec3,g: &GridGeometry,o: [i32;2]| {
+        let mut shaped=p;
+        let shelf=crate::cave::CAVE_SHELF_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT;
+        if p.y>0. {
+            let u=((p.x-w)/(e-w)).clamp(0.,1.);
+            let v=((p.z-n)/(s-n)).clamp(0.,1.);
+            let diagonal=match corner {
+                crate::cave::DiagonalCorner::SouthEast=>u+v-1.,
+                crate::cave::DiagonalCorner::SouthWest=>v-u,
+            };
+            let band=(1.-diagonal.abs()/0.125).clamp(0.,1.);
+            let rounding=if p.y<shelf {
+                let t=p.y/shelf;
+                16.*t*t*(1.-t)*(1.-t)
+            } else {
+                let rise=((p.y-shelf)/(2.*g.tile_height)).clamp(0.,1.);
+                rise*rise*(3.-2.*rise)
+            };
+            // A bowed diagonal replaces the flat triangular sheet through
+            // the wall body, not only at its foot. The same field rounds the
+            // cap edge. Tapering at both ends preserves adjoining closures,
+            // and the narrow band keeps the cap's interior from folding.
+            // The exact floor contact and six-pixel walking course remain.
+            let recess=rounding*4.*u*(1.-u)*band*0.12;
+            let inward=match corner {
+                crate::cave::DiagonalCorner::SouthEast=>Vec3::X+Vec3::Z,
+                crate::cave::DiagonalCorner::SouthWest=>-Vec3::X+Vec3::Z,
+            };
+            shaped+=inward.normalize()*Vec3::new(g.tile_width,0.,g.tile_height)*recess;
+        }
+        corners.as_ref().map_or_else(||cave_cliff::rock_point(shaped,g,o),|corners|corners.point(shaped,g,o))
+    };
     let color = if dark {
         [0.31, 0.37, 0.39, 1.0]
     } else {
         [0.34, 0.345, 0.31, 1.0]
     };
+    // The corner foot shares the straight wall's exact source boundary.
+    // Flaring it into neighboring floor cells left narrow exposed faces
+    // after the foreground wall faded, resembling spikes or false ledges.
     let (cap, face, south, side, _side_normal) = match corner {
         crate::cave::DiagonalCorner::SouthEast => (
             [[e, h, n], [e, h, s], [w, h, s]],
             [
-                [e - bevel, 0., n - bevel],
+                [e, 0., n],
                 [e, h, n],
                 [w, h, s],
-                [w - bevel, 0., s - bevel],
+                [w, 0., s],
             ],
-            [[w - bevel, 0., s - bevel], [w, h, s], [e, h, s], [e, 0., s]],
-            [[e, 0., s], [e, h, s], [e, h, n], [e - bevel, 0., n - bevel]],
+            [[w, 0., s], [w, h, s], [e, h, s], [e, 0., s]],
+            [[e, 0., s], [e, h, s], [e, h, n], [e, 0., n]],
             [1., 0., 0.],
         ),
         crate::cave::DiagonalCorner::SouthWest => (
             [[w, h, n], [e, h, s], [w, h, s]],
             [
-                [w + bevel, 0., n - bevel],
-                [e + bevel, 0., s - bevel],
+                [w, 0., n],
+                [e, 0., s],
                 [e, h, s],
                 [w, h, n],
             ],
-            [[w, 0., s], [w, h, s], [e, h, s], [e + bevel, 0., s - bevel]],
-            [[w + bevel, 0., n - bevel], [w, h, n], [w, h, s], [w, 0., s]],
+            [[w, 0., s], [w, h, s], [e, h, s], [e, 0., s]],
+            [[w, 0., n], [w, h, n], [w, h, s], [w, 0., s]],
             [-1., 0., 0.],
         ),
     };
@@ -1164,9 +1315,43 @@ fn append_corner(
         cap.swap(1, 2);
     }
     cave_cliff::cap_triangle_with_point(out, cap, color, g, origin, point);
-    cave_cliff::quad_with_point(out, face, color, g, origin, point, false);
-    cave_cliff::quad_with_point(out, south, color, g, origin, point, false);
-    cave_cliff::quad_with_point(out, side, color, g, origin, point, false);
+    // The triangular body occupies the south side of the diagonal. Face
+    // winding must point into the open passage, not back into that body.
+    let outward = |p: [[f32;3];4]| [p[3],p[2],p[1],p[0]];
+    cave_cliff::quad_with_point(out, outward(face), color, g, origin, point, false);
+    for closure in [outward(south), outward(side)] {
+        let p = closure.map(Vec3::from_array);
+        let normal = (p[1]-p[0]).cross(p[3]-p[0]).normalize();
+        let length = (p[3]-p[0]).abs().max_element();
+        let count = (length/g.tile_width).round().max(1.) as usize;
+        for i in 0..count {
+            let lo=i as f32/count as f32;
+            let hi=(i+1) as f32/count as f32;
+            let segment=[p[0].lerp(p[3],lo),p[1].lerp(p[2],lo),
+                p[1].lerp(p[2],hi),p[0].lerp(p[3],hi)];
+            // Closures belong only to exposed source edges. A full-height
+            // adjoining rock cell already closes the mass; keeping the
+            // internal face makes it show through the foreground cutaway.
+            // Unknown art, shelves and partial diagonal drawings retain
+            // their closure instead of opening holes in the enclosure.
+            let probe=(segment[0]+segment[3])*0.5+normal*g.tile_width*0.5;
+            let x=((probe.x-g.origin_x)/g.tile_width).floor() as i32;
+            let z=((probe.z-g.origin_z)/g.tile_height).floor() as i32;
+            let buried=cells.and_then(|cells| {
+                (x>=0 && z>=0 && x<g.width as i32 && z<g.height as i32)
+                    .then(||cells.get(z as usize*g.width+x as usize)).flatten()
+            }).is_some_and(|t| {
+                t.source.tileset_id.as_ref()==if dark {"dark_cave"} else {"cave"}
+                    && crate::cave::diagonal_corner_local(&t.source).is_none()
+                    && matches!(crate::cave::cave_shape(&t.source),
+                        Some(CellShape::RaisedTop {height,solid:SolidKind::Bank})
+                            if height*g.tile_height/SOURCE_TILE_HEIGHT>=h)
+            });
+            if !buried {
+                cave_cliff::quad_with_point(out,segment.map(|p|p.to_array()),color,g,origin,point,false);
+            }
+        }
+    }
 }
 
 fn terrain_material(source: &VisualTileSource, shape: CellShape) -> Option<[f32; 4]> {
@@ -1238,7 +1423,31 @@ pub(super) fn append_terrain(
     origin: [i32; 2],
 ) {
     let mut shallow_scarps = Vec::new();
-    let corners = cave_cliff::RockCorners::new(cells, g);
+    let corners = cave_cliff::RockCorners::new_with_shapes(map,cells,shapes,g);
+    // A modeled triangular corner owns its complete south and lateral
+    // boundary at the tall rock height. Individual source glyphs on those
+    // boundaries still have low/flat gameplay support, which must not make
+    // an adjoining straight wall emit another face inside the rock mass.
+    // These render-only edge heights never replace the walking shapes.
+    let mut corner_edges = vec![[None;4];cells.len()];
+    for p in diagonal_cave_corner_placements(cells,g) {
+        let source=&cells[p.row*g.width+p.column].source;
+        let indices=[p.row*g.width+p.column,p.row*g.width+p.column+1,
+            (p.row+1)*g.width+p.column,(p.row+1)*g.width+p.column+1];
+        if !indices.iter().all(|&i|claimed[i]
+            && cells[i].source.tileset_id==source.tileset_id
+            && cells[i].source.metatile_id==source.metatile_id)
+            || ground(map,cells,source.tileset_id.as_ref(),0x16).is_none() {
+            continue;
+        }
+        let h=crate::cave::rock_height(source)*g.tile_height/SOURCE_TILE_HEIGHT;
+        for x in 0..2 {corner_edges[(p.row+1)*g.width+p.column+x][2]=Some(h);}
+        let (column,side)=match p.corner {
+            crate::cave::DiagonalCorner::SouthEast=>(p.column+1,1),
+            crate::cave::DiagonalCorner::SouthWest=>(p.column,3),
+        };
+        for y in 0..2 {corner_edges[(p.row+y)*g.width+column][side]=Some(h);}
+    }
     for (index, tile) in cells.iter().enumerate() {
         // Authored boulders and ladders already own their floor caps. Their
         // joined elevated support still needs an exposed rock side, otherwise
@@ -1289,10 +1498,14 @@ pub(super) fn append_terrain(
             // Walking shelves are smooth support surfaces. Repeated four-way
             // light/dark triangles made each source cell look like a tile
             // quilt; use continuous map-space mineral color on their plane.
-            let colors = cap.map(|p| {
-                cave_cliff::pigment(color, Vec3::from_array(p), g, origin, false)
-            });
-            append_quad_colors(&mut mesh.solid, cap, [0., 1., 0.], cap.map(|p|cave_cliff::floor_uv(Vec3::from_array(p),g,origin,false)), colors);
+            if !new_bark::cave_finish::append(&mut mesh.solid, cap,
+                [0., 1., 0.], &tile.source, g, origin)
+            {
+                let colors = cap.map(|p|
+                    cave_cliff::pigment(color, Vec3::from_array(p), g, origin, false));
+                append_quad_colors(&mut mesh.solid, cap, [0., 1., 0.],
+                    cap.map(|p|cave_cliff::floor_uv(Vec3::from_array(p),g,origin,false)), colors);
+            }
             new_bark::cave_finish::floor_detail(
                 &mut mesh.solid,
                 cap,
@@ -1314,8 +1527,9 @@ pub(super) fn append_terrain(
             let Some(ni) = neighbor else {
                 continue;
             };
-            let bottom =
-                neighbor_edge_heights(shapes[ni], side, g.tile_height / SOURCE_TILE_HEIGHT);
+            let bottom = corner_edges[ni][(side+2)%4].map_or_else(
+                ||neighbor_edge_heights(shapes[ni],side,g.tile_height/SOURCE_TILE_HEIGHT),
+                |height|[height;2]);
             // A changing ramp may meet the cap at only one endpoint. Keep the
             // shared diagonal and emit a single triangle at that termination.
             let low = [bottom[0].min(h), bottom[1].min(h)];
@@ -1398,6 +1612,150 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     #[test]
+    fn kanto_native_cave_warps_keep_source_footprint_and_authored_datum() {
+        let g=grid(4,4);
+        for tileset in ["cave","dark_cave"] {
+            for (block,art,datum) in [
+                (0x07,[[0x2a,0x2b],[0x3a,0x3b]],0.),
+                (0x14,[[0x2a,0x2b],[0x3a,0x3b]],0.),
+                (0x0b,[[0x22,0x23],[0x32,0x33]],0.),
+                (0x15,[[0x22,0x23],[0x32,0x33]],0.),
+                (0x1b,[[0x28,0x29],[0x38,0x39]],6.),
+                (0x1f,[[0x20,0x21],[0x30,0x31]],6.),
+            ] {
+                let mut t=tiles(4,4,tileset);
+                for tile in &mut t {tile.source.metatile_id=0x02;tile.source.tile_index=0x16;}
+                for y in 0..2 {for x in 0..2 {
+                    let source=&mut t[(y+2)*4+x+2].source;
+                    source.metatile_id=block;source.tile_index=art[y][x];
+                }}
+                for map in ["DiglettsCave","MountMoon","RockTunnel1F",
+                    "RockTunnelB1F","TohjoFalls","VictoryRoad"] {
+                    let cells:Vec<_>=t.iter().collect();
+                    let placements=resolve(map,&cells,&g,None);
+                    let p=placements.iter().find(|p|matches!(p.form,Form::NativeCaveWarp)).unwrap();
+                    assert_eq!((p.column,p.row,p.width,p.height),(2,2,2,2));
+                    assert_eq!(p.kind_label(),"dungeon:cave-floor-hatch");
+                    let mut mesh=TerrainMeshData{footing_heights:vec![datum;16],..Default::default()};
+                    append(&mut mesh,&g,p,&cells,[0,0]);
+                    assert_eq!(mesh.footing_heights,vec![datum;16]);
+                    assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions)
+                        .all(|p|p[1]>=datum && p[1]<=datum+1.25));
+                    let top_area=mesh.textured.indices.chunks_exact(3).filter(|tri|
+                        tri.iter().all(|i|mesh.textured.positions[*i as usize][1]==datum+1.25))
+                        .map(|tri|{let p=tri.iter().map(|i|Vec3::from_array(mesh.textured.positions[*i as usize])).collect::<Vec<_>>();
+                            (p[1]-p[0]).cross(p[2]-p[0]).y*0.5}).sum::<f32>();
+                    assert!((top_area-256.).abs()<0.001,"source cap must close original 16px footprint");
+                    for i in p.indices(g.width) {let uv=g.uv(i%g.width,i/g.width);
+                        for expected in [[uv.0,uv.2],[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2]] {
+                            assert!(mesh.textured.uvs.contains(&expected),"every original source corner must remain");
+                        }
+                    }
+                }
+                let cells:Vec<_>=t.iter().collect();
+                let other=resolve("UnionCave1F",&cells,&g,None);
+                assert!(other.iter().any(|p|matches!(p.form,Form::CaveHatch)));
+                assert!(!other.iter().any(|p|matches!(p.form,Form::NativeCaveWarp)));
+                drop(cells);t[10].source.tile_index^=1;
+                assert!(!resolve("MountMoon",&t.iter().collect::<Vec<_>>(),&g,None)
+                    .iter().any(|p|matches!(p.form,Form::NativeCaveWarp)));
+            }
+        }
+    }
+
+    #[test]
+    fn cave_ladder_and_exit_substrates_share_the_surrounding_mineral_floor() {
+        let g=grid(4,4);
+        for tileset in ["cave","dark_cave"] {
+            let mut t=tiles(4,4,tileset);
+            for tile in &mut t {tile.source.metatile_id=0x02;tile.source.tile_index=0x16;}
+            let cells:Vec<_>=t.iter().collect();
+            for form in [Form::CaveHatch,Form::CaveSill] {
+                let p=Placement {column:2,row:2,width:2,
+                    height:if matches!(form,Form::CaveHatch){2}else{1},
+                    ground:0,form,rise_pixels:6.,depth_pixels:16.,front_rows:2.};
+                let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],..Default::default()};
+                append(&mut mesh,&g,&p,&cells,[17,53]);
+                assert!(mesh.textured.indices.is_empty(),
+                    "modeled cave floors must not retain isolated flat atlas patches");
+                assert_eq!(mesh.footing_heights,vec![0.;16]);
+                let floor:Vec<_>=mesh.solid.positions.iter().zip(&mesh.solid.uvs)
+                    .take(p.indices(g.width).count()*64)
+                    .filter(|(_,uv)|uv[0]>90000. && (uv[1]/100000.).round()==4.)
+                    .map(|(p,_)|p).collect();
+                assert!(floor.len()>=p.indices(g.width).count()*64);
+                assert!(floor.iter().all(|p|p[1]==0.),"finish must preserve the authored substrate datum");
+                for i in p.indices(g.width) {
+                    let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
+                    for point in [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]] {
+                        assert!(floor.iter().any(|p|**p==point),"floor must close at each original corner");
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn gym_orb_live_palette_requires_complete_drawings_and_preserves_floor() {
+        for (tileset, blocks, art, maps, floor) in [
+            ("elite_four_room", vec![(0x1d,0),(0x1e,2),(0x25,2),(0x26,0)],
+             [[0x20,0x21],[0x30,0x31],[0x22,0x23],[0x32,0x33]],
+             vec!["VioletGym","BlackthornGym1F","MahoganyGym","AzaleaGym","GoldenrodGym"], 1),
+            ("tower", vec![(0x12,0),(0x13,2)],
+             [[0x28,0x29],[0x38,0x39],[0x2a,0x2b],[0x3a,0x3b]],
+             vec!["PewterGym","CianwoodGym","EcruteakGym"], 2),
+        ] {
+            for (block, ox) in blocks {
+                let mut t = tiles(4,4,tileset);
+                for tile in &mut t { tile.source.tile_index = floor; tile.source.metatile_id = if tileset == "tower" {9} else {0x2d}; }
+                for y in 0..4 { for x in 0..2 {
+                    let s = &mut t[y*4+ox+x].source;
+                    s.metatile_id = block; s.tile_index = art[y][x];
+                }}
+                // Tower and elite25/26 forms are authored live-profile folds.
+                // Exercise that production boundary rather than asking a
+                // profile-free resolver to invent a matching drawing.
+                let profiles: Document = serde_json::from_value(serde_json::json!({
+                    "objects":[{"name":"scoped gym orb fixture","tileset":tileset,
+                        "maps":maps,"metatile":block,"origin":[ox,0],
+                        "tiles":art,"ground":floor,"top_pixels":0,"depth_pixels":10.}]
+                })).unwrap();
+                let g = grid(4,4);
+                for &map in &maps {
+                    let refs = t.iter().collect::<Vec<_>>();
+                    let selected = resolve(map,&refs,&g,Some(&profiles));
+                    let p = selected.iter().find(|p|matches!(p.form,Form::GymOrb))
+                        .unwrap_or_else(|| panic!("missing live orb: {map} {tileset} block{block:02x}"));
+                    assert_eq!(p.indices(4).count(),8);
+                    assert!(p.indices(4).all(|i|(ox..ox+2).contains(&(i%4))));
+                    let mut mesh = TerrainMeshData {footing_heights:vec![0.;16],..Default::default()};
+                    append(&mut mesh,&g,p,&refs,[0,0]);
+                    assert_eq!(mesh.footing_heights,vec![0.;16]);
+                    assert!(mesh.textured.positions.iter().any(|v|v[1]>27.9));
+                    for pixel in [[4,4],[7,3],[8,18],[8,16],[4,20]] {
+                        let uv = g.uv(ox+pixel[0]/8,pixel[1]/8);
+                        assert!(mesh.textured.uvs.contains(&[
+                            uv.0+(uv.1-uv.0)*((pixel[0]%8) as f32+0.5)/8.,
+                            uv.2+(uv.3-uv.2)*((pixel[1]%8) as f32+0.5)/8.,
+                        ]));
+                    }
+                    for i in p.indices(4) { for field in 0..5 {
+                        let mut altered = t.clone(); let s = &mut altered[i].source;
+                        match field { 0=>s.metatile_id^=0x80, 1=>s.tile_index^=0x80,
+                            2=>s.subtile_column^=0x80, 3=>s.subtile_row^=0x80,
+                            _=>s.tileset_id="custom".into() }
+                        assert!(resolve(map,&altered.iter().collect::<Vec<_>>(),&g,Some(&profiles))
+                            .iter().all(|p|p.kind_label()!=Kind::LeaguePodium.label()));
+                    }}
+                }
+                for map in ["OtherRoom","SproutTower1F","CeladonGameCorner"] {
+                    assert!(resolve(map,&t.iter().collect::<Vec<_>>(),&g,Some(&profiles))
+                        .iter().all(|p|!matches!(p.form,Form::GymOrb)));
+                }
+            }
+        }
+    }
+    #[test]
     fn sprout_true_statues_exclude_entrance_carpet_and_require_complete_source() {
         let g=grid(8,4);
         let mut t=tiles(8,4,"tower");
@@ -1418,9 +1776,9 @@ mod tests {
         assert!(selected[0].indices(8).all(|i|i%8<2));
         let mut mesh=TerrainMeshData {footing_heights:vec![0.;32],..Default::default()};
         append(&mut mesh,&g,&selected[0],&refs,[0,0]);
-        assert!(!mesh.solid.indices.is_empty());
+        assert!(!mesh.textured.indices.is_empty());
         assert_eq!(mesh.footing_heights,vec![0.;32]);
-        assert!(mesh.solid.positions.iter().all(|p|p[1]>=0. && p[1]<=24.));
+        assert!(mesh.textured.positions.iter().all(|p|p[1]>=0. && p[1]<=24.));
         assert!(resolve("TinTower1F",&refs,&g,None).is_empty());
         t[0].source.tile_index^=1;
         assert!(resolve("SproutTower1F",&t.iter().collect::<Vec<_>>(),&g,None).is_empty());
@@ -1496,6 +1854,80 @@ mod tests {
         t
     }
     #[test]
+    fn gym_stone_palette_requires_complete_room_scoped_drawings() {
+        for (map, tileset, block, drawing, floor) in [
+            ("OlivineGym", "champions_room", 0x11, [[0x46, 0x47], [0x56, 0x57]], crate::olivine_gym::GROUND_TILE),
+            ("PewterGym", "tower", 0x32, [[0x04, 0x05], [0x14, 0x15]], crate::tower::TOWER_FLOOR_TILE),
+            ("CianwoodGym", "tower", 0x32, [[0x04, 0x05], [0x14, 0x15]], crate::tower::TOWER_FLOOR_TILE),
+        ] {
+            let mut t = tiles(4, 4, tileset);
+            for cell in &mut t { cell.source.tile_index = floor; }
+            for y in 0..2 { for x in 0..2 {
+                let s = &mut t[y * 4 + x].source;
+                s.metatile_id = block;
+                s.tile_index = drawing[y][x];
+            }}
+            let g = grid(4, 4);
+            let p = resolve(map, &t.iter().collect::<Vec<_>>(), &g, None);
+            assert_eq!(p.iter().filter(|p| matches!(p.form, Form::GymBoulder)).count(), 1);
+            let rock = p.iter().find(|p| matches!(p.form, Form::GymBoulder)).unwrap();
+            let mut mesh = TerrainMeshData { footing_heights: vec![7.; 16], ..Default::default() };
+            append(&mut mesh, &g, rock, &t.iter().collect::<Vec<_>>(), [0, 0]);
+            let sample = |pixel: [usize; 2]| {
+                let uv = g.uv(pixel[0] / 8, pixel[1] / 8);
+                [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                 uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+            };
+            assert!(mesh.textured.uvs.contains(&sample([8, 6])));
+            let highlight = if tileset == "tower" { [8, 1] } else { [4, 4] };
+            assert!(mesh.textured.uvs.contains(&sample(highlight)));
+            if tileset == "tower" {
+                assert!(!mesh.textured.uvs.contains(&sample([4, 4])));
+            }
+            assert_eq!(mesh.footing_heights, vec![7.; 16]);
+            for other in ["SproutTower1F", "OtherRoom"] {
+                assert!(resolve(other, &t.iter().collect::<Vec<_>>(), &g, None)
+                    .iter().all(|p| !matches!(p.form, Form::GymBoulder)));
+            }
+            for index in [0, 1, 4, 5] {
+                let mut altered = t.clone();
+                altered[index].source.tile_index ^= 0x80;
+                assert!(resolve(map, &altered.iter().collect::<Vec<_>>(), &g, None)
+                    .iter().all(|p| !matches!(p.form, Form::GymBoulder)));
+            }
+        }
+    }
+    #[test]
+    fn seafoam_boulders_keep_full_volume_native_palette_and_floor_datum() {
+        let t=rock_fixture();let g=grid(4,4);let cells=t.iter().collect::<Vec<_>>();
+        let placements=resolve("SeafoamGym",&cells,&g,None);
+        let rock=placements.iter().find(|p|matches!(p.form,Form::SeafoamBoulder)).unwrap();
+        assert_eq!((rock.rise_pixels,rock.depth_pixels),(12.,14.));
+        let base=boulder_datum(rock,&cells,&g);
+        let mut expected=SurfaceMeshData::default();
+        model(Kind::CaveBoulder).append(&mut expected,[0.,16.,2.,16.],base,12.);
+        let mut mesh=TerrainMeshData {footing_heights:vec![7.;16],..Default::default()};
+        append(&mut mesh,&g,rock,&cells,[0,0]);
+        assert_eq!(mesh.textured.positions,expected.positions);
+        assert_eq!(mesh.textured.normals,expected.normals);
+        assert_eq!(mesh.textured.indices,expected.indices);
+        assert_eq!(mesh.footing_heights,vec![7.;16]);
+        for pixel in [[8,6],[4,4]] {
+            let uv=g.uv(pixel[0]/8,pixel[1]/8);
+            assert!(mesh.textured.uvs.contains(&[
+                uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
+                uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]));
+        }
+        for map in ["UnionCave1F","OtherRoom"] {
+            assert!(resolve(map,&cells,&g,None).iter().all(|p|!matches!(p.form,Form::SeafoamBoulder)));
+        }
+        for i in [0,1,4,5] {
+            let mut bad=t.clone();bad[i].source.tile_index=0xff;
+            assert!(resolve("SeafoamGym",&bad.iter().collect::<Vec<_>>(),&g,None)
+                .iter().all(|p|!matches!(p.form,Form::SeafoamBoulder)));
+        }
+    }
+    #[test]
     fn cianwood_static_boulders_use_complete_3d_rocks() {
         let mut t = tiles(4, 4, "tower");
         for tile in &mut t { tile.source.tile_index = crate::tower::TOWER_FLOOR_TILE; }
@@ -1513,11 +1945,46 @@ mod tests {
         assert!(p.iter().all(|p| p.kind_label() == "dungeon:cave-boulder"));
         let mut mesh = TerrainMeshData { footing_heights: vec![0.0; 16], ..Default::default() };
         for rock in &p { append(&mut mesh, &g, rock, &cells, [0, 0]); }
-        assert!(mesh.solid.positions.iter().any(|p| p[1] > 8.0));
+        assert!(mesh.textured.positions.iter().any(|p| p[1] > 8.0));
         assert_eq!(mesh.footing_heights, vec![0.0; 16]);
         assert!(resolve("SproutTower1F", &cells, &g, None).is_empty());
         t[0].source.tile_index = 0xff;
         assert_eq!(resolve("CianwoodGym", &t.iter().collect::<Vec<_>>(), &g, None).len(), 1);
+    }
+    #[test]
+    fn pewter_guardians_require_all_eight_source_cells_and_preserve_adjacent_floor() {
+        for (block, ox) in [(0x19, 0), (0x1a, 2)] {
+            let mut t = tiles(4, 4, "tower");
+            for tile in &mut t { tile.source.tile_index = crate::tower::TOWER_FLOOR_TILE; }
+            let art = [[0x22, 0x23], [0x32, 0x33], [0x26, 0x27], [0x36, 0x37]];
+            for y in 0..4 { for x in 0..2 {
+                let s = &mut t[y * 4 + ox + x].source;
+                s.metatile_id = block;
+                s.tile_index = art[y][x];
+            }}
+            let g = grid(4, 4);
+            let refs = t.iter().collect::<Vec<_>>();
+            let p = resolve("PewterGym", &refs, &g, None);
+            assert_eq!(p.len(), 1);
+            assert_eq!(p[0].kind_label(), "dungeon:tower-guardian");
+            assert_eq!(p[0].indices(4).count(), 8);
+            assert!(p[0].indices(4).all(|i| (ox..ox + 2).contains(&(i % 4))));
+            let mut mesh = TerrainMeshData { footing_heights: vec![72.; 16], ..Default::default() };
+            append(&mut mesh, &g, &p[0], &refs, [0, 0]);
+            assert_eq!(mesh.footing_heights, vec![72.; 16]);
+            assert!(mesh.textured.positions.iter().any(|v| v[1] > 20.));
+            for i in p[0].indices(4) { for field in 0..5 {
+                let mut altered = t.clone();
+                let s = &mut altered[i].source;
+                match field { 0 => s.metatile_id ^= 0x80, 1 => s.tile_index ^= 0x80,
+                    2 => s.subtile_column ^= 0x80, 3 => s.subtile_row ^= 0x80,
+                    _ => s.tileset_id = "other".into() }
+                assert!(resolve("PewterGym", &altered.iter().collect::<Vec<_>>(), &g, None).is_empty());
+            }}
+            for other in ["SproutTower1F", "CianwoodGym", "GoldenrodGameCorner"] {
+                assert!(resolve(other, &refs, &g, None).is_empty());
+            }
+        }
     }
     #[test]
     fn cianwood_rear_guardians_claim_the_complete_statue_without_adjacent_wall() {
@@ -1558,6 +2025,8 @@ mod tests {
         for (block, drawing) in [
             (0x07, [[0x2a, 0x2b], [0x3a, 0x3b]]),
             (0x0b, [[0x22, 0x23], [0x32, 0x33]]),
+            (0x14, [[0x2a, 0x2b], [0x3a, 0x3b]]),
+            (0x15, [[0x22, 0x23], [0x32, 0x33]]),
             (0x1b, [[0x28, 0x29], [0x38, 0x39]]),
             (0x1f, [[0x20, 0x21], [0x30, 0x31]]),
         ] {
@@ -2089,7 +2558,7 @@ mod tests {
         );
     }
     #[test]
-    fn tower_walls_consume_only_two_face_rows_and_leave_floor_free() {
+    fn tower_timber_live_palette_consumes_two_face_rows_and_leaves_floor_free() {
         let mut t = tiles(4, 4, "tower");
         for y in 0..4 {
             for x in 0..4 {
@@ -2116,6 +2585,23 @@ mod tests {
             p[0].indices(4).collect::<Vec<_>>(),
             (0..8).collect::<Vec<_>>()
         );
+        assert!(matches!(p[0].form, Form::TowerTimber));
+        let g = grid(4, 4);
+        let refs = t.iter().collect::<Vec<_>>();
+        let mut mesh = TerrainMeshData { footing_heights: vec![0.; 16], ..Default::default() };
+        append(&mut mesh, &g, &p[0], &refs, [0, 0]);
+        assert!(!mesh.textured.indices.is_empty());
+        assert!(mesh.textured.positions.iter().any(|v| v[1] > 15.9));
+        assert_eq!(mesh.footing_heights, vec![0.; 16]);
+        let uv = g.uv(0, 0);
+        for pixel in [[0, 0], [1, 3], [0, 1], [2, 0]] {
+            assert!(mesh.textured.uvs.contains(&[
+                uv.0 + (uv.1 - uv.0) * (pixel[0] as f32 + 0.5) / 8.,
+                uv.2 + (uv.3 - uv.2) * (pixel[1] as f32 + 0.5) / 8.,
+            ]));
+        }
+        let ordinary = resolve("TinTower1F", &refs, &g, None);
+        assert!(ordinary.iter().all(|p| !matches!(p.form, Form::TowerTimber)));
     }
     #[test]
     fn sprout_ladders_require_whole_source_drawings_and_keep_support() {
@@ -2162,6 +2648,222 @@ mod tests {
         }
     }
     #[test]
+    fn cave_straight_walls_join_the_complete_diagonal_corner_height() {
+        for (corner,block,ox,art) in [
+            (crate::cave::DiagonalCorner::SouthEast,0x10,2,[[0x0a,0x26],[0x17,0x0a]]),
+            (crate::cave::DiagonalCorner::SouthWest,0x11,0,[[0x26,0x0b],[0x0b,0x15]]),
+        ] {
+            for dark in [false,true] {
+                let g=grid(8,8);
+                let mut t=tiles(8,8,if dark {"dark_cave"} else {"cave"});
+                for tile in &mut t {tile.source.metatile_id=2;tile.source.tile_index=0x16;}
+                for y in 0..2 {for x in 0..2 {
+                    let src=&mut t[(y+2)*8+x+2].source;
+                    src.metatile_id=block;src.subtile_column=ox+x as u8;
+                    src.subtile_row=2+y as u8;src.tile_index=art[y][x];
+                }}
+                let side=match corner {crate::cave::DiagonalCorner::SouthEast=>4,
+                    crate::cave::DiagonalCorner::SouthWest=>1};
+                let walls=[4*8+2,4*8+3,2*8+side,3*8+side];
+                for i in walls {t[i].source.metatile_id=0x2e;t[i].source.tile_index=0x26;}
+                let refs=t.iter().collect::<Vec<_>>();
+                assert_eq!(diagonal_cave_corner_placements(&refs,&g).len(),1);
+                let shapes=t.iter().map(|t|crate::cave::cave_shape(&t.source)
+                    .unwrap_or(CellShape::Flat)).collect::<Vec<_>>();
+                let mut claimed=vec![true;64];for i in walls {claimed[i]=false;}
+                let mut actual=TerrainMeshData::default();
+                append_terrain(&mut actual,"SilverCaveRoom3",&refs,&shapes,&g,&mut claimed.clone(),[0,0]);
+                let mut joined_shapes=shapes.clone();
+                let h=if dark {48.} else {40.};
+                for y in 2..4 {for x in 2..4 {joined_shapes[y*8+x]=CellShape::RaisedTop {
+                    height:h,solid:SolidKind::Bank};}}
+                let mut joined=TerrainMeshData::default();
+                append_terrain(&mut joined,"SilverCaveRoom3",&refs,&joined_shapes,&g,&mut claimed,[0,0]);
+                assert_eq!(actual.solid.indices.len(),joined.solid.indices.len(),
+                    "straight wall emits buried faces against a complete tall corner");
+                assert_eq!(actual.solid.positions,joined.solid.positions);
+                let mut broken=t.clone();broken[2*8+2].source.tile_index^=0x80;
+                let refs=broken.iter().collect::<Vec<_>>();
+                let mut fallback=TerrainMeshData::default();
+                let mut claimed=vec![true;64];for i in walls {claimed[i]=false;}
+                append_terrain(&mut fallback,"SilverCaveRoom3",&refs,&shapes,&g,&mut claimed,[0,0]);
+                assert!(fallback.solid.indices.len()>joined.solid.indices.len(),
+                    "partial source drawings must retain the straight wall closure");
+            }
+        }
+    }
+
+    #[test]
+    fn cave_corner_omits_only_closures_buried_in_proven_rock() {
+        let g = grid(6,6);
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            for dark in [false,true] {
+                let mut t = tiles(6,6,if dark {"dark_cave"} else {"cave"});
+                for tile in &mut t {
+                    tile.source.metatile_id=0x2e;
+                    tile.source.tile_index=0x26;
+                }
+                let refs=t.iter().collect::<Vec<_>>();
+                let h=if dark {48.} else {40.};
+                let mut closed=SurfaceMeshData::default();
+                append_corner(&mut closed,[16.,32.,16.,32.],h,corner,dark,&g,[0,0],None);
+                let mut joined=SurfaceMeshData::default();
+                append_corner(&mut joined,[16.,32.,16.,32.],h,corner,dark,&g,[0,0],Some(&refs));
+                assert_eq!(closed.indices.len()-joined.indices.len(),2*8*(h as usize/2)*6,
+                    "only the two buried side closures should be omitted");
+                // The cap and exposed diagonal still reach the real wall height.
+                assert!(joined.positions.iter().any(|p|p[1]>=h));
+                assert!(joined.positions.iter().any(|p|p[1]==0.));
+                let mut interrupted=t.clone();
+                let column=match corner {
+                    crate::cave::DiagonalCorner::SouthEast=>4,
+                    crate::cave::DiagonalCorner::SouthWest=>1,
+                };
+                let open=&mut interrupted[2*6+column].source;
+                open.metatile_id=0x02;
+                open.tile_index=0x16;
+                let refs=interrupted.iter().collect::<Vec<_>>();
+                let mut partial=SurfaceMeshData::default();
+                append_corner(&mut partial,[16.,32.,16.,32.],h,corner,dark,&g,[0,0],Some(&refs));
+                assert_eq!(partial.indices.len()-joined.indices.len(),4*(h as usize/2)*6,
+                    "a one-cell opening must retain that half of the side closure");
+                for tile in &mut t {tile.source.tileset_id="custom".into();}
+                let refs=t.iter().collect::<Vec<_>>();
+                let mut unknown=SurfaceMeshData::default();
+                append_corner(&mut unknown,[16.,32.,16.,32.],h,corner,dark,&g,[0,0],Some(&refs));
+                assert_eq!(unknown.indices.len(),closed.indices.len(),
+                    "unknown neighboring art must not open a corner body");
+            }
+        }
+    }
+
+    #[test]
+    fn cave_corner_lower_diagonal_is_recessed_with_an_exact_ground_foot() {
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            let mut mesh=SurfaceMeshData::default();
+            append_corner(&mut mesh,[0.,16.,0.,16.],40.,corner,false,&grid(2,2),[0,0],None);
+            let distance=|p:&[f32;3]|match corner {
+                crate::cave::DiagonalCorner::SouthEast=>p[0]+p[2]-16.,
+                crate::cave::DiagonalCorner::SouthWest=>p[2]-p[0],
+            };
+            assert!(mesh.positions.iter().any(|p|p[1]==2. && p[0]>6. && p[0]<10.
+                && distance(p)>0.5),"the lower face must have an actual curved recess");
+            assert!(mesh.positions.iter().any(|p|p[1]==0. && p[0]==8. && p[2]==8.),
+                "the original diagonal floor contact must stay exact");
+            assert!(mesh.positions.iter().any(|p|p[1]==6. && p[0]==8. && p[2]==8.),
+                "the unchanged course must join above the recess");
+        }
+    }
+
+    #[test]
+    fn cave_corner_diagonal_body_and_cap_share_rounding_above_the_walking_course() {
+        let g=grid(2,2);
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            for h in [40.,48.] {
+                let mut mesh=SurfaceMeshData::default();
+                append_corner(&mut mesh,[0.,16.,0.,16.],h,corner,h==48.,&g,[0,0],None);
+                let inward=match corner {
+                    crate::cave::DiagonalCorner::SouthEast=>(Vec3::X+Vec3::Z).normalize(),
+                    crate::cave::DiagonalCorner::SouthWest=>(-Vec3::X+Vec3::Z).normalize(),
+                };
+                for y in [22.,h] {
+                    let original=Vec3::new(8.,y,8.);
+                    let planar=cave_cliff::rock_point(original,&g,[0,0]);
+                    let rounded=cave_cliff::rock_point(original+inward*0.96,&g,[0,0]);
+                    assert!(mesh.positions.iter().any(|p|Vec3::from_array(*p).distance(rounded)<0.001),
+                        "the diagonal body and cap must share a bowed center at {y}");
+                    assert!(!mesh.positions.iter().any(|p|Vec3::from_array(*p).distance(planar)<0.001),
+                        "the tall corner must not retain its planar diagonal sheet");
+                }
+                for original in [Vec3::new(8.,0.,8.),Vec3::new(8.,6.,8.)] {
+                    assert!(mesh.positions.iter().any(|p|Vec3::from_array(*p).distance(original)<0.001));
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn cave_rounded_diagonal_caps_and_faces_keep_outward_winding_across_map_coordinates() {
+        let g=grid(2,2);
+        let mut origins=vec![[15,32],[17,53],[79,143]];
+        for z in (0..144).step_by(8) { for x in (0..80).step_by(8) {
+            origins.push([x,z]);
+        }}
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            let outward=match corner {
+                crate::cave::DiagonalCorner::SouthEast=>-Vec3::X-Vec3::Z,
+                crate::cave::DiagonalCorner::SouthWest=>Vec3::X-Vec3::Z,
+            };
+            for h in [40.,48.] { for &origin in &origins {
+                let mut mesh=SurfaceMeshData::default();
+                append_corner(&mut mesh,[0.,16.,0.,16.],h,corner,h==48.,&g,origin,None);
+                // The eight subdivisions of the triangular cap produce 64
+                // triangles; the following range is the exposed diagonal.
+                let cap_indices=8*8*3;
+                let diagonal_indices=8*(h as usize/2)*6;
+                for (i,triangle) in mesh.indices[..cap_indices+diagonal_indices]
+                    .chunks_exact(3).enumerate() {
+                    let p: [Vec3;3]=std::array::from_fn(|j|
+                        Vec3::from_array(mesh.positions[triangle[j] as usize]));
+                    let n=(p[1]-p[0]).cross(p[2]-p[0]);
+                    let expected=if i<64 {Vec3::Y} else {outward};
+                    assert!(n.dot(expected)>0.,
+                        "rounded corner folds at {origin:?}, height {h}, triangle {i}: {n:?}");
+                }
+            }}
+        }
+    }
+
+    #[test]
+    fn cave_corner_caps_and_sides_close_at_tall_source_heights() {
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            for h in [40.,48.] {for origin in [[0,0],[17,53],[79,143]] {
+                let mut mesh=SurfaceMeshData::default();
+                append_corner(&mut mesh,[0.,16.,0.,16.],h,corner,h==48.,&grid(2,2),origin,None);
+                let key=|p:[f32;3]|p.map(|v|(v*10000.).round() as i32);
+                let mut edges=std::collections::BTreeMap::new();
+                for tri in mesh.indices.chunks_exact(3) {
+                    for i in 0..3 {
+                        let mut edge=[key(mesh.positions[tri[i] as usize]),
+                            key(mesh.positions[tri[(i+1)%3] as usize])];
+                        edge.sort();*edges.entry(edge).or_insert(0)+=1;
+                    }
+                }
+                for (edge,count) in edges {
+                    assert!(count==2 || (count==1 && edge.iter().all(|p|p[1]==0)),
+                        "open or overlapping corner seam at height {h}, origin {origin:?}: {edge:?}, {count}");
+                }
+            }}
+        }
+    }
+
+    #[test]
+    fn cave_corner_bases_stay_inside_the_authored_half_block() {
+        for corner in [crate::cave::DiagonalCorner::SouthEast,
+            crate::cave::DiagonalCorner::SouthWest] {
+            for height in [40., 48.] {
+                let mut mesh = SurfaceMeshData::default();
+                append_corner(&mut mesh, [0.,16.,0.,16.], height, corner,
+                    false, &grid(2,2), [0,0], None);
+                for p in mesh.positions.iter().filter(|p|p[1]<=6.) {
+                    assert!((0. ..=16.).contains(&p[0]) && (0. ..=16.).contains(&p[2]),
+                        "corner base projects past the adjoining wall into the floor: {p:?}");
+                    let inside = match corner {
+                        crate::cave::DiagonalCorner::SouthEast => p[0]+p[2]>=16.-0.001,
+                        crate::cave::DiagonalCorner::SouthWest => p[2]>=p[0]-0.001,
+                    };
+                    assert!(inside, "corner foot expands outside its authored diagonal: {p:?}");
+                }
+            }
+        }
+    }
+
+    #[test]
     fn cave_corner_mirrors_keep_upward_caps_and_nonzero_outward_normals() {
         for corner in [
             crate::cave::DiagonalCorner::SouthEast,
@@ -2172,7 +2874,6 @@ mod tests {
                 &mut m,
                 [0., 16., 0., 16.],
                 16.,
-                4.,
                 corner,
                 false,
                 &grid(2, 2),
@@ -2186,6 +2887,17 @@ mod tests {
                     .collect::<Vec<_>>();
                 let n = Vec3::from_array(m.normals[ids[0] as usize]);
                 assert!((p[1] - p[0]).cross(p[2] - p[0]).dot(n) > 0.0);
+                if p.iter().all(|p|p.y<=6.) {
+                    let center=(p[0]+p[1]+p[2])/3.;
+                    let expected=if (center.z-16.).abs()<0.001 {Vec3::Z}
+                        else if (center.x-16.).abs()<0.001 {Vec3::X}
+                        else if center.x.abs()<0.001 {-Vec3::X}
+                        else {match corner {
+                            crate::cave::DiagonalCorner::SouthEast=>-Vec3::X-Vec3::Z,
+                            crate::cave::DiagonalCorner::SouthWest=>Vec3::X-Vec3::Z,
+                        }};
+                    assert!(n.dot(expected)>0.,"corner face points into the rock: {center:?} {n:?}");
+                }
             }
         }
     }

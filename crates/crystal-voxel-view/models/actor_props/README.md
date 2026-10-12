@@ -1,8 +1,8 @@
 # Original volumetric actor kit
 
-73 independently keyed runtime meshes: all 28 non-walking-human sprite families
-(including both mounted trainers), all 38 resolved icon families, and seven
-additional exact battle species. These contain authored geometry and linear
+69 independently keyed runtime meshes: all 28 non-walking-human sprite families
+(including both mounted trainers), all 38 resolved icon families, and three
+canonical starter rig sources. These contain authored geometry and linear
 material colors only. They contain no sprite pixels, extracted textures, ROM
 content, or game logic.
 
@@ -21,10 +21,11 @@ content, or game logic.
   pedaling animation
 - Source meshes use +Y up, front +Z, actual lowest vertex at Y=0. All placements,
   facing, visibility, source changes, and floor height remain host-owned
-- `battle_species_mesh` selects only explicitly authored species. Seven new
-  models cover Chikorita, Cyndaquil, Totodile, Pidgey, Rattata, Sentret, and
-  Hoothoot. Other exact named species can reuse their dedicated creature model;
-  generic `fish`, `bird`, `monster`, etc. never stand in for an arbitrary species
+- Battle and visible exact-species actors share the canonical battle-species
+  registry. Missing species retain their original 2D art; smaller icon or
+  overworld meshes never substitute for a missing canonical body. The retired
+  Pidgey, Rattata, Sentret and Hoothoot alternative exports and builders were
+  removed. Chikorita, Cyndaquil and Totodile GLBs remain canonical rig sources.
 
 ## Editing and regeneration
 
@@ -54,9 +55,9 @@ cargo test -p crystal-voxel-view actor_props
 ```
 
 The Python check proves generator/registry/export agreement, 66 exact source
-families, seven extra species, nonempty full-volume geometry, valid indices,
+families, three canonical starter rig sources, nonempty full-volume geometry, valid indices,
 finite normalized vertex normals, consistent triangle winding, positive solid
 volumes, floor grounding and bounded unit scale. Rust tests validate source
-namespace separation, rejection of inferred aliases, exact-species fallback,
+namespace separation, rejection of inferred aliases, canonical exact-species selection,
 all imported meshes, and malformed-export rejection. These checks do not
 replace gameplay, visual or interaction testing.

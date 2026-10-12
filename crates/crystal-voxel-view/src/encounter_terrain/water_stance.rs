@@ -40,7 +40,6 @@ mod tests {
         let mesh = rig
             .map(|r| r.neutral.clone())
             .or_else(|| crate::battle_species_models::mesh(species))
-            .or_else(|| crate::new_bark_actors::actor_props::battle_species_mesh(species))
             .unwrap();
         let min = mesh
             .positions

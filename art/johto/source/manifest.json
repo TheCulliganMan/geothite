@@ -276,10 +276,10 @@
     {
       "file": "department-store.blend",
       "encoding": "gzip-blend",
-      "bytes": 154445,
-      "sha256": "8981b1bf3ea89033f5113c3e785c1f4c01c9a319995b62743a9399a853ee0686",
-      "uncompressed_bytes": 1632916,
-      "uncompressed_sha256": "7f8de6baf1fba02ddeacd0eb9e56045c16cbf9cbb349f99b592adfa4c6e0565f"
+      "bytes": 176525,
+      "sha256": "f173fedb6d0fb4085317daeba8353c5f7f90da2032c07dd5fb9b8037a974e50b",
+      "uncompressed_bytes": 1982674,
+      "uncompressed_sha256": "bd9c9173cb808fb5fd8a7e3c68a81dd925a69ca50d1e58d31866add9972dc54d"
     },
     {
       "file": "dungeons.blend",

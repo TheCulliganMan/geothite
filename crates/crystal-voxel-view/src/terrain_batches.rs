@@ -82,12 +82,24 @@ pub(super) fn prepare_with_authentic_bounds(
                 vec![data]
             };
             batches.into_iter().map(move |data| {
-                let mut batch = PreparedBatch::from(data.into_mesh());
+                let mut batch = PreparedBatch::from(data.into_compact_mesh());
                 batch.authentic_domain = domain;
                 batch
             })
         })
         .collect()
+}
+
+/// A cave's separate enclosing rock owns everything outside the authored
+/// map. Keeping the padded floor batches there creates coplanar mineral
+/// surfaces under the reveal, producing stripes when the rock fades away.
+/// Crossing geometry that cannot be faithfully clipped remains intact.
+pub(super) fn prepare_enclosed_cave(
+    source: SurfaceMeshData, tile_size: Vec2, bounds: Option<AuthenticBounds>,
+) -> Vec<PreparedBatch> {
+    let mut batches=prepare_with_authentic_bounds(source,tile_size,bounds);
+    batches.retain(|batch|batch.authentic_domain!=AuthenticDomain::Outside);
+    batches
 }
 
 fn valid_topology(source: &SurfaceMeshData) -> bool {
@@ -269,6 +281,32 @@ pub(super) fn separate_authentic_domains(
         (2, bounds.min.y, true),
         (2, bounds.max.y, false),
     ];
+    // Most authored objects lie wholly in one domain. Classify their existing
+    // buffer once and move it through unchanged instead of expanding every
+    // triangle corner and copying all four attribute streams twice.
+    let mut min = Vec2::splat(f32::INFINITY);
+    let mut max = Vec2::splat(f32::NEG_INFINITY);
+    let mut finite = true;
+    for &position in &source.positions {
+        let p = Vec2::new(position[0], position[2]);
+        if !p.is_finite() {
+            finite = false;
+            break;
+        }
+        min = min.min(p);
+        max = max.max(p);
+    }
+    if finite {
+        if min.cmpge(bounds.min).all() && max.cmple(bounds.max).all() {
+            return vec![(AuthenticDomain::Inside, source)];
+        }
+        // Strict separation keeps boundary-only triangles in the inside domain.
+        if max.x < bounds.min.x || min.x > bounds.max.x
+            || max.y < bounds.min.y || min.y > bounds.max.y
+        {
+            return vec![(AuthenticDomain::Outside, source)];
+        }
+    }
     let mut marked = vec![false; source.positions.len()];
     for range in &source.cutaway_ranges {
         marked[range.clone()].fill(true);
@@ -333,24 +371,35 @@ pub(super) fn separate_authentic_domains(
     .zip(indices)
     .zip(clipped)
     {
-        for index in indices {
-            let old = index as usize;
+        let base = data.positions.len();
+        let mut indices = indices;
+        for index in &mut indices {
+            let old = *index as usize;
             if remap[old] == u32::MAX {
-                let next = data.positions.len();
-                remap[old] = next as u32;
+                remap[old] = (base + touched.len()) as u32;
                 touched.push(old);
-                data.positions.push(source.positions[old]);
-                data.normals.push(source.normals[old]);
-                data.uvs.push(source.uvs[old]);
-                data.colors.push(source.colors[old]);
-                if marked[old] {
-                    mark_vertex(&mut data, next);
-                }
             }
-            data.indices.push(remap[old]);
+            *index = remap[old];
         }
-        for old in touched.drain(..) {
+        data.positions.reserve_exact(touched.len());
+        data.normals.reserve_exact(touched.len());
+        data.uvs.reserve_exact(touched.len());
+        data.colors.reserve_exact(touched.len());
+        for (offset, old) in touched.drain(..).enumerate() {
+            data.positions.push(source.positions[old]);
+            data.normals.push(source.normals[old]);
+            data.uvs.push(source.uvs[old]);
+            data.colors.push(source.colors[old]);
+            if marked[old] {
+                mark_vertex(&mut data, base + offset);
+            }
             remap[old] = u32::MAX;
+        }
+        if data.indices.is_empty() {
+            data.indices = indices;
+        } else {
+            data.indices.reserve_exact(indices.len());
+            data.indices.extend(indices);
         }
         if !data.indices.is_empty() {
             result.push((domain, data));
@@ -435,34 +484,34 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
     let mut remap = vec![u32::MAX; vertex_count];
     let mut touched = Vec::new();
     let mut result = Vec::with_capacity(batch_count);
-    for indices in buckets.into_iter().filter(|indices| !indices.is_empty()) {
+    for mut indices in buckets.into_iter().filter(|indices| !indices.is_empty()) {
+        // Determine the exact referenced vertex set before allocating attributes.
+        // Reuse the bucket's index buffer rather than copying every index again.
+        for index in &mut indices {
+            let old = *index as usize;
+            if remap[old] == u32::MAX {
+                remap[old] = touched.len() as u32;
+                touched.push(old);
+            }
+            *index = remap[old];
+        }
+        let count = touched.len();
         let mut batch = SurfaceMeshData {
-            indices: Vec::with_capacity(indices.len()),
+            positions: Vec::with_capacity(count),
+            normals: Vec::with_capacity(count),
+            uvs: Vec::with_capacity(count),
+            colors: Vec::with_capacity(count),
+            indices,
             ..default()
         };
-        for index in indices {
-            let old = index as usize;
-            if remap[old] == u32::MAX {
-                let next = batch.positions.len();
-                remap[old] = next as u32;
-                touched.push(old);
-                batch.positions.push(source.positions[old]);
-                batch.normals.push(source.normals[old]);
-                batch.uvs.push(source.uvs[old]);
-                batch.colors.push(source.colors[old]);
-                if marked[old] {
-                    if let Some(range) = batch.cutaway_ranges.last_mut()
-                        && range.end == next
-                    {
-                        range.end += 1;
-                    } else {
-                        batch.cutaway_ranges.push(next..next + 1);
-                    }
-                }
+        for (next, old) in touched.drain(..).enumerate() {
+            batch.positions.push(source.positions[old]);
+            batch.normals.push(source.normals[old]);
+            batch.uvs.push(source.uvs[old]);
+            batch.colors.push(source.colors[old]);
+            if marked[old] {
+                mark_vertex(&mut batch, next);
             }
-            batch.indices.push(remap[old]);
-        }
-        for old in touched.drain(..) {
             remap[old] = u32::MAX;
         }
         result.push(batch);
@@ -554,6 +603,37 @@ mod tests {
         append_triangle(&mut data, [a, d, c], true);
         data.normals.fill([0.125, 1.0, -0.0]);
         data
+    }
+
+    #[test]
+    fn enclosed_cave_removes_coplanar_padding_but_preserves_the_complete_source_floor() {
+        for scale in [1.,2.] {
+            let mut source=large_plane();
+            for p in &mut source.positions {p[0]=p[0]*scale-17.;p[1]=0.;p[2]=p[2]*scale+29.;}
+            source.normals.fill([0.,1.,0.]);
+            let bounds=AuthenticBounds {min:Vec2::new(-17.,29.),
+                max:Vec2::new(-17.+4.*scale,29.+3.*scale)};
+            let batches=prepare_enclosed_cave(source.clone(),Vec2::splat(8.*scale),Some(bounds));
+            assert!(!batches.is_empty());
+            let mut area=0.;
+            for batch in batches {
+                assert_eq!(batch.authentic_domain,AuthenticDomain::Inside);
+                let bevy::mesh::VertexAttributeValues::Float32x3(points)=
+                    batch.mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else {panic!("positions");};
+                assert!(points.iter().all(|p|p[1]==0. && p[0]>=bounds.min.x && p[0]<=bounds.max.x
+                    && p[2]>=bounds.min.y && p[2]<=bounds.max.y));
+                let indices:Vec<_>=batch.mesh.indices().unwrap().iter().collect();
+                for t in indices.chunks_exact(3) {
+                    let [a,b,c]=[t[0],t[1],t[2]].map(|i|Vec3::from_array(points[i]));
+                    area+=(b-a).cross(c-a).y*0.5;
+                }
+            }
+            assert!((area-12.*scale*scale).abs()<0.0001,
+                "every interior floor surface must remain exactly once at the source datum");
+            let fallback=prepare_enclosed_cave(source,Vec2::splat(8.*scale),None);
+            assert!(fallback.iter().all(|b|b.authentic_domain==AuthenticDomain::Unspecified),
+                "without authoritative bounds no padding may be inferred or removed");
+        }
     }
 
     fn projected_signed_area(data: &SurfaceMeshData) -> f64 {
@@ -848,6 +928,49 @@ mod tests {
     }
 
     #[test]
+    fn compact_static_indices_preserve_geometry_and_fall_back_above_u16() {
+        for large in [false, true] {
+            let mut data = fixture(1);
+            if large {
+                data.positions.resize(65537, [0.0; 3]);
+                data.normals.resize(65537, [0.0, 1.0, 0.0]);
+                data.uvs.resize(65537, [0.0; 2]);
+                data.colors.resize(65537, [1.0; 4]);
+                data.indices.extend([65535, 65536, 0]);
+            }
+            let original = data.clone().into_mesh();
+            let compact = data.into_compact_mesh();
+            for attribute in [Mesh::ATTRIBUTE_POSITION, Mesh::ATTRIBUTE_NORMAL,
+                Mesh::ATTRIBUTE_UV_0, Mesh::ATTRIBUTE_COLOR] {
+                assert_eq!(compact.attribute(attribute), original.attribute(attribute));
+            }
+            assert!(compact.attribute(Mesh::ATTRIBUTE_UV_1).is_none(),
+                "whole-object fading must not upload the unread legacy eligibility mask");
+            assert!(matches!(compact.indices().unwrap(), bevy::mesh::Indices::U32(_)) == large);
+            assert_eq!(compact.indices().unwrap().iter().collect::<Vec<_>>(),
+                original.indices().unwrap().iter().collect::<Vec<_>>());
+        }
+    }
+
+    #[test]
+    fn whole_domain_classification_reuses_attribute_and_index_buffers() {
+        for (x, domain) in [(1.0, AuthenticDomain::Inside), (-3.0, AuthenticDomain::Outside)] {
+            let mut source = SurfaceMeshData::default();
+            append_triangle(&mut source, [[x, 0.0, 1.0], [x + 0.5, 0.0, 1.0], [x, 0.0, 2.0]], true);
+            let expected = triangles(&source);
+            let pointers = (source.positions.as_ptr(), source.normals.as_ptr(),
+                source.uvs.as_ptr(), source.colors.as_ptr(), source.indices.as_ptr());
+            let mut domains = separate_authentic_domains(source, Some(bounds()));
+            assert_eq!(domains.len(), 1);
+            let (actual_domain, data) = domains.pop().unwrap();
+            assert_eq!(actual_domain, domain);
+            assert_eq!(triangles(&data), expected);
+            assert_eq!((data.positions.as_ptr(), data.normals.as_ptr(),
+                data.uvs.as_ptr(), data.colors.as_ptr(), data.indices.as_ptr()), pointers);
+        }
+    }
+
+    #[test]
     fn static_batches_keep_every_ordered_triangle_corner_and_cutaway_bit() {
         let mut source = fixture(68);
         // Complete long triangles must remain, even across multiple cells.
@@ -863,6 +986,11 @@ mod tests {
         assert!(batches.len() <= MAX_BATCHES_PER_AXIS * MAX_BATCHES_PER_AXIS);
         let mut actual = BTreeMap::new();
         for batch in &batches {
+            // Attribute storage is allocated once at its exact referenced size.
+            assert_eq!(batch.positions.capacity(), batch.positions.len());
+            assert_eq!(batch.normals.capacity(), batch.normals.len());
+            assert_eq!(batch.uvs.capacity(), batch.uvs.len());
+            assert_eq!(batch.colors.capacity(), batch.colors.len());
             for (key, count) in triangles(batch) {
                 *actual.entry(key).or_insert(0) += count;
             }

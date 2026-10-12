@@ -135,6 +135,8 @@ pub struct VisualActor {
     /// `effect_grass_rustle`). Optional renderers may use this to choose
     /// geometry; it carries no gameplay or collision semantics.
     pub source_id: Arc<str>,
+    /// Pack-backed Pokemon appearance, independent of shared sprite identity.
+    pub model_palette: Option<VisualPokemonModelPalette>,
     pub texture: Handle<Image>,
     /// Actor center in the same world-pixel coordinate system as the map.
     pub center: Vec2,
@@ -382,7 +384,7 @@ mod tests {
                     ..visual_tile(1, 0, 9)
                 },
             ],
-            actors: vec![VisualActor {
+            actors: vec![VisualActor { model_palette: None,
                 id: VisualActorId::Player,
                 source_id: Arc::from("player"),
                 texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
@@ -525,7 +527,7 @@ mod tests {
     #[test]
     fn active_frame_rejects_duplicate_stable_actor_ids() {
         let mut frame = active_frame();
-        frame.actors.push(VisualActor {
+        frame.actors.push(VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: Arc::from("player"),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
@@ -574,7 +576,7 @@ mod tests {
     #[test]
     fn presentation_effect_identity_is_distinct_and_stable() {
         let mut frame = active_frame();
-        let grass_rustle = VisualActor {
+        let grass_rustle = VisualActor { model_palette: None,
             id: VisualActorId::Effect(VisualEffectId::GrassRustle),
             source_id: Arc::from("effect_grass_rustle"),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),

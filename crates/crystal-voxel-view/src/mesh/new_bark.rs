@@ -8,6 +8,13 @@ use crate::new_bark_models::{ModelKind, model};
 const MAP: &str = "NewBarkTown";
 pub(super) use crate::new_bark_models::supports_map;
 
+/// Outdoor grove coverage is independent of the narrower verified building kit.
+pub(super) fn supports_grove(map: &str) -> bool {
+    map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
+        || matches!(map, "LakeOfRage" | "RuinsOfAlphOutside" | "SilverCaveOutside")
+}
+
+
 const TRADITIONAL_DOOR_TILES: [[u16; 2]; 2] = [[0x27, 0x28], [0x29, 0x2a]];
 const DOOR_TILES: [[u16; 2]; 2] = [[0x37, 0x38], [0x39, 0x3a]];
 
@@ -558,59 +565,18 @@ pub(super) fn append_signs(
         let south = n + 2.0 * geometry.tile_height;
         let unit = geometry.tile_height;
         let cx = (w + e) * 0.5;
-        let z = south - unit * 0.22;
-        // Narrow post and inset cream board stay entirely within the exact
-        // source 2x2 sign plot. Text/interactions remain owned by the game.
-        sign_box(
+        let z = south - unit * 0.35;
+        // Use the same compact notice panel as every other verified route
+        // sign. Source ownership, ground sample and interactions stay here.
+        let model = crate::exterior_models::model(crate::exterior_models::Kind::RouteSign);
+        model.append_fitted(
             &mut mesh.solid,
-            [
-                cx - unit * 0.12,
-                cx + unit * 0.12,
-                0.0,
-                unit * 1.25,
-                z - unit * 0.11,
-                z + unit * 0.11,
-            ],
-            [0.34, 0.25, 0.16, 1.0],
+            [cx - unit * 0.825, cx + unit * 0.825,
+                z - unit * 0.12, z + unit * 0.12],
+            0.0,
+            unit * 2.0 / (model.max[1] - model.min[1]),
+            None,
         );
-        sign_box(
-            &mut mesh.solid,
-            [
-                w + unit * 0.10,
-                e - unit * 0.10,
-                unit * 0.72,
-                unit * 1.64,
-                z - unit * 0.13,
-                z + unit * 0.13,
-            ],
-            [0.48, 0.35, 0.22, 1.0],
-        );
-        sign_box(
-            &mut mesh.solid,
-            [
-                w + unit * 0.24,
-                e - unit * 0.24,
-                unit * 0.84,
-                unit * 1.52,
-                z + unit * 0.131,
-                z + unit * 0.15,
-            ],
-            [0.80, 0.75, 0.59, 1.0],
-        );
-        for (dy, length) in [(1.30, 0.88), (1.13, 0.67), (0.98, 0.76)] {
-            sign_box(
-                &mut mesh.solid,
-                [
-                    cx - unit * length * 0.5,
-                    cx + unit * length * 0.5,
-                    unit * dy,
-                    unit * (dy + 0.034),
-                    z + unit * 0.151,
-                    z + unit * 0.153,
-                ],
-                [0.44, 0.46, 0.34, 1.0],
-            );
-        }
         mark_authored_rect(
             mesh,
             geometry,
@@ -665,6 +631,8 @@ fn sign_box(mesh: &mut SurfaceMeshData, bounds: [f32; 6], color: [f32; 4]) {
 
 fn mixed_tree_origins(metatile: u16) -> &'static [(u8, u8)] {
     match metatile {
+        0x3c => &[(0, 0)],
+        0x3e => &[(0, 2)],
         0x5b => &[(0, 0)],
         0x5c => &[(0, 0), (2, 0), (0, 2)],
         0x5d => &[(0, 0), (2, 0)],
@@ -723,7 +691,7 @@ pub(super) fn tree_placements(
     geometry: &GridGeometry,
 ) -> Vec<TreePlacement> {
     let mut result = complete_tree_placements(cells, geometry);
-    if !supports_map(map) {
+    if !supports_grove(map) {
         return result;
     }
     for tile in cells {
@@ -762,7 +730,7 @@ fn modeled_tree_ground(
     geometry: &GridGeometry,
     placement: TreePlacement,
 ) -> Option<usize> {
-    if !(supports_map(map) || map == "Route26")
+    if !supports_grove(map)
         || placement.width != 2
         || !matches!(placement.height, 2 | 4)
         || !(0..placement.height).all(|y| {
@@ -796,7 +764,7 @@ pub(super) fn preferred_scenery_cells(
     geometry: &GridGeometry,
 ) -> Vec<bool> {
     let mut reserved = vec![false; cells.len()];
-    if !(supports_map(map) || map == "Route26") {
+    if !supports_grove(map) {
         return reserved;
     }
     let shapes: Vec<_> = cells
@@ -813,7 +781,9 @@ pub(super) fn preferred_scenery_cells(
             }
         }
     }
-    for placement in sign_placements(cells, &shapes, geometry) {
+    for placement in sign_placements(cells, &shapes, geometry)
+        .into_iter().filter(|_| supports_map(map))
+    {
         for y in 0..2 {
             for x in 0..2 {
                 reserved[(placement.row + y) * geometry.width + placement.column + x] = true;
@@ -822,7 +792,7 @@ pub(super) fn preferred_scenery_cells(
     }
     // Route29's legacy live profile contains one pixel tuft per source phase.
     // Complete modeled grass must claim those exact cells before masking.
-    if authored_ground_cell(cells, &shapes, 0x05).is_some() {
+    if supports_map(map) && authored_ground_cell(cells, &shapes, 0x05).is_some() {
         for (index, tile) in cells.iter().enumerate() {
             if grass_source(&tile.source) {
                 reserved[index] = true;
@@ -842,19 +812,26 @@ fn foliage_lod(g: &GridGeometry, x: f32, z: f32, radius_cells: f32) -> bool {
 
 /// Adjacent recognized tree plots allow overlapping crowns inside continuous groves.
 pub(super) fn grove_neighbors(
+    mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
     g: &GridGeometry,
     map: &str,
     p: TreePlacement,
 ) -> [bool; 4] {
-    let plots = tree_placements(map, cells, g);
+    let occupied = mesh.tree_neighborhood.get_or_insert_with(|| {
+        let mut occupied = vec![false; g.width * g.height];
+        for plot in tree_placements(map, cells, g) {
+            for row in plot.row..(plot.row + plot.height).min(g.height) {
+                for column in plot.column..(plot.column + plot.width).min(g.width) {
+                    occupied[row * g.width + column] = true;
+                }
+            }
+        }
+        occupied
+    });
     let contains = |x: i32, y: i32| {
-        plots.iter().any(|q| {
-            x >= q.column as i32
-                && x < (q.column + q.width) as i32
-                && y >= q.row as i32
-                && y < (q.row + q.height) as i32
-        })
+        x >= 0 && y >= 0 && (x as usize) < g.width && (y as usize) < g.height
+            && occupied[y as usize * g.width + x as usize]
     };
     let x = p.column as i32;
     let y = p.row as i32;
@@ -901,45 +878,19 @@ pub(super) fn append_tree(
     let width = placement.width as f32 * geometry.tile_width;
     let south = north + placement.height as f32 * geometry.tile_height;
     let depth = width.min(placement.height as f32 * geometry.tile_height);
-    let kind = if foliage_lod(geometry, west + width * 0.5, south - depth * 0.5, 14.0) {
-        ModelKind::TreeLod
-    } else {
-        ModelKind::Tree
-    };
     let coordinates = [
         map_origin[0] + placement.column as i32,
         map_origin[1] + placement.row as i32,
     ];
-    let neighbors = grove_neighbors(cells, geometry, map, placement);
-    if map == "NewBarkTown" {
-        crate::foliage::append_town_tree(
-            mesh,
-            [west, west + width, south - depth, south],
-            placement.base_height,
-            geometry.tile_height,
-            coordinates,
-            neighbors,
-        );
-    } else if matches!(map, "Route29" | "Route26") {
-        crate::foliage::append_route_tree(
-            mesh,
-            [west, west + width, south - depth, south],
-            placement.base_height,
-            geometry.tile_height,
-            coordinates,
-            neighbors,
-        );
-    } else {
-        crate::foliage::append_world_tree(
-            mesh,
-            kind,
-            [west, west + width, south - depth, south],
-            placement.base_height,
-            geometry.tile_height,
-            coordinates,
-            neighbors,
-        );
-    }
+    let neighbors = grove_neighbors(mesh, cells, geometry, map, placement);
+    crate::foliage::append_grove_tree(
+        mesh,
+        [west, west + width, south - depth, south],
+        placement.base_height,
+        geometry.tile_height,
+        coordinates,
+        neighbors,
+    );
     mark_authored_rect(
         mesh,
         geometry,
@@ -1014,6 +965,45 @@ pub(super) fn append_flower(
         None,
     );
     true
+}
+
+/// A modeled tree's ground replaces its original hull. Preserve the land's
+/// exposed water contact even though ordinary exposed-side meshing skips it.
+pub(super) fn append_grove_water_contacts(
+    mesh: &mut TerrainMeshData, cells: &[&VisualTile], g: &GridGeometry, origin: [i32; 2],
+) {
+    let bottom = CellShape::Water.surface_height(g.tile_height);
+    for (i, tile) in cells.iter().enumerate() {
+        if !matches!(mesh.authored_cells.get(i).copied().flatten(),
+            Some("johto/tree" | "johto/small_tree" | "world-exterior/kanto_canopy"
+                | "world-exterior/forest_tree" | "world-exterior/park_tree"))
+            || mesh.footing_heights.get(i).is_none_or(|h| h.abs() > 0.001)
+            || !matches!(tile.source.tileset_id.as_ref(),
+                "johto" | "johto_modern" | "kanto" | "forest" | "park" | "battle_tower_outside")
+        { continue; }
+        let x = i % g.width;
+        let y = i / g.width;
+        let (w, e, n, s) = g.bounds(x, y);
+        for direction in Direction::ALL {
+            let (dx, dy) = direction.offset();
+            let nx = x as isize + dx;
+            let ny = y as isize + dy;
+            if nx < 0 || ny < 0 || nx >= g.width as isize || ny >= g.height as isize { continue; }
+            let neighbor = &cells[ny as usize * g.width + nx as usize].source;
+            if neighbor.tileset_id != tile.source.tileset_id
+                || !matches!(shape_for_source(neighbor), CellShape::Water)
+            { continue; }
+            let (p, normal) = match direction {
+                Direction::North => ([[w,bottom,n],[w,0.,n],[e,0.,n],[e,bottom,n]], [0.,0.,-1.]),
+                Direction::South => ([[e,bottom,s],[e,0.,s],[w,0.,s],[w,bottom,s]], [0.,0.,1.]),
+                Direction::West => ([[w,bottom,s],[w,0.,s],[w,0.,n],[w,bottom,n]], [-1.,0.,0.]),
+                Direction::East => ([[e,bottom,n],[e,0.,n],[e,0.,s],[e,bottom,s]], [1.,0.,0.]),
+            };
+            // Reuse the same mineral wall and pigment as native shoreline
+            // terrain. Its perimeter stays fixed to the existing floor/water.
+            outdoor_stone::append_canyon(&mut mesh.solid, p, normal, g, origin);
+        }
+    }
 }
 
 /// Original folded-blade tuft, emitted only for the verified complete Johto
@@ -1332,12 +1322,22 @@ pub(super) fn meadow_noise(x: f32, z: f32) -> f32 {
 }
 
 fn ground_color(material: GroundMaterial, p: [f32; 3], geometry: &GridGeometry) -> [f32; 4] {
+    ground_color_with_path_palette(material, p, geometry, None)
+}
+
+fn ground_color_with_path_palette(
+    material: GroundMaterial,
+    p: [f32; 3],
+    geometry: &GridGeometry,
+    path_palette: Option<[f32; 3]>,
+) -> [f32; 4] {
     let (x, z) = (p[0] / geometry.tile_width, p[2] / geometry.tile_height);
     let broad = meadow_noise(x / 5.0, z / 5.0);
     let fine = meadow_noise(x / 1.7, z / 1.7);
     let (base, variation) = match material {
         GroundMaterial::Lawn => ([0.24, 0.37, 0.105], broad * 0.19 + fine * 0.085),
-        GroundMaterial::Path => ([0.68, 0.52, 0.31], broad * 0.090 + fine * 0.050),
+        GroundMaterial::Path => (path_palette.unwrap_or([0.68, 0.52, 0.31]),
+            broad * 0.090 + fine * 0.050),
         GroundMaterial::Water => ([0.095, 0.30, 0.32], broad * 0.036 + fine * 0.010),
         GroundMaterial::Shore => ([0.45, 0.46, 0.37], broad * 0.032 + fine * 0.024),
         GroundMaterial::Bank => ([0.39, 0.37, 0.29], broad * 0.035 + fine * 0.020),
@@ -1353,7 +1353,7 @@ fn ground_color(material: GroundMaterial, p: [f32; 3], geometry: &GridGeometry) 
     ]
 }
 
-fn sampled_cell(uvs: &[[f32; 2]], geometry: &GridGeometry) -> Option<usize> {
+pub(super) fn sampled_cell(uvs: &[[f32; 2]], geometry: &GridGeometry) -> Option<usize> {
     let u = uvs.iter().map(|uv| uv[0]).sum::<f32>() / uvs.len() as f32;
     let v = uvs.iter().map(|uv| uv[1]).sum::<f32>() / uvs.len() as f32;
     if !(0.0..1.0).contains(&u) || !(0.0..1.0).contains(&v) {
@@ -1657,6 +1657,59 @@ fn owned_rock_surface(positions: &[[f32; 3]], normal: [f32; 3],
         })
 }
 
+/// Finish the existing Forest ledge hull, including its borrowed cap sample.
+/// Its source classifier already distinguishes the ramp opening and side courses.
+fn forest_bank_surface(
+    positions: &[[f32; 3]], normal: [f32; 3], sample: &VisualTileSource,
+    cells: &[&VisualTile], g: &GridGeometry, claims: &[Option<&str>],
+) -> Option<GroundMaterial> {
+    if sample.tileset_id.as_ref() != "forest" { return None; }
+    let center = positions.iter().fold(Vec3::ZERO, |sum,p| sum+Vec3::from_array(*p)) * 0.25;
+    let i = cell_at(g,center.x-normal[0]*g.tile_width*0.001,
+        center.z-normal[2]*g.tile_height*0.001)?;
+    if claims.get(i).is_some_and(Option::is_some) { return None; }
+    let shape = crate::forest::forest_ledge_shape(&cells[i].source)?;
+    if !matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..}
+        | CellShape::LedgeBand {..} | CellShape::RampNorth {..}) { return None; }
+    let maximum = g.tile_height*crate::profile::JUMP_LEDGE_HEIGHT/SOURCE_TILE_HEIGHT;
+    if positions.iter().any(|p|p[1] < -0.001 || p[1]>maximum+0.001) { return None; }
+    Some(if normal[1]>0.01 {GroundMaterial::Lawn} else {GroundMaterial::Bank})
+}
+
+fn ordinary_lawn_map(map: &str) -> bool {
+    map.strip_prefix("Route").is_some_and(|n|
+        !n.is_empty() && n.bytes().all(|c|c.is_ascii_digit()))
+        || map.ends_with("Town") || map.ends_with("City")
+        || matches!(map,"LakeOfRage"|"RuinsOfAlphOutside"|"SilverCaveOutside")
+}
+
+fn lawn_water_bank(
+    map: &str, positions: &[[f32;3];4], normal: [f32;3], sample: &VisualTileSource,
+    cells: &[&VisualTile], g: &GridGeometry, authored: &[Option<&str>],
+) -> bool {
+    let outdoor = ordinary_lawn_map(map);
+    if !outdoor || normal[1].abs()>0.001
+        || !matches!(sample.tileset_id.as_ref(),"johto"|"johto_modern")
+        || ground_material(sample)!=Some(GroundMaterial::Lawn) {return false;}
+    let center=positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
+    let n=Vec3::from_array(normal);
+    if n.length_squared()<0.99 {return false;}
+    let Some(land)=cell_at(g,center.x-normal[0]*g.tile_width*0.001,
+        center.z-normal[2]*g.tile_height*0.001) else {return false;};
+    let Some(water)=cell_at(g,center.x+normal[0]*g.tile_width*0.001,
+        center.z+normal[2]*g.tile_height*0.001) else {return false;};
+    let low=CellShape::Water.surface_height(g.tile_height);
+    let epsilon=g.tile_height*0.0001;
+    cells[land].source.tileset_id==sample.tileset_id
+        && ground_material(&cells[land].source)==Some(GroundMaterial::Lawn)
+        && authored.get(land).is_some_and(|claim|claim.is_none())
+        && cells[water].source.tileset_id==sample.tileset_id
+        && matches!(shape_for_source(&cells[water].source),CellShape::Water)
+        && positions.iter().all(|p|p[1]>=low-epsilon && p[1]<=epsilon)
+        && positions.iter().any(|p|(p[1]-low).abs()<epsilon)
+        && positions.iter().any(|p|p[1].abs()<epsilon)
+}
+
 fn surface_material(
     map: &str,
     positions: &[[f32; 3]],
@@ -1666,6 +1719,9 @@ fn surface_material(
     geometry: &GridGeometry,
     authored_cells: &[Option<&str>],
 ) -> Option<GroundMaterial> {
+    if let Some(material) = forest_bank_surface(positions,normal,sample,cells,geometry,authored_cells) {
+        return Some(material);
+    }
     if (map.starts_with("Route") || map.ends_with("Town") || map.ends_with("City"))
         && owned_rock_surface(positions, normal, cells, geometry) {
         return Some(GroundMaterial::Stone);
@@ -1777,6 +1833,11 @@ fn surface_material(
             && sample.tile_index == 0x14
             && authored_cells.get(world).copied().flatten()
                 == Some("world-exterior/kanto_boundary_shore");
+        let buoy_bed = material == GroundMaterial::Water
+            && sample.tile_index == 0x14
+            && sample.tileset_id == cells[world].source.tileset_id
+            && authored_cells.get(world).copied().flatten() == Some(buoy_course::LABEL)
+            && buoy_course::source(&cells[world].source);
         // Route19's two all-rock blocks are surrounded by native water. The
         // exact binding keeps the land-rock sculpture, but supplies block $43
         // water at the same datum as its neighbors, never a square paving island.
@@ -1799,6 +1860,7 @@ fn surface_material(
             && !harbor_bed
             && !park_basin_bed
             && !kanto_rock_bed
+            && !buoy_bed
             && !route19_rock_bed
         {
             return None;
@@ -1872,6 +1934,8 @@ mod city_paving;
 mod forest_floor;
 #[path = "ground_blend.rs"]
 mod ground_blend;
+#[path = "shore_blend.rs"]
+mod shore_blend;
 #[path = "ledge_finish.rs"]
 pub(super) mod ledge_finish;
 #[path = "ice_rim.rs"]
@@ -1892,10 +1956,12 @@ pub(super) fn append_rock_floor_patches(
 
 struct GroundFinish<'a> {
     cerulean_pool: bool,
+    path_palette: Option<[f32; 3]>,
     city_paving: Option<Vec<u8>>,
     forest: bool,
     sunlit_grove: bool,
     blend: ground_blend::GroundBlend,
+    shore: shore_blend::ShoreBlend,
     geometry: &'a GridGeometry,
     map_origin: [i32; 2],
     shadows: Vec<GroundShadow>,
@@ -1917,7 +1983,14 @@ impl<'a> GroundFinish<'a> {
             .collect();
         let mut shadows = Vec::new();
         for placement in tree_placements(map, cells, geometry) {
-            if modeled_tree_ground(map, cells, &shapes, geometry, placement).is_none() {
+            let ground = if matches!(map, "NationalPark" | "NationalParkBugContest") {
+                super::modeled_exteriors::park_tree_ground(map, cells, &shapes, geometry, placement)
+            } else {
+                modeled_tree_ground(map, cells, &shapes, geometry, placement)
+                    .or_else(|| super::modeled_exteriors::tree_ground(
+                        map, cells, &shapes, geometry, placement))
+            };
+            if ground.is_none() {
                 continue;
             }
             let (west, _, north, _) = geometry.bounds(placement.column, placement.row);
@@ -1927,8 +2000,9 @@ impl<'a> GroundFinish<'a> {
             shadows.push(GroundShadow {
                 bounds: [west, west + width, south - depth, south],
                 tree: true,
-                trunk_center: matches!(map, "Route29" | "Route26").then(|| {
-                    let offset = crate::foliage::route_trunk_offset(
+                trunk_center: matches!(cells[placement.row * geometry.width + placement.column]
+                    .source.tileset_id.as_ref(), "johto" | "johto_modern").then(|| {
+                    let offset = crate::foliage::grove_trunk_offset(
                         [map_origin[0]+placement.column as i32, map_origin[1]+placement.row as i32],
                         width.min(depth),
                     );
@@ -2064,13 +2138,18 @@ impl<'a> GroundFinish<'a> {
         let blend = ground_blend::GroundBlend::at_corners(&materials, &heights, geometry);
         Self {
             cerulean_pool: map == "CeruleanGym",
+            // New Bark's pale gravel has a cool green cast in the native
+            // drawing. Keep Route29's earth and coastal sand separate.
+            path_palette: (map == "NewBarkTown").then_some([0.50, 0.54, 0.46]),
             city_paving,
-            sunlit_grove: matches!(map,
-                "Route29" | "Route26" | "NationalPark" | "NationalParkBugContest"),
+            sunlit_grove: ((map.starts_with("Route") || map == "LakeOfRage")
+                && cells.iter().any(|t| matches!(t.source.tileset_id.as_ref(), "johto" | "johto_modern")))
+                || matches!(map, "NationalPark" | "NationalParkBugContest"),
             forest: cells
                 .iter()
                 .any(|t| t.source.tileset_id.as_ref() == "forest"),
             blend,
+            shore: shore_blend::ShoreBlend::new(map,cells,geometry),
             geometry,
             map_origin,
             shadows,
@@ -2101,7 +2180,8 @@ impl<'a> GroundFinish<'a> {
             p[1],
             p[2] - self.geometry.origin_z + self.map_origin[1] as f32 * self.geometry.tile_height,
         ];
-        let mut color = ground_color(material, map_p, self.geometry);
+        let mut color = ground_color_with_path_palette(material, map_p, self.geometry,
+            self.path_palette);
         // Water classification has already passed the source and datum guards.
         // Cerulean's blue pool is distinct from outdoor teal water; only its
         // color changes here, never its cells, height or animation ownership.
@@ -2130,7 +2210,8 @@ impl<'a> GroundFinish<'a> {
             color[2] *= 0.40;
         }
         if matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
-            if let Some(mixed) = self.blend.color(p, self.geometry, self.map_origin) {
+            if let Some(mixed) = self.blend.color_with_path_palette(p, self.geometry,
+                self.map_origin, self.path_palette) {
                 color = mixed;
             }
             let mut darkness = self.darkness(p);
@@ -2155,11 +2236,40 @@ impl<'a> GroundFinish<'a> {
                 // the dense trunk contact stays dark and cast shadows remain real.
                 darkness = (darkness - 0.30).max(0.0) + darkness.min(0.30) * (1.0 - fleck * 0.48);
             }
+            if material==GroundMaterial::Lawn {
+                color=self.shore.color(p,self.geometry,self.map_origin,color);
+            }
             for c in &mut color[..3] {
                 *c *= 1.0 - darkness;
             }
         }
         color
+    }
+
+    fn park_canopy_darkness(&self, p: [f32; 3]) -> f32 {
+        // The tree's lawn backing is restricted to its source plot. Canopy
+        // shade is a separate presentation field and may fall on nearby
+        // masonry without changing that backing or its source ownership.
+        let cover = self.shadows.iter().filter(|s| s.tree)
+            .filter_map(|s| {
+                let [w, e, n, south] = s.bounds;
+                let width = e - w;
+                let depth = south - n;
+                if width < self.geometry.tile_width * 2. { return None; }
+                let x = (p[0] - ((w + e) * 0.5 - width * 0.36)) / (width * 0.80);
+                let z = (p[2] - ((n + south) * 0.5 - depth * 0.44)) / (depth * 0.75);
+                Some((1. - x * x - z * z).max(0.).powi(2))
+            }).fold(0.0_f32, f32::max);
+        if cover == 0. { return 0.; }
+        let x = (p[0] - self.geometry.origin_x) / self.geometry.tile_width
+            + self.map_origin[0] as f32;
+        let z = (p[2] - self.geometry.origin_z) / self.geometry.tile_height
+            + self.map_origin[1] as f32;
+        let patch = meadow_noise(x * 1.3, z * 1.3)
+            + meadow_noise(x * 0.47 + 17., z * 0.47 - 9.) * 0.55;
+        let light = ((patch + 0.16) / 0.40).clamp(0., 1.);
+        let light = light * light * (3. - 2. * light);
+        cover * 0.22 * (1. - light * 0.70)
     }
 
     fn append_surface(
@@ -2185,6 +2295,7 @@ impl<'a> GroundFinish<'a> {
                 // Reuse the disjoint, world-anchored limestone partition;
                 // source ownership and the original floor remain unchanged.
                 let park = flags & 0x40 != 0;
+                let first = mesh.positions.len();
                 city_paving::append(
                     mesh,
                     positions,
@@ -2193,6 +2304,14 @@ impl<'a> GroundFinish<'a> {
                     if park { GroundMaterial::Path } else { material },
                     if park { 0x40 } else { flags & 15 },
                 );
+                if park {
+                    for i in first..mesh.positions.len() {
+                        let shade = self.park_canopy_darkness(mesh.positions[i]);
+                        for (c, gain) in [1.02, 0.96, 0.86].into_iter().enumerate() {
+                            mesh.colors[i][c] *= 1. - shade * gain;
+                        }
+                    }
+                }
                 return;
             }
         }
@@ -2258,6 +2377,7 @@ impl<'a> GroundFinish<'a> {
                             .and_then(|i| cells.get(i))
                     })
                     .is_some_and(|shadows| !shadows.is_empty()))
+            || self.shore.near([(w+e)*0.5,positions[0][1],(n+s)*0.5],self.geometry)
             || self.blend.near(
                 [(w + e) * 0.5, positions[0][1], (n + s) * 0.5],
                 self.geometry,
@@ -2479,7 +2599,7 @@ pub(super) fn polish_world_surfaces(
     map_origin: [i32; 2],
 ) {
     let finish = GroundFinish::new(map, cells, geometry, map_origin);
-    let corners = cave_cliff::RockCorners::new(cells, geometry);
+    let corners = cave_cliff::RockCorners::new_on_map(map,cells,geometry);
     let cave_trace = std::env::var_os("CRYSTAL_CAVE_RENDER_TRACE").is_some()
         && cells.first().is_some_and(|t| {
             matches!(
@@ -2513,6 +2633,29 @@ pub(super) fn polish_world_surfaces(
         let positions: [[f32; 3]; 4] = old.positions[base..base + 4].try_into().unwrap();
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
+        if sampled_cell(&uvs,geometry).is_some_and(|i|
+            lawn_water_bank(map,&positions,normal,&cells[i].source,cells,geometry,&mesh.authored_cells))
+            && ledge_finish::append(&mut mesh.solid,positions,normal,geometry,map_origin) {
+            continue;
+        }
+        let center=positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
+        let owned_x=((center.x-geometry.origin_x)/geometry.tile_width).floor() as isize;
+        let owned_z=((center.z-geometry.origin_z)/geometry.tile_height).floor() as isize;
+        let owned=(owned_x>=0 && owned_z>=0 && owned_x<geometry.width as isize
+            && owned_z<geometry.height as isize)
+            .then(||owned_z as usize*geometry.width+owned_x as usize);
+        if map=="VictoryRoad" && normal[1]>0.3 && normal[1]<0.999
+            && owned.is_some_and(|i| {
+                let s=&cells[i].source;
+                s.tileset_id.as_ref()=="cave" && (s.tile_index==0x16
+                    || (matches!(s.metatile_id,0x12|0x30) && matches!(s.tile_index,0x36|0x37)))
+            }) {
+            let points=positions.map(Vec3::from_array);
+            append_quad_colors(&mut mesh.solid,positions,normal,
+                points.map(|p|cave_cliff::floor_uv(p,geometry,map_origin,false)),
+                points.map(|p|cave_cliff::pigment([0.40,0.40,0.38,1.],p,geometry,map_origin,false)));
+            continue;
+        }
         if ledge_approach::obsolete_toe_wall(&positions, normal, cells, geometry) {
             continue;
         }
@@ -2555,6 +2698,21 @@ pub(super) fn polish_world_surfaces(
                 );
             }
             cave_faces += 1;
+            continue;
+        }
+        if map=="VictoryRoad" && normal[1]>0.999 && owned.is_some_and(|i| {
+            let s=&cells[i].source;
+            s.tileset_id.as_ref()=="cave" && s.tile_index==0x16
+        }) {
+            if center.y>=crate::cave::CAVE_ROCK_HEIGHT*geometry.tile_height/SOURCE_TILE_HEIGHT {
+                cave_cliff::quad_with_point(&mut mesh.solid,positions,[0.34,0.345,0.31,1.],geometry,map_origin,
+                    |p,g,o|corners.point(p,g,o),false);
+            } else {
+                let points=positions.map(Vec3::from_array);
+                append_quad_colors(&mut mesh.solid,positions,normal,
+                    points.map(|p|cave_cliff::floor_uv(p,geometry,map_origin,false)),
+                    points.map(|p|cave_cliff::pigment([0.40,0.40,0.38,1.],p,geometry,map_origin,false)));
+            }
             continue;
         }
         if map != "HallOfFame"
@@ -2617,6 +2775,18 @@ pub(super) fn polish_world_surfaces(
             })
         });
         if let Some(material) = material {
+            if material == GroundMaterial::Water && normal[1] > 0.999
+                && sampled_cell(&uvs,geometry).is_some_and(|i|
+                    crate::cave_water::live_outdoor_water(cells[i],map))
+            {
+                // Keep authenticated outdoor water on its original atlas UVs
+                // so the source-phase shader can draw continuous currents.
+                // Painting it into the solid mesh discarded that clock and
+                // left only static short ripple bars on a uniform plane.
+                append_quad_colors(&mut mesh.textured,positions,normal,uvs,
+                    old.colors[base..base+4].try_into().unwrap());
+                continue;
+            }
             let painted_start = mesh.solid.positions.len();
             if material == GroundMaterial::Shore
                 && sampled_cell(&uvs, geometry).is_some_and(|i|
@@ -2633,7 +2803,12 @@ pub(super) fn polish_world_surfaces(
                     matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern")
                         && cells[i].source.metatile_id == 0x0a))
             {
-                if map == "Route26" {
+                // The byte-identical $0a drawing shares one mineral finish
+                // across towns and routes, including coastal copies.
+                let native_platform = sampled_cell(&uvs, geometry).is_some_and(|i|
+                    matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern")
+                        && cells[i].source.metatile_id == 0x0a);
+                if native_platform || map == "Route26" {
                     outdoor_stone::append_canyon(&mut mesh.solid, positions, normal, geometry, map_origin);
                 } else {
                     outdoor_stone::append(&mut mesh.solid, positions, normal, geometry, map_origin);
@@ -2676,6 +2851,13 @@ pub(super) fn polish_world_surfaces(
                 continue;
             }
             if material == GroundMaterial::Bank {
+                if sampled_cell(&uvs, geometry).is_some_and(|i|
+                    forest_bank_surface(&positions, normal, &cells[i].source,
+                        cells, geometry, &mesh.authored_cells) == Some(GroundMaterial::Bank))
+                    && ledge_finish::append(&mut mesh.solid, positions, normal, geometry, map_origin)
+                {
+                    continue;
+                }
                 let owner = sampled_cell(&uvs, geometry).filter(|&i| {
                     cells[i].source.tileset_id.as_ref() == "johto"
                         && shallow_bank_source(&cells[i].source)
@@ -2696,7 +2878,8 @@ pub(super) fn polish_world_surfaces(
                     let source = &cells[i].source;
                     let shape = shape_for_source(source);
                     let height = shape.surface_height(geometry.tile_height);
-                    shallow_bank_source(source)
+                    (shallow_bank_source(source)
+                        || crate::forest::forest_ledge_shape(source).is_some())
                         && height > 0.0
                         && matches!(shape, CellShape::RaisedTop { solid: SolidKind::Bank, .. }
                             | CellShape::LedgeBand { .. })
@@ -2792,6 +2975,123 @@ pub(super) fn polish_world_surfaces(
 mod tests {
     use super::super::tests::{frame, source_with_tile};
     use super::*;
+
+    #[test]
+    fn forest_ledge_finish_uses_owned_hull_and_rejects_foreign_or_claimed_art() {
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut f=frame(1,1,vec![source_with_tile(0x18,1,1,0x05)]);
+        f.tiles[0].source.tileset_id="forest".into();
+        let cap=[[0.,6.,0.],[0.,6.,8.],[8.,6.,8.],[8.,6.,0.]];
+        let wall=[[0.,0.,0.],[0.,6.,0.],[0.,6.,8.],[0.,0.,8.]];
+        let cells=vec![&f.tiles[0]];
+        let sample=&cells[0].source;
+        assert_eq!(forest_bank_surface(&cap,[0.,1.,0.],sample,&cells,&g,&[None]),Some(GroundMaterial::Lawn));
+        assert_eq!(forest_bank_surface(&wall,[-1.,0.,0.],sample,&cells,&g,&[None]),Some(GroundMaterial::Bank));
+        assert_eq!(forest_bank_surface(&cap,[0.,1.,0.],sample,&cells,&g,&[Some("authored/prop")]),None);
+        let high=cap.map(|mut p|{p[1]+=8.;p});
+        assert_eq!(forest_bank_surface(&high,[0.,1.,0.],sample,&cells,&g,&[None]),None);
+        let mut foreign=sample.clone();foreign.tileset_id="johto".into();
+        assert_eq!(forest_bank_surface(&cap,[0.,1.,0.],&foreign,&cells,&g,&[None]),None);
+        drop(cells);
+        f.tiles[0].source.metatile_id=0x20;
+        let cells=vec![&f.tiles[0]];
+        assert_eq!(forest_bank_surface(&cap,[0.,1.,0.],&cells[0].source,&cells,&g,&[None]),None);
+    }
+
+    #[test]
+    fn forest_ledge_relief_and_litter_keep_native_cap_and_floor_contacts() {
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut f=frame(1,1,vec![source_with_tile(0x18,1,1,0x05)]);
+        f.tiles[0].source.tileset_id="forest".into();
+        let cells=vec![&f.tiles[0]];
+        let cap=[[0.,6.,0.],[0.,6.,8.],[8.,6.,8.],[8.,6.,0.]];
+        let wall=[[0.,0.,8.],[0.,6.,8.],[0.,6.,0.],[0.,0.,0.]];
+        let mut mesh=TerrainMeshData {footing_heights:vec![6.],authored_cells:vec![None],..Default::default()};
+        let (u0,u1,v0,v1)=g.uv(0,0);
+        let uvs=[[u0,v0],[u0,v1],[u1,v1],[u1,v0]];
+        append_quad_colors(&mut mesh.textured,cap,[0.,1.,0.],uvs,[[1.;4];4]);
+        append_quad_colors(&mut mesh.textured,wall,[-1.,0.,0.],uvs,[[1.;4];4]);
+        polish_world_surfaces(&mut mesh,"IlexForest",&cells,&g,[0,0]);
+        assert!(mesh.textured.positions.is_empty());
+        assert_eq!(mesh.footing_heights,vec![6.]);
+        assert_eq!(mesh.authored_cells,vec![None]);
+        for corner in cap.into_iter().chain(wall) {
+            assert!(mesh.solid.positions.contains(&corner),"native ledge perimeter moved");
+        }
+        assert!(mesh.solid.positions.iter().any(|p|p[0] < -0.01 && p[1]>0. && p[1]<6.),
+            "earthen face must have relief inside its fixed perimeter");
+        assert!(mesh.solid.positions.iter().any(|p|p[0]>0. && p[0]<8. && p[2]>0. && p[2]<8. && p[1]>6.),
+            "native raised cap must receive the forest litter finish");
+    }
+
+    #[test]
+    fn cave_shelf_return_faces_share_the_front_scarp_finish() {
+        let g=GridGeometry {width:3,height:3,tile_width:8.,tile_height:8.,origin_x:-17.,origin_z:29.};
+        for tileset in ["cave","dark_cave","johto"] {
+            let mut tiles:Vec<_>=(0..9).map(|i|VisualTile {
+                column:(i%3)as u32,row:(i/3)as u32,priority:false,
+                texture:Handle::default(),animation_frames:None,
+                source:VisualTileSource {tileset_id:tileset.into(),metatile_id:0x02,
+                    subtile_column:(i%3)as u8,subtile_row:(i/3)as u8,
+                    tile_index:if i==4 {0x01}else{0x16}},
+            }).collect();
+            let mut shapes=vec![CellShape::Flat;9];
+            shapes[4]=CellShape::RaisedTop {height:6.,solid:SolidKind::Bank};
+            for known in [true,false] {
+                tiles[4].source.tile_index=if known {0x01}else{0xff};
+                let cells:Vec<_>=tiles.iter().collect();
+                let mut mesh=TerrainMeshData {footing_heights:vec![0.;9],..Default::default()};
+                append_exposed_sides(&mut mesh,&g,&cells,&shapes,&vec![None;9],1,1);
+                if known && tileset!="johto" {
+                    assert_eq!(mesh.textured.positions.len(),16);
+                    assert!(mesh.solid.positions.is_empty());
+                    let joins=mesh.textured.positions.clone();
+                    polish_world_surfaces(&mut mesh,"UnionCave1F",&cells,&g,[0,0]);
+                    assert!(mesh.textured.positions.is_empty());
+                    assert!(mesh.solid.positions.len()>16);
+                    assert!(mesh.solid.uvs.iter().all(|uv|(uv[1]/100000.).round()==6.));
+                    assert!(mesh.solid.positions.iter().all(|p|p[1]>=0. && p[1]<=6.));
+                    for p in joins.into_iter().filter(|p|p[1]==0.) {
+                        assert!(mesh.solid.positions.contains(&p),"lost exact floor join");
+                    }
+                    assert_eq!(mesh.footing_heights,vec![0.;9]);
+                } else {
+                    assert!(mesh.textured.positions.is_empty());
+                    assert_eq!(mesh.solid.positions.len(),16);
+                    assert!(mesh.solid.uvs.iter().all(|uv|*uv==[0.,0.]));
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn tall_cave_return_faces_use_joined_rock_and_participate_in_the_cutaway() {
+        let g=GridGeometry {width:3,height:3,tile_width:8.,tile_height:8.,origin_x:-17.,origin_z:29.};
+        for tileset in ["cave","dark_cave"] {
+            let tiles:Vec<_>=(0..9).map(|i|VisualTile {
+                column:(i%3)as u32,row:(i/3)as u32,priority:false,
+                texture:Handle::default(),animation_frames:None,
+                source:VisualTileSource {tileset_id:tileset.into(),metatile_id:if i==4 {0x2e}else{0x02},
+                    subtile_column:(i%3)as u8,subtile_row:(i/3)as u8,
+                    tile_index:if i==4 {0x26}else{0x16}},
+            }).collect();
+            let cells:Vec<_>=tiles.iter().collect();
+            let height=crate::cave::rock_height(&cells[4].source);
+            let mut shapes=vec![CellShape::Flat;9];
+            shapes[4]=CellShape::RaisedTop {height,solid:SolidKind::Bank};
+            let mut mesh=TerrainMeshData {footing_heights:vec![0.;9],..Default::default()};
+            append_exposed_sides(&mut mesh,&g,&cells,&shapes,&vec![None;9],1,1);
+            assert_eq!(mesh.textured.positions.len(),16);
+            assert!(mesh.solid.positions.is_empty());
+            polish_world_surfaces(&mut mesh,"UnionCave1F",&cells,&g,[0,0]);
+            assert!(mesh.textured.positions.is_empty());
+            assert!(mesh.solid.positions.len()>16);
+            assert!(mesh.solid.uvs.iter().all(|uv|(uv[1]/100000.).round()==2.),
+                "an enclosing return face must share the wall reveal category");
+            assert!(mesh.solid.normals.iter().all(|n|Vec3::from_array(*n).is_finite()));
+            assert_eq!(mesh.footing_heights,vec![0.;9]);
+        }
+    }
 
     #[test]
     fn folded_cave_faces_join_across_cells_without_moving_floor_or_lip() {
@@ -3545,6 +3845,87 @@ mod tests {
     }
 
     #[test]
+    fn lawn_shore_soil_keeps_all_four_bank_perimeters_and_rejects_unknown_contacts() {
+        let mut f=frame(3,3,vec![source_with_tile(0x35,0,0,0x14);9]);
+        f.tiles[4].source=source_with_tile(0x01,0,0,0x05);
+        let g=geometry(&f);
+        let cells:Vec<_>=f.tiles.iter().collect();
+        let low=CellShape::Water.surface_height(g.tile_height);
+        for direction in Direction::ALL {
+            let mut mesh=TerrainMeshData {
+                authored_cells:vec![None;9],footing_heights:vec![low;9],..Default::default()
+            };
+            mesh.footing_heights[4]=0.;
+            let (w,e,n,s)=g.bounds(1,1);
+            append_textured_shoreline(&mut mesh.textured,&g,1,1,direction,[w,e,n,s],low,0.);
+            let p:[[f32;3];4]=mesh.textured.positions[..].try_into().unwrap();
+            let normal=mesh.textured.normals[0];
+            assert!(lawn_water_bank("LakeOfRage",&p,normal,&cells[4].source,&cells,&g,&mesh.authored_cells));
+            for map in ["Route26","Route43","CherrygroveCity","NewBarkTown"] {
+                assert!(lawn_water_bank(map,&p,normal,&cells[4].source,&cells,&g,&mesh.authored_cells));
+            }
+            assert!(!lawn_water_bank("Route43Gate",&p,normal,&cells[4].source,&cells,&g,&mesh.authored_cells));
+            let mut claims=mesh.authored_cells.clone();claims[4]=Some("johto/tree");
+            assert!(!lawn_water_bank("LakeOfRage",&p,normal,&cells[4].source,&cells,&g,&claims));
+            let changed=p.map(|mut v|{v[1]-=g.tile_height;v});
+            assert!(!lawn_water_bank("LakeOfRage",&changed,normal,&cells[4].source,&cells,&g,&mesh.authored_cells));
+            let footing=mesh.footing_heights.clone();
+            let claims=mesh.authored_cells.clone();
+            polish_world_surfaces(&mut mesh,"LakeOfRage",&cells,&g,[0,0]);
+            assert!(mesh.textured.positions.is_empty());
+            assert!(!mesh.solid.indices.is_empty());
+            for corner in p {assert!(mesh.solid.positions.contains(&corner));}
+            assert_eq!(mesh.footing_heights,footing);
+            assert_eq!(mesh.authored_cells,claims);
+            let mut changed=f.clone();changed.tiles[4].source.tileset_id=std::sync::Arc::from("unknown");
+            let changed_cells:Vec<_>=changed.tiles.iter().collect();
+            assert!(!lawn_water_bank("LakeOfRage",&p,normal,&cells[4].source,&changed_cells,&g,&claims));
+            changed=f.clone();
+            for tile in &mut changed.tiles {tile.source=source_with_tile(0x01,0,0,0x05);}
+            let changed_cells:Vec<_>=changed.tiles.iter().collect();
+            assert!(!lawn_water_bank("LakeOfRage",&p,normal,&cells[4].source,&changed_cells,&g,&claims));
+        }
+    }
+
+    #[test]
+    fn lake_cabin_corner_crowns_share_grove_without_sprite_floor_fragments() {
+        for (block, crown_row) in [(0x3c, 0usize), (0x3e, 2usize)] {
+            let mut sources = (0..4).flat_map(|y| (0..4).map(move |x|
+                source_with_tile(block, x, y, 0x05))).collect::<Vec<_>>();
+            for (dy, row) in [[0x1e, 0x1f], [0x3e, 0x3f]].iter().enumerate() {
+                for (x, &tile) in row.iter().enumerate() {
+                    sources[(crown_row+dy)*4+x].tile_index = tile;
+                }
+            }
+            let mut f = frame(4, 4, sources);
+            f.map_id = std::sync::Arc::from("LakeOfRage");
+            let mut g = geometry(&f);
+            g.origin_x = -(g.width as f32 * g.tile_width) * 0.5;
+            g.origin_z = -(g.height as f32 * g.tile_height) * 0.5;
+            let cells: Vec<_> = f.tiles.iter().collect();
+            for map in ["LakeOfRage", "Route43", "CherrygroveCity"] {
+                let plots = tree_placements(map, &cells, &g);
+                assert_eq!(plots.len(), 1);
+                assert_eq!((plots[0].column,plots[0].row,plots[0].width,plots[0].height),
+                    (0,crown_row,2,2));
+                let reserved = preferred_scenery_cells(map, &cells, &g);
+                assert_eq!(reserved.iter().filter(|&&v|v).count(), 4);
+            }
+            let mut mesh = build_terrain_mesh_with_samples(&f, &TerrainImageSamples::default()).unwrap();
+            // Exercise the production outdoor finish even when the test
+            // process has authored exterior loading disabled.
+            polish_world_surfaces(&mut mesh, "LakeOfRage", &cells, &g, [0,0]);
+            assert!(mesh.textured.positions.is_empty(), "block {block:x}: complete corner crown must not retain a sprite square");
+            assert!(mesh.footing_heights.iter().all(|&h|h==0.));
+            assert!(!mesh.solid.indices.is_empty());
+            f.tiles[crown_row*4].source.subtile_column = 1;
+            let cells: Vec<_> = f.tiles.iter().collect();
+            assert!(tree_placements("LakeOfRage", &cells, &g).is_empty(),
+                "changed source phase must retain its original drawing");
+        }
+    }
+
+    #[test]
     fn cherrygrove_mixed_shoreline_block_models_three_complete_trees_only() {
         // Actual source drawing east of Cherrygrove Center: three independent
         // crowns and one open lawn quadrant, not a single four-cell-wide tree.
@@ -3568,7 +3949,19 @@ mod tests {
             plots.iter().map(|p| (p.column, p.row)).collect::<Vec<_>>(),
             vec![(0, 0), (0, 2), (2, 2)]
         );
-        assert!(tree_placements("AzaleaTown", &cells, &g).is_empty());
+        assert!(tree_placements("UnionCave1F", &cells, &g).is_empty());
+        for map in ["LakeOfRage", "Route43", "Route32", "Route35", "Route42",
+            "Route44", "Route45", "Route46", "BlackthornCity", "EcruteakCity", "MahoganyTown"] {
+            let lake_plots = tree_placements(map, &cells, &g);
+            assert_eq!(lake_plots.iter().map(|p| (p.column,p.row,p.width,p.height)).collect::<Vec<_>>(),
+                plots.iter().map(|p| (p.column,p.row,p.width,p.height)).collect::<Vec<_>>(),
+                "{map} reuses exact mixed crown signatures");
+            let reserved = preferred_scenery_cells(map, &cells, &g);
+            assert_eq!(reserved.iter().filter(|&&v| v).count(), 12);
+            let finish = GroundFinish::new(map, &cells, &g, [0, 0]);
+            assert_eq!(finish.shadows.iter().filter(|s| s.tree).count(), 3);
+            assert!(finish.shadows.iter().all(|s| s.trunk_center.is_some()));
+        }
         let reserved = preferred_scenery_cells("CherrygroveCity", &cells, &g);
         assert_eq!(reserved.iter().filter(|&&v| v).count(), 12);
         assert!(!reserved[2] && !reserved[3] && !reserved[6] && !reserved[7]);
@@ -3581,6 +3974,11 @@ mod tests {
             mesh.solid.positions.len() >= model(ModelKind::Tree).surface_mesh().positions.len() * 3
         );
         assert!(mesh.footing_heights.iter().all(|h| *h == 0.0));
+        let canopy_height = mesh.solid.positions.iter().map(|p| p[1])
+            .fold(0.0_f32, f32::max);
+        assert!(canopy_height > g.tile_height * 3.
+            && canopy_height <= g.tile_height * 8.,
+            "coastal town trees need a broad town crown, not vertically stretched world trees: {canopy_height}");
         f.tiles[0].source.tile_index = 0x05;
         let cells: Vec<_> = f.tiles.iter().collect();
         assert_eq!(
@@ -3633,7 +4031,7 @@ mod tests {
             && p[2] > -40.0
             && p[2] < -24.0
             && p[1] >= 0.0
-            && p[1] < 16.0));
+            && p[1] <= 16.001));
         assert!(mesh.footing_heights.iter().all(|&y| y == 0.0));
         frame.tiles[1].source.tile_index = 0x06;
         let cells: Vec<_> = frame.tiles.iter().collect();
@@ -3672,10 +4070,12 @@ mod tests {
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: fast.sunlit_grove,
             blend: fast.blend.clone(),
+            shore: fast.shore.clone(),
             geometry: &g,
             map_origin: [0, 0],
             shadows: fast.shadows.clone(),
@@ -3801,10 +4201,12 @@ mod tests {
         let fast = GroundFinish::new("Route29", &cells, &g, [0, 0]);
         let reference = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: fast.sunlit_grove,
             blend: fast.blend.clone(),
+            shore: fast.shore.clone(),
             geometry: &g,
             map_origin: [0, 0],
             shadows: fast.shadows.clone(),
@@ -3866,10 +4268,12 @@ mod tests {
         );
         let finish = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: false,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &geometry,
             map_origin: [0, 0],
             shadows: vec![shadow],
@@ -3877,10 +4281,12 @@ mod tests {
         };
         let unshaded = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: false,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &geometry,
             map_origin: [0, 0],
             shadows: vec![],
@@ -3956,10 +4362,12 @@ mod tests {
         let g = geometry(&f);
         let floor = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: true,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &g,
             map_origin: [10, 9],
             shadows: vec![],
@@ -3995,10 +4403,12 @@ mod tests {
         };
         let floor = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: true,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &g,
             map_origin: [10, 9],
             shadows: vec![GroundShadow {
@@ -4010,10 +4420,12 @@ mod tests {
         };
         let shifted = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: true,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &shifted_g,
             map_origin: [10, 9],
             shadows: vec![GroundShadow {
@@ -4068,10 +4480,12 @@ mod tests {
         let geometry = geometry(&frame);
         let finish = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: false,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &geometry,
             map_origin: [10, 9],
             shadows: vec![],
@@ -4079,10 +4493,12 @@ mod tests {
         };
         let shifted = GroundFinish {
             cerulean_pool: false,
+            path_palette: None,
             city_paving: None,
             forest: false,
             sunlit_grove: false,
             blend: Default::default(),
+            shore: Default::default(),
             geometry: &geometry,
             map_origin: [11, 9],
             shadows: vec![],
@@ -4155,6 +4571,115 @@ mod tests {
     }
 
     #[test]
+    fn cached_grove_neighbors_match_source_plot_scans_at_edges_and_interiors() {
+        let sources = (0..8).flat_map(|row| (0..6).map(move |column| {
+            let y = row % 4;
+            let x = column % 2;
+            source_with_tile(0x05, x, y,
+                (if y == 0 { 0x1e } else if y == 3 { 0x3e } else { 0x2e }) + x as u16)
+        })).collect();
+        let frame = frame(6, 8, sources);
+        let g = geometry(&frame);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        for map in ["NewBarkTown", "Route29", "Route30"] {
+            let plots = tree_placements(map, &cells, &g);
+            assert!(plots.len() > 4);
+            let mut mesh = TerrainMeshData::default();
+            let mut allocation = None;
+            for &p in &plots {
+                let contains = |x: i32, y: i32| plots.iter().any(|q| {
+                    x >= q.column as i32 && x < (q.column + q.width) as i32
+                        && y >= q.row as i32 && y < (q.row + q.height) as i32
+                });
+                let x = p.column as i32;
+                let y = p.row as i32;
+                let expected = [contains(x - 1, y + p.height as i32 / 2),
+                    contains(x + p.width as i32, y + p.height as i32 / 2),
+                    contains(x + p.width as i32 / 2, y - 1),
+                    contains(x + p.width as i32 / 2, y + p.height as i32)];
+                assert_eq!(grove_neighbors(&mut mesh, &cells, &g, map, p), expected);
+                let pointer = mesh.tree_neighborhood.as_ref().unwrap().as_ptr();
+                if let Some(previous) = allocation { assert_eq!(pointer, previous); }
+                allocation = Some(pointer);
+            }
+        }
+    }
+
+    #[test]
+    fn modeled_grove_keeps_closed_water_contacts_without_changing_floor_or_claims() {
+        for scale in [1., 4.] {
+            let mut f = frame(4, 4, vec![source_with_tile(0x35,0,0,0x14);16]);
+            f.tile_size *= scale;
+            for (i, tile) in [(5,0x1e),(6,0x1f),(9,0x3e),(10,0x3f)] {
+                f.tiles[i].source = source_with_tile(0x61, ((i%4)-1) as u8,
+                    ((i/4)-1) as u8, tile);
+            }
+            let mut g = geometry(&f);
+            g.tile_width *= scale;
+            g.tile_height *= scale;
+            let cells: Vec<_> = f.tiles.iter().collect();
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![CellShape::Water.surface_height(g.tile_height);16],
+                authored_cells: vec![None;16], ..Default::default()
+            };
+            for i in [5,6,9,10] {
+                mesh.footing_heights[i] = 0.;
+                mesh.authored_cells[i] = Some("johto/tree");
+            }
+            let footing = mesh.footing_heights.clone();
+            let claims = mesh.authored_cells.clone();
+            append_grove_water_contacts(&mut mesh, &cells, &g, [0,0]);
+            assert_eq!(mesh.footing_heights, footing);
+            assert_eq!(mesh.authored_cells, claims);
+            assert!(!mesh.solid.indices.is_empty());
+            let mut contacts = 0;
+            for i in [5,6,9,10] {
+                for direction in Direction::ALL {
+                    let (dx,dy) = direction.offset();
+                    let x = i%4;
+                    let y = i/4;
+                    let neighbor = (y as isize+dy) as usize*4+(x as isize+dx) as usize;
+                    if claims[neighbor].is_some() { continue; }
+                    contacts += 1;
+                    let (w,e,n,s) = g.bounds(x,y);
+                    let origin = Vec3::new((w+e)*0.5,-g.tile_height*0.125,(n+s)*0.5);
+                    let direction = Vec3::new(dx as f32,0.,dy as f32);
+                    let hit = mesh.solid.indices.chunks_exact(3).any(|ids| {
+                        let p = [ids[0],ids[1],ids[2]].map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
+                        let e1 = p[1]-p[0]; let e2 = p[2]-p[0];
+                        let h = direction.cross(e2); let det = e1.dot(h);
+                        if det.abs() < 1e-7 { return false; }
+                        let delta = origin-p[0]; let u = delta.dot(h)/det;
+                        let q = delta.cross(e1); let v = direction.dot(q)/det;
+                        let distance = e2.dot(q)/det;
+                        (0.0..=1.0).contains(&u) && v>=0. && u+v<=1.
+                            && distance>0. && distance<g.tile_width*0.75
+                    });
+                    assert!(hit, "open modeled grove contact at {i}, scale {scale}");
+                }
+            }
+            assert_eq!(contacts,8);
+            assert!(mesh.solid.positions.iter().all(|p|
+                p[1]>=CellShape::Water.surface_height(g.tile_height)-0.001 && p[1]<=0.001));
+            for invalid in 0..3 {
+                let mut mesh = TerrainMeshData {
+                    footing_heights: footing.clone(), authored_cells: claims.clone(), ..Default::default()
+                };
+                let mut changed = f.clone();
+                match invalid {
+                    0 => mesh.authored_cells.fill(Some("custom/tree")),
+                    1 => for i in [5,6,9,10] { mesh.footing_heights[i]=g.tile_height; },
+                    _ => for i in [0,1,2,3,4,7,8,11,12,13,14,15] {
+                        changed.tiles[i].source.tileset_id = std::sync::Arc::from("unknown");
+                    },
+                }
+                append_grove_water_contacts(&mut mesh, &changed.tiles.iter().collect::<Vec<_>>(), &g, [0,0]);
+                assert!(mesh.solid.positions.is_empty());
+            }
+        }
+    }
+
+    #[test]
     fn tree_variants_preserve_horizontal_plot_and_ground_anchor() {
         let sources = (0..4)
             .flat_map(|row| {
@@ -4188,21 +4713,45 @@ mod tests {
             b,
             build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap()
         );
-        // Different world placements may change the contour, while every
-        // elevated tree vertex stays grounded inside the same occupied plot.
+        // The shared grove crown may overlap adjacent plots. Its trunk and
+        // supporting limbs must stay inside the original blocked footprint.
         assert!(
-            a.solid
-                .positions
-                .iter()
-                .chain(&b.solid.positions)
-                .filter(|p| p[1] > 0.6)
+            a.solid.positions[..119 + 4 * 3 * 77].iter()
+                .chain(&b.solid.positions[..119 + 4 * 3 * 77])
                 .all(|p| p[0] >= -12.001
                     && p[0] <= 4.001
                     && p[2] >= -0.001
                     && p[2] <= 16.001
-                    && p[1] <= 80.0 * 1.601)
+                    && p[1] >= 0.)
         );
+        assert!(a.solid.positions.iter().chain(&b.solid.positions)
+            .filter(|p| p[1] > 0.6)
+            .all(|p| p[0] >= -24. && p[0] <= 16.
+                && p[2] >= -12. && p[2] <= 28. && p[1] <= 64.));
         assert_eq!(a.footing_heights, b.footing_heights);
+
+        let mut shared = None;
+        for map in ["NewBarkTown", "Route29", "CherrygroveCity", "Route30",
+            "Route31", "VioletCity", "Route26", "Route43", "LakeOfRage",
+            "Route32", "Route35", "Route42", "Route44", "Route45", "Route46",
+            "BlackthornCity", "EcruteakCity", "MahoganyTown"] {
+            let g = geometry(&frame);
+            let cells: Vec<_> = frame.tiles.iter().collect();
+            let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+            let plots = tree_placements(map, &cells, &g);
+            assert_eq!(plots.len(), 1, "{map}");
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![0.; cells.len()], ..Default::default()
+            };
+            let mut claimed = vec![false; cells.len()];
+            assert!(append_tree(&mut mesh, &cells, &shapes, &g, map, plots[0],
+                &mut claimed, frame.grid_origin.to_array()), "{map}");
+            assert_eq!(claimed.iter().filter(|&&c| c).count(), 8);
+            assert!(mesh.footing_heights.iter().all(|&h| h == 0.));
+            if let Some(reference) = &shared {
+                assert_eq!(&mesh.solid, reference, "{map} must use the shared grove asset");
+            } else { shared = Some(mesh.solid); }
+        }
     }
 
     #[test]
@@ -4695,6 +5244,26 @@ mod tests {
     }
 
     #[test]
+    fn outdoor_live_water_keeps_original_uvs_geometry_and_support() {
+        let mut f=frame(1,1,vec![material_source("johto",0x35,0,0,0x14)]);
+        f.map_id="LakeOfRage".into();
+        let first=Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(8101),std::marker::PhantomData);
+        let second=Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(8102),std::marker::PhantomData);
+        f.tiles[0].texture=first.clone();f.tiles[0].animation_frames=Some(vec![first,second].into());
+        let cells:Vec<_>=f.tiles.iter().collect();
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let p=[[0.,-2.,0.],[0.,-2.,8.],[8.,-2.,8.],[8.,-2.,0.]];
+        let uv=[[0.,0.],[0.,1.],[1.,1.],[1.,0.]];
+        let mut mesh=TerrainMeshData {footing_heights:vec![-2.],authored_cells:vec![None],..Default::default()};
+        append_quad_colors(&mut mesh.textured,p,[0.,1.,0.],uv,[[1.;4];4]);
+        let source=mesh.textured.clone();
+        polish_world_surfaces(&mut mesh,"LakeOfRage",&cells,&g,[10,20]);
+        assert_eq!(mesh.textured,source);
+        assert!(mesh.solid.positions.is_empty());
+        assert_eq!(mesh.footing_heights,[-2.]);assert_eq!(mesh.authored_cells,[None]);
+    }
+
+    #[test]
     fn park_basin_water_underlay_requires_complete_fixture_ownership() {
         let f = frame(1,1,vec![material_source("park",0x3f,3,0,0x5f)]);
         let cells: Vec<_> = f.tiles.iter().collect();
@@ -4707,6 +5276,49 @@ mod tests {
             &[None]),None);
         assert_eq!(surface_material("Route29",&p,[0.,1.,0.],&water,&cells,&g,
             &[Some("park/pond-basin")]),None);
+    }
+
+    #[test]
+    fn park_masonry_receives_canopy_shade_without_changing_its_partition() {
+        let sources = (0..36).map(|i| {
+            let x = i % 6;
+            let y = i / 6;
+            if (1..5).contains(&x) && (1..5).contains(&y) {
+                material_source("park", 6, (x - 1) as u8, (y - 1) as u8,
+                    (0x0c + x - 1 + (y - 1) * 0x10) as u16)
+            } else if y == 0 {
+                material_source("park", 0x01, x as u8 % 4, 0, 0)
+            } else {
+                material_source("park", crate::park::PARK_TREE_GROUND_METATILE, 0, 0, 1)
+            }
+        }).collect();
+        let f = frame(6, 6, sources);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let g = GridGeometry { width: 6, height: 6, tile_width: 8., tile_height: 8.,
+            origin_x: 0., origin_z: 0. };
+        let p = [[0., 0., 0.], [0., 0., 8.], [8., 0., 8.], [8., 0., 0.]];
+        let mut finish = GroundFinish::new("NationalPark", &cells, &g, [0, 0]);
+        assert_eq!(finish.shadows.iter().filter(|s| s.tree).count(), 1);
+        let mut shaded = SurfaceMeshData::default();
+        finish.append_surface(&mut shaded, GroundMaterial::Pavers, p);
+        assert_eq!(finish.park_canopy_darkness([128., 0., 128.]), 0.);
+        finish.shadows.clear();
+        let mut exposed = SurfaceMeshData::default();
+        finish.append_surface(&mut exposed, GroundMaterial::Pavers, p);
+        assert_eq!(exposed.positions, shaded.positions);
+        assert_eq!(exposed.indices, shaded.indices);
+        assert_eq!(exposed.normals, shaded.normals);
+        assert!(exposed.colors.iter().zip(&shaded.colors)
+            .any(|(a, b)| b[0] < a[0] - 0.01));
+        assert!(exposed.colors.iter().zip(&shaded.colors)
+            .all(|(a, b)| (0..3).all(|c| b[c] <= a[c] && b[c] >= a[c] * 0.77)));
+        for y in 1..5 { for x in 1..5 {
+            let mut changed = f.tiles.clone();
+            changed[y * 6 + x].source.tile_index ^= 1;
+            let cells: Vec<_> = changed.iter().collect();
+            let refused = GroundFinish::new("NationalPark", &cells, &g, [0, 0]);
+            assert!(refused.shadows.iter().all(|s| !s.tree));
+        }}
     }
 
     #[test]

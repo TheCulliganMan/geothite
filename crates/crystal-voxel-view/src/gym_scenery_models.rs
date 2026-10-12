@@ -195,3 +195,42 @@ mod tests {
         assert_eq!((checked, triangles), (144, 1152));
     }
 }
+
+/// The source flower drawing owns the same authored wooden container, but
+/// not the clipped shrub crowns. Retain named container parts verbatim.
+pub(crate) fn gym_flower_planter_base() -> &'static Model {
+    static BASE: OnceLock<Model> = OnceLock::new();
+    BASE.get_or_init(|| {
+        let mut source: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"))
+            .expect("named flower container source");
+        assert_eq!(source["name"].as_str(),Some("planter_round"));
+        let parts=source["primitives"].as_array_mut().expect("named planter parts");
+        assert!(parts.iter().all(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
+            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass"|"bark"|"leaf"|"leaf_light"|"leaf_gold"))));
+        parts.retain(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
+            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass")));
+        assert!(!parts.is_empty());
+        let mut model=Model::parse(serde_json::to_string(&source).expect("retained container parts").as_str())
+            .expect("validated flower container");
+        // Keep the original assembly's fit; removing the canopy must not
+        // stretch the wooden container to the full plant height.
+        model.min=gym_model(1).min;model.max=gym_model(1).max;
+        model
+    })
+}
+
+#[cfg(test)]
+mod flower_tests {
+    use super::*;
+    #[test]
+    fn gym_planter_flower_container_preserves_named_cache_and_original_fit() {
+        let ordinary=gym_model(1);let before=ordinary.surface.clone();
+        let base=gym_flower_planter_base();
+        assert_eq!(base.min,ordinary.min);assert_eq!(base.max,ordinary.max);
+        assert!(base.surface.positions.iter().all(|p|p[1]<ordinary.max[1]*0.6));
+        assert!(base.surface.indices.len()<ordinary.surface.indices.len());
+        assert_eq!(gym_model(1).surface,before);
+        assert!(std::ptr::eq(base,gym_flower_planter_base()));
+    }
+}

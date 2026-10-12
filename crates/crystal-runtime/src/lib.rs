@@ -5,6 +5,7 @@
 
 pub mod frontpic_animation;
 pub mod hall_of_fame;
+mod outdoor_mods;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;

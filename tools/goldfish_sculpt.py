@@ -60,13 +60,13 @@ def face(p,s):
  for sign in (-1,1):
   # Front-oblique fitted lenses retain visibility in the battle camera.
   socket=fitted('Eye socket / fitted dark cheek '+str(sign),INK,oval(sign*x,y,.055,.064,28),b,.009,3);p.append(socket)
-  white=fitted('Eye white / supported ivory lens '+str(sign),WHITE,oval(sign*x,y,.050,.059,28),socket,.004,2);p.append(white)
+  white=fitted('Eye white / supported ivory lens '+str(sign),WHITE,oval(sign*x,y,.050,.059,28),socket,.006,3);p.append(white)
   if s=='goldeen':
-   iris=fitted('Iris / low teal oval '+str(sign),TEAL,oval(sign*x,y-.018,.027,.032,24),white,.003,2);p.append(iris)
-   pupil=fitted('Pupil / quiet lower dark oval '+str(sign),INK,oval(sign*x,y-.018,.012,.025,20),iris,.002,2);p.append(pupil)
+   iris=fitted('Iris / low teal oval '+str(sign),TEAL,oval(sign*x,y-.018,.027,.032,24),white,.004,3);p.append(iris)
+   pupil=fitted('Pupil / quiet lower dark oval '+str(sign),INK,oval(sign*x,y-.018,.012,.025,20),iris,.003,3);p.append(pupil)
    lid=[(sign*x-.047,y+.009),(sign*x+.047,y+.009),(sign*x+.035,y+.037),(sign*x,y+.055),(sign*x-.035,y+.037)];p.append(fitted('Lid / sleepy orange upper cheek '+str(sign),ORANGE,lid,white,.006,3))
   else:
-   pupil=fitted('Pupil / tiny vacant carp dot '+str(sign) if carp else 'Pupil / broad glossy seaking gaze '+str(sign),INK,oval(sign*x,y,.006 if carp else .040,.009 if carp else .047,24),white,.003,2);p.append(pupil)
+   pupil=fitted('Pupil / tiny vacant carp dot '+str(sign) if carp else 'Pupil / broad glossy seaking gaze '+str(sign),INK,oval(sign*x,y,.006 if carp else .040,.009 if carp else .047,24),white,.004,3);p.append(pupil)
   if not carp:p.append(fitted('Glint / restrained ivory eye light '+str(sign),WHITE,oval(sign*x-.003,y-.010 if s=='goldeen' else y+.019,.003 if s=='goldeen' else .006,.004 if s=='goldeen' else .009,16),pupil,.002,2))
  if not carp:
   p.append(curved_tube('Horn / rooted ivory forward lance',WHITE,[(0,.64,.205),(0,.74,.28),(0,.89 if s=='goldeen' else .83,.335)],[.044,.026,.0015],28))
@@ -76,11 +76,19 @@ def face(p,s):
 def fins(p,s):
  carp=s=='magikarp';base=p[0];tails=[];sides=[]
  if carp:
-  tail=contour([((0,.46),(.07,.56),(.23,.73),(.39,.79)),((.39,.79),(.38,.64),(.14,.53),(.17,.45)),((.17,.45),(.14,.36),(.38,.23),(.40,.14)),((.40,.14),(.20,.18),(.09,.34),(0,.46))],9)
+  tail=contour([((.355,.455),(.48,.53),(.68,.76),(.85,.79)),((.85,.79),(.83,.64),(.64,.51),(.65,.455)),((.65,.455),(.64,.40),(.83,.24),(.85,.13)),((.85,.13),(.66,.17),(.46,.38),(.355,.455))],10)
+  raw=sheet('Tail / single forked red carp caudal sail',RED,tail,lambda y,x:.023*math.sin(x*6),.016,3)
+  q=zy(raw);p.append(q);tails.append(q)
+  inset=contour([((.40,.455),(.49,.52),(.66,.72),(.80,.75)),((.80,.75),(.77,.60),(.61,.51),(.615,.455)),((.615,.455),(.61,.40),(.77,.27),(.80,.18)),((.80,.18),(.65,.22),(.48,.40),(.40,.455))],10)
+  for face_sign in (-1,1):
+   parent=raw if face_sign==1 else reverse_front(raw);xy=inset if face_sign==1 else [(-x,y) for x,y in inset]
+   mark=fitted('Tail inset / supported ivory carp sail '+str(face_sign),WHITE,xy,parent,.006,3)
+   p.append(zy(mark if face_sign==1 else reverse_front(mark)))
  else:
   tail=contour([((0,.45),(.10,.47),(.09,.68),(.23,.83)),((.23,.83),(.40,.91),(.46,.83),(.43,.72)),((.43,.72),(.40,.65),(.29,.57),(.32,.51)),((.32,.51),(.33,.44),(.48,.37),(.46,.28)),((.46,.28),(.44,.15),(.31,.14),(.23,.22)),((.23,.22),(.12,.28),(.09,.42),(0,.45))],8)
  for sign in (-1,1):
-  xy=[(sign*x,y) for x,y in tail];q=sheet('Tail / flowing split '+s+' caudal fan '+str(sign),WHITE,xy,lambda y,x:-.365-.75*abs(x)+.035*math.sin(y*8),.013,2);p.append(q);tails.append(q)
+  if not carp:
+   xy=[(sign*x,y) for x,y in tail];q=sheet('Tail / flowing split '+s+' caudal fan '+str(sign),WHITE,xy,lambda y,x:-.365-.75*abs(x)+.035*math.sin(y*8),.013,2);p.append(q);tails.append(q)
   side=contour([((.16,.43),(.24,.42),(.39,.41),(.52,.33)),((.52,.33),(.45,.30),(.49,.23),(.40,.20)),((.40,.20),(.34,.12),(.26,.18),(.26,.26)),((.26,.26),(.25,.32),(.18,.37),(.16,.43))],8)
   q=sheet('Pectoral / swept scalloped white paddle '+str(sign),WHITE,[(sign*x,y) for x,y in side],lambda y,x:.10-.50*(abs(x)-.16)+.025*math.sin(y*12),.012,2);p.append(q);sides.append(q)
   if carp:
@@ -93,13 +101,17 @@ def fins(p,s):
   xy=[(-.24,.28),(-.18,.075),(-.11,.13),(-.025,.035),(.025,.15),(.14,.10),(.15,.29)];p.append(zy(sheet('Pelvic / inverted gold crown',GOLD,xy,lambda y,x:.008*math.sin(x*6),.013,2)))
  elif s=='seaking':
   for sign in (-1,1):p.append(sheet('Pelvic / rounded spotted lower streamer '+str(sign),WHITE,[(sign*x,y) for x,y in contour([((.08,.26),(.10,.14),(.18,.04),(.24,.085)),((.24,.085),(.32,.15),(.26,.22),(.19,.31)),((.19,.31),(.15,.29),(.11,.27),(.08,.26))],8)],lambda y,x:-.15-.35*abs(x),.012,2))
- # Thin fitted veins follow actual stored fan surfaces, not a guessed plane.
+ # Thin veins follow the actual stored fan surfaces.
  for j,q in enumerate(tails+sides):
-  sk=surface(q);sign=-1 if max(q['positions'][::3])<=.001 else 1
-  paths=(([(.04,.46),(.10,.53),(.29,.70)],[(.04,.45),(.10,.38),(.29,.24)]) if carp else ([(.055,.45),(.16,.52),(.27,.68)],[(.055,.45),(.19,.42),(.33,.29)])) if j<2 else ([(.18,.41),(.29,.33),(.39,.26)],)
+  vertical=carp and j==0;parent=side_rotate(q,-1) if vertical else q;sk=surface(parent);sign=-1 if max(q['positions'][::3])<=.001 else 1
+  paths=([( .40,.455),(.54,.58),(.74,.70)],[(.40,.455),(.54,.33),(.74,.23)]) if vertical else (([(.055,.45),(.16,.52),(.27,.68)],[(.055,.45),(.19,.42),(.33,.29)]) if j<len(tails) else ([(.18,.41),(.29,.33),(.39,.26)],))
   for k,path in enumerate(paths):
-   pts=[(sign*x,y,sk(y,sign*x)-.001) for x,y in path];p.append(curved_tube('Fin ray / supported pale fan fold '+str(j)+' '+str(k),SEAM if carp else VEIN,pts,[.0025]*len(pts),10))
+   pts=[(x if vertical else sign*x,y,sk(y,x if vertical else sign*x)-.001) for x,y in path];ray=curved_tube('Fin ray / supported pale fan fold '+str(j)+' '+str(k),SEAM if carp else VEIN,pts,[.0025]*len(pts),10);p.append(zy(ray) if vertical else ray)
  return tails,sides
+
+def paint_faces(p,name,color,xy,parent,th,sub):
+ for sign in (-1,1):
+  q=parent if sign==1 else reverse_front(parent);outline=xy if sign==1 else [(-x,y) for x,y in xy];mark=fitted(name+' '+str(sign),color,outline,q,th,sub);p.append(mark if sign==1 else reverse_front(mark))
 
 def markings(p,s,tails,sides):
  b=p[0]
@@ -108,7 +120,7 @@ def markings(p,s,tails,sides):
   for j,q in enumerate(tails+sides):
    sign=-1 if max(q['positions'][::3])<=.001 else 1
    xy=oval(sign*(.18 if j<2 else .25),.47 if j<2 else .365,.08 if j<2 else .045,.045 if j<2 else .030,22)
-   p.append(fitted('Fin paint / supported orange root wash '+str(j),ORANGE,xy,q,.0035,3))
+   paint_faces(p,'Fin paint / supported orange root wash '+str(j),ORANGE,xy,q,.0035,3)
  elif s=='seaking':
   for sign in (-1,1):
    lateral=side_rotate(b,-sign)
@@ -119,11 +131,11 @@ def markings(p,s,tails,sides):
    for j,y in enumerate((.43,.39)):
     x=sign*.15;xy=[(x-.035,y+.012),(x+.035,y+.012),(x+.020,y-.006),(x,y-.012),(x-.020,y-.006)];p.append(fitted('Gill / supported charcoal crescent '+str(sign)+' '+str(j),INK,xy,b,.005,3))
   p.append(fitted('Bib / supported white lower chin',WHITE,[(-.065,.414),(.065,.414),(.11,.33),(.055,.25),(-.055,.25),(-.11,.33)],b,.009,4))
-  for j,q in enumerate(tails+sides):
+  for j,q in enumerate(tails+sides+[q for q in p if q['part'].startswith('Pelvic /')]):
    sign=-1 if max(q['positions'][::3])<=.001 else 1
-   points=((.25,.74,.021),(.36,.70,.016),(.38,.29,.025),(.30,.34,.014)) if j<2 else ((.33,.32,.022),(.37,.255,.011))
+   points=((.25,.74,.021),(.36,.70,.016),(.38,.29,.025),(.30,.34,.014)) if j<2 else ((.33,.32,.022),(.37,.255,.011)) if j<4 else ((.20,.13,.012),(.19,.20,.011))
    for k,(x,y,r) in enumerate(points):
-    xy=[(sign*(x+dx*r),y+dy*r) for dx,dy in ((-1,-.6),(-.6,1),(.6,.7),(1,-.4),(.2,-1))];p.append(fitted('Fin spot / seated irregular charcoal '+str(j)+' '+str(k),INK,xy,q,.003,2))
+    xy=[(sign*(x+dx*r),y+dy*r) for dx,dy in ((-1,-.6),(-.6,1),(.6,.7),(1,-.4),(.2,-1))];paint_faces(p,'Fin spot / seated irregular charcoal '+str(j)+' '+str(k),INK,xy,q,.003,2)
  else:
   # Carp plate seams wrap both flanks of the actual mantle.
   for sign in (-1,1):

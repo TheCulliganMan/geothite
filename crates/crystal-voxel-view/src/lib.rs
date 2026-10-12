@@ -14,6 +14,7 @@ pub use battle_source_projection::{
 };
 mod barn;
 mod battle_species_models;
+mod pokemon_appearance;
 mod pidgeotto_rig;
 mod species_rig;
 mod battle_tower;
@@ -129,6 +130,7 @@ mod saffron_gym;
 mod ship;
 mod sign;
 mod terrain_tracking;
+mod terrain_animation;
 mod terrain_batches;
 mod tower;
 mod train_station;
@@ -141,6 +143,18 @@ mod violet_gym;
 mod viridian_gym;
 mod warehouse;
 mod waterfall;
+mod environment_fx;
+#[cfg(not(target_arch = "wasm32"))]
+mod render_metrics;
+#[cfg(not(target_arch = "wasm32"))]
+mod shadow_bounds;
+#[cfg(not(target_arch = "wasm32"))]
+mod shadow_fit;
+#[cfg(not(target_arch = "wasm32"))]
+mod shadow_receivers;
+#[cfg(not(target_arch = "wasm32"))]
+mod gpu_culling;
+mod compact_vertices;
 mod wise_trios;
 
 use std::collections::{HashMap, HashSet};
@@ -200,7 +214,6 @@ pub fn authored_actor_source(source: &str) -> Option<&'static str> {
 /// Exact normal-palette battle mesh availability, excluding generic icons.
 pub fn has_authored_battle_species(species: &str) -> bool {
     battle_species_models::supported_species().any(|id| id.eq_ignore_ascii_case(species))
-        || new_bark_actors::actor_props::battle_species_kind(species).is_some()
 }
 
 /// Parking layer used to keep the classic overworld out of every active
@@ -224,6 +237,16 @@ pub struct VoxelViewPlugin;
 impl Plugin for VoxelViewPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(BattleViewPlugin);
+        #[cfg(not(target_arch = "wasm32"))]
+        render_metrics::register(app);
+        #[cfg(not(target_arch = "wasm32"))]
+        shadow_bounds::register(app);
+        #[cfg(not(target_arch = "wasm32"))]
+        shadow_fit::register(app);
+        #[cfg(not(target_arch = "wasm32"))]
+        shadow_receivers::register(app);
+        #[cfg(not(target_arch = "wasm32"))]
+        gpu_culling::register(app);
         load_internal_asset!(
             app,
             VOXEL_SURFACE_SHADER_HANDLE,
@@ -267,6 +290,8 @@ impl Plugin for VoxelViewPlugin {
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
+            .add_systems(Update, terrain_animation::sync.after(sync_voxel_view)
+                .before(sync_cave_water_phases).in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_cave_water_phases.after(sync_voxel_view).in_set(WorldRenderSet::RenderSync))
             .add_systems(
                 Update,
@@ -650,6 +675,19 @@ DebandDither::Disabled,),
             VoxelWorldCamera,
         ))
         .id();
+    // Short-radius indirect occlusion grounds trunks, roof courses and rocks.
+    // The browser renderer retains its authored contact shading: Bevy SSAO
+    // requires native compute support and is unavailable on WebGL/WebGPU.
+    #[cfg(not(target_arch = "wasm32"))]
+    if adapter.as_ref().is_some_and(|a| !software_renderer(&a.name))
+        && std::env::var("CRYSTAL_MODELED_OCCLUSION").as_deref() == Ok("on")
+    {
+        commands.entity(camera).insert(bevy::pbr::ScreenSpaceAmbientOcclusion {
+            radius: 3.0,
+            constant_object_thickness: 1.2,
+            ..default()
+        });
+    }
     commands.spawn((
 
 // A southeast light gives the small world readable northwest cast
@@ -982,10 +1020,21 @@ fn sync_voxel_atmosphere(
     let atmosphere = atmosphere.map(|a| (a.start_tiles, a.end_tiles, a.opacity));
     let cavern_lit = cave && frame.active && settings.enabled;
     let dark = cavern_lit && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave");
-    let (ambient_gain, sun_gain) = if dark { (0.36, 0.28) }
+    // These rooms retain their live cave palette, including Rock Tunnel's
+    // authored darkness. Extra dimming hides the floor/rock distinction a
+    // second time. Broad fill exposes that pigment; reduced direct light
+    // and the source face shading still give the enclosing rock its depth.
+    let native_kanto_cave = cavern_lit
+        && matches!(frame.map_id.as_ref(), "DiglettsCave" | "MountMoon"
+            | "RockTunnel1F" | "RockTunnelB1F" | "TohjoFalls" | "VictoryRoad")
+        && frame.tiles.first().is_some_and(|tile|
+            matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave"));
+    let (ambient_gain, sun_gain) = if native_kanto_cave { (1.0, 0.65) }
+        else if dark { (0.36, 0.28) }
         else if cavern_lit { (0.60, 0.48) } else { (1.0, 1.0) };
     if let Some(ambient) = ambient.as_mut() {
-        ambient.brightness = GlobalAmbientLight::default().brightness * ambient_gain;
+        let brightness = GlobalAmbientLight::default().brightness * ambient_gain;
+        if ambient.brightness != brightness { ambient.brightness = brightness; }
     }
     // CPU rasterizers pay for the entire broad terrain halo again in the
     // shadow pass. Authored contact shading already grounds these scenes;
@@ -1004,44 +1053,62 @@ fn sync_voxel_atmosphere(
         }
     }
     for (mut light, mut cascade) in &mut lights {
-        light.illuminance = 3_000.0 * sun_gain;
-        light.shadow_maps_enabled = shadows;
-        if matches!(frame.map_id.as_ref(), "Route29" | "Route26" | "NewBarkTown") {
+        let illuminance = 3_000.0 * sun_gain;
+        if light.illuminance != illuminance { light.illuminance = illuminance; }
+        let color = if environment_fx::frozen(&frame) {
+            Color::srgb(0.68, 0.85, 1.0)
+        } else if matches!(frame.map_id.as_ref(), "Route29" | "NewBarkTown") {
+            Color::srgb(1.0, 0.94, 0.82)
+        } else if environment_fx::coastal(&frame) {
+            Color::srgb(0.89, 0.96, 1.0)
+        } else { Color::WHITE };
+        if light.color != color { light.color = color; }
+        if light.shadow_maps_enabled != shadows { light.shadow_maps_enabled = shadows; }
+        let desired_cascade = if matches!(frame.map_id.as_ref(), "Route29" | "Route26" | "NewBarkTown"
+            | "NationalPark" | "NationalParkBugContest") {
             // Resolve leaves near the player rather than spending a single
             // shadow map on the camera's entire distant terrain halo.
-            *cascade = CascadeShadowConfigBuilder {
+            CascadeShadowConfigBuilder {
                 // WebGL supports one cascade; tighten that one around the
                 // visible scene instead of requesting unsupported cascades.
                 num_cascades: if cfg!(target_arch = "wasm32") { 1 } else { 3 },
                 maximum_distance: if cfg!(target_arch = "wasm32") { 1024.0 } else { 2048.0 },
                 first_cascade_far_bound: 256.0,
                 ..default()
-            }.build();
-            light.shadow_normal_bias = 2.5;
+            }.build()
         } else {
-            *cascade = CascadeShadowConfigBuilder {
+            CascadeShadowConfigBuilder {
                 num_cascades: 1,
                 maximum_distance: 4096.0,
                 first_cascade_far_bound: 4096.0,
                 ..default()
-            }.build();
-            light.shadow_normal_bias = 2.5;
-        }
+            }.build()
+        };
+        // Source animation changes the frame resource, but does not change
+        // sun coverage. Preserve Bevy's change tracking on those idle updates.
+        if cascade.bounds != desired_cascade.bounds
+            || cascade.minimum_distance != desired_cascade.minimum_distance
+            || cascade.overlap_proportion != desired_cascade.overlap_proportion
+        { *cascade = desired_cascade; }
+        if light.shadow_normal_bias != 2.5 { light.shadow_normal_bias = 2.5; }
     }
     for (mut fog, mut fxaa) in &mut cameras {
-        fxaa.enabled = frame.active
+        let enabled = frame.active
             && settings.enabled
             && (cave || new_bark_models::supports_map(&frame.map_id));
+        if fxaa.enabled != enabled { fxaa.enabled = enabled; }
         if let Some((start_tiles, end_tiles, opacity)) = atmosphere {
             let pose = settings.camera.pose(frame.viewport_size);
             let target_distance = pose.eye.distance(pose.target);
-            fog.color = voxel_clear_color(&frame).with_alpha(opacity);
-            fog.falloff = FogFalloff::Linear {
-                start: target_distance + start_tiles * frame.tile_size.y,
-                end: target_distance + end_tiles * frame.tile_size.y,
-            };
+            let color = voxel_clear_color(&frame).with_alpha(opacity);
+            if fog.color != color { fog.color = color; }
+            let start = target_distance + start_tiles * frame.tile_size.y;
+            let end = target_distance + end_tiles * frame.tile_size.y;
+            if !matches!(&fog.falloff, FogFalloff::Linear {start: old_start, end: old_end}
+                if *old_start == start && *old_end == end)
+            { fog.falloff = FogFalloff::Linear { start, end }; }
         } else {
-            fog.color = Color::NONE;
+            if fog.color != Color::NONE { fog.color = Color::NONE; }
         }
     }
 }
@@ -1219,12 +1286,15 @@ fn sync_terrain(
                         }
                     }
                 }
-                let textured_meshes = terrain_batches::prepare_with_authentic_bounds(
+                let prepare_surfaces=if cave_enclosure.is_some() {
+                    terrain_batches::prepare_enclosed_cave
+                } else {terrain_batches::prepare_with_authentic_bounds};
+                let textured_meshes = prepare_surfaces(
                     textured,
                     build_frame.tile_size,
                     source_bounds,
                 );
-                let solid_meshes = terrain_batches::prepare_with_authentic_bounds(
+                let solid_meshes = prepare_surfaces(
                     solid,
                     build_frame.tile_size,
                     source_bounds,
@@ -1415,6 +1485,9 @@ fn apply_built_terrain(
             Vec4::ZERO
         };
         material.extension.water_mask = water_mask;
+        let palette=cave_water::native_palette(frame,images).unwrap_or([Vec4::ZERO;2]);
+        material.extension.water_deep=palette[0];
+        material.extension.water_foam=palette[1];
     }
     let solid_material_handle = if let Some(handle) = cache.solid_material.as_ref() {
         if materials.get(handle).is_none() {
@@ -1437,7 +1510,8 @@ fn apply_built_terrain(
         let dark = frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave")
             && std::env::var_os("CRYSTAL_CAVE_GEOMETRY_REVIEW").is_none();
         Vec4::new(1.0, if dark { 1.0 } else { 0.0 }, 0.0, 0.0)
-    } else if matches!(frame.map_id.as_ref(), "NewBarkTown" | "Route29" | "Route26") {
+    } else if matches!(frame.map_id.as_ref(), "NewBarkTown" | "Route29" | "Route26"
+        | "NationalPark" | "NationalParkBugContest") {
         // The existing environment vector's Z channel selects exterior
         // daylight; X/Y retain cave reveal and darkness ownership.
         Vec4::Z
@@ -1744,10 +1818,27 @@ struct VoxelSurface {
     #[texture(107)]
     #[sampler(108)]
     painted_bedrock: Option<Handle<Image>>,
+    #[uniform(109)]
+    water_deep: Vec4,
+    #[uniform(110)]
+    water_foam: Vec4,
 }
 impl MaterialExtension for VoxelSurface {
     fn fragment_shader() -> ShaderRef {
         VOXEL_SURFACE_SHADER_HANDLE.into()
+    }
+
+    fn specialize(
+        _pipeline: &bevy::pbr::MaterialExtensionPipeline,
+        descriptor: &mut RenderPipelineDescriptor,
+        _layout: &MeshVertexBufferLayoutRef,
+        key: bevy::pbr::MaterialExtensionKey<Self>,
+    ) -> Result<(), SpecializedMeshPipelineError> {
+        if std::env::var_os("CRYSTAL_VOXEL_PIPELINE_TRACE").is_some() {
+            eprintln!("voxel pipeline: key={:?} fragment_defs={:?}", key.mesh_key,
+                descriptor.fragment.as_ref().map(|fragment| &fragment.shader_defs));
+        }
+        Ok(())
     }
 }
 
@@ -2245,6 +2336,54 @@ mod renderer_tests {
     use super::*;
 
     #[test]
+    fn atmosphere_animation_updates_do_not_dirty_unchanged_light_or_shadow_settings() {
+        #[derive(Resource, Default)]
+        struct Changes(usize);
+        fn count_changes(
+            changed: Query<(), Or<(Changed<DirectionalLight>,
+                Changed<bevy::light::CascadeShadowConfig>, Changed<DistanceFog>, Changed<Fxaa>)>>,
+            ambient: Res<GlobalAmbientLight>,
+            mut count: ResMut<Changes>,
+        ) {
+            count.0 += changed.iter().count() + usize::from(ambient.is_changed());
+        }
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>()
+            .init_resource::<GlobalAmbientLight>()
+            .init_resource::<Changes>()
+            .add_systems(Update, (sync_voxel_atmosphere, count_changes).chain());
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.active = true;
+            frame.map_id = "NewBarkTown".into();
+        }
+        let sun = app.world_mut().spawn((DirectionalLight::default(),
+            bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
+        app.world_mut().spawn((DistanceFog::default(), Fxaa::default(), VoxelWorldCamera));
+        app.update();
+        assert!(app.world().resource::<Changes>().0 > 0);
+        app.world_mut().resource_mut::<Changes>().0 = 0;
+        for _ in 0..8 {
+            // Force source-frame changes like live atlas animation, without
+            // changing any atmosphere inputs or the authored rendering values.
+            app.world_mut().resource_mut::<VisualWorldFrame>().terrain_revision += 1;
+            app.update();
+        }
+        assert_eq!(app.world().resource::<Changes>().0, 0);
+        assert_eq!(app.world().get::<DirectionalLight>(sun).unwrap().illuminance, 3000.0);
+        assert_eq!(app.world().get::<bevy::light::CascadeShadowConfig>(sun).unwrap().bounds.len(),
+            if cfg!(target_arch = "wasm32") { 1 } else { 3 });
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "GoldenrodCity".into();
+        app.update();
+        assert!(app.world().resource::<Changes>().0 > 0,
+            "actual map lighting changes must still reach Bevy");
+        assert_eq!(app.world().get::<bevy::light::CascadeShadowConfig>(sun).unwrap().bounds.len(), 1);
+    }
+
+    #[test]
     fn cavern_lights_dim_real_energy_and_restore_when_leaving() {
         let mut app = App::new();
         app.init_resource::<VisualWorldFrame>()
@@ -2260,6 +2399,14 @@ mod renderer_tests {
             ("IcePath1F", "ice_path", 48.0, 1440.0),
             ("DragonsDenB1F", "johto", 48.0, 1440.0),
             ("DarkCaveVioletEntrance", "dark_cave", 28.8, 840.0),
+            ("RockTunnelB1F", "dark_cave", 80.0, 1950.0),
+            ("RockTunnel1F", "dark_cave", 80.0, 1950.0),
+            ("DiglettsCave", "cave", 80.0, 1950.0),
+            ("MountMoon", "cave", 80.0, 1950.0),
+            ("TohjoFalls", "cave", 80.0, 1950.0),
+            ("VictoryRoad", "cave", 80.0, 1950.0),
+            ("RockTunnel1F", "house", 80.0, 3000.0),
+            ("DarkCaveVioletEntrance", "dark_cave", 28.8, 840.0),
             ("Route29", "johto", 80.0, 3000.0),
         ] {
             let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
@@ -2271,8 +2418,8 @@ mod renderer_tests {
                     tile_index: 0x16, subtile_column: 0, subtile_row: 0 } }];
             drop(frame);
             app.update();
-            assert!((app.world().resource::<GlobalAmbientLight>().brightness - ambient).abs() < 0.001);
-            assert!((app.world().get::<DirectionalLight>(sun).unwrap().illuminance - direct).abs() < 0.001);
+            assert!((app.world().resource::<GlobalAmbientLight>().brightness - ambient).abs() < 0.001, "ambient in {map}/{tileset}");
+            assert!((app.world().get::<DirectionalLight>(sun).unwrap().illuminance - direct).abs() < 0.001, "direct in {map}/{tileset}");
         }
     }
 
@@ -2285,18 +2432,23 @@ mod renderer_tests {
             .add_systems(Update, sync_voxel_atmosphere);
         let sun = app.world_mut().spawn((DirectionalLight::default(),
             bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
-        for map in ["Route29", "Route26", "NewBarkTown", "GoldenrodCity", "UnionCave1F", "Route29"] {
+        for map in ["Route29", "Route26", "NewBarkTown", "NationalPark", "NationalParkBugContest",
+            "GoldenrodCity", "UnionCave1F", "Route29"] {
             app.world_mut().resource_mut::<VisualWorldFrame>().map_id = map.into();
             app.update();
             let world = app.world();
             let cascade = world.get::<bevy::light::CascadeShadowConfig>(sun).unwrap();
             let light = world.get::<DirectionalLight>(sun).unwrap();
-            let grove = matches!(map, "Route29" | "Route26" | "NewBarkTown");
+            let grove = matches!(map, "Route29" | "Route26" | "NewBarkTown"
+                | "NationalPark" | "NationalParkBugContest");
             assert_eq!(cascade.bounds.len(), if grove && !cfg!(target_arch = "wasm32") {3} else {1});
             let far = if grove {
                 if cfg!(target_arch = "wasm32") {1024.} else {2048.}
             } else {4096.};
             assert!((*cascade.bounds.last().unwrap() - far).abs() < 0.001);
+            if grove && !cfg!(target_arch = "wasm32") {
+                assert!((cascade.bounds[0] - 256.).abs() < 0.001);
+            }
             assert_eq!(light.shadow_normal_bias, 2.5);
         }
     }
@@ -3027,7 +3179,7 @@ Visibility::Hidden,))).id();
         let frame = VisualWorldFrame {
             active: true, grid_size: UVec2::splat(4), tile_size: Vec2::splat(8.0),
             viewport_size: Vec2::splat(32.0),
-            actors: vec![VisualActor { id: VisualActorId::Player, source_id: "player".into(),
+            actors: vec![VisualActor { model_palette: None, id: VisualActorId::Player, source_id: "player".into(),
                 texture: Handle::default(), center: Vec2::new(0.0, 8.0),
                 size: Vec2::splat(16.0), flip_x: false, above_priority: false, facing: None }],
             ..default()
@@ -3060,7 +3212,7 @@ Visibility::Hidden,))).id();
 
     #[test]
     fn player_depth_pull_clears_same_level_terrain_at_forty_five_degrees() {
-        let player = VisualActor {
+        let player = VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: "player".into(),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -3081,7 +3233,7 @@ Visibility::Hidden,))).id();
     #[test]
     fn remote_player_uses_a_distinct_material_without_changing_its_footing() {
         let texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData);
-        let player = VisualActor {
+        let player = VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: "player".into(),
             texture: texture.clone(),
@@ -3091,7 +3243,7 @@ Visibility::Hidden,))).id();
             above_priority: false,
             facing: None,
         };
-        let remote = VisualActor {
+        let remote = VisualActor { model_palette: None,
             id: VisualActorId::RemotePlayer(7),
             source_id: "remote_player".into(),
             texture,
@@ -3122,7 +3274,7 @@ Visibility::Hidden,))).id();
             grid_size: UVec2::new(2, 2),
             ..default()
         };
-        let mut player = VisualActor {
+        let mut player = VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: "player".into(),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),

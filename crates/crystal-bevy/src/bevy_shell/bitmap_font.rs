@@ -4494,6 +4494,34 @@ fn visible_map_object_model_source_id(
     )
 }
 
+/// The pack's named lake object starts a BATTLETYPE_FORCESHINY Gyarados.
+/// Guard its exact source identity and red palette; a replaced sprite or
+/// another Gyarados keeps its own appearance. No map-wide color inference.
+fn visible_map_object_model_palette(
+    root: &AssetRoot,
+    map: &str,
+    object: &crate::core::map::ObjectEvent,
+    visible_sprite: &str,
+    source_id: &str,
+    variable_sprites: &BTreeMap<String, String>,
+) -> Result<Option<crystal_render_api::VisualPokemonModelPalette>> {
+    if map != "LakeOfRage"
+        || object.object_identifier.as_deref() != Some("LAKEOFRAGE_GYARADOS")
+        || object.script != "RedGyarados"
+        || object.event_flag != "EVENT_LAKE_OF_RAGE_RED_GYARADOS"
+        || object.object_type != "OBJECTTYPE_SCRIPT"
+        || object.sprite != "SPRITE_GYARADOS"
+        || visible_sprite != "SPRITE_GYARADOS"
+        || object.pal != 8
+        || source_id != "species:GYARADOS:gyarados"
+        || variable_sprites.contains_key(visible_sprite)
+    { return Ok(None); }
+    Ok(Some(crystal_render_api::VisualPokemonModelPalette {
+        normal: load_pokemon_palette(root, "gyarados", PokemonSpriteSide::Front, false)?,
+        appearance: load_pokemon_palette(root, "gyarados", PokemonSpriteSide::Front, true)?,
+    }))
+}
+
 /// Render-only identity of the currently visible appearance. Variable and
 /// daycare resolution has already happened; no hidden/original actor identity
 /// is consulted. The bitmap source remains available for normal card fallback.

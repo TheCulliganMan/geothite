@@ -1,6 +1,17 @@
 // Compact fingerprints of complete, individually reviewed native drawings.
 // No game pixels, source map layouts, scripts, or collision data are embedded.
 const OBJECTS: &[Object] = &[
+    // Exact complete carton drawings introduced by the rooftop sale callback.
+    Object {
+        map: "GoldenrodDeptStoreRoof", tileset: "mart", width: 3, height: 4,
+        fingerprint: 0x4b15ffd19f19630f,
+        detail: Detail::RoofSaleBoxes { stacked: true }, rise: 26., depth: 32.,
+    },
+    Object {
+        map: "GoldenrodDeptStoreRoof", tileset: "mart", width: 3, height: 2,
+        fingerprint: 0x92373e4fe140d264,
+        detail: Detail::RoofSaleBoxes { stacked: false }, rise: 15., depth: 16.,
+    },
     Object {
         map: "GoldenrodGameCorner",
         tileset: "game_corner",
@@ -139,6 +150,26 @@ const OBJECTS: &[Object] = &[
         fingerprint: 0xa755ca03de633ed3,
         detail: Detail::Asset(Asset::ElevatorControls),
         rise: 16.,
+        depth: 3.,
+    },
+    Object {
+        map: "CeladonDeptStoreElevator",
+        tileset: "mart",
+        width: 6,
+        height: 2,
+        fingerprint: 0x904830824255ead1,
+        detail: Detail::StoreLiftGlazing,
+        rise: 24.,
+        depth: 3.,
+    },
+    Object {
+        map: "GoldenrodDeptStoreElevator",
+        tileset: "mart",
+        width: 6,
+        height: 2,
+        fingerprint: 0x904830824255ead1,
+        detail: Detail::StoreLiftGlazing,
+        rise: 24.,
         depth: 3.,
     },
     Object {
@@ -287,7 +318,7 @@ const OBJECTS: &[Object] = &[
         width: 2,
         height: 4,
         fingerprint: 0x8dc9d24b7ddbc743,
-        detail: Detail::Interior(Interior::StationBench),
+        detail: Detail::RoofSeat,
         rise: 8.,
         depth: 22.,
     },
@@ -804,6 +835,20 @@ const OBJECTS: &[Object] = &[
 ];
 const CELLS: &[CellRule] = &[
     CellRule {
+        map: "GoldenrodDeptStoreRoof", tileset: "mart", detail: Detail::RoofRail,
+        fingerprints: &[
+            0x176b5bf8c7261a14, 0x1fa816f8cbb1b39f, 0x255851f8ce12ee6a, 0x30fb0cf8d581b0f5,
+            0x4d9858c9e7ad5164, 0x56ae93c9ecf1b52f, 0x5b854ec9ee9a25ba, 0x680189c9f6c1b285,
+        ],
+    },
+    CellRule {
+        map: "GoldenrodDeptStoreRoof", tileset: "mart", detail: Detail::Surface(Surface::Ceramic),
+        fingerprints: &[
+            0x7cb790f072f81657, 0x855a3ff077da4eb0, 0xc012e9012246b879,
+            0xc4e2d80123e962b2, 0xe85f9fe824311c51, 0xf16f0ee8296fb9ca,
+        ],
+    },
+    CellRule {
         map: "BattleTowerBattleRoom",
         tileset: "battle_tower_inside",
         detail: Detail::Wall(Wall::Steel),
@@ -1103,25 +1148,6 @@ const CELLS: &[CellRule] = &[
     CellRule {
         map: "CeladonDeptStoreElevator",
         tileset: "mart",
-        detail: Detail::Wall(Wall::Steel),
-        fingerprints: &[
-            0x0c036824bc97054f,
-            0x145b5324c139b822,
-            0x4b70d035688f0009,
-            0x544313356d99a4a0,
-            0x749a6d1c6b35114a,
-            0x7d737c1c70457c33,
-            0x83a15b368ae9f77c,
-            0x8c0daa368f9dfd45,
-            0xb4822d2d1794fdc8,
-            0xbce0e42d1c3d76ed,
-            0xebe0042e393cf14d,
-            0xf437ef2e3ddfa420,
-        ],
-    },
-    CellRule {
-        map: "CeladonDeptStoreElevator",
-        tileset: "mart",
         detail: Detail::Surface(Surface::Ceramic),
         fingerprints: &[
             0x032a5924b7869a66,
@@ -1179,25 +1205,6 @@ const CELLS: &[CellRule] = &[
             0x84e135a6121ffa08,
             0xc4ebcd8392b6326b,
             0xcd4a8483975eab90,
-        ],
-    },
-    CellRule {
-        map: "GoldenrodDeptStoreElevator",
-        tileset: "mart",
-        detail: Detail::Wall(Wall::Steel),
-        fingerprints: &[
-            0x0c036824bc97054f,
-            0x145b5324c139b822,
-            0x4b70d035688f0009,
-            0x544313356d99a4a0,
-            0x749a6d1c6b35114a,
-            0x7d737c1c70457c33,
-            0x83a15b368ae9f77c,
-            0x8c0daa368f9dfd45,
-            0xb4822d2d1794fdc8,
-            0xbce0e42d1c3d76ed,
-            0xebe0042e393cf14d,
-            0xf437ef2e3ddfa420,
         ],
     },
     CellRule {

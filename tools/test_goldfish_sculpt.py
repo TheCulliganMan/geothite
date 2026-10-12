@@ -4,6 +4,7 @@ import json,os,unittest
 from pathlib import Path
 from goldfish_sculpt import sculpture,SPECIES,HEIGHTS
 from jet_fish_sculpt import side_rotate
+from bovine_sculpt import reverse_front
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from test_kingdra_sculpt import crossed_faces
@@ -58,7 +59,11 @@ class GoldfishTests(unittest.TestCase):
     elif name.startswith(('Flank /','Flank spot /')):
      sign=int(name.split()[-2] if name.startswith('Flank spot /') else last);parent=side_rotate(self.find(s,'Body /'),-sign);p=side_rotate(p,-sign)
     elif name.startswith(('Fin paint /','Fin spot /')):
-     j=int(name.split()[-2] if name.startswith('Fin spot /') else last);parent=[q for prefix in ('Tail /','Pectoral /') for q in m['primitives'] if q['part'].startswith(prefix)][j]
+     j=int(name.split()[-3] if name.startswith('Fin spot /') else name.split()[-2]);parent=[q for prefix in ('Tail /','Pectoral /','Pelvic /') for q in m['primitives'] if q['part'].startswith(prefix)][j]
+     if int(last)==-1:p=reverse_front(p);parent=reverse_front(parent)
+    elif name.startswith('Tail inset /'):
+     parent=side_rotate(self.find(s,'Tail /'),-1);p=side_rotate(p,-1)
+     if int(last)==-1:p=reverse_front(p);parent=reverse_front(parent)
     if parent:yield s,p,parent
  def test_painted_skin_and_fitted_faces_have_actual_mesh_support(self):
   for s,p,parent in self.pairs():
@@ -76,10 +81,10 @@ class GoldfishTests(unittest.TestCase):
    b=self.find(s,'Body /')
    for p in m['primitives']:
     if p['part'].startswith(('Tail /','Pectoral /','Dorsal /','Pelvic /','Horn /','Whisker /')):self.assertTrue(self.overlap(p,b),(s,p['part']))
-   for prefix,n in {'Tail /':2,'Pectoral /':2,'Dorsal /':1,'Horn /':0 if s=='magikarp' else 1,'Whisker /':2 if s=='magikarp' else 0,'Lid /':2 if s=='goldeen' else 0,'Flank /':2 if s=='seaking' else 0,'Scale seam /':6 if s=='magikarp' else 0}.items():self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),n,(s,prefix))
+   for prefix,n in {'Tail /':1 if s=='magikarp' else 2,'Pectoral /':2,'Dorsal /':1,'Horn /':0 if s=='magikarp' else 1,'Whisker /':2 if s=='magikarp' else 0,'Lid /':2 if s=='goldeen' else 0,'Flank /':2 if s=='seaking' else 0,'Scale seam /':6 if s=='magikarp' else 0}.items():self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),n,(s,prefix))
  def test_fin_rays_rims_and_carp_seams_follow_actual_parent_surfaces(self):
   for s,m in self.models.items():
-   fans=[q for prefix in ('Tail /','Pectoral /') for q in m['primitives'] if q['part'].startswith(prefix)]
+   fans=[q for prefix in ('Tail /','Pectoral /','Pelvic /') for q in m['primitives'] if q['part'].startswith(prefix)]
    for p in m['primitives']:
     if p['part'].startswith('Fin ray /'):parent=fans[int(p['part'].split()[-2])]
     elif p['part'].startswith('Pectoral rim /'):parent=self.find(s,'Pectoral /',p['part'].split()[-1])

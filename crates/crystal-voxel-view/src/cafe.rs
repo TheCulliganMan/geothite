@@ -16,6 +16,16 @@ pub(crate) fn is_cafe_map(map_id: &str) -> bool {
     )
 }
 
+/// Exact Celadon table drawing; an edited or cropped block cannot invent furniture.
+pub(crate) fn celadon_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
+    const ART:[u16;16]=[0x1c,0x20,0x21,0x1d,0x1c,0x30,0x31,0x1d,
+        0x3e,0x50,0x50,0x3f,0xa8,0x4e,0x4f,0xa9];
+    (map=="CeladonCafe" && s.tileset_id.as_ref()=="game_corner" && s.metatile_id==0x2e
+        && s.subtile_column<4 && s.subtile_row<4
+        && s.tile_index==ART[s.subtile_row as usize*4+s.subtile_column as usize])
+        .then_some((s.subtile_column,s.subtile_row))
+}
+
 /// The two cafés draw the same complete 32x32 octagonal table with different
 /// upper decoration. Keep its plan-view art on top and lift only its authored
 /// silhouette; shared Game Corner maps must not inherit this table reading.
@@ -24,7 +34,7 @@ pub(crate) fn is_table(map_id: &str, source: &VisualTileSource) -> bool {
         return false;
     }
     match map_id {
-        "CeladonCafe" => source.metatile_id == 0x2e,
+        "CeladonCafe" => celadon_table_local(map_id,source).is_some(),
         "OlivineCafe" | "SafariZoneMainOffice" => source.metatile_id == 0x15,
         _ => false,
     }
@@ -50,6 +60,11 @@ fn is_service_counter(map_id: &str, source: &VisualTileSource) -> bool {
 
 pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape> {
     if is_table(map_id, source) {
+        if map_id=="CeladonCafe" {
+            // The complete authored table owns this drawing atomically. An
+            // incomplete source stays on its original plane, without a guessed pedestal.
+            return Some(CellShape::PlaneAt{height:0.});
+        }
         return Some(CellShape::FloatingRelief {
             height: TABLETOP_THICKNESS,
             ground_tile_index: FLOOR_TILE,
@@ -89,7 +104,7 @@ mod tests {
             ground_tile_index: FLOOR_TILE,
             base_height: TABLETOP_BOTTOM,
         });
-        assert_eq!(shape("CeladonCafe", &source(0x2e)), expected);
+        assert_eq!(shape("CeladonCafe", &source(0x2e)), Some(CellShape::PlaneAt{height:0.}));
         assert_eq!(shape("OlivineCafe", &source(0x15)), expected);
         assert_eq!(shape("SafariZoneMainOffice", &source(0x15)), expected);
         assert_eq!(shape("CeladonCafe", &source(0x15)), None);

@@ -2954,6 +2954,49 @@ fn stats_shiny_palette_loads_the_two_source_colors() {
         [normalize_palette_component(22), 0, normalize_palette_component(19)], [0, 0, 0]]);
 }
 
+#[test]
+fn shiny_models_read_all_251_palette_pairs_from_the_pack() {
+    let shell = progression_shell_on_map_for_test("LakeOfRage");
+    let species = &shell.shell.runtime().data().pokemon;
+    assert_eq!(species.len(), 251);
+    for id in species.keys() {
+        let asset = pokemon_asset_id_for_dvs(id, Dv::default());
+        for side in [PokemonSpriteSide::Front, PokemonSpriteSide::Back] {
+            let normal = load_pokemon_palette(&shell.asset_root, &asset, side, false)
+                .unwrap_or_else(|e| panic!("{id} normal palette: {e}"));
+            let shiny = load_pokemon_palette(&shell.asset_root, &asset, side, true)
+                .unwrap_or_else(|e| panic!("{id} shiny palette: {e}"));
+            assert_eq!(normal[0], [255;3]); assert_eq!(normal[3], [0;3]);
+            assert_eq!(shiny[0], [255;3]); assert_eq!(shiny[3], [0;3]);
+        }
+    }
+}
+
+#[test]
+fn lake_shiny_model_matches_the_pack_forced_shiny_object_and_rejects_replacements() {
+    let shell = progression_shell_on_map_for_test("LakeOfRage");
+    let data = shell.shell.runtime().data();
+    let map = &data.maps["LakeOfRage"];
+    let object = map.objects.iter().find(|o| o.object_identifier.as_deref() == Some("LAKEOFRAGE_GYARADOS")).unwrap();
+    let battle = map.scripted_wild_battles.iter().find(|b| b.source_script == object.script).unwrap();
+    assert_eq!(battle.request.species, "GYARADOS");
+    assert_eq!(battle.request.battle_type, "BATTLETYPE_FORCESHINY");
+    let variables = BTreeMap::new();
+    let palette = visible_map_object_model_palette(&shell.asset_root, "LakeOfRage", object,
+        "SPRITE_GYARADOS", "species:GYARADOS:gyarados", &variables).unwrap().unwrap();
+    assert_eq!(palette.appearance, load_pokemon_palette(&shell.asset_root, "gyarados", PokemonSpriteSide::Front, true).unwrap());
+    assert_ne!(palette.appearance, palette.normal);
+    assert!(palette.appearance[1][0] > palette.appearance[1][2]);
+    for map in ["Route44", "LakeOfRage"] {
+        let mut changed = object.clone(); changed.script = "OtherGyarados".into();
+        assert!(visible_map_object_model_palette(&shell.asset_root, map, &changed,
+            "SPRITE_GYARADOS", "species:GYARADOS:gyarados", &variables).unwrap().is_none());
+    }
+    let mut variables = variables; variables.insert("SPRITE_GYARADOS".into(), "GYARADOS".into());
+    assert!(visible_map_object_model_palette(&shell.asset_root, "LakeOfRage", object,
+        "SPRITE_GYARADOS", "species:GYARADOS:gyarados", &variables).unwrap().is_none());
+}
+
 fn render_pc_audit_canvas(world: &mut World, images: &Assets<Image>, label: &str) -> image::RgbaImage {
         let mut query = world.query::<(&Sprite, &Transform)>();
         let mut sprites = query.iter(&world).collect::<Vec<_>>();

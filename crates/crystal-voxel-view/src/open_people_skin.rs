@@ -133,7 +133,7 @@ impl PeopleGpu {
             if matches!(look.texture_key, "red" | "misty" | "brock" | "pokefan_m" | "nurse") {
                 crate::painted_torso::short_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
             }
-            crate::bare_body::sculpt(&mut body, &mut body_joints, &mut body_weights, look);
+            crate::bare_body::sculpt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
             crate::footwear::adapt(&mut body,&mut body_joints,&mut body_weights,look);
             crate::handwear::adapt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
             // Offline review only: inspect the final production surface rather

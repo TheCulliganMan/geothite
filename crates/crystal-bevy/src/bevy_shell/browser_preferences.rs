@@ -26,7 +26,7 @@ fn autosave_browser_progress(mut runtime: ResMut<BevyRuntimeShell>, time: Res<Ti
 #[cfg(target_arch = "wasm32")]
 thread_local! {
     static BROWSER_AUDIO_CONTEXT: std::cell::RefCell<Option<web_sys::AudioContext>> = const { std::cell::RefCell::new(None) };
-    static BROWSER_MUTED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+    static BROWSER_MUTED: std::cell::Cell<bool> = const { std::cell::Cell::new(true) };
     static BROWSER_MASTER_GAIN: std::cell::RefCell<Option<web_sys::GainNode>> = const { std::cell::RefCell::new(None) };
 }
 

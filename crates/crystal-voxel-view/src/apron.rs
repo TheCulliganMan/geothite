@@ -154,6 +154,7 @@ fn radial_sample(cloth: &CostumeMesh, y: f32, dir: Vec2) -> Option<Sample> {
 
 fn normals(surface: &mut SurfaceMeshData) {
     surface.normals.fill([0.; 3]);
+    let mut adjacent = vec![Vec::new(); surface.positions.len()];
     for f in surface.indices.chunks_exact(3) {
         let p = [f[0], f[1], f[2]].map(|i| Vec3::from_array(surface.positions[i as usize]));
         let n = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
@@ -161,6 +162,7 @@ fn normals(surface: &mut SurfaceMeshData) {
         // larger sloping cloth face meets them. Area weighting can overpower
         // that rim and produce a normal against its outward face.
         for (corner, &i) in f.iter().enumerate() {
+            adjacent[i as usize].push(n);
             let a = (p[(corner + 1) % 3] - p[corner]).normalize();
             let b = (p[(corner + 2) % 3] - p[corner]).normalize();
             let angle = a.dot(b).clamp(-1., 1.).acos();
@@ -170,6 +172,44 @@ fn normals(surface: &mut SurfaceMeshData) {
     }
     for n in &mut surface.normals {
         *n = Vec3::from_array(*n).normalize().to_array();
+    }
+    // A narrow pocket rim can meet a broad sloping face at a sharp corner.
+    // The angle average alone can graze one of those faces, then face inward
+    // after skinning. Keep the smooth normal inside the outward hemisphere of
+    // every incident face, with a small margin for the animated weight field.
+    // This changes shading only; fitted positions and skin influences stay exact.
+    for (normal, faces) in surface.normals.iter_mut().zip(adjacent) {
+        let mut n = Vec3::from_array(*normal);
+        for _ in 0..12 {
+            for face in &faces {
+                let deficit = 0.20 - n.dot(*face);
+                if deficit > 0.0 { n = (n + *face * deficit).normalize(); }
+            }
+        }
+        *normal = n.to_array();
+    }
+}
+
+/// The narrow closing rim must not bend the broad front's shading field.
+/// Both still share their fitted positions and skin weights, keeping the
+/// shell closed. Back vertices retain the rounded rim normals above.
+fn front_normals(surface: &mut SurfaceMeshData, layer: usize) {
+    let mut sums = vec![Vec3::ZERO; layer];
+    for face in surface.indices.chunks_exact(3) {
+        if face.iter().any(|&i| i as usize >= layer) {
+            continue;
+        }
+        let p = [face[0], face[1], face[2]]
+            .map(|i| Vec3::from_array(surface.positions[i as usize]));
+        let n = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+        for (corner, &i) in face.iter().enumerate() {
+            let a = (p[(corner + 1) % 3] - p[corner]).normalize();
+            let b = (p[(corner + 2) % 3] - p[corner]).normalize();
+            sums[i as usize] += n * a.dot(b).clamp(-1., 1.).acos();
+        }
+    }
+    for (normal, sum) in surface.normals.iter_mut().zip(sums) {
+        *normal = sum.normalize().to_array();
     }
 }
 
@@ -289,21 +329,39 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
         }
     }
     let at = |r: usize, c: usize| (r * (COLS + 1) + c) as u32;
+    // Rounded edges produce uneven quads. Use the diagonal whose smaller
+    // triangle has the better aspect ratio, avoiding a thin corner that can
+    // fold over under the otherwise continuous skin-weight field.
+    let quality = |face: [u32; 3]| {
+        let p = face.map(|i| Vec3::from_array(surface.positions[i as usize]));
+        let edges = [(p[1] - p[0]), (p[2] - p[1]), (p[0] - p[2])];
+        let area = edges[0].cross(-edges[2]).length_squared();
+        area / edges.iter().map(|edge| edge.length_squared()).sum::<f32>().powi(2)
+    };
+    let mut front_faces = Vec::with_capacity(COLS * ROWS * 2);
     for row in 0..ROWS {
         for col in 0..COLS {
             let a = at(row, col);
             let b = at(row + 1, col);
             let c = a + 1;
             let d = b + 1;
-            for f in [[a, b, c], [c, b, d]] {
-                surface.indices.extend(f);
-                surface.indices.extend([
-                    f[2] + layer as u32,
-                    f[1] + layer as u32,
-                    f[0] + layer as u32,
-                ]);
-            }
+            let original = [[a, b, c], [c, b, d]];
+            let alternate = [[a, b, d], [a, d, c]];
+            let score = |faces: [[u32; 3]; 2]| quality(faces[0]).min(quality(faces[1]));
+            front_faces.extend(if score(alternate) > score(original) {
+                alternate
+            } else {
+                original
+            });
         }
+    }
+    for f in front_faces {
+        surface.indices.extend(f);
+        surface.indices.extend([
+            f[2] + layer as u32,
+            f[1] + layer as u32,
+            f[0] + layer as u32,
+        ]);
     }
     // Ordered perimeter follows the front's outward winding.
     let mut edge = Vec::new();
@@ -326,6 +384,7 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
         surface.indices.extend([a, a + l, b, b, a + l, b + l]);
     }
     normals(&mut surface);
+    front_normals(&mut surface, layer);
     CostumeMesh {
         surface,
         joints,

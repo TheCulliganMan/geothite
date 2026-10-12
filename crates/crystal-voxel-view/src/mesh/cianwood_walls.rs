@@ -1,5 +1,5 @@
-// Timber Gym perimeters use vertical architecture. Scope complete side-strip
-// drawings by map and source without changing the invisible-path puzzle or support.
+// Timber perimeters use vertical architecture. Scope complete side-strip
+// drawings by map and source without changing puzzles or support.
 fn append_cianwood_walls(
     map: &str,
     cells: &[&VisualTile],
@@ -7,7 +7,8 @@ fn append_cianwood_walls(
     claimed: &mut [bool],
     out: &mut Vec<Placement>,
 ) {
-    if !matches!(map, "CianwoodGym" | "EcruteakGym") {
+    let sprout = matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F");
+    if !sprout && !matches!(map, "CianwoodGym" | "EcruteakGym") {
         return;
     }
     let Some(ground) = ground_sample(cells, map, "tower", crate::tower::TOWER_FLOOR_TILE) else {
@@ -15,6 +16,11 @@ fn append_cianwood_walls(
     };
     for (i, t) in cells.iter().enumerate() {
         let s = &t.source;
+        // These six complete drawings are the observed tower side perimeters.
+        // Gym guardian joins and invisible-field drawings keep separate owners.
+        if sprout && !matches!(s.metatile_id, 0x04 | 0x06 | 0x08 | 0x0a | 0x0c | 0x0e) {
+            continue;
+        }
         let (ox, oy, h) = match s.metatile_id {
             0x04 => (0, 2, 2),
             0x06 => (2, 2, 2),
@@ -55,6 +61,22 @@ fn append_cianwood_walls(
         }) {
             continue;
         }
+        // Southern returns must reach the folded facade in the lower two
+        // source rows. Their drawing ends at row 2, but the facade stands at
+        // row 4; using the short drawing depth leaves a full-row corner gap.
+        // Extend only across the complete verified wall, never a floor/profile.
+        let block_x = column.saturating_sub(ox);
+        let return_join = matches!(s.metatile_id, 0x0c | 0x0e | 0x16 | 0x17)
+            && column >= ox && block_x + 4 <= g.width && row + 4 <= g.height
+            && (2..4).all(|dy| (0..4).all(|dx| {
+                let j=(row+dy)*g.width+block_x+dx;
+                let source=&cells[j].source;
+                !claimed[j] && source.tileset_id==s.tileset_id
+                    && source.metatile_id==s.metatile_id
+                    && source.subtile_column as usize==dx
+                    && source.subtile_row as usize==dy
+                    && matches!(crate::tower::tower_shape(source),Some(CellShape::FacadeBand{band_count:2,..}))
+            }));
         let p = Placement {
             kind: ModelKind::WallTraditional,
             column,
@@ -64,6 +86,8 @@ fn append_cianwood_walls(
             ground,
             depth_pixels: if matches!(s.metatile_id, 0x21 | 0x22) {
                 3.0
+            } else if return_join {
+                32.0
             } else {
                 h as f32 * 8.0
             },
@@ -83,7 +107,40 @@ mod cianwood_wall_tests {
     use super::*;
     use std::sync::Arc;
     #[test]
-    fn perimeter_joins_keep_floor_free_and_reject_altered_drawings() {
+    fn southern_returns_reach_the_verified_folded_wall_and_reject_overrides() {
+        let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        for block in [0x0c,0x0e,0x16,0x17] {
+            let ox=if matches!(block,0x0c|0x16){0}else{2};
+            let tiles:Vec<_>=(0..16).map(|i| {
+                let x=i%4;let y=i/4;
+                VisualTile{column:x as u32,row:y as u32,texture:Handle::default(),
+                    priority:false,animation_frames:None,
+                    source:VisualTileSource{tileset_id:Arc::from("tower"),metatile_id:block,
+                        subtile_column:x as u8,subtile_row:y as u8,
+                        tile_index:if y>=2 {if y==2 {0x11}else{0x21}}
+                            else if x==ox {0x41}else if x==ox+1 {0x31}else{2}}}
+            }).collect();
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let mut placements=Vec::new();
+            append_cianwood_walls("CianwoodGym",&refs,&g,&mut vec![false;16],&mut placements);
+            assert_eq!(placements.len(),1);
+            assert_eq!(placements[0].depth_pixels,32.);
+            assert_eq!(placements[0].indices(4).count(),4,"geometry must not enlarge source claims");
+            let mut mesh=TerrainMeshData{footing_heights:vec![3.;16],..Default::default()};
+            assert!(append(&mut mesh,"CianwoodGym",&refs,&g,&placements[0],&mut vec![false;16],[0,0]));
+            assert_eq!(mesh.footing_heights,vec![3.;16]);
+            assert!((mesh.textured.positions.iter().map(|p|p[2]).fold(0.,f32::max)-32.).abs()<0.001);
+            for index in 8..16 {
+                let mut reserved=vec![false;16];reserved[index]=true;
+                let mut changed=Vec::new();
+                append_cianwood_walls("CianwoodGym",&refs,&g,&mut reserved,&mut changed);
+                assert_eq!(changed.len(),1);
+                assert_eq!(changed[0].depth_pixels,16.,"custom neighboring wall must retain ownership");
+            }
+        }
+    }
+    #[test]
+    fn perimeter_joins_keep_floor_free_in_gyms_and_all_sprout_floors() {
         let g = GridGeometry {
             width: 4,
             height: 4,
@@ -130,7 +187,11 @@ mod cianwood_wall_tests {
                     };
                 }
             }
-            for map in ["CianwoodGym", "EcruteakGym"] {
+            let mut maps = vec!["CianwoodGym", "EcruteakGym"];
+            if matches!(block, 0x04 | 0x06 | 0x08 | 0x0a | 0x0c | 0x0e) {
+                maps.extend(["SproutTower1F", "SproutTower2F", "SproutTower3F"]);
+            }
+            for map in maps {
                 let mut p = Vec::new();
                 let mut claimed = vec![false; 16];
                 append_cianwood_walls(map, &t.iter().collect::<Vec<_>>(), &g, &mut claimed, &mut p);
@@ -142,6 +203,7 @@ mod cianwood_wall_tests {
                 };
                 assert!(append(
                     &mut mesh,
+                    map,
                     &t.iter().collect::<Vec<_>>(),
                     &g,
                     &p[0],
@@ -149,10 +211,35 @@ mod cianwood_wall_tests {
                     [0, 0]
                 ));
                 assert_eq!(mesh.footing_heights, vec![0.0; 16]);
-                assert!(mesh.solid.positions.iter().all(|p| p[0] >= ox as f32 * 8.0
+                assert!(!mesh.textured.indices.is_empty());
+                assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions).all(|p| p[0] >= ox as f32 * 8.0
                     && p[0] <= (ox + 2) as f32 * 8.0
                     && p[2] >= oy as f32 * 8.0
                     && p[2] <= (oy + h) as f32 * 8.0));
+                if map.starts_with("SproutTower") {
+                    for y in oy..oy+h {
+                        for x in ox..ox+2 {
+                            let i = y*4+x;
+                            for field in 0..6 {
+                                let mut changed = t.clone();
+                                let s = &mut changed[i].source;
+                                let mut reserved = vec![false;16];
+                                match field {
+                                    0 => s.tileset_id = Arc::from("other"),
+                                    1 => s.metatile_id ^= 1,
+                                    2 => s.subtile_column ^= 1,
+                                    3 => s.subtile_row ^= 1,
+                                    4 => s.tile_index ^= 1,
+                                    _ => reserved[i] = true,
+                                }
+                                let mut changed_out = Vec::new();
+                                append_cianwood_walls(map, &changed.iter().collect::<Vec<_>>(),
+                                    &g, &mut reserved, &mut changed_out);
+                                assert!(changed_out.is_empty());
+                            }
+                        }
+                    }
+                }
                 let original = t[oy * 4 + ox].source.tile_index;
                 t[oy * 4 + ox].source.tile_index = 0xff;
                 let mut bad = Vec::new();
@@ -166,7 +253,7 @@ mod cianwood_wall_tests {
                 assert!(bad.is_empty());
                 t[oy * 4 + ox].source.tile_index = original;
                 append_cianwood_walls(
-                    "SproutTower1F",
+                    "TinTower1F",
                     &t.iter().collect::<Vec<_>>(),
                     &g,
                     &mut vec![false; 16],
@@ -194,6 +281,7 @@ fn append_side_wall(
     rise: f32,
     facing: f32,
     tile_width: f32,
+    source_uv: impl Fn([usize; 2]) -> [f32; 2],
 ) {
     let [west, east, north, south] = bounds;
     let depth = south - north;
@@ -205,11 +293,11 @@ fn append_side_wall(
     };
     let cz = (north + south) * 0.5;
     let first = mesh.positions.len();
-    crate::dungeon_models::model(crate::dungeon_models::Kind::TimberWall).append(
+    crate::dungeon_models::model(crate::dungeon_models::Kind::TimberWall).append_tower_timber(
         mesh,
         [-depth * 0.5, depth * 0.5, -thickness * 0.5, thickness * 0.5],
-        0.0,
         rise,
+        source_uv,
     );
     for p in &mut mesh.positions[first..] {
         let [x, y, z] = *p;

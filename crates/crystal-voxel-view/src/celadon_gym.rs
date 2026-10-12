@@ -37,7 +37,8 @@ pub(crate) fn hedge_group(source: &VisualTileSource) -> Option<HedgeGroup> {
     }
     // $1a repeats four exact [4c 4d; 5c 5d] hedge crowns. $1b carries
     // the same two drawings only in its lower half. The blue $20-$23 art is
-    // the animated flowerbed family and deliberately remains on that path.
+    // a separate complete flowerbed family, resolved by Gym scenery. It is
+    // not part of the outdoor tile03 flower animation family.
     let (local_column, local_row) = match source.metatile_id {
         0x1a => (source.subtile_column % 2, source.subtile_row % 2),
         0x1b if source.subtile_row >= 2 => (source.subtile_column % 2, source.subtile_row - 2),

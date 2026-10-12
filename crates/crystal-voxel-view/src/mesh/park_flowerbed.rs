@@ -1,5 +1,6 @@
 //! Source-complete flowerbed edging; native flowers retain their own ownership.
 use super::*;
+use super::modeled_exteriors::park_flowers;
 use crate::live_profiles::Document;
 #[path = "park_flowerbed_geometry.rs"]
 mod geometry;
@@ -11,6 +12,7 @@ pub(super) struct Placement {
     row: usize,
     width: usize,
     ground: [usize; 2],
+    source_origin: [i32; 2],
 }
 impl Placement {
     pub(super) fn indices(&self, grid_width: usize) -> impl Iterator<Item = usize> + '_ {
@@ -98,6 +100,7 @@ pub(super) fn resolve(
             row,
             width: end + 4 - column,
             ground: [paving, lawn],
+            source_origin: [origin[0] + column as i32, origin[1] + row as i32],
         };
         if !p.coherent(cells, g) || p.indices(g.width).any(|i| reserved[i]) {
             continue;
@@ -156,6 +159,16 @@ pub(super) fn append(
         );
     }
     geometry::append(&mut mesh.solid, b, g.tile_height);
+    // Only a complete native bed permits the low planting between its
+    // flower samples. Heads and floor ownership remain on their own cells.
+    for y in 1..3 { for x in 1..p.width - 1 {
+        let i = (p.row + y) * g.width + p.column + x;
+        if !claimed[i] {
+            super::modeled_exteriors::append_park_underplanting(&mut mesh.solid,
+                g.bounds(p.column + x, p.row + y).into(),
+                [p.source_origin[0] + x as i32, p.source_origin[1] + y as i32]);
+        }
+    }}
     for i in p.indices(g.width) {
         claimed[i] = true;
         if mesh.authored_cells.len() == cells.len() {
@@ -258,6 +271,12 @@ mod tests {
         assert!(append(&mut mesh, &cells, &g, &out[0], &mut claimed));
         assert_eq!(claimed.iter().filter(|&&v| v).count(), 44);
         assert_eq!(mesh.footing_heights, vec![0.; 88]);
+        let foliage: Vec<_> = mesh.solid.positions.iter().zip(&mesh.solid.colors)
+            .filter(|(_, c)| c[1] > c[0] * 1.7 && c[1] > c[2] * 3.)
+            .map(|(p, _)| p).collect();
+        assert!(!foliage.is_empty(), "the complete bed must receive its low planting");
+        assert!(foliage.iter().all(|p| p[0] > 8. && p[0] < 152.
+            && p[2] > 8. && p[2] < 24. && p[1] > 0. && p[1] < 2.4));
         for i in 0..88 {
             if matches!(cells[i].source.tile_index, 1 | 3) {
                 assert!(!claimed[i]);

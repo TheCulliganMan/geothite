@@ -1,4 +1,4 @@
-//! Presentation mask for proven live cave water. UVs, animation frames and
+//! Presentation mask for proven live water. UVs, animation frames and
 //! source pixels remain untouched; the surface shader colors only these slots.
 use bevy::asset::RenderAssetUsages;
 use bevy::{
@@ -10,12 +10,57 @@ use bevy::{
 };
 use crystal_render_api::{VisualTile, VisualWorldFrame};
 
+pub(crate) const DEN_WHIRLPOOL_DRAWING: [u16;16] = [
+    0x32,0x33,0x58,0x58,0x42,0x43,0x58,0x58,
+    0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58,
+];
+
+/// Complete source drawings and a genuine local water animation prove both
+/// the whirlpool footprint and the clock used to present its currents.
+pub(crate) fn den_whirlpool_cells(cells: &[&VisualTile], width: usize, height: usize) -> Vec<(usize,usize)> {
+    if cells.len()!=width.saturating_mul(height) {return Vec::new();}
+    let mut result=Vec::new();
+    for row in 0..height.saturating_sub(3) {for col in 0..width.saturating_sub(3) {
+        if !(0..16).all(|j| {
+            let s=&cells[(row+j/4)*width+col+j%4].source;
+            s.tileset_id.as_ref()=="johto" && s.metatile_id==0x07
+                && s.subtile_column as usize==j%4 && s.subtile_row as usize==j/4
+                && s.tile_index==DEN_WHIRLPOOL_DRAWING[j]
+        }) {continue;}
+        let Some(water)=[8,9,12,13].into_iter().map(|j|(row+j/4)*width+col+j%4)
+            .find(|&i|role_for_map(cells[i],"DragonsDenB1F")==[255,0]) else {continue;};
+        result.extend([0,1,4,5].into_iter().map(|j|((row+j/4)*width+col+j%4,water)));
+    }}
+    result
+}
+
+fn den_whirlpool_water(frame: &VisualWorldFrame) -> std::collections::HashMap<(u32,u32),&VisualTile> {
+    if frame.map_id.as_ref()!="DragonsDenB1F" {return Default::default();}
+    let (width,height)=(frame.grid_size.x as usize,frame.grid_size.y as usize);
+    let mut ordered=vec![None;width.saturating_mul(height)];
+    for tile in &frame.tiles {
+        if tile.column as usize>=width || tile.row as usize>=height {return Default::default();}
+        if ordered[tile.row as usize*width+tile.column as usize].replace(tile).is_some() {return Default::default();}
+    }
+    let Some(cells)=ordered.into_iter().collect::<Option<Vec<_>>>() else {return Default::default();};
+    den_whirlpool_cells(&cells,width,height).into_iter().map(|(i,w)|
+        ((cells[i].column,cells[i].row),cells[w])).collect()
+}
+
 fn role(tile: &VisualTile) -> [u8; 2] { role_for_map(tile, "") }
+
+pub(crate) fn outdoor(map: &str) -> bool {
+    map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
+        || matches!(map,"LakeOfRage"|"IlexForest"|"NationalPark"|"NationalParkBugContest"|"BattleTowerOutside"
+            |"RuinsOfAlphOutside"|"SilverCaveOutside"|"OlivinePort"|"VermilionPort")
+}
 
 fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
     let s = &tile.source;
     let den = map == "DragonsDenB1F" && s.tileset_id.as_ref() == "johto";
-    if !(matches!(s.tileset_id.as_ref(), "cave" | "dark_cave") || den)
+    let open_water = outdoor(map) && matches!(s.tileset_id.as_ref(),
+        "johto"|"johto_modern"|"kanto"|"forest"|"park"|"battle_tower_outside"|"port");
+    if !(matches!(s.tileset_id.as_ref(), "cave" | "dark_cave") || den || open_water)
         || s.subtile_column >= 4
         || s.subtile_row >= 4
         || !tile
@@ -25,11 +70,20 @@ fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
     {
         return [0, 0];
     }
+    if open_water {
+        return if crate::profile::shape_for_source(s) == crate::profile::CellShape::Water {
+            [255,0]
+        } else { [0,0] };
+    }
     match s.tile_index {
         0x14 => [255, 0],
         0x40 if !den && s.metatile_id == 0x2c => [0, 255],
         _ => [0, 0],
     }
+}
+
+pub(crate) fn live_outdoor_water(tile: &VisualTile, map: &str) -> bool {
+    outdoor(map) && role_for_map(tile,map) == [255,0]
 }
 
 fn phase(tile: &VisualTile) -> u8 {
@@ -44,7 +98,8 @@ fn phase(tile: &VisualTile) -> u8 {
 
 pub(super) fn registration(frame: &VisualWorldFrame) -> Vec4 {
     Vec4::new(
-        1.,
+        if frame.map_id.as_ref()=="TohjoFalls" { 3. }
+            else if outdoor(&frame.map_id) { 2. } else { 1. },
         frame.tile_size.x,
         (frame.grid_origin.x as f32 + frame.grid_size.x as f32 * 0.5) * frame.tile_size.x
             - frame.center.x,
@@ -137,18 +192,21 @@ pub(super) fn mask(frame: &VisualWorldFrame) -> Option<Image> {
     let mut pixels = vec![0; width as usize * height as usize * 4];
     for pixel in pixels.chunks_exact_mut(4) { pixel[3] = 255; }
     let falls = receiving_falls(frame);
+    let whirlpools = den_whirlpool_water(frame);
     for tile in &frame.tiles {
         if tile.column >= frame.grid_size.x || tile.row >= frame.grid_size.y {
             return None;
         }
-        let [pool, fall] = role_for_map(tile, &frame.map_id);
+        let whirlpool = whirlpools.get(&(tile.column,tile.row));
+        let [pool, fall] = if whirlpool.is_some() {[255,128]} else {role_for_map(tile, &frame.map_id)};
+        let live_phase = whirlpool.map_or_else(||phase(tile), |water|phase(water));
         for y in 0..8 {
             for x in 0..8 {
                 let i = (((tile.row * 8 + y) * width + tile.column * 8 + x) * 4) as usize;
                 pixels[i..i + 4].copy_from_slice(&[
                     pool,
                     fall,
-                    if pool > 0 || fall > 0 { phase(tile) } else { 0 },
+                    if pool > 0 || fall > 0 { live_phase } else { 0 },
                     if pool > 0 || fall > 0 {
                         impact(&falls, tile.column as f32 + (x as f32 + 0.5)/8.,
                             tile.row as f32 + (y as f32 + 0.5)/8., pool>0)
@@ -189,15 +247,17 @@ pub(super) fn refresh_mask_phases(
     let width = mask.width() as usize;
     let mut updates = Vec::new();
     let mut roles_changed = false;
+    let whirlpools = den_whirlpool_water(built);
     for tile in &built.tiles {
         if tile.column >= built.grid_size.x || tile.row >= built.grid_size.y {
             continue;
         }
-        let [pool, fall] = role_for_map(tile, &built.map_id);
+        let whirlpool = whirlpools.get(&(tile.column,tile.row));
+        let [pool, fall] = if whirlpool.is_some() {[255,128]} else {role_for_map(tile, &built.map_id)};
         let next = [
             pool,
             fall,
-            if pool > 0 || fall > 0 { phase(tile) } else { 0 },
+            if pool > 0 || fall > 0 { whirlpool.map_or_else(||phase(tile), |water|phase(water)) } else { 0 },
         ];
         let first = (tile.row as usize * 8 * width + tile.column as usize * 8) * 4;
         if mask.data.as_ref().expect("CPU image pixels")[first..first + 3] != next {
@@ -312,6 +372,38 @@ mod tests {
         }
     }
     #[test]
+    fn den_whirlpool_requires_complete_art_and_follows_its_local_water_phase() {
+        let first=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(301),std::marker::PhantomData);
+        let second=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(302),std::marker::PhantomData);
+        let mut frame=VisualWorldFrame{map_id:"DragonsDenB1F".into(),grid_size:UVec2::new(4,4),..default()};
+        frame.tiles=(0..16).map(|i| {
+            let mut t=tile(DEN_WHIRLPOOL_DRAWING[i]);
+            t.column=(i%4) as u32;t.row=(i/4) as u32;
+            t.source.tileset_id="johto".into();t.source.metatile_id=0x07;
+            t.source.subtile_column=(i%4) as u8;t.source.subtile_row=(i/4) as u8;
+            t.texture=first.clone();t.animation_frames=Some(vec![first.clone(),second.clone()].into());t
+        }).collect();
+        assert_eq!(den_whirlpool_water(&frame).len(),4);
+        let mut images=Assets::<Image>::default();
+        let h=images.add(mask(&frame).unwrap());
+        assert_eq!(&images.get(&h).unwrap().data.as_ref().unwrap()[..3],&[255,128,0]);
+        frame.tiles[8].texture=second.clone();
+        assert!(refresh_mask_phases(&frame,&h,&mut images));
+        for (x,z) in [(0,0),(1,0),(0,1),(1,1)] {
+            let i=(z*8*32+x*8)*4;
+            assert_eq!(&images.get(&h).unwrap().data.as_ref().unwrap()[i..i+3],&[255,128,127]);
+        }
+        frame.tiles[0].source.tile_index=0x31;
+        assert!(den_whirlpool_water(&frame).is_empty());
+        assert!(refresh_mask_phases(&frame,&h,&mut images));
+        assert_eq!(&images.get(&h).unwrap().data.as_ref().unwrap()[..3],&[0,0,0]);
+        frame.tiles[0].source.tile_index=DEN_WHIRLPOOL_DRAWING[0];
+        for t in &mut frame.tiles {t.animation_frames=None;}
+        assert!(den_whirlpool_water(&frame).is_empty());
+        frame.map_id="Route45".into();
+        assert!(mask(&frame).is_none());
+    }
+    #[test]
     fn only_proven_cave_pool_and_waterfall_slots_receive_a_skin() {
         assert_eq!(role(&tile(0x14)), [255, 0]);
         assert_eq!(role(&tile(0x40)), [0, 255]);
@@ -337,11 +429,22 @@ mod tests {
         t.source.tileset_id = "johto".into();
         t.source.metatile_id = 0x35;
         assert_eq!(role_for_map(&t, "DragonsDenB1F"), [255,0]);
-        assert_eq!(role_for_map(&t, "Route45"), [0,0]);
+        assert_eq!(role_for_map(&t, "CeruleanGym"), [0,0]);
         t.source.tile_index = 0x40;
         assert_eq!(role_for_map(&t, "DragonsDenB1F"), [0,0]);
         t.source.tile_index = 0x14; t.animation_frames = None;
         assert_eq!(role_for_map(&t, "DragonsDenB1F"), [0,0]);
+    }
+    #[test]
+    fn outdoor_water_requires_source_geometry_and_an_authenticated_animation() {
+        let mut t=tile(0x14);t.source.tileset_id="johto".into();t.source.metatile_id=0x35;
+        for map in ["LakeOfRage","Route44","CherrygroveCity","NewBarkTown"] {
+            assert!(live_outdoor_water(&t,map));
+        }
+        assert!(!live_outdoor_water(&t,"PlayersHouse1F"));
+        t.source.tile_index=0x05;assert!(!live_outdoor_water(&t,"LakeOfRage"));
+        t.source.tile_index=0x14;t.animation_frames=None;
+        assert!(!live_outdoor_water(&t,"LakeOfRage"));
     }
     #[test]
     fn waterfall_foam_reaches_only_the_lower_pool_and_survives_phase_updates() {
@@ -482,6 +585,58 @@ mod tests {
         assert_eq!(built.tiles[1].texture, second);
     }
     #[test]
+    fn kanto_native_water_patterns_take_palette_without_repeating_source_pixels() {
+        let mut images=Assets::<Image>::default();
+        let mut data=vec![];
+        for i in 0..64 {data.extend(if i%8==0 {[120,160,240,255]} else {[32,40,128,255]});}
+        let image=Image::new(Extent3d{width:8,height:8,depth_or_array_layers:1},
+            TextureDimension::D2,data,TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD);
+        let first=images.add(image.clone());let second=images.add(image);
+        let mut water=tile(0x14);water.texture=first.clone();
+        water.animation_frames=Some(vec![first.clone(),second.clone()].into());
+        let mut frame=VisualWorldFrame{map_id:"TohjoFalls".into(),tiles:vec![water],..default()};
+        let palette=native_palette(&frame,&images).unwrap();
+        assert!(palette[0].z>palette[0].x && palette[1].z>palette[1].x);
+        assert!(palette[1].y>palette[0].y);assert_eq!(palette[0].w,1.);
+        frame.tiles[0].texture=second.clone();assert_eq!(native_palette(&frame,&images),Some(palette));
+        frame.map_id="UnionCave1F".into();assert!(native_palette(&frame,&images).is_none());
+        frame.map_id="TohjoFalls".into();frame.tiles[0].animation_frames=None;
+        assert!(native_palette(&frame,&images).is_none());
+        frame.tiles[0].animation_frames=Some(vec![first,second.clone()].into());
+        images.get_mut(&second).unwrap().data.as_mut().unwrap()[3]=0;
+        assert!(native_palette(&frame,&images).is_none());
+    }
+
+    #[test]
+    fn kanto_native_tohjo_water_keeps_live_source_phase_and_map_registration() {
+        let first=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(411),std::marker::PhantomData);
+        let second=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(412),std::marker::PhantomData);
+        let mut water=tile(0x14);water.texture=first.clone();
+        water.animation_frames=Some(vec![first.clone(),second.clone()].into());
+        let mut frame=VisualWorldFrame{map_id:"TohjoFalls".into(),grid_size:UVec2::ONE,
+            grid_origin:IVec2::new(10,30),tile_size:Vec2::splat(8.),tiles:vec![water],..default()};
+        let native=registration(&frame);assert_eq!(native.x,3.);
+        let before=mask(&frame).unwrap();
+        assert_eq!(&before.data.as_ref().unwrap()[..4],&[255,0,0,255]);
+        frame.tiles[0].texture=second.clone();
+        let current=mask(&frame).unwrap();
+        assert_eq!(&current.data.as_ref().unwrap()[..3],&[255,0,127]);
+        assert_eq!(registration(&frame),native,"source phase must not move procedural flow");
+        frame.map_id="UnionCave1F".into();let legacy=registration(&frame);
+        assert_eq!(legacy.x,1.);
+        assert_eq!([legacy.y,legacy.z,legacy.w],[native.y,native.z,native.w]);
+        frame.map_id="VermilionPort".into();assert_eq!(registration(&frame).x,2.);
+        frame.map_id="TohjoFalls".into();
+        frame.tiles[0].source.tile_index=0x40;
+        let cascade=mask(&frame).unwrap();
+        assert_eq!(&cascade.data.as_ref().unwrap()[..3],&[0,255,127]);
+        frame.tiles[0].source.tile_index=0x14;
+        frame.tiles[0].animation_frames=None;assert!(mask(&frame).is_none());
+        frame.tiles[0].animation_frames=Some(vec![first,second].into());
+        frame.tiles[0].source.tileset_id="house".into();assert!(mask(&frame).is_none());
+    }
+
+    #[test]
     fn ripple_registration_keeps_source_position_when_viewport_scrolls_and_resizes() {
         let mut frame = VisualWorldFrame {
             grid_size: UVec2::new(20, 12),
@@ -535,4 +690,33 @@ mod tests {
         }
         assert_eq!(frame, original);
     }
+}
+
+
+/// Palette samples, never a repeated drawing, supply native Tohjo currents.
+/// Only authenticated live water images participate; unavailable source art
+/// leaves the existing source surface untouched rather than inventing a hue.
+pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Option<[Vec4;2]> {
+    if frame.map_id.as_ref()!="TohjoFalls" {return None;}
+    let mut colors=std::collections::BTreeSet::new();
+    for tile in &frame.tiles {
+        if role_for_map(tile,&frame.map_id)==[0,0] {continue;}
+        let image=images.get(&tile.texture)?;
+        if image.texture_descriptor.size.width!=8 || image.texture_descriptor.size.height!=8
+            || !matches!(image.texture_descriptor.format,TextureFormat::Rgba8Unorm|TextureFormat::Rgba8UnormSrgb) {return None;}
+        let data=image.data.as_ref()?;
+        if data.len()!=256 || data.chunks_exact(4).any(|p|p[3]!=255) {return None;}
+        for pixel in data.chunks_exact(4) {
+            let c=Vec3::from_array([pixel[0],pixel[1],pixel[2]].map(|v|{
+                let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
+            }));
+            if c.dot(Vec3::new(0.2126,0.7152,0.0722))>0.006 {colors.insert([pixel[0],pixel[1],pixel[2]]);}
+        }
+    }
+    let mut colors=colors.into_iter().map(|rgb|Vec3::from_array(rgb.map(|v|{
+        let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
+    }))).collect::<Vec<_>>();
+    colors.sort_by(|a,b|a.dot(Vec3::new(0.2126,0.7152,0.0722)).total_cmp(&b.dot(Vec3::new(0.2126,0.7152,0.0722))));
+    if colors.len()<2 {return None;}
+    Some([colors[0].extend(1.),colors[colors.len()-1].extend(1.)])
 }

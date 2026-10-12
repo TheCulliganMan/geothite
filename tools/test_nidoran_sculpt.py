@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""Stored-surface tests for distinct small poison-pin silhouettes and roots."""
+import copy,json,os,unittest
+from pathlib import Path
+from nidoran_sculpt import sculpture,SPECIES,HEIGHTS
+from sculpt_test_support import assert_closed_models,assert_model_shading
+import test_nidorino_sculpt as root_checks
+from test_slime_sculpt import ray_intersections
+from test_kingdra_sculpt import crossed_faces
+from nidorino_sculpt import side_chart
+from sculpt_geometry import translate
+ROOT=Path(os.environ.get('CRYSTAL_NIDORAN_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
+
+class NidoranTests(unittest.TestCase):
+ @classmethod
+ def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def each(self):
+  for s,m in self.models.items():self.ps=m['primitives'];yield s,m
+ def find(self,prefix,s=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (s is None or p['part'].endswith(' '+str(s))))
+ overlap=root_checks.NidorinoTests.overlap
+ def test_closed_connected_outward_solids(self):assert_closed_models(self,self.models)
+ def test_normals_track_actual_faces(self):assert_model_shading(self,self.models)
+ def test_parity_grounding_height_budget_and_anatomy(self):
+  for s,m in self.each():
+   with self.subTest(species=s):
+    self.assertEqual(m,sculpture(s));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+    self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHTS[s],places=6)
+    for prefix,n in (('Horn /',1),('Ear /',2),('Ear inset /',2),('Haunch /',4),('Leg /',4),('Foot /',4),('Claw /',8),('Back spine /',3),('Tail /',1),('Incisor /',2),('Cheek barb /',6 if s.endswith('_f') else 0),('Ear fold /',2 if s.endswith('_f') else 0)):
+     self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
+ def test_distinct_ear_and_body_proportions(self):
+  ext={}
+  for s,m in self.each():
+   body=self.find('Body /');ears=[p for p in self.ps if p['part'].startswith('Ear /')]
+   ext[s]=(max(body['positions'][1::3])-min(body['positions'][1::3]),max(body['positions'][2::3])-min(body['positions'][2::3]),max(v for p in ears for v in p['positions'][1::3])-min(v for p in ears for v in p['positions'][1::3]))
+  self.assertGreater(ext['nidoran_f'][0]/ext['nidoran_f'][1],.8);self.assertLess(ext['nidoran_m'][0]/ext['nidoran_m'][1],.6);self.assertGreater(ext['nidoran_m'][2],ext['nidoran_f'][2]*1.4)
+ def test_head_muzzle_horn_ears_teeth_barbs_tail_and_spines_have_roots(self):
+  for s,m in self.each():
+   head=self.find('Head /');body=self.find('Body /');muzzle=self.find('Muzzle /')
+   for a,b in ((head,body),(muzzle,head),(self.find('Horn /'),head),(self.find('Tail /'),body)):self.assertTrue(self.overlap(a,b),s+' '+a['part'])
+   for p in self.ps:
+    if p['part'].startswith('Back spine /'):self.assertTrue(self.overlap(p,body),p['part'])
+    if p['part'].startswith('Cheek barb /'):self.assertTrue(self.overlap(p,head),p['part'])
+   for side in (-1,1):self.assertTrue(self.overlap(self.find('Ear /',side),head));self.assertTrue(self.overlap(self.find('Incisor /',side),muzzle))
+ def test_all_leg_chains_and_eight_claws_have_roots(self):
+  for s,m in self.each():
+   for side in (-1,1):
+    for placement in ('front','rear'):
+     tag=f'{side} {placement}';thigh=self.find('Haunch /',tag);leg=self.find('Leg /',tag);foot=self.find('Foot /',tag)
+     for a,b in ((thigh,self.find('Body /')),(leg,thigh),(foot,leg)):self.assertTrue(self.overlap(a,b),s+' '+a['part'])
+     self.assertLess(min(foot['positions'][1::3]),.002)
+     for j in range(2):self.assertTrue(self.overlap(self.find('Claw /',tag+' '+str(j)),foot))
+ def pairs(self):
+  for p in self.ps:
+   n=p['part'];s=n.split()[-1];parent=None
+   for child,base in (('Eye socket /','Head /'),('Eye /','Eye socket /'),('Iris /','Eye /'),('Pupil /','Iris /'),('Glint /','Pupil /'),('Nostril /','Muzzle /'),('Ear inset /','Ear /'),('Ear fold /','Ear inset /')):
+    if n.startswith(child):parent=self.find(base,s if base not in ('Head /','Muzzle /') else None)
+   if n.startswith('Mouth /'):parent=self.find('Muzzle /')
+   if n.startswith('Haunch spot /'):
+    tokens=n.split();s=int(tokens[-2]);tag=' '.join(tokens[-2:]);yield side_chart(p,s),side_chart(self.find('Haunch /',tag),s);continue
+   if n.startswith('Flank spot /'):
+    s=int(n.split()[-2]);yield side_chart(p,s),side_chart(self.find('Body /'),s);continue
+   if parent:yield p,parent
+ def test_fitted_layers_follow_stored_parent(self):
+  for s,m in self.each():
+   for p,parent in self.pairs():
+    for i in range(0,len(p['positions']),3):
+     x,y,z=p['positions'][i:i+3];hits=ray_intersections(parent,x,y);self.assertTrue(hits,p['part']);self.assertLess(abs(z-max(hits)),.016,p['part'])
+ def test_fitted_front_centers_and_edges_clear_parent(self):
+  for s,m in self.each():
+   for p,parent in self.pairs():
+    for i in range(0,len(p['indices']),3):
+     vv=[p['positions'][3*j:3*j+3] for j in p['indices'][i:i+3]];a,b,c=vv
+     if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-10:continue
+     for weights in ((1/3,1/3,1/3),(.5,.5,0),(.5,0,.5),(0,.5,.5)):
+      x,y,z=[sum(vv[k][axis]*weights[k] for k in range(3)) for axis in range(3)];hits=ray_intersections(parent,x,y);self.assertTrue(hits,p['part']);self.assertGreater(z-max(hits),.0001,p['part'])
+ def test_ears_horns_legs_tail_and_spines_do_not_cross(self):
+  for s,m in self.each():
+   for p in self.ps:
+    if p['part'].startswith(('Horn /','Ear /','Ear inset /','Ear fold /','Tail /','Back spine /','Leg /','Cheek barb /')):self.assertIsNone(crossed_faces(p),p['part'])
+ def test_detached_horn_ear_tail_are_rejected(self):
+  for s,m in self.each():
+   for prefix,parent in (('Horn /','Head /'),('Ear /','Head /'),('Tail /','Body /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(prefix)),1,0,0),self.find(parent)))
+
+if __name__=='__main__':unittest.main()

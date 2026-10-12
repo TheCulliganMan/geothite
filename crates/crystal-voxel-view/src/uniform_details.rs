@@ -297,7 +297,7 @@ pub(crate) fn append(cloth: &mut CostumeMesh, rig: &PersonRig, look: Look) {
 
 pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
     if look.texture_key == "rocket" { return rocket_details(rig, look); }
-    if !matches!(look.texture_key, "officer" | "captain" | "sailor" | "clerk" | "biker" | "black_belt" | "gentleman" | "gym_guide") {
+    if !matches!(look.texture_key, "officer" | "captain" | "sailor" | "clerk" | "biker" | "black_belt" | "gentleman" | "gym_guide" | "unused_guy" | "cal") {
         return None;
     }
     let mut out = CostumeMesh {
@@ -305,7 +305,37 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
         joints: Vec::new(),
         weights: Vec::new(),
     };
-    if matches!(look.texture_key, "gentleman" | "gym_guide") {
+    if look.texture_key == "cal" {
+        // A zip jacket needs a continuous hem around the sides and back,
+        // rather than front-only stripes on the shared sleeve/body UV island.
+        waist_band(&mut out, rig, 1.46, 0.085, [137, 35, 43])?;
+        rectangle(&mut out, rig, [-0.042, 0.042, 1.545, 2.36], 1., [81, 30, 39]);
+        let first = out.surface.positions.len();
+        rectangle(&mut out, rig, [-0.009, 0.009, 1.565, 2.33], 1., [179, 169, 148]);
+        for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+        for sign in [-1., 1.] {
+            let first = out.surface.positions.len();
+            let collar = [[0.015, 2.34], [0.12, 2.43], [0.25, 2.34], [0.12, 2.23]]
+                .map(|[x, y]| [x * sign, y]);
+            panel(&mut out, rig, &collar, 1., [164, 39, 47]);
+            for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
+            let pocket = [[0.11, 1.73], [0.24, 1.84], [0.26, 1.815], [0.13, 1.705]]
+                .map(|[x, y]| [x * sign, y]);
+            panel(&mut out, rig, &pocket, 1., [116, 34, 44]);
+        }
+        let first = out.surface.positions.len();
+        rectangle(&mut out, rig, [-0.02, 0.02, 2.24, 2.30], 1., [193, 181, 151]);
+        for p in &mut out.surface.positions[first..] { p[2] += 0.014; }
+        return Some(out);
+    }
+    if matches!(look.texture_key, "gentleman" | "gym_guide" | "unused_guy") {
+        let ochre_suit = look.texture_key == "unused_guy";
+        let opening = if ochre_suit { [105, 76, 40] } else { [28, 44, 67] };
+        if ochre_suit {
+            // The jacket hem closes around the torso instead of ending as
+            // disconnected front details on the shared shirt painting.
+            waist_band(&mut out, rig, 1.46, 0.055, [150, 113, 57])?;
+        }
         // Keep front-specific suit details off the shared shirt UV island.
         // Every panel follows the same torso surface and skin influences.
         panel(&mut out, rig, &[
@@ -336,11 +366,18 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
             panel(&mut out, rig, &[
                 [0., 2.34], [-0.032, 2.29], [-0.024, 2.06],
                 [0., 2.00], [0.024, 2.06], [0.032, 2.29],
-            ], 1., [145, 49, 63]);
+            ], 1., if ochre_suit { [45, 117, 119] } else { [145, 49, 63] });
             for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
         }
-        rectangle(&mut out, rig, [-0.014, 0.014, 1.50, 1.94], 1., [28, 44, 67]);
-        rectangle(&mut out, rig, [-0.24, -0.10, 2.08, 2.105], 1., [28, 44, 67]);
+        rectangle(&mut out, rig, [-0.014, 0.014, 1.50, 1.94], 1., opening);
+        rectangle(&mut out, rig, [-0.24, -0.10, 2.08, 2.105], 1., opening);
+        if ochre_suit {
+            for sign in [-1., 1.] {
+                let pocket = [[0.10, 1.72], [0.25, 1.72], [0.25, 1.695], [0.10, 1.695]]
+                    .map(|[x, y]| [x * sign, y]);
+                panel(&mut out, rig, &pocket, 1., opening);
+            }
+        }
         for y in [1.64, 1.81] {
             let points: Vec<_> = (0..12).map(|i| {
                 let a = std::f32::consts::TAU * i as f32 / 12.;
@@ -364,7 +401,7 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
             // The inner collar ends at the wrap; carrying both strips to
             // the waist produced an X emblem rather than layered clothing.
             let points = if sign < 0. {
-                [[-0.09, 2.43], [-0.20, 2.38], [0.025, 2.03], [0.085, 2.03]]
+                [[-0.09, 2.43], [-0.20, 2.38], [0.015, 2.20], [0.075, 2.20]]
             } else {
                 [[0.09, 2.43], [0.20, 2.38], [-0.16, 1.65], [-0.23, 1.65]]
             };
@@ -378,6 +415,17 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
         let first = out.surface.positions.len();
         rectangle(&mut out, rig, [-0.045, 0.045, 1.49, 1.60], 1., [39, 40, 43]);
         for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+        // Two tapered cloth ends distinguish a tied martial belt from a
+        // plain waist stripe. Sample the torso skin palette so the ends
+        // follow the same bend as the knot instead of hanging rigidly.
+        for points in [
+            [[-0.040, 1.53], [0.005, 1.53], [-0.035, 1.32], [-0.085, 1.34]],
+            [[0.005, 1.53], [0.045, 1.53], [0.100, 1.37], [0.055, 1.35]],
+        ] {
+            let first = out.surface.positions.len();
+            panel(&mut out, rig, &points, 1., [30, 31, 36]);
+            for p in &mut out.surface.positions[first..] { p[2] += 0.009; }
+        }
         return Some(out);
     }
     if look.texture_key == "clerk" {
@@ -568,6 +616,8 @@ mod tests {
             CharacterKind::Sailor,
             CharacterKind::Gentleman,
             CharacterKind::GymGuide,
+            CharacterKind::UnusedGuy,
+            CharacterKind::Cal,
             CharacterKind::Teacher,
             CharacterKind::Rocket,
             CharacterKind::RocketGirl,
@@ -581,7 +631,7 @@ mod tests {
                     "{} details must retain the separate skirt", look.texture_key);
                 cardigan_details(rig, look).or_else(|| rocket_details(rig, look)).unwrap()
             } else { crate::npc_appearance::costume_mesh(rig, look).unwrap() };
-            let minimum_vertices = if matches!(kind, CharacterKind::Gentleman | CharacterKind::GymGuide | CharacterKind::Teacher | CharacterKind::Rocket | CharacterKind::RocketGirl) { 100 } else { 1000 };
+            let minimum_vertices = if matches!(kind, CharacterKind::Gentleman | CharacterKind::GymGuide | CharacterKind::UnusedGuy | CharacterKind::Teacher | CharacterKind::Rocket | CharacterKind::RocketGirl) { 100 } else { 1000 };
             assert!(cloth.surface.positions.len() > minimum_vertices);
             for (j, w) in cloth.joints.iter().zip(&cloth.weights) {
                 assert!(j.iter().all(|&id| (id as usize) < rig.skin_nodes.len()));

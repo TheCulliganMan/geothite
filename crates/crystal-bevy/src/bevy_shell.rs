@@ -2,6 +2,8 @@
 mod dev_tools;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_record;
+#[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+mod render_measure_validation;
 #[cfg(feature = "location-tester")]
 mod render_walk;
 mod battle_anim_graphics;
@@ -360,6 +362,10 @@ pub struct BevyShellConfig {
     /// Normal play continues to use the live/new-game clock path.
     #[cfg(feature = "location-tester")]
     pub render_test_hour: Option<u8>,
+    /// Disposable location fixture only: seed a verified flag and rerun normal
+    /// entry callbacks. This is visual-state evidence, not progression.
+    #[cfg(feature = "location-tester")]
+    pub render_test_preview_flag: Option<String>,
     /// Seed the location renderer's fresh session for incidental encounters.
     #[cfg(feature = "location-tester")]
     pub render_test_party: bool,
@@ -412,6 +418,8 @@ pub struct BevyShellConfig {
     /// Uses real level-25 learnsets; the existing Meganium showcase retains level-32 moves.
     #[cfg(feature = "location-tester")]
     pub render_test_battle_starter: Option<String>,
+    #[cfg(feature = "location-tester")]
+    pub render_test_battle_shiny: bool,
     /// One deterministic ordinary failed throw in the fresh Route36 preview.
     /// Supplies hardware DIV samples only; the real PACK action resolves capture.
     #[cfg(feature = "location-tester")]
@@ -1612,6 +1620,8 @@ fn music_volume_during_transient(volume: f32, transient_id: Option<&str>) -> f32
 #[cfg(all(not(test), not(target_arch = "wasm32")))]
 struct NativeAudioBackend {
     output: NativeAudioOutput,
+    /// Silence developer trials while retaining source playback timing.
+    preview_muted: bool,
     music_sink: Option<rodio::Sink>,
     music_volume: f32,
     transient_sinks: Vec<rodio::Sink>,
@@ -1645,6 +1655,9 @@ impl NativeAudioBackend {
                 _stream: stream,
                 handle,
             },
+            // Preview launches stay silent unless sound is explicitly enabled.
+            preview_muted: std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some()
+                || std::env::var("CRYSTAL_PREVIEW_SOUND").as_deref() != Ok("1"),
             music_sink: None,
             music_volume: 1.0,
             transient_sinks: Vec::new(),
@@ -1726,10 +1739,11 @@ impl NativeAudioBackend {
 
     fn refresh_music_volume(&self) {
         if let Some(sink) = self.music_sink.as_ref() {
-            sink.set_volume(music_volume_during_transient(
-                self.music_volume,
-                self.transient_audio_id.as_deref(),
-            ));
+            sink.set_volume(if self.preview_muted {
+                0.0
+            } else {
+                music_volume_during_transient(self.music_volume, self.transient_audio_id.as_deref())
+            });
         }
     }
 
@@ -1778,7 +1792,9 @@ impl NativeAudioBackend {
         }
         self.transient_sinks.retain(|sink| !sink.empty());
         let sink = rodio::Sink::try_new(&self.output.handle).context("create native audio sink")?;
-        if matches!(command.kind, ModpackAudioKind::Music) {
+        if self.preview_muted {
+            sink.set_volume(0.0);
+        } else if matches!(command.kind, ModpackAudioKind::Music) {
             sink.set_volume(music_volume_during_transient(
                 self.music_volume,
                 self.transient_audio_id.as_deref(),
@@ -5528,6 +5544,7 @@ struct VisibleObjectSprite {
     object_index: usize,
     object_identifier: Option<String>,
     source_id: Arc<str>,
+    model_palette: Option<crystal_render_api::VisualPokemonModelPalette>,
     above_priority: bool,
     standing: Handle<Image>,
     walking: Option<Handle<Image>>,
@@ -5643,6 +5660,8 @@ pub fn run_bevy_shell(
     let render_test_live = config.render_test_live;
     #[cfg(feature = "location-tester")]
     let render_test_battle = config.render_test_battle;
+    #[cfg(feature = "location-tester")]
+    let render_test_battle_shiny = config.render_test_battle_shiny;
     #[cfg(feature = "location-tester")]
     let render_test_route36_encounter = config.render_test_route36_encounter;
     #[cfg(feature = "location-tester")]
@@ -5773,6 +5792,7 @@ pub fn run_bevy_shell(
             render_test_enemy_gust,
             render_test_poke_ball_failure,
             render_test_battle_starter.as_deref(),
+            render_test_battle_shiny,
         )?
     } else {
         runtime_shell
@@ -8095,6 +8115,12 @@ fn initialize_bevy_runtime_shell(
         anyhow::ensure!(hour < 24, "render-test hour {hour} is outside 0..24");
         shell.update_clock_from_datetime(GameDate::new(2000, 1, 1), hour, 0, 0)?;
     }
+    #[cfg(feature = "location-tester")]
+    if let Some(flag) = config.render_test_preview_flag.as_deref() {
+        anyhow::ensure!(runtime_tile_start && config.quick_save_path.is_none(),
+            "preview flag requires a fresh disposable location session without saving");
+        shell.set_script_flag_for_smoke(flag)?;
+    }
     if title_menu.is_some() || initial_player_name_prompt {
         // MainMenu clears GAME_TIMER_COUNTING_F. The bit is armed only when
         // the new-game introduction reaches FinishContinue.
@@ -8498,15 +8524,42 @@ fn initialize_bevy_runtime_shell(
         // Runtime-tile starts still execute the map's authoritative callback.
         // Finish its terminal EndCallback/control records before exposing the
         // first test joypad frame, just as an ordinary arrival does.
-        continue_visible_script_after_prompt(&mut runtime_shell)?;
-        let snapshot = runtime_shell.shell.snapshot()?;
-        if !snapshot.script_events.audio_events.is_empty() {
-            drain_visible_audio_events(&mut runtime_shell)?;
+        #[cfg(feature = "location-tester")]
+        let preview_flag=config.render_test_preview_flag.as_deref();
+        #[cfg(not(feature = "location-tester"))]
+        let preview_flag:Option<&str>=None;
+        // The session constructor can decide a callback branch before the
+        // fixture flag is installed. Settle that initial callback, then rerun
+        // the same production map-entry callback path for the disposable state.
+        for refresh in 0..if preview_flag.is_some(){2}else{1} {
+            if refresh==1 {
+                runtime_shell.shell.set_script_flag_for_smoke(preview_flag.unwrap())?;
+                runtime_shell.shell.apply_current_map_setup_callbacks("MAPSETUP_WARP")?;
+            }
+            continue_visible_script_after_prompt(&mut runtime_shell)?;
+            let snapshot = runtime_shell.shell.snapshot()?;
+            if !snapshot.script_events.audio_events.is_empty() {
+                drain_visible_audio_events(&mut runtime_shell)?;
+            }
+            if has_visible_pending_non_audio_script_events(&snapshot) {
+                drain_visible_non_audio_script_events(&mut runtime_shell)?;
+            }
+            close_visible_noninteractive_runtime_surfaces_until_idle(&mut runtime_shell)?;
         }
-        if has_visible_pending_non_audio_script_events(&snapshot) {
-            drain_visible_non_audio_script_events(&mut runtime_shell)?;
+        if preview_flag==Some("ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON")
+            && runtime_shell.shell.current_map_name()=="GoldenrodDeptStoreRoof" {
+            let declared=&runtime_shell.runtime.data().maps["GoldenrodDeptStoreRoof"].script_block_changes;
+            let state=runtime_shell.shell.session().state();
+            let actual=state.map_block_overrides.get("GoldenrodDeptStoreRoof")
+                .context("sale preview callback did not produce rooftop block overrides")?;
+            let sale:Vec<_>=declared.iter().filter(|c|c.source_script.starts_with(".SaleIsOn@")).collect();
+            anyhow::ensure!(!sale.is_empty(),"sale preview requires declared sale block changes");
+            for change in sale {
+                let stride=crate::core::systems::script_blocks::CHANGE_BLOCK_COORD_STRIDE;
+                anyhow::ensure!(actual.get(&(change.x/stride,change.y/stride))==Some(&change.block_id),
+                    "sale preview callback did not apply its declared block change");
+            }
         }
-        close_visible_noninteractive_runtime_surfaces_until_idle(&mut runtime_shell)?;
     }
     // Initialization may execute callbacks through direct shell mutations;
     // never carry an intermediate routing snapshot into the first joypad

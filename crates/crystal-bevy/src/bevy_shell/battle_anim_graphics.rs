@@ -32,9 +32,13 @@ mod raster_tests {
         tile[15] = 0x10;
         let raw: Vec<u8> = [[0; 16], tile, [0; 16]].into_iter().flatten().collect();
         std::fs::write(graphics.join("hit.2bpp"), raw).unwrap();
-        std::fs::write(graphics.join("battle_anims.pal"),
-            "; gray\nRGB 31,31,31\nRGB 25,25,25\nRGB 13,13,13\nRGB 0,0,0\n").unwrap();
-        let object = serde_json::json!({"flags": 0x60, "gfx_id": "TEST", "palette": "PAL_BATTLE_OB_GRAY"});
+        std::fs::write(
+            graphics.join("battle_anims.pal"),
+            "; gray\nRGB 31,31,31\nRGB 25,25,25\nRGB 13,13,13\nRGB 0,0,0\n",
+        )
+        .unwrap();
+        let object =
+            serde_json::json!({"flags": 0x60, "gfx_id": "TEST", "palette": "PAL_BATTLE_OB_GRAY"});
         let frame = serde_json::json!({"oam_set": "TEST", "xflip": false, "yflip": false});
         let bundle = serde_json::json!({
             "gfx_table": {"TEST": [1, "TestHitGFX"]},
@@ -47,11 +51,28 @@ mod raster_tests {
         let mut images = Assets::<Image>::default();
         for enemy in [false, true] {
             let rendered = battle_anim_rendered_frame(
-                &mut art, &bundle, &assets, "TEST", &object, "TEST", 0, &frame,
-                enemy, false, false, None, 0xe4, 0xe4, None, &mut images,
-            ).unwrap();
-            assert_eq!((rendered.offset_x, rendered.offset_y),
-                       if enemy { (-1, -5) } else { (-7, -3) });
+                &mut art,
+                &bundle,
+                &assets,
+                "TEST",
+                &object,
+                "TEST",
+                0,
+                &frame,
+                enemy,
+                false,
+                false,
+                None,
+                0xe4,
+                0xe4,
+                None,
+                &mut images,
+            )
+            .unwrap();
+            assert_eq!(
+                (rendered.offset_x, rendered.offset_y),
+                if enemy { (-1, -5) } else { (-7, -3) }
+            );
             let image = images.get(&rendered.sprite.handle).unwrap();
             assert_eq!((image.width(), image.height()), (8, 8));
             let mut expected = vec![0; 8 * 8 * 4];
@@ -60,7 +81,10 @@ mod raster_tests {
                 expected[(y * 8 + x) * 4..(y * 8 + x) * 4 + 4]
                     .copy_from_slice(&[shade, shade, shade, 255]);
             }
-            assert_eq!(image.data.as_deref().expect("CPU image pixels"), expected.as_slice());
+            assert_eq!(
+                image.data.as_deref().expect("CPU image pixels"),
+                expected.as_slice()
+            );
         }
     }
 }
@@ -69,8 +93,8 @@ fn rules(name: &str) -> Rules {
     let mut rules = Rules::default();
     match name {
         "angels" | "bubble" | "charge" => rules.trim = true,
-        "egg" | "explosion" | "hit" | "horn" | "lightning" | "noise"
-        | "reflect" | "rocks" | "skyattack" | "status" => rules.remove_blank = true,
+        "egg" | "explosion" | "hit" | "horn" | "lightning" | "noise" | "reflect" | "rocks"
+        | "skyattack" | "status" => rules.remove_blank = true,
         "beam" => {
             rules.xflip = true;
             rules.yflip = true;
@@ -108,9 +132,7 @@ fn flipped(tile: &Tile, xflip: bool, yflip: bool) -> Tile {
 fn remove_matching(tiles: &mut Vec<Tile>, xflip: bool, yflip: bool, keep_blank: bool) {
     let mut retained = Vec::with_capacity(tiles.len());
     for tile in tiles.iter() {
-        if (keep_blank && *tile == [0; 16])
-            || !retained.contains(&flipped(tile, xflip, yflip))
-        {
+        if (keep_blank && *tile == [0; 16]) || !retained.contains(&flipped(tile, xflip, yflip)) {
             retained.push(*tile);
         }
     }
@@ -184,8 +206,10 @@ mod tests {
     }
 
     fn asymmetric() -> Tile {
-        [0x80, 0x10, 0x40, 0x08, 0x20, 0x04, 0x10, 0x02,
-         0x08, 0x01, 0x04, 0x80, 0x02, 0x40, 0x01, 0x20]
+        [
+            0x80, 0x10, 0x40, 0x08, 0x20, 0x04, 0x10, 0x02, 0x08, 0x01, 0x04, 0x80, 0x02, 0x40,
+            0x01, 0x20,
+        ]
     }
 
     #[test]
@@ -193,17 +217,24 @@ mod tests {
         let a = asymmetric();
         let mut b = a;
         b[0] ^= 0x10;
-        assert_eq!(preprocess("hit", &bytes(&[[0; 16], a, [0; 16], b, a, [0; 16]])).unwrap(),
-                   bytes(&[a, b, a]));
+        assert_eq!(
+            preprocess("hit", &bytes(&[[0; 16], a, [0; 16], b, a, [0; 16]])).unwrap(),
+            bytes(&[a, b, a])
+        );
     }
 
     #[test]
     fn trimmed_sheets_keep_internal_blanks_and_at_least_one_tile() {
         let a = asymmetric();
         for name in ["angels", "bubble", "charge"] {
-            assert_eq!(preprocess(name, &bytes(&[[0; 16], a, [0; 16], a, [0; 16]])).unwrap(),
-                       bytes(&[[0; 16], a, [0; 16], a]));
-            assert_eq!(preprocess(name, &bytes(&[[0; 16]; 3])).unwrap(), bytes(&[[0; 16]]));
+            assert_eq!(
+                preprocess(name, &bytes(&[[0; 16], a, [0; 16], a, [0; 16]])).unwrap(),
+                bytes(&[[0; 16], a, [0; 16], a])
+            );
+            assert_eq!(
+                preprocess(name, &bytes(&[[0; 16]; 3])).unwrap(),
+                bytes(&[[0; 16]])
+            );
         }
     }
 
@@ -212,8 +243,10 @@ mod tests {
         let a = asymmetric();
         // These are independent literal bit reversals of the source tile.
         let x = [1, 8, 2, 16, 4, 32, 8, 64, 16, 128, 32, 1, 64, 2, 128, 4];
-        assert_eq!(preprocess("pokeball", &bytes(&[a, x, [0; 16], [0; 16], a])).unwrap(),
-                   bytes(&[a, [0; 16], [0; 16], a]));
+        assert_eq!(
+            preprocess("pokeball", &bytes(&[a, x, [0; 16], [0; 16], a])).unwrap(),
+            bytes(&[a, [0; 16], [0; 16], a])
+        );
     }
 
     #[test]
@@ -222,24 +255,49 @@ mod tests {
         let x = [1, 8, 2, 16, 4, 32, 8, 64, 16, 128, 32, 1, 64, 2, 128, 4];
         let y = [1, 32, 2, 64, 4, 128, 8, 1, 16, 2, 32, 4, 64, 8, 128, 16];
         let xy = [128, 4, 64, 2, 32, 1, 16, 128, 8, 64, 4, 32, 2, 16, 1, 8];
-        assert_eq!(preprocess("beam", &bytes(&[a, x, y, xy, [0; 16], a])).unwrap(),
-                   bytes(&[a, a]));
+        assert_eq!(
+            preprocess("beam", &bytes(&[a, x, y, xy, [0; 16], a])).unwrap(),
+            bytes(&[a, a])
+        );
     }
 
     #[test]
     fn misc_removes_exact_duplicates_then_mirrors_but_keeps_one_blank() {
         let a = asymmetric();
         let x = [1, 8, 2, 16, 4, 32, 8, 64, 16, 128, 32, 1, 64, 2, 128, 4];
-        assert_eq!(preprocess("misc", &bytes(&[a, a, x, [0; 16], [0; 16]])).unwrap(),
-                   bytes(&[a, [0; 16]]));
+        assert_eq!(
+            preprocess("misc", &bytes(&[a, a, x, [0; 16], [0; 16]])).unwrap(),
+            bytes(&[a, [0; 16]])
+        );
     }
 
     #[test]
     fn unaffected_sheets_retain_every_source_tile() {
         let source = bytes(&[[0; 16], asymmetric(), asymmetric(), [0; 16]]);
-        for name in ["aeroblast", "cut", "fire", "flower", "globe", "haze", "ice",
-                     "plant", "poison", "powder", "psychic", "rope", "sand", "shapes",
-                     "shine", "smoke", "speed", "water", "wave", "web", "whip", "wind"] {
+        for name in [
+            "aeroblast",
+            "cut",
+            "fire",
+            "flower",
+            "globe",
+            "haze",
+            "ice",
+            "plant",
+            "poison",
+            "powder",
+            "psychic",
+            "rope",
+            "sand",
+            "shapes",
+            "shine",
+            "smoke",
+            "speed",
+            "water",
+            "wave",
+            "web",
+            "whip",
+            "wind",
+        ] {
             assert_eq!(preprocess(name, &source).unwrap(), source, "{name}");
         }
     }
@@ -249,8 +307,10 @@ mod tests {
         // Even an intentionally compiled blank remains authoritative.
         let compiled = bytes(&[asymmetric(), [0; 16]]);
         assert_eq!(normalize("hit", compiled.clone(), 2).unwrap(), compiled);
-        assert_eq!(normalize("hit", bytes(&[[0; 16], asymmetric(), [0; 16]]), 1).unwrap(),
-                   bytes(&[asymmetric()]));
+        assert_eq!(
+            normalize("hit", bytes(&[[0; 16], asymmetric(), [0; 16]]), 1).unwrap(),
+            bytes(&[asymmetric()])
+        );
     }
 
     #[test]

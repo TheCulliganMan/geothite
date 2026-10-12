@@ -318,6 +318,7 @@ fn publish_visual_world_frame(
             return;
         };
         actor.facing = Some(visual_facing(object.world_facing));
+        actor.model_palette = object.model_palette;
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }
@@ -494,6 +495,7 @@ fn visual_actor(
         flip_x: sprite.flip_x,
         above_priority,
         facing: None,
+        model_palette: None,
     })
 }
 
@@ -600,7 +602,7 @@ mod render_mod_tests {
     fn fully_clipped_actor_is_not_published_to_renderer_mod() {
         let grid_size = UVec2::new(40, 36);
         let half_grid_width = grid_size.x as f32 * TILE_SIZE * 0.5;
-        let actor = crystal_render_api::VisualActor {
+        let actor = crystal_render_api::VisualActor { model_palette: None,
             id: crystal_render_api::VisualActorId::Object(1),
             source_id: Arc::from("edge_npc"),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(7), std::marker::PhantomData),

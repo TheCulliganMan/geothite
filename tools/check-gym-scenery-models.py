@@ -3,6 +3,7 @@
 import sys,json,math,collections,argparse,struct
 from pathlib import Path
 from model_asset_storage import read_model_json
+from gym_maze_palette import PALETTE as MAZE_PALETTE
 ROOT=Path(__file__).resolve().parents[1]
 EXPECTED=['planter_leafy','planter_round','azalea_broad_tree','celadon_round_hedge']+[f'maze_wall_{i:02x}'for i in range(16)]
 def validate(root,generated=None,unindexed=None):
@@ -45,6 +46,10 @@ def validate(root,generated=None,unindexed=None):
    assert hi-lo>.1 and abs(lo-d['bounds']['min'][axis])<1e-5 and abs(hi-d['bounds']['max'][axis])<1e-5
   if name.startswith('maze_wall_'):
    assert d['bounds']=={'min':[-.5,0.,-.5],'max':[.5,1.,.5]},(name,'join datum changed',d['bounds'])
+   for p in d['primitives']:
+    material=p['name'].rsplit(':',1)[-1]
+    assert material in MAZE_PALETTE,(name,'unknown maze material',material)
+    assert p['base_color']==[*[round(v,5)for v in MAZE_PALETTE[material]],1.],(name,'maze palette drift',material)
   total+=ntri;parts_total+=len(parts);print(f'{name}: {ntri} triangles, {len(parts)} closed parts')
  print(f'PASS: {len(EXPECTED)} meshes, {parts_total} closed original parts, {total} triangles; all 16 wall joins retain identical datums')
 if __name__=='__main__':

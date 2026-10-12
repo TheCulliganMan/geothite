@@ -141,8 +141,40 @@ pub(super) fn parse_planter<'a>(
             surface.indices.push(remap[old]);
         }
     }
+    let gym_stone_pixels = original.gym_stone_pixels.map(|pixels| {
+        let mut filtered = vec![[0; 2]; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+        }
+        filtered
+    });
+    let pewter_guardian_pixels = original.pewter_guardian_pixels.map(|pixels| {
+        let mut filtered = vec![[0; 2]; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+        }
+        filtered
+    });
+    let tower_timber_pixels = original.tower_timber_pixels.map(|pixels| {
+        let mut filtered = vec![[0; 2]; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+        }
+        filtered
+    });
+    let gym_orb_pixels = original.gym_orb_pixels.map(|pixels| {
+        let mut filtered = vec![[0; 2]; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+        }
+        filtered
+    });
     Ok(Model {
-        surface,
+        surface: surface.into(),
+        gym_stone_pixels,
+        pewter_guardian_pixels,
+        tower_timber_pixels,
+        gym_orb_pixels,
         min: original.min,
         max: original.max,
     })

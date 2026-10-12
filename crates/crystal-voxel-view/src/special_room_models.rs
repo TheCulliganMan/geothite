@@ -184,6 +184,7 @@ mod tests {
             (RoomAsset::FacilityInstrumentPair, 16.),
             (RoomAsset::FacilityInstrumentBank, 32.),
             (RoomAsset::LinkRoundStool, 16.),
+            (RoomAsset::GymStonePartition, 16.),
         ] {
             let model = room_model(kind);
             assert!(model

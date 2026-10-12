@@ -53,8 +53,8 @@ mod bedroom_carpet_tests {
             mesh.authored_cells = vec![None; cells.len()];
             let mut claimed = vec![false; cells.len()];
             for p in &placements {
-                assert!(append(&mut mesh, &refs, &g, p, &mut claimed, [0, 0]));
-                assert!(!append(&mut mesh, &refs, &g, p, &mut claimed, [0, 0]));
+                assert!(append(&mut mesh, "PlayersHouse2F", &refs, &g, p, &mut claimed, [0, 0]));
+                assert!(!append(&mut mesh, "PlayersHouse2F", &refs, &g, p, &mut claimed, [0, 0]));
             }
             assert_eq!(claimed.iter().filter(|v| **v).count(), 52);
             assert!(mesh.footing_heights.iter().all(|v| *v == 3.0));

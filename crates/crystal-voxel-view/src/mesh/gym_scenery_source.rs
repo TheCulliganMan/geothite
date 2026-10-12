@@ -14,6 +14,7 @@ pub(super) enum Kind {
     PlanterRound,
     CentralTree,
     Hedge,
+    BlueFlowerBed,
     Maze,
 }
 impl Kind {
@@ -23,6 +24,7 @@ impl Kind {
             Self::PlanterRound => "gym:round-display-planter",
             Self::CentralTree => "gym:azalea-broad-tree",
             Self::Hedge => "gym:celadon-round-hedge",
+            Self::BlueFlowerBed => "gym:celadon-blue-flowerbed",
             Self::Maze => "gym:viridian-connected-maze",
         }
     }
@@ -32,7 +34,7 @@ impl Kind {
             Self::PlanterRound => 1,
             Self::CentralTree => 2,
             Self::Hedge => 3,
-            Self::Maze => unreachable!(),
+            Self::Maze | Self::BlueFlowerBed => unreachable!(),
         }
     }
     pub(super) fn rise_pixels(self) -> f32 {
@@ -41,6 +43,7 @@ impl Kind {
             Self::PlanterRound => 16.,
             Self::CentralTree => 28.,
             Self::Hedge => 15.,
+            Self::BlueFlowerBed => 12.,
             Self::Maze => 12.,
         }
     }

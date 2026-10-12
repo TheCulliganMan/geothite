@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 type Completion = Arc<Mutex<Option<Result<(), String>>>>;
 
 #[derive(Resource)]
-struct Capture {
+pub(super) struct Capture {
     path: PathBuf,
     second: Option<PathBuf>,
     same_second_view: bool,
@@ -15,6 +15,7 @@ struct Capture {
     requested: bool,
     completion: Completion,
     started: Instant,
+    timeout_seconds: u64,
     live: bool,
     idle: bool,
     first_path: PathBuf,
@@ -23,6 +24,7 @@ struct Capture {
     previous: Option<(String, image::RgbImage)>,
     identity: String,
     image_target_mode: bool,
+    preserve_alpha: bool,
     image_target: Option<bevy::camera::ImageRenderTarget>,
     image_size: UVec2,
 }
@@ -33,14 +35,28 @@ pub(super) fn install(
     second: Option<PathBuf>,
     live: bool,
 ) -> Result<()> {
+    let timeout_seconds = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS") {
+        Err(std::env::VarError::NotPresent) => 60,
+        Ok(value) => {
+            let seconds = value.parse::<u64>().map_err(|_| anyhow::anyhow!(
+                "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be an integer between 60 and 300"))?;
+            anyhow::ensure!((60..=300).contains(&seconds),
+                "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be between 60 and 300");
+            seconds
+        }
+        Err(_) => anyhow::bail!(
+            "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be an integer between 60 and 300"),
+    };
     let same_second_view = match std::env::var("CRYSTAL_RENDER_TEST_SECOND_VIEW") {
         Err(std::env::VarError::NotPresent) => false,
         Ok(value) if value == "toggle" => false,
         Ok(value) if value == "same" => true,
         _ => anyhow::bail!("CRYSTAL_RENDER_TEST_SECOND_VIEW must be toggle or same"),
     };
-    anyhow::ensure!(!same_second_view || !live,
-        "same-view temporal captures require one-shot verification mode");
+    anyhow::ensure!(
+        !same_second_view || !live,
+        "same-view temporal captures require one-shot verification mode"
+    );
     let image_target_mode = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET") {
         Err(std::env::VarError::NotPresent) => false,
         Ok(value) if value == "window" => false,
@@ -51,6 +67,12 @@ pub(super) fn install(
         !image_target_mode || !live,
         "image-target capture is a one-shot verification mode; live review requires window capture"
     );
+    let preserve_alpha = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_CHANNELS") {
+        Err(std::env::VarError::NotPresent) => false,
+        Ok(value) if value == "rgb" => false,
+        Ok(value) if value == "rgba" => true,
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_CHANNELS must be rgb or rgba"),
+    };
     for path in std::iter::once(&path).chain(second.iter()) {
         if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
             std::fs::create_dir_all(parent)?;
@@ -78,6 +100,7 @@ pub(super) fn install(
         previous: None,
         identity: String::new(),
         image_target_mode,
+        preserve_alpha,
         image_target: None,
         image_size: UVec2::ZERO,
         path,
@@ -87,9 +110,20 @@ pub(super) fn install(
         requested: false,
         completion: default(),
         started: Instant::now(),
+        timeout_seconds,
     })
     .add_systems(Update, (prepare_image_target, capture).chain());
     Ok(())
+}
+
+// Moving captures must use the same explicitly selected target and scale as
+// the final readback. An unprepared image target never falls back to a window.
+pub(super) fn moving_screenshot(capture: Option<&Capture>, window: Entity) -> Option<Screenshot> {
+    if let Some(capture) = capture.filter(|capture| capture.image_target_mode) {
+        return capture.image_target.as_ref().map(|target|
+            Screenshot(bevy::camera::RenderTarget::Image(target.clone())));
+    }
+    Some(Screenshot::window(window))
 }
 
 // Explicit verification target, never a retry after a failed window capture.
@@ -105,43 +139,59 @@ fn prepare_image_target(
     if !capture.image_target_mode {
         return;
     }
+    let Capture { image_target, image_size, .. } = &mut *capture;
+    if prepare_image_target_for_cameras(
+        image_target, image_size, &windows, &mut images, &mut targets, &mut commands,
+    ) {
+        capture.frame = 0;
+    }
+}
+
+// Timing validation shares the exact camera routing and scale used by authored
+// captures. This always renders the production cameras on the GPU.
+pub(super) fn prepare_image_target_for_cameras(
+    image_target: &mut Option<bevy::camera::ImageRenderTarget>,
+    image_size: &mut UVec2,
+    windows: &Query<(Entity, &Window), With<PrimaryWindow>>,
+    images: &mut Assets<Image>,
+    targets: &mut Query<(Entity, &mut bevy::camera::RenderTarget, Has<Camera2d>), With<Camera>>,
+    commands: &mut Commands,
+) -> bool {
     let Ok((window_entity, window)) = windows.single() else {
-        return;
+        return false;
     };
     let size = UVec2::new(window.physical_width(), window.physical_height());
     if size.x == 0 || size.y == 0 {
-        return;
+        return false;
     }
     let scale_factor = window.resolution.scale_factor();
-    let previous = capture.image_target.clone();
-    if capture.image_target.is_none()
-        || capture.image_size != size
-        || capture
-            .image_target
+    let previous = image_target.clone();
+    let resized = image_target.is_none()
+        || *image_size != size
+        || image_target
             .as_ref()
-            .is_some_and(|target| target.scale_factor != scale_factor)
-    {
+            .is_some_and(|target| target.scale_factor != scale_factor);
+    if resized {
         let handle = images.add(Image::new_target_texture(
             size.x,
             size.y,
             bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb,
             None,
         ));
-        capture.image_target = Some(bevy::camera::ImageRenderTarget {
+        *image_target = Some(bevy::camera::ImageRenderTarget {
             handle,
             scale_factor,
         });
-        capture.image_size = size;
-        capture.frame = 0;
+        *image_size = size;
         println!(
             "render-test explicit image target: {}x{} scale {}",
             size.x, size.y, scale_factor
         );
     }
-    let Some(image) = capture.image_target.as_ref() else {
-        return;
+    let Some(image) = image_target.as_ref() else {
+        return false;
     };
-    for (entity, mut target, is_hud_camera) in &mut targets {
+    for (entity, mut target, is_hud_camera) in targets.iter_mut() {
         let selected = match &*target {
             bevy::camera::RenderTarget::Window(bevy::window::WindowRef::Primary) => true,
             bevy::camera::RenderTarget::Window(bevy::window::WindowRef::Entity(entity)) => {
@@ -158,10 +208,13 @@ fn prepare_image_target(
         {
             *target = bevy::camera::RenderTarget::Image(image.clone());
             if is_hud_camera {
-                commands.entity(entity).insert(crystal_voxel_view::BattleCompositeImageCamera);
+                commands
+                    .entity(entity)
+                    .insert(crystal_voxel_view::BattleCompositeImageCamera);
             }
         }
     }
+    resized
 }
 
 fn capture(
@@ -257,7 +310,7 @@ fn capture(
         return;
     }
     // Bound startup/readback failures; ordinary walking has its own duration.
-    if capture.started.elapsed().as_secs() > 60 && walk.is_none() {
+    if capture.started.elapsed().as_secs() > capture.timeout_seconds && walk.is_none() {
         eprintln!("capture timed out: {:?}", status.inactive_reason);
         exit.write(AppExit::error());
         return;
@@ -272,7 +325,10 @@ fn capture(
         status.inactive_reason.as_deref() == Some("disabled")
     };
     if capture.requested
-        || capture.frame < 12
+        // Tower source frames advance every 16 ticks. Same-view readbacks
+        // need a longer gap than the ordinary paired-view GPU warmup so they
+        // can observe an actual pose change rather than two identical poses.
+        || capture.frame < if capture.same_second_view && capture.second.is_none() {43} else {12}
         || !settled
         || walk.as_ref().is_some_and(|walk| !walk.settled())
     {
@@ -303,7 +359,13 @@ fn capture(
             format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera)
         };
     }
+    if std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some() {
+        println!("capture frame: map={} center={:?} origin={:?} grid={:?} tile={:?} viewport={:?} camera={:?}",
+            frame.map_id, frame.center, frame.grid_origin, frame.grid_size,
+            frame.tile_size, frame.viewport_size, settings.camera);
+    }
     let path = capture.path.clone();
+    let preserve_alpha = capture.preserve_alpha;
     let completion = capture.completion.clone();
     commands
         .spawn(screenshot)
@@ -314,10 +376,14 @@ fn capture(
                 .try_into_dynamic()
                 .map_err(|error| format!("decode GPU image: {error}"))
                 .and_then(|image| {
-                    image
-                        .to_rgb8()
-                        .save(&path)
-                        .map_err(|error| error.to_string())
+                    // Keep the actual readback alpha for explicit diagnostics.
+                    // Ordinary captures retain their existing RGB output.
+                    let saved = if preserve_alpha {
+                        image.to_rgba8().save(&path)
+                    } else {
+                        image.to_rgb8().save(&path)
+                    };
+                    saved.map_err(|error| error.to_string())
                 });
             *completion.lock().unwrap() = Some(result);
         });
@@ -384,6 +450,22 @@ mod image_target_tests {
         window::{WindowRef, WindowResolution},
     };
 
+    #[test]
+    fn moving_capture_retains_explicit_image_target_scale_without_window_fallback() {
+        let (mut app, window, _, _, _, _) = fixture(true);
+        assert!(moving_screenshot(Some(app.world().resource::<Capture>()), window).is_none());
+        app.update();
+        let capture = app.world().resource::<Capture>();
+        let expected = capture.image_target.as_ref().unwrap();
+        let screenshot = moving_screenshot(Some(capture), window).unwrap();
+        assert!(matches!(screenshot.0, RenderTarget::Image(ref target) if target == expected));
+        assert_eq!(expected.scale_factor, 2.0);
+        let (mut app, window, _, _, _, _) = fixture(false);
+        app.update();
+        assert!(matches!(moving_screenshot(Some(app.world().resource::<Capture>()), window)
+            .unwrap().0, RenderTarget::Window(WindowRef::Entity(entity)) if entity == window));
+    }
+
     fn fixture(enabled: bool) -> (App, Entity, Entity, Entity, Entity, Handle<Image>) {
         let mut app = App::new();
         app.init_resource::<Assets<Image>>()
@@ -395,6 +477,7 @@ mod image_target_tests {
                 requested: false,
                 completion: default(),
                 started: Instant::now(),
+                timeout_seconds: 60,
                 live: false,
                 idle: false,
                 first_path: PathBuf::new(),
@@ -403,6 +486,7 @@ mod image_target_tests {
                 previous: None,
                 identity: String::new(),
                 image_target_mode: enabled,
+                preserve_alpha: false,
                 image_target: None,
                 image_size: UVec2::ZERO,
             })
@@ -470,9 +554,21 @@ mod image_target_tests {
         assert_eq!(capture.image_size, UVec2::new(640, 576));
         assert!(matches!(app.world().get::<RenderTarget>(camera),
             Some(RenderTarget::Image(image)) if image == target));
-        assert!(app.world().get::<crystal_voxel_view::BattleCompositeImageCamera>(camera).is_some());
-        assert!(app.world().get::<crystal_voxel_view::BattleCompositeImageCamera>(secondary).is_none());
-        assert!(app.world().get::<crystal_voxel_view::BattleCompositeImageCamera>(image_camera).is_none());
+        assert!(
+            app.world()
+                .get::<crystal_voxel_view::BattleCompositeImageCamera>(camera)
+                .is_some()
+        );
+        assert!(
+            app.world()
+                .get::<crystal_voxel_view::BattleCompositeImageCamera>(secondary)
+                .is_none()
+        );
+        assert!(
+            app.world()
+                .get::<crystal_voxel_view::BattleCompositeImageCamera>(image_camera)
+                .is_none()
+        );
         let camera = app.world().get::<Camera>(camera).unwrap();
         assert_eq!(camera.order, 3);
         assert_eq!(

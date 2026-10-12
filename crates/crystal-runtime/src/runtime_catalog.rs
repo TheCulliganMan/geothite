@@ -53,7 +53,7 @@ impl CrystalRuntime {
         // Retain that verified value instead of hashing the same pack again.
         let (
             _,
-            data,
+            mut data,
             compiled_audio,
             audio_manifest,
             audio_compression,
@@ -61,6 +61,7 @@ impl CrystalRuntime {
             _,
             pack_identity,
         ) = pack.into_parts();
+        outdoor_mods::apply(&mut data);
         let audio_manifest = if audio_compression.is_none()
             && audio_manifest.music.is_empty()
             && audio_manifest.sound_effects.is_empty()
@@ -5302,4 +5303,3 @@ fn collect_fishing_encounter_keys(
         }
     }
 }
-

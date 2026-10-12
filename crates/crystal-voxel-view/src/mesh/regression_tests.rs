@@ -316,7 +316,7 @@ mod tests {
         );
         assert_eq!(mesh.solid.quad_count(), 1);
         assert!(mesh.solid.positions.iter().all(|p|p[1]==-0.02));
-        assert!(mesh.solid.uvs.iter().all(|uv|*uv==[0.,0.]));
+        assert!(mesh.solid.uvs.iter().all(|uv| uv[0] > 90000. && (uv[1]/100000.).round() == 4.));
         assert_eq!(mesh.footing_heights,vec![0.]);
     }
 
@@ -1559,6 +1559,43 @@ mod tests {
     }
 
     #[test]
+    fn kanto_native_tohjo_cascade_joins_pool_levels_and_keeps_rendered_actor_support_on_water() {
+        let mut sources=vec![];
+        for y in 0..4 {for x in 0..3 {
+            sources.push(source_for_tileset("cave",if x<2 && (1..3).contains(&y) {0x2c}else{1},
+                x as u8,y as u8,if x==2 {1}else if (1..3).contains(&y) {0x40}else{0x14}));
+        }}
+        let mut native=frame(3,4,sources);native.map_id="TohjoFalls".into();
+        let cells=native.tiles.iter().collect::<Vec<_>>();
+        let falls=waterfall_placements(&cells,3,4);
+        let upper=crate::waterfall::tohjo_upstream_pool("TohjoFalls",&cells,3,4,&falls);
+        assert_eq!(upper.iter().filter(|v|**v).count(),2);
+        assert!(upper[0] && upper[1] && !upper[9] && !upper[10]);
+        let mesh=build_terrain_mesh(&native).unwrap();
+        let mut legacy=native.clone();legacy.map_id="UnionCave1F".into();
+        let other=build_terrain_mesh(&legacy).unwrap();
+        for i in 0..12 {
+            let expected=if i<2 {4.}else if i==3 || i==4 {2.5}
+                else if i==6 || i==7 {-0.5}else{other.footing_heights[i]};
+            assert_eq!(mesh.footing_heights[i],expected,"rendered actor support for cell {i}");
+        }
+        let g=GridGeometry {width:3,height:4,tile_width:8.,tile_height:8.,origin_x:-12.,origin_z:-16.};
+        let mut sheet=SurfaceMeshData::default();
+        append_waterfall(&mut sheet,&g,&cells,falls[0],[0,0],Some([4.,-2.]));
+        let north=g.origin_z+8.;let south=g.origin_z+24.;
+        assert!(sheet.positions.iter().filter(|p|p[2]==north).all(|p|p[1]==4.));
+        assert!(sheet.positions.iter().filter(|p|p[2]==south).all(|p|p[1]==-2.));
+        assert!(sheet.positions.iter().any(|p|p[2]==north));
+        assert!(sheet.positions.iter().any(|p|p[2]==south));
+        for (i,y) in [(0,4.),(1,4.),(9,-2.),(10,-2.)] {
+            let uv=g.uv(i%3,i/3);
+            assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
+                .any(|(p,u)|p[1]==y && *u==[uv.0,uv.2]),"pool and fall must meet their common tier");
+        }
+        assert!(crate::waterfall::tohjo_upstream_pool("UnionCave1F",&cells,3,4,&falls).iter().all(|v|!*v));
+    }
+
+    #[test]
     fn waterfall_uses_each_source_row_once_on_one_bounded_cave_slope() {
         let mut sources = Vec::new();
         for row in 0..2 {
@@ -2160,10 +2197,17 @@ mod tests {
             .zip(m.textured.normals.chunks_exact(4))
             .filter(|(_,n)| n[0][0]>0.001 && n[0][1]>0.1)
             .map(|(p,_)|p).collect();
-        assert_eq!(caps.len(),4);
-        for pair in caps.windows(2) {
-            assert_eq!(pair[0][0],pair[1][3]);
-            assert_eq!(pair[0][1],pair[1][2]);
+        assert_eq!(caps.len(), 4 * 4 * 4);
+        let g = GridGeometry { width: 2, height: 4, tile_width: 8.0,
+            tile_height: 8.0, origin_x: -8.0, origin_z: -16.0 };
+        // Check the complete end against the composed east/west taper and
+        // four-row rise, including every shared row boundary.
+        for p in caps.into_iter().flatten() {
+            let tx = (p[0] - g.origin_x) / g.tile_width;
+            let rise = (p[2] - g.origin_z) / (4.0 * g.tile_height);
+            let expected = crate::profile::JUMP_LEDGE_HEIGHT * (1.0 - tx) * rise;
+            assert!((p[1] - expected).abs() < 0.001,
+                "terminal bank surface must follow its taper at {p:?}");
         }
     }
 
@@ -2208,6 +2252,35 @@ mod tests {
             Some(1),
             "the repeated upper tier borrows ordinary rock art"
         );
+    }
+
+    #[test]
+    fn bank_water_contact_closes_below_zero_without_reordering_native_courses() {
+        let drawing=[[0x2b,0x2c,0x2c,0x2d],[0x3b,0x3c,0x3c,0x3d],
+            [0x3b,0x3c,0x3c,0x3d],[0x4b,0x4c,0x4c,0x4d]];
+        let f=frame(4,4,drawing.into_iter().enumerate().flat_map(|(z,row)|
+            row.into_iter().enumerate().map(move |(x,tile)|
+                source_with_tile(0x0a,x as u8,z as u8,tile))).collect());
+        let cells:Vec<_>=f.tiles.iter().collect();
+        let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        for scale in [1.,4.] {for direction in Direction::ALL {
+            let g=GridGeometry {width:4,height:4,tile_width:8.*scale,tile_height:8.*scale,
+                origin_x:0.,origin_z:0.};
+            let (w,e,n,s)=g.bounds(1,3);let b=[w,e,n,s];
+            let run=BankColumnRun {north:0,front:3};
+            let top=shapes[13].surface_height(g.tile_height);
+            let water=CellShape::Water.surface_height(g.tile_height);
+            let mut dry=SurfaceMeshData::default();let mut wet=SurfaceMeshData::default();
+            append_bank_run_side(&mut dry,&g,&cells,&shapes,run,1,direction,b,0.,top,[0.;2]);
+            append_bank_run_side(&mut wet,&g,&cells,&shapes,run,1,direction,b,water,top,[0.;2]);
+            assert_eq!(wet.positions.len(),dry.positions.len()+4);
+            assert!(wet.positions[..4].iter().all(|p|p[1]>=water && p[1]<=0.));
+            assert!(wet.positions[..4].iter().any(|p|p[1]==water));
+            assert!(wet.positions[..4].iter().any(|p|p[1]==0.));
+            assert_eq!(wet.positions[4..],dry.positions,"upper course geometry must remain unchanged");
+            assert_eq!(wet.uvs[4..],dry.uvs,"the foundation must not shift native course art");
+            assert_eq!(wet.normals[4..],dry.normals);
+        }}
     }
 
     #[test]

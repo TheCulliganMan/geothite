@@ -470,11 +470,7 @@ def lapras():
  for s in (-1,1):tube('Curled ear',[(s*.14,-.28,.96),(s*.25,-.25,1.04),(s*.26,-.27,1.12),(s*.20,-.29,1.12)],.020,'blue')
 
 def onix():
- chain=[((.20,.25,.12),(.11,.13,.11)),((.18,.30,.29),(.16,.16,.16)),((.12,.24,.49),(.19,.18,.18)),((-.12,.16,.64),(.22,.21,.22)),((-.32,.06,.82),(.24,.22,.23)),((-.27,-.03,1.12),(.28,.25,.27)),((0,-.08,1.38),(.31,.27,.29))]
- for p,s in chain:ico('Segmented angular rock body',p,s,'stone',1)
- prism('Angular stone jaw',[(-.24,1.28),(.24,1.28),(.17,1.08),(-.18,1.08)],-.16,.29,'stone_dark')
- eyes(0,-.312,1.42,.027,.12,True);rod('Rock head horn',(0,-.06,1.58),(0,-.09,1.91),.12,.002,'stone_light',5)
- tube('Mouth crack',[(-.18,-.317,1.24),(0,-.327,1.21),(.18,-.317,1.24)],.012,'ink')
+ raise ValueError('Onix uses its original pure rock-chain sculpture')
 
 def beast(kind):
  color={'entei':'brown','raikou':'yellow','suicune':'blue'}[kind]
@@ -938,46 +934,6 @@ def totodile():
   o['authoring']='Original full 360-degree Totodile sculpture; connected clay anatomy and closed inset details'
  detailed.hide_render=True;detailed.hide_viewport=True
 
-def pidgey():
- bird()
- for obj in list(COL.objects):
-  if obj.name.startswith('Crest feather'):bpy.data.objects.remove(obj,do_unlink=True)
- for s in (-1,1):
-  tube('Cream eyebrow',[(s*.028,-.177,.576),(s*.083,-.16,.605),(s*.135,-.12,.594)],.025,'cream')
-  sphere('Dark cheek marking',(s*.115,-.142,.481),(.048,.018,.054),'brown')
- for i in range(3):rod('Distinct swept crown',(0,.01,.61),((i-1)*.055,.155,.735-i*.023),.036,.005,'tan')
-
-def rattata():
- sphere('Purple mouse body',(0,.055,.23),(.21,.28,.20),'purple')
- for x in (-.145,.145):
-  for y in (-.13,.24):sphere('Mouse paw',(x,y,.047),(.065,.095,.05),'cream')
- sphere('Rat head',(0,-.20,.39),(.22,.20,.20),'purple');muzzle((0,-.358,.31),(.16,.08,.094),'cream');eyes(0,-.371,.47,.028,.105,True)
- for s in (-1,1):
-  sphere('Large round rat ear',(s*.164,-.085,.58),(.11,.065,.12),'purple');sphere('Pink ear inset',(s*.164,-.143,.59),(.072,.012,.081),'pink')
-  box('Incisor',(s*.032,-.427,.275),(.051,.020,.065),'white',.007)
-  for j in range(2):tube('Whisker',[(s*.12,-.40,.33),(s*.29,-.46,.34+j*.06)],.006,'cream')
- sphere('Rat nose',(0,-.438,.362),(.038,.021,.024),'rose');tube('Thin curled rat tail',[(0,.29,.24),(.16,.41,.22),(.33,.38,.35),(.34,.27,.48),(.27,.23,.49)],.032,'pink')
-
-def sentret():
- feet('brown',.12,s=(.09,.14,.05));sphere('Upright scout body',(0,0,.35),(.25,.19,.30),'brown');belly((0,-.174,.34),(.16,.031,.18),'cream');sphere('Belly ring center',(0,-.207,.34),(.095,.013,.105),'brown')
- sphere('Sentret head',(0,-.025,.67),(.22,.18,.18),'brown');muzzle((0,-.186,.60),(.11,.038,.048),'cream');eyes(0,-.192,.715,.025,.095)
- for s in (-1,1):
-  sphere('Tall round scout ear',(s*.165,0,.88),(.089,.064,.17),'brown');sphere('Cream ear center',(s*.17,-.055,.89),(.050,.016,.111),'cream');sphere('Short scout arm',(s*.24,-.008,.40),(.071,.079,.13),'brown')
- tail=[(0,.11,.17),(.16,.29,.16),(.28,.37,.31),(.27,.39,.53),(.19,.39,.69)]
- tube('Large balancing tail',tail,.09,'tan')
- for p in ((.16,.29,.16),(.28,.37,.31),(.25,.39,.54)):sphere('Tail dark ring',p,(.093,.091,.054),'brown')
-
-def hoothoot():
- sphere('Round owl body',(0,0,.37),(.29,.25,.35),'brown');belly((0,-.204,.31),(.21,.05,.22),'cream')
- for s in (-1,1):
-  sphere('Cream owl face disk',(s*.126,-.208,.56),(.125,.042,.14),'cream');sphere('Huge red eye',(s*.126,-.248,.58),(.072,.020,.091),'red');sphere('Black watch pupil',(s*.126,-.267,.58),(.028,.008,.060),'ink')
-  prism('Clock-hand brow',[(s*.03,.68),(s*.08,.83),(s*.16,.91),(s*.17,.73),(s*.23,.68)],-.16,.048,'ink')
-  sphere('Folded owl wing',(s*.267,.03,.34),(.072,.16,.21),'tan')
-  for z in (.25,.35,.45):tube('Wing feather edge',[(s*.29,-.07,z),(s*.315,.07,z-.07)],.010,'brown')
- rod('Tiny owl beak',(0,-.26,.49),(0,-.34,.445),.037,.002,'ink')
- rod('Single standing leg',(0,0,.14),(0,-.025,.042),.035,.025,'rose')
- for s in (-1,0,1):rod('Owl spreading toe',(0,-.025,.04),(s*.08,-.15,.025),.018,.011,'rose')
-
 def bicycle_frame(female=False):
  # Bicycle lies in forward -Y; axle runs X. The fixed source pose has shoes on
  # pedals and hands at the handlebar grips; root translation remains authoritative.
@@ -1009,12 +965,12 @@ BUILDERS={
  'icon_lapras':lapras, 'icon_lugia':lambda:legendary_bird(True), 'icon_monster':monster, 'icon_moth':moth, 'icon_oddish':oddish,
  'icon_pikachu':pikachu, 'icon_poliwag':poliwag, 'icon_serpent':serpent, 'icon_shell':shell, 'icon_slowpoke':slowpoke, 'icon_snorlax':snorlax,
  'chris_bike':lambda:bicycle_frame(), 'kris_bike':lambda:bicycle_frame(True),
- 'battle_chikorita':chikorita, 'battle_cyndaquil':cyndaquil, 'battle_totodile':totodile, 'battle_pidgey':pidgey, 'battle_rattata':rattata, 'battle_sentret':sentret, 'battle_hoothoot':hoothoot,
+ 'battle_chikorita':chikorita, 'battle_cyndaquil':cyndaquil, 'battle_totodile':totodile,
  'icon_squirtle':squirtle, 'icon_staryu':staryu, 'icon_sudowoodo':sudowoodo, 'icon_unown':unown, 'icon_voltorb':lambda:ball(True),
 }
 # These source families intentionally share a recognizable subject but differ in
 # presentation scale. Source identity is never collapsed in the Rust registry.
-HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'battle_pidgey':.84,'battle_rattata':.75,'battle_sentret':1.07,'battle_hoothoot':.93,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':1.08,'poke_ball':.46,'boulder':.68,'rock':.43,
+HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':1.08,'poke_ball':.46,'boulder':.68,'rock':.43,
  'paper':.13,'pokedex':.16,'famicom':.40,'snes':.30,'n64':.43,'virtual_boy':.59,'gold_trophy':.63,'silver_trophy':.56,
  'surf':.98,'surfing_pikachu':1.00,'bird':.72,'fairy':.78,'monster':1.00,'dragon':1.12,'slowpoke':.70,'sudowoodo':.96,'entei':1.12,'raikou':1.14,'suicune':1.25}
 
@@ -1031,7 +987,9 @@ def canonical_primitive(primitive):
  unique=sorted(set(vertices));lookup={v:i for i,v in enumerate(unique)};remap=[lookup[v] for v in vertices];triangles=[]
  for i in range(0,len(primitive['indices']),3):
   t=tuple(remap[v] for v in primitive['indices'][i:i+3]);triangles.append(min(t,t[1:]+t[:1],t[2:]+t[:2]))
- return {'positions':[v for p in unique for v in p[:3]],'normals':[v for p in unique for v in p[3:]],'indices':[v for t in sorted(triangles) for v in t],'base_color':primitive['base_color']}
+ result={'positions':[v for p in unique for v in p[:3]],'normals':[v for p in unique for v in p[3:]],'indices':[v for t in sorted(triangles) for v in t],'base_color':primitive['base_color']}
+ if 'material' in primitive:result['material']=primitive['material']
+ return result
 
 def canonical_primitives(primitives):
  return sorted((canonical_primitive(p) for p in primitives),key=lambda p:json.dumps(p,sort_keys=True,separators=(',',':')))
@@ -1062,7 +1020,10 @@ def export(name,objects):
      p=convert(o.matrix_world@me.vertices[me.loops[li].vertex_index].co);n=convert((nm@me.corner_normals[li].vector).normalized());key=tuple(p+n)
      if key not in lookup:lookup[key]=len(pos)//3;pos.extend(p);nor.extend(n)
      idx.append(lookup[key])
-   if idx:primitives.append({'positions':pos,'normals':nor,'indices':idx,'base_color':[round(v,6) for v in mat.diffuse_color]});tri_count+=len(idx)//3
+   if idx:
+    primitive={'positions':pos,'normals':nor,'indices':idx,'base_color':[round(v,6) for v in mat.diffuse_color]}
+    if name=='boulder':primitive['material']=mat.name
+    primitives.append(primitive);tri_count+=len(idx)//3
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':canonical_primitives(primitives)}
  if name=='battle_totodile':
   sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1140,6 +1101,11 @@ def sudowoodo_runtime_lod(name,objects):
 BATCH_SIZE=12
 ONLY=next((set(a.split('=',1)[1].split(',')) for a in ARGS if a.startswith('--only=')),None)
 if ONLY and not ONLY.issubset(BUILDERS):raise ValueError('Unknown --only asset identity')
+if ONLY is None or 'big_onix' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from onix_sculpt import sculpture as onix_sculpture
+ (OUT/'big_onix.mesh.json').write_text(json.dumps(onix_sculpture(),separators=(',',':')))
+ print('big_onix: original long connected rock chain and wedge-shaped face',flush=True)
 if ONLY is None or 'icon_clefairy' in ONLY:
  sys.path.insert(0,str(Path(__file__).resolve().parent))
  from clefairy_sculpt import sculpture as clefairy_sculpture
@@ -1155,7 +1121,7 @@ if ONLY is None or 'icon_voltorb' in ONLY:
  from orb_sculpt import sculpture as orb_sculpture
  (OUT/'icon_voltorb.mesh.json').write_text(json.dumps(orb_sculpture('voltorb'),separators=(',',':')))
  print('icon_voltorb: original smooth shared orb with fitted angular eyes',flush=True)
-MODELS=[(name,builder) for name,builder in BUILDERS.items() if name not in ('icon_clefairy','icon_jigglypuff','icon_voltorb') and (ONLY is None or name in ONLY)]
+MODELS=[(name,builder) for name,builder in BUILDERS.items() if name not in ('big_onix','icon_clefairy','icon_jigglypuff','icon_voltorb') and (ONLY is None or name in ONLY)]
 for batch_start in range(0,len(MODELS),BATCH_SIZE):
  selected=next((int(a.split('=',1)[1]) for a in ARGS if a.startswith('--batch=')),None)
  if selected is not None and selected != batch_start//BATCH_SIZE+1:continue

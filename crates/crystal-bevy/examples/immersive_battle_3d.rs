@@ -38,6 +38,7 @@ fn main() -> Result<()> {
     let mut pidgeotto = false;
     let mut enemy_gust = false;
     let mut starter = None;
+    let mut shiny = false;
     let mut poke_ball_failure = false;
     let mut window_size = None;
     let mut reduced_flashes = false;
@@ -62,6 +63,7 @@ fn main() -> Result<()> {
             "--size-comparison" => size_comparison = true,
             "--pidgeotto" => pidgeotto = true,
             "--enemy-gust" => enemy_gust = true,
+            "--shiny" => shiny = true,
             "--starter" => {
                 anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
                 let name = args
@@ -133,6 +135,7 @@ fn main() -> Result<()> {
         starter.is_none() || enemy_gust,
         "--starter/--species requires --enemy-gust"
     );
+    anyhow::ensure!(!shiny || enemy_gust, "--shiny requires --enemy-gust");
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
             .into_iter()
@@ -251,6 +254,7 @@ fn main() -> Result<()> {
             render_test_pidgeotto: pidgeotto,
             render_test_enemy_gust: enemy_gust,
             render_test_battle_starter: starter,
+            render_test_battle_shiny: shiny,
             render_test_poke_ball_failure: poke_ball_failure,
             render_test_window_size: window_size,
             battle_reduced_flashes: reduced_flashes,

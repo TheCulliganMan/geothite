@@ -84,6 +84,15 @@ fn parse_model<'a>(
 // their canonical GLB. The rig also exposes an exact neutral surface to callers
 // that only need immutable bounds or an overworld prop.
 macro_rules! species_mesh {
+    ("chikorita") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Chikorita).neutral.clone())
+    };
+    ("cyndaquil") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Cyndaquil).neutral.clone())
+    };
+    ("totodile") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Totodile).neutral.clone())
+    };
     ("meganium") => {
         Some(crate::species_rig::rig(crate::species_rig::Species::Meganium).neutral.clone())
     };
@@ -155,6 +164,7 @@ species_models! {
     "CHARIZARD" => "charizard",
     "CHARMELEON" => "charmeleon",
     "CHINCHOU" => "chinchou",
+    "CHIKORITA" => "chikorita",
     "CLEFABLE" => "clefable",
     "CLEFFA" => "cleffa",
     "CLOYSTER" => "cloyster",
@@ -162,6 +172,7 @@ species_models! {
     "CROBAT" => "crobat",
     "CROCONAW" => "croconaw",
     "CUBONE" => "cubone",
+    "CYNDAQUIL" => "cyndaquil",
     "DELIBIRD" => "delibird",
     "DEWGONG" => "dewgong",
     "DITTO" => "ditto",
@@ -207,6 +218,7 @@ species_models! {
     "HITMONCHAN" => "hitmonchan",
     "HITMONLEE" => "hitmonlee",
     "HITMONTOP" => "hitmontop",
+    "HO_OH" => "ho_oh",
     "HOPPIP" => "hoppip",
     "HORSEA" => "horsea",
     "HOUNDOOM" => "houndoom",
@@ -231,6 +243,7 @@ species_models! {
     "LEDIAN" => "ledian",
     "LEDYBA" => "ledyba",
     "LICKITUNG" => "lickitung",
+    "LUGIA" => "lugia",
     "MACHAMP" => "machamp",
     "MACHOKE" => "machoke",
     "MACHOP" => "machop",
@@ -329,6 +342,7 @@ species_models! {
     "TENTACRUEL" => "tentacruel",
     "TOGEPI" => "togepi",
     "TOGETIC" => "togetic",
+    "TOTODILE" => "totodile",
     "TYPHLOSION" => "typhlosion",
     "TYRANITAR" => "tyranitar",
     "TYROGUE" => "tyrogue",

@@ -56,6 +56,15 @@ pub struct VisualBattleBattler {
     /// species mesh that would communicate the wrong visible battle state.
     pub allow_species_model: bool,
     pub shiny: bool,
+    /// Actual normal and currently presented palettes from the supplied pack.
+    /// A shiny model requires these anchors; absence retains source art.
+    pub model_palette: Option<VisualPokemonModelPalette>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct VisualPokemonModelPalette {
+    pub normal: [[u8; 3]; 4],
+    pub appearance: [[u8; 3]; 4],
 }
 
 /// Current source picture operation. These phases never advance a clock.
@@ -378,6 +387,7 @@ mod tests {
                     visible: true,
                     allow_species_model: true,
                     shiny: false,
+            model_palette: None,
                 }),
                 None,
             ],

@@ -5,11 +5,14 @@ Each original part is retained as a named, independently editable closed mesh.
 import bpy,math,json,sys,struct
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gym_maze_palette import PALETTE as MAZE_PALETTE
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 out=Path(next((a for a in args if not a.startswith('--')),'target/gym-scenery'));out.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 palette={'oak':(.36,.16,.045),'oak_light':(.58,.31,.065),'oak_end':(.19,.075,.022),'soil':(.15,.115,.095),'leaf_dark':(.025,.13,.015),'leaf':(.065,.32,.02),'leaf_light':(.18,.48,.045),'leaf_gold':(.34,.6,.07),'bark':(.34,.22,.15),'bark_light':(.47,.32,.21),'brass':(.74,.60,.32),'wall':(.41,.43,.43),'wall_light':(.56,.59,.55),'wall_shadow':(.27,.31,.32),'coping':(.67,.71,.64),'trim':(.48,.55,.42)}
+palette.update(MAZE_PALETTE)
 materials={}
 for name,rgb in palette.items():
  m=bpy.data.materials.new(name);m.diffuse_color=(*rgb,1);m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*rgb,1);bs.inputs['Roughness'].default_value=.86;materials[name]=m

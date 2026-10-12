@@ -101,7 +101,7 @@ fn lease_compatible(
         && actor.base_pose.to_matrix() == lease.stamp.pose
         && actor.palette_key.0 == 0xe4
         && enemy.allow_species_model
-        && !enemy.shiny
+        && (!enemy.shiny || enemy.model_palette.is_some())
         && enemy.source_rect == lease.source_rect
         && enemy.source_opaque_rect == lease.opaque_rect
         && layout == &lease.layout

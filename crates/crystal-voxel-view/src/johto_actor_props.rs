@@ -12,6 +12,8 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 struct Primitive {
+    #[serde(default)]
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -19,6 +21,8 @@ struct Primitive {
 }
 #[derive(Deserialize)]
 struct Export {
+    #[serde(default)]
+    name: String,
     primitives: Vec<Primitive>,
 }
 
@@ -27,9 +31,33 @@ struct Export {
 fn parse_model<'a>(
     json: impl Into<crate::model_storage::Source<'a>>,
 ) -> Result<SurfaceMeshData, String> {
+    parse_model_palette(json, false)
+}
+
+fn parse_model_palette<'a>(
+    json: impl Into<crate::model_storage::Source<'a>>,
+    gold_gym_stone: bool,
+) -> Result<SurfaceMeshData, String> {
     let source: Export = crate::model_storage::parse(json)?;
+    if gold_gym_stone && source.name != "boulder" {
+        return Err("gym palette requires the named boulder asset".into());
+    }
     let mut mesh = SurfaceMeshData::default();
     for p in source.primitives {
+        let color = if gold_gym_stone {
+            let rgb = match p.material.as_str() {
+                "stone" => [165, 123, 24],
+                "stone_light" => [198, 148, 57],
+                "stone_dark" => [57, 57, 57],
+                _ => return Err("gym boulder requires named stone materials".into()),
+            };
+            // Verified Cianwood/Blackthorn sprite shades; PBR vertex colors are linear.
+            let linear = |v: u8| {
+                let v = f32::from(v) / 255.;
+                if v <= 0.04045 { v / 12.92 } else { ((v + 0.055) / 1.055).powf(2.4) }
+            };
+            [linear(rgb[0]), linear(rgb[1]), linear(rgb[2]), 1.]
+        } else { p.base_color };
         let n = p.positions.len() / 3;
         if n < 3
             || p.positions.len() % 3 != 0
@@ -48,7 +76,7 @@ fn parse_model<'a>(
         for point in p.positions.chunks_exact(3) {
             mesh.positions.push([point[0], point[1], point[2]]);
             mesh.uvs.push([0.0, 0.0]);
-            mesh.colors.push(p.base_color);
+            mesh.colors.push(color);
         }
         for normal in p.normals.chunks_exact(3) {
             let normal = Vec3::new(normal[0], normal[1], normal[2]);
@@ -82,6 +110,13 @@ fn parse_model<'a>(
         return Err("authored actor must be volumetric and floor rooted".into());
     }
     Ok(mesh)
+}
+
+pub(crate) fn gold_gym_boulder_mesh() -> SurfaceMeshData {
+    static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
+    MODEL.get_or_init(|| parse_model_palette(
+        crate::model_storage::include_model!("models/actor_props/boulder.mesh.json"), true,
+    ).expect("named Cianwood boulder palette")).clone()
 }
 
 macro_rules! prop_mesh {
@@ -132,7 +167,6 @@ macro_rules! authored_props {
                 PropKind::$variant => prop_mesh!($label)
             ),+ ,
                 PropKind::ExactSpecies(species) => crate::battle_species_models::mesh(species)
-                    .or_else(|| battle_species_kind(species).map(mesh))
                     .expect("verified exact visible species"),
             }
         }
@@ -203,10 +237,6 @@ authored_props! {
     BattleChikorita => "battle_chikorita",
     BattleCyndaquil => "battle_cyndaquil",
     BattleTotodile => "battle_totodile",
-    BattlePidgey => "battle_pidgey",
-    BattleRattata => "battle_rattata",
-    BattleSentret => "battle_sentret",
-    BattleHoothoot => "battle_hoothoot",
     IconSquirtle => "icon_squirtle",
     IconStaryu => "icon_staryu",
     IconSudowoodo => "icon_sudowoodo",
@@ -229,7 +259,6 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
             return None;
         }
         let exact = crate::battle_species_models::supported_species()
-            .chain(EXACT_SHARED_SPECIES.iter().copied())
             .find(|candidate| *candidate == species)?;
         return Some(PropKind::ExactSpecies(exact));
     }
@@ -253,85 +282,6 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         .find(|kind| kind.label() == source)
 }
 
-pub(crate) const EXACT_SHARED_SPECIES: &[&str] = &[
-    "CHIKORITA",
-    "CYNDAQUIL",
-    "TOTODILE",
-    "PIDGEY",
-    "RATTATA",
-    "SENTRET",
-    "HOOTHOOT",
-    "ENTEI",
-    "RAIKOU",
-    "SUICUNE",
-    "ONIX",
-    "BULBASAUR",
-    "CHARMANDER",
-    "CLEFAIRY",
-    "DIGLETT",
-    "GEODUDE",
-    "GYARADOS",
-    "HO_OH",
-    "JIGGLYPUFF",
-    "LAPRAS",
-    "LUGIA",
-    "ODDISH",
-    "PIKACHU",
-    "POLIWAG",
-    "SLOWPOKE",
-    "SNORLAX",
-    "SQUIRTLE",
-    "STARYU",
-    "SUDOWOODO",
-    "UNOWN",
-    "VOLTORB",
-];
-
-/// These are exact battle species, separately authored from generic icon
-/// families. An unsupported species returns None rather than a false match.
-pub(crate) fn battle_species_kind(species: &str) -> Option<PropKind> {
-    match species.to_ascii_uppercase().as_str() {
-        "CHIKORITA" => Some(PropKind::BattleChikorita),
-        "CYNDAQUIL" => Some(PropKind::BattleCyndaquil),
-        "TOTODILE" => Some(PropKind::BattleTotodile),
-        "PIDGEY" => Some(PropKind::BattlePidgey),
-        "RATTATA" => Some(PropKind::BattleRattata),
-        "SENTRET" => Some(PropKind::BattleSentret),
-        "HOOTHOOT" => Some(PropKind::BattleHoothoot),
-        // Sprite/icon families with exact species names have their own actual
-        // recognizable species meshes. Do not map generic bigmon/fish/etc.
-        "ENTEI" => Some(PropKind::Entei),
-        "RAIKOU" => Some(PropKind::Raikou),
-        "SUICUNE" => Some(PropKind::Suicune),
-        "ONIX" => Some(PropKind::BigOnix),
-        "BULBASAUR" => Some(PropKind::IconBulbasaur),
-        "CHARMANDER" => Some(PropKind::IconCharmander),
-        "CLEFAIRY" => Some(PropKind::IconClefairy),
-        "DIGLETT" => Some(PropKind::IconDiglett),
-        "GEODUDE" => Some(PropKind::IconGeodude),
-        "GYARADOS" => Some(PropKind::IconGyarados),
-        "HO_OH" => Some(PropKind::IconHoOh),
-        "JIGGLYPUFF" => Some(PropKind::IconJigglypuff),
-        "LAPRAS" => Some(PropKind::IconLapras),
-        "LUGIA" => Some(PropKind::IconLugia),
-        "ODDISH" => Some(PropKind::IconOddish),
-        "PIKACHU" => Some(PropKind::IconPikachu),
-        "POLIWAG" => Some(PropKind::IconPoliwag),
-        "SLOWPOKE" => Some(PropKind::IconSlowpoke),
-        "SNORLAX" => Some(PropKind::IconSnorlax),
-        "SQUIRTLE" => Some(PropKind::IconSquirtle),
-        "STARYU" => Some(PropKind::IconStaryu),
-        "SUDOWOODO" => Some(PropKind::IconSudowoodo),
-        "UNOWN" => Some(PropKind::IconUnown),
-        "VOLTORB" => Some(PropKind::IconVoltorb),
-        _ => None,
-    }
-}
-
-pub(crate) fn battle_species_mesh(species: &str) -> Option<SurfaceMeshData> {
-    battle_species_kind(species).map(mesh)
-}
-
 pub(crate) fn kind_labels() -> impl Iterator<Item = &'static str> {
     ALL_KINDS.iter().copied().map(PropKind::label)
 }
@@ -345,6 +295,42 @@ pub(super) fn fruit_tree() -> SurfaceMeshData {
 mod tests {
     use super::*;
     use std::collections::HashSet;
+
+    #[test]
+    fn gold_gym_boulder_named_palette_preserves_geometry_and_other_assets() {
+        let ordinary = mesh(PropKind::Boulder);
+        let gym = gold_gym_boulder_mesh();
+        assert_eq!(ordinary.positions, gym.positions);
+        assert_eq!(ordinary.normals, gym.normals);
+        assert_eq!(ordinary.indices, gym.indices);
+        assert_eq!(ordinary.uvs, gym.uvs);
+        assert_ne!(ordinary.colors, gym.colors);
+        assert_eq!(mesh(PropKind::Boulder), ordinary);
+        let json = include_str!("../models/actor_props/boulder.mesh.json");
+        assert!(parse_model_palette(json.replace("stone_light", "unknown").as_str(), true).is_err());
+        assert!(parse_model_palette(json.replace("\"boulder\"", "\"rock\"").as_str(), true).is_err());
+        // These are the reviewed sprite palette's ochre body, gold highlight
+        // and charcoal outline. Comparing decoded display colors catches a
+        // generic gray substitution as well as double sRGB conversion.
+        let display_rgb = |color: &[f32; 4]| -> [u8; 3] {
+            std::array::from_fn(|i| {
+                let v = color[i];
+                let srgb = if v <= 0.0031308 { v * 12.92 }
+                    else { 1.055 * v.powf(1. / 2.4) - 0.055 };
+                (srgb * 255.).round() as u8
+            })
+        };
+        let expected = [[165, 123, 24], [198, 148, 57], [57, 57, 57]];
+        for rgb in expected {
+            assert!(gym.colors.iter().any(|color| display_rgb(color) == rgb),
+                "movable Gym boulders must retain every source palette shade");
+        }
+        for color in &gym.colors {
+            assert!(color[3] == 1. && color.iter().all(|v| v.is_finite()));
+            assert!(expected.contains(&display_rgb(color)),
+                "movable Gym boulders must not inherit a generic stone palette");
+        }
+    }
 
     #[test]
     fn exact_source_families_preserve_icon_namespace_and_reject_guesses() {
@@ -383,25 +369,19 @@ mod tests {
     }
 
     #[test]
-    fn battle_species_never_use_generic_family_aliases() {
-        assert_eq!(
-            battle_species_kind("CHIKORITA"),
-            Some(PropKind::BattleChikorita)
-        );
-        assert_eq!(
-            battle_species_kind("RATTATA"),
-            Some(PropKind::BattleRattata)
-        );
-        assert_eq!(battle_species_kind("PIDGEY"), Some(PropKind::BattlePidgey));
-        for missing in [
-            "EEVEE",
-            "CHARIZARD",
-            "MAGIKARP",
-            "NIDORAN_M",
-            "monster",
-            "icon_fish",
-        ] {
-            assert_eq!(battle_species_kind(missing), None);
+    fn exact_species_props_share_canonical_bodies_without_icon_substitution() {
+        for species in ["CHIKORITA", "CYNDAQUIL", "TOTODILE"] {
+            assert_eq!(mesh(PropKind::ExactSpecies(species)),
+                crate::battle_species_models::mesh(species).unwrap());
+            assert!(crate::has_authored_battle_species(species));
+        }
+        for source in ["monster", "icon_fish", "species:UNKNOWN:icon_fish"] {
+            assert!(!crate::has_authored_battle_species(source));
+        }
+        assert_eq!(prop_kind_for_source("species:UNKNOWN:icon_fish"),None);
+        for (species, icon) in [("PIDGEY", "icon_bird"), ("RATTATA", "icon_monster"), ("STARYU", "icon_staryu")] {
+            assert!(!crate::has_authored_battle_species(species));
+            assert_eq!(prop_kind_for_source(&format!("species:{species}:{icon}")), None);
         }
     }
 
@@ -429,7 +409,7 @@ mod tests {
                 assert!((Vec3::from_array(n).length() - 1.0).abs() < 0.0001);
             }
         }
-        assert_eq!(ALL_KINDS.len(), 73);
+        assert_eq!(ALL_KINDS.len(), 69);
     }
 
     #[test]
@@ -442,6 +422,50 @@ mod tests {
 #[cfg(test)]
 mod exact_visible_species_tests {
     use super::*;
+    #[test]
+    fn ho_oh_uses_its_dedicated_battle_model_and_preserves_icon_routing() {
+        assert_eq!(
+            crate::battle_species_models::supported_species()
+                .filter(|name| *name == "HO_OH")
+                .count(),
+            1
+        );
+        assert_eq!(prop_kind_for_source("icon_ho_oh"), Some(PropKind::IconHoOh));
+        assert_eq!(
+            prop_kind_for_source("species:HO_OH:icon_ho_oh"),
+            Some(PropKind::ExactSpecies("HO_OH"))
+        );
+        let model = mesh(PropKind::ExactSpecies("HO_OH"));
+        let battle = crate::battle_species_models::mesh("HO_OH").unwrap();
+        assert_eq!(model.positions, battle.positions);
+        assert_eq!(model.indices, battle.indices);
+        assert_eq!(model.normals, battle.normals);
+        assert_eq!(model.colors, battle.colors);
+        assert_ne!(model.positions, mesh(PropKind::IconHoOh).positions);
+    }
+
+    #[test]
+    fn lugia_uses_its_dedicated_battle_model_and_preserves_icon_routing() {
+        assert_eq!(
+            crate::battle_species_models::supported_species()
+                .filter(|name| *name == "LUGIA")
+                .count(),
+            1
+        );
+        assert_eq!(prop_kind_for_source("icon_lugia"), Some(PropKind::IconLugia));
+        assert_eq!(
+            prop_kind_for_source("species:LUGIA:icon_lugia"),
+            Some(PropKind::ExactSpecies("LUGIA"))
+        );
+        let model = mesh(PropKind::ExactSpecies("LUGIA"));
+        let battle = crate::battle_species_models::mesh("LUGIA").unwrap();
+        assert_eq!(model.positions, battle.positions);
+        assert_eq!(model.indices, battle.indices);
+        assert_eq!(model.normals, battle.normals);
+        assert_eq!(model.colors, battle.colors);
+        assert_ne!(model.positions, mesh(PropKind::IconLugia).positions);
+    }
+
     #[test]
     fn published_amphy_identity_reuses_exact_ampharos_mesh_and_keeps_monsters_generic() {
         let kind = prop_kind_for_source("species:AMPHAROS:monster").unwrap();
@@ -475,7 +499,6 @@ mod exact_visible_species_tests {
             ("MACHOP", "icon_humanshape"),
             ("TENTACOOL", "icon_jellyfish"),
             ("SHELLDER", "icon_shell"),
-            ("STARYU", "icon_staryu"),
         ] {
             let kind = prop_kind_for_source(&format!("species:{species}:{art}")).unwrap();
             assert_eq!(kind, PropKind::ExactSpecies(species));
@@ -494,13 +517,12 @@ mod exact_visible_species_tests {
         }
     }
     #[test]
-    fn every_normal_species_has_a_bounded_reusable_visible_model() {
+    fn every_canonical_species_has_a_bounded_reusable_visible_model() {
         let mut species: Vec<_> = crate::battle_species_models::supported_species()
-            .chain(EXACT_SHARED_SPECIES.iter().copied())
             .collect();
         species.sort_unstable();
         species.dedup();
-        assert_eq!(species.len(), 251);
+        assert_eq!(species.len(), 225);
         for name in species {
             let source = format!("species:{name}:icon_monster");
             assert_eq!(

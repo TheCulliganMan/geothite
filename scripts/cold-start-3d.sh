@@ -65,28 +65,37 @@ if LC_ALL=C head -n 1 "$ART/people/kenney/human-male.glb" 2>/dev/null | LC_ALL=C
     echo 'Artwork contains Git LFS pointers. Restore LFS objects and run git lfs checkout (see docs/cold-start-3d.md).' >&2
     exit 1
 fi
+# Build the native tools together so Bevy features are unified once, rather than
+# recompiling separate renderer graphs for each validation command.
+if [ "$ACTION" = preview ]; then
+    cargo build --locked --profile "$PROFILE" -p geothite -p crystal-voxel-view -p crystal-bevy \
+        --features crystal-bevy/location-tester --bin geothite --bin bundle_open_models \
+        --bin bundle_open_people --bin crystal-bevy --example new_bark_3d
+else
+    cargo build --locked --profile "$PROFILE" -p geothite -p crystal-voxel-view -p crystal-bevy \
+        --features crystal-bevy/voxel-view --bin geothite --bin bundle_open_models \
+        --bin bundle_open_people --bin crystal-bevy
+fi
 # Rust loads and verifies the actual pack. A dump is only a loading/render smoke check.
-cargo run --locked --profile "$PROFILE" -p geothite -- dump "$PACK"
+"$TARGET/$BIN_PROFILE/geothite" dump "$PACK"
 mkdir -p "$ROOT/target"
 VERIFY=$(mktemp -d "$ROOT/target/cold-start-3d.XXXXXX")
 trap 'rm -rf "$VERIFY"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' HUP TERM
-cargo run --locked --profile "$PROFILE" -p crystal-voxel-view --bin bundle_open_models -- "$ART" "$VERIFY/scenery.json"
-cargo run --locked --profile "$PROFILE" -p crystal-voxel-view --bin bundle_open_people -- "$ART" "$VERIFY/people.json"
+"$TARGET/$BIN_PROFILE/bundle_open_models" "$ART" "$VERIFY/scenery.json"
+"$TARGET/$BIN_PROFILE/bundle_open_people" "$ART" "$VERIFY/people.json"
 rm -rf "$VERIFY"
 trap - EXIT HUP INT TERM
 case "$ACTION" in
     check) echo 'Pack and artwork validated; no gameplay or GPU check was performed.' ;;
     build|play)
-        cargo build --locked --profile "$PROFILE" -p crystal-bevy --bin crystal-bevy --features voxel-view
         if [ "$ACTION" = play ]; then
             exec "$TARGET/$BIN_PROFILE/crystal-bevy" --pack "$PACK" "$@"
         fi
         echo 'Native 3D client built. Launch with scripts/cold-start-3d.sh play or preview.'
         ;;
     preview)
-        cargo build --locked --profile "$PROFILE" -p crystal-bevy --example new_bark_3d --features location-tester
         exec "$TARGET/$BIN_PROFILE/examples/new_bark_3d" "$PACK" "$@"
         ;;
     web)

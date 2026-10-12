@@ -78,7 +78,8 @@ pub fn resolved_footing_height(
         .ok()?
         .checked_mul(width)?
         .checked_add(usize::try_from(coordinate.x).ok()?)?;
-    resolved_heights.get(index).copied()
+    let resolved = resolved_heights.get(index).copied()?;
+    Some(resolved)
 }
 
 pub fn visual_point_to_voxel(point: Vec2, height: f32) -> Vec3 {
@@ -139,8 +140,49 @@ mod tests {
     }
 
     #[test]
+    fn cave_wall_backed_ladder_footing_stays_level_during_movement() {
+        for tileset in ["cave","dark_cave"] {
+            for block in [0x14,0x15] {
+                for scale in [1.,2.] {
+                    let mut f=frame();
+                    f.center=Vec2::new(-37.,29.);
+                    f.viewport_size=Vec2::new(16.,16.)*scale;
+                    f.tile_size=Vec2::splat(8.*scale);
+                    f.grid_size=UVec2::new(2,2);
+                    f.tiles.clear();
+                    let art=if block==0x14 {[[0x2a,0x2b],[0x3a,0x3b]]}
+                        else {[[0x22,0x23],[0x32,0x33]]};
+                    for y in 0..2 {for x in 0..2 {
+                        f.tiles.push(VisualTile {column:x,row:y,priority:false,
+                            texture:Handle::default(),animation_frames:None,
+                            source:VisualTileSource {tileset_id:tileset.into(),metatile_id:block,
+                                subtile_column:(x+2)as u8,subtile_row:(y+2)as u8,
+                                tile_index:art[y as usize][x as usize]}});
+                    }}
+                    f.tiles.reverse();
+                    let heights=[0.;4];
+                    let top=f.center.y+8.*scale;
+                    for step in 1..=32 {
+                        let depth=step as f32*0.5*scale;
+                        let foot=Vec2::new(f.center.x,top-depth);
+                        assert!((resolved_footing_height(&f,foot,&heights).unwrap()
+                            -0.).abs()<0.00001);
+                    }
+                    let midpoint=Vec2::new(f.center.x,f.center.y);
+                    assert_eq!(resolved_footing_height(&f,midpoint,&heights),Some(0.));
+                    let modified=[9.*scale;4];
+                    assert_eq!(resolved_footing_height(&f,midpoint,&modified),Some(9.*scale));
+                    for tile in &mut f.tiles {tile.source.tile_index=0xff;}
+                    assert_eq!(resolved_footing_height(&f,midpoint,&heights),Some(0.),
+                        "custom art must preserve the resolved floor datum");
+                }
+            }
+        }
+    }
+
+    #[test]
     fn actor_card_is_anchored_at_the_bottom_center() {
-        let actor = VisualActor {
+        let actor = VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: Arc::from("player"),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),

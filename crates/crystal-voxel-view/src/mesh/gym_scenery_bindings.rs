@@ -1,6 +1,12 @@
 // Reviewed native source identities only; no pixels, maps, collision, or scripts.
 // Whole-drawing FNV-1a hashes include metatile, phase, and tile for every cell.
 const OBJECTS: &[Object] = &[
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 4, fingerprint: 0x4d48dea33f1c59d9, kind: Kind::BlueFlowerBed },
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 4, fingerprint: 0x7fe6c88a5a937339, kind: Kind::BlueFlowerBed },
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 4, fingerprint: 0x72a9df55f7eac5f9, kind: Kind::BlueFlowerBed },
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 4, fingerprint: 0xf2dda685e6aee799, kind: Kind::BlueFlowerBed },
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 2, fingerprint: 0x1f5f74aca5b88661, kind: Kind::BlueFlowerBed },
+    Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 2, fingerprint: 0xf5bb92b2088298fd, kind: Kind::BlueFlowerBed },
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 2, height: 2, fingerprint: 0x04daf12707335683, kind: Kind::PlanterRound },
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 2, height: 2, fingerprint: 0x0904f7c88e87e457, kind: Kind::PlanterRound },
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 2, height: 2, fingerprint: 0x0d0dc269d7c8ff4d, kind: Kind::PlanterLow },

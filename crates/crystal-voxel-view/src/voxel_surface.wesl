@@ -23,6 +23,8 @@ struct CutawayUniform {
 @group(constants::MATERIAL_BIND_GROUP) @binding(106) var painted_stone_sampler: sampler;
 @group(constants::MATERIAL_BIND_GROUP) @binding(107) var painted_bedrock: texture_2d<f32>;
 @group(constants::MATERIAL_BIND_GROUP) @binding(108) var painted_bedrock_sampler: sampler;
+@group(constants::MATERIAL_BIND_GROUP) @binding(109) var<uniform> water_deep: vec4<f32>;
+@group(constants::MATERIAL_BIND_GROUP) @binding(110) var<uniform> water_foam: vec4<f32>;
 
 fn water_impact(uv: vec2<f32>) -> f32 {
     let size = vec2<i32>(textureDimensions(water_mask));
@@ -81,7 +83,11 @@ fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>) {
     let foot_plane = mesh_view_bindings::view.view_from_world
         * vec4<f32>(world.x, cutaway.bottom_radius.y, world.z, 1.0);
     let front_depth = foot_plane.z - bottom.z;
-    let wall_fade = 0.88 * smoothstep(cutaway.bottom_radius.w * 0.30,
+    // Feather across both sides of the foot plane. A one-sided transition
+    // kept grazing side faces opaque immediately beside dissolved rock,
+    // leaving thin diagonal slivers through otherwise readable passages.
+    // Distant rear rock remains solid; front rock retains its faint outline.
+    let wall_fade = 0.88 * smoothstep(-cutaway.bottom_radius.w * 3.0,
         cutaway.bottom_radius.w * 1.20, front_depth);
     let strength = max(aperture, select(wall_fade, 0.0, cave_reveal.w > 0.5));
     // Continuous, screen-stable coverage avoids the sixteen visible opacity
@@ -94,6 +100,28 @@ fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>) {
 // contributes visibility only, without applying another PBR light response.
 fn mineral_hash(p: vec3<f32>) -> f32 {
     return fract(sin(dot(p, vec3<f32>(127.1, 311.7, 74.7))) * 43758.5453);
+}
+
+// Soft overlapping splash clusters avoid the square interpolation pattern
+// of a value-noise lattice at enlarged waterfall landings. The caller moves
+// this field only with the authenticated water phase. Wider unequal clusters
+// overlap into foam patches instead of isolated dots. A nine-cell neighborhood
+// covers their complete support; jitter stays within the middle half.
+fn foam_clusters(p: vec2<f32>) -> f32 {
+    let base = floor(p);
+    var foam = 0.0;
+    for (var z = -1; z <= 1; z = z + 1) {
+        for (var x = -1; x <= 1; x = x + 1) {
+            let cell = base + vec2<f32>(f32(x), f32(z));
+            let jitter = vec2<f32>(mineral_hash(vec3<f32>(cell, 17.3)),
+                mineral_hash(vec3<f32>(cell, 31.7)));
+            let center = cell + vec2<f32>(0.25) + jitter * 0.5;
+            let radius = mix(0.46, 0.95, mineral_hash(vec3<f32>(cell, 59.1)));
+            let distance = length(p - center);
+            foam = foam + 1.0 - smoothstep(radius * 0.20, radius, distance);
+        }
+    }
+    return clamp(foam, 0.0, 1.0);
 }
 
 fn mineral_field(p: vec3<f32>) -> f32 {
@@ -114,12 +142,20 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
 @if(VERTEX_UVS_A) {
     if in.uv.x > 90000.0 {
         let kind = round(in.uv.y / 100000.0);
-        enclosing_wall = kind == 2.0 || kind == 3.0;
+        enclosing_wall = kind == 2.0 || kind == 3.0 || kind == 10.0;
     }
 }
     // Only enclosing rock participates. Walking planes, complete low stones,
     // authored stairs and live water retain their full geometry at all heights.
-    if enclosing_wall { reveal_cave_player(surface.world_position, in.position.xy); }
+    // A walkable rock crown is the player's floor, not an occluding roof.
+    // Preserve surfaces below their real support and the nearby upward cap
+    // relief; otherwise the reveal removes the platform and exposes its base.
+    let below_support = surface.world_position.y <= cutaway.bottom_radius.y + 0.02;
+    let supported_crown = surface.world_normal.y > 0.35
+        && surface.world_position.y <= cutaway.top_feather.y;
+    if enclosing_wall && !(below_support || supported_crown) {
+        reveal_cave_player(surface.world_position, in.position.xy);
+    }
     if cutaway.fade.w > 0.0 && surface.material.base_color.a < cutaway.fade.w { discard; }
     surface.material.base_color = alpha_discard(surface.material.flags, surface.material.alpha_cutoff, surface.material.base_color);
     // The mask is derived from proven source animation slots in the owned
@@ -236,7 +272,10 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         let y_layer = textureSample(painted_stone, painted_stone_sampler, rock.xz * scale).rgb;
         let x_rock = textureSample(painted_bedrock, painted_bedrock_sampler, rock.zy / 40.0).rgb;
         let z_rock = textureSample(painted_bedrock, painted_bedrock_sampler, rock.xy / 40.0).rgb;
-        let y_rock = textureSample(painted_bedrock, painted_bedrock_sampler, rock.xz / 40.0).rgb;
+        // Broad cap plates use the regular cave-rock scale. Sampling this
+        // same asset at 40 units packed many tiny painted lumps onto each
+        // native tile and concealed the actual large mineral planes.
+        let y_rock = textureSample(painted_bedrock, painted_bedrock_sampler, rock.xz / 144.0).rgb;
         let x_paint = select(x_rock, x_layer, canyon);
         let z_paint = select(z_rock, z_layer, canyon);
         // Carry some sediment pigment over the shoulder so its cap and shaft
@@ -247,8 +286,12 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         let reference = select(vec3<f32>(0.20, 0.205, 0.17), vec3<f32>(0.35, 0.245, 0.12), canyon);
         // Canyon forms should read before their grain. Broad ochre variation
         // remains visible, with quieter caps and restrained sediment bands.
-        let paint_strength = select(0.82, mix(0.42, 0.60, wall), canyon);
-        let broad_pigment = reference * select(1.0, 0.96 + weather * 0.08, canyon);
+        let paint_strength = select(0.82, mix(0.28, 0.60, wall), canyon);
+        // Pale weathered cap beds sit above the warmer sediment faces, as
+        // in the source drawing. Blend over the actual shoulder normal so
+        // the lighter top describes its shape without a painted border.
+        let canyon_bed = mix(vec3<f32>(0.49, 0.37, 0.20), reference, wall);
+        let broad_pigment = select(reference, canyon_bed * (0.96 + weather * 0.08), canyon);
         let pigment = mix(broad_pigment, paint, paint_strength);
         surface.material.base_color = vec4<f32>(pigment * surface.material.base_color.rgb / reference * detail,
             surface.material.base_color.a);
@@ -257,10 +300,11 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // Floors use broader, softer paint; source art and live water stay in the atlas.
     if in.uv.x > 90000.0 {
         let category = round(in.uv.y / 100000.0);
+        let native_cave = category == 10.0 || category == 12.0 || category == 14.0;
         let sliding_ice = category == 8.0;
         let shelf_shoulder = category == 9.0;
         let frozen = category == 3.0 || category == 5.0 || category == 7.0 || sliding_ice || shelf_shoulder;
-        let floor_paint = category == 4.0 || category == 5.0 || sliding_ice;
+        let floor_paint = category == 4.0 || category == 5.0 || category == 12.0 || sliding_ice;
         let tag = category * 100000.0;
         let rock = vec3<f32>(in.uv.x - 100000.0, surface.world_position.y, in.uv.y - tag);
         let w = pow(abs(surface.world_normal), vec3<f32>(4.0));
@@ -274,12 +318,13 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         let paint = a * weights.x + b * weights.z + c * weights.y;
         let ratio = paint / vec3<f32>(0.25, 0.21, 0.16);
         let grey = dot(ratio, vec3<f32>(0.2126, 0.7152, 0.0722));
-        let mineral = select(ratio, vec3<f32>(grey), frozen);
+        let mineral = select(ratio, vec3<f32>(grey), frozen || native_cave);
         // Retain the existing floor and frozen-rock treatment. Regular rock
         // uses quieter, bounded grain so its fractures and map-space pigment
         // carry the form without bright flecks over every geometric facet.
         let rock_pigment = select(clamp(mineral, vec3<f32>(0.55), vec3<f32>(1.65)), mineral, frozen || floor_paint);
         var paint_amount = select(select(0.42, 0.38, frozen), select(0.65, 0.38, frozen) * 0.32, floor_paint);
+        if native_cave { paint_amount = select(0.18, 0.06, floor_paint); }
         var blended_pigment = rock_pigment;
         if shelf_shoulder {
             // Keep the face paint continuous at the foot of the shoulder,
@@ -313,15 +358,26 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         if max(kind.x, kind.y) > 0.5 {
             let phase = water.b * 6.2831853;
             let map = (surface.world_position.xz + water_enabled.zw) / max(water_enabled.y, 0.001);
-            let broad = sin(map.y * 2.7 + map.x * 0.22 + sin(map.x * 0.31 + map.y * 0.12) * 1.9 + sin(map.x * 1.1 + map.y * 0.22) * 0.5 - phase);
-            let cross = sin(map.y * 5.6 + map.x * 0.33 + sin(map.x * 0.71) * 0.4 + phase * 2.0);
-            let ripple = broad * 0.72 + cross * 0.28;
+            // Crossed, locally bent wave fronts keep enclosed pools from
+            // reading as parallel ocean stripes. The periodic warp closes
+            // with the same authenticated source animation as the crests.
+            let pool_warp = mineral_field(vec3<f32>(map.x * 0.38 + sin(phase) * 0.12,
+                map.y * 0.43 + cos(phase) * 0.12, 91.3));
+            let broad = sin(map.y * 2.7 + map.x * 0.83 + pool_warp * 5.2 - phase);
+            let cross = sin(map.x * 3.8 - map.y * 1.7 + pool_warp * 2.4 + phase * 2.0);
+            let ripple = broad * 0.56 + cross * 0.44;
             let broken = smoothstep(-0.1, 0.7, sin(map.x * 0.67 + sin(map.y * 0.5) * 1.7) * 0.7 + sin(map.x * 0.29 - map.y * 0.77) * 0.3);
-            let glint = smoothstep(0.95, 0.999, broad) * broken;
-            let deep = vec3<f32>(0.018, 0.095, 0.125);
-            let crest = vec3<f32>(0.16, 0.38, 0.40);
-            let pool = mix(deep, vec3<f32>(0.055, 0.19, 0.22), ripple * 0.25 + 0.40);
-            let rippled = mix(pool, crest, glint * 0.65);
+            let glint = smoothstep(0.95, 0.999, broad)
+                * smoothstep(0.18, 0.78, cross) * broken;
+            let open_water = water_enabled.x == 2.0;
+            let native_cave_water = water_enabled.x == 3.0;
+            let source_water = surface.material.base_color.rgb;
+            let palette_current = native_cave_water && water_deep.w > 0.5;
+            let deep = select(select(vec3<f32>(0.018, 0.095, 0.125), vec3<f32>(0.026, 0.14, 0.19), open_water), water_deep.rgb, palette_current);
+            let crest = select(select(vec3<f32>(0.16, 0.38, 0.40), vec3<f32>(0.25, 0.52, 0.49), open_water), water_foam.rgb, palette_current);
+            let pool_tone = select(select(vec3<f32>(0.055, 0.19, 0.22), vec3<f32>(0.085, 0.30, 0.32), open_water), mix(deep,crest,0.18),palette_current);
+            let pool = mix(deep, pool_tone, ripple * 0.25 + 0.40);
+            let rippled = mix(pool, crest, glint * 0.45);
             // Continuous ribbons follow the authenticated cascade phase,
             // rather than magnifying the atlas's eight-pixel foam checker.
             // Detail is continuous in map space, including the landing;
@@ -338,35 +394,69 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             let breaks = smoothstep(0.27, 0.72, threads);
             let sheet = smoothstep(0.26, 0.76, turbulence);
             let froth = clamp(sheet * 0.29 + streak * breaks * 0.54, 0.0, 0.86);
-            let falling_sheet = mix(vec3<f32>(0.035, 0.15, 0.19),
-                vec3<f32>(0.62, 0.81, 0.80), froth);
+            let falling_sheet = mix(select(vec3<f32>(0.035, 0.15, 0.19), mix(deep,crest,0.10),palette_current),
+                select(vec3<f32>(0.62, 0.81, 0.80),crest,palette_current), froth);
             // The slope meets the lower pool at its real zero-height datum.
             // Feather flow into that pool, with irregular foam at the impact,
             // instead of ending the brighter waterfall in a straight color seam.
-            let elevation = max(surface.world_position.y, 0.0) / max(water_enabled.y, 0.001);
+            let landing_y = select(0.0, -2.0 * water_enabled.y, native_cave_water);
+            let elevation = max(surface.world_position.y - landing_y, 0.0) / max(water_enabled.y, 0.001);
             let impact = 1.0 - smoothstep(0.0, 0.75, elevation);
-            // Two scales break the foam into small, soft clusters. Broad
-            // patches alone read as enlarged source tiles at this camera angle.
-            let mist = mineral_field(vec3<f32>(map.x * 9.3,
-                map.y * 6.7 + sin(phase) * 0.24, 53.1 + cos(phase) * 0.24));
-            let droplets = mineral_field(vec3<f32>(map.x * 18.6 + 7.1,
-                map.y * 13.4 + sin(phase) * 0.38, 71.9 + cos(phase) * 0.38));
-            let spray = smoothstep(0.32, 0.78, mist * 0.68 + droplets * 0.32);
-            let landing = mix(rippled, vec3<f32>(0.43, 0.65, 0.64), spray * 0.38);
+            // Rotate and bend the foam domain so the noise lattice cannot
+            // appear as enlarged square pixels at the landing. Two moderate
+            // scales form soft, overlapping clusters rather than bright grit.
+            let foam_map = vec2<f32>(map.x * 0.82 - map.y * 0.57,
+                map.x * 0.57 + map.y * 0.82);
+            let foam_bend = vec2<f32>(sin(map.y * 1.3 + sin(phase)),
+                cos(map.x * 1.1 + cos(phase))) * 0.19;
+            let mist = foam_clusters((foam_map + foam_bend) * vec2<f32>(1.9, 1.6)
+                + vec2<f32>(sin(phase), cos(phase)) * 0.24);
+            let droplets = mineral_field(vec3<f32>((foam_map - foam_bend) * vec2<f32>(7.3, 6.1)
+                + vec2<f32>(7.1 + sin(phase) * 0.38, cos(phase) * 0.38), 71.9));
+            let spray = smoothstep(0.10, 0.94, mist * 0.86 + droplets * 0.14);
+            let landing = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),crest,palette_current), spray * 0.38);
             let falling = mix(falling_sheet, landing, impact);
             // The same fine foam continues onto authenticated pool slots below
             // this cascade, with a smooth footprint in its own mask channel.
-            let receiving_pool = mix(rippled, vec3<f32>(0.43, 0.65, 0.64),
+            let receiving_pool = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),crest,palette_current),
                 spray * 0.38 * water_impact(in.uv));
-            surface.material.base_color = vec4<f32>(mix(receiving_pool, falling, kind.y), surface.material.base_color.a);
+            // Only complete Dragon's Den source drawings use the middle
+            // role value. Their current shares the adjacent live pool phase.
+            let vortex = kind.y > 0.25 && kind.y < 0.75;
+            var pool_surface = receiving_pool;
+            if vortex {
+                let radial = fract(map / 4.0) * 4.0 - vec2<f32>(1.0);
+                let radius = length(radial);
+                let angle = atan2(radial.y, radial.x);
+                let spiral = sin(angle * 3.0 + radius * 14.0 - phase * 2.0 + pool_warp * 1.1);
+                let whirl_crest = smoothstep(0.70, 0.98, spiral)
+                    * smoothstep(0.12, 0.40, radius);
+                let hollow = 1.0 - smoothstep(0.08, 0.52, radius);
+                let swirling = mix(pool, deep * 0.48, hollow * 0.70);
+                let eddy = mix(swirling, crest, whirl_crest * 0.38);
+                let whirl_blend = 1.0 - smoothstep(0.72, 1.0, radius);
+                pool_surface = mix(receiving_pool, eddy, whirl_blend);
+            }
+            var flowing_water = mix(pool_surface, falling, select(kind.y, 0.0, vortex));
+            if native_cave_water && !palette_current {
+                // Missing authenticated palette art cannot select foreign
+                // teal. Keep the actual source surface until it is available.
+                flowing_water = source_water;
+            }
+            surface.material.base_color = vec4<f32>(flowing_water, surface.material.base_color.a);
         }
     }
 }
     let view_position = mesh_view_bindings::view.view_from_world * surface.world_position;
     var visibility = 1.0;
     var directional_energy = 0.0;
+    var sun_tint = vec3<f32>(1.0);
     for (var light_id = 0u; light_id < mesh_view_bindings::lights.n_directional_lights; light_id += 1u) {
         let light = mesh_view_bindings::lights.directional_lights[light_id];
+        let energy = dot(light.color.rgb, vec3<f32>(0.2126, 0.7152, 0.0722));
+        if energy > directional_energy {
+            sun_tint = light.color.rgb / max(energy, 0.0001);
+        }
         directional_energy = max(directional_energy,
             dot(light.color.rgb, vec3<f32>(0.2126, 0.7152, 0.0722)));
         if (light.flags & DIRECTIONAL_LIGHT_FLAGS_SHADOWS_ENABLED_BIT) != 0u {
@@ -382,13 +472,28 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     let ambient_gain = clamp(dot(mesh_view_bindings::lights.ambient_color.rgb,
         vec3<f32>(0.2126, 0.7152, 0.0722)) / 80.0, 0.0, 1.0);
     let sun_gain = clamp(directional_energy / 3000.0, 0.0, 1.0);
-    var shaded = surface.material.base_color.rgb * (0.55 * ambient_gain + 0.45 * sun_gain * visibility);
+    var indirect_occlusion = vec3<f32>(1.0);
+@if(SCREEN_SPACE_AMBIENT_OCCLUSION) {
+    // These palette-preserving materials bypass StandardMaterial's Lambert
+    // response, so sample the native contact pass explicitly for sky fill.
+    let ao_pixel = vec2<i32>(in.position.xy - mesh_view_bindings::view.viewport.xy);
+    let contact = textureLoad(mesh_view_bindings::screen_space_ambient_occlusion_texture, ao_pixel, 0i).r;
+    indirect_occlusion = vec3<f32>(mix(1.0, clamp(contact, 0.3, 1.0), 0.45));
+}
+    var shaded = surface.material.base_color.rgb * (indirect_occlusion * (0.55 * ambient_gain)
+        + sun_tint * (0.45 * sun_gain * visibility));
     // Exterior grove daylight uses warm exposed leaves and cool, deeper
     // cast shade. Visibility still comes from the real shadow geometry, so
     // scrolling and orbit cannot move a painted patch of sunlight.
     if cave_reveal.z > 0.5 {
-        let daylight = mix(vec3<f32>(0.32, 0.40, 0.44), vec3<f32>(1.04, 1.01, 0.90), visibility);
-        shaded = surface.material.base_color.rgb * daylight;
+        // Broad sky fill keeps painted detail readable in shade. A modest
+        // hemisphere response gives rounded leaves and raised roof courses
+        // volume without applying full Lambert shading over authored paint.
+        let sky = mix(vec3<f32>(0.52, 0.61, 0.69), vec3<f32>(0.64, 0.72, 0.78),
+            clamp(surface.world_normal.y * 0.5 + 0.5, 0.0, 1.0));
+        let daylight = mix(sky * indirect_occlusion, sun_tint * 0.96, visibility);
+        let hemisphere = 0.94 + 0.06 * max(surface.world_normal.y, 0.0);
+        shaded = surface.material.base_color.rgb * daylight * hemisphere;
     }
     let darkened = mix(shaded, vec3<f32>(0.0), clamp(cutaway.fade.y, 0.0, 1.0));
     let palette_color = mix(darkened, vec3<f32>(1.0), clamp(cutaway.fade.z, 0.0, 1.0));

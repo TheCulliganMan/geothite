@@ -7,11 +7,14 @@ front +Z. All source units are arbitrary; runtime fits exact verified source plo
 import bpy, bmesh, math, json, sys
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from roof_planter_sculpt import document as roof_planter_document, MATERIALS as ROOF_MATERIALS
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 out=Path(next((a for a in args if not a.startswith('--')),'target/special-interiors'));out.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 PALETTE={'stone':(.43,.43,.36),'stone_light':(.63,.63,.52),'stone_dark':(.28,.30,.28),'sandstone':(.64,.60,.42),'sand_light':(.79,.74,.52),'dark_rock':(.29,.34,.37),'dark_light':(.42,.47,.48),'ice':(.29,.64,.76),'ice_light':(.66,.89,.93),'ice_dark':(.15,.40,.59),'wood':(.39,.24,.13),'wood_light':(.60,.39,.20),'wood_dark':(.21,.14,.11),'steel':(.30,.39,.41),'metal_light':(.53,.62,.59),'brass':(.75,.59,.29),'red':(.70,.22,.19),'cloth':(.73,.76,.66),'cloth_light':(.91,.91,.77),'blue':(.28,.42,.52),'glass':(.19,.49,.60),'ink':(.11,.16,.17),'leaf':(.24,.40,.22)}
+PALETTE.update({name: values[0][:3] for name, values in ROOF_MATERIALS.items()})
 M={}
 for name,rgb in PALETTE.items():
  m=bpy.data.materials.new(name);m.diffuse_color=(*rgb,1);m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*rgb,1);bs.inputs['Roughness'].default_value=.87;M[name]=m
@@ -19,6 +22,8 @@ assets={};COL=None
 # A coordinate is only a semantic color anchor into the verified local drawing.
 # Runtime samples the current tile/palette; no game pixels are exported here.
 SOURCE_PIXELS={
+ 'gym_stone_partition':{'stone':[4,4],'stone_light':[3,3],'stone_dark':[4,10]},
+ 'roof_planter':{name: values[1] for name, values in ROOF_MATERIALS.items()},
  'roof_binoculars':{'steel':[4,13],'metal_light':[3,11],'ink':[4,12],'cloth_light':[3,2],'blue':[9,1]},
  'facility_instrument_pair':{'steel':[1,0],'metal_light':[3,7],'ink':[2,1],'cloth_light':[4,2]},
  'facility_instrument_bank':{'steel':[1,8],'metal_light':[3,15],'ink':[2,9],'cloth_light':[4,10]},
@@ -304,12 +309,10 @@ box('Coping slab flat roof',(0,0,1.43),(1.89,1.52,.17),'metal_light',.035)
 for z in [.17,.33]:box('Access hut horizontal masonry string',(0,-.700,z),(1.66,.065,.06),'cloth_light',.012)
 
 begin('roof_planter')
-box('Long terrace planting trough',(0,0,.24),(1.98,.65,.48),'stone',.07)
-box('Terrace trough lip',(0,0,.51),(2.10,.74,.13),'stone_light',.045)
-box('Dark planting earth',(0,0,.581),(1.87,.53,.026),'wood_dark',.01)
-for x in [-.70,-.33,.08,.44,.77]:
- for j in range(3):
-  a=j*2.1+x;rod('Stiff ornamental leaf',(x,0,.59),(x+.22*math.cos(a),.20*math.sin(a),.91+(j%2)*.21),.045,'leaf',5)
+for part in roof_planter_document()['primitives']:
+ vertices=[((x-16)/16,-(z-6)/16,y/16) for x,y,z in zip(*[iter(part['positions'])]*3)]
+ faces=[tuple(part['indices'][i:i+3]) for i in range(0,len(part['indices']),3)]
+ poly(part['name'],vertices,faces,part['material'])
 
 begin('gym_stone_partition')
 box('Solid squared stone partition',(0,0,.59),(1.0,.92,1.18),'stone',.06)

@@ -7,12 +7,20 @@ mod hull;
 #[path = "mesh/live.rs"]
 mod live;
 
+#[path = "mesh/buoy_course.rs"]
+mod buoy_course;
+#[path = "mesh/shore_ecology.rs"]
+mod shore_ecology;
+
 #[path = "mesh/background.rs"]
 mod background;
 #[path = "mesh/cave_enclosure.rs"]
 mod cave_enclosure;
+mod cave_crowns;
 mod dragons_den;
 mod den_water_boundary;
+mod den_platform;
+mod den_whirlpool;
 #[path = "mesh/gate_counters.rs"]
 mod gate_counters;
 #[path = "mesh/cable_club.rs"]
@@ -23,6 +31,8 @@ mod outdoor_signs;
 mod native_ground_bindings;
 #[path = "mesh/department_store.rs"]
 mod department_store;
+#[path = "mesh/olivine_stage.rs"]
+mod olivine_stage;
 #[path = "mesh/facility_radio.rs"]
 mod facility_radio;
 #[path = "mesh/facility_tables.rs"]
@@ -51,6 +61,10 @@ mod sprout_pillar;
 pub(crate) fn movable_cave_stone(frozen: bool, dark: bool, variant: u8) -> SurfaceMeshData {
     modeled_dungeons::movable_stone(frozen, dark, variant)
 }
+#[path = "mesh/seafoam_palette.rs"]
+mod seafoam_palette;
+#[path = "mesh/kanto_cave_palette.rs"]
+mod kanto_cave_palette;
 #[path = "mesh/cave_cliff.rs"]
 mod cave_cliff;
 #[path = "mesh/cave_shore.rs"]
@@ -212,6 +226,25 @@ pub struct SurfaceMeshData {
 }
 
 impl SurfaceMeshData {
+    /// Static draw batches can use narrower indices without changing a single
+    /// vertex or triangle. Animated/rigged consumers retain their u32 contract.
+    pub(super) fn into_compact_mesh(mut self) -> Mesh {
+        let source = std::mem::take(&mut self.indices);
+        let indices = if source.iter().all(|&i| i <= u16::MAX as u32) {
+            Indices::U16(source.into_iter().map(|i| i as u16).collect())
+        } else {
+            Indices::U32(source)
+        };
+        // Ownership has already become whole-object fade groups. Their shader
+        // reads a group uniform, never the old UV1 eligibility mask. Keep that
+        // mask available to ordinary into_mesh audit/rig consumers, but avoid
+        // allocating and uploading eight unused bytes per static vertex.
+        self.cutaway_ranges.clear();
+        let mut mesh = self.into_mesh();
+        mesh.insert_indices(indices);
+        mesh
+    }
+
     pub fn into_mesh(self) -> Mesh {
         let mut mesh = Mesh::new(
             PrimitiveTopology::TriangleList,
@@ -251,6 +284,8 @@ pub struct TerrainMeshData {
     pub(crate) background: Option<RepeatingBackground>,
     pub(crate) tree_instances: Vec<TreeMeshInstance>,
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
+    /// Temporary source-plot occupancy, shared by all trees in one build.
+    tree_neighborhood: Option<Vec<bool>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
     /// Rock beyond authenticated cave map bounds; separate reveal policy.
@@ -348,7 +383,7 @@ impl TerrainMeshData {
     }
 }
 
-fn select_surface_indices(
+pub(crate) fn select_surface_indices(
     source: &SurfaceMeshData, marked: &[bool], remap: &mut [u32],
     indices: impl Iterator<Item = u32>,
 ) -> SurfaceMeshData {
@@ -531,7 +566,7 @@ pub(crate) fn build_animated_flowers(
     let cells: Vec<_> = frame.tiles.iter().collect();
     if matches!(frame.map_id.as_ref(), "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
         for &anchor in pillars {
-            sprout_pillar::append(&mut solid_mesh, &geometry, &cells, anchor);
+            sprout_pillar::append(&mut textured, &geometry, &cells, anchor);
         }
     }
     Ok((textured.into_mesh(), solid_mesh.into_mesh()))
@@ -2658,6 +2693,7 @@ fn append_cafe_table_pedestals(
     geometry: &GridGeometry,
     map_id: &str,
 ) {
+    if map_id=="CeladonCafe" {return;}
     for tile in cells {
         let source = &tile.source;
         if source.subtile_column != 0
@@ -6514,11 +6550,12 @@ fn append_textured_cell(
         | CellShape::Water
         | CellShape::PlaneAt { .. }
         | CellShape::RaisedTop { .. } => {
+            let uv = cave_pool_uv(cells[index], geometry.uv(column, row));
             append_top(
                 &mut mesh.textured,
                 [x0, x1, z0, z1],
                 shapes[index].surface_height(geometry.tile_height),
-                geometry.uv(column, row),
+                uv,
             );
         }
         CellShape::RampNorth {
@@ -6560,18 +6597,27 @@ fn append_textured_cell(
             let normal = Vec3::new(west_height - east_height, geometry.tile_width, 0.0)
                 .normalize()
                 .to_array();
-            append_quad(
-                &mut mesh.textured,
-                [
-                    [x0, west_height, z1],
-                    [x1, east_height, z1],
-                    [x1, east_height, z0],
-                    [x0, west_height, z0],
-                ],
-                normal,
-                [[u0, v1], [u1, v1], [u1, v0], [u0, v0]],
-                BANK_TOP_SHADE,
-            );
+            // The southward rise is applied after this east/west taper.
+            // A single quad gives that composed surface a diagonal valley;
+            // subdivisions keep the end joined to the adjoining bank rows.
+            let subdivisions = if cells[index].source.tileset_id.as_ref() == "johto"
+                && cells[index].source.metatile_id == 0x57 { 4 } else { 1 };
+            for z in 0..subdivisions {
+                for x in 0..subdivisions {
+                    let point = |ix: usize, iz: usize| {
+                        let tx = ix as f32 / subdivisions as f32;
+                        let tz = iz as f32 / subdivisions as f32;
+                        ([x0 + (x1 - x0) * tx,
+                            west_height + (east_height - west_height) * tx,
+                            z0 + (z1 - z0) * tz],
+                            [u0 + (u1 - u0) * tx, v0 + (v1 - v0) * tz])
+                    };
+                    let corners = [point(x, z + 1), point(x + 1, z + 1),
+                        point(x + 1, z), point(x, z)];
+                    append_quad(&mut mesh.textured, corners.map(|p| p.0), normal,
+                        corners.map(|p| p.1), BANK_TOP_SHADE);
+                }
+            }
         }
         CellShape::Waterfall => {
             let replacement = authored_water_cell(cells, shapes).ok_or(
@@ -7823,9 +7869,11 @@ fn append_waterfall(
     cells: &[&VisualTile],
     placement: WaterfallPlacement,
     map_origin: [i32; 2],
+    levels: Option<[f32;2]>,
 ) {
-    let base = crate::profile::GROUND_HEIGHT * geometry.tile_height / SOURCE_TILE_HEIGHT;
-    let drop = crate::cave::CAVE_ROCK_HEIGHT * geometry.tile_height / SOURCE_TILE_HEIGHT;
+    let [head,landing]=levels.unwrap_or([crate::cave::CAVE_ROCK_HEIGHT,crate::profile::GROUND_HEIGHT]);
+    let base = landing * geometry.tile_height / SOURCE_TILE_HEIGHT;
+    let drop = (head-landing) * geometry.tile_height / SOURCE_TILE_HEIGHT;
     // One continuous sheet, sampled on shared quarter-cell knots. The real
     // head and landing remain exact, while the body pinches inward unevenly
     // and carries shallow relief rather than reading as one flat rectangle.
@@ -8821,6 +8869,11 @@ fn append_exposed_sides(
             shapes[index].solid_kind()
         };
         let color = solid_color(solid, direction);
+        // A cave rock's return face often has no authored upright band.
+        // Keep its source identity so the cave finishing pass can join this
+        // face to the front scarp, rather than leave an ochre fallback strip.
+        let cave_return = matches!(cells[index].source.tileset_id.as_ref(), "cave" | "dark_cave");
+        let first = mesh.solid.positions.len();
         match direction {
             Direction::North => append_solid_quad(
                 &mut mesh.solid,
@@ -8866,6 +8919,21 @@ fn append_exposed_sides(
                 [1.0, 0.0, 0.0],
                 color,
             ),
+        }
+        if cave_return {
+            let positions: [[f32;3];4] = mesh.solid.positions[first..].try_into().unwrap();
+            let normal = mesh.solid.normals[first];
+            if new_bark::cave_finish::shallow_face(&positions, normal, &cells[index].source, geometry).is_some()
+                || new_bark::cave_finish::enclosing_color(&positions, normal, &cells[index].source, geometry).is_some() {
+                mesh.solid.positions.truncate(first);
+                mesh.solid.normals.truncate(first);
+                mesh.solid.colors.truncate(first);
+                mesh.solid.uvs.truncate(first);
+                mesh.solid.indices.truncate(mesh.solid.indices.len()-6);
+                let (u0,u1,v0,v1)=geometry.uv(column,row);
+                append_quad(&mut mesh.textured,positions,normal,
+                    [[u0,v1],[u0,v0],[u1,v0],[u1,v1]],color);
+            }
         }
     }
 }
@@ -8971,10 +9039,13 @@ fn append_bank_run_side(
         Direction::East => 0.84,
         Direction::North => 0.68,
     };
-    let first_band = (bottom / geometry.tile_height).floor().max(0.0) as usize;
-    let last_band = (top / geometry.tile_height).ceil().max(0.0) as usize;
+    // Water is recessed below zero. Clamping the first course to zero left
+    // an open slit beneath every bank meeting that water. Keep the signed
+    // foundation course while retaining the original above-ground art order.
+    let first_band = (bottom / geometry.tile_height).floor() as i32;
+    let last_band = (top / geometry.tile_height).ceil().max(0.0) as i32;
     for band in first_band..last_band {
-        let local_band = band - first_band;
+        let local_band = if band < 0 { 0 } else { (band - first_band.max(0)) as usize };
         let band_floor = band as f32 * geometry.tile_height;
         let band_ceiling = band_floor + geometry.tile_height;
         let band_bottom = bottom.max(band_floor);
@@ -9275,6 +9346,24 @@ fn append_top(mesh: &mut SurfaceMeshData, bounds: [f32; 4], height: f32, uv: (f3
     append_top_shaded(mesh, bounds, height, uv, TEXTURED_SHADE);
 }
 
+/// Keep proven pool samples inside their own atlas cell. Exact boundary UVs
+/// can round into the preceding rock row, selecting its zero water-mask role
+/// and exposing a thin strip of native outline beneath a modeled bank.
+fn cave_pool_uv(tile: &VisualTile, uv: (f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
+    if !matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave")
+        || tile.source.tile_index != 0x14
+        || !tile.animation_frames.as_ref().is_some_and(|frames|
+            frames.len() > 1 && frames.contains(&tile.texture))
+    {
+        return uv;
+    }
+    let (u0, u1, v0, v1) = uv;
+    // Half a source pixel avoids atlas bleed without moving any world edge.
+    let du = (u1 - u0) / (SOURCE_TILE_HEIGHT * 2.0);
+    let dv = (v1 - v0) / (SOURCE_TILE_HEIGHT * 2.0);
+    (u0 + du, u1 - du, v0 + dv, v1 - dv)
+}
+
 fn rock_platform_corner_clips(
     cells: &[&VisualTile],
     shapes: &[CellShape],
@@ -9457,13 +9546,17 @@ fn solid_color(kind: SolidKind, direction: Direction) -> [f32; 4] {
         SolidKind::Grass => [0.20, 0.38, 0.16],
         SolidKind::Fence => [0.34, 0.34, 0.30],
     };
-    let shade = match direction {
+    let shade = direction_shade(direction);
+    [base[0] * shade, base[1] * shade, base[2] * shade, 1.0]
+}
+
+fn direction_shade(direction: Direction) -> f32 {
+    match direction {
         Direction::North => 0.68,
         Direction::South => 0.96,
         Direction::West => 0.76,
         Direction::East => 0.86,
-    };
-    [base[0] * shade, base[1] * shade, base[2] * shade, 1.0]
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

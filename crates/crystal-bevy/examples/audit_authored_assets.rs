@@ -4,11 +4,10 @@ use anyhow::{Context, Result, ensure};
 use bevy::{
     asset::RenderAssetUsages,
     prelude::{Assets, Handle, Image, UVec2, Vec2},
-    render::{
-        render_resource::{Extent3d, TextureDimension, TextureFormat},
-    },
+    render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
+use crystal_core::systems::script_blocks::{CHANGE_BLOCK_COORD_STRIDE, ScriptBlockChange};
 use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
 use crystal_runtime::CrystalRuntime;
 use crystal_voxel_view::{audit_cell_coverage_on_map, audit_terrain_mesh_with_images};
@@ -23,7 +22,10 @@ fn main() -> Result<()> {
     )
     .canonicalize()?;
     let output = PathBuf::from(args.next().context("output report path is required")?);
-    let requested: Vec<_> = args.collect();
+    let mut requested: Vec<_> = args.collect();
+    let script_variants = requested.iter().any(|arg| arg == "--script-block-variants");
+    let kanto_interiors = requested.iter().any(|arg| arg == "--kanto-interiors");
+    requested.retain(|arg| arg != "--script-block-variants" && arg != "--kanto-interiors");
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let actor_sources: Vec<_> = loaded
@@ -56,10 +58,22 @@ fn main() -> Result<()> {
         }
         maps.retain(|map| requested.contains(map));
     }
+    if kanto_interiors {
+        let mut selected = Vec::new();
+        for map in maps {
+            let region = &runtime.data().pokegear_landmark_for_map(&map)?.region;
+            let environment = runtime.data().map_environment(&map)?;
+            if region == "KANTO" && !matches!(environment, "TOWN" | "ROUTE") {
+                selected.push(map);
+            }
+        }
+        maps = selected;
+    }
     let mut reports = Vec::new();
     let mut totals = BTreeMap::<String, usize>::new();
     let mut all_families = BTreeMap::<String, usize>::new();
     let mut errors = Vec::new();
+    let mut variant_reports = Vec::new();
     for map_id in &maps {
         let started = std::time::Instant::now();
         let module = &runtime.data().maps[map_id];
@@ -190,9 +204,29 @@ fn main() -> Result<()> {
             frame.tiles.len(),
             started.elapsed().as_secs_f64() * 1000.0
         );
-        reports.push(json!({ "map": map_id, "tileset": tileset, "source_cells": frame.tiles.len(), "modeled_cells": modeled, "families": families, "unmodeled_source_classification": remaining, "unmodeled_sources": sources, "solid_vertices": mesh.solid.positions.len(), "solid_triangles": mesh.solid.indices.len()/3, "footing_cells": mesh.footing_heights.len() }));
+        let environment = runtime.data().map_environment(map_id)?;
+        let landmark = runtime.data().pokegear_landmark_for_map(map_id).ok();
+        reports.push(json!({ "map": map_id, "environment": environment,
+            "region": landmark.map(|landmark| landmark.region.as_str()),
+            "landmark": landmark.map(|landmark| landmark.constant.as_str()), "tileset": tileset, "source_cells": frame.tiles.len(), "modeled_cells": modeled, "families": families, "unmodeled_source_classification": remaining, "unmodeled_sources": sources, "solid_vertices": mesh.solid.positions.len(), "solid_triangles": mesh.solid.indices.len()/3, "footing_cells": mesh.footing_heights.len() }));
+        if script_variants && !module.script_block_changes.is_empty() {
+            match audit_script_variants(
+                map_id,
+                &frame,
+                &module.script_block_changes,
+                layout,
+                &runtime.data().tilesets[tileset].palette_map,
+                &handles,
+                &images,
+            ) {
+                Ok(variants) => variant_reports.extend(variants),
+                Err(error) => errors.push(
+                    json!({"map":map_id,"state":"script-block-variants","error":error.to_string()}),
+                ),
+            }
+        }
     }
-    let report = json!({ "format": "geothite-authored-model-coverage-v1", "map_count": maps.len(), "verified_maps": reports.len(), "totals": totals, "families": all_families, "mesher_errors": errors, "actor_sources": actor_sources, "battle_species": battle_species, "limitations": ["Base map state; dynamic blocks and decorations require separate state fixtures", "Unmodeled source classifications are legacy classifier evidence, not proof of an authored model", "Greyscale source samples validate topology and ownership; actual game palette and lighting need native visual review"], "maps": reports });
+    let report = json!({ "format": "geothite-authored-model-coverage-v1", "map_count": maps.len(), "verified_maps": reports.len(), "totals": totals, "families": all_families, "mesher_errors": errors, "actor_sources": actor_sources, "battle_species": battle_species, "limitations": ["Base maps and optional declared block-substitution combinations; script reachability, actors and decorations need separate runtime review", "Unmodeled source classifications are legacy classifier evidence, not proof of an authored model", "Greyscale source samples validate topology and ownership; actual game palette and lighting need native visual review"], "maps": reports, "script_block_variants":variant_reports });
     if let Some(parent) = output.parent() {
         std::fs::create_dir_all(parent)?;
     }
@@ -204,4 +238,113 @@ fn main() -> Result<()> {
         errors.len()
     );
     Ok(())
+}
+
+/// Exercise every combination of declared substitutions without pretending to
+/// execute a script or advance the game. Runtime input still owns progression.
+fn audit_script_variants(
+    map: &str,
+    base: &VisualWorldFrame,
+    changes: &[ScriptBlockChange],
+    layout: &[u8],
+    palettes: &[u8],
+    handles: &[Handle<Image>],
+    images: &Assets<Image>,
+) -> Result<Vec<serde_json::Value>> {
+    let width = base.grid_size.x as usize;
+    let height = base.grid_size.y as usize;
+    let mut edits = BTreeMap::new();
+    for change in changes {
+        ensure!(
+            change.x % CHANGE_BLOCK_COORD_STRIDE == 0 && change.y % CHANGE_BLOCK_COORD_STRIDE == 0,
+            "unaligned block change on {map}"
+        );
+        let xy = (
+            usize::from(change.x / CHANGE_BLOCK_COORD_STRIDE) * 4,
+            usize::from(change.y / CHANGE_BLOCK_COORD_STRIDE) * 4,
+        );
+        if let Some(old) = edits.insert(xy, change.block_id) {
+            ensure!(
+                old == change.block_id,
+                "conflicting block alternatives on {map} at {xy:?}"
+            );
+        }
+        ensure!(
+            xy.0 + 4 <= width && xy.1 + 4 <= height,
+            "block change outside {map}"
+        );
+    }
+    ensure!(
+        edits.len() <= 8,
+        "{map} exceeds the bounded 8-edit combination audit"
+    );
+    let edits: Vec<_> = edits.into_iter().collect();
+    let mut reports = Vec::new();
+    for mask in 1usize..1usize << edits.len() {
+        let mut frame = base.clone();
+        let mut changed = Vec::new();
+        for (bit, &((x, y), block)) in edits.iter().enumerate() {
+            if mask & (1 << bit) == 0 {
+                continue;
+            }
+            let drawing = layout
+                .get(usize::from(block) * 16..usize::from(block) * 16 + 16)
+                .with_context(|| format!("missing block {block:02x} on {map}"))?;
+            for dy in 0..4 {
+                for dx in 0..4 {
+                    let index = (y + dy) * width + x + dx;
+                    let tile = &mut frame.tiles[index];
+                    let art = u16::from(drawing[dy * 4 + dx]);
+                    let palette = palettes
+                        .get(usize::from(art))
+                        .with_context(|| format!("missing palette for {map} tile {art}"))?;
+                    let sample = crystal_bevy::bevy_shell::resolve_tileset_tile_index(
+                        handles.len(),
+                        usize::from(art),
+                        (palette >> 3) & 1,
+                    );
+                    tile.source.metatile_id = block;
+                    tile.source.subtile_column = dx as u8;
+                    tile.source.subtile_row = dy as u8;
+                    tile.source.tile_index = art;
+                    tile.texture = handles
+                        .get(sample)
+                        .context("missing variant tile art")?
+                        .clone();
+                    changed.push(index);
+                }
+            }
+        }
+        let mesh = audit_terrain_mesh_with_images(&frame, images)
+            .map_err(|error| anyhow::anyhow!("{map} block mask {mask}: {error:?}"))?;
+        ensure!(
+            mesh.authored_cells.len() == frame.tiles.len()
+                && mesh.footing_heights.len() == frame.tiles.len()
+                && mesh.footing_heights.iter().all(|v| v.is_finite()),
+            "invalid variant audit on {map}"
+        );
+        let legacy = audit_cell_coverage_on_map(map, &frame.tiles, width, height)
+            .map_err(|error| anyhow::anyhow!("{map} block mask {mask}: {error:?}"))?;
+        let mut families = BTreeMap::<String, usize>::new();
+        let mut remaining = BTreeMap::<String, usize>::new();
+        for &index in &changed {
+            if let Some(family) = mesh.authored_cells[index] {
+                *families.entry(family.to_owned()).or_default() += 1;
+            } else {
+                *remaining
+                    .entry(legacy[index].label().to_owned())
+                    .or_default() += 1;
+            }
+        }
+        reports.push(
+            json!({"map":map,"block_mask":mask,"edited_cells":changed.len(),
+            "edited_families":families,"edited_unmodeled_classification":remaining,
+            "footing_cells":mesh.footing_heights.len()}),
+        );
+    }
+    eprintln!(
+        "{map}: {} declared block-substitution combinations verified",
+        reports.len()
+    );
+    Ok(reports)
 }

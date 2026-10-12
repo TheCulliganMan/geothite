@@ -3057,6 +3057,16 @@ impl GameDataSet {
     }
 
     pub fn overworld_map(&self, map_name: &str) -> Result<OverworldMapData> {
+        // The assembled module is the authoritative runtime map. Landscape
+        // mods must reach active sessions as well as connected-map catalogs;
+        // rereading the original split payload here would restore old blocks.
+        if let Some(module) = self.maps.get(map_name) {
+            return Ok(OverworldMapData::from_attributes(
+                map_name,
+                &module.attributes,
+                module.blocks.clone(),
+            ));
+        }
         let attributes = self
             .map_attributes
             .get(map_name)
@@ -3498,4 +3508,3 @@ impl GameDataSet {
         Ok(names)
     }
 }
-

@@ -12,6 +12,9 @@ out=Path(next((a for a in args if not a.startswith('--')),'target/dungeon-kit'))
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 PALETTE={'stone':(.43,.43,.36),'stone_light':(.63,.63,.52),'stone_dark':(.28,.30,.28),'sandstone':(.64,.60,.42),'sand_light':(.79,.74,.52),'dark_rock':(.29,.34,.37),'dark_light':(.42,.47,.48),'ice':(.29,.64,.76),'ice_light':(.66,.89,.93),'ice_dark':(.15,.40,.59),'wood':(.39,.24,.13),'wood_light':(.60,.39,.20),'wood_dark':(.21,.14,.11),'steel':(.30,.39,.41),'metal_light':(.53,.62,.59),'brass':(.75,.59,.29),'red':(.70,.22,.19),'cloth':(.73,.76,.66),'cloth_light':(.91,.91,.77),'blue':(.28,.42,.52),'glass':(.19,.49,.60),'ink':(.11,.16,.17),'leaf':(.24,.40,.22)}
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from violet_plaque_palette import PALETTE as VIOLET_PLAQUE_PALETTE
+PALETTE.update(VIOLET_PLAQUE_PALETTE)
 M={}
 for name,rgb in PALETTE.items():
  m=bpy.data.materials.new(name);m.diffuse_color=(*rgb,1);m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*rgb,1);bs.inputs['Roughness'].default_value=.87;M[name]=m
@@ -119,10 +122,10 @@ for i in range(3):
  ring_obj=ring('Carved oval glyph',(0,0,0),.085,.046,.025,'sand_light',8);ring_obj.rotation_euler.x=math.pi/2;ring_obj.location=(.14 if i%2 else -.12,-.12,z)
  rod('Incised tablet stroke',(-.20,-.12,z+.07),(.18,-.12,z+.07),.014,'sand_light',5)
 begin('gym_plaque')
-box('Stone marker foot',(0,0,.08),(.98,.48,.16),'stone',.045)
-box('Timber plaque panel',(0,0,.56),(.91,.17,.77),'wood',.06)
-box('Inset brass plaque',(0,-.10,.59),(.71,.035,.51),'brass',.025)
-for i,w in enumerate([.46,.55,.35]):box('Embossed plaque line',(0,-.127,.71-i*.115),(w,.016,.028),'wood_dark',.005)
+box('Stone marker foot',(0,0,.08),(.98,.48,.16),'stone_plaque_shadow',.045)
+box('Chiseled slate plaque panel',(0,0,.56),(.91,.17,.77),'stone_plaque_gray',.06)
+box('Pale stone relief field',(0,-.10,.59),(.71,.035,.51),'stone_plaque_light',.025)
+for i,w in enumerate([.46,.55,.35]):box('Dark carved marker stroke',(0,-.127,.71-i*.115),(w,.016,.028),'stone_plaque_ink',.005)
 begin('warehouse_crate')
 box('Inner wood casing',(0,0,.54),(1.09,.86,1.03),'wood_dark',.025)
 for i in range(5):
@@ -220,6 +223,14 @@ def export(name,col):
    mat=obj.data.materials[tri.material_index];g=groups.setdefault(mat.name,{'name':mat.name,'base_color':[round(v,5) for v in mat.diffuse_color],'positions':[],'normals':[],'indices':[]})
    normal=(normal_matrix@tri.normal).normalized()
    if normal.length_squared<.9:continue
+   if name in ('tower_guardian','league_podium'):
+    head=('Faceted guardian body','Guardian head','Projecting squared muzzle','Raised carved ear','Folded shoulder','Foreleg carving','Incised dark eye')
+    if name=='league_podium':
+     region='orb' if obj.name.startswith(('Faceted league orb','Orb equatorial stone band','Orb front seal')) else 'pedestal'
+    else:region='head' if obj.name.startswith(head) else 'pedestal'
+    ranges=g.setdefault('palette_regions',[]);start=len(g['positions'])//3
+    if ranges and ranges[-1][1]==start and ranges[-1][2]==region:ranges[-1][1]=start+3
+    else:ranges.append([start,start+3,region])
    for vid in tri.vertices:
     v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (normal.x,normal.z,-normal.y))
   obj_eval.to_mesh_clear()

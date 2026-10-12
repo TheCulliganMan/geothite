@@ -178,6 +178,7 @@ fn shifted_native_frames_keep_halo_overlap_and_custom_profile_rejection() {
         row: p.row,
         ground: p.ground,
         grid_origin: [origin[0] + 1, origin[1]],
+        native_palette_sources: p.native_palette_sources,
     };
     claims.fill(false);
     assert!(!append(

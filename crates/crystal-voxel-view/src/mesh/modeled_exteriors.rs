@@ -14,19 +14,28 @@ pub(super) mod park_hoop_fence;
 #[path = "structure_extensions.rs"]
 mod structure_extensions;
 #[path = "park_flowers.rs"]
-mod park_flowers;
+pub(super) mod park_flowers;
 use crate::exterior_models::{Kind, model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
+
+// Share the existing planting producer through its owning module boundary.
+pub(super) fn append_park_underplanting(mesh: &mut SurfaceMeshData,
+    bounds: [f32;4], cell: [i32;2]) {
+    park_flowers::append_underplanting(mesh,bounds,cell);
+}
+
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Asset {
     World(Kind),
     Johto(Johto),
+    ForestTree,
 }
 impl Asset {
     fn label(self) -> &'static str {
         match self {
             Self::World(k) => k.label(),
+            Self::ForestTree => "world-exterior/forest_tree",
             Self::Johto(k) => match k {
                 Johto::House => "johto/house",
                 Johto::PlayerHouse => "johto/player_house",
@@ -442,6 +451,42 @@ pub(super) fn append_building(
     claimed: &mut [bool],
     map_origin: [i32; 2],
 ) -> bool {
+    append_building_with_samples(mesh,cells,shapes,g,map,p,claimed,map_origin,None)
+}
+
+fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
+    p: BuildingPlacement, images: &TerrainImageSamples) -> Option<[[f32;4];3]> {
+    let mut colors = std::collections::BTreeSet::new();
+    // Complete source roof interior, excluding its transparent/ground corners.
+    for row in p.row..p.row+p.roof_rows {
+        for column in p.column+2..p.column+p.width-2 {
+            for pixel in tile_rgba(images,cells[row*g.width+column]).ok()?.chunks_exact(4) {
+                if pixel[3] == 255 { colors.insert([pixel[0],pixel[1],pixel[2]]); }
+            }
+        }
+    }
+    // A complete source roof can use all four native palette entries, with
+    // the brightest reserved for its border rather than the roof field.
+    if !(2..=4).contains(&colors.len()) { return None; }
+    let mut colors:Vec<_>=colors.into_iter().collect();
+    colors.sort_by_key(|c|u32::from(c[0])*2126+u32::from(c[1])*7152+u32::from(c[2])*722);
+    let linear = |c:[u8;3]| {
+        let rgb=c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92} else {((s+0.055)/1.055).powf(2.4)}});
+        [rgb[0],rgb[1],rgb[2],1.]
+    };
+    let dark=linear(colors[0]);
+    let light=linear(colors[if colors.len()==4 {2} else {colors.len()-1}]);
+    let mid=if colors.len()>=3 {linear(colors[1])} else {
+        std::array::from_fn(|i|(dark[i]+light[i])*0.5)
+    };
+    Some([dark,mid,light])
+}
+
+pub(super) fn append_building_with_samples(
+    mesh: &mut TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
+    g: &GridGeometry, map: &str, p: BuildingPlacement, claimed: &mut [bool],
+    map_origin: [i32;2], images: Option<&TerrainImageSamples>,
+) -> bool {
     if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed, map_origin) {
         return true;
     }
@@ -452,6 +497,22 @@ pub(super) fn append_building(
     if !clear(claimed, g, rect) {
         return false;
     }
+    let roof_palette = if d.asset == Asset::Johto(Johto::TraditionalHouse)
+        || (map == "LakeOfRage" && d.asset == Asset::Johto(Johto::House)) {
+        if let Some(images)=images {
+            let Some(palette)=cabin_roof_palette(cells,g,p,images) else {
+                // Missing material coverage is shown as exact 2D, never purple
+                // prototype paint or a legacy voxel-building substitute.
+                for row in p.row..p.row+p.height {for column in p.column..p.column+p.width {
+                    let (w,e,n,s)=g.bounds(column,row);
+                    append_top(&mut mesh.textured,[w,e,n,s],0.,g.uv(column,row));
+                    claimed[row*g.width+column]=true;
+                }}
+                return true;
+            };
+            Some(palette)
+        } else {None}
+    } else {None};
     let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
     let Some(sample) = ground(cells, shapes, tileset, p.ground_tile_index, None) else {
         return false;
@@ -474,8 +535,11 @@ pub(super) fn append_building(
             model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
         }
         Asset::Johto(kind) => {
-            johto_model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
+            let m=johto_model(kind);
+            m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door);
+            if let Some(palette)=roof_palette {m.recolor_fitted_roof(&mut mesh.solid,cutaway_start,palette);}
         }
+        Asset::ForestTree => unreachable!("trees cannot be building placements"),
     }
     if map == "GoldenrodCity"
         && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset
@@ -532,17 +596,17 @@ fn tree_kind(cells: &[&VisualTile], g: &GridGeometry, p: TreePlacement) -> Optio
     Some(match s.tileset_id.as_ref() {
         "johto" | "johto_modern" => Asset::Johto(Johto::Tree),
         "kanto" => Asset::World(Kind::KantoCanopy),
-        "forest" => Asset::World(Kind::ForestConifer),
+        "forest" => Asset::ForestTree,
         "park" => Asset::World(if p.width == 4 {
             Kind::KantoCanopy
         } else {
             Kind::ParkHedge
         }),
-        "battle_tower_outside" => Asset::World(Kind::ForestConifer),
+        "battle_tower_outside" => Asset::ForestTree,
         _ => return None,
     })
 }
-fn tree_ground(
+pub(super) fn tree_ground(
     map: &str,
     cells: &[&VisualTile],
     shapes: &[CellShape],
@@ -569,6 +633,39 @@ fn tree_ground(
     })
 }
 
+pub(super) fn park_tree_ground(
+    map: &str,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    p: TreePlacement,
+) -> Option<usize> {
+    if p.width != 4 || p.height != 4
+        || p.column + 4 > g.width || p.row + 4 > g.height
+        || !(0..4).all(|y| (0..4).all(|x| {
+            crate::park::large_tree_local(&cells[(p.row + y) * g.width + p.column + x].source)
+                == Some((x as u8, y as u8))
+        }))
+    {
+        return None;
+    }
+    tree_ground(map, cells, shapes, g, p)
+}
+
+/// Missing authored trees stay exact flat source art; reserve against legacy
+/// grouped extrusion without inventing a model or an authored floor claim.
+pub(super) fn append_missing_tree_source(mesh: &mut TerrainMeshData,
+    g: &GridGeometry, p: TreePlacement, claimed: &mut [bool]) {
+    for row in p.row..p.row + p.height {
+        for column in p.column..p.column + p.width {
+            let i = row * g.width + column;
+            let (w,e,n,s) = g.bounds(column,row);
+            append_top(&mut mesh.textured,[w,e,n,s],p.base_height,g.uv(column,row));
+            claimed[i] = true;
+        }
+    }
+}
+
 pub(super) fn append_tree(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
@@ -584,10 +681,7 @@ pub(super) fn append_tree(
     };
     let park_tree = cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "park"
         && p.width == 4;
-    if park_tree && (p.height != 4 || !(0..4).all(|y| (0..4).all(|x| {
-        crate::park::large_tree_local(&cells[(p.row + y) * g.width + p.column + x].source)
-            == Some((x as u8, y as u8))
-    }))) {
+    if park_tree && park_tree_ground(map, cells, shapes, g, p).is_none() {
         return false;
     }
     if kind == Asset::World(Kind::ParkHedge) {
@@ -612,6 +706,11 @@ pub(super) fn append_tree(
     let Some(sample) = tree_ground(map, cells, shapes, g, p) else {
         return false;
     };
+    if kind == Asset::ForestTree && !crate::foliage::world_tree_available([
+        map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]) {
+        append_missing_tree_source(mesh, g, p, claimed);
+        return true;
+    }
     floor(mesh, cells, shapes, g, rect, sample, claimed);
     if park_tree {
         crate::foliage::append_park_tree(mesh, bounds(g, rect), p.base_height, g.tile_height,
@@ -633,9 +732,8 @@ pub(super) fn append_tree(
     let depth = (b[1] - b[0]).min(b[3] - b[2]);
     b[2] = b[3] - depth;
     let h = p.height as f32 * g.tile_height;
-    if matches!(kind, Asset::World(Kind::ForestConifer))
-        && johto_model(Johto::Tree).has_cutout_foliage()
-    {
+    if kind == Asset::ForestTree {
+        let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
         crate::foliage::append_world_tree(
             mesh,
             Johto::Tree,
@@ -646,7 +744,7 @@ pub(super) fn append_tree(
                 map_origin[0] + p.column as i32,
                 map_origin[1] + p.row as i32,
             ],
-            super::new_bark::grove_neighbors(cells, g, map, p),
+            neighbors,
         );
         mark_authored_rect(mesh, g, rect, kind.label());
         return true;
@@ -662,10 +760,11 @@ pub(super) fn append_tree(
                 None,
             )
         }
-        Asset::Johto(k) => {
-            crate::foliage::append_world_tree(
+        Asset::ForestTree => unreachable!("forest tree handled before catalog append"),
+        Asset::Johto(_) => {
+            let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
+            crate::foliage::append_grove_tree(
                 mesh,
-                k,
                 b,
                 p.base_height,
                 g.tile_height,
@@ -673,7 +772,7 @@ pub(super) fn append_tree(
                     map_origin[0] + p.column as i32,
                     map_origin[1] + p.row as i32,
                 ],
-                super::new_bark::grove_neighbors(cells, g, map, p),
+                neighbors,
             );
         }
     }
@@ -744,7 +843,7 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
                     rect: [x, y, 2, 2],
                     kind: Kind::RouteSign,
                     ground: if s.metatile_id == 0x47 { 0x05 } else { 0x06 },
-                    height: 1.6,
+                    height: 2.0,
                 });
             }
         }
@@ -865,6 +964,11 @@ pub(super) fn append_props(
             b[2] = center - g.tile_height * 0.12;
             b[3] = center + g.tile_height * 0.12;
         }
+        if p.kind == Kind::RouteSign {
+            let center = (b[0] + b[1]) * 0.5;
+            b[0] = center - g.tile_width * 0.825;
+            b[1] = center + g.tile_width * 0.825;
+        }
         let m = model(p.kind);
         m.append_fitted(
             &mut mesh.solid,
@@ -952,6 +1056,15 @@ fn canonical_live(object: &crate::live_profiles::Object) -> bool {
         .any(|candidate| candidate == object)
 }
 
+/// The shipped coastal profile duplicates Johto's native $0a stone block.
+/// Leave it to the shared bank mesher before live placements reserve cells.
+/// User-edited profiles retain their explicit renderer.
+pub(super) fn native_stone_profile(object: &crate::live_profiles::Object) -> bool {
+    object.tileset == "johto"
+        && object.name == "Cherrygrove coastal boulder"
+        && canonical_live(object)
+}
+
 /// Only source-complete live placements arrive here. Explicit named objects
 /// cover coastal rocks whose raster silhouettes do not belong to tree logic.
 pub(super) fn append_live(
@@ -993,7 +1106,7 @@ pub(super) fn append_live(
     }
     let mut b = bounds(g, rect);
     if small_tree {
-        crate::foliage::append_town_tree(mesh, b, 0.0, g.tile_height * 0.5,
+        crate::foliage::append_grove_tree(mesh, b, 0.0, g.tile_height * 0.5,
             [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32], [false; 4]);
         mark_authored_rect(mesh, g, rect, "johto/small_tree");
         return true;
@@ -1285,6 +1398,80 @@ mod tests {
         )
     }
     #[test]
+    fn cabin_roof_uses_live_source_swatches_and_rejects_missing_palette_coverage() {
+        let frame=super::super::tests::frame(6,1,vec![super::super::tests::source_with_tile(0x2c,0,0,0x05);6]);
+        let g=GridGeometry {width:6,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let p=BuildingPlacement {column:0,row:0,width:6,height:1,roof_rows:1,ground_tile_index:0x05};
+        assert!(cabin_roof_palette(&cells,&g,p,&TerrainImageSamples::default()).is_none());
+        let pixels:Vec<_>=(0..64).flat_map(|i|if i%2==0 {[57,57,57,255]} else {[165,123,24,255]}).collect();
+        let mut images=TerrainImageSamples::default();
+        for tile in &cells {
+            images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(pixels.clone()));
+        }
+        let palette=cabin_roof_palette(&cells,&g,p,&images).unwrap();
+        assert!(palette[0][0] < palette[1][0] && palette[1][0] < palette[2][0]);
+        assert_eq!(palette[0][0],palette[0][1]);
+        assert!(palette[2][0]>palette[2][1] && palette[2][1]>palette[2][2]);
+        let cyan:Vec<_>=(0..64).flat_map(|i|[
+            [57,57,57,255], [41,140,255,255], [123,255,255,255], [222,255,222,255],
+        ][i%4]).collect();
+        for tile in &cells {
+            images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(cyan.clone()));
+        }
+        let cyan_palette=cabin_roof_palette(&cells,&g,p,&images).unwrap();
+        assert!(cyan_palette[1][2]>cyan_palette[1][1]);
+        assert_eq!(cyan_palette[2][1],cyan_palette[2][2]);
+        assert!(cyan_palette[2][0]<cyan_palette[2][1]);
+        let pixels:Vec<_>=(0..64).flat_map(|i|[i as u8,0,0,255]).collect();
+        images.pixels.insert(cells[2].texture.id(),TileImageSample::Rgba(pixels));
+        assert!(cabin_roof_palette(&cells,&g,p,&images).is_none(),"unknown paint must not acquire a guessed 3D palette");
+    }
+
+    #[test]
+    fn missing_forest_asset_retains_exact_2d_tiles_without_substitute_geometry() {
+        const CHILD: &str = "GEOTHITE_MISSING_FOREST_TEST_CHILD";
+        if std::env::var_os(CHILD).is_none() {
+            let output = std::process::Command::new(std::env::current_exe().unwrap())
+                .args(["--exact", "mesh::modeled_exteriors::tests::missing_forest_asset_retains_exact_2d_tiles_without_substitute_geometry", "--nocapture"])
+                .env(CHILD, "1")
+                .env("CRYSTAL_OPEN_MODEL_ROOT", std::env::temp_dir().join(format!("geothite-missing-trees-{}",std::process::id())))
+                .output().unwrap();
+            assert!(output.status.success(),"{}\n{}",String::from_utf8_lossy(&output.stdout),String::from_utf8_lossy(&output.stderr));
+            return;
+        }
+        let sources = [0x26,0x27,0x05,0x36,0x37,0x05].into_iter().enumerate().map(|(i,tile)| {
+            let mut s = super::super::tests::source_with_tile(
+                if i%3<2 {0x06} else {0x01}, (i%3) as u8,(i/3) as u8,tile);
+            s.tileset_id="forest".into(); s
+        }).collect();
+        let frame=super::super::tests::frame(3,2,sources);
+        let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        let p=TreePlacement {column:0,row:0,width:2,height:2,ground_tile_index:0x05,
+            ground_metatile_id:None,base_height:0.,rounded:true,outline_mask:true,
+            remove_all_ground:false,card_thickness:0.};
+        assert!(!crate::foliage::world_tree_available([0,0]));
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;6],authored_cells:vec![None;6],..Default::default()};
+        let mut claimed=vec![false;6];
+        assert!(append_tree(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0]));
+        assert!(mesh.solid.positions.is_empty());
+        assert!(mesh.scenery.is_empty());
+        assert_eq!(mesh.authored_cells,vec![None;6]);
+        assert_eq!(mesh.footing_heights,vec![0.;6]);
+        assert_eq!(claimed,vec![true,true,false,true,true,false]);
+        let mut expected=SurfaceMeshData::default();
+        for row in 0..2 {for column in 0..2 {
+            let (w,e,n,s)=g.bounds(column,row);
+            append_top(&mut expected,[w,e,n,s],0.,g.uv(column,row));
+        }}
+        assert_eq!(mesh.textured.positions,expected.positions);
+        assert_eq!(mesh.textured.uvs,expected.uvs);
+        assert_eq!(mesh.textured.indices,expected.indices);
+    }
+
+    #[test]
     fn path_only_tree_maps_require_complete_art_and_same_atlas_backing() {
         let sources = (0..4)
             .flat_map(|row| {
@@ -1465,6 +1652,50 @@ mod tests {
     }
 
     #[test]
+    fn cherrygrove_rock_profile_reuses_native_stone_mesh_and_pigment() {
+        let doc: crate::live_profiles::Document = serde_json::from_slice(include_bytes!(
+            "../../../../modpacks/voxel-view/profiles.json")).unwrap();
+        let drawing = [[0x2b,0x2c,0x2c,0x2d], [0x3b,0x3c,0x3c,0x3d],
+            [0x3b,0x3c,0x3c,0x3d], [0x4b,0x4c,0x4c,0x4d]];
+        let mut sources = vec![super::super::tests::source_with_tile(0x35,0,0,0x14);36];
+        for (row, tiles) in drawing.into_iter().enumerate() {
+            for (column, tile) in tiles.into_iter().enumerate() {
+                sources[(row+1)*6+column+1] = super::super::tests::source_with_tile(
+                    0x0a,column as u8,row as u8,tile);
+            }
+        }
+        sources[0] = super::super::tests::source_with_tile(0x02,0,0,0x05);
+        let mut f = super::super::tests::frame(6,6,sources);
+        f.map_id = std::sync::Arc::from("CherrygroveCity");
+        let cells: Vec<_> = f.tiles.iter().collect();
+        assert!(live::resolve(&cells,6,6,"CherrygroveCity",Some(&doc)).iter()
+            .any(|p| native_stone_profile(p.object)), "fixture must exercise the overridden profile");
+        let samples = TerrainImageSamples::default();
+        let native = build_instanced_terrain_mesh_with_samples(&f,&samples).unwrap();
+        let profiled = build_instanced_terrain_mesh_with_profiles(&f,&samples,&doc).unwrap();
+        assert!(!native.solid.positions.is_empty());
+        assert_eq!(profiled.solid.positions,native.solid.positions);
+        assert_eq!(profiled.solid.normals,native.solid.normals);
+        assert_eq!(profiled.solid.colors,native.solid.colors);
+        assert_eq!(profiled.solid.uvs,native.solid.uvs);
+        assert_eq!(profiled.solid.indices,native.solid.indices);
+        assert_eq!(profiled.footing_heights,native.footing_heights);
+        assert_eq!(profiled.authored_cells,native.authored_cells);
+        let stone = |mesh: &TerrainMeshData| -> Vec<_> {
+            mesh.solid.uvs.iter().enumerate().filter(|(_,uv)| uv[0] < -9000.)
+                .map(|(i,uv)| (mesh.solid.positions[i],mesh.solid.colors[i],*uv)).collect()
+        };
+        let city_stone = stone(&profiled);
+        assert!(!city_stone.is_empty());
+        f.map_id = std::sync::Arc::from("Route26");
+        let route = build_instanced_terrain_mesh_with_profiles(&f,&samples,&doc).unwrap();
+        assert_eq!(stone(&route),city_stone,"identical blocks must share their mineral finish");
+        for cell in &mut f.tiles {cell.source.tileset_id=std::sync::Arc::from("johto_modern");}
+        let modern = build_instanced_terrain_mesh_with_profiles(&f,&samples,&doc).unwrap();
+        assert_eq!(stone(&modern),city_stone,"Johto Modern shares the same $0a drawing");
+    }
+
+    #[test]
     fn changing_a_named_live_profile_keeps_its_custom_renderer() {
         let doc: crate::live_profiles::Document = serde_json::from_slice(include_bytes!(
             "../../../../modpacks/voxel-view/profiles.json"
@@ -1476,8 +1707,10 @@ mod tests {
             .find(|o| o.name == "Cherrygrove coastal boulder")
             .unwrap();
         assert!(canonical_live(&object));
+        assert!(native_stone_profile(&object));
         object.tiles[0][0] ^= 1;
         assert!(!canonical_live(&object));
+        assert!(!native_stone_profile(&object));
     }
     #[test]
     fn forest_door_block_change_selects_a_closed_gateway_without_a_new_door() {

@@ -39,9 +39,9 @@ def load(path):
  decoder=Cbor(raw[22:]);pack=decoder.read();assert decoder.at==len(raw)-22;return pack
 ROOT=Path(__file__).resolve().parents[1]
 TEST_BODY=r'''
-fn check(map: &str, cells: Vec<Identity<'static>>, w: usize,h: usize, expected: [usize;5]) {
+fn check(map: &str, cells: Vec<Identity<'static>>, w: usize,h: usize, expected: [usize;6]) {
  let blocked=vec![false;cells.len()]; let out=source::resolve(map,&cells,w,h,[0,0],&blocked);
- let counts=|items:&[source::Match]| { let mut c=[0;5];for p in items {let k=match p.kind{Kind::PlanterLow=>0,Kind::PlanterRound=>1,Kind::CentralTree=>2,Kind::Hedge=>3,Kind::Maze=>4};c[k]+=p.indices(w).count();}c};
+ let counts=|items:&[source::Match]| { let mut c=[0;6];for p in items {let k=match p.kind{Kind::PlanterLow=>0,Kind::PlanterRound=>1,Kind::CentralTree=>2,Kind::Hedge=>3,Kind::Maze=>4,Kind::BlueFlowerBed=>5};c[k]+=p.indices(w).count();}c};
  assert_eq!(counts(&out),expected,"native source coverage: {map}");
  let mut ownership=vec![false;cells.len()];for p in &out {for i in p.indices(w){assert!(!ownership[i]);ownership[i]=true;}}
  assert!(source::resolve("UnrelatedSharedAtlasMap",&cells,w,h,[0,0],&blocked).is_empty());
@@ -97,7 +97,7 @@ def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--pack',type=Path,required=True);parser.add_argument('--rustc',default=os.getenv('RUSTC')or shutil.which('rustc'));args=parser.parse_args();assert args.rustc,'set RUSTC or pass --rustc'
  pack=load(args.pack);module=ROOT/'crates/crystal-voxel-view/src/mesh/gym_scenery_source.rs'
  code=f'#[path={str(module)!r}] mod source;\n'.replace("'",'"')+'use source::{Identity,Kind};\n'+TEST_BODY+'\nfn main(){\n'
- cases={'AzaleaGym':[104,112,9,0,0],'GoldenrodGym':[316,188,0,0,0],'CeladonGym':[0,0,0,168,0],'ViridianGym':[0,0,0,0,356]}
+ cases={'AzaleaGym':[104,112,9,0,0,0],'GoldenrodGym':[316,188,0,0,0,0],'CeladonGym':[0,0,0,168,0,120],'ViridianGym':[0,0,0,0,356,0]}
  for name,expected in cases.items():
   m=pack['data']['maps'][name];ts=m['attributes']['tileset_name'];w=m['attributes']['width']*4;h=m['attributes']['height']*4;layout=pack['runtime_files'][f'data/tilesets/{ts}_metatiles.bin'];assert not m['script_block_changes'],'new native dynamic state needs explicit review'
   code+='check("'+name+'",vec![\n'

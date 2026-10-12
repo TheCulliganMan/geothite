@@ -4,7 +4,7 @@ use std::collections::HashSet;
 
 fn drawing(id: u16) -> Option<[u16;16]> {
     Some(match id {
-        0x07 => [0x32,0x33,0x58,0x58,0x42,0x43,0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58],
+        0x07 => crate::cave_water::DEN_WHIRLPOOL_DRAWING,
         0x31 => [0x58,0x58,0x58,0x58,0x58,0x58,0x58,0x58,0x14,0x14,0x14,0x14,0x14,0x14,0x14,0x14],
         0x34 => [0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14],
         0x36 => [0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58,0x14,0x14,0x58,0x58],
@@ -117,8 +117,18 @@ mod tests {
             && p[1]>=-2.49 && p[1]<=1.69));
         assert!(mesh.solid.normals.iter().all(|n|Vec3::from_array(*n).is_finite()));
         // The first float has closed top and bottom and outward side normals.
-        assert!(mesh.solid.normals[..324].iter().any(|n|n[1]>0.99));
-        assert!(mesh.solid.normals[..324].iter().any(|n|n[1]<-0.99));
+        assert!(mesh.solid.normals[..288].iter().any(|n|n[1]>0.9));
+        assert!(mesh.solid.normals[..288].iter().any(|n|n[1] < -0.99));
+        let mut edges=std::collections::BTreeMap::new();
+        for tri in mesh.solid.positions[..288].chunks_exact(3) {
+            let p:[ [i32;3];3 ]=std::array::from_fn(|i|tri[i].map(|v|(v*100000.).round() as i32));
+            for (a,b) in [(0,1),(1,2),(2,0)] {
+                let mut edge=[p[a],p[b]];edge.sort();
+                *edges.entry(edge).or_insert(0)+=1;
+            }
+        }
+
+        assert!(edges.values().all(|&uses|uses==2), "the float must be a closed volume");
         tiles[0].source.tile_index=0x14;
         assert!(resolve(&tiles.iter().collect::<Vec<_>>(),&g).is_empty());
         tiles[0].source.tile_index=0x58;

@@ -267,7 +267,7 @@ mod prize_booth_tests {
             ..Default::default()
         };
         let mut claimed = vec![false; 72];
-        assert!(append(&mut mesh, &refs, &g, booth, &mut claimed, [0, 0]));
+        assert!(append(&mut mesh, "CeladonGameCornerPrizeRoom", &refs, &g, booth, &mut claimed, [0, 0]));
         assert_eq!(mesh.footing_heights, vec![0.; 72]);
         // Source floor underlay owns 48 quads, then four sign and four display quads.
         assert_eq!(mesh.textured.positions.len(), (48 + 8) * 4);

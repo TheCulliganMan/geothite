@@ -62,7 +62,7 @@ an invented walk-through U opening. No geometry extends onto the approach carpet
 ## Art and placement
 
 Joined cream paper frames, a continuous cornice and ochre toe course surround
-recessed teal glazing. Separate lift-side ribs and copper directory rims retain
+recessed blue glazing with diagonal highlights. Separate lift-side ribs and copper directory rims retain
 their source-sized silhouettes. The directory's four source tiles and the
 lift call-button tile are sampled from the current atlas onto outward faces;
 lettering is not baked into the original authored assets.
@@ -242,3 +242,35 @@ mesh consumption. The renderer regressions currently still fail in migration
 APIs before these tests can run. The coordinated disk cleanup removed old build
 caches; verification now uses the shared `target-bevy20-verify` cache. Native
 verification remains pending that build.
+
+The current window-course finish uses explicit blue glass, sky reflections,
+glints and blue shadow materials. Closed diagonal facets replace the former
+rectangular highlight. The Rust store pass no longer infers glass from RGB
+channels. Frame sizes and non-window geometry/paint are retained. The updated
+canonical JSON matches the generator and passes the complete pack/geometry
+checker (178 closed parts, 4,184 triangles). All nineteen department-store Rust regressions pass, including production
+paint preservation for all five window-course sizes. All twelve muted native
+comparisons in `target/store-blue-glass-review/` were inspected; their 24 visible
+readbacks passed with no shader errors. The production audit retains all base
+object totals and 520 wall cells, finite footing and zero mesher errors. The
+window finish is verified; fifth-floor display transparency still needs work. The archived editable Blender scene still contains
+the previous finish and needs a resave from the current generator; no local
+Blender executable has been found in the usual installation/build locations.
+
+The fifth-floor display now has a dedicated named countertop enamel finish,
+copper edging and blue glazing with closed diagonal reflection facets. Its
+closed bodies, source-floor inset, 64x64x8 bounds and source matching remain
+unchanged. The generator and canonical JSON pass the complete checker (192
+closed parts, 4,416 triangles across eight models). The runtime finish is
+limited to this model's exact countertop material. All twenty-one department-store Rust regressions pass. Native review of
+this refinement remains pending; the editable Blender archive is still the old
+finish and must not be treated as the current generated scene.
+
+Fresh native review of both 5F displays and two controls is complete in
+`target/store-display-glass-review/`: all four comparisons were inspected and
+eight visible readbacks passed without shader errors. The new blue glazing,
+diagonal reflection relief, copper beads and opaque warmer enamel are visible.
+Both 5F islands retain 56 source-owned cells and all reviewed store floors
+retain 140 modeled object cells, with finite footing and no mesher errors.
+The finish increment is verified; the broad display still has limited
+merchandise detail, and the archived Blender scene still needs its resave.

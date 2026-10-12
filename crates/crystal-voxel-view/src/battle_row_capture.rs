@@ -167,7 +167,7 @@ impl ActorCaptures {
             && !frame.use_source_scene
             && frame.battlers[index]
                 .as_ref()
-                .is_some_and(|actor| actor.visible && actor.allow_species_model && !actor.shiny)
+                .is_some_and(|actor| actor.visible && actor.allow_species_model && (!actor.shiny || actor.model_palette.is_some()))
     }
 }
 
@@ -336,7 +336,7 @@ fn sync_actor_captures(
                 || actor.is_articulated()
                 || !frame.battlers[index]
                     .as_ref()
-                    .is_some_and(|actor| actor.visible && actor.allow_species_model && !actor.shiny)
+                    .is_some_and(|actor| actor.visible && actor.allow_species_model && (!actor.shiny || actor.model_palette.is_some()))
                 || *visibility != Visibility::Visible
                 || !actor_layers.intersects(&row_layers)
                 || *layers != row_layers

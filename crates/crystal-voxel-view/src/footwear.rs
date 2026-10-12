@@ -161,7 +161,9 @@ fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut V
         let t=((p[1]-0.14)/0.095).clamp(0.0,1.0);
         let fade=1.0-t*t*(3.0-2.0*t);
         let forward=((p[2]+0.05)/0.28).clamp(0.0,1.0);
-        let width=0.72+0.12*forward;
+        // A bare heel is narrower than the ball of the foot. The previous
+        // nearly uniform width retained the shoe's straight side walls.
+        let width=0.58+0.26*forward;
         if fade>0.0 {
             p[0]=centers[side]+(p[0]-centers[side])*(1.0-(1.0-width)*fade);
             if p[1]>0.012 {p[1]*=1.0-(0.22+0.20*forward)*fade;}
@@ -172,6 +174,13 @@ fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut V
         let toe=((p[2]-0.14)/0.12).clamp(0.0,1.0);
         let lobes=(across*std::f32::consts::PI*5.0).sin().abs();
         if fade>0.0 {p[2]-=fade*toe*(0.018+across*0.035+(1.0-lobes)*0.012);}
+        // Lift only the medial midsole into a shallow arch. Heel and toe
+        // contact patches retain the source floor height; the ankle ring is
+        // outside this field and remains exactly joined to the lower leg.
+        let medial=((centers[side]-p[0])*p[0].signum()/0.10+0.25).clamp(0.0,1.0);
+        let along=(1.0-((p[2]+0.025)/0.12).powi(2)).max(0.0);
+        let sole=(1.0-p[1]/0.09).clamp(0.0,1.0);
+        p[1]+=0.045*medial*medial*along*along*sole*sole;
         // The same inspected plain skin patch as the exposed lower legs.
         *uv=[0.90+(p[0]-centers[side])*0.025,0.31+p[2]*0.025];
     }
@@ -284,7 +293,7 @@ mod tests {
             let painting=crate::npc_textures::decode(&std::fs::read(root.join(format!("people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
             let mut mesh=rig.mesh.clone();let mut ids=rig.ids.clone();let mut weights=rig.weights.clone();
             adapt(&mut mesh,&mut ids,&mut weights,look);
-            let mut feet=[0;2];let mut changed=0;
+            let mut feet=[0;2];let mut changed=0;let mut arch=[0;2];let mut contact=[0;2];
             for &i in &mesh.indices {
                 let i=i as usize;let p=mesh.positions[i];
                 assert!(p.iter().all(|v|v.is_finite()));
@@ -303,11 +312,20 @@ mod tests {
                     assert_eq!(mesh.positions[i],rig.mesh.positions[i],"ankle/other body moved");
                 } else if mesh.positions[i]!=rig.mesh.positions[i] {changed+=1;}
                 if rig.mesh.positions[i][1]>=0.27 {assert_eq!(mesh.uvs[i],rig.mesh.uvs[i]);}
-                if rig.mesh.positions[i][1]<0.012 {assert_eq!(mesh.positions[i][1],rig.mesh.positions[i][1]);}
+                if rig.mesh.positions[i][1]<0.012 {
+                    let side=usize::from(mesh.positions[i][0]>0.0);
+                    if mesh.positions[i][1]>rig.mesh.positions[i][1]+0.008 {arch[side]+=1;}
+                    if rig.mesh.positions[i][2] < -0.15 || rig.mesh.positions[i][2]>0.16 {
+                        assert_eq!(mesh.positions[i][1],rig.mesh.positions[i][1],"heel/toe contact lifted");
+                        contact[side]+=1;
+                    }
+                }
                 assert_eq!(ids[i],rig.ids[i]);assert_eq!(weights[i],rig.weights[i]);
             }
             assert!(feet.iter().all(|&n|n>1000),"missing rounded feet {feet:?}");
             assert!(changed>100,"shoe volume was only recolored: {changed}");
+            assert!(arch.iter().all(|&n|n>0),"missing medial arches {arch:?}");
+            assert!(contact.iter().all(|&n|n>4),"missing heel/toe contacts {contact:?}");
         }
     }
     #[test]

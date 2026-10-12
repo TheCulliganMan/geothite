@@ -1114,11 +1114,11 @@ mod tests {
     }
 
     #[test]
-    fn cave_ladder_drawing_joins_the_visual_shelf_height() {
+    fn cave_wall_backed_ladder_drawing_keeps_the_lower_floor_height() {
         let up = source_for_tileset("cave", 0x14, 2, 2, 0x2a);
         let down = source_for_tileset("cave", 0x15, 2, 2, 0x22);
-        assert_eq!(support_height(&up, 8.0), crate::cave::CAVE_SHELF_HEIGHT);
-        assert_eq!(support_height(&down, 8.0), crate::cave::CAVE_SHELF_HEIGHT);
+        assert_eq!(support_height(&up, 8.0), 0.0);
+        assert_eq!(support_height(&down, 8.0), 0.0);
     }
 
     #[test]

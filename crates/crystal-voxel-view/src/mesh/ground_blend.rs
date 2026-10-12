@@ -120,6 +120,15 @@ impl GroundBlend {
         g: &GridGeometry,
         origin: [i32; 2],
     ) -> Option<[f32; 4]> {
+        self.color_with_path_palette(p, g, origin, None)
+    }
+    pub(super) fn color_with_path_palette(
+        &self,
+        p: [f32; 3],
+        g: &GridGeometry,
+        origin: [i32; 2],
+        path_palette: Option<[f32; 3]>,
+    ) -> Option<[f32; 4]> {
         let cell = cell_at(g, p[0], p[2])?;
         let material = self.materials.get(cell).copied().flatten()?;
         if !matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
@@ -165,8 +174,8 @@ impl GroundBlend {
         }
         let t = path_weight / total_weight;
         let lawn = ground_color(GroundMaterial::Lawn, map_p, g);
-        let path = ground_color(GroundMaterial::Path, map_p, g);
-        let base = ground_color(material, map_p, g);
+        let path = ground_color_with_path_palette(GroundMaterial::Path, map_p, g, path_palette);
+        let base = ground_color_with_path_palette(material, map_p, g, path_palette);
         // Wobble can retain mixed color at the geometric cutoff. Feather the
         // outer half back to the owned material before leaving the blend band.
         let fade = (nearest / width * 2. - 1.).clamp(0., 1.);
@@ -188,17 +197,21 @@ mod tests {
         let materials = [Some(GroundMaterial::Lawn), Some(GroundMaterial::Path)];
         let blend = GroundBlend::new(&materials, &g);
         let width = g.tile_width * 0.65;
+        for palette in [None, Some([0.50, 0.54, 0.46])] {
         for origin in [[0,0],[-31,-7],[17,43],[64,-32]] {
             for (sign, material) in [(-1., GroundMaterial::Lawn),(1., GroundMaterial::Path)] {
                 let at = |distance| [8. + sign * distance, 0., 4.];
-                let sample = |p: [f32;3]| blend.color(p, &g, origin).unwrap_or_else(||
-                    ground_color(material, [p[0] + origin[0] as f32 * 8., p[1],
-                        p[2] + origin[1] as f32 * 8.], &g));
+                let sample = |p: [f32;3]| blend.color_with_path_palette(p, &g, origin,
+                    palette).unwrap_or_else(||
+                    ground_color_with_path_palette(material,
+                        [p[0] + origin[0] as f32 * 8., p[1],
+                        p[2] + origin[1] as f32 * 8.], &g, palette));
                 let inside = sample(at(width - 0.001));
                 let outside = sample(at(width + 0.001));
                 assert!(inside.iter().zip(outside).all(|(a,b)| (a-b).abs() < 0.0001),
                     "the outer blend boundary must be continuous at source phase {origin:?}");
             }
+        }
         }
     }
     #[test]

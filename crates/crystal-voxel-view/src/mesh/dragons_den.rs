@@ -27,14 +27,22 @@ pub(super) fn finish(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile
         || cells.iter().any(|t| t.source.tileset_id.as_ref() != "johto") {
         return false;
     }
+    let original_vertices = mesh.textured.positions.len() as u32;
     let boundary = den_water_boundary::append(mesh,cells,g,origin);
+    let whirlpool = den_whirlpool::append(mesh,cells,g);
+    let platforms = den_platform::cells(cells,g);
+    let mut platform_caps = Vec::new();
     let source = &mut mesh.textured;
     let mut retained = Vec::with_capacity(source.indices.len());
     for ids in source.indices.chunks_exact(3) {
+        if ids.iter().all(|&i|i>=original_vertices) {
+            retained.extend_from_slice(ids);
+            continue;
+        }
         let uv = ids.iter().fold(Vec2::ZERO, |v, &i| v + Vec2::from_array(source.uvs[i as usize])) / 3.;
         let x = (uv.x * g.width as f32).floor() as usize;
         let z = (uv.y * g.height as f32).floor() as usize;
-        if x < g.width && z < g.height && boundary.contains(&(z*g.width+x)) {
+        if x < g.width && z < g.height && (boundary.contains(&(z*g.width+x)) || whirlpool.contains(&(z*g.width+x))) {
             continue;
         }
         // Folded rock sides can borrow another atlas cell. Probe slightly
@@ -49,6 +57,20 @@ pub(super) fn finish(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile
                 s.metatile_id == 0x0a && stone(s) };
         let sampled = (0. ..1.).contains(&uv.x) && (0. ..1.).contains(&uv.y)
             && x < g.width && z < g.height && stone(&cells[z*g.width+x].source);
+        let platform = (x < g.width && z < g.height && platforms.contains(&(z*g.width+x)))
+            || (wx >= 0 && wz >= 0 && wx < g.width as i32 && wz < g.height as i32
+                && platforms.contains(&(wz as usize*g.width+wx as usize)));
+        if platform {
+            let points = std::array::from_fn(|j|Vec3::from_array(source.positions[ids[j] as usize]));
+            let height = 16. * g.tile_height / SOURCE_TILE_HEIGHT;
+            if normal.y > 0.99 && points.iter().all(|p|(p.y-height).abs()<1e-4) {
+                platform_caps.push(points);
+                continue;
+            }
+            if normal.y.abs()<0.01 && points.iter().all(|p|p.y<=height+1e-4) {
+                continue;
+            }
+        }
         if !owned && !sampled {
             retained.extend_from_slice(ids);
             continue;
@@ -71,6 +93,7 @@ pub(super) fn finish(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile
     // Retain the old vertex indexing and cutaway ownership for untouched art.
     // Only the selected terrain triangles move to the mineral material.
     source.indices = retained;
+    den_platform::append(&mut mesh.solid,&platform_caps,&mesh.footing_heights,g,origin);
     true
 }
 

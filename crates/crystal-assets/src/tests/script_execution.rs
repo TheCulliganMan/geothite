@@ -1752,6 +1752,24 @@ fn overworld_map_requires_explicit_blocks_label_and_payload() {
 }
 
 #[test]
+fn overworld_map_reload_retains_authored_module_mods_and_supports_split_payloads() {
+    let mut module = test_map_module("Route29", "ROUTE_29", None);
+    module.attributes.width = 1;
+    module.attributes.height = 1;
+    module.attributes.blocks_label = Some("Route29_Blocks".to_string());
+    module.blocks = vec![0x05];
+    let mut data = GameDataSet::default();
+    data.map_attributes.insert("Route29".to_string(), module.attributes.clone());
+    data.map_blocks.insert("Route29_Blocks".to_string(), "AA==".to_string());
+    data.maps.insert("Route29".to_string(), module);
+    assert_eq!(data.overworld_map("Route29").unwrap().metatile_ids, vec![0x05],
+        "tile callback reload must retain the runtime module's grove mod");
+    data.maps.remove("Route29");
+    assert_eq!(data.overworld_map("Route29").unwrap().metatile_ids, vec![0x00],
+        "split-only build inputs still assemble their original payload");
+}
+
+#[test]
 fn runtime_map_assembly_rejects_malformed_attribute_labels_without_missing_fallback() {
     let mut data = GameDataSet::default();
     let mut attributes = test_map_module("Route29", "ROUTE_29", None).attributes;

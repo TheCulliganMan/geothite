@@ -334,7 +334,9 @@
           await loadWasm(init, './crystal-bevy_bg.wasm', 'Game engine', reportAsset);
           await meshtasticBridge?.connect(wasm);
           const muteButton = document.querySelector('#mute');
-          let muted = localStorage.getItem('crystal.audio.muted') === 'true';
+          // Start silently; sound requires an explicit click on Enable sound.
+          let muted = true;
+          localStorage.setItem('crystal.audio.muted', 'true');
           let audioState = 'idle';
           const updateMute = () => {
             wasm.crystal_set_muted(muted);
@@ -367,7 +369,7 @@
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             startIn2D: document.documentElement.classList.contains("flygon-embedded"),
-            startIn3D: ["new-bark", "bedroom", "goldenrod", "underground", "route26", "route26-canyon", "route29", "national-park", "national-park-pool", "union-cave", "ice-path", "whirl-islands", "mount-silver"].includes(new URLSearchParams(location.search).get("preview")),
+            startIn3D: ["new-bark", "bedroom", "goldenrod", "department-store", "underground", "route26", "route26-canyon", "route29", "national-park", "national-park-pool", "union-cave", "ice-path", "whirl-islands", "mount-silver"].includes(new URLSearchParams(location.search).get("preview")),
             cameraControls: {
               group: document.querySelector('#camera-controls'),
               zoomOut: document.querySelector('#zoom-out'), zoomIn: document.querySelector('#zoom-in'),

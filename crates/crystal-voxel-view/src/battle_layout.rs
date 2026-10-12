@@ -17,12 +17,12 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
         // Capsule only; disturbed soil is not part of the animal's height.
         "DIGLETT" => 0.805_091 / 0.82,
         // Tail-to-face centerline of the current authored pose, excluding horns.
-        "ONIX" => 1.857_489_3 / 1.72,
+        "ONIX" => 2.867_740_6 / 1.72,
         "GYARADOS" => 1.270_513_3 / 0.82,
         "EKANS" => 2.485_483_5 / 1.18,
         "ARBOK" => 2.329_859_6 / 1.18,
         "DRATINI" | "DRAGONAIR" => 2.241_65 / 1.18,
-        "STEELIX" => 2.249_835_3 / 1.18,
+        "STEELIX" => 2.867_623_2 / 1.45,
         // Longitudinal nose-to-tail extent, not fin/lure height.
         "MAGIKARP" | "GOLDEEN" | "SEAKING" | "REMORAID" | "CHINCHOU" | "LANTURN" | "DUNSPARCE"
         | "CATERPIE" | "WEEDLE" => {
@@ -74,12 +74,12 @@ mod tests {
         let scale = model_scale(
             "STEELIX",
             Some(9.1948),
-            Vec3::ZERO,
-            Vec3::new(0.766938, 1.18, 0.599248),
+            Vec3::new(-0.7005319, 0.0, -0.61516),
+            Vec3::new(0.7497097, 1.45, 0.4157339),
         )
         .unwrap();
-        assert!((scale * 2.2498353 / WORLD_UNITS_PER_METER - 9.1948).abs() < 1e-5);
-        assert!(scale * 1.18 / WORLD_UNITS_PER_METER < 5.0);
+        assert!((scale * 2.8676232 / WORLD_UNITS_PER_METER - 9.1948).abs() < 1e-5);
+        assert!(scale * 1.45 / WORLD_UNITS_PER_METER < 5.0);
     }
     #[test]
     fn missing_or_invalid_pack_dimension_never_invents_a_species_size() {
@@ -606,8 +606,8 @@ mod framing_tests {
             Some(body(
                 "ONIX",
                 8.7884,
-                Vec3::new(-0.388217, 0.0, -0.351834),
-                Vec3::new(0.388217, 1.72, 0.351834),
+                Vec3::new(-0.5348557, 0.0, -0.629095),
+                Vec3::new(0.5264492, 1.72, 0.3373237),
             )),
             Some(body(
                 "DIGLETT",
@@ -729,8 +729,8 @@ mod source_registration_tests {
     use super::*;
     #[test]
     fn similarity_matches_fitted_anchors_and_source_shapes_in_both_directions() {
-        let min = Vec3::new(-0.388217, 0.0, -0.351834);
-        let max = Vec3::new(0.388217, 1.72, 0.351834);
+        let min = Vec3::new(-0.5348557, 0.0, -0.629095);
+        let max = Vec3::new(0.5264492, 1.72, 0.3373237);
         let onix = BattleBody::modeled(
             "ONIX",
             min,

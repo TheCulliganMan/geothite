@@ -90,7 +90,7 @@ fn upstairs_reuses_exact_pc_and_sign_models_in_all_inspected_rooms() {
             mesh.footing_heights = vec![3.25; cells.len()];
             mesh.authored_cells = vec![None; cells.len()];
             let mut claimed = vec![false; cells.len()];
-            assert!(append(&mut mesh, &refs, &g, found[0], &mut claimed, [0, 0]));
+            assert!(append(&mut mesh, map, &refs, &g, found[0], &mut claimed, [0, 0]));
             assert!(mesh.footing_heights.iter().all(|&h| h == 3.25));
             assert_eq!(claimed.iter().filter(|&&c| c).count(), count);
             if kind == ModelKind::PictureFrame {

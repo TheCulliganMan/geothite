@@ -13,13 +13,18 @@ if __name__=='__main__':
     paths=sorted(directory.glob('*.mesh.json'))
     assert {p.name.removesuffix('.mesh.json')for p in paths}==EXPECTED
     counts={p.name:validate(p)for p in paths}
-    source_sampled={'roof_binoculars':16,'facility_instrument_pair':16,'facility_instrument_bank':32,'link_round_stool':16}
+    source_sampled={'roof_binoculars':16,'facility_instrument_pair':16,'facility_instrument_bank':32,'link_round_stool':16,'roof_planter':16,'gym_stone_partition':16}
     for name,height in source_sampled.items():
         document=read_model_json(directory/(name+'.mesh.json'))
         assert document['triangle_count']<1000, (name,'small source fixtures must stay compact')
         for primitive in document['primitives']:
             anchor=primitive.get('source_pixel')
             assert isinstance(anchor,list) and len(anchor)==2 and all(type(v)is int for v in anchor), (name,'missing live material anchor')
-            assert 0<=anchor[0]<16 and 0<=anchor[1]<height, (name,'material anchor leaves its verified source drawing')
+            width=32 if name=='roof_planter' else 16
+            assert 0<=anchor[0]<width and 0<=anchor[1]<height, (name,'material anchor leaves its verified source drawing')
+    planter=read_model_json(directory/'roof_planter.mesh.json')
+    assert len([p for p in planter['primitives'] if 'layered leaf' in p['name']])==48
+    assert all(len(p['indices'])==24 for p in planter['primitives'] if 'layered leaf' in p['name'])
+    assert {tuple(p['source_pixel']) for p in planter['primitives']}=={(2,12),(2,9),(4,13),(0,0),(4,2),(2,1),(9,2)}
     for name,count in counts.items():print(f'{name}: {count} triangles')
     print(f'PASS: {len(counts)} original special-room meshes, {sum(counts.values())} triangles')

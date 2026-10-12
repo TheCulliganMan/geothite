@@ -46,12 +46,25 @@ struct Args {
     output_dir: Option<PathBuf>,
     hour: u8,
     live: bool,
+    preview_flag: Option<String>,
 }
 
 fn main() -> Result<()> {
     #[cfg(feature = "operation-trace")]
     let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args(env::args().skip(1))?;
+    // The existing same-view capture mode can compare two actual 3D poses
+    // without a visible-window readback. Normal single-view captures stay single.
+    let temporal_3d = args.view == ViewMode::TwoPointFiveD
+        && env::var("CRYSTAL_RENDER_TEST_SECOND_VIEW").as_deref() == Ok("same");
+    if temporal_3d && (args.map.is_none() || args.screenshot.is_none()
+        || args.all_maps || !args.maps.is_empty() || args.live || args.walk.is_some()) {
+        bail!("same-view 3D temporal capture requires one --map and --screenshot, without --live or --walk");
+    }
+
+    if args.preview_flag.is_some() && (args.map.is_none() || args.all_maps || !args.maps.is_empty() || args.screenshot.is_none()) {
+        bail!("--preview-flag requires one --map and --screenshot; it seeds a disposable visual fixture");
+    }
     if args.walk.is_some()
         && (args.view != ViewMode::TwoPointFiveD
             || args.all_maps
@@ -130,10 +143,10 @@ fn main() -> Result<()> {
     );
     println!("press F3 to toggle faithful 2D / optional 2.5D at the same location");
 
-    let pair = args.view == ViewMode::Both;
+    let pair = args.view == ViewMode::Both || temporal_3d;
     let first = args.screenshot.as_ref().map(|path| {
         if pair {
-            suffixed_output(path, "2d")
+            suffixed_output(path, if temporal_3d {"3d-start"} else {"2d"})
         } else {
             path.clone()
         }
@@ -142,12 +155,12 @@ fn main() -> Result<()> {
         .screenshot
         .as_ref()
         .filter(|_| pair)
-        .map(|path| suffixed_output(path, "2.5d"));
+        .map(|path| suffixed_output(path, if temporal_3d {"3d-end"} else {"2.5d"}));
     let identity = format!(
-        "{}|{:?}|{map}|{tile_x}|{tile_y}|{}",
+        "{}|{:?}|{map}|{tile_x}|{tile_y}|{}|{:?}",
         pack_path.display(),
         std::fs::metadata(&pack_path)?.modified()?,
-        args.hour
+        args.hour, args.preview_flag
     );
     let previous = second
         .as_ref()
@@ -180,12 +193,13 @@ fn main() -> Result<()> {
             render_test_live: args.live,
             render_test_walk: args.walk,
             render_test_hour: Some(args.hour),
+            render_test_preview_flag: args.preview_flag,
             render_test_party: true,
             ..Default::default()
         },
     )?;
     if let (Some(first), Some(second)) = (first, second) {
-        write_comparison(&first, &second, previous, args.screenshot.as_ref().unwrap())?;
+        write_comparison(&first, &second, previous, args.screenshot.as_ref().unwrap(), temporal_3d)?;
         std::fs::write(second.with_extension("identity"), identity)?;
     }
     println!(
@@ -295,6 +309,7 @@ fn write_comparison(
     second: &std::path::Path,
     previous: Option<image::DynamicImage>,
     prefix: &std::path::Path,
+    temporal_3d: bool,
 ) -> Result<()> {
     let mut panels = vec![image::open(first)?];
     let has_previous = previous.is_some();
@@ -311,7 +326,11 @@ fn write_comparison(
     }
     let output = suffixed_output(prefix, "compare").with_extension("png");
     sheet.save(&output)?;
-    let labels = if has_previous {
+    let labels = if temporal_3d && has_previous {
+        "Earlier 3D pose · Previous 3D pose · Later 3D pose"
+    } else if temporal_3d {
+        "Earlier 3D pose · Later 3D pose"
+    } else if has_previous {
         "2D reference · Previous 2.5D · Current 2.5D"
     } else {
         "2D reference · Current 2.5D"
@@ -331,9 +350,8 @@ fn write_comparison(
         ),
     )?;
     println!(
-        "review {} — left to right: 2D reference, {}current 2.5D",
+        "review {} — left to right: {labels}",
         output.display(),
-        if has_previous { "previous 2.5D, " } else { "" }
     );
     Ok(())
 }
@@ -388,6 +406,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut output_dir = None;
     let mut hour = 12;
     let mut live = false;
+    let mut preview_flag = None;
     let mut values = values.into_iter();
     while let Some(flag) = values.next() {
         match flag.as_str() {
@@ -401,6 +420,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
             ),
             "--all-maps" => all_maps = true,
             "--live" => live = true,
+            "--preview-flag" => preview_flag = Some(next_value(&mut values, "--preview-flag")?),
             "--x" => tile_x = Some(next_value(&mut values, "--x")?.parse::<i16>()?),
             "--y" => tile_y = Some(next_value(&mut values, "--y")?.parse::<i16>()?),
             "--view" => view = ViewMode::parse(&next_value(&mut values, "--view")?)?,
@@ -437,6 +457,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         output_dir,
         hour,
         live,
+        preview_flag,
     })
 }
 
@@ -457,7 +478,8 @@ fn print_usage() {
     println!(
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
-         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] | \
+         [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
+         [--preview-flag <verified-flag>] | \
          (--maps <id,id,...> | --all-maps) --output-dir <directory> \
          [--view 2d|2.5d|both] [--hour <0..23>]]"#
     );

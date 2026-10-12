@@ -25,6 +25,14 @@ enum Asset {
     CounterNorth,
     CounterWest,
 }
+pub(super) fn append_lift_cabin_glazing(out: &mut SurfaceMeshData, bounds: [f32;4], height: f32) {
+    let [w,e,n,s] = bounds;
+    for pane in 0..3 {
+        let left = w+(e-w)*pane as f32/3.;
+        let right = w+(e-w)*(pane+1) as f32/3.;
+        Asset::Window1.model().append_fitted(out, [left,right,n,s], 0., height);
+    }
+}
 impl Asset {
     fn model(self) -> &'static Model {
         if matches!(
@@ -364,27 +372,36 @@ pub(super) fn append(
             mesh.solid.colors.extend(stairs.colors);
             continue;
         }
-        let north = if is_display { n } else { s - 3. * sy };
-        let first = mesh.solid.colors.len();
+        if is_display {
+            // All ten named materials sample this complete authenticated
+            // drawing, including its distinct gray case and blue glass palettes.
+            assert!(part.asset.model().append_store_display(
+                &mut mesh.textured, [w, e, n, s], 8. * sy, |material| {
+                    let pixel = match material {
+                        0 | 3 => [1, 1], // Gray case and drawer faces, tile 2a.
+                        1 => [9, 2], // Pale enamel, tile 3b.
+                        2 | 7 | 8 => [0, 0], // Dark folded trim, pulls and plinth.
+                        4 => [3, 54], // Blue glazing, tile 0e.
+                        5 | 6 => [3, 49], // Pale reflection and glint, tile 0e.
+                        9 => [0, 48], // Dark recessed glazing rim.
+                        _ => unreachable!("validated named store display material"),
+                    };
+                    let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                    [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                     uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
+                },
+            ), "canonical store display requires all named materials");
+            continue;
+        }
+        let north = s - 3. * sy;
         part.asset.model().append_fitted(
             &mut mesh.solid,
             [w, e, north, s],
             0.,
-            if is_display { 8. * sy } else { 16. * sy },
+            16. * sy,
         );
-        if matches!(
-            part.asset,
-            Asset::Window1 | Asset::Window2 | Asset::Window4 | Asset::Window8 | Asset::Window10
-        ) {
-            // The store's native windows are blue; retain cream frames and gold trim.
-            for color in &mut mesh.solid.colors[first..] {
-                if color[1] > color[0] && color[2] > color[0] {
-                    for (channel, factor) in color[..3].iter_mut().zip([1.3, 0.95, 1.8]) {
-                        *channel *= factor;
-                    }
-                }
-            }
-        }
+        // Window glass, reflections, frames and shadows carry explicit authored
+        // material paint. Never infer their role from RGB channel comparisons.
         if part.asset == Asset::Directory {
             inscription(
                 mesh,
@@ -405,11 +422,13 @@ pub(super) fn append(
             );
         }
     }
-    // Waist-high service furniture stays opaque. Wall reveal would otherwise
-    // fade a complete U merely because the player stands in its staff bay.
+    // Waist-high service furniture and the display island stay opaque. Wall
+    // reveal would otherwise wash out furniture near the player.
     let reveal = !matches!(
         p.network.label,
-        "mart/department_store_counter_end" | "mart/department_store_service_loop"
+        "mart/department_store_counter_end"
+            | "mart/department_store_service_loop"
+            | "mart/department_store_closed_u"
     );
     if reveal {
         mesh.solid
@@ -440,8 +459,8 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
         _ => b,
     };
     let first = out.positions.len();
-    asset.model().append_fitted(out, bounds, 0., 10. * sy);
-    asset.model().apply_room_finish(out,first);
+    assert!(asset.model().append_store_counter_body(out,bounds,9.*sy),
+        "canonical store counter requires all five named material roles");
     let rotate = |[x, y, z]: [f32; 3]| match asset {
         Asset::CounterNorth => [-x, y, -z],
         Asset::CounterWest => [-z, y, x],
@@ -463,6 +482,11 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
             *channel *= new / old;
         }
     }
+    // Every bay shares this exact worktop height and perimeter. No separate
+    // privacy lip turns across an adjoining top, and no rounded end leaves
+    // a trench between two touching cabinet plots.
+    super::modeled_interiors::architecture_box(out,[w,e,9.*sy,10.*sy,n,s],
+        [0.76,0.75,0.65]);
 }
 fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f32) {
     let [w, e, n, s] = b;
@@ -518,7 +542,13 @@ fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f3
 // The west-facing controls face the clerk inside the U-shaped service counter.
 fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f32) {
     let [w, e, n, s] = b;
-    let point = |x: f32, y: f32, z: f32| [w + (e - w) * x / 16., y * sy, n + (s - n) * z / 16.];
+    // A register occupies part of a counter bay, rather than nearly its full
+    // width/depth. Keep the drawer seated on the same countertop datum.
+    let point = |x: f32, y: f32, z: f32| [
+        w + (e - w) * (8. + (x - 8.) * 0.65) / 16.,
+        (10. + (y - 10.) * 0.70) * sy,
+        n + (s - n) * (8. + (z - 8.) * 0.65) / 16.,
+    ];
     let mut prism =
         |x0: f32, x1: f32, z0: f32, z1: f32, base: f32, lo: f32, hi: f32, color: [f32; 4]| {
             let v = [

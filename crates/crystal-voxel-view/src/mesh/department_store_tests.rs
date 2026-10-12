@@ -1,5 +1,31 @@
 // Synthetic identities exercise matching independently of the external pack.
 // tools/check-department-store.py separately verifies every actual map binding.
+#[test]
+fn joined_service_counter_tops_are_continuous_and_registers_fit_the_bay() {
+    for scale in [0.5,1.,1.5] {
+        let mut mesh=SurfaceMeshData::default();
+        let bays=[(Asset::CounterPlain,[0.,16.,0.,16.]),
+            (Asset::CounterRegister,[16.,32.,0.,16.]),
+            (Asset::CounterWest,[0.,16.,16.,48.])];
+        for (asset,bounds) in bays {
+            append_service_counter(&mut mesh,asset,bounds.map(|v|v*scale),scale);
+        }
+        let mut area=0.;
+        for triangle in mesh.indices.chunks_exact(3) {
+            let points=[triangle[0],triangle[1],triangle[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+            if points.iter().all(|p|(p.y-10.*scale).abs()<0.0001) {
+                let normal=(points[1]-points[0]).cross(points[2]-points[0]);
+                if normal.y>0. {area+=normal.y*0.5;}
+            }
+        }
+        assert!((area-1024.*scale*scale).abs()<0.001,"tops must cover touching bays without trenches or overlap");
+        let mut register=SurfaceMeshData::default();
+        append_cash_register(&mut register,[0.,16.*scale,0.,16.*scale],scale);
+        assert!(register.positions.iter().all(|p|p[0]>3.9*scale && p[0]<12.*scale
+            && p[2]>4.*scale && p[2]<12.*scale && p[1]>=10.*scale && p[1]<13.2*scale));
+        assert!(register.positions.iter().any(|p|(p[1]-10.*scale).abs()<0.0001),"drawer must sit on top");
+    }
+}
 fn fixture(
     which: usize,
     origin: [i32; 2],
@@ -68,6 +94,80 @@ fn fixture(
         },
         Box::leak(vec![nn].into_boxed_slice()),
     )
+}
+#[test]
+fn department_store_display_native_palette_preserves_geometry_glazing_and_footing() {
+    let (cells, g, networks) = fixture(6, [0, 0], [40, 40]);
+    let refs = cells.iter().collect::<Vec<_>>();
+    let placements = resolve_fixture(networks, &cells, &g, [0, 0], None,
+        &vec![false; cells.len()]);
+    assert_eq!(placements.len(), 1);
+    let p = &placements[0];
+    let mut mesh = TerrainMeshData::default();
+    mesh.footing_heights = vec![72.0; cells.len()];
+    let mut claimed = vec![false; cells.len()];
+    assert!(append(&mut mesh, &refs, &g, p, &mut claimed));
+    let part = &p.network.parts[0];
+    assert_eq!(part.asset, Asset::ClosedU);
+    let (w, _, n, _) = g.bounds(p.column, p.row);
+    let mut authored = SurfaceMeshData::default();
+    part.asset.model().append_fitted(&mut authored,
+        [w, w + 64.0, n, n + 64.0], 0.0, 8.0);
+    let first = mesh.textured.positions.windows(authored.positions.len())
+        .position(|v| v == authored.positions.as_slice()).unwrap();
+    assert_eq!(&mesh.textured.normals[first..], authored.normals.as_slice());
+    let index_first = mesh.textured.indices.len() - authored.indices.len();
+    assert_eq!(mesh.textured.indices[index_first..].iter().map(|i|i-first as u32)
+        .collect::<Vec<_>>(), authored.indices);
+    for pixel in [[1,1],[9,2],[0,0],[3,54],[3,49],[0,48]] {
+        let uv = g.uv(p.column + pixel[0]/8, p.row + pixel[1]/8);
+        assert!(mesh.textured.uvs[first..].contains(&[
+            uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
+            uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]));
+    }
+    for (&normal,&color) in mesh.textured.normals[first..].iter()
+        .zip(&mesh.textured.colors[first..]) {
+        assert_eq!(color, crate::interior_models::authored_face_color([1.;4],Vec3::from_array(normal)));
+    }
+    assert!(mesh.solid.positions.is_empty());
+    assert!(mesh.textured.cutaway_ranges.is_empty());
+    assert!(mesh.solid.cutaway_ranges.is_empty());
+    assert!(mesh.footing_heights.iter().all(|&height| height == 72.0));
+    assert_eq!(claimed.iter().filter(|&&v| v).count(), 56);
+}
+#[test]
+fn department_store_windows_keep_authored_material_paint_through_production_append() {
+    let mut seen = [false; 5];
+    for which in 0..NETWORKS.len() {
+        let (cells, g, networks) = fixture(which, [0, 0], [40, 40]);
+        let refs = cells.iter().collect::<Vec<_>>();
+        let placements = resolve_fixture(networks, &cells, &g, [0, 0], None,
+            &vec![false; cells.len()]);
+        for p in placements {
+            let mut mesh = TerrainMeshData::default();
+            mesh.footing_heights = vec![72.0; cells.len()];
+            let mut claimed = vec![false; cells.len()];
+            assert!(append(&mut mesh, &refs, &g, &p, &mut claimed));
+            for part in p.network.parts {
+                if !matches!(part.asset, Asset::Window1 | Asset::Window2 |
+                    Asset::Window4 | Asset::Window8 | Asset::Window10) { continue; }
+                seen[part.asset as usize] = true;
+                let (w, _, n, _) = g.bounds(p.column + part.x, p.row + part.y);
+                let e = w + part.width as f32 * g.tile_width;
+                let s = n + part.depth as f32 * g.tile_height;
+                let mut authored = SurfaceMeshData::default();
+                part.asset.model().append_fitted(&mut authored,
+                    [w, e, s - 3.0, s], 0.0, 16.0);
+                let first = mesh.solid.positions.windows(authored.positions.len())
+                    .position(|v| v == authored.positions.as_slice())
+                    .expect("complete authored window geometry must reach production mesh");
+                assert_eq!(&mesh.solid.colors[first..first + authored.colors.len()],
+                    authored.colors.as_slice(), "glass and teal shadows must not be recolored by RGB tests");
+            }
+            assert!(mesh.footing_heights.iter().all(|&v| v == 72.0));
+        }
+    }
+    assert!(seen.iter().all(|&v| v), "every authored bay count must be exercised");
 }
 #[test]
 fn celadon_sixth_floor_callback_wall_is_exact_and_map_scoped() {
@@ -368,7 +468,7 @@ fn reserved_cells_custom_profiles_and_missing_ground_keep_whole_object_fallback(
     assert!(resolve_fixture(n, &missing, &g, [0, 0], None, &reserved).is_empty());
 }
 #[test]
-fn append_is_atomic_preserves_footing_and_keeps_all_geometry_inside_owned_cells() {
+fn append_is_atomic_preserves_footing_owned_bounds_and_opaque_display_island() {
     for which in 0..NETWORKS.len() {
         let origin = [-25, -27];
         let (cells, mut g, n) = fixture(which, origin, [84, 82]);
@@ -390,10 +490,15 @@ fn append_is_atomic_preserves_footing_and_keeps_all_geometry_inside_owned_cells(
         claims[first] = false;
         assert!(append(&mut mesh, &refs, &g, &p[0], &mut claims));
         assert!(mesh.footing_heights.iter().all(|&h| h == 2.75));
-        if (24..30).contains(&which) {
+        if matches!(
+            p[0].network.label,
+            "mart/department_store_counter_end"
+                | "mart/department_store_service_loop"
+                | "mart/department_store_closed_u"
+        ) {
             assert!(
                 mesh.solid.cutaway_ranges.is_empty(),
-                "waist-high counters must stay opaque"
+                "waist-high counters and display islands must stay opaque"
             );
             assert!(mesh.textured.cutaway_ranges.is_empty());
             assert!(mesh.cutaway_links.is_empty());
@@ -440,7 +545,14 @@ fn append_is_atomic_preserves_footing_and_keeps_all_geometry_inside_owned_cells(
             }
         }
         if which == 6 {
-            for &[x, _, z] in &mesh.solid.positions {
+            assert!(!mesh.textured.positions.is_empty());
+            assert!(mesh.textured.positions.iter().all(|&[x,y,z]|
+                x >= w && x <= w+n[0].width as f32*g.tile_width
+                && z >= north && z <= north+n[0].height as f32*g.tile_height
+                && y >= -0.001 && y <= 8.*g.tile_height/8.+0.001));
+            assert!(mesh.textured.normals.iter().all(|normal|
+                (Vec3::from_array(*normal).length_squared()-1.).abs()<0.0001));
+            for &[x, _, z] in mesh.solid.positions.iter().chain(&mesh.textured.positions) {
                 let x = (x - w) / g.tile_width;
                 let z = (z - north) / g.tile_height;
                 assert!(

@@ -1444,6 +1444,12 @@ fn append_signature_candidates(
     out: &mut Vec<Placement>,
 ) {
     for drawing in INTERIOR_DRAWINGS {
+        if kanto_native_room(map) && drawing.tileset=="players_house"
+            && drawing.kind==ModelKind::WallDomestic
+            && drawing.tiles.iter().all(|tile|*tile==0x44) {
+            // This native black void is room framing, not a cream wall panel.
+            continue;
+        }
         // This blue service wall contains two vendor openings, not six house
         // windows. Its complete map-scoped booth owns the course; altered or
         // cropped courses retain live source artwork without this substitute.
@@ -1636,6 +1642,15 @@ mod signature_tests {
         )
     }
     #[test]
+    fn kanto_native_black_room_framing_does_not_acquire_a_wall_model() {
+        let drawing=INTERIOR_DRAWINGS.iter().find(|d|d.tileset=="players_house"
+            && d.block==4 && d.kind==ModelKind::WallDomestic).unwrap();
+        let (tiles,g)=source_fixture(drawing);let refs=tiles.iter().collect::<Vec<_>>();
+        assert!(!resolve("RedsHouse2F",&refs,&g,None).iter().any(|p|p.kind==ModelKind::WallDomestic));
+        assert!(resolve("PlayersHouse1F",&refs,&g,None).iter().any(|p|p.kind==ModelKind::WallDomestic),
+            "the unrelated Johto drawing retains its existing interpretation");
+    }
+    #[test]
     fn selected_signatures_are_complete_bounded_drawings() {
         assert_eq!(INTERIOR_DRAWINGS.len(), 144);
         for d in INTERIOR_DRAWINGS {
@@ -1711,7 +1726,7 @@ mod signature_tests {
             let p = resolve("PlayersHouse2F", &refs, &g, None).into_iter()
                 .find(|p| p.kind == ModelKind::PictureFrame).unwrap();
             let mut mesh = TerrainMeshData::default();
-            assert!(append(&mut mesh, &refs, &g, &p, &mut vec![false; cells.len()], [0, 0]));
+            assert!(append(&mut mesh, "PlayersHouse2F", &refs, &g, &p, &mut vec![false; cells.len()], [0, 0]));
             assert_eq!(mesh.textured.quad_count(), 8);
             cells[0].source.tile_index = 0xff;
             let refs: Vec<_> = cells.iter().collect();
@@ -1756,7 +1771,7 @@ mod signature_tests {
             .unwrap();
         let mut mesh = TerrainMeshData::default();
         let mut claims = vec![false; tiles.len()];
-        assert!(append(&mut mesh, &refs, &g, &p, &mut claims, [0, 0]));
+        assert!(append(&mut mesh, "PlayersHouse2F", &refs, &g, &p, &mut claims, [0, 0]));
         // Four original-floor quads plus four unaltered live picture quads.
         assert_eq!(mesh.textured.quad_count(), 8);
         assert!(

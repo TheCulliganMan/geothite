@@ -151,8 +151,11 @@ struct Instance {
 
 struct PropInstance {
     entity: Entity,
+    pedals: Option<crate::bicycle::Pedals>,
     kind: actor_props::PropKind,
     stone: Option<(CaveStoneFinish, u8)>,
+    gold_gym_stone: bool,
+    model_palette: Option<crystal_render_api::VisualPokemonModelPalette>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -176,7 +179,7 @@ pub(crate) struct ModeledActors {
     shadow_material: Option<Handle<StandardMaterial>>,
     instances: HashMap<VisualActorId, Instance>,
     map_id: String,
-    prop_meshes: HashMap<(actor_props::PropKind, Option<(CaveStoneFinish, u8)>), Handle<Mesh>>,
+    prop_meshes: HashMap<(actor_props::PropKind, Option<(CaveStoneFinish, u8)>, bool, Option<crystal_render_api::VisualPokemonModelPalette>), Handle<Mesh>>,
     stone_materials: HashMap<CaveStoneFinish, Handle<VoxelMaterial>>,
     props: HashMap<VisualActorId, PropInstance>,
 }
@@ -384,6 +387,9 @@ pub(crate) fn sync(
             material.clone()
         };
         let kind = prop_kind(actor).expect("filtered resolved prop");
+        let gold_gym_stone = matches!(frame.map_id.as_ref(), "CianwoodGym" | "BlackthornGym2F")
+            && matches!(actor.id, VisualActorId::Object(_))
+            && kind == actor_props::PropKind::Boulder;
         let stone = if matches!(actor.id, VisualActorId::Object(_))
             && matches!(kind, actor_props::PropKind::Boulder | actor_props::PropKind::Rock) {
             cave_stone_finish(&frame).map(|finish| {
@@ -426,7 +432,8 @@ pub(crate) fn sync(
         if state
             .props
             .get(&actor.id)
-            .is_some_and(|instance| instance.kind != kind || instance.stone != stone)
+            .is_some_and(|instance| instance.kind != kind || instance.stone != stone
+                || instance.gold_gym_stone != gold_gym_stone || instance.model_palette != actor.model_palette)
         {
             let old = state.props.remove(&actor.id).unwrap();
             commands.entity(old.entity).despawn();
@@ -438,8 +445,10 @@ pub(crate) fn sync(
         } else {
             let mesh = state
                 .prop_meshes
-                .entry((kind,stone))
-                .or_insert_with(|| meshes.add(if let Some((finish,variant))=stone {
+                .entry((kind,stone,gold_gym_stone,actor.model_palette))
+                .or_insert_with(|| meshes.add(if gold_gym_stone {
+                    actor_props::gold_gym_boulder_mesh().into_mesh()
+                } else if let Some((finish,variant))=stone {
                     let mut data=crate::mesh::movable_cave_stone(finish==CaveStoneFinish::Frozen,
                         finish==CaveStoneFinish::Dark, variant);
                     // Smashable rocks retain their smaller authored extent.
@@ -449,7 +458,11 @@ pub(crate) fn sync(
                         }
                     }
                     data.into_mesh()
-                } else { actor_props::mesh(kind).into_mesh() }))
+                } else {
+                    let data = actor_props::mesh(kind);
+                    actor.model_palette.map_or(data.clone(), |palette|
+                        crate::pokemon_appearance::mesh(&data, palette)).into_mesh()
+                }))
                 .clone();
             let entity = if let Some(material) = cave_material {
                 commands.spawn(((Mesh3d(mesh),
@@ -464,7 +477,10 @@ transform,),
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ))
                 .id() };
-            state.props.insert(actor.id, PropInstance { entity, kind, stone });
+            let pedals = matches!(kind, actor_props::PropKind::ChrisBike | actor_props::PropKind::KrisBike)
+                .then(|| crate::bicycle::spawn_pedals(&mut commands, &mut meshes,
+                    material.clone(), entity, 0.));
+            state.props.insert(actor.id, PropInstance { entity, pedals, kind, stone, gold_gym_stone, model_palette: actor.model_palette });
         }
         if let Some(entity) = cards.entities.get(&actor.id)
             && let Ok(mut visibility) = card_visibility.get_mut(*entity)
@@ -565,19 +581,19 @@ model_transform(
                         scale * person_height(kind) / imported.height * crate::npc_appearance::look(kind).width,
                         scale * person_height(kind) / imported.height,
                         scale * person_height(kind) / imported.height)));
-                let mut person = state.people_gpu.spawn(
+                let person = state.people_gpu.spawn(
                     name,
                     kind,
                     imported,
                     entity,
                     matches!(actor.id, VisualActorId::RemotePlayer(_)),
+                    actor.source_id.ends_with("_bike"),
                     &mut commands,
                     &mut meshes,
                     &mut materials,
                     &mut images,
                     &mut binds,
                 );
-                person.bicycle = actor.source_id.ends_with("_bike");
                 let shadow = commands
                     .spawn((
                         (Mesh3d(state.shadow_mesh.as_ref().unwrap().clone()),
@@ -610,13 +626,33 @@ Transform::from_xyz(0.0, -0.001, 0.0)
         }
 
     }
+    // Update after the rider has advanced, including its initial zero phase.
+    // Each bike owns its articulated entities; cached frame meshes stay shared.
+    for (id, prop) in &state.props {
+        if let Some(pedals) = &prop.pedals {
+            let phase = state.instances.get(id).map(|rider| rider.motion.phase).unwrap_or(0.);
+            if let Some(rider) = state.instances.get(id)
+                && let Ok(rider_root) = transforms.get(rider.entity)
+            {
+                let position = rider_root.translation;
+                let rotation = rider_root.rotation;
+                if let Ok(mut bike_root) = transforms.get_mut(prop.entity) {
+                    // Preserve the separately authored bike scale, but use
+                    // the rider's presented turn and exact ground anchor.
+                    bike_root.translation = position;
+                    bike_root.rotation = rotation;
+                }
+            }
+            pedals.set_phase(&mut commands, phase);
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     fn actor() -> VisualActor {
-        VisualActor {
+        VisualActor { model_palette: None,
             id: VisualActorId::Player,
             source_id: "chris".into(),
             texture: Handle::default(),
@@ -653,6 +689,55 @@ mod tests {
             .add_systems(Update, sync);
         app
     }
+    #[test]
+    #[ignore = "requires supplied mounted player rigs and paintings"]
+    fn mounted_runtime_riders_and_bikes_share_turns_anchors_and_independent_phases() {
+        let mut app = actor_test_app();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.actors[0].source_id = "chris_bike".into();
+            let mut other = frame.actors[0].clone();
+            other.id = VisualActorId::Object(19);
+            other.source_id = "kris_bike".into();
+            other.center.x += 40.;
+            other.facing = Some(Vec2::NEG_Y);
+            frame.actors.push(other);
+        }
+        app.update();
+        for step in 0..24 {
+            app.world_mut().resource_mut::<Time>()
+                .advance_by(std::time::Duration::from_secs_f32(1./60.));
+            {
+                let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.actors[0].center.x += 0.3;
+                frame.actors[0].facing = Some(Vec2::NEG_Y);
+            }
+            app.update();
+            let state = app.world().resource::<ModeledActors>();
+            for id in [VisualActorId::Player,VisualActorId::Object(19)] {
+                let rider = &state.instances[&id];
+                let prop = &state.props[&id];
+                let person = app.world().get::<Transform>(rider.entity).unwrap();
+                let bike = app.world().get::<Transform>(prop.entity).unwrap();
+                assert_eq!(person.translation,bike.translation,"mounted anchors diverged");
+                assert!(person.rotation.abs_diff_eq(bike.rotation,1e-6),"bike snapped ahead of rider turn");
+                assert_eq!(bike.scale,Vec3::splat(16.),"bike must retain independent authored scale");
+                let children = app.world().get::<Children>(prop.entity).unwrap();
+                assert_eq!(children.len(),3);
+                let crank = app.world().get::<Transform>(children[0]).unwrap();
+                assert!(crank.rotation.abs_diff_eq(Quat::from_rotation_x(-rider.motion.phase),1e-6),
+                    "crank must use the same frame's rider phase");
+            }
+            assert_eq!(state.instances[&VisualActorId::Object(19)].motion.phase,0.);
+            assert!(state.instances[&VisualActorId::Player].motion.phase>0.);
+            if step==0 {
+                let rider = &state.instances[&VisualActorId::Player];
+                assert!((rider.motion.yaw-facing_yaw(Vec2::NEG_Y)).abs()>0.1,
+                    "test must exercise an interpolated turn rather than its settled endpoint");
+            }
+        }
+    }
+
     #[test]
     fn every_human_kind_has_an_explicit_external_appearance() {
         assert_eq!(KINDS.len(), 75);
@@ -1025,6 +1110,56 @@ mod tests {
             "unknown_decoration".into();
         app.update();
         assert!(app.world().resource::<ModeledActors>().props.is_empty());
+    }
+    #[test]
+    fn gold_gym_boulder_palette_moves_with_same_object_and_does_not_leak_maps() {
+        let mut app = actor_test_app();
+        let mut prop = actor();
+        prop.id = VisualActorId::Object(19);
+        prop.source_id = "boulder".into();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id = "CianwoodGym".into();
+            frame.actors.push(prop);
+        }
+        app.update();
+        let first = app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity;
+        assert!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].gold_gym_stone);
+        let count = app.world().resource::<Assets<Mesh>>().len();
+        let position = app.world().get::<Transform>(first).unwrap().translation;
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].center.x += 8.;
+        app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity, first);
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), count);
+        let moved = app.world().get::<Transform>(first).unwrap().translation;
+        assert_eq!(moved.x - position.x, 8.);
+        assert_eq!(moved.y, position.y);
+        let gold_mesh = app.world().get::<Mesh3d>(first).unwrap().0.clone();
+        let prop_mesh_count = app.world().resource::<ModeledActors>().prop_meshes.len();
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "BlackthornGym2F".into();
+        app.update();
+        let other_gold = &app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)];
+        assert!(other_gold.gold_gym_stone);
+        let blackthorn_entity = other_gold.entity;
+        // A real map transition rebuilds entities, while preserving the
+        // dedicated palette mesh cache shared by these two explicit maps.
+        assert_ne!(blackthorn_entity, first);
+        assert!(app.world().get_entity(first).is_err());
+        assert_eq!(app.world().get::<Mesh3d>(blackthorn_entity).unwrap().0, gold_mesh);
+        assert_eq!(app.world().resource::<ModeledActors>().prop_meshes.len(), prop_mesh_count);
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].center.x += 8.;
+        app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)].entity, blackthorn_entity);
+        let blackthorn_moved = app.world().get::<Transform>(blackthorn_entity).unwrap().translation;
+        assert_eq!(blackthorn_moved.x - moved.x, 8.);
+        assert_eq!(blackthorn_moved.y, moved.y);
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "PewterGym".into();
+        app.update();
+        let next = &app.world().resource::<ModeledActors>().props[&VisualActorId::Object(19)];
+        assert!(!next.gold_gym_stone);
+        assert_ne!(next.entity, blackthorn_entity);
+        assert_eq!(app.world().get::<Transform>(next.entity).unwrap().translation, blackthorn_moved);
+        assert!(app.world().get_entity(blackthorn_entity).is_err());
     }
     #[test]
     fn cave_boulder_material_and_mesh_follow_environment_while_movement_reuses_the_object() {

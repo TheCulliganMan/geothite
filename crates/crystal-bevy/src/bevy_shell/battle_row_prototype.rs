@@ -72,7 +72,7 @@ fn immersive_row_prototype_supported(
         && battlers.iter().all(|battler| {
             battler
                 .as_ref()
-                .is_some_and(|b| b.visible && b.allow_species_model && !b.shiny)
+                .is_some_and(|b| b.visible && b.allow_species_model && (!b.shiny || b.model_palette.is_some()))
         })
         && animation
             .bg_events

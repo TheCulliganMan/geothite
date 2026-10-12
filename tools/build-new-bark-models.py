@@ -196,28 +196,6 @@ def make_lab():
   for zz in [2.68,2.75,2.82,2.89]:facade_cube('Vent cream louvers',0,zz,.56,.023,-2.788,.022,'plaster_light',a)
 
 
-def make_tree():
- begin('tree')
- cone('Broad tree trunk',(0,0,.8),.20,.145,1.6,'timber_light',7)
- for i in range(5):
-  a=i*math.tau/5+.2
-  rod('Spreading roots',(.03*math.cos(a),.03*math.sin(a),.19),(.42*math.cos(a),.37*math.sin(a),.065),.08,'timber',5)
- for a in [.2,2.3,4.5]:rod('Forked bough',(0,0,1.12),(.43*math.cos(a),.4*math.sin(a),2.13),.10,'timber_light',6)
- lobes=[((0,0,2.35),(1.08,.93,.95)),((-.68,-.02,2.0),(.62,.66,.61)),((.64,.02,2.12),(.63,.66,.66)),((-.16,-.63,2.15),(.70,.61,.65)),((.14,.54,2.29),(.76,.62,.65)),((-.15,.06,2.96),(.64,.57,.56))]
- for i,(loc,scale) in enumerate(lobes):
-  o=ico('Sculpted broadleaf crown',loc,scale,'leaf',2)
-  for name in ['leaf_light','leaf_dark','leaf_gold']:o.data.materials.append(MATS[name])
-  for v in o.data.vertices:v.co*=random.uniform(.95,1.045)
-  o.data.update()
-  for poly in o.data.polygons:
-   n=poly.normal; r=random.random()
-   poly.material_index=3 if n.z>.45 and r>.68 else 1 if n.z>.1 and r>.23 else 2 if n.z<-.35 else 0
- # grounded leaf tufts, deliberately kept within root footprint
- for i in range(4):
-  a=i*1.6
-  o=ico('Root foliage',(.28*math.cos(a),.25*math.sin(a),.095),(.19,.13,.09),'leaf',1)
-
-
 def petal(n,center,angle,r,mat):
  cx,cy,cz=center;ca=math.cos(angle);sa=math.sin(angle)
  verts=[(cx,cy,cz-.015),(cx+ca*r*.60-sa*r*.37,cy+sa*r*.60+ca*r*.37,cz+.015),(cx+ca*r,cy+sa*r,cz+.035),(cx+ca*r*.60+sa*r*.37,cy+sa*r*.60-ca*r*.37,cz+.015),(cx+ca*r*.50,cy+sa*r*.50,cz+.060)]
@@ -310,7 +288,7 @@ def make_npc(kind):
   facade_cube('Glasses bridge',0,1.314,.061,.016,-.191,.020,'ink')
   cube('Scientist top hair',(0,.031,1.57),(.257,.245,.06),'stone_light',.025)
 
-make_house();make_lab();make_tree();make_flowers();make_trainer();make_npc('teacher');make_npc('scientist')
+make_house();make_lab();make_flowers();make_trainer();make_npc('teacher');make_npc('scientist')
 # Export each model as a compact primitive per material. Unapplied camera/light geometry never enters a model.
 def export_asset(name,col):
  bpy.ops.object.select_all(action='DESELECT')

@@ -1,5 +1,40 @@
-//! Garden clusters occupy native animated-flower cells, never nearby lawn.
+//! Native flower heads and low foliage within source-complete garden beds.
 use super::*;
+
+pub(in crate::mesh) fn append_underplanting(mesh: &mut SurfaceMeshData, bounds: [f32; 4], cell: [i32; 2]) {
+    let [w, e, n, s] = bounds;
+    let scale = (e - w).min(s - n);
+    let seed = (cell[0] as u32).wrapping_mul(0x9e3779b9)
+        ^ (cell[1] as u32).wrapping_mul(0x85ebca6b);
+    let phase = (seed % 997) as f32 / 997. * std::f32::consts::TAU;
+    for (plant, [x, z]) in [[0.27, 0.27], [0.73, 0.27], [0.27, 0.73], [0.73, 0.73]]
+        .into_iter().enumerate()
+    {
+        let turn = phase + plant as f32 * 2.399963;
+        let center = Vec3::new(w + (e - w) * x + turn.cos() * scale * 0.009,
+            scale * 0.018, n + (s - n) * z + turn.sin() * scale * 0.009);
+        for leaf in 0..8 {
+            let a = turn + leaf as f32 * std::f32::consts::TAU / 8.;
+            let along = Vec3::new(a.cos(), 0., a.sin());
+            let across = Vec3::new(-a.sin(), 0., a.cos());
+            let length = scale * (0.235 + 0.014 * (a * 1.7 + phase).sin());
+            let middle = center + along * length * 0.53
+                + Vec3::Y * scale * (0.20 + 0.035 * (a + phase).sin());
+            let tip = center + along * length
+                + Vec3::Y * scale * (0.10 + 0.035 * (a * 1.3).cos());
+            let left = middle - across * scale * 0.095;
+            let right = middle + across * scale * 0.095;
+            let ridge = middle + Vec3::Y * scale * 0.03;
+            let tone = 0.92 + 0.09 * (turn * 1.3 + leaf as f32).sin();
+            for p in [[center, left, ridge, center], [left, tip, ridge, left]] {
+                face(mesh, p, [0.095 * tone, 0.235 * tone, 0.045 * tone, 1.]);
+            }
+            for p in [[tip, right, ridge, tip], [right, center, ridge, right]] {
+                face(mesh, p, [0.15 * tone, 0.31 * tone, 0.055 * tone, 1.]);
+            }
+        }
+    }
+}
 
 pub(super) fn append(mesh: &mut SurfaceMeshData, bounds: [f32; 4], base: f32, cell: [i32; 2]) {
     let [w, e, n, s] = bounds;
@@ -82,6 +117,26 @@ fn face(mesh: &mut SurfaceMeshData, mut vertices: [Vec3; 4], color: [f32; 4]) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bed_underplanting_stays_low_inside_its_cells_and_uses_world_phase() {
+        let mut first = SurfaceMeshData::default();
+        append_underplanting(&mut first, [0., 8., 0., 8.], [20, 40]);
+        assert!(first.positions.iter().all(|p| p[0] > 0. && p[0] < 8.
+            && p[2] > 0. && p[2] < 8. && p[1] > 0. && p[1] < 8. * 0.30));
+        assert!(first.normals.iter().all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.001));
+        let mut shifted = SurfaceMeshData::default();
+        append_underplanting(&mut shifted, [-16., -8., 24., 32.], [20, 40]);
+        assert_eq!(first.indices, shifted.indices);
+        assert_eq!(first.colors, shifted.colors);
+        for (a, b) in first.positions.iter().zip(&shifted.positions) {
+            assert!((a[0] - 16. - b[0]).abs() < 0.00001);
+            assert_eq!(a[1], b[1]);
+            assert!((a[2] + 24. - b[2]).abs() < 0.00001);
+        }
+        let mut neighbor = SurfaceMeshData::default();
+        append_underplanting(&mut neighbor, [0., 8., 0., 8.], [21, 40]);
+        assert_ne!(first.positions, neighbor.positions);
+    }
     #[test]
     fn park_flower_clusters_stay_inside_native_cell_and_follow_map_phase() {
         let mut first = SurfaceMeshData::default();

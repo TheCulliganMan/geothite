@@ -117,3 +117,33 @@ mod tests {
         );
     }
 }
+
+
+/// Tohjo's upper pool is the connected native water north of a complete
+/// cascade. It must be separated from the receiving pool by the cascade;
+/// ambiguous/clipped layouts are never assigned an invented elevation.
+pub(crate) fn tohjo_upstream_pool(map:&str,cells:&[&VisualTile],width:usize,height:usize,
+    falls:&[WaterfallPlacement])->Vec<bool> {
+    let mut upper=vec![false;cells.len()];
+    if map!="TohjoFalls" || cells.len()!=width.saturating_mul(height) {return upper;}
+    let pool=|i:usize|{let s=&cells[i].source;
+        matches!(s.tileset_id.as_ref(),"cave"|"dark_cave") && s.tile_index==0x14
+            && s.subtile_column<4 && s.subtile_row<4};
+    for fall in falls {
+        if fall.row==0 || fall.row+fall.height>=height {continue;}
+        if !(fall.column..fall.column+fall.width).all(|x|
+            pool((fall.row-1)*width+x) && pool((fall.row+fall.height)*width+x)) {continue;}
+        let mut visited=HashSet::new();let mut queue=VecDeque::new();
+        for x in fall.column..fall.column+fall.width {queue.push_back((fall.row-1)*width+x);}
+        while let Some(i)=queue.pop_front() {
+            if !visited.insert(i) {continue;}
+            let x=i%width;let y=i/width;
+            for (x,y) in [(x.wrapping_sub(1),y),(x+1,y),(x,y.wrapping_sub(1)),(x,y+1)] {
+                if x<width && y<height && pool(y*width+x) && !visited.contains(&(y*width+x)) {queue.push_back(y*width+x);}
+            }
+        }
+        if visited.iter().any(|i|i/width>=fall.row+fall.height) {continue;}
+        for i in visited {upper[i]=true;}
+    }
+    upper
+}

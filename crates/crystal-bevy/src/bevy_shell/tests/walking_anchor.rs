@@ -1,4 +1,20 @@
 #[test]
+fn cherrygrove_border_grove_preserves_western_sea_and_authored_maps() {
+    let block = |x, y| exterior_border_block("CherrygroveCity", "johto", 0x35, 80, x, y);
+    // Behind the Center and along the eastern tree boundary.
+    for (x, y) in [(56, -4), (79, -1), (80, 0), (88, 20)] {
+        assert_eq!(block(x, y), 0x05);
+    }
+    // The western ocean, island coast and southern sea keep their water.
+    for (x, y) in [(-4, 12), (0, -4), (23, -1), (8, 36), (40, 40)] {
+        assert_eq!(block(x, y), 0x35);
+    }
+    assert_eq!(exterior_border_block("NewBarkTown", "johto", 0x35, 80, 88, 0), 0x35);
+    assert_eq!(exterior_border_block("CherrygroveCity", "kanto", 0x35, 80, 88, 0), 0x35);
+    assert_eq!(exterior_border_block("CherrygroveCity", "johto", 0x01, 80, 88, 0), 0x01);
+}
+
+#[test]
 fn walking_anchor_placement_is_deterministic_and_collision_bounded() {
     use crate::core::world::collision::permissions as p;
     assert!(walking_plain_support(p::FLOOR));
@@ -1382,4 +1398,86 @@ fn walking_anchor_ice_preview_keeps_source_floor_and_excludes_real_sliding_ice()
     assert!(!map.objects.iter().any(|object| object.object_type == "OBJECTTYPE_TRAINER"));
     assert!(!map.events.warps.iter().any(|warp| warp_tile_position_checked(warp)
         .is_some_and(|tile| [TilePosition::new(8,16),TilePosition::new(9,16)].contains(&tile))));
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn location_sale_flag_fixture_applies_real_entry_callbacks_and_block_overrides() {
+    let asset_root=AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime=workspace_desktop_runtime(&asset_root);
+    let spawn_identifier=runtime.title_new_game_spawn_identifier().unwrap();
+    let start=BevyShellStart::NewGameAtRuntimeTile{spawn_identifier,
+        map_name:"GoldenrodDeptStoreRoof".into(),tile_x:5,tile_y:3};
+    let base=initialize_bevy_runtime_shell(asset_root.clone(),runtime.clone(),start.clone(),
+        BevyShellConfig{render_test_hour:Some(12),..Default::default()}).unwrap();
+    let sale=initialize_bevy_runtime_shell(asset_root,runtime.clone(),start,
+        BevyShellConfig{render_test_hour:Some(12),
+            render_test_preview_flag:Some("ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON".into()),
+            ..Default::default()}).unwrap();
+    let declared=&runtime.data().maps["GoldenrodDeptStoreRoof"].script_block_changes;
+    let changes:Vec<_>=declared.iter().filter(|c|c.source_script.starts_with(".SaleIsOn@")).collect();
+    assert_eq!(changes.len(),2);
+    let stride=crate::core::systems::script_blocks::CHANGE_BLOCK_COORD_STRIDE;
+    for change in changes {
+        let xy=(change.x/stride,change.y/stride);
+        let current=sale.shell.session().state().map_block_overrides
+            .get("GoldenrodDeptStoreRoof").and_then(|blocks|blocks.get(&xy));
+        assert_eq!(current,Some(&change.block_id));
+        let previous=base.shell.session().state().map_block_overrides
+            .get("GoldenrodDeptStoreRoof").and_then(|blocks|blocks.get(&xy));
+        assert_ne!(previous,current,"sale fixture must visibly differ from the base layout");
+    }
+    assert_eq!(sale.shell.snapshot().unwrap().overworld.map_name,"GoldenrodDeptStoreRoof");
+    assert!(sale.shell.session().state().flags.is_script_flag_set("EVENT_GOLDENROD_SALE_ON").unwrap());
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn location_indoor_flag_fixtures_apply_declared_gym_and_basement_layouts() {
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    // Exercise real map-entry callbacks, not direct block insertion. Derive
+    // replacement coordinates and block identities from the loaded pack.
+    let cases = [
+        ("BlackthornGym1F", "EVENT_BOULDER_IN_BLACKTHORN_GYM_1",
+            "BlackthornGym1FBouldersCallback", 2),
+        ("BlackthornGym1F", "EVENT_BOULDER_IN_BLACKTHORN_GYM_2",
+            ".skip1@BlackthornGym1FBouldersCallback", 2),
+        ("BlackthornGym1F", "EVENT_BOULDER_IN_BLACKTHORN_GYM_3",
+            ".skip2@BlackthornGym1FBouldersCallback", 2),
+        ("GoldenrodDeptStoreB1F", "EVENT_RECEIVED_CARD_KEY",
+            ".GotCardKey@GoldenRodDeptStoreB1FClearBoxesCallback", 0),
+        ("GoldenrodDeptStoreB1F", "EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_2",
+            ".Layout2@GoldenRodDeptStoreB1FClearBoxesCallback", 0),
+        ("GoldenrodDeptStoreB1F", "EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_3",
+            ".Layout3@GoldenRodDeptStoreB1FClearBoxesCallback", 0),
+    ];
+    let stride = crate::core::systems::script_blocks::CHANGE_BLOCK_COORD_STRIDE;
+    for (map, flag, script, command_index) in cases {
+        let start = BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: spawn_identifier.clone(), map_name: map.into(),
+            tile_x: if map == "BlackthornGym1F" { 5 } else { 9 }, tile_y: 9,
+        };
+        let base = initialize_bevy_runtime_shell(asset_root.clone(), runtime.clone(), start.clone(),
+            BevyShellConfig {render_test_hour: Some(12), ..Default::default()}).unwrap();
+        let changed = initialize_bevy_runtime_shell(asset_root.clone(), runtime.clone(), start,
+            BevyShellConfig {render_test_hour: Some(12), render_test_preview_flag: Some(flag.into()),
+                ..Default::default()}).unwrap();
+        let change = runtime.data().maps[map].script_block_changes.iter()
+            .find(|c| c.source_script == script && c.command_index == command_index).unwrap();
+        let xy = (change.x / stride, change.y / stride);
+        let current = changed.shell.session().state().map_block_overrides
+            .get(map).and_then(|blocks| blocks.get(&xy));
+        let previous = base.shell.session().state().map_block_overrides
+            .get(map).and_then(|blocks| blocks.get(&xy));
+        assert_eq!(current, Some(&change.block_id), "{map}: {flag}");
+        assert_ne!(current, previous, "{map}: {flag} must change the base drawing");
+        assert_eq!(changed.shell.current_map_name(), map);
+        assert!(changed.shell.session().state().flags.is_script_flag_set(flag).unwrap());
+    }
 }

@@ -6277,7 +6277,18 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             } else {
                 let sub_x = source_x.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
                 let sub_y = source_y.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                (source_map.attributes.border_block as u16, sub_x, sub_y)
+                (
+                    exterior_border_block(
+                        &source_map.map_name,
+                        &source_map.attributes.tileset_name,
+                        source_map.attributes.border_block,
+                        source.width,
+                        source_x,
+                        source_y,
+                    ),
+                    sub_x,
+                    sub_y,
+                )
             };
             let Some((source_tile_index, tile_handle)) =
                 tileset_art.cache.get(source_art_key).and_then(|art| {
@@ -6807,6 +6818,17 @@ Transform::from_xyz(0.0, 0.0, 2.4),),
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
+            let model_palette = match visible_map_object_model_palette(
+                &runtime_shell.asset_root, &snapshot.overworld.map_name, object,
+                resolved_object_sprite, &model_source_id,
+                &snapshot.script_events.variable_sprites,
+            ) {
+                Ok(palette) => palette,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
+            };
             // ASM object_event palette 0 means "use the sprite's compiled
             // default", not palette bank 0.  The TS renderer resolves this
             // before instantiating the animation; doing a raw `pal & 7` here
@@ -7096,6 +7118,7 @@ Transform::from_xyz(0.0, 0.0, 2.4),),
                     object_index: index,
                     object_identifier: object.object_identifier.clone(),
                     source_id: Arc::from(model_source_id.as_str()),
+                    model_palette,
                     above_priority: objects_above_priority.contains(&index),
                     standing: frame.handle.clone(),
                     walking: walking_frame.as_ref().map(|frame| frame.handle.clone()),

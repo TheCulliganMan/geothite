@@ -43,6 +43,22 @@ pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     (source.tile_index == expected).then_some((local_column, local_row))
 }
 
+/// Complete pink perimeter strips; the terminal blocks end in a separate cap row.
+pub(crate) fn perimeter_local(s: &VisualTileSource) -> Option<(u8,u8,usize,usize)> {
+    if s.tileset_id.as_ref() != "champions_room" || s.subtile_column>=4 || s.subtile_row>=4 {
+        return None;
+    }
+    let x=match s.metatile_id {
+        0x24|0x25 if s.subtile_column<2=>s.subtile_column,
+        0x26|0x27 if s.subtile_column>=2=>s.subtile_column-2,
+        _=>return None,
+    };
+    let tile=if matches!(s.metatile_id,0x24|0x27) && s.subtile_row==3 {
+        [0x1a,0x1b][x as usize]
+    } else {[0x0a,0x0b][x as usize]};
+    (s.tile_index==tile).then_some((x,s.subtile_row,2,4))
+}
+
 #[cfg(test)]
 mod tests {
     use std::sync::Arc;
@@ -59,6 +75,23 @@ mod tests {
         }
     }
 
+    #[test]
+    fn olivine_perimeter_requires_exact_strip_and_terminal_phase() {
+        for (block,offset) in [(0x24,0),(0x25,0),(0x26,2),(0x27,2)] {
+            for y in 0..4 {for x in 0..2 {
+                let tile=if matches!(block,0x24|0x27) && y==3 {0x1a+x as u16} else {0x0a+x as u16};
+                let mut s=source(block,x+offset,y,tile);
+                assert_eq!(perimeter_local(&s),Some((x,y,2,4)));
+                s.tile_index^=0x80;assert_eq!(perimeter_local(&s),None);
+            }}
+            for (x,y) in [(4,0),(255,0),(0,4),(0,255)] {
+                assert_eq!(perimeter_local(&source(block,x,y,0x0a)),None);
+            }
+        }
+        assert_eq!(perimeter_local(&source(0x25,2,0,0x0a)),None);
+        assert_eq!(perimeter_local(&source(0x26,0,0,0x0a)),None);
+        assert_eq!(perimeter_local(&source(0x23,0,0,0x0a)),None);
+    }
     #[test]
     fn source_phase_rejects_rocks_in_native_floor_and_invalid_statue_rows() {
         for (x,y,tile) in [(2,2,0x46),(3,2,0x47),(2,3,0x56),(3,3,0x57)] {
