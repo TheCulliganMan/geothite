@@ -1,9 +1,38 @@
 //! Place front clothing paintings on the source rig's separate front island.
 use crate::{mesh::SurfaceMeshData, npc_appearance::Look};
 
+/// These cloth rectangles have gray separator padding inside the source
+/// shirt island. Keep complete cloth faces within the painted fabric, leaving
+/// adjacent neck, hands and trousers on their own UV islands.
+pub(crate) fn avoid_shirt_gutter(mesh: &mut SurfaceMeshData, look: Look,
+    joints: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
+    if !matches!(look.texture_key, "will" | "surge" | "gentleman" | "rocket"
+        | "fishing_guru" | "gameboy_kid" | "biker" | "cooltrainer_m"
+        | "bill" | "cal" | "gym_guide" | "standing_youngster"
+        | "clerk" | "outdoorsman" | "unused_guy" | "bug_catcher" | "rocker") { return; }
+    for face in mesh.indices.chunks_exact_mut(3) {
+        let ids = [face[0] as usize, face[1] as usize, face[2] as usize];
+        if !ids.iter().all(|&i| (1.34..2.57).contains(&mesh.positions[i][1])
+            && mesh.uvs[i][0] < 0.625 && mesh.uvs[i][1] > 0.46) { continue; }
+        if !ids.iter().any(|&i| mesh.uvs[i][0] > 0.595 || mesh.uvs[i][1] < 0.51) {
+            continue;
+        }
+        for (index, &i) in face.iter_mut().zip(&ids) {
+            *index = mesh.positions.len() as u32;
+            mesh.positions.push(mesh.positions[i]);
+            mesh.normals.push(mesh.normals[i]);
+            mesh.colors.push(mesh.colors[i]);
+            mesh.uvs.push([mesh.uvs[i][0].clamp(0.005, 0.595),
+                mesh.uvs[i][1].clamp(0.51, 0.99)]);
+            joints.push(joints[i]); weights.push(weights[i]);
+        }
+    }
+}
+
 pub(crate) fn map_front(mesh: &mut SurfaceMeshData, look: Look,
     joints: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
     let width = match look.texture_key {
+        "will" => 0.25,
         "chris" | "super_nerd" | "gramps" | "youngster" | "kris" | "red" | "mom" | "bugsy" | "koga" | "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m" => 0.90,
         "lass" | "nurse" | "cooltrainer_f" | "granny" | "jasmine" | "karen" | "beauty" | "daisy" | "clair" | "sabrina" | "erika" | "receptionist" | "whitney" | "misty" | "janine" | "kimono_girl" => 0.56,
         _ => return,
@@ -32,8 +61,17 @@ pub(crate) fn map_front(mesh: &mut SurfaceMeshData, look: Look,
             // outer front shirt corners inside the adjacent fabric gutter.
             let (left, right) = if matches!(look.texture_key, "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m") { (0.01, 0.595) }
                 else if width > 0.8 { (0.01, 0.615) } else { (0.13, 0.49) };
-            let u = (0.3125 + p[0] * width).clamp(left, right);
+            let u = if look.texture_key == "will" {
+                (0.3074 + p[0] * width).clamp(0.235, 0.38)
+            } else {
+                (0.3125 + p[0] * width).clamp(left, right)
+            };
             let mut v = (0.475 + (2.52 - p[1]) * 0.45).clamp(0.475, 0.965);
+            if look.texture_key == "will" {
+                // The candidate's measured front collar starts at v=.7097.
+                // Its separate rear island stays on uninterrupted red cloth.
+                v = (0.7097 + (2.52 - p[1]) * 0.235).clamp(0.7097, 0.985);
+            }
             if matches!(look.texture_key, "clair" | "sabrina") {
                 // These raised collars extend above the shoulder fabric in
                 // the painting. Keep the source shoulder ring below the skin
@@ -194,6 +232,69 @@ mod tests {
     use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
 
     #[test]
+    #[ignore = "requires supplied rigs and shirt-gutter paintings"]
+    fn supplied_shirt_gutters_sample_cloth_and_preserve_other_islands() {
+        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for (_, kind) in crate::new_bark_actors::character_meshes::SOURCE_KINDS {
+            let look=crate::npc_appearance::look(kind);
+            let rig=PersonRig::parse(&std::fs::read(root.join(format!(
+                "people/kenney/{}.glb",look.base))).unwrap()).unwrap();
+            let mut mesh=rig.mesh.clone();let mut ids=rig.ids.clone();let mut weights=rig.weights.clone();
+            avoid_shirt_gutter(&mut mesh,look,&mut ids,&mut weights);
+            if !matches!(kind, CharacterKind::Will | CharacterKind::Surge
+                | CharacterKind::Gentleman | CharacterKind::Rocket
+                | CharacterKind::FishingGuru | CharacterKind::GameboyKid | CharacterKind::Biker
+                | CharacterKind::CooltrainerM | CharacterKind::Bill | CharacterKind::Cal
+                | CharacterKind::GymGuide | CharacterKind::StandingYoungster
+                | CharacterKind::Clerk | CharacterKind::Outdoorsman | CharacterKind::UnusedGuy
+                | CharacterKind::BugCatcher | CharacterKind::Rocker) {
+                assert_eq!(mesh.indices,rig.mesh.indices);
+                assert_eq!(mesh.uvs,rig.mesh.uvs);
+                assert_eq!(mesh.positions,rig.mesh.positions);
+                assert_eq!(ids,rig.ids);assert_eq!(weights,rig.weights);
+                continue;
+            }
+            let painting=crate::npc_textures::decode(&std::fs::read(root.join(format!(
+                "people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
+            let mut changed=0;
+            for (source, updated) in rig.mesh.indices.chunks_exact(3).zip(mesh.indices.chunks_exact(3)) {
+                for (&a,&b) in source.iter().zip(updated) {
+                    let (a,b)=(a as usize,b as usize);
+                    assert_eq!(mesh.positions[b],rig.mesh.positions[a]);
+                    assert_eq!(mesh.normals[b],rig.mesh.normals[a]);
+                    assert_eq!(mesh.colors[b],rig.mesh.colors[a]);
+                    assert_eq!(ids[b],rig.ids[a]);assert_eq!(weights[b],rig.weights[a]);
+                    if a==b {assert_eq!(mesh.uvs[b],rig.mesh.uvs[a]);}
+                }
+                if source==updated {continue;}
+                changed+=1;
+                // Check the interior as well as corners: UV interpolation
+                // must not cross the separator, skin, or footwear artwork.
+                for a in 0..=8 { for b in 0..=8-a {
+                    let bary=[a as f32/8.,b as f32/8.,(8-a-b) as f32/8.];
+                    let uv: [f32;2]=std::array::from_fn(|axis| (0..3)
+                        .map(|i|mesh.uvs[updated[i] as usize][axis]*bary[i]).sum());
+                    let x=(uv[0]*painting.size.0 as f32) as u32;
+                    let y=(uv[1]*painting.size.1 as f32) as u32;
+                    let rgb=&painting.rgba[((y*painting.size.0+x)*4) as usize..][..3];
+                    let cloth=if matches!(kind,CharacterKind::Will | CharacterKind::Bill | CharacterKind::Cal) {
+                        rgb[0] as f32 > rgb[1] as f32*1.3 && rgb[0] as f32 > rgb[2] as f32*1.3
+                    } else if matches!(kind, CharacterKind::Surge | CharacterKind::Clerk | CharacterKind::Outdoorsman | CharacterKind::Rocker) {
+                        rgb[1] as f32 > rgb[0] as f32*1.12 && rgb[1] as f32 > rgb[2] as f32*1.3
+                    } else if kind==CharacterKind::UnusedGuy {
+                        rgb[0] as f32 > rgb[1] as f32*1.1 && rgb[1] as f32 > rgb[2] as f32*1.5
+                    } else {
+                        rgb[2] as f32 > rgb[1] as f32*1.2 && rgb[1] as f32 > rgb[0] as f32*1.1
+                    };
+                    assert!(cloth,"{} shirt sampled non-cloth {rgb:?} at {uv:?}",look.texture_key);
+                }}
+            }
+            assert!(changed>6,"{} gutter correction absent",look.texture_key);
+            assert_eq!(mesh.positions.len(),ids.len());assert_eq!(ids.len(),weights.len());
+        }
+    }
+
+    #[test]
     #[ignore = "requires supplied Kimono Girl painting and female rig"]
     fn supplied_kimono_girl_plain_regions_preserve_skin_and_rig() {
         let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
@@ -333,7 +434,7 @@ mod tests {
     #[ignore = "requires supplied Red/Misty paintings and rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_short_sleeves_sample_shirts_and_skin_without_moving_the_rig() {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::Red, CharacterKind::Misty, CharacterKind::Brock, CharacterKind::PokefanM] {
+        for kind in [CharacterKind::Red, CharacterKind::Misty, CharacterKind::Brock, CharacterKind::PokefanM, CharacterKind::Nurse] {
         let look = crate::npc_appearance::look(kind);
         let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb",look.base))).unwrap()).unwrap();
         let painting = crate::npc_textures::decode(&std::fs::read(root.join(format!("people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
@@ -358,7 +459,7 @@ mod tests {
             let sleeve = u < 0.5;
             coverage[usize::from(mesh.positions[b][0]>0.0)][usize::from(sleeve)] += 1;
             if sleeve {
-                let fabric = if kind == CharacterKind::Red {pixel.iter().all(|&c| c>170)}
+                let fabric = if matches!(kind, CharacterKind::Red | CharacterKind::Nurse) {pixel.iter().all(|&c| c>170)}
                     else if kind == CharacterKind::Misty {pixel[0]>170 && pixel[1]>130 && pixel[2]<140}
                     else if kind == CharacterKind::Brock {pixel[0]>130 && pixel[1]>50 && pixel[1]<180 && pixel[2]<130}
                     else {pixel[0]>pixel[1] && pixel[1]>pixel[2] && pixel[0]<140};

@@ -31,9 +31,12 @@ struct Review {
     roots: Vec<Entity>,
     people: Vec<Person>,
     run_phase: Option<f32>,
+    bicycle: bool,
+    run_weight: f32,
     head_scale: Option<f32>,
     hand_scale: Option<f32>,
     unlit: bool,
+    albedo_fill: Option<f32>,
     gpu: PeopleGpu,
     frame: u32,
     pending: bool,
@@ -66,6 +69,12 @@ pub fn run() {
         assert!(phase.is_finite() && (0.0..=1.0).contains(&phase), "run phase must be from 0 to 1");
         phase * std::f32::consts::TAU
     });
+    let bicycle = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_BICYCLE").is_some();
+    if bicycle {
+        assert!(kinds.iter().all(|kind| matches!(kind,
+            CharacterKind::Trainer | CharacterKind::TrainerFemale)),
+            "bicycle review requires a chris/kris filter");
+    }
     // Export precisely the production paintings, never a legacy source face.
     if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_ATLASES").is_some() {
         let atlases = output.join("atlases");
@@ -108,6 +117,13 @@ pub fn run() {
             roots: vec![],
             people: vec![],
             run_phase,
+            bicycle,
+            run_weight: std::env::var("CRYSTAL_PEOPLE_REVIEW_RUN_WEIGHT").ok().map(|value| {
+                let weight: f32 = value.parse().expect("review run weight must be numeric");
+                assert!(weight.is_finite() && (0.0..=1.0).contains(&weight),
+                    "review run weight must be from 0 to 1");
+                weight
+            }).unwrap_or(1.0),
             head_scale: std::env::var("CRYSTAL_PEOPLE_REVIEW_HEAD_SCALE").ok().map(|value| {
                 let scale: f32 = value.parse().expect("head scale must be a number");
                 assert!(scale.is_finite() && (0.5..=1.0).contains(&scale),
@@ -121,6 +137,12 @@ pub fn run() {
                 scale
             }),
             unlit: std::env::var_os("CRYSTAL_PEOPLE_REVIEW_UNLIT").is_some(),
+            albedo_fill: std::env::var("CRYSTAL_PEOPLE_REVIEW_ALBEDO_FILL").ok().map(|value| {
+                let fill: f32 = value.parse().expect("albedo fill must be a number");
+                assert!(fill.is_finite() && (0.0..=0.5).contains(&fill),
+                    "albedo fill must be from 0.0 to 0.5");
+                fill
+            }),
             gpu: default(),
             frame: 0,
             pending: false,
@@ -170,11 +192,32 @@ fn trace_render_state(
     }
 }
 
+fn single_view() -> Option<usize> {
+    std::env::var("CRYSTAL_PEOPLE_REVIEW_SINGLE_VIEW").ok().map(|value| {
+        let view: usize = value.parse().expect("single review view must be an integer");
+        assert!(view < 4, "single review view must be from 0 to 3");
+        assert!(std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").is_some(),
+            "single review view requires the image target");
+        view
+    })
+}
+
 fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
     // Diagnostic alternative to the window swapchain. It uses the same
     // camera, meshes and materials, and never changes production rendering.
+    let detail = single_view().is_some();
+    let region = std::env::var("CRYSTAL_PEOPLE_REVIEW_DETAIL").ok().map(|value| {
+        assert!(matches!(value.as_str(), "feet" | "hands"),
+            "supported detail regions are feet and hands");
+        assert!(detail, "detail review requires a single image-target view");
+        value
+    });
+    let feet = region.as_deref() == Some("feet");
+    let hands = region.as_deref() == Some("hands");
+    let close_up = feet || hands;
     let image = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").map(|_| {
-        images.add(Image::new_target_texture(1600, 600,
+        let (width, height) = if detail { (1000, 1000) } else { (1600, 600) };
+        images.add(Image::new_target_texture(width, height,
             bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb, None))
     });
     let target = image.clone().map(|handle| bevy::camera::RenderTarget::Image(handle.into()))
@@ -184,15 +227,28 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
         (Camera3d::default(), Msaa::Off,
 Projection::Orthographic(OrthographicProjection {
                 scaling_mode: ScalingMode::Fixed {
-                    width: 6.4,
-                    height: 2.4,
+                    width: if close_up { 0.62 } else if detail { 2.4 } else { 6.4 },
+                    height: if close_up { 0.62 } else { 2.4 },
                 },
                 near: 0.1,
                 far: 100.,
                 ..OrthographicProjection::default_3d()
             }),
-Transform::from_xyz(0., 1.4, 8.)
-                .looking_at(Vec3::new(0., 0.85, 0.), Vec3::Y),
+if hands {
+    let target = if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_BICYCLE").is_some() {
+        Vec3::new(0., 0.72, 0.25)
+    } else {
+        Vec3::new(0., 0.48, 0.)
+    };
+    Transform::from_translation(target + Vec3::new(0., 1.2, 8.))
+        .looking_at(target, Vec3::Y)
+} else if feet {
+    Transform::from_xyz(0., 2.5, 8.)
+        .looking_at(Vec3::new(0., 0.12, 0.), Vec3::Y)
+} else {
+    Transform::from_xyz(0., 1.4, 8.)
+        .looking_at(Vec3::new(0., 0.85, 0.), Vec3::Y)
+},
 Camera {
                 clear_color: ClearColorConfig::Custom(Color::srgb(0.87, 0.86, 0.82)),
                 ..default()
@@ -277,24 +333,48 @@ fn capture(
         .into_iter()
         .enumerate()
         {
+            let single = single_view();
+            if single.is_some_and(|view| view != i) { continue; }
             let root = commands
                 .spawn((Visibility::default(),
-Transform::from_xyz(-2.4 + i as f32 * 1.6, 0., 0.)
+Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0., 0.)
                         .with_rotation(Quat::from_rotation_y(yaw))
                         .with_scale(Vec3::new(scale * look.width, scale, scale)),))
                 .id();
+            let bicycle = review.bicycle;
             let person = review.gpu.spawn(
                 look.base,
                 kind,
                 rig.clone(),
                 root,
                 false,
+                bicycle,
                 &mut commands,
                 &mut meshes,
                 &mut materials,
                 &mut images,
                 &mut binds,
             );
+            if bicycle {
+                // Match the separately scaled production bicycle prop while
+                // driving the same mounted Person::update pose as the game.
+                let bike = crate::bicycle::mesh(kind == CharacterKind::TrainerFemale);
+                let entity = commands.spawn((
+                    Mesh3d(meshes.add(bike.into_mesh())),
+                    MeshMaterial3d(materials.add(StandardMaterial {
+                        perceptual_roughness: 0.88, ..default()
+                    })),
+                    Transform::from_scale(Vec3::new(
+                        1.0 / (scale * look.width), 1.0 / scale, 1.0 / scale)),
+                    RenderLayers::layer(VOXEL_RENDER_LAYER),
+                )).id();
+                commands.entity(root).add_child(entity);
+                let pedal_material = materials.add(StandardMaterial {
+                    perceptual_roughness: 0.88, ..default()
+                });
+                crate::bicycle::spawn_pedals(&mut commands, &mut meshes, pedal_material,
+                    entity, review.run_phase.unwrap_or(0.));
+            }
             review.people.push(person);
             review.roots.push(root);
         }
@@ -305,21 +385,66 @@ Transform::from_xyz(-2.4 + i as f32 * 1.6, 0., 0.)
                 material.unlit = true;
             }
         }
+        // Small painted-color fill retains directional depth, unlike the
+        // rejected unlit trial. Restrict this experiment to textured bodies;
+        // untextured hats/props keep their ordinary lighting and vertex color.
+        if let Some(fill) = review.albedo_fill {
+            for (_, material) in materials.iter_mut() {
+                if material.base_color_texture.is_some() {
+                    material.emissive_texture = material.base_color_texture.clone();
+                    material.emissive = LinearRgba::new(fill, fill, fill, 1.);
+                }
+            }
+        }
     }
     let run_phase = review.run_phase;
+    let run_weight = review.run_weight;
     let head_scale = review.head_scale;
     let hand_scale = review.hand_scale;
-    if run_phase.is_some() || head_scale.is_some() || hand_scale.is_some() {
-        for person in &mut review.people {
-            // Resample before every experiment so scale never compounds across
-            // frames, including idle captures with an overridden head size.
-            person.update(run_phase.unwrap_or(0.),
-                if run_phase.is_some() { 1. } else { 0. }, 0.0, &mut transforms);
-            if let Some(scale) = head_scale {
-                person.review_head_scale(scale, &mut transforms);
+    let texture_key = crate::npc_appearance::look(review.kinds[review.index]).texture_key;
+    let export_pose = review.frame == 29;
+    for (index, person) in review.people.iter_mut().enumerate() {
+        // Optional diagnostic samples the actual production update rather
+        // than duplicating the animation or skin-palette implementation.
+        // The ordinary capture immediately restores its requested pose.
+        #[cfg(not(target_arch = "wasm32"))]
+        if export_pose && index == 0
+            && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_RUN_SWEEP").is_some()
+        {
+            let directory = std::path::PathBuf::from(std::env::var_os(
+                "CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES").expect("run sweep needs mesh export directory"));
+            let mut samples = Vec::new();
+            for weight in [1.0, 0.85, 0.70, 0.55] {
+                for step in 0..32 {
+                    person.update(step as f32 / 32.0 * std::f32::consts::TAU,
+                        weight, 0.0, &mut transforms);
+                    samples.push(serde_json::json!({
+                        "weight": weight, "step": step, "steps": 32,
+                        "palette": person.review_skin_palette(&transforms),
+                    }));
+                }
             }
-            if let Some(scale) = hand_scale {
-                person.review_hand_scale(scale, &mut transforms);
+            std::fs::write(directory.join(format!("{texture_key}.run-sweep.json")),
+                serde_json::to_vec(&samples).expect("encode run sweep"))
+                .expect("write run sweep");
+        }
+        // Every capture must drive the production animation/proportion
+        // path, including plain Idle without experimental overrides.
+        person.update(run_phase.unwrap_or(0.),
+            if run_phase.is_some() { run_weight } else { 0. }, 0.0, &mut transforms);
+        if let Some(scale) = head_scale {
+            person.review_head_scale(scale, &mut transforms);
+        }
+        if let Some(scale) = hand_scale {
+            person.review_hand_scale(scale, &mut transforms);
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        if export_pose && index == 0 {
+            if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
+                let palette = person.review_skin_palette(&transforms);
+                std::fs::write(std::path::PathBuf::from(directory).join(format!("{texture_key}.pose.json")),
+                    serde_json::to_vec(&palette).expect("encode review palette"))
+                    .expect("write review palette");
             }
         }
     }

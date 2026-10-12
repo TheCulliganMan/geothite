@@ -98,9 +98,9 @@ pub(crate) fn mesh(female: bool) -> SurfaceMeshData {
             );
         }
     }
-    let seat = Vec3::new(0.0, 0.61, -0.12);
+    let seat = Vec3::new(0.0, 0.445, -0.12);
     let crank = Vec3::new(0.0, 0.265, -0.015);
-    let steer = Vec3::new(0.0, 0.67, 0.33);
+    let steer = Vec3::new(0.0, 0.56, 0.33);
     let back = Vec3::new(0.0, WHEEL_HEIGHT, -0.37);
     let front = Vec3::new(0.0, WHEEL_HEIGHT, 0.40);
     for (a, b) in [
@@ -113,44 +113,122 @@ pub(crate) fn mesh(female: bool) -> SurfaceMeshData {
     ] {
         tube(&mut m, a, b, 0.022, paint);
     }
-    tube(&mut m, seat, Vec3::new(0.0, 0.665, -0.12), 0.016, metal);
+    tube(&mut m, seat, Vec3::new(0.0, 0.50, -0.12), 0.016, metal);
     tube(
         &mut m,
-        Vec3::new(-0.08, 0.665, -0.12),
-        Vec3::new(0.08, 0.665, -0.12),
+        Vec3::new(-0.08, 0.50, -0.12),
+        Vec3::new(0.08, 0.50, -0.12),
         0.035,
         ink,
     );
-    tube(&mut m, steer, Vec3::new(0.0, 0.855, 0.37), 0.018, metal);
+    tube(&mut m, steer, Vec3::new(0.0, 0.710, 0.25), 0.018, metal);
     tube(
         &mut m,
-        Vec3::new(-0.25, 0.865, 0.35),
-        Vec3::new(0.25, 0.865, 0.35),
+        Vec3::new(-0.25, 0.720, 0.25),
+        Vec3::new(0.25, 0.720, 0.25),
         0.018,
         metal,
     );
     for s in [-1.0, 1.0] {
         tube(
             &mut m,
-            Vec3::new(s * 0.19, 0.865, 0.35),
-            Vec3::new(s * 0.27, 0.865, 0.35),
+            Vec3::new(s * 0.19, 0.720, 0.25),
+            Vec3::new(s * 0.27, 0.720, 0.25),
             0.023,
             ink,
-        );
-        tube(
-            &mut m,
-            crank,
-            Vec3::new(s * 0.075, 0.265 + s * 0.05, s * 0.06),
-            0.011,
-            metal,
         );
     }
     m
 }
 
+/// Both rider ankles and the articulated prop use this pedal trajectory.
+fn pedal_center(phase: f32, side: usize) -> Vec3 {
+    let sign = if side == 0 { 1. } else { -1. };
+    let angle = phase + if side == 0 { 0. } else { std::f32::consts::PI };
+    Vec3::new(sign * 0.11, 0.265 + 0.078 * angle.sin(),
+        -0.015 + 0.078 * angle.cos())
+}
+
+/// Independent entities keep each rider's pedal phase independent, while the
+/// platforms remain level rather than rotating through the shoes.
+pub(crate) struct Pedals { crank: Entity, platforms: [Entity; 2] }
+impl Pedals {
+    pub(crate) fn set_phase(&self, commands: &mut Commands, phase: f32) {
+        commands.entity(self.crank).insert(Transform::from_xyz(0., 0.265, -0.015)
+            .with_rotation(Quat::from_rotation_x(-phase)));
+        for side in 0..2 {
+            commands.entity(self.platforms[side])
+                .insert(Transform::from_translation(pedal_center(phase, side)));
+        }
+    }
+}
+
+pub(crate) fn spawn_pedals(commands: &mut Commands, meshes: &mut Assets<Mesh>,
+    material: Handle<StandardMaterial>, root: Entity, phase: f32) -> Pedals {
+    use bevy::camera::visibility::RenderLayers;
+    use crate::new_bark_actors::ModeledActor;
+    let mut crank = SurfaceMeshData::default();
+    let metal = [0.58, 0.64, 0.68, 1.0];
+    for sign in [-1., 1.] {
+        tube(&mut crank, Vec3::new(sign * 0.075, 0., 0.),
+            Vec3::new(sign * 0.075, 0., sign * 0.078), 0.011, metal);
+        tube(&mut crank, Vec3::new(sign * 0.075, 0., sign * 0.078),
+            Vec3::new(sign * 0.11, 0., sign * 0.078), 0.011, metal);
+    }
+    let crank = commands.spawn((Mesh3d(meshes.add(crank.into_mesh())),
+        MeshMaterial3d(material.clone()), Transform::default(), ModeledActor,
+        RenderLayers::layer(crate::VOXEL_RENDER_LAYER))).id();
+    let mut platform = SurfaceMeshData::default();
+    // A broad, level rubber platform supports the shoe sole.
+    tube(&mut platform, Vec3::new(-0.030, 0., 0.),
+        Vec3::new(0.030, 0., 0.), 0.016, [0.025, 0.035, 0.045, 1.]);
+    let platform = meshes.add(platform.into_mesh());
+    let platforms = std::array::from_fn(|_| commands.spawn((Mesh3d(platform.clone()),
+        MeshMaterial3d(material.clone()), Transform::default(), ModeledActor,
+        RenderLayers::layer(crate::VOXEL_RENDER_LAYER))).id());
+    commands.entity(root).add_children(&[crank, platforms[0], platforms[1]]);
+    let pedals = Pedals { crank, platforms };
+    pedals.set_phase(commands, phase);
+    pedals
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn mounted_pedals_follow_crank_without_tilting_or_syncing_other_riders() {
+        use bevy::ecs::world::CommandQueue;
+        let mut world = World::new();
+        let mut queue = CommandQueue::default();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut commands = Commands::new(&mut queue, &world);
+        let root_a = commands.spawn(Transform::default()).id();
+        let root_b = commands.spawn(Transform::default()).id();
+        let a = spawn_pedals(&mut commands, &mut meshes, Handle::default(), root_a, 0.);
+        let b = spawn_pedals(&mut commands, &mut meshes, Handle::default(), root_b, 0.73);
+        queue.apply(&mut world);
+        let other = *world.get::<Transform>(b.crank).unwrap();
+        for step in 0..32 {
+            let mut commands = Commands::new(&mut queue, &world);
+            a.set_phase(&mut commands, step as f32 / 32. * TAU);
+            queue.apply(&mut world);
+            assert_eq!(*world.get::<Transform>(b.crank).unwrap(), other);
+            let crank = world.get::<Transform>(a.crank).unwrap();
+            let crank_mesh = meshes.get(&world.get::<Mesh3d>(a.crank).unwrap().0).unwrap();
+            let Some(bevy::mesh::VertexAttributeValues::Float32x3(vertices)) =
+                crank_mesh.attribute(Mesh::ATTRIBUTE_POSITION) else { panic!("crank positions"); };
+            for platform in a.platforms {
+                let pad = world.get::<Transform>(platform).unwrap();
+                assert_eq!(pad.rotation, Quat::IDENTITY, "shoe platform must stay level");
+                assert!(pad.translation.y - 0.016 > 0., "pedal must clear the ground");
+                let gap = vertices.iter().map(|p| crank.to_matrix().transform_point3(
+                    Vec3::from_array(*p)).distance(pad.translation)).fold(f32::INFINITY, f32::min);
+                assert!(gap < 1e-6, "actual crank mesh misses its platform: {gap}");
+                assert_eq!(world.get::<ChildOf>(platform).unwrap().parent(), root_a);
+            }
+        }
+    }
+
     #[test]
     fn bicycle_surfaces_have_finite_unit_normals_and_outward_triangles() {
         for female in [false, true] {
@@ -180,49 +258,211 @@ mod tests {
     }
 }
 
-/// Pose the existing weighted rider in mesh coordinates; no second human mesh.
-pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform], phase: f32) {
-    fn world_rotation(
-        rig: &crate::open_people::PersonRig,
-        pose: &[Transform],
-        node: usize,
-    ) -> Quat {
-        let mut chain = vec![node];
-        let mut parent = rig.parents[node];
-        while let Some(p) = parent {
-            chain.push(p);
-            parent = rig.parents[p];
+fn joint_world(rig: &crate::open_people::PersonRig, pose: &[Transform], node: usize) -> Mat4 {
+    rig.parents[node].map(|parent| joint_world(rig, pose, parent))
+        .unwrap_or(Mat4::IDENTITY) * pose[node].to_matrix()
+}
+
+/// Include the final painted body in the mounted culling envelope. A weighted
+/// vertex lies inside the union of its contributing joint boxes, so this avoids
+/// reskinning every vertex for every sample during asset construction.
+pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
+    positions: &[[f32; 3]], ids: &[[u16; 4]], weights: &[[f32; 4]],
+    scale: Vec3, head_scale: f32, hand_scale: f32) -> (Vec3, Vec3) {
+    let mut boxes = vec![(Vec3::splat(f32::INFINITY),
+        Vec3::splat(f32::NEG_INFINITY)); rig.skin_nodes.len()];
+    for ((p, ids), weights) in positions.iter().zip(ids).zip(weights) {
+        let p = Vec3::from_array(*p);
+        for i in 0..4 {
+            if weights[i] > 0. {
+                let bounds = &mut boxes[ids[i] as usize];
+                bounds.0 = bounds.0.min(p);
+                bounds.1 = bounds.1.max(p);
+            }
         }
-        chain
-            .iter()
-            .rev()
-            .fold(Quat::IDENTITY, |rotation, &i| rotation * pose[i].rotation)
     }
-    fn turn(rig: &crate::open_people::PersonRig, pose: &mut [Transform], node: usize, angle: f32) {
-        let parent = rig.parents[node]
-            .map(|p| world_rotation(rig, pose, p))
-            .unwrap_or(Quat::IDENTITY);
-        let mesh = world_rotation(rig, pose, rig.mesh_node);
-        let axis = parent.inverse() * mesh * Vec3::X;
-        pose[node].rotation =
-            (Quat::from_axis_angle(axis.normalize(), angle) * pose[node].rotation).normalize();
-    }
-    for (side, leg) in rig.leg_joints.iter().enumerate() {
-        let cycle = (phase + side as f32 * std::f32::consts::PI).sin() * 0.12;
-        turn(rig, transforms, rig.skin_nodes[leg[0]], -1.1 + cycle);
-        turn(rig, transforms, rig.skin_nodes[leg[1]], 1.7 - cycle);
-    }
-    for hand in &rig.hand_joints {
-        if let Some(&wrist) = hand.iter().find(|&&joint| {
-            rig.parents[rig.skin_nodes[joint]]
-                .is_none_or(|parent| !hand.iter().any(|&other| rig.skin_nodes[other] == parent))
-        }) {
-            let forearm = rig.parents[rig.skin_nodes[wrist]];
-            if let Some(forearm) = forearm {
-                if let Some(upper) = rig.parents[forearm] {
-                    turn(rig, transforms, upper, -1.0);
+    let mut bounds = rig.bounds;
+    let mut transforms = rig.nodes.clone();
+    for idle in 0..8 {
+        for step in 0..64 {
+            rig.sample("Idle", idle as f32 / 8. * rig.duration("Idle"), &mut transforms);
+            pose(rig, &mut transforms, step as f32 / 64. * TAU, scale);
+            transforms[rig.skin_nodes[rig.head_joint]].scale *= head_scale;
+            for hand in &rig.hand_joints {
+                for &joint in hand {
+                    let node = rig.skin_nodes[joint];
+                    let mut parent = rig.parents[node];
+                    let mut descendant = false;
+                    while let Some(ancestor) = parent {
+                        if hand.iter().any(|&j| rig.skin_nodes[j] == ancestor) {
+                            descendant = true;
+                            break;
+                        }
+                        parent = rig.parents[ancestor];
+                    }
+                    if !descendant { transforms[node].scale *= hand_scale; }
                 }
-                turn(rig, transforms, forearm, -0.2);
+            }
+            let inverse = joint_world(rig, &transforms, rig.mesh_node).inverse();
+            for (joint, &(min, max)) in boxes.iter().enumerate() {
+                if !min.is_finite() { continue; }
+                let matrix = inverse * joint_world(rig, &transforms, rig.skin_nodes[joint])
+                    * rig.inverse_binds[joint];
+                for x in [min.x, max.x] {
+                    for y in [min.y, max.y] {
+                        for z in [min.z, max.z] {
+                            let p = matrix.transform_point3(Vec3::new(x, y, z));
+                            assert!(p.is_finite(), "invalid mounted body envelope");
+                            bounds.0 = bounds.0.min(p);
+                            bounds.1 = bounds.1.max(p);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    bounds
+}
+
+fn rotate_world(rig: &crate::open_people::PersonRig, pose: &mut [Transform], node: usize, delta: Quat) {
+    let parent = rig.parents[node].map(|p| joint_world(rig, pose, p).to_scale_rotation_translation().1)
+        .unwrap_or(Quat::IDENTITY);
+    pose[node].rotation = (parent.inverse() * delta * parent * pose[node].rotation).normalize();
+}
+
+fn wrist_node(rig: &crate::open_people::PersonRig, side: usize) -> usize {
+    let hand = &rig.hand_joints[side];
+    let joint = hand.iter().find(|&&joint| {
+        rig.parents[rig.skin_nodes[joint]].is_none_or(|parent|
+            !hand.iter().any(|&other| rig.skin_nodes[other] == parent))
+    }).expect("mounted supplied rig requires a wrist");
+    rig.skin_nodes[*joint]
+}
+
+fn foot_node(rig: &crate::open_people::PersonRig, side: usize) -> usize {
+    let shin = rig.skin_nodes[rig.leg_joints[side][1]];
+    *rig.skin_nodes.iter().find(|&&node| rig.parents[node] == Some(shin))
+        .expect("mounted supplied rig requires a foot")
+}
+
+// Two-joint CCD retains the seeded bend direction and bone lengths. Targets
+// are in the supplied hierarchy's world coordinates, before the actor root.
+fn solve_limb(rig: &crate::open_people::PersonRig, pose: &mut [Transform],
+    upper: usize, lower: usize, end: usize, target: Vec3) {
+    for _ in 0..48 {
+        let endpoint = joint_world(rig, pose, end).transform_point3(Vec3::ZERO);
+        if endpoint.distance_squared(target) < 1e-10 { break; }
+        for node in [lower, upper] {
+            let origin = joint_world(rig, pose, node).transform_point3(Vec3::ZERO);
+            let from = joint_world(rig, pose, end).transform_point3(Vec3::ZERO) - origin;
+            let to = target - origin;
+            if from.length_squared() > 1e-10 && to.length_squared() > 1e-10 {
+                rotate_world(rig, pose, node,
+                    Quat::from_rotation_arc(from.normalize(), to.normalize()));
+            }
+        }
+    }
+}
+
+/// Pose the actual weighted rider against bike-local contact targets. Scale
+/// is the production person root scale, including the player's width.
+pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform],
+    phase: f32, scale: Vec3) {
+    let target = |p: Vec3| p / scale + Vec3::Y * rig.floor;
+    let hips = rig.skin_nodes[rig.hips_joint];
+    let desired_hips = target(Vec3::new(0., 0.540, -0.12));
+    let parent = rig.parents[hips].map(|p| joint_world(rig, transforms, p))
+        .unwrap_or(Mat4::IDENTITY);
+    transforms[hips].translation = parent.inverse().transform_point3(desired_hips);
+    // A small forward torso lean brings the shoulder within arm reach of
+    // the grips. Keep the head upright instead of pitching the face down.
+    let chest = rig.skin_nodes[rig.chest_joint];
+    rotate_world(rig, transforms, chest, Quat::from_rotation_x(0.50));
+    let head = rig.skin_nodes[rig.head_joint];
+    rotate_world(rig, transforms, head, Quat::from_rotation_x(-0.50));
+    for side in 0..2 {
+        let sign = if side == 0 { 1. } else { -1. };
+        let pedal = pedal_center(phase, side);
+        let thigh = rig.skin_nodes[rig.leg_joints[side][0]];
+        let shin = rig.skin_nodes[rig.leg_joints[side][1]];
+        let foot = foot_node(rig, side);
+        // Keep the shoe's authored level orientation. Idle contains ankle
+        // rocking, which would otherwise move the sole through the pedal.
+        let foot_rotation = joint_world(rig, &rig.nodes, foot).to_scale_rotation_translation().1;
+        rotate_world(rig, transforms, thigh, Quat::from_rotation_x(-1.1));
+        rotate_world(rig, transforms, shin, Quat::from_rotation_x(1.7));
+        let ankle = target(pedal + Vec3::new(0., 0.0775, -0.035));
+        solve_limb(rig, transforms, thigh, shin, foot, ankle);
+        let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
+        rotate_world(rig, transforms, foot, foot_rotation * current.inverse());
+        let wrist = wrist_node(rig, side);
+        let lower = rig.parents[wrist].expect("mounted wrist requires a forearm");
+        let upper = rig.parents[lower].expect("mounted forearm requires an upper arm");
+        rotate_world(rig, transforms, upper, Quat::from_rotation_x(-1.0));
+        rotate_world(rig, transforms, lower, Quat::from_rotation_x(-0.2));
+        // Fit the rounded production finger pads to the rubber surface.
+        // Measured contact requires a small outward radial adjustment, rather
+        // than placing the reshaped fingers inside the previous grip datum.
+        solve_limb(rig, transforms, upper, lower, wrist,
+            target(Vec3::new(sign * 0.215, 0.7365, 0.1965)));
+        // Align the finger hinge with the horizontal grip, rather than
+        // inheriting the sideways fist orientation from a walking arm.
+        let desired = Quat::from_rotation_x(1.05) * if side == 0 {
+            Quat::IDENTITY
+        } else { Quat::from_rotation_y(std::f32::consts::PI) };
+        let current = joint_world(rig, transforms, wrist).to_scale_rotation_translation().1;
+        rotate_world(rig, transforms, wrist, desired * current.inverse());
+    }
+    // A partly closed grip leaves room for the bar between palm and fingers.
+    // The fully closed Idle fist has no such space and intersects the grip.
+    for &finger in &rig.finger_nodes {
+        transforms[finger].rotation = rig.nodes[finger].rotation
+            .slerp(transforms[finger].rotation, 0.55).normalize();
+    }
+    // The source right thumb is not an exact mirror of the left. Fold its
+    // base around the bar axis so its tip clears the inner metal section.
+    let thumb = rig.thumb_nodes[1].expect("mounted supplied rig requires a right thumb base");
+    rotate_world(rig, transforms, thumb, Quat::from_rotation_x(-0.27));
+}
+
+#[cfg(test)]
+mod mounted_tests {
+    use super::*;
+    #[test]
+    #[ignore = "requires supplied rider rigs in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn supplied_mounted_riders_reach_saddle_grips_and_pedal_circle() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for (name, width) in [("human-male", 1.0), ("human-female", 0.94)] {
+            let rig = crate::open_people::PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let unit = 1.20 / rig.height;
+            let scale = Vec3::new(unit * width, unit, unit);
+            for step in 0..32 {
+                let phase = step as f32 / 32. * std::f32::consts::TAU;
+                let mut transforms = rig.nodes.clone();
+                rig.sample("Idle", 0., &mut transforms);
+                let before = transforms.clone();
+                pose(&rig, &mut transforms, phase, scale);
+                let position = |node| (joint_world(&rig, &transforms, node)
+                    .transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor) * scale;
+                assert!(position(rig.skin_nodes[rig.hips_joint])
+                    .distance(Vec3::new(0., 0.540, -0.12)) < 0.0001);
+                for side in 0..2 {
+                    let sign = if side == 0 { 1. } else { -1. };
+                    let angle = phase + if side == 0 { 0. } else { std::f32::consts::PI };
+                    let grip_error = position(wrist_node(&rig, side))
+                        .distance(Vec3::new(sign * 0.215, 0.735, 0.195));
+                    let ankle_error = position(foot_node(&rig, side)).distance(Vec3::new(
+                        sign * 0.11, 0.3425 + 0.078 * angle.sin(),
+                        -0.050 + 0.078 * angle.cos()));
+                    assert!(grip_error < 0.006, "{name} step{step} side{side} grip error {grip_error}");
+                    assert!(ankle_error < 0.006, "{name} step{step} side{side} ankle error {ankle_error}");
+                }
+                for (i, t) in transforms.iter().enumerate() {
+                    assert!(t.rotation.is_finite() && (t.rotation.length()-1.).abs() < 1e-5);
+                    assert_eq!(t.scale, before[i].scale);
+                    if i != rig.skin_nodes[rig.hips_joint] { assert_eq!(t.translation, before[i].translation); }
+                }
             }
         }
     }

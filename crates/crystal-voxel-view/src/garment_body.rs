@@ -12,6 +12,33 @@ pub(crate) fn hem(look: Look) -> Option<f32> {
         None
     }
 }
+
+/// Nurse's dress leaves bare calves, rather than the supplied trousers.
+/// Copy complete lower-body faces so the shoe and garment UV seams stay intact.
+pub(crate) fn nurse_legs(
+    mesh: &mut SurfaceMeshData,
+    joints: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    look: Look,
+) {
+    if look.texture_key != "nurse" { return; }
+    for face in mesh.indices.chunks_exact_mut(3) {
+        let ids = [face[0] as usize, face[1] as usize, face[2] as usize];
+        if !ids.iter().all(|&i| mesh.uvs[i][0] >= 0.605 && mesh.uvs[i][1] >= 0.745) {
+            continue;
+        }
+        for (index, &i) in face.iter_mut().zip(&ids) {
+            let p = mesh.positions[i];
+            *index = mesh.positions.len() as u32;
+            mesh.positions.push(p);
+            mesh.normals.push(mesh.normals[i]);
+            mesh.colors.push(mesh.colors[i]);
+            mesh.uvs.push([0.87 + p[2] * 0.02, 0.36 + p[1] * 0.025]);
+            joints.push(joints[i]);
+            weights.push(weights[i]);
+        }
+    }
+}
 pub(crate) fn cover(
     mesh: &mut SurfaceMeshData,
     joints: &mut Vec<[u16; 4]>,
@@ -162,6 +189,8 @@ mod tests {
         let male = load("human-male");
         let female = load("human-female");
         let mut checked = 0;
+        let mut failures = std::collections::BTreeMap::new();
+        let mut examples = Vec::new();
         for (_, kind) in SOURCE_KINDS {
             let look = crate::npc_appearance::look(kind);
             if hem(look).is_none() {
@@ -205,14 +234,11 @@ mod tests {
                     .iter()
                     .enumerate()
                     .map(|(i, &n)| {
-                        (0..4)
-                            .map(|slot| {
-                                skin[cloth.joints[i][slot] as usize]
-                                    .transform_vector3(Vec3::from_array(n))
-                                    * cloth.weights[i][slot]
-                            })
-                            .sum::<Vec3>()
-                            .normalize()
+                        let matrix=(0..4).fold(Mat4::ZERO,|sum,slot|
+                            sum+skin[cloth.joints[i][slot] as usize]*cloth.weights[i][slot]);
+                        let basis=Mat3::from_cols(matrix.x_axis.truncate(),
+                            matrix.y_axis.truncate(),matrix.z_axis.truncate());
+                        (basis.inverse().transpose()*Vec3::from_array(n)).normalize()
                     })
                     .collect();
                 for face in cloth.surface.indices.chunks_exact(3) {
@@ -236,15 +262,18 @@ mod tests {
                         "{} collapsed panel at {step}/16",
                         look.texture_key
                     );
-                    assert!(
-                        geometric.normalize().dot(normal) > 0.0,
-                        "{} reversed panel at {step}/16: ids={ids:?} bind={bind:?} posed={p:?} normal={normal:?} geometric={geometric:?}",
-                        look.texture_key
-                    );
+                    let facing = geometric.normalize().dot(normal);
+                    if !(facing > 0.0) {
+                        *failures.entry((look.texture_key, step)).or_insert(0usize) += 1;
+                        if examples.len() < 12 {
+                            examples.push(format!("{} reversed panel at {step}/16: facing={facing} ids={ids:?} bind={bind:?} posed={p:?} normal={normal:?} geometric={geometric:?}", look.texture_key));
+                        }
+                    }
                 }
             }
         }
         assert_eq!(checked, 25);
+        assert!(failures.is_empty(), "reversed panels by role and Run phase: {failures:?}\n{}", examples.join("\n"));
     }
 
     #[test]

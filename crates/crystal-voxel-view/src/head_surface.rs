@@ -100,9 +100,113 @@ pub(crate) fn smooth(
     crate::hand_surface::smooth_selection(mesh, ids, weights, &selected);
 }
 
+/// Give the player's drawn face a small anime nose and a receding chin in
+/// profile. The eye plane, crown and mixed-weight neck seam stay authored.
+pub(crate) fn player_profile(rig: &PersonRig, mesh: &mut SurfaceMeshData,
+    ids: &[[u16; 4]], weights: &[[f32; 4]]) {
+    let head_weight = |i: usize| (0..4)
+        .filter(|&j| ids[i][j] as usize == rig.head_joint)
+        .map(|j| weights[i][j]).sum::<f32>();
+    let mut min = Vec3::splat(f32::INFINITY);
+    let mut max = Vec3::splat(f32::NEG_INFINITY);
+    for (i, &p) in mesh.positions.iter().enumerate() {
+        if head_weight(i) > 0.5 {
+            min = min.min(Vec3::from_array(p));
+            max = max.max(Vec3::from_array(p));
+        }
+    }
+    if !min.is_finite() || !max.is_finite() { return; }
+    let center = (min + max) * 0.5;
+    let half = (max - min) * 0.5;
+    let displacement = |position: Vec3| {
+        let local = (position - center) / half;
+        if local.z <= 0.35 || local.y >= 0.18 { return 0.; }
+        let front = ((local.z - 0.35) / 0.5).clamp(0., 1.);
+        let front = front * front * (3. - 2. * front);
+        let lower = (-local.y).clamp(0., 1.);
+        let chin = -0.25 * lower * lower;
+        let nose = 0.025 * (-(local.x / 0.20).powi(2)
+            - ((local.y + 0.04) / 0.12).powi(2)).exp();
+        let upper_fade = ((0.18 - local.y) / 0.10).clamp(0., 1.);
+        half.z * front * (chin + nose) * upper_fade
+    };
+    for (i, p) in mesh.positions.iter_mut().enumerate() {
+        if head_weight(i) < 0.85 { continue; }
+        let original = Vec3::from_array(*p);
+        let local = (original - center) / half;
+        if local.z <= 0.35 || local.y >= 0.18 { continue; }
+        p[2] += displacement(original);
+        // Keep the authored smooth anime lighting field. Recomputing normals
+        // around the tiny nose accent creates a rounded dark bump, while the
+        // intended face reads through its drawn eyes, nose and mouth.
+    }
+}
+
+/// Continuous rear-head lighting without moving the painted facial plane.
+pub(crate) fn nape_normals(rig: &PersonRig, mesh: &mut SurfaceMeshData,
+    ids: &[[u16;4]], weights: &[[f32;4]]) {
+    let head = |i: usize| (0..4).filter(|&s| ids[i][s] as usize == rig.head_joint)
+        .map(|s| weights[i][s]).sum::<f32>() > 0.5;
+    let mut lo=Vec3::splat(f32::INFINITY);let mut hi=Vec3::splat(f32::NEG_INFINITY);
+    for (i,p) in mesh.positions.iter().enumerate() {
+        if head(i) {lo=lo.min(Vec3::from_array(*p));hi=hi.max(Vec3::from_array(*p));}
+    }
+    if !lo.is_finite() || !hi.is_finite() {return;}
+    let center=(lo+hi)*0.5;let half=(hi-lo)*0.5;
+    for (i,p) in mesh.positions.iter().enumerate() {
+        if !head(i) || p[1]<=lo.y+(hi.y-lo.y)*0.05 {continue;}
+        let fade=((center.z+half.z*0.55-p[2])/(half.z*0.45)).clamp(0.,1.);
+        let target=Vec3::new((p[0]-center.x)/half.x.powi(2),
+            (p[1]-center.y)*0.35/half.y.powi(2),(p[2]-center.z)/half.z.powi(2));
+        if fade>0. && target.length_squared()>1e-12 {
+            mesh.normals[i]=Vec3::from_array(mesh.normals[i])
+                .lerp(target.normalize(),fade*fade*(3.-2.*fade)).normalize().to_array();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "requires supplied Kurt rig in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn kurt_nape_refinement_preserves_painted_front_and_collared_body() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        let rig = PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap()).unwrap();
+        let mut mesh = rig.mesh.clone();
+        let mut ids = rig.ids.clone();
+        let mut weights = rig.weights.clone();
+        smooth(&rig, &mut mesh, &mut ids, &mut weights);
+        bald_crown(&rig, &mut mesh, &mut ids, &mut weights,
+            crate::npc_appearance::look(crate::new_bark_actors::character_meshes::CharacterKind::Kurt));
+        let before = mesh.clone();
+        let before_ids = ids.clone();
+        let before_weights = weights.clone();
+        let head = |i: usize| (0..4).filter(|&s| before_ids[i][s] as usize == rig.head_joint)
+            .map(|s| before_weights[i][s]).sum::<f32>() > 0.5;
+        let mut lo = Vec3::splat(f32::INFINITY);
+        let mut hi = Vec3::splat(f32::NEG_INFINITY);
+        for (i, p) in before.positions.iter().enumerate() {
+            if head(i) { lo=lo.min(Vec3::from_array(*p));hi=hi.max(Vec3::from_array(*p)); }
+        }
+        let center=(lo+hi)*0.5;let half=(hi-lo)*0.5;
+        for _ in 0..2 { smooth(&rig, &mut mesh, &mut ids, &mut weights); }
+        nape_normals(&rig, &mut mesh, &ids, &weights);
+        let mut protected_front=0;let mut rounded=0;
+        for (i, p) in before.positions.iter().enumerate() {
+            assert_eq!(mesh.uvs[i], before.uvs[i]);
+            assert_eq!(ids[i], before_ids[i]);assert_eq!(weights[i], before_weights[i]);
+            if !head(i) || (p[2]>=center.z+half.z*0.60 && p[1]>=center.y-half.y*0.40) {
+                assert_eq!(mesh.positions[i], *p, "painted front/body shifted at {i}");
+                protected_front+=usize::from(head(i));
+            } else { rounded+=usize::from(mesh.positions[i]!=*p); }
+        }
+        assert!(protected_front>10 && rounded>10);
+        assert!(mesh.positions.iter().flatten().all(|v| v.is_finite()));
+        assert!(mesh.normals.iter().all(|n| (Vec3::from_array(*n).length()-1.0).abs()<1e-5));
+        for w in weights { assert!(w.iter().all(|v| v.is_finite() && *v>=0.0));
+            assert!((w.iter().sum::<f32>()-1.0).abs()<1e-5); }
+    }
     #[test]
     #[ignore = "requires supplied male and female rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn adventure_face_keeps_body_uvs_skin_and_accessory_anchors() {

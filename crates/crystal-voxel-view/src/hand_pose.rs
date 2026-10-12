@@ -6,7 +6,10 @@ pub(crate) fn relax(rig: &PersonRig, pose: &mut [Transform]) {
     for &node in &rig.finger_nodes {
         pose[node].rotation = rig.nodes[node]
             .rotation
-            .slerp(pose[node].rotation, 0.40)
+            // The supplied animation closes around an absent handle. Keep a
+            // small resting bend rather than the hooked half-grip; mounted
+            // poses use the separate production grip solver.
+            .slerp(pose[node].rotation, 0.20)
             .normalize();
     }
 }

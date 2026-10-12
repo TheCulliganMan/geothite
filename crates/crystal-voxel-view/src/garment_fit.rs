@@ -114,6 +114,46 @@ pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig) -> Vec<Option<Vec
         .collect()
 }
 
+/// Fitting changes the side slopes. The flat cloth rims need separate normal
+/// islands so a side normal cannot point against a rim triangle.
+pub(crate) fn finish_normals(cloth: &mut crate::npc_appearance::CostumeMesh) {
+    let mesh = &mut cloth.surface;
+    let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
+    let mut normals = std::collections::BTreeMap::<[i32; 3], Vec3>::new();
+    let mut rims = Vec::new();
+    for (face_index, face) in mesh.indices.chunks_exact(3).enumerate() {
+        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let normal = (p[1] - p[0]).cross(p[2] - p[0]);
+        assert!(normal.is_finite() && normal.length_squared() > 1e-18);
+        let (low, high) = p.iter().fold((f32::INFINITY, f32::NEG_INFINITY),
+            |(low, high), p| (low.min(p.y), high.max(p.y)));
+        if high - low < 1e-6 {
+            rims.push((face_index, normal.normalize()));
+        } else {
+            for &i in face { *normals.entry(key(mesh.positions[i as usize])).or_default() += normal; }
+        }
+    }
+    for (p, normal) in mesh.positions.iter().zip(&mut mesh.normals) {
+        if let Some(sum) = normals.get(&key(*p)) {
+            assert!(sum.is_finite() && sum.length_squared() > 1e-18);
+            *normal = sum.normalize().to_array();
+        }
+    }
+    for (face_index, normal) in rims {
+        for corner in 0..3 {
+            let at = face_index * 3 + corner;
+            let i = mesh.indices[at] as usize;
+            mesh.indices[at] = mesh.positions.len() as u32;
+            mesh.positions.push(mesh.positions[i]);
+            mesh.normals.push(normal.to_array());
+            mesh.uvs.push(mesh.uvs[i]);
+            mesh.colors.push(mesh.colors[i]);
+            cloth.joints.push(cloth.joints[i]);
+            cloth.weights.push(cloth.weights[i]);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

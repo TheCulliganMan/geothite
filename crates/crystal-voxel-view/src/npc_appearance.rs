@@ -27,7 +27,7 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         Blue => Look { base: "human-male", texture_key: "blue", shirt: [99, 64, 125], lower: [43, 71, 107], hair: [76, 43, 31], hairstyle: "spikes", hat: "none", costume: "tee", accessories: "pendant", width: 1.01, height: 1.38 },
         Brock => Look { base: "human-male", texture_key: "brock", shirt: [89, 122, 76], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "spikes", hat: "none", costume: "vest", accessories: "hikingpack", width: 1.08, height: 1.38 },
         Bruno => Look { base: "human-male", texture_key: "bruno", shirt: [252, 196, 145], lower: [247, 247, 227], hair: [48, 33, 28], hairstyle: "topknot", hat: "none", costume: "martial", accessories: "blackbelt,wristwraps", width: 1.25, height: 1.38 },
-        BugCatcher => Look { base: "human-male", texture_key: "bug_catcher", shirt: [71, 107, 186], lower: [166, 166, 102], hair: [76, 43, 31], hairstyle: "short", hat: "straw", costume: "tee", accessories: "shorts,net", width: 0.88, height: 1.05 },
+        BugCatcher => Look { base: "human-male", texture_key: "bug_catcher", shirt: [71, 107, 186], lower: [166, 166, 102], hair: [76, 43, 31], hairstyle: "short", hat: "straw", costume: "tee", accessories: "shorts,net", width: 0.98, height: 1.05 },
         Bugsy => Look { base: "human-male", texture_key: "bugsy", shirt: [94, 156, 74], lower: [166, 166, 102], hair: [99, 64, 125], hairstyle: "bob", hat: "none", costume: "polo", accessories: "shorts,netbelt", width: 0.88, height: 1.05 },
         Cal => Look { base: "human-male", texture_key: "cal", shirt: [209, 56, 59], lower: [33, 46, 64], hair: [76, 43, 31], hairstyle: "short", hat: "bluecap", costume: "jacket", accessories: "backpack", width: 1.00, height: 1.38 },
         Captain => Look { base: "human-male", texture_key: "captain", shirt: [43, 71, 107], lower: [43, 71, 107], hair: [173, 184, 181], hairstyle: "short", hat: "captain", costume: "suit", accessories: "moustache,goldbuttons", width: 1.18, height: 1.38 },
@@ -82,7 +82,7 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         Sage => Look { base: "human-male", texture_key: "sage", shirt: [204, 186, 143], lower: [204, 186, 143], hair: [173, 184, 181], hairstyle: "bald", hat: "none", costume: "robe", accessories: "beads", width: 1.09, height: 1.38 },
         Sailor => Look { base: "human-male", texture_key: "sailor", shirt: [247, 247, 227], lower: [71, 107, 186], hair: [48, 33, 28], hairstyle: "short", hat: "sailor", costume: "sailor", accessories: "neckerchief,anchor", width: 1.20, height: 1.38 },
         Scientist => Look { base: "human-male", texture_key: "scientist", shirt: [247, 247, 227], lower: [76, 43, 31], hair: [173, 184, 181], hairstyle: "short", hat: "none", costume: "coat", accessories: "glasses,pen", width: 1.00, height: 1.38 },
-        StandingYoungster => Look { base: "human-male", texture_key: "standing_youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts,ballheld", width: 0.88, height: 1.05 },
+        StandingYoungster => Look { base: "human-male", texture_key: "standing_youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts,ballheld", width: 0.98, height: 1.05 },
         SuperNerd => Look { base: "human-male", texture_key: "super_nerd", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "sidepart", hat: "none", costume: "polo", accessories: "roundglasses,suspenders", width: 1.14, height: 1.38 },
         Surge => Look { base: "human-male", texture_key: "surge", shirt: [89, 122, 76], lower: [89, 122, 76], hair: [201, 156, 89], hairstyle: "flattop", hat: "none", costume: "vest", accessories: "dogtags,combatboots", width: 1.26, height: 1.38 },
         SwimmerGirl => Look { base: "human-female", texture_key: "swimmer_girl", shirt: [71, 107, 186], lower: [71, 107, 186], hair: [76, 43, 31], hairstyle: "highpony", hat: "none", costume: "swimsuit", accessories: "goggles", width: 0.94, height: 1.38 },
@@ -92,7 +92,7 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         UnusedGuy => Look { base: "human-male", texture_key: "unused_guy", shirt: [201, 156, 89], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "sidepart", hat: "none", costume: "suit", accessories: "tealtie", width: 1.04, height: 1.38 },
         Whitney => Look { base: "human-female", texture_key: "whitney", shirt: [209, 56, 59], lower: [145, 31, 46], hair: [230, 107, 145], hairstyle: "pigtails", hat: "none", costume: "tee", accessories: "shorts,redstripe", width: 0.92, height: 1.38 },
         Will => Look { base: "human-male", texture_key: "will", shirt: [209, 56, 59], lower: [145, 31, 46], hair: [99, 64, 125], hairstyle: "sidepart", hat: "none", costume: "suit", accessories: "mask,whitegloves", width: 1.00, height: 1.38 },
-        Youngster => Look { base: "human-male", texture_key: "youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts", width: 0.88, height: 1.05 },
+        Youngster => Look { base: "human-male", texture_key: "youngster", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts", width: 0.98, height: 1.05 },
         Outdoorsman => Look { base: "human-male", texture_key: "outdoorsman", shirt: [89, 122, 76], lower: [166, 166, 102], hair: [76, 43, 31], hairstyle: "short", hat: "hiking", costume: "vest", accessories: "backpack,beard", width: 1.18, height: 1.38 },
     }
 }
@@ -639,7 +639,7 @@ pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Opti
     if look.hat != "none" && !crate::uniform_caps::append(&mut mesh,center,half,look.hat) {
         let color = match look.hat {
             "trainer" | "redcap" => [191, 35, 37], "bluecap" | "police" | "kris" => [32, 62, 128],
-            "nurse" | "sailor" | "captain" | "reception" => [235, 234, 216],
+            "sailor" | "captain" | "reception" => [235, 234, 216],
             "straw" | "hiking" => [164, 133, 69], _ => [29, 31, 37],
         };
         let baseball = matches!(look.hat, "trainer" | "redcap" | "bluecap");
@@ -654,17 +654,13 @@ pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Opti
         } else {
             let rise = if look.hat == "top" { 0.40 } else { 0.20 };
             ellipsoid(&mut mesh, Vec3::new(center.x, top - 0.02, center.z), Vec3::new(width * 1.03, rise, half.z * 0.88), color);
-            if !matches!(look.hat, "nurse" | "kris" | "reception") {
+            if !matches!(look.hat, "kris" | "reception") {
                 let wide = matches!(look.hat, "straw" | "hiking" | "top");
                 ellipsoid(&mut mesh, Vec3::new(center.x, top - 0.14, center.z + if wide { 0.0 } else { half.z * 0.75 }),
                     Vec3::new(width * if wide { 1.50 } else { 1.04 }, 0.04, half.z * if wide { 1.30 } else { 0.65 }), color);
             }
         }
-        if look.hat == "nurse" {
-            let badge = Vec3::new(center.x, top - 0.02, max.z - 0.03);
-            ellipsoid(&mut mesh, badge, Vec3::new(0.025, 0.075, 0.03), [183, 36, 48]);
-            ellipsoid(&mut mesh, badge, Vec3::new(0.075, 0.025, 0.03), [183, 36, 48]);
-        } else if matches!(look.hat, "police" | "captain") {
+        if matches!(look.hat, "police" | "captain") {
             ellipsoid(&mut mesh, Vec3::new(center.x, top - 0.02, max.z - 0.03), Vec3::new(0.075, 0.075, 0.03),
                 [223, 180, 73]);
         }
@@ -703,7 +699,7 @@ fn tied_hair(mesh: &mut crate::mesh::SurfaceMeshData, center: bevy::prelude::Vec
     // Granny's painting has warm gray hair; the previous cool gray orb looked
     // like a separate accessory even where it met the existing hair surface.
     let mut hair=if look.texture_key=="granny" {[147,137,130]} else {look.hair};
-    if matches!(look.texture_key, "whitney" | "misty" | "janine") {
+    if matches!(look.texture_key, "whitney" | "misty" | "janine" | "kris") {
         if let Some(painting) = crate::npc_textures::get(look.texture_key) {
             // Match the gathers to the painted scalp rather than the
             // brighter fallback swatch. This strip contains hair only.
@@ -722,15 +718,32 @@ fn tied_hair(mesh: &mut crate::mesh::SurfaceMeshData, center: bevy::prelude::Vec
         "pigtails"|"rolls" => for side in [-1.0,1.0] {
             let roll=look.hairstyle=="rolls";
             let kris=look.texture_key=="kris";
+            if kris {
+                // Gather at the scalp, then fan into overlapping tapered
+                // locks. The former broad oval read as a rigid leaf.
+                hair_lock(mesh, [local(side*0.73,0.40,-0.38),
+                    local(side*1.17,0.48,-0.53), local(side*1.48,-0.14,-0.65),
+                    local(side*1.39,-0.76,-0.60)],
+                    half.x*0.19,half.x*0.22,0.75,false,hair);
+                hair_lock(mesh, [local(side*1.20,0.02,-0.60),
+                    local(side*1.42,-0.18,-0.63), local(side*1.57,-0.35,-0.64),
+                    local(side*1.60,-0.56,-0.60)],
+                    half.x*0.14,half.x*0.06,0.75,false,hair);
+                hair_lock(mesh, [local(side*1.09,0.11,-0.62),
+                    local(side*1.14,-0.16,-0.70), local(side*1.20,-0.45,-0.73),
+                    local(side*1.17,-0.70,-0.69)],
+                    half.x*0.12,half.x*0.055,0.75,false,hair);
+                continue;
+            }
             let curve=if roll {
                 [local(side*0.76,0.30,-0.40),local(side*1.13,0.33,-0.60),
                     local(side*1.30,-0.15,-0.73),local(side*0.94,-0.43,-0.70)]
             } else {
                 [local(side*0.73,0.40,-0.38),local(side*1.25,0.50,-0.59),
-                    local(side*if kris {1.62} else {1.30},-0.19,-0.67),
-                    local(side*if kris {1.48} else {1.10},if kris {-0.61} else {-0.76},-0.70)]
+                    local(side*1.30,-0.19,-0.67),
+                    local(side*1.10,-0.76,-0.70)]
             };
-            hair_lock(mesh,curve,half.x*0.23,half.x*if kris {0.33} else {0.25},0.80,false,hair);
+            hair_lock(mesh,curve,half.x*0.23,half.x*0.25,0.80,false,hair);
         },
         "bun"|"topknot" => {
             let topknot=look.hairstyle=="topknot";
@@ -1140,7 +1153,7 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
     let top = 1.62;
     let bottom = if coat {0.92} else {crate::garment_body::hem(look)?};
     let mut color = if coat { look.shirt } else { look.lower };
-    if matches!(look.texture_key, "erika" | "receptionist" | "falkner" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "kurt" | "kurt_outside" | "kimono_girl") {
+    if matches!(look.texture_key, "erika" | "receptionist" | "nurse" | "falkner" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "kurt" | "kurt_outside" | "kimono_girl") {
         if let Some(painting) = crate::npc_textures::get(look.texture_key) {
             // Match the separate skirt to its plain painted fabric,
             // rather than retaining the old palette swatch.
@@ -1203,13 +1216,26 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
     let smooth = |v: f32| { let t = v.clamp(0.0, 1.0); t*t*(3.0-2.0*t) };
     let mut joints = Vec::with_capacity(mesh.positions.len());
     let mut weights = Vec::with_capacity(mesh.positions.len());
+    let closed = !coat;
+    let closed_leg_share = {
+        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+        if closed && bottom >= 0.70 {
+            std::env::var("CRYSTAL_PEOPLE_REVIEW_SKIRT_LEG_SHARE").ok().map(|value| {
+                let share: f32=value.parse().expect("skirt leg share must be numeric");
+                assert!(share.is_finite() && (0.0..=0.60).contains(&share),
+                    "review skirt leg share must be from 0 to 0.60");
+                share
+            }).unwrap_or(0.60)
+        } else {0.60}
+        #[cfg(any(not(feature = "people-review"), target_arch = "wasm32"))]
+        {0.60}
+    };
     for (vertex, p) in mesh.positions.iter().enumerate() {
         let midpoint = (thigh[0].x+thigh[1].x)*0.5;
         let side = smooth(0.5+(p[0]-midpoint)/((thigh[1].x-thigh[0].x)*if coat {0.65} else {1.6}));
         // Closed fabric spans both legs. Keep a pelvis contribution and
         // follow thighs rather than knee hinges so the panels stay continuous.
-        let closed = !coat;
-        let leg = smooth((top-p[1])/0.18) * if closed {0.60} else {1.0};
+        let leg = smooth((top-p[1])/0.18) * if closed {closed_leg_share} else {1.0};
         let mut influences = vec![(rig.hips_joint, 1.0-leg)];
         for s in 0..2 {
             let amount = leg * if s==0 { 1.0-side } else { side };
@@ -1262,6 +1288,9 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
         }
     }
     let mut costume = CostumeMesh { surface: mesh, joints, weights };
+    if look.texture_key == "nurse" {
+        crate::garment_fit::finish_normals(&mut costume);
+    }
     crate::apron::append(&mut costume, look);
     crate::uniform_details::append(&mut costume, rig, look);
     Some(costume)

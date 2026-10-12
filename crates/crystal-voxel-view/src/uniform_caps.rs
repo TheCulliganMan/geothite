@@ -75,7 +75,15 @@ fn crown(
     }
 }
 
-fn peak(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3) {
+fn peak(
+    mesh: &mut SurfaceMeshData,
+    center: Vec3,
+    half: Vec3,
+    upper_rgb: [u8; 3],
+    lower_rgb: [u8; 3],
+    thickness: f32,
+    bend: f32,
+) {
     const COLS: usize = 32;
     const ROWS: usize = 5;
     let p = |col: usize, row: usize, lower: bool| {
@@ -86,11 +94,10 @@ fn peak(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3) {
             + half
                 * Vec3::new(
                     s * 0.92,
-                    -0.25 - 0.045 * t + 0.055 * s * s - if lower { 0.028 } else { 0. },
+                    -0.25 - bend * t + 0.055 * s * s - if lower { thickness } else { 0. },
                     0.80 * arch + 0.64 * t * arch,
                 )
     };
-    let rgb = [25, 31, 40];
     for row in 0..ROWS {
         for col in 0..COLS {
             for lower in [false, true] {
@@ -105,7 +112,11 @@ fn peak(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3) {
                 } else {
                     [[0, 1, 2], [0, 2, 3]]
                 } {
-                    triangle(mesh, ids.map(|i| q[i]), rgb);
+                    triangle(
+                        mesh,
+                        ids.map(|i| q[i]),
+                        if lower { lower_rgb } else { upper_rgb },
+                    );
                 }
             }
         }
@@ -123,18 +134,224 @@ fn peak(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3) {
             } else {
                 [[0, 1, 2], [0, 2, 3]]
             } {
-                triangle(mesh, ids.map(|i| q[i]), rgb);
+                triangle(mesh, ids.map(|i| q[i]), upper_rgb);
             }
         }
     }
 }
 
+fn nurse_cap(mesh: &mut SurfaceMeshData, origin: Vec3, half: Vec3) {
+    // A folded cloth crown with a fitted lower edge, rounded corners and a
+    // flared front replaces the unrelated oval resting on top of the hair.
+    const SIDES: usize = 64;
+    let profiles = [
+        (-0.15, 0.82, 0.48),
+        (-0.13, 0.84, 0.49),
+        (0.16, 1.025, 0.44),
+        (0.18, 1.03, 0.43),
+    ];
+    let point = |row: usize, a: f32| {
+        let (y, x, z) = profiles[row];
+        let rounded = |v: f32| {
+            if v.abs() < 1e-6 {
+                0.
+            } else {
+                v.signum() * v.abs().sqrt()
+            }
+        };
+        let sx = rounded(a.cos());
+        let sz = rounded(a.sin());
+        origin + half * Vec3::new(x * sx, y + 0.055 * sz, z * sz)
+    };
+    let first = mesh.positions.len() as u32;
+    for row in 0..profiles.len() {
+        for side in 0..=SIDES {
+            let a = std::f32::consts::TAU * side as f32 / SIDES as f32;
+            let p = point(row, a);
+            let along = point(row, a + 0.001) - point(row, a - 0.001);
+            let up = point((row + 1).min(profiles.len() - 1), a) - point(row.saturating_sub(1), a);
+            mesh.positions.push(p.to_array());
+            mesh.normals.push(up.cross(along).normalize().to_array());
+            mesh.colors.push(color([241, 241, 231]));
+            mesh.uvs.push([0.; 2]);
+        }
+    }
+    for row in 0..profiles.len() - 1 {
+        for side in 0..SIDES {
+            let a = first + (row * (SIDES + 1) + side) as u32;
+            let b = a + (SIDES + 1) as u32;
+            mesh.indices.extend([a, b, a + 1, a + 1, b, b + 1]);
+        }
+    }
+    for (row, upper) in [(0, false), (profiles.len() - 1, true)] {
+        let middle = origin + Vec3::Y * (half.y * profiles[row].0);
+        for side in 0..SIDES {
+            let a = point(row, std::f32::consts::TAU * side as f32 / SIDES as f32);
+            let b = point(
+                row,
+                std::f32::consts::TAU * (side + 1) as f32 / SIDES as f32,
+            );
+            triangle(
+                mesh,
+                if upper {
+                    [a, middle, b]
+                } else {
+                    [a, b, middle]
+                },
+                [241, 241, 231],
+            );
+        }
+    }
+    // Three non-overlapping cloth panels form the cross. Fit their depth to
+    // the sloping front, rather than using two intersecting red ellipsoids.
+    let badge = |x: f32, y: f32| {
+        let y = y + 0.055;
+        let z = 0.48 - (y + 0.095) / 0.33 * 0.05;
+        origin + half * Vec3::new(x, y, z) + Vec3::Z * 0.006
+    };
+    for (left, right, low, high) in [
+        (-0.04, 0.04, -0.11, -0.04),
+        (-0.14, 0.14, -0.04, 0.04),
+        (-0.04, 0.04, 0.04, 0.11),
+    ] {
+        let p = [
+            badge(left, low),
+            badge(right, low),
+            badge(right, high),
+            badge(left, high),
+        ];
+        triangle(mesh, [p[0], p[1], p[2]], [183, 36, 48]);
+        triangle(mesh, [p[0], p[2], p[3]], [183, 36, 48]);
+    }
+}
+
 /// Returns false for hats handled by the other head accessory styles.
 pub(crate) fn append(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: &str) -> bool {
-    if !matches!(hat, "police" | "captain" | "sailor") {
+    if !matches!(
+        hat,
+        "trainer" | "kris" | "police" | "captain" | "sailor" | "top" | "nurse"
+    ) {
         return false;
     }
     let origin = Vec3::new(center.x, center.y + half.y, center.z);
+    if hat == "nurse" {
+        nurse_cap(mesh, origin, half);
+        return true;
+    }
+    if hat == "kris" {
+        // A soft, fitted crown with an attached lower band replaces the
+        // separate oval. Keep the established blue cap and open forehead.
+        crown(
+            mesh,
+            origin,
+            half,
+            &[
+                (-0.38, 0.99, 0.93),
+                (-0.30, 1.05, 0.98),
+                (-0.19, 1.10, 1.02),
+                (-0.06, 1.09, 0.99),
+                (0.08, 0.84, 0.76),
+                (0.14, 0.52, 0.47),
+                (0.16, 0.10, 0.09),
+            ],
+            [32, 62, 128],
+        );
+        crown(
+            mesh,
+            origin,
+            half,
+            &[(-0.40, 0.99, 0.93), (-0.33, 1.04, 0.975)],
+            [25, 43, 88],
+        );
+        return true;
+    }
+    if hat == "trainer" {
+        // The crown follows the scalp; its bill attaches below the dome and
+        // curves downward gently rather than hovering as a separate oval.
+        crown(
+            mesh,
+            origin,
+            half,
+            &[
+                (-0.54, 1.015, 0.985),
+                (-0.43, 1.035, 1.005),
+                (-0.29, 1.015, 0.985),
+                (-0.14, 0.950, 0.925),
+                (0.00, 0.815, 0.795),
+                (0.11, 0.600, 0.585),
+                (0.18, 0.335, 0.330),
+                (0.20, 0.065, 0.065),
+            ],
+            [191, 35, 37],
+        );
+        crown(
+            mesh,
+            origin,
+            half,
+            &[(-0.55, 1.018, 0.988), (-0.51, 1.030, 1.000)],
+            [153, 30, 35],
+        );
+        peak(
+            mesh,
+            origin - Vec3::Y * half.y * 0.25,
+            half,
+            [181, 32, 36],
+            [103, 30, 35],
+            0.065,
+            0.09,
+        );
+        // Small cloth-covered top button closes the crown without a broad
+        // flat cap at its apex.
+        crown(
+            mesh,
+            origin,
+            half,
+            &[
+                (0.19, 0.072, 0.072),
+                (0.225, 0.065, 0.065),
+                (0.24, 0.025, 0.025),
+            ],
+            [174, 31, 35],
+        );
+        return true;
+    }
+    if hat == "top" {
+        // A flat topped, slightly flared crown, rather than the old dome.
+        // All dimensions follow the supplied head and its animation anchor.
+        crown(
+            mesh,
+            origin,
+            half,
+            &[
+                (-0.24, 0.95, 0.88),
+                (-0.18, 0.96, 0.89),
+                (0.68, 0.99, 0.92),
+                (0.83, 1.03, 0.97),
+                (0.88, 1.02, 0.96),
+            ],
+            [29, 31, 37],
+        );
+        crown(
+            mesh,
+            origin,
+            half,
+            &[
+                (-0.32, 1.30, 1.17),
+                (-0.30, 1.36, 1.23),
+                (-0.25, 1.36, 1.23),
+                (-0.22, 1.30, 1.17),
+            ],
+            [29, 31, 37],
+        );
+        crown(
+            mesh,
+            origin,
+            half,
+            &[(-0.19, 0.976, 0.906), (-0.06, 0.980, 0.911)],
+            [47, 51, 60],
+        );
+        return true;
+    }
     if hat == "sailor" {
         crown(
             mesh,
@@ -187,7 +404,7 @@ pub(crate) fn append(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: 
                 [36, 64, 117]
             },
         );
-        peak(mesh, origin, half);
+        peak(mesh, origin, half, [25, 31, 40], [25, 31, 40], 0.028, 0.045);
         let badge = origin + half * Vec3::new(0., -0.05, 1.065);
         let contour = [
             (-0.12, 0.09),
@@ -245,6 +462,7 @@ mod tests {
             CharacterKind::Officer,
             CharacterKind::Captain,
             CharacterKind::Sailor,
+            CharacterKind::Gentleman,
         ] {
             let mut look = npc_appearance::look(kind);
             // Inspect the cap alone, excluding the captain's facial accessory.
@@ -257,9 +475,25 @@ mod tests {
                     p.y > center.y + half.y * 0.60,
                     "cap obscures the forehead/eyes"
                 );
-                assert!((p.x - center.x).abs() <= half.x * 1.18);
+                assert!(
+                    (p.x - center.x).abs()
+                        <= half.x
+                            * if kind == CharacterKind::Gentleman {
+                                1.38
+                            } else {
+                                1.18
+                            }
+                );
                 assert!((p.z - center.z).abs() <= half.z * 1.45);
-                assert!(p.y < max.y + half.y * 0.31);
+                assert!(
+                    p.y < max.y
+                        + half.y
+                            * if kind == CharacterKind::Gentleman {
+                                0.90
+                            } else {
+                                0.31
+                            }
+                );
             }
             assert!(
                 mesh.normals
@@ -272,7 +506,7 @@ mod tests {
     #[test]
     fn distinct_uniform_caps_have_finite_smooth_crowns_and_valid_faces() {
         let mut shapes = Vec::new();
-        for hat in ["police", "captain", "sailor"] {
+        for hat in ["police", "captain", "sailor", "top", "nurse"] {
             let mut mesh = SurfaceMeshData::default();
             assert!(append(
                 &mut mesh,

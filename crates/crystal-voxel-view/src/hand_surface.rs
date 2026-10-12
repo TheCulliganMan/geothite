@@ -38,6 +38,28 @@ pub(crate) fn smooth_selection(
     weights: &mut Vec<[f32;4]>,
     selected: &[bool],
 ) {
+    refine_selection(mesh, ids, weights, selected, false);
+}
+
+/// Split neighboring triangles along a refined boundary too. Otherwise a
+/// separately weighted edge midpoint can pull away from an unsplit triangle
+/// during skinning, even when the bind-pose surface appears joined.
+pub(crate) fn smooth_selection_joined(
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16;4]>,
+    weights: &mut Vec<[f32;4]>,
+    selected: &[bool],
+) {
+    refine_selection(mesh, ids, weights, selected, true);
+}
+
+fn refine_selection(
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16;4]>,
+    weights: &mut Vec<[f32;4]>,
+    selected: &[bool],
+    join_boundary: bool,
+) {
     let old = mesh.indices.clone();
     let original = mesh.positions.clone();
     let mut adjacent = BTreeMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
@@ -100,7 +122,13 @@ pub(crate) fn smooth_selection(
     mesh.indices.clear();
     for face in old.chunks_exact(3) {
         let [a, b, c] = [face[0], face[1], face[2]];
-        if ![a, b, c].iter().all(|&i| selected[i as usize]) {
+        let whole = [a, b, c].iter().all(|&i| selected[i as usize]);
+        let split = [(a, b), (b, c), (c, a)].map(|(a, b)| {
+            let ka = key(original[a as usize]);
+            let kb = key(original[b as usize]);
+            whole || (join_boundary && edge_faces.contains_key(&(ka.min(kb), ka.max(kb))))
+        });
+        if !split.iter().any(|&split| split) {
             mesh.indices.extend_from_slice(face);
             continue;
         }
@@ -153,11 +181,30 @@ pub(crate) fn smooth_selection(
                 index
             })
         };
-        let ab = midpoint(a, b);
-        let bc = midpoint(b, c);
-        let ca = midpoint(c, a);
-        mesh.indices
-            .extend([a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca]);
+        let corners = [a, b, c];
+        let mids: [Option<u32>; 3] = std::array::from_fn(|edge| {
+            split[edge].then(|| midpoint(corners[edge], corners[(edge + 1) % 3]))
+        });
+        match split.iter().filter(|&&split| split).count() {
+            1 => {
+                let edge = split.iter().position(|&split| split).unwrap();
+                let [a, b, c] = std::array::from_fn(|i| corners[(edge + i) % 3]);
+                let ab = mids[edge].unwrap();
+                mesh.indices.extend([a, ab, c, ab, b, c]);
+            }
+            2 => {
+                let edge = (split.iter().position(|&split| !split).unwrap() + 1) % 3;
+                let [a, b, c] = std::array::from_fn(|i| corners[(edge + i) % 3]);
+                let ab = mids[edge].unwrap();
+                let bc = mids[(edge + 1) % 3].unwrap();
+                mesh.indices.extend([b, bc, ab, ab, bc, c, a, ab, c]);
+            }
+            3 => {
+                let [ab, bc, ca] = mids.map(Option::unwrap);
+                mesh.indices.extend([a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca]);
+            }
+            _ => unreachable!(),
+        }
     }
     let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
@@ -183,6 +230,59 @@ pub(crate) fn smooth_selection(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn joined_refinement_keeps_uv_boundary_watertight_when_skinning_bends() {
+        // Two triangles share a diagonal through separate UV islands and
+        // different joint influences at its ends. Only the first is rounded.
+        let mut mesh = SurfaceMeshData {
+            positions: vec![[0.,0.,0.], [1.,0.,0.], [0.,1.,0.],
+                [1.,0.,0.], [1.,1.,0.], [0.,1.,0.]],
+            normals: vec![[0.,0.,1.]; 6],
+            colors: vec![[1.;4]; 6],
+            uvs: vec![[0.,0.], [1.,0.], [0.,1.], [0.2,0.], [1.,1.], [0.,0.2]],
+            indices: vec![0,1,2,3,4,5],
+            ..Default::default()
+        };
+        let mut ids = vec![[0,1,0,0];6];
+        let mut weights = vec![[1.,0.,0.,0.], [0.,1.,0.,0.], [1.,0.,0.,0.],
+            [0.,1.,0.,0.], [0.,1.,0.,0.], [1.,0.,0.,0.]];
+        smooth_selection_joined(&mut mesh, &mut ids, &mut weights,
+            &[true,true,true,false,false,false]);
+        let mut edges = BTreeMap::new();
+        for face in mesh.indices.chunks_exact(3) {
+            let p = [face[0],face[1],face[2]]
+                .map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            assert!((p[1]-p[0]).cross(p[2]-p[0]).z > 0., "reversed or degenerate face");
+            for (a,b) in [(0,1),(1,2),(2,0)] {
+                let a=key(p[a].to_array()); let b=key(p[b].to_array());
+                *edges.entry((a.min(b),a.max(b))).or_insert(0) += 1;
+            }
+        }
+        for ((a,b),count) in edges {
+            if count == 1 {
+                assert!((a[0]==b[0] && [0,100_000].contains(&a[0]))
+                    || (a[1]==b[1] && [0,100_000].contains(&a[1])),
+                    "open interior edge across refined boundary: {a:?} {b:?}");
+            } else { assert_eq!(count,2,"non-manifold refined surface"); }
+        }
+        for step in 0..16 {
+            let moving = Mat4::from_rotation_y(step as f32 * 0.1)
+                * Mat4::from_translation(Vec3::new(0.2,0.1,0.));
+            let mut welded = BTreeMap::new();
+            for (i,&p) in mesh.positions.iter().enumerate() {
+                let p3=Vec3::from_array(p);
+                let deformed=(0..4).map(|slot| {
+                    if ids[i][slot]==0 { p3*weights[i][slot] }
+                    else { moving.transform_point3(p3)*weights[i][slot] }
+                }).sum::<Vec3>();
+                if let Some(previous) = welded.insert(key(p),deformed) {
+                    assert!(previous.distance(deformed)<0.000001,
+                        "UV copies separate during skinning at step {step}");
+                }
+            }
+        }
+    }
+
     #[test]
     #[ignore = "requires shared Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_hands_are_smoother_without_changing_body_attributes_or_wrist_boundaries() {

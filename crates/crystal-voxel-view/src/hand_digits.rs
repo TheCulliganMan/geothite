@@ -127,6 +127,8 @@ struct Hand {
     left: f32,
     right: f32,
     tip: f32,
+    cap_center_z: f32,
+    cap_depth: f32,
 }
 fn hands(rig: &PersonRig) -> Vec<Hand> {
     let mut result = Vec::new();
@@ -172,6 +174,7 @@ fn hands(rig: &PersonRig) -> Vec<Hand> {
         let mut left = f32::INFINITY;
         let mut right = f32::NEG_INFINITY;
         let mut tip = 0.0_f32;
+        let mut index_points = Vec::new();
         for ((p, j), w) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights) {
             let amount = (0..4)
                 .filter(|&i| index.contains(&(j[i] as usize)))
@@ -184,14 +187,45 @@ fn hands(rig: &PersonRig) -> Vec<Hand> {
             left = left.min(p.x);
             right = right.max(p.x);
             tip = tip.max(p.y);
+            index_points.push(p);
         }
         if right - left > 0.1 && tip > 0.35 {
+            // The terminal surface narrows relative to the proximal slab.
+            // Spacing fingers over the entire slab put the outer designed
+            // center beyond the supplied cap, leaving an asymmetric blade.
+            let cap_left = index_points
+                .iter()
+                .filter(|p| p.y > tip - 0.08)
+                .map(|p| p.x)
+                .fold(f32::INFINITY, f32::min);
+            let cap_right = index_points
+                .iter()
+                .filter(|p| p.y > tip - 0.08)
+                .map(|p| p.x)
+                .fold(f32::NEG_INFINITY, f32::max);
+            let cap_min = index_points
+                .iter()
+                .filter(|p| p.y > tip - 0.08)
+                .map(|p| p.z)
+                .fold(f32::INFINITY, f32::min);
+            let cap_max = index_points
+                .iter()
+                .filter(|p| p.y > tip - 0.08)
+                .map(|p| p.z)
+                .fold(f32::NEG_INFINITY, f32::max);
+            assert!(cap_max - cap_min > 0.01, "supplied finger cap has no depth");
+            assert!(
+                cap_right - cap_left > 0.1,
+                "supplied finger cap has no width"
+            );
             result.push(Hand {
                 bind,
                 index,
-                left,
-                right,
+                left: cap_left,
+                right: cap_right,
                 tip,
+                cap_center_z: (cap_min + cap_max) * 0.5,
+                cap_depth: (cap_max - cap_min) * 0.5,
             });
         }
     }
@@ -236,15 +270,42 @@ pub(crate) fn sculpt(
             let half = (h.right - h.left) * 0.5;
             let center = (h.right + h.left) * 0.5;
             let s = ((q.x - center) / half).clamp(-1., 1.);
-            let groove = [-0.5, 0., 0.5]
-                .into_iter()
-                .map(|g: f32| (-((s - g) / 0.075).powi(2)).exp())
-                .fold(0.0_f32, f32::max);
+            // Give each finger a broad circular terminal pad. The previous
+            // cosine cut took too much height from the shoulders, producing
+            // four pointed claws in the actual mounted and resting renders.
+            let cell = ((s + 1.) * 2.).floor().clamp(0., 3.);
+            let lateral = ((s - (-0.75 + 0.5 * cell)) / 0.25).abs();
+            let radius = half * 0.25 * 0.82;
+            // Smooth shoulders and a wider web avoid the circular profile's
+            // vertical tangent, which creased the triangulated pad edges.
+            let shoulder = lateral * lateral * (3. - 2. * lateral);
+            let cap_drop = radius * shoulder * shoulder;
+            let web = ((lateral - 0.50) / 0.50).clamp(0., 1.);
+            let web = web * web * (3. - 2. * web);
+            let lateral_drop = cap_drop + (0.105 - radius) * web;
             let t = ((q.y - 0.22) / (h.tip - 0.22)).clamp(0., 1.);
             let activation = t * t * (3. - 2. * t);
-            q.y -= activation * 0.120 * groove;
-            let middle_z = 0.020 + 0.14 * (q.y - 0.18);
-            q.z = middle_z + (q.z - middle_z) * (1. - 0.40 * groove * activation);
+            // Round the terminal pad through its depth too. A lateral arch
+            // alone leaves four flat blades when the relaxed hand curls.
+            // This bounded height field retains the connected surface and
+            // uses the supplied slab's actual depth, without adding pieces.
+            let depth = ((q.z - h.cap_center_z) / h.cap_depth).clamp(-1., 1.);
+            // The supplied cap already has a depth dome. A second deep
+            // carve sharpened its tip; retain that dome with a small blend.
+            q.y -= activation * (lateral_drop + 0.008 * depth * depth);
+            // A rounded section across each pad replaces the shared flat
+            // front/back plates. Retain a thin connected web in the valleys
+            // and fade into the original palm rather than adding loose parts.
+            let section = (lateral * std::f32::consts::FRAC_PI_2).cos().max(0.);
+            // Apply depth shaping after tip shaping. Reusing the original
+            // activation couples both contractions and can invert the local
+            // surface near a valley; the sequential maps stay monotone.
+            // Begin the depth blend beyond the palm crease. Compressing the
+            // proximal surface made a hard ridge across the resting palm.
+            let volume_t = ((q.y - 0.28) / (h.tip - 0.28)).clamp(0., 1.);
+            let volume_activation = volume_t * volume_t * (3. - 2. * volume_t);
+            let middle_z = h.cap_center_z;
+            q.z = middle_z + (q.z - middle_z) * (1. - 0.75 * (1. - section) * volume_activation);
             *p = h.bind.inverse().transform_point3(q).to_array();
             changed[i] = true;
             break;
@@ -253,9 +314,20 @@ pub(crate) fn sculpt(
     let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for f in mesh.indices.chunks_exact(3) {
         let p = [f[0], f[1], f[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-        let n = (p[1] - p[0]).cross(p[2] - p[0]);
-        for &i in f {
-            *normals.entry(key(mesh.positions[i as usize])).or_default() += n;
+        let n = (p[1] - p[0]).cross(p[2] - p[0]).normalize_or_zero();
+        // Subdivision leaves unequal triangle sizes near a web. Weight by
+        // each corner's angle so a large neighboring face cannot dominate
+        // the normal of a small curved pad face across an atlas seam.
+        for corner in 0..3 {
+            let a = p[(corner + 1) % 3] - p[corner];
+            let b = p[(corner + 2) % 3] - p[corner];
+            let angle = a
+                .normalize_or_zero()
+                .dot(b.normalize_or_zero())
+                .clamp(-1., 1.)
+                .acos();
+            let i = f[corner] as usize;
+            *normals.entry(key(mesh.positions[i])).or_default() += n * angle;
         }
     }
     for i in 0..mesh.positions.len() {
@@ -274,6 +346,7 @@ mod tests {
     #[ignore = "requires supplied Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_digits_preserve_wrists_attributes_and_animation_bounds() {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        let mut shape_failures = Vec::new();
         for name in ["human-male", "human-female", "skater-male", "skater-female"] {
             let rig = PersonRig::parse(
                 &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
@@ -312,7 +385,7 @@ mod tests {
                 assert!(weight.iter().all(|&v| v >= 0. && v.is_finite()));
                 assert!((weight.iter().sum::<f32>() - 1.).abs() < 1e-5);
             }
-            for hand in &h {
+            for (side, hand) in h.iter().enumerate() {
                 let tip = |s: f32| {
                     mesh.positions
                         .iter()
@@ -330,12 +403,51 @@ mod tests {
                         .fold(f32::NEG_INFINITY, f32::max)
                 };
                 let lobes = [-0.75, -0.25, 0.25, 0.75].map(tip);
+                for (center, apex) in [-0.75, -0.25, 0.25, 0.75].into_iter().zip(lobes) {
+                    let shoulders = [tip(center - 0.12), tip(center + 0.12)];
+                    if !(shoulders.iter().all(|p| p.is_finite())
+                        && apex - (shoulders[0] + shoulders[1]) * 0.5 > 0.015)
+                    {
+                        shape_failures.push(format!(
+                            "{name} side{side} fingertip remains flat: center {center}, apex {apex}, shoulders {shoulders:?}"
+                        ));
+                    }
+                    let mut pad_center = f32::NEG_INFINITY;
+                    let mut pad_sides = f32::NEG_INFINITY;
+                    for ((&p, &j), &w) in mesh.positions.iter().zip(&j).zip(&w) {
+                        if !eligible(p, j, w, hand, 0.23) {
+                            continue;
+                        }
+                        let q = hand.bind.transform_point3(Vec3::from_array(p));
+                        let lateral = (q.x - (hand.left + hand.right) * 0.5)
+                            / ((hand.right - hand.left) * 0.5);
+                        if (lateral - center).abs() > 0.08 {
+                            continue;
+                        }
+                        let depth = ((q.z - hand.cap_center_z) / hand.cap_depth).abs();
+                        if depth < 0.25 {
+                            pad_center = pad_center.max(q.y);
+                        }
+                        if depth > 0.75 {
+                            pad_sides = pad_sides.max(q.y);
+                        }
+                    }
+                    if !(pad_center.is_finite()
+                        && pad_sides.is_finite()
+                        && pad_center - pad_sides > 0.008)
+                    {
+                        shape_failures.push(format!(
+                            "{name} side{side} fingertip pad stays flat through depth: center {center}, peak {pad_center}, sides {pad_sides}"
+                        ));
+                    }
+                }
                 for (i, gap) in [-0.5, 0., 0.5].into_iter().enumerate() {
                     let valley = tip(gap);
-                    assert!(
-                        valley.is_finite() && lobes[i].min(lobes[i + 1]) - valley > 0.035,
-                        "{name} fingertip silhouette missing: {lobes:?} valley {gap}={valley}"
-                    );
+                    if !(valley.is_finite() && lobes[i].min(lobes[i + 1]) - valley > 0.035) {
+                        shape_failures.push(format!(
+                            "{name} side{side} fingertip silhouette missing: {lobes:?} valley {gap}={valley}"
+                        ));
+                    }
                 }
                 let mut edges = BTreeMap::<([i32; 3], [i32; 3]), (usize, i32)>::new();
                 for f in mesh.indices.chunks_exact(3) {
@@ -401,5 +513,8 @@ mod tests {
                 }
             }
         }
+        // Collect shape defects across the entire supplied rig set, rather
+        // than stopping on one fingertip and leaving the other hands unaudited.
+        assert!(shape_failures.is_empty(), "{}", shape_failures.join("\n"));
     }
 }

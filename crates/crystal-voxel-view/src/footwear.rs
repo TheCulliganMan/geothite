@@ -1,6 +1,7 @@
 //! Source shoe-island styling and gentle rounding with pinned soles/ankles.
 use crate::{mesh::SurfaceMeshData, npc_appearance::Look};
 use bevy::prelude::*;
+mod player_laces;
 
 fn shoe(p: [f32; 3], uv: [f32; 2]) -> bool {
     p[1] <= 0.27 && uv[0] >= 0.61 && uv[1] < 0.50
@@ -17,7 +18,7 @@ fn palette(look: Look) -> ([u8; 3], [u8; 3]) {
             [65, 68, 73],
         );
     }
-    if matches!(look.texture_key, "red" | "jasmine" | "karen" | "beauty" | "daisy" | "clair" | "sabrina" | "erika" | "bugsy" | "receptionist" | "whitney" | "misty" | "janine" | "koga" | "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m") {
+    if matches!(look.texture_key, "chris" | "kris" | "red" | "jasmine" | "karen" | "beauty" | "daisy" | "clair" | "sabrina" | "erika" | "bugsy" | "receptionist" | "whitney" | "misty" | "janine" | "koga" | "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m") {
         // These painted shoes already carry their intended palette.
         // A vest/dress tint obscured both the laces and upper color.
         return ([255, 255, 255], [163, 168, 168]);
@@ -70,6 +71,7 @@ pub(crate) fn adapt(
     let linear = |rgb: [u8; 3]| rgb.map(|v| Color::srgb_u8(v, v, v).to_linear().red);
     let upper = linear(upper);
     let sole = linear(sole);
+    let player = matches!(look.texture_key, "chris" | "kris");
     for ((&p, &uv), color) in mesh.positions.iter().zip(&mesh.uvs).zip(&mut mesh.colors) {
         if !shoe(p, uv) {
             continue;
@@ -97,6 +99,40 @@ pub(crate) fn adapt(
             for channel in &mut color[..3] {
                 *channel *= 1.0 - 0.75 * (1.0 - front) * blend;
             }
+        }
+    }
+    if player {
+        player_shoe_uvs(mesh, ids, weights);
+        player_laces::append(mesh, ids, weights);
+    }
+}
+
+/// Plain leather and rubber share a clean sample; crosslaces are modeled
+/// on the actual upper instead of stretching a top-down bitmap around it.
+fn player_shoe_uvs(mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
+    let mut copies = std::collections::HashMap::new();
+    let old = std::mem::take(&mut mesh.indices);
+    for face in old.chunks_exact(3) {
+        let shoe_face = face.iter().all(|&i| shoe(mesh.positions[i as usize], mesh.uvs[i as usize]));
+        if !shoe_face {
+            mesh.indices.extend_from_slice(face);
+            continue;
+        }
+        for &i in face {
+            let copy = *copies.entry(i).or_insert_with(|| {
+                let source = i as usize;
+                let index = mesh.positions.len() as u32;
+                mesh.positions.push(mesh.positions[source]);
+                mesh.normals.push(mesh.normals[source]);
+                mesh.colors.push(mesh.colors[source]);
+                // Neutral plain toe panel in both authored player paintings.
+                mesh.uvs.push([0.716, 0.465]);
+                ids.push(ids[source]);
+                weights.push(weights[source]);
+                index
+            });
+            mesh.indices.push(copy);
         }
     }
 }
@@ -163,6 +199,79 @@ fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut V
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    #[ignore = "requires supplied player rigs and paintings in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn player_shoe_albedo_preserves_uppers_and_removes_skin_from_soles() {
+        use crate::new_bark_actors::character_meshes::CharacterKind;
+        use crate::open_people::PersonRig;
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale] {
+            let look = crate::npc_appearance::look(kind);
+            let rig = PersonRig::parse(&std::fs::read(
+                root.join(format!("people/kenney/{}.glb", look.base))).unwrap()).unwrap();
+            let painting = crate::npc_textures::get(look.texture_key).unwrap();
+            let sample = |uv: [f32; 2]| {
+                let x = (uv[0] * painting.size.0 as f32).clamp(0., painting.size.0 as f32 - 1.) as usize;
+                let y = (uv[1] * painting.size.1 as f32).clamp(0., painting.size.1 as f32 - 1.) as usize;
+                &painting.rgba[(y * painting.size.0 as usize + x) * 4..][..3]
+            };
+            let mut before = rig.mesh.clone();
+            let mut before_ids = rig.ids.clone();
+            let mut before_weights = rig.weights.clone();
+            adapt(&mut before, &mut before_ids, &mut before_weights,
+                crate::npc_appearance::look(CharacterKind::Officer));
+            let mut after = rig.mesh.clone();
+            let mut ids = rig.ids.clone();
+            let mut weights = rig.weights.clone();
+            adapt(&mut after, &mut ids, &mut weights, look);
+            assert!(after.indices.len() > before.indices.len(), "modeled crosslaces missing");
+            assert_eq!(after.positions.len(), ids.len());
+            assert_eq!(ids.len(), weights.len());
+            let mut old_skin = 0;
+            let mut soles = std::collections::BTreeSet::new();
+            for (old_face, new_face) in before.indices.chunks_exact(3).zip(after.indices.chunks_exact(3)) {
+                let shoe_face = old_face.iter().all(|&i| shoe(before.positions[i as usize], before.uvs[i as usize]));
+                let rubber = old_face.iter().any(|&i| before.positions[i as usize][1] <= 0.055);
+                for (&old, &new) in old_face.iter().zip(new_face) {
+                    let (old, new) = (old as usize, new as usize);
+                    assert_eq!(before.positions[old], after.positions[new], "contact geometry changed");
+                    assert_eq!(before.normals[old], after.normals[new]);
+                    assert_eq!(before_ids[old], ids[new]);
+                    assert_eq!(before_weights[old], weights[new]);
+                    if rubber {
+                        soles.insert(old);
+                        let rgb = sample(before.uvs[old]);
+                        old_skin += usize::from(i16::from(rgb[0]) - i16::from(rgb[1]) > 25
+                            && i16::from(rgb[1]) - i16::from(rgb[2]) > 20);
+                    } else if !shoe_face {
+                        assert_eq!(after.uvs[new], before.uvs[old], "non-shoe UV changed");
+                    }
+                    if shoe(before.positions[old], before.uvs[old]) && before.positions[old][1] >= 0.10 {
+                        assert!(after.colors[new][..3].iter().all(|&c| c > 0.98),
+                            "painted trainer upper remains shirt-tinted");
+                    }
+                }
+                if shoe_face {
+                    // Inspect interpolated UVs across the whole face, rather
+                    // than allowing lace/skin stripes between good corners.
+                    for a in 0..=4 { for b in 0..=4-a {
+                        let blend = [a as f32 / 4., b as f32 / 4., (4-a-b) as f32 / 4.];
+                        let uv = std::array::from_fn(|axis| new_face.iter().zip(blend)
+                            .map(|(&i,w)| after.uvs[i as usize][axis] * w).sum());
+                        let rgb = sample(uv);
+                        assert!(rgb.iter().all(|&c| c > 230), "rubber face crosses dark/skin pixels");
+                        assert!(i16::from(*rgb.iter().max().unwrap()) - i16::from(*rgb.iter().min().unwrap()) < 5,
+                            "rubber albedo is not neutral");
+                    } }
+                }
+            }
+            assert!(soles.len() > 80 && old_skin > 10, "regression did not cover the skin-mapped soles");
+            for i in 0..rig.mesh.positions.len() {
+                assert_eq!(ids[i], rig.ids[i]);
+                assert_eq!(weights[i], rig.weights[i]);
+            }
+        }
+    }
     use super::*;
     use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
     #[test]

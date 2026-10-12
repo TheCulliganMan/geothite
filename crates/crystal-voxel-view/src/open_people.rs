@@ -118,6 +118,8 @@ pub(crate) struct PersonRig {
     pub hand_joints: [Vec<usize>; 2],
     /// Optional articulated finger nodes; excludes wrist and end markers.
     pub finger_nodes: Vec<usize>,
+    /// Named thumb bases, when present, for fitted prop grips.
+    pub thumb_nodes: [Option<usize>; 2],
     /// Left/right thigh and shin indices in the same skin palette as the body.
     pub leg_joints: [[usize; 2]; 2],
     pub inverse_binds: Vec<Mat4>,
@@ -289,6 +291,8 @@ impl PersonRig {
             let name = n.name().unwrap_or("");
             (name.contains("HandIndex") || name.contains("HandThumb")) && !name.ends_with("_end")
         }).map(|n| n.index()).collect();
+        let thumb_nodes = ["LeftHandThumb1", "RightHandThumb1"].map(|name|
+            g.nodes().find(|node| node.name() == Some(name)).map(|node| node.index()));
         let inverse_binds: Vec<_> = skin
             .reader(|_| Some(bin))
             .read_inverse_bind_matrices()
@@ -484,6 +488,7 @@ impl PersonRig {
             chest_joint,
             hand_joints,
             finger_nodes,
+            thumb_nodes,
             leg_joints,
             inverse_binds,
             mesh_node,

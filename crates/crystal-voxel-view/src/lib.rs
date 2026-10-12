@@ -43,6 +43,7 @@ mod garment_fit;
 mod garment_body;
 mod hand_surface;
 mod hand_digits;
+mod handwear;
 mod hand_pose;
 mod head_surface;
 #[cfg(test)]
