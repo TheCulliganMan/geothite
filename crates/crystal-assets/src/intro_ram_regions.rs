@@ -13,14 +13,21 @@ pub fn runtime_intro_apply_region_effect(
     let number = |key: &str| operation.fields.get(key).and_then(serde_json::Value::as_u64)
         .and_then(|value| usize::try_from(value).ok())
         .with_context(|| format!("CrystalIntro {} has no source region {key}", operation.op));
-    if let Some(condition) = operation.fields.get("condition") {
-        if let (Some(source), Some(predicate)) = (condition.get("source").and_then(serde_json::Value::as_str),
-            condition.get("predicate").and_then(serde_json::Value::as_str)) {
-            let value = memory.get(source).copied().with_context(|| format!("CrystalIntro source condition {source} is uninitialized"))?;
-            if (predicate == "zero" && value != 0) || (predicate == "nonzero" && value == 0) { return Ok(()); }
-        }
-    }
-    if let Some(effects) = operation.fields.get("source_memory_effects") {
+    let matches = |condition: &serde_json::Value| -> Result<bool> {
+        let (Some(source), Some(predicate)) = (condition["source"].as_str(), condition["predicate"].as_str()) else { return Ok(true); };
+        let value = u64::from(*memory.get(source).with_context(|| format!("CrystalIntro source condition {source} is uninitialized"))?);
+        let operand = || condition["operand"].as_u64().context("CrystalIntro source condition operand is invalid");
+        Ok(match predicate {
+            "zero" => value == 0, "nonzero" => value != 0,
+            "equal" | "equals" => value == operand()?, "not_equal" => value != operand()?,
+            "unsigned_less_than" => value < operand()?, "unsigned_greater_or_equal" => value >= operand()?,
+            "unsigned_greater_than" => value > operand()?, "unsigned_less_or_equal" => value <= operand()?,
+            _ => anyhow::bail!("CrystalIntro source memory condition {predicate} is unsupported"),
+        })
+    };
+    if operation.fields.get("condition").map(&matches).transpose()? == Some(false) { return Ok(()); }
+    let source_effect_enabled = operation.fields.get("source_memory_effect_condition").map(matches).transpose()?.unwrap_or(true);
+    if let Some(effects) = operation.fields.get("source_memory_effects").filter(|_| source_effect_enabled) {
         let effects = effects.as_object().context("CrystalIntro source memory effects are not byte writes")?;
         for (target, value) in effects {
             let value = value.as_u64().filter(|value| *value <= 255).context("CrystalIntro source memory effect exceeds one byte")?;
@@ -181,6 +188,21 @@ mod tests {
     fn operation(mut value: serde_json::Value) -> super::super::RuntimePresentationOperation {
         value["source_span"] = json!({"file":"synthetic-region-test","start_line":1,"end_line":1});
         serde_json::from_value(value).unwrap()
+    }
+
+    #[test]
+    fn source_grass_request_guard_preserves_pending_size_after_animation_stops() {
+        let request = operation(json!({"op":"indexed_2bpp_request",
+            "source_memory_effects":{"wRequested2bppSize":4},
+            "source_memory_effect_condition":{"source":"wIntroSceneFrameCounter","predicate":"unsigned_less_than","operand":36}}));
+        let mut memory = BTreeMap::from([("wIntroSceneFrameCounter".to_string(),35),("wRequested2bppSize".to_string(),0)]);
+        let mut regions = BTreeMap::new();
+        runtime_intro_apply_region_effect(&mut regions, &request, &mut memory, &mut |_| panic!("no source resource")).unwrap();
+        assert_eq!(memory["wRequested2bppSize"],4);
+        memory.insert("wIntroSceneFrameCounter".to_string(),36);
+        memory.insert("wRequested2bppSize".to_string(),2);
+        runtime_intro_apply_region_effect(&mut regions, &request, &mut memory, &mut |_| panic!("no source resource")).unwrap();
+        assert_eq!(memory["wRequested2bppSize"],2);
     }
 
     #[test]

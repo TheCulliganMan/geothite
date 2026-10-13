@@ -354,16 +354,24 @@ fn visible_intro_source_segment(
         }
         _ => segment.machine_cycles = crystal_assets::runtime_intro_operation_instruction_machine_cycles_with_context(operation, branch, memory, values, regions, compressed)?,
     }
-    let effect_enabled = if let Some(condition) = operation.fields.get("condition") {
-        if let (Some(source), Some(predicate)) = (condition["source"].as_str(), condition["predicate"].as_str()) {
-            let value = *memory.get(source).context("CrystalIntro source effect guard byte is missing")?;
-            match predicate { "zero" => value == 0, "nonzero" => value != 0, _ => true }
-        } else { true }
-    } else { true };
+    let matches = |condition: &serde_json::Value| -> Result<bool> {
+        let (Some(source), Some(predicate)) = (condition["source"].as_str(), condition["predicate"].as_str()) else { return Ok(true); };
+        let value = u64::from(*memory.get(source).context("CrystalIntro source effect guard byte is missing")?);
+        let operand = || condition["operand"].as_u64().context("CrystalIntro source effect guard operand is invalid");
+        Ok(match predicate {
+            "zero" => value == 0, "nonzero" => value != 0,
+            "equal" | "equals" => value == operand()?, "not_equal" => value != operand()?,
+            "unsigned_less_than" => value < operand()?, "unsigned_greater_or_equal" => value >= operand()?,
+            "unsigned_greater_than" => value > operand()?, "unsigned_less_or_equal" => value <= operand()?,
+            _ => anyhow::bail!("CrystalIntro source effect guard {predicate} is unsupported"),
+        })
+    };
+    let effect_enabled = operation.fields.get("condition").map(&matches).transpose()?.unwrap_or(true);
+    let source_effect_enabled = effect_enabled && operation.fields.get("source_memory_effect_condition").map(matches).transpose()?.unwrap_or(true);
     if effect_enabled && matches!(operation.op.as_str(), "write_memory_byte" | "palette_transfer_request") {
         segment.memory_updates_after.extend(visible_intro_source_memory_effects(operation)?);
     }
-    if let Some(effects) = operation.fields.get("source_memory_effects").filter(|_| effect_enabled) {
+    if let Some(effects) = operation.fields.get("source_memory_effects").filter(|_| source_effect_enabled) {
         for (target, value) in effects.as_object().context("CrystalIntro source memory effects are invalid")? {
             let value = value.as_u64().filter(|value| *value <= 255).context("CrystalIntro source memory effect exceeds one byte")?;
             segment.memory_updates_after.insert(target.clone(), value as u16);
@@ -372,7 +380,7 @@ fn visible_intro_source_segment(
     segment.memory_update_instruction_index = operation.fields.get("source_memory_effect_instruction_index")
         .map(|value| value.as_u64().and_then(|index| usize::try_from(index).ok()).context("CrystalIntro memory effect index is invalid"))
         .transpose()?;
-    if let Some(from_end) = operation.fields.get("source_memory_effect_instruction_index_from_end") {
+    if let Some(from_end) = operation.fields.get("source_memory_effect_instruction_index_from_end").filter(|_| source_effect_enabled) {
         anyhow::ensure!(segment.memory_update_instruction_index.is_none(), "CrystalIntro source store has two conflicting boundaries");
         let distance = from_end.as_u64().and_then(|value| usize::try_from(value).ok()).filter(|value| *value > 0)
             .context("CrystalIntro source store distance is invalid")?;
