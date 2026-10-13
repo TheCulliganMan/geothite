@@ -41,11 +41,15 @@ file_hash() {
 }
 mkdir -p "$workspace/vendor" "$workspace/toolchain"
 vendor="$workspace/vendor/pokecrystal"
+vendor_created=false
 if [[ ! -d "$vendor/.git" ]]; then
   [[ ! -e "$vendor" ]] || { echo 'Existing vendor directory is not a Git checkout.' >&2; exit 1; }
   git clone --no-checkout "$(pin_value repository)" "$vendor"
+  vendor_created=true
 fi
-[[ -z "$(git -C "$vendor" status --porcelain --untracked-files=no)" ]] || { echo 'External pret checkout has tracked edits; preserve them before building.' >&2; exit 1; }
+if [[ "$vendor_created" = false ]]; then
+  [[ -z "$(git -C "$vendor" status --porcelain --untracked-files=no)" ]] || { echo 'External pret checkout has tracked edits; preserve them before building.' >&2; exit 1; }
+fi
 git -C "$vendor" cat-file -e "$commit^{commit}" 2>/dev/null || git -C "$vendor" fetch origin "$commit"
 git -C "$vendor" checkout --detach "$commit"
 [[ "$(git -C "$vendor" rev-parse 'HEAD^{tree}')" = "$tree" ]] || { echo 'Pret tree differs from pin.' >&2; exit 1; }
@@ -61,10 +65,14 @@ if [[ ! -x "$RGBDS/rgbasm" ]]; then
       command -v "$tool" >/dev/null || { printf 'Required RGBDS source build tool missing: %s\n' "$tool" >&2; exit 1; }
     done
     source_dir="$workspace/toolchain/rgbds-source-$rgbds_version"
+    source_created=false
     if [[ ! -d "$source_dir/.git" ]]; then
       git clone --no-checkout https://github.com/gbdev/rgbds.git "$source_dir"
+      source_created=true
     fi
-    [[ -z "$(git -C "$source_dir" status --porcelain --untracked-files=no)" ]] || { echo 'External RGBDS checkout has tracked edits.' >&2; exit 1; }
+    if [[ "$source_created" = false ]]; then
+      [[ -z "$(git -C "$source_dir" status --porcelain --untracked-files=no)" ]] || { echo 'External RGBDS checkout has tracked edits.' >&2; exit 1; }
+    fi
     git -C "$source_dir" checkout --detach "$rgbds_source_commit"
     make -C "$source_dir" -j "$jobs"
     mkdir -p "$RGBDS"
