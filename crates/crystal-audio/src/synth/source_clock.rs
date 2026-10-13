@@ -74,6 +74,7 @@ pub struct SourceAudioClock {
     channels: [Option<Channel>; 8],
     context: SynthContext,
     samples: Vec<NoiseNote>,
+    sample_pointer_present: bool,
     sample: usize,
     pub sfx_priority: bool,
     pub volume: u8,
@@ -90,6 +91,7 @@ impl SourceAudioClock {
             channels: std::array::from_fn(|_| None),
             context: SynthContext::cartridge()?,
             samples: vec![],
+            sample_pointer_present: false,
             sample: 0,
             sfx_priority: false,
             volume: 0x77,
@@ -105,6 +107,7 @@ impl SourceAudioClock {
         self.channels = std::array::from_fn(|_| None);
         self.noise_delay = 0;
         self.samples.clear();
+        self.sample_pointer_present = false;
         self.sample = 0;
         self.sfx_priority = false;
     }
@@ -130,6 +133,7 @@ impl SourceAudioClock {
                 .is_some_and(|channel| channel.state.flags1 & 1 != 0)
             {
                 self.samples.clear();
+                self.sample_pointer_present = false;
                 self.sample = 0;
             }
             self.sfx_priority = false;
@@ -237,10 +241,10 @@ impl SourceAudioClock {
                 .get(self.sample)
                 .map(|s| s.length as u8)
                 .or_else(|| {
-                    if self.samples.is_empty() {
-                        None
-                    } else {
+                    if self.sample_pointer_present {
                         Some(255)
+                    } else {
+                        None
                     }
                 });
             let noise_blocked = index < 4
@@ -257,7 +261,7 @@ impl SourceAudioClock {
                     frequency = sample.frequency as u16;
                     self.sample += 1;
                     channel.state.note_flags |= 16;
-                } else if !self.samples.is_empty() {
+                } else if self.sample_pointer_present {
                     noise_sample_first_byte = Some(255);
                 }
             }
@@ -500,6 +504,7 @@ impl SourceAudioClock {
                                 .and_then(|k| k.get(&(drum_pitch as i32)))
                                 .cloned()
                                 .context("source clock missing drum sample")?;
+                            self.sample_pointer_present = true;
                             self.sample = 0;
                             self.noise_delay = 0;
                         }
@@ -681,6 +686,19 @@ mod tests {
         assert_eq!(end.after.flags1 & 1, 0);
         assert_eq!(end.after.note_flags & 32, 32);
         assert!(clock.update_vblank()?.is_empty());
+        Ok(())
+    }
+
+    #[test]
+    fn source_clock_empty_drum_sample_retains_its_terminator_pointer() -> Result<()> {
+        let mut clock = SourceAudioClock::new()?;
+        clock.context.drumkits.insert(0, BTreeMap::from([(1, vec![])]));
+        clock.play(&program(4, &[("toggle_noise", &["0"]), ("drum_note", &["1", "4"]), ("sound_ret", &[])]))?;
+        let first = clock.update_vblank()?.remove(0);
+        assert_eq!(first.noise_sample_first_byte, Some(255));
+        assert_eq!(clock.update_vblank()?.remove(0).noise_sample_first_byte, Some(255));
+        clock.stop_all();
+        assert!(!clock.sample_pointer_present);
         Ok(())
     }
 
