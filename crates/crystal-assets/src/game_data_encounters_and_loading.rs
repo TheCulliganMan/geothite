@@ -1,4 +1,18 @@
 impl GameDataSet {
+    /// Validate authored catalog records through the production content parsers.
+    /// Category order is identical to loading a content pack; no alternate
+    /// source schema or compatibility conversion participates in this check.
+    pub fn validate_authored_content_payloads(payloads: &[(ContentPackCategory, Value)]) -> Result<()> {
+        let mut data = Self::default();
+        for category in CONTENT_PACK_CATEGORIES {
+            for (_, payload) in payloads.iter().filter(|(kind, _)| kind == category) {
+                data.apply_content_pack_payload(*category, payload.clone())
+                    .with_context(|| format!("validate authored {} payload", category.as_str()))?;
+            }
+        }
+        Ok(())
+    }
+
     pub fn fishing_rod_item(&self, item_id: &str) -> Result<(&Item, &str)> {
         let item = self.item(item_id)?;
         let rod = fishing_rod_for_item_id(&self.fishing, item_id).with_context(|| {

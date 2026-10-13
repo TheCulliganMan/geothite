@@ -51,7 +51,7 @@ pub(super) fn read(root: &Path) -> Result<Value> {
         .get("InitializeEventsScript")
         .and_then(Value::as_array)
         .context("source initial events")?;
-    let flags = initial
+    let mut flags = initial
         .iter()
         .filter(|entry| entry["command"] == "setevent")
         .map(|entry| {
@@ -60,6 +60,10 @@ pub(super) fn read(root: &Path) -> Result<Value> {
                 .context("source initial event name")
         })
         .collect::<Result<Vec<_>>>()?;
+    // Source setevent is idempotent; the playability schema declares a set of
+    // initially active flags rather than a tape of repeated source commands.
+    let mut seen_flags = std::collections::BTreeSet::new();
+    flags.retain(|flag| seen_flags.insert(*flag));
     ensure!(!flags.is_empty(), "source initial event list is empty");
     let surf_source = super::source_scripts::parse(&std::fs::read_to_string(
         vendor.join("maps/DanceTheater.asm"),

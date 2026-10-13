@@ -87,7 +87,7 @@ pub fn export(root: &Path) -> Result<()> {
     for (index, (class, ids)) in classes.iter().enumerate() { ensure!(counts[index] == ids.len(), "source trainer count {class}"); }
     let directory = data.join("content-packs/core-modular/trainers");
     std::fs::create_dir_all(&directory)?;
-    std::fs::write(directory.join("Source.json"), serde_json::to_vec_pretty(&catalog)?)?;
+    std::fs::write(directory.join("Source.json"), serde_json::to_vec_pretty(&catalog.trainers)?)?;
     std::fs::write(data.join("trainers.json"), serde_json::to_vec_pretty(&catalog)?)?;
     let names = classes.iter().zip(class_names).map(|((id, _), name)| (id.clone(), name)).collect::<BTreeMap<_, _>>();
     let directory = data.join("content-packs/core-modular/trainer_class_names");

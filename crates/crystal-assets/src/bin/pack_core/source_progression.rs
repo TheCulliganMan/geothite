@@ -26,10 +26,90 @@ fn write(data: &Path, category: &str, values: &BTreeMap<String, Value>) -> Resul
     let directory = data.join("content-packs/core-modular").join(category);
     std::fs::create_dir_all(&directory)?;
     for (id, value) in values {
-        std::fs::write(directory.join(format!("{id}.json")), serde_json::to_vec_pretty(&json!({id:value}))?)?;
+        let record = modular_record(category, id, value)?;
+        std::fs::write(directory.join(format!("{id}.json")), serde_json::to_vec_pretty(&json!({id:record}))?)?;
     }
     std::fs::write(data.join(format!("{category}.json")), serde_json::to_vec_pretty(values)?)?;
     Ok(())
+}
+
+fn modular_record(category: &str, species: &str, value: &Value) -> Result<Value> {
+    Ok(match category {
+        "learnsets" => json!({"species":species,"learnset":value}),
+        "evolutions" => json!({"species":species,"evolutions":value}),
+        "egg_moves" => json!({"species":species,"moves":value}),
+        "level_up_moves" => {
+            let learned: Vec<crystal_core::systems::learnsets::LearnsetEntry> = serde_json::from_value(value.clone())?;
+            let moves = learned.into_iter().map(|crystal_core::systems::learnsets::LearnsetEntry(level,move_id)|
+                json!({"level":level,"move":move_id})).collect::<Vec<_>>();
+            json!({"species":species,"moves":moves})
+        }
+        _ => value.clone(),
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crystal_assets::{ContentPackCategory, GameDataSet};
+
+    #[test]
+    fn progression_catalog_records_pass_production_parsers() {
+        let cases = [("learnsets",ContentPackCategory::Learnsets,json!([[1,"TELEPORT"]])),
+            ("level_up_moves",ContentPackCategory::LevelUpMoves,json!([[1,"TELEPORT"]])),
+            ("egg_moves",ContentPackCategory::EggMoves,json!(["LIGHT_SCREEN"])),
+            ("evolutions",ContentPackCategory::Evolutions,json!([]))];
+        for (name,category,value) in cases {
+            let record = modular_record(name,"ABRA",&value).unwrap();
+            GameDataSet::validate_authored_content_payloads(&[(category,json!({"ABRA":record}))]).unwrap();
+            assert!(GameDataSet::validate_authored_content_payloads(&[(category,json!({"ABRA":value}))]).is_err(),
+                "aggregate schema must not be accepted as a modular {name} record");
+            let empty = modular_record(name,"ABRA",&json!([])).unwrap();
+            GameDataSet::validate_authored_content_payloads(&[(category,json!({"ABRA":empty}))]).unwrap();
+        }
+    }
+
+    #[test]
+    fn exported_catalog_shapes_match_production_parsers() {
+        let Some(workspace) = std::env::var_os("CRYSTAL_EXPORT_WORKSPACE") else { return; };
+        let directory = Path::new(&workspace).join("apps/web/assets/data/content-packs/core-modular");
+        let mut failures = Vec::new();
+        for entry in std::fs::read_dir(directory).unwrap() {
+            let entry = entry.unwrap();
+            if !entry.path().is_dir() { continue; }
+            let name = entry.file_name().into_string().unwrap();
+            let Ok(category) = serde_json::from_value::<ContentPackCategory>(json!(name)) else { continue; };
+            // Fresh intro certification belongs to the continuous production
+            // replay; this read-only schema audit never changes its flags.
+            if category == ContentPackCategory::RuntimeTitleScreen { continue; }
+            let mut payloads = Vec::new();
+            for file in std::fs::read_dir(entry.path()).unwrap() {
+                let path = file.unwrap().path();
+                if !path.extension().is_some_and(|extension| extension == "json") { continue; }
+                let mut payload: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+                // Validate the corrected source serialization without exporting
+                // or mutating the shared workspace currently owned by root.
+                if ["learnsets","level_up_moves","egg_moves","evolutions"].contains(&name.as_str()) {
+                    let object = payload.as_object_mut().unwrap();
+                    for (id,value) in object { if value.is_array() { *value = modular_record(&name,id,value).unwrap(); } }
+                } else if category == ContentPackCategory::Trainers && payload.get("trainers").is_some() {
+                    payload = payload["trainers"].clone();
+                } else if category == ContentPackCategory::Audio && payload.is_array() {
+                    payload = Value::Object(payload.as_array().unwrap().iter().map(|asset|
+                        (asset["id"].as_str().unwrap().to_string(),asset.clone())).collect());
+                } else if category == ContentPackCategory::Playability {
+                    let mut seen = std::collections::BTreeSet::new();
+                    payload["initial_events"].as_array_mut().unwrap().retain(|flag|
+                        seen.insert(flag.as_str().unwrap().to_string()));
+                }
+                payloads.push((category,payload));
+            }
+            if let Err(error) = GameDataSet::validate_authored_content_payloads(&payloads) {
+                failures.push(format!("{name}: {error:#}"));
+            }
+        }
+        assert!(failures.is_empty(), "{}", failures.join("\n"));
+    }
 }
 
 pub fn export(root: &Path) -> Result<()> {

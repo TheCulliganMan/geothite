@@ -81,7 +81,7 @@ pub(super) fn export(root:&Path)->Result<()> {
             std::fs::write(output,pcm.iter().flat_map(|sample|sample.to_le_bytes()).collect::<Vec<_>>())?;
             let value=serde_json::json!({"id":id,"path":audio_path,"kind":kind,"source":"pcm","sfx_priority":if kind=="sound_effect" {Some(u8::try_from(index)?)}else{None},"pcm_format":{"sample_rate_hz":22050,"channels":2,"bits_per_sample":16},"pcm_frame_count":frames,"payload_hash":format!("{hash:08x}"),"loop_start_sample":start,"loop_end_sample":start.map(|_|frames),"midi_program":{"profile":"pokecrystal-midi-v1","midi_base64":midi}});
             let _:crystal_assets::ModpackAudioAsset=serde_json::from_value(value.clone()).with_context(||format!("validate source audio {id}"))?;
-            std::fs::write(modular.join(format!("{id}.json")),serde_json::to_vec_pretty(&serde_json::json!([value]))?)?;
+            std::fs::write(modular.join(format!("{id}.json")),serde_json::to_vec_pretty(&serde_json::json!({id:value}))?)?;
             assets.insert(id.clone(),value);println!("exported audio {id}: {frames} frames, hash {hash:08x}");
         }
     }
