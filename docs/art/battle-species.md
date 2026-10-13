@@ -1,8 +1,9 @@
 # Exact-species battle sculpture kit
 
 The render-only registry in `crates/crystal-voxel-view/src/battle_species_models.rs`
-contains 220 original, volumetric species sculptures. Together with the 31 exact
-species in `new_bark_actors::actor_props`, this covers the 251-species game catalog. Generic
+contains 225 dedicated species bodies, including the canonical articulated
+models. This is incomplete coverage of the 251-species game catalog. Species
+without a dedicated body retain their original 2D source art. Generic
 icon families never count as species support. `mesh(species)` returns `None` for unknown identities, and
 `supported_species()` enumerates only models with embedded runtime geometry.
 
@@ -28,6 +29,12 @@ rigging and remain editable; these exports currently present the authored idle
 pose. The kit does not claim a skeletal animation rig, alternative forms,
 gender-specific variants, or shiny palettes. Presentation must preserve the
 source-specific fallback for forms the model does not represent.
+
+Dedicated GLB models retain their actual authored skins and clips through the
+species rig runtime. The static kit's coverage count does not establish that
+every species is rigged or visually approved. The latest
+[nautilus review](nautilus-sculptures.md) records the Omanyte/Omastar replacements
+and the currently failing global triangle-budget audit.
 
 ## Rebuild and review
 

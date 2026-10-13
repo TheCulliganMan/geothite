@@ -165,10 +165,11 @@ pub fn apply_state_object_overrides(
                 map_name: overworld.map.name.clone(),
             })?;
     for (object_id, object_memory) in &memory.objects {
-        overworld
+        let (object_index, authored_object) = overworld
             .objects
             .iter()
-            .find(|object| object.object_identifier.as_deref() == Some(object_id.as_str()))
+            .enumerate()
+            .find(|(_, object)| object.object_identifier.as_deref() == Some(object_id.as_str()))
             .ok_or_else(|| MapContextError::MissingObjectOverride {
                 map_name: overworld.map.name.clone(),
                 object_id: object_id.clone(),
@@ -180,6 +181,18 @@ pub fn apply_state_object_overrides(
             object_memory.y,
             width,
             height,
+            // An unchanged, unallocated authored map event may be staged beyond
+            // the room (the GS Ball receptionist is one example). A saved
+            // coordinate cannot introduce a new off-map position or a live
+            // object struct there.
+            object_memory.x == authored_object.x
+                && object_memory.y == authored_object.y
+                && !overworld.object_has_loaded_struct(object_index)
+                && !memory
+                    .object_structs
+                    .structs
+                    .iter()
+                    .any(|slot| usize::from(slot.map_object_index) == object_index + 1),
         )?;
     }
     let mut staged = overworld.clone();
@@ -220,7 +233,7 @@ pub fn sync_state_object_overrides(
                 map_name: overworld.map.name.clone(),
             })?;
     let mut objects = BTreeMap::new();
-    for object in &overworld.objects {
+    for (object_index, object) in overworld.objects.iter().enumerate() {
         let Some(object_id) = object.object_identifier.as_ref() else {
             continue;
         };
@@ -231,6 +244,10 @@ pub fn sync_state_object_overrides(
             object.y,
             width,
             height,
+            // Map-object memory and the loaded object-struct roster are
+            // distinct. Preserve source staging coordinates without treating
+            // an unallocated event as a visible actor outside the map.
+            !overworld.object_has_loaded_struct(object_index),
         )?;
         objects.insert(
             object_id.clone(),
@@ -271,6 +288,7 @@ fn saved_object_raw_tile_to_runtime_tile(
     raw_y: u16,
     runtime_width: u16,
     runtime_height: u16,
+    allow_unallocated_staging: bool,
 ) -> Result<TilePosition, MapContextError> {
     let tile = raw_event_tile_to_runtime_tile_checked(raw_x, raw_y).ok_or_else(|| {
         MapContextError::ObjectOverrideCoordinatesOutOfRange {
@@ -280,10 +298,11 @@ fn saved_object_raw_tile_to_runtime_tile(
             y: raw_y,
         }
     })?;
-    if tile.x < 0
-        || tile.y < 0
-        || i32::from(tile.x) >= i32::from(runtime_width)
-        || i32::from(tile.y) >= i32::from(runtime_height)
+    if !allow_unallocated_staging
+        && (tile.x < 0
+            || tile.y < 0
+            || i32::from(tile.x) >= i32::from(runtime_width)
+            || i32::from(tile.y) >= i32::from(runtime_height))
     {
         return Err(MapContextError::ObjectOverrideOutsideMap {
             map_name: map_name.to_string(),
@@ -937,6 +956,141 @@ mod tests {
         );
         assert!(!state.map_object_overrides.contains_key("Route29"));
         assert_eq!(state.overworld, before_overworld);
+    }
+
+    #[test]
+    fn unallocated_source_staging_survives_sync_restore_and_appearance() {
+        let mut source = test_object("STAGED", 16, 8);
+        source.event_flag = "-1".into();
+        let mut session = OverworldSession::with_events_and_objects(
+            test_map(),
+            Default::default(),
+            vec![source],
+            test_tileset(),
+            TilePosition::new(0, 0),
+        );
+        assert!(!session.object_has_loaded_struct(0));
+        let fresh = session.clone();
+        let mut state = GameState::default();
+        sync_state_object_overrides(&mut state, &session).unwrap();
+        let memory = &state.map_object_overrides["Route29"];
+        assert_eq!(
+            memory.objects["STAGED"],
+            OverworldObjectMemory { x: 16, y: 8 }
+        );
+        assert!(memory.object_structs.structs.is_empty());
+
+        let mut restored = fresh.clone();
+        apply_state_object_overrides(&mut restored, &state).unwrap();
+        assert_eq!((restored.objects[0].x, restored.objects[0].y), (16, 8));
+        assert!(!restored.object_has_loaded_struct(0));
+
+        // Validated moveobject writes map-object memory before appear copies
+        // it into the first free object struct. Synchronization preserves both.
+        session.objects[0].x = 2;
+        session.objects[0].y = 1;
+        assert!(session.copy_object_struct_for_appear("STAGED").unwrap());
+        assert!(session.object_struct_is_visible(0));
+        sync_state_object_overrides(&mut state, &session).unwrap();
+        let mut restored = fresh;
+        apply_state_object_overrides(&mut restored, &state).unwrap();
+        assert!(restored.object_struct_is_visible(0));
+        assert_eq!(
+            restored.object_runtime_tile_by_id("STAGED").unwrap(),
+            TilePosition::new(2, 1)
+        );
+    }
+
+    #[test]
+    fn staged_object_restore_rejects_injected_coordinates_and_allocated_structs() {
+        let mut source = test_object("STAGED", 16, 8);
+        source.event_flag = "-1".into();
+        let session = OverworldSession::with_events_and_objects(
+            test_map(),
+            Default::default(),
+            vec![source],
+            test_tileset(),
+            TilePosition::new(0, 0),
+        );
+        let mut saved = GameState::default();
+        sync_state_object_overrides(&mut saved, &session).unwrap();
+        for allocate in [false, true] {
+            let mut bad = saved.clone();
+            let memory = bad.map_object_overrides.get_mut("Route29").unwrap();
+            if allocate {
+                memory.object_structs.structs.push(test_object_struct(
+                    1,
+                    1,
+                    TilePosition::new(16, 8),
+                    Direction::Down,
+                ));
+            } else {
+                memory.objects.get_mut("STAGED").unwrap().x = 17;
+            }
+            let mut restored = session.clone();
+            assert!(matches!(
+                apply_state_object_overrides(&mut restored, &bad),
+                Err(MapContextError::ObjectOverrideOutsideMap { .. })
+            ));
+            assert_eq!(
+                restored, session,
+                "invalid saved state must not mutate the session"
+            );
+        }
+    }
+
+    #[test]
+    fn compiled_save_reference_validation_requires_unchanged_unallocated_source_staging() {
+        use crate::state::{
+            ObjectOverrideSaveError, validate_saved_object_overrides,
+            validate_saved_object_overrides_with_source_positions,
+        };
+        let mut memory = OverworldObjectMapMemory {
+            objects: BTreeMap::from([("STAGED".into(), OverworldObjectMemory { x: 16, y: 8 })]),
+            ..Default::default()
+        };
+        let validate = |memory: &OverworldObjectMapMemory, source| {
+            validate_saved_object_overrides_with_source_positions(
+                "Route29",
+                memory,
+                |_| Some((6, 4)),
+                |_| Some(1),
+                |id| id == "STAGED",
+                |_| source,
+            )
+        };
+        assert!(matches!(
+            validate_saved_object_overrides(
+                "Route29",
+                &memory,
+                |_| Some((6, 4)),
+                |_| Some(1),
+                |_| true
+            ),
+            Err(ObjectOverrideSaveError::RuntimeTileOutOfBounds { .. })
+        ));
+        assert_eq!(validate(&memory, Some((0, 16, 8))), Ok(()));
+        assert!(validate(&memory, None).is_err());
+        assert!(
+            validate(&memory, Some((1, 16, 8))).is_err(),
+            "source index must belong to this map"
+        );
+        memory.objects.get_mut("STAGED").unwrap().x = 17;
+        assert!(
+            validate(&memory, Some((0, 16, 8))).is_err(),
+            "saved coordinates cannot invent a staging position"
+        );
+        memory.objects.get_mut("STAGED").unwrap().x = 16;
+        memory.object_structs.structs.push(test_object_struct(
+            1,
+            1,
+            TilePosition::new(16, 8),
+            Direction::Down,
+        ));
+        assert!(
+            validate(&memory, Some((0, 16, 8))).is_err(),
+            "allocated structs retain strict map bounds"
+        );
     }
 
     #[test]

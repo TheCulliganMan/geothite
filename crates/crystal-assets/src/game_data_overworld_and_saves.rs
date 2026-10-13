@@ -2107,6 +2107,13 @@ impl GameDataSet {
             |_| self.saved_map_tile_bounds(map_name),
             |_| self.map_module(map_name).ok().map(|module| module.objects.len()),
             |object_id| self.map_declares_event_object(map_name, object_id),
+            |object_id| {
+                self.map_module(map_name).ok()?.objects.iter().enumerate()
+                    .find_map(|(index, object)| {
+                        (object.object_identifier.as_deref() == Some(object_id))
+                            .then_some((index, object.x, object.y))
+                    })
+            },
         )
         .map_err(|error| anyhow::anyhow!("{error}"))
     }

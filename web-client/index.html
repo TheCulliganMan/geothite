@@ -328,7 +328,8 @@
           globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, { onProgress: progress => { reportAsset(progress); if (progress.phase === 'ready') audioResolve(); if (progress.phase === 'error') audioReject(Error(progress.error)); } });
           // The browser build always opens this generated pack. Begin it beside
           // the game and audio WASM downloads; __crystalFetchPack reuses it.
-          const gameDataReady = globalThis.__crystalFetchPack('./realtime-clock.browser.crystalpack');
+          const gameDataReady = globalThis.__crystalFetchPack('./realtime-clock.browser.crystalpack')
+            .then(bytes => bytes.byteLength);
           const wasm = await import('./crystal-bevy.js');
           const { default: init } = wasm;
           await loadWasm(init, './crystal-bevy_bg.wasm', 'Game engine', reportAsset);
@@ -357,8 +358,11 @@
           // WASM initialization starts asynchronous pack loading. Enable input
           // only after the actual game loop has produced its first observation.
           await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });
-          const gameData = await gameDataReady;
-          reportAsset({ label: 'Game data', loaded: gameData.byteLength, total: gameData.byteLength, phase: 'ready' });
+          const gameDataBytes = await gameDataReady;
+          // The first observation proves Rust has consumed its owned pack.
+          // Keep only progress counts after startup, not the download buffer.
+          packRequests.clear();
+          reportAsset({ label: 'Game data', loaded: gameDataBytes, total: gameDataBytes, phase: 'ready' });
           document.querySelector('#loading').hidden = true;
           document.querySelector('#touch-controls').disabled = false;
           if (!document.documentElement.classList.contains("flygon-embedded") && !meshtasticBridge) {

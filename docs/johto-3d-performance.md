@@ -494,3 +494,43 @@ also passed. Full-crate checks and a GPU runtime observation remain pending.
 MCP movement and the production Start menu, and the spawned stdio regression that
 enters Mom's dialogue with byte-for-byte empty stderr. This verifies those gameplay
 paths; it is not a claim of graphical movement performance.
+
+## Fresh shader-complete native checks
+
+One frozen Windows DX12 executable, full-detail scenery, Radeon RX 7900 XTX,
+640×480 logical / 960×720 physical image target, focused update policy, and
+15-second intervals produced these results. Host compiler contention remained.
+A warmup GPU readback was inspected before timing; no readback ran during timing.
+Timing warmups now compile shader pipelines synchronously: earlier warmups could
+accept terrain before character-body shaders finished, invalidating that comparison.
+
+| Scene | Receiver filter | Median update | p95 update | Completed submissions/s |
+| --- | --- | ---: | ---: | ---: |
+| New Bark | off | 15.28 ms | 49.04 ms | 49.656 |
+| New Bark | on | 13.59 ms | 36.24 ms | 60.750 |
+| Route 29 | off | 5.59 ms | 9.07 ms | 163.682 |
+| Route 29 | on | 5.46 ms | 9.43 ms | 165.318 |
+
+All four queue receipts recorded zero poll errors; outstanding work was 1→1,
+1→2, 4→5 and 1→1 respectively. These are completed-work observations and CPU
+updates, not GPU timestamp durations or displayed FPS. The fixed game tick
+remained 0.016742706 seconds. Full-detail warmup images contain terrain and
+complete characters. Receiver filtering remains opt-in; these results do not
+establish a final browser-performance claim or authorize the unfinished effects.
+
+Earlier full-detail browser probes failed to produce playable observations while
+their renderer remained CPU-active, with roughly 6.6/6.4 GB private memory.
+Cooperative grove construction and staged uploads subsequently completed both
+outdoor scenes with production walking. Steady rendering remains too slow:
+the opt-in retained-binding Route 29 diagnostic measured 71.6/107.5 ms median/p95
+rAF intervals, with both binding caches hitting on every steady frame. These are
+not GPU timings or displayed FPS. The browser walking probe now
+preserves renderer errors, supports muted Edge runs and checks full-detail readiness.
+Its host deadline and owned-browser cleanup passed an explicit short-deadline check.
+
+The same executable's production synthetic-input `RLRL` checks passed in both
+maps: 128 frames each, five distinct authoritative tiles and five grid origins,
+with only the initial terrain build. Inspected movement/final images retain
+complete characters and scenery. Movement update traces under contention were
+31.91/76.80 ms median/p95 in New Bark and 15.51/35.79 ms on Route 29. These are
+movement observations, not FPS; stationary throughput does not erase that cost.

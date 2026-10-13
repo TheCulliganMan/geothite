@@ -1,5 +1,42 @@
 # Outdoor terrain transfer checkpoint — 2026-10-12
 
+## Current acceptance status
+
+The missing pack inputs were rebuilt through the Rust pipeline. Production
+source/native paired captures now run on this Windows host with `WGPU_BACKEND=dx12`,
+muted audio and the canonical model root. The shared shader's invalid cutaway
+field access has been corrected; terrain renders again.
+
+The cap/wall classifier and shared deformed positions now preserve the combined
+rock finish: all 19 stone and six base-contact regressions pass. Edge-anchored
+bevel variation replaces height-dependent variation. A narrower mineral bevel
+also passes those checks. Wall-only fractures now retain separate normals;
+only actual cap/wall joins receive unconditional shoulder smoothing. Fresh
+45/90-degree comparisons show closed visible contacts, but the broad caps
+remain too soft for the requested mineral silhouette; visual acceptance is open.
+The retained bed relief is shallower, with stronger cap pigment and wider low
+lawn tufts. Source-footing checks pass. Fresh 45/90-degree native captures retain
+closed visible contacts; the broader silhouette remains visually unaccepted.
+
+Cherrygrove path/water contacts use bare soil without adding lawn plants or
+moving source floor corners. Its datum regression, shoreline and ledge checks
+pass. Fresh Cherrygrove and Lake captures show soil edges and tapered water
+glints. The separate ignored lake-removal variant restores exactly four blocks;
+its audio manifest, runtime assets and other game data match the verified base.
+
+The full outdoor goal remains incomplete. Route26 silhouette quality, complete
+floor-seam coverage, Lake canopy readability, Gyarados coverage, Ilex foliage
+quality and Park's central fountain/reference finish remain acceptance work.
+The current Lake 45-degree capture confirms a 2D Gyarados marker: the source
+binding exists, but Gyarados is absent from the exact-species model registry.
+The historical transfer failures below describe the old checkpoint, rather
+than the current passing rock regression.
+Preserve the actual source fountain silhouette. The user's latest review
+rejects replacing it with an inferred closed Poké Ball sculpture; source
+fidelity takes precedence over the concept note's wording.
+The restored fountain passes its three source-ownership regressions and a fresh
+matching-state 2D/native comparison. No fountain-shape change remains.
+
 ## Goal and stopping point
 
 Original goal: **“Make outside rendering perfect up to the standards I set.”** This goal is incomplete. The human requested all work committed for transfer and explicitly instructed this thread to listen to the coordinating agent. Work stops after this checkpoint; resume improvements on the new host after shared integration is committed.

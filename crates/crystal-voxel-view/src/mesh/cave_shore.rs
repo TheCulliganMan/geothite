@@ -15,6 +15,9 @@ fn edges(s: &VisualTileSource) -> Option<u8> {
     }
     let (x, y, t) = (s.subtile_column, s.subtile_row, s.tile_index);
     match s.metatile_id {
+        0x25 if x == 3 && t == 0x15 => Some(EAST),
+        0x26 if x == 0 && t == 0x17 => Some(WEST),
+        0x27 if y == 0 && t == 0x26 => Some(NORTH),
         0x3d if y == 0 && x < 3 && t == 0x26 => Some(NORTH),
         0x3d if y == 0 && x == 3 && t == 0x0b => Some(NORTH | EAST),
         0x3d if y > 0 && x == 3 && t == 0x15 => Some(EAST),
@@ -161,6 +164,35 @@ pub(super) fn append(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn water_edge_art_keeps_the_lower_ladder_landing_clear() {
+        for (block, column, row, glyph, edge) in [
+            (0x25,3,2,0x15,EAST), (0x26,0,2,0x17,WEST),
+            (0x27,2,0,0x26,NORTH),
+        ] {
+            let source = VisualTileSource { tileset_id:"dark_cave".into(),
+                metatile_id:block, subtile_column:column, subtile_row:row, tile_index:glyph };
+            assert_eq!(edges(&source),Some(edge));
+            assert_eq!(crate::cave::cave_shape(&source),Some(CellShape::Flat));
+            let mut tiles=(0..16).map(|i|VisualTile {
+                column:i%4,row:i/4,priority:false,texture:Handle::default(),
+                animation_frames:None,source:source.clone(),
+            }).collect::<Vec<_>>();
+            tiles[0].source=source.clone();
+            tiles[1].source.tile_index=0x14;
+            tiles[1].animation_frames=Some(vec![Handle::default();2].into());
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let mut mesh=TerrainMeshData::default();
+            assert!(append(&mut mesh,[[0.,0.,0.],[0.,0.,8.],[8.,0.,8.],[8.,0.,0.]],
+                [0.,1.,0.],&cells,&g,0,[0,0]));
+            assert!(mesh.textured.positions.iter().all(|p|p[1]==0.),"water retains its datum");
+            assert!(mesh.solid.positions.iter().all(|p|(0. ..=0.65).contains(&p[1])),
+                "shore art cannot become a shelf above the lower landing");
+            let mut unknown=source.clone(); unknown.tile_index=0xff;
+            assert_eq!(edges(&unknown),None);
+        }
+    }
     #[test]
     fn cave_pool_atlas_endpoints_stay_in_the_live_slot() {
         let mut tile = VisualTile {

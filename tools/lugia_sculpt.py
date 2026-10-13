@@ -13,8 +13,8 @@ SPECIES=('lugia',);HEIGHT=1.45
 WHITE=(.95,.97,.98);BLUE=(.47,.64,.84);NAVY=(.19,.28,.53)
 INK=(.065,.075,.12);IVORY=(.99,.99,.97);PINK=(.83,.46,.49)
 
-def paddle(name,color,points,widths,depths):
- pp,ww=smooth(points,widths,6);_,dd=smooth(points,depths,6);v=[];frames=[];side=(0,0,1);n=28
+def paddle(name,color,points,widths,depths,*,segments=28,steps=6):
+ pp,ww=smooth(points,widths,steps);_,dd=smooth(points,depths,steps);v=[];frames=[];side=(0,0,1);n=segments
  for k,p in enumerate(pp):
   tangent=unit(sub(pp[min(k+1,len(pp)-1)],pp[max(0,k-1)]));side=unit(sub(side,mul(tangent,dot(side,tangent))));other=cross(tangent,side);frames.append((side,other))
   v.extend(add(p,add(mul(side,dd[k]*math.cos(i*math.tau/n)),mul(other,ww[k]*math.sin(i*math.tau/n)))) for i in range(n))

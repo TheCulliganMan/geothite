@@ -1019,10 +1019,11 @@ impl RuntimeGameShell {
             RuntimeMutationCommand::OpenScriptShop(command_ref)
         } else {
             anyhow::bail!(
-                "compiled script command {}:{} '{}' has no Rust runtime mutation",
+                "compiled script command {}:{} '{}' on origin map {} has no Rust runtime mutation",
                 source_script,
                 command_index,
-                command
+                command,
+                map_name
             );
         };
         self.apply_runtime_mutation_command(mutation)

@@ -260,6 +260,7 @@ impl SurfaceMeshData {
         self.cutaway_ranges.clear();
         let mut mesh = self.into_mesh();
         mesh.insert_indices(indices);
+        crate::compact_vertices::remove_constant_color_alpha(&mut mesh);
         mesh
     }
 
@@ -435,7 +436,7 @@ pub(crate) fn select_surface_indices(
 /// Builds a combined textured surface mesh and a separate untextured solid
 /// mesh from explicitly addressed cells and clean-room source profiles.
 pub fn build_terrain_mesh(frame: &VisualWorldFrame) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, None, false, None, None)
+    build_terrain_mesh_internal(frame, None, false, None, None, None)
 }
 
 /// Runtime variant that removes the authored ground pixels from upright tree
@@ -456,7 +457,7 @@ pub fn audit_terrain_mesh_with_images(
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     let samples = TerrainImageSamples::capture(frame, images);
     let profiles = crate::live_profiles::LiveProfiles::default();
-    build_terrain_mesh_internal(frame, Some(&samples), true, Some(&profiles.document), None)
+    build_terrain_mesh_internal(frame, Some(&samples), true, Some(&profiles.document), None, None)
 }
 
 fn mark_authored_rect(
@@ -486,7 +487,7 @@ pub fn build_terrain_mesh_with_samples(
     frame: &VisualWorldFrame,
     samples: &TerrainImageSamples,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples), false, None, None)
+    build_terrain_mesh_internal(frame, Some(samples), false, None, None, None)
 }
 
 #[cfg(test)]
@@ -494,7 +495,7 @@ fn build_instanced_terrain_mesh_with_samples(
     frame: &VisualWorldFrame,
     samples: &TerrainImageSamples,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples), true, None, None)
+    build_terrain_mesh_internal(frame, Some(samples), true, None, None, None)
 }
 
 /// Runtime meshes share identical painted hulls instead of expanding every copy.
@@ -503,7 +504,7 @@ pub(crate) fn build_instanced_terrain_mesh_with_profiles(
     samples: &TerrainImageSamples,
     profiles: &crate::live_profiles::Document,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
-    build_terrain_mesh_internal(frame, Some(samples), true, Some(profiles), None)
+    build_terrain_mesh_internal(frame, Some(samples), true, Some(profiles), None, None)
 }
 
 pub(crate) struct RuntimeTerrainBuild {
@@ -522,17 +523,17 @@ pub(crate) fn build_runtime_terrain_mesh_with_profiles(
 ) -> Result<RuntimeTerrainBuild, TerrainMeshError> {
     let mut grove_groups = Vec::new();
     let mut grove_opaque = Vec::new();
-    let compact_grove_uvs = std::env::var("CRYSTAL_COMPACT_SOLID_UVS").as_deref() == Ok("on")
-        && {
+    let compact_grove_uvs = {
             let material = crate::solid_terrain_material();
             crate::compact_vertices::solid_uv0_is_unused(
                 &material.base, material.extension.water_enabled,
             )
         };
-    let mut sink = |source| {
+    let mut sink = |source: SurfaceMeshData| {
         let (opaque, mut groups) = crate::occluder_fade::prepare(source);
-        // Native A/B opt-in already removes these coordinates during upload.
-        // Release them per grove, before retaining the rest of the scene.
+        // Stock grove palettes have no UV-driven textures or water effects.
+        // All-zero coordinates enable no tagged shader branch; release them
+        // per grove, while nonzero/tagged coordinates remain untouched.
         if compact_grove_uvs {
             crate::occluder_fade::compact_palette_group_uv0(&mut groups);
         }
@@ -541,11 +542,86 @@ pub(crate) fn build_runtime_terrain_mesh_with_profiles(
         if !opaque.indices.is_empty() {
             grove_opaque.push(opaque);
         }
-    };
-    let terrain = build_terrain_mesh_internal(
-        frame, Some(samples), true, Some(profiles), Some(&mut sink),
-    )?;
-    Ok(RuntimeTerrainBuild { terrain, grove_groups, grove_opaque })
+    };    let terrain = build_terrain_mesh_internal(
+        frame, Some(samples), true, Some(profiles), Some(&mut sink), None,
+    )?;    Ok(RuntimeTerrainBuild { terrain, grove_groups, grove_opaque })
+}
+
+/// Exact source context for groves whose expansion is deferred across updates.
+#[derive(Default)]
+struct DeferredGroves {
+    recipes: std::collections::VecDeque<new_bark::GroveRecipe>,
+    cells: Vec<VisualTile>,
+    shapes: Vec<CellShape>,
+    geometry: Option<GridGeometry>,
+    claims: Vec<Option<&'static str>>,
+    origin: [i32; 2],
+}
+impl DeferredGroves {
+    fn next(&mut self) -> Option<SurfaceMeshData> {
+        let recipe = self.recipes.pop_front()?;
+        let cells: Vec<_> = self.cells.iter().collect();
+        let mut object = TerrainMeshData {
+            authored_cells: self.claims.clone(), ..Default::default()
+        };
+        recipe.append(&mut object);
+        ledge_approach::finish_detached_grove(&mut object, &cells,
+            self.geometry.as_ref().expect("deferred source geometry"),
+            &self.shapes, self.origin);
+        Some(object.solid)
+    }
+}
+
+pub(crate) struct PendingRuntimeTerrain {
+    result: RuntimeTerrainBuild,
+    groves: DeferredGroves,
+}
+impl PendingRuntimeTerrain {
+    /// Prepare at most this many complete source objects; no geometry is skipped.
+    pub(crate) fn advance(&mut self, objects: usize) -> bool {
+        self.advance_inner(objects, None)
+    }
+    pub(crate) fn advance_uploaded(&mut self, objects: usize, meshes: &mut Assets<Mesh>) -> bool {
+        self.advance_inner(objects, Some(meshes))
+    }
+    fn advance_inner(&mut self, objects: usize, mut meshes: Option<&mut Assets<Mesh>>) -> bool {
+        let palette = crate::solid_terrain_material();
+        let compact_uvs = crate::compact_vertices::solid_uv0_is_unused(
+            &palette.base, palette.extension.water_enabled);
+        for _ in 0..objects {
+            let Some(source) = self.groves.next() else { break; };
+            let (opaque, mut groups) = crate::occluder_fade::prepare(source);
+            if compact_uvs { crate::occluder_fade::compact_palette_group_uv0(&mut groups); }
+            if let Some(meshes) = meshes.as_deref_mut() {
+                crate::occluder_fade::stage_group_meshes(&mut groups, meshes);
+            }
+            self.result.grove_groups.extend(groups);
+            if !opaque.indices.is_empty() { self.result.grove_opaque.push(opaque); }
+        }
+        self.groves.recipes.is_empty()
+    }
+    pub(crate) fn finish(self) -> RuntimeTerrainBuild {
+        assert!(self.groves.recipes.is_empty(), "all full-detail groves must finish");
+        self.result
+    }
+}
+pub(crate) fn begin_runtime_terrain_mesh_with_profiles(
+    frame: &VisualWorldFrame, samples: &TerrainImageSamples,
+    profiles: &crate::live_profiles::Document,
+) -> Result<PendingRuntimeTerrain, TerrainMeshError> {
+    let mut groves = DeferredGroves::default();
+    let mut terrain = build_terrain_mesh_internal(frame, Some(samples), true,
+        Some(profiles), None, Some(&mut groves))?;
+    // This base remains live throughout progressive grove preparation. Free
+    // builder growth slack now rather than carrying it into every later object.
+    terrain.solid.compact_build_storage();
+    terrain.textured.compact_build_storage();
+    terrain.animated_solid.compact_build_storage();
+    terrain.animated_textured.compact_build_storage();
+    Ok(PendingRuntimeTerrain {
+        result: RuntimeTerrainBuild { terrain, grove_groups: Vec::new(), grove_opaque: Vec::new() },
+        groves,
+    })
 }
 
 /// Rebuild animated flowers and selected pillars in the retained mesh's atlas slots.

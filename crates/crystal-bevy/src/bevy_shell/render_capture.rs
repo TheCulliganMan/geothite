@@ -416,6 +416,14 @@ fn capture(
         {
             return;
         }
+        if !hold.frozen {
+            // Actor extraction is normally disabled in 2D. Enable the passive
+            // hold first, then let the next Update publish the complete actor
+            // list before taking the comparison baseline or requesting readback.
+            hold.frozen = true;
+            virtual_time.pause();
+            return;
+        }
         let state = match paired_state(&runtime, &frame) {
             Ok(state) => state,
             Err(error) => {

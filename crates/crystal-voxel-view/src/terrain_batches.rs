@@ -93,12 +93,52 @@ pub(super) fn prepare_with_authentic_bounds(
 /// A cave's separate enclosing rock owns everything outside the authored
 /// map. Keeping the padded floor batches there creates coplanar mineral
 /// surfaces under the reveal, producing stripes when the rock fades away.
-/// Crossing geometry that cannot be faithfully clipped remains intact.
+/// Sculpted enclosing sides can cross the nominal boundary; their complete
+/// source geometry remains intact. Only padded floors belong to the outer cap.
 pub(super) fn prepare_enclosed_cave(
-    source: SurfaceMeshData, tile_size: Vec2, bounds: Option<AuthenticBounds>,
+    mut source: SurfaceMeshData, tile_size: Vec2, bounds: Option<AuthenticBounds>,
 ) -> Vec<PreparedBatch> {
+    let Some(rect)=bounds.filter(|b| b.min.is_finite() && b.max.is_finite()
+        && b.max.x>b.min.x && b.max.y>b.min.y) else {
+        return prepare_with_authentic_bounds(source,tile_size,bounds);
+    };
+    if !valid_topology(&source) || !tile_size.is_finite() || tile_size.min_element()<=0. {
+        return prepare_with_authentic_bounds(source,tile_size,bounds);
+    }
+    let margin=tile_size.max_element()*0.75;
+    let enclosing=source.indices.chunks_exact(3).map(|triangle| {
+        let outside=triangle.iter().any(|&i| {
+            let p=source.positions[i as usize];
+            p[0]<rect.min.x || p[0]>rect.max.x || p[2]<rect.min.y || p[2]>rect.max.y
+        });
+        outside && triangle.iter().all(|&i| {
+            let i=i as usize;let p=source.positions[i];let uv=source.uvs[i];
+            let local=Vec2::new(p[0],p[2]);
+            uv[0]>90000. && matches!((uv[1]/100000.).round() as i32,2|3|10|18)
+                && source.normals[i][1].abs()<0.85
+                && (local-local.clamp(rect.min,rect.max)).length()<=margin
+        })
+    }).collect::<Vec<_>>();
+    if !enclosing.iter().any(|&keep|keep) {
+        let mut batches=prepare_with_authentic_bounds(source,tile_size,bounds);
+        batches.retain(|batch|batch.authentic_domain!=AuthenticDomain::Outside);
+        return batches;
+    }
+    let mut marked=vec![false;source.positions.len()];
+    for range in &source.cutaway_ranges {marked[range.clone()].fill(true);}
+    let mut remap=vec![u32::MAX;source.positions.len()];
+    let wall=crate::mesh::select_surface_indices(&source,&marked,&mut remap,
+        source.indices.chunks_exact(3).zip(&enclosing).filter(|(_,keep)|**keep)
+            .flat_map(|(triangle,_)|triangle.iter().copied()));
+    drop(marked);drop(remap);
+    // Keep the large remaining attribute buffers owned in place. The normal
+    // domain partition compacts their referenced vertices; duplicating the
+    // entire terrain here would add an unnecessary peak allocation.
+    let mut corner=0;
+    source.indices.retain(|_| {let keep=!enclosing[corner/3];corner+=1;keep});
     let mut batches=prepare_with_authentic_bounds(source,tile_size,bounds);
     batches.retain(|batch|batch.authentic_domain!=AuthenticDomain::Outside);
+    batches.extend(prepare_with_authentic_bounds(wall,tile_size,bounds));
     batches
 }
 
@@ -615,6 +655,44 @@ mod tests {
     }
 
     #[test]
+    fn enclosed_cave_keeps_sculpted_boundary_sides_and_drops_padding() {
+        let bounds=AuthenticBounds {min:Vec2::ZERO,max:Vec2::splat(32.)};
+        let mut source=SurfaceMeshData::default();
+        let mut quad=|points:[[f32;3];4],normal:[f32;3],uvs:[[f32;2];4],color:[f32;4]| {
+            let first=source.positions.len() as u32;
+            source.positions.extend(points);source.normals.extend([normal;4]);
+            source.uvs.extend(uvs);source.colors.extend([color;4]);
+            source.indices.extend([first,first+1,first+2,first,first+2,first+3]);
+        };
+        for (z,role,normal) in [(-0.25,3.,[0.,0.15,0.988686]),
+            (-8.,3.,[0.,0.15,0.988686])] {
+            let points=[[8.,0.,z],[16.,0.,z],[16.,48.,z],[8.,48.,z]];
+            quad(points,normal,
+                points.map(|p|[100000.+p[0],role*100000.+p[2]]),[0.2,0.4,0.5,1.]);
+        }
+        quad(
+            [[8.,0.,-1.],[8.,0.,-0.5],[16.,0.,-0.5],[16.,0.,-1.]],
+            [0.,1.,0.],[[100000.,500000.];4],[0.3;4]);
+        let batches=prepare_enclosed_cave(source.clone(),Vec2::splat(8.),Some(bounds));
+        let mut triangles=0;
+        for batch in batches {
+            let bevy::mesh::VertexAttributeValues::Float32x3(points)=
+                batch.mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else {panic!("positions");};
+            let bevy::mesh::VertexAttributeValues::Float32x3(normals)=
+                batch.mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() else {panic!("normals");};
+            let bevy::mesh::VertexAttributeValues::Float32x2(uvs)=
+                batch.mesh.attribute(Mesh::ATTRIBUTE_UV_0).unwrap() else {panic!("uvs");};
+            let indices=batch.mesh.indices().unwrap().iter().collect::<Vec<_>>();
+            triangles+=indices.len()/3;
+            for i in indices {
+                let old=source.positions[..4].iter().position(|p|*p==points[i]).unwrap();
+                assert_eq!(normals[i],source.normals[old]);
+                assert_eq!(uvs[i],source.uvs[old]);
+            }
+        }
+        assert_eq!(triangles,2,"the complete displaced side stays exactly once; far halo and floor padding do not");
+    }
+    #[test]
     fn enclosed_cave_removes_coplanar_padding_but_preserves_the_complete_source_floor() {
         for scale in [1.,2.] {
             let mut source=large_plane();
@@ -950,9 +1028,16 @@ mod tests {
             let original = data.clone().into_mesh();
             let compact = data.into_compact_mesh();
             for attribute in [Mesh::ATTRIBUTE_POSITION, Mesh::ATTRIBUTE_NORMAL,
-                Mesh::ATTRIBUTE_UV_0, Mesh::ATTRIBUTE_COLOR] {
+                Mesh::ATTRIBUTE_UV_0] {
                 assert_eq!(compact.attribute(attribute), original.attribute(attribute));
             }
+            let Some(bevy::mesh::VertexAttributeValues::Float32x4(original_colors)) =
+                original.attribute(Mesh::ATTRIBUTE_COLOR) else { panic!() };
+            let Some(bevy::mesh::VertexAttributeValues::Float32x3(compact_colors)) =
+                compact.attribute(Mesh::ATTRIBUTE_COLOR) else { panic!() };
+            let restored: Vec<_> = compact_colors.iter().map(|&[r, g, b]| [r, g, b, 1.0])
+                .map(|color| color.map(f32::to_bits)).collect();
+            assert_eq!(restored, original_colors.iter().map(|color| color.map(f32::to_bits)).collect::<Vec<_>>());
             assert!(compact.attribute(Mesh::ATTRIBUTE_UV_1).is_none(),
                 "whole-object fading must not upload the unread legacy eligibility mask");
             assert!(matches!(compact.indices().unwrap(), bevy::mesh::Indices::U32(_)) == large);

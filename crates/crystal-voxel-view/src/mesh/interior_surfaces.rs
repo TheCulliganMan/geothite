@@ -122,8 +122,30 @@ fn kanto_native_floor_map(map: &str) -> bool {
         | "PowerPlant" | "SilphCo1F" | "TrainerHouseB1F"
         | "LavRadioTower1F" | "SaffronMagnetTrainStation")
 }
+fn cafe_floor_source(source: &VisualTileSource) -> bool {
+    if crate::casino::is_floor_cell(source) { return true; }
+    if source.tileset_id.as_ref() != "game_corner"
+        || source.subtile_column >= 4 || source.subtile_row >= 4 { return false; }
+    // Cafe shelf, table and counter blocks reuse the same floor quartet in
+    // different strips from the casino. These masks follow the packed layout.
+    let mask: u16 = match source.metatile_id {
+        0x16 => 0xcccc, 0x17 => 0x00cc, 0x18 => 0x00ff,
+        0x19 => 0xff00, 0x29 => 0x3300, 0x2c => 0x0fff, 0x2d => 0x0f00,
+        _ => return false,
+    };
+    let phase = source.subtile_row * 4 + source.subtile_column;
+    mask & (1 << phase) != 0
+        && source.tile_index == [0x01, 0x10, 0x01, 0x10, 0x11, 0x12, 0x11, 0x12][usize::from(phase % 8)]
+}
+
 fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor> {
     use InteriorFloor::*;
+    if map == "CeladonCafe" {
+        return (cafe_floor_source(source)
+            && matches!(shape_for_source_on_map(map, source),
+                CellShape::Flat | CellShape::PlaneAt { height: 0. }))
+            .then_some(NativeRoom);
+    }
     if kanto_native_floor_map(map)
         && matches!((source.tileset_id.as_ref(),source.tile_index),
             ("house"|"players_house",0x01) | ("mansion",0x01|0x11)
@@ -441,6 +463,147 @@ fn native_source_surface_patches(mesh:&mut SurfaceMeshData,xs:&[f32],zs:&[f32],
             mesh.indices.extend([first,first+1,first+2]);
         }
     }}
+}
+
+fn native_cafe_material_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], uv: (f32, f32, f32, f32), source_tile: u16,
+) {
+    let (u0, u1, v0, v1) = uv;
+    // Each authenticated quadrant has the same cream field, but its dark
+    // outline occupies a different corner. Sample those live source pixels;
+    // the original bitmap remains available to the classic renderer.
+    let grout_pixel = match source_tile {
+        0x01 => [1, 1],
+        0x10 => [6, 1],
+        0x11 => [1, 6],
+        0x12 => [6, 6],
+        _ => unreachable!("cafe finish requires an authenticated floor quadrant"),
+    };
+    let sample = |pixel: [usize; 2]| [
+        u0 + (u1 - u0) * (pixel[0] as f32 + 0.5) / 8.,
+        v0 + (v1 - v0) * (pixel[1] as f32 + 0.5) / 8.,
+    ];
+    native_source_ceramic_floor_cell(mesh, b, height, world, sample([0, 0]), sample(grout_pixel));
+}
+
+fn native_gate_material_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], uv: (f32, f32, f32, f32),
+) {
+    let (u0, u1, v0, v1) = uv;
+    let sample = |pixel: [usize; 2]| [
+        u0 + (u1 - u0) * (pixel[0] as f32 + 0.5) / 8.,
+        v0 + (v1 - v0) * (pixel[1] as f32 + 0.5) / 8.,
+    ];
+    // Source tile01 contains cream and gray diamonds. Retain both pigments
+    // on larger ceramic slabs so the walking lane is readable at an angle.
+    let gray = sample([0, 3]);
+    let cream = sample([0, 0]);
+    let checker = (world[0].div_euclid(2) + world[1].div_euclid(2)).rem_euclid(2);
+    native_source_ceramic_floor_cell(mesh, b, height, world,
+        if checker == 0 { cream } else { gray }, gray);
+}
+
+fn native_source_ceramic_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], field_uv: [f32; 2], grout_uv: [f32; 2],
+) {
+    let [w, e, n, s] = b;
+    let west = world[0].rem_euclid(2) == 0;
+    let north = world[1].rem_euclid(2) == 0;
+    let border = 0.025;
+    let xs = if west { [0., border, 1.] } else { [0., 1. - border, 1.] };
+    let zs = if north { [0., border, 1.] } else { [0., 1. - border, 1.] };
+    let point = |x: f32, z: f32| {
+        let edge = x == if west { 0. } else { 1. }
+            || z == if north { 0. } else { 1. };
+        [w + (e - w) * x,
+            height - if edge { (e - w).min(s - n) * 0.006 } else { 0. },
+            n + (s - n) * z]
+    };
+    let tex = |x: f32, z: f32| {
+        let grout = (if west { x < border } else { x > 1. - border })
+            || (if north { z < border } else { z > 1. - border });
+        if grout { grout_uv } else { field_uv }
+    };
+    native_source_surface_patches(mesh, &xs, &zs, point, tex, |_, _| 1., true);
+}
+
+fn native_mart_material_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], uv: (f32, f32, f32, f32),
+) {
+    let (u0, u1, v0, v1) = uv;
+    let sample = |pixel: [usize; 2]| [
+        u0 + (u1 - u0) * (pixel[0] as f32 + 0.5) / 8.,
+        v0 + (v1 - v0) * (pixel[1] as f32 + 0.5) / 8.,
+    ];
+    // Keep the standard mart floor's live greens instead of its pixel lattice.
+    let dark = sample([0, 0]);
+    let light = sample([3, 3]);
+    let checker = (world[0].div_euclid(2) + world[1].div_euclid(2)).rem_euclid(2);
+    native_source_ceramic_floor_cell(mesh, b, height, world,
+        if checker == 0 { light } else { dark }, dark);
+}
+
+fn native_silph_material_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], uv: (f32, f32, f32, f32), source_tile: u16,
+) {
+    let (u0, u1, v0, v1) = uv;
+    let sample = |x: f32| [u0 + (u1 - u0) * (x + 0.5) / 8.,
+        v0 + (v1 - v0) * 0.5 / 8.];
+    // Facility01 alternates palette indices 1/0 at each pixel; facility26
+    // is the plain index-zero field. Keep the source blue/cream arrangement
+    // without carrying that one-pixel dither into the angled walking surface.
+    let field = sample(0.);
+    let joint = sample(if source_tile == 0x01 { 1. } else { 0. });
+    native_source_ceramic_floor_cell(mesh, b, height, world, field, joint);
+}
+
+fn native_deptstore_material_floor_cell(
+    mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
+    world: [i32; 2], uv: (f32, f32, f32, f32),
+) {
+    let [w, e, n, s] = b;
+    let (u0, u1, v0, v1) = uv;
+    let sample = |pixel: [usize; 2]| [
+        u0 + (u1 - u0) * (pixel[0] as f32 + 0.5) / 8.,
+        v0 + (v1 - v0) * (pixel[1] as f32 + 0.5) / 8.,
+    ];
+    let yellow = sample([0, 0]);
+    let amber = sample([3, 0]);
+    let cream = sample([5, 5]);
+    // Preserve the angular three-color drawing at a sixteen-pixel slab scale.
+    // Clip its partitions into each eight-pixel cell rather than painting over
+    // neighboring furnishings or changing the walking datum.
+    let ox = world[0].rem_euclid(2) as f32 * 0.5;
+    let oz = world[1].rem_euclid(2) as f32 * 0.5;
+    for (r, color) in [
+        ([0., 0.475, 0., 0.475], yellow),
+        ([0.475, 0.5, 0., 0.475], amber),
+        ([0., 0.5, 0.475, 0.5], amber),
+        ([0.5, 1., 0., 0.5], yellow),
+        ([0., 0.5, 0.5, 1.], yellow),
+        ([0.5, 1., 0.5, 0.525], amber),
+        ([0.5, 0.525, 0.525, 1.], amber),
+        ([0.525, 1., 0.525, 0.55], cream),
+        ([0.525, 0.55, 0.55, 1.], cream),
+        ([0.55, 1., 0.55, 1.], yellow),
+    ] {
+        let r: [f32; 4] = r;
+        let left = r[0].max(ox);
+        let right = r[1].min(ox + 0.5);
+        let north = r[2].max(oz);
+        let south = r[3].min(oz + 0.5);
+        if left >= right || north >= south { continue; }
+        append_top(mesh, [w + (e - w) * (left - ox) * 2.,
+            w + (e - w) * (right - ox) * 2.,
+            n + (s - n) * (north - oz) * 2.,
+            n + (s - n) * (south - oz) * 2.], height,
+            (color[0], color[0], color[1], color[1]));
+    }
 }
 
 fn native_house_material_floor_cell(mesh:&mut SurfaceMeshData,b:[f32;4],height:f32,
@@ -789,6 +952,7 @@ fn finish_surfaces_excluding(
                 let source_column=(((u[0][0]+u[2][0])*0.5*g.width as f32).floor() as usize).min(g.width-1);
                 let source_row=(((u[0][1]+u[2][1])*0.5*g.height as f32).floor() as usize).min(g.height-1);
                 let source_index=source_row*g.width+source_column;
+                let mut donor_index = source_index;
                 let native_uv=if source_styles[source_index]==Some(InteriorFloor::NativeRoom) {
                     (u.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min),
                      u.iter().map(|v|v[0]).fold(f32::NEG_INFINITY,f32::max),
@@ -801,13 +965,38 @@ fn finish_surfaces_excluding(
                         (*style==Some(InteriorFloor::NativeRoom)
                           && cells[i].source.tileset_id==cells[source_index].source.tileset_id).then_some(i))
                         else {mesh.textured.indices.extend_from_slice(quad);continue;};
+                    donor_index = donor;
                     g.uv(donor%g.width,donor/g.width)
                 };
                 let atlas=cells[source_index].source.tileset_id.as_ref();
-                if kanto_native_room(map) && matches!(atlas,"house"|"players_house") {
+                if map == "CeladonCafe" {
+                    native_cafe_material_floor_cell(&mut mesh.textured, bounds, height,
+                        world, native_uv, cells[donor_index].source.tile_index);
+                } else if atlas == "gate" {
+                    native_gate_material_floor_cell(&mut mesh.textured, bounds, height, world, native_uv);
+                } else if atlas == "mart"
+                    && cells[donor_index].source.tile_index == crate::mart::STANDARD_MART_FLOOR_TILE {
+                    native_mart_material_floor_cell(&mut mesh.textured, bounds, height, world, native_uv);
+                } else if map == "SilphCo1F" && atlas == "facility" {
+                    native_silph_material_floor_cell(&mut mesh.textured, bounds, height,
+                        world, native_uv, cells[donor_index].source.tile_index);
+                } else if kanto_native_room(map) && matches!(atlas,"house"|"players_house") {
                     native_house_material_floor_cell(&mut mesh.textured,bounds,height,world,native_uv,atlas=="players_house");
                 } else {native_beveled_floor_cell(&mut mesh.textured,bounds,height,world,native_uv);}
 
+            } else if style == InteriorFloor::StoreCeramic && map.starts_with("CeladonDeptStore") {
+                let ids = [quad[0], quad[1], quad[2], quad[5]];
+                let u = ids.map(|i| mesh.textured.uvs[i as usize]);
+                let sc = (((u[0][0] + u[2][0]) * 0.5 * g.width as f32).floor() as usize).min(g.width - 1);
+                let sr = (((u[0][1] + u[2][1]) * 0.5 * g.height as f32).floor() as usize).min(g.height - 1);
+                let uv = if source_styles[sr * g.width + sc] == Some(InteriorFloor::StoreCeramic) {
+                    (u.iter().map(|v| v[0]).fold(f32::INFINITY, f32::min),
+                     u.iter().map(|v| v[0]).fold(f32::NEG_INFINITY, f32::max),
+                     u.iter().map(|v| v[1]).fold(f32::INFINITY, f32::min),
+                     u.iter().map(|v| v[1]).fold(f32::NEG_INFINITY, f32::max))
+                } else { g.uv(destination % g.width, destination / g.width) };
+                native_deptstore_material_floor_cell(&mut mesh.textured, bounds, height,
+                    world, uv);
             } else if gym_floor_style(style) {
                 let native_uv =
                     // Backing quads may use an authenticated floor donor. Keep
@@ -1407,12 +1596,9 @@ mod kanto_room_floor_tests {
         for (map,atlas,tile) in [
             ("PewterPokecenter1F","pokecenter",0x11),
             ("PewterPokecenter2FBeta","pokecenter",0x11),
-            ("PewterMart","mart",0x01),
-            ("Route5SaffronGate","gate",0x01),
             ("PowerPlant","facility",0x01),
             ("LavRadioTower1F","radio_tower",0x01),
             ("SaffronMagnetTrainStation","train_station",0x3d),
-            ("CeladonCafe","game_corner",0x01),
         ] {
             let (mut tiles,g,mut mesh)=fixture();
             for cell in &mut tiles {cell.source.tileset_id=atlas.into();cell.source.tile_index=tile;}
@@ -1431,6 +1617,72 @@ mod kanto_room_floor_tests {
         assert!(!kanto_native_floor_map("GoldenrodMagnetTrainStation"));
         assert!(!kanto_native_floor_map("CeladonDeptStore1F"));
         assert!(!kanto_native_floor_map("PewterMartAnnex"));
+    }
+    #[test]
+    fn cafe_ceramic_finish_preserves_footing_and_rejects_unproven_quadrants() {
+        let (mut tiles, g, mut mesh) = fixture();
+        for (cell, tile) in tiles.iter_mut().zip([0x01, 0x10, 0x11, 0x12]) {
+            cell.source.tileset_id = "game_corner".into();
+            cell.source.metatile_id = 1;
+            cell.source.tile_index = tile;
+            assert_eq!(interior_floor("CeladonCafe", &cell.source), Some(InteriorFloor::NativeRoom));
+        }
+        let original_tiles = tiles.clone();
+        let refs = tiles.iter().collect::<Vec<_>>();
+        assert_eq!(finish_surfaces(&mut mesh, "CeladonCafe", &refs, &g, [0, 0]), 4);
+        assert_eq!(tiles, original_tiles);
+        assert_eq!(mesh.footing_heights, vec![3.25; 4]);
+        assert_eq!(mesh.authored_cells, vec![None; 4]);
+        assert!(mesh.solid.positions.is_empty());
+        assert!(mesh.textured.positions.iter().all(|p| p[1] <= 3.25 && p[1] >= 3.202));
+        for cell in &mut tiles {
+            cell.source.tile_index ^= 0x80;
+            assert_eq!(interior_floor("CeladonCafe", &cell.source), None);
+        }
+    }
+    #[test]
+    fn kanto_ceramic_finishes_keep_source_and_footing_without_spilling_into_johto() {
+        for (map, atlas, johto, tile) in [("Route5SaffronGate", "gate", "Route35GoldenrodGate", 1),
+            ("PewterMart", "mart", "GoldenrodMart", crate::mart::STANDARD_MART_FLOOR_TILE),
+            ("SilphCo1F", "facility", "RuinsOfAlphResearchCenter", 0x01),
+            ("SilphCo1F", "facility", "RuinsOfAlphResearchCenter", 0x26)] {
+            let (mut tiles, g, mut mesh) = fixture();
+            for cell in &mut tiles {
+                cell.source.tileset_id = atlas.into();
+                cell.source.tile_index = tile;
+            }
+            let original_tiles = tiles.clone();
+            let refs = tiles.iter().collect::<Vec<_>>();
+            assert_eq!(finish_surfaces(&mut mesh, map, &refs, &g, [-3, 7]), 4);
+            assert_eq!(tiles, original_tiles);
+            assert_eq!(mesh.footing_heights, vec![3.25; 4]);
+            assert_eq!(mesh.authored_cells, vec![None; 4]);
+            assert!(mesh.solid.positions.is_empty());
+            assert!(mesh.textured.positions.iter().all(|p| p[1] <= 3.25 && p[1] >= 3.202));
+            assert_ne!(interior_floor(johto, &tiles[0].source), Some(InteriorFloor::NativeRoom));
+            tiles[0].source.tile_index = 0x81;
+            assert_eq!(interior_floor(map, &tiles[0].source), None);
+        }
+    }
+    #[test]
+    fn kanto_department_pavers_cover_every_phase_without_raising_the_floor() {
+        for row in -3..3 {
+            for column in -3..3 {
+                let mut mesh = SurfaceMeshData::default();
+                native_deptstore_material_floor_cell(&mut mesh, [0., 8., 0., 8.],
+                    3.25, [column, row], (0.2, 0.4, 0.3, 0.7));
+                let area: f32 = mesh.indices.chunks_exact(3).map(|ids| {
+                    let [a, b, c] = [ids[0], ids[1], ids[2]]
+                        .map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                    (b - a).cross(c - a).length() * 0.5
+                }).sum();
+                assert!((area - 64.).abs() < 0.001);
+                assert!(mesh.positions.iter().all(|p|
+                    p[1] == 3.25 && (0.0..=8.0).contains(&p[0]) && (0.0..=8.0).contains(&p[2])));
+                assert!(mesh.uvs.iter().all(|uv|
+                    (0.2..0.4).contains(&uv[0]) && (0.3..0.7).contains(&uv[1])));
+            }
+        }
     }
     #[test]
     fn kanto_native_room_floor_yields_to_custom_source_profiles_and_changed_art() {

@@ -2056,6 +2056,31 @@ include!("immersive_capture_bridge.rs");
 
 #[cfg(feature = "location-tester")]
 #[test]
+fn immersive_wild_species_preview_retains_requested_body_and_real_battle() {
+    for species in ["OMANYTE", "OMASTAR"] {
+        let mut controller = immersive_battle_starter_preview_controller(
+            false, false, false, false, false, false, false, Some(species));
+        assert!(controller.shell.quick_save_path.is_none());
+        let snapshot = controller.snapshot().unwrap();
+        assert_eq!(snapshot.party.slots[0].pokemon.species.id, species);
+        assert_eq!(snapshot.party.slots[0].pokemon.level, 25);
+        let battle = snapshot.battle.as_ref().expect("source wild battle");
+        assert!(matches!(battle.kind, crystal_runtime::RuntimeBattleKind::StaticWild { .. }));
+        assert_eq!(battle.enemy_pokemon.species.id, "SUDOWOODO");
+        assert_eq!(battle.active_player_party_index, Some(0));
+        assert!(battle.player_moves.iter().all(|m| m.current_pp > 0));
+        assert!(controller.shell.battle_action_cursor.is_some());
+        let pp = snapshot.party.slots[0].pokemon.moves[0].current_pp;
+        controller.press(GameButton::A).unwrap();
+        controller.press(GameButton::A).unwrap();
+        let after = controller.snapshot().unwrap();
+        assert_eq!(after.party.slots[0].pokemon.moves[0].current_pp, pp - 1);
+        assert!(!controller.shell.battle_messages.is_empty());
+    }
+}
+
+#[cfg(feature = "location-tester")]
+#[test]
 fn immersive_model_previews_use_pack_species_and_read_only_real_battle() {
     for species in ["AMPHAROS", "MACHOP", "MACHOKE", "MACHAMP", "PSYDUCK",
         "GOLDUCK", "ABRA", "ALAKAZAM", "DROWZEE", "HYPNO", "CROCONAW", "FERALIGATR", "MARILL", "AZUMARILL"] {

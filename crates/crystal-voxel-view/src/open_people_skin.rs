@@ -23,7 +23,10 @@ const HEAD_SCALE: f32 = 0.72;
 const HAND_SCALE: f32 = 0.82;
 
 #[derive(Default)]
-pub(crate) struct PeopleGpu(pub HashMap<(&'static str, CharacterKind), Gpu>);
+pub(crate) struct PeopleGpu(
+    pub HashMap<(&'static str, CharacterKind), Gpu>,
+    HashMap<&'static str, Handle<Image>>,
+);
 pub(crate) struct Gpu {
     mesh: Handle<Mesh>,
     material: Handle<StandardMaterial>,
@@ -67,6 +70,12 @@ pub(crate) struct Person {
     run: Vec<Transform>,
 }
 impl PeopleGpu {
+    pub(super) fn retain_kinds(&mut self, kinds: &std::collections::HashSet<CharacterKind>) {
+        self.0.retain(|(_, kind), _| kinds.contains(kind));
+        let bodies = &self.0;
+        self.1.retain(|texture, _| bodies.keys().any(|(_, kind)|
+            crate::npc_appearance::look(*kind).texture_key == *texture));
+    }
     #[allow(clippy::too_many_arguments)]
     pub fn spawn(
         &mut self,
@@ -82,6 +91,7 @@ impl PeopleGpu {
         images: &mut Assets<Image>,
         binds: &mut Assets<SkinnedMeshInverseBindposes>,
     ) -> Person {
+        let textures = &mut self.1;
         let gpu = self.0.entry((name, kind)).or_insert_with(|| {
             let look = crate::npc_appearance::look(kind);
             let painting = crate::npc_textures::get(look.texture_key)
@@ -172,19 +182,22 @@ impl PeopleGpu {
                 VertexAttributeValues::Uint16x4(body_joints),
             );
             mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, body_weights);
-            let size = painting.size;
-            let rgba = painting.rgba.clone();
-            let texture = images.add(Image::new(
+            // The validated painting catalog is immutable. Different body
+            // rigs can share its exact pixels without sharing their geometry.
+            let texture = textures.entry(look.texture_key).or_insert_with(|| {
+                let size = painting.size;
+                images.add(Image::new(
                 Extent3d {
                     width: size.0,
                     height: size.1,
                     depth_or_array_layers: 1,
                 },
                 TextureDimension::D2,
-                rgba,
+                painting.rgba.clone(),
                 TextureFormat::Rgba8UnormSrgb,
                 RenderAssetUsages::RENDER_WORLD,
-            ));
+                ))
+            }).clone();
             let material = StandardMaterial {
                 base_color: Color::srgb(0.97, 0.96, 0.94),
                 base_color_texture: Some(texture),
@@ -447,6 +460,39 @@ impl Person {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn different_body_rigs_share_exact_painting_upload_without_sharing_meshes() {
+        use bevy::ecs::world::CommandQueue;
+        let world = World::new();
+        let mut queue = CommandQueue::default();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<StandardMaterial>::default();
+        let mut images = Assets::<Image>::default();
+        let mut binds = Assets::<SkinnedMeshInverseBindposes>::default();
+        let mut cache = PeopleGpu::default();
+        let kind = CharacterKind::Trainer;
+        for name in ["human-male", "skater-male"] {
+            let rig = crate::open_people::get(name).expect("supplied rig").clone();
+            let mut commands = Commands::new(&mut queue, &world);
+            let actor = commands.spawn((Transform::default(), Visibility::default())).id();
+            cache.spawn(name, kind, rig, actor, false, false, &mut commands,
+                &mut meshes, &mut materials, &mut images, &mut binds);
+        }
+        let first = &cache.0[&("human-male", kind)];
+        let second = &cache.0[&("skater-male", kind)];
+        assert_ne!(first.mesh, second.mesh);
+        assert_ne!(first.binds, second.binds);
+        let texture = materials.get(&first.material).unwrap().base_color_texture.as_ref().unwrap();
+        assert_eq!(Some(texture), materials.get(&second.material).unwrap().base_color_texture.as_ref());
+        assert_eq!(Some(texture), materials.get(&second.remote).unwrap().base_color_texture.as_ref());
+        assert_eq!(images.len(), 1, "one painting upload across different body rigs");
+        let image = images.get(texture).unwrap();
+        let painting = crate::npc_textures::get(crate::npc_appearance::look(kind).texture_key).unwrap();
+        assert_eq!(image.data.as_deref(), Some(painting.rgba.as_slice()));
+        assert_eq!((image.width(), image.height()), painting.size);
+        assert_eq!(image.asset_usage, RenderAssetUsages::RENDER_WORLD);
+    }
 
     #[test]
     #[ignore = "requires shared Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT"]

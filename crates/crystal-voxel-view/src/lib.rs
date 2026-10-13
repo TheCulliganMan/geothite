@@ -32,6 +32,8 @@ pub use people_review::run as run_people_review;
 mod npc_appearance;
 mod hair_shapes;
 mod npc_textures;
+mod browser_memory;
+
 mod painted_torso;
 mod bare_body;
 pub use npc_textures::normalize_npc_texture;
@@ -75,6 +77,7 @@ mod camera;
 mod casino;
 mod cave;
 mod cave_water;
+mod water_surface;
 mod celadon_gym;
 mod cerulean_gym;
 mod cut_tree;
@@ -160,7 +163,7 @@ mod wise_trios;
 use std::collections::{HashMap, HashSet};
 
 #[cfg(not(target_arch = "wasm32"))]
-use bevy::tasks::AsyncComputeTaskPool;
+use bevy::tasks::{AsyncComputeTaskPool, futures_lite::future};
 #[cfg(not(target_arch = "wasm32"))]
 use bevy::tasks::Task;
 use bevy::{
@@ -185,7 +188,6 @@ use bevy::{
         renderer::RenderAdapterInfo,
         view::{DebandDither, Tonemapping},
     },
-    tasks::futures_lite::future,
 };
 use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame, WorldRenderSet};
 
@@ -237,6 +239,8 @@ pub struct VoxelViewPlugin;
 impl Plugin for VoxelViewPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(BattleViewPlugin);
+        #[cfg(target_arch = "wasm32")]
+        browser_memory::register(app);
         #[cfg(not(target_arch = "wasm32"))]
         render_metrics::register(app);
         #[cfg(not(target_arch = "wasm32"))]
@@ -253,6 +257,17 @@ impl Plugin for VoxelViewPlugin {
             "voxel_surface.wesl",
             Shader::from_wesl
         );
+        // Native visual review can iterate the same source shader without
+        // recompiling the game. Shipped clients use the embedded shader.
+        #[cfg(not(target_arch = "wasm32"))]
+        if let Some(path) = std::env::var_os("CRYSTAL_VOXEL_SHADER_REVIEW") {
+            let source = std::fs::read_to_string(path)
+                .expect("read explicitly selected voxel surface review shader");
+            let mut shaders = app.world_mut().resource_mut::<Assets<Shader>>();
+            let mut shader = shaders.get_mut(&VOXEL_SURFACE_SHADER_HANDLE)
+                .expect("embedded voxel surface shader is registered");
+            *shader = Shader::from_wesl(source, shader.path.clone());
+        }
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
         #[cfg(not(target_arch = "wasm32"))]
         app.add_systems(Update, native_model_camera.before(sync_voxel_view));
@@ -376,6 +391,10 @@ pub struct VoxelViewStatus {
     pub active_frames: u32,
     /// Completed or pending geometry builds; useful for movement profiling.
     pub terrain_builds: u64,
+    /// Map whose completed geometry is currently installed in the scene.
+    pub terrain_map: Option<String>,
+    /// The desired terrain revision has not reached the scene yet.
+    pub terrain_pending: bool,
     /// True until the current profile revision has reached the GPU scene.
     pub profiles_pending: bool,
     pub inactive_reason: Option<String>,
@@ -492,7 +511,16 @@ struct TerrainBuildQueue {
     #[cfg(not(target_arch = "wasm32"))]
     task: Option<Task<TerrainBuildResult>>,
     #[cfg(target_arch = "wasm32")]
-    completed: Option<TerrainBuildResult>,
+    pending: Option<BrowserTerrainBuild>,
+}
+
+#[cfg(target_arch = "wasm32")]
+struct BrowserTerrainBuild {
+    key: TerrainCacheKey,
+    frame: VisualWorldFrame,
+    source_texture: Handle<Image>,
+    profiles: std::sync::Arc<live_profiles::Document>,
+    terrain: Result<mesh::PendingRuntimeTerrain, TerrainMeshError>,
 }
 
 struct TerrainBuildResult {
@@ -501,6 +529,94 @@ struct TerrainBuildResult {
     source_texture: Handle<Image>,
     profiles: std::sync::Arc<live_profiles::Document>,
     terrain: Result<BuiltTerrain, TerrainMeshError>,
+}
+
+fn prepare_runtime_terrain(
+    runtime: mesh::RuntimeTerrainBuild,
+    build_frame: &VisualWorldFrame,
+) -> BuiltTerrain {
+    let mesh::RuntimeTerrainBuild {
+        mut terrain,
+        grove_groups,
+        grove_opaque,
+    } = runtime;
+    // Runtime groves arrive prepared; a revision publishes only once complete.
+    // Whole-object translucency can expose every original join.
+    // Keep these triangles in their owning wall rather than applying
+    // the old capsule's camera-dependent hidden-face selection.
+    terrain.reveal_join_batches.clear();
+    let reveal_join_batches = Vec::new();
+    let animated_textured_mesh = std::mem::take(&mut terrain.animated_textured).into_mesh();
+    let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
+    let animated_pillars = std::mem::take(&mut terrain.animated_pillars);
+    let enclosure = std::mem::take(&mut terrain.cave_enclosure);
+    let cave_enclosure = (!enclosure.indices.is_empty()).then(|| enclosure.into_mesh());
+    let background = terrain
+        .background
+        .take()
+        .map(|b| (b.mesh.into_mesh(), b.texture));
+    let instances = std::mem::take(&mut terrain.tree_instances)
+        .into_iter()
+        .map(|group| (group.mesh.into_mesh(), group.origins))
+        .collect();
+    let footing_heights = std::mem::take(&mut terrain.footing_heights);
+    let (textured, solid, fade_textured_groups, mut fade_solid_groups) =
+        occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
+    // Grove ownership is independent of linked wall/label anchors.
+    fade_solid_groups.extend(grove_groups);
+    let source_bounds = authentic_mesh_bounds(&build_frame);
+    let mut scenery = Vec::new();
+    let mut scenery_fades = Vec::new();
+    for part in std::mem::take(&mut terrain.scenery) {
+        for (domain, data) in terrain_batches::separate_authentic_domains(part.mesh, source_bounds)
+        {
+            let (opaque, groups) = occluder_fade::prepare(data);
+            if !groups.is_empty() {
+                scenery_fades.push((groups, part.texture.clone(), domain));
+            }
+            if !opaque.indices.is_empty() {
+                scenery.extend(
+                    terrain_batches::prepare_with_authentic_bounds(
+                        opaque,
+                        build_frame.tile_size,
+                        source_bounds,
+                    )
+                    .into_iter()
+                    .map(|batch| (batch, part.texture.clone())),
+                );
+            }
+        }
+    }
+    let prepare_surfaces = if cave_enclosure.is_some() {
+        terrain_batches::prepare_enclosed_cave
+    } else {
+        terrain_batches::prepare_with_authentic_bounds
+    };
+    let textured_meshes = prepare_surfaces(textured, build_frame.tile_size, source_bounds);
+    let mut solid_meshes = prepare_surfaces(solid, build_frame.tile_size, source_bounds);
+    for opaque in grove_opaque {
+        solid_meshes.extend(prepare_surfaces(
+            opaque,
+            build_frame.tile_size,
+            source_bounds,
+        ));
+    }
+    BuiltTerrain {
+        scenery,
+        scenery_fades,
+        background,
+        cave_enclosure,
+        instances,
+        reveal_join_batches,
+        fade_textured_groups,
+        fade_solid_groups,
+        footing_heights,
+        textured_meshes,
+        solid_meshes,
+        animated_textured_mesh,
+        animated_solid_mesh,
+        animated_pillars,
+    }
 }
 
 struct BuiltTerrain {
@@ -613,8 +729,7 @@ fn setup_voxel_view(
     mut meshes: ResMut<Assets<Mesh>>,
     mut scene: ResMut<VoxelScene>,
     adapter: Option<Res<RenderAdapterInfo>>,
-) {
-    #[cfg(not(target_arch = "wasm32"))]
+) {    #[cfg(not(target_arch = "wasm32"))]
     if std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some() {
         if let Some(adapter) = adapter.as_ref() {
             eprintln!(
@@ -724,8 +839,7 @@ Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
     ));
 
     scene.camera = Some(camera);
-    scene.actor_quad = Some(meshes.add(actor_quad_mesh()));
-}
+    scene.actor_quad = Some(meshes.add(actor_quad_mesh()));}
 
 #[allow(clippy::too_many_arguments)]
 fn sync_voxel_view(
@@ -846,6 +960,14 @@ fn sync_voxel_view(
         }
     };
     status.terrain_builds = terrain_builds.started;
+    let applied_map = terrain_cache.key.as_ref().map(|key| key.map_id.as_ref());
+    if status.terrain_map.as_deref() != applied_map {
+        status.terrain_map = applied_map.map(str::to_owned);
+    }
+    status.terrain_pending = matches!(terrain_state, TerrainSyncState::Pending);
+    if status.terrain_pending {
+        status.active_frames = 0;
+    }
     if must_wait_for_initial_terrain(terrain_state, &terrain_cache) {
         // Initial activation has no authored mesh to present yet. Keep the
         // manually selected 2.5D presentation inactive until the first build
@@ -957,6 +1079,7 @@ fn voxel_projection_needs_update(projection: &Projection, pose: VoxelCameraPose)
 
 // Phase changes update the retained atlas without invalidating async geometry.
 fn sync_cave_water_phases(
+    time: Res<Time>,
     frame: Res<VisualWorldFrame>,
     phases: Option<Res<crystal_render_api::VisualTileAnimationFrame>>,
     status: Res<VoxelViewStatus>,
@@ -978,19 +1101,28 @@ fn sync_cave_water_phases(
     }
     cave_water::refresh_phases(built, &phases, &mut images);
     if let Some(mask) = mask {
-        if cave_water::refresh_mask_phases(built, &mask, &mut images) {
+        let (changed, steps) = cave_water::refresh_mask_with_steps(built, &mask, &mut images);
+        if changed {
             // Re-uploading an Image replaces its GPU texture. Refresh every
             // material that binds it, including cloned cave occluder groups.
             let users: Vec<_> = materials.iter().filter_map(|(id, material)| {
                 (material.extension.water_mask.as_ref() == Some(&mask)).then_some(id)
             }).collect();
             for id in users {
-                let _ = materials.get_mut(id);
+                if let Some(mut material) = materials.get_mut(id) {
+                    material.extension.water_phase = water_surface::blend_clock(
+                        material.extension.water_phase, time.elapsed_secs_wrapped(), steps);
+                }
             }
         }
     }
     let registration = cave_water::retained_registration(built, &frame);
+    let contact = water_surface::contact(&frame);
     if let Some(handle) = material_handle {
+        if materials.get(&handle).is_some_and(|material|
+            material.extension.water_contact != contact) {
+            materials.get_mut(&handle).unwrap().extension.water_contact = contact;
+        }
         if materials.get(&handle).is_some_and(|material|
             material.extension.water_enabled.x > 0.5 && material.extension.water_enabled != registration)
         {
@@ -1184,7 +1316,7 @@ fn sync_terrain(
         }
         #[cfg(target_arch = "wasm32")]
         {
-            builds.completed = None;
+            builds.pending = None;
         }
         builds.key = None;
     }
@@ -1226,8 +1358,7 @@ fn sync_terrain(
     {
         cache.key = Some(next_key.clone());
     }
-    if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
-        builds.started += 1;
+    if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {        builds.started += 1;
         let mut build_frame = frame.clone();
         let source_texture = frame.map_texture.clone();
         // The host overwrites its viewport image during every scroll. Own an
@@ -1237,12 +1368,11 @@ fn sync_terrain(
             .ok_or(TerrainSyncError::SourceTextureUnavailable)?
             .clone();
         build_frame.map_texture = images.add(atlas);
-        let samples = TerrainImageSamples::capture(frame, images);
-        let build_key = next_key.clone();
+        let samples = TerrainImageSamples::capture(frame, images);        let build_key = next_key.clone();
         let profile_document = profiles.document.clone();
         builds.key = Some(next_key.clone());
-        let build = async move {
-            #[cfg(feature = "operation-trace")]
+        #[cfg(not(target_arch = "wasm32"))]
+        let build = async move {            #[cfg(feature = "operation-trace")]
             let _span = bevy::log::info_span!("crystal_terrain_build").entered();
             // SurfaceMeshData -> Bevy Mesh conversion walks and moves every
             // vertex/index buffer. Keep that work on the compute task too;
@@ -1253,79 +1383,7 @@ fn sync_terrain(
                 &samples,
                 &profile_document,
             )
-            .map(|mesh::RuntimeTerrainBuild { mut terrain, grove_groups, grove_opaque }| {
-                // Diagnostic builders retain complete meshes. Runtime groves
-                // arrive prepared; all pieces upload only with the revision.
-                // Whole-object translucency can expose every original join.
-                // Keep these triangles in their owning wall rather than applying
-                // the old capsule's camera-dependent hidden-face selection.
-                terrain.reveal_join_batches.clear();
-                let reveal_join_batches = Vec::new();
-                let animated_textured_mesh =
-                    std::mem::take(&mut terrain.animated_textured).into_mesh();
-                let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
-                let animated_pillars = std::mem::take(&mut terrain.animated_pillars);
-                let enclosure = std::mem::take(&mut terrain.cave_enclosure);
-                let cave_enclosure = (!enclosure.indices.is_empty()).then(|| enclosure.into_mesh());
-                let background = terrain
-                    .background
-                    .take()
-                    .map(|b| (b.mesh.into_mesh(), b.texture));
-                let instances = std::mem::take(&mut terrain.tree_instances)
-                    .into_iter()
-                    .map(|group| (group.mesh.into_mesh(), group.origins))
-                    .collect();
-                let footing_heights = terrain.footing_heights.clone();
-                let (textured, solid, fade_textured_groups, mut fade_solid_groups) =
-                    occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
-                // Grove ownership is independent of linked wall/label anchors.
-                fade_solid_groups.extend(grove_groups);
-                let source_bounds = authentic_mesh_bounds(&build_frame);
-                let mut scenery = Vec::new();
-                let mut scenery_fades = Vec::new();
-                for part in std::mem::take(&mut terrain.scenery) {
-                    for (domain, data) in terrain_batches::separate_authentic_domains(part.mesh, source_bounds) {
-                        let (opaque, groups) = occluder_fade::prepare(data);
-                        if !groups.is_empty() { scenery_fades.push((groups, part.texture.clone(), domain)); }
-                        if !opaque.indices.is_empty() {
-                            scenery.extend(terrain_batches::prepare_with_authentic_bounds(opaque, build_frame.tile_size, source_bounds)
-                                .into_iter().map(|batch| (batch, part.texture.clone())));
-                        }
-                    }
-                }
-                let prepare_surfaces=if cave_enclosure.is_some() {
-                    terrain_batches::prepare_enclosed_cave
-                } else {terrain_batches::prepare_with_authentic_bounds};
-                let textured_meshes = prepare_surfaces(
-                    textured,
-                    build_frame.tile_size,
-                    source_bounds,
-                );
-                let mut solid_meshes = prepare_surfaces(
-                    solid,
-                    build_frame.tile_size,
-                    source_bounds,
-                );
-                for opaque in grove_opaque {
-                    solid_meshes.extend(prepare_surfaces(opaque, build_frame.tile_size, source_bounds));
-                }
-                BuiltTerrain {
-                    scenery,
-                    scenery_fades,
-                    background,
-                    cave_enclosure,
-                    instances,
-                    reveal_join_batches,
-                    fade_textured_groups,
-                    fade_solid_groups,
-                    footing_heights,
-                    textured_meshes,
-                    solid_meshes,
-                    animated_textured_mesh,
-                    animated_solid_mesh,
-                    animated_pillars,
-                }
-            });
+            .map(|terrain| prepare_runtime_terrain(terrain, &build_frame));
             TerrainBuildResult {
                 key: build_key,
                 frame: build_frame,
@@ -1340,7 +1398,12 @@ fn sync_terrain(
         }
         #[cfg(target_arch = "wasm32")]
         {
-            builds.completed = Some(future::block_on(build));
+            let terrain = mesh::begin_runtime_terrain_mesh_with_profiles(
+                &build_frame, &samples, &profile_document);
+            builds.pending = Some(BrowserTerrainBuild {
+                key: build_key, frame: build_frame, source_texture,
+                profiles: profile_document, terrain,
+            });
         }
     }
 
@@ -1350,7 +1413,16 @@ fn sync_terrain(
         .as_mut()
         .and_then(|task| future::block_on(future::poll_once(task)));
     #[cfg(target_arch = "wasm32")]
-    let completed = builds.completed.take();
+    let completed = if builds.pending.as_mut().is_some_and(|pending|
+        pending.terrain.as_mut().map_or(true, |terrain| terrain.advance_uploaded(1, meshes))) {
+        let pending = builds.pending.take().expect("completed browser build");
+        let terrain = pending.terrain.map(|terrain|
+            prepare_runtime_terrain(terrain.finish(), &pending.frame));
+        Some(TerrainBuildResult {
+            key: pending.key, frame: pending.frame,
+            source_texture: pending.source_texture, profiles: pending.profiles, terrain,
+        })
+    } else { None };
     if let Some(completed) = completed {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -1488,6 +1560,8 @@ fn apply_built_terrain(
         handle
     };
     let water_mask = cave_water::mask(frame).map(|mask| images.add(mask));
+    let water_shore = water_mask.as_ref().and_then(|_| water_surface::shoreline(frame))
+        .map(|shore| images.add(shore));
     if let Some(mut material) = materials.get_mut(&textured_material_handle) {
         material.extension.water_enabled = if water_mask.is_some() {
             cave_water::registration(frame)
@@ -1495,6 +1569,11 @@ fn apply_built_terrain(
             Vec4::ZERO
         };
         material.extension.water_mask = water_mask;
+        material.extension.water_shore = water_shore;
+        material.extension.water_bounds = water_surface::bounds(frame);
+        material.extension.water_style = water_surface::style(frame);
+        material.extension.water_phase = Vec4::ZERO;
+        material.extension.water_contact = water_surface::contact(frame);
         let palette=cave_water::native_palette(frame,images).unwrap_or([Vec4::ZERO;2]);
         material.extension.water_deep=palette[0];
         material.extension.water_foam=palette[1];
@@ -1812,15 +1891,16 @@ const VOXEL_SURFACE_SHADER_HANDLE: Handle<Shader> =
     Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542), std::marker::PhantomData);
 
 #[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default)]
+// Pack surface values into one binding to fit WebGL2 fragment uniform limits.
 struct VoxelSurface {
     #[uniform(100)]
     cutaway: interior_cutaway::CutawayUniform,
     #[texture(101)]
     #[sampler(102)]
     water_mask: Option<Handle<Image>>,
-    #[uniform(103)]
+    #[uniform(100)]
     water_enabled: Vec4,
-    #[uniform(104)]
+    #[uniform(100)]
     cave_reveal: Vec4,
     #[texture(105)]
     #[sampler(106)]
@@ -1828,10 +1908,21 @@ struct VoxelSurface {
     #[texture(107)]
     #[sampler(108)]
     painted_bedrock: Option<Handle<Image>>,
-    #[uniform(109)]
+    #[uniform(100)]
     water_deep: Vec4,
-    #[uniform(110)]
+    #[uniform(100)]
     water_foam: Vec4,
+    #[texture(103)]
+    #[sampler(104)]
+    water_shore: Option<Handle<Image>>,
+    #[uniform(100)]
+    water_bounds: Vec4,
+    #[uniform(100)]
+    water_style: Vec4,
+    #[uniform(100)]
+    water_phase: Vec4,
+    #[uniform(100)]
+    water_contact: Vec4,
 }
 impl MaterialExtension for VoxelSurface {
     fn fragment_shader() -> ShaderRef {

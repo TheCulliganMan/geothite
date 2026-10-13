@@ -284,10 +284,14 @@ pub(crate) fn sculpt(
             // source dome below before assigning this four-lobe silhouette.
             let cell = ((s + 1.) * 2.).floor().clamp(0., 3.);
             let lateral = ((s - (-0.75 + 0.5 * cell)) / 0.25).abs();
-            let pad_height = half * 0.54;
-            // Smooth shoulders and a wider web avoid the circular profile's
-            // vertical tangent, which creased the triangulated pad edges.
-            let shoulder = lateral * lateral * (3. - 2. * lateral);
+            let pad_height = half * 0.25;
+            // Each pad's cap radius is half its width. The taller cubic
+            // profile made four pointed teeth instead of rounded fingers.
+            // Soften the circular arc's vertical tangent only near the web;
+            // its broad crown remains round and has zero slope at the apex.
+            let shoulder = ((1.04_f32).sqrt()
+                - (1.04 - lateral * lateral).max(0.04).sqrt())
+                / ((1.04_f32).sqrt() - 0.2);
             let cap_drop = pad_height * shoulder;
             let web = ((lateral - 0.50) / 0.50).clamp(0., 1.);
             let web = web * web * (3. - 2. * web);
@@ -446,11 +450,18 @@ mod tests {
                 let lobes = [-0.75, -0.25, 0.25, 0.75].map(tip);
                 for (center, apex) in [-0.75, -0.25, 0.25, 0.75].into_iter().zip(lobes) {
                     let shoulders = [tip(center - 0.12), tip(center + 0.12)];
+                    // Four pads span the measured hand width. A round cap's
+                    // sag at this shoulder is relative to its radius, not a
+                    // fixed .015 units: that fixed minimum forces narrow
+                    // triangular tips on the smaller supplied hands. Bound
+                    // both flatness and sharpness around circular-cap sag.
+                    let radius = (hand.right - hand.left) / 8.0;
+                    let sag = apex - (shoulders[0] + shoulders[1]) * 0.5;
                     if !(shoulders.iter().all(|p| p.is_finite())
-                        && apex - (shoulders[0] + shoulders[1]) * 0.5 > 0.015)
+                        && sag > radius * 0.04 && sag < radius * 0.35)
                     {
                         shape_failures.push(format!(
-                            "{name} side{side} fingertip remains flat: center {center}, apex {apex}, shoulders {shoulders:?}"
+                            "{name} side{side} fingertip is flat or pointed: center {center}, apex {apex}, shoulders {shoulders:?}, sag {sag}, radius {radius}"
                         ));
                     }
                     let mut pad_center = f32::NEG_INFINITY;

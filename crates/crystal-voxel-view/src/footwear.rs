@@ -182,9 +182,21 @@ fn plain_shoe_uvs(mesh: &mut SurfaceMeshData,
 /// Toe contours belong to that surface, so no separate toe pieces can float
 /// away from the instep when the production skeleton bends the ankle.
 fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>) {
+    // Production shorts expose the lower leg before footwear is adapted.
+    // Continue that actual ankle sample onto the foot instead of using a
+    // lighter hand patch from elsewhere in the same identity painting.
+    let ankle_uv: [Vec2; 2] = std::array::from_fn(|side| {
+        mesh.positions.iter().zip(&mesh.uvs)
+            .filter(|(p, uv)| usize::from(p[0] > 0.0) == side
+                && (0.27..0.50).contains(&p[1])
+                && uv[0] >= 0.80 && (0.16..0.60).contains(&uv[1]))
+            .min_by(|(a, _), (b, _)| (a[1] - 0.30).abs().total_cmp(&(b[1] - 0.30).abs()))
+            .map(|(_, uv)| Vec2::from_array(*uv))
+            .unwrap_or(Vec2::new(0.90, 0.31))
+    });
     for _ in 0..2 {
         let selected: Vec<_> = mesh.positions.iter().map(|p| p[1]>0.012 && p[1]<0.235).collect();
-        crate::hand_surface::smooth_selection(mesh, ids, weights, &selected);
+        crate::hand_surface::smooth_selection_joined(mesh, ids, weights, &selected);
     }
     let mut ankle_points = [std::collections::BTreeSet::new(), std::collections::BTreeSet::new()];
     for &p in &mesh.positions {
@@ -223,7 +235,7 @@ fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut V
         let sole=(1.0-p[1]/0.09).clamp(0.0,1.0);
         p[1]+=0.045*medial*medial*along*along*sole*sole;
         // The same inspected plain skin patch as the exposed lower legs.
-        *uv=[0.90+(p[0]-centers[side])*0.025,0.31+p[2]*0.025];
+        *uv=(ankle_uv[side]+Vec2::new((p[0]-centers[side])*0.025,p[2]*0.025)).to_array();
     }
     // Recompute normals after changing the volume. Weld coincident UV seams
     // for shading, keeping the individual skinning influences untouched.
@@ -341,6 +353,39 @@ mod tests {
     }
     use super::*;
     use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
+    #[test]
+    #[ignore = "requires supplied swimmer rigs and paintings"]
+    fn swimmer_feet_continue_the_production_ankle_skin_palette() {
+        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for kind in [CharacterKind::SwimmerGuy,CharacterKind::SwimmerGirl] {
+            let look=crate::npc_appearance::look(kind);
+            let rig=PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb",look.base))).unwrap()).unwrap();
+            let painting=crate::npc_textures::decode(&std::fs::read(root.join(format!("people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
+            let mut mesh=rig.mesh.clone();let mut ids=rig.ids.clone();let mut weights=rig.weights.clone();
+            crate::npc_appearance::shorts_body(&rig,&mut mesh,&mut ids,&mut weights,look);
+            adapt(&mut mesh,&mut ids,&mut weights,look);
+            let visible=mesh.indices.iter().map(|&i|i as usize).collect::<std::collections::BTreeSet<_>>();
+            let mean = |low: f32, high: f32, side: usize| {
+                let mut sum=Vec3::ZERO; let mut count=0;
+                for &i in &visible {
+                    let p=mesh.positions[i];let uv=mesh.uvs[i];
+                    if !(low..high).contains(&p[1]) || usize::from(p[0]>0.0)!=side
+                        || uv[0]<0.80 || !(0.16..0.60).contains(&uv[1]) {continue;}
+                    let x=(uv[0]*painting.size.0 as f32) as u32;
+                    let y=(uv[1]*painting.size.1 as f32) as u32;
+                    let rgb=&painting.rgba[((y*painting.size.0+x)*4) as usize..][..3];
+                    sum+=Vec3::new(rgb[0] as f32,rgb[1] as f32,rgb[2] as f32);count+=1;
+                }
+                assert!(count>20,"missing exposed skin samples for {}",look.texture_key);
+                sum/count as f32
+            };
+            for side in 0..2 {
+                let foot=mean(0.03,0.20,side);let ankle=mean(0.27,0.40,side);
+                assert!((foot-ankle).abs().max_element()<8.0,
+                    "{} foot changes skin palette at ankle: foot={foot:?}, ankle={ankle:?}",look.texture_key);
+            }
+        }
+    }
     #[test]
     #[ignore = "requires supplied swimmer rigs and paintings"]
     fn supplied_swimmer_feet_have_skin_round_contours_and_pinned_ankles() {

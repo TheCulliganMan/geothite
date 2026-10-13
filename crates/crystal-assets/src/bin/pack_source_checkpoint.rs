@@ -236,6 +236,10 @@ fn main() -> Result<()> {
         for failure in failures.iter().take(8) { eprintln!("incomplete map module: {failure}"); }
         eprintln!("assembled {} source map modules; {} need further export",data.maps.len(),failures.len());
     }
+    // The serialized checkpoint must contain the same executable standard
+    // scripts that the audit sees. Materializing only after writing left
+    // jumpstd targets absent from otherwise successfully audited packs.
+    data.materialize_global_scripts().context("materialize authored global scripts before checkpoint serialization")?;
     let mut files = BTreeMap::new();
     for &name in crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
         files.insert(name.to_string(), std::fs::read(assets.join(name))?);
@@ -304,7 +308,6 @@ fn main() -> Result<()> {
     );
     if audit {
         data.audio = serde_json::from_value(json("audio.json")?)?;
-        data.materialize_global_scripts().context("materialize authored global scripts for audit")?;
         let root = crystal_assets::AssetRoot::new(root);
         let report = crystal_assets::modpack::ModpackCompiler::new(&root).audit(&data);
         for diagnostic in &report.diagnostics {

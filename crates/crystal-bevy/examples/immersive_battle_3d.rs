@@ -21,6 +21,7 @@ fn main() -> Result<()> {
     let mut record_on_capture = false;
     let mut seconds = 20;
     let mut live = false;
+    let mut catalog_only = false;
     let mut enabled = true;
     let mut route36_encounter = false;
     let mut fishing_encounter = false;
@@ -37,6 +38,7 @@ fn main() -> Result<()> {
     let mut size_comparison = false;
     let mut pidgeotto = false;
     let mut enemy_gust = false;
+    let mut wild_species = false;
     let mut starter = None;
     let mut shiny = false;
     let mut poke_ball_failure = false;
@@ -45,6 +47,7 @@ fn main() -> Result<()> {
     while let Some(flag) = args.next() {
         match flag.as_str() {
             "--live" => live = true,
+            "--catalog" => catalog_only = true,
             "--record-on-move" => record_on_move = true,
             "--record-on-capture" => record_on_capture = true,
             "--classic" => enabled = false,
@@ -76,7 +79,8 @@ fn main() -> Result<()> {
                 );
                 starter = Some(name);
             }
-            "--species" => {
+            "--species" | "--wild-species" => {
+                wild_species = flag == "--wild-species";
                 let name = args.next().context("--species authored Pokémon name")?
                     .to_ascii_uppercase();
                 anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
@@ -123,19 +127,20 @@ fn main() -> Result<()> {
             size_comparison,
             pidgeotto,
             enemy_gust,
+            wild_species,
             poke_ball_failure
         ]
         .into_iter()
         .filter(|active| *active)
         .count()
             <= 1,
-        "choose only one of --route36-encounter, --fishing-encounter, --walking-encounter, --surf-encounter, --cave-encounter, --gym-encounter, --falkner-encounter, --ice-encounter, --shadow-ball, --psychic, --hyper-beam, --surf, --size-comparison, --pidgeotto, --enemy-gust or --poke-ball-failure"
+        "choose only one encounter or move fixture, --enemy-gust, --wild-species, or --poke-ball-failure"
     );
     anyhow::ensure!(
-        starter.is_none() || enemy_gust,
+        starter.is_none() || enemy_gust || wild_species,
         "--starter/--species requires --enemy-gust"
     );
-    anyhow::ensure!(!shiny || enemy_gust, "--shiny requires --enemy-gust");
+    anyhow::ensure!(!shiny || enemy_gust || wild_species, "--shiny requires --enemy-gust or --wild-species");
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
             .into_iter()
@@ -166,6 +171,23 @@ fn main() -> Result<()> {
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
+    if catalog_only {
+        let missing: Vec<_> = runtime
+            .data()
+            .pokemon
+            .keys()
+            .filter(|name| !crystal_voxel_view::has_authored_battle_species(name))
+            .map(String::as_str)
+            .collect();
+        println!(
+            "{} packed species; {} dedicated battle bodies; {} missing bodies",
+            runtime.data().pokemon.len(),
+            runtime.data().pokemon.len() - missing.len(),
+            missing.len()
+        );
+        println!("Missing: {}", missing.join(", "));
+        return Ok(());
+    }
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
     let (map_name, tile_x, tile_y) = if surf_encounter {
         ("Route44", 38, 3)

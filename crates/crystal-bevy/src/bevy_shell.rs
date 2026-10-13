@@ -35,6 +35,7 @@ use bevy::render::{Render, RenderApp, RenderSystems};
 use bevy::window::PrimaryWindow;
 use bevy::window::{PresentMode, WindowFocused, WindowResolution};
 use bevy::winit::{UpdateMode, WinitSettings};
+mod source_sprite_renderer;
 use chrono::{Datelike, Local as ChronoLocal, Timelike};
 use crystal_assets::{
     RuntimeBadgeRegion, RuntimeBugContestAction, RuntimeCurrencyAccount, RuntimeDayCareAction,
@@ -5892,8 +5893,10 @@ pub fn run_bevy_shell(
         plugins
     };
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    let plugins = if render_test_screenshot.is_some() {
-        // Automated screenshots must include fully compiled shader pipelines.
+    let plugins = if render_test_screenshot.is_some() || render_test_measure.is_some() {
+        // Screenshots and timing warmups must include fully compiled pipelines.
+        // Otherwise a fast warmup can accept terrain while character bodies are
+        // still compiling, measuring an incomplete scene.
         plugins.set(bevy::render::RenderPlugin {
             synchronous_pipeline_compilation: true,
             ..default()
@@ -6037,6 +6040,7 @@ pub fn run_bevy_shell(
         .add_systems(Update, refresh_shell_panels.after(refresh_battle_text));
     #[cfg(feature = "dev-tools")]
     dev_tools::install(&mut app);
+    source_sprite_renderer::install(&mut app);
     #[cfg(feature = "voxel-view")]
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
         .add_systems(
@@ -7483,6 +7487,15 @@ fn settle_visible_shell_controller(
             runtime_shell.transient_audio_playing = false;
             if runtime_shell.visible_wait_sfx_boundary {
                 let presentation = runtime_shell.shell.presentation_snapshot()?;
+                // WaitSFX may follow farwritetext before any graphical update
+                // has initialized its printer. Advance that same printer
+                // here instead of repeatedly testing an unrevealed page.
+                if visible_field_dialog_pages(&presentation, runtime_shell).is_some()
+                    && !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation)
+                {
+                    tick_visible_field_text_reveal(runtime_shell, false)?;
+                    continue;
+                }
                 if advance_visible_wait_sfx_boundary(runtime_shell, &presentation, false)? {
                     continue;
                 }

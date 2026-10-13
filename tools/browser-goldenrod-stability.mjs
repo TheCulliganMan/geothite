@@ -17,6 +17,7 @@ const report = { url, cycles, samples: [], transitions: [], errors: [], processS
     originalWasmBytes: 512 * 1024 ** 2, singleBufferBytes: 32 * 1024 ** 2 },
   timingMeaning: 'requestAnimationFrame intervals; not GPU completion or presented FPS',
   bufferAccounting: 'Requested WebGL bufferData storage; excludes textures and driver overhead',
+  bufferAccountingEnabled: process.env.DISABLE_BUFFER_ACCOUNTING !== '1',
   quality: 'Run with CRYSTAL_SCENERY_FULL_DETAIL=1 at browser build time; record build revision separately.' };
 let browser;
 let page;
@@ -55,11 +56,12 @@ try {
     finally { sampling = false; }
   }, 1000);
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-  await context.addInitScript(() => {
+  await context.addInitScript(accountBuffers => {
     localStorage.setItem('crystal.audio.muted', 'true');
     window.goldenrodMetrics = { largestBuffer: 0, bufferUploadBytes: 0, liveBufferBytes: 0,
       peakBufferBytes: 0, contextLost: 0,
       active: false, last: 0, intervals: [], longTasks: [], renderer: null };
+    if (!accountBuffers) return;
     const proto = WebGL2RenderingContext.prototype;
     const allocations = new WeakMap();
     const deleteBuffer = proto.deleteBuffer;
@@ -112,12 +114,17 @@ try {
     new PerformanceObserver(list => {
       if (goldenrodMetrics.active) goldenrodMetrics.longTasks.push(...list.getEntries().map(e => e.duration));
     }).observe({ type: 'longtask' });
-  });
+  }, process.env.DISABLE_BUFFER_ACCOUNTING !== '1');
   page = await context.newPage();
   page.on('crash', () => report.errors.push('Page process crashed'));
   page.on('pageerror', e => report.errors.push(e.message));
   page.on('console', message => {
-    if (message.type() !== 'error' && message.type() !== 'warning') return;
+    // Bevy's styled tracing writes ERROR/WARN through console.log.
+    if (message.type() !== 'error' && message.type() !== 'warning' &&
+        !/Caught rendering error|Quitting the application|%cERROR%c|%cWARN%c/.test(message.text())) return;
+    if (/%cERROR%c|Caught rendering error|Quitting the application/.test(message.text())) {
+      report.errors.push(message.text().slice(0, 4000));
+    }
     report.consoleDiagnostics.push({ type: message.type(), text: message.text().slice(0, 4000) });
     if (report.consoleDiagnostics.length > 30) report.consoleDiagnostics.shift();
   });
@@ -151,7 +158,9 @@ try {
       const voxel = state.presentation?.voxel;
       assert.ok(voxel, 'current production bridge must expose renderer readiness');
       assert.equal(voxel.scenery_full_detail, true, 'trial must preserve full-detail models');
-      if (voxel.active && !voxel.profiles_pending && voxel.active_frames >= 30) return state;
+      const currentTerrain = !('terrain_map' in voxel) || voxel.terrain_map === state.map_info.name;
+      if (voxel.active && currentTerrain && voxel.terrain_pending !== true
+          && !voxel.profiles_pending && voxel.active_frames >= 30) return state;
       await page.waitForTimeout(250);
     }
     throw Error('Production 3D renderer did not finish its active-frame warmup');
@@ -249,7 +258,14 @@ try {
     assert.equal(state.map_info.name, 'GoldenrodCity');
     assert.ok(state.map_info.player.x !== before.map_info.player.x ||
       state.map_info.player.y !== before.map_info.player.y, 'authoritative tiles must move after exit');
+    // Wait for the production movement animation to release input.
+    for (let settle = 0; settle < 120 && state.flow_state?.animating; settle++) {
+      await page.waitForTimeout(100);
+      state = await observe();
+    }
+    assert.equal(state.flow_state?.animating, false, 'movement must release input before Start');
     state = await press('start');
+    report.lastMenuObservation = state;
     assert.ok((state.observe.menus ?? []).length > 0 || /POK.MON|PACK|SAVE/.test(JSON.stringify(state.observe)),
       'production Start menu must be visible');
     await press('b');

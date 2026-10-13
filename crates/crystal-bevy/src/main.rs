@@ -1,3 +1,8 @@
+#![cfg_attr(
+    all(target_os = "windows", feature = "desktop-app"),
+    windows_subsystem = "windows"
+)]
+
 use std::env;
 use std::path::{Path, PathBuf};
 
@@ -16,6 +21,35 @@ const DEFAULT_BROWSER_PACK_FILENAME: &str = "realtime-clock.browser.crystalpack"
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<()> {
+    let result = run_native();
+    #[cfg(all(target_os = "windows", feature = "desktop-app"))]
+    if let Err(error) = &result {
+        show_desktop_startup_error(&format!("Geothite could not start.\n\n{error:#}"));
+    }
+    result
+}
+
+#[cfg(all(target_os = "windows", feature = "desktop-app"))]
+fn show_desktop_startup_error(message: &str) {
+    #[link(name = "user32")]
+    unsafe extern "system" {
+        fn MessageBoxW(
+            window: *mut std::ffi::c_void,
+            text: *const u16,
+            caption: *const u16,
+            flags: u32,
+        ) -> i32;
+    }
+    let text: Vec<u16> = message.encode_utf16().chain(Some(0)).collect();
+    let caption: Vec<u16> = "Geothite".encode_utf16().chain(Some(0)).collect();
+    // Both buffers remain alive and null-terminated throughout the modal call.
+    unsafe {
+        MessageBoxW(std::ptr::null_mut(), text.as_ptr(), caption.as_ptr(), 0x10);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn run_native() -> Result<()> {
     #[cfg(feature = "operation-trace")]
     let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args_from(env::args().skip(1))?;
@@ -400,7 +434,15 @@ async fn fetch_browser_pack() -> Result<Vec<u8>> {
             let bytes = JsFuture::from(js_sys::Promise::resolve(&pending))
                 .await
                 .map_err(|error| anyhow::anyhow!("download pack: {error:?}"))?;
-            return Ok(js_sys::Uint8Array::new(&bytes).to_vec());
+            // The production transport already owns a Uint8Array. Constructing
+            // another typed array from it copies the complete pack before the
+            // required transfer into WASM; retain its existing view instead.
+            let bytes = if bytes.is_instance_of::<js_sys::Uint8Array>() {
+                bytes.unchecked_into::<js_sys::Uint8Array>()
+            } else {
+                js_sys::Uint8Array::new(&bytes)
+            };
+            return Ok(bytes.to_vec());
         }
     }
     let response = JsFuture::from(window.fetch_with_str(DEFAULT_BROWSER_PACK_FILENAME))

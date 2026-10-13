@@ -129,7 +129,7 @@ use crystal_core::state::{
     validate_saved_map_reference as core_validate_saved_map_reference,
     validate_saved_money_runtime_event_shape,
     validate_saved_mystery_gift_references as core_validate_saved_mystery_gift_references,
-    validate_saved_object_overrides as core_validate_saved_object_overrides,
+    validate_saved_object_overrides_with_source_positions as core_validate_saved_object_overrides,
     validate_saved_optional_catalog_reference,
     validate_saved_overworld_references as core_validate_saved_overworld_references,
     validate_saved_pending_screen_fade_shape, validate_saved_player_gender,

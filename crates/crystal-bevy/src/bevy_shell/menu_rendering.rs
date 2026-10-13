@@ -1955,6 +1955,9 @@ fn load_clock_reset_frame(
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode clock-reset font PNG")?
         .to_rgba8();
+    let up_arrow = crate::open_runtime_image(assets.join("gfx/font/up_arrow.png"))
+        .context("decode source clock-reset up-arrow PNG")?
+        .to_rgba8();
     let frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode clock-reset textbox frame PNG")?
         .to_rgba8();
@@ -2003,7 +2006,7 @@ fn load_clock_reset_frame(
             )?;
         }
         VisibleClockResetPhase::SetDay | VisibleClockResetPhase::SetHour | VisibleClockResetPhase::SetMinute => {
-            draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
+            draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
         }
         VisibleClockResetPhase::Password | VisibleClockResetPhase::WrongPassword
         | VisibleClockResetPhase::Requested | VisibleClockResetPhase::TimeConfirm
@@ -2014,14 +2017,15 @@ fn load_clock_reset_frame(
             if clock_reset.phase == VisibleClockResetPhase::Password {
                 let digits = clock_reset.password_digits.iter().map(|digit| char::from(b'0' + digit)).collect::<String>();
                 draw_time_set_text(&font, &digits, 14 * SOURCE_TILE_SIZE, 15 * SOURCE_TILE_SIZE, &mut data)?;
-                draw_time_set_text(&font, "▲", (14 + clock_reset.password_cursor.min(4)) * SOURCE_TILE_SIZE,
-                    16 * SOURCE_TILE_SIZE, &mut data)?;
+                blit_time_set_tile_image_clipped(&up_arrow, 0, 0,
+                    (14 + clock_reset.password_cursor.min(4)) * SOURCE_TILE_SIZE,
+                    16 * SOURCE_TILE_SIZE, false, false, true, None, &mut data);
             }
             if clock_reset.phase == VisibleClockResetPhase::TimeResetDone {
-                draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
+                draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
             }
             if clock_reset.phase == VisibleClockResetPhase::TimeConfirm {
-                draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
+                draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
                 draw_time_set_window(&frame, 14, 7, 6, 5, &mut data)?;
                 draw_time_set_text(&font, if clock_reset.confirm_selection == 0 { "▶YES" } else { " YES" }, 15 * SOURCE_TILE_SIZE, 8 * SOURCE_TILE_SIZE, &mut data)?;
                 draw_time_set_text(&font, if clock_reset.confirm_selection == 1 { "▶NO" } else { " NO" }, 15 * SOURCE_TILE_SIZE, 9 * SOURCE_TILE_SIZE, &mut data)?;
@@ -4434,13 +4438,21 @@ fn render_playfield(
     #[cfg(feature = "voxel-view")] voxel_settings: Option<
         Res<crystal_voxel_view::VoxelViewSettings>,
     >,
+    #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
 ) {
     let movement_subframe = tick_timer.map_or(0.0, |timer| timer.presentation_subframe());
     #[cfg(feature = "voxel-view")]
     // Production always installs the setting. Feature-gated extraction tests
     // that invoke this system in isolation intentionally request the complete
     // optional frame by omitting it.
-    let visual_world_enabled = voxel_settings.map_or(true, |settings| settings.enabled);
+    let visual_world_enabled = voxel_settings.map_or(true, |settings| settings.enabled) || {
+        // A passive comparison needs the same source atlas and actor extraction
+        // in both views. Preparing that read-only atlas does not enable 3D.
+        #[cfg(feature = "location-tester")]
+        { capture_hold.as_ref().is_some_and(|hold| hold.frozen) }
+        #[cfg(not(feature = "location-tester"))]
+        { false }
+    };
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_enabled = false;
     #[cfg(feature = "voxel-view")]

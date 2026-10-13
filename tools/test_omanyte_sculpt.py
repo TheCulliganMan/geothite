@@ -19,7 +19,7 @@ class OmanyteTests(unittest.TestCase):
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'omanyte':self.m})
  def test_recipe_height_floor_palette_and_budget(self):
   self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),32);self.assertEqual(len({p['part'] for p in self.ps}),32)
-  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),90000)
+  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),22000)
   self.assertEqual(self.find('Shell /')['base_color'],linear(CREAM));self.assertEqual(self.find('Body /')['base_color'],linear(BLUE))
   for s in (-1,1):self.assertEqual(self.find('Eye /',s)['base_color'],linear(WHITE))
  def test_mantle_eyes_and_all_tentacles_have_actual_volume_roots(self):

@@ -66,6 +66,8 @@ web-sys = { workspace = true, features = [
 default = ["bevy-shell", "fullscreen-scaling"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
 fullscreen-scaling = ["bevy-shell"]
+# Installed Windows app: no console window; startup errors get a native dialog.
+desktop-app = ["bevy-shell"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
 location-tester = ["crystal-runtime/location-tester", "crystal-runtime/test-fixtures", "voxel-view", "crystal-assets/test-fixtures"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
@@ -80,6 +82,10 @@ meshtastic = ["crystal-net/meshtastic"]
 [[example]]
 name = "render_at_location"
 required-features = ["location-tester"]
+
+[[example]]
+name = "source_sprite_regression"
+required-features = ["bevy-shell"]
 
 [[example]]
 name = "audit_voxel_coverage"

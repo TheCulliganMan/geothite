@@ -329,6 +329,9 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
             if sx < 0 || sz < 0 || sx >= size.x as i32 * 2 || sz >= size.y as i32 * 2 {
                 continue;
             }
+            if ice && modeled_dungeons::frozen_wall::complete_at(cells,g,i) {
+                continue;
+            }
             let low = if filled[i] {
                 height
             } else {
@@ -338,25 +341,35 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
                 continue;
             }
             let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
-            for (boundary, face) in [
+            for (boundary, neighbor, face) in [
                 (
                     sz == 0,
+                    i.checked_sub(g.width),
                     [[w, low, n], [e, low, n], [e, height, n], [w, height, n]],
                 ),
                 (
                     sx == size.x as i32 * 2 - 1,
+                    (i%g.width+1<g.width).then_some(i+1),
                     [[e, low, n], [e, low, s], [e, height, s], [e, height, n]],
                 ),
                 (
                     sz == size.y as i32 * 2 - 1,
+                    (i/g.width+1<g.height).then_some(i+g.width),
                     [[e, low, s], [w, low, s], [w, height, s], [e, height, s]],
                 ),
                 (
                     sx == 0,
+                    (i%g.width>0).then(||i-1),
                     [[w, low, s], [w, low, n], [w, height, n], [w, height, s]],
                 ),
             ] {
                 if boundary {
+                    // A complete frozen mass in the retained source halo
+                    // already supplies this room-facing boundary wall too.
+                    if ice && neighbor.is_some_and(|j|
+                        modeled_dungeons::frozen_wall::complete_at(cells,g,j)) {
+                        continue;
+                    }
                     cave_cliff::quad_with_point(
                         &mut out,
                         face,
@@ -423,6 +436,14 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
                 if corner_cells[j] {
                     continue;
                 }
+                // Complete frozen masses are modeled at the same enclosing
+                // datum as this outer cap. Their raw sixteen-pixel source
+                // shape is not the rendered wall height. Closing above that
+                // raw height duplicates the existing wall on the same plane,
+                // producing interleaved pale and blue triangles.
+                if ice && modeled_dungeons::frozen_wall::complete_at(&cells,g,j) {
+                    continue;
+                }
                 let low = shape_for_source(&cells[j].source).surface_height(g.tile_height);
                 if low >= height {
                     continue;
@@ -473,6 +494,52 @@ pub(super) fn build(frame: &VisualWorldFrame, g: &GridGeometry) -> SurfaceMeshDa
 mod tests {
     use super::*;
     use bevy::prelude::{IVec2, UVec2, Vec2};
+    #[test]
+    fn complete_frozen_halo_already_closes_the_low_map_boundary() {
+        let g=GridGeometry {width:12,height:12,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut frame=VisualWorldFrame {map_id:"IcePathB2FBlackthornSide".into(),
+            grid_origin:IVec2::splat(-4),source_map_size_core_tiles:Some(UVec2::splat(2)),
+            ..Default::default()};
+        frame.tiles=(0..144).map(|i| {
+            let (x,z)=(i%12,i/12);let ground=(4..8).contains(&x)&&(4..8).contains(&z);
+            VisualTile {column:x as u32,row:z as u32,texture:Default::default(),
+                animation_frames:None,priority:false,
+                source:VisualTileSource {tileset_id:"ice_path".into(),metatile_id:if ground {2}else{0x19},
+                    subtile_column:(x%4) as u8,subtile_row:(z%4) as u8,
+                    tile_index:if ground {crate::ice_path::CAVE_GROUND_TILE}
+                        else {0x84+(x%4) as u16+(z%4) as u16*0x10}}}
+        }).collect();
+        let closed=build(&frame,&g);
+        let mut unknown=frame.clone();unknown.tiles.truncate(1);
+        let outside=build(&unknown,&g);
+        assert_eq!(closed.positions,outside.positions,
+            "the retained native halo wall must not be drawn twice");
+        assert_eq!(closed.indices,outside.indices);
+        frame.tiles[3*12+6].source.tile_index=crate::ice_path::CAVE_GROUND_TILE;
+        assert!(build(&frame,&g).positions.len()>outside.positions.len(),
+            "a clipped or changed halo cannot prove an existing enclosing wall");
+    }
+    #[test]
+    fn complete_frozen_boundary_does_not_gain_a_duplicate_outer_wall() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut frame=VisualWorldFrame {map_id:"IcePathB2FBlackthornSide".into(),
+            source_map_size_core_tiles:Some(UVec2::splat(2)),..Default::default()};
+        frame.tiles=(0..16).map(|i|VisualTile {column:(i%4) as u32,row:(i/4) as u32,
+            texture:Default::default(),animation_frames:None,priority:false,
+            source:VisualTileSource {tileset_id:"ice_path".into(),metatile_id:0x19,
+                subtile_column:(i%4) as u8,subtile_row:(i/4) as u8,
+                tile_index:0x84+(i%4) as u16+(i/4) as u16*0x10}}).collect();
+        let closed=build(&frame,&g);
+        let mut halo=frame.clone();halo.tiles.truncate(1);
+        let outside=build(&halo,&g);
+        assert_eq!(closed.positions,outside.positions,
+            "the complete native frozen wall already closes the outer cap");
+        assert_eq!(closed.indices,outside.indices);
+        frame.tiles[0].source.metatile_id=2;
+        frame.tiles[0].source.tile_index=crate::ice_path::CAVE_GROUND_TILE;
+        assert!(build(&frame,&g).positions.len()>outside.positions.len(),
+            "unknown boundary art still needs its enclosing cross-section");
+    }
     #[test]
     fn complete_authored_void_blocks_have_rock_and_an_opaque_base() {
         let g=GridGeometry{width:6,height:6,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};

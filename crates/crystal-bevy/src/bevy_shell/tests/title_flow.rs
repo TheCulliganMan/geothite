@@ -2282,8 +2282,8 @@ fn visible_clock_reset_password_gate_preserves_save_until_correct_and_returns_to
     open_visible_clock_reset_screen(&mut runtime_shell).unwrap();
     move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
     confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
-    // Authored byte sum: 0x12+0x34+C/H/R/I/S+01/02/03 = 868.
-    for (index, digit) in [0,0,8,6,8].into_iter().enumerate().rev() {
+    // Authored byte sum: 0x12+0x34+C/H/R/I/S+01/02/03 = 768.
+    for (index, digit) in [0,0,7,6,8].into_iter().enumerate().rev() {
         assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().password_cursor, index);
         for _ in 0..digit { move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap(); }
         move_visible_clock_reset_horizontal(&mut runtime_shell, -1).unwrap();
@@ -2366,6 +2366,7 @@ fn clock_reset_prompt_frame_uses_boot_window_and_value_phases() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
     let asset_root = AssetRoot::new(repo_root);
     let runtime = workspace_desktop_runtime(&asset_root);
+    let asset_root = runtime.materialize_runtime_files().unwrap();
     let mut images = Assets::<Image>::default();
     let confirm = load_clock_reset_frame(
         &asset_root,
@@ -2463,6 +2464,35 @@ fn visible_intro_clock_advances_from_entry_to_the_first_input_hook() {
         .expect("intro presentation state");
     assert_eq!(intro.frame_clock.frame_t_cycles, 70_224);
     assert_eq!(intro.frame_clock.phase_t_cycles, 3_324);
+}
+
+#[test]
+fn intro_instruction_register_write_precedes_the_latched_lcd_interrupt() {
+    let timing = VisibleIntroScreen::new().interrupt_timing;
+    let callback = std::cell::Cell::new(false);
+    let mut clock = RuntimeIntroFrameClock::new(70_224, 244).unwrap();
+    let advance = timing.advance_instruction_sequence_with_interrupts_and_effects(
+        &mut clock,
+        [3],
+        &mut || callback.get(),
+        &mut |index| { assert_eq!(index, 0); callback.set(true); Ok(()) },
+        &mut || panic!("this instruction does not cross VBlank"),
+    ).unwrap();
+    assert_eq!(advance.lcd_interrupts_serviced, 1);
+    assert_eq!(clock.phase_t_cycles, 256 + u32::from(timing.lcd_callback_nonzero_machine_cycles) * 4);
+
+    // An already pending request must run before this register write.
+    callback.set(false);
+    let mut clock = RuntimeIntroFrameClock::new(70_224, 250).unwrap();
+    let advance = timing.advance_instruction_sequence_with_interrupts_and_effects(
+        &mut clock,
+        [3],
+        &mut || callback.get(),
+        &mut |_| { callback.set(true); Ok(()) },
+        &mut || panic!("this instruction does not cross VBlank"),
+    ).unwrap();
+    assert_eq!(advance.lcd_interrupts_serviced, 1);
+    assert_eq!(clock.phase_t_cycles, 250 + u32::from(timing.lcd_callback_zero_machine_cycles) * 4 + 12);
 }
 
 #[test]

@@ -5244,6 +5244,8 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
         .expect("read text TUI pack");
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
         .expect("load text TUI pack");
+    runtime.data().script_flag_command("PlayersHouse1F", "MeetMomScript", 5)
+        .expect("authored Mom Pokegear grant must retain its typed engine-flag mutation");
     let mut controller = VisibleShellController::new_game(
         asset_root,
         runtime,

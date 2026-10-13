@@ -1,5 +1,10 @@
 # Fossil Pokémon source and anatomy review
 
+The earlier baseline findings below describe the original shared recipe.
+Omanyte and Omastar now have [dedicated nautilus sculptures](nautilus-sculptures.md).
+Kabuto and Kabutops still require their individual replacement work. Consult
+the new review for current verification and remaining production checks.
+
 The four canonical fossil models still use the generic `fossils()` batch
 recipe. Two paired oblique baseline renders each exited 0 at 1600×824 and
 were individually inspected in full. Omanyte and Omastar share a smooth
@@ -67,5 +72,6 @@ The paid high-resolution Omanyte listing and unrelated samurai-helmet
 search matches do not provide a free Pokémon rig.
 
 Original recipes are the actionable next path with the evidence currently
-available. The four fossil canonical meshes are unchanged. Ignored reference
-PNGs and baseline images remain only while this family review continues.
+available. The four fossil canonical meshes were unchanged at that source-review
+checkpoint; the nautilus update linked above records the later replacements.
+Reference PNGs and baseline images remain ignored and are removed after review.

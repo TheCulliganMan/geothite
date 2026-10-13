@@ -1719,9 +1719,10 @@ fn lawn_water_bank(
     cells: &[&VisualTile], g: &GridGeometry, authored: &[Option<&str>],
 ) -> bool {
     let outdoor = ordinary_lawn_map(map);
+    let land_material = ground_material(sample);
     if !outdoor || normal[1].abs()>0.001
         || !matches!(sample.tileset_id.as_ref(),"johto"|"johto_modern")
-        || ground_material(sample)!=Some(GroundMaterial::Lawn) {return false;}
+        || !matches!(land_material, Some(GroundMaterial::Lawn | GroundMaterial::Path)) {return false;}
     let center=positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
     let n=Vec3::from_array(normal);
     if n.length_squared()<0.99 {return false;}
@@ -1732,7 +1733,7 @@ fn lawn_water_bank(
     let low=CellShape::Water.surface_height(g.tile_height);
     let epsilon=g.tile_height*0.0001;
     cells[land].source.tileset_id==sample.tileset_id
-        && ground_material(&cells[land].source)==Some(GroundMaterial::Lawn)
+        && ground_material(&cells[land].source)==land_material
         && authored.get(land).is_some_and(|claim|claim.is_none())
         && cells[water].source.tileset_id==sample.tileset_id
         && matches!(shape_for_source(&cells[water].source),CellShape::Water)
@@ -2521,11 +2522,11 @@ impl<'a> GroundFinish<'a> {
             append_solid_quad(mesh, p, [0.0, 1.0, 0.0], color);
             if material == GroundMaterial::Lawn {
                 let root = Vec3::new(cx, y, cz);
-                let height = self.geometry.tile_height * (0.045 + seed * 0.025);
+                let height = self.geometry.tile_height * (0.060 + seed * 0.040);
                 for blade in 0..3 {
                     let a = angle + blade as f32 * 2.094395;
-                    let side = Vec3::new(a.cos(), 0., a.sin()) * self.geometry.tile_width * 0.015;
-                    let lean = Vec3::new(-a.sin(), 0., a.cos()) * self.geometry.tile_width * 0.035;
+                    let side = Vec3::new(a.cos(), 0., a.sin()) * self.geometry.tile_width * 0.023;
+                    let lean = Vec3::new(-a.sin(), 0., a.cos()) * self.geometry.tile_width * 0.050;
                     let tip = root + Vec3::Y * height + lean;
                     let points = [
                         (root - side).to_array(),
@@ -2629,8 +2630,23 @@ pub(super) fn polish_world_surfaces(
     geometry: &GridGeometry,
     map_origin: [i32; 2],
 ) {
+    polish_world_surfaces_with_shapes(mesh, map, cells, geometry, map_origin, &[]);
+}
+
+pub(super) fn polish_world_surfaces_with_shapes(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    geometry: &GridGeometry,
+    map_origin: [i32; 2],
+    shapes: &[CellShape],
+) {
     let finish = GroundFinish::new(map, cells, geometry, map_origin);
-    let corners = cave_cliff::RockCorners::new_on_map(map,cells,geometry);
+    let corners = if cave_crowns::enabled(map) && shapes.len() == cells.len() {
+        cave_cliff::RockCorners::new_with_shapes(map, cells, shapes, geometry)
+    } else {
+        cave_cliff::RockCorners::new_on_map(map, cells, geometry)
+    };
     let cave_trace = std::env::var_os("CRYSTAL_CAVE_RENDER_TRACE").is_some()
         && cells.first().is_some_and(|t| {
             matches!(
@@ -2664,10 +2680,15 @@ pub(super) fn polish_world_surfaces(
         let positions: [[f32; 3]; 4] = old.positions[base..base + 4].try_into().unwrap();
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
-        if sampled_cell(&uvs,geometry).is_some_and(|i|
-            lawn_water_bank(map,&positions,normal,&cells[i].source,cells,geometry,&mesh.authored_cells))
-            && ledge_finish::append(&mut mesh.solid,positions,normal,geometry,map_origin) {
-            continue;
+        if let Some(i) = sampled_cell(&uvs, geometry).filter(|&i|
+            lawn_water_bank(map, &positions, normal, &cells[i].source,
+                cells, geometry, &mesh.authored_cells)) {
+            let finished = if ground_material(&cells[i].source) == Some(GroundMaterial::Path) {
+                ledge_finish::append_bare_soil(&mut mesh.solid, positions, normal, geometry, map_origin)
+            } else {
+                ledge_finish::append(&mut mesh.solid, positions, normal, geometry, map_origin)
+            };
+            if finished { continue; }
         }
         let center=positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
         let owned_x=((center.x-geometry.origin_x)/geometry.tile_width).floor() as isize;
@@ -2808,9 +2829,9 @@ pub(super) fn polish_world_surfaces(
         if let Some(material) = material {
             if material == GroundMaterial::Water && normal[1] > 0.999
                 && sampled_cell(&uvs,geometry).is_some_and(|i|
-                    crate::cave_water::live_outdoor_water(cells[i],map))
+                    crate::cave_water::live_pool_water(cells[i],map))
             {
-                // Keep authenticated outdoor water on its original atlas UVs
+                // Keep authenticated pool water on its original atlas UVs
                 // so the source-phase shader can draw continuous currents.
                 // Painting it into the solid mesh discarded that clock and
                 // left only static short ripple bars on a uniform plane.
@@ -3037,6 +3058,15 @@ mod tests {
                 let samples = TerrainImageSamples::default();
                 let reference = build_instanced_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
                 let runtime = build_runtime_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
+                let mut deferred = begin_runtime_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
+                while !deferred.advance(1) {}
+                let deferred = deferred.finish();
+                assert_eq!(runtime.terrain, deferred.terrain);
+                assert_eq!(runtime.grove_opaque, deferred.grove_opaque);
+                let empty = SurfaceMeshData::default();
+                let comparison = build_runtime_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
+                same_geometry(crate::occluder_fade::geometry_signature(&empty, deferred.grove_groups),
+                    crate::occluder_fade::geometry_signature(&empty, comparison.grove_groups));
                 assert!(!runtime.grove_groups.is_empty(), "fixture must exercise detached trees");
                 assert!(runtime.grove_opaque.is_empty(), "complete grove ownership must survive");
                 assert_eq!(reference.authored_cells, runtime.terrain.authored_cells);
@@ -3964,6 +3994,34 @@ mod tests {
             for tile in &mut changed.tiles {tile.source=source_with_tile(0x01,0,0,0x05);}
             let changed_cells:Vec<_>=changed.tiles.iter().collect();
             assert!(!lawn_water_bank("LakeOfRage",&p,normal,&cells[4].source,&changed_cells,&g,&claims));
+        }
+    }
+
+    #[test]
+    fn path_shore_soil_closes_cherrygrove_water_contacts_at_exact_source_datums() {
+        let mut f = frame(3, 3, vec![source_with_tile(0x35, 0, 0, 0x14); 9]);
+        f.tiles[4].source = source_with_tile(0x00, 0, 0, 0x06);
+        let g = geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let low = CellShape::Water.surface_height(g.tile_height);
+        for direction in Direction::ALL {
+            let mut mesh = TerrainMeshData {
+                authored_cells: vec![None; 9], footing_heights: vec![low; 9],
+                ..Default::default()
+            };
+            mesh.footing_heights[4] = 0.;
+            let (w, e, n, s) = g.bounds(1, 1);
+            append_textured_shoreline(&mut mesh.textured, &g, 1, 1,
+                direction, [w, e, n, s], low, 0.);
+            let corners = mesh.textured.positions.clone();
+            let floor = mesh.footing_heights.clone();
+            let claims = mesh.authored_cells.clone();
+            polish_world_surfaces(&mut mesh, "CherrygroveCity", &cells, &g, [0, 0]);
+            assert!(mesh.textured.positions.is_empty(), "path edge must receive the soil finish");
+            for corner in corners { assert!(mesh.solid.positions.contains(&corner)); }
+            assert_eq!(mesh.footing_heights, floor);
+            assert_eq!(mesh.authored_cells, claims);
+            assert!(mesh.solid.positions.iter().all(|p| p[1] >= low && p[1] <= 0.));
         }
     }
 
@@ -5324,9 +5382,20 @@ mod tests {
     }
 
     #[test]
-    fn outdoor_live_water_keeps_original_uvs_geometry_and_support() {
-        let mut f=frame(1,1,vec![material_source("johto",0x35,0,0,0x14)]);
-        f.map_id="LakeOfRage".into();
+    fn live_pools_keep_original_uvs_geometry_and_support_across_map_families() {
+        for (map, tileset, metatile, column, row) in [
+            ("LakeOfRage", "johto", 0x35, 0, 0),
+            ("Route40", "johto", 0x35, 0, 0),
+            ("Route19", "kanto", 0x43, 0, 0),
+            ("CinnabarIsland", "kanto", 0x43, 0, 0),
+            ("IlexForest", "forest", 0x35, 0, 0),
+            ("NationalPark", "park", 0x3f, 0, 0),
+            ("SafariZoneBeta", "park", 0x3f, 0, 0),
+            ("VermilionPort", "port", 0x0a, 0, 0),
+            ("CeruleanGym", "port", 0x2e, 2, 0),
+        ] {
+        let mut f=frame(1,1,vec![material_source(tileset,metatile,column,row,0x14)]);
+        f.map_id=map.into();
         let first=Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(8101),std::marker::PhantomData);
         let second=Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(8102),std::marker::PhantomData);
         f.tiles[0].texture=first.clone();f.tiles[0].animation_frames=Some(vec![first,second].into());
@@ -5337,10 +5406,11 @@ mod tests {
         let mut mesh=TerrainMeshData {footing_heights:vec![-2.],authored_cells:vec![None],..Default::default()};
         append_quad_colors(&mut mesh.textured,p,[0.,1.,0.],uv,[[1.;4];4]);
         let source=mesh.textured.clone();
-        polish_world_surfaces(&mut mesh,"LakeOfRage",&cells,&g,[10,20]);
-        assert_eq!(mesh.textured,source);
-        assert!(mesh.solid.positions.is_empty());
+        polish_world_surfaces(&mut mesh,map,&cells,&g,[10,20]);
+        assert_eq!(mesh.textured,source,"{map} keeps its live water binding");
+        assert!(mesh.solid.positions.is_empty(),"{map} must not bake static ripple bars");
         assert_eq!(mesh.footing_heights,[-2.]);assert_eq!(mesh.authored_cells,[None]);
+        }
     }
 
     #[test]

@@ -152,9 +152,15 @@ mod tests {
         use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         let rig = PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap()).unwrap();
-        let cloth = crate::npc_appearance::costume_mesh(&rig, crate::npc_appearance::look(CharacterKind::Kurt)).unwrap();
-        let shoes = rig.mesh.indices.chunks_exact(3).filter(|f|
-            f.iter().all(|&i| rig.mesh.positions[i as usize][1] < 0.27)).collect::<Vec<_>>();
+        for kind in [CharacterKind::Kurt, CharacterKind::KurtOutside] {
+        let look = crate::npc_appearance::look(kind);
+        let cloth = crate::npc_appearance::costume_mesh(&rig, look).unwrap();
+        let mut mesh = rig.mesh.clone();
+        let mut joints = rig.ids.clone();
+        let mut weights = rig.weights.clone();
+        crate::footwear::adapt(&mut mesh, &mut joints, &mut weights, look);
+        let shoes = mesh.indices.chunks_exact(3).filter(|f|
+            f.iter().all(|&i| mesh.positions[i as usize][1] < 0.27)).collect::<Vec<_>>();
         assert!(!shoes.is_empty());
         let panels = cloth.surface.indices.chunks_exact(3).filter(|f|
             f.iter().all(|&i| cloth.surface.positions[i as usize][1] < 1.0)).collect::<Vec<_>>();
@@ -176,8 +182,12 @@ mod tests {
             let mut pose = rig.nodes.clone(); rig.sample("Run", rig.duration("Run") * step as f32 / 32., &mut pose);
             let inverse = world(rig.mesh_node, &pose, &rig.parents).inverse();
             let skin = rig.skin_nodes.iter().zip(&rig.inverse_binds).map(|(&n, b)| inverse * world(n, &pose, &rig.parents) * *b).collect::<Vec<_>>();
-            let body = rig.mesh.positions.iter().enumerate().map(|(i, &p)| deform(p, rig.ids[i], rig.weights[i], &skin)).collect::<Vec<_>>();
+            let body = mesh.positions.iter().enumerate().map(|(i, &p)| deform(p, joints[i], weights[i], &skin)).collect::<Vec<_>>();
             let fabric = cloth.surface.positions.iter().enumerate().map(|(i, &p)| deform(p, cloth.joints[i], cloth.weights[i], &skin)).collect::<Vec<_>>();
+            let floor = shoes.iter().flat_map(|face| face.iter()).map(|&i| body[i as usize].y).fold(f32::INFINITY, f32::min);
+            let hem_floor = fabric.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
+            assert!(hem_floor >= floor - 0.002,
+                "Kurt robe passes below the shoe floor at Run {step}/32: hem={hem_floor}, floor={floor}");
             for shoe in &shoes { for panel in &panels {
                 let tri = [fabric[panel[0] as usize], fabric[panel[1] as usize], fabric[panel[2] as usize]];
                 for edge in 0..3 {
@@ -188,6 +198,7 @@ mod tests {
                         panel.iter().map(|&i| cloth.surface.positions[i as usize]).collect::<Vec<_>>());
                 }
             }}
+        }
         }
     }
 
@@ -275,7 +286,7 @@ mod tests {
                     let geometric = (p[1] - p[0]).cross(p[2] - p[0]);
                     assert!(
                         geometric.length_squared() > 1e-12,
-                        "{} collapsed panel at {step}/16",
+                        "{} collapsed panel at {step}/16: ids={ids:?} bind={bind:?} posed={p:?}",
                         look.texture_key
                     );
                     let facing = geometric.normalize().dot(normal);

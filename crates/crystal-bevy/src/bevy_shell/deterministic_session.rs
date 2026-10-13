@@ -5043,8 +5043,10 @@ fn visible_player_boundary(
     runtime_shell: &BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> bool {
-    (runtime_shell.field_text_reveal.is_some()
-        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, snapshot))
+    // A just-published page owns input before its printer cache is created.
+    // Movement completion can expose that page between graphical updates;
+    // treating a missing printer as permission to press A skips the dialogue.
+    !visible_field_dialogue_is_entirely_consumed(runtime_shell, snapshot)
         || visible_non_text_player_boundary(runtime_shell, snapshot)
 }
 

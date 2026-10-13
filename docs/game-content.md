@@ -68,6 +68,22 @@ The same executable supports the stdio MCP session:
 
 Build and launch the graphical client with the production title and save flow:
 
+On Windows, `just desktop` builds and installs the graphical executable with
+an embedded icon, the validated native pack, model assets, and a Desktop
+shortcut. Install `just`, the pinned Rust toolchain, and the Visual Studio C++
+tools with Windows SDK first. Keep Git LFS artwork checked out. Use
+`just desktop-content` to run the initializer above when native content has not
+yet been generated. To select another completed native pack, use
+`just desktop 'content-packs/outdoor-base-visual.crystalpack'` or pass its path.
+The install lives in `%USERPROFILE%\Games\Geothite`; launch `Geothite.lnk` from the
+Desktop. Saves stay in the install's `saves` directory across recipe updates.
+The recipe rejects packs that fail the production presentation consumers,
+including uncertified intro timing, before changing the install.
+The installed app resolves its pack and models beside the executable, opens
+without a console, and shows startup errors in a Windows dialog.
+
+For a direct Cargo launch:
+
 ```sh
 cargo run --release --locked -p crystal-bevy --features voxel-view -- \
   --pack content-packs/core-modular.crystalpack \

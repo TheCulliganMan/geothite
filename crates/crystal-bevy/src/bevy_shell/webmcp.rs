@@ -313,6 +313,8 @@ fn finish_webmcp_request(
                             "active": status.active,
                             "active_frames": status.active_frames,
                             "terrain_builds": status.terrain_builds,
+                            "terrain_map": status.terrain_map,
+                            "terrain_pending": status.terrain_pending,
                             "profiles_pending": status.profiles_pending,
                             "inactive_reason": status.inactive_reason,
                             "scenery_full_detail": crystal_voxel_view::scenery_full_detail_enabled(),

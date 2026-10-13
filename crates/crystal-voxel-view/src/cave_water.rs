@@ -52,14 +52,16 @@ fn role(tile: &VisualTile) -> [u8; 2] { role_for_map(tile, "") }
 pub(crate) fn outdoor(map: &str) -> bool {
     map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
         || matches!(map,"LakeOfRage"|"IlexForest"|"NationalPark"|"NationalParkBugContest"|"BattleTowerOutside"
-            |"RuinsOfAlphOutside"|"SilverCaveOutside"|"OlivinePort"|"VermilionPort")
+            |"RuinsOfAlphOutside"|"SilverCaveOutside"|"OlivinePort"|"VermilionPort"
+            |"CinnabarIsland"|"SafariZoneBeta")
 }
 
-fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
+pub(super) fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
     let s = &tile.source;
     let den = map == "DragonsDenB1F" && s.tileset_id.as_ref() == "johto";
-    let open_water = outdoor(map) && matches!(s.tileset_id.as_ref(),
-        "johto"|"johto_modern"|"kanto"|"forest"|"park"|"battle_tower_outside"|"port");
+    let open_water = (outdoor(map) && matches!(s.tileset_id.as_ref(),
+        "johto"|"johto_modern"|"kanto"|"forest"|"park"|"battle_tower_outside"|"port"))
+        || (map == "CeruleanGym" && s.tileset_id.as_ref() == "port");
     if !(matches!(s.tileset_id.as_ref(), "cave" | "dark_cave") || den || open_water)
         || s.subtile_column >= 4
         || s.subtile_row >= 4
@@ -84,6 +86,11 @@ fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
 
 pub(crate) fn live_outdoor_water(tile: &VisualTile, map: &str) -> bool {
     outdoor(map) && role_for_map(tile,map) == [255,0]
+}
+
+pub(crate) fn live_pool_water(tile: &VisualTile, map: &str) -> bool {
+    live_outdoor_water(tile, map)
+        || (map == "CeruleanGym" && role_for_map(tile,map) == [255,0])
 }
 
 fn phase(tile: &VisualTile) -> u8 {
@@ -233,20 +240,34 @@ pub(super) fn mask(frame: &VisualWorldFrame) -> Option<Image> {
 /// Encode only phases accepted by the retained source atlas. Geometry, source
 /// assets stay intact; role channels keep requiring the authenticated family.
 /// Unchanged frames do not mark the image dirty or upload it again.
-pub(super) fn refresh_mask_phases(
+#[cfg(test)]
+fn refresh_mask_phases(
     built: &VisualWorldFrame,
     handle: &Handle<Image>,
     images: &mut Assets<Image>,
 ) -> bool {
+    refresh_mask_with_steps(built, handle, images).0
+}
+
+/// Alongside the exact source pixels, report a blend only when every slot of
+/// that role advances by the same single authenticated frame. Mixed local
+/// clocks, skipped frames and changed source roles must settle immediately.
+pub(super) fn refresh_mask_with_steps(
+    built: &VisualWorldFrame,
+    handle: &Handle<Image>,
+    images: &mut Assets<Image>,
+) -> (bool, Vec2) {
     let Some(mask) = images.get(handle) else {
-        return false;
+        return (false, Vec2::ZERO);
     };
     if mask.width() != built.grid_size.x * 8 || mask.height() != built.grid_size.y * 8 {
-        return false;
+        return (false, Vec2::ZERO);
     }
     let width = mask.width() as usize;
     let mut updates = Vec::new();
     let mut roles_changed = false;
+    let mut steps: [Option<f32>; 2] = [None, None];
+    let mut invalid_steps = [false; 2];
     let whirlpools = den_whirlpool_water(built);
     for tile in &built.tiles {
         if tile.column >= built.grid_size.x || tile.row >= built.grid_size.y {
@@ -260,18 +281,36 @@ pub(super) fn refresh_mask_phases(
             if pool > 0 || fall > 0 { whirlpool.map_or_else(||phase(tile), |water|phase(water)) } else { 0 },
         ];
         let first = (tile.row as usize * 8 * width + tile.column as usize * 8) * 4;
+        let previous = &mask.data.as_ref().expect("CPU image pixels")[first..first + 3];
+        if pool > 0 || fall == 255 {
+            let family = whirlpool.copied().unwrap_or(tile).animation_frames.as_ref();
+            let count = family.map_or(0, |frames| frames.len());
+            let delta = ((f32::from(next[2]) - f32::from(previous[2])) / 255.0).rem_euclid(1.0);
+            let single_step = if count > 1 && previous[..2] == next[..2]
+                && (delta - 1.0 / count as f32).abs() < 1.5 / 255.0 {
+                delta * std::f32::consts::TAU
+            } else { 0.0 };
+            let role = usize::from(fall == 255);
+            invalid_steps[role] |= single_step == 0.0
+                || steps[role].is_some_and(|step| (step - single_step).abs() >= 0.04);
+            steps[role] = Some(match steps[role] {
+                None => single_step,
+                Some(step) if (step - single_step).abs() < 0.04 => step,
+                Some(_) => 0.0,
+            });
+        }
         if mask.data.as_ref().expect("CPU image pixels")[first..first + 3] != next {
             roles_changed |= mask.data.as_ref().expect("CPU image pixels")[first..first + 2] != next[..2];
             updates.push((tile.column as usize, tile.row as usize, next));
         }
     }
     if updates.is_empty() {
-        return false;
+        return (false, Vec2::ZERO);
     }
     if roles_changed {
         if let Some(rebuilt) = self::mask(built) {
             images.get_mut(handle).unwrap().data = rebuilt.data;
-            return true;
+            return (true, Vec2::ZERO);
         }
     }
     let mut mask = images.get_mut(handle).unwrap();
@@ -286,7 +325,10 @@ pub(super) fn refresh_mask_phases(
             }
         }
     }
-    true
+    (true, if roles_changed { Vec2::ZERO } else {
+        Vec2::new(if invalid_steps[0] { 0.0 } else { steps[0].unwrap_or(0.0) },
+            if invalid_steps[1] { 0.0 } else { steps[1].unwrap_or(0.0) })
+    })
 }
 
 /// Copy authenticated live pixels into their retained atlas slots. Never infer
@@ -445,6 +487,55 @@ mod tests {
         t.source.tile_index=0x05;assert!(!live_outdoor_water(&t,"LakeOfRage"));
         t.source.tile_index=0x14;t.animation_frames=None;
         assert!(!live_outdoor_water(&t,"LakeOfRage"));
+    }
+
+    #[test]
+    fn cerulean_pool_uses_live_port_water_without_promoting_the_deck() {
+        let mut t = tile(0x14);
+        t.source.tileset_id = "port".into();
+        t.source.metatile_id = 0x2b;
+        assert_eq!(role_for_map(&t, "CeruleanGym"), [255, 0]);
+        assert!(live_pool_water(&t, "CeruleanGym"));
+        assert!(!live_outdoor_water(&t, "CeruleanGym"));
+        assert_eq!(role_for_map(&t, "PlayersHouse1F"), [0, 0]);
+        t.source.tile_index = 0x0a;
+        assert_eq!(role_for_map(&t, "CeruleanGym"), [0, 0]);
+        t.source.tile_index = 0x14;
+        t.animation_frames = None;
+        assert_eq!(role_for_map(&t, "CeruleanGym"), [0, 0]);
+    }
+
+    #[test]
+    fn optical_blending_accepts_only_coherent_single_source_steps_including_wrap() {
+        let handles: Vec<_> = (800..803).map(|id|
+            Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(id),std::marker::PhantomData)).collect();
+        let mut frame = VisualWorldFrame { map_id:"UnionCaveB1F".into(),
+            grid_size:UVec2::new(2,1), ..default() };
+        frame.tiles = (0..2).map(|column| {
+            let mut t = tile(0x14);
+            t.column=column; t.texture=handles[0].clone();
+            t.animation_frames=Some(handles.clone().into()); t
+        }).collect();
+        let mut images=Assets::default();
+        let mask_handle=images.add(mask(&frame).unwrap());
+        for phase in [1,2,0] {
+            for tile in &mut frame.tiles { tile.texture=handles[phase].clone(); }
+            let (changed,steps)=refresh_mask_with_steps(&frame,&mask_handle,&mut images);
+            assert!(changed);
+            assert!((steps.x-std::f32::consts::TAU/3.0).abs()<0.03);
+            assert_eq!(steps.y,0.0);
+            assert_eq!(images.get(&mask_handle).unwrap().data.as_ref().unwrap()[2],
+                (phase*255/3) as u8,"blending never substitutes source pixels");
+        }
+        assert_eq!(refresh_mask_with_steps(&frame,&mask_handle,&mut images),(false,Vec2::ZERO));
+        frame.tiles[0].texture=handles[1].clone();
+        assert_eq!(refresh_mask_with_steps(&frame,&mask_handle,&mut images),(true,Vec2::ZERO),
+            "a frozen local family cannot be rewound by another cell's blend");
+        for tile in &mut frame.tiles { tile.texture=handles[0].clone(); }
+        refresh_mask_with_steps(&frame,&mask_handle,&mut images);
+        for tile in &mut frame.tiles { tile.texture=handles[2].clone(); }
+        assert_eq!(refresh_mask_with_steps(&frame,&mask_handle,&mut images),(true,Vec2::ZERO),
+            "dropped frames settle at the authenticated current phase");
     }
     #[test]
     fn waterfall_foam_reaches_only_the_lower_pool_and_survives_phase_updates() {

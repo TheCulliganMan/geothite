@@ -97,7 +97,7 @@ impl RockCorners {
         result
     }
 
-    /// Known walking crowns need an exact socket for their stone stairs.
+    /// Known walking crowns need exact sockets for stairs and barred shelves.
     /// Ease geological relief into that socket before triangulating walls;
     /// trimming an already displaced wall leaves triangular shards outside it.
     pub(in crate::mesh) fn new_on_map(map:&str,cells:&[&VisualTile],g:&GridGeometry) -> Self {
@@ -106,17 +106,22 @@ impl RockCorners {
         for row in 0..g.height.saturating_sub(1) {
             for column in 0..g.width.saturating_sub(1) {
                 let source=&cells[row*g.width+column].source;
+                let barred=matches!(source.metatile_id,0x13|0x37);
                 if !matches!(source.tileset_id.as_ref(),"cave"|"dark_cave")
-                    || !matches!(source.metatile_id,0x12|0x30) || source.subtile_row!=2
-                    || source.subtile_column!=if source.metatile_id==0x12 {2} else {0}
-                    || source.tile_index!=0x36 {continue;}
+                    || !(matches!(source.metatile_id,0x12|0x30|0x13|0x37)
+                        || map=="SilverCaveRoom3" && source.metatile_id==0x36) || source.subtile_row!=2
+                    || source.subtile_column!=if matches!(source.metatile_id,0x30|0x36) {0} else {2}
+                    || source.tile_index!=if barred {0x0e} else {0x36} {continue;}
                 if !(0..2).all(|dz|(0..2).all(|dx| {
                     let s=&cells[(row+dz)*g.width+column+dx].source;
                     s.tileset_id==source.tileset_id && s.metatile_id==source.metatile_id
                         && s.subtile_row==2+dz as u8 && s.subtile_column==source.subtile_column+dx as u8
-                        && s.tile_index==0x36+dx as u16
+                        && s.tile_index==if barred {0x0e+dx as u16+dz as u16*0x10} else {0x36+dx as u16}
                 })) {continue;}
                 let (w,e,n,s)=g.bounds(column,row);
+                // Barred shelf art shares the same exact cap/side boundary
+                // as a stair socket. Moving adjoining rock alone opens a
+                // vertical sliver beside its retained source face.
                 result.stair_openings.push([w,e+g.tile_width,n,s+g.tile_height]);
             }
         }
@@ -127,8 +132,13 @@ impl RockCorners {
         shapes:&[CellShape],g:&GridGeometry) -> Self {
         let mut result=Self::new_on_map(map,cells,g);
         result.walking_caps=cells.iter().zip(shapes).map(|(tile,shape)| {
+            let resolved_crown_face=crate::cave::cave_shape(&tile.source).is_some_and(|raw|
+                    matches!(raw,CellShape::RaisedTop {height,solid:SolidKind::Bank}
+                        |CellShape::LedgeBand {height,..} if height==crate::cave::rock_height(&tile.source)))
+                && shape.surface_height(SOURCE_TILE_HEIGHT)>crate::cave::CAVE_SHELF_HEIGHT
+                && shape.surface_height(SOURCE_TILE_HEIGHT)<=crate::cave::CAVE_ROCK_HEIGHT;
             (matches!(tile.source.tileset_id.as_ref(),"cave"|"dark_cave")
-                && tile.source.tile_index==0x16
+                && (tile.source.tile_index==0x16 || resolved_crown_face)
                 && matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..}
                     |CellShape::LedgeBand {..}))
                 .then(||shape.surface_height(g.tile_height))
@@ -305,6 +315,72 @@ mod tests {
         let corners=RockCorners::new_with_shapes("UnionCave1F",&cells,&ceilings,&g);
         let plain=RockCorners::new(&cells,&g);let p=Vec3::new(16.,40.,16.);
         assert_eq!(corners.point(p,&g,[11,17]),plain.point(p,&g,[11,17]));
+    }
+    #[test]
+    fn cave_resolved_quarter_rock_cap_joins_the_stair_side_at_its_support_plane() {
+        let mut sources=Vec::new();
+        for row in 0..4 {for column in 0..4 {
+            let mut source=super::super::super::tests::source_with_tile(
+                0x0e,column,row,if row<2 {0x16}else{0x26});
+            source.tileset_id="cave".into(); sources.push(source);
+        }}
+        let frame=super::super::super::tests::frame(4,4,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|tile| {
+            let mut shape=crate::cave::cave_shape(&tile.source).unwrap();
+            match &mut shape {
+                CellShape::RaisedTop {height,..}|CellShape::LedgeBand {height,..}=>*height=16.,
+                _=>panic!("quarter rock course"),
+            } shape
+        }).collect::<Vec<_>>();
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let corners=RockCorners::new_with_shapes("SilverCaveRoom2",&cells,&shapes,&g);
+        for origin in [[0,0],[11,17],[-40,110]] {
+            for x in [0.,8.,16.,24.,32.] {for z in [16.,24.,32.] {
+                assert_eq!(corners.point(Vec3::new(x,16.,z),&g,origin).y,16.,
+                    "resolved crown front must join the flat stair socket");
+            }}
+        }
+    }
+    #[test]
+    fn cave_barred_shelf_cap_joins_the_supported_crown_without_lifting_its_edge() {
+        let sources=(0..4).flat_map(|row|(0..2).map(move |column| {
+            let glyph=if row<2 {0x16} else {[[0x0e,0x0f],[0x1e,0x1f]][row-2][column]};
+            let mut source=super::super::super::tests::source_with_tile(0x37,(column+2) as u8,row as u8,glyph);
+            source.tileset_id="cave".into();source
+        })).collect();
+        let frame=super::super::super::tests::frame(2,4,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|tile|if tile.source.subtile_row<2 {
+            CellShape::RaisedTop {height:16.,solid:SolidKind::Bank}
+        } else {
+            let mut shape=crate::cave::cave_shape(&tile.source).unwrap();
+            // This constructor consumes the crown resolver's support planes.
+            // The source mapper initially uses the enclosing rock datum.
+            match &mut shape {CellShape::LedgeBand {height,..}=>*height=16.,_=>panic!("barred source face")};
+            shape
+        }).collect::<Vec<_>>();
+        let g=GridGeometry {width:2,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let corners=RockCorners::new_with_shapes("SilverCaveRoom2",&cells,&shapes,&g);
+        assert_eq!(corners.stair_openings.len(),1);
+        for origin in [[0,0],[11,17],[-40,110]] {
+            for x in [0.,4.,8.,12.,16.] {for z in [12.,16.,20.,24.,28.,32.] {
+                assert_eq!(corners.point(Vec3::new(x,16.,z),&g,origin).y,16.,"cap at {x},{z} origin {origin:?}");
+            }}
+            for x in [0.,8.,16.] {for z in [16.,24.,32.] {for y in [0.,4.,8.,12.,16.] {
+                let p=Vec3::new(x,y,z);
+                assert_eq!(corners.point(p,&g,origin),p,"barred socket boundary remains exact");
+            }}}
+            let enclosing=Vec3::new(8.,40.,24.);
+            assert_ne!(corners.point(enclosing,&g,origin),enclosing);
+        }
+        let mut unknown=frame.clone();
+        for tile in &mut unknown.tiles {tile.source.metatile_id=0;tile.source.tile_index=0x0e;}
+        let cells=unknown.tiles.iter().collect::<Vec<_>>();
+        let guarded=RockCorners::new_with_shapes("SilverCaveRoom2",&cells,&shapes,&g);
+        let plain=RockCorners::new(&cells,&g);
+        let p=Vec3::new(8.,16.,24.);
+        assert_eq!(guarded.point(p,&g,[11,17]),plain.point(p,&g,[11,17]));
     }
     #[test]
     fn cave_corner_breaks_join_caps_and_sides_without_moving_low_surfaces() {

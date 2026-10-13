@@ -225,6 +225,7 @@ fn finish_visible_restart_clock(runtime: &mut BevyRuntimeShell) -> Result<()> {
 fn draw_visible_restart_clock_values(
     font: &image::RgbaImage,
     frame: &image::RgbaImage,
+    up_arrow: &image::RgbaImage,
     clock: &VisibleClockResetScreen,
     data: &mut [u8],
 ) -> Result<()> {
@@ -274,7 +275,8 @@ fn draw_visible_restart_clock_values(
             | VisibleClockResetPhase::TimeConfirm
             | VisibleClockResetPhase::TimeResetDone
     ) {
-        draw_time_set_text(font, "▲", x * SOURCE_TILE_SIZE, 7 * SOURCE_TILE_SIZE, data)?;
+        blit_time_set_tile_image_clipped(up_arrow, 0, 0, x * SOURCE_TILE_SIZE,
+            7 * SOURCE_TILE_SIZE, false, false, true, None, data);
         draw_time_set_text(font, "▼", x * SOURCE_TILE_SIZE, 9 * SOURCE_TILE_SIZE, data)?;
     }
     Ok(())

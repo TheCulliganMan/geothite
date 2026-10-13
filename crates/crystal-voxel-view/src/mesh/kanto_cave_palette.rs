@@ -59,7 +59,7 @@ fn field(cells:&[&VisualTile],images:&TerrainImageSamples,index:u16)->Option<Vec
     None
 }
 
-fn apply(out:&mut SurfaceMeshData,pigment:Vec3,shelf:Option<Vec3>,cap:Option<Vec3>,rock:Option<Vec3>,g:&GridGeometry,natural:bool)->usize {
+fn apply(out:&mut SurfaceMeshData,pigment:Vec3,shelf:Option<Vec3>,cap:Option<Vec3>,rock:Option<Vec3>,g:&GridGeometry,natural:bool,tag_shift:f32)->usize {
     let mut changed=0;
     for i in 0..out.positions.len() {
         let uv=&mut out.uvs[i];
@@ -94,7 +94,7 @@ fn apply(out:&mut SurfaceMeshData,pigment:Vec3,shelf:Option<Vec3>,cap:Option<Vec
         c[..3].copy_from_slice(&(pigment*role*variation).to_array());
         // Native domains keep the source hue in the shader and use restrained
         // monochrome mineral grain. Retain the same map-space coordinates.
-        uv[1]+=800000.;
+        uv[1]+=tag_shift;
         changed+=1;
     }
     changed
@@ -108,9 +108,24 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
     let shelf=field(cells,images,0x01);
     let cap=field(cells,images,0x26);
     let rock=field(cells,images,0x0c);
-    let natural=map=="VictoryRoad";
-    apply(&mut mesh.textured,pigment,shelf,cap,rock,g,natural)+apply(&mut mesh.solid,pigment,shelf,cap,rock,g,natural)
-        +apply(&mut mesh.cave_enclosure,pigment,shelf,cap,rock,g,natural)
+    let natural=matches!(map,"VictoryRoad"|"DiglettsCave");
+    let tag_shift=if map=="DiglettsCave" {1600000.} else {800000.};
+    apply(&mut mesh.textured,pigment,shelf,cap,rock,g,natural,tag_shift)+apply(&mut mesh.solid,pigment,shelf,cap,rock,g,natural,tag_shift)
+        +apply(&mut mesh.cave_enclosure,pigment,shelf,cap,rock,g,natural,tag_shift)
+}
+
+/// Union Cave's reviewed floors retain their authored mineral values without
+/// changing their shelf topology, ladders, support, or enclosing rock.
+pub(super) fn finish_union(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    images:&TerrainImageSamples,g:&GridGeometry)->usize {
+    if !matches!(map,"UnionCave1F"|"UnionCaveB1F"|"UnionCaveB2F") {return 0;}
+    let Some(pigment)=field(cells,images,0x16) else {return 0;};
+    let shelf=field(cells,images,0x01);
+    let cap=field(cells,images,0x26);
+    let rock=field(cells,images,0x0c);
+    apply(&mut mesh.textured,pigment,shelf,cap,rock,g,true,1600000.)
+        +apply(&mut mesh.solid,pigment,shelf,cap,rock,g,true,1600000.)
+        +apply(&mut mesh.cave_enclosure,pigment,shelf,cap,rock,g,true,1600000.)
 }
 
 #[cfg(test)]
@@ -149,6 +164,31 @@ mod tests {
         }
         let before=mesh.clone();
         assert_eq!(finish(&mut mesh,"UnionCave1F",&[&tile],&images,&g),0);
+        assert_eq!(mesh.solid,before.solid);
+        let mut diglett=before.clone();
+        assert_eq!(finish(&mut diglett,"DiglettsCave",&[&tile,&upper,&ceiling,&stone],&images,&g),4);
+        assert_eq!(diglett.solid.positions,before.solid.positions);
+        assert_eq!(diglett.footing_heights,before.footing_heights);
+        assert_eq!(diglett.solid.uvs[..4].iter().map(|uv|(uv[1]/100000.).round() as u8)
+            .collect::<Vec<_>>(),[20,20,22,18]);
+        let expected=mineral_pigment(linear([148,107,173]),4)*(0.4/0.402);
+        for (actual,expected) in diglett.solid.colors[0][..3].iter().zip(expected.to_array()) {
+            assert!((*actual-expected).abs()<0.00001);
+        }
+        for map in ["UnionCave1F","UnionCaveB1F","UnionCaveB2F"] {
+            let mut union=before.clone();
+            assert_eq!(finish_union(&mut union,map,&[&tile,&upper,&ceiling,&stone],&images,&g),4);
+            assert_eq!(union.solid.positions,before.solid.positions);
+            assert_eq!(union.solid.normals,before.solid.normals);
+            assert_eq!(union.solid.indices,before.solid.indices);
+            assert_eq!(union.footing_heights,before.footing_heights);
+            assert!(union.solid.colors[1][0]>union.solid.colors[0][0]*1.8);
+            assert_eq!(union.solid.colors[4],before.solid.colors[4]);
+            assert_eq!(union.solid.uvs[4],before.solid.uvs[4]);
+            assert_eq!(union.solid.uvs[..4].iter().map(|uv|(uv[1]/100000.).round() as u8)
+                .collect::<Vec<_>>(),[20,20,22,18]);
+        }
+        assert_eq!(finish_union(&mut mesh,"SilverCaveRoom2",&[&tile],&images,&g),0);
         assert_eq!(mesh.solid,before.solid);
         assert_eq!(finish(&mut mesh,"VictoryRoad",&[&tile,&upper,&ceiling,&stone],&images,&g),4);
         assert_eq!(mesh.solid.positions,before.solid.positions);

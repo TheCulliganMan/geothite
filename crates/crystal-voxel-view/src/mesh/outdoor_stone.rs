@@ -8,7 +8,11 @@ fn crest_depth(x: f32, z: f32) -> f32 {
     // Large mineral beds carry the silhouette. A second short-period height
     // field turned every broad plane into small humps. Keep one linear field
     // and let the separate cleft field cut the beds instead of swelling them.
-    1.20 + super::cave_cliff::slab(x * 0.16, z * 0.16) * 2.20
+    // Keep the bed field below the support clamp on ordinary high caps.
+    // Deep relief saturated that clamp across broad patches and bent the
+    // surrounding wall into padded shoulders. The separate clefts retain
+    // the deep broken cuts without turning the whole bed into a mound.
+    0.75 + super::cave_cliff::slab(x * 0.16, z * 0.16) * 1.40
 }
 
 fn cap_cleft(x: f32, z: f32) -> f32 {
@@ -422,7 +426,6 @@ pub(super) fn sculpt_rock_rims(
             p.y,
             p.z + origin[1] as f32 * g.tile_height - g.origin_z,
         );
-        let rim_variation = 0.80 + noise(source_point / (g.tile_height * 0.7)) * 0.40;
         // The nearest adjoining floor constrains every part of the warp,
         // including a perpendicular rim reaching around a convex corner.
         let support = edges
@@ -445,7 +448,27 @@ pub(super) fn sculpt_rock_rims(
             let distance = p.xz().distance(a.lerp(b, along));
             // Choose form from the source edge, not the vertex material.
             // Stone/canyon vertices sharing a join must receive one warp.
-            let rim_width = (g.tile_height * rim_scale * rim_variation)
+            // One authored edge owns the bevel radius. Sampling vertex height
+            // or its distance inside the cap inflated each ring independently,
+            // producing pillowy shoulders instead of a shared mineral cut.
+            let edge_point = a.lerp(b, along) + Vec2::new(
+                origin[0] as f32 * g.tile_width - g.origin_x,
+                origin[1] as f32 * g.tile_height - g.origin_z,
+            );
+            // Opposing parallel rims share this along-edge field. Different
+            // radii across a narrow shelf would drag its protected centerline.
+            let along_source = if normal.x == 0. {
+                edge_point.x / g.tile_width
+            } else {
+                edge_point.y / g.tile_height
+            };
+            let rim_variation = 0.85 + super::cave_cliff::slab(
+                along_source * 0.20, 17.,
+            ) * 0.15;
+            // Keep the mineral cut narrow enough to retain a broad flat bed.
+            // A nearly tile-wide shoulder reads as a rolled mound even when
+            // its samples lie on angular planes.
+            let rim_width = (g.tile_height * rim_scale * rim_variation * 0.55)
                 .min(height - bottom.max(support))
                 .max(0.001);
             let direction = if normal.x < 0.0 {
@@ -776,7 +799,8 @@ fn joined_normals(s: &mut SurfaceMeshData, crease: f32) {
         if let Some(adjacent) = faces.get(&key(s.positions[i])) {
             // Native cap/wall shoulder seams describe one continuous bevel.
             // Keep them smooth; the crease rule applies inside mineral caps.
-            let shoulder = adjacent.iter().any(|(_, _, cap)| !cap);
+            let shoulder = adjacent.iter().any(|(_, _, cap)| !cap)
+                && adjacent.iter().any(|(_, _, cap)| *cap);
             let normal = adjacent.iter()
                 .filter(|(normal, _, _)| shoulder || normal.dot(reference) >= crease)
                 .fold(Vec3::ZERO, |sum, (normal, angle, _)| sum + *normal * *angle);
@@ -1188,6 +1212,7 @@ mod tests {
 
     #[test]
     fn mineral_fractures_keep_separate_normals_without_opening_source_seams() {
+        for authored_normal in [[0., 1., 0.], [0., 0., 1.]] {
         for degrees in [10_f32, 50.] {
             let mut mesh = SurfaceMeshData::default();
             let angle = degrees.to_radians();
@@ -1196,7 +1221,7 @@ mod tests {
                 [Vec3::ZERO, side, Vec3::Z]] {
                 let first = mesh.positions.len() as u32;
                 mesh.positions.extend(points.map(|p| p.to_array()));
-                mesh.normals.extend([[0., 1., 0.]; 3]);
+                mesh.normals.extend([authored_normal; 3]);
                 mesh.uvs.extend([[-10000., -20000.]; 3]);
                 mesh.indices.extend([first, first + 1, first + 2]);
             }
@@ -1214,6 +1239,7 @@ mod tests {
                     "fracture planes must retain their actual angle");
             }
             assert!(a.is_normalized() && b.is_normalized());
+        }
         }
     }
 

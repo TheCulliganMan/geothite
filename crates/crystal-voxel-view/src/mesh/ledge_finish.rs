@@ -16,6 +16,21 @@ pub(in crate::mesh) fn append(
     g: &GridGeometry,
     origin: [i32; 2],
 ) -> bool {
+    append_soil(mesh, p, normal, g, origin, true)
+}
+
+/// Source paths expose soil at the water drop without adding lawn plants.
+pub(in crate::mesh) fn append_bare_soil(
+    mesh: &mut SurfaceMeshData, p: [[f32; 3]; 4], normal: [f32; 3],
+    g: &GridGeometry, origin: [i32; 2],
+) -> bool {
+    append_soil(mesh, p, normal, g, origin, false)
+}
+
+fn append_soil(
+    mesh: &mut SurfaceMeshData, p: [[f32; 3]; 4], normal: [f32; 3],
+    g: &GridGeometry, origin: [i32; 2], vegetated: bool,
+) -> bool {
     let n = Vec3::from_array(normal);
     if n.y.abs() > 0.001 || n.length_squared() < 0.99 {
         return false;
@@ -84,7 +99,7 @@ pub(in crate::mesh) fn append(
             + meadow_noise(m.x * 6.7, m.z * 6.7) * 0.35;
         let edge = 0.75 + sod * 0.22;
         let rim = ((v - edge) / 0.12).clamp(0., 1.);
-        let rim = rim * rim * (3. - 2. * rim);
+        let rim = if vegetated { rim * rim * (3. - 2. * rim) } else { 0. };
         let soil = soil_color(m.x,m.z,v);
         let grass = [0.26, 0.39, 0.085];
         std::array::from_fn(|c| {
@@ -137,6 +152,7 @@ pub(in crate::mesh) fn append(
             }
         }
     }
+    if !vegetated { return true; }
     // Short hanging grass and exposed roots break the ruler-straight rim.
     // Basal fans grow from its unchanged rim; hanging strands lie on the face.
     let tangent = (p[3] - p[0]).normalize();

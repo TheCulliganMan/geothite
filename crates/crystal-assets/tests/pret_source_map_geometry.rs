@@ -219,6 +219,13 @@ fn goldenrod_off_map_receptionist_can_be_staged_then_allocated_in_map() {
         !session.object_has_loaded_struct(0),
         "staged actor must not consume a visible object struct"
     );
+    let authored = session.clone();
+    let mut saved = crystal_core::state::GameState::reset_wram_for_new_game();
+    crystal_core::systems::map_context::sync_state_object_overrides(&mut saved, &session)
+        .expect("persist the unallocated authored staging position");
+    crystal_core::systems::map_context::apply_state_object_overrides(&mut session, &saved)
+        .expect("restore the same authored staging position without allocating it");
+    assert!(!session.object_has_loaded_struct(0));
     // The script writes map-object memory before disappear/appear copies it.
     session.objects[0].x = 0;
     session.objects[0].y = 7;
@@ -227,6 +234,16 @@ fn goldenrod_off_map_receptionist_can_be_staged_then_allocated_in_map() {
     assert!(session.object_struct_is_visible(0));
     assert_eq!(
         session.object_runtime_tile_by_id(id).unwrap(),
+        TilePosition::new(0, 7)
+    );
+    crystal_core::systems::map_context::sync_state_object_overrides(&mut saved, &session)
+        .expect("persist the in-map appeared object struct");
+    let mut resumed = authored;
+    crystal_core::systems::map_context::apply_state_object_overrides(&mut resumed, &saved)
+        .expect("restore the appeared object through the production map context");
+    assert!(resumed.object_struct_is_visible(0));
+    assert_eq!(
+        resumed.object_runtime_tile_by_id(id).unwrap(),
         TilePosition::new(0, 7)
     );
     session.delete_loaded_object_struct_for_disappear(id);

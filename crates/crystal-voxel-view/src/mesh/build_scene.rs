@@ -123,6 +123,7 @@ fn build_terrain_mesh_internal(
     instance_hulls: bool,
     profiles: Option<&crate::live_profiles::Document>,
     mut grove_sink: Option<&mut dyn FnMut(SurfaceMeshData)>,
+    deferred_groves: Option<&mut DeferredGroves>,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     // The runtime's bundled/live profile document enables the full authored
     // kit. Low-level samples-only calls retain their legacy mesher contract
@@ -1081,7 +1082,7 @@ fn build_terrain_mesh_internal(
         // Missing 3D trees retain exact source tiles. Never substitute the
         // legacy voxel hull for unavailable canonical tree assets.
         for placement in new_bark::tree_placements(frame.map_id.as_ref(), &cells, &geometry) {
-            let appended = if grove_sink.is_some() {
+            let appended = if grove_sink.is_some() || deferred_groves.is_some() {
                 if let Some(grove) = new_bark::claim_grove(&mut mesh, &cells, &shapes,
                     &geometry, frame.map_id.as_ref(), placement, &mut claimed_by_tree,
                     frame.grid_origin.to_array()) {
@@ -2235,12 +2236,13 @@ fn build_terrain_mesh_internal(
         frame.grid_origin.to_array()) {
         // Johto's source art belongs to this cavern, not the outdoor meadow.
     } else if authored_enabled {
-        new_bark::polish_world_surfaces(
+        new_bark::polish_world_surfaces_with_shapes(
             &mut mesh,
             &frame.map_id,
             &original_cells,
             &geometry,
             frame.grid_origin.to_array(),
+            &source_shapes,
         );
     } else {
         new_bark::polish_surfaces(
@@ -2276,10 +2278,18 @@ fn build_terrain_mesh_internal(
     }
     if authored_enabled && let Some(images)=images {
         kanto_cave_palette::finish(&mut mesh,&frame.map_id,&original_cells,images,&geometry);
+        kanto_cave_palette::finish_union(&mut mesh,&frame.map_id,&original_cells,images,&geometry);
     }
     shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
         &shapes, &geometry, frame.grid_origin.to_array());
-    if let Some(sink) = grove_sink.as_mut() {
+    if let Some(deferred) = deferred_groves {
+        deferred.recipes = detached_groves.into();
+        deferred.cells = original_cells.iter().map(|tile| (*tile).clone()).collect();
+        deferred.shapes = source_shapes.clone();
+        deferred.geometry = Some(geometry);
+        deferred.claims = grove_finish_claims.unwrap_or_default();
+        deferred.origin = frame.grid_origin.to_array();
+    } else if let Some(sink) = grove_sink.as_mut() {
         for grove in detached_groves {
             // Grove leaves can cross a bank edge. Apply the same final bank
             // shape and lip normal field using the completed source claims.

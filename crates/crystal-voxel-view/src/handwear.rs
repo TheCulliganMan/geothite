@@ -33,7 +33,16 @@ pub(crate) fn adapt(
     let original = std::mem::take(&mut mesh.indices);
     let mut copies = HashMap::new();
     for face in original.chunks_exact(3) {
-        if !face.iter().all(|&i| selected[i as usize]) {
+        // Bare wrists share the plain arm material across the adjoining face.
+        // Restricting this to wholly hand-weighted faces leaves a painted
+        // crease strip between the remapped palm and the forearm. Gloves keep
+        // their authored cuff boundary instead of extending onto the arm.
+        let plain_face = if gloves {
+            face.iter().all(|&i| selected[i as usize])
+        } else {
+            face.iter().any(|&i| selected[i as usize])
+        };
+        if !plain_face {
             mesh.indices.extend_from_slice(face);
             continue;
         }
@@ -70,7 +79,10 @@ mod tests {
     #[test]
     #[ignore = "requires the supplied character rig"]
     fn bare_hand_faces_keep_geometry_skin_and_nonhand_mapping() {
-        material_preserves_surface(crate::new_bark_actors::character_meshes::CharacterKind::Trainer);
+        use crate::new_bark_actors::character_meshes::CharacterKind;
+        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale, CharacterKind::Nurse] {
+            material_preserves_surface(kind);
+        }
     }
 
     #[test]
@@ -99,14 +111,14 @@ mod tests {
 
     fn material_preserves_surface(kind: crate::new_bark_actors::character_meshes::CharacterKind) {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        let look = crate::npc_appearance::look(kind);
         let rig =
-            PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap())
+            PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap())
                 .unwrap();
         let mut mesh = rig.mesh.clone();
         let mut joints = rig.ids.clone();
         let mut weights = rig.weights.clone();
         let before = mesh.clone();
-        let look = crate::npc_appearance::look(kind);
         let uv = if look.accessories.split(',').any(|a| a == "whitegloves") {
             [0.87, 0.69]
         } else { [0.90, 0.31] };
@@ -114,18 +126,27 @@ mod tests {
         assert_eq!(mesh.indices.len(), before.indices.len());
         let hands: BTreeSet<_> = rig.hand_joints.iter().flatten().copied().collect();
         let mut glove_faces = 0;
+        let mut wrist_faces = 0;
         for (old, new) in before
             .indices
             .chunks_exact(3)
             .zip(mesh.indices.chunks_exact(3))
         {
-            let glove = old.iter().all(|&i| {
+            let selected = |&i: &u32| {
                 (0..4)
                     .filter(|&k| hands.contains(&(rig.ids[i as usize][k] as usize)))
                     .map(|k| rig.weights[i as usize][k])
                     .sum::<f32>()
                     > 0.85
-            });
+            };
+            let glove = if look.accessories.split(',').any(|a| a == "whitegloves") {
+                old.iter().all(selected)
+            } else {
+                old.iter().any(selected)
+            };
+            if glove && !old.iter().all(selected) {
+                wrist_faces += 1;
+            }
             glove_faces += usize::from(glove);
             for (&a, &b) in old.iter().zip(new) {
                 let (a, b) = (a as usize, b as usize);
@@ -144,5 +165,10 @@ mod tests {
             glove_faces > 30,
             "supplied hands did not receive glove material"
         );
+        if look.accessories.split(',').any(|a| a == "whitegloves") {
+            assert_eq!(wrist_faces, 0, "glove cuff extended onto forearm");
+        } else {
+            assert!(wrist_faces > 0, "bare wrist retained painted crease faces");
+        }
     }
 }

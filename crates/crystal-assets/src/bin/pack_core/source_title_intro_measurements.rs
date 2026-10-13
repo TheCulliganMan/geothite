@@ -26,59 +26,15 @@ pub(super) fn byte_loop_instruction_machine_cycles(
     routine: &str,
     byte_count: u16,
 ) -> Result<Vec<u64>> {
-    let body: &[u64] = match routine {
-        "ByteFill" => &[2],
-        "CopyBytes" => &[2, 2, 2],
-        _ => anyhow::bail!("unsupported intro byte loop {routine}"),
-    };
-    let mut b = ((byte_count >> 8) as u8).wrapping_add(1);
-    let mut c = (byte_count as u8).wrapping_add(1);
-    let mut tape = vec![1, 1, 3];
-    loop {
-        c = c.wrapping_sub(1);
-        tape.extend([1, if c != 0 { 3 } else { 2 }]);
-        if c == 0 {
-            b = b.wrapping_sub(1);
-            tape.extend([1, if b != 0 { 3 } else { 2 }]);
-            if b == 0 {
-                tape.push(4);
-                break;
-            }
-        }
-        tape.extend_from_slice(body);
-    }
-    Ok(tape)
+    crystal_assets::runtime_intro_byte_loop_instruction_machine_cycles(routine, byte_count)
 }
 
 pub(super) fn clear_helper_instruction_machine_cycles(
     routine: &str,
     byte_count: u16,
 ) -> Result<Vec<u64>> {
-    ensure!(
-        byte_count > 0,
-        "intro clear helper has a wrapping zero-count loop"
-    );
-    let body: &[u64] = match routine {
-        "ClearSpriteAnims" => &[3, 2, 2, 1, 1],
-        "ClearSprites" => {
-            ensure!(byte_count <= 256, "ClearSprites exceeds its B register");
-            &[2, 1]
-        }
-        _ => anyhow::bail!("unsupported intro clear helper {routine}"),
-    };
-    let mut tape = if routine == "ClearSpriteAnims" {
-        vec![3, 3]
-    } else {
-        vec![3, 2, 1]
-    };
-    for index in 0..byte_count {
-        tape.extend_from_slice(body);
-        tape.push(if index + 1 == byte_count { 2 } else { 3 });
-    }
-    tape.push(4);
-    Ok(tape)
+    crystal_assets::runtime_intro_clear_loop_instruction_machine_cycles(routine, byte_count)
 }
-
 fn certify_byte_loop_source(vendor: &Path, routine: &str) -> Result<()> {
     let source = super::Source::read(vendor, "home/copy.asm")?;
     let instructions = source
@@ -122,7 +78,39 @@ fn certify_byte_loop_source(vendor: &Path, routine: &str) -> Result<()> {
     Ok(())
 }
 
-fn attach_byte_loop_costs(vendor: &Path, operations: &mut [Value]) -> Result<()> {
+fn register_setup_machine_cycles(instruction: &str) -> Option<u64> {
+    if instruction == "xor a" {
+        return Some(1);
+    }
+    if instruction.starts_with("lb bc, ")
+        || instruction.starts_with("depixel ")
+        || instruction.starts_with("hlcoord ")
+        || instruction.starts_with("debgcoord ")
+    {
+        return Some(3);
+    }
+    let (destination, operand) = instruction.strip_prefix("ld ")?.split_once(", ")?;
+    if operand.starts_with('[') {
+        return None;
+    }
+    if ["bc", "de", "hl"].contains(&destination) {
+        return Some(3);
+    }
+    if ["a", "b", "c", "d", "e", "h", "l"].contains(&destination) {
+        return Some(if ["a", "b", "c", "d", "e", "h", "l"].contains(&operand) {
+            1
+        } else {
+            2
+        });
+    }
+    None
+}
+
+fn attach_byte_loop_costs(
+    vendor: &Path,
+    operations: &mut [Value],
+    symbols: &std::collections::BTreeMap<String, (usize, u16)>,
+) -> Result<()> {
     for routine in ["ByteFill", "CopyBytes"] {
         certify_byte_loop_source(vendor, routine)?;
     }
@@ -189,11 +177,32 @@ fn attach_byte_loop_costs(vendor: &Path, operations: &mut [Value]) -> Result<()>
             "call ByteFill" if operation["op"] == "fill_memory" => "ByteFill",
             "call CopyBytes" if operation["op"] == "copy_memory" => "CopyBytes",
             "call ClearSprites" if operation["op"] == "fill_memory" => "ClearSprites",
-            "call ClearSpriteAnims" if operation["op"] == "fill_memory" => "ClearSpriteAnims",
+            "call ClearSpriteAnims"
+                if operation["op"] == "fill_memory"
+                    || operation["op"] == "deinitialize_all_sprites" =>
+            {
+                "ClearSpriteAnims"
+            }
             _ => continue,
         };
-        let bytes = u16::try_from(number(operation, "byte_count")?)
-            .context("intro byte loop exceeds source BC register")?;
+        let bytes = if operation["op"] == "deinitialize_all_sprites" {
+            let start = symbols
+                .get("wSpriteAnimData")
+                .context("intro sprite clear start symbol")?;
+            let end = symbols
+                .get("wSpriteAnimDataEnd")
+                .context("intro sprite clear end symbol")?;
+            ensure!(
+                start.0 == end.0,
+                "intro sprite clear crossed source memory banks"
+            );
+            end.1
+                .checked_sub(start.1)
+                .context("intro sprite clear symbols reversed")?
+        } else {
+            u16::try_from(number(operation, "byte_count")?)
+                .context("intro byte loop exceeds source BC register")?
+        };
         let clear = routine.starts_with("Clear");
         let machine_cycles = if clear {
             clear_helper_instruction_machine_cycles(routine, bytes)?
@@ -202,6 +211,29 @@ fn attach_byte_loop_costs(vendor: &Path, operations: &mut [Value]) -> Result<()>
         } else {
             byte_loop_machine_cycles(routine, bytes)?
         };
+        // The source lowering consumes register preparation without emitting a
+        // separate visual effect. Preserve its instruction boundaries before
+        // this helper; never scan across an earlier call, label or memory effect.
+        let call_index = source
+            .lines
+            .iter()
+            .position(|(line, _)| u64::from(*line) == end)
+            .context("intro helper caller line disappeared")?;
+        let mut caller_start = call_index;
+        let mut prefix = Vec::new();
+        while caller_start > 0 {
+            let Some(cost) = register_setup_machine_cycles(&source.lines[caller_start - 1].1)
+            else {
+                break;
+            };
+            caller_start -= 1;
+            prefix.push(cost);
+        }
+        prefix.reverse();
+        prefix.push(6); // Actual direct CALL, separate from the helper body's RET.
+        operation["source_caller_instruction_machine_cycles"] = json!(prefix);
+        operation["source_caller_span"] =
+            json!({"file":source.file,"start_line":source.lines[caller_start].0,"end_line":end});
         operation["source_helper_timing"] = json!({
             "routine":routine,
             "byte_count":bytes,
@@ -669,7 +701,7 @@ pub(super) fn attach(
     let operations = phase["operations"]
         .as_array_mut()
         .context("intro phase operations")?;
-    attach_byte_loop_costs(vendor, operations)?;
+    attach_byte_loop_costs(vendor, operations, &symbols)?;
     let mut count = 0;
     for index in 0..operations.len() {
         if operations[index]["op"] != "decompress_lz3_resource" {

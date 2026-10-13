@@ -1639,6 +1639,12 @@ mod tests {
                     let mut mesh=TerrainMeshData{footing_heights:vec![datum;16],..Default::default()};
                     append(&mut mesh,&g,p,&cells,[0,0]);
                     assert_eq!(mesh.footing_heights,vec![datum;16]);
+                    assert_eq!(mesh.textured.indices.len(),mesh.textured.positions.len()/4*6,
+                        "native hatch must preserve the room finishing face layout");
+                    for (face,indices) in mesh.textured.indices.chunks_exact(6).enumerate() {
+                        let base=face as u32*4;
+                        assert_eq!(indices,[base,base+1,base+2,base,base+2,base+3]);
+                    }
                     assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions)
                         .all(|p|p[1]>=datum && p[1]<=datum+1.25));
                     let top_area=mesh.textured.indices.chunks_exact(3).filter(|tri|

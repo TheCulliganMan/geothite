@@ -1044,10 +1044,7 @@ def virtual_ducks(n):
 def fossils(n):
  spiral_shell=n.startswith('OMA');mature=n in ('OMASTAR','KABUTOPS')
  if spiral_shell:
-  sph('Blue mollusk',(0,-.10,.31),(.23,.22,.18),'blue');sph('Cream spiral shell',(0,.06,.55),(.29,.25,.31),'cream');spiral('Raised shell coil',(0,-.20,.57),.24,'brown',1.8,.015);eyes(.38,-.30,.13,.045)
-  for i in range(8):a=i*math.tau/8;tube('Blue tentacle',[(.16*math.cos(a),-.11+.13*math.sin(a),.23),(.29*math.cos(a),-.11+.23*math.sin(a),.12),(.38*math.cos(a),-.11+.31*math.sin(a),.11)],[.046,.037,.023],'blue')
-  if mature:
-   for i in range(7):a=i*math.tau/7;rod('Shell thorn',(.23*math.cos(a),.05,.56+.23*math.sin(a)),(.38*math.cos(a),.055,.56+.39*math.sin(a)),.058,'cream',.002)
+  raise RuntimeError('Omanyte and Omastar use their dedicated nautilus sculptures before Blender batching')
  else:
   if not mature:
    sph('Domed brown shell',(0,0,.26),(.35,.29,.22),'brown');sph('Black underside',(0,-.04,.13),(.31,.26,.08),'ink')
@@ -1161,6 +1158,15 @@ def run():
  global COL
  names=list(BUILDERS)
  if args.only:names=[n for n in names if n in args.only.lower().split(',')]
+ for species in ('omanyte','omastar'):
+  if species not in names:continue
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from omanyte_sculpt import sculpture as omanyte_sculpture
+  from omastar_sculpt import sculpture as omastar_sculpture
+  model=omanyte_sculpture() if species=='omanyte' else omastar_sculpture()
+  (OUT/(species+'.mesh.json')).write_text(json.dumps(model,separators=(',',':')))
+  names.remove(species)
+  print(species+': original ribbed nautilus shell and ten rooted tentacles',flush=True)
  if 'farfetch_d' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from leek_duck_sculpt import sculpture as leek_duck_sculpture

@@ -285,19 +285,6 @@ mod tests {
                 }
             }
         }
-        // Optional neutral geometry review uses this same production result.
-        // Keep generated output in an ignored verification directory.
-        if origin == [0, 0] {
-            if let Some(path) = std::env::var_os("CRYSTAL_OUTDOOR_ROCK_FIXTURE_EXPORT") {
-                let geometry = serde_json::json!({
-                    "positions": mesh.solid.positions,
-                    "normals": mesh.solid.normals,
-                    "uvs": mesh.solid.uvs,
-                    "indices": mesh.solid.indices,
-                });
-                std::fs::write(path, serde_json::to_vec(&geometry).unwrap()).unwrap();
-            }
-        }
         assert!(mesh.solid.positions[corner][0] > 9.5);
         assert_eq!(mesh.footing_heights, footing);
         assert_eq!(mesh.authored_cells, claims);

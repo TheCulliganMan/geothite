@@ -870,8 +870,9 @@ fn resume_visible_script_return(runtime_shell: &mut BevyRuntimeShell) -> Result<
         returned.frame.source_script, returned.frame.next_command_index, returned.state_checksum
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
-    arm_visible_active_script_cursor(
+    arm_visible_active_script_cursor_with_origin(
         runtime_shell,
+        &returned.frame.origin_map_name,
         &returned.frame.source_script,
         returned.frame.next_command_index,
     );

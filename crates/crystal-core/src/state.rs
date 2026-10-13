@@ -6334,7 +6334,23 @@ pub fn validate_saved_object_overrides(
     memory: &OverworldObjectMapMemory,
     runtime_tile_bounds: impl FnOnce(&str) -> Option<(u16, u16)>,
     map_object_count: impl FnOnce(&str) -> Option<usize>,
+    object_exists: impl FnMut(&str) -> bool,
+) -> Result<(), ObjectOverrideSaveError> {
+    validate_saved_object_overrides_with_source_positions(
+        map_name, memory, runtime_tile_bounds, map_object_count, object_exists, |_| None,
+    )
+}
+
+/// Validate staging against the compiled event's unchanged coordinates and
+/// event index. A staged event must not be backed by a saved object struct.
+/// Callers without authoritative source positions retain the strict validator.
+pub fn validate_saved_object_overrides_with_source_positions(
+    map_name: &str,
+    memory: &OverworldObjectMapMemory,
+    runtime_tile_bounds: impl FnOnce(&str) -> Option<(u16, u16)>,
+    map_object_count: impl FnOnce(&str) -> Option<usize>,
     mut object_exists: impl FnMut(&str) -> bool,
+    mut source_position: impl FnMut(&str) -> Option<(usize, u16, u16)>,
 ) -> Result<(), ObjectOverrideSaveError> {
     let Some((width, height)) = runtime_tile_bounds(map_name) else {
         return Err(ObjectOverrideSaveError::MissingMap {
@@ -6362,11 +6378,17 @@ pub fn validate_saved_object_overrides(
                 y: object_memory.y,
             });
         };
-        if runtime_tile.x < 0
+        let outside = runtime_tile.x < 0
             || runtime_tile.y < 0
             || i32::from(runtime_tile.x) >= i32::from(width)
-            || i32::from(runtime_tile.y) >= i32::from(height)
-        {
+            || i32::from(runtime_tile.y) >= i32::from(height);
+        let source_staging = outside && source_position(object_id).is_some_and(|(index, x, y)| {
+            index < object_count && x == object_memory.x && y == object_memory.y
+                && !memory.object_structs.structs.iter().any(|slot| {
+                    usize::from(slot.map_object_index) == index + 1
+                })
+        });
+        if outside && !source_staging {
             return Err(ObjectOverrideSaveError::RuntimeTileOutOfBounds {
                 map_name: map_name.to_string(),
                 object_id: object_id.clone(),

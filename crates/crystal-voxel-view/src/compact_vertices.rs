@@ -1,6 +1,26 @@
-//! Lossless removal of a constant, unused attribute. The caller must establish
-//! that neither its material textures nor procedural effects consume UV0.
+//! Lossless omission of redundant vertex components. UV0 removal requires the
+//! caller to establish that no textures or procedural effects consume it.
 use bevy::{mesh::VertexAttributeValues, prelude::*};
+
+/// Vertex fetch supplies 1.0 for the absent fourth float. Preserve the original
+/// RGB bits and retain RGBA whenever any authored alpha is not exactly opaque.
+pub(super) fn remove_constant_color_alpha(mesh: &mut Mesh) -> usize {
+    let Ok(VertexAttributeValues::Float32x4(colors)) = mesh.try_attribute(Mesh::ATTRIBUTE_COLOR)
+    else { return 0; };
+    let Ok(VertexAttributeValues::Float32x3(positions)) = mesh.try_attribute(Mesh::ATTRIBUTE_POSITION)
+    else { return 0; };
+    if colors.len() != positions.len()
+        || colors.iter().any(|color| color[3].to_bits() != 1.0_f32.to_bits()) {
+        return 0;
+    }
+    let bytes = colors.len() * std::mem::size_of::<f32>();
+    let colors = colors.iter().map(|color| [color[0], color[1], color[2]]).collect::<Vec<_>>();
+    mesh.insert_attribute(bevy::mesh::MeshVertexAttribute {
+        format: bevy::render::render_resource::VertexFormat::Float32x3,
+        ..Mesh::ATTRIBUTE_COLOR
+    }, colors);
+    bytes
+}
 
 pub(super) fn solid_uv0_is_unused(material: &StandardMaterial, water_enabled: Vec4) -> bool {
     material.unlit
@@ -34,6 +54,44 @@ mod tests {
         let mut mesh = Mesh::from(Cuboid::default());
         mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, vec![[0.0; 2]; mesh.count_vertices()]);
         mesh
+    }
+    #[test]
+    fn opaque_color_compaction_keeps_rgb_geometry_and_indices_exact() {
+        let mut mesh = source();
+        let color = [0.137_f32, -0.0, 0.863, 1.0];
+        mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![color; mesh.count_vertices()]);
+        let unchanged: Vec<_> = mesh.attributes()
+            .filter(|(a, _)| a.id != Mesh::ATTRIBUTE_COLOR.id)
+            .map(|(a, v)| (a.id, v.get_bytes().to_vec())).collect();
+        let indices = mesh.indices().cloned();
+        let count = mesh.count_vertices();
+        assert_eq!(remove_constant_color_alpha(&mut mesh), count * 4);
+        let Some(VertexAttributeValues::Float32x3(colors)) = mesh.attribute(Mesh::ATTRIBUTE_COLOR)
+        else { panic!(); };
+        assert!(colors.iter().all(|rgb| rgb.map(f32::to_bits) ==
+            [color[0], color[1], color[2]].map(f32::to_bits)));
+        let after: Vec<_> = mesh.attributes()
+            .filter(|(a, _)| a.id != Mesh::ATTRIBUTE_COLOR.id)
+            .map(|(a, v)| (a.id, v.get_bytes().to_vec())).collect();
+        assert_eq!(unchanged, after);
+        assert_eq!(indices, mesh.indices().cloned());
+        assert_eq!(remove_constant_color_alpha(&mut mesh), 0);
+    }
+    #[test]
+    fn translucent_invalid_and_extracted_colors_keep_their_original_storage() {
+        for alpha in [0.0, -0.0, 0.5, f32::NAN, f32::INFINITY] {
+            let mut mesh = source();
+            mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![[0.3, 0.2, 0.1, alpha]; mesh.count_vertices()]);
+            assert_eq!(remove_constant_color_alpha(&mut mesh), 0);
+            assert!(matches!(mesh.attribute(Mesh::ATTRIBUTE_COLOR), Some(VertexAttributeValues::Float32x4(_))));
+        }
+        let mut invalid = source();
+        invalid.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![[0.3, 0.2, 0.1, 1.0]]);
+        assert_eq!(remove_constant_color_alpha(&mut invalid), 0);
+        let mut extracted = source();
+        extracted.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![[0.3, 0.2, 0.1, 1.0]; extracted.count_vertices()]);
+        let _gpu = extracted.take_gpu_data().unwrap();
+        assert_eq!(remove_constant_color_alpha(&mut extracted), 0);
     }
     #[test]
     fn removing_unused_uvs_preserves_every_geometry_and_color_bit() {

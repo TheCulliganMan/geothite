@@ -179,6 +179,7 @@ pub(crate) struct ModeledActors {
     shadow_material: Option<Handle<StandardMaterial>>,
     instances: HashMap<VisualActorId, Instance>,
     map_id: String,
+    gpu_map_id: String,
     prop_meshes: HashMap<(actor_props::PropKind, Option<(CaveStoneFinish, u8)>, bool, Option<crystal_render_api::VisualPokemonModelPalette>), Handle<Mesh>>,
     stone_materials: HashMap<CaveStoneFinish, Handle<VoxelMaterial>>,
     props: HashMap<VisualActorId, PropInstance>,
@@ -317,6 +318,14 @@ pub(crate) fn sync(
         if !enabled {
             return;
         }
+    }
+    if state.gpu_map_id != frame.map_id.as_ref() {
+        // Retain common roles (especially the player) across the transition,
+        // but release uploaded bodies and paintings belonging only to old maps.
+        // Entity handles keep the retiring frame alive until deferred despawns.
+        let needed = frame.actors.iter().filter_map(character_kind).collect();
+        state.people_gpu.retain_kinds(&needed);
+        state.gpu_map_id = frame.map_id.to_string();
     }
     if state.material.is_none() {
         state.material = Some(materials.add(StandardMaterial {
@@ -968,6 +977,48 @@ mod tests {
             1,
             "resolved actors remain modeled indoors"
         );
+    }
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn map_replacement_retires_unused_character_uploads_and_keeps_the_player() {
+        let mut app = actor_test_app();
+        // Exercise real handle-drop processing rather than only the cache map.
+        app.add_plugins((MinimalPlugins, bevy::asset::AssetPlugin::default()))
+            .init_asset::<Mesh>()
+            .init_asset::<Image>()
+            .init_asset::<StandardMaterial>()
+            .init_asset::<VoxelMaterial>()
+            .init_asset::<bevy::mesh::skinning::SkinnedMeshInverseBindposes>();
+        let mut other = actor();
+        other.id = VisualActorId::Object(19);
+        other.source_id = "teacher".into();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.push(other);
+        app.update();
+        let state = app.world().resource::<ModeledActors>();
+        assert_eq!(state.people_gpu.0.len(), 2);
+        assert!(state.people_gpu.0.keys().any(|(_, kind)| *kind == CharacterKind::Teacher));
+        let old_player = state.instances[&VisualActorId::Player].entity;
+        let before_meshes = app.world().resource::<Assets<Mesh>>().len();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id = "VioletCity".into();
+            frame.actors.retain(|actor| actor.id == VisualActorId::Player);
+        }
+        let before = app.world().resource::<VisualWorldFrame>().clone();
+        app.update();
+        assert!(app.world().get_entity(old_player).is_err());
+        let state = app.world().resource::<ModeledActors>();
+        assert_eq!(state.people_gpu.0.len(), 1);
+        assert!(state.people_gpu.0.keys().all(|(_, kind)| *kind == CharacterKind::Trainer));
+        assert_eq!(state.instances.len(), 1);
+        assert_eq!(*app.world().resource::<VisualWorldFrame>(), before,
+            "cache retirement cannot alter the authoritative presentation frame");
+        for _ in 0..4 { app.update(); }
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 1,
+            "the old painting asset must be removed after its material handles drop");
+        assert!(app.world().resource::<Assets<Mesh>>().len() < before_meshes,
+            "retired character meshes must leave the asset collection too");
     }
     #[test]
     fn duplicate_characters_share_meshes_and_leave_production_frame_untouched() {

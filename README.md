@@ -18,6 +18,30 @@ for implementation status and remaining differences from the original game.
 
 ## Setup
 
+### Windows desktop executable
+
+With Rust 1.99, `just`, and the Visual Studio C++ tools/Windows SDK installed,
+run `just desktop-content` once to initialize game content, then `just desktop`.
+The desktop recipe validates `content-packs/core-modular.crystalpack`, including
+the production title and intro timing certification, then builds
+the release graphical client with the 2.5D renderer and an embedded crystal
+icon, and installs it with its pack and model assets under
+`%USERPROFILE%\Games\Geothite`. It creates `Geothite.lnk` on the Windows Desktop.
+Double-click the shortcut to play. Re-running the recipe updates the install
+and preserves saves. Close the game before updating. The installed build opens
+without a console window and reports startup failures in a Windows dialog.
+
+For a different completed native pack or installation directory:
+
+```powershell
+just desktop 'C:\Games\core-modular.crystalpack'
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-desktop.ps1 -Pack C:\Games\core-modular.crystalpack -InstallDirectory C:\Games\Geothite -Launch
+```
+
+The executable resolves its default pack and model assets beside itself,
+independently of the launching working directory. Build products and game
+content stay outside tracked source.
+
 Generate local game content with the repository's Rust builders, then use Docker
 with Compose for your own server. [Game content setup](docs/game-content.md)
 contains the required tools, pinned source inputs, validation, and play commands.

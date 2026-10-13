@@ -238,13 +238,13 @@ fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
         });
     }
 
-    // `$3d/$3e` are the paired cave-water corner blocks. Every collision
+    // `$25-$27` and `$3d/$3e` are cave-water edges and corners. Every collision
     // quadrant is water, and their `$0b/$15/$0a/$17` pixels are only the
     // drawn boundary around that water. The generic shelf-edge vocabulary
     // reuses `$15/$17`; applying it here creates a stray six-pixel ledge
     // beside a waterfall. Keep the complete authored block at the cave-water
     // datum instead. Cave pools are level with the lower floor, not recessed.
-    if matches!(source.metatile_id, 0x3d | 0x3e) {
+    if matches!(source.metatile_id, 0x25 | 0x26 | 0x27 | 0x3d | 0x3e) {
         return Some(CellShape::Flat);
     }
 
@@ -393,23 +393,6 @@ fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
                 height: CAVE_ROCK_HEIGHT,
                 solid: SolidKind::Bank,
             }
-        });
-    }
-
-    // Block $27 is the one-course rocky lip above cave water. Preserve the
-    // native face row; the water rows themselves stay on the cave datum.
-    if source.metatile_id == 0x27 {
-        return Some(if source.subtile_row == 0 {
-            CellShape::LedgeBand {
-                face: LedgeFace::South,
-                plane_subtile: 1,
-                band_from_top: 0,
-                band_count: 1,
-                top_tile_index: 0x16,
-                height: CAVE_SHELF_HEIGHT,
-            }
-        } else {
-            CellShape::Flat
         });
     }
 
@@ -679,6 +662,9 @@ mod tests {
     #[test]
     fn cave_water_corners_do_not_inherit_reused_shelf_edges() {
         for (metatile, drawing) in [
+            (0x25, [[0x14,0x14,0x14,0x15];4]),
+            (0x26, [[0x17,0x14,0x14,0x14];4]),
+            (0x27, [[0x26;4],[0x14;4],[0x14;4],[0x14;4]]),
             (
                 0x3d,
                 [

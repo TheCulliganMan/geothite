@@ -1886,7 +1886,7 @@ impl RuntimeIntroInterruptTiming {
     fn service_pending_instruction_interrupts(
         &self,
         clock: &mut RuntimeIntroFrameClock,
-        callback_nonzero: bool,
+        callback_nonzero: &mut dyn FnMut() -> bool,
         vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
         next_vblank_request: &mut u64,
         next_lcd_request: &mut u64,
@@ -1914,7 +1914,7 @@ impl RuntimeIntroInterruptTiming {
                 *lcd_interrupts_serviced = lcd_interrupts_serviced
                     .checked_add(1)
                     .context("intro LCD interrupt count overflowed")?;
-                u64::from(if callback_nonzero {
+                u64::from(if callback_nonzero() {
                     self.lcd_callback_nonzero_machine_cycles
                 } else {
                     self.lcd_callback_zero_machine_cycles
@@ -1954,6 +1954,26 @@ impl RuntimeIntroInterruptTiming {
         clock: &mut RuntimeIntroFrameClock,
         instruction_machine_cycles: impl IntoIterator<Item = u64>,
         callback_nonzero: bool,
+        vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_instruction_sequence_with_interrupts_and_effects(
+            clock,
+            instruction_machine_cycles,
+            &mut || callback_nonzero,
+            &mut |_| Ok(()),
+            vblank_body_machine_cycles,
+        )
+    }
+
+    /// Commit source instruction effects before servicing requests latched
+    /// during that instruction. LCD callbacks observe the resulting register
+    /// state, while requests pending at entry still observe the preceding state.
+    pub fn advance_instruction_sequence_with_interrupts_and_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_machine_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
         vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
     ) -> Result<RuntimeIntroInstructionClockAdvance> {
         anyhow::ensure!(
@@ -2024,7 +2044,7 @@ impl RuntimeIntroInterruptTiming {
                 &mut timer_interrupts_serviced,
             )?)
             .context("intro instruction frame-boundary count overflowed")?;
-        for machine_cycles in instruction_machine_cycles {
+        for (instruction_index, machine_cycles) in instruction_machine_cycles.into_iter().enumerate() {
             anyhow::ensure!(
                 machine_cycles > 0,
                 "intro instruction clock received a zero-cycle instruction"
@@ -2044,6 +2064,7 @@ impl RuntimeIntroInterruptTiming {
                     &mut pending_timer,
                 )?)
                 .context("intro instruction frame-boundary count overflowed")?;
+            instruction_completed(instruction_index)?;
             frame_boundaries_crossed = frame_boundaries_crossed
                 .checked_add(self.service_pending_instruction_interrupts(
                     clock,
@@ -4349,6 +4370,7 @@ pub struct RuntimePresentationOperationObservation<'a> {
     pub operation_index: usize,
     pub next_operation_index: usize,
     pub returned: bool,
+    pub control_transfer_taken: bool,
     pub memory_before: &'a BTreeMap<String, u16>,
     pub values_before: &'a BTreeMap<String, u16>,
     pub memory_after: &'a BTreeMap<String, u16>,
@@ -4467,6 +4489,7 @@ impl RuntimePresentationPhaseMachine {
         let mut effects = Vec::new();
         for _ in 0..1_024 {
             let effect_start = effects.len();
+            let mut control_transfer_taken = false;
             let operation_index = self.interpreter.operation_index;
             let before = observer.as_ref().map(|_| (self.memory.clone(), self.values.clone()));
             let operation = self
@@ -4483,6 +4506,7 @@ impl RuntimePresentationPhaseMachine {
                             operation_index,
                             next_operation_index: self.interpreter.operation_index,
                             returned: $returned,
+                            control_transfer_taken: $returned || control_transfer_taken,
                             memory_before,
                             values_before,
                             memory_after: &self.memory,
@@ -4569,7 +4593,10 @@ impl RuntimePresentationPhaseMachine {
                         returned: true,
                     });
                 }
-                "jump" => self.interpreter.jump_to_label(program, string("target")?)?,
+                "jump" => {
+                    control_transfer_taken = true;
+                    self.interpreter.jump_to_label(program, string("target")?)?;
+                }
                 "branch_memory_compare" => {
                     let source = string("source")?;
                     let operand = numeric("operand")?;
@@ -4587,6 +4614,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4617,6 +4645,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4640,6 +4669,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4658,6 +4688,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -5112,6 +5143,7 @@ impl RuntimePresentationPhaseMachine {
                     if value == 0 {
                         self.interpreter
                             .jump_to_label(program, string("zero_target")?)?;
+                        control_transfer_taken = true;
                     } else {
                         self.memory.insert(target, value - 1);
                     }
@@ -5179,6 +5211,7 @@ impl RuntimePresentationPhaseMachine {
                     if value == 0 {
                         if let Some(target) = operation.fields.get("target").and_then(Value::as_str)
                         {
+                            control_transfer_taken = true;
                             self.interpreter.jump_to_label(program, target)?;
                         } else {
                             observe!(true);

@@ -17,6 +17,7 @@ fn main() -> Result<()> {
     let mut screenshot = None;
     let mut second_screenshot = None;
     let mut modeled = true;
+    let mut preview_flag = None;
     let mut record = None;
     let mut walk = None;
     let mut measure = None;
@@ -38,6 +39,7 @@ fn main() -> Result<()> {
             .with_context(|| format!("missing value for {flag}"))?;
         match flag.as_str() {
             "--map" => map = value,
+            "--preview-flag" => preview_flag = Some(value),
             "--x" => tile_x = Some(value.parse::<i16>()?),
             "--y" => tile_y = Some(value.parse::<i16>()?),
             "--screenshot" => screenshot = Some(PathBuf::from(value)),
@@ -138,6 +140,7 @@ fn main() -> Result<()> {
                 "Geothite | {map} 3D | Q/E orbit, PgUp/PgDn zoom, F3 2D/3D"
             )),
             render_test_hour: Some(16),
+            render_test_preview_flag: preview_flag,
             render_test_screenshot: screenshot,
             render_test_second_screenshot: second_screenshot,
             render_test_walk: walk,

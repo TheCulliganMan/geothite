@@ -8,7 +8,7 @@ mod kernels;
 mod midi;
 mod render;
 mod source_clock;
-pub use source_clock::{SourceAudioClock, SourceChannelState, SourceChannelStep};
+pub use source_clock::{SourceAudioClock, SourceChannelState, SourceChannelStep, SourceCommandStep};
 use control::expand;
 pub use control::{link, validate_references};
 use kernels::*;

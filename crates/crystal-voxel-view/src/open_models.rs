@@ -112,10 +112,7 @@ pub(crate) fn load_required<T>(
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
-        let root = std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT")
-            .map(std::path::PathBuf::from)
-            .unwrap_or_else(|| std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("../../assets/open-models"));
+        let root = crate::open_people::model_root();
         return required_from_root(&root, path, parse);
     }
     #[cfg(target_arch = "wasm32")]

@@ -949,8 +949,10 @@ fn prepare_immersive_battle_preview(
 ) -> Result<BevyRuntimeShell> {
     anyhow::ensure!(
         starter.is_none()
-            || (enemy_gust && starter.is_some_and(crystal_voxel_view::has_authored_battle_species)),
-        "species model preview requires the enemy Gust fixture and an authored battle model"
+            || (starter.is_some_and(crystal_voxel_view::has_authored_battle_species)
+                && (enemy_gust || ![shadow_ball, psychic, hyper_beam, surf,
+                    size_comparison, pidgeotto, poke_ball_failure].into_iter().any(|active| active))),
+        "species model preview requires an authored body and the Gust or default wild fixture"
     );
     anyhow::ensure!(
         [
@@ -1003,7 +1005,9 @@ fn prepare_immersive_battle_preview(
     } else {
         None
     };
-    if enemy_gust {
+    if enemy_gust || starter.is_some() {
+        // A requested body can also be reviewed in the existing scripted wild
+        // encounter. This does not substitute for or change Vance's fixture.
         // The original grass showcases let Vance's unchanged AI prefer Gust. The
         // ordinary level-25 leads are slower than his Pidgeotto. Meganium
         // uses its minimum natural evolution level, 32, and acts first.

@@ -1,166 +1,122 @@
 # Human character quality checkpoint
 
-## Original goal and completion status
+## Scope and acceptance
 
-Make every 3D player and NPC character hand evaluated and improved, with clean
-UV maps, readable anime styling and smooth, clear models. Scope is all 75 human
-identities, players, bicycles and their production render contexts. The goal is
-**unfinished**. No whole character is approved. Local render improvements and
-passing narrow tests must not be described as completion of the roster.
+The goal remains unfinished. Scope is all 75 human identities, both players,
+clothing, hands, shoes, bicycles and production contexts. No whole character is
+approved. Passing geometry tests and isolated renders establish only the checks
+actually performed.
 
-## Current implementation
+Accept each character only after inspecting its head, body, hair, clothing,
+hands and feet from all angles in Idle and motion. Inspect players mounted
+through the bicycle cycle. Compare production 2D and 3D at the same position,
+time, facing and game state. Evaluate silhouette, anime styling, UV/material
+readability, shading, scale and contact with scenery. Preserve authoritative
+controller state and unrelated content.
 
-The production path uses the supplied human/skater rigs and required per-identity
-paintings; strict missing/malformed asset checks reject substitution. Character
-work includes flatter drawn anime faces, fitted head/hair/cap shapes, tailored
-front/back clothing UVs, refined joined hands, resting finger poses, modeled
-player laces and UV seams, animated bicycle pedals and hand/foot attachments,
-conservative animated bounds, and an offline reviewer exporting the actual GPU
-body, costume and palette. These changes have different verification states.
+## Completed implementation and verification
 
-The latest local Nurse work replaces the oval cap and raised blob cross with a
-folded crown and flat red cross, maps exposed calves to skin, rounds the sleeve
-and forearm together, and rebuilds fitted garment normals with distinct flat
-rim normal islands. Her complete model remains unfinished. The waist has a
-bright band from a short skirt flare; the proposed broader fitting fade is only
-an external numeric prediction, not a source change. Current fit radius grows
-from .27094 at y=1.62 to .33438 at y=1.47938 while the body barely changes.
+The production path uses the supplied human/skater rigs and required identity
+paintings. Strict missing/malformed asset checks reject substitution.
 
-The last source change gives Nurse a .40 shoulder-weight span (x=.25–.65) so
-it ends where the elbow blend begins. Other exposed-arm roles retain .50.
-Fresh muted native build passed (11m22s), and all five capture jobs passed.
-All five images were individually reviewed; the underarm remains too square
-and is unapproved. The arm regression was intentionally interrupted at the
-user request for immediate handoff; no completed test result is credited.
-Idle GPU checks preserve positions, normals, indices and UVs exactly; 929 skin
-vertices change, maximum weight-sum error is 7.45e-8, and 2,154 selected arm
-faces have zero opposed normals (minimum agreement .1469025). This is an Idle
-check only, not whole-model approval.
+- Nurse has a folded cap, flat red cross, exposed-leg skin UVs and a gradual
+  skirt fitting fade. Retained leg geometry continues above the neutral hem;
+  fitted skirt weights are smoothed below the pinned waist and shared across
+  the rolled hem. The all-role Run winding, animated waist fit, closed garment
+  body preservation and Nurse 61-phase leg continuity tests each ran one test
+  and passed. Fresh muted GPU Idle, Run .125 and Run .625 renders were inspected
+  in front, quarter, side and back views. The latest skirt improvement is
+  retained; this does not approve her entire character.
+- Hands have refined joined fingers, fuller tips, angle-weighted normals and
+  role-aware bare/gloved UVs. Attribute, topology, motion bounds and material
+  regressions passed. Bare-hand mapping now crosses adjoining wrist faces,
+  removing the painted crease band while preserving authored glove cuffs.
+  Three material tests passed, covering Chris, Kris, Nurse, Will and dark glove
+  roles; the full mounted-contact and digit/bounds regressions also passed.
+  Fourteen fresh Idle/Run close-ups were individually inspected. Geometric
+  wrist transitions and overall hand shape remain unfinished. Fingertip caps
+  now use a rounded arc scaled to each finger's measured radius. The four-rig
+  cap/topology/attribute/61-phase bounds regression and full mounted-contact
+  regression pass. Fourteen fresh cap close-ups and four bicycle phase sheets
+  were individually inspected; the rounded cap improvement is retained.
+- Chris, Kris and Nurse shoes have a slimmer fitted footprint, preserved ankle
+  seams and floor height, plain authored palette samples and modeled laces.
+  Shoe geometry, albedo protection, lace attachment and mounted production
+  hand/shoe contact regressions passed. Running and mounted renders were
+  individually inspected. Other roles retain their authored shoes/bare feet.
+- Swimmer feet now refine adjacent boundary triangles along with the foot,
+  and continue the production ankle skin sample instead of a separate hand
+  patch. Both the skin/floor/pinned-ankle regression and production ankle-palette
+  regression passed. Eight fresh Idle/Run close-ups were individually inspected.
+  The continuity changes are retained; toe shapes, heel/ankle contours and
+  shading remain unfinished, and neither swimmer is approved.
+- The reviewer removes only its expected previous PNGs, propagates Bevy's exit
+  result and requires every expected capture to exist. A failed native render
+  returns failure and cannot credit an old image. Successful fresh DX12
+  captures verified this path on the Windows host.
+- Clair's declared cape now uses the existing closed cape renderer, with her
+  authored blue palette and a shorter hem. Lance retains his existing red cape.
+  The production-dispatch, closed-edge, outward-normal and 61-phase animation
+  bounds regression passed for both rigs. Six fresh Idle/Run sheets were
+  individually inspected from front, quarter, side and back. Clair's cape
+  addition is retained; her complete character is still unapproved.
 
-## Verified evidence and failures
+## Remaining acceptance work
 
-- Nurse folded cap: fresh native build and seven capture jobs passed. All 13
-  images individually reviewed. Ordinary cap regression ran 1 test and passed.
-  Body/pose/costume exports match the preceding Nurse/Cal/Youngster baseline.
-- Nurse exposed calves: fresh build and five capture jobs passed; all five
-  images reviewed. 372 UV corners change; per-face positions/normals/joints/
-  weights exact. Costume and pose exact. No changed corner above y=.785.
-- Nurse fitted normals: fresh build and first four jobs passed. Fifth side PNG
-  saved and reviewed but process stalled after window closed. Main-thread sample
-  showed a condition wait; only its verified task-owned PID was stopped with
-  SIGTERM. Fifth job is -15, not a pass. All five images reviewed. All 4,000 cloth
-  faces now have outward normal agreement, minimum .8175876. Per-face geometry,
-  UVs and skin are exact; body/pose exact. Bright waist band remains unfinished.
-- Nurse earlier arm variants: full shoulder blend rejected visually for square
-  underarm and failed Run15/32 (-.03778). Elbow-only preserved shoulder contour
-  but fresh test failed Idle0/32 (-.9502461). Current shortened-span candidate
-  is not covered by those old results. The original exported Idle model also
-  contains the same severe shoulder fold; preservation is not acceptance.
-- Current retained hand geometry: fresh full-cycle mounted grip/pedal,
-  resting-pose and white-glove checks passed in the terminal-domain review.
-  The aggregate four-rig digit shape test ran 1 test and failed with 52 defects:
-  32 lateral-cap and 20 depth-cap checks. All preceding finite/skin/closed-edge
-  and 3 clips x61 phase bounds assertions completed for all four rigs. No hand
-  approval. The fixed lateral .015 criterion may imply a sharper tip than a
-  circular cap at actual finger scale; independently reassess shape and actual
-  renders rather than simply lowering a threshold to obtain green tests.
-- Strict loading: four negative checks each ran 1 actual test and passed:
-  missing production rigs, missing native rigs, malformed optional people and
-  incomplete identity paintings. Loading correctness is not visual approval.
-- Player shoes/laces: measured upper attachment and UV protection checked;
-  multiple running/mounted views inspected. Heavy faceted sole/heel/collar
-  still unfinished. Mounted contacts passed before latest Nurse-only edits.
-- Will tailored red front/back atlas and white glove UVs: rendered and protected
-  fields checked. Lower crown rendered in Idle/Run .125/.625, head-only changes
-  verified and crown preservation test passed. Whole Will still unfinished.
-- Kurt/KurtOutside hair/nape improved; robe clearance still fails 6/32 poses.
-  A straight-knee trial was rejected for stiff gait and floor penetration.
-- Historical baseline/motion review covered all 75 identities. This does not
-  approve any complete model or establish current whole-game context quality.
+Nurse still needs cleaner underarms, hands/wrists, hair/buns, jaw/nape and overall
+styling. Kurt/KurtOutside robe clearance remains unresolved in motion. Their
+contact regression now checks both identities with actual refined shoes over
+32 Run phases and also checks the shoe floor. Any replacement deformation must
+also preserve outward panel winding and animated waist fit. Continue
+individual evaluation and improvement across the complete roster; earlier
+75-identity baseline inspection does not approve current models.
+The latest 75-identity Idle gallery was freshly generated with the rounded
+caps and every sheet was individually inspected in four views. Remaining
+visible issues include exposed shoulder/underarm joins, angular bare feet,
+sparse hair coverage and clothing seams. The declared canes for Elder,
+Gentleman and Pryce, and KimonoGirl's fan/hairpin, have no renderer implementation.
+Motion review, fixes and production comparisons are still required before
+roster acceptance.
 
-## Owned and shared source
+Production comparison remains incomplete. A fresh classic SilverCaveRoom2
+capture displays a ball-like player at both (15,18) and adjacent (14,18), while
+the pack's mounted Chris source sheet depicts the correct human. Loaded pack
+checks establish floor collision and Normal mode at both positions. The actual
+classic player-entity image association regression passes after map objects
+populate the image store, and New Bark renders Chris correctly. Resolve the
+remaining cave GPU presentation mismatch before using these captures as
+character fidelity evidence.
+The shared pack is still explicitly unvalidated; a successful character render
+must not be described as full pack playability or title-flow certification.
 
-Owned character source/art/review documents are listed in the checkpoint commit.
-Shared integrations require the coordinating commit: `src/lib.rs` module wiring,
-`src/new_bark_actors.rs` bike/actor hooks, `src/open_people_skin.rs` production
-upload/pose/render hooks, and browser/native mute defaults. `src/bare_body.rs`
-contains another worker's swimmer/torso work plus this thread's Nurse branch and
-arm regression extension; retain all of it in the shared integration checkpoint.
-`src/footwear.rs` has separately owned bare-foot contour/arch edits. Only this
-thread's player palette, plain shoe UV, modeled lace and player test hunks belong
-to this checkpoint. Do not stage other renderer, terrain, creature or pack work.
+## Successful local review procedure
 
-## New-host dependencies and restart
+Hydrate Git LFS rigs and paintings under assets/open-models/people. Keep all
+content packs ignored and external to tracked source. Use a separate Cargo
+target directory, leave other goals' caches and changes intact, and keep audio
+muted. The pack/export goal owns the external exporter.
 
-Use the coordinating `scripts/cold-start-3d.sh` and `docs/cold-start-3d.md` for the
-Git bundle, separate Git LFS objects and ignored local content packs. Both people
-GLBs and character PNGs use Git LFS; hydrate actual objects, not pointer files.
-The four required rigs are under `assets/open-models/people/kenney/`, paintings
-under `assets/open-models/people/npc-textures/`. Production source builds the
-strict people bundle from them. Never commit ignored packs or copy old compiled
-browser products into source. Rust toolchain/Bevy dependencies come from the
-repository toolchain and lockfile. A native GPU/window environment is required
-for screenshot review; numeric asset tests alone do not replace viewing renders.
+On this Windows host, use PowerShell:
 
-Old-host captures/logs/diagnostics are under
-`~/.codex/artifacts/anime-character-review/pending-model-review/`. They are
-ignored external evidence, not runtime dependencies or committed deliverables.
-The isolated-garment-target cache and session IDs are also old-host only.
-ImageGen outputs used to produce canonical PNGs are not required to run the app.
-Use ImageGen for any further bitmap edits; do not edit textures with Python.
-
-Run from the new checkout (output outside tracked source):
-
-```sh
-export CRYSTAL_PREVIEW_MUTE=1
-export CRYSTAL_OPEN_MODEL_ROOT="$PWD/assets/open-models"
-review_dir="$(mktemp -d)"
-cargo build --locked --profile wasm-dev -p crystal-voxel-view \
-  --features people-review --bin render_people_review
-CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET=1 \
-  ./target/wasm-dev/render_people_review "$review_dir/nurse-idle" nurse
-CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET=1 \
-  ./target/wasm-dev/render_people_review "$review_dir/nurse-run125" nurse 0.125
-CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET=1 \
-  ./target/wasm-dev/render_people_review "$review_dir/nurse-run625" nurse 0.625
-cargo test --locked -p crystal-voxel-view --features people-review,crystal-assets/test-fixtures \
-  supplied_exposed_arms_keep_shading_on_the_outward_surface -- --ignored
-cargo test --locked -p crystal-voxel-view --features people-review,crystal-assets/test-fixtures \
-  supplied_digits_preserve_wrists_attributes_and_animation_bounds -- --ignored
-cargo test --locked -p crystal-voxel-view --features people-review,crystal-assets/test-fixtures \
-  mounted_production_hands_and_shoes_fit_grips_and_pedals_through_full_cycle -- --ignored
+```powershell
+$env:CRYSTAL_PREVIEW_MUTE = '1'
+$env:CRYSTAL_OPEN_MODEL_ROOT = Join-Path (Get-Location) 'assets/open-models'
+$env:WGPU_BACKEND = 'dx12'
+$env:CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET = '1'
+cargo build --locked --target-dir target/character-quality --profile wasm-dev `
+  -p crystal-voxel-view --features people-review --bin render_people_review
+# Set $reviewDirectory to an absolute directory outside tracked source.
+& target/character-quality/wasm-dev/render_people_review.exe $reviewDirectory nurse
+& target/character-quality/wasm-dev/render_people_review.exe $reviewDirectory nurse 0.125
+& target/character-quality/wasm-dev/render_people_review.exe $reviewDirectory nurse 0.625
+cargo test --locked --target-dir target/character-quality --profile wasm-dev `
+  -p crystal-voxel-view --features people-review,crystal-assets/test-fixtures `
+  supplied_closed_garment_panels_keep_outward_winding_through_run -- --ignored
 ```
 
-These restart commands use the repository's current feature declarations and
-new default target directory; the old evidence used additional cached Bevy
-features and an external target. Confirm actual test counts and successful
-compilation on the new host. Do not credit zero tests or a stale test binary.
-
-Reviewer options: `CRYSTAL_PEOPLE_REVIEW_SINGLE_VIEW=0..3` for front/three-quarter/
-side/back; `CRYSTAL_PEOPLE_REVIEW_DETAIL=hands|feet` with single view; bicycle mode
-`CRYSTAL_PEOPLE_REVIEW_BICYCLE=1` for players; actual GPU diagnostics via
-`CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES` pointing to an external output directory.
-Final numeric argument is normalized animation phase. Inspect each PNG manually.
-No current hand/shoe/Will/Nurse edits have been deployed to the served browser;
-its old engine is not evidence for the checkpoint. Rebuild the complete browser
-engine/glue/strict bundle/gzip/index together after stable native verification.
-
-## Next work
-
-First inspect the final shortened-shoulder result below and reproduce its checks.
-If it fails or its silhouette is bad, fix the continuous shoulder/elbow field
-without hiding the failure. Preserve hand/neck UVs and skin boundaries. Then
-smooth Nurse's skirt fitting fade while preserving waist attachment; verify
-full angles, motion and surface orientation. Improve her shoes, skirt gait,
-jaw/nape and buns. Continue the full 75-identity roster with actual rendered
-head/body/hair/clothing/hand/foot evaluation and production context checks.
-No goal completion should be claimed until the original full scope is verified.
-
-## Final checkpoint results / commit
-
-Verification stopped at the immediate handoff instruction. No further
-improvements or tests are running in this task. Commit ID is in the final
-response; this commit contains the durable note. Checks above cover the full
-shared working tree, not this partial ownership checkpoint alone. The
-coordinator must commit remaining shared integrations before a standalone
-new-host build. Keep audio muted. The full character goal remains unfinished.
+Use distinct output directories for each view/phase so evidence remains fresh.
+Reviewer single-view options are CRYSTAL_PEOPLE_REVIEW_SINGLE_VIEW=0..3,
+CRYSTAL_PEOPLE_REVIEW_DETAIL=hands|feet and
+CRYSTAL_PEOPLE_REVIEW_BICYCLE=1 for Chris/Kris. Inspect each PNG manually.
+Use ImageGen for bitmap edits; continue geometry and animation work in Rust.
+Do not commit screenshots, logs, scratch outputs, generated packs or binaries.

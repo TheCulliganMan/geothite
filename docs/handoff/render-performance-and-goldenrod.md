@@ -1,12 +1,84 @@
 # 3D rendering performance and Goldenrod browser crash handoff
 
-Original goal: use Bevy to improve 3D lighting and effects (windblown leaves,
-coastal mist, snow/frost in caves), with playable rendering performance first.
-The user requires intact model quality, Route 29/New Bark references, and removal
-of the added haze. The latest reported blocker is a computer/browser crash when
-leaving Goldenrod's department store into Goldenrod City in the game embedded in
-ChatGPT. The full original goal is **not complete**. No final playable-frame-rate
-or Goldenrod crash-fix claim has been verified.
+Original goal: improve 3D lighting and windblown leaves, coastal mist and cave
+snow/frost, after establishing playable full-detail rendering. Keep haze removed
+and preserve gameplay timing. **The full goal is not complete.** The local
+browser crash has a verified fix; final playable performance, environmental
+effects and the specific ChatGPT MCP-app panel remain open.
+
+## Production changes prepared for coordinated commit
+
+The black screen was a WebGL pipeline failure: the voxel material requested 15
+fragment uniform buffers against the adapter limit of 12, and Bevy quit after
+invalidating the pipeline. The five VoxelSurface values now share one uniform
+binding with an identically ordered shader struct, reducing the total to 11.
+Geometry, textures, water/cutaway values and gameplay timing are preserved.
+
+Terrain retirement releases the old hierarchy and cache-owned meshes, materials
+and atlases before replacement allocation, with two pending updates for asset
+removal/render extraction. The regression checks actual asset removal as well
+as hierarchy/cache release. This is CPU/ECS lifetime proof, not driver-release
+proof.
+
+Browser construction retains exact grove recipes and source-bank context,
+prepares one complete grove per update, and stages its buffers immediately.
+Pending groups retain handles, collision triangles, bounds and fade ownership.
+Final preparation is shared with the native compute path. Map/profile changes
+cancel pending work. There is no 2D fallback, model reduction or game-tick change.
+The grove geometry/bank equivalence regression, all 18 current occluder tests,
+and the department-store retirement regression passed.
+
+The full-detail staged browser passed six department-store exits and six returns
+in Edge 155/Radeon RX 7900 XTX/WebGL2 through production input, including further
+outdoor movement, Start/B and camera turns. No renderer errors, page crashes or
+context loss occurred. The 2026-10-13 repeat used WASM SHA-256
+`5BB923873CB6AC122529132ABDA0EE33A128A9DF140F9EA406F7E1A7B324DBB5`.
+Outdoor images were inspected. Memory was recorded rather than used as the crash
+gate, per the latest user instruction; the original 512 MiB target is unmet.
+
+After removing the experiments, the final production configuration rebuilt
+with --locked and passed a fresh six exits/six returns with the stronger
+destination-terrain check, outdoor movement, menus and camera turns. Final WASM
+SHA-256: `7FF8B4541DE47BEB07C9E7F7F81C5FF034F9142F9AD99973BAC823F8F0479363`.
+Errors/crashes/context losses were zero; all samples were muted. Heap high water
+was 1,129,840,640 bytes and largest tracked buffer 18,626,404 bytes. Original
+memory budgets remain unmet and are not claimed as passing.
+
+Passive native paired captures hold the same checksum, LCD frame and actor list
+across 2D/3D readbacks. Ordinary play and movement captures retain the real clock.
+Native timing warmups now finish shader compilation before accepting geometry;
+the prior hats-only warmup was invalid. See the qualified shader-complete
+New Bark/Route 29 timings in docs/johto-3d-performance.md.
+
+QA probes preserve styled Bevy errors, use muted production input, require real
+movement, observe each walking leg and bound blocked-browser operations. Current
+terrain readiness must match the destination map when exposed. Their measured
+rAF intervals are not GPU timestamps or displayed FPS.
+
+## Deferred investigations removed from the commit candidate
+
+Unaccepted bind-group retention, shared floating-point metadata, browser shadow
+filter and WebGPU experiments were removed, including their feature flags,
+configuration and extra lockfile dependencies. Diagnostic build-stage tracing
+was removed. Owned previews were stopped; scratch remains ignored because
+automatic approval review rejected recursive cache deletion (blocked by policy). Native receiver-filter experiments
+that predate this work retain their existing opt-in behavior.
+
+Those experiments provided direction, not final acceptance: the metadata
+candidate measured roughly 53 ms median walking intervals in New Bark/Route 29;
+the actual receiver filter removed about 45% of draw calls without reaching the
+performance gate. Strict same-state visual acceptance was still pending.
+
+An experimental metadata bundle also passed six exits/returns in Codex IAB via
+registered production WebMCP controls, with outdoor images and walking/Start/B
+verified, muted controls and empty error queries. It passed two small-house
+exits/returns with destination terrain ready. These checks do not certify the
+final production bundle in IAB, nor the distinct ChatGPT MCP-app panel. The
+MCP-app inventory had no active game tab. The disposable previews were closed.
+
+Establish fresh playable full-detail performance on the final production build
+before registering the unfinished environmental effects. Keep the full goal
+open; neither crash stability nor removed experimental timings complete it.
 
 ## Checkpoint state
 
@@ -40,8 +112,8 @@ without forging focus or modifying the fixed game tick. Validated native timing
 also records queue-completion callbacks, submitted/completed interval counts,
 outstanding work and poll errors. These are completed-work observations, not GPU
 timestamps or display-presented FPS. Current callback/report functions compiled
-against cached Bevy; the extracted policy and ECS receipt tests passed. A fresh
-full executable/GPU observation of these additions remains unverified.
+against cached Bevy; the extracted policy and ECS receipt tests passed. Fresh full executable/GPU observations passed for New Bark and Route 29;
+see the qualified shader-complete native results in `docs/johto-3d-performance.md`.
 
 Latest implementation: map changes now release the old terrain hierarchy and
 cache-held mesh/material/atlas references before the replacement build. Two
@@ -93,8 +165,8 @@ software rendering. Production bridge presses moved from store (8,4) through
 (8,7), warped into Goldenrod City (24,28), then moved to (24,29). WASM linear
 memory rose from 680,329,216 bytes (649 MiB) to 1,010,630,656 bytes (964 MiB).
 The probe completed without a page crash. This supports a memory-pressure
-investigation but does not reproduce the reported embedded-ChatGPT crash. No
-after-fix browser result is established yet.
+investigation but does not reproduce the reported embedded-ChatGPT crash. That old bundle did not establish an after-fix result; the fresh local
+six-cycle browser result is documented above.
 
 ## Ownership and transfer
 
@@ -171,7 +243,7 @@ new host. Do not commit any of them.
 
    ```sh
    cargo build --locked --profile wasm-dev -p crystal-bevy --features location-tester --example new_bark_3d
-   CRYSTAL_OPEN_MODEL_ROOT="$PWD/assets/open-models" CRYSTAL_AUDIO_MUTE=1 \
+   CRYSTAL_OPEN_MODEL_ROOT="$PWD/assets/open-models" CRYSTAL_PREVIEW_MUTE=1 \
      CRYSTAL_SCENERY_FULL_DETAIL=1 CRYSTAL_SHADOW_RECEIVERS=on \
      CRYSTAL_MEASURE_3D_VALIDATION=on CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
      CRYSTAL_RENDER_TEST_UPDATE_POLICY=focused \

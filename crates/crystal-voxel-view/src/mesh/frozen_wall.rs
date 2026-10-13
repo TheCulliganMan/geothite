@@ -94,7 +94,7 @@ fn enclosure_point(p: Vec3, cells: &[&VisualTile], g: &GridGeometry, origin: [i3
     frozen_point(rounded, g, origin)
 }
 
-fn complete_at(cells: &[&VisualTile], g: &GridGeometry, index: usize) -> bool {
+pub(in crate::mesh) fn complete_at(cells: &[&VisualTile], g: &GridGeometry, index: usize) -> bool {
     let Some((x, y)) = crate::ice_path::rock_mass_local(&cells[index].source) else {
         return false;
     };

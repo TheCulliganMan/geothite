@@ -109,17 +109,23 @@ Failed or incomplete:
   overlapping canopies remain. RGBA evidence shows most apparent black
   backgrounds are fully transparent final-frame regions; exact cause is
   unresolved. Do not label them opaque pixels from an RGB export.
-- Default window-target Lake capture was all black and exited with a blank
-  frame error. Separate image-target success does not fix or verify it.
+- The old-host default window-target Lake capture was blank. A muted Windows
+  DX12 window capture at `(20,18)` now renders visibly and preserves game state
+  across its 3D/2D pair. This establishes that selected window view, not whole-map
+  or browser Lake acceptance. Repetitive crowns and water glints still need review.
 - An initial Forest attempt panicked on empty shoreline candidates. The
   guard and subsequent RGBA capture verified the repair.
-- GoldenrodPokecenter1F fails before capture on an authored receptionist at
-  `(16,8)` outside a 10x8 map. This is present in the pack; a callback moving
-  the actor was not established. Do not bypass validation without a proper
-  source/visibility-aware regression.
-- `python3 tools/check-actor-props.py` previously failed on refined
-  `icon_clefairy` at 38,760 triangles against the existing 25,000 limit.
-  No passing full actor audit is claimed; do not blindly weaken the checker.
+- GoldenrodPokecenter1F's authored receptionist starts at `(16,8)` outside
+  its 10x8 room until the GS Ball script moves her in. Map-context persistence
+  and compiled save-reference validation now permit unchanged, unallocated
+  source staging while rejecting injected coordinates and allocated off-map
+  structs. All 19 map-context tests and all six source geometry tests pass;
+  the updated assets library also checks successfully. A fresh production
+  clinic capture is still required to verify the complete startup path.
+- `python3 tools/check-actor-props.py` passes with the unchanged 25,000 limit.
+  Clefairy now has 24,216 triangles and Jigglypuff 22,956. Both sculptures
+  pass eight geometry/support checks and inspected before-and-after neutral
+  previews. Production-camera, animation and shiny acceptance remain open.
 - The reverted cluster-count experiment's Cargo build was canceled, not a
   test pass or failure. Initial trace compilation also encountered another
   owner's missing cave imports; those were fixed before the successful build.
@@ -134,6 +140,19 @@ Follow `AGENTS.md`, `docs/cold-start-3d.md`, and the coordinating chat's
 content packs separately as that document describes. The actual pack used was
 `content-packs/realtime-clock.browser.crystalpack`; never commit it or rebuild
 it from the incompatible legacy export workspace as an assumed success.
+The current Rust build path is documented in `docs/game-content.md`; a missing
+pack does not require asking the user to supply one. The generated ignored
+`content-packs/core-modular.unvalidated.crystalpack` passes the content audit.
+Its continuous frontend intro timing remains uncertified. Native National Park
+and Ilex Forest 3D/2D pairs preserve state; Forest canopy readability still fails.
+The live browser National Park preview also renders in 3D and 2D. Its view
+switch advances time, so it does not establish a frozen browser comparison.
+The masked-foliage cutaway in `voxel_surface.wesl` shares stable pixel
+coverage across overlapping leaves instead of accumulating blended alpha.
+It retains source cutouts, complete geometry and shadows. The fresh native
+Forest pair preserves state and now reveals the previously hidden player
+and ground; all 18 occluder regressions pass. The visible fade is grainy, and
+Forest's dense canopy, other camera angles and browser parity remain open.
 Restore real LFS artwork, not pointer files. No source audio/catalog duplication,
 PCM export, ROM, external exporter, or extra clock is required by this pass.
 
