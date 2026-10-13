@@ -471,6 +471,12 @@ fn counted_helper_tape(source: &super::Source, routine: &str) -> Result<Vec<u64>
 
 fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Result<()> {
     let source = super::Source::read(vendor, "engine/movie/intro.asm")?;
+    let sprite_source = super::Source::read(vendor, "engine/sprite_anims/core.asm")?;
+    ensure!(sprite_source.body("DeinitializeAllSprites")?.iter().skip(1)
+        .filter(|(_, line)| !line.starts_with('.')).map(|(_, line)| line.as_str()).collect::<Vec<_>>()
+        == ["ld hl, wSpriteAnimationStructs", "ld bc, SPRITEANIMSTRUCT_LENGTH", "ld e, NUM_SPRITE_ANIM_STRUCTS",
+            "xor a", "ld [hl], a", "add hl, bc", "dec e", "jr nz, .loop", "ret"],
+        "intro sprite deinitialization source changed");
     // These two expanded direct calls are certified against their exact bodies.
     for (routine, expected) in [
         (
@@ -590,6 +596,28 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
         .contains(&operation["op"].as_str().unwrap_or(""));
         let mut complete = true;
         for (_, line) in lines {
+            if line == "farcall DeinitializeAllSprites" {
+                let (prefix, suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+                normal.extend(prefix);
+                normal.extend([3,3,2,1]);
+                for slot in 0..10 { normal.extend([2,2,1,if slot == 9 {2} else {3}]); }
+                normal.push(4);
+                normal.extend(suffix);
+                taken = normal.clone();
+                continue;
+            }
+            if line == "call Request2bpp" {
+                let tiles = operation["tile_count"].as_u64().filter(|tiles| (1..=255).contains(tiles))
+                    .context("direct intro Request2bpp tile count missing")?;
+                normal.push(6);
+                operation["source_request_caller_instruction_machine_cycles"] = json!(normal);
+                operation["source_request_return_instruction_machine_cycles"] = json!([]);
+                operation["source_request_timing"] = json!({"routine":"Request2bpp","source_file":"home/gfx.asm",
+                    "model":"normal_link_blocking_segments_v1","tile_count":tiles,"tiles_per_cycle":8,
+                    "link_mode":"not_mobile","delay_frame_body_included":false,"interrupts_included":false});
+                complete = false;
+                break;
+            }
             if let Some(routine) = line.strip_prefix("call ").filter(|routine| {
                 ["CrystalIntro_UnownFade", "Intro_Scene20_AppearUnown",
                  "Intro_Scene24_ApplyPaletteFade", "Intro_FadeUnownWordPals"].contains(routine)
@@ -624,6 +652,11 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             if line == "call Intro_ColoredSuicuneFrameSwap"
                 || line == "call Intro_Scene16_AnimateSuicune"
             {
+                source.operation("Intro_ColoredSuicuneFrameSwap", &["ld a, $1", "ldh [hBGMapMode], a", "ret"],
+                    "source_tilemap_update_boundary", json!({}))?;
+                source.operation("Intro_Scene16_AnimateSuicune", &[".PrepareForSuicuneSwap:", "xor a", "ldh [hBGMapMode], a", "ret"],
+                    "source_tilemap_prepare_boundary", json!({}))?;
+                operation["source_memory_effect_instruction_index_from_end"] = json!(2);
                 let mut caller = normal.clone();
                 caller.push(6);
                 operation["source_tilemap_timing"] = json!({"routine":line.strip_prefix("call ").unwrap(),
@@ -634,6 +667,16 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
                 break;
             }
             if line == "call Intro_RustleGrass" {
+                let body = source.body("Intro_RustleGrass")?;
+                let return_index = body.iter().position(|(_, instruction)| instruction == "ret")
+                    .context("intro grass helper has no source return")?;
+                ensure!(return_index >= 2 && body[return_index - 2].1 == "ld a, 4"
+                    && body[return_index - 1].1 == "ld [wRequested2bppSize], a",
+                    "intro grass request size boundary changed");
+                operation["source_memory_effects"] = json!({"wRequested2bppSize":4});
+                operation["source_memory_effect_condition"] = json!({"source":"wIntroSceneFrameCounter",
+                    "predicate":"unsigned_less_than","operand":36});
+                operation["source_memory_effect_instruction_index_from_end"] = json!(2);
                 let mut caller = normal.clone();
                 caller.push(6);
                 let variants = [false,true].into_iter().map(|finished| {
@@ -1152,6 +1195,37 @@ fn attach_byte_loop_costs(
 
 #[cfg(test)]
 mod byte_loop_cost_tests {
+    #[test]
+    fn remaining_intro_helpers_have_source_instruction_contracts() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for (instruction, op) in [("farcall DeinitializeAllSprites","deinitialize_all_sprites"),
+            ("call Request2bpp","request_2bpp_transfer"),("call Intro_RustleGrass","indexed_2bpp_request")] {
+            let line = source.lines.iter().find(|(_, code)| code == instruction).unwrap().0;
+            let mut operations = vec![json!({"op":"source_prefix","source_helper_timing":{},"source_span":{
+                "file":"engine/movie/intro.asm","start_line":line-1,"end_line":line-1}}),
+                json!({"op":op,"tile_count":1,"source_span":{
+                "file":"engine/movie/intro.asm","start_line":line,"end_line":line}})];
+            attach_plain_instruction_costs(vendor,&mut operations).unwrap();
+            let operation = &operations[1];
+            if op == "deinitialize_all_sprites" {
+                let (prefix,suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+                let modeled: Vec<u64> = serde_json::from_value(operation["source_instruction_machine_cycles"].clone()).unwrap();
+                let body = &modeled[prefix.len()..modeled.len()-suffix.len()];
+                let measured = source_intro_oracle::measure_routine(vendor,"DeinitializeAllSprites",&[]).unwrap();
+                let actual: Vec<u64> = measured["instructions"].as_array().unwrap().iter()
+                    .map(|instruction|instruction["machine_cycles"].as_u64().unwrap()).collect();
+                assert_eq!(body,actual);
+            } else if op == "request_2bpp_transfer" {
+                assert_eq!(operation["source_request_caller_instruction_machine_cycles"],json!([6]));
+                assert_eq!(operation["source_request_return_instruction_machine_cycles"],json!([]));
+            } else {
+                assert_eq!(operation["source_memory_effects"],json!({"wRequested2bppSize":4}));
+                assert_eq!(operation["source_memory_effect_condition"]["operand"],json!(36));
+            }
+        }
+    }
     #[test]
     fn palette_helpers_publish_the_store_boundary_before_return() {
         let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
