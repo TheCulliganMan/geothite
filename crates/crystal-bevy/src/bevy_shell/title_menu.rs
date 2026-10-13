@@ -582,6 +582,15 @@ fn tick_visible_intro_screen(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 
     let scene_finished = step_visible_intro_scene(runtime_shell)?;
     drain_visible_intro_setup_audio(runtime_shell)?;
+    // A blocking setup is one source dispatcher call. VBlank resumes the
+    // suspended call; it does not dispatch the scene or run sprite callbacks
+    // again while the decompressor/transfer/DelayFrames still owns execution.
+    if !scene_finished
+        && runtime_shell.intro_screen.as_ref()
+            .is_some_and(|intro| intro.scene_setup_cursor.is_some())
+    {
+        return Ok(());
+    }
     let delay = if scene_finished {
         let intro = runtime_shell
             .intro_screen
@@ -604,8 +613,13 @@ fn tick_visible_intro_screen(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
             .intro_screen
             .as_mut()
             .context("intro screen disappeared before its source scene advance")?;
+        let dispatcher_entry = intro.jumptable_index;
+        let dispatch_tick = intro.scene_dispatch_tick.checked_add(1)
+            .context("visible intro scene dispatcher tick overflowed")?;
         visible_intro_next_scene(intro);
-        apply_visible_intro_sprite_pipeline_for_shell(runtime_shell)?;
+        // NextIntroScene changes the state seen by callbacks, but this
+        // scheduler invocation still belongs to the call that just returned.
+        apply_visible_intro_sprite_pipeline_for_shell_at(runtime_shell, dispatcher_entry, dispatch_tick)?;
         if runtime_shell
             .intro_screen
             .as_ref()
@@ -1855,6 +1869,19 @@ fn apply_visible_intro_sprite_pipeline_for_shell(
         .as_mut()
         .context("visible intro sprite pipeline has no active intro")?;
     apply_visible_intro_sprite_pipeline(intro, bundle, program)
+}
+
+fn apply_visible_intro_sprite_pipeline_for_shell_at(
+    runtime_shell: &mut BevyRuntimeShell,
+    dispatcher_entry: usize,
+    dispatch_tick: u16,
+) -> Result<()> {
+    let program = &runtime_shell.runtime.data().runtime_title_screen.program;
+    let bundle = runtime_shell.intro_sprite_bundle.as_ref()
+        .context("visible intro has no pack-owned sprite animation bundle")?;
+    let intro = runtime_shell.intro_screen.as_mut()
+        .context("visible intro sprite pipeline has no active intro")?;
+    apply_visible_intro_sprite_pipeline_at(intro, bundle, program, dispatcher_entry, dispatch_tick)
 }
 
 fn apply_visible_intro_sprite_pipeline(

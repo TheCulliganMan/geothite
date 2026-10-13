@@ -2413,7 +2413,43 @@ fn clock_reset_prompt_frame_uses_boot_window_and_value_phases() {
 }
 
 #[test]
-fn visible_intro_accumulates_exported_decompression_cpu_work() {
+#[ignore = "requires a fresh source diagnostic pack"]
+fn visible_intro_setup_wait_does_not_redispatch_or_advance_scene_state() {
+    let mut shell = independent_intro_diagnostic_shell_for_test();
+    let operations = visible_intro_scene_operations(shell.intro_screen.as_ref().unwrap(),
+        shell.runtime.title_presentation_program()).unwrap();
+    let expected_work: u64 = operations.iter().map(|operation| {
+        let decompression = operation.fields.get("decompress_machine_cycles")
+            .and_then(serde_json::Value::as_u64).unwrap_or(0);
+        let helper = operation.fields.get("source_helper_timing")
+            .and_then(|helper| helper.get("machine_cycles"))
+            .and_then(serde_json::Value::as_u64).unwrap_or(0);
+        let caller: u64 = ["source_caller_instruction_machine_cycles", "source_return_instruction_machine_cycles"]
+            .into_iter().filter_map(|key| operation.fields.get(key).and_then(serde_json::Value::as_array))
+            .flatten().map(|cost| cost.as_u64().unwrap()).sum();
+        decompression + helper + caller
+    }).sum();
+    let mut suspended_frames = 0;
+    for _ in 0..100 {
+        tick_visible_intro_screen(&mut shell).expect("resume authored setup call");
+        let intro = shell.intro_screen.as_ref().expect("intro state");
+        if intro.jumptable_index == 1 {
+            assert!(suspended_frames > 1, "test must exercise multiple suspended frames");
+            assert_eq!(intro.cpu_work_machine_cycles, expected_work,
+                "suspended source helper work must be accounted exactly once");
+            return;
+        }
+        assert_eq!(intro.jumptable_index, 0);
+        assert!(intro.scene_setup_cursor.is_some());
+        assert_eq!(intro.scene_dispatch_tick, 0, "the one call has not returned");
+        assert_eq!(intro.scene_frame_counter, 0, "VBlank must not execute scene control");
+        suspended_frames += 1;
+    }
+    panic!("authored setup call did not return");
+}
+
+#[test]
+fn visible_intro_accumulates_exported_source_cpu_work() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     let expected_machine_cycles = {
         let intro = runtime_shell
@@ -2426,17 +2462,23 @@ fn visible_intro_accumulates_exported_decompression_cpu_work() {
         )
         .expect("source-owned IntroScene1 operations")
         .iter()
-        .filter(|operation| operation.op == "decompress_lz3_resource")
         .map(|operation| {
-            operation
+            let decompression = operation
                 .fields
                 .get("decompress_machine_cycles")
                 .and_then(serde_json::Value::as_u64)
-                .expect("decompression operation has exact CPU work")
+                .unwrap_or(0);
+            let helper = operation.fields.get("source_helper_timing")
+                .and_then(|helper| helper.get("machine_cycles"))
+                .and_then(serde_json::Value::as_u64).unwrap_or(0);
+            let caller: u64 = ["source_caller_instruction_machine_cycles", "source_return_instruction_machine_cycles"]
+                .into_iter().filter_map(|key| operation.fields.get(key).and_then(serde_json::Value::as_array))
+                .flatten().map(|cost| cost.as_u64().expect("source caller instruction work")).sum();
+            decompression + helper + caller
         })
         .sum::<u64>()
     };
-    for _ in 0..64 {
+    for _ in 0..100 {
         if runtime_shell
             .intro_screen
             .as_ref()
@@ -2544,14 +2586,42 @@ fn visible_intro_completes_to_title_within_typescript_frame_budget() {
     );
 }
 
+fn independent_intro_diagnostic_shell_for_test() -> BevyRuntimeShell {
+    let asset_root = AssetRoot::new(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."),
+    );
+    let loaded = crystal_assets::read_unverified_compiled_game_pack_for_intro_timing_diagnostic(
+        PathBuf::from(std::env::var_os("CRYSTAL_INTRO_DIAGNOSTIC_PACK").expect("explicit diagnostic pack path is required")),
+    ).expect("decode diagnostic pack without certifying it");
+    let runtime = CrystalRuntime::from_unverified_compiled_pack_for_intro_timing_diagnostic(
+        &asset_root, loaded,
+    ).expect("construct diagnostic runtime");
+    let parameters = RuntimeIntroPresentationParameters::from_unverified_program_for_timing_diagnostic(
+        runtime.title_presentation_program(),
+    ).expect("parse actual raw intro measurements without changing provenance");
+    let mut intro = VisibleIntroScreen::from_program(parameters, runtime.title_presentation_program())
+        .expect("execute actual source entry initialization once");
+    apply_visible_intro_background_binding(&mut intro, runtime.title_presentation_program())
+        .expect("bind actual intro background");
+    let sprite_bundle = load_intro_sprite_anim_bundle(runtime.data().sprite_anim_bundle.as_str())
+        .expect("load actual intro sprite scheduler");
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().expect("actual spawn");
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root, runtime, BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig::default(),
+    ).expect("initialize production shell for diagnostic");
+    shell.intro_sprite_bundle = Some(sprite_bundle);
+    shell.intro_display_screen = Some(intro.clone());
+    shell.intro_screen = Some(intro);
+    shell
+}
+
 /// Explicit diagnostic: raw measurements remain uncertified. Run with both
 /// CRYSTAL_INTRO_DIAGNOSTIC_PACK and CRYSTAL_INTRO_DIAGNOSTIC_ROM_TRACE set.
 /// Execute the real visible intro continuously; never reseed from ROM hooks.
 #[test]
 #[ignore = "requires fresh source pack and independent pinned-ROM trace"]
 fn visible_intro_continuous_timeline_matches_independent_rom_trace() {
-    let pack_path = std::env::var_os("CRYSTAL_INTRO_DIAGNOSTIC_PACK")
-        .expect("explicit diagnostic pack path is required");
     let trace_path = std::env::var_os("CRYSTAL_INTRO_DIAGNOSTIC_ROM_TRACE")
         .expect("explicit independent ROM trace path is required");
     let trace: serde_json::Value = serde_json::from_slice(
@@ -2584,32 +2654,7 @@ fn visible_intro_continuous_timeline_matches_independent_rom_trace() {
         }
     }
     assert_eq!(input_boundaries.len(), 28);
-    let asset_root = AssetRoot::new(
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."),
-    );
-    let loaded = crystal_assets::read_unverified_compiled_game_pack_for_intro_timing_diagnostic(
-        PathBuf::from(pack_path),
-    ).expect("decode diagnostic pack without certifying it");
-    let runtime = CrystalRuntime::from_unverified_compiled_pack_for_intro_timing_diagnostic(
-        &asset_root, loaded,
-    ).expect("construct diagnostic runtime");
-    let parameters = RuntimeIntroPresentationParameters::from_unverified_program_for_timing_diagnostic(
-        runtime.title_presentation_program(),
-    ).expect("parse actual raw intro measurements without changing provenance");
-    let mut intro = VisibleIntroScreen::from_program(parameters, runtime.title_presentation_program())
-        .expect("execute actual source entry initialization once");
-    apply_visible_intro_background_binding(&mut intro, runtime.title_presentation_program())
-        .expect("bind actual intro background");
-    let sprite_bundle = load_intro_sprite_anim_bundle(runtime.data().sprite_anim_bundle.as_str())
-        .expect("load actual intro sprite scheduler");
-    let spawn_identifier = runtime.title_new_game_spawn_identifier().expect("actual spawn");
-    let mut shell = initialize_bevy_runtime_shell(
-        asset_root, runtime, BevyShellStart::NewGame { spawn_identifier },
-        BevyShellConfig::default(),
-    ).expect("initialize production shell for diagnostic");
-    shell.intro_sprite_bundle = Some(sprite_bundle);
-    shell.intro_display_screen = Some(intro.clone());
-    shell.intro_screen = Some(intro);
+    let mut shell = independent_intro_diagnostic_shell_for_test();
     let mut observed = Vec::<(usize, u64, u32, u16)>::new();
     for frame in 0..4000_u64 {
         let Some(intro) = shell.intro_screen.as_ref() else { break };

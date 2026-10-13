@@ -1,6 +1,15 @@
 use anyhow::{Context, Result, bail, ensure};
 use serde_json::Value;
 
+/// The pinned farcall macro, rst vector and bank-preserving wrapper. The
+/// callee's instructions (including its RET) run between these two sequences.
+pub fn runtime_intro_farcall_instruction_machine_cycles() -> (Vec<u64>, Vec<u64>) {
+    (
+        vec![2, 3, 4, 4, 3, 3, 4, 3, 4, 3, 4, 4, 6, 1],
+        vec![1, 4, 1, 4, 3, 1, 4, 3, 4, 4, 4, 1, 4, 1, 4],
+    )
+}
+
 /// Ordered instruction costs for the source byte-copy helpers. Interrupts and
 /// the caller's CALL are separate instructions owned by the calling program.
 pub fn runtime_intro_byte_loop_instruction_machine_cycles(

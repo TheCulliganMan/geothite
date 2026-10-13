@@ -858,6 +858,77 @@ fn runtime_timed_phase_cursor_preserves_exported_wait_boundaries() {
 }
 
 #[test]
+fn runtime_timed_phase_cursor_accounts_for_helpers_once_across_waits() {
+    let helper = |routine: &str, count: u16, cycles: u64, source: &str, model: &str| {
+        RuntimePresentationOperation {
+            op: "fill_memory".into(),
+            source_span: presentation_span(),
+            fields: serde_json::from_value(serde_json::json!({
+                "source_caller_instruction_machine_cycles": [6],
+                "source_helper_timing": {
+                    "routine":routine, "byte_count":count, "machine_cycles":cycles,
+                    "source_file":source, "model":model,
+                    "caller_call_included":false, "interrupts_included":false,
+                }
+            })).unwrap(),
+        }
+    };
+    let program = RuntimePresentationProgram {
+        subprograms: vec![RuntimePresentationSubprogram {
+            id: "helpers".into(),
+            phases: vec![RuntimePresentationPhase {
+                id: "setup".into(),
+                operations: vec![
+                    helper("ClearSprites", 160, 969, "home/clear_sprites.asm", "clear_register_counter_loop_v1"),
+                    RuntimePresentationOperation {
+                        op: "wait_frames".into(),
+                        source_span: presentation_span(),
+                        fields: BTreeMap::from([("frames".into(), serde_json::json!(2))]),
+                    },
+                    helper("CopyBytes", 256, 2578, "home/copy.asm", "byte_count_and_counter_rollover_v1"),
+                ],
+                ..Default::default()
+            }],
+            ..Default::default()
+        }],
+        ..Default::default()
+    };
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&program, "helpers", "setup", 0, 2).unwrap();
+    let first = cursor.tick(&program).unwrap();
+    assert_eq!(first.cpu_work_machine_cycles, 975); // Helper RET and caller CALL each once.
+    assert!(!first.complete);
+    let suspended = cursor.tick(&program).unwrap();
+    assert_eq!(suspended.cpu_work_machine_cycles, 0);
+    assert!(suspended.effects.is_empty());
+    let resumed = cursor.tick(&program).unwrap();
+    assert_eq!(resumed.cpu_work_machine_cycles, 2584);
+    assert!(resumed.complete);
+    assert_eq!(cursor.tick(&program).unwrap().cpu_work_machine_cycles, 0);
+
+    let mut farcall = program.clone();
+    let mut clear = helper("ClearSpriteAnims", 193, 2325, "engine/sprite_anims/core.asm", "clear_register_counter_loop_v1");
+    let (prefix, suffix) = runtime_intro_farcall_instruction_machine_cycles();
+    clear.fields.insert("source_caller_model".into(), serde_json::json!("farcall_hl_v1"));
+    clear.fields.insert("source_caller_instruction_machine_cycles".into(), serde_json::json!(prefix));
+    clear.fields.insert("source_return_instruction_machine_cycles".into(), serde_json::json!(suffix));
+    farcall.subprograms[0].phases[0].operations[0] = clear;
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&farcall, "helpers", "setup", 0, 2).unwrap();
+    assert_eq!(cursor.tick(&farcall).unwrap().cpu_work_machine_cycles, 2416);
+    farcall.subprograms[0].phases[0].operations[0].fields
+        .insert("source_return_instruction_machine_cycles".into(), serde_json::json!([4]));
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&farcall, "helpers", "setup", 0, 2).unwrap();
+    assert!(cursor.tick(&farcall).is_err(), "a shortened bank-restoration path must be rejected");
+
+    for replacement in [serde_json::json!([]), serde_json::json!([5]), serde_json::json!([0, 6])] {
+        let mut malformed = program.clone();
+        malformed.subprograms[0].phases[0].operations[0].fields
+            .insert("source_caller_instruction_machine_cycles".into(), replacement);
+        let mut cursor = RuntimePresentationTimedPhaseCursor::new(&malformed, "helpers", "setup", 0, 2).unwrap();
+        assert!(cursor.tick(&malformed).is_err());
+    }
+}
+
+#[test]
 fn runtime_timed_phase_cursor_blocks_for_each_exported_2bpp_vblank_chunk() {
     let operation = |op: &str, fields: BTreeMap<String, serde_json::Value>| {
         RuntimePresentationOperation {

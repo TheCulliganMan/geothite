@@ -1701,6 +1701,7 @@ pub struct RuntimeIntroFrameClock {
 #[path = "intro_instruction_timing.rs"]
 mod intro_instruction_timing;
 pub use intro_instruction_timing::{
+    runtime_intro_farcall_instruction_machine_cycles,
     runtime_intro_byte_loop_instruction_machine_cycles,
     runtime_intro_clear_loop_instruction_machine_cycles,
     runtime_intro_helper_instruction_machine_cycles,
@@ -4188,6 +4189,39 @@ impl RuntimePresentationTimedPhaseCursor {
                 .cloned()
                 .context("runtime presentation timed cursor reached a missing operation")?;
             self.operation_index += 1;
+            if let Some(helper) = operation.fields.get("source_helper_timing") {
+                let helper_cycles = runtime_intro_helper_instruction_machine_cycles(helper)?;
+                let caller = operation.fields.get("source_caller_instruction_machine_cycles")
+                    .and_then(Value::as_array)
+                    .context("runtime presentation helper has no caller instruction sequence")?;
+                let returns = if operation.fields.get("source_caller_model").and_then(Value::as_str)
+                    == Some("farcall_hl_v1") {
+                    let (prefix, suffix) = runtime_intro_farcall_instruction_machine_cycles();
+                    anyhow::ensure!(caller.iter().map(Value::as_u64).eq(prefix.iter().copied().map(Some)),
+                        "runtime presentation farcall prefix disagrees with its instruction model");
+                    let returns = operation.fields.get("source_return_instruction_machine_cycles")
+                        .and_then(Value::as_array).context("runtime presentation farcall has no return sequence")?;
+                    anyhow::ensure!(returns.iter().map(Value::as_u64).eq(suffix.iter().copied().map(Some)),
+                        "runtime presentation farcall return disagrees with its instruction model");
+                    returns.as_slice()
+                } else {
+                    anyhow::ensure!(!operation.fields.contains_key("source_caller_model")
+                        && !operation.fields.contains_key("source_return_instruction_machine_cycles")
+                        && caller.last().and_then(Value::as_u64) == Some(6),
+                        "runtime presentation helper caller does not end with its direct CALL");
+                    &[]
+                };
+                for cost in caller.iter().map(|cost| cost.as_u64()
+                    .filter(|cost| *cost > 0)
+                    .context("runtime presentation helper caller has an invalid instruction cost"))
+                    .chain(helper_cycles.into_iter().map(Ok))
+                    .chain(returns.iter().map(|cost| cost.as_u64()
+                        .context("runtime presentation farcall return has an invalid instruction cost")))
+                {
+                    cpu_work_machine_cycles = cpu_work_machine_cycles.checked_add(cost?)
+                        .context("runtime presentation CPU work cycle count overflowed")?;
+                }
+            }
             if operation.op == "decompress_lz3_resource" {
                 let machine_cycles = operation
                     .fields

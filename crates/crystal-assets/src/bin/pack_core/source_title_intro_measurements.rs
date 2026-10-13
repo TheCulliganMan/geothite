@@ -106,11 +106,44 @@ fn register_setup_machine_cycles(instruction: &str) -> Option<u64> {
     None
 }
 
+fn certify_farcall_source(vendor: &Path) -> Result<()> {
+    for (file, label, expected) in [
+        ("home/header.asm", "FarCall", vec!["jp FarCall_hl"]),
+        ("home/header.asm", "Bankswitch", vec!["ldh [hROMBank], a", "ld [rROMB], a", "ret"]),
+        ("home/farcall.asm", "FarCall_hl", vec![
+            "ldh [hTempBank], a", "ldh a, [hROMBank]", "push af", "ldh a, [hTempBank]",
+            "rst Bankswitch", "call FarCall_JumpToHL",
+        ]),
+        ("home/farcall.asm", "FarCall_JumpToHL", vec!["jp hl"]),
+        ("home/farcall.asm", "ReturnFarCall", vec![
+            "ld a, b", "ld [wFarCallBC], a", "ld a, c", "ld [wFarCallBC + 1], a",
+            "pop bc", "ld a, b", "rst Bankswitch", "ld a, [wFarCallBC]", "ld b, a",
+            "ld a, [wFarCallBC + 1]", "ld c, a", "ret",
+        ]),
+    ] {
+        let source = super::Source::read(vendor, file)?;
+        let actual = source.body(label)?.iter().skip(1)
+            .take_while(|(_, line)| !line.starts_with("SECTION "))
+            .filter(|(_, line)| !line.starts_with('.'))
+            .map(|(_, line)| line.as_str()).collect::<Vec<_>>();
+        ensure!(actual == expected, "intro farcall cycle-model source changed: {label}");
+    }
+    let macros = super::Source::read(vendor, "macros/farcall.asm")?;
+    let start = macros.lines.iter().position(|(_, line)| line == "MACRO farcall")
+        .context("intro farcall macro missing")?;
+    let actual = macros.lines[start + 1..].iter().take_while(|(_, line)| line != "ENDM")
+        .map(|(_, line)| line.as_str()).collect::<Vec<_>>();
+    ensure!(actual == ["ld a, BANK(\\1)", "ld hl, \\1", "rst FarCall"],
+        "intro farcall macro differs from its instruction model");
+    Ok(())
+}
+
 fn attach_byte_loop_costs(
     vendor: &Path,
     operations: &mut [Value],
     symbols: &std::collections::BTreeMap<String, (usize, u16)>,
 ) -> Result<()> {
+    certify_farcall_source(vendor)?;
     for routine in ["ByteFill", "CopyBytes"] {
         certify_byte_loop_source(vendor, routine)?;
     }
@@ -177,7 +210,7 @@ fn attach_byte_loop_costs(
             "call ByteFill" if operation["op"] == "fill_memory" => "ByteFill",
             "call CopyBytes" if operation["op"] == "copy_memory" => "CopyBytes",
             "call ClearSprites" if operation["op"] == "fill_memory" => "ClearSprites",
-            "call ClearSpriteAnims"
+            "call ClearSpriteAnims" | "farcall ClearSpriteAnims"
                 if operation["op"] == "fill_memory"
                     || operation["op"] == "deinitialize_all_sprites" =>
             {
@@ -221,7 +254,8 @@ fn attach_byte_loop_costs(
             .context("intro helper caller line disappeared")?;
         let mut caller_start = call_index;
         let mut prefix = Vec::new();
-        while caller_start > 0 {
+        let farcall = instruction.starts_with("farcall ");
+        while !farcall && caller_start > 0 {
             let Some(cost) = register_setup_machine_cycles(&source.lines[caller_start - 1].1)
             else {
                 break;
@@ -229,8 +263,15 @@ fn attach_byte_loop_costs(
             caller_start -= 1;
             prefix.push(cost);
         }
-        prefix.reverse();
-        prefix.push(6); // Actual direct CALL, separate from the helper body's RET.
+        if farcall {
+            let (before, after) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+            prefix = before;
+            operation["source_caller_model"] = json!("farcall_hl_v1");
+            operation["source_return_instruction_machine_cycles"] = json!(after);
+        } else {
+            prefix.reverse();
+            prefix.push(6); // Actual direct CALL, separate from the helper body's RET.
+        }
         operation["source_caller_instruction_machine_cycles"] = json!(prefix);
         operation["source_caller_span"] =
             json!({"file":source.file,"start_line":source.lines[caller_start].0,"end_line":end});
@@ -250,6 +291,24 @@ fn attach_byte_loop_costs(
 #[cfg(test)]
 mod byte_loop_cost_tests {
     use super::*;
+
+    #[test]
+    fn source_farcall_clear_cost_matches_the_independent_rom_instructions() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let vendor = Path::new(&vendor);
+        certify_farcall_source(vendor).unwrap();
+        let symbols = source_intro_oracle::symbols(
+            &std::fs::read_to_string(vendor.join("pokecrystal.sym")).unwrap()).unwrap();
+        let (bank, address) = symbols["ClearSpriteAnims"];
+        let measured = source_intro_oracle::measure_routine_state(vendor, "FarCall",
+            &[("hROMBank".into(), 1)], &[("A", bank as u16), ("HL", address)]).unwrap();
+        let (prefix, suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+        let body = clear_helper_instruction_machine_cycles("ClearSpriteAnims", 193).unwrap();
+        // Entering at rst8 excludes the caller's LD/LD/RST macro (2+3+4).
+        let predicted: u64 = prefix.iter().chain(&body).chain(&suffix).sum::<u64>() - 9;
+        assert_eq!(predicted, 2407);
+        assert_eq!(measured["machine_cycles"].as_u64(), Some(predicted));
+    }
 
     #[test]
     fn source_byte_loop_costs_include_empty_and_counter_rollover_paths() {
