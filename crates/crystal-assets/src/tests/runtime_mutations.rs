@@ -4108,7 +4108,8 @@ fn compiled_game_pack_round_trips_as_runtime_artifact() {
         .save_modpack_identity()
         .expect("loaded pack has canonical save identity");
     assert_eq!(identity.id(), "base-game");
-    assert_eq!(identity.hash(), sha256_hex(raw));
+    use sha2::Digest;
+    assert_eq!(identity.hash(), format!("{:x}", sha2::Sha256::digest(raw)));
     assert!(loaded.data().pokemon.contains_key("CHIKORITA"));
     let _ = std::fs::remove_file(path);
 }

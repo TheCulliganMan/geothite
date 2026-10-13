@@ -429,18 +429,16 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires a completed external pack and independent radio oracle fixtures"]
     fn radio_memory_formats_compiled_catalogs_like_source_ram() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../..")
-            .canonicalize()
-            .unwrap();
-        let pack = crate::read_verified_compiled_game_pack(
-            root.join("content-packs/core-modular.crystalpack"),
-        )
-        .unwrap();
+        let fixtures = std::path::PathBuf::from(std::env::var_os("CRYSTAL_ORACLE_FIXTURE_ROOT")
+            .expect("set CRYSTAL_ORACLE_FIXTURE_ROOT to the external oracle fixtures"));
+        let pack_path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .expect("set CRYSTAL_RENDER_TEST_PACK to a completed external source pack");
+        let pack = crate::read_verified_compiled_game_pack(pack_path).unwrap();
         let data = pack.data();
         let source_names =
-            include_bytes!("../../../../tools/asm-oracle/fixtures/pokemon-names.bin");
+            std::fs::read(fixtures.join("pokemon-names.bin")).unwrap();
         for index in 0..256 {
             let name = RadioTextMemory::pokemon_name(data, (index as u8).wrapping_add(1)).unwrap();
             assert_eq!(&name[..10], &source_names[index * 10..index * 10 + 10]);
@@ -449,9 +447,7 @@ mod tests {
         let mut memory = RadioTextMemory::new(0).unwrap();
         assert!(memory.ram_text(RADIO_STRING_1).is_err());
         memory.select_pokedex_species(data, 155).unwrap();
-        let trace: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-pokedex.json"
-        ))
+        let trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixtures.join("radio-program-pokedex.json")).unwrap())
         .unwrap();
         let captured = hex(trace["prints"][0]["ram_text"]["53363"].as_str().unwrap());
         assert_eq!(memory.ram_text(RADIO_STRING_1).unwrap(), captured[..11]);
@@ -503,9 +499,7 @@ mod tests {
         );
         assert!(memory.format_buena_password(data, 0xb0).is_err());
         assert!(memory.format_buena_password(data, 0x03).is_err());
-        let trainer_trace: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-places-people.json"
-        ))
+        let trainer_trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixtures.join("radio-program-places-people.json")).unwrap())
         .unwrap();
         let trainer_print = trainer_trace["prints"]
             .as_array()
@@ -549,9 +543,7 @@ mod tests {
             memory.ram_text(RADIO_STRING_1).unwrap(),
             captured_place[..end]
         );
-        let oak_trace: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-oak.json"
-        ))
+        let oak_trace: serde_json::Value = serde_json::from_slice(&std::fs::read(fixtures.join("radio-program-oak.json")).unwrap())
         .unwrap();
         memory.format_oak_encounter(data, 13, 0, 2).unwrap();
         let oak_print = &oak_trace["prints"][3];
@@ -568,9 +560,7 @@ mod tests {
             captured_place[..end]
         );
         let rocket = memory.label_text(data, "_RocketRadioText1").unwrap();
-        let source: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../tools/asm-oracle/fixtures/radio-program-rocket.json"
-        ))
+        let source: serde_json::Value = serde_json::from_slice(&std::fs::read(fixtures.join("radio-program-rocket.json")).unwrap())
         .unwrap();
         let expected = hex(source["prints"][0]["text_bytes"].as_str().unwrap());
         assert_eq!(rocket, expected[..rocket.len()]);

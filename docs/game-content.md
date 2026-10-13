@@ -59,6 +59,14 @@ The published files are:
 
 All three remain ignored by Git.
 
+The independent radio oracle tests use external fixtures at runtime rather than
+embedding files from another checkout into the test executable. To run those
+opt-in comparisons, set `CRYSTAL_ORACLE_FIXTURE_ROOT` to their external fixture
+directory and `CRYSTAL_RENDER_TEST_PACK` to a completed pack, then use
+`cargo test --locked -p crystal-assets --lib radio_ -- --ignored`. Missing
+configured inputs fail those tests; normal test compilation needs no sibling
+repository or game-content fixtures.
+
 ### Fresh-source verification on 2026-10-13
 
 `CRYSTAL_PACK_BUILD_PROFILE=wasm-dev just crystalpack` was executed on a clean
