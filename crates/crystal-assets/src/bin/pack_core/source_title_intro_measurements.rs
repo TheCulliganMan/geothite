@@ -574,6 +574,20 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             .filter(|(line, _)| (from..=end).contains(&u64::from(*line)));
         let mut normal = Vec::new();
         let mut taken = Vec::new();
+        let mut memory_effect_index = None;
+        let scalar_effect = [
+            "write_memory_byte",
+            "write_memory_byte_from_result",
+            "write_memory_byte_from_masked_result",
+            "restore_memory_byte",
+            "palette_transfer_request",
+            "increment_memory_byte",
+            "subtract_memory_byte",
+            "decrement_memory_byte",
+            "postincrement_memory_byte",
+            "set_memory_bit",
+        ]
+        .contains(&operation["op"].as_str().unwrap_or(""));
         let mut complete = true;
         for (_, line) in lines {
             if line == "call PlayMusic" || line == "call PlaySFX" {
@@ -674,6 +688,19 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
                 taken.extend(helper);
                 continue;
             }
+            if scalar_effect {
+                let mutation = line.starts_with("ld [")
+                    || (line.starts_with("ldh [") && line.ends_with(", a"))
+                    || ["inc [hl]", "dec [hl]"].contains(&line.as_str())
+                    || ((line.starts_with("set ") || line.starts_with("res "))
+                        && line.ends_with(", [hl]"));
+                if mutation {
+                    memory_effect_index = Some(normal.len());
+                }
+                if line == "call NextIntroScene" || line == "call Intro_SetCGBPalUpdate" {
+                    memory_effect_index = Some(normal.len() + 2);
+                }
+            }
             let (Some(a), Some(b)) = (
                 plain_instruction_cycles(line, false),
                 plain_instruction_cycles(line, true),
@@ -705,6 +732,13 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
                     taken.push(4);
                 }
             }
+            if let Some(index) = memory_effect_index {
+                ensure!(
+                    index < normal.len(),
+                    "intro scalar source store index exceeds its instruction tape"
+                );
+                operation["source_memory_effect_instruction_index"] = json!(index);
+            }
             operation["source_instruction_machine_cycles"] = json!(normal);
             if normal != taken {
                 operation["source_instruction_machine_cycles_taken"] = json!(taken);
@@ -712,6 +746,123 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             operation["source_instruction_span"] =
                 json!({"file":current.file,"start_line":from,"end_line":end});
         }
+    }
+    Ok(())
+}
+
+fn attach_wait_costs(vendor: &Path, operations: &mut [Value]) -> Result<()> {
+    let delay = super::Source::read(vendor, "home/delay.asm")?;
+    for (routine, expected) in [
+        (
+            "DelayFrame",
+            vec![
+                "ld a, 1",
+                "ld [wVBlankOccurred], a",
+                "halt",
+                "nop",
+                "ld a, [wVBlankOccurred]",
+                "and a",
+                "jr nz, .halt",
+                "ret",
+            ],
+        ),
+        (
+            "DelayFrames",
+            vec!["call DelayFrame", "dec c", "jr nz, DelayFrames", "ret"],
+        ),
+    ] {
+        ensure!(
+            delay
+                .body(routine)?
+                .iter()
+                .skip(1)
+                .filter(|(_, line)| !line.starts_with('.'))
+                .map(|(_, line)| line.as_str())
+                .collect::<Vec<_>>()
+                == expected,
+            "intro source wait body changed: {routine}"
+        );
+    }
+    for operation in operations
+        .iter_mut()
+        .filter(|operation| operation["op"] == "wait_frames")
+    {
+        let span = operation["source_span"].clone();
+        let file = span["file"].as_str().context("intro wait source file")?;
+        let start = span["start_line"]
+            .as_u64()
+            .context("intro wait source start")?;
+        let end = span["end_line"].as_u64().context("intro wait source end")?;
+        let source = super::Source::read(vendor, file)?;
+        let mut lines = source
+            .lines
+            .iter()
+            .filter(|(line, _)| (start..=end).contains(&u64::from(*line)))
+            .collect::<Vec<_>>();
+        let frames = number(operation, "frames")?;
+        ensure!(
+            (1..=255).contains(&frames),
+            "intro source wait has invalid frame count"
+        );
+        let counter = lines.iter().any(|(_, line)| line == "call DelayFrames");
+        let direct_count = lines
+            .iter()
+            .filter(|(_, line)| line == "call DelayFrame")
+            .count();
+        ensure!(
+            (counter && direct_count == 0) || (!counter && direct_count as u64 == frames),
+            "intro source wait calls differ from authored frame count at {file}:{start}..{end}"
+        );
+        let mut prefix = Vec::new();
+        let mut suffix = Vec::new();
+        if counter {
+            // Some dynamic source lowerings omit register-only setup from their
+            // span. Recover only contiguous setup directly before this CALL.
+            let first = lines.first().context("intro wait source span empty")?;
+            if first.1 == "call DelayFrames" {
+                let mut index = source
+                    .lines
+                    .iter()
+                    .position(|(line, _)| *line == first.0)
+                    .context("intro wait caller position")?;
+                while index > 0
+                    && register_setup_machine_cycles(&source.lines[index - 1].1).is_some()
+                {
+                    index -= 1;
+                    lines.insert(0, &source.lines[index]);
+                }
+            }
+        }
+        let mut after = false;
+        for (_, line) in lines {
+            if line == "call DelayFrames" {
+                ensure!(!after, "intro wait has multiple counter calls");
+                prefix.push(6);
+                after = true;
+                continue;
+            }
+            if line == "call DelayFrame" {
+                after = true;
+                continue;
+            }
+            let cost = plain_instruction_cycles(line, false)
+                .with_context(|| format!("intro wait has unsupported source instruction {line}"))?;
+            if after {
+                suffix.extend(cost);
+            } else {
+                prefix.extend(cost);
+            }
+        }
+        if counter {
+            ensure!(
+                prefix.last() == Some(&6),
+                "intro counter wait caller lacks its CALL"
+            );
+        }
+        operation["source_wait_timing"] = json!({"routine":if counter {"DelayFrames"} else {"DelayFrame"},"source_file":"home/delay.asm",
+            "model":if counter {"frame_counter_calls_v1"} else {"direct_frame_calls_v1"},"frames":frames,"caller_call_included":false,"interrupts_included":false});
+        operation["source_wait_caller_instruction_machine_cycles"] = json!(prefix);
+        operation["source_wait_return_instruction_machine_cycles"] = json!(suffix);
     }
     Ok(())
 }
@@ -1878,6 +2029,132 @@ mod byte_loop_cost_tests {
     }
 
     #[test]
+    fn wait_metadata_preserves_direct_calls_and_counter_helpers() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        let home = super::super::Source::read(vendor, "home/tilemap.asm").unwrap();
+        let mut operations = vec![
+            source
+                .operation(
+                    "Intro_ClearBGPals",
+                    &["call DelayFrame", "call DelayFrame", "ret"],
+                    "wait_frames",
+                    json!({"frames":2}),
+                )
+                .unwrap(),
+            source
+                .operation(
+                    "IntroScene21",
+                    &["ld c, 3", "call DelayFrames"],
+                    "wait_frames",
+                    json!({"frames":3}),
+                )
+                .unwrap(),
+            home.operation(
+                "WaitBGMap",
+                &["ld c, 4", "call DelayFrames", "ret"],
+                "wait_frames",
+                json!({"frames":4}),
+            )
+            .unwrap(),
+        ];
+        attach_wait_costs(vendor, &mut operations).unwrap();
+        assert_eq!(
+            operations[0]["source_wait_timing"]["model"],
+            json!("direct_frame_calls_v1")
+        );
+        assert_eq!(
+            operations[0]["source_wait_caller_instruction_machine_cycles"],
+            json!([])
+        );
+        assert_eq!(
+            operations[0]["source_wait_return_instruction_machine_cycles"],
+            json!([4])
+        );
+        for index in [1, 2] {
+            assert_eq!(
+                operations[index]["source_wait_timing"]["model"],
+                json!("frame_counter_calls_v1")
+            );
+            assert_eq!(
+                operations[index]["source_wait_caller_instruction_machine_cycles"],
+                json!([2, 6])
+            );
+        }
+        assert_eq!(
+            operations[1]["source_wait_return_instruction_machine_cycles"],
+            json!([])
+        );
+        assert_eq!(
+            operations[2]["source_wait_return_instruction_machine_cycles"],
+            json!([4])
+        );
+        let measured = source_intro_oracle::measure_routine_with_frame_wait_fixture(
+            vendor,
+            "Intro_ClearBGPals",
+            &[],
+            &[],
+        )
+        .unwrap();
+        assert_eq!(measured["frame_waits"].as_array().unwrap().len(), 2);
+    }
+
+    #[test]
+    fn scalar_source_effects_precede_helper_returns() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        let home = super::super::Source::read(vendor, "home/tilemap.asm").unwrap();
+        let mut operations = vec![
+            source
+                .operation(
+                    "Intro_SetCGBPalUpdate",
+                    &["ld a, TRUE", "ldh [hCGBPalUpdate], a", "ret"],
+                    "palette_transfer_request",
+                    json!({"target":"hCGBPalUpdate","value":1}),
+                )
+                .unwrap(),
+            home.operation(
+                "ClearPalettes",
+                &["ld a, TRUE", "ldh [hCGBPalUpdate], a"],
+                "palette_transfer_request",
+                json!({"target":"hCGBPalUpdate","value":1}),
+            )
+            .unwrap(),
+            source
+                .operation(
+                    "Intro_ResetLYOverrides",
+                    &["ld a, LOW(rSCX)", "ldh [hLCDCPointer], a", "ret"],
+                    "write_memory_byte",
+                    json!({"target":"hLCDCPointer","value":67}),
+                )
+                .unwrap(),
+        ];
+        attach_plain_instruction_costs(vendor, &mut operations).unwrap();
+        assert_eq!(
+            operations[0]["source_memory_effect_instruction_index"],
+            json!(1)
+        );
+        assert_eq!(
+            operations[1]["source_memory_effect_instruction_index"],
+            json!(1)
+        );
+        assert_eq!(
+            operations[2]["source_memory_effect_instruction_index"],
+            json!(1)
+        );
+        assert_eq!(
+            operations[1]["source_instruction_machine_cycles"],
+            json!([2, 3, 4])
+        );
+    }
+
+    #[test]
     fn source_farcall_clear_cost_matches_the_independent_rom_instructions() {
         let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
             return;
@@ -2393,6 +2670,20 @@ pub(super) fn attach_cleanup(vendor: &Path, entry_cleanup: &mut Value) -> Result
     ] {
         operations[index]["source_instruction_machine_cycles"] = json!(tape);
     }
+    for (index, effect_index) in [
+        (4, 1),
+        (5, 1),
+        (9, 1),
+        (11, 1),
+        (12, 0),
+        (13, 1),
+        (14, 1),
+        (15, 1),
+        (16, 1),
+        (17, 1),
+    ] {
+        operations[index]["source_memory_effect_instruction_index"] = json!(effect_index);
+    }
     let delay = super::Source::read(vendor, "home/delay.asm")?;
     ensure!(
         delay
@@ -2519,6 +2810,7 @@ pub(super) fn attach(
         .context("intro phase operations")?;
     attach_byte_loop_costs(vendor, operations, &symbols)?;
     attach_plain_instruction_costs(vendor, operations)?;
+    attach_wait_costs(vendor, operations)?;
     let mut count = 0;
     for index in 0..operations.len() {
         if operations[index]["op"] != "decompress_lz3_resource" {
