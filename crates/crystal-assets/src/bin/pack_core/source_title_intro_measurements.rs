@@ -109,32 +109,567 @@ fn register_setup_machine_cycles(instruction: &str) -> Option<u64> {
 fn certify_farcall_source(vendor: &Path) -> Result<()> {
     for (file, label, expected) in [
         ("home/header.asm", "FarCall", vec!["jp FarCall_hl"]),
-        ("home/header.asm", "Bankswitch", vec!["ldh [hROMBank], a", "ld [rROMB], a", "ret"]),
-        ("home/farcall.asm", "FarCall_hl", vec![
-            "ldh [hTempBank], a", "ldh a, [hROMBank]", "push af", "ldh a, [hTempBank]",
-            "rst Bankswitch", "call FarCall_JumpToHL",
-        ]),
+        (
+            "home/header.asm",
+            "Bankswitch",
+            vec!["ldh [hROMBank], a", "ld [rROMB], a", "ret"],
+        ),
+        (
+            "home/farcall.asm",
+            "FarCall_hl",
+            vec![
+                "ldh [hTempBank], a",
+                "ldh a, [hROMBank]",
+                "push af",
+                "ldh a, [hTempBank]",
+                "rst Bankswitch",
+                "call FarCall_JumpToHL",
+            ],
+        ),
         ("home/farcall.asm", "FarCall_JumpToHL", vec!["jp hl"]),
-        ("home/farcall.asm", "ReturnFarCall", vec![
-            "ld a, b", "ld [wFarCallBC], a", "ld a, c", "ld [wFarCallBC + 1], a",
-            "pop bc", "ld a, b", "rst Bankswitch", "ld a, [wFarCallBC]", "ld b, a",
-            "ld a, [wFarCallBC + 1]", "ld c, a", "ret",
-        ]),
+        (
+            "home/farcall.asm",
+            "ReturnFarCall",
+            vec![
+                "ld a, b",
+                "ld [wFarCallBC], a",
+                "ld a, c",
+                "ld [wFarCallBC + 1], a",
+                "pop bc",
+                "ld a, b",
+                "rst Bankswitch",
+                "ld a, [wFarCallBC]",
+                "ld b, a",
+                "ld a, [wFarCallBC + 1]",
+                "ld c, a",
+                "ret",
+            ],
+        ),
     ] {
         let source = super::Source::read(vendor, file)?;
-        let actual = source.body(label)?.iter().skip(1)
+        let actual = source
+            .body(label)?
+            .iter()
+            .skip(1)
             .take_while(|(_, line)| !line.starts_with("SECTION "))
             .filter(|(_, line)| !line.starts_with('.'))
-            .map(|(_, line)| line.as_str()).collect::<Vec<_>>();
-        ensure!(actual == expected, "intro farcall cycle-model source changed: {label}");
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>();
+        ensure!(
+            actual == expected,
+            "intro farcall cycle-model source changed: {label}"
+        );
     }
     let macros = super::Source::read(vendor, "macros/farcall.asm")?;
-    let start = macros.lines.iter().position(|(_, line)| line == "MACRO farcall")
+    let start = macros
+        .lines
+        .iter()
+        .position(|(_, line)| line == "MACRO farcall")
         .context("intro farcall macro missing")?;
-    let actual = macros.lines[start + 1..].iter().take_while(|(_, line)| line != "ENDM")
-        .map(|(_, line)| line.as_str()).collect::<Vec<_>>();
-    ensure!(actual == ["ld a, BANK(\\1)", "ld hl, \\1", "rst FarCall"],
-        "intro farcall macro differs from its instruction model");
+    let actual = macros.lines[start + 1..]
+        .iter()
+        .take_while(|(_, line)| line != "ENDM")
+        .map(|(_, line)| line.as_str())
+        .collect::<Vec<_>>();
+    ensure!(
+        actual == ["ld a, BANK(\\1)", "ld hl, \\1", "rst FarCall"],
+        "intro farcall macro differs from its instruction model"
+    );
+    Ok(())
+}
+
+/// Plain SM83 source instructions retain their boundaries. Conditional control
+/// transfers have distinct taken and fallthrough paths; no ROM frame readings
+/// participate in this model.
+fn plain_instruction_cycles(instruction: &str, taken: bool) -> Option<Vec<u64>> {
+    let registers = ["a", "b", "c", "d", "e", "h", "l"];
+    if instruction.starts_with("assert ")
+        || instruction.starts_with('.')
+        || instruction.ends_with(':')
+    {
+        return Some(vec![]);
+    }
+    let cost = if instruction == "ret" {
+        4
+    } else if instruction.starts_with("ret ") {
+        if taken { 5 } else { 2 }
+    } else if instruction.starts_with("jr ") {
+        if instruction.contains(", ") && !taken {
+            2
+        } else {
+            3
+        }
+    } else if instruction == "jp hl" {
+        1
+    } else if instruction.starts_with("jp ") {
+        if instruction.contains(", ") && !taken {
+            3
+        } else {
+            4
+        }
+    } else if instruction.starts_with("push ") {
+        4
+    } else if instruction.starts_with("pop ") {
+        3
+    } else if instruction.starts_with("ldh ") {
+        3
+    } else if instruction.starts_with("lb ")
+        || instruction.starts_with("hlcoord ")
+        || instruction.starts_with("debgcoord ")
+        || instruction.starts_with("decoord ")
+        || instruction.starts_with("depixel ")
+    {
+        3
+    } else if let Some(raw) = instruction.strip_prefix("ld ") {
+        let (destination, operand) = raw.split_once(", ")?;
+        if ["bc", "de", "hl", "sp"].contains(&destination) {
+            3
+        } else if destination.starts_with('[') || operand.starts_with('[') {
+            if ["[hl]", "[hli]", "[hld]", "[de]", "[bc]"].contains(&destination)
+                || ["[hl]", "[hli]", "[hld]", "[de]", "[bc]"].contains(&operand)
+            {
+                if destination == "[hl]" && !registers.contains(&operand) {
+                    3
+                } else {
+                    2
+                }
+            } else {
+                4
+            }
+        } else if registers.contains(&destination) {
+            if registers.contains(&operand) { 1 } else { 2 }
+        } else {
+            return None;
+        }
+    } else if let Some(operand) = instruction
+        .strip_prefix("inc ")
+        .or_else(|| instruction.strip_prefix("dec "))
+    {
+        if operand == "[hl]" {
+            3
+        } else if ["bc", "de", "hl", "sp"].contains(&operand) {
+            2
+        } else {
+            1
+        }
+    } else if instruction.starts_with("bit ")
+        || instruction.starts_with("set ")
+        || instruction.starts_with("res ")
+    {
+        if instruction.ends_with(", [hl]") {
+            if instruction.starts_with("bit ") {
+                3
+            } else {
+                4
+            }
+        } else {
+            2
+        }
+    } else if ["sla ", "srl ", "sra ", "swap ", "rl ", "rr "]
+        .iter()
+        .any(|prefix| instruction.starts_with(prefix))
+    {
+        2
+    } else if instruction.starts_with("add hl, ") {
+        2
+    } else if let Some(operand) = ["and ", "or ", "xor ", "cp ", "sub ", "add ", "adc "]
+        .iter()
+        .find_map(|prefix| instruction.strip_prefix(prefix))
+    {
+        let operand = operand.strip_prefix("a, ").unwrap_or(operand);
+        if registers.contains(&operand) { 1 } else { 2 }
+    } else if ["nop", "di", "ei", "rra", "rlca", "rrca", "rla"].contains(&instruction) {
+        1
+    } else if instruction == "call NextIntroScene" {
+        return Some(vec![6, 3, 3, 4]);
+    } else if instruction == "call Intro_SetCGBPalUpdate" {
+        return Some(vec![6, 2, 3, 4]);
+    } else {
+        return None;
+    };
+    Some(vec![cost])
+}
+
+fn straight_helper_tape(source: &super::Source, routine: &str) -> Result<Vec<u64>> {
+    let body = source.body(routine)?;
+    let mut tape = Vec::new();
+    let mut repeat = None;
+    let mut repeated = Vec::new();
+    for (_, line) in body.iter().skip(1) {
+        if line.starts_with('.') {
+            break;
+        }
+        if let Some(count) = line.strip_prefix("rept ") {
+            ensure!(
+                repeat.is_none(),
+                "intro timing has nested straight-helper repetition"
+            );
+            repeat = Some(count.parse::<usize>()?);
+            continue;
+        }
+        if line == "endr" {
+            for _ in 0..repeat
+                .take()
+                .context("intro timing repetition end without start")?
+            {
+                tape.extend_from_slice(&repeated);
+            }
+            repeated.clear();
+            continue;
+        }
+        let cost = plain_instruction_cycles(line, false)
+            .with_context(|| format!("unmodeled straight helper {routine}: {line}"))?;
+        ensure!(
+            cost == plain_instruction_cycles(line, true).context("straight helper taken cost")?,
+            "straight helper has a conditional instruction: {routine}"
+        );
+        if repeat.is_some() {
+            repeated.extend(cost);
+        } else {
+            tape.extend(cost);
+        }
+    }
+    ensure!(
+        repeat.is_none() && tape.last() == Some(&4),
+        "straight helper has no final RET: {routine}"
+    );
+    Ok(tape)
+}
+
+fn branching_helper_tape(
+    source: &super::Source,
+    routine: &str,
+    decisions: &[(&str, bool)],
+) -> Result<Vec<u64>> {
+    let body = source.body(routine)?;
+    let mut tape = Vec::new();
+    let mut index = 1usize;
+    let mut byte_count = 0u16;
+    for _ in 0..1000 {
+        let (_, line) = body
+            .get(index)
+            .context("intro branching helper leaves source body")?;
+        index += 1;
+        if line.starts_with('.') {
+            continue;
+        }
+        if let Some(value) = line.strip_prefix("ld bc, ") {
+            byte_count = if let Some(hex) = value.strip_prefix('$') {
+                u16::from_str_radix(hex, 16)?
+            } else if let Some(palettes) = value.strip_suffix(" palettes") {
+                palettes.parse::<u16>()? * 8
+            } else {
+                value.parse()?
+            };
+        }
+        if line == "call ByteFill" || line == "call CopyBytes" {
+            tape.push(6);
+            tape.extend(byte_loop_instruction_machine_cycles(
+                line.strip_prefix("call ").unwrap(),
+                byte_count,
+            )?);
+            continue;
+        }
+        let conditional =
+            (line.starts_with("jr ") && line.contains(", ")) || line.starts_with("ret ");
+        let taken = if conditional {
+            decisions
+                .iter()
+                .find(|(instruction, _)| instruction == &line.as_str())
+                .with_context(|| format!("intro helper branch has no source decision: {line}"))?
+                .1
+        } else {
+            true
+        };
+        tape.extend(
+            plain_instruction_cycles(line, taken).with_context(|| {
+                format!("intro branching helper has unknown instruction: {line}")
+            })?,
+        );
+        if line == "ret" || (line.starts_with("ret ") && taken) {
+            return Ok(tape);
+        }
+        if taken && line.starts_with("jr ") {
+            let target = line
+                .split_once(", ")
+                .map(|(_, target)| target)
+                .unwrap_or(&line[3..]);
+            index = body
+                .iter()
+                .position(|(_, label)| label.trim_end_matches(':') == target)
+                .with_context(|| format!("intro helper branch target missing: {target}"))?;
+        }
+    }
+    anyhow::bail!("intro branching helper exceeded bounded source instructions")
+}
+
+fn counted_helper_tape(source: &super::Source, routine: &str) -> Result<Vec<u64>> {
+    let body = source.body(routine)?;
+    let mut tape = Vec::new();
+    let mut index = 1usize;
+    let mut b = 0u8;
+    let mut c = 0u8;
+    for _ in 0..5000 {
+        let (_, line) = body
+            .get(index)
+            .context("intro counted helper leaves source body")?;
+        index += 1;
+        if line.starts_with('.') {
+            continue;
+        }
+        if let Some(value) = line.strip_prefix("ld b, ") {
+            b = if value == "SCREEN_HEIGHT" {
+                18
+            } else {
+                value.parse()?
+            };
+        }
+        if let Some(value) = line.strip_prefix("ld c, ") {
+            c = if value == "SCREEN_WIDTH" {
+                20
+            } else if value == "1 palettes" {
+                8
+            } else {
+                value.parse()?
+            };
+        }
+        if line == "dec b" {
+            b = b.wrapping_sub(1);
+        }
+        if line == "dec c" {
+            c = c.wrapping_sub(1);
+        }
+        let taken = if line == "jr nz, .col" || line == "jr nz, .loop2" {
+            c != 0
+        } else if line == "jr nz, .row" || line == "jr nz, .loop1" {
+            b != 0
+        } else if line.starts_with("jr ") {
+            anyhow::bail!("unknown counted helper branch: {line}")
+        } else {
+            false
+        };
+        tape.extend(
+            plain_instruction_cycles(line, taken)
+                .with_context(|| format!("unknown counted helper instruction: {line}"))?,
+        );
+        if line == "ret" {
+            return Ok(tape);
+        }
+        if taken {
+            let target = line
+                .split_once(", ")
+                .context("counted helper branch target")?
+                .1;
+            index = body
+                .iter()
+                .position(|(_, label)| label.trim_end_matches(':') == target)
+                .context("counted helper label")?;
+        }
+    }
+    anyhow::bail!("counted intro helper exceeded instruction bound")
+}
+
+fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Result<()> {
+    let source = super::Source::read(vendor, "engine/movie/intro.asm")?;
+    // These two expanded direct calls are certified against their exact bodies.
+    for (routine, expected) in [
+        (
+            "NextIntroScene",
+            vec!["ld hl, wJumptableIndex", "inc [hl]", "ret"],
+        ),
+        (
+            "Intro_SetCGBPalUpdate",
+            vec!["ld a, TRUE", "ldh [hCGBPalUpdate], a", "ret"],
+        ),
+    ] {
+        let body = source.body(routine)?;
+        ensure!(
+            body.iter()
+                .skip(1)
+                .map(|(_, line)| line.as_str())
+                .collect::<Vec<_>>()
+                == expected,
+            "intro plain helper source changed: {routine}"
+        );
+    }
+    let mut previous_scene_end = 0u64;
+    for operation in operations {
+        let span = operation["source_span"].clone();
+        let Some(file) = span["file"].as_str() else {
+            continue;
+        };
+        if !["engine/movie/intro.asm", "home/tilemap.asm"].contains(&file) {
+            continue;
+        }
+        let other;
+        let current = if file == source.file {
+            &source
+        } else {
+            other = super::Source::read(vendor, file)?;
+            &other
+        };
+        let (Some(start), Some(end)) = (span["start_line"].as_u64(), span["end_line"].as_u64())
+        else {
+            continue;
+        };
+        let is_scene = file == source.file
+            && source
+                .lines
+                .iter()
+                .filter(|(line, _)| u64::from(*line) <= start)
+                .rev()
+                .find(|(_, line)| line.ends_with(':') && !line.starts_with('.'))
+                .is_some_and(|(_, label)| {
+                    label.starts_with("IntroScene") && label != "IntroScenes:"
+                });
+        if is_scene && end == previous_scene_end {
+            // A lowering can emit a second semantic alias for the same source
+            // result. That alias executes no second copy of the instructions.
+            operation["source_instruction_machine_cycles"] = json!([]);
+            continue;
+        }
+        let scene_start = source
+            .lines
+            .iter()
+            .filter(|(line, _)| u64::from(*line) < start)
+            .rev()
+            .find(|(_, label)| label.starts_with("IntroScene") && label.ends_with(':'))
+            .map(|(line, _)| u64::from(*line))
+            .unwrap_or(start.saturating_sub(1));
+        let from = if !is_scene {
+            start
+        } else if previous_scene_end >= scene_start && previous_scene_end < start {
+            previous_scene_end + 1
+        } else {
+            scene_start + 1
+        };
+        if is_scene {
+            previous_scene_end = end;
+        }
+        if operation.get("source_helper_timing").is_some() {
+            continue;
+        }
+        let lines = current
+            .lines
+            .iter()
+            .filter(|(line, _)| (from..=end).contains(&u64::from(*line)));
+        let mut normal = Vec::new();
+        let mut taken = Vec::new();
+        let mut complete = true;
+        for (_, line) in lines {
+            if line == "call Intro_ColoredSuicuneFrameSwap"
+                || line == "call Intro_Scene16_AnimateSuicune"
+            {
+                let mut caller = normal.clone();
+                caller.push(6);
+                operation["source_tilemap_timing"] = json!({"routine":line.strip_prefix("call ").unwrap(),
+                    "source_file":"engine/movie/intro.asm","model":"tile_byte_branch_counter_v1",
+                    "target":"wTilemap","byte_count":360,"caller_call_included":false,"interrupts_included":false});
+                operation["source_tilemap_caller_instruction_machine_cycles"] = json!(caller);
+                complete = false;
+                break;
+            }
+            if line == "call Intro_RustleGrass" {
+                let mut caller = normal.clone();
+                caller.push(6);
+                let variants = [false,true].into_iter().map(|finished| {
+                    let mut tape = caller.clone();
+                    tape.extend(branching_helper_tape(&source,"Intro_RustleGrass",&[("ret nc",finished)])?);
+                    Ok(json!({"predicate":if finished {"unsigned_greater_or_equal"} else {"unsigned_less_than"},"operand":36,"instruction_machine_cycles":tape}))
+                }).collect::<Result<Vec<_>>>()?;
+                operation["source_instruction_timing_variants"] = json!({"selector":{"source":"wIntroSceneFrameCounter","mask":255},"variants":variants});
+                complete = false;
+                break;
+            }
+            if line == "call Intro_Scene20_AppearUnown" {
+                let mut caller = normal.clone();
+                caller.push(6);
+                let variants = [false,true].into_iter().map(|nonzero| {
+                    let mut tape = caller.clone();
+                    tape.extend(branching_helper_tape(&source,"Intro_Scene20_AppearUnown",&[("jr nz, .load_pal_2",nonzero)])?);
+                    Ok(json!({"predicate":if nonzero {"not_equal"} else {"equal"},"operand":0,"instruction_machine_cycles":tape}))
+                }).collect::<Result<Vec<_>>>()?;
+                operation["source_instruction_timing_variants"] = json!({"selector":{"source":"accumulator","scope":"values","mask":255},"variants":variants});
+                complete = false;
+                break;
+            }
+            if line == "call Intro_PerspectiveScrollBG" || line == "call CrystalIntro_UnownFade" {
+                let mut caller = normal.clone();
+                caller.push(6);
+                let variants = if line == "call Intro_PerspectiveScrollBG" {
+                    let entries = (0..=1)
+                        .map(|parity| {
+                            let mut tape = caller.clone();
+                            tape.extend(branching_helper_tape(
+                                &source,
+                                "Intro_PerspectiveScrollBG",
+                                &[("jr z, .skip", parity == 0)],
+                            )?);
+                            Ok(json!({"equals":parity,"instruction_machine_cycles":tape}))
+                        })
+                        .collect::<Result<Vec<_>>>()?;
+                    json!({"selector":{"source":"wIntroSceneFrameCounter","mask":1},"variants":entries})
+                } else {
+                    let entries = [("unsigned_less_than",31,false,true),("equals",31,true,false),("unsigned_greater_than",31,false,false)].into_iter().map(|(predicate,operand,equal,below)| {
+                        let mut tape = caller.clone();
+                        tape.extend(branching_helper_tape(&source,"CrystalIntro_UnownFade",&[("jr z, .okay",equal),("jr c, .okay",below)])?);
+                        Ok(json!({"predicate":predicate,"operand":operand,"instruction_machine_cycles":tape}))
+                    }).collect::<Result<Vec<_>>>()?;
+                    json!({"selector":{"source":"wIntroSceneTimer","mask":63},"variants":entries})
+                };
+                operation["source_instruction_timing_variants"] = variants;
+                complete = false;
+                break;
+            }
+            if line == "call Intro_LoadTilemap" || line == "call Intro_Scene24_ApplyPaletteFade" {
+                let helper = counted_helper_tape(&source, line.strip_prefix("call ").unwrap())?;
+                normal.push(6);
+                taken.push(6);
+                normal.extend_from_slice(&helper);
+                taken.extend(helper);
+                continue;
+            }
+            if line == "call Intro_FadeUnownWordPals" {
+                let helper = straight_helper_tape(&source, "Intro_FadeUnownWordPals")?;
+                normal.push(6);
+                taken.push(6);
+                normal.extend_from_slice(&helper);
+                taken.extend(helper);
+                continue;
+            }
+            let (Some(a), Some(b)) = (
+                plain_instruction_cycles(line, false),
+                plain_instruction_cycles(line, true),
+            ) else {
+                complete = false;
+                break;
+            };
+            normal.extend(a);
+            taken.extend(b);
+        }
+        if complete {
+            if file == "home/tilemap.asm" && operation["op"] == "palette_transfer_request" {
+                // This effect returns from the CGB ClearPalettes branch before
+                // falling through ClearBGPalettes into WaitBGMap.
+                let following = current
+                    .lines
+                    .iter()
+                    .find(|(line, _)| u64::from(*line) > end);
+                ensure!(
+                    following.is_some_and(|(_, line)| line == "ret"),
+                    "intro palette clear return source changed"
+                );
+                normal.push(4);
+                taken.push(4);
+            }
+            operation["source_instruction_machine_cycles"] = json!(normal);
+            if normal != taken {
+                operation["source_instruction_machine_cycles_taken"] = json!(taken);
+            }
+            operation["source_instruction_span"] =
+                json!({"file":current.file,"start_line":from,"end_line":end});
+        }
+    }
     Ok(())
 }
 
@@ -144,6 +679,102 @@ fn attach_byte_loop_costs(
     symbols: &std::collections::BTreeMap<String, (usize, u16)>,
 ) -> Result<()> {
     certify_farcall_source(vendor)?;
+    for (file, routine, expected) in [
+        (
+            "engine/movie/intro.asm",
+            "Intro_ClearBGPals",
+            vec![
+                "ldh a, [rWBK]",
+                "push af",
+                "ld a, BANK(wBGPals2)",
+                "ldh [rWBK], a",
+                "ld hl, wBGPals2",
+                "ld bc, 16 palettes",
+                "xor a",
+                "call ByteFill",
+                "pop af",
+                "ldh [rWBK], a",
+                "ld a, TRUE",
+                "ldh [hCGBPalUpdate], a",
+                "call DelayFrame",
+                "call DelayFrame",
+                "ret",
+            ],
+        ),
+        (
+            "engine/movie/intro.asm",
+            "Intro_ResetLYOverrides",
+            vec![
+                "ldh a, [rWBK]",
+                "push af",
+                "ld a, BANK(wLYOverrides)",
+                "ldh [rWBK], a",
+                "ld hl, wLYOverrides",
+                "ld bc, wLYOverridesEnd - wLYOverrides",
+                "xor a",
+                "call ByteFill",
+                "pop af",
+                "ldh [rWBK], a",
+                "ld a, LOW(rSCX)",
+                "ldh [hLCDCPointer], a",
+                "ret",
+            ],
+        ),
+        (
+            "home/text.asm",
+            "ClearTilemap",
+            vec![
+                "hlcoord 0, 0",
+                "ld a, ' '",
+                "ld bc, wTilemapEnd - wTilemap",
+                "call ByteFill",
+                "ldh a, [rLCDC]",
+                "bit B_LCDC_ENABLE, a",
+                "ret z",
+                "jp WaitBGMap",
+            ],
+        ),
+        (
+            "home/tilemap.asm",
+            "ClearPalettes",
+            vec![
+                "ldh a, [hCGB]",
+                "and a",
+                "jr nz, .cgb",
+                "xor a",
+                "ldh [rBGP], a",
+                "ldh [rOBP0], a",
+                "ldh [rOBP1], a",
+                "ret",
+                "ldh a, [rWBK]",
+                "push af",
+                "ld a, BANK(wBGPals2)",
+                "ldh [rWBK], a",
+                "ld hl, wBGPals2",
+                "ld bc, 16 palettes",
+                "ld a, $ff",
+                "call ByteFill",
+                "pop af",
+                "ldh [rWBK], a",
+                "ld a, TRUE",
+                "ldh [hCGBPalUpdate], a",
+                "ret",
+            ],
+        ),
+    ] {
+        let source = super::Source::read(vendor, file)?;
+        let body = source.body(routine)?;
+        let actual = body
+            .iter()
+            .skip(1)
+            .filter(|(_, line)| !line.starts_with('.'))
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>();
+        ensure!(
+            actual == expected,
+            "intro split helper source changed: {routine}"
+        );
+    }
     for routine in ["ByteFill", "CopyBytes"] {
         certify_byte_loop_source(vendor, routine)?;
     }
@@ -210,6 +841,14 @@ fn attach_byte_loop_costs(
             "call ByteFill" if operation["op"] == "fill_memory" => "ByteFill",
             "call CopyBytes" if operation["op"] == "copy_memory" => "CopyBytes",
             "call ClearSprites" if operation["op"] == "fill_memory" => "ClearSprites",
+            "call Intro_ClearBGPals"
+            | "call Intro_ResetLYOverrides"
+            | "call ClearBGPalettes"
+            | "call ClearTilemap"
+                if operation["op"] == "fill_memory" =>
+            {
+                instruction.strip_prefix("call ").unwrap()
+            }
             "call ClearSpriteAnims" | "farcall ClearSpriteAnims"
                 if operation["op"] == "fill_memory"
                     || operation["op"] == "deinitialize_all_sprites" =>
@@ -236,8 +875,23 @@ fn attach_byte_loop_costs(
             u16::try_from(number(operation, "byte_count")?)
                 .context("intro byte loop exceeds source BC register")?
         };
-        let clear = routine.starts_with("Clear");
-        let machine_cycles = if clear {
+        let split = [
+            "Intro_ClearBGPals",
+            "Intro_ResetLYOverrides",
+            "ClearBGPalettes",
+            "ClearTilemap",
+        ]
+        .contains(&routine);
+        let clear = routine.starts_with("Clear") && !split;
+        let machine_cycles = if split {
+            let surrounding = match routine {
+                "Intro_ClearBGPals" | "Intro_ResetLYOverrides" => 31,
+                "ClearBGPalettes" => 45,
+                "ClearTilemap" => 25,
+                _ => unreachable!(),
+            };
+            byte_loop_machine_cycles("ByteFill", bytes)? + surrounding
+        } else if clear {
             clear_helper_instruction_machine_cycles(routine, bytes)?
                 .iter()
                 .sum::<u64>()
@@ -264,7 +918,8 @@ fn attach_byte_loop_costs(
             prefix.push(cost);
         }
         if farcall {
-            let (before, after) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+            let (before, after) =
+                crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
             prefix = before;
             operation["source_caller_model"] = json!("farcall_hl_v1");
             operation["source_return_instruction_machine_cycles"] = json!(after);
@@ -281,8 +936,8 @@ fn attach_byte_loop_costs(
             "machine_cycles":machine_cycles,
             "caller_call_included":false,
             "interrupts_included":false,
-            "source_file":match routine {"ClearSprites"=>"home/clear_sprites.asm","ClearSpriteAnims"=>"engine/sprite_anims/core.asm",_=>"home/copy.asm"},
-            "model":if clear {"clear_register_counter_loop_v1"} else {"byte_count_and_counter_rollover_v1"}
+            "source_file":match routine {"ClearSprites"=>"home/clear_sprites.asm","ClearSpriteAnims"=>"engine/sprite_anims/core.asm","Intro_ClearBGPals"|"Intro_ResetLYOverrides"=>"engine/movie/intro.asm","ClearBGPalettes"=>"home/tilemap.asm","ClearTilemap"=>"home/text.asm",_=>"home/copy.asm"},
+            "model":if split {"split_memory_effect_v1"} else if clear {"clear_register_counter_loop_v1"} else {"byte_count_and_counter_rollover_v1"}
         });
     }
     Ok(())
@@ -293,15 +948,460 @@ mod byte_loop_cost_tests {
     use super::*;
 
     #[test]
+    fn plain_scene_taken_and_fallthrough_tapes_match_independent_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for (routine, frame, lines, taken) in [
+            (
+                "IntroScene27",
+                128,
+                vec![
+                    "ld hl, wIntroSceneTimer",
+                    "inc [hl]",
+                    "ld hl, wIntroSceneFrameCounter",
+                    "ld a, [hl]",
+                    "inc [hl]",
+                    "cp $80",
+                    "jr nc, .done",
+                    "call NextIntroScene",
+                    "ld a, $80",
+                    "ld [wIntroSceneFrameCounter], a",
+                    "ret",
+                ],
+                true,
+            ),
+            (
+                "IntroScene28",
+                12,
+                vec![
+                    "ld hl, wIntroSceneFrameCounter",
+                    "ld a, [hl]",
+                    "and a",
+                    "jr z, .done",
+                    "dec [hl]",
+                    "cp $18",
+                    "jr z, .clear",
+                    "cp $8",
+                    "ret nz",
+                ],
+                false,
+            ),
+        ] {
+            let mut expected = Vec::new();
+            for line in lines {
+                expected.extend(plain_instruction_cycles(line, taken || line == "ret nz").unwrap());
+            }
+            let measured = source_intro_oracle::measure_routine(
+                vendor,
+                routine,
+                &[("wIntroSceneFrameCounter".into(), frame)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(expected, actual, "{routine}");
+        }
+        assert!(plain_instruction_cycles("call UnmodeledHelper", false).is_none());
+        assert_eq!(
+            plain_instruction_cycles("jr nc, .done", false),
+            Some(vec![2])
+        );
+        assert_eq!(
+            plain_instruction_cycles("jr nc, .done", true),
+            Some(vec![3])
+        );
+    }
+
+    #[test]
+    fn split_memory_helper_tapes_match_independent_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for (routine, count, surrounding, writes, suffix) in [
+            ("Intro_ResetLYOverrides", 144, 31, vec![], vec![2, 3, 4]),
+            (
+                "ClearBGPalettes",
+                128,
+                45,
+                vec![("hCGB".into(), 1)],
+                vec![2, 3, 4],
+            ),
+            ("ClearTilemap", 360, 25, vec![("$ff40".into(), 0)], vec![]),
+        ] {
+            let descriptor = json!({"routine":routine,"byte_count":count,
+                "machine_cycles":byte_loop_machine_cycles("ByteFill",count).unwrap()+surrounding,
+                "source_file":match routine {"ClearBGPalettes"=>"home/tilemap.asm","ClearTilemap"=>"home/text.asm",_=>"engine/movie/intro.asm"},
+                "model":"split_memory_effect_v1","caller_call_included":false,"interrupts_included":false});
+            let mut tape =
+                crystal_assets::runtime_intro_helper_instruction_machine_cycles(&descriptor)
+                    .unwrap();
+            let measured_routine = if routine == "ClearBGPalettes" {
+                tape.remove(0);
+                "ClearPalettes"
+            } else {
+                routine
+            };
+            if routine == "ClearTilemap" {
+                // The fixture's LCD is off: RET Z is taken, no WaitBGMap JP.
+                tape.truncate(tape.len() - 2);
+                tape.push(5);
+            }
+            tape.extend(suffix);
+            let measured =
+                source_intro_oracle::measure_routine(vendor, measured_routine, &writes).unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(tape, actual, "{routine}");
+        }
+    }
+
+    #[test]
+    fn straight_word_palette_helper_matches_sm83_instruction_boundaries() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        let tape = straight_helper_tape(&source, "Intro_FadeUnownWordPals").unwrap();
+        for (palette, timer) in [(0, 0), (4, 8), (7, 15)] {
+            let measured = source_intro_oracle::measure_routine_state(
+                vendor,
+                "Intro_FadeUnownWordPals",
+                &[("wIntroSceneTimer".into(), timer)],
+                &[("A", palette)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(tape, actual, "palette {palette} timer {timer}");
+        }
+    }
+
+    #[test]
+    fn lz3_source_counter_and_command_paths_match_independent_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let symbols = source_intro_oracle::symbols(
+            &std::fs::read_to_string(vendor.join("pokecrystal.sym")).unwrap(),
+        )
+        .unwrap();
+        for command in 0u8..=6 {
+            for count in [1usize, 2, 31, 32, 255, 256, 257, 512, 768] {
+                for negative in [false, true] {
+                    let mut compressed = vec![0, 0x53]; // Seed output for rewrite commands.
+                    let encoded = count - 1;
+                    if count <= 32 {
+                        compressed.push((command << 5) | encoded as u8);
+                    } else {
+                        compressed.extend([
+                            0xe0 | (command << 2) | ((encoded >> 8) as u8),
+                            encoded as u8,
+                        ]);
+                    }
+                    match command {
+                        0 => compressed.extend(std::iter::repeat_n(0x53, count)),
+                        1 => compressed.push(0x53),
+                        2 => compressed.extend([0x53, 0xaa]),
+                        3 => (),
+                        _ if negative => compressed.push(0x80),
+                        _ => compressed.extend([0, 0]),
+                    }
+                    compressed.push(255);
+                    let predicted =
+                        crystal_assets::runtime_intro_decompress_instruction_machine_cycles(
+                            &compressed,
+                        )
+                        .unwrap();
+                    let writes = compressed
+                        .iter()
+                        .enumerate()
+                        .map(|(offset, byte)| (format!("wShadowOAM + {offset}"), *byte))
+                        .collect::<Vec<_>>();
+                    let measured = source_intro_oracle::measure_routine_state(
+                        vendor,
+                        "Decompress",
+                        &writes,
+                        &[("HL", symbols["wShadowOAM"].1), ("DE", 0xd000)],
+                    )
+                    .unwrap();
+                    let actual = measured["instructions"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        predicted, actual,
+                        "command {command} count {count} negative {negative}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn request2bpp_blocking_segments_match_source_cpu_control() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for count in [0u8, 1, 7, 8, 16, 31, 64, 128, 255] {
+            let segments =
+                crystal_assets::runtime_intro_request2bpp_instruction_segments(count, 8).unwrap();
+            let expected = segments
+                .iter()
+                .flat_map(|(_, before, after)| before.iter().chain(after))
+                .copied()
+                .collect::<Vec<_>>();
+            let measured = source_intro_oracle::measure_routine_with_frame_wait_fixture(
+                vendor,
+                "Request2bpp",
+                &[("hROMBank".into(), 1), ("wLinkMode".into(), 0)],
+                &[
+                    ("BC", 0x100 | u16::from(count)),
+                    ("HL", 0x8000),
+                    ("DE", 0xc000),
+                ],
+            )
+            .unwrap();
+            let waits = measured["frame_waits"].as_array().unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| {
+                    !waits.iter().any(|wait| {
+                        let start = wait["start_instruction"].as_u64().unwrap() as usize;
+                        let end = wait["end_instruction"].as_u64().unwrap() as usize;
+                        (*index >= start) && (*index < end)
+                    })
+                })
+                .map(|(_, instruction)| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(expected, actual, "tiles {count}");
+            assert_eq!(
+                segments.len(),
+                waits.len(),
+                "tiles {count} source wait count"
+            );
+        }
+        // Certify every split source body before its timing descriptor is used.
+        attach_byte_loop_costs(vendor, &mut [], &std::collections::BTreeMap::new()).unwrap();
+    }
+
+    #[test]
+    fn branching_palette_and_scroll_helpers_match_independent_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for frame in [0, 1, 128, 255] {
+            let predicted = branching_helper_tape(
+                &source,
+                "Intro_PerspectiveScrollBG",
+                &[("jr z, .skip", frame & 1 == 0)],
+            )
+            .unwrap();
+            let measured = source_intro_oracle::measure_routine(
+                vendor,
+                "Intro_PerspectiveScrollBG",
+                &[("wIntroSceneFrameCounter".into(), frame)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(predicted, actual, "scroll frame {frame}");
+        }
+        for timer in [0, 30, 31, 32, 63, 64, 128, 255] {
+            let value = timer & 63;
+            let predicted = branching_helper_tape(
+                &source,
+                "CrystalIntro_UnownFade",
+                &[("jr z, .okay", value == 31), ("jr c, .okay", value < 31)],
+            )
+            .unwrap();
+            let measured = source_intro_oracle::measure_routine(
+                vendor,
+                "CrystalIntro_UnownFade",
+                &[("wIntroSceneTimer".into(), timer)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(predicted, actual, "fade timer {timer}");
+        }
+    }
+
+    #[test]
+    fn counted_tilemap_and_palette_helpers_match_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for routine in ["Intro_LoadTilemap", "Intro_Scene24_ApplyPaletteFade"] {
+            let predicted = counted_helper_tape(&source, routine).unwrap();
+            let measured =
+                source_intro_oracle::measure_routine_state(vendor, routine, &[], &[("A", 0)])
+                    .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(predicted, actual, "{routine}");
+        }
+    }
+
+    #[test]
+    fn indexed_palette_copy_paths_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for variant in [0u16, 1, 255] {
+            let predicted = branching_helper_tape(
+                &source,
+                "Intro_Scene20_AppearUnown",
+                &[("jr nz, .load_pal_2", variant != 0)],
+            )
+            .unwrap();
+            let measured = source_intro_oracle::measure_routine_state(
+                vendor,
+                "Intro_Scene20_AppearUnown",
+                &[("wIntroSceneTimer".into(), 7)],
+                &[("A", variant)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(predicted, actual, "palette variant {variant}");
+        }
+    }
+
+    #[test]
+    fn grass_request_and_early_return_paths_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for frame in [0, 1, 35, 36, 255] {
+            let predicted =
+                branching_helper_tape(&source, "Intro_RustleGrass", &[("ret nc", frame >= 36)])
+                    .unwrap();
+            let measured = source_intro_oracle::measure_routine(
+                vendor,
+                "Intro_RustleGrass",
+                &[("wIntroSceneFrameCounter".into(), frame)],
+            )
+            .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(predicted, actual, "grass frame {frame}");
+        }
+    }
+
+    #[test]
+    fn tilemap_xor_byte_and_frame_branches_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for fill in [
+            vec![0u8; 360],
+            vec![1; 360],
+            vec![128; 360],
+            (0..360).map(|i| [0, 1, 127, 128, 255][i % 5]).collect(),
+        ] {
+            for frame in [None, Some(0u8), Some(1), Some(2), Some(3), Some(255)] {
+                let predicted =
+                    crystal_assets::runtime_intro_tilemap_xor_instruction_machine_cycles(
+                        &fill, frame,
+                    )
+                    .unwrap();
+                let routine = if frame.is_some() {
+                    "Intro_Scene16_AnimateSuicune"
+                } else {
+                    "Intro_ColoredSuicuneFrameSwap"
+                };
+                let mut writes = fill
+                    .iter()
+                    .enumerate()
+                    .map(|(i, &value)| (format!("wTilemap + {i}"), value))
+                    .collect::<Vec<_>>();
+                if let Some(frame) = frame {
+                    writes.push(("wIntroSceneFrameCounter".into(), frame));
+                }
+                let measured =
+                    source_intro_oracle::measure_routine(vendor, routine, &writes).unwrap();
+                let actual = measured["instructions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                    .collect::<Vec<_>>();
+                assert_eq!(predicted, actual, "{routine} frame {frame:?}");
+            }
+        }
+    }
+
+    #[test]
     fn source_farcall_clear_cost_matches_the_independent_rom_instructions() {
-        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
         let vendor = Path::new(&vendor);
         certify_farcall_source(vendor).unwrap();
         let symbols = source_intro_oracle::symbols(
-            &std::fs::read_to_string(vendor.join("pokecrystal.sym")).unwrap()).unwrap();
+            &std::fs::read_to_string(vendor.join("pokecrystal.sym")).unwrap(),
+        )
+        .unwrap();
         let (bank, address) = symbols["ClearSpriteAnims"];
-        let measured = source_intro_oracle::measure_routine_state(vendor, "FarCall",
-            &[("hROMBank".into(), 1)], &[("A", bank as u16), ("HL", address)]).unwrap();
+        let measured = source_intro_oracle::measure_routine_state(
+            vendor,
+            "FarCall",
+            &[("hROMBank".into(), 1)],
+            &[("A", bank as u16), ("HL", address)],
+        )
+        .unwrap();
         let (prefix, suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
         let body = clear_helper_instruction_machine_cycles("ClearSpriteAnims", 193).unwrap();
         // Entering at rst8 excludes the caller's LD/LD/RST macro (2+3+4).
@@ -735,6 +1835,63 @@ pub(super) fn attach(
 ) -> Result<Value> {
     let symbols =
         source_intro_oracle::symbols(&std::fs::read_to_string(vendor.join("pokecrystal.sym"))?)?;
+    let source = super::Source::read(vendor, "engine/movie/intro.asm")?;
+    ensure!(
+        source
+            .body("IntroSceneJumper")?
+            .iter()
+            .skip(1)
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>()
+            == ["jumptable IntroScenes, wJumptableIndex"],
+        "intro scene dispatcher source changed"
+    );
+    let macros = super::Source::read(vendor, "macros/code.asm")?;
+    let start = macros
+        .lines
+        .iter()
+        .position(|(_, line)| line == "MACRO jumptable")
+        .context("intro dispatcher macro missing")?;
+    let macro_body = macros.lines[start + 1..]
+        .iter()
+        .take_while(|(_, line)| line != "ENDM")
+        .map(|(_, line)| line.as_str())
+        .collect::<Vec<_>>();
+    ensure!(
+        macro_body
+            == [
+                "ld a, [\\2]",
+                "ld e, a",
+                "ld d, 0",
+                "ld hl, \\1",
+                "add hl, de",
+                "add hl, de",
+                "ld a, [hli]",
+                "ld h, [hl]",
+                "ld l, a",
+                "jp hl"
+            ],
+        "intro dispatcher instruction macro changed"
+    );
+    {
+        use sha2::Digest;
+        let digest = format!(
+            "{:x}",
+            sha2::Sha256::digest(std::fs::read(vendor.join("home/decompress.asm"))?)
+        );
+        ensure!(
+            digest == "fb08952b65c7c834dfbe09b8a3d9c53832043f0635e8165ebcd42543ed1a9e9f",
+            "intro LZ3 instruction-model source changed"
+        );
+        let gfx_digest = format!(
+            "{:x}",
+            sha2::Sha256::digest(std::fs::read(vendor.join("home/gfx.asm"))?)
+        );
+        ensure!(
+            gfx_digest == "bf9d276ec0a3d8c800ddcbe26f10555abe79718c6c40a7dd2afd62e89ed52af2",
+            "intro Request2bpp instruction-model source changed"
+        );
+    }
     let records = trace["records"].as_array().context("intro trace records")?;
     let mut decompressions = records
         .iter()
@@ -761,6 +1918,7 @@ pub(super) fn attach(
         .as_array_mut()
         .context("intro phase operations")?;
     attach_byte_loop_costs(vendor, operations, &symbols)?;
+    attach_plain_instruction_costs(vendor, operations)?;
     let mut count = 0;
     for index in 0..operations.len() {
         if operations[index]["op"] != "decompress_lz3_resource" {
@@ -815,6 +1973,41 @@ pub(super) fn attach(
             number(request, "bc")? & 255 == number(transfer, "tile_count")?,
             "intro transfer size differs from source"
         );
+        let resource = transfer["resource"]
+            .as_str()
+            .context("intro compressed resource path")?;
+        let compressed = std::fs::read(vendor.join(resource))?;
+        let decompress_tape =
+            crystal_assets::runtime_intro_decompress_instruction_machine_cycles(&compressed)?;
+        let modeled_cycles = decompress_tape.iter().sum::<u64>();
+        ensure!(
+            record["instruction_machine_cycles"].as_u64() == Some(modeled_cycles),
+            "intro source LZ3 instruction model disagrees with ROM: {resource}"
+        );
+        operations[index]["source_decompress_timing"] = json!({
+            "routine":"Decompress","source_file":"home/decompress.asm",
+            "model":"lz3_source_command_counter_v1","compressed_byte_count":compressed.len(),
+            "machine_cycles":modeled_cycles,"caller_call_included":false,"interrupts_included":false});
+        let span = &operations[index]["source_span"];
+        let start = span["start_line"]
+            .as_u64()
+            .context("intro decompressor caller start")?;
+        let end = span["end_line"]
+            .as_u64()
+            .context("intro decompressor caller end")?;
+        let mut caller = Vec::new();
+        for (_, line) in source
+            .lines
+            .iter()
+            .filter(|(line, _)| (start..end).contains(&u64::from(*line)))
+        {
+            caller.extend(
+                plain_instruction_cycles(line, false)
+                    .context("intro decompressor register setup instruction")?,
+            );
+        }
+        caller.extend([6, 3, 4, 2, 3, 4, 3, 6]);
+        operations[index]["source_decompress_caller_instruction_machine_cycles"] = json!(caller);
         operations[index]["decompress_machine_cycles"] =
             record["instruction_machine_cycles"].clone();
         operations[index]["decompress_frame_boundaries_crossed"] = json!(crossings(record)?);
@@ -826,6 +2019,12 @@ pub(super) fn attach(
             next["op"] == "request_2bpp_transfer",
             "intro decompression request is not adjacent"
         );
+        next["source_request_timing"] = json!({"routine":"Request2bpp","source_file":"home/gfx.asm",
+            "model":"normal_link_blocking_segments_v1","tile_count":transfer["tile_count"],
+            "tiles_per_cycle":metadata["chunking"]["default_tiles_per_vblank"],
+            "link_mode":"not_mobile","delay_frame_body_included":false,"interrupts_included":false});
+        next["source_request_caller_instruction_machine_cycles"] = json!([3, 3, 3, 6]);
+        next["source_request_return_instruction_machine_cycles"] = json!([3, 3, 4]);
         next["request_2bpp_machine_cycles"] = request["instruction_machine_cycles"].clone();
         next["request_2bpp_frame_boundaries_crossed"] = json!(crossings(request)?);
         next["request_2bpp_timing_oracle"] = identity(trace, request)?;
@@ -909,6 +2108,6 @@ pub(super) fn attach(
         "intro scheduler timing coverage empty"
     );
     Ok(
-        json!({"rom_frame_crossings":crossings,"timing_oracle":{"runner":"pack_core Rust intro oracle","schema_version":1,"validated":false,"rom_sha1":trace["rom_sha1"],"instruction_core":"sm83_mcycle_v1","timer_model":"cgb_timer_falling_edge_delayed_reload_v1"}}),
+        json!({"source_dispatcher_instruction_machine_cycles":[4,1,2,3,2,2,2,2,1,1],"source_dispatcher_caller_call_included":false,"rom_frame_crossings":crossings,"timing_oracle":{"runner":"pack_core Rust intro oracle","schema_version":1,"validated":false,"rom_sha1":trace["rom_sha1"],"instruction_core":"sm83_mcycle_v1","timer_model":"cgb_timer_falling_edge_delayed_reload_v1"}}),
     )
 }
