@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Build and verify local content from the repository's exact source pin.
 set -euo pipefail
+export GIT_TERMINAL_PROMPT=0
 repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 workspace="${XDG_DATA_HOME:-$HOME/.local/share}/geothite/export-workspace"
 jobs=2
@@ -90,8 +91,14 @@ cp "$repo/crates/crystal-bevy/src/battle_anim_program/"{bank.bin,provenance.json
 export CARGO_TARGET_DIR="${CRYSTAL_PACK_BUILD_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/geothite/pack-builder}"
 export CARGO_BUILD_JOBS="$jobs"
 export CRYSTAL_EXPORT_WORKSPACE="$workspace"
-cargo run --profile "$profile" --locked -p crystal-assets --bin pack_core -- "$workspace"
-cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$workspace/content-packs/core-modular.browser.crystalpack" --audio
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_core -- "$workspace" --prepare-source-workspace
+diagnostic="$workspace/content-packs/intro-diagnostic.unvalidated.crystalpack"
+trace="$workspace/intro-trace.json"
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_core -- "$workspace" --export-intro-trace
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_source_checkpoint -- "$workspace" "$diagnostic" --title-unvalidated "$workspace/apps/web/assets/data/runtime_title_screen.unvalidated.json"
+cargo run --profile "$profile" --locked -p crystal-bevy --features intro-certification --bin certify_intro -- "$diagnostic" "$trace" "$workspace"
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_core -- "$workspace" --pack-prepared-workspace
+cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$workspace/content-packs/core-modular.browser.crystalpack" --audio --desktop
 # Verify both candidate packs before replacing the local agent inputs.
 mkdir -p "$repo/content-packs"
 browser_candidate="$repo/content-packs/core-modular.browser.pending.crystalpack"
@@ -99,7 +106,7 @@ native_candidate="$repo/content-packs/core-modular.pending.crystalpack"
 tui_candidate="$repo/content-packs/text-tui.pending.crystalpack"
 trap 'rm -f -- "$browser_candidate" "$native_candidate" "$tui_candidate"' EXIT
 cp "$workspace/content-packs/core-modular.crystalpack" "$native_candidate"
-cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$native_candidate"
+cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$native_candidate" --desktop
 cp "$workspace/content-packs/core-modular.browser.crystalpack" "$browser_candidate"
 cargo run --profile "$profile" --locked -p crystal-assets --bin pack_text_tui -- . "$browser_candidate" "$tui_candidate"
 cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$tui_candidate" --audio

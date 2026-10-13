@@ -387,7 +387,7 @@ impl<'a> ModpackCompiler<'a> {
 
         let compiled_audio = compile_audio_payloads(self.asset_root, &mut data)?;
         let audio_manifest = ModpackAudioManifest::from_assets(&data.audio, &compiled_audio)?;
-        let runtime_files = compile_runtime_files(self.asset_root)?;
+        let runtime_files = compile_runtime_files(self.asset_root, &data.runtime_title_screen.program)?;
         let identity = derive_compiled_game_pack_identity(
             COMPILED_GAME_PACK_FORMAT_VERSION,
             &data,
@@ -495,10 +495,22 @@ pub const REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS: &[&str] = &[
     "gfx/pokegear/radio.tilemap.rle",
 ];
 
-fn compile_runtime_files(asset_root: &AssetRoot) -> Result<BTreeMap<String, Vec<u8>>> {
+fn compile_runtime_files(asset_root: &AssetRoot, presentation: &RuntimePresentationProgram) -> Result<BTreeMap<String, Vec<u8>>> {
     let root = asset_root.runtime_assets();
     let mut files = BTreeMap::new();
     collect_runtime_files(&root, &root, &mut files)?;
+    // These compressed graphics are live inputs to the source decompressor's
+    // instruction clock. Retain only resources authored by this presentation,
+    // rather than every assembler/build intermediate in the export workspace.
+    for resource in &presentation.resources {
+        if resource.kind == "graphics" && resource.path.ends_with(".lz") {
+            validate_compiled_runtime_file_key(&resource.path)?;
+            let bytes = std::fs::read(root.join(&resource.path))
+                .with_context(|| format!("read source-timed graphic {}", resource.path))?;
+            anyhow::ensure!(!bytes.is_empty(), "source-timed graphic {} is empty", resource.path);
+            files.insert(resource.path.clone(), bytes);
+        }
+    }
     for &relative in REQUIRED_VENDOR_RUNTIME_FILE_KEYS {
         let source = asset_root.repository_root.join(relative);
         let bytes = std::fs::read(&source)

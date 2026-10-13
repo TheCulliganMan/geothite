@@ -47,6 +47,7 @@ impl VisibleIntroScreen {
             saved_register_bytes: BTreeMap::new(),
             cleanup_cursor: None,
             scene_setup_cursor: None,
+            source_pending_dispatch_return: None,
             scene_setup_audio: Vec::new(),
             scene_setup_sprite_instances: Vec::new(),
             cleanup_exit_reason: None,
@@ -1090,6 +1091,120 @@ fn execute_visible_intro_cleanup(
 }
 
 fn tick_visible_intro_screen(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    runtime_shell.intro_display_screen = runtime_shell.intro_screen.clone();
+    if runtime_shell.intro_screen.is_none() { return Ok(()); }
+    let subprogram = runtime_shell.runtime.title_presentation_program().subprograms.iter()
+        .find(|subprogram| subprogram.id == "crystal_intro")
+        .context("source CrystalIntro program is missing")?;
+    let source = subprogram.loop_["scheduler"].get("source_scheduler_timing").is_some();
+    #[cfg(test)]
+    if !source { return tick_visible_intro_screen_fixture(runtime_shell); }
+    anyhow::ensure!(source, "CrystalIntro requires its source-derived sprite scheduler");
+    let dispatcher_tape = visible_intro_source_instruction_array(
+        subprogram.loop_["scene_dispatch"].get("source_dispatcher_instruction_machine_cycles"), "dispatcher")?;
+    anyhow::ensure!(subprogram.loop_["scene_dispatch"]["source_dispatcher_caller_call_included"] == false,
+        "CrystalIntro dispatcher double-counts its caller");
+    let queue = |intro: &mut VisibleIntroScreen, tape: Vec<u64>| -> Result<()> {
+        queue_visible_intro_source_segment(&mut intro.source_instruction_segments,
+            VisibleIntroInstructionSegment { machine_cycles:tape, ..Default::default() })
+    };
+    if runtime_shell.intro_screen.as_ref().is_some_and(|intro| intro.cleanup_cursor.is_some()) {
+        return advance_visible_intro_cleanup(runtime_shell);
+    }
+    // Display settling retains the suspended source call. The exact CPU work
+    // and its IRQs were consumed once when the instructions executed.
+    if let Some(intro) = runtime_shell.intro_screen.as_mut() {
+        if intro.scene_block_frames > 0 {
+            intro.scene_block_frames -= 1;
+            if intro.scene_block_frames > 0 { return Ok(()); }
+        }
+        if intro.scene_delay_frames > 0 {
+            intro.scene_delay_frames -= 1;
+            if intro.scene_delay_frames > 0 { return Ok(()); }
+        }
+    }
+    let pending = runtime_shell.intro_screen.as_mut()
+        .and_then(|intro| intro.source_pending_dispatch_return.take());
+    let (entry, tick, finished) = if let Some(pending) = pending { pending } else {
+        let resuming = runtime_shell.intro_screen.as_ref().is_some_and(|intro| intro.scene_setup_cursor.is_some());
+        if !resuming {
+            let intro = runtime_shell.intro_screen.as_mut().context("source intro disappeared")?;
+            intro.callable_memory.extend(intro.source_clock_memory.clone());
+            let byte = |name: &str| -> Result<u8> {
+                u8::try_from(*intro.source_clock_memory.get(name)
+                    .with_context(|| format!("source intro byte {name} is missing"))?)
+                    .with_context(|| format!("source intro byte {name} exceeds one byte"))
+            };
+            intro.scene_frame_counter = byte("wIntroSceneFrameCounter")?;
+            intro.scene_timer = byte("wIntroSceneTimer")?;
+            let delay = byte("wTextDelayFrames")?;
+            let tick = intro.scene_dispatch_tick.checked_add(1).context("source dispatcher count overflowed")?;
+            intro.source_input_boundaries.push_back(VisibleIntroSourceInputBoundary {
+                clock:intro.frame_clock, dispatcher_entry:intro.jumptable_index, dispatch_tick:tick,
+                scene_frame_counter:intro.scene_frame_counter, scene_timer:intro.scene_timer, text_delay_frames:delay,
+            });
+            anyhow::ensure!(intro.source_input_boundaries.len() <= 4000, "source intro input log exceeded its bounded capacity");
+            queue_visible_intro_source_segment(&mut intro.source_instruction_segments,
+                VisibleIntroInstructionSegment { joy_text_delay_after: true, ..Default::default() })?;
+            if intro.finished || intro.jumptable_index >= intro.scene_count {
+                // The exit bit is tested only after the final real input call.
+                queue(intro, vec![3,2,2,4,2,3])?;
+                advance_visible_intro_clock_work(runtime_shell, false)?;
+                return finish_visible_intro_screen(runtime_shell, "complete");
+            }
+            queue(intro, vec![3,2,2,4,2,2,6])?;
+            queue(intro, dispatcher_tape)?;
+            advance_visible_intro_clock_work(runtime_shell, false)?;
+        }
+        let intro = runtime_shell.intro_screen.as_ref().context("source intro disappeared before dispatch")?;
+        let entry = intro.jumptable_index;
+        let tick = if resuming { intro.scene_dispatch_tick } else { intro.scene_dispatch_tick.checked_add(1).context("source dispatcher count overflowed")? };
+        let finished = step_visible_intro_scene(runtime_shell)?;
+        runtime_shell.intro_screen.as_mut().context("source intro disappeared after dispatch")?.scene_dispatch_tick = tick;
+        drain_visible_intro_setup_audio(runtime_shell)?;
+        let source_work = runtime_shell.intro_screen.as_ref().is_some_and(|intro| !intro.source_instruction_segments.is_empty());
+        let crossed = advance_visible_intro_clock_work(runtime_shell, false)?;
+        let intro = runtime_shell.intro_screen.as_mut().context("source intro disappeared during dispatch")?;
+        if let Some(next) = intro.next_scene_frame_counter.take() { intro.scene_frame_counter = next; }
+        if !finished && intro.scene_setup_cursor.is_some() {
+            let cursor = intro.scene_setup_cursor.as_mut().context("source setup cursor disappeared")?;
+            if source_work && cursor.wait_kind.is_some() {
+                cursor.wait_frames_remaining = u16::try_from(crossed).context("source setup exceeded the renderer wait range")?;
+            }
+            return Ok(());
+        }
+        let completion_wait = if finished && intro.scene_setup_cursor.is_none() {
+            u16::from(*intro.completion_wait_frames.get(entry).context("source completion wait missing")?)
+        } else { 0 };
+        let hold = u16::from(intro.scene_block_frames).max(completion_wait);
+        if hold > 0 {
+            intro.scene_block_frames = 0;
+            intro.scene_delay_frames = u8::try_from(hold).context("source display hold exceeds one byte")?;
+            intro.source_pending_dispatch_return = Some((entry,tick,finished));
+            return Ok(());
+        }
+        (entry,tick,finished)
+    };
+    let intro = runtime_shell.intro_screen.as_mut().context("source dispatcher return lost intro")?;
+    if finished {
+        visible_intro_next_scene(intro);
+        intro.scene_frame_counter = u8::try_from(*intro.source_clock_memory.get("wIntroSceneFrameCounter").context("source frame counter missing")?)?;
+        intro.scene_timer = u8::try_from(*intro.source_clock_memory.get("wIntroSceneTimer").context("source scene timer missing")?)?;
+    }
+    let (prefix, mut suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+    queue(intro, prefix)?;
+    apply_visible_intro_sprite_pipeline_for_shell_at(runtime_shell, entry, tick)?;
+    let intro = runtime_shell.intro_screen.as_mut().context("source scheduler return lost intro")?;
+    suffix.push(6); // CALL DelayFrame, whose body owns the HALT/IRQ loop.
+    queue(intro, suffix)?;
+    advance_visible_intro_clock_work(runtime_shell, true)?;
+    queue(runtime_shell.intro_screen.as_mut().context("source frame wait lost intro")?, vec![4,6])?;
+    advance_visible_intro_clock_work(runtime_shell, false)?; // JP .loop; CALL JoyTextDelay.
+    Ok(())
+}
+
+#[cfg(test)]
+fn tick_visible_intro_screen_fixture(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.intro_display_screen = runtime_shell.intro_screen.clone();
     let Some(intro) = runtime_shell.intro_screen.as_ref() else {
         return Ok(());

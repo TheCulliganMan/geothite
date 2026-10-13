@@ -65,6 +65,7 @@ web-sys = { workspace = true, features = [
 [features]
 default = ["bevy-shell", "fullscreen-scaling"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
+intro-certification = ["bevy-shell", "crystal-assets/test-fixtures", "crystal-runtime/test-fixtures"]
 fullscreen-scaling = ["bevy-shell"]
 # Installed Windows app: no console window; startup errors get a native dialog.
 desktop-app = ["bevy-shell"]
@@ -117,3 +118,8 @@ required-features = ["location-tester"]
 name = "crystal-bevy"
 path = "src/main.rs"
 required-features = ["bevy-shell"]
+
+[[bin]]
+name = "certify_intro"
+path = "src/bin/certify_intro.rs"
+required-features = ["intro-certification"]

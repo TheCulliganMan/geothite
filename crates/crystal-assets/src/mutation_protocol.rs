@@ -483,7 +483,7 @@ mod compiled_tileset_extension_tests {
         let data = asset_root
             .load_base_game_data()
             .expect("load canonical game data");
-        let runtime_files = compile_runtime_files(&asset_root).expect("compile runtime files");
+        let runtime_files = compile_runtime_files(&asset_root, &data.runtime_title_screen.program).expect("compile runtime files");
         let report = canonical_test_compile_report(&data, "tileset-extension-base");
         CompiledGamePack::new_unchecked_for_tests(data, report)
             .with_runtime_files_for_tests(runtime_files)

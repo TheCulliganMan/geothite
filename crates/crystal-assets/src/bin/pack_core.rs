@@ -102,6 +102,8 @@ fn main() -> Result<()> {
         let root = PathBuf::from(repository_root);
         verify_pret_source_pin(&root)?;
         return match stage.as_str() {
+            "--prepare-source-workspace" => export_source_workspace(&root, true),
+            "--pack-prepared-workspace" => compile_core_pack(&root),
             "--export-world" => source_world::export(&root),
             "--export-npcs" => source_npcs::export(&root),
             "--export-items" => item_name_export::export_source(&root),
@@ -146,6 +148,13 @@ fn main() -> Result<()> {
 }
 
 fn export_core_pack(repository_root: &Path) -> Result<()> {
+    export_source_workspace(repository_root, false)?;
+    compile_core_pack(repository_root)
+}
+
+// Source preparation writes no certified catalog or playable pack. The
+// production presentation replay must certify it before compilation.
+fn export_source_workspace(repository_root: &Path, diagnostic_title: bool) -> Result<()> {
     verify_pret_source_pin(repository_root)?;
     source_constants::export(repository_root).context("export source numeric constants")?;
     source_species::export(repository_root).context("export source Pokemon and moves")?;
@@ -180,7 +189,16 @@ fn export_core_pack(repository_root: &Path) -> Result<()> {
     battle_oam_export::export(repository_root).context("export source battle OAM")?;
     source_animation_catalogs::export(repository_root).context("export authored animation catalogs")?;
     source_audio::export(repository_root).context("export source audio programs")?;
-    source_title_screen::export(repository_root).context("export authored title presentation")?;
+    if diagnostic_title {
+        source_title_screen::export_unvalidated(repository_root).context("prepare authored title presentation for production replay")?;
+    } else {
+        source_title_screen::export(repository_root).context("export authored title presentation")?;
+    }
+    Ok(())
+}
+
+fn compile_core_pack(repository_root: &Path) -> Result<()> {
+    verify_pret_source_pin(repository_root)?;
     source_manifest::export(repository_root).context("index authored exported catalogs")?;
     let asset_root = AssetRoot::new(repository_root);
     let compiler = ModpackCompiler::new(&asset_root);

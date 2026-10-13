@@ -2541,6 +2541,7 @@ struct VisibleIntroScreen {
     saved_register_bytes: BTreeMap<usize, u16>,
     cleanup_cursor: Option<RuntimePresentationTimedPhaseCursor>,
     scene_setup_cursor: Option<RuntimePresentationTimedPhaseCursor>,
+    source_pending_dispatch_return: Option<(usize, u16, bool)>,
     scene_setup_audio: Vec<String>,
     scene_setup_sprite_instances: Vec<String>,
     cleanup_exit_reason: Option<&'static str>,
@@ -8016,48 +8017,15 @@ fn advance_visible_smoke_walk_warp_phase(runtime_shell: &mut BevyRuntimeShell) -
     Ok(true)
 }
 
-fn initialize_bevy_runtime_shell(
-    asset_root: AssetRoot,
-    runtime: CrystalRuntime,
-    start: BevyShellStart,
-    config: BevyShellConfig,
-) -> Result<BevyRuntimeShell> {
-    #[cfg(target_arch = "wasm32")]
-    runtime.install_browser_runtime_files()?;
-    #[cfg(any(test, feature = "location-tester"))]
-    let runtime_tile_start = matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. });
-    let asset_root = if cfg!(not(target_arch = "wasm32")) && runtime.has_runtime_files() {
-        runtime.materialize_runtime_files()?
-    } else {
-        asset_root
-    };
-    let initial_arrival_reason = match &start {
-        BevyShellStart::NewGame { .. } => Some("new_game"),
-        #[cfg(any(test, feature = "location-tester"))]
-        BevyShellStart::NewGameAtRuntimeTile { .. } => None,
-        BevyShellStart::LoadSave { .. } => None,
-        BevyShellStart::Title { .. } => None,
-    };
-    let restore_loaded_visible_state = matches!(&start, BevyShellStart::LoadSave { .. });
-    let initial_player_name_prompt = matches!(&start, BevyShellStart::NewGame { .. });
-    let title_parameters = matches!(&start, BevyShellStart::Title { .. })
-        .then(|| {
-            RuntimeTitlePresentationParameters::from_program(runtime.title_presentation_program())
-        })
-        .transpose()?;
-    let title_main_menu = matches!(&start, BevyShellStart::Title { .. })
-        .then(|| RuntimeTitleMainMenuDefinition::from_program(runtime.title_presentation_program()))
-        .transpose()?;
-    let title_menu = match &start {
-        BevyShellStart::Title {
-            spawn_identifier,
-            save_path,
-        } => {
-            let parameters =
-                title_parameters.context("title presentation parameters are missing")?;
-            let main_menu = title_main_menu.context("title main menu definition is missing")?;
+fn build_visible_title_menu(
+    program: &RuntimePresentationProgram,
+    spawn_identifier: u16,
+    save_path: Option<PathBuf>,
+) -> Result<TitleMenu> {
+    let parameters = RuntimeTitlePresentationParameters::from_program(program)?;
+    let main_menu = RuntimeTitleMainMenuDefinition::from_program(program)?;
             let mut presentation_machine = RuntimePresentationPhaseMachine::new(
-                runtime.title_presentation_program(),
+                program,
                 "start_title_screen",
                 "title_screen",
             )?;
@@ -8086,8 +8054,8 @@ fn initialize_bevy_runtime_shell(
             presentation_machine
                 .values
                 .insert("title_suicune_frame".to_string(), 0);
-            Some(TitleMenu {
-                spawn_identifier: *spawn_identifier,
+            Ok(TitleMenu {
+                spawn_identifier: spawn_identifier,
                 save_path: save_path.clone(),
                 cursor: MenuCursor {
                     surface_id: "title".to_string(),
@@ -8115,11 +8083,36 @@ fn initialize_bevy_runtime_shell(
                 suicune_selector_swap_nibbles: parameters.suicune_selector_swap_nibbles,
                 joypad_mask: 0,
             })
-        }
-        BevyShellStart::LoadSave { .. } => None,
-        BevyShellStart::NewGame { .. } => None,
+}
+
+fn initialize_bevy_runtime_shell(
+    asset_root: AssetRoot,
+    runtime: CrystalRuntime,
+    start: BevyShellStart,
+    config: BevyShellConfig,
+) -> Result<BevyRuntimeShell> {
+    #[cfg(target_arch = "wasm32")]
+    runtime.install_browser_runtime_files()?;
+    #[cfg(any(test, feature = "location-tester"))]
+    let runtime_tile_start = matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. });
+    let asset_root = if cfg!(not(target_arch = "wasm32")) && runtime.has_runtime_files() {
+        runtime.materialize_runtime_files()?
+    } else {
+        asset_root
+    };
+    let initial_arrival_reason = match &start {
+        BevyShellStart::NewGame { .. } => Some("new_game"),
         #[cfg(any(test, feature = "location-tester"))]
         BevyShellStart::NewGameAtRuntimeTile { .. } => None,
+        BevyShellStart::LoadSave { .. } => None,
+        BevyShellStart::Title { .. } => None,
+    };
+    let restore_loaded_visible_state = matches!(&start, BevyShellStart::LoadSave { .. });
+    let initial_player_name_prompt = matches!(&start, BevyShellStart::NewGame { .. });
+    let title_menu = match &start {
+        BevyShellStart::Title { spawn_identifier, save_path } => Some(
+            build_visible_title_menu(runtime.title_presentation_program(), *spawn_identifier, save_path.clone())?),
+        _ => None,
     };
     let intro_parameters = matches!(&start, BevyShellStart::Title { .. })
         .then(|| {

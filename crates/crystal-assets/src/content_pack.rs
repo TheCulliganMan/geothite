@@ -1276,15 +1276,35 @@ pub struct RuntimePresentationPhaseRun {
     pub returned: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimePresentationTimedPhaseCursor {
     pub subprogram: String,
     pub phase: String,
     pub operation_index: usize,
     pub end_operation_index: usize,
     pub wait_frames_remaining: u16,
+    pub wait_kind: Option<RuntimePresentationTimedWaitKind>,
+    pub blocking_request: Option<RuntimePresentationOperation>,
     pub transfer_mode: Option<RuntimePresentation2bppTransferMode>,
     pub frame_t_cycles: Option<u32>,
+}
+
+impl std::hash::Hash for RuntimePresentationTimedPhaseCursor {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        // A request is identified by its authored phase and operation index.
+        // Its retained JSON payload need not be hashed to distinguish cursors.
+        std::hash::Hash::hash(&(&self.subprogram, &self.phase, self.operation_index,
+            self.end_operation_index, self.wait_frames_remaining, self.wait_kind,
+            self.blocking_request.is_some(), self.transfer_mode, self.frame_t_cycles), state);
+    }
+}
+
+/// Why a source call is suspended; render settling never consumes DelayFrame.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum RuntimePresentationTimedWaitKind {
+    RenderSettling,
+    DelayFrame,
+    Transfer2bpp,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -1298,6 +1318,12 @@ pub struct RuntimePresentationTimedPhaseTick {
     pub effects: Vec<RuntimePresentationOperation>,
     pub cpu_work_machine_cycles: u64,
     pub complete: bool,
+    /// Source instruction work in execution order, excluding idle frame waits.
+    pub instruction_machine_cycles: Vec<u64>,
+    /// Effect commits at instruction-boundary offsets (zero means before work).
+    pub instruction_effects: Vec<(usize, RuntimePresentationOperation)>,
+    /// False when an operation lacks source timing; strict consumers must reject it.
+    pub source_instruction_timing_complete: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1701,11 +1727,37 @@ pub struct RuntimeIntroFrameClock {
 #[path = "intro_instruction_timing.rs"]
 mod intro_instruction_timing;
 pub use intro_instruction_timing::{
+    runtime_intro_decompress_instruction_machine_cycles,
+    runtime_intro_request2bpp_instruction_segments,
+    runtime_intro_tilemap_xor_instruction_machine_cycles,
+    runtime_intro_sprite_sine_instruction_machine_cycles,
+    runtime_intro_sprite_init_instruction_machine_cycles,
+    runtime_intro_sprite_reinit_instruction_machine_cycles,
+    runtime_intro_sprite_group_instruction_machine_cycles,
+    runtime_intro_sprite_update_instruction_machine_cycles,
+    runtime_intro_sprite_scheduler_instruction_machine_cycles,
+    runtime_intro_scheduled_audio_instruction_machine_cycles,
     runtime_intro_farcall_instruction_machine_cycles,
     runtime_intro_byte_loop_instruction_machine_cycles,
     runtime_intro_clear_loop_instruction_machine_cycles,
     runtime_intro_helper_instruction_machine_cycles,
 };
+
+#[path = "intro_operation_timing.rs"]
+mod intro_operation_timing;
+pub use intro_operation_timing::{runtime_intro_operation_instruction_machine_cycles, runtime_intro_operation_instruction_machine_cycles_with_context, runtime_intro_decode_lz3};
+
+#[path = "intro_ram_regions.rs"]
+mod intro_ram_regions;
+pub use intro_ram_regions::runtime_intro_apply_region_effect;
+
+#[path = "intro_audio_clock_timing.rs"]
+mod intro_audio_clock_timing;
+pub use intro_audio_clock_timing::{runtime_intro_source_audio_update_machine_cycles, RuntimeIntroAudioPlaybackTiming, runtime_intro_source_audio_playback_timing};
+
+#[path = "intro_vblank_timing.rs"]
+mod intro_vblank_timing;
+pub use intro_vblank_timing::runtime_intro_vblank_machine_cycles;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RuntimeIntroInstructionClockAdvance {
@@ -1888,7 +1940,7 @@ impl RuntimeIntroInterruptTiming {
         &self,
         clock: &mut RuntimeIntroFrameClock,
         callback_nonzero: &mut dyn FnMut() -> bool,
-        vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
         next_vblank_request: &mut u64,
         next_lcd_request: &mut u64,
         next_timer_request: &mut u64,
@@ -1906,7 +1958,10 @@ impl RuntimeIntroInterruptTiming {
                 *vblank_interrupts_serviced = vblank_interrupts_serviced
                     .checked_add(1)
                     .context("intro VBlank interrupt count overflowed")?;
-                vblank_body_machine_cycles()?
+                let handler_phase = (u64::from(clock.phase_t_cycles)
+                    + 4 * u64::from(self.hardware_entry_machine_cycles + self.vector_jump_machine_cycles))
+                    % u64::from(clock.frame_t_cycles);
+                vblank_body_machine_cycles(handler_phase as u32)?
                     .checked_add(u64::from(self.hardware_entry_machine_cycles))
                     .and_then(|value| value.checked_add(u64::from(self.vector_jump_machine_cycles)))
                     .context("intro VBlank interrupt timing overflowed")?
@@ -1976,6 +2031,22 @@ impl RuntimeIntroInterruptTiming {
         callback_nonzero: &mut dyn FnMut() -> bool,
         instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
         vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_instruction_sequence_with_interrupts_and_phase_effects(
+            clock, instruction_machine_cycles, callback_nonzero, instruction_completed,
+            &mut |_| vblank_body_machine_cycles(),
+        )
+    }
+
+    /// The VBlank provider receives the handler-entry LCD phase after hardware
+    /// entry and the vector jump, so LY-dependent transfer admission is exact.
+    pub fn advance_instruction_sequence_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_machine_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
     ) -> Result<RuntimeIntroInstructionClockAdvance> {
         anyhow::ensure!(
             self.timer_request_period_t_cycles > 0,
@@ -4121,6 +4192,8 @@ impl RuntimePresentationTimedPhaseCursor {
             operation_index,
             end_operation_index,
             wait_frames_remaining: 0,
+            wait_kind: None,
+            blocking_request: None,
             transfer_mode: None,
             frame_t_cycles: None,
         })
@@ -4147,6 +4220,27 @@ impl RuntimePresentationTimedPhaseCursor {
         &mut self,
         program: &RuntimePresentationProgram,
     ) -> Result<RuntimePresentationTimedPhaseTick> {
+        self.tick_with_resources(program, &mut |_| anyhow::bail!("source-timed cursor requires compressed graphics resources"))
+    }
+
+    pub fn tick_with_resources(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        resource: &mut impl FnMut(&str) -> Result<Vec<u8>>,
+    ) -> Result<RuntimePresentationTimedPhaseTick> {
+        self.tick_with_source_context(program, &BTreeMap::new(), &BTreeMap::new(), &BTreeMap::new(), resource)
+    }
+
+    pub fn tick_with_source_context(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        memory: &BTreeMap<String, u16>,
+        values: &BTreeMap<String, u16>,
+        regions: &BTreeMap<String, Vec<u8>>,
+        resource: &mut impl FnMut(&str) -> Result<Vec<u8>>,
+    ) -> Result<RuntimePresentationTimedPhaseTick> {
+        let mut memory = memory.clone();
+        let mut regions = regions.clone();
         let phase = program
             .subprograms
             .iter()
@@ -4168,17 +4262,28 @@ impl RuntimePresentationTimedPhaseCursor {
             if self.wait_frames_remaining > 0 {
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects: Vec::new(),
+                    instruction_machine_cycles: Vec::new(),
+                    instruction_effects: Vec::new(),
+                    source_instruction_timing_complete: true,
                     cpu_work_machine_cycles: 0,
                     complete: false,
                 });
             }
         }
+        self.wait_kind = None;
+        self.blocking_request = None;
         let mut effects = Vec::new();
+        let mut instruction_machine_cycles = Vec::new();
+        let mut instruction_effects = Vec::new();
+        let mut source_instruction_timing_complete = true;
         let mut cpu_work_machine_cycles = 0_u64;
         for _ in 0..1_024 {
             if self.operation_index > self.end_operation_index {
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: true,
                 });
@@ -4189,6 +4294,42 @@ impl RuntimePresentationTimedPhaseCursor {
                 .cloned()
                 .context("runtime presentation timed cursor reached a missing operation")?;
             self.operation_index += 1;
+            if operation.fields.contains_key("source_decompress_timing") {
+                let name = operation.fields.get("resource").and_then(Value::as_str)
+                    .context("source decompression has no graphic resource")?;
+                let path = program.resources.iter().find(|entry| entry.path == name)
+                    .map(|entry| entry.path.as_str()).unwrap_or(name);
+                let bytes = resource(path)?;
+                instruction_machine_cycles.extend(
+                    runtime_intro_operation_instruction_machine_cycles_with_context(&operation, false,
+                        &memory, values, &regions, Some(&bytes))?);
+            } else if operation.fields.contains_key("source_helper_timing")
+                || operation.fields.contains_key("source_instruction_machine_cycles")
+                || operation.fields.contains_key("source_instruction_timing_variants")
+                || operation.fields.contains_key("source_tilemap_timing")
+                || operation.fields.contains_key("source_sprite_init_timing")
+            {
+                instruction_machine_cycles.extend(
+                    runtime_intro_operation_instruction_machine_cycles_with_context(&operation, false, &memory, values, &regions, None)?);
+            } else {
+                source_instruction_timing_complete = false;
+            }
+            instruction_effects.push((instruction_machine_cycles.len(), operation.clone()));
+            if operation.fields.contains_key("source_helper_timing")
+                || operation.fields.contains_key("source_instruction_machine_cycles")
+                || operation.fields.contains_key("source_decompress_timing")
+                || operation.fields.contains_key("source_tilemap_timing")
+                || operation.fields.contains_key("source_sprite_init_timing")
+                || operation.fields.contains_key("source_instruction_timing_variants") {
+                runtime_intro_apply_region_effect(&mut regions, &operation, &mut memory, resource)?;
+            }
+            if matches!(operation.op.as_str(), "write_memory_byte" | "palette_transfer_request") {
+                if let (Some(target), Some(value)) = (operation.fields.get("target").and_then(Value::as_str),
+                    operation.fields.get("value").and_then(Value::as_u64)) {
+                    anyhow::ensure!(value <= 255, "intro source memory write exceeds one byte");
+                    memory.insert(target.to_string(), value as u16);
+                }
+            }
             if let Some(helper) = operation.fields.get("source_helper_timing") {
                 let helper_cycles = runtime_intro_helper_instruction_machine_cycles(helper)?;
                 let caller = operation.fields.get("source_caller_instruction_machine_cycles")
@@ -4273,8 +4414,12 @@ impl RuntimePresentationTimedPhaseCursor {
                 effects.push(operation);
                 if frame_boundaries_crossed > 0 {
                     self.wait_frames_remaining = frame_boundaries_crossed;
+                    self.wait_kind = Some(RuntimePresentationTimedWaitKind::RenderSettling);
                     return Ok(RuntimePresentationTimedPhaseTick {
                         effects,
+                        instruction_machine_cycles,
+                        instruction_effects,
+                        source_instruction_timing_complete,
                         cpu_work_machine_cycles,
                         complete: false,
                     });
@@ -4290,9 +4435,13 @@ impl RuntimePresentationTimedPhaseCursor {
                     .filter(|frames| *frames > 0)
                     .context("runtime presentation wait_frames has no positive exact duration")?;
                 self.wait_frames_remaining = frames;
+                self.wait_kind = Some(RuntimePresentationTimedWaitKind::DelayFrame);
                 effects.push(operation);
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: false,
                 });
@@ -4384,9 +4533,14 @@ impl RuntimePresentationTimedPhaseCursor {
                 }
                 self.wait_frames_remaining =
                     exact_frame_boundaries.unwrap_or_else(|| tile_count.div_ceil(tiles_per_vblank));
+                self.wait_kind = Some(RuntimePresentationTimedWaitKind::Transfer2bpp);
+                self.blocking_request = Some(operation.clone());
                 effects.push(operation);
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: false,
                 });

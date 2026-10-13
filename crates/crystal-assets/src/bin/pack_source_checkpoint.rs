@@ -245,6 +245,12 @@ fn main() -> Result<()> {
         files.insert(name.to_string(), std::fs::read(assets.join(name))?);
     }
     collect_files(&assets,&assets,&mut files)?;
+    for resource in &data.runtime_title_screen.program.resources {
+        if resource.kind == "graphics" && resource.path.ends_with(".lz") {
+            anyhow::ensure!(!resource.path.starts_with('/') && !resource.path.split('/').any(|part| part == ".."), "invalid compressed resource path");
+            files.insert(resource.path.clone(), std::fs::read(assets.join(&resource.path))?);
+        }
+    }
     for &name in crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS { files.insert(name.to_string(), std::fs::read(root.join(name))?); }
     let manifest = ModpackAudioManifest::from_assets(&data.audio, &BTreeMap::new())?;
     let report = ModpackCompileReport {

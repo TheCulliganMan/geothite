@@ -864,6 +864,7 @@ fn runtime_timed_phase_cursor_accounts_for_helpers_once_across_waits() {
             op: "fill_memory".into(),
             source_span: presentation_span(),
             fields: serde_json::from_value(serde_json::json!({
+                "target":"testScratch", "byte_count":count, "value":0,
                 "source_caller_instruction_machine_cycles": [6],
                 "source_helper_timing": {
                     "routine":routine, "byte_count":count, "machine_cycles":cycles,
@@ -1081,7 +1082,9 @@ fn intro_presentation_parameters_are_read_from_exported_scene_dispatch_labels() 
                 },
                 "interrupt_timing": {
                     "unit": "sm83_machine_cycles",
+                    "entry_memory": {"rWBK":1,"hTilesPerCycle":8,"wLinkMode":0,"hMobile":0,"hCGB":1,"hLCDCPointer":0,"wMusicPlaying":1,"hOAMUpdate":0,"hVBlankCounter":0,"hBGMapMode":0,"hBGMapThird":0,"hCGBPalUpdate":0,"wTextDelayFrames":0,"wVBlankOccurred":0},
                     "entry_to_first_input_machine_cycles": 59,
+                    "entry_to_first_input_instruction_machine_cycles": vec![3,4,2,3,3,4,3,4,6,1,3,2,3,1,3,4,4,6],
                     "outer_loop_body": {
                         "after_input_before_scene_dispatch": 21,
                         "scene_dispatch_to_sprite_scheduler": 48,
@@ -2877,7 +2880,7 @@ fn native_vendor_runtime_file_compilation_covers_every_renderer_dependency() {
             .canonicalize()
             .expect("repository root"),
     );
-    let files = compile_runtime_files(&root).expect("compile native runtime files");
+    let files = compile_runtime_files(&root, &RuntimePresentationProgram::default()).expect("compile native runtime files");
     validate_compiled_runtime_files(&files).expect("complete native runtime file bundle");
     for &key in REQUIRED_VENDOR_RUNTIME_FILE_KEYS {
         assert!(
@@ -2890,7 +2893,7 @@ fn native_vendor_runtime_file_compilation_covers_every_renderer_dependency() {
 #[test]
 fn compiled_pokegear_layouts_preserve_source_bytes_and_are_required() {
     let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..").canonicalize().unwrap());
-    let files = compile_runtime_files(&root).unwrap();
+    let files = compile_runtime_files(&root, &RuntimePresentationProgram::default()).unwrap();
     for &key in REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
         let source = std::fs::read(root.vendor_pokecrystal().join(key)).unwrap();
         assert_eq!(files.get(key), Some(&source), "compiled game is missing the source card layout {key}");

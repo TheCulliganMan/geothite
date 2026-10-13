@@ -440,12 +440,26 @@ fn collect_catalogs(vendor: &Path, program: &mut RuntimePresentationProgram) -> 
 
 pub(super) fn export(root: &Path, intro: Value) -> Result<()> {
     let title = assemble(root, intro)?;
+    export_timing_graphics(root, &title.program)?;
     let bytes = serde_json::to_vec_pretty(&title)?;
     let data = root.join("apps/web/assets/data");
     let catalog = data.join("content-packs/core-modular/runtime_title_screen");
     std::fs::create_dir_all(&catalog)?;
     std::fs::write(catalog.join("Source.json"), &bytes)?;
     std::fs::write(data.join("runtime_title_screen.json"), bytes)?;
+    Ok(())
+}
+
+pub(super) fn export_timing_graphics(root: &Path, program: &RuntimePresentationProgram) -> Result<()> {
+    for resource in &program.resources {
+        if resource.kind == "graphics" && resource.path.ends_with(".lz") {
+            crystal_assets::validate_compiled_runtime_file_key(&resource.path)?;
+            let target = root.join("apps/web/assets").join(&resource.path);
+            std::fs::create_dir_all(target.parent().context("source timing graphic parent")?)?;
+            std::fs::copy(root.join("vendor/pokecrystal").join(&resource.path), &target)
+                .with_context(|| format!("export source timing graphic {}", resource.path))?;
+        }
+    }
     Ok(())
 }
 
