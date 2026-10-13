@@ -583,22 +583,32 @@ fn advance_visible_intro_delay_frame(
         if halt.vblank_interrupts_serviced == 0 && halt.lcd_interrupts_serviced == 0
             && halt.timer_interrupts_serviced == 0
         {
-            let timing = &intro.interrupt_timing;
-            let first_timer = u64::from(timing.first_timer_request_after_intro_entry_t_cycles);
-            let timer_period = u64::from(timing.timer_request_period_t_cycles);
-            anyhow::ensure!(timer_period > 0, "CrystalIntro HALT has no timer calendar");
-            let elapsed = intro.frame_clock.elapsed_t_cycles;
-            let timer_distance = if elapsed <= first_timer { first_timer - elapsed }
-                else { (timer_period - (elapsed - first_timer) % timer_period) % timer_period };
-            let distance = u64::from(timing.t_cycles_until_next_lcd_hblank(&intro.frame_clock)?)
-                .min(u64::from(timing.t_cycles_until_next_vblank(&intro.frame_clock)?))
-                .min(timer_distance);
-            // The CGB core samples interrupt requests at machine-cycle
-            // boundaries while halted. This is idle time, not a CPU opcode.
-            let idle_machine_cycles = distance.div_ceil(4);
-            let span = if idle_machine_cycles == 0 { Vec::new() } else { vec![idle_machine_cycles] };
-            boundaries += advance_visible_intro_timed_instructions(intro, &span,
-                &mut |_, _| Ok(()), vblank_body_machine_cycles)?.frame_boundaries_crossed;
+            let mut woke = false;
+            for _ in 0..1_024 {
+                let timing = &intro.interrupt_timing;
+                let first_timer = u64::from(timing.first_timer_request_after_intro_entry_t_cycles);
+                let timer_period = u64::from(timing.timer_request_period_t_cycles);
+                anyhow::ensure!(timer_period > 0, "CrystalIntro HALT has no timer calendar");
+                let elapsed = intro.frame_clock.elapsed_t_cycles;
+                let timer_distance = if elapsed <= first_timer { first_timer - elapsed }
+                    else { (timer_period - (elapsed - first_timer) % timer_period) % timer_period };
+                let dot = u64::from(intro.frame_clock.phase_t_cycles) % 456;
+                let ppu_edge = if dot < 250 { 250 - dot } else { 456 - dot };
+                // The pinned source hardware polls HALT in 4T steps, clipping
+                // at PPU mode/line edges. Timer requests retain 4T polling.
+                let distance = u64::from(timing.t_cycles_until_next_lcd_hblank(&intro.frame_clock)?)
+                    .min(u64::from(timing.t_cycles_until_next_vblank(&intro.frame_clock)?))
+                    .min(timer_distance.div_ceil(4) * 4).min(ppu_edge);
+                let memory = std::cell::RefCell::new(&mut intro.source_clock_memory);
+                let idle = timing.advance_idle_t_cycles_with_interrupts_and_phase_effects(&mut intro.frame_clock, distance,
+                    &mut || memory.borrow().get("hLCDCPointer").copied().unwrap_or(0) != 0,
+                    &mut |phase| vblank_body_machine_cycles(&mut memory.borrow_mut(), phase))?;
+                boundaries += idle.frame_boundaries_crossed;
+                if idle.vblank_interrupts_serviced > 0 || idle.lcd_interrupts_serviced > 0 || idle.timer_interrupts_serviced > 0 {
+                    woke = true; break;
+                }
+            }
+            anyhow::ensure!(woke, "CrystalIntro HALT did not receive an interrupt within its source frame");
         }
         let mut loaded_vblank_flag = None;
         boundaries += advance_visible_intro_timed_instructions(intro, &[1, 4],

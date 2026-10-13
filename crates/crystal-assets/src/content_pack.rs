@@ -2048,6 +2048,36 @@ impl RuntimeIntroInterruptTiming {
         instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
         vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
     ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        let cycles = instruction_machine_cycles.into_iter().map(|machine_cycles| {
+            anyhow::ensure!(machine_cycles > 0, "intro instruction clock received a zero-cycle instruction");
+            machine_cycles.checked_mul(4).context("intro instruction T-cycle conversion overflowed")
+        }).collect::<Result<Vec<_>>>()?;
+        self.advance_t_cycle_sequence_with_interrupts_and_phase_effects(clock, cycles,
+            callback_nonzero, instruction_completed, vblank_body_machine_cycles)
+    }
+
+    /// Halted hardware can wake between CPU machine-cycle boundaries. Idle
+    /// spans preserve those exact PPU edges without charging an opcode.
+    pub fn advance_idle_t_cycles_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        elapsed_t_cycles: u64,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_t_cycle_sequence_with_interrupts_and_phase_effects(clock,
+            std::iter::once(elapsed_t_cycles).filter(|cycles| *cycles > 0),
+            callback_nonzero, &mut |_| Ok(()), vblank_body_machine_cycles)
+    }
+
+    fn advance_t_cycle_sequence_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_t_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
         anyhow::ensure!(
             self.timer_request_period_t_cycles > 0,
             "intro timer request period is zero"
@@ -2116,14 +2146,8 @@ impl RuntimeIntroInterruptTiming {
                 &mut timer_interrupts_serviced,
             )?)
             .context("intro instruction frame-boundary count overflowed")?;
-        for (instruction_index, machine_cycles) in instruction_machine_cycles.into_iter().enumerate() {
-            anyhow::ensure!(
-                machine_cycles > 0,
-                "intro instruction clock received a zero-cycle instruction"
-            );
-            let instruction_t_cycles = machine_cycles
-                .checked_mul(4)
-                .context("intro instruction T-cycle conversion overflowed")?;
+        for (instruction_index, instruction_t_cycles) in instruction_t_cycles.into_iter().enumerate() {
+            anyhow::ensure!(instruction_t_cycles > 0, "intro clock received a zero-duration span");
             frame_boundaries_crossed = frame_boundaries_crossed
                 .checked_add(self.advance_interrupt_scheduled_segment(
                     clock,

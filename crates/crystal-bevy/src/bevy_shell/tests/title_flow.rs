@@ -3631,3 +3631,17 @@ fn visible_intro_joy_delay_samples_ram_at_load_before_irq() {
         assert_eq!(intro.source_clock_memory.get("wTextDelayFrames"), Some(&expected));
     }
 }
+
+#[test]
+fn visible_intro_halted_clock_preserves_partial_machine_cycle_hblank() {
+    let timing = VisibleIntroScreen::new().interrupt_timing;
+    let mut clock = RuntimeIntroFrameClock::new(70_224,248).unwrap();
+    let advance = timing.advance_idle_t_cycles_with_interrupts_and_phase_effects(&mut clock,2,
+        &mut || true, &mut |_| panic!("no VBlank at the first HBlank")).unwrap();
+    assert_eq!(advance.lcd_interrupts_serviced,1);
+    assert_eq!(clock.phase_t_cycles,250 + 49 * 4);
+    assert_eq!(clock.elapsed_t_cycles,2 + 49 * 4);
+    timing.advance_instruction_sequence_with_interrupts(&mut clock,[1],true,
+        &mut || panic!("no VBlank after the callback")).unwrap();
+    assert_eq!(clock.phase_t_cycles,250 + 50 * 4);
+}
