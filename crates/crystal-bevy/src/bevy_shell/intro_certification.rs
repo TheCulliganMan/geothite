@@ -283,7 +283,7 @@ pub fn certify_source_intro_timeline(
         );
     }
     let mut value = serde_json::to_value(title)?;
-    fn certify_oracles(value: &mut serde_json::Value) -> Result<usize> {
+    fn certify_oracles(value: &mut serde_json::Value, certificate: &serde_json::Value) -> Result<usize> {
         let mut count = 0;
         match value {
             serde_json::Value::Object(fields) => {
@@ -299,15 +299,16 @@ pub fn certify_source_intro_timeline(
                         "intro oracle identity changed"
                     );
                     fields.insert("validated".into(), serde_json::Value::Bool(true));
+                    fields.insert("certification".into(), certificate.clone());
                     count += 1;
                 }
                 for child in fields.values_mut() {
-                    count += certify_oracles(child)?;
+                    count += certify_oracles(child, certificate)?;
                 }
             }
             serde_json::Value::Array(items) => {
                 for child in items {
-                    count += certify_oracles(child)?;
+                    count += certify_oracles(child, certificate)?;
                 }
             }
             _ => {}
@@ -320,8 +321,16 @@ pub fn certify_source_intro_timeline(
         .iter_mut()
         .find(|subprogram| subprogram["id"] == "crystal_intro")
         .context("source CrystalIntro subprogram missing")?;
+    let mut certificate = intro["required_consumer"]["certification"].clone();
+    anyhow::ensure!(certificate["scene_count"] == 28 && certificate["decompression_count"] == 37
+        && certificate["sprite_allocation_count"] == 19 && certificate["audio_irq_model_matches_rom"] == true
+        && certificate["control_dispatch_calls"] == 1753,
+        "source certificate lacks the independently checked helper and audio counts");
+    certificate["complete_phase_machine_matches_rom"] = serde_json::Value::Bool(true);
+    certificate["production_input_boundary_count"] = serde_json::json!(checked_inputs);
+    certificate["production_return_matches_rom"] = serde_json::Value::Bool(true);
     anyhow::ensure!(
-        certify_oracles(intro)? > 0,
+        certify_oracles(intro, &certificate)? > 0,
         "source intro lacks timing oracles to certify"
     );
     let title: crystal_assets::RuntimeTitleScreen = serde_json::from_value(value)?;
