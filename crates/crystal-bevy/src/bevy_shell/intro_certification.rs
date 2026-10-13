@@ -91,6 +91,10 @@ pub fn certify_source_intro_timeline(
     shell.intro_sprite_bundle = Some(sprite_bundle);
     shell.intro_display_screen = Some(intro.clone());
     shell.intro_screen = Some(intro);
+    let expected_live_inputs: Vec<_> = trace["records"].as_array()
+        .context("independent input records missing")?.iter()
+        .filter(|record| record["hook"] == "JoyTextDelay").collect();
+    let mut checked_inputs = 0;
     let mut ended = false;
     for _ in 0..10000 {
         if shell.intro_screen.is_none() {
@@ -98,6 +102,30 @@ pub fn certify_source_intro_timeline(
             break;
         }
         tick_visible_intro_screen(&mut shell).context("execute continuous production intro")?;
+        let inputs = shell.intro_screen.as_ref().map(|intro| &intro.source_input_boundaries)
+            .unwrap_or(&shell.intro_completed_input_boundaries);
+        while checked_inputs < inputs.len() {
+            let actual = &inputs[checked_inputs];
+            let expected = expected_live_inputs.get(checked_inputs)
+                .context("production intro produced an extra input boundary")?;
+            let elapsed = actual.clock.elapsed_t_cycles.checked_sub(initial_elapsed)
+                .context("production input clock moved backwards")?;
+            let frame = (initial_phase + elapsed) / frame_cycles;
+            let expected_frame = expected["start_frame"].as_u64().context("ROM input frame missing")?
+                .checked_sub(initial_frame).context("ROM input precedes intro")?;
+            let expected_phase = expected["start_phase_t_cycles"].as_u64().context("ROM input phase missing")?;
+            anyhow::ensure!((frame,u64::from(actual.clock.phase_t_cycles)) == (expected_frame,expected_phase),
+                "production input {checked_inputs} clock differs from ROM: actual=({frame},{}), expected=({expected_frame},{expected_phase})", actual.clock.phase_t_cycles);
+            for (name, byte) in [("wIntroSceneFrameCounter",actual.scene_frame_counter),
+                ("wIntroSceneTimer",actual.scene_timer),("wTextDelayFrames",actual.text_delay_frames)] {
+                let expected_byte = expected["start_memory"][name].as_u64()
+                    .with_context(|| format!("ROM input {checked_inputs} scalar {name} missing"))?;
+                anyhow::ensure!(u64::from(byte) == expected_byte,
+                    "production input {checked_inputs} scalar {name} differs from ROM: actual={byte}, expected={expected_byte}");
+            }
+            checked_inputs += 1;
+        }
+
     }
     anyhow::ensure!(
         ended,
@@ -118,28 +146,11 @@ pub fn certify_source_intro_timeline(
         .elapsed_t_cycles
         .checked_sub(initial_elapsed)
         .context("production return clock moved backwards")?;
-    anyhow::ensure!(
-        (
-            (initial_phase + actual_elapsed) / frame_cycles,
-            u64::from(completion.phase_t_cycles)
-        ) == (
-            return_absolute / frame_cycles - initial_frame,
-            return_absolute % frame_cycles
-        ),
-        "production intro return differs from ROM: actual=({}, {}), expected=({}, {})",
-        (initial_phase + actual_elapsed) / frame_cycles,
-        completion.phase_t_cycles,
-        return_absolute / frame_cycles - initial_frame,
-        return_absolute % frame_cycles
-    );
     let expected_joy: Vec<_> = trace["records"].as_array()
         .context("independent hook records missing")?.iter()
         .filter(|record| record["hook"] == "JoyTextDelay").collect();
-    anyhow::ensure!(shell.intro_completed_input_boundaries.len() == expected_joy.len(),
-        "production input count including exit {} differs from ROM {}",
-        shell.intro_completed_input_boundaries.len(), expected_joy.len());
     for (ordinal, (actual, expected)) in shell.intro_completed_input_boundaries.iter()
-        .zip(expected_joy).enumerate() {
+        .zip(&expected_joy).enumerate() {
         let elapsed = actual.clock.elapsed_t_cycles.checked_sub(initial_elapsed)
             .context("production input clock moved backwards")?;
         let frame = (initial_phase + elapsed) / frame_cycles;
@@ -157,6 +168,23 @@ pub fn certify_source_intro_timeline(
                 "production input {ordinal} scalar {name} differs from ROM: actual={actual_byte}, expected={expected_byte}");
         }
     }
+    anyhow::ensure!(shell.intro_completed_input_boundaries.len() == expected_joy.len(),
+        "production input count including exit {} differs from ROM {}",
+        shell.intro_completed_input_boundaries.len(), expected_joy.len());
+    anyhow::ensure!(
+        (
+            (initial_phase + actual_elapsed) / frame_cycles,
+            u64::from(completion.phase_t_cycles)
+        ) == (
+            return_absolute / frame_cycles - initial_frame,
+            return_absolute % frame_cycles
+        ),
+        "production intro return differs from ROM: actual=({}, {}), expected=({}, {})",
+        (initial_phase + actual_elapsed) / frame_cycles,
+        completion.phase_t_cycles,
+        return_absolute / frame_cycles - initial_frame,
+        return_absolute % frame_cycles
+    );
     let actual_inputs: Vec<_> = shell
         .intro_completed_input_boundaries
         .iter()
