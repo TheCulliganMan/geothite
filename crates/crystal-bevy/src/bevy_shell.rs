@@ -1,3 +1,7 @@
+#[cfg(any(test, feature = "intro-certification"))]
+mod intro_certification;
+#[cfg(any(test, feature = "intro-certification"))]
+pub use intro_certification::certify_source_intro_timeline;
 #[cfg(feature = "dev-tools")]
 mod dev_tools;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -1006,6 +1010,9 @@ struct BevyRuntimeShell {
     latest_rtc_sample: Option<RuntimeRtcSample>,
     splash_screen: Option<VisibleSplashScreen>,
     intro_screen: Option<VisibleIntroScreen>,
+    intro_audio_clock: Option<VisibleIntroSourceAudioClock>,
+    intro_completion_clock: Option<RuntimeIntroFrameClock>,
+    intro_completed_input_boundaries: VecDeque<VisibleIntroSourceInputBoundary>,
     /// LCD-visible intro state from the preceding VBlank. CrystalIntro writes
     /// registers and VRAM during the current CPU frame; those writes are not
     /// the frame the hardware has just finished presenting.
@@ -2474,11 +2481,62 @@ struct VisibleContinueScreen {
     minutes: u8,
 }
 
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+struct VisibleIntroInstructionSegment {
+    machine_cycles: Vec<u64>,
+    lcd_callback_pointer_after: Option<u8>,
+    memory_updates_after: BTreeMap<String, u16>,
+    memory_update_instruction_index: Option<usize>,
+    audio_after: Vec<String>,
+    audio_return_machine_cycles: Vec<u64>,
+    sfx_channel_clears: Vec<(usize, u8)>,
+    delay_frames_after: u16,
+    delay_frame_calls_after: u16,
+    request_after: Option<crystal_assets::RuntimePresentationOperation>,
+}
+
+impl Hash for VisibleIntroInstructionSegment {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.machine_cycles.hash(state);
+        self.lcd_callback_pointer_after.hash(state);
+        self.memory_updates_after.hash(state);
+        self.memory_update_instruction_index.hash(state);
+        self.audio_after.hash(state);
+        self.audio_return_machine_cycles.hash(state);
+        self.sfx_channel_clears.hash(state);
+        self.delay_frames_after.hash(state);
+        self.delay_frame_calls_after.hash(state);
+        self.request_after.is_some().hash(state);
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct VisibleIntroSourceInputBoundary {
+    clock: RuntimeIntroFrameClock,
+    dispatcher_entry: usize,
+    dispatch_tick: u16,
+    scene_frame_counter: u8,
+    scene_timer: u8,
+    text_delay_frames: u8,
+}
+
+struct VisibleIntroSourceAudioClock {
+    clock: crystal_audio::synth::SourceAudioClock,
+    current_sfx_priority: u8,
+}
+
+impl VisibleIntroSourceAudioClock {
+    fn new() -> Result<Self> {
+        Ok(Self { clock: crystal_audio::synth::SourceAudioClock::new()?, current_sfx_priority: 0 })
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleIntroScreen {
     callable_memory: BTreeMap<String, u16>,
     symbolic_memory: BTreeMap<String, String>,
     saved_register_slots: BTreeMap<usize, String>,
+    saved_register_bytes: BTreeMap<usize, u16>,
     cleanup_cursor: Option<RuntimePresentationTimedPhaseCursor>,
     scene_setup_cursor: Option<RuntimePresentationTimedPhaseCursor>,
     scene_setup_audio: Vec<String>,
@@ -2493,6 +2551,12 @@ struct VisibleIntroScreen {
     interrupt_timing: RuntimeIntroInterruptTiming,
     frame_clock: RuntimeIntroFrameClock,
     cpu_work_machine_cycles: u64,
+    source_instruction_segments: Vec<VisibleIntroInstructionSegment>,
+    source_clock_memory: BTreeMap<String, u16>,
+    source_regions: BTreeMap<String, Vec<u8>>,
+    source_sprite_callback_machine_cycles: Vec<Vec<u64>>,
+    source_pending_sprite_slots: VecDeque<usize>,
+    source_input_boundaries: VecDeque<VisibleIntroSourceInputBoundary>,
     jumptable_index: usize,
     scene_dispatch_tick: u16,
     scene_frame_counter: u8,
@@ -2574,6 +2638,7 @@ enum VisibleIntroPaletteEffect {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleIntroSprite {
+    source_slot: Option<usize>,
     x: i16,
     y: i16,
     tile_id: u8,
@@ -8197,6 +8262,9 @@ fn initialize_bevy_runtime_shell(
         latest_rtc_sample: None,
         splash_screen,
         intro_screen,
+        intro_audio_clock: Some(VisibleIntroSourceAudioClock::new()?),
+        intro_completion_clock: None,
+        intro_completed_input_boundaries: VecDeque::new(),
         intro_display_screen,
         intro_sprite_bundle,
         title_menu,

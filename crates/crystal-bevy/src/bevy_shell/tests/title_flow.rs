@@ -2538,6 +2538,113 @@ fn intro_instruction_register_write_precedes_the_latched_lcd_interrupt() {
 }
 
 #[test]
+fn visible_intro_source_work_advances_clock_and_commits_callback_before_irq() {
+    let mut intro = VisibleIntroScreen::new();
+    intro.frame_clock = RuntimeIntroFrameClock::new(70_224, 244).unwrap();
+    let advance = advance_visible_intro_instruction_work(
+        &mut intro, &[3], &[(0, 1)],
+        &mut || panic!("source callback write does not reach VBlank"),
+    ).unwrap();
+    assert_eq!(advance.lcd_interrupts_serviced, 1);
+    assert_eq!(intro.lcdc_pointer, 1);
+    assert_eq!(intro.frame_clock.phase_t_cycles, 256 + 49 * 4);
+    assert_eq!(intro.frame_clock.elapsed_t_cycles, 12 + 49 * 4);
+
+    // VBlank consumes the provider's current authoritative state exactly once
+    // after the source instruction that latched its request has completed.
+    intro.frame_clock = RuntimeIntroFrameClock::new(70_224, 65_560).unwrap();
+    let mut sound_updates = 0;
+    let advance = advance_visible_intro_instruction_work(
+        &mut intro, &[6, 6, 6, 6, 6], &[],
+        &mut || { sound_updates += 1; Ok(100) },
+    ).unwrap();
+    assert_eq!(sound_updates, 1);
+    assert_eq!(advance.vblank_interrupts_serviced, 1);
+    assert_eq!(intro.frame_clock.phase_t_cycles, 65_680 + (100 + 9) * 4);
+    assert_eq!(intro.frame_clock.elapsed_t_cycles, 120 + (100 + 9) * 4);
+}
+
+#[test]
+fn visible_intro_source_segments_share_ordered_memory_with_vblank() {
+    let mut intro = VisibleIntroScreen::new();
+    intro.frame_clock = RuntimeIntroFrameClock::new(70_224, 65_560).unwrap();
+    intro.source_clock_memory.insert("hCGBPalUpdate".to_string(), 0);
+    intro.source_instruction_segments.push(VisibleIntroInstructionSegment {
+        machine_cycles: vec![6, 6, 6, 6, 2, 4],
+        lcd_callback_pointer_after: None,
+        memory_update_instruction_index: Some(4), memory_updates_after: BTreeMap::from([("hCGBPalUpdate".to_string(), 1)]),
+        audio_after: Vec::new(),
+        audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(), delay_frames_after: 0, delay_frame_calls_after: 0, request_after: None,
+    });
+    let mut updates = 0;
+    assert_eq!(advance_visible_intro_source_segments(&mut intro,
+        &mut |_| panic!("this source segment has no audio timing"),
+        &mut |_, _| panic!("this source segment has no audio command"),
+        &mut |_| panic!("this source segment does not clear SFX"),
+        &mut |memory, phase| {
+            assert_eq!(phase, 65_664 + 9 * 4);
+            assert_eq!(memory.get("hCGBPalUpdate"), Some(&1));
+            memory.insert("hCGBPalUpdate".to_string(), 0);
+            updates += 1;
+            Ok(100)
+        }).unwrap(), 0);
+    assert_eq!(updates, 1);
+    assert_eq!(intro.source_clock_memory.get("hCGBPalUpdate"), Some(&0));
+    assert_eq!(intro.frame_clock.phase_t_cycles, 65_664 + (100 + 9 + 4) * 4);
+    assert!(intro.source_instruction_segments.is_empty());
+}
+
+#[test]
+fn visible_intro_delay_frame_wakes_for_lcd_but_returns_only_after_vblank() {
+    let mut intro = VisibleIntroScreen::new();
+    intro.frame_clock = RuntimeIntroFrameClock::new(70_224, 3_324).unwrap();
+    intro.source_clock_memory.insert("hLCDCPointer".to_string(), 0);
+    let mut vblank_updates = 0;
+    let boundaries = advance_visible_intro_delay_frame(&mut intro,
+        &mut |memory, _| {
+            assert_eq!(memory.get("wVBlankOccurred"), Some(&1));
+            memory.insert("wVBlankOccurred".to_string(), 0);
+            vblank_updates += 1;
+            Ok(1_500)
+        }).unwrap();
+    assert_eq!(vblank_updates, 1);
+    assert_eq!(boundaries, 1);
+    assert_eq!(intro.source_clock_memory.get("wVBlankOccurred"), Some(&0));
+    assert!(intro.frame_clock.elapsed_t_cycles > 70_224 - 3_324);
+    assert!(intro.frame_clock.phase_t_cycles < 3_324);
+}
+
+#[test]
+fn visible_intro_sprite_frames_preserve_source_duration_and_shift_oam_flip_bits() {
+    let bundle = SpriteAnimRuntimeBundle {
+        objects: BTreeMap::from([("object".to_string(), serde_json::json!({
+            "name":"object", "frameset":"frames", "function":"SpriteAnimFunc_Null"
+        }))]),
+        oam_sets: BTreeMap::new(),
+        framesets: BTreeMap::from([("frames".to_string(), SpriteAnimFrameset {
+            name: "frames".to_string(), steps: vec![
+                SpriteAnimFrameStep { oam_set: Some("a".to_string()), duration:3, attr_flags:64, command:"frame".to_string() },
+                SpriteAnimFrameStep { oam_set: Some("b".to_string()), duration:1, attr_flags:128, command:"frame".to_string() },
+            ],
+        })]),
+    };
+    let mut intro = VisibleIntroScreen::new();
+    spawn_visible_intro_sprite(&mut intro, &bundle, "object", 0, 0).unwrap();
+    update_visible_intro_sprite_animations(&mut intro, &bundle).unwrap();
+    assert_eq!(intro.sprites[0].frame_timer, 3);
+    assert_eq!(intro.sprites[0].attr_flags, 32);
+    for remaining in [2, 1, 0] {
+        update_visible_intro_sprite_animations(&mut intro, &bundle).unwrap();
+        assert_eq!(intro.sprites[0].frameset_step, 0);
+        assert_eq!(intro.sprites[0].frame_timer, remaining);
+    }
+    update_visible_intro_sprite_animations(&mut intro, &bundle).unwrap();
+    assert_eq!(intro.sprites[0].frameset_step, 1);
+    assert_eq!(intro.sprites[0].frame_timer, 1);
+    assert_eq!(intro.sprites[0].attr_flags, 64);
+}
+
+#[test]
 fn visible_intro_completes_to_title_within_typescript_frame_budget() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     let mut saw_opening_music_command = false;
