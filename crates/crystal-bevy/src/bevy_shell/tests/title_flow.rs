@@ -2574,7 +2574,7 @@ fn visible_intro_source_segments_share_ordered_memory_with_vblank() {
         lcd_callback_pointer_after: None,
         memory_update_instruction_index: Some(4), memory_updates_after: BTreeMap::from([("hCGBPalUpdate".to_string(), 1)]),
         audio_after: Vec::new(),
-        audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(), delay_frames_after: 0, delay_frame_calls_after: 0, request_after: None,
+        audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(), delay_frames_after: 0, delay_frame_calls_after: 0, joy_text_delay_after: false, request_after: None,
     });
     let mut updates = 0;
     assert_eq!(advance_visible_intro_source_segments(&mut intro,
@@ -3584,4 +3584,50 @@ fn fullscreen_main_menu_is_a_panel_not_an_entire_lcd() {
     assert!(sprite.rect.is_some());
     assert!(transform.translation.y < 0.0);
 
+}
+
+#[test]
+fn visible_intro_source_repeated_palette_request_commits_before_return() {
+    let operation = crystal_assets::RuntimePresentationOperation {
+        op: "palette_transfer_request".to_string(), source_span: Default::default(),
+        fields: BTreeMap::from([
+            ("target".to_string(), serde_json::json!("hCGBPalUpdate")),
+            ("value".to_string(), serde_json::json!(1)),
+            ("source_instruction_machine_cycles".to_string(), serde_json::json!([2,3,4])),
+            ("source_memory_effect_instruction_index_from_end".to_string(), serde_json::json!(2)),
+        ]),
+    };
+    let memory = BTreeMap::from([("hCGBPalUpdate".to_string(), 1)]);
+    let segment = visible_intro_source_segment(&operation, false, &memory, &BTreeMap::new(), &BTreeMap::new(), None).unwrap();
+    assert_eq!(segment.memory_updates_after.get("hCGBPalUpdate"), Some(&1));
+    assert_eq!(segment.memory_update_instruction_index, Some(1));
+    let mut intro = VisibleIntroScreen::new();
+    intro.source_clock_memory = memory;
+    intro.frame_clock = RuntimeIntroFrameClock::new(70_224, 65_644).unwrap();
+    intro.source_instruction_segments.push(segment);
+    let mut interrupts = 0;
+    advance_visible_intro_source_segments(&mut intro,
+        &mut |_| panic!("no audio timing"), &mut |_, _| panic!("no playback"), &mut |_| panic!("no SFX clear"),
+        &mut |memory, _| { interrupts += 1; assert_eq!(memory.get("hCGBPalUpdate"), Some(&1)); memory.insert("hCGBPalUpdate".to_string(), 0); Ok(100) }).unwrap();
+    assert_eq!(interrupts, 1);
+    assert_eq!(intro.source_clock_memory.get("hCGBPalUpdate"), Some(&0));
+}
+
+#[test]
+fn visible_intro_joy_delay_samples_ram_at_load_before_irq() {
+    for (phase, expected) in [(65_660,5), (65_632,0)] {
+        let mut intro = VisibleIntroScreen::new();
+        // A narrow fixture places VBlank either before or at the delay load.
+        intro.interrupt_timing.joy_text_delay_common_instruction_machine_cycles = vec![1];
+        intro.frame_clock = RuntimeIntroFrameClock::new(70_224, phase).unwrap();
+        intro.source_clock_memory.insert("wTextDelayFrames".to_string(), 1);
+        let mut interrupts = 0;
+        advance_visible_intro_joy_text_delay(&mut intro, &mut |memory, _| {
+            interrupts += 1;
+            memory.insert("wTextDelayFrames".to_string(), 0);
+            Ok(100)
+        }).unwrap();
+        assert_eq!(interrupts, 1);
+        assert_eq!(intro.source_clock_memory.get("wTextDelayFrames"), Some(&expected));
+    }
 }

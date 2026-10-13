@@ -20,6 +20,13 @@ pub fn runtime_intro_apply_region_effect(
             if (predicate == "zero" && value != 0) || (predicate == "nonzero" && value == 0) { return Ok(()); }
         }
     }
+    if let Some(effects) = operation.fields.get("source_memory_effects") {
+        let effects = effects.as_object().context("CrystalIntro source memory effects are not byte writes")?;
+        for (target, value) in effects {
+            let value = value.as_u64().filter(|value| *value <= 255).context("CrystalIntro source memory effect exceeds one byte")?;
+            memory.insert(target.clone(), value as u16);
+        }
+    }
     if matches!(operation.op.as_str(), "write_memory_byte" | "palette_transfer_request") {
         if let Some(value) = operation.fields.get("value").and_then(serde_json::Value::as_u64) {
             anyhow::ensure!(value <= 255, "CrystalIntro source region scalar write exceeds one byte");
@@ -47,6 +54,14 @@ pub fn runtime_intro_apply_region_effect(
         }
     }
     match operation.op.as_str() {
+        "save_memory_byte" if operation.fields.contains_key("result") => {
+            let value = *memory.get(text("source")?).context("CrystalIntro source stack save byte is uninitialized")?;
+            memory.insert(text("result")?.to_string(), value);
+        }
+        "restore_memory_byte" if operation.fields.contains_key("result") => {
+            let value = *memory.get(text("result")?).context("CrystalIntro source stack restore result is uninitialized")?;
+            memory.insert(text("target")?.to_string(), value);
+        }
         "decompress_lz3_resource" => {
             let data = resolve(text("resource")?)?;
             let decoded = super::runtime_intro_decode_lz3(&data, 64 * 1024)?;

@@ -403,6 +403,8 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
     let mut entered = false;
     let mut entry_clock = None;
     let mut first_input = None;
+    let mut intro_return = None;
+    let mut cleanup_clock = None;
     let mut current_scene = u8::MAX;
     let mut dispatch_tick = 0u16;
     let mut scenes = Vec::<Value>::new();
@@ -463,6 +465,8 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
             if location == entry {
                 ensure!(!entered, "intro oracle unexpectedly reentered CrystalIntro");
                 entered = true;
+                let return_pc = u16::from_le_bytes([cpu.read(sp), cpu.read(sp.wrapping_add(1))]);
+                intro_return = Some(((if return_pc < 0x4000 { 0 } else { cpu.rom_bank() }, return_pc), sp.wrapping_add(2)));
                 let (timer_period, first_timer_request) = cpu
                     .timer_calendar()
                     .context("intro entry timer is disabled")?;
@@ -502,7 +506,7 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
                         name: (*name).into(), return_address: (return_bank,return_pc), return_sp:sp.wrapping_add(2), cpu:cycles,lcd,interrupt_cycles,idle_cycles,
                         record: json!({"dispatcher_entry":current_scene,"dispatch_tick":dispatch_tick,"bc":bc,"de":de,"hl":hl,"a":cpu.accumulator(),"bank":cpu.rom_bank(),"hook_bank":location.0,"return_pc":return_pc,"vram_bank":cpu.read(0xff4f)&1,"wram_bank":cpu.read(0xff70)&7}),
                     });
-                    if *name == "IntroSceneJumper" {
+                    if *name == "IntroSceneJumper" || *name == "JoyTextDelay" {
                         pending.last_mut().unwrap().record["start_memory"] =
                             scene_memory(&cpu, &symbols);
                     }
@@ -561,9 +565,12 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
                             .map(|hook| (&hook.name, hook.return_address, hook.return_sp))
                             .collect::<Vec<_>>()
                     );
-                    return Ok(
-                        json!({"schema_version":1,"validated":false,"runner":"pack_core Rust intro oracle","rom_sha1":hash,"startup":"CGB post-boot registers, LCD enabled, zeroed external RAM","frame_t_cycles":FRAME,"entry":entry_clock,"first_input":first_input,"scenes":scenes,"records":records,"interrupt_timing_samples_t_cycles":interrupt_timings,"completion":{"cpu_t_cycles":cycles,"lcd_t_cycles":lcd}}),
-                    );
+                    ensure!(cleanup_clock.is_none(), "intro oracle reentered cleanup");
+                    cleanup_clock = Some(json!({"cpu_t_cycles":cycles,"lcd_t_cycles":lcd}));
+                }
+                if intro_return == Some((location, sp)) {
+                    ensure!(cleanup_clock.is_some() && pending.is_empty(), "intro oracle returned before completed cleanup hooks");
+                    return Ok(json!({"schema_version":1,"validated":false,"runner":"pack_core Rust intro oracle","rom_sha1":hash,"startup":"CGB post-boot registers, LCD enabled, zeroed external RAM","frame_t_cycles":FRAME,"entry":entry_clock,"first_input":first_input,"scenes":scenes,"records":records,"interrupt_timing_samples_t_cycles":interrupt_timings,"cleanup_entry":cleanup_clock,"completion":{"boundary":"CrystalIntro_return","cpu_t_cycles":cycles,"lcd_t_cycles":lcd,"memory":scene_memory(&cpu,&symbols)}}));
                 }
             }
         }

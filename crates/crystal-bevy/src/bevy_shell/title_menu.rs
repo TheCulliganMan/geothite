@@ -315,7 +315,7 @@ fn visible_intro_source_segment(
         machine_cycles: Vec::new(), lcd_callback_pointer_after: None,
         memory_updates_after: BTreeMap::new(), memory_update_instruction_index: None, audio_after: Vec::new(),
         audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(),
-        delay_frames_after: 0, delay_frame_calls_after: 0, request_after: None,
+        delay_frames_after: 0, delay_frame_calls_after: 0, joy_text_delay_after: false, request_after: None,
     };
     match operation.op.as_str() {
         "play_audio" => {
@@ -353,9 +353,31 @@ fn visible_intro_source_segment(
         }
         _ => segment.machine_cycles = crystal_assets::runtime_intro_operation_instruction_machine_cycles_with_context(operation, branch, memory, values, regions, compressed)?,
     }
+    let effect_enabled = if let Some(condition) = operation.fields.get("condition") {
+        if let (Some(source), Some(predicate)) = (condition["source"].as_str(), condition["predicate"].as_str()) {
+            let value = *memory.get(source).context("CrystalIntro source effect guard byte is missing")?;
+            match predicate { "zero" => value == 0, "nonzero" => value != 0, _ => true }
+        } else { true }
+    } else { true };
+    if effect_enabled && matches!(operation.op.as_str(), "write_memory_byte" | "palette_transfer_request") {
+        segment.memory_updates_after.extend(visible_intro_source_memory_effects(operation)?);
+    }
+    if let Some(effects) = operation.fields.get("source_memory_effects").filter(|_| effect_enabled) {
+        for (target, value) in effects.as_object().context("CrystalIntro source memory effects are invalid")? {
+            let value = value.as_u64().filter(|value| *value <= 255).context("CrystalIntro source memory effect exceeds one byte")?;
+            segment.memory_updates_after.insert(target.clone(), value as u16);
+        }
+    }
     segment.memory_update_instruction_index = operation.fields.get("source_memory_effect_instruction_index")
         .map(|value| value.as_u64().and_then(|index| usize::try_from(index).ok()).context("CrystalIntro memory effect index is invalid"))
         .transpose()?;
+    if let Some(from_end) = operation.fields.get("source_memory_effect_instruction_index_from_end") {
+        anyhow::ensure!(segment.memory_update_instruction_index.is_none(), "CrystalIntro source store has two conflicting boundaries");
+        let distance = from_end.as_u64().and_then(|value| usize::try_from(value).ok()).filter(|value| *value > 0)
+            .context("CrystalIntro source store distance is invalid")?;
+        segment.memory_update_instruction_index = Some(segment.machine_cycles.len().checked_sub(distance)
+            .context("CrystalIntro source store distance exceeds its instruction tape")?);
+    }
     if let Some(index) = segment.memory_update_instruction_index {
         anyhow::ensure!(index < segment.machine_cycles.len(), "CrystalIntro memory effect index exceeds source tape");
     }
@@ -368,7 +390,7 @@ fn queue_visible_intro_source_segment(
 ) -> Result<()> {
     if segment.machine_cycles.is_empty() && segment.audio_after.is_empty()
         && segment.delay_frames_after == 0 && segment.delay_frame_calls_after == 0 && segment.request_after.is_none()
-        && segment.audio_return_machine_cycles.is_empty()
+        && segment.audio_return_machine_cycles.is_empty() && !segment.joy_text_delay_after
     {
         if segment.memory_updates_after.is_empty() { return Ok(()); }
         let previous = segments.last_mut().context("CrystalIntro aliased memory effect has no preceding source instruction")?;
@@ -395,11 +417,11 @@ fn collect_visible_intro_timed_cursor_segments(
         if effect.fields.contains_key("source_sprite_init_timing") {
             intro.source_pending_sprite_slots.extend(visible_intro_allocated_source_slots(&before_regions, &intro.source_regions)?);
         }
-        segment.memory_updates_after = intro.callable_memory.iter().filter(|(key,value)| before_memory.get(*key) != Some(*value))
-            .map(|(key,value)| (key.clone(), *value)).collect();
+        segment.memory_updates_after.extend(intro.callable_memory.iter().filter(|(key,value)| before_memory.get(*key) != Some(*value))
+            .map(|(key,value)| (key.clone(), *value)));
         segment.lcd_callback_pointer_after = segment.memory_updates_after.get("hLCDCPointer").copied()
             .map(u8::try_from).transpose().context("CrystalIntro LCD callback exceeds one byte")?;
-        if effect.op == "restore_memory_byte" {
+        if effect.op == "restore_memory_byte" && effect.fields.contains_key("storage") {
             let slot = effect.fields.get("storage").and_then(|storage| storage.get("stack_slot"))
                 .and_then(serde_json::Value::as_u64).and_then(|slot| usize::try_from(slot).ok())
                 .context("CrystalIntro source restore has no stack slot")?;
@@ -509,6 +531,9 @@ fn advance_visible_intro_source_segments(
         if let Some(request) = segment.request_after {
             boundaries += advance_visible_intro_request_2bpp(intro, &request, vblank_body_machine_cycles)?;
         }
+        if segment.joy_text_delay_after {
+            boundaries += advance_visible_intro_joy_text_delay(intro, vblank_body_machine_cycles)?;
+        }
     }
     intro.lcdc_pointer = u8::try_from(intro.source_clock_memory.get("hLCDCPointer").copied().unwrap_or(0))
         .context("CrystalIntro LCD callback pointer exceeds one byte")?;
@@ -582,6 +607,33 @@ fn advance_visible_intro_delay_frame(
         if !waiting { return Ok(boundaries); }
     }
     anyhow::bail!("CrystalIntro DelayFrame did not receive VBlank within one source frame")
+}
+
+/// Sample the source delay load before servicing an interrupt latched by that
+/// opcode. The branch uses the loaded register, even if VBlank changes RAM.
+fn advance_visible_intro_joy_text_delay(
+    intro: &mut VisibleIntroScreen,
+    provider: &mut dyn FnMut(&mut BTreeMap<String, u16>, u32) -> Result<u64>,
+) -> Result<u64> {
+    let mut prefix: Vec<u64> = intro.interrupt_timing.joy_text_delay_common_instruction_machine_cycles
+        .iter().copied().map(u64::from).collect();
+    let restart: Vec<u64> = intro.interrupt_timing.joy_text_delay_repeat_restart_tail_machine_cycles.iter().copied().map(u64::from).collect();
+    let suppressed: Vec<u64> = intro.interrupt_timing.joy_text_delay_repeat_suppressed_tail_machine_cycles.iter().copied().map(u64::from).collect();
+    anyhow::ensure!(restart.as_slice() == [3,4,1,3,2,4,4] && suppressed.as_slice() == [3,4,1,2,1,3,4],
+        "CrystalIntro JoyTextDelay source delay branch changed");
+    prefix.extend_from_slice(&restart[..2]); // JR .checkframedelay; LD A,[delay].
+    let load_index = prefix.len().checked_sub(1).context("CrystalIntro JoyTextDelay source load is missing")?;
+    let mut loaded = None;
+    let mut boundaries = advance_visible_intro_timed_instructions(intro, &prefix,
+        &mut |index, memory| {
+            if index == load_index { loaded = Some(*memory.get("wTextDelayFrames").context("CrystalIntro text-delay byte is uninitialized")?); }
+            Ok(())
+        }, provider)?.frame_boundaries_crossed;
+    let restart = loaded.context("CrystalIntro JoyTextDelay did not execute its load")? == 0;
+    let tail = if restart { &[1,3,2,4,4][..] } else { &[1,2,1,3,4][..] };
+    boundaries += advance_visible_intro_timed_instructions(intro, tail,
+        &mut |index, memory| { if restart && index == 3 { memory.insert("wTextDelayFrames".to_string(), 5); } Ok(()) }, provider)?.frame_boundaries_crossed;
+    Ok(boundaries)
 }
 
 fn advance_visible_intro_delay_frames(
@@ -829,6 +881,8 @@ fn execute_visible_intro_entry_init(
             }
             op => anyhow::bail!("unsupported CrystalIntro entry_init operation {op}"),
         }
+        crystal_assets::runtime_intro_apply_region_effect(&mut intro.source_regions, operation,
+            &mut intro.callable_memory, &mut |resource| anyhow::bail!("CrystalIntro entry unexpectedly reads resource {resource}"))?;
     }
     let expected_saves = [(0, "rWBK"), (1, "hInMenu"), (2, "hVBlank")]
         .into_iter()
@@ -1897,9 +1951,9 @@ fn execute_visible_intro_scene_dispatch(
                 anyhow::ensure!(lcd_callback_pointer_after.is_none() || !segment.machine_cycles.is_empty(),
                     "CrystalIntro callback write has no source instruction boundary");
                 segment.lcd_callback_pointer_after = lcd_callback_pointer_after;
-                segment.memory_updates_after = observation.memory_after.iter()
+                segment.memory_updates_after.extend(observation.memory_after.iter()
                     .filter(|(key, value)| observation.memory_before.get(*key) != Some(*value))
-                    .map(|(key, value)| (key.clone(), *value)).collect();
+                    .map(|(key, value)| (key.clone(), *value)));
                 queue_visible_intro_source_segment(&mut source_segments, segment)?;
                 Ok(())
             })?
@@ -2513,7 +2567,7 @@ fn apply_visible_intro_sprite_pipeline_at(
         let tape = crystal_assets::runtime_intro_sprite_scheduler_instruction_machine_cycles(&slots, limit_slot, oam_addr)?;
         intro.source_instruction_segments.push(VisibleIntroInstructionSegment {
             machine_cycles: tape, lcd_callback_pointer_after: None, memory_updates_after: BTreeMap::new(), memory_update_instruction_index: None, audio_after: Vec::new(),
-            audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(), delay_frames_after: 0, delay_frame_calls_after: 0, request_after: None,
+            audio_return_machine_cycles: Vec::new(), sfx_channel_clears: Vec::new(), delay_frames_after: 0, delay_frame_calls_after: 0, joy_text_delay_after: false, request_after: None,
         });
     } else {
         apply_visible_intro_sprite_anim_functions(intro, bundle, program)?;

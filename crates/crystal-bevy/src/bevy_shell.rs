@@ -2492,6 +2492,7 @@ struct VisibleIntroInstructionSegment {
     sfx_channel_clears: Vec<(usize, u8)>,
     delay_frames_after: u16,
     delay_frame_calls_after: u16,
+    joy_text_delay_after: bool,
     request_after: Option<crystal_assets::RuntimePresentationOperation>,
 }
 
@@ -2506,6 +2507,7 @@ impl Hash for VisibleIntroInstructionSegment {
         self.sfx_channel_clears.hash(state);
         self.delay_frames_after.hash(state);
         self.delay_frame_calls_after.hash(state);
+        self.joy_text_delay_after.hash(state);
         self.request_after.is_some().hash(state);
     }
 }

@@ -2632,6 +2632,15 @@ mod control_tests {
 /// Memory effects remain the existing authored nineteen operations; timing
 /// includes the original outer calls and the helper returns between effects.
 pub(super) fn attach_cleanup(vendor: &Path, entry_cleanup: &mut Value) -> Result<()> {
+    let symbols = source_intro_oracle::symbols(&std::fs::read_to_string(vendor.join("pokecrystal.sym"))?)?;
+    let palette_bank = symbols.get("wGBCPalettes").context("intro palette bank symbol missing")?.0;
+    ensure!((1..=7).contains(&palette_bank), "intro palette bank exceeds CGB WRAM banks");
+    let entry_operations = entry_cleanup["entry_init"]["operations"].as_array_mut()
+        .context("intro entry operations missing")?;
+    let bank_write = entry_operations.iter_mut().find(|operation| operation["op"] == "write_memory_byte"
+        && operation["target"] == "rWBK").context("intro entry palette bank write missing")?;
+    ensure!(bank_write["value"] == "BANK(wGBCPalettes)", "intro entry bank expression changed");
+    bank_write["source_memory_effects"] = json!({"rWBK":palette_bank});
     attach_byte_loop_costs(vendor, &mut [], &std::collections::BTreeMap::new())?;
     let operations = entry_cleanup["cleanup"]["operations"]
         .as_array_mut()
