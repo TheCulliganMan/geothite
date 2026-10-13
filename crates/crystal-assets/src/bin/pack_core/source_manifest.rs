@@ -15,7 +15,7 @@ pub fn export(root: &Path) -> Result<()> {
         for entry in std::fs::read_dir(path)? {
             let path = entry?.path();
             if path.extension().is_some_and(|extension| extension == "json") {
-                names.push(format!("{category}/{}", path.file_name().context("catalog filename")?.to_str().context("UTF-8 catalog filename")?));
+                names.push(format!("content-packs/core-modular/{category}/{}", path.file_name().context("catalog filename")?.to_str().context("UTF-8 catalog filename")?));
             }
         }
         names.sort();
@@ -61,8 +61,15 @@ mod tests {
             let index: ContentPackIndex = serde_json::from_slice(&std::fs::read(directory.join("index.json"))?)?;
             index.validate()?;
             ensure!(generated.compiled.is_none(), "compiler source manifest must remain authored");
-            ensure!(serde_json::to_value(&generated.files)?["pokemon"] == json!(["pokemon/ABRA.json"]),
+            ensure!(serde_json::to_value(&generated.files)?["pokemon"] == json!(["content-packs/core-modular/pokemon/ABRA.json"]),
                 "compiler source manifest lost its Pokemon catalog");
+            for paths in serde_json::to_value(&generated.files)?.as_object().context("generated file categories")?.values() {
+                for path in paths.as_array().context("generated file entries")? {
+                    let path = path.as_str().context("generated file path")?;
+                    ensure!(path.starts_with("content-packs/core-modular/") && root.join("apps/web/assets/data").join(path).is_file(),
+                        "compiler source path does not resolve beneath its declared pack: {path}");
+                }
+            }
             ensure!(index.packs[0].compiled.as_deref() == Some("content-packs/core-modular.crystalpack"),
                 "published index lost its compiled pack reference");
             ensure!(serde_json::to_value(&index.packs[0].files)? == serde_json::to_value(ContentPackFiles::default())?,
