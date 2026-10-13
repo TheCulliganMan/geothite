@@ -492,10 +492,25 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             "intro plain helper source changed: {routine}"
         );
     }
-    let audio=super::Source::read(vendor,"home/audio.asm")?;
-    ensure!(audio.body("SFXChannelsOff")?.iter().skip(1).map(|(_,line)|line.as_str()).collect::<Vec<_>>()
-        ==["xor a","ld [wChannel5Flags1], a","ld [wChannel6Flags1], a","ld [wChannel7Flags1], a","ld [wChannel8Flags1], a","ld [wPitchSweep], a","ret"],
-        "intro scheduled SFXChannelsOff instruction-model source changed");
+    let audio = super::Source::read(vendor, "home/audio.asm")?;
+    ensure!(
+        audio
+            .body("SFXChannelsOff")?
+            .iter()
+            .skip(1)
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>()
+            == [
+                "xor a",
+                "ld [wChannel5Flags1], a",
+                "ld [wChannel6Flags1], a",
+                "ld [wChannel7Flags1], a",
+                "ld [wChannel8Flags1], a",
+                "ld [wPitchSweep], a",
+                "ret"
+            ],
+        "intro scheduled SFXChannelsOff instruction-model source changed"
+    );
     let mut previous_scene_end = 0u64;
     for operation in operations {
         let span = operation["source_span"].clone();
@@ -1795,6 +1810,74 @@ mod byte_loop_cost_tests {
     }
 
     #[test]
+    fn cleanup_split_helpers_and_delayframes_match_independent_source_cpu() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for (routine, count, surrounding, file, tail) in [
+            (
+                "ClearBGPalettes",
+                128u16,
+                45u64,
+                "home/tilemap.asm",
+                vec![2, 3, 4, 2, 3, 2, 6],
+            ),
+            ("ClearTilemap", 360, 25, "home/text.asm", vec![2, 3, 2, 6]),
+        ] {
+            let descriptor = json!({"routine":routine,"byte_count":count,"machine_cycles":byte_loop_machine_cycles("ByteFill",count).unwrap()+surrounding,
+                "source_file":file,"model":"split_memory_effect_v1","caller_call_included":false,"interrupts_included":false});
+            let mut expected =
+                crystal_assets::runtime_intro_helper_instruction_machine_cycles(&descriptor)
+                    .unwrap();
+            expected.extend(tail);
+            for frame in 0..4 {
+                expected.extend([6, 1, if frame == 3 { 2 } else { 3 }]);
+            }
+            expected.extend([4, 4]);
+            let measured = source_intro_oracle::measure_routine_with_frame_wait_fixture(
+                vendor,
+                routine,
+                &[("hCGB".into(), 1), ("$ff40".into(), 0x91)],
+                &[],
+            )
+            .unwrap();
+            let waits = measured["frame_waits"].as_array().unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| {
+                    !waits.iter().any(|wait| {
+                        let begin = wait["start_instruction"].as_u64().unwrap() as usize;
+                        let end = wait["end_instruction"].as_u64().unwrap() as usize;
+                        *index >= begin && *index < end
+                    })
+                })
+                .map(|(_, instruction)| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            assert_eq!(expected, actual, "cleanup {routine}");
+            assert_eq!(waits.len(), 4, "cleanup {routine} source frame count");
+        }
+        let constants = std::collections::BTreeMap::from([
+            ("SCREEN_AREA".into(), 360),
+            ("SCREEN_HEIGHT_PX".into(), 144),
+        ]);
+        let mut phases =
+            super::super::source_title_intro::entry_cleanup(vendor, &constants).unwrap();
+        attach_cleanup(vendor, &mut phases).unwrap();
+        assert_eq!(
+            phases["cleanup"]["operations"][12]["source_instruction_machine_cycles"],
+            json!([3])
+        );
+        assert_eq!(
+            phases["cleanup"]["operations"][18]["source_instruction_machine_cycles"],
+            json!([4])
+        );
+    }
+
+    #[test]
     fn source_farcall_clear_cost_matches_the_independent_rom_instructions() {
         let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
             return;
@@ -2236,6 +2319,112 @@ mod control_tests {
                 .contains("control mismatch")
         );
     }
+}
+
+/// The CGB cleanup is a source-call decomposition, not a new dispatch path.
+/// Memory effects remain the existing authored nineteen operations; timing
+/// includes the original outer calls and the helper returns between effects.
+pub(super) fn attach_cleanup(vendor: &Path, entry_cleanup: &mut Value) -> Result<()> {
+    attach_byte_loop_costs(vendor, &mut [], &std::collections::BTreeMap::new())?;
+    let operations = entry_cleanup["cleanup"]["operations"]
+        .as_array_mut()
+        .context("intro cleanup operations")?;
+    ensure!(
+        operations.len() == 19,
+        "intro cleanup source operation count changed"
+    );
+    for operation in operations.iter_mut() {
+        operation["source_instruction_machine_cycles"] = json!([]);
+    }
+    for (index, routine, count, surrounding, file, model) in [
+        (
+            3,
+            "ClearBGPalettes",
+            128u16,
+            45u64,
+            "home/tilemap.asm",
+            "split_memory_effect_v1",
+        ),
+        (
+            7,
+            "ClearSprites",
+            160,
+            0,
+            "home/clear_sprites.asm",
+            "clear_register_counter_loop_v1",
+        ),
+        (
+            8,
+            "ClearTilemap",
+            360,
+            25,
+            "home/text.asm",
+            "split_memory_effect_v1",
+        ),
+    ] {
+        ensure!(
+            operations[index]["op"] == "fill_memory"
+                && operations[index]["byte_count"].as_u64() == Some(u64::from(count)),
+            "intro cleanup helper shape changed: {routine}"
+        );
+        let machine_cycles = if routine == "ClearSprites" {
+            clear_helper_instruction_machine_cycles(routine, count)?
+                .iter()
+                .sum::<u64>()
+        } else {
+            byte_loop_machine_cycles("ByteFill", count)? + surrounding
+        };
+        operations[index]["source_caller_instruction_machine_cycles"] = json!([6]);
+        operations[index]["source_helper_timing"] = json!({"routine":routine,"byte_count":count,"machine_cycles":machine_cycles,
+            "caller_call_included":false,"interrupts_included":false,"source_file":file,"model":model});
+    }
+    for (index, tape) in [
+        (4, vec![2, 3, 4]),
+        (5, vec![2, 3]),
+        (9, vec![2, 3]),
+        (11, vec![1, 3]),
+        (12, vec![3]),
+        (13, vec![2, 3]),
+        (14, vec![2, 3]),
+        (15, vec![3, 3]),
+        (16, vec![3, 3]),
+        (17, vec![3, 3]),
+        (18, vec![4]),
+    ] {
+        operations[index]["source_instruction_machine_cycles"] = json!(tape);
+    }
+    let delay = super::Source::read(vendor, "home/delay.asm")?;
+    ensure!(
+        delay
+            .body("DelayFrames")?
+            .iter()
+            .skip(1)
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>()
+            == ["call DelayFrame", "dec c", "jr nz, DelayFrames", "ret"],
+        "intro cleanup DelayFrames source changed"
+    );
+    for index in [6, 10] {
+        ensure!(
+            operations[index]["op"] == "wait_frames" && operations[index]["frames"] == 4,
+            "intro cleanup BG wait shape changed"
+        );
+        operations[index]["source_wait_timing"] = json!({"routine":"DelayFrames","source_file":"home/delay.asm",
+            "model":"frame_counter_calls_v1","frames":4,"caller_call_included":false,"interrupts_included":false});
+        operations[index]["source_wait_caller_instruction_machine_cycles"] = json!([2, 6]);
+        operations[index]["source_wait_return_instruction_machine_cycles"] = json!([4]);
+    }
+    // Cancellation uses the authored music-none call, but its execution is a
+    // separate production path and is not blessed by normal-exit certification.
+    let cancel = entry_cleanup["button_cancel"]["operations"]
+        .as_array_mut()
+        .context("intro cancellation operations")?;
+    ensure!(
+        cancel.len() == 1 && cancel[0]["op"] == "stop_audio",
+        "intro cancellation source changed"
+    );
+    cancel[0]["source_audio_caller_instruction_machine_cycles"] = json!([3, 6]);
+    Ok(())
 }
 
 pub(super) fn attach(

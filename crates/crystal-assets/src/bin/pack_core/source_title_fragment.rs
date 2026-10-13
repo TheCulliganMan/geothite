@@ -48,7 +48,8 @@ fn assemble_with_measurements(root: &Path, measured: bool) -> Result<Value> {
         json!({"rom_frame_crossings":[],"timing_oracle":{"runner":"pack_core Rust intro oracle","schema_version":1,"validated":false,"rom_sha1":trace["rom_sha1"],"instruction_core":"sm83_mcycle_v1","timer_model":"cgb_timer_falling_edge_delayed_reload_v1"}})
     };
     let sprites = super::intro_sprites(&vendor)?;
-    let entry_cleanup = super::intro_entry_cleanup(&vendor, &constants)?;
+    let mut entry_cleanup = super::intro_entry_cleanup(&vendor, &constants)?;
+    if measured { super::source_title_intro_measurements::attach_cleanup(&vendor, &mut entry_cleanup)?; }
     let clock = super::intro_clock(&vendor, &trace)?;
     let certification = if measured {
         let control_calls = super::certify_intro_control(&dispatch["phase"], &trace)?;
