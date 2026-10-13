@@ -59,7 +59,15 @@ With Git LFS and Rust installed, initialize from Windows using WSL Ubuntu-24.04:
 .\tools\build-crystalpack.ps1
 ```
 
-Or run in a Linux x86_64 build environment:
+With `just` installed, the same entry point selects the platform initializer:
+
+```sh
+just crystalpack
+```
+
+On macOS, source assembly also requires Homebrew Bison, pkgconf, and libpng.
+RGBDS is built from its pinned source commit in the external workspace. The
+direct Bash entry point works on macOS and Linux x86_64:
 
 ```sh
 bash tools/build-crystalpack.sh

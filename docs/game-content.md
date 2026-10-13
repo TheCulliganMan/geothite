@@ -8,12 +8,18 @@ outside tracked source.
 
 ## Initialize once
 
+The single platform-selecting command is `just crystalpack`.
+
 Install Git, Git LFS, and the Rust toolchain selected by `rust-toolchain.toml`.
 The build environment also needs Bash, curl, tar, make, a C compiler, and
 `sha1sum`/`sha256sum`. Windows uses the `Ubuntu-24.04` WSL distribution by default;
 install these tools and Rust inside that distribution, plus Git LFS on Windows.
 Native graphical play also needs the platform libraries listed in
 [cold-start-3d.md](cold-start-3d.md).
+
+On macOS, install Bison, pkgconf, and libpng with Homebrew. The initializer
+builds the pinned RGBDS source outside the checkout, uses Homebrew's Bison
+without changing shell configuration, and verifies the assembled ROM's SHA-1.
 
 From the checkout, run on Windows:
 
@@ -26,6 +32,9 @@ On Linux x86_64:
 ```sh
 bash tools/build-crystalpack.sh
 ```
+
+The same Bash command runs on macOS. Paths and checksum verification do not
+require GNU `realpath` or GNU checksum command options.
 
 The external workspace defaults to `$HOME/.local/share/geothite/export-workspace`
 inside the Linux build environment. The script selects the exact pret commit and
@@ -49,6 +58,22 @@ The published files are:
 | Terminal and stdio MCP | `content-packs/text-tui.crystalpack` |
 
 All three remain ignored by Git.
+
+### Fresh-source verification on 2026-10-13
+
+`CRYSTAL_PACK_BUILD_PROFILE=wasm-dev just crystalpack` was executed on a clean
+clone on macOS with fresh pinned pret source, RGBDS 1.0.4, and the matching
+reference ROM SHA-1. Source export completed through audio, but `pack_core`
+failed in `source_title_catalog::assemble` when the production intro consumer
+rejected the uncertified decompression timing oracle. No production pack was
+published.
+
+The source-control regression checked all 1,753 dispatcher calls successfully.
+The continuous production intro regression against the independent ROM trace
+failed across all 28 scenes: the frontend clock remains at phase 3,324 and the
+first setup returns at frame 65 rather than frame 66. Completing source export
+requires fixing and certifying that full runtime timeline; the initializer
+continues to reject the incomplete result.
 
 ## Play
 

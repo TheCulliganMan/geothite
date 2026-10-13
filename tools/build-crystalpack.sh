@@ -16,19 +16,28 @@ done
 [[ "$workspace" = /* && "$jobs" =~ ^[1-9][0-9]*$ ]] || { echo 'Workspace must be absolute; jobs must be positive.' >&2; exit 2; }
 case "$workspace/" in "$repo/"*) echo 'Export workspace must be outside the checkout.' >&2; exit 2 ;; esac
 export PATH="$HOME/.cargo/bin:$PATH"
-for tool in git curl tar make cc sha1sum sha256sum cargo realpath; do
+for tool in git curl tar make cc cargo; do
   command -v "$tool" >/dev/null || { printf 'Required build tool missing: %s\n' "$tool" >&2; exit 1; }
 done
-workspace=$(realpath -m -- "$workspace")
+mkdir -p -- "$workspace"
+workspace=$(cd -- "$workspace" && pwd -P)
 case "$workspace/" in "$repo/"*) echo 'Export workspace must be outside the checkout.' >&2; exit 2 ;; esac
 pin="$repo/pret-source.lock.json"
 pin_value() { sed -n "s/.*\"$1\": \"\([^\"]*\)\".*/\1/p" "$pin"; }
 commit=$(pin_value commit)
 tree=$(pin_value tree)
 rgbds_version=$(pin_value rgbds)
+rgbds_source_commit=$(pin_value rgbds_source_commit)
 rgbds_hash=$(pin_value rgbds_linux_x86_64_sha256)
 rom_hash=$(pin_value reference_rom_sha1)
-[[ "$commit" =~ ^[0-9a-f]{40}$ && "$tree" =~ ^[0-9a-f]{40}$ && "$rgbds_hash" =~ ^[0-9a-f]{64}$ && "$rom_hash" =~ ^[0-9a-f]{40}$ && "$rgbds_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Invalid source/toolchain pin.' >&2; exit 1; }
+[[ "$commit" =~ ^[0-9a-f]{40}$ && "$tree" =~ ^[0-9a-f]{40}$ && "$rgbds_source_commit" =~ ^[0-9a-f]{40}$ && "$rgbds_hash" =~ ^[0-9a-f]{64}$ && "$rom_hash" =~ ^[0-9a-f]{40}$ && "$rgbds_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Invalid source/toolchain pin.' >&2; exit 1; }
+file_hash() {
+  if command -v "sha${1}sum" >/dev/null; then
+    "sha${1}sum" "$2" | cut -d ' ' -f 1
+  else
+    shasum -a "$1" "$2" | cut -d ' ' -f 1
+  fi
+}
 mkdir -p "$workspace/vendor" "$workspace/toolchain"
 vendor="$workspace/vendor/pokecrystal"
 if [[ ! -d "$vendor/.git" ]]; then
@@ -41,17 +50,37 @@ git -C "$vendor" checkout --detach "$commit"
 [[ "$(git -C "$vendor" rev-parse 'HEAD^{tree}')" = "$tree" ]] || { echo 'Pret tree differs from pin.' >&2; exit 1; }
 export RGBDS="$workspace/toolchain/rgbds-$rgbds_version"
 if [[ ! -x "$RGBDS/rgbasm" ]]; then
-  [[ "$(uname -m)" = x86_64 ]] || { echo 'Pinned assembler archive requires Linux x86_64.' >&2; exit 1; }
+  if [[ "$(uname -s)" = Darwin ]]; then
+    # Apple's system Bison is too old for RGBDS. Use the installed Homebrew
+    # tools without modifying the user's shell configuration.
+    if command -v brew >/dev/null; then
+      export PATH="$(brew --prefix)/opt/bison/bin:$PATH"
+    fi
+    for tool in bison pkg-config; do
+      command -v "$tool" >/dev/null || { printf 'Required RGBDS source build tool missing: %s\n' "$tool" >&2; exit 1; }
+    done
+    source_dir="$workspace/toolchain/rgbds-source-$rgbds_version"
+    if [[ ! -d "$source_dir/.git" ]]; then
+      git clone --no-checkout https://github.com/gbdev/rgbds.git "$source_dir"
+    fi
+    [[ -z "$(git -C "$source_dir" status --porcelain --untracked-files=no)" ]] || { echo 'External RGBDS checkout has tracked edits.' >&2; exit 1; }
+    git -C "$source_dir" checkout --detach "$rgbds_source_commit"
+    make -C "$source_dir" -j "$jobs"
+    mkdir -p "$RGBDS"
+    cp "$source_dir/"{rgbasm,rgblink,rgbfix,rgbgfx} "$RGBDS/"
+  else
+  [[ "$(uname -s)" = Linux && "$(uname -m)" = x86_64 ]] || { echo 'Pinned assembler archive requires Linux x86_64.' >&2; exit 1; }
   archive="$workspace/toolchain/rgbds-$rgbds_version.tar.xz"
   curl --fail --location --retry 3 "https://github.com/gbdev/rgbds/releases/download/v$rgbds_version/rgbds-linux-x86_64.tar.xz" --output "$archive"
-  printf '%s  %s\n' "$rgbds_hash" "$archive" | sha256sum --check --status
+  [[ "$(file_hash 256 "$archive")" = "$rgbds_hash" ]] || { echo 'Assembler archive differs from pin.' >&2; exit 1; }
   mkdir -p "$RGBDS"
   tar -xJf "$archive" -C "$RGBDS"
+  fi
 fi
 [[ "$("$RGBDS/rgbasm" --version)" = "rgbasm v$rgbds_version" ]] || { echo 'Assembler differs from pin.' >&2; exit 1; }
 printf 'Building pinned pret source %s\n' "$commit"
 make -C "$vendor" -j "$jobs" RGBDS="$RGBDS/" pokecrystal.gbc
-printf '%s  %s\n' "$rom_hash" "$vendor/pokecrystal.gbc" | sha1sum --check --status
+[[ "$(file_hash 1 "$vendor/pokecrystal.gbc")" = "$rom_hash" ]] || { echo 'Assembled reference ROM differs from pin.' >&2; exit 1; }
 cd "$repo"
 git lfs install --local
 git lfs pull

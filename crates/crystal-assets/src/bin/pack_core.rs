@@ -113,6 +113,11 @@ fn main() -> Result<()> {
             "--export-playability" => source_playability::export(&root),
             "--export-title" => source_title_screen::export(&root),
             "--export-title-unvalidated" => source_title_screen::export_unvalidated(&root),
+            "--export-intro-trace" => {
+                let trace = source_title_screen::intro_trace(&root.join("vendor/pokecrystal"))?;
+                fs::write(root.join("intro-trace.json"), serde_json::to_vec(&trace)?)?;
+                Ok(())
+            },
             "--export-special-tables" => source_special_tables::export(&root),
             "--export-roaming" => source_roaming::export(&root),
             "--export-metadata" => source_metadata::export(&root),

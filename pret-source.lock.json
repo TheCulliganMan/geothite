@@ -4,6 +4,7 @@
   "commit": "3bc8daa4173e96a7f4011dad3922eb6fa5dad5c6",
   "tree": "64288c8eacf03b7797a9e18b16def659a4ff4dd7",
   "rgbds": "1.0.4",
+  "rgbds_source_commit": "f7b8207322aa9e3714ef0d98d01989f320103026",
   "rgbds_linux_x86_64_sha256": "3e19e50ea602e316be709160acaf0a708b1fa6d32d219ec541f244442895dbb7",
   "reference_rom_sha1": "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"
 }
