@@ -13,6 +13,27 @@ pub(super) fn assemble_unvalidated(root: &Path) -> Result<Value> {
     assemble_with_measurements(root, false)
 }
 
+fn attach_dispatcher_timing(scene_dispatch: &mut Value, timing: &Value) -> Result<()> {
+    let instructions = timing["source_dispatcher_instruction_machine_cycles"]
+        .as_array()
+        .context("source intro dispatcher lacks its instruction sequence")?;
+    ensure!(
+        instructions
+            .iter()
+            .all(|cost| cost.as_u64().is_some_and(|cost| (1..=6).contains(&cost)))
+            && !instructions.is_empty(),
+        "source intro dispatcher has invalid instruction costs"
+    );
+    ensure!(
+        timing["source_dispatcher_caller_call_included"].as_bool() == Some(false),
+        "source intro dispatcher double counts its outer CALL"
+    );
+    scene_dispatch["source_dispatcher_instruction_machine_cycles"] =
+        timing["source_dispatcher_instruction_machine_cycles"].clone();
+    scene_dispatch["source_dispatcher_caller_call_included"] = json!(false);
+    Ok(())
+}
+
 fn assemble_with_measurements(root: &Path, measured: bool) -> Result<Value> {
     let vendor = root.join("vendor/pokecrystal");
     let constants: Value = serde_json::from_slice(&std::fs::read(root.join("apps/web/assets/data/story_event_script_constants.json"))?)?;
@@ -83,7 +104,9 @@ fn assemble_with_measurements(root: &Path, measured: bool) -> Result<Value> {
     subprogram["result"] = json!({"completion":"JUMPTABLE_EXIT_F","cancelled_by":"PAD_BUTTONS"});
     subprogram["source_span"] = source.span("CrystalIntro")?;
     subprogram["phases"] = json!([entry_cleanup["entry_init"], dispatch["phase"], entry_cleanup["cleanup"], entry_cleanup["button_cancel"]]);
-    subprogram["loop"] = json!({"input_poll":input,"frame_wait":frame_wait,"scene_dispatch":{"table":"IntroScenes","index":"wJumptableIndex","entries":labels,"entry_offsets":entry_offsets,"completion_wait_frames":waits},"scheduler":scheduler,"interrupt_timing":clock});
+    let mut scene_dispatch = json!({"table":"IntroScenes","index":"wJumptableIndex","entries":labels,"entry_offsets":entry_offsets,"completion_wait_frames":waits});
+    if measured { attach_dispatcher_timing(&mut scene_dispatch, &timing)?; }
+    subprogram["loop"] = json!({"input_poll":input,"frame_wait":frame_wait,"scene_dispatch":scene_dispatch,"scheduler":scheduler,"interrupt_timing":clock});
     subprogram["resource_transfers"] = transfers["resource_transfers"].clone();
     subprogram["resources"] = json!(subprogram_resources);
     subprogram["sprite_programs"] = sprites["sprite_programs"].clone();
@@ -101,4 +124,33 @@ fn assemble_with_measurements(root: &Path, measured: bool) -> Result<Value> {
     program["audio"] = json!(audio);
     let _: RuntimePresentationProgram = serde_json::from_value(program.clone()).context("assembled authored intro schema")?;
     Ok(program)
+}
+
+#[cfg(test)]
+mod timing_wiring_tests {
+    use super::*;
+
+    #[test]
+    fn dispatcher_timing_survives_program_schema_roundtrip_without_outer_call() {
+        let timing = json!({"source_dispatcher_instruction_machine_cycles":[4,1,2,3,2,2,2,2,1,1],"source_dispatcher_caller_call_included":false});
+        let mut dispatch = json!({"table":"IntroScenes"});
+        attach_dispatcher_timing(&mut dispatch, &timing).unwrap();
+        let mut subprogram = RuntimePresentationSubprogram::default();
+        subprogram.loop_ = json!({"scene_dispatch":dispatch});
+        let mut program = RuntimePresentationProgram::default();
+        program.subprograms.push(subprogram);
+        let roundtrip: RuntimePresentationProgram =
+            serde_json::from_slice(&serde_json::to_vec(&program).unwrap()).unwrap();
+        assert_eq!(
+            roundtrip.subprograms[0].loop_["scene_dispatch"]["source_dispatcher_instruction_machine_cycles"],
+            timing["source_dispatcher_instruction_machine_cycles"]
+        );
+        assert_eq!(
+            roundtrip.subprograms[0].loop_["scene_dispatch"]["source_dispatcher_caller_call_included"],
+            json!(false)
+        );
+        let mut malformed = timing.clone();
+        malformed["source_dispatcher_caller_call_included"] = json!(true);
+        assert!(attach_dispatcher_timing(&mut dispatch, &malformed).is_err());
+    }
 }
