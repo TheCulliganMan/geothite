@@ -21,7 +21,7 @@ if [ "${CRYSTAL_SCENERY_FULL_DETAIL:-0}" = 1 ]; then
 fi
 cargo build --locked --profile wasm-dev -p crystal-bevy --bin crystal-bevy \
     --features "$FEATURES" --target wasm32-unknown-unknown
-cargo build --locked --profile wasm-dev -p crystal-audio --lib \
+cargo rustc --locked --profile wasm-dev -p crystal-audio --lib --crate-type cdylib \
     --features browser-synth --target wasm32-unknown-unknown
 cargo build --locked -p crystal-web-server --bin crystal-web-server
 mkdir -p "$OUT"

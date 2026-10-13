@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
     && cargo build --locked --profile web-release --package crystal-bevy \
         --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
-    && cargo build --locked --profile web-release --package crystal-audio --lib \
+    && cargo rustc --locked --profile web-release --package crystal-audio --lib --crate-type cdylib \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
     && mkdir -p /out/web/flygon \
