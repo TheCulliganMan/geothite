@@ -50,6 +50,16 @@ pub(super) fn lower(vendor: &Path, trace: &Value) -> Result<Value> {
         "intro clock trace uses different ROM"
     );
     let source = Source::read(vendor, "engine/movie/intro.asm")?;
+    source.operation("CrystalIntro", &[
+        "ldh a, [rWBK]", "push af", "ld a, BANK(wGBCPalettes)", "ldh [rWBK], a",
+        "ldh a, [hInMenu]", "push af", "ldh a, [hVBlank]", "push af", "call .InitRAMAddrs",
+    ], "source_intro_entry_clock", json!({}))?;
+    source.operation("CrystalIntro", &[
+        ".InitRAMAddrs:", "assert VBLANK_NORMAL == 0", "xor a", "ldh [hVBlank], a",
+        "ld a, TRUE", "ldh [hInMenu], a", "xor a", "ldh [hMapAnims], a",
+        "ld [wJumptableIndex], a", "ret",
+    ], "source_intro_entry_init_clock", json!({}))?;
+    let entry_tape: [u64; 18] = [3, 4, 2, 3, 3, 4, 3, 4, 6, 1, 3, 2, 3, 1, 3, 4, 4, 6];
     source.operation(
         "CrystalIntro",
         &[
@@ -181,6 +191,23 @@ pub(super) fn lower(vendor: &Path, trace: &Value) -> Result<Value> {
         &[("wGameTimerPaused".into(), 0)],
     )?;
     let entry = &trace["entry"];
+    let entry_memory = entry["memory"].as_object()
+        .context("pinned-ROM CrystalIntro entry byte state is missing")?;
+    for key in ["hCGB", "hVBlank", "hInMenu", "hOAMUpdate", "hBGMapUpdate", "hBGMapTileCount", "hBGMapMode",
+        "hBGMapThird", "hCGBPalUpdate", "hDMATransfer", "hMapAnims", "hLCDCPointer",
+        "wRequested2bppSize", "wRequested1bppSize", "wOverworldDelay", "wTextDelayFrames",
+        "wJoypadDisable", "wGameLogicPaused", "wGameTimerPaused", "wGameTimeCap",
+        "wGameTimeFrames", "wGameTimeSeconds", "wGameTimeMinutes", "wGameTimeHours",
+        "wGameTimeHours+1", "hVBlankCounter", "wMusicPlaying", "hTilesPerCycle", "wLinkMode", "hMobile", "rWBK"] {
+        ensure!(entry_memory.get(key).and_then(Value::as_u64).is_some_and(|value| value <= 255),
+            "pinned-ROM CrystalIntro entry has no exact source byte {key}");
+    }
+    ensure!(entry_memory["hCGB"] == 1 && entry_memory["wMusicPlaying"] == 1,
+        "pinned-ROM CrystalIntro bootstrap does not have source CGB/sound initialization");
+    for channel in 1..=8 {
+        ensure!(entry_memory.get(&format!("wChannel{channel}Flags1")) == Some(&json!(0)),
+            "pinned-ROM CrystalIntro bootstrap has active audio channel {channel}");
+    }
     let input = &trace["first_input"];
     let entry_cost = (input["cpu_t_cycles"]
         .as_u64()
@@ -190,8 +217,10 @@ pub(super) fn lower(vendor: &Path, trace: &Value) -> Result<Value> {
             .as_u64()
             .context("entry IRQ cost")?)
         / 4;
+    ensure!(entry_tape.iter().sum::<u64>() == entry_cost,
+        "source CrystalIntro entry instruction tape differs from independent ROM work");
     let oracle = json!({"runner":"pack_core Rust intro oracle","schema_version":1,"validated":false,"rom_sha1":trace["rom_sha1"],"instruction_core":"sm83_mcycle_v1","timer_model":"cgb_timer_falling_edge_delayed_reload_v1"});
     Ok(
-        json!({"unit":"sm83_machine_cycles","entry_to_first_input_machine_cycles":entry_cost,"hardware_entry":5,"vectors":{"instruction":"jp","machine_cycles":4},"frame_clock":{"frame_t_cycles":trace["frame_t_cycles"],"intro_entry_phase_t_cycles":entry["phase_t_cycles"],"timing_oracle":oracle},"outer_loop_body":{"after_input_before_scene_dispatch":gap(trace,"JoyTextDelay","IntroSceneJumper")?,"scene_dispatch_to_sprite_scheduler":gap(trace,"IntroSceneJumper","PlaySpriteAnimations")?,"sprite_scheduler_to_frame_wait":gap(trace,"PlaySpriteAnimations","DelayFrame")?},"joy_text_delay":{"pressed_repeat_reset_machine_cycles":cycles(&measured[0])?,"repeat_suppressed_machine_cycles":cycles(&measured[1])?,"repeat_restart_machine_cycles":cycles(&measured[2])?,"common_instruction_machine_cycles":tapes[0][..shared],"pressed_repeat_reset_tail_machine_cycles":tapes[0][shared..],"repeat_suppressed_tail_machine_cycles":tapes[1][shared..],"repeat_restart_tail_machine_cycles":tapes[2][shared..]},"lcd_stat":{"handler":"LCD","trigger_register":"rSTAT","trigger_mask":"STAT_MODE_0","trigger":"hblank","callback_pointer":"hLCDCPointer","interrupts_per_visible_frame":144,"scanline_t_cycles":456,"hblank_request_t_cycles":250,"vblank_request_t_cycles":65664,"callback_zero_machine_cycles":cycles(&zero)?+9,"callback_nonzero_machine_cycles":cycles(&nonzero)?+9},"timer":{"handler":"MobileTimer","enable":"IE_TIMER","inactive_guard":{"source":"hMobile","predicate":"zero"},"request_period_t_cycles":entry["timer_request_period_t_cycles"],"first_request_after_intro_entry_t_cycles":entry["first_timer_request_after_intro_entry_t_cycles"],"inactive_machine_cycles":cycles(&inactive_timer)?+9},"vblank_normal":{"handler":"VBlank_Normal","selector":{"source":"hVBlank","value":0},"inactive_game_timer_machine_cycles":cycles(&inactive_game)?,"wrapper_epilogue_machine_cycles":16},"implementation_source_spans":[source.span("CrystalIntro")?,joy.span("JoyTextDelay")?,lcd.span("LCD")?,mobile.span("MobileTimer")?,timer.span("GameTimer")?]}),
+        json!({"unit":"sm83_machine_cycles","entry_memory":entry_memory,"entry_memory_provenance":{"boundary":"CrystalIntro","startup":trace["startup"],"rom_sha1":trace["rom_sha1"],"source_span":source.span("CrystalIntro")?},"entry_to_first_input_machine_cycles":entry_cost,"entry_to_first_input_instruction_machine_cycles":entry_tape,"hardware_entry":5,"vectors":{"instruction":"jp","machine_cycles":4},"frame_clock":{"frame_t_cycles":trace["frame_t_cycles"],"intro_entry_phase_t_cycles":entry["phase_t_cycles"],"timing_oracle":oracle},"outer_loop_body":{"after_input_before_scene_dispatch":gap(trace,"JoyTextDelay","IntroSceneJumper")?,"scene_dispatch_to_sprite_scheduler":gap(trace,"IntroSceneJumper","PlaySpriteAnimations")?,"sprite_scheduler_to_frame_wait":gap(trace,"PlaySpriteAnimations","DelayFrame")?},"joy_text_delay":{"pressed_repeat_reset_machine_cycles":cycles(&measured[0])?,"repeat_suppressed_machine_cycles":cycles(&measured[1])?,"repeat_restart_machine_cycles":cycles(&measured[2])?,"common_instruction_machine_cycles":tapes[0][..shared],"pressed_repeat_reset_tail_machine_cycles":tapes[0][shared..],"repeat_suppressed_tail_machine_cycles":tapes[1][shared..],"repeat_restart_tail_machine_cycles":tapes[2][shared..]},"lcd_stat":{"handler":"LCD","trigger_register":"rSTAT","trigger_mask":"STAT_MODE_0","trigger":"hblank","callback_pointer":"hLCDCPointer","interrupts_per_visible_frame":144,"scanline_t_cycles":456,"hblank_request_t_cycles":250,"vblank_request_t_cycles":65664,"callback_zero_machine_cycles":cycles(&zero)?+9,"callback_nonzero_machine_cycles":cycles(&nonzero)?+9},"timer":{"handler":"MobileTimer","enable":"IE_TIMER","inactive_guard":{"source":"hMobile","predicate":"zero"},"request_period_t_cycles":entry["timer_request_period_t_cycles"],"first_request_after_intro_entry_t_cycles":entry["first_timer_request_after_intro_entry_t_cycles"],"inactive_machine_cycles":cycles(&inactive_timer)?+9},"vblank_normal":{"handler":"VBlank_Normal","selector":{"source":"hVBlank","value":0},"inactive_game_timer_machine_cycles":cycles(&inactive_game)?,"wrapper_epilogue_machine_cycles":16},"implementation_source_spans":[source.span("CrystalIntro")?,joy.span("JoyTextDelay")?,lcd.span("LCD")?,mobile.span("MobileTimer")?,timer.span("GameTimer")?]}),
     )
 }
