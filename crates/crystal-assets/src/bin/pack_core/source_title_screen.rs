@@ -23,13 +23,19 @@ pub(super) fn export_unvalidated(root: &Path) -> Result<()> {
 mod source_intro_oracle;
 #[path = "source_intro_audio_timing.rs"]
 mod source_intro_audio_timing;
+#[path = "source_intro_audio_commands.rs"]
+mod source_intro_audio_commands;
 #[path = "source_intro_vblank_timing.rs"]
 mod source_intro_vblank_timing;
 #[path = "source_intro_audio_certification.rs"]
 mod source_intro_audio_certification;
+#[path = "source_intro_audio_clock_certification.rs"]
+mod source_intro_audio_clock_certification;
 
 pub(super) fn certify_intro_audio(vendor: &Path, model: &Value, trace: &Value) -> Result<Value> {
-    source_intro_audio_certification::certify(vendor, model, trace)
+    let mut certificate=source_intro_audio_certification::certify(vendor, model, trace)?;
+    certificate["runtime_source_clock"]=source_intro_audio_clock_certification::certify(vendor,model,trace)?;
+    Ok(certificate)
 }
 
 pub(super) fn certify_intro_control(phase: &Value, trace: &Value) -> Result<usize> {

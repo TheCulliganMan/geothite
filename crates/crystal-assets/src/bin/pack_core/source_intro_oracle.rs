@@ -380,6 +380,8 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
         "IntroSceneJumper",
         "DelayFrame",
         "PlaySFX",
+        "PlayMusic",
+        "SFXChannelsOff",
         "_UpdateSound",
         "ApplyPitchSlide",
         "HandleTrackVibrato",
