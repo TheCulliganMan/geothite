@@ -122,6 +122,9 @@ mod source_cache_tests {
 }
 
 fn fixture_address(symbols: &BTreeMap<String, (usize, u16)>, expression: &str) -> Result<u16> {
+    if let Some(hex) = expression.strip_prefix('$') {
+        return Ok(u16::from_str_radix(hex, 16)?);
+    }
     if let Some(address) = symbols.get(expression) {
         return Ok(address.1);
     }
@@ -156,6 +159,39 @@ pub(super) fn measure_routine_state(
     writes: &[(String, u8)],
     registers: &[(&str, u16)],
 ) -> Result<Value> {
+    measure_routine_state_at_phase(vendor, label, writes, registers, 0)
+}
+
+pub(super) fn measure_routine_state_at_phase(
+    vendor: &Path,
+    label: &str,
+    writes: &[(String, u8)],
+    registers: &[(&str, u16)],
+    lcd_phase: u64,
+) -> Result<Value> {
+    measure_routine_fixture(vendor, label, writes, registers, lcd_phase, false)
+}
+
+/// Calibrate caller instructions around actual DelayFrame executions. The
+/// fixture wakes HALT and supplies completion flags; the recorded frame bodies
+/// are excluded from caller tapes and do not certify interrupt/frame timing.
+pub(super) fn measure_routine_with_frame_wait_fixture(
+    vendor: &Path,
+    label: &str,
+    writes: &[(String, u8)],
+    registers: &[(&str, u16)],
+) -> Result<Value> {
+    measure_routine_fixture(vendor, label, writes, registers, 0, true)
+}
+
+fn measure_routine_fixture(
+    vendor: &Path,
+    label: &str,
+    writes: &[(String, u8)],
+    registers: &[(&str, u16)],
+    lcd_phase: u64,
+    wake_frame_waits: bool,
+) -> Result<Value> {
     let source = timing_source(vendor)?;
     let symbols = &source.symbols;
     let &(bank, address) = symbols
@@ -167,20 +203,43 @@ pub(super) fn measure_routine_state(
         .collect::<Result<Vec<_>>>()?;
     let mut cpu = Cpu::new(Arc::clone(&source.rom));
     cpu.prepare_call(bank, address, &writes);
+    cpu.fixture_lcd_phase(lcd_phase);
     cpu.fixture_registers(registers)
         .map_err(anyhow::Error::msg)?;
     let mut instructions = Vec::new();
+    let delay_frame = *symbols.get("DelayFrame").context("source DelayFrame")?;
+    let mut frame_wait = None;
+    let mut frame_waits = Vec::new();
     for _ in 0..1_000_000 {
+        if let Some((return_location, return_sp, start)) = frame_wait {
+            if cpu.location() == return_location && cpu.registers().3 == return_sp {
+                frame_waits.push(json!({"start_instruction":start,"end_instruction":instructions.len()}));
+                frame_wait = None;
+            }
+        }
         if cpu.location() == (0, 0) {
             return Ok(
-                json!({"routine":label,"machine_cycles":cpu.clock().0/4,"instructions":instructions,"rom_sha1":ROM_SHA1,"interrupts_enabled":false}),
+                json!({"routine":label,"machine_cycles":cpu.clock().0/4,"instructions":instructions,"frame_waits":frame_waits,"rom_sha1":ROM_SHA1,"interrupts_enabled":false,"memory":scene_memory(&cpu,&symbols)}),
             );
         }
         let location = cpu.location();
+        if wake_frame_waits && location == delay_frame {
+            ensure!(frame_wait.is_none(), "nested DelayFrame fixture");
+            let sp = cpu.registers().3;
+            let pc = u16::from_le_bytes([cpu.read(sp),cpu.read(sp.wrapping_add(1))]);
+            frame_wait = Some(((if pc<0x4000 {0}else{cpu.rom_bank()},pc),sp.wrapping_add(2),instructions.len()));
+        }
         let opcode = cpu.read(location.1);
         let start = cpu.clock().0;
         cpu.step().map_err(anyhow::Error::msg)?;
         instructions.push(json!({"bank":location.0,"address":location.1,"opcode":opcode,"machine_cycles":(cpu.clock().0-start)/4}));
+        if wake_frame_waits && frame_wait.is_some() && opcode == 0x76 {
+            for name in ["wVBlankOccurred", "wRequested2bppSize", "wRequested1bppSize"] {
+                cpu.fixture_write(fixture_address(symbols,name)?,0);
+            }
+            cpu.fixture_write(0xffff,1);
+            cpu.fixture_write(0xff0f,1);
+        }
     }
     anyhow::bail!("timing routine {label} exceeded bounded instruction limit")
 }
@@ -236,11 +295,47 @@ fn scene_memory(cpu: &Cpu, symbols: &BTreeMap<String, (usize, u16)>) -> Value {
         "hBGP",
         "hOBP",
         "hVBlank",
+        "hVBlankCounter",
         "hInMenu",
+        "hCGB",
+        "hOAMUpdate",
+        "hBGMapUpdate",
+        "hBGMapTileCount",
+        "hBGMapThird",
+        "hDMATransfer",
+        "hMapAnims",
+        "wRequested2bppSize",
+        "wRequested2bppSource",
+        "wRequested2bppDest",
+        "wRequested1bppSize",
+        "wRequested1bppSource",
+        "wRequested1bppDest",
+        "wOverworldDelay",
+        "wTextDelayFrames",
+        "wJoypadDisable",
+        "wGameLogicPaused",
+        "wGameTimerPaused",
+        "wGameTimeCap",
+        "wGameTimeFrames",
+        "wGameTimeSeconds",
+        "wGameTimeMinutes",
+        "wGameTimeHours",
+        "wMusicPlaying",
+        "wChannel1Flags1",
+        "wChannel2Flags1",
+        "wChannel3Flags1",
+        "wChannel4Flags1",
+        "wChannel5Flags1",
+        "wChannel6Flags1",
+        "wChannel7Flags1",
+        "wChannel8Flags1",
     ] {
-        if let Some((_, address)) = symbols.get(name) {
-            memory.insert(name.into(), json!(cpu.read(*address)));
+        if let Some((bank, address)) = symbols.get(name) {
+            memory.insert(name.into(), json!(cpu.read_symbol(*bank, *address)));
         }
+    }
+    if let Some((bank,address)) = symbols.get("wGameTimeHours") {
+        memory.insert("wGameTimeHours+1".into(),json!(cpu.read_symbol(*bank,address.wrapping_add(1))));
     }
     if let Some((_, address)) = symbols.get("wLYOverrides") {
         memory.insert("wLYOverrides".into(), json!(cpu.read(*address)));
@@ -365,7 +460,7 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
                     .timer_calendar()
                     .context("intro entry timer is disabled")?;
                 entry_clock = Some(
-                    json!({"cpu_t_cycles":cycles,"lcd_t_cycles":lcd,"phase_t_cycles":lcd%FRAME,"timer_request_period_t_cycles":timer_period,"first_timer_request_after_intro_entry_t_cycles":first_timer_request}),
+                    json!({"cpu_t_cycles":cycles,"lcd_t_cycles":lcd,"phase_t_cycles":lcd%FRAME,"timer_request_period_t_cycles":timer_period,"first_timer_request_after_intro_entry_t_cycles":first_timer_request,"memory":scene_memory(&cpu,&symbols)}),
                 );
             }
             if entered && first_input.is_none() && location == input {

@@ -12,6 +12,7 @@ pub(super) fn export(root: &Path) -> Result<()> {
 
 pub(super) fn export_unvalidated(root: &Path) -> Result<()> {
     let title = super::source_title_catalog::assemble_unvalidated(root, source_title_fragment::assemble(root)?)?;
+    super::source_title_catalog::export_timing_graphics(root, &title.program)?;
     let output = root.join("apps/web/assets/data/runtime_title_screen.unvalidated.json");
     std::fs::write(&output, serde_json::to_vec_pretty(&title)?)?;
     println!("wrote authored unvalidated title catalog {}", output.display());
@@ -22,6 +23,8 @@ pub(super) fn export_unvalidated(root: &Path) -> Result<()> {
 mod source_intro_oracle;
 #[path = "source_intro_audio_timing.rs"]
 mod source_intro_audio_timing;
+#[path = "source_intro_vblank_timing.rs"]
+mod source_intro_vblank_timing;
 #[path = "source_intro_audio_certification.rs"]
 mod source_intro_audio_certification;
 
@@ -46,6 +49,7 @@ mod source_title_intro_scenes;
 pub(super) fn intro_clock(vendor: &Path, trace: &Value) -> Result<Value> {
     let mut clock=source_title_intro_clock::lower(vendor,trace)?;
     clock["vblank_normal"]["audio_update"]=source_intro_audio_timing::export(vendor)?;
+    clock["vblank_normal"]["cost_models"]=source_intro_vblank_timing::export(vendor)?;
     Ok(clock)
 }
 pub(super) fn intro_trace(vendor: &Path) -> Result<Value> {

@@ -207,6 +207,14 @@ pub(super) struct Cpu {
     total: u64,
 }
 impl Cpu {
+    /// Set the LCD phase only for isolated source-routine calibration. Runtime
+    /// traces always advance the clock by executing instructions.
+    pub(super) fn fixture_lcd_phase(&mut self, phase: u64) {
+        self.b.dots = phase;
+    }
+    pub(super) fn fixture_write(&mut self, address: u16, value: u8) {
+        self.b.write(address, value);
+    }
     pub(super) fn fixture_registers(&mut self, values:&[(&str,u16)])->Result<(),String> {
         for &(name,value) in values {
             match name {
@@ -242,6 +250,13 @@ impl Cpu {
     }
     pub(super) fn read(&self, address: u16) -> u8 {
         self.b.read(address)
+    }
+    pub(super) fn read_symbol(&self, bank: usize, address: u16) -> u8 {
+        if (0xd000..=0xdfff).contains(&address) && bank != 0 {
+            self.b.wram[bank * 4096 + usize::from(address - 0xd000)]
+        } else {
+            self.b.read(address)
+        }
     }
     pub(super) fn accumulator(&self) -> u8 {
         self.r[7]
