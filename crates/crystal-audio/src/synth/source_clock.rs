@@ -112,6 +112,14 @@ impl SourceAudioClock {
         self.sfx_priority = false;
     }
 
+    /// Apply the authored SFXChannelsOff routine without resetting music or
+    /// the drum sample pointer (the source routine leaves both untouched).
+    pub fn stop_sfx_channels(&mut self) {
+        for channel in self.channels[4..].iter_mut().flatten() {
+            channel.state.flags1 = 0;
+        }
+    }
+
     pub fn channels(&self) -> Vec<SourceChannelState> {
         self.channels
             .iter()
@@ -686,6 +694,23 @@ mod tests {
         assert_eq!(end.after.flags1 & 1, 0);
         assert_eq!(end.after.note_flags & 32, 32);
         assert!(clock.update_vblank()?.is_empty());
+        Ok(())
+    }
+
+    #[test]
+    fn source_clock_sfx_channels_off_preserves_music_and_sample_pointer() -> Result<()> {
+        let mut clock = SourceAudioClock::new()?;
+        clock.play(&program(1, &[("note_type", &["4", "8", "0"]), ("note", &["C_", "4"]), ("sound_ret", &[])]))?;
+        clock.play(&program(5, &[("square_note", &["4", "8", "0", "400"]), ("sound_ret", &[])]))?;
+        clock.update_vblank()?;
+        let music_before = clock.channels().into_iter().find(|channel| channel.channel == 1).unwrap();
+        clock.sample_pointer_present = true;
+        clock.stop_sfx_channels();
+        let states = clock.channels();
+        assert_eq!(states.iter().find(|channel| channel.channel == 1), Some(&music_before));
+        assert_eq!(states.iter().find(|channel| channel.channel == 5).unwrap().flags1, 0);
+        assert!(clock.sample_pointer_present);
+        assert!(clock.update_vblank()?.iter().all(|step| step.before.channel <= 4));
         Ok(())
     }
 
