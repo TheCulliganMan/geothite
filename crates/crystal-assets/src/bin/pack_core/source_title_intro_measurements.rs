@@ -561,13 +561,24 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             .find(|(_, label)| label.starts_with("IntroScene") && label.ends_with(':'))
             .map(|(line, _)| u64::from(*line))
             .unwrap_or(start.saturating_sub(1));
-        let from = if !is_scene {
+        let mut from = if !is_scene {
             start
         } else if previous_scene_end >= scene_start && previous_scene_end < start {
             previous_scene_end + 1
         } else {
             scene_start + 1
         };
+        if is_scene {
+            // Each local label starts a separately entered basic block. Source
+            // lowering can omit unreferenced blocks; their instructions cannot
+            // become a prefix of the next reachable semantic operation.
+            if let Some((line, _)) = source.lines.iter().rev().find(|(line, code)| {
+                u64::from(*line) < start && u64::from(*line) >= from
+                    && (code.ends_with(':') || (code.starts_with('.') && !code.contains(' ')))
+            }) {
+                from = u64::from(*line) + 1;
+            }
+        }
         if is_scene {
             previous_scene_end = end;
         }
@@ -1195,6 +1206,25 @@ fn attach_byte_loop_costs(
 
 #[cfg(test)]
 mod byte_loop_cost_tests {
+    #[test]
+    fn unreachable_local_blocks_never_prefix_reachable_instruction_work() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor,"engine/movie/intro.asm").unwrap();
+        let body = source.body("IntroScene20").unwrap();
+        let unused = body.iter().position(|(_,code)| code == ".AppearUnownPal2:").unwrap();
+        let previous_return = body[..unused].iter().rev().find(|(_,code)|code == "ret").unwrap().0;
+        let finished = body.iter().position(|(_,code)| code == ".finished:").unwrap();
+        let call = body[finished+1].0;
+        let mut operations = vec![json!({"op":"return","source_span":{"file":source.file,
+            "start_line":previous_return,"end_line":previous_return}}),
+            json!({"op":"increment_memory_byte","target":"wJumptableIndex","source_span":{"file":source.file,
+            "start_line":call,"end_line":call}})];
+        attach_plain_instruction_costs(vendor,&mut operations).unwrap();
+        assert_eq!(operations[1]["source_instruction_machine_cycles"],json!([6,3,3,4]));
+        assert!(operations[1].get("source_instruction_timing_variants").is_none());
+        assert!(operations[1].get("source_memory_effects").is_none());
+    }
     #[test]
     fn remaining_intro_helpers_have_source_instruction_contracts() {
         let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
