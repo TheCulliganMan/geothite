@@ -122,7 +122,7 @@ pub fn runtime_intro_operation_instruction_machine_cycles_with_context(
                     .as_str()
                     .context("intro timing variant missing predicate")?
                 {
-                    "equal" => value == operand,
+                    "equal" | "equals" => value == operand,
                     "not_equal" => value != operand,
                     "unsigned_less_than" => value < operand,
                     "unsigned_greater_than" => value > operand,
